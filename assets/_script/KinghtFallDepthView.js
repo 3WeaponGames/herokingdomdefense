@@ -113,8 +113,12 @@ function bounds(renderer, main, cache) {
   if (renderer instanceof sp.Skeleton && renderer._skeleton) {
     // Spine node sizes are authored setup bounds, not the current animated pose.
     updatePose(renderer,cache);
-    var geometry = sourceGeometry(renderer, cache);
-    if (geometry) {
+    var geometry = !renderer._nativeSkeleton && sourceGeometry(renderer, cache);
+    if (renderer._nativeSkeleton) {
+      // JSB exposes animated skeleton-local bounds on the native renderer.
+      var nativeBounds = renderer._nativeSkeleton.getBoundingBox();
+      x = nativeBounds.x; y = nativeBounds.y; w = nativeBounds.width; h = nativeBounds.height;
+    } else if (geometry) {
       x = geometry.box.minX; y = geometry.box.minY;
       w = geometry.box.maxX - x; h = geometry.box.maxY - y;
     } else {
@@ -228,6 +232,11 @@ function DepthView(game) {
   this.game = game;
   this.main = game.ndMain;
   this.objects = [];
+  // Native captures live renderers on the GPU, including their current mesh
+  // deformation and draw order. Browser uses its existing copied-pose pass.
+  this.nativeCapture = !!(cc.sys && cc.sys.isNative);
+  this.captureSupported = !this.nativeCapture;
+  this.nativeActors = new Map();
   this.capture = new cc.Node("OcclusionCapture");
   this.capture.active = false;
   this.capture.parent = cc.director.getScene();
@@ -241,6 +250,16 @@ function DepthView(game) {
   this.camera.farClip = 1000;
   this.camera.backgroundColor = cc.color(0, 0, 0, 0);
   this.camera.clearFlags = cc.Camera.ClearFlags.COLOR | cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL;
+  if (this.nativeCapture) {
+    var self = this;
+    cc.resources.load("OcclusionSilhouette", cc.EffectAsset, function (error, effect) {
+      if (self._destroyed) return;
+      if (error) { cc.warn("Silhouette effect could not load", error); return; }
+      self.nativeMaterial = cc.Material.create(effect);
+      self.nativeMaterial.define("USE_TEXTURE", true);
+      self.captureSupported = true;
+    });
+  }
   this.prepareObjects();
   cc.director.on(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
 }
@@ -291,6 +310,9 @@ DepthView.prototype.sort = function () {
   ordered=ordered.map(function(node,index){return {node:node,ground:node._depthGround?point(node._depthGround,main).y:node.y,actor:node._combatActor||node===hero?1:0,index:index};});
   ordered.sort(function(a,b){return b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
   ordered.forEach(function (entry, index) { entry.node.zIndex = index * 2; });
+  // This pass runs after EVENT_AFTER_UPDATE, when Creator normally flushes
+  // delayed child sorting. Apply the new ground order before this frame draws.
+  if (main.sortAllChildren) main.sortAllChildren();
 };
 DepthView.prototype.makeMask = function (object, actor, sources) {
   if (!object.overlay) {
@@ -304,7 +326,13 @@ DepthView.prototype.makeMask = function (object, actor, sources) {
   }
   var node = new cc.Node("UnitSilhouette");
   node.parent = object.overlay.node;
-  var result = { node: node, visuals: sources.map(function (source) { return makeVisual(source, node); }) };
+  var result;
+  if (this.nativeCapture) {
+    var sprite = node.addComponent(cc.Sprite);
+    sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+    sprite.setMaterial(0, this.nativeMaterial);
+    result = { node: node, sprite: sprite };
+  } else result = { node: node, visuals: sources.map(function (source) { return makeVisual(source, node); }) };
   object.masks.set(actor, result);
   return result;
 };
@@ -322,7 +350,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
     } else values.push(source.spriteFrame);
   });
   if (sameStamp(object.signature,signature)) return;
-  if (!object.capture) {
+  if (!this.nativeCapture && !object.capture) {
     object.capture = new cc.Node("ObjectAlpha");
     object.capture.parent = this.capture;
     object.visuals = sources.map(function (source) { return makeVisual(source, object.capture); });
@@ -340,20 +368,78 @@ DepthView.prototype.snapshot = function (object, box, cache) {
     object.frame = new cc.SpriteFrame(object.texture);
     object.frame.setFlipY(true);
   }
-  this.capture.children.forEach(function (node) { node.active = node === object.capture; });
-  this.capture.active = true;
-  object.visuals.forEach(function (pair) { syncVisual(pair, self.main,null,null,cache); });
-  this.cameraNode.setPosition(center.x, center.y, 0);
-  this.camera.orthoSize = height / 2;
-  this.camera.targetTexture = object.texture;
-  this.camera.render(object.capture);
-  this.capture.active = false;
+  if (this.nativeCapture) this.renderNative(sources, center, height, object.texture);
+  else {
+    this.capture.children.forEach(function (node) { node.active = node === object.capture; });
+    this.capture.active = true;
+    object.visuals.forEach(function (pair) { syncVisual(pair, self.main,null,null,cache); });
+    this.cameraNode.setPosition(center.x, center.y, 0);
+    this.camera.orthoSize = height / 2;
+    this.camera.targetTexture = object.texture;
+    this.camera.render(object.capture);
+    this.capture.active = false;
+  }
   object.center = center; object.size = { width: width, height: height }; object.signature = signature;
+};
+DepthView.prototype.renderNative = function (sources, center, height, texture) {
+  var origin = this.main.convertToWorldSpaceAR(cc.v2(0, 0));
+  var up = this.main.convertToWorldSpaceAR(cc.v2(0, 1));
+  var position = this.main.convertToWorldSpaceAR(cc.v2(center.x, center.y));
+  this.cameraNode.setPosition(position.x, position.y, 0);
+  this.camera.orthoSize = height * Math.hypot(up.x - origin.x, up.y - origin.y) / 2;
+  this.camera.targetTexture = texture;
+  var camera = this.camera, first = true;
+  // Render only the selected visual nodes, preserving their native animation,
+  // skins, clipping and deform data. No actor/script/physics copies are created.
+  try {
+    sources.forEach(function (source) {
+      if (!source.enabled || !source.node.activeInHierarchy) return;
+      camera.clearFlags = cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL | (first ? cc.Camera.ClearFlags.COLOR : 0);
+      camera.render(source.node);
+      first = false;
+    });
+  } finally {
+    camera.targetTexture = null;
+  }
+};
+DepthView.prototype.syncNativeMask = function (mask, entry, object, cache) {
+  var actor = entry.actor, box = entry.bounds, record = this.nativeActors.get(actor);
+  if (!record) { record = {}; this.nativeActors.set(actor, record); }
+  if (record.draw !== cache) {
+    // Reuse one capture per hidden actor across every overlapping wall/tree.
+    this.snapshotActor(record, entry.sources, box);
+    record.draw = cache;
+  }
+  mask.sprite.spriteFrame = record.frame;
+  mask.node.setPosition(record.center.x - object.center.x, record.center.y - object.center.y);
+  mask.node.setContentSize(record.size);
+  mask.node.color = cc.color(entry.tint.r, entry.tint.g, entry.tint.b);
+  mask.node.opacity = 204;
+};
+DepthView.prototype.snapshotActor = function (record, sources, box) {
+  var center = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
+  // Retain capacity across animation frames. Tiny changes in animated bounds
+  // must not recreate GPU textures and SpriteFrames for every hidden unit.
+  var width = Math.max(record.size ? record.size.width : 0, Math.ceil((box.maxX - box.minX + 4) / 32) * 32);
+  var height = Math.max(record.size ? record.size.height : 0, Math.ceil((box.maxY - box.minY + 4) / 32) * 32);
+  var resolution = Math.min(1, 512 / Math.max(width, height));
+  var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
+  if (!record.texture || record.texture.width !== tw || record.texture.height !== th) {
+    if (record.frame) record.frame.destroy();
+    if (record.texture) record.texture.destroy();
+    record.texture = new cc.RenderTexture();
+    record.texture.initWithSize(tw, th, cc.gfx.RB_FMT_S8);
+    record.frame = new cc.SpriteFrame(record.texture);
+    record.frame.setFlipY(true);
+  }
+  this.renderNative(sources, center, height, record.texture);
+  record.center = center; record.size = { width: width, height: height };
 };
 DepthView.prototype.update = function () {
   if (!this.main.activeInHierarchy) return;
   this.sort();
-  var self = this, game = this.game,cache={transforms:new Map(),bounds:new Map(),poses:new Set(),vertexStore:this._vertexStore||(this._vertexStore=new WeakMap())},visible=viewBounds(game,this.main);
+  if (this.captureSupported === false) return;
+  var self = this, game = this.game,cache={transforms:new Map(),bounds:new Map(),poses:new Set(),vertexStore:this.nativeCapture?null:this._vertexStore||(this._vertexStore=new WeakMap())},visible=viewBounds(game,this.main);
   var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
@@ -380,7 +466,8 @@ DepthView.prototype.update = function () {
       var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
       mask.node.active = true;
       mask.node.zIndex = entry.actor.node.zIndex;
-      mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache); });
+      if (self.nativeCapture) self.syncNativeMask(mask, entry, object, cache);
+      else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache); });
     });
     object.overlay.node.active = true;
     object.overlay.node.zIndex = object.node.zIndex + 1;
@@ -388,16 +475,33 @@ DepthView.prototype.update = function () {
     object.overlay.node.setContentSize(object.size);
     object.overlay.mask.spriteFrame = object.frame;
   });
+  if (this.nativeCapture) this.nativeActors.forEach(function (record, actor) {
+    if (cc.isValid(actor.node) && activeActors.has(actor)) return;
+    if (record.frame) record.frame.destroy();
+    if (record.texture) record.texture.destroy();
+    self.nativeActors.delete(actor);
+  });
+  // New/relocated stencil nodes must follow their object in this same draw.
+  if (this.main.sortAllChildren) this.main.sortAllChildren();
 };
 DepthView.prototype.destroy = function () {
+  if (this._destroyed) return;
+  this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
   this.objects.forEach(function (object) {
-    if (object.overlay) object.overlay.node.destroy();
+    if (object.overlay && cc.isValid(object.overlay.node, true)) object.overlay.node.destroy();
     if (object.frame) object.frame.destroy();
     if (object.texture) object.texture.destroy();
   });
-  this.capture.destroy(); this.cameraNode.destroy();
   this._vertexStore = null;
+  if (cc.isValid(this.capture, true)) this.capture.destroy();
+  if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
+  if (this.nativeMaterial) this.nativeMaterial.destroy();
+  this.nativeActors.forEach(function (record) {
+    if (record.frame) record.frame.destroy();
+    if (record.texture) record.texture.destroy();
+  });
+  this.nativeActors.clear();
 };
 exports.DepthView = DepthView;
 exports.copyPose = copyPose;

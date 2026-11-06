@@ -42,6 +42,40 @@ var def_KinghtFallUIBuff = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype._nativeFrame = function (frame) {
+    if (!frame || !cc.sys.isNative) return frame;
+    var original = frame._original;
+    var texture = original ? original._texture : frame.getTexture();
+    // JSB can retain blank regions in its dynamic UI atlas after battle/UI
+    // transitions. Keep this small modal on the original artwork textures.
+    texture.packable = false;
+    if (!original) return frame;
+    if (!this._nativeSpriteFrames) this._nativeSpriteFrames = new Map();
+    if (this._nativeSpriteFrames.has(frame)) return this._nativeSpriteFrames.get(frame);
+    var rect = frame.getRect();
+    rect.x = original._x; rect.y = original._y;
+    // Do not reset a shared source frame: other live UIs may still use its
+    // packed UVs/material. Each modal owns only these small frame wrappers.
+    var copy = new cc.SpriteFrame(texture, rect, frame.isRotated(), frame.getOffset(), frame.getOriginalSize());
+    ["insetLeft", "insetRight", "insetTop", "insetBottom"].forEach(function (key) { copy[key] = frame[key]; });
+    this._nativeSpriteFrames.set(frame, copy);
+    return copy;
+  };
+  _ctor.prototype.onLoad = function () {
+    t.prototype.onLoad.call(this);
+    if (!cc.sys.isNative) return;
+    var self = this;
+    this.node.getComponentsInChildren(cc.Sprite).forEach(function (sprite) {
+      sprite.spriteFrame = self._nativeFrame(sprite.spriteFrame);
+    });
+  };
+  _ctor.prototype.onDestroy = function () {
+    if (this._nativeSpriteFrames) {
+      this._nativeSpriteFrames.forEach(function (frame) { frame.destroy(); });
+      this._nativeSpriteFrames.clear();
+    }
+    t.prototype.onDestroy.call(this);
+  };
   _ctor.prototype.init = function (t) {
     this.callBack = t;
   };
@@ -286,8 +320,8 @@ var def_KinghtFallUIBuff = function (t) {
       var a = e.getChildByName("spAniIcon");
       var o = e.getChildByName("sprIcon").getComponent(cc.Sprite);
       var s = e.getChildByName("labInfo").getComponent(cc.RichText);
-      e.getChildByName("sprBg").getComponent(cc.Sprite).spriteFrame = this.sprfBgList[n.Quality - 1];
-      e.getChildByName("sprIocnBg").getComponent(cc.Sprite).spriteFrame = this.sprfIconList[n.Quality - 1];
+      e.getChildByName("sprBg").getComponent(cc.Sprite).spriteFrame = this._nativeFrame(this.sprfBgList[n.Quality - 1]);
+      e.getChildByName("sprIocnBg").getComponent(cc.Sprite).spriteFrame = this._nativeFrame(this.sprfIconList[n.Quality - 1]);
       switch (n.Quality) {
         case 1:
         case 2:
@@ -305,8 +339,8 @@ var def_KinghtFallUIBuff = function (t) {
           a.active = true;
       }
       this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconBuff, n.Image, function (t) {
-        o.spriteFrame = t;
-      });
+        o.spriteFrame = this._nativeFrame(t);
+      }.bind(this));
       var l = [];
       for (var c = 0; c < n.Pamer.length; c++) {
         if (n.isPerecentage && n.isPerecentage[c]) {

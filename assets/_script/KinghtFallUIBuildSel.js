@@ -49,6 +49,9 @@ var def_KinghtFallUIBuildSel = function (t) {
         e.setPosition(o.Excursion ? cc.v2(o.Excursion[0] || 0, o.Excursion[1] || 0) : cc.v2(0, 0));
       });
       r.getChildByName("labName").getComponent(cc.Label).string = i.T(o.Name);
+      if (!i._nameBadgeRows) i._nameBadgeRows = [];
+      i._nameBadgeRows.push({ label: r.getChildByName("labName").getComponent(cc.Label),
+        backgrounds: r.children.filter(function (node) { return (node.name === "ndNormal" || node.name === "ndVideo") && node.y < -20; }) });
       for (var d = 0; d < r.children.length; d++) {
         var p = r.children[d];
         "ndNormal" == p.name && (p.active = !!o.BuildSliverCost);
@@ -94,6 +97,25 @@ var def_KinghtFallUIBuildSel = function (t) {
     for (var a = 0; a < e.length; a++) {
       n(a);
     }
+  };
+  _ctor.prototype.lateUpdate = function () {
+    (this._nameBadgeRows || []).forEach(function (row) {
+      var label = row.label, node = label.node;
+      var signature = [label.string, label.fontSize, label.lineHeight, label.font && label.font.name,
+        node.width, node.height, node.scaleX, node.scaleY].join("|");
+      if (row.signature === signature) return;
+      label._forceUpdateRenderData();
+      var width = Math.ceil(Math.max(220, node.width * Math.abs(node.scaleX) + 28));
+      var height = Math.ceil(Math.max(80, node.height * Math.abs(node.scaleY) + 16));
+      row.backgrounds.forEach(function (background) {
+        var sprite = background.getComponent(cc.Sprite);
+        sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        sprite.type = cc.Sprite.Type.SLICED;
+        background.setContentSize(width, height);
+        background.setPosition(node.position);
+      });
+      row.signature = signature;
+    });
   };
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndItem", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndParent", undefined);

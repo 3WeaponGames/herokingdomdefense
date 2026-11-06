@@ -43,7 +43,7 @@ function harness(deferred = false) {
   Button.prototype._resetState = function () { this._pressed = false; };
   Button.prototype.update = Button.prototype.onEnable = Button.prototype.onDisable = function () {};
   function Base() {}
-  Base.prototype.onDestroy = function () {};
+  Base.prototype.onDestroy = function () { this.baseDestroyed = true; };
   function Item() {}
   Item.prototype.initView = function (reward) { this.reward = JSON.parse(JSON.stringify(reward)); };
   function Layout() {}
@@ -130,6 +130,17 @@ test('blank space, popup contents, and a sibling control dismiss without swallow
     h.dispatch(target, { x: 600, y: 450 });
     assert.equal(h.popup.active, false); assert.equal(clicks, 1);
   }
+});
+
+test('switching to Equipment finishes teardown after Creator has already destroyed the child nodes', () => {
+  const h = harness(); h.controller.onEnable(); h.clickChest(0);
+  h.controller.onDisable();
+  const generation = h.controller._boxRewardRequest;
+  h.controller.ndBoxShow.children = null;
+  h.controller.onDestroy();
+  assert.equal(h.controller.baseDestroyed, true, 'base cleanup must unsubscribe global events');
+  assert.equal(h.uiRoot.listeners.length, 0);
+  assert.ok(h.controller._boxRewardRequest > generation, 'pending reward loads remain invalidated');
 });
 
 test('dismissal listeners are unique and removed when leaving the battle home panel', () => {
