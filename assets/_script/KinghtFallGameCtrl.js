@@ -67,6 +67,7 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    this._battleSettlement = null;
     this.gameData = new $z1KinghtFallGameCtrlData.default(this, t);
     this.ctrPlay.initData();
     this.buildBullet.node.active = false;
@@ -126,6 +127,7 @@ var def_KinghtFallGameCtrl = function (t) {
     t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.onRestart = function (t) {
+    this._battleSettlement = null;
     t && (this.gameData.buffList = []);
     this.gameData.onRestart(t);
     this.cleanMap();

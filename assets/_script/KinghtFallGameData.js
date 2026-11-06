@@ -30,6 +30,45 @@ var exp_KinghtFallGameData = function (t) {
   _ctor.prototype.hasSave = function (t) {
     return this.data.levelNum == t;
   };
+  _ctor.prototype.initData = function () {
+    // UserData and MissionData are loaded before this record. Finish any settlement
+    // interrupted between their independent saves before a battle can be resumed.
+    if (this.data.pendingSettlement) this.completeSettlement(this.data.pendingSettlement);
+  };
+  _ctor.prototype.beginSettlement = function (rewards, stage, challengeMask, isWin) {
+    var settlement = this.data.pendingSettlement || {
+      id: Date.now().toString(36) + "-" + Math.random().toString(36).slice(2),
+      rewards: rewards.map(function (reward) { return { id: reward.id, num: reward.num }; }),
+      stage: stage,
+      challengeMask: challengeMask,
+      isWin: isWin,
+      multiplier: 1
+    };
+    this.settleBattle(settlement, settlement.multiplier);
+    return settlement;
+  };
+  _ctor.prototype.settleBattle = function (settlement, multiplier) {
+    if (multiplier > 1) {
+      var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+      var receipt = player.getUserData().data.battleSettlement;
+      // An ad belonging to a closed result screen must not overwrite a newer run.
+      if (this.data.levelNum >= 0 || !receipt || receipt.id !== settlement.id) return false;
+    }
+    var pending = Object.assign({}, settlement, { multiplier: multiplier });
+    this.data.pendingSettlement = pending;
+    this.saveData();
+    this.completeSettlement(pending);
+    return true;
+  };
+  _ctor.prototype.completeSettlement = function (settlement) {
+    var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+    // Each target record saves its receipt together with its rewards. Retrying this
+    // journal after a reload cannot award either balance twice.
+    player.getUserData().applyBattleSettlement(settlement);
+    player.getMissionData().applyBattleSettlement(settlement);
+    this.setNewGame();
+    require("EventMgr").EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
+  };
   _ctor.prototype.setNewGame = function () {
     this.data = new l();
     this.saveData();

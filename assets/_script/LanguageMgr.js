@@ -186,6 +186,7 @@ LanguageMgr.prototype._ownsLabel = function (label) {
   if (!node || node._localizationGenerated || node.name === "RICHTEXT_CHILD" && cc.PrivateNode && node instanceof cc.PrivateNode) return false;
   // EditBox placeholders are UI copy; its text label contains user input.
   if (cc.EditBox) for (var current = node; current; current = current.parent) {
+    if (cc.Scene && current instanceof cc.Scene) break;
     var input = current.getComponent && current.getComponent(cc.EditBox);
     if (input && input.textLabel === label) return false;
   }
@@ -215,6 +216,10 @@ LanguageMgr.prototype.refresh = function () {
 LanguageMgr.prototype.refreshTree = function (node) {
   var self = this;
   if (!node || !cc.isValid(node)) return;
+  if (cc.Scene && node instanceof cc.Scene) {
+    node.children.slice().forEach(function (child) { self.refreshTree(child); });
+    return;
+  }
   var label = node.getComponent(cc.Label) || node.getComponent(cc.RichText);
   if (label && this._ownsLabel(label)) {
     if (!label._localizedRecipe) label._localizedRecipe = this._recipe(label.string);

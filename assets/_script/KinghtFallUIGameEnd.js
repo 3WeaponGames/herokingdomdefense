@@ -45,13 +45,16 @@ var def_KinghtFallUIGameEnd = function (t) {
   };
   _ctor.prototype.start = function () {
     var t = this;
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame();
     this.initData();
+    var controller = $z1KinghtFallUIGame.default.instance.ctrGame;
+    this.settlement = controller._battleSettlement || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().beginSettlement(this.getSkillList, controller.gameData.levelCfg.Level, this.challengeMask, this.isWin);
+    controller._battleSettlement = this.settlement;
+    this.finished = false;
+    this.adPending = false;
     this.ndReward.init(this.getSkillList.length);
     this.initBtnView(false);
     this.initBtnEvent();
     $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1KinghtFallConfig.KinghtFallParameter.BGMusic);
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.LevelChallenges, 1);
     if (this.isWin) {
       $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.game_success);
       var e = this.spAni.setAnimation(0, "victory_appear", false);
@@ -74,6 +77,7 @@ var def_KinghtFallUIGameEnd = function (t) {
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.levelCfg;
     var i = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.round;
     this.getSkillList = [];
+    this.challengeMask = 0;
     var a = function (t, n) {
       var i = true;
       for (var a = 0; a < e.getSkillList.length; a++) {
@@ -112,8 +116,7 @@ var def_KinghtFallUIGameEnd = function (t) {
       for (var p = $z1KinghtFallEnum.KinghtFallEnumLevelChalType.Pass; p < $z1KinghtFallEnum.KinghtFallEnumLevelChalType.MAX; p++) {
         1 != d[p] && (u += 1 << p - 1);
       }
-      console.log("tag", d, u);
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().passStage($z1KinghtFallUIGame.default.instance.ctrGame.gameData.levelCfg.Level, u);
+      this.challengeMask = u;
     }
   };
   _ctor.prototype.update = function (t) {
@@ -170,18 +173,27 @@ var def_KinghtFallUIGameEnd = function (t) {
   _ctor.prototype.initBtnEvent = function () {
     var t = this;
     this.btnBreak.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards(t.getSkillList);
+      if (t.finished || t.adPending) return;
+      t.finished = true;
       $z1UIMgr.UIMgr.getInstance().closeById(t.fromId);
       t.closeUI();
     }, this);
     this.btnVideo.on(cc.Node.EventType.TOUCH_END, function () {
+      if (t.finished || t.adPending) return;
+      t.adPending = true;
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+        if (t.finished) return;
+        if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().settleBattle(t.settlement, 2) === false) {
+          t.adPending = false;
+          return;
+        }
+        t.finished = true;
+        t.adPending = false;
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.win_double);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_win_double_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards(t.getSkillList, 2);
         $z1UIMgr.UIMgr.getInstance().closeById(t.fromId);
         t.closeUI();
-      }, null, "battle.victory.double");
+      }, function () { t.adPending = false; }, "battle.victory.double");
     }, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
       var e = parseInt($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.StaminaCost));

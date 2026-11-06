@@ -56,14 +56,19 @@ var exp_BaseData = function () {
     var s = null;
     var c = null;
     if (t) {
-      s = JSON.parse(t);
-      s = $z1Utils.Utils.restoreObjectKeys(s, this.aliseMap);
+      s = this.readSaveRecord(t, e, "server", false);
       !Array.isArray(s) && s && (o = s[this.savetimeKey]);
     }
-    var h = this.ecrypt ? $z1CacheUtils.CacheUtils.getDataDecrypt(e, this.pwd) : $z1CacheUtils.CacheUtils.getData(e);
+    var h;
+    try {
+      h = $z1CacheUtils.CacheUtils.getData(e);
+    } catch (error) {
+      // An unreadable original must not be overwritten by a fresh session.
+      this.saveBlockedByRecovery = true;
+      console.error("Cannot read saved record", e, error);
+    }
     if (h) {
-      c = JSON.parse(h);
-      c = $z1Utils.Utils.restoreObjectKeys(c, this.aliseMap);
+      c = this.readSaveRecord(h, e, "local", this.ecrypt);
       !Array.isArray(c) && c && (r = c[this.savetimeKey]);
     }
     if (r && o && r > o) {
@@ -89,9 +94,33 @@ var exp_BaseData = function () {
     }
     return a;
   };
+  _ctor.prototype.readSaveRecord = function (raw, key, source, encrypted) {
+    try {
+      var decoded = encrypted ? $z1Utils.Utils.decrypt(raw, this.pwd) : raw;
+      var data = JSON.parse(decoded);
+      if (!data || typeof data !== "object") throw new Error("Invalid saved record shape");
+      return $z1Utils.Utils.restoreObjectKeys(data, this.aliseMap);
+    } catch (error) {
+      // Keep the exact original bytes before an initData migration can save.
+      var backupKey = key + ".corrupt." + source + "." + Date.now();
+      this.recoveryErrors = this.recoveryErrors || [];
+      this.recoveryErrors.push({ source: source, raw: raw, backupKey: backupKey });
+      try {
+        while (localStorage.getItem(backupKey) !== null) backupKey += ".1";
+        localStorage.setItem(backupKey, raw);
+        if (localStorage.getItem(backupKey) !== raw) throw new Error("Recovery backup was not persisted");
+        this.recoveryErrors[this.recoveryErrors.length - 1].backupKey = backupKey;
+      } catch (backupError) {
+        this.saveBlockedByRecovery = true;
+        console.error("Cannot preserve corrupt saved record; saving is disabled", key, source, backupError);
+      }
+      console.error("Ignoring corrupt saved record", key, source, error);
+      return null;
+    }
+  };
   _ctor.prototype.initData = function () {};
   _ctor.prototype.saveData = function () {
-    if (!this.pause) {
+    if (!this.pause && !this.saveBlockedByRecovery) {
       this.data[this.savetimeKey] = Number((new Date().getTime() / 1e3).toFixed(0));
       var t = JSON.stringify($z1Utils.Utils.renameObjectKeys(this.data, this.aliseMap));
       $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && (this.gameKey = this.gameKey.replace($z1Config.GameConfig.AppCacheName, $z1Config.GameConfig.WebCacheName));
@@ -104,6 +133,7 @@ var exp_BaseData = function () {
     }
   };
   _ctor.prototype.UpdateData = function () {
+    if (this.pause || this.saveBlockedByRecovery) return;
     null == this.data && (this.data = new Object());
     var t = Number((new Date().getTime() / 1e3).toFixed(0));
     var e = this.preTime;

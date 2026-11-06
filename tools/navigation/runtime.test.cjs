@@ -612,4 +612,24 @@ if (fs.existsSync(engineBodyFile)) {
   });
 } else console.log('SKIP installed-engine physics regression: set COCOS_ENGINE_DIR to a Creator 2.4.13 engine checkout.');
 
+test('Permanent combat buffs survive updates; timed buffs expire without removing adjacent permanent buffs', () => {
+  for (const name of ['KinghtFallSoldierBase', 'KinghtFallEnemyBase']) {
+    const e = environment(), actor = e.actor(name);
+    actor.state = -1; actor.attack = 100;
+    const kind = e.load('KinghtFallInterface').KinghtFallEnemyBuffType.DamageAdd;
+    actor.addBuff(kind, { addNum: 0.1, time: -1 });
+    actor.addBuff(kind, { addNum: 0.2, time: 1 });
+    actor.addBuff(kind, { addNum: 0.3, time: -1 });
+    actor.onUpdate(0.5);
+    assert.equal(actor.getBuffList(kind).length, 3, name + ' retains permanent and unexpired buffs');
+    actor.onUpdate(0.5);
+    assert.equal(actor.getBuffList(kind).length, 2, name + ' expires only the timed buff');
+    actor.onUpdate(60);
+    assert.equal(actor.getBuffList(kind).length, 2);
+    if (name === 'KinghtFallSoldierBase') near(actor.getAttack(), 140);
+    actor.delBuff(kind);
+    assert.equal(actor.getBuffList(kind).length, 0, 'permanent buffs can still be removed explicitly');
+  }
+});
+
 console.log(`Navigation runtime integration: ${passed} tests passed.`);

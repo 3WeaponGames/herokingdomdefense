@@ -232,51 +232,7 @@ var def_KinghtFallUITreasureReward = function (t) {
     }
     var a = [];
     var o = function (t) {
-      var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTreasureLevel(t);
-      var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById(t);
-      var i = 0;
-      for (var o = e ? e.level : 1; o <= n.levelInfo.length; o++) {
-        i += n.levelInfo[o - 1].PieceCost;
-      }
-      if (e) {
-        if (e.frame >= i) {
-          a.push({
-            item: {
-              id: n.Conversion[0],
-              num: n.Conversion[1]
-            },
-            isNew: false
-          });
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([{
-            id: n.Conversion[0],
-            num: n.Conversion[1]
-          }]);
-        } else {
-          e.frame++;
-          a.push({
-            item: {
-              id: n.goodID,
-              num: 1
-            },
-            isNew: false
-          });
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setTreasureLevel(e);
-        }
-      } else {
-        e = {
-          id: t,
-          level: 1,
-          frame: 0
-        };
-        a.push({
-          item: {
-            id: n.goodID,
-            num: 1
-          },
-          isNew: true
-        });
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setTreasureLevel(e);
-      }
+      Array.prototype.push.apply(a, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addTreasureReward(t, 1));
     };
     var r = function () {
       var t;

@@ -295,7 +295,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       case 0:
         t = true;
     }
-    this.btnSign.getChildByName("ndRed").active = t;
+    var signDay = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
+    this.btnSign.getChildByName("ndRed").active = t && !!$z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSignCfg()[signDay];
     this.refreshSubView();
   };
   _ctor.prototype.onUpdateTask = function () {
@@ -309,7 +310,9 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       });
       i.getChildByName("labNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(e.Award[1]);
       var a = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage();
-      a = Math.min(a, this.cfgList.length);
+      // maxStage is the next unlocked chapter, including the sentinel after
+      // the final chapter has been cleared.
+      a = Math.min(a, this.cfgList.length + 1);
       var o = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxOrder();
       var s = 0;
       var l = 1;

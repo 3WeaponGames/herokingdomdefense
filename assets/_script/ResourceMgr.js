@@ -47,19 +47,42 @@ var exp_ResourceMgr = function () {
   t.prototype.getBundle = function (t) {
     return cc.assetManager.getBundle(t);
   };
+  // Keep existing success-only callbacks. Loading owns the visible retry action,
+  // so a failed request resumes its original continuation without reinitializing.
+  t.prototype.loadWithRecovery = function (name, operation, complete) {
+    var manager = this;
+    var finished = false;
+    var active = false;
+    var retry = function () {
+      if (finished || active) return;
+      active = true;
+      var settled = false;
+      var timer = setTimeout(function () { done(new Error("Asset request timed out: " + name)); }, 30000);
+      function done(error, asset) {
+        if (settled || finished) return;
+        settled = true;
+        active = false;
+        clearTimeout(timer);
+        if (error || !asset) {
+          error = error || new Error("Asset request returned no asset: " + name);
+          $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, error);
+          if (manager.loadErrorHandler) manager.loadErrorHandler(error, retry);
+        } else {
+          finished = true;
+          complete && complete(asset);
+        }
+      }
+      try { operation(done); }
+      catch (error) { if (settled) throw error; done(error); }
+    };
+    retry();
+  };
   t.prototype.loadBundle = function (t, e) {
     var n = cc.assetManager.getBundle(t);
     if (null == n) {
-      cc.assetManager.loadBundle(t, function (n, i) {
-        if (n) {
-          $z1LogMgr.LogMgr.getInstance().error(t + "bundle load error :" + n);
-        } else {
-          $z1LogMgr.LogMgr.getInstance().debug("加载bundle:" + t);
-          e(i);
-        }
-      });
+      this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e);
     } else {
-      e(n);
+      e && e(n);
     }
   };
   t.prototype.preloadFromBundle = function (t, e, n) {
@@ -112,46 +135,7 @@ var exp_ResourceMgr = function () {
   };
   t.prototype.loadSpriteframe = function () {
     var e = $z1ArgsParseUtils.ArgsParseUtils._makeloadSpriteFrameResrgs.apply(this, arguments);
-    var n = e.bundle;
-    var i = e.path;
-    var s = e.callback;
-    var l = e.saveKey;
-    var g = $z1TimeUtils.TimeUtils.GetTimeBySecond() + 86400;
-    var u = $z1ResCacheMgr.ResCacheMgr.getInstance().getAssets(n, i, cc.SpriteFrame);
-    if (u && u.asset) {
-      u.asset.addRef();
-      u.releaseTime = g;
-      return void s(u.asset);
-    }
-    var d = cc.assetManager.getBundle(n);
-    var p = new exp_ResCache(n, i, g, e.cacheTme, cc.SpriteFrame);
-    if (null == d) {
-      t.getInstance().loadBundle(n, function (t) {
-        t.load(i, cc.SpriteFrame, function (t, a) {
-          if (t) {
-            $z1LogMgr.LogMgr.getInstance().error("loadres error path:" + i + "  error:", t.message);
-          } else {
-            a.addRef();
-            p.asset = a;
-            $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(p, e.autoRelese);
-            l && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(l, n, i, cc.SpriteFrame);
-            s && s(a);
-          }
-        });
-      });
-    } else {
-      d.load(i, cc.SpriteFrame, function (t, a) {
-        if (t) {
-          $z1LogMgr.LogMgr.getInstance().error("loadres error path:" + i + "  error:" + t);
-        } else {
-          a.addRef();
-          p.asset = a;
-          $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(p, e.autoRelese);
-          l && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(l, n, i, cc.SpriteFrame);
-          s && s(a);
-        }
-      });
-    }
+    this.loadRes(e.bundle, e.path, cc.SpriteFrame, e.callback, e.autoRelese, e.cacheTme, e.saveKey);
   };
   t.prototype.loadRemoteSpriteFrame = function (t, e, n, a) {
     undefined === n && (n = false);
@@ -205,60 +189,26 @@ var exp_ResourceMgr = function () {
         d.releaseTime = u;
         return void l(d.asset);
       }
-      var p = cc.assetManager.getBundle(n);
       var f = new exp_ResCache(n, i, u, e.cacheTme, s);
-      if (null == p) {
-        t.getInstance().loadBundle(n, function (t) {
-          t.load(i, s, function (t, a) {
-            if (t) {
-              $z1LogMgr.LogMgr.getInstance().error("loadres error path:" + i + "  error:", t.message);
-            } else {
-              a.addRef();
-              f.asset = a;
-              $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(f, e.autoRelese);
-              g && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s);
-              l && l(a);
-            }
-          });
-        });
-      } else {
-        p.load(i, s, function (t, a) {
-          if (t) {
-            $z1LogMgr.LogMgr.getInstance().error("loadres error path:" + i + "  error:" + t);
-          } else {
+      var manager = this;
+      this.loadBundle(n, function (bundle) {
+        manager.loadWithRecovery(n + "/" + i, function (done) { bundle.load(i, s, done); }, function (a) {
             a.addRef();
             f.asset = a;
             $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(f, e.autoRelese);
             g && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s);
             l && l(a);
-          }
         });
-      }
+      });
     } else {
       console.error("请传入具体资源类型，不能是基类asset,路径:", n + "/" + i);
     }
   };
   t.prototype.loadDir = function (t, e, n) {
-    var i = cc.assetManager.getBundle(t);
-    if (null == i) {
-      cc.assetManager.loadBundle(t, function (t, i) {
-        i.loadDir(e, cc.Asset, function (t, i) {
-          if (t) {
-            $z1LogMgr.LogMgr.getInstance().error("loadres error path:" + e + "  error:" + t);
-          } else {
-            n && n(i);
-          }
-        });
-      });
-    } else {
-      i.loadDir(e, cc.Asset, function (t, i) {
-        if (t) {
-          $z1LogMgr.LogMgr.getInstance().error("loadres error path:" + e + "  error:" + t);
-        } else {
-          n && n(i);
-        }
-      });
-    }
+    var manager = this;
+    this.loadBundle(t, function (bundle) {
+      manager.loadWithRecovery(t + "/" + e, function (done) { bundle.loadDir(e, cc.Asset, done); }, n);
+    });
   };
   t.prototype.releaseByBundle = function (t, e) {
     t.release(e);

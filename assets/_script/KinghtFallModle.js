@@ -96,12 +96,12 @@ var def_KinghtFallModle = function () {
   _ctor.prototype.compareIsToday = function (t) {
     var e = new Date(t);
     var n = e.getFullYear();
-    var i = e.getUTCMonth();
-    var a = e.getUTCDay();
+    var i = e.getMonth();
+    var a = e.getDate();
     var o = new Date();
     var r = o.getFullYear();
-    var s = o.getUTCMonth();
-    var l = o.getUTCDay();
+    var s = o.getMonth();
+    var l = o.getDate();
     return n == r && i == s && a == l;
   };
   _ctor.prototype.showRedPerson = function () {

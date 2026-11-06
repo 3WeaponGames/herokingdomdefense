@@ -10,6 +10,7 @@
     "settings.version": { "en": "Version {1} · {0} · {2}", "zh": "版本 {1} · {0} · {2}", "context": "In-game Settings build information" },
     "settings.languageCycle": { "en": "{0}  ›", "zh": "{0}  ›", "context": "Selector when catalog has more than two languages" },
     "loading.progress": { "en": "{0}%", "zh": "{0}%", "context": "Loading progress" },
+    "loading.failed": { "en": "Unable to load the game. Tap to retry.", "zh": "游戏加载失败，点击重试。", "context": "Recoverable startup error and retry action" },
     "system.playTimeLimit": { "en": "Your play time is limited to one hour because you are underage.", "zh": "由于您是未成年只能玩一个小时", "context": "Existing platform play-time notification" },
     "player.self": { "en": "You", "zh": "我", "context": "Default local player name" }
   }

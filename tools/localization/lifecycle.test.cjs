@@ -43,4 +43,13 @@ test('Startup waits for artwork before starting once; destroyed loading componen
   const loading=new context.exports.default();loading.loadLogo=()=>logo++;loading.startGame=()=>started++;loading.start();assert.equal(preloads,1);assert.equal(started,0);preloadCallback([]);assert.equal(logo,1);assert.equal(started,1);
   const destroyed=new context.exports.default();destroyed.loadLogo=()=>logo++;destroyed.startGame=()=>started++;destroyed.start();destroyed.destroyed=true;preloadCallback([{error:'asset absent'}]);assert.equal(started,1);
 });
+test('Scene traversal localizes child labels without querying components on the Cocos Scene',()=>{
+  const f=fixture();
+  f.cc.Scene=class Scene extends f.Node{getComponent(){throw new Error('Scene does not support getComponent');}};
+  const scene=new f.cc.Scene('scene'),node=new f.Node('caption');scene.children=[node];node.parent=scene;
+  const label=node.add(f.Label);label._string='[[loc:a]]';
+  f.cc.director.getScene=()=>scene;
+  f.manager.refresh();assert.equal(label.string,'Upgrade');
+  f.manager.setCurrentLanguage('zh');assert.equal(label.string,'强化');
+});
 console.log(passed+' localization lifecycle checks passed.');

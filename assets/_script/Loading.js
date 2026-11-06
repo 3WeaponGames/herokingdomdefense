@@ -38,6 +38,12 @@ var def_Loading = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onLoad = function () {
+    var self = this;
+    this.loadingRetries = [];
+    this.resourceErrorHandler = function (error, retry) { self.showLoadingError(error, retry); };
+    $z1ResourceMgr.ResourceMgr.getInstance().loadErrorHandler = this.resourceErrorHandler;
+    this.node.on(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
+    this.labPro.node.on(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
     cc.director.preloadScene(this.sceneName);
     $z1LanguageMgr.LanguageMgr.getInstance().init();
   };
@@ -45,10 +51,60 @@ var def_Loading = function (t) {
     var self = this;
     var language = $z1LanguageMgr.LanguageMgr.getInstance();
     language.init(function (error) {
-      if (!error && cc.isValid(self)) language.preloadArtwork(function () {
-        if (cc.isValid(self)) { self.loadLogo(); self.startGame(); }
+      if (!cc.isValid(self)) return;
+      if (error) return self.showLoadingError(error, function () { self.start(); });
+      language.preloadArtwork(function () {
+        if (cc.isValid(self) && !self.gameStarted) { self.gameStarted = true; self.loadLogo(); self.startGame(); }
       });
     });
+  };
+  _ctor.prototype.showLoadingError = function (error, retry) {
+    if (!cc.isValid(this)) return;
+    console.error("Startup resource failed", error);
+    this.loadingRetries = this.loadingRetries || [];
+    if (this.loadingRetries.indexOf(retry) < 0) this.loadingRetries.push(retry);
+    var language = $z1LanguageMgr.LanguageMgr.getInstance();
+    // This fallback is needed when the translation catalog itself could not load.
+    var bootstrapMessage = "Unable to load the game. Tap to retry.";
+    this.labPro.string = language.ready ? language.t("loading.failed") : bootstrapMessage;
+    if (!this.progressLabelStyle) {
+      this.progressLabelStyle = { width: this.labPro.node.width, height: this.labPro.node.height,
+        overflow: this.labPro.overflow, horizontalAlign: this.labPro.horizontalAlign };
+    }
+    this.labPro.node.width = Math.min(cc.winSize.width - 80, 640) / Math.abs(this.labPro.node.scaleX || 1);
+    this.labPro.node.height = 180;
+    this.labPro.overflow = cc.Label.Overflow.SHRINK;
+    this.labPro.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+  };
+  _ctor.prototype.retryLoading = function () {
+    if (!this.loadingRetries || !this.loadingRetries.length) return;
+    var retries = this.loadingRetries.splice(0);
+    if (this.progressLabelStyle) {
+      this.labPro.node.width = this.progressLabelStyle.width;
+      this.labPro.node.height = this.progressLabelStyle.height;
+      this.labPro.overflow = this.progressLabelStyle.overflow;
+      this.labPro.horizontalAlign = this.progressLabelStyle.horizontalAlign;
+      this.progressLabelStyle = null;
+    }
+    var language = $z1LanguageMgr.LanguageMgr.getInstance();
+    this.labPro.string = language.ready ? language.t("loading.progress", [Math.round(this.process * 100)]) : "0%";
+    retries.forEach(function (retry) { retry(); });
+  };
+  _ctor.prototype.loadMainScene = function () {
+    var self = this;
+    var retry = function () { self.loadMainScene(); };
+    var accepted = cc.director.loadScene(this.sceneName, function (error) {
+      if (error) self.showLoadingError(error, retry);
+    });
+    if (accepted === false) this.showLoadingError(new Error("Main scene is unavailable"), retry);
+  };
+  _ctor.prototype.onDestroy = function () {
+    var resources = $z1ResourceMgr.ResourceMgr.getInstance();
+    if (resources.loadErrorHandler === this.resourceErrorHandler) resources.loadErrorHandler = null;
+    this.node.off(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
+    if (cc.isValid(this.labPro.node)) this.labPro.node.off(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
+    $z1EventMgr.EventMgr.getInstance().off($z1Appcfg.BaseEventName.Loading, this, this.setProcessLoad);
+    this.loadingRetries = [];
   };
   _ctor.prototype.startGame = function () {
     var t = this;
@@ -74,7 +130,7 @@ var def_Loading = function (t) {
   };
   _ctor.prototype.setProcessLoad = function (t) {
     this.process = t / 100;
-    this.labPro.string = $z1LanguageMgr.LanguageMgr.getInstance().t("loading.progress", [t]);
+    if (!this.loadingRetries || !this.loadingRetries.length) this.labPro.string = $z1LanguageMgr.LanguageMgr.getInstance().t("loading.progress", [t]);
     this.progressBar.fillRange = this.process;
     switch (t) {
       case $z1Appcfg.LoadingProcess.StartLoading:
@@ -91,7 +147,7 @@ var def_Loading = function (t) {
       case $z1Appcfg.LoadingProcess.OtherCfg:
         break;
       case $z1Appcfg.LoadingProcess.EndLoading:
-        cc.director.loadScene(this.sceneName);
+        this.loadMainScene();
     }
   };
   _ctor.prototype.preloadUI = function () {};

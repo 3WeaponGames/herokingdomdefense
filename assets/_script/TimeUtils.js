@@ -58,12 +58,12 @@ var exp_TimeUtils = function () {
   _ctor.compareIsToday = function (t) {
     var e = new Date(1e3 * t);
     var n = e.getFullYear();
-    var i = e.getUTCMonth();
-    var a = e.getUTCDay();
+    var i = e.getMonth();
+    var a = e.getDate();
     var o = new Date(1e3 * this.GetTimeBySecond());
     var r = o.getFullYear();
-    var s = o.getUTCMonth();
-    var l = o.getUTCDay();
+    var s = o.getMonth();
+    var l = o.getDate();
     return n == r && i == s && a == l;
   };
   _ctor.overDay = function (t) {

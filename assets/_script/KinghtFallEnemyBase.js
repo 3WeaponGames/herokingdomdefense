@@ -101,7 +101,7 @@ var def_KinghtFallEnemyBase = function (t) {
       this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
       for (var n = 0; n < this.debuffInfo.length; n++) {
         var i = this.debuffInfo[n];
-        if (-1 != i.time) {
+        if (-1 != i.timeMax) {
           i.time += t;
           if (i.time >= i.timeMax) {
             this.delBuffIdx(n), n--;

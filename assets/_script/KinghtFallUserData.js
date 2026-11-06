@@ -86,6 +86,41 @@ var exp_KinghtFallUserData = function (t) {
   _ctor.prototype.getGoldNum = function () {
     return this.data.goldNum;
   };
+  _ctor.prototype.applyBattleSettlement = function (settlement) {
+    var receipt = this.data.battleSettlement;
+    var previous = receipt && receipt.id === settlement.id ? receipt.multiplier : 0;
+    // A late ad callback must never credit a battle older than the current receipt.
+    if (settlement.multiplier > 1 && !previous) return false;
+    if (previous >= settlement.multiplier) return false;
+    var extra = settlement.multiplier - previous;
+    var gold = 0;
+    var diamond = 0;
+    var power = 0;
+    settlement.rewards.forEach(function (reward) {
+      switch (reward.id) {
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin: gold += reward.num * extra; break;
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond: diamond += reward.num * extra; break;
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina: power += reward.num * extra; break;
+      }
+    });
+    this.data.goldNum += gold;
+    this.data.diamondNum += diamond;
+    this.data.powerNum += power;
+    if (!previous && settlement.isWin) {
+      this.data.stageInfo[settlement.stage - 1] |= settlement.challengeMask;
+      if (settlement.stage === this.data.maxStage) {
+        this.data.curStage = settlement.stage + 1;
+        this.data.maxStage = settlement.stage + 1;
+        this.data.maxOrder = 0;
+      }
+    }
+    this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier };
+    this.saveData();
+    if (gold) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, gold, true);
+    if (diamond) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, diamond, true);
+    if (power) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
+    return true;
+  };
   _ctor.prototype.addGoldNum = function (t, e) {
     this.data.goldNum += t;
     this.saveData();

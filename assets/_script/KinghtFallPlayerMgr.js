@@ -112,6 +112,37 @@ var exp_KinghtFallPlayerMgr = function () {
       }
     }
   };
+  // The first relic copy unlocks it; duplicates become fragments until every
+  // remaining upgrade is funded, then use the relic's configured conversion.
+  _ctor.prototype.addTreasureReward = function (t, e) {
+    undefined === e && (e = 1);
+    var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById(t);
+    var i = [];
+    if (!n || !isFinite(e) || e <= 0) return i;
+    for (var a = 0; a < Math.floor(e); a++) {
+      var o = this.udata.getTreasureLevel(t);
+      if (!o) {
+        this.udata.setTreasureLevel({ id: t, level: 1, frame: 0 });
+        i.push({ item: { id: n.goodID, num: 1 }, isNew: true });
+        continue;
+      }
+      var r = 0;
+      // The final level has no next upgrade and therefore no PieceCost.
+      for (var s = Math.max(1, o.level); s < n.levelInfo.length; s++) {
+        r += n.levelInfo[s - 1].PieceCost;
+      }
+      if (o.frame >= r) {
+        var l = { id: n.Conversion[0], num: n.Conversion[1] };
+        this.addRewards([l]);
+        i.push({ item: l, isNew: false });
+      } else {
+        o.frame++;
+        this.udata.setTreasureLevel(o);
+        i.push({ item: { id: n.goodID, num: 1 }, isNew: false });
+      }
+    }
+    return i;
+  };
   _ctor.prototype.addRewards = function (t, e, n) {
     undefined === e && (e = 1);
     var a = [];
@@ -138,6 +169,11 @@ var exp_KinghtFallPlayerMgr = function () {
               this.missionData.addAchPoint(l);
           }
           a.push(t[o]);
+          break;
+        case $z1KinghtFallEnum.KinghtFallEnumGoodType.Type02:
+          var treasures = this.addTreasureReward(r.itemID, l);
+          for (var j = 0; j < treasures.length; j++) a.push(treasures[j].item);
+          break;
       }
     }
     $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);

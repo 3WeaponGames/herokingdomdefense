@@ -100,4 +100,54 @@ test('Native adapter-shaped state uses supported getters/setters and retains com
   f.requests[0].callback(null,new f.Texture('native-en'));assert.notEqual(a.skeletonData,f.original);assert.equal(a.getCurrent(0).trackTime,0.8);assert.equal(a.getCurrent(0).animationLast,0.75);assert.equal(a.getCurrent(0).next.animation.name,'idle');assert.equal(a._skeleton.skin.name,'blue');assert.equal(a.paused,true);assert.equal(a.timeScale,0.7);assert.equal(shape(a),before);assert.equal(completed,0);
   a.getState().update(1.3);a.getState().apply(a._skeleton);assert.equal(completed,1);f.language('zh');assert.equal(a.skeletonData,f.original);assert.equal(completed,1);assert.equal(f.warnings.length,0);
 });
+test('English Victory enlargement survives refresh and language switching without scaling other bones',()=>{
+  const f=fixture();
+  const skeleton=JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.json'),'utf8'));
+  f.original.skeletonJson=skeleton;
+  const catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/resources/localization/catalog.json'),'utf8'));
+  const sourceTables=JSON.parse(fs.readFileSync(path.join(__dirname,'art-entries.json'),'utf8'));
+  const uuid='89af557c-6789-4a54-a86e-2b2640f02bb5';
+  assert.equal(catalog.spineImages[uuid].boneScales.en.sl5,1.75);
+  assert.deepEqual(sourceTables.spineImages[uuid].boneScales,catalog.spineImages[uuid].boneScales);
+  f.manager.catalog.spineImages.page.boneScales=catalog.spineImages[uuid].boneScales;
+  const before=JSON.stringify(skeleton),a=f.component();
+  f.requests[0].callback(null,new f.Texture('en'));
+  const scaled=a.skeletonData.skeletonJson;
+  assert.notEqual(scaled,skeleton);
+  scaled.bones.forEach((bone,index)=>{
+    const original=skeleton.bones[index];
+    if(bone.name==='sl5'){
+      assert.equal(bone.scaleX,(original.scaleX===undefined?1:original.scaleX)*1.75);
+      assert.equal(bone.scaleY,(original.scaleY===undefined?1:original.scaleY)*1.75);
+    }else assert.equal(JSON.stringify(bone),JSON.stringify(original));
+  });
+  assert.equal(JSON.stringify(scaled.animations),JSON.stringify(skeleton.animations));
+  f.service.refresh();assert.equal(a.skeletonData.skeletonJson,scaled);
+  f.language('zh');assert.equal(a.skeletonData,f.original);
+  f.language('en');assert.equal(a.skeletonData.skeletonJson,scaled,'scale is not applied twice');
+  assert.equal(JSON.stringify(skeleton),before,'original and Chinese artwork remain untouched');
+  // Verify rendered bounds against the real authored animation, not only JSON.
+  const atlasText=fs.readFileSync(path.join(__dirname,'../../assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.atlas'),'utf8');
+  function animatedBounds(json,animation,slotName){
+    const atlas=new spine.TextureAtlas(atlasText,()=>({getImage:()=>({width:1566,height:1008}),setFilters(){},setWraps(){}}));
+    const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(JSON.parse(JSON.stringify(json)));
+    const live=new spine.Skeleton(data),state=new spine.AnimationState(new spine.AnimationStateData(data));
+    const entry=state.setAnimation(0,animation,false);entry.trackTime=entry.animation.duration;
+    state.apply(live);live.updateWorldTransform();
+    const slot=live.findSlot(slotName),vertices=[];slot.getAttachment().computeWorldVertices(slot.bone,vertices,0,2);
+    const xs=vertices.filter((_,i)=>i%2===0),ys=vertices.filter((_,i)=>i%2===1);
+    return {width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};
+  }
+  const originalBounds=animatedBounds(skeleton,'victory_appear','shengli'),largeBounds=animatedBounds(scaled,'victory_appear','shengli');
+  assert(Math.abs(largeBounds.width/originalBounds.width-1.75)<1e-5);
+  assert(Math.abs(largeBounds.height/originalBounds.height-1.75)<1e-5);
+  for(const [animation,slot]of [['victory_appear','shengli_1'],['fail_appear','shibai_1']]){
+    assert.deepEqual(animatedBounds(scaled,animation,slot),animatedBounds(skeleton,animation,slot));
+  }
+});
+test('Spine scene refresh visits child nodes without querying components on the scene itself',()=>{
+  const f=fixture();let childVisits=0;
+  f.context.cc.director.getScene=()=>({getComponent(){throw new Error('Scene has no components');},children:[{getComponent(){childVisits++;return null;},children:[]}]});
+  f.service.refresh();assert.equal(childVisits,1);
+});
 console.log(passed+' Spine artwork checks passed using the installed Creator Spine 3.8 runtime.');

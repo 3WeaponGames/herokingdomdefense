@@ -35,9 +35,17 @@ var def_KinghtFallUISignIn = function (t) {
     this.initBtnListener();
   };
   _ctor.prototype.initData = function () {};
+  _ctor.prototype.canClaim = function (multiplier, claim, day) {
+    var daily = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData();
+    var currentDay = daily.getSignDay();
+    if (!this.cfgList[currentDay] || day !== undefined && day !== currentDay) return false;
+    var expected = claim === 1 && multiplier === 1 ? 1 : 0;
+    return daily.getSignReward() === expected;
+  };
   _ctor.prototype.initBtnListener = function () {
     var t = this;
-    var e = function (e, n) {
+    var e = function (e, n, day) {
+      if (!t.canClaim(e, n, day)) return;
       var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
       var a = t.cfgList[i];
       var o = {
@@ -45,8 +53,9 @@ var def_KinghtFallUISignIn = function (t) {
         num: a.Item[1]
       };
       var r = t.ndDayList[i].convertToWorldSpaceAR(t.ndDayList[i].getChildByName("sprIcon").position);
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().sign(n);
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([o], e, r);
+      var rewards = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([o], e, r);
+      if (!rewards.length) return;
+      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().sign(n, t.cfgList.length);
       t.initView();
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4);
     };
@@ -54,17 +63,21 @@ var def_KinghtFallUISignIn = function (t) {
       e(1, 0);
     }, this);
     this.btnVide.on(cc.Node.EventType.TOUCH_END, function () {
+      if (!t.canClaim(1, 1)) return;
+      var day = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.day7_once);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_day7_once_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        e(1, 1);
+        e(1, 1, day);
       }, null, "home.signIn.extra");
     }, this);
     this.btnDouble.on(cc.Node.EventType.TOUCH_END, function () {
+      if (!t.canClaim(2, 1)) return;
+      var day = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.day7_double);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_day7_double_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        e(2, 1);
+        e(2, 1, day);
       }, null, "home.signIn.double");
     }, this);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
@@ -73,6 +86,8 @@ var def_KinghtFallUISignIn = function (t) {
   };
   _ctor.prototype.initView = function () {
     var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignReward();
+    var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
+    if (!this.cfgList[e]) t = 3;
     switch (t) {
       case 0:
         this.btnSign.active = true;
@@ -92,7 +107,6 @@ var def_KinghtFallUISignIn = function (t) {
         this.btnDouble.active = false;
         this.btnGet.active = true;
     }
-    var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSignDay();
     var n = function (n) {
       var a = i.ndDayList[n];
       var o = i.cfgList[n];

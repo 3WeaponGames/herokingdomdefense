@@ -69,10 +69,13 @@ var exp_KinghtFallDailyData = function (t) {
   _ctor.prototype.getSignReward = function () {
     return this.data.signReward;
   };
-  _ctor.prototype.sign = function (t) {
+  _ctor.prototype.sign = function (t, totalDays) {
+    if (t !== 0 && t !== 1 || typeof totalDays === "number" && (this.data.signDay < 0 || this.data.signDay >= totalDays)) return false;
     var e = 1 << t;
-    this.data.signReward += e;
+    if ((this.data.signReward & e) !== 0 || t === 0 && this.data.signReward !== 0) return false;
+    this.data.signReward |= e;
     this.saveData();
+    return true;
   };
   _ctor.prototype.getOnlineTime = function () {
     return this.data.onlineTime;

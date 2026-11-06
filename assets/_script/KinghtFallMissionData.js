@@ -70,6 +70,34 @@ var exp_KinghtFallMissionData = function (t) {
     2 == this.data.taskInfo.stage && this.doUpTask();
     return this.data.taskInfo;
   };
+  _ctor.prototype.applyBattleSettlement = function (settlement) {
+    var receipt = this.data.battleSettlement;
+    var previous = receipt && receipt.id === settlement.id ? receipt.multiplier : 0;
+    if (settlement.multiplier > 1 && !previous) return false;
+    if (previous >= settlement.multiplier) return false;
+    var extra = settlement.multiplier - previous;
+    var self = this;
+    function achievement(type, amount) {
+      var info = self.getAchInfoByType(type);
+      if (info) info.num += amount;
+      else self.data.achievementInfo.push({ type: type, num: amount, reward: [] });
+    }
+    settlement.rewards.forEach(function (reward) {
+      var amount = reward.num * extra;
+      switch (reward.id) {
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin:
+          achievement($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetGold, amount); break;
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond:
+          achievement($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetDiamonds, amount); break;
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.PassPoints:
+          self.data.achievementPoint += amount; break;
+      }
+    });
+    if (!previous) achievement($z1KinghtFallEnum.KinghtFallEnumAchiEnum.LevelChallenges, 1);
+    this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier };
+    this.saveData();
+    return true;
+  };
   _ctor.prototype.doUpTask = function () {
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTaskCfgById(this.data.taskInfo.id + 1);
     t && (this.data.taskInfo = {

@@ -5127,6 +5127,11 @@
       "zh": "{0}%",
       "context": "Loading progress"
     },
+    "loading.failed": {
+      "en": "Unable to load the game. Tap to retry.",
+      "zh": "游戏加载失败，点击重试。",
+      "context": "Recoverable startup error and retry action"
+    },
     "system.playTimeLimit": {
       "en": "Your play time is limited to one hour because you are underage.",
       "zh": "由于您是未成年只能玩一个小时",
@@ -7717,6 +7722,11 @@
       "template": "settlement_atlas",
       "skeletonDataUuid": "7533c9fc-5e29-4774-a275-4a8e0fde7497",
       "source": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.png",
+      "boneScales": {
+        "en": {
+          "sl5": 1.75
+        }
+      },
       "preserveOriginal": {
         "zh": {
           "art.result.victory": "胜利",

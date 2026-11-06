@@ -41,6 +41,7 @@ for(const [index,name] of [[450,'settlement_atlas'],[451,'day7_atlas']]){
   const texture=JSON.parse(fs.readFileSync(path.join(root,p+'.meta'),'utf8'));
   const skeleton=JSON.parse(fs.readFileSync(path.join(root,p.replace(/\.png$/,'.json.meta')),'utf8'));
   out.spineImages[texture.uuid]={template:name,skeletonDataUuid:skeleton.uuid,source:p,preserveOriginal:{zh:Object.fromEntries(out.artTemplates[name].regions.map(r=>[r.key,out.entries[r.key].zh]))}};
+  if(name==='settlement_atlas')out.spineImages[texture.uuid].boneScales={en:{sl5:1.75}};
 }
 const relics=[
  ['02',273,'slow','Slow','慢',44,39,36,44,'#ec3838',15],
