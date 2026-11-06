@@ -1011,7 +1011,21 @@
             "#fd6bd8",
             "#ffdd53"
           ],
-          "italic": true
+          "italic": true,
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 4,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 6
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/KinghtFallIconGood/wg_qd_new.png",
@@ -1039,7 +1053,21 @@
           "gradient": [
             "#ffffff",
             "#92e7ff"
-          ]
+          ],
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 4,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 6
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIAddStrength/wg_syh1_bt1.png",
@@ -1067,7 +1095,21 @@
           "gradient": [
             "#ffffff",
             "#ffef31"
-          ]
+          ],
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 4,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 6
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIAddStrength/wg_syh1_bt2.png",
@@ -1095,7 +1137,21 @@
           "gradient": [
             "#ffffff",
             "#30d8ff"
-          ]
+          ],
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 4,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 6
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIPassport/wg_txz_ct.png",
@@ -1125,7 +1181,21 @@
             "#ffffff",
             "#fff44c"
           ],
-          "italic": true
+          "italic": true,
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 4,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 6
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUISignIn/wg_qd_d7.png",
@@ -1153,9 +1223,18 @@
           "align": "center",
           "locales": {
             "en": {
-              "font": null,
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
               "fontFamily": "Arial",
-              "bold": false
+              "bold": false,
+              "outlineWidth": 3,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 5
             }
           }
         }
@@ -1189,9 +1268,18 @@
           "align": "center",
           "locales": {
             "en": {
-              "font": null,
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
               "fontFamily": "Arial",
-              "bold": false
+              "bold": false,
+              "outlineWidth": 3,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 5
             }
           }
         }
@@ -1767,7 +1855,17 @@
           "align": "center",
           "locales": {
             "en": {
-              "baselineOffset": -4
+              "baselineOffset": -4,
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 5,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 3,
+                "blur": 0
+              },
+              "padding": 8
             }
           },
           "shadow": {
@@ -1798,7 +1896,17 @@
           "align": "center",
           "locales": {
             "en": {
-              "baselineOffset": 0
+              "baselineOffset": 0,
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 5,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 3,
+                "blur": 0
+              },
+              "padding": 8
             }
           },
           "shadow": {
@@ -1858,7 +1966,21 @@
               "x": 283,
               "y": 516
             }
-          ]
+          ],
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 4,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 6
+            }
+          }
         }
       ],
       "pending": false
@@ -2054,9 +2176,18 @@
           "lineHeightRatio": 1,
           "locales": {
             "en": {
-              "font": null,
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
               "fontFamily": "Arial",
-              "bold": true
+              "bold": true,
+              "outlineWidth": 2,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 4
             }
           }
         }
@@ -2327,7 +2458,21 @@
           "padding": 0,
           "lineHeightRatio": 1,
           "wrap": false,
-          "fontFamily": "Arial"
+          "fontFamily": "Arial",
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 1,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 3
+            }
+          }
         },
         {
           "key": "art.sidebar.sample_game1",

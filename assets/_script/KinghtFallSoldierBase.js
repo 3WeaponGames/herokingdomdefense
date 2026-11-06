@@ -1,4 +1,5 @@
 var i;
+var GameToolsOverrides = require("GameToolsOverrides");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 var cc__spreadArrays = __spreadArrays;
@@ -60,6 +61,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.outBuild = t;
   };
   _ctor.prototype.initData = function (t) {
+    GameToolsOverrides.cancel(this);
     var e = this;
     Navigation.reset(this);
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
@@ -345,10 +347,11 @@ var def_KinghtFallSoldierBase = function (t) {
     }() && (this.doAttackStart(), true);
   };
   _ctor.prototype.doAttackStart = function () {
+    if (GameToolsOverrides.isPending(this)) return;
     this.state = s.Attack;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     this.time[l.Attack] = -1;
-    this.doAttack();
+    GameToolsOverrides.attack(this, "ally", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
     var t = this;
@@ -415,6 +418,7 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.freeNode = function () {
+    GameToolsOverrides.cancel(this);
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Soldier + "_" + this.cfg.ID;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(this);
@@ -482,6 +486,7 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.setNew = function () {
+    GameToolsOverrides.cancel(this);
     var t;
     Navigation.reset(this);
     this.hp = this.hpMax;

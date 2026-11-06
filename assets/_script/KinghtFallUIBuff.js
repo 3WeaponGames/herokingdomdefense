@@ -48,6 +48,10 @@ var def_KinghtFallUIBuff = function (t) {
   _ctor.prototype.start = function () {
     var t = this;
     this.initData();
+    if (this._customPerkPool && this.canOutBuff.length === 0) {
+      this.scheduleOnce(function () { t.callBack([]); t.closeUI(); }, 0);
+      return;
+    }
     this.initBtnView();
     this.onRefreshBuff();
     this.ndItem.active = false;
@@ -106,6 +110,8 @@ var def_KinghtFallUIBuff = function (t) {
   };
   _ctor.prototype.initData = function () {
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuffCfgList();
+    var custom = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data.GameTools;
+    this._customPerkPool = !!(custom && custom.perks && Object.keys(custom.perks).length);
     var e = function (t) {
       var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.buffList;
       for (var n = 0; n < e.length; n++) {
@@ -127,7 +133,7 @@ var def_KinghtFallUIBuff = function (t) {
     };
     for (var i = 0; i < t.length; i++) {
       var a = t[i];
-      if (!e(a.ID)) {
+      if (!e(a.ID) && require("GameToolsOverrides").perkEnabled(a.ID) && (!this._customPerkPool || a.Weight > 0)) {
         if (a.Unlock) {
           n(a.Unlock) && this.canOutBuff.push({
             id: a.ID,
@@ -181,15 +187,67 @@ var def_KinghtFallUIBuff = function (t) {
   };
   _ctor.prototype.initBtnView = function () {
     var t = this.btnRefresh.getChildByName("layout1").getChildByName("labQue").getComponent(cc.Label);
+    if (this._customPerkPool) {
+      var minimum = this.minQua;
+      t.node.active = this.canOutBuff.some(function (item) { return item.qua >= minimum && item.weight > 0; });
+    }
     switch (this.minQua) {
       case 2:
         t.node.color = new cc.Color().fromHEX("#1FDDFF");
-        t.string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameBuff02);
+        t.string = require("LanguageMgr").LanguageMgr.getInstance().t("format.perk.minimumQuality", [this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameBuff02)]);
         break;
       case 3:
         t.node.color = new cc.Color().fromHEX("#e95cff");
-        t.string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameBuff03);
+        t.string = require("LanguageMgr").LanguageMgr.getInstance().t("format.perk.minimumQuality", [this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameBuff03)]);
     }
+    this._layoutRerollGuarantee();
+  };
+  _ctor.prototype.lateUpdate = function () {
+    this._layoutRerollGuarantee();
+  };
+  _ctor.prototype._layoutRerollGuarantee = function () {
+    if (!this.btnRefresh) return;
+    var node = this.btnRefresh.getChildByName("layout1"), layout = node.getComponent(cc.Layout);
+    var rarity = node.getChildByName("labQue"), caption = node.children[0], suffix = node.children[2];
+    var available = !this._customPerkPool || this.canOutBuff.some(function (item) { return item.qua >= this.minQua && item.weight > 0; }, this);
+    node.active = available;
+    if (!available) return;
+    var english = require("LanguageMgr").LanguageMgr.getInstance().getCurrentLanguage() === "en";
+    suffix.active = !english;
+    var narrow = cc.view.getFrameSize().width < 360;
+    var signature = [english, narrow, this.btnRefresh.width, caption.width, caption.height, rarity.width, rarity.height,
+      caption.getComponent(cc.Label).string, rarity.getComponent(cc.Label).string].join(":");
+    if (signature === this._guaranteeLayoutSignature) return;
+    if (english) {
+      [caption, rarity].forEach(function (child) {
+        var label = child.getComponent(cc.Label);
+        label.fontSize = narrow ? 56 : 52;
+        label.lineHeight = narrow ? 56 : 58;
+        label.overflow = cc.Label.Overflow.NONE;
+        label.enableWrapText = false;
+        label._forceUpdateRenderData();
+      });
+      var width = (caption.width + rarity.width + 10) * Math.abs(node.scaleX);
+      // The centered caption may extend a little beyond the button's edges;
+      // longer rarity names or narrow viewports use two complete lines.
+      var stacked = narrow || width > this.btnRefresh.width + 48;
+      layout.type = stacked ? cc.Layout.Type.VERTICAL : cc.Layout.Type.HORIZONTAL;
+      [caption, rarity].forEach(function (child) { if (stacked) child.x = 0; else child.y = 0; });
+      if (stacked) node.width = Math.max(caption.width, rarity.width);
+      else node.height = Math.max(caption.height, rarity.height);
+      layout.spacingX = 10;
+      layout.spacingY = 0;
+    } else {
+      layout.type = cc.Layout.Type.HORIZONTAL;
+      node.children.forEach(function (child) { child.y = 0; });
+      node.height = Math.max(caption.height, rarity.height, suffix.height);
+      layout.spacingX = 0;
+      layout.spacingY = 0;
+    }
+    layout.updateLayout();
+    node.x = 0;
+    node.y = this.btnRefresh.height / 2 + 10 + node.height * Math.abs(node.scaleY) / 2;
+    this._guaranteeLayoutSignature = signature;
   };
   _ctor.prototype.onRefreshBuff = function (t) {
     var e = this;
@@ -211,7 +269,7 @@ var def_KinghtFallUIBuff = function (t) {
         var s = this.canOutBuff[o];
         s.qua >= this.minQua && a.push(s);
       }
-      i($z1Utils.Utils.weight_rand(a).id);
+      if (!this._customPerkPool || a.length > 0) i($z1Utils.Utils.weight_rand(a).id);
     }
     for (; this.selInfo.length < 3 && n.length > 0;) {
       i($z1Utils.Utils.weight_rand(n).id);

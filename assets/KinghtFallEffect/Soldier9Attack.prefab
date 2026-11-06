@@ -70,7 +70,8 @@
     "_preCacheMode": 2,
     "_cacheMode": 2,
     "premultipliedAlpha": false,
-    "_animationName": "circle",
+    "defaultAnimation": "attack",
+    "_animationName": "attack",
     "_N$enableBatch": true,
     "_materials": [
       {

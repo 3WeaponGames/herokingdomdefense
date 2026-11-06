@@ -2,16 +2,23 @@
   "labelStyles": {
     "ui.layout.kinghtfallhomebattlectrl.7": {
       "en": {
-        "width": 800,
-        "height": 128,
-        "fontSize": 96,
-        "lineHeight": 104,
-        "wrap": false,
-        "overflow": "SHRINK",
-        "maxLines": 1,
+        "width": 902,
+        "height": 90,
+        "fontSize": 67,
+        "lineHeight": 78,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
         "horizontalAlign": 1,
         "x": 0,
-        "y": 355.392
+        "y": 367.392
+      },
+      "zh": {
+        "fontSize": 84,
+        "lineHeight": 97,
+        "width": 415,
+        "overflow": "RESIZE_HEIGHT",
+        "wrap": true,
+        "y": 367.392
       }
     }
   },

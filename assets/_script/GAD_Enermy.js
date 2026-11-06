@@ -146,7 +146,7 @@ var def_GAD_Enermy = function (t) {
   _ctor.prototype.updateHp = function () {
     if (this.shouldReset) {
       var t = this.getDigitCount(this._hp);
-      t > 4 && (this.lblHP.fontSize = 80 - 6 * (t - 4));
+      t > 4 && (this.lblHP.fontSize = Math.max(50, 80 - 6 * (t - 4)));
     }
     this.lblHP.string = "" + this._hp;
   };

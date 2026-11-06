@@ -213,7 +213,7 @@
       "ctor": "Float64Array",
       "array": [
         -1.872,
-        366.419,
+        367.392,
         0,
         0,
         0,
@@ -332,8 +332,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.12]]",
-    "_fontSize": 52,
-    "_lineHeight": 52,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -915,7 +915,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -146,
+        -106,
         0,
         0,
         0,
@@ -1116,7 +1116,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -61.317,
+        -42,
         0,
         0,
         0,
@@ -1127,13 +1127,18 @@
         0.5
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.50]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1400,7 +1405,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -61.317,
+        -42,
         0,
         0,
         0,
@@ -1411,13 +1416,18 @@
         0.5
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.65]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1684,7 +1694,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -61.317,
+        -42,
         0,
         0,
         0,
@@ -1695,13 +1705,18 @@
         0.5
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.80]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2005,6 +2020,9 @@
       },
       {
         "__id__": 120
+      },
+      {
+        "__id__": 331
       }
     ],
     "_prefab": {
@@ -2019,7 +2037,7 @@
       "ctor": "Float64Array",
       "array": [
         0.98,
-        -320.597,
+        -300.597,
         0,
         0,
         0,
@@ -2529,6 +2547,9 @@
       },
       {
         "__id__": 156
+      },
+      {
+        "__id__": 332
       }
     ],
     "_prefab": {
@@ -2536,14 +2557,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 254,
-      "height": 93
+      "width": 660,
+      "height": 128
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -248,
-        -447.289,
+        0,
+        -484,
         0,
         0,
         0,
@@ -2577,8 +2598,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 254,
-      "height": 93
+      "width": 660,
+      "height": 128
     }
   },
   {
@@ -2653,7 +2674,9 @@
     },
     "node": {
       "__id__": 123
-    }
+    },
+    "_type": 1,
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2685,8 +2708,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -97.11,
-        -0.263,
+        -278,
+        0,
         0,
         0,
         0,
@@ -2809,7 +2832,9 @@
     "node": {
       "__id__": 133
     },
-    "_N$string": "25"
+    "_N$string": "25",
+    "_fontSize": 59,
+    "_lineHeight": 68
   },
   {
     "__type__": "cc.LabelOutline",
@@ -2875,8 +2900,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -71.157,
-        15.542,
+        -220,
+        28,
         0,
         0,
         0,
@@ -2892,7 +2917,7 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.139]]",
-    "_lineHeight": 50,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$verticalAlign": 1,
     "_materials": [
@@ -2903,7 +2928,8 @@
     "node": {
       "__id__": 138
     },
-    "_N$string": "[[loc:ui.layout.kinghtfallhomebattlectrl.139]]"
+    "_N$string": "[[loc:ui.layout.kinghtfallhomebattlectrl.139]]",
+    "_fontSize": 67
   },
   {
     "__type__": "cc.LabelOutline",
@@ -2956,14 +2982,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 166,
-      "height": 24
+      "width": 500,
+      "height": 30
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        32.859,
-        -19.341,
+        30,
+        -30,
         0,
         0,
         0,
@@ -2992,8 +3018,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 18
+      "width": 500,
+      "height": 30
     }
   },
   {
@@ -3134,7 +3160,9 @@
     "node": {
       "__id__": 149
     },
-    "_N$string": "0/1"
+    "_N$string": "0/1",
+    "_fontSize": 59,
+    "_lineHeight": 68
   },
   {
     "__type__": "cc.LabelOutline",
@@ -3196,15 +3224,18 @@
     },
     "node": {
       "__id__": 122
-    }
+    },
+    "_type": 1,
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.Widget",
     "_alignFlags": 12,
-    "_bottom": 173.21099999999996,
+    "_bottom": 161.211,
     "node": {
       "__id__": 122
-    }
+    },
+    "_left": 45
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -3430,7 +3461,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -34.973,
+        -25,
         0,
         0,
         0,
@@ -3441,13 +3472,18 @@
         1
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.165]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 54,
+    "_lineHeight": 62,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3710,7 +3746,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -28.152,
+        -25,
         0,
         0,
         0,
@@ -3721,13 +3757,18 @@
         1
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.180]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 54,
+    "_lineHeight": 62,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3990,7 +4031,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -28.152,
+        -30.5,
         0,
         0,
         0,
@@ -4001,13 +4042,18 @@
         1
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.195]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 54,
+    "_lineHeight": 62,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4270,7 +4316,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -28.152,
+        -30.5,
         0,
         0,
         0,
@@ -4281,13 +4327,18 @@
         1
       ],
       "__type__": "TypedArray"
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 1
     }
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.210]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 54,
+    "_lineHeight": 62,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4431,7 +4482,7 @@
     "__type__": "cc.Layout",
     "_resize": 1,
     "_N$layoutType": 2,
-    "_N$spacingY": 13,
+    "_N$spacingY": 56,
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 100,
@@ -4439,7 +4490,8 @@
     },
     "node": {
       "__id__": 159
-    }
+    },
+    "_N$paddingBottom": 50
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -4779,8 +4831,8 @@
   },
   {
     "__type__": "cc.Label",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4995,8 +5047,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.248]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5212,8 +5264,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.260]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5339,7 +5391,7 @@
     "__type__": "cc.Layout",
     "_resize": 1,
     "_N$layoutType": 2,
-    "_N$spacingY": 13,
+    "_N$spacingY": 42,
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 100,
@@ -5452,7 +5504,7 @@
     "_resize": 1,
     "_N$layoutType": 2,
     "_N$paddingBottom": 15,
-    "_N$spacingY": 13,
+    "_N$spacingY": 42,
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 104,
@@ -5613,8 +5665,8 @@
   },
   {
     "__type__": "cc.Label",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5926,8 +5978,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.297]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6029,8 +6081,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.302]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 60,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6236,8 +6288,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.311]]",
-    "_fontSize": 48,
-    "_lineHeight": 50,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6541,5 +6593,58 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 97
+    },
+    "content": [
+      {
+        "__id__": 104
+      },
+      {
+        "__id__": 109
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 341,
+    "minHeight": 128,
+    "maxWidth": 440,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 122
+    },
+    "content": [
+      {
+        "__id__": 138
+      },
+      {
+        "__id__": 142
+      }
+    ],
+    "columnMode": true,
+    "paragraph": {
+      "__id__": 138
+    },
+    "footer": {
+      "__id__": 142
+    },
+    "mirrorBackgrounds": [
+      {
+        "__id__": 123
+      }
+    ],
+    "paddingX": 12,
+    "paddingY": 14,
+    "gap": 8,
+    "minHeight": 128,
+    "maxWidth": 700,
+    "reflowRows": false
   }
 ]

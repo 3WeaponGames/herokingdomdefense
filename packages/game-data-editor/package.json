@@ -1,0 +1,35 @@
+{
+  "name": "game-data-editor",
+  "version": "1.0.0",
+  "description": "Visual game data authoring with explicit saves and silent previews",
+  "main": "main.js",
+  "main-menu": {
+    "Tools/Hero Kingdom Defense/Stages & Waves": {
+      "message": "game-data-editor:open-stages"
+    },
+    "Tools/Hero Kingdom Defense/Battle Perks": {
+      "message": "game-data-editor:open-perks"
+    },
+    "Tools/Hero Kingdom Defense/Buildings": {
+      "message": "game-data-editor:open-buildings"
+    },
+    "Tools/Hero Kingdom Defense/Equipment": {
+      "message": "game-data-editor:open-equipment"
+    },
+    "Tools/Hero Kingdom Defense/Talents": {
+      "message": "game-data-editor:open-talents"
+    },
+    "Tools/Hero Kingdom Defense/Units": {
+      "message": "game-data-editor:open-units"
+    },
+    "Tools/Hero Kingdom Defense/Maps": {
+      "message": "game-data-editor:open-maps"
+    },
+    "Tools/Hero Kingdom Defense/Battle Settings": {
+      "message": "game-data-editor:open-settings"
+    },
+    "Tools/Hero Kingdom Defense/Testing": {
+      "message": "game-data-editor:open-testing"
+    }
+  }
+}

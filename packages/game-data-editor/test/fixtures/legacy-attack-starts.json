@@ -1,0 +1,11 @@
+{
+  "note": "Exact pre-editor method bodies captured 2026-11-07. No gameplay data or scripts are loaded from an ignored baseline at test time.",
+  "methods": {
+    "KinghtFallEnemyBase": "function () {\n    this.state = r.Attack;\n    this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);\n    this.time[s.Attack] = -1;\n    this.doAttack();\n  }",
+    "KinghtFallEnemyLong": "function () {\n    this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Attack;\n    this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);\n    this.time[r.Attack] = 0;\n    this.doAttack();\n  }",
+    "KinghtFallEnemyItem10": "function () {\n    this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Attack;\n    this.getSpAni().setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);\n    this.time[r.Attack] = -1;\n    this.doAttack();\n  }",
+    "KinghtFallSoldierBase": "function () {\n    this.state = s.Attack;\n    this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);\n    this.time[l.Attack] = -1;\n    this.doAttack();\n  }",
+    "KinghtFallSoldierItem03": "function () {\n    this.state = $z1KinghtFallSoldierBase.KinghtFallSoldierStatus.Attack;\n    this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);\n    this.time[r.Attack] = 0;\n    this.doAttack();\n  }",
+    "KinghtFallGamePlayCtrl": "function () {\n    this.node.getPosition(this.vec2_1);\n    var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();\n    var e = [];\n    for (var n = 0; n < t.length; n++) {\n      var i = t[n];\n      if (!i.isDead()) {\n        i.node.getPosition(this.vec2_2);\n        cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);\n        var a = this.vec2_2.mag();\n        a <= this.attackRange && e.push({\n          tag: i,\n          len: a\n        });\n      }\n    }\n    if (0 != e.length) {\n      e.sort(function (t, e) {\n        return t.len - e.len;\n      });\n      this.tagEnemy = e[0].tag;\n      this.time[C.Attack] = -1;\n      this.doAttackStart();\n      this.doAttack();\n    }\n  }"
+  }
+}

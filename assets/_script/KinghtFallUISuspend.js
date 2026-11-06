@@ -101,14 +101,15 @@ var def_KinghtFallUISuspend = function (t) {
   };
   _ctor.prototype.bindEvent = function () {
     var t = this;
-    this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
-      t.closeUI();
-    }, this);
+    this.btnClose.on(cc.Node.EventType.TOUCH_END, this.resumeGame, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
       t.breakCall();
       t.closeUI();
     }, this);
+  };
+  _ctor.prototype.resumeGame = function () {
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
+    this.closeUI();
   };
   _ctor.prototype.showView = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().playAudioButtonClicked();

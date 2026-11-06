@@ -387,8 +387,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluibuildsel.17]]",
-    "_fontSize": 52,
-    "_lineHeight": 52,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -882,8 +882,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluibuildsel.42]]",
-    "_fontSize": 60,
-    "_lineHeight": 60,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -960,9 +960,9 @@
   {
     "__type__": "cc.RichText",
     "_N$string": "[[loc:ui.kinghtfalluibuildatlas.labinfo.31]]",
-    "_N$fontSize": 50,
+    "_N$fontSize": 67,
     "_N$maxWidth": 700,
-    "_N$lineHeight": 70,
+    "_N$lineHeight": 78,
     "node": {
       "__id__": 45
     }

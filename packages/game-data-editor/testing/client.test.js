@@ -1,0 +1,30 @@
+'use strict';
+const assert=require('assert');
+class Element {
+  constructor(tag){this.tagName=tag;this.children=[];this.style={};this.value='';this.hidden=false;this.disabled=false;this.textContent='';}
+  appendChild(child){this.children.push(child);child.parentNode=this;return child;}
+  removeChild(child){this.children.splice(this.children.indexOf(child),1);child.parentNode=null;return child;}
+  get firstChild(){return this.children[0]||null;}
+  remove(){if(this.parentNode)this.parentNode.removeChild(this);}
+  scrollIntoView(){} focus(){}
+}
+global.document={createElement:tag=>new Element(tag)};
+const Client=require('./client');
+function all(root,match){const results=[];function walk(node){if(match(node))results.push(node);node.children.forEach(walk);}walk(root);return results;}
+const button=(root,text)=>all(root,n=>n.tagName==='button'&&n.textContent===text)[0];
+const flush=()=>new Promise(resolve=>setImmediate(resolve));
+const catalog={goods:[{id:2001,name:'Gold'},{id:2002,name:'Gems'},{id:2005,name:'Stamina'}],equipment:[{id:1,name:'Body',maxLevel:50}],talents:[{id:1,name:'Talent',level:1}],stages:[{stage:1,name:'Frontier Plains',waves:10}]};
+function state(ready,managed){return {running:ready,ready,target:{project:'Fixture project',profile:'test-profile',managed:managed!==false},testMode:true,catalog,state:{currencies:{gold:10,gems:5,stamina:30},equipment:[{id:1,level:1}],talents:[],progression:{maxStage:1,maxWave:0,currentStage:1}},capabilities:{grantAll:true,equipmentAll:true,talent:true,talentRemove:false,talentsAll:true,unlock:true,reset:true}};}
+async function main(){
+  let passed=0;async function test(name,body){await body();passed++;console.log('✓ '+name);}
+  await test('opening and closing only reads status; no game launch or grant',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push({method,request});return state(false);}});await flush();assert.deepStrictEqual(calls,[{method:'testing',request:{action:'status'}}]);assert(button(root,'+99,999 Gold').disabled);assert(!button(root,'Start muted test game').disabled);client.destroy();assert.strictEqual(root.children.length,0);});
+  await test('unmanaged or disabled test mode never enables write commands',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push(request);return state(false);}});await flush();client.update(state(true,false));assert(button(root,'+99,999 Gems').disabled);const disabled=state(true);disabled.testMode=false;client.update(disabled);await button(root,'+99,999 Gold').onclick();assert.strictEqual(calls.length,1);client.destroy();});
+  await test('an existing loading or Test Mode disabled game can be resumed explicitly',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push(request);return state(true);}});await flush();const loading=state(true);loading.ready=false;client.update(loading);assert(!button(root,'Retry / show test game').disabled);await button(root,'Retry / show test game').onclick();assert.strictEqual(calls[1].action,'start');const disabled=state(true);disabled.state.testMode=false;client.update(disabled);assert(!button(root,'Enable test controls').disabled);assert(button(root,'+99,999 Gold').disabled);client.destroy();});
+  await test('explicit grant targets supported resource with requested amount',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push(request);return state(true);}});await flush();await button(root,'+99,999 Gems').onclick();assert.deepStrictEqual(calls[1],{action:'grant',itemId:2002,amount:99999});assert(button(root,'Remove selected').hidden);client.destroy();});
+  await test('bulk actions require their inline review confirmation',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push(request);return state(true);}});await flush();button(root,'Max all equipment').onclick();assert.strictEqual(calls.length,1);button(root,'Apply to test player').onclick();await flush();assert.deepStrictEqual(calls[1],{action:'equipment-all',level:'max'});client.destroy();});
+  await test('all-talents action requests every supported branch only after review',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push(request);return state(true);}});await flush();button(root,'Unlock all talents').onclick();assert.strictEqual(calls.length,1);assert(all(root,n=>n.tagName==='p'&&String(n.textContent).includes('including all branches')).length);button(root,'Apply to test player').onclick();await flush();assert.deepStrictEqual(calls[1],{action:'talents-all',enabled:true});client.destroy();});
+  await test('reset requires review and exact typed confirmation before backend request',async()=>{const root=new Element('div'),calls=[];const client=Client.mount(root,{ipc:async(method,request)=>{calls.push(request);return state(true);}});await flush();button(root,'Review full test-player reset').onclick();assert.strictEqual(calls.length,1);const reset=button(root,'Back up and reset test player'),input=all(root,n=>n.tagName==='input'&&n.placeholder==='RESET TEST PLAYER')[0];assert(reset.disabled);input.value='RESET';input.oninput();assert(reset.disabled);reset.onclick();assert.strictEqual(calls.length,1);input.value='RESET TEST PLAYER';input.oninput();assert(!reset.disabled);await reset.onclick();assert.deepStrictEqual(calls[1],{action:'reset',confirm:'RESET MANAGED TEST PLAYER'});client.destroy();});
+  await test('grant quantities reject fractional, negative and unbounded values',()=>{assert.strictEqual(Client.integer('99999',1,99999999),99999);assert.throws(()=>Client.integer('1.5',1,99999999));assert.throws(()=>Client.integer('-1',1,99999999));assert.throws(()=>Client.integer('Infinity',1,99999999));});
+  console.log(passed+' testing panel client tests passed.');
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});

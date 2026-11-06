@@ -41,6 +41,15 @@ function fixture(native=false){
 }
 function shape(s){return JSON.stringify(Object.fromEntries(Object.entries(s.node).filter(([,v])=>typeof v!=='function')));}
 let passed=0;function test(name,fn){fn();passed++;console.log('PASS '+name);}
+
+test('Spine scanning descends from Scene without reading its unsupported component getter',()=>{
+  const f=fixture();let sceneReads=0,refreshes=0;
+  class Scene{get getComponent(){sceneReads++;throw Error('Scene has no components');}}
+  f.context.cc.Scene=Scene;const scene=new Scene(),component={};
+  scene.children=[{getComponent(Type){assert.equal(Type,f.Skeleton);return component;},children:[]}];
+  f.context.cc.director.getScene=()=>scene;f.service.refreshSkeleton=value=>{assert.equal(value,component);refreshes++;};
+  f.service.refresh();f.service.refresh();assert.equal(refreshes,2);assert.equal(sceneReads,0);
+});
 test('Clones atlas assets without modifying shared originals; preserves active tracks, queues, skin, timing and node geometry',()=>{
   const f=fixture(),a=f.component(),b=f.component(),before=shape(a),originalData=f.original.getRuntimeData(),originalAnimations=originalData.animations.slice();
   let starts=0,completed=0;const listener={start(){starts++;},complete(){completed++;}};a._listener=listener;a._state.addListener(listener);

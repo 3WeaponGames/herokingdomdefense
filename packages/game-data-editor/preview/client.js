@@ -1,0 +1,85 @@
+'use strict';
+const Renderer=require('./spine-renderer');
+const Projectile=require('./projectile');
+function el(tag,text,parent){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function select(parent,items,value){const input=el('select',undefined,parent);items.forEach(item=>{const option=el('option',item.label===undefined?String(item):item.label,input);option.value=item.value===undefined?item:item.value;});input.value=value;return input;}
+function button(parent,text,action){const b=el('button',text,parent);b.type='button';b.onclick=action;return b;}
+function mount(container, api) {
+    const root=el('section',undefined,container);root.className='hkd-unit-preview';
+    const style=el('style',undefined,root);style.textContent='.hkd-unit-preview{min-width:260px;color:#dce6ee;font:12px/1.45 Arial,sans-serif;padding:12px;box-sizing:border-box;background:#20262e;border:1px solid #3a4654;border-radius:8px}.hkd-unit-preview *{box-sizing:border-box}.hkd-unit-preview h3{margin:0 0 8px;font-size:15px}.hkd-unit-preview label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:7px 0}.hkd-unit-preview input,.hkd-unit-preview select,.hkd-unit-preview button{background:#2b3541;color:#e8eef4;border:1px solid #506174;border-radius:4px;padding:5px;min-width:0}.hkd-unit-preview input[type=number]{width:100px}.hkd-unit-preview input[type=range]{width:100%;margin:5px 0;accent-color:#68bce7}.hkd-unit-preview button{cursor:pointer}.hkd-unit-preview button:hover{border-color:#8ccbe9}.hkd-unit-preview button:disabled{opacity:.4;cursor:default}.hkd-unit-preview .preview-row{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:7px 0}.hkd-unit-preview .preview-help{font-size:11px;color:#a9bac9;margin:7px 0}.hkd-unit-preview .preview-box{position:relative;background:radial-gradient(ellipse at 50% 80%,#39485a,#161d26);border-radius:6px;overflow:hidden}.hkd-unit-preview canvas{display:block;width:100%;height:290px}.hkd-unit-preview .preview-badge{position:absolute;left:8px;top:7px;font-size:10px;letter-spacing:.06em;color:#9ccbb4}.hkd-unit-preview .preview-divider{border-top:1px solid #3a4654;margin:12px 0}.hkd-unit-preview .preview-value{font-variant-numeric:tabular-nums;color:#8ed2f2}.hkd-unit-preview .preview-markers{position:relative;height:26px;margin:3px 6px;border-bottom:2px solid #708397}.hkd-unit-preview .preview-marker{position:absolute;bottom:0;width:2px;height:16px;background:#f2c46e}.hkd-unit-preview .preview-marker.gameplay{background:#86dcb1;height:22px}.hkd-unit-preview .preview-marker.original{background:#97a8ba;height:12px}.hkd-unit-preview .preview-error{color:#ffb4a9}.hkd-unit-preview .preview-equipment{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.hkd-unit-preview .preview-equipment input{width:57px}.hkd-unit-preview .preview-shot{height:100px}.hkd-unit-preview .preview-static{width:100%;height:250px;object-fit:contain}';
+    style.textContent += '.hkd-unit-preview [hidden]{display:none!important}.hkd-unit-preview canvas,.hkd-unit-preview canvas.preview-shot{height:auto}.hkd-unit-preview .preview-marker.reference{background:#86dcb1;height:22px}.hkd-unit-preview .preview-marker.active{background:#f2c46e;height:16px}';
+    const title=el('h3','Unit preview',root),status=el('p','Select a unit to preview.',root);status.className='preview-help';
+    const box=el('div',undefined,root);box.className='preview-box';const badge=el('span','SILENT · RENDER ONLY',box);badge.className='preview-badge';
+    const canvas=el('canvas',undefined,box);canvas.width=700;canvas.height=580;
+    const controls=el('div',undefined,root), first=el('div',undefined,controls);first.className='preview-row';
+    const play=button(first,'Play',()=>{playing=!playing;play.textContent=playing?'Pause':'Play';last=0;if(playing)animate();});
+    button(first,'|◀',()=>{playing=false;play.textContent='Play';seekTime(0);});
+    button(first,'◀ Frame',()=>step(-1));button(first,'Frame ▶',()=>step(1));
+    const animationRow=el('label','Animation',controls),animations=select(animationRow,[],'');
+    const speedRow=el('label','Preview speed',controls),speed=select(speedRow,[{value:.25,label:'0.25×'},{value:.5,label:'0.5×'},{value:1,label:'1×'},{value:2,label:'2×'}],1);
+    const options=el('div',undefined,controls);options.className='preview-row';
+    const loopLabel=el('label','Loop',options),loop=el('input',undefined,loopLabel);loop.type='checkbox';loop.checked=true;
+    const facing=button(options,'Face left',()=>{direction*=-1;facing.textContent=direction===1?'Face left':'Face right';render();});
+    const zoom=select(options,[{value:.5,label:'50%'},{value:.75,label:'75%'},{value:1,label:'Fit'},{value:1.5,label:'150%'},{value:2,label:'200%'}],1);zoom.onchange=render;
+    const frameRow=el('label','Frame grid',controls),grid=select(frameRow,[30,60],60);
+    const scrub=el('input',undefined,controls);scrub.type='range';scrub.min=0;scrub.max=1;scrub.step='any';scrub.value=0;
+    const timeRow=el('label','Position (seconds)',controls),seconds=el('input',undefined,timeRow);seconds.type='number';seconds.min=0;seconds.step='any';seconds.value=0;
+    const position=el('span','0.000 s · frame 0',controls);position.className='preview-value';
+    const skinsRow=el('label','Preview skin',controls),skins=select(skinsRow,[],'');
+    const equipment=el('div',undefined,controls);equipment.className='preview-equipment';
+    el('div',undefined,root).className='preview-divider';
+    const timing=el('div',undefined,root),timingTitle=el('h3','Attack timing',timing);
+    const timingHelp=el('p','The gold marker controls the hit or projectile release. Save timing edits to apply them.',timing);timingHelp.className='preview-help';
+    const markers=el('div',undefined,timing);markers.className='preview-markers';
+    const effectSlider=el('input',undefined,timing);effectSlider.type='range';effectSlider.min=0;effectSlider.max=1;effectSlider.step='any';effectSlider.value=0;
+    const effectRow=el('label','Gold marker time (seconds)',timing),effectSeconds=el('input',undefined,effectRow);effectSeconds.type='number';effectSeconds.min=0;effectSeconds.max=10;effectSeconds.step='any';
+    const editRow=el('div',undefined,timing);editRow.className='preview-row';
+    const usePosition=button(editRow,'Use current frame',()=>commitTime(current));
+    const reset=button(editRow,'Reset to default',()=>{if(!description)return;api.onChange([{doc:'overrides',path:['timings',description.key],remove:true}]);effect=defaultEffect();customTiming=false;updateTiming();render();});
+    const legend=el('p','Gold: active hit / release · green: original animation reference',timing);legend.className='preview-help';
+    const shot=el('div',undefined,timing),targetRow=el('label','Target distance',shot),distance=el('input',undefined,targetRow);distance.type='number';distance.min=25;distance.max=2000;distance.step=5;distance.value=250;
+    const shotCanvas=el('canvas',undefined,shot);shotCanvas.className='preview-shot';shotCanvas.width=700;shotCanvas.height=180;
+    const impact=el('p','',shot);impact.className='preview-help';
+    const shared=el('p','',root);shared.className='preview-help';
+    let request=null,description=null,spine=null,layers=[],poseBounds=null,playing=false,current=0,duration=1,effect=0,customTiming=false,raf=null,last=0,token=0,direction=1,disposed=false,trajectory=null,heroLevels={},identity='';
+    function stop(){playing=false;play.textContent='Play';if(raf!==null)cancelAnimationFrame(raf);raf=null;last=0;}
+    function step(change){stop();seekTime(Math.max(0,Math.min(duration,current+change/Number(grid.value))));}
+    function seekTime(value){current=Math.max(0,Math.min(duration,Number(value)||0));scrub.value=current;seconds.value=Number(current.toFixed(6));position.textContent=current.toFixed(3)+' s · frame '+(current*Number(grid.value)).toFixed(2);render();}
+    scrub.oninput=()=>{stop();seekTime(scrub.value);};seconds.onchange=()=>{stop();seekTime(seconds.value);};grid.onchange=()=>seekTime(current);
+    animations.onchange=()=>{stop();duration=Math.max.apply(null,layers.map(l=>{const a=l.data.findAnimation(animations.value);return a?a.duration:0;}))||1;scrub.max=duration;seekTime(0);updateTiming();};
+    skins.onchange=()=>{layers.forEach(l=>{if(l.data.findSkin(skins.value)){l.skeleton.setSkinByName(skins.value);l.description.skin=skins.value;}});render();};
+    distance.onchange=()=>{trajectory=Projectile.simulate(description&&description.projectile,Math.max(25,Number(distance.value)||250),60);render();};
+    effectSlider.oninput=()=>{effect=Number(effectSlider.value);effectSeconds.value=effect;updateMarkers();render();};
+    effectSlider.onchange=()=>commitTime(Number(effectSlider.value));effectSeconds.onchange=()=>commitTime(Number(effectSeconds.value));
+    function commitTime(value){if(!description||!isFinite(value)||value<0||value>Math.min(10,attackDuration())){effectSeconds.value=effect;status.textContent='Choose a time within this attack animation.';return;}effect=value;customTiming=true;api.onChange([{doc:'overrides',path:['timings',description.key],value:{attack:value}}]);updateTiming();render();}
+    function attackDuration(){return Math.max.apply(null,layers.map(l=>{const a=l.data.findAnimation('attack');return a?a.duration:0;}))||1;}
+    function updateMarkers(){markers.innerHTML='';const max=attackDuration();const add=(at,kind,label)=>{const marker=el('span',undefined,markers);marker.className='preview-marker '+kind;marker.style.left=(Math.max(0,Math.min(1,at/max))*100)+'%';marker.title=label+' · '+at.toFixed(4)+' seconds';};layers.forEach(l=>{const a=l.description.json.animations.attack;((a&&a.events)||[]).forEach(event=>add(Number(event.time||0),'reference',event.name+' (original animation reference)'));});add(effect,'active',description?description.effect+' (active gold marker)':'Active hit / release');}
+    function updateTiming(){if(!description)return;timingTitle.textContent=description.effect+' timing';effectSlider.max=Math.min(10,attackDuration());effectSeconds.max=effectSlider.max;effectSlider.value=effect;effectSeconds.value=effect;effectSlider.disabled=effectSeconds.disabled=usePosition.disabled=animations.value!=='attack';reset.disabled=!description;timingHelp.textContent='Gold '+description.effect.toLowerCase()+' at '+effect.toFixed(4)+' seconds ('+(customTiming?'custom':'default')+'). Default: '+defaultEffect().toFixed(4)+' seconds. Save edits to apply them to '+description.type+' '+description.id+(description.form!=='default'?' / form '+description.form:'')+'.';updateMarkers();}
+    function drawShot(){if(!description||!description.projectile)return;const ctx=shotCanvas.getContext('2d'),w=shotCanvas.width,h=shotCanvas.height,d=Math.max(25,Number(distance.value)||250),scale=(w-70)/d;ctx.clearRect(0,0,w,h);ctx.strokeStyle='#556777';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(30,h/2);ctx.lineTo(w-30,h/2);ctx.stroke();ctx.fillStyle='#a4b6c5';ctx.fillRect(w-38,h/2-20,16,40);ctx.strokeStyle='#6e869b';ctx.beginPath();if(trajectory)trajectory.points.forEach((p,i)=>{if(i===0)ctx.moveTo(30+p.x*scale,h/2-p.y*scale);else ctx.lineTo(30+p.x*scale,h/2-p.y*scale);});ctx.stroke();if(trajectory&&current>=effect){const time=current-effect,index=Math.min(trajectory.points.length-1,Math.floor(time*60)),p=trajectory.points[index];ctx.fillStyle=trajectory.time!==null&&time>=trajectory.time?'#f4cf78':'#89d6ff';ctx.beginPath();ctx.arc(30+p.x*scale,h/2-p.y*scale,7,0,Math.PI*2);ctx.fill();}impact.textContent='Stationary target, 60 updates/sec. '+(trajectory&&trajectory.time!==null?'Release '+effect.toFixed(3)+' s → impact '+(effect+trajectory.time).toFixed(3)+' s.':'No impact in this scenario.')+' Live target movement changes arrival time.';}
+    function render(){if(disposed||!spine||!layers.length)return;Renderer.seek(spine,layers,animations.value,current,loop.checked);Renderer.drawCanvas(spine,canvas,layers,{width:canvas.width,height:canvas.height,bounds:poseBounds,zoom:Number(zoom.value),facing:direction});drawShot();}
+    function animate(timestamp){if(disposed||!playing)return;if(last&&timestamp){current+=(timestamp-last)/1000*Number(speed.value);if(current>duration){if(loop.checked)current=current%duration;else{current=duration;stop();}}}last=timestamp||0;seekTime(current);if(playing)raf=requestAnimationFrame(animate);}
+    function timingData(){const doc=request&&request.documents&&request.documents.overrides;return doc&&doc.data||{};}
+    function validTime(value){return typeof value==='number'&&isFinite(value)&&value>=0;}
+    function defaultEffect(){const data=timingData(),item=data.timingDefaults&&description&&data.timingDefaults[description.key];return item&&validTime(item.attack)?item.attack:description&&validTime(description.defaultTiming)?description.defaultTiming:0;}
+    function readEffect(){const data=timingData(),item=data.timings&&description&&data.timings[description.key];customTiming=!!(item&&validTime(item.attack));effect=customTiming?item.attack:defaultEffect();}
+    async function load(next){request=next;const currentToken=++token;stop();controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help';status.textContent='Loading model…';try{
+        const payload={type:next.type,id:next.id,record:next.record,heroLevels,levelIndex:next.levelIndex};
+        const data=await api.ipc('unit-preview',payload);if(disposed||currentToken!==token)return;description=data;
+        title.textContent=data.type==='building'?'Building preview':data.type==='hero'?'Hero & equipment preview':'Unit '+data.id+(data.form!=='default'?' · form '+data.form:'');
+        if(data.type==='building'){controls.hidden=timing.hidden=true;canvas.hidden=true;let img=box.querySelector('img');if(!img){img=el('img',undefined,box);img.className='preview-static';}img.src=data.image||'';img.alt=data.label;status.textContent=data.image?'Authored building icon.':'No authored icon is assigned.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
+        const oldImage=box.querySelector('img');if(oldImage)oldImage.remove();canvas.hidden=false;controls.hidden=timing.hidden=false;
+        spine=require(data.runtimePath);const loaded=await Renderer.createLayers(spine,data.layers);if(disposed||currentToken!==token)return;layers=loaded;
+        const names=Array.from(new Set([].concat.apply([],data.layers.map(l=>l.animations))));animations.innerHTML='';names.forEach(name=>{const o=el('option',name,animations);o.value=name;});animations.value=names.indexOf('attack')>=0?'attack':names[0];
+        Renderer.seek(spine,layers,'idle',0,false);poseBounds=Renderer.bounds(spine,layers);
+        skins.innerHTML='';(data.layers[0].skins||[]).forEach(name=>{const o=el('option',name,skins);o.value=name;});skins.value=data.layers[0].skin;skinsRow.hidden=data.type==='hero';
+        equipment.innerHTML='';(data.equipment||[]).forEach(item=>{const label=el('label',item.label,equipment),input=el('input',undefined,label);input.type='number';input.min=1;input.max=item.max;input.value=item.level;input.onchange=()=>{heroLevels[item.id]=Math.min(item.max,Math.max(1,Math.round(Number(input.value)||1)));load(request);};});
+        readEffect();trajectory=Projectile.simulate(data.projectile,Math.max(25,Number(distance.value)||250),60);shot.hidden=!data.projectile;
+        status.textContent='Animation preview only. '+(data.type==='hero'?'Equipment levels here do not change your saved progression.':'No gameplay or audio is running.');
+        shared.textContent=data.shared.length?'Animation assets are shared with '+data.shared.length+' other prefab(s). Timing edits stay scoped to this unit.':'This preview never writes animation assets.';
+        shared.title=data.shared.join('\n');animations.onchange();
+    }catch(error){if(currentToken===token){layers=[];controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help preview-error';status.textContent='Preview unavailable: '+error.message;}}}
+    function setUnit(next){next=Object.assign({},next);const equipmentData=next.type==='hero'&&next.documents&&next.documents.A?next.documents.A.data.EquipCfg:null;const nextIdentity=next.type+':'+next.id+':'+JSON.stringify(next.record||{})+':'+JSON.stringify(equipmentData);if(identity===nextIdentity&&description&&description.type!=='building'){request=next;readEffect();updateTiming();render();return;}identity=nextIdentity;heroLevels={};load(next);}
+    function setBuilding(next){identity='';load(Object.assign({},next,{type:'building'}));}
+    return{setUnit,setBuilding,destroy(){disposed=true;token++;stop();layers=[];Renderer.destroyCanvas(canvas);root.remove();},getState(){return{loaded:!!description,description:description&&{id:description.id,type:description.type,key:description.key},time:current,effect,playing,silent:true};}};
+}
+module.exports={mount};

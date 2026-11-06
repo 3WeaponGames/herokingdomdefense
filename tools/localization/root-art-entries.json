@@ -82,7 +82,21 @@
           "padding": 0,
           "color": "#235eaf",
           "outlineWidth": 0,
-          "align": "center"
+          "align": "center",
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 2,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 4
+            }
+          }
         }
       ]
     },
@@ -108,7 +122,21 @@
           "padding": 0,
           "color": "#235eaf",
           "outlineWidth": 0,
-          "align": "center"
+          "align": "center",
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 2,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 4
+            }
+          }
         }
       ]
     },
@@ -134,7 +162,21 @@
           "padding": 0,
           "color": "#235eaf",
           "outlineWidth": 0,
-          "align": "center"
+          "align": "center",
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 2,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 4
+            }
+          }
         }
       ]
     },
@@ -160,7 +202,21 @@
           "padding": 0,
           "color": "#235eaf",
           "outlineWidth": 0,
-          "align": "center"
+          "align": "center",
+          "locales": {
+            "en": {
+              "font": "assets/resources/localization/fonts/Lilita One.ttf",
+              "outlineWidth": 2,
+              "outlineColor": "#000000",
+              "shadow": {
+                "color": "#000000",
+                "offsetX": 0,
+                "offsetY": 2,
+                "blur": 0
+              },
+              "padding": 4
+            }
+          }
         }
       ]
     }

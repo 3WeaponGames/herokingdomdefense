@@ -1,3 +1,4 @@
+var GameToolsOverrides = require("GameToolsOverrides");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -30,6 +31,7 @@ var $z1KinghtFallGamePlayCtrl = require("KinghtFallGamePlayCtrl");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var Navigation = require("KinghtFallNavigation");
+var TestMode = require("TestMode").TestMode;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -67,6 +69,7 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    GameToolsOverrides.clear();
     this.gameData = new $z1KinghtFallGameCtrlData.default(this, t);
     this.ctrPlay.initData();
     this.buildBullet.node.active = false;
@@ -120,6 +123,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    GameToolsOverrides.clear();
     if (this._mapPhysicsManager) this._mapPhysicsManager.off("before-step", this._syncMapPhysics, this);
     this._mapPhysicsManager = null;
     this._mapPhysicsRoot = null;
@@ -156,7 +160,24 @@ var def_KinghtFallGameCtrl = function (t) {
     this.vec2_2.y = cc.misc.clampf(this.vec2_2.y, -this.mapSize.height / 2 + cc.winSize.height / 2, this.mapSize.height / 2 - cc.winSize.height / 2);
     this.camera.node.setPosition(this.vec2_2);
   };
+  _ctor.prototype.testInstantBuild = function () {
+    if (!TestMode.getInstance().isEnabled() || this.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare ||
+        !this.ctrPlay || this.ctrPlay.isDead()) return false;
+    var position = this.ctrPlay.getWpos(), buildings = this.gameData.getBulidList();
+    for (var index = 0; index < buildings.length; index++) {
+      var build = buildings[index];
+      if (build.getSell() === -1 || this.upBulid && build.uuid === this.upBulid.uuid) continue;
+      var polygon = build.getLockPoint();
+      if (polygon && cc.Intersection.pointInPolygon(position, polygon)) {
+        // The normal path retains prices, branch choices, unlocks and save events.
+        build.doUpgrade(build.standTimeMax, true);
+        return true;
+      }
+    }
+    return false;
+  };
   _ctor.prototype.onUpdate = function (t) {
+    GameToolsOverrides.tick(t, this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight);
     Navigation.beginFrame(this);
     switch (this.gameStatus) {
       case $z1KinghtFallModle.KinghtFallGameStage.Prepare:

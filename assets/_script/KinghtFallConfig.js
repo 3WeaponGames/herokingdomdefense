@@ -271,7 +271,7 @@ exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
   path: "menu_bgm",
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.ready_bgm] = {
-  path: "ready_bgm",
+  path: "Skybound_Horns",
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.fight_bgm] = {
   path: "fight_bgm",
@@ -364,6 +364,9 @@ var exp_KinghtFallParameter = function () {
   t.RunMusic = "KinghtFallRun";
   t.FollowRange = 120;
   t.FollowMode = 1;
+  t.BattleNightStrength = .8;
+  t.HeroRangeLineWidth = 3.5;
+  t.HeroRangeOpacity = 61;
   t.InitGold = 0;
   return t;
 }();

@@ -1,4 +1,5 @@
 var i;
+var GameToolsOverrides = require("GameToolsOverrides");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
@@ -53,6 +54,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.setBody(this.spAni.node);
   };
   _ctor.prototype.initData = function (t, e) {
+    GameToolsOverrides.cancel(this);
     var n = this;
     Navigation.reset(this);
     this._routeInterrupted = false;
@@ -345,10 +347,11 @@ var def_KinghtFallEnemyBase = function (t) {
     }() && (this.doAttackStart(), true);
   };
   _ctor.prototype.doAttackStart = function () {
+    if (GameToolsOverrides.isPending(this)) return;
     this.state = r.Attack;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     this.time[s.Attack] = -1;
-    this.doAttack();
+    GameToolsOverrides.attack(this, "enemy", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
     var t = this;
@@ -431,6 +434,7 @@ var def_KinghtFallEnemyBase = function (t) {
     }
   };
   _ctor.prototype.freeNode = function () {
+    GameToolsOverrides.cancel(this);
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + this.cfg.ID;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delEnemy(this);

@@ -843,6 +843,9 @@
       },
       {
         "__id__": 48
+      },
+      {
+        "__id__": 55
       }
     ],
     "_prefab": {
@@ -915,8 +918,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluiaddcurrency.43]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1060,5 +1063,23 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 41
+    },
+    "content": [
+      {
+        "__id__": 42
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 264,
+    "reflowRows": true
   }
 ]

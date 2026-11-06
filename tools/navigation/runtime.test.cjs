@@ -113,7 +113,7 @@ function environment() {
   const stubs = {
     NavigationGrid: { NavigationGrid }, BaseCtrl: { default: BaseCtrl }, KinghtFallUIGame: ui,
     KinghtFallConfig: { KinghtFallParameter: { FollowRange: 40, FollowMode: 1 }, KinghtFallBundelName: {}, KinghtFallPrefabName: {}, KinghtFallPoolName: {} },
-    KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getSoldierCfgById: () => cfg }) } },
+    KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ data: {}, getSoldierCfgById: () => cfg }) } },
     KinghtFallEnum: enumModule,
     KinghtFallModle: { KinghtFallSoldierAniEnum: { Idle: 'idle', Move: 'move' }, KinghtFallGameArmy: {}, KinghtFallGameStage: { Prepare: 0, Fight: 1 } },
     KinghtFallGameCtrlData: { default: function () {}, KinghtFallTimeType: {}, KinghtFallCommerceKeyType: {} }
@@ -122,7 +122,7 @@ function environment() {
   function load(name) {
     if (stubs[name]) return stubs[name];
     if (modules[name]) return modules[name].exports;
-    if (!/^(KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
+    if (!/^(GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
     const module = { exports: {} }; modules[name] = module;
     const context = { module, exports: module.exports, require: load, cc, sp: { Skeleton: function () {} }, console, Set, Date: { now: () => now },
       __extends(Child, Parent) { Object.setPrototypeOf(Child, Parent); Child.prototype = Object.create(Parent.prototype); Child.prototype.constructor = Child; },

@@ -195,6 +195,9 @@
     "_components": [
       {
         "__id__": 13
+      },
+      {
+        "__id__": 112
       }
     ],
     "_prefab": {
@@ -927,8 +930,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisuspend.40]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -996,6 +999,9 @@
     "_components": [
       {
         "__id__": 51
+      },
+      {
+        "__id__": 113
       }
     ],
     "_prefab": {
@@ -1052,8 +1058,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisuspend.47]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1272,8 +1278,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisuspend.58]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1342,6 +1348,9 @@
     "_components": [
       {
         "__id__": 69
+      },
+      {
+        "__id__": 114
       }
     ],
     "_prefab": {
@@ -1398,8 +1407,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisuspend.65]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1571,6 +1580,9 @@
       },
       {
         "__id__": 84
+      },
+      {
+        "__id__": 115
       }
     ],
     "_prefab": {
@@ -1727,6 +1739,9 @@
       },
       {
         "__id__": 92
+      },
+      {
+        "__id__": 116
       }
     ],
     "_prefab": {
@@ -1917,6 +1932,9 @@
       },
       {
         "__id__": 100
+      },
+      {
+        "__id__": 117
       }
     ],
     "_prefab": {
@@ -1990,10 +2008,11 @@
     "_N$string": "[[loc:ui.kinghtfalluisuspend.new_richtext.97]]",
     "_N$horizontalAlign": 1,
     "_N$maxWidth": 500,
-    "_N$lineHeight": 50,
+    "_N$lineHeight": 78,
     "node": {
       "__id__": 96
-    }
+    },
+    "_N$fontSize": 67
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2210,5 +2229,113 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 7
+    },
+    "content": [
+      {
+        "__id__": 8
+      }
+    ],
+    "paddingX": 40,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 0,
+    "minHeight": 89,
+    "maxWidth": 700,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 45
+    },
+    "content": [
+      {
+        "__id__": 46
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 88,
+    "maxWidth": 213,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 63
+    },
+    "content": [
+      {
+        "__id__": 64
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 88,
+    "maxWidth": 213,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 78
+    },
+    "content": [
+      {
+        "__id__": 79
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 264,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 86
+    },
+    "content": [
+      {
+        "__id__": 87
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 264,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 95
+    },
+    "content": [
+      {
+        "__id__": 96
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 0,
+    "minHeight": 0,
+    "maxWidth": 600,
+    "reflowRows": true
   }
 ]

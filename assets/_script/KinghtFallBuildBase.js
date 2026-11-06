@@ -69,6 +69,7 @@ var def_KinghtFallBuildBase = function (t) {
     });
   };
   _ctor.prototype.start = function () {
+    this.standTimeMax = require("GameToolsOverrides").parameter("buildStandTime", this.standTimeMax);
     var t;
     var e = this;
     null === (t = this.ndMove) || undefined === t || t.forEach(function (t, n) {

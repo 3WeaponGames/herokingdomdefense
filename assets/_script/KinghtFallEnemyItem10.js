@@ -1,4 +1,5 @@
 var i;
+var GameToolsOverrides = require("GameToolsOverrides");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
@@ -59,10 +60,11 @@ var def_KinghtFallEnemyItem10 = function (t) {
     $z1KinghtFallUIGame.default.instance.ctrEffect.loadEffect($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier10Buff);
   };
   _ctor.prototype.doAttackStart = function () {
+    if (GameToolsOverrides.isPending(this)) return;
     this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Attack;
     this.getSpAni().setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     this.time[r.Attack] = -1;
-    this.doAttack();
+    GameToolsOverrides.attack(this, "enemy", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
     var t = this;
@@ -145,6 +147,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.setBody(this.getSpAni().node);
   };
   _ctor.prototype.upData = function (t) {
+    GameToolsOverrides.cancel(this);
     this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Wait;
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
     this.getSpAni().node.active = false;

@@ -11,6 +11,10 @@ function TestMode() {
   this._enabled = false;
   this._f8Down = false;
   this._badge = null;
+  this._gameplayTarget = null;
+  this._held = {};
+  this._movement = {};
+  this._actions = {};
 }
 
 TestMode.getInstance = function () {
@@ -49,6 +53,7 @@ TestMode.prototype.setEnabled = function (enabled) {
   this.init();
   if (!this.isAvailable()) return false;
   this._enabled = !!enabled;
+  this.clearGameplayInput();
   try { cc.sys.localStorage.setItem(STORAGE_KEY, this._enabled ? "1" : "0"); }
   catch (error) { /* Session testing still works when local storage is unavailable. */ }
   this._refreshBadge();
@@ -74,28 +79,80 @@ TestMode.prototype._isEditing = function (event) {
   // Covers native Cocos EditBox focus, where there may be no HTML input.
   var scene = cc.director && cc.director.getScene();
   if (scene && cc.EditBox && scene.getComponentsInChildren) {
-    return scene.getComponentsInChildren(cc.EditBox).some(function (box) {
-      return cc.isValid(box) && box.isFocused && box.isFocused();
+    // Native Scene has no component array; query its normal child Nodes.
+    return (scene.children || [scene]).some(function (root) {
+      return root.getComponentsInChildren && root.getComponentsInChildren(cc.EditBox).some(function (box) {
+        return cc.isValid(box) && box.isFocused && box.isFocused();
+      });
     });
   }
   return false;
 };
 
 TestMode.prototype._keyDown = function (event) {
-  if (!this._isF8(event) || !this.isAvailable()) return;
-  if (this._f8Down) return;
-  this._f8Down = true;
-  // Latch ignored presses too: moving focus while holding F8 must not toggle.
-  if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || this._isEditing(event)) return;
+  if (!event || !this.isAvailable()) return;
+  if (this._isF8(event)) {
+    if (this._f8Down) return;
+    this._f8Down = true;
+    // Latch ignored presses too: moving focus while holding F8 must not toggle.
+    if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || this._isEditing(event)) return;
+    if (event.preventDefault) event.preventDefault();
+    this.toggle();
+    return;
+  }
+  var key = this._gameplayKey(event);
+  if (!key || this._held[key]) return;
+  this._held[key] = true;
+  if (!this._enabled || !this._hasGameplayTarget() || event.repeat || event.isComposing ||
+      event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || this._isEditing(event)) return;
   if (event.preventDefault) event.preventDefault();
-  this.toggle();
+  if (key.length === 1) this._movement[key] = true;
+  else this._actions[key] = true;
 };
 
 TestMode.prototype._keyUp = function (event) {
-  if (this._isF8(event)) this._releaseKey();
+  if (this._isF8(event)) this._f8Down = false;
+  var key = this._gameplayKey(event);
+  if (key) { delete this._held[key]; delete this._movement[key]; }
 };
 
-TestMode.prototype._releaseKey = function () { this._f8Down = false; };
+TestMode.prototype._releaseKey = function () { this._f8Down = false; this.clearGameplayInput(); };
+
+TestMode.prototype._gameplayKey = function (event) {
+  if (!event) return null;
+  var codes = { KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd', KeyR: 'rally', Escape: 'pause', Space: 'build' };
+  var names = { w: 'w', a: 'a', s: 's', d: 'd', r: 'rally', escape: 'pause', esc: 'pause', ' ': 'build', spacebar: 'build' };
+  var numbers = { 87: 'w', 65: 'a', 83: 's', 68: 'd', 82: 'rally', 27: 'pause', 32: 'build' };
+  return codes[event.code] || names[String(event.key || '').toLowerCase()] || numbers[event.keyCode] || null;
+};
+
+TestMode.prototype.clearGameplayInput = function (preserveHeld) {
+  if (!preserveHeld) this._held = {};
+  this._movement = {}; this._actions = {};
+};
+TestMode.prototype.setGameplayTarget = function (target) {
+  if (this._gameplayTarget !== target) this.clearGameplayInput();
+  this._gameplayTarget = target;
+};
+TestMode.prototype.removeGameplayTarget = function (target) {
+  if (this._gameplayTarget === target) { this._gameplayTarget = null; this.clearGameplayInput(); }
+};
+TestMode.prototype._hasGameplayTarget = function () {
+  var target = this._gameplayTarget;
+  return target && cc.isValid(target) && target.node && cc.isValid(target.node) &&
+    target.node.active !== false && target.node.activeInHierarchy !== false;
+};
+TestMode.prototype.readGameplayInput = function (target) {
+  if (!this.isEnabled() || target !== this._gameplayTarget || !this._hasGameplayTarget()) return null;
+  if (this._isEditing()) { this._movement = {}; this._actions = {}; return null; }
+  var x = (this._movement.d ? 1 : 0) - (this._movement.a ? 1 : 0);
+  var y = (this._movement.w ? 1 : 0) - (this._movement.s ? 1 : 0);
+  var length = Math.sqrt(x * x + y * y) || 1;
+  var input = { x: x / length, y: y / length, rally: !!this._actions.rally,
+    pause: !!this._actions.pause, build: !!this._actions.build };
+  this._actions = {};
+  return input;
+};
 
 TestMode.prototype._installHotkey = function () {
   var self = this;
@@ -126,7 +183,7 @@ TestMode.prototype._refreshBadge = function () {
   var canvas = cc.Canvas && cc.Canvas.instance;
   if (!canvas || !canvas.node || !cc.isValid(canvas.node)) return;
   var badge = new cc.Node("DevelopmentTestModeBadge");
-  badge.setContentSize(240, 30);
+  badge.setContentSize(360, 44);
   badge.group = canvas.node.group;
   badge.zIndex = cc.macro.MAX_ZINDEX;
   canvas.node.addChild(badge);
@@ -134,13 +191,13 @@ TestMode.prototype._refreshBadge = function () {
   graphics.fillColor = cc.color(32, 26, 11, 235);
   graphics.strokeColor = cc.color("#f2c357");
   graphics.lineWidth = 1;
-  graphics.roundRect(-120, -15, 240, 30, 5);
+  graphics.roundRect(-180, -22, 360, 44, 5);
   graphics.fill(); graphics.stroke();
   var text = new cc.Node("Caption");
   badge.addChild(text);
   var label = text.addComponent(cc.Label);
-  label.fontSize = 20;
-  label.lineHeight = 22;
+  label.fontSize = 30;
+  label.lineHeight = 34;
   label.isBold = true;
   label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
   label.verticalAlign = cc.Label.VerticalAlign.CENTER;
@@ -148,7 +205,7 @@ TestMode.prototype._refreshBadge = function () {
   label.enableWrapText = false;
   text.color = cc.color("#ffe19a");
   // Label's default NONE overflow can clear size during creation; restore last.
-  text.setContentSize(228, 30);
+  text.setContentSize(340, 44);
   LanguageMgr.getInstance().bindLabel(label, BADGE_KEY);
   var widget = badge.addComponent(cc.Widget);
   widget.isAlignTop = true;
