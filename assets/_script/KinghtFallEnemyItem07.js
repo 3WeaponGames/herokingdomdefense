@@ -10,6 +10,7 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallEnemyMelee = require("KinghtFallEnemyMelee");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 cc__decorator.property;
@@ -81,12 +82,10 @@ var def_KinghtFallEnemyItem07 = function (t) {
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, r)) {
-              var p = d.tagNode.convertToWorldSpaceAR(cc.Vec2.ZERO);
-              t.vec2_2 = $z1KinghtFallUIGame.default.instance.ctrGame.ndMain.convertToNodeSpaceAR(p);
-              cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-              if (-1 == n || t.vec2_2.len() < n) {
+              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
+              if (-1 == n || targetDistance < n) {
                 e = c;
-                n = t.vec2_2.len();
+                n = targetDistance;
               }
             }
           }
@@ -97,7 +96,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     if (n) {
       n.node.getPosition(this.vec2_2);
       n.cfg && this.cfg.Suppressed == n.cfg.ID && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e));
+      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
       $z1KinghtFallUIGame.default.instance.ctrEffect.onAttack2(n.node.getPosition(), $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack, "xiao");
@@ -164,7 +163,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
         break;
       }
       r.item.node.getPosition(this.vec2_2);
-      r.item.onAttacked(a);
+      r.item.onAttacked(a, this);
       $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), a);
       $z1KinghtFallUIGame.default.instance.ctrEffect.onAttack(this.vec2_2.clone(), $z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier7Attack, $z1KinghtFallConfig.KinghtFallPoolName.Soldier7Attack);
     }

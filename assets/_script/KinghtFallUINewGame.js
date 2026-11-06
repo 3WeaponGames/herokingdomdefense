@@ -23,11 +23,12 @@ var def_KinghtFallUINewGame = function (t) {
   _ctor.prototype.start = function () {
     var t = this;
     this.btnBreak.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame();
+      if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame() === false) return;
       t.call();
       t.closeUI();
     }, this);
     this.btnContinue.on(cc.Node.EventType.TOUCH_END, function () {
+      if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;
       t.call();
       t.closeUI();
     }, this);

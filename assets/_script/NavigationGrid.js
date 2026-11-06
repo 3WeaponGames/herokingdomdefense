@@ -75,7 +75,7 @@ function NavigationGrid(polygons,bounds,cellSize) {
   this.count=this.columns*this.rows;
   if(this.count>MAX_CELLS)throw new RangeError("Navigation grid exceeds 65536 cells; use tighter bounds or a larger cell size.");
   this.polygons=[];this._index=new Map();this._indexSize=Math.max(80,this.cellSize*6);this._caches=new Map();
-  this.lastSearch=null;
+  this.lastSearch=null;this._centers=[];this._projections=new Map();
   var self=this;
   (polygons||[]).forEach(function(vertices) {
     if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation polygons need at least three vertices.");
@@ -130,16 +130,20 @@ NavigationGrid.prototype.segmentClear=function(start,end,radius) {
   return true;
 };
 NavigationGrid.prototype._center=function(id) {
+  if(this._centers[id])return this._centers[id];
   var x=id%this.columns,y=Math.floor(id/this.columns),b=this.bounds,s=this.cellSize;
-  return {x:(b.minX+x*s+Math.min(b.minX+(x+1)*s,b.maxX))/2,y:(b.minY+y*s+Math.min(b.minY+(y+1)*s,b.maxY))/2};
+  return this._centers[id]={x:(b.minX+x*s+Math.min(b.minX+(x+1)*s,b.maxX))/2,y:(b.minY+y*s+Math.min(b.minY+(y+1)*s,b.maxY))/2};
 };
 NavigationGrid.prototype._cache=function(radius) {
   var key=String(radius),cache=this._caches.get(key);
   if(cache){this._caches.delete(key);this._caches.set(key,cache);return cache;}
-  cache={radius:radius,walk:new Uint8Array(this.count),checked:new Uint8Array(this.count),edges:new Uint8Array(this.count),seen:new Uint32Array(this.count),closed:new Uint32Array(this.count),g:new Float64Array(this.count),parent:new Int32Array(this.count),serial:0};
-  for(var i=0;i<this.count;i++)cache.walk[i]=this.isWalkable(this._center(i),radius)?1:0;
+  cache={radius:radius,walk:new Uint8Array(this.count),walkKnown:new Uint8Array(this.count),checked:new Uint8Array(this.count),edges:new Uint8Array(this.count),seen:new Uint32Array(this.count),closed:new Uint32Array(this.count),g:new Float64Array(this.count),parent:new Int32Array(this.count),serial:0};
   if(this._caches.size>=8)this._caches.delete(this._caches.keys().next().value);
   this._caches.set(key,cache);return cache;
+};
+NavigationGrid.prototype._walkableCell=function(cache,id) {
+  if(!cache.walkKnown[id]){cache.walk[id]=this.isWalkable(this._center(id),cache.radius)?1:0;cache.walkKnown[id]=1;}
+  return !!cache.walk[id];
 };
 NavigationGrid.prototype._edge=function(cache,id,direction) {
   var mask=1<<direction;
@@ -147,8 +151,8 @@ NavigationGrid.prototype._edge=function(cache,id,direction) {
   cache.checked[id]|=mask;
   var x=id%this.columns,y=Math.floor(id/this.columns),delta=DIRECTIONS[direction],nx=x+delta[0],ny=y+delta[1];
   if(nx<0||nx>=this.columns||ny<0||ny>=this.rows)return false;
-  var next=ny*this.columns+nx,allowed=!!cache.walk[id]&&!!cache.walk[next];
-  if(allowed&&delta[0]&&delta[1])allowed=!!cache.walk[y*this.columns+nx]&&!!cache.walk[ny*this.columns+x];
+  var next=ny*this.columns+nx,allowed=this._walkableCell(cache,id)&&this._walkableCell(cache,next);
+  if(allowed&&delta[0]&&delta[1])allowed=this._walkableCell(cache,y*this.columns+nx)&&this._walkableCell(cache,ny*this.columns+x);
   if(allowed)allowed=this.segmentClear(this._center(id),this._center(next),cache.radius);
   cache.checked[next]|=1<<OPPOSITE[direction];
   if(allowed){cache.edges[id]|=mask;cache.edges[next]|=1<<OPPOSITE[direction];}
@@ -158,7 +162,7 @@ NavigationGrid.prototype._nearby=function(p,cache,limit) {
   var result=[],s=this.cellSize,b=this.bounds;
   var x0=Math.max(0,Math.floor((p.x-limit-b.minX)/s)),x1=Math.min(this.columns-1,Math.floor((p.x+limit-b.minX)/s));
   var y0=Math.max(0,Math.floor((p.y-limit-b.minY)/s)),y1=Math.min(this.rows-1,Math.floor((p.y+limit-b.minY)/s));
-  for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++){var id=y*this.columns+x;if(cache.walk[id]){var p2=this._center(id),d2=distance2(p,p2);if(d2<=limit*limit+EPS)result.push({id:id,point:p2,d2:d2});}}
+  for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++){var id=y*this.columns+x,p2=this._center(id),d2=distance2(p,p2);if(d2<=limit*limit+EPS&&this._walkableCell(cache,id))result.push({id:id,point:p2,d2:d2});}
   result.sort(function(a,b){return a.d2-b.d2||a.id-b.id;});return result;
 };
 NavigationGrid.prototype._anchors=function(p,cache) {
@@ -215,6 +219,28 @@ NavigationGrid.prototype._smooth=function(points,radius) {
   }
   return result;
 };
+NavigationGrid.prototype._projectGoal=function(goal,cache,start) {
+  var key=cache.radius+":"+goal.x+","+goal.y,ties=this._projections.get(key),self=this;
+  if(!ties){
+    ties=[];
+    var b=this.bounds,maximum=Math.sqrt(Math.max(distance2(goal,{x:b.minX,y:b.minY}),distance2(goal,{x:b.maxX,y:b.minY}),distance2(goal,{x:b.minX,y:b.maxY}),distance2(goal,{x:b.maxX,y:b.maxY})))+this.cellSize;
+    var limit=Math.min(maximum,this.cellSize*3+cache.radius*2);
+    while(true){
+      var nearby=this._nearby(goal,cache,limit),best=Infinity;
+      for(var i=0;i<nearby.length;i++){
+        var candidate=nearby[i];if(candidate.d2>best+EPS)break;
+        if(this._escapeClear(goal,candidate.point,cache.radius,true)){best=candidate.d2;ties.push(candidate.id);}
+      }
+      if(ties.length||limit>=maximum)break;
+      limit=Math.min(maximum,limit*2);
+    }
+    if(this._projections.size>=128)this._projections.delete(this._projections.keys().next().value);
+    this._projections.set(key,ties);
+  }
+  var selected=-1,bestStart=Infinity;
+  ties.forEach(function(id){var d=distance2(self._center(id),start);if(d<bestStart-EPS){bestStart=d;selected=id;}});
+  return selected;
+};
 NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
   var start=point(startValue),requestedGoal=point(goalValue),r=radiusValue(radius),self=this;
   this.lastSearch={expanded:0,cells:this.count,direct:false};
@@ -230,8 +256,7 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
   var goalAnchors=goalFree?this._anchors(requestedGoal,cache):[],goalIds=new Set(),target=requestedGoal;
   if(goalFree&&!goalAnchors.length)return null;
   goalAnchors.forEach(function(candidate){goalIds.add(candidate.id);});
-  var projectedId=-1,nearest=Infinity,nearestFromStart=Infinity;
-  if(!goalFree)for(var id=0;id<this.count;id++)if(cache.walk[id]){var center=this._center(id),d2=distance2(center,requestedGoal),fromStart=distance2(center,start);if((d2<nearest-EPS||Math.abs(d2-nearest)<=EPS&&fromStart<nearestFromStart)&&this._escapeClear(requestedGoal,center,r,true)){nearest=d2;nearestFromStart=fromStart;projectedId=id;}}
+  var projectedId=goalFree?-1:this._projectGoal(requestedGoal,cache,start);
   if(!goalFree){if(projectedId<0)return null;target=this._center(projectedId);goalIds.add(projectedId);}
   var serial=++cache.serial;if(serial>=4294967295){cache.seen.fill(0);cache.closed.fill(0);cache.serial=serial=1;}
   var heap=new Heap(),found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity;

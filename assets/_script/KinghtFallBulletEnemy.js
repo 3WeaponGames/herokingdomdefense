@@ -21,14 +21,13 @@ var def_KinghtFallBulletEnemy = function (t) {
   };
   _ctor.prototype.setTag = function (t, e, n) {
     this._dir = cc.v2(e.x - t.x, e.y - t.y).normalizeSelf();
-    this.tagNode = e;
+    this.bindTarget(e, n);
     this.tagNode.getPosition(this.tagPos);
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
-    this.callAttack = n;
   };
   _ctor.prototype.setLeft = function (t, e, n) {
     if (t.x > e.x) {
@@ -36,19 +35,19 @@ var def_KinghtFallBulletEnemy = function (t) {
     } else {
       this._dir = cc.v2(Math.cos(this.angle * Math.PI / 180), Math.sin(this.angle * Math.PI / 180));
     }
-    this.tagNode = e;
+    this.bindTarget(e, n);
     this.tagNode.getPosition(this.tagPos);
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
-    this.callAttack = n;
   };
   _ctor.prototype.freeNode = function (t) {
+    if (this.state === 2) return;
     undefined === t && (t = true);
     t && $z1KinghtFallUIGame.default.instance.ctrGame.freeEnemyBullet(this);
-    this.state = 2;
+    this.cancel();
     this.ctrPar.freeBullet(this);
   };
   return cc__decorate([ccp_ccclass], _ctor);

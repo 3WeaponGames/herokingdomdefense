@@ -49,7 +49,6 @@ exports.KinghtFallBundelName = exp_KinghtFallBundelName;
   t.UIAddCurrency = "KinghtFallUIAddCurrency";
   t.UIAddStrength = "KinghtFallUIAddStrength";
   t.UIExchangeCode = "KinghtFallUIExchangeCode";
-  t.UIAddDesktop = "KinghtFallUIAddDesktop";
   t.UISideBoard = "KinghtFallUISideBoard";
   t.UIGM = "KinghtFallUIGM";
 })(o = exports.KinghtFallUIID || (exports.KinghtFallUIID = {}));
@@ -101,13 +100,6 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   showTop: false,
   showMult: false,
   zIndex: $z1Appcfg.OrderLayer.pop2,
-  bundleName: exp_KinghtFallBundelName.Prefab
-}, i[o.UIAddDesktop] = {
-  prefab: "commer/KinghtFallUIAddDesktop",
-  name: "KinghtFallUIAddDesktop",
-  showTop: false,
-  showMult: false,
-  zIndex: $z1Appcfg.OrderLayer.pop,
   bundleName: exp_KinghtFallBundelName.Prefab
 }, i[o.UIAchievement] = {
   prefab: "homePop/KinghtFallUIAchievement",
@@ -353,6 +345,7 @@ exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
   t.NewbieGuide = "KinghtFallNewbieGuide";
   t.UpdateRedPoint = "KinghtFallUpdateRedPoint";
   t.TimeUpdate = "KinghtFallTimeUpdate";
+  t.DailyUpdate = "KinghtFallDailyUpdate";
   t.PlayVideoSucc = "KinghtFallPlayVideoSucc";
   t.UpBattView = "KinghtFallUpBattView";
 })(exports.KinghtFallEventName || (exports.KinghtFallEventName = {}));

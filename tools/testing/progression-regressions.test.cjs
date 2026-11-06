@@ -10,6 +10,11 @@ function harness() {
   const state = { saves: 0, ads: [], events: [], achievements: [] };
   const singleton = value => ({ getInstance: () => value });
   function Base() {}
+  Base.prototype.addEvent = function () {};
+  Base.prototype.normalizeSaveRecord = function (data, defaults) {
+    for (const key of Object.keys(defaults)) if (data[key] === undefined) data[key] = JSON.parse(JSON.stringify(defaults[key]));
+    return data;
+  };
   Base.prototype.saveData = () => state.saves++;
   const modules = {
     BaseData: { BaseData: Base }, BaseUI: { default: Base }, BaseCtrl: { default: Base },
@@ -18,7 +23,8 @@ function harness() {
     KinghtFallTextConfig: { KinghtFallTextConfig: {} },
     EventMgr: { EventMgr: singleton({ emit: (...args) => state.events.push(args) }) },
     Utils: { Utils: { StringFormat: text => text } },
-    KinghtFallModle: { default: singleton({ compareIsToday: () => false, numberFomat: String }) },
+    KinghtFallModle: { default: singleton({ compareIsToday: time => new Date(time).toDateString() === new Date().toDateString(), numberFomat: String }) },
+    CacheUtils: { CacheUtils: { getData: () => null, saveData: () => true } },
     SdkMgr: { AdType: {}, SdkMgr: singleton({ playVideo: (kind, done) => state.ads.push(done) }) },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) },
     GameTrackDataEvent: { TrackId: {} },
@@ -26,6 +32,7 @@ function harness() {
       getSignCfg: () => config.SignCfg,
       getGoodsCfgById: id => config.GoodsCfg[id],
       getTreasureCfgById: id => config.TreasureCfg.find(item => item.ID === id),
+      getEquipCfgList: () => config.EquipCfg,
       getTaskCfgById: id => config.TaskCfg.find(item => item.ID === id)
     }) }
   };

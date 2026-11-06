@@ -23,6 +23,8 @@ for(let id=1;id<=4;id++){
   }
   results.push(row);
 }
-const report=path.resolve(__dirname,'../../local/navigation-audit-20261106/authored-route-audit.json');
+const report=path.resolve(__dirname,'../../local/audit/authored-route-audit.json');
+fs.mkdirSync(path.dirname(report),{recursive:true});
 fs.writeFileSync(report,JSON.stringify(results,null,2)+'\n');
 console.log(JSON.stringify(results.map(x=>({map:x.map,tests:x.tests,blockedPointCount:x.blockedPoints.length})),null,2));
+if(results.some(map=>map.tests.some(result=>result.missing>0||result.segments===0)))process.exitCode=1;

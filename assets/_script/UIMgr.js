@@ -182,14 +182,18 @@ var exp_UIMgr = function () {
       var y = this.getUICnf(t);
       if (null == y) {
         $z1LogMgr.LogMgr.getInstance().debug(t + "不存在");
-        return void (this.isopening = false);
+        this.isopening = false;
+        this.openWaiting();
+        return;
       }
       var v = new c(t, e, n, i, h, g, u, d, p);
       if (this.popCanShow(t, y, v)) {
         if (this.uistatck.get(t) && !y.showMult) {
           $z1LogMgr.LogMgr.getInstance().debug(t + "已经存在");
           this.uistatck.get(t).node.getComponent($z1BaseUI.default).refreshUI(t, e, i, h, g, u, d, p);
-          return void (this.isopening = false);
+          this.isopening = false;
+          this.openWaiting();
+          return;
         }
         $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false);
         var _ = this.uichace.get(t);
@@ -232,6 +236,13 @@ var exp_UIMgr = function () {
           I.active = true;
         } else {
           $z1ResourceMgr.ResourceMgr.getInstance().loadRes(y.bundleName, y.prefab, cc.Prefab, function (s) {
+            if (!cc.isValid(n)) {
+              f.isopening = false;
+              $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+              f.cancelOpenTransition();
+              f.openWaiting();
+              return;
+            }
             var l = cc.instantiate(s);
             l.active = false;
             l.name = y.name;
@@ -265,19 +276,34 @@ var exp_UIMgr = function () {
             f.isopening = false;
             f.openWaiting();
             l.active = true;
-          });
+          }, { onError: function (error, retry, cancel) {
+            // Abort this request before releasing the queue. Retrying must enter
+            // open() afresh, not instantiate an old UI over a newer request.
+            cancel();
+            f.isopening = false;
+            $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+            $z1ResourceMgr.ResourceMgr.getInstance().showRuntimeRecovery(error, function () {
+              if (cc.isValid(n)) f.open(t, e, n, i, h, g, u, d, p);
+              else f.openWaiting();
+            }, function () { f.cancelOpenTransition(); f.openWaiting(); });
+          } });
         }
       } else {
         this.isopening = false;
+        this.openWaiting();
       }
     }
   };
   _ctor.prototype.getChildByName = function (t) {
     return this.uiRoot.getChildByName(t);
   };
+  _ctor.prototype.cancelOpenTransition = function () {
+    var touch = this.uistatck.get($z1Config.UIID.UITouch);
+    if (touch && touch.cancelTransition) touch.cancelTransition();
+  };
   _ctor.prototype.openWaiting = function () {
     if (this.watingOpen.length > 0) {
-      var t = this.watingOpen.pop();
+      var t = this.watingOpen.shift();
       this.openUIOfParentAndCallback(t.uid, t.fromId, t.parent, t.callback, t.param1, t.param2, t.param3, t.param4, t.param5);
     }
   };

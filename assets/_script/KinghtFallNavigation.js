@@ -8,6 +8,23 @@ function point(node, main, offset) {
   return { x: p.x, y: p.y };
 }
 function distance(a, b) { var x = a.x - b.x, y = a.y - b.y; return Math.sqrt(x * x + y * y); }
+function nearestPolygonPoint(start, vertices) {
+  var best = null, bestDistance = Infinity;
+  for (var i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+    var a = vertices[j], b = vertices[i], dx = b.x - a.x, dy = b.y - a.y;
+    var lengthSquared = dx * dx + dy * dy;
+    var along = lengthSquared ? Math.max(0, Math.min(1, ((start.x - a.x) * dx + (start.y - a.y) * dy) / lengthSquared)) : 0;
+    var candidate = { x: a.x + along * dx, y: a.y + along * dy }, length = distance(start, candidate);
+    if (length < bestDistance) { best = candidate; bestDistance = length; }
+  }
+  return best;
+}
+exports.polygonDistance = function (unit, polygon, game) {
+  var start = unit.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
+  var closest = nearestPolygonPoint(start, polygon);
+  if (!closest) return Infinity;
+  return distance(point(unit.node, game.ndMain), game.ndMain.convertToNodeSpaceAR(cc.v2(closest)));
+};
 var ARRIVAL_EPSILON = 0.0001;
 function setMainPosition(node, main, position) {
   var world = main.convertToWorldSpaceAR(cc.v2(position));
@@ -50,37 +67,100 @@ function Navigation(game) {
   this._nextRefresh = 0;
   this._signature = "";
   this._refreshPending = true;
-  this.stats = { searches: 0, noPath: 0, revisions: 0 };
+  this._shapeCache = new Map();
+  this._polygons = [];
+  this._friendlyPolygons = [];
+  this._requests = [];
+  this._requestUnits = new Set();
+  this._frameId = 0;
+  this.stats = { searches: 0, noPath: 0, revisions: 0, snapshotBuilds: 0, deferred: 0 };
 }
+Navigation.prototype.shape = function (collider, forcedPoints) {
+  var main = this.game.ndMain, stamp = [], vertices, node = collider.node;
+  if (forcedPoints) {
+    vertices = forcedPoints.map(function (p) { var local = main.convertToNodeSpaceAR(cc.v2(p)); return { x: Math.round(local.x * 1e4) / 1e4, y: Math.round(local.y * 1e4) / 1e4 }; });
+    vertices.forEach(function (p) { stamp.push(p.x, p.y); });
+  } else {
+    for (var ancestor = node; ancestor && ancestor !== main; ancestor = ancestor.parent) stamp.push(ancestor, ancestor.x, ancestor.y, ancestor.scaleX, ancestor.scaleY, ancestor.angle);
+    var offset = collider.offset || { x: 0, y: 0 };
+    stamp.push(offset.x, offset.y, collider.radius, collider.size && collider.size.width, collider.size && collider.size.height);
+    (collider.points || []).forEach(function (p) { stamp.push(p.x, p.y); });
+  }
+  var cached = this._shapeCache.get(collider);
+  if (cached && cached.forced === !!forcedPoints && cached.stamp.length === stamp.length && stamp.every(function (value, index) {
+    var previous = cached.stamp[index];
+    if (value === previous) return true;
+    // Cocos round-trips static world/local transforms through physics. Ignore
+    // floating-point noise against the last cached stamp, so cumulative real
+    // movement still invalidates the scene instead of drifting unnoticed.
+    return typeof value === "number" && typeof previous === "number" && isFinite(value) && isFinite(previous) && Math.abs(value - previous) <= 1e-12 * Math.max(1, Math.abs(value), Math.abs(previous));
+  })) return cached.polygon;
+  if (!vertices) vertices = colliderPoints(collider).map(function (p) { return point(node, main, p); });
+  this._shapeCache.set(collider, { forced: !!forcedPoints, stamp: stamp, polygon: vertices });
+  return vertices;
+};
 Navigation.prototype.refresh = function () {
   var now = Date.now();
   if (this.grid && !this._refreshPending && now < this._nextRefresh) return;
   this._refreshPending = false;
   this._nextRefresh = now + 250;
-  var game = this.game, main = game.ndMain, polygons = [], seen = new Set();
+  var navigation = this, game = this.game, polygons = [], friendly = [], seen = new Set();
   game.gameData.obstacles.concat(game.gameData.getBulidList()).forEach(function (owner) {
     // Gate wings are sibling nodes referenced as Skeleton components, not
     // descendants of the gate. Their enabled physics shapes still block units.
+    var gateShapes = owner.getNavigationGateShapes ? owner.getNavigationGateShapes() : [];
+    gateShapes.forEach(function (shape) {
+      if (seen.has(shape.collider)) return;
+      seen.add(shape.collider);
+      var polygon = navigation.shape(shape.collider, shape.points);
+      if (polygon.length >= 3) polygons.push(polygon);
+    });
     var nodes = [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); }));
     nodes.forEach(function (node) {
       if (!node || !node.activeInHierarchy) return;
       colliders(node).forEach(function (collider) {
         if (seen.has(collider) || !activeCollider(collider)) return;
         seen.add(collider);
-        var polygon = colliderPoints(collider).map(function (p) { return point(collider.node, main, p); });
-        if (polygon.length >= 3) polygons.push(polygon);
+        var polygon = navigation.shape(collider);
+        if (polygon.length >= 3) { polygons.push(polygon); friendly.push(polygon); }
       });
     });
   });
   var size = game.mapSize;
   var bounds = { minX: -size.width / 2, minY: -size.height / 2, maxX: size.width / 2, maxY: size.height / 2 };
-  var signature = JSON.stringify([bounds, polygons]);
-  if (!this.grid || signature !== this._signature) {
-    this._signature = signature;
+  var same = this.grid && this.grid.bounds.minX === bounds.minX && this.grid.bounds.minY === bounds.minY && this.grid.bounds.maxX === bounds.maxX && this.grid.bounds.maxY === bounds.maxY;
+  same = same && polygons.length === this._polygons.length && friendly.length === this._friendlyPolygons.length && polygons.every(function (p, index) { return p === navigation._polygons[index]; }) && friendly.every(function (p, index) { return p === navigation._friendlyPolygons[index]; });
+  if (!same) {
+    this._polygons = polygons;
+    this._friendlyPolygons = friendly;
     this.grid = new NavigationGrid(polygons, bounds, 20);
+    this.friendlyGrid = null;
     this.revision++;
     this.stats.revisions++;
+    this.stats.snapshotBuilds++;
   }
+};
+Navigation.prototype.gridFor = function (unit) {
+  this.refresh();
+  if (unit.navigationTeam !== "friendly") return this.grid;
+  // The upgraded first-map gate has a valid body-width passage between its
+  // wings that a 20-unit lattice misses. Keep body clearance; sample more finely.
+  if (!this.friendlyGrid) this.friendlyGrid = new NavigationGrid(this._friendlyPolygons, this.grid.bounds, 16);
+  return this.friendlyGrid;
+};
+Navigation.prototype.takeSearchTurn = function (unit) {
+  if (!this._frameManaged) return true;
+  unit._navigationRequestFrame = this._frameId;
+  while (this._requests.length) {
+    var first = this._requests[0];
+    if (first._isPooled || first.isDead && first.isDead() || first.node.activeInHierarchy === false || this._frameId - first._navigationRequestFrame > 2) {
+      this._requestUnits.delete(first); this._requests.shift();
+    } else break;
+  }
+  if (!this._requestUnits.has(unit)) { this._requestUnits.add(unit); this._requests.push(unit); }
+  if (this._requests[0] !== unit || this._frameSearches >= 8 || this._frameSearches > 0 && Date.now() - this._frameSearchStart >= 4) return false;
+  this._requests.shift(); this._requestUnits.delete(unit);
+  return true;
 };
 Navigation.prototype.radius = function (unit) {
   // Attack/search CircleColliders are deliberately excluded: they are not bodies.
@@ -102,23 +182,37 @@ Navigation.prototype.move = function (unit, target, dt) {
   // Some unit types intentionally cross buildings with their physics disabled.
   if (!unit.rigidBody || unit.rigidBody.active !== false) {
     this.refresh();
+    var grid = this.gridFor(unit);
     var radius = this.radius(unit);
     state = unit._navigationState;
-    var changed = !state || state.owner !== this || state.revision !== this.revision || state.radius !== radius || distance(state.target, target) > 20;
+    var changed = !state || state.owner !== this || state.grid !== grid || state.revision !== this.revision || state.radius !== radius || distance(state.target, target) > 20;
+    if (!changed && !state.points) changed = distance(state.start, start) > ARRIVAL_EPSILON || distance(state.target, target) > ARRIVAL_EPSILON;
     if (!changed && state.points) {
       if (state.index >= state.points.length) {
         changed = distance(state.target, target) > ARRIVAL_EPSILON || distance(start, state.goal) > ARRIVAL_EPSILON;
-      } else if (this.grid.isWalkable(start, radius)) {
-        changed = !this.grid.segmentClear(start, state.points[state.index], radius);
+      } else if (grid.isWalkable(start, radius)) {
+        // Crowd contacts can push a body past its cached escape/corner anchor.
+        // Keep moving forward when the next segment has full body clearance;
+        // returning to that exact, possibly occupied anchor can pin a queue.
+        while (state.index + 1 < state.points.length && grid.segmentClear(start, state.points[state.index + 1], radius)) state.index++;
+        changed = !grid.segmentClear(start, state.points[state.index], radius);
       } else {
         changed = state.index !== 0 || !onEscape(start, state.escape);
       }
     }
     if (changed || !state.points && now >= state.retryAt) {
-      var path = this.grid.findPath(start, target, radius);
+      if (!this.takeSearchTurn(unit)) {
+        this.stats.deferred++;
+        return { arrived: false, reached: false, blocked: false, deferred: true, directionX: 0 };
+      }
+      if (!this._frameSearches) this._frameSearchStart = Date.now();
+      this._frameSearches = (this._frameSearches || 0) + 1;
+      var path = grid.findPath(start, target, radius);
       this.stats.searches++;
       if (!path) this.stats.noPath++;
-      state = unit._navigationState = { owner: this, revision: this.revision, radius: radius, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), escape: path && path.escape, index: 0, retryAt: now + 800 };
+      // An immutable scene cannot yield a different answer for an unchanged
+      // failed request. Retry when geometry, target or unit position changes.
+      state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), escape: path && path.escape, index: 0, retryAt: Infinity };
     }
     if (!state.points) return { arrived: false, reached: false, blocked: true, directionX: 0 };
     while (state.index < state.points.length && distance(start, state.points[state.index]) <= ARRIVAL_EPSILON) state.index++;
@@ -143,10 +237,14 @@ function get(game) {
 }
 exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit, target, dt); };
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };
+exports.canStopFollowing = function (unit, game, target) {
+  var navigation = get(game); navigation.refresh();
+  return navigation.grid.segmentClear(point(unit.node, game.ndMain), target, 0);
+};
 exports.attackPositionOf = function (selection, unit, game) {
   var polygon = selection.polygon;
   if (!polygon || polygon.length < 2) return point(selection.tag, game.ndMain);
-  var main = game.ndMain, start = point(unit.node, main), best = null, bestDistance = Infinity;
+  var main = game.ndMain, start = point(unit.node, main);
   // Building origins can lie behind adjoining cliffs or wall pieces. Approach
   // the same polygon used by combat range checks instead; the planner projects
   // this boundary goal outward by the unit's real physics clearance.
@@ -154,15 +252,7 @@ exports.attackPositionOf = function (selection, unit, game) {
     var local = main.convertToNodeSpaceAR(cc.v2(p));
     return { x: local.x, y: local.y };
   });
-  for (var i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
-    var a = vertices[j], b = vertices[i], dx = b.x - a.x, dy = b.y - a.y;
-    var lengthSquared = dx * dx + dy * dy;
-    var along = lengthSquared ? Math.max(0, Math.min(1, ((start.x - a.x) * dx + (start.y - a.y) * dy) / lengthSquared)) : 0;
-    var candidate = { x: a.x + along * dx, y: a.y + along * dy };
-    var length = distance(start, candidate);
-    if (length < bestDistance) { best = candidate; bestDistance = length; }
-  }
-  return best || point(selection.tag, main);
+  return nearestPolygonPoint(start, vertices) || point(selection.tag, main);
 };
 exports.reset = function (unit) {
   unit._navigationState = null;
@@ -202,5 +292,11 @@ exports.resumeEnemyRoute = function (unit, game) {
   return route.nodeIndex;
 };
 // GameCtrl calls once per update; all units then share one collider snapshot.
-exports.beginFrame = function (game) { if (game._navigation) game._navigation._refreshPending = true; };
+exports.beginFrame = function (game) {
+  var navigation = get(game);
+  navigation._refreshPending = true;
+  navigation._frameManaged = true;
+  navigation._frameId++;
+  navigation._frameSearches = 0;
+};
 exports.get = get;

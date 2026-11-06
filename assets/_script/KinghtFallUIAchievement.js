@@ -143,8 +143,8 @@ var def_KinghtFallUIAchievement = function (t) {
     }
     t.getChildByName("labInfo").getComponent(cc.RichText).string = "<b>" + i.cfg.Describe + "</b>";
     var g = t.getChildByName("ndPro");
-    g.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = i.num / i.cfg.Argument;
-    g.getChildByName("labPro").getComponent(cc.Label).string = i.num + "/" + i.cfg.Argument;
+    g.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = Math.min(1, Math.max(0, i.num / i.cfg.Argument));
+    g.getChildByName("labPro").getComponent(cc.Label).string = Math.min(i.num, i.cfg.Argument) + "/" + i.cfg.Argument;
     var u = t.getChildByName("ndFinish");
     u.getChildByName("mask").active = 2 == i.tag;
     var f = u.getChildByName("btnGet");
@@ -159,8 +159,13 @@ var def_KinghtFallUIAchievement = function (t) {
         m.active = false;
         f.off(cc.Node.EventType.TOUCH_END);
         f.on(cc.Node.EventType.TOUCH_END, function () {
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([r], 1, t.convertToWorldSpaceAR(a.position));
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchRew(i.cfg.Type, i.cfg.ID);
+          var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+          player.claimRewards([r], 1, t.convertToWorldSpaceAR(a.position), function () {
+            player.getMissionData().getAchRew(i.cfg.Type, i.cfg.ID);
+          }, function () {
+            n.initData();
+            return n.acheData.some(function (row) { return row.cfg.ID === i.cfg.ID && row.tag === 2; });
+          });
           n.initView();
           n.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4);
         }, this);

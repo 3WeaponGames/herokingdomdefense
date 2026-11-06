@@ -35,7 +35,11 @@ var def_KinghtFallModle = function () {
     } else {
       cc.director.getPhysicsManager().enabled = true;
       cc.director.getPhysicsManager().gravity = cc.v2(0, 0);
-      cc.director.getCollisionManager().enabled = true;
+      // Combat ranges and gate triggers use explicit geometry queries. There
+      // are no onCollision callbacks or consumers of Collider.world here;
+      // checking every pair of range circles duplicates that work quadratically.
+      // Physical bodies continue to collide through the PhysicsManager above.
+      cc.director.getCollisionManager().enabled = false;
       cc.director.getCollisionManager().enabledDebugDraw = false;
       $z1UIMgr.UIMgr.getInstance().addUICnf($z1KinghtFallConfig.KinghtFallUICF);
       $z1AudioMgr.AudioMgr.getInstance().addAdConf($z1KinghtFallConfig.KinghtFallAudioCF);

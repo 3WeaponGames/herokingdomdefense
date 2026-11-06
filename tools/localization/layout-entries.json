@@ -3583,11 +3583,22 @@
     },
     "ui.layout.kinghtfalluisignin.213": {
       "en": {
-        "width": 112,
-        "wrap": false,
+        "width": 190,
+        "height": 62,
+        "fontSize": 26,
+        "lineHeight": 29,
+        "wrap": true,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 2
+      },
+      "zh": {
+        "width": 190,
+        "height": 62,
+        "fontSize": 26,
+        "lineHeight": 29,
+        "wrap": true,
+        "overflow": "SHRINK",
+        "maxLines": 2
       }
     },
     "ui.layout.kinghtfalluitreasureinfo.25": {

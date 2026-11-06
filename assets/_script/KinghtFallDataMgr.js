@@ -211,11 +211,32 @@ var exp_KinghtFallDataMgr = function () {
   _ctor.prototype.getCodeJoin = function (t) {
     for (var e = 0; e < this.data.GiftCfg.length; e++) {
       var n = this.data.GiftCfg[e];
-      if (n.join == t) {
+      if (n.join == t && this.getCodeStatus(n) === "active") {
         return n;
       }
     }
     return null;
+  };
+  _ctor.prototype.getCodeStatus = function (code) {
+    // Parse the configured local calendar format explicitly; Safari does not
+    // consistently accept the hyphenated, non-ISO date strings in GiftCfg.
+    function stamp(value) {
+      if (!value) return null;
+      var parts = /^(\d{4})-(\d{1,2})-(\d{1,2}) (\d{2}):(\d{2}):(\d{2})$/.exec(value);
+      if (!parts) return NaN;
+      var date = new Date(+parts[1], +parts[2] - 1, +parts[3], +parts[4], +parts[5], +parts[6]);
+      if (date.getFullYear() !== +parts[1] || date.getMonth() !== +parts[2] - 1 || date.getDate() !== +parts[3] || date.getHours() !== +parts[4] || date.getMinutes() !== +parts[5] || date.getSeconds() !== +parts[6]) return NaN;
+      return date.getTime();
+    }
+    var begin = stamp(code.begin_time), end = stamp(code.end_time), now = Date.now();
+    if (Number.isNaN(begin) || Number.isNaN(end) || begin !== null && end !== null && end <= begin) return "invalid";
+    if (begin !== null && now < begin) return "future";
+    if (end !== null && now >= end) return "expired";
+    return "active";
+  };
+  _ctor.prototype.hasActiveGiftCode = function () {
+    var self = this;
+    return this.data.GiftCfg.some(function (code) { return self.getCodeStatus(code) === "active"; });
   };
   return _ctor;
 }();

@@ -1,0 +1,10 @@
+{
+  "name": "hero-kingdom-defense",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node tools/testing/run-checks.cjs",
+    "check": "node tools/testing/run-checks.cjs"
+  },
+  "engines": { "node": ">=22" }
+}

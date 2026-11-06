@@ -36,6 +36,12 @@ var exp_KinghtFallGuideData = function (t) {
   _ctor.prototype.initData = function () {
     this.data.stepId = 0;
   };
+  _ctor.prototype.validateSaveRecord = function (data) {
+    data = this.normalizeSaveRecord(data, new l());
+    data.tips = data.tips.map(function (value) { return typeof value === "number" && isFinite(value) && value >= 0 ? value : 0; });
+    Object.keys(data.listTime).forEach(function (key) { if (typeof data.listTime[key] !== "number" || !isFinite(data.listTime[key]) || data.listTime[key] < 0) data.listTime[key] = 0; });
+    return data;
+  };
   _ctor.prototype.getGroupId = function () {
     return this.data.GroupId;
   };

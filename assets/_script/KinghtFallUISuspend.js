@@ -106,7 +106,7 @@ var def_KinghtFallUISuspend = function (t) {
       t.closeUI();
     }, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
-      t.breakCall();
+      if (t.breakCall() === false) return;
       t.closeUI();
     }, this);
   };

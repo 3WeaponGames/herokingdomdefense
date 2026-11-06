@@ -43,22 +43,17 @@ var def_KinghtFallUIExchangeCode = function (t) {
     if (t && 0 != t.length) {
       var e = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getCode(t);
       if (e) {
-        var n = Date.now();
-        var i = -1;
-        e.begin_time && (i = new Date(e.begin_time).getTime());
-        var a = -1;
-        e.end_time && (a = new Date(e.end_time).getTime());
-        if (-1 != i && n < i) {
+        var status = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getCodeStatus(e);
+        if (status === "future") {
           this.openUI($z1Config.UIID.UITips, "[[loc:script.kinghtfalluiexchangecode.text.52]]");
-        } else if (-1 != a && n > a) {
+        } else if (status !== "active") {
           this.openUI($z1Config.UIID.UITips, "[[loc:script.kinghtfalluiexchangecode.text.54]]");
         } else {
           var o = "gift_" + t.toLocaleLowerCase();
           if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getTimeByKey(o) >= e.exchange_time) {
             this.openUI($z1Config.UIID.UITips, "[[loc:script.kinghtfalluiexchangecode.text.58]]");
           } else {
-            $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().addTimeByKey(o);
-            this.openUI($z1Config.UIID.UITips, e.gift_name);
+            var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
             var r = e.rewards;
             var g = [];
             for (var u = 0; u < r.length; u++) {
@@ -67,7 +62,13 @@ var def_KinghtFallUIExchangeCode = function (t) {
                 num: r[u][1]
               });
             }
-            var d = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards(g);
+            var d = player.claimRewards(g, 1, undefined, function () {
+              player.getGuideData().addTimeByKey(o);
+            }, function () {
+              return $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getCodeStatus(e) === "active" && player.getGuideData().getTimeByKey(o) < e.exchange_time;
+            });
+            if (!d || !d.length) return;
+            this.openUI($z1Config.UIID.UITips, e.gift_name);
             this.openUI($z1KinghtFallConfig.KinghtFallUIID.UIGoldReward, d);
             this.closeUI();
           }

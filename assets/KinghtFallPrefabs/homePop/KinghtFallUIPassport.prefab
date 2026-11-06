@@ -2468,6 +2468,9 @@
     "_children": [
       {
         "__id__": 128
+      },
+      {
+        "__id__": 139
       }
     ],
     "_components": [
@@ -2630,6 +2633,9 @@
     },
     "node": {
       "__id__": 1
+    },
+    "btnClaimAll": {
+      "__id__": 139
     }
   },
   {
@@ -2639,6 +2645,239 @@
     },
     "root": {
       "__id__": 1
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "btnClaimAll",
+    "_parent": {
+      "__id__": 127
+    },
+    "_children": [
+      {
+        "__id__": 140
+      },
+      {
+        "__id__": 141
+      }
+    ],
+    "_components": [
+      {
+        "__id__": 142
+      },
+      {
+        "__id__": 147
+      }
+    ],
+    "_prefab": {
+      "__id__": 148
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 230,
+      "height": 66
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        -5.491,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "bgDisabled",
+    "_parent": {
+      "__id__": 139
+    },
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 143
+      }
+    ],
+    "_prefab": {
+      "__id__": 149
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 230,
+      "height": 66
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "labTitle",
+    "_components": [
+      {
+        "__id__": 144
+      },
+      {
+        "__id__": 145
+      },
+      {
+        "__id__": 146
+      }
+    ],
+    "_prefab": {
+      "__id__": 150
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 200,
+      "height": 56
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    },
+    "_parent": {
+      "__id__": 139
+    }
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "6c0a5351-a1ac-4371-a1bd-e6edc608d872"
+    },
+    "node": {
+      "__id__": 139
+    },
+    "_sizeMode": 0,
+    "_type": 1
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "c5d0e24f-8f33-44f4-a727-4c862aa4f968"
+    },
+    "node": {
+      "__id__": 140
+    },
+    "_sizeMode": 0,
+    "_type": 1
+  },
+  {
+    "__type__": "cc.Label",
+    "_string": "[[loc:common.claimAll]]",
+    "_fontSize": 32,
+    "_lineHeight": 36,
+    "_styleFlags": 1,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "node": {
+      "__id__": 141
+    },
+    "_N$string": "[[loc:common.claimAll]]"
+  },
+  {
+    "__type__": "cc.LabelOutline",
+    "_width": 2,
+    "_color": {
+      "__type__": "cc.Color",
+      "a": 255,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "node": {
+      "__id__": 141
+    }
+  },
+  {
+    "__type__": "67db1C8o05AUKGTeZFpIrDv",
+    "node": {
+      "__id__": 141
+    }
+  },
+  {
+    "__type__": "08526eaTJpCXYM9VKuRXAnP",
+    "node": {
+      "__id__": 139
+    },
+    "_N$interactable": false
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "17Yajqn3QhuFgiTuChzNzw",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "FIrsNLfvpfWM77lJvzWiUw",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "rjWihIIxAYsZquR8CuKUjQ",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
     }
   }
 ]

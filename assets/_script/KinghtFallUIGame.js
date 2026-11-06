@@ -218,9 +218,6 @@ var def_KinghtFallUIGame = function (t) {
       t.ctrGame.changeAge();
       switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
         case 1:
-          t.scheduleOnce(function () {
-            t.ctrGame.changeAge();
-          });
           t.btnAgg.getChildByName("ndTag1").active = true;
           t.btnAgg.getChildByName("ndTag2").active = false;
           break;
@@ -235,7 +232,7 @@ var def_KinghtFallUIGame = function (t) {
         t.openUI($z1KinghtFallConfig.KinghtFallUIID.UISuspend, function () {
           t.onRestart(true);
         }, function () {
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame();
+          if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame() === false) return false;
           t.closeUI();
         });
       }
@@ -280,6 +277,7 @@ var def_KinghtFallUIGame = function (t) {
     $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
   };
   _ctor.prototype.onRestart = function (t) {
+    if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return false;
     this.btnBuildInfo.active = true;
     this.canBreak = true;
     this.onPauseGame(false);
@@ -826,12 +824,8 @@ var def_KinghtFallUIGame = function (t) {
           e.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game05);
       }
     };
-    if (this.ctrGame.isAgg) {
-      this.ctrGame.changeAge();
-      n();
-    } else {
-      n();
-    }
+    if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode != t) this.ctrGame.clearArmyOrder();
+    n();
   };
   _ctor.instance = null;
   cc__decorate([ccp_property({

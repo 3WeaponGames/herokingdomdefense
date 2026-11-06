@@ -18,6 +18,7 @@ var $z1KinghtFallItemHp = require("KinghtFallItemHp");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var Navigation = require("KinghtFallNavigation");
+var targetSearchPhase = 0;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -33,6 +34,8 @@ var def_KinghtFallEnemyBase = function (t) {
     e.finIndex = 0;
     e.lastFind = false;
     e._routeInterrupted = false;
+    e._targetSearchElapsed = 0;
+    e._targetSearchCache = null;
     return e;
   }
   cc__extends(_ctor, t);
@@ -54,8 +57,13 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.initData = function (t, e) {
     var n = this;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
+    this.node._combatActor = this;
+    this._isPooled = false;
     Navigation.reset(this);
     this._routeInterrupted = false;
+    this._targetSearchElapsed = 0;
+    this._targetSearchCache = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
     var i = this.node.getComponents(cc.CircleCollider);
@@ -97,6 +105,7 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.onUpdate = function (t) {
     var e = this;
     if (!this.isDead()) {
+      this._targetSearchElapsed += t;
       this.node.getPosition(this.vec2_1);
       this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
       for (var n = 0; n < this.debuffInfo.length; n++) {
@@ -111,9 +120,9 @@ var def_KinghtFallEnemyBase = function (t) {
       -1 != this.time[s.Attack] && (this.time[s.Attack] += t * this.getAttSpeed());
       switch (this.state) {
         case r.Idle:
-          this.lastFind = this.isFind();
-          if (this.lastFind) {
-            var a = this.getFind();
+          var a = this.getUpdateTarget();
+          this.lastFind = !!a;
+          if (a) {
             if (a && a.tag) this.interruptRoute();
             if (a && a.canAtt) {
               this.time[s.Attack] >= 1 && this.onFindList();
@@ -125,10 +134,16 @@ var def_KinghtFallEnemyBase = function (t) {
           }
           break;
         case r.Wait:
-          this.time[s.Attack] >= 1 && this.onFindList();
+          var waitingTarget = this.getUpdateTarget();
+          if (waitingTarget && waitingTarget.canAtt) {
+            this.time[s.Attack] >= 1 && this.onFindList();
+          } else if (waitingTarget && waitingTarget.tag) {
+            this.interruptRoute();
+            this.doMove();
+          }
           break;
         case r.Move:
-          var o = this.getFind();
+          var o = this.getUpdateTarget();
           if (o && o.tag) this.interruptRoute();
           if (o && o.canAtt) {
             this.rigidBody.linearVelocity = cc.Vec2.ZERO;
@@ -227,12 +242,14 @@ var def_KinghtFallEnemyBase = function (t) {
       var n = -1;
       var i = -1;
       var targetPolygon = null;
+      var targetActor = null;
+      var targetBuilding = null;
       var a = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
       if (!a.isDead()) {
         a.node.getPosition(t.vec2_2);
         cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
         if (t.vec2_2.len() <= t.cfg.AttackRange + t.cfg.SearchRange) {
-          e = a.node, n = t.vec2_2.len();
+          e = a.node, n = t.vec2_2.len(), targetActor = a;
         }
       }
       var o = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
@@ -241,7 +258,7 @@ var def_KinghtFallEnemyBase = function (t) {
           g.node.getPosition(t.vec2_2);
           cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
           if (t.vec2_2.len() <= t.cfg.AttackRange + t.cfg.SearchRange && (-1 == n || t.vec2_2.len() < n)) {
-            e = g.node, n = t.vec2_2.len();
+            e = g.node, n = t.vec2_2.len(), targetActor = g;
           }
         }
       }
@@ -261,14 +278,14 @@ var def_KinghtFallEnemyBase = function (t) {
           for (var d = 0; d < u.length; d++) {
             var p = u[d];
             if (cc.Intersection.polygonCircle(p.points, s)) {
-              var f = p.tagNode.convertToWorldSpaceAR(cc.Vec2.ZERO);
-              t.vec2_2 = $z1KinghtFallUIGame.default.instance.ctrGame.ndMain.convertToNodeSpaceAR(f);
-              cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-              if (-1 == n || t.vec2_2.len() < n) {
+              var targetDistance = Navigation.polygonDistance(t, p.points, $z1KinghtFallUIGame.default.instance.ctrGame);
+              if (-1 == n || targetDistance < n) {
                 i = cc.Intersection.polygonCircle(p.points, l);
                 e = p.tagNode;
                 targetPolygon = p.points;
-                n = t.vec2_2.len();
+                targetActor = null;
+                targetBuilding = g;
+                n = targetDistance;
               }
             }
           }
@@ -278,12 +295,60 @@ var def_KinghtFallEnemyBase = function (t) {
         return {
           tag: e,
           canAtt: -1 == i ? n <= t.cfg.AttackRange : i,
-          polygon: targetPolygon
+          polygon: targetPolygon,
+          actor: targetActor,
+          building: targetBuilding
         };
       } else {
         return null;
       }
     }() || null;
+  };
+  _ctor.prototype.getUpdateTarget = function () {
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var cached = this._targetSearchCache;
+    if (cached && cached.game === game && cached.cfg === this.cfg && this._targetSearchElapsed < .2) {
+      var target = cached.target;
+      if (!target) return null;
+      var node = target.tag;
+      var valid = node && node.activeInHierarchy !== false;
+      if (valid && target.actor) {
+        valid = !target.actor._isPooled && !target.actor.isDead() && node._combatGeneration === cached.generation;
+        if (valid) {
+          this.node.getPosition(this.vec2_1);
+          node.getPosition(this.vec2_2);
+          cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
+          var distance = this.vec2_2.len();
+          valid = distance <= this.cfg.AttackRange + this.cfg.SearchRange;
+          target.canAtt = distance <= this.cfg.AttackRange;
+        }
+      } else if (valid && target.building) {
+        valid = target.building.getIsWork();
+        if (valid) {
+          var parts = target.building.getWposPhyCol2(), polygon = null;
+          for (var i = 0; i < parts.length; i++) if (parts[i].tagNode === node) { polygon = parts[i].points; break; }
+          var circle = { position: this.node.convertToWorldSpaceAR(cc.Vec2.ZERO), radius: this.cfg.AttackRange + this.cfg.SearchRange };
+          valid = !!polygon && cc.Intersection.polygonCircle(polygon, circle);
+          if (valid) {
+            target.polygon = polygon;
+            circle.radius = this.cfg.AttackRange;
+            target.canAtt = cc.Intersection.polygonCircle(polygon, circle);
+          }
+        }
+      } else {
+        // Unknown/custom target records cannot be validated safely.
+        valid = false;
+      }
+      if (valid) return target;
+    }
+    // Refresh nearest-target choice at 5Hz; validate its current range and
+    // lifetime every update, including while waiting. Attack execution still
+    // performs its own fresh range check before applying damage.
+    var found = this.getFind();
+    // Offset the first repeat so a wave does not rescan every unit together.
+    this._targetSearchElapsed = cached ? 0 : (targetSearchPhase++ % 10) * .02;
+    this._targetSearchCache = { game: game, cfg: this.cfg, target: found, generation: found && found.tag && found.tag._combatGeneration };
+    return found;
   };
   _ctor.prototype.onFindList = function () {
     var t = this;
@@ -322,13 +387,11 @@ var def_KinghtFallEnemyBase = function (t) {
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, s)) {
-              var p = d.tagNode.convertToWorldSpaceAR(cc.Vec2.ZERO);
-              t.vec2_2 = $z1KinghtFallUIGame.default.instance.ctrGame.ndMain.convertToNodeSpaceAR(p);
-              cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-              if (-1 == n || t.vec2_2.len() < n) {
+              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
+              if (-1 == n || targetDistance < n) {
                 i = true;
                 e = d.tagNode;
-                n = t.vec2_2.len();
+                n = targetDistance;
               }
             }
           }
@@ -388,10 +451,9 @@ var def_KinghtFallEnemyBase = function (t) {
           for (var g = 0; g < h.length; g++) {
             var u = h[g];
             if (cc.Intersection.polygonCircle(u, r)) {
-              c.node.getPosition(t.vec2_2);
-              cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-              if (-1 == n || t.vec2_2.len() < n) {
-                e = c, n = t.vec2_2.len();
+              var targetDistance = Navigation.polygonDistance(t, u, $z1KinghtFallUIGame.default.instance.ctrGame);
+              if (-1 == n || targetDistance < n) {
+                e = c, n = targetDistance;
               }
             }
           }
@@ -402,7 +464,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (n) {
       n.node.getPosition(this.vec2_2);
       n.cfg && this.cfg.Suppressed == n.cfg.ID && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e));
+      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
       $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(this.vec2_2.clone(), "xb_gj");
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       return void this.setLeft(this.vec2_2.x < 0);
@@ -431,6 +493,10 @@ var def_KinghtFallEnemyBase = function (t) {
     }
   };
   _ctor.prototype.freeNode = function () {
+    if (this._isPooled) return;
+    this._isPooled = true;
+    this._targetSearchCache = null;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + this.cfg.ID;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delEnemy(this);

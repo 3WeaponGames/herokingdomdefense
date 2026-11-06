@@ -1,0 +1,84 @@
+# Audit fixes and verification
+
+This follows `CURRENT_GAME_AUDIT_2026-11-06.md`. Changes preserve the existing chest-preview and Claim All work. No deployment or commit was made.
+
+| Audit item | Result |
+|---|---|
+| A01, A09: impossible progression | Mission 100 now requires 200 equipment upgrades (204 exist). Relic ownership ends at 27, relic upgrades at 54, equipment upgrades at 204. Achievement milestones stay increasing, and both languages now match the requirements. Content-cap regressions protect these limits. |
+| A02: runtime loading lock | Failed UI requests release input/opening state, offer Retry/Cancel, restore transition masks, and continue queued requests. Critical runtime asset failures offer Retry/Reload through a prompt requiring no downloaded assets. Late callbacks cannot complete cancelled requests. |
+| A03: production ads | Hardened missing/incomplete SDK, invalid result, duplicate callback, and late SDK injection handling. Standalone unavailable ads leave rewards unclaimed and show a retry message. Actual host integration remains pending because the release platform has not been chosen. |
+| A04: pooled projectile targets | Enemy and allied unit spawn generations, projectile identity, and battle epochs reject dead, reused, cancelled, and prior-battle targets. Delayed unit loads cannot populate a replaced battle. |
+| A05: daily rollover | Timer and app resume check the calendar day, reset playtime claims, advance claimed sign-in days, update login progress once, and refresh reward views. Pending ad claims cannot cross the captured day. |
+| A06: malformed save shapes | User, mission, daily, guide, and battle saves validate and normalize before use. Valid fields survive repair; original bytes are retained. Unsupported newer records are protected from overwrite. Saved equipment/build levels are bounded by content. |
+| A07: silent write failures | Local writes report success/failure, retain dirty state, retry, and display a persistent localized notice until recovery. Battle settlement journals survive failed writes. Starting/restarting a battle waits for settlement recovery before spending energy. |
+| A08: interrupted one-time claims | A durable journal now groups balances and claim markers for Battle Pass, playtime, sign-in, achievements, chapter chests, missions, gifts, and desktop rewards. Replay uses receipts and handles midnight, sparse arrays, and later in-session progress. |
+| A10: unreadable captions/progress | Day 7's reward caption has more space, a larger effective size, and wrapping support in both languages. Playtime and achievement progress displays clamp at their target. |
+| A11: stale/incomplete features | Unassigned Shop stays explicitly unavailable. Expired gift codes are hidden from Settings and feed promotion; invalid calendar windows fail closed. Removed the absent, unused Add Desktop screen registration. No expired promotions were reactivated. |
+| A12: nonportable auditing | `npm test` runs all checks; CI uses the same entry point. Audits create output directories and fail missing generated art, invalid assets, and unsolved routes. Historical comparisons are explicit optional inputs instead of ignored machine-local prerequisites. |
+
+## Verification
+
+- Final command: `npm test`. All six check groups passed, including 168 Node test entries with zero failures or skips on this Creator-equipped machine. Some test entries also contain additional internal assertions.
+- All 702 authored navigation route checks passed. Localization reported zero errors; all 41 artwork templates, 39 sprite bindings, and two Spine bindings passed current availability checks.
+- Source syntax, imports, serialized asset references, startup scene, and `git diff --check` passed.
+- Fault tests cover save interruption at each reward write boundary, failed storage/journal writes, dirty retries, corrupt snapshots, newer versions, midnight and delayed ad claims, stale projectile callbacks, cancelled/late asset callbacks, and failed settlement entry/quit paths.
+- Fresh isolated preview at 375 × 667: English and Chinese sign-in captions, a claimed reward surviving reload, Playtime Claim All (three rewards, 60 gems), unavailable ads with no extra reward, Settings, battle tutorial/input, pause, and return home. No captured warning/error messages in this walkthrough. Normal entry consumed five test-profile energy.
+- Screenshot evidence is in `local/current-audit/sign-in-fixed.jpg`, `sign-in-fixed-zh.jpg`, and `playtime-claim-all-fixed.jpg`. Test log: `local/current-audit/final-tests.log`.
+- Final Cocos Creator 2.4.13 web-mobile release export completed successfully (exit 0; 17:25:53–17:27:53 UTC). All 2,032 source hashes stayed unchanged during export; all 34 exported JavaScript files parsed. The packaged TestMode is unavailable with `debug=false`: no F8 handler, no saved testing preference read, and enabling refused. Build evidence/output: `local/release-check/20261106-172551/`. Creator emitted nonfatal editor log/profile/update diagnostics, recorded in the build logs.
+- The exported release was served locally and checked at 375 × 667: home tutorial, battle startup/tutorial, pause, return home, and sign-in all rendered and responded; captured warning/error logs were empty. Pressing F8 did not enable testing. Screenshot: `local/current-audit/release-sign-in-fixed.jpg`. The temporary viewport was reset and the local test server stopped after verification.
+
+## Remaining release checks
+
+The game still needs the chosen production host's ad SDK and real-device validation. No live ad delivery, native-device run, complete 200-wave playthrough, sustained crowd/performance soak, or full bilingual screen matrix is certified by these checks. Shop content remains unfinished. Historical image/gameplay preservation requires the original baseline, as described in `TESTING.md`; current validity checks do not substitute for it. CI without Creator explicitly skips the real-engine Spine integration, which was run locally here.
+
+## Gate, army orders, and retaliation follow-up
+
+The reported Map01 enemy stall was reproduced with the actual gate geometry and shield-enemy body. Target selection ranked the gate's off-centre origin even though combat range used its collider boundary. It could choose an inaccessible face while ignoring the reachable wing. Enemy target ranking now uses the physical boundary, and waiting enemies resume pursuit when a target enters search range.
+
+Friendly navigation treats the intact main gate leaf as passable while preserving its wings and terrain. The current transformed gate trigger opens for nearby living friendlies from either side. Enemy navigation retains the intact gate barrier even during its friendly opening animation; an enemy cannot request the gate to open. A finer friendly grid resolves the upgraded gate's valid body-width passage without reducing body clearance. Following no longer stops just because the hero is nearby across a wall.
+
+Rally and follow use a shared persistent army order, without an accumulating breadcrumb list. New and revived allies inherit the current order, acquire enemies on the way, and resume the order after combat. Enemy damage now supplies its attacker so allies can retaliate against ranged attackers outside their ordinary search distance. Slow allies retain retaliation while making progress; unreachable pursuits time out instead of consuming the army order indefinitely. Target generations reject dead or reused actors; projectiles also retain the shooter's firing-time generation so a recycled shooter cannot become a false retaliation target.
+
+Navigation reuses unchanged transformed geometry, samples occupancy lazily, caches blocked-goal projections and unchanged failures, and schedules searches fairly with a maximum of eight per frame. Additional searches defer once the frame's search work has taken four milliseconds; an individual search is still synchronous. Even small unit/goal changes invalidate failed routes, and gate destruction invalidates the obstacle grid. The identical 100-unit blocked-goal harness improved from approximately 55.9 seconds to 1.25 seconds, with spatial queries reduced from 6,858,874 to 48,137 and scenery vertex transforms from 58,200 to 190. These are Node workload measurements, not browser FPS or a device performance guarantee.
+
+Verification of this follow-up:
+
+- `npm test`: all six groups passed; 170 Node test entries, zero failures or skips. Navigation files additionally report 35 runtime cases, 14 friendly-order cases, 10 grid cases, and the 100-unit stress assertions.
+- All 702 authored route checks, localization/artwork checks, source/import/asset checks, and `git diff --check` passed.
+- Gate coverage includes all three Map01 left-gate levels, both crossing directions, rally and follow, enemy exclusion, respawn inheritance, four allied archetypes, melee/ranged damage plumbing, slow retaliation, and tiny physics/target movements after failed routes.
+- The stress test keeps 100 blocked units within the search budget, rebuilds unchanged geometry once, and verifies all 100 resume safe movement after removing the gate while their destination continues moving.
+- The initial Creator preview walkthrough covered battle startup, tutorial, movement/build interaction, combat, perk selection, and progression to wave 2. **Correction after the live crowd audit:** that editor had automatic compilation disabled and was serving stale compiled scripts. Its screenshot proves the walkthrough, but does not verify the movement changes. Use the fresh exported live tests below for that evidence.
+- Earlier source-test evidence: `local/pathfinding-stall/full-tests.log` and `local/pathfinding-stall/performance-comparison.json`. The earlier release export above also predates these movement changes.
+
+## Live gate and crowd audit
+
+The follow-up used a fresh Cocos Creator 2.4.13 debug web-mobile export, actual Map01 prefabs, Box2D, Spine, game updates, combat callbacks and normal barracks timers. Temporary development controls used an isolated in-memory save. They set up scenarios and recorded measurements without replacing unit movement or attacks. The temporary `Main.js` hook was removed and its original bytes verified. Refreshed export modules have recorded source SHA-256 hashes under `local/live-gates/`.
+
+Live testing found problems that static path checks had missed:
+
+- Crowd contact could push a unit past an old escape waypoint. Navigation now advances to a later waypoint only when the complete body has a clear segment.
+- Multiple allies fought over the same destination. Army orders now allocate clear, spaced destinations. An ally already in the correct rally area can rest at its actual safe position when nearby allies block its numbered destination. It must still clear the gate and remain on the requested side. Contact jitter cannot indefinitely restart this arrival check.
+- Static transforms fluctuated by approximately `1e-13` after physics synchronization, repeatedly rebuilding navigation grids. Cache comparisons now ignore floating-point noise while retaining real subpixel changes and cumulative movement.
+- An unused nonphysics collision manager checked every pair of range circles despite no collision callbacks or `Collider.world` consumers. That manager is disabled; Box2D and explicit range/trigger geometry checks remain active.
+- Enemies repeatedly transformed the same building outlines and scanned every target. Building outlines are shared within a simulation frame. Nearest-target acquisition runs at staggered 0.2-second intervals; current-target range, lifetime, generation and building availability remain checked every update, and attack execution validates its range again.
+
+The first acceptance run completed 20 scenarios with no JavaScript errors. All twelve 30-unit rally/follow cases crossed both directions through all three gate variants; every unit settled and no movement stalls remained. Both 60-unit rally crossings also completed and settled all 60 units. Six normal barracks respawns inherited the exterior rally and crossed the intact gate. Authored waves 6 and 8 cleared; wave 10 was observed for 60 simulation seconds, with five enemies still fighting when that timed case ended.
+
+Two deliberately amplified wave 8/10 scenarios reached 160 concurrent units (100 enemies plus 60 allies). They use five times the authored enemy count, twenty times enemy HP and protected structures/hero to sustain the crowd; those modifiers are test controls, not balance changes. In both scenarios all six tracked respawns inherited orders and attacked en route, and ground enemies did not pass an intact friendly-open gate. After actual gate damage destroyed the wave-10 gate, 86 of 87 tracked nearby ground enemies moved over 30 pixels, and 61 crossed its inner face. Three end-of-case movement suspects were behind attacking enemies: removing the crowd in a geometry replay let each attack the tower within 0.02–0.12 seconds. These were combat queues, not failed static routes.
+
+That first run still exposed excessive frame costs at 160 units and is retained as a performance baseline, not a passing performance claim: `local/live-gates/acceptance-before-combat-optimization.json`. A background-throttled preliminary case is also excluded from acceptance; final cases record wall time, simulation time and document visibility separately. Functional crossing/respawn checks do not by themselves certify performance.
+
+## Paused checkpoint — user requested commit
+
+Work was paused on request after the verified fixes above, the shared building-footprint/targeting optimization, and the following additional changes:
+
+- Formation allocation reuses candidate geometry checks, squared reservation distances and retained slots. For 60 units on the real Map01 geometry, the inward layout fell from 2,618 terrain / 2,450 visibility queries to 72 / 60. Warm Node measurements fell from 39–53 ms to 3.5–5.6 ms; all 360 saved destinations and their ownership remained identical. All 22 friendly-order checks pass. **This last allocation optimization has not yet been rerun in the exported live game.**
+- Silhouette rendering shares bounds/pose work within a draw, skips offscreen silhouette work, preserves source batching, and avoids clearing unchanged tint materials or disabling/re-enabling visible copies each frame. All 14 depth tests pass, including real Spine integration. Animations and physical collisions remain enabled.
+
+Rendering performance remains unfinished. The amplified 160-unit wave-8 run with those rendering fixes completed all six respawn/attack-en-route checks, rejected enemy gate admission, and ended with no navigation stalls, but averaged approximately 66 ms per frame (95th percentile 96 ms). This is not smooth performance and is not a release performance sign-off. The host used hardware WebGL on Intel HD Graphics 530 at 375 × 667, not a software WebGL fallback.
+
+A subsequent diagnostic rendering comparison retained combat and restored all render components afterwards. Its 20-second phases averaged approximately 88 ms normally, 39 ms with silhouettes temporarily hidden, 99 ms with health sprites temporarily hidden, and 81 ms after full restoration. Populations changed during combat and detailed profiling adds overhead, so these are bottleneck diagnostics rather than a strict benchmark. Silhouettes are still enabled in production. The next investigation is exact silhouette geometry reuse; **no experimental vertex-reuse implementation was written**. Do not switch shared Spine animation caching on blindly: actors have different skins and silhouette rendering depends on their current poses.
+
+Resume from `local/live-gates/pause-checkpoint-results.json`, `pause-checkpoint-live.json`, `pause-checkpoint.png`, the earlier acceptance report, and the reusable tools documented in `TESTING.md`. These local diagnostics/exports are intentionally ignored by Git. The source hook is removed, temporary game tab closed, local test server stopped, and all agents stopped at this checkpoint. Refresh/rebuild the editor preview before testing; its old preview had automatic compilation disabled.
+
+Final checkpoint validation: `npm test` passed all six check groups, with 191 tests passing, zero failures and zero skips; all 702 authored routes passed. `git diff --check` passed. Log: `local/live-gates/checkpoint-tests.log`.

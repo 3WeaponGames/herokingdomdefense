@@ -66,6 +66,20 @@ var exp_KinghtFallMissionData = function (t) {
     this.data.time = Date.now();
     this.addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.LoginDays, 1);
   };
+  _ctor.prototype.validateSaveRecord = function (data) {
+    data = this.normalizeSaveRecord(data, new g());
+    Object.keys(data.listTime).forEach(function (key) { if (typeof data.listTime[key] !== "number" || !isFinite(data.listTime[key]) || data.listTime[key] < 0) data.listTime[key] = 0; });
+    data.achievementInfo = data.achievementInfo.filter(function (row) { return row && Number.isInteger(row.type) && row.type >= 0; }).map(function (row) {
+      row.num = typeof row.num === "number" && isFinite(row.num) && row.num >= 0 ? row.num : 0;
+      row.reward = Array.isArray(row.reward) ? row.reward.filter(function (id) { return Number.isInteger(id) && id > 0; }) : [];
+      return row;
+    });
+    data.achievementReward = data.achievementReward.map(function (value) { return typeof value === "number" && isFinite(value) ? value & 3 : 0; });
+    var task = data.taskInfo;
+    if (task && (!Number.isInteger(task.id) || task.id < 1 || typeof task.type !== "number" || !isFinite(task.type))) delete data.taskInfo;
+    else if (task) { task.num = typeof task.num === "number" && isFinite(task.num) && task.num >= 0 ? task.num : 0; task.stage = [0, 1, 2].indexOf(task.stage) >= 0 ? task.stage : 0; }
+    return data;
+  };
   _ctor.prototype.getTaskInfo = function () {
     2 == this.data.taskInfo.stage && this.doUpTask();
     return this.data.taskInfo;
@@ -74,7 +88,7 @@ var exp_KinghtFallMissionData = function (t) {
     var receipt = this.data.battleSettlement;
     var previous = receipt && receipt.id === settlement.id ? receipt.multiplier : 0;
     if (settlement.multiplier > 1 && !previous) return false;
-    if (previous >= settlement.multiplier) return false;
+    if (previous >= settlement.multiplier) return this.saveData() !== false;
     var extra = settlement.multiplier - previous;
     var self = this;
     function achievement(type, amount) {
@@ -95,8 +109,7 @@ var exp_KinghtFallMissionData = function (t) {
     });
     if (!previous) achievement($z1KinghtFallEnum.KinghtFallEnumAchiEnum.LevelChallenges, 1);
     this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier };
-    this.saveData();
-    return true;
+    return this.saveData() !== false;
   };
   _ctor.prototype.doUpTask = function () {
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTaskCfgById(this.data.taskInfo.id + 1);

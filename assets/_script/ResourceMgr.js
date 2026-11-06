@@ -47,17 +47,23 @@ var exp_ResourceMgr = function () {
   t.prototype.getBundle = function (t) {
     return cc.assetManager.getBundle(t);
   };
-  // Keep existing success-only callbacks. Loading owns the visible retry action,
-  // so a failed request resumes its original continuation without reinitializing.
-  t.prototype.loadWithRecovery = function (name, operation, complete) {
+  // Loading handles startup failures. After startup, every request still has an
+  // asset-free recovery path; do not leave a success-only continuation stranded.
+  t.prototype.loadWithRecovery = function (name, operation, complete, onError) {
     var manager = this;
     var finished = false;
     var active = false;
+    var timer = null;
+    var cancel = function () {
+      finished = true;
+      active = false;
+      clearTimeout(timer);
+    };
     var retry = function () {
       if (finished || active) return;
       active = true;
       var settled = false;
-      var timer = setTimeout(function () { done(new Error("Asset request timed out: " + name)); }, 30000);
+      timer = setTimeout(function () { done(new Error("Asset request timed out: " + name)); }, 30000);
       function done(error, asset) {
         if (settled || finished) return;
         settled = true;
@@ -67,6 +73,8 @@ var exp_ResourceMgr = function () {
           error = error || new Error("Asset request returned no asset: " + name);
           $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, error);
           if (manager.loadErrorHandler) manager.loadErrorHandler(error, retry);
+          else if (onError) onError(error, retry, cancel);
+          else manager.showRuntimeRecovery(error, retry, null, cancel);
         } else {
           finished = true;
           complete && complete(asset);
@@ -76,14 +84,99 @@ var exp_ResourceMgr = function () {
       catch (error) { if (settled) throw error; done(error); }
     };
     retry();
+    return { retry: retry, cancel: cancel };
   };
-  t.prototype.loadBundle = function (t, e) {
+  t.prototype.loadBundle = function (t, e, onError) {
     var n = cc.assetManager.getBundle(t);
     if (null == n) {
-      this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e);
+      return this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e, onError);
     } else {
       e && e(n);
     }
+  };
+  // This overlay uses built-in labels/graphics, so a missing prefab cannot prevent
+  // recovery. Multiple simultaneous failures share one prompt and one pause owner.
+  t.prototype.showRuntimeRecovery = function (error, retry, cancel, abandon) {
+    var manager = this;
+    this.runtimeFailures = this.runtimeFailures || [];
+    if (!this.runtimeFailures.some(function (entry) { return entry.retry === retry; })) {
+      this.runtimeFailures.push({ retry: retry, cancel: cancel, abandon: abandon });
+    }
+    if (this.runtimeRecoveryNode && cc.isValid(this.runtimeRecoveryNode)) {
+      this.runtimeCancelLabel.string = this.runtimeRecoveryText(this.runtimeFailures.every(function (entry) { return !!entry.cancel; }) ? "loading.cancel" : "loading.reload");
+      return;
+    }
+    var root = require("UIMgr").UIMgr.getInstance().uiRoot || cc.Canvas.instance && cc.Canvas.instance.node;
+    if (!root || !cc.isValid(root)) throw new Error("Resource recovery needs an active UI root: " + error.message);
+    var size = cc.winSize;
+    var node = new cc.Node("ResourceRecovery");
+    node.setContentSize(size.width, size.height);
+    node.parent = root;
+    node.zIndex = cc.macro.MAX_ZINDEX;
+    node.addComponent(cc.BlockInputEvents);
+    var background = node.addComponent(cc.Graphics);
+    background.fillColor = new cc.Color(15, 22, 33, 245);
+    background.rect(-size.width / 2, -size.height / 2, size.width, size.height);
+    background.fill();
+    var width = Math.min(620, size.width - 64);
+    function label(name, key, y, height, fontSize) {
+      var child = new cc.Node(name);
+      child.parent = node;
+      child.y = y;
+      child.setContentSize(width, height);
+      var text = child.addComponent(cc.Label);
+      text.fontSize = fontSize;
+      text.lineHeight = fontSize + 8;
+      text.enableWrapText = true;
+      text.overflow = cc.Label.Overflow.RESIZE_HEIGHT;
+      text.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+      text.verticalAlign = cc.Label.VerticalAlign.CENTER;
+      text.string = manager.runtimeRecoveryText(key);
+      return text;
+    }
+    label("Message", "loading.runtimeFailed", 120, 180, 30);
+    function button(name, key, y, action) {
+      var text = label(name, key, y, 72, 30);
+      text.overflow = cc.Label.Overflow.CLAMP;
+      text.enableWrapText = false;
+      text.node.height = 72;
+      var surface = new cc.Node(name + "Background");
+      surface.parent = node;
+      surface.y = y;
+      surface.setSiblingIndex(text.node.getSiblingIndex());
+      var graphics = surface.addComponent(cc.Graphics);
+      graphics.fillColor = new cc.Color(46, 85, 130, 255);
+      graphics.roundRect(-width / 2, -40, width, 80, 12);
+      graphics.fill();
+      text.node.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); action(); });
+      return text;
+    }
+    button("Retry", "loading.retry", -55, function () { manager.resolveRuntimeRecovery(true); });
+    this.runtimeCancelLabel = button("Cancel", this.runtimeFailures.every(function (entry) { return !!entry.cancel; }) ? "loading.cancel" : "loading.reload", -160, function () { manager.resolveRuntimeRecovery(false); });
+    this.runtimeRecoveryNode = node;
+    this.runtimePausedDirector = !cc.director.isPaused();
+    if (this.runtimePausedDirector) cc.director.pause();
+  };
+  t.prototype.runtimeRecoveryText = function (key) {
+    return require("LanguageMgr").LanguageMgr.getInstance().t(key);
+  };
+  t.prototype.resolveRuntimeRecovery = function (retry) {
+    var failures = (this.runtimeFailures || []).splice(0);
+    if (this.runtimeRecoveryNode && cc.isValid(this.runtimeRecoveryNode)) this.runtimeRecoveryNode.destroy();
+    this.runtimeRecoveryNode = null;
+    this.runtimeCancelLabel = null;
+    if (this.runtimePausedDirector) cc.director.resume();
+    this.runtimePausedDirector = false;
+    if (!retry && failures.some(function (entry) { return !entry.cancel; })) {
+      failures.forEach(function (entry) { if (entry.abandon) entry.abandon(); });
+      // Browser restart only resets the scene in Creator 2.4, leaving game
+      // singletons alive. A page reload resets those managers as well. Native
+      // Creator overrides game.restart() with a complete JavaScript VM restart.
+      if (typeof window !== "undefined" && window.location && typeof window.location.reload === "function") window.location.reload();
+      else cc.game.restart();
+      return;
+    }
+    failures.forEach(function (entry) { (retry ? entry.retry : entry.cancel)(); });
   };
   t.prototype.preloadFromBundle = function (t, e, n) {
     t.preload(e, cc.Asset, function (t, e) {
@@ -176,6 +269,9 @@ var exp_ResourceMgr = function () {
   };
   t.prototype.loadRes = function () {
     var e = $z1ArgsParseUtils.ArgsParseUtils._makeLoadResArgs.apply(this, arguments);
+    // Optional trailing options preserve all existing positional callers.
+    var options = arguments[arguments.length - 1];
+    var onError = options && typeof options === "object" && options.onError;
     var n = e.bundle;
     var i = e.path;
     var s = e.type;
@@ -198,17 +294,17 @@ var exp_ResourceMgr = function () {
             $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(f, e.autoRelese);
             g && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s);
             l && l(a);
-        });
-      });
+        }, onError);
+      }, onError);
     } else {
       console.error("请传入具体资源类型，不能是基类asset,路径:", n + "/" + i);
     }
   };
-  t.prototype.loadDir = function (t, e, n) {
+  t.prototype.loadDir = function (t, e, n, onError) {
     var manager = this;
     this.loadBundle(t, function (bundle) {
-      manager.loadWithRecovery(t + "/" + e, function (done) { bundle.loadDir(e, cc.Asset, done); }, n);
-    });
+      manager.loadWithRecovery(t + "/" + e, function (done) { bundle.loadDir(e, cc.Asset, done); }, n, onError);
+    }, onError);
   };
   t.prototype.releaseByBundle = function (t, e) {
     t.release(e);

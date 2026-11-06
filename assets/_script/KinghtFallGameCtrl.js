@@ -30,6 +30,7 @@ var $z1KinghtFallGamePlayCtrl = require("KinghtFallGamePlayCtrl");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var Navigation = require("KinghtFallNavigation");
+var DepthView = require("KinghtFallDepthView").DepthView;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -41,6 +42,7 @@ var def_KinghtFallGameCtrl = function (t) {
     e.buildBullet = null;
     e.ndAggFlag = null;
     e.gameData = null;
+    e._combatEpoch = 0;
     e.mapSize = cc.size(1500, 2668);
     e.moveSize = cc.size(1500, 2668);
     e.ndBg = null;
@@ -55,6 +57,8 @@ var def_KinghtFallGameCtrl = function (t) {
     e.vec2_1 = new cc.Vec2();
     e.vec2_2 = new cc.Vec2();
     e.isAgg = false;
+    e.rallyPoint = null;
+    e.pathList = [];
     e.pathIndex = 0;
     e.ndPlayArr1 = [];
     e.ndPlayArr2 = [];
@@ -67,13 +71,19 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    this._combatEpoch++;
     this._battleSettlement = null;
+    this.isAgg = false;
+    this.rallyPoint = null;
+    this.pathList = [];
+    this._armyFormation = null;
     this.gameData = new $z1KinghtFallGameCtrlData.default(this, t);
     this.ctrPlay.initData();
     this.buildBullet.node.active = false;
     this.ndAggFlag.active = false;
   };
   _ctor.prototype.initMap = function (t) {
+    if (this._depthView) this._depthView.destroy();
     this._navigation = null;
     this.moveSize = t.getContentSize();
     this.ndBg = t.getChildByName("ndBg");
@@ -88,6 +98,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ctrPlay.ndRange.setParent(this.ndUI);
     this.ndAggFlag.setParent(this.ndMain);
     this.gameData.initMap();
+    if (cc.Camera && cc.RenderTexture) this._depthView = new DepthView(this);
     this._bindMapPhysics(t);
   };
   _ctor.prototype._bindMapPhysics = function (map) {
@@ -121,12 +132,16 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._depthView) this._depthView.destroy();
+    this._depthView = null;
+    this._combatEpoch++;
     if (this._mapPhysicsManager) this._mapPhysicsManager.off("before-step", this._syncMapPhysics, this);
     this._mapPhysicsManager = null;
     this._mapPhysicsRoot = null;
     t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.onRestart = function (t) {
+    this.clearArmyOrder();
     this._battleSettlement = null;
     t && (this.gameData.buffList = []);
     this.gameData.onRestart(t);
@@ -159,6 +174,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.camera.node.setPosition(this.vec2_2);
   };
   _ctor.prototype.onUpdate = function (t) {
+    var l;
     Navigation.beginFrame(this);
     switch (this.gameStatus) {
       case $z1KinghtFallModle.KinghtFallGameStage.Prepare:
@@ -211,18 +227,6 @@ var def_KinghtFallGameCtrl = function (t) {
     var r = this.gameData.getSoldierList();
     for (var s = 0; s < r.length; s++) {
       (l = r[s]).onUpdate(t);
-    }
-    if (this.isAgg && (!this.pathList || !this.pathList.length)) {
-      this.pathList = [];
-      this.addPathNode();
-    }
-    if (this.isAgg && (this.ctrPlay.node.getPosition(this.vec2_1), cc.Vec2.subtract(this.vec2_2, this.vec2_1, this.pathList[this.pathList.length - 1].pos), this.vec2_2.mag() > 20 && this.addPathNode(), this.pathList.length >= 1e3)) {
-      e = this.gameData.getSoldierList();
-      for (s = 0; s < e.length; s++) {
-        var l;
-        (l = e[s]).setPath(this.pathList, true);
-      }
-      this.pathList.splice(0, this.pathList.length - 500);
     }
   };
   _ctor.prototype.onCommerce = function (t) {
@@ -402,54 +406,163 @@ var def_KinghtFallGameCtrl = function (t) {
     }
   };
   _ctor.prototype.changeAge = function () {
-    if (this.isAgg) {
-      var t = this.gameData.getSoldierList();
-      for (var e = 0; e < t.length; e++) {
-        t[e].setPath(this.pathList, false);
+    if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode == 1) {
+      this.isAgg = false;
+      this.rallyPoint = { index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) };
+      this.pathList = [this.rallyPoint];
+      this.ndAggFlag.Flag = 1;
+      this.ndAggFlag.active = true;
+      this.ndAggFlag.setPosition(this.rallyPoint.pos);
+      this.ndAggFlag.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.rallyPoint.pos.y);
+      var animation = this.ndAggFlag.getComponent(sp.Skeleton);
+      if (animation) {
+        animation.setAnimation(0, "click", false);
+        animation.addAnimation(0, "idle", true);
+      }
+    } else {
+      this.isAgg = !this.isAgg;
+      this.rallyPoint = null;
+      this.pathList = [];
+      this.ndAggFlag.Flag = 0;
+      this.ndAggFlag.active = false;
+    }
+    this.ctrPlay.ndAgg.active = this.isAgg;
+    this.applyArmyOrder();
+  };
+  _ctor.prototype.applyArmyOrder = function () {
+    this._armyFormation = null;
+    var soldiers = this.gameData.getSoldierList();
+    for (var i = 0; i < soldiers.length; i++) soldiers[i].applyArmyOrder(this);
+  };
+  _ctor.prototype.getArmyOrderGoal = function (unit, anchor) {
+    var soldiers = this.gameData.getSoldierList();
+    // Preserve the exact destination and follow distance for a lone soldier.
+    if (soldiers.length < 2) return null;
+    var navigation = Navigation.get(this);
+    navigation.refresh();
+    var previous = this._armyFormation;
+    if (previous && previous.frame === navigation._frameId) return previous.slots.get(unit) || { pending: true };
+    var moved = !previous || cc.Vec2.distance(previous.anchor, anchor) > 20 || !navigation.grid.segmentClear(previous.anchor, anchor, 0);
+    var changed = !previous || previous.order !== this.rallyPoint || previous.following !== this.isAgg || moved || previous.revision !== navigation.revision || previous.members.length !== soldiers.length;
+    if (!changed) for (var i = 0; i < soldiers.length; i++) if (previous.members[i] !== soldiers[i]) { changed = true; break; }
+    if (!changed) {
+      previous.frame = navigation._frameId;
+      return previous.slots.get(unit) || { pending: true };
+    }
+    // A point inside a wall/open leaf retains normal projected-goal handling.
+    // Formation points must be on the command's side of every intact gate.
+    if (!navigation.grid.isWalkable(anchor, 0)) return null;
+    var center = !moved && previous ? previous.anchor : { x: anchor.x, y: anchor.y };
+    var heroRadius = navigation.radius(this.ctrPlay), radius = 8, radii = new Map();
+    soldiers.forEach(function (soldier) {
+      var r = soldier.isDead() ? soldier._armyBodyRadius || 20 : navigation.radius(soldier);
+      soldier._armyBodyRadius = r;
+      radii.set(soldier, r);
+      radius = Math.max(radius, r);
+    });
+    // Navigation adds at least two pixels to each body's enclosing radius.
+    // Share that clearance between neighbours while retaining a two-pixel gap;
+    // terrain checks below still use the full navigation radius.
+    var spacing = radius * 2 - 2, candidates = [], reserved = [], slots = new Map();
+    var limit = Math.min(480, Math.max(spacing * 3, spacing * (Math.ceil(Math.sqrt(soldiers.length)) + 2)));
+    function available(point, r) {
+      for (var j = 0; j < reserved.length; j++) {
+        var other = reserved[j], clearance = r + other.radius - 2 - .01;
+        var dx = point.x - other.pos.x, dy = point.y - other.pos.y;
+        if (clearance > 0 && dx * dx + dy * dy < clearance * clearance) return false;
+      }
+      return true;
+    }
+    function valid(point, r) {
+      return available(point, r) && navigation.grid.isWalkable(point, r) && navigation.grid.segmentClear(center, point, 0);
+    }
+    function reserve(soldier, point) {
+      var slot = { pos: point, radius: radii.get(soldier) };
+      slots.set(soldier, slot);
+      reserved.push(slot);
+    }
+    // Reserve the hero/flag center, then retain each unit's own slot through
+    // deaths, revival and roster changes. No path searches run during layout.
+    reserved.push({ pos: center, radius: heroRadius });
+    if (previous) soldiers.forEach(function (soldier) {
+      var old = previous.slots.get(soldier);
+      if (!old || !old.pos) return;
+      var point = { x: center.x + old.pos.x - previous.anchor.x, y: center.y + old.pos.y - previous.anchor.y };
+      if (cc.Vec2.distance(point, center) <= limit && valid(point, radii.get(soldier))) reserve(soldier, point);
+    });
+    // A hexagonal lattice packs the actual body clearance into narrow outdoor
+    // approaches without letting the larger hero inflate every soldier slot.
+    if (slots.size < soldiers.length) {
+      var rowHeight = spacing * Math.sqrt(3) / 2, rows = Math.ceil(limit / rowHeight), columns = Math.ceil(limit / spacing);
+      for (var row = -rows; row <= rows; row++) for (var column = -columns; column <= columns; column++) {
+        var candidate = { x: center.x + (column + (row % 2) / 2) * spacing, y: center.y + row * rowHeight };
+        var distance = cc.Vec2.distance(candidate, center);
+        if (distance <= limit) candidates.push({ pos: candidate, distance: distance });
+      }
+      candidates.sort(function (a, b) { return a.distance - b.distance || a.pos.y - b.pos.y || a.pos.x - b.pos.x; });
+    }
+    soldiers.forEach(function (soldier) {
+      if (slots.has(soldier)) return;
+      // Terrain and gate-side checks are shared at the largest body radius.
+      // Evaluate only candidates reached by this layout, at most once each;
+      // reservations alone change while assigning the remaining bodies.
+      for (var j = 0; j < candidates.length; j++) {
+        var candidate = candidates[j];
+        if (candidate.clear === false || !available(candidate.pos, radii.get(soldier))) continue;
+        if (candidate.clear === undefined) candidate.clear = navigation.grid.isWalkable(candidate.pos, radius) && navigation.grid.segmentClear(center, candidate.pos, 0);
+        if (!candidate.clear) continue;
+        reserve(soldier, candidate.pos);
+        break;
+      }
+      if (!slots.has(soldier)) slots.set(soldier, { pending: true });
+    });
+    this._armyFormation = { frame: navigation._frameId, order: this.rallyPoint, following: this.isAgg, anchor: center,
+      revision: navigation.revision, members: soldiers.slice(), slots: slots };
+    return slots.get(unit);
+  };
+  _ctor.prototype.settleArmyCrowd = function (unit, position) {
+    var formation = this._armyFormation;
+    if (!formation || !formation.slots.has(unit)) return false;
+    var navigation = Navigation.get(this), radius = navigation.radius(unit);
+    navigation.refresh();
+    if (!navigation.grid.isWalkable(position, radius) || !navigation.grid.segmentClear(formation.anchor, position, 0)) return false;
+    var extent = 0;
+    formation.slots.forEach(function (slot) { if (slot.pos) extent = Math.max(extent, cc.Vec2.distance(slot.pos, formation.anchor)); });
+    if (cc.Vec2.distance(position, formation.anchor) > extent + radius) return false;
+    // A rally is an area. A body already resting safely against its allies
+    // need not push through them to reach an arbitrary numbered slot.
+    // Keep the gate throat clear and never accept arrival on its wrong side.
+    var buildings = this.gameData.getBulidList();
+    for (var i = 0; i < buildings.length; i++) {
+      var shapes = buildings[i].getNavigationGateShapes && buildings[i].getNavigationGateShapes();
+      if (shapes) for (var j = 0; j < shapes.length; j++) if (Navigation.polygonDistance(unit, shapes[j].points, this) < radius * 2 + 8) return false;
+    }
+    var neighbours = this.gameData.getSoldierList().concat([this.ctrPlay]);
+    for (i = 0; i < neighbours.length; i++) {
+      var other = neighbours[i];
+      if (other === unit || other.isDead() || !other.node.activeInHierarchy) continue;
+      var otherRadius = other._armyBodyRadius || navigation.radius(other);
+      if (cc.Vec2.distance(position, Navigation.positionOf(other.node, this)) <= radius + otherRadius + 8) {
+        formation.slots.set(unit, { pos: { x: position.x, y: position.y }, radius: radius, resting: true });
+        Navigation.reset(unit);
+        return true;
       }
     }
-    this.isAgg = !this.isAgg;
-    if (this.isAgg) {
-      this.ndAggFlag.Flag = 0;
-      this.pathIndex = 0;
-      this.pathList = [];
-      this.addPathNode();
-    }
-    switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
-      case 1:
-        if (this.ndAggFlag.Flag) {
-          this.ndAggFlag.active = true;
-          this.ndAggFlag.setPosition(this.pathList[0].pos);
-          this.ndAggFlag.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.pathList[0].pos.y);
-          var n = this.ndAggFlag.getComponent(sp.Skeleton);
-          n.setAnimation(0, "click", false);
-          n.addAnimation(0, "idle", true);
-        }
-        break;
-      case 2:
-        this.ctrPlay.ndAgg.active = this.isAgg;
-        this.ndAggFlag.active = false;
-    }
+    return false;
+  };
+  _ctor.prototype.clearArmyOrder = function () {
+    this.isAgg = false;
+    this.rallyPoint = null;
+    this.pathList = [];
+    this.ndAggFlag.Flag = 0;
+    this.ndAggFlag.active = false;
+    this.ctrPlay.ndAgg.active = false;
+    this.applyArmyOrder();
   };
   _ctor.prototype.addPathNode = function () {
-    this.ctrPlay.node.getPosition(this.vec2_1);
-    this.pathList.push({
-      index: this.pathIndex++,
-      pos: this.vec2_1.clone()
-    });
-    var t = this.gameData.getSoldierList();
-    for (var e = 0; e < t.length; e++) {
-      var n = t[e];
-      n.node.getPosition(this.vec2_2);
-      cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-      switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
-        case 1:
-          n.startAgg(this.pathList[this.pathList.length - 1]) && this.ndAggFlag.Flag++;
-          break;
-        case 2:
-          this.vec2_2.mag() < $z1KinghtFallConfig.KinghtFallParameter.FollowRange && n.startAgg(this.pathList[this.pathList.length - 1]);
-      }
-    }
+    // Compatibility for callers issuing a fresh rally: followers read the
+    // live hero position and never accumulate or replay movement history.
+    this.pathList = [{ index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) }];
   };
   _ctor.prototype.onPauseGame = function () {
     this.ctrPlay.setPause(true);
@@ -527,7 +640,9 @@ var def_KinghtFallGameCtrl = function (t) {
     this.cleanMap();
   };
   _ctor.prototype.cleanMap = function () {
+    this._combatEpoch++;
     for (var t = 0; t < this.ndPlayArr2.length; t++) {
+      this.ndPlayArr2[t].cancel();
       this.ndPlayArr2[t].node.active = false;
       this.ndPlayArr1.push(this.ndPlayArr2[t].node);
     }
@@ -541,6 +656,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
     this.ndSoldArr = [];
     for (t = 0; t < this.ndBuildArr2.length; t++) {
+      this.ndBuildArr2[t].cancel();
       this.ndBuildArr2[t].node.active = false;
       this.ndBuildArr1.push(this.ndBuildArr2[t].node);
     }
@@ -548,6 +664,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.addEnemy = function (t, e) {
     var n = this;
+    var epoch = this._combatEpoch;
     if (-1 != t) {
       var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
       var a = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + i.ID;
@@ -565,6 +682,7 @@ var def_KinghtFallGameCtrl = function (t) {
         o(r);
       } else {
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, i.prefab, function (t) {
+          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
           r = cc.instantiate(t);
           $z1PoolMgr.PoolMgr.getInstance().creatrePool(a, cc.instantiate(t), 10);
           o(r);
@@ -574,6 +692,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.addSoldier = function (t, e) {
     var n = this;
+    var epoch = this._combatEpoch;
     var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     var a = $z1KinghtFallConfig.KinghtFallPoolName.Soldier + "_" + i.ID;
     var o = function (i) {
@@ -589,6 +708,7 @@ var def_KinghtFallGameCtrl = function (t) {
       o(r);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "Play" + i.prefab, function (t) {
+        if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
         r = cc.instantiate(t);
         $z1PoolMgr.PoolMgr.getInstance().creatrePool(a, cc.instantiate(t), 1);
         o(r);
@@ -642,6 +762,7 @@ var def_KinghtFallGameCtrl = function (t) {
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit >= Math.random();
     s && (r *= this.ctrPlay.critDam);
+    o.combatContext = this;
     o.setTag(a, t.node, function () {
       if (cc.isValid(t) && cc.isValid(t.node)) {
         if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(2)) {
@@ -655,7 +776,7 @@ var def_KinghtFallGameCtrl = function (t) {
         var i = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff08);
         i && t.isDead() && e.ctrPlay.addHpPro(i.Pamer[0]);
         var a = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff15);
-        a && t.addBuff($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed, {
+        a && !t.isDead() && t.addBuff($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed, {
           subNum: a.Pamer[0],
           time: 1
         });
@@ -681,6 +802,7 @@ var def_KinghtFallGameCtrl = function (t) {
     var i = this.ndUI.convertToNodeSpaceAR(n);
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletEnemy.default);
+    a.combatContext = this;
     this.ndEnemyArr.push(a);
     return {
       ctr: a,
@@ -705,6 +827,7 @@ var def_KinghtFallGameCtrl = function (t) {
     var a = n.getComponent($z1KinghtFallBulletBuild.default);
     this.ndBuildArr2.push(a);
     var o = t.getAttack();
+    a.combatContext = this;
     a.setTag(i, e.node, function () {
       if (cc.isValid(e) && cc.isValid(e.node)) {
         $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(e.node.getPosition(), o);
@@ -733,6 +856,7 @@ var def_KinghtFallGameCtrl = function (t) {
     var i = this.ndUI.convertToNodeSpaceAR(n);
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletSoldier.default);
+    a.combatContext = this;
     this.ndSoldArr.push(a);
     return {
       ctr: a,

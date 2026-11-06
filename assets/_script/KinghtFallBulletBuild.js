@@ -16,17 +16,17 @@ var def_KinghtFallBulletBuild = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.setTag = function (t, e, n) {
     this._dir = cc.v2(e.x - t.x, e.y - t.y).normalizeSelf();
-    this.tagNode = e;
+    this.bindTarget(e, n);
     this.tagNode.getPosition(this.tagPos);
     this.bullet.active = true;
     var i = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     this.node.angle = i;
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
-    this.callAttack = n;
   };
   _ctor.prototype.freeNode = function () {
-    this.state = 2;
+    if (this.state === 2) return;
+    this.cancel();
     $z1KinghtFallUIGame.default.instance.ctrGame.freeBuildBullet(this);
   };
   return cc__decorate([ccp_ccclass], _ctor);

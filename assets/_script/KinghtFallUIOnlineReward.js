@@ -20,6 +20,7 @@ var def_KinghtFallUIOnlineReward = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
     e.btnClose = null;
+    e.btnClaimAll = null;
     e.ctrList = null;
     return e;
   }
@@ -36,10 +37,48 @@ var def_KinghtFallUIOnlineReward = function (t) {
   };
   _ctor.prototype.initBtnListener = function () {
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
+    this.btnClaimAll.on(cc.Node.EventType.TOUCH_END, this.onClaimAll, this);
   };
   _ctor.prototype.initView = function () {
     this.onLineTime = Math.floor($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getOnlineTime() / 60);
     this.ctrList.numItems = this.cfgList.length;
+    var available = this.getClaimableRewards().length > 0;
+    this.btnClaimAll.getComponent(cc.Button).interactable = available;
+    this.btnClaimAll.getChildByName("bgDisabled").active = !available;
+  };
+  _ctor.prototype.getClaimableRewards = function (rows) {
+    var daily = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData();
+    var minutes = Math.floor(daily.getOnlineTime() / 60);
+    return (rows || this.cfgList).filter(function (row) {
+      return minutes >= row.condition && !daily.getOnlineTimeReward(row.id);
+    });
+  };
+  _ctor.prototype.onClaimAll = function () {
+    this.claimRewards(this.cfgList, this.btnClaimAll.convertToWorldSpaceAR(cc.v2(0, 0)));
+  };
+  _ctor.prototype.claimRewards = function (rows, position) {
+    if (this.claimingRewards) return;
+    var available = this.getClaimableRewards(rows);
+    if (!available.length) return;
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var rewards = [];
+    available.forEach(function (row) {
+      var reward = rewards.filter(function (item) { return item.id === row.reward[0]; })[0];
+      if (reward) reward.num += row.reward[1];
+      else rewards.push({ id: row.reward[0], num: row.reward[1] });
+    });
+    this.claimingRewards = true;
+    try {
+      var self = this;
+      var granted = player.claimRewards(rewards, 1, position, function () {
+        available.forEach(function (row) { player.getDailyData().setOnlineTimeReward(row.id); });
+      }, function () { return self.getClaimableRewards(available).length === available.length; });
+      if (!granted) return;
+      this.initView();
+      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4);
+    } finally {
+      this.claimingRewards = false;
+    }
   };
   _ctor.prototype.initListItem = function (t, e) {
     var n = this;
@@ -75,8 +114,8 @@ var def_KinghtFallUIOnlineReward = function (t) {
     }
     t.getChildByName("labInfo").getComponent(cc.RichText).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle10), i.condition);
     var f = t.getChildByName("ndPro");
-    f.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.onLineTime / i.condition;
-    f.getChildByName("labPro").getComponent(cc.Label).string = this.onLineTime + "/" + i.condition;
+    f.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = Math.min(1, Math.max(0, this.onLineTime / i.condition));
+    f.getChildByName("labPro").getComponent(cc.Label).string = Math.min(this.onLineTime, i.condition) + "/" + i.condition;
     var m = t.getChildByName("ndFinish");
     var y = t.getChildByName("btnLock");
     var v = m.getChildByName("btnGet");
@@ -89,10 +128,7 @@ var def_KinghtFallUIOnlineReward = function (t) {
         m.getChildByName("mask").active = false, t.opacity = 102, v.active = false, _.active = true;
       } else {
         m.getChildByName("mask").active = true, v.active = true, _.active = false, v.off(cc.Node.EventType.TOUCH_END), v.on(cc.Node.EventType.TOUCH_END, function () {
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([r], 1, t.convertToWorldSpaceAR(a.position));
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().setOnlineTimeReward(i.id);
-          n.initView();
-          n.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4);
+          n.claimRewards([i], t.convertToWorldSpaceAR(a.position));
         }, this);
       }
     } else {
@@ -104,6 +140,7 @@ var def_KinghtFallUIOnlineReward = function (t) {
     type: cc.Node,
     tooltip: "关闭"
   })], _ctor.prototype, "btnClose", undefined);
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnClaimAll", undefined);
   cc__decorate([ccp_property({
     type: $z1List.default,
     tooltip: "关闭"

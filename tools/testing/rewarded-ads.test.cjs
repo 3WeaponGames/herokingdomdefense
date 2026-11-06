@@ -5,7 +5,7 @@ const vm = require('node:vm');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '../..');
-const script = name => fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8');
+const script = name => fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8').replace(/\r\n/g, '\n');
 const placements = require(path.join(root, 'assets/_script/AdPlacements.js'));
 
 function harness(options = {}) {

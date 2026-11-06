@@ -35,6 +35,19 @@ var exp_KinghtFallGameData = function (t) {
     // interrupted between their independent saves before a battle can be resumed.
     if (this.data.pendingSettlement) this.completeSettlement(this.data.pendingSettlement);
   };
+  _ctor.prototype.validateSaveRecord = function (data) {
+    data = this.normalizeSaveRecord(data, new l());
+    data.buildingLevel = data.buildingLevel.filter(function (row) { return row && Number.isInteger(row.point) && Number.isInteger(row.level) && row.level >= 0; });
+    data.buffList = data.buffList.filter(function (id) { return Number.isInteger(id) && id > 0; });
+    Object.keys(data.businessList).forEach(function (key) { if (typeof data.businessList[key] !== "number" || !isFinite(data.businessList[key]) || data.businessList[key] < 0) delete data.businessList[key]; });
+    if (data.taskList && (!Number.isInteger(data.taskList.index) || data.taskList.index < 0 || !Array.isArray(data.taskList.list) || !data.taskList.list.every(function (id) { return Number.isInteger(id) && id > 0; }) || [0, 1, 2].indexOf(data.taskList.stage) < 0)) delete data.taskList;
+    if (data.levelNum >= 0 && (!Number.isInteger(data.roundNum) || data.roundNum < 1 || typeof data.coin !== "number" || !isFinite(data.coin) || data.coin < 0)) data.levelNum = -1;
+    if (data.pendingSettlement && (typeof data.pendingSettlement.id !== "string" || !Number.isInteger(data.pendingSettlement.stage) || data.pendingSettlement.stage < 1 || [1, 2].indexOf(data.pendingSettlement.multiplier) < 0 || !Number.isInteger(data.pendingSettlement.challengeMask) || typeof data.pendingSettlement.isWin !== "boolean" || !Array.isArray(data.pendingSettlement.rewards) || !data.pendingSettlement.rewards.every(function (reward) { return reward && Number.isInteger(reward.id) && typeof reward.num === "number" && isFinite(reward.num) && reward.num >= 0; }))) delete data.pendingSettlement;
+    return data;
+  };
+  _ctor.prototype.readyForNewBattle = function () {
+    return !this.data.pendingSettlement || this.completeSettlement(this.data.pendingSettlement);
+  };
   _ctor.prototype.beginSettlement = function (rewards, stage, challengeMask, isWin) {
     var settlement = this.data.pendingSettlement || {
       id: Date.now().toString(36) + "-" + Math.random().toString(36).slice(2),
@@ -56,22 +69,31 @@ var exp_KinghtFallGameData = function (t) {
     }
     var pending = Object.assign({}, settlement, { multiplier: multiplier });
     this.data.pendingSettlement = pending;
-    this.saveData();
-    this.completeSettlement(pending);
-    return true;
+    this.pendingSettlementNeedsSave = true;
+    if (this.saveData() === false) return false;
+    this.pendingSettlementNeedsSave = false;
+    return this.completeSettlement(pending);
   };
   _ctor.prototype.completeSettlement = function (settlement) {
+    if (this.pendingSettlementNeedsSave) {
+      if (this.saveData() === false) return false;
+      this.pendingSettlementNeedsSave = false;
+    }
     var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
     // Each target record saves its receipt together with its rewards. Retrying this
     // journal after a reload cannot award either balance twice.
-    player.getUserData().applyBattleSettlement(settlement);
-    player.getMissionData().applyBattleSettlement(settlement);
-    this.setNewGame();
+    if (player.getUserData().applyBattleSettlement(settlement) === false) return false;
+    if (player.getMissionData().applyBattleSettlement(settlement) === false) return false;
+    var previous = this.data;
+    this.data = new l();
+    if (this.saveData() === false) { this.data = previous; return false; }
     require("EventMgr").EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
+    return true;
   };
   _ctor.prototype.setNewGame = function () {
+    if (this.data.pendingSettlement && !this.completeSettlement(this.data.pendingSettlement)) return false;
     this.data = new l();
-    this.saveData();
+    return this.saveData() !== false;
   };
   _ctor.prototype.getRoundNum = function () {
     return this.data.roundNum;

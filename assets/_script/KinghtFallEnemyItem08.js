@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallEnemyLong = require("KinghtFallEnemyLong");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 cc__decorator.property;
@@ -52,12 +53,10 @@ var def_KinghtFallEnemyItem08 = function (t) {
           for (var u = 0; u < g.length; u++) {
             var d = g[u];
             if (cc.Intersection.polygonCircle(d.points, s)) {
-              var p = d.tagNode.convertToWorldSpaceAR(cc.Vec2.ZERO);
-              t.vec2_2 = $z1KinghtFallUIGame.default.instance.ctrGame.ndMain.convertToNodeSpaceAR(p);
-              cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-              if (-1 == n || t.vec2_2.len() < n) {
+              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
+              if (-1 == n || targetDistance < n) {
                 e = h;
-                n = t.vec2_2.len();
+                n = targetDistance;
               }
             }
           }
@@ -71,9 +70,11 @@ var def_KinghtFallEnemyItem08 = function (t) {
       this.setLeft(this.vec2_2.x < 0);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.onShotEnemy(this);
       i.ctr.setParent(this);
+      var shooterGeneration = this.node._combatGeneration;
       return void i.ctr.setTag(i.pos, n.node, function () {
         $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
-        n.onAttacked(e);
+        var shooter = cc.isValid(t.node) && t.node._combatGeneration === shooterGeneration ? t : null;
+        n.onAttacked(e, shooter);
       });
     }
   };

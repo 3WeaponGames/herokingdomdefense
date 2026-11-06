@@ -15,6 +15,7 @@ var $z1KinghtFallMissionData = require("KinghtFallMissionData");
 var $z1KinghtFallUserData = require("KinghtFallUserData");
 var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
+var $z1CacheUtils = require("CacheUtils");
 var exp_KinghtFallPlayerMgr = function () {
   function _ctor() {}
   _ctor.getInstance = function () {
@@ -30,12 +31,134 @@ var exp_KinghtFallPlayerMgr = function () {
     this.guideData.getData();
     this.dailyData = new $z1KinghtFallDailyData.KinghtFallDailyData();
     this.dailyData.getData();
+    this.restorePendingRewards();
+    var self = this;
+    if (!this.rewardRetryTimer) this.rewardRetryTimer = setInterval(function () {
+      self.retryRewardRecovery();
+      if (self.gameData && self.gameData.data.pendingSettlement) self.gameData.completeSettlement(self.gameData.data.pendingSettlement);
+    }, 1000);
     this.gameData = new $z1KinghtFallGameData.KinghtFallGameData();
     this.gameData.getData();
     this.reloadConfig();
     t && t();
   };
   _ctor.prototype.reloadConfig = function () {};
+  _ctor.prototype.rewardRecords = function () {
+    return [this.udata, this.missionData, this.dailyData, this.guideData].filter(function (record) { return !!record; });
+  };
+  _ctor.prototype.rewardJournalKey = function () { return this.udata.gameKey + ".rewardJournal"; };
+  _ctor.prototype.rewardSaveFailure = function () {
+    this.rewardStorageCheckPending = true;
+    $z1EventMgr.EventMgr.getInstance().emit("SaveFailed", { key: this.rewardJournalKey() });
+  };
+  _ctor.prototype.retryRewardRecovery = function () {
+    if (this.pendingRewardJournal) return this.restorePendingRewards();
+    if (!this.rewardStorageCheckPending) return true;
+    // If journaling failed before any award, the claim remains available. Probe
+    // only an empty journal so recovery can clear the notice without erasing it.
+    var key = this.rewardJournalKey();
+    try {
+      if ($z1CacheUtils.CacheUtils.getData(key)) return this.restorePendingRewards();
+      if ($z1CacheUtils.CacheUtils.saveData(key, "") === false) { this.rewardSaveFailure(); return false; }
+    } catch (error) { this.rewardSaveFailure(); return false; }
+    this.rewardStorageCheckPending = false;
+    $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: key });
+    return true;
+  };
+  _ctor.prototype.restorePendingRewards = function () {
+    if (this.claimingRewardTransaction) return false;
+    var key = this.rewardJournalKey();
+    if (!this.pendingRewardJournal) {
+      try {
+        var raw = $z1CacheUtils.CacheUtils.getData(key);
+        if (!raw) return true;
+        var journal = JSON.parse(raw);
+        var records = this.rewardRecords();
+        if (journal.version !== 1 || typeof journal.id !== "string" || !Array.isArray(journal.records) || !journal.records.length || !journal.records.every(function (entry) {
+          var record = records.filter(function (record) { return record.gameKey === entry.key; })[0];
+          if (!record || !entry.data || Array.isArray(entry.data) || entry.data.rewardTransaction !== journal.id) return false;
+          var checked = record.validateSaveRecord(JSON.parse(JSON.stringify(entry.data)));
+          return JSON.stringify(checked) === JSON.stringify(entry.data);
+        })) throw new Error("Invalid reward recovery journal");
+        this.pendingRewardJournal = journal;
+      } catch (error) {
+        if (raw && !this.rewardJournalInvalid) {
+          this.rewardJournalInvalid = true;
+          this.udata.preserveSaveRecord(raw, key, "journal");
+        }
+        console.error("Cannot recover reward transaction", error);
+        this.rewardSaveFailure();
+        return false;
+      }
+    }
+    var pending = this.pendingRewardJournal;
+    var targets = this.rewardRecords();
+    // Install all journal receipts together in memory before any write. Ordinary
+    // gameplay saves during a disk failure then retain the receipt and new state.
+    for (var i = 0; i < pending.records.length; i++) {
+      var entry = pending.records[i];
+      var record = targets.filter(function (target) { return target.gameKey === entry.key; })[0];
+      if (record.saveBlockedByRecovery) { this.rewardSaveFailure(); return false; }
+      if (record.data.rewardTransaction !== pending.id) record.data = JSON.parse(JSON.stringify(entry.data));
+    }
+    if (this.dailyData) this.dailyData.ensureCurrentDay();
+    if (this.missionData) this.missionData.initData();
+    for (var j = 0; j < pending.records.length; j++) {
+      var targetKey = pending.records[j].key;
+      record = targets.filter(function (target) { return target.gameKey === targetKey; })[0];
+      // A matching in-memory receipt can still have a failed write pending.
+      if (record.saveData() === false) { this.rewardSaveFailure(); return false; }
+    }
+    if ($z1CacheUtils.CacheUtils.saveData(key, "") === false) { this.rewardSaveFailure(); return false; }
+    this.pendingRewardJournal = null;
+    this.rewardStorageCheckPending = false;
+    $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: key });
+    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
+    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold);
+    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond);
+    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
+    return true;
+  };
+  // Reward balances, achievement counters, and their one-time claim flags are
+  // staged together. No target save runs until the complete journal is durable.
+  _ctor.prototype.claimRewards = function (rewards, multiplier, position, markClaim, eligible) {
+    if (this.claimingRewardTransaction || !this.restorePendingRewards()) return null;
+    if (this.dailyData) this.dailyData.ensureCurrentDay();
+    if (!eligible()) return null;
+    var records = this.rewardRecords();
+    if (records.some(function (record) { return record.pause || record.saveBlockedByRecovery; })) { this.rewardSaveFailure(); return null; }
+    var originals = records.map(function (record) { return record.data; });
+    var id = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    var journal = { version: 1, id: id, records: [] };
+    var result;
+    this.claimingRewardTransaction = true;
+    try {
+      records.forEach(function (record) { record.data = JSON.parse(JSON.stringify(record.data)); record.deferSave = true; });
+      result = this.addRewards(rewards, multiplier, position);
+      if (markClaim() === false) return null;
+      records.forEach(function (record, index) {
+        // JSON expands sparse claim/equipment arrays to nulls. Store their
+        // canonical shape so recovery validates exactly the bytes we journaled.
+        record.data = record.validateSaveRecord(JSON.parse(JSON.stringify(record.data)));
+        if (JSON.stringify(record.data) !== JSON.stringify(originals[index])) {
+          record.data.rewardTransaction = id;
+          journal.records.push({ key: record.gameKey, data: record.data });
+        }
+      });
+    } finally {
+      records.forEach(function (record, index) { record.data = originals[index]; record.deferSave = false; });
+      this.claimingRewardTransaction = false;
+    }
+    if (!journal.records.length) return null;
+    if ($z1CacheUtils.CacheUtils.saveData(this.rewardJournalKey(), JSON.stringify(journal)) === false) { this.rewardSaveFailure(); return null; }
+    this.pendingRewardJournal = journal;
+    if (!this.restorePendingRewards()) return null;
+    if (position) rewards.forEach(function (reward) {
+      if (reward.id === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniGold, position);
+      if (reward.id === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniDiamond, position);
+    });
+    return result;
+  };
   _ctor.prototype.getUserData = function () {
     return this.udata;
   };
@@ -155,12 +278,12 @@ var exp_KinghtFallPlayerMgr = function () {
             case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin:
               this.udata.addGoldNum(l);
               this.missionData.addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetGold, l);
-              n && $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniGold, n);
+              !this.claimingRewardTransaction && n && $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniGold, n);
               break;
             case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond:
               this.udata.addDiamondNum(l);
               this.missionData.addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetDiamonds, l);
-              n && $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniDiamond, n);
+              !this.claimingRewardTransaction && n && $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniDiamond, n);
               break;
             case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina:
               this.udata.addPowerNum(l);
@@ -176,7 +299,7 @@ var exp_KinghtFallPlayerMgr = function () {
           break;
       }
     }
-    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
+    if (!this.claimingRewardTransaction) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
     return a;
   };
   _ctor.prototype.hasGetLevelReward = function (t) {

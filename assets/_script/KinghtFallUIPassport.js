@@ -23,6 +23,7 @@ var def_KinghtFallUIPassport = function (t) {
     var e = null !== t && t.apply(this, arguments) || this;
     e.ndTop = null;
     e.btnClose = null;
+    e.btnClaimAll = null;
     e.ctrList = null;
     e.bpLevel = 0;
     e.bpExp = 0;
@@ -31,17 +32,24 @@ var def_KinghtFallUIPassport = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
     this.cfgList = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getPassCfg();
-    this.initData();
     this.ctrList.tmpNode.active = false;
     this.initView();
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
+    this.btnClaimAll.on(cc.Node.EventType.TOUCH_END, this.onClaimAll, this);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TimeUpdate, this.refreshRewardAvailability);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, this.refreshRewardAvailability);
   };
   _ctor.prototype.initView = function () {
+    this.initData();
     this.ctrList.numItems = this.cfgList.length + 1;
+    this.refreshClaimAllButton();
   };
   _ctor.prototype.initData = function () {
-    for (this.bpExp = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchPoint(); this.bpExp >= this.cfgList[this.bpLevel].LevelCost && (this.bpExp -= this.cfgList[this.bpLevel].LevelCost, this.bpLevel++, this.cfgList[this.bpLevel]);) {
-      ;
+    this.bpLevel = 0;
+    this.bpExp = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchPoint();
+    while (this.cfgList[this.bpLevel] && this.bpExp >= this.cfgList[this.bpLevel].LevelCost) {
+      this.bpExp -= this.cfgList[this.bpLevel].LevelCost;
+      this.bpLevel++;
     }
     this.ndTop.getChildByName("labLevel").getComponent(cc.Label).string = "" + this.bpLevel;
     if (this.cfgList[this.bpLevel]) {
@@ -50,6 +58,55 @@ var def_KinghtFallUIPassport = function (t) {
     } else {
       this.ndTop.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 1;
       this.ndTop.getChildByName("labPro").getComponent(cc.Label).string = "" + this.bpExp;
+    }
+  };
+  _ctor.prototype.refreshRewardAvailability = function () {
+    var previousLevel = this.bpLevel;
+    this.initData();
+    if (previousLevel !== this.bpLevel) this.ctrList.numItems = this.cfgList.length + 1;
+    this.refreshClaimAllButton();
+  };
+  _ctor.prototype.getClaimableFreeRewards = function (rows) {
+    var level = this.bpLevel;
+    var mission = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
+    return (rows || this.cfgList).filter(function (row) {
+      return level >= row.ID && !(mission.getAchReward(row.ID) & 1);
+    });
+  };
+  _ctor.prototype.refreshClaimAllButton = function () {
+    var available = !this.claimingRewards && this.getClaimableFreeRewards().length > 0;
+    this.btnClaimAll.getComponent(cc.Button).interactable = available;
+    this.btnClaimAll.getChildByName("bgDisabled").active = !available;
+  };
+  _ctor.prototype.onClaimAll = function () {
+    this.claimFreeRewards(this.cfgList, this.btnClaimAll.convertToWorldSpaceAR(cc.v2(0, 0)), true);
+  };
+  _ctor.prototype.claimFreeRewards = function (rows, position, showRewards) {
+    if (this.claimingRewards) return;
+    this.initData();
+    var available = this.getClaimableFreeRewards(rows);
+    if (!available.length) return void this.refreshClaimAllButton();
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var rewards = [];
+    available.forEach(function (row) {
+      var reward = rewards.filter(function (item) { return item.id === row.Reward1[0]; })[0];
+      if (reward) reward.num += row.Reward1[1];
+      else rewards.push({ id: row.Reward1[0], num: row.Reward1[1] });
+    });
+    this.claimingRewards = true;
+    try {
+      var granted = player.claimRewards(rewards, 1, position, function () {
+        available.forEach(function (row) { player.getMissionData().setAchReward(row.ID, 1); });
+      }, function () { return available.every(function (row) { return !(player.getMissionData().getAchReward(row.ID) & 1); }); });
+      if (!granted) return;
+      available.forEach(function (row) {
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token_normal_X, row.ID);
+      });
+      if (showRewards) this.openUI($z1KinghtFallConfig.KinghtFallUIID.UIGoldReward, rewards);
+    } finally {
+      this.claimingRewards = false;
+      this.initView();
+      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
     }
   };
   _ctor.prototype.initItemView = function (t, e) {
@@ -108,10 +165,7 @@ var def_KinghtFallUIPassport = function (t) {
         b.active = false, F.active = true;
       } else {
         b.active = true, $z1KinghtFallModle.default.getInstance().twBreatheRedPoint(b), F.active = false, i.on(cc.Node.EventType.TOUCH_END, function () {
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token_normal_X, r.ID);
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([v], 1, i.convertToWorldSpaceAR(d.position));
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setAchReward(r.ID, 1);
-          n.initView();
+          n.claimFreeRewards([r], i.convertToWorldSpaceAR(d.position), false);
         });
       }
       P.active = false;
@@ -159,12 +213,18 @@ var def_KinghtFallUIPassport = function (t) {
         b.active = false, F.active = true;
       } else {
         b.active = true, F.active = false, a.on(cc.Node.EventType.TOUCH_END, function () {
+          if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchReward(r.ID) & 2) return;
+          var granted = false;
           $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+            if (granted || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getAchReward(r.ID) & 2) return;
+            granted = true;
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token_better_X, r.ID);
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.token);
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-            $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([D], 1, a.convertToWorldSpaceAR(C.position));
-            $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setAchReward(r.ID, 2);
+            var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+            player.claimRewards([D], 1, a.convertToWorldSpaceAR(C.position), function () {
+              player.getMissionData().setAchReward(r.ID, 2);
+            }, function () { return !(player.getMissionData().getAchReward(r.ID) & 2); });
             n.initView();
           }, null, "home.pass.premium");
         });
@@ -186,6 +246,7 @@ var def_KinghtFallUIPassport = function (t) {
     type: cc.Node,
     tooltip: "关闭"
   })], _ctor.prototype, "btnClose", undefined);
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnClaimAll", undefined);
   cc__decorate([ccp_property({
     type: $z1List.default,
     tooltip: "关闭"

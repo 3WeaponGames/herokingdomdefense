@@ -16993,7 +16993,7 @@
       "MissionType": 3,
       "MissionDescribe": "[[loc:data.taskcfg.4.missiondescribe]]",
       "Argument": [
-        250
+        200
       ],
       "Award": [
         2001,
@@ -17558,7 +17558,7 @@
       "ID": 111055,
       "Type": 4,
       "Describe": "[[loc:data.achievementcfg.55.describe]]",
-      "Argument": 30,
+      "Argument": 25,
       "Item": [
         2002,
         10
@@ -17568,7 +17568,7 @@
       "ID": 111056,
       "Type": 4,
       "Describe": "[[loc:data.achievementcfg.56.describe]]",
-      "Argument": 40,
+      "Argument": 27,
       "Item": [
         2002,
         10
@@ -17608,7 +17608,7 @@
       "ID": 111060,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.60.describe]]",
-      "Argument": 40,
+      "Argument": 35,
       "Item": [
         2002,
         10
@@ -17618,7 +17618,7 @@
       "ID": 111061,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.61.describe]]",
-      "Argument": 50,
+      "Argument": 40,
       "Item": [
         2002,
         10
@@ -17628,7 +17628,7 @@
       "ID": 111062,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.62.describe]]",
-      "Argument": 60,
+      "Argument": 44,
       "Item": [
         2002,
         10
@@ -17638,7 +17638,7 @@
       "ID": 111063,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.63.describe]]",
-      "Argument": 70,
+      "Argument": 47,
       "Item": [
         2002,
         10
@@ -17648,7 +17648,7 @@
       "ID": 111064,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.64.describe]]",
-      "Argument": 80,
+      "Argument": 50,
       "Item": [
         2002,
         10
@@ -17658,7 +17658,7 @@
       "ID": 111065,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.65.describe]]",
-      "Argument": 100,
+      "Argument": 52,
       "Item": [
         2002,
         10
@@ -17668,7 +17668,7 @@
       "ID": 111066,
       "Type": 5,
       "Describe": "[[loc:data.achievementcfg.66.describe]]",
-      "Argument": 120,
+      "Argument": 54,
       "Item": [
         2002,
         10
@@ -17838,7 +17838,7 @@
       "ID": 111083,
       "Type": 7,
       "Describe": "[[loc:data.achievementcfg.83.describe]]",
-      "Argument": 300,
+      "Argument": 204,
       "Item": [
         2002,
         10

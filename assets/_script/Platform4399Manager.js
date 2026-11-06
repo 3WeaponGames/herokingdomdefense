@@ -60,21 +60,34 @@ var exp_Platform4399Manager = function () {
   _ctor.prototype.showInsertAd = function (t, e) {
     e && e();
   };
+  _ctor.prototype.isRewardedAdAvailable = function () {
+    return typeof window !== "undefined" && !!window.h5api && typeof window.h5api.playAd === "function";
+  };
   _ctor.prototype.showVideoAd = function (t, e, n) {
-    if ("h5api" in window) {
-      h5api.playAd(function (t) {
-        if (!(1e4 === t.code)) {
-          if (10001 === t.code) {
-            e && e();
-          } else {
-            n && n();
-          }
-        }
-      });
-    } else {
+    if (!this.isRewardedAdAvailable()) {
       console.log("找不到 4399HTML5 API");
       n && n();
+      return false;
     }
+    var settled = false;
+    function finish(success) {
+      if (settled) return;
+      settled = true;
+      if (success) { e && e(); }
+      else { n && n(); }
+    }
+    try {
+      window.h5api.playAd(function (result) {
+        // 10000 starts playback; only the documented completed event rewards.
+        // Malformed/unknown results are failures, including asynchronous ones.
+        if (!settled && (!result || result.code !== 10000)) finish(!!result && result.code === 10001);
+      });
+    } catch (error) {
+      // Let the caller report an exception in its already-delivered callback.
+      if (settled) throw error;
+      finish(false);
+    }
+    return true;
   };
   _ctor.prototype.otherFun = function (t, e) {
     e && e();

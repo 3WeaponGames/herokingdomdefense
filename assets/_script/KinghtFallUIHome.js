@@ -108,6 +108,7 @@ var def_KinghtFallUIHome = function (t) {
     }
   };
   _ctor.prototype.isLock = function (t) {
+    if (t === 4 && !this.preShop) return true;
     if (-1 == this.lockList[t][0]) {
       return false;
     }

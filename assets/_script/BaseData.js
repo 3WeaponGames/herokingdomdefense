@@ -31,6 +31,7 @@ var exp_BaseData = function () {
         t.pause = e;
       });
       setInterval(function () {
+        if (t.localSavePending && t.data) t.saveData();
         if (t.isneedSave && t.data) {
           var e = t.preTime;
           var n = Number((new Date().getTime() / 1e3).toFixed(0));
@@ -38,6 +39,7 @@ var exp_BaseData = function () {
         }
       }, 1e3);
       cc.game.on(cc.game.EVENT_HIDE, function () {
+        if (t.localSavePending && t.data) t.saveData();
         if (t.isneedSave && t.data) {
           t.preTime = 0;
           t.UpdateData();
@@ -99,8 +101,20 @@ var exp_BaseData = function () {
       var decoded = encrypted ? $z1Utils.Utils.decrypt(raw, this.pwd) : raw;
       var data = JSON.parse(decoded);
       if (!data || typeof data !== "object") throw new Error("Invalid saved record shape");
-      return $z1Utils.Utils.restoreObjectKeys(data, this.aliseMap);
+      data = $z1Utils.Utils.restoreObjectKeys(data, this.aliseMap);
+      if (this.validateSaveRecord) {
+        var original = JSON.stringify(data);
+        data = this.validateSaveRecord(data);
+        if (JSON.stringify(data) !== original) this.preserveSaveRecord(raw, key, source);
+      }
+      return data;
     } catch (error) {
+      this.preserveSaveRecord(raw, key, source);
+      console.error("Ignoring corrupt saved record", key, source, error);
+      return null;
+    }
+  };
+  _ctor.prototype.preserveSaveRecord = function (raw, key, source) {
       // Keep the exact original bytes before an initData migration can save.
       var backupKey = key + ".corrupt." + source + "." + Date.now();
       this.recoveryErrors = this.recoveryErrors || [];
@@ -114,26 +128,61 @@ var exp_BaseData = function () {
         this.saveBlockedByRecovery = true;
         console.error("Cannot preserve corrupt saved record; saving is disabled", key, source, backupError);
       }
-      console.error("Ignoring corrupt saved record", key, source, error);
-      return null;
+  };
+  // Defaults repair missing/wrongly typed fields without discarding valid progress.
+  // Record-specific validators below also sanitize nested collections.
+  _ctor.prototype.normalizeSaveRecord = function (data, defaults) {
+    if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("Invalid saved record shape");
+    var self = this;
+    Object.keys(defaults).forEach(function (key) {
+      var value = data[key], fallback = defaults[key];
+      if (Array.isArray(fallback)) {
+        if (!Array.isArray(value)) data[key] = [];
+      } else if (typeof fallback === "number") {
+        if (typeof value !== "number" || !isFinite(value) || value < Math.min(0, fallback)) data[key] = fallback;
+      } else if (fallback && typeof fallback === "object") {
+        if (!value || typeof value !== "object" || Array.isArray(value)) data[key] = {};
+      }
+    });
+    if (data.battleSettlement && (typeof data.battleSettlement.id !== "string" || [1, 2].indexOf(data.battleSettlement.multiplier) < 0)) delete data.battleSettlement;
+    if (data.rewardTransaction !== undefined && typeof data.rewardTransaction !== "string") delete data.rewardTransaction;
+    var versionKey = Object.prototype.hasOwnProperty.call(defaults, "vesion") ? "vesion" : "version";
+    if (defaults[versionKey] && data[versionKey] > (self.vesion || defaults[versionKey])) {
+      self.saveBlockedByRecovery = true;
+      throw new Error("Saved record uses a newer version");
     }
+    return data;
+  };
+  _ctor.prototype.reportSaveFailure = function () {
+    this.localSavePending = true;
+    this.saveFailureReported = true;
+    if ($z1EventMgr.EventMgr) $z1EventMgr.EventMgr.getInstance().emit("SaveFailed", { key: this.gameKey });
   };
   _ctor.prototype.initData = function () {};
   _ctor.prototype.saveData = function () {
+    if (this.deferSave) return true;
     if (!this.pause && !this.saveBlockedByRecovery) {
       this.data[this.savetimeKey] = Number((new Date().getTime() / 1e3).toFixed(0));
       var t = JSON.stringify($z1Utils.Utils.renameObjectKeys(this.data, this.aliseMap));
       $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && (this.gameKey = this.gameKey.replace($z1Config.GameConfig.AppCacheName, $z1Config.GameConfig.WebCacheName));
-      if (this.ecrypt) {
-        $z1CacheUtils.CacheUtils.saveDataEncrypt(this.gameKey, t, this.pwd);
-      } else {
-        $z1CacheUtils.CacheUtils.saveData(this.gameKey, t);
+      var saved = false;
+      try {
+        saved = this.ecrypt ? $z1CacheUtils.CacheUtils.saveDataEncrypt(this.gameKey, t, this.pwd) : $z1CacheUtils.CacheUtils.saveData(this.gameKey, t);
+      } catch (error) { console.error("Cannot save progress", this.gameKey, error); }
+      if (saved === false) { this.reportSaveFailure(); return false; }
+      this.localSavePending = false;
+      if (this.saveFailureReported) {
+        this.saveFailureReported = false;
+        if ($z1EventMgr.EventMgr) $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: this.gameKey });
       }
       $z1ServerDataMgr.ServerdataMgr.getNeedSaveServer() && this.UpdateData();
+      return true;
     }
+    this.reportSaveFailure();
+    return false;
   };
   _ctor.prototype.UpdateData = function () {
-    if (this.pause || this.saveBlockedByRecovery) return;
+    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave) return;
     null == this.data && (this.data = new Object());
     var t = Number((new Date().getTime() / 1e3).toFixed(0));
     var e = this.preTime;

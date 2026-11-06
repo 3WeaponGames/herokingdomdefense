@@ -49,6 +49,11 @@ var def_UITouch = function (t) {
   _ctor.prototype.onBlockTouch = function (t) {
     this.node._touchListener.setSwallowTouches(!t);
   };
+  _ctor.prototype.cancelTransition = function () {
+    cc.Tween.stopAllByTarget(this.ndMask);
+    this.ndMask.active = false;
+    this.onBlockTouch(true);
+  };
   _ctor.prototype.onShowTransition = function (t, e) {
     var n = this;
     this.ndMask.active = true;

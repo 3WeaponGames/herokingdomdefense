@@ -21,7 +21,7 @@ var exp_BaseButton = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype._onTouchBegan = function (e) {
     if (this.interactable && this.enabledInHierarchy) {
-      if (this.touched) {
+      if (this.touched && this.invertTime > 0) {
         return this.node.pauseSystemEvents(true), void this._resetState();
       } else {
         return void t.prototype._onTouchBegan.call(this, e);
@@ -30,12 +30,12 @@ var exp_BaseButton = function (t) {
   };
   _ctor.prototype._onTouchEnded = function (e) {
     if (this.interactable && this.enabledInHierarchy) {
-      if (this.touched) {
+      if (this.touched && this.invertTime > 0) {
         this.node.pauseSystemEvents(true);
         return void this._resetState();
       }
       $z1AudioMgr.AudioMgr.getInstance().playAudioButtonClicked();
-      this.touched = true;
+      this.touched = this.invertTime > 0;
       this.touchmil = 0;
       t.prototype._onTouchEnded.call(this, e);
     }

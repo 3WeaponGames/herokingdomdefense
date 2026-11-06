@@ -33,6 +33,7 @@ var def_KinghtFallUISetting = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onEnable = function () {
+    this.btnExchangeCode.active = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().hasActiveGiftCode();
     this.musicSlider.progress = $z1AudioMgr.AudioMgr.getInstance().getMusicVolume();
     this.effectSlider.progress = $z1AudioMgr.AudioMgr.getInstance().getEffectVolume();
   };

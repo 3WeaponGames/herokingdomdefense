@@ -3,7 +3,11 @@
 // Creator component/asset adapter. Set COCOS_ENGINE_ROOT on other installations.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const engine=process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
-const spine=require(path.join(engine,'extensions/spine/lib/spine.js'));
+const engineRuntime=path.join(engine,'extensions/spine/lib/spine.js');
+if (!fs.existsSync(engineRuntime) && !process.env.COCOS_ENGINE_ROOT) {
+  require('node:test')('Real Cocos Spine animation integration', {skip: 'Install Creator 2.4.13 or set COCOS_ENGINE_ROOT to run this engine integration check'}, () => {});
+} else {
+const spine=require(engineRuntime);
 const source=fs.readFileSync(path.join(__dirname,'../../assets/_script/LocalizedArtwork.js'),'utf8');
 function runtimeData(){
   const data=new spine.SkeletonData();data.bones.push(new spine.BoneData(0,'root',null));
@@ -151,3 +155,5 @@ test('Spine scene refresh visits child nodes without querying components on the 
   f.service.refresh();assert.equal(childVisits,1);
 });
 console.log(passed+' Spine artwork checks passed using the installed Creator Spine 3.8 runtime.');
+
+}

@@ -40,6 +40,10 @@ var def_KinghtFallSoldierBase = function (t) {
     e.finIndex = 0;
     e.lastFind = false;
     e.isAgg = false;
+    e.navigationTeam = "friendly";
+    e.rallyPoint = null;
+    e._targetRefresh = 0;
+    e._orderTarget = null;
     return e;
   }
   cc__extends(_ctor, t);
@@ -61,7 +65,19 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.initData = function (t) {
     var e = this;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
+    this.node._combatActor = this;
+    this._isPooled = false;
     Navigation.reset(this);
+    this.rallyPoint = null;
+    this.pathList = null;
+    this.isAgg = false;
+    this._orderTarget = null;
+    this._targetRefresh = 0;
+    this._settledPoint = null;
+    this._retaliationTarget = null;
+    this._retaliationTime = 0;
+    this._retaliationPosition = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.attackRange = this.cfg.AttackRange;
     var n = this.node.getComponents(cc.CircleCollider);
@@ -135,7 +151,6 @@ var def_KinghtFallSoldierBase = function (t) {
     this.onChangeSpeed();
   };
   _ctor.prototype.onUpdate = function (t) {
-    var e = this;
     if (!this.isDead()) {
       this.node.getPosition(this.vec2_1);
       this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
@@ -149,80 +164,108 @@ var def_KinghtFallSoldierBase = function (t) {
         }
       }
       -1 != this.time[l.Attack] && (this.time[l.Attack] += t * this.getAttSpeed());
-      switch (this.state) {
-        case s.Idle:
-          if (this.isAgg) {
-            var followGame = $z1KinghtFallUIGame.default.instance.ctrGame;
-            cc.Vec2.subtract(this.vec2_2, Navigation.positionOf(followGame.ctrPlay.node, followGame), Navigation.positionOf(this.node, followGame));
-            if (this.vec2_2.len() <= $z1KinghtFallConfig.KinghtFallParameter.FollowRange / 2) {
-              return;
-            }
-            this.doMove();
-          } else {
-            this.lastFind = this.isFind();
-            if (this.lastFind) {
-              var a = this.getFind();
-              if (a && a.canAtt) {
-                this.time[l.Attack] >= 1 && this.onFindList();
-              } else {
-                this.doMove();
-              }
-            }
+      if (this.state == s.Attack) return;
+      var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+      var position = Navigation.positionOf(this.node, game);
+      var target = this._orderTarget;
+      this._retaliationTime = Math.max(0, (this._retaliationTime || 0) - t);
+      // Allow a slow unit or a gate detour to finish the response. The timeout
+      // abandons stalled pursuit, rather than expiring while it makes progress.
+      if (this._retaliationTime > 0 && target === this._retaliationTarget && this._retaliationPosition && cc.Vec2.distance(position, this._retaliationPosition) > .1) {
+        this._retaliationTime = 3;
+        this._retaliationPosition = position;
+      }
+      var searchRange = this.attackRange + this.cfg.SearchRange;
+      if (target && target === this._retaliationTarget && this._retaliationTime > 0) searchRange += target.attackRange || target.cfg && target.cfg.AttackRange || 0;
+      if (target && (target.isDead() || !target.node.activeInHierarchy || target.node._combatGeneration !== this._orderTargetGeneration || cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > searchRange)) {
+        target = this._orderTarget = null;
+        this._targetRefresh = 0;
+      }
+      // Combat can interrupt either order, but never consumes its destination.
+      // Bound acquisition work instead of scanning every enemy every frame.
+      this._targetRefresh -= t;
+      if (this._targetRefresh <= 0) {
+        var found = this.getFind();
+        target = this._orderTarget = found && found.tag;
+        this._orderTargetGeneration = target && target.node._combatGeneration;
+        this._targetRefresh = .2;
+      }
+      var goal = null, formation = null;
+      if (target) {
+        goal = Navigation.positionOf(target.node, game);
+        this._settledPoint = null;
+        this._armyProgressPoint = null;
+        this._armyStalledTime = 0;
+        if (cc.Vec2.distance(position, goal) <= this.attackRange) {
+          if (this.time[l.Attack] >= 1) this.onFindList();
+          else if (this.state != s.Idle) this.doIdel();
+          return;
+        }
+      } else if (this.isAgg) {
+        goal = Navigation.positionOf(game.ctrPlay.node, game);
+        formation = game.getArmyOrderGoal && game.getArmyOrderGoal(this, goal);
+        if (!formation && cc.Vec2.distance(position, goal) <= $z1KinghtFallConfig.KinghtFallParameter.FollowRange / 2 && Navigation.canStopFollowing(this, game, goal)) {
+          if (this.state != s.Idle) this.doIdel();
+          return;
+        }
+      } else if (this.rallyPoint) {
+        goal = this.rallyPoint.pos;
+        formation = game.getArmyOrderGoal && game.getArmyOrderGoal(this, goal);
+        if (!formation && this._settledPoint && cc.Vec2.distance(position, this._settledPoint) < 3) {
+          if (this.state != s.Idle) this.doIdel();
+          return;
+        }
+      } else if (this.pathList && this.pathList.pathInfoList[this.pathList.nodeIndex]) {
+        goal = this.pathList.pathInfoList[this.pathList.nodeIndex].pos;
+      }
+      if (formation) {
+        if (formation.pending) {
+          if (this.state != s.Idle) this.doIdel();
+          return;
+        }
+        goal = formation.pos;
+        // Contact oscillation of a few pixels is not meaningful travel. A
+        // normal walk clears this window quickly; a jostled crowd can rest.
+        if (!this._armyProgressPoint || !this._armyProgressGoal || cc.Vec2.distance(this._armyProgressGoal, goal) > 1 || cc.Vec2.distance(position, this._armyProgressPoint) > 8) {
+          this._armyProgressPoint = position;
+          this._armyProgressGoal = { x: goal.x, y: goal.y };
+          this._armyStalledTime = 0;
+        } else this._armyStalledTime = (this._armyStalledTime || 0) + t;
+        if (this.state == s.Move && cc.Vec2.distance(position, goal) > 4 && this._armyStalledTime >= .75 && game.settleArmyCrowd) {
+          this._armyStalledTime = .5;
+          if (game.settleArmyCrowd(this, position)) {
+            this._settledPoint = position;
+            this._armyStalledTime = 0;
+            this.doIdel();
+            return;
           }
-          break;
-        case s.Wait:
-          this.time[l.Attack] >= 1 && this.onFindList();
-          break;
-        case s.Move:
-          (function () {
-            var game = $z1KinghtFallUIGame.default.instance.ctrGame;
-            var goal = null, followingPath = false;
-            if (e.isAgg) {
-              cc.Vec2.subtract(e.vec2_2, Navigation.positionOf(game.ctrPlay.node, game), Navigation.positionOf(e.node, game));
-              if (e.vec2_2.len() <= $z1KinghtFallConfig.KinghtFallParameter.FollowRange / 2) {
-                return void e.doIdel();
-              }
-              if (!e.pathList || !e.pathList.pathInfoList[e.pathList.nodeIndex]) e.upPath();
-              if (e.pathList && e.pathList.pathInfoList[e.pathList.nodeIndex]) {
-                goal = e.pathList.pathInfoList[e.pathList.nodeIndex].pos;
-                followingPath = true;
-              } else return void e.doIdel();
-            } else if (e.pathList) {
-              if (!e.pathList.pathInfoList[e.pathList.nodeIndex]) {
-                e.pathList = null;
-                return void e.doIdel();
-              }
-              goal = e.pathList.pathInfoList[e.pathList.nodeIndex].pos;
-              followingPath = true;
-            } else {
-              var i = e.getFind();
-              if (i) {
-                if (i.canAtt) {
-                  return void (e.time[l.Attack] >= 1 ? e.onFindList() : e.doIdel());
-                }
-                goal = Navigation.positionOf(i.tag.node, game);
-              } else {
-                e.lastFind = e.isFind();
-                e.lastFind || e.doIdel();
-                return;
-              }
-            }
-            var movement = Navigation.moveTo(e, game, goal, t);
-            if (movement.directionX) e.setLeft(movement.directionX < 0);
-            if (followingPath && movement.arrived) {
-              e.pathList.nodeIndex++;
-              Navigation.reset(e);
-              if (e.pathList.nodeIndex < e.pathList.pathInfoList.length) {
-                e.pathList.pathIndex = e.pathList.pathInfoList[e.pathList.nodeIndex].index;
-              } else if (!e.isAgg) {
-                e.pathList = null;
-                var flag = game.ndAggFlag;
-                flag.Flag = Math.max(0, flag.Flag - 1);
-                if (!flag.Flag) flag.active = false;
-                e.doIdel();
-              }
-            }
-          })();
+        }
+        // Solid army bodies need distinct destinations and room to rest after
+        // tiny contact corrections. Do not demand an occupied exact endpoint.
+        if (cc.Vec2.distance(position, goal) <= (this._settledPoint ? 12 : 4) && Navigation.canStopFollowing(this, game, goal)) {
+          this._settledPoint = position;
+          if (this.state != s.Idle) this.doIdel();
+          return;
+        }
+        this._settledPoint = null;
+      }
+      if (!goal) {
+        if (this.state != s.Idle) this.doIdel();
+        return;
+      }
+      if (this.state != s.Move) this.doMove();
+      var movement = Navigation.moveTo(this, game, goal, t);
+      if (movement.directionX) this.setLeft(movement.directionX < 0);
+      // A projected endpoint on the wrong side of a wall is not arrival.
+      var nearRally = !target && this.rallyPoint && movement.arrived && cc.Vec2.distance(Navigation.positionOf(this.node, game), goal) <= 48 && Navigation.canStopFollowing(this, game, goal);
+      if (!target && !this.isAgg && movement.arrived && (movement.reached || nearRally)) {
+        if (this.rallyPoint) this._settledPoint = Navigation.positionOf(this.node, game);
+        else if (this.pathList) {
+          this.pathList.nodeIndex++;
+          if (this.pathList.nodeIndex >= this.pathList.pathInfoList.length) this.pathList = null;
+          else this.pathList.pathIndex = this.pathList.pathInfoList[this.pathList.nodeIndex].index;
+        }
+        this.doIdel();
       }
     }
   };
@@ -302,6 +345,13 @@ var def_KinghtFallSoldierBase = function (t) {
     }()));
   };
   _ctor.prototype.getFind = function () {
+    var attacker = this._retaliationTarget;
+    if (this._retaliationTime > 0 && attacker && !attacker.isDead() && attacker.node.activeInHierarchy && attacker.node._combatGeneration === this._retaliationGeneration) {
+      attacker.node.getPosition(this.vec2_2);
+      var retaliationDistance = cc.Vec2.distance(this.vec2_1, this.vec2_2);
+      var attackerRange = attacker.attackRange || attacker.cfg && attacker.cfg.AttackRange || 0;
+      if (retaliationDistance <= this.attackRange + this.cfg.SearchRange + attackerRange) return { tag: attacker, canAtt: retaliationDistance <= this.attackRange };
+    }
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     var e = null;
     var n = -1;
@@ -384,8 +434,16 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.doAttackFinish = function () {
     this.doIdel();
   };
-  _ctor.prototype.onAttacked = function (t) {
+  _ctor.prototype.onAttacked = function (t, attacker) {
     if (!this.isDead()) {
+      if (attacker && attacker.node && attacker.isDead && !attacker.isDead()) {
+        this._retaliationTarget = attacker;
+        this._retaliationGeneration = attacker.node._combatGeneration;
+        this._retaliationTime = 3;
+        this._retaliationPosition = Navigation.positionOf(this.node, $z1KinghtFallUIGame.default.instance.ctrGame);
+        this._targetRefresh = 0;
+        this._settledPoint = null;
+      }
       var e = 1;
       if (1 == this.cfg.AttackType) {
         var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.talentAdd[$z1KinghtFallEnum.KinghtFallEnumTalentCfg.TalenType04];
@@ -415,6 +473,9 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.freeNode = function () {
+    if (this._isPooled) return;
+    this._isPooled = true;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Soldier + "_" + this.cfg.ID;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(this);
@@ -483,6 +544,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.setNew = function () {
     var t;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     Navigation.reset(this);
     this.hp = this.hpMax;
     null === (t = this.hpctrl) || undefined === t || t.setHp(this.hp, this.hpMax);
@@ -491,59 +553,53 @@ var def_KinghtFallSoldierBase = function (t) {
     this.isAgg = false;
     this.time[l.Attack] = 0;
     this.doIdel();
+    this._orderTarget = null;
+    this._targetRefresh = 0;
+    this._retaliationTarget = null;
+    this._retaliationTime = 0;
+    this._retaliationPosition = null;
+    this.applyArmyOrder($z1KinghtFallUIGame.default.instance.ctrGame);
   };
   _ctor.prototype.getWpos = function () {
     return this.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
   };
-  _ctor.prototype.setPath = function (t, e) {
-    var n;
-    this.isAgg = e;
+  _ctor.prototype.applyArmyOrder = function (game) {
     Navigation.reset(this);
-    if (!t || !t.length || !this.pathList || !this.pathList.pathInfoList.length) return;
-    if (this.pathList) {
-      var i = 0;
-      var a = 0;
-      do {
-        if (this.pathList.pathInfoList[i].index == t[a].index) {
-          (n = this.pathList.pathInfoList).splice.apply(n, cc__spreadArrays([i + 1, this.pathList.pathInfoList.length - i + 1], t.slice(a + 1)));
-          break;
-        }
-        if (this.pathList.pathInfoList[i].index < t[a].index) {
-          i++;
-        } else {
-          a++;
-        }
-      } while (i < this.pathList.pathInfoList.length && a < t.length);
-      for (var o = 0; o < this.pathList.pathInfoList.length; o++) {
-        if (this.pathList.pathInfoList[o].index == this.pathList.pathIndex) {
-          this.pathList.pathInfoList.splice(0, o);
-          this.pathList.nodeIndex = 0;
-          break;
-        }
-      }
+    this.rallyPoint = game.rallyPoint || null;
+    this.isAgg = !this.rallyPoint && !!game.isAgg;
+    this.pathList = null;
+    this._settledPoint = null;
+    this._armyProgressPoint = null;
+    this._armyStalledTime = 0;
+    if (!this.isDead() && this.state != s.Attack) {
+      if (this.rallyPoint || this.isAgg) this.doMove();
+      else this.doIdel();
     }
+  };
+  _ctor.prototype.setPath = function (t, e) {
+    this.isAgg = !!e;
+    this.rallyPoint = null;
+    this._settledPoint = null;
+    Navigation.reset(this);
+    var point = t && t[t.length - 1];
+    this.pathList = point ? { nodeIndex: 0, pathIndex: point.index, pathInfoList: [{ index: point.index, pos: cc.v2(point.pos.x, point.pos.y) }] } : null;
   };
   _ctor.prototype.startAgg = function (t) {
     if (this.isDead() || !t || !t.pos) {
       return false;
     }
     Navigation.reset(this);
-    this.isAgg = true;
+    this.isAgg = $z1KinghtFallConfig.KinghtFallParameter.FollowMode == 2;
+    this.rallyPoint = null;
+    this._settledPoint = null;
     this.pathList = {
       nodeIndex: 0,
       pathIndex: t.index,
-      pathInfoList: [JSON.parse(JSON.stringify(t))]
+      pathInfoList: [{ index: t.index, pos: cc.v2(t.pos.x, t.pos.y) }]
     };
     this.obsPos = null;
     this.obsObj = [];
     this.lastPos = null;
-    switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
-      case 1:
-        var e = cc.v2();
-        cc.Vec2.random(e, 25);
-        cc.Vec2.add(e, e, this.pathList.pathInfoList[0].pos);
-        this.pathList.pathInfoList[0].pos = e;
-    }
     this.doMove();
     return true;
   };

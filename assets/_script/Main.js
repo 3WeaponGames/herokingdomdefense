@@ -37,6 +37,9 @@ var def_Main = function (t) {
   n = _ctor;
   _ctor.prototype.onLoad = function () {
     n.instance = this;
+    this.failedSaveKeys = {};
+    $z1EventMgr.EventMgr.getInstance().on("SaveFailed", this, this.onSaveFailed);
+    $z1EventMgr.EventMgr.getInstance().on("SaveRecovered", this, this.onSaveRecovered);
     $z1UIMgr.UIMgr.getInstance().getChildByName("UILoading").zIndex = 9999;
     this.adapt();
     this.preloadRes();
@@ -61,6 +64,7 @@ var def_Main = function (t) {
       $z1EventMgr.EventMgr.getInstance().emit("WCNGameEnd", "[[loc:system.playTimeLimit]]");
     }, 3);
     $z1UIUtils.UIUtils.schedule(this.addTime, this, 1);
+    cc.game.on(cc.game.EVENT_SHOW, this.checkDailyRollover, this);
     var e = $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().getCrunetDay();
     $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.dau_day_X, e);
   };
@@ -68,6 +72,7 @@ var def_Main = function (t) {
     $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.AdsWatch, t);
   };
   _ctor.prototype.addTime = function () {
+    this.checkDailyRollover();
     if ($z1PlayerMgr.PlayerMgr.getInstance().getTrackData().getTimeByKey($z1GameTrackData.TimeByKey.ONLINE_TIME) <= 18e3) {
       switch ($z1PlayerMgr.PlayerMgr.getInstance().getTrackData().addTimeByKey($z1GameTrackData.TimeByKey.ONLINE_TIME)) {
         case 60:
@@ -106,6 +111,61 @@ var def_Main = function (t) {
     }
     $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().addOnlineTime();
     $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.TimeUpdate);
+  };
+  _ctor.prototype.checkDailyRollover = function () {
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var dailyChanged = player.getDailyData().ensureCurrentDay();
+    var mission = player.getMissionData();
+    var previous = mission.data.time;
+    mission.initData();
+    if (dailyChanged || previous !== mission.data.time) {
+      var events = $z1EventMgr.EventMgr.getInstance();
+      events.emit($z1KinghtFallConfig.KinghtFallEventName.DailyUpdate);
+      events.emit($z1KinghtFallConfig.KinghtFallEventName.TimeUpdate);
+      events.emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
+    }
+  };
+  _ctor.prototype.onSaveFailed = function (info) {
+    this.failedSaveKeys[info.key] = true;
+    if (!this.saveNotice || !cc.isValid(this.saveNotice)) {
+      var node = this.saveNotice = new cc.Node("SaveNotice");
+      node.parent = $z1UIMgr.UIMgr.getInstance().uiRoot || this.node;
+      node.zIndex = 32760;
+      node.width = Math.min(cc.winSize.width - 24, 710);
+      node.height = 108;
+      var widget = node.addComponent(cc.Widget);
+      widget.isAlignTop = true;
+      widget.top = 45;
+      widget.isAlignHorizontalCenter = true;
+      var background = node.addComponent(cc.Graphics);
+      background.fillColor = cc.color(50, 25, 10, 245);
+      background.rect(-node.width / 2, -node.height / 2, node.width, node.height);
+      background.fill();
+      var caption = new cc.Node("Message");
+      caption.parent = node;
+      caption.width = node.width - 24;
+      caption.height = node.height - 12;
+      var label = caption.addComponent(cc.Label);
+      label.fontSize = 26;
+      label.lineHeight = 30;
+      label.enableWrapText = true;
+      label.overflow = cc.Label.Overflow.SHRINK;
+      label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+      label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+      label.string = "[[loc:system.saveFailed]]";
+    }
+    this.saveNotice.active = true;
+  };
+  _ctor.prototype.onSaveRecovered = function (info) {
+    delete this.failedSaveKeys[info.key];
+    if (this.saveNotice && !Object.keys(this.failedSaveKeys).length) this.saveNotice.active = false;
+  };
+  _ctor.prototype.onDestroy = function () {
+    if (this.saveNotice && cc.isValid(this.saveNotice)) this.saveNotice.destroy();
+    cc.game.off(cc.game.EVENT_SHOW, this.checkDailyRollover, this);
+    cc.director.getScheduler().unschedule(this.addTime, this);
+    $z1EventMgr.EventMgr.getInstance().off("SaveFailed", this, this.onSaveFailed);
+    $z1EventMgr.EventMgr.getInstance().off("SaveRecovered", this, this.onSaveRecovered);
   };
   _ctor.prototype.checkUserInfo = function (t) {
     var e = $z1PlayerMgr.PlayerMgr.getInstance().getUserData();

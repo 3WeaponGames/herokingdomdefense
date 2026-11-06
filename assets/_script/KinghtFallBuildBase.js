@@ -246,42 +246,22 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.getWposPhyCol = function () {
-    if (this.isDestroyed) {
-      return [];
-    }
-    var t = [];
-    var e = this.node.getComponents(cc.PhysicsPolygonCollider);
-    for (var n = 0; n < e.length; n++) {
-      if ((s = e[n]).tag == this.index) {
-        var i = [];
-        for (var a = 0; a < s.points.length; a++) {
-          var o = s.points[a];
-          i.push(this.node.convertToWorldSpaceAR(o));
-        }
-        t.push(i);
-      }
-    }
-    for (var r = 0; r < this.ndAniOther.length; r++) {
-      var s;
-      e = (s = this.ndAniOther[r].node).getComponents(cc.PhysicsPolygonCollider);
-      for (n = 0; n < e.length; n++) {
-        var l = e[n];
-        if (l.tag == this.index) {
-          i = [];
-          for (a = 0; a < l.points.length; a++) {
-            o = l.points[a];
-            i.push(s.convertToWorldSpaceAR(o));
-          }
-          t.push(i);
-        }
-      }
-    }
-    return t;
+    return this.getWposPhyCol2().map(function (part) { return part.points; });
   };
   _ctor.prototype.getWposPhyCol2 = function () {
     if (this.isDestroyed) {
+      this._combatFootprints = null;
       return [];
     }
+    // Every enemy observes the same geometry during one game update. Avoid
+    // transforming every building vertex again for every target/attack scan.
+    // Standalone callers have no managed frame and always get fresh geometry.
+    var ui = $z1KinghtFallUIGame.default.instance;
+    var game = ui && ui.ctrGame;
+    var navigation = game && game._navigation;
+    var frame = navigation && navigation._frameManaged ? navigation._frameId : null;
+    var cached = this._combatFootprints;
+    if (frame !== null && cached && cached.navigation === navigation && cached.frame === frame && cached.level === this.index) return cached.parts;
     var t = [];
     var e = this.node.getComponents(cc.PhysicsPolygonCollider);
     for (var n = 0; n < e.length; n++) {
@@ -315,6 +295,7 @@ var def_KinghtFallBuildBase = function (t) {
         }
       }
     }
+    if (frame !== null) this._combatFootprints = { navigation: navigation, frame: frame, level: this.index, parts: t };
     return t;
   };
   _ctor.prototype.setLight = function (t) {
@@ -624,7 +605,9 @@ var def_KinghtFallBuildBase = function (t) {
     };
   };
   _ctor.prototype.setSave = function (t) {
-    this.setLevel(t.level);
+    var level = t && t.level;
+    level = typeof level === "number" && isFinite(level) ? Math.floor(level) : 0;
+    this.setLevel(Math.max(0, Math.min(this.buildCfg.levelList.length, level)));
   };
   _ctor.prototype.getMoveToPos = function (t, e) {
     if (!this.ndMove || 0 == this.ndMove.length) {

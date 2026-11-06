@@ -38,6 +38,14 @@ var exp_KinghtFallDailyData = function (t) {
     this.data = new c();
     return this.data;
   };
+  _ctor.prototype.validateSaveRecord = function (data) {
+    data = this.normalizeSaveRecord(data, new c());
+    data.signReward &= 3;
+    data.signDay = Math.floor(data.signDay);
+    data.onlineTimeReward = data.onlineTimeReward.map(function (value) { return typeof value === "number" && isFinite(value) && value >= 0 ? value : 0; });
+    data.subGameTime = data.subGameTime.map(function (value) { return typeof value === "number" && isFinite(value) && value >= 0 ? value : 0; });
+    return data;
+  };
   _ctor.prototype.initData = function () {
     var t = false;
     if (this.data.vesion < this.vesion) {
@@ -63,6 +71,12 @@ var exp_KinghtFallDailyData = function (t) {
     this.data.onlineTime = 0;
     this.data.onlineTimeReward = [];
   };
+  _ctor.prototype.ensureCurrentDay = function () {
+    if ($z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time)) return false;
+    this.initDailyData();
+    this.saveData();
+    return true;
+  };
   _ctor.prototype.getSignDay = function () {
     return this.data.signDay;
   };
@@ -82,6 +96,7 @@ var exp_KinghtFallDailyData = function (t) {
   };
   _ctor.prototype.addOnlineTime = function (t) {
     undefined === t && (t = 1);
+    this.ensureCurrentDay();
     this.data.onlineTime += t;
     this.saveData();
     return this.data.onlineTime;

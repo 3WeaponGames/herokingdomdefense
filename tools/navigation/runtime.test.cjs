@@ -1,157 +1,15 @@
 'use strict';
-// Exercise the shipped adapter and unit classes against the real planner.
-// The Cocos mock implements scene transforms and component discovery; it does
-// not replace pathfinding or the movement/arrival code under test.
+// Exercise shipped navigation and unit classes using the shared scene harness.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { NavigationGrid } = require('../../assets/_script/NavigationGrid');
+const { environment, Node, Vec2, Collider, PhysicsPolygonCollider, PhysicsBoxCollider, PhysicsCircleCollider, CircleCollider, RigidBody, installIntersection, map01GateEnvironment, distance, near } = require('./runtime-harness.cjs');
 const sourceDir = path.resolve(__dirname, '../../assets/_script');
 const engineDir = process.env.COCOS_ENGINE_DIR || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 let passed = 0;
 function test(name, run) { run(); passed++; console.log('PASS ' + name); }
-function near(actual, expected, epsilon = 1e-6) { assert(Math.abs(actual - expected) <= epsilon, `${actual} != ${expected}`); }
-function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-function installIntersection(cc) {
-  const file = path.join(engineDir, 'cocos2d/core/collider/CCIntersection.js');
-  if (fs.existsSync(file)) {
-    vm.runInNewContext(fs.readFileSync(file, 'utf8'), { cc, module: { exports: {} } }, { filename: file });
-  } else {
-    // Portable geometry mock; installed Creator's implementation is used above
-    // whenever present, including for the real gate regression on this PC.
-    cc.Intersection = { polygonCircle(polygon, circle) {
-      let inside = false, closest = Infinity; const p = circle.position;
-      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        const a = polygon[j], b = polygon[i], dx = b.x - a.x, dy = b.y - a.y;
-        if ((a.y > p.y) !== (b.y > p.y) && p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x) inside = !inside;
-        const length = dx * dx + dy * dy, t = length ? Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / length)) : 0;
-        closest = Math.min(closest, distance(p, { x: a.x + t * dx, y: a.y + t * dy }));
-      }
-      return inside || closest < circle.radius;
-    } };
-  }
-}
-class Vec2 {
-  constructor(x = 0, y = 0) { this.x = x; this.y = y; }
-  clone() { return new Vec2(this.x, this.y); }
-  len() { return Math.hypot(this.x, this.y); }
-  mag() { return this.len(); }
-  static subtract(out, a, b) { out.x = a.x - b.x; out.y = a.y - b.y; return out; }
-  static add(out, a, b) { out.x = a.x + b.x; out.y = a.y + b.y; return out; }
-  static random(out, r) { out.x = r; out.y = 0; return out; }
-  static distance(a, b) { return distance(a, b); }
-}
-Vec2.ZERO = new Vec2();
-class Node {
-  constructor(name = '', parent = null, x = 0, y = 0) {
-    Object.assign(this, { name, x, y, scaleX: 1, scaleY: 1, angle: 0, active: true, components: [], children: [], parent: null, width: 400, height: 400 });
-    if (parent) this.setParent(parent);
-  }
-  get activeInHierarchy() { return this.active && (!this.parent || this.parent.activeInHierarchy); }
-  get position() { return this.getPosition(); }
-  set position(value) { this.setPosition(value); }
-  get childrenCount() { return this.children.length; }
-  setParent(parent) {
-    if (this.parent) this.parent.children.splice(this.parent.children.indexOf(this), 1);
-    this.parent = parent;
-    if (parent) parent.children.push(this);
-  }
-  setPosition(x, y) { if (typeof x === 'object') ({ x, y } = x); this.x = x; this.y = y; }
-  getPosition(out = new Vec2()) { out.x = this.x; out.y = this.y; return out; }
-  getContentSize() { return { width: this.width, height: this.height }; }
-  getChildByName(name) { return this.children.find(n => n.name === name); }
-  convertToWorldSpaceAR(p) {
-    const a = this.angle * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
-    const result = new Vec2(this.x + c * p.x * this.scaleX - s * p.y * this.scaleY, this.y + s * p.x * this.scaleX + c * p.y * this.scaleY);
-    return this.parent ? this.parent.convertToWorldSpaceAR(result) : result;
-  }
-  convertToNodeSpaceAR(p) {
-    const parentPoint = this.parent ? this.parent.convertToNodeSpaceAR(p) : p;
-    const a = -this.angle * Math.PI / 180, c = Math.cos(a), s = Math.sin(a), x = parentPoint.x - this.x, y = parentPoint.y - this.y;
-    return new Vec2((c * x - s * y) / this.scaleX, (s * x + c * y) / this.scaleY);
-  }
-  addComponent(Type) { const value = new Type(); value.node = this; this.components.push(value); return value; }
-  getComponent(Type) { return this.components.find(value => value instanceof Type); }
-  getComponents(Type) { return this.components.filter(value => value instanceof Type); }
-  getComponentsInChildren(Type) { return this.getComponents(Type).concat(...this.children.map(n => n.getComponentsInChildren(Type))); }
-}
-class Collider { constructor() { this.enabled = true; this.sensor = false; this.offset = new Vec2(); } }
-class PhysicsPolygonCollider extends Collider {}
-class PhysicsBoxCollider extends Collider { constructor() { super(); this.size = { width: 20, height: 20 }; } }
-class PhysicsCircleCollider extends Collider { constructor() { super(); this.radius = 8; } }
-class CircleCollider extends Collider { constructor() { super(); this.radius = 8; } }
-class RigidBody {
-  constructor() { this.active = true; this.linearVelocity = new Vec2(77, -32); }
-  syncPosition() {}
-  syncRotation() {}
-  getComponents(Type) { return this.node.getComponents(Type); }
-}
-function BaseCtrl() {}
-BaseCtrl.prototype.onDestroy = function () { this.baseDestroyed = true; };
-function enums() { return new Proxy({}, { get: (_, key) => String(key) }); }
-function environment() {
-  let now = 0;
-  const physics = { listeners: [],
-    on(event, callback, target) { this.listeners.push({ event, callback, target }); },
-    off(event, callback, target) { this.listeners = this.listeners.filter(l => l.event !== event || l.callback !== callback || l.target !== target); },
-    emit(event) { this.listeners.slice().filter(l => l.event === event).forEach(l => l.callback.call(l.target)); } };
-  const game = {
-    ndMain: new Node('ndMain'), mapSize: { width: 400, height: 400 },
-    ndAggFlag: new Node('flag'), pathList: [],
-    gameData: { obstacles: [], buildings: [], soldiers: [], talentAdd: {}, treasureAdd: {}, addTime: {}, getHpAdd: () => 1, getAttAdd: () => 1, getGameBuff: () => null,
-      getBulidList() { return this.buildings; }, getSoldierList() { return this.soldiers; } }
-  };
-  game.ctrPlay = { node: new Node('hero', game.ndMain, 150, 150), ndRange: new Node(), isDead: () => false };
-  const ui = { default: { instance: { ctrGame: game, speed: 1, ctrEffect: { onMoveTrack() {} } } } };
-  const cc = { Node, Vec2, PhysicsCollider: Collider, PhysicsPolygonCollider, PhysicsBoxCollider, PhysicsCircleCollider, CircleCollider, RigidBody,
-    director: { getPhysicsManager: () => physics }, game: { config: { frameRate: 60 } },
-    v2: (x = 0, y = 0) => typeof x === 'object' ? new Vec2(x.x, x.y) : new Vec2(x, y), size: (width, height) => ({ width, height }),
-    winSize: { width: 750, height: 1334 }, _decorator: { ccclass: target => target, property: () => () => undefined } };
-  const cfg = { ID: 90001, AttackRange: 20, SearchRange: 40, Health: 100, AttackDamage: 5, AttackInterval: 1, BuildingCross: 1, MoveSpeed: 60 };
-  const enumModule = new Proxy({}, { get: () => enums() });
-  const stubs = {
-    NavigationGrid: { NavigationGrid }, BaseCtrl: { default: BaseCtrl }, KinghtFallUIGame: ui,
-    KinghtFallConfig: { KinghtFallParameter: { FollowRange: 40, FollowMode: 1 }, KinghtFallBundelName: {}, KinghtFallPrefabName: {}, KinghtFallPoolName: {} },
-    KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getSoldierCfgById: () => cfg }) } },
-    KinghtFallEnum: enumModule,
-    KinghtFallModle: { KinghtFallSoldierAniEnum: { Idle: 'idle', Move: 'move' }, KinghtFallGameArmy: {}, KinghtFallGameStage: { Prepare: 0, Fight: 1 } },
-    KinghtFallGameCtrlData: { default: function () {}, KinghtFallTimeType: {}, KinghtFallCommerceKeyType: {} }
-  };
-  const modules = {};
-  function load(name) {
-    if (stubs[name]) return stubs[name];
-    if (modules[name]) return modules[name].exports;
-    if (!/^(KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
-    const module = { exports: {} }; modules[name] = module;
-    const context = { module, exports: module.exports, require: load, cc, sp: { Skeleton: function () {} }, console, Set, Date: { now: () => now },
-      __extends(Child, Parent) { Object.setPrototypeOf(Child, Parent); Child.prototype = Object.create(Parent.prototype); Child.prototype.constructor = Child; },
-      __decorate(decorators, target, key) { if (key !== undefined) return undefined; return decorators.reduceRight((value, decorator) => decorator(value) || value, target); },
-      __spreadArrays: (...arrays) => [].concat(...arrays) };
-    vm.runInNewContext(fs.readFileSync(path.join(sourceDir, name + '.js'), 'utf8'), context, { filename: name + '.js' });
-    return module.exports;
-  }
-  const nav = load('KinghtFallNavigation');
-  function unit(x = -100, y = 0, parent = game.ndMain) {
-    const node = new Node('unit', parent, x, y), rigidBody = node.addComponent(RigidBody);
-    return { node, rigidBody, getSpeed: () => 60 };
-  }
-  function box(x, y, width, height, building = false, parent = game.ndMain) {
-    const node = new Node('obstacle', parent, x, y), collider = node.addComponent(PhysicsBoxCollider);
-    collider.size = { width, height }; (building ? game.gameData.buildings : game.gameData.obstacles).push({ node });
-    return collider;
-  }
-  function actor(name, x = -100, y = 0, parent = game.ndMain) {
-    const value = new (load(name).default)(), body = unit(x, y, parent);
-    Object.assign(value, body, { state: 1, time: { Attack: -1, Spell: 0, SpellMax: Infinity, Movetime: 0 }, cfg, hp: 100, hpMax: 100, hpctrl: { setHp() {}, setType() {} },
-      getAttSpeed: () => 1, isDead: () => false, getFind: () => null, isFind: () => false,
-      spAni: { node: new Node(), setAnimation() {} }, setLeft(value) { this.facingLeft = value; }, onFindList() {} });
-    value.spAni2 = value.spAni3 = value.spAni;
-    if (value.oldPos) value.node.getPosition(value.oldPos);
-    return value;
-  }
-  return { game, nav, unit, box, actor, load, cc, cfg, physics, setTime: value => { now = value; } };
-}
 
 test('Nested transforms use one main-space radius and convert movement back to the local parent', () => {
   const e = environment();
@@ -204,16 +62,16 @@ test('A moving target cannot report arrival at its stale cached endpoint', () =>
   near(u.node.x, 110); assert.equal(result.reached, true);
 });
 
-test('Unreachable routes clear stale velocity, throttle retries, and recover immediately on geometry revision', () => {
+test('Unreachable routes clear stale velocity, cache unchanged failures, and recover immediately on geometry revision', () => {
   const e = environment(); const wall = e.box(0, 0, 20, 400), u = e.unit(), target = { x: 100, y: 0 };
   let result = e.nav.moveTo(u, e.game, target, 1), nav = e.nav.get(e.game);
   assert.equal(result.blocked, true); near(u.node.x, -100); near(u.rigidBody.linearVelocity.len(), 0);
   assert.equal(nav.stats.searches, 1);
   e.setTime(100); e.nav.moveTo(u, e.game, target, 1); assert.equal(nav.stats.searches, 1);
-  e.setTime(801); e.nav.moveTo(u, e.game, target, 1); assert.equal(nav.stats.searches, 2);
+  e.setTime(801); e.nav.moveTo(u, e.game, target, 1); assert.equal(nav.stats.searches, 1);
   wall.enabled = false; e.nav.beginFrame(e.game);
   result = e.nav.moveTo(u, e.game, target, 1);
-  assert.equal(result.blocked, false); assert.equal(nav.stats.searches, 3); near(u.node.x, -40);
+  assert.equal(result.blocked, false); assert.equal(nav.stats.searches, 2); near(u.node.x, -40);
 });
 
 test('Collider snapshots track active buildings, sensors, body activation, transforms and map bounds', () => {
@@ -228,6 +86,30 @@ test('Collider snapshots track active buildings, sensors, body activation, trans
   wall.node.active = false; e.nav.beginFrame(e.game); nav.refresh(); assert.equal(nav.revision, 5);
   e.game.mapSize.width = 500; e.nav.beginFrame(e.game); nav.refresh(); assert.equal(nav.revision, 6);
   assert(nav.grid.isWalkable({ x: 230, y: 0 }, 12));
+});
+
+test('Physics round-trip noise preserves the geometry cache while real subpixel transforms still invalidate it', () => {
+  const e = environment(), parent = new Node('terrain group', e.game.ndMain, 20, 30);
+  const wall = e.box(-172.986, 0, 20, 80, false, parent), nav = e.nav.get(e.game);
+  nav.refresh(); const originalGrid = nav.grid;
+  // Actual live dt1_1 terrain drift: 1.1368683772161603e-13 in node.x.
+  wall.node.x = -172.98599999999988;
+  parent.x += 1e-13; parent.angle += 1e-13; parent.scaleX += 1e-13;
+  e.nav.beginFrame(e.game); nav.refresh();
+  assert.equal(nav.revision, 1, 'Numerical physics noise rebuilt the immutable scene');
+  assert.equal(nav.grid, originalGrid);
+  wall.node.x += .0001;
+  e.nav.beginFrame(e.game); nav.refresh();
+  assert.equal(nav.revision, 2, 'A real subpixel translation reused stale geometry');
+  wall.offset.x += .0001;
+  e.nav.beginFrame(e.game); nav.refresh();
+  assert.equal(nav.revision, 3, 'A real collider offset reused stale geometry');
+  parent.scaleX += .0001;
+  e.nav.beginFrame(e.game); nav.refresh();
+  assert.equal(nav.revision, 4, 'An ancestor scale change reused stale geometry');
+  parent.angle += .0001;
+  e.nav.beginFrame(e.game); nav.refresh();
+  assert.equal(nav.revision, 5, 'An ancestor rotation reused stale geometry');
 });
 
 test('Round physics obstacles use a conservative polygon rather than cutting into a circle', () => {
@@ -319,9 +201,10 @@ test('A fully upgraded Map02 gate wing is approached at its attack polygon rathe
     let attacks = 0; u.doAttackStart = () => { attacks++; };
     u.bornInfo = { nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, -245.465, 598.627)] };
     const selected = u.getFind(), nav = e.nav.get(e.game); nav.refresh();
-    if (spawn === fixture.spawn) assert.equal(selected.tag.fixtureId, fixture.expectedOldSelection);
+    const oldTarget = parts.reduce((best, part) => distance(spawn, part.node.position) < distance(spawn, best.node.position) ? part : best);
+    if (spawn === fixture.spawn) assert.equal(oldTarget.node.fixtureId, fixture.expectedOldSelection);
     assert.equal(selected.canAtt, false); assert(selected.polygon.length >= 3);
-    assert.equal(nav.grid.findPath(spawn, e.nav.positionOf(selected.tag, e.game), fixture.radius), null, 'fixture no longer reproduces the buried-origin failure');
+    assert.equal(nav.grid.findPath(spawn, e.nav.positionOf(oldTarget.node, e.game), fixture.radius), null, 'fixture no longer reproduces the old nearest-origin failure');
     assert.equal(!!u.onFindList(), false); assert.equal(attacks, 0);
     const approach = e.nav.attackPositionOf(selected, u, e.game);
     assert(nav.grid.findPath(spawn, approach, fixture.radius), 'polygon approach has no safe path');
@@ -379,9 +262,9 @@ test('Map02 level-two gate and neighboring built structures recover all four rep
     delete u.getFind; delete u.onFindList; let attacks = 0; u.doAttackStart = () => { attacks++; };
     u.bornInfo = { nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, -245.465, 598.627)] };
     const selected = u.getFind(), nav = e.nav.get(e.game); nav.refresh();
-    assert.equal(selected.canAtt, false);
-    assert.equal(nav.grid.findPath(spawn, e.nav.positionOf(selected.tag, e.game), fixture.radius), null, JSON.stringify(spawn) + ' no longer reproduces old origin failure');
-    assert(nav.grid.findPath(spawn, e.nav.attackPositionOf(selected, u, e.game), fixture.radius), 'nearest boundary is unreachable at ' + JSON.stringify(spawn));
+    const oldTarget = colliders.reduce((best, collider) => distance(spawn, collider.node.position) < distance(spawn, best.node.position) ? collider : best);
+    assert.equal(nav.grid.findPath(spawn, e.nav.positionOf(oldTarget.node, e.game), fixture.radius), null, JSON.stringify(spawn) + ' no longer reproduces old origin failure');
+    if (!selected.canAtt) assert(nav.grid.findPath(spawn, e.nav.attackPositionOf(selected, u, e.game), fixture.radius), 'nearest boundary is unreachable at ' + JSON.stringify(spawn));
     let previous = u.node.getPosition();
     for (let i = 0; i < 160 && !u.getFind().canAtt; i++) {
       u.onUpdate(0.05); const current = u.node.getPosition();
@@ -392,6 +275,21 @@ test('Map02 level-two gate and neighboring built structures recover all four rep
     u.time.Attack = 1; u.onUpdate(0); assert.equal(attacks, 1);
     assert.equal(u.bornInfo.nodeIndex, 0); assert(colliders.every(c => c.enabled));
   }
+});
+
+test('Waiting enemies reacquire an approaching target outside attack range and resume pursuit', () => {
+  const e = environment(), u = e.actor('KinghtFallEnemyItem02');
+  delete u.getFind;
+  e.game.ctrPlay.node.setPosition(-50, 0);
+  u.bornInfo = { nodeIndex: 1, pathList: [new Node('completed route', e.game.ndMain, -100, 0)] };
+  u.doWait();
+  assert.equal(u.state, 3);
+  assert.equal(u.getFind().canAtt, false);
+  u.onUpdate(0);
+  assert.equal(u.state, 1, 'route-end wait ignored a new target outside attack range');
+  u.onUpdate(0.1);
+  assert(u.node.x > -100, 'reacquired target did not restart movement');
+  assert.equal(u.bornInfo.nodeIndex, 1, 'reacquisition must not rewind the completed route');
 });
 
 test('All eight pursuing enemy classes resume forward after the hero leaves actual aggro range', () => {
@@ -431,6 +329,7 @@ test('Combat acquisition and disengagement invalidate close destinations within 
   u.bornInfo = { nodeIndex: 0, pathList: [objective] };
   u.onUpdate(0); near(u._navigationState.target.x, 35);
   u.getFind = () => ({ tag: hero, canAtt: false });
+  u._targetSearchElapsed = .2; // Observe the next bounded acquisition tick.
   u.onUpdate(0); near(u._navigationState.target.x, 20);
   u.getFind = () => null;
   u.onUpdate(0.1); near(u._navigationState.target.x, 35); near(u.node.x, 6);
@@ -493,14 +392,14 @@ test('Enemy authored goals advance only at the resolved endpoint; wait and unrea
   }
 });
 
-test('Every allied archetype follows the same planner and ends a rally once, without stale-vector movement', () => {
+test('Every allied archetype follows the same planner and completes a legacy destination without stale-vector movement', () => {
   for (let n = 1; n <= 4; n++) {
     const e = environment(), name = 'KinghtFallSoldierItem' + String(n).padStart(2, '0'), u = e.actor(name);
     u.pathList = { nodeIndex: 0, pathIndex: 42, pathInfoList: [{ index: 42, pos: { x: 100, y: 0 } }] };
     e.game.ndAggFlag.Flag = 1; u.vec2_2 = new Vec2(-9000, 9000); u.onUpdate(0.1);
     near(u.node.x, -94); near(u.node.y, 0); assert(u._navigationState);
-    u.onUpdate(100); near(u.node.x, 100); assert.equal(u.pathList, null); assert.equal(e.game.ndAggFlag.Flag, 0); assert.equal(u.state, 0);
-    u.onUpdate(0); assert.equal(e.game.ndAggFlag.Flag, 0);
+    u.onUpdate(100); near(u.node.x, 100); assert.equal(u.pathList, null); assert.equal(e.game.ndAggFlag.Flag, 1); assert.equal(u.state, 0);
+    u.onUpdate(0); assert.equal(e.game.ndAggFlag.Flag, 1, 'movement must not clear the persistent army marker');
     assert(u instanceof e.load('KinghtFallSoldierBase').default);
   }
 });
@@ -508,7 +407,7 @@ test('Every allied archetype follows the same planner and ends a rally once, wit
 test('Allied combat pursuit and follow distance both use the main coordinate system', () => {
   const e = environment(), group = new Node('unit-group', e.game.ndMain, -100, 0), u = e.actor('KinghtFallSoldierItem01', 0, 0, group);
   const targetParent = new Node('target-group', e.game.ndMain, 100, 20), target = new Node('target', targetParent, 0, -20);
-  u.getFind = () => ({ tag: { node: target }, canAtt: false }); u.onUpdate(0.1);
+  u.getFind = () => ({ tag: { node: target, isDead: () => false }, canAtt: false }); u.onUpdate(0.1);
   near(e.nav.positionOf(u.node, e.game).x, -94); near(u.node.x, 6);
   // Same local coordinates under different parents are not close in the map.
   e.game.ctrPlay.node.setParent(targetParent); e.game.ctrPlay.node.setPosition(6, -20);
@@ -527,20 +426,21 @@ test('Pooled enemy/allied init, allied revival, new rallies and route updates di
   soldier._navigationState = { old: true }; assert.equal(soldier.startAgg({ index: 1, pos: { x: 100, y: 0 } }), true); assert.equal(soldier._navigationState, null);
   soldier._navigationState = { old: true }; soldier.setPath([], true); assert.equal(soldier._navigationState, null);
   soldier.setPath([{ index: 1, pos: { x: 100, y: 0 } }, { index: 2, pos: { x: 120, y: 0 } }], false);
-  assert.equal(soldier.pathList.pathInfoList.length, 2);
+  assert.equal(soldier.pathList.pathInfoList.length, 1); assert.equal(soldier.pathList.pathIndex, 2);
   soldier.pathList = { nodeIndex: 0, pathIndex: 1, pathInfoList: [] }; assert.doesNotThrow(() => soldier.setPath([], false));
 });
 
-test('Game controller invalidates snapshots per update, bounds rally history, and initializes empty routes safely', () => {
+test('Game controller invalidates snapshots per update without accumulating historical follow routes', () => {
   const e = environment(), ctrl = new (e.load('KinghtFallGameCtrl').default)();
   Object.assign(ctrl, e.game, { ctrPlay: { node: new Node('hero', e.game.ndMain, 0, 0), doMove() {} }, gameStatus: -1, isAgg: true,
-    pathList: Array.from({ length: 1000 }, (_, i) => ({ index: i, pos: new Vec2(0, 0) })), pathIndex: 1000 });
-  let received = 0;
-  ctrl.gameData.soldiers = [{ onUpdate() {}, setPath(list) { received = list.length; }, node: new Node(), startAgg() { return false; } }];
+    pathList: [], pathIndex: 0 });
+  ctrl.gameData.soldiers = [{ onUpdate() {} }];
   const nav = e.nav.get(ctrl); nav.refresh(); assert.equal(nav._refreshPending, false);
-  ctrl.onUpdate(0); assert.equal(nav._refreshPending, true); assert.equal(received, 1000);
-  assert.equal(ctrl.pathList.length, 500); assert.equal(ctrl.pathList[0].index, 500);
-  ctrl.pathList = []; ctrl.onUpdate(0); assert.equal(ctrl.pathList.length, 1); assert.equal(ctrl.pathList[0].index, 1000);
+  ctrl.onUpdate(0); assert.equal(nav._refreshPending, true);
+  for (let i = 0; i < 1000; i++) { ctrl.ctrPlay.node.x = i; ctrl.onUpdate(0); }
+  assert.equal(ctrl.pathList.length, 0, 'following must not build a hero breadcrumb queue');
+  ctrl.addPathNode(); assert.equal(ctrl.pathList.length, 1); assert.equal(ctrl.pathList[0].index, 0);
+  ctrl.addPathNode(); assert.equal(ctrl.pathList.length, 1); assert.equal(ctrl.pathList[0].index, 1);
 });
 
 test('Map initialization discards the previous map navigation instance', () => {
@@ -630,6 +530,128 @@ test('Permanent combat buffs survive updates; timed buffs expire without removin
     actor.delBuff(kind);
     assert.equal(actor.getBuffList(kind).length, 0, 'permanent buffs can still be removed explicitly');
   }
+});
+
+test('Map01 shield enemies reach and attack every left-gate level instead of stalling at an occluded corner', () => {
+  for (const level of [1, 2, 3]) for (const hero of [null, { x: -420, y: 600 }]) {
+    const e = map01GateEnvironment(level, hero), u = e.actor('KinghtFallEnemyItem02', -600, 940);
+    const prefab = JSON.parse(fs.readFileSync(path.join(sourceDir, '../KinghtFallEnemy/ItemEnemy02.prefab'), 'utf8'));
+    u.node.addComponent(PhysicsPolygonCollider).points = prefab.find(component => component.__type__ === 'cc.PhysicsPolygonCollider').points;
+    const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg['90002'];
+    u.cfg.AttackRange = config.AttackRange; u.cfg.SearchRange = config.SearchRange;
+    delete u.getFind; delete u.onFindList;
+    u.time.Attack = 1;
+    let attacks = 0;
+    u.doAttackStart = () => { attacks++; };
+    u.bornInfo = { nodeIndex: 0, pathList: [new Node('route goal', e.game.ndMain, -532.576, 759.256)] };
+    const nav = e.nav.get(e.game); nav.refresh();
+    const radius = nav.radius(u); assert.equal(radius, 20);
+    let previous = u.node.position;
+    for (let frame = 0; frame < 400 && !attacks; frame++) {
+      e.setTime(frame * 50); u.onUpdate(0.05);
+      const current = u.node.position;
+      assert(nav.grid.segmentClear(previous, current, radius), 'Gate approach crossed terrain or a wall');
+      assert(distance(previous, current) <= 3.000001, 'Gate approach teleported');
+      previous = current;
+    }
+    assert(attacks > 0, `Level ${level}, hero ${!!hero}: enemy remained at ${JSON.stringify(u.node.position)}`);
+    assert.equal(u.bornInfo.nodeIndex, 0, 'Combat must not consume the authored route');
+  }
+});
+
+test('A nearby hero behind a closed gate cannot keep shield enemies targeting an unreachable origin', () => {
+  const e = environment(); installIntersection(e.cc);
+  e.game.mapSize = { width: 600, height: 600 };
+  e.game.ctrPlay.node.setPosition(20, 0);
+  const gate = new Node('offset-origin gate', e.game.ndMain, 0, 180);
+  const polygon = [{ x: -10, y: -280 }, { x: 10, y: -280 }, { x: 10, y: 280 }, { x: -10, y: 280 }];
+  gate.addComponent(PhysicsPolygonCollider).points = polygon.map(p => ({ x: p.x, y: p.y - gate.y }));
+  e.game.gameData.buildings.push({ node: gate, getIsWork: () => true,
+    getWposPhyCol: () => [polygon], getWposPhyCol2: () => [{ tagNode: gate, points: polygon }] });
+  const u = e.actor('KinghtFallEnemyItem02', -100, 0);
+  u.node.addComponent(PhysicsBoxCollider).size = { width: 22, height: 22 };
+  u.cfg.AttackRange = 50; u.cfg.SearchRange = 220; u.time.Attack = 1;
+  delete u.getFind; delete u.onFindList;
+  let attacks = 0; u.doAttackStart = () => { attacks++; };
+  u.bornInfo = { nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, 150, 0)] };
+  const nav = e.nav.get(e.game); nav.refresh();
+  assert.equal(nav.grid.findPath(u.node.position, e.game.ctrPlay.node.position, nav.radius(u)), null);
+  for (let frame = 0; frame < 200 && !attacks; frame++) { e.setTime(frame * 50); u.onUpdate(0.05); }
+  assert(attacks > 0, 'Enemy never approached and attacked the gate blocking its route to the hero');
+  assert.equal(u.getFind().tag, gate);
+  assert.equal(u.bornInfo.nodeIndex, 0);
+});
+
+test('A small physics nudge invalidates a failed overlap escape instead of leaving the unit blocked forever', () => {
+  const e = environment(); e.box(0, 0, 240, 400);
+  const u = e.unit(65, 0), goal = { x: 180, y: 0 }, nav = e.nav.get(e.game);
+  assert.equal(e.nav.moveTo(u, e.game, goal, 0).blocked, true);
+  assert.equal(nav.stats.searches, 1);
+  // This two-pixel nudge puts a valid exit within the planner's escape radius.
+  u.node.x = 67;
+  const result = e.nav.moveTo(u, e.game, goal, 0.1);
+  assert.equal(result.blocked, false);
+  assert.equal(nav.stats.searches, 2);
+  assert(u.node.x > 67, 'The valid gradual escape did not begin');
+  assert(distance(u.node, { x: 67, y: 0 }) <= 6.000001, 'Retrying the escape teleported the unit');
+});
+
+test('Subpixel target movement invalidates a failed path when the target becomes approachable', () => {
+  const e = environment(); e.box(0, 0, 20, 400);
+  const u = e.unit(-100, 0), nav = e.nav.get(e.game);
+  assert.equal(e.nav.moveTo(u, e.game, { x: 10.1, y: 0 }, 0).blocked, true);
+  assert.equal(nav.stats.searches, 1);
+  // The first point is outside the far face; it cannot project through the wall.
+  // Moving 0.2px inside the polygon permits a safe approach to its near face.
+  const result = e.nav.moveTo(u, e.game, { x: 9.9, y: 0 }, 0.1);
+  assert.equal(result.blocked, false);
+  assert.equal(nav.stats.searches, 2);
+  assert(u.node.x > -100);
+  assert(nav.grid.segmentClear({ x: -100, y: 0 }, u.node, 12));
+});
+
+test('A live Map01 crowd displacement past an escape anchor advances toward the rally instead of backtracking', () => {
+  const e = map01GateEnvironment(1, null), goal = { x: -300, y: 600 };
+  // Both positions were observed in the actual Creator inward-rally run.
+  const u = e.unit(-567.1206546305175, 867.3987725677789);
+  u.navigationTeam = 'friendly';
+  u.node.addComponent(PhysicsBoxCollider).size = { width: 22, height: 22 };
+  const nav = e.nav.get(e.game), grid = nav.gridFor(u);
+  e.nav.moveTo(u, e.game, goal, 0);
+  assert(u._navigationState.escape, 'Fixture must begin inside inflated cliff clearance');
+  assert.equal(u._navigationState.index, 0);
+  const displaced = { x: -577.8107077083368, y: 856.559562021177 };
+  assert(grid.isWalkable(displaced, 20));
+  assert(grid.segmentClear(displaced, goal, 20));
+  u.node.setPosition(displaced);
+  const result = e.nav.moveTo(u, e.game, goal, 0.1);
+  assert.equal(result.blocked, false);
+  assert(u.node.y < displaced.y, 'Unit backtracked north to its obsolete escape anchor');
+  assert(u.node.x > displaced.x, 'Unit failed to advance east toward the rally');
+  assert(grid.segmentClear(displaced, u.node, 20));
+  assert.equal(nav.stats.searches, 1, 'A safe cached segment should not need a new search');
+});
+
+test('Cached escape lookahead retains detour corners when the next shortcut crosses a wall', () => {
+  const e = environment(); e.box(0, 0, 40, 80);
+  const u = e.unit(-25, 0), goal = { x: 100, y: 0 }, nav = e.nav.get(e.game);
+  e.nav.moveTo(u, e.game, goal, 0);
+  assert(u._navigationState.escape);
+  const displaced = { x: -65, y: 55 }, grid = nav.grid, radius = nav.radius(u);
+  u.node.setPosition(displaced);
+  assert(grid.isWalkable(displaced, radius));
+  assert.equal(grid.segmentClear(displaced, goal, radius), false, 'Fixture must require a detour');
+  let previous = displaced, result;
+  for (let frame = 0; frame < 20; frame++) {
+    e.setTime(frame * 100); e.nav.beginFrame(e.game);
+    result = e.nav.moveTo(u, e.game, goal, 1);
+    const current = { x: u.node.x, y: u.node.y };
+    assert(grid.segmentClear(previous, current, radius), 'Lookahead skipped a required wall corner');
+    assert(distance(previous, current) <= 60.000001, 'Lookahead teleported the unit');
+    previous = current;
+    if (result.reached) break;
+  }
+  assert(result.reached, 'Safe lookahead failed to complete the detour');
 });
 
 console.log(`Navigation runtime integration: ${passed} tests passed.`);

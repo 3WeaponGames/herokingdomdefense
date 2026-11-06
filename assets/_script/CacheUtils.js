@@ -14,27 +14,33 @@ var $z1Utils = require("Utils");
 var exp_CacheUtils = function () {
   function _ctor() {}
   _ctor.saveData = function (t, e) {
+    var fileSaved = false;
+    var nativeFile = $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE || $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT;
     if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
-      var n = tt.getFileSystemManager();
       try {
+        var n = tt.getFileSystemManager();
         tt.sffile[t] = e;
         n.writeFileSync("ttfile://user/data.json", JSON.stringify(tt.sffile), "utf8");
+        fileSaved = true;
       } catch (o) {
         console.error("存储到文件失败：", JSON.stringify(o));
       }
     } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
-      n = wx.getFileSystemManager();
       try {
+        n = wx.getFileSystemManager();
         wx.sffile[t] = e;
         n.writeFileSync(wx.env.USER_DATA_PATH + "/data.json", JSON.stringify(wx.sffile), "utf8");
+        fileSaved = true;
       } catch (o) {
         console.error("存储到文件失败：", JSON.stringify(o));
       }
     }
     try {
       localStorage.setItem(t, e);
+      return nativeFile ? fileSaved : true;
     } catch (o) {
       console.error("存储到缓存失败：", JSON.stringify(o));
+      return fileSaved;
     }
   };
   _ctor.clearAll = function (t) {
@@ -91,7 +97,7 @@ var exp_CacheUtils = function () {
   };
   _ctor.saveDataEncrypt = function (t, e, n) {
     var i = $z1Utils.Utils.encrypt(e, n);
-    this.saveData(t, i);
+    return this.saveData(t, i);
   };
   _ctor.getDataDecrypt = function (t, e) {
     var n = this.getData(t);

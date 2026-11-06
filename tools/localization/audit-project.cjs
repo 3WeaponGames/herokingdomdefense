@@ -3,7 +3,6 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.resolve(__dirname, '../..');
 const assetRoot = path.join(root, 'assets');
-const backup = path.join(root, 'local/localization-backup-20261106/assets');
 function option(name, fallback) {
   const at = process.argv.indexOf(name);
   if (at < 0) return fallback;
@@ -11,7 +10,8 @@ function option(name, fallback) {
   return path.resolve(root, process.argv[at + 1]);
 }
 const catalogFile = option('--catalog', path.join(assetRoot, 'resources/localization/catalog.json'));
-const reportFile = option('--report', path.join(__dirname, 'project-audit.json'));
+const backup = option('--baseline', null);
+const reportFile = option('--report', path.join(root, 'local/audit/localization.json'));
 const catalog = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
 const token = /\[\[loc:([\w.-]+)\]\]/g;
 const displayField = /^(name|describe|levelupdescribe|equipname|missiondescribe|gift_name|buffword|buffdes|bufflabel|buffvalue|description|title|text|label|content)$/i;
@@ -79,8 +79,8 @@ for (const file of walk(assetRoot)) {
     const data = JSON.parse(fs.readFileSync(file,'utf8'));
     function inspect(o, at) { if (!o || typeof o !== 'object') return; for (const [key,value] of Object.entries(o)) { if (key==='TextCfg') continue; const p=at.concat(key); if (typeof value==='string' && displayField.test(key) && meaningful(value)) error('raw-config-copy',rel+':'+p.join('.'),value); if (typeof value==='string' && displayField.test(key) && value.includes('[[loc:')) report.counts.configTextFields++; if (value && typeof value==='object') inspect(value,p); } }
     inspect(data,[]);
-    const originalFile = path.join(backup,path.relative(assetRoot,file));
-    if (fs.existsSync(originalFile)) {
+    const originalFile = backup && path.join(backup,path.relative(assetRoot,file));
+    if (originalFile && fs.existsSync(originalFile)) {
       const original = JSON.parse(fs.readFileSync(originalFile,'utf8'));
       function compare(a,b,at) {
         if (typeof a === 'number' || typeof a === 'boolean' || a===null) { report.counts.numericGameplayValues++; if(a!==b)error('gameplay-value-changed',rel+':'+at.join('.'),{before:a,after:b}); return; }
@@ -95,7 +95,7 @@ for (const file of walk(assetRoot)) {
         for(const key of Object.keys(b))if(!Object.hasOwn(a,key)&&!['buffLabel','buffValue'].includes(key))error('unexpected-gameplay-field',rel+':'+at.concat(key).join('.'),b[key]);
       }
       compare(original,data,[]);
-    } else report.warnings.push({type:'missing-backup',source:rel});
+    } else if (backup) error('missing-baseline-file',rel,originalFile);
   }
   if (file.endsWith('.js')) {
     report.counts.scriptFiles++;
@@ -115,6 +115,8 @@ for (const file of walk(assetRoot)) {
 for (const [key,style] of Object.entries(catalog.labelStyles||{})) { if(!catalog.entries[key])error('layout-key-missing',key,null); for(const [language,options]of Object.entries(style)) if(!(options.width>0)||options.height!==undefined&&!(options.height>0))error('invalid-layout-bounds',key+':'+language,options); }
 for (const [uuid,binding] of Object.entries(catalog.images||{})) { if(binding.key&&!catalog.entries[binding.key])error('artwork-key-missing',uuid,binding.key); if(binding.pending)report.warnings.push({type:'pending-artwork',source:uuid,key:binding.key}); }
 report.summary={passed:report.errors.length===0,errorCount:report.errors.length,warningCount:report.warnings.length};
+report.historicalBaseline=backup||'Not supplied; historical gameplay-value preservation was not checked.';
+fs.mkdirSync(path.dirname(reportFile),{recursive:true});
 fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({summary:report.summary,counts:report.counts,errors:report.errors,warnings:report.warnings.slice(0,15)},null,2));
 if(report.errors.length)process.exitCode=1;

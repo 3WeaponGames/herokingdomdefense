@@ -28,15 +28,47 @@ var def_KinghtFallBuildWall = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
     t.prototype.start.call(this);
-    var e = this.node.getComponent(cc.PolygonCollider);
-    this.polyPoints = [];
-    if (e) {
-      for (var n = 0; n < e.points.length; n++) {
-        var i = e.points[n];
-        this.polyPoints.push(this.node.convertToWorldSpaceAR(i));
-      }
-    }
     this.ndAniEffect.node.active = false;
+  };
+  // The leaf remains an enemy obstacle while the visual gate admits allies.
+  // Use the authored points: upgrade/shut tweens temporarily shrink physics.
+  _ctor.prototype.getNavigationGateShapes = function () {
+    if (!this.index || this.isDestroyed || !this.node.activeInHierarchy) return [];
+    var gate = this;
+    return this.node.getComponents(cc.PhysicsPolygonCollider).filter(function (collider) {
+      return collider.tag == gate.index;
+    }).map(function (collider) {
+      var offset = collider.offset || cc.Vec2.ZERO;
+      return { collider: collider, points: (gate.colPoint[collider.uuid] || collider.points).map(function (point) {
+        return collider.node.convertToWorldSpaceAR(cc.v2(point.x + offset.x, point.y + offset.y));
+      }) };
+    });
+  };
+  _ctor.prototype.hasFriendlyAtGate = function (game) {
+    var trigger = this.node.getComponent(cc.PolygonCollider);
+    if (!trigger || !trigger.points || trigger.points.length < 3) return false;
+    var offset = trigger.offset || cc.Vec2.ZERO;
+    // World positions cannot be cached at start: the map moves on resize.
+    var polygon = trigger.points.map(function (point) {
+      return trigger.node.convertToWorldSpaceAR(cc.v2(point.x + offset.x, point.y + offset.y));
+    });
+    this.polyPoints = polygon;
+    function approaching(unit) {
+      if (!unit || !unit.node || !unit.node.activeInHierarchy || unit.isDead && unit.isDead()) return false;
+      var radius = 24;
+      unit.node.getComponents(cc.PhysicsCircleCollider).forEach(function (collider) {
+        radius = Math.max(radius, collider.radius + 12);
+      });
+      var origin = unit.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
+      var edge = unit.node.convertToWorldSpaceAR(cc.v2(radius, 0));
+      var top = unit.node.convertToWorldSpaceAR(cc.v2(0, radius));
+      radius = Math.max(cc.Vec2.distance(origin, edge), cc.Vec2.distance(origin, top));
+      return cc.Intersection.polygonCircle(polygon, { position: origin, radius: radius });
+    }
+    if (approaching(game.ctrPlay)) return true;
+    var soldiers = game.gameData.getSoldierList();
+    for (var i = 0; i < soldiers.length; i++) if (approaching(soldiers[i])) return true;
+    return false;
   };
   _ctor.prototype.setLevel = function (e) {
     t.prototype.setLevel.call(this, e);
@@ -81,19 +113,8 @@ var def_KinghtFallBuildWall = function (t) {
   _ctor.prototype.doTime = function () {
     var t;
     var e = this;
-    var n = false;
-    var i = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay.getWpos();
-    cc.Intersection.pointInPolygon(i, this.polyPoints) && (n = true);
-    if (!n) {
-      var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
-      for (var o = 0; o < a.length; o++) {
-        var r = a[o];
-        if (!r.isDead() && cc.Intersection.pointInPolygon(r.getWpos(), this.polyPoints)) {
-          n = true;
-          break;
-        }
-      }
-    }
+    if (!this.index || this.isDestroyed) return;
+    var n = this.hasFriendlyAtGate($z1KinghtFallUIGame.default.instance.ctrGame);
     if (n && this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
       t.enabled = false;
       cc.Tween.stopAllByTarget(t);
@@ -106,6 +127,7 @@ var def_KinghtFallBuildWall = function (t) {
         });
       } else {
         t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut : $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
+          cc.Tween.stopAllByTarget(t);
           t.enabled = t.tag == e.index;
           t.enabled && cc.tween(t).to(.1, {}, {
             onUpdate: function (n, i) {

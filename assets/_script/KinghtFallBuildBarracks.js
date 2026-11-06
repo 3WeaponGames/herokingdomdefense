@@ -217,7 +217,6 @@ var def_KinghtFallBuildBarracks = function (t) {
       if (i && (n >= e || i.cfg.ID != o.buildInfo.cfg.Data[1])) {
         i && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(i);
         o.enemyList[n] = null;
-        $z1KinghtFallUIGame.default.instance.ctrGame.ndAggFlag.active = false;
       }
       if (n < e) {
         if (o.enemyList[n]) {
@@ -262,8 +261,8 @@ var def_KinghtFallBuildBarracks = function (t) {
     };
   };
   _ctor.prototype.setSave = function (t) {
-    this.VideoTimes = t.data;
-    this.setLevel(t.level);
+    this.VideoTimes = t && typeof t.data === "number" && isFinite(t.data) ? Math.max(0, Math.floor(t.data)) : 0;
+    $z1KinghtFallBuildBase.default.prototype.setSave.call(this, t);
   };
   cc__decorate([ccp_property({
     type: cc.Node,

@@ -13,6 +13,7 @@ var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallEnemyBase = require("KinghtFallEnemyBase");
 var $z1KinghtFallEnemyMelee = require("KinghtFallEnemyMelee");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -102,12 +103,10 @@ var def_KinghtFallEnemyItem10 = function (t) {
           for (var u = 0; u < h.length; u++) {
             var d = h[u];
             if (cc.Intersection.polygonCircle(d.points, r)) {
-              var p = d.tagNode.convertToWorldSpaceAR(cc.Vec2.ZERO);
-              t.vec2_2 = $z1KinghtFallUIGame.default.instance.ctrGame.ndMain.convertToNodeSpaceAR(p);
-              cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-              if (-1 == n || t.vec2_2.len() < n) {
+              var targetDistance = Navigation.polygonDistance(t, d.points, $z1KinghtFallUIGame.default.instance.ctrGame);
+              if (-1 == n || targetDistance < n) {
                 e = c;
-                n = t.vec2_2.len();
+                n = targetDistance;
               }
             }
           }
@@ -118,7 +117,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     if (n) {
       n.node.getPosition(this.vec2_2);
       n.cfg && this.cfg.Suppressed == n.cfg.ID && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e));
+      $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
       switch (this.cfg.ID) {
         case 90010:
           $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(this.vec2_2.clone(), "xb_gj");

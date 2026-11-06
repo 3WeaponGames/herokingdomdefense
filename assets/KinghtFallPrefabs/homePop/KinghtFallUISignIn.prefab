@@ -4331,21 +4331,21 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 112,
-      "height": 73.52
+      "width": 190,
+      "height": 62
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        169.054,
-        -70.551,
+        157,
+        -65,
         0,
         0,
         0,
         0,
         1,
-        0.5,
-        0.5,
+        1,
+        1,
         1
       ],
       "__type__": "TypedArray"
@@ -4354,8 +4354,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisignin.213]]",
-    "_fontSize": 52,
-    "_lineHeight": 52,
+    "_fontSize": 26,
+    "_lineHeight": 29,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,

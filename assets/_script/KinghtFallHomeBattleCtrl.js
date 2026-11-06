@@ -69,6 +69,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   };
   _ctor.prototype.onEnable = function () {
     var t = this;
+    this.bindBoxRewardDismissal();
     this.newSel();
     this.onUpdateTask();
     this.scheduleOnce(function () {
@@ -194,10 +195,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       n.setSkin("hong");
       n.setAnimation(0, "idle", true);
     });
-    this.ndBoxShow.getChildByName("ndTips").active = false;
-    this.ndBoxShow.getChildByName("ndTips").attr({
-      tagUUID: null
-    });
+    this.hideBoxReward();
     var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(this.selectStage);
     for (var a = 0; a < e.Challenge.length; a++) {
       var o = this.ndBoxShow.getChildByName("ndTag" + (a + 1));
@@ -388,17 +386,60 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       this.ndTaskInfo.active = false;
     }
   };
+  _ctor.prototype.bindBoxRewardDismissal = function () {
+    var root = $z1UIMgr.UIMgr.getInstance().uiRoot;
+    if (this._boxRewardInputRoot === root) return;
+    if (this._boxRewardInputRoot) this._boxRewardInputRoot.off(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
+    this._boxRewardInputRoot = root;
+    // Capture also sees taps on sibling controls before their Button handlers
+    // stop propagation. Blank-screen touches are handled by this root as well.
+    if (root) root.on(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
+  };
+  _ctor.prototype.onBoxRewardTouchEnd = function (event) {
+    var popup = this.ndBoxShow.getChildByName("ndTips");
+    if (!popup.active) return;
+    var location = event.getLocation();
+    for (var index = 1; index <= 3; index++) {
+      var chest = this.ndBoxShow.getChildByName("ndTag" + index);
+      if (!chest.activeInHierarchy) continue;
+      var point = chest.convertToNodeSpaceAR(location);
+      var left = -chest.width * chest.anchorX, bottom = -chest.height * chest.anchorY;
+      // Non-swallowing overlays dispatch the same touch first. Use coordinates,
+      // not event.target, so the chest can still toggle/switch the preview once.
+      if (point.x >= left && point.x <= left + chest.width && point.y >= bottom && point.y <= bottom + chest.height) return;
+    }
+    this.hideBoxReward();
+  };
+  _ctor.prototype.hideBoxReward = function () {
+    this._boxRewardRequest = (this._boxRewardRequest || 0) + 1;
+    var popup = this.ndBoxShow && this.ndBoxShow.getChildByName("ndTips");
+    if (!popup) return;
+    cc.Tween.stopAllByTarget(popup);
+    popup.active = false;
+    popup.tagUUID = null;
+    popup.scale = 1;
+  };
+  _ctor.prototype.onDisable = function () {
+    if (this._boxRewardInputRoot) this._boxRewardInputRoot.off(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
+    this._boxRewardInputRoot = null;
+    this.hideBoxReward();
+  };
+  _ctor.prototype.onDestroy = function () {
+    this.onDisable();
+    t.prototype.onDestroy.call(this);
+  };
   _ctor.prototype.onBoxClick = function (t) {
     var e = this.ndBoxShow.getChildByName("ndTag" + (t + 1));
+    var popup = this.ndBoxShow.getChildByName("ndTips");
+    if (popup.active && popup.tagUUID === e.uuid) return this.hideBoxReward();
     var n = ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(this.selectStage) & 1 << t) > 0;
     var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageReward(this.selectStage, t + 1);
     if (n) {
+      this.hideBoxReward();
       if (i) {
         $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, $z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTips04);
       } else {
         var a = e.getChildByName("spAni").getComponent(sp.Skeleton);
-        a.setAnimation(0, "open", false);
-        a.addAnimation(0, "open_idle", false);
         var o = this.cfgList[this.selectStage - 1].ChallengeReward[t];
         var r = [];
         for (var s = 0; s < o.length; s++) {
@@ -408,9 +449,15 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
             num: l[1]
           });
         }
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards(r, 1, e.convertToWorldSpaceAR(cc.v2(0, 0)));
+        var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+        var stage = this.selectStage;
+        var granted = player.claimRewards(r, 1, e.convertToWorldSpaceAR(cc.v2(0, 0)), function () {
+          player.getUserData().setStageReward(stage, t + 1);
+        }, function () { return (player.getUserData().getStageInfo(stage) & 1 << t) > 0 && !player.getUserData().getStageReward(stage, t + 1); });
+        if (!granted) return;
+        a.setAnimation(0, "open", false);
+        a.addAnimation(0, "open_idle", false);
         $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIGoldReward, $z1KinghtFallConfig.KinghtFallUIID.UIHome, r);
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setStageReward(this.selectStage, t + 1);
         this.initMapView();
       }
     } else {
@@ -423,16 +470,17 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     var i = this.ndBoxShow.getChildByName("ndTips");
     cc.Tween.stopAllByTarget(i);
     if (i.active && i.tagUUID == e.uuid) {
-      i.active = false;
+      this.hideBoxReward();
     } else {
+      var request = this._boxRewardRequest = (this._boxRewardRequest || 0) + 1;
       i.active = true;
       i.x = e.x;
       i.attr({
         tagUUID: e.uuid
       });
       cc.tween(i).set({
-        scale: 0
-      }).to(.2, {
+        scale: .95
+      }).to(.1, {
         scale: 1
       }, {
         easing: "quintOut"
@@ -461,6 +509,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
               o(r);
             } else {
               s.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (t) {
+                if (s._boxRewardRequest !== request) return;
                 r = cc.instantiate(t);
                 $z1PoolMgr.PoolMgr.getInstance().creatrePool($z1KinghtFallConfig.KinghtFallPoolName.ItemGood, cc.instantiate(t), 10);
                 o(r);
@@ -497,9 +546,14 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
         id: e.Award[0],
         num: e.Award[1]
       };
-      t.stage = 2;
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([n], 1, this.ndTaskInfo.convertToWorldSpaceAR(this.ndTaskInfo.getChildByName("ndItem").position));
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setTaskInfo(t);
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+      var taskId = t.id;
+      var granted = player.claimRewards([n], 1, this.ndTaskInfo.convertToWorldSpaceAR(this.ndTaskInfo.getChildByName("ndItem").position), function () {
+        var task = player.getMissionData().getTaskInfo();
+        task.stage = 2;
+        player.getMissionData().setTaskInfo(task);
+      }, function () { var task = player.getMissionData().getTaskInfo(); return task.id === taskId && task.stage === 1; });
+      if (!granted) return;
       this.onUpdateTask();
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4);
     }
@@ -518,19 +572,22 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   _ctor.prototype.onClickShortCut = function () {
     $z1PlatformManager.PlatformManager.getInstance().addShortcut(null, function (t) {
       if ("桌面图标添加成功" == t && ($z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, "[[loc:script.kinghtfallhomebattlectrl.trackid.509]]"), $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.add_desktop), 0 == $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getTimeByKey($z1GameTrackData.TimeByKey.ADD_DESKTOP))) {
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setTimeByKey($z1GameTrackData.TimeByKey.ADD_DESKTOP, 1);
         var e = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.AddDesktop).split(",");
         var n = {
           id: parseInt(e[0]),
           num: parseInt(e[1])
         };
-        var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([n]);
-        $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIGoldReward, $z1Config.UIID.UINONE, i);
+        var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+        var i = player.claimRewards([n], 1, null, function () {
+          player.getGuideData().setTimeByKey($z1GameTrackData.TimeByKey.ADD_DESKTOP, 1);
+        }, function () { return !player.getGuideData().getTimeByKey($z1GameTrackData.TimeByKey.ADD_DESKTOP); });
+        if (i) $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIGoldReward, $z1Config.UIID.UINONE, i);
       }
     });
   };
   _ctor.prototype.onStartGame = function () {
     var t = this;
+    if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;
     if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(this.selectStage)) {
       $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UINewGame, $z1Config.UIID.UINONE, function () {
         t.sendEvent($z1Appcfg.BaseEventName.ShowTransition, true, function () {

@@ -1,17 +1,112 @@
 {
   "entries": {
-    "testing.modeBadge": { "en": "TEST MODE · F8", "zh": "测试模式 · F8", "context": "Compact development-only badge; F8 toggles test mode" },
-    "testing.adUnavailable": { "en": "No ad is available right now. Please try again.", "zh": "暂时没有可用的广告，请稍后重试。", "context": "Rewarded ad failure" },
-    "testing.adTimeout": { "en": "The ad did not finish. Please try again.", "zh": "广告未能完成，请重试。", "context": "Rewarded ad timeout" },
-    "testing.adBusy": { "en": "An ad is already in progress.", "zh": "广告正在播放中。", "context": "Rewarded ad concurrency guard" },
-    "language.en": { "en": "English", "zh": "English", "context": "Native language name" },
-    "language.zh": { "en": "简体中文", "zh": "简体中文", "context": "Native language name; intentionally Chinese in every locale" },
-    "settings.language": { "en": "Language", "zh": "语言", "context": "In-game Settings" },
-    "settings.version": { "en": "Version {1} · {0} · {2}", "zh": "版本 {1} · {0} · {2}", "context": "In-game Settings build information" },
-    "settings.languageCycle": { "en": "{0}  ›", "zh": "{0}  ›", "context": "Selector when catalog has more than two languages" },
-    "loading.progress": { "en": "{0}%", "zh": "{0}%", "context": "Loading progress" },
-    "loading.failed": { "en": "Unable to load the game. Tap to retry.", "zh": "游戏加载失败，点击重试。", "context": "Recoverable startup error and retry action" },
-    "system.playTimeLimit": { "en": "Your play time is limited to one hour because you are underage.", "zh": "由于您是未成年只能玩一个小时", "context": "Existing platform play-time notification" },
-    "player.self": { "en": "You", "zh": "我", "context": "Default local player name" }
+    "common.claimAll": {
+      "en": "Claim All",
+      "zh": "全部领取",
+      "context": "Collect every currently available reward in this panel"
+    },
+    "testing.modeBadge": {
+      "en": "TEST MODE · F8",
+      "zh": "测试模式 · F8",
+      "context": "Compact development-only badge; F8 toggles test mode"
+    },
+    "testing.adUnavailable": {
+      "en": "No ad is available right now. Please try again.",
+      "zh": "暂时没有可用的广告，请稍后重试。",
+      "context": "Rewarded ad failure"
+    },
+    "testing.adTimeout": {
+      "en": "The ad did not finish. Please try again.",
+      "zh": "广告未能完成，请重试。",
+      "context": "Rewarded ad timeout"
+    },
+    "testing.adBusy": {
+      "en": "An ad is already in progress.",
+      "zh": "广告正在播放中。",
+      "context": "Rewarded ad concurrency guard"
+    },
+    "language.en": {
+      "en": "English",
+      "zh": "English",
+      "context": "Native language name"
+    },
+    "language.zh": {
+      "en": "简体中文",
+      "zh": "简体中文",
+      "context": "Native language name; intentionally Chinese in every locale"
+    },
+    "settings.language": {
+      "en": "Language",
+      "zh": "语言",
+      "context": "In-game Settings"
+    },
+    "settings.version": {
+      "en": "Version {1} · {0} · {2}",
+      "zh": "版本 {1} · {0} · {2}",
+      "context": "In-game Settings build information"
+    },
+    "settings.languageCycle": {
+      "en": "{0}  ›",
+      "zh": "{0}  ›",
+      "context": "Selector when catalog has more than two languages"
+    },
+    "loading.progress": {
+      "en": "{0}%",
+      "zh": "{0}%",
+      "context": "Loading progress"
+    },
+    "loading.failed": {
+      "en": "Unable to load the game. Tap to retry.",
+      "zh": "游戏加载失败，点击重试。",
+      "context": "Recoverable startup error and retry action"
+    },
+    "system.playTimeLimit": {
+      "en": "Your play time is limited to one hour because you are underage.",
+      "zh": "由于您是未成年只能玩一个小时",
+      "context": "Existing platform play-time notification"
+    },
+    "player.self": {
+      "en": "You",
+      "zh": "我",
+      "context": "Default local player name"
+    },
+    "system.saveFailed": {
+      "en": "Progress could not be saved. Free some storage and keep the game open while we retry.",
+      "zh": "进度保存失败。请清理存储空间，并保持游戏开启以重试。"
+    },
+    "loading.runtimeFailed": {
+      "en": "Some game files could not load. Check your connection and try again.",
+      "zh": "部分游戏资源加载失败，请检查网络后重试。"
+    },
+    "loading.retry": {
+      "en": "Retry",
+      "zh": "重试"
+    },
+    "loading.cancel": {
+      "en": "Cancel",
+      "zh": "取消"
+    },
+    "loading.reload": {
+      "en": "Reload game",
+      "zh": "重新加载"
+    }
+  },
+  "labelStyles": {
+    "common.claimAll": {
+      "en": {
+        "width": 200,
+        "height": 56,
+        "fontSize": 32,
+        "lineHeight": 36,
+        "horizontalAlign": 1
+      },
+      "zh": {
+        "width": 200,
+        "height": 56,
+        "fontSize": 32,
+        "lineHeight": 36,
+        "horizontalAlign": 1
+      }
+    }
   }
 }

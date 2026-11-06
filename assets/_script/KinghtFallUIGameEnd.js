@@ -196,6 +196,7 @@ var def_KinghtFallUIGameEnd = function (t) {
       }, function () { t.adPending = false; }, "battle.victory.double");
     }, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
+      if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;
       var e = parseInt($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.StaminaCost));
       if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subPowerNum(e)) {
         t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GameRestart, true);

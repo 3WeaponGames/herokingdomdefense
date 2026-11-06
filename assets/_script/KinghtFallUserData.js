@@ -83,6 +83,31 @@ var exp_KinghtFallUserData = function (t) {
     $z1KinghtFallConfig.KinghtFallParameter.FollowMode = this.data.followMode;
     t && this.saveData();
   };
+  _ctor.prototype.validateSaveRecord = function (data) {
+    data = this.normalizeSaveRecord(data, new g());
+    var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    var equipment = config.getEquipCfgList();
+    ["stageInfo", "rewardInfo", "functionUnlockInfo", "personLevel"].forEach(function (key) {
+      data[key] = data[key].map(function (value) { return typeof value === "number" && isFinite(value) && value >= 0 ? Math.floor(value) : 0; });
+    });
+    data.personLevel = data.personLevel.slice(0, equipment.length).map(function (value, index) { return Math.max(1, Math.min(equipment[index].levelInfo.length, value)); });
+    ["talentInfo", "treasureInfo", "shopInfo"].forEach(function (key) {
+      data[key] = data[key].filter(function (row) { return row && typeof row === "object" && Number.isInteger(row.id) && row.id > 0; }).map(function (row) {
+        ["level", "frame", "video", "time"].forEach(function (field) {
+          if (row[field] !== undefined && (typeof row[field] !== "number" || !isFinite(row[field]) || row[field] < 0)) row[field] = 0;
+        });
+        if (key !== "shopInfo") { row.level = Math.max(1, row.level || 1); row.frame = row.frame || 0; }
+        if (key === "treasureInfo") {
+          var treasure = config.getTreasureCfgById(row.id);
+          if (treasure) row.level = Math.min(treasure.levelInfo.length, Math.floor(row.level));
+        }
+        return row;
+      });
+    });
+    data.curStage = Math.max(1, Math.floor(data.curStage));
+    data.maxStage = Math.max(data.curStage, Math.floor(data.maxStage));
+    return data;
+  };
   _ctor.prototype.getGoldNum = function () {
     return this.data.goldNum;
   };
@@ -91,7 +116,7 @@ var exp_KinghtFallUserData = function (t) {
     var previous = receipt && receipt.id === settlement.id ? receipt.multiplier : 0;
     // A late ad callback must never credit a battle older than the current receipt.
     if (settlement.multiplier > 1 && !previous) return false;
-    if (previous >= settlement.multiplier) return false;
+    if (previous >= settlement.multiplier) return this.saveData() !== false;
     var extra = settlement.multiplier - previous;
     var gold = 0;
     var diamond = 0;
@@ -115,16 +140,16 @@ var exp_KinghtFallUserData = function (t) {
       }
     }
     this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier };
-    this.saveData();
+    var saved = this.saveData() !== false;
     if (gold) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, gold, true);
     if (diamond) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, diamond, true);
     if (power) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
-    return true;
+    return saved;
   };
   _ctor.prototype.addGoldNum = function (t, e) {
     this.data.goldNum += t;
     this.saveData();
-    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, true, e);
+    if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, true, e);
   };
   _ctor.prototype.subGoldNum = function (t) {
     return !(this.data.goldNum < t || (this.data.goldNum -= t, $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, false), this.saveData(), 0));
@@ -140,7 +165,7 @@ var exp_KinghtFallUserData = function (t) {
   _ctor.prototype.addDiamondNum = function (t, e) {
     this.data.diamondNum += t;
     this.saveData();
-    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, true, e);
+    if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, true, e);
   };
   _ctor.prototype.subDiamondNum = function (t) {
     return !(this.data.diamondNum < t || (this.data.diamondNum -= t, $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, false), this.saveData(), 0));
@@ -154,7 +179,7 @@ var exp_KinghtFallUserData = function (t) {
     this.data.powerNum > this.maxPower && e > 0 && (this.data.powerNum = this.maxPower);
     this.data.powerUpdateTime += e;
     this.saveData();
-    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
+    if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
   };
   _ctor.prototype.subPowerNum = function (t) {
     return !(this.data.powerNum < t || (this.data.powerNum >= this.maxPower && (this.data.powerUpdateTime = Date.now()), this.data.powerNum -= t, $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower), this.saveData(), 0));
