@@ -380,8 +380,8 @@
   },
   {
     "__type__": "cc.Label",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_N$overflow": 3,
     "node": {
       "__id__": 13
@@ -477,7 +477,9 @@
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
-    "_N$string": "[[loc:ui.layout.uireport.18]]"
+    "_N$string": "[[loc:ui.layout.uireport.18]]",
+    "_fontSize": 59,
+    "_lineHeight": 68
   },
   {
     "__type__": "cc.Widget",
@@ -623,8 +625,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.28]]",
-    "_fontSize": 32,
-    "_lineHeight": 32,
+    "_fontSize": 34,
+    "_lineHeight": 40,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_materials": [
@@ -696,8 +698,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.31]]",
-    "_fontSize": 34,
-    "_lineHeight": 34,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_materials": [
@@ -1110,7 +1112,7 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.51]]",
-    "_fontSize": 20,
+    "_fontSize": 34,
     "_enableWrapText": false,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1124,7 +1126,8 @@
     "node": {
       "__id__": 50
     },
-    "_N$string": "[[loc:ui.layout.uireport.51]]"
+    "_N$string": "[[loc:ui.layout.uireport.51]]",
+    "_lineHeight": 40
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1418,7 +1421,7 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.64]]",
-    "_fontSize": 25,
+    "_fontSize": 26,
     "_lineHeight": 32,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1680,8 +1683,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.76]]",
-    "_fontSize": 25,
-    "_lineHeight": 25,
+    "_fontSize": 26,
+    "_lineHeight": 30,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$cacheMode": 1,
@@ -1942,8 +1945,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.88]]",
-    "_fontSize": 25,
-    "_lineHeight": 25,
+    "_fontSize": 26,
+    "_lineHeight": 30,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$cacheMode": 1,
@@ -2204,8 +2207,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uireport.100]]",
-    "_fontSize": 25,
-    "_lineHeight": 25,
+    "_fontSize": 26,
+    "_lineHeight": 30,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$cacheMode": 1,

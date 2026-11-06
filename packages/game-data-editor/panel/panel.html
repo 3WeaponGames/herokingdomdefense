@@ -1,0 +1,17 @@
+<div id="root" class="game-tools">
+  <header class="gt-header"><div><div class="gt-eyebrow">HERO KINGDOM DEFENSE</div><h1 id="title"></h1></div><span class="gt-silent">● Silent previews</span></header>
+  <div id="toolbar" class="gt-toolbar">
+    <label>Source <select id="variant"><option value="A">A · Main</option><option value="B">B · Variant</option><option value="D">D · Variant</option></select></label>
+    <label>Language <select id="language"><option value="en">English</option><option value="zh">简体中文</option></select></label>
+    <span class="gt-spacer"></span><button id="undo" title="Undo the last draft edit">Undo</button><button id="redo">Redo</button><button id="reload">Refresh</button><button id="discard">Discard</button><button id="review">Review</button><button id="save" class="gt-primary">Save changes…</button>
+  </div>
+  <div id="status" role="status" class="gt-status">Loading current game data…</div>
+  <div id="workspace" class="gt-workspace">
+    <aside id="sidebar" class="gt-sidebar"><input id="search" class="gt-search" placeholder="Search name or ID…" type="search"/><div id="count" class="gt-count"></div><div id="list" class="gt-list"></div></aside>
+    <main id="detail" class="gt-detail"></main>
+    <aside id="preview" class="gt-preview"></aside>
+  </div>
+  <div id="issues" class="gt-issues" hidden></div>
+  <footer id="footer">Edits stay in a shared draft. The game changes only when you save.</footer>
+  <div id="modal" class="gt-modal" hidden><div class="gt-dialog"><h2 id="modalTitle"></h2><div id="modalBody" class="gt-dialog-body"></div><div id="modalActions" class="gt-actions"></div></div></div>
+</div>

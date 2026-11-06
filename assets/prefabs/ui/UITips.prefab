@@ -65,6 +65,9 @@
       },
       {
         "__id__": 8
+      },
+      {
+        "__id__": 13
       }
     ],
     "_prefab": {
@@ -117,8 +120,8 @@
   },
   {
     "__type__": "cc.Label",
-    "_fontSize": 64,
-    "_lineHeight": 70,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -225,5 +228,23 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 2
+    },
+    "content": [
+      {
+        "__id__": 3
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 0,
+    "minHeight": 0,
+    "maxWidth": 600,
+    "reflowRows": true
   }
 ]

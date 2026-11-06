@@ -19718,5 +19718,68 @@
         }
       ]
     }
-  ]
+  ],
+  "GameTools": {
+    "version": 1,
+    "timings": {
+      "enemy:90001:default": {
+        "attack": 0.5
+      }
+    },
+    "parameters": {},
+    "perks": {},
+    "timingDefaults": {
+      "hero:hero:default": {
+        "attack": 0.1667
+      },
+      "enemy:90001:default": {
+        "attack": 0.5
+      },
+      "enemy:90002:default": {
+        "attack": 0.5
+      },
+      "enemy:90003:default": {
+        "attack": 0.5
+      },
+      "enemy:90004:default": {
+        "attack": 0.5
+      },
+      "enemy:90005:default": {
+        "attack": 0.5
+      },
+      "enemy:90006:default": {
+        "attack": 0.5
+      },
+      "enemy:90007:default": {
+        "attack": 0.5
+      },
+      "enemy:90008:default": {
+        "attack": 0.5
+      },
+      "enemy:90009:default": {
+        "attack": 0.5
+      },
+      "enemy:90010:1": {
+        "attack": 0.5
+      },
+      "enemy:90011:2": {
+        "attack": 0.5
+      },
+      "enemy:90012:3": {
+        "attack": 0.5
+      },
+      "ally:90001:default": {
+        "attack": 0.5
+      },
+      "ally:90002:default": {
+        "attack": 0.5
+      },
+      "ally:90003:default": {
+        "attack": 0.5
+      },
+      "ally:90004:default": {
+        "attack": 0.5
+      }
+    }
+  }
 }

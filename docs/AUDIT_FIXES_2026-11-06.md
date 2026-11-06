@@ -82,3 +82,11 @@ A subsequent diagnostic rendering comparison retained combat and restored all re
 Resume from `local/live-gates/pause-checkpoint-results.json`, `pause-checkpoint-live.json`, `pause-checkpoint.png`, the earlier acceptance report, and the reusable tools documented in `TESTING.md`. These local diagnostics/exports are intentionally ignored by Git. The source hook is removed, temporary game tab closed, local test server stopped, and all agents stopped at this checkpoint. Refresh/rebuild the editor preview before testing; its old preview had automatic compilation disabled.
 
 Final checkpoint validation: `npm test` passed all six check groups, with 191 tests passing, zero failures and zero skips; all 702 authored routes passed. `git diff --check` passed. Log: `local/live-gates/checkpoint-tests.log`.
+
+## PCMain merge follow-up
+
+Merged the other PC's `9dd1838` changes with checkpoint `1e782f7`, preserving the audit fixes, persistent army orders, retaliation and pooled-object safety alongside the editor tools, saved animation timing defaults, test controls and mobile typography. Reward prefabs retain Claim All controls and remap appended mobile-layout components without breaking serialized references. The catalog and layout source retain both sets of bindings, including Claim All and loading-progress styles.
+
+Cross-feature regressions protect single-command rally input, failed-save protection when leaving pause, timed attacks cancelled by actor reuse, and current-frame building geometry when a delayed hit executes. Loading retains mobile layout and retry recovery; localized artwork scans Scene children safely while preserving native outlines and bone scaling.
+
+Validation: `npm test` passed all six groups with 217 tests, zero failures and zero skips, including all 702 authored navigation checks. `node packages/game-data-editor/test/run.js` also passed. A fresh Creator 2.4.13 debug web-mobile export completed with exit code 0; all 3,130 checked asset/settings/package inputs remained byte-identical and all 34 exported JavaScript files parsed successfully. Logs and pre-resolution snapshots are retained under ignored `local/merge-resolution/`. This merge does not certify or close the unfinished large-crowd rendering performance work described above.

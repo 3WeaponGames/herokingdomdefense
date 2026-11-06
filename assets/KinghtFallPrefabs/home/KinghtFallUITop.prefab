@@ -131,6 +131,9 @@
       },
       {
         "__id__": 20
+      },
+      {
+        "__id__": 104
       }
     ],
     "_prefab": {
@@ -170,6 +173,9 @@
     "_components": [
       {
         "__id__": 7
+      },
+      {
+        "__id__": 107
       }
     ],
     "_prefab": {
@@ -230,6 +236,9 @@
     "_components": [
       {
         "__id__": 10
+      },
+      {
+        "__id__": 108
       }
     ],
     "_prefab": {
@@ -320,7 +329,7 @@
   {
     "__type__": "cc.Label",
     "_string": "9999",
-    "_fontSize": 52,
+    "_fontSize": 59,
     "_lineHeight": 80,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
@@ -392,7 +401,7 @@
   {
     "__type__": "cc.Label",
     "_string": "01:59",
-    "_fontSize": 36,
+    "_fontSize": 59,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -404,7 +413,8 @@
     "node": {
       "__id__": 15
     },
-    "_N$string": "01:59"
+    "_N$string": "01:59",
+    "_lineHeight": 68
   },
   {
     "__type__": "cc.LabelOutline",
@@ -485,6 +495,9 @@
       },
       {
         "__id__": 33
+      },
+      {
+        "__id__": 105
       }
     ],
     "_prefab": {
@@ -521,6 +534,9 @@
     "_components": [
       {
         "__id__": 24
+      },
+      {
+        "__id__": 109
       }
     ],
     "_prefab": {
@@ -581,6 +597,9 @@
     "_components": [
       {
         "__id__": 27
+      },
+      {
+        "__id__": 110
       }
     ],
     "_prefab": {
@@ -671,7 +690,7 @@
   {
     "__type__": "cc.Label",
     "_string": "9999",
-    "_fontSize": 52,
+    "_fontSize": 59,
     "_lineHeight": 80,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
@@ -751,6 +770,9 @@
       },
       {
         "__id__": 46
+      },
+      {
+        "__id__": 106
       }
     ],
     "_prefab": {
@@ -787,6 +809,9 @@
     "_components": [
       {
         "__id__": 37
+      },
+      {
+        "__id__": 111
       }
     ],
     "_prefab": {
@@ -847,6 +872,9 @@
     "_components": [
       {
         "__id__": 40
+      },
+      {
+        "__id__": 112
       }
     ],
     "_prefab": {
@@ -937,7 +965,7 @@
   {
     "__type__": "cc.Label",
     "_string": "9999",
-    "_fontSize": 52,
+    "_fontSize": 59,
     "_lineHeight": 80,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
@@ -1867,8 +1895,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluitop.95]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 7,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1972,6 +2000,114 @@
     },
     "root": {
       "__id__": 1
+    }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 5
+    },
+    "content": [
+      {
+        "__id__": 12
+      }
+    ],
+    "paddingX": 12,
+    "paddingY": 6,
+    "gap": 8,
+    "minWidth": 80,
+    "minHeight": 40,
+    "maxWidth": 180,
+    "reflowRows": false
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 22
+    },
+    "content": [
+      {
+        "__id__": 29
+      }
+    ],
+    "paddingX": 12,
+    "paddingY": 6,
+    "gap": 8,
+    "minWidth": 80,
+    "minHeight": 40,
+    "maxWidth": 180,
+    "reflowRows": false
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 35
+    },
+    "content": [
+      {
+        "__id__": 42
+      }
+    ],
+    "paddingX": 12,
+    "paddingY": 6,
+    "gap": 8,
+    "minWidth": 80,
+    "minHeight": 40,
+    "maxWidth": 180,
+    "reflowRows": false
+  },
+  {
+    "__type__": "cc.Widget",
+    "_alignFlags": 8,
+    "_left": -21.5,
+    "alignMode": 2,
+    "node": {
+      "__id__": 6
+    }
+  },
+  {
+    "__type__": "cc.Widget",
+    "_alignFlags": 8,
+    "_left": -1.847,
+    "alignMode": 2,
+    "node": {
+      "__id__": 9
+    }
+  },
+  {
+    "__type__": "cc.Widget",
+    "_alignFlags": 8,
+    "_left": -25,
+    "alignMode": 2,
+    "node": {
+      "__id__": 23
+    }
+  },
+  {
+    "__type__": "cc.Widget",
+    "_alignFlags": 8,
+    "_left": 3.509,
+    "alignMode": 2,
+    "node": {
+      "__id__": 26
+    }
+  },
+  {
+    "__type__": "cc.Widget",
+    "_alignFlags": 8,
+    "_left": -27.5,
+    "alignMode": 2,
+    "node": {
+      "__id__": 36
+    }
+  },
+  {
+    "__type__": "cc.Widget",
+    "_alignFlags": 8,
+    "_left": 3.509,
+    "alignMode": 2,
+    "node": {
+      "__id__": 39
     }
   }
 ]

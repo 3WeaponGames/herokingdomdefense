@@ -38,6 +38,7 @@ var def_Loading = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onLoad = function () {
+    this._layoutLoadingScreen();
     var self = this;
     this.loadingRetries = [];
     this.resourceErrorHandler = function (error, retry) { self.showLoadingError(error, retry); };
@@ -46,6 +47,25 @@ var def_Loading = function (t) {
     this.labPro.node.on(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
     cc.director.preloadScene(this.sceneName);
     $z1LanguageMgr.LanguageMgr.getInstance().init();
+  };
+  _ctor.prototype._layoutLoadingScreen = function () {
+    // Apply this to previews of an already-open loading scene as well as to
+    // the saved scene asset, whose percentage used to share a generic name.
+    var root = this.uiRoot && this.uiRoot.getChildByName("UILoading");
+    if (root) {
+      var age = root.getChildByName("8"), advisory = root.getChildByName("ndInfo");
+      if (age) age.active = false;
+      if (advisory) advisory.active = false;
+    }
+    if (this.labPro && this.progressBar) {
+      var node = this.labPro.node, bar = this.progressBar.node.parent;
+      node.name = "ProgressPercent";
+      node.setAnchorPoint(.5, .5);
+      node.setPosition(bar.x, bar.y);
+      this.labPro._localizedStyleKey = "ui.layout.loading.progress";
+      this.labPro.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+      this.labPro.verticalAlign = cc.Label.VerticalAlign.CENTER;
+    }
   };
   _ctor.prototype.start = function () {
     var self = this;

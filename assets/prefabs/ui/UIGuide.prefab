@@ -555,9 +555,9 @@
   {
     "__type__": "cc.RichText",
     "_N$string": "[[loc:ui.uiguide.labtext.24]]",
-    "_N$fontSize": 60,
+    "_N$fontSize": 67,
     "_N$maxWidth": 1000,
-    "_N$lineHeight": 76,
+    "_N$lineHeight": 78,
     "node": {
       "__id__": 23
     }
@@ -617,9 +617,10 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.uiguide.27]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
+    "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_materials": [
       {

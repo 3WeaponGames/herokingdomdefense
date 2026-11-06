@@ -1,0 +1,178 @@
+{
+  "entries": {
+    "ui.layout.kinghtfalluigame.141": {
+      "en": "Start Battle",
+      "zh": "战斗",
+      "context": "Battle start button; reward explanation is outside the English button."
+    },
+    "format.battle.waveCompletionSilver": {
+      "en": "+{0} silver on completion",
+      "zh": "完成后获得 +{0} 银币",
+      "context": "Silver awarded after the current wave; shown below Start Battle in English."
+    },
+    "format.perk.minimumQuality": {
+      "en": "{0}+",
+      "zh": "{0}",
+      "context": "One unbroken colored rarity label; plus means this rarity or better."
+    }
+  },
+  "labelStyles": {
+    "ui.layout.kinghtfalluigame.133": {
+      "en": {
+        "width": 236,
+        "height": 128,
+        "fontSize": 67,
+        "lineHeight": 64,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -48
+      },
+      "zh": {
+        "width": 212,
+        "height": 78,
+        "fontSize": 67,
+        "lineHeight": 78,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -44.01
+      }
+    },
+    "ui.layout.kinghtfalluigame.191": {
+      "en": {
+        "width": 288,
+        "height": 62,
+        "fontSize": 54,
+        "lineHeight": 62,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -30
+      },
+      "zh": {
+        "width": 288,
+        "height": 62,
+        "fontSize": 54,
+        "lineHeight": 62,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -30
+      }
+    },
+    "ui.layout.kinghtfalluigame.141": {
+      "en": {
+        "width": 520,
+        "height": 80,
+        "fontSize": 68,
+        "lineHeight": 79,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 0
+      },
+      "zh": {
+        "width": 284,
+        "height": 106.5,
+        "fontSize": 68,
+        "lineHeight": 79,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT"
+      }
+    },
+    "ui.mobile.kinghtfalluibuildatlas.31": {
+      "en": {
+        "fontSize": 72,
+        "lineHeight": 86,
+        "width": 736,
+        "fontFamily": "Arial",
+        "color": "#1d2822",
+        "highlightColor": "#246b38",
+        "horizontalAlign": 0,
+        "x": 102,
+        "y": 0
+      },
+      "zh": {
+        "fontSize": 72,
+        "lineHeight": 86,
+        "width": 736,
+        "fontFamily": "Arial",
+        "color": "#1d2822",
+        "highlightColor": "#246b38",
+        "horizontalAlign": 0,
+        "x": 102,
+        "y": 0
+      }
+    },
+    "ui.layout.kinghtfalluibuff.57": {
+      "en": {
+        "fontSize": 52,
+        "lineHeight": 58,
+        "width": 320,
+        "height": 78,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1
+      },
+      "zh": {
+        "fontSize": 67,
+        "lineHeight": 78,
+        "width": 140,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT"
+      }
+    },
+    "ui.layout.kinghtfalluibuff.62": {
+      "en": {
+        "fontSize": 52,
+        "lineHeight": 58,
+        "width": 240,
+        "height": 78,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1
+      },
+      "zh": {
+        "fontSize": 67,
+        "lineHeight": 78,
+        "width": 145,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT"
+      }
+    },
+    "ui.layout.loading.progress": {
+      "en": {
+        "fontSize": 64,
+        "lineHeight": 64,
+        "width": 240,
+        "height": 80,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -474.418
+      },
+      "zh": {
+        "fontSize": 64,
+        "lineHeight": 64,
+        "width": 240,
+        "height": 80,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -474.418
+      }
+    }
+  },
+  "nodePathStyles": {
+    "uiRoot/UILoading/ProgressPercent": "ui.layout.loading.progress",
+    "undefined/uiRoot/UILoading/ProgressPercent": "ui.layout.loading.progress"
+  }
+}

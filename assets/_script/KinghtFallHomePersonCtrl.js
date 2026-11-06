@@ -111,6 +111,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       r.labNum.string = $z1Utils.Utils.StringFormat(o.T(r.cfg.Describe), r.cfg.levelInfo[l - 1].Parameters);
       g.getChildByName("labNum1").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T(r.cfg.Describe), r.cfg.levelInfo[l - 1].Parameters);
       r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = o.T(r.cfg.levelInfo[l - 1].EquipName);
+      r.ndInfo.getChildByName("labName").active = c;
       if (c) {
         g.active = true;
         r.ndInfo.getChildByName("ndLock").active = false;

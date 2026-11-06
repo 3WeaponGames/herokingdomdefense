@@ -117,12 +117,69 @@ test('Badge is localized, restores label width, stays inside spare top margin, a
   assert.equal(env.cc.Canvas.instance.node.children.length, 0);
   env.service.setEnabled(true);
   const badge = env.service._badge, text = badge.children[0], label = text.components[0];
-  assert.equal(badge.name, 'DevelopmentTestModeBadge'); assert.equal(badge.width, 240); assert.equal(badge.height, 30);
-  assert.equal(text.width, 228); assert.equal(text.height, 30); assert.equal(label.key, 'testing.modeBadge');
-  assert.equal(badge.y, 649); assert.equal(badge.components.length, 2); assert.equal(badge.on, undefined);
+  assert.equal(badge.name, 'DevelopmentTestModeBadge'); assert.equal(badge.width, 360); assert.equal(badge.height, 44);
+  assert.equal(text.width, 340); assert.equal(text.height, 44); assert.equal(label.key, 'testing.modeBadge');
+  assert.equal(badge.y, 642); assert.equal(badge.components.length, 2); assert.equal(badge.on, undefined);
   env.service.setEnabled(false); assert.equal(badge.active, false);
   env.service.setEnabled(true); assert.equal(env.cc.Canvas.instance.node.children.length, 1);
   badge.destroyed = true; env.director.emit('scene'); assert.notEqual(env.service._badge, badge);
   assert.equal(env.calls.bindings, 2);
+});
+function gameplay(env) {
+  const target = { node: { active: true, activeInHierarchy: true } };
+  env.service.setGameplayTarget(target); env.service.setEnabled(true); return target;
+}
+function down(env, code, extra = {}) { env.dom.emit('keydown', { code, ...extra }); }
+function up(env, code) { env.dom.emit('keyup', { code }); }
+
+test('WASD combines directions at normal speed, cancels opposites, and releases individual keys', () => {
+  const env = environment({ preview: true }), target = gameplay(env);
+  down(env, 'KeyW'); down(env, 'KeyD'); let input = env.service.readGameplayInput(target);
+  assert.ok(Math.abs(input.x - Math.SQRT1_2) < 1e-12); assert.ok(Math.abs(input.y - Math.SQRT1_2) < 1e-12);
+  down(env, 'KeyA'); input = env.service.readGameplayInput(target); assert.equal(input.x, 0); assert.equal(input.y, 1);
+  up(env, 'KeyW'); up(env, 'KeyA'); input = env.service.readGameplayInput(target); assert.equal(input.x, 1); assert.equal(input.y, 0);
+  up(env, 'KeyD'); input = env.service.readGameplayInput(target); assert.equal(input.x, 0); assert.equal(input.y, 0);
+});
+
+test('R, Escape and Space fire once per press, including across pause input resets', () => {
+  const env = environment({ preview: true }), target = gameplay(env);
+  for (const [code, action] of [['KeyR', 'rally'], ['Escape', 'pause'], ['Space', 'build']]) {
+    down(env, code); assert.equal(env.service.readGameplayInput(target)[action], true);
+    env.service.clearGameplayInput(true); down(env, code); assert.equal(env.service.readGameplayInput(target)[action], false);
+    up(env, code); down(env, code); assert.equal(env.service.readGameplayInput(target)[action], true); up(env, code);
+  }
+});
+
+test('Gameplay controls ignore typing, modifiers, inactive battles, test mode OFF and release builds', () => {
+  const env = environment({ preview: true }), target = gameplay(env);
+  down(env, 'KeyW', { target: { tagName: 'INPUT' } }); assert.equal(env.service.readGameplayInput(target).y, 0); up(env, 'KeyW');
+  down(env, 'KeyW', { ctrlKey: true }); assert.equal(env.service.readGameplayInput(target).y, 0); up(env, 'KeyW');
+  down(env, 'KeyW'); env.document.activeElement = { tagName: 'INPUT' }; assert.equal(env.service.readGameplayInput(target), null);
+  env.document.activeElement = null; assert.equal(env.service.readGameplayInput(target).y, 0); up(env, 'KeyW');
+  target.node.activeInHierarchy = false; down(env, 'Space'); target.node.activeInHierarchy = true;
+  assert.equal(env.service.readGameplayInput(target).build, false); up(env, 'Space');
+  env.service.setEnabled(false); down(env, 'KeyR'); assert.equal(env.service.readGameplayInput(target), null);
+  env.service.setEnabled(true); assert.equal(env.service.readGameplayInput(target).rally, false);
+  const releaseEnv = environment(); releaseEnv.service.setGameplayTarget(target); releaseEnv.service.setEnabled(true);
+  assert.equal(releaseEnv.service.readGameplayInput(target), null);
+});
+
+test('Blur, hide, disabling and changing battle targets clear movement and pending actions', () => {
+  const env = environment({ preview: true }), target = gameplay(env);
+  for (const clear of [() => env.dom.emit('blur'), () => env.game.emit('hide'), () => env.service.setEnabled(false)]) {
+    down(env, 'KeyW'); down(env, 'Space'); clear(); env.service.setEnabled(true);
+    const input = env.service.readGameplayInput(target); assert.equal(input.y, 0); assert.equal(input.build, false);
+  }
+  down(env, 'KeyD'); env.service.removeGameplayTarget(target); assert.equal(env.service.readGameplayInput(target), null);
+  const next = gameplay(env); assert.equal(env.service.readGameplayInput(next).x, 0);
+});
+
+test('Native numeric WASD and action key releases survive GAD clearing system KEY_UP', () => {
+  const env = environment({ debug: true, web: false }), target = gameplay(env);
+  env.system.emit('down', { keyCode: 87 }); assert.equal(env.service.readGameplayInput(target).y, 1);
+  env.system.off('up'); env.nativeListeners[0].onKeyReleased(87); assert.equal(env.service.readGameplayInput(target).y, 0);
+  env.system.emit('down', { keyCode: 32 }); assert.equal(env.service.readGameplayInput(target).build, true);
+  env.nativeListeners[0].onKeyReleased(32); env.system.emit('down', { keyCode: 32 });
+  assert.equal(env.service.readGameplayInput(target).build, true);
 });
 console.log(passed + ' TestMode checks passed; no SDK calls, rewards, or files written.');

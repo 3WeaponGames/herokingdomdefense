@@ -189,6 +189,9 @@
     "_components": [
       {
         "__id__": 14
+      },
+      {
+        "__id__": 107
       }
     ],
     "_prefab": {
@@ -470,8 +473,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluionlinereward.21]]",
-    "_fontSize": 52,
-    "_lineHeight": 70,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$verticalAlign": 1,
     "_N$overflow": 3,
@@ -524,6 +527,9 @@
     "_components": [
       {
         "__id__": 76
+      },
+      {
+        "__id__": 111
       }
     ],
     "_prefab": {
@@ -532,7 +538,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 532,
-      "height": 117
+      "height": 180
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -568,6 +574,9 @@
     "_components": [
       {
         "__id__": 31
+      },
+      {
+        "__id__": 108
       }
     ],
     "_prefab": {
@@ -640,8 +649,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluionlinereward.27]]",
-    "_fontSize": 52,
-    "_lineHeight": 52,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -735,7 +744,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 532,
-      "height": 116
+      "height": 180
     }
   },
   {
@@ -755,7 +764,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 532,
-      "height": 117
+      "height": 180
     }
   },
   {
@@ -770,7 +779,9 @@
     },
     "node": {
       "__id__": 34
-    }
+    },
+    "_type": 1,
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -807,7 +818,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 532,
-      "height": 117
+      "height": 180
     }
   },
   {
@@ -933,6 +944,9 @@
     "_components": [
       {
         "__id__": 50
+      },
+      {
+        "__id__": 109
       }
     ],
     "_prefab": {
@@ -1005,8 +1019,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluionlinereward.46]]",
-    "_fontSize": 52,
-    "_lineHeight": 52,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1088,6 +1102,9 @@
     "_components": [
       {
         "__id__": 58
+      },
+      {
+        "__id__": 110
       }
     ],
     "_prefab": {
@@ -1160,8 +1177,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluionlinereward.54]]",
-    "_fontSize": 52,
-    "_lineHeight": 52,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1255,8 +1272,8 @@
         0,
         0,
         1,
-        0.8,
-        0.8,
+        1,
+        1,
         1
       ],
       "__type__": "TypedArray"
@@ -1303,14 +1320,14 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 1
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -37.826,
-        42.585,
+        -148,
+        70,
         0,
         0,
         0,
@@ -1326,9 +1343,9 @@
   {
     "__type__": "cc.RichText",
     "_N$string": "[[loc:ui.kinghtfalluiachievement.labinfo.49]]",
-    "_N$fontSize": 48,
+    "_N$fontSize": 67,
     "_N$maxWidth": 500,
-    "_N$lineHeight": 50,
+    "_N$lineHeight": 78,
     "node": {
       "__id__": 63
     }
@@ -1368,13 +1385,13 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 252,
-      "height": 24
+      "height": 30
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -34.917,
-        -23.026,
+        -34,
+        -62,
         0,
         0,
         0,
@@ -1475,8 +1492,8 @@
   {
     "__type__": "cc.Label",
     "_string": "25/5",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1550,7 +1567,9 @@
     },
     "node": {
       "__id__": 24
-    }
+    },
+    "_type": 1,
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2083,5 +2102,109 @@
     "asset": {
       "__id__": 0
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 7
+    },
+    "content": [
+      {
+        "__id__": 8
+      }
+    ],
+    "paddingX": 40,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 0,
+    "minHeight": 89,
+    "maxWidth": 700,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 25
+    },
+    "content": [
+      {
+        "__id__": 26
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 138,
+    "minHeight": 88,
+    "maxWidth": 178,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 44
+    },
+    "content": [
+      {
+        "__id__": 45
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 138,
+    "minHeight": 88,
+    "maxWidth": 178,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 52
+    },
+    "content": [
+      {
+        "__id__": 53
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 138,
+    "minHeight": 88,
+    "maxWidth": 178,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 24
+    },
+    "content": [
+      {
+        "__id__": 63
+      },
+      {
+        "__id__": 66
+      }
+    ],
+    "columnMode": true,
+    "paragraph": {
+      "__id__": 63
+    },
+    "footer": {
+      "__id__": 66
+    },
+    "mirrorBackgrounds": [
+      {
+        "__id__": 33
+      }
+    ],
+    "paddingX": 12,
+    "paddingY": 20,
+    "gap": 12,
+    "minHeight": 180,
+    "maxWidth": 700,
+    "reflowRows": false
   }
 ]

@@ -1,3 +1,4 @@
+var GameToolsOverrides = require("GameToolsOverrides");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -60,10 +61,25 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.setLeft(1);
     this.ctrArr.node.active = false;
     this.ndRange.active = false;
+    this._refreshRangeIndicator();
     this.ndAgg.active = false;
     this.critDam = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.CriticalDamage));
   };
+  _ctor.prototype._refreshRangeIndicator = function () {
+    var range = this.ndRange;
+    var settings = $z1KinghtFallConfig.KinghtFallParameter;
+    // Draw a thin stroke inside the existing bounds, retaining the range scale.
+    var sprite = range.getComponent(cc.Sprite);
+    if (sprite) sprite.enabled = false;
+    var graphics = range.getComponent(cc.Graphics) || range.addComponent(cc.Graphics);
+    graphics.clear();
+    graphics.lineWidth = settings.HeroRangeLineWidth;
+    graphics.strokeColor = cc.color(255, 255, 255, settings.HeroRangeOpacity);
+    graphics.circle(0, 0, (range.width - settings.HeroRangeLineWidth) / 2);
+    graphics.stroke();
+  };
   _ctor.prototype.initData = function () {
+    GameToolsOverrides.cancel(this);
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getEquipCfgList();
     for (var e = 0; e < t.length; e++) {
       var n = t[e];
@@ -107,6 +123,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.ctrHp.setHp(this.hp, this.hpMax);
   };
   _ctor.prototype.onRestart = function (t) {
+    GameToolsOverrides.cancel(this);
     undefined === t && (t = false);
     $z1AudioMgr.AudioMgr.getInstance().getAudioSource($z1KinghtFallConfig.KinghtFallParameter.BGMusic).volume = $z1AudioMgr.AudioMgr.getInstance().getMusicVolume();
     this.ctrPlayAni.onRestart();
@@ -184,6 +201,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     }
   };
   _ctor.prototype.endRoundGame = function () {
+    GameToolsOverrides.cancel(this);
     if (this.isDead()) {
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, 0);
       this.onReborn();
@@ -234,6 +252,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     }
   };
   _ctor.prototype.onDead = function () {
+    GameToolsOverrides.cancel(this);
     var t = this;
     this.tagEnemy = null;
     $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().stopEffectName($z1KinghtFallConfig.KinghtFallParameter.RunMusic);
@@ -290,7 +309,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this.tagEnemy = e[0].tag;
       this.time[C.Attack] = -1;
       this.doAttackStart();
-      this.doAttack();
+      GameToolsOverrides.attack(this, "hero", this.doAttack);
     }
   };
   _ctor.prototype.doAttackStart = function () {

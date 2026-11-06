@@ -654,4 +654,44 @@ test('Cached escape lookahead retains detour corners when the next shortcut cros
   assert(result.reached, 'Safe lookahead failed to complete the detour');
 });
 
+test('Delayed attack effects cannot survive pooling and reuse of the same enemy or allied node', () => {
+  for (const [name, type] of [['KinghtFallEnemyBase', 'enemy'], ['KinghtFallSoldierBase', 'ally']]) {
+    const e = environment();
+    e.stubs.PoolMgr = { PoolMgr: { getInstance: () => ({ freeNode(_key, node) { node.active = false; } }) } };
+    e.game.gameData.delEnemy = e.game.gameData.delSoldier = () => {};
+    e.game.setPath = () => ({ nodeIndex: 0, pathList: [] });
+    e.load('KinghtFallDataMgr').KinghtFallDataMgr.getInstance().data.GameTools = { timings: { [type + ':90001:default']: { attack: .1 } } };
+    const actor = e.actor(name), timing = e.load('GameToolsOverrides');
+    actor.initData(90001, {});
+    const generation = actor.node._combatGeneration;
+    let hits = 0; actor.doAttack = () => hits++;
+    actor.doAttackStart(); timing.tick(.04, true); assert.equal(hits, 0); assert(timing.isPending(actor));
+    actor.freeNode(); assert.equal(timing.isPending(actor), false); assert(actor.node._combatGeneration > generation);
+    actor.node.active = true; actor.initData(90001, {});
+    timing.tick(.2, true); assert.equal(hits, 0, 'Old delayed effect fired in the reused actor generation');
+    actor.doAttackStart(); timing.tick(.1, true); assert.equal(hits, 1, 'Fresh generation lost its own timed attack');
+  }
+});
+
+test('A delayed hit reads current-frame building geometry after navigation begins its new frame', () => {
+  const e = environment(), ctrl = new (e.load('KinghtFallGameCtrl').default)();
+  Object.assign(ctrl, e.game, { gameStatus: 1, ctrPlay: { doMove() {}, onUpdata() {} },
+    ndPlayArr2: [], ndEnemyArr: [], ndSoldArr: [], ndBuildArr2: [] });
+  ctrl.gameData.onUpdata = () => {};
+  e.load('KinghtFallUIGame').default.instance.ctrGame = ctrl;
+  const building = new (e.load('KinghtFallBuildBase').default)();
+  Object.assign(building, { node: new Node('building', ctrl.ndMain), index: 1, ndAniOther: [], isDestroyed: false });
+  const collider = building.node.addComponent(PhysicsPolygonCollider);
+  collider.tag = 1; collider.points = [new Vec2(-10, -10), new Vec2(10, -10), new Vec2(10, 10), new Vec2(-10, 10)];
+  e.nav.beginFrame(ctrl);
+  assert.equal(building.getWposPhyCol2()[0].points[0].x, -10);
+  building.node.x = 100;
+  const owner = e.actor('KinghtFallEnemyBase'), timing = e.load('GameToolsOverrides');
+  e.load('KinghtFallDataMgr').KinghtFallDataMgr.getInstance().data.GameTools = { timings: { 'enemy:90001:default': { attack: .1 } } };
+  let hitGeometry;
+  timing.attack(owner, 'enemy', () => { hitGeometry = building.getWposPhyCol2()[0].points[0].x; });
+  ctrl.onUpdate(.1);
+  assert.equal(hitGeometry, 90, 'Delayed hit observed the previous frame\'s building position');
+});
+
 console.log(`Navigation runtime integration: ${passed} tests passed.`);

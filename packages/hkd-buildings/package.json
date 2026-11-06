@@ -1,0 +1,15 @@
+{
+  "name": "hkd-buildings",
+  "version": "1.0.0",
+  "description": "Hero Kingdom Defense Buildings authoring panel",
+  "main": "main.js",
+  "panel": {
+    "main": "panel.js",
+    "type": "dockable",
+    "title": "Buildings",
+    "width": 1320,
+    "height": 850,
+    "min-width": 800,
+    "min-height": 500
+  }
+}

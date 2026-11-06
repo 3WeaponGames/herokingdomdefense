@@ -862,7 +862,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "New Label",
+    "_name": "ProgressPercent",
     "_objFlags": 0,
     "_parent": {
       "__id__": 8
@@ -891,8 +891,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 128.09,
-      "height": 83.6
+      "width": 240,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -903,8 +903,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -0.199,
-        -477.744,
+        0,
+        -474.418,
         0,
         0,
         0,
@@ -945,17 +945,17 @@
     "_dstBlendFactor": 771,
     "_string": "80%",
     "_N$string": "80%",
-    "_fontSize": 60,
-    "_lineHeight": 60,
-    "_enableWrapText": true,
+    "_fontSize": 64,
+    "_lineHeight": 64,
+    "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
     "_underlineHeight": 0,
-    "_N$horizontalAlign": 0,
-    "_N$verticalAlign": 0,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 0,
     "_N$cacheMode": 0,
@@ -1104,7 +1104,7 @@
       "__id__": 8
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 26
@@ -1205,7 +1205,7 @@
         "__id__": 32
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 36
@@ -1344,8 +1344,8 @@
     "_dstBlendFactor": 771,
     "_string": "[[loc:ui.layout.loading.29]]",
     "_N$string": "[[loc:ui.layout.loading.29]]",
-    "_fontSize": 52,
-    "_lineHeight": 60,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1486,8 +1486,8 @@
     "_dstBlendFactor": 771,
     "_string": "[[loc:ui.layout.loading.33]]",
     "_N$string": "[[loc:ui.layout.loading.33]]",
-    "_fontSize": 48,
-    "_lineHeight": 70,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
@@ -1652,8 +1652,8 @@
     "_dstBlendFactor": 771,
     "_string": "",
     "_N$string": "",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,

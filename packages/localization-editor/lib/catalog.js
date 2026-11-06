@@ -65,10 +65,22 @@ function structure(catalog) {
             if (style.maxLines !== undefined && (!Number.isInteger(style.maxLines) || style.maxLines < 1)) throw new Error(key + ': maxLines must be a positive integer.');
             ['x','y'].forEach(field => { if (style[field] !== undefined && (typeof style[field] !== 'number' || !isFinite(style[field]))) throw new Error(key + ': ' + field + ' must be a finite number.'); });
             if (style.wrap !== undefined && typeof style.wrap !== 'boolean') throw new Error(key + ': wrap must be true or false.');
+            if (style.fontFamily !== undefined && (typeof style.fontFamily !== 'string' || !style.fontFamily.trim())) throw new Error(key + ': fontFamily must name a system font.');
+            if (style.fontRole !== undefined && ['display','body'].indexOf(style.fontRole) < 0) throw new Error(key + ': fontRole must be display or body.');
+            ['color','highlightColor'].forEach(field => { if (style[field] !== undefined && (typeof style[field] !== 'string' || !/^#[0-9a-f]{6}$/i.test(style[field]))) throw new Error(key + ': ' + field + ' must be a six-digit hex color.'); });
             if (style.horizontalAlign !== undefined && [0,1,2].indexOf(style.horizontalAlign) < 0) throw new Error(key + ': horizontalAlign must be 0 (left), 1 (center) or 2 (right).');
             if (style.overflow !== undefined && ['NONE','CLAMP','SHRINK','RESIZE_HEIGHT'].indexOf(style.overflow) < 0) throw new Error(key + ': overflow must be NONE, CLAMP, SHRINK or RESIZE_HEIGHT.');
         });
     });
+    if (catalog.fontRoles !== undefined) {
+        if (!plain(catalog.fontRoles)) throw new Error('fontRoles must be an object.');
+        Object.keys(catalog.fontRoles).forEach(code => {
+            if (codes.indexOf(code) < 0 || !plain(catalog.fontRoles[code])) throw new Error('fontRoles must use a catalog locale.');
+            Object.keys(catalog.fontRoles[code]).forEach(key => {
+                if (!safeKey(key) || ['display','body'].indexOf(catalog.fontRoles[code][key]) < 0) throw new Error('fontRoles assignments must use a valid key and display or body.');
+            });
+        });
+    }
     ['nodeStyles','nodePathStyles'].forEach(section => {
         if (catalog[section] !== undefined && !plain(catalog[section])) throw new Error(section + ' must be an object.');
         Object.keys(catalog[section] || {}).forEach(id => { if (!safeKey(catalog[section][id]) || reserved.indexOf(id) >= 0) throw new Error(section + ': invalid layout binding ' + id); });

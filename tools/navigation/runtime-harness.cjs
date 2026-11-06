@@ -106,13 +106,15 @@ function environment() {
   const cc = { Node, Vec2, PolygonCollider, PhysicsCollider: Collider, PhysicsPolygonCollider, PhysicsBoxCollider, PhysicsCircleCollider, CircleCollider, RigidBody,
     director: { getPhysicsManager: () => physics }, game: { config: { frameRate: 60 } },
     v2: (x = 0, y = 0) => typeof x === 'object' ? new Vec2(x.x, x.y) : new Vec2(x, y), size: (width, height) => ({ width, height }),
+    isValid: value => !!value && !value.destroyed,
     winSize: { width: 750, height: 1334 }, _decorator: { ccclass: target => target, property: () => () => undefined } };
   const cfg = { ID: 90001, AttackRange: 20, SearchRange: 40, Health: 100, AttackDamage: 5, AttackInterval: 1, BuildingCross: 1, MoveSpeed: 60 };
   const enumModule = new Proxy({}, { get: () => enums() });
+  const dataManager = { data: {}, getSoldierCfgById: () => cfg };
   const stubs = {
     NavigationGrid: { NavigationGrid }, BaseCtrl: { default: BaseCtrl }, KinghtFallUIGame: ui,
     KinghtFallConfig: { KinghtFallParameter: { FollowRange: 40, FollowMode: 1 }, KinghtFallBundelName: {}, KinghtFallPrefabName: {}, KinghtFallPoolName: {} },
-    KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getSoldierCfgById: () => cfg }) } },
+    KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => dataManager } },
     KinghtFallEnum: enumModule,
     KinghtFallModle: { KinghtFallSoldierAniEnum: { Idle: 'idle', Move: 'move' }, KinghtFallGameArmy: {}, KinghtFallGameStage: { Prepare: 0, Fight: 1 } },
     KinghtFallGameCtrlData: { default: function () {}, KinghtFallTimeType: {}, KinghtFallCommerceKeyType: {} }
@@ -121,7 +123,7 @@ function environment() {
   function load(name) {
     if (stubs[name]) return stubs[name];
     if (modules[name]) return modules[name].exports;
-    if (!/^(KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallBuild(Base|Wall)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
+    if (!/^(GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallBuild(Base|Wall)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
     const module = { exports: {} }; modules[name] = module;
     const context = { module, exports: module.exports, require: load, cc, sp: { Skeleton: function () {} }, console, Set, Date: { now: () => now },
       __extends(Child, Parent) { Object.setPrototypeOf(Child, Parent); Child.prototype = Object.create(Parent.prototype); Child.prototype.constructor = Child; },
@@ -149,7 +151,7 @@ function environment() {
     if (value.oldPos) value.node.getPosition(value.oldPos);
     return value;
   }
-  return { game, nav, unit, box, actor, load, cc, cfg, physics, setTime: value => { now = value; } };
+  return { game, nav, unit, box, actor, load, cc, cfg, physics, stubs, setTime: value => { now = value; } };
 }
 
 function map01GateEnvironment(level, hero) {

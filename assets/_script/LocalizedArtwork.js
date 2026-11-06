@@ -225,7 +225,9 @@ SpineArtwork.prototype.refresh=function() {
   var self=this;
   this.components.forEach(function(component){if(!cc.isValid(component))self.components.delete(component);else self.refreshSkeleton(component);});
   var scene=cc.director&&cc.director.getScene();
-  function visit(node){if(!node||!cc.isValid(node))return;var component=node.getComponent(sp.Skeleton);if(component)self.refreshSkeleton(component);(node.children||[]).forEach(visit);}
+  function visit(node){if(!node||!cc.isValid(node))return;if(!(cc.Scene&&node instanceof cc.Scene)){var component=node.getComponent(sp.Skeleton);if(component)self.refreshSkeleton(component);}(node.children||[]).forEach(visit);}
+  // The director's Scene is structural, including native/adapter scene roots
+  // that do not expose the same cc.Scene constructor as ordinary nodes.
   if(scene)(scene.children||[]).forEach(visit);
 };
 SpineArtwork.prototype.preload=function(callback) {

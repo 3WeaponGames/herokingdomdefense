@@ -2846,7 +2846,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:New Label"
     },
     "ui.kinghtfalluibuff.labname.81": {
-      "en": "Take All",
+      "en": "Claim All",
       "zh": "全都要",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:labName"
     },
@@ -3081,7 +3081,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:labNum; assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureInfo.prefab:labNum"
     },
     "ui.kinghtfallhometreasurectrl.labtime.72": {
-      "en": "<b><outline color=#000000 width=4><color=#75ff10><size=56>8</size></color> more draws</outline></b>",
+      "en": "<b><outline color=#000000 width=4><color=#75ff10><size=68>8</size></color> more draws</outline></b>",
       "zh": "<b><outline color=#000000 width=4>再抽<color=#75ff10><size=72>8</size></color>次</outline></b>",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:labTime"
     },
@@ -3431,7 +3431,7 @@
       "context": "assets\\_script\\KinghtFallTextConfig.js:22"
     },
     "script.kinghtfalltextconfig.hometrea03.24": {
-      "en": "<b><outline color=#000000 width=4><color=#75ff10><size=56>{0}</size></color> more draws</outline></b>",
+      "en": "<b><outline color=#000000 width=4><color=#75ff10><size=68>{0}</size></color> more draws</outline></b>",
       "zh": "<b><outline color=#000000 width=4>再抽<color=#75ff10><size=72>{0}</size></color>次</outline></b>",
       "context": "assets\\_script\\KinghtFallTextConfig.js:24"
     },
@@ -4081,7 +4081,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.81": {
-      "en": "Take All",
+      "en": "Claim All",
       "zh": "全都要",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnGetAll/labName (localized control layout)"
     },

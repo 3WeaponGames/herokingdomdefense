@@ -122,6 +122,9 @@
     "_components": [
       {
         "__id__": 20
+      },
+      {
+        "__id__": 595
       }
     ],
     "_prefab": {
@@ -266,8 +269,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.8]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -356,8 +359,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.13]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1127,8 +1130,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.55]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1380,8 +1383,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.69]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1633,8 +1636,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.83]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1886,8 +1889,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.97]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2139,8 +2142,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.111]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2392,8 +2395,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.125]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2565,13 +2568,13 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 683,
-      "height": 95
+      "height": 184
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
         0,
-        -201.912,
+        -224,
         0,
         0,
         0,
@@ -2585,7 +2588,8 @@
     },
     "_parent": {
       "__id__": 2
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -2636,13 +2640,14 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.138]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2721,13 +2726,14 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.142]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2806,13 +2812,14 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.146]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2891,13 +2898,14 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.150]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2976,13 +2984,14 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.154]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3061,13 +3070,14 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.158]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3109,7 +3119,9 @@
     },
     "node": {
       "__id__": 136
-    }
+    },
+    "_type": 1,
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -3164,7 +3176,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 750,
-      "height": 802
+      "height": 604
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3175,7 +3187,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        135,
+        57,
         0,
         0,
         0,
@@ -3489,8 +3501,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.174]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3602,8 +3614,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.181]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3744,8 +3756,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.186]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3880,8 +3892,8 @@
   {
     "__type__": "cc.Label",
     "_string": "2.1",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -3950,6 +3962,9 @@
       },
       {
         "__id__": 213
+      },
+      {
+        "__id__": 596
       }
     ],
     "_prefab": {
@@ -4022,8 +4037,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.198]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4213,8 +4228,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.207]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4335,6 +4350,9 @@
       },
       {
         "__id__": 226
+      },
+      {
+        "__id__": 597
       }
     ],
     "_prefab": {
@@ -4407,8 +4425,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.217]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4494,8 +4512,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.222]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4595,7 +4613,8 @@
       "__type__": "cc.Size",
       "width": 708,
       "height": 150
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -4917,8 +4936,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.243]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5030,8 +5049,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.250]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5172,8 +5191,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.255]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5308,8 +5327,8 @@
   {
     "__type__": "cc.Label",
     "_string": "2.1",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5378,6 +5397,9 @@
       },
       {
         "__id__": 282
+      },
+      {
+        "__id__": 598
       }
     ],
     "_prefab": {
@@ -5450,8 +5472,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.267]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5641,8 +5663,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.276]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5763,6 +5785,9 @@
       },
       {
         "__id__": 295
+      },
+      {
+        "__id__": 599
       }
     ],
     "_prefab": {
@@ -5835,8 +5860,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.286]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -5922,8 +5947,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.291]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6023,7 +6048,8 @@
       "__type__": "cc.Size",
       "width": 708,
       "height": 150
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -6345,8 +6371,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.312]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6458,8 +6484,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.319]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6600,8 +6626,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.324]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6736,8 +6762,8 @@
   {
     "__type__": "cc.Label",
     "_string": "2.1",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -6806,6 +6832,9 @@
       },
       {
         "__id__": 351
+      },
+      {
+        "__id__": 600
       }
     ],
     "_prefab": {
@@ -6878,8 +6907,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.336]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -7069,8 +7098,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.345]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -7191,6 +7220,9 @@
       },
       {
         "__id__": 364
+      },
+      {
+        "__id__": 601
       }
     ],
     "_prefab": {
@@ -7263,8 +7295,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.355]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -7350,8 +7382,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.360]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -7451,7 +7483,8 @@
       "__type__": "cc.Size",
       "width": 708,
       "height": 150
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -7773,8 +7806,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.381]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -7886,8 +7919,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.388]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8028,8 +8061,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.393]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8164,8 +8197,8 @@
   {
     "__type__": "cc.Label",
     "_string": "2.1",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8234,6 +8267,9 @@
       },
       {
         "__id__": 420
+      },
+      {
+        "__id__": 602
       }
     ],
     "_prefab": {
@@ -8306,8 +8342,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.405]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8497,8 +8533,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.414]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8619,6 +8655,9 @@
       },
       {
         "__id__": 433
+      },
+      {
+        "__id__": 603
       }
     ],
     "_prefab": {
@@ -8691,8 +8730,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.424]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8778,8 +8817,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.429]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -8879,7 +8918,8 @@
       "__type__": "cc.Size",
       "width": 708,
       "height": 150
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -9201,8 +9241,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.450]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -9314,8 +9354,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.457]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -9456,8 +9496,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.462]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -9592,8 +9632,8 @@
   {
     "__type__": "cc.Label",
     "_string": "2.1",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -9662,6 +9702,9 @@
       },
       {
         "__id__": 489
+      },
+      {
+        "__id__": 604
       }
     ],
     "_prefab": {
@@ -9734,8 +9777,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.474]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -9925,8 +9968,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.483]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -10047,6 +10090,9 @@
       },
       {
         "__id__": 502
+      },
+      {
+        "__id__": 605
       }
     ],
     "_prefab": {
@@ -10119,8 +10165,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.493]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -10206,8 +10252,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.498]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -10307,7 +10353,8 @@
       "__type__": "cc.Size",
       "width": 708,
       "height": 150
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -10629,8 +10676,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.519]]",
-    "_fontSize": 48,
-    "_lineHeight": 48,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -10742,8 +10789,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.526]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -10884,8 +10931,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.531]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -11020,8 +11067,8 @@
   {
     "__type__": "cc.Label",
     "_string": "2.1",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -11090,6 +11137,9 @@
       },
       {
         "__id__": 558
+      },
+      {
+        "__id__": 606
       }
     ],
     "_prefab": {
@@ -11162,8 +11212,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.543]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -11353,8 +11403,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.552]]",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -11475,6 +11525,9 @@
       },
       {
         "__id__": 571
+      },
+      {
+        "__id__": 607
       }
     ],
     "_prefab": {
@@ -11547,8 +11600,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.562]]",
-    "_fontSize": 64,
-    "_lineHeight": 64,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -11634,8 +11687,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomepersonctrl.567]]",
-    "_fontSize": 44,
-    "_lineHeight": 44,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -11735,7 +11788,8 @@
       "__type__": "cc.Size",
       "width": 708,
       "height": 150
-    }
+    },
+    "_opacity": 255
   },
   {
     "__type__": "cc.Node",
@@ -11951,7 +12005,7 @@
   {
     "__type__": "cc.Widget",
     "_alignFlags": 45,
-    "_top": 532,
+    "_top": 610,
     "_originalWidth": 240,
     "_originalHeight": 802,
     "node": {
@@ -12067,5 +12121,281 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 3
+    },
+    "content": [
+      {
+        "__id__": 4
+      },
+      {
+        "__id__": 7
+      },
+      {
+        "__id__": 12
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 0,
+    "minHeight": 0,
+    "maxWidth": 480,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 196
+    },
+    "content": [
+      {
+        "__id__": 197
+      },
+      {
+        "__id__": 202
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 215
+    },
+    "content": [
+      {
+        "__id__": 216
+      },
+      {
+        "__id__": 221
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 265
+    },
+    "content": [
+      {
+        "__id__": 266
+      },
+      {
+        "__id__": 271
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 284
+    },
+    "content": [
+      {
+        "__id__": 285
+      },
+      {
+        "__id__": 290
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 334
+    },
+    "content": [
+      {
+        "__id__": 335
+      },
+      {
+        "__id__": 340
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 353
+    },
+    "content": [
+      {
+        "__id__": 354
+      },
+      {
+        "__id__": 359
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 403
+    },
+    "content": [
+      {
+        "__id__": 404
+      },
+      {
+        "__id__": 409
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 422
+    },
+    "content": [
+      {
+        "__id__": 423
+      },
+      {
+        "__id__": 428
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 472
+    },
+    "content": [
+      {
+        "__id__": 473
+      },
+      {
+        "__id__": 478
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 491
+    },
+    "content": [
+      {
+        "__id__": 492
+      },
+      {
+        "__id__": 497
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 541
+    },
+    "content": [
+      {
+        "__id__": 542
+      },
+      {
+        "__id__": 547
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 560
+    },
+    "content": [
+      {
+        "__id__": 561
+      },
+      {
+        "__id__": 566
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 242,
+    "reflowRows": true
   }
 ]

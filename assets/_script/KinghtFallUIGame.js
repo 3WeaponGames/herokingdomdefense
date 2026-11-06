@@ -26,6 +26,7 @@ var $z1KinghtFallGameCtrl = require("KinghtFallGameCtrl");
 var $z1KinghtFallGameCtrlData = require("KinghtFallGameCtrlData");
 var $z1KinghtFallGameEffect = require("KinghtFallGameEffect");
 var $z1KinghtFallGameUICtrl = require("KinghtFallGameUICtrl");
+var TestMode = require("TestMode").TestMode;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -122,6 +123,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.start = function () {
     var t = this;
+    TestMode.getInstance().setGameplayTarget(this);
     $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.ready_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
     this.initBtnEvent();
     this.initEvent();
@@ -212,31 +214,8 @@ var def_KinghtFallUIGame = function (t) {
         t.onPauseGame(false);
       }, "battle.silver.supply");
     });
-    this.btnAgg.on(cc.Node.EventType.TOUCH_END, function () {
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
-      t.ctrGame.changeAge();
-      switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
-        case 1:
-          t.btnAgg.getChildByName("ndTag1").active = true;
-          t.btnAgg.getChildByName("ndTag2").active = false;
-          break;
-        case 2:
-          t.btnAgg.getChildByName("ndTag1").active = !t.ctrGame.isAgg;
-          t.btnAgg.getChildByName("ndTag2").active = t.ctrGame.isAgg;
-      }
-    });
-    this.btnSuspend.on(cc.Node.EventType.TOUCH_END, function () {
-      if (t.canBreak) {
-        t.onPauseGame(true);
-        t.openUI($z1KinghtFallConfig.KinghtFallUIID.UISuspend, function () {
-          t.onRestart(true);
-        }, function () {
-          if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame() === false) return false;
-          t.closeUI();
-        });
-      }
-    });
+    this.btnAgg.on(cc.Node.EventType.TOUCH_END, this.rallyCommand, this);
+    this.btnSuspend.on(cc.Node.EventType.TOUCH_END, this.openPause, this);
     this.btnReviveBreak.on(cc.Node.EventType.TOUCH_END, function () {
       t.btnReviveBreak.active = false;
       t.btnRevive.active = false;
@@ -273,8 +252,45 @@ var def_KinghtFallUIGame = function (t) {
       }
     });
   };
+  _ctor.prototype.rallyCommand = function () {
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
+    this.ctrGame.changeAge();
+    switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
+      case 1:
+        this.btnAgg.getChildByName("ndTag1").active = true;
+        this.btnAgg.getChildByName("ndTag2").active = false;
+        break;
+      case 2:
+        this.btnAgg.getChildByName("ndTag1").active = !this.ctrGame.isAgg;
+        this.btnAgg.getChildByName("ndTag2").active = this.ctrGame.isAgg;
+    }
+  };
+  _ctor.prototype.openPause = function () {
+    var self = this;
+    if (this.canBreak) {
+      this.onPauseGame(true);
+      this.openUI($z1KinghtFallConfig.KinghtFallUIID.UISuspend, function () {
+        self.onRestart(true);
+      }, function () {
+        if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame() === false) return false;
+        self.closeUI();
+      });
+    }
+  };
   _ctor.prototype.onClose = function () {
+    this._stopTestMovement();
+    TestMode.getInstance().removeGameplayTarget(this);
     $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
+  };
+  _ctor.prototype.onEnable = function () {
+    if (this.ctrGame) TestMode.getInstance().setGameplayTarget(this);
+    require("LanguageMgr").LanguageMgr.getInstance().onChange(this._refreshStartBattleCaption, this);
+  };
+  _ctor.prototype.onDisable = function () {
+    this._stopTestMovement();
+    TestMode.getInstance().removeGameplayTarget(this);
+    require("LanguageMgr").LanguageMgr.getInstance().offChange(this._refreshStartBattleCaption, this);
   };
   _ctor.prototype.onRestart = function (t) {
     if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return false;
@@ -354,6 +370,7 @@ var def_KinghtFallUIGame = function (t) {
       this.btnStartFight.children[2].active = false;
       this.btnStartFight.children[3].active = false;
     }
+    this._refreshStartBattleCaption();
     var i = this.ctrGame.gameData.getBulidList();
     this.btnAgg.active = false;
     for (n = 0; n < i.length; n++) {
@@ -364,8 +381,48 @@ var def_KinghtFallUIGame = function (t) {
       }
     }
   };
+  _ctor.prototype._refreshStartBattleCaption = function () {
+    if (!this.ctrGame || !this.btnStartFight) return;
+    var language = require("LanguageMgr").LanguageMgr.getInstance();
+    var english = language.getCurrentLanguage() === "en";
+    var button = this.btnStartFight, children = button.children;
+    var fitter = button.getComponent("PaddedTextBackground");
+    var next = this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round];
+    if (fitter) fitter.enabled = !english;
+    children[1].active = !english;
+    children[2].active = children[3].active = !english && !!next;
+    if (english) {
+      button.setContentSize(294, 111);
+      children[0].setPosition(0, 0);
+      if (!this._completionReward) {
+        var node = new cc.Node("completionReward");
+        node.parent = button;
+        node.setAnchorPoint(.5, .5);
+        node.scale = .5;
+        var label = node.addComponent(cc.Label);
+        label.fontSize = 52;
+        label.lineHeight = 60;
+        label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+        label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+        label.overflow = cc.Label.Overflow.RESIZE_HEIGHT;
+        label.enableWrapText = true;
+        node.width = 720;
+        var outline = node.addComponent(cc.LabelOutline);
+        outline.color = cc.Color.BLACK;
+        outline.width = 3;
+        this._completionReward = label;
+      }
+      this._completionReward.node.y = -button.height / 2 - 28;
+      this._completionReward.node.active = !!next;
+      if (next) this._completionReward.string = language.t("format.battle.waveCompletionSilver", [next.StartSliver]);
+    } else {
+      if (this._completionReward) this._completionReward.node.active = false;
+      if (fitter) fitter.invalidate();
+    }
+  };
   _ctor.prototype.onPauseGame = function (t) {
     var e = this;
+    if (t) { TestMode.getInstance().clearGameplayInput(true); this._stopTestMovement(); }
     this.isPauset = t;
     this.scheduleOnce(function () {
       if (t) {
@@ -410,6 +467,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.startRoundGame = function () {
     var t = this;
+    var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = false;
     this.btnStartFight.active = false;
     this.btnAddCoin.active = false;
@@ -420,10 +478,10 @@ var def_KinghtFallUIGame = function (t) {
     cc.tween(this.ctrUI.ndLight).set({
       opacity: 0
     }).to(.5, {
-      opacity: 255
+      opacity: Math.round(255 * nightStrength)
     }, {
       onUpdate: function (e, n) {
-        var i = Math.floor(255 - 99 * n);
+        var i = Math.round(255 - 99 * nightStrength * n);
         t.ctrGame.ndBg.children.forEach(function (t) {
           t.color = new cc.Color(i, i, i);
         });
@@ -443,6 +501,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.endRoundGame = function () {
     var t = this;
+    var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = true;
     this.canBreak = false;
     $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.ready_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
@@ -455,12 +514,12 @@ var def_KinghtFallUIGame = function (t) {
         t.ctrGame.ctrPlay.ndRange.active = false;
         t.ctrGame.gameData.setLight(false);
         cc.tween(t.ctrUI.ndLight).set({
-          opacity: 255
+          opacity: Math.round(255 * nightStrength)
         }).to(.5, {
           opacity: 0
         }, {
           onUpdate: function (e, n) {
-            var i = Math.floor(156 + 99 * n);
+            var i = Math.round(255 - 99 * nightStrength * (1 - n));
             t.ctrGame.ndBg.children.forEach(function (t) {
               t.color = new cc.Color(i, i, i);
             });
@@ -528,6 +587,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.lateUpdate = function (t) {
     this.isPauset || this.ctrGame.onLateUpdate(t);
+    this._fitBuildingsButton();
   };
   _ctor.prototype._enemyIndicatorObstacles = function () {
     var ui = this.ctrUI.node;
@@ -535,6 +595,27 @@ var def_KinghtFallUIGame = function (t) {
       this.btnStartFight, this.btnAddCoin, this.btnAgg].filter(function (node) {
       return node && cc.isValid(node) && node.active && node.activeInHierarchy !== false;
     }).map(function (node) { return enemyIndicatorBounds(node, ui); });
+  };
+  _ctor.prototype._fitBuildingsButton = function () {
+    var button = this.btnBuildInfo;
+    if (!button || !button.parent || !button.active) return;
+    var caption = button.getChildByName("labNum"), label = caption && caption.getComponent(cc.Label);
+    if (!caption || !label) return;
+    var visible = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
+    var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: visible.width, height: visible.height };
+    var signature = [safe.x, safe.y, safe.width, safe.height, button.parent.width, button.parent.height,
+      button.scaleX, button.scaleY, caption.width, caption.height, label.string, label.fontSize].join(":");
+    if (signature === this._buildCaptionBoundsSignature) return;
+    if (this._buildInfoBaseX === undefined) this._buildInfoBaseX = button.x;
+    if (label._forceUpdateRenderData) label._forceUpdateRenderData();
+    button.x = this._buildInfoBaseX;
+    var parent = button.parent, left = parent.convertToNodeSpaceAR(cc.v2(safe.x, safe.y));
+    var right = parent.convertToNodeSpaceAR(cc.v2(safe.x + safe.width, safe.y + safe.height));
+    var rect = enemyIndicatorBounds(button, parent), padding = 12;
+    var low = Math.min(left.x, right.x) + padding - (rect.minX - button.x);
+    var high = Math.max(left.x, right.x) - padding - (rect.maxX - button.x);
+    button.x = low <= high ? Math.max(low, Math.min(high, this._buildInfoBaseX)) : (low + high) / 2;
+    this._buildCaptionBoundsSignature = signature;
   };
   _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles) {
     var ui = this.ctrUI.node, arrow = node.getChildByName("ndArr");
@@ -562,7 +643,45 @@ var def_KinghtFallUIGame = function (t) {
       if (arrow.active) arrow.angle = 180 * Math.atan2(dy, dx) / Math.PI - 90;
     }
   };
+  _ctor.prototype._stopTestMovement = function () {
+    if (this._testKeyboardMoving && this.ctrGame) this.ctrGame.moveFun(null);
+    this._testKeyboardMoving = false;
+  };
+  _ctor.prototype._updateTestControls = function () {
+    var mode = TestMode.getInstance(), input = mode.readGameplayInput(this);
+    if (!input || !this.ctrGame || !this.ctrGame.ctrPlay ||
+        this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.End) {
+      this._stopTestMovement(); return;
+    }
+    var manager = $z1UIMgr.UIMgr.getInstance(), pause = null, blocked = !!manager.isopening, guide = false;
+    var self = this, layers = $z1Appcfg.OrderLayer;
+    manager.uistatck.forEach(function (ui, id) {
+      if (ui === self || !ui.node || !ui.node.active || !ui.node.activeInHierarchy || ui.isclose) return;
+      if (id === $z1KinghtFallConfig.KinghtFallUIID.UISuspend) { pause = ui; return; }
+      if (id === $z1Config.UIID.UITouch) {
+        if (ui.ndMask && ui.ndMask.active || ui.ndAd && ui.ndAd.active) blocked = true;
+      } else if (ui.layer === layers.guide && !self.isPauset) {
+        guide = true; // Movement/build tutorials deliberately keep gameplay running.
+      } else if (ui.layer === layers.pop || ui.layer === layers.pop2 || ui.layer === layers.guide || ui.layer === layers.Log) blocked = true;
+    });
+    if (input.pause && !blocked && !guide) {
+      this._stopTestMovement();
+      if (pause) pause.resumeGame();
+      else if (!this.isPauset && this.canBreak) this.openPause();
+      return;
+    }
+    if (blocked || pause || this.isPauset || this.ctrGame.ctrPlay.isDead()) {
+      this._stopTestMovement(); mode.clearGameplayInput(true); return;
+    }
+    if (input.rally && this.btnAgg.active && this.btnAgg.activeInHierarchy) this.rallyCommand();
+    if (input.build) this.ctrGame.testInstantBuild();
+    if (this.isPauset) { this._stopTestMovement(); return; }
+    if (input.x || input.y) {
+      this.moveFun(cc.v2(input.x, input.y)); this._testKeyboardMoving = true;
+    } else this._stopTestMovement();
+  };
   _ctor.prototype.update = function (t) {
+    this._updateTestControls();
     if (!this.isPauset) {
       t = Math.min(t, .1);
       this.ctrUI.upGuide();

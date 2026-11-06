@@ -159,7 +159,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 584,
-      "height": 482
+      "height": 560
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -207,7 +207,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        202.298,
+        240,
         0,
         0,
         0,
@@ -307,7 +307,7 @@
       "ctor": "Float64Array",
       "array": [
         235.749,
-        202.347,
+        240,
         0,
         0,
         0,
@@ -373,7 +373,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        63.546,
+        84,
         0,
         0,
         0,
@@ -428,8 +428,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisetting.18]]",
-    "_fontSize": 60,
-    "_lineHeight": 60,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -491,13 +491,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 342,
+      "width": 260,
       "height": 20
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        36.927,
+        80,
         0,
         0,
         0,
@@ -531,7 +531,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 388,
+      "width": 306,
       "height": 34
     }
   },
@@ -548,7 +548,8 @@
     },
     "node": {
       "__id__": 22
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -577,7 +578,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 382,
+      "width": 300,
       "height": 28
     }
   },
@@ -595,7 +596,8 @@
     },
     "node": {
       "__id__": 25
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -764,7 +766,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -12.073,
+        8,
         0,
         0,
         0,
@@ -819,8 +821,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisetting.37]]",
-    "_fontSize": 60,
-    "_lineHeight": 60,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -882,13 +884,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 342,
+      "width": 260,
       "height": 20
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        37.342,
+        80,
         0,
         0,
         0,
@@ -922,7 +924,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 388,
+      "width": 306,
       "height": 34
     }
   },
@@ -939,7 +941,8 @@
     },
     "node": {
       "__id__": 41
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -968,7 +971,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 382,
+      "width": 300,
       "height": 28
     }
   },
@@ -986,7 +989,8 @@
     },
     "node": {
       "__id__": 44
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1164,7 +1168,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -198.164,
+        -230,
         0,
         0,
         0,
@@ -1180,8 +1184,8 @@
   {
     "__type__": "cc.Label",
     "_string": "1.0.0",
-    "_fontSize": 56,
-    "_lineHeight": 56,
+    "_fontSize": 59,
+    "_lineHeight": 68,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1251,8 +1255,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluisetting.58]]",
-    "_fontSize": 50,
-    "_lineHeight": 50,
+    "_fontSize": 67,
+    "_lineHeight": 78,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1293,6 +1297,9 @@
       },
       {
         "__id__": 66
+      },
+      {
+        "__id__": 74
       }
     ],
     "_prefab": {
@@ -1307,7 +1314,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -126.52,
+        -154,
         0,
         0,
         0,
@@ -1445,7 +1452,8 @@
     },
     "node": {
       "__id__": 6
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1506,5 +1514,23 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 60
+    },
+    "content": [
+      {
+        "__id__": 61
+      }
+    ],
+    "paddingX": 16,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 160,
+    "minHeight": 92,
+    "maxWidth": 264,
+    "reflowRows": true
   }
 ]

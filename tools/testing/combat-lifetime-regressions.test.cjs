@@ -49,7 +49,7 @@ function harness() {
     isValid: (object, strict) => !!object && !object.destroyed && !(strict && object.pendingDestroy) };
   function load(name) {
     if (modules[name]) return modules[name];
-    const context = { exports: {}, require: id => modules[id] || (fs.existsSync(path.join(scriptRoot, id + '.js')) && /^KinghtFall(Bullet|EnemyBase|SoldierBase|GameCtrl$)/.test(id) ? load(id) : { default: Base }),
+    const context = { exports: {}, require: id => modules[id] || (fs.existsSync(path.join(scriptRoot, id + '.js')) && /^(GameToolsOverrides$|KinghtFall(Bullet|EnemyBase|SoldierBase|GameCtrl$))/.test(id) ? load(id) : { default: Base }),
       console, cc, sp: { Skeleton: function () {} },
       __extends: (ctor, base) => { Object.setPrototypeOf(ctor.prototype, base.prototype); },
       __decorate: (decorators, target, key) => key === undefined ? target : undefined, __spreadArrays: (...args) => [].concat(...args) };

@@ -39,7 +39,7 @@ var def_KinghtFallUIBuildAtlas = function (t) {
         e.setPosition(n.Excursion ? cc.v2(n.Excursion[0] || 0, n.Excursion[1] || 0) : cc.v2(0, 0));
       });
       i.getChildByName("labName").getComponent(cc.Label).string = t.T(n.Name);
-      i.getChildByName("labInfo").getComponent(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [t.T(n.LevelUpDescribe)]);
+      i.getChildByName("labInfo").getComponent(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("{0}", [t.T(n.LevelUpDescribe)]);
     };
     e($z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter);
     e($z1KinghtFallEnum.KinghtFallEnumBuildEnum.ArrowTower);
