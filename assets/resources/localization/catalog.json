@@ -2783,7 +2783,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:labName"
     },
     "ui.kinghtfalluigame.labname.146": {
-      "en": "Complete",
+      "en": "Finish",
       "zh": "完成",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:labName"
     },
@@ -2873,7 +2873,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:labQue; assets\\_script\\KinghtFallTextConfig.js:36"
     },
     "ui.kinghtfalluibuff.new_label.67": {
-      "en": "or Better",
+      "en": "+",
       "zh": "以上品质",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:New Label"
     },
@@ -4028,7 +4028,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndEnemyIcon/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.146": {
-      "en": "Complete",
+      "en": "Finish",
       "zh": "完成",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
     },
@@ -4818,7 +4818,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/labQue (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.67": {
-      "en": "or Better",
+      "en": "+",
       "zh": "以上品质",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
     },
@@ -5316,6 +5316,116 @@
       "en": "Elite\nPlaytester",
       "zh": "超级\n游戏内测员",
       "context": "Tester reward medal caption"
+    },
+    "art.relic.slow": {
+      "en": "Slow",
+      "zh": "慢",
+      "context": "Editable glyph on relic parchment; full item meaning appears in its tooltip"
+    },
+    "art.relic.tax": {
+      "en": "Tax",
+      "zh": "税收",
+      "context": "Editable glyph on relic parchment; full item meaning appears in its tooltip"
+    },
+    "art.relic.increase": {
+      "en": "+",
+      "zh": "增",
+      "context": "Editable glyph on relic parchment; full item meaning appears in its tooltip"
+    },
+    "art.relic.split": {
+      "en": "Split",
+      "zh": "分",
+      "context": "Editable glyph on relic parchment; full item meaning appears in its tooltip"
+    },
+    "art.relic.save": {
+      "en": "Save",
+      "zh": "省",
+      "context": "Editable glyph on relic parchment; full item meaning appears in its tooltip"
+    },
+    "art.age.caption": {
+      "en": "Age Rating",
+      "zh": "适龄提示",
+      "context": "Age guidance badge caption"
+    },
+    "art.feedback.icon": {
+      "en": "Feedback",
+      "zh": "反馈与投诉",
+      "context": "Home feedback icon caption"
+    },
+    "art.sidebar.step1": {
+      "en": "1. Open the sidebar",
+      "zh": "1.点击侧边栏图标",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.step2": {
+      "en": "2. Open Claim the Castle",
+      "zh": "2.点击拿下一座城",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.step3": {
+      "en": "3. Claim your reward",
+      "zh": "3.领取奖励",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.hot": {
+      "en": "Hot",
+      "zh": "热点",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.live": {
+      "en": "Live",
+      "zh": "直播",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.tips": {
+      "en": "Tips",
+      "zh": "经验",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.local": {
+      "en": "Local",
+      "zh": "深圳",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.follow": {
+      "en": "Follow",
+      "zh": "关注",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.greeting": {
+      "en": "Hello!",
+      "zh": "上午好",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.scan": {
+      "en": "Scan",
+      "zh": "扫一扫",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.games": {
+      "en": "Games",
+      "zh": "小程序",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.all": {
+      "en": "All",
+      "zh": "全部",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.game": {
+      "en": "Claim the\nCastle",
+      "zh": "拿下一座城",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.sample_game1": {
+      "en": "Get Rich…",
+      "zh": "想致富先…",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
+    },
+    "art.sidebar.sample_game2": {
+      "en": "Antique Master…",
+      "zh": "古董大师…",
+      "context": "Sidebar reward guide, embedded instructional screenshot"
     }
   },
   "images": {
@@ -5678,6 +5788,118 @@
         "en": "localization/generated/en/tester_all-y",
         "zh": "localization/generated/zh/tester_all-y"
       }
+    },
+    "6d35e5a9-1d08-4d60-8212-e2b6a7a82c90": {
+      "key": "art.relic.slow",
+      "template": "relic_02",
+      "preserveOriginal": {
+        "zh": "慢"
+      },
+      "source": "assets/KinghtFallIconGood/zb_02.png",
+      "artwork": {
+        "en": "localization/generated/en/relic_02",
+        "zh": "localization/generated/zh/relic_02"
+      }
+    },
+    "69e35884-c99b-4ca5-8b31-10c686fc8ebf": {
+      "key": "art.relic.tax",
+      "template": "relic_04",
+      "preserveOriginal": {
+        "zh": "税收"
+      },
+      "source": "assets/KinghtFallIconGood/zb_04.png",
+      "artwork": {
+        "en": "localization/generated/en/relic_04",
+        "zh": "localization/generated/zh/relic_04"
+      }
+    },
+    "211479e9-2299-4a9b-b6cf-f333ca9faca4": {
+      "key": "art.relic.increase",
+      "template": "relic_06",
+      "preserveOriginal": {
+        "zh": "增"
+      },
+      "source": "assets/KinghtFallIconGood/zb_06.png",
+      "artwork": {
+        "en": "localization/generated/en/relic_06",
+        "zh": "localization/generated/zh/relic_06"
+      }
+    },
+    "bcb1b55b-4649-48d5-b846-d1ba22b26ce6": {
+      "key": "art.relic.split",
+      "template": "relic_08",
+      "preserveOriginal": {
+        "zh": "分"
+      },
+      "source": "assets/KinghtFallIconGood/zb_08.png",
+      "artwork": {
+        "en": "localization/generated/en/relic_08",
+        "zh": "localization/generated/zh/relic_08"
+      }
+    },
+    "90491735-5874-457c-9644-36147af8ce5f": {
+      "key": "art.relic.save",
+      "template": "relic_09",
+      "preserveOriginal": {
+        "zh": "省"
+      },
+      "source": "assets/KinghtFallIconGood/zb_09.png",
+      "artwork": {
+        "en": "localization/generated/en/relic_09",
+        "zh": "localization/generated/zh/relic_09"
+      }
+    },
+    "76d0beb4-79f8-40a5-958e-e281ce0430c0": {
+      "key": "art.age.caption",
+      "template": "age_rating",
+      "preserveOriginal": {
+        "zh": "适龄提示"
+      },
+      "source": "assets/load/8.png",
+      "artwork": {
+        "en": "localization/generated/en/age_rating",
+        "zh": "localization/generated/zh/age_rating"
+      }
+    },
+    "2dddfc91-02b8-4b7d-bd70-8952085a1154": {
+      "key": "art.feedback.icon",
+      "template": "feedback_icon",
+      "preserveOriginal": {
+        "zh": "反馈与投诉"
+      },
+      "source": "assets/prefabs/_res/textures/KinghtFallHomeBattleCtrl/fk.png",
+      "artwork": {
+        "en": "localization/generated/en/feedback_icon",
+        "zh": "localization/generated/zh/feedback_icon"
+      }
+    },
+    "b4c0ab7b-177b-4920-9e1f-31ac005edbb9": {
+      "key": "art.sidebar.step1",
+      "template": "sidebar_guide",
+      "preserveOriginal": {
+        "zh": {
+          "art.sidebar.step1": "1.点击侧边栏图标",
+          "art.sidebar.step2": "2.点击拿下一座城",
+          "art.sidebar.step3": "3.领取奖励",
+          "art.sidebar.hot": "热点",
+          "art.sidebar.live": "直播",
+          "art.sidebar.tips": "经验",
+          "art.sidebar.local": "深圳",
+          "art.sidebar.follow": "关注",
+          "art.sidebar.greeting": "上午好",
+          "art.sidebar.scan": "扫一扫",
+          "art.sidebar.games": "小程序",
+          "art.sidebar.all": "全部",
+          "art.sidebar.game": "拿下一座城",
+          "art.sidebar.sample_game1": "想致富先…",
+          "art.sidebar.sample_game2": "古董大师…"
+        }
+      },
+      "source": "assets/KinghtFallUISideBoard/wg_cbl_cbl.png",
+      "artwork": {
+        "en": "localization/generated/en/sidebar_guide",
+        "zh": "localization/generated/zh/sidebar_guide"
+      }
     }
   },
   "numberFormats": {
@@ -5726,6 +5948,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#fff346"
@@ -5760,6 +5984,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#fff346"
@@ -5794,6 +6020,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#55ff4b"
@@ -5828,6 +6056,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#55ff4b"
@@ -5862,6 +6092,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#89afb2"
@@ -5896,6 +6128,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#ff4646"
@@ -5930,6 +6164,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#ff4646"
@@ -5964,6 +6200,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#ffffff",
             "#fff346"
@@ -5998,6 +6236,8 @@
           "outlineColor": "#16150f",
           "outlineWidth": 3,
           "align": "center",
+          "padding": 3,
+          "lineHeightRatio": 1,
           "gradient": [
             "#58ffff",
             "#8df4ff",
@@ -6143,7 +6383,14 @@
           "color": "#ffffff",
           "outlineColor": "#16150f",
           "outlineWidth": 0,
-          "align": "center"
+          "align": "center",
+          "locales": {
+            "en": {
+              "font": null,
+              "fontFamily": "Arial",
+              "bold": false
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/prefabs/_res/textures/UIReport/an.png",
@@ -6172,7 +6419,14 @@
           "color": "#ffffff",
           "outlineColor": "#16150f",
           "outlineWidth": 0,
-          "align": "center"
+          "align": "center",
+          "locales": {
+            "en": {
+              "font": null,
+              "fontFamily": "Arial",
+              "bold": false
+            }
+          }
         }
       ],
       "sourceOriginal": "assets/prefabs/_res/textures/UIReport/shenggong.png",
@@ -6196,27 +6450,29 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 76,
-              "y": 73
+              "x": 73,
+              "y": 66
             },
             {
-              "x": 139,
-              "y": 37
+              "x": 130,
+              "y": 33
             },
             {
               "x": 157,
-              "y": 47
+              "y": 49
             },
             {
-              "x": 94,
+              "x": 96,
               "y": 84
             }
           ]
@@ -6239,28 +6495,30 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 23,
-              "y": 45
+              "x": 40,
+              "y": 33
             },
             {
-              "x": 88,
-              "y": 79
+              "x": 97,
+              "y": 66
             },
             {
-              "x": 70,
-              "y": 90
+              "x": 74,
+              "y": 84
             },
             {
-              "x": 5,
-              "y": 56
+              "x": 13,
+              "y": 49
             }
           ]
         }
@@ -6282,27 +6540,29 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 76,
-              "y": 73
+              "x": 73,
+              "y": 66
             },
             {
-              "x": 139,
-              "y": 37
+              "x": 130,
+              "y": 33
             },
             {
               "x": 157,
-              "y": 47
+              "y": 49
             },
             {
-              "x": 94,
+              "x": 96,
               "y": 84
             }
           ]
@@ -6325,28 +6585,30 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 23,
-              "y": 45
+              "x": 40,
+              "y": 33
             },
             {
-              "x": 88,
-              "y": 79
+              "x": 97,
+              "y": 66
             },
             {
-              "x": 70,
-              "y": 90
+              "x": 74,
+              "y": 84
             },
             {
-              "x": 5,
-              "y": 56
+              "x": 13,
+              "y": 49
             }
           ]
         }
@@ -6368,27 +6630,29 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 76,
-              "y": 73
+              "x": 73,
+              "y": 66
             },
             {
-              "x": 139,
-              "y": 37
+              "x": 130,
+              "y": 33
             },
             {
               "x": 157,
-              "y": 47
+              "y": 49
             },
             {
-              "x": 94,
+              "x": 96,
               "y": 84
             }
           ]
@@ -6411,28 +6675,30 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 23,
-              "y": 45
+              "x": 40,
+              "y": 33
             },
             {
-              "x": 88,
-              "y": 79
+              "x": 97,
+              "y": 66
             },
             {
-              "x": 70,
-              "y": 90
+              "x": 74,
+              "y": 84
             },
             {
-              "x": 5,
-              "y": 56
+              "x": 13,
+              "y": 49
             }
           ]
         }
@@ -6454,27 +6720,29 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 76,
-              "y": 73
+              "x": 73,
+              "y": 66
             },
             {
-              "x": 139,
-              "y": 37
+              "x": 130,
+              "y": 33
             },
             {
               "x": 157,
-              "y": 47
+              "y": 49
             },
             {
-              "x": 94,
+              "x": 96,
               "y": 84
             }
           ]
@@ -6497,28 +6765,30 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 23,
-              "y": 45
+              "x": 40,
+              "y": 33
             },
             {
-              "x": 88,
-              "y": 79
+              "x": 97,
+              "y": 66
             },
             {
-              "x": 70,
-              "y": 90
+              "x": 74,
+              "y": 84
             },
             {
-              "x": 5,
-              "y": 56
+              "x": 13,
+              "y": 49
             }
           ]
         }
@@ -6540,27 +6810,29 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 76,
-              "y": 73
+              "x": 73,
+              "y": 66
             },
             {
-              "x": 139,
-              "y": 37
+              "x": 130,
+              "y": 33
             },
             {
               "x": 157,
-              "y": 47
+              "y": 49
             },
             {
-              "x": 94,
+              "x": 96,
               "y": 84
             }
           ]
@@ -6583,28 +6855,30 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 23,
-              "y": 45
+              "x": 40,
+              "y": 33
             },
             {
-              "x": 88,
-              "y": 79
+              "x": 97,
+              "y": 66
             },
             {
-              "x": 70,
-              "y": 90
+              "x": 74,
+              "y": 84
             },
             {
-              "x": 5,
-              "y": 56
+              "x": 13,
+              "y": 49
             }
           ]
         }
@@ -6626,27 +6900,29 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 76,
-              "y": 73
+              "x": 73,
+              "y": 66
             },
             {
-              "x": 139,
-              "y": 37
+              "x": 130,
+              "y": 33
             },
             {
               "x": 157,
-              "y": 47
+              "y": 49
             },
             {
-              "x": 94,
+              "x": 96,
               "y": 84
             }
           ]
@@ -6669,28 +6945,30 @@
             "height": 26
           },
           "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
-          "fontSize": 24,
-          "minFontSize": 11,
+          "fontSize": 31,
+          "minFontSize": 12,
           "color": "#ffffff",
           "outlineColor": "#626346",
-          "outlineWidth": 2,
+          "outlineWidth": 2.5,
           "align": "center",
+          "padding": 1,
+          "lineHeightRatio": 1,
           "quad": [
             {
-              "x": 23,
-              "y": 45
+              "x": 40,
+              "y": 33
             },
             {
-              "x": 88,
-              "y": 79
+              "x": 97,
+              "y": 66
             },
             {
-              "x": 70,
-              "y": 90
+              "x": 74,
+              "y": 84
             },
             {
-              "x": 5,
-              "y": 56
+              "x": 13,
+              "y": 49
             }
           ]
         }
@@ -6720,6 +6998,11 @@
           "outlineColor": "#16150f",
           "outlineWidth": 4,
           "align": "center",
+          "locales": {
+            "en": {
+              "baselineOffset": -4
+            }
+          },
           "shadow": {
             "color": "#000000",
             "offsetX": 2,
@@ -6746,6 +7029,11 @@
           "outlineColor": "#16150f",
           "outlineWidth": 4,
           "align": "center",
+          "locales": {
+            "en": {
+              "baselineOffset": 0
+            }
+          },
           "shadow": {
             "color": "#000000",
             "offsetX": 2,
@@ -6806,7 +7094,7 @@
           ]
         }
       ],
-      "pending": true
+      "pending": false
     },
     "tester_all": {
       "width": 147,
@@ -6911,6 +7199,517 @@
           "align": "center"
         }
       ]
+    },
+    "relic_02": {
+      "width": 128,
+      "height": 128,
+      "regions": [
+        {
+          "key": "art.relic.slow",
+          "rect": {
+            "x": 44,
+            "y": 39,
+            "width": 36,
+            "height": 44
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 15,
+          "minFontSize": 8,
+          "color": "#ec3838",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 1,
+          "wrap": false,
+          "angle": 18
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconGood/zb_02.png",
+      "source": "assets/resources/localization/neutral/relic_02.png",
+      "pending": false
+    },
+    "relic_04": {
+      "width": 128,
+      "height": 128,
+      "regions": [
+        {
+          "key": "art.relic.tax",
+          "rect": {
+            "x": 50,
+            "y": 31,
+            "width": 35,
+            "height": 56
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 20,
+          "minFontSize": 8,
+          "color": "#f4ded3",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 1,
+          "wrap": false,
+          "angle": -14
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconGood/zb_04.png",
+      "source": "assets/resources/localization/neutral/relic_04.png",
+      "pending": false
+    },
+    "relic_06": {
+      "width": 128,
+      "height": 128,
+      "regions": [
+        {
+          "key": "art.relic.increase",
+          "rect": {
+            "x": 45,
+            "y": 39,
+            "width": 34,
+            "height": 44
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 32,
+          "minFontSize": 8,
+          "color": "#feff54",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 1,
+          "wrap": false,
+          "angle": 18
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconGood/zb_06.png",
+      "source": "assets/resources/localization/neutral/relic_06.png",
+      "pending": false
+    },
+    "relic_08": {
+      "width": 128,
+      "height": 128,
+      "regions": [
+        {
+          "key": "art.relic.split",
+          "rect": {
+            "x": 43,
+            "y": 37,
+            "width": 38,
+            "height": 46
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 15,
+          "minFontSize": 8,
+          "color": "#511e14",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 1,
+          "wrap": false,
+          "angle": 18
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconGood/zb_08.png",
+      "source": "assets/resources/localization/neutral/relic_08.png",
+      "pending": false
+    },
+    "relic_09": {
+      "width": 128,
+      "height": 128,
+      "regions": [
+        {
+          "key": "art.relic.save",
+          "rect": {
+            "x": 42,
+            "y": 37,
+            "width": 39,
+            "height": 47
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 15,
+          "minFontSize": 8,
+          "color": "#d5f9ff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 1,
+          "wrap": false,
+          "angle": 26
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconGood/zb_09.png",
+      "source": "assets/resources/localization/neutral/relic_09.png",
+      "pending": false
+    },
+    "age_rating": {
+      "width": 195,
+      "height": 251,
+      "regions": [
+        {
+          "key": "art.age.caption",
+          "rect": {
+            "x": 18,
+            "y": 203,
+            "width": 166,
+            "height": 39
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 12,
+          "color": "#000000",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 1,
+          "wrap": false
+        }
+      ],
+      "sourceOriginal": "assets/load/8.png",
+      "source": "assets/resources/localization/neutral/age_rating.png",
+      "pending": false
+    },
+    "feedback_icon": {
+      "width": 91,
+      "height": 93,
+      "regions": [
+        {
+          "key": "art.feedback.icon",
+          "rect": {
+            "x": 4,
+            "y": 72,
+            "width": 83,
+            "height": 18
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 15,
+          "minFontSize": 10,
+          "color": "#000000",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "wrap": false,
+          "lineHeightRatio": 1,
+          "locales": {
+            "en": {
+              "font": null,
+              "fontFamily": "Arial",
+              "bold": true
+            }
+          }
+        }
+      ],
+      "sourceOriginal": "assets/prefabs/_res/textures/KinghtFallHomeBattleCtrl/fk.png",
+      "source": "assets/resources/localization/neutral/feedback_icon.png",
+      "pending": false
+    },
+    "sidebar_guide": {
+      "width": 521,
+      "height": 670,
+      "regions": [
+        {
+          "key": "art.sidebar.step1",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 515,
+            "height": 37
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 30,
+          "minFontSize": 8,
+          "color": "#595959",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "left",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.step2",
+          "rect": {
+            "x": 0,
+            "y": 203,
+            "width": 515,
+            "height": 35
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 8,
+          "color": "#595959",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "left",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.step3",
+          "rect": {
+            "x": 0,
+            "y": 536,
+            "width": 515,
+            "height": 37
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 30,
+          "minFontSize": 8,
+          "color": "#595959",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "left",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.hot",
+          "rect": {
+            "x": 72,
+            "y": 116,
+            "width": 64,
+            "height": 30
+          },
+          "font": null,
+          "fontSize": 22,
+          "minFontSize": 8,
+          "color": "#eeeeee",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.live",
+          "rect": {
+            "x": 140,
+            "y": 116,
+            "width": 64,
+            "height": 30
+          },
+          "font": null,
+          "fontSize": 22,
+          "minFontSize": 8,
+          "color": "#eeeeee",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.tips",
+          "rect": {
+            "x": 208,
+            "y": 116,
+            "width": 64,
+            "height": 30
+          },
+          "font": null,
+          "fontSize": 22,
+          "minFontSize": 8,
+          "color": "#eeeeee",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.local",
+          "rect": {
+            "x": 276,
+            "y": 116,
+            "width": 64,
+            "height": 30
+          },
+          "font": null,
+          "fontSize": 22,
+          "minFontSize": 8,
+          "color": "#eeeeee",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.follow",
+          "rect": {
+            "x": 344,
+            "y": 116,
+            "width": 64,
+            "height": 30
+          },
+          "font": null,
+          "fontSize": 22,
+          "minFontSize": 8,
+          "color": "#eeeeee",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.greeting",
+          "rect": {
+            "x": 42,
+            "y": 270,
+            "width": 87,
+            "height": 33
+          },
+          "font": null,
+          "fontSize": 25,
+          "minFontSize": 8,
+          "color": "#101010",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.scan",
+          "rect": {
+            "x": 335,
+            "y": 271,
+            "width": 65,
+            "height": 32
+          },
+          "font": null,
+          "fontSize": 23,
+          "minFontSize": 8,
+          "color": "#101010",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.games",
+          "rect": {
+            "x": 58,
+            "y": 352,
+            "width": 69,
+            "height": 27
+          },
+          "font": null,
+          "fontSize": 20,
+          "minFontSize": 8,
+          "color": "#101010",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.all",
+          "rect": {
+            "x": 339,
+            "y": 355,
+            "width": 39,
+            "height": 24
+          },
+          "font": null,
+          "fontSize": 17,
+          "minFontSize": 8,
+          "color": "#777777",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.game",
+          "rect": {
+            "x": 54,
+            "y": 485,
+            "width": 101,
+            "height": 25
+          },
+          "font": null,
+          "fontSize": 12,
+          "minFontSize": 8,
+          "color": "#101010",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.sample_game1",
+          "rect": {
+            "x": 176,
+            "y": 485,
+            "width": 94,
+            "height": 24
+          },
+          "font": null,
+          "fontSize": 16,
+          "minFontSize": 8,
+          "color": "#101010",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        },
+        {
+          "key": "art.sidebar.sample_game2",
+          "rect": {
+            "x": 300,
+            "y": 485,
+            "width": 110,
+            "height": 24
+          },
+          "font": null,
+          "fontSize": 13,
+          "minFontSize": 8,
+          "color": "#101010",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center",
+          "padding": 0,
+          "lineHeightRatio": 1,
+          "wrap": false,
+          "fontFamily": "Arial"
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallUISideBoard/wg_cbl_cbl.png",
+      "source": "assets/resources/localization/neutral/sidebar_guide.png",
+      "pending": false
     }
   },
   "spineImages": {
@@ -6918,11 +7717,6 @@
       "template": "settlement_atlas",
       "skeletonDataUuid": "7533c9fc-5e29-4774-a275-4a8e0fde7497",
       "source": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.png",
-      "boneScales": {
-        "en": {
-          "sl5": 1.75
-        }
-      },
       "preserveOriginal": {
         "zh": {
           "art.result.victory": "胜利",
@@ -6942,6 +7736,10 @@
         "zh": {
           "art.sign.day7": "第七天即可\n领取豪华大奖!"
         }
+      },
+      "artwork": {
+        "en": "localization/generated/en/day7_atlas",
+        "zh": "localization/generated/zh/day7_atlas"
       }
     }
   },
@@ -7200,11 +7998,16 @@
     },
     "ui.layout.kinghtfalluigame.146": {
       "en": {
-        "width": 363,
+        "width": 180,
+        "height": 76,
+        "fontSize": 52,
+        "lineHeight": 60,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 106.5,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": -66,
+        "y": -21.254
       }
     },
     "ui.layout.kinghtfalluigame.191": {
@@ -7349,11 +8152,14 @@
     },
     "ui.layout.kinghtfalluibuff.57": {
       "en": {
-        "width": 112,
+        "width": 286,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluibuff.81": {
@@ -7520,11 +8326,16 @@
     },
     "ui.layout.kinghtfallhomebattlectrl.7": {
       "en": {
-        "width": 414,
+        "width": 800,
+        "height": 128,
+        "fontSize": 96,
+        "lineHeight": 104,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 113.84,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 355.392
       }
     },
     "ui.layout.kinghtfallhomebattlectrl.12": {
@@ -8807,20 +9618,26 @@
     },
     "ui.layout.kinghtfalluibuff.62": {
       "en": {
-        "width": 112,
+        "width": 120,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluibuff.67": {
       "en": {
-        "width": 216,
+        "width": 38,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluisuspend.88": {

@@ -5,7 +5,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '../..');
 const catalog = { version: 1, defaultLanguage: 'en', languages: [{code:'en', nameKey:'language.en'}, {code:'zh', nameKey:'language.zh'}], entries: {}, images: {},
   numberFormats: { en: {base:1000,suffixes:['','K','M','B','T','Qa','Qi']}, zh: {base:10000,suffixes:['','万','亿','兆','京','垓','秭']} } };
-for (const source of ['text-entries.json', 'root-entries.json', 'art-entries.json', 'layout-entries.json']) {
+for (const source of ['text-entries.json', 'root-entries.json', 'art-entries.json', 'root-art-entries.json', 'layout-entries.json']) {
   const file = path.join(__dirname, source);
   if (!fs.existsSync(file)) continue;
   const data = JSON.parse(fs.readFileSync(file, 'utf8'));

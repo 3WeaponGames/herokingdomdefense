@@ -1,0 +1,86 @@
+{
+  "entries": {
+    "ui.layout.kinghtfalluibuff.67": {
+      "en": "+",
+      "zh": "以上品质",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
+    },
+    "ui.kinghtfalluibuff.new_label.67": {
+      "en": "+",
+      "zh": "以上品质",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:New Label"
+    },
+    "ui.layout.kinghtfalluigame.146": {
+      "en": "Finish",
+      "zh": "完成",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
+    },
+    "ui.kinghtfalluigame.labname.146": {
+      "en": "Finish",
+      "zh": "完成",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:labName"
+    }
+  },
+  "labelStyles": {
+    "ui.layout.kinghtfalluibuff.57": {
+      "en": {
+        "width": 286,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.62": {
+      "en": {
+        "width": 120,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.67": {
+      "en": {
+        "width": 38,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.146": {
+      "en": {
+        "width": 180,
+        "height": 76,
+        "fontSize": 52,
+        "lineHeight": 60,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": -66,
+        "y": -21.254
+      }
+    }
+  },
+  "nodeStyles": {
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:79Gnu6VgtLqZaONG1np0e1": "ui.layout.kinghtfalluigame.146",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:1cztArr29KYqhhgPFJVWQb": "ui.layout.kinghtfalluibuff.57",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:66LHR/uZRDsJ+2H6fIHb3y": "ui.layout.kinghtfalluibuff.62",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:e2MNMbdXtPooXecs1fFZfS": "ui.layout.kinghtfalluibuff.67",
+    "79Gnu6VgtLqZaONG1np0e1": "ui.layout.kinghtfalluigame.146",
+    "1cztArr29KYqhhgPFJVWQb": "ui.layout.kinghtfalluibuff.57",
+    "66LHR/uZRDsJ+2H6fIHb3y": "ui.layout.kinghtfalluibuff.62",
+    "e2MNMbdXtPooXecs1fFZfS": "ui.layout.kinghtfalluibuff.67"
+  }
+}

@@ -70,4 +70,11 @@ test('A destroyed node cannot be written by an asynchronous image callback',()=>
   const f=fixture(),s=f.sprite();s.node.destroyed=true;
   assert.doesNotThrow(()=>f.requests[0].callback(null,new f.Frame('late')));assert.equal(s.spriteFrame._uuid,'original');
 });
+test('Multi-region Chinese preserves source only while every linked entry still matches',()=>{
+  const f=fixture();f.catalog.images.original.preserveOriginal.zh={tile:'兵营',other:'塔'};f.manager.setCurrentLanguage('zh');const s=f.sprite();assert.equal(f.requests.length,0);assert.equal(s.spriteFrame._uuid,'original');
+  f.catalog.entries.other.zh='新塔';f.manager.refreshSprite(s);assert.equal(f.requests.length,1);assert.equal(f.requests[0].url,'localization/generated/zh/tile_by');f.requests[0].callback(null,new f.Frame('updated-composite'));assert.equal(s.spriteFrame._uuid,'updated-composite');
+  f.catalog.entries.other.zh='塔';f.manager.refreshSprite(s);assert.equal(s.spriteFrame._uuid,'original');assert.equal(f.requests.length,1);
+  f.catalog.entries.tile.zh='新兵营';f.manager.refreshSprite(s);assert.equal(f.requests.length,2);f.requests[1].callback(null,new f.Frame('updated-primary'));assert.equal(s.spriteFrame._uuid,'updated-primary');
+  f.manager.setCurrentLanguage('en');assert.equal(f.requests.at(-1).url,'localization/generated/en/tile_by');
+});
 console.log(passed+' artwork runtime checks passed.');

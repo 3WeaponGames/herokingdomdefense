@@ -1,7 +1,7 @@
 # Project Cocos — full status audit
 
-**Audit date:** 6 November 2026 (Asia/Shanghai)  
-**Project:** `P:\Unity\Projects\Project Cocos` · Cocos Creator 2.4.13  
+**Audit date:** 6 November 2026 (Asia/Shanghai)
+**Project:** `P:\Unity\Projects\Project Cocos` · Cocos Creator 2.4.13
 **Overall assessment:** a substantial playable game with localization work in progress; **not yet a complete, verified English release**.
 
 This is an audit-only snapshot. Implementation stopped when requested. No game functions, gameplay configuration, source artwork, or editor settings were changed during this audit. The only written outputs were audit documentation, the machine-readable audit result, and screenshots. Existing implementation changes remain in place. No reward was deliberately claimed, purchase made, save reset, or system clock changed. The running game's ordinary timers continued normally.

@@ -80,7 +80,7 @@ Template rectangles use top-left **image pixels**. Runtime binding rectangles us
 
 Existing field tiles, labels embedded in textures, and bound Spine atlas text use these same text entries and template controls. For Spine, `spineImages` maps each original **Texture2D UUID** to a template; this differs from sprite bindings, which use SpriteFrame UUIDs. Keep atlas dimensions, packed regions, and animation geometry unchanged. Change the words in **Text**, or font/region styling in **Text artwork**, then save and reload the preview. The runtime creates separate localized SkeletonData assets instead of editing the shared original animation asset. Startup preloads ready Spine textures before the game opens.
 
-Use exact source-wording matches when retaining original Chinese artwork. A single-text sprite binding can contain `preserveOriginal: { "zh": "兵营" }`; it uses that original only while the bound Chinese entry still equals `兵营`. An atlas with multiple text regions uses a map, for example:
+Use exact source-wording matches when retaining original Chinese artwork. A single-text sprite binding can contain `preserveOriginal: { "zh": "兵营" }`; it uses that original only while the bound Chinese entry still equals `兵营`. A sprite or atlas with multiple text regions uses a map, for example:
 
 ```json
 "preserveOriginal": {
@@ -92,8 +92,6 @@ Use exact source-wording matches when retaining original Chinese artwork. A sing
 ```
 
 After any listed Chinese entry changes, the generated Chinese atlas is used. Use the exact wording actually baked into the source. Avoid `true` for editable source preservation: that legacy value always keeps the original regardless of table edits. CSV imports preserve these routing and source-match fields.
-
-Spine bindings can also set `boneScales` by locale and bone name. For example, `"boneScales": { "en": { "sl5": 1.75 } }` enlarges the English Victory title by 75%. The scale multiplies both setup axes in the localized skeleton copy, so the title keeps its entrance animation and other bones retain their original sizes.
 
 Automated runtime checks cover Sprite and Spine switching, stale async requests, pooled nodes, animation timing/queues, and completion callbacks. The native Spine implementation follows the installed Creator 2.4.13 adapter but still needs a native-device test. A live native cached-animation switch restarts its animation because that adapter does not expose its elapsed frame/consumed queue; the current localized result/sign-in prefabs use realtime animation. Active crossfade identity is not retained when replacing SkeletonData.
 

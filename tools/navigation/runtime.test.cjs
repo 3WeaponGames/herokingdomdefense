@@ -8,10 +8,30 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { NavigationGrid } = require('../../assets/_script/NavigationGrid');
 const sourceDir = path.resolve(__dirname, '../../assets/_script');
+const engineDir = process.env.COCOS_ENGINE_DIR || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 let passed = 0;
 function test(name, run) { run(); passed++; console.log('PASS ' + name); }
 function near(actual, expected, epsilon = 1e-6) { assert(Math.abs(actual - expected) <= epsilon, `${actual} != ${expected}`); }
 function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+function installIntersection(cc) {
+  const file = path.join(engineDir, 'cocos2d/core/collider/CCIntersection.js');
+  if (fs.existsSync(file)) {
+    vm.runInNewContext(fs.readFileSync(file, 'utf8'), { cc, module: { exports: {} } }, { filename: file });
+  } else {
+    // Portable geometry mock; installed Creator's implementation is used above
+    // whenever present, including for the real gate regression on this PC.
+    cc.Intersection = { polygonCircle(polygon, circle) {
+      let inside = false, closest = Infinity; const p = circle.position;
+      for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const a = polygon[j], b = polygon[i], dx = b.x - a.x, dy = b.y - a.y;
+        if ((a.y > p.y) !== (b.y > p.y) && p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x) inside = !inside;
+        const length = dx * dx + dy * dy, t = length ? Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / length)) : 0;
+        closest = Math.min(closest, distance(p, { x: a.x + t * dx, y: a.y + t * dy }));
+      }
+      return inside || closest < circle.radius;
+    } };
+  }
+}
 class Vec2 {
   constructor(x = 0, y = 0) { this.x = x; this.y = y; }
   clone() { return new Vec2(this.x, this.y); }
@@ -274,6 +294,191 @@ test('Enemy combat targets use transformed child-node positions without consumin
   u.onUpdate(0); assert.equal(u.bornInfo.nodeIndex, 0);
 });
 
+test('A fully upgraded Map02 gate wing is approached at its attack polygon rather than its unreachable origin', () => {
+  const fixture = require('./fixtures/map02-upper-left-gate-level3.json');
+  for (const spawn of [fixture.spawn, { x: -640, y: 880 }, { x: -600, y: 880 }]) {
+    const e = environment(); installIntersection(e.cc);
+    e.game.mapSize = { width: fixture.bounds.maxX - fixture.bounds.minX, height: fixture.bounds.maxY - fixture.bounds.minY };
+    e.game.ctrPlay.isDead = () => true;
+    function shape(node, points) {
+      const collider = node.addComponent(PhysicsPolygonCollider);
+      collider.points = points.map(p => ({ x: p.x - node.x, y: p.y - node.y }));
+      return collider;
+    }
+    fixture.terrain.forEach(points => { const node = new Node('terrain', e.game.ndMain); shape(node, points); e.game.gameData.obstacles.push({ node }); });
+    const parts = fixture.parts.map(part => {
+      const node = new Node(part.name, e.game.ndMain, part.origin.x, part.origin.y); node.fixtureId = part.id;
+      return { node, collider: shape(node, part.points) };
+    });
+    const gate = { node: parts[0].node, ndAniOther: parts.slice(1), getIsWork: () => true,
+      getWposPhyCol2: () => parts.map(p => ({ tagNode: p.node, points: p.collider.points.map(v => p.node.convertToWorldSpaceAR(v)) })) };
+    e.game.gameData.buildings.push(gate);
+    const u = e.actor('KinghtFallEnemyItem01', spawn.x, spawn.y), body = u.node.addComponent(PhysicsBoxCollider);
+    body.size = { width: 22, height: 22 }; u.cfg.AttackRange = fixture.attackRange; u.cfg.SearchRange = fixture.searchRange;
+    delete u.getFind; delete u.onFindList;
+    let attacks = 0; u.doAttackStart = () => { attacks++; };
+    u.bornInfo = { nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, -245.465, 598.627)] };
+    const selected = u.getFind(), nav = e.nav.get(e.game); nav.refresh();
+    if (spawn === fixture.spawn) assert.equal(selected.tag.fixtureId, fixture.expectedOldSelection);
+    assert.equal(selected.canAtt, false); assert(selected.polygon.length >= 3);
+    assert.equal(nav.grid.findPath(spawn, e.nav.positionOf(selected.tag, e.game), fixture.radius), null, 'fixture no longer reproduces the buried-origin failure');
+    assert.equal(!!u.onFindList(), false); assert.equal(attacks, 0);
+    const approach = e.nav.attackPositionOf(selected, u, e.game);
+    assert(nav.grid.findPath(spawn, approach, fixture.radius), 'polygon approach has no safe path');
+    let previous = u.node.getPosition();
+    for (let i = 0; i < 160 && !u.getFind().canAtt; i++) {
+      u.onUpdate(0.05);
+      const current = u.node.getPosition();
+      assert(nav.grid.segmentClear(previous, current, fixture.radius), 'enemy cut through the closed gate or terrain');
+      assert(distance(previous, current) <= 3.000001, 'approach teleported');
+      assert.equal(u.bornInfo.nodeIndex, 0, 'combat pursuit consumed the route objective');
+      previous = current;
+    }
+    assert.equal(u.getFind().canAtt, true, 'enemy never entered its unchanged attack range');
+    u.time.Attack = 1; u.onUpdate(0);
+    assert.equal(attacks, 1, 'normal movement update did not enter an attack on the closed gate');
+    assert(parts.every(p => p.collider.enabled), 'fix opened or disabled the gate');
+  }
+});
+
+test('Building approach polygons transform from world space and ordinary unit targets retain their node position', () => {
+  const e = environment(), u = e.unit(0, 0), target = new Node('target', e.game.ndMain, 100, 0);
+  e.game.ndMain.setPosition(300, -200); e.game.ndMain.scaleX = e.game.ndMain.scaleY = 1.5; e.game.ndMain.angle = 25;
+  const polygon = [{ x: 60, y: -20 }, { x: 120, y: -20 }, { x: 120, y: 20 }, { x: 60, y: 20 }].map(p => e.game.ndMain.convertToWorldSpaceAR(p));
+  const approach = e.nav.attackPositionOf({ tag: target, polygon }, u, e.game);
+  near(approach.x, 60); near(approach.y, 0);
+  const ordinary = e.nav.attackPositionOf({ tag: target }, u, e.game);
+  near(ordinary.x, 100); near(ordinary.y, 0);
+});
+
+test('Map02 level-two gate and neighboring built structures recover all four reproduced pursuit stalls', () => {
+  const fixture = require('./fixtures/map02-upper-left-gate-level2.json');
+  for (const spawn of fixture.starts) {
+    const e = environment(); installIntersection(e.cc);
+    e.game.mapSize = { width: fixture.bounds.maxX - fixture.bounds.minX, height: fixture.bounds.maxY - fixture.bounds.minY };
+    e.game.ctrPlay.isDead = () => true;
+    fixture.terrain.forEach(points => {
+      const node = new Node('terrain', e.game.ndMain), collider = node.addComponent(PhysicsPolygonCollider); collider.points = points;
+      e.game.gameData.obstacles.push({ node });
+    });
+    const colliders = [];
+    fixture.buildings.forEach(building => {
+      const root = new Node(building.name, e.game.ndMain, building.origin.x, building.origin.y);
+      const parts = building.parts.map(part => {
+        const node = part.id === building.nodeId ? root : new Node(part.name, e.game.ndMain, part.origin.x, part.origin.y);
+        node.fixtureId = part.id;
+        const collider = node.addComponent(PhysicsPolygonCollider);
+        collider.points = part.points.map(p => ({ x: p.x - node.x, y: p.y - node.y })); colliders.push(collider);
+        return { node, collider };
+      });
+      e.game.gameData.buildings.push({ node: root, ndAniOther: parts.filter(p => p.node !== root), getIsWork: () => true,
+        getWposPhyCol2: () => parts.map(p => ({ tagNode: p.node, points: p.collider.points.map(v => p.node.convertToWorldSpaceAR(v)) })) });
+    });
+    const u = e.actor('KinghtFallEnemyItem01', spawn.x, spawn.y), body = u.node.addComponent(PhysicsBoxCollider);
+    body.size = { width: 22, height: 22 }; u.cfg.AttackRange = fixture.attackRange; u.cfg.SearchRange = fixture.searchRange;
+    delete u.getFind; delete u.onFindList; let attacks = 0; u.doAttackStart = () => { attacks++; };
+    u.bornInfo = { nodeIndex: 0, pathList: [new Node('objective', e.game.ndMain, -245.465, 598.627)] };
+    const selected = u.getFind(), nav = e.nav.get(e.game); nav.refresh();
+    assert.equal(selected.canAtt, false);
+    assert.equal(nav.grid.findPath(spawn, e.nav.positionOf(selected.tag, e.game), fixture.radius), null, JSON.stringify(spawn) + ' no longer reproduces old origin failure');
+    assert(nav.grid.findPath(spawn, e.nav.attackPositionOf(selected, u, e.game), fixture.radius), 'nearest boundary is unreachable at ' + JSON.stringify(spawn));
+    let previous = u.node.getPosition();
+    for (let i = 0; i < 160 && !u.getFind().canAtt; i++) {
+      u.onUpdate(0.05); const current = u.node.getPosition();
+      assert(nav.grid.segmentClear(previous, current, fixture.radius), 'approach crossed another building');
+      assert(distance(previous, current) <= 3.000001); previous = current;
+    }
+    assert.equal(u.getFind().canAtt, true, 'level-two enemy stayed outside attack range at ' + JSON.stringify(spawn));
+    u.time.Attack = 1; u.onUpdate(0); assert.equal(attacks, 1);
+    assert.equal(u.bornInfo.nodeIndex, 0); assert(colliders.every(c => c.enabled));
+  }
+});
+
+test('All eight pursuing enemy classes resume forward after the hero leaves actual aggro range', () => {
+  for (const n of [1, 2, 3, 4, 5, 7, 8, 10]) {
+    const e = environment(), name = 'KinghtFallEnemyItem' + String(n).padStart(2, '0'), u = e.actor(name);
+    delete u.getFind; // Exercise the shipped hero-distance/aggro selection too.
+    u.bornInfo = { nodeIndex: 0, pathList: [new Node('passed', e.game.ndMain, -50, 0), new Node('objective', e.game.ndMain, 100, 0)] };
+    for (let i = 0; i < 4; i++) {
+      e.game.ctrPlay.node.setPosition(u.node.x + 42, 0);
+      u.onUpdate(0.5);
+      assert.equal(u.bornInfo.nodeIndex, 0, name + ' consumed a waypoint during combat');
+    }
+    near(u.node.x, 20); assert.equal(u._routeInterrupted, true);
+    e.game.ctrPlay.node.setPosition(150, 150);
+    u.onUpdate(0.1);
+    near(u.node.x, 26); assert.equal(u.bornInfo.nodeIndex, 1, name);
+    assert.equal(u._routeInterrupted, false); assert.equal(u.facingLeft, false);
+    for (let i = 0; i < 20 && u.bornInfo.nodeIndex < 2; i++) u.onUpdate(0.1);
+    near(u.node.x, 100); assert.equal(u.bornInfo.nodeIndex, 2, name + ' lost the final objective');
+  }
+});
+
+test('Auxiliary classes share route resumption without acquiring hero aggro', () => {
+  for (const name of ['KinghtFallEnemyItem06', 'KinghtFallEnemyItem09']) {
+    const e = environment(), u = e.actor(name, 20, 0);
+    u.bornInfo = { nodeIndex: 0, pathList: [new Node('passed', e.game.ndMain, -50, 0), new Node('objective', e.game.ndMain, 100, 0)] };
+    u.getFind = () => { throw new Error('Auxiliary must not start chasing'); };
+    u.interruptRoute(); u.onUpdate(0.1);
+    near(u.node.x, 26); assert.equal(u.bornInfo.nodeIndex, 1); assert.equal(u._routeInterrupted, false);
+    u.onUpdate(0.1); near(u.node.x, 32);
+  }
+});
+
+test('Combat acquisition and disengagement invalidate close destinations within the path cache tolerance', () => {
+  const e = environment(), u = e.actor('KinghtFallEnemyItem01', 0, 0);
+  const objective = new Node('objective', e.game.ndMain, 35, 0), hero = new Node('hero', e.game.ndMain, 20, 0);
+  u.bornInfo = { nodeIndex: 0, pathList: [objective] };
+  u.onUpdate(0); near(u._navigationState.target.x, 35);
+  u.getFind = () => ({ tag: hero, canAtt: false });
+  u.onUpdate(0); near(u._navigationState.target.x, 20);
+  u.getFind = () => null;
+  u.onUpdate(0.1); near(u._navigationState.target.x, 35); near(u.node.x, 6);
+  assert.equal(e.nav.get(e.game).stats.searches, 3);
+});
+
+test('Disengaging skips multiple passed waypoints but retains the final objective and transforms', () => {
+  const e = environment(), group = new Node('route', e.game.ndMain, -100, 20), u = e.actor('KinghtFallEnemyItem01', 60, 0);
+  const nodes = [0, 60, 120, 200].map((x, i) => new Node('waypoint' + i, group, x, -20));
+  u.bornInfo = { nodeIndex: 0, pathList: nodes }; u.interruptRoute();
+  u.onUpdate(0); assert.equal(u.bornInfo.nodeIndex, 3); near(u.node.x, 60);
+  u.onUpdate(0.1); near(u.node.x, 66); assert.equal(u.bornInfo.nodeIndex, 3);
+  u.onUpdate(1); near(u.node.x, 100); assert.equal(u.bornInfo.nodeIndex, 4);
+  assert.equal(nodes.length, 4); near(nodes[0].x, 0);
+});
+
+test('A resumed objective routes around intervening obstacles instead of cutting through them', () => {
+  const e = environment(); e.box(60, 0, 16, 100);
+  const u = e.actor('KinghtFallEnemyItem01', 20, 0), body = u.node.addComponent(PhysicsBoxCollider);
+  body.size = { width: 22, height: 22 }; // 20-unit clearance, matching authored bodies.
+  u.bornInfo = { nodeIndex: 0, pathList: [new Node('passed', e.game.ndMain, -50, 0), new Node('objective', e.game.ndMain, 150, 0)] };
+  u.getFind = () => ({ tag: e.game.ctrPlay.node, canAtt: true }); u.onUpdate(0);
+  u.getFind = () => null;
+  const nav = e.nav.get(e.game); let last = u.node.getPosition(), detoured = false;
+  for (let i = 0; i < 200 && u.bornInfo.nodeIndex < 2; i++) {
+    u.onUpdate(0.1);
+    assert(u.bornInfo.nodeIndex >= 1, 'returned to the obsolete waypoint');
+    const current = u.node.getPosition();
+    assert(nav.grid.segmentClear(last, current, nav.radius(u)), 'resumed movement crossed a collider');
+    assert(distance(last, current) <= 6.000001, 'resumed movement teleported');
+    detoured = detoured || Math.abs(current.y) > 50;
+    last = current;
+  }
+  assert(detoured); near(u.node.x, 150); near(u.node.y, 0); assert.equal(u.bornInfo.nodeIndex, 2);
+});
+
+test('Route resumption cannot infer passed waypoints across a wall or before a forward segment', () => {
+  const e = environment(); e.box(0, 0, 100, 20);
+  const u = e.actor('KinghtFallEnemyItem01', 0, 40);
+  u.bornInfo = { nodeIndex: 0, pathList: [new Node('first', e.game.ndMain, -100, -80), new Node('last', e.game.ndMain, 100, -80)] };
+  u.interruptRoute(); u.onUpdate(0); assert.equal(u.bornInfo.nodeIndex, 0);
+  // An intentional building-crossing unit still uses its configured behavior.
+  u.rigidBody.active = false; u.interruptRoute(); u.onUpdate(0); assert.equal(u.bornInfo.nodeIndex, 1);
+  const before = environment(), b = before.actor('KinghtFallEnemyItem01', -100, 40);
+  b.bornInfo = { nodeIndex: 0, pathList: [new Node('first', before.game.ndMain, -50, 0), new Node('last', before.game.ndMain, 100, 0)] };
+  b.interruptRoute(); b.onUpdate(0); assert.equal(b.bornInfo.nodeIndex, 0);
+});
+
 test('Enemy authored goals advance only at the resolved endpoint; wait and unreachable states never advance', () => {
   for (const name of ['KinghtFallEnemyItem01', 'KinghtFallEnemyItem06', 'KinghtFallEnemyItem09']) {
     const e = environment(); e.box(0, 0, 40, 40, true); const u = e.actor(name), waypoint = new Node('goal', e.game.ndMain);
@@ -314,7 +519,8 @@ test('Allied combat pursuit and follow distance both use the main coordinate sys
 test('Pooled enemy/allied init, allied revival, new rallies and route updates discard cached navigation', () => {
   const e = environment(), enemy = e.actor('KinghtFallEnemyBase'), soldier = e.actor('KinghtFallSoldierBase');
   e.game.setPath = () => ({ nodeIndex: 0, pathList: [] });
-  enemy._navigationState = { old: true }; enemy.initData(1, {}); assert.equal(enemy._navigationState, null); near(enemy.rigidBody.linearVelocity.len(), 0);
+  enemy._navigationState = { old: true }; enemy._routeInterrupted = true; enemy.initData(1, {});
+  assert.equal(enemy._navigationState, null); assert.equal(enemy._routeInterrupted, false); near(enemy.rigidBody.linearVelocity.len(), 0);
   soldier._navigationState = { old: true }; soldier.initData(90001); assert.equal(soldier._navigationState, null); near(soldier.rigidBody.linearVelocity.len(), 0);
   soldier._navigationState = { old: true }; soldier.setNew(); assert.equal(soldier._navigationState, null); assert.equal(soldier.pathList, null);
   assert.equal(soldier.startAgg(null), false); assert.equal(soldier.startAgg({ index: 1 }), false);
@@ -370,7 +576,6 @@ test('UIGame settles the ancestor Widget before activating map Rigidbody compone
   assert(activated);
 });
 
-const engineDir = process.env.COCOS_ENGINE_DIR || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 const engineBodyFile = path.join(engineDir, 'cocos2d/core/physics/CCRigidBody.js');
 if (fs.existsSync(engineBodyFile)) {
   test('Installed Cocos physics reproduces the 166.667px drift; ancestor synchronization preserves all local map coordinates', () => {

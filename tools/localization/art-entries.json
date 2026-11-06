@@ -669,11 +669,6 @@
       "template": "settlement_atlas",
       "skeletonDataUuid": "7533c9fc-5e29-4774-a275-4a8e0fde7497",
       "source": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.png",
-      "boneScales": {
-        "en": {
-          "sl5": 1.75
-        }
-      },
       "preserveOriginal": {
         "zh": {
           "art.result.victory": "胜利",
@@ -1889,7 +1884,7 @@
           "align": "center",
           "padding": 1,
           "wrap": false,
-          "rotation": 12
+          "angle": 18
         }
       ],
       "sourceOriginal": "assets/KinghtFallIconGood/zb_02.png",
@@ -1917,7 +1912,7 @@
           "align": "center",
           "padding": 1,
           "wrap": false,
-          "rotation": -14
+          "angle": -14
         }
       ],
       "sourceOriginal": "assets/KinghtFallIconGood/zb_04.png",
@@ -1945,7 +1940,7 @@
           "align": "center",
           "padding": 1,
           "wrap": false,
-          "rotation": 12
+          "angle": 18
         }
       ],
       "sourceOriginal": "assets/KinghtFallIconGood/zb_06.png",
@@ -1973,7 +1968,7 @@
           "align": "center",
           "padding": 1,
           "wrap": false,
-          "rotation": 12
+          "angle": 18
         }
       ],
       "sourceOriginal": "assets/KinghtFallIconGood/zb_08.png",
@@ -2001,7 +1996,7 @@
           "align": "center",
           "padding": 1,
           "wrap": false,
-          "rotation": 26
+          "angle": 26
         }
       ],
       "sourceOriginal": "assets/KinghtFallIconGood/zb_09.png",

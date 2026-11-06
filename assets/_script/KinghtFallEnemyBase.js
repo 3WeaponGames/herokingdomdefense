@@ -32,6 +32,7 @@ var def_KinghtFallEnemyBase = function (t) {
     e.vec2_2 = new cc.Vec2();
     e.finIndex = 0;
     e.lastFind = false;
+    e._routeInterrupted = false;
     return e;
   }
   cc__extends(_ctor, t);
@@ -54,6 +55,7 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.initData = function (t, e) {
     var n = this;
     Navigation.reset(this);
+    this._routeInterrupted = false;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
     var i = this.node.getComponents(cc.CircleCollider);
@@ -112,6 +114,7 @@ var def_KinghtFallEnemyBase = function (t) {
           this.lastFind = this.isFind();
           if (this.lastFind) {
             var a = this.getFind();
+            if (a && a.tag) this.interruptRoute();
             if (a && a.canAtt) {
               this.time[s.Attack] >= 1 && this.onFindList();
             } else {
@@ -126,6 +129,7 @@ var def_KinghtFallEnemyBase = function (t) {
           break;
         case r.Move:
           var o = this.getFind();
+          if (o && o.tag) this.interruptRoute();
           if (o && o.canAtt) {
             this.rigidBody.linearVelocity = cc.Vec2.ZERO;
             this.time[s.Attack] >= 1 && this.onFindList();
@@ -133,16 +137,28 @@ var def_KinghtFallEnemyBase = function (t) {
             var game = $z1KinghtFallUIGame.default.instance.ctrGame;
             var targetNode = o && o.tag;
             if (!targetNode) {
-              targetNode = this.bornInfo.pathList[this.bornInfo.nodeIndex];
+              targetNode = this.getRouteWaypoint(game);
               if (!targetNode) { this.doWait(); break; }
             }
-            var movement = Navigation.moveTo(this, game, Navigation.positionOf(targetNode, game), t);
+            var destination = o && o.tag ? Navigation.attackPositionOf(o, this, game) : Navigation.positionOf(targetNode, game);
+            var movement = Navigation.moveTo(this, game, destination, t);
             if (movement.directionX) this.setLeft(movement.directionX < 0);
             // Authored waypoints on a collider edge resolve to a safe nearby point.
             if (!o && movement.arrived) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
           }
       }
     }
+  };
+  _ctor.prototype.interruptRoute = function () {
+    if (!this._routeInterrupted) Navigation.reset(this);
+    this._routeInterrupted = true;
+  };
+  _ctor.prototype.getRouteWaypoint = function (game) {
+    if (this._routeInterrupted) {
+      Navigation.resumeEnemyRoute(this, game);
+      this._routeInterrupted = false;
+    }
+    return this.bornInfo.pathList[this.bornInfo.nodeIndex];
   };
   _ctor.prototype.setLeft = function (t) {
     this.spAni.node.scaleX = t ? -this.spAni.node.scaleY : this.spAni.node.scaleY;
@@ -210,6 +226,7 @@ var def_KinghtFallEnemyBase = function (t) {
       var e = null;
       var n = -1;
       var i = -1;
+      var targetPolygon = null;
       var a = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
       if (!a.isDead()) {
         a.node.getPosition(t.vec2_2);
@@ -250,6 +267,7 @@ var def_KinghtFallEnemyBase = function (t) {
               if (-1 == n || t.vec2_2.len() < n) {
                 i = cc.Intersection.polygonCircle(p.points, l);
                 e = p.tagNode;
+                targetPolygon = p.points;
                 n = t.vec2_2.len();
               }
             }
@@ -259,7 +277,8 @@ var def_KinghtFallEnemyBase = function (t) {
       if (e) {
         return {
           tag: e,
-          canAtt: -1 == i ? n <= t.cfg.AttackRange : i
+          canAtt: -1 == i ? n <= t.cfg.AttackRange : i,
+          polygon: targetPolygon
         };
       } else {
         return null;

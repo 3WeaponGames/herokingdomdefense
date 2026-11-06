@@ -143,9 +143,63 @@ function get(game) {
 }
 exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit, target, dt); };
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };
+exports.attackPositionOf = function (selection, unit, game) {
+  var polygon = selection.polygon;
+  if (!polygon || polygon.length < 2) return point(selection.tag, game.ndMain);
+  var main = game.ndMain, start = point(unit.node, main), best = null, bestDistance = Infinity;
+  // Building origins can lie behind adjoining cliffs or wall pieces. Approach
+  // the same polygon used by combat range checks instead; the planner projects
+  // this boundary goal outward by the unit's real physics clearance.
+  var vertices = polygon.map(function (p) {
+    var local = main.convertToNodeSpaceAR(cc.v2(p));
+    return { x: local.x, y: local.y };
+  });
+  for (var i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+    var a = vertices[j], b = vertices[i], dx = b.x - a.x, dy = b.y - a.y;
+    var lengthSquared = dx * dx + dy * dy;
+    var along = lengthSquared ? Math.max(0, Math.min(1, ((start.x - a.x) * dx + (start.y - a.y) * dy) / lengthSquared)) : 0;
+    var candidate = { x: a.x + along * dx, y: a.y + along * dy };
+    var length = distance(start, candidate);
+    if (length < bestDistance) { best = candidate; bestDistance = length; }
+  }
+  return best || point(selection.tag, main);
+};
 exports.reset = function (unit) {
   unit._navigationState = null;
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
+};
+exports.resumeEnemyRoute = function (unit, game) {
+  // Combat and route destinations can be less than the moving-target cache's
+  // tolerance apart. Always discard the combat path on this transition.
+  exports.reset(unit);
+  var route = unit.bornInfo, nodes = route && route.pathList;
+  if (!nodes || !nodes[route.nodeIndex]) return route && route.nodeIndex;
+  var main = game.ndMain, start = point(unit.node, main), index = route.nodeIndex;
+  var best = distance(start, point(nodes[index], main));
+  var navigation = get(game), radius = 0;
+  var collides = !unit.rigidBody || unit.rigidBody.active !== false;
+  if (collides) { navigation.refresh(); radius = navigation.radius(unit); }
+  // Find the nearest forward route segment that can be rejoined directly.
+  // A segment behind a wall is not evidence that its preceding waypoints were
+  // passed. Ties keep the earlier segment, including at crossing/looping routes.
+  // Only skip a segment's start: its end (especially the final objective) still
+  // has to be reached through the normal obstacle-aware movement planner.
+  for (var i = index; i + 1 < nodes.length; i++) {
+    if (!nodes[i] || !nodes[i + 1]) continue;
+    var a = point(nodes[i], main), b = point(nodes[i + 1], main);
+    var dx = b.x - a.x, dy = b.y - a.y, lengthSquared = dx * dx + dy * dy;
+    if (!lengthSquared) continue;
+    var progress = ((start.x - a.x) * dx + (start.y - a.y) * dy) / lengthSquared;
+    if (progress <= 0) continue;
+    progress = Math.min(1, progress);
+    var rejoin = { x: a.x + dx * progress, y: a.y + dy * progress };
+    var score = distance(start, rejoin);
+    if (score + ARRIVAL_EPSILON >= best) continue;
+    if (collides && !navigation.grid.segmentClear(start, rejoin, radius)) continue;
+    best = score;
+    route.nodeIndex = i + 1;
+  }
+  return route.nodeIndex;
 };
 // GameCtrl calls once per update; all units then share one collider snapshot.
 exports.beginFrame = function (game) { if (game._navigation) game._navigation._refreshPending = true; };

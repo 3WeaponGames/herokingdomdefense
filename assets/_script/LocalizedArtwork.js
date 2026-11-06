@@ -1,8 +1,8 @@
 "use strict";
 
 // Cocos Creator 2.4 Spine artwork localization. Sprite artwork stays in LanguageMgr.
-// Localized atlas pages and optional text-bone scales use separate SkeletonData
-// assets. Original SkeletonData and animation timelines are never edited.
+// Geometry/animations are unchanged: only atlas texture pages and their parsed
+// attachment references differ. Original SkeletonData assets are never edited.
 function SpineArtwork() {
   this.manager=null;
   this.components=new Set();
@@ -73,23 +73,12 @@ SpineArtwork.prototype._load=function(resource,callback) {
   try{if(resource.indexOf("localization/")===0)cc.resources.load(resource,cc.Texture2D,done);else cc.assetManager.loadAny(resource,done);}
   catch(error){done(error);}
 };
-SpineArtwork.prototype._clone=function(source,textures,key,boneScales) {
+SpineArtwork.prototype._clone=function(source,textures,key) {
   var cache=this.clones.get(source);
   if(!cache){cache=new Map();this.clones.set(source,cache);}
   if(cache.has(key))return cache.get(key);
   var clone=new sp.SkeletonData();
-  if(source.skeletonJson){
-    clone.skeletonJson=source.skeletonJson;
-    if(boneScales&&Object.keys(boneScales).length){
-      clone.skeletonJson=JSON.parse(JSON.stringify(source.skeletonJson));
-      (clone.skeletonJson.bones||[]).forEach(function(bone){
-        var scale=boneScales[bone.name];
-        if(typeof scale!=="number"||!isFinite(scale)||scale<=0)return;
-        bone.scaleX=(bone.scaleX===undefined?1:bone.scaleX)*scale;
-        bone.scaleY=(bone.scaleY===undefined?1:bone.scaleY)*scale;
-      });
-    }
-  }
+  if(source.skeletonJson)clone.skeletonJson=source.skeletonJson;
   else if(source._nativeAsset){clone._nativeAsset=source._nativeAsset;clone._nativeUrl=source.nativeUrl;}
   clone.atlasText=source.atlasText;
   clone.textures=textures.slice();
@@ -188,12 +177,11 @@ SpineArtwork.prototype.refreshSkeleton=function(component) {
   if(this._catalog!==manager.catalog){this._catalog=manager.catalog;this.revision++;}
   var source=component._localizedSpineOriginal||this.sources.get(component.skeletonData)||component.skeletonData;
   if(!source||!source.textures)return;
-  var language=manager.getCurrentLanguage(),catalog=manager.catalog,self=this,matched=false,boneScales={};
+  var language=manager.getCurrentLanguage(),catalog=manager.catalog,self=this,matched=false;
   var resources=source.textures.map(function(texture){
     var binding=catalog.spineImages&&texture&&catalog.spineImages[texture._uuid];if(!binding)return null;matched=true;
     var template=binding.template&&catalog.artTemplates&&catalog.artTemplates[binding.template];
     if(binding.pending||!template||template.pending||self._preserve(binding,language)||template.languages&&template.languages.indexOf(language)<0)return null;
-    Object.assign(boneScales,binding.boneScales&&binding.boneScales[language]);
     return binding.artwork&&binding.artwork[language]||"localization/generated/"+language+"/"+binding.template;
   });
   if(!matched){this.components.delete(component);return;}
@@ -206,7 +194,7 @@ SpineArtwork.prototype.refreshSkeleton=function(component) {
   function finish(){
     if(!valid())return;
     component._localizedSpineRequested=null;
-    try{self._apply(component,failure?source:resources.some(Boolean)?self._clone(source,textures,key,boneScales):source);component._localizedSpineApplied=failure?null:key;}
+    try{self._apply(component,failure?source:resources.some(Boolean)?self._clone(source,textures,key):source);component._localizedSpineApplied=failure?null:key;}
     catch(error){self._warn(source._uuid||source.name||"SkeletonData",error);try{self._apply(component,source);}catch(ignored){/* Source remains safest. */}}
   }
   if(!remaining){finish();return;}

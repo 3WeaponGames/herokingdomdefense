@@ -387,6 +387,9 @@ LanguageMgr.prototype.refreshSprite = function (sprite) {
   sprite._localizedOriginalFrame = frame;
   var originalText = binding.preserveOriginal && binding.preserveOriginal[this.currentLan];
   var preserve = originalText === true || typeof originalText === "string" && originalText === this._entry(binding.key, this.currentLan);
+  if (originalText && typeof originalText === "object") preserve = Object.keys(originalText).every(function (key) {
+    return this._entry(key, this.currentLan) === originalText[key];
+  }, this);
   var template = binding.template && this.catalog.artTemplates && this.catalog.artTemplates[binding.template];
   // Template drafts have no production texture yet. Keep their original art
   // when preview recompiles instead of hiding it under a generic text overlay.

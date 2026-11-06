@@ -1,31 +1,10 @@
 {
-  "date": "2026-11-06T13:46:30.806Z",
-  "errors": [
-    {
-      "type": "missing-key",
-      "source": "assets/_script/TimeUtils.js",
-      "detail": "time.ago.days.one"
-    },
-    {
-      "type": "missing-key",
-      "source": "assets/_script/TimeUtils.js",
-      "detail": "time.ago.hours.one"
-    },
-    {
-      "type": "missing-key",
-      "source": "assets/_script/TimeUtils.js",
-      "detail": "time.ago.minutes.one"
-    },
-    {
-      "type": "missing-key",
-      "source": "assets/_script/TimeUtils.js",
-      "detail": "time.ago.seconds.one"
-    }
-  ],
+  "date": "2026-11-06T15:35:25.969Z",
+  "errors": [],
   "warnings": [],
   "counts": {
-    "entries": 1048,
-    "tokenReferences": 2855,
+    "entries": 1083,
+    "tokenReferences": 2872,
     "scriptFiles": 202,
     "serializedTextFields": 641,
     "styledLabels": 253,
@@ -44,8 +23,8 @@
     "The removed top disclaimer and numeric ItemHp sample Label remain in the catalog but are inactive or overwritten at runtime."
   ],
   "summary": {
-    "passed": false,
-    "errorCount": 4,
+    "passed": true,
+    "errorCount": 0,
     "warningCount": 0
   }
 }

@@ -41,7 +41,6 @@ for(const [index,name] of [[450,'settlement_atlas'],[451,'day7_atlas']]){
   const texture=JSON.parse(fs.readFileSync(path.join(root,p+'.meta'),'utf8'));
   const skeleton=JSON.parse(fs.readFileSync(path.join(root,p.replace(/\.png$/,'.json.meta')),'utf8'));
   out.spineImages[texture.uuid]={template:name,skeletonDataUuid:skeleton.uuid,source:p,preserveOriginal:{zh:Object.fromEntries(out.artTemplates[name].regions.map(r=>[r.key,out.entries[r.key].zh]))}};
-  if(name==='settlement_atlas')out.spineImages[texture.uuid].boneScales={en:{sl5:1.75}};
 }
 const relics=[
  ['02',273,'slow','Slow','慢',44,39,36,44,'#ec3838',15],
@@ -50,7 +49,7 @@ const relics=[
  ['08',279,'split','Split','分',43,37,38,46,'#511e14',15],
  ['09',280,'save','Save','省',42,37,39,47,'#d5f9ff',15]
 ];
-relics.forEach(([suffix,index,id,en,zh,x,y,w,h,color,size])=>template('relic_'+suffix,index,[region(enzh('art.relic.'+id,en,zh,'Editable glyph on relic parchment; full item meaning appears in its tooltip'),x,y,w,h,{fontSize:size,minFontSize:8,color,outlineWidth:0,padding:1,wrap:false,rotation:suffix==='04'?-14:suffix==='09'?26:12})],{source:'assets/resources/localization/neutral/relic_'+suffix+'.png'}));
+relics.forEach(([suffix,index,id,en,zh,x,y,w,h,color,size])=>template('relic_'+suffix,index,[region(enzh('art.relic.'+id,en,zh,'Editable glyph on relic parchment; full item meaning appears in its tooltip'),x,y,w,h,{fontSize:size,minFontSize:8,color,outlineWidth:0,padding:1,wrap:false,angle:suffix==='04'?-14:suffix==='09'?26:18})],{source:'assets/resources/localization/neutral/relic_'+suffix+'.png'}));
 template('age_rating',686,[region(enzh('art.age.caption','Age Rating','适龄提示','Age guidance badge caption'),18,203,166,39,{fontSize:29,minFontSize:12,color:'#000000',outlineWidth:0,padding:1,wrap:false})],{source:'assets/resources/localization/neutral/age_rating.png'});
 template('feedback_icon',696,[region(enzh('art.feedback.icon','Feedback','反馈与投诉','Home feedback icon caption'),4,72,83,18,{fontSize:15,minFontSize:10,color:'#000000',outlineWidth:0,padding:0,wrap:false,lineHeightRatio:1,locales:{en:{font:null,fontFamily:'Arial',bold:true}}})],{source:'assets/resources/localization/neutral/feedback_icon.png'});
 const sidebar=[];

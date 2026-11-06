@@ -2751,7 +2751,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:labName"
     },
     "ui.kinghtfalluigame.labname.146": {
-      "en": "Complete",
+      "en": "Finish",
       "zh": "完成",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:labName"
     },
@@ -2841,7 +2841,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:labQue; assets\\_script\\KinghtFallTextConfig.js:36"
     },
     "ui.kinghtfalluibuff.new_label.67": {
-      "en": "or Better",
+      "en": "+",
       "zh": "以上品质",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:New Label"
     },
@@ -3996,7 +3996,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndEnemyIcon/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.146": {
-      "en": "Complete",
+      "en": "Finish",
       "zh": "完成",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
     },
@@ -4786,7 +4786,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/labQue (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.67": {
-      "en": "or Better",
+      "en": "+",
       "zh": "以上品质",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
     },

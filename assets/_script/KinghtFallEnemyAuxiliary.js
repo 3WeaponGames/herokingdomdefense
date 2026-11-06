@@ -40,7 +40,7 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
           this.bornInfo.nodeIndex++;
         } else {
           var game = $z1KinghtFallUIGame.default.instance.ctrGame;
-          var waypoint = this.bornInfo.pathList[this.bornInfo.nodeIndex];
+          var waypoint = this.getRouteWaypoint(game);
           if (!waypoint) { this.doWait(); break; }
           var goal = Navigation.positionOf(waypoint, game);
           var movement = Navigation.moveTo(this, game, goal, t);

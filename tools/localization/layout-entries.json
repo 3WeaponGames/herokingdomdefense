@@ -196,7 +196,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndEnemyIcon/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.146": {
-      "en": "Complete",
+      "en": "Finish",
       "zh": "完成",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
     },
@@ -986,7 +986,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/labQue (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.67": {
-      "en": "or Better",
+      "en": "+",
       "zh": "以上品质",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
     },
@@ -1516,11 +1516,16 @@
     },
     "ui.layout.kinghtfalluigame.146": {
       "en": {
-        "width": 363,
+        "width": 180,
+        "height": 76,
+        "fontSize": 52,
+        "lineHeight": 60,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 106.5,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": -66,
+        "y": -21.254
       }
     },
     "ui.layout.kinghtfalluigame.191": {
@@ -1665,11 +1670,14 @@
     },
     "ui.layout.kinghtfalluibuff.57": {
       "en": {
-        "width": 112,
+        "width": 286,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluibuff.81": {
@@ -1836,11 +1844,16 @@
     },
     "ui.layout.kinghtfallhomebattlectrl.7": {
       "en": {
-        "width": 414,
+        "width": 800,
+        "height": 128,
+        "fontSize": 96,
+        "lineHeight": 104,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 113.84,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 355.392
       }
     },
     "ui.layout.kinghtfallhomebattlectrl.12": {
@@ -3123,20 +3136,26 @@
     },
     "ui.layout.kinghtfalluibuff.62": {
       "en": {
-        "width": 112,
+        "width": 120,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluibuff.67": {
       "en": {
-        "width": 216,
+        "width": 38,
+        "height": 76,
+        "fontSize": 48,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 73.52,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluisuspend.88": {

@@ -28,3 +28,18 @@ node tools/testing/test-mode.test.cjs
 ```
 
 These tests do not call an ad SDK or grant rewards. Browser/device interaction and the centralized reward adapter require their own integration checks.
+
+## Verified behavior and limits
+
+In the isolated preview verification on 2026-11-06, test mode ON granted the existing battle silver reward immediately: **6 → 16 silver**. F8 was also verified switching the mode back OFF. This checks an actual reward path, not successful playback of a real advertisement.
+
+With test mode OFF, the current local 4399 preview has no real `h5api` ad SDK available. That path reports ad unavailability and grants **no reward**. Release builds always use the normal path; a saved development ON preference cannot bypass it. Real SDK integration, ad-unit configuration, and device/network behavior still need platform testing.
+
+The existing rewarded-ad hooks remain in place, with **24 named placement IDs** registered in `assets/_script/AdPlacements.js` across 23 call sites (one site selects between placements). Test mode uses their existing success callbacks and bypasses supported ad-frequency/cooldown restrictions. It does not reset previously owned upgrades, consumed one-time claims, quest requirements, or progression unlocks; toggling it off does not erase rewards already earned.
+
+The adapter also has regression coverage for duplicate callbacks, failure, timeout, concurrent requests, input/audio cleanup, and placement registration:
+
+```powershell
+node tools/testing/rewarded-ads.test.cjs
+node tools/testing/ad-limit-guards.test.cjs
+```
