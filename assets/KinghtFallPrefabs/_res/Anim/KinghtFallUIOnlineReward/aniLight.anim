@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "aniLight",
+  "_duration": 2.5,
+  "wrapMode": 2,
+  "curveData": {
+    "paths": {
+      "wg_zy_ksyxg": {
+        "props": {
+          "x": [
+            {
+              "frame": 0,
+              "value": -409.995
+            },
+            {
+              "frame": 1.0166666666666666,
+              "value": 412.196
+            },
+            {
+              "frame": 2.5,
+              "value": 379.484
+            }
+          ]
+        }
+      }
+    }
+  }
+}

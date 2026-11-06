@@ -1,0 +1,7682 @@
+{
+  "LevelCfg": [
+    {
+      "Level": 1,
+      "Name": "[[loc:data.levelcfg.1.name]]",
+      "Map": "wg_zy_gq1",
+      "EnemyAni": "wqyl_bb",
+      "prefab": "Map01",
+      "InGameCoefficient": 1,
+      "GoldSupplyCoefficient": 2,
+      "ConversionCoefficient": 2,
+      "EquipLevelCap": 10,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          6,
+          17
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          12
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            1300
+          ],
+          [
+            2002,
+            40
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            2700
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            4000
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 1,
+          "Wave": 1,
+          "HealthCoefficient": 0.9,
+          "AttackCoefficient": 0.7,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              10
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 2,
+          "HealthCoefficient": 0.9,
+          "AttackCoefficient": 0.7,
+          "StartSliver": 1,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              20
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 3,
+          "HealthCoefficient": 1.2,
+          "AttackCoefficient": 1,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              60
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 4,
+          "HealthCoefficient": 1.2,
+          "AttackCoefficient": 1,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              110
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 5,
+          "HealthCoefficient": 1.4,
+          "AttackCoefficient": 1.2,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90001,5",
+            "3#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              190
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 6,
+          "HealthCoefficient": 1.4,
+          "AttackCoefficient": 1.2,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              280
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 7,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              380
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 8,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              510
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 9,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,2"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              650
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 1,
+          "Wave": 10,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90008,1",
+            "2#90002,15",
+            "3#90005,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              820
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 2,
+      "Name": "[[loc:data.levelcfg.2.name]]",
+      "Map": "wg_zy_gq2",
+      "EnemyAni": "wqyl_zbb",
+      "prefab": "Map02",
+      "InGameCoefficient": 2,
+      "GoldSupplyCoefficient": 3,
+      "ConversionCoefficient": 3,
+      "EquipLevelCap": 10,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          9
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          5,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            2400
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            4800
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            7300
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 2,
+          "Wave": 1,
+          "HealthCoefficient": 1,
+          "AttackCoefficient": 0.8,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              1000
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 2,
+          "HealthCoefficient": 1,
+          "AttackCoefficient": 0.8,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,8",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              1190
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 3,
+          "HealthCoefficient": 1.4,
+          "AttackCoefficient": 1.2,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,5",
+            "2#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              1410
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 4,
+          "HealthCoefficient": 1.4,
+          "AttackCoefficient": 1.2,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90003,3",
+            "3#90004,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              1640
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 5,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90009,1",
+            "2#90001,12",
+            "3#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              1900
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 6,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              2170
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 7,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,8",
+            "2#90004,8",
+            "3#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              2450
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 8,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              2760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 9,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,15",
+            "2#90004,7",
+            "3#90005,2"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              3080
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 2,
+          "Wave": 10,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 6,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90007,1",
+            "2#90002,15",
+            "3#90005,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              3430
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Name": "[[loc:data.levelcfg.3.name]]",
+      "Map": "wg_zy_gq3",
+      "EnemyAni": "wqyl_gb",
+      "prefab": "Map03",
+      "InGameCoefficient": 4,
+      "GoldSupplyCoefficient": 5,
+      "ConversionCoefficient": 5,
+      "EquipLevelCap": 10,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          9
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          4,
+          13
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          21
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            4700
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            9500
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            14200
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 3,
+          "Wave": 1,
+          "HealthCoefficient": 1.2,
+          "AttackCoefficient": 1,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              3790
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 2,
+          "HealthCoefficient": 1.2,
+          "AttackCoefficient": 1,
+          "StartSliver": 1,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              4160
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 3,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "3#90001,5",
+            "10#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              4560
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 4,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "10#90001,7",
+            "11#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              4970
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 5,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90009,1",
+            "2#90001,7",
+            "3#90002,6",
+            "10#90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              5410
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 6,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "10#90001,5",
+            "11#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              5860
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 7,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "10#90002,5",
+            "11#90003,3",
+            "12#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              6320
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 8,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "10#90003,5",
+            "11#90004,8",
+            "12#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              6810
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 9,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 8,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "10#90002,10",
+            "11#90003,5",
+            "12#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              7310
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 10,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 9,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90002,9",
+            "3#90005,2",
+            "10#90002,8",
+            "11#90004,4",
+            "12#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              7840
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 4,
+      "Name": "[[loc:data.levelcfg.4.name]]",
+      "Map": "wg_zy_gq4",
+      "EnemyAni": "wqyl_qb",
+      "prefab": "Map04",
+      "InGameCoefficient": 7,
+      "GoldSupplyCoefficient": 8,
+      "ConversionCoefficient": 8,
+      "EquipLevelCap": 10,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          9
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          13
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          11
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            8000
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            15900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            23900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 4,
+          "Wave": 1,
+          "HealthCoefficient": 1.3,
+          "AttackCoefficient": 1.1,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              8380
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 2,
+          "HealthCoefficient": 1.3,
+          "AttackCoefficient": 1.1,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              8930
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 3,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              9510
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 4,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "7#90001,7",
+            "8#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              10100
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 5,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90007,1",
+            "2#90001,7",
+            "3#90002,6",
+            "8#90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              10720
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 6,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              11350
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 7,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "7#90002,5",
+            "8#90003,3",
+            "9#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              11990
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 8,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "7#90003,5",
+            "8#90004,8",
+            "9#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              12660
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 9,
+          "HealthCoefficient": 2,
+          "AttackCoefficient": 1.8,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "7#90002,10",
+            "8#90003,5",
+            "9#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              13340
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 4,
+          "Wave": 10,
+          "HealthCoefficient": 2,
+          "AttackCoefficient": 1.8,
+          "StartSliver": 6,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90002,9",
+            "3#90005,2",
+            "7#90002,8",
+            "8#90004,4",
+            "9#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              14050
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 5,
+      "Name": "[[loc:data.levelcfg.5.name]]",
+      "Map": "wg_zy_gq1",
+      "EnemyAni": "wqyl_zbb",
+      "prefab": "Map01",
+      "InGameCoefficient": 11,
+      "GoldSupplyCoefficient": 12,
+      "ConversionCoefficient": 12,
+      "EquipLevelCap": 10,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          12
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            12400
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            24800
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            37200
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 5,
+          "Wave": 1,
+          "HealthCoefficient": 1.4,
+          "AttackCoefficient": 1.2,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              14770
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 2,
+          "HealthCoefficient": 1.4,
+          "AttackCoefficient": 1.2,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,3",
+            "6#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              15500
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 3,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,7",
+            "5#90004,4",
+            "6#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              16260
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 4,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,3",
+            "6#90004,3",
+            "7#90001,7",
+            "8#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              17030
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 5,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90009,1",
+            "5#90001,7",
+            "6#90002,6",
+            "8#90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              17830
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 6,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,4",
+            "6#90004,3",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              18640
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 7,
+          "HealthCoefficient": 2,
+          "AttackCoefficient": 1.8,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90003,5",
+            "5#90004,8",
+            "6#90005,3",
+            "7#90002,5",
+            "8#90003,3",
+            "9#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              19460
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 8,
+          "HealthCoefficient": 2,
+          "AttackCoefficient": 1.8,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,5",
+            "6#90004,5",
+            "7#90003,5",
+            "8#90004,8",
+            "9#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              20310
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 9,
+          "HealthCoefficient": 2.2,
+          "AttackCoefficient": 2,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "4#90002,8",
+            "5#90004,7",
+            "6#90005,5",
+            "7#90002,10",
+            "8#90003,5",
+            "9#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              21170
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 5,
+          "Wave": 10,
+          "HealthCoefficient": 2.2,
+          "AttackCoefficient": 2,
+          "StartSliver": 6,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "4#90010,1",
+            "5#90002,9",
+            "6#90005,2",
+            "7#90002,8",
+            "8#90004,4",
+            "9#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              22060
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 6,
+      "Name": "[[loc:data.levelcfg.6.name]]",
+      "Map": "wg_zy_gq2",
+      "EnemyAni": "wqyl_gb",
+      "prefab": "Map02",
+      "InGameCoefficient": 16,
+      "GoldSupplyCoefficient": 17,
+      "ConversionCoefficient": 17,
+      "EquipLevelCap": 20,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          8
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          5,
+          18
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            17900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            35900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            53800
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 6,
+          "Wave": 1,
+          "HealthCoefficient": 2.2,
+          "AttackCoefficient": 2,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "7#90001,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              22960
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 2,
+          "HealthCoefficient": 2.2,
+          "AttackCoefficient": 2,
+          "StartSliver": 1,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "7#90001,5",
+            "8#90003,3",
+            "9#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              23870
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 3,
+          "HealthCoefficient": 2.5,
+          "AttackCoefficient": 2.3,
+          "StartSliver": 1,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "7#90001,7",
+            "8#90004,4",
+            "9#90001,5",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              24810
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 4,
+          "HealthCoefficient": 2.5,
+          "AttackCoefficient": 2.3,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "7#90001,5",
+            "8#90003,3",
+            "9#90004,3",
+            "1#90001,7",
+            "2#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              25760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 5,
+          "HealthCoefficient": 2.7,
+          "AttackCoefficient": 2.5,
+          "StartSliver": 2,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "7#90009,1",
+            "8#90001,7",
+            "9#90002,6",
+            "2#90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              26740
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 6,
+          "HealthCoefficient": 2.7,
+          "AttackCoefficient": 2.5,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "7#90002,10",
+            "8#90003,4",
+            "9#90004,3",
+            "1#90001,5",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              27730
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 7,
+          "HealthCoefficient": 2.8,
+          "AttackCoefficient": 2.6,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "7#90003,5",
+            "8#90004,8",
+            "9#90005,3",
+            "1#90002,5",
+            "2#90003,3",
+            "3#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              28730
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 8,
+          "HealthCoefficient": 2.8,
+          "AttackCoefficient": 2.6,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "7#90002,10",
+            "8#90003,5",
+            "9#90004,5",
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              29760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 9,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "7#90002,8",
+            "8#90004,7",
+            "9#90005,5",
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              30800
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 6,
+          "Wave": 10,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "7#90010,1",
+            "8#90002,9",
+            "9#90005,2",
+            "1#90002,8",
+            "2#90004,4",
+            "3#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              31870
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 7,
+      "Name": "[[loc:data.levelcfg.7.name]]",
+      "Map": "wg_zy_gq3",
+      "EnemyAni": "wqyl_qb",
+      "prefab": "Map03",
+      "InGameCoefficient": 22,
+      "GoldSupplyCoefficient": 23,
+      "ConversionCoefficient": 23,
+      "EquipLevelCap": 20,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          4,
+          13
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          6,
+          21
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            24700
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            49400
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            74100
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 7,
+          "Wave": 1,
+          "HealthCoefficient": 2.3,
+          "AttackCoefficient": 2.1,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              32950
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 2,
+          "HealthCoefficient": 2.3,
+          "AttackCoefficient": 2.1,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,4",
+            "6#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              34040
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 3,
+          "HealthCoefficient": 2.7,
+          "AttackCoefficient": 2.5,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,7",
+            "5#90004,4",
+            "6#90001,5",
+            "1#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              35160
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 4,
+          "HealthCoefficient": 2.7,
+          "AttackCoefficient": 2.5,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,3",
+            "6#90004,3",
+            "1#90001,7",
+            "2#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              36290
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 5,
+          "HealthCoefficient": 2.8,
+          "AttackCoefficient": 2.6,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90010,1",
+            "5#90001,7",
+            "6#90002,6",
+            "10#90004,6",
+            "2#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              37450
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 6,
+          "HealthCoefficient": 2.8,
+          "AttackCoefficient": 2.6,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "10#90001,5",
+            "11#90003,3",
+            "4#-1,10;90003,3",
+            "5#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              38620
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 7,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 7,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "4#90002,5",
+            "5#90003,3",
+            "6#90004,5",
+            "10#-1,10;90002,5",
+            "11#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              39800
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 8,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 8,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "4#90003,5",
+            "5#90004,8",
+            "6#90005,3",
+            "10#-1,10;90003,6",
+            "11#-1,10;90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              41010
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 9,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 9,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "4#90002,10",
+            "5#90003,5",
+            "6#90004,5",
+            "10#-1,15;90001,5",
+            "11#-1,15;90002,5",
+            "12#-1,15;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              42230
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 7,
+          "Wave": 10,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90002,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90004,4",
+            "6#90005,3",
+            "10#-1,15;90002,5",
+            "11#-1,15;90003,3",
+            "12#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              43480
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 8,
+      "Name": "[[loc:data.levelcfg.8.name]]",
+      "Map": "wg_zy_gq4",
+      "EnemyAni": "wqyl_bb",
+      "prefab": "Map04",
+      "InGameCoefficient": 29,
+      "GoldSupplyCoefficient": 30,
+      "ConversionCoefficient": 30,
+      "EquipLevelCap": 20,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          9
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            32400
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            64700
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            97100
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 8,
+          "Wave": 1,
+          "HealthCoefficient": 2.5,
+          "AttackCoefficient": 2.3,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              44740
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 2,
+          "HealthCoefficient": 2.5,
+          "AttackCoefficient": 2.3,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,4",
+            "3#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              46010
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 3,
+          "HealthCoefficient": 2.8,
+          "AttackCoefficient": 2.6,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "4#90001,5",
+            "5#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              47310
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 4,
+          "HealthCoefficient": 2.8,
+          "AttackCoefficient": 2.6,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "4#90001,7",
+            "5#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              48620
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 5,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,6",
+            "13#90004,6",
+            "4#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              49960
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 6,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "13#90001,5",
+            "14#90003,3",
+            "4#-1,10;90003,3",
+            "5#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              51310
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 7,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "4#90002,5",
+            "5#90003,3",
+            "6#90004,5",
+            "13#-1,10;90002,5",
+            "14#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              52670
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 8,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "4#90003,5",
+            "5#90004,8",
+            "6#90005,3",
+            "13#-1,10;90003,6",
+            "14#-1,10;90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              54060
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 9,
+          "HealthCoefficient": 3.2,
+          "AttackCoefficient": 3,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "4#90002,10",
+            "5#90003,5",
+            "6#90004,5",
+            "13#-1,15;90001,5",
+            "14#-1,15;90002,5",
+            "15#-1,15;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              55460
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 8,
+          "Wave": 10,
+          "HealthCoefficient": 3.2,
+          "AttackCoefficient": 3,
+          "StartSliver": 6,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90002,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90004,4",
+            "6#90005,3",
+            "13#-1,15;90002,5",
+            "14#-1,15;90003,3",
+            "15#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              56890
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 9,
+      "Name": "[[loc:data.levelcfg.9.name]]",
+      "Map": "wg_zy_gq1",
+      "EnemyAni": "wqyl_gb",
+      "prefab": "Map01",
+      "InGameCoefficient": 37,
+      "GoldSupplyCoefficient": 38,
+      "ConversionCoefficient": 38,
+      "EquipLevelCap": 20,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          6,
+          17
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            41300
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            82600
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            123900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 9,
+          "Wave": 1,
+          "HealthCoefficient": 2.6,
+          "AttackCoefficient": 2.4,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              58330
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 2,
+          "HealthCoefficient": 2.6,
+          "AttackCoefficient": 2.4,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              59780
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 3,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              61260
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 4,
+          "HealthCoefficient": 2.9,
+          "AttackCoefficient": 2.7,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "7#90001,7",
+            "8#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              62750
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 5,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,6",
+            "8#90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              64270
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 6,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              65800
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 7,
+          "HealthCoefficient": 3.2,
+          "AttackCoefficient": 3,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "7#90002,5",
+            "8#90003,3",
+            "9#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              67340
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 8,
+          "HealthCoefficient": 3.2,
+          "AttackCoefficient": 3,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "7#90003,5",
+            "8#90004,8",
+            "9#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              68910
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 9,
+          "HealthCoefficient": 3.3,
+          "AttackCoefficient": 3.1,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "7#90002,10",
+            "8#90003,5",
+            "9#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              70490
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 9,
+          "Wave": 10,
+          "HealthCoefficient": 3.3,
+          "AttackCoefficient": 3.1,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90007,1",
+            "2#90002,9",
+            "3#90005,2",
+            "7#90002,8",
+            "8#90004,4",
+            "9#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              72100
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 10,
+      "Name": "[[loc:data.levelcfg.10.name]]",
+      "Map": "wg_zy_gq2",
+      "EnemyAni": "wqyl_qb",
+      "prefab": "Map02",
+      "InGameCoefficient": 46,
+      "GoldSupplyCoefficient": 47,
+      "ConversionCoefficient": 47,
+      "EquipLevelCap": 20,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          8
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          16
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            51300
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            102500
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            153800
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 10,
+          "Wave": 1,
+          "HealthCoefficient": 2.7,
+          "AttackCoefficient": 2.5,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              73720
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 2,
+          "HealthCoefficient": 2.7,
+          "AttackCoefficient": 2.5,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "10#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              75350
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 3,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "10#90001,5",
+            "11#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              77010
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 4,
+          "HealthCoefficient": 3.1,
+          "AttackCoefficient": 2.9,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "10#90001,7",
+            "11#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              78680
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 5,
+          "HealthCoefficient": 3.2,
+          "AttackCoefficient": 3,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,6",
+            "11#90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              80380
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 6,
+          "HealthCoefficient": 3.2,
+          "AttackCoefficient": 3,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "10#90001,5",
+            "11#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              82090
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 7,
+          "HealthCoefficient": 3.3,
+          "AttackCoefficient": 3.1,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "10#90002,5",
+            "11#90003,3",
+            "12#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              83810
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 8,
+          "HealthCoefficient": 3.3,
+          "AttackCoefficient": 3.1,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "10#90003,5",
+            "11#90004,8",
+            "12#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              85560
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 9,
+          "HealthCoefficient": 3.5,
+          "AttackCoefficient": 3.3,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "10#90002,10",
+            "11#90003,5",
+            "12#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              87320
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 10,
+          "Wave": 10,
+          "HealthCoefficient": 3.5,
+          "AttackCoefficient": 3.3,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90007,1",
+            "2#90002,9",
+            "3#90005,2",
+            "10#90002,8",
+            "11#90004,4",
+            "12#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              89110
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 11,
+      "Name": "[[loc:data.levelcfg.11.name]]",
+      "Map": "wg_zy_gq3",
+      "EnemyAni": "wqyl_bb",
+      "prefab": "Map03",
+      "InGameCoefficient": 56,
+      "GoldSupplyCoefficient": 57,
+      "ConversionCoefficient": 57,
+      "EquipLevelCap": 30,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            62300
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            124700
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            187000
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 11,
+          "Wave": 1,
+          "HealthCoefficient": 3.5,
+          "AttackCoefficient": 3.3,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              90910
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 2,
+          "HealthCoefficient": 3.5,
+          "AttackCoefficient": 3.3,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,4",
+            "3#90004,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              92720
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 3,
+          "HealthCoefficient": 3.8,
+          "AttackCoefficient": 3.6,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90002,4",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              94560
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 4,
+          "HealthCoefficient": 3.8,
+          "AttackCoefficient": 3.6,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90002,3",
+            "7#90001,7",
+            "8#90002,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              96410
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 5,
+          "HealthCoefficient": 4,
+          "AttackCoefficient": 3.8,
+          "StartSliver": 7,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90004,6",
+            "10#90002,6",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              98290
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 6,
+          "HealthCoefficient": 4,
+          "AttackCoefficient": 3.8,
+          "StartSliver": 8,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90003,4",
+            "3#90002,3",
+            "10#90001,5",
+            "11#90003,3",
+            "7#-1,10;90003,3",
+            "8#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              100180
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 7,
+          "HealthCoefficient": 4.1,
+          "AttackCoefficient": 3.9,
+          "StartSliver": 9,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90002,8",
+            "3#90005,3",
+            "7#90004,5",
+            "8#90003,3",
+            "9#90002,5",
+            "10#-1,10;90004,5",
+            "11#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              102080
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 8,
+          "HealthCoefficient": 4.1,
+          "AttackCoefficient": 3.9,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90002,5",
+            "7#90003,5",
+            "8#90002,8",
+            "9#90005,3",
+            "10#-1,10;90003,6",
+            "11#-1,10;90002,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              104010
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 9,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 11,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90004,8",
+            "2#90002,7",
+            "3#90005,5",
+            "7#90004,10",
+            "8#90003,5",
+            "9#90002,5",
+            "10#-1,15;90001,5",
+            "11#-1,15;90004,5",
+            "12#-1,15;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              105950
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 11,
+          "Wave": 10,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 12,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90004,9",
+            "3#90005,2",
+            "7#90007,1",
+            "8#90002,4",
+            "9#90005,3",
+            "10#-1,15;90004,5",
+            "11#-1,15;90003,3",
+            "12#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              107920
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 12,
+      "Name": "[[loc:data.levelcfg.12.name]]",
+      "Map": "wg_zy_gq4",
+      "EnemyAni": "wqyl_zbb",
+      "prefab": "Map04",
+      "InGameCoefficient": 67,
+      "GoldSupplyCoefficient": 68,
+      "ConversionCoefficient": 68,
+      "EquipLevelCap": 30,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          19
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          15
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            74500
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            148900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            223400
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 12,
+          "Wave": 1,
+          "HealthCoefficient": 3.6,
+          "AttackCoefficient": 3.4,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              109900
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 2,
+          "HealthCoefficient": 3.6,
+          "AttackCoefficient": 3.4,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,4",
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              111890
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 3,
+          "HealthCoefficient": 4,
+          "AttackCoefficient": 3.8,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,7",
+            "5#90004,4",
+            "1#90001,5",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              113910
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 4,
+          "HealthCoefficient": 4,
+          "AttackCoefficient": 3.8,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,3",
+            "6#90004,3",
+            "1#90001,7",
+            "10#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              115940
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 5,
+          "HealthCoefficient": 4.1,
+          "AttackCoefficient": 3.9,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90010,1",
+            "5#90001,7",
+            "6#90002,6",
+            "1#90004,6",
+            "10#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              118000
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 6,
+          "HealthCoefficient": 4.1,
+          "AttackCoefficient": 3.9,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,4",
+            "6#90004,3",
+            "1#90001,5",
+            "2#90003,3",
+            "10#-1,10;90003,3",
+            "11#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              120070
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 7,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 7,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90003,5",
+            "5#90004,8",
+            "6#90005,3",
+            "1#90002,5",
+            "2#90003,3",
+            "3#90004,5",
+            "10#-1,10;90002,6",
+            "14#-1,10;90003,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              122150
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 8,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,5",
+            "6#90004,5",
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "10#-1,10;90003,8",
+            "14#-1,10;90004,8"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              124260
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 9,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 8,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "4#90002,10",
+            "5#90003,5",
+            "10#-1,10;90004,5",
+            "11#-1,10;90001,5",
+            "13#-1,10;90002,5",
+            "14#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              126380
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 12,
+          "Wave": 10,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 8,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90002,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90004,4",
+            "14#90005,3",
+            "13#90002,5",
+            "10#-1,15;90003,3",
+            "11#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              128530
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 13,
+      "Name": "[[loc:data.levelcfg.13.name]]",
+      "Map": "wg_zy_gq1",
+      "EnemyAni": "wqyl_qb",
+      "prefab": "Map01",
+      "InGameCoefficient": 79,
+      "GoldSupplyCoefficient": 80,
+      "ConversionCoefficient": 80,
+      "EquipLevelCap": 30,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          3,
+          8
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          6,
+          17
+        ],
+        [
+          6,
+          18
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            87800
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            175700
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            263500
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 13,
+          "Wave": 1,
+          "HealthCoefficient": 3.8,
+          "AttackCoefficient": 3.6,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              130690
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 2,
+          "HealthCoefficient": 3.8,
+          "AttackCoefficient": 3.6,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,4",
+            "7#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              132860
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 3,
+          "HealthCoefficient": 4.1,
+          "AttackCoefficient": 3.9,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              135060
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 4,
+          "HealthCoefficient": 4.1,
+          "AttackCoefficient": 3.9,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "7#90001,7",
+            "8#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              137270
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 5,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,6",
+            "8#90004,6",
+            "4#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              139510
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 6,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,4",
+            "3#90004,3",
+            "7#90001,5",
+            "8#90003,3",
+            "4#-1,10;90003,3",
+            "5#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              141760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 7,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "7#90002,5",
+            "8#90003,3",
+            "9#90004,5",
+            "4#-1,10;90002,5",
+            "5#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              144020
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 8,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,10",
+            "2#90003,5",
+            "3#90004,5",
+            "7#90003,5",
+            "8#90004,8",
+            "9#90005,3",
+            "4#-1,10;90003,6",
+            "5#-1,10;90004,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              146310
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 9,
+          "HealthCoefficient": 4.5,
+          "AttackCoefficient": 4.3,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "7#90002,10",
+            "8#90003,5",
+            "9#90004,5",
+            "4#-1,15;90001,5",
+            "5#-1,15;90002,5",
+            "6#-1,15;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              148610
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 13,
+          "Wave": 10,
+          "HealthCoefficient": 4.5,
+          "AttackCoefficient": 4.3,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90002,9",
+            "3#90005,2",
+            "7#90007,1",
+            "8#90004,4",
+            "9#90005,3",
+            "4#-1,15;90002,5",
+            "5#-1,15;90003,3",
+            "6#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              150940
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 14,
+      "Name": "[[loc:data.levelcfg.14.name]]",
+      "Map": "wg_zy_gq2",
+      "EnemyAni": "wqyl_bb",
+      "prefab": "Map02",
+      "InGameCoefficient": 92,
+      "GoldSupplyCoefficient": 93,
+      "ConversionCoefficient": 93,
+      "EquipLevelCap": 30,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          3,
+          10
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            102300
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            204500
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            306800
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 14,
+          "Wave": 1,
+          "HealthCoefficient": 3.9,
+          "AttackCoefficient": 3.7,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              153280
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 2,
+          "HealthCoefficient": 3.9,
+          "AttackCoefficient": 3.7,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,4",
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              155630
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 3,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,7",
+            "5#90004,4",
+            "1#90001,5",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              158010
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 4,
+          "HealthCoefficient": 4.2,
+          "AttackCoefficient": 4,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,3",
+            "6#90004,3",
+            "1#90001,7",
+            "7#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              160400
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 5,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90010,1",
+            "5#90001,7",
+            "6#90002,6",
+            "1#90004,6",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              162820
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 6,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,4",
+            "6#90004,3",
+            "1#90001,5",
+            "2#90003,3",
+            "7#-1,10;90003,3",
+            "8#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              165250
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 7,
+          "HealthCoefficient": 4.5,
+          "AttackCoefficient": 4.3,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90003,5",
+            "5#90004,8",
+            "6#90005,3",
+            "1#90002,5",
+            "2#90003,3",
+            "3#90004,5",
+            "7#-1,10;90002,6",
+            "11#-1,10;90003,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              167690
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 8,
+          "HealthCoefficient": 4.5,
+          "AttackCoefficient": 4.3,
+          "StartSliver": 6,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,5",
+            "6#90004,5",
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "7#-1,10;90003,8",
+            "11#-1,10;90004,8"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              170160
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 9,
+          "HealthCoefficient": 4.6,
+          "AttackCoefficient": 4.4,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "4#90002,10",
+            "5#90003,5",
+            "7#-1,10;90004,5",
+            "8#-1,10;90001,5",
+            "10#-1,10;90002,5",
+            "11#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              172640
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 14,
+          "Wave": 10,
+          "HealthCoefficient": 4.6,
+          "AttackCoefficient": 4.4,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90002,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90004,4",
+            "11#90005,3",
+            "10#90002,5",
+            "7#-1,15;90003,3",
+            "8#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              175150
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 15,
+      "Name": "[[loc:data.levelcfg.15.name]]",
+      "Map": "wg_zy_gq3",
+      "EnemyAni": "wqyl_zbb",
+      "prefab": "Map03",
+      "InGameCoefficient": 106,
+      "GoldSupplyCoefficient": 107,
+      "ConversionCoefficient": 107,
+      "EquipLevelCap": 30,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          6,
+          19
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          21
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            117800
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            235600
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            353400
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 15,
+          "Wave": 1,
+          "HealthCoefficient": 4,
+          "AttackCoefficient": 3.8,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              177670
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 2,
+          "HealthCoefficient": 4,
+          "AttackCoefficient": 3.8,
+          "StartSliver": 7,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,4",
+            "1#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              180200
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 3,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 7,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,7",
+            "5#90004,4",
+            "1#90001,5",
+            "2#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              182760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 4,
+          "HealthCoefficient": 4.4,
+          "AttackCoefficient": 4.2,
+          "StartSliver": 7,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "4#90001,5",
+            "5#90003,3",
+            "6#90004,3",
+            "1#90001,7",
+            "7#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              185330
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 5,
+          "HealthCoefficient": 4.5,
+          "AttackCoefficient": 4.3,
+          "StartSliver": 8,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90010,1",
+            "5#90001,7",
+            "6#90002,6",
+            "1#90004,6",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              187930
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 6,
+          "HealthCoefficient": 4.5,
+          "AttackCoefficient": 4.3,
+          "StartSliver": 8,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,4",
+            "6#90004,3",
+            "1#90001,5",
+            "2#90003,3",
+            "7#-1,10;90003,3",
+            "8#-1,10;90001,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              190540
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 7,
+          "HealthCoefficient": 4.6,
+          "AttackCoefficient": 4.4,
+          "StartSliver": 9,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "4#90003,5",
+            "5#90004,8",
+            "6#90005,3",
+            "1#90002,5",
+            "2#90003,3",
+            "3#90004,5",
+            "7#-1,10;90002,6",
+            "11#-1,10;90003,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              193160
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 8,
+          "HealthCoefficient": 4.6,
+          "AttackCoefficient": 4.4,
+          "StartSliver": 9,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "4#90002,10",
+            "5#90003,5",
+            "6#90004,5",
+            "1#90003,5",
+            "2#90004,8",
+            "3#90005,3",
+            "7#-1,10;90003,8",
+            "11#-1,10;90004,8"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              195810
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 9,
+          "HealthCoefficient": 4.8,
+          "AttackCoefficient": 4.6,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90004,7",
+            "3#90005,5",
+            "4#90002,10",
+            "5#90003,5",
+            "7#-1,10;90004,5",
+            "8#-1,10;90001,5",
+            "10#-1,10;90002,5",
+            "11#-1,10;90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              198470
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 15,
+          "Wave": 10,
+          "HealthCoefficient": 4.8,
+          "AttackCoefficient": 4.6,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90002,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90004,4",
+            "11#90005,3",
+            "10#90002,5",
+            "7#-1,15;90003,3",
+            "8#-1,15;90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              201160
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 16,
+      "Name": "[[loc:data.levelcfg.16.name]]",
+      "Map": "wg_zy_gq4",
+      "EnemyAni": "wqyl_gb",
+      "prefab": "Map04",
+      "InGameCoefficient": 121,
+      "GoldSupplyCoefficient": 122,
+      "ConversionCoefficient": 122,
+      "EquipLevelCap": 40,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          13
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          19
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            134400
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            268700
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            403100
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 16,
+          "Wave": 1,
+          "HealthCoefficient": 4.8,
+          "AttackCoefficient": 4.6,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              203860
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 2,
+          "HealthCoefficient": 4.8,
+          "AttackCoefficient": 4.6,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "13#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              206570
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 3,
+          "HealthCoefficient": 5.1,
+          "AttackCoefficient": 4.9,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "13#90001,5",
+            "14#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              209310
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 4,
+          "HealthCoefficient": 5.1,
+          "AttackCoefficient": 4.9,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "13#90004,3",
+            "14#90001,7",
+            "15#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              212060
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 5,
+          "HealthCoefficient": 5.3,
+          "AttackCoefficient": 5.1,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,3",
+            "13#90006,1"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              214840
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 6,
+          "HealthCoefficient": 5.3,
+          "AttackCoefficient": 5.1,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90003,4",
+            "3#90002,3",
+            "13#90002,5",
+            "14#90005,3",
+            "7#90003,3",
+            "8#90002,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              217630
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 7,
+          "HealthCoefficient": 5.4,
+          "AttackCoefficient": 5.2,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90002,8",
+            "3#90005,3",
+            "13#90004,5",
+            "14#90003,3",
+            "15#90002,5",
+            "7#90004,5",
+            "8#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              220430
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 8,
+          "HealthCoefficient": 5.4,
+          "AttackCoefficient": 5.2,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90005,3",
+            "3#90002,5",
+            "13#90003,5",
+            "14#90002,8",
+            "4#90005,3",
+            "5#90003,6",
+            "7#90002,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              223260
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 9,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90002,7",
+            "3#90005,5",
+            "13#90004,10",
+            "14#90003,5",
+            "4#90002,5",
+            "5#90004,5",
+            "7#90003,5",
+            "8#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              226100
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 16,
+          "Wave": 10,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 8,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90004,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90002,4",
+            "7#90005,3",
+            "8#90003,5",
+            "13#90004,11",
+            "6#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              228970
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 17,
+      "Name": "[[loc:data.levelcfg.17.name]]",
+      "Map": "wg_zy_gq1",
+      "EnemyAni": "wqyl_bb",
+      "prefab": "Map01",
+      "InGameCoefficient": 137,
+      "GoldSupplyCoefficient": 138,
+      "ConversionCoefficient": 138,
+      "EquipLevelCap": 40,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          3,
+          7
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          17
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          3,
+          8
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          15
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            152200
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            304400
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            456600
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 17,
+          "Wave": 1,
+          "HealthCoefficient": 4.9,
+          "AttackCoefficient": 4.7,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              231850
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 2,
+          "HealthCoefficient": 4.9,
+          "AttackCoefficient": 4.7,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              234740
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 3,
+          "HealthCoefficient": 5.3,
+          "AttackCoefficient": 5.1,
+          "StartSliver": 2,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "7#90001,5",
+            "8#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              237660
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 4,
+          "HealthCoefficient": 5.3,
+          "AttackCoefficient": 5.1,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "3#90004,3",
+            "7#90001,7",
+            "8#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              240590
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 5,
+          "HealthCoefficient": 5.4,
+          "AttackCoefficient": 5.2,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,3",
+            "8#90006,1"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              243550
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 6,
+          "HealthCoefficient": 5.4,
+          "AttackCoefficient": 5.2,
+          "StartSliver": 3,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90003,4",
+            "3#90002,3",
+            "7#90002,5",
+            "8#90005,3",
+            "4#90003,3",
+            "5#90002,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              246520
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 7,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 4,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90002,8",
+            "3#90005,3",
+            "7#90004,5",
+            "8#90003,3",
+            "9#90002,5",
+            "4#90004,5",
+            "5#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              249500
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 8,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 4,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90005,3",
+            "3#90002,5",
+            "7#90003,5",
+            "8#90002,8",
+            "9#90005,3",
+            "4#90003,6",
+            "5#90002,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              252510
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 9,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90002,7",
+            "3#90005,5",
+            "7#90004,10",
+            "8#90003,5",
+            "9#90002,5",
+            "4#90004,5",
+            "5#90003,5",
+            "6#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              255530
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 17,
+          "Wave": 10,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 5,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90004,9",
+            "3#90005,2",
+            "7#90007,1",
+            "8#90002,4",
+            "9#90005,3",
+            "4#90003,5",
+            "5#90004,3",
+            "6#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              258580
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 18,
+      "Name": "[[loc:data.levelcfg.18.name]]",
+      "Map": "wg_zy_gq2",
+      "EnemyAni": "wqyl_zbb",
+      "prefab": "Map02",
+      "InGameCoefficient": 154,
+      "GoldSupplyCoefficient": 155,
+      "ConversionCoefficient": 155,
+      "EquipLevelCap": 40,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          16
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            170900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            341900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            512800
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 18,
+          "Wave": 1,
+          "HealthCoefficient": 5.1,
+          "AttackCoefficient": 4.9,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              261640
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 2,
+          "HealthCoefficient": 5.1,
+          "AttackCoefficient": 4.9,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "10#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              264710
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 3,
+          "HealthCoefficient": 5.4,
+          "AttackCoefficient": 5.2,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "10#90001,5",
+            "11#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              267810
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 4,
+          "HealthCoefficient": 5.4,
+          "AttackCoefficient": 5.2,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "10#90004,3",
+            "11#90001,7",
+            "12#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              270920
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 5,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,3",
+            "10#90006,1"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              274060
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 6,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90003,4",
+            "3#90002,3",
+            "10#90002,5",
+            "11#90005,3",
+            "7#90003,3",
+            "8#90002,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              277210
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 7,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90002,8",
+            "3#90005,3",
+            "10#90004,5",
+            "11#90003,3",
+            "12#90002,5",
+            "7#90004,5",
+            "8#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              280370
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 8,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 6,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90005,3",
+            "3#90002,5",
+            "10#90003,5",
+            "11#90002,8",
+            "4#90005,3",
+            "5#90003,6",
+            "7#90002,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              283560
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 9,
+          "HealthCoefficient": 5.8,
+          "AttackCoefficient": 5.6,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90002,7",
+            "3#90005,5",
+            "10#90004,10",
+            "11#90003,5",
+            "4#90002,5",
+            "5#90004,5",
+            "7#90003,5",
+            "8#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              286760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 18,
+          "Wave": 10,
+          "HealthCoefficient": 5.8,
+          "AttackCoefficient": 5.6,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90004,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90002,4",
+            "7#90005,3",
+            "8#90003,5",
+            "10#90004,11",
+            "6#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              289990
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 19,
+      "Name": "[[loc:data.levelcfg.19.name]]",
+      "Map": "wg_zy_gq3",
+      "EnemyAni": "wqyl_gb",
+      "prefab": "Map03",
+      "InGameCoefficient": 172,
+      "GoldSupplyCoefficient": 173,
+      "ConversionCoefficient": 173,
+      "EquipLevelCap": 40,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          14
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          20
+        ],
+        [
+          6,
+          21
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          11
+        ],
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            190900
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            381800
+          ],
+          [
+            2002,
+            60
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            572700
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 19,
+          "Wave": 1,
+          "HealthCoefficient": 5.2,
+          "AttackCoefficient": 5,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              293230
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 2,
+          "HealthCoefficient": 5.2,
+          "AttackCoefficient": 5,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "10#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              296480
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 3,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 7,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "10#90001,5",
+            "11#90003,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              299760
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 4,
+          "HealthCoefficient": 5.5,
+          "AttackCoefficient": 5.3,
+          "StartSliver": 7,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "10#90004,3",
+            "11#90001,7",
+            "12#90004,4"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              303050
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 5,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 8,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,3",
+            "10#90006,1"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              306370
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 6,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 8,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90003,4",
+            "3#90002,3",
+            "10#90002,5",
+            "11#90005,3",
+            "7#90003,3",
+            "8#90002,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              309700
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 7,
+          "HealthCoefficient": 5.8,
+          "AttackCoefficient": 5.6,
+          "StartSliver": 9,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90002,8",
+            "3#90005,3",
+            "10#90004,5",
+            "11#90003,3",
+            "12#90002,5",
+            "7#90004,5",
+            "8#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              313040
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 8,
+          "HealthCoefficient": 5.8,
+          "AttackCoefficient": 5.6,
+          "StartSliver": 9,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90005,3",
+            "3#90002,5",
+            "10#90003,5",
+            "11#90002,8",
+            "4#90005,3",
+            "5#90003,6",
+            "7#90002,6"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              316410
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 9,
+          "HealthCoefficient": 5.9,
+          "AttackCoefficient": 5.7,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90002,7",
+            "3#90005,5",
+            "10#90004,10",
+            "11#90003,5",
+            "4#90002,5",
+            "5#90004,5",
+            "7#90003,5",
+            "8#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              319790
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 19,
+          "Wave": 10,
+          "HealthCoefficient": 5.9,
+          "AttackCoefficient": 5.7,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90004,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90002,4",
+            "7#90005,3",
+            "8#90003,5",
+            "10#90004,11",
+            "6#90005,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              323200
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "Level": 20,
+      "Name": "[[loc:data.levelcfg.20.name]]",
+      "Map": "wg_zy_gq4",
+      "EnemyAni": "wqyl_qb",
+      "prefab": "Map04",
+      "InGameCoefficient": 191,
+      "GoldSupplyCoefficient": 192,
+      "ConversionCoefficient": 192,
+      "EquipLevelCap": 50,
+      "Challenge": [
+        1,
+        2,
+        3
+      ],
+      "HomeLevel1Unlock": [
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          3,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          13
+        ],
+        [
+          4,
+          15
+        ]
+      ],
+      "HomeLevel2Unlock": [
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          5,
+          16
+        ],
+        [
+          6,
+          19
+        ]
+      ],
+      "HomeLevel3Unlock": [
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          9
+        ],
+        [
+          4,
+          12
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          17
+        ],
+        [
+          6,
+          18
+        ],
+        [
+          6,
+          20
+        ]
+      ],
+      "ChallengeReward": [
+        [
+          [
+            2001,
+            212000
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            423900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ],
+        [
+          [
+            2001,
+            635900
+          ],
+          [
+            2002,
+            100
+          ],
+          [
+            2004,
+            50
+          ]
+        ]
+      ],
+      "WaveCfg": [
+        {
+          "id": 20,
+          "Wave": 1,
+          "HealthCoefficient": 5.3,
+          "AttackCoefficient": 5.1,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90002,10"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              326620
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 2,
+          "HealthCoefficient": 5.3,
+          "AttackCoefficient": 5.1,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "13#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              330050
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 3,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,7",
+            "2#90004,4",
+            "13#90001,5",
+            "14#90003,3",
+            "7#90001,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              333510
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 4,
+          "HealthCoefficient": 5.7,
+          "AttackCoefficient": 5.5,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [
+            "1#90001,5",
+            "2#90003,3",
+            "13#90004,3",
+            "14#90001,7",
+            "15#90004,4",
+            "7#90001,5",
+            "8#90002,3"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              336980
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 5,
+          "HealthCoefficient": 5.8,
+          "AttackCoefficient": 5.6,
+          "StartSliver": 5,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90010,1",
+            "2#90001,7",
+            "3#90002,3",
+            "13#90006,1"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              340480
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 6,
+          "HealthCoefficient": 5.8,
+          "AttackCoefficient": 5.6,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90003,4",
+            "3#90002,3",
+            "13#90002,5",
+            "14#90005,3",
+            "7#90003,3",
+            "8#90002,3",
+            "7#90002,5",
+            "8#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              343990
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 7,
+          "HealthCoefficient": 5.9,
+          "AttackCoefficient": 5.7,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "RefreshSoldierKind": [
+            "1#90003,5",
+            "2#90002,8",
+            "3#90005,3",
+            "13#90004,5",
+            "14#90003,3",
+            "15#90002,5",
+            "7#90004,5",
+            "8#90003,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              347510
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 8,
+          "HealthCoefficient": 5.9,
+          "AttackCoefficient": 5.7,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90004,10",
+            "2#90005,3",
+            "3#90002,5",
+            "13#90003,5",
+            "14#90002,8",
+            "4#90005,3",
+            "5#90003,6",
+            "7#90003,3",
+            "8#90004,2",
+            "9#90002,5"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              351060
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 9,
+          "HealthCoefficient": 6.1,
+          "AttackCoefficient": 5.9,
+          "StartSliver": 7,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90002,8",
+            "2#90002,7",
+            "3#90005,5",
+            "13#90004,10",
+            "14#90003,5",
+            "4#90002,5",
+            "5#90004,5",
+            "7#90003,5",
+            "6#90005,3",
+            "11#90003,4",
+            "10#90005,2"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              354620
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        },
+        {
+          "id": 20,
+          "Wave": 10,
+          "HealthCoefficient": 6.1,
+          "AttackCoefficient": 5.9,
+          "StartSliver": 9,
+          "CommerceSliver": 16,
+          "RefreshSoldierKind": [
+            "1#90006,1",
+            "2#90004,9",
+            "3#90005,2",
+            "4#90007,1",
+            "5#90002,4",
+            "7#90008,1",
+            "8#90003,5",
+            "13#90010,1",
+            "6#90005,3",
+            "11#90003,4",
+            "10#90009,1"
+          ],
+          "WaveReward": [
+            [
+              2001,
+              358210
+            ],
+            [
+              2004,
+              5
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

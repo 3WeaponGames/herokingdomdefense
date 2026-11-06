@@ -1,0 +1,1 @@
+const i=require('./inventory.json'),t=require('./translate.cjs').translate;const missing=[...new Set(i.configs.filter(x=>/GameJsonCfg\.json$/.test(x.f)).map(x=>x.v).concat(i.labels.map(x=>x.v)))].filter(x=>!t(x));console.log(missing.length);console.log(missing.join('\n'));

@@ -1,0 +1,19 @@
+{
+  "name": "localization-editor",
+  "version": "1.0.0",
+  "description": "Translation tables and localized artwork for Project Cocos",
+  "main": "main.js",
+  "main-menu": {
+    "Localization/Translation Tables": { "message": "localization-editor:open" },
+    "Localization/Validate Translations": { "message": "localization-editor:validate" }
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "Translation Tables",
+    "width": 1160,
+    "height": 760,
+    "min-width": 650,
+    "min-height": 420
+  }
+}

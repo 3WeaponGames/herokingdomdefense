@@ -1,0 +1,1 @@
+const fs=require('fs');const inv=require('./inventory.json');const a=inv.scripts.filter(x=>!/(console\.|LogMgr|\.iLog\(|tooltip:|displayName:|ccp_menu|^\/\/)/.test(x.context)&&!/(GameTrackDataEvent|CityMgr|Utils)\.js$/.test(x.f));fs.writeFileSync('local/script-display.txt',a.map(x=>x.f+':'+x.line+' '+x.context).join('\n'));console.log(a.length)

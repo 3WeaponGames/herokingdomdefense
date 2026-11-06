@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "btnBat",
+  "_duration": 2.5,
+  "wrapMode": 2,
+  "curveData": {
+    "paths": {
+      "mask/wg_zy_ksyxg": {
+        "props": {
+          "x": [
+            {
+              "frame": 0,
+              "value": -264.209
+            },
+            {
+              "frame": 1,
+              "value": 266.049
+            },
+            {
+              "frame": 2.5,
+              "value": 266.049
+            }
+          ]
+        }
+      }
+    }
+  }
+}

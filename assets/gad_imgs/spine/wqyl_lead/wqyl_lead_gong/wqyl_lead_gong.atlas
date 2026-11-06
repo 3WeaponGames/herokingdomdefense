@@ -1,0 +1,48 @@
+
+wqyl_lead_gong.png
+size: 380,287
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+humanr_bow_1
+  rotate: true
+  xy: 208, 11
+  size: 82, 150
+  orig: 82, 150
+  offset: 0, 0
+  index: -1
+humanr_bow_2
+  rotate: false
+  xy: 115, 13
+  size: 91, 180
+  orig: 91, 180
+  offset: 0, 0
+  index: -1
+humanr_bow_3
+  rotate: true
+  xy: 2, 195
+  size: 90, 216
+  orig: 90, 216
+  offset: 0, 0
+  index: -1
+humanr_bow_4
+  rotate: false
+  xy: 220, 95
+  size: 114, 190
+  orig: 114, 190
+  offset: 0, 0
+  index: -1
+humanr_bow_5
+  rotate: false
+  xy: 2, 2
+  size: 111, 191
+  orig: 111, 191
+  offset: 0, 0
+  index: -1
+humanr_rope
+  rotate: false
+  xy: 336, 148
+  size: 42, 137
+  orig: 42, 140
+  offset: 0, 3
+  index: -1

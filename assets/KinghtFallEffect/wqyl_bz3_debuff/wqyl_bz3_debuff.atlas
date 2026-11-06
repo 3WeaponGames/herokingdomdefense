@@ -1,0 +1,20 @@
+
+wqyl_bz3_debuff.png
+size: 85,71
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tx_bj
+  rotate: false
+  xy: 2, 2
+  size: 46, 44
+  orig: 61, 59
+  offset: 7, 7
+  index: -1
+tx_x
+  rotate: true
+  xy: 2, 48
+  size: 21, 81
+  orig: 27, 87
+  offset: 4, 3
+  index: -1

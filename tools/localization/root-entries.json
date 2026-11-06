@@ -1,0 +1,12 @@
+{
+  "entries": {
+    "language.en": { "en": "English", "zh": "English", "context": "Native language name" },
+    "language.zh": { "en": "简体中文", "zh": "简体中文", "context": "Native language name; intentionally Chinese in every locale" },
+    "settings.language": { "en": "Language", "zh": "语言", "context": "In-game Settings" },
+    "settings.version": { "en": "Version {1} · {0} · {2}", "zh": "版本 {1} · {0} · {2}", "context": "In-game Settings build information" },
+    "settings.languageCycle": { "en": "{0}  ›", "zh": "{0}  ›", "context": "Selector when catalog has more than two languages" },
+    "loading.progress": { "en": "{0}%", "zh": "{0}%", "context": "Loading progress" },
+    "system.playTimeLimit": { "en": "Your play time is limited to one hour because you are underage.", "zh": "由于您是未成年只能玩一个小时", "context": "Existing platform play-time notification" },
+    "player.self": { "en": "You", "zh": "我", "context": "Default local player name" }
+  }
+}

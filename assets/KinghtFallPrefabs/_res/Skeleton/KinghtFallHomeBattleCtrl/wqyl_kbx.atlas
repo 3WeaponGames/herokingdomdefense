@@ -1,0 +1,55 @@
+
+wqyl_kbx.png
+size: 511,511
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+wg_zy_bx1
+  rotate: false
+  xy: 420, 426
+  size: 89, 83
+  orig: 93, 87
+  offset: 2, 2
+  index: -1
+wg_zy_bx2
+  rotate: true
+  xy: 391, 239
+  size: 101, 104
+  orig: 101, 104
+  offset: 0, 0
+  index: -1
+xiang_guang
+  rotate: true
+  xy: 263, 249
+  size: 124, 126
+  orig: 132, 132
+  offset: 4, 3
+  index: -1
+xiang_kai_guang1
+  rotate: false
+  xy: 2, 375
+  size: 416, 134
+  orig: 440, 144
+  offset: 8, 2
+  index: -1
+xiang_kai_guang2
+  rotate: true
+  xy: 2, 46
+  size: 294, 259
+  orig: 294, 280
+  offset: 0, 8
+  index: -1
+xiang_kai_guang3
+  rotate: false
+  xy: 263, 48
+  size: 189, 189
+  orig: 190, 189
+  offset: 1, 0
+  index: -1
+xiang_kai_xing
+  rotate: false
+  xy: 420, 342
+  size: 84, 82
+  orig: 92, 92
+  offset: 3, 5
+  index: -1

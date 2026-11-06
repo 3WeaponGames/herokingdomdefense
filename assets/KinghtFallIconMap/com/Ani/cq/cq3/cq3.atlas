@@ -1,0 +1,27 @@
+
+cq3.png
+size: 256,45
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cm3_q2
+  rotate: true
+  xy: 2, 10
+  size: 33, 72
+  orig: 33, 72
+  offset: 0, 0
+  index: -1
+cq_2_1_wq
+  rotate: true
+  xy: 76, 3
+  size: 40, 100
+  orig: 40, 100
+  offset: 0, 0
+  index: -1
+cq_wq
+  rotate: true
+  xy: 178, 2
+  size: 41, 76
+  orig: 41, 76
+  offset: 0, 0
+  index: -1

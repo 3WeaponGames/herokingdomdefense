@@ -1,0 +1,25 @@
+{
+  "collision-matrix": [
+    [
+      false
+    ],
+    [
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      false
+    ]
+  ],
+  "group-list": [
+    "default",
+    "Map",
+    "UI"
+  ],
+  "migrate-history": [
+    "cloud-function"
+  ],
+  "start-scene": "067cd63c-7413-41cf-9a74-36bfcb59a6a2"
+}

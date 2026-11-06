@@ -1,0 +1,4279 @@
+{
+  "entries": {
+    "ui.layout.common_uisetting.39": {
+      "en": "Sound",
+      "zh": "音效",
+      "context": "assets\\commonUI\\COMMON_UISetting.prefab:GAD_UISetting/root/layout/effectNode/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.165": {
+      "en": "Achievements",
+      "zh": "成就",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnAchieve/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.180": {
+      "en": "Battle Pass",
+      "zh": "通行证",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnPassport/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.195": {
+      "en": "Playtime\nRewards",
+      "zh": "在线奖励",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnOnline/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.210": {
+      "en": "7-Day Login",
+      "zh": "七日签到",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnSign/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.248": {
+      "en": "Shortcut",
+      "zh": "添加桌面",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnRight/btnAddDesktop/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.260": {
+      "en": "Entry Rewards",
+      "zh": "入口有奖",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnRight/btnSideBoard/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.142": {
+      "en": "Regen",
+      "zh": "恢复",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum2 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.146": {
+      "en": "Speed",
+      "zh": "移动",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum3 (localized control layout)"
+    },
+    "ui.layout.kinghtfalluihome.30": {
+      "en": "Gear",
+      "zh": "装备",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUIHome.prefab:KinghtFallUIHome/ndBottom/Toggle1/checkmark/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisetting.37": {
+      "en": "Sound",
+      "zh": "音效",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUISetting.prefab:KinghtFallUISetting/root/effectNode/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitalentinfo.35": {
+      "en": "Prerequisite locked",
+      "zh": "需解锁前置天赋",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITalentInfo.prefab:KinghtFallUITalentInfo/root/ndLock (localized control layout)"
+    },
+    "ui.layout.common_uiresult.62": {
+      "en": "Return Home",
+      "zh": "返回主界面",
+      "context": "assets\\commonUI\\COMMON_UIResult.prefab:GAD_UIResult/root/btns/yz_ty_btn2/New Label (localized control layout)"
+    },
+    "ui.layout.common_uiresult.67": {
+      "en": "Advanced Mode",
+      "zh": "进阶玩法",
+      "context": "assets\\commonUI\\COMMON_UIResult.prefab:GAD_UIResult/root/btns/yz_ty_btn2/New Label (localized control layout)"
+    },
+    "ui.layout.common_uiresult.76": {
+      "en": "Continue",
+      "zh": "继续",
+      "context": "assets\\commonUI\\COMMON_UIResult.prefab:GAD_UIResult/root/btns/yz_ty_btn2/New Label (localized control layout)"
+    },
+    "ui.layout.common_uisetting.8": {
+      "en": "Settings",
+      "zh": "设置",
+      "context": "assets\\commonUI\\COMMON_UISetting.prefab:GAD_UISetting/root/title (localized control layout)"
+    },
+    "ui.layout.common_uisetting.19": {
+      "en": "Music",
+      "zh": "音乐",
+      "context": "assets\\commonUI\\COMMON_UISetting.prefab:GAD_UISetting/root/layout/musicNode/musicLabel (localized control layout)"
+    },
+    "ui.layout.common_uisetting.62": {
+      "en": "Return Home",
+      "zh": "返回大厅",
+      "context": "assets\\commonUI\\COMMON_UISetting.prefab:GAD_UISetting/root/btns/yz_ty_btn5/New Label (localized control layout)"
+    },
+    "ui.layout.common_uisetting.67": {
+      "en": "Advanced Mode",
+      "zh": "进阶玩法",
+      "context": "assets\\commonUI\\COMMON_UISetting.prefab:GAD_UISetting/root/btns/yz_ty_btn5/New Label (localized control layout)"
+    },
+    "ui.layout.common_uisetting.75": {
+      "en": "Continue Battle",
+      "zh": "继续战斗",
+      "context": "assets\\commonUI\\COMMON_UISetting.prefab:GAD_UISetting/root/btns/yz_ty_btn1/New Label (localized control layout)"
+    },
+    "ui.layout.gad_uigame.49": {
+      "en": "Speed +2",
+      "zh": "攻速提升2",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/root/gmNode/New Button/Background/Label (localized control layout)"
+    },
+    "ui.layout.gad_uigame.60": {
+      "en": "Speed +5",
+      "zh": "攻速提升5",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/root/gmNode/New Button/Background/Label (localized control layout)"
+    },
+    "ui.layout.gad_uigame.104": {
+      "en": "Paused\nTap anywhere to continue",
+      "zh": "暂停中\n点击任意区域继续",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/uiview/layer/New Label (localized control layout)"
+    },
+    "ui.layout.gad_uilottery.9": {
+      "en": "Choose a Boost",
+      "zh": "buff选择",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UILottery.prefab:GAD_UILottery/root/title/New Label (localized control layout)"
+    },
+    "ui.layout.gad_uilottery.19": {
+      "en": "Projectile Attack",
+      "zh": "子弹攻击",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UILottery.prefab:GAD_UILottery/root/itemLayer/item/buffIcon/itemName (localized control layout)"
+    },
+    "ui.layout.gad_uipause.8": {
+      "en": "Notice",
+      "zh": "提示",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIPause.prefab:KinghtFallUINewGame/root/title (localized control layout)"
+    },
+    "ui.layout.gad_uipause.13": {
+      "en": "You have an unfinished battle.\nContinue?",
+      "zh": "检测到未完成的战斗，\n是否继续？",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIPause.prefab:KinghtFallUINewGame/root/version (localized control layout)"
+    },
+    "ui.layout.gad_uipause.17": {
+      "en": "Cancel",
+      "zh": "取消",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIPause.prefab:KinghtFallUINewGame/root/btnBreak/effectLabel (localized control layout)"
+    },
+    "ui.layout.gad_uipause.25": {
+      "en": "Continue",
+      "zh": "继续",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIPause.prefab:KinghtFallUINewGame/root/btnContinue/effectLabel (localized control layout)"
+    },
+    "ui.layout.gad_uiresult.16": {
+      "en": "Return Home",
+      "zh": "返回大厅",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIResult.prefab:GAD_UIGame/root/btnBreak/effectLabel (localized control layout)"
+    },
+    "ui.layout.gad_uiresult.27": {
+      "en": "Claim Double",
+      "zh": "双倍领取",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIResult.prefab:GAD_UIGame/root/btnVideo/effectLabel (localized control layout)"
+    },
+    "ui.layout.pbt_door.12": {
+      "en": "Cards x2",
+      "zh": "卡牌x2",
+      "context": "assets\\gad_prefabs\\_res\\Prefab\\GAD_UIGame\\pbt_door.prefab:pbt_door/text (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiaddcurrency.43": {
+      "en": "No, Thanks",
+      "zh": "不了,谢谢",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIAddCurrency.prefab:KinghtFallUIAddCurrency/root/btnBreak/LabNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiaddstrength.10": {
+      "en": "Get Energy",
+      "zh": "补充体力",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIAddStrength.prefab:KinghtFallUIAddStrength/root/wg_zy_pd/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiaddstrength.79": {
+      "en": "Tap outside to close",
+      "zh": "点击空白处关闭",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIAddStrength.prefab:KinghtFallUIAddStrength/root/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiexchangecode.8": {
+      "en": "Redeem Code",
+      "zh": "礼包兑换",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIExchangeCode.prefab:KinghtFallUIExchangeCode/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiexchangecode.23": {
+      "en": "Enter your gift code",
+      "zh": "请输入您的兑换码",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIExchangeCode.prefab:KinghtFallUIExchangeCode/root/New EditBox/PLACEHOLDER_LABEL (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiexchangecode.29": {
+      "en": "Claim",
+      "zh": "领取",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIExchangeCode.prefab:KinghtFallUIExchangeCode/root/btnGet/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.133": {
+      "en": "Next Wave",
+      "zh": "下波敌人",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndEnemyIcon/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.146": {
+      "en": "Complete",
+      "zh": "完成",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.191": {
+      "en": "Buildings",
+      "zh": "建筑图鉴",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnBuildInfo/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.201": {
+      "en": "Build",
+      "zh": "建造",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.205": {
+      "en": "Claim",
+      "zh": "领取",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labGet (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.209": {
+      "en": "Pending",
+      "zh": "未完成",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labNoFinish (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.254": {
+      "en": "Rally",
+      "zh": "集合",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnAgg/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.282": {
+      "en": "Time Remaining",
+      "zh": "等待倒计时",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/btnReviveBreak/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.294": {
+      "en": "Revive Now",
+      "zh": "立即复活",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/btnRevive/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameback.31": {
+      "en": "Return to battle preparation and gain 10",
+      "zh": "返回上次战斗准备并增加10",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/New Layout/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameback.42": {
+      "en": "Give Up",
+      "zh": "放弃",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/btnBreak/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameback.53": {
+      "en": "Revive",
+      "zh": "复活",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/btnNewGame/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameend.16": {
+      "en": "Continue",
+      "zh": "继续",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameEnd.prefab:KinghtFallUIGameEnd/root/btnBreak/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameend.27": {
+      "en": "Claim Double",
+      "zh": "双倍领取",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameEnd.prefab:KinghtFallUIGameEnd/root/btnVideo/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.9": {
+      "en": "Inspiration",
+      "zh": "灵光一现",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndTitle/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.15": {
+      "en": "Choose an Inspiration",
+      "zh": "请选择新灵光",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndTitle/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.51": {
+      "en": "Refresh",
+      "zh": "刷新",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.57": {
+      "en": "Guaranteed",
+      "zh": "必出",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.81": {
+      "en": "Take All",
+      "zh": "全都要",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnGetAll/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuildatlas.9": {
+      "en": "Buildings",
+      "zh": "建筑图鉴",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuildAtlas.prefab:KinghtFallUIBuildAtlas/root/wg_jzfz_bt/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuildatlas.27": {
+      "en": "Stronghold",
+      "zh": "据点",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuildAtlas.prefab:KinghtFallUIBuildAtlas/root/ndItem/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuildsel.11": {
+      "en": "Building Upgrade",
+      "zh": "建筑分支",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuildSel.prefab:KinghtFallUIBuildSel/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuildsel.17": {
+      "en": "Choose a building upgrade",
+      "zh": "请选择升级后的建筑",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuildSel.prefab:KinghtFallUIBuildSel/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuildsel.42": {
+      "en": "Stronghold",
+      "zh": "据点",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuildSel.prefab:KinghtFallUIBuildSel/root/ndItem/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.9": {
+      "en": "Pause",
+      "zh": "暂停",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/wg_gxhd_pd/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.16": {
+      "en": "Current Inspirations",
+      "zh": "当前获得灵光",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.40": {
+      "en": "Rally Mode",
+      "zh": "集合模式",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle1/Background/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.47": {
+      "en": "Rally Mode",
+      "zh": "集合模式",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle1/checkmark/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.58": {
+      "en": "Follow Mode",
+      "zh": "跟随模式",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle2/Background/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.65": {
+      "en": "Follow Mode",
+      "zh": "跟随模式",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle2/checkmark/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.80": {
+      "en": "Return Home",
+      "zh": "返回主页",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/btnBreak/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluivideotips.8": {
+      "en": "Infantry",
+      "zh": "步兵",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIVideoTips.prefab:KinghtFallUIVideoTips/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigm.8": {
+      "en": "Debug",
+      "zh": "GM",
+      "context": "assets\\KinghtFallPrefabs\\gm\\KinghtFallUIGM.prefab:KinghtFallUIGM/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigm.18": {
+      "en": "Unlock All Stages",
+      "zh": "解锁全部关卡",
+      "context": "assets\\KinghtFallPrefabs\\gm\\KinghtFallUIGM.prefab:KinghtFallUIGM/root/btnLock/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigm.34": {
+      "en": "Add 10K Gems",
+      "zh": "获取1W钻石",
+      "context": "assets\\KinghtFallPrefabs\\gm\\KinghtFallUIGM.prefab:KinghtFallUIGM/root/btnDiamond/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigm.48": {
+      "en": "Starting Silver\n+30",
+      "zh": "开局初始银币\n+30",
+      "context": "assets\\KinghtFallPrefabs\\gm\\KinghtFallUIGM.prefab:KinghtFallUIGM/root/New Toggle/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.7": {
+      "en": "1. Stage Name",
+      "zh": "1.关卡名称",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndLevelInfo/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.12": {
+      "en": "1. Stage Name",
+      "zh": "1.关卡名称",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndLevelInfo/labOrder (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.50": {
+      "en": "Stage\nCleared",
+      "zh": "通过关卡",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBoxShow/ndTag1/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.65": {
+      "en": "Hero\nSurvived",
+      "zh": "主角未死亡",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBoxShow/ndTag2/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.80": {
+      "en": "Castle\nUnharmed",
+      "zh": "主堡未受过攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBoxShow/ndTag3/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.139": {
+      "en": "Upgrade any equipment to level 99",
+      "zh": "任一装备提升至99级",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndTaskInfo/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.297": {
+      "en": "Wall Defense",
+      "zh": "守卫城墙",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.302": {
+      "en": "Chapter 4",
+      "zh": "第4章解锁",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/labInfo (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.150": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum4 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.154": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum5 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.158": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum6 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.181": {
+      "en": "Swift Shot",
+      "zh": "疾风",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.186": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLay/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.198": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnUpgeade/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.217": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.222": {
+      "en": "Clear stage to upgrade",
+      "zh": "完成关卡后可强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnLock/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.230": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.250": {
+      "en": "Swift Shot",
+      "zh": "疾风",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.255": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLay/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.267": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnUpgeade/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.286": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.291": {
+      "en": "Clear stage to upgrade",
+      "zh": "完成关卡后可强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnLock/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.299": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.319": {
+      "en": "Swift Shot",
+      "zh": "疾风",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.324": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLay/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.336": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnUpgeade/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.355": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.360": {
+      "en": "Clear stage to upgrade",
+      "zh": "完成关卡后可强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnLock/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.368": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.388": {
+      "en": "Swift Shot",
+      "zh": "疾风",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.393": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLay/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.405": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnUpgeade/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.424": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.429": {
+      "en": "Clear stage to upgrade",
+      "zh": "完成关卡后可强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnLock/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.437": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.457": {
+      "en": "Swift Shot",
+      "zh": "疾风",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.462": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLay/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.474": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnUpgeade/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.493": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.498": {
+      "en": "Clear stage to upgrade",
+      "zh": "完成关卡后可强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnLock/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.506": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.526": {
+      "en": "Swift Shot",
+      "zh": "疾风",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.531": {
+      "en": "Attack",
+      "zh": "攻击",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLay/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.543": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnUpgeade/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.562": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.567": {
+      "en": "Clear stage to upgrade",
+      "zh": "完成关卡后可强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnLock/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.575": {
+      "en": "Upgrade",
+      "zh": "强化",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLock/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhometreasurectrl.5": {
+      "en": "Relic Collection",
+      "zh": "至宝收集",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:KinghtFallHomeTreasureCtrl/ndShow/wg_tf_bt/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfallhometreasurectrl.67": {
+      "en": "Relic Chest",
+      "zh": "至宝盒子",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:KinghtFallHomeTreasureCtrl/ndDown/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhometreasurectrl.116": {
+      "en": "Draw 10",
+      "zh": "抽十次",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:KinghtFallHomeTreasureCtrl/ndDown/btnTen/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluihome.65": {
+      "en": "Talents",
+      "zh": "天赋",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUIHome.prefab:KinghtFallUIHome/ndBottom/Toggle2/checkmark/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluihome.100": {
+      "en": "Battle",
+      "zh": "战斗",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUIHome.prefab:KinghtFallUIHome/ndBottom/Toggle3/checkmark/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluihome.135": {
+      "en": "Relics",
+      "zh": "至宝",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUIHome.prefab:KinghtFallUIHome/ndBottom/Toggle4/checkmark/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluihome.170": {
+      "en": "Shop",
+      "zh": "商店",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUIHome.prefab:KinghtFallUIHome/ndBottom/Toggle5/checkmark/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewmodular.16": {
+      "en": "New Feature",
+      "zh": "新功能",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUINewModular.prefab:KinghtFallUINewModular/root/wg_gxhd_pd/LabName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewmodular.28": {
+      "en": "Tap to continue",
+      "zh": "点击继续",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUINewModular.prefab:KinghtFallUINewModular/root/LabName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisetting.8": {
+      "en": "Settings",
+      "zh": "设置",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUISetting.prefab:KinghtFallUISetting/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisetting.18": {
+      "en": "Music",
+      "zh": "音乐",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUISetting.prefab:KinghtFallUISetting/root/musicNode/musicLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisetting.58": {
+      "en": "Reset Data",
+      "zh": "清除数据",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUISetting.prefab:KinghtFallUISetting/root/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisetting.62": {
+      "en": "Gift Code",
+      "zh": "兑换码",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUISetting.prefab:KinghtFallUISetting/root/btnExchangeCode/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitop.95": {
+      "en": "This game is for entertainment. Its fictional content does not represent real life.",
+      "zh": "“游戏仅供娱乐，内容与现实无关，切勿当真！”",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUITop.prefab:UITop/root/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiachievement.8": {
+      "en": "Achievements",
+      "zh": "成就",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIAchievement.prefab:KinghtFallUIAchievement/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiachievement.31": {
+      "en": "Claim",
+      "zh": "领取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIAchievement.prefab:KinghtFallUIAchievement/root/ndItem/ndFinish/btnGet/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiachievement.39": {
+      "en": "Claimed",
+      "zh": "已领取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIAchievement.prefab:KinghtFallUIAchievement/root/ndItem/ndFinish/btnFinish/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigoldreward.16": {
+      "en": "You Received",
+      "zh": "恭喜获得",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIGoldReward.prefab:KinghtFallUIGoldReward/root/wg_gxhd_pd/LabName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigoldreward.28": {
+      "en": "Tap to continue",
+      "zh": "点击继续",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIGoldReward.prefab:KinghtFallUIGoldReward/root/LabName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewgame.8": {
+      "en": "Notice",
+      "zh": "提示",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewgame.13": {
+      "en": "Continue the battle?",
+      "zh": "是否继续战斗？",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/version (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewgame.17": {
+      "en": "Cancel",
+      "zh": "取消",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/btnBreak/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewgame.25": {
+      "en": "Continue",
+      "zh": "继续",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/btnContinue/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluionlinereward.9": {
+      "en": "Playtime Rewards",
+      "zh": "在线时长奖励",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/wg_zy_pd/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluionlinereward.27": {
+      "en": "Claim",
+      "zh": "领取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/ndItem/btnLock/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluionlinereward.46": {
+      "en": "Claim",
+      "zh": "领取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/ndItem/ndFinish/btnGet/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluionlinereward.54": {
+      "en": "Claimed",
+      "zh": "已领取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/ndItem/ndFinish/btnFinish/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluipassport.75": {
+      "en": "Standard Rewards",
+      "zh": "普通奖励",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIPassport.prefab:KinghtFallUIPassport/ndMain/wg_txz_ptd/labPro (localized control layout)"
+    },
+    "ui.layout.kinghtfalluipassport.84": {
+      "en": "Premium Rewards",
+      "zh": "高级奖励",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIPassport.prefab:KinghtFallUIPassport/ndMain/wg_txz_ptd/labPro (localized control layout)"
+    },
+    "ui.layout.kinghtfalluipassport.93": {
+      "en": "Level",
+      "zh": "等级",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIPassport.prefab:KinghtFallUIPassport/ndMain/wg_txz_djbtd/labPro (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisideboard.8": {
+      "en": "Enter from the sidebar for rewards",
+      "zh": "侧边栏进入领奖励",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISideBoard.prefab:KinghtFallUISideBoard/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisideboard.25": {
+      "en": "Open Sidebar",
+      "zh": "进入侧边栏",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISideBoard.prefab:KinghtFallUISideBoard/root/btnGo/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisideboard.34": {
+      "en": "Claim Rewards",
+      "zh": "领取奖励",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISideBoard.prefab:KinghtFallUISideBoard/root/btnReward/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.11": {
+      "en": "7-Day Login",
+      "zh": "七日签到",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.228": {
+      "en": "Check In",
+      "zh": "签到",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnSign/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.239": {
+      "en": "Claim Again",
+      "zh": "再领一次",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnVideo/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.250": {
+      "en": "Claim Double",
+      "zh": "双倍领取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnVideoBouble/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.258": {
+      "en": "Checked In",
+      "zh": "已签到",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnGet/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitalentinfo.8": {
+      "en": "Talent Name",
+      "zh": "天赋名称",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITalentInfo.prefab:KinghtFallUITalentInfo/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitalentinfo.26": {
+      "en": "Unlock",
+      "zh": "解锁",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITalentInfo.prefab:KinghtFallUITalentInfo/root/btnVideo/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitalentinfo.41": {
+      "en": "Unlock",
+      "zh": "解锁",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITalentInfo.prefab:KinghtFallUITalentInfo/root/btnGold/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitalentinfo.58": {
+      "en": "Tap outside to continue",
+      "zh": "点击空白处继续",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITalentInfo.prefab:KinghtFallUITalentInfo/root/labClose (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasureinfo.8": {
+      "en": "Talent Name",
+      "zh": "天赋名称",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureInfo.prefab:KinghtFallUITreasureInfo/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasureinfo.44": {
+      "en": "Locked",
+      "zh": "未解锁",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureInfo.prefab:KinghtFallUITreasureInfo/root/labLock (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasureinfo.49": {
+      "en": "Upgrade",
+      "zh": "升级",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureInfo.prefab:KinghtFallUITreasureInfo/root/btnGold/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasureinfo.66": {
+      "en": "Tap outside to continue",
+      "zh": "点击空白处继续",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureInfo.prefab:KinghtFallUITreasureInfo/root/labClose (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasurereward.16": {
+      "en": "You Received",
+      "zh": "恭喜获得",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/wg_gxhd_pd/LabName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasurereward.38": {
+      "en": "Back",
+      "zh": "返回",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/btnClose/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasurereward.93": {
+      "en": "Draw 10",
+      "zh": "抽十次",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/btnTen/labDay (localized control layout)"
+    },
+    "ui.layout.uiguide.27": {
+      "en": "Old King",
+      "zh": "老国王",
+      "context": "assets\\prefabs\\ui\\UIGuide.prefab:UIGuide/tipBg/labName (localized control layout)"
+    },
+    "ui.layout.uireport.28": {
+      "en": "Your Issue",
+      "zh": "问题描述",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/New EditBox/New Label1 (localized control layout)"
+    },
+    "ui.layout.uireport.31": {
+      "en": "Progress is saved locally. Clearing data erases it.",
+      "zh": "tips:游戏是本地缓存，如果清除了本地数据会导致游戏进度消失哦~",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/New EditBox/New Label (localized control layout)"
+    },
+    "ui.layout.uireport.46": {
+      "en": "Feedback & Support",
+      "zh": "反馈与投诉",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/New Label (localized control layout)"
+    },
+    "ui.layout.uireport.64": {
+      "en": "False Ads",
+      "zh": "虚假宣传",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn1/FalsePublicity/New Label (localized control layout)"
+    },
+    "ui.layout.uireport.76": {
+      "en": "Lost Data",
+      "zh": "数据丢失",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn2/Dataloss/New Label (localized control layout)"
+    },
+    "ui.layout.uireport.88": {
+      "en": "Freezing",
+      "zh": "游戏卡死",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn3/GameStuck/New Label (localized control layout)"
+    },
+    "ui.layout.uireport.100": {
+      "en": "Ads Won't Play",
+      "zh": "无法看广告",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn4/unableAD/New Label (localized control layout)"
+    },
+    "ui.layout.loading.29": {
+      "en": "Healthy Gaming Advice",
+      "zh": "《健康游戏忠告》",
+      "context": "assets\\scenes\\loading.fire:uiRoot/UILoading/ndInfo/New Label (localized control layout)"
+    },
+    "ui.layout.loading.33": {
+      "en": "\nChoose appropriate games and avoid pirated copies. Protect your personal information and beware of scams.\nPlay in moderation, take regular breaks, and make time for a healthy, balanced life.",
+      "zh": "\n抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。\n适度游戏益脑，沉迷游戏伤身。合理安排时间，享受健康生活。",
+      "context": "assets\\scenes\\loading.fire:uiRoot/UILoading/ndInfo/New Label (localized control layout)"
+    },
+    "ui.layout.common_uiresult.36": {
+      "en": "Rewards",
+      "zh": "获得奖励",
+      "context": "assets\\commonUI\\COMMON_UIResult.prefab:GAD_UIResult/root/ndTop/New Label (localized control layout)"
+    },
+    "ui.layout.gad_uigame.31": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/root/pbt_cards/lblhp (localized control layout)"
+    },
+    "ui.layout.gad_uigame.71": {
+      "en": "Damage +5",
+      "zh": "伤害提升5",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/root/gmNode/New Button/Background/Label (localized control layout)"
+    },
+    "ui.layout.gad_uigame.118": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/uiview/labTip (localized control layout)"
+    },
+    "ui.layout.gad_uigame.122": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIGame.prefab:GAD_UIGame/uiview/lblWave (localized control layout)"
+    },
+    "ui.layout.gad_uiresult.35": {
+      "en": "Restart",
+      "zh": "重新开始",
+      "context": "assets\\gad_prefabs\\ui\\GAD_UIResult.prefab:GAD_UIGame/root/btnNewGame/effectLabel (localized control layout)"
+    },
+    "ui.layout.itemhp.9": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\KinghtFallIconMap\\ItemHp.prefab:itemHp/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiaddcurrency.9": {
+      "en": "Get Gold",
+      "zh": "补充金币",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIAddCurrency.prefab:KinghtFallUIAddCurrency/root/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiaddcurrency.32": {
+      "en": "Get",
+      "zh": "获取",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIAddCurrency.prefab:KinghtFallUIAddCurrency/root/btnVideo/Layout/LabNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluiaddstrength.67": {
+      "en": "Free",
+      "zh": "免费",
+      "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIAddStrength.prefab:KinghtFallUIAddStrength/root/ndRight/ndBtn/Layout/LabNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.69": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/ctrPlay/ndHp/ItemHp/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.141": {
+      "en": "Fight",
+      "zh": "迎击敌人",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.270": {
+      "en": "Reviving In",
+      "zh": "复活倒计时",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigame.343": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/New Sprite(Splash)/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameback.11": {
+      "en": "Revive?",
+      "zh": "是否复活",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/title (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigameend.35": {
+      "en": "Restart",
+      "zh": "重新开始",
+      "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameEnd.prefab:KinghtFallUIGameEnd/root/btnNewGame/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.62": {
+      "en": "Rare",
+      "zh": "稀有",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/labQue (localized control layout)"
+    },
+    "ui.layout.kinghtfalluibuff.67": {
+      "en": "or Better",
+      "zh": "以上品质",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisuspend.88": {
+      "en": "Resume",
+      "zh": "继续游戏",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/btnColse/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfalluivideotips.21": {
+      "en": "No, Thanks",
+      "zh": "不了，谢谢",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIVideoTips.prefab:KinghtFallUIVideoTips/root/btnRefresh/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluivideotips.33": {
+      "en": "Get",
+      "zh": "获取",
+      "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIVideoTips.prefab:KinghtFallUIVideoTips/root/btnGetAll/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluigm.26": {
+      "en": "Add 1M Gold",
+      "zh": "获取100W金币",
+      "context": "assets\\KinghtFallPrefabs\\gm\\KinghtFallUIGM.prefab:KinghtFallUIGM/root/btnCoin/effectLabel (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.105": {
+      "en": "Play",
+      "zh": "开始游戏",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnBattle/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomebattlectrl.311": {
+      "en": "291s",
+      "zh": "291s",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/Layout/labTime (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.8": {
+      "en": "Power: ",
+      "zh": "战力：",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndPower/New Label (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.13": {
+      "en": "40M",
+      "zh": "4000万",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndPower/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.55": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem1/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.69": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem2/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.83": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem3/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.97": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem4/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.111": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem5/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.125": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem6/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.138": {
+      "en": "Max HP: ",
+      "zh": "血量上限：",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum1 (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.174": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndItem/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.207": {
+      "en": "19.8K",
+      "zh": "1.98w",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnUpgeade/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.243": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndItem/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.276": {
+      "en": "19.8K",
+      "zh": "1.98w",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnUpgeade/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.312": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndItem/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.345": {
+      "en": "19.8K",
+      "zh": "1.98w",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnUpgeade/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.381": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndItem/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.414": {
+      "en": "19.8K",
+      "zh": "1.98w",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnUpgeade/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.450": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndItem/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.483": {
+      "en": "19.8K",
+      "zh": "1.98w",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnUpgeade/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.519": {
+      "en": "Lv.2",
+      "zh": "Lv.2",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndItem/labPower (localized control layout)"
+    },
+    "ui.layout.kinghtfallhomepersonctrl.552": {
+      "en": "19.8K",
+      "zh": "1.98w",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnUpgeade/Layout/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhometreasurectrl.27": {
+      "en": "Lv.1",
+      "zh": "Lv.1",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:KinghtFallHomeTreasureCtrl/ndShow/ItemTreasure/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfallhometreasurectrl.80": {
+      "en": "Draw 1",
+      "zh": "抽一次",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:KinghtFallHomeTreasureCtrl/ndDown/btnOne/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfallhometreasurectrl.98": {
+      "en": "Draw 1",
+      "zh": "抽一次",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:KinghtFallHomeTreasureCtrl/ndDown/btnVideo/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluinewmodular.35": {
+      "en": "Label",
+      "zh": "Label",
+      "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUINewModular.prefab:KinghtFallUINewModular/root/ndItem/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluionlinereward.21": {
+      "en": "Play each day to earn rewards!",
+      "zh": "每日累计在线一定时间可以领取大量福利！",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/labTitle (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisideboard.20": {
+      "en": "x20",
+      "zh": "x20",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISideBoard.prefab:KinghtFallUISideBoard/root/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.22": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay1/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.36": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay1/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.51": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay2/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.65": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay2/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.80": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay3/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.94": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay3/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.109": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay4/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.123": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay4/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.138": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay5/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.152": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay5/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.167": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay6/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.181": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay6/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.199": {
+      "en": "Day 1",
+      "zh": "第1天",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay7/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluisignin.213": {
+      "en": "Gold",
+      "zh": "金币",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/ndDay7/labName (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasureinfo.25": {
+      "en": "Lv.1",
+      "zh": "Lv.1",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureInfo.prefab:KinghtFallUITreasureInfo/root/ItemTreasure/labNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasurereward.47": {
+      "en": "Get",
+      "zh": "获取",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/btnClose/Layout/LabNum (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasurereward.57": {
+      "en": "Draw 1",
+      "zh": "抽一次",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/btnOne/labDay (localized control layout)"
+    },
+    "ui.layout.kinghtfalluitreasurereward.75": {
+      "en": "Draw 1",
+      "zh": "抽一次",
+      "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITreasureReward.prefab:KinghtFallUITreasureReward/root/btnVideo/labDay (localized control layout)"
+    },
+    "ui.layout.uireport.18": {
+      "en": "Leave your contact details so we can reply",
+      "zh": "留下联系方式更方便我们联系您",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/New EditBox/mask/PLACEHOLDER_LABEL (localized control layout)"
+    },
+    "ui.layout.uireport.51": {
+      "en": "Get Data",
+      "zh": "获取数据",
+      "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/New Button/Background/Label (localized control layout)"
+    },
+    "ui.layout.uitouch.33": {
+      "en": "Loading ad...",
+      "zh": "广告加载中...",
+      "context": "assets\\prefabs\\ui\\UITouch.prefab:UITouch/ndAd/New Label (localized control layout)"
+    }
+  },
+  "labelStyles": {
+    "ui.layout.common_uiresult.62": {
+      "en": {
+        "width": 472,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uiresult.67": {
+      "en": {
+        "width": 472,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uiresult.76": {
+      "en": {
+        "width": 472,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uisetting.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uisetting.19": {
+      "en": {
+        "width": 220,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uisetting.39": {
+      "en": {
+        "width": 220,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uisetting.62": {
+      "en": {
+        "width": 472,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uisetting.67": {
+      "en": {
+        "width": 472,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.common_uisetting.75": {
+      "en": {
+        "width": 472,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 98.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.49": {
+      "en": {
+        "width": 100,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 40,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.60": {
+      "en": {
+        "width": 100,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 40,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.104": {
+      "en": {
+        "width": 600,
+        "wrap": true,
+        "overflow": "SHRINK",
+        "height": 190.54,
+        "maxLines": 2
+      }
+    },
+    "ui.layout.gad_uilottery.9": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uilottery.19": {
+      "en": {
+        "width": 398,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 97.68,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uipause.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uipause.13": {
+      "en": {
+        "width": 600,
+        "wrap": true,
+        "overflow": "SHRINK",
+        "height": 203.4,
+        "maxLines": 2
+      }
+    },
+    "ui.layout.gad_uipause.17": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uipause.25": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uiresult.16": {
+      "en": {
+        "width": 428,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uiresult.27": {
+      "en": {
+        "width": 320,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.pbt_door.12": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 108.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiaddcurrency.43": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiaddstrength.10": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 108.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiaddstrength.79": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 108.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiexchangecode.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 112.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiexchangecode.23": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 90.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiexchangecode.29": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.133": {
+      "en": {
+        "width": 236,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 63.44,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.146": {
+      "en": {
+        "width": 363,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 106.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.191": {
+      "en": {
+        "width": 168,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 58.4,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.201": {
+      "en": {
+        "width": 104,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.205": {
+      "en": {
+        "width": 104,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.209": {
+      "en": {
+        "width": 180,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.254": {
+      "en": {
+        "width": 232,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.282": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 106.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.294": {
+      "en": {
+        "width": 318,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 106.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigameback.31": {
+      "en": {
+        "width": 1100,
+        "height": 136,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 56,
+        "lineHeight": 56,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfalluigameback.42": {
+      "en": {
+        "width": 428,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigameback.53": {
+      "en": {
+        "width": 323,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigameend.16": {
+      "en": {
+        "width": 428,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigameend.27": {
+      "en": {
+        "width": 320,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.9": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.15": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.51": {
+      "en": {
+        "width": 316,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.57": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.81": {
+      "en": {
+        "width": 311,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuildatlas.9": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuildatlas.27": {
+      "en": {
+        "width": 406,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuildsel.11": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuildsel.17": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuildsel.42": {
+      "en": {
+        "width": 406,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.9": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.16": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.40": {
+      "en": {
+        "width": 256,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 80.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.47": {
+      "en": {
+        "width": 402,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.58": {
+      "en": {
+        "width": 256,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 80.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.65": {
+      "en": {
+        "width": 402,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.80": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluivideotips.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigm.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigm.18": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigm.34": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigm.48": {
+      "en": {
+        "width": 444,
+        "wrap": true,
+        "overflow": "SHRINK",
+        "height": 174.72,
+        "maxLines": 2
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.7": {
+      "en": {
+        "width": 414,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.12": {
+      "en": {
+        "width": 259,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.50": {
+      "en": {
+        "width": 220,
+        "height": 104,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.65": {
+      "en": {
+        "width": 220,
+        "height": 104,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.80": {
+      "en": {
+        "width": 220,
+        "height": 104,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.139": {
+      "en": {
+        "width": 380,
+        "height": 104,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 38,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.165": {
+      "en": {
+        "width": 320,
+        "height": 108,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.180": {
+      "en": {
+        "width": 320,
+        "height": 108,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.195": {
+      "en": {
+        "width": 320,
+        "height": 108,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.210": {
+      "en": {
+        "width": 320,
+        "height": 108,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.248": {
+      "en": {
+        "width": 320,
+        "height": 108,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.260": {
+      "en": {
+        "width": 320,
+        "height": 108,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.297": {
+      "en": {
+        "width": 330,
+        "height": 62,
+        "wrap": false,
+        "maxLines": 1,
+        "fontSize": 42,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.302": {
+      "en": {
+        "width": 280,
+        "height": 62,
+        "wrap": false,
+        "maxLines": 1,
+        "fontSize": 40,
+        "lineHeight": 42,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.142": {
+      "en": {
+        "width": 154,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 60.48,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.146": {
+      "en": {
+        "width": 154,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 60.48,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.150": {
+      "en": {
+        "width": 154,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 60.48,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.154": {
+      "en": {
+        "width": 154,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 60.48,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.158": {
+      "en": {
+        "width": 154,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 60.48,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.181": {
+      "en": {
+        "width": 544,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.186": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 70.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.198": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.217": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.222": {
+      "en": {
+        "width": 380,
+        "height": 106,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.230": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.250": {
+      "en": {
+        "width": 544,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.255": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 70.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.267": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.286": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.291": {
+      "en": {
+        "width": 380,
+        "height": 106,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.299": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.319": {
+      "en": {
+        "width": 544,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.324": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 70.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.336": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.355": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.360": {
+      "en": {
+        "width": 380,
+        "height": 106,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.368": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.388": {
+      "en": {
+        "width": 544,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.393": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 70.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.405": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.424": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.429": {
+      "en": {
+        "width": 380,
+        "height": 106,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.437": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.457": {
+      "en": {
+        "width": 544,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.462": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 70.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.474": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.493": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.498": {
+      "en": {
+        "width": 380,
+        "height": 106,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.506": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.526": {
+      "en": {
+        "width": 544,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.531": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 70.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.543": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.562": {
+      "en": {
+        "width": 380,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.567": {
+      "en": {
+        "width": 380,
+        "height": 106,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 44,
+        "lineHeight": 44,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.575": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.5": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.67": {
+      "en": {
+        "width": 453,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 82.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.116": {
+      "en": {
+        "width": 383,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluihome.30": {
+      "en": {
+        "width": 164,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluihome.65": {
+      "en": {
+        "width": 164,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluihome.100": {
+      "en": {
+        "width": 164,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluihome.135": {
+      "en": {
+        "width": 164,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluihome.170": {
+      "en": {
+        "width": 164,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewmodular.16": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 115.1,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewmodular.28": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisetting.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisetting.18": {
+      "en": {
+        "width": 220,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisetting.37": {
+      "en": {
+        "width": 220,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisetting.58": {
+      "en": {
+        "width": 250,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 63,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisetting.62": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitop.95": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 88.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiachievement.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiachievement.31": {
+      "en": {
+        "width": 252,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiachievement.39": {
+      "en": {
+        "width": 252,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigoldreward.16": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 115.1,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigoldreward.28": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewgame.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewgame.13": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 113.4,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewgame.17": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewgame.25": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluionlinereward.9": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluionlinereward.27": {
+      "en": {
+        "width": 252,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluionlinereward.46": {
+      "en": {
+        "width": 252,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluionlinereward.54": {
+      "en": {
+        "width": 252,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluipassport.75": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluipassport.84": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluipassport.93": {
+      "en": {
+        "width": 146,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisideboard.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 123.92,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisideboard.25": {
+      "en": {
+        "width": 496,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisideboard.34": {
+      "en": {
+        "width": 496,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.11": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.228": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.239": {
+      "en": {
+        "width": 314,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.250": {
+      "en": {
+        "width": 314,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.258": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitalentinfo.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitalentinfo.26": {
+      "en": {
+        "width": 156,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitalentinfo.35": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitalentinfo.41": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitalentinfo.58": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasureinfo.8": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasureinfo.44": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 95.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasureinfo.49": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasureinfo.66": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasurereward.16": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 115.1,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasurereward.38": {
+      "en": {
+        "width": 424,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasurereward.93": {
+      "en": {
+        "width": 421,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uiguide.27": {
+      "en": {
+        "width": 393,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.28": {
+      "en": {
+        "width": 140,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 40.32,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.31": {
+      "en": {
+        "width": 960,
+        "height": 92,
+        "wrap": true,
+        "maxLines": 2,
+        "fontSize": 36,
+        "lineHeight": 38,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.uireport.46": {
+      "en": {
+        "width": 600,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 50.4,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.64": {
+      "en": {
+        "width": 110,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 40.32,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.76": {
+      "en": {
+        "width": 110,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 31.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.88": {
+      "en": {
+        "width": 110,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 31.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.100": {
+      "en": {
+        "width": 125,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 31.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.loading.29": {
+      "en": {
+        "width": 1000,
+        "height": 84,
+        "wrap": false,
+        "maxLines": 1,
+        "fontSize": 52,
+        "lineHeight": 60,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.loading.33": {
+      "en": {
+        "width": 1320,
+        "height": 340,
+        "wrap": true,
+        "maxLines": 5,
+        "fontSize": 40,
+        "lineHeight": 58,
+        "overflow": "SHRINK"
+      }
+    },
+    "ui.layout.common_uiresult.36": {
+      "en": {
+        "width": 264,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 88.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.31": {
+      "en": {
+        "width": 216.95,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 108.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.71": {
+      "en": {
+        "width": 100,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 40,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.118": {
+      "en": {
+        "width": 206.5,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 103.76,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uigame.122": {
+      "en": {
+        "width": 104.47,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 50.4,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.gad_uiresult.35": {
+      "en": {
+        "width": 300,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.itemhp.9": {
+      "en": {
+        "width": 73.4,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 50.4,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiaddcurrency.9": {
+      "en": {
+        "width": 312,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 108.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiaddcurrency.32": {
+      "en": {
+        "width": 156,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluiaddstrength.67": {
+      "en": {
+        "width": 156,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.69": {
+      "en": {
+        "width": 52.24,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 25.2,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.141": {
+      "en": {
+        "width": 284,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 106.5,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.270": {
+      "en": {
+        "width": 408,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 108.8,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigame.343": {
+      "en": {
+        "width": 104.47,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 50.4,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigameback.11": {
+      "en": {
+        "width": 496,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 167.2,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigameend.35": {
+      "en": {
+        "width": 300,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.62": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluibuff.67": {
+      "en": {
+        "width": 216,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisuspend.88": {
+      "en": {
+        "width": 300,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluivideotips.21": {
+      "en": {
+        "width": 372,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluivideotips.33": {
+      "en": {
+        "width": 156,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluigm.26": {
+      "en": {
+        "width": 408.74,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 87.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.105": {
+      "en": {
+        "width": 348,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 117.84,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomebattlectrl.311": {
+      "en": {
+        "width": 114.78,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 71,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.8": {
+      "en": {
+        "width": 152,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.13": {
+      "en": {
+        "width": 162.78,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.55": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.69": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.83": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.97": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.111": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.125": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.138": {
+      "en": {
+        "width": 240,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 60.48,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.174": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.207": {
+      "en": {
+        "width": 160.55,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.243": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.276": {
+      "en": {
+        "width": 160.55,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.312": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.345": {
+      "en": {
+        "width": 160.55,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.381": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.414": {
+      "en": {
+        "width": 160.55,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.450": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.483": {
+      "en": {
+        "width": 160.55,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.519": {
+      "en": {
+        "width": 100.48,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 68.47999999999999,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhomepersonctrl.552": {
+      "en": {
+        "width": 160.55,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.27": {
+      "en": {
+        "width": 115.9,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.80": {
+      "en": {
+        "width": 204,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.98": {
+      "en": {
+        "width": 204,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluinewmodular.35": {
+      "en": {
+        "width": 175.16,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 88.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluionlinereward.21": {
+      "en": {
+        "width": 744.4,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 158.2,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisideboard.20": {
+      "en": {
+        "width": 114.78,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 88.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.22": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.36": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.51": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.65": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.80": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.94": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.109": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.123": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.138": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.152": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.167": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.181": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.199": {
+      "en": {
+        "width": 151.14,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 83.6,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluisignin.213": {
+      "en": {
+        "width": 112,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 73.52,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasureinfo.25": {
+      "en": {
+        "width": 115.9,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 78.56,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasurereward.47": {
+      "en": {
+        "width": 156,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 102.72,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasurereward.57": {
+      "en": {
+        "width": 204,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.kinghtfalluitreasurereward.75": {
+      "en": {
+        "width": 204,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 92.64,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.18": {
+      "en": {
+        "width": 884,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 374,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uireport.51": {
+      "en": {
+        "width": 100,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 40,
+        "maxLines": 1
+      }
+    },
+    "ui.layout.uitouch.33": {
+      "en": {
+        "width": 482.68,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 116.8,
+        "maxLines": 1
+      }
+    }
+  },
+  "nodeStyles": {
+    "be7eeb62-c897-4997-afcf-5fd26d3f5dba:7cV/mWF9lJH444zqVeRIiH": "ui.layout.common_uiresult.36",
+    "be7eeb62-c897-4997-afcf-5fd26d3f5dba:6fhZfwqDtLKaMzDKLCzpHg": "ui.layout.common_uiresult.62",
+    "be7eeb62-c897-4997-afcf-5fd26d3f5dba:9fZa+w9F1Aa4fjAq5SNpJb": "ui.layout.common_uiresult.67",
+    "be7eeb62-c897-4997-afcf-5fd26d3f5dba:3eMZEvmxpEmJ1QJfRkK2Bi": "ui.layout.common_uiresult.76",
+    "db4ca41b-00d5-4db2-8a08-9197b959684d:aaQ25MkAhFzITfc7s/rRKo": "ui.layout.common_uisetting.8",
+    "db4ca41b-00d5-4db2-8a08-9197b959684d:19z9Eu88ZLQZESaCdCRfQc": "ui.layout.common_uisetting.19",
+    "db4ca41b-00d5-4db2-8a08-9197b959684d:8dd/Q/ANRLz721udwqHurZ": "ui.layout.common_uisetting.39",
+    "db4ca41b-00d5-4db2-8a08-9197b959684d:5f+8yZ3klPW5vVscFPC3O+": "ui.layout.common_uisetting.62",
+    "db4ca41b-00d5-4db2-8a08-9197b959684d:9beqfKiNdIEYHqVbiNh6Co": "ui.layout.common_uisetting.67",
+    "db4ca41b-00d5-4db2-8a08-9197b959684d:42TeFlsaFLh5AOD8bBnpui": "ui.layout.common_uisetting.75",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:bdoge0uhBDqI+kBggZy17w": "ui.layout.gad_uigame.31",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:d5eKHhADNJhI3w+Qs2AM0H": "ui.layout.gad_uigame.49",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:6eqxWTyqNBer7xO78AfQdF": "ui.layout.gad_uigame.60",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:53SYk8J4ND35IHr+MAle3h": "ui.layout.gad_uigame.71",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:a8T5pdqHZDV6uzo+Jwia64": "ui.layout.gad_uigame.104",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:feSs8gYxFGBIbg/Fpqzpkm": "ui.layout.gad_uigame.118",
+    "39b18f36-61bd-46b4-97a0-72bae5d32af8:e6JbNE44ZNGqsw2bOvgSfD": "ui.layout.gad_uigame.122",
+    "320c4253-2f1f-429e-88b5-16338730a629:5ecvj+HRVDIal7zgwkqM7r": "ui.layout.gad_uilottery.9",
+    "320c4253-2f1f-429e-88b5-16338730a629:bbdpFEmJhEtqhBuN1Y7PYK": "ui.layout.gad_uilottery.19",
+    "60551a4d-ac9e-4251-9885-6690f1759fd7:43z/W/RalMNLok6aEkRv9j": "ui.layout.gad_uipause.8",
+    "60551a4d-ac9e-4251-9885-6690f1759fd7:2cQp7e6DhNcJ9653GKI9UC": "ui.layout.gad_uipause.13",
+    "60551a4d-ac9e-4251-9885-6690f1759fd7:539GiSL0JDtrrniTt6gIQX": "ui.layout.gad_uipause.17",
+    "60551a4d-ac9e-4251-9885-6690f1759fd7:a3T7bq1aVJO6roURyLTFDm": "ui.layout.gad_uipause.25",
+    "b10f6191-a975-41b6-8c5d-7844b865e7e2:539GiSL0JDtrrniTt6gIQX": "ui.layout.gad_uiresult.16",
+    "b10f6191-a975-41b6-8c5d-7844b865e7e2:6bZ1rOO6NPz5mIdVR8228o": "ui.layout.gad_uiresult.27",
+    "b10f6191-a975-41b6-8c5d-7844b865e7e2:6721P9zXhAaI3GUdzHO9qQ": "ui.layout.gad_uiresult.35",
+    "2fedd507-a6fb-4396-8021-f5ebf8083042:02UkszPiZEbLFM4Rxc5/10": "ui.layout.pbt_door.12",
+    "a23a3b74-194d-4d27-ba0c-87a253b38d64:85uOD4+91MUbnwkYA1IvHJ": "ui.layout.itemhp.9",
+    "d95c1543-3cff-412f-9720-9f8b85d00970:e9WENfEGpEyoOQvirVeazN": "ui.layout.itemhp.9",
+    "e65002f1-915d-4e7d-9b24-eb5281dca5a2:d1ocHIjgRNb7xcqSoF+M8j": "ui.layout.kinghtfalluiaddcurrency.9",
+    "e65002f1-915d-4e7d-9b24-eb5281dca5a2:43irH6ac1NOrpwZcUpURbF": "ui.layout.kinghtfalluiaddcurrency.32",
+    "e65002f1-915d-4e7d-9b24-eb5281dca5a2:f59uoJQWxMwbkCxJY5w2pq": "ui.layout.kinghtfalluiaddcurrency.43",
+    "a8abe270-9f98-4fcb-9836-30de622de489:9c7yUlXDFC67ySVMiY0Fp1": "ui.layout.kinghtfalluiaddstrength.10",
+    "a8abe270-9f98-4fcb-9836-30de622de489:86KT9wFNZBHbjH6ApMft4P": "ui.layout.kinghtfalluiaddstrength.67",
+    "a8abe270-9f98-4fcb-9836-30de622de489:c8X6xPvgtMdKy+ukb1vxWN": "ui.layout.kinghtfalluiaddstrength.79",
+    "a304b6ab-fc1d-4bad-b56b-c94706285bac:a2S/6n+AVBQr6PWETJTzhg": "ui.layout.kinghtfalluiexchangecode.8",
+    "a304b6ab-fc1d-4bad-b56b-c94706285bac:21YzwvYStMYa+8Kw/ZNVQr": "ui.layout.kinghtfalluiexchangecode.23",
+    "a304b6ab-fc1d-4bad-b56b-c94706285bac:22O4bsl09NYoDr0PcQ72FR": "ui.layout.kinghtfalluiexchangecode.29",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:0ai1ZXDRBOQKVEBBrh8ArA": "ui.layout.kinghtfalluigame.69",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:97XunZqAZE8ZoSxwelyAtN": "ui.layout.kinghtfalluigame.133",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:633ZHHnj9Ew4r793dSRF3y": "ui.layout.kinghtfalluigame.141",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:79Gnu6VgtLqZaONG1np0e1": "ui.layout.kinghtfalluigame.146",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:61SaYXeeFOO7nnfL8Mffh3": "ui.layout.kinghtfalluigame.191",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:fc1QuyO6RPraSAZWIeLmkk": "ui.layout.kinghtfalluigame.201",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:d6VtFUKJNN3oyMqyTMUnFB": "ui.layout.kinghtfalluigame.205",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:db7izAvA9GRpZVp52ib3Cm": "ui.layout.kinghtfalluigame.209",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:82j9OsZUJDXKBiYh1hxh2g": "ui.layout.kinghtfalluigame.254",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:e7QrXMcUJNS5+LdbRJHA77": "ui.layout.kinghtfalluigame.270",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:cbuVkkqCFEsoFsR2egGuM8": "ui.layout.kinghtfalluigame.282",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:930CYWkWlCa7J2c8Ih4n4c": "ui.layout.kinghtfalluigame.294",
+    "b0ad012d-a0c2-40ca-bf51-bfafded1505f:2bYdUXGYpFkKgOq9PSMTY1": "ui.layout.kinghtfalluigame.343",
+    "49bb2ae7-9b20-4401-aea2-2b4dbab6d41a:43z/W/RalMNLok6aEkRv9j": "ui.layout.kinghtfalluigameback.11",
+    "49bb2ae7-9b20-4401-aea2-2b4dbab6d41a:c1YxP+AtFAPLPrr6ce68Px": "ui.layout.kinghtfalluigameback.31",
+    "49bb2ae7-9b20-4401-aea2-2b4dbab6d41a:539GiSL0JDtrrniTt6gIQX": "ui.layout.kinghtfalluigameback.42",
+    "49bb2ae7-9b20-4401-aea2-2b4dbab6d41a:6bZ1rOO6NPz5mIdVR8228o": "ui.layout.kinghtfalluigameback.53",
+    "303e4cf2-55cd-432c-8f9b-29b4e196e413:539GiSL0JDtrrniTt6gIQX": "ui.layout.kinghtfalluigameend.16",
+    "303e4cf2-55cd-432c-8f9b-29b4e196e413:6bZ1rOO6NPz5mIdVR8228o": "ui.layout.kinghtfalluigameend.27",
+    "303e4cf2-55cd-432c-8f9b-29b4e196e413:6721P9zXhAaI3GUdzHO9qQ": "ui.layout.kinghtfalluigameend.35",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:55ZJo9uTFOYpkDYz8GdGTg": "ui.layout.kinghtfalluibuff.9",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:dadSND1VBPx43epcKd4o+D": "ui.layout.kinghtfalluibuff.15",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:3fXEUse7JOwoHMGB2mhw4l": "ui.layout.kinghtfalluibuff.51",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:1cztArr29KYqhhgPFJVWQb": "ui.layout.kinghtfalluibuff.57",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:66LHR/uZRDsJ+2H6fIHb3y": "ui.layout.kinghtfalluibuff.62",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:e2MNMbdXtPooXecs1fFZfS": "ui.layout.kinghtfalluibuff.67",
+    "8f8795e7-b951-4ce1-9591-cd0024647dd6:92No2Qhk9Fqo2VDWXjGjpQ": "ui.layout.kinghtfalluibuff.81",
+    "b6d6c126-b0cc-4989-9842-df465dcf212d:a6mQ6TFUhIpKqPbn7c9Eb+": "ui.layout.kinghtfalluibuildatlas.9",
+    "b6d6c126-b0cc-4989-9842-df465dcf212d:9bXg5WmaFCDaZDxkuR9Ksn": "ui.layout.kinghtfalluibuildatlas.27",
+    "342d78c2-9bd4-4895-b66a-ae8e75bfa9e4:4eOCS30ING/o9noviix2sw": "ui.layout.kinghtfalluibuildsel.11",
+    "342d78c2-9bd4-4895-b66a-ae8e75bfa9e4:f6IpkJZqNMC7ANoXl8OefV": "ui.layout.kinghtfalluibuildsel.17",
+    "342d78c2-9bd4-4895-b66a-ae8e75bfa9e4:56MvTKHX9G8pCf5w12Ifia": "ui.layout.kinghtfalluibuildsel.42",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:ca3bKCQhFKWa7uqwdftmJJ": "ui.layout.kinghtfalluisuspend.9",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:43z/W/RalMNLok6aEkRv9j": "ui.layout.kinghtfalluisuspend.16",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:47M2cVIeRJQIxfbrtbOiV5": "ui.layout.kinghtfalluisuspend.40",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:ffyqR7cvJGabd/V/CSrHtj": "ui.layout.kinghtfalluisuspend.47",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:eb4okN1E9EIK1MXmTGXwn0": "ui.layout.kinghtfalluisuspend.58",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:daAmhrdnVFzrZFaJe79uJL": "ui.layout.kinghtfalluisuspend.65",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:539GiSL0JDtrrniTt6gIQX": "ui.layout.kinghtfalluisuspend.80",
+    "107dcd58-e592-454a-9240-33f5cd5c0eaa:6bZ1rOO6NPz5mIdVR8228o": "ui.layout.kinghtfalluisuspend.88",
+    "33ccaf32-6299-4dbc-b51f-aef6fb36adc1:42VT0OcI9GzayYD0C28Lng": "ui.layout.kinghtfalluivideotips.8",
+    "33ccaf32-6299-4dbc-b51f-aef6fb36adc1:9c0A9VOsxMP4HVpng9/b+I": "ui.layout.kinghtfalluivideotips.21",
+    "33ccaf32-6299-4dbc-b51f-aef6fb36adc1:58BdjQPlBB26n5l1vChJl6": "ui.layout.kinghtfalluivideotips.33",
+    "74d1cbe0-f35f-43ed-a05c-a9054eafeae9:43z/W/RalMNLok6aEkRv9j": "ui.layout.kinghtfalluigm.8",
+    "74d1cbe0-f35f-43ed-a05c-a9054eafeae9:539GiSL0JDtrrniTt6gIQX": "ui.layout.kinghtfalluigm.18",
+    "74d1cbe0-f35f-43ed-a05c-a9054eafeae9:00T56xU1FMwaSn5UOp4x/4": "ui.layout.kinghtfalluigm.26",
+    "74d1cbe0-f35f-43ed-a05c-a9054eafeae9:80JeiS5AdJuojadcnDJe12": "ui.layout.kinghtfalluigm.34",
+    "74d1cbe0-f35f-43ed-a05c-a9054eafeae9:75lFuNtAhIn5ThCKv6zPTj": "ui.layout.kinghtfalluigm.48",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:18dj5YEXpCJ5rFWBTqc/kl": "ui.layout.kinghtfallhomebattlectrl.7",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:64FP9exJlAGq3QGWGYZm0a": "ui.layout.kinghtfallhomebattlectrl.12",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:da53B9GUxNwJWv4rOHWDnX": "ui.layout.kinghtfallhomebattlectrl.50",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:99FfwbEgdP6pcGtwnw6oPK": "ui.layout.kinghtfallhomebattlectrl.65",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:92DLN4nYRMdZNY2v4QDcgN": "ui.layout.kinghtfallhomebattlectrl.80",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:0dHjRu4C9EvZFaMIhMjzYJ": "ui.layout.kinghtfallhomebattlectrl.105",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:12X4ezgetBq7xjRGE6bcaB": "ui.layout.kinghtfallhomebattlectrl.139",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:34WElpDnRDDYeva4/HB82/": "ui.layout.kinghtfallhomebattlectrl.165",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:7bQqqwWANFM4kcbiRuJCOQ": "ui.layout.kinghtfallhomebattlectrl.180",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:4c2hBlHTpOWZ1lgq0+LTWl": "ui.layout.kinghtfallhomebattlectrl.195",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:88U38YsmpJ2Kt5bGQBkXao": "ui.layout.kinghtfallhomebattlectrl.210",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:5duA8BlhdHPow0KW1BLgd+": "ui.layout.kinghtfallhomebattlectrl.248",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:3b6MzS/0lJJKnOjk/NbxZK": "ui.layout.kinghtfallhomebattlectrl.260",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:4ceeKYvMdL/JqJgMIptCJH": "ui.layout.kinghtfallhomebattlectrl.297",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:2bxOAMp+NJcIPb0O75jwLl": "ui.layout.kinghtfallhomebattlectrl.302",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:f7r+yCpIFJ+50WHXXjISX8": "ui.layout.kinghtfallhomebattlectrl.311",
+    "23ada4a7-04e0-4526-a262-58852ee10328:beoF45KHFEpI/PJ0SdUsbP": "ui.layout.kinghtfallhomepersonctrl.8",
+    "23ada4a7-04e0-4526-a262-58852ee10328:4cS3wqHoxGW5U5JtIRnbDE": "ui.layout.kinghtfallhomepersonctrl.13",
+    "23ada4a7-04e0-4526-a262-58852ee10328:06VP1qCwRPSZOff8lPFlu5": "ui.layout.kinghtfallhomepersonctrl.55",
+    "23ada4a7-04e0-4526-a262-58852ee10328:5bA3SlESNF/rdklJAvOxi6": "ui.layout.kinghtfallhomepersonctrl.69",
+    "23ada4a7-04e0-4526-a262-58852ee10328:60frzgZlhJSZZeygrqUkJ7": "ui.layout.kinghtfallhomepersonctrl.83",
+    "23ada4a7-04e0-4526-a262-58852ee10328:75XNDrKxFAAI0jOCvcHqt3": "ui.layout.kinghtfallhomepersonctrl.97",
+    "23ada4a7-04e0-4526-a262-58852ee10328:e5icsrMu5MvY2NTnyFmEen": "ui.layout.kinghtfallhomepersonctrl.111",
+    "23ada4a7-04e0-4526-a262-58852ee10328:4ebmhQa9ZH0b/8ReXRQzGz": "ui.layout.kinghtfallhomepersonctrl.125",
+    "23ada4a7-04e0-4526-a262-58852ee10328:80GIGyVphGxJPDLl/BMhzq": "ui.layout.kinghtfallhomepersonctrl.138",
+    "23ada4a7-04e0-4526-a262-58852ee10328:8d1RSzm9tEN7il4QZ9mHnU": "ui.layout.kinghtfallhomepersonctrl.142",
+    "23ada4a7-04e0-4526-a262-58852ee10328:c5c1CFuRhHyYzm72ACQ3rd": "ui.layout.kinghtfallhomepersonctrl.146",
+    "23ada4a7-04e0-4526-a262-58852ee10328:f8HYwNVelPyoC0ODK3BN0N": "ui.layout.kinghtfallhomepersonctrl.150",
+    "23ada4a7-04e0-4526-a262-58852ee10328:45ClxV1EBJIKOlfEBwtGcC": "ui.layout.kinghtfallhomepersonctrl.154",
+    "23ada4a7-04e0-4526-a262-58852ee10328:158iqbJXZDOIVn1l3ioUuk": "ui.layout.kinghtfallhomepersonctrl.158",
+    "23ada4a7-04e0-4526-a262-58852ee10328:fb3TskAmNBnbCQhhxWxLO3": "ui.layout.kinghtfallhomepersonctrl.174",
+    "23ada4a7-04e0-4526-a262-58852ee10328:939d3ikXlG/7qJfcN1m/ka": "ui.layout.kinghtfallhomepersonctrl.181",
+    "23ada4a7-04e0-4526-a262-58852ee10328:fbZcEWjyVJdbbOpjDQaoaU": "ui.layout.kinghtfallhomepersonctrl.186",
+    "23ada4a7-04e0-4526-a262-58852ee10328:16id0ti5NAfLqhX78y1ifq": "ui.layout.kinghtfallhomepersonctrl.198",
+    "23ada4a7-04e0-4526-a262-58852ee10328:e443dm2MBDkbB7J7r466zC": "ui.layout.kinghtfallhomepersonctrl.207",
+    "23ada4a7-04e0-4526-a262-58852ee10328:2dJp1GcfdFRqjCczITWhsR": "ui.layout.kinghtfallhomepersonctrl.217",
+    "23ada4a7-04e0-4526-a262-58852ee10328:048XQRSURJp5J5q6cJ/uw5": "ui.layout.kinghtfallhomepersonctrl.222",
+    "23ada4a7-04e0-4526-a262-58852ee10328:9fUdDH5wpFBbC/KMscb9nP": "ui.layout.kinghtfallhomepersonctrl.230",
+    "23ada4a7-04e0-4526-a262-58852ee10328:09WL0VtNVEHJOsyn/F9t7s": "ui.layout.kinghtfallhomepersonctrl.243",
+    "23ada4a7-04e0-4526-a262-58852ee10328:baJLVDSV9BAYffygYs/wgT": "ui.layout.kinghtfallhomepersonctrl.250",
+    "23ada4a7-04e0-4526-a262-58852ee10328:02NF3CEERFJJAg21lkq+AN": "ui.layout.kinghtfallhomepersonctrl.255",
+    "23ada4a7-04e0-4526-a262-58852ee10328:c3c9NvFhFBYpXye+MgDnu9": "ui.layout.kinghtfallhomepersonctrl.267",
+    "23ada4a7-04e0-4526-a262-58852ee10328:65xAcjrIFErbB3ObE8xuEr": "ui.layout.kinghtfallhomepersonctrl.276",
+    "23ada4a7-04e0-4526-a262-58852ee10328:03WW3tkeFJWq1XvZ7wDOzs": "ui.layout.kinghtfallhomepersonctrl.286",
+    "23ada4a7-04e0-4526-a262-58852ee10328:b42oCFETFBEK43/8Yq6XCD": "ui.layout.kinghtfallhomepersonctrl.291",
+    "23ada4a7-04e0-4526-a262-58852ee10328:f50EeTxntNGqO6QlwwwJaw": "ui.layout.kinghtfallhomepersonctrl.299",
+    "23ada4a7-04e0-4526-a262-58852ee10328:b6aUlt85BHPohVYIfbSyF0": "ui.layout.kinghtfallhomepersonctrl.312",
+    "23ada4a7-04e0-4526-a262-58852ee10328:29DqI0CFRH0pe4ax2QdBut": "ui.layout.kinghtfallhomepersonctrl.319",
+    "23ada4a7-04e0-4526-a262-58852ee10328:02pFnAMwxHuYhaMm6hu4+X": "ui.layout.kinghtfallhomepersonctrl.324",
+    "23ada4a7-04e0-4526-a262-58852ee10328:68/B5nnypPUIaGgbOGUA3l": "ui.layout.kinghtfallhomepersonctrl.336",
+    "23ada4a7-04e0-4526-a262-58852ee10328:09Awt4mWZDd6YvoAnIyden": "ui.layout.kinghtfallhomepersonctrl.345",
+    "23ada4a7-04e0-4526-a262-58852ee10328:79rLgoeVBB7bGHdmeBI2++": "ui.layout.kinghtfallhomepersonctrl.355",
+    "23ada4a7-04e0-4526-a262-58852ee10328:1bB5RY2H5Ke5jd/vcRC0L5": "ui.layout.kinghtfallhomepersonctrl.360",
+    "23ada4a7-04e0-4526-a262-58852ee10328:43WrbpIIdHbb+SteRc9t1L": "ui.layout.kinghtfallhomepersonctrl.368",
+    "23ada4a7-04e0-4526-a262-58852ee10328:43ZhcfkEBBl42c2pklDWzo": "ui.layout.kinghtfallhomepersonctrl.381",
+    "23ada4a7-04e0-4526-a262-58852ee10328:d0KuCSO8RCmaFmlKWgQ68j": "ui.layout.kinghtfallhomepersonctrl.388",
+    "23ada4a7-04e0-4526-a262-58852ee10328:7dUFyW6GtDEJab+q/j9+8C": "ui.layout.kinghtfallhomepersonctrl.393",
+    "23ada4a7-04e0-4526-a262-58852ee10328:43TLJlSuJJ44g3Z5SDFC7E": "ui.layout.kinghtfallhomepersonctrl.405",
+    "23ada4a7-04e0-4526-a262-58852ee10328:18+w07jiVGxLz9oDrCQ8mI": "ui.layout.kinghtfallhomepersonctrl.414",
+    "23ada4a7-04e0-4526-a262-58852ee10328:2c5MKXMORBuYrHCJhro/IK": "ui.layout.kinghtfallhomepersonctrl.424",
+    "23ada4a7-04e0-4526-a262-58852ee10328:95xcbqK+5Npom9ugr9nLrv": "ui.layout.kinghtfallhomepersonctrl.429",
+    "23ada4a7-04e0-4526-a262-58852ee10328:20Qj5AI3FEl4HZysohR2IP": "ui.layout.kinghtfallhomepersonctrl.437",
+    "23ada4a7-04e0-4526-a262-58852ee10328:d1Lv6D80tKNJr/GsVNHVBa": "ui.layout.kinghtfallhomepersonctrl.450",
+    "23ada4a7-04e0-4526-a262-58852ee10328:ddpAEjd6RIK7cj43zR8Qdc": "ui.layout.kinghtfallhomepersonctrl.457",
+    "23ada4a7-04e0-4526-a262-58852ee10328:61d6QCTj5Cm7AFyV76wJG4": "ui.layout.kinghtfallhomepersonctrl.462",
+    "23ada4a7-04e0-4526-a262-58852ee10328:8600ugwSZPo6aPOvPhZ2uU": "ui.layout.kinghtfallhomepersonctrl.474",
+    "23ada4a7-04e0-4526-a262-58852ee10328:44Ikpied5JfI1zWfq27vLr": "ui.layout.kinghtfallhomepersonctrl.483",
+    "23ada4a7-04e0-4526-a262-58852ee10328:c1SMVwg5tH0IdeVKX/tdAp": "ui.layout.kinghtfallhomepersonctrl.493",
+    "23ada4a7-04e0-4526-a262-58852ee10328:8eXjFoZ1tOwpWScchA0Fba": "ui.layout.kinghtfallhomepersonctrl.498",
+    "23ada4a7-04e0-4526-a262-58852ee10328:67weu++epFJ7wVFUZTcqsA": "ui.layout.kinghtfallhomepersonctrl.506",
+    "23ada4a7-04e0-4526-a262-58852ee10328:416unPMlRNEKeQggZkQ1Yx": "ui.layout.kinghtfallhomepersonctrl.519",
+    "23ada4a7-04e0-4526-a262-58852ee10328:03N04pQIFKA7Foq50CjRO4": "ui.layout.kinghtfallhomepersonctrl.526",
+    "23ada4a7-04e0-4526-a262-58852ee10328:a577SEveNH9r5AdSWrnRBW": "ui.layout.kinghtfallhomepersonctrl.531",
+    "23ada4a7-04e0-4526-a262-58852ee10328:41mXRAb45E1Y5JRxv4Mwyu": "ui.layout.kinghtfallhomepersonctrl.543",
+    "23ada4a7-04e0-4526-a262-58852ee10328:2fZ7Ut3jRBS4pG4im938KW": "ui.layout.kinghtfallhomepersonctrl.552",
+    "23ada4a7-04e0-4526-a262-58852ee10328:473gJ24dNGYboint5FX+ps": "ui.layout.kinghtfallhomepersonctrl.562",
+    "23ada4a7-04e0-4526-a262-58852ee10328:02HlBPE39LZbG+8JEhMw6v": "ui.layout.kinghtfallhomepersonctrl.567",
+    "23ada4a7-04e0-4526-a262-58852ee10328:b9iIM9Ij1G05bHwtsquhen": "ui.layout.kinghtfallhomepersonctrl.575",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:6ewTaT1rNPCLiPnYQmTJCi": "ui.layout.kinghtfallhometreasurectrl.5",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:759Ub7pzVG26+olhAblV2D": "ui.layout.kinghtfallhometreasurectrl.27",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:fbKuy2hntKnYnbJ6PbTix3": "ui.layout.kinghtfallhometreasurectrl.67",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:8c+paxWKZOyb2XbhF/ZcoU": "ui.layout.kinghtfallhometreasurectrl.80",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:48/wlAZIREqbL2TMHTmQWy": "ui.layout.kinghtfallhometreasurectrl.98",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:1dMcn2cEtMqZ0ZR3FY8Plg": "ui.layout.kinghtfallhometreasurectrl.116",
+    "da8bbe55-a27a-41bb-ae72-bb40c4d17597:65mhH75XJFgKhjSBA9h4Tb": "ui.layout.kinghtfalluihome.30",
+    "da8bbe55-a27a-41bb-ae72-bb40c4d17597:1fRRZXcAlCuLxPl1skOa4u": "ui.layout.kinghtfalluihome.65",
+    "da8bbe55-a27a-41bb-ae72-bb40c4d17597:c72o3W81tFbIE3K7HnIGLU": "ui.layout.kinghtfalluihome.100",
+    "da8bbe55-a27a-41bb-ae72-bb40c4d17597:4c5thugTRGfLtMQZjZl4Kx": "ui.layout.kinghtfalluihome.135",
+    "da8bbe55-a27a-41bb-ae72-bb40c4d17597:b5QJRu5/VOLIZsTI3AQEju": "ui.layout.kinghtfalluihome.170",
+    "d1952de6-a69d-4072-8c81-f50167691fdb:fe4fnQfcdGr5ahysJKDR5U": "ui.layout.kinghtfalluinewmodular.16",
+    "d1952de6-a69d-4072-8c81-f50167691fdb:676jIUAvhDcJypD8nOJK3O": "ui.layout.kinghtfalluinewmodular.28",
+    "d1952de6-a69d-4072-8c81-f50167691fdb:10mNzGcRNOp5QKDGrynBB0": "ui.layout.kinghtfalluinewmodular.35",
+    "0c3d5353-6ca8-4521-902c-eb14df273ad2:43z/W/RalMNLok6aEkRv9j": "ui.layout.kinghtfalluisetting.8",
+    "0c3d5353-6ca8-4521-902c-eb14df273ad2:81bWfmWkRFsLPgiYt635k+": "ui.layout.kinghtfalluisetting.18",
+    "0c3d5353-6ca8-4521-902c-eb14df273ad2:d3SNeyKnREv6cFftJW04gM": "ui.layout.kinghtfalluisetting.37",
+    "0c3d5353-6ca8-4521-902c-eb14df273ad2:fdIJayu09HUpZz2DZst3lL": "ui.layout.kinghtfalluisetting.58",
+    "0c3d5353-6ca8-4521-902c-eb14df273ad2:539GiSL0JDtrrniTt6gIQX": "ui.layout.kinghtfalluisetting.62",
+    "370a2882-1ff0-4d26-9e8b-4137227b5748:ffh1yDxVZOjqPM3AF17xSX": "ui.layout.kinghtfalluitop.95",
+    "7f137a65-8637-4b98-95cd-ed94a0014316:4eOCS30ING/o9noviix2sw": "ui.layout.kinghtfalluiachievement.8",
+    "7f137a65-8637-4b98-95cd-ed94a0014316:3ev5AgZB5JlKO8Gq9G04/P": "ui.layout.kinghtfalluiachievement.31",
+    "7f137a65-8637-4b98-95cd-ed94a0014316:1dsNbZtw5AQZMhMq8gw/T1": "ui.layout.kinghtfalluiachievement.39",
+    "2febd47b-4bb1-4b76-a7c9-f01d6f45b7f3:fe4fnQfcdGr5ahysJKDR5U": "ui.layout.kinghtfalluigoldreward.16",
+    "2febd47b-4bb1-4b76-a7c9-f01d6f45b7f3:676jIUAvhDcJypD8nOJK3O": "ui.layout.kinghtfalluigoldreward.28",
+    "ad53a63f-a196-44a8-9aaf-ec85d538d3b0:43z/W/RalMNLok6aEkRv9j": "ui.layout.kinghtfalluinewgame.8",
+    "ad53a63f-a196-44a8-9aaf-ec85d538d3b0:2cQp7e6DhNcJ9653GKI9UC": "ui.layout.kinghtfalluinewgame.13",
+    "ad53a63f-a196-44a8-9aaf-ec85d538d3b0:539GiSL0JDtrrniTt6gIQX": "ui.layout.kinghtfalluinewgame.17",
+    "ad53a63f-a196-44a8-9aaf-ec85d538d3b0:a3T7bq1aVJO6roURyLTFDm": "ui.layout.kinghtfalluinewgame.25",
+    "764e6d09-03a2-4214-b48e-97207f930803:6drjVUDoJIUKK1JPzxQFrN": "ui.layout.kinghtfalluionlinereward.9",
+    "764e6d09-03a2-4214-b48e-97207f930803:5dLHfKT/NCQLJSx62GB1Ko": "ui.layout.kinghtfalluionlinereward.21",
+    "764e6d09-03a2-4214-b48e-97207f930803:f4oj2EIqVMXYquZzgM5QpP": "ui.layout.kinghtfalluionlinereward.27",
+    "764e6d09-03a2-4214-b48e-97207f930803:3ev5AgZB5JlKO8Gq9G04/P": "ui.layout.kinghtfalluionlinereward.46",
+    "764e6d09-03a2-4214-b48e-97207f930803:1dsNbZtw5AQZMhMq8gw/T1": "ui.layout.kinghtfalluionlinereward.54",
+    "67262722-3368-46e1-a49b-9345899955dc:38ZMzr3ARIhrqWHPiijHlQ": "ui.layout.kinghtfalluipassport.75",
+    "67262722-3368-46e1-a49b-9345899955dc:aaywZwGPROZZBovYqq8vUF": "ui.layout.kinghtfalluipassport.84",
+    "67262722-3368-46e1-a49b-9345899955dc:019uPLSBNLcaKNalil0LmH": "ui.layout.kinghtfalluipassport.93",
+    "cdef138b-a147-4122-bc94-11186332eda0:43z/W/RalMNLok6aEkRv9j": "ui.layout.kinghtfalluisideboard.8",
+    "cdef138b-a147-4122-bc94-11186332eda0:46PGv1cMxMAqZi12/11GAt": "ui.layout.kinghtfalluisideboard.20",
+    "cdef138b-a147-4122-bc94-11186332eda0:53vM8QKwhIZKXreFLql6kV": "ui.layout.kinghtfalluisideboard.25",
+    "cdef138b-a147-4122-bc94-11186332eda0:4cNAPx4mVIhr4Wd6B7j6uo": "ui.layout.kinghtfalluisideboard.34",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:caMK9UQb1Pg7xxgEcQE6kX": "ui.layout.kinghtfalluisignin.11",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:91Z7Zz34BEvK8vTt4DSuaf": "ui.layout.kinghtfalluisignin.22",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:44TkxxXb5AYJxEjn2D85o7": "ui.layout.kinghtfalluisignin.36",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:e1Aj57I8tMhpAcXVy3th1j": "ui.layout.kinghtfalluisignin.51",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:e3qARVdhBFS4/FRxNWAGaA": "ui.layout.kinghtfalluisignin.65",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:c2U0pyY1hJJqCmiL44Hz01": "ui.layout.kinghtfalluisignin.80",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:0a0gz91N1P44uUICc74K2V": "ui.layout.kinghtfalluisignin.94",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:edtRKSdMVEvZswgInUEwEd": "ui.layout.kinghtfalluisignin.109",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:86ro+mfUtFrq7TCXGqbciS": "ui.layout.kinghtfalluisignin.123",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:b6pEjgp5xEVaaq+4soPT2J": "ui.layout.kinghtfalluisignin.138",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:56Qv1U4LBA645EOvbIpFlP": "ui.layout.kinghtfalluisignin.152",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:24BhRlKFpJArnd5irjF+al": "ui.layout.kinghtfalluisignin.167",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:6bpu5wFcBOWJVQc9AKg+Rl": "ui.layout.kinghtfalluisignin.181",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:4duupjxZBJPqJsJw6a6nI6": "ui.layout.kinghtfalluisignin.199",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:82eXJ3vx9D8p26gUi8B/FB": "ui.layout.kinghtfalluisignin.213",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:7c8AurUlZClaJgPp+gsDaK": "ui.layout.kinghtfalluisignin.228",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:6577L+U4ZB7IJawy2fZklc": "ui.layout.kinghtfalluisignin.239",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:7ereUJELJKGajevCZVmKZE": "ui.layout.kinghtfalluisignin.250",
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:25bT8evCdFHZ9nYHQXnEAg": "ui.layout.kinghtfalluisignin.258",
+    "eb2db536-8d18-4271-afd9-ebc5c8f49951:caMK9UQb1Pg7xxgEcQE6kX": "ui.layout.kinghtfalluitalentinfo.8",
+    "eb2db536-8d18-4271-afd9-ebc5c8f49951:dd8orqWupAG6R1qqg94ars": "ui.layout.kinghtfalluitalentinfo.26",
+    "eb2db536-8d18-4271-afd9-ebc5c8f49951:ac51XWWNVK85+fHR5SKiQE": "ui.layout.kinghtfalluitalentinfo.35",
+    "eb2db536-8d18-4271-afd9-ebc5c8f49951:25bT8evCdFHZ9nYHQXnEAg": "ui.layout.kinghtfalluitalentinfo.41",
+    "eb2db536-8d18-4271-afd9-ebc5c8f49951:9bHymemZdO34A+q/Kgui0q": "ui.layout.kinghtfalluitalentinfo.58",
+    "c719731d-a23b-4622-897e-a4e27ad81525:caMK9UQb1Pg7xxgEcQE6kX": "ui.layout.kinghtfalluitreasureinfo.8",
+    "c719731d-a23b-4622-897e-a4e27ad81525:d9G8bqZHFBgqGWPQAoG/Xf": "ui.layout.kinghtfalluitreasureinfo.25",
+    "c719731d-a23b-4622-897e-a4e27ad81525:41X39wXA9KE4R9O5Z6EUVO": "ui.layout.kinghtfalluitreasureinfo.44",
+    "c719731d-a23b-4622-897e-a4e27ad81525:25bT8evCdFHZ9nYHQXnEAg": "ui.layout.kinghtfalluitreasureinfo.49",
+    "c719731d-a23b-4622-897e-a4e27ad81525:afP0VJfrxHX69T57ZnMP1j": "ui.layout.kinghtfalluitreasureinfo.66",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:fe4fnQfcdGr5ahysJKDR5U": "ui.layout.kinghtfalluitreasurereward.16",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:e3UbeviwVA57RsapVLXCcj": "ui.layout.kinghtfalluitreasurereward.38",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:58BrtGXtZEBLonsVVcsRmk": "ui.layout.kinghtfalluitreasurereward.47",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:60sCYmDHxJbrmrel8StEH8": "ui.layout.kinghtfalluitreasurereward.57",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:4elO3Dn9ZK15mdaSYeeF3E": "ui.layout.kinghtfalluitreasurereward.75",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:18H9U2GKxGNLCfyXbxELcz": "ui.layout.kinghtfalluitreasurereward.93",
+    "01b4d53e-6d5e-4adb-95d9-753fc0e24793:8cRh4mIQRPoJRrheX4Gsro": "ui.layout.uiguide.27",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:0aDLQEvtRC35dyuOIstyxx": "ui.layout.uireport.18",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:4bVV6obpxEaYOXrusupFLj": "ui.layout.uireport.28",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:d1vJyZnq5Nwa1myhtnXLmB": "ui.layout.uireport.31",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:0fJSiSiZhAB5FZhsdfnewr": "ui.layout.uireport.46",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:06HhmC3HJEXoy8Z8xlVCbP": "ui.layout.uireport.51",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:8aGrflOOFEZod1oIqDwO3O": "ui.layout.uireport.64",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:88YJuq1nxGzpvojpkZb9NQ": "ui.layout.uireport.76",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:e0fCIybXhD+qyHCnC9rqvL": "ui.layout.uireport.88",
+    "84e45fac-8f30-4699-bccf-aa1ab616212b:e1bPvzPC9AtZ9PU6kd1hKh": "ui.layout.uireport.100",
+    "9a0c6cbe-0f8c-433c-8d8c-1f11299cf62d:e6g+RvaHdJUpU8it5EpUzg": "ui.layout.uitouch.33",
+    "7cV/mWF9lJH444zqVeRIiH": "ui.layout.common_uiresult.36",
+    "6fhZfwqDtLKaMzDKLCzpHg": "ui.layout.common_uiresult.62",
+    "9fZa+w9F1Aa4fjAq5SNpJb": "ui.layout.common_uiresult.67",
+    "3eMZEvmxpEmJ1QJfRkK2Bi": "ui.layout.common_uiresult.76",
+    "aaQ25MkAhFzITfc7s/rRKo": "ui.layout.common_uisetting.8",
+    "19z9Eu88ZLQZESaCdCRfQc": "ui.layout.common_uisetting.19",
+    "8dd/Q/ANRLz721udwqHurZ": "ui.layout.common_uisetting.39",
+    "5f+8yZ3klPW5vVscFPC3O+": "ui.layout.common_uisetting.62",
+    "9beqfKiNdIEYHqVbiNh6Co": "ui.layout.common_uisetting.67",
+    "42TeFlsaFLh5AOD8bBnpui": "ui.layout.common_uisetting.75",
+    "bdoge0uhBDqI+kBggZy17w": "ui.layout.gad_uigame.31",
+    "d5eKHhADNJhI3w+Qs2AM0H": "ui.layout.gad_uigame.49",
+    "6eqxWTyqNBer7xO78AfQdF": "ui.layout.gad_uigame.60",
+    "53SYk8J4ND35IHr+MAle3h": "ui.layout.gad_uigame.71",
+    "a8T5pdqHZDV6uzo+Jwia64": "ui.layout.gad_uigame.104",
+    "feSs8gYxFGBIbg/Fpqzpkm": "ui.layout.gad_uigame.118",
+    "e6JbNE44ZNGqsw2bOvgSfD": "ui.layout.gad_uigame.122",
+    "5ecvj+HRVDIal7zgwkqM7r": "ui.layout.gad_uilottery.9",
+    "bbdpFEmJhEtqhBuN1Y7PYK": "ui.layout.gad_uilottery.19",
+    "02UkszPiZEbLFM4Rxc5/10": "ui.layout.pbt_door.12",
+    "85uOD4+91MUbnwkYA1IvHJ": "ui.layout.itemhp.9",
+    "e9WENfEGpEyoOQvirVeazN": "ui.layout.itemhp.9",
+    "d1ocHIjgRNb7xcqSoF+M8j": "ui.layout.kinghtfalluiaddcurrency.9",
+    "43irH6ac1NOrpwZcUpURbF": "ui.layout.kinghtfalluiaddcurrency.32",
+    "f59uoJQWxMwbkCxJY5w2pq": "ui.layout.kinghtfalluiaddcurrency.43",
+    "9c7yUlXDFC67ySVMiY0Fp1": "ui.layout.kinghtfalluiaddstrength.10",
+    "86KT9wFNZBHbjH6ApMft4P": "ui.layout.kinghtfalluiaddstrength.67",
+    "c8X6xPvgtMdKy+ukb1vxWN": "ui.layout.kinghtfalluiaddstrength.79",
+    "a2S/6n+AVBQr6PWETJTzhg": "ui.layout.kinghtfalluiexchangecode.8",
+    "21YzwvYStMYa+8Kw/ZNVQr": "ui.layout.kinghtfalluiexchangecode.23",
+    "22O4bsl09NYoDr0PcQ72FR": "ui.layout.kinghtfalluiexchangecode.29",
+    "0ai1ZXDRBOQKVEBBrh8ArA": "ui.layout.kinghtfalluigame.69",
+    "97XunZqAZE8ZoSxwelyAtN": "ui.layout.kinghtfalluigame.133",
+    "633ZHHnj9Ew4r793dSRF3y": "ui.layout.kinghtfalluigame.141",
+    "79Gnu6VgtLqZaONG1np0e1": "ui.layout.kinghtfalluigame.146",
+    "61SaYXeeFOO7nnfL8Mffh3": "ui.layout.kinghtfalluigame.191",
+    "fc1QuyO6RPraSAZWIeLmkk": "ui.layout.kinghtfalluigame.201",
+    "d6VtFUKJNN3oyMqyTMUnFB": "ui.layout.kinghtfalluigame.205",
+    "db7izAvA9GRpZVp52ib3Cm": "ui.layout.kinghtfalluigame.209",
+    "82j9OsZUJDXKBiYh1hxh2g": "ui.layout.kinghtfalluigame.254",
+    "e7QrXMcUJNS5+LdbRJHA77": "ui.layout.kinghtfalluigame.270",
+    "cbuVkkqCFEsoFsR2egGuM8": "ui.layout.kinghtfalluigame.282",
+    "930CYWkWlCa7J2c8Ih4n4c": "ui.layout.kinghtfalluigame.294",
+    "2bYdUXGYpFkKgOq9PSMTY1": "ui.layout.kinghtfalluigame.343",
+    "c1YxP+AtFAPLPrr6ce68Px": "ui.layout.kinghtfalluigameback.31",
+    "55ZJo9uTFOYpkDYz8GdGTg": "ui.layout.kinghtfalluibuff.9",
+    "dadSND1VBPx43epcKd4o+D": "ui.layout.kinghtfalluibuff.15",
+    "3fXEUse7JOwoHMGB2mhw4l": "ui.layout.kinghtfalluibuff.51",
+    "1cztArr29KYqhhgPFJVWQb": "ui.layout.kinghtfalluibuff.57",
+    "66LHR/uZRDsJ+2H6fIHb3y": "ui.layout.kinghtfalluibuff.62",
+    "e2MNMbdXtPooXecs1fFZfS": "ui.layout.kinghtfalluibuff.67",
+    "92No2Qhk9Fqo2VDWXjGjpQ": "ui.layout.kinghtfalluibuff.81",
+    "a6mQ6TFUhIpKqPbn7c9Eb+": "ui.layout.kinghtfalluibuildatlas.9",
+    "9bXg5WmaFCDaZDxkuR9Ksn": "ui.layout.kinghtfalluibuildatlas.27",
+    "f6IpkJZqNMC7ANoXl8OefV": "ui.layout.kinghtfalluibuildsel.17",
+    "56MvTKHX9G8pCf5w12Ifia": "ui.layout.kinghtfalluibuildsel.42",
+    "ca3bKCQhFKWa7uqwdftmJJ": "ui.layout.kinghtfalluisuspend.9",
+    "47M2cVIeRJQIxfbrtbOiV5": "ui.layout.kinghtfalluisuspend.40",
+    "ffyqR7cvJGabd/V/CSrHtj": "ui.layout.kinghtfalluisuspend.47",
+    "eb4okN1E9EIK1MXmTGXwn0": "ui.layout.kinghtfalluisuspend.58",
+    "daAmhrdnVFzrZFaJe79uJL": "ui.layout.kinghtfalluisuspend.65",
+    "42VT0OcI9GzayYD0C28Lng": "ui.layout.kinghtfalluivideotips.8",
+    "9c0A9VOsxMP4HVpng9/b+I": "ui.layout.kinghtfalluivideotips.21",
+    "58BdjQPlBB26n5l1vChJl6": "ui.layout.kinghtfalluivideotips.33",
+    "00T56xU1FMwaSn5UOp4x/4": "ui.layout.kinghtfalluigm.26",
+    "80JeiS5AdJuojadcnDJe12": "ui.layout.kinghtfalluigm.34",
+    "75lFuNtAhIn5ThCKv6zPTj": "ui.layout.kinghtfalluigm.48",
+    "18dj5YEXpCJ5rFWBTqc/kl": "ui.layout.kinghtfallhomebattlectrl.7",
+    "64FP9exJlAGq3QGWGYZm0a": "ui.layout.kinghtfallhomebattlectrl.12",
+    "da53B9GUxNwJWv4rOHWDnX": "ui.layout.kinghtfallhomebattlectrl.50",
+    "99FfwbEgdP6pcGtwnw6oPK": "ui.layout.kinghtfallhomebattlectrl.65",
+    "92DLN4nYRMdZNY2v4QDcgN": "ui.layout.kinghtfallhomebattlectrl.80",
+    "0dHjRu4C9EvZFaMIhMjzYJ": "ui.layout.kinghtfallhomebattlectrl.105",
+    "12X4ezgetBq7xjRGE6bcaB": "ui.layout.kinghtfallhomebattlectrl.139",
+    "34WElpDnRDDYeva4/HB82/": "ui.layout.kinghtfallhomebattlectrl.165",
+    "7bQqqwWANFM4kcbiRuJCOQ": "ui.layout.kinghtfallhomebattlectrl.180",
+    "4c2hBlHTpOWZ1lgq0+LTWl": "ui.layout.kinghtfallhomebattlectrl.195",
+    "88U38YsmpJ2Kt5bGQBkXao": "ui.layout.kinghtfallhomebattlectrl.210",
+    "5duA8BlhdHPow0KW1BLgd+": "ui.layout.kinghtfallhomebattlectrl.248",
+    "3b6MzS/0lJJKnOjk/NbxZK": "ui.layout.kinghtfallhomebattlectrl.260",
+    "4ceeKYvMdL/JqJgMIptCJH": "ui.layout.kinghtfallhomebattlectrl.297",
+    "2bxOAMp+NJcIPb0O75jwLl": "ui.layout.kinghtfallhomebattlectrl.302",
+    "f7r+yCpIFJ+50WHXXjISX8": "ui.layout.kinghtfallhomebattlectrl.311",
+    "beoF45KHFEpI/PJ0SdUsbP": "ui.layout.kinghtfallhomepersonctrl.8",
+    "4cS3wqHoxGW5U5JtIRnbDE": "ui.layout.kinghtfallhomepersonctrl.13",
+    "06VP1qCwRPSZOff8lPFlu5": "ui.layout.kinghtfallhomepersonctrl.55",
+    "5bA3SlESNF/rdklJAvOxi6": "ui.layout.kinghtfallhomepersonctrl.69",
+    "60frzgZlhJSZZeygrqUkJ7": "ui.layout.kinghtfallhomepersonctrl.83",
+    "75XNDrKxFAAI0jOCvcHqt3": "ui.layout.kinghtfallhomepersonctrl.97",
+    "e5icsrMu5MvY2NTnyFmEen": "ui.layout.kinghtfallhomepersonctrl.111",
+    "4ebmhQa9ZH0b/8ReXRQzGz": "ui.layout.kinghtfallhomepersonctrl.125",
+    "80GIGyVphGxJPDLl/BMhzq": "ui.layout.kinghtfallhomepersonctrl.138",
+    "8d1RSzm9tEN7il4QZ9mHnU": "ui.layout.kinghtfallhomepersonctrl.142",
+    "c5c1CFuRhHyYzm72ACQ3rd": "ui.layout.kinghtfallhomepersonctrl.146",
+    "f8HYwNVelPyoC0ODK3BN0N": "ui.layout.kinghtfallhomepersonctrl.150",
+    "45ClxV1EBJIKOlfEBwtGcC": "ui.layout.kinghtfallhomepersonctrl.154",
+    "158iqbJXZDOIVn1l3ioUuk": "ui.layout.kinghtfallhomepersonctrl.158",
+    "fb3TskAmNBnbCQhhxWxLO3": "ui.layout.kinghtfallhomepersonctrl.174",
+    "939d3ikXlG/7qJfcN1m/ka": "ui.layout.kinghtfallhomepersonctrl.181",
+    "fbZcEWjyVJdbbOpjDQaoaU": "ui.layout.kinghtfallhomepersonctrl.186",
+    "16id0ti5NAfLqhX78y1ifq": "ui.layout.kinghtfallhomepersonctrl.198",
+    "e443dm2MBDkbB7J7r466zC": "ui.layout.kinghtfallhomepersonctrl.207",
+    "2dJp1GcfdFRqjCczITWhsR": "ui.layout.kinghtfallhomepersonctrl.217",
+    "048XQRSURJp5J5q6cJ/uw5": "ui.layout.kinghtfallhomepersonctrl.222",
+    "9fUdDH5wpFBbC/KMscb9nP": "ui.layout.kinghtfallhomepersonctrl.230",
+    "09WL0VtNVEHJOsyn/F9t7s": "ui.layout.kinghtfallhomepersonctrl.243",
+    "baJLVDSV9BAYffygYs/wgT": "ui.layout.kinghtfallhomepersonctrl.250",
+    "02NF3CEERFJJAg21lkq+AN": "ui.layout.kinghtfallhomepersonctrl.255",
+    "c3c9NvFhFBYpXye+MgDnu9": "ui.layout.kinghtfallhomepersonctrl.267",
+    "65xAcjrIFErbB3ObE8xuEr": "ui.layout.kinghtfallhomepersonctrl.276",
+    "03WW3tkeFJWq1XvZ7wDOzs": "ui.layout.kinghtfallhomepersonctrl.286",
+    "b42oCFETFBEK43/8Yq6XCD": "ui.layout.kinghtfallhomepersonctrl.291",
+    "f50EeTxntNGqO6QlwwwJaw": "ui.layout.kinghtfallhomepersonctrl.299",
+    "b6aUlt85BHPohVYIfbSyF0": "ui.layout.kinghtfallhomepersonctrl.312",
+    "29DqI0CFRH0pe4ax2QdBut": "ui.layout.kinghtfallhomepersonctrl.319",
+    "02pFnAMwxHuYhaMm6hu4+X": "ui.layout.kinghtfallhomepersonctrl.324",
+    "68/B5nnypPUIaGgbOGUA3l": "ui.layout.kinghtfallhomepersonctrl.336",
+    "09Awt4mWZDd6YvoAnIyden": "ui.layout.kinghtfallhomepersonctrl.345",
+    "79rLgoeVBB7bGHdmeBI2++": "ui.layout.kinghtfallhomepersonctrl.355",
+    "1bB5RY2H5Ke5jd/vcRC0L5": "ui.layout.kinghtfallhomepersonctrl.360",
+    "43WrbpIIdHbb+SteRc9t1L": "ui.layout.kinghtfallhomepersonctrl.368",
+    "43ZhcfkEBBl42c2pklDWzo": "ui.layout.kinghtfallhomepersonctrl.381",
+    "d0KuCSO8RCmaFmlKWgQ68j": "ui.layout.kinghtfallhomepersonctrl.388",
+    "7dUFyW6GtDEJab+q/j9+8C": "ui.layout.kinghtfallhomepersonctrl.393",
+    "43TLJlSuJJ44g3Z5SDFC7E": "ui.layout.kinghtfallhomepersonctrl.405",
+    "18+w07jiVGxLz9oDrCQ8mI": "ui.layout.kinghtfallhomepersonctrl.414",
+    "2c5MKXMORBuYrHCJhro/IK": "ui.layout.kinghtfallhomepersonctrl.424",
+    "95xcbqK+5Npom9ugr9nLrv": "ui.layout.kinghtfallhomepersonctrl.429",
+    "20Qj5AI3FEl4HZysohR2IP": "ui.layout.kinghtfallhomepersonctrl.437",
+    "d1Lv6D80tKNJr/GsVNHVBa": "ui.layout.kinghtfallhomepersonctrl.450",
+    "ddpAEjd6RIK7cj43zR8Qdc": "ui.layout.kinghtfallhomepersonctrl.457",
+    "61d6QCTj5Cm7AFyV76wJG4": "ui.layout.kinghtfallhomepersonctrl.462",
+    "8600ugwSZPo6aPOvPhZ2uU": "ui.layout.kinghtfallhomepersonctrl.474",
+    "44Ikpied5JfI1zWfq27vLr": "ui.layout.kinghtfallhomepersonctrl.483",
+    "c1SMVwg5tH0IdeVKX/tdAp": "ui.layout.kinghtfallhomepersonctrl.493",
+    "8eXjFoZ1tOwpWScchA0Fba": "ui.layout.kinghtfallhomepersonctrl.498",
+    "67weu++epFJ7wVFUZTcqsA": "ui.layout.kinghtfallhomepersonctrl.506",
+    "416unPMlRNEKeQggZkQ1Yx": "ui.layout.kinghtfallhomepersonctrl.519",
+    "03N04pQIFKA7Foq50CjRO4": "ui.layout.kinghtfallhomepersonctrl.526",
+    "a577SEveNH9r5AdSWrnRBW": "ui.layout.kinghtfallhomepersonctrl.531",
+    "41mXRAb45E1Y5JRxv4Mwyu": "ui.layout.kinghtfallhomepersonctrl.543",
+    "2fZ7Ut3jRBS4pG4im938KW": "ui.layout.kinghtfallhomepersonctrl.552",
+    "473gJ24dNGYboint5FX+ps": "ui.layout.kinghtfallhomepersonctrl.562",
+    "02HlBPE39LZbG+8JEhMw6v": "ui.layout.kinghtfallhomepersonctrl.567",
+    "b9iIM9Ij1G05bHwtsquhen": "ui.layout.kinghtfallhomepersonctrl.575",
+    "6ewTaT1rNPCLiPnYQmTJCi": "ui.layout.kinghtfallhometreasurectrl.5",
+    "759Ub7pzVG26+olhAblV2D": "ui.layout.kinghtfallhometreasurectrl.27",
+    "fbKuy2hntKnYnbJ6PbTix3": "ui.layout.kinghtfallhometreasurectrl.67",
+    "8c+paxWKZOyb2XbhF/ZcoU": "ui.layout.kinghtfallhometreasurectrl.80",
+    "48/wlAZIREqbL2TMHTmQWy": "ui.layout.kinghtfallhometreasurectrl.98",
+    "1dMcn2cEtMqZ0ZR3FY8Plg": "ui.layout.kinghtfallhometreasurectrl.116",
+    "65mhH75XJFgKhjSBA9h4Tb": "ui.layout.kinghtfalluihome.30",
+    "1fRRZXcAlCuLxPl1skOa4u": "ui.layout.kinghtfalluihome.65",
+    "c72o3W81tFbIE3K7HnIGLU": "ui.layout.kinghtfalluihome.100",
+    "4c5thugTRGfLtMQZjZl4Kx": "ui.layout.kinghtfalluihome.135",
+    "b5QJRu5/VOLIZsTI3AQEju": "ui.layout.kinghtfalluihome.170",
+    "10mNzGcRNOp5QKDGrynBB0": "ui.layout.kinghtfalluinewmodular.35",
+    "81bWfmWkRFsLPgiYt635k+": "ui.layout.kinghtfalluisetting.18",
+    "d3SNeyKnREv6cFftJW04gM": "ui.layout.kinghtfalluisetting.37",
+    "fdIJayu09HUpZz2DZst3lL": "ui.layout.kinghtfalluisetting.58",
+    "ffh1yDxVZOjqPM3AF17xSX": "ui.layout.kinghtfalluitop.95",
+    "6drjVUDoJIUKK1JPzxQFrN": "ui.layout.kinghtfalluionlinereward.9",
+    "5dLHfKT/NCQLJSx62GB1Ko": "ui.layout.kinghtfalluionlinereward.21",
+    "f4oj2EIqVMXYquZzgM5QpP": "ui.layout.kinghtfalluionlinereward.27",
+    "38ZMzr3ARIhrqWHPiijHlQ": "ui.layout.kinghtfalluipassport.75",
+    "aaywZwGPROZZBovYqq8vUF": "ui.layout.kinghtfalluipassport.84",
+    "019uPLSBNLcaKNalil0LmH": "ui.layout.kinghtfalluipassport.93",
+    "46PGv1cMxMAqZi12/11GAt": "ui.layout.kinghtfalluisideboard.20",
+    "53vM8QKwhIZKXreFLql6kV": "ui.layout.kinghtfalluisideboard.25",
+    "4cNAPx4mVIhr4Wd6B7j6uo": "ui.layout.kinghtfalluisideboard.34",
+    "91Z7Zz34BEvK8vTt4DSuaf": "ui.layout.kinghtfalluisignin.22",
+    "44TkxxXb5AYJxEjn2D85o7": "ui.layout.kinghtfalluisignin.36",
+    "e1Aj57I8tMhpAcXVy3th1j": "ui.layout.kinghtfalluisignin.51",
+    "e3qARVdhBFS4/FRxNWAGaA": "ui.layout.kinghtfalluisignin.65",
+    "c2U0pyY1hJJqCmiL44Hz01": "ui.layout.kinghtfalluisignin.80",
+    "0a0gz91N1P44uUICc74K2V": "ui.layout.kinghtfalluisignin.94",
+    "edtRKSdMVEvZswgInUEwEd": "ui.layout.kinghtfalluisignin.109",
+    "86ro+mfUtFrq7TCXGqbciS": "ui.layout.kinghtfalluisignin.123",
+    "b6pEjgp5xEVaaq+4soPT2J": "ui.layout.kinghtfalluisignin.138",
+    "56Qv1U4LBA645EOvbIpFlP": "ui.layout.kinghtfalluisignin.152",
+    "24BhRlKFpJArnd5irjF+al": "ui.layout.kinghtfalluisignin.167",
+    "6bpu5wFcBOWJVQc9AKg+Rl": "ui.layout.kinghtfalluisignin.181",
+    "4duupjxZBJPqJsJw6a6nI6": "ui.layout.kinghtfalluisignin.199",
+    "82eXJ3vx9D8p26gUi8B/FB": "ui.layout.kinghtfalluisignin.213",
+    "7c8AurUlZClaJgPp+gsDaK": "ui.layout.kinghtfalluisignin.228",
+    "6577L+U4ZB7IJawy2fZklc": "ui.layout.kinghtfalluisignin.239",
+    "7ereUJELJKGajevCZVmKZE": "ui.layout.kinghtfalluisignin.250",
+    "dd8orqWupAG6R1qqg94ars": "ui.layout.kinghtfalluitalentinfo.26",
+    "ac51XWWNVK85+fHR5SKiQE": "ui.layout.kinghtfalluitalentinfo.35",
+    "9bHymemZdO34A+q/Kgui0q": "ui.layout.kinghtfalluitalentinfo.58",
+    "d9G8bqZHFBgqGWPQAoG/Xf": "ui.layout.kinghtfalluitreasureinfo.25",
+    "41X39wXA9KE4R9O5Z6EUVO": "ui.layout.kinghtfalluitreasureinfo.44",
+    "afP0VJfrxHX69T57ZnMP1j": "ui.layout.kinghtfalluitreasureinfo.66",
+    "e3UbeviwVA57RsapVLXCcj": "ui.layout.kinghtfalluitreasurereward.38",
+    "58BrtGXtZEBLonsVVcsRmk": "ui.layout.kinghtfalluitreasurereward.47",
+    "60sCYmDHxJbrmrel8StEH8": "ui.layout.kinghtfalluitreasurereward.57",
+    "4elO3Dn9ZK15mdaSYeeF3E": "ui.layout.kinghtfalluitreasurereward.75",
+    "18H9U2GKxGNLCfyXbxELcz": "ui.layout.kinghtfalluitreasurereward.93",
+    "8cRh4mIQRPoJRrheX4Gsro": "ui.layout.uiguide.27",
+    "0aDLQEvtRC35dyuOIstyxx": "ui.layout.uireport.18",
+    "4bVV6obpxEaYOXrusupFLj": "ui.layout.uireport.28",
+    "d1vJyZnq5Nwa1myhtnXLmB": "ui.layout.uireport.31",
+    "0fJSiSiZhAB5FZhsdfnewr": "ui.layout.uireport.46",
+    "06HhmC3HJEXoy8Z8xlVCbP": "ui.layout.uireport.51",
+    "8aGrflOOFEZod1oIqDwO3O": "ui.layout.uireport.64",
+    "88YJuq1nxGzpvojpkZb9NQ": "ui.layout.uireport.76",
+    "e0fCIybXhD+qyHCnC9rqvL": "ui.layout.uireport.88",
+    "e1bPvzPC9AtZ9PU6kd1hKh": "ui.layout.uireport.100",
+    "e6g+RvaHdJUpU8it5EpUzg": "ui.layout.uitouch.33"
+  },
+  "nodePathStyles": {
+    "GAD_UIResult/root/ndTop/New Label": "ui.layout.common_uiresult.36",
+    "GAD_UIResult/root/btns/yz_ty_btn2/New Label": "ui.layout.common_uiresult.76",
+    "GAD_UISetting/root/title": "ui.layout.common_uisetting.8",
+    "GAD_UISetting/root/layout/musicNode/musicLabel": "ui.layout.common_uisetting.19",
+    "GAD_UISetting/root/layout/effectNode/effectLabel": "ui.layout.common_uisetting.39",
+    "GAD_UISetting/root/btns/yz_ty_btn5/New Label": "ui.layout.common_uisetting.67",
+    "GAD_UISetting/root/btns/yz_ty_btn1/New Label": "ui.layout.common_uisetting.75",
+    "GAD_UIGame/root/pbt_cards/lblhp": "ui.layout.gad_uigame.31",
+    "GAD_UIGame/root/gmNode/New Button/Background/Label": "ui.layout.gad_uigame.71",
+    "GAD_UIGame/uiview/layer/New Label": "ui.layout.gad_uigame.104",
+    "GAD_UIGame/uiview/labTip": "ui.layout.gad_uigame.118",
+    "GAD_UIGame/uiview/lblWave": "ui.layout.gad_uigame.122",
+    "GAD_UILottery/root/title/New Label": "ui.layout.gad_uilottery.9",
+    "GAD_UILottery/root/itemLayer/item/buffIcon/itemName": "ui.layout.gad_uilottery.19",
+    "KinghtFallUINewGame/root/title": "ui.layout.kinghtfalluinewgame.8",
+    "KinghtFallUINewGame/root/version": "ui.layout.kinghtfalluinewgame.13",
+    "KinghtFallUINewGame/root/btnBreak/effectLabel": "ui.layout.kinghtfalluinewgame.17",
+    "KinghtFallUINewGame/root/btnContinue/effectLabel": "ui.layout.kinghtfalluinewgame.25",
+    "GAD_UIGame/root/btnBreak/effectLabel": "ui.layout.gad_uiresult.16",
+    "GAD_UIGame/root/btnVideo/effectLabel": "ui.layout.gad_uiresult.27",
+    "GAD_UIGame/root/btnNewGame/effectLabel": "ui.layout.gad_uiresult.35",
+    "pbt_door/text": "ui.layout.pbt_door.12",
+    "itemHp/New Label": "ui.layout.itemhp.9",
+    "KinghtFallUIAddCurrency/root/New Label": "ui.layout.kinghtfalluiaddcurrency.9",
+    "KinghtFallUIAddCurrency/root/btnVideo/Layout/LabNum": "ui.layout.kinghtfalluiaddcurrency.32",
+    "KinghtFallUIAddCurrency/root/btnBreak/LabNum": "ui.layout.kinghtfalluiaddcurrency.43",
+    "KinghtFallUIAddStrength/root/wg_zy_pd/New Label": "ui.layout.kinghtfalluiaddstrength.10",
+    "KinghtFallUIAddStrength/root/ndRight/ndBtn/Layout/LabNum": "ui.layout.kinghtfalluiaddstrength.67",
+    "KinghtFallUIAddStrength/root/New Label": "ui.layout.kinghtfalluiaddstrength.79",
+    "KinghtFallUIExchangeCode/root/title": "ui.layout.kinghtfalluiexchangecode.8",
+    "KinghtFallUIExchangeCode/root/New EditBox/PLACEHOLDER_LABEL": "ui.layout.kinghtfalluiexchangecode.23",
+    "KinghtFallUIExchangeCode/root/btnGet/New Label": "ui.layout.kinghtfalluiexchangecode.29",
+    "KinghtFallUIGame/ctrPlay/ndHp/ItemHp/New Label": "ui.layout.kinghtfalluigame.69",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndEnemyIcon/labName": "ui.layout.kinghtfalluigame.133",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName": "ui.layout.kinghtfalluigame.146",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/btnBuildInfo/labNum": "ui.layout.kinghtfalluigame.191",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labName": "ui.layout.kinghtfalluigame.201",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labGet": "ui.layout.kinghtfalluigame.205",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndTask/labNoFinish": "ui.layout.kinghtfalluigame.209",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/btnAgg/labNum": "ui.layout.kinghtfalluigame.254",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/labNum": "ui.layout.kinghtfalluigame.270",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/btnReviveBreak/labName": "ui.layout.kinghtfalluigame.282",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/btnRevive/labName": "ui.layout.kinghtfalluigame.294",
+    "KinghtFallUIGame/KinghtFallGameUICtrl/New Sprite(Splash)/New Label": "ui.layout.kinghtfalluigame.343",
+    "KinghtFallUIGameBack/root/title": "ui.layout.kinghtfalluigameback.11",
+    "KinghtFallUIGameBack/root/New Layout/title": "ui.layout.kinghtfalluigameback.31",
+    "KinghtFallUIGameBack/root/btnBreak/effectLabel": "ui.layout.kinghtfalluigameback.42",
+    "KinghtFallUIGameBack/root/btnNewGame/effectLabel": "ui.layout.kinghtfalluigameback.53",
+    "KinghtFallUIGameEnd/root/btnBreak/effectLabel": "ui.layout.kinghtfalluigameend.16",
+    "KinghtFallUIGameEnd/root/btnVideo/effectLabel": "ui.layout.kinghtfalluigameend.27",
+    "KinghtFallUIGameEnd/root/btnNewGame/effectLabel": "ui.layout.kinghtfalluigameend.35",
+    "KinghtFallUIBuff/root/ndTitle/labTitle": "ui.layout.kinghtfalluibuff.15",
+    "KinghtFallUIBuff/root/ndBtn/btnRefresh/labName": "ui.layout.kinghtfalluibuff.51",
+    "KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/New Label": "ui.layout.kinghtfalluibuff.67",
+    "KinghtFallUIBuff/root/ndBtn/btnRefresh/layout1/labQue": "ui.layout.kinghtfalluibuff.62",
+    "KinghtFallUIBuff/root/ndBtn/btnGetAll/labName": "ui.layout.kinghtfalluibuff.81",
+    "KinghtFallUIBuildAtlas/root/wg_jzfz_bt/title": "ui.layout.kinghtfalluibuildatlas.9",
+    "KinghtFallUIBuildAtlas/root/ndItem/labName": "ui.layout.kinghtfalluibuildatlas.27",
+    "KinghtFallUIBuildSel/root/labTitle": "ui.layout.kinghtfalluibuildsel.17",
+    "KinghtFallUIBuildSel/root/ndItem/labName": "ui.layout.kinghtfalluibuildsel.42",
+    "KinghtFallUISuspend/root/wg_gxhd_pd/title": "ui.layout.kinghtfalluisuspend.9",
+    "KinghtFallUISuspend/root/title": "ui.layout.kinghtfalluisuspend.16",
+    "KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle1/Background/New Label": "ui.layout.kinghtfalluisuspend.40",
+    "KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle1/checkmark/New Label": "ui.layout.kinghtfalluisuspend.47",
+    "KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle2/Background/New Label": "ui.layout.kinghtfalluisuspend.58",
+    "KinghtFallUISuspend/root/wg_zt_d1/New ToggleContainer/Toggle2/checkmark/New Label": "ui.layout.kinghtfalluisuspend.65",
+    "KinghtFallUISuspend/root/btnBreak/effectLabel": "ui.layout.kinghtfalluisuspend.80",
+    "KinghtFallUISuspend/root/btnColse/effectLabel": "ui.layout.kinghtfalluisuspend.88",
+    "KinghtFallUIVideoTips/root/labTitle": "ui.layout.kinghtfalluivideotips.8",
+    "KinghtFallUIVideoTips/root/btnRefresh/labName": "ui.layout.kinghtfalluivideotips.21",
+    "KinghtFallUIVideoTips/root/btnGetAll/labName": "ui.layout.kinghtfalluivideotips.33",
+    "KinghtFallUIGM/root/title": "ui.layout.kinghtfalluigm.8",
+    "KinghtFallUIGM/root/btnLock/effectLabel": "ui.layout.kinghtfalluigm.18",
+    "KinghtFallUIGM/root/btnCoin/effectLabel": "ui.layout.kinghtfalluigm.26",
+    "KinghtFallUIGM/root/btnDiamond/effectLabel": "ui.layout.kinghtfalluigm.34",
+    "KinghtFallUIGM/root/New Toggle/effectLabel": "ui.layout.kinghtfalluigm.48",
+    "KinghtFallHomeBattleCtrl/ndLevelInfo/labName": "ui.layout.kinghtfallhomebattlectrl.7",
+    "KinghtFallHomeBattleCtrl/ndLevelInfo/labOrder": "ui.layout.kinghtfallhomebattlectrl.12",
+    "KinghtFallHomeBattleCtrl/ndBoxShow/ndTag1/labName": "ui.layout.kinghtfallhomebattlectrl.50",
+    "KinghtFallHomeBattleCtrl/ndBoxShow/ndTag2/labName": "ui.layout.kinghtfallhomebattlectrl.65",
+    "KinghtFallHomeBattleCtrl/ndBoxShow/ndTag3/labName": "ui.layout.kinghtfallhomebattlectrl.80",
+    "KinghtFallHomeBattleCtrl/btnBattle/labName": "ui.layout.kinghtfallhomebattlectrl.105",
+    "KinghtFallHomeBattleCtrl/ndTaskInfo/labName": "ui.layout.kinghtfallhomebattlectrl.139",
+    "KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnAchieve/labName": "ui.layout.kinghtfallhomebattlectrl.165",
+    "KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnPassport/labName": "ui.layout.kinghtfallhomebattlectrl.180",
+    "KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnOnline/labName": "ui.layout.kinghtfallhomebattlectrl.195",
+    "KinghtFallHomeBattleCtrl/ndBtnLeft/Layout/btnSign/labName": "ui.layout.kinghtfallhomebattlectrl.210",
+    "KinghtFallHomeBattleCtrl/ndBtnRight/btnAddDesktop/labName": "ui.layout.kinghtfallhomebattlectrl.248",
+    "KinghtFallHomeBattleCtrl/ndBtnRight/btnSideBoard/labName": "ui.layout.kinghtfallhomebattlectrl.260",
+    "KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/labName": "ui.layout.kinghtfallhomebattlectrl.297",
+    "KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/labInfo": "ui.layout.kinghtfallhomebattlectrl.302",
+    "KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/Layout/labTime": "ui.layout.kinghtfallhomebattlectrl.311",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndPower/New Label": "ui.layout.kinghtfallhomepersonctrl.8",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndPower/labPower": "ui.layout.kinghtfallhomepersonctrl.13",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem1/labPower": "ui.layout.kinghtfallhomepersonctrl.55",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem2/labPower": "ui.layout.kinghtfallhomepersonctrl.69",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem3/labPower": "ui.layout.kinghtfallhomepersonctrl.83",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem4/labPower": "ui.layout.kinghtfallhomepersonctrl.97",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem5/labPower": "ui.layout.kinghtfallhomepersonctrl.111",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndLevelInfo/ndItem6/labPower": "ui.layout.kinghtfallhomepersonctrl.125",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum1": "ui.layout.kinghtfallhomepersonctrl.138",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum2": "ui.layout.kinghtfallhomepersonctrl.142",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum3": "ui.layout.kinghtfallhomepersonctrl.146",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum4": "ui.layout.kinghtfallhomepersonctrl.150",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum5": "ui.layout.kinghtfallhomepersonctrl.154",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/labNum6": "ui.layout.kinghtfallhomepersonctrl.158",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndItem/labPower": "ui.layout.kinghtfallhomepersonctrl.174",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/labName": "ui.layout.kinghtfallhomepersonctrl.181",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLay/labNum1": "ui.layout.kinghtfallhomepersonctrl.186",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnUpgeade/labName": "ui.layout.kinghtfallhomepersonctrl.198",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnUpgeade/Layout/labNum": "ui.layout.kinghtfallhomepersonctrl.207",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnLock/labName": "ui.layout.kinghtfallhomepersonctrl.217",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnLock/labNum": "ui.layout.kinghtfallhomepersonctrl.222",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLock/labName": "ui.layout.kinghtfallhomepersonctrl.230",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndItem/labPower": "ui.layout.kinghtfallhomepersonctrl.243",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/labName": "ui.layout.kinghtfallhomepersonctrl.250",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLay/labNum1": "ui.layout.kinghtfallhomepersonctrl.255",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnUpgeade/labName": "ui.layout.kinghtfallhomepersonctrl.267",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnUpgeade/Layout/labNum": "ui.layout.kinghtfallhomepersonctrl.276",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnLock/labName": "ui.layout.kinghtfallhomepersonctrl.286",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnLock/labNum": "ui.layout.kinghtfallhomepersonctrl.291",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLock/labName": "ui.layout.kinghtfallhomepersonctrl.299",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndItem/labPower": "ui.layout.kinghtfallhomepersonctrl.312",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/labName": "ui.layout.kinghtfallhomepersonctrl.319",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLay/labNum1": "ui.layout.kinghtfallhomepersonctrl.324",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnUpgeade/labName": "ui.layout.kinghtfallhomepersonctrl.336",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnUpgeade/Layout/labNum": "ui.layout.kinghtfallhomepersonctrl.345",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnLock/labName": "ui.layout.kinghtfallhomepersonctrl.355",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnLock/labNum": "ui.layout.kinghtfallhomepersonctrl.360",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLock/labName": "ui.layout.kinghtfallhomepersonctrl.368",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndItem/labPower": "ui.layout.kinghtfallhomepersonctrl.381",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/labName": "ui.layout.kinghtfallhomepersonctrl.388",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLay/labNum1": "ui.layout.kinghtfallhomepersonctrl.393",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnUpgeade/labName": "ui.layout.kinghtfallhomepersonctrl.405",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnUpgeade/Layout/labNum": "ui.layout.kinghtfallhomepersonctrl.414",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnLock/labName": "ui.layout.kinghtfallhomepersonctrl.424",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnLock/labNum": "ui.layout.kinghtfallhomepersonctrl.429",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLock/labName": "ui.layout.kinghtfallhomepersonctrl.437",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndItem/labPower": "ui.layout.kinghtfallhomepersonctrl.450",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/labName": "ui.layout.kinghtfallhomepersonctrl.457",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLay/labNum1": "ui.layout.kinghtfallhomepersonctrl.462",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnUpgeade/labName": "ui.layout.kinghtfallhomepersonctrl.474",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnUpgeade/Layout/labNum": "ui.layout.kinghtfallhomepersonctrl.483",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnLock/labName": "ui.layout.kinghtfallhomepersonctrl.493",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnLock/labNum": "ui.layout.kinghtfallhomepersonctrl.498",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLock/labName": "ui.layout.kinghtfallhomepersonctrl.506",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndItem/labPower": "ui.layout.kinghtfallhomepersonctrl.519",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/labName": "ui.layout.kinghtfallhomepersonctrl.526",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLay/labNum1": "ui.layout.kinghtfallhomepersonctrl.531",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnUpgeade/labName": "ui.layout.kinghtfallhomepersonctrl.543",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnUpgeade/Layout/labNum": "ui.layout.kinghtfallhomepersonctrl.552",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnLock/labName": "ui.layout.kinghtfallhomepersonctrl.562",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnLock/labNum": "ui.layout.kinghtfallhomepersonctrl.567",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLock/labName": "ui.layout.kinghtfallhomepersonctrl.575",
+    "KinghtFallHomeTreasureCtrl/ndShow/wg_tf_bt/New Label": "ui.layout.kinghtfallhometreasurectrl.5",
+    "KinghtFallHomeTreasureCtrl/ndShow/ItemTreasure/labNum": "ui.layout.kinghtfallhometreasurectrl.27",
+    "KinghtFallHomeTreasureCtrl/ndDown/labName": "ui.layout.kinghtfallhometreasurectrl.67",
+    "KinghtFallHomeTreasureCtrl/ndDown/btnOne/labDay": "ui.layout.kinghtfallhometreasurectrl.80",
+    "KinghtFallHomeTreasureCtrl/ndDown/btnVideo/labDay": "ui.layout.kinghtfallhometreasurectrl.98",
+    "KinghtFallHomeTreasureCtrl/ndDown/btnTen/labDay": "ui.layout.kinghtfallhometreasurectrl.116",
+    "KinghtFallUIHome/ndBottom/Toggle1/checkmark/labName": "ui.layout.kinghtfalluihome.30",
+    "KinghtFallUIHome/ndBottom/Toggle2/checkmark/labName": "ui.layout.kinghtfalluihome.65",
+    "KinghtFallUIHome/ndBottom/Toggle3/checkmark/labName": "ui.layout.kinghtfalluihome.100",
+    "KinghtFallUIHome/ndBottom/Toggle4/checkmark/labName": "ui.layout.kinghtfalluihome.135",
+    "KinghtFallUIHome/ndBottom/Toggle5/checkmark/labName": "ui.layout.kinghtfalluihome.170",
+    "KinghtFallUINewModular/root/wg_gxhd_pd/LabName": "ui.layout.kinghtfalluinewmodular.16",
+    "KinghtFallUINewModular/root/LabName": "ui.layout.kinghtfalluinewmodular.28",
+    "KinghtFallUINewModular/root/ndItem/labName": "ui.layout.kinghtfalluinewmodular.35",
+    "KinghtFallUISetting/root/title": "ui.layout.kinghtfalluisetting.8",
+    "KinghtFallUISetting/root/musicNode/musicLabel": "ui.layout.kinghtfalluisetting.18",
+    "KinghtFallUISetting/root/effectNode/effectLabel": "ui.layout.kinghtfalluisetting.37",
+    "KinghtFallUISetting/root/effectLabel": "ui.layout.kinghtfalluisetting.58",
+    "KinghtFallUISetting/root/btnExchangeCode/effectLabel": "ui.layout.kinghtfalluisetting.62",
+    "UITop/root/New Label": "ui.layout.kinghtfalluitop.95",
+    "KinghtFallUIAchievement/root/labTitle": "ui.layout.kinghtfalluiachievement.8",
+    "KinghtFallUIAchievement/root/ndItem/ndFinish/btnGet/labTitle": "ui.layout.kinghtfalluiachievement.31",
+    "KinghtFallUIAchievement/root/ndItem/ndFinish/btnFinish/labTitle": "ui.layout.kinghtfalluiachievement.39",
+    "KinghtFallUIGoldReward/root/wg_gxhd_pd/LabName": "ui.layout.kinghtfalluigoldreward.16",
+    "KinghtFallUIGoldReward/root/LabName": "ui.layout.kinghtfalluigoldreward.28",
+    "KinghtFallUIOnlineReward/root/wg_zy_pd/labTitle": "ui.layout.kinghtfalluionlinereward.9",
+    "KinghtFallUIOnlineReward/root/labTitle": "ui.layout.kinghtfalluionlinereward.21",
+    "KinghtFallUIOnlineReward/root/ndItem/btnLock/labTitle": "ui.layout.kinghtfalluionlinereward.27",
+    "KinghtFallUIOnlineReward/root/ndItem/ndFinish/btnGet/labTitle": "ui.layout.kinghtfalluionlinereward.46",
+    "KinghtFallUIOnlineReward/root/ndItem/ndFinish/btnFinish/labTitle": "ui.layout.kinghtfalluionlinereward.54",
+    "KinghtFallUIPassport/ndMain/wg_txz_ptd/labPro": "ui.layout.kinghtfalluipassport.84",
+    "KinghtFallUIPassport/ndMain/wg_txz_djbtd/labPro": "ui.layout.kinghtfalluipassport.93",
+    "KinghtFallUISideBoard/root/title": "ui.layout.kinghtfalluisideboard.8",
+    "KinghtFallUISideBoard/root/labNum": "ui.layout.kinghtfalluisideboard.20",
+    "KinghtFallUISideBoard/root/btnGo/New Label": "ui.layout.kinghtfalluisideboard.25",
+    "KinghtFallUISideBoard/root/btnReward/New Label": "ui.layout.kinghtfalluisideboard.34",
+    "KinghtFallUISignIn/root/labTitle": "ui.layout.kinghtfalluisignin.11",
+    "KinghtFallUISignIn/root/ndDay1/labDay": "ui.layout.kinghtfalluisignin.22",
+    "KinghtFallUISignIn/root/ndDay1/labName": "ui.layout.kinghtfalluisignin.36",
+    "KinghtFallUISignIn/root/ndDay2/labDay": "ui.layout.kinghtfalluisignin.51",
+    "KinghtFallUISignIn/root/ndDay2/labName": "ui.layout.kinghtfalluisignin.65",
+    "KinghtFallUISignIn/root/ndDay3/labDay": "ui.layout.kinghtfalluisignin.80",
+    "KinghtFallUISignIn/root/ndDay3/labName": "ui.layout.kinghtfalluisignin.94",
+    "KinghtFallUISignIn/root/ndDay4/labDay": "ui.layout.kinghtfalluisignin.109",
+    "KinghtFallUISignIn/root/ndDay4/labName": "ui.layout.kinghtfalluisignin.123",
+    "KinghtFallUISignIn/root/ndDay5/labDay": "ui.layout.kinghtfalluisignin.138",
+    "KinghtFallUISignIn/root/ndDay5/labName": "ui.layout.kinghtfalluisignin.152",
+    "KinghtFallUISignIn/root/ndDay6/labDay": "ui.layout.kinghtfalluisignin.167",
+    "KinghtFallUISignIn/root/ndDay6/labName": "ui.layout.kinghtfalluisignin.181",
+    "KinghtFallUISignIn/root/ndDay7/labDay": "ui.layout.kinghtfalluisignin.199",
+    "KinghtFallUISignIn/root/ndDay7/labName": "ui.layout.kinghtfalluisignin.213",
+    "KinghtFallUISignIn/root/btnSign/labDay": "ui.layout.kinghtfalluisignin.228",
+    "KinghtFallUISignIn/root/btnVideo/labDay": "ui.layout.kinghtfalluisignin.239",
+    "KinghtFallUISignIn/root/btnVideoBouble/labDay": "ui.layout.kinghtfalluisignin.250",
+    "KinghtFallUISignIn/root/btnGet/labDay": "ui.layout.kinghtfalluisignin.258",
+    "KinghtFallUITalentInfo/root/labTitle": "ui.layout.kinghtfalluitalentinfo.8",
+    "KinghtFallUITalentInfo/root/btnVideo/Layout/labNum": "ui.layout.kinghtfalluitalentinfo.26",
+    "KinghtFallUITalentInfo/root/ndLock": "ui.layout.kinghtfalluitalentinfo.35",
+    "KinghtFallUITalentInfo/root/btnGold/labDay": "ui.layout.kinghtfalluitalentinfo.41",
+    "KinghtFallUITalentInfo/root/labClose": "ui.layout.kinghtfalluitalentinfo.58",
+    "KinghtFallUITreasureInfo/root/labTitle": "ui.layout.kinghtfalluitreasureinfo.8",
+    "KinghtFallUITreasureInfo/root/ItemTreasure/labNum": "ui.layout.kinghtfalluitreasureinfo.25",
+    "KinghtFallUITreasureInfo/root/labLock": "ui.layout.kinghtfalluitreasureinfo.44",
+    "KinghtFallUITreasureInfo/root/btnGold/labDay": "ui.layout.kinghtfalluitreasureinfo.49",
+    "KinghtFallUITreasureInfo/root/labClose": "ui.layout.kinghtfalluitreasureinfo.66",
+    "KinghtFallUITreasureReward/root/wg_gxhd_pd/LabName": "ui.layout.kinghtfalluitreasurereward.16",
+    "KinghtFallUITreasureReward/root/btnClose/New Label": "ui.layout.kinghtfalluitreasurereward.38",
+    "KinghtFallUITreasureReward/root/btnClose/Layout/LabNum": "ui.layout.kinghtfalluitreasurereward.47",
+    "KinghtFallUITreasureReward/root/btnOne/labDay": "ui.layout.kinghtfalluitreasurereward.57",
+    "KinghtFallUITreasureReward/root/btnVideo/labDay": "ui.layout.kinghtfalluitreasurereward.75",
+    "KinghtFallUITreasureReward/root/btnTen/labDay": "ui.layout.kinghtfalluitreasurereward.93",
+    "UIGuide/tipBg/labName": "ui.layout.uiguide.27",
+    "UIReport/root/New EditBox/mask/PLACEHOLDER_LABEL": "ui.layout.uireport.18",
+    "UIReport/root/New EditBox/New Label1": "ui.layout.uireport.28",
+    "UIReport/root/New EditBox/New Label": "ui.layout.uireport.31",
+    "UIReport/root/New Label": "ui.layout.uireport.46",
+    "UIReport/root/New Button/Background/Label": "ui.layout.uireport.51",
+    "UIReport/root/btn1/FalsePublicity/New Label": "ui.layout.uireport.64",
+    "UIReport/root/btn2/Dataloss/New Label": "ui.layout.uireport.76",
+    "UIReport/root/btn3/GameStuck/New Label": "ui.layout.uireport.88",
+    "UIReport/root/btn4/unableAD/New Label": "ui.layout.uireport.100",
+    "UITouch/ndAd/New Label": "ui.layout.uitouch.33",
+    "uiRoot/UILoading/ndInfo/New Label": "ui.layout.loading.33"
+  }
+}

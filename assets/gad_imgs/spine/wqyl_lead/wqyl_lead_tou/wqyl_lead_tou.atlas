@@ -1,0 +1,41 @@
+
+wqyl_lead_tou.png
+size: 399,114
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+humanr_head
+  rotate: false
+  xy: 339, 54
+  size: 58, 58
+  orig: 58, 58
+  offset: 0, 0
+  index: -1
+humanr_headgear_1
+  rotate: true
+  xy: 191, 11
+  size: 101, 72
+  orig: 101, 72
+  offset: 0, 0
+  index: -1
+humanr_headgear_2
+  rotate: true
+  xy: 112, 15
+  size: 97, 77
+  orig: 97, 77
+  offset: 0, 0
+  index: -1
+humanr_headgear_3
+  rotate: true
+  xy: 265, 33
+  size: 79, 72
+  orig: 79, 72
+  offset: 0, 0
+  index: -1
+humanr_headgear_4
+  rotate: true
+  xy: 2, 2
+  size: 110, 108
+  orig: 110, 108
+  offset: 0, 0
+  index: -1

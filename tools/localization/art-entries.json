@@ -1,0 +1,1429 @@
+{
+  "entries": {
+    "art.buff.attack_speed_up": {
+      "en": "Attack Speed Up",
+      "zh": "攻速提升",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.attack_up": {
+      "en": "Attack Up",
+      "zh": "攻击提升",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.projectiles_up": {
+      "en": "More Shots",
+      "zh": "弹道提升",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.heal": {
+      "en": "Heal",
+      "zh": "生命回复",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.attack_speed_down": {
+      "en": "Attack Speed Down",
+      "zh": "攻速下降",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.projectiles_down": {
+      "en": "Fewer Shots",
+      "zh": "弹道减少",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.health_down": {
+      "en": "Health Down",
+      "zh": "生命减少",
+      "context": "Floating combat buff artwork"
+    },
+    "art.buff.weapon_up": {
+      "en": "Weapon Up",
+      "zh": "武器强化",
+      "context": "Floating combat buff artwork"
+    },
+    "art.badge.new": {
+      "en": "New!",
+      "zh": "新的!",
+      "context": "New item badge"
+    },
+    "art.energy.gems": {
+      "en": "Buy with Gems",
+      "zh": "钻石购买",
+      "context": "Energy purchase header"
+    },
+    "art.energy.ad": {
+      "en": "Watch an Ad",
+      "zh": "视频购买",
+      "context": "Energy ad header"
+    },
+    "art.pass.title": {
+      "en": "Level Pass",
+      "zh": "等级通行证",
+      "context": "Pass banner"
+    },
+    "art.sign.day7": {
+      "en": "Day 7:\nClaim the Grand Prize!",
+      "zh": "第七天即可\n领取豪华大奖!",
+      "context": "Seven-day sign-in special reward banner"
+    },
+    "art.feedback.submit": {
+      "en": "Submit",
+      "zh": "提交",
+      "context": "Feedback submit button"
+    },
+    "art.feedback.success": {
+      "en": "Submitted",
+      "zh": "提交成功",
+      "context": "Feedback success toast"
+    },
+    "art.build.by": {
+      "en": "Barracks",
+      "zh": "兵营",
+      "context": "Isometric construction plot"
+    },
+    "art.build.cq": {
+      "en": "Wall",
+      "zh": "城墙",
+      "context": "Isometric construction plot"
+    },
+    "art.build.fw": {
+      "en": "House",
+      "zh": "房屋",
+      "context": "Isometric construction plot"
+    },
+    "art.build.jt": {
+      "en": "Tower",
+      "zh": "箭塔",
+      "context": "Isometric construction plot"
+    },
+    "art.build.mf": {
+      "en": "Mill",
+      "zh": "磨坊",
+      "context": "Isometric construction plot"
+    },
+    "art.build.zc": {
+      "en": "Castle",
+      "zh": "主城",
+      "context": "Isometric construction plot"
+    },
+    "art.result.victory": {
+      "en": "Victory",
+      "zh": "胜利",
+      "context": "Animated battle-result title"
+    },
+    "art.result.defeat": {
+      "en": "Defeat",
+      "zh": "失败",
+      "context": "Animated battle-result title"
+    }
+  },
+  "images": {
+    "4a5f899e-20aa-43ac-aba5-b413e1cd0d18": {
+      "key": "art.buff.attack_speed_up",
+      "template": "buff_attack_speed_up",
+      "preserveOriginal": {
+        "zh": "攻速提升"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts1.png"
+    },
+    "66383f64-a436-47a0-ae03-11b292fff68f": {
+      "key": "art.buff.attack_up",
+      "template": "buff_attack_up",
+      "preserveOriginal": {
+        "zh": "攻击提升"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts2.png"
+    },
+    "c80a49f7-99bf-44aa-8350-5e32d1c67e96": {
+      "key": "art.buff.projectiles_up",
+      "template": "buff_projectiles_up",
+      "preserveOriginal": {
+        "zh": "弹道提升"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts3.png"
+    },
+    "a616dc14-7d8f-4b9c-be19-8b40334b649e": {
+      "key": "art.buff.heal",
+      "template": "buff_heal",
+      "preserveOriginal": {
+        "zh": "生命回复"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts4.png"
+    },
+    "1fff7a93-73f4-4b2a-a491-605cb46ed80f": {
+      "key": "art.buff.attack_speed_down",
+      "template": "buff_attack_speed_down",
+      "preserveOriginal": {
+        "zh": "攻速下降"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts5.png"
+    },
+    "f771dd2f-3382-4699-9b0d-eb53392e4c7e": {
+      "key": "art.buff.projectiles_down",
+      "template": "buff_projectiles_down",
+      "preserveOriginal": {
+        "zh": "弹道减少"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts7.png"
+    },
+    "0ea01a43-e8fe-48e2-ad77-6b61a5584312": {
+      "key": "art.buff.health_down",
+      "template": "buff_health_down",
+      "preserveOriginal": {
+        "zh": "生命减少"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts8.png"
+    },
+    "3969250c-9fae-4501-9317-32736424eb99": {
+      "key": "art.buff.weapon_up",
+      "template": "buff_weapon_up",
+      "preserveOriginal": {
+        "zh": "武器强化"
+      },
+      "source": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts9.png"
+    },
+    "81a1e0ba-35bf-40c5-b988-ec3f9a16822d": {
+      "key": "art.badge.new",
+      "template": "new_badge",
+      "preserveOriginal": {
+        "zh": "新的!"
+      },
+      "source": "assets/KinghtFallIconGood/wg_qd_new.png"
+    },
+    "c4eb8e70-6b2a-49a1-9928-fc5a1ab2af2c": {
+      "key": "art.energy.gems",
+      "template": "buy_gems",
+      "preserveOriginal": {
+        "zh": "钻石购买"
+      },
+      "source": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIAddStrength/wg_syh1_bt1.png"
+    },
+    "db7cc0b4-a467-403e-b0dd-a43f74074b9e": {
+      "key": "art.energy.ad",
+      "template": "watch_ad",
+      "preserveOriginal": {
+        "zh": "视频购买"
+      },
+      "source": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIAddStrength/wg_syh1_bt2.png"
+    },
+    "e67de9d7-9e1a-4504-b8c4-811816e7b7ae": {
+      "key": "art.pass.title",
+      "template": "level_pass",
+      "preserveOriginal": {
+        "zh": "等级通行证"
+      },
+      "source": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIPassport/wg_txz_ct.png"
+    },
+    "127ce1e3-210d-4f62-81bb-e9dece122ea3": {
+      "key": "art.sign.day7",
+      "template": "day7",
+      "preserveOriginal": {
+        "zh": "第七天即可\n领取豪华大奖!"
+      },
+      "source": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUISignIn/wg_qd_d7.png"
+    },
+    "7202b79e-3081-4f4e-8610-488643f9b8c7": {
+      "key": "art.feedback.submit",
+      "template": "submit",
+      "preserveOriginal": {
+        "zh": "提交"
+      },
+      "source": "assets/prefabs/_res/textures/UIReport/an.png"
+    },
+    "b8242db7-480d-4521-b9a3-4e66676f9886": {
+      "key": "art.feedback.success",
+      "template": "submitted",
+      "preserveOriginal": {
+        "zh": "提交成功"
+      },
+      "source": "assets/prefabs/_res/textures/UIReport/shenggong.png"
+    },
+    "0131ed57-f103-41f0-8aa4-7d6d9e7d070e": {
+      "key": "art.build.by",
+      "template": "tile_by",
+      "preserveOriginal": {
+        "zh": "兵营"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_by.png"
+    },
+    "5e229274-96e8-49b5-ba2f-39344a35db79": {
+      "key": "art.build.by",
+      "template": "tile_by_",
+      "preserveOriginal": {
+        "zh": "兵营"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_by_.png"
+    },
+    "6ee12f5a-512a-4593-9a9e-9bdccd1ac3e4": {
+      "key": "art.build.cq",
+      "template": "tile_cq",
+      "preserveOriginal": {
+        "zh": "城墙"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_cq.png"
+    },
+    "ece47e9e-de38-4a3c-97d3-7c25f7079d55": {
+      "key": "art.build.cq",
+      "template": "tile_cq_",
+      "preserveOriginal": {
+        "zh": "城墙"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_cq_.png"
+    },
+    "de5efb11-6931-4bdf-8bf8-428b171ce96b": {
+      "key": "art.build.fw",
+      "template": "tile_fw",
+      "preserveOriginal": {
+        "zh": "房屋"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_fw.png"
+    },
+    "4cf4e46a-5865-409d-bae9-a0665f90790e": {
+      "key": "art.build.fw",
+      "template": "tile_fw_",
+      "preserveOriginal": {
+        "zh": "房屋"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_fw_.png"
+    },
+    "0b12ddfe-6a93-44fe-b93b-ec41664a6c6d": {
+      "key": "art.build.jt",
+      "template": "tile_jt",
+      "preserveOriginal": {
+        "zh": "箭塔"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_jt.png"
+    },
+    "bb77e3c2-bfe1-4e21-9e29-82427a6f6fe8": {
+      "key": "art.build.jt",
+      "template": "tile_jt_",
+      "preserveOriginal": {
+        "zh": "箭塔"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_jt_.png"
+    },
+    "7f222ad2-e8ee-4696-819d-3d63069d8fe9": {
+      "key": "art.build.mf",
+      "template": "tile_mf",
+      "preserveOriginal": {
+        "zh": "磨坊"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_mf.png"
+    },
+    "b3b421a3-d846-4a5b-b32b-4e12f01d4df3": {
+      "key": "art.build.mf",
+      "template": "tile_mf_",
+      "preserveOriginal": {
+        "zh": "磨坊"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_mf_.png"
+    },
+    "4616f240-c5b7-48bf-8457-0996b446661b": {
+      "key": "art.build.zc",
+      "template": "tile_zc",
+      "preserveOriginal": {
+        "zh": "主城"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_zc.png"
+    },
+    "5315769f-0d62-4d0c-b600-5f2bcc3785e0": {
+      "key": "art.build.zc",
+      "template": "tile_zc_",
+      "preserveOriginal": {
+        "zh": "主城"
+      },
+      "source": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_zc_.png"
+    }
+  },
+  "spineImages": {
+    "89af557c-6789-4a54-a86e-2b2640f02bb5": {
+      "template": "settlement_atlas",
+      "skeletonDataUuid": "7533c9fc-5e29-4774-a275-4a8e0fde7497",
+      "source": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.png",
+      "preserveOriginal": {
+        "zh": true
+      }
+    },
+    "c29b0c62-a505-4776-9a2e-8be73ca17213": {
+      "template": "day7_atlas",
+      "skeletonDataUuid": "05aa8449-4a44-4a59-8d15-8e8553bff68c",
+      "source": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUISignIn/wqyl_day7.png",
+      "preserveOriginal": {
+        "zh": true
+      }
+    }
+  },
+  "artTemplates": {
+    "buff_attack_speed_up": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.attack_speed_up",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#fff346"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts1.png"
+    },
+    "buff_attack_up": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.attack_up",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#fff346"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts2.png"
+    },
+    "buff_projectiles_up": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.projectiles_up",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#55ff4b"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts3.png"
+    },
+    "buff_heal": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.heal",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#55ff4b"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts4.png"
+    },
+    "buff_attack_speed_down": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.attack_speed_down",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#89afb2"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts5.png"
+    },
+    "buff_projectiles_down": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.projectiles_down",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#ff4646"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts7.png"
+    },
+    "buff_health_down": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.health_down",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#ff4646"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts8.png"
+    },
+    "buff_weapon_up": {
+      "width": 129,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.buff.weapon_up",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 123,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#fff346"
+          ],
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 0,
+            "offsetY": 1,
+            "blur": 0
+          }
+        }
+      ],
+      "sourceOriginal": "assets/gad_prefabs/_res/textures/GAD_UIGame/buff_ts9.png"
+    },
+    "new_badge": {
+      "width": 85,
+      "height": 38,
+      "regions": [
+        {
+          "key": "art.badge.new",
+          "rect": {
+            "x": 4,
+            "y": 2,
+            "width": 77,
+            "height": 34
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#58ffff",
+            "#8df4ff",
+            "#fd6bd8",
+            "#ffdd53"
+          ],
+          "italic": true
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconGood/wg_qd_new.png"
+    },
+    "buy_gems": {
+      "width": 156,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.energy.gems",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 150,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 32,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#92e7ff"
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIAddStrength/wg_syh1_bt1.png"
+    },
+    "watch_ad": {
+      "width": 156,
+      "height": 42,
+      "regions": [
+        {
+          "key": "art.energy.ad",
+          "rect": {
+            "x": 3,
+            "y": 3,
+            "width": 150,
+            "height": 36
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 32,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#ffef31"
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIAddStrength/wg_syh1_bt2.png"
+    },
+    "level_pass": {
+      "width": 750,
+      "height": 429,
+      "regions": [
+        {
+          "key": "art.pass.title",
+          "rect": {
+            "x": 90,
+            "y": 194,
+            "width": 230,
+            "height": 54
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 39,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#30d8ff"
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUIPassport/wg_txz_ct.png",
+      "source": "assets/resources/localization/neutral/pass.png"
+    },
+    "day7": {
+      "width": 514,
+      "height": 192,
+      "regions": [
+        {
+          "key": "art.sign.day7",
+          "rect": {
+            "x": 47,
+            "y": 57,
+            "width": 323,
+            "height": 91
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 31,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#fff44c"
+          ],
+          "italic": true
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallPrefabs/_res/textures/KinghtFallUISignIn/wg_qd_d7.png",
+      "source": "assets/resources/localization/neutral/day7.png"
+    },
+    "submit": {
+      "width": 484,
+      "height": 70,
+      "regions": [
+        {
+          "key": "art.feedback.submit",
+          "rect": {
+            "x": 80,
+            "y": 8,
+            "width": 324,
+            "height": 54
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 29,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center"
+        }
+      ],
+      "sourceOriginal": "assets/prefabs/_res/textures/UIReport/an.png",
+      "background": {
+        "type": "roundedRect",
+        "fill": "#fb3959",
+        "radius": 5
+      }
+    },
+    "submitted": {
+      "width": 160,
+      "height": 62,
+      "regions": [
+        {
+          "key": "art.feedback.success",
+          "rect": {
+            "x": 11,
+            "y": 7,
+            "width": 138,
+            "height": 46
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 27,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 0,
+          "align": "center"
+        }
+      ],
+      "sourceOriginal": "assets/prefabs/_res/textures/UIReport/shenggong.png",
+      "background": {
+        "type": "roundedRect",
+        "fill": "#4b4e56",
+        "radius": 8
+      }
+    },
+    "tile_by": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.by",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 76,
+              "y": 73
+            },
+            {
+              "x": 139,
+              "y": 37
+            },
+            {
+              "x": 157,
+              "y": 47
+            },
+            {
+              "x": 94,
+              "y": 84
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_by.png",
+      "source": "assets/resources/localization/neutral/tile_by.png"
+    },
+    "tile_by_": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.by",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 23,
+              "y": 45
+            },
+            {
+              "x": 88,
+              "y": 79
+            },
+            {
+              "x": 70,
+              "y": 90
+            },
+            {
+              "x": 5,
+              "y": 56
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_by_.png",
+      "source": "assets/resources/localization/neutral/tile_by_.png"
+    },
+    "tile_cq": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.cq",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 76,
+              "y": 73
+            },
+            {
+              "x": 139,
+              "y": 37
+            },
+            {
+              "x": 157,
+              "y": 47
+            },
+            {
+              "x": 94,
+              "y": 84
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_cq.png",
+      "source": "assets/resources/localization/neutral/tile_cq.png"
+    },
+    "tile_cq_": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.cq",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 23,
+              "y": 45
+            },
+            {
+              "x": 88,
+              "y": 79
+            },
+            {
+              "x": 70,
+              "y": 90
+            },
+            {
+              "x": 5,
+              "y": 56
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_cq_.png",
+      "source": "assets/resources/localization/neutral/tile_cq_.png"
+    },
+    "tile_fw": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.fw",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 76,
+              "y": 73
+            },
+            {
+              "x": 139,
+              "y": 37
+            },
+            {
+              "x": 157,
+              "y": 47
+            },
+            {
+              "x": 94,
+              "y": 84
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_fw.png",
+      "source": "assets/resources/localization/neutral/tile_fw.png"
+    },
+    "tile_fw_": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.fw",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 23,
+              "y": 45
+            },
+            {
+              "x": 88,
+              "y": 79
+            },
+            {
+              "x": 70,
+              "y": 90
+            },
+            {
+              "x": 5,
+              "y": 56
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_fw_.png",
+      "source": "assets/resources/localization/neutral/tile_fw_.png"
+    },
+    "tile_jt": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.jt",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 76,
+              "y": 73
+            },
+            {
+              "x": 139,
+              "y": 37
+            },
+            {
+              "x": 157,
+              "y": 47
+            },
+            {
+              "x": 94,
+              "y": 84
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_jt.png",
+      "source": "assets/resources/localization/neutral/tile_jt.png"
+    },
+    "tile_jt_": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.jt",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 23,
+              "y": 45
+            },
+            {
+              "x": 88,
+              "y": 79
+            },
+            {
+              "x": 70,
+              "y": 90
+            },
+            {
+              "x": 5,
+              "y": 56
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_jt_.png",
+      "source": "assets/resources/localization/neutral/tile_jt_.png"
+    },
+    "tile_mf": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.mf",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 76,
+              "y": 73
+            },
+            {
+              "x": 139,
+              "y": 37
+            },
+            {
+              "x": 157,
+              "y": 47
+            },
+            {
+              "x": 94,
+              "y": 84
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_mf.png",
+      "source": "assets/resources/localization/neutral/tile_mf.png"
+    },
+    "tile_mf_": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.mf",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 23,
+              "y": 45
+            },
+            {
+              "x": 88,
+              "y": 79
+            },
+            {
+              "x": 70,
+              "y": 90
+            },
+            {
+              "x": 5,
+              "y": 56
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_mf_.png",
+      "source": "assets/resources/localization/neutral/tile_mf_.png"
+    },
+    "tile_zc": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.zc",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 76,
+              "y": 73
+            },
+            {
+              "x": 139,
+              "y": 37
+            },
+            {
+              "x": 157,
+              "y": 47
+            },
+            {
+              "x": 94,
+              "y": 84
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_zc.png",
+      "source": "assets/resources/localization/neutral/tile_zc.png"
+    },
+    "tile_zc_": {
+      "width": 171,
+      "height": 100,
+      "regions": [
+        {
+          "key": "art.build.zc",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 26
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 24,
+          "minFontSize": 11,
+          "color": "#ffffff",
+          "outlineColor": "#626346",
+          "outlineWidth": 2,
+          "align": "center",
+          "quad": [
+            {
+              "x": 23,
+              "y": 45
+            },
+            {
+              "x": 88,
+              "y": 79
+            },
+            {
+              "x": 70,
+              "y": 90
+            },
+            {
+              "x": 5,
+              "y": 56
+            }
+          ]
+        }
+      ],
+      "sourceOriginal": "assets/KinghtFallIconMap/com/Bottom/wg_jzbs_zc_.png",
+      "source": "assets/resources/localization/neutral/tile_zc_.png"
+    },
+    "settlement_atlas": {
+      "width": 1566,
+      "height": 1008,
+      "source": "assets/resources/localization/neutral/settlement_atlas.png",
+      "sourceOriginal": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUIGameEnd/wqyl_settlement.png",
+      "regions": [
+        {
+          "key": "art.result.victory",
+          "rect": {
+            "x": 1438,
+            "y": 84,
+            "width": 121,
+            "height": 65
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 54,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 4,
+          "align": "center",
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 2,
+            "offsetY": 3,
+            "blur": 0
+          },
+          "gradient": [
+            "#ffffff",
+            "#e7e8dc"
+          ]
+        },
+        {
+          "key": "art.result.defeat",
+          "rect": {
+            "x": 1438,
+            "y": 155,
+            "width": 123,
+            "height": 66
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 54,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 4,
+          "align": "center",
+          "shadow": {
+            "color": "#000000",
+            "offsetX": 2,
+            "offsetY": 3,
+            "blur": 0
+          },
+          "gradient": [
+            "#ffffff",
+            "#e7e8dc"
+          ]
+        }
+      ]
+    },
+    "day7_atlas": {
+      "width": 285,
+      "height": 518,
+      "source": "assets/resources/localization/neutral/day7_atlas.png",
+      "sourceOriginal": "assets/KinghtFallPrefabs/_res/Skeleton/KinghtFallUISignIn/wqyl_day7.png",
+      "regions": [
+        {
+          "key": "art.sign.day7",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 317,
+            "height": 87
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 31,
+          "minFontSize": 6,
+          "color": "#ffffff",
+          "outlineColor": "#16150f",
+          "outlineWidth": 3,
+          "align": "center",
+          "gradient": [
+            "#ffffff",
+            "#fff44c"
+          ],
+          "italic": true,
+          "quad": [
+            {
+              "x": 196,
+              "y": 516
+            },
+            {
+              "x": 196,
+              "y": 199
+            },
+            {
+              "x": 283,
+              "y": 199
+            },
+            {
+              "x": 283,
+              "y": 516
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

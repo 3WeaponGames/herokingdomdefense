@@ -1,0 +1,68 @@
+[
+  {
+    "file": "assets/KinghtFallPrefabs/home/KinghtFallUITop.prefab",
+    "node": "ndPower",
+    "fromY": 571.912,
+    "toY": 611.912
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/KinghtFallUITop.prefab",
+    "node": "ndGold",
+    "fromY": 571.912,
+    "toY": 611.912
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/KinghtFallUITop.prefab",
+    "node": "ndDiam",
+    "fromY": 571.912,
+    "toY": 611.912
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "ndLevelInfo",
+    "fromY": 0,
+    "toY": 40
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "ndBoxShow",
+    "fromY": -186,
+    "toY": -146
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "btnBattle",
+    "fromY": -360.597,
+    "toY": -320.597
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "ndTaskInfo",
+    "fromY": -487.289,
+    "toY": -447.289
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "ndBtnLeft",
+    "fromY": 526.7,
+    "toY": 566.7
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "ndBtnRight",
+    "fromY": 526.7,
+    "toY": 566.7
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "btnReport",
+    "fromY": 137.7,
+    "toY": 177.7
+  },
+  {
+    "file": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab",
+    "node": "btnSubEnter",
+    "fromY": 0,
+    "toY": 40
+  }
+]

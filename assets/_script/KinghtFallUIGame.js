@@ -1,0 +1,830 @@
+var i;
+var cc__extends = __extends;
+var cc__decorate = __decorate;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var $z1BasePlatform = require("BasePlatform");
+var $z1BaseUI = require("BaseUI");
+var $z1Appcfg = require("Appcfg");
+var $z1PlatformSetting = require("PlatformSetting");
+var $z1AudioMgr = require("AudioMgr");
+var $z1SdkMgr = require("SdkMgr");
+var $z1UIMgr = require("UIMgr");
+var $z1Utils = require("Utils");
+var $z1Config = require("Config");
+var $z1GameTrackDataEvent = require("GameTrackDataEvent");
+var $z1PlayerMgr = require("PlayerMgr");
+var $z1UIGuide = require("UIGuide");
+var $z1KinghtFallConfig = require("KinghtFallConfig");
+var $z1KinghtFallTextConfig = require("KinghtFallTextConfig");
+var $z1KinghtFallEnum = require("KinghtFallEnum");
+var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
+var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
+var $z1KinghtFallModle = require("KinghtFallModle");
+var $z1KinghtFallGameCtrl = require("KinghtFallGameCtrl");
+var $z1KinghtFallGameCtrlData = require("KinghtFallGameCtrlData");
+var $z1KinghtFallGameEffect = require("KinghtFallGameEffect");
+var $z1KinghtFallGameUICtrl = require("KinghtFallGameUICtrl");
+var cc__decorator = cc._decorator;
+var ccp_ccclass = cc__decorator.ccclass;
+var ccp_property = cc__decorator.property;
+var def_KinghtFallUIGame = function (t) {
+  function _ctor() {
+    var e = null !== t && t.apply(this, arguments) || this;
+    e.ndCtrGame = null;
+    e.ctrEffect = null;
+    e.ctrUI = null;
+    e.ndEnemyIcon = null;
+    e.ndCoin = null;
+    e.ndBuildCoin = null;
+    e.ndLevelInfo = null;
+    e.btnStartFight = null;
+    e.btnAddCoin = null;
+    e.btnAgg = null;
+    e.btnSuspend = null;
+    e.btnRevive = null;
+    e.btnReviveBreak = null;
+    e.btnBuildInfo = null;
+    e.ndTask = null;
+    e.btnTest = null;
+    e.speed = 1;
+    e.ctrGame = null;
+    e.levelId = 1;
+    e.isGet = false;
+    e.canStart = true;
+    e.canBreak = true;
+    e.spIdx = 0;
+    e.isPauset = true;
+    e.enemyIconInfo = {};
+    return e;
+  }
+  var n;
+  cc__extends(_ctor, t);
+  n = _ctor;
+  _ctor.prototype.init = function (t) {
+    this.levelId = t;
+  };
+  _ctor.prototype.onLoad = function () {
+    n.instance = this;
+    this.ndEnemyIcon.active = false;
+    this.ndBuildCoin.active = false;
+    this.btnStartFight.active = false;
+    this.btnAgg.active = false;
+    this.btnBuildInfo.active = true;
+    this.ndTask.getChildByName("ndAni").active = false;
+  };
+  _ctor.prototype.start = function () {
+    var t = this;
+    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.ready_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    this.initBtnEvent();
+    this.initEvent();
+    this.btnAgg.getChildByName("ndTag1").active = true;
+    this.btnAgg.getChildByName("ndTag2").active = false;
+    switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
+      case 1:
+        this.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game04);
+        break;
+      case 2:
+        this.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game05);
+    }
+    this.ctrGame = this.ndCtrGame.getComponent($z1KinghtFallGameCtrl.default);
+    this.ctrGame.initData(this.levelId);
+    this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconMap, this.ctrGame.gameData.levelCfg.prefab, function (e) {
+      var n = cc.instantiate(e);
+      n.setParent(t.ndCtrGame);
+      t.ctrGame.initMap(n);
+      t.ctrEffect.initData(t.ctrGame.ndUI);
+      t.ctrGame.gameData.upMap();
+      t.ctrGame.onLateUpdate(0);
+      t.sendEvent($z1Appcfg.BaseEventName.ShowTransition, false, function () {
+        t.isPauset = false;
+        t.startGuide();
+      });
+      t.initBtnView();
+      t.ctrUI.ndGuide.setParent(t.ctrGame.ndPath);
+      t.ctrGame.loadGame() && t.onRestart(false);
+      t.ctrGame.gameData.initCom();
+    });
+    this.initView();
+  };
+  _ctor.prototype.initBtnEvent = function () {
+    var t = this;
+    this.ctrUI.setMoveFunc(this.moveFun.bind(this));
+    this.btnStartFight.on(cc.Node.EventType.TOUCH_END, function () {
+      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide8);
+      if (t.canStart && (t.startRoundGame(), !$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(2))) {
+        for (var e in t.enemyIconInfo) {
+          if (Object.prototype.hasOwnProperty.call(t.enemyIconInfo, e)) {
+            var i = t.enemyIconInfo[e];
+            if (i.ndItem && i.ndItem.active) {
+              n.instance.ctrUI.setGuide(i.tagNode);
+              break;
+            }
+          }
+        }
+      }
+    });
+    this.btnAddCoin.on(cc.Node.EventType.TOUCH_END, function () {
+      t.onPauseGame(true);
+      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.button_coin);
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_button_coin_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+        t.ctrGame.gameData.coin += t.ctrGame.gameData.videoCoin;
+        t.initView();
+        t.onPauseGame(false);
+        var e = cc.v2(t.ndCoin.position.x + t.ndCoin.children[0].x, t.ndCoin.position.y + t.ndCoin.children[0].y);
+        var n = t.btnAddCoin.convertToWorldSpaceAR(cc.v2(0, 0));
+        var i = t.ctrUI.node.convertToNodeSpaceAR(n);
+        var a = function () {
+          var n = cc.instantiate(t.ndCoin.children[0]);
+          n.active = true;
+          n.scale = .5;
+          n.setParent(t.ctrUI.node);
+          var a = cc.v2();
+          cc.Vec2.random(a, 40);
+          cc.tween(n).set({
+            position: cc.v3(i.x, i.y, 0)
+          }).by(.2, {
+            position: cc.v3(a.x, a.y, 0)
+          }).to(1, {
+            position: cc.v3(e.x, e.y, 0),
+            scale: 1
+          }).call(function () {
+            n.destroy();
+          }).start();
+        };
+        for (var o = 0; o < 10; o++) {
+          a();
+        }
+      }, function () {
+        t.onPauseGame(false);
+      });
+    });
+    this.btnAgg.on(cc.Node.EventType.TOUCH_END, function () {
+      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
+      t.ctrGame.changeAge();
+      switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
+        case 1:
+          t.scheduleOnce(function () {
+            t.ctrGame.changeAge();
+          });
+          t.btnAgg.getChildByName("ndTag1").active = true;
+          t.btnAgg.getChildByName("ndTag2").active = false;
+          break;
+        case 2:
+          t.btnAgg.getChildByName("ndTag1").active = !t.ctrGame.isAgg;
+          t.btnAgg.getChildByName("ndTag2").active = t.ctrGame.isAgg;
+      }
+    });
+    this.btnSuspend.on(cc.Node.EventType.TOUCH_END, function () {
+      if (t.canBreak) {
+        t.onPauseGame(true);
+        t.openUI($z1KinghtFallConfig.KinghtFallUIID.UISuspend, function () {
+          t.onRestart(true);
+        }, function () {
+          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame();
+          t.closeUI();
+        });
+      }
+    });
+    this.btnReviveBreak.on(cc.Node.EventType.TOUCH_END, function () {
+      t.btnReviveBreak.active = false;
+      t.btnRevive.active = false;
+    });
+    this.btnBuildInfo.on(cc.Node.EventType.TOUCH_END, function () {
+      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+      t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIBuildAtlas);
+    });
+    this.ndTask.on(cc.Node.EventType.TOUCH_END, function () {
+      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+      t.getTask();
+    });
+    this.btnRevive.on(cc.Node.EventType.TOUCH_END, function () {
+      t.onPauseGame(true);
+      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.hero_revive);
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_hero_revive_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+        t.onReviveShow(0);
+        t.ctrGame.ctrPlay.onReborn();
+        t.onPauseGame(false);
+      }, function () {
+        t.onPauseGame(false);
+      });
+    });
+    this.btnTest.active = false;
+    this.btnTest.getComponentInChildren(cc.Label).string = require("LanguageMgr").LanguageMgr.getInstance().t("format.multiplier", [1]);
+    this.btnTest.on(cc.Node.EventType.TOUCH_END, function () {
+      if (t.canBreak) {
+        var e = [1, 1.5, 2];
+        t.spIdx++;
+        t.spIdx >= e.length && (t.spIdx = 0);
+        t.setChangeSpeed(e[t.spIdx]);
+        t.btnTest.getComponentInChildren(cc.Label).string = require("LanguageMgr").LanguageMgr.getInstance().t("format.multiplier", [e[t.spIdx]]);
+      }
+    });
+  };
+  _ctor.prototype.onClose = function () {
+    $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
+  };
+  _ctor.prototype.onRestart = function (t) {
+    this.btnBuildInfo.active = true;
+    this.canBreak = true;
+    this.onPauseGame(false);
+    this.ctrGame.onRestart(t);
+    this.ctrUI.setRevive(0);
+    this.initView();
+    this.initBtnView();
+    this.btnAgg.active = false;
+    this.btnAgg.getChildByName("ndTag1").active = true;
+    this.btnAgg.getChildByName("ndTag2").active = false;
+    var e = this.ctrGame.gameData.getBulidList();
+    for (var n = 0; n < e.length; n++) {
+      var i = e[n];
+      if (i.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks && i.getLevel() >= 1) {
+        this.btnAgg.active = true;
+        break;
+      }
+    }
+    this.ctrGame.gameData.setLight(false);
+    this.ctrUI.ndLight.active = false;
+    this.ctrGame.ndBg.children.forEach(function (t) {
+      t.color = cc.Color.WHITE;
+    });
+    this.ctrGame.gameData.obstacles.forEach(function (t) {
+      t.node.color = cc.Color.WHITE;
+    });
+  };
+  _ctor.prototype.initEvent = function () {
+    var t = this;
+    this.addEvent($z1Appcfg.BaseEventName.CloseUI, this.onCloseUI);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, this.startGuide);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, this.onPauseGame);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.RoundEnd, this.endRoundGame);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.GameOver, this.onGameOver);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.GameRestart, this.onRestart);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, this.onReviveShow);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.BuildingLevelUp, function () {
+      t.ctrGame.gameData.upMap();
+      t.initBtnView();
+      if (t.ctrGame.gameData.baseBuild.getLevel() >= 1) {
+        n.instance.ctrUI.setGuide(null);
+        t.scheduleOnce(function () {
+          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide6);
+          t.startGuide();
+        }, 1);
+      }
+    });
+  };
+  _ctor.prototype.setChangeSpeed = function (t) {
+    this.speed = t;
+    this.ctrGame.onChangeSpeed();
+  };
+  _ctor.prototype.initBtnView = function () {
+    this.btnStartFight.active = this.ctrGame.gameData.baseBuild.getLevel() >= 1;
+    if (1 == this.ctrGame.gameData.levelCfg.Level && this.ctrGame.gameData.round <= 3) {
+      var t = true;
+      var e = this.ctrGame.gameData.getBulidList();
+      for (var n = 0; n < e.length; n++) {
+        if (-1 != (a = e[n].getSell()) && a <= this.ctrGame.gameData.coin) {
+          t = false;
+          break;
+        }
+      }
+      this.btnStartFight.getChildByName("ndHead").active = t;
+    } else {
+      this.btnStartFight.getChildByName("ndHead").active = false;
+    }
+    this.btnAddCoin.active = !this.isGet && this.ctrGame.gameData.baseBuild.getLevel() >= 1;
+    this.btnAddCoin.getChildByName("lay1").getChildByName("labNum").getComponent(cc.Label).string = "" + this.ctrGame.gameData.videoCoin;
+    if (this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round]) {
+      this.btnStartFight.getChildByName("labNum").getComponent(cc.Label).string = "+" + this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round].StartSliver;
+    } else {
+      this.btnStartFight.children[1].x = 0;
+      this.btnStartFight.children[2].active = false;
+      this.btnStartFight.children[3].active = false;
+    }
+    var i = this.ctrGame.gameData.getBulidList();
+    this.btnAgg.active = false;
+    for (n = 0; n < i.length; n++) {
+      var a;
+      if ((a = i[n]).buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks && a.getLevel() >= 1) {
+        this.btnAgg.active = true;
+        break;
+      }
+    }
+  };
+  _ctor.prototype.onPauseGame = function (t) {
+    var e = this;
+    this.isPauset = t;
+    this.scheduleOnce(function () {
+      if (t) {
+        e.ctrGame.onPauseGame();
+        e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+      } else {
+        e.ctrGame.onResumeGame();
+      }
+    });
+  };
+  _ctor.prototype.onGameOver = function (t) {
+    var e = this;
+    this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.End;
+    this.ctrGame.moveFun(null);
+    this.ctrGame.onPauseGame();
+    this.canBreak = false;
+    this.ctrUI.setRevive(0);
+    this.scheduleOnce(function () {
+      if (t) {
+        e.openUI($z1KinghtFallConfig.KinghtFallUIID.UIGameEnd, t);
+      } else {
+        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.fail_X_Y, e.ctrGame.gameData.levelCfg.Level + "_" + e.ctrGame.gameData.round);
+        e.openUI($z1KinghtFallConfig.KinghtFallUIID.UIGameBack, function (n) {
+          if (n) {
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.game_revive);
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_game_revive_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
+            e.ctrGame.gameData.coin += n;
+            $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, n);
+            e.onRestart(false);
+          } else {
+            e.openUI($z1KinghtFallConfig.KinghtFallUIID.UIGameEnd, t);
+          }
+        });
+      }
+    }, 1);
+  };
+  _ctor.prototype.onReviveShow = function (t) {
+    this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrUI.setRevive(t);
+  };
+  _ctor.prototype.moveFun = function (t) {
+    this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrGame.moveFun(t);
+  };
+  _ctor.prototype.startRoundGame = function () {
+    var t = this;
+    this.btnBuildInfo.active = false;
+    this.btnStartFight.active = false;
+    this.btnAddCoin.active = false;
+    this.ctrUI.ndLight.active = true;
+    this.isGet = false;
+    this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Transition;
+    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.fight_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    cc.tween(this.ctrUI.ndLight).set({
+      opacity: 0
+    }).to(.5, {
+      opacity: 255
+    }, {
+      onUpdate: function (e, n) {
+        var i = Math.floor(255 - 99 * n);
+        t.ctrGame.ndBg.children.forEach(function (t) {
+          t.color = new cc.Color(i, i, i);
+        });
+        t.ctrGame.gameData.obstacles.forEach(function (t) {
+          t.node.color = new cc.Color(i, i, i);
+        });
+      }
+    }).call(function () {
+      t.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Fight;
+      t.initView();
+    }).start();
+    this.ctrGame.ctrPlay.ndRange.active = true;
+    this.ctrGame.gameData.getBulidList().forEach(function (t) {
+      t.buildInfo && t.startRoundGame();
+    });
+    this.ctrGame.gameData.startRoundGame();
+  };
+  _ctor.prototype.endRoundGame = function () {
+    var t = this;
+    this.btnBuildInfo.active = true;
+    this.canBreak = false;
+    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.ready_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Transition;
+    this.scheduleOnce(function () {
+      t.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Prepare;
+      t.onPauseGame(true);
+      t.ctrGame.ctrPlay.endRoundGame();
+      t.openUICallBack($z1KinghtFallConfig.KinghtFallUIID.UIBuff, function () {
+        t.ctrGame.ctrPlay.ndRange.active = false;
+        t.ctrGame.gameData.setLight(false);
+        cc.tween(t.ctrUI.ndLight).set({
+          opacity: 255
+        }).to(.5, {
+          opacity: 0
+        }, {
+          onUpdate: function (e, n) {
+            var i = Math.floor(156 + 99 * n);
+            t.ctrGame.ndBg.children.forEach(function (t) {
+              t.color = new cc.Color(i, i, i);
+            });
+            t.ctrGame.gameData.obstacles.forEach(function (t) {
+              t.node.color = new cc.Color(i, i, i);
+            });
+          }
+        }).call(function () {
+          t.ctrUI.ndLight.active = false;
+        }).start();
+      }, function (e) {
+        t.onPauseGame(false);
+        t.canBreak = true;
+        t.ctrGame.ctrPlay.ctrPlayAni.setLevelUp();
+        for (var n = 0; n < e.length; n++) {
+          var i = e[n];
+          t.ctrGame.gameData.addGameBuff(i);
+        }
+        t.ctrGame.endRoundGame();
+        var a = 0;
+        a += t.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.KillSoldier2];
+        var o = t.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff04);
+        o && (a += o.Pamer[0]);
+        if (a > 0) {
+          t.ctrGame.gameData.coin += a;
+          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, a);
+        }
+        t.initView();
+        t.ctrGame.gameData.upMap();
+        t.initBtnView();
+        t.ctrGame.saveGame();
+      });
+    }, 1);
+  };
+  _ctor.prototype.initView = function () {
+    var t;
+    if (this.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      var e = this.ctrGame.gameData.getBulidList();
+      var n = (null === (t = this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round]) || undefined === t ? undefined : t.StartSliver) || 0;
+      for (var i = 0; i < e.length; i++) {
+        var a = e[i];
+        switch (a.buildCfg.enumValue) {
+          case $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Mill:
+            a.getIsWork() && (n += a.getGetCoin());
+            break;
+          case $z1KinghtFallEnum.KinghtFallEnumBuildEnum.PrivateHouse:
+            a.getIsWork() && (n += a.getGetCoin());
+        }
+      }
+      this.ndCoin.getChildByName("labNum").getComponent(cc.Label).string = this.ctrGame.gameData.coin + "(+" + n + ")";
+    } else {
+      this.ndCoin.getChildByName("labNum").getComponent(cc.Label).string = "" + this.ctrGame.gameData.coin;
+    }
+    this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(this.ctrGame.gameData.levelCfg.Name);
+    this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), this.ctrGame.gameData.round + "/" + this.ctrGame.gameData.levelCfg.WaveCfg.length);
+    if (this.ctrGame.gameData.taskInfo.index >= this.ctrGame.gameData.taskInfo.list.length) {
+      this.ndTask.active = false;
+    } else {
+      var o = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(this.ctrGame.gameData.taskInfo.list[this.ctrGame.gameData.taskInfo.index]);
+      this.ndTask.active = true;
+      this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(o.Name);
+      this.ndTask.getChildByName("labGet").active = 1 == this.ctrGame.gameData.taskInfo.stage;
+      this.ndTask.getChildByName("labNoFinish").active = 0 == this.ctrGame.gameData.taskInfo.stage;
+    }
+  };
+  _ctor.prototype.lateUpdate = function (t) {
+    this.isPauset || this.ctrGame.onLateUpdate(t);
+  };
+  _ctor.prototype.update = function (t) {
+    if (!this.isPauset) {
+      t = Math.min(t, .1);
+      this.ctrUI.upGuide();
+      this.ctrGame.onUpdate(t * this.speed);
+      for (var e in this.enemyIconInfo) {
+        Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).tag = false);
+      }
+      var n = this.ctrGame.gameData.enemyQueue;
+      if (this.ctrGame.gameData.baseBuild.getLevel() >= 1) {
+        var i = function (t) {
+          if (Object.prototype.hasOwnProperty.call(n, t)) {
+            var e = n[t];
+            if (!a.enemyIconInfo[t]) {
+              a.enemyIconInfo[t] = {
+                id: 0,
+                tagNode: a.ctrGame.ndPath.getChildByName("ndEnemy" + t),
+                ndItem: cc.instantiate(a.ndEnemyIcon),
+                tag: true
+              };
+              a.enemyIconInfo[t].ndItem.setParent(a.ctrUI.node);
+              a.enemyIconInfo[t].ndItem.setSiblingIndex(0);
+            }
+            var i = a.enemyIconInfo[t];
+            if (e[0]) {
+              var o = e[0];
+              -1 == o.id && (o = e[1]);
+              if (-1 == o.id) {
+                i.tag = false;
+              } else {
+                if (i.id != o.id) {
+                  i.id = o.id;
+                  var r = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(o.id);
+                  a.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + r.loadIcon, function (t) {
+                    i.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
+                  });
+                }
+                i.ndItem.getChildByName("labNum").getComponent(cc.Label).string = "" + o.num;
+                var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
+                var l = cc.Camera.main.getWorldToScreenPoint(s);
+                var c = a.ctrUI.node.convertToNodeSpaceAR(l);
+                var h = c.clone();
+                c.x = cc.misc.clampf(c.x, -246, 246);
+                c.y = cc.misc.clampf(c.y, -442, 442);
+                i.ndItem.setPosition(c);
+                if (c.equals(h)) {
+                  i.ndItem.getChildByName("ndArr").active = false;
+                } else {
+                  var g = cc.v2();
+                  cc.Vec2.subtract(g, cc.v2(h.x, h.y), cc.v2(c.x, c.y));
+                  var u = 180 * Math.atan2(g.y, g.x) / Math.PI;
+                  i.ndItem.getChildByName("ndArr").angle = u - 90;
+                }
+                i.tag = true;
+              }
+            }
+          }
+        };
+        var a = this;
+        for (var e in n) {
+          i(e);
+        }
+      }
+      for (var e in this.enemyIconInfo) {
+        var o;
+        Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).ndItem.active = o.tag);
+      }
+    }
+  };
+  _ctor.prototype.onCloseUI = function (t) {
+    var e = this;
+    if (t == $z1Config.UIID.UIGuide) {
+      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+      var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
+      var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
+      var a = [2];
+      var o = [2];
+      for (var r = 0; r < a.length; r++) {
+        if (n == a[r] && i == o[r]) {
+          return;
+        }
+      }
+      this.scheduleOnce(function () {
+        e.startGuide();
+      });
+    }
+  };
+  _ctor.prototype.startGuide = function (t) {
+    var e = this;
+    if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK) {
+      if (t) {
+        if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(t)) {
+          return;
+        }
+        var i = new $z1UIGuide.GuildCfg();
+        var a = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(t)[0];
+        i.isWeek = !!a.Close;
+        i.showHand = a.Finger;
+        i.hideMask = !a.Mask;
+        i.tipstring = a.Describe;
+        i.showAni = !!a.ShowKing;
+        i.deviationTipsAll = cc.v2(0, a.Offset || 0);
+        11 == t && (i.distNode = this.btnAgg);
+        switch (t) {
+          case 7:
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide12);
+            break;
+          case 8:
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide10);
+            break;
+          case 9:
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide11);
+            break;
+          case 10:
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide13);
+            break;
+          case 11:
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide14);
+        }
+        this.openUICallBack($z1Config.UIID.UIGuide, function () {
+          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGuideTips(t);
+        }, i);
+      }
+      var o = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
+      var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(o);
+      if (!(s.length <= 0)) {
+        var h;
+        var g = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
+        var u = s[g];
+        switch (o) {
+          case 2:
+            this.isPauset = true;
+            (h = new $z1UIGuide.GuildCfg()).isWeek = !!u.Close;
+            h.showHand = u.Finger;
+            h.hideMask = !u.Mask;
+            h.tipstring = u.Describe;
+            h.showAni = !!u.ShowKing;
+            switch (g) {
+              case 0:
+                h.distNode = this.ndCoin;
+                h.addSize = new cc.Size(40, 0);
+                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
+                h.lightType = 1;
+                $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide4);
+                break;
+              case 1:
+                h.distNode = this.ctrGame.gameData.baseBuild.ndLockList[this.ctrGame.gameData.baseBuild.getLevel()];
+                h.distCamera = this.ctrGame.camera;
+                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
+                h.callBack = function () {
+                  n.instance.ctrUI.setGuide(e.ctrGame.gameData.baseBuild.ndLockList[e.ctrGame.gameData.baseBuild.getLevel()]);
+                };
+                this.isPauset = false;
+                $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide5);
+                break;
+              case 2:
+                for (var d in this.enemyIconInfo) {
+                  if (Object.prototype.hasOwnProperty.call(this.enemyIconInfo, d)) {
+                    var v = this.enemyIconInfo[d];
+                    if (v.ndItem && v.ndItem.active) {
+                      h.distNode = v.ndItem;
+                      break;
+                    }
+                  }
+                }
+                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
+                $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide7);
+                break;
+              case 3:
+                h.lightType = 1;
+                h.distNode = this.btnStartFight;
+                h.deviationTipsAll = cc.v2(0, u.Offset || 0);
+                this.isPauset = false;
+            }
+        }
+        if (h) {
+          this.openUICallBack($z1Config.UIID.UIGuide, function () {
+            if (s[g + 1]) {
+              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(g + 1);
+            } else {
+              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGroupId(o + 1);
+              $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(0);
+            }
+          }, h);
+        } else {
+          this.sendEvent($z1Appcfg.BaseEventName.blocktouch, true);
+        }
+      }
+    }
+  };
+  _ctor.prototype.aniBtnAddCoin = function () {
+    if (!this.isGet) {
+      var t = this.btnAddCoin.getComponent(cc.Animation);
+      t.play(t.defaultClip.name);
+    }
+  };
+  _ctor.prototype.getTask = function () {
+    if (1 == this.ctrGame.gameData.taskInfo.stage) {
+      var t = this.ctrGame.gameData.taskInfo.reward[this.ctrGame.gameData.taskInfo.index];
+      switch (t.id) {
+        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.SilverCoin:
+          this.ctrGame.gameData.coin += t.num;
+          var e = this.ndCoin;
+          var n = cc.v2(e.position.x + e.children[0].x, e.position.y + e.children[0].y);
+          var i = this.ndTask.convertToWorldSpaceAR(cc.v2(0, 0));
+          var a = this.ctrUI.node.convertToNodeSpaceAR(i);
+          var o = function () {
+            var t = cc.instantiate(e.children[0]);
+            t.active = true;
+            t.scale = .5;
+            t.setParent(r.ctrUI.node);
+            var i = cc.v2();
+            cc.Vec2.random(i, 40);
+            cc.tween(t).set({
+              position: cc.v3(a.x, a.y, 0)
+            }).by(.2, {
+              position: cc.v3(i.x, i.y, 0)
+            }).to(1, {
+              position: cc.v3(n.x, n.y, 0),
+              scale: 1
+            }).call(function () {
+              t.destroy();
+            }).start();
+          };
+          var r = this;
+          for (var s = 0; s < 10; s++) {
+            o();
+          }
+          break;
+        default:
+          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([t], this.ctrGame.gameData.levelCfg.InGameCoefficient);
+      }
+      var l = this.ndTask.getChildByName("ndAni");
+      var c = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(t.id);
+      this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, c.icon, function (t) {
+        l.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
+      });
+      l.getChildByName("labNum").getComponent(cc.Label).string = "+" + t.num * this.ctrGame.gameData.levelCfg.InGameCoefficient;
+      l.active = true;
+      cc.tween(l).set({
+        y: 40
+      }).to(.5, {
+        y: 80
+      }).call(function () {
+        l.active = false;
+      }).start();
+      this.ctrGame.gameData.taskInfo.index++;
+      this.ctrGame.gameData.taskInfo.stage = 0;
+      this.ctrGame.saveGame();
+      this.initView();
+    }
+  };
+  _ctor.prototype.addTask = function (t) {
+    this.ctrGame.gameData.taskInfo.index >= this.ctrGame.gameData.taskInfo.list.length || this.ctrGame.gameData.taskInfo.list[this.ctrGame.gameData.taskInfo.index] == t && (this.ctrGame.gameData.taskInfo.stage = 1, this.initView(), this.ctrGame.saveGame());
+  };
+  _ctor.prototype.changeFollowMode = function (t) {
+    var e = this;
+    var n = function () {
+      $z1KinghtFallConfig.KinghtFallParameter.FollowMode = t;
+      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setFollowMode();
+      switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
+        case 1:
+          e.btnAgg.getChildByName("ndTag1").active = true;
+          e.btnAgg.getChildByName("ndTag2").active = false;
+          e.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game04);
+          break;
+        case 2:
+          e.btnAgg.getChildByName("ndTag1").active = !e.ctrGame.isAgg;
+          e.btnAgg.getChildByName("ndTag2").active = e.ctrGame.isAgg;
+          e.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game05);
+      }
+    };
+    if (this.ctrGame.isAgg) {
+      this.ctrGame.changeAge();
+      n();
+    } else {
+      n();
+    }
+  };
+  _ctor.instance = null;
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "入口信息"
+  })], _ctor.prototype, "ndCtrGame", undefined);
+  cc__decorate([ccp_property({
+    type: $z1KinghtFallGameEffect.default,
+    tooltip: "玩家"
+  })], _ctor.prototype, "ctrEffect", undefined);
+  cc__decorate([ccp_property({
+    type: $z1KinghtFallGameUICtrl.default,
+    tooltip: "操作界面"
+  })], _ctor.prototype, "ctrUI", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "入口信息"
+  })], _ctor.prototype, "ndEnemyIcon", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "货币信息"
+  })], _ctor.prototype, "ndCoin", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "货币信息"
+  })], _ctor.prototype, "ndBuildCoin", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "关卡信息"
+  })], _ctor.prototype, "ndLevelInfo", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "开始战斗"
+  })], _ctor.prototype, "btnStartFight", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "加金币"
+  })], _ctor.prototype, "btnAddCoin", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "集合"
+  })], _ctor.prototype, "btnAgg", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "暂停"
+  })], _ctor.prototype, "btnSuspend", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "复活"
+  })], _ctor.prototype, "btnRevive", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "复活"
+  })], _ctor.prototype, "btnReviveBreak", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "暂停"
+  })], _ctor.prototype, "btnBuildInfo", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "任务"
+  })], _ctor.prototype, "ndTask", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "暂停"
+  })], _ctor.prototype, "btnTest", undefined);
+  return n = cc__decorate([ccp_ccclass], _ctor);
+}($z1BaseUI.default);
+exports.default = def_KinghtFallUIGame;

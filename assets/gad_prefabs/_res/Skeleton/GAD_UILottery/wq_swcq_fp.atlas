@@ -1,0 +1,27 @@
+
+wq_swcq_fp.png
+size: 908,908
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+buffd
+  rotate: true
+  xy: 2, 695
+  size: 211, 300
+  orig: 211, 300
+  offset: 0, 0
+  index: -1
+buffd1
+  rotate: true
+  xy: 304, 695
+  size: 211, 300
+  orig: 211, 300
+  offset: 0, 0
+  index: -1
+buffd2
+  rotate: true
+  xy: 606, 695
+  size: 211, 300
+  orig: 211, 300
+  offset: 0, 0
+  index: -1

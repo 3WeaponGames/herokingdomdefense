@@ -1,0 +1,76 @@
+
+dh_skill_blood.png
+size: 445,445
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tx_x
+  rotate: true
+  xy: 358, 272
+  size: 21, 81
+  orig: 27, 87
+  offset: 4, 3
+  index: -1
+光效/zl_tx1
+  rotate: true
+  xy: 360, 295
+  size: 148, 83
+  orig: 223, 150
+  offset: 47, 11
+  index: -1
+光效/zl_tx2
+  rotate: true
+  xy: 326, 35
+  size: 158, 99
+  orig: 223, 150
+  offset: 46, 11
+  index: -1
+光效/zl_tx3
+  rotate: true
+  xy: 94, 23
+  size: 167, 106
+  orig: 223, 150
+  offset: 42, 10
+  index: -1
+光效/zl_tx4
+  rotate: false
+  xy: 183, 195
+  size: 173, 122
+  orig: 223, 150
+  offset: 36, 10
+  index: -1
+光效/zl_tx5
+  rotate: false
+  xy: 2, 313
+  size: 179, 130
+  orig: 223, 150
+  offset: 25, 10
+  index: -1
+光效/zl_tx6
+  rotate: true
+  xy: 202, 29
+  size: 164, 122
+  orig: 223, 150
+  offset: 20, 11
+  index: -1
+光效/zl_tx7
+  rotate: false
+  xy: 2, 192
+  size: 173, 119
+  orig: 223, 150
+  offset: 17, 13
+  index: -1
+光效/zl_tx8
+  rotate: false
+  xy: 183, 319
+  size: 175, 124
+  orig: 223, 150
+  offset: 15, 13
+  index: -1
+光效/zl_tx9
+  rotate: true
+  xy: 2, 20
+  size: 170, 90
+  orig: 223, 150
+  offset: 18, 16
+  index: -1

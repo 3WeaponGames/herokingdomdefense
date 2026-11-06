@@ -1,0 +1,41 @@
+
+wqyl_Combat effectiveness.png
+size: 294,275
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+effect_star_1
+  rotate: false
+  xy: 223, 42
+  size: 38, 37
+  orig: 40, 39
+  offset: 1, 0
+  index: -1
+effect_star_2
+  rotate: false
+  xy: 223, 3
+  size: 38, 37
+  orig: 40, 39
+  offset: 1, 0
+  index: -1
+jiantou
+  rotate: false
+  xy: 263, 35
+  size: 29, 44
+  orig: 35, 49
+  offset: 3, 2
+  index: -1
+leven_up_light
+  rotate: false
+  xy: 223, 81
+  size: 50, 192
+  orig: 57, 198
+  offset: 4, 3
+  index: -1
+light
+  rotate: false
+  xy: 2, 2
+  size: 219, 271
+  orig: 227, 287
+  offset: 4, 8
+  index: -1

@@ -1,0 +1,71 @@
+<div id="root" class="localization">
+  <header>
+    <div><h1>Translation Tables</h1><div id="subtitle" class="muted">Loading catalog…</div></div>
+    <div class="buttons"><button id="reload">Reload</button><button id="save" class="primary" disabled>Save tables</button></div>
+  </header>
+  <div class="toolbar">
+    <button id="entriesTab" class="tab selected">Text</button><button id="layoutsTab" class="tab">Layouts</button><button id="imagesTab" class="tab">Bindings</button><button id="templatesTab" class="tab">Text artwork</button>
+    <span class="spacer"></span><button id="importCSV">Import CSV</button><button id="exportCSV">Export CSV</button>
+    <input id="importFile" type="file" accept=".csv" hidden>
+    <button id="validate">Validate</button><span id="issueCount" class="badge">—</span>
+  </div>
+  <div id="draftInfo" class="draft" hidden>Unsaved work from a previous panel session is available. <button id="restoreDraft">Restore draft</button><button id="discardDraft">Discard draft</button></div>
+  <div class="filters">
+    <input id="search" type="search" placeholder="Search key, translation, or source…" aria-label="Search translations">
+    <select id="target" aria-label="Language column"></select>
+    <label><input id="missing" type="checkbox"> Missing only</label>
+    <label>Default <select id="defaultLanguage" aria-label="Default game language"></select></label>
+  </div>
+  <details class="tools"><summary>Add a key or language</summary>
+    <div class="add-row"><input id="keyName" placeholder="New key: settings.language" aria-label="New translation key"><button id="addKey">Add key</button></div>
+    <div class="add-row"><input id="languageCode" class="short" placeholder="Code: fr" aria-label="New locale code"><input id="languageName" placeholder="Native name: Français" aria-label="New language native name"><button id="addLanguage">Add language</button></div>
+    <p class="muted">Stable keys stay the same when wording changes. New languages start empty; use Missing only to complete them before release.</p>
+  </details>
+  <div id="issues" class="issues" hidden></div>
+  <div id="entries" class="entries">
+    <div class="table-scroll"><table id="table"></table></div>
+    <footer><span id="pagination"></span><span class="spacer"></span><button id="previous">Previous</button><button id="next">Next</button></footer>
+  </div>
+  <div id="images" class="images" hidden>
+    <aside><select id="imageList" size="15" aria-label="Artwork bindings"></select>
+      <input id="imageNewUuid" placeholder="New SpriteFrame UUID" aria-label="New artwork UUID"><button id="imageAdd">Bind to new-key field</button>
+    </aside>
+    <section class="image-editor">
+      <strong id="imageUuid"></strong><p id="imageHelp" class="muted"></p>
+      <label>Translation key <input id="imageKey"></label>
+      <div class="grid"><label>Mode <select id="imageMode"><option value="replace">Replace text artwork</option><option value="overlay">Overlay text</option></select></label>
+      <label>Font size <input id="imageFont" type="number" min="0" placeholder="Automatic"></label>
+      <label>Text color <input id="imageColor" placeholder="#ffffff"></label>
+      <label>Background <input id="imageBackground" placeholder="#314052"></label>
+      <label>Outline color <input id="imageOutline" placeholder="#000000"></label>
+      <label>Outline width <input id="imageOutlineWidth" type="number" min="0" placeholder="0"></label></div>
+      <label>Text region JSON <input id="imageRect" placeholder='{"x":0,"y":0,"width":200,"height":60}'></label>
+      <h2>Optional localized artwork</h2><div id="imageArtwork" class="grid"></div>
+      <p class="muted">Use SpriteFrame UUIDs for language-specific illustrations. Leave empty to use translated text. Preserve the original UUID at the left as the binding identity.</p>
+      <details><summary>Additional binding metadata (JSON)</summary><textarea id="imageJson" rows="9" spellcheck="false"></textarea><p class="muted">Fields above override matching fields in this JSON when applied.</p></details>
+      <button id="imageApply" class="primary">Apply binding</button>
+    </section>
+  </div>
+  <div id="templates" class="images" hidden>
+    <aside><select id="templateList" size="15" aria-label="Text artwork templates"></select><button id="buildArtwork">Rebuild saved artwork</button></aside>
+    <section class="image-editor">
+      <strong id="templateTitle">Select a template</strong>
+      <p class="muted">Translate each region's key in the Text tab. Template fields control font, outline, fill, and position. Saving tables rebuilds the PNGs at their original dimensions for every configured language.</p>
+      <textarea id="templateJson" rows="22" spellcheck="false" aria-label="Artwork template JSON"></textarea>
+      <p class="muted">rect is measured from the image's top-left in pixels. quad is clockwise: top-left, top-right, bottom-right, bottom-left. font and source paths are relative to the project. Generated files go to resources/localization/generated.</p>
+      <button id="templateApply" class="primary">Apply template</button>
+    </section>
+  </div>
+  <div id="layouts" class="images" hidden>
+    <aside><select id="layoutList" size="15" aria-label="Localized label layouts"></select><button id="layoutAdd">Add layout for new-key field</button></aside>
+    <section class="image-editor">
+      <strong id="layoutTitle">Select a label layout</strong><p id="layoutContext" class="muted"></p>
+      <p class="muted">Each locale can set width, height, fontSize, lineHeight, wrap, maxLines, overflow, x and y. Omitted fields use the original UI values. Translate the wording in the Text tab.</p>
+      <textarea id="layoutJson" rows="20" spellcheck="false" aria-label="Localized label styles and node bindings JSON"></textarea>
+      <p class="muted">labelStyles holds locale-specific styles. nodeStyles lists prefab UUID:fileId bindings; nodePathStyles lists fallback node paths. Existing bindings for other layouts are preserved.</p>
+      <button id="layoutApply" class="primary">Apply layout</button>
+    </section>
+  </div>
+  <div id="status" class="status" role="status"></div>
+  <div class="bottom-hint">Catalog: assets/resources/localization/catalog.json · Use {0} placeholders and preserve rich text tags · Reload browser preview after saving</div>
+</div>

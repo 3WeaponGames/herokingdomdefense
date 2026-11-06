@@ -1,0 +1,27 @@
+
+wqyl_xems_xtbh.png
+size: 79,37
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cure_light1
+  rotate: false
+  xy: 2, 4
+  size: 52, 14
+  orig: 56, 16
+  offset: 2, 1
+  index: -1
+cure_light2
+  rotate: false
+  xy: 2, 20
+  size: 53, 15
+  orig: 55, 17
+  offset: 1, 1
+  index: -1
+leven_up_light
+  rotate: false
+  xy: 57, 2
+  size: 20, 33
+  orig: 20, 33
+  offset: 0, 0
+  index: -1

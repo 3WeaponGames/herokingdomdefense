@@ -1,0 +1,96 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "pbt_enemy_attack",
+  "_duration": 0.5,
+  "sample": 30,
+  "events": [
+    {
+      "frame": 0.26666666666666666,
+      "func": "Attack",
+      "params": []
+    }
+  ],
+  "curveData": {
+    "props": {
+      "y": [
+        {
+          "frame": 0,
+          "value": 0
+        },
+        {
+          "frame": 0.13333333333333333,
+          "value": 20
+        },
+        {
+          "frame": 0.16666666666666666,
+          "value": -6
+        },
+        {
+          "frame": 0.26666666666666666,
+          "value": -8
+        },
+        {
+          "frame": 0.5,
+          "value": 0
+        }
+      ],
+      "angle": [
+        {
+          "frame": 0,
+          "value": 0
+        },
+        {
+          "frame": 0.5,
+          "value": 0
+        }
+      ],
+      "scale": [
+        {
+          "frame": 0,
+          "value": {
+            "y": 1,
+            "z": 1,
+            "x": 1,
+            "__type__": "cc.Vec3"
+          }
+        },
+        {
+          "frame": 0.13333333333333333,
+          "value": {
+            "y": 1.2,
+            "z": 1,
+            "x": 1.2,
+            "__type__": "cc.Vec3"
+          }
+        },
+        {
+          "frame": 0.16666666666666666,
+          "value": {
+            "y": 1.15,
+            "z": 1,
+            "x": 1.15,
+            "__type__": "cc.Vec3"
+          }
+        },
+        {
+          "frame": 0.26666666666666666,
+          "value": {
+            "y": 1,
+            "z": 1,
+            "x": 1,
+            "__type__": "cc.Vec3"
+          }
+        },
+        {
+          "frame": 0.5,
+          "value": {
+            "y": 1,
+            "z": 1,
+            "x": 1,
+            "__type__": "cc.Vec3"
+          }
+        }
+      ]
+    }
+  }
+}

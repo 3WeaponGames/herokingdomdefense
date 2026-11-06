@@ -1,0 +1,394 @@
+[
+  {
+    "__type__": "cc.Prefab",
+    "_name": "ItemEnemy08",
+    "data": {
+      "__id__": 1
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "ItemEnemy05",
+    "_groupIndex": 1,
+    "_children": [
+      {
+        "__id__": 2
+      },
+      {
+        "__id__": 5
+      },
+      {
+        "__id__": 7
+      },
+      {
+        "__id__": 9
+      },
+      {
+        "__id__": 15
+      }
+    ],
+    "_components": [
+      {
+        "__id__": 17
+      },
+      {
+        "__id__": 18
+      },
+      {
+        "__id__": 19
+      },
+      {
+        "__id__": 20
+      }
+    ],
+    "_prefab": {
+      "__id__": 21
+    },
+    "groupIndex": 1,
+    "_id": "a74557d0-fcc2-47e2-b4e3-d449b56380d5"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "spAni",
+    "_groupIndex": 1,
+    "_parent": {
+      "__id__": 1
+    },
+    "_components": [
+      {
+        "__id__": 3
+      }
+    ],
+    "_prefab": {
+      "__id__": 4
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 577.57,
+      "height": 639.55
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.5,
+        0.5,
+        1
+      ],
+      "__type__": "TypedArray"
+    },
+    "groupIndex": 1
+  },
+  {
+    "__type__": "sp.Skeleton",
+    "defaultSkin": "default",
+    "defaultAnimation": "idle",
+    "_preCacheMode": 0,
+    "premultipliedAlpha": false,
+    "_animationName": "idle",
+    "node": {
+      "__id__": 2
+    },
+    "_materials": [
+      {
+        "__uuid__": "7afd064b-113f-480e-b793-8817d19f63c3"
+      }
+    ],
+    "_N$skeletonData": {
+      "__uuid__": "f12415c8-9791-47fc-a90d-9b2e81cfe854"
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "81Ln81RbtDYajvkZbXAJJE",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "ndHp",
+    "_groupIndex": 1,
+    "_parent": {
+      "__id__": 1
+    },
+    "_prefab": {
+      "__id__": 6
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        58.141,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    },
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "559exsrT1IVqFZ8rsMbJ/H",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "ndEffect",
+    "_groupIndex": 1,
+    "_parent": {
+      "__id__": 1
+    },
+    "_prefab": {
+      "__id__": 8
+    },
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "c4Mb6C1pFArJenO4vMPE15",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "KinghtFallBulletEnemy",
+    "_groupIndex": 1,
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [
+      {
+        "__id__": 10
+      }
+    ],
+    "_components": [
+      {
+        "__id__": 13
+      }
+    ],
+    "_prefab": {
+      "__id__": 14
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        115.657,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    },
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "wqyl_wl_huoqiu",
+    "_parent": {
+      "__id__": 9
+    },
+    "_components": [
+      {
+        "__id__": 11
+      }
+    ],
+    "_prefab": {
+      "__id__": 12
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 309.2,
+      "height": 86.3
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.5,
+        0.5,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
+  },
+  {
+    "__type__": "sp.Skeleton",
+    "defaultSkin": "default",
+    "defaultAnimation": "blast",
+    "_preCacheMode": 0,
+    "premultipliedAlpha": false,
+    "_animationName": "blast",
+    "_materials": [
+      {
+        "__uuid__": "7afd064b-113f-480e-b793-8817d19f63c3"
+      }
+    ],
+    "_N$skeletonData": {
+      "__uuid__": "336ad35b-567c-404c-9621-bd71655d1344"
+    },
+    "node": {
+      "__id__": 10
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "2fanUC0VpMi7710jzgjjcG",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "8fc0fuMxJBH7pAziTmOozrw",
+    "speed": 500,
+    "node": {
+      "__id__": 9
+    },
+    "bullet": {
+      "__id__": 10
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "04S+QzwiBGUKz5aoeMw7oA",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "ndBullet",
+    "_parent": {
+      "__id__": 1
+    },
+    "_prefab": {
+      "__id__": 16
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "64KKJ+wjNLV4QbW4++ltb5",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.RigidBody",
+    "_allowSleep": false,
+    "_linearDamping": 1,
+    "_fixedRotation": true,
+    "node": {
+      "__id__": 1
+    }
+  },
+  {
+    "__type__": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "node": {
+      "__id__": 1
+    }
+  },
+  {
+    "__type__": "cc.CircleCollider",
+    "tag": 1,
+    "node": {
+      "__id__": 1
+    }
+  },
+  {
+    "__type__": "d935bVJcLFPZLYFR051n0dR",
+    "ndBulletPat": {
+      "__id__": 15
+    },
+    "ctrArr": {
+      "__id__": 13
+    },
+    "ndHp": {
+      "__id__": 5
+    },
+    "spAni": {
+      "__id__": 3
+    },
+    "ndEffect": {
+      "__id__": 7
+    },
+    "node": {
+      "__id__": 1
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "asset": {
+      "__id__": 0
+    },
+    "root": {
+      "__id__": 1
+    }
+  }
+]

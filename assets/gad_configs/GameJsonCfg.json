@@ -1,0 +1,1489 @@
+{
+  "basicCfg": {
+    "1": {
+      "id": 1,
+      "enumKey": "basicASPD",
+      "enumValue": 1,
+      "para": 1
+    },
+    "2": {
+      "id": 2,
+      "enumKey": "basicbullet",
+      "enumValue": 2,
+      "para": 1
+    },
+    "3": {
+      "id": 3,
+      "enumKey": "basicHP",
+      "enumValue": 3,
+      "para": 20
+    },
+    "4": {
+      "id": 4,
+      "enumKey": "moveSpeed",
+      "enumValue": 4,
+      "para": 80
+    },
+    "5": {
+      "id": 5,
+      "enumKey": "roundDistance",
+      "enumValue": 5,
+      "para": 600
+    },
+    "6": {
+      "id": 6,
+      "enumKey": "swordFlySpeed",
+      "enumValue": 6,
+      "para": 1000
+    },
+    "7": {
+      "id": 7,
+      "enumKey": "sideRoadSpeed",
+      "enumValue": 7,
+      "para": 200
+    },
+    "8": {
+      "id": 8,
+      "enumKey": "swordFLlyDistance",
+      "enumValue": 8,
+      "para": 1400
+    },
+    "9": {
+      "id": 9,
+      "enumKey": "memberLimit",
+      "enumValue": 9,
+      "para": 6
+    },
+    "10": {
+      "id": 10,
+      "enumKey": "WallWidth",
+      "enumValue": 10,
+      "para": 830
+    },
+    "11": {
+      "id": 11,
+      "enumKey": "EnemyFixedWidth",
+      "enumValue": 11,
+      "para": 190
+    },
+    "12": {
+      "id": 12,
+      "enumKey": "SpeedAdditionSegs",
+      "enumValue": 12,
+      "para": [
+        [
+          0.3,
+          400,
+          15
+        ],
+        [
+          0.45,
+          500,
+          45
+        ],
+        [
+          0.7,
+          600,
+          50
+        ]
+      ]
+    },
+    "13": {
+      "id": 13,
+      "enumKey": "BulletSpace",
+      "enumValue": 13,
+      "para": 30
+    },
+    "14": {
+      "id": 14,
+      "enumKey": "width",
+      "enumValue": 14,
+      "para": 15
+    },
+    "15": {
+      "id": 15,
+      "enumKey": "maxWidth",
+      "enumValue": 15,
+      "para": 550
+    },
+    "16": {
+      "id": 16,
+      "enumKey": "minimumWidth",
+      "enumValue": 16,
+      "para": 150
+    },
+    "17": {
+      "id": 17,
+      "enumKey": "IntervalTime",
+      "enumValue": 17,
+      "para": 0.1
+    },
+    "18": {
+      "id": 18,
+      "enumKey": "bulletLimit",
+      "enumValue": 18,
+      "para": 10
+    },
+    "19": {
+      "id": 19,
+      "enumKey": "bulletChange",
+      "enumValue": 19,
+      "para": 2
+    },
+    "20": {
+      "id": 20,
+      "enumKey": "speedLimit",
+      "enumValue": 20,
+      "para": 10
+    }
+  },
+  "enemyCfg": [
+    {
+      "id": 1,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_bb",
+      "itemNum": 9,
+      "size": 1,
+      "HpPosition": 100
+    },
+    {
+      "id": 2,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_bz2",
+      "itemNum": 4,
+      "size": 0.5,
+      "HpPosition": 100
+    },
+    {
+      "id": 3,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_bz3",
+      "itemNum": 4,
+      "size": 0.4,
+      "HpPosition": 100
+    },
+    {
+      "id": 4,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_gb",
+      "itemNum": 4,
+      "size": 1,
+      "HpPosition": 100
+    },
+    {
+      "id": 5,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_qb",
+      "itemNum": 4,
+      "size": 0.85,
+      "HpPosition": 100
+    },
+    {
+      "id": 6,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_sm",
+      "itemNum": 1,
+      "size": 0.7,
+      "HpPosition": 50
+    },
+    {
+      "id": 7,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_wl",
+      "itemNum": 1,
+      "size": 0.7,
+      "HpPosition": 25
+    },
+    {
+      "id": 8,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_wtqs",
+      "itemNum": 1,
+      "size": 0.4,
+      "HpPosition": 25
+    },
+    {
+      "id": 9,
+      "atk": 3,
+      "width": 70,
+      "height": 50,
+      "spineEnemy": "wqyl_xems",
+      "itemNum": 1,
+      "size": 0.7,
+      "HpPosition": 25
+    }
+  ],
+  "levelCfg": [
+    {
+      "round": 1,
+      "roundDistance": 800,
+      "position1": "speedSub,6",
+      "position2": "ATKplus,5|memberSub,6|speedSub,10|ATKDivision,6"
+    },
+    {
+      "round": 2,
+      "roundDistance": 500,
+      "position1": "5,10",
+      "position2": "5,10",
+      "position3": "5,10",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 3,
+      "roundDistance": 500,
+      "position1": "3,50;1",
+      "position2": "3,50",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,5|ATKplus,10|memberPlus,1|speedPlus,1|speedPlus,2|ATKDivision,2|ATKMultiply,2"
+    },
+    {
+      "round": 4,
+      "roundDistance": 500,
+      "position1": "speedSub,45|speedSub,50|speedSub,55",
+      "position2": "ATKplus,40|ATKplus,50|ATKplus,60|memberSub,45|memberSub,50|memberSub,55|speedSub,45|speedSub,50|speedSub,55|ATKDivision,45|ATKDivision,50,|ATKDivision,55"
+    },
+    {
+      "round": 5,
+      "roundDistance": 500,
+      "position1": "1,500",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 6,
+      "roundDistance": 500,
+      "position1": "ATKplus,55|ATKplus,60|ATKplus,65|memberSub,55|memberSub,60|memberSub,65|speedSub,55|speedSub,60|speedSub,65|ATKDivision,55|ATKDivision,60,|ATKDivision,65",
+      "position2": "ATKplus,55|ATKplus,60|ATKplus,65|memberSub,55|memberSub,60|memberSub,65|speedSub,55|speedSub,60|speedSub,65|ATKDivision,55|ATKDivision,60,|ATKDivision,65"
+    },
+    {
+      "round": 7,
+      "roundDistance": 500,
+      "position1": "9,300",
+      "position2": "9,300",
+      "position3": "9,300",
+      "position4": "9,300",
+      "position5": "9,300",
+      "position6": "9,300",
+      "position7": ""
+    },
+    {
+      "round": 8,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 9,
+      "roundDistance": 500,
+      "position1": "6,700",
+      "position2": "6,700",
+      "position3": "6,700",
+      "position4": "6,700",
+      "position5": "6,700",
+      "position6": "6,700",
+      "position7": ""
+    },
+    {
+      "round": 10,
+      "roundDistance": 800,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 11,
+      "roundDistance": 500,
+      "position1": "3,20000;1",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,20|ATKplus,40|memberPlus,1|speedSub,2|speedPlus,1|speedPlus,2|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 12,
+      "roundDistance": 300,
+      "position1": "8,2500",
+      "position2": "8,2500",
+      "position3": "8,2500",
+      "position4": "8,2500",
+      "position5": "8,2500",
+      "position6": "8,2500",
+      "position7": "8,2500"
+    },
+    {
+      "round": 13,
+      "roundDistance": 300,
+      "position1": "4,10000",
+      "position2": "4,10000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 14,
+      "roundDistance": 300,
+      "position1": "2,20000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 15,
+      "roundDistance": 300,
+      "position1": "7,2500",
+      "position2": "7,2500",
+      "position3": "7,2500",
+      "position4": "7,2500",
+      "position5": "7,2500",
+      "position6": "7,2500",
+      "position7": "7,2500"
+    },
+    {
+      "round": 16,
+      "roundDistance": 300,
+      "position1": "4,10000",
+      "position2": "4,10000;1",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,50|ATKplus,100|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 17,
+      "roundDistance": 300,
+      "position1": "6,3000",
+      "position2": "6,3000",
+      "position3": "6,3000",
+      "position4": "6,3000",
+      "position5": "6,3000",
+      "position6": "6,3000",
+      "position7": ""
+    },
+    {
+      "round": 18,
+      "roundDistance": 300,
+      "position1": "9,5000",
+      "position2": "9,5000",
+      "position3": "9,5000",
+      "position4": "9,5000",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 19,
+      "roundDistance": 300,
+      "position1": "7,2500",
+      "position2": "7,2500",
+      "position3": "7,2500",
+      "position4": "7,2500",
+      "position5": "7,2500",
+      "position6": "7,2500",
+      "position7": "7,2500"
+    },
+    {
+      "round": 20,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 21,
+      "roundDistance": 500,
+      "position1": "6,13000",
+      "position2": "6,13000",
+      "position3": "6,13000",
+      "position4": "6,13000",
+      "position5": "6,13000",
+      "position6": "6,13000",
+      "position7": "6,13000"
+    },
+    {
+      "round": 22,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 23,
+      "roundDistance": 500,
+      "position1": "2,150000",
+      "position2": "2,150000",
+      "position3": "2,150000;1",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,100|ATKplus,200|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 24,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 25,
+      "roundDistance": 500,
+      "position1": "8,550000",
+      "position2": "8,550000",
+      "position3": "8,550000",
+      "position4": "8,550000",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 26,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 27,
+      "roundDistance": 500,
+      "position1": "7,2000000",
+      "position2": "7,2000000",
+      "position3": "7,2000000",
+      "position4": "7,2000000",
+      "position5": "7,2000000",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 28,
+      "roundDistance": 800,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 29,
+      "roundDistance": 500,
+      "position1": "3,20000000;1",
+      "position2": "3,20000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,1000|ATKplus,3000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 30,
+      "roundDistance": 300,
+      "position1": "4,8000000",
+      "position2": "4,8000000",
+      "position3": "4,8000000",
+      "position4": "4,8000000",
+      "position5": "4,8000000",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 31,
+      "roundDistance": 300,
+      "position1": "7,7000000",
+      "position2": "7,7000000",
+      "position3": "7,7000000",
+      "position4": "7,7000000",
+      "position5": "7,7000000",
+      "position6": "7,7000000",
+      "position7": ""
+    },
+    {
+      "round": 32,
+      "roundDistance": 300,
+      "position1": "7,7000000",
+      "position2": "7,7000000",
+      "position3": "7,7000000",
+      "position4": "7,7000000",
+      "position5": "7,7000000",
+      "position6": "7,7000000",
+      "position7": ""
+    },
+    {
+      "round": 33,
+      "roundDistance": 300,
+      "position1": "6,7000000",
+      "position2": "6,7000000",
+      "position3": "6,7000000",
+      "position4": "6,7000000",
+      "position5": "6,7000000",
+      "position6": "6,7000000",
+      "position7": "6,7000000"
+    },
+    {
+      "round": 34,
+      "roundDistance": 300,
+      "position1": "6,7000000",
+      "position2": "6,7000000",
+      "position3": "6,7000000",
+      "position4": "6,7000000",
+      "position5": "6,7000000",
+      "position6": "6,7000000",
+      "position7": "6,7000000"
+    },
+    {
+      "round": 35,
+      "roundDistance": 300,
+      "position1": "8,7000000",
+      "position2": "8,7000000",
+      "position3": "8,7000000",
+      "position4": "8,7000000",
+      "position5": "8,7000000",
+      "position6": "8,7000000",
+      "position7": "8,7000000"
+    },
+    {
+      "round": 36,
+      "roundDistance": 300,
+      "position1": "9,7000000",
+      "position2": "9,7000000",
+      "position3": "9,7000000",
+      "position4": "9,7000000",
+      "position5": "9,7000000",
+      "position6": "9,7000000",
+      "position7": "9,7000000"
+    },
+    {
+      "round": 37,
+      "roundDistance": 300,
+      "position1": "8,20000000",
+      "position2": "8,20000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 38,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 39,
+      "roundDistance": 500,
+      "position1": "7,50000000",
+      "position2": "7,50000000",
+      "position3": "7,50000000",
+      "position4": "7,50000000",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 40,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 41,
+      "roundDistance": 500,
+      "position1": "6,150000000",
+      "position2": "6,150000000;1",
+      "position3": "6,150000000",
+      "position4": "6,150000000",
+      "position5": "6,150000000",
+      "position6": "6,150000000",
+      "position7": "",
+      "randomBuff": "ATKplus,2000|ATKplus,4000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2|ATKMultiply,2"
+    },
+    {
+      "round": 42,
+      "roundDistance": 300,
+      "position1": "7,120000000",
+      "position2": "7,120000000",
+      "position3": "7,120000000",
+      "position4": "7,120000000",
+      "position5": "7,120000000",
+      "position6": "7,120000000",
+      "position7": "2,120000000"
+    },
+    {
+      "round": 43,
+      "roundDistance": 300,
+      "position1": "8,120000000",
+      "position2": "8,120000000",
+      "position3": "8,120000000",
+      "position4": "8,120000000",
+      "position5": "8,120000000",
+      "position6": "8,120000000",
+      "position7": "8,120000000"
+    },
+    {
+      "round": 44,
+      "roundDistance": 300,
+      "position1": "8,225000000",
+      "position2": "8,225000000",
+      "position3": "8,225000000",
+      "position4": "8,225000000",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 45,
+      "roundDistance": 300,
+      "position1": "2,300000000",
+      "position2": "2,300000000",
+      "position3": "2,300000000",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 46,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 47,
+      "roundDistance": 300,
+      "position1": "2,1250000000",
+      "position2": "2,1250000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 48,
+      "roundDistance": 300,
+      "position1": "3,1250000000",
+      "position2": "3,1250000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 49,
+      "roundDistance": 300,
+      "position1": "1,2500000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 50,
+      "roundDistance": 300,
+      "position1": "2,2500000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 51,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 52,
+      "roundDistance": 500,
+      "position1": "4,2500000000;1",
+      "position2": "4,2500000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,2000|ATKplus,4000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 53,
+      "roundDistance": 500,
+      "position1": "9,5000000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 54,
+      "roundDistance": 500,
+      "position1": "1,5000000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 55,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 56,
+      "roundDistance": 500,
+      "position1": "6,4000000000",
+      "position2": "6,4000000000",
+      "position3": "6,4000000000",
+      "position4": "6,4000000000",
+      "position5": "6,4000000000",
+      "position6": "6,4000000000",
+      "position7": ""
+    },
+    {
+      "round": 57,
+      "roundDistance": 500,
+      "position1": "7,6000000000",
+      "position2": "7,6000000000",
+      "position3": "7,6000000000",
+      "position4": "7,6000000000",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 58,
+      "roundDistance": 500,
+      "position1": "2,24000000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 59,
+      "roundDistance": 500,
+      "position1": "8,12000000000",
+      "position2": "8,12000000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 60,
+      "roundDistance": 500,
+      "position1": "8,8000000000",
+      "position2": "8,8000000000",
+      "position3": "8,8000000000",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 61,
+      "roundDistance": 500,
+      "position1": "9,4000000000",
+      "position2": "9,4000000000",
+      "position3": "9,4000000000",
+      "position4": "9,4000000000",
+      "position5": "9,4000000000",
+      "position6": "9,4000000000",
+      "position7": ""
+    },
+    {
+      "round": 62,
+      "roundDistance": 500,
+      "position1": "7,12000000000",
+      "position2": "7,12000000000;1",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,10000|ATKplus,20000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2|ATKMultiply,2"
+    },
+    {
+      "round": 63,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 64,
+      "roundDistance": 500,
+      "position1": "9,9600000000",
+      "position2": "9,9600000000",
+      "position3": "9,9600000000",
+      "position4": "9,9600000000",
+      "position5": "9,9600000000",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 65,
+      "roundDistance": 500,
+      "position1": "8,12000000000",
+      "position2": "8,12000000000",
+      "position3": "8,12000000000",
+      "position4": "8,12000000000",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 66,
+      "roundDistance": 500,
+      "position1": "7,16000000000",
+      "position2": "7,16000000000",
+      "position3": "7,16000000000",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 67,
+      "roundDistance": 500,
+      "position1": "5,48000000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 68,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 69,
+      "roundDistance": 500,
+      "position1": "6,32000000000",
+      "position2": "6,32000000000",
+      "position3": "6,32000000000;1",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": "",
+      "randomBuff": "ATKplus,20000|ATKplus,40000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 70,
+      "roundDistance": 500,
+      "position1": "3,48000000000",
+      "position2": "3,48000000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 71,
+      "roundDistance": 500,
+      "position1": "7,16000000000",
+      "position2": "7,16000000000",
+      "position3": "7,16000000000",
+      "position4": "7,16000000000",
+      "position5": "7,16000000000",
+      "position6": "7,16000000000",
+      "position7": ""
+    },
+    {
+      "round": 72,
+      "roundDistance": 500,
+      "position1": "6,14000000000",
+      "position2": "6,14000000000",
+      "position3": "6,14000000000",
+      "position4": "6,14000000000",
+      "position5": "6,14000000000",
+      "position6": "6,14000000000",
+      "position7": "6,14000000000"
+    },
+    {
+      "round": 73,
+      "roundDistance": 500,
+      "position1": "9,19200000000",
+      "position2": "9,19200000000",
+      "position3": "9,19200000000",
+      "position4": "9,19200000000",
+      "position5": "9,19200000000",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 74,
+      "roundDistance": 500,
+      "position1": "2,48000000000",
+      "position2": "2,48000000000",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 75,
+      "roundDistance": 500,
+      "position1": "1,200000000000",
+      "position2": "",
+      "position3": "",
+      "position4": "",
+      "position5": "",
+      "position6": "",
+      "position7": ""
+    },
+    {
+      "round": 76,
+      "roundDistance": 300,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 77,
+      "roundDistance": 300,
+      "position1": "1,48000000000",
+      "position2": "1,48000000000"
+    },
+    {
+      "round": 78,
+      "roundDistance": 300,
+      "position1": "2,32000000000",
+      "position2": "2,32000000000",
+      "position3": "2,32000000000"
+    },
+    {
+      "round": 79,
+      "roundDistance": 300,
+      "position1": "3,24000000000",
+      "position2": "3,24000000000",
+      "position3": "3,24000000000;1",
+      "position4": "3,24000000000",
+      "randomBuff": "ATKplus,200000|ATKplus,400000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2|ATKMultiply,2"
+    },
+    {
+      "round": 80,
+      "roundDistance": 300,
+      "position1": "4,32000000000",
+      "position2": "4,32000000000",
+      "position3": "4,32000000000",
+      "position4": "4,32000000000"
+    },
+    {
+      "round": 81,
+      "roundDistance": 500,
+      "position1": "5,24000000000",
+      "position2": "5,24000000000",
+      "position3": "5,24000000000",
+      "position4": "5,24000000000",
+      "position5": "5,24000000000"
+    },
+    {
+      "round": 82,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 83,
+      "roundDistance": 500,
+      "position1": "6,192000000000"
+    },
+    {
+      "round": 84,
+      "roundDistance": 500,
+      "position1": "7,64000000000",
+      "position2": "7,64000000000",
+      "position3": "7,64000000000"
+    },
+    {
+      "round": 85,
+      "roundDistance": 500,
+      "position1": "8,48000000000",
+      "position2": "8,48000000000",
+      "position3": "8,48000000000",
+      "position4": "8,48000000000"
+    },
+    {
+      "round": 86,
+      "roundDistance": 300,
+      "position1": "9,96000000000",
+      "position2": "9,96000000000"
+    },
+    {
+      "round": 87,
+      "roundDistance": 300,
+      "position1": "1,64000000000",
+      "position2": "1,64000000000;1",
+      "position3": "1,64000000000",
+      "position4": "1,64000000000",
+      "randomBuff": "ATKplus,400000|ATKplus,800000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2"
+    },
+    {
+      "round": 88,
+      "roundDistance": 300,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 89,
+      "roundDistance": 300,
+      "position1": "2,192000000000",
+      "position2": "2,192000000000"
+    },
+    {
+      "round": 90,
+      "roundDistance": 300,
+      "position1": "3,384000000000"
+    },
+    {
+      "round": 91,
+      "roundDistance": 500,
+      "position1": "4,96000000000",
+      "position2": "4,96000000000",
+      "position3": "4,96000000000",
+      "position4": "4,96000000000"
+    },
+    {
+      "round": 92,
+      "roundDistance": 500,
+      "position1": "5,128000000000",
+      "position2": "5,128000000000",
+      "position3": "5,128000000000"
+    },
+    {
+      "round": 93,
+      "roundDistance": 500,
+      "position1": "6,192000000000",
+      "position2": "6,192000000000",
+      "position3": "6,192000000000"
+    },
+    {
+      "round": 94,
+      "roundDistance": 500,
+      "position1": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75",
+      "position2": "ATKplus,65|ATKplus,70|ATKplus,75|memberSub,65|memberSub,70|memberSub,75|speedSub,65|speedSub,70|speedSub,75|ATKDivision,65|ATKDivision,70,|ATKDivision,75"
+    },
+    {
+      "round": 95,
+      "roundDistance": 500,
+      "position1": "7,768000000000;1",
+      "randomBuff": "ATKplus,2000000|ATKplus,4000000|memberPlus,1|speedSub,2|speedPlus,1|memberSub,1|ATKDivision,2|ATKMultiply,2"
+    },
+    {
+      "round": 96,
+      "roundDistance": 300,
+      "position1": "8,384000000000",
+      "position2": "8,384000000000"
+    },
+    {
+      "round": 97,
+      "roundDistance": 300,
+      "position1": "9,256000000000",
+      "position2": "9,256000000000",
+      "position3": "9,256000000000"
+    },
+    {
+      "round": 98,
+      "roundDistance": 300,
+      "position1": "1,192000000000",
+      "position2": "1,192000000000",
+      "position3": "1,192000000000",
+      "position4": "1,192000000000"
+    },
+    {
+      "round": 99,
+      "roundDistance": 300,
+      "position1": "2,384000000000",
+      "position2": "2,384000000000",
+      "position3": "2,384000000000"
+    },
+    {
+      "round": 100,
+      "roundDistance": 300,
+      "position1": "3,768000000000",
+      "position2": "3,768000000000"
+    }
+  ],
+  "buffTypeCfg": [
+    {
+      "buffType": "speedPlus",
+      "enumKey": "SpeedPlus",
+      "enumValue": "speedPlus",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.1.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts1",
+      "buffIcon": "tf_13",
+      "buffDes": "[[loc:data.bufftypecfg.1.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.speed]]",
+      "buffValue": "[[loc:format.operation.add]]"
+    },
+    {
+      "buffType": "speedSub",
+      "enumKey": "SpeedSub",
+      "enumValue": "speedSub",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.2.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts5",
+      "buffIcon": "tf_13",
+      "buffDes": "[[loc:data.bufftypecfg.2.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.speed]]",
+      "buffValue": "[[loc:format.operation.subtract]]"
+    },
+    {
+      "buffType": "ATKplus",
+      "enumKey": "ATKplus",
+      "enumValue": "ATKplus",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.3.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts2",
+      "buffIcon": "tf_02",
+      "buffDes": "[[loc:data.bufftypecfg.3.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.atk]]",
+      "buffValue": "[[loc:format.operation.add]]"
+    },
+    {
+      "buffType": "ATKsub",
+      "enumKey": "ATKsub",
+      "enumValue": "ATKsub",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.4.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts6",
+      "buffIcon": "tf_02",
+      "buffDes": "[[loc:data.bufftypecfg.4.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.atk]]",
+      "buffValue": "[[loc:format.operation.subtract]]"
+    },
+    {
+      "buffType": "memberPlus",
+      "enumKey": "memberPlus",
+      "enumValue": "memberPlus",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.5.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts3",
+      "buffIcon": "tf_99",
+      "buffDes": "[[loc:data.bufftypecfg.5.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.member]]",
+      "buffValue": "[[loc:format.operation.add]]"
+    },
+    {
+      "buffType": "memberSub",
+      "enumKey": "memberSub",
+      "enumValue": "memberSub",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.6.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts7",
+      "buffIcon": "tf_99",
+      "buffDes": "[[loc:data.bufftypecfg.6.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.member]]",
+      "buffValue": "[[loc:format.operation.subtract]]"
+    },
+    {
+      "buffType": "HPplus",
+      "enumKey": "HPplus",
+      "enumValue": "HPplus",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.7.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts4",
+      "buffIcon": "tf_03",
+      "buffDes": "[[loc:data.bufftypecfg.7.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.hp]]",
+      "buffValue": "[[loc:format.operation.add]]"
+    },
+    {
+      "buffType": "HPsub",
+      "enumKey": "HPsub",
+      "enumValue": "HPsub",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.8.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts8",
+      "buffIcon": "tf_03",
+      "buffDes": "[[loc:data.bufftypecfg.8.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.hp]]",
+      "buffValue": "[[loc:format.operation.subtract]]"
+    },
+    {
+      "buffType": "levelPlus",
+      "enumKey": "levelPlus",
+      "enumValue": "levelPlus",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.9.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts9",
+      "buffDes": "[[loc:data.bufftypecfg.9.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.level]]",
+      "buffValue": "[[loc:format.operation.add]]"
+    },
+    {
+      "buffType": "levelSub",
+      "enumKey": "levelSub",
+      "enumValue": "levelSub",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.10.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts6",
+      "buffDes": "[[loc:data.bufftypecfg.10.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.level]]",
+      "buffValue": "[[loc:format.operation.subtract]]"
+    },
+    {
+      "buffType": "speedMultiply",
+      "enumKey": "speedMultiply",
+      "enumValue": "speedMultiply",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.11.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts1",
+      "buffIcon": "tf_13",
+      "buffDes": "[[loc:data.bufftypecfg.11.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.speed]]",
+      "buffValue": "[[loc:format.operation.multiply]]"
+    },
+    {
+      "buffType": "speedDivision",
+      "enumKey": "speedDivision",
+      "enumValue": "speedDivision",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.12.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts5",
+      "buffIcon": "tf_13",
+      "buffDes": "[[loc:data.bufftypecfg.12.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.speed]]",
+      "buffValue": "[[loc:format.operation.divide]]"
+    },
+    {
+      "buffType": "ATKMultiply",
+      "enumKey": "ATKMultiply",
+      "enumValue": "ATKMultiply",
+      "color": "blue",
+      "buffWord": "[[loc:data.bufftypecfg.13.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts2",
+      "buffIcon": "tf_02",
+      "buffDes": "[[loc:data.bufftypecfg.13.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.atk]]",
+      "buffValue": "[[loc:format.operation.multiply]]"
+    },
+    {
+      "buffType": "ATKDivision",
+      "enumKey": "ATKDivision",
+      "enumValue": "ATKDivision",
+      "color": "red",
+      "buffWord": "[[loc:data.bufftypecfg.14.buffword]]",
+      "hitEffect": 1,
+      "buffImage": "buff_ts6",
+      "buffIcon": "tf_02",
+      "buffDes": "[[loc:data.bufftypecfg.13.buffdes]]",
+      "buffLabel": "[[loc:gad.stat.atk]]",
+      "buffValue": "[[loc:format.operation.divide]]"
+    }
+  ],
+  "bubbleCfg": [
+    {
+      "typeBubble": 1,
+      "buffType": "ATKplus",
+      "buffPara": 1,
+      "resName": "yz_BUFF_01"
+    },
+    {
+      "typeBubble": 2,
+      "buffType": "speedPlus",
+      "buffPara": 1,
+      "resName": "yz_BUFF_02"
+    },
+    {
+      "typeBubble": 3,
+      "buffType": "memberPlus",
+      "buffPara": 1,
+      "resName": "yz_BUFF_09"
+    },
+    {
+      "typeBubble": 4,
+      "buffType": "HPplus",
+      "buffPara": 5,
+      "resName": "yz_BUFF_05"
+    },
+    {
+      "typeBubble": 5,
+      "buffType": "levelPlus",
+      "buffPara": 1,
+      "resName": "yz_BUFF_80"
+    }
+  ],
+  "memberCfg": [
+    {
+      "id": 1,
+      "roleID": 1001,
+      "resName": "arrow1",
+      "icon": "js_1",
+      "name": "[[loc:data.membercfg.1.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 3,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 2,
+      "roleID": 1002,
+      "resName": "arrow1",
+      "icon": "js_2",
+      "name": "[[loc:data.membercfg.2.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 2,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 3,
+      "roleID": 1003,
+      "resName": "arrow1",
+      "icon": "js_3",
+      "name": "[[loc:data.membercfg.3.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 1,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 4,
+      "roleID": 1004,
+      "resName": "arrow1",
+      "icon": "js_4",
+      "name": "[[loc:data.membercfg.4.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 1,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 5,
+      "roleID": 1005,
+      "resName": "arrow1",
+      "icon": "js_5",
+      "name": "[[loc:data.membercfg.5.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 3,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 6,
+      "roleID": 1006,
+      "resName": "arrow1",
+      "icon": "js_6",
+      "name": "[[loc:data.membercfg.6.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 3,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 7,
+      "roleID": 1007,
+      "resName": "arrow1",
+      "icon": "js_7",
+      "name": "[[loc:data.membercfg.7.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 3,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 8,
+      "roleID": 1008,
+      "resName": "arrow1",
+      "icon": "js_8",
+      "name": "[[loc:data.membercfg.8.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 3,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 9,
+      "roleID": 1009,
+      "resName": "arrow1",
+      "icon": "js_9",
+      "name": "[[loc:data.membercfg.9.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 3,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    },
+    {
+      "id": 10,
+      "roleID": 1010,
+      "resName": "arrow1",
+      "icon": "js_10",
+      "name": "[[loc:data.membercfg.10.name]]",
+      "arrowhit": "arrow1_hit",
+      "quality": 2,
+      "cardLevel": 5,
+      "cardATK": 1,
+      "basicATK": 14
+    }
+  ]
+}

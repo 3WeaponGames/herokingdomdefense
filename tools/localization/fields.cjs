@@ -1,0 +1,1 @@
+const i=require('./inventory.json');console.log([...new Set(i.configs.filter(x=>x.f.includes('configs')||x.f.includes('Config')).map(x=>x.f+':'+x.p.filter(z=>typeof z==='string').join('.')))].join('\n'));

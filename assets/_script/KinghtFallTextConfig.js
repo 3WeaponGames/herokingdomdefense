@@ -1,0 +1,44 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.KinghtFallTextConfig = undefined;
+(function (t) {
+  t.CommerName01 = "[[loc:script.kinghtfalltextconfig.commername01.6]]";
+  t.HomeTips01 = "[[loc:script.kinghtfalltextconfig.hometips01.7]]";
+  t.HomeTips02 = "[[loc:script.kinghtfalltextconfig.hometips02.8]]";
+  t.HomeTips03 = "[[loc:script.kinghtfalltextconfig.hometips03.9]]";
+  t.HomeTips04 = "[[loc:script.kinghtfalltextconfig.hometips04.10]]";
+  t.HomeTips05 = "[[loc:script.kinghtfalltextconfig.hometips05.11]]";
+  t.HomeTips06 = "[[loc:script.kinghtfalltextconfig.hometips06.12]]";
+  t.HomeTips07 = "[[loc:script.kinghtfalltextconfig.hometips07.13]]";
+  t.HomeBattle01 = "[[loc:script.kinghtfalltextconfig.homebattle01.14]]";
+  t.HomeBattle02 = "[[loc:script.kinghtfalltextconfig.homebattle02.15]]";
+  t.HomeBattle05 = "[[loc:ui.kinghtfallhomebattlectrl.labname.50]]";
+  t.HomeBattle06 = "[[loc:ui.kinghtfallhomebattlectrl.labname.65]]";
+  t.HomeBattle07 = "[[loc:ui.kinghtfallhomebattlectrl.labname.80]]";
+  t.HomeBattle10 = "[[loc:script.kinghtfalltextconfig.homebattle10.19]]";
+  t.HomeBattle11 = "[[loc:script.kinghtfalltextconfig.homebattle11.20]]";
+  t.HomeTalent01 = "[[loc:ui.kinghtfalluitalentinfo.labnum.26]]";
+  t.HomeTrea01 = "[[loc:script.kinghtfalltextconfig.hometrea01.22]]";
+  t.HomeTrea02 = "[[loc:common.level]]";
+  t.HomeTrea03 = "[[loc:script.kinghtfalltextconfig.hometrea03.24]]";
+  t.HomeTrea04 = "[[loc:ui.kinghtfallhometreasurectrl.labtime.75]]";
+  t.HomeTrea05 = "[[loc:script.kinghtfalltextconfig.hometrea05.26]]";
+  t.HomePerson01 = "[[loc:data.equipcfg.1.describe]]";
+  t.HomePerson02 = "[[loc:script.kinghtfalltextconfig.homeperson02.28]]";
+  t.HomePerson03 = "[[loc:script.kinghtfalltextconfig.homeperson03.29]]";
+  t.HomePerson04 = "[[loc:script.kinghtfalltextconfig.homeperson04.30]]";
+  t.GameCom01 = "[[loc:script.kinghtfalltextconfig.gamecom01.31]]";
+  t.GameCom02 = "[[loc:script.kinghtfalltextconfig.gamecom02.32]]";
+  t.GameCom03 = "[[loc:script.kinghtfalltextconfig.gamecom03.33]]";
+  t.GameCom04 = "[[loc:script.kinghtfalltextconfig.gamecom04.34]]";
+  t.GameBuff01 = "[[loc:script.kinghtfalltextconfig.gamebuff01.35]]";
+  t.GameBuff02 = "[[loc:ui.kinghtfalluibuff.labque.62]]";
+  t.GameBuff03 = "[[loc:script.kinghtfalltextconfig.gamebuff03.37]]";
+  t.GameEnd01 = "[[loc:script.kinghtfalltextconfig.gameend01.38]]";
+  t.Game01 = "[[loc:script.kinghtfalltextconfig.game01.39]]";
+  t.Game02 = "[[loc:script.kinghtfalltextconfig.game02.40]]";
+  t.Game03 = "[[loc:script.kinghtfalltextconfig.game03.41]]";
+  t.Game04 = "[[loc:ui.kinghtfalluigame.labnum.254]]";
+  t.Game05 = "[[loc:script.kinghtfalltextconfig.game05.43]]";
+})(exports.KinghtFallTextConfig || (exports.KinghtFallTextConfig = {}));

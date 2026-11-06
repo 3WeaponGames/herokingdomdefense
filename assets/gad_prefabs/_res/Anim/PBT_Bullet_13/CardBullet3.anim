@@ -1,0 +1,52 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "CardBullet3",
+  "_duration": 0.5,
+  "wrapMode": 2,
+  "curveData": {
+    "paths": {
+      "motion2_3": {
+        "props": {
+          "x": [
+            {
+              "frame": 0,
+              "value": 10
+            },
+            {
+              "frame": 0.25,
+              "value": -10,
+              "curve": "cubicInOut"
+            },
+            {
+              "frame": 0.5,
+              "value": 10
+            }
+          ]
+        }
+      },
+      "motion2_4": {
+        "props": {
+          "x": [
+            {
+              "frame": 0,
+              "value": -10,
+              "curve": "cubicInOut"
+            },
+            {
+              "frame": 0.25,
+              "value": 10,
+              "curve": "cubicInOut"
+            },
+            {
+              "frame": 0.5,
+              "value": -10
+            }
+          ]
+        }
+      }
+    },
+    "props": {
+      "y": []
+    }
+  }
+}
