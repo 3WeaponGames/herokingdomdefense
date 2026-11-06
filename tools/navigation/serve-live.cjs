@@ -2,7 +2,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
-const root = path.resolve(__dirname, '../../local/live-gates/export/web-mobile');
+const root = process.env.LIVE_GATE_EXPORT?path.resolve(process.env.LIVE_GATE_EXPORT):path.resolve(__dirname, '../../local/live-gates/export/web-mobile');
 const types = {'.html':'text/html','.js':'application/javascript','.json':'application/json','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.wasm':'application/wasm','.mp3':'audio/mpeg','.ogg':'audio/ogg','.ttf':'font/ttf','.woff':'font/woff'};
 http.createServer((req,res) => {
   const rel = decodeURIComponent(new URL(req.url,'http://localhost').pathname);

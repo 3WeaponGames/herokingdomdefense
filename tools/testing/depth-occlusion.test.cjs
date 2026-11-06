@@ -273,3 +273,170 @@ test('continuously visible silhouettes keep their render component lifecycle act
   assert.equal(active, false);
   assert.equal(transitions, 1, 'moving in front still hides the silhouette immediately');
 });
+
+function vertexFixture(spine) {
+  class Skeleton {}
+  const api = load({ v2: (x, y) => ({ x, y }) }, { Skeleton, spine });
+  const store = new WeakMap(), main = { convertToNodeSpaceAR: p => p };
+  return {
+    ...api, store, main,
+    frame: () => ({ poses: new Set(), bounds: new Map(), transforms: new Map(), vertexStore: store }),
+    source: skeleton => Object.assign(new Skeleton(), { _skeleton: skeleton, skeletonData: skeleton.data, enabled: true,
+      node: { activeInHierarchy: true, convertToWorldSpaceAR: p => p } }),
+    target: data => ({ _skeleton: new spine.Skeleton(data), skeletonData: data, markForRender() {} })
+  };
+}
+function checkVertexScatter(spine, sourceSlot, targetSlot) {
+  const original = sourceSlot.getAttachment(), facade = targetSlot.getAttachment();
+  const region = original instanceof spine.RegionAttachment;
+  assert(facade instanceof (region ? spine.RegionAttachment : spine.MeshAttachment));
+  assert.equal(Object.getPrototypeOf(facade), original);
+  for (const key of ['region', 'uvs', 'triangles', 'color', 'deformAttachment']) assert.equal(facade[key], original[key], key);
+  const size = region ? 8 : original.worldVerticesLength;
+  for (const stride of [2, 5, 6]) for (const start of region ? [0] : [0, 2]) {
+    const count = size - start, offset = 3;
+    const expected = new Float32Array(7 + size / 2 * stride).fill(-987);
+    const actual = expected.slice();
+    if (region) {
+      original.computeWorldVertices(sourceSlot.bone, expected, offset, stride);
+      facade.computeWorldVertices(targetSlot.bone, actual, offset, stride);
+    } else {
+      original.computeWorldVertices(sourceSlot, start, count, expected, offset, stride);
+      facade.computeWorldVertices(targetSlot, start, count, actual, offset, stride);
+    }
+    assert.deepEqual(actual, expected, `cached XY differs or overwrites UV/color fields at stride ${stride}, start ${start}`);
+  }
+}
+
+test('silhouette facades reuse exact weighted/deformed vertices with all renderer strides and retain clipping', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine), data = new spine.SkeletonData();
+  data.bones.push(new spine.BoneData(0, 'root', null), new spine.BoneData(1, 'child', null));
+  for (let i = 0; i < 4; i++) data.slots.push(new spine.SlotData(i, 'slot' + i, data.bones[i % 2]));
+  const skeleton = new spine.Skeleton(data), region = new spine.RegionAttachment('region');
+  region.offset.set([-10, -10, -10, 30, 30, 30, 30, -10]);
+  const mesh = new spine.MeshAttachment('weighted');
+  mesh.worldVerticesLength = 6; mesh.bones = [2, 0, 1, 2, 0, 1, 2, 0, 1];
+  mesh.vertices = [0, 0, .3, 2, 4, .7, 30, 0, .6, 25, 3, .4, 0, 30, .5, 3, 25, .5];
+  mesh.triangles = [0, 1, 2]; mesh.uvs = [0, 0, 1, 0, 0, 1]; mesh.region = { texture: {} };
+  const unweighted = new spine.MeshAttachment('deformed');
+  unweighted.worldVerticesLength = 6; unweighted.vertices = [0, 0, 30, 0, 0, 30];
+  const clip = new spine.ClippingAttachment('clip');
+  clip.worldVerticesLength = 8; clip.vertices = [-20, -20, 45, -20, 45, 45, -20, 45]; clip.endSlot = data.slots[3];
+  [region, mesh, unweighted, clip].forEach((attachment, index) => skeleton.slots[index].setAttachment(attachment));
+  skeleton.slots[1].deform.push(1, 2, -3, 4, 5, -6, 7, 8, -9, 10, 11, -12);
+  skeleton.slots[2].deform.push(-3, 2, 35, 4, 1, 37);
+  Object.assign(skeleton.bones[0], { x: 17, y: -9, rotation: 23, scaleX: -1.3, scaleY: .8 });
+  Object.assign(skeleton.bones[1], { x: -11, y: 13, rotation: -37, scaleX: .7, scaleY: -1.2 });
+  const source = f.source(skeleton), frame = f.frame();
+  const originals = skeleton.slots.map(slot => slot.getAttachment());
+  let computations = 0;
+  for (const attachment of originals.slice(0, 3)) {
+    const compute = attachment.computeWorldVertices;
+    attachment.computeWorldVertices = function () { computations++; return compute.apply(this, arguments); };
+  }
+  const box = f.bounds(source, f.main, frame);
+  assert.equal(computations, 3);
+  const targets = Array.from({ length: 12 }, () => f.target(data));
+  for (const target of targets) {
+    f.copyPose(source, target, {}, frame);
+    const offset = new spine.Vector2(), size = new spine.Vector2();
+    target._skeleton.getBounds(offset, size, []);
+    assert.equal(offset.x, box.minX); assert.equal(offset.y, box.minY);
+    assert.equal(offset.x + size.x, box.maxX); assert.equal(offset.y + size.y, box.maxY);
+  }
+  assert.equal(computations, 3, 'each silhouette skinned the same source pose again');
+  for (let i = 0; i < 3; i++) {
+    checkVertexScatter(spine, skeleton.slots[i], targets[0]._skeleton.slots[i]);
+    assert.equal(targets[0]._skeleton.slots[i].getAttachment(), targets[1]._skeleton.slots[i].getAttachment());
+  }
+  assert.deepEqual(skeleton.slots.map(slot => slot.getAttachment()), originals, 'source skin was replaced by cached facades');
+  assert.equal(targets[0]._skeleton.slots[3].getAttachment(), clip, 'clipping attachment identity changed');
+  function clipped(s) {
+    const c = new spine.SkeletonClipping(), xy = [], attachment = s.slots[1].getAttachment();
+    c.clipStart(s.slots[3], clip);
+    attachment.computeWorldVertices(s.slots[1], 0, 6, xy, 0, 2);
+    c.clipTriangles(xy, 6, mesh.triangles, 3, mesh.uvs, new spine.Color(1, 1, 1, 1), new spine.Color(), false, 2);
+    const result = { vertices: c.clippedVertices.slice(), triangles: c.clippedTriangles.slice() };
+    c.clipEndWithSlot(s.slots[3]); assert.equal(c.isClipping(), false);
+    return result;
+  }
+  assert.deepEqual(clipped(targets[0]._skeleton), clipped(skeleton));
+  const reused = targets[0]._skeleton.slots[1].getAttachment();
+  const previousXY = reused._depthVertices.slice();
+  skeleton.slots[1].deform[0] += 9;
+  unweighted.worldVerticesLength = 8;
+  skeleton.slots[2].deform.push(30, 35);
+  f.copyPose(source, targets[0], {}, f.frame());
+  assert.equal(targets[0]._skeleton.slots[1].getAttachment(), reused);
+  assert.notDeepEqual(reused._depthVertices, previousXY, 'next-frame weighted deformation reused stale XY');
+  assert.equal(targets[0]._skeleton.slots[2].getAttachment()._depthVertices.length, 8, 'changing vertex extent retained the old buffer length');
+  checkVertexScatter(spine, skeleton.slots[1], targets[0]._skeleton.slots[1]);
+  checkVertexScatter(spine, skeleton.slots[2], targets[0]._skeleton.slots[2]);
+});
+
+test('vertex buffers refresh per pose and stay isolated across shared skins, attachment changes and rebuilt skeletons', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine), data = new spine.SkeletonData();
+  data.bones.push(new spine.BoneData(0, 'root', null)); data.slots.push(new spine.SlotData(0, 'body', data.bones[0]));
+  const shared = new spine.RegionAttachment('shared'); shared.offset.set([-10, 0, -10, 40, 10, 40, 10, 0]);
+  const sources = [f.source(new spine.Skeleton(data)), f.source(new spine.Skeleton(data))];
+  sources.forEach((source, index) => { source._skeleton.slots[0].setAttachment(shared); source._skeleton.bones[0].x = index * 100; });
+  const targets = sources.map(() => f.target(data)), frame = f.frame();
+  sources.forEach((source, index) => { f.bounds(source, f.main, frame); f.copyPose(source, targets[index], {}, frame); });
+  const facade = targets[0]._skeleton.slots[0].getAttachment(), buffer = facade._depthVertices;
+  assert.notEqual(facade, targets[1]._skeleton.slots[0].getAttachment(), 'different actors shared an animated vertex buffer');
+  const before = buffer.slice();
+  sources[0]._skeleton.bones[0].x = 37;
+  const next = f.frame(); f.copyPose(sources[0], targets[0], {}, next);
+  assert.equal(targets[0]._skeleton.slots[0].getAttachment(), facade, 'stable attachments allocated a new facade each draw');
+  assert.equal(facade._depthVertices, buffer, 'stable geometry allocated a new XY buffer each draw');
+  assert.equal(buffer[0], before[0] + 37);
+  assert.equal(targets[1]._skeleton.slots[0].getAttachment()._depthVertices[0], before[0] + 100);
+  const capture = f.target(data); f.copyPose(sources[0], capture, null, next);
+  assert.equal(capture._skeleton.slots[0].getAttachment(), shared, 'ordinary capture unexpectedly used silhouette facades');
+  sources[0]._skeleton.slots[0].setAttachment(null);
+  f.copyPose(sources[0], targets[0], {}, f.frame()); assert.equal(targets[0]._skeleton.slots[0].getAttachment(), null);
+  sources[0]._skeleton.slots[0].setAttachment(shared); sources[0]._skeleton.bones[0].x = -22;
+  f.copyPose(sources[0], targets[0], {}, f.frame()); checkVertexScatter(spine, sources[0]._skeleton.slots[0], targets[0]._skeleton.slots[0]);
+  const replacement = new spine.RegionAttachment('new skin'); replacement.offset.set([-30, -5, -30, 50, 30, 50, 30, -5]);
+  sources[0]._skeleton.slots[0].setAttachment(replacement);
+  f.copyPose(sources[0], targets[0], {}, f.frame()); checkVertexScatter(spine, sources[0]._skeleton.slots[0], targets[0]._skeleton.slots[0]);
+  const rebuilt = new spine.Skeleton(data); rebuilt.slots[0].setAttachment(shared); rebuilt.bones[0].x = -97;
+  sources[0]._skeleton = rebuilt;
+  f.copyPose(sources[0], targets[0], {}, f.frame()); checkVertexScatter(spine, rebuilt.slots[0], targets[0]._skeleton.slots[0]);
+  rebuilt.bones[0].active = false;
+  f.copyPose(sources[0], targets[0], {}, f.frame());
+  assert.equal(targets[0]._skeleton.slots[0].getAttachment(), shared, 'inactive bone retained stale cached geometry');
+});
+
+test('authored red/blue soldier meshes keep exact animated and mirrored silhouette geometry', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine);
+  let checkedMeshes = 0;
+  for (const name of ['wqyl_qb', 'wqyl_zbb']) {
+    const dir = path.join(root, 'assets/KinghtFallEnemyAni', name);
+    const atlas = new spine.TextureAtlas(fs.readFileSync(path.join(dir, name + '.atlas'), 'utf8'), () => ({
+      setFilters() {}, setWraps() {}, getImage: () => ({ width: 2048, height: 2048 })
+    }));
+    const reader = new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas));
+    const data = reader.readSkeletonData(JSON.parse(fs.readFileSync(path.join(dir, name + '.json'))));
+    for (const skin of ['hong', 'lan']) for (const animation of ['idle', 'move', 'attack']) for (const time of [.13, .57]) {
+      const skeleton = new spine.Skeleton(data);
+      skeleton.setSkinByName(skin); skeleton.setSlotsToSetupPose(); skeleton.scaleX = time < .2 ? -1 : 1;
+      const state = new spine.AnimationState(new spine.AnimationStateData(data));
+      state.setAnimation(0, animation, true); state.update(time); state.apply(skeleton);
+      const source = f.source(skeleton), target = f.target(data), frame = f.frame();
+      const expected = f.bounds(source, f.main, frame);
+      f.copyPose(source, target, {}, frame);
+      const offset = new spine.Vector2(), size = new spine.Vector2();
+      skeleton.getBounds(offset, size, []);
+      assert.equal(expected.minX, offset.x); assert.equal(expected.maxY, offset.y + size.y);
+      for (let i = 0; i < skeleton.slots.length; i++) {
+        const slot = skeleton.slots[i], attachment = slot.getAttachment();
+        if (slot.bone.active && (attachment instanceof spine.RegionAttachment || attachment instanceof spine.MeshAttachment)) {
+          checkVertexScatter(spine, slot, target._skeleton.slots[i]);
+          if (attachment instanceof spine.MeshAttachment) checkedMeshes++;
+        }
+      }
+    }
+  }
+  assert(checkedMeshes > 100, 'authored weighted mesh coverage was lost');
+});
