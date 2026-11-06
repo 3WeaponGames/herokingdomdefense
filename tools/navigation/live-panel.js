@@ -1,11 +1,8 @@
 /* Temporary Creator preview fixture. Installed only for the live gate audit. */
 (function () {
   if (typeof window === 'undefined' || typeof CC_DEBUG === 'undefined' || !CC_DEBUG || !/[?&]live-gates=1(?:&|$)/.test(window.location.search)) return;
-  var memory = Object.create(null);
-  var storage = { getItem: function (k) { return Object.prototype.hasOwnProperty.call(memory, k) ? memory[k] : null; }, setItem: function (k, v) { memory[k] = String(v); }, removeItem: function (k) { delete memory[k]; }, clear: function () { memory = Object.create(null); }, key: function (i) { return Object.keys(memory)[i] || null; } };
-  Object.defineProperty(storage, 'length', { get: function () { return Object.keys(memory).length; } });
-  Object.defineProperty(window, 'localStorage', { configurable: true, value: storage });
-  cc.sys.localStorage = storage;
+  if(!window.__liveGateSilence)throw new Error('Live gate fixture requires its silent bootstrap before Main starts');
+  var storage=window.__liveGateSilence.storage;
   var UI = require('KinghtFallUIGame').default;
   var UIMgr = require('UIMgr').UIMgr;
   var Player = require('KinghtFallPlayerMgr').KinghtFallPlayerMgr;
@@ -48,8 +45,13 @@
       var debug=context.getExtension('WEBGL_debug_renderer_info');
       result.webgl={version:context.getParameter(context.VERSION),shadingLanguage:context.getParameter(context.SHADING_LANGUAGE_VERSION),renderer:context.getParameter(context.RENDERER),vendor:context.getParameter(context.VENDOR),unmaskedRenderer:debug?context.getParameter(debug.UNMASKED_RENDERER_WEBGL):'unavailable',unmaskedVendor:debug?context.getParameter(debug.UNMASKED_VENDOR_WEBGL):'unavailable',drawingBufferWidth:context.drawingBufferWidth,drawingBufferHeight:context.drawingBufferHeight,contextAttributes:context.getContextAttributes()};
     }catch(error){result.webglError=String(error);}
+    result.audio=audioDiagnostics();
+    var settings=require('KinghtFallDataMgr').KinghtFallDataMgr.getInstance().data.GameTools||{},timingJSON=JSON.stringify({defaults:settings.timingDefaults||null,overrides:settings.timings||null}),hash=2166136261;
+    for(var i=0;i<timingJSON.length;i++){hash^=timingJSON.charCodeAt(i);hash=Math.imul(hash,16777619);}
+    result.attackTimings={savedDefaults:Object.keys(settings.timingDefaults||{}).length,savedOverrides:Object.keys(settings.timings||{}).length,fingerprint:(hash>>>0).toString(16),policy:'Use merged saved defaults/overrides unchanged; no reseeding or timing bypass'};
     return result;
   }
+  function audioDiagnostics(){var proof=window.__liveGateSilence,cache=require('CacheUtils').CacheUtils;return {installedBeforeMain:!!(proof&&proof.installedBeforeMain),musicAllowed:cache.canPlayMusin(),effectsAllowed:cache.canPlayEffect(),musicPreference:storage.getItem('MUSIC'),effectPreference:storage.getItem('EFFECT'),sourceMuteGuard:!!(proof&&proof.sourceMuteGuard),engineZeroVolumeGuard:!!(proof&&proof.engineZeroVolumeGuard),sourcePlayAttempts:proof&&proof.sourcePlayAttempts,enginePlayAttempts:proof&&proof.enginePlayAttempts};}
   function frameData() {
     if (!game) return {};
     return { phase: active, wave: game.gameData.round, gameStatus: game.gameStatus, paused: ui.isPauset, desiredAllies: desiredArmyCount, allies: living().length, ownedAllies: units().length, dead: units().length - living().length, enemies: game.gameData.getEnemyList().length, outside: living().filter(function (s) { return isOutside(s.node); }).length, gateLevel: gate().index, gateOpen: gate().isOpen, gateHealth: gate().buildInfo && gate().buildInfo.hp, hero: { x: game.ctrPlay.node.x, y: game.ctrPlay.node.y }, respawnQueue: [7,8].map(function (id) { var b = game.gameData.bulidPointMap[id]; return { id: id, extraOwned: b.VideoTimes, owned: b.enemyList.filter(Boolean).length, waiting: b.waitEnemy.length, time: Object.assign({},b.time) }; }) };
@@ -254,6 +256,7 @@
     return {killSix:killSix,destroyGate:destroyGate,summary:summary,report:report,dispose:function(){cc.director.off(cc.Director.EVENT_AFTER_UPDATE,sample);bindings.reverse().forEach(function(restore){restore();});}};
   }
   async function measure(label, seconds, done, schedule) {
+    var audio=audioDiagnostics();if(audio.musicAllowed||audio.effectsAllowed||!audio.sourceMuteGuard||!audio.installedBeforeMain)throw new Error('Silent preview controls are not active');
     label += ' · ' + units().length + ' allies';
     active = label; metrics.start(label); log('START ' + label);
     var start = performance.now(), startFrame = frameData(), nextAction=0, hiddenSamples=0, report=metrics.report();
@@ -264,7 +267,7 @@
       report=metrics.report();
     }
     var ratio=report.elapsedGameMs/Math.max(1,report.elapsedWallMs),validDuration=report.elapsedGameMs>=seconds*1000;
-    var result = { environment:environment, label: label, duration: (performance.now()-start)/1000, initial: startFrame, final: frameData(), metrics: report, timingValidity:{requestedGameSeconds:seconds,completedGameSeconds:report.elapsedGameMs/1000,gameToWallRatio:ratio,hiddenSamples:hiddenSamples,functionalDurationValid:validDuration,performanceValid:validDuration&&!hiddenSamples&&ratio>=.8&&ratio<=1.2} };
+    var result = { environment:environment, audio:audioDiagnostics(), label: label, duration: (performance.now()-start)/1000, initial: startFrame, final: frameData(), metrics: report, timingValidity:{requestedGameSeconds:seconds,completedGameSeconds:report.elapsedGameMs/1000,gameToWallRatio:ratio,hiddenSamples:hiddenSamples,functionalDurationValid:validDuration,performanceValid:validDuration&&!hiddenSamples&&ratio>=.8&&ratio<=1.2} };
     if (done) Object.assign(result, done());
     results.push(result); stopHeroDrive(); active = (validDuration?'Finished: ':'INVALID duration: ') + label; log(active);
     if(!validDuration)throw new Error('Scene did not simulate '+seconds+' seconds within wall-time limit; keep the game tab visible');
@@ -320,7 +323,7 @@
       {at:80,name:'Final exterior rally',run:function(){order('rally',outside);}}
     ]:null;
     if(actions&&number===10){actions.push({at:60,name:'Real gate destruction and crowd release',run:checks.destroyGate});actions.sort(function(a,b){return a.at-b.at;});}
-    try{if(renderChecks){await measure('Render A/B warmup: wave 8 ×5, enemy HP×20',15,null,actions.slice(0,1));await renderAB();}else await measure('Actual wave '+number+(multiplier>1?' ×'+multiplier+' crowd stress, enemy HP×20':' authored composition'),seconds,function(){return {waveFinished:!!game.gameData._liveWaveFinished,fixtureModifiers:{enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,spawnInterval:game.gameData.packInterval,heroHealth:100000,structureHealth:multiplier>1?100000:'authored',unitMovementAndAttacks:'unchanged',respawnTimers:'unchanged'},checks:checks.report()};},actions);}
+    try{if(renderChecks){await measure('Render A/B warmup: wave 8 ×5, enemy HP×20',15,null,actions.slice(0,1));await renderAB();}else await measure('Actual wave '+number+(multiplier>1?' ×'+multiplier+' crowd stress, enemy HP×20':' authored composition'),seconds,function(){return {waveFinished:!!game.gameData._liveWaveFinished,workloadKey:JSON.stringify({map:1,wave:number,enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,allies:desiredArmyCount,timingFingerprint:environment.attackTimings.fingerprint,composition:cfg.RefreshSoldierKind}),fixtureModifiers:{armyOwnershipCount:desiredArmyCount,authoredComposition:cfg.RefreshSoldierKind.slice(),enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,spawnInterval:game.gameData.packInterval,heroHealth:100000,structureHealth:multiplier>1?100000:'authored',unitMovementAndAttacks:'unchanged',respawnTimers:'unchanged'},checks:checks.report()};},actions);}
     finally{game.gameData.addEnemy=originalAdd;checks.dispose();phaseChecks=null;}
   }
   async function renderAB() {
@@ -340,11 +343,12 @@
   }
   async function acceptanceSuite() {
     await build(30);await crossingMatrix();await respawn();
-    await wave(6,1,60);await wave(8,1,60);await wave(10,1,60);
-    await build(60);await crossing(3,'rally',true,true);await crossing(3,'rally',false,false);
+    await wave(10,1,120);
+    await build(60);await gateThreeMatrix();
     await wave(8,5,90);await wave(10,5,90);
     active='Acceptance suite finished';log(active);
   }
+  async function gateThreeMatrix(){await crossing(3,'rally',true,true);await crossing(3,'rally',false,false);await crossing(3,'follow',true,false);await crossing(3,'follow',false,false);}
   function start() {
     if (!document.body) return setTimeout(start, 100);
     panel = document.createElement('section'); panel.id = 'live-gate-panel'; panel.style.cssText='position:fixed;left:6px;top:42px;width:430px;max-height:92vh;overflow:auto;z-index:100000;background:#0d1c26ee;color:#fff;padding:9px;box-sizing:border-box;font:13px sans-serif';
@@ -353,11 +357,12 @@
     button('Open test battle',openBattle); button('Build + 30 allies',function(){return build(30);}); button('Build + 60 allies',function(){return build(60);});
     button('Run acceptance suite',acceptanceSuite);
     button('60 allies gate 3 rally pair',async function(){await build(60);await crossing(3,'rally',true,true);await crossing(3,'rally',false,false);});
+    button('60 allies: four gate 3 crossings',async function(){await build(60);await gateThreeMatrix();});
     button('Run 12 gate crossings',crossingMatrix); button('Test 6 natural respawns',respawn);
     button('Diagnose gate pair',async function(){metrics.setGeometryDiagnostics(true);await crossing(1,'rally',true,true);await crossing(1,'rally',false,false);metrics.setGeometryDiagnostics(false);});
     button('Wave 6 · 60 seconds',function(){return wave(6,1,60);});
     button('Wave 8 · 60 seconds',function(){return wave(8,1,60);});
-    button('Wave 10 · 60 seconds',function(){return wave(10,1,60);});
+    button('Wave 10 · 120 seconds',function(){return wave(10,1,120);});
     button('Wave 8 ×5 · 90 seconds',function(){return wave(8,5,90);});
     button('Wave 10 ×5 · 90 seconds',function(){return wave(10,5,90);});
     button('Diagnose wave 8 ×5',async function(){geometryEnabled=true;metrics.setGeometryDiagnostics(true);try{await wave(8,5,90);}finally{geometryEnabled=false;metrics.setGeometryDiagnostics(false);}});

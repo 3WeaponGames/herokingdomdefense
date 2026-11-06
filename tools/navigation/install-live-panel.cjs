@@ -12,30 +12,35 @@ function temporaryBlock() {
   return '\nvar __liveGateMetrics = (function () { var exports = {};\n' + metrics + '\nreturn exports; })();\n' + panel + '\n';
 }
 if (process.argv.includes('--sync-export')) {
-  const folder = path.join(root, 'local/live-gates/export/web-mobile/assets/main');
+  const exportRoot=process.env.LIVE_GATE_EXPORT?path.resolve(process.env.LIVE_GATE_EXPORT):path.join(root,'local/live-gates/export/web-mobile');
+  const folder = path.join(exportRoot,'assets/main');
   const bundle = path.join(folder, fs.readdirSync(folder).find(name => /^index.*\.js$/.test(name)));
-  const code = fs.readFileSync(bundle, 'utf8');
+  let code = fs.readFileSync(bundle, 'utf8');
+  const preBegin='/* BEGIN TEMPORARY LIVE GATE SILENCE */',preEnd='/* END TEMPORARY LIVE GATE SILENCE */';
+  const oldPrelude=code.indexOf(preBegin);
+  if(oldPrelude>=0){const endPrelude=code.indexOf(preEnd,oldPrelude);if(endPrelude<0)throw new Error('Incomplete silence bootstrap');code=code.slice(0,oldPrelude)+code.slice(endPrelude+preEnd.length);}
+  const mainHeader=/\bMain:\s*\[\s*function\(require, module, exports\)\s*\{/.exec(code);
+  if(!mainHeader)throw new Error('Cannot locate exported Main module');
+  const prelude=fs.readFileSync(path.join(__dirname,'live-silence.js'),'utf8');
+  const mainStart=mainHeader.index+mainHeader[0].length;
+  code=code.slice(0,mainStart)+'\n'+preBegin+'\n'+prelude+'\n'+preEnd+'\n'+code.slice(mainStart);
   let begin = code.indexOf('/* BEGIN TEMPORARY LIVE GATE AUDIT */');
   let end = code.indexOf('/* END TEMPORARY LIVE GATE AUDIT */');
   let retainedEnd = end;
   if (begin < 0) { begin = code.indexOf('var __liveGateMetrics = function()'); end = code.indexOf('cc._RF.pop();', begin); retainedEnd = end; }
-  if (begin < 0 || end < begin) throw new Error('Export does not contain the temporary test block');
+  if(begin<0){begin=code.indexOf('cc._RF.pop();',mainStart);end=retainedEnd=begin;}
+  if (begin < 0 || end < begin) throw new Error('Cannot locate exported Main module end');
   const block = temporaryBlock().replace("typeof CC_DEBUG === 'undefined' || !CC_DEBUG || ", '');
   const suffix = code.slice(retainedEnd).replace(/^\/\* END TEMPORARY LIVE GATE AUDIT \*\//, '');
   fs.writeFileSync(bundle, code.slice(0, begin) + '/* BEGIN TEMPORARY LIVE GATE AUDIT */' + block + '/* END TEMPORARY LIVE GATE AUDIT */\n' + suffix);
   console.log('Updated only the exported diagnostic block'); process.exit(0);
 }
-fs.mkdirSync(path.dirname(backup), { recursive: true });
+if (!process.argv.includes('--remove')) throw new Error('Build a debug export, set LIVE_GATE_EXPORT, and use --sync-export. Source-Main injection is disabled so the mute bootstrap always precedes Main imports.');
 let current = fs.readFileSync(main, 'utf8');
 if (current.includes(marker)) {
   if (!fs.existsSync(backup) || current.split(marker)[0] !== fs.readFileSync(backup, 'utf8')) throw new Error('Main.js changed outside the test block; refusing restore');
   current = current.split(marker)[0];
-} else if (process.argv.includes('--remove')) {
-  console.log('No temporary block installed'); process.exit(0);
-} else fs.writeFileSync(backup, current);
-if (process.argv.includes('--remove')) {
-  fs.writeFileSync(main, current); console.log('Restored Main.js');
 } else {
-  fs.writeFileSync(main, current + marker + temporaryBlock() + '/* END TEMPORARY LIVE GATE AUDIT */\n');
-  console.log('Installed temporary preview fixture; restore using --remove');
+  console.log('No temporary block installed'); process.exit(0);
 }
+fs.writeFileSync(main, current); console.log('Restored Main.js');

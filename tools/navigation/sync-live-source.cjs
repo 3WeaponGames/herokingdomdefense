@@ -2,7 +2,7 @@
 // Refresh registered CommonJS gameplay modules in the disposable debug export.
 // Preserve Creator registration IDs/dependency mappings and all exported assets.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const root=path.resolve(__dirname,'../..'),folder=path.join(root,'local/live-gates/export/web-mobile/assets/main');
+const root=path.resolve(__dirname,'../..'),exportRoot=process.env.LIVE_GATE_EXPORT?path.resolve(process.env.LIVE_GATE_EXPORT):path.join(root,'local/live-gates/export/web-mobile'),folder=path.join(exportRoot,'assets/main');
 const bundle=path.join(folder,fs.readdirSync(folder).find(n=>/^index.*\.js$/.test(n)));
 let code=fs.readFileSync(bundle,'utf8'); const report=[];
 for(const name of process.argv.slice(2)) {

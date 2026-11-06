@@ -4,6 +4,7 @@
 // camera scrolling, Canvas/Widget offsets, and the device's resolution.
 var ALLY = { r: 140, g: 215, b: 255 }, ENEMY = { r: 255, g: 115, b: 115 };
 var BONE_FIELDS = ["a", "b", "c", "d", "worldX", "worldY", "x", "y", "rotation", "scaleX", "scaleY", "shearX", "shearY", "active"];
+var vertexFrame = 0;
 
 function point(node, main, x, y) {
   return main.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(x || 0, y || 0)));
@@ -38,6 +39,73 @@ function updatePose(renderer, cache) {
   renderer._skeleton.updateWorldTransform();
   if(cache)cache.poses.add(renderer);
 }
+function regionVertices(bone, output, offset, stride) {
+  var points = this._depthVertices;
+  for (var i = 0; i < 8; i += 2, offset += stride) {
+    output[offset] = points[i]; output[offset + 1] = points[i + 1];
+  }
+}
+function meshVertices(slot, start, count, output, offset, stride) {
+  var points = this._depthVertices;
+  for (var i = start, end = start + count; i < end; i += 2, offset += stride) {
+    output[offset] = points[i]; output[offset + 1] = points[i + 1];
+  }
+}
+function sourceGeometry(renderer, cache) {
+  // Only the web Spine runtime exposes these attachments. Other backends keep
+  // their existing bounds/render path. Buffers belong to one source renderer,
+  // never to a shared skin/attachment or an animation cache.
+  var runtime = sp.spine;
+  if (!cache || !cache.vertexStore || !runtime || !runtime.RegionAttachment || !runtime.MeshAttachment) return null;
+  if (!cache.vertexFrame) cache.vertexFrame = ++vertexFrame;
+  var skeleton = renderer._skeleton, saved = cache.vertexStore.get(renderer);
+  if (!saved || saved.skeleton !== skeleton) {
+    saved = { skeleton: skeleton, frame: 0, slots: [], box: {} };
+    cache.vertexStore.set(renderer, saved);
+  }
+  if (saved.frame === cache.vertexFrame) return saved;
+  updatePose(renderer, cache);
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  // This is Spine Skeleton.getBounds' traversal, retaining its exact XY
+  // results for the already-copied silhouette pose instead of skinning again.
+  for (var i = 0; i < skeleton.drawOrder.length; i++) {
+    var slot = skeleton.drawOrder[i], attachment = slot.getAttachment();
+    if (!slot.bone.active) continue;
+    var region = attachment instanceof runtime.RegionAttachment;
+    if (!region && !(attachment instanceof runtime.MeshAttachment)) continue;
+    var index = slot.data.index, count = region ? 8 : attachment.worldVerticesLength;
+    var record = saved.slots[index];
+    if (!record || record.attachment !== attachment || record.slot !== slot) {
+      record = { attachment: attachment, slot: slot, points: [], facade: null };
+      saved.slots[index] = record;
+    }
+    var points = record.points;
+    points.length = count;
+    if (region) attachment.computeWorldVertices(slot.bone, points, 0, 2);
+    else attachment.computeWorldVertices(slot, 0, count, points, 0, 2);
+    record.frame = cache.vertexFrame;
+    record.region = region;
+    for (var j = 0; j < count; j += 2) {
+      minX = Math.min(minX, points[j]); minY = Math.min(minY, points[j + 1]);
+      maxX = Math.max(maxX, points[j]); maxY = Math.max(maxY, points[j + 1]);
+    }
+  }
+  saved.box.minX = minX; saved.box.minY = minY; saved.box.maxX = maxX; saved.box.maxY = maxY;
+  saved.frame = cache.vertexFrame;
+  return saved;
+}
+function silhouetteAttachment(record) {
+  if (!record.facade) {
+    // Inherit region/UV/triangle/color data and the original attachment's
+    // prototype (including instanceof and deformAttachment identity). Only
+    // render-only copies use this facade; source slots remain untouched.
+    var facade = Object.create(record.attachment);
+    facade._depthVertices = record.points;
+    facade.computeWorldVertices = record.region ? regionVertices : meshVertices;
+    record.facade = facade;
+  }
+  return record.facade;
+}
 function bounds(renderer, main, cache) {
   if(cache&&cache.bounds.has(renderer))return cache.bounds.get(renderer);
   var node = renderer.node, x, y, w, h;
@@ -45,11 +113,17 @@ function bounds(renderer, main, cache) {
   if (renderer instanceof sp.Skeleton && renderer._skeleton) {
     // Spine node sizes are authored setup bounds, not the current animated pose.
     updatePose(renderer,cache);
-    // Spine Vector2.set takes (x, y); Creator Vec2.set takes another vector.
-    var vector = function () { return { x: 0, y: 0, set: function (x, y) { this.x = x; this.y = y; } }; };
-    var offset = vector(), size = vector();
-    renderer._skeleton.getBounds(offset, size, []);
-    x = offset.x; y = offset.y; w = size.x; h = size.y;
+    var geometry = sourceGeometry(renderer, cache);
+    if (geometry) {
+      x = geometry.box.minX; y = geometry.box.minY;
+      w = geometry.box.maxX - x; h = geometry.box.maxY - y;
+    } else {
+      // Spine Vector2.set takes (x, y); Creator Vec2.set takes another vector.
+      var vector = function () { return { x: 0, y: 0, set: function (x, y) { this.x = x; this.y = y; } }; };
+      var offset = vector(), size = vector();
+      renderer._skeleton.getBounds(offset, size, []);
+      x = offset.x; y = offset.y; w = size.x; h = size.y;
+    }
   } else {
     w = node.width; h = node.height; x = -w * node.anchorX; y = -h * node.anchorY;
   }
@@ -100,6 +174,7 @@ function copyPose(source, target, tint, cache) {
   var from = source._skeleton, to = target._skeleton;
   if (!from || !to) return;
   updatePose(source,cache);
+  var geometry = tint && sourceGeometry(source, cache);
   to.x = from.x; to.y = from.y; to.scaleX = from.scaleX; to.scaleY = from.scaleY;
   to.color.setFromColor(from.color);
   for (var i = 0; i < from.bones.length; i++) {
@@ -108,7 +183,8 @@ function copyPose(source, target, tint, cache) {
   }
   for (i = 0; i < from.slots.length; i++) {
     var slot = from.slots[i], output = to.slots[i];
-    output.setAttachment(slot.getAttachment());
+    var attachment = slot.getAttachment(), record = geometry && geometry.slots[i];
+    output.setAttachment(record && record.frame === cache.vertexFrame && record.attachment === attachment ? silhouetteAttachment(record) : attachment);
     output.deform.length = slot.deform.length;
     for (var j = 0; j < slot.deform.length; j++) output.deform[j] = slot.deform[j];
     output.color.setFromColor(slot.color);
@@ -277,7 +353,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
 DepthView.prototype.update = function () {
   if (!this.main.activeInHierarchy) return;
   this.sort();
-  var self = this, game = this.game,cache={transforms:new Map(),bounds:new Map(),poses:new Set()},visible=viewBounds(game,this.main);
+  var self = this, game = this.game,cache={transforms:new Map(),bounds:new Map(),poses:new Set(),vertexStore:this._vertexStore||(this._vertexStore=new WeakMap())},visible=viewBounds(game,this.main);
   var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
@@ -321,6 +397,7 @@ DepthView.prototype.destroy = function () {
     if (object.texture) object.texture.destroy();
   });
   this.capture.destroy(); this.cameraNode.destroy();
+  this._vertexStore = null;
 };
 exports.DepthView = DepthView;
 exports.copyPose = copyPose;
