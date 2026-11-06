@@ -65,6 +65,7 @@ function structure(catalog) {
             if (style.maxLines !== undefined && (!Number.isInteger(style.maxLines) || style.maxLines < 1)) throw new Error(key + ': maxLines must be a positive integer.');
             ['x','y'].forEach(field => { if (style[field] !== undefined && (typeof style[field] !== 'number' || !isFinite(style[field]))) throw new Error(key + ': ' + field + ' must be a finite number.'); });
             if (style.wrap !== undefined && typeof style.wrap !== 'boolean') throw new Error(key + ': wrap must be true or false.');
+            if (style.horizontalAlign !== undefined && [0,1,2].indexOf(style.horizontalAlign) < 0) throw new Error(key + ': horizontalAlign must be 0 (left), 1 (center) or 2 (right).');
             if (style.overflow !== undefined && ['NONE','CLAMP','SHRINK','RESIZE_HEIGHT'].indexOf(style.overflow) < 0) throw new Error(key + ': overflow must be NONE, CLAMP, SHRINK or RESIZE_HEIGHT.');
         });
     });

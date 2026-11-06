@@ -50,7 +50,7 @@ var def_KinghtFallUIAddStrength = function (t) {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.power);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_power_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
         t.onBtnBuy(t.goldNum[1]);
-      });
+      }, null, "home.energy.refill");
     }, this);
     this.node.getChildByName("bg").on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
   };

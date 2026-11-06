@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 var r;
 var $z1KinghtFallEnemyBase = require("KinghtFallEnemyBase");
+var $z1KinghtFallUIGame = require("KinghtFallUIGame");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 cc__decorator.property;
@@ -37,13 +39,13 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
           this.doWait();
           this.bornInfo.nodeIndex++;
         } else {
-          this.bornInfo.pathList[this.bornInfo.nodeIndex].getPosition(this.vec2_2);
-          cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-          this.setLeft(this.vec2_2.x < 0);
-          this.vec2_2.len() <= 15 && this.bornInfo.nodeIndex++;
-          cc.Vec2.normalize(this.vec2_2, this.vec2_2);
-          cc.Vec2.scaleAndAdd(this.vec2_1, this.vec2_1, this.vec2_2, this.getSpeed() * t);
-          this.node.setPosition(this.vec2_1);
+          var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+          var waypoint = this.bornInfo.pathList[this.bornInfo.nodeIndex];
+          if (!waypoint) { this.doWait(); break; }
+          var goal = Navigation.positionOf(waypoint, game);
+          var movement = Navigation.moveTo(this, game, goal, t);
+          if (movement.directionX) this.setLeft(movement.directionX < 0);
+          if (movement.arrived) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
         }
     }
   };

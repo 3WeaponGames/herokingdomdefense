@@ -17,6 +17,7 @@ var $z1KinghtFallItemHp = require("KinghtFallItemHp");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallGameCtrlData = require("KinghtFallGameCtrlData");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -60,6 +61,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.initData = function (t) {
     var e = this;
+    Navigation.reset(this);
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.attackRange = this.cfg.AttackRange;
     var n = this.node.getComponents(cc.CircleCollider);
@@ -150,9 +152,8 @@ var def_KinghtFallSoldierBase = function (t) {
       switch (this.state) {
         case s.Idle:
           if (this.isAgg) {
-            $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay.node.getPosition(this.vec2_2);
-            cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-            this.vec2_2.len();
+            var followGame = $z1KinghtFallUIGame.default.instance.ctrGame;
+            cc.Vec2.subtract(this.vec2_2, Navigation.positionOf(followGame.ctrPlay.node, followGame), Navigation.positionOf(this.node, followGame));
             if (this.vec2_2.len() <= $z1KinghtFallConfig.KinghtFallParameter.FollowRange / 2) {
               return;
             }
@@ -174,56 +175,53 @@ var def_KinghtFallSoldierBase = function (t) {
           break;
         case s.Move:
           (function () {
+            var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+            var goal = null, followingPath = false;
             if (e.isAgg) {
-              $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay.node.getPosition(e.vec2_2);
-              cc.Vec2.subtract(e.vec2_2, e.vec2_2, e.vec2_1);
+              cc.Vec2.subtract(e.vec2_2, Navigation.positionOf(game.ctrPlay.node, game), Navigation.positionOf(e.node, game));
               if (e.vec2_2.len() <= $z1KinghtFallConfig.KinghtFallParameter.FollowRange / 2) {
                 return void e.doIdel();
               }
-              if (e.pathList.pathInfoList[e.pathList.nodeIndex]) {
-                e.vec2_2 = cc.v2(e.pathList.pathInfoList[e.pathList.nodeIndex].pos);
-                cc.Vec2.subtract(e.vec2_2, e.vec2_2, e.vec2_1);
-                if (e.vec2_2.len() <= 15) {
-                  e.pathList.nodeIndex++, e.pathList.nodeIndex >= e.pathList.pathInfoList.length || (e.pathList.pathIndex = e.pathList.pathInfoList[e.pathList.nodeIndex].index);
-                }
-              } else {
-                e.upPath();
-              }
+              if (!e.pathList || !e.pathList.pathInfoList[e.pathList.nodeIndex]) e.upPath();
+              if (e.pathList && e.pathList.pathInfoList[e.pathList.nodeIndex]) {
+                goal = e.pathList.pathInfoList[e.pathList.nodeIndex].pos;
+                followingPath = true;
+              } else return void e.doIdel();
             } else if (e.pathList) {
               if (!e.pathList.pathInfoList[e.pathList.nodeIndex]) {
                 e.pathList = null;
                 return void e.doIdel();
               }
-              e.vec2_2 = cc.v2(e.pathList.pathInfoList[e.pathList.nodeIndex].pos);
-              cc.Vec2.subtract(e.vec2_2, e.vec2_2, e.vec2_1);
-              if (e.vec2_2.len() <= 20) {
-                e.pathList.nodeIndex++;
-                if (e.pathList.nodeIndex >= e.pathList.pathInfoList.length) {
-                  e.pathList = null;
-                  var n = $z1KinghtFallUIGame.default.instance.ctrGame.ndAggFlag;
-                  n.Flag--;
-                  n.Flag || (n.active = false);
-                  return void e.doIdel();
-                }
-                e.pathList.pathIndex = e.pathList.pathInfoList[e.pathList.nodeIndex].index;
-              }
+              goal = e.pathList.pathInfoList[e.pathList.nodeIndex].pos;
+              followingPath = true;
             } else {
               var i = e.getFind();
               if (i) {
                 if (i.canAtt) {
                   return void (e.time[l.Attack] >= 1 ? e.onFindList() : e.doIdel());
                 }
-                i.tag.node.getPosition(e.vec2_2);
-                cc.Vec2.subtract(e.vec2_2, e.vec2_2, e.vec2_1);
+                goal = Navigation.positionOf(i.tag.node, game);
               } else {
                 e.lastFind = e.isFind();
                 e.lastFind || e.doIdel();
+                return;
               }
             }
-            cc.Vec2.normalize(e.vec2_2, e.vec2_2);
-            cc.Vec2.scaleAndAdd(e.vec2_1, e.vec2_1, e.vec2_2, e.getSpeed() * t);
-            e.setLeft(e.vec2_2.x < 0);
-            e.node.setPosition(e.vec2_1);
+            var movement = Navigation.moveTo(e, game, goal, t);
+            if (movement.directionX) e.setLeft(movement.directionX < 0);
+            if (followingPath && movement.arrived) {
+              e.pathList.nodeIndex++;
+              Navigation.reset(e);
+              if (e.pathList.nodeIndex < e.pathList.pathInfoList.length) {
+                e.pathList.pathIndex = e.pathList.pathInfoList[e.pathList.nodeIndex].index;
+              } else if (!e.isAgg) {
+                e.pathList = null;
+                var flag = game.ndAggFlag;
+                flag.Flag = Math.max(0, flag.Flag - 1);
+                if (!flag.Flag) flag.active = false;
+                e.doIdel();
+              }
+            }
           })();
       }
     }
@@ -485,6 +483,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.setNew = function () {
     var t;
+    Navigation.reset(this);
     this.hp = this.hpMax;
     null === (t = this.hpctrl) || undefined === t || t.setHp(this.hp, this.hpMax);
     this.node.active = true;
@@ -499,6 +498,8 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.setPath = function (t, e) {
     var n;
     this.isAgg = e;
+    Navigation.reset(this);
+    if (!t || !t.length || !this.pathList || !this.pathList.pathInfoList.length) return;
     if (this.pathList) {
       var i = 0;
       var a = 0;
@@ -523,9 +524,10 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.startAgg = function (t) {
-    if (this.isDead()) {
+    if (this.isDead() || !t || !t.pos) {
       return false;
     }
+    Navigation.reset(this);
     this.isAgg = true;
     this.pathList = {
       nodeIndex: 0,

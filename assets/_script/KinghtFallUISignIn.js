@@ -58,14 +58,14 @@ var def_KinghtFallUISignIn = function (t) {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.day7_once);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_day7_once_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
         e(1, 1);
-      });
+      }, null, "home.signIn.extra");
     }, this);
     this.btnDouble.on(cc.Node.EventType.TOUCH_END, function () {
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.day7_double);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_day7_double_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
         e(2, 1);
-      });
+      }, null, "home.signIn.double");
     }, this);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
       t.closeUI();

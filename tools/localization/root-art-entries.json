@@ -1,0 +1,168 @@
+{
+  "entries": {
+    "art.tester.all": {
+      "en": "Elite\nPlaytester",
+      "zh": "超级\n游戏内测员",
+      "context": "Tester reward medal caption"
+    },
+    "art.tester.all-f": {
+      "en": "Elite\nPlaytester",
+      "zh": "超级\n游戏内测员",
+      "context": "Tester reward medal caption"
+    },
+    "art.tester.all-r": {
+      "en": "Elite\nPlaytester",
+      "zh": "超级\n游戏内测员",
+      "context": "Tester reward medal caption"
+    },
+    "art.tester.all-y": {
+      "en": "Elite\nPlaytester",
+      "zh": "超级\n游戏内测员",
+      "context": "Tester reward medal caption"
+    }
+  },
+  "images": {
+    "5a65a1a4-84e6-4e78-8b19-ccd64708f46e": {
+      "key": "art.tester.all",
+      "template": "tester_all",
+      "source": "assets/imgs/all.png",
+      "artwork": {
+        "en": "localization/generated/en/tester_all",
+        "zh": "localization/generated/zh/tester_all"
+      }
+    },
+    "a6ea3e39-78a7-4f1a-a7ce-baea0e8fbd0a": {
+      "key": "art.tester.all-f",
+      "template": "tester_all-f",
+      "source": "assets/imgs/all-f.png",
+      "artwork": {
+        "en": "localization/generated/en/tester_all-f",
+        "zh": "localization/generated/zh/tester_all-f"
+      }
+    },
+    "7b836b53-5daf-4608-8a99-e1664c61a3d1": {
+      "key": "art.tester.all-r",
+      "template": "tester_all-r",
+      "source": "assets/imgs/all-r.png",
+      "artwork": {
+        "en": "localization/generated/en/tester_all-r",
+        "zh": "localization/generated/zh/tester_all-r"
+      }
+    },
+    "0c9ad079-fb10-4acc-b9ce-4695871939b9": {
+      "key": "art.tester.all-y",
+      "template": "tester_all-y",
+      "source": "assets/imgs/all-y.png",
+      "artwork": {
+        "en": "localization/generated/en/tester_all-y",
+        "zh": "localization/generated/zh/tester_all-y"
+      }
+    }
+  },
+  "artTemplates": {
+    "tester_all": {
+      "width": 147,
+      "height": 166,
+      "source": "assets/resources/localization/neutral/tester_all.png",
+      "sourceOriginal": "assets/imgs/all.png",
+      "pending": false,
+      "regions": [
+        {
+          "key": "art.tester.all",
+          "rect": {
+            "x": 8,
+            "y": 91,
+            "width": 131,
+            "height": 61
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 23,
+          "minFontSize": 18,
+          "lineHeightRatio": 1.08,
+          "padding": 0,
+          "color": "#235eaf",
+          "outlineWidth": 0,
+          "align": "center"
+        }
+      ]
+    },
+    "tester_all-f": {
+      "width": 143,
+      "height": 165,
+      "source": "assets/resources/localization/neutral/tester_all-f.png",
+      "sourceOriginal": "assets/imgs/all-f.png",
+      "pending": false,
+      "regions": [
+        {
+          "key": "art.tester.all-f",
+          "rect": {
+            "x": 8,
+            "y": 91,
+            "width": 127,
+            "height": 61
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 23,
+          "minFontSize": 18,
+          "lineHeightRatio": 1.08,
+          "padding": 0,
+          "color": "#235eaf",
+          "outlineWidth": 0,
+          "align": "center"
+        }
+      ]
+    },
+    "tester_all-r": {
+      "width": 143,
+      "height": 165,
+      "source": "assets/resources/localization/neutral/tester_all-r.png",
+      "sourceOriginal": "assets/imgs/all-r.png",
+      "pending": false,
+      "regions": [
+        {
+          "key": "art.tester.all-r",
+          "rect": {
+            "x": 8,
+            "y": 91,
+            "width": 127,
+            "height": 61
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 23,
+          "minFontSize": 18,
+          "lineHeightRatio": 1.08,
+          "padding": 0,
+          "color": "#235eaf",
+          "outlineWidth": 0,
+          "align": "center"
+        }
+      ]
+    },
+    "tester_all-y": {
+      "width": 143,
+      "height": 165,
+      "source": "assets/resources/localization/neutral/tester_all-y.png",
+      "sourceOriginal": "assets/imgs/all-y.png",
+      "pending": false,
+      "regions": [
+        {
+          "key": "art.tester.all-y",
+          "rect": {
+            "x": 8,
+            "y": 91,
+            "width": 127,
+            "height": 61
+          },
+          "font": "assets/resources/localization/fonts/NotoSansSC-Black.ttf",
+          "fontSize": 23,
+          "minFontSize": 18,
+          "lineHeightRatio": 1.08,
+          "padding": 0,
+          "color": "#235eaf",
+          "outlineWidth": 0,
+          "align": "center"
+        }
+      ]
+    }
+  }
+}

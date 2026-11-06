@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 var r;
 var $z1PlatformSetting = require("PlatformSetting");
 var $z1SdkMgr = require("SdkMgr");
+var TestMode = require("TestMode").TestMode;
 var $z1UIMgr = require("UIMgr");
 var $z1Utils = require("Utils");
 var $z1Config = require("Config");
@@ -76,6 +77,11 @@ var def_KinghtFallBuildBarracks = function (t) {
   };
   _ctor.prototype.doTime = function (t) {
     var e = this;
+    var bypassAdLimits = TestMode.getInstance().shouldBypassAdLimits();
+    if (this._testAdLimitBypass !== bypassAdLimits) {
+      this._testAdLimitBypass = bypassAdLimits;
+      this.ndVideoSoldier.active = this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare;
+    }
     if (this.waitEnemy.length > 0 && (this.ndPro.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.time[r.Reborn] / this.time[r.RebornMax], this.time[r.Reborn] += t, this.time[r.Reborn] >= this.time[r.RebornMax])) {
       this.time[r.Reborn] = 0;
       var n = this.waitEnemy.shift();
@@ -89,7 +95,7 @@ var def_KinghtFallBuildBarracks = function (t) {
       }
       0 == this.waitEnemy.length && (this.ndPro.active = false);
     }
-    if (this.VideoTimes < 3 && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe)) {
+    if (this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare) {
       $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay.node.getPosition(this.vec2_1);
       if (this.getInClick(this.vec2_1, t)) {
         this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
@@ -100,7 +106,7 @@ var def_KinghtFallBuildBarracks = function (t) {
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.map_add_soldier);
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_map_add_soldier_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
             e.VideoTimes++;
-            e.ndVideoSoldier.active = e.VideoTimes < 3 && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe);
+            e.ndVideoSoldier.active = e.canAddVideoSoldier();
             $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.GameCom04));
             e.initBuffData();
           }
@@ -126,7 +132,7 @@ var def_KinghtFallBuildBarracks = function (t) {
             o(true);
           }, function () {
             o(false);
-          });
+          }, "battle.barracks.extraSoldier");
         }
       }
       this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.keepTime / this.standTimeMax;
@@ -143,7 +149,7 @@ var def_KinghtFallBuildBarracks = function (t) {
       this.VideoTimes = 0;
     }
     this.waitEnemy = [];
-    this.ndVideoSoldier.active = this.VideoTimes < 3 && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe);
+    this.ndVideoSoldier.active = this.canAddVideoSoldier();
     this.initBuffData();
   };
   _ctor.prototype.initBuffData = function () {
@@ -180,12 +186,15 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
     this.ndPro.active = false;
     this.waitEnemy = [];
-    this.ndVideoSoldier.active = this.VideoTimes < 3 && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe);
+    this.ndVideoSoldier.active = this.canAddVideoSoldier();
   };
   _ctor.prototype.init = function () {
     this.keepTime = 0;
     this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0;
-    this.ndVideoSoldier.active = this.VideoTimes < 3 && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe);
+    this.ndVideoSoldier.active = this.canAddVideoSoldier();
+  };
+  _ctor.prototype.canAddVideoSoldier = function () {
+    return (TestMode.getInstance().shouldBypassAdLimits() || this.VideoTimes < 3) && !$z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe);
   };
   _ctor.prototype.getInClick = function (t, e) {
     var n = cc.v2(this.node.x + this.ndVideoSoldier.position.x, this.node.y + this.ndVideoSoldier.position.y);

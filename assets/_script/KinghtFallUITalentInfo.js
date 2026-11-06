@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 var $z1BaseUI = require("BaseUI");
 var $z1AudioMgr = require("AudioMgr");
 var $z1SdkMgr = require("SdkMgr");
+var TestMode = require("TestMode").TestMode;
 var $z1Utils = require("Utils");
 var $z1GameTrackDataEvent = require("GameTrackDataEvent");
 var $z1PlayerMgr = require("PlayerMgr");
@@ -71,12 +72,7 @@ var def_KinghtFallUITalentInfo = function (t) {
         break;
       case 3:
         this.btnVideo.active = true;
-        var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.cfg.ID);
-        if (this.cfg.vedioCount > 1) {
-          this.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = (n ? n.video : 0) + "/" + this.cfg.vedioCount;
-        } else {
-          this.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTalent01);
-        }
+        this.refreshVideoCount();
         this.ndLock.active = false;
         this.btnGold.active = false;
         break;
@@ -87,6 +83,22 @@ var def_KinghtFallUITalentInfo = function (t) {
     }
     this.btnVideo.on(cc.Node.EventType.TOUCH_END, this.onVideoBtnClick, this);
     this.btnGold.on(cc.Node.EventType.TOUCH_END, this.onGoldBtnClick, this);
+  };
+  _ctor.prototype.update = function () {
+    var bypassAdLimits = TestMode.getInstance().shouldBypassAdLimits();
+    if (this._testAdLimitBypass !== bypassAdLimits && this.cfg) {
+      this._testAdLimitBypass = bypassAdLimits;
+      if (this.btnVideo.active) this.refreshVideoCount();
+    }
+  };
+  _ctor.prototype.refreshVideoCount = function () {
+    var progress = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.cfg.ID);
+    var label = this.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label);
+    if (this.cfg.vedioCount > 1 && !TestMode.getInstance().shouldBypassAdLimits()) {
+      label.string = (progress ? progress.video : 0) + "/" + this.cfg.vedioCount;
+    } else {
+      label.string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTalent01);
+    }
   };
   _ctor.prototype.initView = function () {
     this.labName.string = this.T(this.cfgInfo.Name);
@@ -105,6 +117,8 @@ var def_KinghtFallUITalentInfo = function (t) {
   };
   _ctor.prototype.onVideoBtnClick = function () {
     var t = this;
+    var owned = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.cfg.ID);
+    if (owned && owned.isLock) return;
     $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent);
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
@@ -118,7 +132,7 @@ var def_KinghtFallUITalentInfo = function (t) {
           video: 1
         };
       }
-      if (e.video >= t.cfg.vedioCount) {
+      if (e.video >= t.cfg.vedioCount || TestMode.getInstance().shouldBypassAdLimits()) {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent_unlock_X, t.cfg.ID);
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TalentUp, 1);
         $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.unlock);
@@ -129,7 +143,7 @@ var def_KinghtFallUITalentInfo = function (t) {
       }
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setTalentLevel(e);
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate);
-    });
+    }, null, "home.talent.unlock");
   };
   _ctor.prototype.onGoldBtnClick = function () {
     if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subGoldNum(this.goldNum)) {

@@ -211,7 +211,7 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
           $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setShopInfo(e);
           t.upView();
         }
-      });
+      }, null, "home.treasure.draw");
     }, this);
   };
   _ctor.prototype.getReward = function (t, e) {

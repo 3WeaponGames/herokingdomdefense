@@ -31,7 +31,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnRight/btnAddDesktop/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomebattlectrl.260": {
-      "en": "Entry Rewards",
+      "en": "Sidebar Rewards",
       "zh": "入口有奖",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/ndBtnRight/btnSideBoard/labName (localized control layout)"
     },
@@ -56,7 +56,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUISetting.prefab:KinghtFallUISetting/root/effectNode/effectLabel (localized control layout)"
     },
     "ui.layout.kinghtfalluitalentinfo.35": {
-      "en": "Prerequisite locked",
+      "en": "Unlock previous talent",
       "zh": "需解锁前置天赋",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUITalentInfo.prefab:KinghtFallUITalentInfo/root/ndLock (localized control layout)"
     },
@@ -181,7 +181,7 @@
       "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIExchangeCode.prefab:KinghtFallUIExchangeCode/root/title (localized control layout)"
     },
     "ui.layout.kinghtfalluiexchangecode.23": {
-      "en": "Enter your gift code",
+      "en": "Enter a gift code",
       "zh": "请输入您的兑换码",
       "context": "assets\\KinghtFallPrefabs\\commer\\KinghtFallUIExchangeCode.prefab:KinghtFallUIExchangeCode/root/New EditBox/PLACEHOLDER_LABEL (localized control layout)"
     },
@@ -236,7 +236,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/btnRevive/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigameback.31": {
-      "en": "Return to battle preparation and gain 10",
+      "en": "Retry this wave with +10 silver",
       "zh": "返回上次战斗准备并增加10",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/New Layout/title (localized control layout)"
     },
@@ -246,7 +246,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/btnBreak/effectLabel (localized control layout)"
     },
     "ui.layout.kinghtfalluigameback.53": {
-      "en": "Revive",
+      "en": "Retry",
       "zh": "复活",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/btnNewGame/effectLabel (localized control layout)"
     },
@@ -261,17 +261,17 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameEnd.prefab:KinghtFallUIGameEnd/root/btnVideo/effectLabel (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.9": {
-      "en": "Inspiration",
+      "en": "Battle Perks",
       "zh": "灵光一现",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndTitle/labTitle (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.15": {
-      "en": "Choose an Inspiration",
+      "en": "Choose a Perk",
       "zh": "请选择新灵光",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndTitle/labTitle (localized control layout)"
     },
     "ui.layout.kinghtfalluibuff.51": {
-      "en": "Refresh",
+      "en": "Reroll",
       "zh": "刷新",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUIBuff.prefab:KinghtFallUIBuff/root/ndBtn/btnRefresh/labName (localized control layout)"
     },
@@ -316,7 +316,7 @@
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/wg_gxhd_pd/title (localized control layout)"
     },
     "ui.layout.kinghtfalluisuspend.16": {
-      "en": "Current Inspirations",
+      "en": "Active Perks",
       "zh": "当前获得灵光",
       "context": "assets\\KinghtFallPrefabs\\gamePop\\KinghtFallUISuspend.prefab:KinghtFallUISuspend/root/title (localized control layout)"
     },
@@ -406,7 +406,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomebattlectrl.302": {
-      "en": "Chapter 4",
+      "en": "Stage 4",
       "zh": "第4章解锁",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/labInfo (localized control layout)"
     },
@@ -446,7 +446,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnLock/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.222": {
-      "en": "Clear stage to upgrade",
+      "en": "Clear the stage to upgrade",
       "zh": "完成关卡后可强化",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/btnLock/labNum (localized control layout)"
     },
@@ -476,7 +476,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnLock/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.291": {
-      "en": "Clear stage to upgrade",
+      "en": "Clear the stage to upgrade",
       "zh": "完成关卡后可强化",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/btnLock/labNum (localized control layout)"
     },
@@ -506,7 +506,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnLock/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.360": {
-      "en": "Clear stage to upgrade",
+      "en": "Clear the stage to upgrade",
       "zh": "完成关卡后可强化",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/btnLock/labNum (localized control layout)"
     },
@@ -536,7 +536,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnLock/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.429": {
-      "en": "Clear stage to upgrade",
+      "en": "Clear the stage to upgrade",
       "zh": "完成关卡后可强化",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/btnLock/labNum (localized control layout)"
     },
@@ -566,7 +566,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnLock/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.498": {
-      "en": "Clear stage to upgrade",
+      "en": "Clear the stage to upgrade",
       "zh": "完成关卡后可强化",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/btnLock/labNum (localized control layout)"
     },
@@ -596,7 +596,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnLock/labName (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.567": {
-      "en": "Clear stage to upgrade",
+      "en": "Clear the stage to upgrade",
       "zh": "完成关卡后可强化",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/btnLock/labNum (localized control layout)"
     },
@@ -741,12 +741,12 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/ndItem/ndFinish/btnFinish/labTitle (localized control layout)"
     },
     "ui.layout.kinghtfalluipassport.75": {
-      "en": "Standard Rewards",
+      "en": "Free Rewards",
       "zh": "普通奖励",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIPassport.prefab:KinghtFallUIPassport/ndMain/wg_txz_ptd/labPro (localized control layout)"
     },
     "ui.layout.kinghtfalluipassport.84": {
-      "en": "Premium Rewards",
+      "en": "Bonus Rewards",
       "zh": "高级奖励",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIPassport.prefab:KinghtFallUIPassport/ndMain/wg_txz_ptd/labPro (localized control layout)"
     },
@@ -756,7 +756,7 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIPassport.prefab:KinghtFallUIPassport/ndMain/wg_txz_djbtd/labPro (localized control layout)"
     },
     "ui.layout.kinghtfalluisideboard.8": {
-      "en": "Enter from the sidebar for rewards",
+      "en": "Sidebar Rewards",
       "zh": "侧边栏进入领奖励",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISideBoard.prefab:KinghtFallUISideBoard/root/title (localized control layout)"
     },
@@ -776,7 +776,7 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/labTitle (localized control layout)"
     },
     "ui.layout.kinghtfalluisignin.228": {
-      "en": "Check In",
+      "en": "Claim",
       "zh": "签到",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnSign/labDay (localized control layout)"
     },
@@ -791,7 +791,7 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnVideoBouble/labDay (localized control layout)"
     },
     "ui.layout.kinghtfalluisignin.258": {
-      "en": "Checked In",
+      "en": "Claimed",
       "zh": "已签到",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUISignIn.prefab:KinghtFallUISignIn/root/btnGet/labDay (localized control layout)"
     },
@@ -871,27 +871,27 @@
       "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/New Label (localized control layout)"
     },
     "ui.layout.uireport.64": {
-      "en": "False Ads",
+      "en": "Misleading\nAds",
       "zh": "虚假宣传",
       "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn1/FalsePublicity/New Label (localized control layout)"
     },
     "ui.layout.uireport.76": {
-      "en": "Lost Data",
+      "en": "Lost\nProgress",
       "zh": "数据丢失",
       "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn2/Dataloss/New Label (localized control layout)"
     },
     "ui.layout.uireport.88": {
-      "en": "Freezing",
+      "en": "Game\nFreezes",
       "zh": "游戏卡死",
       "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn3/GameStuck/New Label (localized control layout)"
     },
     "ui.layout.uireport.100": {
-      "en": "Ads Won't Play",
+      "en": "Ads Won't\nPlay",
       "zh": "无法看广告",
       "context": "assets\\prefabs\\ui\\UIReport.prefab:UIReport/root/btn4/unableAD/New Label (localized control layout)"
     },
     "ui.layout.loading.29": {
-      "en": "Healthy Gaming Advice",
+      "en": "Healthy Gaming Tips",
       "zh": "《健康游戏忠告》",
       "context": "assets\\scenes\\loading.fire:uiRoot/UILoading/ndInfo/New Label (localized control layout)"
     },
@@ -961,7 +961,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/btnStartFight/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluigame.270": {
-      "en": "Reviving In",
+      "en": "Reviving in",
       "zh": "复活倒计时",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/ndRevie/labNum (localized control layout)"
     },
@@ -971,7 +971,7 @@
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGame.prefab:KinghtFallUIGame/KinghtFallGameUICtrl/New Sprite(Splash)/New Label (localized control layout)"
     },
     "ui.layout.kinghtfalluigameback.11": {
-      "en": "Revive?",
+      "en": "Retry Wave?",
       "zh": "是否复活",
       "context": "assets\\KinghtFallPrefabs\\game\\KinghtFallUIGameBack.prefab:KinghtFallUIGameBack/root/title (localized control layout)"
     },
@@ -1534,16 +1534,19 @@
     },
     "ui.layout.kinghtfalluigame.201": {
       "en": {
-        "width": 104,
-        "wrap": false,
+        "width": 440,
+        "wrap": true,
         "overflow": "SHRINK",
-        "height": 68.47999999999999,
-        "maxLines": 1
+        "height": 96,
+        "fontSize": 44,
+        "lineHeight": 46,
+        "maxLines": 2,
+        "horizontalAlign": 0
       }
     },
     "ui.layout.kinghtfalluigame.205": {
       "en": {
-        "width": 104,
+        "width": 180,
         "wrap": false,
         "overflow": "SHRINK",
         "height": 68.47999999999999,
@@ -2365,28 +2368,38 @@
     "ui.layout.kinghtfallhometreasurectrl.5": {
       "en": {
         "width": 600,
+        "height": 96,
+        "fontSize": 68,
+        "lineHeight": 76,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 113.84,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfallhometreasurectrl.67": {
       "en": {
-        "width": 453,
+        "width": 450,
+        "height": 86,
+        "fontSize": 64,
+        "lineHeight": 68,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 82.56,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": -196.005
       }
     },
     "ui.layout.kinghtfallhometreasurectrl.116": {
       "en": {
-        "width": 383,
+        "width": 340,
+        "height": 72,
+        "fontSize": 56,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 92.64,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluihome.30": {
@@ -2625,38 +2638,56 @@
     },
     "ui.layout.kinghtfalluipassport.75": {
       "en": {
-        "width": 600,
+        "width": 520,
+        "height": 80,
+        "fontSize": 52,
+        "lineHeight": 60,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 102.72,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 8.89
       }
     },
     "ui.layout.kinghtfalluipassport.84": {
       "en": {
-        "width": 600,
+        "width": 520,
+        "height": 80,
+        "fontSize": 52,
+        "lineHeight": 60,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 102.72,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 8.89
       }
     },
     "ui.layout.kinghtfalluipassport.93": {
       "en": {
-        "width": 146,
+        "width": 136,
+        "height": 68,
+        "fontSize": 44,
+        "lineHeight": 50,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 87.6,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 0
       }
     },
     "ui.layout.kinghtfalluisideboard.8": {
       "en": {
         "width": 600,
+        "height": 96,
+        "fontSize": 68,
+        "lineHeight": 76,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 123.92,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluisideboard.25": {
@@ -2870,38 +2901,58 @@
     },
     "ui.layout.uireport.64": {
       "en": {
-        "width": 110,
-        "wrap": false,
+        "width": 140,
+        "height": 56,
+        "fontSize": 25,
+        "lineHeight": 26,
+        "wrap": true,
         "overflow": "SHRINK",
-        "height": 40.32,
-        "maxLines": 1
+        "maxLines": 2,
+        "horizontalAlign": 1,
+        "x": 87,
+        "y": 0
       }
     },
     "ui.layout.uireport.76": {
       "en": {
-        "width": 110,
-        "wrap": false,
+        "width": 140,
+        "height": 56,
+        "fontSize": 25,
+        "lineHeight": 26,
+        "wrap": true,
         "overflow": "SHRINK",
-        "height": 31.5,
-        "maxLines": 1
+        "maxLines": 2,
+        "horizontalAlign": 1,
+        "x": 87,
+        "y": 0
       }
     },
     "ui.layout.uireport.88": {
       "en": {
-        "width": 110,
-        "wrap": false,
+        "width": 140,
+        "height": 56,
+        "fontSize": 25,
+        "lineHeight": 26,
+        "wrap": true,
         "overflow": "SHRINK",
-        "height": 31.5,
-        "maxLines": 1
+        "maxLines": 2,
+        "horizontalAlign": 1,
+        "x": 87,
+        "y": 0
       }
     },
     "ui.layout.uireport.100": {
       "en": {
-        "width": 125,
-        "wrap": false,
+        "width": 140,
+        "height": 56,
+        "fontSize": 25,
+        "lineHeight": 26,
+        "wrap": true,
         "overflow": "SHRINK",
-        "height": 31.5,
-        "maxLines": 1
+        "maxLines": 2,
+        "horizontalAlign": 1,
+        "x": 87,
+        "y": 0
       }
     },
     "ui.layout.loading.29": {
@@ -3333,29 +3384,38 @@
     },
     "ui.layout.kinghtfallhometreasurectrl.27": {
       "en": {
-        "width": 115.9,
+        "width": 248,
+        "height": 68,
+        "fontSize": 44,
+        "lineHeight": 50,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 78.56,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfallhometreasurectrl.80": {
       "en": {
-        "width": 204,
+        "width": 340,
+        "height": 72,
+        "fontSize": 56,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 92.64,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfallhometreasurectrl.98": {
       "en": {
-        "width": 204,
+        "width": 340,
+        "height": 72,
+        "fontSize": 56,
+        "lineHeight": 56,
         "wrap": false,
         "overflow": "SHRINK",
-        "height": 92.64,
-        "maxLines": 1
+        "maxLines": 1,
+        "horizontalAlign": 1
       }
     },
     "ui.layout.kinghtfalluinewmodular.35": {
@@ -3572,6 +3632,52 @@
         "overflow": "SHRINK",
         "height": 116.8,
         "maxLines": 1
+      }
+    },
+    "ui.kinghtfallhometreasurectrl.labtime.72": {
+      "en": {
+        "width": 660,
+        "fontSize": 44,
+        "lineHeight": 60,
+        "wrap": false,
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 165,
+        "y": 78
+      }
+    },
+    "script.kinghtfalltextconfig.hometrea03.24": {
+      "en": {
+        "width": 660,
+        "fontSize": 44,
+        "lineHeight": 60,
+        "wrap": false,
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 165,
+        "y": 78
+      }
+    },
+    "ui.kinghtfallhometreasurectrl.labtime.75": {
+      "en": {
+        "width": 660,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": true,
+        "maxLines": 2,
+        "horizontalAlign": 1,
+        "x": 165,
+        "y": 19
+      }
+    },
+    "script.kinghtfalltextconfig.hometrea05.26": {
+      "en": {
+        "width": 1100,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": true,
+        "maxLines": 2,
+        "horizontalAlign": 1
       }
     }
   },
@@ -4035,7 +4141,13 @@
     "88YJuq1nxGzpvojpkZb9NQ": "ui.layout.uireport.76",
     "e0fCIybXhD+qyHCnC9rqvL": "ui.layout.uireport.88",
     "e1bPvzPC9AtZ9PU6kd1hKh": "ui.layout.uireport.100",
-    "e6g+RvaHdJUpU8it5EpUzg": "ui.layout.uitouch.33"
+    "e6g+RvaHdJUpU8it5EpUzg": "ui.layout.uitouch.33",
+    "2dDAk/zKBKBI/uRJFKz9s7": "ui.kinghtfallhometreasurectrl.labtime.72",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:2dDAk/zKBKBI/uRJFKz9s7": "ui.kinghtfallhometreasurectrl.labtime.72",
+    "15LiIeQ/RP3aM4/KEz38XS": "ui.kinghtfallhometreasurectrl.labtime.75",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:15LiIeQ/RP3aM4/KEz38XS": "ui.kinghtfallhometreasurectrl.labtime.75",
+    "e1s22B7SpGPbWCvNg4FkVk": "script.kinghtfalltextconfig.hometrea05.26",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:e1s22B7SpGPbWCvNg4FkVk": "script.kinghtfalltextconfig.hometrea05.26"
   },
   "nodePathStyles": {
     "GAD_UIResult/root/ndTop/New Label": "ui.layout.common_uiresult.36",
@@ -4274,6 +4386,7 @@
     "UIReport/root/btn3/GameStuck/New Label": "ui.layout.uireport.88",
     "UIReport/root/btn4/unableAD/New Label": "ui.layout.uireport.100",
     "UITouch/ndAd/New Label": "ui.layout.uitouch.33",
-    "uiRoot/UILoading/ndInfo/New Label": "ui.layout.loading.33"
+    "uiRoot/UILoading/ndInfo/New Label": "ui.layout.loading.33",
+    "KinghtFallUITreasureReward/root/New RichText": "script.kinghtfalltextconfig.hometrea05.26"
   }
 }

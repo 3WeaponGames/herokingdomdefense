@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "a9fc3589-02e8-4bf5-ae5d-c76c4e26e71b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1566,
+  "height": 1008,
+  "platformSettings": {},
+  "subMetas": {
+    "settlement_atlas": {
+      "ver": "1.0.6",
+      "uuid": "55923952-d8b0-4f5c-84c4-6dde5112f17b",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "a9fc3589-02e8-4bf5-ae5d-c76c4e26e71b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1562,
+      "height": 1004,
+      "rawWidth": 1566,
+      "rawHeight": 1008,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

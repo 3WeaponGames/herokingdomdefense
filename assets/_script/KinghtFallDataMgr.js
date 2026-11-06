@@ -28,7 +28,7 @@ var exp_KinghtFallDataMgr = function () {
   _ctor.prototype.preload = function (t) {
     var e = this;
     if (this.readRemoteCfg) {
-      alert("注意：当前使用的是本地远程配置文件");
+      alert(require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:system.remoteConfigWarning]]"));
       console.error("注意：当前使用的是本地远程配置文件！！！");
       var n = this.remoteCfg.A;
       $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && this.remoteCfg.AWeb && (n = this.remoteCfg.AWeb);

@@ -50,6 +50,8 @@ var LanguageOptions = cc.Class({
     label.verticalAlign = cc.Label.VerticalAlign.CENTER;
     label.overflow = cc.Label.Overflow.SHRINK;
     label.enableWrapText = false;
+    // Adding a Label with its default NONE overflow resets the node's size.
+    node.setContentSize(width, 38);
     var outline = node.addComponent(cc.LabelOutline);
     outline.color = cc.color("#34291e");
     outline.width = 2;

@@ -58,7 +58,10 @@ module.exports = {
             let result;
             try { result = backupAndSave(catalog, revision); }
             catch (error) { event.reply(error.message || String(error)); return; }
-            try { result.artwork = await compile(catalog); }
+            try {
+                result.artwork = await compile(catalog);
+                if (result.artwork.pending && result.artwork.pending.length) result.warning = 'Ready artwork rebuilt; ' + result.artwork.pending.length + ' unfinished templates remain pending.';
+            }
             catch (error) { result.warning = 'Catalog saved, but artwork could not be rebuilt: ' + error.message; }
             refresh(error => {
                 if (error) result.warning = 'File saved, but asset refresh failed: ' + error.message;

@@ -29,6 +29,52 @@ var $z1KinghtFallGameUICtrl = require("KinghtFallGameUICtrl");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+// Keep the complete enemy indicator clear of HUD controls and earlier indicators.
+// Candidate edges are bounded and deterministic; this is UI placement, not movement.
+function placeEnemyIndicator(target, footprint, bounds, obstacles, gap) {
+  var clamp = function (value, min, max) { return Math.max(min, Math.min(max, value)); };
+  var x = clamp(target.x, bounds.minX, bounds.maxX), y = clamp(target.y, bounds.minY, bounds.maxY);
+  var forbidden = obstacles.map(function (rect) { return {
+    minX: rect.minX - gap - footprint.maxX, maxX: rect.maxX + gap - footprint.minX,
+    minY: rect.minY - gap - footprint.maxY, maxY: rect.maxY + gap - footprint.minY
+  }; });
+  var xs = [x, bounds.minX, bounds.maxX], ys = [y, bounds.minY, bounds.maxY];
+  forbidden.forEach(function (rect) {
+    [rect.minX, rect.maxX].forEach(function (value) { if (value >= bounds.minX && value <= bounds.maxX) xs.push(value); });
+    [rect.minY, rect.maxY].forEach(function (value) { if (value >= bounds.minY && value <= bounds.maxY) ys.push(value); });
+  });
+  var best = { x: x, y: y }, bestOverlap = Infinity, bestDistance = Infinity;
+  xs.forEach(function (px) { ys.forEach(function (py) {
+    var overlap = 0;
+    forbidden.forEach(function (rect) {
+      if (px > rect.minX + 0.001 && px < rect.maxX - 0.001 && py > rect.minY + 0.001 && py < rect.maxY - 0.001) {
+        overlap += Math.min(px - rect.minX, rect.maxX - px) * Math.min(py - rect.minY, rect.maxY - py);
+      }
+    });
+    var distance = (px - target.x) * (px - target.x) + (py - target.y) * (py - target.y);
+    if (overlap < bestOverlap || overlap === bestOverlap && distance < bestDistance) {
+      best = { x: px, y: py }; bestOverlap = overlap; bestDistance = distance;
+    }
+  }); });
+  return best;
+}
+function enemyIndicatorBounds(node, ui, ignored) {
+  var rect = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
+  function include(point) {
+    rect.minX = Math.min(rect.minX, point.x); rect.maxX = Math.max(rect.maxX, point.x);
+    rect.minY = Math.min(rect.minY, point.y); rect.maxY = Math.max(rect.maxY, point.y);
+  }
+  function visit(current) {
+    if (!current || current === ignored) return;
+    var left = -current.anchorX * current.width, bottom = -current.anchorY * current.height;
+    [[left, bottom], [left + current.width, bottom], [left, bottom + current.height], [left + current.width, bottom + current.height]].forEach(function (point) {
+      include(ui.convertToNodeSpaceAR(current.convertToWorldSpaceAR(cc.v2(point[0], point[1]))));
+    });
+    current.children.forEach(function (child) { if (child.active) visit(child); });
+  }
+  visit(node);
+  return rect;
+}
 var def_KinghtFallUIGame = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -91,6 +137,10 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame = this.ndCtrGame.getComponent($z1KinghtFallGameCtrl.default);
     this.ctrGame.initData(this.levelId);
     this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconMap, this.ctrGame.gameData.levelCfg.prefab, function (e) {
+      // Widgets normally align after physics. Settle this parent and its
+      // ancestors before map bodies capture their initial world positions.
+      var widget = t.ndCtrGame.getComponent(cc.Widget);
+      if (widget) widget.updateAlignment();
       var n = cc.instantiate(e);
       n.setParent(t.ndCtrGame);
       t.ctrGame.initMap(n);
@@ -160,7 +210,7 @@ var def_KinghtFallUIGame = function (t) {
         }
       }, function () {
         t.onPauseGame(false);
-      });
+      }, "battle.silver.supply");
     });
     this.btnAgg.on(cc.Node.EventType.TOUCH_END, function () {
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
@@ -212,7 +262,7 @@ var def_KinghtFallUIGame = function (t) {
         t.onPauseGame(false);
       }, function () {
         t.onPauseGame(false);
-      });
+      }, "battle.hero.revive");
     });
     this.btnTest.active = false;
     this.btnTest.getComponentInChildren(cc.Label).string = require("LanguageMgr").LanguageMgr.getInstance().t("format.multiplier", [1]);
@@ -481,6 +531,39 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.lateUpdate = function (t) {
     this.isPauset || this.ctrGame.onLateUpdate(t);
   };
+  _ctor.prototype._enemyIndicatorObstacles = function () {
+    var ui = this.ctrUI.node;
+    return [this.btnBuildInfo, this.ndTask, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
+      this.btnStartFight, this.btnAddCoin, this.btnAgg].filter(function (node) {
+      return node && cc.isValid(node) && node.active && node.activeInHierarchy !== false;
+    }).map(function (node) { return enemyIndicatorBounds(node, ui); });
+  };
+  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles) {
+    var ui = this.ctrUI.node, arrow = node.getChildByName("ndArr");
+    var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
+    var footprint = enemyIndicatorBounds(node, ui, arrow);
+    if (arrow) {
+      // Reserve every arrow rotation, including when it was hidden last frame.
+      var center = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 0)));
+      var ax = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(1, 0)));
+      var ay = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 1)));
+      var sx = Math.hypot(ax.x - center.x, ax.y - center.y), sy = Math.hypot(ay.x - center.x, ay.y - center.y);
+      var radius = Math.hypot(arrow.width * Math.max(arrow.anchorX, 1 - arrow.anchorX) * sx, arrow.height * Math.max(arrow.anchorY, 1 - arrow.anchorY) * sy);
+      footprint.minX = Math.min(footprint.minX, center.x - radius); footprint.maxX = Math.max(footprint.maxX, center.x + radius);
+      footprint.minY = Math.min(footprint.minY, center.y - radius); footprint.maxY = Math.max(footprint.maxY, center.y + radius);
+    }
+    footprint.minX -= origin.x; footprint.maxX -= origin.x; footprint.minY -= origin.y; footprint.maxY -= origin.y;
+    var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
+    var position = placeEnemyIndicator(target, footprint, bounds, obstacles, 12);
+    node.setPosition(position.x, position.y);
+    obstacles.push({ minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
+      minY: position.y + footprint.minY, maxY: position.y + footprint.maxY });
+    if (arrow) {
+      var dx = target.x - position.x, dy = target.y - position.y;
+      arrow.active = dx * dx + dy * dy > 0.001;
+      if (arrow.active) arrow.angle = 180 * Math.atan2(dy, dx) / Math.PI - 90;
+    }
+  };
   _ctor.prototype.update = function (t) {
     if (!this.isPauset) {
       t = Math.min(t, .1);
@@ -491,6 +574,7 @@ var def_KinghtFallUIGame = function (t) {
       }
       var n = this.ctrGame.gameData.enemyQueue;
       if (this.ctrGame.gameData.baseBuild.getLevel() >= 1) {
+        var indicatorObstacles = this._enemyIndicatorObstacles();
         var i = function (t) {
           if (Object.prototype.hasOwnProperty.call(n, t)) {
             var e = n[t];
@@ -522,18 +606,7 @@ var def_KinghtFallUIGame = function (t) {
                 var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
                 var l = cc.Camera.main.getWorldToScreenPoint(s);
                 var c = a.ctrUI.node.convertToNodeSpaceAR(l);
-                var h = c.clone();
-                c.x = cc.misc.clampf(c.x, -246, 246);
-                c.y = cc.misc.clampf(c.y, -442, 442);
-                i.ndItem.setPosition(c);
-                if (c.equals(h)) {
-                  i.ndItem.getChildByName("ndArr").active = false;
-                } else {
-                  var g = cc.v2();
-                  cc.Vec2.subtract(g, cc.v2(h.x, h.y), cc.v2(c.x, c.y));
-                  var u = 180 * Math.atan2(g.y, g.x) / Math.PI;
-                  i.ndItem.getChildByName("ndArr").angle = u - 90;
-                }
+                a._placeEnemyIndicator(i.ndItem, c, indicatorObstacles);
                 i.tag = true;
               }
             }

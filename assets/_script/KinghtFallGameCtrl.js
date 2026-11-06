@@ -29,6 +29,7 @@ var $z1KinghtFallGameCtrlData = require("KinghtFallGameCtrlData");
 var $z1KinghtFallGamePlayCtrl = require("KinghtFallGamePlayCtrl");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -72,6 +73,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndAggFlag.active = false;
   };
   _ctor.prototype.initMap = function (t) {
+    this._navigation = null;
     this.moveSize = t.getContentSize();
     this.ndBg = t.getChildByName("ndBg");
     this.mapSize = this.ndBg.getContentSize();
@@ -85,6 +87,43 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ctrPlay.ndRange.setParent(this.ndUI);
     this.ndAggFlag.setParent(this.ndMain);
     this.gameData.initMap();
+    this._bindMapPhysics(t);
+  };
+  _ctor.prototype._bindMapPhysics = function (map) {
+    if (this._mapPhysicsManager) this._mapPhysicsManager.off("before-step", this._syncMapPhysics, this);
+    this._mapPhysicsRoot = map;
+    this._mapPhysicsTransform = null;
+    this._mapPhysicsManager = cc.director.getPhysicsManager();
+    this._mapPhysicsManager.on("before-step", this._syncMapPhysics, this);
+    this._syncMapPhysics();
+  };
+  _ctor.prototype._syncMapPhysics = function () {
+    var map = this._mapPhysicsRoot;
+    if (!map || !map.activeInHierarchy) return;
+    var origin = map.convertToWorldSpaceAR(cc.v2(0, 0));
+    var xAxis = map.convertToWorldSpaceAR(cc.v2(1, 0));
+    var yAxis = map.convertToWorldSpaceAR(cc.v2(0, 1));
+    var transform = [origin.x, origin.y, xAxis.x - origin.x, xAxis.y - origin.y, yAxis.x - origin.x, yAxis.y - origin.y];
+    var previous = this._mapPhysicsTransform;
+    var changed = !previous || transform.some(function (value, index) { return Math.abs(value - previous[index]) > 0.0001; });
+    if (!changed) return;
+    var scaled = previous && (Math.abs(Math.hypot(transform[2], transform[3]) - Math.hypot(previous[2], previous[3])) > 0.0001 || Math.abs(Math.hypot(transform[4], transform[5]) - Math.hypot(previous[4], previous[5])) > 0.0001);
+    this._mapPhysicsTransform = transform;
+    // Creator 2.4 observes each body's own transform, not ancestor transforms.
+    // A screen/Widget shift would otherwise be written back into local map
+    // coordinates on the next physics tick. Preserve the authored map layout.
+    map.getComponentsInChildren(cc.RigidBody).forEach(function (body) {
+      if (!body.node.activeInHierarchy) return;
+      body.syncPosition();
+      body.syncRotation();
+      if (scaled) body.getComponents(cc.PhysicsCollider).forEach(function (collider) { collider.apply(); });
+    });
+  };
+  _ctor.prototype.onDestroy = function () {
+    if (this._mapPhysicsManager) this._mapPhysicsManager.off("before-step", this._syncMapPhysics, this);
+    this._mapPhysicsManager = null;
+    this._mapPhysicsRoot = null;
+    t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.onRestart = function (t) {
     t && (this.gameData.buffList = []);
@@ -118,6 +157,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.camera.node.setPosition(this.vec2_2);
   };
   _ctor.prototype.onUpdate = function (t) {
+    Navigation.beginFrame(this);
     switch (this.gameStatus) {
       case $z1KinghtFallModle.KinghtFallGameStage.Prepare:
         var e = this.gameData.getBulidList();
@@ -170,13 +210,17 @@ var def_KinghtFallGameCtrl = function (t) {
     for (var s = 0; s < r.length; s++) {
       (l = r[s]).onUpdate(t);
     }
+    if (this.isAgg && (!this.pathList || !this.pathList.length)) {
+      this.pathList = [];
+      this.addPathNode();
+    }
     if (this.isAgg && (this.ctrPlay.node.getPosition(this.vec2_1), cc.Vec2.subtract(this.vec2_2, this.vec2_1, this.pathList[this.pathList.length - 1].pos), this.vec2_2.mag() > 20 && this.addPathNode(), this.pathList.length >= 1e3)) {
       e = this.gameData.getSoldierList();
       for (s = 0; s < e.length; s++) {
         var l;
         (l = e[s]).setPath(this.pathList, true);
       }
-      this.pathList.slice(0, 500);
+      this.pathList.splice(0, this.pathList.length - 500);
     }
   };
   _ctor.prototype.onCommerce = function (t) {
@@ -233,7 +277,7 @@ var def_KinghtFallGameCtrl = function (t) {
           n(true);
         }, function () {
           n(false);
-        });
+        }, "battle.map.silver");
       }
     }
     if (!this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] && this.gameData.weaponBusinessPoints.getInClick(this.vec2_1, t)) {
@@ -263,7 +307,7 @@ var def_KinghtFallGameCtrl = function (t) {
           i(true);
         }, function () {
           i(false);
-        });
+        }, "battle.map.weapon1");
       }
     }
     if (1 == this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon] && $z1KinghtFallModle.KinghtFallSwitch.isMapShopSecondOpen() && this.gameData.weaponBusinessPoints.getInClick(this.vec2_1, t)) {
@@ -293,7 +337,7 @@ var def_KinghtFallGameCtrl = function (t) {
           a(true);
         }, function () {
           a(false);
-        });
+        }, "battle.map.weapon2");
       }
     }
     if (!this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] && this.gameData.horseBusinessPoints.getInClick(this.vec2_1, t)) {
@@ -322,7 +366,7 @@ var def_KinghtFallGameCtrl = function (t) {
           o(true);
         }, function () {
           o(false);
-        });
+        }, "battle.map.horse1");
       }
     }
     if (1 == this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagHorse] && $z1KinghtFallModle.KinghtFallSwitch.isMapShopSecondOpen() && this.gameData.horseBusinessPoints.getInClick(this.vec2_1, t)) {
@@ -351,7 +395,7 @@ var def_KinghtFallGameCtrl = function (t) {
           r(true);
         }, function () {
           r(false);
-        });
+        }, "battle.map.horse2");
       }
     }
   };

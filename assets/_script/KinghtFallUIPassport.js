@@ -166,7 +166,7 @@ var def_KinghtFallUIPassport = function (t) {
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([D], 1, a.convertToWorldSpaceAR(C.position));
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setAchReward(r.ID, 2);
             n.initView();
-          });
+          }, null, "home.pass.premium");
         });
       }
       P.active = false;

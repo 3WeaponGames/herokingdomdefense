@@ -76,7 +76,7 @@ var def_KinghtFallUIBuff = function (t) {
           t.showItem(e);
         }
         t.showAni();
-      });
+      }, null, "battle.buff.refresh");
     }, this);
     this.btnGetAll.active = true;
     this.btnGetAll.on(cc.Node.EventType.TOUCH_END, function () {
@@ -99,7 +99,7 @@ var def_KinghtFallUIBuff = function (t) {
             }).delay(.1).start();
           }
         }
-      });
+      }, null, "battle.buff.takeAll");
     }, this);
     this.showAni();
     this.startGuide();

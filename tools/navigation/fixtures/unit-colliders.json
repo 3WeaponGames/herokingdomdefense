@@ -1,0 +1,506 @@
+[
+  {
+    "file": "ItemEnemy01.prefab",
+    "node": "ItemEnemy01",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy02.prefab",
+    "node": "ItemEnemy02",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy03.prefab",
+    "node": "ItemEnemy03",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy04.prefab",
+    "node": "ItemEnemy04",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy05.prefab",
+    "node": "ItemEnemy05",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy06.prefab",
+    "node": "ItemEnemy06",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy07.prefab",
+    "node": "ItemEnemy07",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy08.prefab",
+    "node": "ItemEnemy05",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy09.prefab",
+    "node": "ItemEnemy09",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "ItemEnemy10.prefab",
+    "node": "ItemEnemy10",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "PlayItemEnemy01.prefab",
+    "node": "KinghtFallSoldierItem01",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "PlayItemEnemy02.prefab",
+    "node": "PlayItemEnemy02",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "PlayItemEnemy03.prefab",
+    "node": "PlayItemEnemy03",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  },
+  {
+    "file": "PlayItemEnemy04.prefab",
+    "node": "PlayItemEnemy04",
+    "type": "cc.PhysicsPolygonCollider",
+    "points": [
+      {
+        "y": 3,
+        "x": -15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": -5,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 3,
+        "x": 15,
+        "__type__": "cc.Vec2"
+      },
+      {
+        "y": 11,
+        "x": 0,
+        "__type__": "cc.Vec2"
+      }
+    ],
+    "boundingRadius": 15.297058540778355,
+    "offset": {
+      "x": 0,
+      "y": 0
+    },
+    "scale": [
+      1,
+      1
+    ]
+  }
+]

@@ -42,15 +42,15 @@ var exp_TimeUtils = function () {
     var n = Math.floor(e.getTime() / 1e3) - t;
     n <= 0 && (n = 1);
     if (Math.floor(n / 60 / 60 / 24) > 0) {
-      return require("LanguageMgr").LanguageMgr.getInstance().t("[[loc:time.ago.days]]", [Math.floor(n / 60 / 60 / 24)]);
+      return require("LanguageMgr").LanguageMgr.getInstance().t(Math.floor(n / 60 / 60 / 24) === 1 ? "[[loc:time.ago.days.one]]" : "[[loc:time.ago.days]]", [Math.floor(n / 60 / 60 / 24)]);
     } else {
       if (Math.floor(n / 60 / 60) > 0) {
-        return require("LanguageMgr").LanguageMgr.getInstance().t("[[loc:time.ago.hours]]", [Math.floor(n / 60 / 60)]);
+        return require("LanguageMgr").LanguageMgr.getInstance().t(Math.floor(n / 60 / 60) === 1 ? "[[loc:time.ago.hours.one]]" : "[[loc:time.ago.hours]]", [Math.floor(n / 60 / 60)]);
       } else {
         if (Math.floor(n / 60) > 0) {
-          return require("LanguageMgr").LanguageMgr.getInstance().t("[[loc:time.ago.minutes]]", [Math.floor(n / 60)]);
+          return require("LanguageMgr").LanguageMgr.getInstance().t(Math.floor(n / 60) === 1 ? "[[loc:time.ago.minutes.one]]" : "[[loc:time.ago.minutes]]", [Math.floor(n / 60)]);
         } else {
-          return require("LanguageMgr").LanguageMgr.getInstance().t("[[loc:time.ago.seconds]]", [Math.floor(n)]);
+          return require("LanguageMgr").LanguageMgr.getInstance().t(Math.floor(n) === 1 ? "[[loc:time.ago.seconds.one]]" : "[[loc:time.ago.seconds]]", [Math.floor(n)]);
         }
       }
     }

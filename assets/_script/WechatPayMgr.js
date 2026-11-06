@@ -69,7 +69,7 @@ var exp_WechatPayMgr = function () {
         } else {
           o.isPaying = false;
           wx.showToast({
-            title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.wechatpaymgr.text.60]]") + t,
+            title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.wechatpaymgr.text.60]]"),
             icon: "error",
             duration: 2e3
           });
@@ -111,7 +111,7 @@ var exp_WechatPayMgr = function () {
             t && t(i);
           } else {
             wx.showToast({
-              title: n.msg,
+              title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:payment.queryFailed]]"),
               icon: 0 == n ? "success" : "error",
               duration: 2e3
             });
@@ -170,7 +170,7 @@ var exp_WechatPayMgr = function () {
             if (1 != t.code) {
               wx.hideLoading(), setTimeout(function () {
                 wx.showToast({
-                  title: t.msg,
+                  title: require("LanguageMgr").LanguageMgr.getInstance().T(0 == t.code ? "[[loc:payment.completed]]" : -6 == t.code ? "[[loc:script.wechatpaymgr.text.194]]" : "[[loc:payment.unconfirmed]]"),
                   icon: 0 == t ? "success" : "error",
                   duration: 2e3
                 });

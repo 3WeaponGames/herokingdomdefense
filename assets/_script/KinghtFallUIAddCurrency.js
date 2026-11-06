@@ -80,7 +80,7 @@ var def_KinghtFallUIAddCurrency = function (t) {
           }], 1, t.sprIcon.node.convertToWorldSpaceAR(cc.Vec2.ZERO));
         }
         t.closeUI();
-      });
+      }, null, t.goodId === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin ? "home.currency.gold" : "home.currency.gems");
     }, this);
   };
   cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labTitle1", undefined);

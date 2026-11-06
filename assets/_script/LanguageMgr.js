@@ -161,6 +161,10 @@ LanguageMgr.prototype._formatRecipe = function (template, params) {
   return { template: source.template, params: values };
 };
 LanguageMgr.prototype.getImgstr = function (path) { return path; };
+LanguageMgr.prototype.preloadArtwork = function (done) {
+  if (this._spineArtwork) this._spineArtwork.preload(done);
+  else if (done) done([]);
+};
 LanguageMgr.prototype.formatNumber = function (number) {
   var recipe = { template: "", number: Number(number) };
   return this._remember(this._render(recipe), recipe);
@@ -177,8 +181,19 @@ LanguageMgr.prototype.bindLabel = function (label, key, params) {
   this._labels.add(label);
   this.refreshLabel(label);
 };
+LanguageMgr.prototype._ownsLabel = function (label) {
+  var node = label && label.node;
+  if (!node || node._localizationGenerated || node.name === "RICHTEXT_CHILD" && cc.PrivateNode && node instanceof cc.PrivateNode) return false;
+  // EditBox placeholders are UI copy; its text label contains user input.
+  if (cc.EditBox) for (var current = node; current; current = current.parent) {
+    var input = current.getComponent && current.getComponent(cc.EditBox);
+    if (input && input.textLabel === label) return false;
+  }
+  return true;
+};
 LanguageMgr.prototype.refreshLabel = function (label) {
-  if (!label || !cc.isValid(label) || !label.node) { this._labels.delete(label); return; }
+  if (!label || !cc.isValid(label) || !label.node || !cc.isValid(label.node)) { this._labels.delete(label); return; }
+  if (!this._ownsLabel(label)) { this._labels.delete(label); return; }
   var recipe = label._localizedRecipe || this._recipe(label.string);
   label._localizedRecipe = recipe;
   var value = this._remember(this._render(recipe), recipe);
@@ -195,14 +210,16 @@ LanguageMgr.prototype.refresh = function () {
   });
   var scene = cc.director && cc.director.getScene();
   if (scene) this.refreshTree(scene);
+  if (this._spineArtwork) this._spineArtwork.refresh();
 };
 LanguageMgr.prototype.refreshTree = function (node) {
   var self = this;
   if (!node || !cc.isValid(node)) return;
   var label = node.getComponent(cc.Label) || node.getComponent(cc.RichText);
-  if (label && !node._localizationGenerated) {
+  if (label && this._ownsLabel(label)) {
     if (!label._localizedRecipe) label._localizedRecipe = this._recipe(label.string);
-    if (label._localizedRecipe.template.indexOf("[[loc:") !== -1 || this.catalog.entries[label._localizedRecipe.template]) {
+    this._applyLabelStyle(label, label._localizedRecipe);
+    if (this._isLocalized(label._localizedRecipe) || label._localizedStyleKey) {
       this._labels.add(label); this.refreshLabel(label);
     }
   }
@@ -219,6 +236,15 @@ LanguageMgr.prototype._applyLabelStyle = function (label, recipe) {
   var assetUuid = prefab && prefab._uuid;
   var key = fileId && ((assetUuid && nodeStyles[assetUuid + ":" + fileId]) || nodeStyles[fileId]);
   if (!key) key = label._localizedStyleKey;
+  if (!key && this.catalog.nodePathStyles) {
+    var parts = [], current = node;
+    while (current) {
+      parts.unshift(current.name);
+      key = this.catalog.nodePathStyles[parts.join("/")];
+      if (key) break;
+      current = current.parent;
+    }
+  }
   if (!key) {
     var match = /\[\[loc:([\w.-]+)\]\]/.exec(recipe.template);
     key = match ? match[1] : recipe.template;
@@ -229,18 +255,22 @@ LanguageMgr.prototype._applyLabelStyle = function (label, recipe) {
   if (!label._localizedBaseStyle) label._localizedBaseStyle = {
     width: node.width, height: node.height, x: node.x, y: node.y,
     fontSize: label.fontSize, lineHeight: label.lineHeight,
-    overflow: label.overflow, wrap: label.enableWrapText, maxWidth: label.maxWidth
+    overflow: label.overflow, wrap: label.enableWrapText, maxWidth: label.maxWidth,
+    horizontalAlign: label.horizontalAlign
   };
   var original = label._localizedBaseStyle;
   var style = styles[this.currentLan] || {};
   var rich = cc.RichText && label instanceof cc.RichText;
   label.fontSize = style.fontSize === undefined ? original.fontSize : style.fontSize;
   label.lineHeight = style.lineHeight === undefined ? original.lineHeight : style.lineHeight;
+  label.horizontalAlign = style.horizontalAlign === undefined ? original.horizontalAlign : style.horizontalAlign;
   if (rich) label.maxWidth = style.width === undefined ? original.maxWidth : style.width;
   else {
     label.overflow = style.overflow ? cc.Label.Overflow[style.overflow] : original.overflow;
     label.enableWrapText = style.wrap === undefined ? original.wrap : style.wrap;
-    node.setContentSize(style.width === undefined ? original.width : style.width, style.height === undefined ? original.height : style.height);
+    var height = style.height === undefined ? original.height : style.height;
+    if (style.maxLines && style.wrap) height = Math.min(height, label.lineHeight * style.maxLines + label.fontSize * 0.3);
+    node.setContentSize(style.width === undefined ? original.width : style.width, height);
   }
   if (style.x !== undefined || style.y !== undefined || label._localizedPositionOverride) {
     node.setPosition(style.x === undefined ? original.x : style.x, style.y === undefined ? original.y : style.y);
@@ -254,6 +284,10 @@ LanguageMgr.prototype.getAudit = function () {
 LanguageMgr.prototype.install = function () {
   if (typeof cc === "undefined" || typeof CC_EDITOR !== "undefined" && CC_EDITOR) return;
   var self = this;
+  if (typeof sp !== "undefined" && sp.Skeleton) {
+    this._spineArtwork = require("LocalizedArtwork").LocalizedArtwork;
+    this._spineArtwork.install(this);
+  }
   function patchLabel(Type) {
     if (!Type || Object.prototype.hasOwnProperty.call(Type.prototype, "_localizationInstalled")) return;
     var prototype = Type.prototype;
@@ -262,7 +296,8 @@ LanguageMgr.prototype.install = function () {
     Object.defineProperty(prototype, "_localizationInstalled", { value: true });
     Object.defineProperty(prototype, "string", { configurable: true, enumerable: descriptor.enumerable,
       get: descriptor.get, set: function (value) {
-        if (this._localizationWriting || this.node && this.node._localizationGenerated) return descriptor.set.call(this, value);
+        if (this._localizationWriting) return descriptor.set.call(this, value);
+        if (!self._ownsLabel(this)) { self._labels.delete(this); delete this._localizedRecipe; return descriptor.set.call(this, value); }
         var recipe = self._recipe(value);
         this._localizedRecipe = recipe;
         self._applyLabelStyle(this, recipe);
@@ -273,12 +308,30 @@ LanguageMgr.prototype.install = function () {
     });
     var onEnable = prototype.onEnable;
     prototype.onEnable = function () {
-      if (!this.node._localizationGenerated) this.string = this._localizedRecipe ? self._remember(self._render(this._localizedRecipe), this._localizedRecipe) : this.string;
+      if (self._ownsLabel(this)) this.string = this._localizedRecipe ? self._remember(self._render(this._localizedRecipe), this._localizedRecipe) : this.string;
       if (onEnable) onEnable.apply(this, arguments);
+    };
+    var onDestroy = prototype.onDestroy;
+    prototype.onDestroy = function () {
+      self._labels.delete(this);
+      if (onDestroy) onDestroy.apply(this, arguments);
     };
   }
   patchLabel(cc.Label);
   patchLabel(cc.RichText);
+  if (cc.instantiate && cc.Node && !cc.instantiate._localizationInstalled) {
+    var instantiate = cc.instantiate;
+    var localizedInstantiate = function (source) {
+      var clone = instantiate.apply(this, arguments);
+      // Prefab assets retain serialized tokens. Cloning a live Node instead
+      // copies rendered strings/frames, so carry their original bindings too.
+      if (source instanceof cc.Node && clone instanceof cc.Node) self._copyNodeBindings(source, clone);
+      return clone;
+    };
+    Object.keys(instantiate).forEach(function (key) { localizedInstantiate[key] = instantiate[key]; });
+    localizedInstantiate._localizationInstalled = true;
+    cc.instantiate = localizedInstantiate;
+  }
   if (cc.Sprite && !cc.Sprite.prototype._localizationInstalled) {
     var prototype = cc.Sprite.prototype;
     var descriptor = Object.getOwnPropertyDescriptor(prototype, "spriteFrame");
@@ -292,36 +345,99 @@ LanguageMgr.prototype.install = function () {
     });
     var onEnable = prototype.onEnable;
     prototype.onEnable = function () { if (onEnable) onEnable.apply(this, arguments); self.refreshSprite(this); };
+    var onDestroy = prototype.onDestroy;
+    prototype.onDestroy = function () {
+      self._sprites.delete(this);
+      this._localizedRequest = (this._localizedRequest || 0) + 1;
+      if (onDestroy) onDestroy.apply(this, arguments);
+    };
   }
   if (cc.director) cc.director.on(cc.Director.EVENT_AFTER_SCENE_LAUNCH, function () { self.refresh(); });
 };
+LanguageMgr.prototype._copyNodeBindings = function (source, clone) {
+  if (source._localizationGenerated) clone._localizationGenerated = true;
+  var self = this;
+  [cc.Label, cc.RichText].forEach(function (Type) {
+    if (!Type) return;
+    var label = source.getComponent(Type), copy = clone.getComponent(Type);
+    if (!label || !copy) return;
+    if (label._localizedBaseStyle) copy._localizedBaseStyle = Object.assign({}, label._localizedBaseStyle);
+    if (label._localizedStyleKey) copy._localizedStyleKey = label._localizedStyleKey;
+    if (label._localizedRecipe) {
+      copy._localizedRecipe = JSON.parse(JSON.stringify(label._localizedRecipe));
+      if (self._isLocalized(copy._localizedRecipe) || copy._localizedStyleKey) { self._labels.add(copy); self.refreshLabel(copy); }
+    }
+  });
+  var sprite = source.getComponent(cc.Sprite), image = clone.getComponent(cc.Sprite);
+  if (sprite && image && sprite._localizedOriginalFrame) {
+    image._localizedOriginalFrame = sprite._localizedOriginalFrame;
+    this.refreshSprite(image);
+  }
+  (source.children || []).forEach(function (child, index) { if (clone.children[index]) self._copyNodeBindings(child, clone.children[index]); });
+};
 // Artwork retains the original transform. Unverified source fonts stay pending.
 LanguageMgr.prototype.refreshSprite = function (sprite) {
-  if (!this.ready || !sprite || !sprite.node || !cc.isValid(sprite) || sprite._localizationWriting) return;
+  if (!this.ready || !sprite || !sprite.node || !cc.isValid(sprite) || !cc.isValid(sprite.node) || sprite._localizationWriting) return;
   var frame = sprite._localizedOriginalFrame || sprite.spriteFrame;
   var uuid = frame && frame._uuid;
   var binding = uuid && this.catalog.images[uuid];
-  if (!binding) { if (sprite._localizedOverlay) sprite._localizedOverlay.active = false; return; }
+  var request = sprite._localizedRequest = (sprite._localizedRequest || 0) + 1;
+  if (!binding) { this._sprites.delete(sprite); if (sprite._localizedOverlay) sprite._localizedOverlay.active = false; return; }
   this._sprites.add(sprite);
   sprite._localizedOriginalFrame = frame;
-  if (binding.pending || binding.preserveOriginal && this.currentLan === "zh") {
+  var originalText = binding.preserveOriginal && binding.preserveOriginal[this.currentLan];
+  var preserve = originalText === true || typeof originalText === "string" && originalText === this._entry(binding.key, this.currentLan);
+  var template = binding.template && this.catalog.artTemplates && this.catalog.artTemplates[binding.template];
+  // Template drafts have no production texture yet. Keep their original art
+  // when preview recompiles instead of hiding it under a generic text overlay.
+  if (binding.pending || template && template.pending || binding.template && !binding.artwork || preserve || binding.preserveOriginal === true && this.currentLan === "zh") {
     if (sprite._localizedOverlay) sprite._localizedOverlay.active = false;
     this._setFrame(sprite, frame); return;
   }
   var replacement = binding.artwork && binding.artwork[this.currentLan];
+  // Adding a catalog language rebuilds all ready templates. Their generated
+  // resource paths are deterministic; no manual artwork-map edit is required.
+  if (!replacement && binding.artwork && template && (!template.languages || template.languages.indexOf(this.currentLan) !== -1)) {
+    replacement = "localization/generated/" + this.currentLan + "/" + binding.template;
+  }
   if (replacement) {
     if (sprite._localizedOverlay) sprite._localizedOverlay.active = false;
     var self = this, language = this.currentLan;
-    cc.assetManager.loadAny(replacement, function (error, asset) {
-      if (!error && cc.isValid(sprite) && self.currentLan === language && sprite._localizedOriginalFrame === frame) self._setFrame(sprite, asset);
-    });
+    var loaded = function (error, asset) {
+      if (!cc.isValid(sprite) || !sprite.node || !cc.isValid(sprite.node) || self.currentLan !== language || sprite._localizedOriginalFrame !== frame || sprite._localizedRequest !== request) return;
+      if (!error && !asset) error = new Error("The artwork loader returned no SpriteFrame.");
+      if (!error && typeof cc.SpriteFrame === "function" && !(asset instanceof cc.SpriteFrame)) error = new Error("Localized artwork must be a SpriteFrame.");
+      if (error) {
+        self._setFrame(sprite, frame);
+        if (!self._missing["artwork:" + replacement] && cc.warn) cc.warn("Localized artwork failed to load: " + replacement, error);
+        self._missing["artwork:" + replacement] = true;
+      } else {
+        delete self._missing["artwork:" + replacement];
+        self._setFrame(sprite, asset);
+      }
+    };
+    try {
+      if (replacement.indexOf("localization/") === 0) cc.resources.load(replacement, cc.SpriteFrame, loaded);
+      else cc.assetManager.loadAny(replacement, loaded);
+    } catch (error) { loaded(error); }
+    return;
+  }
+  if (binding.template) {
+    // A locale excluded from a template's build list keeps its source artwork.
+    if (sprite._localizedOverlay) sprite._localizedOverlay.active = false;
+    this._setFrame(sprite, frame);
     return;
   }
   if (binding.key) this._drawTextImage(sprite, frame, binding);
 };
 LanguageMgr.prototype._setFrame = function (sprite, frame) {
+  if (!sprite || !sprite.node || !cc.isValid(sprite) || !cc.isValid(sprite.node)) return;
+  var width = sprite.node.width, height = sprite.node.height;
   sprite._localizationWriting = true;
-  try { sprite.spriteFrame = frame; } finally { sprite._localizationWriting = false; }
+  try {
+    sprite.spriteFrame = frame;
+    if (sprite.node.setContentSize) sprite.node.setContentSize(width, height);
+  } finally { sprite._localizationWriting = false; }
 };
 LanguageMgr.prototype._drawTextImage = function (sprite, frame, binding) {
   var node = sprite.node;

@@ -86,7 +86,7 @@ var def_KinghtFallUIBuildSel = function (t) {
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_building_2v1_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
             t.callBack(a);
             t.closeUI();
-          });
+          }, null, "battle.building.branch");
         }, i);
       }
     };

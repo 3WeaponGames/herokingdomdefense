@@ -14,6 +14,8 @@ var $z1Appcfg = require("Appcfg");
 var $z1AppManager = require("AppManager");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1Main = require("Main");
+var $z1TestMode = require("TestMode");
+var $z1AdPlacements = require("AdPlacements");
 (function (t) {
   t[t.ReissueSign = 0] = "ReissueSign";
   t[t.FreeLotty = 1] = "FreeLotty";
@@ -21,31 +23,129 @@ var $z1Main = require("Main");
   t[t.AdFreeTime = 3] = "AdFreeTime";
 })(exports.AdType || (exports.AdType = {}));
 var exp_SdkMgr = function () {
-  function _ctor() {}
+  function _ctor() {
+    this._activeRewardedAd = null;
+    this.lastRewardedAd = null;
+  }
   _ctor.getInstance = function () {
     null == this.instance && (this.instance = new _ctor());
     return this.instance;
   };
-  _ctor.prototype.playVideo = function (t, e, n) {
-    $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
-    $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false);
-    $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, true);
-    $z1PlatformManager.PlatformManager.getInstance().showVideoAd("", t, function () {
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, false);
-      $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, true);
-      $z1Main.default.instance.onPlayVideo(1);
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
-      $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
-      e && e();
-    }, function (t) {
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, false);
-      $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-      $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
-      $z1LogMgr.LogMgr.getInstance().debug("播放广告失败");
-      t && t.length && $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, -1, t);
-      n && n();
-    });
+  _ctor.prototype.getRewardedAdPlacements = function () {
+    return $z1AdPlacements.RewardedAdPlacements;
+  };
+  _ctor.prototype._showRewardedAdError = function (key) {
+    $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, -1, "[[loc:" + key + "]]");
+  };
+  // The fourth argument identifies the reward placement, separately from an SDK ad-unit ID.
+  _ctor.prototype.playVideo = function (t, e, n, placementId) {
+    var manager = this;
+    placementId = placementId || "legacy.rewarded";
+    if (this._activeRewardedAd) {
+      // Existing failure hooks can resume gameplay: defer them until the active ad ends.
+      n && this._activeRewardedAd.rejectedCallbacks.push(n);
+      this._showRewardedAdError("testing.adBusy");
+      return false;
+    }
+    var placement = $z1AdPlacements.RewardedAdPlacements[placementId];
+    var simulated = $z1TestMode.TestMode.getInstance().isEnabled();
+    var request = {
+      placementId: placementId,
+      simulated: simulated,
+      done: false,
+      timer: null,
+      paused: false,
+      blocked: false,
+      adStarted: false,
+      rejectedCallbacks: [],
+      result: "pending"
+    };
+    this._activeRewardedAd = request;
+    this.lastRewardedAd = request;
+    var finish = function (success, errorKey) {
+      if (request.done) {
+        return;
+      }
+      request.done = true;
+      request.result = success ? "rewarded" : "failed";
+      if (request.timer !== null) {
+        clearTimeout(request.timer);
+        request.timer = null;
+      }
+      if (manager._activeRewardedAd === request) {
+        manager._activeRewardedAd = null;
+      }
+      // Release ownership before reward callbacks, which can open or close other UI.
+      try {
+        request.adStarted && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, false);
+      } finally {
+        try {
+          request.blocked && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+        } finally {
+          request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
+        }
+      }
+      for (var i = 0; i < request.rejectedCallbacks.length; i++) {
+        try {
+          request.rejectedCallbacks[i]();
+        } catch (error) {
+          // A rejected request cannot prevent the active request from delivering its result.
+          $z1LogMgr.LogMgr.getInstance().debug(error && error.message || error);
+        }
+      }
+      request.rejectedCallbacks.length = 0;
+      $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, success);
+      if (success) {
+        $z1Main.default.instance.onPlayVideo(1);
+        e && e();
+      } else {
+        $z1LogMgr.LogMgr.getInstance().debug("Rewarded ad failed: " + placementId);
+        try {
+          manager._showRewardedAdError(errorKey || "testing.adUnavailable");
+        } finally {
+          n && n();
+        }
+      }
+    };
+    if (simulated) {
+      // Synchronous by design: preserve rewards/analytics without SDK calls or blocking.
+      finish(true);
+      return true;
+    }
+    try {
+      request.paused = true;
+      $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
+      request.blocked = true;
+      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false);
+      request.adStarted = true;
+      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, true);
+      request.timer = setTimeout(function () {
+        finish(false, "testing.adTimeout");
+      }, $z1AdPlacements.REWARDED_AD_TIMEOUT_MS);
+      $z1PlatformManager.PlatformManager.getInstance().showVideoAd(placement && placement.adUnitId || "", t, function () {
+        try {
+          finish(true);
+        } catch (error) {
+          request.callbackError = error;
+          throw error;
+        }
+      }, function () {
+        try {
+          finish(false, "testing.adUnavailable");
+        } catch (error) {
+          request.callbackError = error;
+          throw error;
+        }
+      });
+    } catch (error) {
+      // Do not misreport an exception in a completed game's reward callback as an ad failure.
+      if (request.callbackError === error) {
+        throw error;
+      }
+      $z1LogMgr.LogMgr.getInstance().debug(error && error.message || error);
+      finish(false, "testing.adUnavailable");
+    }
+    return true;
   };
   _ctor.prototype.playMultitonVideo = function (t, e, n, o, c, u) {
     $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
@@ -58,7 +158,7 @@ var exp_SdkMgr = function () {
       $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
       $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
       $z1LogMgr.LogMgr.getInstance().debug("播放广告失败");
-      t && t.length && $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, -1, t);
+      t && t.length && $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, -1, require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:testing.adUnavailable]]"));
       c && c();
     }, u);
   };

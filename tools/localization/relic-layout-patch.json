@@ -1,0 +1,156 @@
+{
+  "entries": {
+    "ui.kinghtfallhometreasurectrl.labtime.72": {
+      "en": "<b><outline color=#000000 width=4><color=#75ff10><size=56>8</size></color> more draws</outline></b>",
+      "zh": "<b><outline color=#000000 width=4>再抽<color=#75ff10><size=72>8</size></color>次</outline></b>",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:labTime"
+    },
+    "script.kinghtfalltextconfig.hometrea03.24": {
+      "en": "<b><outline color=#000000 width=4><color=#75ff10><size=56>{0}</size></color> more draws</outline></b>",
+      "zh": "<b><outline color=#000000 width=4>再抽<color=#75ff10><size=72>{0}</size></color>次</outline></b>",
+      "context": "assets\\_script\\KinghtFallTextConfig.js:24"
+    },
+    "ui.kinghtfallhometreasurectrl.labtime.75": {
+      "en": "<b><outline color=#000000 width=4>Guaranteed\n<color=#e95cff>Epic</color> or better relic</outline></b>",
+      "zh": "<b><outline color=#000000 width=4>必得<color=#e95cff>史诗</color>以上至宝</outline></b>",
+      "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:labTime; assets\\_script\\KinghtFallTextConfig.js:25"
+    },
+    "script.kinghtfalltextconfig.hometrea05.26": {
+      "en": "<b><outline color=#000000 width=4>Guaranteed <color=#e95cff>Epic</color> or better\nwithin <color=#75ff10>{0}</color> draws</outline></b>",
+      "zh": "<b><outline color=#000000 width=4>再抽<color=#75ff10>{0}</color>次必得<color=#e95cff>史诗</color>以上至宝</outline></b>",
+      "context": "assets\\_script\\KinghtFallTextConfig.js:26"
+    }
+  },
+  "labelStyles": {
+    "ui.layout.kinghtfallhometreasurectrl.5": {
+      "en": {
+        "width": 600,
+        "height": 96,
+        "fontSize": 68,
+        "lineHeight": 76,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.27": {
+      "en": {
+        "width": 248,
+        "height": 68,
+        "fontSize": 44,
+        "lineHeight": 50,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.67": {
+      "en": {
+        "width": 450,
+        "height": 86,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": -196.005
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.80": {
+      "en": {
+        "width": 340,
+        "height": 72,
+        "fontSize": 56,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.98": {
+      "en": {
+        "width": 340,
+        "height": 72,
+        "fontSize": 56,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.layout.kinghtfallhometreasurectrl.116": {
+      "en": {
+        "width": 340,
+        "height": 72,
+        "fontSize": 56,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "maxLines": 1,
+        "horizontalAlign": 1
+      }
+    },
+    "ui.kinghtfallhometreasurectrl.labtime.72": {
+      "en": {
+        "width": 660,
+        "fontSize": 44,
+        "lineHeight": 60,
+        "wrap": false,
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 165,
+        "y": 78
+      }
+    },
+    "script.kinghtfalltextconfig.hometrea03.24": {
+      "en": {
+        "width": 660,
+        "fontSize": 44,
+        "lineHeight": 60,
+        "wrap": false,
+        "maxLines": 1,
+        "horizontalAlign": 1,
+        "x": 165,
+        "y": 78
+      }
+    },
+    "ui.kinghtfallhometreasurectrl.labtime.75": {
+      "en": {
+        "width": 660,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": true,
+        "maxLines": 2,
+        "horizontalAlign": 1,
+        "x": 165,
+        "y": 19
+      }
+    },
+    "script.kinghtfalltextconfig.hometrea05.26": {
+      "en": {
+        "width": 1100,
+        "fontSize": 48,
+        "lineHeight": 56,
+        "wrap": true,
+        "maxLines": 2,
+        "horizontalAlign": 1
+      }
+    }
+  },
+  "nodeStyles": {
+    "2dDAk/zKBKBI/uRJFKz9s7": "ui.kinghtfallhometreasurectrl.labtime.72",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:2dDAk/zKBKBI/uRJFKz9s7": "ui.kinghtfallhometreasurectrl.labtime.72",
+    "15LiIeQ/RP3aM4/KEz38XS": "ui.kinghtfallhometreasurectrl.labtime.75",
+    "17cf7974-087d-4ac6-93d4-6c7823bce980:15LiIeQ/RP3aM4/KEz38XS": "ui.kinghtfallhometreasurectrl.labtime.75",
+    "e1s22B7SpGPbWCvNg4FkVk": "script.kinghtfalltextconfig.hometrea05.26",
+    "5eaa929a-463d-4b45-a656-e4d6210d8f0c:e1s22B7SpGPbWCvNg4FkVk": "script.kinghtfalltextconfig.hometrea05.26"
+  },
+  "nodePathStyles": {
+    "KinghtFallUITreasureReward/root/New RichText": "script.kinghtfalltextconfig.hometrea05.26"
+  }
+}

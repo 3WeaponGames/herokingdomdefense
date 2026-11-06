@@ -42,6 +42,8 @@ language.bindLabel(label, 'battle.wave', [waveNumber]);
 
 `bindLabel` keeps the stable key and parameters attached to the label, so switching languages preserves its meaning even when two English entries happen to have the same wording. The manager's `t`/`T` methods return translated strings for external APIs such as native platform dialogs. A serialized string or data-table field can reference an entry using `[[loc:battle.wave]]`; runtime lookup accepts either that token or a bare key. Keep words and sentence structure in translation entries. Avoid constructing sentences by concatenating language-specific fragments around variable values: use a full sentence with `{0}`, `{1}`, etc. instead.
 
+Existing internal UI helpers return stable `[[loc:...]]` or encoded `[[fmt:...]]` tokens until they reach a Label/RichText. Do not hand-edit the encoded format payload. Late-loaded prefabs, pooled UI, and live-node clones retain their translation bindings. EditBox placeholders translate; player-entered text and RichText's generated fragments are left to their owning components.
+
 Preserve placeholder names and counts across languages. Keep Cocos rich text tags such as `<b>`, `<color=#43a926>` and `</c>` balanced and equivalent. Translate the text between them. Do not translate script identifiers, asset paths, enum values, or gameplay IDs.
 
 ## Localize text in artwork
@@ -50,7 +52,7 @@ Preserve placeholder names and counts across languages. Keep Cocos rich text tag
 
 The **Layouts** tab edits locale-specific label layout rules. Search by the translation/layout key, source context, translated wording, prefab binding, or node path. Select a layout to edit its JSON, then click **Apply layout** and **Save tables**.
 
-`labelStyles` contains one object per locale. Supported fields include `width`, `height`, `fontSize`, `lineHeight`, `wrap`, `maxLines`, `overflow` (`NONE`, `CLAMP`, `SHRINK`, or `RESIZE_HEIGHT`), and optional `x`/`y`. Omitted values use the original UI layout, which preserves the source Chinese presentation when no Chinese override is needed. Check changes in the running game; changes to font size and wrapping can affect adjacent controls.
+`labelStyles` contains one object per locale. Supported fields include `width`, `height`, `fontSize`, `lineHeight`, `wrap`, `maxLines`, `overflow` (`NONE`, `CLAMP`, `SHRINK`, or `RESIZE_HEIGHT`), `horizontalAlign` (`0` left, `1` center, `2` right), and optional `x`/`y`. Omitted values use the original UI layout, which preserves the source Chinese presentation when no Chinese override is needed. Check changes in the running game; changes to font size and wrapping can affect adjacent controls.
 
 `nodeStyles` lists prefab UUID/file-ID bindings for that layout. `nodePathStyles` lists fallback node paths. These bindings let dynamic labels use the correct layout even when their displayed value changes. Edits to one layout preserve other bindings and catalog sections. To add a layout for a new label, enter an existing translation key in the **New key** field above and click **Add layout for new-key field**.
 
@@ -60,7 +62,7 @@ The **Bindings** tab binds an original SpriteFrame UUID to a translation key. Th
 
 Select a binding to edit its key, replacement/overlay mode, font size, color, outline, background, and optional text region. Region coordinates are local UI coordinates represented as `{ "x": 0, "y": 0, "width": 200, "height": 60 }`. **Apply binding** stages the artwork fields in the panel; **Save tables** writes them to the game.
 
-For an illustration that needs different artwork in a particular language, enter that locale's **SpriteFrame UUID** in the corresponding field. Leave it empty to use the text treatment. An original Chinese image can be assigned as the Chinese artwork override while other languages use text. Additional binding metadata is preserved and available in the advanced JSON field.
+For an illustration that needs different artwork in a particular language, enter that locale's SpriteFrame UUID or generated resource path in the artwork field. Generated paths have the form `localization/generated/en/tile_by` without the file extension. A published `template` binding derives the same path for newly added languages. Bindings without a template can use the text replacement/overlay treatment; unfinished template bindings retain their source image. Additional binding metadata is preserved and available in the advanced JSON field.
 
 To add a binding, first create and translate its text key. Leave that key in the **New key** field, enter the original SpriteFrame UUID in the Bindings tab, then click **Bind to new-key field**. A binding refers to a SpriteFrame, not its Texture2D UUID. Multiple uses of a SpriteFrame share its binding; use separate SpriteFrames if those uses require different translations or layouts.
 
@@ -74,6 +76,25 @@ A template has `width`, `height`, optional `source` (a neutral project image), o
 
 Template rectangles use top-left **image pixels**. Runtime binding rectangles use centered **node coordinates**; they are different coordinate systems. Font and neutral-image paths are relative to the project and restricted to files inside `assets`. An optional template `languages` list limits which locales are generated; omit it for all catalog languages.
 
+`pending: true` explicitly marks unfinished art. The compiler skips and reports that template, and the runtime retains its source image. A ready template with a missing neutral image or font is an error. Correct the source path or mark the draft pending; a successful table save alone does not mean all artwork was rebuilt.
+
+Existing field tiles, labels embedded in textures, and bound Spine atlas text use these same text entries and template controls. For Spine, `spineImages` maps each original **Texture2D UUID** to a template; this differs from sprite bindings, which use SpriteFrame UUIDs. Keep atlas dimensions, packed regions, and animation geometry unchanged. Change the words in **Text**, or font/region styling in **Text artwork**, then save and reload the preview. The runtime creates separate localized SkeletonData assets instead of editing the shared original animation asset. Startup preloads ready Spine textures before the game opens.
+
+Use exact source-wording matches when retaining original Chinese artwork. A single-text sprite binding can contain `preserveOriginal: { "zh": "兵营" }`; it uses that original only while the bound Chinese entry still equals `兵营`. An atlas with multiple text regions uses a map, for example:
+
+```json
+"preserveOriginal": {
+  "zh": {
+    "art.result.victory": "胜利",
+    "art.result.defeat": "失败"
+  }
+}
+```
+
+After any listed Chinese entry changes, the generated Chinese atlas is used. Use the exact wording actually baked into the source. Avoid `true` for editable source preservation: that legacy value always keeps the original regardless of table edits. CSV imports preserve these routing and source-match fields.
+
+Automated runtime checks cover Sprite and Spine switching, stale async requests, pooled nodes, animation timing/queues, and completion callbacks. The native Spine implementation follows the installed Creator 2.4.13 adapter but still needs a native-device test. A live native cached-animation switch restarts its animation because that adapter does not expose its elapsed frame/consumed queue; the current localized result/sign-in prefabs use realtime animation. Active crossfade identity is not retained when replacing SkeletonData.
+
 ## Verification
 
 Run **Localization → Validate Translations** for an editor-console report, or **Validate** inside the panel for clickable issues. Validation checks coverage and token consistency; it does not judge translation quality or prove that text fits.
@@ -84,4 +105,13 @@ The editor extension's CSV, validation, and safe-save tests can be run from the 
 
 ```powershell
 node packages/localization-editor/test/catalog.test.js
+node tools/localization/runtime.test.cjs
+node tools/localization/lifecycle.test.cjs
+node tools/localization/artwork-runtime.test.cjs
+node tools/localization/artwork-compiler.test.cjs
+node tools/localization/spine-artwork.test.cjs
 ```
+
+The Spine test uses the installed engine at `C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine`; set `COCOS_ENGINE_ROOT` if yours is elsewhere. These automated checks supplement visual preview testing; they do not certify translation quality, every device layout, or native deployment.
+
+For rewarded-ad testing, see [TEST_MODE.md](TEST_MODE.md). **F8** toggles the preview/debug-only mode: eligible rewarded-ad callbacks succeed without playing an ad and the supported ad caps/cooldowns are bypassed. Ownership and progression rules still apply. It is off for a fresh development profile, restores the local development preference, and cannot be enabled in release builds. Its badge and messages are normal catalog entries and translate through the same panel.

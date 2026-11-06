@@ -17,7 +17,11 @@ function dataURL(file) {
 }
 function prepare(catalog, root) {
     Catalog.structure(catalog);
-    const templates = Catalog.clone(catalog.artTemplates || {}), fonts = {};
+    const templates = Catalog.clone(catalog.artTemplates || {}), fonts = {}, pending = [];
+    Object.keys(templates).forEach(id => {
+        if (templates[id].pending !== undefined && typeof templates[id].pending !== 'boolean') throw new Error(id + ': pending must be true or false.');
+        if (templates[id].pending) { pending.push(id); delete templates[id]; }
+    });
     Object.keys(templates).forEach(id => {
         if (!Catalog.safeKey(id)) throw new Error('Invalid artwork template ID: ' + id);
         const template = templates[id];
@@ -41,11 +45,11 @@ function prepare(catalog, root) {
             });
         });
     });
-    return { catalog, templates, fonts };
+    return { catalog, templates, fonts, pending };
 }
 async function compile(catalog, root) {
     const request = prepare(catalog, root);
-    if (!Object.keys(request.templates).length) return { count: 0, outputs: [], metrics: [] };
+    if (!Object.keys(request.templates).length) return { count: 0, outputs: [], metrics: [], pending: request.pending };
     const BrowserWindow = require('electron').BrowserWindow;
     const window = new BrowserWindow({ show: false, width: 64, height: 64, webPreferences: { nodeIntegration: false, contextIsolation: true, webSecurity: true } });
     let timer;
@@ -73,7 +77,7 @@ async function compile(catalog, root) {
                 resource: 'localization/generated/' + output.locale + '/' + output.template,
                 width: output.width, height: output.height, changed };
         });
-        return { count: outputs.length, outputs, metrics: result.metrics };
+        return { count: outputs.length, outputs, metrics: result.metrics, pending: request.pending };
     } finally { clearTimeout(timer); if (!window.isDestroyed()) window.destroy(); }
 }
 module.exports = { prepare, compile };

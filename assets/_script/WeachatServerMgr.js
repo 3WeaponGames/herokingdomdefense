@@ -132,6 +132,8 @@ var exp_WeachatServerMgr = function () {
           } else if (-2 == i.code) {
             n.canUpdate = false;
             wx.showModal({
+              confirmText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeOK]]"),
+              cancelText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeBack]]"),
               title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:ui.gad_uipause.title.8]]"),
               content: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.bytedanceservermgr.text.130]]"),
               success: function (t) {
@@ -180,6 +182,8 @@ var exp_WeachatServerMgr = function () {
             } else if (-10 == t.code) {
               a.isOpened = false;
               wx.showModal({
+                confirmText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeOK]]"),
+                cancelText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeBack]]"),
                 title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.bytedanceservermgr.text.177]]"),
                 showCancel: false,
                 content: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.bytedanceservermgr.text.179]]"),

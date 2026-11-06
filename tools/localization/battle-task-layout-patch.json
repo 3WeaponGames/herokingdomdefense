@@ -1,0 +1,25 @@
+{
+  "labelStyles": {
+    "ui.layout.kinghtfalluigame.201": {
+      "en": {
+        "width": 440,
+        "height": 96,
+        "fontSize": 44,
+        "lineHeight": 46,
+        "wrap": true,
+        "maxLines": 2,
+        "overflow": "SHRINK",
+        "horizontalAlign": 0
+      }
+    },
+    "ui.layout.kinghtfalluigame.205": {
+      "en": {
+        "width": 180,
+        "height": 68.47999999999999,
+        "wrap": false,
+        "maxLines": 1,
+        "overflow": "SHRINK"
+      }
+    }
+  }
+}

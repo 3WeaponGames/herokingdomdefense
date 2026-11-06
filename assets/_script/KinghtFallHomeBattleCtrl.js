@@ -15,6 +15,7 @@ var $z1PlatformManager = require("PlatformManager");
 var $z1PoolMgr = require("PoolMgr");
 var $z1ResourceMgr = require("ResourceMgr");
 var $z1SdkMgr = require("SdkMgr");
+var TestMode = require("TestMode").TestMode;
 var $z1UIMgr = require("UIMgr");
 var $z1Utils = require("Utils");
 var $z1Config = require("Config");
@@ -91,6 +92,13 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TimeUpdate, this.showRed);
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.UpBattView, this.newSel);
+  };
+  _ctor.prototype.update = function () {
+    var bypassAdLimits = TestMode.getInstance().shouldBypassAdLimits();
+    if (this._testAdLimitBypass !== bypassAdLimits && this.subPlayTime.length) {
+      this._testAdLimitBypass = bypassAdLimits;
+      this.refreshSubView();
+    }
   };
   _ctor.prototype.initBtnListener = function () {
     var t = this;
@@ -640,11 +648,11 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().setSubTimeByIndex(t, Date.now());
           });
         };
-        if (i < this.subPlayTime[t]) {
+        if (i < this.subPlayTime[t] && !TestMode.getInstance().shouldBypassAdLimits()) {
           $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack(e.getYoumengTrack(t));
             a();
-          });
+          }, null, "home.defendWall.cooldown");
         } else {
           a();
         }
@@ -666,10 +674,11 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   _ctor.prototype.onSubView = function (t, e, n, i, a, o) {
     if (e > n) {
       var r = Math.floor((i - a) / 1e3);
-      t.getChildByName("ndMask").active = r < o;
-      t.getChildByName("Layout").active = r < o;
+      var waiting = r < o && !TestMode.getInstance().shouldBypassAdLimits();
+      t.getChildByName("ndMask").active = waiting;
+      t.getChildByName("Layout").active = waiting;
       t.getChildByName("labInfo").active = false;
-      r < o && (t.getChildByName("Layout").getChildByName("labTime").getComponent(cc.Label).string = require("LanguageMgr").LanguageMgr.getInstance().t("format.seconds", [o - r]));
+      waiting && (t.getChildByName("Layout").getChildByName("labTime").getComponent(cc.Label).string = require("LanguageMgr").LanguageMgr.getInstance().t("format.seconds", [o - r]));
     } else {
       t.getChildByName("ndMask").active = true;
       t.getChildByName("Layout").active = false;

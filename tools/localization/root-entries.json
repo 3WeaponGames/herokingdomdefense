@@ -1,5 +1,9 @@
 {
   "entries": {
+    "testing.modeBadge": { "en": "TEST MODE · F8", "zh": "测试模式 · F8", "context": "Compact development-only badge; F8 toggles test mode" },
+    "testing.adUnavailable": { "en": "No ad is available right now. Please try again.", "zh": "暂时没有可用的广告，请稍后重试。", "context": "Rewarded ad failure" },
+    "testing.adTimeout": { "en": "The ad did not finish. Please try again.", "zh": "广告未能完成，请重试。", "context": "Rewarded ad timeout" },
+    "testing.adBusy": { "en": "An ad is already in progress.", "zh": "广告正在播放中。", "context": "Rewarded ad concurrency guard" },
     "language.en": { "en": "English", "zh": "English", "context": "Native language name" },
     "language.zh": { "en": "简体中文", "zh": "简体中文", "context": "Native language name; intentionally Chinese in every locale" },
     "settings.language": { "en": "Language", "zh": "语言", "context": "In-game Settings" },

@@ -68,7 +68,7 @@ var def_KinghtFallUIVideoTips = function (t) {
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
         t.callBack(true);
         t.closeUI();
-      });
+      }, null, "battle.offer.confirm");
     }, this);
   };
   cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labTitle", undefined);

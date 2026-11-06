@@ -17,6 +17,7 @@ var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallItemHp = require("KinghtFallItemHp");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -52,6 +53,7 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.initData = function (t, e) {
     var n = this;
+    Navigation.reset(this);
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
     var i = this.node.getComponents(cc.CircleCollider);
@@ -128,26 +130,16 @@ var def_KinghtFallEnemyBase = function (t) {
             this.rigidBody.linearVelocity = cc.Vec2.ZERO;
             this.time[s.Attack] >= 1 && this.onFindList();
           } else {
-            (function (n) {
-              if (n) {
-                n.tag.getPosition(e.vec2_2);
-                cc.Vec2.subtract(e.vec2_2, e.vec2_2, e.vec2_1);
-                e.setLeft(e.vec2_2.x < 0);
-              } else if (e.bornInfo.nodeIndex > e.bornInfo.pathList.length) {
-                e.doWait();
-              } else if (e.bornInfo.nodeIndex == e.bornInfo.pathList.length) {
-                e.doWait();
-                e.bornInfo.nodeIndex++;
-              } else {
-                e.bornInfo.pathList[e.bornInfo.nodeIndex].getPosition(e.vec2_2);
-                cc.Vec2.subtract(e.vec2_2, e.vec2_2, e.vec2_1);
-                e.setLeft(e.vec2_2.x < 0);
-                e.vec2_2.len() <= 15 && e.bornInfo.nodeIndex++;
-              }
-              cc.Vec2.normalize(e.vec2_2, e.vec2_2);
-              cc.Vec2.scaleAndAdd(e.vec2_1, e.vec2_1, e.vec2_2, e.getSpeed() * t);
-              e.node.setPosition(e.vec2_1);
-            })(o);
+            var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+            var targetNode = o && o.tag;
+            if (!targetNode) {
+              targetNode = this.bornInfo.pathList[this.bornInfo.nodeIndex];
+              if (!targetNode) { this.doWait(); break; }
+            }
+            var movement = Navigation.moveTo(this, game, Navigation.positionOf(targetNode, game), t);
+            if (movement.directionX) this.setLeft(movement.directionX < 0);
+            // Authored waypoints on a collider edge resolve to a safe nearby point.
+            if (!o && movement.arrived) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
           }
       }
     }

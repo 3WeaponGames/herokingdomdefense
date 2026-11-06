@@ -115,6 +115,8 @@ var g = function () {
     };
     if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
       wx.showModal({
+        confirmText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeOK]]"),
+        cancelText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeBack]]"),
         title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.bytedanceservermgr.text.177]]"),
         content: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.serverdatamgr.text.119]]"),
         success: function (t) {
@@ -127,6 +129,8 @@ var g = function () {
       });
     } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
       tt.showModal({
+        confirmText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeOK]]"),
+        cancelText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeBack]]"),
         title: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.bytedanceservermgr.text.177]]"),
         content: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.serverdatamgr.text.119]]"),
         success: function (t) {

@@ -60,7 +60,7 @@
     <aside><select id="layoutList" size="15" aria-label="Localized label layouts"></select><button id="layoutAdd">Add layout for new-key field</button></aside>
     <section class="image-editor">
       <strong id="layoutTitle">Select a label layout</strong><p id="layoutContext" class="muted"></p>
-      <p class="muted">Each locale can set width, height, fontSize, lineHeight, wrap, maxLines, overflow, x and y. Omitted fields use the original UI values. Translate the wording in the Text tab.</p>
+      <p class="muted">Each locale can set width, height, fontSize, lineHeight, wrap, maxLines, overflow, horizontalAlign (0 left / 1 center / 2 right), x and y. Omitted fields use the original UI values. Translate the wording in the Text tab.</p>
       <textarea id="layoutJson" rows="20" spellcheck="false" aria-label="Localized label styles and node bindings JSON"></textarea>
       <p class="muted">labelStyles holds locale-specific styles. nodeStyles lists prefab UUID:fileId bindings; nodePathStyles lists fallback node paths. Existing bindings for other layouts are preserved.</p>
       <button id="layoutApply" class="primary">Apply layout</button>

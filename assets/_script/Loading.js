@@ -20,6 +20,7 @@ var $z1GameTrackDataEvent = require("GameTrackDataEvent");
 var $z1DataMgr = require("DataMgr");
 var $z1PlayerMgr = require("PlayerMgr");
 var $z1LanguageMgr = require("LanguageMgr");
+var $z1TestMode = require("TestMode");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -42,8 +43,11 @@ var def_Loading = function (t) {
   };
   _ctor.prototype.start = function () {
     var self = this;
-    $z1LanguageMgr.LanguageMgr.getInstance().init(function (error) {
-      if (!error && cc.isValid(self)) { self.loadLogo(); self.startGame(); }
+    var language = $z1LanguageMgr.LanguageMgr.getInstance();
+    language.init(function (error) {
+      if (!error && cc.isValid(self)) language.preloadArtwork(function () {
+        if (cc.isValid(self)) { self.loadLogo(); self.startGame(); }
+      });
     });
   };
   _ctor.prototype.startGame = function () {
@@ -56,6 +60,7 @@ var def_Loading = function (t) {
     $z1ResCacheMgr.ResCacheMgr.getInstance().init();
     $z1UIMgr.UIMgr.getInstance().addUICnf($z1Config.UICF);
     $z1UIMgr.UIMgr.getInstance().Init(this.uiRoot);
+    $z1TestMode.TestMode.getInstance().init();
     $z1AudioMgr.AudioMgr.getInstance().init($z1Config.AudioCF);
     $z1EventMgr.EventMgr.getInstance().on($z1Appcfg.BaseEventName.Loading, this, this.setProcessLoad);
     $z1SdkMgr.SdkMgr.getInstance().requestCheckVersion(function () {

@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-06T13:46:30.806Z",
+  "errors": [
+    {
+      "type": "missing-key",
+      "source": "assets/_script/TimeUtils.js",
+      "detail": "time.ago.days.one"
+    },
+    {
+      "type": "missing-key",
+      "source": "assets/_script/TimeUtils.js",
+      "detail": "time.ago.hours.one"
+    },
+    {
+      "type": "missing-key",
+      "source": "assets/_script/TimeUtils.js",
+      "detail": "time.ago.minutes.one"
+    },
+    {
+      "type": "missing-key",
+      "source": "assets/_script/TimeUtils.js",
+      "detail": "time.ago.seconds.one"
+    }
+  ],
+  "warnings": [],
+  "counts": {
+    "entries": 1048,
+    "tokenReferences": 2855,
+    "scriptFiles": 202,
+    "serializedTextFields": 641,
+    "styledLabels": 253,
+    "richTextBlocks": 11,
+    "editBoxes": 2,
+    "configTextFields": 1697,
+    "numericGameplayValues": 24097,
+    "unchangedGameplayStrings": 18813
+  },
+  "exemptions": [
+    "Pure numeric values and punctuation (+, -, %, /, :, parentheses) are language-neutral display data.",
+    "Inspector captions, diagnostic logs, analytics descriptions, SDK status identifiers and geographic identity-validation data are not player-facing copy.",
+    "Legacy configsB/D TextCfg tables remain unchanged reference data; LanguageMgr uses resources/localization/catalog instead.",
+    "Spine attachment/slot names and atlas resource paths identify artwork, not rendered text. Their visual lettering is covered by artwork bindings and visual review.",
+    "Player-authored names and entered gift codes or feedback are user content and must not be translated.",
+    "The removed top disclaimer and numeric ItemHp sample Label remain in the catalog but are inactive or overwritten at runtime."
+  ],
+  "summary": {
+    "passed": false,
+    "errorCount": 4,
+    "warningCount": 0
+  }
+}

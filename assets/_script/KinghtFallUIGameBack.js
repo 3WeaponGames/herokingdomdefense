@@ -48,7 +48,7 @@ var def_KinghtFallUIGameBack = function (t) {
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
         t.breakCall(t.addCoin);
         t.closeUI();
-      });
+      }, null, "battle.retry");
     }, this);
   };
   cc__decorate([ccp_property({
