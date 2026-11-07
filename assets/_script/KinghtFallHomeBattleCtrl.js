@@ -348,9 +348,22 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       if (!cc.isValid(self, true) || self._stageMonsterRequest !== request || !cc.isValid(node, true)) return;
       var source = prefab.data.getComponentInChildren(sp.Skeleton);
       if (!source || !source.skeletonData) return;
-      renderer.defaultSkin = source.defaultSkin || "default";
-      renderer.skeletonData = source.skeletonData;
-      renderer.setSkin(renderer.defaultSkin);
+      var target = source.skeletonData, skin = source.defaultSkin || "default";
+      var json = target.skeletonJson, skins = json && json.skins, names = null;
+      if (json) names = Array.isArray(skins) ? skins.map(function (entry) { return entry.name; }) : Object.keys(skins || {});
+      else if (typeof target.getSkinsEnum === "function") {
+        var enumeration = target.getSkinsEnum();
+        names = Object.keys(enumeration).filter(function (name) { return name !== "<None>" && typeof enumeration[name] === "number"; });
+      }
+      if (names) {
+        names = names.filter(function (name) { return typeof name === "string" && name.length > 0; });
+        if (names.indexOf(skin) < 0) skin = names.indexOf("default") >= 0 ? "default" : names[0] || "";
+      }
+      // Creator resets defaultSkin when skeletonData changes. Keep the target
+      // skin locally and restore it afterwards; setSkin("") asserts in JSB.
+      renderer.skeletonData = target;
+      renderer.defaultSkin = skin;
+      if (skin) renderer.setSkin(skin);
       var metadata = source.skeletonData.skeletonJson && source.skeletonData.skeletonJson.skeleton;
       var scale = 90 / Math.max(1, metadata && metadata.height || 120);
       var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;

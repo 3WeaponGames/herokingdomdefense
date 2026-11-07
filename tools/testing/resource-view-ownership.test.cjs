@@ -48,8 +48,8 @@ function fixture(){
  h.cache=h.modules.ResCacheMgr.ResCacheMgr.getInstance();h.Ctrl=h.load('BaseCtrl').default;h.UI=h.load('BaseUI').default;
  h.resources.showRuntimeRecovery=(...args)=>h.prompts.push(args);h.expire=()=>{h.time+=20;h.cache.autoRelease();};
  cc.Color={WHITE:'white'};
- h.monsterPrefab=()=>{const asset=new Prefab();asset.data={getComponentInChildren:()=>({defaultSkin:'default',skeletonData:{skeletonJson:{skeleton:{height:120}}}})};return asset;};
- h.home=()=>{const owner=new (h.load('KinghtFallHomeBattleCtrl').default)(),view={setSkin(){},setAnimation(){}},model={x:0,y:0,getComponent:()=>view};
+ h.monsterPrefab=()=>{const asset=new Prefab();asset.data={getComponentInChildren:()=>({defaultSkin:'default',skeletonData:{skeletonJson:{skeleton:{height:120},skins:[{name:'default'}]}}})};return asset;};
+ h.home=()=>{const owner=new (h.load('KinghtFallHomeBattleCtrl').default)(),view={get skeletonData(){return this._data;},set skeletonData(value){this._data=value;this.defaultSkin='';this.defaultAnimation='';},setSkin(name){assert(name&&name.length,'native name.length() > 0');assert(this._data.skeletonJson.skins.some(skin=>skin.name===name),'native foundSkin != NULL');},setAnimation(){}},model={x:0,y:0,getComponent:()=>view};
   Object.assign(owner,{selectStage:1,cfgList:[{Name:'stage',Map:'map',Level:1,WaveCfg:[],EnemyAni:'unit',Challenge:[]}],ndLevelInfo:{getChildByName(){assert(!owner.isDestroy,'destroyed preview was accessed');return model;}},T:x=>x,hideBoxReward(){},loadSpriteFrame(){}});return owner;
  };
  h.treasure=()=>{h.load('KinghtFallItemGood');h.load('KinghtFallItemTreasure');const owner=new (h.load('KinghtFallUITreasureReward').default)();
