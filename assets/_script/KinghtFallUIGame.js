@@ -125,7 +125,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.start = function () {
     var t = this;
     TestMode.getInstance().setGameplayTarget(this);
-    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.ready_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    this.playPlanningMusic();
     var entry = this._freshEntry, levelId = this.levelId, started = false;
     if (!entry) { this.initBtnEvent(); this.initEvent(); }
     this.btnAgg.getChildByName("ndTag1").active = true;
@@ -197,6 +197,13 @@ var def_KinghtFallUIGame = function (t) {
         t.startGuide();
       });
     });
+  };
+  _ctor.prototype.playPlanningMusic = function () {
+    var config = this.ctrGame && this.ctrGame.gameData && this.ctrGame.gameData.levelCfg ||
+      $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(this.levelId);
+    var audio = $z1KinghtFallConfig.KinghtFallAudioId;
+    var id = config && config.prefab === "Map03" ? audio.desert_ready_bgm : audio.ready_bgm;
+    $z1AudioMgr.AudioMgr.getInstance().playMusic(id, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
   };
   _ctor.prototype.initBtnEvent = function () {
     var t = this;
@@ -601,7 +608,7 @@ var def_KinghtFallUIGame = function (t) {
     var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = true;
     this.canBreak = false;
-    $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.ready_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+    this.playPlanningMusic();
     this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Transition;
     this.scheduleOnce(function () {
       if (!dialog.isCurrent()) return;
