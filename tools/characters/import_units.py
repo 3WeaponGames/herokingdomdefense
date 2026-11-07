@@ -10,11 +10,13 @@ import json
 import os
 from pathlib import Path
 import re
+import copy
+import struct
+import errno
+import shutil
 import time
 import uuid
 
-from PIL import Image
-from unity_monsters import convert_prefab, image_info, unpack
 
 NAMESPACE = uuid.UUID("21a5b5ed-f6ab-45ec-88a6-bad4ecc995aa")
 
@@ -42,6 +44,7 @@ def texture_meta(name, width, height):
 
 
 def atlas_pages(images, maximum=4096):
+    from PIL import Image
     pages, placements = [], {}
     page, x, y, row = 0, 2, 2, 0
     pages.append([])
@@ -111,8 +114,36 @@ class Transaction:
         self.json(relative+".meta", dict(ver="1.1.3", uuid=asset_uuid(relative), importer="folder", isBundle=False,
             bundleName="", priority=1, compressionType={}, optimizeHotUpdate={}, inlineSpriteFrames={}, isRemoteBundle={}, subMetas={}), True)
 
+    def _publish(self, source, target, before, copy_only=False):
+        """Publish atomically even when the external backup is on another disk."""
+        def check():
+            if (target.read_bytes() if target.exists() else None) != before:
+                raise ValueError("Concurrent change: " + str(target.relative_to(self.project)))
+        check()
+        if not copy_only:
+            try:
+                os.replace(source, target)
+                return
+            except OSError as error:
+                if error.errno != errno.EXDEV and getattr(error, "winerror", None) != 17:
+                    raise
+        # Creator ignores dot-prefixed files. The final rename stays on the
+        # target volume; the durable original backup always stays outside it.
+        temporary = target.parent / (".unit-import-" + uuid.uuid4().hex + ".tmp")
+        try:
+            with source.open("rb") as reader, temporary.open("xb") as writer:
+                shutil.copyfileobj(reader, writer)
+                writer.flush()
+                os.fsync(writer.fileno())
+            check()
+            os.replace(temporary, target)
+        finally:
+            if temporary.exists():
+                temporary.unlink()
+
     def commit(self):
         if not self.plan: return None
+        self.plan = dict(sorted(self.plan.items(), key=lambda pair: not pair[0].endswith(".meta")))
         stamp = str(int(time.time()*1000))+"-"+uuid.uuid4().hex[:8]
         backup = self.artifacts / ("import-"+stamp); backup.mkdir(parents=True)
         journal = dict(status="prepared", files=[])
@@ -128,22 +159,188 @@ class Transaction:
                 if current != before: raise ValueError("Concurrent change: "+relative)
             for relative, (before,after) in self.plan.items():
                 target=self.project/relative; target.parent.mkdir(parents=True,exist_ok=True)
-                os.replace(backup/"staged"/(digest(relative.encode())+".bin"),target); committed.append(relative)
+                self._publish(backup/"staged"/(digest(relative.encode())+".bin"),target,before); committed.append(relative)
+            for relative, (_,after) in self.plan.items():
+                if (self.project/relative).read_bytes()!=after: raise ValueError("Concurrent change after publication: "+relative)
             journal["status"]="complete"
         except Exception as error:
             conflicts=[]
             for relative in reversed(committed):
                 before,after=self.plan[relative]; target=self.project/relative
-                if target.read_bytes()!=after: conflicts.append(relative); continue
-                if before is None: target.unlink()
-                else: target.write_bytes(before)
+                try:
+                    if (target.read_bytes() if target.exists() else None)!=after:
+                        conflicts.append(relative); continue
+                    if before is None: target.unlink()
+                    else: self._publish(backup/"original"/(digest(relative.encode())+".bin"),target,after,copy_only=True)
+                except (OSError, ValueError):
+                    conflicts.append(relative)
             journal.update(status="recovery-required" if conflicts else "rolled-back", conflicts=conflicts, error=str(error))
             raise
         finally: logfile.write_bytes(encoded(journal))
         return str(backup)
 
 
+def _planned_read(tx, relative):
+    if relative in tx.plan:
+        return tx.plan[relative][1]
+    return tx.read(relative)
+
+
+def update_texture_dimensions(meta, width, height):
+    """Refresh derived sizes, keeping authored identifiers, settings and slices."""
+    meta = copy.deepcopy(meta)
+    old_width, old_height = meta.get("width"), meta.get("height")
+    meta["width"], meta["height"] = width, height
+    def update(rows):
+        for entry in rows.values():
+            if entry.get("importer") == "sprite-frame":
+                raw_width, raw_height = entry.get("rawWidth", old_width), entry.get("rawHeight", old_height)
+                full = (entry.get("width") == raw_width and entry.get("height") == raw_height and
+                        entry.get("trimType") != "custom" and not entry.get("trimX", 0) and
+                        not entry.get("trimY", 0) and not entry.get("rotated", False))
+                entry["rawWidth"], entry["rawHeight"] = width, height
+                if full:
+                    entry["width"], entry["height"] = width, height
+            update(entry.get("subMetas", {}))
+    update(meta.get("subMetas", {}))
+    return meta
+
+
+def stage_page_copy(tx, source, destination):
+    """Share one sibling page per pack, without duplicating imported UUIDs."""
+    raw = _planned_read(tx, source)
+    if raw is None or len(raw) < 24 or raw[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError("Missing or invalid atlas PNG: " + source)
+    expected = tx.managed.get(source)
+    if source not in tx.plan and expected and digest(raw) != expected:
+        raise ValueError("Imported atlas page was edited: " + source)
+    width, height = struct.unpack(">II", raw[16:24])
+    if not width or not height:
+        raise ValueError("Invalid atlas dimensions: " + source)
+    before = tx.read(destination)
+    if before is not None and before != raw and destination not in tx.managed:
+        raise ValueError("Unmanaged sibling atlas page already exists: " + destination)
+    tx.stage(destination, raw)
+    existing = tx.read(destination + ".meta")
+    if existing is not None:
+        meta = json.loads(existing.decode("utf-8-sig"))
+    else:
+        original = _planned_read(tx, source + ".meta")
+        meta = json.loads(original.decode("utf-8-sig")) if original else texture_meta(destination, width, height)
+        meta = copy.deepcopy(meta)
+        meta["uuid"] = asset_uuid(destination)
+        # Texture settings and unknown metadata survive in the new copy, but
+        # its asset/subasset identifiers must differ from the original page.
+        def update_subassets(rows, prefix=""):
+            for name, entry in rows.items():
+                key = prefix + name
+                if "uuid" in entry:
+                    suffix = "#sprite" if not prefix and len(rows) == 1 and entry.get("importer") == "sprite-frame" else "#submeta:" + key
+                    entry["uuid"] = asset_uuid(destination + suffix)
+                if "rawTextureUuid" in entry:
+                    entry["rawTextureUuid"] = meta["uuid"]
+                update_subassets(entry.get("subMetas", {}), key + "/")
+        update_subassets(meta.get("subMetas", {}))
+    if meta.get("importer") != "texture" or not meta.get("uuid"):
+        raise ValueError("Invalid sibling texture metadata: " + destination)
+    original_meta = _planned_read(tx, source + ".meta")
+    if original_meta and meta["uuid"] == json.loads(original_meta.decode("utf-8-sig")).get("uuid"):
+        raise ValueError("Sibling atlas page duplicates its source UUID: " + destination)
+    meta = update_texture_dimensions(meta, width, height)
+    tx.json(destination + ".meta", meta)
+    return meta
+
+
+def atlas_page_headers(raw):
+    lines = raw.decode("utf-8").splitlines(keepends=True)
+    rows = []
+    for index, line in enumerate(lines):
+        name = line.strip().lstrip("\ufeff")
+        if not name or index > 0 and lines[index - 1].strip() or index + 1 >= len(lines):
+            continue
+        if re.match(r"^(size|format):", lines[index + 1].strip()):
+            rows.append((index, name))
+    if not rows:
+        raise ValueError("Atlas has no page headers")
+    return lines, rows
+
+
+def plan_atlas_layout(tx, kinds):
+    """Repair Creator's basename-only atlas lookup; stage no gameplay edits."""
+    counts = dict(packs=0, units=0, pages=0, rewrittenAtlases=0, textureReferences=0)
+    for kind in kinds:
+        target = "assets/resources/unit-library/" + kind
+        manifest_file = target + "/catalog.json"
+        raw_manifest = tx.read(manifest_file)
+        if raw_manifest is None:
+            raise ValueError("Missing imported unit catalog: " + manifest_file)
+        manifest = json.loads(raw_manifest.decode("utf-8-sig"))
+        tx.managed.update(manifest.get("importedFiles", {}))
+        managed = dict(manifest.get("importedFiles", {}))
+        seen = {}
+        for unit in manifest.get("units", []):
+            skeleton = unit["skeleton"]
+            if not skeleton.startswith(target + "/Units/") or "/../" in skeleton or not skeleton.endswith(".json"):
+                raise ValueError("Unexpected imported unit resource: " + skeleton)
+            if tx.read(skeleton) is None:
+                raise ValueError("Missing imported skeleton: " + skeleton)
+            atlas = skeleton[:-5] + ".atlas"
+            raw = tx.read(atlas)
+            if raw is None:
+                raise ValueError("Missing unit atlas: " + atlas)
+            expected = tx.managed.get(atlas)
+            if expected and digest(raw) != expected:
+                raise ValueError("Imported unit atlas was edited: " + atlas)
+            lines, headers = atlas_page_headers(raw)
+            textures = []
+            for index, header in headers:
+                name = Path(header.replace("\\", "/")).name
+                source = target + "/Atlases/" + name
+                destination = target + "/Units/" + name
+                resolved = (tx.project / Path(atlas).parent / header).resolve()
+                if resolved not in [(tx.project / source).resolve(), (tx.project / destination).resolve()]:
+                    raise ValueError("Unmanaged unit atlas page: " + header)
+                if destination not in seen:
+                    seen[destination] = stage_page_copy(tx, source, destination)
+                    managed[destination] = digest(_planned_read(tx, destination))
+                textures.append(seen[destination]["uuid"])
+                ending = lines[index][len(lines[index].rstrip("\r\n")):]
+                bom = "\ufeff" if lines[index].startswith("\ufeff") else ""
+                lines[index] = bom + name + ending
+            after = "".join(lines).encode("utf-8")
+            if after != raw:
+                counts["rewrittenAtlases"] += 1
+            tx.stage(atlas, after)
+            managed[atlas] = digest(after)
+            metadata_file = skeleton + ".meta"
+            raw_meta = tx.read(metadata_file)
+            if raw_meta is None:
+                raise ValueError("Missing imported skeleton metadata: " + skeleton)
+            meta = json.loads(raw_meta.decode("utf-8-sig"))
+            if meta.get("uuid") != unit["uuid"]:
+                raise ValueError("Unit UUID changed outside its catalog: " + skeleton)
+            if meta.get("textures") != textures:
+                counts["textureReferences"] += 1
+                tx.json(metadata_file, dict(meta, textures=textures))
+            counts["units"] += 1
+        manifest["importedFiles"] = managed
+        tx.json(manifest_file, manifest)
+        counts["packs"] += 1
+        counts["pages"] += len(seen)
+    counts["files"] = len(tx.plan)
+    return counts
+
+
+def repair_atlas_layout(project, artifacts, kinds=None, dry_run=False):
+    tx = Transaction(project, artifacts)
+    result = plan_atlas_layout(tx, kinds or ["character-maker", "monster1", "monster2"])
+    result["backup"] = None if dry_run else tx.commit()
+    result["dryRun"] = dry_run
+    return result
+
+
 def import_pack(project, file, kind, artifacts):
+    from unity_monsters import convert_prefab, image_info, unpack
     tx=Transaction(project,artifacts)
     root="assets/resources/unit-library"; target=root+"/"+kind
     manifest_file=target+"/catalog.json"; old=tx.read(manifest_file)
@@ -156,8 +353,11 @@ def import_pack(project, file, kind, artifacts):
     atlas_lines=[]; textures=[]
     for index,(png,width,height) in enumerate(pages):
         relative=target+"/Atlases/"+kind+"-"+str(index)+".png"
-        tx.stage(relative,png); meta=tx.json(relative+".meta",texture_meta(relative,width,height),True); textures.append(meta["uuid"])
-        atlas_lines.extend(["", "../Atlases/"+kind+"-"+str(index)+".png", "size: "+str(width)+","+str(height),"format: RGBA8888","filter: Linear,Linear","repeat: none"])
+        tx.stage(relative,png); page_meta=tx.json(relative+".meta",texture_meta(relative,width,height),True)
+        tx.json(relative+".meta",update_texture_dimensions(page_meta,width,height))
+        sibling=target+"/Units/"+kind+"-"+str(index)+".png"
+        meta=stage_page_copy(tx, relative, sibling); textures.append(meta["uuid"])
+        atlas_lines.extend(["", Path(sibling).name, "size: "+str(width)+","+str(height),"format: RGBA8888","filter: Linear,Linear","repeat: none"])
         for guid,(page,x,y) in sorted(placements.items()):
             if page!=index:continue
             info=images[guid]; w,h=info["width"],info["height"]
@@ -187,6 +387,8 @@ def import_pack(project, file, kind, artifacts):
         relative=target+"/Units/"+name+".json"
         tx.json(relative,rig)
         meta=tx.json(relative+".meta",dict(ver="1.2.5",uuid=asset_uuid(relative),importer="spine",textures=textures,scale=1,subMetas={}),True)
+        if meta.get("textures") != textures:
+            meta=dict(meta,textures=textures);tx.json(relative+".meta",meta)
         tx.stage(relative[:-5]+".atlas",atlas)
         tx.json(relative[:-5]+".atlas.meta",dict(ver="1.0.3",uuid=asset_uuid(relative[:-5]+".atlas"),importer="asset",subMetas={}),True)
         units.append(dict(id=kind+"/"+name,name=name.replace("_"," "),pack=kind,source=item["name"],skeleton=relative,uuid=meta["uuid"],
@@ -209,7 +411,17 @@ def import_pack(project, file, kind, artifacts):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("package",type=Path);parser.add_argument("--kind",required=True,choices=["monster1","monster2","character-maker"])
+    parser.add_argument("package",type=Path,nargs="?");parser.add_argument("--kind",choices=["monster1","monster2","character-maker"])
+    parser.add_argument("--repair-atlas-layout",action="store_true",help="Add shared sibling atlas pages for Creator 2.4; preserve unit resources and UUIDs")
+    parser.add_argument("--dry-run",action="store_true",help="Validate an atlas-layout repair without writing files")
     parser.add_argument("--project",type=Path,default=Path(__file__).resolve().parents[2])
     parser.add_argument("--artifacts",type=Path,default=Path.home()/"Documents/Codex Artifacts/HeroKingdomDefense/unit-imports")
-    args=parser.parse_args(); print(json.dumps(import_pack(args.project,args.package,args.kind,args.artifacts),indent=2))
+    args=parser.parse_args()
+    if args.repair_atlas_layout:
+        if args.package: parser.error("Atlas layout repair does not take a Unity package")
+        result=repair_atlas_layout(args.project,args.artifacts,[args.kind] if args.kind else None,args.dry_run)
+    else:
+        if not args.package or not args.kind: parser.error("Import requires a Unity package and --kind")
+        if args.dry_run: parser.error("--dry-run is currently for --repair-atlas-layout only")
+        result=import_pack(args.project,args.package,args.kind,args.artifacts)
+    print(json.dumps(result,indent=2))
