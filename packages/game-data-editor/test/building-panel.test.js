@@ -140,18 +140,19 @@ test('barracks roster controls edit the selected branch only and retain supporte
     assert.equal(f.messages.some(item => item.message === 'game-data-editor:save'), false);
 });
 
-test('inline barracks unit statistics edit their existing shared unit record', async () => {
+test('inline barracks unit statistics edit only the allied record and preserve the matching enemy', async () => {
     const f = fixture(); f.render('3', 0);
     const branch = f.store.documents.A.data.BuildEnum['3'].levelList[0], id = String(branch.Data[1]);
-    const originalBuildingHp = branch.Hp, next = f.store.documents.A.data.SoldierCfg[id].Health + 17;
+    const originalBuildingHp = branch.Hp, enemy=clone(f.store.documents.A.data.SoldierCfg[id]), next = f.store.documents.A.data.AllyCfg[id].Health + 17;
     const summary = all(f.panel.$detail, element => element.tagName === 'summary' && element.textContent.startsWith('Assigned unit ·'))[0];
     assert(summary, 'Assigned unit section must be available.');
     const unitHp = fields(summary.parentNode, 'HP')[0];
     assert(unitHp, 'Assigned unit HP must be editable in the Buildings panel.');
     assert.match(f.panel.$detail.textContent, /shared/i);
     unitHp.value = String(next); unitHp.onchange(); await f.panel._queue;
-    assert.equal(f.store.documents.A.data.SoldierCfg[id].Health, next);
-    assert.deepEqual(clone(f.messages[0].request.edits), [{ doc: 'A', path: ['SoldierCfg', id, 'Health'], value: next }]);
+    assert.equal(f.store.documents.A.data.AllyCfg[id].Health, next);
+    assert.deepEqual(f.store.documents.A.data.SoldierCfg[id],enemy);
+    assert.deepEqual(clone(f.messages[0].request.edits), [{ doc: 'A', path: ['AllyCfg', id, 'Health'], value: next }]);
     assert.equal(f.store.documents.A.data.BuildEnum['3'].levelList[0].Hp, originalBuildingHp);
     assert.equal(f.messages.some(item => item.message === 'game-data-editor:save'), false);
 });

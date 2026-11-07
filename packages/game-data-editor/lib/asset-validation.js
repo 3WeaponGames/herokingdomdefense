@@ -193,17 +193,17 @@ function validate(root, documents, changes) {
         });
     });
     (base.BuffCfg || []).forEach((perk, index) => sprite('A', ['BuffCfg', index, 'Image'], perk.Image, 'KinghtFallIconBuff'));
-    Object.keys(base.SoldierCfg || {}).forEach(id => {
-        const unit = base.SoldierCfg[id], at = ['SoldierCfg', id];
+    for(const table of ['SoldierCfg','AllyCfg'])Object.keys(base[table] || {}).forEach(id => {
+        const unit = base[table][id], at = [table, id], allied=table==='AllyCfg';
         check('A', at.concat('prefab'), unit.prefab, name => {
             if (Number(id) >= 90011) throw new Error('Boss transformation forms have no directly spawnable prefab.');
-            const candidate = imported(root, 'KinghtFallEnemy', name, 'prefab').data;
-            const canonical = 'ItemEnemy' + String(Number(id) - 90000).padStart(2, '0');
+            const candidate = imported(root, 'KinghtFallEnemy', (allied?'Play':'')+name, 'prefab').data;
+            const canonical = (allied?'Play':'')+'ItemEnemy' + String(Number(id) - 90000).padStart(2, '0');
             const template = imported(root, 'KinghtFallEnemy', canonical, 'prefab').data;
             const types = template.filter(c => c.__type__ && c.__type__.indexOf('.') < 0).map(c => c.__type__);
             if (!types.some(type => candidate.some(c => c.__type__ === type))) throw new Error('Selected prefab has a different gameplay controller. Use a model variant of ' + canonical + '.');
             context.unitModel(candidate, template);
-            if (Number(id) <= 90004) {
+            if (!allied && !base.AllyCfg && Number(id) <= 90004) {
                 const ally = imported(root, 'KinghtFallEnemy', 'Play' + name, 'prefab').data;
                 const allyTemplate = imported(root, 'KinghtFallEnemy', 'Play' + canonical, 'prefab').data;
                 const allyTypes = allyTemplate.filter(c => c.__type__ && c.__type__.indexOf('.') < 0).map(c => c.__type__);
@@ -234,7 +234,7 @@ function validate(root, documents, changes) {
     Object.keys(overrides.unitTypes || {}).forEach(id=>{const type=overrides.unitTypes[id];if(type&&typeof type==='object')check('overrides',['unitTypes',id,'icon'],type.icon,name=>imported(root,'KinghtFallEnemy',name.startsWith('@icon/')?name:'icon/'+name,'sprite'));});
     ['timings', 'timingDefaults'].forEach(group => Object.keys(overrides[group] || {}).forEach(key => {
         const parts = key.split(':'), side = parts[0], id = Number(parts[1]), form = parts[2];
-        if (!touched(changes, 'overrides', [group, key]) && !touched(changes, 'A', ['SoldierCfg', parts[1], 'prefab'])) return;
+        if (!touched(changes, 'overrides', [group, key]) && !touched(changes, 'A', [side==='ally'&&base.AllyCfg?'AllyCfg':'SoldierCfg', parts[1], 'prefab'])) return;
         const valid = key === 'hero:hero:default' || parts.length === 3 && String(id) === parts[1] && (side === 'enemy' && ((id >= 90001 && id <= 90009 && form === 'default') || (id >= 90010 && id <= 90012 && form === String(id - 90009))) || side === 'ally' && id >= 90001 && id <= 90004 && form === 'default');
         if (!valid) { issue('overrides', [group, key], 'Timing key does not identify a reachable unit and form.'); return; }
         const item = overrides[group][key];
@@ -246,7 +246,7 @@ function validate(root, documents, changes) {
                 const controller = prefab.find(c => c.spAniBody && c.spAniDrap);
                 component = controller && prefab[controller.spAniBody.__id__];
             } else {
-                const unit = base.SoldierCfg && base.SoldierCfg[id];
+                const unit = (side==='ally'&&base.AllyCfg||base.SoldierCfg||{})[id];
                 if (!unit) throw new Error('Timing unit no longer exists.');
                 const boss = side === 'enemy' && id >= 90010;
                 const prefab = imported(root, 'KinghtFallEnemy', boss ? 'ItemEnemy10' : (side === 'ally' ? 'Play' : '') + unit.prefab, 'prefab').data;

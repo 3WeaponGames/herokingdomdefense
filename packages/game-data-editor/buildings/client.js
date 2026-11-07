@@ -63,14 +63,14 @@ function mechanics(panel, row, level, at, context) {
     } else panel._note(type === 6 ? 'Walls use their health and authored gate geometry. No attack, troop or income properties are configured.' : 'This branch has no special properties.', false, section);
     if (type === 3) {
         panel._note('Capacity and unit assignment apply to this branch. Buffs and earned bonus soldiers are added during battle. Respawn time is the delay between replacements.', false, section);
-        const id = values && values[1], unit = (panel._data('A').SoldierCfg || {})[id];
+        const data=panel._data('A'), table=data.AllyCfg?'AllyCfg':'SoldierCfg', id = values && values[1], unit = (data[table] || {})[id];
         if (unit) {
             const stats = panel._section('Assigned unit · '+panel._text(unit.Name)+' · '+id);
-            panel._note('Shared unit record: these stats also affect enemies of this type and every barracks branch using it. To change only this branch’s roster, use Soldier type above.', true, stats);
-            const primary = ['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed','BuildingCross','Suppressed','DeathAni'];
-            primary.filter(key => own(unit, key)).forEach(key => panel._value(stats, 'A', ['SoldierCfg', String(id), key], unit[key], key, {table:'SoldierCfg', id}, unit));
+            panel._note('Allied unit record: these stats affect barracks branches using this ally. Enemy records are independent. To change this branch’s roster, use Soldier type above.', false, stats);
+            const primary = ['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed','BuildingCross','CounterType','DeathAni'];
+            primary.filter(key => own(unit, key)).forEach(key => panel._value(stats, 'A', [table, String(id), key], unit[key], key, {table:'SoldierCfg', id,side:'ally'}, unit));
             const advanced = panel._section('Unit name, artwork & additional properties', undefined, true);
-            panel._properties(advanced, 'A', ['SoldierCfg', String(id)], unit, {table:'SoldierCfg', id}, primary);
+            panel._properties(advanced, 'A', [table, String(id)], unit, {table:'SoldierCfg', id,side:'ally'}, primary.concat('Suppressed'));
         } else panel._note('The assigned unit is missing. Choose an implemented allied unit above before saving.', true, section);
     }
 }
@@ -144,7 +144,7 @@ function preview(panel, row, api) {
     }
     const input = {documents:panel._snapshot.documents, version:panel._snapshot.version};
     const level = (row.record.levelList || [])[panel._level || 0];
-    const id = level && level.Data && level.Data[1], unit = (panel._data('A').SoldierCfg || {})[id];
+    const id = level && level.Data && level.Data[1], data=panel._data('A'), unit = (data.AllyCfg || data.SoldierCfg || {})[id];
     if (row.key === '3' && panel._buildingPreview === 'unit' && unit) panel._previewClient.setUnit(Object.assign(input, {type:'ally', id:String(id), record:unit}));
     else panel._previewClient.setBuilding(Object.assign(input, {id:row.key, record:row.record, levelIndex:panel._level}));
 }

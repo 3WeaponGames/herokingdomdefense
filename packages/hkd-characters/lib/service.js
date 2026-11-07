@@ -15,7 +15,7 @@ class Service{
     const cfg=read(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json')),entries=read(path.join(this.root,'assets/resources/localization/catalog.json')).entries;
     const text=value=>String(value||'').replace(/\[\[loc:([^\]]+)\]\]/g,(m,key)=>entries[key]&&entries[key].en||m);
     const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero'}];
-    for(const type of ['ally','enemy'])for(const row of Object.values(cfg.SoldierCfg)){
+    for(const type of ['ally','enemy'])for(const row of Object.values(type==='ally'&&cfg.AllyCfg||cfg.SoldierCfg)){
       if(type==='ally'&&(!row.prefab||!fs.existsSync(path.join(this.root,'assets/KinghtFallEnemy/Play'+row.prefab+'.prefab'))))continue;
       const boss=type==='enemy'&&row.ID>=90010,form=boss?String(row.ID-90009):'default';
       result.push({type,id:String(row.ID),key:type+':'+row.ID+':'+form,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies'});
@@ -31,6 +31,7 @@ class Service{
       if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!profile||typeof profile.name!=='string'||!profile.name.trim()||profile.name.length>100)throw Error('Choose a valid character name and identifier.');
       if(!profile.base||!Array.isArray(profile.parts)||profile.parts.length>40)throw Error('Invalid character base or part list.');
       if(profile.faceless!==undefined&&typeof profile.faceless!=='boolean')throw Error('Faceless must be enabled or disabled.');
+      if(profile.skinTint!==undefined&&!/^#[a-f0-9]{6}$/i.test(profile.skinTint))throw Error(profile.name+': choose a valid skin tint.');
       const rig=this.describe(profile.base,true),layers=new Map(rig.layers.map(l=>[l.uuid,l])),ids=new Set(),targets=new Set();
       if(profile.scale!==undefined&&(typeof profile.scale!=='number'||!Number.isFinite(profile.scale)||profile.scale<.1||profile.scale>4))throw Error(profile.name+': character size must be between 0.1 and 4.');
       for(const [layer,skin]of Object.entries(profile.skins||{}))if(!layers.has(layer)||!layers.get(layer).skins.includes(skin))throw Error(profile.name+': missing model skin.');

@@ -83,6 +83,8 @@ function descriptor(key, context) {
   if (key==='AttackPriority') {result.readOnly=true;result.help='Legacy authored metadata. Current runtime selects the nearest eligible target and does not read this array.';}
   if (key==='Quality') result.options=RARITIES.map((label,i)=>({value:i+1,label}));
   if (key==='BuildingCross') result.options=[{value:0,label:'Ignore building obstruction'},{value:1,label:'Respect building obstruction'}];
+  if (key==='Suppressed') {result.label='Damage bonus against';result.help='Deals the configured counter-damage multiplier to this opposing unit. Does not change target priority.';}
+  if (key==='CounterType') {result.label='Countered unit type';result.help='Applies the configured damage multiplier to every opposing unit assigned to this type. Does not change target priority.';}
   if (key==='AttackInterval') {result.min=0.000001;result.help='Runtime attack rate: higher values attack more frequently. Animation playback speed is separate.';}
   if (['Health','Hp','Zoom'].indexOf(key)>=0) result.min=0.000001;
   if (['Weight','AttackDamage','AttackRange','SearchRange','Speed','DeathAni','GoldCost','lockCose','BuildSliverCost','VedioCount','vedioCount','StartSliver','CommerceSliver','EquipLevelCap','MissionNumber','MissionType'].indexOf(key)>=0) result.min=0;
@@ -116,7 +118,7 @@ function dataDescriptor(context, index) {
     if ((id===4||id===5)&&index>0 || id===6){readOnly=true;help='Preserved authored metadata; this building does not use this property.';}
     if((id===1||id===2)&&index===1){min=0.000001;help='Runtime attack rate: higher values attack more frequently.';}
     if(id===3&&index===0){integer=true;help='Base roster size before perks and bonus soldiers.';}
-    if(id===3&&index===1){integer=true;help='Choose an implemented allied unit. Its base stats are shared with the Units panel and matching enemies.';}
+    if(id===3&&index===1){integer=true;help='Choose an implemented allied unit. Its independent stats are edited under Allies in the Units panel.';}
     if(id===3&&index===2){min=0.000001;help='Delay before one dead soldier returns.';}
   } else if(context.table==='SoldierCfg') {
     label=(UNIT_DATA[context.id] || [])[index] || label;
@@ -135,8 +137,8 @@ function validate(documents, changes) {
         const p=change.path || [];
         if(p.slice(0,Math.min(p.length,path.length)).every((key,i)=>String(key)===String(path[i]))) return true;
       }
-      if(doc==='A'&&path[0]==='BuildEnum')return change.doc==='catalog'||change.doc==='A'&&(change.path||[])[0]==='SoldierCfg'&&path[path.length-2]==='Data'&&path[path.length-1]===1;
-      return doc!=='catalog'&&((change.doc==='A'&&['SoldierCfg','BuildEnum','TalentCfg','EquipCfg','GoodsCfg'].indexOf((change.path||[])[0])>=0)||['A','B','D'].indexOf(change.doc)>=0&&(change.path||[])[0]==='LevelCfg'||change.doc==='catalog');
+      if(doc==='A'&&path[0]==='BuildEnum')return change.doc==='catalog'||change.doc==='A'&&['SoldierCfg','AllyCfg'].includes((change.path||[])[0])&&path[path.length-2]==='Data'&&path[path.length-1]===1;
+      return doc!=='catalog'&&((change.doc==='A'&&['SoldierCfg','AllyCfg','BuildEnum','TalentCfg','EquipCfg','GoodsCfg'].indexOf((change.path||[])[0])>=0)||['A','B','D'].indexOf(change.doc)>=0&&(change.path||[])[0]==='LevelCfg'||change.doc==='catalog');
     });
   }
   function issue(doc,path,message,severity) {issues.push({severity:severity || (touched(doc,path)?'error':'warning'),doc,path,message});}
@@ -190,15 +192,16 @@ function validate(documents, changes) {
     const available=(base.BuffCfg||[]).filter(p=>p.Quality===rarity&&!p.Unlock&&p.Weight>0);
     if(!available.length)issue('A',['BuffCfg'],'Rarity '+RARITIES[rarity-1]+' needs a positive-weight perk available without a talent prerequisite.');
   }
-  Object.keys(units).forEach(id=>{
-    const unit=units[id],p=['SoldierCfg',id];
+  for(const table of ['SoldierCfg','AllyCfg'])Object.keys(base[table]||{}).forEach(id=>{
+    const unit=base[table][id],p=[table,id],opponents=table==='AllyCfg'?units:base.AllyCfg||units;
     if(unit.ID!==Number(id))issue('A',p.concat('ID'),'Unit ID must match its table key.');
     ['Health','AttackInterval'].forEach(k=>number('A',p.concat(k),unit[k],Number.MIN_VALUE,false));
     ['AttackDamage','AttackRange','SearchRange','Speed','DeathAni'].forEach(k=>{if(own(unit,k))number('A',p.concat(k),unit[k],0,false);});
-    if(unit.Suppressed&&!units[unit.Suppressed])issue('A',p.concat('Suppressed'),'Countered unit does not exist.');
+    if(unit.CounterType===undefined&&unit.Suppressed&&!opponents[unit.Suppressed])issue('A',p.concat('Suppressed'),'Opposing unit does not exist.');
+    if(unit.CounterType!==undefined&&(typeof unit.CounterType!=='string'||unit.CounterType&&!((docs.overrides||base.GameTools||{}).unitTypes||{})[unit.CounterType]))issue('A',p.concat('CounterType'),'Choose an existing unit type, or None.');
     (unit.AttackPriority||[]).forEach((v,i)=>{if([1,2,3,4].indexOf(v)<0)issue('A',p.concat('AttackPriority',i),'Unknown target priority.');});
     (unit.Data||[]).forEach((v,i)=>number('A',p.concat('Data',i),v,0,false));
-    if((id==='90010'||id==='90011')&&(!unit.Data||!units[unit.Data[2]]))issue('A',p.concat('Data',2),'Next boss form must exist.');
+    if(table==='SoldierCfg'&&(id==='90010'||id==='90011')&&(!unit.Data||!units[unit.Data[2]]))issue('A',p.concat('Data',2),'Next boss form must exist.');
   });
   Object.keys(base.BuildEnum||{}).filter(id=>id!=='0').forEach(id=>{
     const building=base.BuildEnum[id],p=['BuildEnum',id],levels=building.levelList;
@@ -217,7 +220,8 @@ function validate(documents, changes) {
       const expected=id==='1'||id==='2'||id==='3'?3:id==='4'||id==='5'?1:0;
       if(expected&&(!Array.isArray(level.Data)||level.Data.length<expected))issue('A',q.concat('Data'),'Building properties are missing required runtime values.');
       if(Array.isArray(level.Data))level.Data.forEach((v,j)=>{const d=dataDescriptor({table:'BuildEnum',id},j);number('A',q.concat('Data',j),v,d.min,d.integer);});
-      if(id==='3'&&Array.isArray(level.Data)&&(!units[level.Data[1]]||!units[level.Data[1]].prefab||level.Data[1]<90001||level.Data[1]>90004))issue('A',q.concat('Data',1),'Barracks unit must have an authored allied prefab (90001–90004).');
+      const allies=base.AllyCfg||units;
+      if(id==='3'&&Array.isArray(level.Data)&&(!allies[level.Data[1]]||!allies[level.Data[1]].prefab||level.Data[1]<90001||level.Data[1]>90004))issue('A',q.concat('Data',1),'Barracks unit must have an authored allied prefab (90001–90004).');
     });
     const visiting=new Set(),done=new Set();function visit(n){if(visiting.has(n))return true;if(done.has(n))return false;visiting.add(n);if((graph[n]||[]).some(visit))return true;visiting.delete(n);done.add(n);return false;}
     if(Object.keys(graph).some(k=>visit(Number(k))))issue('A',p.concat('levelList'),'Upgrade branches contain a cycle.');
@@ -295,6 +299,12 @@ function validate(documents, changes) {
       if(overrides[group]!==undefined&&(!overrides[group]||typeof overrides[group]!=='object'||Array.isArray(overrides[group]))){issue('overrides',[group],'Attack timings must be a unit timing table.');return;}
       Object.keys(overrides[group]||{}).forEach(key=>{const item=overrides[group][key],parts=key.split(':');if(parts.length!==3||['hero','enemy','ally'].indexOf(parts[0])<0)issue('overrides',[group,key],'Timing must identify a unit, attack side and form.');if(parts[0]!=='hero'&&!units[parts[1]])issue('overrides',[group,key],'Timing unit does not exist.');if(!item||typeof item.attack!=='number'||!Number.isFinite(item.attack)||item.attack<0||item.attack>10)issue('overrides',[group,key],'Attack time must be between 0 and 10 seconds.');});
     });
+    if(overrides.animationSpeeds!==undefined&&(!overrides.animationSpeeds||typeof overrides.animationSpeeds!=='object'||Array.isArray(overrides.animationSpeeds)))issue('overrides',['animationSpeeds'],'Attack animation speeds must be a unit table.');
+    for(const [key,speed]of Object.entries(overrides.animationSpeeds||{})){
+      const [side,id,form,...extra]=key.split(':'),enemyForm=side==='enemy'&&Number(id)>=90010?String(Number(id)-90009):'default';
+      if(extra.length||(side==='hero'?(key!=='hero:hero:default'):(!['enemy','ally'].includes(side)||!units[id]||side==='ally'&&(Number(id)<90001||Number(id)>90004)||form!==enemyForm)))issue('overrides',['animationSpeeds',key],'Choose a reachable unit and form.');
+      if(typeof speed!=='number'||!Number.isFinite(speed)||speed<.1||speed>4)issue('overrides',['animationSpeeds',key],'Attack animation speed must be between 0.1 and 4.');
+    }
     const perks=overrides.perks||{};
     Object.keys(perks).forEach(id=>{if(!(base.BuffCfg||[]).some(p=>String(p.ID)===id))issue('overrides',['perks',id],'Perk does not exist.');if(!perks[id]||typeof perks[id].enabled!=='boolean')issue('overrides',['perks',id],'Perk override requires an enabled switch.');});
     if(Object.keys(perks).length){

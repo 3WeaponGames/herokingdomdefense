@@ -29,11 +29,13 @@ var def_KinghtFallUITreasureInfo = function (t) {
     e.ndPro = null;
     e.ndLock = null;
     e.btnGold = null;
+    e.readOnly = false;
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.init = function (t) {
+  _ctor.prototype.init = function (t, readOnly) {
     this.cfg = t;
+    this.readOnly = !!readOnly;
     this.cfgGoods = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(this.cfg.goodID);
   };
   _ctor.prototype.start = function () {
@@ -44,7 +46,7 @@ var def_KinghtFallUITreasureInfo = function (t) {
   _ctor.prototype.initBtnListener = function () {
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
     this.node.getChildByName("bg").on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
-    this.btnGold.on(cc.Node.EventType.TOUCH_END, this.onGoldBtnClick, this);
+    if (!this.readOnly) this.btnGold.on(cc.Node.EventType.TOUCH_END, this.onGoldBtnClick, this);
   };
   _ctor.prototype.initView = function () {
     var t = this;
@@ -73,12 +75,15 @@ var def_KinghtFallUITreasureInfo = function (t) {
       this.btnGold.active = false;
     } else {
       this.ndLock.active = false;
+      this.ndPro.active = true;
+      this.btnGold.active = !this.readOnly;
       this.ndPro.getChildByName("labPro").getComponent(cc.Label).string = this.info.frame + "/" + this.cfg.levelInfo[this.info.level - 1].PieceCost;
       this.ndPro.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.info.frame / this.cfg.levelInfo[this.info.level - 1].PieceCost;
       this.btnGold.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(this.cfg.levelInfo[this.info.level - 1].GoldCost);
     }
   };
   _ctor.prototype.onGoldBtnClick = function () {
+    if (this.readOnly) return;
     var self = this, player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
     this.info = player.getUserData().getTreasureLevel(this.cfg.ID);
     if (!this.info || this.info.level >= this.cfg.levelInfo.length) return;

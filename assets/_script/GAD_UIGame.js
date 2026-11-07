@@ -56,6 +56,14 @@ var def_GAD_UIGame = function (t) {
   var n;
   cc__extends(_ctor, t);
   n = _ctor;
+  _ctor.prototype.init = function (entry) {
+    this._wallAdmission = null;
+    if (!entry) return;
+    var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+    var admitted = player.admitWallDefense(entry.cost, function () { return entry.isCurrent() && player.getUserData().getMaxStage() >= entry.unlockStage; });
+    if (!admitted) { this.isclose = true; return; }
+    this._wallAdmission = admitted;
+  };
   _ctor.prototype.onLoad = function () {
     this._waveLevelCfgs = $z1GAD_DataMgr.default.getInstance().getWaveCfgs($z1GAD_PlayerMgr.default.getInstance().getLevel());
     n.script = this;
@@ -74,7 +82,7 @@ var def_GAD_UIGame = function (t) {
     this.scheduleOnce(function () {
       t._fenceLine = .5 * -cc.winSize.height + $z1GAD_Configs.GADConfig.BottomHeight;
       t.ndFence.y = t._fenceLine;
-      t._rewardRun = $z1GAD_PlayerMgr.default.getInstance().beginRun();
+      t._rewardRun = $z1GAD_PlayerMgr.default.getInstance().beginRun(t._wallAdmission);
       $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
       t.buildWave();
     });

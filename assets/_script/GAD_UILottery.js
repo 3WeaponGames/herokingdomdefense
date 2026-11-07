@@ -120,7 +120,7 @@ var def_GAD_UILottery = function (t) {
       i.getComponent(cc.Sprite).spriteFrame = this.buffSpArr[1];
     }
     a.string = e.buffLabel;
-    o.string = $z1Utils.Utils.StringFormat(e.buffValue, n);
+    o.string = $z1Utils.Utils.StringFormat(e.buffValue, require("LanguageMgr").LanguageMgr.getInstance().formatNumber(n, "battle"));
   };
   _ctor.prototype.doAnimation = function () {
     var t = this;
@@ -160,6 +160,7 @@ var def_GAD_UILottery = function (t) {
   };
   _ctor.prototype.swapCards = function () {
     var t = this;
+    if (this.isclose || !cc.isValid(this, true)) return;
     if (this.changeNum <= 0) {
       this.scheduleOnce(function () {
         t.standPos();
@@ -170,33 +171,30 @@ var def_GAD_UILottery = function (t) {
       var i = (n = this.shuffleArray(n))[0];
       var a = n[1];
       var o = e[i];
-      var r = o.position;
+      var r = o.position.clone();
       var s = e[a];
-      var l = s.position;
-      var c = .01 * this.changeNum;
-      cc.tween(o).to(c, {
-        position: l
-      }).start();
-      cc.tween(s).to(c, {
-        position: r
-      }).call(function () {
+      var l = s.position.clone();
+      var c = Math.max(.2, .02 * this.changeNum);
+      var completed = 0;
+      // Native actions advance per target. Wait for both chests so the next
+      // swap cannot capture the other chest's unfinished position.
+      var onComplete = function () {
+        if (++completed !== 2 || t.isclose || !cc.isValid(t, true)) return;
         t.changeNum--;
         t.swapCards();
-      }).start();
+      };
+      cc.tween(o).to(c, {
+        position: l
+      }).call(onComplete).start();
+      cc.tween(s).to(c, {
+        position: r
+      }).call(onComplete).start();
     }
   };
   _ctor.prototype.standPos = function () {
-    var t = this;
-    this.shuffleArray(this.startPosArr);
-    for (var e in this.nodeLayer.children) {
-      var n = this.nodeLayer.children[e];
-      n.setPosition(this.startPosArr[0]);
-      cc.tween(n).delay(.1).to(.1, {
-        position: new cc.Vec3(this.startPosArr[e].x, this.startPosArr[e].y, 0)
-      }).call(function () {
-        t.canTouch = true;
-      }).start();
-    }
+    // The completed swaps already occupy the three slots. A final hidden
+    // re-deal would erase the identity the player just followed.
+    this.canTouch = !this.isclose && cc.isValid(this, true) && this.selectNum > 0;
   };
   _ctor.prototype.shuffleArray = function (t) {
     var e;

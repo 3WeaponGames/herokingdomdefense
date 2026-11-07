@@ -1,6 +1,7 @@
 'use strict';
 const Placement=require('./lib/placement');
 const LabelScrub=require('./lib/label-scrub');
+const CharacterOptions=require('./lib/character-options');
 function mount(host,api){
   const itemMode=api.kind==='items';
   const el=(tag,text,parent,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;if(parent)parent.appendChild(n);return n;};
@@ -112,11 +113,17 @@ function mount(host,api){
       delete p.base.mount;
       p.parts=[];p.skins={};p.models={};p.faceless=value.startsWith('character-maker/');selectedPart='';
       changed();loadRig();
-    },[{value:'',label:'Current unit model'},...sources.map(source=>({value:source.id,label:(source.pack==='character-maker'?'Character Maker':source.pack==='monster1'?'Monster Pack 1':'Monster Pack 2')+' · '+source.name}))]);
+    },[{value:'',label:'Current unit model'},...CharacterOptions.characterSources(sources,p.base.source).map(source=>({value:source.id,label:(source.pack==='character-maker'?'Character Maker':'Current saved monster')+' · '+source.name}))]);
     if(!itemMode&&p.base.source&&p.base.source.startsWith('character-maker/'))field(inspector,'Horse',p.base.mount||'',chooseHorse,[{value:'',label:'No horse'},{value:'legacy-cavalry',label:'Original cavalry horse'},{value:'hero-horse',label:'Hero horses (choose a skin below)'}]);
     if(!itemMode&&rig&&rig.layers.some(layer=>layer.json.slots.some(slot=>api.core.isFacialSlot(slot.name)))){
-      check(inspector,'Faceless',!!p.faceless,value=>{p.faceless=value;changed();});
-      el('p','Hide eyes, facial hair and expressions through every animation. Head and helmets remain visible.',inspector,'help');
+      check(inspector,'Faceless (hide eyes)',!!p.faceless,value=>{p.faceless=value;changed();});
+      el('p','Hide only the eyes through every animation. Beards, hair, eyebrows and other parts stay visible.',inspector,'help');
+    }
+    if(!itemMode&&api.core.skinTint(p)){
+      const value=api.core.skinTint(p),presets=CharacterOptions.skinTones.slice();if(!presets.some(preset=>preset.value===value))presets.unshift({value,label:'Custom'});
+      let picker;const tone=field(inspector,'Skin tone',value,v=>{p.skinTint=v;if(picker)picker.value=v;changed();},presets);
+      picker=tintField(inspector,'Skin tint',value,v=>{p.skinTint=v;if(!presets.some(preset=>preset.value===v)){let custom=Array.from(tone.options).find(option=>option.textContent==='Custom');if(!custom)custom=el('option','Custom',tone);custom.value=v;}tone.value=v;});
+      el('p','Colors the exposed head and body only. Armor, weapons, hair and beards keep their own colors.',inspector,'help');
     }
     const size=field(inspector,'Character size',p.scale===undefined?1:p.scale,v=>{const n=Number(v);if(!Number.isFinite(n)||n<.1||n>4){size.value=p.scale||1;return;}p.scale=n;changed();});size.type='number';size.min=.1;size.max=4;size.step=.05;if(itemMode)size.parentElement.hidden=true;
     if(!itemMode)check(inspector,'Use this look for this unit',data.assignments[(unitFor(p)||{}).key]===selected,value=>{const key=unitFor(p).key;if(value)data.assignments[key]=selected;else if(data.assignments[key]===selected)delete data.assignments[key];renderLooks();changed();});
@@ -187,12 +194,12 @@ function mount(host,api){
   function fitBounds(includeCurrent){if(!spine||!layers.length)return;api.renderer.seek(spine,baseLayers,'idle',0,false);let b=api.renderer.bounds(spine,baseLayers);if(includeCurrent){const c=api.renderer.bounds(spine,layers);b={minX:Math.min(b.minX,c.minX),minY:Math.min(b.minY,c.minY),maxX:Math.max(b.maxX,c.maxX),maxY:Math.max(b.maxY,c.maxY)};b.width=b.maxX-b.minX;b.height=b.maxY-b.minY;}poseBounds={...b,minX:b.minX-12,minY:b.minY-3,maxX:b.maxX+12,maxY:b.maxY+18,width:b.width+24,height:b.height+21};}
   function prepareFitting(){
     const p=profile();if(!p||!layers.length||Date.now()<fittingRetryAfter)return;
-    const signature=JSON.stringify([p.parts,p.skins||{},!!p.faceless]);if(signature===fittingKey)return;
+    const signature=JSON.stringify([p.parts,p.skins||{},!!p.faceless,api.core.skinTint(p)]);if(signature===fittingKey)return;
     const serial=token,sprites=[...new Set(p.parts.map(v=>v.sprite))];
     fittingKey=signature;
     Promise.all(sprites.map(async id=>[id,await imageFor(assets[id])])).then(loaded=>{if(disposed||serial!==token||signature!==fittingKey)return;
       states.forEach(api.core.restore);const textures=Object.fromEntries(loaded.map(([id,img])=>[id,new spine.FakeTexture(img)]));
-      states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless}));draw();const shape=JSON.stringify(p.parts.map(part=>[part.id,part.sprite,part.layer]));if(!drag&&shape!==viewFitKey){viewFitKey=shape;fitBounds(true);draw();}
+      states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless,skinTint:api.core.skinTint(p)}));draw();const shape=JSON.stringify(p.parts.map(part=>[part.id,part.sprite,part.layer]));if(!drag&&shape!==viewFitKey){viewFitKey=shape;fitBounds(true);draw();}
     }).catch(error=>{if(!disposed&&serial===token&&signature===fittingKey){fittingKey='';fittingRetryAfter=Date.now()+1000;message(error.message,true);}});
   }
   function draw(){
@@ -234,7 +241,7 @@ function mount(host,api){
   function step(amount){playing=false;play.textContent='Play';time=Math.max(0,Math.min(duration,time+amount/30));draw();}
   animation.onchange=()=>{time=0;updateDuration();draw();};scrub.oninput=()=>{playing=false;play.textContent='Play';time=Number(scrub.value);draw();};
   function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time=(time+(now-last)/1000*Number(speed.value))%duration;draw();}last=now;raf=requestAnimationFrame(frame);}
-  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;parts=result.parts;units=result.units;sources=result.sources||[];search.placeholder='Search '+parts.length+' parts…';assets=Object.fromEntries(parts.map(p=>[p.id,p]));lastSent=JSON.stringify(data);const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(p=>p.category))].sort()){const option=el('option',name,category);option.value=name;}unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
+  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;parts=itemMode?result.parts:CharacterOptions.characterParts(result.parts);units=result.units;sources=result.sources||[];search.placeholder='Search '+parts.length+' parts…';assets=Object.fromEntries(result.parts.map(p=>[p.id,p]));lastSent=JSON.stringify(data);const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(p=>p.category))].sort()){const option=el('option',name,category);option.value=name;}unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
   return {destroy(){disposed=true;token++;if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(original.canvas);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,loaded:!!layers.length,silent:true};}};
 }
 module.exports={mount};

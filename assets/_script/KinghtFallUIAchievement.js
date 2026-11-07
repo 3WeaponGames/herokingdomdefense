@@ -203,6 +203,18 @@ var def_KinghtFallUIAchievement = function (t) {
         f.active = false;
         m.active = true;
     }
+    this.layoutDescription(t);
+  };
+  _ctor.prototype.layoutDescription = function (row) {
+    var description = row.getChildByName("labInfo"), label = description.getComponent(cc.RichText);
+    var finish = row.getChildByName("ndFinish");
+    var right = row.width * (1 - row.anchorX) - 16;
+    if (finish.active) {
+      var button = finish.getChildByName("btnGet");
+      if (!button.active) button = finish.getChildByName("btnFinish");
+      right = Math.min(right, finish.x + (button.x - button.width * button.anchorX * Math.abs(button.scaleX)) * Math.abs(finish.scaleX) - 16);
+    }
+    label.maxWidth = Math.max(32, (right - description.x) / Math.abs(description.scaleX));
   };
   cc__decorate([ccp_property({
     type: cc.Node,

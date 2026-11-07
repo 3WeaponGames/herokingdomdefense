@@ -3521,8 +3521,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -318.948,
-        492.346,
+        319,
+        607,
         0,
         0,
         0,
@@ -3605,8 +3605,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -318.22,
-        396.266,
+        319,
+        511,
         0,
         0,
         0,
@@ -3648,7 +3648,7 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        0,
+        -34,
         -30,
         0,
         0,
@@ -4357,8 +4357,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -279.606,
-        579.537,
+        -315,
+        607,
         0,
         0,
         0,
@@ -4588,8 +4588,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        1.198,
-        571.572,
+        30,
+        607,
         0,
         0,
         0,
@@ -4603,26 +4603,26 @@
     }
   },
     {
-    "__type__": "cc.Node",
-    "_name": "labName",
-    "_opacity": 204,
-    "_parent": {
+        "__type__": "cc.Node",
+        "_name": "labName",
+        "_opacity": 255,
+        "_parent": {
       "__id__": 236
     },
-    "_components": [
+        "_components": [
       {
         "__id__": 238
       }
     ],
-    "_prefab": {
+        "_prefab": {
       "__id__": 239
     },
-    "_contentSize": {
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 0,
       "height": 90.72
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
         0,
@@ -4637,12 +4637,19 @@
         0.5
       ],
       "__type__": "TypedArray"
-    }
-  },
+    },
+        "_color": {
+            "__type__": "cc.Color",
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 255
+        }
+    },
     {
     "__type__": "cc.Label",
-    "_fontSize": 72,
-    "_lineHeight": 72,
+    "_fontSize": 84,
+    "_lineHeight": 98,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -4706,8 +4713,8 @@
   },
     {
     "__type__": "cc.Label",
-    "_fontSize": 67,
-    "_lineHeight": 78,
+    "_fontSize": 54,
+    "_lineHeight": 64,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,

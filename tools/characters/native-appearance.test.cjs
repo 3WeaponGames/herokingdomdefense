@@ -24,6 +24,7 @@ function fixture(options = {}) {
   const calls = { prepare: 0, apply: 0, restore: 0 };
   const browserCore = {
     actorKey: Core.actorKey,
+    skinTint: Core.skinTint,
     prepare(_runtime, skeleton) {
       calls.prepare++;
       assert.equal(!!(native || options.rendererNative), false, 'native actors must retain native attachments');

@@ -22,8 +22,10 @@ exports.createResult = function (run, config, treasures, inventory, random) {
   for (var wave = config.wavesPerItem; wave <= cleared; wave += config.wavesPerItem) {
     var band = config.rarityBands[config.rarityBands.length - 1];
     for (var i = 0; i < config.rarityBands.length; i++) if (wave <= config.rarityBands[i].throughWave) { band = config.rarityBands[i]; break; }
-    var total = band.weights.reduce(function (sum, weight) { return sum + weight; }, 0), roll = random() * total, quality = 1;
-    for (i = 0; i < band.weights.length; i++) { roll -= band.weights[i]; if (roll < 0) { quality = i + 1; break; } }
+    // Weights run common -> legendary. Authored Relic qualities run in reverse:
+    // 4 green, 3 blue, 2 purple, 1 orange. Keep the existing item IDs/qualities.
+    var total = band.weights.reduce(function (sum, weight) { return sum + weight; }, 0), roll = random() * total, quality = 4;
+    for (i = 0; i < band.weights.length; i++) { roll -= band.weights[i]; if (roll < 0) { quality = 4 - i; break; } }
     var tier = treasures.filter(function (item) { return item.Quality === quality; });
     var useful = tier.filter(function (item) { return needsPieces(item, owned[item.ID]); });
     // An exhausted tier retains its normal conversion, never a higher-rarity reroll.

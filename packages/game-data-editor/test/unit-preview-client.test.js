@@ -61,6 +61,18 @@ async function main(){
         button(f.root,'Mirror model: Off').onclick();assert.equal(f.client.getState().mirrored,true);const change=f.edits[0][0];assert.deepStrictEqual(change.path,['visuals']);assert.equal(change.value['enemy:90001:default'].mirrorX,true);assert.equal(change.value['enemy:90001:default'].unknown,7);assert.equal(change.value['ally:90001:default'].mirrorX,true);assert.equal(f.client.getState().effect,.5);
         f.request.documents.overrides.data.visuals['enemy:90001:default'].mirrorX=false;f.client.setUnit(f.request);assert.equal(f.client.getState().mirrored,false);assert.equal(f.edits.length,1);f.client.destroy();
     });
+    await test('saved attack playback is an independent draft with stable gold and authored reference markers',async()=>{
+        const f=fixture({default:.5,custom:.7});await flush();assert.equal(f.edits.length,0);assert.equal(f.client.getState().attackSpeed,1);
+        const speed=field(f.root,'Attack animation speed (saved)');speed.value='1.2';speed.onchange();
+        assert.equal(f.client.getState().attackSpeed,1.2);assert.equal(f.client.getState().effect,.7);
+        assert.deepStrictEqual(f.edits,[[{doc:'overrides',path:['animationSpeeds'],value:{'enemy:90001:default':1.2}}]]);
+        assert.equal(all(f.root,n=>n.className==='preview-marker reference')[0].style.left,'40%');
+        assert.equal(all(f.root,n=>n.className==='preview-marker active')[0].style.left,'70%');
+        f.request.documents.overrides.data.animationSpeeds={[f.description.key]:.8};f.client.setUnit(f.request);assert.equal(f.client.getState().attackSpeed,.8);
+        button(f.root,'Reset attack speed').onclick();assert.equal(f.client.getState().attackSpeed,1);assert.equal(f.client.getState().effect,.7);
+        assert.deepStrictEqual(f.edits[1],[{doc:'overrides',path:['animationSpeeds'],value:{}}]);
+        const count=f.edits.length;for(const value of ['0','5','NaN']){speed.value=value;speed.onchange();assert.equal(f.edits.length,count);}f.client.destroy();
+    });
     console.log(checks+' unit preview marker checks passed.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

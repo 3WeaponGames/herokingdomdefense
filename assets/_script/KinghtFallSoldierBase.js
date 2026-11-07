@@ -67,6 +67,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.outBuild = t;
   };
   _ctor.prototype.initData = function (t) {
+    if (cc.resources) require("UnitHitFeedback").reset(this);
     GameToolsOverrides.cancel(this);
     var e = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
@@ -88,7 +89,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this._retaliationTarget = null;
     this._retaliationTime = 0;
     this._retaliationPosition = null;
-    this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t, "ally");
     if (this.spAni) this.setLeft(false);
     this.attackRange = this.cfg.AttackRange;
     var n = this.node.getComponents(cc.CircleCollider);
@@ -98,9 +99,9 @@ var def_KinghtFallSoldierBase = function (t) {
       this.node.addComponent(cc.CircleCollider).radius = this.attackRange;
     }
     if (n[1]) {
-      n[1].radius = this.attackRange + this.cfg.SearchRange;
+      n[1].radius = this.getSightRange();
     } else {
-      this.node.addComponent(cc.CircleCollider).radius = this.attackRange + this.cfg.SearchRange;
+      this.node.addComponent(cc.CircleCollider).radius = this.getSightRange();
     }
     var i = 1;
     var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.talentAdd[$z1KinghtFallEnum.KinghtFallEnumTalentCfg.TalenType02];
@@ -189,7 +190,7 @@ var def_KinghtFallSoldierBase = function (t) {
         this._retaliationTime = 3;
         this._retaliationPosition = position;
       }
-      var searchRange = this.attackRange + this.cfg.SearchRange;
+      var searchRange = this.getSightRange();
       if (target && target === this._retaliationTarget && this._retaliationTime > 0) searchRange += target.attackRange || target.cfg && target.cfg.AttackRange || 0;
       if (target && (target.isDead() || !target.node.activeInHierarchy || target.node._combatGeneration !== this._orderTargetGeneration || cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > searchRange)) {
         target = this._orderTarget = null;
@@ -204,8 +205,8 @@ var def_KinghtFallSoldierBase = function (t) {
         this._orderTargetGeneration = target && target.node._combatGeneration;
         this._targetRefresh = .2;
       }
-      if (target && this.isHoldingPosition() && !(target === this._retaliationTarget && this._retaliationTime > 0 && target.node._combatGeneration === this._retaliationGeneration) &&
-          cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > this.attackRange) target = this._orderTarget = null;
+      if (target && this.isHoldingPosition() && this.rallyPoint && !(target === this._retaliationTarget && this._retaliationTime > 0 && target.node._combatGeneration === this._retaliationGeneration) &&
+          cc.Vec2.distance(this.rallyPoint.pos, Navigation.positionOf(target.node, game)) > this.getSightRange()) target = this._orderTarget = null;
       var goal = null, formation = null;
       if (target) {
         goal = Navigation.positionOf(target.node, game);
@@ -354,12 +355,16 @@ var def_KinghtFallSoldierBase = function (t) {
       var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
       for (var n = 0; n < e.length; n++) {
         var i = e[n];
-        if (!i.isDead() && (i.node.getPosition(t.vec2_2), cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1), t.vec2_2.len() <= t.attackRange + t.cfg.SearchRange)) {
+        if (!i.isDead() && (i.node.getPosition(t.vec2_2), cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1), t.vec2_2.len() <= t.getSightRange())) {
           return true;
         }
       }
       return false;
     }()));
+  };
+  _ctor.prototype.getSightRange = function () {
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame, heroRange = game.ctrPlay && game.ctrPlay.attackRange;
+    return Math.max(this.attackRange, typeof heroRange === "number" && isFinite(heroRange) && heroRange > 0 ? heroRange : this.attackRange + this.cfg.SearchRange);
   };
   _ctor.prototype.getFind = function () {
     var attacker = this._retaliationTarget;
@@ -367,15 +372,17 @@ var def_KinghtFallSoldierBase = function (t) {
       attacker.node.getPosition(this.vec2_2);
       var retaliationDistance = cc.Vec2.distance(this.vec2_1, this.vec2_2);
       var attackerRange = attacker.attackRange || attacker.cfg && attacker.cfg.AttackRange || 0;
-      if (retaliationDistance <= this.attackRange + this.cfg.SearchRange + attackerRange) return { tag: attacker, canAtt: retaliationDistance <= this.attackRange };
+      if (retaliationDistance <= this.getSightRange() + attackerRange) return { tag: attacker, canAtt: retaliationDistance <= this.attackRange };
     }
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     var e = null;
     var n = -1;
-    var scanRange = this.isHoldingPosition() ? this.attackRange : this.attackRange + this.cfg.SearchRange;
+    var scanRange = this.getSightRange(), game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var post = this.isHoldingPosition() && this.rallyPoint && this.rallyPoint.pos;
     for (var i = 0; i < t.length; i++) {
       var a = t[i];
       if (!a.isDead()) {
+        if (post && cc.Vec2.distance(post, Navigation.positionOf(a.node, game)) > scanRange) continue;
         a.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
         if (this.vec2_2.len() <= scanRange && (-1 == n || this.vec2_2.len() < n)) {
@@ -442,7 +449,7 @@ var def_KinghtFallSoldierBase = function (t) {
     }();
     if (n) {
       n.node.getPosition(this.vec2_2);
-      this.cfg.Suppressed == n.cfg.ID && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
+      GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       n.onAttacked(e);
       $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
       $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(n.node.getPosition(), "xb_gj");
@@ -473,6 +480,7 @@ var def_KinghtFallSoldierBase = function (t) {
         }
       }
       this.hp -= t * e;
+      if (t * e > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         this.state = s.Dead;
         this._followSelected = false;
@@ -496,6 +504,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    if (cc.resources) require("UnitHitFeedback").reset(this);
     this._followSelected = false;
     this.isAgg = false;
     this._personalRallyPoint = null;
@@ -611,8 +620,9 @@ var def_KinghtFallSoldierBase = function (t) {
       if (saved) this.setPersonalRallyPoint(saved, false);
       this._rallyOrder = order;
       if (!this._personalRallyPoint) {
-        this.setPersonalRallyPoint(game.rallyPoint ? game.rallyPoint.pos : Navigation.positionOf(this.node, game), false);
-        if (game._separateArmyCommands) this._rallyOrder = game.rallyPoint;
+        // A Rally click orders the current roster once. New troops keep their
+        // own spawn/post until explicitly rallied or recruited into Follow.
+        this.setPersonalRallyPoint(!game._separateArmyCommands && game.rallyPoint ? game.rallyPoint.pos : Navigation.positionOf(this.node, game), false);
       }
       this.isAgg = !!game.isAgg && !!this._followSelected && !this.isDead() && this.node.activeInHierarchy;
       this.rallyPoint = this.isAgg ? null : this._personalRallyPoint;

@@ -39,7 +39,7 @@ function scrolling(held, frameByFrameRenderNum = 0) {
     _columnGap: 0, _lineGap: 0, _topGap: 0, _lastDisplayData: [0, 1, 2], _scrollItem: held ? children[0] : null,
     content, frameByFrameRenderNum, _updateCounter: 0, _updateDone: true,
     _pool: { put(node) { children = children.filter(x => x !== node); } },
-    _calcViewPos() { this.viewTop = -10; this.viewBottom = -40; }, _calcNearestItem() {},
+    _calcViewPos() { this.viewTop = -20; this.viewBottom = -50; }, _calcNearestItem() {},
     _createOrUpdateItem(data) { created.push(data.id); if (!children.some(x => x._listId === data.id)) children.push({ _listId: data.id });
       if (!this._lastDisplayData.includes(data.id)) this._lastDisplayData.push(data.id); } });
   return { list, created, children: () => children.map(x => x._listId) };
@@ -48,7 +48,7 @@ function scrolling(held, frameByFrameRenderNum = 0) {
 test('equal-size virtual windows render their incoming row while a dragged outgoing row is retained', () => {
   for (const held of [false, true]) {
     const h = scrolling(held); h.list._onScrolling();
-    assert.deepEqual(Array.from(h.list.displayData, x => x.id), [1, 2, 3]);
+    assert.deepEqual(Array.from(h.list.displayData, x => x.id), [1, 2, 3, 4, 5], 'one extra row is prepared on either side of the viewport');
     assert.ok(h.children().includes(3));
     assert.equal(h.children().includes(0), held, 'the drag-owned row must not be pooled early');
   }

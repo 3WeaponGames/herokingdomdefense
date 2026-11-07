@@ -22,7 +22,7 @@ test('building catalog shows every authored type and branch without modifying so
 });
 test('barracks roster options match implemented allies and branch summaries expose assignments',()=>{
   assert.deepEqual(Model.alliedUnits(base,catalog,'en').map(o=>o.value),[90001,90002,90003,90004]);
-  const d=Schema.clone(base);delete d.SoldierCfg['90002'].prefab;
+  const d=Schema.clone(base);delete (d.AllyCfg||d.SoldierCfg)['90002'].prefab;
   assert(!Model.alliedUnits(d,catalog,'en').some(o=>o.value===90002));
   assert(Model.branches(base.BuildEnum['3'],'3',base,catalog,'en').every(b=>b.unit&&/respawn/.test(b.summary)));
   assert(/silver/.test(Model.branchSummary(4,base.BuildEnum['4'].levelList[0],base,catalog,'en')));
@@ -51,8 +51,8 @@ test('unsafe roster, rate, level and upgrade connection drafts are rejected with
     assert(issues.some(i=>i.severity==='error'),id+':'+key.join('.')+'='+JSON.stringify(value));
     assert.equal(JSON.stringify(d),before,'invalid drafts are reported, never repaired');
   }
-  const d=docs();delete d.A.data.SoldierCfg['90001'].prefab;
-  assert(buildingIssues(d,[{doc:'A',path:['SoldierCfg','90001','prefab']}]).some(i=>i.severity==='error'&&/Barracks unit/.test(i.message)));
+  const d=docs();delete d.A.data.AllyCfg['90001'].prefab;
+  assert(buildingIssues(d,[{doc:'A',path:['AllyCfg','90001','prefab']}]).some(i=>i.severity==='error'&&/Barracks unit/.test(i.message)));
 });
 test('unrelated legacy building problems remain advisory and valid roster edits preserve unknown fields',()=>{
   const d=docs();d.A.data.BuildEnum['2'].levelList[0].level=-1;

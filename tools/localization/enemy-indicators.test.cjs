@@ -88,4 +88,14 @@ test('custom monster pictograms preserve aspect ratio, reject stale callbacks an
   loadPictogram.call(f.state,record,90002);pending[2](Error('missing native texture'));assert.equal(fallback,1);assert.equal(sprite.spriteFrame.key,'icon/90002');near(icon.width,width);near(icon.height,height);assert.equal(icon.color,'#ffffff');
  }finally{manager.getInstance=previous;delete cc.resources;delete cc.color;}
 });
+test('every monster and boss form uses its own head through the guarded Resources loader',()=>{
+ const f=fixture(),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance,pending=[];
+ manager.getInstance=()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]});cc.resources={};
+ try{f.state.loadSpriteFrame=(bundle,key,done)=>pending.push({bundle,key,done});const record={id:90001,ndItem:f.indicator()};
+  for(const unit of Object.values(config.SoldierCfg)){record.id=unit.ID;loadPictogram.call(f.state,record,unit.ID);}
+  assert.equal(pending.length,12);assert(pending.every(p=>p.bundle==='resources'&&p.key.startsWith('icons/enemy-heads/')));assert.equal(new Set(pending.map(p=>p.key)).size,12);
+  const sprite=record.ndItem.getChildByName('sprIcon').getComponent(Sprite);pending[0].done({getOriginalSize:()=>({width:128,height:128})});assert.equal(sprite.spriteFrame,undefined);
+  const current={getOriginalSize:()=>({width:128,height:128})};pending.at(-1).done(current);assert.equal(sprite.spriteFrame,current);
+ }finally{manager.getInstance=previous;delete cc.resources;}
+});
 console.log(passed+' enemy indicator HUD-layout checks passed.');

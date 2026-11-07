@@ -59,6 +59,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.setBody(this.spAni.node);
   };
   _ctor.prototype.initData = function (t, e) {
+    if (cc.resources) require("UnitHitFeedback").reset(this);
     GameToolsOverrides.cancel(this);
     this.releaseHealingEffects();
     var n = this;
@@ -501,7 +502,7 @@ var def_KinghtFallEnemyBase = function (t) {
     }();
     if (n) {
       n.node.getPosition(this.vec2_2);
-      n.cfg && this.cfg.Suppressed == n.cfg.ID && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
+      GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
       $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(this.vec2_2.clone(), "xb_gj");
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
@@ -515,15 +516,25 @@ var def_KinghtFallEnemyBase = function (t) {
     var e;
     if (!this.isDead()) {
       this.hp -= t;
+      if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         this.state = r.Dead;
         $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
         this.delAllBuff();
         this.freeNode();
-        var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getTaskInfo();
+        var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
+        if (missions.recordQuestEvent) {
+          var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+          var form = this.spIdx === undefined ? "default" : String(this.spIdx + 1);
+          var role = data && data.GameTools && data.GameTools.unitTypeAssignments && data.GameTools.unitTypeAssignments["enemy:" + this.cfg.ID + ":" + form];
+          missions.recordQuestEvent($z1KinghtFallEnum.KinghtFallEnumTaskEnum.SoldierDefeated, 1, false, role);
+        }
+        else {
+        var n = missions.getTaskInfo();
         if (n.type == $z1KinghtFallEnum.KinghtFallEnumTaskEnum.SoldierDefeated) {
           n.num++;
           $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setTaskInfo(n);
+        }
         }
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.Kill, 1);
       }
@@ -532,6 +543,7 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);
     this.releaseHealingEffects();
     GameToolsOverrides.cancel(this);

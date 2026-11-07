@@ -5,7 +5,7 @@ const root=path.resolve(__dirname,'../../..');
 const original={};
 ['A','B','D'].forEach(key=>original[key]={data:JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig'+(key==='A'?'':key)+'/GameJsonCfg.json'),'utf8'))});
 original.catalog={data:JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'),'utf8'))};
-original.overrides={data:{version:1,timings:{},parameters:{},perks:{}}};
+original.overrides={data:Schema.clone(original.A.data.GameTools||{version:1,timings:{},parameters:{},perks:{}})};
 const baseline=Schema.validate(original),fingerprint=i=>i.doc+':'+JSON.stringify(i.path)+':'+i.message,known=new Set(baseline.map(fingerprint));
 const fixture=()=>Schema.clone(original);
 const introduced=docs=>Schema.validate(docs).filter(i=>!known.has(fingerprint(i))&&i.severity==='error');
@@ -32,4 +32,9 @@ test('disabling the entire available perk pool is rejected',()=>{const d=fixture
 test('unused targeting metadata is read-only rather than a nonfunctional editor control',()=>{assert.strictEqual(Schema.descriptor('AttackPriority').readOnly,true);assert(/does not read/.test(Schema.descriptor('AttackPriority').help));});
 test('stage wave removal validates dependent equipment unlocks',()=>{const d=fixture();d.A.data.LevelCfg[0].WaveCfg.pop();const issues=Schema.validate(d,[{doc:'A',path:['LevelCfg',0,'WaveCfg']}]);assert(issues.some(i=>i.severity==='error'&&/Equipment unlock/.test(i.message)));});
 test('composite shared settings reject negative, malformed and unknown reward values without changing authored sentinel locks',()=>{const good=fixture();assert(!Schema.validate(good).some(i=>i.path[0]==='ParameterCfg'));for(const [id,value]of [['60005','-5,15'],['60005','5,NaN'],['60005','5'],['60009','999999,10'],['60009','2002,-1'],['60008','-2,0'],['60008','1,-1']]){const d=fixture();d.A.data.ParameterCfg[id].Value=value;assert(Schema.validate(d).some(i=>i.path[0]==='ParameterCfg'&&i.path[1]===id&&i.severity==='error'),id+':'+value);}const legacy=fixture();legacy.A.data.ParameterCfg['60005'].Value='-5,15';const issues=Schema.validate(legacy,[{doc:'A',path:['ParameterCfg','60018','Value']}]).filter(i=>i.path[0]==='ParameterCfg'&&i.path[1]==='60005');assert(issues.length&&issues.every(i=>i.severity==='warning'));});
+test('saved attack playback validates per side and form without seeding any defaults',()=>{
+ const d=fixture(),defaults=JSON.stringify(d.overrides.data.timingDefaults);d.overrides.data.animationSpeeds={'enemy:90001:default':1.2,'ally:90004:default':.8,'hero:hero:default':1.1,'enemy:90011:2':1.5};
+ assert.deepStrictEqual(introduced(d),[]);assert.equal(JSON.stringify(d.overrides.data.timingDefaults),defaults);
+ for(const [key,value]of [['enemy:90001:default',0],['enemy:90001:default',4.1],['enemy:90001:default','1.2'],['ally:90012:default',1],['enemy:90011:default',1],['hero:wrong:default',1]]){const bad=fixture();bad.overrides.data.animationSpeeds={[key]:value};assert(introduced(bad).some(x=>x.path[0]==='animationSpeeds'));}
+});
 console.log(passed+' editor schema tests passed.');

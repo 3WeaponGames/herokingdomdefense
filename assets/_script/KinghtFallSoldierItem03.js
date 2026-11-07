@@ -65,7 +65,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
       return void i.ctr.setTag(i.pos, n.node, function () {
         var i;
         if (cc.isValid(n) && cc.isValid(n.node)) {
-          if (t.cfg.Suppressed && t.cfg.Suppressed == (null === (i = n.cfg) || undefined === i ? undefined : i.ID)) {
+          if (GameToolsOverrides.counters(t, n)) {
             var a = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
             e *= a;
           }

@@ -56,3 +56,14 @@ Creator UUIDs, rejects edited PNG overwrites, checks for concurrent changes, and
 keeps transaction backups outside the repository. Reimporting unchanged content
 performs no writes. Unity C# scripts, Unity demo scenes and editor logo textures
 are excluded.
+
+## GUI PRO Kit icons
+
+The requested GUI PRO Kit - Casual Game artwork is available as Cocos sprite frames:
+
+- `assets/resources/icons/Pictograms`: all 320 pictograms.
+- `assets/resources/icons/GUI-Pro/Icons`: the 90 GUI icons from the reference sheet.
+
+All images are original 128px PNGs copied byte-for-byte. Rune icons, demo extras and 256px/512px duplicate sets are excluded. Search the icon chooser by the source name, or use `@icon/icons/Pictograms/Pictoicon_Account` or `@icon/icons/GUI-Pro/Icons/Icon_Battle`.
+
+Source GUIDs and hashes are recorded in `tools/icons/pictograms.catalog.json` and `tools/icons/gui-pro.catalog.json`. Reimport with `node tools/icons/import-pictograms.cjs "path/to/GUI PRO Kit - Casual Game"` and `node tools/icons/import-gui-icons.cjs "path/to/GUI PRO Kit - Casual Game"`. Reimport preserves UUIDs, performs no writes for unchanged content and refuses to replace locally edited artwork.

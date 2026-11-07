@@ -17,6 +17,7 @@ function harness() {
     EventMgr: { EventMgr: { getInstance: () => ({ emit: (...args) => events.push(args) }) } },
     KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getTaskCfgById: () => ({ ID: 1, MissionType: 1 }) }) } }
   };
+  modules.QuestBoardCore = require('../../assets/_script/QuestBoardCore');
   function load(name) {
     if (modules[name]) return modules[name];
     const context = { exports: {}, require: id => modules[id] || {}, console, Date: Clock,

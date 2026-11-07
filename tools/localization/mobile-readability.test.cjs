@@ -32,8 +32,13 @@ test('Every authored Label and RichText has readable mobile typography in both l
   assert.ok(count>=335,'The audit must cover the full authored label set');
 });
 test('Primary captions and world-building names retain their readable defaults',()=>{
-  for(const key of ['ui.layout.kinghtfalluinewmodular.35','ui.mobile.kinghtfalluigame.241','ui.layout.kinghtfalluigame.201'])
+  for(const key of ['ui.layout.kinghtfalluinewmodular.35','ui.layout.kinghtfalluigame.201'])
     for(const language of ['en','zh'])assert.ok(catalog.labelStyles[key][language].fontSize*.5*.48>=15.99,key+' '+language);
+  // The battle header intentionally makes the wave a smaller secondary line.
+  for(const language of ['en','zh']){
+    assert.equal(catalog.labelStyles['ui.mobile.kinghtfalluigame.241'][language].fontSize,54);
+    assert.equal(catalog.labelStyles['ui.mobile.kinghtfalluigame.238'][language].fontSize,84);
+  }
   for(const binding of Object.values(catalog.images).filter(b=>b.template?.startsWith('tile_'))){
     assert.ok(binding.readableText?.neutral,'Building captions need clean background art');
     assert.ok(binding.readableText.minimumCssPixels>=14,'World captions must not shrink into their image');

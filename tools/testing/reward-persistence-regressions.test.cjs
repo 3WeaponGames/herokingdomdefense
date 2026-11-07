@@ -22,6 +22,7 @@ function harness(saved = {}) {
   };
   Base.prototype.normalizeSaveRecord = (data, defaults) => Object.assign({}, defaults, data);
   Base.prototype.init = function () {};
+  modules.QuestBoardCore = require('../../assets/_script/QuestBoardCore');
   function load(name) {
     if (modules[name]) return modules[name];
     const ctx = { exports: {}, require: name => modules[name] || {}, console: { log() {}, error() {} },

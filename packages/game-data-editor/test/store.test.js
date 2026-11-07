@@ -84,4 +84,11 @@ test('interrupted transactions are surfaced but only explicitly recovered',()=>{
 });
 test('prototype paths and undefined values cannot be authored',()=>{const s=fixture().store;assert.throws(()=>edit(s,'A',['__proto__','x'],1),/Invalid field/);assert.throws(()=>edit(s,'A',['unknown','keep'],undefined),/value is required/);});
 test('JSON structural writes retain untouched value tokens',()=>{const input='{\n  "a": 1e2,\n  "b": {"x":1,"y":2}\n}\n',before=JSON.parse(input),after=JSON.parse(input);after.c={attack:.125};const output=Json.patch(input,before,after);assert(output.includes('"a": 1e2'));assert(output.includes('"b": {"x":1,"y":2}'));assert.deepStrictEqual(JSON.parse(output),after);assert.equal(Json.patch(input,before,before),input);});
+test('attack playback stays in a draft until Save and preserves defaults, unknown fields and independent sides',()=>{
+ const f=fixture(),s=f.store,p=Object.keys(f.docs)[0],before=fs.readFileSync(path.join(f.root,p));
+ edit(s,'overrides',['animationSpeeds'],{'ally:90004:default':1.2,'enemy:90004:default':.8});assert.deepStrictEqual(fs.readFileSync(path.join(f.root,p)),before);
+ const originalTiming=JSON.stringify(s.documents.overrides.data.timingDefaults);s.save({version:s.version});
+ const saved=JSON.parse(f.read(p));assert.deepStrictEqual(saved.GameTools.animationSpeeds,{'ally:90004:default':1.2,'enemy:90004:default':.8});assert.equal(saved.unknown.spell,100);assert.equal(JSON.stringify(saved.GameTools.timingDefaults),originalTiming);
+ const noOp=f.read(p);assert.equal(s.save({version:s.version}).result.noChanges,true);assert.equal(f.read(p),noOp);
+});
 console.log(passed+' store tests passed');

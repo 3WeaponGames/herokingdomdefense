@@ -11,6 +11,7 @@ function ipc(message,payload){return new Promise((resolve,reject)=>{
 });}
 function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 function button(label,action,cls){const n=node('button',label,cls);n.type='button';n.onclick=action;return n;}
+function openPanel(kind){return Promise.resolve().then(()=>{if(!own(TITLES,kind))throw Error('Unknown tool panel');if(Editor.Panel&&typeof Editor.Panel.open==='function')return Editor.Panel.open('hkd-'+kind);return ipc('open-panel',kind);});}
 function clear(el){while(el.firstChild)el.removeChild(el.firstChild);}
 function stripRich(text){return String(text||'').replace(/<[^>]*>/g,'');}
 function get(obj,keys){return keys.reduce((v,key)=>v==null?undefined:v[key],obj);}
@@ -89,7 +90,7 @@ function create(kind){
       if(kind==='units'){
         add('hero','Hero','Base stats are linked to Equipment',{},[],{unitType:'hero'});
         Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id];add('enemy:'+id,this._text(r.Name),(r.prefab?'Enemy':'Boss form')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
-        Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=data.SoldierCfg[id];add('ally:'+id,this._text(r.Name)+' · Ally','Shared base stats with enemy '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
+        Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=(data.AllyCfg||data.SoldierCfg)[id];add('ally:'+id,this._text(r.Name)+' · Ally','Allied unit - independent stats',r,[data.AllyCfg?'AllyCfg':'SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
       }
       if(kind==='unit-types')Object.keys(this._data('overrides').unitTypes||{}).forEach(id=>{const type=this._data('overrides').unitTypes[id],assigned=Object.values(this._data('overrides').unitTypeAssignments||{}).filter(value=>value===id).length;add(id,type.name,id+' - '+assigned+' unit assignment(s)',type,['unitTypes',id],{doc:'overrides',icon:type.icon});});
       if(kind==='settings'){
@@ -161,7 +162,7 @@ function create(kind){
         if(key==='Data'){
           const fields=node('div',undefined,'gt-fields');block.appendChild(fields);value.forEach((v,i)=>{
             const d=Schema.dataDescriptor(context,i);
-            if(context.table==='BuildEnum'&&Number(context.id)===3&&i===1)d.options=this._unitOptions(false).filter(o=>o.value>=90001&&o.value<=90004);
+            if(context.table==='BuildEnum'&&Number(context.id)===3&&i===1)d.options=this._unitOptions(false,'ally').filter(o=>o.value>=90001&&o.value<=90004);
             if(context.table==='SoldierCfg'&&[90010,90011].indexOf(Number(context.id))>=0&&i===2)d.options=this._unitOptions(true).filter(o=>o.value!==-1);
             this._field(fields,d.label,v,n=>this._set(doc,keys.concat(i),n),d);
           });return;
@@ -188,9 +189,10 @@ function create(kind){
       if(typeof value==='object'){const block=this._section(meta.label,container,true);this._properties(block,doc,keys,value,context);return;}
       if(key==='kindID')meta.options=Object.keys(this._data('A').TalentCfg||{}).map(id=>({value:Number(id),label:this._text(this._data('A').TalentCfg[id].Name)}));
       if(key==='Suppressed')meta.options=this._unitOptions(true).filter(x=>x.value!==-1);
+      if(key==='CounterType')meta.options=[{value:'',label:'None'},...Object.entries(this._data('overrides').unitTypes||{}).map(([value,type])=>({value,label:type.name}))];
       this._field(container,meta.label,value,v=>this._set(doc,keys,v),meta);
     },
-    _unitOptions(forms){const units=this._data('A').SoldierCfg||{};return [{value:-1,label:'Wait (spawn ticks)'}].concat(Object.keys(units).filter(id=>forms||units[id].prefab).map(id=>({value:Number(id),label:this._text(units[id].Name)+' · '+id})));},
+    _unitOptions(forms,side){const data=this._data('A'),units=(side==='ally'&&data.AllyCfg)||data.SoldierCfg||{};return [{value:-1,label:'Wait (spawn ticks)'}].concat(Object.keys(units).filter(id=>forms||units[id].prefab).map(id=>({value:Number(id),label:this._text(units[id].Name)+' · '+id})));},
     _rewardRows(parent,doc,keys,rewards){
       const goods=this._data('A').GoodsCfg||{},options=Object.keys(goods).map(id=>({value:Number(id),label:this._text(goods[id].Name||goods[id].name||id)+' · '+id}));
       rewards.forEach((reward,i)=>{const row=node('div',undefined,'gt-array-row');parent.appendChild(row);this._field(row,'Reward item',reward[0],v=>this._set(doc,keys.concat(i,0),v),{options});this._field(row,'Amount',reward[1],v=>this._set(doc,keys.concat(i,1),v),{integer:true,min:0});row.appendChild(button('Remove',()=>{const next=clone(rewards);next.splice(i,1);this._set(doc,keys,next);},'gt-mini'));});parent.appendChild(button('Add reward',()=>this._set(doc,keys,rewards.concat([[2001,1]])),'gt-mini'));
@@ -292,19 +294,20 @@ function create(kind){
         this._note('The hero combines equipment stats and layered animated equipment. Choose levels in the silent preview; those choices never change player progression.');
         const fields=this._section('Base stats from equipment');
         (this._data('A').EquipCfg||[]).forEach((equipment,i)=>{const r=equipment.levelInfo[0];this._field(fields,Schema.EQUIPMENT[i]+' · level 1',r.Parameters,value=>this._set('A',['EquipCfg',i,'levelInfo',0,'Parameters'],value),{min:0,help:'Shared source: Equipment. Open Equipment for every upgrade level.'});});
-        fields.appendChild(button('Open Equipment panel',()=>ipc('open-panel','equipment').catch(e=>this._status(e.message,true))));return;
+        fields.appendChild(button('Open Equipment panel',()=>openPanel('equipment').catch(e=>this._status(e.message,true))));return;
       }
-      const id=Number(row.unitID);if(id>=90001&&id<=90004)this._note('This base stat record is shared by the enemy and allied soldier of this type. Timing overrides are scoped separately to the selected side.',true);
+      const id=Number(row.unitID);this._note(row.unitType==='ally'?'Allied unit: its name, model, stats, equipment and timing are independent of enemies.':'Enemy unit: its name, model, stats and timing are independent of allies.');
       if(!row.record.prefab)this._note('This is a boss transformation form. It is reached through the boss’s behavior and is not a directly spawnable unit.');
       const typeKey=row.unitType+':'+row.unitID+':'+(row.unitType==='enemy'&&id>=90010?id-90009:'default'),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Unit type & map pictogram');
-      this._field(typeFields,'Unit type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Controls the map pictogram. Combat behavior and counters keep their existing settings.'});
-      typeFields.appendChild(button('Manage types & pictograms',()=>ipc('open-panel','unit-types').catch(error=>this._status(error.message,true))));
+      this._field(typeFields,'Unit type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
+      this._field(typeFields,'Countered unit type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
+      typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));
       const visualFields=this._section('Model transform'),visuals=this._data('overrides').visuals||{},visual=visuals[typeKey]||{};
       const setVisual=(field,value)=>{const next=Object.assign({},this._data('overrides').visuals||{});next[typeKey]=Object.assign({},next[typeKey],{[field]:value});return this._set('overrides',['visuals'],next);};
       for(const [key,label,initial,min,max]of [['x','Offset X',0,-4096,4096],['y','Offset Y',0,-4096,4096],['scaleX','Scale X',1,.01,20],['scaleY','Scale Y',1,.01,20],['rotation','Rotation',0,-3600,3600]])this._field(visualFields,label,visual[key]===undefined?initial:visual[key],value=>setVisual(key,value),{min,max});
       this._field(visualFields,'Model tint',visual.tint||'#ffffff',value=>setVisual('tint',value),{color:true});
       visualFields.appendChild(button('Edit rider, horse & parts',()=>ipc('open-characters').catch(error=>this._status(error.message,true))));
-      this._properties(this._section('Stats & behavior'),'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID});
+      this._properties(this._section('Stats & behavior'),'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID,side:row.unitType},['Suppressed','CounterType']);
       this._note('Attack rate controls how often attacks begin. The preview timeline controls the release or effect moment inside a selected attack. Existing behavior stays unchanged until an override is saved.');
     },
     _newUnitType(){const types=clone(this._data('overrides').unitTypes||{});let id='new-type',index=2;while(own(types,id))id='new-type-'+index++;types[id]={name:'New type',icon:'',tint:'#ffffff'};this._selected=id;return this._set('overrides',['unitTypes'],types);},
@@ -313,9 +316,9 @@ function create(kind){
       this._field(fields,'Name',row.record.name,value=>this._set('overrides',p.concat('name'),value));
       this._field(fields,'Pictogram',row.record.icon,value=>this._set('overrides',p.concat('icon'),value),{asset:'images',bundle:'KinghtFallEnemy',wide:true,help:'Choose an imported monster part, an existing battle icon, or another Resources image.'});
       this._field(fields,'Pictogram tint',row.record.tint||'#ffffff',value=>this._set('overrides',p.concat('tint'),value),{color:true});
-      this._note('Select this type in Units. Type names and pictograms do not change attack behavior, stats, wave IDs, or player progress.');
+      this._note('Select this type in Units. Types group units for counter bonuses and supply a fallback pictogram. Changing a role does not change attack behavior, stats, wave IDs, or player progress.');
       const assigned=Object.entries(this._data('overrides').unitTypeAssignments||{}).filter(([key,value])=>value===row.key);this._note(assigned.length?'Assigned to: '+assigned.map(([key])=>key).join(', '):'No units use this type yet.');
-      const remove=button('Delete type',()=>{if(assigned.length)return this._status('Choose another type for these units before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);
+      const remove=button('Delete type',()=>{if(assigned.length||['SoldierCfg','AllyCfg'].some(table=>Object.values(this._data('A')[table]||{}).some(unit=>unit.CounterType===row.key)))return this._status('Remove unit assignments and counter references before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);
     },
     _setting(row){
       if(row.override){
@@ -357,7 +360,7 @@ function create(kind){
         this.$preview.appendChild(node('p',stripRich(Schema.formatEffect(perk,this._data('catalog'),this._language)),'gt-description'));this._note('Preview uses the current draft values and selected language.',false,this.$preview);
       }else if(kind==='stages'){
         this.$preview.appendChild(node('h3','Stage overview'));const asset=this._image(row.record.Map);if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';this.$preview.appendChild(img);}
-        this._note('Playable map: '+row.record.prefab,false,this.$preview);this.$preview.appendChild(button('Open Maps panel',()=>ipc('open-panel','maps').catch(e=>this._status(e.message,true))));
+        this._note('Playable map: '+row.record.prefab,false,this.$preview);this.$preview.appendChild(button('Open Maps panel',()=>openPanel('maps').catch(e=>this._status(e.message,true))));
         this.$preview.appendChild(node('p','Spawn lanes are authored in the map. Each lane emits its ordered groups in parallel with other lanes. Wait groups delay only their own lane.','gt-subtitle'));
       }else if(kind==='relics'){
         const asset=this._image(row.icon);if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';this.$preview.appendChild(img);}const selected=row.record.levelInfo[this._level]||{};this.$preview.appendChild(node('h3','Level '+selected.Level));this.$preview.appendChild(node('p',stripRich(Schema.formatEffect(Object.assign({},selected,{Describe:row.record.Describe}),this._data('catalog'),this._language,'param','vaulePercentage')),'gt-description'));

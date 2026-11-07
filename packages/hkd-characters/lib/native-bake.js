@@ -30,12 +30,13 @@ function preserveMetadata(root,files,read){
   }
 }
 function retime(rig,contract){
+  const hit=require('./hit-animation').reaction(rig);
   const animations={};for(const [name,original]of Object.entries(contract.animations)){
     const source=rig.animations[name]||rig.animations[name==='die'?'dead1':'idle'];if(!source)throw Error('Replacement model has no '+name+' animation');
     const result=clone(source),from=duration(source),to=original.duration;
     function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((from?value.time*to/from:value.time).toFixed(7));Object.values(value).forEach(visit);}visit(result);
     if(original.events&&original.events.length)result.events=clone(original.events);else delete result.events;animations[name]=result;
-  }rig.animations=animations;rig.events=clone(contract.events||{});
+  }animations.hit=hit;rig.animations=animations;rig.events=clone(contract.events||{});
 }
 function bake(root,profile,id,contract,assets,read,options){
   if(!options&&profile.base.source){
@@ -73,6 +74,12 @@ function bake(root,profile,id,contract,assets,read,options){
   for(const part of profile.parts){const at=rig.slots.findIndex(slot=>slot.name===part.slot);if(at>=0&&part.order){const slot=rig.slots.splice(at,1)[0];rig.slots.splice(Math.max(0,Math.min(rig.slots.length,at+part.order)),0,slot);}}
   for(const [slotName,variants]of Object.entries(attachments))for(const [name,attachment]of Object.entries(variants)){
     const region=attachment.path||attachment.name||name;if(!pictures[region])pictures[region]=cut(region);
+  }
+  const skinTint=Core.skinTint(profile);
+  if(skinTint){
+    const tint=color=>[0,2,4].map(at=>Math.round(parseInt(color.slice(at,at+2),16)*parseInt(skinTint.slice(at+1,at+3),16)/255).toString(16).padStart(2,'0')).join('')+color.slice(6,8);
+    for(const slot of rig.slots)if(Core.isSkinSlot(slot.name))slot.color=tint(slot.color||'ffffffff');
+    for(const animation of Object.values(rig.animations))for(const [name,slot]of Object.entries(animation.slots||{}))if(Core.isSkinSlot(name))for(const frame of slot.color||[])frame.color=tint(frame.color);
   }
   retime(rig,contract);
   // Preserve the old unit's world footprint, callback duration and hit events.

@@ -98,7 +98,7 @@ var def_GAD_Door = function (t) {
       this.door.node.width = this._targetWidth - 50;
       this.ndLeft.getComponent(cc.Sprite).spriteFrame = this.poleSp["red" == (null === (a = this._cfg) || undefined === a ? undefined : a.color) ? 1 : 0];
       this.ndRight.getComponent(cc.Sprite).spriteFrame = this.poleSp["red" == (null === (o = this._cfg) || undefined === o ? undefined : o.color) ? 1 : 0];
-      this.text.string = $z1Utils.Utils.StringFormat((null === (r = this._cfg) || undefined === r ? undefined : r.buffWord) || "", this.accurateNum(this._value, 1));
+      this.text.string = $z1Utils.Utils.StringFormat((null === (r = this._cfg) || undefined === r ? undefined : r.buffWord) || "", require("LanguageMgr").LanguageMgr.getInstance().formatNumber(this.accurateNum(this._value, 1), "battle"));
       this._bufType != $z1GADGameEnumData.enumGADBuffTypeCfg.HPsub && this._bufType != $z1GADGameEnumData.enumGADBuffTypeCfg.HPplus || console.log("this._value = " + this._value + ", v = " + this.accurateNum(this._value, 1));
     }
   };

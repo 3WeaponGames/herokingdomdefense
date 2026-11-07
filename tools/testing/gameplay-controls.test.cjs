@@ -117,9 +117,10 @@ test('Rally mode issues one persistent order for the shared button and keyboard 
   f.ui.rallyCommand(); assert.equal(f.state.rallied, 2);
 });
 
-test('Pause exit retains the current battle when saving the new-game state fails', () => {
+test('Pause exit saves the current checkpoint and stays open if persistence fails', () => {
   const f = fixture(); f.ui.openPause();
   const exit = f.state.opens[0][3];
+  f.game.saveGame = () => f.state.saveResult;
   f.state.saveResult = false; assert.equal(exit(), false); assert.equal(f.state.closed, undefined);
   f.state.saveResult = true; exit(); assert.equal(f.state.closed, true);
 });

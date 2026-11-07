@@ -52,6 +52,7 @@ var def_KinghtFallUIGameEnd = function (t) {
     var controller = $z1KinghtFallUIGame.default.instance.ctrGame;
     this.settlement = controller._battleSettlement || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().beginSettlement(this.getSkillList, controller.gameData.levelCfg.Level, this.challengeMask, this.isWin);
     controller._battleSettlement = this.settlement;
+    if (this.isWin && cc.view) require("StageStarPresentation").showResult(this, controller.gameData.levelCfg, this.settlement.challengeMask);
     this.finished = false;
     this.adPending = false;
     this.ndReward.init(this.getSkillList.length);

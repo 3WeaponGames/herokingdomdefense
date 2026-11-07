@@ -7,7 +7,7 @@ function load(name,dependencies,extra={}){
 }
 test('the header never displays a timer while energy recovery and full/overflow balances retain their behavior',()=>{
  const now=1750000000000;let power=26,updated=now-32000,grants=[];const user={maxPower:30,powerRecoveryTime:300000,getPowerNum:()=>power,getPowerUpdateTime:()=>updated,addPowerNum(amount,elapsed){grants.push([amount,elapsed]);power=Math.min(30,power+amount);updated+=elapsed;}};
- const label={string:''},timer={active:true},Top=load('KinghtFallUITop',{BaseUI:{default:function(){}},KinghtFallModle:{default:{getInstance:()=>({numberFomat:String})}}},{Date:{now:()=>now}}),top=new Top();top.userData=user;top.ndPower={getChildByName:name=>name==='labTime'?timer:{getComponent:()=>label}};
+ const label={string:''},timer={active:true,removeFromParent(){},destroy(){}},Top=load('KinghtFallUITop',{BaseUI:{default:function(){}},KinghtFallModle:{default:{getInstance:()=>({numberFomat:String})}}},{Date:{now:()=>now}}),top=new Top();top.userData=user;top.ndPower={getChildByName:name=>name==='labTime'?timer:{getComponent:()=>label}};
  top.onRefreshPower();assert.equal(timer.active,false);assert.equal(label.string,'26');assert.equal(grants.length,0);
  updated=now-610000;timer.active=true;top.onRefreshPower();assert.equal(label.string,'28');assert.equal(timer.active,false);assert.deepEqual(grants,[[2,600000]]);
  power=35;updated=now-900000;top.onRefreshPower();assert.equal(label.string,'35');assert.equal(grants.length,1);assert.equal(timer.active,false);
@@ -27,7 +27,7 @@ test('Wall Defense replaces both locked captions with Best Wave only after the e
 });
 test('authored currency spacing, tower placement, click bounds and localized caption left edges stay consistent',()=>{
  const top=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/KinghtFallUITop.prefab'))),home=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab'))),catalog=require('../../assets/resources/localization/catalog.json');
- const tops=[5,22,35].map(index=>top[top[index]._components.find(r=>top[r.__id__].__type__==='cc.Widget').__id__]._top);assert(tops.every(value=>value>55&&value<56));assert.equal(top[15]._active,false);assert.equal(home[336]._active,false);
+ const tops=['ndPower','ndGold','ndDiam'].map(name=>{const node=top.find(n=>n._name===name);return top[node._components.find(r=>top[r.__id__].__type__==='cc.Widget').__id__]._top;});assert(tops.every(value=>value>55&&value<56));assert(!top.some(n=>n._name==='labTime'));assert.equal(home[336]._active,false);
  const button=home[292],icon=home[334],mask=home[293],background=home[291];assert.equal(icon._trs.array[1],mask._trs.array[1]);assert(icon._trs.array[1]>24);assert(button._contentSize.width>=background._contentSize.width);
  const topGap=background._contentSize.height-button._trs.array[1]-icon._trs.array[1]-icon._contentSize.height/2;assert(topGap>0&&topGap<32);
  for(const locale of ['en','zh']){const a=catalog.labelStyles['ui.layout.kinghtfallhomebattlectrl.297'][locale],b=catalog.labelStyles['ui.layout.kinghtfallhomebattlectrl.302'][locale];assert.equal(a.horizontalAlign,0);assert.equal(b.horizontalAlign,0);assert.equal(a.x-a.width*.25,b.x-b.width*.25);assert.equal(a.wrap,false);assert.equal(b.wrap,false);}

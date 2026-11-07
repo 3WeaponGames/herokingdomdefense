@@ -477,6 +477,7 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.followCommand = function () {
     if (this.isAgg) this.holdSelectedFollowers();
     this.isAgg = !this.isAgg;
+    if (this.isAgg) this.gameData.getSoldierList().forEach(function (unit) { unit._followPickupBlocked = false; });
     this.ctrPlay.ndAgg.active = this.isAgg;
     this.applyArmyOrder();
     this.collectFollowers();
@@ -491,7 +492,9 @@ var def_KinghtFallGameCtrl = function (t) {
     if (animation) { animation.setAnimation(0, "click", false); animation.addAnimation(0, "idle", true); }
     var game = this;
     this.gameData.getSoldierList().forEach(function (unit) {
+      if (unit.isDead() || unit._isPooled || !unit.node.activeInHierarchy) return;
       if (unit._followSelected && game.isAgg) return;
+      unit._followPickupBlocked = false;
       unit.setPersonalRallyPoint(game.rallyPoint.pos, true);
       unit._rallyOrder = game.rallyPoint;
     });
@@ -509,7 +512,9 @@ var def_KinghtFallGameCtrl = function (t) {
       }
       if (unit._followSelected || !this.isUnitInFollowRing(unit)) continue;
       unit._followSelected = true;
+      unit._followPickupBlocked = false;
       unit._rallyOrder = null;
+      unit.rallyPoint = null; unit.pathList = null; unit._orderTarget = null; unit._targetRefresh = 0;
       unit.applyArmyOrder(this);
       added = true;
     }
@@ -551,7 +556,9 @@ var def_KinghtFallGameCtrl = function (t) {
     if (this.gameData.getSoldierList().indexOf(unit) < 0 || !this.isUnitInFollowRing(unit)) return false;
     if (unit._followSelected) return true;
     unit._followSelected = true;
+    unit._followPickupBlocked = false;
     unit._rallyOrder = null;
+    unit.rallyPoint = null; unit.pathList = null; unit._orderTarget = null; unit._targetRefresh = 0;
     unit.applyArmyOrder(this);
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
@@ -882,7 +889,7 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.addSoldier = function (t, e) {
     var n = this;
     var epoch = this._combatEpoch;
-    var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t, "ally");
     var a = $z1KinghtFallConfig.KinghtFallPoolName.Soldier + "_" + i.ID;
     var o = function (i) {
       i.setParent(n.ndMain);
@@ -1137,7 +1144,7 @@ var def_KinghtFallGameCtrl = function (t) {
       businessList: this.gameData.businessAdd, taskList: n };
   };
   _ctor.prototype.saveGame = function () {
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setCheckpoint(this.getCheckpoint());
+    return $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setCheckpoint(this.getCheckpoint());
   };
   cc__decorate([ccp_property({
     type: cc.Camera,

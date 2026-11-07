@@ -143,14 +143,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 435,
-      "height": 89
+      "width": 620,
+      "height": 112
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
         0,
-        355.392,
+        390,
         0,
         0,
         0,
@@ -209,14 +209,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 414.05,
-      "height": 113.84
+      "width": 1150,
+      "height": 116
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
         -1.872,
-        367.392,
+        403.44,
         0,
         0,
         0,
@@ -232,8 +232,8 @@
     {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.7]]",
-    "_fontSize": 84,
-    "_lineHeight": 84,
+    "_fontSize": 86,
+    "_lineHeight": 100,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -2219,7 +2219,7 @@
   },
     {
     "__type__": "cc.Label",
-    "_string": "[[loc:ui.layout.kinghtfallhomebattlectrl.105]]",
+    "_string": "[[loc:lobby.campaign]]",
     "_fontSize": 94,
     "_lineHeight": 108,
     "_styleFlags": 1,
@@ -2233,7 +2233,7 @@
     "node": {
       "__id__": 104
     },
-    "_N$string": "[[loc:ui.layout.kinghtfallhomebattlectrl.105]]"
+    "_N$string": "[[loc:lobby.campaign]]"
   },
     {
     "__type__": "cc.LabelOutline",
@@ -2423,7 +2423,7 @@
   },
     {
     "__type__": "cc.Label",
-    "_string": "5",
+    "_string": "10",
     "_fontSize": 72,
     "_lineHeight": 83,
     "_styleFlags": 1,
@@ -2437,7 +2437,7 @@
     "node": {
       "__id__": 113
     },
-    "_N$string": "5"
+    "_N$string": "10"
   },
     {
     "__type__": "cc.LabelOutline",
@@ -2528,12 +2528,12 @@
     }
   },
     {
-    "__type__": "cc.Node",
-    "_name": "ndTaskInfo",
-    "_parent": {
+        "__type__": "cc.Node",
+        "_name": "ndTaskInfo",
+        "_parent": {
       "__id__": 1
     },
-    "_children": [
+        "_children": [
       {
         "__id__": 123
       },
@@ -2547,7 +2547,7 @@
         "__id__": 142
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 155
       },
@@ -2558,15 +2558,15 @@
         "__id__": 332
       }
     ],
-    "_prefab": {
+        "_prefab": {
       "__id__": 157
     },
-    "_contentSize": {
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 660,
       "height": 128
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
         -45,
@@ -2581,8 +2581,9 @@
         1
       ],
       "__type__": "TypedArray"
-    }
-  },
+    },
+        "_active": false
+    },
     {
     "__type__": "cc.Node",
     "_name": "ndFinish",
@@ -6694,9 +6695,9 @@
         "paddingX": 40,
         "paddingY": 10,
         "gap": 8,
-        "minWidth": 435,
-        "minHeight": 89,
-        "maxWidth": 700,
+        "minWidth": 620,
+        "minHeight": 112,
+        "maxWidth": 620,
         "reflowRows": true,
         "ribbonTitle": true
     },

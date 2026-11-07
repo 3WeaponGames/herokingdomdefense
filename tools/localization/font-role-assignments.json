@@ -1,6 +1,7 @@
 {
   "defaultRole": "body",
   "displayStyles": [
+    "art.pass.title",
     "start.tap",
     "ui.layout.common_uiresult.36",
     "ui.layout.common_uiresult.62",
@@ -122,7 +123,11 @@
     "ui.layout.uireport.88",
     "ui.mobile.kinghtfallhomebattlectrl.236",
     "ui.mobile.kinghtfallhomebattlectrl.283",
-    "ui.mobile.kinghtfalluigame.238"
+    "ui.mobile.kinghtfalluigame.238",
+    "lobby.campaign",
+    "lobby.wallDefense",
+    "lobby.quests",
+    "quests.title"
   ],
   "displayArtwork": [
     "new_badge",

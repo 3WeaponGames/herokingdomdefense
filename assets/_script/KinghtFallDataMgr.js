@@ -195,7 +195,8 @@ var exp_KinghtFallDataMgr = function () {
   _ctor.prototype.getGameTaskEnem = function (t) {
     return this.data.InGameTaskEnum[t];
   };
-  _ctor.prototype.getSoldierCfgById = function (t) {
+  _ctor.prototype.getSoldierCfgById = function (t, side) {
+    if (side === "ally" && this.data.AllyCfg && this.data.AllyCfg[t]) return this.data.AllyCfg[t];
     return this.data.SoldierCfg[t];
   };
   _ctor.prototype.getCode = function (t) {

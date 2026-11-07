@@ -108,6 +108,8 @@ var exp_KinghtFallUserData = function (t) {
     data.curStage = Math.max(1, Math.floor(data.curStage));
     data.maxStage = Math.max(data.curStage, Math.floor(data.maxStage));
     data.wallDefenseBestWave = Math.floor(data.wallDefenseBestWave);
+    var admission = data.wallDefenseAdmission;
+    if (admission && (typeof admission.id !== "string" || !admission.id || admission.id.length > 160 || typeof admission.cost !== "number" || !isFinite(admission.cost) || admission.cost <= 0 || typeof admission.used !== "boolean")) delete data.wallDefenseAdmission;
     var rules = require("GAD_RewardRules");
     if (data.wallDefensePending && !rules.validResult(data.wallDefensePending)) delete data.wallDefensePending;
     var receipt = data.wallDefenseReceipt;

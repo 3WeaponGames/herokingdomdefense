@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "8c184dec-adb9-5b81-a0a6-9d3383606bf9",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Pictoicon_Chess_Queen": {
+      "ver": "1.0.6",
+      "uuid": "2703f394-b0f2-5df3-ae97-fbbe76d1ab98",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8c184dec-adb9-5b81-a0a6-9d3383606bf9",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
