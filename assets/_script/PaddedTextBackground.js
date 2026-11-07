@@ -12,6 +12,8 @@ cc.Class({
     minWidth: 0,
     minHeight: 0,
     maxWidth: 700,
+    ribbonTitle: false,
+    ribbonCenterY: 0.12,
     reflowRows: true,
     columnMode: false,
     paragraph: { default: null, type: cc.Node },
@@ -46,6 +48,13 @@ cc.Class({
     if (layout) layout.enabled = false;
     var sprite = this.node.getComponent(cc.Sprite);
     if (sprite) {
+      var frameName = sprite.spriteFrame && sprite.spriteFrame.name;
+      if (/^wg_(zy_pd|gxhd_pd|jzfz_bt|tf_bt|tf_pd|txz_ptd|txz_gjd|txz_djbtd)$/.test(frameName || "")) this.ribbonTitle = true;
+      if (/^wg_txz_(ptd|gjd|djbtd)$/.test(frameName || "")) {
+        this.ribbonCenterY = 0.18;
+        this.minHeight = Math.max(this.minHeight, frameName === "wg_txz_djbtd" ? 128 : 112);
+        if (frameName !== "wg_txz_djbtd") { this.minWidth = 369; this.maxWidth = 369; }
+      }
       sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
       sprite.type = cc.Sprite.Type.SLICED;
     }
@@ -66,7 +75,7 @@ cc.Class({
     if (!this._labels) return;
     // Text can change without a size event while a localization SHRINK rule
     // is active. Only measure/layout when copy, visibility or size changes.
-    var signature = [this.paddingX, this.paddingY, this.gap, this.minWidth, this.minHeight, this.maxWidth, this.reflowRows].join(":") +
+    var signature = [this.paddingX, this.paddingY, this.gap, this.minWidth, this.minHeight, this.maxWidth, this.reflowRows, this.ribbonTitle, this.ribbonCenterY].join(":") +
       this.content.map(function (n) { return n.active + ":" + n.scaleX + ":" + n.scaleY; }).join("|") +
       this._labels.map(function (l) { return l.string + ":" + l.fontSize + ":" + l.lineHeight + ":" + l.node.activeInHierarchy; }).join("|");
     if (!this._dirty && signature === this._signature) return;
@@ -121,6 +130,11 @@ cc.Class({
       self._prepare(item.node, Math.max(16, (limit - fixed) * item.width / total));
     });
   },
+  _positionContent: function (node, x, y) {
+    if (this.ribbonTitle && node.parent !== this.node && node.parent === this.node.parent) {
+      node.setPosition(this.node.x + x * this.node.scaleX, this.node.y + y * this.node.scaleY);
+    } else node.setPosition(x, y);
+  },
   fit: function () {
     if (!this._rows || this._fitting) return;
     this._fitting = true;
@@ -139,7 +153,10 @@ cc.Class({
         this.mirrorBackgrounds.forEach(function (node) { if (cc.isValid(node)) node.height = height; });
         return;
       }
-      var self = this, limit = Math.max(32, this.maxWidth - 2 * this.paddingX);
+      var sprite = this.node.getComponent(cc.Sprite), frame = sprite && sprite.spriteFrame;
+      // The folded tails are outside the ribbon's usable front face.
+      var tails = this.ribbonTitle && frame && !/^wg_txz_/.test(frame.name || "") ? (frame.insetLeft || 0) + (frame.insetRight || 0) : 0;
+      var self = this, limit = Math.max(32, this.maxWidth - tails - 2 * this.paddingX);
       var rows = this._rows.map(function (row) {
         var nodes = row.nodes.filter(function (node) { return node.active; });
         nodes.forEach(function (node) { self._prepare(node, 1000000); });
@@ -158,7 +175,7 @@ cc.Class({
           width = Math.max(width, row.width);
           row.nodes.forEach(function (node) {
             var w = node.width * Math.abs(node.scaleX), h = node.height * Math.abs(node.scaleY);
-            node.setPosition(x + node.anchorX * w, centerY + (node.anchorY - 0.5) * h);
+            self._positionContent(node, x + node.anchorX * w, centerY + (node.anchorY - 0.5) * h);
             x += w + self.gap;
           });
           y -= row.height + self.gap;
@@ -170,8 +187,11 @@ cc.Class({
           height = Math.max(height, 2 * Math.abs(box.y), 2 * Math.abs(box.y + box.height));
         }); });
       }
-      this.node.setContentSize(Math.ceil(Math.max(this.minWidth, width + 2 * this.paddingX)),
-        Math.ceil(Math.max(this.minHeight, height + 2 * this.paddingY)));
+      var fittedHeight = Math.ceil(Math.max(this.minHeight, height + 2 * this.paddingY));
+      this.node.setContentSize(Math.ceil(Math.max(this.minWidth, width + tails + 2 * this.paddingX)), fittedHeight);
+      if (this.ribbonTitle && this.reflowRows) rows.forEach(function (row) {
+        row.nodes.forEach(function (node) { node.y += fittedHeight * self.ribbonCenterY * (node.parent === self.node ? 1 : self.node.scaleY); });
+      });
     } finally { this._fitting = false; this._dirty = false; }
   }
 });

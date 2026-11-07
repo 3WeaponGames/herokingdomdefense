@@ -399,6 +399,26 @@
       "en": "Label",
       "zh": "Label",
       "context": "assets/KinghtFallEnemy/ItemHp.prefab:New Label (mobile typography)"
+    },
+    "ui.energy.recovery_rule": {
+      "en": "Natural energy cap: {0} · +1 every {1} min",
+      "zh": "恢复上限 {0} · 每{1}分钟 +1 体力",
+      "context": "Energy refill popup · current natural recovery rules"
+    },
+    "ui.energy.recovery_next": {
+      "en": "Energy: {0} / {1} · Next +1: {2}",
+      "zh": "体力：{0} / {1} · 下次恢复：{2}",
+      "context": "Energy refill popup · live countdown"
+    },
+    "ui.energy.recovery_paused": {
+      "en": "Energy: {0} / {1} · Refills paused",
+      "zh": "体力：{0} / {1} · 自动恢复已暂停",
+      "context": "Energy refill popup · at or above natural cap"
+    },
+    "ui.energy.recovery_overflow": {
+      "en": "Gem and ad rewards can exceed this cap.",
+      "zh": "购买和广告奖励可超过此上限。",
+      "context": "Energy refill popup · paid and ad overflow explanation"
     }
   },
   "labelStyles": {
@@ -2427,12 +2447,12 @@
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "height": 117.84,
-        "fontSize": 84,
-        "lineHeight": 97
+        "fontSize": 94,
+        "lineHeight": 108
       },
       "zh": {
-        "fontSize": 84,
-        "lineHeight": 97,
+        "fontSize": 94,
+        "lineHeight": 108,
         "width": 348,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true
@@ -2440,15 +2460,15 @@
     },
     "ui.mobile.kinghtfallhomebattlectrl.114": {
       "en": {
-        "fontSize": 60,
-        "lineHeight": 69,
+        "fontSize": 72,
+        "lineHeight": 83,
         "width": 140,
         "overflow": "NONE",
         "wrap": false
       },
       "zh": {
-        "fontSize": 60,
-        "lineHeight": 69,
+        "fontSize": 72,
+        "lineHeight": 83,
         "width": 140,
         "overflow": "NONE",
         "wrap": false
@@ -4139,87 +4159,102 @@
     },
     "ui.layout.kinghtfalluihome.30": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.65": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.100": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.135": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.170": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluinewmodular.16": {
@@ -6126,6 +6161,66 @@
         "overflow": "NONE",
         "wrap": false
       }
+    },
+    "ui.energy.recovery_rule": {
+      "en": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      }
+    },
+    "ui.energy.recovery_next": {
+      "en": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      }
+    },
+    "ui.energy.recovery_overflow": {
+      "en": {
+        "fontSize": 26,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 26,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      }
     }
   },
   "nodeStyles": {
@@ -6459,7 +6554,10 @@
     "84e45fac-8f30-4699-bccf-aa1ab616212b:e0fCIybXhD+qyHCnC9rqvL": "ui.layout.uireport.88",
     "84e45fac-8f30-4699-bccf-aa1ab616212b:e1bPvzPC9AtZ9PU6kd1hKh": "ui.layout.uireport.100",
     "6457c822-09f9-4a3a-866c-11e81617b172:6d3k0iqtVEUbWENe0b6K0p": "ui.mobile.uitips.4",
-    "9a0c6cbe-0f8c-433c-8d8c-1f11299cf62d:e6g+RvaHdJUpU8it5EpUzg": "ui.layout.uitouch.33"
+    "9a0c6cbe-0f8c-433c-8d8c-1f11299cf62d:e6g+RvaHdJUpU8it5EpUzg": "ui.layout.uitouch.33",
+    "a8abe270-9f98-4fcb-9836-30de622de489:9a760be0-2f5a-4c1e-b1bd-514c7a1249ea": "ui.energy.recovery_rule",
+    "a8abe270-9f98-4fcb-9836-30de622de489:133e145c-8029-4730-9792-7940f9a9ef81": "ui.energy.recovery_next",
+    "a8abe270-9f98-4fcb-9836-30de622de489:6606ab07-90c6-49bf-9c95-3dd3bacc0c4f": "ui.energy.recovery_overflow"
   },
   "nodePathStyles": {
     "GAD_UIResult/root/win/yz_ty_jlk2/New Label": "ui.mobile.common_uiresult.27",
@@ -6778,7 +6876,10 @@
     "UITips/tips/text": "ui.mobile.uitips.4",
     "UITouch/ndAd/New Label": "ui.layout.uitouch.33",
     "undefined/uiRoot/UILoading/New Label": "ui.mobile.loading.38",
-    "undefined/uiRoot/UILoading/ndInfo/New Label": "ui.layout.loading.33"
+    "undefined/uiRoot/UILoading/ndInfo/New Label": "ui.layout.loading.33",
+    "KinghtFallUIAddStrength/root/EnergyInfo/RecoveryRule": "ui.energy.recovery_rule",
+    "KinghtFallUIAddStrength/root/EnergyInfo/RecoveryNext": "ui.energy.recovery_next",
+    "KinghtFallUIAddStrength/root/EnergyInfo/RecoveryOverflow": "ui.energy.recovery_overflow"
   },
   "images": {
     "4a5f899e-20aa-43ac-aba5-b413e1cd0d18": {

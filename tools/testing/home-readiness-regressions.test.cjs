@@ -10,7 +10,7 @@ function load(name, context) {
   return sandbox.exports;
 }
 
-test('repeated equipment tab destruction releases pending catalog callbacks across a failed load', () => {
+test('equipment catalog subscriptions stay bounded across cached tab visits and real destruction after a failed load', () => {
   const equipment = Object.values(config.EquipCfg);
   const catalog = require('../../assets/resources/hero-items/catalog.json');
   let now = 0, requests = 0, retry, retiredChecks = 0, pendingDestroyChecks = 0, liveChecks = 0;
@@ -35,13 +35,14 @@ test('repeated equipment tab destruction releases pending catalog callbacks acro
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: once({ getUserData: () => ({ getTreasureLevel: () => null, getMaxStage: () => 2 }) }) },
     KinghtFallDataMgr: { KinghtFallDataMgr: once({ getEquipCfgList: () => equipment, getLevelCfgById2: () => ({ EquipLevelCap: 10 }) }) },
     Utils: { Utils: { StringFormat: () => '' } }, KinghtFallTextConfig: { KinghtFallTextConfig: {} },
+    EventMgr: { EventMgr: once({ on: noop, off: noop }) },
     ResCacheMgr: { ResCacheMgr: once({ refreshTime: noop }) }, AudioMgr: { AudioMgr: once({ playAudioButtonClicked: noop }) }
   };
   const context = { cc, sp: { Skeleton: Component }, Date: { now: () => now }, require: id => modules[id] || { default: Component } };
   modules.BaseCtrl = load('BaseCtrl', context);
   modules.HeroItemLooks = load('HeroItemLooks', context);
   const Person = load('KinghtFallHomePersonCtrl', context).default, Home = load('KinghtFallUIHome', context).default;
-  const home = Object.assign(Object.create(Home.prototype), { tag: '', tag1: {}, ndMain: {}, preWeap: { equipment: true }, preBattle: {}, isLock: () => false, showTag: noop });
+  const home = Object.assign(new Home(), { tag: '', tag1: {}, ndMain: {}, preWeap: { equipment: true }, preBattle: {}, isLock: () => false, showTag: noop });
   const visual = () => ({ getChildByName: visual, getComponent: () => ({}), on: noop });
   let refreshes = 0, baseTeardowns = 0;
   cc.instantiate = prefab => {
@@ -51,32 +52,35 @@ test('repeated equipment tab destruction releases pending catalog callbacks acro
         this.controller.onDestroy();
         if (this.controller.isDestroy) baseTeardowns++;
       }
-    } };
+    }, getComponentsInChildren() { return this.controller ? [this.controller] : []; } };
     if (node.equipment) node.controller = Object.assign(new Person(), {
       node, spPower: { node: {} }, scrView: { node: { y: 0, children: [{ getComponent: () => ({ updateAlignment: noop }) }] } },
       ndItemTop: equipment.map(visual), ndItemDown: equipment.map(visual), labNum: equipment.map(visual), T: () => '',
-      initView() { refreshes++; }, initEventListener: noop, scheduleOnce: noop
+      initView() { refreshes++; }, initEventListener: noop, scheduleOnce: noop, unschedule: noop
     });
     return node;
   };
   function open(name) {
     home.showView({ isChecked: true, node: { name } });
-    if (home.tagNode.controller) home.tagNode.controller.start();
+    const page=home.tagNode;
+    if(page.controller){if(!page.started){page.started=true;page.controller.start();}else page.controller.onEnable();}
   }
   for (let i = 0; i < 30; i++) { open('Toggle1'); open('Toggle3'); }
-  assert.equal(requests, 1); assert.equal(baseTeardowns, 30);
+  assert.equal(requests, 1); assert.equal(baseTeardowns, 0, 'tab visits reuse the one live equipment page');
   now = 1000; open('Toggle1');
   // Creator leaves a node valid and active until the frame-end teardown.
   const retiring = home.tagNode;
   const finishDestroy = retiring.destroy.bind(retiring);
   retiring.destroy = function () { this.toDestroy = true; };
+  retiring.destroy();
   open('Toggle3'); open('Toggle1');
   const before = refreshes;
+  retiredChecks = pendingDestroyChecks = liveChecks = 0;
   retry(null, { json: catalog });
   assert.equal(requests, 2); assert.equal(refreshes - before, 1);
   assert.equal(retiredChecks, 0); assert.equal(pendingDestroyChecks, 1); assert.equal(liveChecks, 1);
   finishDestroy();
-  assert.equal(baseTeardowns, 31);
+  assert.equal(baseTeardowns, 1);
   open('Toggle3'); open('Toggle1');
   assert.equal(refreshes - before, 2, 'an already-ready catalog needs only the normal initial view refresh');
   assert.equal(requests, 2);

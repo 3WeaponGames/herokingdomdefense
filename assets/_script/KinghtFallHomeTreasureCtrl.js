@@ -39,6 +39,15 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.onEnable = function () {
+    if (!this._homeTabReady) return;
+    this.initView();
+    this.upView();
+    this.scheduleHomeGuide();
+  };
+  _ctor.prototype.onDisable = function () {
+    this.unschedule(this.showHomeGuide);
+  };
   _ctor.prototype.start = function () {
     var t = this;
     this.ndItem.active = false;
@@ -59,12 +68,20 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     });
     this.btnTen.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(this.cfgBox.Cost10[1]);
     this.upView();
-    this.scheduleOnce(function () {
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 5, t.btnOne, function () {
-        $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_draw1);
-        t.getReward(1, 1);
-      });
-    }, .5);
+    this._homeTabReady = true;
+    this.scheduleHomeGuide();
+  };
+  _ctor.prototype.scheduleHomeGuide = function () {
+    this.unschedule(this.showHomeGuide);
+    this.scheduleOnce(this.showHomeGuide, .5);
+  };
+  _ctor.prototype.showHomeGuide = function () {
+    if (!this.node.activeInHierarchy) return;
+    var target = this;
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 5, this.btnOne, function () {
+      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_draw1);
+      target.getReward(1, 1);
+    });
   };
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TreasureUpdate, this.initView);

@@ -1800,7 +1800,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 86,
-      "height": 94
+      "height": 128
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -2890,57 +2890,63 @@
     }
   },
   {
-    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
-    "node": {
+        "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+        "node": {
       "__id__": 73
     },
-    "content": [
+        "content": [
       {
         "__id__": 74
       }
     ],
-    "paddingX": 16,
-    "paddingY": 10,
-    "gap": 8,
-    "minWidth": 0,
-    "minHeight": 0,
-    "maxWidth": 700,
-    "reflowRows": true
-  },
+        "paddingX": 24,
+        "paddingY": 10,
+        "gap": 8,
+        "minWidth": 369,
+        "minHeight": 112,
+        "maxWidth": 369,
+        "reflowRows": true,
+        "ribbonTitle": true,
+        "ribbonCenterY": 0.18
+    },
   {
-    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
-    "node": {
+        "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+        "node": {
       "__id__": 82
     },
-    "content": [
+        "content": [
       {
         "__id__": 83
       }
     ],
-    "paddingX": 16,
-    "paddingY": 10,
-    "gap": 8,
-    "minWidth": 0,
-    "minHeight": 0,
-    "maxWidth": 700,
-    "reflowRows": true
-  },
+        "paddingX": 24,
+        "paddingY": 10,
+        "gap": 8,
+        "minWidth": 369,
+        "minHeight": 112,
+        "maxWidth": 369,
+        "reflowRows": true,
+        "ribbonTitle": true,
+        "ribbonCenterY": 0.18
+    },
   {
-    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
-    "node": {
+        "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+        "node": {
       "__id__": 91
     },
-    "content": [
+        "content": [
       {
         "__id__": 92
       }
     ],
-    "paddingX": 40,
-    "paddingY": 10,
-    "gap": 8,
-    "minWidth": 0,
-    "minHeight": 94,
-    "maxWidth": 700,
-    "reflowRows": true
-  }
+        "paddingX": 40,
+        "paddingY": 10,
+        "gap": 8,
+        "minWidth": 0,
+        "minHeight": 128,
+        "maxWidth": 700,
+        "reflowRows": true,
+        "ribbonTitle": true,
+        "ribbonCenterY": 0.18
+    }
 ]

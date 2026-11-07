@@ -1,6 +1,7 @@
 "use strict";
 var Core = require("CharacterPartsCore");
 var library = null, looks = null, loading = false, retryAt = 0, failures = {}, textureJobs = {}, profileKeys = new WeakMap();
+var nativePartsNotice = false;
 function profileKey(profile) {
   if (!profileKeys.has(profile)) profileKeys.set(profile, JSON.stringify(profile));
   return profileKeys.get(profile);
@@ -27,11 +28,23 @@ function texture(id) {
   if (job && (!job.retryAt || Date.now() < job.retryAt)) return job.texture;
   var entry = library && library[id]; if (!entry) return null;
   job = textureJobs[id] = {};
-  cc.resources.load(entry.resource, cc.Texture2D, function (error, image) {
-    if (error || !image) { job.retryAt = Date.now() + 1000; return; }
-    var adapter = new sp.SkeletonTexture({ width: image.width, height: image.height });
-    adapter.setRealTexture(image); job.texture = adapter;
-  });
+  function failed(error) {
+    job.retryAt = Date.now() + 1000;
+    if (error && !failures["texture:" + id]) {
+      failures["texture:" + id] = true;
+      if (typeof cc.warn === "function") cc.warn("Character texture " + id + ": " + (error.message || error));
+    }
+  }
+  try {
+    cc.resources.load(entry.resource, cc.Texture2D, function (error, image) {
+      if (error || !image) { failed(error); return; }
+      // This callback runs after lateUpdate's setup try/catch has returned.
+      try {
+        var adapter = new sp.SkeletonTexture({ width: image.width, height: image.height });
+        adapter.setRealTexture(image); job.texture = adapter;
+      } catch (issue) { failed(issue); }
+    });
+  } catch (issue) { failed(issue); }
   return null;
 }
 function visuals(actor, type) {
@@ -62,19 +75,28 @@ var Appearance = cc.Class({
     if (this.team === "hero") profile = require("HeroItemLooks").current(profile);
     if (!profile) { if (this.models.length) this.clear(); return; }
     var renderers = visuals(actor, this.team);
-    var signature = id + ":" + profileKey(profile) + ":" + renderers.map(function (renderer) { return renderer.uuid + ":" + (renderer.skeletonData && renderer.skeletonData.uuid); }).join("|");
+    // JSB has neither SkeletonTexture nor the JS attachment vertex hook used
+    // by Core. Keep native attachments intact; skins/model overrides still work.
+    var nativeParts = !!(cc.sys && cc.sys.isNative) || renderers.some(function (renderer) { return !!renderer._nativeSkeleton; });
+    if (nativeParts && renderers.some(function (renderer) { return renderer.skeletonData && !renderer._skeleton; })) return;
+    if (nativeParts && profile.parts.length && !nativePartsNotice) {
+      nativePartsNotice = true;
+      if (typeof cc.warn === "function") cc.warn("Native Spine retains original character attachments; custom part fitting requires the web Spine runtime.");
+    }
+    var fittedParts = nativeParts ? [] : profile.parts;
+    var signature = id + ":" + profileKey(profile) + ":" + nativeParts + ":" + renderers.map(function (renderer) { return renderer.uuid + ":" + (renderer.skeletonData && renderer.skeletonData.uuid); }).join("|");
     if (this.signature !== signature || this.states.some(function (state) { return !renderers.some(function (renderer) { return renderer._skeleton === state.skeleton; }); })) {
       this.clear();
       var textures = {}, ready = true;
-      profile.parts.forEach(function (part) { textures[part.sprite] = texture(part.sprite); if (!textures[part.sprite]) ready = false; });
-      profile.parts.forEach(function (part) { if (!renderers.some(function (renderer) { return renderer.skeletonData && renderer.skeletonData.uuid === part.layer && renderer._skeleton; })) ready = false; });
+      fittedParts.forEach(function (part) { textures[part.sprite] = texture(part.sprite); if (!textures[part.sprite]) ready = false; });
+      fittedParts.forEach(function (part) { if (!renderers.some(function (renderer) { return renderer.skeletonData && renderer.skeletonData.uuid === part.layer && renderer._skeleton; })) ready = false; });
       if (!ready) return;
       try {
         var pending = [], models = [];
         renderers.forEach(function (renderer) {
           var node = renderer.node;
           models.push({ renderer: renderer, scaleX: Math.abs(node.scaleX), scaleY: node.scaleY, x: node.x || 0, y: node.y || 0, angle: node.angle || 0, opacity: node.opacity === undefined ? 255 : node.opacity, skin: renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name });
-          var parts = profile.parts.filter(function (part) { return renderer.skeletonData && part.layer === renderer.skeletonData.uuid; });
+          var parts = fittedParts.filter(function (part) { return renderer.skeletonData && part.layer === renderer.skeletonData.uuid; });
           if (parts.length && renderer._skeleton) pending.push(Core.prepare(sp.spine, renderer._skeleton, parts, library, textures));
         });
         this.states = pending; this.models = models; this.signature = signature;

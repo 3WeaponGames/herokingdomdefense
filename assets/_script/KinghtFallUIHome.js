@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 var $z1BasePlatform = require("BasePlatform");
 var $z1BaseUI = require("BaseUI");
+var $z1BaseCtrl = require("BaseCtrl");
+var $z1EventMgr = require("EventMgr");
 var $z1Appcfg = require("Appcfg");
 var $z1PlatformSetting = require("PlatformSetting");
 var $z1AudioMgr = require("AudioMgr");
@@ -42,6 +44,7 @@ var def_KinghtFallUIHome = function (t) {
     e.canGuide = true;
     e.tag = "";
     e.tagNode = null;
+    e._tabPages = Object.create(null);
     return e;
   }
   cc__extends(_ctor, t);
@@ -50,10 +53,12 @@ var def_KinghtFallUIHome = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.menu_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
     $z1PoolMgr.PoolMgr.getInstance().clearPool();
     this.initViewTogg();
+    if (this.tagNode && cc.isValid(this.tagNode, true)) this.setTabEvents(this.tagNode, true);
     this.showRed(31);
   };
   _ctor.prototype.onDisable = function () {
     $z1Main.default.instance.uiTop.active = false;
+    if (this.tagNode && cc.isValid(this.tagNode, true)) this.setTabEvents(this.tagNode, false);
   };
   _ctor.prototype.start = function () {
     this.initEventListener();
@@ -181,9 +186,20 @@ var def_KinghtFallUIHome = function (t) {
           }
       }
       if (e) {
-        this.tagNode && this.tagNode.destroy();
-        this.tagNode = cc.instantiate(e);
-        this.tagNode.parent = this.ndMain;
+        var page = this._tabPages[t.node.name];
+        if (!page || !cc.isValid(page, true)) {
+          page = cc.instantiate(e);
+          page.active = false;
+          page.parent = this.ndMain;
+          this._tabPages[t.node.name] = page;
+        }
+        if (this.tagNode && cc.isValid(this.tagNode, true)) {
+          this.setTabEvents(this.tagNode, false);
+          this.tagNode.active = false;
+        }
+        this.tagNode = page;
+        this.setTabEvents(page, true);
+        page.active = true;
         this.showTag(this.tag1, false);
         this.showTag(t, true);
         this.tag = t.node.name;
@@ -191,8 +207,21 @@ var def_KinghtFallUIHome = function (t) {
       } else {
         this.tag1.isChecked = true;
       }
-      this.tagNode.active = true;
+      if (this.tagNode && cc.isValid(this.tagNode, true)) this.tagNode.active = true;
     }
+  };
+  _ctor.prototype.setTabEvents = function (page, active) {
+    var events = $z1EventMgr.EventMgr.getInstance();
+    page.getComponentsInChildren($z1BaseCtrl.default).forEach(function (controller) {
+      if (active ? !controller._homeTabEventsPaused : controller._homeTabEventsPaused) return;
+      (controller.eventList || []).forEach(function (bindings) {
+        bindings.forEach(function (callback, name) {
+          if (active) events.on(name, controller, callback);
+          else events.off(name, controller, callback);
+        });
+      });
+      controller._homeTabEventsPaused = !active;
+    });
   };
   _ctor.prototype.showTag = function (t, e) {
     if (e) {
@@ -200,10 +229,10 @@ var def_KinghtFallUIHome = function (t) {
       cc.Tween.stopAllByTarget(n);
       cc.tween(n).set({
         y: -n.height
-      }).to(.5, {
+      }).to(.12, {
         y: 0
       }, {
-        easing: "backOut"
+        easing: "quadOut"
       }).start();
     }
   };

@@ -59,6 +59,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     e.haveArrow = false;
     e.subPlayTime = [];
     e.subPlayStage = [];
+    e._missionDrawerOpen = false;
+    e._missionRewardReady = false;
     return e;
   }
   cc__extends(_ctor, t);
@@ -66,12 +68,14 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     this.cfgList = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgList();
     this.costEnergy = parseInt($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.StaminaCost));
     this.btnBattle.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = "" + this.costEnergy;
+    this.initMissionDrawer();
   };
   _ctor.prototype.onEnable = function () {
     var t = this;
     this.bindBoxRewardDismissal();
     this.newSel();
     this.onUpdateTask();
+    this.layoutMissionDrawer(false);
     this.scheduleOnce(function () {
       if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideEnd()) {
         t.sendEvent($z1Appcfg.BaseEventName.RefreshReport, false);
@@ -100,6 +104,103 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
       this._testAdLimitBypass = bypassAdLimits;
       this.refreshSubView();
     }
+  };
+  _ctor.prototype.initMissionDrawer = function () {
+    if (this._missionHandle || !this.ndTaskInfo || !this.btnBattle) return;
+    var panel = this.ndTaskInfo;
+    var widget = panel.getComponent(cc.Widget);
+    if (widget) {
+      widget.isAlignLeft = widget.isAlignRight = widget.isAlignHorizontalCenter = false;
+      widget.updateAlignment();
+    }
+    this._missionScaleX = panel.scaleX;
+    this._missionScaleY = panel.scaleY;
+    var handle = this._missionHandle = new cc.Node("MissionDrawerHandle");
+    handle.parent = panel;
+    handle.setContentSize(56, 88);
+    var background = handle.addComponent(cc.Graphics);
+    background.fillColor = new cc.Color(239, 227, 204);
+    background.strokeColor = cc.Color.BLACK;
+    background.lineWidth = 4;
+    background.roundRect(-28, -44, 56, 88, 12);
+    background.fill();
+    background.stroke();
+    var arrow = new cc.Node("Arrow");
+    arrow.parent = handle;
+    this._missionArrow = arrow.addComponent(cc.Graphics);
+    var badge = this._missionBadge = new cc.Node("ndRed");
+    badge.parent = handle;
+    badge.setPosition(23, 39);
+    var dot = badge.addComponent(cc.Graphics);
+    dot.fillColor = new cc.Color(234, 28, 49);
+    dot.strokeColor = new cc.Color(63, 10, 20);
+    dot.lineWidth = 4;
+    dot.circle(0, 0, 12);
+    dot.fill();
+    dot.stroke();
+    handle.addComponent(cc.Button).transition = cc.Button.Transition.NONE;
+    handle.on(cc.Node.EventType.TOUCH_END, this.onMissionDrawerToggle, this);
+    this.refreshMissionDrawerBadge();
+    this.layoutMissionDrawer(false);
+  };
+  _ctor.prototype.refreshMissionDrawerBadge = function () {
+    if (!this._missionHandle) return;
+    this._missionBadge.active = !this._missionDrawerOpen && this._missionRewardReady;
+    var arrow = this._missionArrow, direction = this._missionDrawerOpen ? -1 : 1;
+    arrow.clear();
+    arrow.fillColor = cc.Color.WHITE;
+    arrow.strokeColor = cc.Color.BLACK;
+    arrow.lineWidth = 4;
+    arrow.moveTo(direction * 11, 0);
+    arrow.lineTo(-direction * 8, 17);
+    arrow.lineTo(-direction * 8, -17);
+    arrow.close();
+    arrow.fill();
+    arrow.stroke();
+  };
+  _ctor.prototype.onMissionDrawerToggle = function (event) {
+    // The handle is inside the reward panel, so keep its tap out of claiming.
+    if (event) event.stopPropagation();
+    this._missionDrawerOpen = !this._missionDrawerOpen;
+    this.refreshMissionDrawerBadge();
+    this.layoutMissionDrawer(true);
+  };
+  _ctor.prototype.stopMissionDrawerTweens = function () {
+    if (this._missionDrawerTween) this._missionDrawerTween.stop();
+    if (this._missionPlayTween) this._missionPlayTween.stop();
+    this._missionDrawerTween = this._missionPlayTween = null;
+  };
+  _ctor.prototype.layoutMissionDrawer = function (animate) {
+    if (!this._missionHandle) return;
+    var panel = this.ndTaskInfo, play = this.btnBattle;
+    var origin = cc.view.getVisibleOrigin(), visible = cc.view.getVisibleSize();
+    var left = this.node.convertToNodeSpaceAR(cc.v2(origin.x, origin.y));
+    var right = this.node.convertToNodeSpaceAR(cc.v2(origin.x + visible.width, origin.y));
+    var width = Math.abs(right.x - left.x);
+    var fit = Math.min(1, width / ((panel.width + 56) * Math.abs(this._missionScaleX)));
+    panel.scaleX = this._missionScaleX * fit;
+    panel.scaleY = this._missionScaleY * fit;
+    this._missionHandle.setPosition(panel.width * (1 - panel.anchorX) + 28, 0);
+    var half = panel.width * Math.abs(panel.scaleX) / 2;
+    var x = Math.min(left.x, right.x) + (this._missionDrawerOpen ? half : -half);
+    var y = panel.y + 124;
+    if (this._missionDrawerOpen && panel.active) {
+      y = panel.y + panel.height * (1 - panel.anchorY) * Math.abs(panel.scaleY) + 14 + play.height * play.anchorY * Math.abs(play.scaleY);
+    }
+    var signature = [left.x, right.x, panel.y, panel.width, panel.height, play.height, play.scaleY, panel.active, this._missionDrawerOpen].join(":");
+    if (!animate && signature === this._missionDrawerLayout) return;
+    this._missionDrawerLayout = signature;
+    this.stopMissionDrawerTweens();
+    if (animate) {
+      this._missionDrawerTween = cc.tween(panel).to(.16, { x: x }, { easing: "quadOut" }).start();
+      this._missionPlayTween = cc.tween(play).to(.16, { y: y }, { easing: "quadOut" }).start();
+    } else {
+      panel.x = x;
+      play.y = y;
+    }
+  };
+  _ctor.prototype.lateUpdate = function () {
+    this.layoutMissionDrawer(false);
   };
   _ctor.prototype.initBtnListener = function () {
     var t = this;
@@ -385,6 +486,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     } else {
       this.ndTaskInfo.active = false;
     }
+    this._missionRewardReady = 1 == t.stage;
+    this.refreshMissionDrawerBadge();
   };
   _ctor.prototype.bindBoxRewardDismissal = function () {
     var root = $z1UIMgr.UIMgr.getInstance().uiRoot;
@@ -420,6 +523,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     popup.scale = 1;
   };
   _ctor.prototype.onDisable = function () {
+    this.stopMissionDrawerTweens();
+    this._missionDrawerLayout = null;
     if (this._boxRewardInputRoot) this._boxRewardInputRoot.off(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
     this._boxRewardInputRoot = null;
     this.hideBoxReward();

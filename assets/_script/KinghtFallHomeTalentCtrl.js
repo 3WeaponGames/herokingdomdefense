@@ -28,25 +28,39 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.onEnable = function () {
+    if (!this._homeTabReady) return;
+    this.initItem();
+    this.scheduleHomeGuide();
+  };
+  _ctor.prototype.onDisable = function () {
+    this.unschedule(this.showHomeGuide);
+  };
   _ctor.prototype.start = function () {
-    var t = this;
     this.ndItem.getPosition(this.stratPos);
     this.ndItem.active = false;
     this.initEventListener();
     this.initData();
     this.initView();
     this.initItem();
-    this.scheduleOnce(function () {
-      var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
-      var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(t.nodeInfo[0].cfgList[0].ID);
-      if (6 == e && n && n.isLock) {
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGroupId(7);
-        return void $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setStepId(0);
-      }
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, t.nodeInfo[0].ndItem[0]);
-    }, .5);
+    this._homeTabReady = true;
+    this.scheduleHomeGuide();
     var e = this.nodeInfo[this.max].ndItem[0];
     this.ndParent.scrollToOffset(cc.v2(e.x, this.ndParent.content.height - e.y - this.cellSize.height), .1);
+  };
+  _ctor.prototype.scheduleHomeGuide = function () {
+    this.unschedule(this.showHomeGuide);
+    this.scheduleOnce(this.showHomeGuide, .5);
+  };
+  _ctor.prototype.showHomeGuide = function () {
+    if (!this.node.activeInHierarchy) return;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    var level = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.nodeInfo[0].cfgList[0].ID);
+    if (6 == guide.getGroupId() && level && level.isLock) {
+      guide.setGroupId(7);
+      return void guide.setStepId(0);
+    }
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 6, this.nodeInfo[0].ndItem[0]);
   };
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate, this.initItem);

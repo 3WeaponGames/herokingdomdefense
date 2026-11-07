@@ -41,19 +41,35 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.start = function () {
-    var t;
-    var e = this;
-    var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet);
-    if (n) {
-      var i = null === (t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet).levelInfo[n.level - 1]) || undefined === t ? undefined : t.param;
-      i && (this.subNum = 1 - i[0]);
+  _ctor.prototype.onEnable = function () {
+    if (!this._homeTabReady) return;
+    this.refreshEquipmentLimits();
+    this.initView();
+    this.scheduleHomeGuide();
+  };
+  _ctor.prototype.onDisable = function () {
+    this.unschedule(this.showHomeGuide);
+  };
+  _ctor.prototype.refreshEquipmentLimits = function () {
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    var relic = player.getUserData().getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet);
+    this.subNum = 1;
+    if (relic) {
+      var level = data.getTreasureCfgById($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.ForgeAmulet).levelInfo[relic.level - 1];
+      if (level && level.param) this.subNum = 1 - level.param[0];
     }
+    var stage = player.getUserData().getMaxStage();
+    this.levelLimit = data.getLevelCfgById2(stage).EquipLevelCap;
+    this.nextLevel = 5 * ((stage - 1) / 5 + 1);
+    for (var index = 0; index < this.nodeInfo.length; index++) {
+      this.nodeInfo[index].ndInfo.getChildByName("btnLock").getChildByName("labNum").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomePerson03), this.nextLevel);
+    }
+  };
+  _ctor.prototype.start = function () {
+    var e = this;
     this.cfgEquip = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getEquipCfgList();
-    var a = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage();
-    var o = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById2(a);
-    this.levelLimit = o.EquipLevelCap;
-    this.nextLevel = 5 * ((a - 1) / 5 + 1);
+    this.refreshEquipmentLimits();
     this.spPower.node.active = false;
     var r = function (t) {
       var n = s.cfgEquip[t];
@@ -77,7 +93,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     for (var l = 0; l < this.cfgEquip.length; l++) {
       r(l);
     }
-    this.scrView.node.height = cc.winSize.height / 2 + this.scrView.node.y - 120;
+    this.scrView.node.height = cc.winSize.height / 2 + this.scrView.node.y - 140;
     this.scrView.node.children[0].getComponent(cc.Widget).updateAlignment();
     this.initView();
     if (cc.resources) this._cancelItemLookReady = HeroItemLooks.whenReady(function () {
@@ -85,9 +101,15 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       if (cc.isValid(e, true) && cc.isValid(e.node, true) && e.node.activeInHierarchy) e.initView();
     });
     this.initEventListener();
-    this.scheduleOnce(function () {
-      e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, e.nodeInfo[0].ndInfo.getChildByName("btnUpgeade"));
-    }, .5);
+    this._homeTabReady = true;
+    this.scheduleHomeGuide();
+  };
+  _ctor.prototype.scheduleHomeGuide = function () {
+    this.unschedule(this.showHomeGuide);
+    this.scheduleOnce(this.showHomeGuide, .5);
+  };
+  _ctor.prototype.showHomeGuide = function () {
+    if (this.node.activeInHierarchy) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, this.nodeInfo[0].ndInfo.getChildByName("btnUpgeade"));
   };
   _ctor.prototype.onDestroy = function () {
     if (this._cancelItemLookReady) this._cancelItemLookReady();
@@ -122,8 +144,15 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       r.ndItem.getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), l);
       r.ndInfo.getChildByName("ndItem").getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), l);
       var g = r.ndInfo.getChildByName("ndLay");
-      r.labNum.string = $z1Utils.Utils.StringFormat(o.T(r.cfg.Describe), r.cfg.levelInfo[l - 1].Parameters);
-      g.getChildByName("labNum1").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T(r.cfg.Describe), r.cfg.levelInfo[l - 1].Parameters);
+      // Captions have their own localized labels; values never flow into them.
+      r.labNum.string = "" + r.cfg.levelInfo[l - 1].Parameters;
+      g.getChildByName("labNum1").getComponent(cc.Label).string = "" + r.cfg.levelInfo[l - 1].Parameters;
+      var hasNextLevel = l < r.cfg.levelInfo.length;
+      g.getChildByName("ndArr").active = hasNextLevel;
+      g.getChildByName("labNum2").active = hasNextLevel;
+      // A campaign cap disables the action, but still shows the real next
+      // configured value instead of the prefab's old placeholder.
+      if (hasNextLevel) g.getChildByName("labNum2").getComponent(cc.Label).string = "" + r.cfg.levelInfo[l].Parameters;
       var customItem = cc.resources && HeroItemLooks.item(r.type, l);
       r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = customItem ? customItem.name : o.T(r.cfg.levelInfo[l - 1].EquipName);
       r.ndInfo.getChildByName("labName").active = c;

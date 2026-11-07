@@ -13,3 +13,5 @@ Check **Use this item at this tier** and **Save items** when the item should app
 New items use the selected tier's existing statistics, unlocks, upgrade costs and progression. **Edit stats and upgrades** opens the existing Equipment tool in Creator. No gear balance or player progress is changed merely by opening or browsing either editor. These definitions are alternative physical gear appearances; they do not add a separate loot/inventory economy.
 
 Saved item appearances live in `assets/resources/hero-items/catalog.json`. Original equipment tables and saved player upgrades are preserved. Drafts, explicit saves, no-change saves, revision protection and exact-source backups work the same way as the Characters tool. Equipped item parts take priority when an outfit and item target the same model slot.
+
+Imported part fitting currently uses the web Spine runtime. Simulator/native play keeps the original gear attachments and applies supported original-model/skin changes, without modifying the saved item assignment or player upgrades. It safely skips browser-only part texture loading; displaying imported parts on native builds requires a native attachment adapter.

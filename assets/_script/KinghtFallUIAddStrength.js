@@ -25,6 +25,9 @@ var def_KinghtFallUIAddStrength = function (t) {
     e.labTitle1 = null;
     e.ndLeft = null;
     e.ndRight = null;
+    e.labEnergyRule = null;
+    e.labEnergyNext = null;
+    e.labEnergyOverflow = null;
     return e;
   }
   cc__extends(_ctor, t);
@@ -55,7 +58,44 @@ var def_KinghtFallUIAddStrength = function (t) {
       }, null, "home.energy.refill");
     }, this);
     this.node.getChildByName("bg").on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
+    this.initEnergyInfo();
   };
+  _ctor.prototype.initEnergyInfo = function () {
+    if (!this.labEnergyRule || !this.labEnergyNext || !this.labEnergyOverflow) {
+      var root = this.node.getChildByName("root"), info = root && root.getChildByName("EnergyInfo");
+      if (!info || info.name !== "EnergyInfo") return;
+      this.labEnergyRule = info.getChildByName("RecoveryRule").getComponent(cc.Label);
+      this.labEnergyNext = info.getChildByName("RecoveryNext").getComponent(cc.Label);
+      this.labEnergyOverflow = info.getChildByName("RecoveryOverflow").getComponent(cc.Label);
+    }
+    if (!this.labEnergyRule || !this.labEnergyNext || !this.labEnergyOverflow) return;
+    var panel = this.labEnergyRule.node.parent;
+    var graphics = panel.getComponent(cc.Graphics) || panel.addComponent(cc.Graphics);
+    graphics.clear();
+    graphics.fillColor = cc.color(31, 49, 84, 245);
+    graphics.strokeColor = cc.color(123, 177, 224, 255);
+    graphics.lineWidth = 2;
+    graphics.roundRect(-panel.width / 2, -panel.height / 2, panel.width, panel.height, 14);
+    graphics.fill();graphics.stroke();
+    this.updateEnergyInfo();
+    this.schedule(this.updateEnergyInfo, 1);
+    this.addEvent($z1KinghtFallConfig.KinghtFallEventName.RefreshPower, this.updateEnergyInfo);
+  };
+  _ctor.prototype.updateEnergyInfo = function () {
+    if (!this.labEnergyRule || this.isclose) return;
+    var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    var energy = user.getPowerNum(), cap = user.maxPower, interval = user.powerRecoveryTime;
+    var minutes = Math.round(interval / 600) / 100;
+    this.labEnergyRule.string = $z1Utils.Utils.StringFormat(this.T("ui.energy.recovery_rule"), cap, minutes);
+    if (energy >= cap) this.labEnergyNext.string = $z1Utils.Utils.StringFormat(this.T("ui.energy.recovery_paused"), energy, cap);
+    else {
+      var seconds = Math.max(0, Math.ceil(Math.min(interval, interval - (Date.now() - user.getPowerUpdateTime())) / 1000));
+      var clock = Math.floor(seconds / 60) + ":" + (seconds % 60 < 10 ? "0" : "") + seconds % 60;
+      this.labEnergyNext.string = $z1Utils.Utils.StringFormat(this.T("ui.energy.recovery_next"), energy, cap, clock);
+    }
+    this.labEnergyOverflow.string = this.T("ui.energy.recovery_overflow");
+  };
+  _ctor.prototype.onDisable = function () { this.unschedule(this.updateEnergyInfo); };
   _ctor.prototype.onBtnBuy = function (t) {
     if (t) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().addPowerNum(t);
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.gold_reward);
@@ -63,6 +103,9 @@ var def_KinghtFallUIAddStrength = function (t) {
     this.closeUI();
   };
   cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labTitle1", undefined);
+  cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labEnergyRule", undefined);
+  cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labEnergyNext", undefined);
+  cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labEnergyOverflow", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndLeft", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndRight", undefined);
   return cc__decorate([ccp_ccclass], _ctor);

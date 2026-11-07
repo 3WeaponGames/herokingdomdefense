@@ -3478,8 +3478,8 @@
       "context": "assets\\_script\\KinghtFallTextConfig.js:28"
     },
     "script.kinghtfalltextconfig.homeperson03.29": {
-      "en": "Clear stage {0} to upgrade",
-      "zh": "完成关卡{0}可强化",
+      "en": "Clear stage {0}\nto upgrade",
+      "zh": "完成关卡{0}\n可强化",
       "context": "assets\\_script\\KinghtFallTextConfig.js:29"
     },
     "script.kinghtfalltextconfig.homeperson04.30": {
@@ -5871,6 +5871,86 @@
       "en": "{0}%",
       "zh": "{0}%",
       "context": "Loading percentage layout; runtime supplies the numeric value through loading.progress"
+    },
+    "ui.energy.recovery_rule": {
+      "en": "Natural energy cap: {0} · +1 every {1} min",
+      "zh": "恢复上限 {0} · 每{1}分钟 +1 体力",
+      "context": "Energy refill popup · current natural recovery rules"
+    },
+    "ui.energy.recovery_next": {
+      "en": "Energy: {0} / {1} · Next +1: {2}",
+      "zh": "体力：{0} / {1} · 下次恢复：{2}",
+      "context": "Energy refill popup · live countdown"
+    },
+    "ui.energy.recovery_paused": {
+      "en": "Energy: {0} / {1} · Refills paused",
+      "zh": "体力：{0} / {1} · 自动恢复已暂停",
+      "context": "Energy refill popup · at or above natural cap"
+    },
+    "ui.energy.recovery_overflow": {
+      "en": "Gem and ad rewards can exceed this cap.",
+      "zh": "购买和广告奖励可超过此上限。",
+      "context": "Energy refill popup · paid and ad overflow explanation"
+    },
+    "gear.stat.hp": {
+      "en": "Max HP",
+      "zh": "血量上限",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLay/labStat"
+    },
+    "gear.stat.regen": {
+      "en": "HP Regen",
+      "zh": "生命恢复",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLay/labStat"
+    },
+    "gear.stat.movement": {
+      "en": "Movement Speed",
+      "zh": "移动速度",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLay/labStat"
+    },
+    "gear.stat.damage": {
+      "en": "Attack Damage",
+      "zh": "攻击伤害",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLay/labStat"
+    },
+    "gear.stat.range": {
+      "en": "Attack Range",
+      "zh": "攻击范围",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLay/labStat"
+    },
+    "gear.stat.attack-speed": {
+      "en": "Attack Speed",
+      "zh": "攻击速度",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLay/labStat"
+    },
+    "gear.list.stat.hp": {
+      "en": "Max HP",
+      "zh": "血量上限",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLay/labStat"
+    },
+    "gear.list.stat.regen": {
+      "en": "HP Regen",
+      "zh": "生命恢复",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLay/labStat"
+    },
+    "gear.list.stat.damage": {
+      "en": "Attack Damage",
+      "zh": "攻击伤害",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLay/labStat"
+    },
+    "gear.list.stat.range": {
+      "en": "Attack Range",
+      "zh": "攻击范围",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLay/labStat"
+    },
+    "gear.list.stat.attack-speed": {
+      "en": "Attack Speed",
+      "zh": "攻击速度",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLay/labStat"
+    },
+    "gear.list.stat.movement": {
+      "en": "Movement Speed",
+      "zh": "移动速度",
+      "context": "assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLay/labStat"
     }
   },
   "images": {
@@ -9934,709 +10014,1068 @@
     },
     "ui.layout.kinghtfallhomepersonctrl.142": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 60.48,
-        "fontSize": 67,
-        "lineHeight": 78,
-        "y": 42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 380,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true,
-        "y": 42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.146": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 60.48,
-        "fontSize": 67,
-        "lineHeight": 78,
-        "y": 42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 380,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true,
-        "y": 42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.150": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 60.48,
-        "fontSize": 67,
-        "lineHeight": 78,
-        "y": -42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 380,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true,
-        "y": -42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.154": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 60.48,
-        "fontSize": 67,
-        "lineHeight": 78,
-        "y": -42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 380,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true,
-        "y": -42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.158": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 60.48,
-        "fontSize": 67,
-        "lineHeight": 78,
-        "y": -42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 380,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true,
-        "y": -42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.181": {
       "en": {
-        "width": 570,
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.186": {
       "en": {
-        "width": 284,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 70.56,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.198": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.217": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.222": {
       "en": {
-        "width": 380,
-        "height": 106,
-        "wrap": false,
-        "fontSize": 59,
-        "lineHeight": 68,
-        "overflow": "NONE"
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 360,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.230": {
       "en": {
-        "width": 600,
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 102.72,
-        "fontSize": 72,
-        "lineHeight": 83
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 156,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.250": {
       "en": {
-        "width": 570,
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.255": {
       "en": {
-        "width": 284,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 70.56,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.267": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.286": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.291": {
       "en": {
-        "width": 380,
-        "height": 106,
-        "wrap": false,
-        "fontSize": 59,
-        "lineHeight": 68,
-        "overflow": "NONE"
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 360,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.299": {
       "en": {
-        "width": 600,
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 102.72,
-        "fontSize": 72,
-        "lineHeight": 83
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 156,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.319": {
       "en": {
-        "width": 570,
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.324": {
       "en": {
-        "width": 284,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 70.56,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.336": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.355": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.360": {
       "en": {
-        "width": 380,
-        "height": 106,
-        "wrap": false,
-        "fontSize": 59,
-        "lineHeight": 68,
-        "overflow": "NONE"
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 360,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.368": {
       "en": {
-        "width": 600,
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 102.72,
-        "fontSize": 72,
-        "lineHeight": 83
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 156,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.388": {
       "en": {
-        "width": 570,
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.393": {
       "en": {
-        "width": 284,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 70.56,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.405": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.424": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.429": {
       "en": {
-        "width": 380,
-        "height": 106,
-        "wrap": false,
-        "fontSize": 59,
-        "lineHeight": 68,
-        "overflow": "NONE"
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 360,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.437": {
       "en": {
-        "width": 600,
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 102.72,
-        "fontSize": 72,
-        "lineHeight": 83
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 156,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.457": {
       "en": {
-        "width": 570,
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.462": {
       "en": {
-        "width": 284,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 70.56,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.474": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.493": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.498": {
       "en": {
-        "width": 380,
-        "height": 106,
-        "wrap": false,
-        "fontSize": 59,
-        "lineHeight": 68,
-        "overflow": "NONE"
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 360,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.506": {
       "en": {
-        "width": 600,
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 102.72,
-        "fontSize": 72,
-        "lineHeight": 83
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 156,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.526": {
       "en": {
-        "width": 570,
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 614,
+        "height": 144,
+        "fontSize": 64,
+        "lineHeight": 68,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "x": -198,
+        "y": 40,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.531": {
       "en": {
-        "width": 284,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 70.56,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 220,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": -143,
+        "y": -56,
+        "color": "#657488"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.543": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.562": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 92.64,
-        "fontSize": 67,
-        "lineHeight": 78
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 147,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 368,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 44,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.567": {
       "en": {
-        "width": 380,
-        "height": 106,
-        "wrap": false,
-        "fontSize": 59,
-        "lineHeight": 68,
-        "overflow": "NONE"
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 360,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 368,
+        "height": 168,
+        "fontSize": 54,
+        "lineHeight": 56,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": -17,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.575": {
       "en": {
-        "width": 600,
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 102.72,
-        "fontSize": 72,
-        "lineHeight": 83
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 156,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1000,
+        "height": 240,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 1,
+        "x": 65,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhometreasurectrl.5": {
@@ -10696,87 +11135,102 @@
     },
     "ui.layout.kinghtfalluihome.30": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.65": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.100": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.135": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluihome.170": {
       "en": {
-        "width": 212,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 83.6,
+        "width": 288,
+        "wrap": false,
+        "overflow": "SHRINK",
+        "height": 120,
         "fontSize": 67,
-        "lineHeight": 78
+        "lineHeight": 78,
+        "maxLines": 1
       },
       "zh": {
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 145,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 288,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 120,
+        "maxLines": 1
       }
     },
     "ui.layout.kinghtfalluinewmodular.16": {
@@ -12110,12 +12564,12 @@
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "height": 117.84,
-        "fontSize": 84,
-        "lineHeight": 97
+        "fontSize": 94,
+        "lineHeight": 108
       },
       "zh": {
-        "fontSize": 84,
-        "lineHeight": 97,
+        "fontSize": 94,
+        "lineHeight": 108,
         "width": 348,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true
@@ -12276,225 +12730,328 @@
     },
     "ui.layout.kinghtfallhomepersonctrl.138": {
       "en": {
-        "width": 380,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 60.48,
-        "fontSize": 67,
-        "lineHeight": 78,
-        "y": 42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 380,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true,
-        "y": 42
+        "width": 160,
+        "height": 88,
+        "fontSize": 72,
+        "lineHeight": 80,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 146,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.174": {
       "en": {
-        "width": 140,
-        "wrap": false,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "height": 68.47999999999999,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 140,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.207": {
       "en": {
-        "width": 161,
-        "wrap": false,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "height": 78.56,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 161,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.243": {
       "en": {
-        "width": 140,
-        "wrap": false,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "height": 68.47999999999999,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 140,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.276": {
       "en": {
-        "width": 161,
-        "wrap": false,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "height": 78.56,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 161,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.312": {
       "en": {
-        "width": 140,
-        "wrap": false,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "height": 68.47999999999999,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 140,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.345": {
       "en": {
-        "width": 161,
-        "wrap": false,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "height": 78.56,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 161,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.381": {
       "en": {
-        "width": 140,
-        "wrap": false,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "height": 68.47999999999999,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 140,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.414": {
       "en": {
-        "width": 161,
-        "wrap": false,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "height": 78.56,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 161,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.450": {
       "en": {
-        "width": 140,
-        "wrap": false,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "height": 68.47999999999999,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 140,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.483": {
       "en": {
-        "width": 161,
-        "wrap": false,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "height": 78.56,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 161,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.519": {
       "en": {
-        "width": 140,
-        "wrap": false,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "height": 68.47999999999999,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 140,
+        "width": 184,
+        "height": 60,
+        "fontSize": 54,
+        "lineHeight": 60,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 2,
+        "x": 48,
+        "y": -35,
+        "color": "#FFFFFF"
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.552": {
       "en": {
-        "width": 161,
-        "wrap": false,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "height": 78.56,
-        "fontSize": 59,
-        "lineHeight": 68
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       },
       "zh": {
-        "fontSize": 59,
-        "lineHeight": 68,
-        "width": 161,
+        "width": 176,
+        "height": 80,
+        "fontSize": 64,
+        "lineHeight": 72,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "horizontalAlign": 1,
+        "y": 0,
+        "color": "#FFF9ED"
       }
     },
     "ui.layout.kinghtfallhometreasurectrl.27": {
@@ -13524,15 +14081,15 @@
     },
     "ui.mobile.kinghtfallhomebattlectrl.114": {
       "en": {
-        "fontSize": 60,
-        "lineHeight": 69,
+        "fontSize": 72,
+        "lineHeight": 83,
         "width": 140,
         "overflow": "NONE",
         "wrap": false
       },
       "zh": {
-        "fontSize": 60,
-        "lineHeight": 69,
+        "fontSize": 72,
+        "lineHeight": 83,
         "width": 140,
         "overflow": "NONE",
         "wrap": false
@@ -13604,98 +14161,158 @@
     },
     "ui.mobile.kinghtfallhomepersonctrl.192": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       }
     },
     "ui.mobile.kinghtfallhomepersonctrl.261": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       }
     },
     "ui.mobile.kinghtfallhomepersonctrl.330": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       }
     },
     "ui.mobile.kinghtfallhomepersonctrl.399": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       }
     },
     "ui.mobile.kinghtfallhomepersonctrl.468": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       }
     },
     "ui.mobile.kinghtfallhomepersonctrl.537": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 272,
+        "height": 76,
+        "fontSize": 64,
+        "lineHeight": 72,
+        "overflow": "NONE",
+        "wrap": false,
+        "horizontalAlign": 1,
+        "x": 25,
+        "y": -56,
+        "color": "#32BF00"
       }
     },
     "ui.mobile.kinghtfallhometalentctrl.29": {
@@ -14340,6 +14957,330 @@
         "x": 0,
         "y": -474.418
       }
+    },
+    "ui.energy.recovery_rule": {
+      "en": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      }
+    },
+    "ui.energy.recovery_next": {
+      "en": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 28,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      }
+    },
+    "ui.energy.recovery_overflow": {
+      "en": {
+        "fontSize": 26,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 26,
+        "lineHeight": 32,
+        "width": 620,
+        "height": 42,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "fontRole": "body"
+      }
+    },
+    "gear.stat.hp": {
+      "en": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      },
+      "zh": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      }
+    },
+    "gear.stat.regen": {
+      "en": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      },
+      "zh": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      }
+    },
+    "gear.stat.movement": {
+      "en": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      },
+      "zh": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      }
+    },
+    "gear.stat.damage": {
+      "en": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      },
+      "zh": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      }
+    },
+    "gear.stat.range": {
+      "en": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      },
+      "zh": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      }
+    },
+    "gear.stat.attack-speed": {
+      "en": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      },
+      "zh": {
+        "width": 336,
+        "height": 116,
+        "fontSize": 54,
+        "lineHeight": 58,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "horizontalAlign": 0,
+        "color": "#EAF0FF"
+      }
+    },
+    "gear.list.stat.hp": {
+      "en": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      },
+      "zh": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      }
+    },
+    "gear.list.stat.regen": {
+      "en": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      },
+      "zh": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      }
+    },
+    "gear.list.stat.damage": {
+      "en": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      },
+      "zh": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      }
+    },
+    "gear.list.stat.range": {
+      "en": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      },
+      "zh": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      }
+    },
+    "gear.list.stat.attack-speed": {
+      "en": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      },
+      "zh": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      }
+    },
+    "gear.list.stat.movement": {
+      "en": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      },
+      "zh": {
+        "width": 614,
+        "height": 64,
+        "fontSize": 54,
+        "lineHeight": 60,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "horizontalAlign": 0,
+        "color": "#657488"
+      }
     }
   },
   "nodeStyles": {
@@ -14887,7 +15828,22 @@
     "84e45fac-8f30-4699-bccf-aa1ab616212b:8cjQqkPtJDC76JKKmIlGOF": "ui.mobile.uireport.14",
     "6457c822-09f9-4a3a-866c-11e81617b172:6d3k0iqtVEUbWENe0b6K0p": "ui.mobile.uitips.4",
     "764e6d09-03a2-4214-b48e-97207f930803:CFC5jZH2un7mvImUieSbzA": "common.claimAll",
-    "67262722-3368-46e1-a49b-9345899955dc:rjWihIIxAYsZquR8CuKUjQ": "common.claimAll"
+    "67262722-3368-46e1-a49b-9345899955dc:rjWihIIxAYsZquR8CuKUjQ": "common.claimAll",
+    "a8abe270-9f98-4fcb-9836-30de622de489:9a760be0-2f5a-4c1e-b1bd-514c7a1249ea": "ui.energy.recovery_rule",
+    "a8abe270-9f98-4fcb-9836-30de622de489:133e145c-8029-4730-9792-7940f9a9ef81": "ui.energy.recovery_next",
+    "a8abe270-9f98-4fcb-9836-30de622de489:6606ab07-90c6-49bf-9c95-3dd3bacc0c4f": "ui.energy.recovery_overflow",
+    "23ada4a7-04e0-4526-a262-58852ee10328:dab095KiCBFpax87yZ/Rl9G": "gear.stat.hp",
+    "23ada4a7-04e0-4526-a262-58852ee10328:8d39cxEtNZAs7qtbUrHmR9D": "gear.stat.regen",
+    "23ada4a7-04e0-4526-a262-58852ee10328:d8dc5D5UORFdYFbaihiBHfS": "gear.stat.movement",
+    "23ada4a7-04e0-4526-a262-58852ee10328:43d4eAosd1EdaJGxlDUsUgy": "gear.stat.damage",
+    "23ada4a7-04e0-4526-a262-58852ee10328:892b3HsJz5DLoU6T8sdW1S8": "gear.stat.range",
+    "23ada4a7-04e0-4526-a262-58852ee10328:161278W+A5Ik5vtVmrh/1CZ": "gear.stat.attack-speed",
+    "23ada4a7-04e0-4526-a262-58852ee10328:2c0a25v7CxML5HbVuLy6Gt2": "gear.list.stat.hp",
+    "23ada4a7-04e0-4526-a262-58852ee10328:6b3f6gba0lBRa9zY3aWRM8v": "gear.list.stat.regen",
+    "23ada4a7-04e0-4526-a262-58852ee10328:bd702L2mcpGHpMrNYBJhRaq": "gear.list.stat.damage",
+    "23ada4a7-04e0-4526-a262-58852ee10328:0c125Yta01OibNFaauyAKNf": "gear.list.stat.range",
+    "23ada4a7-04e0-4526-a262-58852ee10328:f980a18hylOx4BtRXdAN3fF": "gear.list.stat.attack-speed",
+    "23ada4a7-04e0-4526-a262-58852ee10328:5c7baG6hu9MK5fCd046w9zd": "gear.list.stat.movement"
   },
   "nodePathStyles": {
     "GAD_UIResult/root/ndTop/New Label": "ui.layout.common_uiresult.36",
@@ -15209,7 +16165,28 @@
     "undefined/uiRoot/UILoading/New Label": "ui.mobile.loading.38",
     "undefined/uiRoot/UILoading/ndInfo/New Label": "ui.layout.loading.33",
     "uiRoot/UILoading/ProgressPercent": "ui.layout.loading.progress",
-    "undefined/uiRoot/UILoading/ProgressPercent": "ui.layout.loading.progress"
+    "undefined/uiRoot/UILoading/ProgressPercent": "ui.layout.loading.progress",
+    "KinghtFallUIAddStrength/root/EnergyInfo/RecoveryRule": "ui.energy.recovery_rule",
+    "KinghtFallUIAddStrength/root/EnergyInfo/RecoveryNext": "ui.energy.recovery_next",
+    "KinghtFallUIAddStrength/root/EnergyInfo/RecoveryOverflow": "ui.energy.recovery_overflow",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow1/labCaption": "gear.stat.hp",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow1/labNum1": "ui.layout.kinghtfallhomepersonctrl.138",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow2/labCaption": "gear.stat.regen",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow2/labNum2": "ui.layout.kinghtfallhomepersonctrl.142",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow6/labCaption": "gear.stat.movement",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow6/labNum6": "ui.layout.kinghtfallhomepersonctrl.158",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow3/labCaption": "gear.stat.damage",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow3/labNum3": "ui.layout.kinghtfallhomepersonctrl.146",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow4/labCaption": "gear.stat.range",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow4/labNum4": "ui.layout.kinghtfallhomepersonctrl.150",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow5/labCaption": "gear.stat.attack-speed",
+    "KinghtFallHomePersonCtrl/ndPersonInfo/ndInfo/statRow5/labNum5": "ui.layout.kinghtfallhomepersonctrl.154",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem1/ndLay/labStat": "gear.list.stat.hp",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem2/ndLay/labStat": "gear.list.stat.regen",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem3/ndLay/labStat": "gear.list.stat.damage",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem4/ndLay/labStat": "gear.list.stat.range",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem5/ndLay/labStat": "gear.list.stat.attack-speed",
+    "KinghtFallHomePersonCtrl/ScrollView/view/content/ndItem6/ndLay/labStat": "gear.list.stat.movement"
   },
   "fonts": {
     "en": "localization/fonts/Lilita One"

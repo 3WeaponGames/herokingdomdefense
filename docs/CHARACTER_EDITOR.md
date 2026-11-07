@@ -18,4 +18,4 @@ Browsing and previewing do not write files, change the active scene, launch game
 
 The editor creates character *looks* on existing rigs. This expansion supplies equipment art, not new skeletons or animation sets. Additional gameplay unit types still need definitions in the Units tool. Appearance overrides are per instance and use the existing animation bones; shared Spine assets, player progression, colliders and authored attack timings are preserved.
 
-The renderer is verified against the project's Creator 2.4.13 web Spine runtime. Native JSB deployment needs its own attachment-adapter validation before shipping.
+Custom imported parts are fitted by the project's Creator 2.4.13 web Spine runtime. Native JSB does not expose the required browser texture adapter or JavaScript attachment vertex hooks. Simulator/native play therefore keeps the original attachments, applies supported original-model/skin overrides, and issues one compatibility notice per session. It does not load custom part textures or change the saved appearance assignment. A native attachment adapter is still required before imported parts can appear on native builds.

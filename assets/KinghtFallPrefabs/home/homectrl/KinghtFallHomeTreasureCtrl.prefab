@@ -2749,23 +2749,24 @@
     }
   },
   {
-    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
-    "node": {
+        "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+        "node": {
       "__id__": 3
     },
-    "content": [
+        "content": [
       {
         "__id__": 4
       }
     ],
-    "paddingX": 40,
-    "paddingY": 10,
-    "gap": 8,
-    "minWidth": 0,
-    "minHeight": 89,
-    "maxWidth": 700,
-    "reflowRows": true
-  },
+        "paddingX": 40,
+        "paddingY": 10,
+        "gap": 8,
+        "minWidth": 0,
+        "minHeight": 89,
+        "maxWidth": 700,
+        "reflowRows": true,
+        "ribbonTitle": true
+    },
   {
     "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
     "node": {

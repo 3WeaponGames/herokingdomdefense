@@ -61,6 +61,7 @@ const operations = {
   energy(h) {
     const ctx = context(h), screen = ui({ T: String, labTitle1: {}, node: node(), ndLeft: node(), ndRight: node() });
     screen.onBtnBuy = method('KinghtFallUIAddStrength', 'onBtnBuy', ctx);
+    screen.initEnergyInfo = method('KinghtFallUIAddStrength', 'initEnergyInfo', ctx);
     method('KinghtFallUIAddStrength', 'start', ctx).call(screen);
     screen.ndLeft.getChildByName('ndBtn').click();
     return screen;

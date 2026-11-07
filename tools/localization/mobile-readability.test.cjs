@@ -20,7 +20,11 @@ test('Every authored Label and RichText has readable mobile typography in both l
         const style=catalog.labelStyles[key][language];
         const font=style?.fontSize||label._fontSize||label._N$fontSize||40;
         assert.ok(font*scale(node)*360/750>=11.99,nodePath(node)+' '+language+' fell below the compact-text minimum');
-        if(label.__type__==='cc.Label')assert.notEqual(style.overflow,'SHRINK',nodePath(node)+' must wrap or grow instead of shrinking');
+        if(label.__type__==='cc.Label'){
+          const footerTab=/^KinghtFallUIHome\/ndBottom\/Toggle[1-5]\/checkmark\/labName$/.test(nodePath(node));
+          if(footerTab){assert.equal(style.wrap,false);assert.equal(style.overflow,'SHRINK');}
+          else assert.notEqual(style.overflow,'SHRINK',nodePath(node)+' must wrap or grow instead of shrinking');
+        }
       }
       count++;
     }
