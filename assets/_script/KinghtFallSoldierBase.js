@@ -480,6 +480,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);
     GameToolsOverrides.cancel(this);
     this._isPooled = true;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;

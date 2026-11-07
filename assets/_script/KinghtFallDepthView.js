@@ -421,10 +421,15 @@ DepthView.prototype.renderNative = function (sources, center, height, texture) {
   try {
     sources.forEach(function (source) {
       if (!source.enabled || !source.node.activeInHierarchy) return;
+      // JSB recalculates scene-wide matrices on every manual camera render,
+      // but only refreshes Sprite vertices in the selected subtree. A previous
+      // capture may already have consumed this source's transform/opacity flags.
+      if (cc.RenderFlow) source.node._renderFlag |= cc.RenderFlow.FLAG_WORLD_TRANSFORM | cc.RenderFlow.FLAG_OPACITY;
       camera.clearFlags = cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL | (first ? cc.Camera.ClearFlags.COLOR : 0);
+      this._nativeRendered = true;
       camera.render(source.node);
       first = false;
-    });
+    }, this);
   } finally {
     camera.targetTexture = null;
   }
@@ -502,22 +507,35 @@ DepthView.prototype.update = function () {
     draw.push({ object: object, box: box, hidden: hidden });
   });
   this._vertexConsumers = cache.vertexConsumers;
-  draw.forEach(function (item) {
-    var object = item.object, box = item.box, hidden = item.hidden;
-    self.snapshot(object, box,cache);
-    hidden.forEach(function (entry) {
-      var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
-      mask.node.active = true;
-      mask.node.zIndex = entry.actor.node.zIndex;
-      if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw);
-      else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache); });
+  try {
+    draw.forEach(function (item) {
+      var object = item.object, box = item.box, hidden = item.hidden;
+      self.snapshot(object, box,cache);
+      hidden.forEach(function (entry) {
+        var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
+        mask.node.active = true;
+        mask.node.zIndex = entry.actor.node.zIndex;
+        if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw);
+        else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache); });
+      });
+      object.overlay.node.active = true;
+      object.overlay.node.zIndex = object.node.zIndex + 1;
+      object.overlay.node.setPosition(object.center.x, object.center.y);
+      object.overlay.node.setContentSize(object.size);
+      object.overlay.mask.spriteFrame = object.frame;
     });
-    object.overlay.node.active = true;
-    object.overlay.node.zIndex = object.node.zIndex + 1;
-    object.overlay.node.setPosition(object.center.x, object.center.y);
-    object.overlay.node.setContentSize(object.size);
-    object.overlay.mask.spriteFrame = object.frame;
-  });
+  } finally {
+    if (this._nativeRendered) {
+      this._nativeRendered = false;
+      // Native RenderFlow clears WORLD_TRANSFORM_CHANGED/OPACITY_CHANGED for
+      // every node, even when camera.render() draws just one body part. Restore
+      // inheritance once after the capture batch so the main draw updates the
+      // hero's follow ring, released joystick and newly laid-out popup sprites.
+      // Reflag the scene, since UI siblings also lose their pending updates.
+      var scene = cc.director.getScene(), flow = cc.RenderFlow;
+      if (scene && flow) scene._renderFlag |= flow.FLAG_WORLD_TRANSFORM | flow.FLAG_OPACITY;
+    }
+  }
   if (this.nativeCapture) this.nativeActors.forEach(function (record, actor) {
     if (cc.isValid(actor.node) && activeActors.has(actor)) return;
     if (record.frame) record.frame.destroy();

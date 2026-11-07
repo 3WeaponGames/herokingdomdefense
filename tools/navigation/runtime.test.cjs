@@ -388,7 +388,8 @@ test('Enemy authored goals advance only at the resolved endpoint; wait and unrea
     u.state = 3; const pos = u.node.getPosition(); u.onUpdate(0.2); near(distance(pos, u.node.position), 0); assert.equal(u.bornInfo.nodeIndex, 1);
     const blocked = environment(); blocked.box(0, 0, 20, 400); const b = blocked.actor(name);
     b.bornInfo = { nodeIndex: 0, pathList: [new Node('goal', blocked.game.ndMain, 100, 0)] }; b.onUpdate(10);
-    assert.equal(b.bornInfo.nodeIndex, 0); near(b.node.x, -100);
+    assert.equal(b.bornInfo.nodeIndex, 0, 'a partial route must not complete the blocked objective');
+    assert(b.node.x > -100 && b.node.x < -10, 'enemy should approach the obstruction without crossing it');
   }
 });
 

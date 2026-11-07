@@ -14,7 +14,7 @@ const savedLooks = require('../../assets/resources/characters/catalog.json');
 // attachments also cannot run the web runtime's JS computeWorldVertices hook.
 function fixture(options = {}) {
   let now = 0;
-  const native = options.native !== false, pending = [], requests = [], warnings = [];
+  const native = options.native !== false, pending = [], requests = [], warnings = [], notices = [];
   const config = JSON.parse(JSON.stringify(savedLooks));
   const profileId = config.assignments['ally:90001:default'];
   const profile = config.profiles[profileId], layer = profile.parts[0].layer;
@@ -47,6 +47,7 @@ function fixture(options = {}) {
     Component, Texture2D: class {}, JsonAsset: class {}, sys: { isNative: native },
     isValid: value => !!value && !value.destroyed,
     warn: message => warnings.push(message),
+    log: message => notices.push(message),
     Class(definition) {
       function Appearance() {}
       Appearance.prototype = Object.assign(Object.create(Component.prototype), definition);
@@ -99,7 +100,7 @@ function fixture(options = {}) {
     return unit;
   }
   return {
-    add, units, cc, sp, calls, requests, warnings, config, profile, layer, options, api: context.exports,
+    add, units, cc, sp, calls, requests, warnings, notices, config, profile, layer, options, api: context.exports,
     flush() { while (pending.length) pending.shift()(); },
     step(count = 1) { for (let i = 0; i < count; i++) units.forEach(unit => unit.component.lateUpdate()); },
     setNow(value) { now = value; },
@@ -117,7 +118,8 @@ test('30 freshly spawned native barracks allies never call unavailable browser S
   assert.equal(f.requests.length, 2, 'catalogs are shared, not requested per soldier/frame');
   assert.equal(f.calls.prepare, 0);
   assert.equal(f.calls.apply, 0);
-  assert.equal(f.warnings.length, 1, 'one compatibility notice, no recurring native exception flood');
+  assert.equal(f.warnings.length, 0);
+  assert.equal(f.notices.length, 1, 'one informational compatibility notice per session');
   for (const unit of f.units) {
     assert.equal(unit.renderer._skeleton.attachments, unit.attachments);
     assert.equal(unit.renderer.getCurrent(), unit.track);
@@ -188,7 +190,7 @@ test('native renderers are protected even when web constructors exist or the pla
   for (const options of [{ browserApiOnNative: true }, { native: false, rendererNative: true }]) {
     const f = fixture(options); f.add(); f.flush(); f.step(); f.flush(); f.step(20);
     assert.equal(f.partRequests().length, 0); assert.equal(f.calls.prepare, 0);
-    assert.equal(f.warnings.length, 1);
+    assert.equal(f.warnings.length, 0); assert.equal(f.notices.length, 1);
   }
 });
 

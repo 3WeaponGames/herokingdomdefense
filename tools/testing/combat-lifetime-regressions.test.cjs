@@ -23,6 +23,11 @@ function pendingBar(name) {
   return {h,actor,pending,health};
 }
 for (const name of ['KinghtFallEnemyBase','KinghtFallSoldierBase']) {
+  test(name+' hides the entire health bar before entering the pool',()=>{
+    const {actor}=pendingBar(name),calls=[];
+    actor.hp=25;actor.hpctrl={setHp:(...args)=>calls.push(args)};
+    actor.freeNode();assert.deepEqual(calls,[[0,100]]);
+  });
   test(name+' shares a pending HP bar across pool reuse and displays current health',()=>{
     const {h,actor,pending,health}=pendingBar(name);
     actor.initData(90001,{}); actor.freeNode(); actor.node.setParent(h.game.ndMain); actor.initData(90001,{});

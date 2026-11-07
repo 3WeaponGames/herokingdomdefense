@@ -1,0 +1,93 @@
+Recommended production approach: authored sprites with a hybrid export
+
+Use individual source-sprite placements while authoring. Export a mixture of
+baked terrain chunks and tightly cropped, depth-sorted occluders for runtime.
+Keep the authored placements as the editable source of truth.
+
+Why this fits the current game
+
+The four current map prefabs contain 220, 257, 245 and 234 serialized sprite
+components respectively, before spawned actors. These are component counts,
+not measured draw calls. KinghtFallDepthView and KinghtFallBuildObstacle already
+keep ground points, collision polygons and occlusion information separate from
+the map's background art. Preserve that distinction in a future exporter.
+
+More objects do not automatically mean proportionally more GPU submissions.
+Cocos 2.4 can batch adjacent compatible sprites that share an atlas. Different
+textures, materials, masks and rendering order can interrupt batching. Its
+dynamic-atlas option can also consume extra memory and is not a free default
+solution on every target. Prefer planned static atlases and measured profiling.
+Official documentation:
+https://docs.cocos.com/creator/2.4/manual/en/advanced-topics/dynamic-atlas.html
+
+Runtime outputs
+
+1. Ground: bake opaque ground, ground markings, small flat stones, low flowers,
+   footprints, fixed water beds and terrain that can never cover a unit into
+   spatial chunks. Start by evaluating 1024 or 2048 pixel chunk limits against
+   the actual map resolution and target hardware, rather than making every
+   depth layer cover the entire map.
+
+2. Occluders: keep trees, tall rocks, cliff fronts and canopies as cropped RGBA
+   cutouts. Give each object or safe group a ground/base point and an occlusion
+   shape for the game's existing depth/silhouette system. A grove can become
+   one group when actors cannot enter it and all its members can safely share
+   one sorting boundary. Keep trees separate where actors can move between them.
+   Do not merge objects with unrelated base heights into one global foreground.
+
+3. Interactive objects: keep towers, gates, upgradeable or destructible scenery,
+   hero units and enemies independent. Keep animations such as lava flow or
+   water highlights in small optional overlays rather than rebaking the map
+   every frame.
+
+4. Data: export collision polygons, navigation boundaries, entrances, build
+   slots, anchors and ground points as data. Baking artwork must not erase or
+   silently change that data. Generated concept images do not supply it.
+
+Memory and overdraw
+
+The original maps' inspected bounds are about 1860 x 3028 pixels, or 1950 x 3118
+for Map03. At RGBA8, 1860 x 3028 x 4 is about 21.5 MiB for a single base-level
+texture before compression, padding, mipmaps or additional CPU copies. Five
+full-map transparent layers at that size would be about 107.4 MiB before those
+extras, even when their PNG files are small. Actual GPU compression can change
+this substantially; profile the intended build format on target devices.
+
+Crop transparent occluders closely. Reuse repeated tree and rock art in atlases
+rather than storing many full-map copies of the same pixels. Avoid drawing
+large overlapping transparent rectangles over the whole screen. Load the
+selected map's art rather than all forty concepts at once.
+
+Export workflow that preserves the map editor's appearance
+
+1. Choose a concept, then rebuild the layout with the extracted PNGs in an
+   editable scene or placement document. Concept art is an AI interpretation,
+   not a guarantee of literal pixel-preserved sprite placement.
+2. Make a missing-art list for that selected layout. Generate only the needed
+   terrain additions, such as cliff faces, water banks, slopes or solidified
+   lava ground, as separate source assets matching the existing art. Author
+   their base points and colliders explicitly.
+3. Record asset GUID, transform, scale, rotation, anchor, layer membership,
+   ground point, opacity, collider and unknown existing metadata for every
+   placement. Keep editor work in drafts until an explicit save/export.
+4. Export each runtime layer/chunk directly from that same placed scene, using
+   the same camera, projection, scale and pixel origin. Include chunk offsets
+   and untrimmed placement bounds in a manifest so cropping does not move art.
+5. Export a clean underlying ground pass independently, including ground hidden
+   by trees and cliffs. Do not cut an already flattened concept image into
+   strips: the hidden art is missing and its sorting boundaries are unknown.
+6. Reassemble the exported chunks and cutouts offscreen and compare them with
+   a reference render of the authored scene. Check transparency edges, seams,
+   draw order, and character positions above/below every occluder base point.
+7. Compare this hybrid with an atlas-only sprite version on a representative
+   crowded battle: CPU frame time, GPU frame time where available, draw calls,
+   texture memory, loading time and screen overdraw. Select chunk sizes from
+   those measurements. No FPS claim has been made from these concepts.
+
+Deliverable scope
+
+This package contains forty visual concepts, eight source-asset boards, the
+four-map reference board, source provenance and the exact generation prompts.
+The concepts are not imported production maps, collision meshes or ready-made
+depth layers. The live game, player progress and active Cocos scene were not
+changed to create them.

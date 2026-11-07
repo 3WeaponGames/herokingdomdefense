@@ -182,9 +182,10 @@ var def_GAD_Door = function (t) {
   _ctor.prototype.onDie = function () {
     var t = this;
     this.node.stopAllActions();
-    this.node.runAction(cc.sequence(cc.fadeOut(.2), cc.callFunc(function () {
+    cc.Tween.stopAllByTarget(this.node);
+    cc.tween(this.node).to(.2, { opacity: 0 }).call(function () {
       t.removeFromScreen();
-    })));
+    }).start();
   };
   _ctor.prototype.scaleWidth = function (t) {
     this._targetWidth += t;

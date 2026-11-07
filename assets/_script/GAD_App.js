@@ -83,7 +83,7 @@ var def_GAD_App = function () {
     this._touchBlocker = t;
     t.setContentSize(cc.winSize.width, cc.winSize.height);
     t.addComponent(cc.BlockInputEvents).enabled = true;
-    t.zIndex = 999999;
+    t.zIndex = cc.macro.MAX_ZINDEX;
     t.name = "block_touch_event";
     t.parent = cc.Canvas.instance.node;
   };

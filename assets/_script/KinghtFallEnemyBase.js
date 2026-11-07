@@ -37,6 +37,8 @@ var def_KinghtFallEnemyBase = function (t) {
     e._routeInterrupted = false;
     e._targetSearchElapsed = 0;
     e._targetSearchCache = null;
+    e.navigationTeam = "enemy";
+    e._unreachableTargets = null;
     return e;
   }
   cc__extends(_ctor, t);
@@ -67,6 +69,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this._routeInterrupted = false;
     this._targetSearchElapsed = 0;
     this._targetSearchCache = null;
+    this._unreachableTargets = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
     var i = this.node.getComponents(cc.CircleCollider);
@@ -165,7 +168,10 @@ var def_KinghtFallEnemyBase = function (t) {
             var movement = Navigation.moveTo(this, game, destination, t);
             if (movement.directionX) this.setLeft(movement.directionX < 0);
             // Authored waypoints on a collider edge resolve to a safe nearby point.
-            if (!o && movement.arrived) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
+            if (!o && movement.arrived && !movement.partial) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
+            // A rejected/finished approach must not pin acquisition forever to
+            // a closer hero behind a wall or an inaccessible building face.
+            if (o && (movement.blocked || movement.arrived && !movement.distance)) this.rejectNavigationTarget(o, game);
           }
       }
     }
@@ -242,6 +248,7 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.getFind = function () {
     var t = this;
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     this.node.getPosition(this.vec2_1);
     return function () {
       var e = null;
@@ -251,7 +258,7 @@ var def_KinghtFallEnemyBase = function (t) {
       var targetActor = null;
       var targetBuilding = null;
       var a = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;
-      if (!a.isDead()) {
+      if (!a.isDead() && t.canPursueTarget(a.node, game)) {
         a.node.getPosition(t.vec2_2);
         cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
         if (t.vec2_2.len() <= t.cfg.AttackRange + t.cfg.SearchRange) {
@@ -260,7 +267,7 @@ var def_KinghtFallEnemyBase = function (t) {
       }
       var o = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getSoldierList();
       for (var r = 0; r < o.length; r++) {
-        if (!(g = o[r]).isDead()) {
+        if (!(g = o[r]).isDead() && t.canPursueTarget(g.node, game)) {
           g.node.getPosition(t.vec2_2);
           cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
           if (t.vec2_2.len() <= t.cfg.AttackRange + t.cfg.SearchRange && (-1 == n || t.vec2_2.len() < n)) {
@@ -283,7 +290,7 @@ var def_KinghtFallEnemyBase = function (t) {
           var u = g.getWposPhyCol2();
           for (var d = 0; d < u.length; d++) {
             var p = u[d];
-            if (cc.Intersection.polygonCircle(p.points, s)) {
+            if (t.canPursueTarget(p.tagNode, game) && cc.Intersection.polygonCircle(p.points, s)) {
               var targetDistance = Navigation.polygonDistance(t, p.points, $z1KinghtFallUIGame.default.instance.ctrGame);
               if (-1 == n || targetDistance < n) {
                 i = cc.Intersection.polygonCircle(p.points, l);
@@ -310,6 +317,28 @@ var def_KinghtFallEnemyBase = function (t) {
       }
     }() || null;
   };
+  _ctor.prototype.canPursueTarget = function (node, game) {
+    var failures = this._unreachableTargets, failure = failures && failures.get(node);
+    if (!failure) return true;
+    var navigation = Navigation.get(game); navigation.refresh();
+    var start = Navigation.positionOf(this.node, game), target = Navigation.positionOf(node, game);
+    if (failure.revision !== navigation.revision || failure.generation !== node._combatGeneration ||
+        cc.Vec2.distance(failure.target, target) > 20 ||
+        cc.Vec2.distance(failure.start, start) > 20 && (!failure.partial || navigation.grid.segmentClear(start, target, failure.radius))) {
+      failures.delete(node);
+      return true;
+    }
+    return false;
+  };
+  _ctor.prototype.rejectNavigationTarget = function (target, game) {
+    var failures = this._unreachableTargets || (this._unreachableTargets = new Map());
+    if (failures.size >= 16) failures.delete(failures.keys().next().value);
+    failures.set(target.tag, { revision: Navigation.get(game).revision, generation: target.tag._combatGeneration,
+      target: Navigation.positionOf(target.tag, game), start: Navigation.positionOf(this.node, game),
+      partial: !!(this._navigationState && this._navigationState.partial), radius: this._navigationState && this._navigationState.radius || 0 });
+    this._targetSearchCache = null;
+    Navigation.reset(this);
+  };
   _ctor.prototype.getUpdateTarget = function () {
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     var cached = this._targetSearchCache;
@@ -317,7 +346,7 @@ var def_KinghtFallEnemyBase = function (t) {
       var target = cached.target;
       if (!target) return null;
       var node = target.tag;
-      var valid = node && node.activeInHierarchy !== false;
+      var valid = node && node.activeInHierarchy !== false && this.canPursueTarget(node, game);
       if (valid && target.actor) {
         valid = !target.actor._isPooled && !target.actor.isDead() && node._combatGeneration === cached.generation;
         if (valid) {
@@ -501,10 +530,12 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);
     this.releaseHealingEffects();
     GameToolsOverrides.cancel(this);
     this._isPooled = true;
     this._targetSearchCache = null;
+    this._unreachableTargets = null;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + this.cfg.ID;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);

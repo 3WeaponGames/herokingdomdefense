@@ -215,7 +215,7 @@ var def_KinghtFallUIGame = function (t) {
         for (var e in t.enemyIconInfo) {
           if (Object.prototype.hasOwnProperty.call(t.enemyIconInfo, e)) {
             var i = t.enemyIconInfo[e];
-            if (i.ndItem && i.ndItem.active) {
+            if (i.tagNode && i.ndItem && i.ndItem.active) {
               n.instance.ctrUI.setGuide(i.tagNode);
               break;
             }
@@ -724,7 +724,7 @@ var def_KinghtFallUIGame = function (t) {
     button.x = low <= high ? Math.max(low, Math.min(high, this._buildInfoBaseX)) : (low + high) / 2;
     this._buildCaptionBoundsSignature = signature;
   };
-  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles) {
+  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles, viewport) {
     var ui = this.ctrUI.node, arrow = node.getChildByName("ndArr");
     var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
     var footprint = enemyIndicatorBounds(node, ui, arrow);
@@ -740,6 +740,8 @@ var def_KinghtFallUIGame = function (t) {
     }
     footprint.minX -= origin.x; footprint.maxX -= origin.x; footprint.minY -= origin.y; footprint.maxY -= origin.y;
     var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
+    if (viewport) bounds = { minX: viewport.minX - footprint.minX + 16, maxX: viewport.maxX - footprint.maxX - 16,
+      minY: viewport.minY - footprint.minY + 16, maxY: viewport.maxY - footprint.maxY - 16 };
     var position = placeEnemyIndicator(target, footprint, bounds, obstacles, 12);
     node.setPosition(position.x, position.y);
     obstacles.push({ minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
@@ -749,6 +751,58 @@ var def_KinghtFallUIGame = function (t) {
       arrow.active = dx * dx + dy * dy > 0.001;
       if (arrow.active) arrow.angle = 180 * Math.atan2(dy, dx) / Math.PI - 90;
     }
+  };
+  _ctor.prototype._updateOffscreenEnemies = function (obstacles) {
+    var game = this.ctrGame, ui = this.ctrUI.node, camera = game.camera || cc.Camera.main;
+    if (!camera || !game.gameData.getEnemyList) return;
+    var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
+    var a = ui.convertToNodeSpaceAR(cc.v2(origin.x, origin.y));
+    var b = ui.convertToNodeSpaceAR(cc.v2(origin.x + size.width, origin.y + size.height));
+    var viewport = { minX: Math.min(a.x, b.x), maxX: Math.max(a.x, b.x), minY: Math.min(a.y, b.y), maxY: Math.max(a.y, b.y) };
+    var center = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, groups = {}, self = this;
+    game.gameData.getEnemyList().forEach(function (enemy) {
+      if (enemy._isPooled || !enemy.node.activeInHierarchy || enemy.isDead()) return;
+      var screen = camera.getWorldToScreenPoint(enemy.node.convertToWorldSpaceAR(cc.v2(0, 0)));
+      var target = ui.convertToNodeSpaceAR(screen);
+      if (target.x >= viewport.minX && target.x <= viewport.maxX && target.y >= viewport.minY && target.y <= viewport.maxY) return;
+      var dx = target.x - center.x, dy = target.y - center.y;
+      var sector = Math.floor((Math.atan2(dy, dx) + Math.PI + Math.PI / 8) / (Math.PI / 4)) % 8;
+      var group = groups[sector] || (groups[sector] = { count: 0, x: 0, y: 0, nearest: Infinity });
+      group.count++; group.x += target.x; group.y += target.y;
+      var distance = dx * dx + dy * dy;
+      if (distance < group.nearest) { group.nearest = distance; group.id = enemy.cfg.ID; }
+    });
+    // Eight directional groups bound HUD work even for large waves. Every
+    // living offscreen enemy contributes to a visible group's count.
+    Object.keys(groups).forEach(function (sector) {
+      var group = groups[sector], key = "live:" + sector, record = self.enemyIconInfo[key];
+      if (!record) {
+        record = self.enemyIconInfo[key] = { id: 0, ndItem: cc.instantiate(self.ndEnemyIcon), tag: false };
+        record.ndItem.setParent(ui); record.ndItem.zIndex = 100;
+      }
+      if (record.id !== group.id) {
+        record.id = group.id;
+        var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(group.id), id = group.id;
+        self.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + config.loadIcon, function (frame) {
+          if (cc.isValid(record.ndItem) && record.id === id) record.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = frame;
+        });
+      }
+      var caption = record.ndItem.getChildByName("labName"), label = caption.getComponent(cc.Label);
+      label.string = "[[loc:ui.battle.offscreen-enemies]]";
+      label.fontSize = 56; label.lineHeight = 64;
+      label.enableWrapText = false; label.overflow = cc.Label.Overflow.CLAMP;
+      caption.setContentSize(260, 88);
+      var count = record.ndItem.getChildByName("labNum").getComponent(cc.Label);
+      if (record.count !== group.count) {
+        record.count = group.count;
+        count.string = "" + group.count;
+        count.enableWrapText = false; count.overflow = cc.Label.Overflow.NONE;
+        count._forceUpdateRenderData();
+        record.ndItem.getChildByName("wg_zd_drsl").width = Math.max(38, count.node.width * Math.abs(count.node.scaleX) + 10);
+      }
+      self._placeEnemyIndicator(record.ndItem, { x: group.x / group.count, y: group.y / group.count }, obstacles, viewport);
+      record.tag = true;
+    });
   };
   _ctor.prototype._stopTestMovement = function () {
     if (this._testKeyboardMoving && this.ctrGame) this.ctrGame.moveFun(null);
@@ -797,8 +851,8 @@ var def_KinghtFallUIGame = function (t) {
         Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).tag = false);
       }
       var n = this.ctrGame.gameData.enemyQueue;
+      var indicatorObstacles = this._enemyIndicatorObstacles();
       if (this.ctrGame.gameData.baseBuild.getLevel() >= 1) {
-        var indicatorObstacles = this._enemyIndicatorObstacles();
         var i = function (t) {
           if (Object.prototype.hasOwnProperty.call(n, t)) {
             var e = n[t];
@@ -841,6 +895,7 @@ var def_KinghtFallUIGame = function (t) {
           i(e);
         }
       }
+      this._updateOffscreenEnemies(indicatorObstacles);
       for (var e in this.enemyIconInfo) {
         var o;
         Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).ndItem.active = o.tag);

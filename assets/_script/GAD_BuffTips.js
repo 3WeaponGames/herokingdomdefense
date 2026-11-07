@@ -32,10 +32,10 @@ var def_GAD_BuffTips = function (t) {
     this.node.getComponent(cc.Sprite).spriteFrame = this.getImg(n.buffImage);
     this.node.opacity = 0;
     this.node.active = true;
-    this.node.runAction(cc.sequence(cc.fadeIn(.2), cc.delayTime(1), cc.fadeOut(.2), cc.callFunc(function () {
+    cc.tween(this.node).to(.2, { opacity: 255 }).delay(1).to(.2, { opacity: 0 }).call(function () {
       e.node.active = false;
       $z1PoolMgr.PoolMgr.getInstance().freeNode("pbt_buff_img", e.node);
-    })));
+    }).start();
   };
   cc__decorate([ccp_property([cc.SpriteFrame])], _ctor.prototype, "buffImgs", undefined);
   return cc__decorate([ccp_ccclass], _ctor);

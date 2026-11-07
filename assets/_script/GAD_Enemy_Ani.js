@@ -37,7 +37,9 @@ var def_GAD_Enemy_Ani = function (t) {
     callback && callback();
   };
   _ctor.prototype.onDestroy = function () {
-    this.ani && this.ani.off("finished", this.onAttackFinished, this);
+    // The enemy prefab destroys cc.Animation before this component. Its event
+    // table is already cleared, so off() would interrupt the node's removal.
+    cc.isValid(this.ani) && this.ani.off("finished", this.onAttackFinished, this);
     this._attackFunc = this._attackCompleteFunc = null;
   };
   _ctor.prototype.playMove = function () {
