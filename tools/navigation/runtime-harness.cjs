@@ -43,7 +43,7 @@ class Vec2 {
 Vec2.ZERO = new Vec2();
 class Node {
   constructor(name = '', parent = null, x = 0, y = 0) {
-    Object.assign(this, { name, x, y, scaleX: 1, scaleY: 1, angle: 0, active: true, components: [], children: [], parent: null, width: 400, height: 400 });
+    Object.assign(this, { name, x, y, scaleX: 1, scaleY: 1, angle: 0, active: true, components: [], children: [], parent: null, width: 400, height: 400, anchorX: .5, anchorY: .5 });
     if (parent) this.setParent(parent);
   }
   get activeInHierarchy() { return this.active && (!this.parent || this.parent.activeInHierarchy); }
@@ -123,7 +123,7 @@ function environment() {
   function load(name) {
     if (stubs[name]) return stubs[name];
     if (modules[name]) return modules[name].exports;
-    if (!/^(GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallBuild(Base|Wall)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
+    if (!/^(GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallBuild(Base|Wall|Barracks)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
     const module = { exports: {} }; modules[name] = module;
     const context = { module, exports: module.exports, require: load, cc, sp: { Skeleton: function () {} }, console, Set, Date: { now: () => now },
       __extends(Child, Parent) { Object.setPrototypeOf(Child, Parent); Child.prototype = Object.create(Parent.prototype); Child.prototype.constructor = Child; },

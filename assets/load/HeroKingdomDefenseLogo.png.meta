@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "8d5097e7-c4d8-45ed-ac1a-4bb9637aff46",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 1536,
+  "height": 1024,
+  "platformSettings": {},
+  "subMetas": {
+    "HeroKingdomDefenseLogo": {
+      "ver": "1.0.6",
+      "uuid": "f4b7af3e-cbd9-4610-b363-399c0a690d98",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8d5097e7-c4d8-45ed-ac1a-4bb9637aff46",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 1,
+      "offsetY": -1,
+      "trimX": 18,
+      "trimY": 10,
+      "width": 1502,
+      "height": 1006,
+      "rawWidth": 1536,
+      "rawHeight": 1024,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

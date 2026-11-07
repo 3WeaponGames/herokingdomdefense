@@ -18,6 +18,9 @@ var def_GAD_UIResult = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.lateUpdate = function () {
+    require("BattleResultTitle").sync(this, this.resultSp, this.btnExit, this.isWin);
+  };
   _ctor.prototype.init = function (t) {
     this.isWin = t;
   };

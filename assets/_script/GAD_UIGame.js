@@ -36,6 +36,11 @@ var def_GAD_UIGame = function (t) {
     e.gmNode = null;
     e._cardCtrl = null;
     e._bullets = [];
+    e._bulletPool = [];
+    e._collisionBounds = new Map();
+    e._passedDoors = [];
+    e._doors = [];
+    e._hitDoorGroups = new Set();
     e._waveRoles = [];
     e._curWave = 0;
     e._waveDistance = 300;
@@ -97,11 +102,12 @@ var def_GAD_UIGame = function (t) {
     });
   };
   _ctor.prototype.update = function (t) {
-    if ($z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) {
+    if (!this.isclose && $z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) {
       t = Math.min(t, .02);
       this._cardCtrl.updateCD(t);
-      var e = [];
-      var n = [];
+      var e = this._passedDoors, n = this._doors, bounds = this._collisionBounds;
+      e.length = n.length = 0;
+      bounds.clear();
       for (var i = 0; i < this._waveRoles.length; i++) {
         (C = this._waveRoles[i]).updatePos(t);
         var a = C.getRoleType();
@@ -113,6 +119,7 @@ var def_GAD_UIGame = function (t) {
             o.onDie();
             this._waveRoles.splice(i, 1);
             i--;
+            if ($z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Game) return;
           }
         } else {
           a == $z1GAD_Configs.emGADRoleType.Door && C.node.y <= this._cardCtrl.node.y && e.push(C);
@@ -165,33 +172,29 @@ var def_GAD_UIGame = function (t) {
           }
         }
       }
-      var y = [];
-      var v = function (t) {
-        var e = 0;
-        for (var n = 0; n < y.length; n++) {
-          y[n] == t && e++;
-        }
-        return e;
-      };
-      var _ = [];
+      var _ = this._hitDoorGroups;
+      _.clear();
+      var frame = cc.director && cc.director.getTotalFrames ? cc.director.getTotalFrames() : -1;
       for (i = 0; i < this._bullets.length; i++) {
         var I = this._bullets[i];
         if (I.checkAutoDie()) {
           I.onDie();
           this._bullets.splice(i, 1);
           i--;
-        } else if (I.isUseful) {
+        } else if (this._waveRoles.length && I.isUseful && (frame < 0 || I._spawnFrame !== frame)) {
           var F = I.getWorldColldierRect();
           for (var P = 0; P < this._waveRoles.length; P++) {
             var C;
             if ((C = this._waveRoles[P]).isUseful) {
-              var A = C.getScaleSize();
-              var D = C.getRoleType() == $z1GAD_Configs.emGADRoleType.Enemy ? $z1GAD_Configs.GADConfig.EnemyFixedWidth : A.width;
-              var M = C.getWorldColliderRectWithFixed(D, A.height);
+              var M = bounds.get(C);
+              if (!M) {
+                var A = C.getScaleSize();
+                var D = C.getRoleType() == $z1GAD_Configs.emGADRoleType.Enemy ? $z1GAD_Configs.GADConfig.EnemyFixedWidth : A.width;
+                M = C.getWorldColliderRectWithFixed(D, A.height);
+                bounds.set(C, M);
+              }
               if (F.intersects(M)) {
-                var T = v(C.getTagID());
-                y.push(C.getTagID());
-                var w = C.bulletHited(I, I.getAtkDamage(), T);
+                var w = C.bulletHited(I, I.getAtkDamage());
                 if (C.isDie) {
                   this._waveRoles.splice(P, 1);
                   P--;
@@ -202,8 +205,8 @@ var def_GAD_UIGame = function (t) {
                   this._bullets.splice(i, 1);
                   i--;
                   if (C.getRoleType() == $z1GAD_Configs.emGADRoleType.Door) {
-                    for (var k = 0; k < this._waveRoles.length; k++) {
-                      if (this._waveRoles[k].getGroupID() == C.getGroupID() && this._waveRoles[k].getTagID() != C.getTagID()) {
+                    for (var k = 0; w >= $z1GAD_Configs.emGADHitState.HitHurt && k < this._waveRoles.length; k++) {
+                      if (this._waveRoles[k].getRoleType() == $z1GAD_Configs.emGADRoleType.Door && this._waveRoles[k].getGroupID() == C.getGroupID() && this._waveRoles[k].getTagID() != C.getTagID()) {
                         var S = C;
                         var K = this._waveRoles[k];
                         var B = S.getScaleWidth(this._doorScaleWidth);
@@ -216,7 +219,7 @@ var def_GAD_UIGame = function (t) {
                         break;
                       }
                     }
-                    _.push(I.getGroupID());
+                    _.add(I.getGroupID());
                   }
                   break;
                 }
@@ -224,16 +227,22 @@ var def_GAD_UIGame = function (t) {
             }
           }
         }
+        if ($z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Game) break;
       }
       for (i = 0; i < this._bullets.length; i++) {
-        if (_.indexOf(this._bullets[i].getGroupID()) >= 0) {
+        if (_.has(this._bullets[i].getGroupID())) {
           this.sendEvent($z1GAD_Configs.emGADEventName.GAD_Show_Hit_Effect, this._bullets[i].node.convertToWorldSpaceAR(cc.Vec2.ZERO), $z1GAD_Configs.emGADRoleType.Door);
           this._bullets[i].removeFromScreen();
           this._bullets.splice(i, 1);
           i--;
         }
       }
-      this.buildWave();
+      // Multiple arrows may hit the same actor in one frame. Keep damage
+      // immediate, and rasterize its visible HP only once before drawing.
+      for (i = 0; i < this._waveRoles.length; i++) {
+        if (this._waveRoles[i]._hpDirty) this._waveRoles[i].updateHp();
+      }
+      if ($z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) this.buildWave();
     }
   };
   _ctor.prototype.gmAddBuff = function (t, e) {
@@ -266,15 +275,24 @@ var def_GAD_UIGame = function (t) {
     var node = this._decisionNode;
     this._decisionNode = null;
     if (node && cc.isValid(node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(node);
+    if (this._bulletPool) this._bulletPool.forEach(function (bullet) { if (cc.isValid(bullet, true)) bullet.destroy(); });
+    this._bulletPool = null;
+    this._bullets.forEach(function (bullet) { bullet._poolGame = null; });
+    this._bullets.length = 0;
+    this._collisionBounds.clear();
+    this._passedDoors.length = this._doors.length = 0;
+    this._hitDoorGroups.clear();
   };
   _ctor.prototype.onDestroy = function () {
     try { this.onClose(); }
-    finally { t.prototype.onDestroy.call(this); }
+    finally {
+      if (n.script === this) n.script = null;
+      t.prototype.onDestroy.call(this);
+    }
   };
   _ctor.prototype.buildWave = function () {
     var t = this._waveLevelCfgs;
     if (this._curWave >= t.length) {
-      console.log("this._curWave:" + this._curWave + " waveCfgs.length:" + t.length);
       return void (0 == this._waveRoles.length && this.openResultView(0, true));
     }
     for (; this.needBuildWave();) {
@@ -324,15 +342,19 @@ var def_GAD_UIGame = function (t) {
     }
   };
   _ctor.prototype.onShootBullet = function (t, e, n) {
-    var i = cc.instantiate(this.prefabBullet);
+    if (!this._bulletPool || this.isclose || $z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Game) return;
+    var i = this._bulletPool.pop() || cc.instantiate(this.prefabBullet);
+    i.active = false;
     i.parent = this.ndBulletRoot;
     var a = this.ndBulletRoot.convertToNodeSpaceAR(e);
     a.y += 50;
     i.setPosition(a);
     var o = i.getComponent($z1GAD_Bullet.default);
+    o._poolGame = this;
     o.setGroupID(t);
     var r = Math.round(this._cardCtrl.getAtkDamage());
     o.init(n.getCardCfg(), r);
+    i.active = true;
     this._bullets.push(o);
   };
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndCardGroup", undefined);

@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var $z1BaseCtrl = require("BaseCtrl");
-var $z1PoolMgr = require("PoolMgr");
 var $z1GAD_DataMgr = require("GAD_DataMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
@@ -26,7 +25,7 @@ var def_GAD_BuffTips = function (t) {
     }
     return null;
   };
-  _ctor.prototype.show = function (t) {
+  _ctor.prototype.show = function (t, pool) {
     var e = this;
     var n = $z1GAD_DataMgr.default.getInstance().getBuffTypeCfg(t);
     this.node.getComponent(cc.Sprite).spriteFrame = this.getImg(n.buffImage);
@@ -34,7 +33,8 @@ var def_GAD_BuffTips = function (t) {
     this.node.active = true;
     cc.tween(this.node).to(.2, { opacity: 255 }).delay(1).to(.2, { opacity: 0 }).call(function () {
       e.node.active = false;
-      $z1PoolMgr.PoolMgr.getInstance().freeNode("pbt_buff_img", e.node);
+      if (pool) pool.freeNode(e.node);
+      else e.node.destroy();
     }).start();
   };
   cc__decorate([ccp_property([cc.SpriteFrame])], _ctor.prototype, "buffImgs", undefined);

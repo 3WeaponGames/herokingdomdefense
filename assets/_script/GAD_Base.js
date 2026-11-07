@@ -15,14 +15,14 @@ cc__decorator.property;
 var def_GAD_Base = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
-    e._colliderGroups = [];
+    e._colliderGroups = new Set();
     e._groupID = 0;
     e._moveSpeed = 100;
     e._maxSpeed = 100;
     e._va = 0;
     e._state = $z1GAD_Configs.emGADRoleState.None;
     e._tagID = 0;
-    e._colliderTags = [];
+    e._colliderTags = new Set();
     return e;
   }
   cc__extends(_ctor, t);
@@ -74,19 +74,19 @@ var def_GAD_Base = function (t) {
     this._groupID = t;
   };
   _ctor.prototype.addColliderTagID = function (t) {
-    this._colliderTags.push(t);
+    this._colliderTags.add(t);
   };
   _ctor.prototype.hasColliderTagID = function (t) {
-    return -1 != this._colliderTags.indexOf(t);
+    return this._colliderTags.has(t);
   };
   _ctor.prototype.addColliderGroupID = function (t) {
-    this._colliderGroups.push(t);
+    this._colliderGroups.add(t);
   };
   _ctor.prototype.getRoleType = function () {
     return this._roleType;
   };
   _ctor.prototype.hasColliderGroupID = function (t) {
-    return -1 != this._colliderGroups.indexOf(t);
+    return this._colliderGroups.has(t);
   };
   _ctor.prototype.updatePos = function (t) {
     this.node.y -= t * this._moveSpeed;

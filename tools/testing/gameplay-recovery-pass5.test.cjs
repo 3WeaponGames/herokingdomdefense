@@ -112,7 +112,7 @@ for(const saved of [false,true])test(`actual UIGame.start map-load chain keeps $
 
 test('legacy pending UI exit and reversed reentry completion never create stale scene owners',()=>{
  const h=owned();let entered=0,exits=0,audio=0;h.cc.SystemEvent={EventType:{KEY_UP:'key'}};h.cc.systemEvent={on:noop,off:noop};
- Object.assign(h.modules,{GAD_Configs:{GAD_UIID:{UIGame:'one',UIResult:'result',UIPause:'pause'},GAD_AudioId:{},GADConfig:{}},GAD_PlayerMgr:{default:single({reset:noop})},GAD_DataMgr:{},AudioMgr:{AudioMgr:single({playMusic(){audio++;},playEffect(){audio++;}})}});
+ Object.assign(h.modules,{GAD_Configs:{GAD_UIID:{UIGame:'one',UIResult:'result',UIPause:'pause'},GAD_AudioId:{},GADConfig:{},emGADGameState:{Over:3}},GAD_PlayerMgr:{default:single({reset:noop,setState:noop})},GAD_DataMgr:{},AudioMgr:{AudioMgr:single({playMusic(){audio++;},stopMusic:noop,playEffect(){audio++;}})}});
  const A=h.load('GAD_App').default,a=new A();a._isInited=true;a.addTouchEvent=a.removeTouchEvent=noop;
  a.enter_App(()=>entered++,()=>exits++);a.exit_App();a.enter_App(()=>entered++);h.requests[1].done(null,h.asset);const current=h.ui.uistatck.get('one');h.requests[0].done(null,h.asset);
  assert.equal(entered,1);assert.equal(exits,1);assert.equal(h.ui.uistatck.get('one'),current);assert.equal(audio,2);a.exit_App();assert.equal(h.ui.uistatck.has('one'),false);

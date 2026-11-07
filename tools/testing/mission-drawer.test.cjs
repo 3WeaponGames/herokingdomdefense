@@ -30,7 +30,7 @@ function fixture(width=750,offset=375){
   panel.addComponent(Widget);owner.ndTaskInfo=panel;owner.btnBattle=play;owner.node={convertToNodeSpaceAR:p=>({x:p.x-offset,y:p.y-667})};
   owner.cfgList=[{}];owner.loadSpriteFrame=(bundle,icon,done)=>done({});owner.T=s=>s;
   const child=(name,parent,Type)=>{const n=new Node(name);n.parent=parent;if(Type)n.addComponent(Type);return n;};
-  const item=child('ndItem',panel);child('sprIcon',item,Sprite);child('labNum',item,Label);child('ndFinish',panel);child('labName',panel,Label);const pro=child('ndPro',panel);child('sprPro',pro,Sprite);child('labPro',pro,Label);
+  const item=child('ndItem',panel);child('sprIcon',item,Sprite);child('labNum',item,Label);const finish=child('ndFinish',panel);child('wg_ty_hd',finish,Sprite);child('labName',panel,Label);const pro=child('ndPro',panel);child('sprPro',pro,Sprite);child('labPro',pro,Label);
   return{owner,panel,play,task,tweens,setWidth(value){width=value;}};
 }
 test('mission drawer starts collapsed at the visible left edge and toggles without claiming or creating duplicate controls',()=>{
@@ -43,7 +43,10 @@ test('mission drawer starts collapsed at the visible left edge and toggles witho
 test('the collapsed handle shows its reward dot only for a completed, unclaimed mission',()=>{
   const f=fixture();f.owner.initMissionDrawer();f.owner.onUpdateTask();assert.equal(f.owner._missionBadge.active,false);
   f.task.num=3;f.owner.onUpdateTask();assert.equal(f.task.stage,1);assert.equal(f.owner._missionBadge.active,true);
-  f.owner.onMissionDrawerToggle();assert.equal(f.owner._missionBadge.active,false);f.owner.onMissionDrawerToggle();assert.equal(f.owner._missionBadge.active,true);
+  const legacyDot=f.panel.getChildByName('ndFinish').getChildByName('wg_ty_hd');assert.equal(legacyDot.active,false);
+  f.owner.onMissionDrawerToggle();assert.equal(f.owner._missionBadge.active,false);assert.equal(legacyDot.active,false);
+  f.owner.onUpdateTask();assert.equal(f.owner._missionBadge.active,false);assert.equal(legacyDot.active,false);
+  f.owner.onMissionDrawerToggle();assert.equal(f.owner._missionBadge.active,true);assert.equal(legacyDot.active,false);
   f.task.stage=2;f.owner.onUpdateTask();assert.equal(f.owner._missionBadge.active,false);assert.equal(f.panel.active,false);
 });
 test('drawer remains flush left and its open panel plus handle fit a resized viewport',()=>{

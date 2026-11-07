@@ -25,16 +25,14 @@ var def_GAD_UIPause = function (t) {
   _ctor.prototype.bindEvent = function () {
     var t = this;
     this.btnBackHome.on(cc.Node.EventType.TOUCH_END, function () {
-      t._callFunc && t._callFunc(false);
-      t.closeUI();
+      t.finishDecision(t._callFunc, false);
     });
     this.btnPlay.on(cc.Node.EventType.TOUCH_END, function () {
-      console.log("true");
-      t._callFunc && t._callFunc(true);
-      t.closeUI();
+      t.finishDecision(t._callFunc, true);
     });
     this.gmNode.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1GAD_UIGame.default.script.setGmNode();
+      var game = $z1GAD_UIGame.default.script;
+      if (game && !game.isclose) game.setGmNode();
     });
   };
   _ctor.prototype.onLoad = function () {};

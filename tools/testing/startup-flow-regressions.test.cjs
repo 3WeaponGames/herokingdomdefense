@@ -64,11 +64,11 @@ function legacyFixture() {
   const data=[],preloads=[],uis=[],opened=[],canvas={children:[]};let resets=0,music=0,exits=0;
   class Node {setContentSize(){}addComponent(){return {};}set parent(value){this._parent=value;value.children.push(this);}get parent(){return this._parent;}
     destroy(){this.destroyed=true;if(this.parent)this.parent.children.splice(this.parent.children.indexOf(this),1);}}
-  const deps={AudioMgr:{AudioMgr:single({addAdConf:noop,playMusic:()=>music++,playEffect:noop})},EventMgr:{EventMgr:single({})},
+  const deps={AudioMgr:{AudioMgr:single({addAdConf:noop,playMusic:()=>music++,stopMusic:noop,playEffect:noop})},EventMgr:{EventMgr:single({})},
     UIMgr:{UIMgr:single({addUICnf:noop,closeById:noop,openUIWithOwner:(id,_none,owner)=>{let done=false;opened.push(id);uis.push(()=>{if(!done&&owner.isCurrent()){done=true;owner.onOpened();}});return{cancel(){if(!done){done=true;owner.onCancel();}}};}})},
-    Config:{UIID:{}},GAD_Configs:{GAD_UIID:{UIGame:'legacy-game'},GADConfig:{},GAD_AudioId:{}},
+    Config:{UIID:{}},GAD_Configs:{GAD_UIID:{UIGame:'legacy-game'},GADConfig:{},GAD_AudioId:{},emGADGameState:{Over:3}},
     GAD_DataMgr:{default:single({load:done=>data.push(done),initCfgData:noop})},
-    GAD_PlayerMgr:{default:single({reset:()=>resets++,preload:done=>preloads.push(done)})}};
+    GAD_PlayerMgr:{default:single({reset:()=>resets++,setState:noop,preload:done=>preloads.push(done)})}};
   const C=load('GAD_App',deps,{Node,Canvas:{instance:{node:canvas}},systemEvent:{on:noop,off:noop},SystemEvent:{EventType:{KEY_UP:'up'}}}).default;
   const app=new C();return {app,canvas,Node,data,preloads,uis,opened,exit:()=>exits++,get resets(){return resets;},get music(){return music;},get exits(){return exits;}};
 }

@@ -108,6 +108,11 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   _ctor.prototype.initMissionDrawer = function () {
     if (this._missionHandle || !this.ndTaskInfo || !this.btnBattle) return;
     var panel = this.ndTaskInfo;
+    // The drawer handle owns the closed-state badge. The old ready-panel dot
+    // otherwise appears over the mission title when the drawer opens.
+    var finish = panel.getChildByName("ndFinish");
+    var readyDot = finish && finish.getChildByName("wg_ty_hd");
+    if (readyDot) readyDot.active = false;
     var widget = panel.getComponent(cc.Widget);
     if (widget) {
       widget.isAlignLeft = widget.isAlignRight = widget.isAlignHorizontalCenter = false;

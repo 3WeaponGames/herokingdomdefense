@@ -24,13 +24,16 @@ var def_GAD_Bullet = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
-    this.skeArrow.setAnimation(0, this._cfg.resName, true);
-    this.setRoleState($z1GAD_Configs.emGADRoleState.Move);
+    // init also runs on pool reuse; start runs only once per component.
   };
   _ctor.prototype.getHitEffectName = function () {
     return this._cfg.arrowhit;
   };
   _ctor.prototype.init = function (t, e) {
+    cc.Tween.stopAllByTarget(this.node);
+    this.node.opacity = 255;
+    this._isPooled = false;
+    this._spawnFrame = cc.director && cc.director.getTotalFrames ? cc.director.getTotalFrames() : -1;
     this.initTagID();
     this._atkDamage = e;
     this._roleType = $z1GAD_Configs.emGADRoleType.Bullet;
@@ -39,6 +42,12 @@ var def_GAD_Bullet = function (t) {
     this._maxSpeed = this._moveSpeed;
     this._hideDis = $z1GAD_DataMgr.default.getInstance().getParam($z1GADGameEnumData.enumGADBasicCfg.swordFLlyDistance, 300);
     this._flyDis = 0;
+    this._colliderGroups.clear();
+    this._colliderTags.clear();
+    this.setRoleState($z1GAD_Configs.emGADRoleState.Move);
+    // The authored arrow is a Sprite; its legacy Spine renderer is disabled.
+    if (this.skeArrow.enabled !== false) this.skeArrow.setAnimation(0, this._cfg.resName, true);
+    else this.skeArrow.node.active = false;
   };
   _ctor.prototype.checkAutoDie = function () {
     return this._flyDis >= this._hideDis;
@@ -51,17 +60,30 @@ var def_GAD_Bullet = function (t) {
     }
   };
   _ctor.prototype.onDie = function () {
+    if (this._isPooled || this.isDie) return;
     var t = this;
     this.setRoleState($z1GAD_Configs.emGADRoleState.Die);
     cc.tween(this.node).to(.1, {
       opacity: 0
     }).call(function () {
-      t.node.destroy();
+      t.removeFromScreen();
     }).start();
   };
   _ctor.prototype.removeFromScreen = function () {
+    if (this._isPooled) return;
     this.setRoleState($z1GAD_Configs.emGADRoleState.Die);
-    this.node.destroy();
+    cc.Tween.stopAllByTarget(this.node);
+    var game = this._poolGame;
+    this._isPooled = true;
+    if (game && !game.isclose && game._bulletPool && game._bulletPool.length < 256) {
+      this.node.active = false;
+      // Keep the slot under its owner. Detaching/reparenting every volley
+      // forces Creator to reorder and revisit the entire projectile tree.
+      game._bulletPool.push(this.node);
+    } else {
+      this._poolGame = null;
+      this.node.destroy();
+    }
   };
   _ctor.prototype.getAtkDamage = function () {
     return this._atkDamage;

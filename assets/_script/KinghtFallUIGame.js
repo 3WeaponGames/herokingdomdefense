@@ -1120,8 +1120,10 @@ var def_KinghtFallUIGame = function (t) {
           e.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = e.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game05);
       }
     };
-    if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode != t) this.ctrGame.clearArmyOrder();
+    var changed = $z1KinghtFallConfig.KinghtFallParameter.FollowMode != t;
+    if (changed) this.ctrGame.clearArmyOrder();
     n();
+    if (changed && t === 2) this.ctrGame.enterSelectiveFollow();
   };
   _ctor.instance = null;
   cc__decorate([ccp_property({

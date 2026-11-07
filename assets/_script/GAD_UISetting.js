@@ -51,16 +51,13 @@ var def_GAD_UISetting = function (t) {
       $z1AudioMgr.AudioMgr.getInstance().setEffectVolume(e.progress);
     }, this);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
-      t._callFunc && t._callFunc(true);
-      t.closeUI();
+      t.finishDecision(t._callFunc, true);
     }, this);
     this.btnBackHome.on(cc.Node.EventType.TOUCH_END, function () {
-      t._callFunc && t._callFunc(false);
-      t.closeUI();
+      t.finishDecision(t._callFunc, false);
     });
     this.btnPlay.on(cc.Node.EventType.TOUCH_END, function () {
-      t._callFunc && t._callFunc(true);
-      t.closeUI();
+      t.finishDecision(t._callFunc, true);
     });
   };
   cc__decorate([ccp_property(cc.Slider)], _ctor.prototype, "musicSlider", undefined);

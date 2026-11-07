@@ -229,11 +229,11 @@ var def_GAD_Cards = function (t) {
       }
       this._cards[o].playAttack(t, e, g);
     }
-    this.ndRoot.stopAllActions();
+    cc.Tween.stopAllByTarget(this.ndRoot);
     var d = this.OFF_Y - this.ndRoot.y;
-    cc.tween(this.ndRoot).to(d / this.SPEED / e, {
+    cc.tween(this.ndRoot).to(Math.abs(d) / this.SPEED * e, {
       y: this.OFF_Y
-    }).to(this.OFF_Y / this.SPEED / e, {
+    }).to(this.OFF_Y / this.SPEED * e, {
       y: 0
     }).start();
     this._isAttacking = false;
@@ -296,7 +296,7 @@ var def_GAD_Cards = function (t) {
         this.refreshBar();
         break;
       case $z1GADGameEnumData.enumGADBuffTypeCfg.HPsub:
-        this.maxHp -= e;
+        this.maxHp = Math.max(1, this.maxHp - e);
         var i = this.hp;
         this.hp = Math.max(0, Math.min(this.hp - e, this.maxHp));
         if (this.hp <= 0) {

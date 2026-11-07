@@ -39,6 +39,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     e.waitEnemy = [];
     e._rosterRequests = {};
     e._rosterSignature = null;
+    e._soldierRallyPosts = [];
     e.keepTime = 0;
     e.standTimeMax = 1.5;
     return e;
@@ -143,6 +144,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
   };
   _ctor.prototype.reset = function (e) {
+    if (e) this._soldierRallyPosts = [];
     this._rosterSignature = null;
     this._rosterRequests = {};
     t.prototype.reset.call(this, e);
@@ -271,13 +273,28 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
   };
   _ctor.prototype.getSave = function () {
-    return {
+    var save = {
       point: this.ID,
       level: this.index,
       data: this.VideoTimes
     };
+    if (this._soldierRallyPosts && this._soldierRallyPosts.some(Boolean)) save.rallyPosts = this._soldierRallyPosts.map(function (point) { return point ? { x: point.x, y: point.y } : null; });
+    return save;
+  };
+  _ctor.prototype.getSoldierRallyPoint = function (unit) {
+    var point = this._soldierRallyPosts && this._soldierRallyPosts[this.enemyList.indexOf(unit)];
+    return point ? { x: point.x, y: point.y } : null;
+  };
+  _ctor.prototype.setSoldierRallyPoint = function (unit, point) {
+    var index = this.enemyList.indexOf(unit);
+    if (index < 0 || !isFinite(point.x) || !isFinite(point.y)) return;
+    if (!this._soldierRallyPosts) this._soldierRallyPosts = [];
+    this._soldierRallyPosts[index] = { x: point.x, y: point.y };
   };
   _ctor.prototype.setSave = function (t) {
+    this._soldierRallyPosts = t && Array.isArray(t.rallyPosts) ? t.rallyPosts.map(function (point) {
+      return point && typeof point.x === "number" && typeof point.y === "number" && isFinite(point.x) && isFinite(point.y) ? { x: point.x, y: point.y } : null;
+    }) : [];
     this.VideoTimes = t && typeof t.data === "number" && isFinite(t.data) ? Math.max(0, Math.floor(t.data)) : 0;
     $z1KinghtFallBuildBase.default.prototype.setSave.call(this, t);
   };

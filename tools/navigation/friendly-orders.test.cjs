@@ -14,6 +14,8 @@ function soldier(e, x = -100, y = 0, n = 1) {
 function controller(e) {
   Object.setPrototypeOf(e.game, e.load('KinghtFallGameCtrl').default.prototype);
   Object.assign(e.game, { vec2_1: new Vec2(), vec2_2: new Vec2(), pathIndex: 0, isAgg: false });
+  e.game.ctrPlay.ndAgg.setParent(e.game.ctrPlay.node);
+  e.game.ctrPlay.ndAgg.width = 208; e.game.ctrPlay.ndAgg.height = 108;
   return e.game;
 }
 function advance(e, unit, count = 1, dt = 0.05) {
@@ -65,12 +67,13 @@ test('Rally placement persists with no army and new or revived soldiers inherit 
   assert.equal(game.ndAggFlag.active, false); assert.equal(unit.isAgg, false);
 });
 
-test('Follow mode tracks the current hero position and toggles off without accumulating breadcrumbs', () => {
+test('Follow mode recruits tapped units, tracks the live hero and remembers the released post', () => {
   const e = environment(), game = controller(e), unit = soldier(e);
   e.load('KinghtFallConfig').KinghtFallParameter.FollowMode = 2;
-  game.ctrPlay.node.setPosition(100, 0);
+  game.ctrPlay.node.setPosition(0, 0);
   game.changeAge();
-  assert.equal(game.isAgg, true); assert.equal(unit.isAgg, true);
+  assert.equal(game.isAgg, true); assert.equal(unit.isAgg, false);
+  assert(game.selectFollower(unit)); assert.equal(unit.isAgg, true);
   assert.equal(game.rallyPoint, null); assert.equal(game.ndAggFlag.active, false);
   advance(e, unit);
   assert(unit.node.x > -100);
@@ -80,11 +83,14 @@ test('Follow mode tracks the current hero position and toggles off without accum
   }
   assert(game.pathList.length <= 1, 'follow retained historical hero breadcrumbs');
   assert(!unit.pathList || unit.pathList.pathInfoList.length <= 1);
-  unit.node.setPosition(-100, 0); unit.setNew();
-  assert.equal(unit.isAgg, true, 'revived unit lost follow mode');
+  const post = unit.node.position;
   game.changeAge();
   assert.equal(game.isAgg, false); assert.equal(unit.isAgg, false);
-  assert.equal(unit.rallyPoint, null);
+  near(unit.rallyPoint.pos.x, post.x); near(unit.rallyPoint.pos.y, post.y);
+  game.changeAge();
+  unit.node.setPosition(-150, 0); unit.node.active = false; unit.setNew();
+  assert.equal(unit.isAgg, false, 'respawn automatically joined follow selection');
+  near(unit.rallyPoint.pos.x, post.x); near(unit.rallyPoint.pos.y, post.y);
 });
 
 test('Every soldier archetype attacks a nearby enemy while rallying, then resumes the persistent rally', () => {
@@ -472,6 +478,7 @@ test('Formation arrival tolerates contact jitter and follows a moving hero witho
   const e = environment(), game = controller(e), units = [soldier(e), soldier(e), soldier(e), soldier(e)];
   e.load('KinghtFallConfig').KinghtFallParameter.FollowMode = 2;
   game.ctrPlay.node.setPosition(0, 0); game.changeAge(); e.nav.beginFrame(game);
+  units.forEach(unit => assert(game.selectFollower(unit)));
   const slots = units.map(unit => ({ ...game.getArmyOrderGoal(unit, game.ctrPlay.node.position).pos }));
   units.forEach((unit, i) => unit.node.setPosition(slots[i].x + 3, slots[i].y));
   units.forEach(unit => unit.onUpdate(.05));
@@ -526,6 +533,7 @@ test('A short hero move across a gate invalidates the previous-side follow forma
   game.gameData.buildings[0].getNavigationGateShapes = () => [{ collider: leaf, points: [new Vec2(-1, -200), new Vec2(1, -200), new Vec2(1, 200), new Vec2(-1, 200)] }];
   e.load('KinghtFallConfig').KinghtFallParameter.FollowMode = 2;
   game.ctrPlay.node.setPosition(-8, 0); game.changeAge(); e.nav.beginFrame(game);
+  units.forEach(unit => assert(game.selectFollower(unit)));
   units.forEach(unit => assert(game.getArmyOrderGoal(unit, game.ctrPlay.node.position).pos.x < -1));
   game.ctrPlay.node.setPosition(8, 0); e.nav.beginFrame(game);
   units.forEach(unit => assert(game.getArmyOrderGoal(unit, game.ctrPlay.node.position).pos.x > 1));

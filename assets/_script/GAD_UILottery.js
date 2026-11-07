@@ -72,15 +72,17 @@ var def_GAD_UILottery = function (t) {
   };
   _ctor.prototype.onTouchEnd = function (t, e, n, i) {
     var a = this;
-    if (!(!this.canTouch || this.selectNum <= 0)) {
+    if (!this.isclose && cc.isValid(this, true) && this.canTouch && this.selectNum > 0) {
       this.selectNum--;
       this.openAnimation(t, e);
       this.scheduleOnce(function () {
+        if (a.isclose || !cc.isValid(a, true)) return;
         for (var t in a.nodeLayer.children) {
           var o = a.nodeLayer.children[t];
           o.uuid != n && a.openAnimation(o, a.uuidMap[o.uuid]);
         }
         a.scheduleOnce(function () {
+          if (a.isclose || !cc.isValid(a, true) || $z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Pause) return;
           a.sendEvent($z1GAD_Configs.emGADEventName.GAD_AddBuff, e.buffType, i);
           $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
           a.closeUI();
@@ -208,6 +210,10 @@ var def_GAD_UILottery = function (t) {
   };
   _ctor.prototype.onLoad = function () {};
   _ctor.prototype.start = function () {};
+  _ctor.prototype.onDestroy = function () {
+    if (cc.isValid(this.itemNode, true) && !this.itemNode.parent) this.itemNode.destroy();
+    t.prototype.onDestroy.call(this);
+  };
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "itemNode", undefined);
   cc__decorate([ccp_property(cc.SpriteFrame)], _ctor.prototype, "buffSpArr", undefined);
   return cc__decorate([ccp_ccclass], _ctor);

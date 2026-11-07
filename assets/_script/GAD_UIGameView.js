@@ -42,6 +42,9 @@ var def_GAD_UIGameView = function (t) {
     var t = this;
     $z1PoolMgr.PoolMgr.getInstance().creatrePool("pbt_hit_effect", this.hitEffect, 5);
     $z1PoolMgr.PoolMgr.getInstance().creatrePool("pbt_buff_img", this.ndBuffImg, 2);
+    this._hitPool = $z1PoolMgr.PoolMgr.getInstance().poolMap.get("pbt_hit_effect");
+    this._buffPool = $z1PoolMgr.PoolMgr.getInstance().poolMap.get("pbt_buff_img");
+    this._hitPool.setWaterMark(256);
     this.labTip.node.active = $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK;
     this.labTip.string = require("LanguageMgr").LanguageMgr.getInstance().t("[[loc:mode.unlock]]", [$z1GAD_App.default.instance.lockNum]);
     if ("1" == $z1GAD_DataMgr.default.getInstance().getUrlParam("isEditor")) {
@@ -65,8 +68,18 @@ var def_GAD_UIGameView = function (t) {
       t.webPause();
     });
     this.ndLayer.active = false;
-    this.btnExit.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1UIMgr.UIMgr.getInstance().openUI($z1GAD_Configs.GAD_UIID.UIPause, $z1Config.UIID.UINONE, function (e) {
+    this.btnExit.on(cc.Node.EventType.TOUCH_END, function (event) {
+      if (event) event.stopPropagation();
+      var game = require("GAD_UIGame").default.script;
+      if (!game || game.isclose || !cc.isValid(game, true)) return;
+      var generation = game._resourceGeneration;
+      $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1GAD_Configs.GAD_UIID.UIPause, $z1Config.UIID.UINONE, {
+        parent: game,
+        isCurrent: game.resourceOptions(generation).isCurrent,
+        onOpened: function (node) { game._decisionNode = node; }
+      }, function (e) {
+        if (game.isclose || !cc.isValid(t.node, true) || game._resourceGeneration !== generation ||
+            $z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Over) return;
         if (e) {
           t.ndLayer.active = false;
           t.btnPause.active = true;
@@ -77,12 +90,13 @@ var def_GAD_UIGameView = function (t) {
       });
     });
     this.ndLayer.on(cc.Node.EventType.TOUCH_END, function () {
-      t.ndLayer.active = false;
-      t.btnPause.active = true;
-      $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
+      if (!t.ndLayer.active || $z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Pause) return;
+      t.webPause();
     });
   };
   _ctor.prototype.webPause = function () {
+    var game = require("GAD_UIGame").default.script;
+    if (game && (game._decisionNode && cc.isValid(game._decisionNode, true) || game._pendingUIOpens && game._pendingUIOpens.size)) return;
     var state = $z1GAD_PlayerMgr.default.getInstance().getState();
     if (state == $z1GAD_Configs.emGADGameState.Game || state == $z1GAD_Configs.emGADGameState.Pause && this.ndLayer.active) {
       if (this.ndLayer.active) {
@@ -117,7 +131,6 @@ var def_GAD_UIGameView = function (t) {
   };
   _ctor.prototype.playWarn = function () {
     var t = this;
-    console.log("warn");
     cc.Tween.stopAllByTarget(this.ndWarn);
     this.onScreenShake();
     this.ndWarn.active = true;
@@ -133,25 +146,32 @@ var def_GAD_UIGameView = function (t) {
   };
   _ctor.prototype.showHitEffect = function (t) {
     var e = this.node.convertToNodeSpaceAR(t);
-    var n = $z1PoolMgr.PoolMgr.getInstance().getNode("pbt_hit_effect");
+    var pool = this._hitPool;
+    var n = pool && pool.getNode();
+    if (!n) return;
     $z1GAD_Configs.emGADRoleType.Door;
     n.parent = this.node;
     n.setPosition(e);
     n.active = true;
-    n.getComponent(sp.Skeleton).setAnimation(0, "jian_1", false);
+    var skeleton = n.getComponent(sp.Skeleton);
+    skeleton.enableBatch = true;
+    if (sp.Skeleton.AnimationCacheMode && skeleton.setAnimationCacheMode && !skeleton.isAnimationCached()) skeleton.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.SHARED_CACHE);
+    skeleton.setAnimation(0, "jian_1", false);
     this.scheduleOnce(function () {
       n.active = false;
-      $z1PoolMgr.PoolMgr.getInstance().freeNode("pbt_hit_effect", n);
+      pool.freeNode(n);
     }, .5);
   };
   _ctor.prototype.showBuffTip = function (t, e) {
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.buff);
     this.sendEvent($z1GAD_Configs.emGADEventName.GAD_BuffAnimation);
-    var n = $z1PoolMgr.PoolMgr.getInstance().getNode("pbt_buff_img");
+    var pool = this._buffPool;
+    var n = pool && pool.getNode();
+    if (!n) return;
     n.parent = this.node;
     var i = this.node.convertToNodeSpaceAR(e);
     n.setPosition(i);
-    n.getComponent($z1GAD_BuffTips.default).show(t);
+    n.getComponent($z1GAD_BuffTips.default).show(t, pool);
   };
   _ctor.prototype.onScreenShake = function () {
     cc.Tween.stopAllByTarget(this.sprBgSup);
@@ -170,6 +190,14 @@ var def_GAD_UIGameView = function (t) {
     }).set({
       position: cc.v3(0, 0)
     }).start();
+  };
+  _ctor.prototype.onDestroy = function () {
+    var pools = $z1PoolMgr.PoolMgr.getInstance();
+    if (pools.poolMap.get("pbt_hit_effect") === this._hitPool) pools.clearPool("pbt_hit_effect");
+    if (pools.poolMap.get("pbt_buff_img") === this._buffPool) pools.clearPool("pbt_buff_img");
+    this.tipPools.forEach(function (node) { if (cc.isValid(node, true)) node.destroy(); });
+    this.tipPools.length = 0;
+    t.prototype.onDestroy.call(this);
   };
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndTipRoot", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndWarn", undefined);

@@ -43,6 +43,8 @@ var def_KinghtFallSoldierBase = function (t) {
     e.isAgg = false;
     e.navigationTeam = "friendly";
     e.rallyPoint = null;
+    e._personalRallyPoint = null;
+    e._followSelected = false;
     e._targetRefresh = 0;
     e._orderTarget = null;
     return e;
@@ -72,6 +74,9 @@ var def_KinghtFallSoldierBase = function (t) {
     this._isPooled = false;
     Navigation.reset(this);
     this.rallyPoint = null;
+    this._personalRallyPoint = null;
+    this._followSelected = false;
+    this._syncFollowMarker();
     this.pathList = null;
     this.isAgg = false;
     this._orderTarget = null;
@@ -195,6 +200,8 @@ var def_KinghtFallSoldierBase = function (t) {
         this._orderTargetGeneration = target && target.node._combatGeneration;
         this._targetRefresh = .2;
       }
+      if (target && this.isHoldingPosition() && !(target === this._retaliationTarget && this._retaliationTime > 0 && target.node._combatGeneration === this._retaliationGeneration) &&
+          cc.Vec2.distance(position, Navigation.positionOf(target.node, game)) > this.attackRange) target = this._orderTarget = null;
       var goal = null, formation = null;
       if (target) {
         goal = Navigation.positionOf(target.node, game);
@@ -360,12 +367,13 @@ var def_KinghtFallSoldierBase = function (t) {
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     var e = null;
     var n = -1;
+    var scanRange = this.isHoldingPosition() ? this.attackRange : this.attackRange + this.cfg.SearchRange;
     for (var i = 0; i < t.length; i++) {
       var a = t[i];
       if (!a.isDead()) {
         a.node.getPosition(this.vec2_2);
         cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-        if (this.vec2_2.len() <= this.attackRange + this.cfg.SearchRange && (-1 == n || this.vec2_2.len() < n)) {
+        if (this.vec2_2.len() <= scanRange && (-1 == n || this.vec2_2.len() < n)) {
           e = a, n = this.vec2_2.len();
         }
       }
@@ -462,6 +470,9 @@ var def_KinghtFallSoldierBase = function (t) {
       this.hp -= t * e;
       if (this.hp <= 0) {
         this.state = s.Dead;
+        this._followSelected = false;
+        this.isAgg = false;
+        this._syncFollowMarker();
         $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
         this.delAllBuff();
         this.node.active = false;
@@ -480,6 +491,10 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    this._followSelected = false;
+    this.isAgg = false;
+    this._personalRallyPoint = null;
+    this._syncFollowMarker();
     if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);
     GameToolsOverrides.cancel(this);
     this._isPooled = true;
@@ -554,6 +569,8 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.setNew = function () {
+    var respawning = this.isDead() || !this.node.activeInHierarchy;
+    if (respawning) this._followSelected = false;
     GameToolsOverrides.cancel(this);
     var t;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
@@ -577,16 +594,46 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.applyArmyOrder = function (game) {
     Navigation.reset(this);
-    this.rallyPoint = game.rallyPoint || null;
-    this.isAgg = !this.rallyPoint && !!game.isAgg;
+    if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) {
+      var saved = this.outBuild && this.outBuild.getSoldierRallyPoint && this.outBuild.getSoldierRallyPoint(this);
+      if (saved) this.setPersonalRallyPoint(saved, false);
+      if (!this._personalRallyPoint) this.setPersonalRallyPoint(Navigation.positionOf(this.node, game), false);
+      this.isAgg = !!game.isAgg && !!this._followSelected && !this.isDead() && this.node.activeInHierarchy;
+      this.rallyPoint = this.isAgg ? null : this._personalRallyPoint;
+    } else {
+      this.rallyPoint = game.rallyPoint || null;
+      this.isAgg = !this.rallyPoint && !!game.isAgg;
+    }
     this.pathList = null;
     this._settledPoint = null;
     this._armyProgressPoint = null;
     this._armyStalledTime = 0;
+    this._syncFollowMarker();
+    var holdingHere = this.isHoldingPosition() && this.rallyPoint && cc.Vec2.distance(Navigation.positionOf(this.node, game), this.rallyPoint.pos) < 3;
+    if (holdingHere) this._settledPoint = Navigation.positionOf(this.node, game);
     if (!this.isDead() && this.state != s.Attack) {
-      if (this.rallyPoint || this.isAgg) this.doMove();
+      if (!holdingHere && (this.rallyPoint || this.isAgg)) this.doMove();
       else this.doIdel();
     }
+  };
+  _ctor.prototype.isHoldingPosition = function () {
+    return $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2 && !this.isAgg;
+  };
+  _ctor.prototype.setPersonalRallyPoint = function (position, remember) {
+    this._personalRallyPoint = { pos: { x: position.x, y: position.y } };
+    if (remember && this.outBuild && this.outBuild.setSoldierRallyPoint) this.outBuild.setSoldierRallyPoint(this, position);
+  };
+  _ctor.prototype._syncFollowMarker = function () {
+    var selected = this._followSelected && this.isAgg && !this.isDead();
+    if (selected && !this._followMarker && cc.Graphics) {
+      var node = this._followMarker = new cc.Node("FollowSelection");
+      node.parent = this.node; node.zIndex = -1;
+      var graphics = node.addComponent(cc.Graphics);
+      graphics.lineWidth = 3;
+      graphics.strokeColor = cc.color(100, 240, 255, 255);
+      graphics.ellipse(0, 0, 18, 8); graphics.stroke();
+    }
+    if (this._followMarker) this._followMarker.active = !!selected;
   };
   _ctor.prototype.setPath = function (t, e) {
     this.isAgg = !!e;

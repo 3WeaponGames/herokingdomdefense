@@ -55,6 +55,10 @@ var def_GAD_Enermy = function (t) {
     } else {
       this._hp = Number(e);
     }
+    // Reuse digit glyphs instead of rebuilding an outlined texture per hit.
+    // Win32 2.4.13's native TTF character cache crashes with this font.
+    if (cc.sys.isNative && cc.sys.os === cc.sys.OS_WINDOWS) this.lblHP._forceUseCanvas = true;
+    if (cc.game.renderType !== cc.game.RENDER_TYPE_CANVAS) this.lblHP.cacheMode = cc.Label.CacheMode.CHAR;
     this.updateHp();
     if (t.indexOf(",") >= 0) {
       var o = t.split(",").map(function (t) {
@@ -84,14 +88,18 @@ var def_GAD_Enermy = function (t) {
     var e = this._enermyCfg.spineEnemy + "/" + this._enermyCfg.spineEnemy;
     this.enemyItem.node.scale = this._enermyCfg.size;
     this.loadResFromBundle($z1GAD_Configs.emGADBundles.imgs, "spine/" + e, sp.SkeletonData, function (e) {
+      if (t.isDie || !cc.isValid(t.node, true)) return;
       t.enemyItem.skeletonData = e;
       t.initEnemyLayer();
     });
   };
   _ctor.prototype.initEnemyLayer = function () {
+    if (this.isDie) return;
     var t = this;
     if (1 == this._enermyCfg.itemNum) {
       this.enemyItem.node.active = true;
+      this.enemyItem.enableBatch = true;
+      if (sp.Skeleton.AnimationCacheMode && this.enemyItem.setAnimationCacheMode) this.enemyItem.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.SHARED_CACHE);
       this.enemyItem.setAnimation(0, "move", true);
       return void this.scheduleOnce(function () {
         t.lblHP.node.setPosition(0, t.node.height + t._enermyCfg.HpPosition + 15);
@@ -115,6 +123,8 @@ var def_GAD_Enermy = function (t) {
         l.parent = this.layer;
         l.setPosition(new cc.Vec2(o + r % 3 * i, 0 + Math.floor(r / 3) * a));
         var s = l.getComponent(sp.Skeleton);
+        s.enableBatch = true;
+        if (sp.Skeleton.AnimationCacheMode && s.setAnimationCacheMode) s.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.SHARED_CACHE);
         3 != this._enermyCfg.id && 2 != this._enermyCfg.id && s.setSkin("hong");
         s.setAnimation(0, "move", true);
       }
@@ -129,6 +139,8 @@ var def_GAD_Enermy = function (t) {
         l.parent = this.layer;
         l.setPosition(new cc.Vec2(o + r % 2 * i, 0 + Math.floor(r / 2) * a));
         s = l.getComponent(sp.Skeleton);
+        s.enableBatch = true;
+        if (sp.Skeleton.AnimationCacheMode && s.setAnimationCacheMode) s.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.SHARED_CACHE);
         3 != this._enermyCfg.id && 2 != this._enermyCfg.id && s.setSkin("hong");
         s.setAnimation(0, "move", true);
       }
@@ -144,11 +156,14 @@ var def_GAD_Enermy = function (t) {
     });
   };
   _ctor.prototype.updateHp = function () {
+    this._hpDirty = false;
+    if (this._displayHp === this._hp) return;
     if (this.shouldReset) {
       var t = this.getDigitCount(this._hp);
-      t > 4 && (this.lblHP.fontSize = Math.max(50, 80 - 6 * (t - 4)));
+      this.lblHP.fontSize = Math.max(50, 80 - 6 * Math.max(0, t - 4));
     }
     this.lblHP.string = "" + this._hp;
+    this._displayHp = this._hp;
   };
   _ctor.prototype.getDigitCount = function (t) {
     if (0 === t) {
@@ -172,6 +187,7 @@ var def_GAD_Enermy = function (t) {
     });
   };
   _ctor.prototype.onDie = function () {
+    if (this.isDie) return;
     var t = this;
     this.setRoleState($z1GAD_Configs.emGADRoleState.Die);
     this.lblHP.node.active = false;
@@ -179,9 +195,10 @@ var def_GAD_Enermy = function (t) {
     this.ske_die.node.active = true;
     this.ndCollider.active = false;
     this.ske_die.setAnimation(0, Math.random() < .5 ? "animation" : "animation2", false);
-    this.layer.removeAllChildren();
+    this.layer.active = false;
+    this.layer.destroyAllChildren();
     this.ske_die.setCompleteListener(function () {
-      t.node.destroy();
+      if (cc.isValid(t.node, true)) t.node.destroy();
     });
     if (this._bubbleCtrl) {
       var e = this._bubbleCtrl.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
@@ -192,7 +209,7 @@ var def_GAD_Enermy = function (t) {
     if (!this.isUseful || this.hasColliderTagID(t.getTagID())) {
       return $z1GAD_Configs.emGADHitState.None;
     } else {
-      return this._hp -= e, this.updateHp(), $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit), this.addColliderTagID(t.getTagID()), this._hp <= 0 ? (this.onDie(), $z1GAD_Configs.emGADHitState.HitDie) : $z1GAD_Configs.emGADHitState.HitHurt;
+      return this._hp -= e, this._hpDirty = true, $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit), this.addColliderTagID(t.getTagID()), this._hp <= 0 ? (this.onDie(), $z1GAD_Configs.emGADHitState.HitDie) : $z1GAD_Configs.emGADHitState.HitHurt;
     }
   };
   _ctor.prototype.playHpRoll = function () {

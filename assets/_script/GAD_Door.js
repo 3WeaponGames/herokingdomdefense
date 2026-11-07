@@ -10,6 +10,7 @@ var $z1GAD_Configs = require("GAD_Configs");
 var $z1GADGameEnumData = require("GADGameEnumData");
 var $z1GAD_DataMgr = require("GAD_DataMgr");
 var $z1GAD_Base = require("GAD_Base");
+var $z1GAD_PlayerMgr = require("GAD_PlayerMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -53,6 +54,8 @@ var def_GAD_Door = function (t) {
     this._originPos = this.node.position.clone();
     this.setRoleState($z1GAD_Configs.emGADRoleState.Move);
     this._bufType = t;
+    if (cc.sys.isNative && cc.sys.os === cc.sys.OS_WINDOWS) this.text._forceUseCanvas = true;
+    if (cc.game.renderType !== cc.game.RENDER_TYPE_CANVAS) this.text.cacheMode = cc.Label.CacheMode.CHAR;
     this._initBuffCfg(e);
     this._targetWidth = 300;
     this._step = 0;
@@ -102,6 +105,7 @@ var def_GAD_Door = function (t) {
     return t.toFixed(e) - 0;
   };
   _ctor.prototype.update = function (t) {
+    if (this.isDie || $z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Game) return;
     this._coolTime -= t;
     0 != this._step && this.updateWidth(this._step);
   };
@@ -180,6 +184,8 @@ var def_GAD_Door = function (t) {
     this.node.destroy();
   };
   _ctor.prototype.onDie = function () {
+    if (this.isDie) return;
+    this.setRoleState($z1GAD_Configs.emGADRoleState.Die);
     var t = this;
     this.node.stopAllActions();
     cc.Tween.stopAllByTarget(this.node);

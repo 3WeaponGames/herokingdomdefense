@@ -24,6 +24,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     e.statePos = new cc.Vec2();
     e.moveFunc = null;
     e.touchID = false;
+    e._followTouches = new Map();
     e._joystickRestReady = false;
     e.vec2_1 = new cc.Vec2();
     e.guideTag = null;
@@ -44,17 +45,28 @@ var def_KinghtFallGameUICtrl = function (t) {
     this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
     this.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
-    this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
+    this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     $z1EventMgr.EventMgr.getInstance().on($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, this, this.onBlockTouch);
   };
   _ctor.prototype.setMoveFunc = function (t) {
     this.moveFunc = t;
   };
   _ctor.prototype.onTouchStart = function (t) {
+    var game = this._followGame(), unit = game && game.findFollowUnitAtScreen(t.touch.getLocation());
+    if (unit) {
+      this._followTouches.set(t.touch.getID(), { unit: unit, generation: unit.node._combatGeneration, start: t.touch.getLocation() });
+      return;
+    }
+    this._beginJoystick(t, t.touch.getLocation());
+  };
+  _ctor.prototype._followGame = function () {
+    var ui = $z1KinghtFallUIGame.default && $z1KinghtFallUIGame.default.instance;
+    return ui && !ui.isPauset && ui.ctrGame && ui.ctrGame.findFollowUnitAtScreen ? ui.ctrGame : null;
+  };
+  _ctor.prototype._beginJoystick = function (t, location) {
     if (this.touchID !== false && this.touchID !== t.touch.getID()) return;
     this.touchID = t.touch.getID();
-    var e = t.touch.getLocation();
-    var n = this.node.convertToNodeSpaceAR(e);
+    var n = this.node.convertToNodeSpaceAR(location);
     this.ndRod.setPosition(n);
     this.ndConter.setPosition(0, 0, 0);
     this.ndAround.forEach(function (t) {
@@ -63,6 +75,15 @@ var def_KinghtFallGameUICtrl = function (t) {
     $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
   };
   _ctor.prototype.onTouchMove = function (t) {
+    var pending = this._followTouches.get(t.touch.getID());
+    if (pending) {
+      if (cc.Vec2.distance(pending.start, t.touch.getLocation()) <= 16) return;
+      this._followTouches.delete(t.touch.getID());
+      // A drag from a unit remains an ordinary movement gesture; a second
+      // finger can tap-select without stealing the controlling joystick.
+      if (this.touchID !== false) return;
+      this._beginJoystick(t, pending.start);
+    }
     if (this.touchID === t.touch.getID()) {
       cc.Vec2.subtract(this.vec2_1, t.touch.getLocation(), t.touch.getStartLocation());
       if (this.vec2_1.len() >= this.numRange) {
@@ -76,7 +97,18 @@ var def_KinghtFallGameUICtrl = function (t) {
       this.moveFunc && this.moveFunc(this.vec2_1.clone());
     }
   };
-  _ctor.prototype.onTouchEnd = function (t) {
+  _ctor.prototype.onTouchCancel = function (t) {
+    this.onTouchEnd(t, true);
+  };
+  _ctor.prototype.onTouchEnd = function (t, cancelled) {
+    var pending = t && this._followTouches.get(t.touch.getID());
+    if (pending) {
+      this._followTouches.delete(t.touch.getID());
+      var game = this._followGame();
+      if (!cancelled && game && cc.isValid(pending.unit.node) && pending.unit.node._combatGeneration === pending.generation && cc.Vec2.distance(pending.start, t.touch.getLocation()) <= 16) game.selectFollower(pending.unit);
+      return;
+    }
+    if (!t) this._followTouches.clear();
     if (!(t && this.touchID !== t.touch.getID())) {
       this._resetJoystick(!t);
     }
@@ -95,6 +127,7 @@ var def_KinghtFallGameUICtrl = function (t) {
   };
   _ctor.prototype.onDisable = function () {
     // A hidden/closed UI may never receive its final touch event.
+    this._followTouches.clear();
     this._resetJoystick(false);
   };
   _ctor.prototype.setRevive = function (t) {

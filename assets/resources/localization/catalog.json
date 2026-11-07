@@ -12,6 +12,21 @@
     }
   ],
   "entries": {
+    "start.retry": {
+      "en": "Tap to Retry",
+      "zh": "点击重试",
+      "context": "Start screen · retry a failed transition to loading"
+    },
+    "start.tap": {
+      "en": "Tap to Start",
+      "zh": "点击开始",
+      "context": "Start screen · tap anywhere to enter the loading screen"
+    },
+    "start.opening": {
+      "en": "Loading...",
+      "zh": "正在加载…",
+      "context": "Start screen · scene transition in progress"
+    },
     "testing.modeBadge": {
       "en": "TEST MODE · F8",
       "zh": "测试模式 · F8",
@@ -8625,6 +8640,28 @@
     }
   },
   "labelStyles": {
+    "start.tap": {
+      "en": {
+        "fontSize": 44,
+        "lineHeight": 60,
+        "width": 460,
+        "height": 88,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "display"
+      },
+      "zh": {
+        "fontSize": 44,
+        "lineHeight": 60,
+        "width": 460,
+        "height": 88,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "display"
+      }
+    },
     "ui.layout.common_uiresult.62": {
       "en": {
         "width": 472,
@@ -16021,6 +16058,7 @@
     "f9c12a63-63d6-4875-a9a0-c52395dff609:a9c41a706d6c4274951d90": "ui.signin.grand-prize"
   },
   "nodePathStyles": {
+    "Start/StartCanvas/TitleContent/StartButton/TapToStart": "start.tap",
     "GAD_UIResult/root/ndTop/New Label": "ui.layout.common_uiresult.36",
     "GAD_UIResult/root/btns/yz_ty_btn2/New Label": "ui.layout.common_uiresult.76",
     "GAD_UISetting/root/title": "ui.layout.common_uisetting.8",

@@ -40,50 +40,7 @@ var def_KinghtFallUIGameEnd = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.lateUpdate = function () {
-    this._syncVictoryTitle();
-  };
-  _ctor.prototype._syncVictoryTitle = function () {
-    var skeleton = this.spAni;
-    var english = this.isWin && require("LanguageMgr").LanguageMgr.getInstance().getCurrentLanguage() === "en";
-    if (!english) {
-      if (this._victoryTitle && cc.isValid(this._victoryTitle)) this._victoryTitle.active = false;
-      if (this._victoryBitmapHidden) skeleton.setAttachment("shengli", "shengli");
-      this._victoryBitmapHidden = false;
-      return;
-    }
-    var attach = skeleton.attachUtil;
-    if (!attach) return;
-    var bone = attach.getAttachedNodes("sl5")[0] || attach.generateAttachedNodes("sl5")[0];
-    if (!bone) return;
-    if (!this._victoryTitle || !cc.isValid(this._victoryTitle)) {
-      // The atlas title is only 125 pixels wide before its 1.75x enlargement.
-      // A real label renders Lilita at full resolution, like the action buttons.
-      // Attach it to the title bone so the authored banner motion stays intact.
-      var node = this._victoryTitle = new cc.Node("VictoryTitle");
-      node.setContentSize(384, 112);
-      node.setPosition(.12, 4);
-      node.setScale(.5);
-      var label = node.addComponent(cc.Label);
-      label._localizedFontRole = "display";
-      label.fontSize = 56; label.lineHeight = 72;
-      label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
-      label.verticalAlign = cc.Label.VerticalAlign.CENTER;
-      label.enableWrapText = false; label.overflow = cc.Label.Overflow.NONE;
-      var button = this.btnBreak.getChildByName("effectLabel").getComponent(cc.Label);
-      if (button.font) { label.font = button.font; label.useSystemFont = false; }
-      label.string = "[[loc:art.result.victory]]";
-    }
-    var title = this._victoryTitle, caption = title.getComponent(cc.Label);
-    title.parent = bone;
-    title.active = !!caption.font && !caption.useSystemFont;
-    if (!title.active) return;
-    var runtime = skeleton._nativeSkeleton || skeleton._skeleton;
-    if (!this._victoryBitmapHidden || this._victoryTitleData !== skeleton.skeletonData || this._victoryTitleRuntime !== runtime) {
-      skeleton.setAttachment("shengli", null);
-      this._victoryBitmapHidden = true;
-      this._victoryTitleData = skeleton.skeletonData;
-      this._victoryTitleRuntime = runtime;
-    }
+    require("BattleResultTitle").sync(this, this.spAni, this.btnBreak, this.isWin);
   };
   _ctor.prototype.init = function (e) {
     t.prototype.init.call(this);

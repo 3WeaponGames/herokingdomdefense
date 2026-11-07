@@ -65,6 +65,8 @@ var def_GAD_App = function () {
     this._entryGeneration = (this._entryGeneration || 0) + 1;
     if (this._entryOpen) this._entryOpen.cancel();
     this._entryOpen = null;
+    $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Over);
+    $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1GAD_Configs.GADConfig.BgMusic);
     this.removeTouchEvent();
     var exitCall = this._exitCall;
     this._exitCall = null;
