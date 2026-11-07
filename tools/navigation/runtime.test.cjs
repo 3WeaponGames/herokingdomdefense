@@ -478,6 +478,7 @@ test('UIGame settles the ancestor Widget before activating map Rigidbody compone
     $z1KinghtFallConfig: { KinghtFallAudioId: {}, KinghtFallParameter: {}, KinghtFallBundelName: {} },
     $z1AudioMgr: { AudioMgr: { getInstance: () => ({ playMusic() {} }) } }, $z1KinghtFallGameCtrl: { default: function () {} },
     $z1KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getLevelCfgById: () => ({ prefab: 'Map01' }) }) } } };
+  ui.playPlanningMusic = vm.runInNewContext('(' + functionAt(source, '_ctor.prototype.playPlanningMusic = function') + ')', context);
   vm.runInNewContext('(' + start + ')', context).call(ui);
   assert(activated);
 });

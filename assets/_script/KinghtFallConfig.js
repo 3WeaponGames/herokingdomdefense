@@ -238,6 +238,7 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
 (function (t) {
   t.menu_bgm = "KinghtFallmenu_bgm";
   t.ready_bgm = "KinghtFallready_bgm";
+  t.desert_ready_bgm = "KinghtFalldesert_ready_bgm";
   t.fight_bgm = "KinghtFallfight_bgm";
   t.button_click = "KinghtFallbutton_click";
   t.gold_reward = "KinghtFallgold_reward";
@@ -264,6 +265,9 @@ exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.ready_bgm] = {
   path: "Skybound_Horns",
+  bundle: exp_KinghtFallBundelName.Audio
+}, a[r.desert_ready_bgm] = {
+  path: "Sands_of_the_Keep",
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.fight_bgm] = {
   path: "fight_bgm",
