@@ -412,7 +412,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   };
   _ctor.prototype.hideBoxReward = function () {
     this._boxRewardRequest = (this._boxRewardRequest || 0) + 1;
-    var popup = this.ndBoxShow && this.ndBoxShow.getChildByName("ndTips");
+    var popup = cc.isValid(this.ndBoxShow, true) && this.ndBoxShow.getChildByName("ndTips");
     if (!popup) return;
     cc.Tween.stopAllByTarget(popup);
     popup.active = false;
@@ -425,7 +425,11 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     this.hideBoxReward();
   };
   _ctor.prototype.onDestroy = function () {
-    this.onDisable();
+    // Creator destroys child nodes before this component's onDestroy. Do not
+    // run onDisable's popup traversal again after those children are released.
+    this._boxRewardRequest = (this._boxRewardRequest || 0) + 1;
+    if (cc.isValid(this._boxRewardInputRoot, true)) this._boxRewardInputRoot.off(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
+    this._boxRewardInputRoot = null;
     t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.onBoxClick = function (t) {

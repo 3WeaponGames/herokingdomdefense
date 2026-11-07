@@ -1,0 +1,629 @@
+{
+  "status": "Complete: conflicts resolved, both branch intents reviewed, full automated suites and bounded actual-game/WebGL checks passed.",
+  "branch": "AcerMain",
+  "mergeInputs": {
+    "acer": "020afc66ce58db8e7d3def6700677e95c2e000e0",
+    "pc": "c9f3d997da6c28498f6f42505ac0750a88f64d08",
+    "base": "b2ea0e99717c5978c25cf9b7ee88acf6e35928a1"
+  },
+  "conflictResolution": {
+    "file": "assets/_script/KinghtFallDepthView.js",
+    "preserved": [
+      "PCMain native JSB animated bounds, silhouette material, actor captures and lifecycle cleanup",
+      "AcerMain browser adaptive multi-consumer geometry caching and high-water scratch reuse"
+    ],
+    "additionalRegression": "Two native occluders across multiple before-draw frames and actor removal; native captures retain a draw identity without retaining browser frame caches."
+  },
+  "automated": {
+    "installedEngine": {
+      "tests": 706,
+      "pass": 706,
+      "fail": 0,
+      "skipped": 0,
+      "checkGroupsPassed": 6,
+      "checkGroups": 6,
+      "node": "24.20.0"
+    },
+    "portable": {
+      "tests": 700,
+      "pass": 676,
+      "fail": 0,
+      "skipped": 24,
+      "checkGroupsPassed": 6,
+      "checkGroups": 6,
+      "node": "22.23.4",
+      "mode": "Creator deliberately unavailable; default CI compatibility"
+    },
+    "pythonBridge": {
+      "python": "3.12.10",
+      "websockets12": {
+        "passed": 18,
+        "failed": 0
+      },
+      "websockets17": {
+        "passed": 18,
+        "failed": 0
+      },
+      "scope": "Inert connections; no sockets/editor/game started by bridge suites."
+    },
+    "authoredRoutes": {
+      "solved": 702,
+      "legs": 702,
+      "detours": 24,
+      "projectedGoals": 0
+    },
+    "serializedAssets": {
+      "files": 5687,
+      "scripts": 210,
+      "serialized": 102,
+      "syntaxErrors": 0,
+      "duplicateUuids": 0,
+      "brokenFiles": 0,
+      "unresolvedImports": 0,
+      "unresolvedSerializedReferences": 0
+    },
+    "exactStagedCodeAssetsAndTestsRecheck": {
+      "installedEngine": {
+        "tests": 706,
+        "pass": 706,
+        "fail": 0,
+        "skipped": 0,
+        "checkGroupsPassed": 6,
+        "node": "24.20.0"
+      },
+      "portable": {
+        "tests": 700,
+        "pass": 676,
+        "fail": 0,
+        "skipped": 24,
+        "checkGroupsPassed": 6,
+        "node": "22.23.4"
+      },
+      "scope": "Fresh export of the merge index, excluding concurrent working edits. Final evidence documentation is filled after testing; executable files, test files and assets stay identical to the tested export."
+    }
+  },
+  "semanticIntegration": {
+    "focusedEntriesPassed": 78,
+    "skips": 0,
+    "catalog": {
+      "semanticFieldsWithArraysAtomic": 8890,
+      "acerChanged": 2,
+      "pcChanged": 30,
+      "overlappingChanged": 0,
+      "exactUnion": true
+    },
+    "autoMergedIntent": [
+      "Map-ready durable fresh-battle admission alongside safe lobby chest teardown",
+      "Required perk decision retries and once-only rewards alongside native modal-owned original-texture frames",
+      "Building-choice cancellation/refunds alongside authored name-badge sizing",
+      "Both catalogs and font/artwork selections retained"
+    ]
+  },
+  "sourcePreservation": {
+    "runtimeModules": 210,
+    "runtimeModulesChangedFromAudit": [
+      "assets/_script/KinghtFallDepthView.js",
+      "assets/_script/KinghtFallHomeBattleCtrl.js",
+      "assets/_script/KinghtFallUIBuff.js",
+      "assets/_script/KinghtFallUIBuildSel.js"
+    ],
+    "runtimeModulesPreservedByteForByteAfterLFNormalization": 206,
+    "newShaderUuid": "a3da4538-9c65-433a-a857-979ee2e9c7a5",
+    "protectedTimingOrGameConfigurationChanges": [],
+    "all210PreviewBodiesMatchStagedMergeAfterLFNormalization": true
+  },
+  "limits": [
+    "This merge validation does not repeat the preceding ten complete backend inspection cycles.",
+    "Installed-engine/native adapter tests and a WebGL render check do not certify real JSB GPU output, a fresh native export, target-device FPS or real host SDKs.",
+    "All owned game tests muted before navigation, isolated memory-only storage, no desktop control."
+  ],
+  "actualGame": {
+    "scope": "Current merged PCMain/AcerMain source; silent bounded headless Cocos browser smoke and effect WebGL readback. Not a native JSB test, full-wave completion, or FPS benchmark.",
+    "verifiedSourceCount": 210,
+    "allCurrentHashes": true,
+    "resourceManifest": {
+      "upstream": 7457,
+      "projectPath": "assets/resources/OcclusionSilhouette.effect",
+      "uuid": "a3da4538-9c65-433a-a857-979ee2e9c7a5",
+      "descriptor": [
+        "OcclusionSilhouette",
+        "cc.EffectAsset"
+      ],
+      "originalManifestUnmodified": true,
+      "actualImportedAssetSHA256": "6c732ee022323a17e89f785d18b4664eed37f84697bee23c461cc0e7f3396326",
+      "sourceSHA256": "e9ab473d1b6afda8ef75bc8644a7bba0612ccf3f1cb0a5af8d5ea377ffd76b71",
+      "metaSHA256": "61e0dc1bf5096c6b2161f7ee327dd5adb2b191ea9f96001b343f4a814f400465",
+      "importedGlsl1EqualsMetadata": true
+    },
+    "gpu": {
+      "effect": "OcclusionSilhouette",
+      "uuid": "a3da4538-9c65-433a-a857-979ee2e9c7a5",
+      "renderType": 1,
+      "spineBackendNative": false,
+      "tint": [
+        40,
+        185,
+        75
+      ],
+      "pattern": [
+        255,
+        40,
+        20,
+        0,
+        250,
+        12,
+        4,
+        128,
+        240,
+        10,
+        20,
+        255,
+        4,
+        20,
+        245,
+        255
+      ],
+      "samples": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          93,
+          38,
+          64
+        ],
+        [
+          40,
+          185,
+          75,
+          255
+        ],
+        [
+          40,
+          185,
+          75,
+          255
+        ]
+      ],
+      "baseline": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "state": {
+        "nodeMask": 1,
+        "cameraMask": 4294967295,
+        "width": 32,
+        "height": 32,
+        "active": true,
+        "renderFlags": 128,
+        "frameLoaded": true,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 4,
+          "height": 1
+        },
+        "ortho": 16,
+        "builtInTexture": true
+      },
+      "variantIsSeparate": true,
+      "resolvedSpriteTexture": true,
+      "driver": {
+        "version": "WebGL 1.0 (OpenGL ES 2.0 Chromium)",
+        "renderer": "WebKit WebGL"
+      },
+      "samplesAtOrigin": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          93,
+          38,
+          64
+        ],
+        [
+          40,
+          185,
+          75,
+          255
+        ],
+        [
+          40,
+          185,
+          75,
+          255
+        ]
+      ],
+      "blend": {
+        "srcAlpha": 770,
+        "dstAlpha": 771
+      },
+      "expected": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          93,
+          38,
+          64
+        ],
+        [
+          40,
+          185,
+          75,
+          255
+        ],
+        [
+          40,
+          185,
+          75,
+          255
+        ]
+      ],
+      "passed": true
+    },
+    "modal": {
+      "perks": {
+        "active": true,
+        "rows": 3,
+        "browserNativeFrameIdentity": true
+      },
+      "build": {
+        "active": true,
+        "authoredBranches": [
+          2,
+          3
+        ],
+        "rows": [
+          {
+            "label": "Wooden Arrow Tower",
+            "backgrounds": [
+              {
+                "active": true,
+                "width": 236,
+                "height": 88,
+                "sliced": true
+              },
+              {
+                "active": false,
+                "width": 236,
+                "height": 88,
+                "sliced": true
+              }
+            ]
+          },
+          {
+            "label": "Stone Arrow Tower",
+            "backgrounds": [
+              {
+                "active": false,
+                "width": 236,
+                "height": 88,
+                "sliced": true
+              },
+              {
+                "active": true,
+                "width": 236,
+                "height": 88,
+                "sliced": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "freshAdmission": {
+      "method": "actual HomeBattle.onStartGame",
+      "stage": 1,
+      "cost": 5,
+      "before": {
+        "power": 30,
+        "stage": 1,
+        "hasCheckpoint": false,
+        "earnedSilver": 0
+      },
+      "immediate": {
+        "power": 30,
+        "stage": 1,
+        "hasCheckpoint": false,
+        "earnedSilver": 0
+      },
+      "after": {
+        "power": 25,
+        "stage": 1,
+        "hasCheckpoint": true,
+        "savedRound": 1,
+        "savedCoin": 6,
+        "earnedSilver": 6
+      },
+      "initialSilver": 6,
+      "runtimeCoin": 6,
+      "passed": true
+    },
+    "pause": {
+      "exists": true,
+      "active": true,
+      "paused": true,
+      "guideSuppressed": "Isolated-save guide node only; gameplay and callbacks unchanged"
+    },
+    "movingFollow": {
+      "before": {
+        "x": -587.125750064876,
+        "y": 908.2045736835839,
+        "follow": true,
+        "ring": true,
+        "command": {
+          "x": 0.2654373477949545,
+          "y": -0.9641281109871138
+        },
+        "frame": 800
+      },
+      "after": {
+        "x": -578.5559778417737,
+        "y": 875.6064664402961,
+        "follow": true,
+        "ring": true,
+        "command": {
+          "x": 0.2776294585224871,
+          "y": -0.9606882344239002
+        },
+        "frame": 805
+      },
+      "distance": 33.70575012962549,
+      "afterCapture": {
+        "x": -538.8093927976772,
+        "y": 833.205247826007,
+        "follow": true,
+        "ring": true,
+        "command": {
+          "x": 0.7154517082391177,
+          "y": -0.6986621881694529
+        },
+        "frame": 818
+      }
+    },
+    "scenarios": [
+      {
+        "label": "Gate variant 3 follow inward Ã‚Â· 30 allies",
+        "gameSeconds": 4.207,
+        "peak": 30,
+        "allies": 30,
+        "enemies": 0,
+        "attackStarts": 0,
+        "shortSampleCrossed": 3,
+        "shortSampleSettled": 0,
+        "total": 30,
+        "observedLowMotionEpisodes": 0,
+        "flaggedAtEnd": 0,
+        "observerErrors": [],
+        "respawns": null,
+        "intactGate": null
+      },
+      {
+        "label": "Actual wave 8 Ãƒâ€”2 crowd stress, enemy HPÃƒâ€”20 Ã‚Â· 30 allies",
+        "gameSeconds": 14.431,
+        "peak": 70,
+        "allies": 30,
+        "enemies": 40,
+        "attackStarts": 336,
+        "observedLowMotionEpisodes": 0,
+        "flaggedAtEnd": 0,
+        "observerErrors": [],
+        "respawns": {
+          "requested": 6,
+          "selected": 6,
+          "respawned": 1,
+          "inherited": 1,
+          "attackedAfterRespawn": 0,
+          "attackedEnRoute": 0,
+          "attackEvidence": "Actual doAttack callbacks with a live target in range, projectile launches, and synchronous melee HP reductions; absence of an event is not counted as a pass."
+        },
+        "intactGate": {
+          "method": "Ground units observed outside, then checked against the intact canonical gate leaf inner face; flyers excluded by BuildingCross=0.",
+          "verdict": "passed",
+          "observedGroundUnits": 40,
+          "excludedFlyers": 0,
+          "openFrames": 248,
+          "openFramesWithNearbyGround": 204,
+          "uniqueGroundNearOpenGate": 21,
+          "gateDestroyedAtMs": null,
+          "violations": []
+        },
+        "waveCompletion": {
+          "queuedGroups": 0,
+          "liveEnemies": 40,
+          "pendingEnemySpawns": 0,
+          "contract": "queued/live/pending/round-once-v1",
+          "generation": 1,
+          "round": 8,
+          "combatEpoch": 3,
+          "sameWave": true,
+          "roundCompleted": false,
+          "completionCount": 0,
+          "waveFinished": false
+        }
+      }
+    ],
+    "pool": {
+      "Soldier_90003": {
+        "deliveries": 15,
+        "newPools": 1,
+        "readyPoolReused": 14,
+        "readyPoolReplaced": 0
+      },
+      "Soldier_90002": {
+        "deliveries": 15,
+        "newPools": 1,
+        "readyPoolReused": 14,
+        "readyPoolReplaced": 0
+      },
+      "Enemy_90002": {
+        "deliveries": 2,
+        "newPools": 1,
+        "readyPoolReused": 1,
+        "readyPoolReplaced": 0
+      },
+      "Enemy_90003": {
+        "deliveries": 2,
+        "newPools": 1,
+        "readyPoolReused": 1,
+        "readyPoolReplaced": 0
+      },
+      "Enemy_90004": {
+        "deliveries": 9,
+        "newPools": 1,
+        "readyPoolReused": 8,
+        "readyPoolReplaced": 0
+      },
+      "EnemyAttack": {
+        "deliveries": 1,
+        "newPools": 1,
+        "readyPoolReused": 0,
+        "readyPoolReplaced": 0
+      },
+      "EnemyDead": {
+        "deliveries": 1,
+        "newPools": 1,
+        "readyPoolReused": 0,
+        "readyPoolReplaced": 0
+      }
+    },
+    "runtimeErrors": [],
+    "externalRequests": [],
+    "cleanup": {
+      "closedAt": "2026-11-07T04:18:52.091Z",
+      "ownBrowserPid": 80720,
+      "ownBrowserExitCode": 0,
+      "proxyClosed": true,
+      "profileRetainedForEvidence": true
+    },
+    "earlierControlAttempts": [
+      {
+        "dir": "preview",
+        "note": "Old upstream7456 lacked effect in its resource descriptor, though import file existed. Scope was an isolated test client. Closed cleanly."
+      },
+      {
+        "dir": "preview-effect",
+        "note": "Old upstream7456 with a private corrected descriptor loaded the imported effect and both UI panels. Its original far-away camera arrangement yielded zero pixels and supplies no positive shader evidence. Closed cleanly."
+      }
+    ],
+    "limits": [
+      "Actual imported asset, shader program, sampler uniform, real sprite MaterialVariant, vertex tint, alpha blending and framebuffer output verified on WebGL1 (Chromium). Distinct red and blue opaque input produce the same tint. Half alpha produces half RGB and quarter alpha with default SRC_ALPHA alpha blending in clear framebuffer.",
+      "An initial normal/far-away camera arrangement also yielded transparent pixels on this run. The successful isolated camera readback used centered geometry and camera Z=1. It verifies the shader/material, not the native capture camera placement.",
+      "Native JSB renderer subtree capture, native Spine bounding boxes and GPU blending, Metal/GLES/Vulkan driver variation, texture up/down orientation and native lifetime remain target-device checks. Mocked native tests validate control flow only. Browser handling intentionally preserves original frames on this platform.",
+      "Bridge/current preview resources were not regenerated by this test. Current runtime module bodies were inserted into existing quick-compile wrappers with rebuilt dependencies; it is not a fresh native release export.",
+      "The short Follow + crowded samples validate activity only; their finite end points do not imply complete settling of every unit or durable path failures."
+    ]
+  },
+  "editorVerification": {
+    "creator": "2.4.13",
+    "bridgeConnected": true,
+    "effectRegisteredUuid": "a3da4538-9c65-433a-a857-979ee2e9c7a5",
+    "resolvedDepthScriptRefreshRequested": true,
+    "newEditorWarningsOrErrorsAfterBaseline": 0,
+    "baselineWarning": "Older preview port 7456 occupied; fresh editor uses 7457. No user-owned preview was closed."
+  },
+  "diagnosticQualifications": [
+    "Fresh unmodified 7457 resources are the final shader/material evidence. Earlier private manifest workaround and transparent far-camera samples are retained as unsuccessful diagnostic attempts.",
+    "Latest live Follow/crowd checks are short activity samples, not complete wave clearing, all-unit settling, all-six respawn completion, en-route respawn combat or device FPS certification. Full automated route/order/respawn suites passed separately."
+  ],
+  "mergedPaths": [
+    {
+      "file": "AGENTS.md",
+      "stagedContentSha256": "f4f2a4ac7de159e33fff3c9781ef89dab11f9b1b2b43577c0a4fc48486c43946"
+    },
+    {
+      "file": "assets/KinghtFallPrefabs/gamePop/KinghtFallUIBuildSel.prefab",
+      "stagedContentSha256": "e9c50280b58bf3b8f1640c5f77aed96756849ec6d9159ba35ddf82d543e8e2df"
+    },
+    {
+      "file": "assets/_script/KinghtFallDepthView.js",
+      "stagedContentSha256": "8905052632a546ec1a5f88dc140e5c2396bf6a4963f39ced2900eb0f801b2cbb"
+    },
+    {
+      "file": "assets/_script/KinghtFallHomeBattleCtrl.js",
+      "stagedContentSha256": "9cb00d9599a56a8fec4525ed2d7b899c09fcb4dbb60c45b7f22f9e61990a5406"
+    },
+    {
+      "file": "assets/_script/KinghtFallUIBuff.js",
+      "stagedContentSha256": "c91977d9b846c331faec92043675357ce3510b11bab25f1257ac18aaa54e0b80"
+    },
+    {
+      "file": "assets/_script/KinghtFallUIBuildSel.js",
+      "stagedContentSha256": "50869108091ba9d85f80be716ff2c482ddd2ddfe9a122d2cf728aefec9acb898"
+    },
+    {
+      "file": "assets/resources/OcclusionSilhouette.effect",
+      "stagedContentSha256": "5b111883984e0a890e2cd7e94dd5c327ed00aab0f709fccbe4ea5e6b191827be"
+    },
+    {
+      "file": "assets/resources/OcclusionSilhouette.effect.meta",
+      "stagedContentSha256": "61e0dc1bf5096c6b2161f7ee327dd5adb2b191ea9f96001b343f4a814f400465"
+    },
+    {
+      "file": "assets/resources/localization/catalog.json",
+      "stagedContentSha256": "add9c51ca583172f497ffae5692f750cd4a576aeec2a9a54d8c72db4d380f99a"
+    },
+    {
+      "file": "docs/TESTING.md",
+      "stagedContentSha256": "51282758a0b12ce1d48b9ee242b733f6846eae58525be1d58f68163d3464eb7c"
+    },
+    {
+      "file": "tools/localization/font-role-assignments.json",
+      "stagedContentSha256": "c8fbc884240e8dec8146c3407c45e0d708ebea516bddf893a9ee5f4cd3d1d345"
+    },
+    {
+      "file": "tools/testing/chest-preview-regressions.test.cjs",
+      "stagedContentSha256": "a4a81f3f8f2c1e396b8028c9ddab086a3ff51571a34e535347764b47601d417b"
+    },
+    {
+      "file": "tools/testing/depth-occlusion.test.cjs",
+      "stagedContentSha256": "50c57ebd46d5386e8b53cc70ac61cec3e7644c1d413080b89bca2f7a1a62fb02"
+    },
+    {
+      "file": "tools/testing/perk-native-artwork.test.cjs",
+      "stagedContentSha256": "cc7eb21fec30272dadde4b64461d31ab7f30873ba3234240f8a329ba680e62bc"
+    }
+  ],
+  "concurrentEdits": {
+    "scope": "Additional local footer UI edits appeared during verification, after the reviewed merge sources froze.",
+    "workingFilesOverwritten": false,
+    "includedInMergeCommit": false,
+    "catalog": "Only the reconstructed, previously tested three-way merged catalog is staged. Its reviewed SHA-256 matches the earlier exact-union proof. Later footer edits remain in the working file.",
+    "isolation": "Full checks repeated on an exact index export to exclude concurrent edits. Input source bodies and imported assets for the bounded preview are qualified separately."
+  }
+}

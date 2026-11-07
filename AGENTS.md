@@ -1,5 +1,10 @@
 # Agent instructions
 
+## Use computer control only when necessary
+
+- Use the computer-use skill only when absolutely necessary, after checking whether a suitable API, connector, or CLI can complete the task.
+- As soon as the required UI result is achieved, immediately close or release the computer-use session before continuing other work. Do not leave computer control active for unrelated code edits, checks, or discussion.
+
 ## Keep MCP sessions silent
 
 - Keep game audio muted whenever using MCP to launch, run, inspect, or test this project. This includes browser previews, hidden previews, and native simulator sessions.

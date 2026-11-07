@@ -11,6 +11,154 @@ function load(cc = {}, sp = {}) {
   vm.runInNewContext(source, context);
   return context.exports;
 }
+
+test('native stage keeps drawing while the silhouette material loads and releases captures on exit', () => {
+  const events = [];
+  let loadEffect, destroyed = 0;
+  class Node { constructor(name) { this.name = name; } addComponent(Type) { return new Type(); } destroy() { destroyed++; } }
+  class Camera {} Camera.ClearFlags = { COLOR: 1, DEPTH: 2, STENCIL: 4 };
+  const material = { define() {}, destroy() { destroyed++; } };
+  const cc = { Node, Camera, isValid: value => !!value, color: () => ({}), resources: { load(name, type, done) { loadEffect = done; } },
+    EffectAsset: class {}, Material: { create: () => material }, sys: { isNative: true }, Director: { EVENT_BEFORE_DRAW: 'draw' }, director: {
+    getScene: () => ({}),
+    on(event, callback, owner) { events.push({ event, callback, owner }); },
+    off(event, callback, owner) { const i = events.findIndex(e => e.event === event && e.callback === callback && e.owner === owner); events.splice(i, 1); }
+  } };
+  class Skeleton {}
+  const { DepthView } = load(cc, { Skeleton });
+  const scenery = { name: 'Tower', y: 100 }, hero = { name: 'Hero', y: 50 };
+  const main = { activeInHierarchy: true, children: [hero, scenery] };
+  const game = { ndMain: main, ctrPlay: { node: hero }, gameData: { bulidPointMap: {} } };
+  // A native skeleton can animate normally but has no browser getBounds API.
+  // Awaiting the material must not block ordinary stage drawing/depth sorting.
+  Object.defineProperty(game.gameData, 'getSoldierList', { get() { throw Error('native silhouette traversal'); } });
+  const view = new DepthView(game);
+  assert.equal(view.captureSupported, false);
+  assert.ok(view.camera, 'manual native camera is available before asynchronous material loading');
+  assert.equal(events.length, 1);
+  for (let frame = 0; frame < 60; frame++) events[0].callback.call(events[0].owner);
+  assert.ok(scenery.zIndex < hero.zIndex);
+  hero.y = 150;
+  view.update();
+  assert.ok(hero.zIndex < scenery.zIndex, 'live ground sorting still follows movement');
+  loadEffect(null, {});
+  assert.equal(view.captureSupported, true);
+  view.nativeActors.set(hero, { frame: { destroy() { destroyed++; } }, texture: { destroy() { destroyed++; } } });
+  view.destroy();
+  assert.equal(events.length, 0, 'native cleanup unregisters before-draw callback');
+  assert.equal(view.nativeActors.size, 0);
+  assert.equal(destroyed, 5, 'capture nodes, material and per-actor GPU resources are released');
+  loadEffect(null, {});
+  assert.equal(destroyed, 5, 'late asset completion after leaving the stage cannot recreate a material');
+});
+
+test('native animated bounds use JSB renderer geometry without browser Spine methods', () => {
+  class Skeleton {}
+  let updates = 0;
+  const node = { activeInHierarchy: true, convertToWorldSpaceAR: p => ({ x: 30 - p.x * 2, y: 50 + p.y * 3 }) };
+  const renderer = Object.assign(new Skeleton(), { node, enabled: true,
+    _skeleton: { updateWorldTransform() { updates++; }, getBounds() { throw Error('Browser-only API'); } },
+    _nativeSkeleton: { getBoundingBox: () => ({ x: -10, y: -5, width: 40, height: 60 }) } });
+  const { bounds } = load({ v2: (x, y) => ({ x, y }) }, { Skeleton });
+  const cache = { poses: new Set(), bounds: new Map(), transforms: new Map(), vertexStore: new WeakMap() };
+  const box = bounds(renderer, { convertToNodeSpaceAR: p => p }, cache);
+  assert.deepEqual({ ...box }, { minX: -30, minY: 35, maxX: 50, maxY: 215 });
+  assert.equal(bounds(renderer, {}, cache), box);
+  assert.equal(updates, 1);
+});
+
+test('native captures select only live visual nodes and restore the camera even if rendering fails', () => {
+  const { DepthView } = load({ v2: (x, y) => ({ x, y }), Camera: { ClearFlags: { COLOR: 1, DEPTH: 2, STENCIL: 4 } } });
+  const calls = [], camera = { render(node) { calls.push({ node, clear: this.clearFlags }); if (node.fail) throw Error('GPU failure'); } };
+  const view = { main: { convertToWorldSpaceAR: p => ({ x: 10 + p.x * 2, y: 20 + p.y * 2 }) }, camera, cameraNode: { setPosition(x, y) { this.position = { x, y }; } } };
+  const sources = [false, true, true].map(enabled => ({ enabled, node: { activeInHierarchy: true } }));
+  DepthView.prototype.renderNative.call(view, sources, { x: 30, y: 40 }, 80, {});
+  assert.deepEqual(calls.map(c => c.node), sources.slice(1).map(s => s.node));
+  assert.deepEqual(calls.map(c => c.clear), [7, 6], 'later body parts preserve the captured alpha of earlier parts');
+  assert.deepEqual(view.cameraNode.position, { x: 70, y: 100 });
+  assert.equal(camera.orthoSize, 80);
+  assert.equal(camera.targetTexture, null);
+  sources[1].node.fail = true;
+  assert.throws(() => DepthView.prototype.renderNative.call(view, sources, { x: 0, y: 0 }, 80, {}), /GPU failure/);
+  assert.equal(camera.targetTexture, null);
+});
+
+test('one native actor capture serves multiple occluders and refreshes with the next animated frame', () => {
+  const { DepthView } = load({ color: (r, g, b) => ({ r, g, b }) });
+  let captures = 0;
+  const actor = {}, entry = { actor, sources: [], bounds: {}, tint: { r: 255, g: 115, b: 115 } };
+  const view = { nativeActors: new Map(), snapshotActor(record) { captures++; record.center = { x: 30, y: 40 }; record.size = { width: 60, height: 70 }; record.frame = {}; } };
+  const masks = Array.from({ length: 2 }, () => ({ sprite: {}, node: { setPosition(x, y) { this.position = { x, y }; }, setContentSize(size) { this.size = size; } } }));
+  const frame = {};
+  masks.forEach((mask, i) => DepthView.prototype.syncNativeMask.call(view, mask, entry, { center: { x: i * 10, y: 20 } }, frame));
+  assert.equal(captures, 1);
+  assert.equal(masks[0].sprite.spriteFrame, masks[1].sprite.spriteFrame);
+  assert.deepEqual(masks[1].node.position, { x: 20, y: 20 });
+  assert.deepEqual(masks[0].node.color, entry.tint);
+  assert.equal(masks[0].node.opacity, 204);
+  DepthView.prototype.syncNativeMask.call(view, masks[0], entry, { center: { x: 0, y: 0 } }, {});
+  assert.equal(captures, 2, 'live animation is captured again on the next draw');
+});
+test('a native depth draw shares one GPU actor capture across masks without retaining browser pose caches', () => {
+  class Skeleton {}
+  const cc = { v2: (x, y) => ({ x, y }), color: () => ({}), isValid: Boolean };
+  const { DepthView } = load(cc, { Skeleton });
+  const main = { activeInHierarchy: true, convertToNodeSpaceAR: p => p };
+  function node(y) {
+    return { y, activeInHierarchy: true, width: 40, height: 40, anchorX: .5, anchorY: 0,
+      convertToWorldSpaceAR: p => ({ x: p.x, y: p.y + y }), setPosition() {}, setContentSize() {}, destroy() {} };
+  }
+  const actor = { node: node(5), hp: 10 };
+  let boundsReads = 0, captures = 0, disposed = 0;
+  actor.spAni = Object.assign(new Skeleton(), {
+    enabled: true, node: actor.node, _skeleton: { updateWorldTransform() {} },
+    _nativeSkeleton: { getBoundingBox() { boundsReads++; return { x: -5, y: 0, width: 10, height: 20 }; } }
+  });
+  const objects = [0, 1].map(y => {
+    const wall = node(y);
+    return { node: wall, sources: [{ enabled: true, node: wall }], overlay: { node: node(y), mask: {} },
+      masks: new Map([[actor, { node: node(y), sprite: {} }]]), center: { x: 0, y }, size: {}, frame: {} };
+  });
+  const view = Object.assign(Object.create(DepthView.prototype), {
+    nativeCapture: true, captureSupported: true, nativeActors: new Map(), main, objects, sort() {},
+    game: { ctrPlay: actor, gameData: { getSoldierList: () => [], getEnemyList: () => [] } },
+    snapshot(_object, _box, cache) { assert.equal(cache.vertexConsumers, undefined); assert.equal(cache.vertexStore, undefined); },
+    snapshotActor(record) {
+      captures++; record.center = { x: 0, y: 5 }; record.size = {};
+      if (!record.frame) {
+        record.frame = { destroy() { disposed++; } };
+        record.texture = { destroy() { disposed++; } };
+      }
+    }
+  });
+  for (let frame = 1; frame <= 2; frame++) {
+    view.update();
+    assert.equal(boundsReads, frame);
+    assert.equal(captures, frame);
+    const record = view.nativeActors.get(actor);
+    assert.equal(record.draw.bounds, undefined, 'actor texture retained the full per-draw bounds cache');
+    for (const object of objects) assert.equal(object.masks.get(actor).sprite.spriteFrame, record.frame);
+  }
+  actor.hp = 0; view.update();
+  assert.equal(view.nativeActors.size, 0); assert.equal(disposed, 2);
+});
+test('native animated captures retain GPU capacity as pose bounds change and grow without clipping', () => {
+  let allocations = 0, released = 0;
+  class RenderTexture { initWithSize(width, height) { Object.assign(this, { width, height }); allocations++; } destroy() { released++; } }
+  class SpriteFrame { setFlipY() {} destroy() { released++; } }
+  const { DepthView } = load({ RenderTexture, SpriteFrame, gfx: { RB_FMT_S8: 8 } });
+  const captures = [], view = { renderNative(sources, center, height, texture) { captures.push({ center, height, texture }); } }, record = {};
+  for (const dx of [0, 1, -1, 2, 0]) DepthView.prototype.snapshotActor.call(view, record, [], { minX: 10, minY: 20, maxX: 96 + dx, maxY: 106 });
+  assert.equal(allocations, 1, 'ordinary animation changes must reuse the texture/frame');
+  assert.equal(record.size.width, 96);
+  assert.equal(captures.length, 5, 'the captured pose still refreshes each frame');
+  DepthView.prototype.snapshotActor.call(view, record, [], { minX: -10, minY: 20, maxX: 130, maxY: 106 });
+  assert.equal(record.size.width, 160, 'a wider attack pose receives enough capacity');
+  assert.equal(allocations, 2);
+  assert.equal(released, 2, 'replaced frame and texture are released together');
+  DepthView.prototype.snapshotActor.call(view, record, [], { minX: 10, minY: 20, maxX: 96, maxY: 106 });
+  assert.equal(allocations, 2, 'returning to idle retains capacity for the next attack');
+});
 test('depth follows exact ground Y, including subpixel crossings and equal-height units', () => {
   const { DepthView } = load();
   const wall = { y: 60.5 }, rear = { y: 60.51, _combatActor: true }, front = { y: 60.49, _combatActor: true }, hero = { y: 60.5 };
@@ -24,6 +172,23 @@ test('depth follows exact ground Y, including subpixel crossings and equal-heigh
   front.y = 60.6;
   DepthView.prototype.sort.call(view);
   assert.ok(front.zIndex < wall.zIndex, 'crossing to the upper side immediately changes depth');
+});
+test('before-draw depth changes flush Creator delayed sorting before the frame is rendered', () => {
+  const { DepthView } = load();
+  const actor = { y: 110, zIndex: 1200 }, wall = { y: 100, zIndex: 0 };
+  const main = { children: [wall, actor], sortAllChildren() { this.children.sort((a, b) => a.zIndex - b.zIndex); } };
+  const view = { main, game: { ctrPlay: { node: actor } } };
+  for (let frame = 0; frame < 3; frame++) {
+    // Gameplay assigns a legacy actor zIndex during update; Creator's regular
+    // AFTER_UPDATE sort therefore places it above the wall each frame.
+    actor.zIndex = 1200; main.sortAllChildren();
+    assert.equal(main.children[1], actor);
+    DepthView.prototype.sort.call(view);
+    assert.equal(main.children[0], actor, 'the same frame must draw the rear actor below the wall');
+  }
+  actor.y = 90;
+  DepthView.prototype.sort.call(view);
+  assert.equal(main.children[1], actor, 'crossing in front immediately restores the full unit');
 });
 test('mask nodes never enter ground sorting, and off-axis objects do not count as occlusion', () => {
   const { DepthView, overlaps } = load();

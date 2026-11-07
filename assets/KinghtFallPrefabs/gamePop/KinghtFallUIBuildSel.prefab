@@ -130,9 +130,6 @@
         "__id__": 7
       },
       {
-        "__id__": 10
-      },
-      {
         "__id__": 16
       },
       {
@@ -176,6 +173,9 @@
     "_components": [
       {
         "__id__": 8
+      },
+      {
+        "__id__": 58
       }
     ],
     "_prefab": {
@@ -183,7 +183,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 435,
+      "width": 480,
       "height": 89
     },
     "_trs": {
@@ -201,7 +201,12 @@
         1
       ],
       "__type__": "TypedArray"
-    }
+    },
+    "_children": [
+      {
+        "__id__": 10
+      }
+    ]
   },
   {
     "__type__": "cc.Sprite",
@@ -231,7 +236,7 @@
     "__type__": "cc.Node",
     "_name": "labTitle",
     "_parent": {
-      "__id__": 6
+      "__id__": 7
     },
     "_components": [
       {
@@ -252,14 +257,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 344,
-      "height": 113.84
+      "width": 1100,
+      "height": 97
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
         0,
-        410.011,
+        0,
         0,
         0,
         0,
@@ -276,7 +281,7 @@
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluibuildsel.11]]",
     "_fontSize": 84,
-    "_lineHeight": 84,
+    "_lineHeight": 97,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -288,7 +293,9 @@
     "node": {
       "__id__": 10
     },
-    "_N$string": "[[loc:ui.layout.kinghtfalluibuildsel.11]]"
+    "_N$string": "[[loc:ui.layout.kinghtfalluibuildsel.11]]",
+    "_N$overflow": 0,
+    "_enableWrapText": false
   },
   {
     "__type__": "cc.LabelOutline",
@@ -364,8 +371,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 476,
-      "height": 73.52
+      "width": 1100,
+      "height": 65
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -387,8 +394,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluibuildsel.17]]",
-    "_fontSize": 67,
-    "_lineHeight": 78,
+    "_fontSize": 56,
+    "_lineHeight": 65,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -736,14 +743,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 220,
-      "height": 70
+      "width": 236,
+      "height": 80
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -205.18,
-        -55.224,
+        -202.462,
+        -52.877,
         0,
         0,
         0,
@@ -796,14 +803,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 220,
-      "height": 69
+      "width": 236,
+      "height": 80
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -206.89,
-        -54.357,
+        -202.462,
+        -52.877,
         0,
         0,
         0,
@@ -859,8 +866,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 132,
-      "height": 87.6
+      "width": 416,
+      "height": 116
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -882,8 +889,8 @@
   {
     "__type__": "cc.Label",
     "_string": "[[loc:ui.layout.kinghtfalluibuildsel.42]]",
-    "_fontSize": 67,
-    "_lineHeight": 78,
+    "_fontSize": 56,
+    "_lineHeight": 58,
     "_styleFlags": 1,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
@@ -1105,5 +1112,23 @@
     "root": {
       "__id__": 1
     }
+  },
+  {
+    "__type__": "cbd2cDvXRdI2pn/JDsfsl05",
+    "node": {
+      "__id__": 7
+    },
+    "content": [
+      {
+        "__id__": 10
+      }
+    ],
+    "paddingX": 40,
+    "paddingY": 10,
+    "gap": 8,
+    "minWidth": 480,
+    "minHeight": 89,
+    "maxWidth": 700,
+    "reflowRows": true
   }
 ]

@@ -9273,12 +9273,12 @@
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "height": 73.52,
-        "fontSize": 67,
-        "lineHeight": 78
+        "fontSize": 56,
+        "lineHeight": 65
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
+        "fontSize": 56,
+        "lineHeight": 65,
         "width": 413,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true
@@ -9374,53 +9374,56 @@
     },
     "ui.layout.kinghtfalluibuildsel.11": {
       "en": {
-        "width": 600,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 113.84,
+        "width": 1100,
+        "wrap": false,
+        "overflow": "NONE",
+        "height": 97,
         "fontSize": 84,
         "lineHeight": 97
       },
       "zh": {
         "fontSize": 84,
         "lineHeight": 97,
-        "width": 344,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 1100,
+        "overflow": "NONE",
+        "wrap": false,
+        "height": 97
       }
     },
     "ui.layout.kinghtfalluibuildsel.17": {
       "en": {
-        "width": 774,
+        "width": 1100,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
-        "height": 73.52,
-        "fontSize": 67,
-        "lineHeight": 78
+        "height": 65,
+        "fontSize": 56,
+        "lineHeight": 65
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 614,
+        "fontSize": 56,
+        "lineHeight": 65,
+        "width": 1100,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 65
       }
     },
     "ui.layout.kinghtfalluibuildsel.42": {
       "en": {
-        "width": 406,
+        "width": 416,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
-        "height": 87.6,
-        "fontSize": 67,
-        "lineHeight": 78
+        "height": 116,
+        "fontSize": 56,
+        "lineHeight": 58
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 148,
+        "fontSize": 56,
+        "lineHeight": 58,
+        "width": 416,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 116
       }
     },
     "ui.layout.kinghtfalluisuspend.9": {
@@ -15259,7 +15262,7 @@
       "ui.layout.kinghtfalluiaddcurrency.9": "display",
       "ui.layout.kinghtfalluiaddstrength.10": "display",
       "ui.layout.kinghtfalluiaddstrength.67": "display",
-      "ui.layout.kinghtfalluibuff.15": "display",
+      "ui.layout.kinghtfalluibuff.15": "body",
       "ui.layout.kinghtfalluibuff.51": "display",
       "ui.layout.kinghtfalluibuff.81": "display",
       "ui.layout.kinghtfalluibuff.9": "display",
@@ -15334,7 +15337,8 @@
       "ui.layout.uireport.88": "display",
       "ui.mobile.kinghtfallhomebattlectrl.236": "display",
       "ui.mobile.kinghtfallhomebattlectrl.283": "display",
-      "ui.mobile.kinghtfalluigame.238": "display"
+      "ui.mobile.kinghtfalluigame.238": "display",
+      "ui.layout.kinghtfalluibuildsel.17": "body"
     }
   },
   "displayTextStyle": {
