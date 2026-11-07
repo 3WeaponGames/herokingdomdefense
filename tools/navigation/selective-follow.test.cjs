@@ -13,22 +13,22 @@ function setup(){
   const unit=e.actor('KinghtFallSoldierItem'+String(n).padStart(2,'0'),x,y);
   unit.uuid='soldier-'+id++;unit.setNew();game.gameData.soldiers.push(unit);return unit;
  };
- e.tick=(units,frames=1)=>{for(let frame=0;frame<frames;frame++){e.now=(e.now||0)+50;e.setTime(e.now);e.nav.beginFrame(game);units.forEach(u=>u.onUpdate(.05));}};
+ e.tick=(units,frames=1)=>{for(let frame=0;frame<frames;frame++){e.now=(e.now||0)+50;e.setTime(e.now);e.nav.beginFrame(game);game.collectFollowers();units.forEach(u=>u.onUpdate(.05));}};
  return e;
 }
-test('enabling Follow moves nobody until a unit is selected inside the visible ellipse',()=>{
+test('Follow automatically collects units touched by the visible ellipse, while outsiders hold their posts',()=>{
  const e=setup(),a=e.soldier(-40),b=e.soldier(45,0,3),outside=e.soldier(100,40);
  e.game.changeAge();assert(e.game.ctrPlay.ndAgg.active);
- e.tick([a,b,outside],10);assert([a,b,outside].every(u=>!u.isAgg&&u.state===0));
- assert(!e.game.selectFollower(outside));assert(e.game.selectFollower(a));assert(a.isAgg&&!b.isAgg);
- const bPost=b.node.position;e.game.ctrPlay.node.setPosition(140,0);e.tick([a,b],20);
- assert(a.node.x>-40);near(distance(b.node,bPost),0);assert(!outside._followSelected);
+ assert(a.isAgg&&b.isAgg&&!outside.isAgg);assert(!e.game.selectFollower(outside));
+ const post=outside.node.position;e.game.ctrPlay.node.setPosition(140,-80);e.tick([a,b,outside],20);
+ assert(a.node.x>-40);near(distance(outside.node,post),0);assert(!outside._followSelected);
+ e.game.ctrPlay.node.setPosition(100,40);e.game.collectFollowers();assert(outside._followSelected&&outside.isAgg,'walking the ring into a posted unit did not recruit it');
 });
 test('separate archer and cavalry groups keep independent posts through repeated Follow sessions',()=>{
- const e=setup(),archer=e.soldier(-30,0,3),horse=e.soldier(40,0,4);
+ const e=setup(),archer=e.soldier(-30,0,3),horse=e.soldier(180,0,4);
  e.game.changeAge();assert(e.game.selectFollower(archer));archer.node.setPosition(-80,70);e.game.changeAge();
  const archerPost={...archer.rallyPoint.pos};
- e.game.ctrPlay.node.setPosition(40,0);e.game.changeAge();assert(e.game.selectFollower(horse));
+ e.game.ctrPlay.node.setPosition(180,0);e.game.changeAge();assert(horse.isAgg);
  horse.node.setPosition(120,-65);e.game.changeAge();e.game.ctrPlay.node.setPosition(-150,-150);e.tick([archer,horse],8);
  assert.deepEqual({...archer.rallyPoint.pos},archerPost);near(distance(archer.node,archerPost),0);
  near(horse.rallyPoint.pos.x,120);near(horse.rallyPoint.pos.y,-65);
@@ -41,13 +41,13 @@ test('overlapping taps recruit separate soldiers and world-camera/Canvas transfo
  e.game.changeAge();
  const world=a.node.convertToWorldSpaceAR(new Vec2(0,30)),screen={x:(world.x-10)/2,y:(world.y+20)/2};
  assert.equal(e.game.findFollowUnitAtScreen(screen),a);assert(e.game.selectFollower(a));
- assert.equal(e.game.findFollowUnitAtScreen(screen),b);assert(e.game.selectFollower(b));
+ assert(b._followSelected,'overlapping units were not both collected automatically');
  assert(e.game.selectFollower(a));assert(a._followSelected,'repeated tap deselected a unit');
  b.node.active=false;assert(!e.game.selectFollower(b));
  assert(!e.game.selectFollower({node:a.node,hp:100,isDead:()=>false}),'enemy/non-roster unit was selectable');
 });
 test('only selected soldiers receive formation slots and posted bodies reserve their space',()=>{
- const e=setup(),a=e.soldier(-35),b=e.soldier(35),posted=e.soldier(0,35,3);
+ const e=setup(),a=e.soldier(-35),b=e.soldier(35),posted=e.soldier(0,75,3);
  for(const u of [a,b,posted])u.node.addComponent(PhysicsBoxCollider).size={width:22,height:22};
  e.game.changeAge();e.game.selectFollower(a);e.game.selectFollower(b);e.nav.beginFrame(e.game);
  const nav=e.nav.get(e.game),slots=[a,b].map(u=>e.game.getArmyOrderGoal(u,{x:0,y:0}));
@@ -60,7 +60,7 @@ test('posted units fire in weapon range, chase only attackers and return to thei
  unit.attackRange=30;unit.cfg={...unit.cfg,SearchRange:160};
  const enemy={node:new Node('enemy',e.game.ndMain,50,0),attackRange:180,isDead:()=>false};
  enemy.node._combatGeneration=1;e.game.gameData.enemies.push(enemy);
- e.game.changeAge();e.tick([unit],10);near(unit.node.x,-40);
+ e.game.changeAge();e.game.changeAge();e.tick([unit],10);near(unit.node.x,-40);
  let attacks=0;unit.time.Attack=1;unit.doAttackStart=()=>{attacks++;unit.doIdel();};
  enemy.node.setPosition(-20,0);e.tick([unit],5);assert(attacks>0);near(unit.node.x,-40);
  enemy.node.setPosition(50,0);unit.onAttacked(1,enemy);e.tick([unit],8);assert(unit.node.x>-40,'retaliation did not pursue the ranged attacker');
@@ -96,5 +96,12 @@ test('living roster refresh preserves selection while checkpoint writes occur on
  const e=setup(),unit=e.soldier(-35);let writes=0;e.game.gameData.levelCfg={};e.game.saveGame=()=>writes++;
  e.game.changeAge();assert.equal(writes,0);e.game.selectFollower(unit);unit.setNew();assert(unit.isAgg&&unit._followSelected);
  unit.node.setPosition(60,30);e.game.changeAge();assert.equal(writes,1);
- e.game.changeAge();e.game.changeAge();assert.equal(writes,1,'empty follow toggle wrote a checkpoint');
+ e.game.ctrPlay.node.setPosition(-200,-200);e.game.changeAge();e.game.changeAge();assert.equal(writes,1,'empty follow toggle wrote a checkpoint');
+});
+test('ring collection ignores dead, pooled, inactive units and is disabled with Follow off',()=>{
+ const e=setup(),living=e.soldier(15),dead=e.soldier(20),pooled=e.soldier(25),hidden=e.soldier(30);
+ dead.hp=0;dead.isDead=()=>true;pooled._isPooled=true;hidden.node.active=false;
+ e.game.collectFollowers();assert(!living._followSelected);e.game.changeAge();assert(living._followSelected);
+ assert(!dead._followSelected&&!pooled._followSelected&&!hidden._followSelected);
+ e.game.changeAge();const post={...living.rallyPoint.pos};e.game.ctrPlay.node.setPosition(100,0);e.tick([living],10);near(distance(living.node,post),0);
 });

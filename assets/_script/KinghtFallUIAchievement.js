@@ -20,6 +20,7 @@ var def_KinghtFallUIAchievement = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
     e.btnClose = null;
+    e.btnClaimAll = null;
     e.ctrList = null;
     e.acheData = [];
     return e;
@@ -30,10 +31,37 @@ var def_KinghtFallUIAchievement = function (t) {
     this.ctrList.tmpNode.active = false;
     this.initView();
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
+    this.btnClaimAll.on(cc.Node.EventType.TOUCH_END, this.onClaimAll, this);
   };
   _ctor.prototype.initView = function () {
     this.initData();
     this.ctrList.numItems = this.acheData.length;
+    var available = this.acheData.some(function (row) { return row.tag === 2; });
+    this.btnClaimAll.getComponent(cc.Button).interactable = available;
+    this.btnClaimAll.getChildByName("bgDisabled").active = !available;
+  };
+  _ctor.prototype.onClaimAll = function () {
+    if (this.claimingRewards) return;
+    this.initData();
+    var available = this.acheData.filter(function (row) { return row.tag === 2; });
+    if (!available.length) return void this.initView();
+    var rewards = [], player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), self = this;
+    available.forEach(function (row) {
+      var reward = rewards.filter(function (item) { return item.id === row.cfg.Item[0]; })[0];
+      if (reward) reward.num += row.cfg.Item[1];
+      else rewards.push({ id: row.cfg.Item[0], num: row.cfg.Item[1] });
+    });
+    this.claimingRewards = true;
+    try {
+      player.claimRewards(rewards, 1, this.btnClaimAll.convertToWorldSpaceAR(cc.v2(0, 0)), function () {
+        available.forEach(function (row) { player.getMissionData().getAchRew(row.cfg.Type, row.cfg.ID); });
+      }, function () {
+        self.initData();
+        return available.every(function (row) { return self.acheData.some(function (current) { return current.cfg.ID === row.cfg.ID && current.tag === 2; }); });
+      });
+      this.initView();
+      this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 4);
+    } finally { this.claimingRewards = false; }
   };
   _ctor.prototype.initData = function () {
     this.acheData = [];
@@ -184,6 +212,7 @@ var def_KinghtFallUIAchievement = function (t) {
     type: $z1List.default,
     tooltip: "关闭"
   })], _ctor.prototype, "ctrList", undefined);
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnClaimAll", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1BaseUI.default);
 exports.default = def_KinghtFallUIAchievement;

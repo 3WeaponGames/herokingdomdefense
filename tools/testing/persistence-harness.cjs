@@ -78,7 +78,7 @@ function harness(saved = {}) {
     };
     return player.claimRewards([{ id: 2001, num: 123 }], 1, null, claims[kind][0], claims[kind][1]);
   };
-  return { player, state, storage, persist, claim, Cache, load };
+  return { player, state, storage, persist, claim, Cache, load, modules, globals };
 }
 
 module.exports = { harness, config, clone };

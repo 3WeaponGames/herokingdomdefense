@@ -81,7 +81,7 @@
   },
   {
     "__type__": "sp.Skeleton",
-    "defaultSkin": "hong",
+    "defaultSkin": "default",
     "defaultAnimation": "idle",
     "_preCacheMode": 0,
     "premultipliedAlpha": false,
@@ -96,7 +96,7 @@
       }
     ],
     "_N$skeletonData": {
-      "__uuid__": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911"
+      "__uuid__": "bef4a005-89af-5a60-a7ae-e7c342b0d24b"
     }
   },
   {

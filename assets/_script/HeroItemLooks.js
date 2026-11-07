@@ -29,11 +29,12 @@ function load() {
   }); } catch (error) { fail(); }
 }
 function merge(base, items) {
-  var result = { parts: [], skins: {}, models: {}, scale: base && base.scale || 1 }, bySlot = {};
+  var result = { parts: [], skins: {}, models: {}, bakedLayers: {}, scale: base && base.scale || 1 }, bySlot = {};
   [base].concat(items).filter(Boolean).forEach(function (profile) {
     profile.parts.forEach(function (part) { bySlot[part.layer + ":" + part.slot] = part; });
     Object.keys(profile.skins || {}).forEach(function (layer) { result.skins[layer] = profile.skins[layer]; });
     Object.keys(profile.models || {}).forEach(function (layer) { result.models[layer] = profile.models[layer]; });
+    Object.keys(profile.bakedLayers || {}).forEach(function (layer) { result.bakedLayers[layer] = profile.bakedLayers[layer]; });
   });
   Object.keys(bySlot).forEach(function (key) { result.parts.push(bySlot[key]); });
   return result;
@@ -54,7 +55,7 @@ function current(base) {
   return cachedLook;
 }
 function item(slot, level) { load(); var id = catalog && catalog.assignments[slot + ":" + level]; return id && catalog.profiles[id] || null; }
-function image(slot, level) { var profile = item(slot, level), part = profile && profile.parts[0]; return part && library && library[part.sprite] || null; }
+function image(slot, level) { var profile = item(slot, level), part = profile && profile.parts[0]; return part && library && library[part.sprite] || profile && profile.icon || null; }
 function whenReady(callback) {
   if (ready()) return;
   var cancel = listeners.get(callback);

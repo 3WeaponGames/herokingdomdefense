@@ -56,6 +56,7 @@ var exp_KinghtFallPlayerMgr = function () {
   };
   _ctor.prototype.retryRewardRecovery = function () {
     if (this.pendingRewardJournal) return this.restorePendingRewards();
+    if (this.udata && this.udata.data.wallDefensePending) return !!this.settleWallDefense(this.udata.data.wallDefensePending);
     if (!this.rewardStorageCheckPending) return true;
     // If journaling failed before any award, the claim remains available. Probe
     // only an empty journal so recovery can clear the notice without erasing it.
@@ -138,7 +139,7 @@ var exp_KinghtFallPlayerMgr = function () {
     try {
       records.forEach(function (record) { record.data = JSON.parse(JSON.stringify(record.data)); record.deferSave = true; });
       result = this.addRewards(rewards, multiplier, position);
-      if (markClaim() === false) return null;
+      if (markClaim(result) === false) return null;
       records.forEach(function (record, index) {
         // JSON expands sparse claim/equipment arrays to nulls. Store their
         // canonical shape so recovery validates exactly the bytes we journaled.
@@ -161,6 +162,36 @@ var exp_KinghtFallPlayerMgr = function () {
       if (reward.id === $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniDiamond, position);
     });
     return result;
+  };
+  _ctor.prototype.settleWallDefense = function (result) {
+    if (!require("GAD_RewardRules").validResult(result) || !this.restorePendingRewards()) return false;
+    var data = this.udata.data, receipt = data.wallDefenseReceipt;
+    if (receipt && receipt.id === result.id) return receipt;
+    if (receipt && receipt.sequence >= result.sequence) return false;
+    var pending = data.wallDefensePending;
+    if (pending && pending.id !== result.id) {
+      if (!this.settleWallDefense(pending)) return false;
+      data = this.udata.data;
+      receipt = data.wallDefenseReceipt;
+      if (receipt && receipt.sequence >= result.sequence) return receipt.id === result.id ? receipt : false;
+    }
+    // Persist the exact rolled result before crediting anything. A failed save
+    // keeps it available to the existing reward recovery timer and next launch.
+    data.wallDefensePending = JSON.parse(JSON.stringify(result));
+    if (this.udata.saveData() === false) { this.rewardSaveFailure(); return false; }
+    var player = this, previouslyOwned = new Set(data.treasureInfo.map(function (row) { return row.id; }));
+    var awarded = this.claimRewards(result.rewards, 1, null, function (actual) {
+      var staged = player.udata.data;
+      staged.wallDefenseBestWave = Math.max(staged.wallDefenseBestWave || 0, result.clearedWaves);
+      staged.wallDefenseReceipt = { id: result.id, sequence: result.sequence, result: JSON.parse(JSON.stringify(result)),
+        awarded: actual.map(function (reward) { return { id: reward.id, num: reward.num }; }),
+        unlockedGoods: result.drops.filter(function (drop) { return !previouslyOwned.has(drop.itemID); }).map(function (drop) { return drop.goodID; }) };
+      delete staged.wallDefensePending;
+    }, function () {
+      var current = player.udata.data.wallDefenseReceipt;
+      return player.udata.data.wallDefensePending && player.udata.data.wallDefensePending.id === result.id && (!current || current.sequence < result.sequence);
+    });
+    return awarded === null ? false : this.udata.data.wallDefenseReceipt;
   };
   // Run all changes on staged records. A successful journal contains the debit,
   // award, counters and checkpoint together before any target record is saved.

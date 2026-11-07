@@ -62,6 +62,7 @@ var Appearance = cc.Class({
       var node = model.renderer.node;
       node.scaleX = (node.scaleX < 0 ? -1 : 1) * model.scaleX; node.scaleY = model.scaleY;
       if (model.transformed) { node.x = model.x; node.y = model.y; node.angle = model.angle; node.opacity = model.opacity; }
+      if (model.tinted && model.color) node.color = model.color;
       if (model.appliedSkin && model.renderer._skeleton && model.renderer._skeleton.skin && model.renderer._skeleton.skin.name === model.appliedSkin && model.skin) model.renderer.setSkin(model.skin);
     });
     this.states = []; this.models = []; this.signature = "";
@@ -73,17 +74,25 @@ var Appearance = cc.Class({
     if (!looks || !library || !actor.cfg && this.team !== "hero") return;
     var key = Core.actorKey(actor, this.team), id = looks.assignments[key], profile = id && looks.profiles[id];
     if (this.team === "hero") profile = require("HeroItemLooks").current(profile);
-    if (!profile) { if (this.models.length) this.clear(); return; }
     var renderers = visuals(actor, this.team);
+    var heroBaked = this.team === "hero" ? require("HeroBakedLooks") : null;
+    if (heroBaked) heroBaked.apply(renderers, profile);
+    if (!profile) { if (this.models.length) this.clear(); return; }
+    // Saved imported units are baked into normal Spine assets for web and
+    // native play. Their equipped parts must not be overlaid a second time.
+    if (this.team !== "hero" && renderers.some(function (renderer) { return renderer.skeletonData && (profile.baked && renderer.skeletonData.uuid === profile.baked.uuid || renderer.skeletonData.skeletonJson && renderer.skeletonData.skeletonJson._unitLook === id); })) {
+      if (this.models.length) this.clear();
+      return;
+    }
     // JSB has neither SkeletonTexture nor the JS attachment vertex hook used
     // by Core. Keep native attachments intact; skins/model overrides still work.
     var nativeParts = !!(cc.sys && cc.sys.isNative) || renderers.some(function (renderer) { return !!renderer._nativeSkeleton; });
     if (nativeParts && renderers.some(function (renderer) { return renderer.skeletonData && !renderer._skeleton; })) return;
-    if (nativeParts && profile.parts.length && !nativePartsNotice) {
+    if (nativeParts && profile.parts.length && !profile.bakedLayers && !nativePartsNotice) {
       nativePartsNotice = true;
       if (typeof cc.log === "function") cc.log("Native Spine retains original character attachments; custom part fitting requires the web Spine runtime.");
     }
-    var fittedParts = nativeParts ? [] : profile.parts;
+    var fittedParts = nativeParts ? [] : profile.parts.filter(function (part) { return !heroBaked || !renderers.some(function (renderer) { return heroBaked.originalId(renderer) === part.layer && (heroBaked.baked(renderer) || profile.bakedLayers && profile.bakedLayers[part.layer]); }); });
     var signature = id + ":" + profileKey(profile) + ":" + nativeParts + ":" + renderers.map(function (renderer) { return renderer.uuid + ":" + (renderer.skeletonData && renderer.skeletonData.uuid); }).join("|");
     if (this.signature !== signature || this.states.some(function (state) { return !renderers.some(function (renderer) { return renderer._skeleton === state.skeleton; }); })) {
       this.clear();
@@ -95,9 +104,9 @@ var Appearance = cc.Class({
         var pending = [], models = [];
         renderers.forEach(function (renderer) {
           var node = renderer.node;
-          models.push({ renderer: renderer, scaleX: Math.abs(node.scaleX), scaleY: node.scaleY, x: node.x || 0, y: node.y || 0, angle: node.angle || 0, opacity: node.opacity === undefined ? 255 : node.opacity, skin: renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name });
+          models.push({ renderer: renderer, scaleX: Math.abs(node.scaleX), scaleY: node.scaleY, x: node.x || 0, y: node.y || 0, angle: node.angle || 0, opacity: node.opacity === undefined ? 255 : node.opacity, color: node.color && node.color.clone ? node.color.clone() : node.color, skin: renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name });
           var parts = fittedParts.filter(function (part) { return renderer.skeletonData && part.layer === renderer.skeletonData.uuid; });
-          if (parts.length && renderer._skeleton) pending.push(Core.prepare(sp.spine, renderer._skeleton, parts, library, textures));
+          if ((parts.length || profile.faceless && !nativeParts) && renderer._skeleton) pending.push(Core.prepare(sp.spine, renderer._skeleton, parts, library, textures, { faceless: !!profile.faceless }));
         });
         this.states = pending; this.models = models; this.signature = signature;
       } catch (error) { this.clear(); if (!failures[id]) { failures[id] = true; cc.warn("Character look " + id + ": " + error.message); } return; }
@@ -105,13 +114,15 @@ var Appearance = cc.Class({
     this.models.forEach(function (model) {
       var node = model.renderer.node, scale = profile.scale || 1;
       node.scaleX = (node.scaleX < 0 ? -1 : 1) * model.scaleX * scale; node.scaleY = model.scaleY * scale;
-      var transform = profile.models && model.renderer.skeletonData && profile.models[model.renderer.skeletonData.uuid];
+      var layerId = heroBaked ? heroBaked.originalId(model.renderer) : model.renderer.skeletonData && model.renderer.skeletonData.uuid;
+      var transform = profile.models && profile.models[layerId];
       if (transform) {
+        if (transform.tint) { node.color = cc.color(transform.tint); model.tinted = true; }
         node.x = model.x + (transform.x || 0); node.y = model.y + (transform.y || 0);
         node.angle = model.angle + (transform.rotation || 0); node.opacity = model.opacity * (transform.opacity === undefined ? 1 : transform.opacity);
         node.scaleX *= transform.scaleX === undefined ? 1 : transform.scaleX; node.scaleY *= transform.scaleY === undefined ? 1 : transform.scaleY; model.transformed = true;
       }
-      var skin = profile.skins && model.renderer.skeletonData && profile.skins[model.renderer.skeletonData.uuid];
+      var skin = profile.skins && profile.skins[layerId];
       var current = model.renderer._skeleton && model.renderer._skeleton.skin && model.renderer._skeleton.skin.name;
       if (skin && current !== skin) { model.skin = current; model.renderer.setSkin(skin); model.renderer.setSlotsToSetupPose(); model.appliedSkin = skin; }
     });

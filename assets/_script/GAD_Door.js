@@ -44,6 +44,7 @@ var def_GAD_Door = function (t) {
     return this._value;
   };
   _ctor.prototype.start = function () {
+    if (this.isDie) return;
     this.setRoleState($z1GAD_Configs.emGADRoleState.Move);
   };
   _ctor.prototype.init = function (t, e) {

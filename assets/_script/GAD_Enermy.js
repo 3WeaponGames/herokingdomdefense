@@ -35,6 +35,7 @@ var def_GAD_Enermy = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
+    if (this.isDie) return;
     this.setRoleState($z1GAD_Configs.emGADRoleState.Move);
     this.ani.playMove();
   };
@@ -88,7 +89,7 @@ var def_GAD_Enermy = function (t) {
     var e = this._enermyCfg.spineEnemy + "/" + this._enermyCfg.spineEnemy;
     this.enemyItem.node.scale = this._enermyCfg.size;
     this.loadResFromBundle($z1GAD_Configs.emGADBundles.imgs, "spine/" + e, sp.SkeletonData, function (e) {
-      if (t.isDie || !cc.isValid(t.node, true)) return;
+      if (t.isDie || !cc.isValid(t.node, true) || !cc.isValid(t.enemyItem, true) || !cc.isValid(t.enemyItem.node, true)) return;
       t.enemyItem.skeletonData = e;
       t.initEnemyLayer();
     });
@@ -209,7 +210,16 @@ var def_GAD_Enermy = function (t) {
     if (!this.isUseful || this.hasColliderTagID(t.getTagID())) {
       return $z1GAD_Configs.emGADHitState.None;
     } else {
-      return this._hp -= e, this._hpDirty = true, $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit), this.addColliderTagID(t.getTagID()), this._hp <= 0 ? (this.onDie(), $z1GAD_Configs.emGADHitState.HitDie) : $z1GAD_Configs.emGADHitState.HitHurt;
+      this._hp -= e;
+      this._hpDirty = true;
+      var frame = cc.director && cc.director.getTotalFrames ? cc.director.getTotalFrames() : -1;
+      // Identical simultaneous hits share one sound; damage remains per arrow.
+      if (frame < 0 || _ctor._hitAudioFrame !== frame) {
+        _ctor._hitAudioFrame = frame;
+        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit);
+      }
+      this.addColliderTagID(t.getTagID());
+      return this._hp <= 0 ? (this.onDie(), $z1GAD_Configs.emGADHitState.HitDie) : $z1GAD_Configs.emGADHitState.HitHurt;
     }
   };
   _ctor.prototype.playHpRoll = function () {

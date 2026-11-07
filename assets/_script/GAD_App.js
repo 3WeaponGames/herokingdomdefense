@@ -33,6 +33,7 @@ var def_GAD_App = function () {
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     var h = function () {
       if (n._entryGeneration !== generation) return;
+      if (!$z1GAD_PlayerMgr.default.getInstance().readyForRun()) { n.removeTouchEvent(); return; }
       n._isInited = true;
       $z1GAD_PlayerMgr.default.getInstance().reset();
       n._entryOpen = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1GAD_Configs.GAD_UIID.UIGame, $z1Config.UIID.UINONE, {
@@ -66,6 +67,7 @@ var def_GAD_App = function () {
     if (this._entryOpen) this._entryOpen.cancel();
     this._entryOpen = null;
     $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Over);
+    $z1GAD_PlayerMgr.default.getInstance().finishRun("quit");
     $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1GAD_Configs.GADConfig.BgMusic);
     this.removeTouchEvent();
     var exitCall = this._exitCall;

@@ -67,13 +67,12 @@ test('Rally placement persists with no army and new or revived soldiers inherit 
   assert.equal(game.ndAggFlag.active, false); assert.equal(unit.isAgg, false);
 });
 
-test('Follow mode recruits tapped units, tracks the live hero and remembers the released post', () => {
+test('Follow mode collects units inside the ring, tracks the live hero and remembers the released post', () => {
   const e = environment(), game = controller(e), unit = soldier(e);
   e.load('KinghtFallConfig').KinghtFallParameter.FollowMode = 2;
   game.ctrPlay.node.setPosition(0, 0);
   game.changeAge();
-  assert.equal(game.isAgg, true); assert.equal(unit.isAgg, false);
-  assert(game.selectFollower(unit)); assert.equal(unit.isAgg, true);
+  assert.equal(game.isAgg, true); assert.equal(unit.isAgg, true);
   assert.equal(game.rallyPoint, null); assert.equal(game.ndAggFlag.active, false);
   advance(e, unit);
   assert(unit.node.x > -100);

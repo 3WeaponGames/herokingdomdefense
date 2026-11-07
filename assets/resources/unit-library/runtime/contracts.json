@@ -1,0 +1,549 @@
+{
+  "version": 1,
+  "units": {
+    "ally:90001:default": {
+      "prefab": "assets/KinghtFallEnemy/PlayItemEnemy01.prefab",
+      "component": 3,
+      "height": 120.8972432912875,
+      "originalSkeleton": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_bb/wqyl_bb.json",
+      "sourceUnit": "character-maker/Character",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "70c569e7-fb9c-574d-a6ef-f60524599b52"
+    },
+    "ally:90002:default": {
+      "prefab": "assets/KinghtFallEnemy/PlayItemEnemy02.prefab",
+      "component": 3,
+      "height": 122.87144341992028,
+      "originalSkeleton": "700270fc-8c60-46fd-98af-a4525f3f6c24",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_zbb/wqyl_zbb.json",
+      "sourceUnit": "character-maker/Character",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.5,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1,
+          "events": []
+        }
+      },
+      "defaultUuid": "a14221e4-3620-5d82-aff2-7b8960644295"
+    },
+    "ally:90003:default": {
+      "prefab": "assets/KinghtFallEnemy/PlayItemEnemy03.prefab",
+      "component": 3,
+      "height": 102.11063391127553,
+      "originalSkeleton": "9b61e9e4-beee-4ee0-8a2d-983974098a69",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_gb/wqyl_gb.json",
+      "sourceUnit": "character-maker/Character",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "af52c13d-50f3-50c7-a91e-581436adf016"
+    },
+    "ally:90004:default": {
+      "prefab": "assets/KinghtFallEnemy/PlayItemEnemy04.prefab",
+      "component": 3,
+      "height": 151.41605986433024,
+      "originalSkeleton": "f8f3b6e5-993e-4eca-92a4-b4bfcae86f87",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json",
+      "sourceUnit": "character-maker/Character",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "ec9f5203-36bc-5236-ae41-aab1fb6f33a9"
+    },
+    "enemy:90001:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy01.prefab",
+      "component": 3,
+      "height": 120.8972432912875,
+      "originalSkeleton": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_bb/wqyl_bb.json",
+      "sourceUnit": "monster1/Wolf_Gray",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "bef4a005-89af-5a60-a7ae-e7c342b0d24b"
+    },
+    "enemy:90002:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy02.prefab",
+      "component": 3,
+      "height": 122.07542960410757,
+      "originalSkeleton": "700270fc-8c60-46fd-98af-a4525f3f6c24",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_zbb/wqyl_zbb.json",
+      "sourceUnit": "monster1/Bear_Grizzly",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.5,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1,
+          "events": []
+        }
+      },
+      "defaultUuid": "3cffb482-453b-59f1-ad0d-4b501e0162db"
+    },
+    "enemy:90003:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy03.prefab",
+      "component": 3,
+      "height": 102.11063391127553,
+      "originalSkeleton": "9b61e9e4-beee-4ee0-8a2d-983974098a69",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_gb/wqyl_gb.json",
+      "sourceUnit": "monster2/Plant_Nepenthes",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "cf1b57b7-bcd7-5d1a-ad0c-c02bd33c11fc"
+    },
+    "enemy:90004:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy04.prefab",
+      "component": 3,
+      "height": 151.41605986433024,
+      "originalSkeleton": "f8f3b6e5-993e-4eca-92a4-b4bfcae86f87",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json",
+      "sourceUnit": "monster1/Buffalo_Wild",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "d983347e-53b1-5ed1-a80c-4f33de66e946"
+    },
+    "enemy:90005:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy05.prefab",
+      "component": 3,
+      "height": 143.44718761370737,
+      "originalSkeleton": "47c5f622-2ee6-468f-a68d-85f049c8826d",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_tsc/wqyl_tsc/wqyl_tsc.json",
+      "sourceUnit": "monster1/Turtle_Alligator",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "die": {
+          "duration": 1.1667,
+          "events": []
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "8f472fd7-235e-56bf-afa9-b118c0b64f54"
+    },
+    "enemy:90006:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy06.prefab",
+      "component": 3,
+      "height": 293.46387046729444,
+      "originalSkeleton": "3861937d-d13f-4e1d-a4d5-f47e5ad5eded",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_sm/wqyl_sm.json",
+      "sourceUnit": "monster2/Alien_Wizard",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "e50bd457-b005-51f8-a4ed-77ffcdb47a61"
+    },
+    "enemy:90007:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy07.prefab",
+      "component": 3,
+      "height": 577.4788902802796,
+      "originalSkeleton": "7967a9b1-8fe2-4f35-a0d7-54c9ff454b3c",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_wtqs/wqyl_wtqs.json",
+      "sourceUnit": "monster2/Golem_Iron",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "0ac049c2-8eda-5b11-a7a5-374e98d6b09f"
+    },
+    "enemy:90008:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy08.prefab",
+      "component": 3,
+      "height": 269.90975066414944,
+      "originalSkeleton": "f12415c8-9791-47fc-a90d-9b2e81cfe854",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_wl/wqyl_wl.json",
+      "sourceUnit": "monster2/Ghost_Pirate",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "804b02d5-4694-5669-a3fe-5b0ff1b19683"
+    },
+    "enemy:90009:default": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy09.prefab",
+      "component": 3,
+      "height": 223.8487554848029,
+      "originalSkeleton": "a70da0d0-f7ba-416f-a2eb-c3919d512487",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_xems/wqyl_xems.json",
+      "sourceUnit": "monster2/Alien_Vampire",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "a586cd91-7617-54f7-aff4-930aaaaaf19f"
+    },
+    "enemy:90010:1": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy10.prefab",
+      "component": 3,
+      "height": 122.07542960410757,
+      "originalSkeleton": "700270fc-8c60-46fd-98af-a4525f3f6c24",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_zbb/wqyl_zbb.json",
+      "sourceUnit": "monster2/Scorpion_Stone",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.5,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack",
+              "string": ""
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1,
+          "events": []
+        }
+      },
+      "defaultUuid": "3560b211-b082-547b-a820-da2d7fc907b5"
+    },
+    "enemy:90011:2": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy10.prefab",
+      "component": 6,
+      "height": 229.877701085963,
+      "originalSkeleton": "dae3ca57-3c85-48c2-95a4-d9fe7397186e",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_bz2/wqyl_bz2.json",
+      "sourceUnit": "monster2/Golem_Tree",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.3333,
+          "events": []
+        }
+      },
+      "defaultUuid": "f52d9e12-fa06-52ac-a06e-58d33bfbd50e"
+    },
+    "enemy:90012:3": {
+      "prefab": "assets/KinghtFallEnemy/ItemEnemy10.prefab",
+      "component": 9,
+      "height": 388.657104070317,
+      "originalSkeleton": "ded4bd5b-209a-4043-859f-c9850cdb4758",
+      "originalSource": "assets/KinghtFallEnemyAni/wqyl_bz3/wqyl_bz3.json",
+      "sourceUnit": "monster2/Skeleton_Warlord",
+      "events": {
+        "attack": {
+          "string": "attack"
+        }
+      },
+      "animations": {
+        "attack": {
+          "duration": 1.3333,
+          "events": [
+            {
+              "time": 0.5,
+              "name": "attack"
+            }
+          ]
+        },
+        "circle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "idle": {
+          "duration": 1.3333,
+          "events": []
+        },
+        "move": {
+          "duration": 1.6667,
+          "events": []
+        }
+      },
+      "defaultUuid": "3c466782-2cfb-5411-af46-801bbe911698"
+    }
+  },
+  "enabled": true
+}

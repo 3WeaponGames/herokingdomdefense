@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "da0c22b9-cfac-59d7-839c-f6032b88b6fd",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 88,
+  "height": 36,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Consumable_Arrow_001_YellowWood": {
+      "ver": "1.0.6",
+      "uuid": "0a687df5-5fbe-56e9-b667-2e7ef68c263d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "da0c22b9-cfac-59d7-839c-f6032b88b6fd",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 88,
+      "height": 36,
+      "rawWidth": 88,
+      "rawHeight": 36,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

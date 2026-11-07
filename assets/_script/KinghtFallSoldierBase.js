@@ -76,6 +76,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.rallyPoint = null;
     this._personalRallyPoint = null;
     this._followSelected = false;
+    this._followPickupBlocked = false;
     this._syncFollowMarker();
     this.pathList = null;
     this.isAgg = false;
@@ -570,7 +571,12 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.setNew = function () {
     var respawning = this.isDead() || !this.node.activeInHierarchy;
-    if (respawning) this._followSelected = false;
+    if (respawning) {
+      this._followSelected = false;
+      // Returning casualties keep their saved post. A stationary ring along
+      // that return route must not immediately recruit them again.
+      this._followPickupBlocked = !!this._personalRallyPoint;
+    }
     GameToolsOverrides.cancel(this);
     var t;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;

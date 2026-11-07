@@ -40,7 +40,7 @@ function geometry(spine, layer) {
             vertices = new Float32Array(attachment.worldVerticesLength); attachment.computeWorldVertices(slot, 0, vertices.length, vertices, 0, 2); triangles = attachment.triangles;
         } else { clipper.clipEndWithSlot(slot); return; }
         let uvs = attachment.uvs;
-        const color = { r: slot.color.r * attachment.color.r, g: slot.color.g * attachment.color.g, b: slot.color.b * attachment.color.b, a: slot.color.a * attachment.color.a * layer.skeleton.color.a };
+        const color = { r: slot.color.r * attachment.color.r * layer.skeleton.color.r, g: slot.color.g * attachment.color.g * layer.skeleton.color.g, b: slot.color.b * attachment.color.b * layer.skeleton.color.b, a: slot.color.a * attachment.color.a * layer.skeleton.color.a };
         if (clipper.isClipping()) {
             clipper.clipTriangles(vertices, vertices.length, triangles, triangles.length, uvs, color, {r:0,g:0,b:0,a:0}, false, 2);
             const clipped = clipper.clippedVertices, outVertices = [], outUvs = [];

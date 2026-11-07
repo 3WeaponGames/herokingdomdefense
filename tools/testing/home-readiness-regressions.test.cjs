@@ -155,7 +155,7 @@ test('retired home notification callbacks cannot claim an unlock or resume guide
 });
 
 test('crowded allies share a failed texture retry deadline and apply the authored look after recovery',()=>{
-  const library=require('../../assets/resources/character-parts/catalog.json'),looks=require('../../assets/resources/characters/catalog.json');
+  const library=require('../../assets/resources/character-parts/catalog.json'),looks=require('../characters/fixtures/legacy-look.json');
   const core=require('../../assets/_script/CharacterPartsCore'),profile=looks.profiles[looks.assignments['ally:90001:default']];
   const parts=profile.parts.map(p=>library.parts.find(x=>x.id===p.sprite));let now=0,applied=0;const requests=new Map(),pending=new Map();
   class Component{} class SkeletonTexture{setRealTexture(image){this.image=image;}}

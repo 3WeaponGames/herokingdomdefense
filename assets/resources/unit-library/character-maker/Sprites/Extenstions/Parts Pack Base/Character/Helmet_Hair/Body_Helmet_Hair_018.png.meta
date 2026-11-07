@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "0a070dff-052e-51b6-abc7-288d62f7a270",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 98,
+  "height": 100,
+  "platformSettings": {},
+  "subMetas": {
+    "Body_Helmet_Hair_018": {
+      "ver": "1.0.6",
+      "uuid": "2e7c403a-0dd6-50fa-8ab5-e144133ff5cd",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0a070dff-052e-51b6-abc7-288d62f7a270",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 98,
+      "height": 100,
+      "rawWidth": 98,
+      "rawHeight": 100,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

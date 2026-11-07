@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "364a51f2-04b2-505c-ad00-1a0d3e111369",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 82,
+  "height": 51,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Mount_002_Blue_Down": {
+      "ver": "1.0.6",
+      "uuid": "a9f85973-0928-5591-8ff2-6753763d57ad",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "364a51f2-04b2-505c-ad00-1a0d3e111369",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 82,
+      "height": 51,
+      "rawWidth": 82,
+      "rawHeight": 51,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

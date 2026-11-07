@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "344d3a96-44f1-5fd4-86f7-d6325e1d141b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 120,
+  "height": 108,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Helmet_033_BronzeWine": {
+      "ver": "1.0.6",
+      "uuid": "5e4732f1-318f-5ff8-944a-b3ca1a93f7ab",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "344d3a96-44f1-5fd4-86f7-d6325e1d141b",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 120,
+      "height": 108,
+      "rawWidth": 120,
+      "rawHeight": 108,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "350fec42-743a-5537-ac6d-53dfb8a4fbe7",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 70,
+  "height": 137,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_WP_Main_Staff_003_WoodSkyblue": {
+      "ver": "1.0.6",
+      "uuid": "9e2cfc64-5cad-5ce2-8724-ab922c10ef80",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "350fec42-743a-5537-ac6d-53dfb8a4fbe7",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 70,
+      "height": 137,
+      "rawWidth": 70,
+      "rawHeight": 137,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -2,13 +2,507 @@
   "version": 1,
   "profiles": {
     "royal-guard": {
-      "name": "Royal Guard · parts demo",
-      "base": { "type": "ally", "id": "90001" },
+      "name": "Royal Guard",
+      "base": { "type": "ally", "id": "90001", "source": "character-maker/Character" },
       "parts": [
-        { "id": "helmet", "sprite": "Helmet/FA_Helmet_047_White", "layer": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911", "slot": "bb_hong_3", "bone": "bone13", "x": 26, "y": 0, "rotation": -91.64, "scaleX": 0.8, "scaleY": 0.95, "opacity": 1, "order": 1, "hideSlots": [] },
-        { "id": "weapon", "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_DarkGary", "layer": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911", "slot": "bb_lan_15", "bone": "bone10", "x": 30, "y": 0, "rotation": 0, "scaleX": 0.9, "scaleY": 0.9, "opacity": 1, "order": 0, "hideSlots": [] }
-      ]
+        { "id": "chest", "sprite": "Chest/FA_Chest_032_Blue", "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c", "slot": "Rider/Body/Chest", "bone": "Rider/Body/Chest", "opacity": 1, "order": 0, "hideSlots": [], "forceVisible": true, "lockAspect": true, "x": 0, "y": 0, "rotation": 0, "scaleX": 1, "scaleY": 1 },
+        { "id": "helmet", "sprite": "Helmet/FA_Helmet_047_White", "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c", "slot": "Rider/Body/Head/Helmet", "bone": "Rider/Body/Head/Helmet", "opacity": 1, "order": 0, "hideSlots": [], "forceVisible": true, "lockAspect": true, "x": 0, "y": 0, "rotation": 0, "scaleX": 1, "scaleY": 1 },
+        {
+          "id": "weapon",
+          "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_DarkGary",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Sword",
+          "bone": "Rider/HandRight/Sword",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      ],
+      "scale": 1,
+      "faceless": true,
+      "baked": {
+        "uuid": "70c569e7-fb9c-574d-a6ef-f60524599b52",
+        "source": "character-maker/Character"
+      }
+    },
+    "heavy-infantry": {
+      "name": "Heavy Infantry",
+      "base": {
+        "type": "ally",
+        "id": "90002",
+        "source": "character-maker/Character"
+      },
+      "scale": 1,
+      "faceless": true,
+      "parts": [
+        {
+          "id": "chest",
+          "sprite": "Chest/FA_Chest_041_White",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_044_White",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "weapon",
+          "sprite": "HandRight/Blunt/FA_WP_Main_Blunt_013_Gray",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Blunt",
+          "bone": "Rider/HandRight/Blunt",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      ],
+      "baked": {
+        "uuid": "a14221e4-3620-5d82-aff2-7b8960644295",
+        "source": "character-maker/Character"
+      }
+    },
+    "crossbowman": {
+      "name": "Crossbowman",
+      "base": {
+        "type": "ally",
+        "id": "90003",
+        "source": "character-maker/Character"
+      },
+      "scale": 1,
+      "faceless": true,
+      "parts": [
+        {
+          "id": "chest",
+          "sprite": "Chest/FA_Chest_032_Blue",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_047_White",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "weapon",
+          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_010_BrownGray",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Crossbow/Crossbow",
+          "bone": "Rider/HandRight/Crossbow/Crossbow",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "stock",
+          "sprite": "HandRight/Crossbow/FA_WP_Main_Crossbow_010_BrownGray_Down",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Crossbow/Crossbow_Down",
+          "bone": "Rider/HandRight/Crossbow/Crossbow_Down",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      ],
+      "baked": {
+        "uuid": "af52c13d-50f3-50c7-a91e-581436adf016",
+        "source": "character-maker/Character"
+      }
+    },
+    "cavalry": {
+      "name": "Cavalry",
+      "base": {
+        "type": "ally",
+        "id": "90004",
+        "source": "character-maker/Character"
+      },
+      "scale": 1,
+      "faceless": true,
+      "parts": [
+        {
+          "id": "chest",
+          "sprite": "Chest/FA_Chest_032_Blue",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_047_White",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Body/Head/Helmet",
+          "bone": "Rider/Body/Head/Helmet",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "weapon",
+          "sprite": "HandRight/Spear/FA_WP_Main_Spear_012_Blue",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandRight/Spear",
+          "bone": "Rider/HandRight/Spear",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "shield",
+          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/HandLeft/Shield",
+          "bone": "Rider/HandLeft/Shield",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "mount",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Mount/FA_Mount_001_Brown",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Mount/Mount",
+          "bone": "Rider/Mount/Mount",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        },
+        {
+          "id": "mount-down",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Mount/FA_Mount_001_Brown_Down",
+          "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
+          "slot": "Rider/Mount/Mount_Down",
+          "bone": "Rider/Mount/Mount_Down",
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true,
+          "lockAspect": true,
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      ],
+      "baked": {
+        "uuid": "ec9f5203-36bc-5236-ae41-aab1fb6f33a9",
+        "source": "character-maker/Character"
+      }
+    },
+    "monster-1": {
+      "name": "Wolf Gray",
+      "base": {
+        "type": "enemy",
+        "id": "90001",
+        "source": "monster1/Wolf_Gray"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "bef4a005-89af-5a60-a7ae-e7c342b0d24b",
+        "source": "monster1/Wolf_Gray"
+      }
+    },
+    "monster-2": {
+      "name": "Bear Grizzly",
+      "base": {
+        "type": "enemy",
+        "id": "90002",
+        "source": "monster1/Bear_Grizzly"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "3cffb482-453b-59f1-ad0d-4b501e0162db",
+        "source": "monster1/Bear_Grizzly"
+      }
+    },
+    "monster-3": {
+      "name": "Plant Nepenthes",
+      "base": {
+        "type": "enemy",
+        "id": "90003",
+        "source": "monster2/Plant_Nepenthes"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "cf1b57b7-bcd7-5d1a-ad0c-c02bd33c11fc",
+        "source": "monster2/Plant_Nepenthes"
+      }
+    },
+    "monster-4": {
+      "name": "Buffalo Wild",
+      "base": {
+        "type": "enemy",
+        "id": "90004",
+        "source": "monster1/Buffalo_Wild"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "d983347e-53b1-5ed1-a80c-4f33de66e946",
+        "source": "monster1/Buffalo_Wild"
+      }
+    },
+    "monster-5": {
+      "name": "Turtle Alligator",
+      "base": {
+        "type": "enemy",
+        "id": "90005",
+        "source": "monster1/Turtle_Alligator"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "8f472fd7-235e-56bf-afa9-b118c0b64f54",
+        "source": "monster1/Turtle_Alligator"
+      }
+    },
+    "monster-6": {
+      "name": "Alien Wizard",
+      "base": {
+        "type": "enemy",
+        "id": "90006",
+        "source": "monster2/Alien_Wizard"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "e50bd457-b005-51f8-a4ed-77ffcdb47a61",
+        "source": "monster2/Alien_Wizard"
+      }
+    },
+    "monster-7": {
+      "name": "Golem Iron",
+      "base": {
+        "type": "enemy",
+        "id": "90007",
+        "source": "monster2/Golem_Iron"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "0ac049c2-8eda-5b11-a7a5-374e98d6b09f",
+        "source": "monster2/Golem_Iron"
+      }
+    },
+    "monster-8": {
+      "name": "Ghost Pirate",
+      "base": {
+        "type": "enemy",
+        "id": "90008",
+        "source": "monster2/Ghost_Pirate"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "804b02d5-4694-5669-a3fe-5b0ff1b19683",
+        "source": "monster2/Ghost_Pirate"
+      }
+    },
+    "monster-9": {
+      "name": "Alien Vampire",
+      "base": {
+        "type": "enemy",
+        "id": "90009",
+        "source": "monster2/Alien_Vampire"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "a586cd91-7617-54f7-aff4-930aaaaaf19f",
+        "source": "monster2/Alien_Vampire"
+      }
+    },
+    "monster-10": {
+      "name": "Scorpion Stone",
+      "base": {
+        "type": "enemy",
+        "id": "90010",
+        "source": "monster2/Scorpion_Stone"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "3560b211-b082-547b-a820-da2d7fc907b5",
+        "source": "monster2/Scorpion_Stone"
+      }
+    },
+    "monster-11": {
+      "name": "Golem Tree",
+      "base": {
+        "type": "enemy",
+        "id": "90011",
+        "source": "monster2/Golem_Tree"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "f52d9e12-fa06-52ac-a06e-58d33bfbd50e",
+        "source": "monster2/Golem_Tree"
+      }
+    },
+    "monster-12": {
+      "name": "Skeleton Warlord",
+      "base": {
+        "type": "enemy",
+        "id": "90012",
+        "source": "monster2/Skeleton_Warlord"
+      },
+      "scale": 1,
+      "parts": [],
+      "baked": {
+        "uuid": "3c466782-2cfb-5411-af46-801bbe911698",
+        "source": "monster2/Skeleton_Warlord"
+      }
     }
   },
-  "assignments": { "ally:90001:default": "royal-guard" }
+  "assignments": { "ally:90001:default": "royal-guard", "ally:90002:default": "heavy-infantry", "ally:90003:default": "crossbowman", "ally:90004:default": "cavalry", "enemy:90001:default": "monster-1", "enemy:90002:default": "monster-2", "enemy:90003:default": "monster-3", "enemy:90004:default": "monster-4", "enemy:90005:default": "monster-5", "enemy:90006:default": "monster-6", "enemy:90007:default": "monster-7", "enemy:90008:default": "monster-8", "enemy:90009:default": "monster-9", "enemy:90010:1": "monster-10", "enemy:90011:2": "monster-11", "enemy:90012:3": "monster-12" }
 }
