@@ -290,6 +290,60 @@ test('fifteen projectiles reuse existing members, retain one firing group, and f
   cards.subMember(6); assert.equal(cards._extraProjectiles, 0); assert.equal(cards._cards.length, 9);
 });
 
+test('a fresh-run projectile gate grows past +2 and equips all fifteen shots through the real buff path', () => {
+  const h=battle(true), cards=new (h.load('GAD_Cards').default)(), gate=new (h.load('GAD_Door').default)(), shots=[];
+  h.cc.winSize={width:750,height:1334};h.cc.Tween={stopAllByTarget(){}};h.cc.tween=()=>{const t={to(){return t;},start(){}};return t;};
+  h.stubs.GAD_DataMgr.default.getInstance().getAllMembers=()=>authored.memberCfg;
+  h.stubs.GAD_PlayerMgr.default.getInstance().addCard=()=>{};
+  cards.addCardItem=function(cfg){this._cards.push({getCardCfg:()=>cfg,playAttack:()=>shots.push(cfg.id)});};
+  Object.assign(cards,{maxBulletCnt:authored.basicCfg[18].para,ndRoot:{y:0},node:{x:0,convertToWorldSpaceAR:p=>p}});cards.showPropTips=()=>{};cards.addMember(1);
+  Object.assign(gate,{node:{active:true},_bufType:'memberPlus',_value:1,_hitEffectValue:1,_initBuffCfg(value){this._value=value;}});gate.setRoleState(h.config.emGADRoleState.Move);
+  for(let group=1;group<=30;group++){gate._coolTime=-1;gate.bulletHited({getGroupID:()=>group,getTagID:()=>group});}
+  assert.equal(gate.getValue(),15);cards.addBuff(gate.getBufType(),gate.getValue());cards.playAttack();
+  assert.equal(cards._cards.length,10);assert.equal(cards._extraProjectiles,5);assert.equal(shots.length,15);
+});
+
+test('chest swaps run at half speed with a readable 0.20 second minimum', () => {
+  const h=battle(), lottery=new (h.load('GAD_UILottery').default)(), durations=[];
+  const point=x=>({x,clone(){return point(this.x);}});
+  lottery.nodeLayer={children:[{position:point(0)},{position:point(1)},{position:point(2)}]};lottery.shuffleArray=a=>a;
+  h.cc.tween=()=>{const t={to(duration){durations.push(duration);return t;},call(){return t;},start(){}};return t;};
+  for(const [remaining,expected]of [[20,.4],[15,.3],[10,.2],[5,.2],[1,.2]]){lottery.changeNum=remaining;lottery.swapCards();assert.equal(durations.pop(),expected);assert.equal(durations.pop(),expected);}
+});
+
+test('chest swap endpoints are snapshots, so moving one chest cannot drag the other endpoint',()=>{
+  const h=battle(),lottery=new (h.load('GAD_UILottery').default)();
+  const point=x=>({x,y:0,clone(){return point(this.x);}}),nodes=[{position:point(-200)},{position:point(0)},{position:point(200)}];
+  lottery.nodeLayer={children:nodes};lottery.shuffleArray=a=>a;lottery.changeNum=1;
+  h.cc.tween=node=>{let end;const chain={to(_duration,props){end=props.position;return chain;},call(){return chain;},start(){node.position.x=end.x;}};return chain;};
+  lottery.swapCards();assert.deepEqual(nodes.map(n=>n.position.x),[0,-200,200]);
+});
+
+test('chest swaps wait for both native targets before capturing the next pair of endpoints',()=>{
+  for(const order of [[0,1],[1,0]]){
+    const h=battle(),lottery=new (h.load('GAD_UILottery').default)(),pending=[];
+    const point=x=>({x,y:0,clone(){return point(this.x);}}),nodes=[{position:point(-200)},{position:point(0)},{position:point(200)}];
+    lottery.nodeLayer={children:nodes};lottery.shuffleArray=a=>a;lottery.changeNum=20;
+    h.cc.tween=node=>{let end,done;const chain={to(_duration,props){end=props.position;return chain;},call(callback){done=callback;return chain;},start(){pending.push(()=>{node.position.x=end.x;done();});}};return chain;};
+    lottery.scheduleOnce=callback=>callback();lottery.swapCards();
+    for(let remaining=20;remaining>0;remaining--){
+      assert.equal(pending.length,2);const pair=pending.splice(0);
+      pair[order[0]]();assert.equal(lottery.changeNum,remaining);assert.equal(pending.length,0);
+      pair[order[1]]();assert.equal(lottery.changeNum,remaining-1);
+      assert.deepEqual(nodes.map(n=>n.position.x).sort((a,b)=>a-b),[-200,0,200]);
+    }
+    assert.equal(pending.length,0);assert.equal(lottery.canTouch,true);
+  }
+});
+
+test('chests retain their tracked final positions when selection becomes available',()=>{
+  const h=battle(),lottery=new (h.load('GAD_UILottery').default)();
+  const positions=[{x:200,y:20},{x:-200,y:20},{x:0,y:20}];lottery.nodeLayer={children:positions.map(position=>({position}))};
+  h.cc.tween=()=>{throw Error('Final reveal must not re-deal tracked chests');};
+  lottery.standPos();assert.equal(lottery.canTouch,true);assert.deepEqual(lottery.nodeLayer.children.map(node=>node.position),positions);
+  lottery.isclose=true;lottery.standPos();assert.equal(lottery.canTouch,false);
+});
+
 test('flat projectile artwork retains its original narrow collision bounds', () => {
   const h = battle(true), Bullet = h.load('GAD_Bullet').default, bullet = new Bullet();
   bullet.colliderSize = h.cc.size(8.3, 77.2);
@@ -308,4 +362,12 @@ test('flat projectile artwork retains its original narrow collision bounds', () 
   bullet._poolGame = { _bulletWorldMatrix: matrix };
   const cached = bullet.getWorldColldierRect(2, 4);
   for (const key of ['x', 'y', 'width', 'height']) assert(Math.abs(cached[key] - expected[key]) < 1e-9, key);
+});
+
+test('compact health labels retain exact enemy health and use numeric state for legacy health rolls',()=>{
+  const h=battle(true),enemy=new (h.load('GAD_Enermy').default)();
+  enemy.lblHP={};enemy._hp=32000000;enemy.updateHp();assert.equal(enemy.lblHP.string,'32mil');assert.equal(enemy.getHp(),32000000);
+  enemy._hp=20000;enemy._displayHp=20002;enemy._isRolling=true;enemy.unschedule=()=>{};
+  enemy.scheduleLabelRoll();assert.equal(enemy._displayHp,20001);assert.equal(enemy.lblHP.string,'20k');
+  enemy.scheduleLabelRoll();assert.equal(enemy.getHp(),20000);assert.equal(enemy._displayHp,20000);assert.equal(enemy._isRolling,false);
 });

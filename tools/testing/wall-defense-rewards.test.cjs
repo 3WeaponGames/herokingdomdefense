@@ -26,15 +26,28 @@ test('Wall Defense pays 5000 gold/5 crystals for ten active minutes and one item
 test('rarity percentages sum to 100 and every checkpoint uses its own wave band',()=>{
   settings.rarityBands.forEach(b=>assert(Math.abs(b.weights.reduce((a,b)=>a+b,0)-100)<1e-10));
   const r=result(1,100,0,()=>.999);
-  assert.deepEqual(r.drops.map(x=>x.quality),[3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4]);
-  assert.equal(result(1,5,0,()=>.99995).drops[0].quality,4);
-  assert.equal(result(1,20,0,()=>.95).drops[0].quality,2);
+  assert.deepEqual(r.drops.map(x=>x.quality),[2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1]);
+  assert.equal(result(1,5,0,()=>.99995).drops[0].quality,1);
+  assert.equal(result(1,20,0,()=>.95).drops[0].quality,3);
+});
+test('early rewards use the authored green/common through orange/legendary frames at the intended rates',()=>{
+  const expected=[['green/common',4,'wg_zb_pzd1',9400],['blue/rare',3,'wg_zb_pzd2',580],['purple/epic',2,'wg_zb_pzd3',19],['orange/legendary',1,'wg_zb_pzd4',1]],counts={};
+  for(let i=0;i<10000;i++){
+    const drop=result(1,5,0,()=>(i+.5)/10000).drops[0],item=config.TreasureCfg.find(t=>t.ID===drop.itemID);
+    assert.equal(item.Quality,drop.quality);counts[drop.quality]=(counts[drop.quality]||0)+1;
+  }
+  for(const [name,quality,frame,count]of expected){
+    assert.equal(counts[quality],count,name+' frequency');
+    const items=config.TreasureCfg.filter(t=>t.Quality===quality);assert(items.length);
+    assert(items.every(item=>config.GoodsCfg[item.goodID].sprBg===frame),name+' artwork');
+  }
 });
 test('an exhausted low rarity converts within that tier without improving its roll',()=>{
-  const owned=config.TreasureCfg.filter(t=>t.Quality===1).map(t=>({id:t.ID,level:t.levelInfo.length,frame:0}));
-  const r=result(1,100,0,()=>0,owned);assert(r.drops.every(d=>d.quality===1));
+  const common=config.TreasureCfg.filter(t=>t.Quality===4);
+  const owned=common.map(t=>({id:t.ID,level:t.levelInfo.length,frame:0}));
+  const r=result(1,100,0,()=>0,owned);assert(r.drops.every(d=>d.quality===4));
   const h=harness();h.player.udata.data.treasureInfo=owned;const receipt=h.player.settleWallDefense(r);
-  assert(receipt);assert.equal(receipt.unlockedGoods.length,0);assert.equal(h.player.udata.getGoldNum(),20*config.TreasureCfg[0].Conversion[1]);
+  assert(receipt);assert.equal(receipt.unlockedGoods.length,0);assert.equal(h.player.udata.getGoldNum(),20*common[0].Conversion[1]);
 });
 test('active clock excludes pauses, background, results and stalled update gaps',()=>{
   const h=runtime();h.advance(60000);h.run.setState(2);h.setTime(240000);h.run.setState(1);h.advance(30000);

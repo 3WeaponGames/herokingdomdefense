@@ -198,6 +198,7 @@ exports.KinghtFallEnumTreasureEnum = exports.KinghtFallEnumAchiEnum = exports.Ki
   t[t.TreasureLevel = 8] = "TreasureLevel";
   t[t.BuildLevel = 9] = "BuildLevel";
   t[t.SoldierDefeated = 10] = "SoldierDefeated";
+  t[t.UnitTypeDefeated = 11] = "UnitTypeDefeated";
 })(exports.KinghtFallEnumTaskEnum || (exports.KinghtFallEnumTaskEnum = {}));
 (function (t) {
   t[t.LoginDays = 1] = "LoginDays";

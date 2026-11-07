@@ -27,14 +27,15 @@ function fixture(){
  };
  h.cc=cc;h.Node=Node;h.Asset=Asset;h.SkeletonData=SkeletonData;
  const user={getMaxStage:()=>1,getMaxOrder:()=>0,getStageInfo:()=>0,getTreasureLevel:()=>null};
- const config={KinghtFallParameter:{AppCacheName:'test'},KinghtFallBundelName:{EnemyAni:'EnemyAni',IconMap:'IconMap',IconGood:'IconGood'},KinghtFallPrefabName:{ItemGood:'ItemGood',ItemTreasure:'ItemTreasure'},KinghtFallPoolName:{ItemGood:'ItemGood'},KinghtFallEventName:{}};
+ const config={KinghtFallParameter:{AppCacheName:'test'},KinghtFallBundelName:{Enemy:'Enemy',EnemyAni:'EnemyAni',IconMap:'IconMap',IconGood:'IconGood'},KinghtFallPrefabName:{ItemGood:'ItemGood',ItemTreasure:'ItemTreasure'},KinghtFallPoolName:{ItemGood:'ItemGood'},KinghtFallEventName:{}};
  Object.assign(h.modules,{
   TimeUtils:{TimeUtils:{GetTimeBySecond:()=>h.time}},PlatformManager:{PlatformManager:{currentPlatform:0}},BasePlatform:{Platform:{BYTEDANCE:3}},
   PlatformSetting:{PlatformSetting:{currentApp:'Main'},AppName:{Main:'Main'}},KinghtFallConfig:config,
   UIMgr:{UIMgr:{getInstance:()=>({closeUI(){}})}},LogMgr:{LogMgr:{getInstance:()=>({error(){}})}},Utils:{Utils:{StringFormat:()=>''}},
   KinghtFallTextConfig:{KinghtFallTextConfig:{}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user,drawTreasures:()=>({rewards:[{item:{id:1,num:1},isNew:false}]})})}},
-  KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getGoodsCfgById:()=>({sprBg:'background',icon:'icon',itemID:1}),getTreasureCfgById:()=>({levelInfo:[]})})}},
+  KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:{}},getSoldierCfgById:()=>({prefab:'monster'}),getGoodsCfgById:()=>({sprBg:'background',icon:'icon',itemID:1}),getTreasureCfgById:()=>({levelInfo:[]})})}},
   KinghtFallModle:{default:{getInstance:()=>({numberFomat:n=>String(n)})}},
+  LobbyBackground:{showForStage(){}},
   PoolMgr:{PoolMgr:{getInstance:()=>({getNode:()=>null,getNodeFromPrefab(_key,prefab){h.pools++;return cc.instantiate(prefab);}})}}
  });
  const loaded=new Set();
@@ -46,8 +47,10 @@ function fixture(){
  h.load('EventMgr');h.load('BaseMgr');h.load('ArgsParseUtils');h.load('ResCacheMgr');h.resources=h.load('ResourceMgr').ResourceMgr.getInstance();
  h.cache=h.modules.ResCacheMgr.ResCacheMgr.getInstance();h.Ctrl=h.load('BaseCtrl').default;h.UI=h.load('BaseUI').default;
  h.resources.showRuntimeRecovery=(...args)=>h.prompts.push(args);h.expire=()=>{h.time+=20;h.cache.autoRelease();};
- h.home=()=>{const owner=new (h.load('KinghtFallHomeBattleCtrl').default)(),view={setSkin(){},setAnimation(){}};
-  Object.assign(owner,{selectStage:1,cfgList:[{Name:'stage',Map:'map',Level:1,WaveCfg:[],EnemyAni:'unit',Challenge:[]}],ndLevelInfo:{getChildByName(){assert(!owner.isDestroy,'destroyed preview was accessed');return{getComponent:()=>view};}},T:x=>x,hideBoxReward(){},loadSpriteFrame(){}});return owner;
+ cc.Color={WHITE:'white'};
+ h.monsterPrefab=()=>{const asset=new Prefab();asset.data={getComponentInChildren:()=>({defaultSkin:'default',skeletonData:{skeletonJson:{skeleton:{height:120}}}})};return asset;};
+ h.home=()=>{const owner=new (h.load('KinghtFallHomeBattleCtrl').default)(),view={setSkin(){},setAnimation(){}},model={x:0,y:0,getComponent:()=>view};
+  Object.assign(owner,{selectStage:1,cfgList:[{Name:'stage',Map:'map',Level:1,WaveCfg:[],EnemyAni:'unit',Challenge:[]}],ndLevelInfo:{getChildByName(){assert(!owner.isDestroy,'destroyed preview was accessed');return model;}},T:x=>x,hideBoxReward(){},loadSpriteFrame(){}});return owner;
  };
  h.treasure=()=>{h.load('KinghtFallItemGood');h.load('KinghtFallItemTreasure');const owner=new (h.load('KinghtFallUITreasureReward').default)();
   Object.assign(owner,{cfgBox:{},getSkillList:[{item:{id:1,num:1},isNew:false}],ndCtr:{node:new Node(),init(){},getPos:()=>({x:0,y:0})},upView(){},sendEvent(){}});return owner;
@@ -57,12 +60,12 @@ function fixture(){
 }
 
 test('home previews track cache-hit and cold-load acquisitions until their controller is destroyed',()=>{
- const h=fixture(),owner=h.home(),asset=new h.SkeletonData();owner.initMapView();h.requests.shift().done(null,asset);
+ const h=fixture(),owner=h.home(),asset=h.monsterPrefab();owner.initMapView();h.requests.shift().done(null,asset);
  for(let i=0;i<19;i++)owner.initMapView();assert.equal(h.requests.length,0);assert.equal(asset.refCount,20);assert.equal(owner.resArray[0].defCount,20);
  owner.onDestroy();h.expire();assert.equal(asset.refCount,0);assert.equal(h.cache.permanentCache.length,0);
 });
 test('home callbacks after destruction neither access the old preview nor present an abandoned load retry',()=>{
- for(const failed of [false,true]){const h=fixture(),owner=h.home(),asset=new h.SkeletonData();owner.initMapView();owner.onDestroy();assert.doesNotThrow(()=>h.requests.shift().done(failed?Error('offline'):null,failed?null:asset));h.expire();assert.equal(asset.refCount,0);assert.equal(h.prompts.length,0);}
+ for(const failed of [false,true]){const h=fixture(),owner=h.home(),asset=h.monsterPrefab();owner.initMapView();owner.onDestroy();assert.doesNotThrow(()=>h.requests.shift().done(failed?Error('offline'):null,failed?null:asset));h.expire();assert.equal(asset.refCount,0);assert.equal(h.prompts.length,0);}
 });
 test('shared prefab pool checkouts retain each live resource owner and release late deliveries after close', () => {
  const h = fixture();

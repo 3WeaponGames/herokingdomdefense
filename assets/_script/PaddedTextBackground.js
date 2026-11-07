@@ -51,9 +51,9 @@ cc.Class({
       var frameName = sprite.spriteFrame && sprite.spriteFrame.name;
       if (/^wg_(zy_pd|gxhd_pd|jzfz_bt|tf_bt|tf_pd|txz_ptd|txz_gjd|txz_djbtd)$/.test(frameName || "")) this.ribbonTitle = true;
       if (/^wg_txz_(ptd|gjd|djbtd)$/.test(frameName || "")) {
-        this.ribbonCenterY = 0.18;
+        if (this.ribbonCenterY === 0.12) this.ribbonCenterY = 0.18;
         this.minHeight = Math.max(this.minHeight, frameName === "wg_txz_djbtd" ? 128 : 112);
-        if (frameName !== "wg_txz_djbtd") { this.minWidth = 369; this.maxWidth = 369; }
+        if (frameName !== "wg_txz_djbtd" && this.minWidth === 0 && this.maxWidth === 700) { this.minWidth = 369; this.maxWidth = 369; }
       }
       sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
       sprite.type = cc.Sprite.Type.SLICED;

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "9e920ce4-2677-53f4-a53b-fcc4629e0ce5",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Icon_Golden_Pass": {
+      "ver": "1.0.6",
+      "uuid": "82bf6a62-6d7e-52d8-ad6c-543d88a14864",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "9e920ce4-2677-53f4-a53b-fcc4629e0ce5",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

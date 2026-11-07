@@ -506,6 +506,13 @@ var def_List = function (t) {
         if (this._sizeType) {
           a = this.viewTop;
           r = this.viewBottom;
+          // Prepare one row beyond each clipped edge before it becomes visible.
+          // This keeps recycled labels/icons from appearing mid-swipe.
+          if (this._virtual && !this.cyclic) {
+            var overscan = this._itemSize.height + this._lineGap;
+            a += overscan;
+            r -= overscan;
+          }
         } else {
           o = this.viewRight;
           s = this.viewLeft;

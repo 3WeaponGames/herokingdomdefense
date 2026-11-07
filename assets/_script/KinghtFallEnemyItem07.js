@@ -1,4 +1,5 @@
 var i;
+var GameToolsOverrides = require("GameToolsOverrides");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
@@ -95,7 +96,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     }();
     if (n) {
       n.node.getPosition(this.vec2_2);
-      n.cfg && this.cfg.Suppressed == n.cfg.ID && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
+      GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(this.vec2_2.clone(), n.onAttacked(e, t));
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);

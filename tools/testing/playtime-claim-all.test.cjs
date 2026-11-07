@@ -59,7 +59,10 @@ function harness(minutes = 0, previouslyClaimed = []) {
     __decorate: (decorators, target, key) => key === undefined ? target : undefined };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallUIOnlineReward.js'), 'utf8'), context);
   const ui = new context.exports.default();
-  ui.btnClose = node(); ui.btnClaimAll = node(); ui.ctrList = { tmpNode: node() };
+  ui.btnClose = node(); ui.btnClaimAll = node();
+  state.listResizes = 0; state.rowRefreshes = [];
+  ui.ctrList = { tmpNode: node(), updateItem(index) { state.rowRefreshes.push(index); },
+    get numItems() { return this.count; }, set numItems(value) { this.count = value; state.listResizes++; } };
   ui.T = value => value;
   ui.start();
   function row(index) {
@@ -108,6 +111,15 @@ test('Time updates enable Claim All exactly when another reward becomes earned',
   assert.equal(ui.btnClaimAll.getComponent(Button).interactable, true);
   ui.onClaimAll();
   assert.deepEqual(state.grants, [[{ id: 2002, num: 20 }]]);
+});
+
+test('second ticks never resize or rebuild the scrolling list; minute and claim changes update rows only', () => {
+  const { ui, state } = harness(4);
+  for (let second=241;second<300;second++) { state.seconds=second; state.callbacks.time.call(ui); }
+  assert.equal(state.listResizes,1);assert.equal(state.rowRefreshes.length,0);
+  state.seconds=300;state.callbacks.time.call(ui);
+  assert.equal(state.listResizes,1);assert.equal(state.rowRefreshes.length,config.length);
+  ui.onClaimAll();assert.equal(state.listResizes,1);assert.equal(state.rowRefreshes.length,config.length*2);
 });
 
 test('Individual claims and Claim All share eligibility and cannot double-award', () => {

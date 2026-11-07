@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "50d605f5-2464-5800-a53b-86915a08b033",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Icon_Gps": {
+      "ver": "1.0.6",
+      "uuid": "d311e777-02b7-52a3-ac4d-f976807dd04a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "50d605f5-2464-5800-a53b-86915a08b033",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

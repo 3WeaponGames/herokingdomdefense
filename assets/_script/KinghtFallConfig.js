@@ -41,6 +41,7 @@ exports.KinghtFallBundelName = exp_KinghtFallBundelName;
   t.UIBuildAtlas = "KinghtFallUIBuildAtlas";
   t.UIVideoTips = "KinghtFallUIVideoTips";
   t.UIAchievement = "KinghtFallUIAchievement";
+  t.UIQuests = "KinghtFallUIQuests";
   t.UIPassport = "KinghtFallUIPassport";
   t.UIOnlineReward = "KinghtFallUIOnlineReward";
   t.UISignIn = "KinghtFallUISignIn";
@@ -100,6 +101,13 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   showTop: false,
   showMult: false,
   zIndex: $z1Appcfg.OrderLayer.pop2,
+  bundleName: exp_KinghtFallBundelName.Prefab
+}, i[o.UIQuests] = {
+  prefab: "homePop/KinghtFallUIQuests",
+  name: "KinghtFallUIQuests",
+  showTop: false,
+  showMult: false,
+  zIndex: $z1Appcfg.OrderLayer.pop,
   bundleName: exp_KinghtFallBundelName.Prefab
 }, i[o.UIAchievement] = {
   prefab: "homePop/KinghtFallUIAchievement",

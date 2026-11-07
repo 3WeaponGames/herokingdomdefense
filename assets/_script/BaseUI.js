@@ -15,6 +15,8 @@ var $z1TweenMgr = require("TweenMgr");
 var $z1UIMgr = require("UIMgr");
 var $z1ArgsParseUtils = require("ArgsParseUtils");
 var $z1BasePlatform = require("BasePlatform");
+var smoothScroll = require("SmoothScroll");
+if (smoothScroll && smoothScroll.install) smoothScroll.install();
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;

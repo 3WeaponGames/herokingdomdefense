@@ -84,9 +84,8 @@ var def_KinghtFallUISuspend = function (t) {
     this.ndParent.content.height = Math.abs(this.posY[0] + (n + 1) * this.posY[1]);
   };
   _ctor.prototype.onClick = function (t, e) {
-    var n = t.currentTarget.convertToWorldSpaceAR(cc.v2(0, 50));
-    var i = this.ndTips.parent.convertToNodeSpaceAR(n);
-    this.ndTips.setPosition(i);
+    if (this.ndTips.active && this._tipTrigger === t.currentTarget) { this.ndTips.active = false; return; }
+    this._tipTrigger = t.currentTarget;
     this.ndTips.active = true;
     var a = [];
     for (var o = 0; o < e.cfg.Pamer.length; o++) {
@@ -97,6 +96,68 @@ var def_KinghtFallUISuspend = function (t) {
       }
     }
     this.ndTips.getChildByName("ndLayout").getComponentInChildren(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [$z1Utils.Utils.StringFormat.apply($z1Utils.Utils, cc__spreadArrays([e.cfg.Describe], a))]);
+    this.layoutPerkTip();
+    // A loaded font may change the measured paragraph on the following frame.
+    this.scheduleOnce(this.layoutPerkTip, 0);
+    this.bindTipDismissal();
+  };
+  _ctor.prototype.layoutPerkTip = function () {
+    if (!this.ndTips || !this.ndTips.active || !cc.isValid(this._tipTrigger, true)) return;
+    var parent = this.ndTips.parent, origin = cc.view.getVisibleOrigin(), size = cc.view.getVisibleSize();
+    var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: size.width, height: size.height };
+    var min = parent.convertToNodeSpaceAR(cc.v2(Math.max(origin.x, safe.x), Math.max(origin.y, safe.y)));
+    var max = parent.convertToNodeSpaceAR(cc.v2(Math.min(origin.x + size.width, safe.x + safe.width), Math.min(origin.y + size.height, safe.y + safe.height)));
+    var margin = 24, padding = 22, available = Math.max(120, max.x - min.x - margin * 2);
+    var bubble = this.ndTips.getChildByName("ndLayout"), text = bubble.getComponentInChildren(cc.RichText);
+    (bubble.getComponents(cc.Component) || []).forEach(function (component) {
+      if (component instanceof cc.Layout || Array.isArray(component.content)) component.enabled = false;
+    });
+    var sprite = bubble.getComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.type = cc.Sprite.Type.SLICED;
+    bubble.anchorX = bubble.anchorY = text.node.anchorX = text.node.anchorY = .5;
+    this.ndTips.setScale(1); bubble.setScale(1); bubble.setPosition(0, 0); text.node.setPosition(0, 0);
+    var scale = Math.abs(text.node.scaleX) || .5;
+    var width = Math.min(600, available);
+    text.horizontalAlign = cc.Label.HorizontalAlign.CENTER; text.maxWidth = (width - padding * 2) / scale;
+    if (text._updateRichText) text._updateRichText();
+    var height = Math.ceil(text.node.height * Math.abs(text.node.scaleY)) + padding * 2;
+    bubble.setContentSize(width, height); this.ndTips.setContentSize(width, height);
+    this.ndTips.children.forEach(function (child) { if (child !== bubble) child.active = false; });
+    var target = parent.convertToNodeSpaceAR(this._tipTrigger.convertToWorldSpaceAR(cc.v2(0, 0)));
+    var x = Math.max(min.x + margin + width / 2, Math.min(max.x - margin - width / 2, target.x));
+    var y = target.y + 60 + height / 2;
+    if (y + height / 2 > max.y - margin) y = target.y - 60 - height / 2;
+    y = Math.max(min.y + margin + height / 2, Math.min(max.y - margin - height / 2, y));
+    this.ndTips.setPosition(x, y);
+  };
+  _ctor.prototype.bindTipDismissal = function () {
+    var root = require("UIMgr").UIMgr.getInstance().uiRoot;
+    if (this._tipInputRoot === root) return;
+    this.unbindTipDismissal(); this._tipInputRoot = root;
+    if (root) root.on(cc.Node.EventType.TOUCH_END, this.dismissPerkTip, this, true);
+  };
+  _ctor.prototype.lateUpdate = function () {
+    if (!this.ndTips || !this.ndTips.active) return;
+    var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
+    var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : {};
+    var signature = [origin.x, origin.y, size.width, size.height, safe.x, safe.y, safe.width, safe.height].join(":");
+    if (signature !== this._tipViewport) { this._tipViewport = signature; this.layoutPerkTip(); }
+  };
+  _ctor.prototype.dismissPerkTip = function (event) {
+    if (!this.ndTips || !this.ndTips.active) return;
+    var location = event.getLocation(), nodes = [this.ndTips, this._tipTrigger];
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i]; if (!cc.isValid(node, true)) continue;
+      var p = node.convertToNodeSpaceAR(location);
+      if (p.x >= -node.width * node.anchorX && p.x <= node.width * (1 - node.anchorX) && p.y >= -node.height * node.anchorY && p.y <= node.height * (1 - node.anchorY)) return;
+    }
+    this.ndTips.active = false;
+  };
+  _ctor.prototype.unbindTipDismissal = function () {
+    if (this._tipInputRoot) this._tipInputRoot.off(cc.Node.EventType.TOUCH_END, this.dismissPerkTip, this, true);
+    this._tipInputRoot = null;
+  };
+  _ctor.prototype.onDisable = function () {
+    this.unbindTipDismissal();
   };
   _ctor.prototype.bindEvent = function () {
     var t = this;
@@ -113,6 +174,7 @@ var def_KinghtFallUISuspend = function (t) {
     this.closeUI();
   };
   _ctor.prototype.onClose = function () {
+    this.unbindTipDismissal();
     if (this._pauseReleased) return;
     this._pauseReleased = true;
     var release = this.releasePause;

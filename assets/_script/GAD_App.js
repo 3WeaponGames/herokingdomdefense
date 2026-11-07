@@ -22,7 +22,7 @@ var def_GAD_App = function () {
     enumerable: false,
     configurable: true
   });
-  _ctor.prototype.enter_App = function (t, e) {
+  _ctor.prototype.enter_App = function (t, e, entry) {
     var n = this;
     if (this._entryOpen) this._entryOpen.cancel();
     this._entryOpen = null;
@@ -33,12 +33,12 @@ var def_GAD_App = function () {
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     var h = function () {
       if (n._entryGeneration !== generation) return;
-      if (!$z1GAD_PlayerMgr.default.getInstance().readyForRun()) { n.removeTouchEvent(); return; }
+      if (!$z1GAD_PlayerMgr.default.getInstance().readyForRun()) { n.removeTouchEvent(); if (entry && entry.onCancel) entry.onCancel(); return; }
       n._isInited = true;
       $z1GAD_PlayerMgr.default.getInstance().reset();
       n._entryOpen = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1GAD_Configs.GAD_UIID.UIGame, $z1Config.UIID.UINONE, {
         isCurrent: function () { return n._entryGeneration === generation; },
-        onCancel: function () { if (n._entryGeneration === generation) n.removeTouchEvent(); },
+        onCancel: function () { if (n._entryGeneration === generation) n.removeTouchEvent(); if (entry && entry.onCancel) entry.onCancel(); },
         onOpened: function () {
         if (n._entryGeneration !== generation) return;
         n.removeTouchEvent();
@@ -46,7 +46,7 @@ var def_GAD_App = function () {
         if (n._entryGeneration !== generation) return;
         $z1AudioMgr.AudioMgr.getInstance().playMusic($z1GAD_Configs.GAD_AudioId.bgm, $z1GAD_Configs.GADConfig.BgMusic);
         $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.mission);
-      } });
+      } }, entry ? { cost: entry.cost, unlockStage: entry.unlockStage, isCurrent: function () { return n._entryGeneration === generation; } } : null);
     };
     if (this._isInited) {
       h();

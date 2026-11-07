@@ -11,6 +11,8 @@ var $z1GAD_App = require("GAD_App");
 var $z1GAD_PlayerMgr = require("GAD_PlayerMgr");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1KinghtFallItemGood = require("KinghtFallItemGood");
+var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
+var $z1UIMgr = require("UIMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -73,6 +75,8 @@ var def_GAD_UIResult = function (t) {
       var rowLength = Math.min(columns, rows.length - Math.floor(i / columns) * columns);
       node.setPosition((i % columns - (rowLength - 1) / 2) * spacing, -Math.floor(i / columns) * spacing);
       node.getComponent($z1KinghtFallItemGood.default).initView(rows[i], 95);
+      var relic = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfg().filter(function (item) { return item.goodID === rows[i].id; })[0];
+      if (relic) node.on(cc.Node.EventType.TOUCH_END, this.openRelicDetails.bind(this, relic));
       if (result.unlockedGoods.indexOf(rows[i].id) >= 0) {
         var badge = new cc.Node("NewItem");
         badge.parent = node;
@@ -89,6 +93,32 @@ var def_GAD_UIResult = function (t) {
         outline.color = cc.Color.BLACK;
       }
     }
+  };
+  _ctor.prototype.openRelicDetails = function (relic, event) {
+    if (event) event.stopPropagation();
+    var current = this._relicDetailNode && cc.isValid(this._relicDetailNode, true) && this._relicDetailNode.getComponent($z1BaseUI.default);
+    if (this.isclose || this._relicDetailOpening || current && !current.isclose) return;
+    var result = this;
+    this._relicDetailOpening = true;
+    $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UITreasureInfo, this.uid, {
+      parent: this,
+      isCurrent: this.resourceOptions(this._resourceGeneration).isCurrent,
+      onCancel: function () { result._relicDetailOpening = false; },
+      onOpened: function (node) {
+        result._relicDetailOpening = false;
+        result._relicDetailNode = node;
+        node.zIndex = Math.min(cc.macro.MAX_ZINDEX, result.node.zIndex + 1);
+      }
+    }, relic, true);
+  };
+  _ctor.prototype.onClose = function () {
+    var node = this._relicDetailNode;
+    this._relicDetailNode = null;
+    if (node && cc.isValid(node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(node);
+  };
+  _ctor.prototype.onDestroy = function () {
+    try { this.onClose(); }
+    finally { t.prototype.onDestroy.call(this); }
   };
   cc__decorate([ccp_property(sp.Skeleton)], _ctor.prototype, "resultSp", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnExit", undefined);

@@ -128,6 +128,7 @@ var def_KinghtFallUIGame = function (t) {
     if (this.btnFollow) this.btnFollow.active = false;
     this.btnBuildInfo.active = true;
     this.ndTask.getChildByName("ndAni").active = false;
+    if (this.ctrUI && this.ctrUI.node && cc.view) require("BattleHud").install(this);
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -367,17 +368,19 @@ var def_KinghtFallUIGame = function (t) {
     this.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UISuspend, null, function () {
       if (dialog.isCurrent()) self.onRestart(true);
     }, function () {
-      if (!dialog.isCurrent() || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setNewGame() === false) return false;
+      if (!dialog.isCurrent() || self.ctrGame.saveGame() === false) return false;
       self.closeUI();
     }, function () { self.finishBattleDialog(dialog); });
   };
   _ctor.prototype.onClose = function () {
+    if (this._battleHud) require("BattleHud").dispose(this);
     this.cancelBattleDialog();
     this._stopTestMovement();
     TestMode.getInstance().removeGameplayTarget(this);
     $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._battleHud) require("BattleHud").dispose(this);
     try { this.cancelBattleDialog(); }
     finally { t.prototype.onDestroy.call(this); }
   };
@@ -699,15 +702,18 @@ var def_KinghtFallUIGame = function (t) {
       this.ndTask.active = false;
     } else {
       var o = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(this.ctrGame.gameData.taskInfo.list[this.ctrGame.gameData.taskInfo.index]);
-      this.ndTask.active = true;
+      if (!this._battleHud) this.ndTask.active = true;
       this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(o.Name);
       this.ndTask.getChildByName("labGet").active = 1 == this.ctrGame.gameData.taskInfo.stage;
       this.ndTask.getChildByName("labNoFinish").active = 0 == this.ctrGame.gameData.taskInfo.stage;
     }
+    if (this._battleHud) require("BattleHud").updateTasks(this,
+      this.ctrGame.gameData.taskInfo.index < this.ctrGame.gameData.taskInfo.list.length, this.ctrGame.gameData.taskInfo.stage === 1);
   };
   _ctor.prototype.lateUpdate = function (t) {
     this.isPauset || this.ctrGame.onLateUpdate(t);
     this._fitBuildingsButton();
+    if (this._battleHud) require("BattleHud").layout(this);
     this._layoutBattleFooter();
   };
   _ctor.prototype._layoutBattleFooter = function () {
@@ -762,6 +768,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype._loadEnemyPictogram = function (record, id) {
     var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
     var cfg = manager.getSoldierCfgById(id), type = resolveEnemyPictogram(manager.data && manager.data.GameTools, id);
+    if (cfg.loadIcon && cfg.loadIcon.indexOf("@icon/") === 0) type = { icon: cfg.loadIcon, tint: type && type.tint || "#ffffff" };
     var icon = record.ndItem.getChildByName("sprIcon");
     if (!icon) return;
     var sprite = icon.getComponent(cc.Sprite), request = record._iconRequest = (record._iconRequest || 0) + 1;
@@ -780,17 +787,22 @@ var def_KinghtFallUIGame = function (t) {
     function original() { self.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + cfg.loadIcon, function (frame) { done(frame, false); }); }
     if (!type || !type.icon) return original();
     if (type.icon.indexOf("@icon/") === 0 && cc.resources) {
-      cc.resources.load(type.icon.slice(6), cc.SpriteFrame, function (error, frame) { if (record._iconRequest !== request) return; if (error || !frame) original(); else done(frame, true); });
+      // Use the same guarded/retrying loader as the other battle artwork. An
+      // imported head has no legacy `icon/@icon/...` fallback asset.
+      if (cfg.loadIcon && cfg.loadIcon.indexOf("@icon/") === 0) this.loadSpriteFrame("resources", type.icon.slice(6), function (frame) { done(frame, true); });
+      else cc.resources.load(type.icon.slice(6), cc.SpriteFrame, function (error, frame) { if (record._iconRequest !== request) return; if (error || !frame) original(); else done(frame, true); });
     } else this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + type.icon, function (frame) { if (frame) done(frame, true); else original(); });
   };
   _ctor.prototype._enemyIndicatorObstacles = function () {
     var ui = this.ctrUI.node;
-    return [this.btnBuildInfo, this.ndTask, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
+    var drawer = this._battleHud;
+    return [this.btnBuildInfo, drawer ? drawer.handle : this.ndTask, drawer && drawer.open ? drawer.view : null, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
       this.btnStartFight, this.btnAddCoin, this.btnAgg, this.btnFollow].filter(function (node) {
       return node && cc.isValid(node) && node.active && node.activeInHierarchy !== false;
     }).map(function (node) { return enemyIndicatorBounds(node, ui); });
   };
   _ctor.prototype._fitBuildingsButton = function () {
+    if (this._battleHud) return;
     var button = this.btnBuildInfo;
     if (!button || !button.parent || !button.active) return;
     var caption = button.getChildByName("labNum"), label = caption && caption.getComponent(cc.Label);
@@ -1007,6 +1019,7 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype.startGuide = function (t) {
+    if (this._battleHud) require("BattleHud").layout(this);
     var e = this;
     if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK) {
       if (t) {
@@ -1166,7 +1179,7 @@ var def_KinghtFallUIGame = function (t) {
           }
           break;
       }
-      var l = this.ndTask.getChildByName("ndAni");
+      var l = this._battleHud ? this._battleHud.rewardHint : this.ndTask.getChildByName("ndAni");
       var c = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(t.id);
       this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, c.icon, function (t) {
         l.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;

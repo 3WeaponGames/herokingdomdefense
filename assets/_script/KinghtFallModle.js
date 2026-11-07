@@ -226,7 +226,9 @@ var def_KinghtFallModle = function () {
       case 0:
         return true;
     }
-    if (2 == (o = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getTaskInfo()).stage) {
+    var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
+    if (missions.hasQuestReward) return missions.hasQuestReward();
+    if (2 == (o = missions.getTaskInfo()).stage) {
       return false;
     }
     var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTaskCfgById(o.id);

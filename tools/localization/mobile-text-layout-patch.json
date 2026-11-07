@@ -1485,32 +1485,34 @@
     },
     "ui.mobile.kinghtfalluigame.238": {
       "en": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 140,
+        "fontSize": 84,
+        "lineHeight": 98,
+        "width": 916,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 116
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 140,
+        "fontSize": 84,
+        "lineHeight": 98,
+        "width": 916,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 116
       }
     },
     "ui.mobile.kinghtfalluigame.241": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
+        "fontSize": 54,
+        "lineHeight": 64,
         "width": 640,
         "overflow": "NONE",
         "wrap": false,
         "y": -58
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
+        "fontSize": 54,
+        "lineHeight": 64,
         "width": 640,
         "overflow": "NONE",
         "wrap": false,

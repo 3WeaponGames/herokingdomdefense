@@ -47,6 +47,7 @@ function prepare() {
   Object.assign(h.player.udata.data, { goldNum: 20000, diamondNum: 2000, powerNum: 5, personLevel: [2], treasureInfo: [{ id: 120001, level: 1, frame: 5 }] });
   h.player.missionData.initData();
   h.player.missionData.data.taskInfo = { id: 6, type: 7, num: 0, stage: 0 };
+  delete h.player.missionData.data.quests; delete h.player.missionData.data.questCursor;
   h.player.rewardRecords().forEach(record => record.saveData());
   h.state.writes = 0;
   return h;

@@ -10,6 +10,7 @@ var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
+var QuestBoard = require("QuestBoardCore");
 var g = function () {
   this.listTime = {};
   this.achievementInfo = [];
@@ -60,6 +61,7 @@ var exp_KinghtFallMissionData = function (t) {
       this.initDailyData();
       t = true;
     }
+    if (QuestBoard.initialize(this.data, this.questConfig)) t = true;
     t && this.saveData();
   };
   _ctor.prototype.initDailyData = function () {
@@ -78,9 +80,52 @@ var exp_KinghtFallMissionData = function (t) {
     var task = data.taskInfo;
     if (task && (!Number.isInteger(task.id) || task.id < 1 || typeof task.type !== "number" || !isFinite(task.type))) delete data.taskInfo;
     else if (task) { task.num = typeof task.num === "number" && isFinite(task.num) && task.num >= 0 ? task.num : 0; task.stage = [0, 1, 2].indexOf(task.stage) >= 0 ? task.stage : 0; }
+    if (Array.isArray(data.quests)) {
+      var seen = {};
+      data.quests = data.quests.filter(function (row) {
+        if (!row || !Number.isInteger(row.id) || row.id < 1 || seen[row.id] || typeof row.type !== "number") return false;
+        seen[row.id] = true;
+        row.num = typeof row.num === "number" && isFinite(row.num) && row.num >= 0 ? row.num : 0;
+        row.stage = row.stage === 1 ? 1 : 0; return true;
+      }).slice(0, QuestBoard.CAPACITY);
+      if (!Number.isInteger(data.questCursor) || data.questCursor < 1) data.questCursor = data.quests.reduce(function (next, row) { return Math.max(next, row.id + 1); }, 1);
+      if (data.quests.length) data.taskInfo = data.quests[0];
+    }
     return data;
   };
+  _ctor.prototype.questConfig = function (id) { return $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTaskCfgById(id); };
+  _ctor.prototype.questContext = function () {
+    var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance(), user = player.getUserData(), config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    var counts = this.data.listTime || {}, context = { stage: user.getMaxStage(), wave: user.getMaxOrder(), equipmentUpgrades: counts.EquipUp || 0, talentUpgrades: counts.TalentUp || 0, treasureUpgrades: counts.TreasureUp || 0, equipmentLevel: 0, unlockedBuffs: 0 };
+    if (config.getEquipCfgList) config.getEquipCfgList().forEach(function (equipment) { context.equipmentLevel = Math.max(context.equipmentLevel, user.getPersonLevel(equipment.id)); });
+    if (config.getBuffCfgList && user.getTalent) {
+      var talents = user.getTalent();
+      config.getBuffCfgList().forEach(function (buff) { if (buff.Unlock && talents.some(function (talent) { return talent.isLock && config.getTalentLevelCfgById(talent.id).kindID === buff.Unlock; })) context.unlockedBuffs++; });
+    }
+    return context;
+  };
+  _ctor.prototype.getQuests = function () {
+    var changed = QuestBoard.initialize(this.data, this.questConfig);
+    changed = QuestBoard.refresh(this.data, this.questConfig, this.questContext()) || changed;
+    if (changed) this.saveData();
+    return this.data.quests;
+  };
+  _ctor.prototype.getQuestViews = function () {
+    var self = this, tasks = this.getQuests(), context = this.questContext();
+    return tasks.map(function (task) { var cfg = QuestBoard.definition(task, self.questConfig); return cfg && { task: task, cfg: cfg, progress: QuestBoard.progress(task, cfg, context) }; }).filter(Boolean);
+  };
+  _ctor.prototype.hasQuestReward = function () { return this.getQuests().some(function (task) { return task.stage === 1; }); };
+  _ctor.prototype.recordQuestEvent = function (type, amount, maximum, unitType) {
+    this.getQuests();
+    if (QuestBoard.record(this.data, type, amount, maximum, unitType)) { QuestBoard.refresh(this.data, this.questConfig, this.questContext()); this.saveData(); }
+  };
+  _ctor.prototype.claimQuest = function (id) {
+    this.getQuests();
+    if (!QuestBoard.claim(this.data, id, this.questConfig)) return false;
+    this.saveData(); return true;
+  };
   _ctor.prototype.getTaskInfo = function () {
+    if (Array.isArray(this.data.quests)) { this.getQuests(); return this.data.taskInfo; }
     2 == this.data.taskInfo.stage && this.doUpTask();
     return this.data.taskInfo;
   };
@@ -118,6 +163,7 @@ var exp_KinghtFallMissionData = function (t) {
     return this.saveData() !== false;
   };
   _ctor.prototype.doUpTask = function () {
+    if (Array.isArray(this.data.quests)) { if (this.data.taskInfo.stage === 2) { this.data.taskInfo.stage = 1; this.claimQuest(this.data.taskInfo.id); } return; }
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTaskCfgById(this.data.taskInfo.id + 1);
     if (!t) return;
     this.data.taskInfo = {
@@ -129,6 +175,13 @@ var exp_KinghtFallMissionData = function (t) {
     this.saveData();
   };
   _ctor.prototype.setTaskInfo = function (t) {
+    if (Array.isArray(this.data.quests)) {
+      var index = this.data.quests.findIndex(function (task) { return task.id === t.id; });
+      if (index < 0) return false;
+      this.data.quests[index] = t;
+      this.data.taskInfo = this.data.quests[0] || t;
+      if (t.stage === 2) { t.stage = 1; return this.claimQuest(t.id); }
+    }
     this.data.taskInfo = t;
     this.saveData();
   };

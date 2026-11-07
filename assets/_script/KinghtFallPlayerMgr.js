@@ -187,6 +187,7 @@ var exp_KinghtFallPlayerMgr = function () {
         awarded: actual.map(function (reward) { return { id: reward.id, num: reward.num }; }),
         unlockedGoods: result.drops.filter(function (drop) { return !previouslyOwned.has(drop.itemID); }).map(function (drop) { return drop.goodID; }) };
       delete staged.wallDefensePending;
+      if (result.admissionId && staged.wallDefenseAdmission && staged.wallDefenseAdmission.id === result.admissionId) staged.wallDefenseAdmission.used = true;
     }, function () {
       var current = player.udata.data.wallDefenseReceipt;
       return player.udata.data.wallDefensePending && player.udata.data.wallDefensePending.id === result.id && (!current || current.sequence < result.sequence);
@@ -219,6 +220,17 @@ var exp_KinghtFallPlayerMgr = function () {
       });
     });
   };
+  _ctor.prototype.admitWallDefense = function (cost, eligible) {
+    if (!eligible() || !this.restorePendingRewards()) return null;
+    var reserved = this.udata.data.wallDefenseAdmission;
+    if (reserved && !reserved.used) return reserved.id;
+    var self = this, id = "wall-entry-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    // An unused paid entry survives a cancelled load or interrupted save. It is
+    // consumed with the run's settlement, so retrying never charges twice.
+    return this.purchase([{ id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina, num: cost }], function () {
+      self.udata.data.wallDefenseAdmission = { id: id, cost: cost, used: false }; return id;
+    }, eligible);
+  };
   _ctor.prototype.drawTreasures = function (box, count, costs, video) {
     var self = this, config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
     if (!box || !Number.isInteger(count) || count < 1) return null;
@@ -229,10 +241,13 @@ var exp_KinghtFallPlayerMgr = function () {
         if (shop.video < box.VedioCount) { self.udata.setShopInfo(shop); return { pending: true, rewards: [] }; }
         shop.video -= box.VedioCount;
       }
+      if (self.missionData.recordQuestEvent) self.missionData.recordQuestEvent($z1KinghtFallEnum.KinghtFallEnumTaskEnum.TreasureCount, count);
+      else {
       var task = self.missionData.getTaskInfo();
       if (task.type === $z1KinghtFallEnum.KinghtFallEnumTaskEnum.TreasureCount) {
         task.num += count;
         self.missionData.setTaskInfo(task);
+      }
       }
       var rewards = [];
       for (var index = 0; index < count; index++) {

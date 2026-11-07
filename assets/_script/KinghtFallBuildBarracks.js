@@ -262,7 +262,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
     if (this.ndVideoSoldier.SolID != this.buildInfo.cfg.Data[1]) {
       this.ndVideoSoldier.SolID = this.buildInfo.cfg.Data[1];
-      var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(this.buildInfo.cfg.Data[1]);
+      var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(this.buildInfo.cfg.Data[1], "ally");
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "Play" + s.prefab, function (e) {
         var n = e.data.getComponent($z1KinghtFallSoldierBase.default);
         var i = t.ndVideoSoldier.getChildByName("spAni").getComponent(sp.Skeleton);

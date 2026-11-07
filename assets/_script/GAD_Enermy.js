@@ -163,7 +163,7 @@ var def_GAD_Enermy = function (t) {
       var t = this.getDigitCount(this._hp);
       this.lblHP.fontSize = Math.max(50, 80 - 6 * Math.max(0, t - 4));
     }
-    this.lblHP.string = "" + this._hp;
+    this.lblHP.string = require("LanguageMgr").LanguageMgr.getInstance().formatNumber(this._hp, "battle");
     this._displayHp = this._hp;
   };
   _ctor.prototype.getDigitCount = function (t) {
@@ -230,14 +230,15 @@ var def_GAD_Enermy = function (t) {
     }
   };
   _ctor.prototype.scheduleLabelRoll = function () {
-    var t = Number(this.lblHP.string);
+    var t = this._displayHp === undefined ? this._hp : this._displayHp;
     if (t != this._hp) {
       if (t > this._hp) {
         t = Math.max(0, t - 1);
       } else {
         t += 1, t = Math.min(t + 1, this._hp);
       }
-      this.lblHP.string = "" + t;
+      this._displayHp = t;
+      this.lblHP.string = require("LanguageMgr").LanguageMgr.getInstance().formatNumber(t, "battle");
       if (t == this._hp) {
         this.unschedule(this.scheduleLabelRoll), this._isRolling = false;
       }

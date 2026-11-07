@@ -1,0 +1,3207 @@
+{
+  "version": 1,
+  "pack": "GUI PRO Kit - Casual Game",
+  "size": 128,
+  "icons": [
+    {
+      "name": "Pictoicon_Account",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Account.Png",
+      "unityGuid": "deabe5269512543afa87cd815c154d56",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Account.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Account",
+      "width": 128,
+      "height": 128,
+      "sha256": "22a936325fe499123fe9efa9cb609c34a9589f5251405a5889b0faf2712599f8"
+    },
+    {
+      "name": "Pictoicon_Achieve",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Achieve.Png",
+      "unityGuid": "80fbdfd7c0129471eafac5f123d72732",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Achieve.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Achieve",
+      "width": 128,
+      "height": 128,
+      "sha256": "e21b3d0d5cb616adfdb6b28d376f3c189338d6db6d92745b94ce0a55256ee091"
+    },
+    {
+      "name": "Pictoicon_Add",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Add.Png",
+      "unityGuid": "a0baff7c216064bf4b264d2a026d2437",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Add.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Add",
+      "width": 128,
+      "height": 128,
+      "sha256": "7a5ba950149850e1cafd4be94013fb14bae211fa8c89e8cd65290febeefa06a5"
+    },
+    {
+      "name": "Pictoicon_Airplane",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Airplane.Png",
+      "unityGuid": "4aaab45709aec48abbb68025e1c12b93",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Airplane.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Airplane",
+      "width": 128,
+      "height": 128,
+      "sha256": "ae8ea4ee30a316e02966a645c8d42c8da709dd41e40f2969b98fca98efbd8a05"
+    },
+    {
+      "name": "Pictoicon_Alert",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Alert.Png",
+      "unityGuid": "306031f2b65774979b1ecd43e92e4150",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Alert.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Alert",
+      "width": 128,
+      "height": 128,
+      "sha256": "d10ade4a406280367405efdc74557d654c8a58d3025d3f309c9465361a20af24"
+    },
+    {
+      "name": "Pictoicon_Anchor",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Anchor.Png",
+      "unityGuid": "5f72a57c1a73745cc84715b91cf322d5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Anchor.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Anchor",
+      "width": 128,
+      "height": 128,
+      "sha256": "499506b8dd9be3352f064d5650c12a7ea4d9f0f6f696a815f0795a0297e6c499"
+    },
+    {
+      "name": "Pictoicon_Angel",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Angel.Png",
+      "unityGuid": "53f49bf8c54e7405db09909857957bf5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Angel.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Angel",
+      "width": 128,
+      "height": 128,
+      "sha256": "515502f3387b86e4081f020d72459c28f97591d06968567db373931a12ad7960"
+    },
+    {
+      "name": "Pictoicon_Ankh",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Ankh.Png",
+      "unityGuid": "ff95f66e252ce4588a7ebe6e1803774e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Ankh.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Ankh",
+      "width": 128,
+      "height": 128,
+      "sha256": "dd012010801da2f545e39f7548c8c1941b8deabbc0e229a8af7a8204c3813916"
+    },
+    {
+      "name": "Pictoicon_Anvil",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Anvil.Png",
+      "unityGuid": "f81a190d065154853a936dadf5b5f2f3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Anvil.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Anvil",
+      "width": 128,
+      "height": 128,
+      "sha256": "f2c245e39126d274ead6fcb78e362e50f46806e5803b5e741856a8f1e6cec69d"
+    },
+    {
+      "name": "Pictoicon_Armor",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Armor.Png",
+      "unityGuid": "8e2918f58ae86404ba78fe9ce7d62ebf",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Armor.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Armor",
+      "width": 128,
+      "height": 128,
+      "sha256": "07243703e0fce3cd7553315674a9c671010f41b02e088967ad09b75ea656e9bf"
+    },
+    {
+      "name": "Pictoicon_Arrow",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow.Png",
+      "unityGuid": "e530b1fb53e824def91db36abce55dfb",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow",
+      "width": 128,
+      "height": 128,
+      "sha256": "6aeaea1686fbd1bb64af23040b8084b4bcb4d7c51c80323fe2760949f773b536"
+    },
+    {
+      "name": "Pictoicon_Arrow_Backward",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Backward.Png",
+      "unityGuid": "e4f5e24fc143f47c2922bb7fe6833928",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Backward.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Backward",
+      "width": 128,
+      "height": 128,
+      "sha256": "3bb85148b331fab55e2bb700cc9a7ef0025cbac772bdefe607fdf8d357747e4e"
+    },
+    {
+      "name": "Pictoicon_Arrow_Bottom",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Bottom.Png",
+      "unityGuid": "9a0f39c95e1974b1fb4d68c6c4a26ded",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Bottom.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Bottom",
+      "width": 128,
+      "height": 128,
+      "sha256": "094f92fea85cf1be57a507895b4330c0f8694bd5f5235de0b286e234e5685003"
+    },
+    {
+      "name": "Pictoicon_Arrow_Down",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Down.Png",
+      "unityGuid": "c50f503636b914f70aabaea4071aabef",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Down.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Down",
+      "width": 128,
+      "height": 128,
+      "sha256": "6b88fc2462920fe741327dbeec7e8fd280068661316d26a059faff7e8d8a0593"
+    },
+    {
+      "name": "Pictoicon_Arrow_Forward",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Forward.Png",
+      "unityGuid": "e26d2e42c6d1345bebaa0d12798c0200",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Forward.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Forward",
+      "width": 128,
+      "height": 128,
+      "sha256": "f80028ce015c0673ade3ebd39070cdff33288cf138a6b83dad85543086408627"
+    },
+    {
+      "name": "Pictoicon_Arrow_Fw",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Fw.Png",
+      "unityGuid": "a9aac5571c3f14dab9ee74b2c500e986",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Fw.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Fw",
+      "width": 128,
+      "height": 128,
+      "sha256": "a0680e9237724c221c9e8c82b6de767daf01d26346da7aa6661a2b9ea8ff5142"
+    },
+    {
+      "name": "Pictoicon_Arrow_Next",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Next.Png",
+      "unityGuid": "43bd618422e7144aa9988fbb93c21104",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Next.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Next",
+      "width": 128,
+      "height": 128,
+      "sha256": "c4dd94a5bf8d56f74e01d813ac7fa32e99039cb3447edf6859bc61f559c499a2"
+    },
+    {
+      "name": "Pictoicon_Arrow_Prev",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Prev.Png",
+      "unityGuid": "a18b73386082740458dec87d7d9edc75",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Prev.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Prev",
+      "width": 128,
+      "height": 128,
+      "sha256": "6a10f2a4ef3fdf0ee3d55e4a6eb3bfb7396b06a0dac5a5f69bedf7c199eeb0e3"
+    },
+    {
+      "name": "Pictoicon_Arrow_Rw",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Rw.Png",
+      "unityGuid": "662fa6a2cd2e448008e69266127b6a9b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Rw.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Rw",
+      "width": 128,
+      "height": 128,
+      "sha256": "50bb9abc4276d20cba4378bf1fb380ad59a8586afad185f832120aa43e0b0b04"
+    },
+    {
+      "name": "Pictoicon_Arrow_Top",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Top.Png",
+      "unityGuid": "b8b9b7f0e6980475e979604d198d9598",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Top.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Top",
+      "width": 128,
+      "height": 128,
+      "sha256": "04d30ed2a547055c21c01da4badde5c3cf253abdbca27e91612532a6a8eda271"
+    },
+    {
+      "name": "Pictoicon_Arrow_Up",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrow_Up.Png",
+      "unityGuid": "19be6a05c92c1416bb181526da546a2e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrow_Up.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrow_Up",
+      "width": 128,
+      "height": 128,
+      "sha256": "641045901c91bb4d002f18fd9fb0faa1a8b399d470304db2ba10c7e1df48df2f"
+    },
+    {
+      "name": "Pictoicon_Arrows",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Arrows.Png",
+      "unityGuid": "57bdc463e49a3499fbcd461164404469",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Arrows.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Arrows",
+      "width": 128,
+      "height": 128,
+      "sha256": "97e9d9da48a65daf99682bce4143bc403cdc1f8b98cfeba9a262dc750c612f8b"
+    },
+    {
+      "name": "Pictoicon_Assassin",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Assassin.Png",
+      "unityGuid": "ea2995b1b355b4c6a8b27bdee5590001",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Assassin.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Assassin",
+      "width": 128,
+      "height": 128,
+      "sha256": "97d3b4fcf7d2a21ddbc072119563277c4c291f646d1528302ef47a6339927032"
+    },
+    {
+      "name": "Pictoicon_Attachment",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Attachment.Png",
+      "unityGuid": "e4d6f41a40ab8409b8f069216e680e1c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Attachment.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Attachment",
+      "width": 128,
+      "height": 128,
+      "sha256": "2d0dc5d72f7c5267ebd77a968fbb926fff7c70538c3585d4ed4c363f6a6a3124"
+    },
+    {
+      "name": "Pictoicon_Attack",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Attack.Png",
+      "unityGuid": "c30c8d502df564eb6ab7b65b5629615c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Attack.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Attack",
+      "width": 128,
+      "height": 128,
+      "sha256": "9163a2897614ee50b53050d635b1ad7d702ff5675a47387454af80aca38ca02c"
+    },
+    {
+      "name": "Pictoicon_Audio",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Audio.Png",
+      "unityGuid": "ae243b3217ee1417ca3bf3f2dc81ccf0",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Audio.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Audio",
+      "width": 128,
+      "height": 128,
+      "sha256": "c06ac5675727ebcc3b233555f2dab1317f0c076e43ff06dcd38e81193f33a57a"
+    },
+    {
+      "name": "Pictoicon_Award",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Award.Png",
+      "unityGuid": "88a22b9bc39a94669bcbcaa268144113",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Award.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Award",
+      "width": 128,
+      "height": 128,
+      "sha256": "a8a23f00e2a38cb9ea3fddc891ad27002bd66d729fb9ca8bd0ecde82533caddd"
+    },
+    {
+      "name": "Pictoicon_Axe",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Axe.Png",
+      "unityGuid": "c752db54a6af44c73aa053639796ac7d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Axe.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Axe",
+      "width": 128,
+      "height": 128,
+      "sha256": "9d3745f539f103ec94ffc093f626999d906b9bc7cb52bf0494ff85331d97c3fa"
+    },
+    {
+      "name": "Pictoicon_Bad_Immune",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bad_Immune.Png",
+      "unityGuid": "65479508e77a14fa5b53305ea5468537",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bad_Immune.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bad_Immune",
+      "width": 128,
+      "height": 128,
+      "sha256": "572f6c3854cf5775ce3ec26afcb77a635d995f66e47c253149e0252971b1c582"
+    },
+    {
+      "name": "Pictoicon_Bag",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bag.Png",
+      "unityGuid": "78662ffa8d2d64e05aa101893f6a593b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bag.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bag",
+      "width": 128,
+      "height": 128,
+      "sha256": "f773a006f09e7af9f829ab998e7cbc938273874353da86afcd3f99dc48a4ca3e"
+    },
+    {
+      "name": "Pictoicon_Ball",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Ball.Png",
+      "unityGuid": "c245e716cc2914b09b40d64274e619d4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Ball.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Ball",
+      "width": 128,
+      "height": 128,
+      "sha256": "eee83f5e12b393243f14ada162a8b4a17efe565d91d285a3d79a17f68838fce6"
+    },
+    {
+      "name": "Pictoicon_Ball_Attack",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Ball_Attack.Png",
+      "unityGuid": "56bd84347d4634506b41c20e820a3d78",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Ball_Attack.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Ball_Attack",
+      "width": 128,
+      "height": 128,
+      "sha256": "443adb0366ea8389aad7d1ce1b77761fe23135e541040d826956e479516ff3cc"
+    },
+    {
+      "name": "Pictoicon_Bang",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bang.Png",
+      "unityGuid": "c7b18de5c490c400ea69ec6e69e46709",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bang.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bang",
+      "width": 128,
+      "height": 128,
+      "sha256": "dee325d9d724cebd929e5c3599e25c846ec8924af478cfc5d8958776d8a79d39"
+    },
+    {
+      "name": "Pictoicon_Bank",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bank.Png",
+      "unityGuid": "19f099e1bf795404082053ab0314be14",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bank.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bank",
+      "width": 128,
+      "height": 128,
+      "sha256": "fba50ee7b4e6345c722d69007c04b96e4fd96d896f1c750aecc23b397cc0b010"
+    },
+    {
+      "name": "Pictoicon_Bat",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bat.Png",
+      "unityGuid": "537a6d6e416e04044872477f1a17eef6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bat.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bat",
+      "width": 128,
+      "height": 128,
+      "sha256": "52b001536ab335f534d612f66a75da0a5a595171d598bfe359c7e2af8b19e3ab"
+    },
+    {
+      "name": "Pictoicon_Battery_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Battery_0.Png",
+      "unityGuid": "eb81b7538527a40bab428a4a5df55048",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Battery_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Battery_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "a28ae29a62d2bd762b5d948d3f93c5d593915dfb07cf7ecca341471188ee41ac"
+    },
+    {
+      "name": "Pictoicon_Battery_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Battery_1.Png",
+      "unityGuid": "63f99a846cde54086b976944cabd0700",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Battery_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Battery_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "532f2f8a034a901907bfab7a304aad3865de82089fb20beee83054c5f3049942"
+    },
+    {
+      "name": "Pictoicon_Battery_2",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Battery_2.Png",
+      "unityGuid": "db4bee6425c354399b694b794d3dcfe1",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Battery_2.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Battery_2",
+      "width": 128,
+      "height": 128,
+      "sha256": "866bb3670f23cf4c0172448514bfdb90e090653d1a2432eb281639f03934608b"
+    },
+    {
+      "name": "Pictoicon_Battery_3",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Battery_3.Png",
+      "unityGuid": "8f175754b354e4055aa6d8a074ada7b7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Battery_3.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Battery_3",
+      "width": 128,
+      "height": 128,
+      "sha256": "6d129ddb34b4a7a28b2f89ccd9f704addeed95b40ef2f783f1d8d1c1445344a7"
+    },
+    {
+      "name": "Pictoicon_Battle",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Battle.Png",
+      "unityGuid": "18231ff48b4314455879e6049bee3de9",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Battle.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Battle",
+      "width": 128,
+      "height": 128,
+      "sha256": "2263daad6e52f5ec1f8f4334d17c6448fd50077542c5f054d0540e869b99fa4e"
+    },
+    {
+      "name": "Pictoicon_Bell",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bell.Png",
+      "unityGuid": "c089161d6158443c1add919ef8f9ac15",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bell.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bell",
+      "width": 128,
+      "height": 128,
+      "sha256": "17224a96231533a0c79508310a0332509ca094db5826f176a7b9bbdb5c403465"
+    },
+    {
+      "name": "Pictoicon_Bell_Mute",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bell_Mute.Png",
+      "unityGuid": "807db7f8c27c54009aef6999913f57c8",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bell_Mute.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bell_Mute",
+      "width": 128,
+      "height": 128,
+      "sha256": "09979173eb9994c7458b7e3ef0faddde7f9160e5363aa52ccf3aa09eb88848d9"
+    },
+    {
+      "name": "Pictoicon_Bin",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bin.Png",
+      "unityGuid": "0d7b1a6a1df7b4d33b0919faafb84ca9",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bin.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bin",
+      "width": 128,
+      "height": 128,
+      "sha256": "838d6b8e3db49a090713d7f4ed191774fcbb1db5afce83dff7df0b939b29e33e"
+    },
+    {
+      "name": "Pictoicon_Blackhole",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Blackhole.Png",
+      "unityGuid": "9bc2c99fae71f42b0ad462fbe2bff730",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Blackhole.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Blackhole",
+      "width": 128,
+      "height": 128,
+      "sha256": "d5a9da91844050eb88661d2c2cfc0d50b2f21754ed90c6dc854bbc9782d52645"
+    },
+    {
+      "name": "Pictoicon_Block_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Block_0.Png",
+      "unityGuid": "8af7f7da9209c45598c2034865aea01c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Block_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Block_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "94eb6f0c9a9f4a47f412cc14f9d143d68cc6a46596c7f679b7bd7adcd01f2fbc"
+    },
+    {
+      "name": "Pictoicon_Block_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Block_1.Png",
+      "unityGuid": "84690742fe59f4e12ac7fc8d0ed6e50c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Block_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Block_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "7cfa1a581195829d02eb8d31e270e3f64e54d3916274ffbb039f4ba14bff6149"
+    },
+    {
+      "name": "Pictoicon_Bone",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bone.Png",
+      "unityGuid": "113497dbb3b13472d818d9b4e00cd57b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bone.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bone",
+      "width": 128,
+      "height": 128,
+      "sha256": "b9e67ba9af8a33d5fd79a3f24e606e7ada326442d467c8aba4aeeb1ae1a3d855"
+    },
+    {
+      "name": "Pictoicon_Book_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Book_0.Png",
+      "unityGuid": "b0c82cdf0a1d34523873f52a6ad16797",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Book_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Book_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "4218044153df17754b3033a4306525b87fe8c5e1b7b4dfe2c528992a59f51741"
+    },
+    {
+      "name": "Pictoicon_Bookmark",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bookmark.Png",
+      "unityGuid": "476452e39b35640529d2dedac76ec9d7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bookmark.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bookmark",
+      "width": 128,
+      "height": 128,
+      "sha256": "91864c824770aa7b9b214e5ca22dd29ba9db33c6a0df58b46acf28c952fa9189"
+    },
+    {
+      "name": "Pictoicon_Bookmark_Add",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bookmark_Add.Png",
+      "unityGuid": "b1dc4c9eeb74d4b9ebbf949c8342572c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bookmark_Add.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bookmark_Add",
+      "width": 128,
+      "height": 128,
+      "sha256": "188951d07ceb4f20ba3d7006eb8d4c47a68102db1e7c889527f40abe508472a6"
+    },
+    {
+      "name": "Pictoicon_Boom",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Boom.Png",
+      "unityGuid": "6a804579ee240497ab330defdfcfad4e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Boom.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Boom",
+      "width": 128,
+      "height": 128,
+      "sha256": "980961a91cdb7e5c9cf138ceaf092fab4718ddb260103db89568c51f7af26c77"
+    },
+    {
+      "name": "Pictoicon_Boot_Fly",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Boot_Fly.Png",
+      "unityGuid": "37e191a3bd90e42d898ef42cea176688",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Boot_Fly.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Boot_Fly",
+      "width": 128,
+      "height": 128,
+      "sha256": "812ff539352465dd9b407e1ad0a63c63685dffb9a2b4ff81106cfc5d2103ed8f"
+    },
+    {
+      "name": "Pictoicon_Boss",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Boss.Png",
+      "unityGuid": "5290afb7163ad4b3d9211916c5266ccf",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Boss.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Boss",
+      "width": 128,
+      "height": 128,
+      "sha256": "795bd9601f0de5df3b6b211151940f1797c468d30dbbd7e48aa288495ece4dd7"
+    },
+    {
+      "name": "Pictoicon_Buff",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Buff.Png",
+      "unityGuid": "3ed6de5139c654e459ff59751d7ab9b2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Buff.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Buff",
+      "width": 128,
+      "height": 128,
+      "sha256": "4b4cfd8a0478c44a0deea52992b285470fc02a015bf991966b8c27871a018c88"
+    },
+    {
+      "name": "Pictoicon_Bulb",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Bulb.Png",
+      "unityGuid": "be2ad1478e1934aaeaf8647226819ac2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Bulb.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Bulb",
+      "width": 128,
+      "height": 128,
+      "sha256": "d1d443058d199e8f6f308eefebd6cad133bf011a1f4f1887e098e199add7f83e"
+    },
+    {
+      "name": "Pictoicon_Cactus",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Cactus.Png",
+      "unityGuid": "3327e0f395a1947e38f2c530c51b109b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Cactus.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Cactus",
+      "width": 128,
+      "height": 128,
+      "sha256": "d8ce1c411929bb7e9c63e82df14e846f3718660198a458fece16fadb05e85d10"
+    },
+    {
+      "name": "Pictoicon_Calendar",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Calendar.Png",
+      "unityGuid": "e9cf63a8bd3c0426f90025a85092b561",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Calendar.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Calendar",
+      "width": 128,
+      "height": 128,
+      "sha256": "ef24c029e70d4d179754aef71ab44b0f1c1e77c248a2b196832533d09983d824"
+    },
+    {
+      "name": "Pictoicon_Camera",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Camera.Png",
+      "unityGuid": "015da74974377405b9b5f01ae047f932",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Camera.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Camera",
+      "width": 128,
+      "height": 128,
+      "sha256": "a6a65a5dc085ac23d27644e7cbe5d68d187091a976224a9efd109f1686228031"
+    },
+    {
+      "name": "Pictoicon_Cancle",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Cancle.Png",
+      "unityGuid": "cabecfcbda0884488b76db6f6975c657",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Cancle.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Cancle",
+      "width": 128,
+      "height": 128,
+      "sha256": "5f1a6e1d7ff3fd648d7ca77538f584d32f16996c58d4e5829039610f961c9faf"
+    },
+    {
+      "name": "Pictoicon_Candle",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Candle.Png",
+      "unityGuid": "0bc0b830e6b5145368353e9355fbff1a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Candle.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Candle",
+      "width": 128,
+      "height": 128,
+      "sha256": "5e0812a57bc86f6237ddb5fa7ca16ee91972509006bdf74fb1bdd948d462cb89"
+    },
+    {
+      "name": "Pictoicon_Card",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Card.Png",
+      "unityGuid": "b44bf247421e6493bb9a94686849f247",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Card.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Card",
+      "width": 128,
+      "height": 128,
+      "sha256": "826feacdc67b5e0f0a895d54de83572f802ce6962e44e837d4e84378952a9b89"
+    },
+    {
+      "name": "Pictoicon_Cart",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Cart.Png",
+      "unityGuid": "844cac0600ee14cbaa713e05486058f9",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Cart.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Cart",
+      "width": 128,
+      "height": 128,
+      "sha256": "1d69409aacfed5488835d888db5c262125a27cc03ce7834d26e601709d87595e"
+    },
+    {
+      "name": "Pictoicon_Castle",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Castle.Png",
+      "unityGuid": "eeb92b0b27e1f4ae295a465f48d6ab44",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Castle.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Castle",
+      "width": 128,
+      "height": 128,
+      "sha256": "aaee8996b300a5da666fa2de5f0421a330d6bc508ab099b5472bebace4ef7095"
+    },
+    {
+      "name": "Pictoicon_Caution",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Caution.Png",
+      "unityGuid": "fbc4d671ad11546dd8b530ce2a96dbda",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Caution.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Caution",
+      "width": 128,
+      "height": 128,
+      "sha256": "fa7b9911327e8c17912960e51b3da56f434015bce852f70773d7a907f7dcc1cd"
+    },
+    {
+      "name": "Pictoicon_Chat",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chat.Png",
+      "unityGuid": "b2251f68a3bf949f4bc30726cacf24d5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chat.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chat",
+      "width": 128,
+      "height": 128,
+      "sha256": "f3acced6a43abb0436aff0df47d78d1efdb039f54ec80b9739641df9514861ed"
+    },
+    {
+      "name": "Pictoicon_Check",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Check.Png",
+      "unityGuid": "b3a5b2eee17654fb595156ac905a78f6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Check.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Check",
+      "width": 128,
+      "height": 128,
+      "sha256": "7ecfd3842693d05729af0aed18d04f93fd912b514bd029f50ceb58c43338bc8f"
+    },
+    {
+      "name": "Pictoicon_Chess_King",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chess_King.Png",
+      "unityGuid": "48d79c8d69ffd40a0972f46434dd7007",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chess_King.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chess_King",
+      "width": 128,
+      "height": 128,
+      "sha256": "722adbcc09c9e7d32208730b8576ed1a38d24282805957dbae693c3ca056b966"
+    },
+    {
+      "name": "Pictoicon_Chess_Knight",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chess_Knight.Png",
+      "unityGuid": "71db48800292948c9ae6bbbd76db20a4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chess_Knight.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chess_Knight",
+      "width": 128,
+      "height": 128,
+      "sha256": "973ae865fe700696fc73513e92ab9ac70389dd282f3be90d53b077f4885ec270"
+    },
+    {
+      "name": "Pictoicon_Chess_Pawn",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chess_Pawn.Png",
+      "unityGuid": "2a742499639b14fb6b84e6ee26c79416",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chess_Pawn.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chess_Pawn",
+      "width": 128,
+      "height": 128,
+      "sha256": "900f77f236a043cb5f01c20cc4ae38604a26888b76871c41b2f64eb640989d49"
+    },
+    {
+      "name": "Pictoicon_Chess_Queen",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chess_Queen.Png",
+      "unityGuid": "e16a907195ad940d78abf820e0f3d71f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chess_Queen.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chess_Queen",
+      "width": 128,
+      "height": 128,
+      "sha256": "241e0863ea32f51be1f17bb7a5e74a72332e19d3086e5e9c8b7c403c367d81ed"
+    },
+    {
+      "name": "Pictoicon_Chess_Rock",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chess_Rock.Png",
+      "unityGuid": "1831b8f7a299a4ff38c1e6b376006d3c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chess_Rock.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chess_Rock",
+      "width": 128,
+      "height": 128,
+      "sha256": "c532c0887eb7ea589ee0d1b0a19d9048fcd9993446c10863be0923e09f26d89d"
+    },
+    {
+      "name": "Pictoicon_Chest_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chest_0.Png",
+      "unityGuid": "1e490602871874736baf9179df2e89ad",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chest_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chest_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "2aaf47a2d2dba2d9529de484344744756a84c5d8450db75ffdbc1b1853026a16"
+    },
+    {
+      "name": "Pictoicon_Chest_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Chest_1.Png",
+      "unityGuid": "d1f60719c418e4cc4aa0f0ae2edecf20",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Chest_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Chest_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "850c00f9f8f310e7b2de9e4711b2fdc2c340085490ac57c91d33b2c564b7ac3d"
+    },
+    {
+      "name": "Pictoicon_Close",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Close.Png",
+      "unityGuid": "0dc6643ddb3934127b12402c7fd7bcf1",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Close.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Close",
+      "width": 128,
+      "height": 128,
+      "sha256": "bb1d93dd0bdc9562d7d90de78f6499de2c6312e233b47c3898111116479312e8"
+    },
+    {
+      "name": "Pictoicon_Cloth",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Cloth.Png",
+      "unityGuid": "c3d4cadeb0337454188af57e71259b44",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Cloth.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Cloth",
+      "width": 128,
+      "height": 128,
+      "sha256": "bf1c8e147d5cf6b2ee89d2aba8e8227efa9ea61271698d36a365d81f941cbecc"
+    },
+    {
+      "name": "Pictoicon_Clover",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Clover.Png",
+      "unityGuid": "ad58e2eb60fbb4e26ad97e185ccc15b4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Clover.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Clover",
+      "width": 128,
+      "height": 128,
+      "sha256": "ff47cc0f5083e5fd766aacd9b7940af4173a361aabc383b4bf85c5cccbbb97b2"
+    },
+    {
+      "name": "Pictoicon_Coal",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Coal.Png",
+      "unityGuid": "c8dc8d1f8ab2b435c95cad294954c32e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Coal.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Coal",
+      "width": 128,
+      "height": 128,
+      "sha256": "a5c7cc4e62611ce98f29a2ae331e62eecd131c538513bcc4cfb92e1f3e6f0ca5"
+    },
+    {
+      "name": "Pictoicon_Coin_Crown",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Coin_Crown.Png",
+      "unityGuid": "3378b76f51a00446381fffea167017a1",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Coin_Crown.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Coin_Crown",
+      "width": 128,
+      "height": 128,
+      "sha256": "24e283d0b87dd9b9133f3ce8efe34fbb51a71415c57138a0b071c4b41f437c19"
+    },
+    {
+      "name": "Pictoicon_Coin_Skull",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Coin_Skull.Png",
+      "unityGuid": "522578d3245a747f08af3a97bde81f2e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Coin_Skull.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Coin_Skull",
+      "width": 128,
+      "height": 128,
+      "sha256": "2d4ab1eed37137393c6ed14818b9ec53f8b22b73492e2dd7f5220afcbd9674a2"
+    },
+    {
+      "name": "Pictoicon_Coin_Star",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Coin_Star.Png",
+      "unityGuid": "0a6c7e21273074a659dade7a1e882a06",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Coin_Star.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Coin_Star",
+      "width": 128,
+      "height": 128,
+      "sha256": "92c29c8b7bf4f347d10e30300927a8d8ceceaef799dbb70a0b00fddaa961177d"
+    },
+    {
+      "name": "Pictoicon_Compass",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Compass.Png",
+      "unityGuid": "2f52da91f951a4f89928e1947af41aec",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Compass.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Compass",
+      "width": 128,
+      "height": 128,
+      "sha256": "567d4e4d389a0984618054a9fcb1cc0d64054fa49a0b25dff9b88d12d952a87f"
+    },
+    {
+      "name": "Pictoicon_Confirm",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Confirm.Png",
+      "unityGuid": "ad49b272d4cb54d6296db0cca2717b15",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Confirm.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Confirm",
+      "width": 128,
+      "height": 128,
+      "sha256": "6fe0a658b9b7c701a8acf3f19f96e6ed40243bccb244cfeda41236512b217362"
+    },
+    {
+      "name": "Pictoicon_Connect",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Connect.Png",
+      "unityGuid": "e72e939cf35b745859afb6530dc386ed",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Connect.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Connect",
+      "width": 128,
+      "height": 128,
+      "sha256": "aa743d89f3a667863818bd0efd15fd7079fb8614ac9d67fe09f2f8a32cc4fd0f"
+    },
+    {
+      "name": "Pictoicon_Control_Fw",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Control_Fw.Png",
+      "unityGuid": "871962aebb3fb4893afdc5647cd61988",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Control_Fw.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Control_Fw",
+      "width": 128,
+      "height": 128,
+      "sha256": "2676f03e64fa311b3bef6874faa0486f94cbd9c60e292571044a4c786808089b"
+    },
+    {
+      "name": "Pictoicon_Control_Pause",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Control_Pause.Png",
+      "unityGuid": "848a40579345940e785a2220306a25ec",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Control_Pause.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Control_Pause",
+      "width": 128,
+      "height": 128,
+      "sha256": "d2efb0c54a301c07f825e35cc3494e4ffc2ecea24aba5055828c707b918a5a07"
+    },
+    {
+      "name": "Pictoicon_Control_Play",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Control_Play.Png",
+      "unityGuid": "81642f823666e4c7ca00670b697f503f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Control_Play.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Control_Play",
+      "width": 128,
+      "height": 128,
+      "sha256": "bb5ea0c97542bc64cf6e5deb6164081b8488d25b290a97e99c7124a69429efe7"
+    },
+    {
+      "name": "Pictoicon_Control_Rw",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Control_Rw.Png",
+      "unityGuid": "8667da7dc7c5b4d9cb133fac68b88bf2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Control_Rw.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Control_Rw",
+      "width": 128,
+      "height": 128,
+      "sha256": "852eb96f3a7cf349c05b7053c882451179d221af6a01b6369fe3d451f1c94625"
+    },
+    {
+      "name": "Pictoicon_Control_Stop",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Control_Stop.Png",
+      "unityGuid": "ce7350448d21446848e116f1db2965bf",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Control_Stop.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Control_Stop",
+      "width": 128,
+      "height": 128,
+      "sha256": "5608f88989d14683119df23fd5478691b7d7c658906a2e9b61ac5ddf1f3b1abe"
+    },
+    {
+      "name": "Pictoicon_Copy",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Copy.Png",
+      "unityGuid": "98846951a0ae447ee880f832ce381a4f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Copy.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Copy",
+      "width": 128,
+      "height": 128,
+      "sha256": "d5c6af0b79e794f39dab687ff44e626e001a743452f46f1234a55133739c1e06"
+    },
+    {
+      "name": "Pictoicon_Coupon",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Coupon.Png",
+      "unityGuid": "b0604c654249549319813ea3b191dc35",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Coupon.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Coupon",
+      "width": 128,
+      "height": 128,
+      "sha256": "80aba233e8c751f4127e17b4892dcdb91a5565a627ab37a4730e726f5d8b53ad"
+    },
+    {
+      "name": "Pictoicon_Critical",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Critical.Png",
+      "unityGuid": "b23bdf5663df14a32965923ccac3f24c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Critical.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Critical",
+      "width": 128,
+      "height": 128,
+      "sha256": "0db7164e1bd9f64d152198eba2132ff68b914113ffcf80b08d33019eeeb329fd"
+    },
+    {
+      "name": "Pictoicon_Crown",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Crown.Png",
+      "unityGuid": "04dbfe7fd066f459cb33b56236d78f8a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Crown.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Crown",
+      "width": 128,
+      "height": 128,
+      "sha256": "43b8f3d7ba7decf4fc5798229739d485e178fff6b42affa8c6fe54910fdc8b21"
+    },
+    {
+      "name": "Pictoicon_Crystal",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Crystal.Png",
+      "unityGuid": "c6d80e0f7e7fd48a0bbdc58c04db4c83",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Crystal.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Crystal",
+      "width": 128,
+      "height": 128,
+      "sha256": "361bcf1bb30dc91cd8bcde0f30fdfd2e5309808c7717ed563fbc77e4bc46936b"
+    },
+    {
+      "name": "Pictoicon_Damage",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Damage.Png",
+      "unityGuid": "e5d2c950ffb9e431d9dfe69d48911a9d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Damage.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "29a9dde1028e4548786723bb40d1e35eb9149fd90f760856d59e698053ea3c6e"
+    },
+    {
+      "name": "Pictoicon_Debug",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Debug.Png",
+      "unityGuid": "da4f9dddc97424e6eb5f0b21c00e2df3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Debug.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Debug",
+      "width": 128,
+      "height": 128,
+      "sha256": "dee5d37fc35c88943927e588e470e8986174bdb107dbc0ae82218039a5836f36"
+    },
+    {
+      "name": "Pictoicon_Defense",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Defense.Png",
+      "unityGuid": "c00de87e1e1c14f21831172ff50c2e4e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Defense.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Defense",
+      "width": 128,
+      "height": 128,
+      "sha256": "2bf0a3952b204499018b4fb59c19885798a079a44618e8b2defcc3f62948f3a8"
+    },
+    {
+      "name": "Pictoicon_Defense_Weak",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Defense_Weak.Png",
+      "unityGuid": "47966b0b12f6c4d828ac4e88f36c4474",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Defense_Weak.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Defense_Weak",
+      "width": 128,
+      "height": 128,
+      "sha256": "c95e748f0c8f1bfc653f2abe3a12d206f8aa7bcf10696a18146737991ab27be8"
+    },
+    {
+      "name": "Pictoicon_Detail",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Detail.Png",
+      "unityGuid": "34197fb77419e4874b9092c497da1f59",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Detail.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Detail",
+      "width": 128,
+      "height": 128,
+      "sha256": "33475829e2bcfadc1ca30f5f45bafaa49ee657050523386d36fc1dc592d33b76"
+    },
+    {
+      "name": "Pictoicon_Dice",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Dice.Png",
+      "unityGuid": "26be0b8b465c240afac8b28136ff1650",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Dice.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Dice",
+      "width": 128,
+      "height": 128,
+      "sha256": "980fab1bd37a988c1705cb8f581b0477b9ca9c80df9681b8be8f1053a8d30a48"
+    },
+    {
+      "name": "Pictoicon_Dig",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Dig.Png",
+      "unityGuid": "799f9b8cc0dd74f2d8491adc6ed7d4b2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Dig.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Dig",
+      "width": 128,
+      "height": 128,
+      "sha256": "af7d38f3b849d6dee956d4618edf69481d7d25347f9931a67ceda8386a156217"
+    },
+    {
+      "name": "Pictoicon_Direct",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Direct.Png",
+      "unityGuid": "4be2b705527634a6ba4b0b4cc5c059a4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Direct.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Direct",
+      "width": 128,
+      "height": 128,
+      "sha256": "f187185e12f9f0d52a3a00830a340ea1468c120cd2fa84f540c82a97c7542579"
+    },
+    {
+      "name": "Pictoicon_Direction",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Direction.Png",
+      "unityGuid": "37725d03f79e24a33976ff796ab6e577",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Direction.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Direction",
+      "width": 128,
+      "height": 128,
+      "sha256": "7283292acc939af77ee349e3c13ec84097c9aaef6f993042895aff166818cf60"
+    },
+    {
+      "name": "Pictoicon_Dislike",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Dislike.Png",
+      "unityGuid": "1b055481ede8b4719aeccce493a931da",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Dislike.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Dislike",
+      "width": 128,
+      "height": 128,
+      "sha256": "6dabd07ffa635ddc1fcc2dbbf54534500d88906a548ea17b1a1646315bf7a664"
+    },
+    {
+      "name": "Pictoicon_Display",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Display.Png",
+      "unityGuid": "89b9791c1ac764df2b7c7a19051f0303",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Display.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Display",
+      "width": 128,
+      "height": 128,
+      "sha256": "f5041119b74ab8ca2ef161a3c1559aca03d1650478694800158d16aad79ba3f2"
+    },
+    {
+      "name": "Pictoicon_Documnet",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Documnet.Png",
+      "unityGuid": "ecb21af558d784dbba649db95d64d743",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Documnet.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Documnet",
+      "width": 128,
+      "height": 128,
+      "sha256": "004e7e4af96f5ace49d219cd570192f241c88f589203ecddcb909c4613dbba00"
+    },
+    {
+      "name": "Pictoicon_Door",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Door.Png",
+      "unityGuid": "5286c3a3a8d58465fab2e793f00b9437",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Door.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Door",
+      "width": 128,
+      "height": 128,
+      "sha256": "23b60ed617841634512fe8a475fee0a9e5da1669e198652799d50b4f51efe01e"
+    },
+    {
+      "name": "Pictoicon_Download",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Download.Png",
+      "unityGuid": "ebe5c126b46e84a888d5ff6a6afec8f8",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Download.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Download",
+      "width": 128,
+      "height": 128,
+      "sha256": "1dd599fa09485ef4f113f7a64d974b4b4a93faac5194aed2f87642b38d8f0bbe"
+    },
+    {
+      "name": "Pictoicon_Emoji_Angry",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Emoji_Angry.Png",
+      "unityGuid": "70a8bff414e9f4fccb2b0886c30c2189",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Emoji_Angry.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Emoji_Angry",
+      "width": 128,
+      "height": 128,
+      "sha256": "8b6e94a1be76ad3aed662c8bd5f18ab092d3270530a31abdb424eecd1ac8fb49"
+    },
+    {
+      "name": "Pictoicon_Emoji_Sad",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Emoji_Sad.Png",
+      "unityGuid": "90d3a4ddef1ff4b75adca4671fb4b297",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Emoji_Sad.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Emoji_Sad",
+      "width": 128,
+      "height": 128,
+      "sha256": "827bd5f73ad05a8f20336d2726c214f664311911c5b2b1be908d5dff4f461562"
+    },
+    {
+      "name": "Pictoicon_Emoji_Smile",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Emoji_Smile.Png",
+      "unityGuid": "3c4e5b23de9354ad791a37b8728ba068",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Emoji_Smile.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Emoji_Smile",
+      "width": 128,
+      "height": 128,
+      "sha256": "de069546018a3bf4e44030b117f8564218bc1e87630e45fbead699a720e0b732"
+    },
+    {
+      "name": "Pictoicon_Emoji_Wow",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Emoji_Wow.Png",
+      "unityGuid": "0bdbdb160925c4145809b2c7b81d7649",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Emoji_Wow.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Emoji_Wow",
+      "width": 128,
+      "height": 128,
+      "sha256": "0ca08729aff23b5b3712b5b5ac7b0e81fcbdf5919b0c91be51185f83f21c26a9"
+    },
+    {
+      "name": "Pictoicon_Energy",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Energy.Png",
+      "unityGuid": "2770b8aa364374c2eaed6f1dfe5f3374",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Energy.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Energy",
+      "width": 128,
+      "height": 128,
+      "sha256": "5bd8a3dbe9a4afba8f57cc2e856d57c8bdb816efead999ab1e1a61bf156cfc38"
+    },
+    {
+      "name": "Pictoicon_Expand",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Expand.Png",
+      "unityGuid": "ab4fbc9e1c7134bc4bc921a5b3b681e2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Expand.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Expand",
+      "width": 128,
+      "height": 128,
+      "sha256": "656f474025db25f93a9ab3e987e800da114af196f07cb496ce0eb0c66069f345"
+    },
+    {
+      "name": "Pictoicon_Export",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Export.Png",
+      "unityGuid": "d621afde2818d4392b95d93e545a2fca",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Export.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Export",
+      "width": 128,
+      "height": 128,
+      "sha256": "074b377a70b69b408987c435e2e703a191e6426a55659d11b7316aa8da6f5812"
+    },
+    {
+      "name": "Pictoicon_Eyeball",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Eyeball.Png",
+      "unityGuid": "a9a180b64ef554842a56c74f44dd9c43",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Eyeball.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Eyeball",
+      "width": 128,
+      "height": 128,
+      "sha256": "b5aaf5b4f283b93e906034bdd109248a8de9a1694763131704f47b9da3162486"
+    },
+    {
+      "name": "Pictoicon_Feather",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Feather.Png",
+      "unityGuid": "5827f43a363024414ac868ed983db2f6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Feather.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Feather",
+      "width": 128,
+      "height": 128,
+      "sha256": "aa44dd283a53cf5337ede73f891f5a644b09b1f52026879cec1d062d5c9afc55"
+    },
+    {
+      "name": "Pictoicon_Female",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Female.Png",
+      "unityGuid": "ffb55a01fc5ab4bd492ebc4f3d8336c6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Female.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Female",
+      "width": 128,
+      "height": 128,
+      "sha256": "627e45db60954f80b4f050fecce9fb52fe450e6a544d7c5ed8c3b787578504ce"
+    },
+    {
+      "name": "Pictoicon_Fense",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fense.Png",
+      "unityGuid": "0cd51d6e1b4834dd0bf3dd9e7d9ddda2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fense.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fense",
+      "width": 128,
+      "height": 128,
+      "sha256": "05bc18c91b8e2a35447f55bc9f57c1e3307551a2023393948295d0cf6283b7a6"
+    },
+    {
+      "name": "Pictoicon_Fight",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fight.Png",
+      "unityGuid": "a0cdca96ac4ec46dbae1305d1210297c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fight.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fight",
+      "width": 128,
+      "height": 128,
+      "sha256": "5132c2c137c54ac05e7d0ebca643ed1f29cfee94e823a1f08c915ae3cb7d2aca"
+    },
+    {
+      "name": "Pictoicon_Filter",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Filter.Png",
+      "unityGuid": "7976ad5bad170425baf9350cc68be3b3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Filter.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Filter",
+      "width": 128,
+      "height": 128,
+      "sha256": "25a4e08bd025f187c818e4328d10f098721ef611a12fa1b533e6a825c80ed3ad"
+    },
+    {
+      "name": "Pictoicon_Fire",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fire.Png",
+      "unityGuid": "cf7c0d7b5cc9c48e8bbe436516401e61",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fire.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fire",
+      "width": 128,
+      "height": 128,
+      "sha256": "2e03afc788ba35b0ce43b19cf6decf30b1df7058f32617c0c732ed49e999a22a"
+    },
+    {
+      "name": "Pictoicon_Firm",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Firm.Png",
+      "unityGuid": "135b35efbbd614f87b185cb41edead09",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Firm.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Firm",
+      "width": 128,
+      "height": 128,
+      "sha256": "5cd9993dd9a880f6fa346e11641251eaaa30c2599a0c41a61e99ce0583c9bcd3"
+    },
+    {
+      "name": "Pictoicon_Fish",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fish.Png",
+      "unityGuid": "5e89dd9289fc64db1b4f9a0e381552fc",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fish.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fish",
+      "width": 128,
+      "height": 128,
+      "sha256": "24c4a2853966746669f6dd26cbafc7fe61749e61f8b83fb167bfe92e919cd469"
+    },
+    {
+      "name": "Pictoicon_Fish_Bone",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fish_Bone.Png",
+      "unityGuid": "652701d211f534133a48644a470a48c2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fish_Bone.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fish_Bone",
+      "width": 128,
+      "height": 128,
+      "sha256": "1d350aeb81c5c528fd757c3d0a2a3b74e87bcb98dee35370886b2a89e8c42cb2"
+    },
+    {
+      "name": "Pictoicon_Fist",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fist.Png",
+      "unityGuid": "9c9fc87521106447e8fbd8db609514a5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fist.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fist",
+      "width": 128,
+      "height": 128,
+      "sha256": "83a1f6ac439814ec437af49e77c02d7dce1f654280262417dc16169652862b54"
+    },
+    {
+      "name": "Pictoicon_Fix",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Fix.Png",
+      "unityGuid": "abeb154978c56421d984a0ad9196396c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Fix.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Fix",
+      "width": 128,
+      "height": 128,
+      "sha256": "e0c6b240f7e17aa46083bac6fb80fcb258f32c4b333cb0bc451d93683af4a201"
+    },
+    {
+      "name": "Pictoicon_Flag_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Flag_0.Png",
+      "unityGuid": "c7e86f9817630495a90c04d531740c5e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Flag_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Flag_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "3cd32049fde56ef648a2d67a15d1bb3af05762b7488254bde43ce9013fbb0d35"
+    },
+    {
+      "name": "Pictoicon_Flag_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Flag_1.Png",
+      "unityGuid": "b495cef9775be496888ce2138f987d3a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Flag_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Flag_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "f186d1f3079ca34193b2f54652d677239acce1c794edcdf8a9858b8d435978bb"
+    },
+    {
+      "name": "Pictoicon_Flower",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Flower.Png",
+      "unityGuid": "28a34d8a3d8794d7fb7adb5e9f2e8f2e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Flower.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Flower",
+      "width": 128,
+      "height": 128,
+      "sha256": "5f3c8ab5e69f2d5eeb103de2f849320b572d2e772d15ce357de561b560a81279"
+    },
+    {
+      "name": "Pictoicon_Focus",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Focus.Png",
+      "unityGuid": "e8b4a3393b27e49a894df3b833d5da01",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Focus.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Focus",
+      "width": 128,
+      "height": 128,
+      "sha256": "40e09957674d39963887a95e3ca2f951ad62bfc5e0a1d7a0b9ea6a9958f6e5a4"
+    },
+    {
+      "name": "Pictoicon_Folder",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Folder.Png",
+      "unityGuid": "aeb5d9c57606d4dfe8a6b9fbf2f02724",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Folder.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Folder",
+      "width": 128,
+      "height": 128,
+      "sha256": "0c9198971b688a25e413a9f288475578b4b09e713ec70948a9f02fb554caf117"
+    },
+    {
+      "name": "Pictoicon_Friend_Add",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Friend_Add.Png",
+      "unityGuid": "09903b1016c0f457894211d889592494",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Friend_Add.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Friend_Add",
+      "width": 128,
+      "height": 128,
+      "sha256": "53cb599f392dfda0ce4d238cc97b02175b038327db94390f196c8409b77a973f"
+    },
+    {
+      "name": "Pictoicon_Gacha_Ball",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gacha_Ball.Png",
+      "unityGuid": "f461788c94e5049c1a3192dbdfa0674c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gacha_Ball.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gacha_Ball",
+      "width": 128,
+      "height": 128,
+      "sha256": "cb49bf1c26404c7cf56bd2d02264403182d203c202a3f43e26d60ff18b712347"
+    },
+    {
+      "name": "Pictoicon_Game",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Game.Png",
+      "unityGuid": "b4efb8742147348bf8d5316bee7b4003",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Game.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Game",
+      "width": 128,
+      "height": 128,
+      "sha256": "b75beb297d555ee2b81b890976f3d6829332851b7eeda719f1bce95c80357ccb"
+    },
+    {
+      "name": "Pictoicon_Gear",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gear.Png",
+      "unityGuid": "444d5ea5901dc4213b421da04aecec45",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gear.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gear",
+      "width": 128,
+      "height": 128,
+      "sha256": "0c4f3c65f6360cb20d84b3c349742250bf7b2229487495eaad01af15a708a71b"
+    },
+    {
+      "name": "Pictoicon_Gem_Diamond",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gem_Diamond.Png",
+      "unityGuid": "2ed8a973348554a6f95e2a05953da87e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gem_Diamond.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gem_Diamond",
+      "width": 128,
+      "height": 128,
+      "sha256": "81e5773a599b91ac91963582cccc06774fa39f0c23032d853a22083dcdf07c2d"
+    },
+    {
+      "name": "Pictoicon_Gem_Hexagon",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gem_Hexagon.Png",
+      "unityGuid": "0e4d16e64c0e340eabdad765afcf960b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gem_Hexagon.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gem_Hexagon",
+      "width": 128,
+      "height": 128,
+      "sha256": "254595fbb5d50eec5b1b930aa9c6968718db271903346982bf6063b827384476"
+    },
+    {
+      "name": "Pictoicon_Gem_Rhombus",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gem_Rhombus.Png",
+      "unityGuid": "213897838489d497388d7fd4b68fa02e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gem_Rhombus.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gem_Rhombus",
+      "width": 128,
+      "height": 128,
+      "sha256": "2d477cec4bfb6a319436d3eb9b55da0b55b9b91f4e723f812feacc957a13ed7d"
+    },
+    {
+      "name": "Pictoicon_Gem_Triangle",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gem_Triangle.Png",
+      "unityGuid": "316591c35c9614ba482ecf92ad868671",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gem_Triangle.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gem_Triangle",
+      "width": 128,
+      "height": 128,
+      "sha256": "3a52ff537b21c504e60686228ff7a768ee56b88a4bcda7171d7974ef437e798b"
+    },
+    {
+      "name": "Pictoicon_Gift",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gift.Png",
+      "unityGuid": "62040ae0f4e304328ad8a9ae7c0c7991",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gift.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gift",
+      "width": 128,
+      "height": 128,
+      "sha256": "3549a20d5818bb28f98c3a78e39f55f3f98d586f581d61db96df1feb5987b5ac"
+    },
+    {
+      "name": "Pictoicon_Globe",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Globe.Png",
+      "unityGuid": "984ab8fbfc7e7402fafc1d7e91fd85fe",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Globe.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Globe",
+      "width": 128,
+      "height": 128,
+      "sha256": "1238fa48226a71d233458563892faf31c2fbdabf4a02d3444af579180172fd90"
+    },
+    {
+      "name": "Pictoicon_Glove",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Glove.Png",
+      "unityGuid": "784af5bb575a044b0896d79c615a32a5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Glove.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Glove",
+      "width": 128,
+      "height": 128,
+      "sha256": "989ac1363924e5971f792f3e2a596fba7be1e939164c0c7295cb70a76581e25d"
+    },
+    {
+      "name": "Pictoicon_Goal",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Goal.Png",
+      "unityGuid": "d90661f73b9d747a3b582bfe216131ed",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Goal.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Goal",
+      "width": 128,
+      "height": 128,
+      "sha256": "1d3609404a9890856de1bb559885e6f3f841e434c046ba2d4be5358f9da2b633"
+    },
+    {
+      "name": "Pictoicon_Guild",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Guild.Png",
+      "unityGuid": "998cc6a62b0324359b8dac0df5d786bb",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Guild.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Guild",
+      "width": 128,
+      "height": 128,
+      "sha256": "974d67b69c4f364db6c70f12a183e4b0b6e615f9bb88d09c4c2c6d26be88fc34"
+    },
+    {
+      "name": "Pictoicon_Gun",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Gun.Png",
+      "unityGuid": "7f930c95fb03541c696364cf3ea33fc3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Gun.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Gun",
+      "width": 128,
+      "height": 128,
+      "sha256": "2f3773adeccb13f899788f6c06e002e1cdbe62da04dcb9fe225052654dadd084"
+    },
+    {
+      "name": "Pictoicon_Hammer",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Hammer.Png",
+      "unityGuid": "c09fa0cc6f04a4491abeae75936a3ad7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Hammer.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Hammer",
+      "width": 128,
+      "height": 128,
+      "sha256": "dcf98245a820eb79cb632e74f63bbe216418dfdb41a9edfd6514d6c162b4793c"
+    },
+    {
+      "name": "Pictoicon_Haptic",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Haptic.Png",
+      "unityGuid": "6f15ed0419baf44658063766d64b7cf4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Haptic.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Haptic",
+      "width": 128,
+      "height": 128,
+      "sha256": "0886722563fe09090b0b0d081875938a801121769eb4e9602a3f566ab04334df"
+    },
+    {
+      "name": "Pictoicon_Hatchet",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Hatchet.Png",
+      "unityGuid": "c2ed73659dd764171aeb296d1c8f7d94",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Hatchet.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Hatchet",
+      "width": 128,
+      "height": 128,
+      "sha256": "bd7faf63f949436aced9ed741f5546b927c7c1a25436a24040b86141c98e8372"
+    },
+    {
+      "name": "Pictoicon_Health",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Health.Png",
+      "unityGuid": "32d5d14c49aae4361a9246d4aa08d36d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Health.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Health",
+      "width": 128,
+      "height": 128,
+      "sha256": "70d419bdfe830f2a3ceac73f15258239d33f249d93535f1b594eb2768ca1e29f"
+    },
+    {
+      "name": "Pictoicon_Helmet",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Helmet.Png",
+      "unityGuid": "1f15a289b07844c889d62041fbaf21ed",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Helmet.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Helmet",
+      "width": 128,
+      "height": 128,
+      "sha256": "5c1548f400e773c3633a7876765df0a83492c538569550d2746516a1298dd486"
+    },
+    {
+      "name": "Pictoicon_Help",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Help.Png",
+      "unityGuid": "ecddde20b9b6f4536a02396242a79186",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Help.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Help",
+      "width": 128,
+      "height": 128,
+      "sha256": "85b84f56990b9e789d4cadf717afec47e41d7e07f99ee4d73a426e6cc943efec"
+    },
+    {
+      "name": "Pictoicon_Hide",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Hide.Png",
+      "unityGuid": "7424bc2f9cfc74cb79ecedd376475da5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Hide.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Hide",
+      "width": 128,
+      "height": 128,
+      "sha256": "7219e3f322c425cb4ceb89464510e4e4671dc1c2f1bb7795a4c1d925b6874c5a"
+    },
+    {
+      "name": "Pictoicon_History",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_History.Png",
+      "unityGuid": "c4a3744a8f693410695cabc209c2fb2f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_History.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_History",
+      "width": 128,
+      "height": 128,
+      "sha256": "8f8c240bdffecdd182705d7f3014d61be2dc3793ffed5e7726ca2cb93963b6bd"
+    },
+    {
+      "name": "Pictoicon_Home_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Home_0.Png",
+      "unityGuid": "77039943e59a543f296a47eda2f38fa9",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Home_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Home_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "f489a0025c41648026ef4d95a23a87b2252a2b6c62fa8dc5d5fea525a2080360"
+    },
+    {
+      "name": "Pictoicon_Home_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Home_1.Png",
+      "unityGuid": "a39629456a32d46e89d1508f11c76169",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Home_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Home_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "148750595023864a41456d29b04a1f222e2ee108a926f25d04482a627d061dae"
+    },
+    {
+      "name": "Pictoicon_Horseshoes",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Horseshoes.Png",
+      "unityGuid": "6176a6e36460740b7b4ec038aedb6f18",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Horseshoes.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Horseshoes",
+      "width": 128,
+      "height": 128,
+      "sha256": "2a6300c2b9df27b268bb16d36112f59a9675db9a4f98908850993eea5e74b8ac"
+    },
+    {
+      "name": "Pictoicon_Hourglass",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Hourglass.Png",
+      "unityGuid": "e857d884661024bd39af20f2edea6a57",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Hourglass.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Hourglass",
+      "width": 128,
+      "height": 128,
+      "sha256": "b078fc4f4b3305583d9de8247ef81293da16f97797c8c0ed20cc09e4f6e7d8dc"
+    },
+    {
+      "name": "Pictoicon_Info",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Info.Png",
+      "unityGuid": "7bee31a45fe2742a195b4a19429aba29",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Info.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Info",
+      "width": 128,
+      "height": 128,
+      "sha256": "19bbcd18f6a47860f6e1adef1e1735969c5fa75d17271ba408ad106eff9566c8"
+    },
+    {
+      "name": "Pictoicon_Invert",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Invert.Png",
+      "unityGuid": "08776ad007e5442ae9663a30526f7e10",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Invert.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Invert",
+      "width": 128,
+      "height": 128,
+      "sha256": "bb454196888ad236283fe110852484f788e7f1d26891b0421460b6a3738cdffa"
+    },
+    {
+      "name": "Pictoicon_Joystick",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Joystick.Png",
+      "unityGuid": "54ad06161cc2a4688a2177f7f2e4c8fa",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Joystick.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Joystick",
+      "width": 128,
+      "height": 128,
+      "sha256": "56b0bcdb7952fa63b04f0b5a8c35e0607b7a63a416c72b04aea4b53c2d1688f1"
+    },
+    {
+      "name": "Pictoicon_Key",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Key.Png",
+      "unityGuid": "53f8b824b2992458aba847f2ba362b5f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Key.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Key",
+      "width": 128,
+      "height": 128,
+      "sha256": "d91a8fb32777d7560b551f7cde5b61226bd82c4a25437b7528af17ea775ae8d6"
+    },
+    {
+      "name": "Pictoicon_Key_Crown",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Key_Crown.Png",
+      "unityGuid": "a4b47aa8935b34400bb8eab9db7efc21",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Key_Crown.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Key_Crown",
+      "width": 128,
+      "height": 128,
+      "sha256": "06f39b05bd99821dc3b7e18304991818f3b8e14445df7e7247c5204f558b7a9c"
+    },
+    {
+      "name": "Pictoicon_Kinght",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Kinght.Png",
+      "unityGuid": "56808301a04a943138705f8dd5eebc73",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Kinght.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Kinght",
+      "width": 128,
+      "height": 128,
+      "sha256": "c1fb230e90b93e14c37313f7c7558e422cff80d409abe4ccbd9ca7e717e4f0b6"
+    },
+    {
+      "name": "Pictoicon_Laurel",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Laurel.Png",
+      "unityGuid": "f360cffe51bfa4c90afb80dfdf656314",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Laurel.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Laurel",
+      "width": 128,
+      "height": 128,
+      "sha256": "9e2a57ab8bfe15fd74d050687de86728ee87c1aa55de74070934315b43aa1efd"
+    },
+    {
+      "name": "Pictoicon_Layout",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Layout.Png",
+      "unityGuid": "f1498426f40ce4b3caa43082b0d67c6a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Layout.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Layout",
+      "width": 128,
+      "height": 128,
+      "sha256": "d28adad454f49552b78142bdc15aeb7faaaf6f14c1f56a68c1f5bc5ba04acbd1"
+    },
+    {
+      "name": "Pictoicon_Leaderboard",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Leaderboard.Png",
+      "unityGuid": "05e51adaf78bb4fe6a05d42d39a9d0b6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Leaderboard.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Leaderboard",
+      "width": 128,
+      "height": 128,
+      "sha256": "d123d83f36f236f71aeee95dbe0a784714d270df228f612ed3940a632d9b2556"
+    },
+    {
+      "name": "Pictoicon_Leaf",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Leaf.Png",
+      "unityGuid": "bc0a20194a747401895c3499b440a884",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Leaf.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Leaf",
+      "width": 128,
+      "height": 128,
+      "sha256": "3d8554187b2cfec498b473a8b325a348abf7954959a28cd444f816e2cac72e38"
+    },
+    {
+      "name": "Pictoicon_Learn",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Learn.Png",
+      "unityGuid": "db2d5933cfbaa4617b97c9698dca67db",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Learn.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Learn",
+      "width": 128,
+      "height": 128,
+      "sha256": "6759a1043a5ea7f04c5dd654e2ae8fcd610022335c1d915ab934fc98cb8c79a5"
+    },
+    {
+      "name": "Pictoicon_Life",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Life.Png",
+      "unityGuid": "6f34fbb70ecfc4511854f0bd608f67ce",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Life.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Life",
+      "width": 128,
+      "height": 128,
+      "sha256": "1fb131e3d549f551f1722ba05677a5108f479df748774e39614812a614fad3a7"
+    },
+    {
+      "name": "Pictoicon_Life_Add",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Life_Add.Png",
+      "unityGuid": "324aa76ac50ea4eae8f0a70ec0bb3e5d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Life_Add.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Life_Add",
+      "width": 128,
+      "height": 128,
+      "sha256": "161faac07114b567f6f5d8297460d410c0224e5624ff493f001f3e6e4d1d0468"
+    },
+    {
+      "name": "Pictoicon_Life_Break",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Life_Break.Png",
+      "unityGuid": "d9b9cfe6c541b40fbb2fb90d47835d32",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Life_Break.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Life_Break",
+      "width": 128,
+      "height": 128,
+      "sha256": "360360e8fd522ce6c0fcd09bd088587afc50c6019c319e3c152e70ac9314f633"
+    },
+    {
+      "name": "Pictoicon_Light",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Light.Png",
+      "unityGuid": "c0128f7d42e56451aa6b32eeadd3bb42",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Light.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Light",
+      "width": 128,
+      "height": 128,
+      "sha256": "4f658ec04f90c59061b7e99e2fbc72545aaccb31a2a64f97faf1a27aa6302163"
+    },
+    {
+      "name": "Pictoicon_Like",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Like.Png",
+      "unityGuid": "62e0ca11160b744278b02790340cc044",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Like.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Like",
+      "width": 128,
+      "height": 128,
+      "sha256": "9a4c98d3be0eb00837fae2dfb550bf57929aceafca8c5bbf56a25ea34cf73016"
+    },
+    {
+      "name": "Pictoicon_Link",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Link.Png",
+      "unityGuid": "0407de00b4e0945e3a36920c6ab52d21",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Link.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Link",
+      "width": 128,
+      "height": 128,
+      "sha256": "acbebd2594bd978a0291bfee7cabb2bf3c0198e9e727be6ae560acd2df1b93d2"
+    },
+    {
+      "name": "Pictoicon_List_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_List_0.Png",
+      "unityGuid": "e78f5b031beb0434f923016b64254c95",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_List_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_List_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "0856cc4cf07d92f549c9b8bd92ebfbdb7921efc5e1288e83340c9b52eb12505a"
+    },
+    {
+      "name": "Pictoicon_List_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_List_1.Png",
+      "unityGuid": "2002718ffb0c84351bc524f0df02912d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_List_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_List_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "4eb5e5033a4b1c96053d1763d6b281fda0acc0579d63c42584287e40f473ed3c"
+    },
+    {
+      "name": "Pictoicon_Location",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Location.Png",
+      "unityGuid": "4c7780205374547aab5841bf05937d0d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Location.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Location",
+      "width": 128,
+      "height": 128,
+      "sha256": "d52ea320e9096e39b28107da0f92447fb9f4c6e1ce3ede1922915fb4607e94e9"
+    },
+    {
+      "name": "Pictoicon_Lock",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Lock.Png",
+      "unityGuid": "37f96e03563fe46159e2101ce9312f7b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Lock.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Lock",
+      "width": 128,
+      "height": 128,
+      "sha256": "4d717aa662ae6e7046d862d9464fa80def37c5f7eb36caa476a540df4a148899"
+    },
+    {
+      "name": "Pictoicon_Magic",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Magic.Png",
+      "unityGuid": "d7ae951503cd24d8d8d64dcd16abd590",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Magic.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Magic",
+      "width": 128,
+      "height": 128,
+      "sha256": "73572ba6be134546478de1938acd5d6703afba195f4856d192e1209b1c1e3ff1"
+    },
+    {
+      "name": "Pictoicon_Magic_Ball",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Magic_Ball.Png",
+      "unityGuid": "45edc13fd763640fa89956b1e34b6c3e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Magic_Ball.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Magic_Ball",
+      "width": 128,
+      "height": 128,
+      "sha256": "a008d3ddc4d973493d847d668598d6f83600799519983a4f9400abe001231335"
+    },
+    {
+      "name": "Pictoicon_Magic_Bomb",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Magic_Bomb.Png",
+      "unityGuid": "204a1422dc0c14dc29ffec63ced8f551",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Magic_Bomb.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Magic_Bomb",
+      "width": 128,
+      "height": 128,
+      "sha256": "9cb7384ed6e9efe5aeacbb78c457dc495fffb0fd504d21522094aac584b92bdc"
+    },
+    {
+      "name": "Pictoicon_Magic_Drop",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Magic_Drop.Png",
+      "unityGuid": "097db867cb5184543b1bef3476687ce2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Magic_Drop.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Magic_Drop",
+      "width": 128,
+      "height": 128,
+      "sha256": "895e8a06c13fcbf9bd3199fbedb34dfdb51bed13ecea134d97d2dab47ae703ad"
+    },
+    {
+      "name": "Pictoicon_Magic_Square",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Magic_Square.Png",
+      "unityGuid": "31394fbc4d38847c9ab9d8cc3c6d3983",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Magic_Square.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Magic_Square",
+      "width": 128,
+      "height": 128,
+      "sha256": "0b1e3f6d83d4bc5c2894984115e547feaeb497820fa08e98b1aaca84cbfdca10"
+    },
+    {
+      "name": "Pictoicon_Magnetic",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Magnetic.Png",
+      "unityGuid": "34df611ec9ad74ed1a1a1ee4e8a4aa3f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Magnetic.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Magnetic",
+      "width": 128,
+      "height": 128,
+      "sha256": "8c75dbacd672cffdfc7912b89fa07db0c80012296bdfef0a4cc75ba9f73f269c"
+    },
+    {
+      "name": "Pictoicon_Mail",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mail.Png",
+      "unityGuid": "48ebf1048e7c64ee1935b009363d6cdd",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mail.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mail",
+      "width": 128,
+      "height": 128,
+      "sha256": "341dac9c525e3961f0a8c16031daf746d2565fc451672d4a19c059e012759d8f"
+    },
+    {
+      "name": "Pictoicon_Mail_Read",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mail_Read.Png",
+      "unityGuid": "f421984ebbc074a9fb636c291556d718",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mail_Read.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mail_Read",
+      "width": 128,
+      "height": 128,
+      "sha256": "70beda5d6c3e88330fe2b909bcc5f9cf1606e73a0db385d66635c2cea4d9b944"
+    },
+    {
+      "name": "Pictoicon_Male",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Male.Png",
+      "unityGuid": "b468f60514f43498685152cccdc10188",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Male.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Male",
+      "width": 128,
+      "height": 128,
+      "sha256": "029b0e63f0192911a40e11b883b331f89535c1059ea33c7db38a22bd36e95f1b"
+    },
+    {
+      "name": "Pictoicon_Mana",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mana.Png",
+      "unityGuid": "42707bfb5b9954ee8826100506d6c784",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mana.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mana",
+      "width": 128,
+      "height": 128,
+      "sha256": "1cc19831c6d6d7f5c0a0dfa90a1f963671ddfa8c6d00b888beda14a2c1431875"
+    },
+    {
+      "name": "Pictoicon_Map_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Map_0.Png",
+      "unityGuid": "662025fad61474e2dba76ce162de6048",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Map_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Map_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "83c67a42edec142d4ff8027a47e3591f8425973d74271d68daae0c614430e408"
+    },
+    {
+      "name": "Pictoicon_Map_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Map_1.Png",
+      "unityGuid": "27dd6680a86e4457a9af23ad9a20150a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Map_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Map_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "bc09d48bbe94d1659853c7c5c63ba34548c3d0e8aa3076c730e427986b6b5090"
+    },
+    {
+      "name": "Pictoicon_Mappin",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mappin.Png",
+      "unityGuid": "bac907c39cdf74404b1a1af3dc76d3bc",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mappin.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mappin",
+      "width": 128,
+      "height": 128,
+      "sha256": "8dfe2568ec3016881eed33bd3a5fdcf2cf11fcf577930057a944f42a38e269ea"
+    },
+    {
+      "name": "Pictoicon_Mask",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mask.Png",
+      "unityGuid": "faf5e1e9f57b144eeb646e87be9d3139",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mask.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mask",
+      "width": 128,
+      "height": 128,
+      "sha256": "b1ef98ca91d79eeb233efe299bc379527bbcbd776972baf7fcf82e0ae063a03d"
+    },
+    {
+      "name": "Pictoicon_Meat",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Meat.Png",
+      "unityGuid": "576b1879823ad4b009843f8a6771bb74",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Meat.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Meat",
+      "width": 128,
+      "height": 128,
+      "sha256": "b60f4bc4052eccec0d3801a196d305ef917d27fa8c4e157b3a5fbc1897ff5c7d"
+    },
+    {
+      "name": "Pictoicon_Medal_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Medal_0.Png",
+      "unityGuid": "8728935dfcdc24019b7ef10bfbba0250",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Medal_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Medal_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "c54d8a6c8c102718e066cc704cffef21246eeafdc3761d407f3c8a7a1cfc1349"
+    },
+    {
+      "name": "Pictoicon_Medal_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Medal_1.Png",
+      "unityGuid": "2f801cd5b9c684c25b63771baed0c5a4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Medal_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Medal_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "0ece5c0fc5870d2d1166990906a20256a032d7933a81b27096a9cecd10dba9d6"
+    },
+    {
+      "name": "Pictoicon_Megaphone",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Megaphone.Png",
+      "unityGuid": "7d68b78b4e0a147b0b089cf142da8745",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Megaphone.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Megaphone",
+      "width": 128,
+      "height": 128,
+      "sha256": "40d77a4b28877825abae8302849ce1ddcb216818aacc90a4ab4041e45fc54d27"
+    },
+    {
+      "name": "Pictoicon_Menu_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Menu_0.Png",
+      "unityGuid": "b4eee84da81674b55b1034cd0c432a4d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Menu_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Menu_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "468f716bb1193814844ae73f7271dda887ed473acbb89706c81b35fa28f8a77d"
+    },
+    {
+      "name": "Pictoicon_Menu_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Menu_1.Png",
+      "unityGuid": "21e171b41892a471d9e8a3cf2ca9ce9c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Menu_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Menu_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "e318958afb9081a50d76950d2a4e60bb3f9a512db21b45eab3070a04ee983398"
+    },
+    {
+      "name": "Pictoicon_Mic",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mic.Png",
+      "unityGuid": "99f17944fc2d74d90b6ee09a06d00f44",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mic.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mic",
+      "width": 128,
+      "height": 128,
+      "sha256": "1c8294e41f2f6d4bbd710d44333820b45550fd7e1ae8fd0b85409aadffeeebe7"
+    },
+    {
+      "name": "Pictoicon_Mic_Off",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mic_Off.Png",
+      "unityGuid": "e87f0e0f3916740c681e6f4aefa23f33",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mic_Off.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mic_Off",
+      "width": 128,
+      "height": 128,
+      "sha256": "e4bcbabe9bb0e6ffb782230a9f4198a4b311f5701b204ded40cdad066aba76ea"
+    },
+    {
+      "name": "Pictoicon_Minus",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Minus.Png",
+      "unityGuid": "5d68f975b3aae4909a0e34352775feea",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Minus.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Minus",
+      "width": 128,
+      "height": 128,
+      "sha256": "31e57327ede5f8ae42d6f166673d89ce4ebebc10e7a66d3ad23ed45c3d510455"
+    },
+    {
+      "name": "Pictoicon_Missile",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Missile.Png",
+      "unityGuid": "2f9afe2706f944d4cb8789223b6e5c13",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Missile.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Missile",
+      "width": 128,
+      "height": 128,
+      "sha256": "5e468683340ac1c7a7b3992eca091cd4adf89d3c8bd6574b260dd33f6a85f163"
+    },
+    {
+      "name": "Pictoicon_Mission",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mission.Png",
+      "unityGuid": "625a75555cee846e1bf335a6c213eca6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mission.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mission",
+      "width": 128,
+      "height": 128,
+      "sha256": "29637f896bb2f92b5a3d339abc4a5e3c5ab2305302933722c9ed43261a62d2d5"
+    },
+    {
+      "name": "Pictoicon_Moneybag",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Moneybag.Png",
+      "unityGuid": "33ca7b6ad30804718a8ec36caae4e0fe",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Moneybag.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Moneybag",
+      "width": 128,
+      "height": 128,
+      "sha256": "552e82ba7d3a43073d4a8d7d96bc18bd1607792301a17b5321977b7889a24791"
+    },
+    {
+      "name": "Pictoicon_Moon",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Moon.Png",
+      "unityGuid": "60fdf321dfd844d5d96f0cad87e6910e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Moon.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Moon",
+      "width": 128,
+      "height": 128,
+      "sha256": "d34eda1bff8885253f9c024cefbccdad7c744eed8e165888b10673ae3f6fc1fa"
+    },
+    {
+      "name": "Pictoicon_Movie",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Movie.Png",
+      "unityGuid": "4f10f3f8a0bfe48cca19558a54c80615",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Movie.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Movie",
+      "width": 128,
+      "height": 128,
+      "sha256": "6e463025258280d51a6cf1851aee57ac6cabb1034eb0b3b96685b828a8496348"
+    },
+    {
+      "name": "Pictoicon_Mushroom",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Mushroom.Png",
+      "unityGuid": "54342ea484cf74806a6549ccfba577b2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Mushroom.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Mushroom",
+      "width": 128,
+      "height": 128,
+      "sha256": "fd06a19461d6485015d35b040dc35537d492a034d653bef02af80938381715ae"
+    },
+    {
+      "name": "Pictoicon_Music",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Music.Png",
+      "unityGuid": "186191ea380174ca9b4fe72856cda52c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Music.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Music",
+      "width": 128,
+      "height": 128,
+      "sha256": "781d352065ab23e2c66c01d55eadfaddd29ac0cf37268b591ed24f376408958c"
+    },
+    {
+      "name": "Pictoicon_Music_Off",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Music_Off.Png",
+      "unityGuid": "9b2dd3f7f521c49b5b5b7579ab1dd65b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Music_Off.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Music_Off",
+      "width": 128,
+      "height": 128,
+      "sha256": "cc0d2d63a686e6de8c81e474c8c7f07329680fa1892e707f054d8aa4067525f1"
+    },
+    {
+      "name": "Pictoicon_Nostop",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Nostop.Png",
+      "unityGuid": "4e26393400b0245fb97cb4830a750939",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Nostop.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Nostop",
+      "width": 128,
+      "height": 128,
+      "sha256": "dc6dffe78d78b2aee8437fcb67aa0e75336cab2b1f1c97597165f0af45ca9955"
+    },
+    {
+      "name": "Pictoicon_Oil",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Oil.Png",
+      "unityGuid": "18504a33bc3ac4dfab1ffaad090526ce",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Oil.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Oil",
+      "width": 128,
+      "height": 128,
+      "sha256": "7f912a4336816b63e82ee6ac7e9bf503fcc58527ad711fd8bb5b7874209f14bd"
+    },
+    {
+      "name": "Pictoicon_Paper_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Paper_0.Png",
+      "unityGuid": "11d239518c86e4f1a96c2548526f2d01",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Paper_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Paper_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "c27f48da289501ebcfb32c17f4e21e26eebf77ad120a6577f7900b740244169c"
+    },
+    {
+      "name": "Pictoicon_Paper_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Paper_1.Png",
+      "unityGuid": "a0b543b99b80640fba6f75a1cd377a67",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Paper_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Paper_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "addf31d587bb2c2be53311a1f44bf5fe67b85c7a627feeb422fb8a7ea0b6e2e2"
+    },
+    {
+      "name": "Pictoicon_Passive",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Passive.Png",
+      "unityGuid": "630240aba998c465686945402c7dc17e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Passive.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Passive",
+      "width": 128,
+      "height": 128,
+      "sha256": "fc58bad5446ff93bf395d3f8622d95e305c645fe6e48b94c44b7331146adff1a"
+    },
+    {
+      "name": "Pictoicon_Paw",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Paw.Png",
+      "unityGuid": "cb7feb86e6d43443498e3c9df71bd2c7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Paw.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Paw",
+      "width": 128,
+      "height": 128,
+      "sha256": "aa6e87572d4d34aa11372f6d44fc17263e7edcda9c5a2382ca9d356c11970f25"
+    },
+    {
+      "name": "Pictoicon_Pen",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pen.Png",
+      "unityGuid": "02295af426b724b609e6cb4e886ceb0a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pen.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pen",
+      "width": 128,
+      "height": 128,
+      "sha256": "338ea8c356dac62b0aa7954e52196c75cae634a0efca524ce0f80b06d9c6b3f5"
+    },
+    {
+      "name": "Pictoicon_Pet",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pet.Png",
+      "unityGuid": "94baa9cb13cb94c04803dc62efab643c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pet.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pet",
+      "width": 128,
+      "height": 128,
+      "sha256": "1d9d986e08ace5a252ca14c725da1b8921daa409bd2259d849fefe4a4e7b82d4"
+    },
+    {
+      "name": "Pictoicon_Photo",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Photo.Png",
+      "unityGuid": "22de86b86210747fe95567d189040060",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Photo.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Photo",
+      "width": 128,
+      "height": 128,
+      "sha256": "2dc10f78ce28cf67d9312928ca4c24d0e67dc9f759ae60cad9a7b63281e71d09"
+    },
+    {
+      "name": "Pictoicon_Pick",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pick.Png",
+      "unityGuid": "eb15e52f47586416aaaf702f3e3f4b45",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pick.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pick",
+      "width": 128,
+      "height": 128,
+      "sha256": "4760b22880913103675fb8c6aa97b1100da65bebc58d62f1ad79b755171caee3"
+    },
+    {
+      "name": "Pictoicon_Piggy",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Piggy.Png",
+      "unityGuid": "1e4bc10975b624efaab3d22c7ba69283",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Piggy.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Piggy",
+      "width": 128,
+      "height": 128,
+      "sha256": "37a434333fe44eea945ed891ab1d131d1c8733a9d77e6084b8ba0623f3c733d0"
+    },
+    {
+      "name": "Pictoicon_Plam",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Plam.Png",
+      "unityGuid": "8a6c08b7759f84522a69e03249210fe3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Plam.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Plam",
+      "width": 128,
+      "height": 128,
+      "sha256": "eebf31dcec4bdf5f0be6c76a9351f1c3a0c7fbf32b8a950e8742fb41220d4c4c"
+    },
+    {
+      "name": "Pictoicon_Planet",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Planet.Png",
+      "unityGuid": "5f74fec916aa14f26bad4c1ae3bc5739",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Planet.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Planet",
+      "width": 128,
+      "height": 128,
+      "sha256": "23e65af510250cfdb03daae567f777ec859fc5d42b2adf5bd025c1be343632df"
+    },
+    {
+      "name": "Pictoicon_Plus",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Plus.Png",
+      "unityGuid": "3a8d52d48e90d49998dd1dbb7ff3557d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Plus.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Plus",
+      "width": 128,
+      "height": 128,
+      "sha256": "714664d0d5d4b512fb1865943aa333d9bf9101c18b0b7f7edfb036299b0a1386"
+    },
+    {
+      "name": "Pictoicon_Pointer",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pointer.Png",
+      "unityGuid": "68ebe76738a654e0cbca97b9e02541d9",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pointer.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pointer",
+      "width": 128,
+      "height": 128,
+      "sha256": "31d4ebecc665c3f173a584482d6334686011d25c1446f50744c3aa3791164e4d"
+    },
+    {
+      "name": "Pictoicon_Poo",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Poo.Png",
+      "unityGuid": "33cc2a74b7ded4897b937adc85cc7e0f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Poo.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Poo",
+      "width": 128,
+      "height": 128,
+      "sha256": "59de419002d70ab191872374cd52142f6a46710785c53a4cbd280479b9923b03"
+    },
+    {
+      "name": "Pictoicon_Posion",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Posion.Png",
+      "unityGuid": "de663f00d17b047b08071c2d214a9c15",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Posion.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Posion",
+      "width": 128,
+      "height": 128,
+      "sha256": "e85b967a949e73954fe7e1f55a7c410921d20b0e933415a610e419310be8998d"
+    },
+    {
+      "name": "Pictoicon_Post",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Post.Png",
+      "unityGuid": "dbcf2e424e35d460d9a472708c183a87",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Post.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Post",
+      "width": 128,
+      "height": 128,
+      "sha256": "3edae2e5cd5e8cd475a5919db095036af2eaf5170647a7e12fbd1387523469f4"
+    },
+    {
+      "name": "Pictoicon_Pot",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pot.Png",
+      "unityGuid": "9e6b2199e0c554953bcdae761b1bb125",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pot.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pot",
+      "width": 128,
+      "height": 128,
+      "sha256": "9aa1968ac0a0235e5963c6cd1153ad3ecdae268474b34c22c8b6ad82b068dbda"
+    },
+    {
+      "name": "Pictoicon_Potion",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Potion.Png",
+      "unityGuid": "335b2e87466df4df58145ea94e25aa38",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Potion.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Potion",
+      "width": 128,
+      "height": 128,
+      "sha256": "3b152fbe8b4833f301ab9f20fae3bbca7cbb53b92dbbd33966c0040d55ea2604"
+    },
+    {
+      "name": "Pictoicon_Pouch",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pouch.Png",
+      "unityGuid": "faa460333d2104455ac30d89372fe9df",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pouch.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pouch",
+      "width": 128,
+      "height": 128,
+      "sha256": "626205216d358cf1ca76386ea25de1405352634c1a07893509d455dc39d28ff0"
+    },
+    {
+      "name": "Pictoicon_Poweroff",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Poweroff.Png",
+      "unityGuid": "e05d929d9e9e7438f813fd36a586a302",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Poweroff.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Poweroff",
+      "width": 128,
+      "height": 128,
+      "sha256": "f8706fc453f55a3510234cdcedae637e26cf524ef2c6d8e8180fadefa3a3904d"
+    },
+    {
+      "name": "Pictoicon_Priest",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Priest.Png",
+      "unityGuid": "7474cb79935a4403fa234e960f0f4b3c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Priest.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Priest",
+      "width": 128,
+      "height": 128,
+      "sha256": "f4f6437e1096eb7f2489e2f30602a7fed004237b835a3b93b33b4385a73c9d98"
+    },
+    {
+      "name": "Pictoicon_Print",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Print.Png",
+      "unityGuid": "b5afb0f241358435a9b8df07ad876122",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Print.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Print",
+      "width": 128,
+      "height": 128,
+      "sha256": "3d141e7bccad63072978d7c1da3c5e805d83aa2ae6af6728bd8588a28b95a757"
+    },
+    {
+      "name": "Pictoicon_Profile",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Profile.Png",
+      "unityGuid": "2675ea2f0e0eb4450a60b18783ea6d7c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Profile.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Profile",
+      "width": 128,
+      "height": 128,
+      "sha256": "0521bc6c21d62609cdf01747baa25e77b1c26b12eb83eaf2d727f7d50ee2e5e6"
+    },
+    {
+      "name": "Pictoicon_Pumkin",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Pumkin.Png",
+      "unityGuid": "e66102950218643d79ca2c82e865a0ac",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Pumkin.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Pumkin",
+      "width": 128,
+      "height": 128,
+      "sha256": "2d02dca93dcc64dd32f294307ddbe7946d728d0a41fb940b99ae977b37cb53fa"
+    },
+    {
+      "name": "Pictoicon_Puzzle",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Puzzle.Png",
+      "unityGuid": "10e2bacb44d4e48d5b845f3424135632",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Puzzle.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Puzzle",
+      "width": 128,
+      "height": 128,
+      "sha256": "3598d02a5156a771c07064b79c851d2c25c20f96c384b5e70dbf91bdc0fe6a13"
+    },
+    {
+      "name": "Pictoicon_Qna",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Qna.Png",
+      "unityGuid": "ac91ec09c6501449eb16630354f5ab7b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Qna.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Qna",
+      "width": 128,
+      "height": 128,
+      "sha256": "62fed70d144e82a54a3350163f5a4add190a97d7e251659b975ed4bf770f431e"
+    },
+    {
+      "name": "Pictoicon_Question",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Question.Png",
+      "unityGuid": "d90e0f970eb474d3bb0260566c2061c2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Question.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Question",
+      "width": 128,
+      "height": 128,
+      "sha256": "a4f46bfd72ab5a600df35bca38c97a017648a664a261d7acdae1aad8c021b5e5"
+    },
+    {
+      "name": "Pictoicon_Quit",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Quit.Png",
+      "unityGuid": "01fb5a8ef034844ee8136cf30df2937c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Quit.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Quit",
+      "width": 128,
+      "height": 128,
+      "sha256": "f52ee02580e2ddeff029302c9c4e39051a089a1430c6a179974669d639790bc8"
+    },
+    {
+      "name": "Pictoicon_Ranking",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Ranking.Png",
+      "unityGuid": "67bbffd51c4bb45b2ad59f0efdcd238d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Ranking.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Ranking",
+      "width": 128,
+      "height": 128,
+      "sha256": "c5f4277b8d3d15fa15dc912fc99fe43db10d752d441f63636ff3d0f7e9d40be3"
+    },
+    {
+      "name": "Pictoicon_Redo",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Redo.Png",
+      "unityGuid": "77c5e810d73684d60aea09a11021167d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Redo.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Redo",
+      "width": 128,
+      "height": 128,
+      "sha256": "ca159069fcec44b9c34f96c89c03dcfe847f0acdee308ecac13d2e0784d3720d"
+    },
+    {
+      "name": "Pictoicon_Refresh",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Refresh.Png",
+      "unityGuid": "a8752cfacfe744f3f86939c5b9573a3d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Refresh.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Refresh",
+      "width": 128,
+      "height": 128,
+      "sha256": "0ee40b3ca594ff01db84349615de0f09c9f9bccf964fea941231c526ae21633f"
+    },
+    {
+      "name": "Pictoicon_Reload",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Reload.Png",
+      "unityGuid": "747163c19865d438b9b8fcac526752a5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Reload.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Reload",
+      "width": 128,
+      "height": 128,
+      "sha256": "96f49325087fcb45246a3d2731bac18ff37bf06327247e9af9f3d7a5c6e2a722"
+    },
+    {
+      "name": "Pictoicon_Remove",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Remove.Png",
+      "unityGuid": "2383402612aec41489e08c0a6f819f46",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Remove.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Remove",
+      "width": 128,
+      "height": 128,
+      "sha256": "322ca25230fa14ee2f48c771e3d17eb662c65af84b2f6a36cc09cef3e01a475d"
+    },
+    {
+      "name": "Pictoicon_Reverse",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Reverse.Png",
+      "unityGuid": "1b8959f739eb946a8ab02c30ff86aca5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Reverse.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Reverse",
+      "width": 128,
+      "height": 128,
+      "sha256": "d761740997b9668cc4b4f78286491b9bc96a563cf1b481911b3212100e8c6fd1"
+    },
+    {
+      "name": "Pictoicon_Ring",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Ring.Png",
+      "unityGuid": "989cfb61a934d4e02956111b9a7bd80b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Ring.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Ring",
+      "width": 128,
+      "height": 128,
+      "sha256": "5a576737cb91ad8d80d6edd84f8ef6f98f7af98571b1dc8f8ef469f84eab397f"
+    },
+    {
+      "name": "Pictoicon_Rocket",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Rocket.Png",
+      "unityGuid": "bb17e24ee79ba4824b02cef33e1ee3fa",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Rocket.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Rocket",
+      "width": 128,
+      "height": 128,
+      "sha256": "765ba81c49f70e3ba4dbdb6b504bb872194fe15f347b5800ac11ecbd73e6702f"
+    },
+    {
+      "name": "Pictoicon_Rune",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Rune.Png",
+      "unityGuid": "9a10dc2d1053745dab736bf999845100",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Rune.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Rune",
+      "width": 128,
+      "height": 128,
+      "sha256": "9dfbd375eea7ed479a970ac0b439c20b1746d6b72f3670846b66e4ece6ca03c6"
+    },
+    {
+      "name": "Pictoicon_Save",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Save.Png",
+      "unityGuid": "d9ddbf886f0914dd5b36fa05e2a12ee7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Save.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Save",
+      "width": 128,
+      "height": 128,
+      "sha256": "a61b4fe0e943233a40b7eceec10a571f96f159f55bb32996c5cc0365dead8bf8"
+    },
+    {
+      "name": "Pictoicon_Scale",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Scale.Png",
+      "unityGuid": "57fe2670386aa44a59a7fe0e620563ba",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Scale.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Scale",
+      "width": 128,
+      "height": 128,
+      "sha256": "b4bb4139b508cc900739b302bf73208b3343294cd4d70b285cdcff1d5b616581"
+    },
+    {
+      "name": "Pictoicon_Scissors",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Scissors.Png",
+      "unityGuid": "558b42715a35745aaa3e6af895c46974",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Scissors.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Scissors",
+      "width": 128,
+      "height": 128,
+      "sha256": "6afa12c33255adfdde868457f0ee1ff64cd88efc9a5d3fe907b8df7940e27464"
+    },
+    {
+      "name": "Pictoicon_Scroll",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Scroll.Png",
+      "unityGuid": "7360f655ebd6b47e28b6076484b00d71",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Scroll.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Scroll",
+      "width": 128,
+      "height": 128,
+      "sha256": "aa97c795cc72153561dfa5c2f3aa8669ec3a7890ed184399ac2c261c93a2c372"
+    },
+    {
+      "name": "Pictoicon_Search",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Search.Png",
+      "unityGuid": "75c454ba8493446aca73f7187aa7bb2b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Search.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Search",
+      "width": 128,
+      "height": 128,
+      "sha256": "8e8f347c19011adbc093a8f0ec03ca4772dcb62b4997dcc030f5f7ccd6f5c8f4"
+    },
+    {
+      "name": "Pictoicon_Security",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Security.Png",
+      "unityGuid": "9c56f23975ce543af9d98da8bb294408",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Security.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Security",
+      "width": 128,
+      "height": 128,
+      "sha256": "3f14ed45b9ae90aa21653c1b49f700227074c1b387fa791a8b94cc8d3f995f8f"
+    },
+    {
+      "name": "Pictoicon_Send",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Send.Png",
+      "unityGuid": "14ff9d9a457314dc4a9cc9541d595a8b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Send.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Send",
+      "width": 128,
+      "height": 128,
+      "sha256": "12fdbd8a6708f92ae132fdce10f7f78057419cb03f09dd1c5ee8990dbde2b21f"
+    },
+    {
+      "name": "Pictoicon_Setting",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Setting.Png",
+      "unityGuid": "2f62c4c76f3ba43bd9997518ea4ae644",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Setting.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Setting",
+      "width": 128,
+      "height": 128,
+      "sha256": "2b9e6a6f46d2d64c641ede6acaf93b590c0dcd9899d6b41e00725e01bcd82729"
+    },
+    {
+      "name": "Pictoicon_Shape",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Shape.Png",
+      "unityGuid": "caae0f81acaa5447788b47871b3f84c2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Shape.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Shape",
+      "width": 128,
+      "height": 128,
+      "sha256": "df3a5efaf92ff3611ae9ae184020b4c8134ee1a1dbd7436d87a2595b0e58ed67"
+    },
+    {
+      "name": "Pictoicon_Share",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Share.Png",
+      "unityGuid": "258c1ce3748984e3ab8ecad8bc6cfed5",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Share.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Share",
+      "width": 128,
+      "height": 128,
+      "sha256": "37d07e1ef62821e52b3787ad4da487676e83447ae13a36d7d48773a9dd72ba16"
+    },
+    {
+      "name": "Pictoicon_Shield",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Shield.Png",
+      "unityGuid": "390344fce7d234df9811fc09139f95f3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Shield.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Shield",
+      "width": 128,
+      "height": 128,
+      "sha256": "354856509a58cb5c32d596e3981a227adea4c6355da519add8af59e1883b64d3"
+    },
+    {
+      "name": "Pictoicon_Shoes",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Shoes.Png",
+      "unityGuid": "badeda3758b0a4d29a25170d7c206d20",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Shoes.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Shoes",
+      "width": 128,
+      "height": 128,
+      "sha256": "b7c691dd324e8c2fb2448dded5eec128cb1e077ce2f8caddc696cc66a0d67ec2"
+    },
+    {
+      "name": "Pictoicon_Shop_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Shop_0.Png",
+      "unityGuid": "e8f6a153544ef418d97576db156b193d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Shop_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Shop_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "5a07933443068d645d4ea9a271d017fe36a4fd4820f87c5f345fca1b0da7685c"
+    },
+    {
+      "name": "Pictoicon_Shop_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Shop_1.Png",
+      "unityGuid": "f35c41c06790440f5984dbf647f089dc",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Shop_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Shop_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "a98cf22c0ed84db296c40f5f2bd570c1c35a135bbc00c963b1de9994f7e36b03"
+    },
+    {
+      "name": "Pictoicon_Shuriken",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Shuriken.Png",
+      "unityGuid": "a1b5dc85a8bc44705b17a2fd334152c2",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Shuriken.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Shuriken",
+      "width": 128,
+      "height": 128,
+      "sha256": "866ad9d38522e3ac9facc6cc955e99910c0e4f71f0cc1e19453b00e4bce871fa"
+    },
+    {
+      "name": "Pictoicon_Signpost",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Signpost.Png",
+      "unityGuid": "6728746f53e3f4d02bcecb7399c80137",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Signpost.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Signpost",
+      "width": 128,
+      "height": 128,
+      "sha256": "f0c36c7d038994e562f9861f48e71d378185c66005a26e49cf2221fc6dd08b6e"
+    },
+    {
+      "name": "Pictoicon_Siren",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Siren.Png",
+      "unityGuid": "6ac90229355ae4eb78784c2b566fc94c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Siren.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Siren",
+      "width": 128,
+      "height": 128,
+      "sha256": "702429a448f3c369bca51835e4f5b405c207f8528d63afee5350acc4648ad0ae"
+    },
+    {
+      "name": "Pictoicon_Skull",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Skull.Png",
+      "unityGuid": "cb318f937c2c9490892a75ae3557e5c7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Skull.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Skull",
+      "width": 128,
+      "height": 128,
+      "sha256": "dec57cc3250f8cae727bd19d92083390ec8df4a96ce7133413d6f3b965ce83df"
+    },
+    {
+      "name": "Pictoicon_Sleep",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Sleep.Png",
+      "unityGuid": "984de273f8d494bfd8ffc3ecd3b45d39",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Sleep.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Sleep",
+      "width": 128,
+      "height": 128,
+      "sha256": "2becc784311e9caae6f89b1e6b8b22d23baea9eeb502d885e26240b11d537dcd"
+    },
+    {
+      "name": "Pictoicon_Slidebar",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Slidebar.Png",
+      "unityGuid": "cbcd549b18d364fb9898e74782b5a902",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Slidebar.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Slidebar",
+      "width": 128,
+      "height": 128,
+      "sha256": "41e1309be4e28fb534ea3fa41332d6faed657555068b7f147fce1fd78f0bb511"
+    },
+    {
+      "name": "Pictoicon_Sound",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Sound.Png",
+      "unityGuid": "f0c5a27e83b9744da98d350a200ff06f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Sound.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Sound",
+      "width": 128,
+      "height": 128,
+      "sha256": "0dbaba7a6b5b64c33d5e5c981f784559524159b13d3663267a260d00526a45d6"
+    },
+    {
+      "name": "Pictoicon_Sound_Off",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Sound_Off.Png",
+      "unityGuid": "0dc6a38b1e62c426eb1a8ceaea787d4a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Sound_Off.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Sound_Off",
+      "width": 128,
+      "height": 128,
+      "sha256": "a0b4ebc6d2651c0ffac7bbd650575b8d8f1e84400e1228db43bce7e409a98b45"
+    },
+    {
+      "name": "Pictoicon_Speed",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Speed.Png",
+      "unityGuid": "e960a3ff860a14b91b77c73134951572",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Speed.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "34b12587fb83c779def4efb0a8fa79c8c49d18dc9eb16e9b5f91070178ad0a5b"
+    },
+    {
+      "name": "Pictoicon_Stack",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Stack.Png",
+      "unityGuid": "a8a0d55e23b5c4572b00d554e62631fd",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Stack.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Stack",
+      "width": 128,
+      "height": 128,
+      "sha256": "256b146606a3475315c298efc93143cdfc175c66ba7946613a79e21b1d080cfd"
+    },
+    {
+      "name": "Pictoicon_Star",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Star.Png",
+      "unityGuid": "be904e5448690450dabdb97f621e8a18",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Star.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Star",
+      "width": 128,
+      "height": 128,
+      "sha256": "a645946a713b94c56a32e818f5364ad3a67e098f0565aaa1912a8f524d992e88"
+    },
+    {
+      "name": "Pictoicon_Stopwatch",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Stopwatch.Png",
+      "unityGuid": "fd33a26e05deb419db3458df32cf1173",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Stopwatch.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Stopwatch",
+      "width": 128,
+      "height": 128,
+      "sha256": "8200526a483716530388b4868818125fff56c1ede0a52c92eda57217813794f4"
+    },
+    {
+      "name": "Pictoicon_Store",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Store.Png",
+      "unityGuid": "52dbd6f08566c40ecb4d7f34a57a4371",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Store.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Store",
+      "width": 128,
+      "height": 128,
+      "sha256": "aa4857687ddd8c5e1b0850cec0636b34727c485c8865989a83995b24ea7346a8"
+    },
+    {
+      "name": "Pictoicon_Sun",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Sun.Png",
+      "unityGuid": "e8039acf53c9544d69a17e3fb41a1d0c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Sun.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Sun",
+      "width": 128,
+      "height": 128,
+      "sha256": "0cf308234a57fc2e74907e85fb2a318e8bc48cd77d046d4af65377fc915d1018"
+    },
+    {
+      "name": "Pictoicon_Switch",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Switch.Png",
+      "unityGuid": "8a89cc257b5c6401b9459f982f13baea",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Switch.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Switch",
+      "width": 128,
+      "height": 128,
+      "sha256": "4fc4d5be73b050c604adecdee42f149f5b278b329a98e9e21a033bf3e69d1ede"
+    },
+    {
+      "name": "Pictoicon_Sword",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Sword.Png",
+      "unityGuid": "7bc865fef523e44b19a0864d1f712d41",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Sword.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Sword",
+      "width": 128,
+      "height": 128,
+      "sha256": "66e06d1ef5bb8ba1c701be4996d094333fc8eb4e224b15a119ae6237b3b74c6a"
+    },
+    {
+      "name": "Pictoicon_Tag",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tag.Png",
+      "unityGuid": "598d8eda21d3a4ec39de2cdd8672c71e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tag.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tag",
+      "width": 128,
+      "height": 128,
+      "sha256": "18098ef43ef324471278f6d3a5f678974622bba60c3915550aa86bfd7043113c"
+    },
+    {
+      "name": "Pictoicon_Talk_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Talk_0.Png",
+      "unityGuid": "d7f99c90256024bfebdeb6d6b1d9a876",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Talk_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Talk_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "8665a6905fc83c62761b1e9501905f2e6204472c8f97d6b13c0c27e7eb238e35"
+    },
+    {
+      "name": "Pictoicon_Talk_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Talk_1.Png",
+      "unityGuid": "1f54e688f685f46b9a3813ae06b0243a",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Talk_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Talk_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "a6ea0be9648c6041905c6fab2f6cc904518926a96473986b8a1f78399f6aba1f"
+    },
+    {
+      "name": "Pictoicon_Tank",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tank.Png",
+      "unityGuid": "9c92e4a3a0c6f4e1abcc646b6a5c533c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tank.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tank",
+      "width": 128,
+      "height": 128,
+      "sha256": "1c585b94ca48fd81b939bfa7a513455079c074b6c793ce8c63e29f81cd183e6c"
+    },
+    {
+      "name": "Pictoicon_Tap",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tap.Png",
+      "unityGuid": "bdab1b534940e474587fc50e87e2067d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tap.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tap",
+      "width": 128,
+      "height": 128,
+      "sha256": "5e4f5aeb23727687a0738016aaedf1e9482a40b688c12753933b1da8176c51bf"
+    },
+    {
+      "name": "Pictoicon_Target",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Target.Png",
+      "unityGuid": "6f9fd63da17ad4f9ebec3afc71e70ce1",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Target.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Target",
+      "width": 128,
+      "height": 128,
+      "sha256": "8f4a013f6efe02d8e8703b19884528b4451f6a1a6b5f221d7919816804978cdb"
+    },
+    {
+      "name": "Pictoicon_Thunder",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Thunder.Png",
+      "unityGuid": "dfc9a525fbb2c432287a50678b1eb0b3",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Thunder.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Thunder",
+      "width": 128,
+      "height": 128,
+      "sha256": "b184454b886526ded80b479ce1f1bd73311ad359b16052a431e8b11f543da435"
+    },
+    {
+      "name": "Pictoicon_Ticket",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Ticket.Png",
+      "unityGuid": "843c3f7bee139482690ec570cb5c33c7",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Ticket.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Ticket",
+      "width": 128,
+      "height": 128,
+      "sha256": "6b2ad96afa96aa08e35a9c4a00828203c044f25e85c6e4eff048b67e410e61d3"
+    },
+    {
+      "name": "Pictoicon_Time",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Time.Png",
+      "unityGuid": "97b5e9c48e51c423e9508e1b496f69ec",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Time.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Time",
+      "width": 128,
+      "height": 128,
+      "sha256": "c01e1d62003fe7bedfe624943e55ef60de8e92e617960eda68730a16896b5796"
+    },
+    {
+      "name": "Pictoicon_Timer",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Timer.Png",
+      "unityGuid": "8072977ea11eb4e3a8db7963f8d6ae8f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Timer.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Timer",
+      "width": 128,
+      "height": 128,
+      "sha256": "4425c8297a13203ab8ab93c7ffac3459382266d1269678f8edaeba0004eb4df8"
+    },
+    {
+      "name": "Pictoicon_Tool",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tool.Png",
+      "unityGuid": "1b530f79616b74660b6fff85948b9292",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tool.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tool",
+      "width": 128,
+      "height": 128,
+      "sha256": "5d9109d248367426a05096f082e09bcf4c03dbf1483c572fb03d4e94ad074362"
+    },
+    {
+      "name": "Pictoicon_Tooltip",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tooltip.Png",
+      "unityGuid": "41b00b5d782664dd1bf40ed8f10b2b20",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tooltip.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tooltip",
+      "width": 128,
+      "height": 128,
+      "sha256": "378eb970343061ecbc265783d55b993a705885946c1445b2bf92be11e24db906"
+    },
+    {
+      "name": "Pictoicon_Tower",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tower.Png",
+      "unityGuid": "4e5c490f2037848d192adc5b341bac11",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tower.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tower",
+      "width": 128,
+      "height": 128,
+      "sha256": "e605253dec620e7cc07937b536a20006c5ec5d7ad5d0efc6dacc142df285445d"
+    },
+    {
+      "name": "Pictoicon_Training",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Training.Png",
+      "unityGuid": "c3884a9879c874bc782aeb738af9958f",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Training.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Training",
+      "width": 128,
+      "height": 128,
+      "sha256": "e7c3b5b8648e233d28c8f1a8cafb8bbd49011338fb87d082b7d97a0ecfc5da7b"
+    },
+    {
+      "name": "Pictoicon_Tree",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tree.Png",
+      "unityGuid": "80d61bfea4fa24188a71f480657e20cf",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tree.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tree",
+      "width": 128,
+      "height": 128,
+      "sha256": "e62f83f894cdc7c42a5a205dd1b3a385bc01c3cbef64934dbe8e90b3f3a4f402"
+    },
+    {
+      "name": "Pictoicon_Tree_Pine",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tree_Pine.Png",
+      "unityGuid": "b02a5e71a571b4c66bc2d729ac421f27",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tree_Pine.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tree_Pine",
+      "width": 128,
+      "height": 128,
+      "sha256": "67a89737a914f090b62b678adf853e82134ca8b10ec8fcccb83051f8e3d34ec5"
+    },
+    {
+      "name": "Pictoicon_Trophy_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Trophy_0.Png",
+      "unityGuid": "8e333f6ecff994e9199531f9f8f8adff",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Trophy_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Trophy_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "e82c9ce3d7b59e8ddd0e2ae9030d6f839f10a9d852472c5b2601fd83ebc38ce8"
+    },
+    {
+      "name": "Pictoicon_Trophy_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Trophy_1.Png",
+      "unityGuid": "8189ff6c36c4a477787ec66c9d995ea8",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Trophy_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Trophy_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "d3c27f38d27c9d6337d9e69564844bce939555db2488e229009a2408adf7aa76"
+    },
+    {
+      "name": "Pictoicon_Tv",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Tv.Png",
+      "unityGuid": "468901c8b75fd4c0390f9c881750f655",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Tv.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Tv",
+      "width": 128,
+      "height": 128,
+      "sha256": "e2ad432255e218d70b6d3b06c77cd3209b805425f5de67eeabe27ecfbc5704d8"
+    },
+    {
+      "name": "Pictoicon_Undo",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Undo.Png",
+      "unityGuid": "cd1da1566f0d846209d4c58230357a58",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Undo.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Undo",
+      "width": 128,
+      "height": 128,
+      "sha256": "3009baf048df0230abd62ab7cb4f4bb708f7d0b2921ee6254fcfd918134162eb"
+    },
+    {
+      "name": "Pictoicon_Unlock",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Unlock.Png",
+      "unityGuid": "5e10e5633846747b5a0889dcc7ed8121",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Unlock.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Unlock",
+      "width": 128,
+      "height": 128,
+      "sha256": "513cc24aac5e97210cc61df385af2300f8d74b66294d95ac9b49e6b47a3df9e9"
+    },
+    {
+      "name": "Pictoicon_User",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_User.Png",
+      "unityGuid": "f31bde830a81146ed97a09be9d52705e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_User.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_User",
+      "width": 128,
+      "height": 128,
+      "sha256": "f969a28afeb3e7edfbc4defd01df7e034adf0171f9e61b2b6294d400405a9a03"
+    },
+    {
+      "name": "Pictoicon_Video",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Video.Png",
+      "unityGuid": "e3abcea78fb1149eda338349c2cb155d",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Video.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Video",
+      "width": 128,
+      "height": 128,
+      "sha256": "1b27283e6e2a7e42f01f9b612c81a0f0cb5d3762fd06213141bacae2e7a169a6"
+    },
+    {
+      "name": "Pictoicon_View",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_View.Png",
+      "unityGuid": "3c809017f539b4ec1adee1ee7ce612f0",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_View.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_View",
+      "width": 128,
+      "height": 128,
+      "sha256": "3b05422236293f9710d2bca5ee44da877e78e4bd72baa3e5011806d6b710cebf"
+    },
+    {
+      "name": "Pictoicon_Viking_Helmet",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Viking_Helmet.Png",
+      "unityGuid": "c74572264fadc4c53ba03b97b6c86dc9",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Viking_Helmet.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Viking_Helmet",
+      "width": 128,
+      "height": 128,
+      "sha256": "ca023ce7cc4fc2dacde5d3666424cea5c15b5989062cbdb0e71cd855f857e60c"
+    },
+    {
+      "name": "Pictoicon_Volume",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Volume.Png",
+      "unityGuid": "6b1501126a13040439292b25ab57f05c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Volume.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Volume",
+      "width": 128,
+      "height": 128,
+      "sha256": "b377f943b6d87f4dbb9766d2cff2adf8823f4271099ff7aa5fba60f93bd63ea3"
+    },
+    {
+      "name": "Pictoicon_Volume_Mute",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Volume_Mute.Png",
+      "unityGuid": "148bf0b4c56d2408cb1784de0266b3b4",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Volume_Mute.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Volume_Mute",
+      "width": 128,
+      "height": 128,
+      "sha256": "0f60131a5f4c1fbc230b44bf494d01fd621bad7de93f0acac9479d05b9757048"
+    },
+    {
+      "name": "Pictoicon_Volume_Off",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Volume_Off.Png",
+      "unityGuid": "d3b345ce557f3498482177b03ea843b8",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Volume_Off.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Volume_Off",
+      "width": 128,
+      "height": 128,
+      "sha256": "fa27d058cf0061f4d4c8e43aa1e11d765ac81f47994a4c51d74d7696c4a4a3b4"
+    },
+    {
+      "name": "Pictoicon_Volume_On",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Volume_On.Png",
+      "unityGuid": "2004a81dfce68456ea4736889a28f41b",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Volume_On.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Volume_On",
+      "width": 128,
+      "height": 128,
+      "sha256": "321bf47b4ff1d33893c626433703207db0670668692e954fbdad2a8223815466"
+    },
+    {
+      "name": "Pictoicon_Wand_0",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Wand_0.Png",
+      "unityGuid": "af940f61656464ca3a241874cb6382fb",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Wand_0.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Wand_0",
+      "width": 128,
+      "height": 128,
+      "sha256": "0ce148d14234224e18dfd59b8135fd77e0d88e54aaf6aa68fde9dd216d3b5e55"
+    },
+    {
+      "name": "Pictoicon_Wand_1",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Wand_1.Png",
+      "unityGuid": "622de9f1009d542cd8e725a588b15583",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Wand_1.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Wand_1",
+      "width": 128,
+      "height": 128,
+      "sha256": "dfc3dca332e5153ca432be2298c9182da61362627b0c0a8802c310e334360e50"
+    },
+    {
+      "name": "Pictoicon_Wand_2",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Wand_2.Png",
+      "unityGuid": "79df7978415f44776ac2538663a98924",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Wand_2.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Wand_2",
+      "width": 128,
+      "height": 128,
+      "sha256": "aad50791e847377a7c534ea8cd6a163f0d6d6bb40d367e4259ad51b05dc7956b"
+    },
+    {
+      "name": "Pictoicon_Warning",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Warning.Png",
+      "unityGuid": "cdc0ed719cd9e4984833c4bf30baa837",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Warning.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Warning",
+      "width": 128,
+      "height": 128,
+      "sha256": "d9b7f6ff7687d6bbb84d68e49c9f862284baeca618d980dcc9d2694cf1e18e4a"
+    },
+    {
+      "name": "Pictoicon_Water",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Water.Png",
+      "unityGuid": "58bd84ccb022346c4a831fa21560cbc1",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Water.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Water",
+      "width": 128,
+      "height": 128,
+      "sha256": "76a43fc26126b2069e294dd30f6df50f92ad3c8098a85364670f0e2f5db77624"
+    },
+    {
+      "name": "Pictoicon_Wifi_Off",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Wifi_Off.Png",
+      "unityGuid": "42c13a69388794cadb224350005ea488",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Wifi_Off.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Wifi_Off",
+      "width": 128,
+      "height": 128,
+      "sha256": "9869f39d6fe594dc6e96cce57e6cb7bd2019bb79dca13e6cfab96cf7f75decd8"
+    },
+    {
+      "name": "Pictoicon_Wifi_On",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Wifi_On.Png",
+      "unityGuid": "8883376dcb58e44538a04a2bc1bbabea",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Wifi_On.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Wifi_On",
+      "width": 128,
+      "height": 128,
+      "sha256": "fb4f24d03a56d4895ef99e5ccba8b76adb74cd9c63438a1ee8b613ed2821386f"
+    },
+    {
+      "name": "Pictoicon_Windcock",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Windcock.Png",
+      "unityGuid": "605d6a812432441058cb1b9b3778306e",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Windcock.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Windcock",
+      "width": 128,
+      "height": 128,
+      "sha256": "ed9bdf558585dfff5ed899d4e9d0326bc35325c4968732faf6b62fc63759907b"
+    },
+    {
+      "name": "Pictoicon_Wing",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Wing.Png",
+      "unityGuid": "d44deb31b5a0b4f35a28dfd0f4a2ed2c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Wing.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Wing",
+      "width": 128,
+      "height": 128,
+      "sha256": "b1277bdc51a23191086307b061473206c895307c3a316974a40b7ccfa793f3ae"
+    },
+    {
+      "name": "Pictoicon_Witchhat",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Witchhat.Png",
+      "unityGuid": "cd4dd10fa1b5745d3af4e16fe1a91ba6",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Witchhat.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Witchhat",
+      "width": 128,
+      "height": 128,
+      "sha256": "6dc265c56c164b6af972fec5072fd21ca93e8d0cc6f9664d79b47670ea477adf"
+    },
+    {
+      "name": "Pictoicon_Yinyang",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Yinyang.Png",
+      "unityGuid": "a923bb1152abd484f84befbee62b539c",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Yinyang.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Yinyang",
+      "width": 128,
+      "height": 128,
+      "sha256": "b8164e2c73db56e11d4a6f0f457b6a6c0d1cc0aae1a724be51ed3f8d9c1690dd"
+    },
+    {
+      "name": "Pictoicon_Zoomin",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Zoomin.Png",
+      "unityGuid": "4f40fb94cb00d46629576500866bd199",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Zoomin.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Zoomin",
+      "width": 128,
+      "height": 128,
+      "sha256": "f17d08085eb2bdd73247c9f8a5788b9c570ff5e31168841d4cb29ea37d165289"
+    },
+    {
+      "name": "Pictoicon_Zoomout",
+      "source": "ResourcesData/Sprite/Component/Icon_PictoIcons(x2)/128/Pictoicon_Zoomout.Png",
+      "unityGuid": "4a99bc1b96d2e40bcbfef86bdbda8578",
+      "image": "assets/resources/icons/Pictograms/Pictoicon_Zoomout.png",
+      "reference": "@icon/icons/Pictograms/Pictoicon_Zoomout",
+      "width": 128,
+      "height": 128,
+      "sha256": "c96b43ee853ccc9bb3de3e06951b1e86a81ab44b14726c8144851140396647ea"
+    }
+  ]
+}

@@ -73,7 +73,7 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.2.Name; assets\\configs\\GameJsonCfg.json:TalentCfg.100025.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100025.Name"
     },
     "data.buffcfg.3.describe": {
-      "en": "Defeat <color=#5fe33a>{0}</c> enemies to gain <color=#5fe33a>{1}</c> bonus silver",
+      "en": "Defeat <color=#5fe33a>{0}</c> enemy monsters to gain <color=#5fe33a>{1}</c> bonus silver",
       "zh": "消灭<color=#5fe33a> {0} </c>个敌人，额外<color=#5fe33a> +{1} </c>银币",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.2.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.2.Describe"
     },
@@ -1363,63 +1363,63 @@
       "context": "assets\\configs\\GameJsonCfg.json:ShopCfg.80001.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:ShopCfg.80001.Name; assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeTreasureCtrl.prefab:labName"
     },
     "data.soldiercfg.90001.name": {
-      "en": "Soldier",
-      "zh": "士兵",
+      "en": "Wolf",
+      "zh": "狼",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90001.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90001.Name; assets\\_script\\KinghtFallUIVideoTips.js:24; assets\\_script\\KinghtFallUIVideoTips.js:27; assets\\_script\\KinghtFallUIVideoTips.js:30; assets\\_script\\KinghtFallUIVideoTips.js:33"
     },
     "data.soldiercfg.90002.name": {
-      "en": "Heavy Infantry",
-      "zh": "重步兵",
+      "en": "Bear",
+      "zh": "熊",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90002.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90002.Name"
     },
     "data.soldiercfg.90003.name": {
-      "en": "Crossbowman",
-      "zh": "弩兵",
+      "en": "Plant Shooter",
+      "zh": "植物射手",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90003.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90003.Name"
     },
     "data.soldiercfg.90004.name": {
-      "en": "Cavalry",
-      "zh": "骑兵",
+      "en": "Buffalo",
+      "zh": "野牛",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90004.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90004.Name"
     },
     "data.soldiercfg.90005.name": {
-      "en": "Siege Engine",
-      "zh": "攻城车",
+      "en": "Alligator Turtle",
+      "zh": "鳄龟",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90005.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90005.Name"
     },
     "data.soldiercfg.90006.name": {
-      "en": "Minotaur Shaman",
-      "zh": "牛头萨满",
+      "en": "Wizard",
+      "zh": "巫师",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90006.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90006.Name"
     },
     "data.soldiercfg.90007.name": {
-      "en": "Headless Knight",
-      "zh": "无头骑士",
+      "en": "Iron Golem",
+      "zh": "钢铁魔像",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90007.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90007.Name"
     },
     "data.soldiercfg.90008.name": {
-      "en": "Wraith Mage",
-      "zh": "恶灵法师",
+      "en": "Pirate Ghost",
+      "zh": "海盗幽灵",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90008.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90008.Name"
     },
     "data.soldiercfg.90009.name": {
-      "en": "Dark Priest",
-      "zh": "邪恶牧师",
+      "en": "Vampire",
+      "zh": "吸血鬼",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90009.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90009.Name"
     },
     "data.soldiercfg.90010.name": {
-      "en": "Mutant I",
-      "zh": "变种怪物1",
+      "en": "Stone Scorpion",
+      "zh": "岩石蝎子",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90010.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90010.Name"
     },
     "data.soldiercfg.90011.name": {
-      "en": "Mutant II",
-      "zh": "变种怪物2",
+      "en": "Tree Golem",
+      "zh": "树木魔像",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90011.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90011.Name"
     },
     "data.soldiercfg.90012.name": {
-      "en": "Mutant III",
-      "zh": "变种怪物3",
+      "en": "Skeleton Warlord",
+      "zh": "骷髅战将",
       "context": "assets\\configs\\GameJsonCfg.json:SoldierCfg.90012.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:SoldierCfg.90012.Name"
     },
     "data.talentcfg.100001.name": {
@@ -1588,7 +1588,7 @@
       "context": "assets\\configs\\GameJsonCfg.json:TalentCfg.100024.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100024.Describe"
     },
     "data.talentcfg.100025.describe": {
-      "en": "<color=#43a926>Unlocks Perk:</c> Defeat 10 enemies to gain 3 extra silver",
+      "en": "<color=#43a926>Unlocks Perk:</c> Defeat 10 enemy monsters to gain 3 extra silver",
       "zh": "<color=#43a926>【灵光解锁】 </c>消灭10个敌人，额外+3银币",
       "context": "assets\\configs\\GameJsonCfg.json:TalentCfg.100025.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100025.Describe"
     },
@@ -1608,7 +1608,7 @@
       "context": "assets\\configs\\GameJsonCfg.json:TaskCfg.0.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.6.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.11.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.15.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.19.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.25.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.32.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.38.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.42.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.47.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.50.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.55.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.61.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.64.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.68.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.74.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.77.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.82.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.87.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.92.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.0.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.6.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.11.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.15.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.19.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.25.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.32.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.38.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.42.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.47.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.50.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.55.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.61.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.64.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.68.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.74.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.77.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.82.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.87.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.92.MissionDescribe"
     },
     "data.taskcfg.2.missiondescribe": {
-      "en": "Defeat {0} enemy soldiers",
+      "en": "Defeat {0} enemy monsters",
       "zh": "击败{0}名敌方士兵",
       "context": "assets\\configs\\GameJsonCfg.json:TaskCfg.1.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.10.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.18.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.23.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.30.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.37.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.40.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.46.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.49.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.54.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.59.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.63.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.67.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.76.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.81.MissionDescribe; assets\\configs\\GameJsonCfg.json:TaskCfg.90.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.1.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.10.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.18.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.23.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.30.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.37.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.40.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.46.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.49.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.54.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.59.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.63.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.67.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.76.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.81.MissionDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:TaskCfg.90.MissionDescribe"
     },
@@ -2148,37 +2148,37 @@
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.98.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.98.Describe"
     },
     "data.achievementcfg.100.describe": {
-      "en": "Defeat <color=#43a926>100</c> enemies",
+      "en": "Defeat <color=#43a926>100</c> enemy monsters",
       "zh": "击杀<color=#43a926> 100</c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.99.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.99.Describe"
     },
     "data.achievementcfg.101.describe": {
-      "en": "Defeat <color=#43a926>200</c> enemies",
+      "en": "Defeat <color=#43a926>200</c> enemy monsters",
       "zh": "击杀<color=#43a926> 200</c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.100.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.100.Describe"
     },
     "data.achievementcfg.102.describe": {
-      "en": "Defeat <color=#43a926>400</c> enemies",
+      "en": "Defeat <color=#43a926>400</c> enemy monsters",
       "zh": "击杀<color=#43a926>400</c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.101.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.101.Describe"
     },
     "data.achievementcfg.103.describe": {
-      "en": "Defeat <color=#43a926>800</c> enemies",
+      "en": "Defeat <color=#43a926>800</c> enemy monsters",
       "zh": "击杀<color=#43a926> 800</c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.102.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.102.Describe"
     },
     "data.achievementcfg.104.describe": {
-      "en": "Defeat <color=#43a926>1,600</c> enemies",
+      "en": "Defeat <color=#43a926>1,600</c> enemy monsters",
       "zh": "击杀<color=#43a926> 1600</c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.103.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.103.Describe"
     },
     "data.achievementcfg.105.describe": {
-      "en": "Defeat <color=#43a926>3,200</c> enemies",
+      "en": "Defeat <color=#43a926>3,200</c> enemy monsters",
       "zh": "击杀<color=#43a926> 3200 </c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.104.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.104.Describe"
     },
     "data.achievementcfg.106.describe": {
-      "en": "Defeat <color=#43a926>6,400</c> enemies",
+      "en": "Defeat <color=#43a926>6,400</c> enemy monsters",
       "zh": "击杀<color=#43a926>6400 </c>名敌人",
       "context": "assets\\configs\\GameJsonCfg.json:AchievementCfg.105.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:AchievementCfg.105.Describe"
     },
@@ -4558,8 +4558,8 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/version (localized control layout)"
     },
     "ui.layout.kinghtfalluinewgame.17": {
-      "en": "Cancel",
-      "zh": "取消",
+      "en": "Restart",
+      "zh": "重新开始",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/btnBreak/effectLabel (localized control layout)"
     },
     "ui.layout.kinghtfalluinewgame.25": {
@@ -4993,8 +4993,8 @@
       "context": "assets\\KinghtFallPrefabs\\home\\KinghtFallUINewModular.prefab:KinghtFallUINewModular/root/ndItem/labName (localized control layout)"
     },
     "ui.layout.kinghtfalluionlinereward.21": {
-      "en": "Play each day to earn rewards!",
-      "zh": "每日累计在线一定时间可以领取大量福利！",
+      "en": "Play each day\nto earn rewards!",
+      "zh": "每日累计在线一定时间\n可以领取大量福利！",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUIOnlineReward.prefab:KinghtFallUIOnlineReward/root/labTitle (localized control layout)"
     },
     "ui.layout.kinghtfalluisideboard.20": {
@@ -6026,6 +6026,79 @@
       "en": "Off",
       "zh": "关闭",
       "context": "Settings · movement indicator visibility"
+    },
+    "data.allycfg.90001.name": {
+      "en": "Royal Guard",
+      "zh": "王国卫士"
+    },
+    "data.allycfg.90002.name": {
+      "en": "Heavy Infantry",
+      "zh": "重装步兵"
+    },
+    "data.allycfg.90003.name": {
+      "en": "Crossbowman",
+      "zh": "弩手"
+    },
+    "data.allycfg.90004.name": {
+      "en": "Cavalry",
+      "zh": "骑兵"
+    },
+    "lobby.quests": {
+      "en": "Quests",
+      "zh": "任务"
+    },
+    "quests.title": {
+      "en": "Quests",
+      "zh": "任务"
+    },
+    "quests.empty": {
+      "en": "All quests claimed!",
+      "zh": "所有任务已领取！"
+    },
+    "lobby.campaign": {
+      "en": "Campaign",
+      "zh": "战役"
+    },
+    "lobby.wallDefense": {
+      "en": "Wall Defense",
+      "zh": "城墙防御"
+    },
+    "lobby.wallUnlock": {
+      "en": "Unlocks at stage {0}",
+      "zh": "第{0}关解锁"
+    },
+    "quests.defeat.fighter": {
+      "en": "Defeat {0} enemy Fighters",
+      "zh": "击败{0}个敌方斗士"
+    },
+    "quests.defeat.guardian": {
+      "en": "Defeat {0} enemy Guardians",
+      "zh": "击败{0}个敌方守卫"
+    },
+    "quests.defeat.skirmisher": {
+      "en": "Defeat {0} enemy Skirmishers",
+      "zh": "击败{0}个敌方游击手"
+    },
+    "quests.defeat.vanguard": {
+      "en": "Defeat {0} enemy Vanguards",
+      "zh": "击败{0}个敌方先锋"
+    },
+    "quests.defeat.mystic": {
+      "en": "Defeat {0} enemy Mystics",
+      "zh": "击败{0}个敌方秘法师"
+    },
+    "quests.defeat.bruiser": {
+      "en": "Defeat {0} enemy Bruisers",
+      "zh": "击败{0}个敌方重击手"
+    },
+    "lobby.wallBestWave": {
+      "en": "Best: Wave {0}",
+      "zh": "最佳波次：{0}"
+    },
+    "battle.tasks": {
+      "en": "Tasks",
+      "zh": "任务",
+      "context": "Battle HUD task drawer toggle"
     }
   },
   "images": {
@@ -6651,7 +6724,20 @@
         "T",
         "Qa",
         "Qi"
-      ]
+      ],
+      "styles": {
+        "battle": {
+          "compactFrom": 10000,
+          "base": 1000,
+          "suffixes": [
+            "",
+            "k",
+            "mil",
+            "bil",
+            "tri"
+          ]
+        }
+      }
     },
     "zh": {
       "base": 10000,
@@ -6663,7 +6749,22 @@
         "京",
         "垓",
         "秭"
-      ]
+      ],
+      "styles": {
+        "battle": {
+          "compactFrom": 10000,
+          "base": 10000,
+          "suffixes": [
+            "",
+            "万",
+            "亿",
+            "兆",
+            "京",
+            "垓",
+            "秭"
+          ]
+        }
+      }
     }
   },
   "artTemplates": {
@@ -9809,23 +9910,28 @@
     },
     "ui.layout.kinghtfallhomebattlectrl.7": {
       "en": {
-        "width": 902,
-        "height": 90,
-        "fontSize": 67,
-        "lineHeight": 78,
+        "width": 1150,
+        "height": 116,
+        "fontSize": 86,
+        "lineHeight": 100,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "horizontalAlign": 1,
         "x": 0,
-        "y": 367.392
+        "y": 403.44,
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
       },
       "zh": {
-        "fontSize": 84,
-        "lineHeight": 97,
-        "width": 415,
+        "fontSize": 86,
+        "lineHeight": 100,
+        "width": 1150,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true,
-        "y": 367.392
+        "y": 403.44,
+        "height": 116,
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
       }
     },
     "ui.layout.kinghtfallhomebattlectrl.12": {
@@ -11695,42 +11801,50 @@
     },
     "ui.layout.kinghtfalluipassport.75": {
       "en": {
-        "width": 590,
-        "height": 80,
+        "width": 500,
+        "height": 90,
         "fontSize": 59,
         "lineHeight": 68,
         "wrap": false,
         "overflow": "NONE",
         "horizontalAlign": 1,
         "x": 0,
-        "y": 8.89
+        "y": 0
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 300,
+        "fontSize": 59,
+        "lineHeight": 68,
+        "width": 500,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "height": 90,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 0
       }
     },
     "ui.layout.kinghtfalluipassport.84": {
       "en": {
-        "width": 590,
-        "height": 80,
+        "width": 500,
+        "height": 90,
         "fontSize": 59,
         "lineHeight": 68,
         "wrap": false,
         "overflow": "NONE",
         "horizontalAlign": 1,
         "x": 0,
-        "y": 8.89
+        "y": 0
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 300,
+        "fontSize": 59,
+        "lineHeight": 68,
+        "width": 500,
         "overflow": "NONE",
-        "wrap": false
+        "wrap": false,
+        "height": 90,
+        "horizontalAlign": 1,
+        "x": 0,
+        "y": 0
       }
     },
     "ui.layout.kinghtfalluipassport.93": {
@@ -13229,19 +13343,24 @@
     },
     "ui.layout.kinghtfalluionlinereward.21": {
       "en": {
-        "width": 923,
+        "width": 720,
         "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
-        "height": 158.2,
-        "fontSize": 67,
-        "lineHeight": 78
-      },
-      "zh": {
+        "overflow": "CLAMP",
+        "height": 180,
         "fontSize": 67,
         "lineHeight": 78,
-        "width": 923,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "horizontalAlign": 1,
+        "maxLines": 2
+      },
+      "zh": {
+        "fontSize": 58,
+        "lineHeight": 70,
+        "width": 720,
+        "overflow": "CLAMP",
+        "wrap": true,
+        "height": 180,
+        "horizontalAlign": 1,
+        "maxLines": 2
       }
     },
     "ui.layout.kinghtfalluisideboard.20": {
@@ -13842,16 +13961,18 @@
       "en": {
         "fontSize": 68,
         "lineHeight": 79,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 398,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "height": 97.68
       },
       "zh": {
         "fontSize": 68,
         "lineHeight": 79,
-        "width": 140,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "width": 398,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "height": 97.68
       }
     },
     "ui.mobile.pbt_enermy.18": {
@@ -14080,32 +14201,34 @@
     },
     "ui.mobile.kinghtfalluigame.238": {
       "en": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 140,
+        "fontSize": 84,
+        "lineHeight": 98,
+        "width": 916,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 116
       },
       "zh": {
-        "fontSize": 72,
-        "lineHeight": 83,
-        "width": 140,
+        "fontSize": 84,
+        "lineHeight": 98,
+        "width": 916,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 116
       }
     },
     "ui.mobile.kinghtfalluigame.241": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
+        "fontSize": 54,
+        "lineHeight": 64,
         "width": 640,
         "overflow": "NONE",
         "wrap": false,
         "y": -58
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
+        "fontSize": 54,
+        "lineHeight": 64,
         "width": 640,
         "overflow": "NONE",
         "wrap": false,
@@ -15656,6 +15779,201 @@
         "horizontalAlign": 1,
         "fontRole": "body"
       }
+    },
+    "art.pass.title": {
+      "en": {
+        "fontRole": "display",
+        "width": 300,
+        "height": 72,
+        "fontSize": 40,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1
+      },
+      "zh": {
+        "width": 300,
+        "height": 72,
+        "fontSize": 40,
+        "lineHeight": 56,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1
+      }
+    },
+    "lobby.quests": {
+      "en": {
+        "width": 440,
+        "height": 108,
+        "wrap": false,
+        "fontSize": 54,
+        "lineHeight": 62,
+        "overflow": "NONE",
+        "x": 0,
+        "y": -30.5,
+        "compactCaption": true,
+        "viewportPadding": 12,
+        "captionTopInset": 8,
+        "fontRole": "display"
+      },
+      "zh": {
+        "fontSize": 54,
+        "lineHeight": 62,
+        "width": 440,
+        "overflow": "NONE",
+        "wrap": false,
+        "x": 0,
+        "y": -30.5,
+        "compactCaption": true,
+        "viewportPadding": 12,
+        "captionTopInset": 8
+      }
+    },
+    "quests.title": {
+      "en": {
+        "width": 600,
+        "wrap": true,
+        "overflow": "RESIZE_HEIGHT",
+        "height": 103.76,
+        "fontSize": 76,
+        "lineHeight": 88,
+        "fontRole": "display"
+      },
+      "zh": {
+        "fontSize": 76,
+        "lineHeight": 88,
+        "width": 160,
+        "overflow": "RESIZE_HEIGHT",
+        "wrap": true
+      }
+    },
+    "lobby.campaign": {
+      "en": {
+        "width": 650,
+        "wrap": false,
+        "overflow": "CLAMP",
+        "height": 128,
+        "fontSize": 94,
+        "lineHeight": 112,
+        "fontRole": "display",
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      },
+      "zh": {
+        "fontSize": 94,
+        "lineHeight": 112,
+        "width": 650,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "height": 128,
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      }
+    },
+    "lobby.wallDefense": {
+      "en": {
+        "width": 650,
+        "wrap": false,
+        "overflow": "CLAMP",
+        "height": 128,
+        "fontSize": 94,
+        "lineHeight": 112,
+        "fontRole": "display",
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      },
+      "zh": {
+        "fontSize": 94,
+        "lineHeight": 112,
+        "width": 650,
+        "overflow": "CLAMP",
+        "wrap": false,
+        "height": 128,
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      }
+    },
+    "quests.empty": {
+      "en": {
+        "width": 560,
+        "height": 110,
+        "fontSize": 42,
+        "lineHeight": 52,
+        "wrap": true,
+        "overflow": "CLAMP",
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      },
+      "zh": {
+        "width": 560,
+        "height": 110,
+        "fontSize": 42,
+        "lineHeight": 52,
+        "wrap": true,
+        "overflow": "CLAMP",
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      }
+    },
+    "lobby.wallUnlock": {
+      "en": {
+        "width": 341,
+        "height": 38,
+        "fontSize": 26,
+        "lineHeight": 32,
+        "wrap": false,
+        "overflow": "CLAMP"
+      },
+      "zh": {
+        "width": 341,
+        "height": 38,
+        "fontSize": 26,
+        "lineHeight": 32,
+        "wrap": false,
+        "overflow": "CLAMP"
+      }
+    },
+    "lobby.wallBestWave": {
+      "en": {
+        "width": 341,
+        "height": 38,
+        "fontSize": 26,
+        "lineHeight": 32,
+        "wrap": false,
+        "overflow": "CLAMP"
+      },
+      "zh": {
+        "width": 341,
+        "height": 38,
+        "fontSize": 26,
+        "lineHeight": 32,
+        "wrap": false,
+        "overflow": "CLAMP"
+      }
+    },
+    "battle.tasks": {
+      "en": {
+        "fontRole": "body",
+        "fontSize": 30,
+        "lineHeight": 38,
+        "width": 128,
+        "height": 46,
+        "wrap": false,
+        "overflow": "CLAMP",
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      },
+      "zh": {
+        "fontRole": "body",
+        "fontSize": 30,
+        "lineHeight": 38,
+        "width": 128,
+        "height": 46,
+        "wrap": false,
+        "overflow": "CLAMP",
+        "hAlign": "CENTER",
+        "vAlign": "CENTER"
+      }
     }
   },
   "nodeStyles": {
@@ -15750,7 +16068,7 @@
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:da53B9GUxNwJWv4rOHWDnX": "ui.layout.kinghtfallhomebattlectrl.50",
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:99FfwbEgdP6pcGtwnw6oPK": "ui.layout.kinghtfallhomebattlectrl.65",
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:92DLN4nYRMdZNY2v4QDcgN": "ui.layout.kinghtfallhomebattlectrl.80",
-    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:0dHjRu4C9EvZFaMIhMjzYJ": "ui.layout.kinghtfallhomebattlectrl.105",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:0dHjRu4C9EvZFaMIhMjzYJ": "lobby.campaign",
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:12X4ezgetBq7xjRGE6bcaB": "ui.layout.kinghtfallhomebattlectrl.139",
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:34WElpDnRDDYeva4/HB82/": "ui.layout.kinghtfallhomebattlectrl.165",
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:7bQqqwWANFM4kcbiRuJCOQ": "ui.layout.kinghtfallhomebattlectrl.180",
@@ -16224,7 +16542,16 @@
     "b10f6191-a975-41b6-8c5d-7844b865e7e2:S5m4cuWuPZn1iGp2gOmg": "wallDefense.result.rewards",
     "b10f6191-a975-41b6-8c5d-7844b865e7e2:30REQ56qB9OJIohdeCB3w": "wallDefense.result.saving",
     "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:o4y6Kw17W3NxFgtqYJSgzQ": "wallDefense.bestWave",
-    "7f137a65-8637-4b98-95cd-ed94a0014316:LTE7EZ89fUjgu6t0r49Zqg": "common.claimAll"
+    "7f137a65-8637-4b98-95cd-ed94a0014316:LTE7EZ89fUjgu6t0r49Zqg": "common.claimAll",
+    "67262722-3368-46e1-a49b-9345899955dc:hkdCrispBattlePassTitle": "art.pass.title",
+    "hkdCrispBattlePassTitle": "art.pass.title",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsNode7": "quests.title",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsNode30": "ui.layout.kinghtfalluiachievement.31",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsNode38": "ui.layout.kinghtfalluiachievement.39",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsNode48": "ui.mobile.kinghtfalluiachievement.49",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsNode55": "ui.mobile.kinghtfalluiachievement.56",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsNode85": "common.claimAll",
+    "855acb2c-0ae6-42ae-9da5-e490e7e274ae:hkdQuestsEmpty": "quests.empty"
   },
   "nodePathStyles": {
     "Start/StartCanvas/TitleContent/StartButton/TapToStart": "start.tap",

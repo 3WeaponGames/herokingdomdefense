@@ -74,6 +74,9 @@
       },
       {
         "__id__": 9
+      },
+      {
+        "__id__": 197
       }
     ],
     "_prefab": {
@@ -107,7 +110,8 @@
       "__type__": "cc.Size",
       "width": 806,
       "height": 1186
-    }
+    },
+    "_active": false
   },
   {
     "__type__": "cc.Sprite",
@@ -148,11 +152,12 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "0cdd647f-81b6-4380-be8a-b6c3f788576a"
+      "__uuid__": "7414b70c-afeb-475d-b915-f447bcf9b4b0"
     },
     "node": {
       "__id__": 2
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.BlockInputEvents",
@@ -167,7 +172,8 @@
     "_originalHeight": 1334,
     "node": {
       "__id__": 2
-    }
+    },
+    "_enabled": false
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -3719,6 +3725,24 @@
     },
     "root": {
       "__id__": 1
+    }
+  },
+  {
+    "__type__": "b7caecdP3VEjovXKYZ6LuYu",
+    "node": {
+      "__id__": 2
+    },
+    "meadow": {
+      "__uuid__": "7414b70c-afeb-475d-b915-f447bcf9b4b0"
+    },
+    "forest": {
+      "__uuid__": "07dbbef9-5aaa-4b9c-84b6-eba1d4db6b18"
+    },
+    "desert": {
+      "__uuid__": "0cb50b52-6d0d-45b8-8529-a703b7624067"
+    },
+    "snowfield": {
+      "__uuid__": "273a73ea-41bd-435e-83f3-2656e374b55e"
     }
   }
 ]

@@ -66,7 +66,7 @@ var def_KinghtFallUITop = function (t) {
   _ctor.prototype.onRefreshPower = function () {
     var t = this.userData.getPowerNum();
     var timer = this.ndPower.getChildByName("labTime");
-    if (timer) timer.active = false;
+    if (timer) { timer.active = false; timer.removeFromParent(); timer.destroy(); }
     if (t < this.userData.maxPower) {
       var n = Date.now() - this.userData.getPowerUpdateTime();
       var i = Math.floor(n / this.userData.powerRecoveryTime);

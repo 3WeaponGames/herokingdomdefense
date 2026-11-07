@@ -37,4 +37,20 @@ test('natural animation completion does not lose an end-frame effect',()=>{const
 test('shared skeleton units and boss forms use independent keys',()=>{const log=[],a=actor(log),b=actor(log);b.spIdx=1;b.cfg.ID=90011;assert.equal(Timing.keyFor(b,'enemy'),'enemy:90011:2');data.GameTools={timings:{'enemy:90001:default':{attack:.5}}};Timing.attack(a,'enemy',a.doAttack);Timing.attack(a,'ally',a.doAttack);assert.equal(log.length,1);Timing.attack(b,'enemy',b.doAttack);assert.equal(log.length,2);Timing.clear();});
 test('resetting override restores original effect',()=>{const log=[],a=actor(log);data.GameTools={timings:{'hero:hero:default':{attack:.5}}};Timing.attack(a,'hero',a.doAttack);Timing.tick(.5,true);delete data.GameTools.timings['hero:hero:default'];Timing.attack(a,'hero',a.doAttack);assert.equal(log.length,2);assert(!Timing.isPending(a));});
 test('perk/parameter helper defaults preserve absent data',()=>{assert.equal(Timing.perkEnabled(50001),true);assert.equal(Timing.parameter('BuildStandTime',1.5),1.5);data.GameTools={perks:{50001:{enabled:false}},parameters:{BuildStandTime:2}};assert.equal(Timing.perkEnabled(50001),false);assert.equal(Timing.perkEnabled(50002),true);assert.equal(Timing.parameter('BuildStandTime',1.5),2);});
+test('saved playback scales attack tracks and their release delay without changing authored defaults',()=>{
+    const log=[],a=actor(log),track={animation:{name:'attack',duration:1},trackTime:0,timeScale:1};a.spAni.getCurrent=()=>track;
+    data.GameTools={timingDefaults:{'enemy:90001:default':{attack:.6}},animationSpeeds:{'enemy:90001:default':1.2}};
+    const before=JSON.stringify(data);Timing.attack(a,'enemy',a.doAttack);assert.equal(track.timeScale,1.2);
+    Timing.tick(.4999,true);assert.equal(log.length,0);Timing.tick(.0001,true);assert.equal(log.length,1);assert.equal(JSON.stringify(data),before);
+});
+test('native attack layers receive setters and idle layers retain their normal playback',()=>{
+    const a=actor([]),tracks=[{name:'attack',value:1},{name:'attack',value:1},{name:'idle',value:1}];
+    const renderers=tracks.map(t=>({getCurrent:()=>({getAnimation:()=>({getName:()=>t.name}),setTimeScale:value=>t.value=value})}));
+    a.ctrPlayAni={spAniBody:renderers[0],spAniBow:renderers[1],spAniMa:renderers[2]};data.GameTools={animationSpeeds:{'hero:hero:default':.8}};
+    Timing.applyAttackPlayback(a,'hero');assert.deepStrictEqual(tracks.map(t=>t.value),[.8,.8,1]);
+});
+test('saved playback remains scoped to side and boss form and invalid speeds use the existing rate',()=>{
+    const a=actor([]);data.GameTools={animationSpeeds:{'enemy:90001:default':1.2,'ally:90001:default':.8,'enemy:90011:2':1.5}};
+    assert.equal(Timing.attackPlayback(a,'enemy'),1.2);assert.equal(Timing.attackPlayback(a,'ally'),.8);a.cfg.ID=90011;a.spIdx=1;assert.equal(Timing.attackPlayback(a,'enemy'),1.5);a.spIdx=0;assert.equal(Timing.attackPlayback(a,'enemy'),1);
+});
 console.log(count+' timing tests passed.');

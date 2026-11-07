@@ -1,0 +1,907 @@
+{
+  "version": 1,
+  "pack": "GUI PRO Kit - Casual Game",
+  "size": 128,
+  "icons": [
+    {
+      "name": "Icon_Adremove",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Adremove.png",
+      "unityGuid": "b78052f66424a414a8af316f2b111fdd",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Adremove.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Adremove",
+      "width": 128,
+      "height": 128,
+      "sha256": "cb5b6fc59a1e3f3dac47078209c334cb0d2437e132badd3d409124c82084e22a"
+    },
+    {
+      "name": "Icon_Bag",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Bag.png",
+      "unityGuid": "21cc1b81d76504d088ae8268fe5286e0",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Bag.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Bag",
+      "width": 128,
+      "height": 128,
+      "sha256": "a1fb78c4a133cd50787f668a4f2c6e5f558f00407036884c673f39a921331015"
+    },
+    {
+      "name": "Icon_Battle",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Battle.png",
+      "unityGuid": "1a62a92f3752e4aba801604f6a85b82e",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Battle.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Battle",
+      "width": 128,
+      "height": 128,
+      "sha256": "8837edcb8599edcd6693d789b8968be9fbe01caa522f35204bb8f77efe635a2d"
+    },
+    {
+      "name": "Icon_Bolt",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Bolt.png",
+      "unityGuid": "ba59aa3994cff4b39b1fa4418cf194fa",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Bolt.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Bolt",
+      "width": 128,
+      "height": 128,
+      "sha256": "f83d3a4b8523e21b96d34a58e9c0dacac8bd63657e1c42595bb4bef437d0cf9c"
+    },
+    {
+      "name": "Icon_Bomb_Bomb",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Bomb_Bomb.png",
+      "unityGuid": "2e9c5b2e1bb824118b8deb06cc2f1780",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Bomb_Bomb.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Bomb_Bomb",
+      "width": 128,
+      "height": 128,
+      "sha256": "0068792cde889cb1eaac009aac852bd1ac68e254a6c53d5adad297b43dc44887"
+    },
+    {
+      "name": "Icon_Bomb_Dynamite",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Bomb_Dynamite.png",
+      "unityGuid": "d60f24b57ce98450e8a7624f85975706",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Bomb_Dynamite.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Bomb_Dynamite",
+      "width": 128,
+      "height": 128,
+      "sha256": "96835ad989b6a4d6888ef95d9a0c93f1b2172dfea2297dfd4b47423f2a279c25"
+    },
+    {
+      "name": "Icon_Bomb_LandMine",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Bomb_LandMine.png",
+      "unityGuid": "c7f964e6f86de448380a7acee57709d6",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Bomb_LandMine.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Bomb_LandMine",
+      "width": 128,
+      "height": 128,
+      "sha256": "c9c1b728f1c6ded264533f02447c3c15f2123d08861b0ba088f1a21f4ac080ec"
+    },
+    {
+      "name": "Icon_Book",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Book.png",
+      "unityGuid": "aace0856003074fada4c38a8f3403d32",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Book.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Book",
+      "width": 128,
+      "height": 128,
+      "sha256": "c76b49228430355a0dbd281dd59296b7bdec171e1aac6b1d34aaddcf94c58f73"
+    },
+    {
+      "name": "Icon_Booster",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Booster.png",
+      "unityGuid": "9079162d3f5e946f88770d469ae4cd5b",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Booster.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Booster",
+      "width": 128,
+      "height": 128,
+      "sha256": "58fc6a9c5561211edd975f7ac94b69500e0f55e020d8944e85a711c0a2b71743"
+    },
+    {
+      "name": "Icon_Boots",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Boots.png",
+      "unityGuid": "825794b52af2c46ed9a87b47df461691",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Boots.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Boots",
+      "width": 128,
+      "height": 128,
+      "sha256": "9ae3a9c51ab2e7c8c9acd39caac7a083b7851e5d44a5c9eebf77477900b25e6b"
+    },
+    {
+      "name": "Icon_BoxingGloves",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_BoxingGloves.png",
+      "unityGuid": "e0ba8de5c8b564a4da0d4072abb0d7f8",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_BoxingGloves.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_BoxingGloves",
+      "width": 128,
+      "height": 128,
+      "sha256": "514c319601d056a1528faf09a1d59a25a0317e9efd46c3ecca321904dfc8a1a8"
+    },
+    {
+      "name": "Icon_Cards",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Cards.png",
+      "unityGuid": "8ad283ad25e6f4c168cc0b86cb0194c3",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Cards.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Cards",
+      "width": 128,
+      "height": 128,
+      "sha256": "5d4f588e372cc586bd921cb9e8bc16ac8ffb98dc3b46a7273024d8abcf83b0b1"
+    },
+    {
+      "name": "Icon_Chest",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Chest.png",
+      "unityGuid": "f86792ca2052e44fb82023e8b8d3b4c2",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Chest.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Chest",
+      "width": 128,
+      "height": 128,
+      "sha256": "942f24b14032f0accf86c6faa7fb86799e8b430aea8873033dfb014fa0758a09"
+    },
+    {
+      "name": "Icon_Clan",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Clan.png",
+      "unityGuid": "412d8e0a440f9443fbad4e00ce9aa998",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Clan.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Clan",
+      "width": 128,
+      "height": 128,
+      "sha256": "772383e4cdeb56975c2f8f1bc52828b65176f2cc254f7ee77d49da23b64329d3"
+    },
+    {
+      "name": "Icon_Clover",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Clover.png",
+      "unityGuid": "b42a6f8c260364826aabac44f61576b2",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Clover.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Clover",
+      "width": 128,
+      "height": 128,
+      "sha256": "0833219518debc935d3e47eaebbf8e0d3701fcaaecc79d36e505b1f5246e7e23"
+    },
+    {
+      "name": "Icon_Compass",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Compass.png",
+      "unityGuid": "fb7c9a7098c084a96939f68bd662b7e3",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Compass.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Compass",
+      "width": 128,
+      "height": 128,
+      "sha256": "34282ef86598e6bf42d4660013219df86c19243c771ef6f2ac8d95a7bf2199ac"
+    },
+    {
+      "name": "Icon_Crown",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Crown.png",
+      "unityGuid": "8e5918bbebef54362b7b6167631ee0ae",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Crown.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Crown",
+      "width": 128,
+      "height": 128,
+      "sha256": "c9d3a792a5b814a2c85888c1925b61eb146e0a21ab22732d978445f8d6ed5dea"
+    },
+    {
+      "name": "Icon_Dice",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Dice.png",
+      "unityGuid": "d9c8848dc26224f31aea3a5c97dca58b",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Dice.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Dice",
+      "width": 128,
+      "height": 128,
+      "sha256": "711612235fb6d0b2419005417306d063102eddf58701eeba74c087f3f2b53a89"
+    },
+    {
+      "name": "Icon_Dice_Yellow",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Dice_Yellow.png",
+      "unityGuid": "9e1d77e107b614ae9be157429a65de67",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Dice_Yellow.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Dice_Yellow",
+      "width": 128,
+      "height": 128,
+      "sha256": "fc61cef75ee7a30b5361ed61da88a7c043a25b173b1015f3f61fd407ae78dec8"
+    },
+    {
+      "name": "Icon_Dog-Gum",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Dog-Gum.png",
+      "unityGuid": "2608ca14a6af24aeb9aacbeac3b357b9",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Dog-Gum.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Dog-Gum",
+      "width": 128,
+      "height": 128,
+      "sha256": "8f51d547dd5c812d8142da2e69d43ff04246c09159ee11e8a7fa864a6be13176"
+    },
+    {
+      "name": "Icon_Egg",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Egg.png",
+      "unityGuid": "e78145f1f73834b68ab6facb44522156",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Egg.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Egg",
+      "width": 128,
+      "height": 128,
+      "sha256": "84f8d035dc23810d4c263c8d1cb02b517e4fcb516abaf188473eb4a1e6dd2b47"
+    },
+    {
+      "name": "Icon_Emergency_Bag",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Emergency_Bag.png",
+      "unityGuid": "f97dca70a16c14df4add8a8c0330b761",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Emergency_Bag.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Emergency_Bag",
+      "width": 128,
+      "height": 128,
+      "sha256": "7905a6982fcb5c292577a9953b379203c59bb331cda16f7e23d4987818249518"
+    },
+    {
+      "name": "Icon_Energy_Green",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Energy_Green.png",
+      "unityGuid": "8ff133579bcb14533bcae0e2e37ce9fe",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Energy_Green.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Energy_Green",
+      "width": 128,
+      "height": 128,
+      "sha256": "fea63b3980383f4cabd621300ce536ba0e5f55b7d32a216c64d4729a7cfbed81"
+    },
+    {
+      "name": "Icon_Energy_Yellow",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Energy_Yellow.png",
+      "unityGuid": "0a45b979ac5144eb4aba3aa461dff52b",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Energy_Yellow.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Energy_Yellow",
+      "width": 128,
+      "height": 128,
+      "sha256": "68eb5093c7f128526b11d37ea46e5af0bb455aaa9467cb7b39e7403794614535"
+    },
+    {
+      "name": "Icon_Flippers",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Flippers.png",
+      "unityGuid": "56167c848515f441694cb011478f4ddc",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Flippers.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Flippers",
+      "width": 128,
+      "height": 128,
+      "sha256": "33dd88a67f55a276ea90f9cd32d2b8f535ba654136aa36e1dfaebc07b4ba51de"
+    },
+    {
+      "name": "Icon_Food_Can",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Food_Can.png",
+      "unityGuid": "21a1ae425f1b141c98749e851413e0b4",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Food_Can.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Food_Can",
+      "width": 128,
+      "height": 128,
+      "sha256": "af86866f059182226ce20a6694a228decad8e8145cc24e85d9ea4b7e5a012e8a"
+    },
+    {
+      "name": "Icon_Food_Meat",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Food_Meat.png",
+      "unityGuid": "de8e18c2a0fa844bb9a673122d877950",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Food_Meat.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Food_Meat",
+      "width": 128,
+      "height": 128,
+      "sha256": "3a3c576aa9bd6f4ed7e43fa371a2afdc57dc5b073be63d5c7988d4d9a02256bf"
+    },
+    {
+      "name": "Icon_Food_Pizza",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Food_Pizza.png",
+      "unityGuid": "a8d869ed488b14d75abb8a0acba051ca",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Food_Pizza.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Food_Pizza",
+      "width": 128,
+      "height": 128,
+      "sha256": "db586072a89d3c8b4be18afdc4febc45da6eb98c75e02060fb4e7f46b64b35fc"
+    },
+    {
+      "name": "Icon_Food_Shell",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Food_Shell.png",
+      "unityGuid": "da4190fd959c24ed486c36e5eb321320",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Food_Shell.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Food_Shell",
+      "width": 128,
+      "height": 128,
+      "sha256": "6fdea8c6c41603652476da9d88b70f2d0ad78609b93d5dceafea4d6e9fe928f0"
+    },
+    {
+      "name": "Icon_Friends",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Friends.png",
+      "unityGuid": "fd58669eaba7f4da6a013006a932ecc1",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Friends.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Friends",
+      "width": 128,
+      "height": 128,
+      "sha256": "25f4eab0b39144c06fa53f36dfdecc0b10eedd1b71cdaff39ee26541da769d9d"
+    },
+    {
+      "name": "Icon_GearWheels",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_GearWheels.png",
+      "unityGuid": "4c276b7de985e468ab366c0512e1593f",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_GearWheels.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_GearWheels",
+      "width": 128,
+      "height": 128,
+      "sha256": "9a85c93736529062d8113445ce3646232e457711c9d66bf565e0dca0fc0cc7a5"
+    },
+    {
+      "name": "Icon_Gem01_Blue",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem01_Blue.png",
+      "unityGuid": "32c8e4f22b265451ebee9724285649cd",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem01_Blue.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem01_Blue",
+      "width": 128,
+      "height": 128,
+      "sha256": "f45a8baf037a834038c6b1685ec6502137c08a64e6132aa6756bad7944086071"
+    },
+    {
+      "name": "Icon_Gem01_Green",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem01_Green.png",
+      "unityGuid": "0a79266e99a984cb5a3bbc997eaaac7c",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem01_Green.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem01_Green",
+      "width": 128,
+      "height": 128,
+      "sha256": "34e0edfb9625b04f00ef1a9af35229ad613984533c31ffa677db2e09d9f08207"
+    },
+    {
+      "name": "Icon_Gem01_Pruple",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem01_Pruple.png",
+      "unityGuid": "fb3c6e32e4e2345aaa36ef880a441f92",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem01_Pruple.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem01_Pruple",
+      "width": 128,
+      "height": 128,
+      "sha256": "2bc834b9f223ade0cad4ad2a0d3bb25ee39341533d39a5b8cef6791640a51bb4"
+    },
+    {
+      "name": "Icon_Gem02_Hexagon_Blue",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem02_Hexagon_Blue.png",
+      "unityGuid": "0a3d05ad0128046b38d3ba4a8dac46ea",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem02_Hexagon_Blue.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem02_Hexagon_Blue",
+      "width": 128,
+      "height": 128,
+      "sha256": "c2100984ef1c13bb61b194b6f574142027ee552cc74cdbfd91d18102c5938a10"
+    },
+    {
+      "name": "Icon_Gem02_Hexagon_Green",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem02_Hexagon_Green.png",
+      "unityGuid": "92603dda54c8e4912988550d2e890410",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem02_Hexagon_Green.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem02_Hexagon_Green",
+      "width": 128,
+      "height": 128,
+      "sha256": "c1ba0c4156f285ab45d16365a8dfa1cc55f30b74a6424e746c265d46c1c75ef8"
+    },
+    {
+      "name": "Icon_Gem02_Hexagon_Purple",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem02_Hexagon_Purple.png",
+      "unityGuid": "5deeb243067ca48feb0ece0b05e49b7f",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem02_Hexagon_Purple.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem02_Hexagon_Purple",
+      "width": 128,
+      "height": 128,
+      "sha256": "c1ea445c6c9e40f2184a44afdd6d326a04dc696b120cba8e2b2cefce86205537"
+    },
+    {
+      "name": "Icon_Gem03_Diamond_Blue",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem03_Diamond_Blue.png",
+      "unityGuid": "0a726717a1c004fad811f62c6e5503cf",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem03_Diamond_Blue.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem03_Diamond_Blue",
+      "width": 128,
+      "height": 128,
+      "sha256": "edf496680cb57e4c7ee0d7b62e13cd1494cba9d351d20df83a275889bc0602a3"
+    },
+    {
+      "name": "Icon_Gem03_Diamond_Green",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem03_Diamond_Green.png",
+      "unityGuid": "250719acbe268473cb04d065a2206e84",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem03_Diamond_Green.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem03_Diamond_Green",
+      "width": 128,
+      "height": 128,
+      "sha256": "00a47c4c653c9ca67238d904e7f72ffcdf0ca185583b43016c57fb2074288a1c"
+    },
+    {
+      "name": "Icon_Gem03_Diamond_Purple",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem03_Diamond_Purple.png",
+      "unityGuid": "5d28d1ed296ac46beb996d6634695306",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem03_Diamond_Purple.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem03_Diamond_Purple",
+      "width": 128,
+      "height": 128,
+      "sha256": "c9428d6c09475b6ce8b33ead5610f4189c2e9785fc01c107c44cb4fb1fa942e8"
+    },
+    {
+      "name": "Icon_Gem04_Octagon_Blue",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem04_Octagon_Blue.png",
+      "unityGuid": "ce90a8a824e1a4290a9530a8f268b3a6",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Blue.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Blue",
+      "width": 128,
+      "height": 128,
+      "sha256": "94026f8ce69db565e433fc220ca0a70f134bcf2a204eb400cbf55bb80aa17ede"
+    },
+    {
+      "name": "Icon_Gem04_Octagon_Purple",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem04_Octagon_Purple.png",
+      "unityGuid": "0beab7d0bc017416e97a675051382f7c",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Purple.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Purple",
+      "width": 128,
+      "height": 128,
+      "sha256": "fb96cd784512f31015df014588efbc08bfbfb53a6418ae216dd3fe79911908b2"
+    },
+    {
+      "name": "Icon_Gem04_Octagon_Red",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem04_Octagon_Red.png",
+      "unityGuid": "50b7f5588e7884ef39fe0c2692e32092",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Red.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Red",
+      "width": 128,
+      "height": 128,
+      "sha256": "f58e3b2c80b74b5bde6bb0a3dfd4a34edeff7145c3e0b48a416239dfe0ba55f0"
+    },
+    {
+      "name": "Icon_Gem04_Octagon_Yellow",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem04_Octagon_Yellow.png",
+      "unityGuid": "aa6e4c002086e44dcaafd80972ff7556",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Yellow.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem04_Octagon_Yellow",
+      "width": 128,
+      "height": 128,
+      "sha256": "68e7428d19215ca74e057c3785a0dc9131f728b8772a190f6b93c9e6ddf40184"
+    },
+    {
+      "name": "Icon_Gem_Pearl",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gem_Pearl.png",
+      "unityGuid": "1339054bb13e74eb3ac0da4a738c13bf",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gem_Pearl.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gem_Pearl",
+      "width": 128,
+      "height": 128,
+      "sha256": "1a3ea7a887b3bab8247b6d6d79226ea64d84073c226e4a1d0743eb9f8b26f533"
+    },
+    {
+      "name": "Icon_Gems",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gems.png",
+      "unityGuid": "9a000a84493d74aa7a2940fe868eb4de",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gems.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gems",
+      "width": 128,
+      "height": 128,
+      "sha256": "77f36a9239b88762e53d3d30f135d09b2587e81afaa412edc48f230c2a919038"
+    },
+    {
+      "name": "Icon_Gift",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gift.png",
+      "unityGuid": "520df1b99cf8b49c9ae30503ca636ca3",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gift.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gift",
+      "width": 128,
+      "height": 128,
+      "sha256": "48ed889be47937faf9b8554f2f174afa1f461bab739936e63386f46131458264"
+    },
+    {
+      "name": "Icon_Gold",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gold.png",
+      "unityGuid": "a2d182d089d464f20a7d6bcb45c8c60c",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gold.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gold",
+      "width": 128,
+      "height": 128,
+      "sha256": "3c1bc53b19fca8e2c4e961e3c25777563021814d16fe12d466fd0fa807c6ae13"
+    },
+    {
+      "name": "Icon_Golden_Pass",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Golden_Pass.png",
+      "unityGuid": "f211b824fcfc544a29d3b86ef3fd25f8",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Golden_Pass.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Golden_Pass",
+      "width": 128,
+      "height": 128,
+      "sha256": "d37139e46e6793489587dd2e93a981b3449b4e048b1946405ca107d11c3f70ca"
+    },
+    {
+      "name": "Icon_Golds",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Golds.png",
+      "unityGuid": "d696fceca4c164275a7601cd8213acf6",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Golds.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Golds",
+      "width": 128,
+      "height": 128,
+      "sha256": "b4cb25b579485e0840cfb3ca91b453c3d4d150208995a33e7e5f6ebf879fadad"
+    },
+    {
+      "name": "Icon_Gps",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Gps.png",
+      "unityGuid": "398c7b6d378f94e96a4e89b2a85adc1c",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Gps.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Gps",
+      "width": 128,
+      "height": 128,
+      "sha256": "e4de36a2d3245abba29df7987098119d90546ec71aa3b984b1f4e03f32d5d055"
+    },
+    {
+      "name": "Icon_Guild",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Guild.png",
+      "unityGuid": "6aceb6817a7f6488db7e4b16a491ca86",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Guild.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Guild",
+      "width": 128,
+      "height": 128,
+      "sha256": "ec70a86d5f1df733eef1eae1397200aa9040ee529715cd0fceebff34ba85bbad"
+    },
+    {
+      "name": "Icon_Hammer",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Hammer.png",
+      "unityGuid": "22f7e3cc2a7fa45dabc8d265a23f0426",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Hammer.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Hammer",
+      "width": 128,
+      "height": 128,
+      "sha256": "0206d5480dd5ca60e23a6569e42b4a93282906ee36f50fd08ab055f05d891a04"
+    },
+    {
+      "name": "Icon_Heart",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Heart.png",
+      "unityGuid": "21cb8c775421e4096915fe18192a6f63",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Heart.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Heart",
+      "width": 128,
+      "height": 128,
+      "sha256": "3aae8274abcd87230ae13ce9caf9b831370b266aabbd21d33501f6452ea30094"
+    },
+    {
+      "name": "Icon_Horsesheos",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Horsesheos.png",
+      "unityGuid": "550b80d4ab6a04ef495e0f6b0938d447",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Horsesheos.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Horsesheos",
+      "width": 128,
+      "height": 128,
+      "sha256": "0a89b1a9118476e8957c9d506c665f93f2a0b918e34502eaea2418de20e6b9f9"
+    },
+    {
+      "name": "Icon_Hourglass",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Hourglass.png",
+      "unityGuid": "634a47004c0e54c489a350f8cdd88dba",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Hourglass.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Hourglass",
+      "width": 128,
+      "height": 128,
+      "sha256": "47c2f408fd47987b410dd52688f6252bdcc66c9d58bd3feaeaade489f51b383d"
+    },
+    {
+      "name": "Icon_Key_Bronze",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Key_Bronze.png",
+      "unityGuid": "4092d10e429014ccfb3c475497e2d6b7",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Key_Bronze.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Key_Bronze",
+      "width": 128,
+      "height": 128,
+      "sha256": "293dc9bc35cc709718f2c80be39862ecdb9abfc48a153f845c656b5ac36ced19"
+    },
+    {
+      "name": "Icon_Key_Gold",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Key_Gold.png",
+      "unityGuid": "0d21ac785be8e4704bde3daeee17fd0b",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Key_Gold.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Key_Gold",
+      "width": 128,
+      "height": 128,
+      "sha256": "d3c8b29356dce69d36d0872a5d7c4523120731144a82dd46a8ffa7c8dd10081b"
+    },
+    {
+      "name": "Icon_Key_Silver",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Key_Silver.png",
+      "unityGuid": "0be1e84c952dc43c185210cb805c9511",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Key_Silver.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Key_Silver",
+      "width": 128,
+      "height": 128,
+      "sha256": "d3aa6bf0aab996dde99654e9476a9ce16084951c060420f55db9bf5221a471e1"
+    },
+    {
+      "name": "Icon_Laurel",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Laurel.png",
+      "unityGuid": "08106b8429f964b9db369217a2ea8db9",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Laurel.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Laurel",
+      "width": 128,
+      "height": 128,
+      "sha256": "fe15113ba14f50f3dd687bdf6f67a79cb162f8c44a21c675b18e197ab00cd844"
+    },
+    {
+      "name": "Icon_Lock",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Lock.png",
+      "unityGuid": "87ea36026183742639abb44ae6216cba",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Lock.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Lock",
+      "width": 128,
+      "height": 128,
+      "sha256": "60fbb58e1239bea25427d9afd574addc8bf27894d1a65989ce7afcbd6e4ccfed"
+    },
+    {
+      "name": "Icon_Magnetic",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Magnetic.png",
+      "unityGuid": "bb90e2a4544d54f2ca60d2e7db129b39",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Magnetic.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Magnetic",
+      "width": 128,
+      "height": 128,
+      "sha256": "60da42e76e64941d28686ae2e0939c494e01a96d64e0ca88111d6b034a006a6d"
+    },
+    {
+      "name": "Icon_Mail",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Mail.png",
+      "unityGuid": "9775498b546c94bf8b4146386f37533d",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Mail.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Mail",
+      "width": 128,
+      "height": 128,
+      "sha256": "f02351d88cb6edaa3784b8438017bbebd2d4d2b3902178bcd4950bc94b863e59"
+    },
+    {
+      "name": "Icon_Mana",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Mana.png",
+      "unityGuid": "00508bdb78a104ea7aa35d626eb49d95",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Mana.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Mana",
+      "width": 128,
+      "height": 128,
+      "sha256": "416aef935177e71905b77126d44e954dce2654768f7c3be4fc2536bb8519be90"
+    },
+    {
+      "name": "Icon_Map",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Map.png",
+      "unityGuid": "bcca194e3e4fe4911910be8362e9308f",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Map.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Map",
+      "width": 128,
+      "height": 128,
+      "sha256": "9c04b360d2a132edea5fe7c29254e0d5b68ee8849aa6a9e919a4e3ad0353af58"
+    },
+    {
+      "name": "Icon_Megaphone",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Megaphone.png",
+      "unityGuid": "3544b654262b54116a0e77b7c16f0d90",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Megaphone.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Megaphone",
+      "width": 128,
+      "height": 128,
+      "sha256": "f461f6ae303216fba05f5f38c965342f4530fffa437138b740b8f8b40fa7ce20"
+    },
+    {
+      "name": "Icon_Missile",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Missile.png",
+      "unityGuid": "a0aca8f55f20043aa820967787d70baa",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Missile.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Missile",
+      "width": 128,
+      "height": 128,
+      "sha256": "272939f3c907694d10d34485a7aa631a5b14801949350950463d3883c26462be"
+    },
+    {
+      "name": "Icon_News",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_News.png",
+      "unityGuid": "11bcd0c1c3a2148e3afea187531f50f5",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_News.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_News",
+      "width": 128,
+      "height": 128,
+      "sha256": "0cdab48d336d64488e04e0c991669cd278f928750275f1bb0f44ae3cfbc56e9c"
+    },
+    {
+      "name": "Icon_Nut",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Nut.png",
+      "unityGuid": "b07423dbe4dad42b191d69e4adb2282a",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Nut.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Nut",
+      "width": 128,
+      "height": 128,
+      "sha256": "da9970c243733d601bdeb3492ea8672023dabb723a623cd11700d31929370207"
+    },
+    {
+      "name": "Icon_Oil",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Oil.png",
+      "unityGuid": "adcc68df1454c4cce8372a68bcf13d4b",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Oil.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Oil",
+      "width": 128,
+      "height": 128,
+      "sha256": "2f4bd416e8ecc8d6ed53ff410b33937a4f6f422140fcdf7985dbb21bd76c43f7"
+    },
+    {
+      "name": "Icon_Potion01_Blue",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Potion01_Blue.png",
+      "unityGuid": "dcd63e4c902054310b6b29e04223486b",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Potion01_Blue.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Potion01_Blue",
+      "width": 128,
+      "height": 128,
+      "sha256": "2a0b4cd9f6a2dc7397b99d1d5a47e0985fb5c7fc8df26ac3b060e534309a4601"
+    },
+    {
+      "name": "Icon_Potion01_Purple",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Potion01_Purple.png",
+      "unityGuid": "762ca17a8b5d1431bb6429644f17627a",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Potion01_Purple.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Potion01_Purple",
+      "width": 128,
+      "height": 128,
+      "sha256": "cc9027c7b604714f8b346c54aaee5b10672523870bac6bcdcc5cc3fa7e8a7060"
+    },
+    {
+      "name": "Icon_Potion01_Red",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Potion01_Red.png",
+      "unityGuid": "8d42612723928446cb0f94f140e0f303",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Potion01_Red.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Potion01_Red",
+      "width": 128,
+      "height": 128,
+      "sha256": "a08822567f766e80b65f28f05604e749070a373e99ace93511885df3b265dde3"
+    },
+    {
+      "name": "Icon_Potion02_Green",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Potion02_Green.png",
+      "unityGuid": "b3726215a307342c5be67d918f4e2b63",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Potion02_Green.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Potion02_Green",
+      "width": 128,
+      "height": 128,
+      "sha256": "8213c9454dd132cb7836e2a583ce262705b86b8685e0297d5e247eebdda6e643"
+    },
+    {
+      "name": "Icon_Potion02_Purple",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Potion02_Purple.png",
+      "unityGuid": "71fcf2ecafa82467c9ac67ee5c710b9e",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Potion02_Purple.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Potion02_Purple",
+      "width": 128,
+      "height": 128,
+      "sha256": "c0261a6244d283f80c43507b6e138125e7820a62c73e3669c53ee83fbfa5d9a8"
+    },
+    {
+      "name": "Icon_Potion02_Red",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Potion02_Red.png",
+      "unityGuid": "642386f77d8a94c13b5341e5d9a01a03",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Potion02_Red.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Potion02_Red",
+      "width": 128,
+      "height": 128,
+      "sha256": "64e19634e67bb6043b8d8cc11f12ca52e1916eb10c36934266a5f26add8243b4"
+    },
+    {
+      "name": "Icon_Pumkin",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Pumkin.png",
+      "unityGuid": "c269f8d3688d646ce9487eafb7a3e5ac",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Pumkin.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Pumkin",
+      "width": 128,
+      "height": 128,
+      "sha256": "87a795715cf8d1a4a68195dca8f81db4bbabb05103c205e7c5c327229f6c7637"
+    },
+    {
+      "name": "Icon_Quest",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Quest.png",
+      "unityGuid": "889a8c17466f04953a75259b5f4fa1db",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Quest.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Quest",
+      "width": 128,
+      "height": 128,
+      "sha256": "9f95899f41409fc40343e47f7f0a750d137875949d782e47f1741890ea178c76"
+    },
+    {
+      "name": "Icon_Ranking",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Ranking.png",
+      "unityGuid": "7b8594bda811f4207845f18a78428237",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Ranking.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Ranking",
+      "width": 128,
+      "height": 128,
+      "sha256": "f425a2fcc5edde558f07e058ef0fb5e7d86758da6fcf4c8446e645680ff988be"
+    },
+    {
+      "name": "Icon_Shield",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Shield.png",
+      "unityGuid": "835bb0042ed8d4333baab9882016e7b9",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Shield.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Shield",
+      "width": 128,
+      "height": 128,
+      "sha256": "9187e6b649aff1d5346397ff58fcd4f943c32e3bf8633cb6e1ed6e9bf81a41b0"
+    },
+    {
+      "name": "Icon_Shop",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Shop.png",
+      "unityGuid": "918906b2fd7f84bf4aba935fb96d6e98",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Shop.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Shop",
+      "width": 128,
+      "height": 128,
+      "sha256": "90b7b39d6c7df9cf5b08c8224e02384efe29c66022be8b53a44cda7ef3287aea"
+    },
+    {
+      "name": "Icon_Shovel",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Shovel.png",
+      "unityGuid": "e702bd0a8f63749369ddc70e6ad44faf",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Shovel.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Shovel",
+      "width": 128,
+      "height": 128,
+      "sha256": "478baca3817b04afdc1e01f245761021eb563ab05b5e53c6473acf69ccfaa046"
+    },
+    {
+      "name": "Icon_Star",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Star.png",
+      "unityGuid": "341d24db5c13444afb87c02c09b2bfa6",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Star.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Star",
+      "width": 128,
+      "height": 128,
+      "sha256": "476ae504b94d937986ee2c64442db762d80b21b8b320c5adbe94aedfdaf2f6ea"
+    },
+    {
+      "name": "Icon_Star_Red",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Star_Red.png",
+      "unityGuid": "985fd49dfd5bb40c089bf5aa121b6bea",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Star_Red.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Star_Red",
+      "width": 128,
+      "height": 128,
+      "sha256": "1f700e1bcdf541f00711df8f3c13e3cc7a721ba023ec53e7ba39f3394efb1bd0"
+    },
+    {
+      "name": "Icon_Stopwatch",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Stopwatch.png",
+      "unityGuid": "2fe4af659450d4f5c8d779384fbf71b1",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Stopwatch.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Stopwatch",
+      "width": 128,
+      "height": 128,
+      "sha256": "2a31bbcb52eeca219a942c7bb830ded78d79096188479bb99f44ece807665519"
+    },
+    {
+      "name": "Icon_Sword",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Sword.png",
+      "unityGuid": "5c0f356e8fdb749c292f0a699fde4480",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Sword.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Sword",
+      "width": 128,
+      "height": 128,
+      "sha256": "8a01d3cfc229590131338d9ccd189e9ba4fa9e96fbe3d4daa804d4e10a3468a2"
+    },
+    {
+      "name": "Icon_Target",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Target.png",
+      "unityGuid": "259dadc21121243e3b779e0d908ce878",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Target.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Target",
+      "width": 128,
+      "height": 128,
+      "sha256": "a02eb7d106de3ed0af60024f1ed2013041138ed6f28b3af62b989194f0c90284"
+    },
+    {
+      "name": "Icon_Timer",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Timer.png",
+      "unityGuid": "6bebd007f5b0445588674f877c7c03f8",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Timer.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Timer",
+      "width": 128,
+      "height": 128,
+      "sha256": "93c009b9eb44d4a251e53d7eed8efcb6632df6c9ad7ae84c12ff06fb95514b31"
+    },
+    {
+      "name": "Icon_Tooth",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Tooth.png",
+      "unityGuid": "f1badda9edf02426bab7919f04fb5967",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Tooth.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Tooth",
+      "width": 128,
+      "height": 128,
+      "sha256": "3ffd994a0fe242334236d3cf504e0c50f197da9a0117ec8ab95efaccb4c3aba0"
+    },
+    {
+      "name": "Icon_Trophy",
+      "source": "ResourcesData/Sprite/Component/Icon_ItemIcons(x2)/128/Icon_Trophy.png",
+      "unityGuid": "9eda7fdd65e344e1e95eac4d16ccf7da",
+      "image": "assets/resources/icons/GUI-Pro/Icons/Icon_Trophy.png",
+      "reference": "@icon/icons/GUI-Pro/Icons/Icon_Trophy",
+      "width": 128,
+      "height": 128,
+      "sha256": "3281bfe2c8e6a5fd946d0da00c0fed20f983c61cbbfe9a46cded1ef095857717"
+    }
+  ]
+}

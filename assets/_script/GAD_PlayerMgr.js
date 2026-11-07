@@ -74,12 +74,13 @@ var def_GAD_PlayerMgr = function () {
     var pending = player.getUserData().data.wallDefensePending;
     return !pending || !!player.settleWallDefense(pending);
   };
-  _ctor.prototype.beginRun = function () {
+  _ctor.prototype.beginRun = function (admissionId) {
     var receipt = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().data.wallDefenseReceipt;
     var sequence = (receipt ? receipt.sequence : 0) + 1;
     this._run = { id: "wall-" + Date.now().toString(36) + "-" + sequence + "-" + Math.random().toString(36).slice(2),
       sequence: sequence, activeMilliseconds: 0, clearedWaves: 0, groups: new Map(), clockAt: null, finalized: false };
     this._result = null;
+    if (admissionId) this._run.admissionId = admissionId;
     return this._run;
   };
   _ctor.prototype.registerWave = function (index, count) {
@@ -108,6 +109,7 @@ var def_GAD_PlayerMgr = function () {
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
       this._result = rewards.createResult(run, $z1GAD_DataMgr.default.getInstance().data.wallDefenseRewards,
         $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfg(), player.getUserData().data.treasureInfo);
+      if (run.admissionId) this._result.admissionId = run.admissionId;
     }
     $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().settleWallDefense(this._result);
     return this.getResult();

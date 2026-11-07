@@ -37,13 +37,25 @@ function restore(state) {
   if (sameOrder(state.appliedOrder, state.skeleton.drawOrder)) state.skeleton.drawOrder = state.order.slice();
   state.slots.clear(); state.appliedOrder = null;
   if (state.colors) { state.colors.forEach(function (record, slot) { if (slot.color.a === record.applied) slot.color.a = record.original; }); state.colors.clear(); }
+  if (state.skinColors) { state.skinColors.forEach(function (record, slot) {
+    if (slot.color.r === record.applied[0] && slot.color.g === record.applied[1] && slot.color.b === record.applied[2]) {
+      slot.color.r = record.original[0]; slot.color.g = record.original[1]; slot.color.b = record.original[2];
+    }
+  }); state.skinColors.clear(); }
 }
 function isFacialSlot(name) {
-  return /(?:^|\/)(?:Eye(?:s|brow)?(?:[_/]|$)|Ani_Eye(?:\/|$)|Mouth(?:[_/]|$)|Nose(?:[_/]|$)|Beard(?:[_/]|$))/i.test(name);
+  return /(?:^|\/)(?:Eyes?(?:[_/]|$)|Ani_Eye(?:\/|$))/i.test(name);
+}
+var DEFAULT_SKIN_TINT = "#f3c89f";
+function isSkinSlot(name) { return /(?:^|\/)Rider\/Body(?:\/Head)?$/.test(name); }
+function skinTint(profile) {
+  return profile && profile.base && /^character-maker\//.test(profile.base.source || "") ? profile.skinTint || DEFAULT_SKIN_TINT : null;
 }
 function prepare(spine, skeleton, parts, assets, textures, options) {
   var state = { skeleton: skeleton, slots: new Map(), colors: new Map(), entries: [], order: skeleton.drawOrder.slice(), appliedOrder: null,
-    faceSlots: options && options.faceless ? skeleton.slots.filter(function (slot) { return isFacialSlot(slot.data.name); }) : [] };
+    faceSlots: options && options.faceless ? skeleton.slots.filter(function (slot) { return isFacialSlot(slot.data.name); }) : [],
+    skinColors: new Map(), skinSlots: options && options.skinTint ? skeleton.slots.filter(function (slot) { return isSkinSlot(slot.data.name); }) : [],
+    skinTint: options && options.skinTint };
   parts.forEach(function (part) {
     var slot = skeleton.findSlot(part.slot), asset = assets[part.sprite], texture = textures[part.sprite];
     if (!slot || !asset || !texture) throw Error("Character part is unavailable: " + part.id);
@@ -70,6 +82,12 @@ function apply(state) {
     if (offset && at >= 0) { skeleton.drawOrder.splice(at, 1); skeleton.drawOrder.splice(Math.max(0, Math.min(skeleton.drawOrder.length, at + offset)), 0, entry.slot); }
   });
   (state.faceSlots || []).forEach(function (slot) { replace(slot, null); });
+  (state.skinSlots || []).forEach(function (slot) {
+    var record = state.skinColors.get(slot), color = slot.color;
+    if (!record || color.r !== record.applied[0] || color.g !== record.applied[1] || color.b !== record.applied[2]) record = { original: [color.r, color.g, color.b] };
+    record.applied = record.original.map(function (value, index) { return value * parseInt(state.skinTint.slice(1 + index * 2, 3 + index * 2), 16) / 255; });
+    color.r = record.applied[0]; color.g = record.applied[1]; color.b = record.applied[2]; state.skinColors.set(slot, record);
+  });
   state.appliedOrder = skeleton.drawOrder.slice();
 }
 function actorKey(actor, type) {
@@ -80,3 +98,4 @@ function actorKey(actor, type) {
 exports.prepare = prepare; exports.apply = apply; exports.restore = restore;
 exports.createAttachment = createAttachment; exports.actorKey = actorKey;
 exports.isFacialSlot = isFacialSlot;
+exports.isSkinSlot = isSkinSlot; exports.skinTint = skinTint; exports.DEFAULT_SKIN_TINT = DEFAULT_SKIN_TINT;

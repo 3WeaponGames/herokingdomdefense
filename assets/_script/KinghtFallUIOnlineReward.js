@@ -40,8 +40,21 @@ var def_KinghtFallUIOnlineReward = function (t) {
     this.btnClaimAll.on(cc.Node.EventType.TOUCH_END, this.onClaimAll, this);
   };
   _ctor.prototype.initView = function () {
-    this.onLineTime = Math.floor($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getOnlineTime() / 60);
-    this.ctrList.numItems = this.cfgList.length;
+    var daily = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData();
+    this.onLineTime = Math.floor(daily.getOnlineTime() / 60);
+    var signature = this.onLineTime + ":" + this.cfgList.map(function (row) {
+      return row.id + ":" + !!daily.getOnlineTimeReward(row.id);
+    }).join(",");
+    if (signature !== this._rewardListSignature) {
+      if (this._rewardListSignature === undefined || this.ctrList.numItems !== this.cfgList.length) {
+        this.ctrList.numItems = this.cfgList.length;
+      } else {
+        // A minute/claim change only alters row content, never list geometry.
+        var list = this.ctrList;
+        this.cfgList.forEach(function (_, index) { list.updateItem(index); });
+      }
+      this._rewardListSignature = signature;
+    }
     var available = this.getClaimableRewards().length > 0;
     this.btnClaimAll.getComponent(cc.Button).interactable = available;
     this.btnClaimAll.getChildByName("bgDisabled").active = !available;

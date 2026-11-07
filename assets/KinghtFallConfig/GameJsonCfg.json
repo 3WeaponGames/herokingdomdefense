@@ -13313,7 +13313,7 @@
     "60010": {
       "enumValue": 60010,
       "enumKey": "StaminaCost",
-      "Value": "5"
+      "Value": "10"
     },
     "60014": {
       "enumValue": 60014,
@@ -13609,7 +13609,7 @@
       "ID": 90001,
       "Name": "[[loc:data.soldiercfg.90001.name]]",
       "prefab": "ItemEnemy01",
-      "loadIcon": "wg_zd_dr1",
+      "loadIcon": "@icon/icons/enemy-heads/wolf",
       "AttackType": 1,
       "Health": 40,
       "AttackDamage": 10,
@@ -13624,13 +13624,14 @@
         2,
         1,
         3
-      ]
+      ],
+      "CounterType": ""
     },
     "90002": {
       "ID": 90002,
       "Name": "[[loc:data.soldiercfg.90002.name]]",
       "prefab": "ItemEnemy02",
-      "loadIcon": "wg_zd_dr2",
+      "loadIcon": "@icon/icons/enemy-heads/bear",
       "AttackType": 1,
       "Health": 60,
       "AttackDamage": 15,
@@ -13645,13 +13646,14 @@
         2,
         1,
         3
-      ]
+      ],
+      "CounterType": "skirmisher"
     },
     "90003": {
       "ID": 90003,
       "Name": "[[loc:data.soldiercfg.90003.name]]",
       "prefab": "ItemEnemy03",
-      "loadIcon": "wg_zd_dr4",
+      "loadIcon": "@icon/icons/enemy-heads/carnivorous-plant",
       "AttackType": 2,
       "Health": 20,
       "AttackDamage": 20,
@@ -13666,13 +13668,14 @@
         2,
         1,
         3
-      ]
+      ],
+      "CounterType": "vanguard"
     },
     "90004": {
       "ID": 90004,
       "Name": "[[loc:data.soldiercfg.90004.name]]",
       "prefab": "ItemEnemy04",
-      "loadIcon": "wg_zd_dr3",
+      "loadIcon": "@icon/icons/enemy-heads/buffalo",
       "AttackType": 1,
       "Health": 50,
       "AttackDamage": 15,
@@ -13687,13 +13690,14 @@
         2,
         1,
         3
-      ]
+      ],
+      "CounterType": "guardian"
     },
     "90005": {
       "ID": 90005,
       "Name": "[[loc:data.soldiercfg.90005.name]]",
       "prefab": "ItemEnemy05",
-      "loadIcon": "wg_zd_dr5",
+      "loadIcon": "@icon/icons/enemy-heads/turtle",
       "AttackType": 2,
       "Health": 60,
       "AttackDamage": 50,
@@ -13707,13 +13711,14 @@
         3,
         1,
         2
-      ]
+      ],
+      "CounterType": ""
     },
     "90006": {
       "ID": 90006,
       "Name": "[[loc:data.soldiercfg.90006.name]]",
       "prefab": "ItemEnemy06",
-      "loadIcon": "wg_zd_dr6",
+      "loadIcon": "@icon/icons/enemy-heads/wizard",
       "AttackType": 3,
       "Health": 100,
       "AttackInterval": 0.2,
@@ -13726,13 +13731,14 @@
         3,
         200,
         15
-      ]
+      ],
+      "CounterType": ""
     },
     "90007": {
       "ID": 90007,
       "Name": "[[loc:data.soldiercfg.90007.name]]",
       "prefab": "ItemEnemy07",
-      "loadIcon": "wg_zd_dr6",
+      "loadIcon": "@icon/icons/enemy-heads/iron-golem",
       "AttackType": 1,
       "Health": 500,
       "AttackDamage": 20,
@@ -13751,13 +13757,14 @@
         20,
         200,
         5
-      ]
+      ],
+      "CounterType": ""
     },
     "90008": {
       "ID": 90008,
       "Name": "[[loc:data.soldiercfg.90008.name]]",
       "prefab": "ItemEnemy08",
-      "loadIcon": "wg_zd_dr6",
+      "loadIcon": "@icon/icons/enemy-heads/ghost",
       "AttackType": 2,
       "Health": 100,
       "AttackDamage": 40,
@@ -13769,13 +13776,14 @@
       "DeathAni": 0.75,
       "AttackPriority": [
         4
-      ]
+      ],
+      "CounterType": ""
     },
     "90009": {
       "ID": 90009,
       "Name": "[[loc:data.soldiercfg.90009.name]]",
       "prefab": "ItemEnemy09",
-      "loadIcon": "wg_zd_dr6",
+      "loadIcon": "@icon/icons/enemy-heads/vampire",
       "AttackType": 3,
       "Health": 300,
       "AttackInterval": 0.3,
@@ -13787,13 +13795,14 @@
         0.5,
         300,
         10
-      ]
+      ],
+      "CounterType": ""
     },
     "90010": {
       "ID": 90010,
       "Name": "[[loc:data.soldiercfg.90010.name]]",
       "prefab": "ItemEnemy10",
-      "loadIcon": "wg_zd_dr6",
+      "loadIcon": "@icon/icons/enemy-heads/scorpion",
       "AttackType": 1,
       "Health": 100,
       "AttackDamage": 30,
@@ -13812,7 +13821,8 @@
         1,
         10,
         90011
-      ]
+      ],
+      "CounterType": ""
     },
     "90011": {
       "ID": 90011,
@@ -13835,7 +13845,9 @@
         1,
         10,
         90012
-      ]
+      ],
+      "loadIcon": "@icon/icons/enemy-heads/tree-golem",
+      "CounterType": ""
     },
     "90012": {
       "ID": 90012,
@@ -13861,7 +13873,9 @@
         300,
         10,
         5
-      ]
+      ],
+      "loadIcon": "@icon/icons/enemy-heads/skeleton",
+      "CounterType": ""
     }
   },
   "TalentCfg": {
@@ -15803,7 +15817,12 @@
       "Award": [
         2001,
         700
-      ]
+      ],
+      "RoleQuest": {
+        "unitType": "fighter",
+        "count": 5,
+        "description": "[[loc:quests.defeat.fighter]]"
+      }
     },
     {
       "ID": 3,
@@ -16071,7 +16090,12 @@
       "Award": [
         2001,
         24400
-      ]
+      ],
+      "RoleQuest": {
+        "unitType": "guardian",
+        "count": 5,
+        "description": "[[loc:quests.defeat.guardian]]"
+      }
     },
     {
       "ID": 25,
@@ -16156,7 +16180,12 @@
       "Award": [
         2001,
         40600
-      ]
+      ],
+      "RoleQuest": {
+        "unitType": "skirmisher",
+        "count": 5,
+        "description": "[[loc:quests.defeat.skirmisher]]"
+      }
     },
     {
       "ID": 32,
@@ -16241,7 +16270,12 @@
       "Award": [
         2001,
         61100
-      ]
+      ],
+      "RoleQuest": {
+        "unitType": "vanguard",
+        "count": 5,
+        "description": "[[loc:quests.defeat.vanguard]]"
+      }
     },
     {
       "ID": 39,
@@ -16351,7 +16385,12 @@
       "Award": [
         2001,
         93600
-      ]
+      ],
+      "RoleQuest": {
+        "unitType": "mystic",
+        "count": 5,
+        "description": "[[loc:quests.defeat.mystic]]"
+      }
     },
     {
       "ID": 48,
@@ -16449,7 +16488,12 @@
       "Award": [
         2001,
         128400
-      ]
+      ],
+      "RoleQuest": {
+        "unitType": "bruiser",
+        "count": 5,
+        "description": "[[loc:quests.defeat.bruiser]]"
+      }
     },
     {
       "ID": 56,
@@ -19820,80 +19864,144 @@
       }
     },
     "unitTypes": {
-      "wolf": {
-        "name": "Wolf",
-        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Wolf/Wolf_Gray/Head",
+      "fighter": {
+        "name": "Fighter",
+        "icon": "wg_zd_dr1",
         "tint": "#ffffff"
       },
-      "bear": {
-        "name": "Bear",
-        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Bear/Bear_Grizzly/Head",
+      "skirmisher": {
+        "name": "Skirmisher",
+        "icon": "wg_zd_dr3",
         "tint": "#ffffff"
       },
-      "carnivorous-plant": {
-        "name": "Carnivorous Plant",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Plant/Plant_Nepenthes/Body",
+      "vanguard": {
+        "name": "Vanguard",
+        "icon": "wg_zd_dr4",
         "tint": "#ffffff"
       },
-      "buffalo": {
-        "name": "Buffalo",
-        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Buffalo/Buffalo_Wild/Head",
+      "mystic": {
+        "name": "Mystic",
+        "icon": "wg_zd_dr6",
         "tint": "#ffffff"
       },
-      "turtle": {
-        "name": "Turtle",
-        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Turtle/Turtle_Alligator/Body",
+      "bruiser": {
+        "name": "Bruiser",
+        "icon": "wg_zd_dr2",
         "tint": "#ffffff"
       },
-      "wizard": {
-        "name": "Wizard",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Alien/Alien_Wizard/Body",
-        "tint": "#ffffff"
-      },
-      "iron-golem": {
-        "name": "Iron Golem",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Golem/Golem_Iron/Body",
-        "tint": "#ffffff"
-      },
-      "ghost": {
-        "name": "Ghost",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Ghost/Ghost_Pirate/Body",
-        "tint": "#ffffff"
-      },
-      "vampire": {
-        "name": "Vampire",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Alien/Alien_Vampire/Body",
-        "tint": "#ffffff"
-      },
-      "scorpion": {
-        "name": "Scorpion",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Scorpion/Scorpion_Stone/Body",
-        "tint": "#ffffff"
-      },
-      "tree-golem": {
-        "name": "Tree Golem",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Golem/Golem_Tree/Body",
-        "tint": "#ffffff"
-      },
-      "skeleton": {
-        "name": "Skeleton",
-        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Skeleton/Skeleton_Warlord/Head",
+      "guardian": {
+        "name": "Guardian",
+        "icon": "wg_zd_dr2",
         "tint": "#ffffff"
       }
     },
     "unitTypeAssignments": {
-      "enemy:90001:default": "wolf",
-      "enemy:90002:default": "bear",
-      "enemy:90003:default": "carnivorous-plant",
-      "enemy:90004:default": "buffalo",
-      "enemy:90005:default": "turtle",
-      "enemy:90006:default": "wizard",
-      "enemy:90007:default": "iron-golem",
-      "enemy:90008:default": "ghost",
-      "enemy:90009:default": "vampire",
-      "enemy:90010:1": "scorpion",
-      "enemy:90011:2": "tree-golem",
-      "enemy:90012:3": "skeleton"
+      "enemy:90001:default": "fighter",
+      "enemy:90002:default": "guardian",
+      "enemy:90003:default": "skirmisher",
+      "enemy:90004:default": "vanguard",
+      "enemy:90005:default": "skirmisher",
+      "enemy:90006:default": "mystic",
+      "enemy:90007:default": "guardian",
+      "enemy:90008:default": "skirmisher",
+      "enemy:90009:default": "mystic",
+      "enemy:90010:1": "bruiser",
+      "enemy:90011:2": "guardian",
+      "enemy:90012:3": "bruiser",
+      "ally:90001:default": "fighter",
+      "ally:90002:default": "guardian",
+      "ally:90003:default": "skirmisher",
+      "ally:90004:default": "vanguard"
+    }
+  },
+  "AllyCfg": {
+    "90001": {
+      "ID": 90001,
+      "Name": "[[loc:data.allycfg.90001.name]]",
+      "prefab": "ItemEnemy01",
+      "loadIcon": "wg_zd_dr1",
+      "AttackType": 1,
+      "Health": 40,
+      "AttackDamage": 10,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 1,
+      "Suppressed": 90005,
+      "DeathAni": 0.25,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "skirmisher"
+    },
+    "90002": {
+      "ID": 90002,
+      "Name": "[[loc:data.allycfg.90002.name]]",
+      "prefab": "ItemEnemy02",
+      "loadIcon": "wg_zd_dr2",
+      "AttackType": 1,
+      "Health": 60,
+      "AttackDamage": 15,
+      "AttackInterval": 0.67,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 85,
+      "BuildingCross": 1,
+      "Suppressed": 90003,
+      "DeathAni": 0.25,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "skirmisher"
+    },
+    "90003": {
+      "ID": 90003,
+      "Name": "[[loc:data.allycfg.90003.name]]",
+      "prefab": "ItemEnemy03",
+      "loadIcon": "wg_zd_dr3",
+      "AttackType": 2,
+      "Health": 20,
+      "AttackDamage": 20,
+      "AttackInterval": 0.5,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 68,
+      "BuildingCross": 1,
+      "Suppressed": 90004,
+      "DeathAni": 0.25,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "vanguard"
+    },
+    "90004": {
+      "ID": 90004,
+      "Name": "[[loc:data.allycfg.90004.name]]",
+      "prefab": "ItemEnemy04",
+      "loadIcon": "wg_zd_dr4",
+      "AttackType": 1,
+      "Health": 50,
+      "AttackDamage": 15,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 170,
+      "BuildingCross": 1,
+      "Suppressed": 90002,
+      "DeathAni": 0.25,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "guardian"
     }
   }
 }

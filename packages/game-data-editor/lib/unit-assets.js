@@ -76,7 +76,7 @@ function describe(root, request) {
         return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, label: level ? level.Icon : 'Building', runtimePath: null };
     }
     if (['hero', 'enemy', 'ally'].indexOf(type) < 0) throw new Error('Unknown unit category.');
-    const record = request.record || cfg.SoldierCfg[id], boss = type === 'enemy' && [90010, 90011, 90012].indexOf(Number(id)) >= 0;
+    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && [90010, 90011, 90012].indexOf(Number(id)) >= 0;
     if (type !== 'hero' && !record) throw new Error('Unit does not exist.');
     const prefabName = type === 'hero' ? null : boss ? 'ItemEnemy10' : (type === 'ally' ? 'Play' : '') + record.prefab;
     if (prefabName && !/^[A-Za-z0-9_-]+$/.test(prefabName)) throw new Error('Invalid unit prefab name.');

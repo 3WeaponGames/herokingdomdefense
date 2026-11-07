@@ -1,0 +1,76 @@
+[
+  {
+    "__type__": "cc.Prefab",
+    "_name": "StageStars",
+    "data": {
+      "__id__": 1
+    },
+    "optimizationPolicy": 0,
+    "asyncLoadAssets": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "StageStars",
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 2
+      }
+    ],
+    "_prefab": {
+      "__id__": 3
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 480,
+      "height": 190
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "__type__": "20f97+/cglF3LCnB9szYXcs",
+    "node": {
+      "__id__": 1
+    },
+    "starFrame": {
+      "__uuid__": "ae6700a5-8c79-4360-9dc6-adf5c472fda8"
+    },
+    "sparkleFrame": {
+      "__uuid__": "85e03b70-949b-4b63-9fa2-d12787de6c5e"
+    },
+    "glowFrame": {
+      "__uuid__": "1f47dc71-c252-493c-8703-37cbdcdb0892"
+    },
+    "sideSize": 120,
+    "centerSize": 150,
+    "spacing": 150,
+    "centerLift": 12,
+    "awardInterval": 0.36
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "StageStarsRoot",
+    "sync": false
+  }
+]

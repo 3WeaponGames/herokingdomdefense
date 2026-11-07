@@ -93,7 +93,7 @@ LanguageMgr.prototype._resolve = function (text, language, depth) {
 LanguageMgr.prototype._render = function (recipe, language, depth) {
   var self = this;
   if ((depth || 0) > 8) return "";
-  if (recipe.number !== undefined) return this._numberText(recipe.number, language);
+  if (recipe.number !== undefined) return this._numberText(recipe.number, language, recipe.numberStyle);
   var text = this._resolve(recipe.template, language, depth);
   var parameters = recipe.params;
   if (parameters) text = text.replace(/\{([\w]+)\}/g, function (token, key) {
@@ -264,6 +264,7 @@ LanguageMgr.prototype._applyDisplayEffects = function (label, resource) {
   label._localizedEffectsActive = true; label._localizedEffectSignature = signature;
 };
 LanguageMgr.prototype._fitShortcutCaption = function (label) {
+  if (label && label._lobbyCaption) return;
   if (!cc.isValid(label) || !label.node || !cc.isValid(label.node)) { this._shortcutCaptions.delete(label); return; }
   var styles = this.catalog.labelStyles && this.catalog.labelStyles[label._localizedStyleKey];
   var style = styles && styles[this.currentLan], node = label.node, parent = node.parent;
@@ -288,15 +289,20 @@ LanguageMgr.prototype._fitShortcutCaption = function (label) {
   label._shortcutCaptionSignature = signature;
   label._shortcutCaptionFit = {width:node.width,height:node.height,x:node.x,y:node.y};
 };
-LanguageMgr.prototype.formatNumber = function (number) {
+LanguageMgr.prototype.formatNumber = function (number, style) {
   var recipe = { template: "", number: Number(number) };
+  if (style) recipe.numberStyle = style;
   return this._remember(this._render(recipe), recipe);
 };
-LanguageMgr.prototype._numberText = function (number, language) {
+LanguageMgr.prototype._numberText = function (number, language, style) {
   var units = this.catalog.numberFormats && this.catalog.numberFormats[language || this.currentLan];
   if (!units) return String(number);
+  var styled = style && units.styles && units.styles[style];
+  if (styled) units = styled;
   var index = 0, value = Number(number), step = units.base || 1000;
+  if (units.compactFrom && Math.abs(value) < units.compactFrom) return String(value);
   while (Math.abs(value) >= step && index < units.suffixes.length - 1) { value /= step; index++; }
+  if (styled && index && Math.abs(Number(value.toFixed(2))) >= step && index < units.suffixes.length - 1) { value /= step; index++; }
   return (index ? value.toFixed(2).replace(/\.?0+$/, "") : String(value)) + this._resolve(units.suffixes[index], language);
 };
 LanguageMgr.prototype.bindLabel = function (label, key, params) {

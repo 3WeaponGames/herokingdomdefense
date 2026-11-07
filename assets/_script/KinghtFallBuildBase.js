@@ -405,10 +405,14 @@ var def_KinghtFallBuildBase = function (t) {
             if ($z1KinghtFallUIGame.default.instance === ui && !ui.isclose && game.gameData === data && game._combatEpoch === epoch && !i._upgradeOperation) ui.canStart = true;
           }, .5);
           $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding);
-          var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getTaskInfo();
+          var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
+          if (missions.recordQuestEvent) missions.recordQuestEvent($z1KinghtFallEnum.KinghtFallEnumTaskEnum.BuildLevel, i.buildInfo.cfg.level, true);
+          else {
+          var e = missions.getTaskInfo();
           if (e.type == $z1KinghtFallEnum.KinghtFallEnumTaskEnum.BuildLevel) {
             e.num = Math.max(e.num, i.buildInfo.cfg.level);
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setTaskInfo(e);
+          }
           }
           $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.lv_building_X_Y, $z1KinghtFallUIGame.default.instance.ctrGame.gameData.levelCfg.Level + "_" + i.buildCfg.enumValue);
           ui.onPauseGame(false, operation);

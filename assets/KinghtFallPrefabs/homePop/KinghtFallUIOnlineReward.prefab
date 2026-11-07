@@ -450,8 +450,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 744.4,
-      "height": 158.2
+      "width": 720,
+      "height": 180
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -471,23 +471,24 @@
     }
   },
   {
-    "__type__": "cc.Label",
-    "_string": "[[loc:ui.layout.kinghtfalluionlinereward.21]]",
-    "_fontSize": 67,
-    "_lineHeight": 78,
-    "_styleFlags": 1,
-    "_N$verticalAlign": 1,
-    "_N$overflow": 3,
-    "_materials": [
+        "__type__": "cc.Label",
+        "_string": "[[loc:ui.layout.kinghtfalluionlinereward.21]]",
+        "_fontSize": 67,
+        "_lineHeight": 78,
+        "_styleFlags": 1,
+        "_N$verticalAlign": 1,
+        "_N$overflow": 1,
+        "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
-    "node": {
+        "node": {
       "__id__": 20
     },
-    "_N$string": "[[loc:ui.layout.kinghtfalluionlinereward.21]]"
-  },
+        "_N$string": "[[loc:ui.layout.kinghtfalluionlinereward.21]]",
+        "_N$enableWrapText": true
+    },
   {
     "__type__": "67db1C8o05AUKGTeZFpIrDv",
     "node": {

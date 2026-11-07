@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "400c31ee-a1bb-5c18-a5a2-274ff45de65c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Icon_Gem04_Octagon_Blue": {
+      "ver": "1.0.6",
+      "uuid": "0aaefe0a-3808-540b-a667-9642d2bdf352",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "400c31ee-a1bb-5c18-a5a2-274ff45de65c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

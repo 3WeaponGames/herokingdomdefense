@@ -115,7 +115,7 @@ var def_GAD_UIGameView = function (t) {
     var i = this;
     (n = this.tipPools.length > 0 ? this.tipPools.pop() : cc.instantiate(this.ndTipRoot.children[0])).parent = this.ndTipRoot;
     n.active = true;
-    n.getComponent(cc.Label).string = (t > 0 ? "+" : "") + t;
+    n.getComponent(cc.Label).string = (t > 0 ? "+" : "") + require("LanguageMgr").LanguageMgr.getInstance().formatNumber(t, "battle");
     n.color = t > 0 ? cc.color().fromHEX("#0bff16") : cc.color().fromHEX("#ff4e49");
     var a = this.ndTipRoot.convertToNodeSpaceAR(cc.v2(e.x, e.y));
     n.setPosition(a.x, a.y);

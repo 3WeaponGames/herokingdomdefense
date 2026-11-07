@@ -66,17 +66,27 @@ test('only selected soldiers receive formation slots and posted bodies reserve t
  for(const slot of slots)assert(distance(slot.pos,posted.node)>=nav.radius(a)+nav.radius(posted)-2-.01);
  assert.equal(e.game.getArmyOrderGoal(posted,posted.rallyPoint.pos),null);
 });
-test('posted units fire in weapon range, chase only attackers and return to their unchanged post',()=>{
+test('posted units engage enemies within hero sight, respect their post leash, and return after combat',()=>{
  const e=setup(),unit=e.soldier(-40,0,3);delete unit.getFind;delete unit.onFindList;delete unit.isDead;
- unit.attackRange=30;unit.cfg={...unit.cfg,SearchRange:160};
- const enemy={node:new Node('enemy',e.game.ndMain,50,0),attackRange:180,isDead:()=>false};
+ unit.attackRange=30;unit.cfg={...unit.cfg,SearchRange:160};e.game.ctrPlay.attackRange=300;
+ const enemy={node:new Node('enemy',e.game.ndMain,220,0),attackRange:180,isDead:()=>false};
  enemy.node._combatGeneration=1;e.game.gameData.enemies.push(enemy);
- e.game.changeAge();e.game.changeAge();e.tick([unit],10);near(unit.node.x,-40);
+ e.game.changeAge();e.game.changeAge();const post={...unit.rallyPoint.pos};e.tick([unit],10);assert(unit.node.x>-40,'a visible enemy outside melee range was ignored');
  let attacks=0;unit.time.Attack=1;unit.doAttackStart=()=>{attacks++;unit.doIdel();};
- enemy.node.setPosition(-20,0);e.tick([unit],5);assert(attacks>0);near(unit.node.x,-40);
- enemy.node.setPosition(50,0);unit.onAttacked(1,enemy);e.tick([unit],8);assert(unit.node.x>-40,'retaliation did not pursue the ranged attacker');
- const post={...unit.rallyPoint.pos};enemy.isDead=()=>true;e.tick([unit],90);
+ const firePosition=unit.node.x;enemy.node.setPosition(firePosition+20,0);e.tick([unit],5);assert(attacks>0);near(unit.node.x,firePosition);
+ enemy.node.setPosition(post.x+310,0);e.tick([unit],90);near(distance(unit.node,post),0);
+ unit.onAttacked(1,enemy);e.tick([unit],8);assert(unit.node.x>-40,'retaliation did not pursue the ranged attacker');
+ enemy.isDead=()=>true;e.tick([unit],90);
  near(distance(unit.node,post),0);near(post.x,-40);assert.equal(unit.state,0);
+});
+
+test('one-time Rally does not capture future troops and Follow immediately clears an earlier rally order',()=>{
+ const e=setup(),game=e.game;game._separateArmyCommands=true;const unit=e.soldier(0);
+ game.ctrPlay.node.setPosition(250,0);game.rallyCommand();assert(unit._rallyOrder);assert.equal(unit.rallyPoint.pos.x,250);
+ const later=e.soldier(400);assert.equal(later.rallyPoint.pos.x,400,'a new unit inherited an old one-time command');assert(!later._rallyOrder);
+ unit._followPickupBlocked=true;game.ctrPlay.node.setPosition(0,0);game.followCommand();
+ assert(unit._followSelected&&unit.isAgg);assert.equal(unit._rallyOrder,null);assert.equal(unit.rallyPoint,null);assert.equal(unit.pathList,null);assert.equal(unit._followPickupBlocked,false);
+ game.ctrPlay.node.setPosition(-200,0);e.tick([unit,later],35);assert(unit.node.x<0,'old Rally destination overrode Follow');
 });
 test('a selected casualty respawns at its barracks and walks to its last released post without rejoining Follow',()=>{
  const e=setup();e.stubs.TestMode={TestMode:{getInstance:()=>({shouldBypassAdLimits:()=>false})}};

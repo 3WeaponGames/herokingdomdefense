@@ -36,6 +36,7 @@ function harness() {
       getTaskCfgById: id => config.TaskCfg.find(item => item.ID === id)
     }) }
   };
+  modules.QuestBoardCore = require('../../assets/_script/QuestBoardCore');
   function load(name) {
     if (modules[name]) return modules[name];
     const context = { exports: {}, require: id => modules[id] || {}, console,
@@ -158,11 +159,12 @@ test('clearing Chapter 20 completes mission 96 and allows the next mission', () 
   const h = harness(); h.user.data.maxStage = 20;
   const ui = h.battle(); ui.onUpdateTask();
   assert.equal(h.mission.getTaskInfo().stage, 0);
-  assert.equal(ui.ndTaskInfo.getChildByName('ndPro').getChildByName('labPro').getComponent().string, '19/20');
+  assert.equal(h.mission.getQuestViews().find(v => v.task.id === 96).progress.num, 19);
   h.user.passStage(20, 1); ui.onUpdateTask();
   assert.equal(h.user.getMaxStage(), 21); assert.equal(h.mission.getTaskInfo().stage, 1);
-  assert.equal(ui.ndTaskInfo.getChildByName('ndPro').getChildByName('labPro').getComponent().string, '20/20');
-  ui.onUpdateTask = () => {}; ui.onTaskClick();
-  assert.equal(h.mission.getTaskInfo().id, 97);
+  assert.equal(h.mission.getQuestViews().find(v => v.task.id === 96).progress.num, 20);
+  const cfg = config.TaskCfg.find(t => t.ID === 96);
+  assert(h.manager.claimRewards([{ id: cfg.Award[0], num: cfg.Award[1] }], 1, null, () => h.mission.claimQuest(96), () => h.mission.getQuests().some(q => q.id === 96 && q.stage === 1)));
+  assert.deepEqual(Array.from(h.mission.getQuests(), q => q.id), [99, 97, 98]);
   assert.equal(h.user.getGoldNum(), config.TaskCfg.find(t => t.ID === 96).Award[1]);
 });

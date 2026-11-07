@@ -55,7 +55,7 @@ var def_GAD_Cards = function (t) {
   _ctor.prototype.refreshBar = function () {
     var t = Math.min(1, Math.max(0, this.hp / this.maxHp));
     this.spBr.node.width = 696 * t;
-    this.lblHP.string = "" + Math.floor(this.hp);
+    this.lblHP.string = require("LanguageMgr").LanguageMgr.getInstance().formatNumber(Math.floor(this.hp), "battle");
   };
   _ctor.prototype.onLoad = function () {
     this.initTagID();

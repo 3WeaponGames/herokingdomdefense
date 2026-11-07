@@ -106,7 +106,7 @@ var Appearance = cc.Class({
           var node = renderer.node;
           models.push({ renderer: renderer, scaleX: Math.abs(node.scaleX), scaleY: node.scaleY, x: node.x || 0, y: node.y || 0, angle: node.angle || 0, opacity: node.opacity === undefined ? 255 : node.opacity, color: node.color && node.color.clone ? node.color.clone() : node.color, skin: renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name });
           var parts = fittedParts.filter(function (part) { return renderer.skeletonData && part.layer === renderer.skeletonData.uuid; });
-          if ((parts.length || profile.faceless && !nativeParts) && renderer._skeleton) pending.push(Core.prepare(sp.spine, renderer._skeleton, parts, library, textures, { faceless: !!profile.faceless }));
+          if ((parts.length || (profile.faceless || Core.skinTint(profile)) && !nativeParts) && renderer._skeleton) pending.push(Core.prepare(sp.spine, renderer._skeleton, parts, library, textures, { faceless: !!profile.faceless, skinTint: Core.skinTint(profile) }));
         });
         this.states = pending; this.models = models; this.signature = signature;
       } catch (error) { this.clear(); if (!failures[id]) { failures[id] = true; cc.warn("Character look " + id + ": " + error.message); } return; }

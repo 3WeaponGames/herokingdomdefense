@@ -94,7 +94,7 @@ var def_KinghtFallEnemyLong = function (t) {
       var shooterGeneration = this.node._combatGeneration;
       return void i.ctr.setTag(i.pos, n.node, function () {
         if (cc.isValid(n) && cc.isValid(n.node)) {
-          if (n.cfg && t.cfg.Suppressed == n.cfg.ID) {
+          if (GameToolsOverrides.counters(t, n)) {
             var i = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
             e *= i;
           }

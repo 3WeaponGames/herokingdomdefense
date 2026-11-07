@@ -6,14 +6,14 @@ const Schema=require('../lib/schema');
 const ALLIED_IDS=[90001,90002,90003,90004];
 function name(value,catalog,language,fallback){return Schema.resolve(value,catalog,language)||fallback;}
 function alliedUnits(base,catalog,language){
-  const units=base.SoldierCfg||{};
+  const units=base.AllyCfg||base.SoldierCfg||{};
   return ALLIED_IDS.filter(id=>units[id]&&units[id].prefab).map(id=>({value:id,label:name(units[id].Name,catalog,language,'Unit '+id)+' · '+id,record:units[id]}));
 }
 function branchSummary(id,level,base,catalog,language){
   const data=Array.isArray(level.Data)?level.Data:[];
   switch(Number(id)){
     case 1:case 2:return data[0]+' damage · '+data[1]+' attacks/s · '+data[2]+' range';
-    case 3:{const unit=(base.SoldierCfg||{})[data[1]];return data[0]+' × '+name(unit&&unit.Name,catalog,language,'Unit '+data[1])+' · '+data[2]+'s respawn';}
+    case 3:{const unit=(base.AllyCfg||base.SoldierCfg||{})[data[1]];return data[0]+' × '+name(unit&&unit.Name,catalog,language,'Unit '+data[1])+' · '+data[2]+'s respawn';}
     case 4:case 5:return data[0]+' silver / wave';
     default:return level.Hp+' HP';
   }
@@ -24,7 +24,7 @@ function branches(building,id,base,catalog,language){
     label:name(record.Name,catalog,language,'Branch #'+record.index),
     summary:branchSummary(id,record,base,catalog,language),record,
     next:Array.isArray(record.BranchBuild)?record.BranchBuild.slice():[],
-    unit:Number(id)===3&&(base.SoldierCfg||{})[(record.Data||[])[1]]||null
+    unit:Number(id)===3&&(base.AllyCfg||base.SoldierCfg||{})[(record.Data||[])[1]]||null
   }));
 }
 function catalog(base,translations,language){
