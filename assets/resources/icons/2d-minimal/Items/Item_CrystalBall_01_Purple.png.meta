@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "73aa3570-1a3e-56f2-b9a1-de984e756be9",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_CrystalBall_01_Purple": {
+      "ver": "1.0.6",
+      "uuid": "3e62cc56-b3d9-5b9e-81bb-e87460a2147e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "73aa3570-1a3e-56f2-b9a1-de984e756be9",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "de6aef68-465f-56f8-a935-4b57016b3a11",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Food_Mushroom_02": {
+      "ver": "1.0.6",
+      "uuid": "d20edc80-1e84-5baa-b348-8bfa3aba9039",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "de6aef68-465f-56f8-a935-4b57016b3a11",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

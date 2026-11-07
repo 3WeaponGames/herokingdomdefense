@@ -30,6 +30,11 @@ var TestMode = require("TestMode").TestMode;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+function resolveEnemyPictogram(settings, id) {
+  var key = 'enemy:' + id + ':' + (Number(id) >= 90010 ? Number(id) - 90009 : 'default');
+  var typeId = settings && settings.unitTypeAssignments && settings.unitTypeAssignments[key];
+  return settings && settings.unitTypes && settings.unitTypes[typeId] || null;
+}
 // Keep the complete enemy indicator clear of HUD controls and earlier indicators.
 // Candidate edges are bounded and deterministic; this is UI placement, not movement.
 function placeEnemyIndicator(target, footprint, bounds, obstacles, gap) {
@@ -89,6 +94,7 @@ var def_KinghtFallUIGame = function (t) {
     e.btnStartFight = null;
     e.btnAddCoin = null;
     e.btnAgg = null;
+    e.btnFollow = null;
     e.btnSuspend = null;
     e.btnRevive = null;
     e.btnReviveBreak = null;
@@ -119,6 +125,7 @@ var def_KinghtFallUIGame = function (t) {
     this.ndBuildCoin.active = false;
     this.btnStartFight.active = false;
     this.btnAgg.active = false;
+    if (this.btnFollow) this.btnFollow.active = false;
     this.btnBuildInfo.active = true;
     this.ndTask.getChildByName("ndAni").active = false;
   };
@@ -130,13 +137,6 @@ var def_KinghtFallUIGame = function (t) {
     if (!entry) { this.initBtnEvent(); this.initEvent(); }
     this.btnAgg.getChildByName("ndTag1").active = true;
     this.btnAgg.getChildByName("ndTag2").active = false;
-    switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
-      case 1:
-        this.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game04);
-        break;
-      case 2:
-        this.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game05);
-    }
     var game = this.ndCtrGame.getComponent($z1KinghtFallGameCtrl.default);
     var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(levelId);
     // Existing checkpoint and diagnostic entries do not purchase a new battle.
@@ -260,6 +260,7 @@ var def_KinghtFallUIGame = function (t) {
       }, "battle.silver.supply");
     });
     this.btnAgg.on(cc.Node.EventType.TOUCH_END, this.rallyCommand, this);
+    if (this.btnFollow) this.btnFollow.on(cc.Node.EventType.TOUCH_END, this.followCommand, this);
     this.btnSuspend.on(cc.Node.EventType.TOUCH_END, this.openPause, this);
     this.btnReviveBreak.on(cc.Node.EventType.TOUCH_END, function () {
       t.btnReviveBreak.active = false;
@@ -297,19 +298,27 @@ var def_KinghtFallUIGame = function (t) {
       }
     });
   };
+  _ctor.prototype._refreshArmyButtons = function () {
+    this.btnAgg.getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game04);
+    this.btnAgg.getChildByName("ndTag1").active = true;
+    this.btnAgg.getChildByName("ndTag2").active = false;
+    if (!this.btnFollow) return;
+    this.btnFollow.active = this.btnAgg.active;
+    this.btnFollow.getChildByName("labNum").getComponent(cc.Label).string = this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game05);
+    var active = !!this.ctrGame && this.ctrGame.isAgg;
+    this.btnFollow.getChildByName("ndTag1").active = !active;
+    this.btnFollow.getChildByName("ndTag2").active = active;
+  };
   _ctor.prototype.rallyCommand = function () {
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
-    this.ctrGame.changeAge();
-    switch ($z1KinghtFallConfig.KinghtFallParameter.FollowMode) {
-      case 1:
-        this.btnAgg.getChildByName("ndTag1").active = true;
-        this.btnAgg.getChildByName("ndTag2").active = false;
-        break;
-      case 2:
-        this.btnAgg.getChildByName("ndTag1").active = !this.ctrGame.isAgg;
-        this.btnAgg.getChildByName("ndTag2").active = this.ctrGame.isAgg;
-    }
+    this.ctrGame.rallyCommand();
+    this._refreshArmyButtons();
+  };
+  _ctor.prototype.followCommand = function () {
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+    this.ctrGame.followCommand();
+    this._refreshArmyButtons();
   };
   _ctor.prototype.beginBattleDialog = function (kind) {
     var ui = this, game = this.ctrGame, data = game.gameData, epoch = game._combatEpoch, round = data.round;
@@ -392,6 +401,7 @@ var def_KinghtFallUIGame = function (t) {
     this.initView();
     this.initBtnView();
     this.btnAgg.active = false;
+    if (this.btnFollow) this.btnFollow.active = false;
     this.btnAgg.getChildByName("ndTag1").active = true;
     this.btnAgg.getChildByName("ndTag2").active = false;
     var e = this.ctrGame.gameData.getBulidList();
@@ -399,6 +409,7 @@ var def_KinghtFallUIGame = function (t) {
       var i = e[n];
       if (i.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks && i.getLevel() >= 1) {
         this.btnAgg.active = true;
+        this._refreshArmyButtons();
         break;
       }
     }
@@ -463,10 +474,12 @@ var def_KinghtFallUIGame = function (t) {
     this._refreshStartBattleCaption();
     var i = this.ctrGame.gameData.getBulidList();
     this.btnAgg.active = false;
+    if (this.btnFollow) this.btnFollow.active = false;
     for (n = 0; n < i.length; n++) {
       var a;
       if ((a = i[n]).buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks && a.getLevel() >= 1) {
         this.btnAgg.active = true;
+        this._refreshArmyButtons();
         break;
       }
     }
@@ -695,11 +708,85 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.lateUpdate = function (t) {
     this.isPauset || this.ctrGame.onLateUpdate(t);
     this._fitBuildingsButton();
+    this._layoutBattleFooter();
+  };
+  _ctor.prototype._layoutBattleFooter = function () {
+    var control = this.ctrUI, root = control && control.node, rod = control && control.ndRod;
+    if (!root || !rod || !this.btnStartFight || !cc.view) return;
+    var visible = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
+    var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: visible.width, height: visible.height };
+    var a = root.convertToNodeSpaceAR(cc.v2(safe.x, safe.y));
+    var b = root.convertToNodeSpaceAR(cc.v2(safe.x + safe.width, safe.y + safe.height));
+    var left = Math.min(a.x, b.x), right = Math.max(a.x, b.x), bottom = Math.min(a.y, b.y), center = (left + right) / 2;
+    var margin = 18, gap = 18, button = this.btnStartFight, reward = this._completionReward && this._completionReward.node;
+    function shown(node) { return node && node.active !== false && node.activeInHierarchy !== false; }
+    function box(node, caption) {
+      var sx = Math.abs(node.scaleX), sy = Math.abs(node.scaleY);
+      var bounds = { minX: -node.anchorX * node.width * sx, maxX: (1 - node.anchorX) * node.width * sx,
+        minY: -node.anchorY * node.height * sy, maxY: (1 - node.anchorY) * node.height * sy };
+      if (shown(caption)) {
+        var w = caption.width * Math.abs(caption.scaleX) * sx, h = caption.height * Math.abs(caption.scaleY) * sy;
+        bounds.minX = Math.min(bounds.minX, caption.x * sx - caption.anchorX * w);
+        bounds.maxX = Math.max(bounds.maxX, caption.x * sx + (1 - caption.anchorX) * w);
+        bounds.minY = Math.min(bounds.minY, caption.y * sy - caption.anchorY * h);
+        bounds.maxY = Math.max(bounds.maxY, caption.y * sy + (1 - caption.anchorY) * h);
+      }
+      return bounds;
+    }
+    var startBox = box(button, reward), rally = this.btnAgg, follow = this.btnFollow;
+    var rallyBox = rally && box(rally, rally.getChildByName("labNum"));
+    var followBox = follow && box(follow, follow.getChildByName("labNum"));
+    var coin = this.btnAddCoin, coinBox = coin && box(coin);
+    var signature = [left, right, bottom, shown(button), shown(coin), JSON.stringify(startBox), JSON.stringify(rallyBox), JSON.stringify(followBox),
+      JSON.stringify(coinBox), rod.width, rod.height, rod.scaleX, rod.scaleY].join(":");
+    if (signature === this._battleFooterSignature) return;
+    this._battleFooterSignature = signature;
+    if (coin && !this._footerCoinOffset) this._footerCoinOffset = { x: coin.x - button.x, y: coin.y - button.y };
+    button.setPosition(center, bottom + margin - startBox.minY);
+    if (coin && this._footerCoinOffset) coin.setPosition(button.x + this._footerCoinOffset.x, button.y + this._footerCoinOffset.y);
+    if (rally) rally.setPosition(right - margin - rallyBox.maxX, bottom + margin - rallyBox.minY);
+    if (follow) follow.setPosition(right - margin - followBox.maxX,
+      rally ? rally.y + rallyBox.maxY + gap - followBox.minY : bottom + margin - followBox.minY);
+    var restX = left + (right - left) / 4;
+    restX = Math.max(left + margin + rod.width * Math.abs(rod.scaleX) / 2, restX);
+    var restY = bottom + 180 + rod.height * Math.abs(rod.scaleY) / 2;
+    if (shown(button)) {
+      var top = button.y + startBox.maxY;
+      if (shown(coin) && restX + rod.width * Math.abs(rod.scaleX) / 2 > coin.x + coinBox.minX) top = Math.max(top, coin.y + coinBox.maxY);
+      restY = Math.max(restY, top + gap + rod.height * Math.abs(rod.scaleY) / 2);
+    }
+    var point = cc.v2(restX, restY);
+    if (rod.parent !== root) point = rod.parent.convertToNodeSpaceAR(root.convertToWorldSpaceAR(point));
+    control.setJoystickRest(point);
+  };
+  _ctor.prototype._loadEnemyPictogram = function (record, id) {
+    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    var cfg = manager.getSoldierCfgById(id), type = resolveEnemyPictogram(manager.data && manager.data.GameTools, id);
+    var icon = record.ndItem.getChildByName("sprIcon");
+    if (!icon) return;
+    var sprite = icon.getComponent(cc.Sprite), request = record._iconRequest = (record._iconRequest || 0) + 1;
+    if (!record._iconBox) record._iconBox = { width: icon.width, height: icon.height };
+    function done(frame, custom) {
+      if (!frame || record._iconRequest !== request || record.id !== id || !cc.isValid(record.ndItem)) return;
+      if (cc.Sprite.SizeMode) sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+      sprite.spriteFrame = frame;
+      var box = record._iconBox, rect = frame.getOriginalSize && frame.getOriginalSize();
+      var ratio = custom && rect && rect.width && rect.height ? Math.min(box.width / rect.width, box.height / rect.height) : 0;
+      icon.width = ratio ? rect.width * ratio : box.width;
+      icon.height = ratio ? rect.height * ratio : box.height;
+      if (cc.color) icon.color = cc.color(custom && type.tint || "#ffffff");
+    }
+    var self = this;
+    function original() { self.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + cfg.loadIcon, function (frame) { done(frame, false); }); }
+    if (!type || !type.icon) return original();
+    if (type.icon.indexOf("@icon/") === 0 && cc.resources) {
+      cc.resources.load(type.icon.slice(6), cc.SpriteFrame, function (error, frame) { if (record._iconRequest !== request) return; if (error || !frame) original(); else done(frame, true); });
+    } else this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + type.icon, function (frame) { if (frame) done(frame, true); else original(); });
   };
   _ctor.prototype._enemyIndicatorObstacles = function () {
     var ui = this.ctrUI.node;
     return [this.btnBuildInfo, this.ndTask, this.btnSuspend, this.ndCoin, this.ndLevelInfo,
-      this.btnStartFight, this.btnAddCoin, this.btnAgg].filter(function (node) {
+      this.btnStartFight, this.btnAddCoin, this.btnAgg, this.btnFollow].filter(function (node) {
       return node && cc.isValid(node) && node.active && node.activeInHierarchy !== false;
     }).map(function (node) { return enemyIndicatorBounds(node, ui); });
   };
@@ -783,9 +870,7 @@ var def_KinghtFallUIGame = function (t) {
       if (record.id !== group.id) {
         record.id = group.id;
         var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(group.id), id = group.id;
-        self.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + config.loadIcon, function (frame) {
-          if (cc.isValid(record.ndItem) && record.id === id) record.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = frame;
-        });
+        self._loadEnemyPictogram(record, id);
       }
       var caption = record.ndItem.getChildByName("labName"), label = caption.getComponent(cc.Label);
       label.string = "[[loc:ui.battle.offscreen-enemies]]";
@@ -807,6 +892,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype._stopTestMovement = function () {
     if (this._testKeyboardMoving && this.ctrGame) this.ctrGame.moveFun(null);
     this._testKeyboardMoving = false;
+    if (this.ctrUI && this.ctrUI.setKeyboardMoving) this.ctrUI.setKeyboardMoving(false);
   };
   _ctor.prototype._updateTestControls = function () {
     var mode = TestMode.getInstance(), input = mode.readGameplayInput(this);
@@ -834,10 +920,12 @@ var def_KinghtFallUIGame = function (t) {
     if (blocked || pause || this.isPauset || this.ctrGame.ctrPlay.isDead()) {
       this._stopTestMovement(); mode.clearGameplayInput(true); return;
     }
+    if (input.follow && this.btnFollow && this.btnFollow.active && this.btnFollow.activeInHierarchy) this.followCommand();
     if (input.rally && this.btnAgg.active && this.btnAgg.activeInHierarchy) this.rallyCommand();
     if (input.build) this.ctrGame.testInstantBuild();
     if (this.isPauset) { this._stopTestMovement(); return; }
     if (input.x || input.y) {
+      if (this.ctrUI && this.ctrUI.setKeyboardMoving) this.ctrUI.setKeyboardMoving(true);
       this.moveFun(cc.v2(input.x, input.y)); this._testKeyboardMoving = true;
     } else this._stopTestMovement();
   };
@@ -876,9 +964,7 @@ var def_KinghtFallUIGame = function (t) {
                 if (i.id != o.id) {
                   i.id = o.id;
                   var r = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(o.id);
-                  a.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "icon/" + r.loadIcon, function (t) {
-                    i.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
-                  });
+                  a._loadEnemyPictogram(i, o.id);
                 }
                 i.ndItem.getChildByName("labNum").getComponent(cc.Label).string = "" + o.num;
                 var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
@@ -1125,6 +1211,7 @@ var def_KinghtFallUIGame = function (t) {
     n();
     if (changed && t === 2) this.ctrGame.enterSelectiveFollow();
   };
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnFollow", undefined);
   _ctor.instance = null;
   cc__decorate([ccp_property({
     type: cc.Node,

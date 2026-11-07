@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "9f86c0bd-67d0-5f17-b43b-a77f3f4ea021",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Helmet_05_Wine": {
+      "ver": "1.0.6",
+      "uuid": "def9246a-5963-5833-8235-104585fe9e78",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "9f86c0bd-67d0-5f17-b43b-a77f3f4ea021",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

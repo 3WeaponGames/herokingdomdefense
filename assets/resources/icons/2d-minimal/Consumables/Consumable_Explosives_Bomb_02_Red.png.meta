@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "83d8b158-ea20-51cb-ba86-234c3886f759",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Explosives_Bomb_02_Red": {
+      "ver": "1.0.6",
+      "uuid": "efd65c7e-4733-57c8-84c1-331bd7a874d8",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "83d8b158-ea20-51cb-ba86-234c3886f759",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

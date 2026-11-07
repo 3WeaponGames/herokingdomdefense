@@ -33,6 +33,7 @@ var def_KinghtFallBulletEnemy8 = function (t) {
   };
   _ctor.prototype.onUpdate = function (dt) {
     if (!(dt > 0) || !isFinite(dt)) return;
+    if (this._projectileVisual) this._projectileVisual.step(dt);
     switch (this.state) {
       case 0:
         if (!this.targetIsLive || !this.targetIsLive()) return void this.freeNode();

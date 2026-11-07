@@ -22,6 +22,9 @@
     "Tools/Hero Kingdom Defense/Units": {
       "message": "game-data-editor:open-units"
     },
+    "Tools/Hero Kingdom Defense/Unit Types": {
+      "message": "game-data-editor:open-unit-types"
+    },
     "Tools/Hero Kingdom Defense/Maps": {
       "message": "game-data-editor:open-maps"
     },
@@ -30,6 +33,9 @@
     },
     "Tools/Hero Kingdom Defense/Testing": {
       "message": "game-data-editor:open-testing"
+    },
+    "Tools/Hero Kingdom Defense/Relics": {
+      "message": "game-data-editor:open-relics"
     }
   }
 }

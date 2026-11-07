@@ -120,9 +120,9 @@ TestMode.prototype._releaseKey = function () { this._f8Down = false; this.clearG
 
 TestMode.prototype._gameplayKey = function (event) {
   if (!event) return null;
-  var codes = { KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd', KeyR: 'rally', Escape: 'pause', Space: 'build' };
-  var names = { w: 'w', a: 'a', s: 's', d: 'd', r: 'rally', escape: 'pause', esc: 'pause', ' ': 'build', spacebar: 'build' };
-  var numbers = { 87: 'w', 65: 'a', 83: 's', 68: 'd', 82: 'rally', 27: 'pause', 32: 'build' };
+  var codes = { KeyW: 'w', KeyA: 'a', KeyS: 's', KeyD: 'd', KeyR: 'rally', KeyF: 'follow', Escape: 'pause', Space: 'build' };
+  var names = { w: 'w', a: 'a', s: 's', d: 'd', r: 'rally', f: 'follow', escape: 'pause', esc: 'pause', ' ': 'build', spacebar: 'build' };
+  var numbers = { 87: 'w', 65: 'a', 83: 's', 68: 'd', 82: 'rally', 70: 'follow', 27: 'pause', 32: 'build' };
   return codes[event.code] || names[String(event.key || '').toLowerCase()] || numbers[event.keyCode] || null;
 };
 
@@ -148,7 +148,7 @@ TestMode.prototype.readGameplayInput = function (target) {
   var x = (this._movement.d ? 1 : 0) - (this._movement.a ? 1 : 0);
   var y = (this._movement.w ? 1 : 0) - (this._movement.s ? 1 : 0);
   var length = Math.sqrt(x * x + y * y) || 1;
-  var input = { x: x / length, y: y / length, rally: !!this._actions.rally,
+  var input = { x: x / length, y: y / length, rally: !!this._actions.rally, follow: !!this._actions.follow,
     pause: !!this._actions.pause, build: !!this._actions.build };
   this._actions = {};
   return input;

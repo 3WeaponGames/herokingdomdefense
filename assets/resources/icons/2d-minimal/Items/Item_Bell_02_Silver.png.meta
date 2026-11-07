@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "34c13bb5-8df8-5d0f-9c13-412cc49c8b8b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Bell_02_Silver": {
+      "ver": "1.0.6",
+      "uuid": "a1dcd8ed-b580-5f27-8355-f977ad111120",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "34c13bb5-8df8-5d0f-9c13-412cc49c8b8b",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

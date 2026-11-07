@@ -75,6 +75,7 @@ var def_GAD_Bullet = function (t) {
   _ctor.prototype.update = function (t) {
     if (this.isUseful && $z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) {
       t = Math.min(t, .02);
+      if (this._projectileVisual) this._projectileVisual.step(t);
       this.node.y += this._moveSpeed * t;
       this._flyDis += this._moveSpeed * t;
     }
@@ -91,6 +92,8 @@ var def_GAD_Bullet = function (t) {
   };
   _ctor.prototype.removeFromScreen = function () {
     if (this._isPooled) return;
+    this._shot = null;
+    if (this._projectileVisual) this._projectileVisual.reset();
     this.setRoleState($z1GAD_Configs.emGADRoleState.Die);
     cc.Tween.stopAllByTarget(this.node);
     var game = this._poolGame;
@@ -107,6 +110,10 @@ var def_GAD_Bullet = function (t) {
   };
   _ctor.prototype.getAtkDamage = function () {
     return this._atkDamage;
+  };
+  _ctor.prototype.onDestroy = function () {
+    if (this._projectileVisual) require("ProjectileLooks").release(this);
+    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   cc__decorate([ccp_property(sp.Skeleton)], _ctor.prototype, "skeArrow", undefined);
   cc__decorate([ccp_property(cc.Size)], _ctor.prototype, "colliderSize", undefined);

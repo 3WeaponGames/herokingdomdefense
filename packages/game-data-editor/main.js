@@ -1,13 +1,15 @@
 'use strict';
 const path=require('path');
 const Store=require('./lib/store').Store;
-const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',talents:'Talents',units:'Units',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
+const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
 let store=null,assets=null;
 function project(){const root=Editor.Project&&Editor.Project.path||Editor.projectPath;if(!root)throw Error('Open HeroKingdomDefense first');return root;}
 function getStore(){
     const root=project();if(!store||store.root!==path.resolve(root)){
         const validators=[(docs,changes)=>require('./lib/schema').validate(docs,changes),(docs,changes)=>require('./lib/map-assets').validate(docs,changes,root),(docs,changes)=>require('./lib/asset-validation').validate(root,docs,changes)];
-        store=new Store(root,{validators});assets=null;
+        const projectKey=require('crypto').createHash('sha256').update(path.resolve(root).toLowerCase()).digest('hex').slice(0,16);
+        const backupRoot=path.join(require('os').homedir(),'Documents','Codex Artifacts','HeroKingdomDefense','game-data-saves',projectKey);
+        store=new Store(root,{validators,backupRoot});assets=null;
     }return store;
 }
 function broadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:changed',{version:snapshot.version});return snapshot;}
@@ -47,6 +49,7 @@ const messages={
     'unit-preview'(event,request){reply(event,()=>require('./lib/unit-assets').describe(project(),Object.assign({},request,{documents:getStore().snapshot().documents})));},
     testing(event,request){reply(event,()=>require('./testing/session').handle(Editor,project(),request));},
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
+    'open-characters'(event){reply(event,()=>{Editor.Panel.open('hkd-characters');return true;});},
     'open-panel'(event,kind){reply(event,()=>{open(kind);return true;});},
     'open-map'(event,id){reply(event,()=>{
         if(!/^Map0[1-4]$/.test(id))throw Error('Unknown map');

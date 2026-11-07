@@ -22,6 +22,10 @@ function resourcePath(value) {
 function prefix(a, b) { return a.length <= b.length && a.every((value, index) => String(value) === String(b[index])); }
 function touched(changes, doc, at) { return (changes || []).some(change => change.doc === doc && (prefix(change.path || [], at) || prefix(at, change.path || []))); }
 function imported(root, bundle, key, kind) {
+    const icon=kind==='sprite'&&typeof key==='string'&&/(?:^|\/)@icon\/(.+)$/.exec(key);
+    if(icon){bundle='resources';key=icon[1];}
+    const reference=kind==='sprite'&&typeof key==='string'&&/(?:^|\/)@sprite\/([^/]+)\/(.+)$/.exec(key);
+    if(reference){bundle=reference[1];key=reference[2];if(!resourcePath(bundle)||bundle.includes('/'))throw Error('Invalid icon bundle');const meta=read(path.join(root,'assets',bundle+'.meta'));if(!meta.isBundle)throw Error('Icon must belong to a runtime asset bundle.');}
     if (!resourcePath(key)) throw new Error('Use an extension-free resource path inside ' + bundle + '.');
     const base = path.join(root, 'assets', bundle), absolute = path.resolve(base, key);
     if (!absolute.startsWith(path.resolve(base) + path.sep)) throw new Error('Resource path leaves its runtime bundle.');
@@ -225,7 +229,9 @@ function validate(root, documents, changes) {
         check('A', at.concat('EquipSkin'), level.EquipSkin, name => context.skin(name, context.equipment()[equipment.id]));
     }));
     Object.keys(base.TalentCfg || {}).forEach(id => sprite('A', ['TalentCfg', id, 'Image'], base.TalentCfg[id].Image, 'KinghtFallIconTalent'));
+    Object.keys(base.GoodsCfg || {}).forEach(id => ['icon','sprBg'].forEach(key => sprite('A', ['GoodsCfg',id,key], base.GoodsCfg[id][key], 'KinghtFallIconGood', true)));
     const overrides = unwrap(documents.overrides) || base.GameTools || {};
+    Object.keys(overrides.unitTypes || {}).forEach(id=>{const type=overrides.unitTypes[id];if(type&&typeof type==='object')check('overrides',['unitTypes',id,'icon'],type.icon,name=>imported(root,'KinghtFallEnemy',name.startsWith('@icon/')?name:'icon/'+name,'sprite'));});
     ['timings', 'timingDefaults'].forEach(group => Object.keys(overrides[group] || {}).forEach(key => {
         const parts = key.split(':'), side = parts[0], id = Number(parts[1]), form = parts[2];
         if (!touched(changes, 'overrides', [group, key]) && !touched(changes, 'A', ['SoldierCfg', parts[1], 'prefab'])) return;

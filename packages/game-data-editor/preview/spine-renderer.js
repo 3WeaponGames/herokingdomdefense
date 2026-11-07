@@ -13,7 +13,8 @@ async function createLayers(spine, descriptions) {
         const data = reader.readSkeletonData(description.json), skeleton = new spine.Skeleton(data);
         if (description.skin && data.findSkin(description.skin)) skeleton.setSkinByName(description.skin);
         skeleton.setToSetupPose(); skeleton.updateWorldTransform();
-        return { description, data, skeleton, atlas };
+        const restBones={};skeleton.bones.forEach(b=>{restBones[b.data.name]={a:b.a,b:b.b,c:b.c,d:b.d,x:b.worldX,y:b.worldY};});
+        return { description, data, skeleton, atlas, restBones };
     }));
 }
 function seek(spine, layers, animation, time, loop) {
@@ -25,6 +26,15 @@ function seek(spine, layers, animation, time, loop) {
         const clip = layer.data.findAnimation(name) || layer.data.findAnimation('idle');
         if (clip) clip.apply(skeleton, 0, Math.max(0, time), !!loop, null, 1, spine.MixBlend.replace, spine.MixDirection.mixIn);
         skeleton.updateWorldTransform();
+    });
+    layers.forEach(layer=>{
+        const follow=layer.description.followMount;if(!follow)return;
+        const mount=layers.find(l=>l.description.uuid===follow.layer),bone=mount&&mount.skeleton.findBone(follow.bone),rest=mount&&mount.restBones[follow.bone];if(!bone||!rest)return;
+        const md=mount.description,angle=(md.rotation||0)*Math.PI/180,cos=Math.cos(angle),sin=Math.sin(angle),sx=md.scaleX,sy=md.scaleY;
+        const world=b=>({a:cos*sx*b.a-sin*sy*b.c,b:cos*sx*b.b-sin*sy*b.d,c:sin*sx*b.a+cos*sy*b.c,d:sin*sx*b.b+cos*sy*b.d,x:cos*sx*b.x-sin*sy*b.y+md.x,y:sin*sx*b.x+cos*sy*b.y+md.y});
+        const p=world(rest),q=world({a:bone.a,b:bone.b,c:bone.c,d:bone.d,x:bone.worldX,y:bone.worldY}),det=p.a*p.d-p.b*p.c;
+        const a=(q.a*p.d-q.b*p.c)/det,b=(-q.a*p.b+q.b*p.a)/det,c=(q.c*p.d-q.d*p.c)/det,d=(-q.c*p.b+q.d*p.a)/det;
+        layer.description._mountMotion={a,b,c,d,x:q.x-a*p.x-b*p.y,y:q.y-c*p.x-d*p.y};
     });
 }
 function geometry(spine, layer) {
@@ -76,10 +86,11 @@ function bounds(spine, layers) {
 }
 function transformPoint(d,x,y) {
     x*=d.scaleX;y*=d.scaleY;
-    if(!d.rotation)return{x:x+d.x,y:y+d.y};
-    const a=d.rotation*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return{x:x*c-y*s+d.x,y:x*s+y*c+d.y};
+    const a=(d.rotation||0)*Math.PI/180,c=Math.cos(a),s=Math.sin(a),px=x*c-y*s+d.x,py=x*s+y*c+d.y,m=d._mountMotion;
+    return m?{x:m.a*px+m.b*py+m.x,y:m.c*px+m.d*py+m.y}:{x:px,y:py};
 }
 function inversePoint(d,x,y) {
+    const m=d._mountMotion;if(m){const px=x-m.x,py=y-m.y,det=m.a*m.d-m.b*m.c;x=(m.d*px-m.b*py)/det;y=(-m.c*px+m.a*py)/det;}
     x-=d.x;y-=d.y;
     if(d.rotation){const a=-d.rotation*Math.PI/180,c=Math.cos(a),s=Math.sin(a),px=x;x=px*c-y*s;y=px*s+y*c;}
     return{x:x/d.scaleX,y:y/d.scaleY};
@@ -97,7 +108,7 @@ function draw(spine, ctx, layers, options) {
     const scale=Math.min((width-32)/viewport.width,(height-24)/viewport.height)*(options.zoom||1), facing=options.facing||1;
     ctx.save();ctx.translate(width/2,height-12+viewport.minY*scale);ctx.scale(scale*facing,-scale);ctx.translate(-(viewport.minX+viewport.maxX)/2,0);
     layers.forEach(layer => {
-        ctx.save();ctx.translate(layer.description.x,layer.description.y);if(layer.description.rotation)ctx.rotate(layer.description.rotation*Math.PI/180);ctx.scale(layer.description.scaleX,layer.description.scaleY);
+        ctx.save();const m=layer.description._mountMotion;if(m)ctx.transform(m.a,m.c,m.b,m.d,m.x,m.y);ctx.translate(layer.description.x,layer.description.y);if(layer.description.rotation)ctx.rotate(layer.description.rotation*Math.PI/180);ctx.scale(layer.description.scaleX,layer.description.scaleY);
         geometry(spine,layer).forEach(g=>{
             ctx.globalAlpha=g.color.a*(layer.description.opacity===undefined?1:layer.description.opacity);
             ctx.globalCompositeOperation=['source-over','lighter','multiply','screen'][g.blend]||'source-over';

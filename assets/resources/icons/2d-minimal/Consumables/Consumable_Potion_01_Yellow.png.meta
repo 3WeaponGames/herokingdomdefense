@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "72afdfcb-d520-536d-8e83-df1ead9b59ef",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Potion_01_Yellow": {
+      "ver": "1.0.6",
+      "uuid": "8ad9b0fb-1229-5711-b6cd-8e2b0e977ca8",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "72afdfcb-d520-536d-8e83-df1ead9b59ef",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

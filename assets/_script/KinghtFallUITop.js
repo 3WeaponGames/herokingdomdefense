@@ -65,18 +65,15 @@ var def_KinghtFallUITop = function (t) {
   };
   _ctor.prototype.onRefreshPower = function () {
     var t = this.userData.getPowerNum();
-    var e = this.ndPower.getChildByName("labTime").getComponent(cc.Label);
-    if (t >= this.userData.maxPower) {
-      e.node.active = false;
-    } else {
-      e.node.active = true;
+    var timer = this.ndPower.getChildByName("labTime");
+    if (timer) timer.active = false;
+    if (t < this.userData.maxPower) {
       var n = Date.now() - this.userData.getPowerUpdateTime();
       var i = Math.floor(n / this.userData.powerRecoveryTime);
       if (i >= 1) {
         this.userData.addPowerNum(i, i * this.userData.powerRecoveryTime);
         return void this.onRefreshPower();
       }
-      e.string = $z1KinghtFallModle.default.getInstance().SecondToHours(Math.floor((this.userData.powerRecoveryTime - n) / 1e3));
     }
     this.ndPower.getChildByName("labNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(t);
   };

@@ -48,7 +48,8 @@ var def_KinghtFallUISetting = function (t) {
     var i = $z1PlayerMgr.PlayerMgr.getInstance();
     this.version.string = require("LanguageMgr").LanguageMgr.getInstance().t("settings.version", [i.getTrackData().getVersionConf(), i.getTrackData().getVersionName(), i.getAbType()]);
     this.bindEvent();
-    require("LanguageOptions").attach(this.node);
+    require("LanguageOptions").attach(this.node, 6);
+    require("ControlIndicatorOptions").attach(this.node);
     this.btnExchangeCode.on(cc.Node.EventType.TOUCH_END, function () {
       n.openUI($z1KinghtFallConfig.KinghtFallUIID.UIExchangeCode);
     }, this);

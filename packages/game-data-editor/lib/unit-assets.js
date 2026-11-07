@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const AttackTimings = require('./attack-timing-defaults');
+const AssetValidation = require('./asset-validation');
 let cachedRoot = '', cachedIndex = null;
 function index(root) {
     if (cachedRoot === root && cachedIndex) return cachedIndex;
@@ -67,8 +68,12 @@ function describe(root, request) {
     const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'));
     if (type === 'building') {
         const record = request.record || cfg.BuildEnum[id], level = record && record.levelList && record.levelList[request.levelIndex || 0];
-        const file = level && files.files.find(f => path.basename(f) === level.Icon + '.png' && f.indexOf('KinghtFallIconBuild') >= 0);
-        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, label: level ? level.Icon : 'Building', runtimePath: request.noRuntime ? null : enginePath() };
+        let file = null;
+        if (level) {
+            try { file = AssetValidation.imported(root, 'KinghtFallIconBuild', level.Icon, 'sprite').file; }
+            catch (_) { /* An absent or invalid draft icon has no static preview. */ }
+        }
+        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, label: level ? level.Icon : 'Building', runtimePath: null };
     }
     if (['hero', 'enemy', 'ally'].indexOf(type) < 0) throw new Error('Unknown unit category.');
     const record = request.record || cfg.SoldierCfg[id], boss = type === 'enemy' && [90010, 90011, 90012].indexOf(Number(id)) >= 0;

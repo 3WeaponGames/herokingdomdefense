@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "d6fb6f81-f2f2-57e4-b990-4955e231439b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Glove_02_Blue": {
+      "ver": "1.0.6",
+      "uuid": "8e62281a-0161-5342-8aa3-7c5e600f2ceb",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "d6fb6f81-f2f2-57e4-b990-4955e231439b",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

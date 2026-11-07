@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "90a680cd-9f7c-58bf-aafc-34b77829d9e2",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "UI_Common_Calendar_04_Blue": {
+      "ver": "1.0.6",
+      "uuid": "ac4b52ef-2aaf-5dcb-a106-1e759146cb39",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "90a680cd-9f7c-58bf-aafc-34b77829d9e2",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

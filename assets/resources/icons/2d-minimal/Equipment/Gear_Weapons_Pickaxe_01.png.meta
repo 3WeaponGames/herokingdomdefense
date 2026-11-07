@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "bee3719a-5d5b-5523-b752-bb1210dbacdd",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Weapons_Pickaxe_01": {
+      "ver": "1.0.6",
+      "uuid": "4803ff1a-677e-5577-8693-c5ff1b290afe",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "bee3719a-5d5b-5523-b752-bb1210dbacdd",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

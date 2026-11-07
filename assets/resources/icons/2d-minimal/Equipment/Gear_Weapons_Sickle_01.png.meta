@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ea974e0f-29be-513c-a381-ef09b6fafd94",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Weapons_Sickle_01": {
+      "ver": "1.0.6",
+      "uuid": "34867dad-12b2-5f7a-8c21-c01e0c7cf6ee",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ea974e0f-29be-513c-a381-ef09b6fafd94",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

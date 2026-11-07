@@ -52,10 +52,7 @@ var def_KinghtFallUISuspend = function (t) {
     this.ndParent.node.on("scroll-ended", function () {
       t.proY = -1;
     }, this);
-    for (var e = 0; e < this.togCon.toggleItems.length; e++) {
-      this.togCon.toggleItems[e].node.on("toggle", this.showView, this);
-    }
-    this.togCon.toggleItems[$z1KinghtFallConfig.KinghtFallParameter.FollowMode - 1].isChecked = true;
+    if (this.togCon) this.togCon.node.active = false;
   };
   _ctor.prototype.initItem = function () {
     var t = this;

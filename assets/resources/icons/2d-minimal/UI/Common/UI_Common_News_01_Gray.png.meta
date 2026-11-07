@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "17a9521e-ea09-5522-8361-96ef09bd6add",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "UI_Common_News_01_Gray": {
+      "ver": "1.0.6",
+      "uuid": "7c0c9a07-d52a-57c0-a7a6-e6f5574917ac",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "17a9521e-ea09-5522-8361-96ef09bd6add",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "91e105d7-89cf-5d4b-aa3b-5d0f7024eb6e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Weapon_Scimitar_01": {
+      "ver": "1.0.6",
+      "uuid": "d8b24c93-60bc-5d56-9cc4-7ae1a2bf406c",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "91e105d7-89cf-5d4b-aa3b-5d0f7024eb6e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

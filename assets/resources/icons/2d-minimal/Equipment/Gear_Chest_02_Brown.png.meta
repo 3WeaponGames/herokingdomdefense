@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "d145e448-fdd6-5269-b7a6-fabb11424d4c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Chest_02_Brown": {
+      "ver": "1.0.6",
+      "uuid": "f36aaa0b-d5a0-5235-a870-e7fe95454700",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "d145e448-fdd6-5269-b7a6-fabb11424d4c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

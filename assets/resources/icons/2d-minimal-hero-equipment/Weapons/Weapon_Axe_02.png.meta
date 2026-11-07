@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e0955284-993d-5e31-8a5c-0bee9a267f72",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Weapon_Axe_02": {
+      "ver": "1.0.6",
+      "uuid": "85e553d3-b1f2-5316-a0d2-0c0f99967832",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e0955284-993d-5e31-8a5c-0bee9a267f72",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

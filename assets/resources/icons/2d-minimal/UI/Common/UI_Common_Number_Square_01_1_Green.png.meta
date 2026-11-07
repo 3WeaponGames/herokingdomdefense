@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "bc0dd7ea-7716-5215-810a-c755b4b833b8",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "UI_Common_Number_Square_01_1_Green": {
+      "ver": "1.0.6",
+      "uuid": "dc537142-5b5f-5f56-9311-05efa094f6aa",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "bc0dd7ea-7716-5215-810a-c755b4b833b8",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

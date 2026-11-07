@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "027aa250-727f-59c3-a76b-06c06e33a093",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Battery_01_Silver": {
+      "ver": "1.0.6",
+      "uuid": "f62d189b-cd0f-5d78-bfb1-7a1073a75723",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "027aa250-727f-59c3-a76b-06c06e33a093",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -49,9 +49,11 @@ function fixture() {
   const buildProto = load('KinghtFallBuildBase').default.prototype;
   const button = callback => ({ active: true, activeInHierarchy: true, emit(event) { assert.equal(event, 'touchend'); callback(); } });
   Object.assign(game, { gameStatus: stages.Prepare, moveDir: cc.v2(), gameData: { coin: 20, getBulidList: () => state.builds || [] },
-    changeAge() { state.rallied = (state.rallied || 0) + 1; this.isAgg = !this.isAgg; },
+    rallyCommand() { state.rallied = (state.rallied || 0) + 1; },
+    followCommand() { state.followed = (state.followed || 0) + 1; this.isAgg = !this.isAgg; },
     ctrPlay: { isDead: () => !!state.dead, getWpos: () => state.position || { x: 0, y: 0 } } });
   Object.assign(ui, { ctrGame: game, isPauset: false, canBreak: true,
+    _refreshArmyButtons() {}, btnFollow: button(() => {}),
     btnAgg: button(() => state.rallied = (state.rallied || 0) + 1),
     btnSuspend: button(() => { state.paused = (state.paused || 0) + 1; ui.isPauset = true; }),
     sendEvent(...args) { state.events.push(args); }, scheduleOnce(callback) { callback(); },
@@ -96,9 +98,11 @@ test('Keyboard movement delegates to the shipped movement function and stops whe
   f.state.enabled = false; f.ui._updateTestControls(); assert.equal(f.game.moveDir.x, 0); assert.equal(f.game.moveDir.y, 0);
 });
 
-test('R uses the shared Rally/Follow command; Esc opens pause and uses the real resume action', () => {
+test('R uses Rally, F toggles Follow independently; Esc opens pause and uses the real resume action', () => {
   const f = fixture(); f.state.input = { rally: true }; f.ui._updateTestControls(); assert.equal(f.state.rallied, 1);
   f.ui.btnAgg.active = false; f.ui._updateTestControls(); assert.equal(f.state.rallied, 1);
+  f.state.input = { follow: true }; f.ui._updateTestControls(); assert.equal(f.state.followed, 1); assert.equal(f.game.isAgg, true);
+  f.ui.btnFollow.active = false; f.ui._updateTestControls(); assert.equal(f.state.followed, 1);
   f.state.input = { pause: true }; f.ui._updateTestControls(); assert.equal(f.state.paused, 1);
   const panel = Object.assign(Object.create(f.pauseProto), { node: { active: true, activeInHierarchy: true },
     sendEvent(name, paused) { assert.equal(name, 'paused'); f.ui.isPauset = paused; },

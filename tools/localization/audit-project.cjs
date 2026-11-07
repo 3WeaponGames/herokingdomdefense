@@ -17,6 +17,7 @@ const token = /\[\[loc:([\w.-]+)\]\]/g;
 const displayField = /^(name|describe|levelupdescribe|equipname|missiondescribe|gift_name|buffword|buffdes|bufflabel|buffvalue|description|title|text|label|content)$/i;
 const report = { date: new Date().toISOString(), errors: [], warnings: [], counts: { entries: Object.keys(catalog.entries).length, tokenReferences: 0, scriptFiles: 0, serializedTextFields: 0, styledLabels: 0, richTextBlocks: 0, editBoxes: 0, configTextFields: 0, numericGameplayValues: 0, unchangedGameplayStrings: 0 }, exemptions: [
   'Pure numeric values and punctuation (+, -, %, /, :, parentheses) are language-neutral display data.',
+  'GameTools.unitTypes names are authoring labels; battle markers display the localized Enemies caption.',
   'Inspector captions, diagnostic logs, analytics descriptions, SDK status identifiers and geographic identity-validation data are not player-facing copy.',
   'Legacy configsB/D TextCfg tables remain unchanged reference data; LanguageMgr uses resources/localization/catalog instead.',
   'Spine attachment/slot names and atlas resource paths identify artwork, not rendered text. Their visual lettering is covered by artwork bindings and visual review.',
@@ -77,7 +78,7 @@ for (const file of walk(assetRoot)) {
   }
   if (path.basename(file) === 'GameJsonCfg.json') {
     const data = JSON.parse(fs.readFileSync(file,'utf8'));
-    function inspect(o, at) { if (!o || typeof o !== 'object') return; for (const [key,value] of Object.entries(o)) { if (key==='TextCfg') continue; const p=at.concat(key); if (typeof value==='string' && displayField.test(key) && meaningful(value)) error('raw-config-copy',rel+':'+p.join('.'),value); if (typeof value==='string' && displayField.test(key) && value.includes('[[loc:')) report.counts.configTextFields++; if (value && typeof value==='object') inspect(value,p); } }
+    function inspect(o, at) { if (!o || typeof o !== 'object') return; for (const [key,value] of Object.entries(o)) { if (key==='TextCfg' || at.length===1 && at[0]==='GameTools' && key==='unitTypes') continue; const p=at.concat(key); if (typeof value==='string' && displayField.test(key) && meaningful(value)) error('raw-config-copy',rel+':'+p.join('.'),value); if (typeof value==='string' && displayField.test(key) && value.includes('[[loc:')) report.counts.configTextFields++; if (value && typeof value==='object') inspect(value,p); } }
     inspect(data,[]);
     const originalFile = backup && path.join(backup,path.relative(assetRoot,file));
     if (originalFile && fs.existsSync(originalFile)) {

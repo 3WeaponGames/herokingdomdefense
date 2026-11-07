@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "bcaedb43-42b4-51a7-83a5-d1624fd573c8",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Dice_01_Gold": {
+      "ver": "1.0.6",
+      "uuid": "193ff5ad-5c00-5d46-8b40-d118a8bb6331",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "bcaedb43-42b4-51a7-83a5-d1624fd573c8",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

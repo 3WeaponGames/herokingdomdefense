@@ -22,7 +22,7 @@ class Service{
     }
     return result;
   }
-  describe(base,noRuntime){if(!this.units().some(u=>u.type===base.type&&u.id===String(base.id)))throw Error('Choose an existing character base.');if(base.source)return UnitLibrary.describe(this.root,base.source,noRuntime);return Units.describe(this.root,{type:base.type,id:base.id,noRuntime:!!noRuntime});}
+  describe(base,noRuntime){if(!this.units().some(u=>u.type===base.type&&u.id===String(base.id)))throw Error('Choose an existing character base.');if(base.source)return require('./mounts').describe(this.root,base,noRuntime);return Units.describe(this.root,{type:base.type,id:base.id,noRuntime:!!noRuntime});}
   load(){return {...this.snapshot(),parts:this.assets().parts,units:this.units(),sources:UnitLibrary.load(this.root).sources};}
   validate(data){
     if(!data||data.version!==1||!data.profiles||typeof data.profiles!=='object'||Array.isArray(data.profiles)||!data.assignments||typeof data.assignments!=='object'||Array.isArray(data.assignments))throw Error('Invalid character document.');
@@ -69,7 +69,7 @@ class Service{
     this.check(request);if(JSONDocument.equal(this.original,this.data))return {...this.snapshot(),result:{saved:false,files:[]}};
     this.validate(this.data);
     const before=fs.readFileSync(this.file,'utf8');if(hash(before)!==this.revision)throw Error('The saved character file changed outside this draft. Your draft is intact; reload or copy it before saving.');
-    const baked=this.relativeFile==='assets/resources/characters/catalog.json'?require('./native-bake').plan(this.root,this.data,this.assets().parts,this.original):require('./hero-bake').plan(this.root,this.data,this.assets().parts,this.original);
+    const baked=require('./appearance-build').plan(this.root,this.data,this.assets().parts,this.original,this.relativeFile==='assets/resources/characters/catalog.json'?'characters':'items');
     const output=JSONDocument.patch(before,this.original,baked.data),files=baked.files;
     files.set(this.relativeFile,output);baked.reads.set(this.file,Buffer.from(before));
     const result=require('./asset-transaction').commit(this.root,files,baked.reads,this.relativeFile);

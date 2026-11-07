@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "78e12506-939f-5106-9eba-d0c25cd6ad8e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Book_02_Red": {
+      "ver": "1.0.6",
+      "uuid": "1260cff4-59f8-5e00-8ebd-e4d6c1b7f1af",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "78e12506-939f-5106-9eba-d0c25cd6ad8e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

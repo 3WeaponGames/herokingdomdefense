@@ -853,12 +853,17 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     }
   };
   _ctor.prototype.onSubView = function (t, e, n, i, a, o) {
-    var best = t.getChildByName("labBestWave");
+    var unlocked = e > n;
+    var name = t.getChildByName("labName"), best = t.getChildByName("labBestWave");
+    if (name) name.active = !unlocked;
     if (best) {
-      var score = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().data.wallDefenseBestWave || 0;
-      require("LanguageMgr").LanguageMgr.getInstance().bindLabel(best.getComponent(cc.Label), "wallDefense.bestWave", [score]);
+      best.active = unlocked;
+      if (unlocked) {
+        var score = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().data.wallDefenseBestWave || 0;
+        require("LanguageMgr").LanguageMgr.getInstance().bindLabel(best.getComponent(cc.Label), "wallDefense.bestWave", [score]);
+      }
     }
-    if (e > n) {
+    if (unlocked) {
       var r = Math.floor((i - a) / 1e3);
       var waiting = r < o && !TestMode.getInstance().shouldBypassAdLimits();
       t.getChildByName("ndMask").active = waiting;

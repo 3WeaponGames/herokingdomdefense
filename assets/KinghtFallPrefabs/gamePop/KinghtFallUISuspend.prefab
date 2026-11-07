@@ -740,30 +740,30 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "wg_zt_d1",
-    "_parent": {
+        "__type__": "cc.Node",
+        "_name": "wg_zt_d1",
+        "_parent": {
       "__id__": 6
     },
-    "_children": [
+        "_children": [
       {
         "__id__": 36
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 76
       }
     ],
-    "_prefab": {
+        "_prefab": {
       "__id__": 77
     },
-    "_contentSize": {
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 584,
       "height": 158
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
         0,
@@ -778,8 +778,9 @@
         1
       ],
       "__type__": "TypedArray"
-    }
-  },
+    },
+        "_active": false
+    },
   {
     "__type__": "cc.Node",
     "_name": "New ToggleContainer",
@@ -1597,7 +1598,7 @@
       "ctor": "Float64Array",
       "array": [
         143.265,
-        -468.412,
+        -307.575,
         0,
         0,
         0,
@@ -1756,7 +1757,7 @@
       "ctor": "Float64Array",
       "array": [
         -142.127,
-        -468.412,
+        -307.575,
         0,
         0,
         0,

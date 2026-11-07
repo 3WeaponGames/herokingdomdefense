@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "efcc8067-2919-504a-aea1-d527a842d911",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Explosives_Bomb_02_Wood": {
+      "ver": "1.0.6",
+      "uuid": "f44f156c-565b-5843-97bf-5f98d492008a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "efcc8067-2919-504a-aea1-d527a842d911",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

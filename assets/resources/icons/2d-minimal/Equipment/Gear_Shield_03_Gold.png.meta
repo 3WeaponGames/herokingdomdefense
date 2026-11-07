@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "8b8dcc5c-e18e-5e4e-8ba2-e1981c0a0052",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Shield_03_Gold": {
+      "ver": "1.0.6",
+      "uuid": "0b660e56-8e11-56f0-b773-ab20686659d4",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8b8dcc5c-e18e-5e4e-8ba2-e1981c0a0052",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

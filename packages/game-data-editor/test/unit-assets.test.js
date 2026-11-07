@@ -8,6 +8,42 @@ catch(error) { if(process.env.COCOS_ENGINE_ROOT)throw error;engineUnavailable=er
 if(runtime)spine=require(runtime);
 const describe=request=>Assets.describe(root,Object.assign({noRuntime:true},request));
 
+test('static building previews resolve every authored icon without the Creator runtime',()=>{
+    const previous=process.env.COCOS_ENGINE_ROOT;
+    process.env.COCOS_ENGINE_ROOT=path.join(root,'missing-creator-runtime');
+    try {
+        for(const [id,building] of Object.entries(cfg.BuildEnum))for(let levelIndex=0;levelIndex<(building.levelList||[]).length;levelIndex++){
+            const result=Assets.describe(root,{type:'building',id,levelIndex});
+            assert.equal(result.runtimePath,null);
+            assert.deepEqual(result.layers,[]);
+            assert(result.image,'building '+id+' branch '+(levelIndex+1));
+            assert(fs.existsSync(url.fileURLToPath(result.image)));
+            assert.equal(result.label,building.levelList[levelIndex].Icon);
+        }
+    } finally {
+        if(previous===undefined)delete process.env.COCOS_ENGINE_ROOT;else process.env.COCOS_ENGINE_ROOT=previous;
+    }
+});
+test('building draft previews resolve nested runtime icon references and preserve missing-icon fallback',()=>{
+    const temporary=require('./owned-temp'),fixtureRoot=temporary('hkd-building-preview-');
+    function sprite(relative){const file=path.join(fixtureRoot,'assets',relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,'fixture');fs.writeFileSync(file+'.meta',JSON.stringify({subMetas:{fixture:{importer:'sprite-frame'}}}));return file;}
+    const expected={
+        'nested/tower':sprite('KinghtFallIconBuild/nested/tower.png'),
+        '@icon/buildings/tower':sprite('resources/buildings/tower.webp'),
+        '@sprite/custom/nested/tower':sprite('custom/nested/tower.jpg')
+    };
+    fs.writeFileSync(path.join(fixtureRoot,'assets/custom.meta'),JSON.stringify({isBundle:true}));
+    function preview(icon){return Assets.describe(fixtureRoot,{type:'building',id:'2',documents:{A:{data:{}}},record:{levelList:[{Icon:icon}]}});}
+    for(const [reference,file]of Object.entries(expected)){
+        const result=preview(reference);
+        assert.equal(result.image,url.pathToFileURL(file).href);
+        assert.equal(result.runtimePath,null);
+        assert.equal(result.label,reference);
+    }
+    for(const reference of ['missing','../outside','@sprite/custom/../outside'])assert.equal(preview(reference).image,null);
+    Assets.invalidate();
+});
+
 test('actual Creator model/skin/attack/backward-seek integration for every reachable unit',{skip:engineUnavailable||false},()=>{
     function layersFor(description){return description.layers.map(d=>{const atlas=new spine.TextureAtlas(d.atlas,name=>{const png=fs.readFileSync(url.fileURLToPath(d.pages[name]));return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});});const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(d.json),skeleton=new spine.Skeleton(data);assert(data.findSkin(d.skin),'skin '+d.skin);skeleton.setSkinByName(d.skin);return{description:d,data,skeleton,atlas};});}
     function coordinates(layers){return layers.map(l=>Renderer.geometry(spine,l).map(g=>Array.from(g.vertices)));}

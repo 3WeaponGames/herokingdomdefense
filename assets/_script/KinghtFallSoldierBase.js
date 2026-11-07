@@ -75,6 +75,8 @@ var def_KinghtFallSoldierBase = function (t) {
     Navigation.reset(this);
     this.rallyPoint = null;
     this._personalRallyPoint = null;
+    this._rallyOrder = null;
+    this._separateArmyCommands = false;
     this._followSelected = false;
     this._followPickupBlocked = false;
     this._syncFollowMarker();
@@ -87,6 +89,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this._retaliationTime = 0;
     this._retaliationPosition = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    if (this.spAni) this.setLeft(false);
     this.attackRange = this.cfg.AttackRange;
     var n = this.node.getComponents(cc.CircleCollider);
     if (n[0]) {
@@ -328,7 +331,8 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.setLeft = function (t) {
-    this.spAni.node.scaleX = t ? -this.spAni.node.scaleY : this.spAni.node.scaleY;
+    this._visualLeft = !!t;
+    GameToolsOverrides.applyModel(this, "ally", this.spAni.node, t);
   };
   _ctor.prototype.doWait = function () {
     this.state = s.Wait;
@@ -600,10 +604,16 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.applyArmyOrder = function (game) {
     Navigation.reset(this);
-    if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) {
+    this._separateArmyCommands = !!game._separateArmyCommands;
+    if (this._separateArmyCommands || $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) {
       var saved = this.outBuild && this.outBuild.getSoldierRallyPoint && this.outBuild.getSoldierRallyPoint(this);
+      var order = this._rallyOrder;
       if (saved) this.setPersonalRallyPoint(saved, false);
-      if (!this._personalRallyPoint) this.setPersonalRallyPoint(Navigation.positionOf(this.node, game), false);
+      this._rallyOrder = order;
+      if (!this._personalRallyPoint) {
+        this.setPersonalRallyPoint(game.rallyPoint ? game.rallyPoint.pos : Navigation.positionOf(this.node, game), false);
+        if (game._separateArmyCommands) this._rallyOrder = game.rallyPoint;
+      }
       this.isAgg = !!game.isAgg && !!this._followSelected && !this.isDead() && this.node.activeInHierarchy;
       this.rallyPoint = this.isAgg ? null : this._personalRallyPoint;
     } else {
@@ -623,9 +633,10 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.isHoldingPosition = function () {
-    return $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2 && !this.isAgg;
+    return (this._separateArmyCommands || $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2) && !this.isAgg;
   };
   _ctor.prototype.setPersonalRallyPoint = function (position, remember) {
+    this._rallyOrder = null;
     this._personalRallyPoint = { pos: { x: position.x, y: position.y } };
     if (remember && this.outBuild && this.outBuild.setSoldierRallyPoint) this.outBuild.setSoldierRallyPoint(this, position);
   };

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "4220c308-e68f-5f73-91da-21492af6822e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Misc_Crosshair_01_Green": {
+      "ver": "1.0.6",
+      "uuid": "9c737396-6f35-5919-9ca6-e10d10efc8bf",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "4220c308-e68f-5f73-91da-21492af6822e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

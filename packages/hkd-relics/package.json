@@ -1,0 +1,7 @@
+{
+  "name": "hkd-relics",
+  "version": "1.0.0",
+  "description": "Relic effects, progression and icons, with explicit draft saves",
+  "main": "main.js",
+  "panel": { "main": "panel.js", "type": "dockable", "title": "Relics", "width": 1320, "height": 850, "min-width": 800, "min-height": 500 }
+}

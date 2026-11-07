@@ -21,6 +21,8 @@ class Node{
 }
 const cc={v2:(x,y)=>({x,y}),isValid:x=>!!x&&!x.destroyed,Label,Sprite,Camera:{main:{getWorldToScreenPoint:p=>p}}};
 const context={cc,$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getSoldierCfgById:id=>({loadIcon:String(id)})})}},$z1KinghtFallConfig:{KinghtFallBundelName:{Enemy:'enemy'}}};
+context.resolveEnemyPictogram=vm.runInNewContext('('+functionAt('function resolveEnemyPictogram')+')',context);
+const loadPictogram=vm.runInNewContext('('+functionAt('_ctor.prototype._loadEnemyPictogram =')+')',context);
 context.placeEnemyIndicator=vm.runInNewContext('('+functionAt('function placeEnemyIndicator')+')',context);
 context.enemyIndicatorBounds=vm.runInNewContext('('+functionAt('function enemyIndicatorBounds')+')',context);
 const getObstacles=vm.runInNewContext('('+functionAt('_ctor.prototype._enemyIndicatorObstacles')+')',context);
@@ -28,7 +30,7 @@ const place=vm.runInNewContext('('+functionAt('_ctor.prototype._placeEnemyIndica
 const update=vm.runInNewContext('('+functionAt('_ctor.prototype.update =')+')',context);
 const updateLive=vm.runInNewContext('('+functionAt('_ctor.prototype._updateOffscreenEnemies =')+')',context);
 function authored(index,parent,english=true){const source=data[index],node=new Node(source._name,parent),trs=source._trs&&source._trs.array;node.width=source._contentSize?source._contentSize.width:0;node.height=source._contentSize?source._contentSize.height:0;node.active=source._active!==false;if(source._anchorPoint){node.anchorX=source._anchorPoint.x;node.anchorY=source._anchorPoint.y;}if(trs){node.x=trs[0];node.y=trs[1];node.scaleX=trs[7];node.scaleY=trs[8];node.angle=2*Math.atan2(trs[5],trs[6])*180/Math.PI;}for(const ref of source._components||[]){const component=data[ref.__id__];if(component.__type__==='cc.Label'){const label=new Label();label.string=component._string;node.components.push(label);const key='ui.layout.kinghtfalluigame.'+ref.__id__,style=english&&((taskPatch.labelStyles[key]||catalog.labelStyles[key]||{}).en);if(style){if(style.width!==undefined)node.width=style.width;if(style.height!==undefined)node.height=style.height;if(style.x!==undefined)node.x=style.x;if(style.y!==undefined)node.y=style.y;}}else if(component.__type__==='cc.Sprite')node.components.push(new Sprite());}for(const child of source._children||[])authored(child.__id__,node,english);return node;}
-function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_updateTestControls(){},ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place,_updateOffscreenEnemies:updateLive};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
+function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_updateTestControls(){},_loadEnemyPictogram:loadPictogram,ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place,_updateOffscreenEnemies:updateLive};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
 function near(a,b){assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);}
 function clear(a,b,gap=0){return a.maxX+gap<=b.minX+1e-6||a.minX-gap>=b.maxX-1e-6||a.maxY+gap<=b.minY+1e-6||a.minY-gap>=b.maxY-1e-6;}
 function bounds(node,ui){return context.enemyIndicatorBounds(node,ui);}
@@ -73,5 +75,17 @@ test('Live markers use the world camera even when a different UI camera becomes 
   const previous=cc.Camera.main;
   try{cc.Camera.main={getWorldToScreenPoint:()=>({x:0,y:0})};f.state.ctrGame.camera.getWorldToScreenPoint=p=>p;update.call(f.state,.016);assert.equal(Object.values(f.state.enemyIconInfo).filter(r=>r.ndItem.active).length,1);}
   finally{cc.Camera.main=previous;}
+});
+test('custom monster pictograms preserve aspect ratio, reject stale callbacks and fall back to the original icon on load failure',()=>{
+ const f=fixture(),pending=[],manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance;
+ const settings={unitTypes:{wolf:{icon:'@icon/unit-library/wolf',tint:'#80c0ff'}},unitTypeAssignments:{'enemy:90001:default':'wolf','enemy:90002:default':'wolf'}};
+ manager.getInstance=()=>({data:{GameTools:settings},getSoldierCfgById:id=>({loadIcon:String(id)})});cc.color=value=>value;cc.resources={load(path,type,callback){pending.push(callback);}};
+ try{
+  const record={id:90001,ndItem:f.indicator()},icon=record.ndItem.getChildByName('sprIcon'),sprite=icon.getComponent(Sprite),width=icon.width,height=icon.height;let fallback=0;
+  f.state.loadSpriteFrame=(bundle,key,callback)=>{fallback++;callback({key});};loadPictogram.call(f.state,record,90001);record.id=90002;loadPictogram.call(f.state,record,90002);
+  pending[0](null,{getOriginalSize:()=>({width:200,height:40})});assert.equal(sprite.spriteFrame,undefined);
+  pending[1](null,{getOriginalSize:()=>({width:200,height:40})});near(icon.width/icon.height,5);assert(icon.width<=width&&icon.height<=height);assert.equal(icon.color,'#80c0ff');
+  loadPictogram.call(f.state,record,90002);pending[2](Error('missing native texture'));assert.equal(fallback,1);assert.equal(sprite.spriteFrame.key,'icon/90002');near(icon.width,width);near(icon.height,height);assert.equal(icon.color,'#ffffff');
+ }finally{manager.getInstance=previous;delete cc.resources;delete cc.color;}
 });
 console.log(passed+' enemy indicator HUD-layout checks passed.');

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "4a05cfcb-3525-5649-b7d2-7dc967e84aea",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Hourglass_01_Silver": {
+      "ver": "1.0.6",
+      "uuid": "d8a0ad26-8a3d-592c-8ce1-6ebcc7409cd5",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "4a05cfcb-3525-5649-b7d2-7dc967e84aea",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -24,6 +24,9 @@ function fixture(start = true, game = null) {
     require: name => name === 'EventMgr' ? { EventMgr: { getInstance: () => manager } } : name === 'KinghtFallUIGame' ? { default: { instance: ui } } : { KinghtFallEventName: { GamePause: 'pause', PlayVideoSucc: 'video' } },
     __extends(ctor, base) { ctor.prototype = Object.create(base.prototype); ctor.prototype.constructor = ctor; },
     __decorate: (_decorators, target) => target };
+  const preferenceContext={exports:{},cc:context.cc};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ControlPreferences.js'),'utf8'),preferenceContext);
+  const originalRequire=context.require;context.require=name=>name==='ControlPreferences'?preferenceContext.exports:originalRequire(name);
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallGameUICtrl.js'), 'utf8'), context);
   const control = new context.exports.default(), area = new TouchNode('area');
   const prefab = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'), 'utf8'));
@@ -33,7 +36,7 @@ function fixture(start = true, game = null) {
     ndReview: new TouchNode(), ndCoin: new TouchNode(), ndLight: new TouchNode(), ndGuide: new TouchNode() });
   control.setMoveFunc(value => moves.push(value && { x: value.x, y: value.y }));
   if (start) control.start();
-  return { control, area, rod, knob, moves, events, ui, rest: { x: authored[0], y: authored[1] } };
+  return { control, area, rod, knob, moves, events, ui, preferences:preferenceContext.exports, rest: { x: authored[0], y: authored[1] } };
 }
 function touch(id, x, y, startX = x, startY = y) {
   return { touch: { getID: () => id, getLocation: () => new Vec2(x, y), getStartLocation: () => new Vec2(startX, startY) } };
@@ -117,4 +120,18 @@ test('Cancelled, blocked, paused or recycled-unit touches cannot change follow s
     else {if(kind==='block')f.control.onBlockTouch();if(kind==='disable')f.control.onDisable();if(kind==='paused')f.ui.isPauset=true;if(kind==='recycled')f.unit.node._combatGeneration++;if(kind==='destroyed')f.unit.node.destroyed=true;f.area.emit('end',touch(0,170,-210));}
     assert.equal(f.selected.length,0,kind);
   }
+});
+test('Hide idle controls keeps input active, reveals on touch and hides after release, cancellation and blocking',()=>{
+  const f=fixture();assert(f.rod.active);f.preferences.setHideIdle(true);assert.equal(f.rod.active,false);assert(f.area.active);
+  for(const terminal of ['end','cancel']){f.area.emit('start',touch(0,40,-300));assert(f.rod.active);f.area.emit('move',touch(0,70,-300,40,-300));assert(f.rod.active);f.area.emit(terminal,touch(0,70,-300));assert.equal(f.rod.active,false);resting(f);}
+  f.area.emit('start',touch(1,40,-300));f.control.onBlockTouch();assert.equal(f.rod.active,false);assert.equal(f.control.touchID,false);f.preferences.setHideIdle(false);assert(f.rod.active);
+});
+test('keyboard movement reveals the indicator and touch movement remains visible when movement keys are released',()=>{
+  const f=fixture();f.preferences.setHideIdle(true);f.control.setKeyboardMoving(true);assert(f.rod.active);f.control.setKeyboardMoving(false);assert.equal(f.rod.active,false);
+  f.area.emit('start',touch(0,40,-300));f.control.setKeyboardMoving(true);f.control.setKeyboardMoving(false);assert(f.rod.active);f.area.emit('end',touch(0,40,-300));assert.equal(f.rod.active,false);
+  f.control.setKeyboardMoving(true);f.control.onDisable();assert.equal(f.rod.active,false);f.control.onDestroy();f.preferences.setHideIdle(false);assert.equal(f.rod.active,false,'a destroyed controller retained its preference listener');
+});
+test('footer relayout updates the release position without moving a held joystick or issuing movement commands',()=>{
+  const f=fixture();f.area.emit('start',touch(0,40,-300));f.control.setJoystickRest(new Vec2(-180,-540));assert.equal(f.rod.x,40);assert.equal(f.rod.y,-300);assert.deepEqual(f.moves,[]);
+  f.rest={x:-180,y:-540};f.area.emit('end',touch(0,40,-300));resting(f);assert.deepEqual(f.moves,[null]);
 });

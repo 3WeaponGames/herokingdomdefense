@@ -48,7 +48,7 @@ function mount(host,api){
     if(!data)return stages;const value=JSON.stringify(data);if(value===lastSent)return stages;lastSent=value;const draft=clone(data);
     // Validation can fail for an intermediate draft. A corrected draft must
     // retry against the last accepted revision; conflicts still fail server-side.
-    stages=stages.then(async()=>{const result=await api.ipc('change',{version,data:draft});version=result.version;stageError=null;}).catch(error=>{stageError=error;if(lastSent===value)lastSent='';message(error.message+' Your local draft is still open.',true);});return stages;
+    stages=stages.then(async()=>{const result=await api.ipc('change',{version,data:draft});version=result.version;const recovered=!!stageError;stageError=null;if(recovered&&lastSent===value)message('Draft updated. Changes remain unsaved until Save.');}).catch(error=>{stageError=error;if(lastSent===value)lastSent='';message(error.message+' Your local draft is still open.',true);});return stages;
   }
   function activateItem(){const p=profile();if(!itemMode||!p||virtual)return;const key=(unitFor(p)||{}).key;if(key)data.assignments[key]=selected;}
   function changed(refresh){activateItem();fittingKey='';dirty();if(refresh)renderInspector();draw();stage();}
@@ -77,17 +77,28 @@ function mount(host,api){
     const apply=n=>{const p=part();if(!p||!valid(n))return false;if(isScale&&p.lockAspect!==false){const other=key==='scaleX'?'scaleY':'scaleX',next=p[other]*Math.abs(n/p[key]);if(Math.abs(next)<.01||Math.abs(next)>20)return false;p[other]=next;const sibling=inspector.querySelector('[aria-label="'+(other==='scaleX'?'Scale X':'Scale Y')+'"]');if(sibling)sibling.value=Number(next.toFixed(5));}p[key]=n;return true;};
     const input=field(parent,label,value,v=>{const n=Number(v);if(!apply(n)){input.value=part()[key];return;}if(after)after(n);changed();});input.type='number';input.step=step;input.min=min;input.max=max;input.oninput=()=>{if(input.value===''||!apply(Number(input.value)))return;fittingKey='';dirty();draw();};LabelScrub.install(input.parentElement.querySelector('span'),input,{step,min,max,scale:isScale,integer:key==='order',begin(){const p=part();return{[key]:p[key],...(isScale?{scaleX:p.scaleX,scaleY:p.scaleY}:{})};},cancel(snapshot){Object.assign(part(),snapshot);input.value=snapshot[key];if(isScale){const other=key==='scaleX'?'scaleY':'scaleX',sibling=inspector.querySelector('[aria-label="'+(other==='scaleX'?'Scale X':'Scale Y')+'"]');if(sibling)sibling.value=snapshot[other];}fittingKey='';dirty();draw();},preview(){input.oninput();},commit(){input.onchange();}});return input;
   }
+  async function chooseHorse(value){
+    const p=profile(),serial=++token,base=clone(p.base);if(value)base.mount=value;else delete base.mount;
+    try{
+      const next=await api.ipc('describe',base);if(disposed||serial!==token||p!==profile())return;
+      const old=rig&&rig.layers.find(l=>l.mount),mount=next.layers.find(l=>l.mount),model=old&&p.models&&p.models[old.uuid];
+      if(old){if(p.models)delete p.models[old.uuid];if(p.skins)delete p.skins[old.uuid];p.parts=p.parts.filter(part=>part.layer!==old.uuid);}
+      if(mount&&model){p.models=p.models||{};p.models[mount.uuid]=model;}
+      p.base=base;if(!p.parts.some(part=>part.id===selectedPart))selectedPart=p.parts[0]&&p.parts[0].id||'';
+      changed();await loadRig();
+    }catch(error){message(error.message,true);renderInspector();}
+  }
   function modelInspector(p){
-    if(!rig)return;const section=el('details',undefined,inspector,'model-settings');section.open=itemMode;el('summary','Adjust original model',section);
+    if(!rig)return;const section=el('details',undefined,inspector,'model-settings');section.open=itemMode||!!p.base.mount;el('summary',p.base.mount?'Adjust rider & horse':'Adjust original model',section);
     if(!rig.layers.some(l=>l.uuid===selectedModel))selectedModel=rig.defaultLayer||rig.layers[0].uuid;
     field(section,'Original model layer',selectedModel,v=>{selectedModel=v;renderInspector();},rig.layers.map(l=>({value:l.uuid,label:l.name})));
-    const layer=rig.layers.find(l=>l.uuid===selectedModel);
-    field(section,'Original model skin',p.skins&&p.skins[layer.uuid]||'',v=>{p.skins=p.skins||{};if(v)p.skins[layer.uuid]=v;else delete p.skins[layer.uuid];changed();},[{value:'',label:'Original skin'},...layer.skins.map(s=>({value:s,label:s}))]);
+    const layer=rig.layers.find(l=>l.uuid===selectedModel),isCurrent=()=>profile()===p&&rig&&rig.layers.some(l=>l.uuid===layer.uuid);
+    field(section,'Original model skin',p.skins&&p.skins[layer.uuid]||'',v=>{if(!isCurrent())return;p.skins=p.skins||{};if(v)p.skins[layer.uuid]=v;else delete p.skins[layer.uuid];changed();},[{value:'',label:'Original skin'},...layer.skins.map(s=>({value:s,label:s}))]);
     const grid=el('div',undefined,section,'grid-2'),model=p.models&&p.models[layer.uuid]||{};
-    tintField(section,'Model tint',model.tint,value=>{p.models=p.models||{};p.models[layer.uuid]=p.models[layer.uuid]||{};p.models[layer.uuid].tint=value;});
+    tintField(section,'Model tint',model.tint,value=>{if(!isCurrent())return;p.models=p.models||{};p.models[layer.uuid]=p.models[layer.uuid]||{};p.models[layer.uuid].tint=value;});
     for(const [key,label,initial,min,max,step]of [['x','Model X',0,-4096,4096,.1],['y','Model Y',0,-4096,4096,.1],['scaleX','Model scale X',1,.01,20,.05],['scaleY','Model scale Y',1,.01,20,.05],['rotation','Model rotation',0,-3600,3600,1],['opacity','Model opacity',1,0,1,.05]]){
-      const apply=value=>{const n=Number(value);if(value===''||!Number.isFinite(n)||n<min||n>max)return false;p.models=p.models||{};p.models[layer.uuid]=p.models[layer.uuid]||{};p.models[layer.uuid][key]=n;dirty();draw();return true;};
-      const input=field(grid,label,model[key]===undefined?initial:model[key],value=>{if(!apply(value))input.value=(p.models&&p.models[layer.uuid]||{})[key]===undefined?initial:p.models[layer.uuid][key];activateItem();stage();});input.type='number';input.min=min;input.max=max;input.step=step;input.oninput=()=>apply(input.value);LabelScrub.install(input.parentElement.querySelector('span'),input,{step,min,max,scale:key==='scaleX'||key==='scaleY',begin:()=>p.models===undefined?null:clone(p.models),cancel(snapshot){if(snapshot===null)delete p.models;else p.models=snapshot;dirty();draw();},preview(){input.oninput();},commit(){input.onchange();}});
+      const apply=value=>{const n=Number(value);if(!isCurrent()||value===''||!Number.isFinite(n)||n<min||n>max)return false;p.models=p.models||{};p.models[layer.uuid]=p.models[layer.uuid]||{};p.models[layer.uuid][key]=n;dirty();draw();return true;};
+      const input=field(grid,label,model[key]===undefined?initial:model[key],value=>{if(!isCurrent())return;if(!apply(value))input.value=(p.models&&p.models[layer.uuid]||{})[key]===undefined?initial:p.models[layer.uuid][key];activateItem();stage();});input.type='number';input.min=min;input.max=max;input.step=step;input.oninput=()=>apply(input.value);LabelScrub.install(input.parentElement.querySelector('span'),input,{step,min,max,scale:key==='scaleX'||key==='scaleY',begin:()=>p.models===undefined?null:clone(p.models),cancel(snapshot){if(!isCurrent())return;if(snapshot===null)delete p.models;else p.models=snapshot;dirty();draw();},preview(){input.oninput();},commit(){input.onchange();}});
     }
     button(section,'Reset original model',()=>{if(p.models)delete p.models[layer.uuid];if(p.skins)delete p.skins[layer.uuid];changed(true);});
   }
@@ -98,9 +109,11 @@ function mount(host,api){
     field(inspector,itemMode?'Equipment tier':'Base character',(unitFor(p)||{}).key,v=>{const unit=units.find(u=>u.key===v);p.base={type:unit.type,id:unit.id};if(!itemMode){p.parts=[];p.skins={};p.models={};selectedPart='';}Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===selected)delete data.assignments[k];});changed();renderLooks();renderInspector();loadRig();},units.map(u=>({value:u.key,label:u.group+' · '+u.name+' '+(u.id==='hero'?'':u.id)})));
     if(!itemMode&&p.base.type!=='hero'&&sources.length)field(inspector,'Base model',p.base.source||'',value=>{
       if(value)p.base.source=value;else delete p.base.source;
+      delete p.base.mount;
       p.parts=[];p.skins={};p.models={};p.faceless=value.startsWith('character-maker/');selectedPart='';
       changed();loadRig();
     },[{value:'',label:'Current unit model'},...sources.map(source=>({value:source.id,label:(source.pack==='character-maker'?'Character Maker':source.pack==='monster1'?'Monster Pack 1':'Monster Pack 2')+' · '+source.name}))]);
+    if(!itemMode&&p.base.source&&p.base.source.startsWith('character-maker/'))field(inspector,'Horse',p.base.mount||'',chooseHorse,[{value:'',label:'No horse'},{value:'legacy-cavalry',label:'Original cavalry horse'},{value:'hero-horse',label:'Hero horses (choose a skin below)'}]);
     if(!itemMode&&rig&&rig.layers.some(layer=>layer.json.slots.some(slot=>api.core.isFacialSlot(slot.name)))){
       check(inspector,'Faceless',!!p.faceless,value=>{p.faceless=value;changed();});
       el('p','Hide eyes, facial hair and expressions through every animation. Head and helmets remain visible.',inspector,'help');
@@ -170,7 +183,7 @@ function mount(host,api){
     }catch(error){if(serial===token)message(error.message,true);}
   }
   function updateDuration(){duration=Math.max(1/30,...layers.map(l=>(l.data.findAnimation(animation.value)||{}).duration||0));scrub.max=duration;time=Math.min(time,duration);}
-  function scaleLayers(list,multiplier,models){for(const layer of list){const source=rig.layers.find(l=>l.uuid===layer.description.uuid),m=models&&models[source.uuid]||{};layer.description={...source,x:source.x+(m.x||0),y:source.y+(m.y||0),rotation:m.rotation||0,opacity:m.opacity===undefined?1:m.opacity,scaleX:source.scaleX*multiplier*(m.scaleX===undefined?1:m.scaleX),scaleY:source.scaleY*multiplier*(m.scaleY===undefined?1:m.scaleY)};}}
+  function scaleLayers(list,multiplier,models){for(const layer of list){const source=rig.layers.find(l=>l.uuid===layer.description.uuid),m=models&&models[source.uuid]||{};layer.description={...source,x:source.x*multiplier+(m.x||0),y:source.y*multiplier+(m.y||0),rotation:m.rotation||0,opacity:m.opacity===undefined?1:m.opacity,scaleX:source.scaleX*multiplier*(m.scaleX===undefined?1:m.scaleX),scaleY:source.scaleY*multiplier*(m.scaleY===undefined?1:m.scaleY)};}}
   function fitBounds(includeCurrent){if(!spine||!layers.length)return;api.renderer.seek(spine,baseLayers,'idle',0,false);let b=api.renderer.bounds(spine,baseLayers);if(includeCurrent){const c=api.renderer.bounds(spine,layers);b={minX:Math.min(b.minX,c.minX),minY:Math.min(b.minY,c.minY),maxX:Math.max(b.maxX,c.maxX),maxY:Math.max(b.maxY,c.maxY)};b.width=b.maxX-b.minX;b.height=b.maxY-b.minY;}poseBounds={...b,minX:b.minX-12,minY:b.minY-3,maxX:b.maxX+12,maxY:b.maxY+18,width:b.width+24,height:b.height+21};}
   function prepareFitting(){
     const p=profile();if(!p||!layers.length||Date.now()<fittingRetryAfter)return;
