@@ -1,0 +1,5 @@
+{
+  "name": "hkd-projectiles", "version": "1.0.0", "description": "Silent projectile library, preview and visual assignments", "main": "main.js",
+  "main-menu": { "Tools/Hero Kingdom Defense/Projectiles": { "message": "hkd-projectiles:open" } },
+  "panel": { "main": "panel.js", "type": "dockable", "title": "Projectiles", "width": 1320, "height": 850, "min-width": 900, "min-height": 600 }
+}

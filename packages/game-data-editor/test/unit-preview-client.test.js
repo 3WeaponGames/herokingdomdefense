@@ -14,7 +14,7 @@ const field=(root,label)=>all(root,n=>n.tagName==='label'&&n.textContent===label
 const clone=value=>JSON.parse(JSON.stringify(value));
 const source=fs.readFileSync(path.join(__dirname,'../preview/client.js'),'utf8');
 const runtime={exports:{},require(name){if(name==='./spine-renderer')return {
-    createLayers:async(_spine,layers)=>layers.map(description=>({description,data:{findAnimation:()=>({duration:1}),findSkin:()=>true},skeleton:{setSkinByName(){}}})),
+    createLayers:async(_spine,layers)=>layers.map(description=>({description,data:{findAnimation:()=>({duration:1}),findSkin:()=>true},skeleton:{setSkinByName(){},color:{set(){}}}})),
     seek(){},bounds(){return{width:1,height:1};},drawCanvas(){},destroyCanvas(){}
 };if(name==='./projectile')return{simulate:()=>null};if(name==='fixture-spine')return{};return require(name);},document:{createElement:tag=>new Element(tag)},requestAnimationFrame(){throw Error('Playback was not requested');},cancelAnimationFrame(){},__dirname:path.join(__dirname,'../preview'),isFinite};
 runtime.module={exports:{}};vm.runInNewContext(source,runtime,{filename:'preview/client.js'});const Client=runtime.module.exports;
@@ -55,6 +55,11 @@ async function main(){
     await test('a refreshed shared draft updates gold without moving the animation reference',async()=>{
         const f=fixture({default:.5});await flush();f.request.documents.overrides.data.timings[f.description.key]={attack:.8};f.client.setUnit(f.request);
         assert.equal(f.client.getState().effect,.8);assert.equal(f.edits.length,0);assert.equal(all(f.root,n=>n.className==='preview-marker reference')[0].style.left,'40%');f.client.destroy();
+    });
+    await test('Mirror is a persistent per-side draft and shared refresh updates facing without touching timing tables',async()=>{
+        const f=fixture({default:.5});f.request.documents.overrides.data.visuals={'ally:90001:default':{mirrorX:true},'enemy:90001:default':{mirrorX:false,unknown:7}};await flush();assert.equal(f.client.getState().mirrored,false);assert.equal(f.edits.length,0);
+        button(f.root,'Mirror model: Off').onclick();assert.equal(f.client.getState().mirrored,true);const change=f.edits[0][0];assert.deepStrictEqual(change.path,['visuals']);assert.equal(change.value['enemy:90001:default'].mirrorX,true);assert.equal(change.value['enemy:90001:default'].unknown,7);assert.equal(change.value['ally:90001:default'].mirrorX,true);assert.equal(f.client.getState().effect,.5);
+        f.request.documents.overrides.data.visuals['enemy:90001:default'].mirrorX=false;f.client.setUnit(f.request);assert.equal(f.client.getState().mirrored,false);assert.equal(f.edits.length,1);f.client.destroy();
     });
     console.log(checks+' unit preview marker checks passed.');
 }

@@ -16,6 +16,17 @@ function setup(){
  e.tick=(units,frames=1)=>{for(let frame=0;frame<frames;frame++){e.now=(e.now||0)+50;e.setTime(e.now);e.nav.beginFrame(game);game.collectFollowers();units.forEach(u=>u.onUpdate(.05));}};
  return e;
 }
+test('independent Rally leaves collected followers active; release keeps their own posts and both formations resolve in the same frame',()=>{
+ const e=setup(),game=e.game;game._separateArmyCommands=true;e.load('KinghtFallConfig').KinghtFallParameter.FollowMode=1;
+ const followers=[e.soldier(-35),e.soldier(35)],others=[e.soldier(250,0,3),e.soldier(280,0,4)];
+ game.followCommand();assert(followers.every(u=>u.isAgg));assert(others.every(u=>!u.isAgg));
+ game.ctrPlay.node.setPosition(70,80);game.rallyCommand();assert(game.isAgg&&game.ctrPlay.ndAgg.active&&game.ndAggFlag.active);
+ assert(followers.every(u=>u.isAgg&&!u.rallyPoint));assert(others.every(u=>!u.isAgg&&u.rallyPoint.pos.x===70&&u.rallyPoint.pos.y===80));
+ e.nav.beginFrame(game);const followSlots=followers.map(u=>game.getArmyOrderGoal(u,{x:70,y:80})),rallySlots=others.map(u=>game.getArmyOrderGoal(u,{x:70,y:80}));
+ assert(followSlots.every(s=>s&&!s.pending));assert(rallySlots.every(s=>s&&!s.pending));assert.equal(game._followFormation.members.length,2);assert.equal(game._rallyFormation.members.length,2);
+ followers[0].node.setPosition(130,90);game.followCommand();assert(!game.isAgg);near(followers[0].rallyPoint.pos.x,130);assert(game.ndAggFlag.active,'releasing Follow removed the independent rally flag');
+ game.ctrPlay.node.setPosition(-220,-100);game.followCommand();assert(!followers[0].isAgg);near(followers[0].rallyPoint.pos.x,130);assert(others.every(u=>u.rallyPoint.pos.x===70));
+});
 test('Follow automatically collects units touched by the visible ellipse, while outsiders hold their posts',()=>{
  const e=setup(),a=e.soldier(-40),b=e.soldier(45,0,3),outside=e.soldier(100,40);
  e.game.changeAge();assert(e.game.ctrPlay.ndAgg.active);

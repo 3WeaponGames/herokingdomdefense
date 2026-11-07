@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "d007acb1-4836-56bd-bf6a-d1b29b68c0a7",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Economy_Energy_02_Blue": {
+      "ver": "1.0.6",
+      "uuid": "2e6f68e2-753c-51c6-a71f-67820662fb36",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "d007acb1-4836-56bd-bf6a-d1b29b68c0a7",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

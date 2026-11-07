@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "411a4734-eaae-52e7-a13f-a3cb8884379d",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Economy_Coin_01_Goblin": {
+      "ver": "1.0.6",
+      "uuid": "454aa9fb-ab2c-5fcc-aadd-9bcbf75fdee3",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "411a4734-eaae-52e7-a13f-a3cb8884379d",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

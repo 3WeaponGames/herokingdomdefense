@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "79c207e9-2737-5f03-9e7b-e0adff290d46",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Economy_Elixir_01_Yellow": {
+      "ver": "1.0.6",
+      "uuid": "f2b73798-4284-5c2c-ac8a-a3d6417e3dcd",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "79c207e9-2737-5f03-9e7b-e0adff290d46",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

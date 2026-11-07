@@ -11,7 +11,7 @@ const LABELS = {
   EquipLevelCap:'Equipment level cap', HealthCoefficient:'Enemy HP multiplier',AttackCoefficient:'Enemy attack multiplier',
   StartSliver:'Starting silver',CommerceSliver:'Silver from reward ad',WaveReward:'Wave rewards',Challenge:'Challenges',ChallengeReward:'Challenge rewards',
   HomeLevel1Unlock:'Castle level 1 — building unlocks',HomeLevel2Unlock:'Castle level 2 — building unlocks',HomeLevel3Unlock:'Castle level 3 — building unlocks',
-  Quality:'Rarity',Weight:'Selection weight',Image:'Icon',Icon:'Icon',Unlock:'Unlock requirement',Pamer:'Effect values',isPerecentage:'Display as percentage',
+  Quality:'Rarity',Weight:'Selection weight',Image:'Icon',Icon:'Icon',icon:'Icon',sprBg:'Icon background',goodID:'Goods reference',Talent:'Effect implementation',param:'Effect values',PieceCost:'Fragments required',Conversion:'Conversion reward',Unlock:'Unlock requirement',Pamer:'Effect values',isPerecentage:'Display as percentage',
   lockCose:'Unlock cost (silver)',index:'Branch index',level:'Building level',BuildSliverCost:'Upgrade cost (silver)',VedioCount:'Reward ads required',vedioCount:'Reward ads required',
   Zoom:'Preview scale',Skin:'Model skin',Hp:'HP',BranchBuild:'Next upgrade branches',Excursion:'Icon offset',Data:'Special properties',
   EffectType:'Effect type',EquipName:'Equipment name',Parameters:'Stat value',GoldCost:'Gold cost',EquipBottom:'Icon background',EquipSkin:'Hero skin',
@@ -29,6 +29,8 @@ const LABELS = {
 const EQUIPMENT = ['Body • HP','Head • HP regeneration','Arrow • Damage','Bow • Attack range','Gloves • Attack rate','Mount • Movement speed'];
 const RARITIES = ['Common','Rare','Epic','Legendary'];
 const BUILDINGS = {1:'Castle Keep',2:'Arrow Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall'};
+// Map01–Map04 have lock/interaction nodes only for these authored levels.
+const BUILDING_LEVEL_CAP = {1:3,2:2,3:3,4:2,5:2,6:2};
 const PERK_LABELS = {
   50001:['Targets per attack'],50002:['Soldier HP bonus','Soldier attack bonus'],50003:['Kills required','Silver reward'],50004:['Silver each day'],
   50005:['Invincibility duration (seconds)'],50006:['Enemy attack reduction'],50007:['House silver bonus'],50008:['Hero HP recovered'],50009:['Silver cost reduction'],
@@ -84,27 +86,44 @@ function descriptor(key, context) {
   if (key==='AttackInterval') {result.min=0.000001;result.help='Runtime attack rate: higher values attack more frequently. Animation playback speed is separate.';}
   if (['Health','Hp','Zoom'].indexOf(key)>=0) result.min=0.000001;
   if (['Weight','AttackDamage','AttackRange','SearchRange','Speed','DeathAni','GoldCost','lockCose','BuildSliverCost','VedioCount','vedioCount','StartSliver','CommerceSliver','EquipLevelCap','MissionNumber','MissionType'].indexOf(key)>=0) result.min=0;
+  if(context.table==='BuildEnum'){
+    if(key==='level'){result.min=1;result.integer=true;if(own(BUILDING_LEVEL_CAP,context.id))result.max=BUILDING_LEVEL_CAP[context.id];result.help='Progression level used by castle unlocks. Stay within this building’s authored map interaction levels; branch index remains the stable reference.';}
+    if(['lockCose','BuildSliverCost','VedioCount'].indexOf(key)>=0)result.integer=true;
+    if(key==='BuildSliverCost'){result.label='Next purchase cost (silver)';result.help='Charged while upgrading from this branch. The destination also uses this value to choose silver or reward-ad presentation.';}
+    if(key==='VedioCount'){result.label='Legacy reward-ad count';result.readOnly=true;result.help='Preserved authored metadata. The current upgrade dialog does not read this count.';}
+    if(key==='Zoom'){result.label='Upgrade card icon scale';result.help='Scale of the icon in the upgrade choice dialog. The building’s map model uses its authored skin.';}
+    if(key==='Excursion')result.label='Upgrade card icon offset';
+  }
   if (/Coefficient$/.test(key)) result.min=0;
   if (key==='Parameters' && context.equipment) result.label=EQUIPMENT[context.equipment-1].split(' • ')[1];
   if (key==='Level' && context.table==='LevelCfg' || key==='Wave' || key==='Level' && context.table==='EquipCfg') result.readOnly=true;
-  if (['Image','Icon','Map','loadIcon','EquipBottom'].indexOf(key)>=0) result.asset='images';
+  if (['Image','Icon','icon','sprBg','Map','loadIcon','EquipBottom'].indexOf(key)>=0) {
+    result.asset='images';
+    result.bundle=key==='Map'?'KinghtFallIconMap':key==='loadIcon'?'KinghtFallEnemy':key==='EquipBottom'||key==='icon'||key==='sprBg'?'KinghtFallIconGood':context.table==='BuffCfg'?'KinghtFallIconBuff':context.table==='BuildEnum'?'KinghtFallIconBuild':context.table==='EquipCfg'?'KinghtFallIconCharacter':context.table==='TalentCfg'?'KinghtFallIconTalent':null;
+  }
+  if(['goodID','Talent','itemID','type'].indexOf(key)>=0&&context.table==='TreasureCfg')result.readOnly=true;
+  if(key==='Level'&&context.table==='TreasureCfg')result.readOnly=true;
   if (key==='prefab') result.asset='prefabs';
   if (key==='EnemyAni') result.asset='animations';
   return result;
 }
 function dataDescriptor(context, index) {
-  let label='Parameter '+(index+1), percent=false, readOnly=false, min=0;
+  let label='Parameter '+(index+1), percent=false, readOnly=false, min=0, integer=false, help;
   if(context.table==='BuildEnum') {
     const id=Number(context.id);
-    const list=(id===1||id===2)?['Attack damage','Attacks per second','Attack range']:id===3?['Soldier capacity','Soldier type','Respawn time (seconds)']:['Silver per wave','Reserved property'];
+    const list=(id===1||id===2)?['Attack damage','Attacks per second','Attack range']:id===3?['Soldier capacity','Soldier type','Respawn time (seconds)']:(id===4||id===5)?['Silver per wave','Reserved property']:[];
     label=list[index] || label;
-    if ((id===4||id===5)&&index>0) readOnly=true;
+    if ((id===4||id===5)&&index>0 || id===6){readOnly=true;help='Preserved authored metadata; this building does not use this property.';}
+    if((id===1||id===2)&&index===1){min=0.000001;help='Runtime attack rate: higher values attack more frequently.';}
+    if(id===3&&index===0){integer=true;help='Base roster size before perks and bonus soldiers.';}
+    if(id===3&&index===1){integer=true;help='Choose an implemented allied unit. Its base stats are shared with the Units panel and matching enemies.';}
+    if(id===3&&index===2){min=0.000001;help='Delay before one dead soldier returns.';}
   } else if(context.table==='SoldierCfg') {
     label=(UNIT_DATA[context.id] || [])[index] || label;
     percent=Number(context.id)===90006&&index===0 || Number(context.id)===90009&&index===0 || Number(context.id)===90012&&index===2;
     if ([90010,90011,90012].indexOf(Number(context.id))>=0 && index===0) readOnly=true;
   }
-  return {label,percent,readOnly,min};
+  return {label,percent,readOnly,min,integer,help};
 }
 function validate(documents, changes) {
   const docs={};Object.keys(documents || {}).forEach(k=>docs[k]=unwrap(documents[k]));
@@ -116,6 +135,7 @@ function validate(documents, changes) {
         const p=change.path || [];
         if(p.slice(0,Math.min(p.length,path.length)).every((key,i)=>String(key)===String(path[i]))) return true;
       }
+      if(doc==='A'&&path[0]==='BuildEnum')return change.doc==='catalog'||change.doc==='A'&&(change.path||[])[0]==='SoldierCfg'&&path[path.length-2]==='Data'&&path[path.length-1]===1;
       return doc!=='catalog'&&((change.doc==='A'&&['SoldierCfg','BuildEnum','TalentCfg','EquipCfg','GoodsCfg'].indexOf((change.path||[])[0])>=0)||['A','B','D'].indexOf(change.doc)>=0&&(change.path||[])[0]==='LevelCfg'||change.doc==='catalog');
     });
   }
@@ -181,19 +201,35 @@ function validate(documents, changes) {
     if((id==='90010'||id==='90011')&&(!unit.Data||!units[unit.Data[2]]))issue('A',p.concat('Data',2),'Next boss form must exist.');
   });
   Object.keys(base.BuildEnum||{}).filter(id=>id!=='0').forEach(id=>{
-    const building=base.BuildEnum[id],p=['BuildEnum',id],levels=building.levelList||[];
+    const building=base.BuildEnum[id],p=['BuildEnum',id],levels=building.levelList;
     number('A',p.concat('lockCose'),building.lockCose,0,true);
+    if(!Array.isArray(levels)||!levels.length){issue('A',p.concat('levelList'),'A building requires at least one authored branch.');return;}
     const graph={};levels.forEach((level,i)=>{
       const q=p.concat('levelList',i);if(level.index!==i+1||level.ID!==Number(id))issue('A',q,'Building branch index and owner ID must match their position.');
+      number('A',q.concat('level'),level.level,1,true);
+      if(own(BUILDING_LEVEL_CAP,id)&&level.level>BUILDING_LEVEL_CAP[id])issue('A',q.concat('level'),'This building has authored map interaction nodes only through level '+BUILDING_LEVEL_CAP[id]+'.');
       ['Hp','Zoom'].forEach(k=>number('A',q.concat(k),level[k],Number.MIN_VALUE,false));
       ['BuildSliverCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
-      graph[level.index]=level.BranchBuild||[];
-      graph[level.index].forEach((next,j)=>{if(!Number.isInteger(next)||next<1||next>levels.length)issue('A',q.concat('BranchBuild',j),'Upgrade branch does not exist.');});
-      (level.Data||[]).forEach((v,j)=>number('A',q.concat('Data',j),v,0,false));
-      if(id==='3'&&level.Data&&(!units[level.Data[1]]||level.Data[1]<90001||level.Data[1]>90004))issue('A',q.concat('Data',1),'Barracks unit must have an authored allied prefab (90001–90004).');
+      graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
+      if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');
+      if(graph[level.index].length&&!own(level,'BuildSliverCost'))issue('A',q.concat('BranchBuild'),'An upgrade connection needs a next purchase cost on this branch.');
+      graph[level.index].forEach((next,j)=>{if(!Number.isInteger(next)||next<1||next>levels.length)issue('A',q.concat('BranchBuild',j),'Upgrade branch does not exist.');else if(graph[level.index].indexOf(next)!==j)issue('A',q.concat('BranchBuild',j),'An upgrade branch cannot be connected twice.');});
+      const expected=id==='1'||id==='2'||id==='3'?3:id==='4'||id==='5'?1:0;
+      if(expected&&(!Array.isArray(level.Data)||level.Data.length<expected))issue('A',q.concat('Data'),'Building properties are missing required runtime values.');
+      if(Array.isArray(level.Data))level.Data.forEach((v,j)=>{const d=dataDescriptor({table:'BuildEnum',id},j);number('A',q.concat('Data',j),v,d.min,d.integer);});
+      if(id==='3'&&Array.isArray(level.Data)&&(!units[level.Data[1]]||!units[level.Data[1]].prefab||level.Data[1]<90001||level.Data[1]>90004))issue('A',q.concat('Data',1),'Barracks unit must have an authored allied prefab (90001–90004).');
     });
     const visiting=new Set(),done=new Set();function visit(n){if(visiting.has(n))return true;if(done.has(n))return false;visiting.add(n);if((graph[n]||[]).some(visit))return true;visiting.delete(n);done.add(n);return false;}
     if(Object.keys(graph).some(k=>visit(Number(k))))issue('A',p.concat('levelList'),'Upgrade branches contain a cycle.');
+  });
+  (base.TreasureCfg||[]).forEach((relic,i)=>{
+    const p=['TreasureCfg',i],good=base.GoodsCfg&&base.GoodsCfg[relic.goodID];
+    if(relic.ID!==120001+i)issue('A',p.concat('ID'),'Relic IDs must retain their existing order.');
+    if(!good||good.itemID!==relic.ID)issue('A',p.concat('goodID'),'Relic must retain its matching goods reference.');
+    if(!['1','2','3','4','5','7','8','9','10','11'].includes(relic.Talent))issue('A',p.concat('Talent'),'Choose an implemented relic effect.');
+    if(!Number.isInteger(relic.Quality)||relic.Quality<1||relic.Quality>4)issue('A',p.concat('Quality'),'Choose an authored rarity.');
+    if(!Array.isArray(relic.Conversion)||relic.Conversion.length!==2||!base.GoodsCfg[relic.Conversion[0]])issue('A',p.concat('Conversion'),'Conversion needs an existing goods ID and amount.');else number('A',p.concat('Conversion',1),relic.Conversion[1],0,true);
+    (relic.levelInfo||[]).forEach((level,li)=>{const q=p.concat('levelInfo',li);if(level.id!==relic.ID||level.Level!==li+1)issue('A',q,'Relic level and owner ID must match their position.');for(const field of ['GoldCost','PieceCost'])if(own(level,field))number('A',q.concat(field),level[field],0,true);if(!Array.isArray(level.param))issue('A',q.concat('param'),'Relic effect values must retain their array format.');(level.param||[]).forEach((v,j)=>number('A',q.concat('param',j),v,0,false));});
   });
   (base.EquipCfg||[]).forEach((equipment,i)=>{
     const p=['EquipCfg',i];if(equipment.id!==i+1)issue('A',p.concat('id'),'Equipment IDs must retain their existing order.');
@@ -243,6 +279,17 @@ function validate(documents, changes) {
   const overrides=docs.overrides||base.GameTools;
   if(overrides){
     if(overrides.version!==1)issue('overrides',['version'],'Unsupported override format.');
+    if(overrides.visuals!==undefined&&(!overrides.visuals||typeof overrides.visuals!=='object'||Array.isArray(overrides.visuals)))issue('overrides',['visuals'],'Model facing must be a unit table.');
+    Object.keys(overrides.visuals||{}).forEach(key=>{const item=overrides.visuals[key],parts=key.split(':'),type=parts[0],id=Number(parts[1]),form=type==='enemy'&&id>=90010?String(id-90009):'default';if(parts.length!==3||!['enemy','ally'].includes(type)||!units[id]||type==='ally'&&(id<90001||id>90004)||parts[2]!==form)issue('overrides',['visuals',key],'Model facing must identify an allied troop or enemy form.');if(!item||item.mirrorX!==undefined&&typeof item.mirrorX!=='boolean')issue('overrides',['visuals',key],'Mirror model must be enabled or disabled.');});
+    for(const [key,item]of Object.entries(overrides.visuals||{}))if(item&&typeof item==='object'){
+      for(const [field,min,max]of [['x',-4096,4096],['y',-4096,4096],['scaleX',.01,20],['scaleY',.01,20],['rotation',-3600,3600]])if(item[field]!==undefined&&(typeof item[field]!=='number'||!Number.isFinite(item[field])||item[field]<min||item[field]>max))issue('overrides',['visuals',key,field],'Choose a valid model transform.');
+      if(item.tint!==undefined&&!/^#[0-9a-f]{6}$/i.test(item.tint))issue('overrides',['visuals',key,'tint'],'Choose a valid model tint.');
+    }
+    const unitTypes=overrides.unitTypes||{};
+    if(overrides.unitTypes!==undefined&&(!overrides.unitTypes||typeof overrides.unitTypes!=='object'||Array.isArray(overrides.unitTypes)))issue('overrides',['unitTypes'],'Unit types must be a type table.');
+    Object.keys(unitTypes).forEach(id=>{const type=unitTypes[id],p=['unitTypes',id];if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!type||typeof type!=='object'){issue('overrides',p,'Use a stable lowercase type identifier.');return;}if(typeof type.name!=='string'||!type.name.trim()||type.name.length>100)issue('overrides',p.concat('name'),'Give this type a name.');if(typeof type.icon!=='string'||!type.icon.trim())issue('overrides',p.concat('icon'),'Choose a pictogram for this type.');if(type.tint!==undefined&&!/^#[0-9a-f]{6}$/i.test(type.tint))issue('overrides',p.concat('tint'),'Choose a valid pictogram tint.');});
+    if(overrides.unitTypeAssignments!==undefined&&(!overrides.unitTypeAssignments||typeof overrides.unitTypeAssignments!=='object'||Array.isArray(overrides.unitTypeAssignments)))issue('overrides',['unitTypeAssignments'],'Unit type assignments must be a unit table.');
+    Object.keys(overrides.unitTypeAssignments||{}).forEach(key=>{const parts=key.split(':'),id=Number(parts[1]),side=parts[0],form=side==='enemy'&&id>=90010?String(id-90009):'default';if(parts.length!==3||!['enemy','ally'].includes(side)||!units[id]||side==='ally'&&(id<90001||id>90004)||parts[2]!==form)issue('overrides',['unitTypeAssignments',key],'Choose a reachable troop or enemy form.');if(!own(unitTypes,overrides.unitTypeAssignments[key]))issue('overrides',['unitTypeAssignments',key],'Choose an existing unit type.');});
     Object.keys(overrides.parameters||{}).forEach(key=>{if(key==='buildStandTime')number('overrides',['parameters',key],overrides.parameters[key],0.001,false);else issue('overrides',['parameters',key],'Unknown runtime parameter override.');});
     ['timings','timingDefaults'].forEach(group=>{
       if(overrides[group]!==undefined&&(!overrides[group]||typeof overrides[group]!=='object'||Array.isArray(overrides[group]))){issue('overrides',[group],'Attack timings must be a unit timing table.');return;}

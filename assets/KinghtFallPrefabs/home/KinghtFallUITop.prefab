@@ -148,7 +148,7 @@
       "ctor": "Float64Array",
       "array": [
         -265.308,
-        611.912,
+        591.912,
         0,
         0,
         0,
@@ -355,12 +355,12 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "labTime",
-    "_parent": {
+        "__type__": "cc.Node",
+        "_name": "labTime",
+        "_parent": {
       "__id__": 5
     },
-    "_components": [
+        "_components": [
       {
         "__id__": 16
       },
@@ -368,20 +368,20 @@
         "__id__": 17
       }
     ],
-    "_prefab": {
+        "_prefab": {
       "__id__": 18
     },
-    "_contentSize": {
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 100.07,
       "height": 58.4
     },
-    "_anchorPoint": {
+        "_anchorPoint": {
       "__type__": "cc.Vec2",
       "x": 1,
       "y": 0.5
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
         75.739,
@@ -396,8 +396,9 @@
         1
       ],
       "__type__": "TypedArray"
-    }
-  },
+    },
+        "_active": false
+    },
   {
     "__type__": "cc.Label",
     "_string": "01:59",
@@ -457,7 +458,7 @@
   {
     "__type__": "cc.Widget",
     "_alignFlags": 1,
-    "_top": 35.087999999999965,
+    "_top": 55.087999999999965,
     "node": {
       "__id__": 5
     }
@@ -512,7 +513,7 @@
       "ctor": "Float64Array",
       "array": [
         -82.25,
-        611.912,
+        591.912,
         0,
         0,
         0,
@@ -732,7 +733,7 @@
   {
     "__type__": "cc.Widget",
     "_alignFlags": 1,
-    "_top": 35.087999999999965,
+    "_top": 55.087999999999965,
     "node": {
       "__id__": 22
     }
@@ -787,7 +788,7 @@
       "ctor": "Float64Array",
       "array": [
         103.302,
-        611.912,
+        591.912,
         0,
         0,
         0,
@@ -1007,7 +1008,7 @@
   {
     "__type__": "cc.Widget",
     "_alignFlags": 1,
-    "_top": 35.087999999999965,
+    "_top": 55.087999999999965,
     "node": {
       "__id__": 35
     }

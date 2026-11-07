@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "6b960458-8226-5fff-9370-b005b1c6c96a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "UI_Play_Battle_01_Color": {
+      "ver": "1.0.6",
+      "uuid": "8a9c84be-db6a-5171-a700-cb9dba48d09f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6b960458-8226-5fff-9370-b005b1c6c96a",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

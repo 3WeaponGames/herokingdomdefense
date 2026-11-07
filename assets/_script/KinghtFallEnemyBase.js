@@ -71,6 +71,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this._targetSearchCache = null;
     this._unreachableTargets = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
+    if (this.spAni) this.setLeft(false);
     this.bornInfo = $z1KinghtFallUIGame.default.instance.ctrGame.setPath(e);
     var i = this.node.getComponents(cc.CircleCollider);
     if (i[0]) {
@@ -188,7 +189,8 @@ var def_KinghtFallEnemyBase = function (t) {
     return this.bornInfo.pathList[this.bornInfo.nodeIndex];
   };
   _ctor.prototype.setLeft = function (t) {
-    this.spAni.node.scaleX = t ? -this.spAni.node.scaleY : this.spAni.node.scaleY;
+    this._visualLeft = !!t;
+    GameToolsOverrides.applyModel(this, "enemy", this.spAni.node, t);
   };
   _ctor.prototype.doWait = function () {
     this.state = r.Wait;

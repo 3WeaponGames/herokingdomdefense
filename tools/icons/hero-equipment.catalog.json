@@ -1,0 +1,498 @@
+{
+  "version": 1,
+  "pack": "2D Minimal - Hero Equip Icons",
+  "resolution": 128,
+  "source": {
+    "package": "2D Minimal - Hero Equip Icons.unitypackage",
+    "version": "1.0",
+    "publisher": "Layer Lab",
+    "sha256": "0dcf90402d8f3eec8bfe9686984ba883fbc85542c0539f8bbc236a454cba845a"
+  },
+  "categories": {
+    "Armor": 20,
+    "Items": 6,
+    "Weapons": 34
+  },
+  "icons": [
+    {
+      "name": "Armor_BoneArmor",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_BoneArmor.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_BoneArmor",
+      "sha256": "7f95216ac17ba79790e3923a1b786b648c4c4290f215538e84fc92c13fc1af20",
+      "unityGuid": "7f5b4487ea5ca4afeb2debd31d99c80b"
+    },
+    {
+      "name": "Armor_ChestArmor",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_ChestArmor.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_ChestArmor",
+      "sha256": "3074f3f927eef4558db2ace5c7ea05ede512e3d4576b54b6bd322b80f9144dc0",
+      "unityGuid": "36d316c9106b44cc7a60812632e6ea54"
+    },
+    {
+      "name": "Armor_CombatBoots",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_CombatBoots.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_CombatBoots",
+      "sha256": "a111fb0052e8652723ac0e6bf0d19a00965daba0a0d498663972657f72de34f2",
+      "unityGuid": "d3d15d38f9d604375ad4aaa946621112"
+    },
+    {
+      "name": "Armor_CombatBootsMilitary",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_CombatBootsMilitary.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_CombatBootsMilitary",
+      "sha256": "b085d4f28e575a113fe1b0db3f96db31d2c27c856f4392f74b83df3d9371ce2b",
+      "unityGuid": "0fc0f682752c3465f867eaa41f859cfc"
+    },
+    {
+      "name": "Armor_DragonShield",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_DragonShield.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_DragonShield",
+      "sha256": "8191a934e99355651f8c566b081c6eb5be7a947c7202da44f3e96694adcd83cd",
+      "unityGuid": "857724ef861eb4a9687080523068a6c0"
+    },
+    {
+      "name": "Armor_EmblemShieldBlue",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_EmblemShieldBlue.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_EmblemShieldBlue",
+      "sha256": "106f3797bdb2e048ec8c9ef06e5bcb7cdd92d1115eaefacd0948566e8c0eadbc",
+      "unityGuid": "a5b890986dbe141e59e1f667fc3fcbd5"
+    },
+    {
+      "name": "Armor_EmblemShieldRed",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_EmblemShieldRed.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_EmblemShieldRed",
+      "sha256": "772b707aa2cfb4f96faf0251d2dcce8b18c6388661cf4a919268ef49e591efe5",
+      "unityGuid": "4104ecec4ceea407e8204404ba236532"
+    },
+    {
+      "name": "Armor_FurShield",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_FurShield.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_FurShield",
+      "sha256": "bb5ca22182cea7832370aa434d9d921d19de3be96cdc0a26230f2bd244929400",
+      "unityGuid": "f0e036ea84d6349ada54da94692ccfbe"
+    },
+    {
+      "name": "Armor_GauntletsGold",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_GauntletsGold.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_GauntletsGold",
+      "sha256": "4ec6e6c64d2ef64897b6789c51bc8eea055a7af9feb994bc475a8af18680ec66",
+      "unityGuid": "065ed018198564c4f8b23ef32c61bc41"
+    },
+    {
+      "name": "Armor_GauntletsSteel",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_GauntletsSteel.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_GauntletsSteel",
+      "sha256": "2c326274f7d2c892ddcbb3c722c3c5f2c07af411e34ce6702a4127605b1e12f5",
+      "unityGuid": "8795d976aed5d430280d75d083fcb5b0"
+    },
+    {
+      "name": "Armor_HeavyArmor",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_HeavyArmor.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_HeavyArmor",
+      "sha256": "c64f36392818876ab98f8b82aad195836f5d36234cb87c2770a2a7d7149951df",
+      "unityGuid": "4d43e4c5d8a0440e48b5c352beb91680"
+    },
+    {
+      "name": "Armor_HelmGolden",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_HelmGolden.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_HelmGolden",
+      "sha256": "6f0b852293141e2645f7044d1e434cbfc4e74219dc427f338fbf719d6a02c3ed",
+      "unityGuid": "2810c9c38fb7341dbaea97f9a4d9aafb"
+    },
+    {
+      "name": "Armor_HelmSilver",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_HelmSilver.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_HelmSilver",
+      "sha256": "59946f6ae0ebd1775a2b3e72308d996ac7d5db04d1bf56acf2bae27f42d3a0c3",
+      "unityGuid": "bbc891d9a2975415da149f39c401a1a6"
+    },
+    {
+      "name": "Armor_HelmetBlue",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_HelmetBlue.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_HelmetBlue",
+      "sha256": "486d9cd66f4141f13690ce752fbf65c0eb724c8fabfd297acf3c4afd70e0ed93",
+      "unityGuid": "7e025c6f720e9478a8994b8b87e3a479"
+    },
+    {
+      "name": "Armor_HelmetGray",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_HelmetGray.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_HelmetGray",
+      "sha256": "42d47d8f5e80755ad6cfebd2dd0cd19248c20c2614cfc3bf11b8bb2e1603d60e",
+      "unityGuid": "cf24116b7c8194dcfaa4f70502213c6f"
+    },
+    {
+      "name": "Armor_MagicCrown",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_MagicCrown.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_MagicCrown",
+      "sha256": "3a1743986c0f59bc9c12240323fd2e3e4951c3812d8e8104de91ab11e146c46e",
+      "unityGuid": "1d02ac6c99b654cb09a07c0a7c2702a7"
+    },
+    {
+      "name": "Armor_RedShield",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_RedShield.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_RedShield",
+      "sha256": "23cd9bfe1061b8f5701b523f1ceeb9f38b845bfe1558572e8e3e791047f9d83b",
+      "unityGuid": "cb98eccb874144f39b78595b8c0de9e5"
+    },
+    {
+      "name": "Armor_SkullMask",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_SkullMask.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_SkullMask",
+      "sha256": "9b44ad8cdda1d9243d74996c976bb7c6fc06a95217a87f3ab8365aafc47e7cfb",
+      "unityGuid": "4937a899526904289b860bc25aae4ea0"
+    },
+    {
+      "name": "Armor_TacticalVest",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_TacticalVest.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_TacticalVest",
+      "sha256": "70d0820a38476ec9ac601a8f7f562217994722451ac1a35ce637a3b607c4c127",
+      "unityGuid": "98e1663b4cfc745aa94d343e72f13124"
+    },
+    {
+      "name": "Armor_WoodenShield",
+      "category": "Armor",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Armor/Armor_WoodenShield.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Armor/Armor_WoodenShield",
+      "sha256": "07357676e1d0a1a67e95149e2bcc0fdcfe8c26e75766b99623e0afbd7b40a93f",
+      "unityGuid": "5da90d14199774066a339bbcd86190b7"
+    },
+    {
+      "name": "Item_Drone",
+      "category": "Items",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Items/Item_Drone.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Items/Item_Drone",
+      "sha256": "98f722b4faf417fff239bc03f96390a048726b7fd5879398cdcc28388c80adb1",
+      "unityGuid": "24e69a097610c4c37b5f05be838a128a"
+    },
+    {
+      "name": "Item_Hook",
+      "category": "Items",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Items/Item_Hook.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Items/Item_Hook",
+      "sha256": "1b03db83702e6fe3013da11e89698189ba0740614e0a60594fcab19fde05bb8f",
+      "unityGuid": "8de3d8931132543fda3206288e1438ea"
+    },
+    {
+      "name": "Item_LaserTurret",
+      "category": "Items",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Items/Item_LaserTurret.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Items/Item_LaserTurret",
+      "sha256": "28b171e982c72fa5fed161586be1df74c72a0c1d7c4a2478438788629d2d8564",
+      "unityGuid": "3ac8d764610ec4c12a2b3e55b30347b6"
+    },
+    {
+      "name": "Item_Scythe",
+      "category": "Items",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Items/Item_Scythe.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Items/Item_Scythe",
+      "sha256": "e8b517a014065aa7c2afe0c8ee8d597aa2136374e4d22bdb8384efa1ca53715a",
+      "unityGuid": "fc280e6ac2f8c4239bd053974e8d5dc9"
+    },
+    {
+      "name": "Item_ScythePurple",
+      "category": "Items",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Items/Item_ScythePurple.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Items/Item_ScythePurple",
+      "sha256": "dcd1b7cb6425db4bf2e6afb5a794430b5d80154f22ebbbd61b51aba5af41680b",
+      "unityGuid": "809c6cf2ffd26462f9906df3eb005e2a"
+    },
+    {
+      "name": "Item_Turret",
+      "category": "Items",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Items/Item_Turret.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Items/Item_Turret",
+      "sha256": "ec4936dad68fbd7a22c824c655a73d422980be2b6af7b537fc28ff2c7e3d9a09",
+      "unityGuid": "5f9583414745a49c2acda8a7798590dd"
+    },
+    {
+      "name": "Weapon_Arrow_01",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Arrow_01.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Arrow_01",
+      "sha256": "07e95346d11e73e2d3a24ab71dfda5095473864e7a19f246f019f32ed8b4e21b",
+      "unityGuid": "0a1a5c45341884fd48eca520827480a9"
+    },
+    {
+      "name": "Weapon_Arrow_02",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Arrow_02.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Arrow_02",
+      "sha256": "70eccb89368bcf92e887c5e0af1b8f19ebcbf484ee5ce63c7af7df1747847822",
+      "unityGuid": "0795fd9d5ce3b4286bda4b68d44facda"
+    },
+    {
+      "name": "Weapon_Axe_01",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Axe_01.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Axe_01",
+      "sha256": "439e816dce6f9397ba806bdb37cb218abd370f8052e22e8a80dedafb98e1ce56",
+      "unityGuid": "42ed0e0c0ce864418b387f14dfc48751"
+    },
+    {
+      "name": "Weapon_Axe_02",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Axe_02.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Axe_02",
+      "sha256": "70f3aa315ae1f938bd657b00220504c1a9297ded64224e0705e247ff866ba434",
+      "unityGuid": "9f66be89c7e044a818b2a77ae9421f1f"
+    },
+    {
+      "name": "Weapon_Bow_01",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Bow_01.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Bow_01",
+      "sha256": "adebde7fb8c46b3fa94d7f94324138fe15340e9c75df7894fed20e9a076bdb34",
+      "unityGuid": "ee9b7ee0c593b4e709ba5d6c3b89b7bc"
+    },
+    {
+      "name": "Weapon_Cannon",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Cannon.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Cannon",
+      "sha256": "6c7ca1cdb5a7afcae7652bf9a50c4abdff001dd7ca5e8fc3134f5f0901e91ba5",
+      "unityGuid": "acd827bc8e5d349e2b9b30a3a2da64cc"
+    },
+    {
+      "name": "Weapon_Crossbow",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Crossbow.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Crossbow",
+      "sha256": "b5f83553cc5a39458f70ff631f52e5a845cc33a95c5572621e3ac93bedbd6ea1",
+      "unityGuid": "3aaf48fc9806741e0b9d61e7d958b0c9"
+    },
+    {
+      "name": "Weapon_CrystalSword",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_CrystalSword.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_CrystalSword",
+      "sha256": "6317b43edc3b41479939eb18d372947c46be4bba6362229ff13f59217ce013a9",
+      "unityGuid": "c663d423ed44c4e749cba67596cfdf1d"
+    },
+    {
+      "name": "Weapon_Dagger",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Dagger.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Dagger",
+      "sha256": "72f63095e538d020c8d90f7048f9bbdf15630df5da1a597d2e8f45efaca50cf5",
+      "unityGuid": "82f2baea419b94ebc9dab6a0e294ea36"
+    },
+    {
+      "name": "Weapon_DualSwords",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_DualSwords.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_DualSwords",
+      "sha256": "6a51b22c742e4b98eb4373ddf9588aa887d59e7e9c4ab77fca9e4e79ec43d5d1",
+      "unityGuid": "cddefa54dd7ae42c6a0bd95ad139702b"
+    },
+    {
+      "name": "Weapon_FireIceSword",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_FireIceSword.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_FireIceSword",
+      "sha256": "e2af75b4594ec4550b1594b1ad6b75f53cd85f6745c3b4b31da3a7694c181930",
+      "unityGuid": "69df7e89fe9194b22acf50917794adb4"
+    },
+    {
+      "name": "Weapon_IceShuriken",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_IceShuriken.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_IceShuriken",
+      "sha256": "4c893708025932192557a3e4ac14be73673a5db3ba85f69cc9479abb5fcde23b",
+      "unityGuid": "7add6a9a7e2b64af5b9e67bbccc31b0e"
+    },
+    {
+      "name": "Weapon_Katana",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Katana.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Katana",
+      "sha256": "6f940f3cae167ce73ea3542562835a940a694f4c1694bddedcbcfe4834d33b36",
+      "unityGuid": "fec09eb7a62274fa4a8a4a2bc3f30d65"
+    },
+    {
+      "name": "Weapon_MagicStaff_01",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_MagicStaff_01.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_MagicStaff_01",
+      "sha256": "754ee1b5aff0cd4e733dc397241ebf7b1dbd7d90af0a0107ee19012535f4efc1",
+      "unityGuid": "9955bc2be7ea644cc81b5555d9d1bfcd"
+    },
+    {
+      "name": "Weapon_MissileGray",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_MissileGray.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_MissileGray",
+      "sha256": "ee463fa98c86761eb7027c3357e3416ec2c22fdaa9f56ec7f1c1c2029bad9864",
+      "unityGuid": "2999c9a8140c249d09ee3d4463f9d329"
+    },
+    {
+      "name": "Weapon_MissileGreen",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_MissileGreen.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_MissileGreen",
+      "sha256": "593471371ebdd980c59299ef349719264b3ecfedc2d8af27b19a314695866228",
+      "unityGuid": "0cfbbc5f06fc743589848216871cf9fd"
+    },
+    {
+      "name": "Weapon_Musket",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Musket.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Musket",
+      "sha256": "3a4e6aa14a4844323650a974f1b11f9cb223d7005ba5f95b0485cc32986c749d",
+      "unityGuid": "527f840bdd0b84f18a1b62f093666ac0"
+    },
+    {
+      "name": "Weapon_Pistol",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Pistol.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Pistol",
+      "sha256": "fad0caa5f8f9f5669709efa0b17c3b4c465d2fac6abca55ec659b54a865db7a0",
+      "unityGuid": "a6a73d4e18d224d23a96d16bb74924d9"
+    },
+    {
+      "name": "Weapon_PistolGolden",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_PistolGolden.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_PistolGolden",
+      "sha256": "34f48a295257bf70d28c4ea399dda56289f532fb26b4f0f7e44ebbb1baa4c79e",
+      "unityGuid": "3085e0fa3ef3a43e6ab47e12351f1377"
+    },
+    {
+      "name": "Weapon_RecurveBowBrown",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_RecurveBowBrown.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_RecurveBowBrown",
+      "sha256": "bb21fa1fd8a1d6f01b72b85f3dd124a490525a78bcb304a0de9cc37996e2b7cf",
+      "unityGuid": "18c52eda44cc644dc86bb65daf545cf8"
+    },
+    {
+      "name": "Weapon_RecurveBowSteel",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_RecurveBowSteel.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_RecurveBowSteel",
+      "sha256": "2228c09e310d5e3b2ef7f056170d91e93fb58d308accf829d9ca9af048489241",
+      "unityGuid": "2aa4a8a4dbfae4631bb31ca590c610f1"
+    },
+    {
+      "name": "Weapon_Rifle",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Rifle.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Rifle",
+      "sha256": "e1dff8b2d7d7b8bbc5eff66e416ec4ce456e1ff13a2eee3e78bd374b4900c82d",
+      "unityGuid": "262e8f2529c0e4462968a9a3706fe993"
+    },
+    {
+      "name": "Weapon_RocketLauncher",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_RocketLauncher.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_RocketLauncher",
+      "sha256": "3d1bfbc494043efcc6f752588197aa04aea9680bd36d8f3ad8eda8e35a297827",
+      "unityGuid": "8ad55ca5714ec488b885b2c860845e9f"
+    },
+    {
+      "name": "Weapon_SMG",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_SMG.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_SMG",
+      "sha256": "cee67848947750f9329305df3e956d561c1688b31646849ee4dccfb5a09ef5eb",
+      "unityGuid": "c967d22ceeea04025aa4e1a9a2d47a53"
+    },
+    {
+      "name": "Weapon_Scimitar_01",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Scimitar_01.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Scimitar_01",
+      "sha256": "cb18d065bdffc42ce1cd5c335b5d28411341b704fa7d7a72d955e49f2d68a290",
+      "unityGuid": "6325ad08f53f54c57af8f553e1d09403"
+    },
+    {
+      "name": "Weapon_Scimitar_02",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Scimitar_02.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Scimitar_02",
+      "sha256": "ccc4c96f30725b17cf3a222d9875f561a67d9b8f8422500b45c844dd1e4d788f",
+      "unityGuid": "08b0b7f63cb1d45c2b6e3302263a877b"
+    },
+    {
+      "name": "Weapon_ShortSword",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_ShortSword.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_ShortSword",
+      "sha256": "7f97c17bc09491464870bc8a603b91c257ffe51d845a3143b2b43c8b345c5f33",
+      "unityGuid": "8edf07e3f9d0d4d3f8a134e2e86d812f"
+    },
+    {
+      "name": "Weapon_SkullStaffGold",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_SkullStaffGold.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_SkullStaffGold",
+      "sha256": "cfbd51751e97d3eb01f8c07449c5464843934c955ed63904db2e74087193d8ee",
+      "unityGuid": "254541f8bb8bb486ab4912964133ecb7"
+    },
+    {
+      "name": "Weapon_SkullStaffRed",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_SkullStaffRed.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_SkullStaffRed",
+      "sha256": "d54df15d6b982a2c12e0af832145400172975453142c7286c35f3e840cc3e707",
+      "unityGuid": "45220634232844a368781610e8da9615"
+    },
+    {
+      "name": "Weapon_SpearGolden",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_SpearGolden.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_SpearGolden",
+      "sha256": "ba74e21ab59aaca647ed6ee0587ace1ecc9a034ef2cbdad31c17bf26187049d2",
+      "unityGuid": "410d1b59fdce246fdadd990feb4811f4"
+    },
+    {
+      "name": "Weapon_SpearSilver",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_SpearSilver.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_SpearSilver",
+      "sha256": "fa32751d439984c4afd0f6e52779f745ba65e770543a5ada5b7c038327df2e0e",
+      "unityGuid": "274e98fa1cbcd4b6d8ea878a76217cea"
+    },
+    {
+      "name": "Weapon_Spear_01",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_Spear_01.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_Spear_01",
+      "sha256": "44fbb41e66f8cc16f988054b7dcc9c47c61382431fa45809d4387c7e4e166cce",
+      "unityGuid": "bdfb2f623c11340649087b0fd3f2fd40"
+    },
+    {
+      "name": "Weapon_TridentGold",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_TridentGold.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_TridentGold",
+      "sha256": "a778ff7150a25a07803d33a43583ce94292893b7a2dfd63bfe9af69c0066ab48",
+      "unityGuid": "62f14dfe26be94d038eb988d20083266"
+    },
+    {
+      "name": "Weapon_TridentSilver",
+      "category": "Weapons",
+      "path": "assets/resources/icons/2d-minimal-hero-equipment/Weapons/Weapon_TridentSilver.png",
+      "reference": "@icon/icons/2d-minimal-hero-equipment/Weapons/Weapon_TridentSilver",
+      "sha256": "cc8e4a5c7cab6365df554a6ecee2d5c47318195f9cbf8e53bb4649db2d5dd7f5",
+      "unityGuid": "add920a63eb5942488919b8160e6a708"
+    }
+  ]
+}

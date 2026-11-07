@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "941ebfb7-2505-57bf-bd33-88152d1af350",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Weapon_IceShuriken": {
+      "ver": "1.0.6",
+      "uuid": "1f0d4d05-e500-5ed3-b258-91139e74784f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "941ebfb7-2505-57bf-bd33-88152d1af350",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

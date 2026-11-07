@@ -21,6 +21,7 @@ function issueValue(documents,issue){let value=documents[issue.doc]&&documents[i
 class Store {
     constructor(root,options){this.root=path.resolve(root);this.options=options||{};this.version=0;this.documents={};this.undoStack=[];this.redoStack=[];this.load();}
     absolute(relative){const result=path.resolve(this.root,relative);if(!result.startsWith(this.root+path.sep))throw Error('Path leaves project');return result;}
+    backupFolder(){return this.options.backupRoot?path.resolve(this.options.backupRoot):this.absolute('local/game-data-editor/backups');}
     readDocument(id,relative){const file=this.absolute(relative),text=fs.readFileSync(file,'utf8'),data=JSON.parse(text.replace(/^\uFEFF/,''));return{id,path:relative,original:clone(data),data,text,revision:hash(text)};}
     load(){
         const maps=Object.keys(this.documents).filter(id=>id.indexOf('map:')===0).map(id=>({id,path:this.documents[id].path}));
@@ -56,15 +57,19 @@ class Store {
     discard(request){this.checkVersion(request);Object.keys(this.documents).forEach(id=>{this.documents[id].data=clone(this.documents[id].original);});this.undoStack=[];this.redoStack=[];this.version++;return this.snapshot();}
     refresh(){if(this.changes().length)throw Error('Save or discard drafts before reloading files');return this.load();}
     recoveries(){
-        const folder=this.absolute('local/game-data-editor/backups');if(!fs.existsSync(folder))return [];
-        return fs.readdirSync(folder,{withFileTypes:true}).filter(d=>d.isDirectory()).map(d=>{
-            try{const j=JSON.parse(fs.readFileSync(path.join(folder,d.name,'transaction.json'),'utf8'));return ['prepared','recovery-required'].indexOf(j.status)>=0?{id:d.name,status:j.status,files:j.files.map(f=>f.path)}:null;}catch(e){return null;}
-        }).filter(Boolean);
+        const primary=this.backupFolder(),legacy=this.absolute('local/game-data-editor/backups');
+        return [...new Set([primary,legacy])].flatMap(folder=>{
+            if(!fs.existsSync(folder))return [];
+            return fs.readdirSync(folder,{withFileTypes:true}).filter(d=>d.isDirectory()).map(d=>{
+                try{const location=path.join(folder,d.name),j=JSON.parse(fs.readFileSync(path.join(location,'transaction.json'),'utf8'));return ['prepared','recovery-required'].indexOf(j.status)>=0?{id:(folder===primary?'':'legacy:')+d.name,location,status:j.status,files:j.files.map(f=>f.path)}:null;}catch(e){return null;}
+            }).filter(Boolean);
+        });
     }
+
     recover(request){
         this.checkVersion(request);if(this.changes().length)throw Error('Discard drafts before recovering an interrupted save');
-        if(!this.recoveries().some(r=>r.id===request.id))throw Error('Unknown recovery transaction');
-        const folder=this.absolute('local/game-data-editor/backups/'+request.id),journalFile=path.join(folder,'transaction.json'),journal=JSON.parse(fs.readFileSync(journalFile,'utf8'));
+        const recovery=this.recoveries().find(r=>r.id===request.id);if(!recovery)throw Error('Unknown recovery transaction');
+        const folder=recovery.location,journalFile=path.join(folder,'transaction.json'),journal=JSON.parse(fs.readFileSync(journalFile,'utf8'));
         const files=journal.files.map(f=>{const file=this.absolute(f.path),backup=path.resolve(folder,f.path);if(!backup.startsWith(folder+path.sep))throw Error('Invalid recovery path');const before=fs.readFileSync(backup,'utf8'),current=fs.readFileSync(file,'utf8');if(hash(before)!==f.before)throw Error('Recovery backup failed verification: '+f.path);if(hash(current)!==f.before&&hash(current)!==f.after)throw Error('External changes prevent automatic recovery: '+f.path);return{file,before,revision:hash(current),changed:hash(current)!==f.before};});
         // Recovery is an explicit UI action. Opening an editor never runs this.
         files.forEach(f=>{let temp;try{if(f.changed){temp=f.file+'.game-tools-recover-'+crypto.randomBytes(8).toString('hex')+'.tmp';fs.writeFileSync(temp,f.before,{encoding:'utf8',flag:'wx'});}if(hash(fs.readFileSync(f.file,'utf8'))!==f.revision)throw Error('File changed during recovery: '+f.file);if(temp)fs.renameSync(temp,f.file);}finally{if(temp&&fs.existsSync(temp))fs.unlinkSync(temp);}});
@@ -123,7 +128,7 @@ class Store {
         // have changed even when its own document has no draft edit.
         Object.keys(candidate.documents).filter(id=>!candidate.documents[id].virtual).forEach(id=>{const d=candidate.documents[id];if(hash(fs.readFileSync(this.absolute(d.path),'utf8'))!==d.revision)throw Error(d.path+' changed again during save. Save cancelled; your drafts are retained. Please retry.');});
         const stamp=new Date().toISOString().replace(/[:.]/g,'-')+'-'+crypto.randomBytes(3).toString('hex');
-        const backupDir=this.absolute('local/game-data-editor/backups/'+stamp);fs.mkdirSync(backupDir,{recursive:true});
+        const backupDir=path.join(this.backupFolder(),stamp);fs.mkdirSync(backupDir,{recursive:true});
         const journal={version:1,status:'prepared',files:prepared.map(p=>({path:p.path,before:hash(p.before),after:hash(p.after)}))};
         const journalFile=path.join(backupDir,'transaction.json');
         const committed=[];

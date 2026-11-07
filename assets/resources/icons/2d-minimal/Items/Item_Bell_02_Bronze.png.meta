@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "fd4e279f-2f6a-502a-9e52-497d93f1cf04",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Bell_02_Bronze": {
+      "ver": "1.0.6",
+      "uuid": "0366a8c5-5027-52e4-b040-91ff79eba0ea",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "fd4e279f-2f6a-502a-9e52-497d93f1cf04",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

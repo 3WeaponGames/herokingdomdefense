@@ -46,6 +46,7 @@ var def_KinghtFallBulletBase = function (t) {
     // Keep an immutable shot identity even if the projectile itself is reused.
     var shot = {};
     this._shot = shot;
+    if (this._launchProjectileLook) this._launchProjectileLook();
     this.callAttack = function () {
       if (bullet._shot !== shot) return;
       bullet._shot = null;
@@ -54,6 +55,8 @@ var def_KinghtFallBulletBase = function (t) {
     };
   };
   _ctor.prototype.cancel = function () {
+    if (this._projectileVisual) this._projectileVisual.reset();
+    this._launchProjectileLook = null;
     this.state = 2;
     this._shot = null;
     this.callAttack = null;
@@ -77,6 +80,7 @@ var def_KinghtFallBulletBase = function (t) {
     this.state = 0;
   };
   _ctor.prototype.onUpdate = function (t) {
+    if (this._projectileVisual) this._projectileVisual.step(t);
     switch (this.state) {
       case 0:
         if (!this.targetIsLive || !this.targetIsLive()) return void this.freeNode();
@@ -125,6 +129,7 @@ var def_KinghtFallBulletBase = function (t) {
   _ctor.prototype.onDie = function () {
     if (this.state !== 0) return;
     this.state = 1;
+    if (this._projectileVisual) this._projectileVisual.impact();
     this.bullet.active = false;
     this.time = 2;
     var attack = this.callAttack;
@@ -135,6 +140,9 @@ var def_KinghtFallBulletBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     this.cancel();
+  };
+  _ctor.prototype.onDestroy = function () {
+    if (this._projectileVisual) require("ProjectileLooks").release(this);
   };
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "bullet", undefined);
   cc__decorate([ccp_property(cc.Integer)], _ctor.prototype, "angle", undefined);

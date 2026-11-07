@@ -34,6 +34,9 @@ var def_KinghtFallGameUICtrl = function (t) {
   _ctor.prototype.start = function () {
     this.ndRod.getPosition(this.statePos);
     this._joystickRestReady = true;
+    var self = this;
+    this._controlPreferenceOff = require("ControlPreferences").subscribe(function () { self._refreshControlIndicator(); });
+    this._refreshControlIndicator();
     this.ndConter.setPosition(0, 0, 0);
     this.ndAround.forEach(function (t) {
       t.active = false;
@@ -51,6 +54,20 @@ var def_KinghtFallGameUICtrl = function (t) {
   _ctor.prototype.setMoveFunc = function (t) {
     this.moveFunc = t;
   };
+  _ctor.prototype.setJoystickRest = function (position) {
+    this.statePos.x = position.x;
+    this.statePos.y = position.y;
+    this._joystickRestReady = true;
+    // Resizing or changing battle phase must not move a held joystick.
+    if (this.touchID === false) this.ndRod.setPosition(this.statePos);
+  };
+  _ctor.prototype.setKeyboardMoving = function (moving) {
+    this._keyboardMoving = !!moving;
+    this._refreshControlIndicator();
+  };
+  _ctor.prototype._refreshControlIndicator = function () {
+    if (this.ndRod) this.ndRod.active = !require("ControlPreferences").getHideIdle() || this.touchID !== false || !!this._keyboardMoving;
+  };
   _ctor.prototype.onTouchStart = function (t) {
     var game = this._followGame(), unit = game && game.findFollowUnitAtScreen(t.touch.getLocation());
     if (unit) {
@@ -66,6 +83,7 @@ var def_KinghtFallGameUICtrl = function (t) {
   _ctor.prototype._beginJoystick = function (t, location) {
     if (this.touchID !== false && this.touchID !== t.touch.getID()) return;
     this.touchID = t.touch.getID();
+    this._refreshControlIndicator();
     var n = this.node.convertToNodeSpaceAR(location);
     this.ndRod.setPosition(n);
     this.ndConter.setPosition(0, 0, 0);
@@ -116,6 +134,7 @@ var def_KinghtFallGameUICtrl = function (t) {
   _ctor.prototype._resetJoystick = function (forceStop) {
     var hadTouch = this.touchID !== false;
     this.touchID = false;
+    if (forceStop) this._keyboardMoving = false;
     if (this._joystickRestReady) {
       this.ndRod.setPosition(this.statePos);
       this.ndConter.setPosition(0, 0, 0);
@@ -124,10 +143,12 @@ var def_KinghtFallGameUICtrl = function (t) {
       });
     }
     if ((hadTouch || forceStop) && this.moveFunc) this.moveFunc(null);
+    this._refreshControlIndicator();
   };
   _ctor.prototype.onDisable = function () {
     // A hidden/closed UI may never receive its final touch event.
     this._followTouches.clear();
+    this._keyboardMoving = false;
     this._resetJoystick(false);
   };
   _ctor.prototype.setRevive = function (t) {
@@ -144,6 +165,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     this.onTouchEnd(null);
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._controlPreferenceOff) this._controlPreferenceOff();
     $z1EventMgr.EventMgr.getInstance().off($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, this, this.onBlockTouch);
   };
   _ctor.prototype.setGuide = function (t) {

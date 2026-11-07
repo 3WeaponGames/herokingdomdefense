@@ -1,7 +1,8 @@
 'use strict';
 const fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
-const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',talents:'Talents',units:'Units & Attack Timing',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
+const Buildings=require('../buildings/client');
+const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Unit Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
 const clone=Schema.clone;
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o||{},k);
 function ipc(message,payload){return new Promise((resolve,reject)=>{
@@ -17,11 +18,12 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 
 function create(kind){
   return Editor.Panel.extend({
-    template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:fs.readFileSync(path.join(__dirname,'panel.css'),'utf8'),
+    template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:''),
     $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
       this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitGroup='enemy';this._variant='A';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
       this.$title.textContent=TITLES[kind]||kind;
+      if(kind==='unit-types')this.$toolbar.appendChild(button('New type',()=>this._newUnitType(),'gt-primary'));
       if(kind==='testing'){
         this.$toolbar.style.display='none';this.$sidebar.style.display='none';this.$preview.style.display='none';this.$issues.hidden=true;
         this.$detail.className='gt-testing-host';this.$detail.style.flex='1';this.$detail.style.minWidth='0';this.$detail.style.overflow='auto';
@@ -72,7 +74,7 @@ function create(kind){
       const row=this._rows().find(r=>r.key===this._selected);
       if(!row){this.$detail.appendChild(node('div','Choose an item to inspect its settings.','gt-empty'));return;}
       this.$detail.appendChild(node('h2',row.label));this.$detail.appendChild(node('p',row.subtitle||'Changes are drafts until saved.','gt-subtitle'));
-      if(kind==='stages')this._stage(row);else if(kind==='perks')this._perk(row);else if(kind==='buildings')this._building(row);else if(kind==='equipment')this._equipment(row);else if(kind==='talents')this._talent(row);else if(kind==='units')this._unit(row);else if(kind==='settings')this._setting(row);
+      if(kind==='stages')this._stage(row);else if(kind==='perks')this._perk(row);else if(kind==='buildings')this._building(row);else if(kind==='equipment')this._equipment(row);else if(kind==='talents')this._talent(row);else if(kind==='relics')this._relic(row);else if(kind==='units')this._unit(row);else if(kind==='unit-types')this._unitType(row);else if(kind==='settings')this._setting(row);
       this.$detail.scrollTop=scroll;this._renderPreview(row);
     },
     _rows(){
@@ -80,14 +82,16 @@ function create(kind){
       const add=(key,label,subtitle,record,keys,extra)=>rows.push(Object.assign({key:String(key),label,subtitle,record,path:keys,doc:'A'},extra||{}));
       if(kind==='stages')(this._data(this._variant).LevelCfg||[]).forEach((r,i)=>{const name=this._text(r.Name),label=/^\s*\d+[.)]\s*/.test(name)?name:r.Level+'. '+name;add(i,label,r.prefab+' · '+r.WaveCfg.length+' waves',r,['LevelCfg',i],{doc:this._variant,icon:r.Map});});
       if(kind==='perks')(data.BuffCfg||[]).forEach((r,i)=>add(r.ID,this._text(r.Name),r.ID+' · '+Schema.RARITIES[r.Quality-1],r,['BuffCfg',i],{icon:r.Image}));
-      if(kind==='buildings')Object.keys(data.BuildEnum||{}).filter(id=>id!=='0').forEach(id=>{const r=data.BuildEnum[id];add(id,this._text(r.name),r.levelList.length+' upgrade branches',r,['BuildEnum',id],{icon:r.levelList[0].Icon});});
+      if(kind==='buildings')rows.push(...Buildings.rows(this));
       if(kind==='equipment')(data.EquipCfg||[]).forEach((r,i)=>add(r.id,Schema.EQUIPMENT[i],r.levelInfo.length+' levels',r,['EquipCfg',i],{icon:r.levelInfo[0].Image}));
+      if(kind==='relics')(data.TreasureCfg||[]).forEach((r,i)=>{const good=(data.GoodsCfg||{})[r.goodID]||{};add(r.ID,this._text(good.name)||String(r.ID),r.ID+' · '+Schema.RARITIES[r.Quality-1]+' · '+r.levelInfo.length+' levels',r,['TreasureCfg',i],{icon:good.icon});});
       if(kind==='talents')Object.keys(data.TalentCfg||{}).forEach(id=>{const r=data.TalentCfg[id],count=(data.TalentLevelCfg||[]).filter(l=>l.kindID===Number(id)).length;add(id,this._text(r.Name),id+' · '+count+' progression records',r,['TalentCfg',id],{icon:r.Image});});
       if(kind==='units'){
         add('hero','Hero','Base stats are linked to Equipment',{},[],{unitType:'hero'});
         Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id];add('enemy:'+id,this._text(r.Name),(r.prefab?'Enemy':'Boss form')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
         Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=data.SoldierCfg[id];add('ally:'+id,this._text(r.Name)+' · Ally','Shared base stats with enemy '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
       }
+      if(kind==='unit-types')Object.keys(this._data('overrides').unitTypes||{}).forEach(id=>{const type=this._data('overrides').unitTypes[id],assigned=Object.values(this._data('overrides').unitTypeAssignments||{}).filter(value=>value===id).length;add(id,type.name,id+' - '+assigned+' unit assignment(s)',type,['unitTypes',id],{doc:'overrides',icon:type.icon});});
       if(kind==='settings'){
         Object.keys(data.ParameterCfg||{}).forEach(id=>{const r=data.ParameterCfg[id];add(id,Schema.human(r.enumKey),'Shared across every stage and variant',r,['ParameterCfg',id]);});
         add('buildStandTime','Build standing time','Optional override · current default 1.5 seconds',{},[],{override:true});
@@ -103,12 +107,13 @@ function create(kind){
         const text=node('div');text.appendChild(node('strong',stripRich(row.label)));text.appendChild(node('small',row.subtitle));b.appendChild(text);this.$list.appendChild(b);
       });
     },
-    _image(name){if(!name)return null;return (this._assets.images||[]).find(x=>x.name===name)||null;},
+    _image(name){if(!name)return null;return (this._assets.images||[]).find(x=>x.reference===name||x.name===name)||null;},
     _note(text,warning,parent){const n=node('div',text,'gt-note'+(warning?' warn':''));(parent||this.$detail).appendChild(n);return n;},
     _section(title,parent,collapsed){const wrap=node('details',undefined,'gt-section');wrap.open=!collapsed;wrap.appendChild(node('summary',title));const fields=node('div',undefined,'gt-fields');wrap.appendChild(fields);(parent||this.$detail).appendChild(wrap);return fields;},
     _field(container,label,value,onchange,options){
       options=options||{};const wrap=node('label',undefined,'gt-field'+(options.wide?' wide':''));wrap.appendChild(node('span',label));let input;
       if(options.options){input=node('select');options.options.forEach(item=>{const o=node('option',item.label);o.value=String(item.value);input.appendChild(o);});if(!options.options.some(o=>String(o.value)===String(value))){const o=node('option',display(value));o.value=String(value);input.appendChild(o);}input.value=String(value);}
+      else if(options.color){input=node('input');input.type='color';input.value=value||'#ffffff';}
       else if(options.boolean){input=node('input');input.type='checkbox';input.checked=!!value;}
       else if(options.multiline){input=node('textarea');input.value=value==null?'':String(value);}
       else {input=node('input');input.type=typeof value==='number'||options.numeric?'number':'text';input.value=value==null?'':String(options.percent?Math.round(value*1e10)/1e8:value);if(input.type==='number'){input.step=options.integer?'1':'any';if(options.min!==undefined)input.min=options.percent?options.min*100:options.min;if(options.max!==undefined)input.max=options.max;}}
@@ -120,8 +125,16 @@ function create(kind){
         if(next!==value)onchange(next);
       };
       input.onchange=commit;
-      if(options.asset){const line=node('div',undefined,'gt-asset-row'),list=node('datalist');list.id='asset-'+Math.random().toString(36).slice(2);(this._assets[options.asset]||[]).forEach(a=>{const o=node('option');o.value=a.name;list.appendChild(o);});input.setAttribute('list',list.id);line.appendChild(input);const icon=this._image(value);if(icon){const image=node('img');image.src=icon.url;image.alt='';image.className='gt-thumb';line.appendChild(image);}wrap.appendChild(line);wrap.appendChild(list);}else wrap.appendChild(input);
+      if(options.asset){const line=node('div',undefined,'gt-asset-row'),list=node('datalist');list.id='asset-'+Math.random().toString(36).slice(2);(this._assets[options.asset]||[]).filter(a=>options.asset!=='images'||a.reference).slice(0,300).forEach(a=>{const o=node('option');o.value=a.reference||a.name;o.label=a.name;list.appendChild(o);});input.setAttribute('list',list.id);line.appendChild(input);const icon=this._image(value);if(icon){const image=node('img');image.src=icon.url;image.alt='';image.className='gt-thumb';line.appendChild(image);}if(options.asset==='images'&&!options.readOnly)line.appendChild(button('Choose icon…',event=>{if(event&&event.preventDefault)event.preventDefault();this._pickIcon(value,onchange,options);},'gt-mini'));wrap.appendChild(line);wrap.appendChild(list);}else wrap.appendChild(input);
       if(options.help)wrap.appendChild(node('small',options.help));container.appendChild(wrap);return input;
+    },
+    _pickIcon(value,onchange,options){
+      const body=this._modal('Choose icon · draft only'),search=node('input'),grid=node('div');
+      search.placeholder='Search names or folders';grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:500px;overflow:auto';body.appendChild(search);body.appendChild(grid);
+      const assets=(this._assets.images||[]).filter(a=>a.reference);
+      let page=0;const render=()=>{clear(grid);const query=search.value.trim().toLowerCase(),all=assets.filter(a=>a.path.toLowerCase().includes(query)),slice=all.slice(0,(page+1)*120);slice.forEach(a=>{const b=button('',()=>{this.$modal.hidden=true;const next=a.reference||a.name;if(next!==value)onchange(next);},'gt-icon-choice'),img=node('img');img.src=a.url;img.loading='lazy';img.style.cssText='width:64px;height:64px;object-fit:contain';b.title=a.path;b.appendChild(img);b.appendChild(node('small',a.name));grid.appendChild(b);});if(slice.length<all.length)grid.appendChild(button('Show more ('+all.length+')',()=>{page++;render();}));};
+      search.oninput=()=>{page=0;render();};render();this.$modalActions.appendChild(button('Cancel',()=>this.$modal.hidden=true));
+      body.appendChild(node('p','Original icons and imported resource images. Choosing an icon changes this draft only; Save applies it to the game.'));
     },
     _localized(container,doc,keys,value,label){
       const key=Schema.token(value);if(!key){this._field(container,label,value,v=>this._set(doc,keys,v),{wide:true,multiline:/description/i.test(label)});return;}
@@ -141,7 +154,7 @@ function create(kind){
       if(value===null){this._field(container,meta.label,'Not set',()=>{},{readOnly:true});return;}
       if(Array.isArray(value)){
         const block=node('div',undefined,'gt-field wide');block.appendChild(node('span',meta.label));container.appendChild(block);
-        if(key==='Pamer'||key==='EffectNumber'){
+        if(key==='Pamer'||key==='EffectNumber'||key==='param'){
           const flags=record[key==='Pamer'?'isPerecentage':'vaulePercentage']||[],names=key==='Pamer'?Schema.PERK_LABELS[record.ID]||[]:[];
           const fields=node('div',undefined,'gt-fields');block.appendChild(fields);value.forEach((v,i)=>this._field(fields,(names[i]||'Effect '+(i+1))+(flags[i]?' (%)':''),v,n=>this._set(doc,keys.concat(i),n),{percent:!!flags[i],min:0,readOnly:key==='Pamer'&&record.ID===50024,help:key==='Pamer'&&record.ID===50024?'Reserved by the existing effect; this perk always uses its scripted upgrade behavior.':undefined}));return;
         }
@@ -241,15 +254,7 @@ function create(kind){
       this._note('Selection weight is relative, not a guaranteed percentage. Unlocks, acquired perks, rarity rules and disabled perks change the available pool.');
     },
     _building(row){
-      const r=row.record,p=row.path;this._properties(this._section('Building type'),'A',p,r,{table:'BuildEnum',id:row.key},['levelList']);
-      const graph=this._section('Upgrade branches');graph.className='';const blocks=node('div',undefined,'gt-branch-graph');graph.appendChild(blocks);
-      this._level=Math.min(this._level,r.levelList.length-1);
-      r.levelList.forEach((level,i)=>{const b=button('',()=>{this._level=i;this._render();},'gt-branch-node'+(i===this._level?' active':''));b.appendChild(node('strong','#'+level.index+' · Level '+level.level));b.appendChild(node('small',(level.BranchBuild||[]).length?'→ '+level.BranchBuild.map(x=>'#'+x).join(', '):'Final branch'));blocks.appendChild(b);});
-      const level=r.levelList[this._level],lp=p.concat('levelList',this._level),context={table:'BuildEnum',id:row.key,building:r,levelIndex:this._level};
-      const section=this._section('Branch #'+level.index+' · '+this._text(level.Name));this._properties(section,'A',lp,level,context);
-      if(!own(level,'BranchBuild'))section.appendChild(button('Add an upgrade connection',()=>{const next=r.levelList.find(x=>x.index!==level.index);if(next)this._set('A',lp.concat('BranchBuild'),[next.index]);},'gt-mini'));
-      const optional=this._section('Optional upgrade costs',undefined,true);['BuildSliverCost','VedioCount'].forEach(key=>{if(!own(level,key))optional.appendChild(button('Add '+Schema.human(key),()=>this._set('A',lp.concat(key),1),'gt-mini'));});
-      this._note('Branch numbers are stable references. Multiple branches can share the same displayed building level. Changing a branch connection affects only an explicit saved edit.');
+      Buildings.render(this,row);
     },
     _equipment(row){
       const r=row.record,p=row.path;this._properties(this._section('Equipment category'),'A',p,r,{table:'EquipCfg',equipment:r.id},['levelInfo']);
@@ -260,6 +265,15 @@ function create(kind){
       r.levelInfo.forEach((level,i)=>{const tr=node('tr',undefined,i===this._level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>{this._level=i;this._render();};[level.Level,level.Parameters,level.GoldCost,level.EquipSkin].forEach(v=>tr.appendChild(node('td',v)));table.appendChild(tr);});const scroll=node('div');scroll.style.maxHeight='220px';scroll.style.overflow='auto';scroll.appendChild(table);levels.appendChild(scroll);
       const level=r.levelInfo[this._level];this._note('Level '+level.Level+' · '+stripRich(this._text(r.Describe).replace(/\{0\}/g,String(level.Parameters))));this._properties(this._section('Level '+level.Level+' settings'),'A',p.concat('levelInfo',this._level),level,{table:'EquipCfg',equipment:r.id});
       this._note('These values also supply the hero’s base stats. The Units panel reads the same equipment data; it does not create a separate copy.');
+    },
+    _relic(row){
+      const r=row.record,p=row.path,goods=this._data('A').GoodsCfg||{},good=goods[r.goodID];
+      this._properties(this._section('Relic effect'),'A',p,r,{table:'TreasureCfg'},['levelInfo','Conversion']);
+      if(good){this._localized(this._section('Display name'),'A',['GoodsCfg',String(r.goodID),'name'],good.name,'Relic name');const icons=this._section('Icons');['icon','sprBg'].forEach(key=>this._value(icons,'A',['GoodsCfg',String(r.goodID),key],good[key],key,{table:'TreasureCfg'},good));}
+      const reward=this._section('Conversion reward');this._field(reward,'Goods ID',r.Conversion[0],v=>this._set('A',p.concat('Conversion',0),v),{options:Object.keys(goods).map(id=>({value:Number(id),label:this._text(goods[id].name)+' · '+id}))});this._field(reward,'Amount',r.Conversion[1],v=>this._set('A',p.concat('Conversion',1),v),{integer:true,min:0});
+      this._level=Math.min(this._level,r.levelInfo.length-1);const levels=this._section('Progression');this._field(levels,'Edit level',this._level,v=>{this._level=v;this._render();},{options:r.levelInfo.map((l,i)=>({value:i,label:'Level '+l.Level}))});
+      const level=r.levelInfo[this._level];if(level)this._properties(this._section('Level '+level.Level),'A',p.concat('levelInfo',this._level),level,{table:'TreasureCfg'},['vaulePercentage']);
+      this._note('Relic IDs, goods bindings and implemented talent effects stay fixed. Costs and effect values use the existing progression; icons do not change equipped hero artwork.');
     },
     _talent(row){
       const r=row.record,p=row.path;this._properties(this._section('Talent effect'),'A',p,r,{table:'TalentCfg'});
@@ -282,8 +296,26 @@ function create(kind){
       }
       const id=Number(row.unitID);if(id>=90001&&id<=90004)this._note('This base stat record is shared by the enemy and allied soldier of this type. Timing overrides are scoped separately to the selected side.',true);
       if(!row.record.prefab)this._note('This is a boss transformation form. It is reached through the boss’s behavior and is not a directly spawnable unit.');
+      const typeKey=row.unitType+':'+row.unitID+':'+(row.unitType==='enemy'&&id>=90010?id-90009:'default'),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Unit type & map pictogram');
+      this._field(typeFields,'Unit type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Controls the map pictogram. Combat behavior and counters keep their existing settings.'});
+      typeFields.appendChild(button('Manage types & pictograms',()=>ipc('open-panel','unit-types').catch(error=>this._status(error.message,true))));
+      const visualFields=this._section('Model transform'),visuals=this._data('overrides').visuals||{},visual=visuals[typeKey]||{};
+      const setVisual=(field,value)=>{const next=Object.assign({},this._data('overrides').visuals||{});next[typeKey]=Object.assign({},next[typeKey],{[field]:value});return this._set('overrides',['visuals'],next);};
+      for(const [key,label,initial,min,max]of [['x','Offset X',0,-4096,4096],['y','Offset Y',0,-4096,4096],['scaleX','Scale X',1,.01,20],['scaleY','Scale Y',1,.01,20],['rotation','Rotation',0,-3600,3600]])this._field(visualFields,label,visual[key]===undefined?initial:visual[key],value=>setVisual(key,value),{min,max});
+      this._field(visualFields,'Model tint',visual.tint||'#ffffff',value=>setVisual('tint',value),{color:true});
+      visualFields.appendChild(button('Edit rider, horse & parts',()=>ipc('open-characters').catch(error=>this._status(error.message,true))));
       this._properties(this._section('Stats & behavior'),'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID});
       this._note('Attack rate controls how often attacks begin. The preview timeline controls the release or effect moment inside a selected attack. Existing behavior stays unchanged until an override is saved.');
+    },
+    _newUnitType(){const types=clone(this._data('overrides').unitTypes||{});let id='new-type',index=2;while(own(types,id))id='new-type-'+index++;types[id]={name:'New type',icon:'',tint:'#ffffff'};this._selected=id;return this._set('overrides',['unitTypes'],types);},
+    _unitType(row){
+      const fields=this._section('Type & pictogram'),p=['unitTypes',row.key];
+      this._field(fields,'Name',row.record.name,value=>this._set('overrides',p.concat('name'),value));
+      this._field(fields,'Pictogram',row.record.icon,value=>this._set('overrides',p.concat('icon'),value),{asset:'images',bundle:'KinghtFallEnemy',wide:true,help:'Choose an imported monster part, an existing battle icon, or another Resources image.'});
+      this._field(fields,'Pictogram tint',row.record.tint||'#ffffff',value=>this._set('overrides',p.concat('tint'),value),{color:true});
+      this._note('Select this type in Units. Type names and pictograms do not change attack behavior, stats, wave IDs, or player progress.');
+      const assigned=Object.entries(this._data('overrides').unitTypeAssignments||{}).filter(([key,value])=>value===row.key);this._note(assigned.length?'Assigned to: '+assigned.map(([key])=>key).join(', '):'No units use this type yet.');
+      const remove=button('Delete type',()=>{if(assigned.length)return this._status('Choose another type for these units before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);
     },
     _setting(row){
       if(row.override){
@@ -304,6 +336,7 @@ function create(kind){
       this._field(section,'Setting ID',r.enumValue,()=>{},{readOnly:true});
     },
     _renderPreview(row){
+      if(kind==='buildings'){try{Buildings.preview(this,row,{ipc});}catch(error){this._status('Preview: '+error.message,true);}return;}
       const hasModel=kind==='units'||kind==='buildings'||kind==='equipment';
       if(hasModel){
         if(!this._previewClient){clear(this.$preview);try{this._previewClient=require('../preview/client').mount(this.$preview,{ipc,onChange:edits=>this._change(edits)});}catch(error){this.$preview.appendChild(node('div','Animation preview is loading. '+error.message,'gt-note'));}}
@@ -314,7 +347,11 @@ function create(kind){
         }catch(error){this._status('Preview: '+error.message,true);}}return;
       }
       if(this._previewClient){this._previewClient.destroy();this._previewClient=null;}clear(this.$preview);
-      if(kind==='perks'){
+      if(kind==='unit-types'){
+        this.$preview.appendChild(node('h3','Map pictogram preview'));const asset=this._image(row.record.icon);
+        if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';img.style.objectFit='contain';this.$preview.appendChild(img);if(row.record.tint&&row.record.tint!=='#ffffff'){const canvas=node('canvas');canvas.width=canvas.height=256;canvas.className='gt-large-icon';this.$preview.appendChild(canvas);img.onload=()=>{if(!canvas.parentNode)return;const ctx=canvas.getContext('2d'),scale=Math.min(256/img.naturalWidth,256/img.naturalHeight),w=img.naturalWidth*scale,h=img.naturalHeight*scale,x=(256-w)/2,y=(256-h)/2;ctx.drawImage(img,x,y,w,h);ctx.globalCompositeOperation='multiply';ctx.fillStyle=row.record.tint;ctx.fillRect(0,0,256,256);ctx.globalCompositeOperation='destination-in';ctx.drawImage(img,x,y,w,h);img.hidden=true;};}}
+        this.$preview.appendChild(node('h2',row.record.name));this._note('Aspect ratio is preserved in battle. Tint is applied to the icon.',false,this.$preview);
+      }else if(kind==='perks'){
         const perk=row.record;this.$preview.appendChild(node('h3','Perk card preview'));const asset=this._image(perk.Image);if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';this.$preview.appendChild(img);}
         this.$preview.appendChild(node('h2',this._text(perk.Name)));this.$preview.appendChild(node('span',Schema.RARITIES[perk.Quality-1],'gt-chip '+Schema.RARITIES[perk.Quality-1].toLowerCase()));
         this.$preview.appendChild(node('p',stripRich(Schema.formatEffect(perk,this._data('catalog'),this._language)),'gt-description'));this._note('Preview uses the current draft values and selected language.',false,this.$preview);
@@ -322,6 +359,8 @@ function create(kind){
         this.$preview.appendChild(node('h3','Stage overview'));const asset=this._image(row.record.Map);if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';this.$preview.appendChild(img);}
         this._note('Playable map: '+row.record.prefab,false,this.$preview);this.$preview.appendChild(button('Open Maps panel',()=>ipc('open-panel','maps').catch(e=>this._status(e.message,true))));
         this.$preview.appendChild(node('p','Spawn lanes are authored in the map. Each lane emits its ordered groups in parallel with other lanes. Wait groups delay only their own lane.','gt-subtitle'));
+      }else if(kind==='relics'){
+        const asset=this._image(row.icon);if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';this.$preview.appendChild(img);}const selected=row.record.levelInfo[this._level]||{};this.$preview.appendChild(node('h3','Level '+selected.Level));this.$preview.appendChild(node('p',stripRich(Schema.formatEffect(Object.assign({},selected,{Describe:row.record.Describe}),this._data('catalog'),this._language,'param','vaulePercentage')),'gt-description'));
       }else if(kind==='talents'){
         const asset=this._image(row.record.Image);if(asset){const img=node('img');img.src=asset.url;img.className='gt-large-icon';this.$preview.appendChild(img);}
         const records=(this._data('A').TalentLevelCfg||[]).filter(x=>x.kindID===Number(row.key)),selected=records[Math.min(this._talentLevel,records.length-1)];

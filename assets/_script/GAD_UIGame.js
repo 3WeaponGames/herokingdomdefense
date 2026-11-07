@@ -1,3 +1,4 @@
+var ProjectileLooks = require("ProjectileLooks");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -108,6 +109,7 @@ var def_GAD_UIGame = function (t) {
     if (!this.isclose && $z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) {
       $z1GAD_PlayerMgr.default.getInstance().tickRun();
       t = Math.min(t, .02);
+      if (this._projectileLooks) this._projectileLooks.update(t);
       this._cardCtrl.updateCD(t);
       var e = this._passedDoors, n = this._doors, bounds = this._collisionBounds;
       e.length = n.length = 0;
@@ -220,6 +222,7 @@ var def_GAD_UIGame = function (t) {
                     C._lastImpactFrame = frame;
                     this.sendEvent($z1GAD_Configs.emGADEventName.GAD_Show_Hit_Effect, I.node.convertToWorldSpaceAR(cc.Vec2.ZERO), C.getRoleType(), I.getHitEffectName());
                   }
+                  if (I._projectileVisual) I._projectileVisual.impact();
                   I.removeFromScreen();
                   this._bullets.splice(i, 1);
                   i--;
@@ -292,6 +295,8 @@ var def_GAD_UIGame = function (t) {
     this.openRequiredUI(id, function (node) { game._decisionNode = node; }, value);
   };
   _ctor.prototype.onClose = function () {
+    if (this._projectileLooks) this._projectileLooks.dispose();
+    this._projectileLooks = null;
     if (n.script === this && $z1GAD_PlayerMgr.default.getInstance()._run === this._rewardRun) $z1GAD_PlayerMgr.default.getInstance().finishRun("quit");
     var node = this._decisionNode;
     this._decisionNode = null;
@@ -380,6 +385,9 @@ var def_GAD_UIGame = function (t) {
     o.setGroupID(t);
     var r = Math.round(this._cardCtrl.getAtkDamage());
     o.init(n.getCardCfg(), r);
+    ProjectileLooks.prepare(o, this, "wall-defense");
+    o._shot = {};
+    o._launchProjectileLook();
     i.active = true;
     this._bullets.push(o);
   };

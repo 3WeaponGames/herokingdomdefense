@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "c08ee1e5-ec5c-5cac-85c9-bdd8a49bc93c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Weapons_Shovel_01": {
+      "ver": "1.0.6",
+      "uuid": "f966d1c9-0515-5b7d-92b2-d42bea1d5382",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "c08ee1e5-ec5c-5cac-85c9-bdd8a49bc93c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

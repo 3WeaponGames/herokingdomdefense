@@ -258,7 +258,8 @@ var def_KinghtFallEnemyItem10 = function (t) {
     }
   };
   _ctor.prototype.setLeft = function (t) {
-    this.getSpAni().node.scaleX = t ? -this.getSpAni().node.scaleY : this.getSpAni().node.scaleY;
+    this._visualLeft = !!t;
+    GameToolsOverrides.applyModel(this, "enemy", this.getSpAni().node, t);
   };
   _ctor.prototype.doWait = function () {
     this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Wait;

@@ -57,3 +57,6 @@ Desktop.ini
 /tools/localization/project-audit.json
 /tools/localization/text-audit.json
 /tools/localization/text-migration-report.json
+
+# Local chat attachments are reference files, not game assets.
+/.codex-attachments/

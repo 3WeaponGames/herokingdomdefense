@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "233eeabe-367b-5613-b2fa-ea85ecf8e9ab",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Food_Bread_01": {
+      "ver": "1.0.6",
+      "uuid": "d63b53c9-b108-57a2-acf4-7e434f81f9df",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "233eeabe-367b-5613-b2fa-ea85ecf8e9ab",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

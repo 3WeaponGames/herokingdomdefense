@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "05739ced-5fdd-5e00-a61e-cd58e3890b40",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Weapons_Spear_01": {
+      "ver": "1.0.6",
+      "uuid": "a7b1fdb6-0744-5e0c-b593-020db269bbb3",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "05739ced-5fdd-5e00-a61e-cd58e3890b40",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

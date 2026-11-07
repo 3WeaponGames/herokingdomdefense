@@ -37,10 +37,22 @@ function retime(rig,contract){
     if(original.events&&original.events.length)result.events=clone(original.events);else delete result.events;animations[name]=result;
   }rig.animations=animations;rig.events=clone(contract.events||{});
 }
-function bake(root,profile,id,contract,assets,read){
-  const description=profile.base.source?Library.describe(root,profile.base.source,true):null;
+function bake(root,profile,id,contract,assets,read,options){
+  if(!options&&profile.base.source){
+    const source=Library.load(root).sources.find(s=>s.id===profile.base.source);
+    if(source){read(path.join(root,source.skeleton));read(path.join(root,source.skeleton.replace(/\.json$/,'.atlas')));}
+    if(profile.base.mount){const horse=profile.base.mount==='legacy-cavalry'?'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json':'assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_ma/wqyl_lead_ma.json';read(path.join(root,horse));read(path.join(root,horse.replace(/\.json$/,'.atlas')));}
+  }
+  const description=options&&options.description||(profile.base.source?require('./mounts').describe(root,profile.base,true):null);
+  if(description&&description.layers.length>1){
+    const pieces=description.layers.map(layer=>bake(root,Object.assign({},profile,{parts:profile.parts.filter(p=>p.layer===layer.uuid)}),id,contract,assets,read,{raw:true,description:{layers:[layer],fitHeight:description.fitHeight}}));
+    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
+  }
   if(!description)throw Error('Choose a Character Maker or monster base before saving this unit');
   const layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read),pictures={};
+  const skinName=profile.skins&&profile.skins[layer.uuid]||layer.skin||'default';
+  rig.skins=[clone(rig.skins.find(s=>s.name===skinName)||rig.skins[0])];rig.skins[0].name='default';
+  for(const animation of Object.values(rig.animations))if(animation.deform){const deform=animation.deform[skinName];animation.deform=deform?{default:deform}:{};}
   const attachments=rig.skins[0].attachments,slots=new Map(rig.slots.map(slot=>[slot.name,slot])),replaced=new Set(),hidden=new Set();
   for(const part of profile.parts){
     if(part.layer!==layer.uuid)throw Error('Part belongs to a different imported base: '+part.id);
@@ -60,19 +72,24 @@ function bake(root,profile,id,contract,assets,read){
   for(const name of hidden){const slot=slots.get(name);if(!slot)continue;delete slot.attachment;attachments[name]={};for(const anim of Object.values(rig.animations))if(anim.slots&&anim.slots[name]){delete anim.slots[name].attachment;}}
   for(const part of profile.parts){const at=rig.slots.findIndex(slot=>slot.name===part.slot);if(at>=0&&part.order){const slot=rig.slots.splice(at,1)[0];rig.slots.splice(Math.max(0,Math.min(rig.slots.length,at+part.order)),0,slot);}}
   for(const [slotName,variants]of Object.entries(attachments))for(const [name,attachment]of Object.entries(variants)){
-    const region=attachment.path||name;if(!pictures[region])pictures[region]=cut(region);
+    const region=attachment.path||attachment.name||name;if(!pictures[region])pictures[region]=cut(region);
   }
-  const image=PNG.pack(pictures),output='assets/resources/unit-library/runtime/'+id.replace(/[^a-zA-Z0-9_-]/g,'_'),atlasName=path.basename(output)+'.png';
-  const lines=['',atlasName,'size: '+image.width+','+image.height,'format: RGBA8888','filter: Linear,Linear','repeat: none'];
-  for(const [name,p]of Object.entries(image.positions))lines.push(name,'  rotate: false','  xy: '+p.x+', '+p.y,'  size: '+p.width+', '+p.height,'  orig: '+p.width+', '+p.height,'  offset: 0, 0','  index: -1');
   retime(rig,contract);
   // Preserve the old unit's world footprint, callback duration and hit events.
   // The hero and every combat statistic/timing table are left untouched.
-  const factor=contract.height/(rig.skeleton.height||120),model=profile.models&&profile.models[layer.uuid]||{},scale=profile.scale||1;
-  rig.bones.unshift({name:'__game_fit',x:(model.x||0)*factor,y:(model.y||0)*factor,rotation:model.rotation||0,scaleX:factor*scale*(model.scaleX===undefined?1:model.scaleX),scaleY:factor*scale*(model.scaleY===undefined?1:model.scaleY)});for(let i=1;i<rig.bones.length;i++)if(!rig.bones[i].parent)rig.bones[i].parent='__game_fit';
+  const factor=contract.height/(description.fitHeight||rig.skeleton.height||120),model=profile.models&&profile.models[layer.uuid]||{},scale=profile.scale||1;
+  rig.bones.unshift({name:'__game_fit',x:((layer.x||0)*scale+(model.x||0))*factor,y:((layer.y||0)*scale+(model.y||0))*factor,rotation:(layer.angle||0)+(model.rotation||0),scaleX:factor*scale*(layer.scaleX===undefined?1:layer.scaleX)*(model.scaleX===undefined?1:model.scaleX),scaleY:factor*scale*(layer.scaleY===undefined?1:layer.scaleY)*(model.scaleY===undefined?1:model.scaleY)});for(let i=1;i<rig.bones.length;i++)if(!rig.bones[i].parent)rig.bones[i].parent='__game_fit';
+  for(const skin of rig.skins)for(const variants of Object.values(skin.attachments))for(const a of Object.values(variants))if(a.vertices&&a.uvs&&a.vertices.length!==a.uvs.length)for(let i=0;i<a.vertices.length;){const count=a.vertices[i++];for(let j=0;j<count;j++){a.vertices[i]++;i+=4;}}
   if(model.opacity!==undefined){const fade=color=>color.slice(0,6)+Math.round(parseInt(color.slice(6,8),16)*model.opacity).toString(16).padStart(2,'0');for(const slot of rig.slots)slot.color=fade(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const key of slot.color||[])key.color=fade(key.color);}
   if(model.tint){const tint=color=>[0,2,4].map(at=>Math.round(parseInt(color.slice(at,at+2),16)*parseInt(model.tint.slice(at+1,at+3),16)/255).toString(16).padStart(2,'0')).join('')+color.slice(6,8);for(const slot of rig.slots)slot.color=tint(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const frame of slot.color||[])frame.color=tint(frame.color);}
   rig._unitSource=profile.base.source;rig._unitLook=id;rig.skeleton.height=contract.height;rig.skeleton.width*=factor;
+  if(options&&options.raw)return{rig,pictures};
+  return outputFiles(root,profile,id,rig,pictures,read);
+}
+function outputFiles(root,profile,id,rig,pictures,read){
+  const image=PNG.pack(pictures),output='assets/resources/unit-library/runtime/'+id.replace(/[^a-zA-Z0-9_-]/g,'_'),atlasName=path.basename(output)+'.png';
+  const lines=['',atlasName,'size: '+image.width+','+image.height,'format: RGBA8888','filter: Linear,Linear','repeat: none'];
+  for(const [name,p]of Object.entries(image.positions))lines.push(name,'  rotate: false','  xy: '+p.x+', '+p.y,'  size: '+p.width+', '+p.height,'  orig: '+p.width+', '+p.height,'  offset: 0, 0','  index: -1');
   const files=new Map([[output+'.json',JSON.stringify(rig,null,2)+'\n'],[output+'.atlas',lines.join('\n')+'\n'],[output+'.png',PNG.encode(image)],
     [output+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:uuid(output+'.json'),importer:'spine',textures:[uuid(output+'.png')],scale:1,subMetas:{}},null,2)+'\n'],
     [output+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:uuid(output+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n'],

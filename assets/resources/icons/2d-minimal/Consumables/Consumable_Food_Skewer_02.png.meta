@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "46449d73-fae0-5a82-af62-4182d0779fec",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Food_Skewer_02": {
+      "ver": "1.0.6",
+      "uuid": "35392c95-5654-52af-a80e-69d5865d9c9d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "46449d73-fae0-5a82-af62-4182d0779fec",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

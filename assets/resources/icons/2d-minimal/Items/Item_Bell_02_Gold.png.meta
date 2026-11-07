@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "361da8ba-5000-53b9-a9e1-e83dc60921fe",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Bell_02_Gold": {
+      "ver": "1.0.6",
+      "uuid": "27546131-f0cf-5c79-8e23-4542d1796e3b",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "361da8ba-5000-53b9-a9e1-e83dc60921fe",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -19780,6 +19780,120 @@
       "ally:90004:default": {
         "attack": 0.5
       }
+    },
+    "visuals": {
+      "enemy:90001:default": {
+        "mirrorX": true
+      },
+      "enemy:90002:default": {
+        "mirrorX": true
+      },
+      "enemy:90003:default": {
+        "mirrorX": true
+      },
+      "enemy:90004:default": {
+        "mirrorX": true
+      },
+      "enemy:90005:default": {
+        "mirrorX": true
+      },
+      "enemy:90006:default": {
+        "mirrorX": true
+      },
+      "enemy:90007:default": {
+        "mirrorX": true
+      },
+      "enemy:90008:default": {
+        "mirrorX": true
+      },
+      "enemy:90009:default": {
+        "mirrorX": true
+      },
+      "enemy:90010:1": {
+        "mirrorX": true
+      },
+      "enemy:90011:2": {
+        "mirrorX": true
+      },
+      "enemy:90012:3": {
+        "mirrorX": true
+      }
+    },
+    "unitTypes": {
+      "wolf": {
+        "name": "Wolf",
+        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Wolf/Wolf_Gray/Head",
+        "tint": "#ffffff"
+      },
+      "bear": {
+        "name": "Bear",
+        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Bear/Bear_Grizzly/Head",
+        "tint": "#ffffff"
+      },
+      "carnivorous-plant": {
+        "name": "Carnivorous Plant",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Plant/Plant_Nepenthes/Body",
+        "tint": "#ffffff"
+      },
+      "buffalo": {
+        "name": "Buffalo",
+        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Buffalo/Buffalo_Wild/Head",
+        "tint": "#ffffff"
+      },
+      "turtle": {
+        "name": "Turtle",
+        "icon": "@icon/unit-library/monster1/Sprites/ResourcesData/Sprites/Turtle/Turtle_Alligator/Body",
+        "tint": "#ffffff"
+      },
+      "wizard": {
+        "name": "Wizard",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Alien/Alien_Wizard/Body",
+        "tint": "#ffffff"
+      },
+      "iron-golem": {
+        "name": "Iron Golem",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Golem/Golem_Iron/Body",
+        "tint": "#ffffff"
+      },
+      "ghost": {
+        "name": "Ghost",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Ghost/Ghost_Pirate/Body",
+        "tint": "#ffffff"
+      },
+      "vampire": {
+        "name": "Vampire",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Alien/Alien_Vampire/Body",
+        "tint": "#ffffff"
+      },
+      "scorpion": {
+        "name": "Scorpion",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Scorpion/Scorpion_Stone/Body",
+        "tint": "#ffffff"
+      },
+      "tree-golem": {
+        "name": "Tree Golem",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Golem/Golem_Tree/Body",
+        "tint": "#ffffff"
+      },
+      "skeleton": {
+        "name": "Skeleton",
+        "icon": "@icon/unit-library/monster2/Sprites/ResourcesData/Sprites/Skeleton/Skeleton_Warlord/Head",
+        "tint": "#ffffff"
+      }
+    },
+    "unitTypeAssignments": {
+      "enemy:90001:default": "wolf",
+      "enemy:90002:default": "bear",
+      "enemy:90003:default": "carnivorous-plant",
+      "enemy:90004:default": "buffalo",
+      "enemy:90005:default": "turtle",
+      "enemy:90006:default": "wizard",
+      "enemy:90007:default": "iron-golem",
+      "enemy:90008:default": "ghost",
+      "enemy:90009:default": "vampire",
+      "enemy:90010:1": "scorpion",
+      "enemy:90011:2": "tree-golem",
+      "enemy:90012:3": "skeleton"
     }
   }
 }

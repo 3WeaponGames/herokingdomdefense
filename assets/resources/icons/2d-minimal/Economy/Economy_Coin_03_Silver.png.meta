@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "908d82d2-fc11-5a6a-a443-80428d69e9a4",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Economy_Coin_03_Silver": {
+      "ver": "1.0.6",
+      "uuid": "3873e9e1-2e91-5a13-bde0-40c8ace8a620",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "908d82d2-fc11-5a6a-a443-80428d69e9a4",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

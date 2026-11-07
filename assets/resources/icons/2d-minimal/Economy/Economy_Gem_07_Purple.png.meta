@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "36070c76-50d2-51ea-9969-f9e564b0486f",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Economy_Gem_07_Purple": {
+      "ver": "1.0.6",
+      "uuid": "09c4a144-fc59-55ca-89aa-912e11812dc2",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "36070c76-50d2-51ea-9969-f9e564b0486f",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

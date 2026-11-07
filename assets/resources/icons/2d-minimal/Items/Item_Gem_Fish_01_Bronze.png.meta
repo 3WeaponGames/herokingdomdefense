@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "1cef4766-1ca4-53ce-986f-22e1c889ace5",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Gem_Fish_01_Bronze": {
+      "ver": "1.0.6",
+      "uuid": "0e883f94-6b16-5733-be30-15a32f1234ff",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "1cef4766-1ca4-53ce-986f-22e1c889ace5",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

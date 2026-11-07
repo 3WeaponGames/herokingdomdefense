@@ -141,9 +141,9 @@ test('WASD combines directions at normal speed, cancels opposites, and releases 
   up(env, 'KeyD'); input = env.service.readGameplayInput(target); assert.equal(input.x, 0); assert.equal(input.y, 0);
 });
 
-test('R, Escape and Space fire once per press, including across pause input resets', () => {
+test('R, F, Escape and Space fire once per press, including across pause input resets', () => {
   const env = environment({ preview: true }), target = gameplay(env);
-  for (const [code, action] of [['KeyR', 'rally'], ['Escape', 'pause'], ['Space', 'build']]) {
+  for (const [code, action] of [['KeyR', 'rally'], ['KeyF', 'follow'], ['Escape', 'pause'], ['Space', 'build']]) {
     down(env, code); assert.equal(env.service.readGameplayInput(target)[action], true);
     env.service.clearGameplayInput(true); down(env, code); assert.equal(env.service.readGameplayInput(target)[action], false);
     up(env, code); down(env, code); assert.equal(env.service.readGameplayInput(target)[action], true); up(env, code);

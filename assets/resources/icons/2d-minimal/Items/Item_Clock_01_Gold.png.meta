@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "fe370409-7ac2-52ea-9cb6-e6aacf97cb64",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Clock_01_Gold": {
+      "ver": "1.0.6",
+      "uuid": "b1f5b334-eacb-5da2-95c2-9f41afed0a6d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "fe370409-7ac2-52ea-9cb6-e6aacf97cb64",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

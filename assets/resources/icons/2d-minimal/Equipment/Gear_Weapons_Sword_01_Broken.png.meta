@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "33e32a49-434f-52a9-9107-99200d7fa3c3",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Gear_Weapons_Sword_01_Broken": {
+      "ver": "1.0.6",
+      "uuid": "81dbbf94-9003-5a27-8481-4f4fe385158d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "33e32a49-434f-52a9-9107-99200d7fa3c3",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

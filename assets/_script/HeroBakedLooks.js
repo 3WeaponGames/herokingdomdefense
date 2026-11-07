@@ -15,7 +15,9 @@ function apply(list, profile) {
       var job = jobs[desired.resource];
       if (!job || job.retryAt && Date.now() >= job.retryAt) {
         job = jobs[desired.resource] = {};
-        cc.resources.load(desired.resource, sp.SkeletonData, function (error, asset) { if (error) job.retryAt = Date.now() + 1000; else job.asset = asset; });
+        try {
+          cc.resources.load(desired.resource, sp.SkeletonData, function (error, asset) { if (error || !asset) job.retryAt = Date.now() + 1000; else job.asset = asset; });
+        } catch (error) { job.retryAt = Date.now() + 1000; }
       }
       if (!job.asset) return;
       target = job.asset;

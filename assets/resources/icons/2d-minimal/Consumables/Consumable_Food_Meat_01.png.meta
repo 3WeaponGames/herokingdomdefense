@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "b69b57be-3a09-5888-a344-67c89158d30d",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Consumable_Food_Meat_01": {
+      "ver": "1.0.6",
+      "uuid": "f36a469e-e029-54f8-ab43-5dd069e0281a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "b69b57be-3a09-5888-a344-67c89158d30d",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

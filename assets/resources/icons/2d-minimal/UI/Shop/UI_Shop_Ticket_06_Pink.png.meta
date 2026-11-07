@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "94364c99-00b5-5560-81fa-46651b6c3ff8",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "UI_Shop_Ticket_06_Pink": {
+      "ver": "1.0.6",
+      "uuid": "5c52b6fb-5e35-5d71-a21d-117b9686fec4",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "94364c99-00b5-5560-81fa-46651b6c3ff8",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

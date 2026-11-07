@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "86cebd15-466b-5e92-8af1-b64c6f46ff6b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Item_Horn_01_Wood": {
+      "ver": "1.0.6",
+      "uuid": "6493c07b-f512-50bc-930e-a88998355943",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "86cebd15-466b-5e92-8af1-b64c6f46ff6b",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

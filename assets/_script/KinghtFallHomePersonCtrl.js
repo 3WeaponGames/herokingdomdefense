@@ -129,11 +129,16 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       var l = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(r.type);
       var c = true;
       r.cfg.Unlock && (c = r.cfg.Unlock[0] < n || !(r.cfg.Unlock[0] > n) && r.cfg.Unlock[1] < i);
-      var customImage = cc.resources && HeroItemLooks.image(r.type, l), iconRequest = r._itemIconRequest = (r._itemIconRequest || 0) + 1;
+      var customImage = cc.resources && !/@(?:icon|sprite)\//.test(r.cfg.levelInfo[l - 1].Image) && HeroItemLooks.image(r.type, l), iconRequest = r._itemIconRequest = (r._itemIconRequest || 0) + 1;
       var setItemIcon = function (t) {
         if (!cc.isValid(o.node) || r._itemIconRequest !== iconRequest) return;
         r.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
         r.ndInfo.getChildByName("ndItem").getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
+        if (cc.color) {
+          var tint = cc.color(customImage && customImage.tint || '#ffffff');
+          r.ndItem.getChildByName("sprIcon").color = tint;
+          r.ndInfo.getChildByName("ndItem").getChildByName("sprIcon").color = tint;
+        }
       };
       if (customImage) cc.resources.load(customImage.resource, cc.SpriteFrame, function (error, frame) { if (!error) setItemIcon(frame); });
       else o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconCharacter, r.cfg.levelInfo[l - 1].Image, setItemIcon);

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "7617977d-f220-5d93-a5e7-51472d4037ae",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Armor_HelmSilver": {
+      "ver": "1.0.6",
+      "uuid": "17956db1-6af2-5e49-9aee-e8be347dd3a0",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "7617977d-f220-5d93-a5e7-51472d4037ae",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

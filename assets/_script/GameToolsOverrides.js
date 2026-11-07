@@ -83,6 +83,22 @@ function parameter(name, fallback) {
   var settings = config(), value = settings && settings.parameters && settings.parameters[name];
   return typeof value === "number" && isFinite(value) ? value : fallback;
 }
+function facing(owner, type, left) {
+  var settings = config(), item = settings && settings.visuals && settings.visuals[keyFor(owner, type)];
+  return (left ? -1 : 1) * (item && item.mirrorX === true ? -1 : 1);
+}
+var visualNodes = new WeakMap();
+function applyModel(owner, type, node, left) {
+  var settings = config(), item = settings && settings.visuals && settings.visuals[keyFor(owner, type)] || {};
+  var base = visualNodes.get(node);
+  if (!Object.keys(item).length && !base) { node.scaleX = (left ? -1 : 1) * node.scaleY; return; }
+  if (!base) { base = { x: node.x || 0, y: node.y || 0, scale: Math.abs(node.scaleY), angle: node.angle || 0, color: node.color && node.color.clone ? node.color.clone() : node.color }; visualNodes.set(node, base); }
+  node.x = base.x + (item.x || 0); node.y = base.y + (item.y || 0);
+  node.scaleX = base.scale * (item.scaleX === undefined ? 1 : item.scaleX) * facing(owner, type, left);
+  node.scaleY = base.scale * (item.scaleY === undefined ? 1 : item.scaleY);
+  node.angle = base.angle + (item.rotation || 0);
+  if (cc.color) node.color = item.tint ? cc.color(item.tint) : base.color;
+}
 exports.attack = attack;
 exports.tick = tick;
 exports.cancel = cancel;
@@ -91,3 +107,5 @@ exports.isPending = isPending;
 exports.keyFor = keyFor;
 exports.perkEnabled = perkEnabled;
 exports.parameter = parameter;
+exports.facing = facing;
+exports.applyModel = applyModel;

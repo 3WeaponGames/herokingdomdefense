@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "8d392642-3bfe-58c3-85d8-6be244fabba9",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Economy_Star_03_Rainbow": {
+      "ver": "1.0.6",
+      "uuid": "777b9a19-c6ba-5056-a10b-e5b8b8fd9b7d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8d392642-3bfe-58c3-85d8-6be244fabba9",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
