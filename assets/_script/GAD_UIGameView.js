@@ -157,10 +157,11 @@ var def_GAD_UIGameView = function (t) {
     skeleton.enableBatch = true;
     if (sp.Skeleton.AnimationCacheMode && skeleton.setAnimationCacheMode && !skeleton.isAnimationCached()) skeleton.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode.SHARED_CACHE);
     skeleton.setAnimation(0, "jian_1", false);
+    var animation = skeleton.findAnimation && skeleton.findAnimation("jian_1");
     this.scheduleOnce(function () {
       n.active = false;
       pool.freeNode(n);
-    }, .5);
+    }, animation && animation.duration > 0 ? animation.duration : .5);
   };
   _ctor.prototype.showBuffTip = function (t, e) {
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.buff);

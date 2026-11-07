@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "393e69e2-452d-5815-bec5-4894851bff55",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 115,
+  "height": 66,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_WP_Main_Wand_004_WoodGold": {
+      "ver": "1.0.6",
+      "uuid": "5c623163-b9c8-5cbc-be17-bba7ace065dc",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "393e69e2-452d-5815-bec5-4894851bff55",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 115,
+      "height": 66,
+      "rawWidth": 115,
+      "rawHeight": 66,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

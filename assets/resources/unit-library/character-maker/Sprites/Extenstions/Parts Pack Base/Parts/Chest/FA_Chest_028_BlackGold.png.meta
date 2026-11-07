@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "18df1cc2-72c2-5a0b-b697-7665fbef04d3",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 78,
+  "height": 70,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Chest_028_BlackGold": {
+      "ver": "1.0.6",
+      "uuid": "26be9d4c-563e-5f38-ba4a-aea031eb4b9f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "18df1cc2-72c2-5a0b-b697-7665fbef04d3",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 78,
+      "height": 70,
+      "rawWidth": 78,
+      "rawHeight": 70,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

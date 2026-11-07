@@ -19,7 +19,8 @@ function createAttachment(spine, skeleton, part, asset, texture) {
   attachment.scaleX = part.scaleX === undefined ? 1 : part.scaleX;
   attachment.scaleY = part.scaleY === undefined ? 1 : part.scaleY;
   attachment.width = asset.width; attachment.height = asset.height;
-  attachment.color.set(1, 1, 1, part.opacity === undefined ? 1 : part.opacity);
+  var tint = /^#[a-f0-9]{6}$/i.test(part.tint) ? part.tint.slice(1) : "ffffff";
+  attachment.color.set(parseInt(tint.slice(0, 2), 16) / 255, parseInt(tint.slice(2, 4), 16) / 255, parseInt(tint.slice(4, 6), 16) / 255, part.opacity === undefined ? 1 : part.opacity);
   attachment._characterBone = skeleton.findBone(part.bone);
   if (!attachment._characterBone) throw Error("Missing anchor bone: " + part.bone);
   attachment._characterCompute = spine.RegionAttachment.prototype.computeWorldVertices;
@@ -35,13 +36,18 @@ function restore(state) {
   });
   if (sameOrder(state.appliedOrder, state.skeleton.drawOrder)) state.skeleton.drawOrder = state.order.slice();
   state.slots.clear(); state.appliedOrder = null;
+  if (state.colors) { state.colors.forEach(function (record, slot) { if (slot.color.a === record.applied) slot.color.a = record.original; }); state.colors.clear(); }
 }
-function prepare(spine, skeleton, parts, assets, textures) {
-  var state = { skeleton: skeleton, slots: new Map(), entries: [], order: skeleton.drawOrder.slice(), appliedOrder: null };
+function isFacialSlot(name) {
+  return /(?:^|\/)(?:Eye(?:s|brow)?(?:[_/]|$)|Ani_Eye(?:\/|$)|Mouth(?:[_/]|$)|Nose(?:[_/]|$)|Beard(?:[_/]|$))/i.test(name);
+}
+function prepare(spine, skeleton, parts, assets, textures, options) {
+  var state = { skeleton: skeleton, slots: new Map(), colors: new Map(), entries: [], order: skeleton.drawOrder.slice(), appliedOrder: null,
+    faceSlots: options && options.faceless ? skeleton.slots.filter(function (slot) { return isFacialSlot(slot.data.name); }) : [] };
   parts.forEach(function (part) {
     var slot = skeleton.findSlot(part.slot), asset = assets[part.sprite], texture = textures[part.sprite];
     if (!slot || !asset || !texture) throw Error("Character part is unavailable: " + part.id);
-    state.entries.push({ part: part, slot: slot, attachment: createAttachment(spine, skeleton, part, asset, texture) });
+    state.entries.push({ part: part, slot: slot, visibility: /^Rider\//.test(part.slot) ? skeleton.findSlot('Rider/Body') : null, attachment: createAttachment(spine, skeleton, part, asset, texture) });
   });
   return state;
 }
@@ -50,18 +56,20 @@ function apply(state) {
   var skeleton = state.skeleton;
   if (sameOrder(state.appliedOrder, skeleton.drawOrder)) skeleton.drawOrder = state.order.slice();
   else state.order = skeleton.drawOrder.slice();
-  state.entries.forEach(function (entry) {
-    function replace(slot, attachment) {
+  function replace(slot, attachment) {
       var old = state.slots.get(slot), current = slot.getAttachment();
       if (!old) { old = { original: current, applied: attachment }; state.slots.set(slot, old); }
       else { if (current !== old.applied) old.original = current; old.applied = attachment; }
       slot.setAttachment(attachment);
-    }
+  }
+  state.entries.forEach(function (entry) {
     replace(entry.slot, entry.attachment);
+    if (entry.part.forceVisible) { var alpha = entry.visibility ? entry.visibility.color.a : 1, previous = state.colors.get(entry.slot); if (!previous || entry.slot.color.a !== previous.applied) previous = { original: entry.slot.color.a }; previous.applied = alpha; state.colors.set(entry.slot, previous); entry.slot.color.a = alpha; }
     (entry.part.hideSlots || []).forEach(function (name) { var slot = skeleton.findSlot(name); if (slot) replace(slot, null); });
     var at = skeleton.drawOrder.indexOf(entry.slot), offset = entry.part.order || 0;
     if (offset && at >= 0) { skeleton.drawOrder.splice(at, 1); skeleton.drawOrder.splice(Math.max(0, Math.min(skeleton.drawOrder.length, at + offset)), 0, entry.slot); }
   });
+  (state.faceSlots || []).forEach(function (slot) { replace(slot, null); });
   state.appliedOrder = skeleton.drawOrder.slice();
 }
 function actorKey(actor, type) {
@@ -71,3 +79,4 @@ function actorKey(actor, type) {
 }
 exports.prepare = prepare; exports.apply = apply; exports.restore = restore;
 exports.createAttachment = createAttachment; exports.actorKey = actorKey;
+exports.isFacialSlot = isFacialSlot;

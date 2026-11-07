@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "de69bbb9-2da7-5ad4-be6b-bf3086c207f2",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 88,
+  "height": 29,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_WP_Main_Crossbow_005_WoodGold_Down": {
+      "ver": "1.0.6",
+      "uuid": "58b5acc1-11fc-5e45-bb44-a576e818f304",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "de69bbb9-2da7-5ad4-be6b-bf3086c207f2",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 88,
+      "height": 29,
+      "rawWidth": 88,
+      "rawHeight": 29,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

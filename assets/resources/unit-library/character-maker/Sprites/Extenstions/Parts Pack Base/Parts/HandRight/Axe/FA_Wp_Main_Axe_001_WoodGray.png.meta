@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "47b900a2-637c-5149-a8ae-1a5d2145982a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 110,
+  "height": 87,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Wp_Main_Axe_001_WoodGray": {
+      "ver": "1.0.6",
+      "uuid": "e395d767-bc5f-5aab-b302-c3c37b8eb993",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "47b900a2-637c-5149-a8ae-1a5d2145982a",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 110,
+      "height": 87,
+      "rawWidth": 110,
+      "rawHeight": 87,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

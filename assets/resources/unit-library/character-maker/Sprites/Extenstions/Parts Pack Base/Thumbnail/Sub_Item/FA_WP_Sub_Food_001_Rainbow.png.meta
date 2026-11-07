@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "7c39afaa-aa81-5db3-8b74-7679cb92a7f2",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_WP_Sub_Food_001_Rainbow": {
+      "ver": "1.0.6",
+      "uuid": "806ec347-5439-520e-91e3-6e038b6ac39b",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "7c39afaa-aa81-5db3-8b74-7679cb92a7f2",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

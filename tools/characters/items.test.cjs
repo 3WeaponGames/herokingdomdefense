@@ -26,6 +26,11 @@ test('item editor browsing and revision conflicts preserve both equipment data a
   const f=fixture(t),before=fs.readFileSync(f.file,'utf8');f.service.load();f.service.units();assert.equal(fs.existsSync(path.join(f.dir,'local')),false);assert.equal(fs.readFileSync(f.file,'utf8'),before);
   const draft=f.service.snapshot().data;draft.unknown.preserve=8;f.service.change({version:f.service.version,data:draft});const external=JSON.parse(before);external.unknown.preserve=99;fs.writeFileSync(f.file,JSON.stringify(external));assert.throws(()=>f.service.save({version:f.service.version}),/outside this draft/);assert.equal(JSON.parse(fs.readFileSync(f.file)).unknown.preserve,99);
 });
+test('editing an item automatically assigns its tier in the draft without a separate activation switch',t=>{
+  const f=fixture(t),before=fs.readFileSync(f.file,'utf8'),draft=f.service.snapshot().data;
+  draft.profiles.helmet={name:'Edited helmet',base:{type:'item',id:'2:1'},parts:[]};f.service.change({version:f.service.version,data:draft});
+  assert.equal(f.service.data.assignments['2:1'],'helmet');assert.equal(fs.readFileSync(f.file,'utf8'),before);f.service.save({version:f.service.version});assert.equal(JSON.parse(fs.readFileSync(f.file)).assignments['2:1'],'helmet');
+});
 test('runtime item lookup retains original defaults and combines gear without changing balance or source outfits',()=>{
   const context={exports:{},cc:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroItemLooks.js'),'utf8'),context);const api=context.exports;
   const original={scale:1,parts:[{id:'helmet-old',layer:'head',slot:'hat'},{id:'cape',layer:'cape',slot:'cloth'}],skins:{head:'lv1'}};

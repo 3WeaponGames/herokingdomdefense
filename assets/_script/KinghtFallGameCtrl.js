@@ -252,6 +252,7 @@ var def_KinghtFallGameCtrl = function (t) {
         updateProjectiles(this.ndBuildArr2, t);
     }
     this.ctrPlay.doMove(this.moveDir, t);
+    this.collectFollowers();
     var o = this.gameData.getBulidList();
     for (n = 0; n < o.length; n++) {
       (l = o[n]).onUpdate(t);
@@ -461,6 +462,23 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     this.ctrPlay.ndAgg.active = this.isAgg;
     this.applyArmyOrder();
+    this.collectFollowers();
+  };
+  _ctor.prototype.collectFollowers = function () {
+    if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode !== 2 || !this.isAgg || this.ctrPlay.isDead()) return;
+    var units = this.gameData.getSoldierList(), added = false;
+    for (var i = 0; i < units.length; i++) {
+      var unit = units[i];
+      if (unit._followPickupBlocked) {
+        if (unit.rallyPoint && cc.Vec2.distance(Navigation.positionOf(unit.node, this), unit.rallyPoint.pos) <= 4 && !this.isUnitInFollowRing(unit)) unit._followPickupBlocked = false;
+        continue;
+      }
+      if (unit._followSelected || !this.isUnitInFollowRing(unit)) continue;
+      unit._followSelected = true;
+      unit.applyArmyOrder(this);
+      added = true;
+    }
+    if (added) this._armyFormation = null;
   };
   _ctor.prototype.isUnitInFollowRing = function (unit) {
     if ($z1KinghtFallConfig.KinghtFallParameter.FollowMode !== 2 || !this.isAgg || !unit || unit._isPooled ||

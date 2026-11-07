@@ -38,9 +38,11 @@ var def_GAD_UIGame = function (t) {
     e._bullets = [];
     e._bulletPool = [];
     e._collisionBounds = new Map();
+    e._bulletWorldMatrix = null;
     e._passedDoors = [];
     e._doors = [];
     e._hitDoorGroups = new Set();
+    e._hitEffectRoles = new Set();
     e._waveRoles = [];
     e._curWave = 0;
     e._waveDistance = 300;
@@ -71,6 +73,7 @@ var def_GAD_UIGame = function (t) {
     this.scheduleOnce(function () {
       t._fenceLine = .5 * -cc.winSize.height + $z1GAD_Configs.GADConfig.BottomHeight;
       t.ndFence.y = t._fenceLine;
+      t._rewardRun = $z1GAD_PlayerMgr.default.getInstance().beginRun();
       $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
       t.buildWave();
     });
@@ -103,6 +106,7 @@ var def_GAD_UIGame = function (t) {
   };
   _ctor.prototype.update = function (t) {
     if (!this.isclose && $z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) {
+      $z1GAD_PlayerMgr.default.getInstance().tickRun();
       t = Math.min(t, .02);
       this._cardCtrl.updateCD(t);
       var e = this._passedDoors, n = this._doors, bounds = this._collisionBounds;
@@ -118,6 +122,7 @@ var def_GAD_UIGame = function (t) {
             this._cardCtrl.enermyHit(o.getAtkPower());
             o.onDie();
             this._waveRoles.splice(i, 1);
+            $z1GAD_PlayerMgr.default.getInstance().resolveWaveRole(o);
             i--;
             if ($z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Game) return;
           }
@@ -143,6 +148,7 @@ var def_GAD_UIGame = function (t) {
             for (var d = 0; d < n.length; d++) {
               if (n[d].getGroupID() == u && (m = this._waveRoles.indexOf(n[d])) >= 0) {
                 this._waveRoles.splice(m, 1);
+                $z1GAD_PlayerMgr.default.getInstance().resolveWaveRole(n[d]);
                 n[d].onDie();
               }
             }
@@ -167,6 +173,7 @@ var def_GAD_UIGame = function (t) {
             var m;
             if (n[d].getGroupID() == u && (m = this._waveRoles.indexOf(n[d])) >= 0) {
               this._waveRoles.splice(m, 1);
+              $z1GAD_PlayerMgr.default.getInstance().resolveWaveRole(n[d]);
               n[d].onDie();
             }
           }
@@ -174,7 +181,12 @@ var def_GAD_UIGame = function (t) {
       }
       var _ = this._hitDoorGroups;
       _.clear();
+      var hitEffects = this._hitEffectRoles;
+      hitEffects.clear();
       var frame = cc.director && cc.director.getTotalFrames ? cc.director.getTotalFrames() : -1;
+      if (this.ndBulletRoot && this.ndBulletRoot.getWorldMatrix) {
+        this.ndBulletRoot.getWorldMatrix(this._bulletWorldMatrix || (this._bulletWorldMatrix = cc.mat4()));
+      }
       for (i = 0; i < this._bullets.length; i++) {
         var I = this._bullets[i];
         if (I.checkAutoDie()) {
@@ -197,10 +209,17 @@ var def_GAD_UIGame = function (t) {
                 var w = C.bulletHited(I, I.getAtkDamage());
                 if (C.isDie) {
                   this._waveRoles.splice(P, 1);
+                  $z1GAD_PlayerMgr.default.getInstance().resolveWaveRole(C);
                   P--;
                 }
                 if (w > 0) {
-                  this.sendEvent($z1GAD_Configs.emGADEventName.GAD_Show_Hit_Effect, I.node.convertToWorldSpaceAR(cc.Vec2.ZERO), C.getRoleType(), I.getHitEffectName());
+                  // Apply every hit. The same actor shares overlapping impact
+                  // artwork across adjacent frames (30 visual impacts/sec at 60Hz).
+                  if (!hitEffects.has(C) && (frame < 0 || C.isDie || C._lastImpactFrame === undefined || frame - C._lastImpactFrame >= 2)) {
+                    hitEffects.add(C);
+                    C._lastImpactFrame = frame;
+                    this.sendEvent($z1GAD_Configs.emGADEventName.GAD_Show_Hit_Effect, I.node.convertToWorldSpaceAR(cc.Vec2.ZERO), C.getRoleType(), I.getHitEffectName());
+                  }
                   I.removeFromScreen();
                   this._bullets.splice(i, 1);
                   i--;
@@ -262,6 +281,7 @@ var def_GAD_UIGame = function (t) {
     var game = this, generation = this._resourceGeneration;
     if ($z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Over) {
       $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Over);
+      $z1GAD_PlayerMgr.default.getInstance().finishRun(e ? "completed" : t ? "wall-destroyed" : "quit");
       this.scheduleOnce(function () {
         if (!game.isclose && cc.isValid(game, true) && game._resourceGeneration === generation) game.openDecision($z1GAD_Configs.GAD_UIID.UIResult, e);
       }, t);
@@ -272,6 +292,7 @@ var def_GAD_UIGame = function (t) {
     this.openRequiredUI(id, function (node) { game._decisionNode = node; }, value);
   };
   _ctor.prototype.onClose = function () {
+    if (n.script === this && $z1GAD_PlayerMgr.default.getInstance()._run === this._rewardRun) $z1GAD_PlayerMgr.default.getInstance().finishRun("quit");
     var node = this._decisionNode;
     this._decisionNode = null;
     if (node && cc.isValid(node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(node);
@@ -280,8 +301,10 @@ var def_GAD_UIGame = function (t) {
     this._bullets.forEach(function (bullet) { bullet._poolGame = null; });
     this._bullets.length = 0;
     this._collisionBounds.clear();
+    this._bulletWorldMatrix = null;
     this._passedDoors.length = this._doors.length = 0;
     this._hitDoorGroups.clear();
+    this._hitEffectRoles.clear();
   };
   _ctor.prototype.onDestroy = function () {
     try { this.onClose(); }
@@ -323,6 +346,7 @@ var def_GAD_UIGame = function (t) {
             f.init(g[0], Number(g[1]));
             f.setGroupID(n);
             f.resetSize(s);
+            f._rewardWave = this._curWave + 1;
             this._waveRoles.push(f);
           } else {
             var m = cc.instantiate(this.prefabEnemy);
@@ -331,10 +355,12 @@ var def_GAD_UIGame = function (t) {
             var _ = m.getComponent($z1GAD_Enermy.default);
             _.init(g[0], g[1], e.randomBuff, o.length >= 4);
             _.setGroupID(n);
+            _._rewardWave = this._curWave + 1;
             this._waveRoles.push(_);
           }
         }
       }
+      $z1GAD_PlayerMgr.default.getInstance().registerWave(this._curWave + 1, o.length);
       this._curWave++;
       if (this._curWave >= t.length) {
         return;

@@ -20,14 +20,24 @@ var def_KinghtFallItemGood = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.initView = function (t) {
+  _ctor.prototype.initView = function (t, size) {
     var e = this;
     var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(t.id);
     this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, n.sprBg, function (t) {
       e.sprBg.spriteFrame = t;
+      if (size) {
+        var bounds = t.getOriginalSize(), scale = size / Math.max(bounds.width, bounds.height);
+        e.sprBg.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        e.sprBg.node.setContentSize(bounds.width * scale, bounds.height * scale);
+      }
     });
     this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, n.icon, function (t) {
       e.sprIcon.spriteFrame = t;
+      if (size) {
+        var bounds = t.getOriginalSize(), scale = size / Math.max(bounds.width, bounds.height);
+        e.sprIcon.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        e.sprIcon.node.setContentSize(bounds.width * scale, bounds.height * scale);
+      }
     });
     this.labNum.string = $z1KinghtFallModle.default.getInstance().numberFomat(t.num);
   };

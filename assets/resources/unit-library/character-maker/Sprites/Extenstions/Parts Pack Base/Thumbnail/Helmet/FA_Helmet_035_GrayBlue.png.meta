@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "96a10c48-dc64-5d9f-b789-e5a3b0343fca",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Helmet_035_GrayBlue": {
+      "ver": "1.0.6",
+      "uuid": "b3c56ed5-7e47-5436-8bd9-2dfce28cb885",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "96a10c48-dc64-5d9f-b789-e5a3b0343fca",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -22,7 +22,7 @@ test('actual Creator model/skin/attack/backward-seek integration for every reach
 });
 test('unit metadata, shared assets, boss forms, equipment and path checks do not require Creator',()=>{
     const enemy=describe({type:'enemy',id:90001}),ally=describe({type:'ally',id:90001});
-    assert.equal(enemy.layers[0].source,ally.layers[0].source);assert.notEqual(enemy.layers[0].skin,ally.layers[0].skin);assert(enemy.shared.length>0);
+    assert.notEqual(enemy.layers[0].source,ally.layers[0].source,'Monster enemies and modular allies must have independent appearance assets');assert(enemy.layers[0].skins.includes(enemy.layers[0].skin));assert(ally.layers[0].skins.includes(ally.layers[0].skin));assert(!enemy.shared.includes(ally.source));
     const boss=[90010,90011,90012].map(id=>describe({type:'enemy',id}));assert.equal(new Set(boss.map(d=>d.key)).size,3);assert.equal(new Set(boss.map(d=>d.layers[0].source)).size,3);
     const hero=describe({type:'hero',id:'hero',heroLevels:{1:5}});assert.equal(hero.equipment.find(x=>x.id===1).level,5);assert.equal(hero.runtimePath,null);
     assert.throws(()=>describe({type:'enemy',id:90001,record:{prefab:'../../outside'}}),/Invalid/);

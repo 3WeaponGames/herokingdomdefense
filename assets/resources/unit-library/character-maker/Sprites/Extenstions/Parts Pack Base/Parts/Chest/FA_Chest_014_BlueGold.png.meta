@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e5ca05fb-06c1-54fb-bfff-2f50ff3278f2",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 78,
+  "height": 70,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Chest_014_BlueGold": {
+      "ver": "1.0.6",
+      "uuid": "bcdbfd7c-8cc0-55f9-ae2c-2c66d166ab09",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e5ca05fb-06c1-54fb-bfff-2f50ff3278f2",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 78,
+      "height": 70,
+      "rawWidth": 78,
+      "rawHeight": 70,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

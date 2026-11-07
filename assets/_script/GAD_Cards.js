@@ -39,6 +39,7 @@ var def_GAD_Cards = function (t) {
       bottom: 2e4
     };
     e._cards = [];
+    e._extraProjectiles = 0;
     e._RangeType = 2;
     e._isAttacking = false;
     e.OFF_Y = 30;
@@ -79,19 +80,21 @@ var def_GAD_Cards = function (t) {
   _ctor.prototype.addMember = function (t) {
     undefined === t && (t = 1);
     for (var e = 0; e < t; e++) {
-      if (this.ndCardRoot.children.length >= this.maxBulletCnt) {
+      if (this._cards.length + this._extraProjectiles >= this.maxBulletCnt) {
         return;
       }
       var n = this.randomMemberCard();
-      n && this.addCardItem(n);
+      if (n) this.addCardItem(n);
+      else if (this._cards.length) this._extraProjectiles++;
     }
   };
   _ctor.prototype.subMember = function (t) {
     undefined === t && (t = 1);
     for (var e = 0; e < t; e++) {
-      if (this._cards.length <= 1) {
+      if (this._cards.length + this._extraProjectiles <= 1) {
         return;
       }
+      if (this._extraProjectiles > 0) { this._extraProjectiles--; continue; }
       var n = this._cards.pop();
       $z1GAD_PlayerMgr.default.getInstance().removeCard(n.getCardCfg().id);
       n.node.destroy();
@@ -218,16 +221,23 @@ var def_GAD_Cards = function (t) {
     var t = $z1GAD_PlayerMgr.default.getInstance().getGroupID();
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.bullet);
     var e = Math.min(1, 1 / this.getCDParam());
-    var n = this._cards.length;
+    var n = this._cards.length + this._extraProjectiles;
     var i = $z1GAD_DataMgr.default.getInstance().getParam($z1GADGameEnumData.enumGADBasicCfg.BulletSpace, 10);
+    var offset = 0;
+    if (n > 10) {
+      var halfRoad = Math.min($z1GAD_Configs.GADConfig.WallWidth, .5 * cc.winSize.width) - 20;
+      var spread = Math.min(2 * halfRoad, 250 + 9 * i);
+      i = Math.max(0, (spread - 25 * n) / (n - 1));
+      offset = Math.max(-halfRoad + spread / 2, Math.min(halfRoad - spread / 2, this.node.x)) - this.node.x;
+    }
     var a = .5 * -(25 * n + i * (n - 1));
     for (var o = 0; o < n; o++) {
       var g = undefined;
       if (n > 1) {
         var u = a + 12.5 + (25 + i) * o;
-        g = this.node.convertToWorldSpaceAR(cc.v2(u, -10));
+        g = this.node.convertToWorldSpaceAR(cc.v2(u + offset, -10));
       }
-      this._cards[o].playAttack(t, e, g);
+      this._cards[o % this._cards.length].playAttack(t, e, g);
     }
     cc.Tween.stopAllByTarget(this.ndRoot);
     var d = this.OFF_Y - this.ndRoot.y;

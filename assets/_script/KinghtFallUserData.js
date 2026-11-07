@@ -12,6 +12,7 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var g = function () {
   this.goldNum = 0;
+  this.wallDefenseBestWave = 0;
   this.diamondNum = 0;
   this.powerNum = 0;
   this.powerUpdateTime = 0;
@@ -106,6 +107,13 @@ var exp_KinghtFallUserData = function (t) {
     });
     data.curStage = Math.max(1, Math.floor(data.curStage));
     data.maxStage = Math.max(data.curStage, Math.floor(data.maxStage));
+    data.wallDefenseBestWave = Math.floor(data.wallDefenseBestWave);
+    var rules = require("GAD_RewardRules");
+    if (data.wallDefensePending && !rules.validResult(data.wallDefensePending)) delete data.wallDefensePending;
+    var receipt = data.wallDefenseReceipt;
+    if (receipt && (!rules.validResult(receipt.result) || receipt.id !== receipt.result.id || receipt.sequence !== receipt.result.sequence ||
+        !Array.isArray(receipt.awarded) || !receipt.awarded.every(function (row) { return row && Number.isInteger(row.id) && Number.isInteger(row.num) && row.num >= 0; }) ||
+        !Array.isArray(receipt.unlockedGoods) || !receipt.unlockedGoods.every(Number.isInteger))) delete data.wallDefenseReceipt;
     return data;
   };
   _ctor.prototype.getGoldNum = function () {

@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '../..');
 const source = fs.readFileSync(path.join(root, 'assets/_script/CharacterAppearance.js'), 'utf8');
 const Core = require('../../assets/_script/CharacterPartsCore');
 const library = require('../../assets/resources/character-parts/catalog.json');
-const savedLooks = require('../../assets/resources/characters/catalog.json');
+const savedLooks = require('./fixtures/legacy-look.json');
 
 // Creator 2.4's JSB index intentionally omits sp.SkeletonTexture. Native
 // attachments also cannot run the web runtime's JS computeWorldVertices hook.
@@ -69,6 +69,7 @@ function fixture(options = {}) {
     require(id) {
       if (id === 'CharacterPartsCore') return browserCore;
       if (id === 'HeroItemLooks') return { current: base => base || profile };
+      if (id === 'HeroBakedLooks') return require('../../assets/_script/HeroBakedLooks');
       throw Error('Unexpected module ' + id);
     }
   };
@@ -198,6 +199,10 @@ test('unassigned native actors keep their authored visuals without a compatibili
   const f = fixture({ unassigned: true }), unit = f.add(); f.flush(); f.step(30);
   assert.deepEqual(unit.renderer.node, unit.original);
   assert.equal(f.partRequests().length, 0); assert.equal(f.warnings.length, 0);
+});
+test('baked native allies are recognized by their asset UUID even when JSB does not expose skeletonJson',()=>{
+  const f=fixture({profile(profile,layer){profile.baked={uuid:layer};profile.scale=1.7;profile.models={[layer]:{x:20,scaleX:1.2,tint:'#80c0ff'}};}}),unit=f.add();
+  f.flush();f.step(10);assert.deepEqual(unit.renderer.node,unit.original,'baked transforms were applied a second time');assert.equal(f.partRequests().length,0);assert.equal(f.notices.length,0);assert.equal(f.calls.prepare,0);
 });
 
 for (const kind of ['constructor', 'binding']) test(`web ${kind} failures stay inside the texture callback and recover after shared backoff`, () => {

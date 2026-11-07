@@ -5976,6 +5976,36 @@
       "en": "Enemies",
       "zh": "敌人",
       "context": "Live offscreen enemy direction marker"
+    },
+    "wallDefense.result.stats": {
+      "en": "Battle time {0}\nWaves cleared {1}",
+      "zh": "战斗时间 {0}\n已通关波次 {1}",
+      "context": "Wall Defense · rewards and persistent best wave"
+    },
+    "wallDefense.result.rewards": {
+      "en": "Rewards",
+      "zh": "战斗奖励",
+      "context": "Wall Defense · rewards and persistent best wave"
+    },
+    "wallDefense.result.saved": {
+      "en": "Rewards collected",
+      "zh": "奖励已领取",
+      "context": "Wall Defense · rewards and persistent best wave"
+    },
+    "wallDefense.result.saving": {
+      "en": "Saving rewards…",
+      "zh": "正在保存奖励…",
+      "context": "Wall Defense · rewards and persistent best wave"
+    },
+    "wallDefense.reward.new": {
+      "en": "NEW",
+      "zh": "新",
+      "context": "Wall Defense · rewards and persistent best wave"
+    },
+    "wallDefense.bestWave": {
+      "en": "Best Wave {0}",
+      "zh": "最高波次 {0}",
+      "context": "Wall Defense · rewards and persistent best wave"
     }
   },
   "images": {
@@ -15492,6 +15522,116 @@
         "x": -232,
         "y": 12
       }
+    },
+    "wallDefense.result.stats": {
+      "en": {
+        "fontSize": 32,
+        "lineHeight": 40,
+        "width": 600,
+        "height": 100,
+        "wrap": true,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 32,
+        "lineHeight": 40,
+        "width": 600,
+        "height": 100,
+        "wrap": true,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      }
+    },
+    "wallDefense.result.rewards": {
+      "en": {
+        "fontSize": 28,
+        "lineHeight": 36,
+        "width": 600,
+        "height": 42,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 28,
+        "lineHeight": 36,
+        "width": 600,
+        "height": 42,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      }
+    },
+    "wallDefense.result.saving": {
+      "en": {
+        "fontSize": 26,
+        "lineHeight": 34,
+        "width": 600,
+        "height": 44,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 26,
+        "lineHeight": 34,
+        "width": 600,
+        "height": 44,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      }
+    },
+    "wallDefense.result.saved": {
+      "en": {
+        "fontSize": 26,
+        "lineHeight": 34,
+        "width": 600,
+        "height": 44,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 26,
+        "lineHeight": 34,
+        "width": 600,
+        "height": 44,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      }
+    },
+    "wallDefense.bestWave": {
+      "en": {
+        "fontSize": 50,
+        "lineHeight": 58,
+        "width": 340,
+        "height": 60,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      },
+      "zh": {
+        "fontSize": 50,
+        "lineHeight": 58,
+        "width": 340,
+        "height": 60,
+        "wrap": false,
+        "overflow": "NONE",
+        "horizontalAlign": 1,
+        "fontRole": "body"
+      }
     }
   },
   "nodeStyles": {
@@ -16055,7 +16195,12 @@
     "23ada4a7-04e0-4526-a262-58852ee10328:0c125Yta01OibNFaauyAKNf": "gear.list.stat.range",
     "23ada4a7-04e0-4526-a262-58852ee10328:f980a18hylOx4BtRXdAN3fF": "gear.list.stat.attack-speed",
     "23ada4a7-04e0-4526-a262-58852ee10328:5c7baG6hu9MK5fCd046w9zd": "gear.list.stat.movement",
-    "f9c12a63-63d6-4875-a9a0-c52395dff609:a9c41a706d6c4274951d90": "ui.signin.grand-prize"
+    "f9c12a63-63d6-4875-a9a0-c52395dff609:a9c41a706d6c4274951d90": "ui.signin.grand-prize",
+    "b10f6191-a975-41b6-8c5d-7844b865e7e2:mAZk1VTngn4c3aYtVbR8SA": "wallDefense.result.stats",
+    "b10f6191-a975-41b6-8c5d-7844b865e7e2:S5m4cuWuPZn1iGp2gOmg": "wallDefense.result.rewards",
+    "b10f6191-a975-41b6-8c5d-7844b865e7e2:30REQ56qB9OJIohdeCB3w": "wallDefense.result.saving",
+    "d44bc6aa-7cab-44c4-b95f-b6eb874994dd:o4y6Kw17W3NxFgtqYJSgzQ": "wallDefense.bestWave",
+    "7f137a65-8637-4b98-95cd-ed94a0014316:LTE7EZ89fUjgu6t0r49Zqg": "common.claimAll"
   },
   "nodePathStyles": {
     "Start/StartCanvas/TitleContent/StartButton/TapToStart": "start.tap",
@@ -16529,7 +16674,13 @@
       "ui.mobile.kinghtfallhomebattlectrl.236": "display",
       "ui.mobile.kinghtfallhomebattlectrl.283": "display",
       "ui.mobile.kinghtfalluigame.238": "display",
-      "ui.layout.kinghtfalluibuildsel.17": "body"
+      "ui.layout.kinghtfalluibuildsel.17": "body",
+      "wallDefense.result.stats": "body",
+      "wallDefense.result.rewards": "body",
+      "wallDefense.result.saved": "body",
+      "wallDefense.result.saving": "body",
+      "wallDefense.reward.new": "body",
+      "wallDefense.bestWave": "body"
     }
   },
   "displayTextStyle": {

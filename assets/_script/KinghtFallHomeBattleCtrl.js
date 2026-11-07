@@ -97,6 +97,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.TimeUpdate, this.showRed);
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.UpBattView, this.newSel);
+    var home = this;
+    this.addEvent("SaveRecovered", function () { if (home.subPlayTime.length) home.refreshSubView(); });
   };
   _ctor.prototype.update = function () {
     var bypassAdLimits = TestMode.getInstance().shouldBypassAdLimits();
@@ -824,6 +826,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
           }, function () {
             $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().setSubTimeByIndex(t, Date.now());
+            e.refreshSubView();
           });
         };
         if (i < this.subPlayTime[t] && !TestMode.getInstance().shouldBypassAdLimits()) {
@@ -850,6 +853,11 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     }
   };
   _ctor.prototype.onSubView = function (t, e, n, i, a, o) {
+    var best = t.getChildByName("labBestWave");
+    if (best) {
+      var score = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().data.wallDefenseBestWave || 0;
+      require("LanguageMgr").LanguageMgr.getInstance().bindLabel(best.getComponent(cc.Label), "wallDefense.bestWave", [score]);
+    }
     if (e > n) {
       var r = Math.floor((i - a) / 1e3);
       var waiting = r < o && !TestMode.getInstance().shouldBypassAdLimits();

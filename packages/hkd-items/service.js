@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),{Service}=require('../hkd-characters/lib/service'),Units=require('../game-data-editor/lib/unit-assets');
 const ROLES={1:'Cape',2:'Helmet',3:'Arrow',4:'Bow',5:'Gloves',6:'Mount'},LAYERS={1:'wqyl_lead_doupeng',2:'wqyl_lead_tou',3:'wqyl_lead_jian',4:'wqyl_lead_gong',5:'wqyl_lead_shou',6:'wqyl_lead_ma'};
+const Document=require('../game-data-editor/lib/json-document');
 class ItemsService extends Service{
   constructor(root){super(root,{file:'assets/resources/hero-items/catalog.json'});}
   equipment(){return JSON.parse(fs.readFileSync(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8')).EquipCfg;}
@@ -15,5 +16,15 @@ class ItemsService extends Service{
     result.defaultLayer=result.layers.find(l=>l.name===LAYERS[item.slot]).uuid;result.item=item;return result;
   }
   validate(data){super.validate(data);for(const p of Object.values(data.profiles))if(p.scale!==undefined&&p.scale!==1)throw Error('Adjust individual item parts; hero item looks do not resize the whole hero.');return true;}
+  change(request){
+    this.check(request);const data=JSON.parse(JSON.stringify(request.data));
+    // Browsing and a no-change Save stay read-only. A real item edit selects
+    // that design for its tier in the draft; Save publishes the assignment.
+    for(const [id,profile]of Object.entries(data.profiles||{}))if(!Document.equal(this.data.profiles[id],profile)){
+      for(const key of Object.keys(data.assignments||{}))if(data.assignments[key]===id&&key!==profile.base.id)delete data.assignments[key];
+      data.assignments[profile.base.id]=id;
+    }
+    return super.change(Object.assign({},request,{data}));
+  }
 }
 module.exports={ItemsService,ROLES,LAYERS};

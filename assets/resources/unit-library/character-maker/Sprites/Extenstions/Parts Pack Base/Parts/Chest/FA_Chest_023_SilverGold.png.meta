@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e58b27d7-34de-598c-a2a8-5b6d79d72239",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 78,
+  "height": 70,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Chest_023_SilverGold": {
+      "ver": "1.0.6",
+      "uuid": "58fc3861-df25-5835-b2bb-9aa864429f0a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e58b27d7-34de-598c-a2a8-5b6d79d72239",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 78,
+      "height": 70,
+      "rawWidth": 78,
+      "rawHeight": 70,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

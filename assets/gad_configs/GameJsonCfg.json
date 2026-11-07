@@ -122,7 +122,7 @@
       "id": 18,
       "enumKey": "bulletLimit",
       "enumValue": 18,
-      "para": 10
+      "para": 15
     },
     "19": {
       "id": 19,
@@ -134,7 +134,7 @@
       "id": 20,
       "enumKey": "speedLimit",
       "enumValue": 20,
-      "para": 10
+      "para": 15
     }
   },
   "enemyCfg": [
@@ -1485,5 +1485,59 @@
       "cardATK": 1,
       "basicATK": 14
     }
-  ]
+  ],
+  "wallDefenseRewards": {
+    "goldID": 2001,
+    "crystalID": 2002,
+    "goldPerMinute": 500,
+    "secondsPerCrystal": 120,
+    "wavesPerItem": 5,
+    "rarityBands": [
+      {
+        "throughWave": 20,
+        "weights": [
+          94,
+          5.8,
+          0.19,
+          0.01
+        ]
+      },
+      {
+        "throughWave": 40,
+        "weights": [
+          90,
+          9.5,
+          0.45,
+          0.05
+        ]
+      },
+      {
+        "throughWave": 60,
+        "weights": [
+          84,
+          14.5,
+          1.4,
+          0.1
+        ]
+      },
+      {
+        "throughWave": 80,
+        "weights": [
+          76,
+          20,
+          3.5,
+          0.5
+        ]
+      },
+      {
+        "throughWave": 100,
+        "weights": [
+          65,
+          28,
+          6,
+          1
+        ]
+      }
+    ]
+  }
 }

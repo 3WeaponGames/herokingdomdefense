@@ -66,7 +66,8 @@ def image_info(item):
 def sample(keys, time, field=None):
     def value(key, name="value"):
         result = key.get(name, 0)
-        return result.get(field, 0) if field and isinstance(result, dict) else result
+        result = result.get(field, 0) if field and isinstance(result, dict) else result
+        return float(result) if isinstance(result, str) else result
     if time <= keys[0]["time"]:
         return value(keys[0])
     for left, right in zip(keys, keys[1:]):
@@ -133,7 +134,7 @@ def convert_prefab(item, entries, images, height=120, character=False):
             child_go = docs[transforms[child["fileID"]]["m_GameObject"]["fileID"]][1]
             visit(child["fileID"], node["name"], path + "/" + child_go["m_Name"] if path else child_go["m_Name"])
     visit(root)
-    animator = next(value for node in nodes for kind, value in node["components"] if kind == 95)
+    animator_node, animator = next((node,value) for node in nodes for kind, value in node["components"] if kind == 95)
     controller = by_guid[animator["m_Controller"]["guid"]]
     clips = {}
     for kind, state in documents(controller["asset"]).values():
@@ -142,7 +143,7 @@ def convert_prefab(item, entries, images, height=120, character=False):
         clip = next(iter(documents(by_guid[state["m_Motion"]["guid"]]["asset"]).values()))[1]
         action = re.split(r"[_ ]", state["m_Name"])[-1].lower()
         action = {"walk": "move", "dead": "die"}.get(action, action)
-        if action in clips:
+        if action in clips and not character:
             raise ValueError("Duplicate animation action: " + action)
         clips[action] = clip
     if character:
@@ -154,6 +155,27 @@ def convert_prefab(item, entries, images, height=120, character=False):
         clips["move"] = clips["walk"]
         clips["die"] = clips["dead1"]
         clips["hit"] = clips["stun"]
+    # Animation bindings are relative to the Animator object, which is nested
+    # under Character/Rider in Character Maker rather than at the prefab root.
+    clips = {action: copy.deepcopy(clip) for action,clip in clips.items()}
+    for clip in clips.values():
+        for key in ("m_PositionCurves", "m_EulerCurves", "m_ScaleCurves", "m_PPtrCurves", "m_FloatCurves"):
+            for curve in clip.get(key, []):
+                prefix=animator_node["path"]
+                curve["path"] = (prefix+"/"+curve["path"] if curve["path"] else prefix) if prefix else curve["path"]
+    # Shared Unity clips also animate optional tails/tools that a particular
+    # variant may omit. Empty anchors preserve these harmless animation
+    # channels without inventing sprites or changing existing body pieces.
+    missing = set(curve["path"] for clip in clips.values() for key in ("m_PositionCurves", "m_EulerCurves", "m_ScaleCurves", "m_PPtrCurves", "m_FloatCurves")
+                  for curve in clip.get(key, []) if curve["path"] not in paths)
+    def ensure_path(path):
+        if path in paths: return
+        parent = path.rsplit("/", 1)[0] if "/" in path else ""
+        ensure_path(parent)
+        node = dict(name=path, path=path, parent=paths[parent]["name"], x=0, y=0, rotation=0,
+                    scaleX=1, scaleY=1, active=True, components=[])
+        nodes.append(node); paths[path]=node
+    for path in sorted(missing): ensure_path(path)
     if not {"idle", "move", "attack", "hit", "die"}.issubset(clips):
         raise ValueError("Missing authored actions in " + item["name"])
     bones = [{"name": "__size", "scaleX": 1, "scaleY": 1}]
@@ -236,6 +258,8 @@ def convert_prefab(item, entries, images, height=120, character=False):
         for curve in clip.get("m_PPtrCurves", []):
             if curve["attribute"] != "m_Sprite":
                 raise ValueError("Unsupported object animation: " + curve["attribute"])
+            if paths[curve["path"]]["name"] not in {node["name"] for node,renderer in renderers}:
+                continue  # Unity ignores sprite bindings absent from this variant.
             animation["slots"].setdefault(paths[curve["path"]]["name"], {})["attachment"] = [dict(time=k["time"], name="u_"+k["value"]["guid"] if k["value"].get("guid") else None) for k in curve["curve"]]
         animations[action] = animation
     result = dict(skeleton={"spine": "3.8.99", "images": "", "audio": ""}, bones=bones, slots=slots,

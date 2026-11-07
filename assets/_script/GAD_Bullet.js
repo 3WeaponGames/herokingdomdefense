@@ -16,6 +16,7 @@ var def_GAD_Bullet = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
     e.skeArrow = null;
+    e.colliderSize = null;
     e._flyDis = 0;
     e._hideDis = 0;
     e._atkDamage = 0;
@@ -46,8 +47,27 @@ var def_GAD_Bullet = function (t) {
     this._colliderTags.clear();
     this.setRoleState($z1GAD_Configs.emGADRoleState.Move);
     // The authored arrow is a Sprite; its legacy Spine renderer is disabled.
-    if (this.skeArrow.enabled !== false) this.skeArrow.setAnimation(0, this._cfg.resName, true);
-    else this.skeArrow.node.active = false;
+    if (this.skeArrow) {
+      if (this.skeArrow.enabled !== false) this.skeArrow.setAnimation(0, this._cfg.resName, true);
+      else this.skeArrow.node.active = false;
+    }
+  };
+  _ctor.prototype.getWorldColldierRect = function (width, height) {
+    // The flat Sprite keeps the authored artwork size independently of its
+    // narrow collision box. Older prefabs retain their node-sized collider.
+    var matrix = this._poolGame && this._poolGame._bulletWorldMatrix;
+    if (matrix) {
+      // Every projectile shares this parent's frame transform. Avoid allocating
+      // an anchor, position and converted world vector for every collision query.
+      var node = this.node, x = node.x, y = node.y, z = node.z, m = matrix.m;
+      var w = ((this.colliderSize ? this.colliderSize.width : node.width) + (width || 0)) * node.scaleX;
+      var h = ((this.colliderSize ? this.colliderSize.height : node.height) + (height || 0)) * node.scaleY;
+      return cc.rect(x * m[0] + y * m[4] + z * m[8] + m[12] - node.anchorX * w,
+        x * m[1] + y * m[5] + z * m[9] + m[13] - node.anchorY * h, w, h);
+    }
+    return t.prototype.getWorldColldierRect.call(this,
+      (width || 0) + (this.colliderSize ? this.colliderSize.width - this.node.width : 0),
+      (height || 0) + (this.colliderSize ? this.colliderSize.height - this.node.height : 0));
   };
   _ctor.prototype.checkAutoDie = function () {
     return this._flyDis >= this._hideDis;
@@ -89,6 +109,7 @@ var def_GAD_Bullet = function (t) {
     return this._atkDamage;
   };
   cc__decorate([ccp_property(sp.Skeleton)], _ctor.prototype, "skeArrow", undefined);
+  cc__decorate([ccp_property(cc.Size)], _ctor.prototype, "colliderSize", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1GAD_Base.default);
 exports.default = def_GAD_Bullet;

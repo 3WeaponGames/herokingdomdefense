@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "394a230c-5b30-5622-9f09-47b2a315eeda",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Helmet_008_Wood": {
+      "ver": "1.0.6",
+      "uuid": "cd82fc64-3522-5ee0-b2ea-a78eb78a7a71",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "394a230c-5b30-5622-9f09-47b2a315eeda",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

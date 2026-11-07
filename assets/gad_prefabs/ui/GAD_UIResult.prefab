@@ -140,6 +140,18 @@
       },
       {
         "__id__": 33
+      },
+      {
+        "__id__": 50
+      },
+      {
+        "__id__": 54
+      },
+      {
+        "__id__": 58
+      },
+      {
+        "__id__": 60
       }
     ],
     "_components": [
@@ -152,14 +164,14 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 750,
-      "height": 282
+      "width": 680,
+      "height": 960
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
         0,
-        -1.046,
+        0,
         0,
         0,
         0,
@@ -190,6 +202,22 @@
       "__type__": "cc.Size",
       "width": 864,
       "height": 736
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        330,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.66,
+        0.66,
+        1
+      ]
     }
   },
   {
@@ -242,7 +270,8 @@
       "__type__": "cc.Size",
       "width": 329,
       "height": 200
-    }
+    },
+    "_active": false
   },
   {
     "__type__": "cc.Layout",
@@ -321,7 +350,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -235.614,
+        -420,
         0,
         0,
         0,
@@ -877,6 +906,15 @@
     },
     "node": {
       "__id__": 1
+    },
+    "lblStats": {
+      "__id__": 52
+    },
+    "lblSaved": {
+      "__id__": 62
+    },
+    "ndRewards": {
+      "__id__": 58
     }
   },
   {
@@ -944,5 +982,294 @@
     "minHeight": 100,
     "maxWidth": 266,
     "reflowRows": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "RewardStats",
+    "_parent": {
+      "__id__": 6
+    },
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 52
+      },
+      {
+        "__id__": 53
+      }
+    ],
+    "_prefab": {
+      "__id__": 51
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 600,
+      "height": 100
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        205,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "mAZk1VTngn4c3aYtVbR8SA",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Label",
+    "node": {
+      "__id__": 50
+    },
+    "_string": "[[loc:wallDefense.result.stats]]",
+    "_N$string": "[[loc:wallDefense.result.stats]]",
+    "_fontSize": 32,
+    "_lineHeight": 40,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$overflow": 2,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ]
+  },
+  {
+    "__type__": "cc.LabelOutline",
+    "node": {
+      "__id__": 50
+    },
+    "_width": 2,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 255
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "RewardHeading",
+    "_parent": {
+      "__id__": 6
+    },
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 56
+      },
+      {
+        "__id__": 57
+      }
+    ],
+    "_prefab": {
+      "__id__": 55
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 600,
+      "height": 42
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        132,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "S5m4cuWuPZn1iGp2gOmg",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Label",
+    "node": {
+      "__id__": 54
+    },
+    "_string": "[[loc:wallDefense.result.rewards]]",
+    "_N$string": "[[loc:wallDefense.result.rewards]]",
+    "_fontSize": 28,
+    "_lineHeight": 36,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$overflow": 2,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ]
+  },
+  {
+    "__type__": "cc.LabelOutline",
+    "node": {
+      "__id__": 54
+    },
+    "_width": 2,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 255
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "RewardItems",
+    "_parent": {
+      "__id__": 6
+    },
+    "_children": [],
+    "_components": [],
+    "_prefab": {
+      "__id__": 59
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 600,
+      "height": 360
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        60,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "mm0q0G6tFkvb8UqaPRcnFw",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "RewardStatus",
+    "_parent": {
+      "__id__": 6
+    },
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 62
+      },
+      {
+        "__id__": 63
+      }
+    ],
+    "_prefab": {
+      "__id__": 61
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 600,
+      "height": 44
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        -337,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "30REQ56qB9OJIohdeCB3w",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "cc.Label",
+    "node": {
+      "__id__": 60
+    },
+    "_string": "[[loc:wallDefense.result.saving]]",
+    "_N$string": "[[loc:wallDefense.result.saving]]",
+    "_fontSize": 22,
+    "_lineHeight": 30,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$overflow": 2,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ]
+  },
+  {
+    "__type__": "cc.LabelOutline",
+    "node": {
+      "__id__": 60
+    },
+    "_width": 2,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 255
+    }
   }
 ]

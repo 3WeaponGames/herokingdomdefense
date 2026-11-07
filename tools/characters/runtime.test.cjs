@@ -9,7 +9,7 @@ test('appearance keys isolate allies, enemies, hero and all boss forms',()=>{
 });
 if(!fs.existsSync(runtime)&&!process.env.COCOS_ENGINE_ROOT)test('real Spine character part integration',{skip:'Install Creator 2.4.13 or set COCOS_ENGINE_ROOT'},()=>{});
 else{
-const spine=require(runtime),manifest=require('../../assets/resources/character-parts/catalog.json'),looks=require('../../assets/resources/characters/catalog.json');
+const spine=require(runtime),manifest=require('../../assets/resources/character-parts/catalog.json'),looks=require('./fixtures/legacy-look.json');
 const assets=Object.fromEntries(manifest.parts.map(v=>[v.id,v])),example=looks.profiles['royal-guard'];
 function rig(){
   const dir=path.join(root,'assets/KinghtFallEnemyAni/wqyl_bb'),png=fs.readFileSync(path.join(dir,'wqyl_bb.png'));
@@ -54,7 +54,7 @@ function componentFixture(options){
   class Component{}class SkeletonTexture extends spine.FakeTexture{setRealTexture(value){this.real=value;}}
   const cc={Component,JsonAsset:class{},Texture2D:class{},isValid:()=>true,warn(){},resources:{load(resource,type,callback){requests.push(resource);const call=()=>{if(resource==='character-parts/catalog')callback(null,{json:manifest});else if(resource==='characters/catalog')callback(null,{json:config});else if(resource==='hero-items/catalog')callback(null,{json:{version:1,profiles:{},assignments:{}}});else{const asset=manifest.parts.find(a=>a.resource===resource);callback(null,{width:asset.width,height:asset.height});}};options.async?pending.push(call):call();}},Class(def){function C(){}C.prototype=Object.assign(Object.create(def.extends.prototype),def);return C;}};
   const itemContext={exports:{},cc,require(){throw Error('An unassigned item must not access player progress');}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroItemLooks.js'),'utf8'),itemContext);
-  const context={exports:{},require:id=>{if(id==='CharacterPartsCore')return Core;if(id==='HeroItemLooks')return itemContext.exports;throw Error('Unexpected module '+id);},cc,sp:{spine,SkeletonTexture}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/CharacterAppearance.js'),'utf8'),context);
+  const context={exports:{},require:id=>{if(id==='CharacterPartsCore')return Core;if(id==='HeroItemLooks')return itemContext.exports;if(id==='HeroBakedLooks')return require('../../assets/_script/HeroBakedLooks');throw Error('Unexpected module '+id);},cc,sp:{spine,SkeletonTexture}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/CharacterAppearance.js'),'utf8'),context);
   return {f,actor,renderer,config,requests,bind:()=>context.exports.bind(actor,options.hero?'hero':'ally'),flush(){while(pending.length)pending.shift()();}};
 }
 test('runtime equips the saved example and pooling restores original visuals without touching combat state',()=>{
@@ -85,7 +85,7 @@ test('saved hero items equip on the real seven-layer hero, follow every animatio
   const actor={node,ctrPlayAni,hp:100,attack:12};class Component{}class SkeletonTexture extends spine.FakeTexture{setRealTexture(image){this.real=image;}}
   const cc={Component,JsonAsset:class{},Texture2D:class{},isValid:()=>true,warn(message){throw Error(message);},resources:{load(resource,type,callback){requests.push(resource);if(resource==='character-parts/catalog')return callback(null,{json:manifest});if(resource==='characters/catalog')return callback(null,{json:{version:1,profiles:{},assignments:{}}});if(resource==='hero-items/catalog')return callback(null,{json:items});const entry=manifest.parts.find(a=>a.resource===resource);assert(entry);callback(null,{width:entry.width,height:entry.height});}},Class(def){function C(){}C.prototype=Object.assign(Object.create(def.extends.prototype),def);return C;}};
   const itemContext={exports:{},cc,require(id){assert.equal(id,'KinghtFallPlayerMgr');return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}};}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroItemLooks.js'),'utf8'),itemContext);
-  const context={exports:{},require:id=>id==='CharacterPartsCore'?Core:itemContext.exports,cc,sp:{spine,SkeletonTexture}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/CharacterAppearance.js'),'utf8'),context);
+  const context={exports:{},require:id=>id==='CharacterPartsCore'?Core:id==='HeroBakedLooks'?require('../../assets/_script/HeroBakedLooks'):itemContext.exports,cc,sp:{spine,SkeletonTexture}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/CharacterAppearance.js'),'utf8'),context);
   const head=ctrPlayAni.spAniHead,original=head._skeleton.slots.map(s=>s.getAttachment()),initial={...head.node},source=JSON.stringify(head._skeleton.data.bones),component=context.exports.bind(actor,'hero');component.lateUpdate();component.lateUpdate();
   for(const animation of ['idle','move','attack'])for(const time of [0,.2,.6]){
     for(const renderer of Object.values(ctrPlayAni)){renderer._skeleton.setToSetupPose();const clip=renderer._skeleton.data.findAnimation(animation);if(clip)clip.apply(renderer._skeleton,0,time,true,null,1,spine.MixBlend.replace,spine.MixDirection.mixIn);renderer._skeleton.updateWorldTransform();}

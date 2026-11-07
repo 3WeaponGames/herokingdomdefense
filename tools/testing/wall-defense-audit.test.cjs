@@ -33,6 +33,30 @@ test('Wall Defense samples each target collision box once per frame', () => {
   assert.equal(h.game._waveRoles.reduce((sum, role) => sum + role.boundsCalls, 0), 7);
 });
 
+test('overlapping impacts share artwork while all fifteen projectiles still deal damage', () => {
+  const h = battle(), target = h.role(); let hits = 0, effects = 0;
+  let frame = 10; h.cc.director = { getTotalFrames: () => frame };
+  target.bulletHited = () => { hits++; return h.config.emGADHitState.HitHurt; };
+  h.game.sendEvent = name => { if (name === h.config.emGADEventName.GAD_Show_Hit_Effect) effects++; };
+  h.game._waveRoles = [target]; h.game._bullets = Array.from({ length: 15 }, () => h.bullet());
+  h.game.update(1 / 60); assert.equal(hits, 15); assert.equal(effects, 1); assert.equal(h.game._bullets.length, 0);
+  frame++; h.game._bullets = [h.bullet()]; h.game.update(1 / 60);
+  assert.equal(hits, 16); assert.equal(effects, 1);
+  frame++; h.game._bullets = [h.bullet()]; h.game.update(1 / 60);
+  assert.equal(hits, 17); assert.equal(effects, 2);
+});
+
+test('simultaneous enemy hits share one audio request while preserving every damage value', () => {
+  const h = battle(true), Enemy = h.load('GAD_Enermy').default, enemies = [new Enemy(), new Enemy()];
+  let frame = 100, sounds = 0; h.cc.director = { getTotalFrames: () => frame };
+  h.stubs.AudioMgr.AudioMgr.getInstance().playEffectFree = () => sounds++;
+  enemies.forEach(enemy => { enemy._hp = 1000; enemy.setRoleState(h.config.emGADRoleState.Move); });
+  for (let i = 0; i < 15; i++) enemies[i % 2].bulletHited({ getTagID: () => i }, 2);
+  assert.equal(sounds, 1); assert.equal(enemies[0]._hp + enemies[1]._hp, 1970);
+  frame++; enemies[0].bulletHited({ getTagID: () => 16 }, 3);
+  assert.equal(sounds, 2); assert.equal(enemies[0]._hp + enemies[1]._hp, 1967);
+});
+
 test('door cooldown absorbs a volley without silently changing its width', () => {
   const h = battle(), door = h.role(h.types.Door), pair = h.role(h.types.Door, 200), changes = [];
   pair.getTagID = () => 3; door.bulletHited = () => h.config.emGADHitState.NoHurt;
@@ -88,6 +112,19 @@ test('a late enemy model load cannot repopulate an already-dead actor', () => {
   enemy.node = {}; enemy.loadResFromBundle = (_bundle, _path, _type, callback) => { done = callback; };
   enemy.initEnemyLayer = () => layers++; enemy.initEnermy(); enemy.isDie = true; done({});
   assert.equal(layers, 0);
+});
+
+test('death before the first component frame cannot revive an enemy or gate', () => {
+  const h = battle(true), enemy = new (h.load('GAD_Enermy').default)(), door = new (h.load('GAD_Door').default)();
+  enemy.ani = { playMove() { throw Error('Dead actor resumed its animation'); } };
+  for (const actor of [enemy, door]) {
+    actor.setRoleState(h.config.emGADRoleState.Die); actor.start(); assert.equal(actor.isDie, true);
+  }
+  let loaded;
+  Object.assign(enemy, { node: {}, enemyItem: { node: null }, _enermyCfg: { spineEnemy: 'wqyl_bb', size: 1 },
+    loadResFromBundle(_bundle, _path, _type, done) { loaded = done; }, initEnemyLayer() { throw Error('Destroyed model revived'); } });
+  enemy.enemyItem.node = {}; enemy.initEnermy(); enemy.enemyItem.node = null;
+  enemy.setRoleState(h.config.emGADRoleState.Move); assert.doesNotThrow(() => loaded({}));
 });
 
 test('all authored waves, enemies and existing buffs remain byte-for-byte unchanged by runtime fixes', () => {
@@ -187,8 +224,8 @@ test('Space and background touches cannot resume behind an open or loading pause
 
 test('delayed hit effects return to the pool that issued them across mode restarts', () => {
   const h = battle(), view = new (h.load('GAD_UIGameView').default)(), returned = [], callbacks = [];
-  const skeleton = { setAnimation() {} }, effect = { setPosition() {}, getComponent: () => skeleton };
-  view.node = { convertToNodeSpaceAR: point => point }; view.scheduleOnce = fn => callbacks.push(fn);
+  const skeleton = { setAnimation() {}, findAnimation: () => ({ duration: .3667 }) }, effect = { setPosition() {}, getComponent: () => skeleton };
+  view.node = { convertToNodeSpaceAR: point => point }; view.scheduleOnce = (fn, duration) => { assert.equal(duration, .3667); callbacks.push(fn); };
   view._hitPool = { getNode: () => effect, freeNode: node => returned.push(node) };
   h.stubs.PoolMgr = { PoolMgr: { getInstance() { throw Error('Must not look up a replacement pool by global name'); } } };
   view.showHitEffect({ x: 1, y: 2 }); view._hitPool = { freeNode() { throw Error('Wrong game pool'); } };
@@ -237,4 +274,38 @@ test('native animation-cache recreation precedes restoring the authored enemy sk
   Object.assign(enemy, { _enermyCfg: { id: 4, itemNum: 4, width: 70, height: 50, size: 1 }, enemyItem: { node: {} },
     node: {}, layer: {}, scheduleOnce() {} });
   enemy.initEnemyLayer(); assert.equal(visible, 4);
+});
+
+test('fifteen projectiles reuse existing members, retain one firing group, and fit inside the field', () => {
+  const h = battle(), cards = new (h.load('GAD_Cards').default)(), shots = [];
+  h.cc.winSize = { width: 750, height: 1334 };
+  h.cc.Tween = { stopAllByTarget() {} }; h.cc.tween = () => { const t = { to() { return t; }, start() {} }; return t; };
+  h.stubs.GAD_DataMgr.default.getInstance().getAllMembers = () => authored.memberCfg;
+  h.stubs.GAD_PlayerMgr.default.getInstance().removeCard = () => {};
+  cards._cards = authored.memberCfg.map(cfg => ({ node: { destroy() {} }, getCardCfg: () => cfg, playAttack: (group, _speed, point) => shots.push({ group, point }) }));
+  Object.assign(cards, { maxBulletCnt: 15, ndCardRoot: { children: cards._cards.map(card => card.node) }, node: { x: 330, convertToWorldSpaceAR: point => ({ x: point.x + 330, y: point.y }) }, ndRoot: { y: 0 } });
+  cards.addMember(20); assert.equal(cards._cards.length, 10); assert.equal(cards._extraProjectiles, 5);
+  cards.playAttack(); assert.equal(shots.length, 15); assert.equal(new Set(shots.map(shot => shot.group)).size, 1);
+  assert(shots.every(shot => shot.point.x > -375 && shot.point.x < 375));
+  cards.subMember(6); assert.equal(cards._extraProjectiles, 0); assert.equal(cards._cards.length, 9);
+});
+
+test('flat projectile artwork retains its original narrow collision bounds', () => {
+  const h = battle(true), Bullet = h.load('GAD_Bullet').default, bullet = new Bullet();
+  bullet.colliderSize = h.cc.size(8.3, 77.2);
+  bullet.node = { width: 35, height: 119, scaleX: 2, scaleY: .5, position: { x: 100, y: 200 },
+    getAnchorPoint: () => ({ x: .5, y: .5 }), parent: { convertToWorldSpaceAR: point => point } };
+  const rect = bullet.getWorldColldierRect();
+  assert(Math.abs(rect.width - 16.6) < 1e-9); assert(Math.abs(rect.height - 38.6) < 1e-9);
+  assert.equal(rect.x, 100 - rect.width / 2); assert.equal(rect.y, 200 - rect.height / 2);
+  bullet.colliderSize = null;
+  assert.equal(bullet.getWorldColldierRect().width, 70);
+  Object.assign(bullet.node, { x: 100, y: 200, z: 0, anchorX: .5, anchorY: .5 });
+  bullet.colliderSize = h.cc.size(8.3, 77.2);
+  const matrix = { m: new Float32Array([0, 2, 0, 0, -3, 0, 0, 0, 0, 0, 1, 0, 40, 50, 0, 1]) };
+  bullet.node.parent.convertToWorldSpaceAR = point => ({ x: 40 - 3 * point.y, y: 50 + 2 * point.x });
+  const expected = bullet.getWorldColldierRect(2, 4);
+  bullet._poolGame = { _bulletWorldMatrix: matrix };
+  const cached = bullet.getWorldColldierRect(2, 4);
+  for (const key of ['x', 'y', 'width', 'height']) assert(Math.abs(cached[key] - expected[key]) < 1e-9, key);
 });

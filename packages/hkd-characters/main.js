@@ -10,5 +10,5 @@ module.exports={load(){},unload(){if(service&&service.snapshot().dirty)Editor.wa
   change(event,request){reply(event,()=>current().change(request));},
   discard(event,request){reply(event,()=>current().discard(request));},
   describe(event,request){reply(event,()=>current().describe(request));},
-  save(event,request){reply(event,()=>{const result=current().save(request);if(result.result.saved)try{Editor.assetdb.refresh('db://assets/resources/characters/catalog.json',error=>{if(error)Editor.warn('Characters saved; refresh the asset import: '+error.message);});}catch(error){result.result.warning='Saved on disk; refresh the Characters catalog in Creator: '+error.message;}return result;});}
+  save(event,request){reply(event,()=>{const result=current().save(request);if(result.result.saved)try{for(const file of result.result.files.filter(file=>!file.endsWith('.meta')))Editor.assetdb.refresh('db://'+file,error=>{if(error)Editor.warn('Characters saved; refresh the asset import: '+error.message);});}catch(error){result.result.warning='Saved on disk; refresh the character assets in Creator: '+error.message;}return result;});}
 }};

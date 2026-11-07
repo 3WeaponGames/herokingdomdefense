@@ -162,7 +162,10 @@ var exp_ResourceMgr = function () {
     this.runtimeRecoveryNode = node;
     this.refreshRuntimeRecovery();
     this.runtimePausedDirector = !cc.director.isPaused();
-    if (this.runtimePausedDirector) cc.director.pause();
+    if (this.runtimePausedDirector) {
+      if (cc.game && cc.game.emit) cc.game.emit("runtime-recovery-pause", true);
+      cc.director.pause();
+    }
     return retire;
   };
   t.prototype.refreshRuntimeRecovery = function () {
@@ -189,7 +192,10 @@ var exp_ResourceMgr = function () {
     this.runtimeRecoveryNode = null;
     this.runtimeCancelLabel = null;
     this.runtimeCancelSurface = null;
-    if (this.runtimePausedDirector) cc.director.resume();
+    if (this.runtimePausedDirector) {
+      cc.director.resume();
+      if (cc.game && cc.game.emit) cc.game.emit("runtime-recovery-pause", false);
+    }
     this.runtimePausedDirector = false;
   };
   t.prototype.resolveRuntimeRecovery = function (retry) {
