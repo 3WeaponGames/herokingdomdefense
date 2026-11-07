@@ -23,7 +23,7 @@ for(let id=1;id<=4;id++){
   }
   results.push(row);
 }
-const report=path.resolve(__dirname,'../../local/audit/authored-route-audit.json');
+const report=require('../testing/artifact-paths.cjs').reportPath('audit','authored-route-audit.json');
 fs.mkdirSync(path.dirname(report),{recursive:true});
 fs.writeFileSync(report,JSON.stringify(results,null,2)+'\n');
 console.log(JSON.stringify(results.map(x=>({map:x.map,tests:x.tests,blockedPointCount:x.blockedPoints.length})),null,2));

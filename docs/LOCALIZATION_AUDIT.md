@@ -7,11 +7,12 @@ English is the default and Simplified Chinese is the second language. The editab
 Run from the project directory:
 
 ```powershell
-node tools/localization/audit-project.cjs
+$artifactDir = Join-Path $env:USERPROFILE 'Documents\Codex Artifacts\HeroKingdomDefense\localization-audit'
+node tools/localization/audit-project.cjs --report (Join-Path $artifactDir 'project-audit.json')
 node tools/localization/test-migrated-runtime.cjs
 ```
 
-`audit-project.cjs` writes `tools/localization/project-audit.json` and exits with a nonzero status on an error. It checks:
+`audit-project.cjs` writes the requested external report and exits with a nonzero status on an error. Without `--report`, its default is `audit/localization.json` under the external artifact root in `AGENTS.md`; `HKD_ARTIFACT_DIR` can override that root. It checks:
 
 - Every `[[loc:key]]` reference and literal `LanguageMgr.t/T/token` key exists.
 - Every locale has translations, with matching parameters and rich-text markup.
@@ -31,7 +32,7 @@ The two EditBox components reference ordinary placeholder Label components. Both
 
 Saved battle state contains stage, building, buff and mission identifiers and values. Loading a battle reconstructs descriptive configuration from the current tables; migration does not rewrite gameplay saves. A legacy local default player name can be recognized separately from third-party account names. Player-authored or external account names must remain unchanged.
 
-The pre-change source backup is `local/localization-backup-20261106`. `project-audit.json` records the exact scalar counts checked against it. It currently covers over 24,000 numeric/boolean/null configuration values and over 18,000 unchanged non-display string values.
+Historical backup locations and scalar comparison counts are recorded in the externally archived audit reports. For a new historical comparison, supply `--baseline path/to/original/assets`. Without an explicit baseline, the default audit validates current content and does not certify preservation against an old copy.
 
 ## English layout
 
@@ -39,7 +40,7 @@ The pre-change source backup is `local/localization-backup-20261106`. `project-a
 
 The home sidebar has wider horizontal margins. Chest objectives use two bounded lines. The mission panel also supports two lines. Bottom navigation placement remains unchanged; its compact Equipment caption is **Gear**. These changes prioritize readable English while retaining localized Chinese content.
 
-`tools/localization/label-fit-audit.json` contains static Windows font measurements at an assumed 375-pixel viewport over the 750-pixel design width. These are estimates. Browser/Cocos screenshots are the final check for overlap, truncation, style and centering.
+The archived `label-fit-audit.json` contains historical static Windows font measurements at an assumed 375-pixel viewport over the 750-pixel design width. Keep new measurements and screenshots in the external artifact folder. Font measurements are estimates; browser/Cocos visual checks establish overlap, truncation, style and centering.
 
 ## English wording and coverage review — 2026-11-06
 

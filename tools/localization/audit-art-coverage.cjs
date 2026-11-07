@@ -10,7 +10,7 @@ function option(name, fallback) {
   return path.resolve(root, process.argv[at + 1]);
 }
 const catalog = JSON.parse(fs.readFileSync(option('--catalog', path.join(root, 'assets/resources/localization/catalog.json')), 'utf8'));
-const reportFile = option('--report', path.join(root, 'local/audit/art-coverage.json'));
+const reportFile = option('--report', require('../testing/artifact-paths.cjs').reportPath('audit', 'art-coverage.json'));
 const baselineFile = option('--baseline', null);
 const bindings = [...Object.entries(catalog.images || {}), ...Object.entries(catalog.spineImages || {})];
 const templates = catalog.artTemplates || {};

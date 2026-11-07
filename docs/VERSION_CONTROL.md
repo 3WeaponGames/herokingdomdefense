@@ -10,7 +10,7 @@
 
 A commit saves a local checkpoint. Push backs up committed history to the configured remote. Unsaved editor changes and uncommitted files are not sent by Push. Git does not automatically save the project.
 
-Keep `assets`, `settings`, `packages`, `tools`, project configuration, documentation, and their asset metadata in Git. The `.gitignore` excludes `library`, `temp`, `local`, build output, dependencies, and credentials. Creator regenerates its caches after cloning. Local drafts, screenshots, and recovery backups under `local` remain on the computer where they were created.
+Keep production `assets`, `settings`, `packages`, maintained `tools` and tests/fixtures, project configuration, documentation, and their asset metadata in Git. The `.gitignore` excludes Creator caches/state, build output, dependencies, credentials, and generated review artifacts. Creator regenerates its caches after cloning. Store concept images, screenshots, test exports, diagnostic reports and completed backup snapshots outside the repository under the local artifact root in `AGENTS.md`; they remain on the computer where they were created. Keep active transaction recovery files in place until recovery is complete, then archive them.
 
 ## Work on a second computer
 

@@ -39,8 +39,9 @@ const out = { assetFiles: files.length, scripts: scripts.size, serialized, synta
   artwork: { templates: templates.length, spriteBindings: Object.keys(catalog.images || {}).length, spineBindings: Object.keys(catalog.spineImages || {}).length, missingArt },
   config: { stages: config.LevelCfg.length, waves: config.LevelCfg.reduce((s, r) => s + r.WaveCfg.length, 0), unlocks: config.ParameterCfg[60008], gifts: config.GiftCfg },
   startSceneExists: ids.has(JSON.parse(fs.readFileSync(path.join(root, 'settings/builder.json'))).startScene) };
-fs.mkdirSync(path.join(root, 'local/audit'), { recursive: true });
-fs.writeFileSync(path.join(root, 'local/audit/assets.json'), JSON.stringify(out, null, 2) + '\n');
+const reportFile = require('./artifact-paths.cjs').reportPath('audit', 'assets.json');
+fs.mkdirSync(path.dirname(reportFile), { recursive: true });
+fs.writeFileSync(reportFile, JSON.stringify(out, null, 2) + '\n');
 console.log(JSON.stringify({ ...out, unresolvedSerializedRefs: { count: missingRefs.length, uuids: [...new Set(missingRefs.map(r => r.uuid))] } }, null, 2));
 
 if (syntaxErrors.length || duplicates.length || brokenFiles.length || imports.length || missingRefs.length || missingArt.length || !out.startSceneExists) process.exitCode = 1;

@@ -11,7 +11,7 @@ function option(name, fallback) {
 }
 const catalogFile = option('--catalog', path.join(assetRoot, 'resources/localization/catalog.json'));
 const backup = option('--baseline', null);
-const reportFile = option('--report', path.join(root, 'local/audit/localization.json'));
+const reportFile = option('--report', require('../testing/artifact-paths.cjs').reportPath('audit', 'localization.json'));
 const catalog = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
 const token = /\[\[loc:([\w.-]+)\]\]/g;
 const displayField = /^(name|describe|levelupdescribe|equipname|missiondescribe|gift_name|buffword|buffdes|bufflabel|buffvalue|description|title|text|label|content)$/i;

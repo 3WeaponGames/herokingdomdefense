@@ -13,7 +13,7 @@ jobs:
         if: always()
         with:
           name: game-audits
-          path: local/audit/
+          path: ${{ runner.temp }}/HeroKingdomDefense/audit/
   bridge:
     runs-on: ubuntu-latest
     strategy:

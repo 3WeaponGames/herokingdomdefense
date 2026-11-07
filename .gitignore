@@ -37,3 +37,23 @@ Desktop.ini
 *.swo
 /.idea/
 /.vs/
+
+# Generated review artifacts belong outside the project (see AGENTS.md).
+/output/imagegen/
+/screenshots/
+/test-results/
+/playwright-report/
+/docs/audits/
+/docs/AUDIT_FIXES_*.md
+/docs/CURRENT_GAME_AUDIT_*.md
+/docs/GAME_STATUS_REPORT_*.md
+/docs/WORK_HANDOFF_*.md
+/packages/localization-editor/test/art-project/
+/packages/localization-editor/test/panel-preview.png
+/packages/localization-editor/test/panel-layouts.png
+/packages/localization-editor/test/font-en.png
+/packages/localization-editor/test/font-zh.png
+/tools/localization/label-fit-audit.json
+/tools/localization/project-audit.json
+/tools/localization/text-audit.json
+/tools/localization/text-migration-report.json

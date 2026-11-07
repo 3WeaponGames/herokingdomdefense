@@ -22,3 +22,11 @@
 - Runtime support for previously scripted settings must retain the original behavior when no saved default or override exists.
 - Attack timing defaults were explicitly approved from authored animation attack events on 2026-11-07. Saved `GameTools.timingDefaults` supplies each unit's default; `GameTools.timings` supplies custom values. Do not automatically reseed either table while opening panels. Gold is the editable gameplay timing; green is the fixed animation reference. Reset removes the custom value and returns to the saved default.
 - Protect concurrent work with revision checks and backups. Do not revert unrelated changes to match a test baseline.
+
+## Keep generated artifacts outside the project
+
+- Store concept art, image-generation prompts and galleries, contact sheets, screenshots, recordings, temporary test exports, diagnostic reports/logs, one-off scripts, and backup snapshots outside this repository. Use `%USERPROFILE%\Documents\Codex Artifacts\HeroKingdomDefense\` with a dated task subfolder, or an operating-system temporary directory.
+- Do not create these artifacts under `output/`, `local/`, `docs/`, package test folders, or `assets/`, and do not stage or commit them. Configure output paths before running tools; if a tool cannot redirect its disposable output, move that output outside the project when it finishes.
+- Keep maintained automated tests, their required fixtures, production game assets, source/configuration files, and required Cocos-managed caches/state in their proper project locations. A file's name alone is not evidence that it is disposable.
+- Before moving existing artifacts, check for active processes and references, preserve their contents in the external archive, and verify the resolved source/destination paths. Keep files required by an active editor/simulator session in place until that session ends, then archive its disposable output.
+- Cleanup is local unless the user explicitly authorizes a repository cleanup commit and push. Do not rewrite Git history. Preserve unrelated work and record what was moved and where outside the repository.
