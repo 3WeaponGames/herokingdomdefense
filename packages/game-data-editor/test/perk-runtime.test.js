@@ -5,9 +5,10 @@ function fixture(file,custom){
     function Base(){};let draws=0;
     const data={BuffCfg:cfg.BuffCfg,GameTools:custom},mgr={data,getBuffCfgList:()=>data.BuffCfg,getTalentLevelCfgById:()=>({kindID:0})};
     const modules={KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>mgr}},KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:{buffList:[]}}}}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getTalent:()=>[]})})}},Utils:{Utils:{weight_rand:items=>{draws++;return items.filter(i=>i.weight>0)[0];}}}};
-    const cc={_decorator:{ccclass:x=>x,property:()=>()=>{}},Label:function(){},Node:function(){}};
+    const cc={_decorator:{ccclass:x=>x,property:()=>()=>{}},Label:function(){},Node:function(){},Component:Base,Enum:x=>x,isValid:value=>!!value&&!value.destroyed};
     const helperContext={exports:{},require:id=>modules[id],cc};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/GameToolsOverrides.js'),'utf8'),helperContext);modules.GameToolsOverrides=helperContext.exports;
     const context={exports:{},require:id=>modules[id]||{default:Base},cc,sp:{Skeleton:function(){}},__extends(c,b){c.prototype=Object.create((b||Base).prototype);},__decorate:(d,t)=>t,__spreadArrays:(...a)=>[].concat(...a),Math:Object.assign(Object.create(Math),{random:()=>.5})};
+    const baseContext={...context,exports:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BaseUI.js'),'utf8'),baseContext);modules.BaseUI=baseContext.exports;
     vm.runInNewContext(fs.readFileSync(file,'utf8'),context);const obj=Object.create(context.exports.default.prototype);Object.assign(obj,{canOutBuff:[],selInfo:[],minQua:3});return{obj,data,draws:()=>draws};
 }
 let count=0;function test(name,fn){fn();console.log('PASS '+name);count++;}

@@ -16,6 +16,7 @@ var $z1GameTrackData = require("GameTrackData");
 var $z1GameTrackDataEvent = require("GameTrackDataEvent");
 var $z1GameUserData = require("GameUserData");
 var $z1PlayerMgr = require("PlayerMgr");
+var RenderGuard = require("KinghtFallRenderGuard");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -36,6 +37,7 @@ var def_Main = function (t) {
   cc__extends(_ctor, t);
   n = _ctor;
   _ctor.prototype.onLoad = function () {
+    RenderGuard.install(sp.Skeleton, cc);
     n.instance = this;
     this.failedSaveKeys = {};
     $z1EventMgr.EventMgr.getInstance().on("SaveFailed", this, this.onSaveFailed);
@@ -45,16 +47,22 @@ var def_Main = function (t) {
     this.preloadRes();
   };
   _ctor.prototype.hideLoading = function () {
-    $z1UIMgr.UIMgr.getInstance().getChildByName("UILoading").destroy();
+    var loading = $z1UIMgr.UIMgr.getInstance().getChildByName("UILoading");
+    if (cc.isValid(loading, true)) loading.destroy();
   };
   _ctor.prototype.start = function () {
     var t = this;
+    var generation = this._startupGeneration = (this._startupGeneration || 0) + 1;
+    var isCurrent = function () { return cc.isValid(t, true) && t._startupGeneration === generation; };
     this.mainCam = cc.Camera.main;
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITouch, $z1Config.UIID.UINONE);
     $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1KinghtFallConfig.KinghtFallUIID.UITop, $z1Config.UIID.UINONE, function (e) {
+      if (!isCurrent()) return;
       t.uiTop = e;
       $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1Config.UIID.UIReportTop, $z1Config.UIID.UINONE, function () {
+        if (!isCurrent()) return;
         $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1KinghtFallConfig.KinghtFallUIID.UIHome, $z1Config.UIID.UINONE, function () {
+          if (!isCurrent()) return;
           $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide1);
           t.hideLoading();
         });
@@ -161,6 +169,7 @@ var def_Main = function (t) {
     if (this.saveNotice && !Object.keys(this.failedSaveKeys).length) this.saveNotice.active = false;
   };
   _ctor.prototype.onDestroy = function () {
+    this._startupGeneration = (this._startupGeneration || 0) + 1;
     if (this.saveNotice && cc.isValid(this.saveNotice)) this.saveNotice.destroy();
     cc.game.off(cc.game.EVENT_SHOW, this.checkDailyRollover, this);
     cc.director.getScheduler().unschedule(this.addTime, this);

@@ -62,13 +62,13 @@ function mount(container, api) {
     function validTime(value){return typeof value==='number'&&isFinite(value)&&value>=0;}
     function defaultEffect(){const data=timingData(),item=data.timingDefaults&&description&&data.timingDefaults[description.key];return item&&validTime(item.attack)?item.attack:description&&validTime(description.defaultTiming)?description.defaultTiming:0;}
     function readEffect(){const data=timingData(),item=data.timings&&description&&data.timings[description.key];customTiming=!!(item&&validTime(item.attack));effect=customTiming?item.attack:defaultEffect();}
-    async function load(next){request=next;const currentToken=++token;stop();controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help';status.textContent='Loading model…';try{
+    async function load(next){request=next;const currentToken=++token;description=null;layers=[];stop();controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help';status.textContent='Loading model…';try{
         const payload={type:next.type,id:next.id,record:next.record,heroLevels,levelIndex:next.levelIndex};
-        const data=await api.ipc('unit-preview',payload);if(disposed||currentToken!==token)return;description=data;
+        const data=await api.ipc('unit-preview',payload);if(disposed||currentToken!==token)return;
         title.textContent=data.type==='building'?'Building preview':data.type==='hero'?'Hero & equipment preview':'Unit '+data.id+(data.form!=='default'?' · form '+data.form:'');
-        if(data.type==='building'){controls.hidden=timing.hidden=true;canvas.hidden=true;let img=box.querySelector('img');if(!img){img=el('img',undefined,box);img.className='preview-static';}img.src=data.image||'';img.alt=data.label;status.textContent=data.image?'Authored building icon.':'No authored icon is assigned.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
+        if(data.type==='building'){description=data;controls.hidden=timing.hidden=true;canvas.hidden=true;let img=box.querySelector('img');if(!img){img=el('img',undefined,box);img.className='preview-static';}img.src=data.image||'';img.alt=data.label;status.textContent=data.image?'Authored building icon.':'No authored icon is assigned.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
         const oldImage=box.querySelector('img');if(oldImage)oldImage.remove();canvas.hidden=false;controls.hidden=timing.hidden=false;
-        spine=require(data.runtimePath);const loaded=await Renderer.createLayers(spine,data.layers);if(disposed||currentToken!==token)return;layers=loaded;
+        spine=require(data.runtimePath);const loaded=await Renderer.createLayers(spine,data.layers);if(disposed||currentToken!==token)return;layers=loaded;description=data;
         const names=Array.from(new Set([].concat.apply([],data.layers.map(l=>l.animations))));animations.innerHTML='';names.forEach(name=>{const o=el('option',name,animations);o.value=name;});animations.value=names.indexOf('attack')>=0?'attack':names[0];
         Renderer.seek(spine,layers,'idle',0,false);poseBounds=Renderer.bounds(spine,layers);
         skins.innerHTML='';(data.layers[0].skins||[]).forEach(name=>{const o=el('option',name,skins);o.value=name;});skins.value=data.layers[0].skin;skinsRow.hidden=data.type==='hero';
@@ -77,7 +77,7 @@ function mount(container, api) {
         status.textContent='Animation preview only. '+(data.type==='hero'?'Equipment levels here do not change your saved progression.':'No gameplay or audio is running.');
         shared.textContent=data.shared.length?'Animation assets are shared with '+data.shared.length+' other prefab(s). Timing edits stay scoped to this unit.':'This preview never writes animation assets.';
         shared.title=data.shared.join('\n');animations.onchange();
-    }catch(error){if(currentToken===token){layers=[];controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help preview-error';status.textContent='Preview unavailable: '+error.message;}}}
+    }catch(error){if(!disposed&&currentToken===token){description=null;layers=[];controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help preview-error';status.textContent='Preview unavailable: '+error.message;}}}
     function setUnit(next){next=Object.assign({},next);const equipmentData=next.type==='hero'&&next.documents&&next.documents.A?next.documents.A.data.EquipCfg:null;const nextIdentity=next.type+':'+next.id+':'+JSON.stringify(next.record||{})+':'+JSON.stringify(equipmentData);if(identity===nextIdentity&&description&&description.type!=='building'){request=next;readEffect();updateTiming();render();return;}identity=nextIdentity;heroLevels={};load(next);}
     function setBuilding(next){identity='';load(Object.assign({},next,{type:'building'}));}
     return{setUnit,setBuilding,destroy(){disposed=true;token++;stop();layers=[];Renderer.destroyCanvas(canvas);root.remove();},getState(){return{loaded:!!description,description:description&&{id:description.id,type:description.type,key:description.key},time:current,effect,playing,silent:true};}};

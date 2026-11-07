@@ -61,7 +61,9 @@ var exp_PlatformManager = function () {
     this.currentPaltform.showVideoAd(t, n, i, e);
   };
   _ctor.prototype.playMultitonVideo = function (t, e, n, i, a, o) {
-    this.currentPaltform.playMultitonVideo && this.currentPaltform.playMultitonVideo(t, e, n, i, a, o);
+    if (this.currentPaltform && this.currentPaltform.playMultitonVideo) return this.currentPaltform.playMultitonVideo(t, e, n, i, a, o);
+    a && a();
+    return false;
   };
   _ctor.prototype.checkShortcut = function (t, e) {
     this.currentPaltform.checkShortcut && this.currentPaltform.checkShortcut(t, e);

@@ -139,6 +139,9 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniArrow.paused = t;
     this.spAniHand.paused = t;
     this.spAniSmoke && (this.spAniSmoke.paused = t);
+    this.spAniSoulFire && (this.spAniSoulFire.paused = t);
+    this.spAniRevive && (this.spAniRevive.paused = t);
+    this.spAniLevelUp && (this.spAniLevelUp.paused = t);
   };
   _ctor.prototype.setDie = function (t) {
     this.isDie = true;

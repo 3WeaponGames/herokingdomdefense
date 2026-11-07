@@ -138,7 +138,7 @@ var def_ListItem = function (t) {
       }
       e();
     });
-    i.start();
+    return i.start();
   };
   _ctor.prototype.onClickThis = function () {
     this.list.selectedId = this.listId;

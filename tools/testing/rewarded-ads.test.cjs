@@ -262,11 +262,18 @@ test('every rewarded call site supplies a registered explicit placement', () => 
   const used = new Set();
   for (const name of fs.readdirSync(path.join(root, 'assets/_script')).filter(n => n.endsWith('.js'))) {
     const source = fs.readFileSync(path.join(root, 'assets/_script', name), 'utf8');
-    for (const match of source.matchAll(/\.playVideo\(/g)) {
-      callCount++;
+    for (const match of source.matchAll(/\.(playVideo|requestPerkAd)\(/g)) {
       const args = argumentsAt(source, match.index + match[0].length);
-      assert.equal(args.length, 4, name + ': explicit fourth placement argument');
-      const ids = [...args[3].matchAll(/["']((?:home|battle)\.[\w.]+)["']/g)].map(m => m[1]);
+      if (match[1] === 'playVideo' && name === 'KinghtFallUIBuff.js' && args[3] === 'placement') {
+        const from = source.indexOf('_ctor.prototype.requestPerkAd ='), to = source.indexOf('_ctor.prototype.start =', from);
+        assert(match.index > from && match.index < to, 'dynamic perk placement must only forward from the checked helper');
+        assert.equal(args.length, 4);
+        continue;
+      }
+      callCount++;
+      const perk = match[1] === 'requestPerkAd';
+      assert.equal(args.length, perk ? 2 : 4, name + ': explicit placement argument');
+      const ids = [...args[perk ? 0 : 3].matchAll(/["']((?:home|battle)\.[\w.]+)["']/g)].map(m => m[1]);
       assert.ok(ids.length, name + ': placement ID must be visible at the call site');
       for (const id of ids) {
         assert.ok(placements.RewardedAdPlacements[id], name + ': unregistered placement ' + id);

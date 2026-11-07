@@ -1,0 +1,85 @@
+[
+  {
+    "file": "01-follow-ring.png",
+    "caption": "Follow ring remains away from the hero",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-1c4fee7e-96f3-4d2d-ba87-5ddeb67b8463.png",
+    "sha256": "c510b088ec4ada19fd9e15d698f5ef691c73116f404711aa7d2f0a8d26c6a661"
+  },
+  {
+    "file": "02-pause-missing-panels.png",
+    "caption": "Pause panel backgrounds absent",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-e95d2c47-caad-44d8-9d90-c48204b94771.png",
+    "sha256": "48999118d54ba40765844c207eedafbcf55304e058e6f7357c8b04bfdc038c3b"
+  },
+  {
+    "file": "03-pause-reopened-panels.png",
+    "caption": "Pause panel backgrounds present after reopening",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-fe1dd2f9-90d7-41fc-84bc-aa332c83ce37.png",
+    "sha256": "015d2e11a9b4401c393549c7eeb169a0cb8edf1dbac04926b8ef18d25cfd2007"
+  },
+  {
+    "file": "04-orphan-health-bars.png",
+    "caption": "Black health bars remain after actor death",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-0f3bf15a-3318-4529-904e-9eafbb59f658.png",
+    "sha256": "4f5eed5d5ca453215511221618e2472c1c645bdd2cc0680615d0d5d3a97a3d96"
+  },
+  {
+    "file": "05-building-missing-panels.png",
+    "caption": "Building upgrade panel backgrounds absent",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-6bdf1191-58c3-43cc-a3a7-921780185805.png",
+    "sha256": "dcf8b4370f60c5f1dc289e5bf6b07182e7f3864f6460343fe40282bc7ba64fab"
+  },
+  {
+    "file": "06-silver-spacing.png",
+    "caption": "Silver icon spacing",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-0a3442e5-09cc-4907-badb-25405fd777ca.png",
+    "sha256": "72ea60e47bcc62b14020be8cce3308599c44fce2e357e708308b9700be3df165"
+  },
+  {
+    "file": "07-victory-outline.png",
+    "caption": "Victory label outline and capitalization",
+    "source": "User-provided historical screenshot in this chat; not a new reproduction",
+    "copied": true,
+    "original": "codex-clipboard-7e2617f1-c308-4059-a3b8-af3e588cab7c.png",
+    "sha256": "1be87893b7c5fad3fce3ed9f5cf8924a1a03ea71d70304b29aba31b086969ff4"
+  },
+  {
+    "file": "08-current-pause.png",
+    "caption": "Latest first-open Pause panel",
+    "current": true,
+    "source": "Exact 375×667 game-canvas capture from final FIXPHASE9/PASS10 current-source headless smoke. Muted before navigation, memory-only save, all 210 latest modules verified, guide overlay hidden only in this fixture. No image or UI source edits.",
+    "original": "local/full-backend-audit/live-current-post9-final/pause-first-open-game.png",
+    "limitations": "Hybrid existing Creator preview wrappers/imports, not a fresh export. Pause has no perks in this fixture; Follow hero moved 28.38px with ring active; crowded scenario peaked at 40 enemies and 30 allies during a short smoke; the screenshot was taken after six planned ally deaths, not the distinct 160-actor acceptance sample.",
+    "sha256": "d429833475dd5001badd583a704b110457eb87e5e8914a3d5505e777ce5bee85"
+  },
+  {
+    "file": "09-current-crowded-gate.png",
+    "caption": "Latest wave 8 crowd stress; scenario peak 40 enemies and 30 allies",
+    "current": true,
+    "source": "Exact 375×667 game-canvas capture from final FIXPHASE9/PASS10 current-source headless smoke. Muted before navigation, memory-only save, all 210 latest modules verified, guide overlay hidden only in this fixture. No image or UI source edits.",
+    "original": "local/full-backend-audit/live-current-post9-final/wave8-crowded-HUD.png",
+    "limitations": "Hybrid existing Creator preview wrappers/imports, not a fresh export. Pause has no perks in this fixture; Follow hero moved 28.38px with ring active; crowded scenario peaked at 40 enemies and 30 allies during a short smoke; the screenshot was taken after six planned ally deaths, not the distinct 160-actor acceptance sample.",
+    "sha256": "8b1c005cdc6cfff07cf130ae164f16bd7abb1c3d07295a9bbe361f02097ef44a"
+  },
+  {
+    "file": "10-current-follow.png",
+    "caption": "Latest moving Follow frame, ring active",
+    "current": true,
+    "source": "Exact 375×667 game-canvas capture from final FIXPHASE9/PASS10 current-source headless smoke. Muted before navigation, memory-only save, all 210 latest modules verified, guide overlay hidden only in this fixture. No image or UI source edits.",
+    "original": "local/full-backend-audit/live-current-post9-final/gate3-moving-follow-HUD.png",
+    "limitations": "Hybrid existing Creator preview wrappers/imports, not a fresh export. Pause has no perks in this fixture; Follow hero moved 28.38px with ring active; crowded scenario peaked at 40 enemies and 30 allies during a short smoke; the screenshot was taken after six planned ally deaths, not the distinct 160-actor acceptance sample.",
+    "sha256": "4ee4464929c98fe4747aa53b86bed6b3484315b1cfa5a842a1c1dcc925b2fd2a"
+  }
+]

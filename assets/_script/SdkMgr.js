@@ -1,6 +1,14 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+function completeAdSteps(steps) {
+  var firstError = null;
+  steps.forEach(function (step) {
+    try { step(); }
+    catch (error) { if (!firstError) firstError = error; console.error(error); }
+  });
+  if (firstError) throw firstError;
+}
 exports.SdkMgr = exports.AdType = undefined;
 var $z1Config = require("Config");
 var $z1AudioMgr = require("AudioMgr");
@@ -76,36 +84,38 @@ var exp_SdkMgr = function () {
         manager._activeRewardedAd = null;
       }
       // Release ownership before reward callbacks, which can open or close other UI.
-      try {
+      completeAdSteps([function () {
         request.adStarted && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, false);
-      } finally {
-        try {
-          request.blocked && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
-        } finally {
-          request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
+      }, function () {
+        request.blocked && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true, request);
+      }, function () {
+        request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
+      }, function () {
+        for (var i = 0; i < request.rejectedCallbacks.length; i++) {
+          try {
+            request.rejectedCallbacks[i]();
+          } catch (error) {
+            // A rejected request cannot prevent the active request from delivering its result.
+            $z1LogMgr.LogMgr.getInstance().debug(error && error.message || error);
+          }
         }
-      }
-      for (var i = 0; i < request.rejectedCallbacks.length; i++) {
-        try {
-          request.rejectedCallbacks[i]();
-        } catch (error) {
-          // A rejected request cannot prevent the active request from delivering its result.
-          $z1LogMgr.LogMgr.getInstance().debug(error && error.message || error);
+        request.rejectedCallbacks.length = 0;
+      }, function () {
+        $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, success);
+      }, function () {
+        if (success) $z1Main.default.instance.onPlayVideo(1);
+      }, function () {
+        if (success) {
+          e && e();
+        } else {
+          $z1LogMgr.LogMgr.getInstance().debug("Rewarded ad failed: " + placementId);
+          try {
+            manager._showRewardedAdError(errorKey || "testing.adUnavailable");
+          } finally {
+            n && n();
+          }
         }
-      }
-      request.rejectedCallbacks.length = 0;
-      $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, success);
-      if (success) {
-        $z1Main.default.instance.onPlayVideo(1);
-        e && e();
-      } else {
-        $z1LogMgr.LogMgr.getInstance().debug("Rewarded ad failed: " + placementId);
-        try {
-          manager._showRewardedAdError(errorKey || "testing.adUnavailable");
-        } finally {
-          n && n();
-        }
-      }
+      }]);
     };
     if (simulated) {
       // Synchronous by design: preserve rewards/analytics without SDK calls or blocking.
@@ -116,7 +126,7 @@ var exp_SdkMgr = function () {
       request.paused = true;
       $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
       request.blocked = true;
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false);
+      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false, request);
       request.adStarted = true;
       $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.AdStart, true);
       request.timer = setTimeout(function () {
@@ -148,19 +158,43 @@ var exp_SdkMgr = function () {
     return true;
   };
   _ctor.prototype.playMultitonVideo = function (t, e, n, o, c, u) {
-    $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
-    $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false);
-    $z1PlatformManager.PlatformManager.getInstance().playMultitonVideo(t, e, n, function (t) {
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
-      $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
-      o && o(t);
-    }, function (t) {
-      $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
-      $z1LogMgr.LogMgr.getInstance().debug("播放广告失败");
-      t && t.length && $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, -1, require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:testing.adUnavailable]]"));
-      c && c();
-    }, u);
+    if (this._activeRewardedAd) {
+      c && this._activeRewardedAd.rejectedCallbacks.push(c);
+      return false;
+    }
+    var manager = this;
+    var request = { done: false, paused: false, blocked: false, timer: null, rejectedCallbacks: [] };
+    this._activeRewardedAd = request;
+    function finish(success, value) {
+      if (request.done) return;
+      request.done = true;
+      clearTimeout(request.timer);
+      if (manager._activeRewardedAd === request) manager._activeRewardedAd = null;
+      completeAdSteps([function () {
+        request.blocked && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true, request);
+      }, function () {
+        request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
+      }, function () {
+        request.rejectedCallbacks.forEach(function (callback) {
+          try { callback(); } catch (error) { $z1LogMgr.LogMgr.getInstance().debug(error); }
+        });
+        request.rejectedCallbacks.length = 0;
+      }, function () {
+        if (success) { o && o(value); } else { c && c(); }
+      }]);
+    }
+    try {
+      request.paused = true;
+      $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
+      request.blocked = true;
+      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false, request);
+      request.timer = setTimeout(function () { finish(false); }, $z1AdPlacements.REWARDED_AD_TIMEOUT_MS);
+      $z1PlatformManager.PlatformManager.getInstance().playMultitonVideo(t, e, n, function (value) { finish(true, value); }, function () { finish(false); }, u);
+    } catch (error) {
+      if (request.done) throw error;
+      finish(false);
+    }
+    return true;
   };
   _ctor.prototype.showInsert = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();

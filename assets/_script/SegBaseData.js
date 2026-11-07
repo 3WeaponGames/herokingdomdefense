@@ -19,6 +19,10 @@ var exp_SegBaseData = function (t) {
     e.saveMap = new Map();
     e.timeMap = new Map();
     e.changleIndex = new Set();
+    e.segmentRecords = new Map();
+    e._segmentRequests = new Map();
+    e._segmentRetries = new Map();
+    e._segmentRevisions = new Map();
     return e;
   }
   cc__extends(_ctor, t);
@@ -29,93 +33,100 @@ var exp_SegBaseData = function (t) {
         t.pause = e;
       });
       cc.game.on(cc.game.EVENT_HIDE, function () {
+        if (t.clearPending) return void t.clearData();
+        if (t.localSavePending) t.saveData(-1);
         t.saveMap.forEach(function (e, n) {
           var i = n;
           var a = null;
           if (0 == n) {
             (a = JSON.parse(JSON.stringify(t.data)))[t.ListName] = t.data[t.ListName].slice(i * t.len, (i + 1) * t.len);
           } else {
-            (a = {
-              list: t.data[t.ListName].slice(i * t.len, (i + 1) * t.len)
-            })[t.savetimeKey] = t.timeMap.get(t.gameKey + i);
+            var previous = t.segmentRecords.get(i);
+            a = previous && !Array.isArray(previous) ? Object.assign({}, previous) : {};
+            a.list = t.data[t.ListName].slice(i * t.len, (i + 1) * t.len);
+            a[t.savetimeKey] = t.data[t.savetimeKey];
           }
-          t.UpdateData2(a, e);
+          t.UpdateData2(a, e, true);
         });
       }, this);
       setInterval(function () {
+        if (t.clearPending) return void t.clearData();
+        if (t.localSavePending) t.saveData(-1);
         t.saveMap.forEach(function (e, n) {
           var i = n;
           var a = null;
           if (0 == n) {
             (a = JSON.parse(JSON.stringify(t.data)))[t.ListName] = t.data[t.ListName].slice(i * t.len, (i + 1) * t.len);
           } else {
-            (a = {
-              list: t.data[t.ListName].slice(i * t.len, (i + 1) * t.len)
-            })[t.savetimeKey] = t.timeMap.get(t.gameKey + i);
+            var previous = t.segmentRecords.get(i);
+            a = previous && !Array.isArray(previous) ? Object.assign({}, previous) : {};
+            a.list = t.data[t.ListName].slice(i * t.len, (i + 1) * t.len);
+            a[t.savetimeKey] = t.data[t.savetimeKey];
           }
           t.UpdateData2(a, e);
         });
       }, 1e3);
-      var e = function (n) {
-        var i;
-        var a = $z1ServerDataMgr.ServerdataMgr.getDataByKey(t.gameKey + n);
-        if (0 == n) {
-          if (a) {
-            t.data = t.loaddata(a, t.gameKey + n, true);
-            e(n + 1);
-          } else {
-            t.loadlocaldata();
-          }
-        } else if (a) {
-          var o = t.loaddata(a, t.gameKey + n, false);
-          if (!Array.isArray(o)) {
-            t.timeMap.set(t.gameKey + n, o[t.savetimeKey]);
-            o = o.list;
-          }
-          (i = t.data[t.ListName]).push.apply(i, o);
-          e(n + 1);
-        } else {
-          t.initData(false);
-        }
-      };
-      e(0);
+      this.loadlocaldata(true);
       return this.data;
     }
     return this.data;
   };
-  _ctor.prototype.loadlocaldata = function () {
-    var t;
-    var e = false;
-    for (var n = 0;; n++) {
-      var i = this.ecrypt ? $z1CacheUtils.CacheUtils.getDataDecrypt(this.gameKey + n, this.pwd) : $z1CacheUtils.CacheUtils.getData(this.gameKey + n);
-      if (0 == n) {
-        if (!i) {
-          break;
-        }
-        this.data = $z1Utils.Utils.restoreObjectKeys(JSON.parse(i), this.aliseMap);
-        e = true;
-      } else {
-        if (!i) {
-          break;
-        }
-        var a = $z1Utils.Utils.restoreObjectKeys(JSON.parse(i), this.aliseMap);
-        if (!Array.isArray(a)) {
-          this.timeMap.set(this.gameKey + n, a[this.savetimeKey]);
-          a = a.list;
-        }
-        (t = this.data[this.ListName]).push.apply(t, a);
+  _ctor.prototype.readSegment = function (raw, key, source, index) {
+    if (!raw) return null;
+    var value = this.readSaveRecord(raw, key, source, source === "local" && this.ecrypt);
+    if (!value) return null;
+    var list = index === 0 ? value[this.ListName] : Array.isArray(value) ? value : value.list;
+    if (!Array.isArray(list) || index === 0 && (Array.isArray(value) || value.maxNum !== undefined && (!Number.isInteger(value.maxNum) || value.maxNum < 0))) {
+      this.preserveSaveRecord(raw, key, source);
+      return null;
+    }
+    return value;
+  };
+  _ctor.prototype.loadlocaldata = function (includeServer) {
+    this.invalidateCloudSaves();
+    this._segmentRequests.clear();
+    this._segmentRetries.clear();
+    this._segmentRevisions.clear();
+    this.saveMap.clear();
+    this.timeMap.clear();
+    this.segmentRecords.clear();
+    var found = false, limit = Infinity;
+    for (var index = 0; index <= limit; index++) {
+      var key = this.gameKey + index, localRaw, serverRaw;
+      try { localRaw = $z1CacheUtils.CacheUtils.getData(key); } catch (error) { this.saveBlockedByRecovery = true; }
+      if (includeServer) serverRaw = $z1ServerDataMgr.ServerdataMgr.getDataByKey(key);
+      if (!localRaw && !serverRaw) {
+        if (found && isFinite(limit) && index < limit) this.saveBlockedByRecovery = true;
+        break;
       }
+      var local = this.readSegment(localRaw, key, "local", index);
+      var server = this.readSegment(serverRaw, key, "server", index);
+      var localTime = local && local[this.savetimeKey], serverTime = server && server[this.savetimeKey];
+      var chosen = local && server && localTime && serverTime && localTime >= serverTime ? local : server || local;
+      if (!chosen) { this.saveBlockedByRecovery = true; break; }
+      this.segmentRecords.set(index, chosen);
+      if (index === 0) {
+        this.data = chosen;
+        // Do not append tail entries to the list parsed from the first chunk.
+        this.data[this.ListName] = chosen[this.ListName].slice();
+        found = true;
+        limit = Number.isInteger(chosen.maxNum) ? chosen.maxNum : Infinity;
+      } else {
+        var list = Array.isArray(chosen) ? chosen : chosen.list;
+        Array.prototype.push.apply(this.data[this.ListName], list);
+      }
+      if (server) this.timeMap.set(key, server[this.savetimeKey]);
     }
-    if (e) {
-      this.initData(false);
-    } else {
-      this.data = this.createData();
-      this.initData(true);
-    }
+    if (!found) this.data = this.createData();
+    else if (!Number.isInteger(this.data.maxNum)) this.data.maxNum = Math.max(0, this.segmentRecords.size - 1);
+    this.initData(!found);
   };
   _ctor.prototype.saveData = function (e) {
     var n = this;
+    if (this.deferSave) return true;
+    if (this.pause || this.saveBlockedByRecovery || this.clearPending) { this.reportSaveFailure(); return false; }
     if (!this.pause) {
+      if (e === undefined) e = -1;
       if (e || 0 == e) {
         if (this.data[this.ListName]) {
           var i = Math.floor(this.data[this.ListName].length / this.len);
@@ -126,57 +137,105 @@ var exp_SegBaseData = function (t) {
             this.changleIndex.add(0);
           }
           if (-1 == e) {
-            for (var l = 0; l <= a; l++) {
+            for (var l = 0; l <= s; l++) {
               this.changleIndex.add(l);
             }
           } else {
             this.changleIndex.add(e);
           }
+          var success = true, pendingCloud = [];
+          this.data[this.savetimeKey] = Number((new Date().getTime() / 1e3).toFixed(0));
           this.changleIndex.forEach(function (t) {
             var e = t;
             var i = null;
-            var a = n.timeMap.get(n.gameKey + e);
             if (0 == e) {
               (i = JSON.parse(JSON.stringify(n.data)))[n.ListName] = n.data[n.ListName].slice(e * n.len, (e + 1) * n.len);
-              n.data[n.savetimeKey] = a || Number((new Date().getTime() / 1e3).toFixed(0));
             } else {
-              (i = {
-                list: n.data[n.ListName].slice(e * n.len, (e + 1) * n.len)
-              })[n.savetimeKey] = a || Number((new Date().getTime() / 1e3).toFixed(0));
+              var previous = n.segmentRecords.get(e);
+              i = previous && !Array.isArray(previous) ? Object.assign({}, previous) : {};
+              i.list = n.data[n.ListName].slice(e * n.len, (e + 1) * n.len);
+              i[n.savetimeKey] = n.data[n.savetimeKey];
             }
+            var saved = false;
+            try {
             if (n.ecrypt) {
-              $z1CacheUtils.CacheUtils.saveDataEncrypt(n.gameKey + e, JSON.stringify($z1Utils.Utils.renameObjectKeys(i, n.aliseMap)), n.pwd);
+              saved = $z1CacheUtils.CacheUtils.saveDataEncrypt(n.gameKey + e, JSON.stringify($z1Utils.Utils.renameObjectKeys(i, n.aliseMap)), n.pwd);
             } else {
-              $z1CacheUtils.CacheUtils.saveData(n.gameKey + e, JSON.stringify($z1Utils.Utils.renameObjectKeys(i, n.aliseMap)));
+              saved = $z1CacheUtils.CacheUtils.saveData(n.gameKey + e, JSON.stringify($z1Utils.Utils.renameObjectKeys(i, n.aliseMap)));
             }
-            $z1ServerDataMgr.ServerdataMgr.getNeedSaveServer() && n.UpdateData2(i, e);
+            } catch (error) { saved = false; }
+            if (saved === false) { success = false; return; }
+            n.segmentRecords.set(e, i);
+            n._segmentRevisions.set(e, (n._segmentRevisions.get(e) || 0) + 1);
+            n.changleIndex.delete(e);
+            if ($z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) {
+              n.saveMap.set(e, e);
+              pendingCloud.push({ data: i, index: e });
+            }
           });
-          this.changleIndex.clear();
+          if (!success) { this.reportSaveFailure(); return false; }
+          this.localSavePending = false;
+          pendingCloud.forEach(function (entry) { n.UpdateData2(entry.data, entry.index); });
+          if (this.saveFailureReported) { this.saveFailureReported = false; $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: this.gameKey }); }
+          return true;
         } else {
-          t.prototype.saveData.call(this, -1);
+          return t.prototype.saveData.call(this, -1);
         }
       } else {
         console.error("!!!!!!!!!!!!key的后缀不能为空!!!!!!");
       }
     }
   };
-  _ctor.prototype.UpdateData2 = function (t, e) {
+  _ctor.prototype.UpdateData2 = function (t, e, force) {
     undefined === e && (e = 0);
-    var n = t[this.savetimeKey];
+    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave || this.clearPending) return;
+    if (!$z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) return;
+    this.saveMap.set(e, e);
+    if (this._segmentRequests.has(e)) return;
+    var n = this.timeMap.get(this.gameKey + e);
     var i = Number((new Date().getTime() / 1e3).toFixed(0));
-    if (n && i - n < this.invertTime) {
+    if (i < (this._segmentRetries.get(e) || 0)) return;
+    if (!force && n && i - n < this.invertTime) {
       this.saveMap.set(e, e);
     } else {
       this.saveMap.delete(e);
       this.timeMap.set(this.gameKey + e, i);
       var a = JSON.stringify($z1Utils.Utils.renameObjectKeys(t, this.aliseMap));
-      $z1ServerDataMgr.ServerdataMgr.saveData(this.gameKey + e, a, function () {});
+      var self = this, request = { generation: this._cloudGeneration, revision: this._segmentRevisions.get(e), data: this.data };
+      this._segmentRequests.set(e, request);
+      function finish(value, error) {
+        if (self._segmentRequests.get(e) !== request || self._cloudGeneration !== request.generation) return;
+        self._segmentRequests.delete(e);
+        if (error || value === false) {
+          self.saveMap.set(e, e);
+          self._segmentRetries.set(e, Number((Date.now() / 1e3).toFixed(0)) + Math.max(1, self.invertTime));
+        } else {
+          self._segmentRetries.delete(e);
+          if (self._segmentRevisions.get(e) !== request.revision) self.saveMap.set(e, e);
+        }
+      }
+      try { $z1ServerDataMgr.ServerdataMgr.saveData(this.gameKey + e, a, finish); }
+      catch (error) { finish(null, error); }
     }
   };
   _ctor.prototype.clearData = function () {
-    for (var t = 0; t < this.data.maxNum; t++) {
-      localStorage.removeItem(this.gameKey + t);
+    this.invalidateCloudSaves();
+    this._segmentRequests.clear();
+    this._segmentRetries.clear();
+    this._segmentRevisions.clear();
+    this.saveMap.clear();
+    var success = true;
+    for (var t = 0; t <= this.data.maxNum; t++) {
+      if ($z1CacheUtils.CacheUtils.removeData(this.gameKey + t) === false) success = false;
     }
+    this.clearPending = !success;
+    if (!success) { this.reportSaveFailure(); return false; }
+    this.localSavePending = false;
+    this.saveMap.clear();
+    this.changleIndex.clear();
+    this.segmentRecords.clear();
+    if (this.saveFailureReported) { this.saveFailureReported = false; $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: this.gameKey }); }
+    return true;
   };
   return _ctor;
 }($z1BaseData.BaseData);

@@ -1,0 +1,8 @@
+{
+  "name": "hkd-characters",
+  "version": "1.0.0",
+  "description": "Character looks and imported parts, with silent animation previews and explicit saves",
+  "main": "main.js",
+  "main-menu": { "Tools/Hero Kingdom Defense/Characters": { "message": "hkd-characters:open" } },
+  "panel": { "main": "panel.js", "type": "dockable", "title": "Characters", "width": 1440, "height": 900, "min-width": 980, "min-height": 600 }
+}

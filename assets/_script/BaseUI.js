@@ -34,23 +34,37 @@ var def_BaseUI = function (t) {
     e.eventList = [];
     e.isclose = false;
     e.fromId = "UINone";
+    e._resourceGeneration = 0;
     return e;
   }
   cc__extends(_ctor, t);
   _ctor.prototype.onLoad = function () {};
   _ctor.prototype.refreshUI = function () {};
   _ctor.prototype.init = function () {
-    this.isclose = false;
+    this.onOpened();
   };
   _ctor.prototype.onOpen = function () {};
   _ctor.prototype.onClose = function () {};
   _ctor.prototype.onToggleHide = function () {};
   _ctor.prototype.onToggleShow = function () {};
   _ctor.prototype.addEvent = function (t, e) {
+    if (this.isclose || !this.eventList) return;
     $z1EventMgr.EventMgr.getInstance().on(t, this, e);
+    for (var index = 0; index < this.eventList.length; index++) {
+      if (this.eventList[index].get(t) === e) return;
+    }
     var n = new Map();
     n.set(t, e);
     this.eventList.push(n);
+  };
+  _ctor.prototype.offEvents = function (dispose) {
+    var target = this;
+    (this.eventList || []).forEach(function (bindings) {
+      bindings.forEach(function (callback, name) {
+        $z1EventMgr.EventMgr.getInstance().off(name, target, callback);
+      });
+    });
+    if (dispose) this.eventList = null;
   };
   _ctor.prototype.sendEvent = function (t, e, n, i, a, o) {
     $z1EventMgr.EventMgr.getInstance().emit(t, e, n, i, a, o);
@@ -60,6 +74,22 @@ var def_BaseUI = function (t) {
   };
   _ctor.prototype.onOpened = function () {
     this.isclose = false;
+    this._resourceGeneration++;
+    this._decisionCompleted = false;
+    this._decisionPending = false;
+    var target = this;
+    (this.eventList || []).forEach(function (bindings) {
+      bindings.forEach(function (callback, name) {
+        $z1EventMgr.EventMgr.getInstance().on(name, target, callback);
+      });
+    });
+  };
+  _ctor.prototype.finishDecision = function (callback, value, generation) {
+    if (this.isclose || this._decisionCompleted || !cc.isValid(this) || generation !== undefined && generation !== this._resourceGeneration) return false;
+    this._decisionCompleted = true;
+    try { if (callback) callback(value); }
+    finally { this.closeUI(); }
+    return true;
   };
   _ctor.prototype.setUid = function (t) {
     this.uid = t;
@@ -86,18 +116,18 @@ var def_BaseUI = function (t) {
           i.scale != a && cc.tween(i).to(.15, {
             scale: a
           }).start();
-          e.onOpen();
-          t && t();
+          try { if (!e.isclose) e.onOpen(); }
+          finally { t && t(); }
         });
       } else {
         this.node.active = true;
-        this.onOpen();
-        t && t();
+        try { if (!this.isclose) this.onOpen(); }
+        finally { t && t(); }
       }
     } else {
       this.node.active = true;
-      this.onOpen();
-      t && t();
+      try { if (!this.isclose) this.onOpen(); }
+      finally { t && t(); }
     }
   };
   _ctor.prototype.closeAni = function (t) {
@@ -128,139 +158,150 @@ var def_BaseUI = function (t) {
   _ctor.prototype.openUICallBack = function (t, e, n, i, a, o, r) {
     $z1UIMgr.UIMgr.getInstance().openUIOfCallback(t, this.uid, e, n, i, a, o, r);
   };
+  _ctor.prototype.openRequiredUI = function (uid, onOpened, a, b, c, d, e) {
+    return $z1UIMgr.UIMgr.getInstance().openUIWithOwner(uid, this.uid, {
+      parent: this,
+      recoveryCancelAllowed: false,
+      isCurrent: this.resourceOptions(this._resourceGeneration).isCurrent,
+      onOpened: onOpened
+    }, a, b, c, d, e);
+  };
+  _ctor.prototype.cancelPendingOpens = function () {
+    if (!this._pendingUIOpens || !this._pendingUIOpens.size) return;
+    var firstError;
+    Array.from(this._pendingUIOpens).forEach(function (owner) {
+      try { owner.cancel(); } catch (error) { if (!firstError) firstError = error; }
+    });
+    if (firstError) throw firstError;
+  };
   _ctor.prototype.closeUI = function (t, e, n, i, a) {
     var o = this;
-    if (this.eventList && this.eventList.length > 0) {
-      for (var r = 0; r < this.eventList.length; r++) {
-        this.eventList[r].forEach(function (t, e) {
-          $z1EventMgr.EventMgr.getInstance().off(e, o, t);
-        });
-      }
-    }
+    if (this.isclose) return;
     this.isclose = true;
+    this._resourceGeneration++;
+    var releaseError = null;
+    try { if (this._releaseOpeningInput) this._releaseOpeningInput(); }
+    catch (error) { releaseError = error; }
+    try { this.cancelPendingOpens(); }
+    catch (error) { if (!releaseError) releaseError = error; }
+    this.offEvents(false);
     this.release();
+    var generation = this._resourceGeneration;
     this.scheduleOnce(function () {
-      $z1UIMgr.UIMgr.getInstance().closeUI(o.node, t, e, n, i, a);
+      if (o.isclose && generation === o._resourceGeneration) $z1UIMgr.UIMgr.getInstance().closeUI(o.node, t, e, n, i, a);
     });
+    if (releaseError) throw releaseError;
   };
   _ctor.prototype.closeNotAni = function (t, e, n, i, a) {
     this.openAniType = r.None;
     this.closeUI(t, e, n, i, a);
   };
+  _ctor.prototype.resourceOptions = function (generation) {
+    var owner = this;
+    return { isCurrent: function () { return !owner.isclose && generation === owner._resourceGeneration && cc.isValid(owner, true); } };
+  };
   _ctor.prototype.loadSpriteFrame = function () {
     var t = this;
+    var generation = this._resourceGeneration;
     var e = $z1ArgsParseUtils.ArgsParseUtils._makeloadSpriteFrameResrgs.apply(this, arguments);
+    if (!e) return;
     var n = e.bundle;
     var i = e.path;
     var a = e.callback;
     var o = true;
     var r = e.saveKey;
     if (i.startsWith("http")) {
-      if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
-        console.log("进来了头像：", i);
-        cc.assetManager.loadRemote(i, {
-          ext: ".head"
-        }, function (e, n) {
-          if (!t.isclose && !e) {
-            console.log("头像下载成功：", i);
-            var o = new cc.SpriteFrame(n);
-            a(o);
-          }
-        });
-      } else {
-        cc.assetManager.loadRemote(i, function (e, n) {
-          if (!t.isclose && !e) {
-            var i = new cc.SpriteFrame(n);
-            a(i);
-          }
-        });
-      }
+      this.loadRemoteSpriteFrame(i, a, true, e.cacheTme);
     } else {
       $z1ResourceMgr.ResourceMgr.getInstance().loadSpriteframe(n, i, function (e) {
-        o && t.addRes(n, i, cc.SpriteFrame);
-        t.isclose || a(e);
-      }, o, e.cacheTme, r);
+        o && t.addRes(n, i, cc.SpriteFrame, e, generation);
+        if (!t.isclose && generation === t._resourceGeneration && a) a(e);
+      }, o, e.cacheTme, r, this.resourceOptions(generation));
     }
   };
   _ctor.prototype.loadRemoteSpriteFrame = function (t, e, n, i) {
     var a = this;
+    var generation = this._resourceGeneration;
     undefined === n && (n = true);
     undefined === i && (i = 10);
     $z1ResourceMgr.ResourceMgr.getInstance().loadRemoteSpriteFrame(t, function (i) {
-      n && a.addRes("", t, cc.SpriteFrame);
-      a.isclose || e(i);
-    }, n, i);
+      n && a.addRes("", t, cc.SpriteFrame, i, generation);
+      if (!a.isclose && generation === a._resourceGeneration && e) e(i);
+    }, n, i, this.resourceOptions(generation));
   };
   _ctor.prototype.loadPrefab = function (t, e, n, i, a) {
     var o = this;
+    var generation = this._resourceGeneration;
     undefined === i && (i = true);
     undefined === a && (a = 10);
     $z1ResourceMgr.ResourceMgr.getInstance().loadRes(t, e, cc.Prefab, function (a) {
-      i && o.addRes(t, e, cc.Prefab);
-      o.isclose || n(a);
-    }, i, a);
+      i && o.addRes(t, e, cc.Prefab, a, generation);
+      if (!o.isclose && generation === o._resourceGeneration && n) n(a);
+    }, i, a, this.resourceOptions(generation));
   };
   _ctor.prototype.loadTexture2D = function (t, e, n, i, a) {
     var o = this;
+    var generation = this._resourceGeneration;
     undefined === i && (i = true);
     undefined === a && (a = 10);
     $z1ResourceMgr.ResourceMgr.getInstance().loadRes(t, e, cc.Texture2D, function (a) {
-      i && o.addRes(t, e, cc.Texture2D);
-      o.isclose || n(a);
-    }, i, a);
+      i && o.addRes(t, e, cc.Texture2D, a, generation);
+      if (!o.isclose && generation === o._resourceGeneration && n) n(a);
+    }, i, a, this.resourceOptions(generation));
   };
   _ctor.prototype.loadResFromBundle = function () {
     var t = this;
+    var generation = this._resourceGeneration;
     var e = $z1ArgsParseUtils.ArgsParseUtils._makeLoadResArgs.apply(this, arguments);
+    if (!e) return;
     var n = e.bundle;
     var i = e.path;
     var a = e.callback;
     var o = true;
     var r = e.type;
     $z1ResourceMgr.ResourceMgr.getInstance().loadRes(n, i, r, function (e) {
-      o && t.addRes(n, i, r);
-      t.isclose || a(e);
-    }, o, e.cacheTme, e.saveKey);
+      o && t.addRes(n, i, r, e, generation);
+      if (!t.isclose && generation === t._resourceGeneration && a) a(e);
+    }, o, e.cacheTme, e.saveKey, this.resourceOptions(generation));
   };
   _ctor.prototype.loadFromRes = function (t, e, n, i) {
     var a = this;
+    var generation = this._resourceGeneration;
     undefined === i && (i = 10);
-    $z1ResourceMgr.ResourceMgr.getInstance().loadFromRes(t, e, function (i) {
-      a.addRes("", t, e);
-      a.isclose || n(i);
-    });
+    $z1ResourceMgr.ResourceMgr.getInstance().loadRes("resources", t, e, function (asset) {
+      a.addRes("resources", t, e, asset, generation);
+      if (!a.isclose && generation === a._resourceGeneration && n) n(asset);
+    }, true, i, this.resourceOptions(generation));
   };
-  _ctor.prototype.addRes = function (t, e, n) {
+  _ctor.prototype.addRes = function (t, e, n, asset, generation) {
+    if (this.isclose || generation !== undefined && generation !== this._resourceGeneration) {
+      $z1ResCacheMgr.ResCacheMgr.getInstance().refreshTime([new $z1ResourceMgr.ResCacheKey(t, e, n, asset)]);
+      return;
+    }
     if (this.resArray) {
-      var i = $z1ResCacheMgr.ResCacheMgr.getInstance().isExistKey(t + "/" + e, n.name, this.resArray);
+      var i = $z1ResCacheMgr.ResCacheMgr.getInstance().isExistKey(t + "/" + e, cc.js.getClassName(n), this.resArray, asset);
       if (-1 != i) {
         this.resArray[i].defCount || (this.resArray[i].defCount = 0);
         this.resArray[i].defCount++;
       } else {
-        var a = new $z1ResourceMgr.ResCacheKey(t, e, n);
+        var a = new $z1ResourceMgr.ResCacheKey(t, e, n, asset);
         this.resArray.push(a);
       }
     }
   };
-  _ctor.prototype.release = function () {
-    if (!this.cache && this.resArray) {
+  _ctor.prototype.release = function (force) {
+    if ((!this.cache || force) && this.resArray) {
       $z1ResCacheMgr.ResCacheMgr.getInstance().refreshTime(this.resArray);
       this.resArray = [];
     }
   };
   _ctor.prototype.setListenerUI = function () {};
   _ctor.prototype.onDestroy = function () {
-    var t = this;
-    if (this.eventList && this.eventList.length > 0) {
-      for (var e = 0; e < this.eventList.length; e++) {
-        this.eventList[e].forEach(function (e, n) {
-          $z1EventMgr.EventMgr.getInstance().off(n, t, e);
-        });
-      }
-      this.eventList = null;
-    }
     this.isclose = true;
-    this.release();
+    this._resourceGeneration++;
+    this.offEvents(true);
+    try { this.cancelPendingOpens(); }
+    finally { try { if (this._releaseOpeningInput) this._releaseOpeningInput(); } finally { this.release(true); } }
   };
   _ctor.prototype.T = function (t) {
     return $z1LanguageMgr.LanguageMgr.getInstance().token(t);

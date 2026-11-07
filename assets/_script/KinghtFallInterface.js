@@ -23,6 +23,7 @@ var exp_KinghtFallInterface = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.setBody = function (t) {
     this.body = t;
+    if (this.spAni && cc.resources) require("CharacterAppearance").bind(this, this.navigationTeam === "friendly" ? "ally" : "enemy");
   };
   _ctor.prototype.getBuff = function (t) {
     for (var e = 0; e < this.debuffInfo.length; e++) {
@@ -44,12 +45,19 @@ var exp_KinghtFallInterface = function (t) {
   _ctor.prototype.addBuff = function (t, e) {
     var n = this;
     var i = new exp_KinghtFallEnemyBuffInfo(t, e);
+    var generation = this.node && this.node._combatGeneration;
+    // Pool hits may complete synchronously, so register ownership first.
+    this.debuffInfo.push(i);
     switch (t) {
       case p.AttackSpeed:
         this.body && (this.body.color = new cc.Color().fromHEX("#FF7676"));
         break;
       case p.DamageCut:
         $z1KinghtFallUIGame.default.instance.ctrEffect.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier10Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, function (t) {
+          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || !cc.isValid(n.ndEffect, true) || n._isPooled || n.node._combatGeneration !== generation || n.debuffInfo.indexOf(i) < 0) {
+            $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier10Buff, t);
+            return;
+          }
           t.active = true;
           i.node = t;
           t.setParent(n.ndEffect);
@@ -57,7 +65,6 @@ var exp_KinghtFallInterface = function (t) {
           t.getComponentInChildren(sp.Skeleton).setAnimation(0, n.isBig ? "debuff_da" : "debuff_xiao", true);
         });
     }
-    this.debuffInfo.push(i);
   };
   _ctor.prototype.delBuff = function (t) {
     for (var e = 0; e < this.debuffInfo.length; e++) {
@@ -79,6 +86,7 @@ var exp_KinghtFallInterface = function (t) {
     this.debuffInfo.splice(t, 1);
   };
   _ctor.prototype.delAllBuff = function () {
+    this.releaseHealingEffects();
     this.body && (this.body.color = cc.Color.WHITE);
     for (var t = 0; t < this.debuffInfo.length; t++) {
       var e = this.debuffInfo[t];
@@ -91,6 +99,9 @@ var exp_KinghtFallInterface = function (t) {
     }
     this.ndEffect.removeAllChildren();
     this.debuffInfo = [];
+  };
+  _ctor.prototype.releaseHealingEffects = function () {
+    if (this._healingEffects) this._healingEffects.forEach(function (release) { release(); });
   };
   cc__decorate([ccp_property({
     type: cc.Node,

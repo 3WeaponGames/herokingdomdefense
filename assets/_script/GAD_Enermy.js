@@ -162,7 +162,9 @@ var def_GAD_Enermy = function (t) {
   };
   _ctor.prototype.playAttack = function (t, e) {
     var n = this;
-    this._isAttack || this.ani.playAttack(function () {
+    if (this._isAttack) return;
+    this._isAttack = true;
+    this.ani.playAttack(function () {
       e && e();
     }, function () {
       n._isAttack = false;

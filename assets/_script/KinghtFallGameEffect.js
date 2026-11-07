@@ -49,8 +49,7 @@ var def_KinghtFallGameEffect = function (t) {
       i(a);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, $z1KinghtFallConfig.KinghtFallPrefabName.EffectEnemyAttack, function (t) {
-        a = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool($z1KinghtFallConfig.KinghtFallPoolName.EnemyAttack, cc.instantiate(t), 10);
+        a = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab($z1KinghtFallConfig.KinghtFallPoolName.EnemyAttack, t, 10);
         i(a);
       });
     }
@@ -74,8 +73,7 @@ var def_KinghtFallGameEffect = function (t) {
       i(a);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, $z1KinghtFallConfig.KinghtFallPrefabName.EffectEnemyDead, function (t) {
-        a = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool($z1KinghtFallConfig.KinghtFallPoolName.EnemyDead, cc.instantiate(t), 10);
+        a = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab($z1KinghtFallConfig.KinghtFallPoolName.EnemyDead, t, 10);
         i(a);
       });
     }
@@ -98,8 +96,7 @@ var def_KinghtFallGameEffect = function (t) {
       a(o);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, e, function (t) {
-        o = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool(n, cc.instantiate(t), 10);
+        o = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(n, t, 10);
         a(o);
       });
     }
@@ -122,8 +119,7 @@ var def_KinghtFallGameEffect = function (t) {
       a(o);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, e, function (t) {
-        o = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool(n, cc.instantiate(t), 10);
+        o = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(n, t, 10);
         a(o);
       });
     }
@@ -146,8 +142,7 @@ var def_KinghtFallGameEffect = function (t) {
       o(r);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, e, function (t) {
-        r = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool(n, cc.instantiate(t), 10);
+        r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(n, t, 10);
         o(r);
       });
     }
@@ -158,8 +153,7 @@ var def_KinghtFallGameEffect = function (t) {
       n(i);
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, t, function (t) {
-        i = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool(e, cc.instantiate(t), 10);
+        i = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(e, t, 10);
         n(i);
       });
     }

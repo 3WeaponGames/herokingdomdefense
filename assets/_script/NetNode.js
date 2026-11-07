@@ -56,7 +56,16 @@ var exp_NetNode = function () {
     this.onServerStatus = t;
   };
   _ctor.prototype.connect = function (t) {
-    return !(!this._socket || this._state != a.Closed || (this._isSocketInit || this.initSocket(), this._state = a.Connecting, this._socket.connect(t) ? (null == this._connectOptions && (this._autoReconnect = t.autoReconnect), this._connectOptions = t, console.log("NetNode start socket"), this.updateNetTips(i.Connecting, true), 0) : (this.updateNetTips(i.Connecting, false), 1)));
+    if (!this._socket || this._state !== a.Closed) return false;
+    if (this._reconnectTimer !== null) { clearTimeout(this._reconnectTimer); this._reconnectTimer = null; }
+    if (!this._isSocketInit) this.initSocket();
+    this._state = a.Connecting; this._intentionalClose = false;
+    this._connectionGeneration = (this._connectionGeneration || 0) + 1;
+    var accepted;
+    try { accepted = this._socket.connect(t); } catch (error) { this.onError(error); }
+    if (!accepted) { this._state = a.Closed; this._isSocketOpen = false; this.updateNetTips(i.Connecting, false); return false; }
+    if (this._connectOptions === null) this._autoReconnect = t.autoReconnect || 0;
+    this._connectOptions = t; this.updateNetTips(i.Connecting, true); return true;
   };
   _ctor.prototype.initSocket = function () {
     var t = this;
@@ -87,18 +96,23 @@ var exp_NetNode = function () {
   };
   _ctor.prototype.onConnected = function () {
     var t = this;
+    if (this._intentionalClose) return;
+    var generation = this._connectionGeneration;
     this.onServerStatus && this.onServerStatus(0);
+    if (this._intentionalClose || generation !== this._connectionGeneration) return;
     console.log("NetNode onConnected!");
     this._isSocketOpen = true;
     if (null !== this._connectedCallback) {
       this._state = a.Checking;
       this._connectedCallback(function () {
-        t.onChecked();
+        if (!t._intentionalClose && generation === t._connectionGeneration && t._state === a.Checking) t.onChecked();
       });
     } else {
       this.onChecked();
     }
     console.log("NetNode onConnected! state =" + this._state);
+    if (this._intentionalClose || generation !== this._connectionGeneration || !this._isSocketOpen) return;
+    if (this._SeedTimer !== null) clearInterval(this._SeedTimer);
     this._SeedTimer = setInterval(function () {
       t._needFixSeedHeard && t.send(t._protocolHelper.getHearbeat());
     }, this._fixtime);
@@ -112,17 +126,18 @@ var exp_NetNode = function () {
     if (this._requests.length > 0) {
       for (var t = 0; t < this._requests.length;) {
         var e = this._requests[t];
-        this._socket.send(e.buffer);
+        if (!this._socket.send(e.buffer)) break;
         if (null == e.rspObject || e.rspCmd <= 0) {
           this._requests.splice(t, 1);
         } else {
           ++t;
         }
       }
-      this.updateNetTips(i.Requesting, this.request.length > 0);
+      this.updateNetTips(i.Requesting, this._requests.length > 0);
     }
   };
   _ctor.prototype.onMessage = function (t) {
+    if (this._intentionalClose) return;
     if (this._protocolHelper.checkPackage(t)) {
       this.resetReceiveMsgTimer();
       this.resetFixSeedMsgTimer();
@@ -133,8 +148,8 @@ var exp_NetNode = function () {
           var a = this._requests[n];
           if (a.rspCmd == e) {
             console.log("NetNode execute request rspcmd " + e);
-            this._callbackExecuter(a.rspObject, t);
             this._requests.splice(parseInt(n), 1);
+            this._callbackExecuter(a.rspObject, t);
             break;
           }
         }
@@ -144,8 +159,9 @@ var exp_NetNode = function () {
       var o = this._listener[e];
       if (null != o) {
         var r = 0;
-        for (var s = o; r < s.length; r++) {
+        for (var s = o.slice(); r < s.length; r++) {
           var l = s[r];
+          if (this._listener[e] !== o || o.indexOf(l) < 0) continue;
           console.log("NetNode execute listener cmd " + e);
           this._callbackExecuter(l, t);
         }
@@ -160,17 +176,26 @@ var exp_NetNode = function () {
   };
   _ctor.prototype.onClosed = function () {
     var t = this;
+    var generation = this._connectionGeneration;
     this.clearTimer();
+    this._isSocketOpen = false;
+    this._state = a.Closed;
     this.onServerStatus && this.onServerStatus(-1);
+    if (generation !== this._connectionGeneration || this._intentionalClose) return;
     console.log("socket closed......");
-    if (!this._disconnectCallback || this._disconnectCallback()) {
+    var reconnect = !this._disconnectCallback || this._disconnectCallback();
+    if (generation !== this._connectionGeneration || this._intentionalClose) return;
+    if (reconnect) {
       if (this.isAutoReconnect()) {
         this.updateNetTips(i.ReConnecting, true);
+        if (generation !== this._connectionGeneration || this._intentionalClose || !this.isAutoReconnect()) return;
         this._reconnectTimer = setTimeout(function () {
-          t._socket.close();
-          t._state = a.Closed;
-          t.connect(t._connectOptions);
+          if (generation !== t._connectionGeneration || t._intentionalClose || !t.isAutoReconnect()) return;
+          t._reconnectTimer = null;
+          // onClosed already owns the closed socket; closing it again can invoke
+          // another status callback and replace this connection mid-retry.
           t._autoReconnect > 0 && (t._autoReconnect -= 1);
+          t.connect(t._connectOptions);
         }, this._reconnetTimeOut);
       } else {
         this._state = a.Closed;
@@ -180,6 +205,12 @@ var exp_NetNode = function () {
     }
   };
   _ctor.prototype.close = function (t, e) {
+    this._intentionalClose = true;
+    this._connectionGeneration = (this._connectionGeneration || 0) + 1;
+    this._isSocketOpen = false;
+    this._autoReconnect = 0;
+    this._connectOptions = null;
+    this._state = a.Closed;
     this.clearTimer();
     this._listener = {};
     this._requests.length = 0;
@@ -316,10 +347,13 @@ var exp_NetNode = function () {
     }, this._heartTime);
   };
   _ctor.prototype.clearTimer = function () {
-    null !== this._SeedTimer && clearTimeout(this._SeedTimer);
+    null !== this._SeedTimer && clearInterval(this._SeedTimer);
+    null !== this._fixSeedTimer && clearTimeout(this._fixSeedTimer);
     null !== this._receiveMsgTimer && clearTimeout(this._receiveMsgTimer);
     null !== this._keepAliveTimer && clearTimeout(this._keepAliveTimer);
     null !== this._reconnectTimer && clearTimeout(this._reconnectTimer);
+    this._SeedTimer = this._fixSeedTimer = this._receiveMsgTimer = this._keepAliveTimer = this._reconnectTimer = null;
+    this._needFixSeedHeard = true;
   };
   _ctor.prototype.isAutoReconnect = function () {
     return 0 != this._autoReconnect;

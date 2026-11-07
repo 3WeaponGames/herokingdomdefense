@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.Platform4399Manager = undefined;
 var exp_Platform4399Manager = function () {
   function _ctor() {}
-  _ctor.prototype.checkShortcut = function () {};
-  _ctor.prototype.addShortcut = function () {};
+  _ctor.prototype.checkShortcut = function (t, callback) { callback && callback(false); };
+  _ctor.prototype.addShortcut = function (t, callback) { callback && callback(false); };
   _ctor.prototype.setCharts = function () {};
   _ctor.prototype.getCharts = function () {};
-  _ctor.prototype.getLaunchOptionsSync = function () {};
+  _ctor.prototype.getLaunchOptionsSync = function (callback) { callback && callback(null); };
   _ctor.prototype.canShare = function () {
     return false;
   };
@@ -24,7 +24,7 @@ var exp_Platform4399Manager = function () {
   _ctor.prototype.toAppStore = function () {};
   _ctor.prototype.openNotify = function () {};
   _ctor.prototype.shareImg = function () {};
-  _ctor.prototype.getUserInfo = function () {};
+  _ctor.prototype.getUserInfo = function (callback) { callback && callback(null, null); };
   _ctor.prototype.hdieBlockAd = function () {};
   _ctor.prototype.androidAdCallBack = function () {};
   _ctor.prototype.initNativeAd = function () {};

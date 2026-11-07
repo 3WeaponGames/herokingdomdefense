@@ -2,6 +2,7 @@
 // Exercise persistent army orders through the shipped controller and soldier AI.
 const assert = require('node:assert/strict');
 const { environment, Node, Vec2, PhysicsBoxCollider, PhysicsPolygonCollider, PolygonCollider, installIntersection, map01GateEnvironment, distance, near } = require('./runtime-harness.cjs');
+const { NavigationGrid } = require('../../assets/_script/NavigationGrid');
 let passed = 0;
 function test(name, run) { run(); passed++; console.log('PASS ' + name); }
 function soldier(e, x = -100, y = 0, n = 1) {
@@ -25,6 +26,12 @@ function rally(e, point) {
   e.game.rallyPoint = { index: 7, pos: { x: point.x, y: point.y } };
   e.game.isAgg = false;
   e.game.gameData.soldiers.forEach(unit => unit.applyArmyOrder(e.game));
+}
+function gateApproaches(e, nav, gate) {
+  const bounds = nav.grid.bounds;
+  // Measure gate clearance independently of the map-edge body clearance.
+  return new NavigationGrid(gate.getNavigationGateShapes().map(shape => shape.points.map(point => e.game.ndMain.convertToNodeSpaceAR(point))),
+    { minX: bounds.minX - 100, minY: bounds.minY - 100, maxX: bounds.maxX + 100, maxY: bounds.maxY + 100 }, 80);
 }
 
 test('Rally placement persists with no army and new or revived soldiers inherit the current destination', () => {
@@ -338,10 +345,12 @@ test('Crowded Map01 orders reserve distinct body-clear destinations on the reque
     rally(e, anchor); e.nav.beginFrame(e.game);
     const nav = e.nav.get(e.game), units = e.game.gameData.soldiers;
     const slots = units.map(unit => e.game.getArmyOrderGoal(unit, anchor));
+    const approaches = gateApproaches(e, nav, gate);
     assert(slots.every(slot => slot && slot.pos), 'formation left soldiers waiting for slots: ' + level + '/' + count + '/' + anchor.y);
     slots.forEach((slot, i) => {
       assert(nav.grid.isWalkable(slot.pos, nav.radius(units[i])), 'formation chose terrain or an intact gate leaf');
       assert(nav.grid.segmentClear(anchor, slot.pos, 0), 'formation chose the wrong side of a gate');
+      assert(approaches.isWalkable(slot.pos, slot.radius * 2 + 8 - 1e-6), 'formation parked a body in the protected gate approach');
       assert(distance(anchor, slot.pos) <= 480);
       if (level === 3 && count === 60) {
         const start = anchor.y === 600 ? { x: -600, y: 940 } : { x: -300, y: 600 };
@@ -351,6 +360,61 @@ test('Crowded Map01 orders reserve distinct body-clear destinations on the reque
     });
     assert.equal(nav.stats.searches, 0, 'assigning formation slots issued per-unit path searches');
   }
+});
+
+test('Live Map01 gate contact positions receive destinations beyond the protected approach', () => {
+  const e = map01GateEnvironment(3), game = controller(e), anchor = { x: -300, y: 600 };
+  game.ctrPlay.node.setPosition(anchor);
+  const observed = [{ x: -385.29912398256045, y: 731.6858574673008 }, { x: -371.2131780856619, y: 722.6605702858508 }];
+  const badGoal = { x: -376, y: 731.6358613752346 };
+  const units = [];
+  for (let i = 0; i < 60; i++) {
+    const point = observed[i] || anchor, unit = soldier(e, point.x, point.y, 3);
+    unit.node.addComponent(PhysicsPolygonCollider).points = [new Vec2(-15, 3), new Vec2(0, -5), new Vec2(15, 3), new Vec2(0, 11)];
+    units.push(unit);
+  }
+  rally(e, anchor); e.nav.beginFrame(game);
+  const nav = e.nav.get(game), gate = game.gameData.buildings.find(building => building.node.name === '17-cq');
+  const slots = units.map(unit => game.getArmyOrderGoal(unit, anchor));
+  const approaches = gateApproaches(e, nav, gate);
+  assert(nav.grid.isWalkable(badGoal, 20), 'recorded failure depended on a statically reachable goal');
+  assert(!approaches.isWalkable(badGoal, 48), 'recorded goal was outside the protected approach');
+  assert.equal(game.settleArmyCrowd(units[1], observed[1]), false, 'recovery must not accept resting inside the gate approach');
+  // A layout recheck must also remove a previously retained unsafe slot.
+  game._armyFormation.slots.set(units[1], { pos: badGoal, radius: 20 });
+  game._armyFormation.revision--;
+  e.nav.beginFrame(game);
+  const reassigned = units.map(unit => game.getArmyOrderGoal(unit, anchor));
+  assert(reassigned.every(slot => slot && slot.pos && approaches.isWalkable(slot.pos, 48)));
+  assert(distance(reassigned[1].pos, badGoal) > 1, 'retained slot kept directing its owner into the gate approach');
+  for (let i = 0; i < 2; i++) {
+    assert(nav.gridFor(units[i]).findPath(observed[i], reassigned[i].pos, 20), 'live contact position lost its safe exit route');
+    advance(e, units[i], 300);
+    assert.equal(units[i].state, 0, 'unit did not finish its route away from the gate approach');
+    assert(approaches.isWalkable(units[i].node.position, 48));
+  }
+  assert(slots.every(slot => slot && slot.pos), 'new layout lost army capacity');
+});
+
+test('Gate approach reservations preserve lone-unit orders and release destroyed gates', () => {
+  const e = map01GateEnvironment(3), game = controller(e), anchor = { x: -376, y: 731.6358613752346 };
+  game.ctrPlay.node.setPosition(anchor);
+  const first = soldier(e, -371, 722, 3);
+  first.node.addComponent(PhysicsPolygonCollider).points = [new Vec2(-15, 3), new Vec2(0, -5), new Vec2(15, 3), new Vec2(0, 11)];
+  assert.equal(game.getArmyOrderGoal(first, anchor), null, 'a lone soldier lost its exact command destination');
+  const second = soldier(e, -380, 700, 3);
+  second.node.addComponent(PhysicsPolygonCollider).points = [new Vec2(-15, 3), new Vec2(0, -5), new Vec2(15, 3), new Vec2(0, 11)];
+  rally(e, anchor); e.nav.beginFrame(game);
+  const nav = e.nav.get(game), gate = game.gameData.buildings.find(building => building.node.name === '17-cq');
+  const intact = [first, second].map(unit => game.getArmyOrderGoal(unit, anchor));
+  const approaches = gateApproaches(e, nav, gate), shapes = gate.getNavigationGateShapes();
+  assert(intact.every(slot => approaches.isWalkable(slot.pos, 48)));
+  shapes.forEach(shape => { shape.collider.enabled = false; });
+  gate.getNavigationGateShapes = () => [];
+  game.applyArmyOrder(); e.nav.beginFrame(game);
+  const destroyed = [first, second].map(unit => game.getArmyOrderGoal(unit, anchor));
+  assert(destroyed.every(slot => slot && slot.pos && nav.grid.isWalkable(slot.pos, 20)));
+  assert(destroyed.some(slot => !approaches.isWalkable(slot.pos, 48)), 'a destroyed gate kept reserving its old approach');
 });
 
 test('Formation slots survive death, revival and newcomers without renumbering existing soldiers', () => {

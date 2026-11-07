@@ -21,7 +21,7 @@ var exp_EditorManager = function () {
   _ctor.prototype.getEnableRemoteCfg = function () {
     return this.enableRemoteCfg;
   };
-  _ctor.prototype.getLaunchOptionsSync = function () {};
+  _ctor.prototype.getLaunchOptionsSync = function (callback) { callback && callback(null); };
   _ctor.prototype.getCode = function () {
     return "";
   };
@@ -31,16 +31,16 @@ var exp_EditorManager = function () {
   _ctor.prototype.toAppStore = function () {};
   _ctor.prototype.openNotify = function () {};
   _ctor.prototype.shareImg = function () {};
-  _ctor.prototype.getUserInfo = function () {};
+  _ctor.prototype.getUserInfo = function (callback) { callback && callback(null, null); };
   _ctor.prototype.getIsZhiTouUser = function () {
     return false;
   };
-  _ctor.prototype.checkCanOpenSideBar = function () {};
-  _ctor.prototype.openSideBar = function () {};
+  _ctor.prototype.checkCanOpenSideBar = function (callback) { callback && callback(false); };
+  _ctor.prototype.openSideBar = function (callback) { callback && callback(false); };
   _ctor.prototype.isFromBroadside = function () {
     return true;
   };
-  _ctor.prototype.playMultitonVideo = function () {};
+  _ctor.prototype.playMultitonVideo = function (t, e, n, success, failure) { failure && failure(); return false; };
   _ctor.prototype.checkShortcut = function (t, e) {
     e && e(false);
   };

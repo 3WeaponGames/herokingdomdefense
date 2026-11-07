@@ -95,10 +95,10 @@ function run(request, host) {
         let record=user.getTreasureLevel(relic.ID), remaining=amount, isNew=!record;
         record=record?clone(record):{id:relic.ID,level:1,frame:0};
         if(isNew)remaining--;
-        const capacity=relic.levelInfo.slice(record.level-1).reduce((sum,l)=>sum+Number(l.PieceCost),0);
-        // The current authored last levels omit PieceCost. The original loop
-        // then produces NaN and never converts duplicates; retain that behavior.
-        const fragments=Number.isFinite(capacity)?Math.min(remaining,Math.max(0,capacity-record.frame)):remaining;
+        // The final level has no next upgrade. Match PlayerMgr's remaining
+        // upgrade capacity without visiting an undefined final PieceCost.
+        const capacity=relic.levelInfo.slice(Math.max(1,record.level)-1,-1).reduce((sum,l)=>sum+Number(l.PieceCost),0);
+        const fragments=Math.min(remaining,Math.max(0,capacity-record.frame));
         record.frame+=fragments;
         remaining-=fragments;
         user.setTreasureLevel(record);

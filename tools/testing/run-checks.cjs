@@ -9,7 +9,12 @@ function walk(dir) {
     return item.isDirectory() ? walk(file) : [file];
   });
 }
-const tests = [...walk('tools'), ...walk('packages/localization-editor/test')].filter(file => /(?:\.test\.c?js|test\.js)$/.test(file)).sort();
+function discoverTests() {
+  return ['tools', 'packages/localization-editor/test', 'packages/game-data-editor/test', 'packages/game-data-editor/testing']
+    .flatMap(walk).filter(file => /(?:\.test\.c?js|test\.js)$/.test(file)).sort();
+}
+function run() {
+const tests = discoverTests();
 const checks = [
   ['--test', ...tests],
   ['tools/localization/test-migrated-runtime.cjs'],
@@ -29,3 +34,6 @@ for (const args of checks) {
 }
 console.log(`\n${checks.length - failed}/${checks.length} check groups passed.`);
 process.exitCode = failed ? 1 : 0;
+}
+module.exports = { discoverTests };
+if (require.main === module) run();

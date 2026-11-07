@@ -54,14 +54,24 @@ var def_KinghtFallEnemyItem09 = function (t) {
         return "break";
       }
       n.enemy.addHpPro(o.cfg.Data[0]);
+      var generation = n.enemy.node._combatGeneration;
       $z1KinghtFallUIGame.default.instance.ctrEffect.onBuff($z1KinghtFallConfig.KinghtFallPrefabName.EffectSoldier9Buff, $z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff, function (t) {
+        var target = n.enemy, pool = $z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff;
+        if (!cc.isValid(target, true) || !cc.isValid(target.node, true) || !cc.isValid(target.ndEffect, true) || target.isDestroy || target._isPooled || target.isDead() || target.node._combatGeneration !== generation) {
+          $z1PoolMgr.PoolMgr.getInstance().freeNode(pool, t);
+          return;
+        }
+        var releases = target._healingEffects || (target._healingEffects = new Set());
+        var e = t.getComponentInChildren(sp.Skeleton);
+        function release() {
+          if (!releases.delete(release)) return;
+          if (cc.isValid(e, true)) e.setCompleteListener(null);
+          if (cc.isValid(t, true)) $z1PoolMgr.PoolMgr.getInstance().freeNode(pool, t);
+        }
+        releases.add(release);
         t.setParent(n.enemy.ndEffect);
         t.setPosition(0, 0, 0);
-        var e = t.getComponentInChildren(sp.Skeleton);
-        e.setCompleteListener(function () {
-          $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.Soldier9Buff, t);
-          e.setCompleteListener(null);
-        });
+        e.setCompleteListener(release);
         e.setAnimation(0, "attack", true);
       });
     };

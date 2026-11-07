@@ -8,20 +8,26 @@ var exp_PoolNode = function () {
     this._createCount = 0;
     this._warterMark = 50;
     this._node = null;
+    this._ownsTemplate = false;
     this._nodes = new cc.NodePool();
+    this._returned = new WeakSet();
   }
-  _ctor.prototype.init = function (t, e) {
+  _ctor.prototype.init = function (t, e, ownsTemplate) {
     this._node = t;
+    this._ownsTemplate = ownsTemplate === undefined ? t instanceof cc.Node && !t.parent : !!ownsTemplate;
     this._isReady = true;
     for (var n = 0; n < e; n++) {
       var i = cc.instantiate(t);
       this._createCount++;
       this._nodes.put(i);
+      this._returned.add(i);
     }
   };
   _ctor.prototype.getNode = function () {
     if (this._nodes.size() > 0) {
-      return this._nodes.get();
+      var node = this._nodes.get();
+      if (node) this._returned.delete(node);
+      return node;
     } else {
       if (this._node && cc.isValid(this._node)) {
         return this._createCount++, cc.instantiate(this._node);
@@ -32,12 +38,14 @@ var exp_PoolNode = function () {
   };
   _ctor.prototype.freeNode = function (t) {
     if (t && cc.isValid(t)) {
-      if (this._warterMark < this._nodes.size()) {
+      if (this._returned.has(t)) return;
+      if (this._nodes.size() >= this._warterMark || !this._isReady) {
         this._createCount--;
         t.destroy();
       } else {
         t.removeFromParent();
         this._nodes.put(t);
+        this._returned.add(t);
       }
     } else {
       this._createCount--;
@@ -48,11 +56,11 @@ var exp_PoolNode = function () {
   };
   _ctor.prototype.destory = function () {
     this._createCount -= this._nodes.size();
-    for (var t = 0; t < this._nodes.size(); t++) {
-      var e = this._nodes.get(t);
-      e && e.destroy();
-    }
     this._nodes.clear();
+    if (this._ownsTemplate && cc.isValid(this._node)) this._node.destroy();
+    this._node = null;
+    this._isReady = false;
+    this._returned = new WeakSet();
   };
   return _ctor;
 }();
@@ -65,7 +73,7 @@ var exp_PoolMgr = function () {
     null == this.instance && (this.instance = new t());
     return this.instance;
   };
-  t.prototype.creatrePool = function (t, e, n) {
+  t.prototype.creatrePool = function (t, e, n, ownsTemplate) {
     undefined === n && (n = 1);
     if (this.poolMap.has(t)) {
       var a = this.poolMap.get(t);
@@ -73,7 +81,7 @@ var exp_PoolMgr = function () {
       a = null;
     }
     var o = new exp_PoolNode();
-    e && o.init(e, n);
+    e && o.init(e, n, ownsTemplate);
     this.poolMap.set(t, o);
   };
   t.prototype.getNode = function (t) {
@@ -89,6 +97,13 @@ var exp_PoolMgr = function () {
   };
   t.prototype.checkHasPool = function (t) {
     return this.poolMap.has(t);
+  };
+  t.prototype.getNodeFromPrefab = function (key, prefab, warmCount) {
+    // Another load callback can fill this pool before the prefab is delivered.
+    var node = this.getNode(key);
+    if (node) return node;
+    this.creatrePool(key, cc.instantiate(prefab), warmCount, true);
+    return cc.instantiate(prefab);
   };
   t.prototype.freeNode = function (t, e) {
     if (this.poolMap.has(t)) {

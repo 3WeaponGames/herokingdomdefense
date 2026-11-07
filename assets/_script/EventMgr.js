@@ -6,6 +6,7 @@ var exp_Listener = function () {
   function _ctor(t, e) {
     this.mListener = e;
     this.mtarget = t;
+    this.active = true;
   }
   Object.defineProperty(_ctor.prototype, "listener", {
     get: function () {
@@ -26,7 +27,7 @@ var exp_Listener = function () {
 exports.Listener = exp_Listener;
 var exp_EventMgr = function () {
   function t() {
-    this.global_event_list = new Array();
+    this.global_event_list = Object.create(null);
   }
   t.getInstance = function () {
     null == this.instance && (this.instance = new t());
@@ -58,20 +59,28 @@ var exp_EventMgr = function () {
   };
   t.prototype.off = function (t, e, n) {
     if (null != t && null != n && null != this.global_event_list[t]) {
-      for (var i = 0; i < this.global_event_list[t].length; i++) {
-        this.global_event_list[t][i].listener == n && this.global_event_list[t][i].target == e && this.global_event_list[t].splice(i, 1);
+      for (var i = this.global_event_list[t].length - 1; i >= 0; i--) {
+        var listener = this.global_event_list[t][i];
+        if (listener.listener == n && listener.target == e) {
+          listener.active = false;
+          this.global_event_list[t].splice(i, 1);
+        }
       }
     }
   };
   t.prototype.removeAll = function () {
-    this.global_event_list = new Array();
+    this.global_event_list = Object.create(null);
   };
   t.prototype.emit = function (t, e, n, i, a, o, r) {
     if (null != t) {
       if (null != this.global_event_list[t]) {
-        for (var s = 0; s < this.global_event_list[t].length; s++) {
-          var l = this.global_event_list[t][s];
-          l && l.listener.call(l.target, e, n, i, a, o, r);
+        var source = this.global_event_list[t];
+        var listeners = source.slice();
+        for (var s = 0; s < listeners.length; s++) {
+          var l = listeners[s];
+          // Removal during dispatch must not shift the next subscriber, and
+          // subscriptions added by a callback begin with the next emission.
+          if (l.active && this.global_event_list[t] === source) l.listener.call(l.target, e, n, i, a, o, r);
         }
       }
     } else {

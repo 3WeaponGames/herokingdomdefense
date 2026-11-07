@@ -466,13 +466,19 @@ function functionAt(source, marker) {
 
 test('UIGame settles the ancestor Widget before activating map Rigidbody components', () => {
   const source = fs.readFileSync(path.join(sourceDir, 'KinghtFallUIGame.js'), 'utf8');
-  const callback = functionAt(source, 'this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconMap');
+  const start = functionAt(source, '_ctor.prototype.start = function');
   let aligned = false, activated = false;
-  const t = { ndCtrGame: { getComponent: () => ({ updateAlignment() { aligned = true; } }) },
-    ctrGame: { initMap() {}, ndUI: {}, ndPath: {}, gameData: { upMap() {}, initCom() {} }, onLateUpdate() {}, loadGame: () => false },
-    ctrEffect: { initData() {} }, sendEvent() {}, initBtnView() {}, ctrUI: { ndGuide: { setParent() {} } } };
   const cc = { Widget: function () {}, instantiate() { assert(aligned, 'Map instantiated before parent/ancestor layout'); return { setParent() { activated = true; assert(aligned); } }; } };
-  vm.runInNewContext('(' + callback + ')', { t, cc, $z1Appcfg: { BaseEventName: {} } })({});
+  const game = { initData() {}, initMap() {}, ndUI: {}, ndPath: {}, gameData: { upMap() {}, initCom() {} }, onLateUpdate() {}, loadGame: () => false };
+  const ui = { ndCtrGame: { getComponent: Type => Type === cc.Widget ? { updateAlignment() { aligned = true; } } : game },
+    btnAgg: { getChildByName: () => ({}) }, initBtnEvent() {}, initEvent() {}, initView() {}, initBtnView() {},
+    loadPrefab(bundle, name, callback) { assert.equal(name, 'Map01'); callback({}); },
+    ctrEffect: { initData() {} }, sendEvent() {}, ctrUI: { ndGuide: { setParent() {} } } };
+  const context = { cc, $z1Appcfg: { BaseEventName: {} }, TestMode: { getInstance: () => ({ setGameplayTarget() {} }) },
+    $z1KinghtFallConfig: { KinghtFallAudioId: {}, KinghtFallParameter: {}, KinghtFallBundelName: {} },
+    $z1AudioMgr: { AudioMgr: { getInstance: () => ({ playMusic() {} }) } }, $z1KinghtFallGameCtrl: { default: function () {} },
+    $z1KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getLevelCfgById: () => ({ prefab: 'Map01' }) }) } } };
+  vm.runInNewContext('(' + start + ')', context).call(ui);
   assert(activated);
 });
 
@@ -505,12 +511,32 @@ if (fs.existsSync(engineBodyFile)) {
     canvas.y -= 50; physics.update(1 / 60); near(gate.node.y, 703.474); near(wall.node.y, -42.225);
     // Unchanged ancestors must not overwrite normal body simulation each tick.
     gate.rigidBody._b2Body.pos.x += 5 / 32; physics.update(1 / 60); near(gate.node.x, -453.39 + 5);
-    let applied = 0; const collider = terrain.node.addComponent(PhysicsBoxCollider); collider.apply = () => { applied++; };
+    let applied = 0; const collider = terrain.node.addComponent(PhysicsBoxCollider); collider.enabledInHierarchy = collider._inited = true; collider.apply = () => { applied++; };
     canvas.scaleX = canvas.scaleY = 1.1; physics.update(1 / 60); near(terrain.node.y, 1495.705); assert.equal(applied, 1);
     ctrl._bindMapPhysics(map); assert.equal(physics.listeners.length, 1);
     ctrl.onDestroy(); assert.equal(physics.listeners.length, 0); assert.equal(ctrl.baseDestroyed, true);
   });
 } else console.log('SKIP installed-engine physics regression: set COCOS_ENGINE_DIR to a Creator 2.4.13 engine checkout.');
+
+test('Ancestor scaling reapplies live collider shapes without resurrecting disabled, inactive or pending fixtures', () => {
+  const e = environment(), map = e.game.ndMain, unit = e.unit(20, 30);
+  const ctrl = new (e.load('KinghtFallGameCtrl').default)();
+  const calls = [];
+  for (const [name, enabled, active, initialized] of [
+    ['live', true, true, true], ['open gate', false, false, false],
+    ['inactive component', true, false, true], ['pending init', true, true, false]
+  ]) {
+    const collider = unit.node.addComponent(PhysicsBoxCollider);
+    Object.assign(collider, {enabled, enabledInHierarchy: active, _inited: initialized, apply() { calls.push(name); }});
+  }
+  ctrl._bindMapPhysics(map);
+  map.scaleX = 1.2; map.scaleY = .8;
+  e.physics.emit('before-step');
+  assert.deepEqual(calls, ['live'], 'apply creates fixtures regardless of component enabled state in Creator2.4');
+  e.physics.emit('before-step');
+  assert.deepEqual(calls, ['live'], 'unchanged ancestors must not rebuild fixtures again');
+  ctrl.onDestroy();
+});
 
 test('Permanent combat buffs survive updates; timed buffs expire without removing adjacent permanent buffs', () => {
   for (const name of ['KinghtFallSoldierBase', 'KinghtFallEnemyBase']) {

@@ -184,8 +184,13 @@ function mergeCSV(catalog, text) {
         const key = row[0];
         if (!safeKey(key) || seen.has(key)) throw new Error('Invalid or duplicate key in CSV: ' + key);
         seen.add(key);
-        if (!own(next.entries, key)) next.entries[key] = { context: 'Imported from CSV' };
-        header.forEach((column, i) => { if (column !== 'key') next.entries[key][column] = row[i]; });
+        const isNew = !own(next.entries, key);
+        if (isNew) next.entries[key] = { context: 'Imported from CSV' };
+        const entry = next.entries[key];
+        header.forEach((column, i) => {
+            // An empty exported cell also represents an omitted optional field.
+            if (column !== 'key' && (isNew || row[i] !== '' || own(entry, column))) entry[column] = row[i];
+        });
     });
     structure(next);
     return { catalog: next, count: rows.length };

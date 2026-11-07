@@ -22,6 +22,10 @@ var exp_BaseData = function () {
     this.invertTime = $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT ? 30 : 10;
     this.savetimeKey = "sft";
     this.preTime = 0;
+    this._cloudGeneration = 0;
+    this._cloudRevision = 0;
+    this._cloudRequest = null;
+    this._cloudRetryAt = 0;
   }
   _ctor.prototype.getData = function () {
     var t = this;
@@ -31,14 +35,16 @@ var exp_BaseData = function () {
         t.pause = e;
       });
       setInterval(function () {
+        if (t.clearPending) { t.clearData(); return; }
         if (t.localSavePending && t.data) t.saveData();
         if (t.isneedSave && t.data) {
           var e = t.preTime;
           var n = Number((new Date().getTime() / 1e3).toFixed(0));
-          e && n - e >= t.invertTime && t.UpdateData();
+          (!e || n - e >= t.invertTime) && t.UpdateData();
         }
       }, 1e3);
       cc.game.on(cc.game.EVENT_HIDE, function () {
+        if (t.clearPending) { t.clearData(); return; }
         if (t.localSavePending && t.data) t.saveData();
         if (t.isneedSave && t.data) {
           t.preTime = 0;
@@ -52,6 +58,7 @@ var exp_BaseData = function () {
   };
   _ctor.prototype.loaddata = function (t, e, n) {
     undefined === n && (n = true);
+    if (n) this.invalidateCloudSaves();
     var a = null;
     var o = null;
     var r = null;
@@ -73,7 +80,9 @@ var exp_BaseData = function () {
       c = this.readSaveRecord(h, e, "local", this.ecrypt);
       !Array.isArray(c) && c && (r = c[this.savetimeKey]);
     }
-    if (r && o && r > o) {
+    // Cloud writes are throttled; several local changes can share one second.
+    // A matching timestamp must not replace those changes with the older upload.
+    if (r && o && r >= o) {
       a = c;
       if (n) {
         this.data = a, this.initData(false);
@@ -161,7 +170,7 @@ var exp_BaseData = function () {
   _ctor.prototype.initData = function () {};
   _ctor.prototype.saveData = function () {
     if (this.deferSave) return true;
-    if (!this.pause && !this.saveBlockedByRecovery) {
+    if (!this.pause && !this.saveBlockedByRecovery && !this.clearPending) {
       this.data[this.savetimeKey] = Number((new Date().getTime() / 1e3).toFixed(0));
       var t = JSON.stringify($z1Utils.Utils.renameObjectKeys(this.data, this.aliseMap));
       $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WEB_LINK && (this.gameKey = this.gameKey.replace($z1Config.GameConfig.AppCacheName, $z1Config.GameConfig.WebCacheName));
@@ -171,6 +180,7 @@ var exp_BaseData = function () {
       } catch (error) { console.error("Cannot save progress", this.gameKey, error); }
       if (saved === false) { this.reportSaveFailure(); return false; }
       this.localSavePending = false;
+      this._cloudRevision++;
       if (this.saveFailureReported) {
         this.saveFailureReported = false;
         if ($z1EventMgr.EventMgr) $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: this.gameKey });
@@ -182,9 +192,13 @@ var exp_BaseData = function () {
     return false;
   };
   _ctor.prototype.UpdateData = function () {
-    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave) return;
+    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave || this.clearPending) return;
+    if (!$z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) return;
+    this.isneedSave = true;
+    if (this._cloudRequest) return;
     null == this.data && (this.data = new Object());
     var t = Number((new Date().getTime() / 1e3).toFixed(0));
+    if (t < this._cloudRetryAt) return;
     var e = this.preTime;
     if (e && t - e < this.invertTime) {
       this.isneedSave = true;
@@ -192,11 +206,44 @@ var exp_BaseData = function () {
       this.isneedSave = false;
       this.preTime = t;
       var n = JSON.stringify(this.data);
-      $z1ServerDataMgr.ServerdataMgr.saveData(this.gameKey, n, function () {});
+      var self = this, request = { generation: this._cloudGeneration, revision: this._cloudRevision, data: this.data };
+      this._cloudRequest = request;
+      function finish(value, error) {
+        if (self._cloudRequest !== request || self._cloudGeneration !== request.generation) return;
+        self._cloudRequest = null;
+        if (error || value === false) {
+          self.isneedSave = true;
+          self._cloudRetryAt = Number((Date.now() / 1e3).toFixed(0)) + Math.max(1, self.invertTime);
+        } else {
+          self._cloudRetryAt = 0;
+          if (self._cloudRevision !== request.revision) self.isneedSave = true;
+        }
+      }
+      try { $z1ServerDataMgr.ServerdataMgr.saveData(this.gameKey, n, finish); }
+      catch (error) { finish(null, error); }
     }
   };
+  _ctor.prototype.invalidateCloudSaves = function () {
+    this._cloudGeneration++;
+    this._cloudRequest = null;
+    this._cloudRetryAt = 0;
+    this.isneedSave = false;
+    this.preTime = 0;
+  };
   _ctor.prototype.clearData = function () {
-    localStorage.removeItem(this.gameKey);
+    this.invalidateCloudSaves();
+    var saved = false;
+    try { saved = $z1CacheUtils.CacheUtils.removeData(this.gameKey); } catch (error) { console.error("Cannot clear progress", this.gameKey, error); }
+    this.clearPending = saved === false;
+    if (this.clearPending) { this.reportSaveFailure(); return false; }
+    this.localSavePending = false;
+    this.isneedSave = false;
+    this.preTime = 0;
+    if (this.saveFailureReported) {
+      this.saveFailureReported = false;
+      if ($z1EventMgr.EventMgr) $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: this.gameKey });
+    }
+    return true;
   };
   return _ctor;
 }();

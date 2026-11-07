@@ -108,7 +108,11 @@ var def_Loading = function (t) {
     }
     var language = $z1LanguageMgr.LanguageMgr.getInstance();
     this.labPro.string = language.ready ? language.t("loading.progress", [Math.round(this.process * 100)]) : "0%";
-    retries.forEach(function (retry) { retry(); });
+    var self = this;
+    retries.forEach(function (retry) {
+      try { retry(); }
+      catch (error) { self.showLoadingError(error, retry); }
+    });
   };
   _ctor.prototype.loadMainScene = function () {
     var self = this;
@@ -119,6 +123,7 @@ var def_Loading = function (t) {
     if (accepted === false) this.showLoadingError(new Error("Main scene is unavailable"), retry);
   };
   _ctor.prototype.onDestroy = function () {
+    this._startupGeneration = (this._startupGeneration || 0) + 1;
     var resources = $z1ResourceMgr.ResourceMgr.getInstance();
     if (resources.loadErrorHandler === this.resourceErrorHandler) resources.loadErrorHandler = null;
     this.node.off(cc.Node.EventType.TOUCH_END, this.retryLoading, this);
@@ -128,6 +133,8 @@ var def_Loading = function (t) {
   };
   _ctor.prototype.startGame = function () {
     var t = this;
+    var generation = this._startupGeneration = (this._startupGeneration || 0) + 1;
+    var isCurrent = function () { return cc.isValid(t, true) && t._startupGeneration === generation; };
     cc.debug.setDisplayStats(false);
     cc.game.addPersistRootNode(this.uiRoot);
     this.progressBar.fillRange = 0;
@@ -140,9 +147,16 @@ var def_Loading = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().init($z1Config.AudioCF);
     $z1EventMgr.EventMgr.getInstance().on($z1Appcfg.BaseEventName.Loading, this, this.setProcessLoad);
     $z1SdkMgr.SdkMgr.getInstance().requestCheckVersion(function () {
-      $z1ServerDataMgr.ServerdataMgr.init(function () {
-        t.setProcessLoad($z1Appcfg.LoadingProcess.StartLoading);
-      });
+      if (!isCurrent()) return;
+      function initServer() {
+        if (!isCurrent()) return;
+        $z1ServerDataMgr.ServerdataMgr.init(function (error) {
+          if (!isCurrent()) return;
+          if (error) t.showLoadingError(error, initServer);
+          else t.setProcessLoad($z1Appcfg.LoadingProcess.StartLoading);
+        });
+      }
+      initServer();
     });
     this.preloadUI();
     console.log("当前应用", $z1PlatformSetting.PlatformSetting.currentApp);

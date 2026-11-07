@@ -22,7 +22,7 @@ var $z1KinghtFallBuildObstacle = require("KinghtFallBuildObstacle");
 var $z1KinghtFallCommerce = require("KinghtFallCommerce");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var def_KinghtFallGameCtrlData = function () {
-  function _ctor(t, e) {
+  function _ctor(t, e, restoring) {
     this.bulidPointMap = {};
     this.obstacles = [];
     this.talentAdd = {};
@@ -36,14 +36,16 @@ var def_KinghtFallGameCtrlData = function () {
     this.packInterval = .5;
     this.time = {};
     this.enemyList = [];
+    this.pendingEnemySpawns = 0;
     this.soldierList = [];
     this.buffList = [];
     this.addTime = {};
+    this._restoringCheckpoint = !!restoring;
     this.ctrPar = t;
     this.levelCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(e);
-    this.initData();
+    this.initData(restoring);
   }
-  _ctor.prototype.initData = function () {
+  _ctor.prototype.initData = function (restoring) {
     var t;
     this.buildings = [];
     var e = this.levelCfg.HomeLevel1Unlock;
@@ -131,9 +133,10 @@ var def_KinghtFallGameCtrlData = function () {
         this.talentAdd[I.kindID].push(I.EffectNumber);
       }
     }
-    this.loadMonster();
+    this.loadMonster(restoring);
   };
   _ctor.prototype.setRound = function () {
+    this._roundCompleted = false;
     this.round = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getRoundNum();
     var t = this.levelCfg.WaveCfg[this.round - 1];
     this.videoCoin = t.CommerceSliver;
@@ -156,12 +159,13 @@ var def_KinghtFallGameCtrlData = function () {
     }
     this.coin = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getCoin();
   };
-  _ctor.prototype.loadMonster = function () {
+  _ctor.prototype.loadMonster = function (restoring) {
+    this._roundCompleted = false;
     this.round++;
     var t = this.levelCfg.WaveCfg[this.round - 1];
-    this.coin += t.StartSliver;
+    if (!restoring) this.coin += t.StartSliver;
     this.videoCoin = t.CommerceSliver;
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
+    if (!restoring) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
     this.enemyQueue = {};
     for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
       var n = t.RefreshSoldierKind[e];
@@ -181,6 +185,10 @@ var def_KinghtFallGameCtrlData = function () {
     }
   };
   _ctor.prototype.onRestart = function (t) {
+    var restoring = !t && this._restoringCheckpoint;
+    this._restoringCheckpoint = false;
+    this.pendingEnemySpawns = 0;
+    if (t) this.addTime = {};
     var e = this.getBulidList();
     for (var n = 0; n < e.length; n++) {
       e[n].reset(t);
@@ -196,12 +204,14 @@ var def_KinghtFallGameCtrlData = function () {
       this.businessAdd = {};
     } else {
       var o = this.levelCfg.WaveCfg[this.round - 1];
-      this.coin -= o.StartSliver;
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, -o.StartSliver);
+      if (!restoring) {
+        this.coin -= o.StartSliver;
+        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, -o.StartSliver);
+      }
       this.round--;
     }
     this.time[i.MonsterGenerate] = 0;
-    this.loadMonster();
+    this.loadMonster(restoring);
     this.upMap();
     for (a = 0; a < this.enemyList.length; a++) {
       this.enemyList[a].node.destroy();
@@ -423,6 +433,7 @@ var def_KinghtFallGameCtrlData = function () {
     return false;
   };
   _ctor.prototype.onUpdata = function (t) {
+    var advancedQueue = false;
     this.time[i.MonsterGenerate] += t;
     if (this.time[i.MonsterGenerate] > this.packInterval) {
       this.time[i.MonsterGenerate] = 0;
@@ -431,6 +442,7 @@ var def_KinghtFallGameCtrlData = function () {
           var n = this.enemyQueue[e];
           if (n && n.length > 0) {
             var a = n[0];
+            advancedQueue = true;
             this.ctrPar.addEnemy(a.id, parseInt(e));
             a.num--;
             a.num <= 0 && n.shift();
@@ -450,6 +462,9 @@ var def_KinghtFallGameCtrlData = function () {
         });
       }
     }
+    // Delay groups do not create an enemy whose death can finish the wave.
+    // Recheck after draining them, retaining the pending-spawn/once-only guard.
+    if (advancedQueue && this.enemyList.length === 0) this.tryEndGame();
   };
   _ctor.prototype.getEnemyList = function () {
     return this.enemyList;
@@ -494,7 +509,8 @@ var def_KinghtFallGameCtrlData = function () {
     for (var e in this.enemyQueue) {
       Object.prototype.hasOwnProperty.call(this.enemyQueue, e) && (t += this.enemyQueue[e].length);
     }
-    if (this.enemyList.length <= 0 && t <= 0) {
+    if (!this._roundCompleted && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
+      this._roundCompleted = true;
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.start_X_Y, this.levelCfg.Level + "_" + this.round);
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().passOrder(this.levelCfg.Level, this.round);
       if (this.round < this.levelCfg.WaveCfg.length) {
@@ -504,7 +520,7 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
   };
-  _ctor.prototype.addGameBuff = function (t) {
+  _ctor.prototype.addGameBuff = function (t, restoring) {
     var e;
     var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuffCfgById(t);
     this.buffList.push({
@@ -512,11 +528,16 @@ var def_KinghtFallGameCtrlData = function () {
       pamer: n.Pamer,
       cfg: n
     });
+    // Loading a checkpoint restores ownership, not the original acquisition reward.
+    if (restoring && [10, 11, 12, 24, 29].some(function (id) {
+      return t == $z1KinghtFallEnum.KinghtFallEnumBuffCfg["Buff" + (id < 10 ? "0" : "") + id];
+    })) return;
     switch (t) {
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff01:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff14:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff21:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff22:
+      case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff35:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff36:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff37:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff40:
@@ -535,6 +556,8 @@ var def_KinghtFallGameCtrlData = function () {
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff32:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43:
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff47:
+      case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff45:
+      case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff53:
         for (var a in this.bulidPointMap) {
           Object.prototype.hasOwnProperty.call(this.bulidPointMap, a) && (r = this.bulidPointMap[a]).initBuffData();
         }

@@ -84,7 +84,13 @@ var def_KinghtFallGameMap = function (t) {
     var n = new f();
     var i = new Map();
     var a = new Map();
-    var o = new exp_AStarNode(t.row, t.col);
+    var nodes = new Map();
+    var intern = function (node) {
+      var key = node.x + "#" + node.y;
+      if (!nodes.has(key)) nodes.set(key, node);
+      return nodes.get(key);
+    };
+    var o = intern(new exp_AStarNode(t.row, t.col));
     n.put(o, 0);
     a.set(o, 0);
     for (var r = 0; n.size > 0;) {
@@ -96,7 +102,7 @@ var def_KinghtFallGameMap = function (t) {
       }
       var l = 0;
       for (var c = this.getNeighbors(s); l < c.length; l++) {
-        var h = c[l];
+        var h = intern(c[l]);
         if (this.isWalkable(h)) {
           var g = a.get(s) + (s.x !== h.x && s.y !== h.y ? 1.5 : 1);
           if (!a.has(h) || g < a.get(h)) {
@@ -114,7 +120,13 @@ var def_KinghtFallGameMap = function (t) {
     var n = new f();
     var i = new Map();
     var a = new Map();
-    var o = new exp_AStarNode(t.row, t.col);
+    var nodes = new Map();
+    var intern = function (node) {
+      var key = node.x + "#" + node.y;
+      if (!nodes.has(key)) nodes.set(key, node);
+      return nodes.get(key);
+    };
+    var o = intern(new exp_AStarNode(t.row, t.col));
     n.put(o, 0);
     a.set(o, 0);
     var r = null;
@@ -125,7 +137,7 @@ var def_KinghtFallGameMap = function (t) {
       }
       var c = 0;
       for (var h = this.getNeighbors(l); c < h.length; c++) {
-        var g = h[c];
+        var g = intern(h[c]);
         if (this.isWalkable(g)) {
           var u = a.get(l) + 1;
           if (!a.has(g) || u < a.get(g)) {
@@ -136,7 +148,11 @@ var def_KinghtFallGameMap = function (t) {
           }
         }
       }
-      l.x === e.row && l.y === e.col || a.get(l) < s && (s = a.get(l), r = l);
+      var remaining = this.heuristic(l, e);
+      if (remaining < s || remaining === s && r && a.get(l) < a.get(r)) {
+        s = remaining;
+        r = l;
+      }
     }
     if (r) {
       return this.reconstructPath(i, r);
@@ -148,7 +164,13 @@ var def_KinghtFallGameMap = function (t) {
     var i = new f();
     var a = new Map();
     var o = new Map();
-    var r = new exp_AStarNode(t.row, t.col);
+    var nodes = new Map();
+    var intern = function (node) {
+      var key = node.x + "#" + node.y;
+      if (!nodes.has(key)) nodes.set(key, node);
+      return nodes.get(key);
+    };
+    var r = intern(new exp_AStarNode(t.row, t.col));
     i.put(r, 0);
     o.set(r, 0);
     var s = null;
@@ -161,7 +183,7 @@ var def_KinghtFallGameMap = function (t) {
       }
       var g = 0;
       for (var u = this.getNeighbors(h); g < u.length; g++) {
-        var d = u[g];
+        var d = intern(u[g]);
         if (this.isWalkable(d)) {
           var m = o.get(h) + 1;
           if (!o.has(d) || m < o.get(d)) {
@@ -172,7 +194,11 @@ var def_KinghtFallGameMap = function (t) {
           }
         }
       }
-      h.x === e.row && h.y === e.col || o.get(h) < l && (l = o.get(h), s = h);
+      var remaining = this.heuristic(h, e);
+      if (remaining < l || remaining === l && s && o.get(h) < o.get(s)) {
+        l = remaining;
+        s = h;
+      }
     }
     if (s) {
       return this.reconstructPath(a, s);

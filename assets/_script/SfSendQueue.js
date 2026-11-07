@@ -11,12 +11,8 @@ var exp_SfTrackSendQueue = function () {
   _ctor.prototype.enqueue = function (t, e, n, i, r) {
     var s = this;
     undefined === i && (i = true);
-    var l = this;
-    var c = new exp_SfTrackHttpTask(t, e, n.maxRetries, function (t) {
-      l.isRunning = false;
-      exp_SfTrackUtils.isFunction(n.callback) && n.callback(t);
-      l._runNext();
-    }, r);
+    n = n || {};
+    var c = new exp_SfTrackHttpTask(t, e, n.maxRetries, n.callback, r);
     if (true === i) {
       this.items.push(c);
       setTimeout(function () {
@@ -32,26 +28,21 @@ var exp_SfTrackSendQueue = function () {
   _ctor.prototype._runNext = function () {
     if (this.items.length > 0 && !this.isRunning) {
       this.isRunning = true;
-      if ("HttpTask" !== this.items[0].taClassName) {
-        this._dequeue().run();
-      } else {
-        var t = this.items.splice(0, this.items.length);
-        var e = t[0];
-        var n = e.data;
-        var i = e.callback;
-        for (var o = 1; o < t.length; o++) {
-          var r = t[o];
-          var s = r.data;
-          if (-1 != e.serverUrl.indexOf("saveData") && e.serverUrl === r.serverUrl && n.key && s.key && n.key == s.key) {
-            if (e.createtime < r.createtime) {
-              n = s, e = r;
-            }
-          } else {
-            this.items.push(r);
+      var self = this, task = this._dequeue(), callbacks = [task.callback];
+      if (task.taClassName === "HttpTask" && task.serverUrl.indexOf("saveData") >= 0) {
+        this.items = this.items.filter(function (candidate) {
+          var a = task.data, b = candidate.data;
+          if (candidate.taClassName === "HttpTask" && task.serverUrl === candidate.serverUrl && a && b && a.key && a.key === b.key && a.appId === b.appId && a.thirdId === b.thirdId && a.platform === b.platform) {
+            callbacks.push(candidate.callback); task = candidate; return false;
           }
-        }
-        new exp_SfTrackHttpTask(n, e.serverUrl, e.tryCount, i).run();
+          return true;
+        });
       }
+      task.callback = function (result) {
+        try { callbacks.forEach(function (callback) { if (typeof callback === "function") { try { callback(result); } catch (error) { console.error(error); } } }); }
+        finally { self.isRunning = false; self._runNext(); }
+      };
+      task.run();
     }
   };
   return _ctor;
@@ -75,8 +66,9 @@ var exp_SfTrackHttpTask = function () {
   }
   t.prototype.run = function () {
     var t = this;
+    if (this.completed) return;
     exp_SfTrackHttp.httpPost(this.serverUrl, this.data, function (e) {
-      if (e) {
+      if (e && e.code !== -1 && e.code !== -3) {
         t.onSuccess(e);
       } else {
         t.onFailed();
@@ -84,6 +76,8 @@ var exp_SfTrackHttpTask = function () {
     });
   };
   t.prototype.onSuccess = function (t) {
+    if (this.completed) return;
+    this.completed = true;
     this.callback && this.callback(t);
   };
   t.prototype.onFailed = function () {
@@ -93,7 +87,7 @@ var exp_SfTrackHttpTask = function () {
         t.run();
       }, 1e3);
     } else {
-      this.callback({
+      this.onSuccess({
         code: -3,
         msg: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.sfsendqueue.text.98]]")
       });
@@ -129,119 +123,35 @@ var exp_SfTrackUtils = function () {
 }();
 exports.SfTrackUtils = exp_SfTrackUtils;
 var exp_SfTrackHttp = function () {
-  function t() {}
-  t.httpGet = function (t, e, n) {
-    var i = this.xhrM ? this.xhrM : this.xhrM = new XMLHttpRequest();
-    if (e) {
-      var a = "";
-      Object.keys(e).forEach(function (t) {
-        a += t + "=" + encodeURIComponent(e[t]) + "&";
-      });
-      "" !== a && (t = t + "?" + (a = a.substr(0, a.lastIndexOf("&"))));
-    }
-    i.open("GET", t, true);
-    i.setRequestHeader("Access-Control-Allow-Origin", "*");
-    i.setRequestHeader("Access-Control-Allow-Methods", "GET, POST");
-    i.setRequestHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
-    i.setRequestHeader("Content-Type", "application/json");
-    i.setRequestHeader("Connection", "keep-alive");
-    i.setRequestHeader("Accept-Encoding", "gzip, deflate, br, compress, zstd");
-    i.onreadystatechange = function () {
-      if (4 === i.readyState) {
-        if (i.status >= 200 && i.status < 300) {
-          var t = i.responseText;
-          try {
-            if (n && t) {
-              n(JSON.parse(t));
-            } else {
-              n && n({
-                code: -1
-              });
-            }
-          } catch (e) {
-            n && n({
-              code: -1,
-              msg: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.sfsendqueue.text.164]]")
-            });
-          }
-        } else {
-          n({
-            code: -1
-          });
-        }
+  function Http() {}
+  function request(method, url, data, callback) {
+    var xhr, complete = false;
+    function finish(value) { if (complete) return; complete = true; if (callback) callback(value); }
+    function failure() { finish({ code: -1 }); }
+    try {
+      var payload = method === "POST" ? JSON.stringify(data == null ? null : data) : null;
+      if (method === "GET" && data) {
+        var query = Object.keys(data).map(function (key) { return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]); }).join("&");
+        if (query) url += (url.indexOf("?") < 0 ? "?" : "&") + query;
       }
-    };
-    i.ontimeout = function () {
-      n && n({
-        code: -1
-      });
-    };
-    i.onerror = function () {
-      n && n({
-        code: -1
-      });
-    };
-    i.send();
-  };
-  t.httpPost = function (t, e, n) {
-    var i;
-    undefined === e && (e = null);
-    i = JSON.stringify(e);
-    var a = t;
-    var o = this.xhrM ? this.xhrM : this.xhrM = new XMLHttpRequest();
-    o.timeout = 7e3;
-    o.open("POST", a, true);
-    o.setRequestHeader("Access-Control-Allow-Origin", "*");
-    o.setRequestHeader("Access-Control-Allow-Methods", "GET, POST");
-    o.setRequestHeader("Access-Control-Allow-Headers", "x-requested-with,content-type");
-    o.setRequestHeader("Content-Type", "application/json");
-    o.setRequestHeader("Token", this.TOKEN);
-    o.setRequestHeader("Connection", "keep-alive");
-    o.setRequestHeader("Accept-Encoding", "gzip");
-    o.onreadystatechange = function () {
-      if (4 === o.readyState) {
-        if (o.status >= 200 && o.status < 400) {
-          var t = o.responseText;
-          try {
-            if (n && t) {
-              n(JSON.parse(t));
-            } else {
-              n && n({
-                code: 0
-              });
-            }
-          } catch (e) {
-            n && n({
-              code: 0,
-              msg: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.sfsendqueue.text.164]]")
-            });
-          }
-        } else {
-          n && n && n({
-            code: -1,
-            msg: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.sfsendqueue.text.98]]")
-          });
-        }
-      }
-    };
-    o.ontimeout = function () {
-      n && n({
-        code: -1,
-        msg: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.sfsendqueue.text.230]]")
-      });
-    };
-    o.onerror = function () {
-      n && n({
-        code: -1,
-        msg: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:script.sfsendqueue.text.236]]")
-      });
-    };
-    if (i) {
-      o.send(i);
-    } else {
-      o.send();
-    }
-  };
-  return t;
+      xhr = new XMLHttpRequest(); xhr.open(method, url, true); xhr.timeout = 7000;
+      xhr.setRequestHeader("Content-Type", "application/json");
+      if (method === "POST" && Http.TOKEN != null) xhr.setRequestHeader("Token", Http.TOKEN);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4 || complete) return;
+        if (xhr.status < 200 || xhr.status >= (method === "GET" ? 300 : 400)) { failure(); return; }
+        var response;
+        try { response = xhr.responseText ? JSON.parse(xhr.responseText) : { code: -1 }; }
+        catch (error) { failure(); return; }
+        // Consumer exceptions must not be mistaken for JSON failures or call twice.
+        finish(response);
+      };
+      xhr.onerror = xhr.ontimeout = xhr.onabort = failure;
+      xhr.send(payload);
+    } catch (error) { if (complete) throw error; failure(); }
+  }
+  Http.httpGet = function (url, data, callback) { request("GET", url, data, callback); };
+  Http.httpPost = function (url, data, callback) { request("POST", url, data, callback); };
+  return Http;
 }();
 exports.SfTrackHttp = exp_SfTrackHttp;

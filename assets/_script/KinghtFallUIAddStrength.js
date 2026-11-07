@@ -41,7 +41,9 @@ var def_KinghtFallUIAddStrength = function (t) {
     var a = parseInt($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.StaminaBuy));
     this.ndLeft.getChildByName("LabNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(this.goldNum[0]);
     (i = this.ndLeft.getChildByName("ndBtn")).on(cc.Node.EventType.TOUCH_END, function () {
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subDiamondNum(a) && t.onBtnBuy(t.goldNum[0]);
+      if (t.isclose) return;
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+      if (player.purchase([{ id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond, num: a }], function () { player.getUserData().addPowerNum(t.goldNum[0]); })) t.onBtnBuy(0);
     }, this);
     i.getChildByName("Layout").getChildByName("LabNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(a);
     this.ndRight.getChildByName("LabNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(this.goldNum[1]);
@@ -55,7 +57,7 @@ var def_KinghtFallUIAddStrength = function (t) {
     this.node.getChildByName("bg").on(cc.Node.EventType.TOUCH_END, this.closeUI, this);
   };
   _ctor.prototype.onBtnBuy = function (t) {
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().addPowerNum(t);
+    if (t) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().addPowerNum(t);
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.gold_reward);
     this.call && this.call();
     this.closeUI();

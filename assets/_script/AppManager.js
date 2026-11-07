@@ -96,6 +96,10 @@ var exp_AppManager = function () {
       cc.error("开关没有配置,请到在PlatformManager.ts上进行配置");
       return 0;
     }
+    var platform = $z1PlatformSetting.PlatformSetting.currentPlatform;
+    // Most registries use the platform string directly. Keep the legacy Google
+    // switch field below, while honoring declared Bilibili/Kuaishou versions.
+    if (platform !== $z1BasePlatform.Platform.GOOGLE && Object.prototype.hasOwnProperty.call(t, platform)) return t[platform];
     switch ($z1PlatformSetting.PlatformSetting.currentPlatform) {
       case $z1BasePlatform.Platform.WECHAT:
         return t.h5_wechat;

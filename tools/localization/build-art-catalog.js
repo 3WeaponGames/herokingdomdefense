@@ -31,10 +31,17 @@ tiles.forEach((b,i)=>['','_'].forEach((suffix,j)=>{
   template('tile_'+b[0]+suffix,314+i*2+j,[region(key,0,0,90,26,{fontSize:31,minFontSize:12,padding:1,lineHeightRatio:1,outlineColor:'#626346',outlineWidth:2.5,quad})],{source:'assets/resources/localization/neutral/tile_'+b[0]+suffix+'.png'});
 }));
 const spineTitles=[
- ['victory','Victory','胜利',{x:1436,y:82,width:125,height:69}],
+ ['victory','VICTORY','胜利',{x:1436,y:82,width:125,height:69}],
  ['defeat','Defeat','失败',{x:1436,y:153,width:127,height:70}]
 ];
 out.artTemplates.settlement_atlas={width:1566,height:1008,source:'assets/resources/localization/neutral/settlement_atlas.png',sourceOriginal:inventory[450].path,regions:spineTitles.map(([id,en,zh,r])=>region(enzh('art.result.'+id,en,zh,'Animated battle-result title'),r.x+2,r.y+2,r.width-4,r.height-4,{fontSize:54,outlineWidth:4,locales:{en:{baselineOffset:id==='victory'?-4:0}},shadow:{color:'#000000',offsetX:2,offsetY:3,blur:0},gradient:['#ffffff','#e7e8dc']}))};
+// This title is enlarged 1.75x by its existing English Spine binding: keep the
+// final outline near the buttons' 3px edge instead of magnifying a 5px stroke.
+Object.assign(out.artTemplates.settlement_atlas.regions[0].locales.en, {
+  font:'assets/resources/localization/fonts/Lilita One.ttf', outlineWidth:1.7,
+  outlineColor:'#000000', padding:3.5, wrap:false, gradient:null,
+  shadow:{color:'#000000',offsetX:0,offsetY:1.7,blur:0}
+});
 out.artTemplates.day7_atlas={width:285,height:518,source:'assets/resources/localization/neutral/day7_atlas.png',sourceOriginal:inventory[451].path,regions:[region('art.sign.day7',0,0,317,87,{fontSize:31,gradient:['#ffffff','#fff44c'],outlineWidth:3,italic:true,quad:[{x:196,y:516},{x:196,y:199},{x:283,y:199},{x:283,y:516}]})]};
 for(const [index,name] of [[450,'settlement_atlas'],[451,'day7_atlas']]){
   const p=inventory[index].path;

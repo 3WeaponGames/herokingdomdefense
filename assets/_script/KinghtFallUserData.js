@@ -121,13 +121,32 @@ var exp_KinghtFallUserData = function (t) {
     var gold = 0;
     var diamond = 0;
     var power = 0;
-    settlement.rewards.forEach(function (reward) {
-      switch (reward.id) {
-        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin: gold += reward.num * extra; break;
-        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond: diamond += reward.num * extra; break;
-        case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina: power += reward.num * extra; break;
+    var totals = previous && receipt.rewardTotals ? Object.assign({}, receipt.rewardTotals) : {};
+    var goods = $z1KinghtFallEnum.KinghtFallEnumGoodsCfg;
+    function currency(reward, amount, apply) {
+      if ([goods.Coin, goods.Diamond, goods.stamina, goods.PassPoints].indexOf(reward.id) < 0) return false;
+      totals[reward.id] = (totals[reward.id] || 0) + amount;
+      if (apply) {
+        if (reward.id === goods.Coin) gold += amount;
+        else if (reward.id === goods.Diamond) diamond += amount;
+        else if (reward.id === goods.stamina) power += amount;
       }
-    });
+      return true;
+    }
+    // Older receipts only awarded the four currency types and have no totals.
+    if (previous && !receipt.rewardTotals) settlement.rewards.forEach(function (reward) { currency(reward, reward.num * previous, false); });
+    var deferred = this.deferSave;
+    this.deferSave = true;
+    try {
+      settlement.rewards.forEach(function (reward) {
+        var amount = reward.num * extra;
+        if (currency(reward, amount, true)) return;
+        var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(reward.id);
+        if (config && config.type === $z1KinghtFallEnum.KinghtFallEnumGoodType.Type02) {
+          require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().addTreasureReward(config.itemID, amount, function (converted) { currency(converted, converted.num, true); });
+        }
+      });
+    } finally { this.deferSave = deferred; }
     this.data.goldNum += gold;
     this.data.diamondNum += diamond;
     this.data.powerNum += power;
@@ -139,7 +158,7 @@ var exp_KinghtFallUserData = function (t) {
         this.data.maxOrder = 0;
       }
     }
-    this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier };
+    this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier, rewardTotals: totals };
     var saved = this.saveData() !== false;
     if (gold) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, gold, true);
     if (diamond) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, diamond, true);
@@ -152,7 +171,11 @@ var exp_KinghtFallUserData = function (t) {
     if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, true, e);
   };
   _ctor.prototype.subGoldNum = function (t) {
-    return !(this.data.goldNum < t || (this.data.goldNum -= t, $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, false), this.saveData(), 0));
+    if (typeof t !== "number" || !isFinite(t) || t < 0 || this.data.goldNum < t) return false;
+    this.data.goldNum -= t;
+    if (this.saveData() === false) { this.data.goldNum += t; return false; }
+    if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, t, false);
+    return true;
   };
   _ctor.prototype.getDiamondNum = function () {
     return this.data.diamondNum;
@@ -168,7 +191,11 @@ var exp_KinghtFallUserData = function (t) {
     if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, true, e);
   };
   _ctor.prototype.subDiamondNum = function (t) {
-    return !(this.data.diamondNum < t || (this.data.diamondNum -= t, $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, false), this.saveData(), 0));
+    if (typeof t !== "number" || !isFinite(t) || t < 0 || this.data.diamondNum < t) return false;
+    this.data.diamondNum -= t;
+    if (this.saveData() === false) { this.data.diamondNum += t; return false; }
+    if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshDiamond, t, false);
+    return true;
   };
   _ctor.prototype.getPowerNum = function () {
     return this.data.powerNum;
@@ -182,7 +209,13 @@ var exp_KinghtFallUserData = function (t) {
     if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
   };
   _ctor.prototype.subPowerNum = function (t) {
-    return !(this.data.powerNum < t || (this.data.powerNum >= this.maxPower && (this.data.powerUpdateTime = Date.now()), this.data.powerNum -= t, $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower), this.saveData(), 0));
+    if (typeof t !== "number" || !isFinite(t) || t < 0 || this.data.powerNum < t) return false;
+    var previousTime = this.data.powerUpdateTime;
+    if (this.data.powerNum >= this.maxPower) this.data.powerUpdateTime = Date.now();
+    this.data.powerNum -= t;
+    if (this.saveData() === false) { this.data.powerNum += t; this.data.powerUpdateTime = previousTime; return false; }
+    if (!this.deferSave) $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RefreshPower);
+    return true;
   };
   _ctor.prototype.getPowerUpdateTime = function () {
     return this.data.powerUpdateTime;

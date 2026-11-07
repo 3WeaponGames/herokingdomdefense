@@ -21,11 +21,13 @@ var def_LiveMgr = function () {
     var e = this;
     undefined === t && (t = false);
     if (s && !t) {
+      if (this._tokenListenerInstalled) return;
+      this._tokenListenerInstalled = true;
       s.ongetToken(function (t, n) {
         var i = null;
-        for (var a = 0; a < n.length; a++) {
+        for (var a = 0; Array.isArray(n) && a < n.length; a++) {
           var o = n[a];
-          if (-1 != o.indexOf("-token=")) {
+          if (typeof o === "string" && -1 != o.indexOf("-token=")) {
             i = o.replace("-token=", "");
             break;
           }
@@ -43,36 +45,40 @@ var def_LiveMgr = function () {
   };
   _ctor.prototype.startSocket = function (t) {
     var e = this;
+    var request = { token: t, remaining: 60, timer: null };
+    if (this._roomRequest && this._roomRequest.timer != null) clearTimeout(this._roomRequest.timer);
+    this._roomRequest = request;
+    this.count = 60;
     if (t) {
-      $z1HttpMgr.HttpMgr.getInstance().httpPost({
-        token: t,
-        appId: this.appId
-      }, function (n) {
-        if (n) {
-          var o = JSON.parse(n);
-          if (o && 0 == o.code && o.data) {
+      function attempt() {
+        if (e._roomRequest !== request) return;
+        var settled = false;
+        $z1HttpMgr.HttpMgr.getInstance().httpPost({
+          token: t,
+          appId: e.appId
+        }, function (n) {
+          if (settled || e._roomRequest !== request) return;
+          settled = true;
+          var o = null;
+          try { o = typeof n === "string" ? JSON.parse(n) : n; } catch (_) {}
+          if (o && 0 == o.code && o.data && o.data.room_id) {
             e.roomId = o.data.room_id;
             $z1SocketMgr.default.getInstance().startSocket(e.url2, e.roomId, e.appId);
             $z1SocketMgr.default.getInstance().setOnMsg(function (t) {
               e.onMsg(t);
             });
-          } else if (e.count > 0) {
-            setTimeout(function () {
-              e.count--;
-              e.startSocket(t);
+          } else if (request.remaining > 0) {
+            request.timer = setTimeout(function () {
+              request.remaining--;
+              e.count = request.remaining;
+              attempt();
             }, 1e3);
           } else {
             $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, "[[loc:script.livemgr.text.65]]");
           }
-        } else if (e.count > 0) {
-          setTimeout(function () {
-            e.count--;
-            e.startSocket(t);
-          }, 1e3);
-        } else {
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, "[[loc:script.livemgr.text.65]]");
-        }
-      }, this.roomUrl);
+        }, e.roomUrl);
+      }
+      attempt();
     } else {
       $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UINONE, "[[loc:script.livemgr.text.77]]");
     }

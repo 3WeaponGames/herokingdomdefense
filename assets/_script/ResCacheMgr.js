@@ -35,27 +35,26 @@ var exp_ResCacheMgr = function (t) {
   };
   _ctor.prototype.autoRelease = function () {
     var t = $z1TimeUtils.TimeUtils.GetTimeBySecond();
-    for (var e = 0; e < this.temporaryCache.length; e++) {
+    for (var e = this.temporaryCache.length - 1; e >= 0; e--) {
       var n = this.temporaryCache[e];
-      if (n && t - n.releaseTime >= n.cacheTime) {
-        if (n.defCount <= 0) {
-          continue;
-        }
+      if (!n || !cc.isValid(n.asset) || n.asset.refCount <= 0) {
+        if (n && n.releaseDependency) n.releaseDependency();
+        this.temporaryCache.splice(e, 1);
+        continue;
+      }
+      if (t - n.releaseTime >= n.cacheTime && n.defCount > 0) {
         var i = n.defCount;
+        // Each closed owner contributes release credits exactly once. A live
+        // owner may still hold the same asset after those credits are consumed.
+        n.defCount = 0;
         for (var a = 0; a < i; a++) {
           n.asset.decRef();
           if (n.asset.refCount <= 0) {
+            if (n.releaseDependency) n.releaseDependency();
             this.temporaryCache.splice(e, 1);
-            e--;
-            n.defCount = 0;
             break;
           }
         }
-        n.asset.refCount > 0 && (n.releaseTime = $z1TimeUtils.TimeUtils.GetTimeBySecond() + 86400);
-      } else if (n && 0 == n.asset.refCount) {
-        this.temporaryCache.splice(e, 1);
-        e--;
-        n.defCount = 0;
       }
     }
   };
@@ -65,7 +64,7 @@ var exp_ResCacheMgr = function (t) {
       for (var i = 0; i < this.temporaryCache.length; i++) {
         var a = t[n];
         var o = this.temporaryCache[i];
-        if (a.cachekey == o.cachekey && a.type == o.type) {
+        if (a.cachekey == o.cachekey && a.type == o.type && (!a.asset || a.asset === o.asset)) {
           this.temporaryCache[i].releaseTime = e;
           this.temporaryCache[i].defCount += a.defCount;
           this.temporaryCache[i].canRelease = false;
@@ -77,17 +76,18 @@ var exp_ResCacheMgr = function (t) {
   _ctor.prototype.addAssets = function (t, e) {
     if (t && t.asset) {
       var n = e ? this.temporaryCache : this.permanentCache;
-      var i = this.isExistKey(t.cachekey, t.type, n);
+      var i = this.isExistKey(t.cachekey, t.type, n, t.asset);
       if (-1 == i) {
         n.push(t);
       } else {
-        n[i] = t;
+        // A cache hit or concurrent load must not erase pending owner releases.
+        n[i].cacheTime = Math.max(n[i].cacheTime, t.cacheTime);
       }
     }
   };
-  _ctor.prototype.addAssetKeyToMap = function (t, e, n, i) {
+  _ctor.prototype.addAssetKeyToMap = function (t, e, n, i, asset) {
     var a = this.permanentCacheKeyMap.get(t);
-    var o = new $z1ResourceMgr.ResCacheKey(e, n, i);
+    var o = new $z1ResourceMgr.ResCacheKey(e, n, i, asset);
     if (a && a.length > 0) {
       a.push(o);
     } else {
@@ -98,13 +98,15 @@ var exp_ResCacheMgr = function (t) {
   };
   _ctor.prototype.releaseAssetsFromMap = function (t) {
     var e = this.permanentCacheKeyMap.get(t);
+    this.permanentCacheKeyMap.delete(t);
     if (e && e.length > 0) {
       for (var n = 0; n < e.length; n++) {
         for (var i = 0; i < this.permanentCache.length; i++) {
           var a = this.permanentCache[i];
-          if (a && a.cachekey == e[n].cachekey && a.type == e[n].type) {
+          if (a && a.cachekey == e[n].cachekey && a.type == e[n].type && (!e[n].asset || e[n].asset === a.asset)) {
             a.asset.decRef();
             if (a.asset.refCount <= 0) {
+              if (a.releaseDependency) a.releaseDependency();
               this.permanentCache.splice(i, 1);
               i--;
             }
@@ -114,13 +116,24 @@ var exp_ResCacheMgr = function (t) {
       }
     }
   };
-  _ctor.prototype.getAssets = function () {
+  _ctor.prototype.getAssets = function (bundle, path, type, temporary) {
+    var key = bundle + "/" + path;
+    var name = cc.js.getClassName(type);
+    var first = temporary ? this.temporaryCache : this.permanentCache;
+    var second = temporary ? this.permanentCache : this.temporaryCache;
+    for (var group = 0; group < 2; group++) {
+      var entries = group ? second : first;
+      for (var i = entries.length - 1; i >= 0; i--) {
+        var entry = entries[i];
+        if (entry.cachekey === key && entry.type === name && cc.isValid(entry.asset) && !(entry.asset.refCount <= 0)) return entry;
+      }
+    }
     return null;
   };
-  _ctor.prototype.isExistKey = function (t, e, n) {
+  _ctor.prototype.isExistKey = function (t, e, n, asset) {
     for (var i = 0; i < n.length; i++) {
       var a = n[i];
-      if (a && a.cachekey == t && a.type == e) {
+      if (a && a.cachekey == t && a.type == e && (!asset || a.asset === asset)) {
         return i;
       }
     }

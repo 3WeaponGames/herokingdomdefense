@@ -12,6 +12,7 @@ var $z1PlatformSetting = require("PlatformSetting");
 var $z1AudioMgr = require("AudioMgr");
 var $z1FeedCardMgr = require("FeedCardMgr");
 var $z1PoolMgr = require("PoolMgr");
+var $z1UIMgr = require("UIMgr");
 var $z1Utils = require("Utils");
 var $z1Config = require("Config");
 var $z1GameTrackDataEvent = require("GameTrackDataEvent");
@@ -97,15 +98,27 @@ var def_KinghtFallUIHome = function (t) {
       var i = this.togCon.toggleItems[n];
       var a = this.isLock(n);
       if (!(a || -1 == this.lockList[n][0] || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getFunctionUnlockInfo(n))) {
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setFunctionUnlockInfo(n);
         e.push(n);
       }
       i.node.getChildByName("ndLock").active = a;
     }
-    if (e.length > 0) {
-      this.canGuide = false;
-      this.openUI($z1KinghtFallConfig.KinghtFallUIID.UINewModular, e);
-    }
+    if (!e.length || this._unlockNotice) return;
+    var home = this, notice = this._unlockNotice = {};
+    this.canGuide = false;
+    $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UINewModular, this.uid, {
+      parent: this,
+      isCurrent: function () { return home._unlockNotice === notice && cc.isValid(home, true) && !home.isclose && home.node.activeInHierarchy; },
+      onOpened: function () {
+        var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+        e.forEach(function (index) { user.setFunctionUnlockInfo(index); });
+      },
+      onCancel: function () {
+        if (home._unlockNotice !== notice) return;
+        home._unlockNotice = null;
+        home.canGuide = true;
+        if (cc.isValid(home, true) && !home.isclose && home.node.activeInHierarchy) home.scheduleOnce(function () { home.startGuide(); });
+      }
+    }, e);
   };
   _ctor.prototype.isLock = function (t) {
     if (t === 4 && !this.preShop) return true;
@@ -238,6 +251,7 @@ var def_KinghtFallUIHome = function (t) {
       });
     }
     if (t == $z1KinghtFallConfig.KinghtFallUIID.UINewModular) {
+      this._unlockNotice = null;
       this.canGuide = true;
       this.scheduleOnce(function () {
         e.startGuide();

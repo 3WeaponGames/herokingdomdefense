@@ -36,8 +36,32 @@ function execute(contents,script){
     });
 }
 function live(entry){return entry&&entry.window&&!entry.window.isDestroyed();}
+function closeOwned(root,entry){
+    if(live(entry)){
+        try{entry.window.webContents.setAudioMuted(true);}catch(error){}
+        // A failed destroy must retain ownership so Close can be retried.
+        entry.window.destroy();
+    }
+    if(sessions.get(root)===entry)sessions.delete(root);
+}
+function failOwned(root,entry,error){
+    entry.loadError=error instanceof Error?error:Error(error&&error.message||String(error));
+    try{closeOwned(root,entry);}catch(cleanupError){entry.cleanupError=cleanupError;}
+}
+function loadMain(root,entry){
+    const generation=entry.loadGeneration=(entry.loadGeneration||0)+1;
+    entry.loadError=null;entry.loaded=false;
+    const failed=error=>{if(entry.loadGeneration===generation)failOwned(root,entry,error);};
+    try{
+        // Every initial load and reload passes the audio gate before navigation.
+        entry.window.webContents.setAudioMuted(true);
+        const pending=entry.window.loadURL(entry.url);
+        if(pending&&typeof pending.then==='function')pending.then(()=>{},failed);
+    }catch(error){failed(error);throw error;}
+}
 function owns(entry){
     if(!live(entry))throw Error('Start the managed test session first.');
+    if(entry.loadError)throw entry.loadError;
     const current=entry.window.webContents.getURL();
     if(!current.startsWith(entry.origin+'/'))throw Error('The managed window is not on the project preview.');
 }
@@ -55,6 +79,7 @@ async function ready(entry,action){
     const deadline=Date.now()+20000;
     let lastError=null;
     do {
+        if(entry.loadError)throw entry.loadError;
         if(!live(entry))throw Error('The managed test window was closed.');
         if(entry.loaded)try{const result=await invoke(entry,{action});if(result.ready)return result;}catch(error){lastError=error;}
         await delay(250);
@@ -72,17 +97,22 @@ function create(Editor,root,deps){
     const origin='http://127.0.0.1:'+port;
     const win=new BrowserWindow({width:800,height:1000,show:false,title:'HeroKingdomDefense · Managed test player · Muted',webPreferences:{partition:target.profile,nodeIntegration:false,contextIsolation:false,backgroundThrottling:false}});
     const entry={window:win,target,origin,url:origin+'/',startedAt:new Date().toISOString(),busy:false,loaded:false};
-    // This order is a project requirement: no URL load before the audio gate.
-    win.webContents.setAudioMuted(true);
-    win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith(origin+'/'))event.preventDefault();});
-    win.webContents.on('new-window',event=>event.preventDefault());
-    win.webContents.on('did-start-loading',()=>{entry.loaded=false;});
-    win.webContents.on('did-finish-load',()=>{win.webContents.setAudioMuted(true);entry.loaded=win.webContents.getURL().startsWith(origin+'/');});
-    win.on('closed',()=>{if(sessions.get(root)===entry)sessions.delete(root);});
-    win.loadURL(entry.url);
-    if(!deps||deps.show!==false)win.show();
+    // Own the window before any native setup operation can fail.
     sessions.set(root,entry);
-    return entry;
+    try{
+        win.on('closed',()=>{if(sessions.get(root)===entry)sessions.delete(root);});
+        win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith(origin+'/'))event.preventDefault();});
+        win.webContents.on('new-window',event=>event.preventDefault());
+        win.webContents.on('did-start-loading',()=>{entry.loaded=false;});
+        win.webContents.on('did-finish-load',()=>{
+            try{win.webContents.setAudioMuted(true);entry.loaded=win.webContents.getURL().startsWith(origin+'/');}
+            catch(error){failOwned(root,entry,error);}
+        });
+        loadMain(root,entry);
+        if(entry.loadError)throw entry.loadError;
+        if(!deps||deps.show!==false)win.show();
+        return entry;
+    }catch(error){if(!entry.loadError)failOwned(root,entry,error);throw error;}
 }
 async function storageClear(entry,timeout){
     return new Promise((resolve,reject)=>{
@@ -95,6 +125,8 @@ async function storageClear(entry,timeout){
     });
 }
 async function navigateBlank(entry,timeout){
+    // A rejected earlier Main navigation cannot retire a later reset navigation.
+    entry.loadGeneration=(entry.loadGeneration||0)+1;
     await new Promise((resolve,reject)=>{
         let settled=false;const contents=entry.window.webContents;
         const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);contents.removeListener('did-finish-load',loaded);contents.removeListener('did-fail-load',failed);entry.window.removeListener('closed',closed);error?reject(error):resolve();};
@@ -110,21 +142,25 @@ async function handle(Editor,root,request,deps){
     root=path.resolve(root);request=request||{action:'status'};
     const actions=['status','start','close','grant','grant-all','equipment','equipment-all','talent','talents-all','unlock','reset'];
     if(!actions.includes(request.action))throw Error('Unknown testing action.');
-    const base={target:identity(root),catalog:catalog(root),capabilities};
     let entry=sessions.get(root);
-    if(live(entry))base.target=entry.target;
     if(request.action==='close'){
-        if(live(entry)){entry.window.webContents.setAudioMuted(true);entry.window.destroy();}sessions.delete(root);
-        return Object.assign(base,{running:false,ready:false,message:'Managed test window closed. Its test save is preserved.'});
+        const closed={target:entry&&entry.target||identity(root),capabilities};
+        closeOwned(root,entry);
+        try{closed.catalog=catalog(root);}catch(error){closed.catalog=null;}
+        return Object.assign(closed,{running:false,ready:false,message:'Managed test window closed. Its test save is preserved.'});
     }
+    const base={target:identity(root),catalog:catalog(root),capabilities};
+    if(live(entry))base.target=entry.target;
     if(request.action==='status'){
         if(!live(entry))return Object.assign(base,{running:false,ready:false,message:'Start a muted managed test session to use these controls. Regular Browser and Simulator players are separate.'});
+        if(entry.loadError)return Object.assign(base,{running:true,ready:false,message:'Managed preview could not load. Close it and try again: '+entry.loadError.message});
         if(!entry.loaded)return Object.assign(base,{running:true,ready:false,message:'Managed preview page is loading.'});
         if(entry.busy)return Object.assign(base,{running:true,ready:false,busy:true,message:'A managed test operation is in progress.'});
         try{return Object.assign(base,{running:true,startedAt:entry.startedAt},await invoke(entry,{action:'status'}));}
         catch(error){return Object.assign(base,{running:true,ready:false,message:error.message});}
     }
     if(request.action==='start'){
+        if(live(entry)&&entry.loadError)throw entry.loadError;
         if(!live(entry))entry=create(Editor,root,deps);else{entry.window.webContents.setAudioMuted(true);if(!deps||deps.show!==false)entry.window.show();}
         base.target=entry.target;
         if(entry.busy)throw Error('A managed test operation is already in progress.');
@@ -162,16 +198,14 @@ async function handle(Editor,root,request,deps){
                 clearing=true;
                 await storageClear(entry,timeout);
                 cleared=true;
-                entry.window.webContents.setAudioMuted(true);
-                entry.loaded=false;
-                entry.window.loadURL(entry.url);
+                loadMain(root,entry);
                 const result=await ready(entry,'start');
                 return Object.assign(base,{running:true},result,{backup,message:'Managed test player reset to the beginning. The previous test save was backed up. Regular Browser and Simulator players were not changed.'});
             }catch(error){
                 if(live(entry)&&!clearing){
                     // Storage is intact: resume the original scene or reload it
                     // if navigation already reached the empty page.
-                    try{if(entry.window.webContents.getURL().startsWith(entry.origin+'/'))await invoke(entry,{action:'cancel-reset'});else{entry.window.webContents.setAudioMuted(true);entry.loaded=false;entry.window.loadURL(entry.url);await ready(entry,'start');}}catch(_recoveryError){}
+                    try{if(entry.window.webContents.getURL().startsWith(entry.origin+'/'))await invoke(entry,{action:'cancel-reset'});else{loadMain(root,entry);await ready(entry,'start');}}catch(_recoveryError){}
                 }else if(live(entry)&&!cleared){
                     // A timed-out storage clear cannot be cancelled. Stop all
                     // player writers instead of racing an uncertain clear.
@@ -185,5 +219,13 @@ async function handle(Editor,root,request,deps){
         return Object.assign(base,{running:true},result);
     }finally{entry.busy=false;}
 }
-function shutdown(){for(const entry of sessions.values())if(live(entry)){entry.window.webContents.setAudioMuted(true);entry.window.destroy();}sessions.clear();}
+function shutdown(){
+    let failure;
+    // Cleanup one captured owner at a time; a failing window cannot strand the
+    // rest or erase a replacement installed by a close callback.
+    for(const [root,entry]of Array.from(sessions)){
+        try{closeOwned(root,entry);}catch(error){if(!failure)failure=error;}
+    }
+    if(failure)throw failure;
+}
 module.exports={handle,shutdown,identity,catalog,confirmReset,_sessions:sessions};

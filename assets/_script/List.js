@@ -210,11 +210,12 @@ var def_List = function (t) {
     this._init();
     if (this._aniDelRuning) {
       this._aniDelRuning = false;
+      (this._aniDelTweens || []).forEach(function (tween) { tween.stop(); });
       if (this._aniDelItem) {
         this._aniDelBeforePos && (this._aniDelItem.position = this._aniDelBeforePos, delete this._aniDelBeforePos), this._aniDelBeforeScale && (this._aniDelItem.scale = this._aniDelBeforeScale, delete this._aniDelBeforeScale), delete this._aniDelItem;
       }
       if (this._aniDelCB) {
-        this._aniDelCB(), delete this._aniDelCB;
+        this._aniDelCB();
       }
     }
   };
@@ -585,7 +586,7 @@ var def_List = function (t) {
           this.displayItemNum = this.displayData.length;
           var p = this._lastDisplayData.length;
           var f = this.displayItemNum != p;
-          if (f) {
+          if (!f) {
             this.frameByFrameRenderNum > 0 && this._lastDisplayData.sort(function (t, e) {
               return t - e;
             });
@@ -1021,7 +1022,7 @@ var def_List = function (t) {
       }
     } else {
       var n = this._pool.size() > 0;
-      e = n ? this._pool.get() : cc.instantiate(this._itemTmp);
+      e = n ? this._pool.get() : null;
       if (!(n && cc.isValid(e))) {
         e = cc.instantiate(this._itemTmp);
         n = false;
@@ -1201,13 +1202,25 @@ var def_List = function (t) {
     if (o) {
       a = o.getComponent($z1ListItem.default);
       i._aniDelRuning = true;
-      i._aniDelCB = e;
+      var completed = false;
+      var finish = function () {
+        if (completed) return;
+        completed = true;
+        i._aniDelRuning = false;
+        (i._aniDelTweens || []).forEach(function (tween) { tween.stop(); });
+        i._aniDelTweens = null;
+        delete i._aniDelCB;
+        e(t);
+      };
+      i._aniDelCB = finish;
+      i._aniDelTweens = [];
       i._aniDelItem = o;
       i._aniDelBeforePos = o.position;
       i._aniDelBeforeScale = o.scale;
       var r = i.displayData[i.displayData.length - 1].id;
       var s = a.selected;
-      a.showAni(n, function () {
+      var removal = a.showAni(n, function () {
+        if (completed) return;
         var n;
         var a;
         var c;
@@ -1227,7 +1240,7 @@ var def_List = function (t) {
           if (s) {
             i._selectedId = -1;
           } else {
-            i._selectedId - 1 >= 0 && i._selectedId--;
+            i._selectedId > t && i._selectedId--;
           }
         } else if (i.selectedMode == l.MULT && i.multSelected.length) {
           var g = i.multSelected.indexOf(t);
@@ -1253,23 +1266,21 @@ var def_List = function (t) {
             a = cc.tween(o).to(.2333, {
               position: cc.v2(y.x, y.y)
             });
+            i._aniDelTweens.push(a);
             if (u <= t + 1) {
               c = true;
               a.call(function () {
-                i._aniDelRuning = false;
-                e(t);
-                delete i._aniDelCB;
+                finish();
               });
             }
             a.start();
           }
         }
         if (!c) {
-          i._aniDelRuning = false;
-          e(t);
-          i._aniDelCB = null;
+          finish();
         }
       }, true);
+      if (removal && !completed) i._aniDelTweens.push(removal);
     } else {
       e(t);
     }
@@ -1325,7 +1336,8 @@ var def_List = function (t) {
         a._scrollView.scrollToOffset(s, e);
         a._scrollToListId = t;
         a._scrollToEndTime = new Date().getTime() / 1e3 + e;
-        a._scrollToSo = a.scheduleOnce(function () {
+        a.unschedule(a._scrollToSo);
+        a._scrollToSo = function () {
           a._adheringBarrier || (a.adhering = a._adheringBarrier = false);
           a._scrollPos = a._scrollToListId = a._scrollToEndTime = a._scrollToSo = null;
           if (i) {
@@ -1336,7 +1348,8 @@ var def_List = function (t) {
               scale: 1
             }).start();
           }
-        }, e + .1);
+        };
+        a.scheduleOnce(a._scrollToSo, e + .1);
         e <= 0 && a._onScrolling();
       }
     }

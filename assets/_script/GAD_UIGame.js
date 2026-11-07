@@ -84,7 +84,7 @@ var def_GAD_UIGame = function (t) {
       if (e) {
         $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.reward);
         $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Pause);
-        t.openUI($z1GAD_Configs.GAD_UIID.UILottery, e);
+        t.openDecision($z1GAD_Configs.GAD_UIID.UILottery, e);
       }
     });
     this.node.on(cc.Node.EventType.TOUCH_START, function () {});
@@ -250,12 +250,26 @@ var def_GAD_UIGame = function (t) {
     return 0 == this._waveRoles.length || this._waveRoles[this._waveRoles.length - 1].node.y <= .5 * cc.winSize.height;
   };
   _ctor.prototype.openResultView = function (t, e) {
+    var game = this, generation = this._resourceGeneration;
     if ($z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Over) {
       $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Over);
       this.scheduleOnce(function () {
-        $z1UIMgr.UIMgr.getInstance().openUI($z1GAD_Configs.GAD_UIID.UIResult, $z1Config.UIID.UINONE, e);
+        if (!game.isclose && cc.isValid(game, true) && game._resourceGeneration === generation) game.openDecision($z1GAD_Configs.GAD_UIID.UIResult, e);
       }, t);
     }
+  };
+  _ctor.prototype.openDecision = function (id, value) {
+    var game = this;
+    this.openRequiredUI(id, function (node) { game._decisionNode = node; }, value);
+  };
+  _ctor.prototype.onClose = function () {
+    var node = this._decisionNode;
+    this._decisionNode = null;
+    if (node && cc.isValid(node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(node);
+  };
+  _ctor.prototype.onDestroy = function () {
+    try { this.onClose(); }
+    finally { t.prototype.onDestroy.call(this); }
   };
   _ctor.prototype.buildWave = function () {
     var t = this._waveLevelCfgs;

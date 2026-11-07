@@ -110,6 +110,7 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.hide = function () {
+    this._stopColliderTweens();
     this.ndLockList.forEach(function (t) {
       t.active = false;
       t.getChildByName("sprPro") && (t.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0);
@@ -134,8 +135,10 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.setLevel = function (t) {
+    this.cancelUpgrade();
     var e;
     var n = this;
+    this._stopColliderTweens();
     this.index = t;
     this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, this.buildCfg.levelList[this.index - 1]);
     if (0 == this.index) {
@@ -148,16 +151,7 @@ var def_KinghtFallBuildBase = function (t) {
         t.enabled && (e = t);
       });
       if (e) {
-        cc.Tween.stopAllByTarget(e), cc.tween(e).to(.2, {}, {
-          onUpdate: function (t, i) {
-            var a = [];
-            for (var o = 0; o < n.colPoint[e.uuid].length; o++) {
-              a.push(cc.v2(n.colPoint[e.uuid][o].x * i, n.colPoint[e.uuid][o].y * i));
-            }
-            t.points = a;
-            t.apply();
-          }
-        }).start();
+        this._animateCollider(e, .2);
       }
       if (this.ndAniDown) {
         this.ndAniDown.node.active = true, this.ndAniDown.setSkin(this.buildInfo.cfg.Skin);
@@ -169,20 +163,8 @@ var def_KinghtFallBuildBase = function (t) {
         t.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
           t.enabled = t.tag == n.index;
           t.enabled && (e = t);
-          if (e) {
-            cc.Tween.stopAllByTarget(e);
-            cc.tween(e).to(.2, {}, {
-              onUpdate: function (t, i) {
-                var a = [];
-                for (var o = 0; o < n.colPoint[e.uuid].length; o++) {
-                  a.push(cc.v2(n.colPoint[e.uuid][o].x * i, n.colPoint[e.uuid][o].y * i));
-                }
-                t.points = a;
-                t.apply();
-              }
-            }).start();
-          }
         });
+        if (e) n._animateCollider(e, .2);
       });
     }
     this.ndCoin.active = false;
@@ -210,6 +192,55 @@ var def_KinghtFallBuildBase = function (t) {
         t.active = false;
       }
     });
+  };
+  _ctor.prototype._stopColliderTween = function (collider) {
+    var owned = this._colliderTweens && this._colliderTweens.get(collider);
+    if (!owned) return;
+    this._colliderTweens.delete(collider);
+    owned.tween && owned.tween.stop();
+  };
+  _ctor.prototype._stopColliderTweens = function () {
+    if (!this._colliderTweens) return;
+    var owner = this;
+    Array.from(this._colliderTweens.keys()).forEach(function (collider) { owner._stopColliderTween(collider); });
+  };
+  _ctor.prototype._animateCollider = function (collider, duration) {
+    var owner = this;
+    this._stopColliderTween(collider);
+    if (!this._colliderTweens) this._colliderTweens = new Map();
+    var operation = { level: this.index, tween: null };
+    this._colliderTweens.set(collider, operation);
+    operation.tween = cc.tween(collider).to(duration, {}, {
+      onUpdate: function (target, progress) {
+        // Creator apply() can recreate fixtures even when a collider is disabled.
+        // A retired growth/close callback must never revive an old gate variant.
+        if (owner._colliderTweens.get(collider) !== operation || owner.index !== operation.level ||
+            owner.enabled === false || owner.isDestroyed || !cc.isValid(owner.node, true) ||
+            !cc.isValid(target, true) || target.enabled === false || target.enabledInHierarchy === false ||
+            !target.node || target.node.activeInHierarchy === false || target.tag != owner.index) return;
+        target.points = owner.colPoint[target.uuid].map(function (point) { return cc.v2(point.x * progress, point.y * progress); });
+        target.apply();
+        if (progress >= 1 && owner._colliderTweens.get(collider) === operation) owner._colliderTweens.delete(collider);
+      }
+    }).start();
+  };
+  _ctor.prototype.onDisable = function () {
+    this.cancelUpgrade();
+    var owner = this, interrupted = this._colliderTweens ? Array.from(this._colliderTweens.keys()) : [];
+    this._stopColliderTweens();
+    // A disabled component may be enabled again without setLevel. Retain its
+    // authored footprint rather than leaving a cancelled half-grown shape.
+    interrupted.forEach(function (collider) {
+      if (!cc.isValid(collider, true) || !owner.colPoint[collider.uuid]) return;
+      collider.points = owner.colPoint[collider.uuid].map(function (point) { return cc.v2(point.x, point.y); });
+      if (collider.enabled && collider.enabledInHierarchy !== false && collider.node && collider.node.activeInHierarchy !== false && collider._inited !== false) collider.apply();
+    });
+    if (t.prototype.onDisable) t.prototype.onDisable.call(this);
+  };
+  _ctor.prototype.onDestroy = function () {
+    this.cancelUpgrade();
+    this._stopColliderTweens();
+    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.doUpgreadAni = function () {
     var t = this;
@@ -342,9 +373,13 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.startRoundGame = function () {
     this.buildInfo.initBuffData();
   };
+  _ctor.prototype.cancelUpgrade = function () {
+    if (this._upgradeOperation) this._upgradeOperation.cancel();
+  };
   _ctor.prototype.doUpgrade = function (t, e) {
     var n;
     var i = this;
+    if (this._upgradeOperation) return false;
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None || !this.buildInfo) {
       return false;
     }
@@ -353,14 +388,21 @@ var def_KinghtFallBuildBase = function (t) {
       if (this.buildInfo.standTime >= this.standTimeMax) {
         this.buildInfo.standTime = this.standTimeMax;
         $z1KinghtFallUIGame.default.instance.ctrGame.upBulid = this;
+        var ui = $z1KinghtFallUIGame.default.instance;
+        var game = ui.ctrGame, data = game.gameData, epoch = game._combatEpoch;
+        var operation;
         var a = function (t) {
+          if (!operation || operation.done) return;
+          if (!operation.isCurrent()) { operation.cancel(); return; }
+          operation.done = true;
+          i._upgradeOperation = null;
           $z1KinghtFallUIGame.default.instance.initView();
           i.index = t;
           i.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(i.buildCfg.enumValue, i.buildCfg.levelList[i.index - 1]);
           $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.BuildingLevelUp);
           i.doUpgreadAni();
           i.scheduleOnce(function () {
-            $z1KinghtFallUIGame.default.instance.canStart = true;
+            if ($z1KinghtFallUIGame.default.instance === ui && !ui.isclose && game.gameData === data && game._combatEpoch === epoch && !i._upgradeOperation) ui.canStart = true;
           }, .5);
           $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding);
           var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getTaskInfo();
@@ -369,7 +411,7 @@ var def_KinghtFallBuildBase = function (t) {
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setTaskInfo(e);
           }
           $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.lv_building_X_Y, $z1KinghtFallUIGame.default.instance.ctrGame.gameData.levelCfg.Level + "_" + i.buildCfg.enumValue);
-          $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
+          ui.onPauseGame(false, operation);
           if (1 == i.getLevel()) {
             switch (i.buildCfg.enumValue) {
               case $z1KinghtFallEnum.KinghtFallEnumBuildEnum.PrivateHouse:
@@ -434,11 +476,33 @@ var def_KinghtFallBuildBase = function (t) {
           }
         };
         if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.coin >= this.getSell()) {
-          $z1KinghtFallUIGame.default.instance.canStart = false;
-          $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.GamePause, true);
-          $z1KinghtFallUIGame.default.instance.ctrGame.gameData.coin -= this.getSell();
+          var info = this.buildInfo, cost = this.getSell(), canStart = ui.canStart;
+          operation = { done: false, request: null, node: null };
+          this._upgradeOperation = operation;
+          operation.isCurrent = function () {
+            return i._upgradeOperation === operation && !operation.done && cc.isValid(i, true) && cc.isValid(i.node, true) && !i.isDestroyed &&
+              i.buildInfo === info && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === game && game.gameData === data && game._combatEpoch === epoch;
+          };
+          operation.cancel = function () {
+            if (operation.done) return;
+            operation.done = true;
+            if (i._upgradeOperation === operation) i._upgradeOperation = null;
+            if (game.upBulid === i) game.upBulid = null;
+            if (game.gameData === data && game._combatEpoch === epoch) {
+              data.coin += cost;
+              if (i.buildInfo === info) info.standTime = 0;
+              if ($z1KinghtFallUIGame.default.instance === ui && !ui.isclose) { ui.canStart = canStart; ui.initView(); }
+            }
+            if ($z1KinghtFallUIGame.default.instance === ui && !ui.isclose) ui.onPauseGame(false, operation);
+            if (operation.request) operation.request.cancel();
+            if (operation.node && cc.isValid(operation.node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(operation.node);
+          };
+          ui.canStart = false;
+          ui.onPauseGame(true, operation);
+          data.coin -= cost;
           if (this.buildInfo.cfg && this.buildInfo.cfg.BranchBuild.length > 1) {
-            $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIBuildSel, $z1KinghtFallConfig.KinghtFallUIID.UIGame, this, a);
+            operation.request = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UIBuildSel, $z1KinghtFallConfig.KinghtFallUIID.UIGame,
+              { isCurrent: operation.isCurrent, onCancel: operation.cancel, onOpened: function (node) { operation.node = node; } }, this, a, operation.cancel);
           } else {
             a(this.buildInfo.cfg ? this.buildInfo.cfg.BranchBuild[0] : 1);
           }
@@ -534,11 +598,13 @@ var def_KinghtFallBuildBase = function (t) {
     if (!this.isDestroyed) {
       this.buildInfo.hp -= t;
       this.buildInfo.hp <= 0 && this.onDead();
-      this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
+      this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
       return t;
     }
   };
   _ctor.prototype.onDead = function () {
+    this.cancelUpgrade();
+    this._stopColliderTweens();
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory);
     this.delAllBuff();
     this.isDestroyed = true;
@@ -578,6 +644,7 @@ var def_KinghtFallBuildBase = function (t) {
     return 0;
   };
   _ctor.prototype.reset = function (t) {
+    this.cancelUpgrade();
     if (t) {
       this.index = 0;
       this.setLevel(this.index);

@@ -80,6 +80,9 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.initData = function () {
     GameToolsOverrides.cancel(this);
+    this.node._combatActor = this;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
+    this._regenerationDisabled = false;
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getEquipCfgList();
     for (var e = 0; e < t.length; e++) {
       var n = t[e];
@@ -108,7 +111,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
           this.moveSpeed = a.Parameters;
       }
     }
+    this._baseAttackRange = this.attackRange;
+    if (cc.resources) require("CharacterAppearance").reset(this);
     this.ctrPlayAni.initView();
+    if (cc.resources) require("CharacterAppearance").bind(this, "hero");
     this.ctrPlayAni.setAttackEvent(this.doAttack1.bind(this));
     this.ctrPlayAni.setAttackEnd(this.doAttackFinish.bind(this));
     this.time = {};
@@ -124,7 +130,17 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onRestart = function (t) {
     GameToolsOverrides.cancel(this);
+    this.node._combatActor = this;
+    this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
+    this.time[C.Attack] = 0;
     undefined === t && (t = false);
+    if (t) {
+      this.time[C.RebornBuff1] = this.time[C.RebornBuff2] = 0;
+      this.time[C.AttackSpeed1] = 0;
+      this.time[C.hpRecover] = 0;
+      this.time[C.RecoverCd] = 0;
+      this.initBuffData();
+    }
     $z1AudioMgr.AudioMgr.getInstance().getAudioSource($z1KinghtFallConfig.KinghtFallParameter.BGMusic).volume = $z1AudioMgr.AudioMgr.getInstance().getMusicVolume();
     this.ctrPlayAni.onRestart();
     this.state = r.Alive;
@@ -186,8 +202,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
           this.time[C.Attack] >= 1 && this.onFindEnemy();
         }
         this.time[C.NoDie] -= t;
-        this.time[C.RecoverCd] -= t;
-        if (-1 != this.time[C.RecoverCd] && this.time[C.RecoverCd] <= 0) {
+        if (!this._regenerationDisabled) this.time[C.RecoverCd] -= t;
+        if (!this._regenerationDisabled && this.time[C.RecoverCd] <= 0) {
           this.time[C.hpRecover] += t;
           if (this.time[C.hpRecover] >= 1) {
             this.hp += this.getHpRecoverSpeed(), this.hp > this.hpMax && (this.hp = this.hpMax), this.ctrHp.setHp(this.hp, this.hpMax), this.time[C.hpRecover]--;
@@ -202,6 +218,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.endRoundGame = function () {
     GameToolsOverrides.cancel(this);
+    this.time[C.Attack] = 0;
     if (this.isDead()) {
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, 0);
       this.onReborn();
@@ -253,6 +270,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onDead = function () {
     GameToolsOverrides.cancel(this);
+    var generation = this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = this;
     this.tagEnemy = null;
     $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().stopEffectName($z1KinghtFallConfig.KinghtFallParameter.RunMusic);
@@ -261,6 +279,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.state = r.Reborn;
     $z1KinghtFallUIGame.default.instance.ctrGame.gameTag[$z1KinghtFallEnum.KinghtFallEnumLevelChalType.NoDie] = 1;
     this.ctrPlayAni.setDie(function () {
+      if (!cc.isValid(t, true) || t.node._combatGeneration !== generation) return;
       t.state = r.Dead;
       t.time[C.Reborn] = 0;
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, t.time[C.RebornTime] - t.time[C.Reborn]);
@@ -268,17 +287,21 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.delAllBuff();
   };
   _ctor.prototype.onReborn = function () {
+    var generation = this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = this;
     this.tagEnemy = null;
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.rebirth);
     this.state = r.Reborn;
     this.rigidBody.active = true;
     this.ctrPlayAni.setRevive(function () {
+      if (!cc.isValid(t, true) || t.node._combatGeneration !== generation) return;
       t.state = r.Alive;
       t.time[C.hpRecover] = 0;
       t.time[C.Attack] = 0;
       t.hp = t.hpMax;
       t.ctrHp.setHp(t.hp, t.hpMax);
+      var audio = $z1AudioMgr.AudioMgr.getInstance();
+      audio.getAudioSource($z1KinghtFallConfig.KinghtFallParameter.BGMusic).volume = audio.getMusicVolume();
     });
     var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff13);
     if (e && !this.time[C.RebornBuff1]) {
@@ -317,6 +340,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.time[C.RecoverCd] = 1;
   };
   _ctor.prototype.doAttack = function () {
+    // The damage event completes the windup even if its target has left range.
+    this.time[C.Attack] = 0;
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack);
     this.node.getPosition(this.vec2_1);
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
@@ -341,7 +366,6 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         var r = e[o];
         r && $z1KinghtFallUIGame.default.instance.ctrGame.onPlayAttack(r.tag);
       }
-      this.time[C.Attack] = 0;
     }
   };
   _ctor.prototype.doAttack1 = function () {};
@@ -387,6 +411,11 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.hpRecoverSpeed * (t + (this.time[C.hpRecoverSpeed] || 0));
   };
   _ctor.prototype.initBuffData = function () {
+    if (this._baseAttackRange === undefined) this._baseAttackRange = this.attackRange;
+    this.attackRange = this._baseAttackRange;
+    var previousHpMax = this.hpMax;
+    this.hpMax = this.baseHp;
+    this._regenerationDisabled = false;
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff01);
     this.attNum = t ? t.Pamer[0] : 1;
     this.crit = 0;
@@ -406,18 +435,21 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     r && (this.time[C.hpRecoverSpeed] += r.Pamer[0]);
     var s = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff40);
     if (s) {
-      this.time[C.RecoverCd] = -1;
+      this._regenerationDisabled = true;
       this.hpMax = (1 + s.Pamer[0]) * this.baseHp;
-      this.hp = this.hpMax;
-      this.ctrHp.setHp(this.hp, this.hpMax);
     }
+    // Recomputing an owned perk must not repeatedly heal existing damage.
+    this.hp = Math.max(0, Math.min(this.hpMax, this.hp + this.hpMax - previousHpMax));
+    this.ctrHp.setHp(this.hp, this.hpMax);
     this.time[C.AttackBuff1] = 0;
     var l = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff41);
     if (l) {
       this.time[C.AttackBuff1] = l.Pamer[0];
       this.attackRange *= 1 - l.Pamer[1];
-      this.ndRange.scale = 2 * this.attackRange / this.ndRange.width;
     }
+    this.ndRange.scale = 2 * this.attackRange / this.ndRange.width;
+    this.time[C.AttackSpeed2] = 0;
+    this.time[C.AttackBuff2] = 0;
     var c = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff42);
     if (c) {
       this.time[C.AttackSpeed2] = c.Pamer[0];

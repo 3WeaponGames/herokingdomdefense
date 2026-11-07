@@ -36,6 +36,16 @@ var TestMode = require("TestMode").TestMode;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+function updateProjectiles(projectiles, dt) {
+  // Returning a shot to its pool removes it from this list immediately.
+  // Advance over survivors only, and leave shots appended here for the next tick.
+  var index = 0;
+  for (var remaining = projectiles.length; remaining > 0 && index < projectiles.length; remaining--) {
+    var shot = projectiles[index];
+    if (shot) shot.onUpdate(dt);
+    if (projectiles[index] === shot) index++;
+  }
+}
 var def_KinghtFallGameCtrl = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -80,8 +90,10 @@ var def_KinghtFallGameCtrl = function (t) {
     this.rallyPoint = null;
     this.pathList = [];
     this._armyFormation = null;
-    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t);
+    var restoring = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(t);
+    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring);
     this.ctrPlay.initData();
+    this.ctrPlay.ndAgg.active = false;
     this.buildBullet.node.active = false;
     this.ndAggFlag.active = false;
   };
@@ -131,7 +143,12 @@ var def_KinghtFallGameCtrl = function (t) {
       if (!body.node.activeInHierarchy) return;
       body.syncPosition();
       body.syncRotation();
-      if (scaled) body.getComponents(cc.PhysicsCollider).forEach(function (collider) { collider.apply(); });
+      if (scaled) body.getComponents(cc.PhysicsCollider).forEach(function (collider) {
+        // Creator's apply() recreates fixtures even for disabled components.
+        // Only resize live shapes; a pending onEnable/init reads the new scale
+        // itself. Otherwise an open gate or an unused upgrade can turn solid.
+        if (collider.enabled && collider.enabledInHierarchy && collider._inited) collider.apply();
+      });
     });
   };
   _ctor.prototype.onDestroy = function () {
@@ -148,8 +165,9 @@ var def_KinghtFallGameCtrl = function (t) {
     this.clearArmyOrder();
     this._battleSettlement = null;
     t && (this.gameData.buffList = []);
-    this.gameData.onRestart(t);
+    // End the previous request lifetime before buildings request their new roster.
     this.cleanMap();
+    this.gameData.onRestart(t);
     this.moveDir = cc.v2(0, 0);
     this.ctrPlay.onRestart(t);
     this.ctrPlay.node.setPosition(this.ndPath.getChildByName("ndStar").position);
@@ -227,18 +245,10 @@ var def_KinghtFallGameCtrl = function (t) {
       case $z1KinghtFallModle.KinghtFallGameStage.Fight:
         this.gameData.onUpdata(t);
         this.ctrPlay.onUpdata(t);
-        this.ndPlayArr2.forEach(function (e) {
-          null == e || e.onUpdate(t);
-        });
-        this.ndEnemyArr.forEach(function (e) {
-          null == e || e.onUpdate(t);
-        });
-        this.ndSoldArr.forEach(function (e) {
-          null == e || e.onUpdate(t);
-        });
-        this.ndBuildArr2.forEach(function (e) {
-          null == e || e.onUpdate(t);
-        });
+        updateProjectiles(this.ndPlayArr2, t);
+        updateProjectiles(this.ndEnemyArr, t);
+        updateProjectiles(this.ndSoldArr, t);
+        updateProjectiles(this.ndBuildArr2, t);
     }
     this.ctrPlay.doMove(this.moveDir, t);
     var o = this.gameData.getBulidList();
@@ -486,6 +496,29 @@ var def_KinghtFallGameCtrl = function (t) {
     // terrain checks below still use the full navigation radius.
     var spacing = radius * 2 - 2, candidates = [], reserved = [], slots = new Map();
     var limit = Math.min(480, Math.max(spacing * 3, spacing * (Math.ceil(Math.sqrt(soldiers.length)) + 2)));
+    var gatePolygons = [], main = this.ndMain;
+    this.gameData.getBulidList().forEach(function (building) {
+      var shapes = building.getNavigationGateShapes && building.getNavigationGateShapes();
+      if (shapes) shapes.forEach(function (shape) {
+        gatePolygons.push(shape.points.map(function (point) { return main.convertToNodeSpaceAR(cc.v2(point)); }));
+      });
+    });
+    function clearGateApproach(point, r) {
+      // Match settleArmyCrowd's protected gate approach. A destination here
+      // would park a body in the passage while nearby units cannot settle.
+      var clearance = r * 2 + 8, squared = clearance * clearance;
+      for (var g = 0; g < gatePolygons.length; g++) {
+        var polygon = gatePolygons[g];
+        for (var j = 0; j < polygon.length; j++) {
+          var a = polygon[j], b = polygon[(j + 1) % polygon.length];
+          var dx = b.x - a.x, dy = b.y - a.y, length = dx * dx + dy * dy;
+          var along = length ? Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / length)) : 0;
+          var x = point.x - a.x - along * dx, y = point.y - a.y - along * dy;
+          if (x * x + y * y < squared) return false;
+        }
+      }
+      return true;
+    }
     function available(point, r) {
       for (var j = 0; j < reserved.length; j++) {
         var other = reserved[j], clearance = r + other.radius - 2 - .01;
@@ -495,7 +528,7 @@ var def_KinghtFallGameCtrl = function (t) {
       return true;
     }
     function valid(point, r) {
-      return available(point, r) && navigation.grid.isWalkable(point, r) && navigation.grid.segmentClear(center, point, 0);
+      return available(point, r) && clearGateApproach(point, r) && navigation.grid.isWalkable(point, r) && navigation.grid.segmentClear(center, point, 0);
     }
     function reserve(soldier, point) {
       var slot = { pos: point, radius: radii.get(soldier) };
@@ -530,7 +563,7 @@ var def_KinghtFallGameCtrl = function (t) {
       for (var j = 0; j < candidates.length; j++) {
         var candidate = candidates[j];
         if (candidate.clear === false || !available(candidate.pos, radii.get(soldier))) continue;
-        if (candidate.clear === undefined) candidate.clear = navigation.grid.isWalkable(candidate.pos, radius) && navigation.grid.segmentClear(center, candidate.pos, 0);
+        if (candidate.clear === undefined) candidate.clear = clearGateApproach(candidate.pos, radius) && navigation.grid.isWalkable(candidate.pos, radius) && navigation.grid.segmentClear(center, candidate.pos, 0);
         if (!candidate.clear) continue;
         reserve(soldier, candidate.pos);
         break;
@@ -661,6 +694,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.cleanMap();
   };
   _ctor.prototype.cleanMap = function () {
+    if (this.upBulid && this.upBulid.cancelUpgrade) this.upBulid.cancelUpgrade();
     this._combatEpoch++;
     for (var t = 0; t < this.ndPlayArr2.length; t++) {
       this.ndPlayArr2[t].cancel();
@@ -702,11 +736,13 @@ var def_KinghtFallGameCtrl = function (t) {
       if (r) {
         o(r);
       } else {
+        var pendingData = this.gameData;
+        pendingData.pendingEnemySpawns = (pendingData.pendingEnemySpawns || 0) + 1;
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, i.prefab, function (t) {
           if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
-          r = cc.instantiate(t);
-          $z1PoolMgr.PoolMgr.getInstance().creatrePool(a, cc.instantiate(t), 10);
+          r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 10);
           o(r);
+          pendingData.pendingEnemySpawns--;
         });
       }
     }
@@ -730,8 +766,7 @@ var def_KinghtFallGameCtrl = function (t) {
     } else {
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "Play" + i.prefab, function (t) {
         if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
-        r = cc.instantiate(t);
-        $z1PoolMgr.PoolMgr.getInstance().creatrePool(a, cc.instantiate(t), 1);
+        r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 1);
         o(r);
       });
     }
@@ -907,7 +942,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(this.gameData.levelCfg.Level)) {
       this.gameData.setRound();
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getBuffList().forEach(function (e) {
-        t.gameData.addGameBuff(e);
+        t.gameData.addGameBuff(e, true);
       });
       var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getBuildInfoList();
       var n = this.gameData.getBulidList();
@@ -947,25 +982,26 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     return false;
   };
-  _ctor.prototype.saveGame = function () {
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setLevelInfo(this.gameData.levelCfg.Level, this.gameData.round, this.gameData.coin);
+  _ctor.prototype.getCheckpoint = function () {
     var t = [];
     this.gameData.buffList.forEach(function (e) {
       t.push(e.id);
     });
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setBuffList(t);
     var e = [];
     this.gameData.getBulidList().forEach(function (t) {
       e.push(t.getSave());
     });
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setBuildInfoList(e);
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setBusinessList(this.gameData.businessAdd);
     var n = {
       index: this.gameData.taskInfo.index,
       list: this.gameData.taskInfo.list,
       stage: this.gameData.taskInfo.stage
     };
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setTaskInfo(n);
+    return { levelNum: this.gameData.levelCfg.Level, roundNum: this.gameData.round,
+      coin: this.gameData.coin, buffList: t, buildingLevel: e,
+      businessList: this.gameData.businessAdd, taskList: n };
+  };
+  _ctor.prototype.saveGame = function () {
+    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setCheckpoint(this.getCheckpoint());
   };
   cc__decorate([ccp_property({
     type: cc.Camera,

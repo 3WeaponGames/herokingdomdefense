@@ -1,8 +1,9 @@
 'use strict';
-const fs=require('fs'),path=require('path'),os=require('os'),assert=require('assert');
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const temporary=require('./owned-temp');
 const root=path.resolve(__dirname,'../../..'),Store=require('../lib/store').Store,Files=require('../lib/store').files,Hash=require('../lib/store').hash;
 const schema=require('../lib/schema'),maps=require('../lib/map-assets'),assets=require('../lib/asset-validation');
-const temp=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-panels-save-')),original={};
+const temp=temporary('hkd-panels-save-'),original={};
 const paths=Object.values(Files).concat(['assets/KinghtFallIconMap/Map01.prefab']);
 paths.forEach(p=>{const source=fs.readFileSync(path.join(root,p));original[p]=Hash(source);fs.mkdirSync(path.dirname(path.join(temp,p)),{recursive:true});fs.writeFileSync(path.join(temp,p),source);});
 const s=new Store(temp,{validators:[schema.validate,(d,c)=>maps.validate(d,c,root),(d,c)=>assets.validate(root,d,c)]});s.addMap('Map01');

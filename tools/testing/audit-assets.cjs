@@ -32,7 +32,7 @@ const catalog = JSON.parse(fs.readFileSync(path.join(root, 'assets/resources/loc
 const templates = Object.entries(catalog.artTemplates || {}), missingArt = [];
 for (const [id, template] of templates) {
   if (template.source && !fs.existsSync(path.join(root, template.source))) missingArt.push({ id, source: template.source });
-  for (const locale of ['en', 'zh']) { const file = path.join(root, 'assets/resources/localization/generated', locale, id + '.png'); if (!fs.existsSync(file)) missingArt.push({ id, locale, file: rel(file) }); }
+  for (const locale of template.languages || catalog.languages.map(language => language.code)) { const file = path.join(root, 'assets/resources/localization/generated', locale, id + '.png'); if (!fs.existsSync(file)) missingArt.push({ id, locale, file: rel(file) }); }
 }
 const config = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json')));
 const out = { assetFiles: files.length, scripts: scripts.size, serialized, syntaxErrors, duplicateUuids: duplicates, brokenFiles, unresolvedImports: imports, unresolvedSerializedRefs: missingRefs,

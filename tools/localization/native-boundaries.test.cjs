@@ -10,6 +10,18 @@ const entries = require('./text-entries.json').entries;
 
 function harness(language, platform = 1) {
   const state = { toasts: [], modals: [], clears: 0, restarts: 0, requests: [], timers: [] };
+  let now = 0;
+  const pending = new Map();
+  let nextTimer = 1;
+  state.tick = elapsed => {
+    const end = now + elapsed;
+    for (;;) {
+      const due = [...pending].filter(([, timer]) => timer.at <= end).sort((a, b) => a[1].at - b[1].at)[0];
+      if (!due) break;
+      pending.delete(due[0]); now = due[1].at; due[1].callback();
+    }
+    now = end;
+  };
   const translate = token => {
     const key = token.replace(/^\[\[loc:|\]\]$/g, '');
     assert.ok(entries[key], 'Missing source translation ' + key);
@@ -27,13 +39,16 @@ function harness(language, platform = 1) {
     showToast(value) { state.toasts.push(value); },
     showModal(value) { state.modals.push(value); },
     showLoading() {}, hideLoading() {},
-    restartMiniProgram() { state.restarts++; },
+    requestMidasPaymentGameItem() { assert.fail('Rejected order must not invoke host payment'); },
+    restartMiniProgram(options) { state.restarts++; options && options.success && options.success(); },
     restartMiniProgramSync() { state.restarts++; }
   };
   state.load = name => {
     const context = { exports: {}, require: name => modules[name] || {}, wx: sdk, tt: sdk, console,
       setInterval(callback) { state.timers.push(callback); return state.timers.length; },
-      clearInterval() {}, setTimeout(callback) { callback(); } };
+      clearInterval() {},
+      setTimeout(callback, delay) { const id = nextTimer++; pending.set(id, { callback, at: now + delay }); return id; },
+      clearTimeout(id) { pending.delete(id); } };
     vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8'), context, { filename: name + '.js' });
     return context.exports;
   };
@@ -71,7 +86,7 @@ for (const language of ['en', 'zh']) {
       let successes = 0;
       payment.requestOrder = (order, callback) => callback({ code, msg: 'SERVER_DIAGNOSTIC_NOT_UI' });
       payment.paySuccess('test-order', success => { if (success) successes++; });
-      h.timers[0]();
+      h.tick(2000);
       assert.equal(h.toasts[0].title, entries[key][language]);
       assert.equal(successes, code === 0 ? 1 : 0);
     }
@@ -80,7 +95,8 @@ for (const language of ['en', 'zh']) {
   test(language + ': native reset dialogs use bounded localized buttons and preserve cancel/confirm behavior', () => {
     for (const platform of [1, 2]) {
       const h = harness(language, platform), manager = h.load('ServerDataMgr').ServerdataMgr;
-      manager.clearAllData();
+      const results = [];
+      manager.clearAllData(success => results.push(success));
       const modal = h.modals[0];
       assert.equal(modal.confirmText, entries['common.nativeOK'][language]);
       assert.equal(modal.cancelText, entries['common.nativeBack'][language]);
@@ -88,9 +104,21 @@ for (const language of ['en', 'zh']) {
       modal.success({ confirm: false, cancel: true });
       assert.equal(h.clears, 0);
       assert.equal(h.restarts, 0);
+      assert.deepEqual(results, [false]);
       modal.success({ confirm: true, cancel: false });
+      assert.equal(h.clears, 0, 'a stale completion cannot confirm a cancelled dialog');
+      assert.equal(h.restarts, 0);
+      manager.clearAllData(success => results.push(success));
+      const confirmation = h.modals[1];
+      assert.equal(confirmation.confirmText, entries['common.nativeOK'][language]);
+      assert.equal(confirmation.cancelText, entries['common.nativeBack'][language]);
+      confirmation.success({ confirm: true, cancel: false });
       assert.equal(h.clears, 1);
       assert.equal(h.restarts, 1);
+      confirmation.success({ confirm: true, cancel: false });
+      assert.equal(h.clears, 1, 'duplicate native completion cannot clear twice');
+      assert.equal(h.restarts, 1);
+      assert.deepEqual(results, [false, true]);
     }
   });
 }

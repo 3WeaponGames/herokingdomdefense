@@ -252,9 +252,10 @@ var def_GAD_Cards = function (t) {
   _ctor.prototype.addCardLev = function (t, e) {
     for (var n = 0; n < this._cards.length; n++) {
       if (this._cards[n].getCardCfg().id == t) {
+        var accepted = this._cards[n].addLev(e);
+        if (!accepted) return false;
         $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.Cards);
-        this._cards[n].addLev(e);
-        this.atkDamage += this._cards[n].getCardCfg().cardATK;
+        this.atkDamage += this._cards[n].getCardCfg().cardATK * accepted;
         return true;
       }
     }
@@ -306,10 +307,10 @@ var def_GAD_Cards = function (t) {
         this.refreshBar();
         break;
       case $z1GADGameEnumData.enumGADBuffTypeCfg.speedMultiply:
-        this.cdParam = (0 == this.cdParam ? 1 : this.cdParam) * e;
+        if (isFinite(e) && e > 0) this.cdParam = this.getCDParam() * e - 1;
         break;
       case $z1GADGameEnumData.enumGADBuffTypeCfg.speedDivision:
-        0 != e && (this.cdParam /= e);
+        if (isFinite(e) && e > 0) this.cdParam = this.getCDParam() / e - 1;
         break;
       case $z1GADGameEnumData.enumGADBuffTypeCfg.ATKMultiply:
         this.atkDamage *= e;

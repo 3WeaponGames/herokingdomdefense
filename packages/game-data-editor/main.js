@@ -28,7 +28,7 @@ function refreshImports(files){
 }
 const messages={
     load(event){reply(event,()=>getStore().snapshot());},
-    refresh(event){reply(event,()=>broadcast(getStore().refresh()));},
+    refresh(event){reply(event,()=>{const snapshot=getStore().refresh();assets=null;require('./lib/unit-assets').invalidate();return broadcast(snapshot);});},
     change(event,request){reply(event,()=>broadcast(getStore().change(request)));},
     undo(event,request){reply(event,()=>broadcast(getStore().undo(request)));},
     redo(event,request){reply(event,()=>broadcast(getStore().redo(request)));},

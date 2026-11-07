@@ -24,24 +24,38 @@ var g = function () {
     if (this.isInited) {
       t && t();
     } else {
-      this.isInited = true;
+      this._initCallbacks = this._initCallbacks || [];
+      if (t) this._initCallbacks.push(t);
+      if (this._initializing) return;
+      this._initializing = true;
+      var completed = false;
+      function finish(error) {
+        if (completed) return; completed = true;
+        e._initializing = false; e.isInited = !error;
+        var callbacks = e._initCallbacks.splice(0);
+        callbacks.forEach(function (callback) { try { callback(error); } catch (issue) { console.error(issue); } });
+      }
       var n = $z1PlatformConfig.ServerDataCfg[$z1PlatformSetting.PlatformSetting.currentApp];
       if (n) {
         this.appId = n.serverdataid;
         this.wechatOpened = n.wechatOpened;
         this.douyinOpened = n.douyinOpened;
       }
-      if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
+      if (!this.curServer && $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
         this.curServer = new $z1WeachatServerMgr.WeachatServerMgr(this.url, this.appId, this.wechatOpened);
       } else {
-        $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE && (this.curServer = new $z1ByteDanceServerMgr.ByteDanceServerMgr(this.url, this.appId, this.douyinOpened));
+        !this.curServer && $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE && (this.curServer = new $z1ByteDanceServerMgr.ByteDanceServerMgr(this.url, this.appId, this.douyinOpened));
       }
       if (this.curServer) {
-        this.curServer.init(function () {
-          e.loadData(t, true);
-        });
+        try {
+          this.curServer.init(function (error) {
+            if (error) { finish(error); return; }
+            try { e.loadData(function (data, issue) { finish(issue); }, true); }
+            catch (issue) { finish(issue); }
+          });
+        } catch (error) { finish(error); }
       } else {
-        t && t();
+        finish();
       }
     }
   };
@@ -50,8 +64,8 @@ var g = function () {
   };
   t.prototype.getOpenId = function (t) {
     if (this.curServer) {
-      this.curServer.getOpenId(function (e) {
-        t(e);
+      this.curServer.getOpenId(function (e, error) {
+        t && t(e, error);
       });
     } else {
       if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
@@ -59,18 +73,21 @@ var g = function () {
       } else {
         $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE && (this.curServer = new $z1ByteDanceServerMgr.ByteDanceServerMgr(this.url, this.appId, this.douyinOpened));
       }
-      this.curServer && this.curServer.getOpenId(function (e) {
-        t(e);
+      if (this.curServer) this.curServer.getOpenId(function (e, error) {
+        t && t(e, error);
       }, true);
+      else t && t(null);
     }
   };
   t.prototype.loadData = function (t, e) {
     undefined === e && (e = false);
     if (this.curServer) {
-      var n = localStorage.getItem(this.serversavedFlagKey);
       if (e) {
         return void this.curServer.loadData(t);
       }
+      var n;
+      try { n = localStorage.getItem(this.serversavedFlagKey); }
+      catch (error) { console.warn(error); }
       if (!this.isGetServer && (n && "1" == n || this.isSendServerFlag)) {
         t && t();
       } else {
@@ -83,36 +100,73 @@ var g = function () {
   };
   t.prototype.saveData = function (t, e, n) {
     if (this.curServer && !this.isPause) {
-      this.curServer.saveData(t, e, n);
+      var manager = this, completed = false;
+      this._pendingCloudSaves = (this._pendingCloudSaves || 0) + 1;
+      function finish(data, error) {
+        if (completed) return;
+        completed = true;
+        manager._pendingCloudSaves--;
+        if (error || data === false) manager._cloudSaveError = error || new Error("Cloud save was rejected.");
+        try { n && n(data, error); }
+        finally { if (manager._flushCloudReset) manager._flushCloudReset(); }
+      }
+      try { this.curServer.saveData(t, e, finish); }
+      catch (error) { if (completed) throw error; finish(null, error); }
+    } else if (this.curServer && this.isPause) {
+      n && n(null, new Error("Cloud saves are paused during reset."));
     } else {
       n && n();
     }
   };
   t.prototype.clearAllData = function (t) {
     var e = this;
-    this.clearCb = t;
+    if (this._clearRequest) { t && t(false, new Error("A cloud reset is already pending.")); return; }
+    var request = this._clearRequest = { done: false, started: false, timer: null };
+    function finish(success, error) {
+      if (request.done) return;
+      request.done = true;
+      if (request.timer !== null) clearTimeout(request.timer);
+      if (e._clearRequest === request) { e._clearRequest = null; e._flushCloudReset = null; }
+      if (!success && request.started) {
+        e.isPause = false;
+        $z1EventMgr.EventMgr.getInstance().emit("CLEARDATA", false);
+      }
+      t && t(success, error);
+    }
     var n = function () {
+      if (request.done || request.started) return;
+      request.started = true;
       e.isPause = true;
       $z1EventMgr.EventMgr.getInstance().emit("CLEARDATA", true);
-      $z1CacheUtils.CacheUtils.clearAll();
-      if (e.curServer) {
-        e.curServer.clearAllData(function (t) {
-          if (!t) {
-            e.isPause = false;
-            $z1EventMgr.EventMgr.getInstance().emit("CLEARDATA", false);
+      // Saves may still be waiting for login, queued, retrying, or in flight.
+      // Only their terminal acknowledgements can order removal after them.
+      e._flushCloudReset = function () {
+        if (request.done) return;
+        if (e._cloudSaveError) { finish(false, e._cloudSaveError); return; }
+        if (e._pendingCloudSaves) return;
+        e._flushCloudReset = null;
+        if (request.timer !== null) { clearTimeout(request.timer); request.timer = null; }
+        try {
+          if ($z1CacheUtils.CacheUtils.clearAll() === false) {
+            finish(false, new Error("Local saved data could not be cleared.")); return;
           }
-          e.clearCb && e.clearCb(t);
-        });
-      } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
-        wx.restartMiniProgram({
-          success: function () {}
-        });
-      } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
-        tt.restartMiniProgramSync();
-      } else {
-        cc.game.end();
-      }
+          if (e.curServer) {
+            e.curServer.clearAllData(function (success) { finish(!!success); });
+          } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
+            wx.restartMiniProgram({ success: function () { finish(true); }, fail: function (error) { finish(false, error); } });
+          } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
+            tt.restartMiniProgramSync(); finish(true);
+          } else {
+            cc.game.end(); finish(true);
+          }
+        } catch (error) { if (request.done) throw error; finish(false, error); }
+      };
+      if (e._pendingCloudSaves) request.timer = setTimeout(function () {
+        finish(false, new Error("Cloud saves have not settled; reset was cancelled without deleting data."));
+      }, 60000);
+      e._flushCloudReset();
     };
+    try {
     if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
       wx.showModal({
         confirmText: require("LanguageMgr").LanguageMgr.getInstance().T("[[loc:common.nativeOK]]"),
@@ -123,9 +177,10 @@ var g = function () {
           if (t.confirm) {
             n();
           } else {
-            t.cancel;
+            finish(false);
           }
-        }
+        },
+        fail: function (error) { finish(false, error); }
       });
     } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
       tt.showModal({
@@ -137,13 +192,15 @@ var g = function () {
           if (t.confirm) {
             n();
           } else {
-            t.cancel;
+            finish(false);
           }
-        }
+        },
+        fail: function (error) { finish(false, error); }
       });
     } else {
       n();
     }
+    } catch (error) { if (request.done) throw error; finish(false, error); }
   };
   t.prototype.clearDataByKey = function (t, e) {
     if (this.curServer) {

@@ -20,21 +20,18 @@ var def_GAD_DataMgr = function () {
     null == this.instance && (this.instance = new e());
     return this.instance;
   };
-  _ctor.prototype.getUrlParam = function (t) {
-    var e;
-    var n;
-    if (!window || !window.location) {
-      return null;
-    }
-    var i = null === (n = null === (e = null === window || undefined === window ? undefined : window.location) || undefined === e ? undefined : e.search) || undefined === n ? undefined : n.replace("?", "");
-    if (!i || "" === i) {
-      return null;
-    }
-    var a = i.split("&");
-    for (var o = 0; o < a.length; o++) {
-      var r = a[o].split("=");
-      if (decodeURIComponent(r[0]) === t) {
-        return decodeURIComponent(r[1]);
+  _ctor.prototype.getUrlParam = function (name) {
+    var search = typeof window !== "undefined" && window && window.location && window.location.search;
+    if (!search) return null;
+    var query = search.replace("?", "");
+    if (!query) return null;
+    var entries = query.split("&");
+    for (var index = 0; index < entries.length; index++) {
+      var pair = entries[index].split("=");
+      try {
+        if (decodeURIComponent(pair[0]) === name) return decodeURIComponent(pair[1]);
+      } catch (_) {
+        // A malformed host-supplied entry cannot supply this flag.
       }
     }
     return null;

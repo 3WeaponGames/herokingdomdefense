@@ -27,11 +27,12 @@ var exp_ResCache = function () {
   return _ctor;
 }();
 exports.ResCache = exp_ResCache;
-exports.ResCacheKey = function (t, e, n) {
+exports.ResCacheKey = function (t, e, n, asset) {
   this.defCount = 0;
   this.type = cc.js.getClassName(n);
   this.cachekey = t + "/" + e;
   this.defCount = 1;
+  this.asset = asset;
 };
 exports.BundleCache = function (t, e, n) {
   this.bundleName = t;
@@ -49,7 +50,7 @@ var exp_ResourceMgr = function () {
   };
   // Loading handles startup failures. After startup, every request still has an
   // asset-free recovery path; do not leave a success-only continuation stranded.
-  t.prototype.loadWithRecovery = function (name, operation, complete, onError) {
+  t.prototype.loadWithRecovery = function (name, operation, complete, onError, isCurrent) {
     var manager = this;
     var finished = false;
     var active = false;
@@ -61,6 +62,7 @@ var exp_ResourceMgr = function () {
     };
     var retry = function () {
       if (finished || active) return;
+      if (isCurrent && !isCurrent()) { cancel(); return; }
       active = true;
       var settled = false;
       timer = setTimeout(function () { done(new Error("Asset request timed out: " + name)); }, 30000);
@@ -70,6 +72,7 @@ var exp_ResourceMgr = function () {
         active = false;
         clearTimeout(timer);
         if (error || !asset) {
+          if (isCurrent && !isCurrent()) { cancel(); return; }
           error = error || new Error("Asset request returned no asset: " + name);
           $z1LogMgr.LogMgr.getInstance().error("Asset load failed: " + name, error);
           if (manager.loadErrorHandler) manager.loadErrorHandler(error, retry);
@@ -86,25 +89,27 @@ var exp_ResourceMgr = function () {
     retry();
     return { retry: retry, cancel: cancel };
   };
-  t.prototype.loadBundle = function (t, e, onError) {
+  t.prototype.loadBundle = function (t, e, onError, isCurrent) {
     var n = cc.assetManager.getBundle(t);
     if (null == n) {
-      return this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e, onError);
+      return this.loadWithRecovery(t, function (done) { cc.assetManager.loadBundle(t, done); }, e, onError, isCurrent);
     } else {
       e && e(n);
     }
   };
   // This overlay uses built-in labels/graphics, so a missing prefab cannot prevent
   // recovery. Multiple simultaneous failures share one prompt and one pause owner.
-  t.prototype.showRuntimeRecovery = function (error, retry, cancel, abandon) {
+  t.prototype.showRuntimeRecovery = function (error, retry, cancel, abandon, options) {
     var manager = this;
     this.runtimeFailures = this.runtimeFailures || [];
     if (!this.runtimeFailures.some(function (entry) { return entry.retry === retry; })) {
-      this.runtimeFailures.push({ retry: retry, cancel: cancel, abandon: abandon });
+      this.runtimeFailures.push({ retry: retry, cancel: cancel, abandon: abandon,
+        retryOnly: !!(options && options.retryOnly), isCurrent: options && options.isCurrent });
     }
+    function retire() { manager.removeRuntimeRecovery(retry); }
     if (this.runtimeRecoveryNode && cc.isValid(this.runtimeRecoveryNode)) {
-      this.runtimeCancelLabel.string = this.runtimeRecoveryText(this.runtimeFailures.every(function (entry) { return !!entry.cancel; }) ? "loading.cancel" : "loading.reload");
-      return;
+      this.refreshRuntimeRecovery();
+      return retire;
     }
     var root = require("UIMgr").UIMgr.getInstance().uiRoot || cc.Canvas.instance && cc.Canvas.instance.node;
     if (!root || !cc.isValid(root)) throw new Error("Resource recovery needs an active UI root: " + error.message);
@@ -149,26 +154,62 @@ var exp_ResourceMgr = function () {
       graphics.roundRect(-width / 2, -40, width, 80, 12);
       graphics.fill();
       text.node.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); action(); });
+      if (name === "Cancel") manager.runtimeCancelSurface = surface;
       return text;
     }
     button("Retry", "loading.retry", -55, function () { manager.resolveRuntimeRecovery(true); });
     this.runtimeCancelLabel = button("Cancel", this.runtimeFailures.every(function (entry) { return !!entry.cancel; }) ? "loading.cancel" : "loading.reload", -160, function () { manager.resolveRuntimeRecovery(false); });
     this.runtimeRecoveryNode = node;
+    this.refreshRuntimeRecovery();
     this.runtimePausedDirector = !cc.director.isPaused();
     if (this.runtimePausedDirector) cc.director.pause();
+    return retire;
+  };
+  t.prototype.refreshRuntimeRecovery = function () {
+    if (!this.runtimeCancelLabel) return;
+    var entries = this.runtimeFailures || [];
+    var canLeave = !entries.some(function (entry) { return entry.retryOnly; });
+    this.runtimeCancelLabel.string = this.runtimeRecoveryText(entries.every(function (entry) { return !!entry.cancel; }) ? "loading.cancel" : "loading.reload");
+    this.runtimeCancelLabel.node.active = canLeave;
+    if (this.runtimeCancelSurface) this.runtimeCancelSurface.active = canLeave;
+  };
+  t.prototype.removeRuntimeRecovery = function (retry) {
+    var entries = this.runtimeFailures || [];
+    var index = entries.findIndex(function (entry) { return entry.retry === retry; });
+    if (index < 0) return;
+    entries.splice(index, 1);
+    if (entries.length) this.refreshRuntimeRecovery();
+    else this.closeRuntimeRecovery();
   };
   t.prototype.runtimeRecoveryText = function (key) {
     return require("LanguageMgr").LanguageMgr.getInstance().t(key);
   };
-  t.prototype.resolveRuntimeRecovery = function (retry) {
-    var failures = (this.runtimeFailures || []).splice(0);
+  t.prototype.closeRuntimeRecovery = function () {
     if (this.runtimeRecoveryNode && cc.isValid(this.runtimeRecoveryNode)) this.runtimeRecoveryNode.destroy();
     this.runtimeRecoveryNode = null;
     this.runtimeCancelLabel = null;
+    this.runtimeCancelSurface = null;
     if (this.runtimePausedDirector) cc.director.resume();
     this.runtimePausedDirector = false;
+  };
+  t.prototype.resolveRuntimeRecovery = function (retry) {
+    var manager = this, current = this.runtimeFailures || [], firstError = null;
+    current.slice().forEach(function (entry) {
+      if (!entry.isCurrent || entry.isCurrent()) return;
+      manager.removeRuntimeRecovery(entry.retry);
+      try { if (entry.cancel) entry.cancel(); }
+      catch (error) { if (!firstError) firstError = error; }
+    });
+    // A required decision must remain available to the current battle. Its
+    // owner can retire it explicitly when that battle closes or resets.
+    if (!retry && current.some(function (entry) { return entry.retryOnly; })) {
+      if (firstError) throw firstError;
+      return false;
+    }
+    var failures = current.splice(0);
+    this.closeRuntimeRecovery();
     if (!retry && failures.some(function (entry) { return !entry.cancel; })) {
-      failures.forEach(function (entry) { if (entry.abandon) entry.abandon(); });
+      failures.forEach(function (entry) { if (entry.abandon) { try { entry.abandon(); } catch (error) { console.error(error); } } });
       // Browser restart only resets the scene in Creator 2.4, leaving game
       // singletons alive. A page reload resets those managers as well. Native
       // Creator overrides game.restart() with a complete JavaScript VM restart.
@@ -176,7 +217,11 @@ var exp_ResourceMgr = function () {
       else cc.game.restart();
       return;
     }
-    failures.forEach(function (entry) { (retry ? entry.retry : entry.cancel)(); });
+    failures.forEach(function (entry) {
+      try { (retry ? entry.retry : entry.cancel)(); }
+      catch (error) { if (!firstError) firstError = error; console.error(error); }
+    });
+    if (firstError) throw firstError;
   };
   t.prototype.preloadFromBundle = function (t, e, n) {
     t.preload(e, cc.Asset, function (t, e) {
@@ -199,9 +244,10 @@ var exp_ResourceMgr = function () {
       a && a(o);
     } else {
       t.instance.loadRes(n, i, cc.Prefab, function (t) {
-        var n = cc.instantiate(t.data);
-        $z1PoolMgr.PoolMgr.getInstance().checkHasPool(e) || $z1PoolMgr.PoolMgr.getInstance().creatrePool(e, cc.instantiate(n), 1);
-        a && a(n);
+        var pool = $z1PoolMgr.PoolMgr.getInstance();
+        if (!pool.checkHasPool(e)) pool.creatrePool(e, t, 1, false);
+        var node = pool.getNode(e);
+        a && a(node);
       });
     }
   };
@@ -227,63 +273,66 @@ var exp_ResourceMgr = function () {
     this.loadDir("resources", t, e);
   };
   t.prototype.loadSpriteframe = function () {
-    var e = $z1ArgsParseUtils.ArgsParseUtils._makeloadSpriteFrameResrgs.apply(this, arguments);
-    this.loadRes(e.bundle, e.path, cc.SpriteFrame, e.callback, e.autoRelese, e.cacheTme, e.saveKey);
+    var args = Array.prototype.slice.call(arguments);
+    var options = args.length && args[args.length - 1];
+    if (options && typeof options === "object") args.pop(); else options = null;
+    var e = $z1ArgsParseUtils.ArgsParseUtils._makeloadSpriteFrameResrgs.apply(this, args);
+    if (e) this.loadRes(e.bundle, e.path, cc.SpriteFrame, e.callback, e.autoRelese, e.cacheTme, e.saveKey, options || {});
   };
-  t.prototype.loadRemoteSpriteFrame = function (t, e, n, a) {
+  t.prototype.loadRemoteSpriteFrame = function (t, e, n, a, options) {
     undefined === n && (n = false);
     undefined === a && (a = 10);
-    var r = $z1TimeUtils.TimeUtils.GetTimeBySecond() + 86400;
-    var l = $z1ResCacheMgr.ResCacheMgr.getInstance().getAssets("", t, cc.Texture2D);
+    var r = $z1TimeUtils.TimeUtils.GetTimeBySecond();
+    var cache = $z1ResCacheMgr.ResCacheMgr.getInstance();
+    var l = cache.getAssets("", t, cc.SpriteFrame, n);
     if (l && l.asset) {
       l.asset.addRef();
-      l.releaseTime = r;
-      return void e(l.asset);
+      var hit = new exp_ResCache("", t, r, a, cc.SpriteFrame, l.asset);
+      hit.releaseDependency = l.releaseDependency;
+      cache.addAssets(hit, n);
+      return void (e && e(l.asset));
     }
-    var g = new exp_ResCache("", t, r, a, cc.Texture2D);
-    if (t.startsWith("http")) {
-      if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
-        cc.assetManager.loadRemote(t, {
-          ext: ".head"
-        }, function (t, i) {
-          if (!t) {
-            i.addRef();
-            g.asset = i;
-            $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(g, n);
-            var a = new cc.SpriteFrame(i);
-            e(a);
-          }
-        });
-      } else {
-        cc.assetManager.loadRemote(t, function (t, i) {
-          if (!t) {
-            i.addRef();
-            g.asset = i;
-            $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(g, n);
-            var a = new cc.SpriteFrame(i);
-            e(a);
-          }
-        });
-      }
-    }
+    var remoteOptions = $z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE ? { ext: ".head" } : {};
+    return this.loadWithRecovery(t, function (done) { cc.assetManager.loadRemote(t, remoteOptions, done); }, function (texture) {
+      var frame = new cc.SpriteFrame(texture);
+      // Runtime SpriteFrames do not have a serialized texture dependency in
+      // Creator's asset graph. Keep one texture reference for the frame's life.
+      texture.addRef();
+      frame.addRef();
+      var entry = new exp_ResCache("", t, r, a, cc.SpriteFrame, frame);
+      var released = false;
+      entry.releaseDependency = function () {
+        if (released) return;
+        released = true;
+        texture.decRef();
+      };
+      cache.addAssets(entry, n);
+      e && e(frame);
+    }, options && options.onError, options && options.isCurrent);
   };
   t.prototype.loadRes = function () {
-    var e = $z1ArgsParseUtils.ArgsParseUtils._makeLoadResArgs.apply(this, arguments);
+    var args = Array.prototype.slice.call(arguments);
+    var options = args.length && args[args.length - 1];
+    if (options && typeof options === "object") args.pop(); else options = null;
+    var e = $z1ArgsParseUtils.ArgsParseUtils._makeLoadResArgs.apply(this, args);
+    if (!e) return;
     // Optional trailing options preserve all existing positional callers.
-    var options = arguments[arguments.length - 1];
     var onError = options && typeof options === "object" && options.onError;
+    var isCurrent = options && options.isCurrent;
     var n = e.bundle;
     var i = e.path;
     var s = e.type;
     var l = e.callback;
     var g = e.saveKey;
     if ("cc.Asset" != cc.js.getClassName(s)) {
-      var u = $z1TimeUtils.TimeUtils.GetTimeBySecond() + 86400;
-      var d = $z1ResCacheMgr.ResCacheMgr.getInstance().getAssets(n, i, s);
+      var u = $z1TimeUtils.TimeUtils.GetTimeBySecond();
+      var cache = $z1ResCacheMgr.ResCacheMgr.getInstance();
+      var d = cache.getAssets(n, i, s, e.autoRelese);
       if (d && d.asset) {
         d.asset.addRef();
-        d.releaseTime = u;
-        return void l(d.asset);
+        cache.addAssets(new exp_ResCache(n, i, u, e.cacheTme, s, d.asset), e.autoRelese);
+        if (g && !e.autoRelese) cache.addAssetKeyToMap(g, n, i, s, d.asset);
+        return void (l && l(d.asset));
       }
       var f = new exp_ResCache(n, i, u, e.cacheTme, s);
       var manager = this;
@@ -292,10 +341,10 @@ var exp_ResourceMgr = function () {
             a.addRef();
             f.asset = a;
             $z1ResCacheMgr.ResCacheMgr.getInstance().addAssets(f, e.autoRelese);
-            g && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s);
+            g && !e.autoRelese && $z1ResCacheMgr.ResCacheMgr.getInstance().addAssetKeyToMap(g, n, i, s, a);
             l && l(a);
-        }, onError);
-      }, onError);
+        }, onError, isCurrent);
+      }, onError, isCurrent);
     } else {
       console.error("请传入具体资源类型，不能是基类asset,路径:", n + "/" + i);
     }

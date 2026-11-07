@@ -24,20 +24,28 @@ var def_GAD_App = function () {
   });
   _ctor.prototype.enter_App = function (t, e) {
     var n = this;
+    if (this._entryOpen) this._entryOpen.cancel();
+    this._entryOpen = null;
+    var generation = this._entryGeneration = (this._entryGeneration || 0) + 1;
     this.addTouchEvent();
     this._exitCall = e;
-    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, function (t) {
-      t.keyCode == cc.macro.KEY.space && $z1EventMgr.EventMgr.getInstance().emit($z1GAD_Configs.emGADEventName.GAD_WebPause);
-    });
+    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     var h = function () {
+      if (n._entryGeneration !== generation) return;
       n._isInited = true;
       $z1GAD_PlayerMgr.default.getInstance().reset();
-      $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1GAD_Configs.GAD_UIID.UIGame, $z1Config.UIID.UINONE, function () {
-        t && t();
+      n._entryOpen = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1GAD_Configs.GAD_UIID.UIGame, $z1Config.UIID.UINONE, {
+        isCurrent: function () { return n._entryGeneration === generation; },
+        onCancel: function () { if (n._entryGeneration === generation) n.removeTouchEvent(); },
+        onOpened: function () {
+        if (n._entryGeneration !== generation) return;
         n.removeTouchEvent();
+        t && t();
+        if (n._entryGeneration !== generation) return;
         $z1AudioMgr.AudioMgr.getInstance().playMusic($z1GAD_Configs.GAD_AudioId.bgm, $z1GAD_Configs.GADConfig.BgMusic);
         $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.mission);
-      });
+      } });
     };
     if (this._isInited) {
       h();
@@ -45,6 +53,7 @@ var def_GAD_App = function () {
       $z1UIMgr.UIMgr.getInstance().addUICnf($z1GAD_Configs.GAD_UICF);
       $z1AudioMgr.AudioMgr.getInstance().addAdConf($z1GAD_Configs.GAD_AudioCF);
       $z1GAD_DataMgr.default.getInstance().load(function () {
+        if (n._entryGeneration !== generation) return;
         $z1GAD_DataMgr.default.getInstance().initCfgData();
         $z1GAD_PlayerMgr.default.getInstance().preload(function () {
           h();
@@ -53,15 +62,25 @@ var def_GAD_App = function () {
     }
   };
   _ctor.prototype.exit_App = function (t) {
+    this._entryGeneration = (this._entryGeneration || 0) + 1;
+    if (this._entryOpen) this._entryOpen.cancel();
+    this._entryOpen = null;
+    this.removeTouchEvent();
+    var exitCall = this._exitCall;
+    this._exitCall = null;
     $z1UIMgr.UIMgr.getInstance().closeById($z1GAD_Configs.GAD_UIID.UIGame);
     $z1UIMgr.UIMgr.getInstance().closeById($z1GAD_Configs.GAD_UIID.UIResult);
     $z1UIMgr.UIMgr.getInstance().closeById($z1GAD_Configs.GAD_UIID.UIPause);
-    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP);
-    this._exitCall && this._exitCall(t);
-    this._exitCall = null;
+    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    exitCall && exitCall(t);
+  };
+  _ctor.prototype.onKeyUp = function (t) {
+    t.keyCode == cc.macro.KEY.space && $z1EventMgr.EventMgr.getInstance().emit($z1GAD_Configs.emGADEventName.GAD_WebPause);
   };
   _ctor.prototype.addTouchEvent = function () {
+    this.removeTouchEvent();
     var t = new cc.Node();
+    this._touchBlocker = t;
     t.setContentSize(cc.winSize.width, cc.winSize.height);
     t.addComponent(cc.BlockInputEvents).enabled = true;
     t.zIndex = 999999;
@@ -69,8 +88,9 @@ var def_GAD_App = function () {
     t.parent = cc.Canvas.instance.node;
   };
   _ctor.prototype.removeTouchEvent = function () {
-    var t = cc.Canvas.instance.node.getChildByName("block_touch_event");
-    t && t.destroy();
+    var t = this._touchBlocker;
+    this._touchBlocker = null;
+    t && cc.isValid(t, true) && t.destroy();
   };
   return _ctor;
 }();

@@ -60,17 +60,25 @@ var exp_TrackData = function (t) {
     this.convertData();
   };
   _ctor.prototype.convertData = function () {
-    if (this.data.needConvert && 0 == this.data.needConvert) {
-      for (var t in this.data) {
-        for (var e in this.eventCF) {
-          var n = this.eventCF[e].eventKey + this.eventCF[e].eventValue;
-          if (this.eventCF[e].alias && -1 != t.indexOf(n)) {
-            this.data[t.replace(n, this.eventCF[e].alias)] = this.data[t];
-            delete this.data[t];
-          }
-        }
+    if (this.data.needConvert != null && this.data.needConvert !== 0 && this.data.needConvert !== "0") return;
+    var data = this.data;
+    var events = Object.keys(this.eventCF).map(function (key) { return this.eventCF[key]; }, this).filter(function (event) { return event.alias; });
+    events.sort(function (a, b) { return (b.eventKey + b.eventValue).length - (a.eventKey + a.eventValue).length; });
+    Object.keys(data).forEach(function (key) {
+      for (var index = 0; index < events.length; index++) {
+        var event = events[index];
+        var prefix = event.eventKey + event.eventValue;
+        if (key.indexOf(prefix) !== 0) continue;
+        var suffix = key.slice(prefix.length);
+        // Numbered guide events are exact keys; parameterized events use an
+        // underscore at their boundary, including an authored trailing '_'.
+        if (suffix && suffix.charAt(0) !== "_" && prefix.charAt(prefix.length - 1) !== "_") continue;
+        var alias = event.alias + (suffix && suffix.charAt(0) !== "_" ? "_" : "") + suffix;
+        if (!Object.prototype.hasOwnProperty.call(data, alias)) data[alias] = data[key];
+        delete data[key];
+        break;
       }
-    }
+    });
     this.data.needConvert = 1;
     this.saveData();
   };
@@ -321,7 +329,7 @@ var exp_TrackData = function (t) {
   };
   _ctor.prototype.setCurentDay = function () {
     this.data.daytime || (this.data.daytime = new Date().getTime());
-    var t = $z1TimeUtils.TimeUtils.overDay(this.data.daytime) + 1 + 1;
+    var t = Math.max(1, $z1TimeUtils.TimeUtils.overDay(this.data.daytime) + 1);
     this.data.day = t;
     this.saveData();
   };

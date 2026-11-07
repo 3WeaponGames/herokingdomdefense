@@ -24,9 +24,19 @@ var def_KinghtFallUIBuildSel = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.init = function (t, e) {
+  _ctor.prototype.init = function (t, e, cancel) {
     this.build = t;
     this.callBack = e;
+    this.cancelCall = cancel;
+  };
+  _ctor.prototype.onClose = function () {
+    var cancel = this.cancelCall;
+    this.cancelCall = null;
+    if (cancel) cancel();
+  };
+  _ctor.prototype.onDestroy = function () {
+    this.onClose();
+    t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.start = function () {
     this.ndItem.active = false;
@@ -57,12 +67,16 @@ var def_KinghtFallUIBuildSel = function (t) {
       r.getChildByName("labInfo").getComponent(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
       if (o.BuildSliverCost) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
-          t.callBack(a);
-          t.closeUI();
+          if (!t._decisionPending) t.finishDecision(t.callBack, a);
         }, i);
       } else {
         r.on(cc.Node.EventType.TOUCH_END, function () {
+          if (t.isclose || t._decisionCompleted || t._decisionPending) return;
+          t._decisionPending = true;
+          var generation = t._resourceGeneration;
           $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+            if (t.isclose || t._decisionCompleted || generation !== t._resourceGeneration || !cc.isValid(t)) return;
+            t._decisionPending = false;
             switch (t.build.buildCfg.enumValue) {
               case $z1KinghtFallEnum.KinghtFallEnumBuildEnum.PrivateHouse:
                 $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.building_up_2v1_X, "house");
@@ -84,9 +98,10 @@ var def_KinghtFallUIBuildSel = function (t) {
             }
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.building_2v1);
             $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_building_2v1_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-            t.callBack(a);
-            t.closeUI();
-          }, null, "battle.building.branch");
+            t.finishDecision(t.callBack, a, generation);
+          }, function () {
+            if (generation === t._resourceGeneration) t._decisionPending = false;
+          }, "battle.building.branch");
         }, i);
       }
     };

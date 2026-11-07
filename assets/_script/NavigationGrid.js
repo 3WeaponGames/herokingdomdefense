@@ -204,8 +204,15 @@ NavigationGrid.prototype._escapeClear=function(start,end,radius,goalProjection) 
   }
   return true;
 };
-NavigationGrid.prototype._escape=function(start,cache) {
-  var candidates=this._nearby(start,cache,this.cellSize*3+cache.radius*2);
+NavigationGrid.prototype._escape=function(start,cache,goal) {
+  var candidates=this._nearby(start,cache,this.cellSize*3+cache.radius*2).slice(0,128);
+  // A crowd can push a body into the clearance margin beside a corner. The
+  // nearest exit may point backward into the following unit, pinning both
+  // bodies while their routes request opposite movement. Prefer an outward
+  // exit on the way to the goal, still using the same bounded candidates and
+  // monotonic-clearance checks (never crossing a previously clear obstacle).
+  candidates.forEach(function(candidate){candidate.cost=Math.sqrt(candidate.d2)+distance(candidate.point,goal);});
+  candidates.sort(function(a,b){return a.cost-b.cost||a.d2-b.d2||a.id-b.id;});
   for(var i=0;i<candidates.length&&i<128;i++)if(this._escapeClear(start,candidates[i].point,cache.radius))return candidates[i].point;
   return null;
 };
@@ -248,7 +255,7 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
   if(startFree&&goalFree&&this.segmentClear(start,requestedGoal,r)){this.lastSearch.direct=true;return {points:distance2(start,requestedGoal)<EPS?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null};}
   var cache=this._cache(r);
   if(!startFree) {
-    var escaped=this._escape(start,cache);if(!escaped)return null;
+    var escaped=this._escape(start,cache,requestedGoal);if(!escaped)return null;
     escape={from:start,to:escaped,distance:distance(start,escaped)};start=escaped;
     if(goalFree&&this.segmentClear(start,requestedGoal,r)){this.lastSearch.direct=true;return {points:distance2(start,requestedGoal)<EPS?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:escape};}
   }

@@ -33,9 +33,11 @@ var def_KinghtFallUISuspend = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.init = function (t, e) {
+  _ctor.prototype.init = function (t, e, releasePause) {
     this.newGameCall = t;
     this.breakCall = e;
+    this.releasePause = releasePause;
+    this._pauseReleased = false;
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -108,8 +110,21 @@ var def_KinghtFallUISuspend = function (t) {
     }, this);
   };
   _ctor.prototype.resumeGame = function () {
-    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
+    if (this._pauseReleased || this.isclose) return;
+    if (!this.releasePause) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
+    this.onClose();
     this.closeUI();
+  };
+  _ctor.prototype.onClose = function () {
+    if (this._pauseReleased) return;
+    this._pauseReleased = true;
+    var release = this.releasePause;
+    this.releasePause = null;
+    if (release) release();
+  };
+  _ctor.prototype.onDestroy = function () {
+    try { this.onClose(); }
+    finally { t.prototype.onDestroy.call(this); }
   };
   _ctor.prototype.showView = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().playAudioButtonClicked();

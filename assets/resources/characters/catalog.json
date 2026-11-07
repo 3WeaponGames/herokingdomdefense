@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "profiles": {
+    "royal-guard": {
+      "name": "Royal Guard · parts demo",
+      "base": { "type": "ally", "id": "90001" },
+      "parts": [
+        { "id": "helmet", "sprite": "Helmet/FA_Helmet_047_White", "layer": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911", "slot": "bb_hong_3", "bone": "bone13", "x": 26, "y": 0, "rotation": -91.64, "scaleX": 0.8, "scaleY": 0.95, "opacity": 1, "order": 1, "hideSlots": [] },
+        { "id": "weapon", "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_DarkGary", "layer": "1c1b09fa-e406-4fa1-a3ad-d1b4ad202911", "slot": "bb_lan_15", "bone": "bone10", "x": 30, "y": 0, "rotation": 0, "scaleX": 0.9, "scaleY": 0.9, "opacity": 1, "order": 0, "hideSlots": [] }
+      ]
+    }
+  },
+  "assignments": { "ally:90001:default": "royal-guard" }
+}

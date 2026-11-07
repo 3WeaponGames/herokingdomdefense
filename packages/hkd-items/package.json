@@ -1,0 +1,6 @@
+{
+  "name": "hkd-items", "version": "1.0.0", "description": "Hero item appearances and current equipment tiers",
+  "main": "main.js",
+  "main-menu": { "Tools/Hero Kingdom Defense/Items": { "message": "hkd-items:open" } },
+  "panel": { "main": "panel.js", "type": "dockable", "title": "Items", "width": 1440, "height": 900, "min-width": 980, "min-height": 600 }
+}

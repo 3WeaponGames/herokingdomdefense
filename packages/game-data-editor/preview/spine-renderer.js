@@ -71,8 +71,18 @@ function triangle(ctx, image, positions, texture) {
 }
 function bounds(spine, layers) {
     let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-    layers.forEach(layer => geometry(spine,layer).forEach(g => {for(let i=0;i<g.vertices.length;i+=2){const x=g.vertices[i]*layer.description.scaleX+layer.description.x,y=g.vertices[i+1]*layer.description.scaleY+layer.description.y;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}}));
+    layers.forEach(layer => geometry(spine,layer).forEach(g => {for(let i=0;i<g.vertices.length;i+=2){const p=transformPoint(layer.description,g.vertices[i],g.vertices[i+1]);minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);}}));
     return isFinite(minX) ? {minX,minY,maxX,maxY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)} : {minX:-50,minY:0,maxX:50,maxY:100,width:100,height:100};
+}
+function transformPoint(d,x,y) {
+    x*=d.scaleX;y*=d.scaleY;
+    if(!d.rotation)return{x:x+d.x,y:y+d.y};
+    const a=d.rotation*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return{x:x*c-y*s+d.x,y:x*s+y*c+d.y};
+}
+function inversePoint(d,x,y) {
+    x-=d.x;y-=d.y;
+    if(d.rotation){const a=-d.rotation*Math.PI/180,c=Math.cos(a),s=Math.sin(a),px=x;x=px*c-y*s;y=px*s+y*c;}
+    return{x:x/d.scaleX,y:y/d.scaleY};
 }
 const tintCache=new WeakMap();
 function tintedImage(image,color) {
@@ -87,9 +97,9 @@ function draw(spine, ctx, layers, options) {
     const scale=Math.min((width-32)/viewport.width,(height-24)/viewport.height)*(options.zoom||1), facing=options.facing||1;
     ctx.save();ctx.translate(width/2,height-12+viewport.minY*scale);ctx.scale(scale*facing,-scale);ctx.translate(-(viewport.minX+viewport.maxX)/2,0);
     layers.forEach(layer => {
-        ctx.save();ctx.translate(layer.description.x,layer.description.y);ctx.scale(layer.description.scaleX,layer.description.scaleY);
+        ctx.save();ctx.translate(layer.description.x,layer.description.y);if(layer.description.rotation)ctx.rotate(layer.description.rotation*Math.PI/180);ctx.scale(layer.description.scaleX,layer.description.scaleY);
         geometry(spine,layer).forEach(g=>{
-            ctx.globalAlpha=g.color.a;
+            ctx.globalAlpha=g.color.a*(layer.description.opacity===undefined?1:layer.description.opacity);
             ctx.globalCompositeOperation=['source-over','lighter','multiply','screen'][g.blend]||'source-over';
             const image=tintedImage(g.image,g.color);
             for(let i=0;i<g.triangles.length;i+=3){const positions=[],texture=[];for(let j=0;j<3;j++){const index=g.triangles[i+j]*2;positions.push(g.vertices[index],g.vertices[index+1]);texture.push(g.uvs[index]*g.image.width,g.uvs[index+1]*g.image.height);}triangle(ctx,image,positions,texture);}
@@ -118,11 +128,11 @@ function drawCanvas(spine,canvas,layers,options){
         if(!g.triangles.length)return;
         let texture=state.textures.get(g.image);if(!texture){texture=gl.createTexture();state.textures.set(g.image,texture);gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,g.image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);}else gl.bindTexture(gl.TEXTURE_2D,texture);
         const vertices=new Float32Array(g.vertices.length*2),d=layer.description;
-        for(let i=0,j=0;i<g.vertices.length;i+=2,j+=4){const x=(g.vertices[i]*d.scaleX+d.x-cx)*scale*facing+w/2,y=h-12+box.minY*scale-(g.vertices[i+1]*d.scaleY+d.y)*scale;vertices[j]=x/w*2-1;vertices[j+1]=1-y/h*2;vertices[j+2]=g.uvs[i];vertices[j+3]=g.uvs[i+1];}
-        gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STREAM_DRAW);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(g.triangles),gl.STREAM_DRAW);gl.uniform4f(state.color,g.color.r,g.color.g,g.color.b,g.color.a);
+        for(let i=0,j=0;i<g.vertices.length;i+=2,j+=4){const point=transformPoint(d,g.vertices[i],g.vertices[i+1]),x=(point.x-cx)*scale*facing+w/2,y=h-12+box.minY*scale-point.y*scale;vertices[j]=x/w*2-1;vertices[j+1]=1-y/h*2;vertices[j+2]=g.uvs[i];vertices[j+3]=g.uvs[i+1];}
+        gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STREAM_DRAW);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(g.triangles),gl.STREAM_DRAW);gl.uniform4f(state.color,g.color.r,g.color.g,g.color.b,g.color.a*(d.opacity===undefined?1:d.opacity));
         if(g.blend===1)gl.blendFunc(gl.SRC_ALPHA,gl.ONE);else if(g.blend===2)gl.blendFunc(gl.DST_COLOR,gl.ONE_MINUS_SRC_ALPHA);else if(g.blend===3)gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_COLOR);else gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
         gl.drawElements(gl.TRIANGLES,g.triangles.length,gl.UNSIGNED_SHORT,0);
     }));
 }
 function destroyCanvas(canvas){const state=canvasStates.get(canvas);if(state&&state.gl){const gl=state.gl;state.textures.forEach(texture=>gl.deleteTexture(texture));gl.deleteBuffer(state.vertices);gl.deleteBuffer(state.indices);gl.deleteShader(state.vertex);gl.deleteShader(state.fragment);gl.deleteProgram(state.program);const extension=gl.getExtension('WEBGL_lose_context');if(extension)extension.loseContext();}canvasStates.delete(canvas);}
-module.exports={createLayers,seek,geometry,bounds,draw,drawCanvas,destroyCanvas};
+module.exports={createLayers,seek,geometry,bounds,draw,drawCanvas,destroyCanvas,transformPoint,inversePoint};

@@ -2,7 +2,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
+const temporaryProject = require('./owned-temp');
 const crypto = require('crypto');
 const Assets = require('../lib/asset-validation');
 const root = path.resolve(__dirname, '../../..');
@@ -98,7 +98,7 @@ test('saved default markers obey the same reachable-unit and clip limits as cust
     assert(check('overrides', ['timingDefaults'], { 'enemy:90001:default': { attack: 9 } }).some(issue => /exceeds the actual/.test(issue.message)));
 });
 test('an image file without an imported SpriteFrame cannot be selected', () => {
-    const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'hkd-assets-test-')), folder = path.join(temporary, 'assets/Icons');
+    const temporary = temporaryProject('hkd-assets-test-'), folder = path.join(temporary, 'assets/Icons');
     fs.mkdirSync(folder, { recursive: true }); fs.writeFileSync(path.join(folder, 'sample.png'), 'fixture');
     fs.writeFileSync(path.join(folder, 'sample.png.meta'), JSON.stringify({ importer: 'texture', type: 'raw', subMetas: {} }));
     assert.throws(() => Assets.imported(temporary, 'Icons', 'sample', 'sprite'), /No imported SpriteFrame/);

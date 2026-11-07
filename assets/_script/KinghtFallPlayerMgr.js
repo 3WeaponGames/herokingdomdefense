@@ -31,20 +31,23 @@ var exp_KinghtFallPlayerMgr = function () {
     this.guideData.getData();
     this.dailyData = new $z1KinghtFallDailyData.KinghtFallDailyData();
     this.dailyData.getData();
+    this.gameData = new $z1KinghtFallGameData.KinghtFallGameData();
+    this.gameData.deferSettlementRecovery = true;
+    this.gameData.getData();
     this.restorePendingRewards();
+    this.gameData.deferSettlementRecovery = false;
+    if (!this.pendingRewardJournal && !this.rewardStorageCheckPending) this.gameData.initData();
     var self = this;
     if (!this.rewardRetryTimer) this.rewardRetryTimer = setInterval(function () {
       self.retryRewardRecovery();
-      if (self.gameData && self.gameData.data.pendingSettlement) self.gameData.completeSettlement(self.gameData.data.pendingSettlement);
+      if (!self.pendingRewardJournal && !self.rewardStorageCheckPending && self.gameData && self.gameData.data.pendingSettlement) self.gameData.completeSettlement(self.gameData.data.pendingSettlement);
     }, 1000);
-    this.gameData = new $z1KinghtFallGameData.KinghtFallGameData();
-    this.gameData.getData();
     this.reloadConfig();
     t && t();
   };
   _ctor.prototype.reloadConfig = function () {};
   _ctor.prototype.rewardRecords = function () {
-    return [this.udata, this.missionData, this.dailyData, this.guideData].filter(function (record) { return !!record; });
+    return [this.udata, this.missionData, this.dailyData, this.guideData, this.gameData].filter(function (record) { return !!record && !!record.data; });
   };
   _ctor.prototype.rewardJournalKey = function () { return this.udata.gameKey + ".rewardJournal"; };
   _ctor.prototype.rewardSaveFailure = function () {
@@ -159,6 +162,65 @@ var exp_KinghtFallPlayerMgr = function () {
     });
     return result;
   };
+  // Run all changes on staged records. A successful journal contains the debit,
+  // award, counters and checkpoint together before any target record is saved.
+  _ctor.prototype.transact = function (mutate, eligible) {
+    var result;
+    var committed = this.claimRewards([], 1, null, function () {
+      result = mutate();
+      return result === false ? false : undefined;
+    }, eligible || function () { return true; });
+    return committed ? result === undefined ? true : result : null;
+  };
+  _ctor.prototype.purchase = function (costs, mutate, eligible) {
+    var self = this, totals = {};
+    var currencies = [$z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina];
+    if (!Array.isArray(costs) || !costs.every(function (cost) {
+      if (!cost || currencies.indexOf(cost.id) < 0 || typeof cost.num !== "number" || !isFinite(cost.num) || cost.num < 0) return false;
+      totals[cost.id] = (totals[cost.id] || 0) + cost.num;
+      return isFinite(totals[cost.id]);
+    })) return null;
+    var combined = Object.keys(totals).map(function (id) { return { id: Number(id), num: totals[id] }; });
+    return this.transact(function () { self.SubGood(combined); return mutate ? mutate() : true; }, function () {
+      return (!eligible || eligible()) && combined.every(function (cost) {
+        var balance = cost.id === currencies[0] ? self.udata.getGoldNum() : cost.id === currencies[1] ? self.udata.getDiamondNum() : self.udata.getPowerNum();
+        return balance >= cost.num;
+      });
+    });
+  };
+  _ctor.prototype.drawTreasures = function (box, count, costs, video) {
+    var self = this, config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    if (!box || !Number.isInteger(count) || count < 1) return null;
+    return this.purchase(costs || [], function () {
+      var shop = self.udata.getShopInfo(box.ID) || { id: box.ID, time: 0, video: 0 };
+      if (video) {
+        shop.video++;
+        if (shop.video < box.VedioCount) { self.udata.setShopInfo(shop); return { pending: true, rewards: [] }; }
+        shop.video -= box.VedioCount;
+      }
+      var task = self.missionData.getTaskInfo();
+      if (task.type === $z1KinghtFallEnum.KinghtFallEnumTaskEnum.TreasureCount) {
+        task.num += count;
+        self.missionData.setTaskInfo(task);
+      }
+      var rewards = [];
+      for (var index = 0; index < count; index++) {
+        shop.time++;
+        var guarantee = shop.time >= box.GuarantNumber;
+        if (guarantee) shop.time -= box.GuarantNumber;
+        var banner = config.getBannerCfg(guarantee ? box.GuarantBanner : box.Banner);
+        var selected = require("Utils").Utils.weight_rand(banner.map(function (row) { return { id: row.RewardID, weight: row.Weight }; }));
+        if (!selected) return false;
+        if (config.getTreasureCfgById(selected.id).Quality <= 2) shop.time = 0;
+        Array.prototype.push.apply(rewards, self.addTreasureReward(selected.id, 1));
+        var relic = self.udata.getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SignOfMultiplication);
+        var effect = relic && config.getTreasureCfgById(relic.id).levelInfo[relic.level - 1];
+        if (effect && effect.param && Math.random() <= effect.param[0]) Array.prototype.push.apply(rewards, self.addTreasureReward(selected.id, 1));
+      }
+      self.udata.setShopInfo(shop);
+      return { pending: false, rewards: rewards };
+    });
+  };
   _ctor.prototype.getUserData = function () {
     return this.udata;
   };
@@ -237,7 +299,7 @@ var exp_KinghtFallPlayerMgr = function () {
   };
   // The first relic copy unlocks it; duplicates become fragments until every
   // remaining upgrade is funded, then use the relic's configured conversion.
-  _ctor.prototype.addTreasureReward = function (t, e) {
+  _ctor.prototype.addTreasureReward = function (t, e, overflowReward) {
     undefined === e && (e = 1);
     var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById(t);
     var i = [];
@@ -256,7 +318,8 @@ var exp_KinghtFallPlayerMgr = function () {
       }
       if (o.frame >= r) {
         var l = { id: n.Conversion[0], num: n.Conversion[1] };
-        this.addRewards([l]);
+        if (overflowReward) overflowReward(l);
+        else this.addRewards([l]);
         i.push({ item: l, isNew: false });
       } else {
         o.frame++;

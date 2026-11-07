@@ -22,7 +22,8 @@ var exp_BaseButton = function (t) {
   _ctor.prototype._onTouchBegan = function (e) {
     if (this.interactable && this.enabledInHierarchy) {
       if (this.touched && this.invertTime > 0) {
-        return this.node.pauseSystemEvents(true), void this._resetState();
+        if (e && e.stopPropagationImmediate) e.stopPropagationImmediate();
+        return void this._resetState();
       } else {
         return void t.prototype._onTouchBegan.call(this, e);
       }
@@ -31,7 +32,9 @@ var exp_BaseButton = function (t) {
   _ctor.prototype._onTouchEnded = function (e) {
     if (this.interactable && this.enabledInHierarchy) {
       if (this.touched && this.invertTime > 0) {
-        this.node.pauseSystemEvents(true);
+        // Gameplay also binds raw TOUCH_END handlers on button nodes. Reject
+        // those handlers for this touch without pausing the node's event system.
+        if (e && e.stopPropagationImmediate) e.stopPropagationImmediate();
         return void this._resetState();
       }
       $z1AudioMgr.AudioMgr.getInstance().playAudioButtonClicked();
@@ -45,7 +48,7 @@ var exp_BaseButton = function (t) {
     if (this.touched) {
       this.touchmil = this.touchmil + e;
       if (this.touchmil > this.invertTime) {
-        this.touchmil = 0, this.touched = false, this.node.resumeSystemEvents(true);
+        this.touchmil = 0, this.touched = false;
       }
     }
   };

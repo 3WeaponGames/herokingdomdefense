@@ -41,14 +41,18 @@ var def_KinghtFallUIGameBack = function (t) {
   _ctor.prototype.initBtnEvent = function () {
     var t = this;
     this.btnBreak.on(cc.Node.EventType.TOUCH_END, function () {
-      t.breakCall(0);
-      t.closeUI();
+      t.finishDecision(t.breakCall, 0);
     }, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
+      if (t.isclose || t._decisionCompleted || t._decisionPending) return;
+      t._decisionPending = true;
+      var generation = t._resourceGeneration;
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        t.breakCall(t.addCoin);
-        t.closeUI();
-      }, null, "battle.retry");
+        if (generation === t._resourceGeneration) t._decisionPending = false;
+        t.finishDecision(t.breakCall, t.addCoin, generation);
+      }, function () {
+        if (generation === t._resourceGeneration) t._decisionPending = false;
+      }, "battle.retry");
     }, this);
   };
   cc__decorate([ccp_property({

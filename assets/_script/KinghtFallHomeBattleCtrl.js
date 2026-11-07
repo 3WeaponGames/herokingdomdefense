@@ -189,7 +189,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconMap, e.Map, function (e) {
       t.ndLevelInfo.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = e;
     });
-    $z1ResourceMgr.ResourceMgr.getInstance().loadRes($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, e.EnemyAni + "/" + e.EnemyAni, sp.SkeletonData, function (e) {
+    this.loadResFromBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, e.EnemyAni + "/" + e.EnemyAni, sp.SkeletonData, function (e) {
       var n = t.ndLevelInfo.getChildByName("spAni").getComponent(sp.Skeleton);
       n.skeletonData = e;
       n.setSkin("hong");
@@ -432,7 +432,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     var e = this.ndBoxShow.getChildByName("ndTag" + (t + 1));
     var popup = this.ndBoxShow.getChildByName("ndTips");
     if (popup.active && popup.tagUUID === e.uuid) return this.hideBoxReward();
-    var n = ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(this.selectStage) & 1 << t) > 0;
+    var challenge = this.cfgList[this.selectStage - 1].Challenge[t];
+    var n = ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(this.selectStage) & 1 << challenge - 1) > 0;
     var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageReward(this.selectStage, t + 1);
     if (n) {
       this.hideBoxReward();
@@ -453,7 +454,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
         var stage = this.selectStage;
         var granted = player.claimRewards(r, 1, e.convertToWorldSpaceAR(cc.v2(0, 0)), function () {
           player.getUserData().setStageReward(stage, t + 1);
-        }, function () { return (player.getUserData().getStageInfo(stage) & 1 << t) > 0 && !player.getUserData().getStageReward(stage, t + 1); });
+        }, function () { return (player.getUserData().getStageInfo(stage) & 1 << challenge - 1) > 0 && !player.getUserData().getStageReward(stage, t + 1); });
         if (!granted) return;
         a.setAnimation(0, "open", false);
         a.addAnimation(0, "open_idle", false);
@@ -510,8 +511,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
             } else {
               s.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (t) {
                 if (s._boxRewardRequest !== request) return;
-                r = cc.instantiate(t);
-                $z1PoolMgr.PoolMgr.getInstance().creatrePool($z1KinghtFallConfig.KinghtFallPoolName.ItemGood, cc.instantiate(t), 10);
+                r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab($z1KinghtFallConfig.KinghtFallPoolName.ItemGood, t, 10);
                 o(r);
               });
             }
@@ -587,23 +587,27 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   };
   _ctor.prototype.onStartGame = function () {
     var t = this;
-    if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return;
-    if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(this.selectStage)) {
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var stage = this.selectStage, cost = this.costEnergy;
+    if (!player.getGameData().readyForNewBattle()) return;
+    if (player.getGameData().hasSave(stage)) {
       $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UINewGame, $z1Config.UIID.UINONE, function () {
         t.sendEvent($z1Appcfg.BaseEventName.ShowTransition, true, function () {
           $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Config.UIID.UINONE, function () {
             $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = false;
-          }, t.selectStage);
+          }, stage);
         });
       });
-    } else if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subPowerNum(this.costEnergy)) {
-      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide3);
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setStage(this.selectStage);
+    } else if (player.getUserData().getPowerNum() >= cost) {
       this.sendEvent($z1Appcfg.BaseEventName.ShowTransition, true, function () {
-        $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Config.UIID.UINONE, function () {
-          $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = false;
-        }, t.selectStage);
+        var manager = $z1UIMgr.UIMgr.getInstance(), ids = $z1KinghtFallConfig.KinghtFallUIID;
+        var entry = { cost: cost, transition: manager.captureOpenTransition() };
+        manager.openUIWithOwner(ids.UIGame, $z1Config.UIID.UINONE, {
+          parent: manager.getUIById(ids.UIHome),
+          isCurrent: function () { return cc.isValid(t, true) && t.node.activeInHierarchy && t.selectStage === stage; },
+          onCancel: function () { manager.cancelOpenTransition(entry.transition); },
+          onOpened: function () { manager.getUIById(ids.UIHome).node.active = false; }
+        }, stage, entry);
       });
     } else {
       $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddStrength, $z1Config.UIID.UINONE);

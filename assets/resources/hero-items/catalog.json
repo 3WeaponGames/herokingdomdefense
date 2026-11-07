@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "profiles": { "new-item": {
+      "name": "Royal Helmet · parts example",
+      "base": {
+        "type": "item",
+        "id": "2:1"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "helmet",
+          "sprite": "Helmet/FA_Helmet_047_White",
+          "layer": "ac6f6dba-1105-445c-9183-d1f983c2b907",
+          "slot": "humanr_headgear_1",
+          "bone": "humanr_head2",
+          "x": 17.709999106583496,
+          "y": -5.620002603063179,
+          "rotation": -98.75826193837028,
+          "scaleX": 1.8867646528411386,
+          "scaleY": 1.6489363966538368,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": []
+        }
+      ],
+      "models": {}
+    } },
+  "assignments": {}
+}

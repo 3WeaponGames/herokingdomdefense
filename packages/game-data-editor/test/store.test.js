@@ -1,10 +1,11 @@
 'use strict';
-const assert=require('assert'),fs=require('fs'),os=require('os'),path=require('path');
+const assert=require('assert'),fs=require('fs'),path=require('path');
+const temporary=require('./owned-temp');
 const Store=require('../lib/store').Store,Json=require('../lib/json-document');
 let passed=0;
 function test(name,fn){fn();passed++;console.log('PASS '+name);}
 function fixture(options){
-    const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-tools-'));
+    const root=temporary('hkd-tools-');
     const docs={
         'assets/KinghtFallConfig/GameJsonCfg.json':'{\r\n  "LevelCfg": [{"Level":1,"WaveCfg":[{"Wave":1,"count":5}]}],\r\n  "unknown": {"spell":1e2,"keep":true}\r\n}\r\n',
         'assets/KinghtFallConfigB/GameJsonCfg.json':'{"LevelCfg":[]}\n',

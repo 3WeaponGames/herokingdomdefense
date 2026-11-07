@@ -14,8 +14,9 @@ function fixture() {
   const stages = { Prepare: 0, Fight: 2, End: 4 };
   const ids = { UIGame: 'game', UISuspend: 'pause', UIHome: 'home', UIBuildSel: 'branch' };
   const layers = { pop: 100, top: 200, pop2: 300, guide: 900, Log: 2000 };
-  const manager = { uistatck: new Map(), isopening: false, openUI(...args) { state.opens.push(args); } };
-  const cc = { _decorator: { ccclass: x => x, property: () => () => {} }, Enum() {},
+  const manager = { uistatck: new Map(), isopening: false, openUI(...args) { state.opens.push(args); },
+    openUIWithOwner(uid, from, owner, ...args) { state.opens.push([uid, from, ...args]); return { cancel() { owner.onCancel(); } }; } };
+  const cc = { _decorator: { ccclass: x => x, property: () => () => {} }, Enum() {}, isValid: value => !!value && !value.destroyed,
     v2: (x = 0, y = 0) => ({ x, y }), Vec2: { normalize(out, p) { const length = Math.hypot(p.x, p.y) || 1; out.x = p.x / length; out.y = p.y / length; } },
     Node: { EventType: { TOUCH_END: 'touchend' } },
     Intersection: { pointInPolygon: (p, rect) => p.x >= rect[0].x && p.x <= rect[1].x && p.y >= rect[0].y && p.y <= rect[1].y } };
@@ -114,7 +115,7 @@ test('Rally mode issues one persistent order for the shared button and keyboard 
 
 test('Pause exit retains the current battle when saving the new-game state fails', () => {
   const f = fixture(); f.ui.openPause();
-  const exit = f.state.opens[0][2];
+  const exit = f.state.opens[0][3];
   f.state.saveResult = false; assert.equal(exit(), false); assert.equal(f.state.closed, undefined);
   f.state.saveResult = true; exit(); assert.equal(f.state.closed, true);
 });

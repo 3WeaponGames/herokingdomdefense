@@ -95,7 +95,7 @@ var def_KinghtFallBuildBartizan = function (t) {
         }
       }
       this.buildInfo.hp <= 0 && this.onDead();
-      this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
+      this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
       return t;
     }
   };

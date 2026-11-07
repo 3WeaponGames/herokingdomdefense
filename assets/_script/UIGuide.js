@@ -41,7 +41,6 @@ exports.GuildCfg = function () {
   this.addSize = new cc.Size(0, 0);
   this.callBack = null;
   this.finishMoveEnd = false;
-  $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false);
 };
 var def_UIGuide = function (t) {
   function _ctor() {
@@ -59,11 +58,26 @@ var def_UIGuide = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.init = function (t) {
+    this._releaseGuideInput();
     this.cfg = t;
+    // UIMgr owns input while loading. Only an instantiated guide owns its reveal.
+    var owner = {}, released = false;
+    this._releaseGuideInput = function () {
+      if (released) return;
+      released = true;
+      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true, owner);
+    };
+    $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false, owner);
+  };
+  _ctor.prototype._releaseGuideInput = function () {};
+  _ctor.prototype.release = function (force) {
+    try { this._releaseGuideInput(); }
+    finally { t.prototype.release.call(this, force); }
   };
   _ctor.prototype.clickTouch = function (t) {
     var e;
     var n = this;
+    var releaseInput = this._releaseGuideInput;
     this.hand.active = false;
     this.tipBg.active = false;
     this.cfg = t;
@@ -93,7 +107,7 @@ var def_UIGuide = function (t) {
       this.mask.node.active = false;
       this.scheduleOnce(function () {
         n.canClose = true;
-        $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+        releaseInput();
       }, .1);
       this.showHand();
       this.showTip(t.tipstring);
@@ -106,12 +120,12 @@ var def_UIGuide = function (t) {
         n.showTip(t.tipstring);
       }).delay(.1).call(function () {
         n.canClose = true;
-        $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+        releaseInput();
       }).start();
     } else {
       this.showHand();
       this.showTip(t.tipstring);
-      $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+      releaseInput();
       this.scheduleOnce(function () {
         n.canClose = true;
       }, .7);
@@ -119,6 +133,7 @@ var def_UIGuide = function (t) {
   };
   _ctor.prototype.moveTouch = function (t) {
     var e = this;
+    var releaseInput = this._releaseGuideInput;
     if (t.startNode && t.endNode) {
       this.schedule(function () {
         if (e.cfg.finishMoveEnd) {
@@ -146,6 +161,7 @@ var def_UIGuide = function (t) {
       if (t.hideMask) {
         this.showHand();
         this.showTip(t.tipstring);
+        releaseInput();
       } else {
         var r;
         var s;
@@ -170,7 +186,7 @@ var def_UIGuide = function (t) {
           e.showHand();
           e.showTip(t.tipstring);
         }).delay(.1).call(function () {
-          $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true);
+          releaseInput();
         }).start();
       }
     } else {
@@ -188,45 +204,36 @@ var def_UIGuide = function (t) {
       }
     }, this.cfg.delay);
     this.node.on(cc.Node.EventType.TOUCH_START, function (e) {
-      if (t.canClose) {
+      if (t.canClose && !t.isclose) {
         if (t.cfg.isWeek || !t.mask.node.active) {
-          if (t.cfg.callBack) {
-            t.cfg.callBack();
-          } else {
-            t.node._touchListener.setSwallowTouches(false);
-          }
-          return void t.closeUI();
+          return void t.resolvePress(true);
         }
         if ((t.distNode || t.cfg.startNode) && (0 != t.cfg.clickType ? t.cfg.startNode.getBoundingBoxToWorld() : t.distNode.getBoundingBoxToWorld()).contains(e.getLocation())) {
-          if (t.cfg.callBack) {
-            t.cfg.callBack();
-          } else {
-            t.node._touchListener.setSwallowTouches(false);
-          }
-          0 == t.cfg.clickType && t.closeUI();
+          t.resolvePress(0 == t.cfg.clickType);
         }
       }
     }, this);
     this.mask.node.getChildByName("bg").on(cc.Node.EventType.TOUCH_START, function (e) {
-      if (t.canClose) {
+      if (t.canClose && !t.isclose) {
         if (t.cfg.isWeek || !t.mask.node.active) {
-          if (t.cfg.callBack) {
-            t.cfg.callBack();
-          } else {
-            t.node._touchListener.setSwallowTouches(false);
-          }
-          return void t.closeUI();
+          return void t.resolvePress(true);
         }
         if (t.distNode && t.distNode.getBoundingBoxToWorld().contains(e.getLocation())) {
-          if (t.cfg.callBack) {
-            t.cfg.callBack();
-          } else {
-            t.node._touchListener.setSwallowTouches(false);
-          }
-          t.closeUI();
+          t.resolvePress(true);
         }
       }
     }, this);
+  };
+  _ctor.prototype.resolvePress = function (close) {
+    var guide = this;
+    function resolve() {
+      if (guide.cfg.callBack) guide.cfg.callBack();
+      else guide.node._touchListener.setSwallowTouches(false);
+    }
+    if (close) {
+      this.canClose = false;
+      this.finishDecision(resolve);
+    } else if (!this.isclose) resolve();
   };
   _ctor.prototype.showHand = function () {
     var t = this.mask.node.getPosition();

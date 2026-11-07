@@ -27,6 +27,19 @@ test('Partial CSV updates only selected columns and preserves artwork metadata',
     assert.strictEqual(result.catalog.entries['sample.line'].zh, fixture().entries['sample.line'].zh);
     assert.deepStrictEqual(result.catalog.images, fixture().images);
 });
+test('CSV preserves omitted optional cells, explicit blanks, intentional clears and new rows', () => {
+    const data = fixture();
+    data.entries.partial = { en: 'Fallback', extra: { keep: true } };
+    data.entries.blanks = { en: 'Keep', zh: '', context: '' };
+    assert.deepStrictEqual(Catalog.mergeCSV(data, Catalog.toCSV(data)).catalog, data);
+    const { catalog } = Catalog.mergeCSV(data, 'key,context,en,zh\npartial,,,完成\nblanks,,,\nadded,,,');
+    assert.deepStrictEqual(catalog.entries.partial, { en: '', zh: '完成', extra: { keep: true } });
+    assert.deepStrictEqual(catalog.entries.blanks, { en: '', zh: '', context: '' });
+    assert.deepStrictEqual(catalog.entries.added, { context: '', en: '', zh: '' });
+    assert.deepStrictEqual(Catalog.mergeCSV(data, 'key,en\nnew,Hello').catalog.entries.new,
+        { context: 'Imported from CSV', en: 'Hello' });
+    assert.deepStrictEqual(data.entries.partial, { en: 'Fallback', extra: { keep: true } });
+});
 test('CSV parser rejects malformed and ambiguous input', () => {
     ['key,en\na,"unclosed', 'key,en\na,"abc"tail', 'key,en\na,ab"cd', 'key,en,en\na,a,a',
         'key,en\na,x\na,y', 'key,fr\na,bonjour', 'key,en\n__proto__,oops', 'key,en\na,x,y'].forEach(csv => {

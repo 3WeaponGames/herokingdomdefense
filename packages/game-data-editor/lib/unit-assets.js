@@ -22,6 +22,11 @@ function index(root) {
     walk(path.join(root, 'assets')); cachedRoot = root; cachedIndex = result; return result;
 }
 function enginePath() {
+    if (process.env.COCOS_ENGINE_ROOT) {
+        const configured = path.join(process.env.COCOS_ENGINE_ROOT, 'extensions/spine/lib/spine.js');
+        if (!fs.existsSync(configured)) throw new Error('Configured COCOS_ENGINE_ROOT has no Creator Spine runtime: ' + configured);
+        return configured;
+    }
     const roots = [process.env.COCOS_ENGINE_ROOT, path.join(path.dirname(process.execPath), 'resources/engine'), 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine'].filter(Boolean);
     const found = roots.map(root => path.join(root, 'extensions/spine/lib/spine.js')).find(file => fs.existsSync(file));
     if (!found) throw new Error('Creator Spine runtime could not be found. Set COCOS_ENGINE_ROOT to this Creator installation\'s resources/engine folder.');
@@ -55,7 +60,7 @@ function projectile(prefab, type, id) {
         angle: component.angle === undefined ? 20 : component.angle,
         angleSpeed: component.angleSpeed === undefined ? 50 : component.angleSpeed,
         addAngleSpeed: 100, arrivalRadius: 25, straight: type === 'hero' || Number(id) === 90008,
-        fixedStep: type === 'enemy' && Number(id) === 90008 ? 0.01 : null };
+        directHoming: type === 'enemy' && Number(id) === 90008 };
 }
 function describe(root, request) {
     const files = index(root), type = request.type || 'enemy', id = String(request.id || 'hero');
@@ -63,7 +68,7 @@ function describe(root, request) {
     if (type === 'building') {
         const record = request.record || cfg.BuildEnum[id], level = record && record.levelList && record.levelList[request.levelIndex || 0];
         const file = level && files.files.find(f => path.basename(f) === level.Icon + '.png' && f.indexOf('KinghtFallIconBuild') >= 0);
-        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, label: level ? level.Icon : 'Building', runtimePath: enginePath() };
+        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, label: level ? level.Icon : 'Building', runtimePath: request.noRuntime ? null : enginePath() };
     }
     if (['hero', 'enemy', 'ally'].indexOf(type) < 0) throw new Error('Unknown unit category.');
     const record = request.record || cfg.SoldierCfg[id], boss = type === 'enemy' && [90010, 90011, 90012].indexOf(Number(id)) >= 0;
@@ -102,6 +107,6 @@ function describe(root, request) {
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
         effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, id) : null,
         forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
-        runtimePath: enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
+        runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
 module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; } };

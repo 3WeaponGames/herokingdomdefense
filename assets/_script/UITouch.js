@@ -46,19 +46,28 @@ var def_UITouch = function (t) {
     this.ndAd.active = false;
     this.addEvent($z1Appcfg.BaseEventName.ShowTransition, this.onShowTransition);
   };
-  _ctor.prototype.onBlockTouch = function (t) {
-    this.node._touchListener.setSwallowTouches(!t);
+  _ctor.prototype.onBlockTouch = function (t, owner) {
+    this._inputOwners = this._inputOwners || new Set();
+    owner = owner || "legacy";
+    if (t) this._inputOwners.delete(owner);
+    else this._inputOwners.add(owner);
+    this.node._touchListener.setSwallowTouches(this._inputOwners.size > 0);
   };
-  _ctor.prototype.cancelTransition = function () {
+  _ctor.prototype.cancelTransition = function (generation) {
+    if (generation !== undefined && generation !== (this._transitionGeneration || 0)) return false;
+    this._transitionGeneration = (this._transitionGeneration || 0) + 1;
     cc.Tween.stopAllByTarget(this.ndMask);
     this.ndMask.active = false;
-    this.onBlockTouch(true);
+    this.onBlockTouch(true, "transition");
+    return true;
   };
   _ctor.prototype.onShowTransition = function (t, e) {
     var n = this;
+    var generation = this._transitionGeneration = (this._transitionGeneration || 0) + 1;
+    cc.Tween.stopAllByTarget(this.ndMask);
     this.ndMask.active = true;
     var i = this.ndMask.getComponent(cc.Mask).spriteFrame.getOriginalSize();
-    this.onBlockTouch(false);
+    this.onBlockTouch(false, "transition");
     var a = 2 * Math.max(cc.winSize.height, cc.winSize.width) / Math.min(i.height, i.width);
     if (t) {
       this.ndMask.setContentSize(i.width * a, i.height * a);
@@ -66,7 +75,7 @@ var def_UITouch = function (t) {
         width: 0,
         height: 0
       }).call(function () {
-        e && e();
+        if (generation === n._transitionGeneration && e) e();
       }).start();
     } else {
       cc.tween(this.ndMask).set({
@@ -76,9 +85,10 @@ var def_UITouch = function (t) {
         width: i.width * a,
         height: i.height * a
       }).call(function () {
+        if (generation !== n._transitionGeneration) return;
         n.ndMask.active = false;
-        e && e();
-        n.onBlockTouch(true);
+        try { if (e) e(); }
+        finally { if (generation === n._transitionGeneration) n.onBlockTouch(true, "transition"); }
       }).start();
     }
   };

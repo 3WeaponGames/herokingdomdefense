@@ -280,7 +280,10 @@ function vertexFixture(spine) {
   const store = new WeakMap(), main = { convertToNodeSpaceAR: p => p };
   return {
     ...api, store, main,
-    frame: () => ({ poses: new Set(), bounds: new Map(), transforms: new Map(), vertexStore: store }),
+    // Most vertex tests exercise several consumers. Explicitly opt in; bounds
+    // or a single silhouette alone must use the ordinary Spine implementation.
+    frame: (consumers = 2, previous = consumers) => ({ poses: new Set(), bounds: new Map(), transforms: new Map(), vertexStore: store,
+      vertexConsumers: { get: () => consumers }, previousVertexConsumers: { get: () => previous } }),
     source: skeleton => Object.assign(new Skeleton(), { _skeleton: skeleton, skeletonData: skeleton.data, enabled: true,
       node: { activeInHierarchy: true, convertToWorldSpaceAR: p => p } }),
     target: data => ({ _skeleton: new spine.Skeleton(data), skeletonData: data, markForRender() {} })
@@ -344,7 +347,7 @@ test('silhouette facades reuse exact weighted/deformed vertices with all rendere
     assert.equal(offset.x, box.minX); assert.equal(offset.y, box.minY);
     assert.equal(offset.x + size.x, box.maxX); assert.equal(offset.y + size.y, box.maxY);
   }
-  assert.equal(computations, 3, 'each silhouette skinned the same source pose again');
+  assert.equal(computations, 3, 'steady silhouettes should reuse the bounds traversal without skinning again');
   for (let i = 0; i < 3; i++) {
     checkVertexScatter(spine, skeleton.slots[i], targets[0]._skeleton.slots[i]);
     assert.equal(targets[0]._skeleton.slots[i].getAttachment(), targets[1]._skeleton.slots[i].getAttachment());
@@ -368,10 +371,10 @@ test('silhouette facades reuse exact weighted/deformed vertices with all rendere
   skeleton.slots[2].deform.push(30, 35);
   f.copyPose(source, targets[0], {}, f.frame());
   assert.equal(targets[0]._skeleton.slots[1].getAttachment(), reused);
-  assert.notDeepEqual(reused._depthVertices, previousXY, 'next-frame weighted deformation reused stale XY');
-  assert.equal(targets[0]._skeleton.slots[2].getAttachment()._depthVertices.length, 8, 'changing vertex extent retained the old buffer length');
   checkVertexScatter(spine, skeleton.slots[1], targets[0]._skeleton.slots[1]);
   checkVertexScatter(spine, skeleton.slots[2], targets[0]._skeleton.slots[2]);
+  assert.notDeepEqual(reused._depthVertices, previousXY, 'next-frame weighted deformation reused stale XY');
+  assert.equal(targets[0]._skeleton.slots[2].getAttachment()._depthVertices.length, 8, 'changing vertex extent retained the old buffer length');
 });
 
 test('vertex buffers refresh per pose and stay isolated across shared skins, attachment changes and rebuilt skeletons', { skip: !fs.existsSync(runtime) }, () => {
@@ -382,11 +385,13 @@ test('vertex buffers refresh per pose and stay isolated across shared skins, att
   sources.forEach((source, index) => { source._skeleton.slots[0].setAttachment(shared); source._skeleton.bones[0].x = index * 100; });
   const targets = sources.map(() => f.target(data)), frame = f.frame();
   sources.forEach((source, index) => { f.bounds(source, f.main, frame); f.copyPose(source, targets[index], {}, frame); });
+  sources.forEach((source, index) => checkVertexScatter(spine, source._skeleton.slots[0], targets[index]._skeleton.slots[0]));
   const facade = targets[0]._skeleton.slots[0].getAttachment(), buffer = facade._depthVertices;
   assert.notEqual(facade, targets[1]._skeleton.slots[0].getAttachment(), 'different actors shared an animated vertex buffer');
   const before = buffer.slice();
   sources[0]._skeleton.bones[0].x = 37;
   const next = f.frame(); f.copyPose(sources[0], targets[0], {}, next);
+  checkVertexScatter(spine, sources[0]._skeleton.slots[0], targets[0]._skeleton.slots[0]);
   assert.equal(targets[0]._skeleton.slots[0].getAttachment(), facade, 'stable attachments allocated a new facade each draw');
   assert.equal(facade._depthVertices, buffer, 'stable geometry allocated a new XY buffer each draw');
   assert.equal(buffer[0], before[0] + 37);
@@ -439,4 +444,142 @@ test('authored red/blue soldier meshes keep exact animated and mirrored silhouet
     }
   }
   assert(checkedMeshes > 100, 'authored weighted mesh coverage was lost');
+});
+
+test('zero and single silhouette consumers retain no vertex records or extra skinning work', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine), data = new spine.SkeletonData();
+  data.bones.push(new spine.BoneData(0, 'root', null)); data.slots.push(new spine.SlotData(0, 'body', data.bones[0]));
+  const attachment = new spine.RegionAttachment('body'); attachment.offset.set([-10, 0, -10, 40, 10, 40, 10, 0]);
+  let computations = 0;
+  const original = attachment.computeWorldVertices;
+  attachment.computeWorldVertices = function () { computations++; return original.apply(this, arguments); };
+  for (const consumers of [0, 1]) {
+    const source = f.source(new spine.Skeleton(data)); source._skeleton.slots[0].setAttachment(attachment);
+    const frame = f.frame(consumers), target = f.target(data), before = computations;
+    f.bounds(source, f.main, frame);
+    assert.equal(computations, before + 1);
+    assert.equal(f.store.has(source), false, 'bounds retained an unneeded source geometry record');
+    if (consumers) {
+      f.copyPose(source, target, {}, frame);
+      assert.equal(target._skeleton.slots[0].getAttachment(), attachment);
+      assert.equal(computations, before + 1, 'copyPose skinned a single consumer prematurely');
+      target._skeleton.getBounds(new spine.Vector2(), new spine.Vector2(), []);
+      assert.equal(computations, before + 2, 'one consumer performed more than one ordinary skinning pass');
+      assert.equal(f.store.has(source), false);
+    }
+  }
+  const source = f.source(new spine.Skeleton(data)); source._skeleton.slots[0].setAttachment(attachment);
+  const frame = f.frame(); frame.vertexConsumers = new Map();
+  f.copyPose(source, f.target(data), {}, frame);
+  assert.equal(f.store.has(source), false, 'an unlisted source was treated as having multiple consumers');
+});
+
+test('newly multiple consumers use frozen ordinary copies before enabling branch-free vertex reuse', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine), data = new spine.SkeletonData();
+  data.bones.push(new spine.BoneData(0, 'root', null)); data.slots.push(new spine.SlotData(0, 'body', data.bones[0]));
+  const attachment = new spine.MeshAttachment('weighted');
+  attachment.worldVerticesLength = 6; attachment.bones = [1, 0, 1, 0, 1, 0];
+  attachment.vertices = [0, 0, 1, 30, 0, 1, 0, 30, 1];
+  const source = f.source(new spine.Skeleton(data)), targets = [f.target(data), f.target(data)], frame = f.frame(2, 0);
+  source._skeleton.slots[0].setAttachment(attachment); source._skeleton.slots[0].deform.push(1, 2, 3, 4, 5, 6);
+  f.bounds(source, f.main, frame);
+  targets.forEach(target => f.copyPose(source, target, {}, frame));
+  const facade = targets[0]._skeleton.slots[0].getAttachment(), expected = [];
+  assert.equal(facade, attachment, 'first multi-consumer draw should use ordinary copied attachments');
+  assert.equal(f.store.has(source), false);
+  attachment.computeWorldVertices(targets[0]._skeleton.slots[0], 0, 6, expected, 0, 2);
+  source._skeleton.bones[0].x = 900;
+  source._skeleton.slots[0].deform[0] = 125;
+  source._skeleton.updateWorldTransform();
+  for (const target of targets) {
+    const actual = [];
+    facade.computeWorldVertices(target._skeleton.slots[0], 0, 6, actual, 0, 2);
+    assert.deepEqual(actual, expected, 'rendering observed the live source instead of the copied pose');
+  }
+  const next = f.frame(); targets.forEach(target => f.copyPose(source, target, {}, next));
+  const reused = targets[0]._skeleton.slots[0].getAttachment();
+  assert.notEqual(reused, attachment, 'steady multiple consumers did not enable geometry reuse');
+  const current = []; reused.computeWorldVertices(targets[0]._skeleton.slots[0], 0, 6, current, 0, 2);
+  assert.notDeepEqual(current, expected, 'the following draw retained the previous pose');
+  const single = f.frame(1); f.copyPose(source, targets[0], {}, single);
+  assert.equal(targets[0]._skeleton.slots[0].getAttachment(), attachment, 'returning to one consumer retained its caching facade');
+});
+
+test('adaptive 1-to-multiple-to-1 consumers reuse steady bounds work and refresh every copied pose', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine), data = new spine.SkeletonData();
+  data.bones.push(new spine.BoneData(0, 'root', null)); data.slots.push(new spine.SlotData(0, 'body', data.bones[0]));
+  const attachment = new spine.RegionAttachment('body'); attachment.offset.set([-10, 0, -10, 40, 10, 40, 10, 0]);
+  const source = f.source(new spine.Skeleton(data)), targets = Array.from({ length: 3 }, () => f.target(data));
+  source._skeleton.slots[0].setAttachment(attachment);
+  let computations = 0, previous = 0;
+  const compute = attachment.computeWorldVertices;
+  attachment.computeWorldVertices = function () { computations++; return compute.apply(this, arguments); };
+  for (const consumers of [1, 3, 3, 1, 1, 3, 3, 0, 0]) {
+    source._skeleton.bones[0].x += 11;
+    const frame = f.frame(consumers, previous), before = computations;
+    f.bounds(source, f.main, frame);
+    assert.equal(computations, before + 1, 'bounds traversed vertices more than once');
+    for (let i = 0; i < consumers; i++) f.copyPose(source, targets[i], {}, frame);
+    const expected = [];
+    compute.call(attachment, source._skeleton.bones[0], expected, 0, 2);
+    // The ordinary renderer can change the live source after copying. Both
+    // cached facades and ordinary first-draw copies retain the frozen pose.
+    source._skeleton.bones[0].x += 900; source._skeleton.updateWorldTransform();
+    for (let i = 0; i < consumers; i++) {
+      const slot = targets[i]._skeleton.slots[0], output = [];
+      slot.getAttachment().computeWorldVertices(slot.bone, output, 0, 2);
+      assert.deepEqual(output, expected);
+      if (consumers === 1) assert.equal(slot.getAttachment(), attachment);
+    }
+    const cloneComputations = consumers === 0 || consumers >= 2 && previous >= 2 ? 0 : consumers;
+    assert.equal(computations, before + 1 + cloneComputations, `unexpected skinning work at ${previous}->${consumers}`);
+    previous = consumers;
+  }
+});
+
+test('the depth pass counts actual overlapping consumers before copying and forgets departed occluders', () => {
+  class Skeleton {}
+  const cc = { v2: (x, y) => ({ x, y }), isValid: () => true, color: () => ({}) }, { DepthView } = load(cc, { Skeleton });
+  const source = { enabled: true, node: { activeInHierarchy: true, width: 10, height: 20, anchorX: .5, anchorY: 0,
+    convertToWorldSpaceAR: p => ({ x: p.x, y: p.y + 5 }) } };
+  const actor = { hp: 10, node: { y: 5, activeInHierarchy: true }, spAni: source };
+  function object(x) {
+    const node = { activeInHierarchy: true, width: 40, height: 40, anchorX: .5, anchorY: 0, convertToWorldSpaceAR: p => ({ x: p.x + x, y: p.y }) };
+    return { node, sources: [{ node, enabled: true }], masks: new Map([[actor, { node: { active: true }, visuals: [] }]]),
+      overlay: { node: { active: true, setPosition() {}, setContentSize() {} }, mask: {} }, center: {}, size: {}, frame: {} };
+  }
+  const objects = [object(0), object(0), object(200)], counts = [];
+  const view = { main: { activeInHierarchy: true, convertToNodeSpaceAR: p => p }, objects,
+    game: { ctrPlay: actor, gameData: { getSoldierList: () => [], getEnemyList: () => [] } }, sort() {},
+    snapshot(_object, _box, cache) { counts.push([cache.vertexConsumers.get(source), cache.previousVertexConsumers && cache.previousVertexConsumers.get(source)]); } };
+  DepthView.prototype.update.call(view);
+  assert.deepEqual(counts, [[2, undefined], [2, undefined]], 'first copy saw an incomplete or non-overlapping consumer count');
+  counts.length = 0; objects[1].node.activeInHierarchy = false;
+  DepthView.prototype.update.call(view);
+  assert.deepEqual(counts, [[1, 2]]);
+  counts.length = 0; DepthView.prototype.update.call(view);
+  assert.deepEqual(counts, [[1, 1]], 'a departed occluder kept requesting eager geometry');
+  actor.node.y = -1; DepthView.prototype.update.call(view);
+  assert.equal(view._vertexConsumers.has(source), false);
+});
+
+test('high-water bounds scratch matches native bounds after a larger mesh, inactive bone and clipping-only pose', { skip: !fs.existsSync(runtime) }, () => {
+  const spine = require(runtime), f = vertexFixture(spine), data = new spine.SkeletonData();
+  data.bones.push(new spine.BoneData(0, 'root', null)); data.slots.push(new spine.SlotData(0, 'body', data.bones[0]));
+  const skeleton = new spine.Skeleton(data), source = f.source(skeleton), frame = f.frame(0);
+  const large = new spine.MeshAttachment('large'); large.worldVerticesLength = 200;
+  large.vertices = Array.from({ length: 200 }, (_, index) => index * 100);
+  skeleton.slots[0].setAttachment(large); f.bounds(source, f.main, frame);
+  const region = new spine.RegionAttachment('small'); region.offset.set([-2, 0, -2, 4, 2, 4, 2, 0]);
+  skeleton.slots[0].setAttachment(region); frame.bounds.clear();
+  const box = f.bounds(source, f.main, frame), offset = new spine.Vector2(), size = new spine.Vector2();
+  skeleton.getBounds(offset, size, []);
+  assert.equal(box.minX, offset.x); assert.equal(box.maxX, offset.x + size.x);
+  assert.equal(box.minY, offset.y); assert.equal(box.maxY, offset.y + size.y);
+  assert.equal(frame.boundsScratch.length, 200, 'scratch was needlessly resized between slot types');
+  skeleton.bones[0].active = false; frame.bounds.clear(); assert.equal(f.bounds(source, f.main, frame), null);
+  skeleton.bones[0].active = true;
+  const clip = new spine.ClippingAttachment('clip'); clip.worldVerticesLength = 8; clip.vertices = region.offset;
+  skeleton.slots[0].setAttachment(clip); frame.bounds.clear(); assert.equal(f.bounds(source, f.main, frame), null);
+  assert.equal(f.store.has(source), false);
 });

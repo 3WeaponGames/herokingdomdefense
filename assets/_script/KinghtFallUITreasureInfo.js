@@ -79,17 +79,24 @@ var def_KinghtFallUITreasureInfo = function (t) {
     }
   };
   _ctor.prototype.onGoldBtnClick = function () {
+    var self = this, player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    this.info = player.getUserData().getTreasureLevel(this.cfg.ID);
+    if (!this.info || this.info.level >= this.cfg.levelInfo.length) return;
+    var level = this.info.level, upgrade = this.cfg.levelInfo[level - 1];
     if (this.info.frame < this.cfg.levelInfo[this.info.level - 1].PieceCost) {
       this.openUI($z1Config.UIID.UITips, $z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTips05);
-    } else if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subGoldNum(this.cfg.levelInfo[this.info.level - 1].GoldCost)) {
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TreasureUp, 1);
+    } else if (player.purchase([{ id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin, num: upgrade.GoldCost }], function () {
+      var info = player.getUserData().getTreasureLevel(self.cfg.ID);
+      player.getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TreasureUp, 1);
+      info.frame -= upgrade.PieceCost;
+      info.level++;
+      player.getUserData().setTreasureLevel(info);
+    }, function () { var info = player.getUserData().getTreasureLevel(self.cfg.ID); return !!info && info.level === level && info.frame >= upgrade.PieceCost; })) {
       $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.level_up);
-      this.info.frame -= this.cfg.levelInfo[this.info.level - 1].PieceCost;
-      this.info.level += 1;
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setTreasureLevel(this.info);
+      this.info = player.getUserData().getTreasureLevel(this.cfg.ID);
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.TreasureUpdate);
       this.initView();
-    } else {
+    } else if (player.getUserData().getGoldNum() < upgrade.GoldCost) {
       this.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddCurrency, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin);
     }
   };

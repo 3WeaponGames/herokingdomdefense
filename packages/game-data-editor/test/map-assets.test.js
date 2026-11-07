@@ -3,7 +3,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const os = require('os');
+const temporaryProject = require('./owned-temp');
 const Maps = require('../lib/map-assets');
 const root = path.resolve(__dirname, '../../..');
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -109,7 +109,7 @@ test('route checks reuse the game planner and leave prefab bytes untouched', () 
 });
 test('obstacle cloning works through shared draft Store, undo, and explicit save', () => {
     const Store = require('../lib/store').Store;
-    const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'hkd-map-test-'));
+    const temporary = temporaryProject('hkd-map-test-');
     const paths = ['assets/KinghtFallConfig/GameJsonCfg.json', 'assets/KinghtFallConfigB/GameJsonCfg.json', 'assets/KinghtFallConfigD/GameJsonCfg.json', 'assets/resources/localization/catalog.json', Maps.fileFor('Map01')];
     paths.forEach(file => { fs.mkdirSync(path.dirname(path.join(temporary, file)), { recursive: true }); fs.copyFileSync(path.join(root, file), path.join(temporary, file)); });
     const store = new Store(temporary), original = fs.readFileSync(path.join(temporary, Maps.fileFor('Map01')), 'utf8');

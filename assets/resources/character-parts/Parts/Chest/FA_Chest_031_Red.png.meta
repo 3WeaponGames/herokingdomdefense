@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "cf2527fb-319d-5326-afeb-4e4d17731004",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 76,
+  "height": 68,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Chest_031_Red": {
+      "ver": "1.0.6",
+      "uuid": "e03e4810-97ca-5be9-a4f2-aa89703f3396",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "cf2527fb-319d-5326-afeb-4e4d17731004",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 76,
+      "height": 68,
+      "rawWidth": 76,
+      "rawHeight": 68,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

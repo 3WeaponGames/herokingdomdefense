@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e014b056-2a85-530c-af83-72b9b8c4c533",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 76,
+  "height": 68,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Chest_046_GreenGold": {
+      "ver": "1.0.6",
+      "uuid": "65b086f0-7250-50da-a96e-1ec5795f91a3",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e014b056-2a85-530c-af83-72b9b8c4c533",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 76,
+      "height": 68,
+      "rawWidth": 76,
+      "rawHeight": 68,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

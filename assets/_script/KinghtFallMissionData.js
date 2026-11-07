@@ -96,8 +96,13 @@ var exp_KinghtFallMissionData = function (t) {
       if (info) info.num += amount;
       else self.data.achievementInfo.push({ type: type, num: amount, reward: [] });
     }
-    settlement.rewards.forEach(function (reward) {
-      var amount = reward.num * extra;
+    var userReceipt = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData().data.battleSettlement;
+    var totals = userReceipt && userReceipt.id === settlement.id && userReceipt.rewardTotals;
+    var previousTotals = previous && receipt.rewardTotals || {};
+    if (totals && previous && !receipt.rewardTotals) settlement.rewards.forEach(function (reward) { previousTotals[reward.id] = (previousTotals[reward.id] || 0) + reward.num * previous; });
+    var rewards = totals ? Object.keys(totals).map(function (id) { return { id: Number(id), num: totals[id] - (previousTotals[id] || 0) }; }) : settlement.rewards.map(function (reward) { return { id: reward.id, num: reward.num * extra }; });
+    rewards.forEach(function (reward) {
+      var amount = reward.num;
       switch (reward.id) {
         case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin:
           achievement($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetGold, amount); break;
@@ -109,16 +114,18 @@ var exp_KinghtFallMissionData = function (t) {
     });
     if (!previous) achievement($z1KinghtFallEnum.KinghtFallEnumAchiEnum.LevelChallenges, 1);
     this.data.battleSettlement = { id: settlement.id, multiplier: settlement.multiplier };
+    if (totals) this.data.battleSettlement.rewardTotals = Object.assign({}, totals);
     return this.saveData() !== false;
   };
   _ctor.prototype.doUpTask = function () {
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTaskCfgById(this.data.taskInfo.id + 1);
-    t && (this.data.taskInfo = {
+    if (!t) return;
+    this.data.taskInfo = {
       id: t.ID,
       type: t.MissionType,
       num: 0,
       stage: 0
-    });
+    };
     this.saveData();
   };
   _ctor.prototype.setTaskInfo = function (t) {

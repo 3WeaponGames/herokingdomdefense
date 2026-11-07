@@ -49,11 +49,6 @@ var def_KinghtFallEnemyItem10 = function (t) {
           e.freeNode();
       }
     });
-    this.spAniUp.setCompleteListener(function () {
-      e.spAniUp.node.active = false;
-      e.getSpAni().node.active = true;
-      e.doMove();
-    });
   };
   _ctor.prototype.start = function () {
     t.prototype.start.call(this);
@@ -135,6 +130,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     }
   };
   _ctor.prototype.initData = function (e, n) {
+    this._transform = null;
     t.prototype.initData.call(this, e, n);
     this.spIdx = 0;
     this.spAni.node.active = true;
@@ -146,6 +142,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.setBody(this.getSpAni().node);
   };
   _ctor.prototype.upData = function (t) {
+    var boss = this, transform = this._transform = {};
     GameToolsOverrides.cancel(this);
     this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Wait;
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
@@ -153,7 +150,14 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.spIdx++;
     this.setBody(this.getSpAni().node);
     this.spAniUp.node.active = true;
-    this.spAniUp.setAnimation(0, this.spAniUp.defaultAnimation, false);
+    var entry = this.spAniUp.setAnimation(0, this.spAniUp.defaultAnimation, false);
+    this.spAniUp.setTrackCompleteListener(entry, function () {
+      if (boss._transform !== transform || boss._isPooled || !cc.isValid(boss, true) || !cc.isValid(boss.node, true) || boss.isDead()) return;
+      boss._transform = null;
+      boss.spAniUp.node.active = false;
+      boss.getSpAni().node.active = true;
+      boss.doMove();
+    });
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     this.attack = Math.round(this.cfg.AttackDamage * $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getAttAdd(this.cfg.ID));
     this.time = {};
@@ -162,7 +166,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.time[r.SpellMax] = this.cfg.Data[1];
     this.hpMax = this.cfg.Health * $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getHpAdd(this.cfg.ID);
     this.hp = this.hpMax;
-    this.hpctrl.setHp(this.hp, this.hpMax);
+    this.hpctrl && this.hpctrl.setHp(this.hp, this.hpMax);
     var e = this.node.getComponents(cc.CircleCollider);
     if (e[0]) {
       e[0].radius = this.cfg.AttackRange;
@@ -178,6 +182,12 @@ var def_KinghtFallEnemyItem10 = function (t) {
   _ctor.prototype.onUpdate = function (e) {
     if (!this.isDead()) {
       this.time[r.Spell] += e;
+      // The transform owns this Wait state until its animation completes.
+      // Ordinary enemies that reach the end of their route still reacquire targets.
+      if (this._transform) {
+        this.updateCombatTimers(e);
+        return;
+      }
       if (this.time[r.Spell] >= this.time[r.SpellMax]) {
         this.doBuff();
       } else {
@@ -270,7 +280,9 @@ var def_KinghtFallEnemyItem10 = function (t) {
   };
   _ctor.prototype.setPause = function (t) {
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
-    this.getSpAni().paused = t;
+    [this.spAni, this.spAni2, this.spAni3, this.spAniUp].forEach(function (skeleton) {
+      if (skeleton) skeleton.paused = t;
+    });
   };
   _ctor.prototype.getSpAni = function () {
     switch (this.spIdx) {

@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "b6993e5f-8a80-57a5-a043-268fe44cb791",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_WP_Sub_Shield_019_Pink": {
+      "ver": "1.0.6",
+      "uuid": "28c3b4a2-b9d0-536d-ab60-b5c504d6383f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "b6993e5f-8a80-57a5-a043-268fe44cb791",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

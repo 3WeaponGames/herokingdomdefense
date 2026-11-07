@@ -37,6 +37,8 @@ var def_KinghtFallBuildBarracks = function (t) {
     e.time = {};
     e.enemyList = [];
     e.waitEnemy = [];
+    e._rosterRequests = {};
+    e._rosterSignature = null;
     e.keepTime = 0;
     e.standTimeMax = 1.5;
     return e;
@@ -46,7 +48,6 @@ var def_KinghtFallBuildBarracks = function (t) {
     t.prototype.start.call(this);
     this.stratAge = $z1Utils.Utils.randomRang(1, 360);
     this.ndPro.active = false;
-    this.VideoTimes = 0;
     this.init();
   };
   _ctor.prototype.setLevel = function (e) {
@@ -58,6 +59,9 @@ var def_KinghtFallBuildBarracks = function (t) {
       this.time[r.RebornMax] = this.buildInfo.cfg.Data[2];
       this.initSoldier();
       this.waitEnemy = [];
+    } else {
+      this._rosterSignature = null;
+      this._rosterRequests = {};
     }
   };
   _ctor.prototype.getPos = function (t) {
@@ -139,6 +143,8 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
   };
   _ctor.prototype.reset = function (e) {
+    this._rosterSignature = null;
+    this._rosterRequests = {};
     t.prototype.reset.call(this, e);
     if (e) {
       for (var n = 0; n < this.enemyList.length; n++) {
@@ -211,6 +217,11 @@ var def_KinghtFallBuildBarracks = function (t) {
     n && (e += n.Pamer[0]);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43) && e--;
     e += this.VideoTimes;
+    var signature = this.buildInfo.cfg.Data[1] + ":" + e;
+    if (signature !== this._rosterSignature) {
+      this._rosterSignature = signature;
+      this._rosterRequests = {};
+    }
     var i = Math.max(e, this.enemyList.length);
     var a = function (n) {
       var i = o.enemyList[n];
@@ -223,8 +234,14 @@ var def_KinghtFallBuildBarracks = function (t) {
           i.isDead() && i.node.setPosition(o.getPos(n));
           i.setNew();
         } else {
+          if (o._rosterRequests[n]) return;
+          var request = { id: o.buildInfo.cfg.Data[1] };
+          o._rosterRequests[n] = request;
           $z1KinghtFallUIGame.default.instance.ctrGame.addSoldier(o.buildInfo.cfg.Data[1], function (e) {
-            if (t.enemyList[n]) {
+            var current = t._rosterRequests[n] === request;
+            if (current) delete t._rosterRequests[n];
+            if (!current || !cc.isValid(t, true) || !cc.isValid(t.node, true) ||
+                !t.buildInfo.cfg || t.buildInfo.cfg.Data[1] !== request.id || t.enemyList[n]) {
               $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delSoldier(e);
             } else {
               t.enemyList[n] = e;

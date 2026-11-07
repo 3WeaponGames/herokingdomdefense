@@ -45,11 +45,31 @@ var def_KinghtFallUIBuff = function (t) {
   _ctor.prototype.init = function (t) {
     this.callBack = t;
   };
+  _ctor.prototype.canChoosePerk = function () {
+    return !this.isAni && !this.isclose && !this._decisionPending && !this._decisionCompleted && cc.isValid(this);
+  };
+  _ctor.prototype.requestPerkAd = function (placement, success) {
+    if (!this.canChoosePerk()) return;
+    var self = this, generation = this._resourceGeneration, settled = false;
+    this._decisionPending = true;
+    function finish(accepted) {
+      if (settled) return;
+      settled = true;
+      if (self.isclose || self._decisionCompleted || generation !== self._resourceGeneration || !cc.isValid(self)) return;
+      self._decisionPending = false;
+      if (accepted) success();
+    }
+    try {
+      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () { finish(true); }, function () { finish(false); }, placement);
+    } catch (error) { finish(false); throw error; }
+  };
   _ctor.prototype.start = function () {
     var t = this;
     this.initData();
     if (this._customPerkPool && this.canOutBuff.length === 0) {
-      this.scheduleOnce(function () { t.callBack([]); t.closeUI(); }, 0);
+      var emptyGeneration = this._resourceGeneration;
+      this._decisionPending = true;
+      this.scheduleOnce(function () { t.finishDecision(t.callBack, [], emptyGeneration); }, 0);
       return;
     }
     this.initBtnView();
@@ -71,7 +91,7 @@ var def_KinghtFallUIBuff = function (t) {
       e(i);
     }
     this.btnRefresh.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+      t.requestPerkAd("battle.buff.refresh", function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.buff_1);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_buff_1_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
         t.onRefreshBuff(true);
@@ -80,22 +100,23 @@ var def_KinghtFallUIBuff = function (t) {
           t.showItem(e);
         }
         t.showAni();
-      }, null, "battle.buff.refresh");
+      });
     }, this);
     this.btnGetAll.active = true;
     this.btnGetAll.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+      t.requestPerkAd("battle.buff.takeAll", function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.buff_3);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_buff_3_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
         t.isAni = true;
+        t._decisionPending = true;
+        var selected = t.selInfo.slice(), generation = t._resourceGeneration;
         for (var e = 0; e < t.ndItemList.length; e++) {
           var n = t.ndItemList[e];
           if (0 == e) {
             cc.tween(n).to(.1, {
               scale: 1.2
             }).delay(.1).call(function () {
-              t.callBack(t.selInfo);
-              t.closeUI();
+              t.finishDecision(t.callBack, selected, generation);
             }).start();
           } else {
             cc.tween(n).to(.1, {
@@ -103,7 +124,7 @@ var def_KinghtFallUIBuff = function (t) {
             }).delay(.1).start();
           }
         }
-      }, null, "battle.buff.takeAll");
+      });
     }, this);
     this.showAni();
     this.startGuide();
@@ -269,10 +290,13 @@ var def_KinghtFallUIBuff = function (t) {
         var s = this.canOutBuff[o];
         s.qua >= this.minQua && a.push(s);
       }
-      if (!this._customPerkPool || a.length > 0) i($z1Utils.Utils.weight_rand(a).id);
+      var guaranteed = $z1Utils.Utils.weight_rand(a);
+      if (guaranteed) i(guaranteed.id);
     }
     for (; this.selInfo.length < 3 && n.length > 0;) {
-      i($z1Utils.Utils.weight_rand(n).id);
+      var selected = $z1Utils.Utils.weight_rand(n);
+      if (!selected) break;
+      i(selected.id);
     }
     this.selInfo.sort(function () {
       return Math.random() - .5;
@@ -322,16 +346,17 @@ var def_KinghtFallUIBuff = function (t) {
   };
   _ctor.prototype.clickItem = function (t) {
     var e = this;
-    if (!this.isAni) {
+    if (this.canChoosePerk() && this.selInfo[t] !== undefined) {
       this.isAni = true;
+      this._decisionPending = true;
+      var selected = this.selInfo[t], generation = this._resourceGeneration;
       for (var n = 0; n < this.ndItemList.length; n++) {
         var i = this.ndItemList[n];
         if (t == n) {
           cc.tween(i).to(.1, {
             scale: 1.2
           }).delay(.1).call(function () {
-            e.callBack([e.selInfo[t]]);
-            e.closeUI();
+            e.finishDecision(e.callBack, [selected], generation);
           }).start();
         } else {
           cc.tween(i).to(.1, {

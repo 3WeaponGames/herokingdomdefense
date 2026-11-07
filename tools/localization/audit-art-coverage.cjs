@@ -24,8 +24,9 @@ for (const [id, template] of Object.entries(templates)) {
   for (const source of [template.source, template.sourceOriginal].filter(Boolean)) {
     if (!fs.existsSync(path.join(root, source))) sourceMissing.push(source);
   }
-  for (const locale of catalog.languages) {
-    const file = `assets/resources/localization/generated/${locale.code}/${id}.png`;
+  const locales = template.languages || catalog.languages.map(locale => locale.code);
+  for (const locale of locales) {
+    const file = `assets/resources/localization/generated/${locale}/${id}.png`;
     if (!fs.existsSync(path.join(root, file))) generatedMissing.push(file);
   }
 }

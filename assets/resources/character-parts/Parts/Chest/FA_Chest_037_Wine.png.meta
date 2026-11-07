@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "f571f5ce-78e2-5a3c-a4b4-629671149cb0",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 76,
+  "height": 68,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_Chest_037_Wine": {
+      "ver": "1.0.6",
+      "uuid": "d4305561-f1cd-50b1-a0b4-f187c1ba0f34",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f571f5ce-78e2-5a3c-a4b4-629671149cb0",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 76,
+      "height": 68,
+      "rawWidth": 76,
+      "rawHeight": 68,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

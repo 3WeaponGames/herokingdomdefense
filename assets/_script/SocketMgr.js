@@ -19,10 +19,15 @@ var def_SocketMgr = function () {
   _ctor.prototype.startSocket = function (t, e, n, l) {
     var c = this;
     undefined === l && (l = false);
+    if (this.netNode && (this.wsUrl !== t || this.roomId !== e || this.appId !== n || this.test !== l)) {
+      this.netNode.close();
+      this.netNode = null;
+    }
     if (!this.netNode) {
       this.wsUrl = t;
       this.roomId = e;
       this.appId = n;
+      this.test = l;
       var h = new $z1NetNode.NetNode();
       this.netNode = h;
       var g = new $z1WebSock.WebSock();

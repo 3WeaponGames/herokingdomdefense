@@ -44,7 +44,7 @@ var exp_NetManager = function () {
   _ctor.prototype.close = function (t, e, n) {
     undefined === n && (n = 0);
     if (this._channels[n]) {
-      return this._channels[n].closeSocket(t, e);
+      return this._channels[n].close(t, e);
     }
   };
   _ctor._instance = null;

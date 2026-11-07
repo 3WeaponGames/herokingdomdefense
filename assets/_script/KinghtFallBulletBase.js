@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+var impactRadius = 25;
 var def_KinghtFallBulletBase = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -82,7 +83,7 @@ var def_KinghtFallBulletBase = function (t) {
         this.tagNode.getPosition(this.tagPos);
         this.node.getPosition(this.vec2_1);
         cc.Vec2.subtract(this.vec2_2, this.tagPos, this.vec2_1);
-        if (this.vec2_2.len() < 25) {
+        if (this.vec2_2.len() < impactRadius) {
           return void this.onDie();
         }
         var e = this._dir.signAngle(this.vec2_2);
@@ -95,9 +96,26 @@ var def_KinghtFallBulletBase = function (t) {
         this.newAngSpeed += this.addAngSpeed * t;
         e = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
         this.node.angle = e;
-        cc.Vec2.multiplyScalar(this.vec2_2, this._dir, this.speed * t);
+        var travel = this.speed * t;
+        var along = this.vec2_2.x * this._dir.x + this.vec2_2.y * this._dir.y;
+        var crossed = false;
+        // A long step can enter and leave the impact circle between samples.
+        // Keep the normal next-tick impact when the endpoint is still inside.
+        if (along > 0 && along < travel) {
+          var offsetX = this.vec2_2.x - along * this._dir.x;
+          var offsetY = this.vec2_2.y - along * this._dir.y;
+          var closestSq = offsetX * offsetX + offsetY * offsetY;
+          var beyond = travel - along;
+          var radiusSq = impactRadius * impactRadius;
+          if (closestSq < radiusSq && closestSq + beyond * beyond >= radiusSq) {
+            travel = along;
+            crossed = true;
+          }
+        }
+        cc.Vec2.multiplyScalar(this.vec2_2, this._dir, travel);
         cc.Vec2.add(this.vec2_1, this.vec2_1, this.vec2_2);
         this.node.setPosition(this.vec2_1);
+        if (crossed) this.onDie();
         break;
       case 1:
         this.time -= t;

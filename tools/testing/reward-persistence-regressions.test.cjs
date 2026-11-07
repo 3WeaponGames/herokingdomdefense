@@ -10,20 +10,22 @@ const clone = value => JSON.parse(JSON.stringify(value));
 
 function harness(saved = {}) {
   const storage = clone(saved);
-  const state = { writes: 0, crashAfter: Infinity, adCalls: 0, closed: 0, selected: 120001 };
+  const state = { writes: 0, crashAfter: Infinity, adCalls: 0, closed: 0, selected: 120001, randomCalls: 0 };
   const modules = {};
   const singleton = object => ({ getInstance: () => object });
   function Base() {}
   Base.prototype.saveData = function () {
+    if (this.deferSave) return true;
     storage[this.gameKey] = clone(this.data);
     state.writes++;
     if (state.writes === state.crashAfter) throw new Error('simulated process interruption');
   };
+  Base.prototype.normalizeSaveRecord = (data, defaults) => Object.assign({}, defaults, data);
   Base.prototype.init = function () {};
   function load(name) {
     if (modules[name]) return modules[name];
-    const ctx = { exports: {}, require: name => modules[name] || {}, console: { log() {} },
-      Date, Math: Object.assign(Object.create(Math), { random: () => 1 }),
+    const ctx = { exports: {}, require: name => modules[name] || {}, console: { log() {}, error() {} },
+      Date, Math: Object.assign(Object.create(Math), { random: () => .9 + (++state.randomCalls % 100000) / 1e6 }),
       cc: { _decorator: { ccclass: t => t, property: () => () => {} }, Node: { EventType: { TOUCH_END: 'touch' } } },
       sp: { Skeleton() {} }, __extends: (ctor, base) => Object.setPrototypeOf(ctor.prototype, base.prototype),
       __decorate: (decorators, target, key) => key === undefined ? target : undefined };
@@ -31,6 +33,10 @@ function harness(saved = {}) {
     return modules[name] = ctx.exports;
   }
   modules.BaseData = { BaseData: Base };
+  modules.CacheUtils = { CacheUtils: {
+    getData: key => storage[key] || null,
+    saveData: (key, value) => { storage[key] = value; state.writes++; if (state.writes === state.crashAfter) throw Error('simulated process interruption'); return true; }
+  } };
   modules.BaseUI = modules.BaseCtrl = { default: Base };
   modules.Config = { GameConfig: { AppCacheName: 'test' }, UIID: {} };
   modules.KinghtFallConfig = { KinghtFallParameter: { AppCacheName: 'kinght' }, KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} };
@@ -41,6 +47,8 @@ function harness(saved = {}) {
   const dataMgr = {
     getGoodsCfgById: id => config.GoodsCfg[id],
     getTreasureCfgById: id => config.TreasureCfg.find(row => row.ID === id),
+    getEquipCfgList: () => config.EquipCfg,
+    getTaskCfgById: id => config.TaskCfg.find(row => row.ID === id),
     getBannerCfg: () => [{ RewardID: state.selected, Weight: 1 }]
   };
   modules.KinghtFallDataMgr = { KinghtFallDataMgr: singleton(dataMgr) };
@@ -59,7 +67,7 @@ function harness(saved = {}) {
     record.createData();
     if (storage[record.gameKey]) record.data = clone(storage[record.gameKey]);
   }
-  player.missionData.data.taskInfo = { type: 0 };
+  player.missionData.data.taskInfo = { id: 1, type: 0, num: 0, stage: 0 };
   const controller = { gameData: { levelCfg: { Level: 1, WaveCfg: [{ WaveReward: [[2001, 125], [2004, 50]] }] }, round: 1 }, gameTag: {} };
   modules.KinghtFallUIGame = { default: { instance: { ctrGame: controller } } };
   function screen(win = true) {
@@ -74,7 +82,7 @@ function harness(saved = {}) {
     state.selected = id;
     const UI = load(name).default;
     const ui = new UI();
-    Object.assign(ui, { cfgBox: { GuarantNumber: 20 }, sendEvent() {}, initView() {}, upView() {}, scheduleOnce() {}, ndCtr: { init() {}, node: { removeAllChildren() {} } } });
+    Object.assign(ui, { cfgBox: { ID: 80001, GuarantNumber: 20 }, sendEvent() {}, initView() {}, upView() {}, scheduleOnce() {}, ndCtr: { init() {}, node: { destroyAllChildren() {}, removeAllChildren() {} } } });
     ui.getReward(1, 1);
     return name === 'KinghtFallHomeTreasureCtrl' ? state.displayed : ui.getSkillList;
   }

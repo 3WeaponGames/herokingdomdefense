@@ -32,7 +32,7 @@ var exp_TimeUtils = function () {
   _ctor.FormatDate1 = function (t, e) {
     undefined === e && (e = "/");
     var n = new Date(t);
-    return n.getFullYear() + e + (n.getUTCMonth() + 1) + e + n.getUTCDate();
+    return n.getUTCFullYear() + e + (n.getUTCMonth() + 1) + e + n.getUTCDate();
   };
   _ctor.BeforeTime = function (t) {
     if (null == t) {
@@ -68,8 +68,8 @@ var exp_TimeUtils = function () {
   };
   _ctor.overDay = function (t) {
     var e = new Date(t);
-    var n = new Date(this.dayStart());
-    return Math.floor((n.getTime() - e.getTime()) / 864e5);
+    var n = new Date();
+    return (Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) - Date.UTC(e.getFullYear(), e.getMonth(), e.getDate())) / 864e5;
   };
   _ctor.getMothTotalDay = function (t) {
     var e = 30;
@@ -90,31 +90,14 @@ var exp_TimeUtils = function () {
     return new Date().getHours() - new Date(1e3 * t).getHours();
   };
   _ctor.getSplaceTime = function (t, e) {
-    var n = new Date();
-    if (n.getHours() >= t) {
-      n.setHours(t + 24);
-    } else {
-      n.setHours(t);
-    }
-    n.setMinutes(e);
-    n.setSeconds(0);
-    return Number((n.getTime() / 1e3).toFixed(0));
+    var now = new Date();
+    var next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), t, e, 0, 0);
+    if (next.getTime() <= now.getTime()) next.setDate(next.getDate() + 1);
+    return Math.floor(next.getTime() / 1e3);
   };
   _ctor.isLastDayOfMonth = function (t) {
-    var e = false;
     var n = new Date(t);
-    var i = n.getFullYear();
-    var a = n.getMonth() + 1;
-    var o = n.getDate();
-    var r = i;
-    var s = a++;
-    if (a > 12) {
-      s -= 12;
-      r++;
-    }
-    var l = new Date(r, s, 1);
-    o == new Date(l.getTime() - 864e5).getDate() && (e = true);
-    return e;
+    return n.getDate() === new Date(n.getFullYear(), n.getMonth() + 1, 0).getDate();
   };
   return _ctor;
 }();

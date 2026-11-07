@@ -18,7 +18,7 @@ test('The shipped shaman spell effect plays the authored clip on both initial lo
   const calls=[],scheduled=[],returned=[],pool=[];
   const animated={defaultAnimation:skeleton.defaultAnimation,setAnimation(track,name,loop){assert.ok(Object.hasOwn(clip.animations,name),'Native Spine must receive a real nonempty animation');calls.push({track,name,loop});}};
   const node={setParent(p){this.parent=p;},setPosition(p){this.position=p;},getComponentInChildren(){return animated;}};
-  const manager={getNode(){return pool.pop();},creatrePool(){},freeNode(name,value){returned.push(name);pool.push(value);}};
+  const manager={getNode(){return pool.pop();},getNodeFromPrefab(_key,prefab){return cc.instantiate(prefab);},freeNode(name,value){returned.push(name);pool.push(value);}};
   const cc={instantiate(){return node;}};
   const effect=vm.runInNewContext('('+body+')',{cc,sp:{Skeleton:function(){}},$z1PoolMgr:{PoolMgr:{getInstance:()=>manager}},$z1KinghtFallUIGame:{default:{instance:{ctrGame:{ndTrack:{name:'tracks'}}}}},$z1KinghtFallConfig:{KinghtFallBundelName:{Effect:'KinghtFallEffect'}}});
   let loads=0;const owner={scheduleOnce(fn,delay){assert.equal(delay,2);scheduled.push(fn);},loadPrefab(bundle,name,cb){loads++;assert.equal(name,'Soldier9Attack');cb(prefab);}};

@@ -120,52 +120,48 @@ var def_KinghtFallUITalentInfo = function (t) {
     var owned = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.cfg.ID);
     if (owned && owned.isLock) return;
     $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), unlocked = false;
+      var committed = player.transact(function () {
+        var progress = player.getUserData().getTalentLevel(t.cfg.ID) || { id: t.cfg.ID, isLock: false, video: 0 };
+        progress.video++;
+        if (progress.video >= t.cfg.vedioCount || TestMode.getInstance().shouldBypassAdLimits()) {
+          progress.isLock = true;
+          unlocked = true;
+          player.getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TalentUp, 1);
+        }
+        player.getUserData().setTalentLevel(progress);
+      }, function () { var current = player.getUserData().getTalentLevel(t.cfg.ID); return !(current && current.isLock); });
+      if (!committed) return;
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent);
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_talent_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-      var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(t.cfg.ID);
-      if (e) {
-        e.video = e.video + 1;
-      } else {
-        e = {
-          id: t.cfg.ID,
-          isLock: false,
-          video: 1
-        };
-      }
-      if (e.video >= t.cfg.vedioCount || TestMode.getInstance().shouldBypassAdLimits()) {
+      var e = player.getUserData().getTalentLevel(t.cfg.ID);
+      if (unlocked) {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent_unlock_X, t.cfg.ID);
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TalentUp, 1);
         $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.unlock);
-        e.isLock = true;
         t.closeUI();
       } else {
         t.btnVideo.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label).string = e.video + "/" + t.cfg.vedioCount;
       }
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setTalentLevel(e);
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate);
     }, null, "home.talent.unlock");
   };
   _ctor.prototype.onGoldBtnClick = function () {
-    if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subGoldNum(this.goldNum)) {
+    var self = this, player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var owned = player.getUserData().getTalentLevel(this.cfg.ID);
+    if (this.isclose || owned && owned.isLock) return;
+    if (player.purchase([{ id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin, num: this.goldNum }], function () {
+      var progress = player.getUserData().getTalentLevel(self.cfg.ID) || { id: self.cfg.ID, isLock: false, video: 0 };
+      progress.isLock = true;
+      player.getUserData().setTalentLevel(progress);
+      player.getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TalentUp, 1);
+    }, function () { var current = player.getUserData().getTalentLevel(self.cfg.ID); return !(current && current.isLock); })) {
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide17);
-      var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalentLevel(this.cfg.ID);
-      if (t) {
-        t.isLock = true;
-      } else {
-        t = {
-          id: this.cfg.ID,
-          isLock: true,
-          video: 0
-        };
-      }
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.talent_unlock_X, this.cfg.ID);
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.TalentUp, 1);
       $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.unlock);
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setTalentLevel(t);
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.TalentUpdate);
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 2);
       this.closeUI();
-    } else {
+    } else if (player.getUserData().getGoldNum() < this.goldNum) {
       this.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddCurrency, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin);
     }
   };

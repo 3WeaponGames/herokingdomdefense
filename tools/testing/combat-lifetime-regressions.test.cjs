@@ -1,176 +1,132 @@
+'use strict';
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const vm = require('node:vm');
 const test = require('node:test');
-
-const scriptRoot = path.resolve(__dirname, '../../assets/_script');
-function harness() {
-  function Vec(x = 0, y = 0) { this.x = x; this.y = y; }
-  Vec.prototype.clone = function () { return new Vec(this.x, this.y); };
-  Vec.prototype.len = function () { return Math.hypot(this.x, this.y); };
-  Vec.prototype.normalizeSelf = function () { const len = this.len() || 1; this.x /= len; this.y /= len; return this; };
-  Vec.prototype.signAngle = function (other) { return Math.atan2(this.x * other.y - this.y * other.x, this.x * other.x + this.y * other.y); };
-  Vec.prototype.rotateSelf = function (angle) { const x = this.x; this.x = x * Math.cos(angle) - this.y * Math.sin(angle); this.y = x * Math.sin(angle) + this.y * Math.cos(angle); return this; };
-  Vec.RIGHT = new Vec(1, 0); Vec.ZERO = new Vec();
-  Vec.subtract = (out, a, b) => { out.x = a.x - b.x; out.y = a.y - b.y; };
-  Vec.add = (out, a, b) => { out.x = a.x + b.x; out.y = a.y + b.y; };
-  Vec.multiplyScalar = (out, a, b) => { out.x = a.x * b; out.y = a.y * b; };
-  Vec.normalize = (out, a) => { out.x = a.x; out.y = a.y; out.normalizeSelf(); };
-  let nextId = 0;
-  function node(x = 0, y = 0) {
-    return { x, y, uuid: String(++nextId), active: true, activeInHierarchy: true,
-      getPosition(out) { if (!out) return new Vec(this.x, this.y); out.x = this.x; out.y = this.y; return out; },
-      setPosition(p) { this.x = p.x; this.y = p.y; }, setParent() {}, setSiblingIndex() {},
-      getComponents: () => [{}, {}], addComponent: () => ({}),
-      getComponent() { return this.component || { setSkin() {} }; }, convertToNodeSpaceAR: p => p };
-  }
-  function Base() { this.debuffInfo = []; }
-  Base.prototype.onDestroy = function () {};
-  const state = { pooled: 0, damage: [], effects: 0 };
-  const singleton = value => ({ getInstance: () => value });
-  const cfg = { ID: 90001, AttackRange: 100, SearchRange: 50, Health: 100, AttackDamage: 10, BuildingCross: true };
-  const ui = { ctrGame: null, ctrEffect: { showDamageNum: (...args) => state.damage.push(args), onMonsterAttack: () => state.effects++, onSoldierDead() {} }, ctrUI: { setGuide() {} } };
-  const modules = {
-    BaseCtrl: { default: Base },
-    KinghtFallNavigation: { reset() {} },
-    KinghtFallInterface: { KinghtFallInterface: Base, KinghtFallEnemyBuffType: { MoveSpeed: 'slow' } },
-    KinghtFallModle: { KinghtFallGameStage: { Prepare: 0 }, KinghtFallSoldierAniEnum: { Move: 'move', Idle: 'idle' }, KinghtFallGameArmy: {} },
-    KinghtFallConfig: { KinghtFallPoolName: { Enemy: 'enemy', Soldier: 'soldier' }, KinghtFallBundelName: {}, KinghtFallPrefabName: {} },
-    KinghtFallEnum: { KinghtFallEnumBuffCfg: { Buff08: 8, Buff15: 15 }, KinghtFallEnumTaskEnum: { SoldierDefeated: 5 } },
-    KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getGuideData: () => ({ getGuideTips: () => true }), getMissionData: () => ({ getTaskInfo: () => ({}), addTaskNum() {} }) }) },
-    KinghtFallMissionData: { KinghtFallTaskCountName: {} },
-    KinghtFallDataMgr: { KinghtFallDataMgr: singleton({ getSoldierCfgById: () => cfg }) },
-    PoolMgr: { PoolMgr: singleton({ getNode: () => null, freeNode: (key, target) => { state.pooled++; target.activeInHierarchy = false; } }) },
-    KinghtFallUIGame: { default: { instance: ui } }
-  };
-  const cc = { _decorator: { ccclass: ctor => ctor, property: () => () => {} }, Component: Base, Node: function () {}, Vec2: Vec,
-    v2: (x, y) => new Vec(x, y), size: (width, height) => ({ width, height }), winSize: { height: 667 },
-    isValid: (object, strict) => !!object && !object.destroyed && !(strict && object.pendingDestroy) };
-  function load(name) {
-    if (modules[name]) return modules[name];
-    const context = { exports: {}, require: id => modules[id] || (fs.existsSync(path.join(scriptRoot, id + '.js')) && /^(GameToolsOverrides$|KinghtFall(Bullet|EnemyBase|SoldierBase|GameCtrl$))/.test(id) ? load(id) : { default: Base }),
-      console, cc, sp: { Skeleton: function () {} },
-      __extends: (ctor, base) => { Object.setPrototypeOf(ctor.prototype, base.prototype); },
-      __decorate: (decorators, target, key) => key === undefined ? target : undefined, __spreadArrays: (...args) => [].concat(...args) };
-    vm.runInNewContext(fs.readFileSync(path.join(scriptRoot, name + '.js'), 'utf8'), context, { filename: name + '.js' });
-    return modules[name] = context.exports;
-  }
-  const Game = load('KinghtFallGameCtrl').default;
-  const game = new Game(); game.node = node(); ui.ctrGame = game;
-  game.ndUI = node(); game.setPath = () => ({ nodeIndex: 0, pathList: [node()] });
-  game.gameData = { getHpAdd: () => 1, getAttAdd: () => 1, delEnemy() {}, delSoldier() {}, getGameBuff: () => null };
-  game.ctrPlay = { getAttWpos: () => new Vec(), ctrPlayAni: { arrName: 'lv1' }, getAttack: () => 10, crit: 0, critDam: 2 };
-  function bullet(kind) {
-    const result = new (load('KinghtFallBullet' + kind).default)(); result.node = node(); result.node.component = result;
-    result.uuid = result.node.uuid; result.bullet = node(); result.combatContext = game;
-    result.ctrPar = { freeBullet: b => { b.node.active = false; } };
-    result.spAni = { setAnimation() {} };
-    return result;
-  }
-  function enemy() {
-    const result = new (load('KinghtFallEnemyBase').default)(); result.node = node(100, 0);
-    Object.assign(result, { hpctrl: { setType() {}, setHp() {} }, spAni: { setAnimation() {} }, rigidBody: {}, onChangeSpeed() {}, delAllBuff() {} });
-    result.initData(90001, 0); return result;
-  }
-  return { state, game, bullet, enemy, node, Vec, load };
+const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
+const {environment, Node} = require('../navigation/runtime-harness.cjs');
+const {setup, hero} = require('./backend-gameplay-harness.cjs');
+const source = path.resolve(__dirname, '../../assets/_script');
+function extra(h, name) {
+  const ex = {}, context = {exports:ex, require:h.load, cc:h.cc, sp:{Skeleton:function(){}}, console:{log(){}},
+    __extends(C,B) { Object.setPrototypeOf(C,B); C.prototype=Object.create(B.prototype); C.prototype.constructor=C; },
+    __decorate:(_ds,t,k)=>k===undefined?t:undefined};
+  vm.runInNewContext(fs.readFileSync(path.join(source,name+'.js'),'utf8'),context,{filename:name+'.js'});
+  return ex;
 }
-
-for (const kind of ['Play', 'Build']) {
-  for (const transition of ['death', 'pool', 'reuse', 'inactive', 'destroy', 'pending-destroy', 'restart']) {
-    test(`${kind} shot cannot hit after target ${transition}`, () => {
-      const h = harness(), enemy = h.enemy(), shot = h.bullet(kind);
-      if (kind === 'Play') { h.game.ndPlayArr1.push(shot.node); h.game.onPlayAttack(enemy); }
-      else { h.game.ndBuildArr1.push(shot.node); h.game.onShotBuild({ getAttPos: () => new h.Vec(), getAttack: () => 10 }, enemy); }
-      const retainedImpact = shot.callAttack;
-      if (transition === 'death') enemy.onAttacked(100);
-      if (transition === 'pool' || transition === 'reuse') enemy.freeNode();
-      if (transition === 'reuse') { enemy.node.activeInHierarchy = true; enemy.initData(90001, 0); }
-      if (transition === 'inactive') enemy.node.activeInHierarchy = false;
-      if (transition === 'destroy') enemy.node.destroyed = true;
-      if (transition === 'pending-destroy') enemy.node.pendingDestroy = true;
-      if (transition === 'restart') h.game.cleanMap();
-      const hp = enemy.hp, effects = h.state.effects;
-      retainedImpact(); shot.onDie();
-      assert.equal(enemy.hp, hp); assert.equal(h.state.effects, effects);
-    });
-  }
-  test(`${kind} shot hits a live target exactly once`, () => {
-    const h = harness(), enemy = h.enemy(), shot = h.bullet(kind);
-    if (kind === 'Play') { h.game.ndPlayArr1.push(shot.node); h.game.onPlayAttack(enemy); }
-    else { h.game.ndBuildArr1.push(shot.node); h.game.onShotBuild({ getAttPos: () => new h.Vec(), getAttack: () => 10 }, enemy); }
-    const retainedImpact = shot.callAttack;
-    shot.onDie(); retainedImpact(); shot.onDie();
-    assert.equal(enemy.hp, 90); assert.equal(h.state.effects, 1);
+function pendingBar(name) {
+  const h=environment(), pending=[], health=[];
+  h.stubs.PoolMgr={PoolMgr:{getInstance:()=>({freeNode:(_key,node)=>node.setParent(null)})}};
+  h.game.setPath=()=>({nodeIndex:0,pathList:[]});
+  h.game.gameData.delEnemy=h.game.gameData.delSoldier=()=>{};
+  const actor=h.actor(name); actor.hpctrl=null; actor.ndHp=new Node('hp',actor.node);
+  actor.loadPrefab=(_b,_p,done)=>pending.push(done);
+  h.cc.instantiate=()=>{const bar=new Node('bar');bar.getComponent=()=>({setType(){},setHp:(...args)=>health.push(args)});return bar;};
+  return {h,actor,pending,health};
+}
+for (const name of ['KinghtFallEnemyBase','KinghtFallSoldierBase']) {
+  test(name+' shares a pending HP bar across pool reuse and displays current health',()=>{
+    const {h,actor,pending,health}=pendingBar(name);
+    actor.initData(90001,{}); actor.freeNode(); actor.node.setParent(h.game.ndMain); actor.initData(90001,{});
+    actor.hp=37; assert.equal(pending.length,1); pending[0]({});
+    assert.equal(actor.ndHp.childrenCount,1); assert.deepEqual(health.at(-1),[37,100]);
+    actor.initData(90001,{}); assert.equal(pending.length,1); assert.deepEqual(health.at(-1),[100,100]);
+  });
+  test(name+' ignores a health-bar completion after owner destruction',()=>{
+    const {actor,pending}=pendingBar(name); actor.initData(90001,{}); actor.destroyed=true; pending[0]({});
+    assert.equal(actor.ndHp.childrenCount,0);
   });
 }
-
-for (const kind of ['Base', 'Play', 'Build', 'Soldier', 'Enemy', 'Enemy8']) {
-  test(`${kind} projectile stops tracking a recycled target`, () => {
-    const h = harness(), enemy = h.enemy(), shot = h.bullet(kind);
-    let hits = 0; shot.setTag(new h.Vec(), enemy.node, () => hits++);
-    enemy.freeNode(); enemy.node.activeInHierarchy = true; enemy.initData(90001, 0);
-    enemy.node.getPosition = () => assert.fail('must not track the replacement enemy');
-    shot.onUpdate(0.01); assert.equal(shot.state, 2); assert.equal(hits, 0); assert.equal(shot.callAttack, null);
+test('Soldier damage, death and healing do not require a loaded health bar',()=>{
+  const h=environment(), actor=h.actor('KinghtFallSoldierBase'); actor.hpctrl=null;
+  assert.equal(actor.onAttacked(10),10); assert.equal(actor.hp,90);
+  actor.addHpPro(.05); assert.equal(actor.hp,95);
+  let deaths=0; actor.outBuild={addDie:()=>deaths++}; actor.ndEffect={removeAllChildren(){}};
+  h.stubs.KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead=()=>{};
+  actor.onAttacked(100); assert.equal(deaths,1); assert.equal(actor.node.active,false);
+});
+for (const name of ['KinghtFallBuildBase','KinghtFallBuildWall','KinghtFallBuildBartizan']) {
+  test(name+' applies lethal damage while its HP prefab is pending',()=>{
+    const h=environment(), C=name==='KinghtFallBuildBartizan'?extra(h,name).default:h.load(name).default, b=new C();
+    b.buildInfo={hp:10,hpMax:100}; b.time={Invincible:-1}; b.ctrHp=null;
+    let deaths=0; b.onDead=()=>{b.isDestroyed=true;deaths++;};
+    b.ndAniEffect={node:{},setAnimation(){},setTrackCompleteListener(_track,done){done();}};
+    assert.equal(b.onAttacked(20),20); assert.equal(b.buildInfo.hp,-10); assert.equal(deaths,1);
+    b.onAttacked(20); assert.equal(deaths,1);
   });
 }
-
-test('reused projectile invalidates its old retained impact callback', () => {
-  const h = harness(), enemy = h.enemy(), shot = h.bullet('Play'); let hits = 0;
-  shot.setTag(new h.Vec(), enemy.node, () => hits += 10);
-  const oldImpact = shot.callAttack;
-  shot.cancel(); shot.combatContext = h.game;
-  shot.setTag(new h.Vec(), enemy.node, () => hits++);
-  oldImpact(); shot.onDie(); assert.equal(hits, 1);
+test('Shaman transformation completes before its health bar is available',()=>{
+  const h=environment(), actor=h.actor('KinghtFallEnemyItem10'); actor.hpctrl=null; h.cfg.Data=[0,5];
+  actor.getSpAni=()=>({node:new Node()}); actor.spAniUp={node:{},setAnimation(){return {};},setTrackCompleteListener(){}};
+  actor.upData(90001); assert.equal(actor.hp,100); assert.equal(actor.time.SpellMax,5);
 });
-
-test('a missed impact cannot apply later when its target becomes active again', () => {
-  const h = harness(), enemy = h.enemy(), shot = h.bullet('Play'); let hits = 0;
-  shot.setTag(new h.Vec(), enemy.node, () => hits++);
-  const impact = shot.callAttack;
-  enemy.node.activeInHierarchy = false; shot.onDie();
-  enemy.node.activeInHierarchy = true; impact(); assert.equal(hits, 0);
-});
-
-test('a revived allied soldier has a new projectile lifetime', () => {
-  const h = harness();
-  const Soldier = h.load('KinghtFallSoldierBase').default;
-  const ally = new Soldier(); Object.assign(ally, { node: h.node(100), hpMax: 100, doIdel() { this.dead = false; }, isDead() { return this.dead; } });
-  ally.node._combatActor = ally; ally.setNew();
-  const shot = h.bullet('Enemy'); let hits = 0;
-  shot.setTag(new h.Vec(), ally.node, () => hits++);
-  ally.dead = true; ally.setNew(); shot.onDie(); assert.equal(hits, 0);
-});
-
-test('enemy pooling is idempotent and invalidates the target generation', () => {
-  const h = harness(), enemy = h.enemy(), before = enemy.node._combatGeneration;
-  enemy.freeNode(); enemy.freeNode();
-  assert.equal(h.state.pooled, 1); assert.equal(enemy.node._combatGeneration, before + 1);
-  enemy.node.activeInHierarchy = true; enemy.initData(90001, 0);
-  assert.equal(enemy.node._combatGeneration, before + 2);
-  enemy.freeNode(); assert.equal(h.state.pooled, 2);
-});
-
-test('round cleanup cancels every projectile family and retained impacts', () => {
-  const h = harness(), enemy = h.enemy(); let hits = 0;
-  const shots = ['Play', 'Build', 'Soldier', 'Enemy', 'Enemy8'].map(kind => h.bullet(kind));
-  shots.forEach(shot => shot.setTag(new h.Vec(), enemy.node, () => hits++));
-  const impacts = shots.map(shot => shot.callAttack);
-  h.game.ndPlayArr2 = [shots[0]]; h.game.ndBuildArr2 = [shots[1]];
-  h.game.ndSoldArr = [shots[2]]; h.game.ndEnemyArr = [shots[3], shots[4]];
-  h.game.cleanMap(); impacts.forEach(hit => hit());
-  assert.equal(hits, 0); assert.ok(shots.every(shot => shot.state === 2 && shot.callAttack === null && shot.tagNode === null));
-});
-
-for (const actor of ['Enemy', 'Soldier']) {
-  test(`delayed ${actor.toLowerCase()} prefab cannot spawn into the next battle`, () => {
-    const h = harness(); let complete;
-    h.game.loadPrefab = (bundle, prefab, done) => { complete = done; };
-    if (actor === 'Enemy') h.game.addEnemy(90001, 0);
-    else h.game.addSoldier(90001, () => assert.fail('stale spawn callback'));
-    assert.equal(typeof complete, 'function');
-    h.game.cleanMap();
-    // The harness deliberately has no cc.instantiate: a stale completion must return before it.
-    assert.doesNotThrow(() => complete({}));
-  });
+function playableHero() {
+  const h=setup({KinghtFallAudioMgr:{KinghtFallAudioMgr:{getInstance:()=>({stopEffectName(){}})}}});
+  h.e.stubs.AudioMgr.AudioMgr.getInstance=()=>({playEffectFree(){},getAudioSource:()=>({}),getMusicVolume:()=>.5});
+  const p=hero(h); p.sendEvent=()=>{}; h.g.gameTag={};
+  return {h,p};
 }
+test('Hero windup whose target leaves releases its latch and acquires again',()=>{
+  const {h,p}=playableHero(); let windups=0;
+  h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data.GameTools={timingDefaults:{'hero:hero:default':{attack:.1}}};
+  p.ctrPlayAni.setAttack=()=>windups++;
+  h.d.enemyList=[{node:new Node(),isDead:()=>false}]; p.onFindEnemy();
+  assert.equal(p.time.Attack,-1); assert.equal(windups,1);
+  h.d.enemyList=[]; h.load('GameToolsOverrides').tick(.1,true); assert.equal(p.time.Attack,0);
+  p.time.Attack=-1;p.doAttack();assert.equal(p.time.Attack,0,'direct/legacy damage event also completes');
+  h.d.enemyList=[{node:new Node(),isDead:()=>false}];
+  for(let i=0;i<20&&windups===1;i++)p.onUpdata(.1);
+  assert.equal(windups,2);
+  assert(h.load('GameToolsOverrides').isPending(p));
+  for(const restart of [false,true]){p.time.Attack=-1;p.onRestart(restart);assert.equal(p.time.Attack,0);assert.equal(h.load('GameToolsOverrides').isPending(p),false);}
+  p.time.Attack=-1;p.endRoundGame();assert.equal(p.time.Attack,0);
+});
+test('Hero life identity rejects old projectiles through death, revive and restart',()=>{
+  const {h,p}=playableHero(), data=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+  data.getEquipCfgList=()=>[]; data.getParamsCfgById=()=>3;
+  Object.assign(p.ctrPlayAni,{initView(){},setAttackEvent(){},setAttackEnd(){},setDie(done){done();},setRevive(done){done();}});
+  p.ctrHp.setType=()=>{};p.initData();assert.equal(p.node._combatActor,p);
+  const B=h.load('KinghtFallBulletBase').default;let hits=0;
+  function shot(){const b=new B();b.bindTarget(p.node,()=>hits++);return b;}
+  const beforeDeath=shot();p.onDead();assert.equal(beforeDeath.targetIsLive(),false);
+  p.onReborn();beforeDeath.callAttack();assert.equal(hits,0);shot().callAttack();assert.equal(hits,1);
+  const beforeRestart=shot();p.onRestart();beforeRestart.callAttack();assert.equal(hits,1);shot().callAttack();assert.equal(hits,2);
+});
+test('Obsolete death/revive animation callbacks cannot change the restarted hero life',()=>{
+  const {p}=playableHero();let die,revive;
+  p.ctrPlayAni.setDie=done=>die=done;p.ctrPlayAni.setRevive=done=>revive=done;
+  p.onDead();p.onRestart();die();assert.equal(p.isDead(),false);
+  p.onReborn();p.onRestart();p.hp=40;revive();assert.equal(p.hp,40);
+});
+test('Legacy path searches terminate on unreachable cyclic cells and retain reachable paths',()=>{
+  const h=environment();h.cc.Component=function(){};const C=extra(h,'KinghtFallGameMap').default;
+  for(const method of ['findPath','findPath2','findPath3']){
+    const map=new C();map.mType=4;map.mapData={'0#0':{type:0},'0#1':{type:0},'0#3':{type:0}};
+    let visits=0;const neighbors=map.getNeighbors;map.getNeighbors=function(n){assert(++visits<10,'search revisits an unreachable cycle');return neighbors.call(this,n);};
+    const result=map[method]({row:0,col:0},{row:0,col:3},100);
+    assert.deepEqual(Array.from(result,n=>[n.x,n.y]),method==='findPath'?[]:[[0,0],[0,1]]);assert(visits<=2);
+    const route=map[method]({row:0,col:0},{row:0,col:1},100);assert.deepEqual(Array.from(route,n=>[n.x,n.y]),[[0,0],[0,1]]);
+  }
+});
+test('Legacy bounded search returns explored progress without spending its budget on coordinate duplicates',()=>{
+  const h=environment();h.cc.Component=function(){};const C=extra(h,'KinghtFallGameMap').default,map=new C();map.mType=4;
+  for(let y=0;y<7;y++)map.mapData['0#'+y]={type:0};
+  let visits=0;const neighbors=map.getNeighbors;map.getNeighbors=function(n){visits++;return neighbors.call(this,n);};
+  const route=map.findPath3({row:0,col:0},{row:0,col:6},4);
+  assert.deepEqual(Array.from(route,n=>[n.x,n.y]),[[0,0],[0,1],[0,2],[0,3]]);assert.equal(visits,4);
+});
+test('Late buff effects are returned after expiry, pool reuse or destruction; synchronous hits remain owned',()=>{
+  for(const invalidation of ['expire','generation','pooled','destroy','none','sync']){
+    const h=environment();let callback,returned=0;const fx=new Node();fx.getComponentInChildren=()=>({setAnimation(){}});
+    h.stubs.PoolMgr={PoolMgr:{getInstance:()=>({freeNode:()=>returned++})}};
+    h.stubs.KinghtFallUIGame.default.instance.ctrEffect.onBuff=(_a,_b,done)=>invalidation==='sync'?done(fx):callback=done;
+    const I=h.load('KinghtFallInterface'),a=new I.KinghtFallInterface();a.node=new Node();a.ndEffect=new Node();
+    a.addBuff(I.KinghtFallEnemyBuffType.DamageCut,{subNum:.2,time:1});
+    if(invalidation==='expire')a.delBuffIdx(0);
+    if(invalidation==='generation')a.node._combatGeneration=1;
+    if(invalidation==='pooled')a._isPooled=true;
+    if(invalidation==='destroy')a.destroyed=true;
+    if(callback)callback(fx);
+    const valid=['none','sync'].includes(invalidation);
+    assert.equal(returned,valid?0:1,invalidation);assert.equal(a.ndEffect.childrenCount,valid?1:0,invalidation);
+    if(valid){a.delBuffIdx(0);assert.equal(returned,1);}
+  }
+});

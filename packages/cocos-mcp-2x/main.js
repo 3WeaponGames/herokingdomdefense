@@ -309,8 +309,10 @@ const TEMPLATE_SENTINEL = 'cocos-mcp-2x runtime log reporter';
 const LOG_START = 'COCOS-MCP-LOG-START';
 const LOG_END = 'COCOS-MCP-LOG-END';
 let _logServer = null;          // http.Server receiving runtime logs (or null)
+let _logServerPending = null;
 let _logServerPort = null;      // port it is/was bound to
 let _runtimeLogsOn = false;     // persisted opt-in flag
+let _runtimeLogEpoch = 0;
 
 // Runtime-log receiver port: bridge port + 1 by default (e.g. 6021). Baked
 // into the template at write time so the page knows where to POST.
@@ -318,14 +320,33 @@ function _runtimeLogPort() { return _bridgePort() + 1; }
 
 function _startLogServer(port) {
     if (_logServer && _logServerPort === port) return Promise.resolve(port);
-    return new Promise((resolve, reject) => {
-        try { if (_logServer) { _logServer.close(); _logServer = null; } } catch (e) { /* ignore */ }
+    if (_logServerPending && _logServerPending.port === port) return _logServerPending.promise;
+    _stopLogServer();
+    const pending = { port, server: null, cancelled: false, reject: null, promise: null };
+    _logServerPending = pending;
+    pending.promise = new Promise((resolve, reject) => {
+        pending.reject = reject;
         const srv = http.createServer((req, res) => {
+            if (_logServer !== srv) { res.writeHead(503); res.end(); return; }
+            const authority = /^(localhost|127\.0\.0\.1|\[::1\]):([0-9]+)$/i.exec(req.headers.host || '');
+            let origin = null;
+            try {
+                if (req.headers.origin) {
+                    const parsed = new URL(req.headers.origin);
+                    // Creator's preview port is configurable. Accept local HTTP
+                    // previews, never a remote page or an opaque/file origin.
+                    if (parsed.origin !== req.headers.origin || parsed.protocol !== 'http:' ||
+                        !/^(localhost|127\.0\.0\.1|\[::1\])$/i.test(parsed.hostname)) throw Error('foreign origin');
+                    origin = parsed.origin;
+                }
+            } catch (error) { res.writeHead(403); res.end(); return; }
+            if (!authority || Number(authority[2]) !== port) { res.writeHead(403); res.end(); return; }
             const cors = {
-                'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'POST, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
+                'Vary': 'Origin',
             };
+            if (origin) cors['Access-Control-Allow-Origin'] = origin;
             if (req.method === 'OPTIONS') { res.writeHead(204, cors); res.end(); return; }
             if (req.method === 'GET') { res.writeHead(200, cors); res.end('cocos-mcp log receiver'); return; }
             if (req.method !== 'POST') { res.writeHead(405, cors); res.end(); return; }
@@ -351,14 +372,33 @@ function _startLogServer(port) {
             });
             req.on('error', () => { try { res.writeHead(400, cors); res.end(); } catch (e) {} });
         });
-        srv.on('error', (err) => { _logServer = null; reject(_err(err)); });
+        pending.server = srv;
+        srv.on('error', (err) => {
+            if (_logServerPending === pending) _logServerPending = null;
+            if (_logServer === srv) { _logServer = null; _logServerPort = null; }
+            reject(_err(err));
+        });
         srv.listen(port, '127.0.0.1', () => {
+            if (pending.cancelled || _logServerPending !== pending) { try { srv.close(); } catch (error) {} return; }
+            _logServerPending = null;
             _logServer = srv; _logServerPort = port; resolve(port);
         });
     });
+    pending.promise.catch(() => {
+        if (_logServerPending === pending) _logServerPending = null;
+        try { if (pending.server) pending.server.close(); } catch (error) {}
+    });
+    return pending.promise;
 }
 
 function _stopLogServer() {
+    const pending = _logServerPending;
+    _logServerPending = null;
+    if (pending) {
+        pending.cancelled = true;
+        try { if (pending.server) pending.server.close(); } catch (error) {}
+        pending.reject(Error('runtime log receiver start cancelled'));
+    }
     if (_logServer) { try { _logServer.close(); } catch (e) {} }
     _logServer = null; _logServerPort = null;
 }
@@ -477,69 +517,23 @@ function _fileHasOurBlock(file) {
 
 // Strip our fenced block (LOG_START..LOG_END inclusive) from text.
 function _stripOurBlock(text) {
-    const lines = text.split(/\r?\n/);
-    const out = [];
-    let skipping = false;
-    for (const line of lines) {
-        if (!skipping && line.indexOf(LOG_START) !== -1) { skipping = true; continue; }
-        if (skipping) { if (line.indexOf(LOG_END) !== -1) skipping = false; continue; }
-        out.push(line);
-    }
-    return out.join('\n');
+    return require('./template-ownership').strip(Buffer.from(text)).toString('utf8');
 }
 
 function _writePreviewTemplate(port) {
     const dir = _previewTemplateDir();
     if (!dir) throw new Error('no project open — cannot write preview template');
-    const existing = _findExistingTemplate();
-
-    if (existing) {
-        let text = Fs.readFileSync(existing.file, 'utf8');
-        text = _stripOurBlock(text);   // idempotent re-inject (e.g. port changed)
-        if (existing.kind === 'jade') {
-            // Append a sibling `script.` block under <body>. Body children sit
-            // at the smallest indent used by existing body-level script lines
-            // (4 spaces in the stock template); fall back to 4.
-            const m = text.match(/^( +)script\(/m);
-            const indent = m ? m[1].length : 4;
-            text = text.replace(/\s*$/, '\n') + _reporterBlockJade(port, indent) + '\n';
-        } else {
-            // HTML/EJS: inject before </body> if present, else append.
-            const block = _reporterBlockHtml(port);
-            if (/<\/body>/i.test(text)) text = text.replace(/<\/body>/i, block + '\n</body>');
-            else text = text.replace(/\s*$/, '\n') + block + '\n';
-        }
-        Fs.writeFileSync(existing.file, text, 'utf8');
-        return { file: existing.file, mode: 'injected', kind: existing.kind };
-    }
-
-    // No existing template — create our own standalone index.html.
-    if (!Fs.existsSync(dir)) Fs.mkdirSync(dir, { recursive: true });
-    const file = _ourCreatedFile();
-    Fs.writeFileSync(file, _previewTemplateHtml(port), 'utf8');
-    return { file: file, mode: 'created', kind: 'html' };
+    const existing = _findExistingTemplate(),kind=existing?existing.kind:'html',file=existing?existing.file:_ourCreatedFile();
+    const text=existing?Fs.readFileSync(file,'utf8'):'',indent=(text.match(/^( +)script\(/m)||['','    '])[1].length;
+    const block=kind==='jade'?_reporterBlockJade(port,indent):_reporterBlockHtml(port);
+    return require('./template-ownership').install(dir,file,kind,block,_previewTemplateHtml(port));
 }
 
 function _removePreviewTemplate() {
     const dir = _previewTemplateDir();
-    const created = _ourCreatedFile();
-
-    // A standalone index.html we created (and didn't inject into) — delete it.
-    if (created && Fs.existsSync(created) && _fileHasOurBlock(created)) {
-        const txt = _safe(() => Fs.readFileSync(created, 'utf8'), '');
-        // If stripping our block leaves only our own scaffold, it's ours to drop.
-        if (txt.indexOf(TEMPLATE_SENTINEL) !== -1 && _stripOurBlock(txt).indexOf('<%=cocos2d%>') !== -1) {
-            try { Fs.unlinkSync(created); } catch (e) { /* ignore */ }
-        }
-    }
-    // Any template (incl. the user's) that still carries our fenced block —
-    // strip just our block back out, leaving their template intact.
     const existing = _findExistingTemplate();
     if (existing && _fileHasOurBlock(existing.file)) {
-        try {
-            const cleaned = _stripOurBlock(Fs.readFileSync(existing.file, 'utf8')).replace(/\s*$/, '\n');
-            Fs.writeFileSync(existing.file, cleaned, 'utf8');
-        } catch (e) { /* ignore */ }
+        require('./template-ownership').remove(dir,existing.file);
     }
     // Drop the folder only if we left it empty.
     try { if (dir && Fs.existsSync(dir) && Fs.readdirSync(dir).length === 0) Fs.rmdirSync(dir); }
@@ -553,9 +547,8 @@ function _runtimeLogsStatus() {
     // scaffold sentinel); 'injected' = our block added to a user template.
     let mode = null;
     if (hasBlock) {
-        const isScaffold = existing.kind === 'html' &&
-            _safe(() => Fs.readFileSync(existing.file, 'utf8').indexOf(TEMPLATE_SENTINEL) !== -1 &&
-                Fs.readFileSync(existing.file, 'utf8').indexOf('<%=cocos2d%>') !== -1, false);
+        const ownership=_safe(()=>require('./template-ownership').recordFor(_previewTemplateDir(),existing.file),null);
+        const isScaffold = !!(ownership && ownership.original===null);
         mode = isScaffold ? 'created' : 'injected';
     }
     return {
@@ -573,9 +566,11 @@ function _runtimeLogsStatus() {
 }
 
 async function _enableRuntimeLogs() {
+    const epoch = ++_runtimeLogEpoch, project = _projectPath();
     if (!_consoleBuffer) _installConsoleHook();
     const port = _runtimeLogPort();
     await _startLogServer(port);
+    if (epoch !== _runtimeLogEpoch || project !== _projectPath()) throw Error('runtime log capture enable cancelled');
     _writePreviewTemplate(port);          // throws if a foreign template exists
     _runtimeLogsOn = true;
     try { const p = _profile(); p.set('runtimeLogs', true); p.save(); } catch (e) {}
@@ -583,6 +578,7 @@ async function _enableRuntimeLogs() {
 }
 
 async function _disableRuntimeLogs() {
+    _runtimeLogEpoch++;
     _stopLogServer();
     _removePreviewTemplate();
     _runtimeLogsOn = false;
@@ -972,12 +968,14 @@ let _ws = null;
 let _connected = false;
 let _url = DEFAULT_URL;
 let _lastError = null;
+let _connectionEpoch = 0, _cancelConnect = null;
 
 function _connectionState() {
     return { connected: _connected, url: _url, lastError: _lastError };
 }
 
-function _handleFrame(raw) {
+function _handleFrame(raw, owner) {
+    owner = owner || _ws;
     let frame;
     try { frame = JSON.parse(raw); } catch (e) { return; }
     if (!frame || typeof frame !== 'object') return;
@@ -986,7 +984,7 @@ function _handleFrame(raw) {
 
     const fn = handlers[frame.command];
     const reply = (resp) => {
-        try { if (_ws) _ws.send(JSON.stringify(resp)); } catch (e) { /* ignore */ }
+        try { if (owner && _ws === owner && _connected) owner.send(JSON.stringify(resp)); } catch (e) { /* ignore */ }
     };
     if (!fn) {
         reply({
@@ -997,7 +995,7 @@ function _handleFrame(raw) {
         return;
     }
     Promise.resolve()
-        .then(() => fn(frame.params || {}))
+        .then(() => { if (_ws === owner && _connected) return fn(frame.params || {}); })
         .then((data) => reply({ id: frame.id, success: true, data: data }))
         .catch((e) => reply({
             id: frame.id, success: false,
@@ -1008,50 +1006,58 @@ function _handleFrame(raw) {
 
 function _connect(url) {
     if (typeof url === 'string' && url.trim()) _url = url.trim();
-    if (_ws) {
-        try { _ws.close(); } catch (e) { /* ignore */ }
-        _ws = null;
-    }
+    _disconnect();
+    _lastError = null;
+    const epoch = _connectionEpoch;
     return new Promise((resolve) => {
         let settled = false;
         const ws = new WsClient();
+        _ws = ws;
+        const owned = () => _ws === ws && _connectionEpoch === epoch;
+        const finish = () => { if (settled) return; settled = true; clearTimeout(timer); if (_cancelConnect === finish) _cancelConnect = null; resolve(_connectionState()); };
+        _cancelConnect = finish;
+        const timer = setTimeout(() => onErr(Error('Connection handshake timed out')),10000);
 
         const onOpen = () => {
-            if (settled) return; settled = true;
-            _ws = ws;
+            if (settled || !owned()) return;
             _connected = true;
             _lastError = null;
             try {
                 ws.send(JSON.stringify({ type: 'hello', client: PACKAGE_NAME, engine: '2.4' }));
             } catch (e) { /* ignore */ }
-            resolve(_connectionState());
+            finish();
         };
         const onErr = (err) => {
+            if (!owned()) return;
             _lastError = (err && err.message) ? err.message : String(err);
-            if (settled) return; settled = true;
             _connected = false; _ws = null;
-            resolve(_connectionState());
+            finish();
+            try { ws.close(); } catch (e) { /* ignore */ }
         };
         const onClose = () => {
+            if (!owned()) return;
             _connected = false;
-            if (_ws === ws) _ws = null;
-            if (settled) return; settled = true;
-            if (!_lastError) _lastError = 'closed before open';
-            resolve(_connectionState());
+            _ws = null;
+            if (!settled && !_lastError) _lastError = 'closed before open';
+            finish();
         };
 
         ws.on('open', onOpen);
         ws.on('error', onErr);
         ws.on('close', onClose);
-        ws.on('message', _handleFrame);
+        ws.on('message', raw => { if (owned() && _connected) _handleFrame(raw,ws); });
 
         try { ws.connect(_url); } catch (e) { onErr(e); }
     });
 }
 
 function _disconnect() {
-    if (_ws) { try { _ws.close(); } catch (e) {} _ws = null; }
+    const ws = _ws;
+    _connectionEpoch++;
+    _ws = null;
     _connected = false;
+    if (_cancelConnect) _cancelConnect();
+    if (ws) { try { ws.close(); } catch (e) {} }
 }
 
 // ----------------------------------------------------------------------- //
@@ -1060,6 +1066,9 @@ function _disconnect() {
 // ----------------------------------------------------------------------- //
 
 let _serverProc = null;          // ChildProcess we spawned (null if none/exited)
+let _serverStartPromise = null;
+let _serverStopPromise = null;
+let _serverEpoch = 0;
 let _serverLastError = null;
 const _serverLog = [];           // ring buffer of recent server stdout/stderr
 let _cfgServerDir = null;        // override of DEFAULT_SERVER_DIR (from Profile/panel)
@@ -1107,22 +1116,6 @@ function _probePort(port, host, timeoutMs) {
     });
 }
 
-function _findPidOnPort(port) {
-    return new Promise((resolve) => {
-        if (process.platform !== 'win32') return resolve(null);
-        ChildProcess.execFile('netstat', ['-ano', '-p', 'TCP'],
-            { maxBuffer: 4 * 1024 * 1024, windowsHide: true }, (err, stdout) => {
-                if (err || !stdout) return resolve(null);
-                const lines = stdout.split(/\r?\n/);
-                for (const line of lines) {
-                    const m = line.trim().match(/^TCP\s+\S+:(\d+)\s+\S+\s+LISTENING\s+(\d+)/i);
-                    if (m && parseInt(m[1], 10) === port) return resolve(parseInt(m[2], 10));
-                }
-                resolve(null);
-            });
-    });
-}
-
 function _killPid(pid) {
     return new Promise((resolve) => {
         if (!pid) return resolve();
@@ -1158,17 +1151,35 @@ async function _serverStatus() {
     };
 }
 
-async function _startServer() {
+function _startServer() {
+    if (_serverStopPromise) {
+        const epoch = _serverEpoch;
+        return _serverStopPromise.then(() => epoch === _serverEpoch ? _startServer() : _serverStatus());
+    }
+    if (_serverStartPromise) return _serverStartPromise;
+    const task = _startServerImpl(_serverEpoch);
+    _serverStartPromise = task;
+    task.then(() => { if (_serverStartPromise === task) _serverStartPromise = null; },
+        () => { if (_serverStartPromise === task) _serverStartPromise = null; });
+    return task;
+}
+
+async function _startServerImpl(epoch) {
     const bridgePort = _bridgePort();
     const httpPort = _httpPort();
+    const py = _pythonPath();
+    const cwd = Path.join(_serverDir(), 'src');
 
-    if (await _probePort(bridgePort)) {
+    const listening = await _probePort(bridgePort);
+    if (epoch !== _serverEpoch) return _serverStatus();
+    if (listening) {
         _serverLastError = null;
         return _serverStatus();
     }
+    // A slow or failed-to-listen child still belongs to us. Never replace its
+    // handle with another process; Stop must be able to terminate it.
+    if (_serverProc && _serverProc.exitCode === null && _serverProc.signalCode === null) return _serverStatus();
 
-    const py = _pythonPath();
-    const cwd = Path.join(_serverDir(), 'src');
     if (!Fs.existsSync(py)) {
         _serverLastError = 'python not found: ' + py +
             ' — check the server dir, or create the venv (python -m venv .venv && .venv\\Scripts\\python -m pip install -e .)';
@@ -1179,16 +1190,17 @@ async function _startServer() {
         return _serverStatus();
     }
 
+    let proc;
     try {
         const args = ['-m', 'main', '--transport', 'http',
             '--http-port', String(httpPort), '--bridge-port', String(bridgePort)];
-        const proc = ChildProcess.spawn(py, args, { cwd: cwd, windowsHide: true });
+        proc = ChildProcess.spawn(py, args, { cwd: cwd, windowsHide: true });
         _serverProc = proc;
         _serverLastError = null;
         if (proc.stdout) proc.stdout.on('data', (d) => _pushServerLog(d.toString()));
         if (proc.stderr) proc.stderr.on('data', (d) => _pushServerLog(d.toString()));
         proc.on('error', (e) => {
-            _serverLastError = 'spawn error: ' + (e && e.message ? e.message : String(e));
+            if (_serverProc === proc && epoch === _serverEpoch) _serverLastError = 'spawn error: ' + (e && e.message ? e.message : String(e));
         });
         proc.on('exit', (code, sig) => {
             _pushServerLog('[server exited: code=' + code + ' signal=' + sig + ']');
@@ -1202,11 +1214,12 @@ async function _startServer() {
     }
 
     const deadline = Date.now() + 12000;
-    while (Date.now() < deadline) {
+    while (epoch === _serverEpoch && Date.now() < deadline) {
         await _delay(400);
-        if (_serverProc == null) break;
+        if (epoch !== _serverEpoch || _serverProc !== proc) break;
         if (await _probePort(bridgePort)) break;
     }
+    if (epoch !== _serverEpoch) return _serverStatus();
     if (!(await _probePort(bridgePort)) && !_serverLastError) {
         _serverLastError = 'server did not start listening on ' + bridgePort +
             ' within 12s — see the server log';
@@ -1214,17 +1227,28 @@ async function _startServer() {
     return _serverStatus();
 }
 
-async function _stopServer() {
+function _stopServer() {
+    if (_serverStopPromise) return _serverStopPromise;
+    _serverEpoch++;
+    const starting = _serverStartPromise;
+    const task = _stopServerImpl(starting);
+    _serverStopPromise = task;
+    task.then(() => { if (_serverStopPromise === task) _serverStopPromise = null; },
+        () => { if (_serverStopPromise === task) _serverStopPromise = null; });
+    return task;
+}
+
+async function _stopServerImpl(starting) {
     const bridgePort = _bridgePort();
-    if (_serverProc && _serverProc.pid) {
-        await _killPid(_serverProc.pid);
-        _serverProc = null;
+    const owned = _serverProc;
+    if (owned && owned.pid && owned.exitCode === null && owned.signalCode === null) {
+        await _killPid(owned.pid);
+        if (_serverProc === owned) _serverProc = null;
     }
-    if (await _probePort(bridgePort)) {
-        const pid = await _findPidOnPort(bridgePort);
-        if (pid) await _killPid(pid);
-    }
-    _serverLastError = null;
+    if (starting) { try { await starting; } catch (error) { /* cancelled start */ } }
+    // A listening port does not establish process ownership. Never terminate
+    // another application just because it is using this configured port.
+    _serverLastError = await _probePort(bridgePort) ? 'The port is still in use by an unmanaged listener; it was not stopped.' : null;
     return _serverStatus();
 }
 
@@ -1275,6 +1299,8 @@ module.exports = {
     },
 
     unload() {
+        _serverEpoch++; // A probe pending during unload must not launch a child.
+        _runtimeLogEpoch++;
         _disconnect();
         _uninstallConsoleHook();
         _stopLogServer();

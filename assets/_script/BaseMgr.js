@@ -33,6 +33,7 @@ var def_BaseMgr = function () {
   };
   _ctor.prototype.onDestroy = function () {
     this.isDestroy = true;
+    this.offEvents();
     this.release();
   };
   return _ctor;

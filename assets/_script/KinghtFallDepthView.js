@@ -51,12 +51,12 @@ function meshVertices(slot, start, count, output, offset, stride) {
     output[offset] = points[i]; output[offset + 1] = points[i + 1];
   }
 }
-function sourceGeometry(renderer, cache) {
+function retainBoundsGeometry(renderer, cache) {
   // Only the web Spine runtime exposes these attachments. Other backends keep
   // their existing bounds/render path. Buffers belong to one source renderer,
   // never to a shared skin/attachment or an animation cache.
   var runtime = sp.spine;
-  if (!cache || !cache.vertexStore || !runtime || !runtime.RegionAttachment || !runtime.MeshAttachment) return null;
+  if (!cache || !cache.vertexStore || !cache.previousVertexConsumers || (cache.previousVertexConsumers.get(renderer) || 0) < 2 || !runtime || !runtime.RegionAttachment || !runtime.MeshAttachment) return null;
   if (!cache.vertexFrame) cache.vertexFrame = ++vertexFrame;
   var skeleton = renderer._skeleton, saved = cache.vertexStore.get(renderer);
   if (!saved || saved.skeleton !== skeleton) {
@@ -64,10 +64,9 @@ function sourceGeometry(renderer, cache) {
     cache.vertexStore.set(renderer, saved);
   }
   if (saved.frame === cache.vertexFrame) return saved;
-  updatePose(renderer, cache);
+  // Retain only after actual multi-silhouette demand. A 2->1/0 transition may
+  // capture bounds once more; later draws take ordinary scratch-only bounds.
   var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-  // This is Spine Skeleton.getBounds' traversal, retaining its exact XY
-  // results for the already-copied silhouette pose instead of skinning again.
   for (var i = 0; i < skeleton.drawOrder.length; i++) {
     var slot = skeleton.drawOrder[i], attachment = slot.getAttachment();
     if (!slot.bone.active) continue;
@@ -94,6 +93,30 @@ function sourceGeometry(renderer, cache) {
   saved.frame = cache.vertexFrame;
   return saved;
 }
+function ordinaryBounds(renderer, cache) {
+  var runtime = sp.spine;
+  if (!runtime || !runtime.RegionAttachment || !runtime.MeshAttachment) return null;
+  // Keep one high-water scratch array, rather than shrinking and zero-filling
+  // it between alternating mesh/region slots. No actor retains these vertices.
+  var points = cache ? cache.boundsScratch || (cache.boundsScratch = []) : [];
+  var order = renderer._skeleton.drawOrder;
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (var i = 0; i < order.length; i++) {
+    var slot = order[i], attachment = slot.getAttachment();
+    if (!slot.bone.active) continue;
+    var region = attachment instanceof runtime.RegionAttachment;
+    if (!region && !(attachment instanceof runtime.MeshAttachment)) continue;
+    var count = region ? 8 : attachment.worldVerticesLength;
+    if (points.length < count) points.length = count;
+    if (region) attachment.computeWorldVertices(slot.bone, points, 0, 2);
+    else attachment.computeWorldVertices(slot, 0, count, points, 0, 2);
+    for (var j = 0; j < count; j += 2) {
+      minX = Math.min(minX, points[j]); minY = Math.min(minY, points[j + 1]);
+      maxX = Math.max(maxX, points[j]); maxY = Math.max(maxY, points[j + 1]);
+    }
+  }
+  return { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
+}
 function silhouetteAttachment(record) {
   if (!record.facade) {
     // Inherit region/UV/triangle/color data and the original attachment's
@@ -113,15 +136,16 @@ function bounds(renderer, main, cache) {
   if (renderer instanceof sp.Skeleton && renderer._skeleton) {
     // Spine node sizes are authored setup bounds, not the current animated pose.
     updatePose(renderer,cache);
-    var geometry = sourceGeometry(renderer, cache);
+    var retained = retainBoundsGeometry(renderer, cache);
+    var geometry = retained ? retained.box : ordinaryBounds(renderer, cache);
     if (geometry) {
-      x = geometry.box.minX; y = geometry.box.minY;
-      w = geometry.box.maxX - x; h = geometry.box.maxY - y;
+      x = geometry.minX; y = geometry.minY; w = geometry.maxX - x; h = geometry.maxY - y;
     } else {
       // Spine Vector2.set takes (x, y); Creator Vec2.set takes another vector.
       var vector = function () { return { x: 0, y: 0, set: function (x, y) { this.x = x; this.y = y; } }; };
       var offset = vector(), size = vector();
-      renderer._skeleton.getBounds(offset, size, []);
+      // Sequential bounds calls share scratch, not retained actor geometry.
+      renderer._skeleton.getBounds(offset, size, cache ? cache.boundsScratch || (cache.boundsScratch = []) : []);
       x = offset.x; y = offset.y; w = size.x; h = size.y;
     }
   } else {
@@ -174,7 +198,9 @@ function copyPose(source, target, tint, cache) {
   var from = source._skeleton, to = target._skeleton;
   if (!from || !to) return;
   updatePose(source,cache);
-  var geometry = tint && sourceGeometry(source, cache);
+  // Newly multiple consumers use ordinary copied attachments for one draw.
+  // Steady multiple consumers reuse bounds XY with branch-free render writers.
+  var geometry = tint && cache && cache.vertexConsumers && cache.vertexConsumers.get(source) >= 2 && retainBoundsGeometry(source, cache);
   to.x = from.x; to.y = from.y; to.scaleX = from.scaleX; to.scaleY = from.scaleY;
   to.color.setFromColor(from.color);
   for (var i = 0; i < from.bones.length; i++) {
@@ -353,7 +379,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
 DepthView.prototype.update = function () {
   if (!this.main.activeInHierarchy) return;
   this.sort();
-  var self = this, game = this.game,cache={transforms:new Map(),bounds:new Map(),poses:new Set(),vertexStore:this._vertexStore||(this._vertexStore=new WeakMap())},visible=viewBounds(game,this.main);
+  var self = this, game = this.game,cache={transforms:new Map(),bounds:new Map(),poses:new Set(),vertexStore:this._vertexStore||(this._vertexStore=new WeakMap()),vertexConsumers:new Map(),previousVertexConsumers:this._vertexConsumers},visible=viewBounds(game,this.main),draw=[];
   var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
@@ -375,6 +401,14 @@ DepthView.prototype.update = function () {
     });
     if (object.overlay) object.overlay.node.active = !!hidden.length;
     if (!hidden.length) return;
+    hidden.forEach(function (entry) {
+      entry.sources.forEach(function (source) { cache.vertexConsumers.set(source, (cache.vertexConsumers.get(source) || 0) + 1); });
+    });
+    draw.push({ object: object, box: box, hidden: hidden });
+  });
+  this._vertexConsumers = cache.vertexConsumers;
+  draw.forEach(function (item) {
+    var object = item.object, box = item.box, hidden = item.hidden;
     self.snapshot(object, box,cache);
     hidden.forEach(function (entry) {
       var mask = object.masks.get(entry.actor) || self.makeMask(object, entry.actor, entry.sources);
@@ -398,6 +432,7 @@ DepthView.prototype.destroy = function () {
   });
   this.capture.destroy(); this.cameraNode.destroy();
   this._vertexStore = null;
+  this._vertexConsumers = null;
 };
 exports.DepthView = DepthView;
 exports.copyPose = copyPose;

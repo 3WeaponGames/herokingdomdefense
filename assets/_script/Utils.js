@@ -9,7 +9,7 @@ var exp_Utils = function () {
     for (var n = 1; n < arguments.length; n++) {
       e[n - 1] = arguments[n];
     }
-    return cc.js.formatStr(t, e);
+    return cc.js.formatStr.apply(cc.js, [t].concat(e));
   };
   _ctor.StringFormat = function (t) {
     var e = [];
@@ -32,64 +32,32 @@ var exp_Utils = function () {
     return n;
   };
   _ctor.weight_rand = function (t) {
-    var e;
-    var n = 0;
-    var i = false;
-    var a = function (t, e) {
-      var n = Math.min(t, e);
-      var i = Math.max(t, e);
-      var a = 1;
-      if (0 === t || 0 === e) {
-        return i;
-      }
-      for (var o = n; o >= 1; o--) {
-        if (n % o == 0 && i % o == 0) {
-          a = o;
-          break;
-        }
-      }
-      return a;
-    };
-    var o = new Array();
-    for (var r = 0; r < t.length; r++) {
-      if (undefined !== t[r].weight) {
-        if (-1 !== t[r].weight.toString().indexOf("%")) {
-          e = Math.floor(t[r].weight.toString().replace("%", ""));
-          i = true;
-        } else {
-          e = Math.floor(100 * t[r].weight);
-        }
-      } else {
-        e = 0;
-      }
-      o[r] = e;
-      n = a(n, e);
+    if (!Array.isArray(t) || !t.length) return undefined;
+    var percent = t.some(function (item) { return item && typeof item.weight === "string" && item.weight.indexOf("%") !== -1; });
+    var weights = t.map(function (item) {
+      var raw = item && item.weight;
+      var value = typeof raw === "string" && raw.indexOf("%") !== -1 ? Number(raw.replace("%", "")) : Number(raw);
+      if (!isFinite(value) || value <= 0) return 0;
+      return percent ? Math.floor(typeof raw === "string" && raw.indexOf("%") !== -1 ? value : 100 * value) : value;
+    });
+    // Percent mode has always capped the ordered entries at 100 and assigned
+    // the unclaimed remainder to the final entry. Numeric mode is relative.
+    var total = 100;
+    if (!percent) {
+      var maximum = 0;
+      for (var k = 0; k < weights.length; k++) maximum = Math.max(maximum, weights[k]);
+      if (!maximum) return undefined;
+      total = 0;
+      for (k = 0; k < weights.length; k++) total += weights[k] /= maximum;
     }
-    var s = new Array();
-    var l = 0;
-    var c = 0;
-    if (i) {
-      for (r = 0; r < t.length; r++) {
-        c = o[r];
-        for (var h = 0; h < c && !(l >= 100); h++) {
-          s.push(r);
-          l++;
-        }
-      }
-      for (; l < 100;) {
-        s.push(t.length - 1);
-        l++;
-      }
-    } else {
-      for (r = 0; r < t.length; r++) {
-        c = o[r] / n;
-        for (h = 0; h < c; h++) {
-          s.push(r);
-        }
-        l += c;
-      }
+    var draw = Math.random() * total;
+    var last;
+    for (var index = 0; index < weights.length; index++) {
+      if (weights[index] > 0) last = t[index];
+      if (draw < weights[index]) return t[index];
+      draw -= weights[index];
     }
-    return t[s[Math.floor(Math.random() * l)]];
+    return percent ? t[t.length - 1] : last;
   };
   _ctor.encrypt = function (t, e) {
     if (null == e || e.length <= 0) {
@@ -150,12 +118,16 @@ var exp_Utils = function () {
     }
   };
   _ctor.randomDiffIndex = function (t, e, n) {
-    var i = this.randomRang(0, t);
-    if (this.checkExist(i, n)) {
-      this.randomDiffIndex(t, e, n);
-    } else {
-      n.push(i);
-      n.length < e && this.randomDiffIndex(t, e, n);
+    if (!Number.isInteger(t) || t < 0 || !Number.isInteger(e) || e < 0 || e > t) throw new RangeError("Invalid unique-index count");
+    if (n.length >= e) return;
+    var available = [];
+    for (var i = 0; i < t; i++) if (!this.checkExist(i, n)) available.push(i);
+    if (available.length < e - n.length) throw new RangeError("Not enough unique indices");
+    while (n.length < e) {
+      var index = this.randomRang(0, available.length);
+      n.push(available[index]);
+      available[index] = available[available.length - 1];
+      available.pop();
     }
   };
   _ctor.checkExist = function (t, e) {
@@ -180,17 +152,11 @@ var exp_Utils = function () {
     return n;
   };
   _ctor.MapTOJson = function (t) {
-    var e = "{";
-    var n = 1;
-    t.forEach(function (t, i, a) {
-      if (a.size == n) {
-        e += '"' + i + '":"' + t + '"';
-      } else {
-        e += '"' + i + '":"' + t + '",';
-      }
-      n++;
+    var entries = [];
+    t.forEach(function (value, key) {
+      entries.push(JSON.stringify(String(key)) + ":" + JSON.stringify(String(value)));
     });
-    return e += "}";
+    return "{" + entries.join(",") + "}";
   };
   _ctor.isCardID = function (t) {
     var e = 0;
@@ -275,13 +241,22 @@ var exp_Utils = function () {
   };
   _ctor.getWebUrlParams = function (t) {
     var e = {};
-    var n = t.split("?")[1];
+    var url = String(t).split("#")[0];
+    var queryIndex = url.indexOf("?");
+    var n = queryIndex < 0 ? "" : url.slice(queryIndex + 1);
+    function decode(value) {
+      value = value.replace(/\+/g, " ");
+      try { return decodeURIComponent(value); } catch (_) { return value; }
+    }
     if (n) {
       var i = n.split("&");
       var a = 0;
       for (var o = i.length; a < o; a++) {
-        var r = i[a].split("=");
-        e[r[0]] = r[1];
+        if (!i[a]) continue;
+        var split = i[a].indexOf("=");
+        var key = decode(split < 0 ? i[a] : i[a].slice(0, split));
+        var value = split < 0 ? undefined : decode(i[a].slice(split + 1));
+        Object.defineProperty(e, key, { value: value, enumerable: true, writable: true, configurable: true });
       }
     }
     return e;
@@ -306,13 +281,10 @@ var exp_Utils = function () {
       });
     }
     var i = {};
-    for (var a in t) {
-      if (e[a]) {
-        i[e[a]] = this.renameObjectKeys(t[a], e);
-      } else {
-        i[a] = this.renameObjectKeys(t[a], e);
-      }
-    }
+    Object.keys(t).forEach(function (a) {
+      var key = Object.prototype.hasOwnProperty.call(e, a) ? e[a] : a;
+      Object.defineProperty(i, key, { value: n.renameObjectKeys(t[a], e), enumerable: true, writable: true, configurable: true });
+    });
     return i;
   };
   _ctor.restoreObjectKeys = function (t, e) {
@@ -331,18 +303,12 @@ var exp_Utils = function () {
     var i = {};
     var a = function (n) {
       var a = Object.keys(e).find(function (t) {
-        return e[t] === n;
+        return String(e[t]) === n;
       });
-      if (a) {
-        i[a] = o.restoreObjectKeys(t[n], e);
-      } else {
-        i[n] = o.restoreObjectKeys(t[n], e);
-      }
+      Object.defineProperty(i, a === undefined ? n : a, { value: o.restoreObjectKeys(t[n], e), enumerable: true, writable: true, configurable: true });
     };
     var o = this;
-    for (var r in t) {
-      a(r);
-    }
+    Object.keys(t).forEach(a);
     return i;
   };
   return _ctor;

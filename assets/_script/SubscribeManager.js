@@ -4,6 +4,20 @@ Object.defineProperty(exports, "__esModule", {
 exports.SubscribeManager = undefined;
 var $z1BasePlatform = require("BasePlatform");
 var $z1PlatformManager = require("PlatformManager");
+function readResponse(value) {
+  try {
+    var result = typeof value === "string" ? JSON.parse(value) : value;
+    if (result && result.code == null && result.data != null) result = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+    return result && typeof result === "object" && result.code != null ? result : { code: -1, data: null };
+  } catch (_) { return { code: -1, data: null }; }
+}
+function request(host, url, data, callback) {
+  var done = false;
+  function finish(value) { if (!done) { done = true; callback && callback(value || {}); } }
+  if (!host || typeof host.request !== "function") return finish({});
+  try { host.request({ url: url, data: data, header: { "content-type": "application/json" }, dataType: "JSON", responseType: "text", success: finish, fail: finish }); }
+  catch (error) { if (done) throw error; finish({}); }
+}
 var exp_SubscribeManager = function () {
   function _ctor() {
     this.isInit = false;
@@ -47,7 +61,8 @@ var exp_SubscribeManager = function () {
       return void (t && t(null));
     }
     var e = wx.getSystemInfoSync().SDKVersion;
-    this.compareVersion(e, "2.32.1") >= 0 && wx.requestSubscribeSystemMessage({
+    if (typeof e !== "string" || this.compareVersion(e, "2.32.1") < 0 || typeof wx.requestSubscribeSystemMessage !== "function") return void (t && t(null));
+    wx.requestSubscribeSystemMessage({
       msgTypeList: ["SYS_MSG_TYPE_WHATS_NEW"],
       success: function (e) {
         t && t(e);
@@ -67,7 +82,8 @@ var exp_SubscribeManager = function () {
     if (a && a == e + "") {
       n && n("success");
     } else {
-      this.getOpenId(function () {
+      this.getOpenId(function (openId) {
+        if (!openId) return void (n && n(null));
         var a = {
           appId: i.appId,
           openId: i.openId,
@@ -82,12 +98,12 @@ var exp_SubscribeManager = function () {
               console.error(i.errMsg);
               return void (n && n(null));
             }
-            var a = JSON.parse(i.data);
+            var a = readResponse(i);
             if (0 == a.code) {
               localStorage.setItem("subscribe_" + t, e + "");
               n && n(a.data);
             } else {
-              console.error(JSON.parse(a));
+              console.error(a);
               n && n(null);
             }
           });
@@ -97,12 +113,12 @@ var exp_SubscribeManager = function () {
               console.error(i.errMsg);
               return void (n && n(null));
             }
-            var a = JSON.parse(i.data);
+            var a = readResponse(i);
             if (0 == a.code) {
               wx.setStorageSync("subscribe_" + t, e + "");
               n && n(a.data);
             } else {
-              console.error(JSON.parse(a));
+              console.error(a);
               n && n(null);
             }
           });
@@ -123,6 +139,7 @@ var exp_SubscribeManager = function () {
   };
   _ctor.prototype.wxsendServer = function (t, e, n, i) {
     var a = this;
+    if (typeof wx === "undefined" || typeof wx[i ? "requestSubscribeSystemMessage" : "requestSubscribeMessage"] !== "function") return void (n && n(null));
     if (i) {
       wx.requestSubscribeSystemMessage({
         msgTypeList: t,
@@ -160,7 +177,7 @@ var exp_SubscribeManager = function () {
             console.error(e.errMsg);
             return void (n && n(null));
           }
-          var i = JSON.parse(e.data);
+          var i = readResponse(e);
           if (200 == i.code) {
             n && n(t);
           } else {
@@ -179,7 +196,8 @@ var exp_SubscribeManager = function () {
           if (i.length <= 0) {
             n && n(null);
           } else {
-            a.getOpenId(function () {
+            a.getOpenId(function (openId) {
+              if (!openId) return void (n && n(null));
               o(i);
             });
           }
@@ -193,6 +211,7 @@ var exp_SubscribeManager = function () {
   };
   _ctor.prototype.dysendServer = function (t, e, n) {
     var i = this;
+    if (typeof tt === "undefined" || typeof tt.requestSubscribeMessage !== "function") return void (n && n(null));
     tt.requestSubscribeMessage({
       tmplIds: t,
       success: function (a) {
@@ -203,7 +222,8 @@ var exp_SubscribeManager = function () {
         if (o.length <= 0) {
           n && n(null);
         } else {
-          i.getOpenId(function () {
+          i.getOpenId(function (openId) {
+            if (!openId) return void (n && n(null));
             var t = {
               appId: i.appId,
               openId: i.openId,
@@ -220,7 +240,7 @@ var exp_SubscribeManager = function () {
                 console.error(t.errMsg);
                 return void (n && n(null));
               }
-              var e = JSON.parse(t.data);
+              var e = readResponse(t);
               if (200 == e.code) {
                 n && n(o);
               } else {
@@ -245,12 +265,14 @@ var exp_SubscribeManager = function () {
     }
     var t = false;
     if (1 == this.type) {
+      if (typeof tt === "undefined" || typeof tt.getSystemInfoSync !== "function" || typeof tt.getLaunchOptionsSync !== "function") return false;
       this.isInit || this.initDy();
       if (-1 == this.platformId) {
         return false;
       }
       t = true;
     } else if (2 == this.type) {
+      if (typeof wx === "undefined" || typeof wx.getAccountInfoSync !== "function") return false;
       this.isInit || this.initWx();
       t = true;
     }
@@ -310,10 +332,11 @@ var exp_SubscribeManager = function () {
     if (this.openId) {
       t && t(this.openId);
     } else if (2 != this.type) {
+      if (this.type !== 1 || typeof tt === "undefined" || typeof tt.login !== "function") return void (t && t(null));
       tt.login({
         force: false,
         success: function (i) {
-          if (i.code) {
+          if (i && i.code) {
             var a = {
               code: i.code,
               appId: e.appId
@@ -323,8 +346,8 @@ var exp_SubscribeManager = function () {
                 console.error(i.errMsg);
                 return void (t && t(null));
               }
-              var a = JSON.parse(i.data);
-              if (0 == a.code) {
+              var a = readResponse(i);
+              if (0 == a.code && a.data && a.data.openid) {
                 n.openId = a.data.openid;
                 localStorage.setItem(e.openIdSaveKey, e.openId);
                 t && t(n.openId);
@@ -343,6 +366,7 @@ var exp_SubscribeManager = function () {
         }
       });
     } else {
+      if (typeof wx === "undefined" || typeof wx.login !== "function") return void (t && t(null));
       wx.login({
         success: function (n) {
           if (n && n.code) {
@@ -352,23 +376,18 @@ var exp_SubscribeManager = function () {
               platform: 1
             };
             e.wxRequest(e.wxUrl + "/getOpenId", i, function (n) {
-              if (n) {
-                if (0 == n.code) {
-                  e.openId = n.data;
-                  wx.setStorageSync(e.openIdSaveKey, e.openId);
-                  t && t(e.openId);
-                } else {
-                  e.iLog("获取openId失败:" + JSON.stringify(n));
-                  t && t(null);
-                }
+              n = readResponse(n);
+              if (0 == n.code && typeof n.data === "string" && n.data) {
+                e.openId = n.data;
+                wx.setStorageSync(e.openIdSaveKey, e.openId);
+                t && t(e.openId);
               } else {
-                setTimeout(function () {
-                  e.getOpenId(t);
-                }, 1e3);
+                e.iLog("获取openId失败:" + JSON.stringify(n));
+                t && t(null);
               }
             });
           } else {
-            e.iLog("登录失败:" + n.errMsg);
+            t && t(null);
           }
         },
         fail: function (n) {
@@ -379,38 +398,10 @@ var exp_SubscribeManager = function () {
     }
   };
   _ctor.prototype.ttRequest = function (t, e, n) {
-    tt.request({
-      url: t,
-      data: e,
-      header: {
-        "content-type": "application/json"
-      },
-      dataType: "JSON",
-      responseType: "text",
-      success: function (t) {
-        n(t);
-      },
-      fail: function (t) {
-        n(t);
-      }
-    });
+    request(typeof tt === "undefined" ? null : tt, t, e, n);
   };
   _ctor.prototype.wxRequest = function (t, e, n) {
-    wx.request({
-      url: t,
-      data: e,
-      header: {
-        "content-type": "application/json"
-      },
-      dataType: "JSON",
-      responseType: "text",
-      success: function (t) {
-        n(t);
-      },
-      fail: function (t) {
-        n(t);
-      }
-    });
+    request(typeof wx === "undefined" ? null : wx, t, e, n);
   };
   _ctor.prototype.iLog = function () {
     var t = [];

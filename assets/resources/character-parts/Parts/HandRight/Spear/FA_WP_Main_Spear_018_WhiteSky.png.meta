@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "ef5693ad-9c86-55f8-a2c9-b318ef3433bd",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 155,
+  "height": 57,
+  "platformSettings": {},
+  "subMetas": {
+    "FA_WP_Main_Spear_018_WhiteSky": {
+      "ver": "1.0.6",
+      "uuid": "28dc6d19-d368-5444-ad56-277fbe0314d0",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ef5693ad-9c86-55f8-a2c9-b318ef3433bd",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 155,
+      "height": 57,
+      "rawWidth": 155,
+      "rawHeight": 57,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

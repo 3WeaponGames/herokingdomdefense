@@ -207,7 +207,7 @@ var def_GAD_Door = function (t) {
         if (this._targetWidth <= this._minWidth) {
           return 0;
         } else {
-          return Math.max(Math.abs(t), this._targetWidth - this._minWidth);
+          return Math.min(Math.abs(t), this._targetWidth - this._minWidth);
         }
       } else {
         return 0;

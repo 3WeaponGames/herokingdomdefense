@@ -52,12 +52,17 @@ var def_KinghtFallUISideBoard = function (t) {
       var i = $z1CacheUtils.CacheUtils.getData($z1Config.GameConfig.AppCacheName + P);
       if (e && "1" != i) {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.add_sidebar);
-        $z1CacheUtils.CacheUtils.saveData($z1Config.GameConfig.AppCacheName + P, "1");
         var a = {
           id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin,
           num: n
         };
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addRewards([a], 1, t.labNum.node.convertToWorldSpaceAR(cc.v2()));
+        var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+        var granted = player.claimRewards([a], 1, t.labNum.node.convertToWorldSpaceAR(cc.v2()), function () {
+          player.getGuideData().setTimeByKey(P, 1);
+        }, function () {
+          return $z1SdkMgr.SdkMgr.getInstance().isFromBroadside(t._options) && "1" != $z1CacheUtils.CacheUtils.getData($z1Config.GameConfig.AppCacheName + P) && !player.getGuideData().getTimeByKey(P);
+        });
+        if (!granted) return;
         t.onAppShow(null);
         t.closeUI();
       }
@@ -68,7 +73,7 @@ var def_KinghtFallUISideBoard = function (t) {
   _ctor.prototype.onAppShow = function (t) {
     this._options = t;
     t && console.log("onShow", t);
-    if ("1" == $z1CacheUtils.CacheUtils.getData($z1Config.GameConfig.AppCacheName + P)) {
+    if ("1" == $z1CacheUtils.CacheUtils.getData($z1Config.GameConfig.AppCacheName + P) || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getTimeByKey(P)) {
       this.btnGo.active = false;
       return void (this.btnReward.active = false);
     }
@@ -90,7 +95,7 @@ var def_KinghtFallUISideBoard = function (t) {
       case $z1PlatformSetting.AppName.MRDYX:
         e = "wg_cbl_cbl1";
     }
-    $z1ResourceMgr.ResourceMgr.getInstance().loadSpriteframe("KinghtFallUISideBoard", e, function (e) {
+    this.loadSpriteFrame("KinghtFallUISideBoard", e, function (e) {
       e && cc.isValid(t.bg) && (t.bg.spriteFrame = e);
     });
   };

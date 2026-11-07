@@ -5243,7 +5243,7 @@
       "context": "Isometric construction plot"
     },
     "art.result.victory": {
-      "en": "Victory",
+      "en": "VICTORY",
       "zh": "胜利",
       "context": "Animated battle-result title"
     },
@@ -7673,15 +7673,17 @@
             "en": {
               "baselineOffset": -4,
               "font": "assets/resources/localization/fonts/Lilita One.ttf",
-              "outlineWidth": 5,
+              "outlineWidth": 1.7,
               "outlineColor": "#000000",
               "shadow": {
                 "color": "#000000",
                 "offsetX": 0,
-                "offsetY": 3,
+                "offsetY": 1.7,
                 "blur": 0
               },
-              "padding": 8
+              "padding": 3.5,
+              "wrap": false,
+              "gradient": null
             }
           },
           "shadow": {

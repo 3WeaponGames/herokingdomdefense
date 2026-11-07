@@ -83,7 +83,8 @@ var def_GAD_UIGameView = function (t) {
     });
   };
   _ctor.prototype.webPause = function () {
-    if ($z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Game) {
+    var state = $z1GAD_PlayerMgr.default.getInstance().getState();
+    if (state == $z1GAD_Configs.emGADGameState.Game || state == $z1GAD_Configs.emGADGameState.Pause && this.ndLayer.active) {
       if (this.ndLayer.active) {
         this.ndLayer.active = false;
         this.btnPause.active = true;

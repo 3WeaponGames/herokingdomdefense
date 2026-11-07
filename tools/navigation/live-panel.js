@@ -1,5 +1,46 @@
 /* Temporary Creator preview fixture. Installed only for the live gate audit. */
 (function () {
+  // The fixture suppresses end-of-wave UI, but its diagnostic must retain the
+  // production queued/live/pending/once-only contract. Scope the latch to the
+  // manually selected wave so teardown or an obsolete callback cannot pass it.
+  function createWaveCompletionObserver(data, epoch) {
+    var generation = 0, current = null;
+    function sameWave() {
+      return current && current.round === data.round && current.queue === data.enemyQueue && current.epoch === epoch();
+    }
+    function counts() {
+      var queued = 0;
+      Object.keys(data.enemyQueue).forEach(function (key) { queued += data.enemyQueue[key].length; });
+      return { queuedGroups: queued, liveEnemies: data.enemyList.length, pendingEnemySpawns: data.pendingEnemySpawns || 0 };
+    }
+    return {
+      begin: function () {
+        current = { generation: ++generation, round: data.round, queue: data.enemyQueue, epoch: epoch(), completions: 0 };
+      },
+      cancel: function () { current = null; },
+      tryEndGame: function () {
+        if (!sameWave() || current.completions || data._roundCompleted) return;
+        var state = counts();
+        if (state.liveEnemies <= 0 && state.queuedGroups <= 0 && !(state.pendingEnemySpawns > 0)) {
+          data._roundCompleted = true;
+          current.completions = 1;
+        }
+      },
+      report: function () {
+        var state = counts(), matches = !!sameWave();
+        return Object.assign(state, { contract: 'queued/live/pending/round-once-v1', generation: current && current.generation,
+          round: data.round, combatEpoch: epoch(), sameWave: matches, roundCompleted: !!data._roundCompleted,
+          completionCount: matches ? current.completions : 0, waveFinished: matches && current.completions === 1 && !!data._roundCompleted });
+      }
+    };
+  }
+  // Import only the observer in Node regressions; no DOM/game bootstrap runs.
+  if (typeof window === 'undefined') {
+    if (typeof module !== 'undefined' && /(?:^|[\\/])live-panel\.js$/.test(module.filename || '')) {
+      module.exports = { createWaveCompletionObserver: createWaveCompletionObserver };
+    }
+    return;
+  }
   if (typeof window === 'undefined' || typeof CC_DEBUG === 'undefined' || !CC_DEBUG || !/[?&]live-gates=1(?:&|$)/.test(window.location.search)) return;
   if(!window.__liveGateSilence)throw new Error('Live gate fixture requires its silent bootstrap before Main starts');
   var storage=window.__liveGateSilence.storage;
@@ -11,7 +52,7 @@
   var Stage = require('KinghtFallModle').KinghtFallGameStage;
   var Nav = require('KinghtFallNavigation');
   var Grid = require('NavigationGrid').NavigationGrid;
-  var results = [], events = [], active = '', busy = false, metrics, game, ui, monitor, desiredArmyCount = 0, environment = null;
+  var results = [], events = [], active = '', busy = false, metrics, game, ui, monitor, waveObserver, desiredArmyCount = 0, environment = null;
   var inside = { x: -300, y: 600 }, outside = { x: -600, y: 940 };
   var panel, status, output, progress, errors = [], geometryEnabled = false, phaseChecks = null, outputVersion = '';
   window.addEventListener('error', function (e) { errors.push(String(e.message)); });
@@ -81,13 +122,19 @@
     for (var i = 0; i < 200; i++) { await delay(100); ui = UI.instance; if (ui && ui.ctrGame && ui.ctrGame.ndMain && !ui.isPauset) break; }
     game = ui.ctrGame; environment=environmentDiagnostics();
     // Only suppress scenario-ending UI; unit/physics/combat/respawn code runs normally.
-    game.gameData.tryEndGame = function () { if (!this.enemyList.length && !Object.keys(this.enemyQueue).some(function (key) { return this.enemyQueue[key].length; }, this)) this._liveWaveFinished = true; };
+    waveObserver = createWaveCompletionObserver(game.gameData, function () { return game._combatEpoch; });
+    game.gameData.tryEndGame = waveObserver.tryEndGame;
     metrics = require('LiveGateMetrics').attach(game, cc, Nav, Grid, {detailedEngineCPU:/[?&]profile-engine=1(?:&|$)/.test(window.location.search)});
     active = 'Battle ready — isolated in-memory save'; log(active);
   }
   function clearCombat() {
+    if (waveObserver) waveObserver.cancel();
     stopHeroDrive(); game.gameStatus = Stage.Prepare; game.clearArmyOrder();
     game.gameData.enemyQueue = {}; game.cleanMap();
+    // cleanMap invalidates old prefab callbacks. This explicit fixture reset
+    // cancels their counts, as production restart does, before the next wave.
+    game.gameData.pendingEnemySpawns = 0;
+    game.gameData._roundCompleted = false;
     game.gameData.getEnemyList().slice().forEach(function (enemy) { enemy.freeNode(); });
   }
   function preserveArmyOwnership(reinitializeChanged) {
@@ -299,9 +346,10 @@
   }
   async function wave(number, multiplier, seconds, renderChecks) {
     clearCombat();await restoreBuildings();
-    game.gameData.round = number; game.gameData.enemyQueue = {}; game.gameData.time.MonsterGenerate = 0; game.gameData._liveWaveFinished = false;
+    game.gameData.round = number; game.gameData.enemyQueue = {}; game.gameData.time.MonsterGenerate = 0;
     var cfg = game.gameData.levelCfg.WaveCfg[number-1];
     cfg.RefreshSoldierKind.filter(Boolean).forEach(function (entry) { var parts = entry.split('#'); game.gameData.enemyQueue[parts[0]] = parts[1].split(';').map(function(row) { var fields=row.split(','); return {id:+fields[0],num:+fields[1]*multiplier}; }); });
+    waveObserver.begin();
     game.gameData.videoCoin=cfg.CommerceSliver;
     game.gameData.packInterval = multiplier > 1 ? .05 : .5;
     var originalAdd=game.gameData.addEnemy;
@@ -323,7 +371,7 @@
       {at:80,name:'Final exterior rally',run:function(){order('rally',outside);}}
     ]:null;
     if(actions&&number===10){actions.push({at:60,name:'Real gate destruction and crowd release',run:checks.destroyGate});actions.sort(function(a,b){return a.at-b.at;});}
-    try{if(renderChecks){await measure('Render A/B warmup: wave 8 ×5, enemy HP×20',15,null,actions.slice(0,1));await renderAB();}else await measure('Actual wave '+number+(multiplier>1?' ×'+multiplier+' crowd stress, enemy HP×20':' authored composition'),seconds,function(){return {waveFinished:!!game.gameData._liveWaveFinished,workloadKey:JSON.stringify({map:1,wave:number,enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,allies:desiredArmyCount,timingFingerprint:environment.attackTimings.fingerprint,composition:cfg.RefreshSoldierKind}),fixtureModifiers:{armyOwnershipCount:desiredArmyCount,authoredComposition:cfg.RefreshSoldierKind.slice(),enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,spawnInterval:game.gameData.packInterval,heroHealth:100000,structureHealth:multiplier>1?100000:'authored',unitMovementAndAttacks:'unchanged',respawnTimers:'unchanged'},checks:checks.report()};},actions);}
+    try{if(renderChecks){await measure('Render A/B warmup: wave 8 ×5, enemy HP×20',15,null,actions.slice(0,1));await renderAB();}else await measure('Actual wave '+number+(multiplier>1?' ×'+multiplier+' crowd stress, enemy HP×20':' authored composition'),seconds,function(){var completion=waveObserver.report();return {waveFinished:completion.waveFinished,waveCompletion:completion,workloadKey:JSON.stringify({map:1,wave:number,enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,allies:desiredArmyCount,timingFingerprint:environment.attackTimings.fingerprint,composition:cfg.RefreshSoldierKind}),fixtureModifiers:{armyOwnershipCount:desiredArmyCount,authoredComposition:cfg.RefreshSoldierKind.slice(),enemyCountMultiplier:multiplier,enemyHealthMultiplier:multiplier>1?20:1,spawnInterval:game.gameData.packInterval,heroHealth:100000,structureHealth:multiplier>1?100000:'authored',unitMovementAndAttacks:'unchanged',respawnTimers:'unchanged'},checks:checks.report()};},actions);}
     finally{game.gameData.addEnemy=originalAdd;checks.dispose();phaseChecks=null;}
   }
   async function renderAB() {

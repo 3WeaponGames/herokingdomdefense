@@ -31,7 +31,8 @@ var def_KinghtFallBulletEnemy8 = function (t) {
     this.newAngSpeed = this.angleSpeed;
     this.state = 0;
   };
-  _ctor.prototype.onUpdate = function () {
+  _ctor.prototype.onUpdate = function (dt) {
+    if (!(dt > 0) || !isFinite(dt)) return;
     switch (this.state) {
       case 0:
         if (!this.targetIsLive || !this.targetIsLive()) return void this.freeNode();
@@ -48,12 +49,12 @@ var def_KinghtFallBulletEnemy8 = function (t) {
         cc.Vec2.normalize(this._dir, this.vec2_2);
         var t = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
         this.node.angle = t;
-        cc.Vec2.multiplyScalar(this.vec2_2, this._dir, .01 * this.speed);
+        cc.Vec2.multiplyScalar(this.vec2_2, this._dir, Math.min(this.vec2_2.len(), dt * this.speed));
         cc.Vec2.add(this.vec2_1, this.vec2_1, this.vec2_2);
         this.node.setPosition(this.vec2_1);
         break;
       case 1:
-        this.time -= .01;
+        this.time -= dt;
         this.time <= 0 && this.freeNode();
     }
   };

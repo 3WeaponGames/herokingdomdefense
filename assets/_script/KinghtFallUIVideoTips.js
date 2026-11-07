@@ -61,14 +61,18 @@ var def_KinghtFallUIVideoTips = function (t) {
     this.sprIcon.spriteFrame = this.sprfIconList[this.type - 1];
     this.labInfo.string = this.T(this.typeInfo[this.type - 1].info);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
-      t.callBack(false);
-      t.closeUI();
+      t.finishDecision(t.callBack, false);
     }, this);
     this.btnVideo.on(cc.Node.EventType.TOUCH_END, function () {
+      if (t.isclose || t._decisionCompleted || t._decisionPending) return;
+      t._decisionPending = true;
+      var generation = t._resourceGeneration;
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
-        t.callBack(true);
-        t.closeUI();
-      }, null, "battle.offer.confirm");
+        if (generation === t._resourceGeneration) t._decisionPending = false;
+        t.finishDecision(t.callBack, true, generation);
+      }, function () {
+        if (generation === t._resourceGeneration) t._decisionPending = false;
+      }, "battle.offer.confirm");
     }, this);
   };
   cc__decorate([ccp_property(cc.Label)], _ctor.prototype, "labTitle", undefined);

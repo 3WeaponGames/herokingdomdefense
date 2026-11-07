@@ -53,7 +53,7 @@ async def manage_node(
         params["position"] = position
     if property is not None:
         params["property"] = property
-    if value is not None:
+    if value is not None or action == "set_property":
         params["value"] = value
     if class_name is not None:
         params["className"] = class_name

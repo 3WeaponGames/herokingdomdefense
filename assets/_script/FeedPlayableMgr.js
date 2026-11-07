@@ -2,6 +2,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FeedPlayableMgr = undefined;
+function feedRequestSucceeded(value) {
+  if (typeof value === "string") { try { value = JSON.parse(value); } catch (error) { return false; } }
+  return !!value && value.code === 0;
+}
 var $z1BasePlatform = require("BasePlatform");
 var $z1SfSendQueue = require("SfSendQueue");
 var $z1TimeUtils = require("TimeUtils");
@@ -18,22 +22,36 @@ var exp_FeedPlayableMgr = function () {
   }
   _ctor.prototype.init = function () {
     var t = this;
-    this.isInit = true;
-    if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE && (this.systemInfo = tt.getSystemInfoSync(), "Douyin" == this.systemInfo.appName || "douyin_lite" == this.systemInfo.appName)) {
+    if (this.isInit) return;
+    if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE && typeof tt !== "undefined" && typeof tt.getSystemInfoSync === "function" && typeof tt.getLaunchOptionsSync === "function" && (this.systemInfo = tt.getSystemInfoSync(), this.systemInfo && ("Douyin" == this.systemInfo.appName || "douyin_lite" == this.systemInfo.appName))) {
       var e = tt.getLaunchOptionsSync();
+      if (!e || !e.extra || !e.extra.appId) return;
+      this.isInit = true;
+      this._generation = (this._generation || 0) + 1;
       this.canSend = true;
-      tt.reportScene(7001, 100);
+      typeof tt.reportScene === "function" && tt.reportScene(7001, 100);
       this.appId = e.extra.appId;
-      setInterval(function () {
+      this._pollTimer = setInterval(function () {
         t.requestAny();
       }, 1e3);
     }
   };
+  _ctor.prototype.dispose = function () {
+    this._generation = (this._generation || 0) + 1;
+    if (this._pollTimer != null) clearInterval(this._pollTimer);
+    this._pollTimer = null;
+    this.isInit = false;
+    this.canSend = false;
+    this.waitSend.length = 0;
+  };
   _ctor.prototype.sendUserData = function (t, e, n) {
     var i = this;
     this.isInit || this.init();
-    this.canSend && this.getOpenId(function () {
+    var generation = this._generation;
+    this.canSend && this.getOpenId(function (id) {
+      if (!id || !i.canSend || generation !== i._generation) return;
       i.checkFeedSubscribeStatus(t, function (n) {
+        if (!i.canSend || generation !== i._generation) return;
         n || i.requestFeedSubscribe(t, e, function () {});
       });
       var a = {
@@ -44,7 +62,8 @@ var exp_FeedPlayableMgr = function () {
         time: n
       };
       $z1HttpMgr.HttpMgr.getInstance().httpPost(a, function (a) {
-        a && a.startsWith("{") && 0 == JSON.parse(a).code || i.waitSend.push({
+        if (!i.canSend || generation !== i._generation) return;
+        feedRequestSucceeded(a) || i.waitSend.push({
           sceneId: t,
           contentIDs: e,
           time: n,
@@ -60,15 +79,15 @@ var exp_FeedPlayableMgr = function () {
       return -1;
     }
     var t = tt.getLaunchOptionsSync();
-    var e = t.scene;
-    if (e && e.endsWith("3041")) {
+    var e = t && t.scene;
+    if (e != null && String(e).slice(-4) === "3041" && t.query) {
       return t.query.feed_game_scene;
     } else {
       return -1;
     }
   };
   _ctor.prototype.requestFeedSubscribe = function (t, e, n) {
-    if (tt.requestFeedSubscribe) {
+    if (typeof tt !== "undefined" && typeof tt.requestFeedSubscribe === "function") {
       this.isInit || this.init();
       if (this.canSend) {
         tt.requestFeedSubscribe({
@@ -85,14 +104,14 @@ var exp_FeedPlayableMgr = function () {
           complete: function () {}
         });
       } else {
-        n(true);
+        n && n(false);
       }
     } else {
-      n(true);
+      n && n(false);
     }
   };
   _ctor.prototype.checkFeedSubscribeStatus = function (t, e) {
-    if (tt.checkFeedSubscribeStatus) {
+    if (typeof tt !== "undefined" && typeof tt.checkFeedSubscribeStatus === "function") {
       this.isInit || this.init();
       if (this.canSend) {
         tt.checkFeedSubscribeStatus({
@@ -108,10 +127,10 @@ var exp_FeedPlayableMgr = function () {
           complete: function () {}
         });
       } else {
-        e(true);
+        e && e(false);
       }
     } else {
-      e(true);
+      e && e(false);
     }
   };
   _ctor.prototype.getOpenId = function (t) {
@@ -140,7 +159,7 @@ var exp_FeedPlayableMgr = function () {
               code: n.code
             };
             $z1SfSendQueue.SfTrackHttp.httpGet(e.url + "/getOpenId", i, function (n) {
-              if (0 == n.code) {
+              if (n && 0 == n.code && n.data && n.data.openid) {
                 e.openId = n.data.openid;
                 localStorage.setItem(e.openIdKey, e.openId);
                 t && t(e.openId);
@@ -161,6 +180,8 @@ var exp_FeedPlayableMgr = function () {
     }
   };
   _ctor.prototype.requestAny = function () {
+    if (!this.canSend) return;
+    var generation = this._generation;
     if (0 != this.waitSend.length) {
       var t;
       var e = $z1TimeUtils.TimeUtils.GetTimeBySecond();
@@ -171,7 +192,8 @@ var exp_FeedPlayableMgr = function () {
           t = --n;
           return "continue";
         }
-        if (e >= a.reqTime) {
+        if (!a.inFlight && e >= a.reqTime) {
+          a.inFlight = true;
           a.reqTime = e + 5;
           var o = {
             appId: i.appId,
@@ -181,7 +203,9 @@ var exp_FeedPlayableMgr = function () {
             time: a.time
           };
           $z1HttpMgr.HttpMgr.getInstance().httpPost(o, function (t) {
-            t && t.startsWith("{") && 0 == JSON.parse(t).code && (a.status = false);
+            if (!i.canSend || generation !== i._generation) return;
+            a.inFlight = false;
+            feedRequestSucceeded(t) && (a.status = false);
           }, i.url + "/addUserData", true);
         }
         t = n;

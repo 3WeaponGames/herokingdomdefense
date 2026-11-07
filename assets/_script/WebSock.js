@@ -25,21 +25,27 @@ var exp_WebSock = function () {
       n = t.protocol + "://" + i + ":" + a;
     }
     console.log("连接：" + n);
-    this._ws = new WebSocket(n);
-    this._ws.binaryType = t.binaryType ? t.binaryType : "arraybuffer";
-    this._ws.onmessage = function (t) {
-      e.onMessage(t.data);
-    };
-    this._ws.onopen = this.onConnected;
-    this._ws.onerror = this.onError;
-    this._ws.onclose = this.onClosed;
+    var next;
+    try { next = new WebSocket(n); } catch (error) { if (this.onError) this.onError(error); return false; }
+    var previous = this._ws;
+    this._ws = next;
+    if (previous) {
+      previous.onmessage = previous.onopen = previous.onerror = previous.onclose = null;
+      try { previous.close(); } catch (ignored) {}
+    }
+    next.binaryType = t.binaryType ? t.binaryType : "arraybuffer";
+    next.onmessage = function (event) { if (e._ws === next && e.onMessage) e.onMessage(event.data); };
+    next.onopen = function (event) { if (e._ws === next && e.onConnected) e.onConnected(event); };
+    next.onerror = function (event) { if (e._ws === next && e.onError) e.onError(event); };
+    next.onclose = function (event) { if (e._ws === next) { e._ws = null; if (e.onClosed) e.onClosed(event); } };
     return true;
   };
   _ctor.prototype.send = function (t) {
-    return this._ws.readyState == WebSocket.OPEN && (this._ws.send(t), true);
+    if (!this._ws || this._ws.readyState !== WebSocket.OPEN) return false;
+    try { this._ws.send(t); return true; } catch (error) { if (this.onError) this.onError(error); return false; }
   };
   _ctor.prototype.close = function (t, e) {
-    this._ws.close(t, e);
+    if (this._ws) this._ws.close(t, e);
   };
   return _ctor;
 }();

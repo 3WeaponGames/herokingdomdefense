@@ -27,7 +27,7 @@ test('a paused default timing resumes at the same animation position',()=>{const
 test('a delayed hero can attack again if every target leaves before its release marker',()=>{
     const log=[],a=actor(log);a.time.Attack=-1;
     const original=method(fs.readFileSync(path.join(root,'assets/_script/KinghtFallGamePlayCtrl.js'),'utf8'),'doAttack');
-    const hit=vm.runInNewContext('('+original+')',{$z1AudioMgr:{AudioMgr:{getInstance(){return{playEffectFree(){log.push('release');}};}}},$z1KinghtFallConfig:{KinghtFallAudioId:{palyer_attack:'attack'}},$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:{getEnemyList(){return[];}}}}}}});
+    const hit=vm.runInNewContext('('+original+')',{C:{Attack:'Attack'},$z1AudioMgr:{AudioMgr:{getInstance(){return{playEffectFree(){log.push('release');}};}}},$z1KinghtFallConfig:{KinghtFallAudioId:{palyer_attack:'attack'}},$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:{getEnemyList(){return[];}}}}}}});
     data.GameTools={timingDefaults:{'hero:hero:default':{attack:.1667}}};Timing.attack(a,'hero',hit);Timing.tick(.1667,true);assert.deepStrictEqual(log,['release']);assert.equal(a.time.Attack,0);assert(!Timing.isPending(a));
 });
 test('pause does not advance a pending effect',()=>{const log=[],a=actor(log);data.GameTools={timings:{'enemy:90001:default':{attack:.5}}};Timing.attack(a,'enemy',a.doAttack);a.spAni.paused=true;Timing.tick(5,true);assert.equal(log.length,0);a.spAni.paused=false;Timing.tick(.5,true);assert.equal(log.length,1);});

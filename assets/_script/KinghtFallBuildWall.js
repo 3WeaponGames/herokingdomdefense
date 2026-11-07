@@ -116,29 +116,20 @@ var def_KinghtFallBuildWall = function (t) {
     if (!this.index || this.isDestroyed) return;
     var n = this.hasFriendlyAtGate($z1KinghtFallUIGame.default.instance.ctrGame);
     if (n && this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
+      e._stopColliderTween(t);
       t.enabled = false;
-      cc.Tween.stopAllByTarget(t);
     }), n != this.isOpen) {
       this.isOpen = n;
       if (this.isOpen) {
         t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.open : $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
+          e._stopColliderTween(t);
           t.enabled = false;
-          cc.Tween.stopAllByTarget(t);
         });
       } else {
         t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut : $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
-          cc.Tween.stopAllByTarget(t);
+          e._stopColliderTween(t);
           t.enabled = t.tag == e.index;
-          t.enabled && cc.tween(t).to(.1, {}, {
-            onUpdate: function (n, i) {
-              var a = [];
-              for (var o = 0; o < e.colPoint[t.uuid].length; o++) {
-                a.push(cc.v2(e.colPoint[t.uuid][o].x * i, e.colPoint[t.uuid][o].y * i));
-              }
-              n.points = a;
-              n.apply();
-            }
-          }).start();
+          t.enabled && e._animateCollider(t, .1);
         });
       }
       if (this.ndAniMain.animation == $z1KinghtFallBuildBase.KinghtFallBuildAniName.create || this.ndAniMain.animation == $z1KinghtFallBuildBase.KinghtFallBuildAniName.upgrade) {
@@ -197,7 +188,7 @@ var def_KinghtFallBuildWall = function (t) {
           e.ndAniEffect.node.active = false;
         });
       }
-      this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
+      this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
       return t;
     }
   };

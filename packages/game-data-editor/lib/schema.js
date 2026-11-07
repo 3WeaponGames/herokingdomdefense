@@ -209,7 +209,23 @@ function validate(documents, changes) {
     if(level.EffectNumber&&(level.EffectNumber.length!==(level.vaulePercentage||[]).length))issue('A',p.concat('EffectNumber'),'Talent values must match percentage display flags.');
     (level.EffectNumber||[]).forEach((v,j)=>number('A',p.concat('EffectNumber',j),v,0,false));
   });
-  Object.keys(base.ParameterCfg||{}).forEach(id=>{const row=base.ParameterCfg[id],p=['ParameterCfg',id,'Value'];if(typeof row.Value!=='string')issue('A',p,'Shared settings retain their string storage type.');else if(!/[;,]/.test(row.Value)&&(!Number.isFinite(Number(row.Value))||Number(row.Value)<0))issue('A',p,'Enter a non-negative number.');if(row.enumKey==='RefreshInterval'&&Number(row.Value)<=0)issue('A',p,'Spawn interval must be greater than zero.');});
+  Object.keys(base.ParameterCfg||{}).forEach(id=>{
+    const row=base.ParameterCfg[id],p=['ParameterCfg',id,'Value'];
+    if(typeof row.Value!=='string'){issue('A',p,'Shared settings retain their string storage type.');return;}
+    const scalar=value=>value.trim()!==''&&Number.isFinite(Number(value))&&Number(value)>=0;
+    const pair=text=>text.split(',').length===2&&text.split(',').every(scalar);
+    if(row.enumKey==='StaminaSupply'){
+      if(!pair(row.Value))issue('A',p,'Stamina supply needs two non-negative amounts separated by a comma.');
+    }else if(row.enumKey==='AddDesktop'){
+      const values=row.Value.split(',');
+      if(!pair(row.Value)||!values.every(v=>Number.isInteger(Number(v)))||!base.GoodsCfg||!base.GoodsCfg[Number(values[0])])issue('A',p,'Desktop reward needs an existing goods ID and a non-negative whole amount.');
+    }else if(row.enumKey==='ButtonUnlock'){
+      // -1 is the authored always-hidden stage sentinel; future stage numbers
+      // are intentional locks, so do not normalize them to existing campaigns.
+      if(!row.Value.split(';').every(text=>{const v=text.split(',');return v.length===2&&v.every(x=>x.trim()!==''&&Number.isInteger(Number(x)))&&(Number(v[0])===-1||Number(v[0])>=1)&&Number(v[1])>=0;}))issue('A',p,'Unlock entries need a positive stage (or -1) and non-negative whole wave.');
+    }else if(!scalar(row.Value))issue('A',p,'Enter a non-negative number.');
+    if(row.enumKey==='RefreshInterval'&&Number(row.Value)<=0)issue('A',p,'Spawn interval must be greater than zero.');
+  });
   (base.InGameTaskCfg||[]).forEach((row,i)=>{const p=['InGameTaskCfg',i];number('A',p.concat('MissionNumber'),row.MissionNumber,1,true);if(!row.MissionID||row.MissionID.length<row.MissionNumber)issue('A',p.concat('MissionID'),'Mission pool must contain at least the mission count.');if(!row.Award||row.Award.length<row.MissionNumber)issue('A',p.concat('Award'),'Every selected mission needs a reward slot.');(row.MissionID||[]).forEach((v,j)=>{if(!base.InGameTaskEnum[v])issue('A',p.concat('MissionID',j),'Mission type does not exist.');});rewards(row.Award,'A',p.concat('Award'));});
   if(docs.catalog&&docs.catalog.entries){
     Object.keys(docs.catalog.entries).forEach(key=>{

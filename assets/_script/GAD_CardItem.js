@@ -53,12 +53,13 @@ var def_GAD_CardItem = function (t) {
   _ctor.prototype.start = function () {};
   _ctor.prototype.updateLv = function () {};
   _ctor.prototype.addLev = function (t) {
-    if (this._lv >= this._cfg.cardLevel) {
-      return false;
-    }
-    this._lv += t;
-    this._atkDamage += this._cfg.cardATK;
+    if (!isFinite(t) || t <= 0) return 0;
+    var accepted = Math.max(0, Math.min(Math.floor(t), this._cfg.cardLevel - this._lv));
+    if (!accepted) return 0;
+    this._lv += accepted;
+    this._atkDamage += this._cfg.cardATK * accepted;
     this.updateLv();
+    return accepted;
   };
   _ctor.prototype.getAtkDamage = function (t) {
     var e = t + this._atkDamage;

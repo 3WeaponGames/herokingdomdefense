@@ -24,6 +24,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     e.statePos = new cc.Vec2();
     e.moveFunc = null;
     e.touchID = false;
+    e._joystickRestReady = false;
     e.vec2_1 = new cc.Vec2();
     e.guideTag = null;
     return e;
@@ -31,6 +32,7 @@ var def_KinghtFallGameUICtrl = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.start = function () {
     this.ndRod.getPosition(this.statePos);
+    this._joystickRestReady = true;
     this.ndConter.setPosition(0, 0, 0);
     this.ndAround.forEach(function (t) {
       t.active = false;
@@ -49,6 +51,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     this.moveFunc = t;
   };
   _ctor.prototype.onTouchStart = function (t) {
+    if (this.touchID !== false && this.touchID !== t.touch.getID()) return;
     this.touchID = t.touch.getID();
     var e = t.touch.getLocation();
     var n = this.node.convertToNodeSpaceAR(e);
@@ -75,14 +78,24 @@ var def_KinghtFallGameUICtrl = function (t) {
   };
   _ctor.prototype.onTouchEnd = function (t) {
     if (!(t && this.touchID !== t.touch.getID())) {
-      this.touchID = false;
+      this._resetJoystick(!t);
+    }
+  };
+  _ctor.prototype._resetJoystick = function (forceStop) {
+    var hadTouch = this.touchID !== false;
+    this.touchID = false;
+    if (this._joystickRestReady) {
       this.ndRod.setPosition(this.statePos);
       this.ndConter.setPosition(0, 0, 0);
       this.ndAround.forEach(function (t) {
         t.active = false;
       });
-      this.moveFunc && this.moveFunc(null);
     }
+    if ((hadTouch || forceStop) && this.moveFunc) this.moveFunc(null);
+  };
+  _ctor.prototype.onDisable = function () {
+    // A hidden/closed UI may never receive its final touch event.
+    this._resetJoystick(false);
   };
   _ctor.prototype.setRevive = function (t) {
     if (t <= 0) {

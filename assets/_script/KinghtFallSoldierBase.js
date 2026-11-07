@@ -133,8 +133,11 @@ var def_KinghtFallSoldierBase = function (t) {
     if (this.hpctrl) {
       this.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Friend);
       this.hpctrl.setHp(this.hp, this.hpMax);
-    } else {
+    } else if (!this._hpLoadPending) {
+      this._hpLoadPending = true;
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, $z1KinghtFallConfig.KinghtFallPrefabName.ItemHp, function (t) {
+        e._hpLoadPending = false;
+        if (!cc.isValid(e, true) || !cc.isValid(e.node, true) || !cc.isValid(e.ndHp, true) || e.hpctrl) return;
         var n;
         (n = cc.instantiate(t)).setParent(e.ndHp);
         n.setPosition(0, 0, 0);
@@ -471,7 +474,7 @@ var def_KinghtFallSoldierBase = function (t) {
           time: 2
         });
       }
-      this.hpctrl.setHp(this.hp, this.hpMax);
+      this.hpctrl && this.hpctrl.setHp(this.hp, this.hpMax);
       return t * e;
     }
   };
@@ -493,6 +496,9 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.getAttack = function () {
     var t = this.attack;
+    var conditional = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime || {};
+    t += this.cfg.AttackDamage * ((conditional[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierDamage1] || 0) +
+      (conditional[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierDamage2] || 0));
     var e = 1;
     var n = this.getBuffList($z1KinghtFallInterface.KinghtFallEnemyBuffType.DamageCut);
     for (var i = 0; i < n.length; i++) {
@@ -543,7 +549,7 @@ var def_KinghtFallSoldierBase = function (t) {
     if (!this.isDead()) {
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
-      this.hpctrl.setHp(this.hp, this.hpMax);
+      this.hpctrl && this.hpctrl.setHp(this.hp, this.hpMax);
     }
   };
   _ctor.prototype.setNew = function () {
@@ -616,6 +622,10 @@ var def_KinghtFallSoldierBase = function (t) {
     var t = 1;
     this.hpMax = this.cfg.Health;
     var e = 1;
+    var treasureNames = { 90001: "PerseveranceSymbol", 90002: "TurtlePower", 90003: "BowmanStrike", 90004: "knightHood" };
+    var treasureId = $z1KinghtFallEnum.KinghtFallEnumTreasureEnum[treasureNames[this.cfg.ID]];
+    var treasure = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[treasureId];
+    if (treasure) e += treasure[1];
     e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierMaxHp] || 0;
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff32);
     n && (e += n.Pamer[0]);
@@ -639,9 +649,8 @@ var def_KinghtFallSoldierBase = function (t) {
     this.hpctrl && this.hpctrl.setHp(this.hp, this.hpMax);
     this.attack = this.cfg.AttackDamage;
     var s = 1;
+    if (treasure) s += treasure[0];
     s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierDamage] || 0;
-    s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierDamage1] || 0;
-    s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierDamage2] || 0;
     var l = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43);
     l && (s += l.Pamer[0]);
     var c = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.talentAdd[$z1KinghtFallEnum.KinghtFallEnumTalentCfg.TalenType01];

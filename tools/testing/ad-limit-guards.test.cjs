@@ -13,7 +13,7 @@ function harness(name) {
     TestMode: { TestMode: singleton({ shouldBypassAdLimits: () => state.enabled }) },
     SdkMgr: { AdType: { AdFreeTime: 1 }, SdkMgr: singleton({ getCheckVersion: () => state.review, playVideo: (kind, success, fail, id) => { state.adCalls++; state.placement = id; success(); } }) },
     PlatformSetting: { SwitchID: { ShenHe: 'review' } },
-    KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getUserData: () => user, getDailyData: () => ({ getSubTimeByIndex: () => state.savedTime, setSubTimeByIndex: (i, n) => state.savedTime = n }), getMissionData: () => ({ addTaskNum: () => state.tasks++ }) }) },
+    KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ transact: (mutate, eligible) => { if (!eligible()) return null; mutate(); return true; }, getUserData: () => user, getDailyData: () => ({ getSubTimeByIndex: () => state.savedTime, setSubTimeByIndex: (i, n) => state.savedTime = n }), getMissionData: () => ({ addTaskNum: () => state.tasks++ }) }) },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) },
     GAD_App: { default: { instance: { enter_App: () => state.entered++ } } },
     GameTrackDataEvent: { TrackId: {} },

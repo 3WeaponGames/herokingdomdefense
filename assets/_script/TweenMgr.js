@@ -4,22 +4,22 @@ Object.defineProperty(exports, "__esModule", {
 exports.TweenMgr = undefined;
 var exp_TweenMgr = function () {
   function _ctor() {
-    this.twenMap = new Map();
+    this.twenMap = new WeakMap();
   }
   _ctor.getInstance = function () {
     null == this.instance && (this.instance = new _ctor());
     return this.instance;
   };
   _ctor.prototype.getTween = function (t) {
-    this.twenMap.has(t.uuid) && this.stopTween(t);
+    this.twenMap.has(t) && this.stopTween(t);
     var e = cc.tween(t);
-    this.twenMap.set(t.uuid, e);
+    this.twenMap.set(t, e);
     return e;
   };
   _ctor.prototype.stopTween = function (t) {
-    if (this.twenMap.has(t.uuid)) {
-      this.twenMap.get(t.uuid).stop();
-      this.twenMap.delete(t.uuid);
+    if (this.twenMap.has(t)) {
+      this.twenMap.get(t).stop();
+      this.twenMap.delete(t);
     }
   };
   _ctor.prototype.playHeartAni = function (t) {

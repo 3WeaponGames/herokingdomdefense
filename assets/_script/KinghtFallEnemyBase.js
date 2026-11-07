@@ -58,6 +58,7 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.initData = function (t, e) {
     GameToolsOverrides.cancel(this);
+    this.releaseHealingEffects();
     var n = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     this.node._combatActor = this;
@@ -84,8 +85,11 @@ var def_KinghtFallEnemyBase = function (t) {
     if (this.hpctrl) {
       this.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Enemy);
       this.hpctrl.setHp(this.hp, this.hpMax);
-    } else {
+    } else if (!this._hpLoadPending) {
+      this._hpLoadPending = true;
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, $z1KinghtFallConfig.KinghtFallPrefabName.ItemHp, function (t) {
+        n._hpLoadPending = false;
+        if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || !cc.isValid(n.ndHp, true) || n.hpctrl) return;
         var e;
         (e = cc.instantiate(t)).setParent(n.ndHp);
         e.setPosition(0, 0, 0);
@@ -104,22 +108,22 @@ var def_KinghtFallEnemyBase = function (t) {
     this.rigidBody.active = !!this.cfg.BuildingCross;
     this.onChangeSpeed();
   };
-  _ctor.prototype.onUpdate = function (t) {
-    var e = this;
-    if (!this.isDead()) {
-      this._targetSearchElapsed += t;
-      this.node.getPosition(this.vec2_1);
-      this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
-      for (var n = 0; n < this.debuffInfo.length; n++) {
-        var i = this.debuffInfo[n];
-        if (-1 != i.timeMax) {
-          i.time += t;
-          if (i.time >= i.timeMax) {
-            this.delBuffIdx(n), n--;
-          }
-        }
+  _ctor.prototype.updateCombatTimers = function (t) {
+    this._targetSearchElapsed += t;
+    this.node.getPosition(this.vec2_1);
+    this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
+    for (var n = 0; n < this.debuffInfo.length; n++) {
+      var i = this.debuffInfo[n];
+      if (-1 != i.timeMax) {
+        i.time += t;
+        if (i.time >= i.timeMax) this.delBuffIdx(n--);
       }
-      -1 != this.time[s.Attack] && (this.time[s.Attack] += t * this.getAttSpeed());
+    }
+    if (-1 != this.time[s.Attack]) this.time[s.Attack] += t * this.getAttSpeed();
+  };
+  _ctor.prototype.onUpdate = function (t) {
+    if (!this.isDead()) {
+      this.updateCombatTimers(t);
       switch (this.state) {
         case r.Idle:
           var a = this.getUpdateTarget();
@@ -497,6 +501,7 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    this.releaseHealingEffects();
     GameToolsOverrides.cancel(this);
     this._isPooled = true;
     this._targetSearchCache = null;
@@ -504,6 +509,10 @@ var def_KinghtFallEnemyBase = function (t) {
     var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + this.cfg.ID;
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delEnemy(this);
+  };
+  _ctor.prototype.onDestroy = function () {
+    this.releaseHealingEffects();
+    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.isDead = function () {
     return this.state == r.Dead;

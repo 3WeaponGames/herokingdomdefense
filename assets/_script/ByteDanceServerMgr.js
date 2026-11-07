@@ -1,3 +1,11 @@
+function completeOnce(callback) {
+  var completed = false;
+  return function () { if (completed) return; completed = true; if (callback) callback.apply(null, arguments); };
+}
+function cloudError(response) {
+  var error = new Error(response && (response.message || response.errMsg || response.msg) || "Cloud request failed");
+  error.code = response && response.code; return error;
+}
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -23,8 +31,8 @@ var exp_ByteDanceServerMgr = function () {
   _ctor.prototype.init = function (t) {
     var e = this;
     if (this.isOpened) {
-      this.getOpenId(function () {
-        t && t();
+      this.getOpenId(function (id, error) {
+        if (t) t(error);
       });
       if (!this.isonHide) {
         this.isonHide = true, tt.onHide(function () {
@@ -40,7 +48,6 @@ var exp_ByteDanceServerMgr = function () {
   };
   _ctor.prototype.clearDataByKey = function (t, e) {
     if (this.isOpened) {
-      this.isClear = true;
       t = (t = t.replace($z1Config.GameConfig.AppCacheName, "")).trim();
       this.saveData(t, "{}", e);
     } else {
@@ -55,6 +62,7 @@ var exp_ByteDanceServerMgr = function () {
     }
   };
   _ctor.prototype.getOpenId = function (t, e) {
+    t = completeOnce(t);
     undefined === e && (e = false);
     if (this.isOpened || e) {
       this.openId = window.openId;
@@ -62,13 +70,10 @@ var exp_ByteDanceServerMgr = function () {
         t(this.openId);
       } else {
         var n = this;
-        var i = localStorage.getItem(this.openIdKey);
+        var i;
+        try { i = localStorage.getItem(this.openIdKey) || localStorage.getItem("um_od"); }
+        catch (error) { console.warn(error); }
         if (i) {
-          this.openId = i;
-          window.openId = this.openId;
-          return void t(this.openId);
-        }
-        if (i = localStorage.getItem("um_od")) {
           this.openId = i;
           window.openId = this.openId;
           return void t(this.openId);
@@ -83,22 +88,24 @@ var exp_ByteDanceServerMgr = function () {
                 platform: n.platform
               };
               $z1SfSendQueue.SfTrackHttp.httpGet(n.url + "/getOpenId", i, function (e) {
-                if (0 == e.code) {
+                if (e && 0 == e.code && e.data && e.data.openid) {
                   n.openId = e.data.openid;
-                  localStorage.setItem(n.openIdKey, n.openId);
+                  window.openId = n.openId;
+                  try { localStorage.setItem(n.openIdKey, n.openId); }
+                  catch (error) { console.warn(error); }
                   t && t(n.openId);
                 } else {
-                  t && t();
+                  t(null, cloudError(e));
                 }
               });
             } else {
               console.log("请求登录失败=" + e.errMsg);
-              t && t();
+              t(null, cloudError(e));
             }
           },
           fail: function (e) {
             console.log("login登录失败=" + JSON.stringify(e));
-            t && t();
+            t(null, cloudError(e));
           }
         });
       }
@@ -107,22 +114,25 @@ var exp_ByteDanceServerMgr = function () {
     }
   };
   _ctor.prototype.loadData = function (t) {
+    t = completeOnce(t);
     var e = this;
     if (this.isOpened) {
       var n = this;
-      var i = tt.getLaunchOptionsSync();
+      var i;
+      try { i = tt.getLaunchOptionsSync() || {}; }
+      catch (error) { t(null, error); return; }
       var a = {
         appId: n.appId,
         thirdId: n.openId,
-        platform: n.platform,
-        appGameId: i.extra.appId
+        platform: n.platform
       };
+      if (i.extra && i.extra.appId != null) a.appGameId = i.extra.appId;
       $z1SfSendQueue.SfTrackHttp.httpGet(n.url + "/loginData", a, function (i) {
         if (null != i) {
           if (0 == i.code) {
             $z1SfSendQueue.SfTrackHttp.TOKEN = i.token;
-            e.data = i.data;
-            t && t(i.data);
+            e.data = i.data; e.canUpdate = true;
+            t(i.data, null);
           } else if (-2 == i.code) {
             n.canUpdate = false;
             tt.showModal({
@@ -138,11 +148,12 @@ var exp_ByteDanceServerMgr = function () {
                 }
               }
             });
+            t(null, cloudError(i));
           } else {
-            t && t(null);
+            t(null, cloudError(i));
           }
         } else {
-          t && t(null);
+          t(null, cloudError(i));
         }
       });
     } else {
@@ -154,8 +165,8 @@ var exp_ByteDanceServerMgr = function () {
       if (this.openId) {
         t();
       } else {
-        this.getOpenId(function () {
-          t();
+        this.getOpenId(function (id, error) {
+          t(error || (!id ? cloudError(null) : null));
         });
       }
     } else {
@@ -163,12 +174,14 @@ var exp_ByteDanceServerMgr = function () {
     }
   };
   _ctor.prototype.saveData = function (t, e, n) {
+    n = completeOnce(n);
     var a = this;
     if (this.isOpened) {
       if (this.canUpdate) {
         t = (t = t.replace($z1Config.GameConfig.AppCacheName, "")).trim();
         var o = this;
-        this.checkLogin(function () {
+        this.checkLogin(function (error) {
+          if (error) { n(null, error); return; }
           var i = new $z1SfSendQueue.SendConfig();
           i.callback = function (t) {
             if (0 == t.code) {
@@ -189,9 +202,10 @@ var exp_ByteDanceServerMgr = function () {
                   }
                 }
               });
+              n(null, cloudError(t));
             } else {
               console.error(t);
-              n && n(null);
+              n(null, cloudError(t));
             }
           };
           var s = {
@@ -219,6 +233,7 @@ var exp_ByteDanceServerMgr = function () {
     $z1SfSendQueue.SfTrackHttp.httpGet(this.url + "/remove", e, function (e) {
       if (null != e) {
         if (0 == e.code) {
+          t && t(true);
           tt.restartMiniProgramSync();
         } else {
           t && t(false);

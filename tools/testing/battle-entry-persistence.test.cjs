@@ -7,7 +7,7 @@ const test = require('node:test');
 function harness() {
   const state = { ready: false, spent: 0, opened: 0, resumed: 0, closed: 0, reset: 0 };
   const game = { readyForNewBattle: () => state.ready, hasSave: () => false, setNewGame: () => { state.reset++; return state.ready; } };
-  const user = { subPowerNum: () => { state.spent++; return false; } };
+  const user = { getPowerNum: () => 0, subPowerNum: () => { state.spent++; return false; } };
   const context = {
     cc: { Node: { EventType: { TOUCH_END: 'touch' } } },
     $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: { getInstance: () => ({ getGameData: () => game, getUserData: () => user }) } },
@@ -34,7 +34,7 @@ test('home battle entry waits for settlement durability before spending stamina'
   start.call({ selectStage: 1, costEnergy: 5 });
   assert.equal(h.state.spent, 0); assert.equal(h.state.opened, 0);
   h.state.ready = true; start.call({ selectStage: 1, costEnergy: 5 });
-  assert.equal(h.state.spent, 1); assert.equal(h.state.opened, 1);
+  assert.equal(h.state.spent, 0); assert.equal(h.state.opened, 1, 'insufficient stamina opens the supply dialog without a debit');
 });
 
 test('discard and resume dialog stays open when settlement or reset cannot save', () => {

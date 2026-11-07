@@ -20,6 +20,7 @@ var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallPlayAniCtrl = require("KinghtFallPlayAniCtrl");
+var HeroItemLooks = require("HeroItemLooks");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -79,10 +80,19 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     this.scrView.node.height = cc.winSize.height / 2 + this.scrView.node.y - 120;
     this.scrView.node.children[0].getComponent(cc.Widget).updateAlignment();
     this.initView();
+    if (cc.resources) this._cancelItemLookReady = HeroItemLooks.whenReady(function () {
+      e._cancelItemLookReady = null;
+      if (cc.isValid(e, true) && cc.isValid(e.node, true) && e.node.activeInHierarchy) e.initView();
+    });
     this.initEventListener();
     this.scheduleOnce(function () {
       e.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, e.nodeInfo[0].ndInfo.getChildByName("btnUpgeade"));
     }, .5);
+  };
+  _ctor.prototype.onDestroy = function () {
+    if (this._cancelItemLookReady) this._cancelItemLookReady();
+    this._cancelItemLookReady = null;
+    t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.initEventListener = function () {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, this.initBtnView);
@@ -97,10 +107,14 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       var l = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(r.type);
       var c = true;
       r.cfg.Unlock && (c = r.cfg.Unlock[0] < n || !(r.cfg.Unlock[0] > n) && r.cfg.Unlock[1] < i);
-      o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconCharacter, r.cfg.levelInfo[l - 1].Image, function (t) {
+      var customImage = cc.resources && HeroItemLooks.image(r.type, l), iconRequest = r._itemIconRequest = (r._itemIconRequest || 0) + 1;
+      var setItemIcon = function (t) {
+        if (!cc.isValid(o.node) || r._itemIconRequest !== iconRequest) return;
         r.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
         r.ndInfo.getChildByName("ndItem").getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
-      });
+      };
+      if (customImage) cc.resources.load(customImage.resource, cc.SpriteFrame, function (error, frame) { if (!error) setItemIcon(frame); });
+      else o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconCharacter, r.cfg.levelInfo[l - 1].Image, setItemIcon);
       o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, r.cfg.levelInfo[l - 1].EquipBottom, function (t) {
         r.ndItem.getComponent(cc.Sprite).spriteFrame = t;
         r.ndInfo.getChildByName("ndItem").getComponent(cc.Sprite).spriteFrame = t;
@@ -110,7 +124,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       var g = r.ndInfo.getChildByName("ndLay");
       r.labNum.string = $z1Utils.Utils.StringFormat(o.T(r.cfg.Describe), r.cfg.levelInfo[l - 1].Parameters);
       g.getChildByName("labNum1").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T(r.cfg.Describe), r.cfg.levelInfo[l - 1].Parameters);
-      r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = o.T(r.cfg.levelInfo[l - 1].EquipName);
+      var customItem = cc.resources && HeroItemLooks.item(r.type, l);
+      r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = customItem ? customItem.name : o.T(r.cfg.levelInfo[l - 1].EquipName);
       r.ndInfo.getChildByName("labName").active = c;
       if (c) {
         g.active = true;
@@ -164,7 +179,9 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       a(r);
     }
     this.labPower.string = $z1KinghtFallModle.default.getInstance().numberFomat(Math.floor(t));
+    if (cc.resources) require("CharacterAppearance").reset(this);
     this.ctrPlayAni.initView();
+    if (cc.resources) require("CharacterAppearance").bind(this, "hero");
   };
   _ctor.prototype.initBtnView = function () {
     var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();
@@ -182,15 +199,18 @@ var def_KinghtFallHomePersonCtrl = function (t) {
   _ctor.prototype.onUpgeade = function (t) {
     var e = this;
     var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(t);
+    if (!this.cfgEquip[t - 1] || n >= this.cfgEquip[t - 1].levelInfo.length) return;
     if (n >= this.levelLimit) {
       $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1Config.UIID.UIHome, $z1KinghtFallTextConfig.KinghtFallTextConfig.HomePerson02);
     } else {
       var i = Math.floor(this.cfgEquip[t - 1].levelInfo[n - 1].GoldCost * this.subNum);
-      if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().subGoldNum(i)) {
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.EquipUp, 1);
+      var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+      if (player.purchase([{ id: $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin, num: i }], function () {
+        player.getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.EquipUp, 1);
+        player.getUserData().setPersonLevel(t, n + 1);
+      }, function () { return player.getUserData().getPersonLevel(t) === n; })) {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.equip_X, t);
         $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.level_up);
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setPersonLevel(t, n + 1);
         this.initView();
         this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 1);
         var a = this.nodeInfo[t - 1].ndItem.getChildByName("spAni").getComponent(sp.Skeleton);
@@ -204,7 +224,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
         this.spPower.setTrackCompleteListener(r, function () {
           e.spPower.node.active = false;
         });
-      } else {
+      } else if (player.getUserData().getGoldNum() < i) {
         $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddCurrency, $z1Config.UIID.UIHome, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin);
       }
     }

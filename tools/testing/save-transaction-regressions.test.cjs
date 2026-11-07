@@ -7,79 +7,7 @@ const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const clone = value => JSON.parse(JSON.stringify(value));
 
-function harness(saved = {}) {
-  const storage = new Map(Object.entries(saved));
-  const state = { events: [], intervals: [], failKeys: new Set(), writes: 0, crashAt: Infinity };
-  const modules = {};
-  const singleton = object => ({ getInstance: () => object });
-  const localStorage = {
-    getItem: key => storage.get(key) ?? null,
-    setItem(key, value) { if (state.failKeys.has(key) || state.failAll) throw Error('quota exceeded'); storage.set(key, value); state.writes++; }
-  };
-  const globals = { console: { log() {}, error() {}, warn() {} }, Date, Math, localStorage,
-    setInterval: fn => { state.intervals.push(fn); return state.intervals.length; },
-    cc: { game: { EVENT_HIDE: 'hide', on() {} } },
-    __extends: (ctor, base) => Object.setPrototypeOf(ctor.prototype, base.prototype) };
-  const load = name => {
-    if (modules[name]) return modules[name];
-    const context = { ...globals, exports: {}, require: name => modules[name] || load(name) };
-    vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8'), context, { filename: name });
-    return modules[name] = context.exports;
-  };
-  modules.Config = { GameConfig: { AppCacheName: 'test' } };
-  modules.KinghtFallConfig = { KinghtFallParameter: { AppCacheName: 'game', FollowMode: 1 }, KinghtFallEventName: { RefreshGold: 'gold', RefreshDiamond: 'diamond', RefreshPower: 'power', UpdateRedPoint: 'redpoint', AniGold: 'gold-animation' } };
-  modules.PlatformManager = { PlatformManager: { currentPlatform: 0 } };
-  modules.BasePlatform = { Platform: { WECHAT: 1, WEB_LINK: 2, BYTEDANCE: 3 } };
-  modules.ServerDataMgr = { ServerdataMgr: { getDataByKey: () => null, getNeedSaveServer: () => false } };
-  modules.Utils = { Utils: { restoreObjectKeys: value => value, renameObjectKeys: value => value } };
-  modules.EventMgr = { EventMgr: singleton({ on() {}, emit: (...args) => state.events.push(args) }) };
-  modules.KinghtFallModle = { default: singleton({ compareIsToday: time => new Date(time).toDateString() === new Date().toDateString() }) };
-  modules.KinghtFallDataMgr = { KinghtFallDataMgr: singleton({
-    getGoodsCfgById: id => config.GoodsCfg[id],
-    getTreasureCfgById: id => config.TreasureCfg.find(row => row.ID === id),
-    getEquipCfgList: () => config.EquipCfg,
-    getTaskCfgById: id => config.TaskCfg.find(row => row.ID === id),
-    getParamsCfgById: id => id === 60001 ? '100' : '300'
-  }) };
-  for (const name of ['LanguageMgr', 'UIMgr', 'KinghtFallTextConfig']) modules[name] = {};
-  const Cache = load('CacheUtils').CacheUtils;
-  const cacheSave = Cache.saveData;
-  Cache.saveData = function (key, value) {
-    const result = cacheSave.call(this, key, value);
-    if (key.endsWith('.rewardJournal') && state.writes === state.crashAt) throw Error('process interruption');
-    return result;
-  };
-  const Player = load('KinghtFallPlayerMgr').KinghtFallPlayerMgr;
-  const player = Player.getInstance();
-  for (const [property, name] of [['udata', 'User'], ['missionData', 'Mission'], ['dailyData', 'Daily'], ['guideData', 'Guide'], ['gameData', 'Game']]) {
-    const Record = load('KinghtFall' + name + 'Data')['KinghtFall' + name + 'Data'];
-    const record = player[property] = new Record();
-    record.createData();
-    const raw = storage.get(record.gameKey);
-    if (raw) record.data = record.readSaveRecord(raw, record.gameKey, 'local', false);
-    const save = record.saveData;
-    record.saveData = function () {
-      const result = save.call(this);
-      if (!this.deferSave && result && state.writes === state.crashAt) throw Error('process interruption');
-      return result;
-    };
-  }
-  player.dailyData.data.time = Date.now();
-  const persist = () => Object.fromEntries(storage);
-  const claim = kind => {
-    const claims = {
-      pass: [() => player.missionData.setAchReward(1, 1), () => !(player.missionData.getAchReward(1) & 1)],
-      online: [() => player.dailyData.setOnlineTimeReward(1), () => !player.dailyData.getOnlineTimeReward(1)],
-      sign: [() => player.dailyData.sign(0, 7), () => player.dailyData.getSignReward() === 0],
-      achievement: [() => player.missionData.getAchRew(1, 111001), () => !player.missionData.getAchInfoByType(1)?.reward.includes(111001)],
-      gift: [() => player.guideData.setTimeByKey('test-gift', 1), () => !player.guideData.getTimeByKey('test-gift')],
-      chapter: [() => player.udata.setStageReward(1, 1), () => !player.udata.getStageReward(1, 1)],
-      mission: [() => player.missionData.setTaskInfo({ id: 1, type: 1, num: 1, stage: 2 }), () => !player.missionData.data.taskInfo || player.missionData.data.taskInfo.stage !== 2]
-    };
-    return player.claimRewards([{ id: 2001, num: 123 }], 1, null, claims[kind][0], claims[kind][1]);
-  };
-  return { player, state, storage, persist, claim, Cache, load };
-}
+const { harness } = require('./persistence-harness.cjs');
 
 for (const kind of ['pass', 'online', 'sign', 'achievement', 'gift', 'chapter', 'mission']) {
   test(kind + ': every transaction write boundary recovers reward and claim once', () => {
@@ -256,17 +184,72 @@ test('a recovered yesterday journal applies its reward once and then rolls the d
   assert.equal(reloaded.player.dailyData.getSignDay(), 1);
 });
 
-test('mini-app file storage remains authoritative when localStorage succeeds', () => {
-  for (const platform of [1, 3]) {
-    const memory = new Map(); let failFile = true;
-    const host = { sffile: {}, env: { USER_DATA_PATH: 'user' }, getFileSystemManager: () => ({ writeFileSync() { if (failFile) throw Error('disk full'); } }) };
-    const context = { exports: {}, console: { error() {} }, wx: host, tt: host,
-      localStorage: { setItem: (key, value) => memory.set(key, value) },
-      require: name => ({ PlatformManager: { PlatformManager: { currentPlatform: platform } }, BasePlatform: { Platform: { WECHAT: 1, BYTEDANCE: 3 } } }[name] || {}) };
-    vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/CacheUtils.js'), 'utf8'), context);
-    assert.equal(context.exports.CacheUtils.saveData('progress', 'new'), false);
-    assert.equal(memory.get('progress'), 'new');
-    failFile = false;
-    assert.equal(context.exports.CacheUtils.saveData('progress', 'new'), true);
-  }
+function platformCache(platform) {
+  const state = { disk: {}, mirror: new Map(), failFile: false, failMirror: false, mirrorWrites: 0 };
+  const host = { sffile: {}, env: { USER_DATA_PATH: 'user' }, getFileSystemManager: () => ({
+    writeFileSync(file, bytes) {
+      assert.equal(file, platform === 1 ? 'user/data.json' : 'ttfile://user/data.json');
+      if (state.failFile) throw Error('inert native write failure');
+      state.disk = JSON.parse(bytes);
+    }
+  }) };
+  const context = { exports: {}, console: { error() {} }, wx: host, tt: host,
+    localStorage: {
+      getItem: key => state.mirror.get(key) ?? null,
+      setItem(key, value) {
+        state.mirrorWrites++;
+        if (state.failMirror) throw Error('inert mirror failure');
+        state.mirror.set(key, value);
+      }
+    },
+    require: name => ({ PlatformManager: { PlatformManager: { currentPlatform: platform } }, BasePlatform: { Platform: { WECHAT: 1, BYTEDANCE: 3 } } }[name] || {}) };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/CacheUtils.js'), 'utf8'), context);
+  return { cache: context.exports.CacheUtils, host, state };
+}
+
+for (const [name, platform] of [['WeChat', 1], ['ByteDance', 3]]) {
+  test(name + ' rejects a failed journal without losing subsequent gold or duplicating the next claim', () => {
+    for (const tombstone of [false, true]) for (const mirrorFails of [false, true]) {
+      const h = harness(), { cache, host, state } = platformCache(platform);
+      Object.assign(h.Cache, { getData: cache.getData, saveData: cache.saveData });
+      const key = h.player.rewardJournalKey();
+      if (tombstone) assert.equal(cache.saveData(key, ''), true);
+      const writes = state.mirrorWrites;
+      state.failFile = true; state.failMirror = mirrorFails;
+      assert.equal(h.claim('gift'), null);
+      assert.equal(h.player.udata.getGoldNum(), 0); assert.equal(state.mirrorWrites, writes);
+      assert.equal(cache.getData(key), null);
+      host.sffile = clone(state.disk); // Reload the untouched native file while keeping the local mirror.
+      assert.equal(cache.getData(key), null);
+      state.failFile = false; state.failMirror = false;
+      h.player.udata.addGoldNum(17); assert.equal(state.disk[key], tombstone ? '' : undefined);
+      assert.equal(h.player.retryRewardRecovery(), true);
+      assert.equal(h.player.udata.getGoldNum(), 17); assert.equal(h.player.guideData.getTimeByKey('test-gift'), 0);
+      assert.ok(h.claim('gift')); assert.equal(h.claim('gift'), null);
+      const reloaded = harness(state.disk);
+      assert.equal(reloaded.player.restorePendingRewards(), true); assert.equal(reloaded.player.udata.getGoldNum(), 140);
+      assert.equal(reloaded.player.guideData.getTimeByKey('test-gift'), 1);
+    }
+  });
+  test(name + ' preserves previous native values and legacy mirror data across failed writes', () => {
+    const { cache, host, state } = platformCache(platform);
+    const original = JSON.parse('{"old":"keep","__proto__":"legacy","meta":{"extension":3}}');
+    host.sffile = clone(original); state.disk = clone(original);
+    state.mirror.set('fallback', 'old mirror'); state.failFile = true;
+    assert.equal(cache.saveData('fallback', 'rejected'), false); assert.equal(cache.getData('fallback'), 'old mirror');
+    assert.equal(cache.saveData('old', ''), false); assert.equal(cache.getData('old'), 'keep');
+    assert.deepEqual(host.sffile, original); assert.deepEqual(state.disk, original);
+    state.failFile = false; state.failMirror = true;
+    assert.equal(cache.saveData('fallback', ''), true); assert.equal(cache.getData('fallback'), null);
+    assert.equal(state.mirror.get('fallback'), 'old mirror');
+    assert.equal(cache.saveData('__proto__', 'updated'), true); assert.equal(cache.getData('__proto__'), 'updated');
+    assert.deepEqual(state.disk.meta, { extension: 3 }); assert.equal(state.disk.old, 'keep');
+  });
+}
+
+test('web-only writes retain their original success and failure behavior', () => {
+  const { cache, state } = platformCache(0);
+  assert.equal(cache.saveData('key', 'first'), true); state.failMirror = true;
+  assert.equal(cache.saveData('key', 'second'), false); assert.equal(cache.getData('key'), 'first');
+  assert.deepEqual(state.disk, {});
 });

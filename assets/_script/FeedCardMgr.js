@@ -2,6 +2,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.TaskData = exports.FeedCardMgr = undefined;
+function parseFeedResponse(value) {
+  if (typeof value === "string") { try { value = JSON.parse(value); } catch (error) { return null; } }
+  return value && typeof value === "object" ? value : null;
+}
 var $z1BasePlatform = require("BasePlatform");
 var $z1PlatformManager = require("PlatformManager");
 var exp_FeedCardMgr = function () {
@@ -73,7 +77,7 @@ var exp_FeedCardMgr = function () {
       } else if (2 == this.platformId && this.launchOptions.scene + "" != "103040") {
         return -1;
       }
-      if (this.launchOptions.query.card_id) {
+      if (this.launchOptions.query && this.launchOptions.query.card_id) {
         return this.launchOptions.query.card_id;
       } else {
         return -1;
@@ -111,9 +115,10 @@ var exp_FeedCardMgr = function () {
           console.error(n.errMsg);
           return void (t && t(null));
         }
-        var i = JSON.parse(n.data);
-        if (0 == i.code) {
+        var i = parseFeedResponse(n.data);
+        if (i && 0 == i.code && Array.isArray(i.data)) {
           e.taskdatas = i.data;
+          e.datas = [];
           var a = e.getTaskData();
           t && t(a);
         } else {
@@ -134,7 +139,8 @@ var exp_FeedCardMgr = function () {
         return console.error("已经发送过了"), void (e && e(true));
       } else {
         if (this.checkCanSend()) {
-          return void this.getOpenId(function () {
+          return void this.getOpenId(function (id) {
+            if (!id) { e && e(false); return; }
             var i = {
               appId: n.appId,
               openId: n.openId,
@@ -146,8 +152,8 @@ var exp_FeedCardMgr = function () {
                 console.error(i.errMsg);
                 return void (e && e(false));
               }
-              var a = JSON.parse(i.data);
-              if (0 == a.code) {
+              var a = parseFeedResponse(i.data);
+              if (a && 0 == a.code) {
                 n.iLog("发送任务成功：", t);
                 localStorage.setItem(r.uid_key, a.data);
                 n.uid = a.data;
@@ -172,7 +178,7 @@ var exp_FeedCardMgr = function () {
     }
     for (var t = 0; t < this.taskdatas.length; t++) {
       var e = this.taskdatas[t];
-      -1 != e.platform.indexOf(this.platformId + "") && this.datas.push(e);
+      e && (typeof e.platform === "string" || Array.isArray(e.platform)) && -1 != e.platform.indexOf(this.platformId + "") && this.datas.push(e);
     }
     return this.datas;
   };
@@ -222,8 +228,8 @@ var exp_FeedCardMgr = function () {
                     console.error(e.errMsg);
                     return void (t && t(null));
                   }
-                  var i = JSON.parse(e.data);
-                  if (0 == i.code) {
+                  var i = parseFeedResponse(e.data);
+                  if (i && 0 == i.code && i.data && i.data.openid) {
                     n.openId = i.data.openid;
                     localStorage.setItem(r.openId, n.openId);
                     t && t(n.openId);
@@ -283,7 +289,7 @@ var exp_FeedCardMgr = function () {
     var e = localStorage.getItem(r.taskSend);
     if (e) {
       var n = e.split("_");
-      if (n[0] == this.getTimeDay() && n[1] && -1 != n[1].indexOf(t + "")) {
+      if (n[0] == this.getTimeDay() && n[1] && -1 != n[1].split(",").indexOf(t + "")) {
         return true;
       }
     }
@@ -291,12 +297,11 @@ var exp_FeedCardMgr = function () {
   };
   _ctor.prototype.addTaskCardId = function (t) {
     var e = localStorage.getItem(r.taskSend);
-    if (null == e) {
-      localStorage.setItem(r.taskSend, this.getTimeDay() + "_" + t);
-    } else {
-      var n = e.split("_");
-      localStorage.setItem(r.taskSend, this.getTimeDay() + "_" + n[1] + "," + t);
-    }
+    var day = this.getTimeDay();
+    var parts = e ? e.split("_") : [];
+    var ids = parts[0] === day && parts[1] ? parts[1].split(",") : [];
+    if (ids.indexOf(String(t)) === -1) ids.push(String(t));
+    localStorage.setItem(r.taskSend, day + "_" + ids.join(","));
   };
   _ctor.prototype.iLog = function () {
     var t = [];

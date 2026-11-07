@@ -26,6 +26,7 @@ import json
 import logging
 import threading
 import uuid
+from http import HTTPStatus
 from typing import Any, Optional
 
 import websockets
@@ -60,7 +61,10 @@ class CocosBridge:
         self._loop_error: Optional[BaseException] = None
         self._server: Optional[websockets.Server] = None
         self._client = None  # the connected websocket (lives on self._loop)
-        self._pending: dict[str, asyncio.Future] = {}
+        self._closing = False
+        self._close_lock = threading.Lock()
+        self._close_future = None
+        self._pending: dict[str, tuple[Any, asyncio.Future]] = {}
 
     # ------------------------------------------------------------------ #
     # Lifecycle (called from FastMCP's main thread)
@@ -120,26 +124,23 @@ class CocosBridge:
         )
 
     async def _process_request(self, *args, **kwargs):
-        # Across websockets versions the signature for process_request differs.
-        # We just want to reject paths other than our configured one.
+        # Legacy asyncio accepts (path, headers) and an HTTP tuple; the modern
+        # API accepts (connection, request) and requires its Response object.
         path = None
+        connection = None
         if args:
-            # websockets <13: (path, headers); >=13: (connection,) where
-            # connection.request.path is the URL path.
             first = args[0]
             if isinstance(first, str):
                 path = first
             else:
-                req = getattr(first, "request", None)
+                connection = first
+                req = args[1] if len(args) > 1 else getattr(first, "request", None)
                 if req is not None:
                     path = getattr(req, "path", None)
         if path is not None and path != self._path:
-            # Return a 404. Format also varies; the tuple form is widely accepted.
-            try:
-                from http import HTTPStatus
-                return (HTTPStatus.NOT_FOUND, [], b"not found\n")
-            except Exception:
-                return None
+            if connection is not None and callable(getattr(connection, "respond", None)):
+                return connection.respond(HTTPStatus.NOT_FOUND, "not found\n")
+            return (HTTPStatus.NOT_FOUND, [], b"not found\n")
         return None
 
     # ------------------------------------------------------------------ #
@@ -147,24 +148,37 @@ class CocosBridge:
     # ------------------------------------------------------------------ #
 
     async def _on_connection(self, ws, *_unused):
+        if self._closing:
+            await ws.close(code=1001, reason="server shutting down")
+            return
         old = self._client
+        # Claim the connection before awaiting old.close(): a third connection
+        # arriving during that await must remain the newest owner.
+        self._client = ws
         if old is not None:
+            self._fail_pending(old, "bridge connection superseded")
+        try:
+            if old is not None:
+                try:
+                    await old.close(code=1001, reason="superseded")
+                except Exception:
+                    pass
+            if self._client is not ws:
+                return
+            logger.info("cocos extension connected")
             try:
-                await old.close(code=1001, reason="superseded")
+                await ws.send(json.dumps({
+                    "type": "hello",
+                    "server": "cocos-mcp-py",
+                    "version": 2,
+                }))
             except Exception:
                 pass
-        self._client = ws
-        logger.info("cocos extension connected")
-        try:
-            await ws.send(json.dumps({
-                "type": "hello",
-                "server": "cocos-mcp-py",
-                "version": 2,
-            }))
-        except Exception:
-            pass
-        try:
+            if self._client is not ws:
+                return
             async for raw in ws:
+                if self._client is not ws:
+                    break
                 try:
                     frame = json.loads(raw)
                 except Exception:
@@ -177,9 +191,11 @@ class CocosBridge:
                 rid = frame.get("id")
                 if not rid:
                     continue
-                fut = self._pending.pop(rid, None)
-                if fut and not fut.done():
-                    fut.set_result(frame)
+                pending = self._pending.get(rid)
+                if pending is not None and pending[0] is ws:
+                    self._pending.pop(rid)
+                    if not pending[1].done():
+                        pending[1].set_result(frame)
         except websockets.ConnectionClosed:
             pass
         except Exception:
@@ -188,10 +204,14 @@ class CocosBridge:
             logger.info("cocos extension disconnected")
             if self._client is ws:
                 self._client = None
-            for fut in list(self._pending.values()):
-                if not fut.done():
-                    fut.set_exception(BridgeUnavailable("bridge connection lost"))
-            self._pending.clear()
+            self._fail_pending(ws, "bridge connection lost")
+
+    def _fail_pending(self, ws, message: str) -> None:
+        for rid, (owner, future) in list(self._pending.items()):
+            if owner is ws:
+                self._pending.pop(rid)
+                if not future.done():
+                    future.set_exception(BridgeUnavailable(message))
 
     # ------------------------------------------------------------------ #
     # Public API (invoked from FastMCP's loop, NOT self._loop)
@@ -199,6 +219,8 @@ class CocosBridge:
 
     async def call(self, command: str, params: Optional[dict] = None,
                    timeout: Optional[float] = None) -> Any:
+        if self._closing:
+            raise BridgeUnavailable("bridge server shutting down")
         if self._loop is None:
             raise BridgeUnavailable("cocos bridge thread not started")
         coro = self._call_impl(command, params, timeout)
@@ -207,6 +229,8 @@ class CocosBridge:
 
     async def _call_impl(self, command: str, params: Optional[dict],
                          timeout: Optional[float]) -> Any:
+        if self._closing:
+            raise BridgeUnavailable("bridge server shutting down")
         ws = self._client
         if ws is None:
             raise BridgeUnavailable(
@@ -216,21 +240,32 @@ class CocosBridge:
         rid = str(uuid.uuid4())
         loop = asyncio.get_running_loop()
         fut = loop.create_future()
-        self._pending[rid] = fut
+        pending = (ws, fut)
+        self._pending[rid] = pending
         frame = {"id": rid, "command": command, "params": params or {}}
         try:
-            await ws.send(json.dumps(frame))
-        except websockets.ConnectionClosed as exc:
-            self._pending.pop(rid, None)
-            raise BridgeUnavailable(f"send failed: {exc}") from exc
-        try:
-            reply = await asyncio.wait_for(fut, timeout=timeout or config.request_timeout)
-        except asyncio.TimeoutError as exc:
-            self._pending.pop(rid, None)
-            raise BridgeUnavailable(
-                f"timeout waiting for reply to '{command}' after "
-                f"{timeout or config.request_timeout}s"
-            ) from exc
+            try:
+                await ws.send(json.dumps(frame))
+            except websockets.ConnectionClosed as exc:
+                raise BridgeUnavailable(f"send failed: {exc}") from exc
+            if self._client is not ws:
+                raise BridgeUnavailable("bridge connection superseded while sending")
+            try:
+                reply = await asyncio.wait_for(fut, timeout=timeout or config.request_timeout)
+            except asyncio.TimeoutError as exc:
+                raise BridgeUnavailable(
+                    f"timeout waiting for reply to '{command}' after "
+                    f"{timeout or config.request_timeout}s"
+                ) from exc
+        finally:
+            if self._pending.get(rid) is pending:
+                self._pending.pop(rid)
+            if not fut.done():
+                fut.cancel()
+            elif not fut.cancelled():
+                # Replacement may fail the future while send() is still
+                # suspended. Consume that failure even if send itself raises.
+                fut.exception()
         if not isinstance(reply, dict):
             raise BridgeError(f"non-object reply from extension: {reply!r}")
         if reply.get("success"):
@@ -239,32 +274,46 @@ class CocosBridge:
         raise BridgeError(f"{command}: {message}")
 
     async def close(self) -> None:
-        # Shut down the WS server on the bridge thread.
+        # The shutdown request has one owner even if several callers close at
+        # once. Awaiting it must not block FastMCP's event loop or let one
+        # cancelled caller cancel cleanup for the others.
         loop = self._loop
-        if loop is None:
-            return
-
-        async def _shutdown():
-            if self._client is not None:
-                try:
-                    await self._client.close()
-                except Exception:
-                    pass
-                self._client = None
-            if self._server is not None:
-                self._server.close()
-                try:
-                    await self._server.wait_closed()
-                except Exception:
-                    pass
-                self._server = None
-            loop.stop()
-
+        with self._close_lock:
+            self._closing = True
+            if self._close_future is None:
+                if loop is None or loop.is_closed() or not loop.is_running():
+                    return
+                self._close_future = asyncio.run_coroutine_threadsafe(self._shutdown(), loop)
+                # Stopping inside _shutdown prevents run_coroutine_threadsafe
+                # from delivering its result. Stop only after delivery instead.
+                def stop_after_completion(_future):
+                    if not loop.is_closed():
+                        loop.call_soon_threadsafe(loop.stop)
+                self._close_future.add_done_callback(stop_after_completion)
+            future = self._close_future
         try:
-            cf = asyncio.run_coroutine_threadsafe(_shutdown(), loop)
-            cf.result(timeout=5)
+            await asyncio.wait_for(asyncio.shield(asyncio.wrap_future(future)), timeout=5)
+        except asyncio.TimeoutError:
+            logger.warning("bridge shutdown is still pending")
         except Exception:
-            pass
+            logger.exception("bridge shutdown failed")
+
+    async def _shutdown(self) -> None:
+        ws = self._client
+        self._client = None
+        if ws is not None:
+            self._fail_pending(ws, "bridge server shutting down")
+            try:
+                await ws.close()
+            except Exception:
+                pass
+        if self._server is not None:
+            self._server.close()
+            try:
+                await self._server.wait_closed()
+            except Exception:
+                pass
+            self._server = None
 
 
 _global_bridge: Optional[CocosBridge] = None

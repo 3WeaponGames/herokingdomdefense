@@ -55,12 +55,23 @@ var i = function () {
     this.index += 8;
     return e;
   };
+  t.prototype.setBigInt64 = function (value) {
+    requireBigInt("BigInt64");
+    this.view.setBigInt64(this.index, typeof value === "bigint" ? value : BigInt(0));
+    this.index += 8;
+  };
+  t.prototype.setBigUint64 = function (value) {
+    requireBigInt("BigUint64");
+    this.view.setBigUint64(this.index, typeof value === "bigint" ? value : BigInt(0));
+    this.index += 8;
+  };
   t.prototype.setBoolean = function (t) {
     return this.setUint8(t ? 1 : 0);
   };
   t.prototype.setString = function (t, e) {
     undefined === e && (e = 1);
     l(t) || (t = "");
+    checkLength(t.length);
     this.setUint16(t.length);
     if (4 == e) {
       var n = 0;
@@ -169,6 +180,18 @@ var a = function () {
     var t = this.view.getFloat64(this.index);
     this.index += 8;
     return t;
+  };
+  t.prototype.getBigInt64 = function () {
+    requireBigInt("BigInt64");
+    var value = this.view.getBigInt64(this.index);
+    this.index += 8;
+    return value;
+  };
+  t.prototype.getBigUint64 = function () {
+    requireBigInt("BigUint64");
+    var value = this.view.getBigUint64(this.index);
+    this.index += 8;
+    return value;
   };
   t.prototype.getBoolean = function () {
     return !!this.getUint8();
@@ -343,6 +366,7 @@ function y(t, e) {
   } else if (f(e)) {
     n += 2;
     r(t) || (t = []);
+    checkLength(t.length);
     e = d(m(e));
     t.forEach(function (t) {
       n += y(t, e);
@@ -354,10 +378,17 @@ function y(t, e) {
     var a = I[e];
     if (0 === e.indexOf("String")) {
       n += 2;
-      l(t) && (n += t.length * a);
+      if (l(t)) {
+        checkLength(t.length);
+        n += t.length * a;
+      }
     } else if (0 === e.indexOf("Object") || 0 === e.indexOf("Array")) {
       n += 2;
-      h(t) || (n += JSON.stringify(t).length * a);
+      if (!h(t)) {
+        var length = JSON.stringify(t).length;
+        checkLength(length);
+        n += length * a;
+      }
     } else {
       n += a;
     }
@@ -484,11 +515,29 @@ exports.decode = function (t) {
   throw new Error("decode error: 'buffer' is bad");
 };
 var b = {};
+function checkLength(length) {
+  if (length > 65535) throw new RangeError("Binary length exceeds the 16-bit wire limit (65535)");
+}
+function requireBigInt(type) {
+  if (typeof BigInt !== "function" || typeof DataView.prototype["set" + type] !== "function" || typeof DataView.prototype["get" + type] !== "function") {
+    throw new Error("Binary " + type + " is unsupported by this runtime");
+  }
+}
+function checkCapabilities(schema) {
+  if (s(schema) || r(schema)) {
+    Object.keys(schema).forEach(function (key) { checkCapabilities(schema[key]); });
+  } else if (f(schema)) {
+    checkCapabilities(m(schema));
+  } else if (schema === "BigInt64" || schema === "BigUint64") {
+    requireBigInt(schema);
+  }
+}
 exports.registerProto = function (t, e) {
   "string" == typeof t && (t = Number(t));
   if (!(c(t) && Math.floor(t) === t && t >= 0 && t <= 65535) || exports.Type[t]) {
     throw new Error("registerProto error: 'id' is bad");
   }
+  checkCapabilities(e);
   b[t] = e;
 };
 exports.registerProtoMap = function (t) {

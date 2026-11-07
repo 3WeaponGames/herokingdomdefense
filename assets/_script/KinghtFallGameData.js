@@ -33,7 +33,7 @@ var exp_KinghtFallGameData = function (t) {
   _ctor.prototype.initData = function () {
     // UserData and MissionData are loaded before this record. Finish any settlement
     // interrupted between their independent saves before a battle can be resumed.
-    if (this.data.pendingSettlement) this.completeSettlement(this.data.pendingSettlement);
+    if (!this.deferSettlementRecovery && this.data.pendingSettlement) this.completeSettlement(this.data.pendingSettlement);
   };
   _ctor.prototype.validateSaveRecord = function (data) {
     data = this.normalizeSaveRecord(data, new l());
@@ -46,7 +46,8 @@ var exp_KinghtFallGameData = function (t) {
     return data;
   };
   _ctor.prototype.readyForNewBattle = function () {
-    return !this.data.pendingSettlement || this.completeSettlement(this.data.pendingSettlement);
+    var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+    return player.restorePendingRewards() && (!this.data.pendingSettlement || this.completeSettlement(this.data.pendingSettlement));
   };
   _ctor.prototype.beginSettlement = function (rewards, stage, challengeMask, isWin) {
     var settlement = this.data.pendingSettlement || {
@@ -85,15 +86,24 @@ var exp_KinghtFallGameData = function (t) {
     if (player.getUserData().applyBattleSettlement(settlement) === false) return false;
     if (player.getMissionData().applyBattleSettlement(settlement) === false) return false;
     var previous = this.data;
-    this.data = new l();
+    this.data = this.resetCheckpointData();
     if (this.saveData() === false) { this.data = previous; return false; }
     require("EventMgr").EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 31);
     return true;
   };
   _ctor.prototype.setNewGame = function () {
     if (this.data.pendingSettlement && !this.completeSettlement(this.data.pendingSettlement)) return false;
-    this.data = new l();
-    return this.saveData() !== false;
+    var previous = this.data;
+    this.data = this.resetCheckpointData();
+    if (this.saveData() === false) { this.data = previous; return false; }
+    return true;
+  };
+  _ctor.prototype.resetCheckpointData = function () {
+    // Keep journal receipts and unknown fields when retiring a run. A pending
+    // journal cleanup must never reinstall the checkpoint from that finished run.
+    var data = Object.assign({}, this.data, new l());
+    ["roundNum", "coin", "taskList", "pendingSettlement"].forEach(function (key) { delete data[key]; });
+    return data;
   };
   _ctor.prototype.getRoundNum = function () {
     return this.data.roundNum;
@@ -108,6 +118,14 @@ var exp_KinghtFallGameData = function (t) {
     this.data.levelNum = t;
     this.data.roundNum = e;
     this.data.coin = n;
+  };
+  _ctor.prototype.setCheckpoint = function (snapshot) {
+    // Merge only checkpoint fields so receipts and unknown future fields survive.
+    var self = this;
+    ["levelNum", "roundNum", "coin", "buffList", "buildingLevel", "businessList", "taskList"].forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(snapshot, key)) self.data[key] = JSON.parse(JSON.stringify(snapshot[key]));
+    });
+    return this.saveData() !== false;
   };
   _ctor.prototype.getBuffList = function () {
     return this.data.buffList;

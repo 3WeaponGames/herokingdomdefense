@@ -26,7 +26,7 @@ function collect(root,documents){
         .concat(Object.keys(cfg.SoldierCfg).sort((a,b)=>Number(a)-Number(b)).map(id=>({type:'enemy',id})))
         .concat([90001,90002,90003,90004].map(id=>({type:'ally',id})));
     requests.forEach(request=>{
-        const description=Assets.describe(root,Object.assign({},request,{documents}));
+        const description=Assets.describe(root,Object.assign({},request,{documents,noRuntime:true}));
         if(typeof description.defaultTiming!=='number')throw Error('Cannot apply a default for '+description.key+': '+description.timingDefaultSource);
         result[description.key]={attack:description.defaultTiming};
     });

@@ -31,7 +31,7 @@ function harness(deferred = false) {
     }
     on(type, fn, target, capture = false) { this.listeners.push({ type, fn, target, capture }); }
     off(type, fn, target, capture = false) { this.listeners = this.listeners.filter(v => !(v.type === type && v.fn === fn && v.target === target && v.capture === capture)); }
-    emit(type, event, capture = false) { for (const v of this.listeners.slice()) if (v.type === type && v.capture === capture) v.fn.call(v.target, event); }
+    emit(type, event, capture = false) { for (const v of this.listeners.slice()) if (v.type === type && v.capture === capture) { v.fn.call(v.target, event); if (event._propagationImmediateStopped) break; } }
     pauseSystemEvents() { this.paused = true; }
     resumeSystemEvents() { this.paused = false; }
   }
@@ -62,7 +62,7 @@ function harness(deferred = false) {
     UIMgr: { UIMgr: { getInstance: () => ({ uiRoot }) } },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: { getInstance: () => ({ getUserData: () => ({ getStageInfo: () => 0, getStageReward: () => false }) }) } },
     KinghtFallConfig: { KinghtFallPoolName: {}, KinghtFallBundelName: {}, KinghtFallPrefabName: {} },
-    PoolMgr: { PoolMgr: { getInstance: () => ({ getNode: () => null, creatrePool() {}, freeNode() {} }) } }
+    PoolMgr: { PoolMgr: { getInstance: () => ({ getNode: () => null, getNodeFromPrefab: (_key, prefab) => cc.instantiate(prefab), freeNode() {} }) } }
   };
   function load(name) {
     const exports = {};
@@ -77,7 +77,7 @@ function harness(deferred = false) {
   const BaseButton = load('BaseButton').BaseButton;
   const controller = new (load('KinghtFallHomeBattleCtrl').default)();
   controller.node = battleNode; controller.ndBoxShow = new Node('boxes', battleNode);
-  controller.cfgList = [{ ChallengeReward: [[[2001, 100]], [[2002, 20]], [[2004, 50]]] }]; controller.selectStage = 1;
+  controller.cfgList = [{ Challenge: [1, 2, 3], ChallengeReward: [[[2001, 100]], [[2002, 20]], [[2004, 50]]] }]; controller.selectStage = 1;
   controller.newSel = controller.onUpdateTask = controller.scheduleOnce = function () {};
   controller.loadPrefab = (bundle, name, done) => state.loads.push(done);
   const chests = [0, 1, 2].map(index => {
@@ -94,7 +94,7 @@ function harness(deferred = false) {
   const popup = new Node('ndTips', controller.ndBoxShow); popup.active = false; popup.y = 220;
   const layout = new Node('ndLayout', popup); layout.width = 200; layout.components.push(new Layout());
   if (!deferred) { const item = new Node('reward', layout); item.components.push(new Item()); }
-  function event(target, point) { return { target, getLocation: () => point, touch: { getLocation: () => point, getID: () => 1 }, stopPropagation() { this.stopped = true; } }; }
+  function event(target, point) { return { target, getLocation: () => point, touch: { getLocation: () => point, getID: () => 1 }, stopPropagation() { this.stopped = true; }, stopPropagationImmediate() { this._propagationImmediateStopped = true; } }; }
   function dispatch(target, point) { const e = event(target, point); uiRoot.emit('end', e, true); if (!target.paused) target.emit('end', e); return e; }
   function clickChest(index) {
     const node = chests[index], point = node.convertToWorldSpaceAR({ x: 0, y: 0 });
@@ -158,9 +158,16 @@ test('only authored chest buttons opt out; ordinary buttons retain their cooldow
   const h = harness();
   assert.ok(h.chests.every(node => node.components[0].invertTime === 0));
   const button = new h.BaseButton(); button.node = new h.Node('ordinary');
+  let actions = 0;
+  button.node.on('end', button._onTouchEnded, button);
+  button.node.on('end', () => actions++);
+  const tap = () => { button._onTouchBegan(h.event(button.node, {})); button.node.emit('end', h.event(button.node, {})); };
   assert.equal(button.invertTime, 1);
-  button._onTouchBegan(h.event(button.node, {})); button._onTouchEnded(h.event(button.node, {}));
+  tap();
   assert.equal(button.touched, true);
-  button._onTouchBegan(h.event(button.node, {})); assert.equal(button.node.paused, true);
+  tap(); assert.equal(actions, 1, 'cooldown also rejects raw gameplay touch handlers');
+  assert.equal(button.node.paused, false, 'rejected touch must not pause unrelated node input');
   button.update(1.01); assert.equal(button.node.paused, false); assert.equal(button.touched, false);
+  tap(); assert.equal(actions, 2);
+  button.onDisable(); button.onEnable(); tap(); assert.equal(actions, 3);
 });

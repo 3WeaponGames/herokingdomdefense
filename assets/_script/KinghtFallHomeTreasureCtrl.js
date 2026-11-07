@@ -177,9 +177,8 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
         num: t.cfgBox.Cost[1]
       };
       if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().trySub([e], true)) {
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().SubGood([e]);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_draw1);
-        t.getReward(1, 1);
+        t.getReward(1, 1, [e]);
       }
     }, this);
     this.btnTen.on(cc.Node.EventType.TOUCH_END, function () {
@@ -188,85 +187,25 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
         num: t.cfgBox.Cost10[1]
       };
       if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().trySub([e], true)) {
-        $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().SubGood([e]);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_draw10);
-        t.getReward(10, 2);
+        t.getReward(10, 2, [e]);
       }
     }, this);
     this.btnVideo.on(cc.Node.EventType.TOUCH_END, function () {
       $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.box_1);
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.pay_box_1_Y, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage());
-        var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getShopInfo($z1KinghtFallEnum.KinghtFallEnumShopEnum.Treasure);
-        e || (e = {
-          id: $z1KinghtFallEnum.KinghtFallEnumShopEnum.Treasure,
-          time: 0,
-          video: 0
-        });
-        e.video++;
-        if (e.video >= t.cfgBox.VedioCount) {
-          e.video -= t.cfgBox.VedioCount;
-          t.getReward(1, 3);
-        } else {
-          $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setShopInfo(e);
-          t.upView();
-        }
+        t.getReward(1, 3, [], true);
       }, null, "home.treasure.draw");
     }, this);
   };
-  _ctor.prototype.getReward = function (t, e) {
+  _ctor.prototype.getReward = function (count, type, costs, video) {
+    var result = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().drawTreasures(this.cfgBox, count, costs || [], video);
+    if (!result) return;
+    if (result.pending) { this.upView(); return; }
+    var a = result.rewards;
     $z1AudioMgr.AudioMgr.getInstance().playEffect($z1KinghtFallConfig.KinghtFallAudioId.box_treasure);
-    var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getShopInfo($z1KinghtFallEnum.KinghtFallEnumShopEnum.Treasure);
-    n || (n = {
-      id: $z1KinghtFallEnum.KinghtFallEnumShopEnum.Treasure,
-      time: 0,
-      video: 0
-    });
-    var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().getTaskInfo();
-    if (i.type == $z1KinghtFallEnum.KinghtFallEnumTaskEnum.TreasureCount) {
-      i.num += t;
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().setTaskInfo(i);
-    }
-    var a = [];
-    var o = function (t) {
-      Array.prototype.push.apply(a, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().addTreasureReward(t, 1));
-    };
-    var r = function () {
-      var t;
-      var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTreasureLevel($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SignOfMultiplication);
-      if (e) {
-        var n = null === (t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById($z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SignOfMultiplication).levelInfo[e.level - 1]) || undefined === t ? undefined : t.param;
-        if (n && Math.random() <= n[0]) {
-          $z1LogMgr.LogMgr.getInstance().info("***倍增之符");
-          return true;
-        }
-      }
-      return false;
-    };
-    for (var s = 0; s < t; s++) {
-      var h = undefined;
-      n.time++;
-      if (n.time >= this.cfgBox.GuarantNumber) {
-        n.time -= this.cfgBox.GuarantNumber;
-        h = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBannerCfg(this.cfgBox.GuarantBanner);
-      } else {
-        h = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBannerCfg(this.cfgBox.Banner);
-      }
-      var p = [];
-      for (var f = 0; f < h.length; f++) {
-        var y = h[f];
-        p.push({
-          id: y.RewardID,
-          weight: y.Weight
-        });
-      }
-      var b = $z1Utils.Utils.weight_rand(p);
-      $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfgById(b.id).Quality <= 2 && (n.time = 0);
-      o(b.id);
-      r() && o(b.id);
-    }
-    $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UITreasureReward, $z1Config.UIID.UINONE, a, e);
-    $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().setShopInfo(n);
+    $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UITreasureReward, $z1Config.UIID.UINONE, a, type);
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.UpdateRedPoint, 8);
     this.initView();
     this.upView();
