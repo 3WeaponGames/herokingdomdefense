@@ -81,7 +81,7 @@ var Appearance = cc.Class({
     if (nativeParts && renderers.some(function (renderer) { return renderer.skeletonData && !renderer._skeleton; })) return;
     if (nativeParts && profile.parts.length && !nativePartsNotice) {
       nativePartsNotice = true;
-      if (typeof cc.warn === "function") cc.warn("Native Spine retains original character attachments; custom part fitting requires the web Spine runtime.");
+      if (typeof cc.log === "function") cc.log("Native Spine retains original character attachments; custom part fitting requires the web Spine runtime.");
     }
     var fittedParts = nativeParts ? [] : profile.parts;
     var signature = id + ":" + profileKey(profile) + ":" + nativeParts + ":" + renderers.map(function (renderer) { return renderer.uuid + ":" + (renderer.skeletonData && renderer.skeletonData.uuid); }).join("|");

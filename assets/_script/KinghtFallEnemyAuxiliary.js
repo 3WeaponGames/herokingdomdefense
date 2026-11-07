@@ -45,7 +45,7 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
           var goal = Navigation.positionOf(waypoint, game);
           var movement = Navigation.moveTo(this, game, goal, t);
           if (movement.directionX) this.setLeft(movement.directionX < 0);
-          if (movement.arrived) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
+          if (movement.arrived && !movement.partial) { this.bornInfo.nodeIndex++; Navigation.reset(this); }
         }
     }
   };

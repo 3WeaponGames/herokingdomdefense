@@ -173,6 +173,35 @@ Navigation.prototype.radius = function (unit) {
   });
   return Math.ceil((radius + 2) / 4) * 4;
 };
+Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid) {
+  var navigation = this, data = this.game.gameData, neighbours = [];
+  var actors = data.getSoldierList().concat(data.getEnemyList(), [this.game.ctrPlay]);
+  actors.forEach(function (other) {
+    if (other === unit || !other.node || other.node.activeInHierarchy === false || other._isPooled || other.isDead && other.isDead()) return;
+    var position = point(other.node, navigation.game.ndMain), length = distance(start, position);
+    if (length > radius + 128) return;
+    var clearance = radius + navigation.radius(other);
+    if (length < clearance + 64) neighbours.push({ point: position, clearance: clearance, distance: length });
+  });
+  if (!neighbours.length) return null;
+  var angle = Math.atan2(target.y - start.y, target.x - start.x), length = Math.max(24, radius * 2);
+  var turns = [0, Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2, Math.PI * .75, -Math.PI * .75, Math.PI];
+  for (var i = 0; i < turns.length; i++) {
+    var candidate = { x: start.x + Math.cos(angle + turns[i]) * length, y: start.y + Math.sin(angle + turns[i]) * length };
+    if (!grid.segmentClear(start, candidate, radius)) continue;
+    var dx = candidate.x - start.x, dy = candidate.y - start.y;
+    var clear = neighbours.every(function (other) {
+      var x = start.x - other.point.x, y = start.y - other.point.y;
+      // Existing contact may be exited gradually, never deepened. Otherwise
+      // require clearance along the entire step, not only at its endpoint.
+      if (other.distance <= other.clearance) return x * dx + y * dy >= -.0001 && distance(candidate, other.point) > other.distance + 1;
+      var along = Math.max(0, Math.min(1, -(x * dx + y * dy) / (dx * dx + dy * dy)));
+      return Math.hypot(x + along * dx, y + along * dy) >= other.clearance;
+    });
+    if (clear) return candidate;
+  }
+  return null;
+};
 Navigation.prototype.move = function (unit, target, dt) {
   var start = point(unit.node, this.game.ndMain);
   var step = Math.max(0, unit.getSpeed() * dt);
@@ -207,29 +236,54 @@ Navigation.prototype.move = function (unit, target, dt) {
       }
       if (!this._frameSearches) this._frameSearchStart = Date.now();
       this._frameSearches = (this._frameSearches || 0) + 1;
-      var path = grid.findPath(start, target, radius);
+      // Enemies advance to a reachable frontier so a distant intact wall can
+      // enter their normal acquisition range. Exact-goal callers still fail
+      // cleanly; a frontier never counts as completing an authored waypoint.
+      var path = grid.findPath(start, target, radius, unit.navigationTeam === "enemy");
       this.stats.searches++;
       if (!path) this.stats.noPath++;
       // An immutable scene cannot yield a different answer for an unchanged
       // failed request. Retry when geometry, target or unit position changes.
-      state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), escape: path && path.escape, index: 0, retryAt: Infinity };
+      state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), partial: !!(path && path.partial), escape: path && path.escape, index: 0, retryAt: Infinity };
     }
     if (!state.points) return { arrived: false, reached: false, blocked: true, directionX: 0 };
     while (state.index < state.points.length && distance(start, state.points[state.index]) <= ARRIVAL_EPSILON) state.index++;
-    if (state.index >= state.points.length) return { arrived: true, reached: state.exact, blocked: false, directionX: 0 };
+    if (state.index >= state.points.length) return { arrived: true, reached: state.exact, partial: state.partial, blocked: false, directionX: 0, distance: 0 };
     destination = state.points[state.index];
   } else unit._navigationState = null;
+  var detouring = false, progress = unit._navigationProgress;
+  if (state && step > 0 && grid.isWalkable(start, radius)) {
+    if (!progress || progress.owner !== this || progress.revision !== this.revision || distance(progress.target, target) > 20) {
+      progress = unit._navigationProgress = { owner: this, revision: this.revision, target: { x: target.x, y: target.y }, point: start, elapsed: 0 };
+    }
+    if (distance(progress.point, start) >= Math.max(2, Math.min(8, unit.getSpeed() * .05))) { progress.point = start; progress.elapsed = 0; }
+    else progress.elapsed += Math.min(Math.max(dt, 0), .1);
+    if (progress.detour) {
+      progress.remaining -= dt;
+      if (progress.remaining <= 0 || !grid.segmentClear(start, progress.detour, radius)) progress.detour = null;
+    }
+    if (progress.elapsed >= .75) {
+      progress.elapsed = 0;
+      progress.detour = this.crowdDetour(unit, start, destination, radius, grid);
+      progress.remaining = 1;
+      // Physics may have invalidated a corridor without invalidating its last
+      // segment. Retry through the existing fair search queue next update.
+      if (!progress.detour) unit._navigationState = null;
+    }
+    if (progress.detour) { destination = progress.detour; detouring = true; }
+  }
   var length = distance(start, destination);
   var travel = Math.min(step, length);
   var next = length > 0 ? { x: start.x + (destination.x - start.x) * travel / length, y: start.y + (destination.y - start.y) * travel / length } : start;
   setMainPosition(unit.node, this.game.ndMain, next);
   var arrived = travel === length;
-  if (state && arrived) state.index++;
-  var finished = state ? state.index >= state.points.length : arrived;
+  if (state && arrived && !detouring) state.index++;
+  if (detouring && arrived) progress.detour = null;
+  var finished = !detouring && (state ? state.index >= state.points.length : arrived);
   // Small target movement is coalesced while travelling, but the old endpoint
   // must never be reported as arrival at a target that has since moved.
   if (state && distance(state.target, target) > ARRIVAL_EPSILON) finished = false;
-  return { arrived: finished, reached: finished && (!state || state.exact), blocked: false, directionX: destination.x - start.x };
+  return { arrived: finished, reached: finished && (!state || state.exact), partial: !!(state && state.partial), blocked: false, directionX: destination.x - start.x, distance: travel };
 };
 function get(game) {
   if (!game._navigation || game._navigation.game !== game) game._navigation = new Navigation(game);
@@ -256,6 +310,7 @@ exports.attackPositionOf = function (selection, unit, game) {
 };
 exports.reset = function (unit) {
   unit._navigationState = null;
+  unit._navigationProgress = null;
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
 };
 exports.resumeEnemyRoute = function (unit, game) {

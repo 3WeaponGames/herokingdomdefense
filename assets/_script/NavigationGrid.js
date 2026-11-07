@@ -248,11 +248,22 @@ NavigationGrid.prototype._projectGoal=function(goal,cache,start) {
   ties.forEach(function(id){var d=distance2(self._center(id),start);if(d<bestStart-EPS){bestStart=d;selected=id;}});
   return selected;
 };
-NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
+NavigationGrid.prototype.findPath=function(startValue,goalValue,radius,allowPartial) {
   var start=point(startValue),requestedGoal=point(goalValue),r=radiusValue(radius),self=this;
   this.lastSearch={expanded:0,cells:this.count,direct:false};
   var startFree=this.isWalkable(start,r),goalFree=this.isWalkable(requestedGoal,r),escape=null;
   if(startFree&&goalFree&&this.segmentClear(start,requestedGoal,r)){this.lastSearch.direct=true;return {points:distance2(start,requestedGoal)<EPS?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null};}
+  // Nearby enemies approaching the same sealed objective can share a safe
+  // frontier route instead of each flooding the same unreachable component.
+  // The grid is immutable; changing colliders creates a fresh grid/cache.
+  var sharedKey=allowPartial&&startFree?r+":"+requestedGoal.x+":"+requestedGoal.y:null;
+  var shared=sharedKey&&this._partialRoutes&&this._partialRoutes.get(sharedKey);
+  if(shared&&distance2(start,shared.start)<=this.cellSize*this.cellSize*9){
+    for(var join=shared.points.length-1;join>=0;join--)if(this.segmentClear(start,shared.points[join],r)){
+      this.lastSearch.shared=true;
+      return {points:[start].concat(shared.points.slice(join)),goal:shared.goal,reached:false,partial:true,escape:null};
+    }
+  }
   var cache=this._cache(r);
   if(!startFree) {
     var escaped=this._escape(start,cache,requestedGoal);if(!escaped)return null;
@@ -261,12 +272,12 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
   }
   var starts=this._anchors(start,cache);if(!starts.length)return null;
   var goalAnchors=goalFree?this._anchors(requestedGoal,cache):[],goalIds=new Set(),target=requestedGoal;
-  if(goalFree&&!goalAnchors.length)return null;
+  if(goalFree&&!goalAnchors.length&&!allowPartial)return null;
   goalAnchors.forEach(function(candidate){goalIds.add(candidate.id);});
   var projectedId=goalFree?-1:this._projectGoal(requestedGoal,cache,start);
-  if(!goalFree){if(projectedId<0)return null;target=this._center(projectedId);goalIds.add(projectedId);}
+  if(!goalFree){if(projectedId<0&&!allowPartial)return null;if(projectedId>=0){target=this._center(projectedId);goalIds.add(projectedId);}}
   var serial=++cache.serial;if(serial>=4294967295){cache.seen.fill(0);cache.closed.fill(0);cache.serial=serial=1;}
-  var heap=new Heap(),found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity;
+  var heap=new Heap(),found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity,frontier=-1,frontierDistance=Infinity;
   starts.forEach(function(candidate){var g=Math.sqrt(candidate.d2);cache.seen[candidate.id]=serial;cache.g[candidate.id]=g;cache.parent[candidate.id]=-1;heap.push({id:candidate.id,g:g,f:g+distance(candidate.point,target)});});
   while(heap.items.length) {
     var item=heap.pop(),currentId=item.id;
@@ -274,6 +285,7 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
     if(cache.closed[currentId]===serial||cache.seen[currentId]!==serial||item.g!==cache.g[currentId])continue;
     cache.closed[currentId]=serial;this.lastSearch.expanded++;
     var current=this._center(currentId),goalDistance=distance2(current,requestedGoal);
+    if(goalDistance<frontierDistance-EPS){frontierDistance=goalDistance;frontier=currentId;}
     if(goalDistance<bestDistance-EPS&&(goalFree||this._escapeClear(requestedGoal,current,r,true))){bestDistance=goalDistance;bestReachable=currentId;}
     if(goalIds.has(currentId)) {
       var completeCost=item.g+(goalFree?Math.sqrt(goalDistance):0);
@@ -290,15 +302,23 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius) {
   // For a blocked target, select its closest cell in the start's reachable
   // component if the globally closest boundary cell lies across another wall.
   if(found<0&&!goalFree)found=bestReachable;
+  var partial=found<0&&!!allowPartial;
+  if(partial)found=frontier;
   if(found<0)return null;
   var reversed=[],cursor=found,guard=0;
   while(cursor>=0&&guard++<=this.count){reversed.push(this._center(cursor));cursor=cache.parent[cursor];}
   if(guard>this.count)return null;
   reversed.reverse();var points=[start];
   reversed.forEach(function(p){if(distance2(points[points.length-1],p)>EPS)points.push(p);});
-  var goal=goalFree?requestedGoal:this._center(found);
+  var goal=goalFree&&!partial?requestedGoal:this._center(found);
   if(distance2(points[points.length-1],goal)>EPS)points.push(goal);
-  return {points:this._smooth(points,r),goal:goal,reached:goalFree,escape:escape};
+  var result={points:this._smooth(points,r),goal:goal,reached:goalFree&&!partial,partial:partial,escape:escape};
+  if(partial&&sharedKey&&!escape){
+    if(!this._partialRoutes)this._partialRoutes=new Map();
+    if(this._partialRoutes.size>=32)this._partialRoutes.delete(this._partialRoutes.keys().next().value);
+    this._partialRoutes.set(sharedKey,{start:start,points:result.points,goal:goal});
+  }
+  return result;
 };
 
 exports.NavigationGrid=NavigationGrid;

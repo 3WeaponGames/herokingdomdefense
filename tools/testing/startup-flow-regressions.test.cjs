@@ -5,7 +5,7 @@ const single=x=>({getInstance:()=>x}),noop=()=>{};
 function load(name,deps,extra={}) {
   function Base(){}
   const cc={Component:Base,Node:{EventType:{TOUCH_END:'end'}},_decorator:{ccclass:x=>x,property:()=>noop},
-    isValid:x=>!!x&&!x.destroyed,winSize:{width:750},Label:{Overflow:{SHRINK:1},HorizontalAlign:{CENTER:1}},...extra};
+    isValid:x=>!!x&&!x.destroyed,winSize:{width:750},macro:{MAX_ZINDEX:32767},Label:{Overflow:{SHRINK:1},HorizontalAlign:{CENTER:1}},...extra};
   const context={exports:{},require:id=>deps[id]||{},cc,sp:{Skeleton:Base},console:{log:noop,error:noop},
     __extends(C,B){Object.setPrototypeOf(C,B);C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},
     __decorate:(_ds,t,k)=>k===undefined?t:undefined,__spreadArrays:(...a)=>[].concat(...a)};
@@ -76,6 +76,7 @@ test('Legacy exit releases only its blocker and rejects each pending entry stage
   for(const stage of [0,1,2]){
     const f=legacyFixture(),unrelated=new f.Node();unrelated.name='block_touch_event';unrelated.parent=f.canvas;
     f.app.enter_App(null,f.exit);assert.equal(f.canvas.children.length,2);
+    assert.equal(f.app._touchBlocker.zIndex,32767);
     if(stage>=1)f.data.shift()();if(stage>=2)f.preloads.shift()();
     const opens=f.opened.length,resets=f.resets;f.app.exit_App();assert.equal(f.exits,1);assert.deepEqual(f.canvas.children,[unrelated]);
     [f.data,f.preloads,f.uis][stage].shift()();assert.equal(f.opened.length,opens);assert.equal(f.resets,resets);assert.equal(f.music,0);

@@ -5,13 +5,14 @@ const data=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/g
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'),'utf8'));
 const taskPatch=require('./battle-task-layout-patch.json');
 function functionAt(marker){const start=source.indexOf('function',source.indexOf(marker)),open=source.indexOf('{',start);let depth=1,end=open+1;for(;depth;end++){if(source[end]==='{')depth++;else if(source[end]==='}')depth--;}return source.slice(start,end);}
-class Label{}class Sprite{}
+class Label{_forceUpdateRenderData(){}}Label.Overflow={CLAMP:1,NONE:0};class Sprite{}
 class Node{
   constructor(name='node',parent=null){this.name=name;this.parent=parent;this.children=[];if(parent)parent.children.push(this);this.active=true;this.x=0;this.y=0;this.width=0;this.height=0;this.anchorX=this.anchorY=0.5;this.scaleX=this.scaleY=1;this.angle=0;this.components=[];}
   get activeInHierarchy(){return this.active&&(!this.parent||this.parent.activeInHierarchy);}
   getChildByName(name){return this.children.find(x=>x.name===name);}
-  getComponent(Type){return this.components.find(x=>x instanceof Type);}
+  getComponent(Type){const component=this.components.find(x=>x instanceof Type);if(component)component.node=this;return component;}
   getPosition(){return{x:this.x,y:this.y};}
+  setContentSize(width,height){this.width=width;this.height=height;}
   setPosition(x,y){if(typeof x==='object'){this.x=x.x;this.y=x.y;}else{this.x=x;this.y=y;}}
   setParent(parent){if(this.parent)this.parent.children.splice(this.parent.children.indexOf(this),1);this.parent=parent;parent.children.push(this);}
   setSiblingIndex(){}
@@ -25,8 +26,9 @@ context.enemyIndicatorBounds=vm.runInNewContext('('+functionAt('function enemyIn
 const getObstacles=vm.runInNewContext('('+functionAt('_ctor.prototype._enemyIndicatorObstacles')+')',context);
 const place=vm.runInNewContext('('+functionAt('_ctor.prototype._placeEnemyIndicator')+')',context);
 const update=vm.runInNewContext('('+functionAt('_ctor.prototype.update =')+')',context);
+const updateLive=vm.runInNewContext('('+functionAt('_ctor.prototype._updateOffscreenEnemies =')+')',context);
 function authored(index,parent,english=true){const source=data[index],node=new Node(source._name,parent),trs=source._trs&&source._trs.array;node.width=source._contentSize?source._contentSize.width:0;node.height=source._contentSize?source._contentSize.height:0;node.active=source._active!==false;if(source._anchorPoint){node.anchorX=source._anchorPoint.x;node.anchorY=source._anchorPoint.y;}if(trs){node.x=trs[0];node.y=trs[1];node.scaleX=trs[7];node.scaleY=trs[8];node.angle=2*Math.atan2(trs[5],trs[6])*180/Math.PI;}for(const ref of source._components||[]){const component=data[ref.__id__];if(component.__type__==='cc.Label'){const label=new Label();label.string=component._string;node.components.push(label);const key='ui.layout.kinghtfalluigame.'+ref.__id__,style=english&&((taskPatch.labelStyles[key]||catalog.labelStyles[key]||{}).en);if(style){if(style.width!==undefined)node.width=style.width;if(style.height!==undefined)node.height=style.height;if(style.x!==undefined)node.x=style.x;if(style.y!==undefined)node.y=style.y;}}else if(component.__type__==='cc.Sprite')node.components.push(new Sprite());}for(const child of source._children||[])authored(child.__id__,node,english);return node;}
-function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_updateTestControls(){},ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
+function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_updateTestControls(){},ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place,_updateOffscreenEnemies:updateLive};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
 function near(a,b){assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);}
 function clear(a,b,gap=0){return a.maxX+gap<=b.minX+1e-6||a.minX-gap>=b.maxX-1e-6||a.maxY+gap<=b.minY+1e-6||a.minY-gap>=b.maxY-1e-6;}
 function bounds(node,ui){return context.enemyIndicatorBounds(node,ui);}
@@ -39,4 +41,37 @@ test('Rotating/previously hidden arrows keep a stable footprint and reactivate a
 test('Canvas transforms and inactive controls do not change local placement or leave phantom blockers',()=>{const f=fixture(),node=f.indicator(),target={x:-246,y:396};place.call(f.state,node,target,getObstacles.call(f.state));const first=node.getPosition();f.canvas.x=375;f.canvas.y=667;f.canvas.scaleX=f.canvas.scaleY=0.5;f.canvas.angle=8;place.call(f.state,node,target,getObstacles.call(f.state));near(node.x,first.x);near(node.y,first.y);for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])f.state[key].active=false;assert.equal(getObstacles.call(f.state).length,0);place.call(f.state,node,target,[]);near(node.x,target.x);near(node.y,target.y);});
 test('Live update retains per-spawn enemy counts/visibility and applies separation to new clones',()=>{const f=fixture(),state=f.state,pathNode=new Node('Path',f.ui);new Node('ndEnemy1',pathNode).setPosition(-600,650);new Node('ndEnemy2',pathNode).setPosition(-600,650);Object.assign(state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},ndPath:pathNode,gameData:{baseBuild:{getLevel:()=>1},enemyQueue:{1:[{id:7,num:9}],2:[{id:8,num:3}]}}},loadSpriteFrame(bundle,key,callback){callback({key});}});cc.instantiate=()=>f.indicator();update.call(state,0.016);const a=state.enemyIconInfo[1].ndItem,b=state.enemyIconInfo[2].ndItem;assert(a.active&&b.active);assert.equal(a.getChildByName('labNum').getComponent(Label).string,'9');assert.equal(b.getChildByName('labNum').getComponent(Label).string,'3');assert(clear(bounds(a,f.ui),bounds(b,f.ui),12));delete state.ctrGame.gameData.enemyQueue[2];update.call(state,0.016);assert.equal(b.active,false);assert.equal(a.active,true);});
 test('Impossible packing still returns a finite bounded position without hiding indicator data',()=>{const p=context.placeEnemyIndicator({x:99,y:99},{minX:-50,maxX:50,minY:-50,maxY:50},{minX:-10,maxX:10,minY:-10,maxY:10},[{minX:-999,maxX:999,minY:-999,maxY:999}],12);assert(Number.isFinite(p.x)&&Number.isFinite(p.y));assert(p.x>=-10&&p.x<=10&&p.y>=-10&&p.y<=10);});
+test('Active offscreen enemies remain represented in all eight directions without a spawn queue or built castle',()=>{
+  const f=fixture(),enemies=[];cc.instantiate=()=>f.indicator();
+  cc.view={getVisibleSize:()=>({width:750,height:1334}),getVisibleOrigin:()=>({x:-375,y:-667})};
+  for(let sector=0;sector<8;sector++)for(let i=0;i<2;i++){
+    const angle=sector*Math.PI/4,node=new Node('enemy',f.ui);node.setPosition(Math.cos(angle)*1800,Math.sin(angle)*1800);
+    enemies.push({node,cfg:{ID:90001},isDead:()=>false});
+  }
+  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
+  update.call(f.state,.016);
+  const markers=Object.values(f.state.enemyIconInfo);assert.equal(markers.length,8);
+  assert.equal(markers.reduce((sum,r)=>sum+Number(r.ndItem.getChildByName('labNum').getComponent(Label).string),0),16);
+  for(const record of markers){assert(record.ndItem.active);const b=bounds(record.ndItem,f.ui);assert(b.minX>=-375&&b.maxX<=375&&b.minY>=-667&&b.maxY<=667,'marker exceeded the actual viewport');assert.equal(record.ndItem.zIndex,100);}
+  // Onscreen, dead and pooled enemies contribute no stale marker/count.
+  enemies.forEach((e,i)=>{if(i%3===0)e.node.setPosition(0,0);else if(i%3===1)e.isDead=()=>true;else e._isPooled=true;});
+  update.call(f.state,.016);assert(markers.every(r=>!r.ndItem.active));
+});
+test('A large wave shares a bounded directional marker and tracks death and camera movement immediately',()=>{
+  const f=fixture(),enemies=Array.from({length:100},()=>({node:new Node('enemy',f.ui),cfg:{ID:90002},isDead:()=>false}));
+  enemies.forEach(e=>e.node.setPosition(1800,0));cc.instantiate=()=>f.indicator();
+  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
+  update.call(f.state,.016);const records=Object.values(f.state.enemyIconInfo);assert.equal(records.length,1);assert.equal(records[0].ndItem.getChildByName('labNum').getComponent(Label).string,'100');
+  enemies[0].isDead=()=>true;update.call(f.state,.016);assert.equal(records[0].ndItem.getChildByName('labNum').getComponent(Label).string,'99');
+  cc.Camera.main.getWorldToScreenPoint=p=>({x:p.x-1800,y:p.y});update.call(f.state,.016);assert(records.every(r=>!r.ndItem.active));cc.Camera.main.getWorldToScreenPoint=p=>p;
+});
+test('Live markers use the world camera even when a different UI camera becomes main',()=>{
+  const f=fixture(),enemy={node:new Node('enemy',f.ui),cfg:{ID:90002},isDead:()=>false};
+  enemy.node.setPosition(1800,0);cc.instantiate=()=>f.indicator();
+  Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},camera:{getWorldToScreenPoint:()=>({x:0,y:0})},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>[enemy]}},loadSpriteFrame(_bundle,_key,done){done({});}});
+  update.call(f.state,.016);assert.equal(Object.keys(f.state.enemyIconInfo).length,0);
+  const previous=cc.Camera.main;
+  try{cc.Camera.main={getWorldToScreenPoint:()=>({x:0,y:0})};f.state.ctrGame.camera.getWorldToScreenPoint=p=>p;update.call(f.state,.016);assert.equal(Object.values(f.state.enemyIconInfo).filter(r=>r.ndItem.active).length,1);}
+  finally{cc.Camera.main=previous;}
+});
 console.log(passed+' enemy indicator HUD-layout checks passed.');
