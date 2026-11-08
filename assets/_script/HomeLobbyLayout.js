@@ -34,18 +34,34 @@ function lockButtonSize(node) {
   node.setContentSize(341, 146);
   var label = node.getChildByName("labName"); label.setPosition(0, 30); label.setContentSize(650, 128);
   var text = label.getComponent(cc.Label); text.fontSize = 94; text.lineHeight = 112; text.overflow = cc.Label.Overflow.CLAMP; text.enableWrapText = false;
-  node.getChildByName("Layout").y = -31;
+  var row = node.getChildByName("Layout");
+  disable(row, cc.Layout); disable(row, cc.Widget);
+  row.setAnchorPoint(.5, .5); row.setPosition(0, -26); row.setContentSize(148, 48);
+  var icon = row.getChildByName("wg_ty_tl");
+  icon.setAnchorPoint(.5, .5); icon.setContentSize(43, 54); icon.setScale(.85); icon.setPosition(-25, 0);
+  var amount = row.getChildByName("labNum"), number = amount.getComponent(cc.Label);
+  amount.setAnchorPoint(0, .5); amount.setScale(.5); amount.setPosition(2, 0); amount.setContentSize(88, 96);
+  number.fontSize = 72; number.lineHeight = 83; number.enableWrapText = false;
+  number.overflow = cc.Label.Overflow.SHRINK;
+  number.horizontalAlign = cc.Label.HorizontalAlign.LEFT; number.verticalAlign = cc.Label.VerticalAlign.CENTER;
+}
+function applyModeSkin(node, frame) {
+  var sprite = node.getComponent(cc.Sprite);
+  sprite.enabled = true; sprite.type = cc.Sprite.Type.SIMPLE; sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+  if (frame) sprite.spriteFrame = frame;
+  node.setContentSize(341, 146);
+  var mask = node.getChildByName("mask");
+  if (mask && frame) { mask.setContentSize(341, 146); mask.getComponent(cc.Mask).spriteFrame = frame; }
+}
+function paintCostPlate(node, color) {
+  var g = graphics(node.getChildByName("Layout"));
+  g.clear(); g.fillColor = cc.color(color); g.roundRect(-74, -24, 148, 48, 24); g.fill();
 }
 function paintMode(node, enabled) {
   if (node._blueState === enabled) return; node._blueState = enabled;
-  var g = graphics(node), w = 341, h = 146;
-  function polygon(y, color) {
-    g.fillColor = cc.color(color); g.moveTo(-w / 2 + 30, h / 2 + y); g.lineTo(w / 2 - 30, h / 2 + y); g.lineTo(w / 2, y); g.lineTo(w / 2 - 30, -h / 2 + y); g.lineTo(-w / 2 + 30, -h / 2 + y); g.lineTo(-w / 2, y); g.close(); g.fill();
-  }
-  g.clear(); polygon(-3, "#11131a"); polygon(0, enabled ? "#007bb7" : "#555766");
-  g.fillColor = cc.color(enabled ? "#20d4f3" : "#9b9eab"); g.moveTo(-138, 68); g.lineTo(138, 68); g.lineTo(165, 0); g.lineTo(139, -61); g.lineTo(-139, -61); g.lineTo(-165, 0); g.close(); g.fill();
-  g.fillColor = new cc.Color(255, 255, 255, enabled ? 65 : 30); g.moveTo(-133, 61); g.lineTo(133, 61); g.lineTo(151, 17); g.lineTo(-151, 17); g.close(); g.fill();
-  g.fillColor = cc.color(enabled ? "#007eaf" : "#626574"); g.roundRect(-75, -54, 150, 45, 22); g.fill();
+  var sprite = node.getComponent(cc.Sprite);
+  sprite.setState(enabled ? cc.Sprite.State.NORMAL : cc.Sprite.State.GRAY);
+  paintCostPlate(node, enabled ? "#004f80" : "#626574");
 }
 function install(home) {
   if (home._lobby) return home._lobby;
@@ -71,8 +87,11 @@ function install(home) {
   disable(home.btnSubBg, cc.Layout); disable(home.btnSubBg, cc.Sprite); disable(home.btnSubBg, cc.Widget);
   home.btnSubBg.parent = home.node; home.btnSubBg.setPosition(0, 0);
   var defense = state.defense = cc.instantiate(home.btnBattle); defense.name = "WallDefenseButton"; defense.parent = home.btnSubBg; defense._isLobbyMode = true;
-  disable(defense, cc.Sprite); defense.getChildByName("mask").active = false;
+  defense.getChildByName("mask").active = false;
   lockButtonSize(home.btnBattle); lockButtonSize(defense);
+  applyModeSkin(home.btnBattle, home.btnBattle.getComponent(cc.Sprite).spriteFrame);
+  applyModeSkin(defense, home.wallDefenseButtonFrame);
+  paintCostPlate(home.btnBattle, "#da9300");
   bind(home.btnBattle.getChildByName("labName"), "lobby.campaign"); bind(defense.getChildByName("labName"), "lobby.wallDefense");
   var caption = state.defenseCaption = new cc.Node("WallDefenseStatus"); caption.parent = home.node; caption.setContentSize(341, 38);
   var label = caption.addComponent(cc.Label); label.fontSize = 26; label.lineHeight = 32; label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;

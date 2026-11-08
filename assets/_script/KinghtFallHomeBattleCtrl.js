@@ -42,6 +42,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     e.btnRight = null;
     e.ndBoxShow = null;
     e.btnBattle = null;
+    e.wallDefenseButtonFrame = null;
     e.ndTaskInfo = null;
     e.ndBtnLeft = null;
     e.btnAchieve = null;
@@ -963,6 +964,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     type: cc.Node,
     tooltip: "战斗按钮"
   })], _ctor.prototype, "btnBattle", undefined);
+  cc__decorate([ccp_property(cc.SpriteFrame)], _ctor.prototype, "wallDefenseButtonFrame", undefined);
   cc__decorate([ccp_property({
     type: cc.Node,
     tooltip: "任务信息"

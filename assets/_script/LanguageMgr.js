@@ -242,6 +242,9 @@ LanguageMgr.prototype._applyLabelTypeface = function (label, text) {
 };
 LanguageMgr.prototype._applyDisplayEffects = function (label, resource) {
   var options = this.catalog.displayTextStyle && this.catalog.displayTextStyle[this.currentLan];
+  var styles = this.catalog.labelStyles && this.catalog.labelStyles[label._localizedStyleKey];
+  var style = styles && styles[this.currentLan];
+  if (options && style && style.displayTextStyle) options = Object.assign({}, options, style.displayTextStyle);
   var base = label._localizedBaseEffects, node = label.node;
   if (!cc.LabelOutline || !cc.LabelShadow || !(label instanceof cc.Label) || label instanceof cc.RichText) return;
   var outline = node.getComponent(cc.LabelOutline), shadow = node.getComponent(cc.LabelShadow);

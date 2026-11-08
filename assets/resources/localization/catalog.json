@@ -12610,7 +12610,13 @@
         "wrap": false,
         "overflow": "NONE",
         "horizontalAlign": 1,
-        "fontRole": "display"
+        "fontRole": "display",
+        "displayTextStyle": {
+          "minimumOutline": 2,
+          "outlineRatio": 0.04,
+          "minimumShadow": 1,
+          "shadowRatio": 0.02
+        }
       },
       "zh": {
         "fontSize": 44,
@@ -18201,16 +18207,20 @@
       "en": {
         "fontSize": 72,
         "lineHeight": 83,
-        "width": 140,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 88,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 96,
+        "horizontalAlign": 0
       },
       "zh": {
         "fontSize": 72,
         "lineHeight": 83,
-        "width": 140,
-        "overflow": "NONE",
-        "wrap": false
+        "width": 88,
+        "overflow": "SHRINK",
+        "wrap": false,
+        "height": 96,
+        "horizontalAlign": 0
       }
     },
     "ui.mobile.kinghtfallhomebattlectrl.134": {
