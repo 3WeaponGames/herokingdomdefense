@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "6b46ef62-95c9-463b-81af-5ebf49a96d58",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 850,
+  "height": 414,
+  "platformSettings": {},
+  "subMetas": {
+    "stage07-south-ridge": {
+      "ver": "1.0.6",
+      "uuid": "59cea353-51cf-4284-b3c6-c4842a67011d",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6b46ef62-95c9-463b-81af-5ebf49a96d58",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 850,
+      "height": 414,
+      "rawWidth": 850,
+      "rawHeight": 414,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

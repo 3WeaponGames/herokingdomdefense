@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "820c477a-5ab6-5e64-a8f7-a99d2dae24f3",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "dragonfly-armor": {
+      "ver": "1.0.6",
+      "uuid": "3c02a1b8-0c0d-54db-a82b-9120f6c91162",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "820c477a-5ab6-5e64-a8f7-a99d2dae24f3",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

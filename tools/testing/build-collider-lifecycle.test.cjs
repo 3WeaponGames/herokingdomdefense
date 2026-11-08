@@ -92,7 +92,7 @@ function fixture(actualEngine = false) {
   Parent.prototype.onDestroy = function () { this.parentDestroyed = true; };
   Parent.prototype.delAllBuff = Parent.prototype.sendEvent = function () {};
   Parent.prototype.T = value => value;
-  const modules = { KinghtFallInterface: { KinghtFallInterface: Parent },
+  const modules = { BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {} }, KinghtFallInterface: { KinghtFallInterface: Parent },
     KinghtFallBuildInfo: { KinghtFallBuildInfo: function (type, cfg) { this.cfg = cfg; this.canUpgrade = false; } },
     KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} },
     KinghtFallEnum: { KinghtFallEnumBuffCfg: {} }, KinghtFallTextConfig: { KinghtFallTextConfig: {} },
@@ -137,6 +137,17 @@ function rapidLevels(h) {
   assert(h.tweens.filter(t => t.options.onUpdate).every(t => t.duration === .2));
   assert.deepEqual(Array.from(h.leaves[2].points, p => [p.x, p.y]), [[-20, -10], [20, -10], [20, 10], [-20, 10]]);
 }
+
+test('appended building variants reuse the authored collider footprint and retire late growth callbacks', () => {
+  const h = fixture();
+  h.wall.buildCfg.levelList.push({ level: 1, Skin: 'skin1', ColliderIndex: 1 }, { level: 2, Skin: 'skin3', ColliderIndex: 3 });
+  h.wall.setLevel(4); h.step(.5);
+  assert.equal(h.wall.getColliderIndex(), 1);
+  const stale = h.tweens.slice(); h.wall.setLevel(5); h.step(1);
+  stale.forEach(t => t.options.onUpdate(t.target, 1)); h.flush();
+  assert.equal(h.wall.getColliderIndex(), 3);
+  assert.deepEqual(h.fixtures(), [0, 0, 1, 0, 0, 1]);
+});
 
 test('rapid building1→3 restore retires only owned colliders and preserves complete authored geometry', () => rapidLevels(fixture()));
 

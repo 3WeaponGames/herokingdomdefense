@@ -5,17 +5,18 @@ const vm = require('node:vm');
 const test = require('node:test');
 
 function harness(name) {
-  const state = { enabled: false, review: false, stage: 10, savedTime: Date.now(), entered: 0, adCalls: 0, tasks: 0, closed: 0, progress: null };
+  const state = { enabled: false, review: false, stage: 10, power: 30, savedTime: Date.now(), entered: 0, adCalls: 0, tasks: 0, closed: 0, progress: null };
   function Base() {}
   const singleton = object => ({ getInstance: () => object });
-  const user = { getMaxStage: () => state.stage, getTalentLevel: () => state.progress, setTalentLevel: p => state.progress = p };
+  const user = { getMaxStage: () => state.stage, getPowerNum: () => state.power, getTalentLevel: () => state.progress, setTalentLevel: p => state.progress = p };
   const modules = {
     TestMode: { TestMode: singleton({ shouldBypassAdLimits: () => state.enabled }) },
     SdkMgr: { AdType: { AdFreeTime: 1 }, SdkMgr: singleton({ getCheckVersion: () => state.review, playVideo: (kind, success, fail, id) => { state.adCalls++; state.placement = id; success(); } }) },
     PlatformSetting: { SwitchID: { ShenHe: 'review' } },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ transact: (mutate, eligible) => { if (!eligible()) return null; mutate(); return true; }, getUserData: () => user, getDailyData: () => ({ getSubTimeByIndex: () => state.savedTime, setSubTimeByIndex: (i, n) => state.savedTime = n }), getMissionData: () => ({ addTaskNum: () => state.tasks++ }) }) },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) },
-    GAD_App: { default: { instance: { enter_App: done => { state.entered++; done(); } } } },
+    GAD_App: { default: { instance: { enter_App: (done, exit, entry) => { state.entryCost = entry.cost; state.entered++; done(); } } } },
+    GAD_Configs: require('../../assets/_script/GAD_Configs'),
     GameTrackDataEvent: { TrackId: {} },
     KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} },
     KinghtFallMissionData: { KinghtFallTaskCountName: {} },
@@ -62,6 +63,13 @@ test('wall cooldown bypass preserves normal cooldown and stage unlock requiremen
   state.enabled=true;h.EnterSubPlay(0);assert.equal(state.adCalls,1);assert.equal(state.entered,2);assert.equal(state.savedTime,saved);
   state.enabled=false;h.EnterSubPlay(0);assert.equal(state.adCalls,2);
   state.enabled=true;state.stage=1;h.EnterSubPlay(0);assert.equal(state.entered,3);
+});
+
+test('Wall Defense requires and admits 10 energy even when Campaign costs 5', () => {
+  const {state,instance:h} = harness('KinghtFallHomeBattleCtrl');
+  h.costEnergy=5;h.subPlayTime=[1800];h.subPlayStage=[2];h.getYoumengTrack=()=> 'wall';
+  state.power=9;h.EnterSubPlay(0);assert.equal(state.entered,0);assert.equal(state.adCalls,0);
+  state.power=10;h.EnterSubPlay(0);assert.equal(state.entered,1);assert.equal(state.entryCost,10);
 });
 test('wall cooldown display updates in both modes without hiding stage locks', () => {
   const {state,instance:h} = harness('KinghtFallHomeBattleCtrl');

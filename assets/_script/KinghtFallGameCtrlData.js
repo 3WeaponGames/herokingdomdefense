@@ -158,6 +158,8 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     this.coin = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getCoin();
+    this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
+    if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };
   _ctor.prototype.loadMonster = function (restoring) {
     this._roundCompleted = false;
@@ -166,6 +168,7 @@ var def_KinghtFallGameCtrlData = function () {
     if (!restoring) this.coin += t.StartSliver;
     this.videoCoin = t.CommerceSliver;
     if (!restoring) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
+    this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
     this.enemyQueue = {};
     for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
       var n = t.RefreshSoldierKind[e];
@@ -183,6 +186,7 @@ var def_KinghtFallGameCtrlData = function () {
         }
       }
     }
+    if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };
   _ctor.prototype.onRestart = function (t) {
     var restoring = !t && this._restoringCheckpoint;
@@ -231,14 +235,14 @@ var def_KinghtFallGameCtrlData = function () {
     }
     if ($z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe)) {
       this.appearBusinessPoints && (this.appearBusinessPoints.node.active = false);
-      this.weaponBusinessPoints.node.active = false;
-      this.horseBusinessPoints.node.active = false;
+      if (this.weaponBusinessPoints) this.weaponBusinessPoints.node.active = false;
+      if (this.horseBusinessPoints) this.horseBusinessPoints.node.active = false;
     } else {
       if (this.appearBusinessPoints) {
         this.appearBusinessPoints.init(1);
         this.appearBusinessPoints.node.active = true;
       }
-      switch (this.businessAdd[a.FlagWeapon]) {
+      if (this.weaponBusinessPoints) switch (this.businessAdd[a.FlagWeapon]) {
         default:
           this.weaponBusinessPoints.node.active = true;
           this.weaponBusinessPoints.init(1);
@@ -254,7 +258,7 @@ var def_KinghtFallGameCtrlData = function () {
         case 2:
           this.weaponBusinessPoints.node.active = false;
       }
-      switch (this.businessAdd[a.FlagHorse]) {
+      if (this.horseBusinessPoints) switch (this.businessAdd[a.FlagHorse]) {
         default:
           this.horseBusinessPoints.node.active = true;
           this.horseBusinessPoints.init(1);
@@ -355,10 +359,10 @@ var def_KinghtFallGameCtrlData = function () {
                 this.businessPoints.push(s);
                 break;
               case $z1KinghtFallCommerce.KinghtFallCommerceType.Weapon:
-                this.weaponBusinessPoints = s;
+                this.weaponBusinessPoints = require('AuthoredSpawnPlan').offers(this.weaponBusinessPoints, s);
                 break;
               case $z1KinghtFallCommerce.KinghtFallCommerceType.Horse:
-                this.horseBusinessPoints = s;
+                this.horseBusinessPoints = require('AuthoredSpawnPlan').offers(this.horseBusinessPoints, s);
             }
             s.node.active = false;
           }
@@ -434,6 +438,11 @@ var def_KinghtFallGameCtrlData = function () {
   };
   _ctor.prototype.onUpdata = function (t) {
     var advancedQueue = false;
+    if (this.authoredTimeline) {
+      var self = this;
+      this.authoredTimeline.advance(t, function (unit, spawn, route) { advancedQueue = true; self.ctrPar.addEnemy(unit, spawn, route); });
+      if (advancedQueue) this.enemyQueue = this.authoredTimeline.queue();
+    } else {
     this.time[i.MonsterGenerate] += t;
     if (this.time[i.MonsterGenerate] > this.packInterval) {
       this.time[i.MonsterGenerate] = 0;
@@ -449,6 +458,7 @@ var def_KinghtFallGameCtrlData = function () {
           }
         }
       }
+    }
     }
     for (var o = 0; o < this.enemyList.length; o++) {
       (a = this.enemyList[o]).onUpdate(t);
@@ -505,9 +515,10 @@ var def_KinghtFallGameCtrlData = function () {
     }
   };
   _ctor.prototype.tryEndGame = function () {
+    if (this.authoredTimeline && this.authoredTimeline.pending()) return;
     var t = 0;
     for (var e in this.enemyQueue) {
-      Object.prototype.hasOwnProperty.call(this.enemyQueue, e) && (t += this.enemyQueue[e].length);
+      !this.authoredTimeline && Object.prototype.hasOwnProperty.call(this.enemyQueue, e) && (t += this.enemyQueue[e].length);
     }
     if (!this._roundCompleted && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
       this._roundCompleted = true;
@@ -571,7 +582,7 @@ var def_KinghtFallGameCtrlData = function () {
       case $z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff11:
         var o = [];
         for (var a in this.bulidPointMap) {
-          Object.prototype.hasOwnProperty.call(this.bulidPointMap, a) && (r = this.bulidPointMap[a]).buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter && r.getIsLock() && r.buildInfo.cfg && (null === (e = r.buildInfo.cfg.BranchBuild) || undefined === e ? undefined : e.length) > 1 && r.getLevel() < this.baseBuild.getLevel() && o.push(r);
+          Object.prototype.hasOwnProperty.call(this.bulidPointMap, a) && (r = this.bulidPointMap[a]).buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter && r.getIsLock() && r.buildInfo.cfg && (null === (e = r.buildInfo.cfg.BranchBuild) || undefined === e ? undefined : e.length) > 0 && r.getLevel() < this.baseBuild.getLevel() && o.push(r);
         }
         o.length > 0 && o[$z1Utils.Utils.randomRang(0, o.length)].onBuffUpgrade();
         break;
@@ -641,8 +652,8 @@ var def_KinghtFallGameCtrlData = function () {
     this.businessPoints.forEach(function (t) {
       t.node.active = false;
     });
-    this.weaponBusinessPoints.node.active = false;
-    this.horseBusinessPoints.node.active = false;
+    if (this.weaponBusinessPoints) this.weaponBusinessPoints.node.active = false;
+    if (this.horseBusinessPoints) this.horseBusinessPoints.node.active = false;
   };
   _ctor.prototype.onChangeSpeed = function () {
     for (var t = 0; t < this.enemyList.length; t++) {

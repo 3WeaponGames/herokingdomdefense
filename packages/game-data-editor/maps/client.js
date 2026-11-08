@@ -287,7 +287,8 @@ function mount(container, options) {
         if (drag.type === 'pan') { state.panX = drag.panX + event.clientX - drag.x; state.panY = drag.panY + event.clientY - drag.y; draw(); return; }
         const p = world(event), draft = clone(drag.original); drag.moved = true;
         if (drag.type === 'node') {
-            drag.edit = Maps.moveEdit(drag.original, drag.node, { x: drag.position.x + p.x - drag.start.x, y: drag.position.y + p.y - drag.start.y }, doc()); draft[drag.node]._trs = drag.edit.value;
+            drag.edits = Maps.moveObjectEdits(drag.original, drag.node, { x: drag.position.x + p.x - drag.start.x, y: drag.position.y + p.y - drag.start.y }, doc());
+            drag.edits.forEach(edit => { draft[edit.path[0]]._trs = edit.value; });
         } else {
             const original = Maps.model(drag.original), node = original.byId[drag.node], local = Maps.point(Maps.inverse(node.world), p), source = draft[drag.collider], offset = source._offset || source.offset || { x: 0, y: 0 };
             source.points[drag.vertex].x = local.x - (offset.x || 0); source.points[drag.vertex].y = local.y - (offset.y || 0);
@@ -295,7 +296,7 @@ function mount(container, options) {
         }
         state.info = Maps.model(draft); draw();
     };
-    canvas.onpointerup = () => { const drag = state.drag; state.drag = null; if (drag && drag.moved && drag.edit) commit([drag.edit]); };
+    canvas.onpointerup = () => { const drag = state.drag; state.drag = null; if (drag && drag.moved && (drag.edits || drag.edit)) commit(drag.edits || [drag.edit]); };
     canvas.onpointercancel = () => { state.drag = null; if (state.snapshot) update(state.snapshot); };
     canvas.oncontextmenu = event => event.preventDefault();
     canvas.onwheel = event => {

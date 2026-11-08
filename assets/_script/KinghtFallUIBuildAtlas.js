@@ -27,19 +27,29 @@ var def_KinghtFallUIBuildAtlas = function (t) {
       t.closeUI();
     }, this);
     var e = function (e) {
-      var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuildCfgById(e).levelList[0];
+      var building = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuildCfgById(e);
+      var choices = Array.isArray(building.InitialChoices) && building.InitialChoices.length ? building.InitialChoices : [1];
+      choices.filter(function (index, at) { return Number.isInteger(index) && building.levelList[index - 1] && choices.indexOf(index) === at; }).forEach(function (index) {
+      var n = building.levelList[index - 1];
       var i = cc.instantiate(t.ndItem);
       i.parent = t.ndParent;
       i.active = true;
       i.x = 0;
-      t.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconBuild, n.Icon, function (t) {
+      var artwork = n.Appearance && n.Appearance.sprite;
+      t.loadSpriteFrame(artwork ? "resources" : $z1KinghtFallConfig.KinghtFallBundelName.IconBuild, artwork || n.Icon, function (t) {
         var e = i.getChildByName("sprIcon");
         e.getComponent(cc.Sprite).spriteFrame = t;
         e.scale = n.Zoom;
         e.setPosition(n.Excursion ? cc.v2(n.Excursion[0] || 0, n.Excursion[1] || 0) : cc.v2(0, 0));
+        if (artwork) {
+          var size = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
+          e.scale = Math.min(170 / Math.max(1, size.width), 170 / Math.max(1, size.height));
+          e.setPosition(-202, 31);
+        }
       });
       i.getChildByName("labName").getComponent(cc.Label).string = t.T(n.Name);
       i.getChildByName("labInfo").getComponent(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("{0}", [t.T(n.LevelUpDescribe)]);
+      });
     };
     e($z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter);
     e($z1KinghtFallEnum.KinghtFallEnumBuildEnum.ArrowTower);

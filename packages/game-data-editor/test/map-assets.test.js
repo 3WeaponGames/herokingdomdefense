@@ -29,7 +29,7 @@ test('only allowlisted runtime map paths can be opened', () => {
 });
 test('map index resolves actual artwork and shared A/B/D stage usages', () => {
     const index = Maps.loadIndex(root, documents);
-    assert.strictEqual(index.length, 4);
+    assert.strictEqual(index.length, Maps.IDS.length);
     index.forEach(map => {
         assert(Object.keys(map.images).length > 20);
         assert(map.stages.some(stage => stage.variant === 'A'));

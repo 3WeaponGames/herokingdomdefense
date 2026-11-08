@@ -24,10 +24,12 @@ var def_KinghtFallUIBuildSel = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.init = function (t, e, cancel) {
+  _ctor.prototype.init = function (t, e, cancel, choices) {
     this.build = t;
     this.callBack = e;
     this.cancelCall = cancel;
+    this.initialChoice = !!t && !(t.buildInfo && t.buildInfo.cfg);
+    this.choiceIndexes = Array.isArray(choices) ? choices.slice() : null;
   };
   _ctor.prototype.onClose = function () {
     var cancel = this.cancelCall;
@@ -44,7 +46,18 @@ var def_KinghtFallUIBuildSel = function (t) {
   };
   _ctor.prototype.initView = function () {
     var t = this;
-    var e = this.build.buildInfo.cfg.BranchBuild;
+    var e = this.choiceIndexes || (this.build.getUpgradeChoices ? this.build.getUpgradeChoices() : this.build.buildInfo.cfg.BranchBuild);
+    var grid = e.length > 3;
+    this._nameBadgeRows = [];
+    this._choiceRows = [];
+    this._initialChoiceDescriptions = [];
+    if (grid || this.initialChoice) {
+      var layout = this.ndParent.getComponent(cc.Layout);
+      if (layout) layout.enabled = false;
+      this.ndParent.setContentSize(620, grid ? 600 : 620);
+      this.ndParent.setPosition(0, -5);
+    }
+    if (this.initialChoice) this.initInitialChoiceView();
     var n = function (n) {
       var a = e[n];
       var o = i.build.buildCfg.levelList[a - 1];
@@ -52,23 +65,39 @@ var def_KinghtFallUIBuildSel = function (t) {
       r.parent = i.ndParent;
       r.active = true;
       r.x = 0;
-      i.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconBuild, o.Icon, function (t) {
+      t._choiceRows.push(r);
+      // Layered defenses expose a bare base sprite at runtime. Their Icon is
+      // the assembled tower artwork intended for selection/atlas previews.
+      var artwork = o.Appearance && !o.Appearance.weapon && o.Appearance.sprite;
+      i.loadSpriteFrame(artwork ? "resources" : $z1KinghtFallConfig.KinghtFallBundelName.IconBuild, artwork || o.Icon, function (t) {
         var e = r.getChildByName("sprIcon");
         e.getComponent(cc.Sprite).spriteFrame = t;
         e.scale = o.Zoom;
         e.setPosition(o.Excursion ? cc.v2(o.Excursion[0] || 0, o.Excursion[1] || 0) : cc.v2(0, 0));
+        if ((artwork || i.initialChoice) && !grid) {
+          var artworkSize = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
+          e.scale = Math.min(174 / Math.max(1, artworkSize.width), 128 / Math.max(1, artworkSize.height));
+          e.setPosition(-202, 36);
+        }
+        if (grid) {
+          var size = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
+          e.scale = Math.min(186 / Math.max(1, size.width), 126 / Math.max(1, size.height));
+          e.setPosition(0, 65);
+        }
       });
       r.getChildByName("labName").getComponent(cc.Label).string = i.T(o.Name);
       if (!i._nameBadgeRows) i._nameBadgeRows = [];
-      i._nameBadgeRows.push({ label: r.getChildByName("labName").getComponent(cc.Label),
+      if (!grid && !i.initialChoice) i._nameBadgeRows.push({ label: r.getChildByName("labName").getComponent(cc.Label),
         backgrounds: r.children.filter(function (node) { return (node.name === "ndNormal" || node.name === "ndVideo") && node.y < -20; }) });
       for (var d = 0; d < r.children.length; d++) {
         var p = r.children[d];
-        "ndNormal" == p.name && (p.active = !!o.BuildSliverCost);
-        "ndVideo" == p.name && (p.active = !o.BuildSliverCost);
+        "ndNormal" == p.name && (p.active = i.initialChoice || !!o.BuildSliverCost);
+        "ndVideo" == p.name && (p.active = !i.initialChoice && !o.BuildSliverCost);
       }
       r.getChildByName("labInfo").getComponent(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
-      if (o.BuildSliverCost) {
+      if (grid) i.layoutChoiceCard(r, n);
+      else if (i.initialChoice) i.layoutInitialChoiceRow(r, n, e.length);
+      if (i.initialChoice || o.BuildSliverCost) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
           if (!t._decisionPending) t.finishDecision(t.callBack, a);
         }, i);
@@ -113,7 +142,85 @@ var def_KinghtFallUIBuildSel = function (t) {
       n(a);
     }
   };
+  _ctor.prototype.layoutChoiceCard = function (row, index) {
+    row.setContentSize(300, 280);
+    row.setPosition(index % 2 ? 160 : -160, 150 - Math.floor(index / 2) * 304);
+    var rootSprite = row.getComponent(cc.Sprite);
+    if (rootSprite) { rootSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; rootSprite.type = cc.Sprite.Type.SLICED; }
+    row.children.forEach(function (node) {
+      if (node.name !== "ndNormal" && node.name !== "ndVideo") return;
+      if (node.y < -20) { node.active = false; return; }
+      var sprite = node.getComponent(cc.Sprite);
+      if (sprite) { sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.type = cc.Sprite.Type.SLICED; }
+      node.setContentSize(300, 280);
+      node.setPosition(0, 0);
+    });
+    var name = row.getChildByName("labName"), label = name.getComponent(cc.Label);
+    name.setPosition(0, -29); name.setScale(.5);
+    label.fontSize = 46; label.lineHeight = 52; label.enableWrapText = true; label.overflow = cc.Label.Overflow.SHRINK;
+    name.setContentSize(548, 114);
+    var info = row.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
+    info.setPosition(0, -98); info.setScale(.5);
+    rich.fontSize = 38; rich.lineHeight = 43; rich.maxWidth = 540;
+    rich.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+    this._initialChoiceDescriptions.push({ label: rich, maxHeight: 76, baseFontSize: 38, baseLineHeight: 43 });
+  };
+  _ctor.prototype.layoutInitialChoiceRow = function (row, index, count) {
+    row.setContentSize(620, 180);
+    row.setPosition(0, (count - 1) * 106 - index * 212);
+    row.children.forEach(function (node) {
+      if (node.name !== "ndNormal" && node.name !== "ndVideo") return;
+      var sprite = node.getComponent(cc.Sprite);
+      if (sprite) { sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.type = cc.Sprite.Type.SLICED; }
+      if (node.y < -20) { node.setContentSize(212, 66); node.setPosition(-202, -53); }
+      else { node.setContentSize(620, 180); node.setPosition(0, 0); }
+    });
+    var name = row.getChildByName("labName"), label = name.getComponent(cc.Label);
+    name.setPosition(-202, -53); name.setScale(.5);
+    label.fontSize = 44; label.lineHeight = 48; label.enableWrapText = true; label.overflow = cc.Label.Overflow.SHRINK;
+    name.setContentSize(400, 116);
+    var info = row.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
+    info.setPosition(112, 0); info.setScale(.5);
+    rich.fontSize = 46; rich.lineHeight = 52; rich.maxWidth = 696;
+    rich.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+    this._initialChoiceDescriptions.push({ label: rich, maxHeight: 148, baseFontSize: 46, baseLineHeight: 52 });
+  };
+  _ctor.prototype.initInitialChoiceView = function () {
+    var root = this.node.getChildByName("root"), banner = root && root.getChildByName("wg_jzfz_bt");
+    if (root) root.setScale(Math.min(1, Math.max(.1, (this.node.width - 40) / 680), Math.max(.1, (this.node.height - 48) / 904)));
+    var title = banner && banner.getChildByName("labTitle"), hint = root && root.getChildByName("labTitle");
+    if (title) title.getComponent(cc.Label).string = this.T(this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks ?
+      "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.choose_tower]]");
+    if (hint) hint.getComponent(cc.Label).string = this.T("[[loc:ui.building.initial_choice_hint]]");
+    if (!root || this._cancelButton) return;
+    var button = new cc.Node("CancelInitialBuild"); button.parent = root; button.setPosition(0, -386); button.setContentSize(252, 66);
+    var background = button.addComponent(cc.Graphics);
+    background.fillColor = new cc.Color(72, 73, 94, 255); background.strokeColor = new cc.Color(0, 0, 0, 255); background.lineWidth = 3;
+    background.roundRect(-126, -33, 252, 66, 15); background.fill(); background.stroke();
+    var textNode = new cc.Node("Label"); textNode.parent = button;
+    var label = textNode.addComponent(cc.Label); label.string = this.T("[[loc:ui.building.cancel]]");
+    label.fontSize = 32; label.lineHeight = 40; label.isBold = true;
+    label.horizontalAlign = cc.Label.HorizontalAlign.CENTER; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+    label.overflow = cc.Label.Overflow.SHRINK;
+    if (title) { var source = title.getComponent(cc.Label); if (source.font) label.font = source.font; }
+    // Adding an active Label starts with NONE overflow, which can resize its
+    // node to zero before text is laid out. Set its bounds after font/overflow.
+    textNode.setContentSize(236, 58);
+    button.on(cc.Node.EventType.TOUCH_END, function () { if (!this._decisionPending) this.closeUI(); }, this);
+    this._cancelButton = button;
+  };
   _ctor.prototype.lateUpdate = function () {
+    (this._initialChoiceDescriptions || []).forEach(function (row) {
+      var rich = row.label, key = rich.string + "|" + (rich.font && rich.font.uuid);
+      if (row.key !== key) {
+        row.key = key; rich.fontSize = row.baseFontSize; rich.lineHeight = row.baseLineHeight;
+      }
+      var height = rich.node.height * Math.abs(rich.node.scaleY);
+      if (height > row.maxHeight + 1 && rich.fontSize > 18) {
+        var size = Math.max(18, Math.floor(rich.fontSize * row.maxHeight / height));
+        rich.fontSize = size; rich.lineHeight = Math.ceil(size * row.baseLineHeight / row.baseFontSize);
+      }
+    });
     (this._nameBadgeRows || []).forEach(function (row) {
       var label = row.label, node = label.node;
       var signature = [label.string, label.fontSize, label.lineHeight, label.font && label.font.name,

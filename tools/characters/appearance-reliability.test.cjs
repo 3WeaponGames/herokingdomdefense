@@ -26,5 +26,11 @@ test('saved model mirroring, independent scales and tint are scoped by side/form
  api.applyModel(owner,'enemy',node,false);assert(Math.abs(node.scaleX+.56)<1e-9);assert(Math.abs(node.scaleY-.84)<1e-9);assert.equal(node.x,6);assert.equal(node.angle,15);assert.equal(node.color,'#80c0ff');
  for(let i=0;i<10;i++)api.applyModel(owner,'enemy',node,true);assert(Math.abs(node.scaleX-.56)<1e-9);assert.equal(node.x,6);assert.equal(JSON.stringify(data),before);
  api.applyModel(owner,'ally',node,false);assert.equal(node.scaleX,.7);assert.equal(node.scaleY,.7);assert.equal(node.x,2);assert.equal(node.y,3);assert.equal(node.angle,5);assert.equal(node.color,'original');
- const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');assert.equal(Object.keys(config.GameTools.visuals).filter(k=>k.startsWith('enemy:')&&config.GameTools.visuals[k].mirrorX).length,12);
+ const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+ const legacyKeys=Array.from({length:12},(_,i)=>{const id=90001+i;assert(config.SoldierCfg[id]&&!config.SoldierCfg[id].MonsterSource);return'enemy:'+id+':'+(id>=90010?id-90009:'default');});
+ const imported=Object.values(config.SoldierCfg).filter(unit=>unit.MonsterSource);assert.equal(imported.length,100);
+ const importedKeys=imported.map(unit=>'enemy:'+unit.ID+':default');
+ const mirrored=Object.keys(config.GameTools.visuals).filter(k=>k.startsWith('enemy:')&&config.GameTools.visuals[k].mirrorX);
+ const campaignKeys=Object.values(config.SoldierCfg).filter(unit=>unit.CampaignBaseUnit).map(unit=>'enemy:'+unit.ID+':default');assert.equal(campaignKeys.length,127);
+ assert.deepEqual(mirrored.sort(),legacyKeys.concat(importedKeys,campaignKeys).sort(),'Legacy forms, independent monsters and campaign appearances retain their saved mirror');
 });

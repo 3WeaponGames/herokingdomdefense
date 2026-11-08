@@ -1,6 +1,7 @@
 'use strict';
 const Renderer=require('./spine-renderer');
 const Projectile=require('./projectile');
+const BuildingArtwork=require('./building-artwork');
 function el(tag,text,parent){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;}
 function select(parent,items,value){const input=el('select',undefined,parent);items.forEach(item=>{const option=el('option',item.label===undefined?String(item):item.label,input);option.value=item.value===undefined?item:item.value;});input.value=value;return input;}
 function button(parent,text,action){const b=el('button',text,parent);b.type='button';b.onclick=action;return b;}
@@ -11,6 +12,7 @@ function mount(container, api) {
     const title=el('h3','Unit preview',root),status=el('p','Select a unit to preview.',root);status.className='preview-help';
     const box=el('div',undefined,root);box.className='preview-box';const badge=el('span','SILENT · RENDER ONLY',box);badge.className='preview-badge';
     const canvas=el('canvas',undefined,box);canvas.width=700;canvas.height=580;
+    const buildingArtwork=BuildingArtwork.mount(box);
     const controls=el('div',undefined,root), first=el('div',undefined,controls);first.className='preview-row';
     const play=button(first,'Play',()=>{playing=!playing;play.textContent=playing?'Pause':'Play';last=0;if(playing)animate();});
     button(first,'|◀',()=>{playing=false;play.textContent='Play';seekTime(0);});
@@ -71,12 +73,12 @@ function mount(container, api) {
     function validTime(value){return typeof value==='number'&&isFinite(value)&&value>=0;}
     function defaultEffect(){const data=timingData(),item=data.timingDefaults&&description&&data.timingDefaults[description.key];return item&&validTime(item.attack)?item.attack:description&&validTime(description.defaultTiming)?description.defaultTiming:0;}
     function readEffect(){const data=timingData(),item=data.timings&&description&&data.timings[description.key];customTiming=!!(item&&validTime(item.attack));effect=customTiming?item.attack:defaultEffect();}
-    async function load(next){request=next;const currentToken=++token;description=null;layers=[];stop();controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help';status.textContent='Loading model…';try{
+    async function load(next){request=next;const currentToken=++token;description=null;layers=[];stop();controls.hidden=timing.hidden=canvas.hidden=true;buildingArtwork.hide();status.className='preview-help';status.textContent='Loading model…';try{
         const payload={type:next.type,id:next.id,record:next.record,heroLevels,levelIndex:next.levelIndex};
         const data=await api.ipc('unit-preview',payload);if(disposed||currentToken!==token)return;
         title.textContent=data.type==='building'?'Building preview':data.type==='hero'?'Hero & equipment preview':'Unit '+data.id+(data.form!=='default'?' · form '+data.form:'');
-        if(data.type==='building'){description=data;controls.hidden=timing.hidden=true;canvas.hidden=true;let img=box.querySelector('img');if(!img){img=el('img',undefined,box);img.className='preview-static';}img.src=data.image||'';img.alt=data.label;status.textContent=data.image?'Authored building icon.':'No authored icon is assigned.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
-        const oldImage=box.querySelector('img');if(oldImage)oldImage.remove();canvas.hidden=false;controls.hidden=timing.hidden=false;
+        if(data.type==='building'){description=data;controls.hidden=timing.hidden=true;canvas.hidden=true;buildingArtwork.set(data);const artwork=data.appearance;status.textContent=!data.image?'Map artwork resource is missing or not imported.':artwork&&artwork.weapon&&!data.weaponImage?'Weapon artwork resource is missing or not imported.':artwork&&artwork.weapon?'Fixed base and aiming weapon.':artwork?'Map artwork · '+(Number(artwork.width)||160)+' × '+(Number(artwork.height)||200)+' world units.':'Authored building icon.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
+        canvas.hidden=false;controls.hidden=timing.hidden=false;
         spine=require(data.runtimePath);const loaded=await Renderer.createLayers(spine,data.layers);if(disposed||currentToken!==token)return;layers=loaded;description=data;
         const names=Array.from(new Set([].concat.apply([],data.layers.map(l=>l.animations))));animations.innerHTML='';names.forEach(name=>{const o=el('option',name,animations);o.value=name;});animations.value=names.indexOf('attack')>=0?'attack':names[0];
         Renderer.seek(spine,layers,'idle',0,false);poseBounds=Renderer.bounds(spine,layers);
@@ -89,6 +91,6 @@ function mount(container, api) {
     }catch(error){if(!disposed&&currentToken===token){description=null;layers=[];controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help preview-error';status.textContent='Preview unavailable: '+error.message;}}}
     function setUnit(next){next=Object.assign({},next);const equipmentData=next.type==='hero'&&next.documents&&next.documents.A?next.documents.A.data.EquipCfg:null;const nextIdentity=next.type+':'+next.id+':'+JSON.stringify(next.record||{})+':'+JSON.stringify(equipmentData);if(identity===nextIdentity&&description&&description.type!=='building'){request=next;readEffect();readMirror();readPlayback();updateTiming();render();return;}identity=nextIdentity;heroLevels={};load(next);}
     function setBuilding(next){identity='';load(Object.assign({},next,{type:'building'}));}
-    return{setUnit,setBuilding,destroy(){disposed=true;token++;stop();layers=[];Renderer.destroyCanvas(canvas);root.remove();},getState(){return{loaded:!!description,description:description&&{id:description.id,type:description.type,key:description.key},time:current,effect,playing,mirrored,attackSpeed:savedAttackSpeed,silent:true};}};
+    return{setUnit,setBuilding,destroy(){disposed=true;token++;stop();layers=[];buildingArtwork.destroy();Renderer.destroyCanvas(canvas);root.remove();},getState(){return{loaded:!!description,description:description&&{id:description.id,type:description.type,key:description.key},time:current,effect,playing,mirrored,attackSpeed:savedAttackSpeed,silent:true};}};
 }
 module.exports={mount};

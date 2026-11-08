@@ -42,13 +42,21 @@ function fixture(height=1334){
  const settle=()=>{for(let i=0;i<4;i++)exports.layout(ui);},finish=()=>{for(const[n,t]of tweens){Object.assign(n,t.values);t.done();}tweens.clear();};
  exports.install(ui);exports.updateTasks(ui,true,false);settle();return{hud:exports,ui,nodes,cc,fit,tweens,settle,finish,setSafe:s=>{safe=s;}};
 }
-test('battle header stays inside safe edges, with Pause above Buildings and a larger opaque white title',()=>{
- for(const h of [1334,1688,1900]){const f=fixture(h),u=f.ui;f.setSafe({x:20,y:30,width:710,height:h-90});f.settle();assert.equal(u.ndCoin.x-u.ndCoin.width/2,-375+38);assert.equal(u.btnSuspend.x+38,375-38);assert(u.btnBuildInfo.y+38<u.btnSuspend.y-38);const caption=f.nodes[190];assert(u.btnBuildInfo.x+caption.x+caption.width*.25<=337);assert.equal(f.nodes[237].opacity,255);assert.equal(f.nodes[237].color,'white');assert.equal(f.nodes[237].getComponent(f.cc.Label).fontSize,84);assert.equal(f.nodes[240].getComponent(f.cc.Label).fontSize,54);}
+test('battle header stays inside safe edges, with Pause above Buildings and a compact opaque white title',()=>{
+ for(const h of [1334,1688,1900]){const f=fixture(h),u=f.ui;f.setSafe({x:20,y:30,width:710,height:h-90});f.settle();assert.equal(u.ndCoin.x-u.ndCoin.width/2,-375+38);assert(u.btnSuspend.x+38<375-38);assert.equal(u.btnSuspend.x,u.btnBuildInfo.x);assert(u.btnBuildInfo.y+38<u.btnSuspend.y-38);const caption=f.nodes[190];assert.equal(caption.x,0);assert(u.btnBuildInfo.x+caption.x+caption.width*.25<=337);assert.equal(f.nodes[237].opacity,255);assert.equal(f.nodes[237].color,'white');assert.equal(f.nodes[237].getComponent(f.cc.Label).fontSize,68);assert.equal(f.nodes[240].getComponent(f.cc.Label).fontSize,54);}
 });
 test('task drawer begins closed, shows ready badge only while closed and retains existing task-click handling',()=>{
  const f=fixture(),{ui,hud}=f,s=ui._battleHud;let claims=0;ui.ndTask.on('touchend',()=>claims++);assert.equal(ui.ndTask.active,false);assert.equal(s.title.getComponent(f.cc.Label).string,'Tasks');assert.equal(s.red.active,false);hud.updateTasks(ui,true,true);f.settle();assert.equal(s.red.active,true);
  let stopped=0;s.handle.listeners.touchend({stopPropagation(){stopped++;}});assert.equal(stopped,1);assert.equal(claims,0);assert.equal(s.red.active,false);assert.equal(s.open,true);f.finish();assert.equal(ui.ndTask.x,0);ui.ndTask.listeners.touchend();assert.equal(claims,1);
  hud.setOpen(ui,false);f.finish();assert.equal(ui.ndTask.active,false);assert.equal(s.red.active,true);hud.updateTasks(ui,false,false);assert.equal(s.handle.active,false);assert.equal(s.red.active,false);assert.equal(ui.ndTask.active,false);
+});
+
+test('Tasks stays directly below Silver when collapsed and expanded',()=>{
+ const f=fixture(),{ui,hud}=f;
+ assert.equal(ui._battleHud.handle.y+ui._battleHud.handle.height/2,ui.ndCoin.y-ui.ndCoin.height/2-12);
+ hud.setOpen(ui,true);f.settle();
+ assert.equal(ui._battleHud.handle.y+ui._battleHud.handle.height/2,ui.ndCoin.y-ui.ndCoin.height/2-12);
+ assert(ui.ndLevelInfo.width<=460);
 });
 test('the visible testing banner reserves top-center space without moving the corner buttons',()=>{
  const f=fixture(),pauseY=f.ui.btnSuspend.y;const badge={active:true,height:44,anchorY:.5,convertToWorldSpaceAR:()=>({x:375,y:1287})};f.cc.Canvas={instance:{node:{getChildByName:()=>badge}}};f.settle();assert(f.ui.ndLevelInfo.y+f.ui.ndLevelInfo.height/2<=1287-667-12);assert.equal(f.ui.btnSuspend.y,pauseY);badge.active=false;f.settle();assert(f.ui.ndLevelInfo.y>1287-667-12-f.ui.ndLevelInfo.height/2);

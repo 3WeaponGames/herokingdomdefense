@@ -44,6 +44,7 @@ var def_KinghtFallBuildBase = function (t) {
     e.colPoint = {};
     e.standTimeMax = 1.5;
     e.showAni = false;
+    e._freeInitialBuild = false;
     e.vec2_1 = new cc.Vec2();
     e.vec2_2 = new cc.Vec2();
     return e;
@@ -102,7 +103,11 @@ var def_KinghtFallBuildBase = function (t) {
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
       this.canLock = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.canLock(this.ID);
       if (this.canLock) {
-        $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] == this.ID && 0 == this.getLevel() && (this.index = 1), this.setLevel(this.index);
+        // A free typed building remains an unbuilt, zero-cost choice until the
+        // player selects its squad/tower. Older families retain their auto-build.
+        $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] == this.ID &&
+          0 == this.getLevel() && !Array.isArray(this.buildCfg.InitialChoices) && (this.index = 1);
+        this.setLevel(this.index);
       } else {
         this.hide();
       }
@@ -126,6 +131,7 @@ var def_KinghtFallBuildBase = function (t) {
         t.enabled = false;
       });
     });
+    require("BuildingAppearance").hide(this);
   };
   _ctor.prototype.getLevel = function () {
     if (this.buildInfo && this.buildInfo.cfg) {
@@ -134,12 +140,32 @@ var def_KinghtFallBuildBase = function (t) {
       return 0;
     }
   };
+  _ctor.prototype.getColliderIndex = function () {
+    var value = this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.ColliderIndex;
+    return typeof value === "number" && isFinite(value) && value > 0 && Math.floor(value) === value ? value : this.index;
+  };
+  _ctor.prototype.getUpgradeChoices = function () {
+    var configured = this.buildInfo && this.buildInfo.cfg ? this.buildInfo.cfg.BranchBuild : this.buildCfg.InitialChoices;
+    if (!Array.isArray(configured)) return this.buildInfo && this.buildInfo.cfg ? [] : [1];
+    var build = this;
+    return configured.filter(function (index, position) {
+      var row = build.buildCfg.levelList[index - 1];
+      return typeof index === "number" && Math.floor(index) === index && index > 0 && row &&
+        (build.buildInfo && build.buildInfo.cfg || row.level === 1) && configured.indexOf(index) === position;
+    });
+  };
+  _ctor.prototype.hasFreeInitialChoice = function () {
+    if (this.getLevel() !== 0 || !Array.isArray(this.buildCfg.InitialChoices) || !this.getUpgradeChoices().length) return false;
+    var data = $z1KinghtFallUIGame.default.instance.ctrGame.gameData;
+    return this._freeInitialBuild || !!data.treasureAddTime && data.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] == this.ID;
+  };
   _ctor.prototype.setLevel = function (t) {
     this.cancelUpgrade();
     var e;
     var n = this;
     this._stopColliderTweens();
     this.index = t;
+    if (t > 0) this._freeInitialBuild = false;
     this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, this.buildCfg.levelList[this.index - 1]);
     if (0 == this.index) {
       this.hide();
@@ -147,7 +173,7 @@ var def_KinghtFallBuildBase = function (t) {
       this.ndAniMain.node.active = true;
       this.ndAniMain.setSkin(this.buildInfo.cfg.Skin);
       this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
-        t.enabled = t.tag == n.index;
+        t.enabled = t.tag == n.getColliderIndex();
         t.enabled && (e = t);
       });
       if (e) {
@@ -161,7 +187,7 @@ var def_KinghtFallBuildBase = function (t) {
         t.node.active = true;
         t.setSkin(n.buildInfo.cfg.Skin);
         t.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
-          t.enabled = t.tag == n.index;
+          t.enabled = t.tag == n.getColliderIndex();
           t.enabled && (e = t);
         });
         if (e) n._animateCollider(e, .2);
@@ -192,6 +218,7 @@ var def_KinghtFallBuildBase = function (t) {
         t.active = false;
       }
     });
+    require("BuildingAppearance").apply(this);
   };
   _ctor.prototype._stopColliderTween = function (collider) {
     var owned = this._colliderTweens && this._colliderTweens.get(collider);
@@ -217,7 +244,7 @@ var def_KinghtFallBuildBase = function (t) {
         if (owner._colliderTweens.get(collider) !== operation || owner.index !== operation.level ||
             owner.enabled === false || owner.isDestroyed || !cc.isValid(owner.node, true) ||
             !cc.isValid(target, true) || target.enabled === false || target.enabledInHierarchy === false ||
-            !target.node || target.node.activeInHierarchy === false || target.tag != owner.index) return;
+            !target.node || target.node.activeInHierarchy === false || target.tag != owner.getColliderIndex()) return;
         target.points = owner.colPoint[target.uuid].map(function (point) { return cc.v2(point.x * progress, point.y * progress); });
         target.apply();
         if (progress >= 1 && owner._colliderTweens.get(collider) === operation) owner._colliderTweens.delete(collider);
@@ -240,15 +267,16 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.onDestroy = function () {
     this.cancelUpgrade();
     this._stopColliderTweens();
+    require("BuildingAppearance").dispose(this);
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.doUpgreadAni = function () {
     var t = this;
-    if (1 == this.index) {
+    if (1 == this.getLevel()) {
       this.ndAniMain.setAnimation(0, r.create, false);
       this.ndAniMain.addAnimation(0, r.idle, true);
       this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (e) {
-        e.enabled = e.tag == t.index;
+        e.enabled = e.tag == t.getColliderIndex();
       });
       if (this.ndAniDown) {
         this.ndAniDown.setAnimation(0, r.create, false), this.ndAniDown.addAnimation(0, r.idle, true);
@@ -258,7 +286,7 @@ var def_KinghtFallBuildBase = function (t) {
         e.setAnimation(0, r.create, false);
         e.addAnimation(0, r.idle, true);
         e.getComponents(cc.PhysicsPolygonCollider).forEach(function (e) {
-          e.enabled = e.tag == t.index;
+          e.enabled = e.tag == t.getColliderIndex();
         });
       });
     } else {
@@ -272,10 +300,11 @@ var def_KinghtFallBuildBase = function (t) {
         e.setAnimation(0, r.upgrade, false);
         e.addAnimation(0, r.idle, true);
         e.getComponents(cc.PhysicsPolygonCollider).forEach(function (e) {
-          e.enabled = e.tag == t.index;
+          e.enabled = e.tag == t.getColliderIndex();
         });
       });
     }
+    require("BuildingAppearance").apply(this);
   };
   _ctor.prototype.getWposPhyCol = function () {
     return this.getWposPhyCol2().map(function (part) { return part.points; });
@@ -297,7 +326,7 @@ var def_KinghtFallBuildBase = function (t) {
     var t = [];
     var e = this.node.getComponents(cc.PhysicsPolygonCollider);
     for (var n = 0; n < e.length; n++) {
-      if ((s = e[n]).tag == this.index) {
+      if ((s = e[n]).tag == this.getColliderIndex()) {
         var i = [];
         for (var a = 0; a < s.points.length; a++) {
           var o = s.points[a];
@@ -314,7 +343,7 @@ var def_KinghtFallBuildBase = function (t) {
       e = (s = this.ndAniOther[r].node).getComponents(cc.PhysicsPolygonCollider);
       for (n = 0; n < e.length; n++) {
         var l = e[n];
-        if (l.tag == this.index) {
+        if (l.tag == this.getColliderIndex()) {
           i = [];
           for (a = 0; a < l.points.length; a++) {
             o = l.points[a];
@@ -353,6 +382,7 @@ var def_KinghtFallBuildBase = function (t) {
         }
       }
     }
+    require("BuildingAppearance").apply(this);
   };
   _ctor.prototype.getLockPoint = function () {
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
@@ -390,12 +420,15 @@ var def_KinghtFallBuildBase = function (t) {
         $z1KinghtFallUIGame.default.instance.ctrGame.upBulid = this;
         var ui = $z1KinghtFallUIGame.default.instance;
         var game = ui.ctrGame, data = game.gameData, epoch = game._combatEpoch;
+        var choices = this.getUpgradeChoices();
         var operation;
         var a = function (t) {
           if (!operation || operation.done) return;
           if (!operation.isCurrent()) { operation.cancel(); return; }
+          if (choices.indexOf(t) < 0 || !i.buildCfg.levelList[t - 1]) { operation.cancel(); return; }
           operation.done = true;
           i._upgradeOperation = null;
+          i._freeInitialBuild = false;
           $z1KinghtFallUIGame.default.instance.initView();
           i.index = t;
           i.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(i.buildCfg.enumValue, i.buildCfg.levelList[i.index - 1]);
@@ -504,11 +537,11 @@ var def_KinghtFallBuildBase = function (t) {
           ui.canStart = false;
           ui.onPauseGame(true, operation);
           data.coin -= cost;
-          if (this.buildInfo.cfg && this.buildInfo.cfg.BranchBuild.length > 1) {
+          if (choices.length > 1) {
             operation.request = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UIBuildSel, $z1KinghtFallConfig.KinghtFallUIID.UIGame,
-              { isCurrent: operation.isCurrent, onCancel: operation.cancel, onOpened: function (node) { operation.node = node; } }, this, a, operation.cancel);
+              { isCurrent: operation.isCurrent, onCancel: operation.cancel, onOpened: function (node) { operation.node = node; } }, this, a, operation.cancel, choices);
           } else {
-            a(this.buildInfo.cfg ? this.buildInfo.cfg.BranchBuild[0] : 1);
+            a(choices[0]);
           }
         } else {
           this.buildInfo.standTime = 0;
@@ -543,6 +576,7 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.upSellView = function () {
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None && this.buildInfo) {
       var t = this.ndLockList[this.getLevel()];
+      if (!t) return;
       if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.coin < this.getSell()) {
         t.color = new cc.Color().fromHEX("#db0000");
       } else {
@@ -551,14 +585,20 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.onBuffUpgrade = function () {
-    var t;
-    if (!(this.buildInfo.cfg && !this.buildInfo.cfg.BranchBuild)) {
-      t = this.buildInfo.cfg ? this.buildInfo.cfg.BranchBuild[0] : 1;
-      this.index = t;
+    var choices = this.getUpgradeChoices();
+    if (!choices.length) return false;
+    if (this.getLevel() === 0 && choices.length > 1) {
+      // Construction perks grant the building, not a preselected tower/squad.
+      // Keep that entitlement on the plot through cancellation and checkpoints.
+      this._freeInitialBuild = true;
       $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.BuildingLevelUp);
-      this.doUpgreadAni();
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding);
+      return true;
     }
+    this.index = choices[0];
+    $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.BuildingLevelUp);
+    this.doUpgreadAni();
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding);
+    return true;
   };
   _ctor.prototype.getSell = function () {
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None || !this.canLock) {
@@ -567,6 +607,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (!this.buildInfo || !this.buildInfo.canUpgrade) {
       return -1;
     }
+    if (this.hasFreeInitialChoice()) return 0;
     var t = this.buildInfo.cfg ? this.buildInfo.cfg.BuildSliverCost : this.buildCfg.lockCose;
     var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff09);
     e && (t -= e.Pamer[0]);
@@ -612,6 +653,7 @@ var def_KinghtFallBuildBase = function (t) {
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory);
     this.delAllBuff();
     this.isDestroyed = true;
+    require("BuildingAppearance").onDead(this);
     this.ndAniMain.setAnimation(0, r.destroy, false);
     this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
       t.enabled = false;
@@ -650,6 +692,7 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.reset = function (t) {
     this.cancelUpgrade();
     if (t) {
+      this._freeInitialBuild = false;
       this.index = 0;
       this.setLevel(this.index);
     }
@@ -669,17 +712,22 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.endRoundGame = function () {
     this.isDestroyed = false;
+    require("BuildingAppearance").apply(this);
   };
   _ctor.prototype.getSave = function () {
-    return {
+    var save = {
       point: this.ID,
       level: this.index
     };
+    if (this._freeInitialBuild && this.index === 0) save.freeInitialBuild = true;
+    return save;
   };
   _ctor.prototype.setSave = function (t) {
     var level = t && t.level;
     level = typeof level === "number" && isFinite(level) ? Math.floor(level) : 0;
-    this.setLevel(Math.max(0, Math.min(this.buildCfg.levelList.length, level)));
+    level = Math.max(0, Math.min(this.buildCfg.levelList.length, level));
+    this._freeInitialBuild = level === 0 && !!t && t.freeInitialBuild === true;
+    this.setLevel(level);
   };
   _ctor.prototype.getMoveToPos = function (t, e) {
     if (!this.ndMove || 0 == this.ndMove.length) {

@@ -203,6 +203,10 @@ Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid) 
   return null;
 };
 Navigation.prototype.move = function (unit, target, dt) {
+  if (unit._hitReactionPlaying) {
+    if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
+    return { arrived: false, reached: false, partial: false, blocked: false, directionX: 0, distance: 0 };
+  }
   var start = point(unit.node, this.game.ndMain);
   var step = Math.max(0, unit.getSpeed() * dt);
   var now = Date.now(), destination = target, state;

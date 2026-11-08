@@ -41,7 +41,7 @@ for (const name of ['KinghtFallEnemyBase','KinghtFallSoldierBase']) {
   });
 }
 test('Soldier damage, death and healing do not require a loaded health bar',()=>{
-  const h=environment(), actor=h.actor('KinghtFallSoldierBase'); actor.hpctrl=null;
+  const h=environment(), actor=h.actor('KinghtFallSoldierBase'); delete actor.isDead; actor.hpctrl=null;
   assert.equal(actor.onAttacked(10),10); assert.equal(actor.hp,90);
   actor.addHpPro(.05); assert.equal(actor.hp,95);
   let deaths=0; actor.outBuild={addDie:()=>deaths++}; actor.ndEffect={removeAllChildren(){}};

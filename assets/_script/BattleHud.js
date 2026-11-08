@@ -98,20 +98,22 @@ function layout(ui) {
   var margin = 18, center = (bounds.left + bounds.right) / 2;
   var rowY = bounds.top - Math.max(60, margin + coin.height / 2, margin + pause.height / 2);
   coin.setPosition(bounds.left + margin + coin.width / 2, rowY);
-  pause.setPosition(bounds.right - margin - pause.width / 2, rowY);
-  buildings.setPosition(bounds.right - margin - buildings.width / 2, rowY - pause.height / 2 - 20 - buildings.height / 2);
   var buildingCaption = buildings.getChildByName("labNum");
-  if (buildingCaption) buildingCaption.x = Math.min(0, bounds.right - margin - buildings.x - buildingCaption.width * Math.abs(buildingCaption.scaleX) / 2);
+  var controlHalfWidth = Math.max(pause.width / 2, buildings.width / 2, buildingCaption ? buildingCaption.width * Math.abs(buildingCaption.scaleX) / 2 : 0);
+  var controlsX = bounds.right - margin - 12 - controlHalfWidth;
+  pause.setPosition(controlsX, rowY);
+  buildings.setPosition(controlsX, rowY - pause.height / 2 - 20 - buildings.height / 2);
+  if (buildingCaption) { buildingCaption.anchorX = .5; buildingCaption.x = 0; buildingCaption.getComponent(cc.Label).horizontalAlign = cc.Label.HorizontalAlign.CENTER; }
   // Dynamic silver amounts reserve their actual width so a larger stage name
   // never sits underneath the counter or the Pause button.
   var low = coin.x + coin.width / 2 + 18, high = pause.x - pause.width / 2 - 18;
-  var width = Math.min(490, high - low), titleX = (low + high) / 2, below = width < 300;
-  if (below) { width = Math.min(540, bounds.right - bounds.left - 36); titleX = center; }
+  var width = Math.min(420, high - low), titleX = (low + high) / 2, below = width < 300;
+  if (below) { width = Math.min(460, bounds.right - bounds.left - 36); titleX = center; }
   name.anchorX = name.anchorY = .5; wave.anchorX = wave.anchorY = .5;
-  var titleSize = sizeLabel(name, 84, width - 32, true, 98), waveSize = sizeLabel(wave, 54, 0, false, 64);
+  var titleSize = sizeLabel(name, 68, width - 24, true, 80), waveSize = sizeLabel(wave, 54, 0, false, 64);
   name.color = wave.color = cc.Color.WHITE; name.opacity = wave.opacity = 255;
   name.setPosition(0, 0); wave.setPosition(0, 0); ui.ndLevelInfo.opacity = 255; ui.ndLevelInfo.color = cc.Color.WHITE;
-  var titleHeight = Math.max(68, titleSize.height + 16);
+  var titleHeight = Math.max(56, titleSize.height + 12);
   var titleY = Math.min(below ? rowY - Math.max(coin.height, pause.height) / 2 - 18 - titleHeight / 2 : rowY,
     Math.min(bounds.top - margin, badgeFloor) - titleHeight / 2);
   ui.ndLevelInfo.setContentSize(width, titleHeight); ui.ndLevelInfo.setPosition(titleX, titleY);
@@ -125,7 +127,7 @@ function layout(ui) {
   var statusSize = sizeLabel(status, 67, 0, false, 78);
   var description = sizeLabel(taskName, 67, Math.max(80, panelWidth - statusSize.width - 46), true, 78);
   var height = Math.max(66, Math.max(description.height, statusSize.height) + 20);
-  var taskY = Math.min(waveBottom, buildingBottom) - 20 - height / 2;
+  var taskY = coin.y - coin.height / 2 - 12 - (state.open ? height : 60) / 2;
   state.handle.setContentSize(state.open ? 44 : 180, state.open ? height : 60);
   state.handle.setPosition(bounds.left + margin + state.handle.width / 2, taskY);
   state.title.active = !state.open; state.arrow.x = state.open ? 0 : 66; state.red.setPosition(state.handle.width / 2 - 3, state.handle.height / 2 - 3);

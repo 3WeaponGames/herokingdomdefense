@@ -1,7 +1,7 @@
 "use strict";
 function measure(bounds, points) {
   var width = bounds.right - bounds.left, center = (bounds.left + bounds.right) / 2;
-  var barWidth = Math.min(850, width - 40), count = Math.min(5, Math.max(3, Math.floor(points / 92)));
+  var barWidth = Math.min(850, width - 40), count = points < 360 ? 3 : 4;
   var arrows = count < 5 ? 38 : 0, viewport = barWidth - arrows * 2 - 12;
   var buttonWidth = Math.min(341, (barWidth - 22) / 2), buttonScale = buttonWidth / 341;
   var buttonY = bounds.footer + 40 + 73 * buttonScale;

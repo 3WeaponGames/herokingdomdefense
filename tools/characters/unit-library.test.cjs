@@ -10,6 +10,22 @@ test('all three licensed imports keep exact sprite bytes, pivot data, metadata a
   }assert.equal(total,1769);
 });
 const engine=Units.enginePath();
+
+test('locomotion keeps authored run cadence, death clips survive baking, and attacks retain their approved events',()=>{
+ const original={animations:{
+  idle:{bones:{body:{translate:[{time:0},{time:1}]}}},
+  move:{bones:{body:{translate:[{time:0},{time:1.4}]}}},
+  run:{bones:{body:{translate:[{time:0},{time:.35}]}}},
+  attack:{bones:{body:{rotate:[{time:0},{time:2}]}}},
+  dead1:{bones:{body:{translate:[{time:0},{time:.9,y:-10}]}}}
+ }};
+ const contract={events:{hit:{}},animations:{idle:{duration:1,events:[]},move:{duration:1.4,events:[]},attack:{duration:.8,events:[{time:.22,name:'hit'}]}}};
+ const rig=structuredClone(original);Bake.retime(rig,contract);
+ assert.equal(Bake.duration(rig.animations.move),.35);assert.equal(Bake.duration(rig.animations.die),.9);
+ assert.equal(Bake.duration(rig.animations.attack),.8);assert.deepEqual(rig.animations.attack.events,contract.animations.attack.events);
+ const mounted=structuredClone(original);Bake.retime(mounted,contract,true);assert.equal(Bake.duration(mounted.animations.move),1.4);
+ assert.equal(Bake.duration(original.animations.attack),2,'Source animation data is unchanged');
+});
 test('101 imported bases and every converted animation parse and produce finite live Spine geometry',{skip:!fs.existsSync(engine)},()=>{
   const spine=require(engine),library=Library.load(root);assert.equal(library.sources.length,101);
   for(const source of library.sources){
@@ -51,7 +67,8 @@ test('the deployed roster uses faceless Maker allies and monster enemies with th
     const profile=looks.profiles[looks.assignments[key]],prefab=JSON.parse(fs.readFileSync(path.join(root,contract.prefab))),component=prefab[contract.component];assert.equal(component._N$skeletonData.__uuid__,contract.defaultUuid);
     const source=key.startsWith('ally:')?'character-maker/':'monster';assert(profile.base.source.startsWith(source));if(key.startsWith('ally:'))assert(profile.faceless);
     const rig=Units.describe(root,{type:profile.base.type,id:profile.base.id,noRuntime:true}).layers[0].json;
-    for(const [name,original]of Object.entries(contract.animations)){assert(Math.abs(Bake.duration(rig.animations[name])-original.duration)<1e-6);assert.deepEqual(rig.animations[name].events||[],original.events);}
+    for(const [name,original]of Object.entries(contract.animations)){if(name!=='move')assert(Math.abs(Bake.duration(rig.animations[name])-original.duration)<1e-6);assert.deepEqual(rig.animations[name].events||[],original.events);}
+    assert(rig.animations.die,'The deployed unit retains its death animation');
     if(profile.faceless)for(const skin of rig.skins)for(const [name,attachments]of Object.entries(skin.attachments))if(Core.isFacialSlot(name))assert.equal(Object.keys(attachments).length,0);
   }
   const hero=Units.describe(root,{type:'hero',id:'hero',noRuntime:true});assert.equal(hero.layers.length,7);assert(hero.layers.every(layer=>layer.source.startsWith('assets/KinghtFallEnemyAni/wqyl_lead/')),'The existing hero was replaced');

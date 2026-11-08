@@ -14,6 +14,7 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
+var TowerCombat = require("TowerCombat");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -23,6 +24,11 @@ var def_KinghtFallBuildBartizan = function (t) {
     e.ndShot = null;
     e.time = {};
     e.attRange = 0;
+    e._towerAimTarget = null;
+    e._towerAimNode = null;
+    e._towerAimGeneration = null;
+    e._towerAimScan = 0;
+    e._towerAimInitialized = false;
     return e;
   }
   cc__extends(_ctor, t);
@@ -31,6 +37,7 @@ var def_KinghtFallBuildBartizan = function (t) {
     var n = this.node.getComponent(cc.CircleCollider);
     n || (n = this.node.addComponent(cc.CircleCollider));
     this.time = {};
+    this.clearAimTarget();
     if (this.buildInfo.cfg) {
       n.enabled = true;
       this.time[r.AttackTime] = 0;
@@ -42,36 +49,73 @@ var def_KinghtFallBuildBartizan = function (t) {
     }
   };
   _ctor.prototype.doTime = function (t) {
+    if (this.isDestroyed) return;
     if (-1 != this.time[r.Invincible]) {
       this.time[r.Invincible] -= t;
       if (this.time[r.Invincible] < 0) {
         this.time[r.Invincible] = -1, this.onDead();
+        return;
       }
     }
+    var artwork = require("BuildingAppearance");
+    if (artwork.step) artwork.step(this, t);
+    this.updateAimTarget(t);
     this.time[r.AttackTime] += this.time[r.AttackSpeed] * t;
-    this.time[r.AttackTime] >= 1 && this.doAttack();
+    var appearance = this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Appearance;
+    var tracking = appearance && appearance.weapon && appearance.weapon.sprite;
+    // A ready weapon with no opponents should keep its bounded acquisition
+    // cadence instead of scanning the entire empty roster every frame.
+    this.time[r.AttackTime] >= 1 && (!tracking || this._towerAimTarget) && this.doAttack();
   };
   _ctor.prototype.doAttack = function () {
+    if (this.isDestroyed) return;
+    var artwork = require("BuildingAppearance");
+    var appearance = this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Appearance;
+    if (appearance && appearance.weapon && appearance.weapon.sprite && artwork.ready && !artwork.ready(this)) return;
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
-    var e = -1;
-    var n = null;
     this.node.getPosition(this.vec2_1);
-    for (var i = 0; i < t.length; i++) {
-      var a = t[i];
-      if (!a.isDead()) {
-        a.node.getPosition(this.vec2_2);
-        cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
-        var o = this.vec2_2.len();
-        if (o < this.attRange && (-1 == e || o < e)) {
-          e = o;
-          n = a;
-        }
-      }
-    }
+    var n = TowerCombat.choose(t, this.vec2_1, this.attRange, this.getTowerSettings(), this.node.parent);
     if (n) {
+      this.cacheAimTarget(n);
+      // Commit the exact firing target before onShotBuild samples the barrel
+      // muzzle. Tracking between shots can keep a different cached target.
+      if (artwork.aim) artwork.aim(this, n);
       this.time[r.AttackTime] = 0;
       $z1KinghtFallUIGame.default.instance.ctrGame.onShotBuild(this, n);
+      if (artwork.fire) artwork.fire(this);
     }
+  };
+  _ctor.prototype.clearAimTarget = function () {
+    this._towerAimTarget = null; this._towerAimNode = null; this._towerAimGeneration = null;
+    this._towerAimScan = 0; this._towerAimInitialized = false;
+  };
+  _ctor.prototype.cacheAimTarget = function (target) {
+    this._towerAimTarget = target || null; this._towerAimNode = target && target.node;
+    this._towerAimGeneration = target && target.node._combatGeneration;
+    this._towerAimScan = .25; this._towerAimInitialized = true;
+  };
+  _ctor.prototype.aimTargetIsLive = function () {
+    var target = this._towerAimTarget;
+    if (!target || !TowerCombat.live(target) || target.node !== this._towerAimNode || target.node._combatGeneration !== this._towerAimGeneration) return false;
+    var position = TowerCombat.point(target.node, this.node.parent), origin = this.node.getPosition();
+    var dx = position.x - origin.x, dy = position.y - origin.y;
+    return this.attRange > 0 && dx * dx + dy * dy < this.attRange * this.attRange;
+  };
+  _ctor.prototype.updateAimTarget = function (dt) {
+    var appearance = this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Appearance;
+    if (!appearance || !appearance.weapon || !appearance.weapon.sprite || this.isDestroyed) return;
+    this._towerAimScan -= dt;
+    var expired = !!this._towerAimTarget && !this.aimTargetIsLive();
+    if (!this._towerAimInitialized || expired || this._towerAimScan <= 0) {
+      var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+      var target = TowerCombat.choose(game.gameData.getEnemyList(), this.node.getPosition(), this.attRange, this.getTowerSettings(), this.node.parent);
+      this.cacheAimTarget(target);
+    }
+    var artwork = require("BuildingAppearance");
+    if (this._towerAimTarget && artwork.aim) artwork.aim(this, this._towerAimTarget);
+  };
+  _ctor.prototype.getTowerSettings = function () {
+    return TowerCombat.settings(this.buildInfo && this.buildInfo.cfg);
   };
   _ctor.prototype.getAttack = function () {
     var t = this.time[r.AttackNum];
@@ -101,10 +145,12 @@ var def_KinghtFallBuildBartizan = function (t) {
   };
   _ctor.prototype.reset = function (e) {
     t.prototype.reset.call(this, e);
+    this.clearAimTarget();
     this.time[r.Invincible] = -1;
   };
   _ctor.prototype.startRoundGame = function () {
     t.prototype.startRoundGame.call(this);
+    this.clearAimTarget();
     if (this.buildInfo.cfg) {
       var e = 1;
       var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff30);
@@ -141,6 +187,7 @@ var def_KinghtFallBuildBartizan = function (t) {
     }
   };
   _ctor.prototype.onDead = function () {
+    this.clearAimTarget();
     t.prototype.onDead.call(this);
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game01), this.T(this.buildCfg.name)));
   };

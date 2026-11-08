@@ -53,7 +53,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     e.btnSideBoard = null;
     e.btnSubEnter = null;
     e.btnSubBg = null;
-    e.costEnergy = 50;
+    e.costEnergy = 5;
     e.isLeftUp = true;
     e.isEnter = false;
     e.haveArrow = false;
@@ -294,7 +294,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     var t = this;
     var selected = this.selectStage;
     var e = this.cfgList[this.selectStage - 1];
-    require("LobbyBackground").showForStage(this.node, e.prefab);
+    require("LobbyBackground").showForStage(this.node, e.EnvironmentBiome || e.EnvironmentMapId || e.prefab);
     var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage();
     this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(e.Name);
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle01), e.Level < n ? e.WaveCfg.length : $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxOrder(), e.WaveCfg.length);
@@ -871,7 +871,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     } else {
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), user = player.getUserData();
       var reserved = user.data && user.data.wallDefenseAdmission;
-      if (user.getPowerNum && user.getPowerNum() < this.costEnergy && !(reserved && !reserved.used)) {
+      var cost = require("GAD_Configs").GADConfig.EnergyCost;
+      if (user.getPowerNum && user.getPowerNum() < cost && !(reserved && !reserved.used)) {
         $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddStrength, $z1Config.UIID.UINONE); return;
       }
       var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().getSubTimeByIndex(t);
@@ -888,7 +889,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
             $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().setSubTimeByIndex(t, Date.now());
             e.refreshSubView();
-          }, { cost: e.costEnergy, unlockStage: e.subPlayStage[t] + 1, onCancel: function () { e._wallDefenseEntering = false; } });
+          }, { cost: cost, unlockStage: e.subPlayStage[t] + 1, onCancel: function () { e._wallDefenseEntering = false; } });
         };
         if (i < this.subPlayTime[t] && !TestMode.getInstance().shouldBypassAdLimits()) {
           $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {

@@ -48,10 +48,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.spAni.setCompleteListener(function (e) {
       switch (e.animation.name) {
         case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack:
-          t.doAttackFinish();
-          break;
-        case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Die:
-          t.freeNode();
+          if (!t.isDead() && !t._isPooled) t.doAttackFinish();
       }
     });
   };
@@ -59,6 +56,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.setBody(this.spAni.node);
   };
   _ctor.prototype.initData = function (t, e) {
+    this._poolCfgID = t;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     GameToolsOverrides.cancel(this);
     this.releaseHealingEffects();
@@ -66,6 +64,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     this.node._combatActor = this;
     this._isPooled = false;
+    this._deathAnimation = null;
     Navigation.reset(this);
     this._routeInterrupted = false;
     this._targetSearchElapsed = 0;
@@ -88,7 +87,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.hpMax = this.cfg.Health * $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getHpAdd(this.cfg.ID);
     this.hp = this.hpMax;
     if (this.hpctrl) {
-      this.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Enemy);
+      this.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Enemy, this);
       this.hpctrl.setHp(this.hp, this.hpMax);
     } else if (!this._hpLoadPending) {
       this._hpLoadPending = true;
@@ -99,7 +98,7 @@ var def_KinghtFallEnemyBase = function (t) {
         (e = cc.instantiate(t)).setParent(n.ndHp);
         e.setPosition(0, 0, 0);
         n.hpctrl = e.getComponent($z1KinghtFallItemHp.default);
-        n.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Enemy);
+        n.hpctrl.setType($z1KinghtFallModle.KinghtFallGameArmy.Enemy, n);
         n.hpctrl.setHp(n.hp, n.hpMax);
         n.ndHp.childrenCount > 1 && console.error("节点下有多个子节点");
       });
@@ -129,6 +128,7 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.onUpdate = function (t) {
     if (!this.isDead()) {
       this.updateCombatTimers(t);
+      if (this._hitReactionPlaying) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; return; }
       switch (this.state) {
         case r.Idle:
           var a = this.getUpdateTarget();
@@ -519,9 +519,11 @@ var def_KinghtFallEnemyBase = function (t) {
       if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         this.state = r.Dead;
-        $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
         this.delAllBuff();
-        this.freeNode();
+        this.playDeath(function () {
+          $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
+          this.freeNode();
+        });
         var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
         if (missions.recordQuestEvent) {
           var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
@@ -543,6 +545,7 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    this._deathAnimation = null;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);
     this.releaseHealingEffects();
@@ -551,7 +554,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this._targetSearchCache = null;
     this._unreachableTargets = null;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
-    var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + this.cfg.ID;
+    var t = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + (this._poolCfgID || this.cfg.ID);
     $z1PoolMgr.PoolMgr.getInstance().freeNode(t, this.node);
     $z1KinghtFallUIGame.default.instance.ctrGame.gameData.delEnemy(this);
   };

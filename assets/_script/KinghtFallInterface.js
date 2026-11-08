@@ -25,6 +25,25 @@ var exp_KinghtFallInterface = function (t) {
     this.body = t;
     if (this.spAni && cc.resources) require("CharacterAppearance").bind(this, this.navigationTeam === "friendly" ? "ally" : "enemy");
   };
+  _ctor.prototype.playDeath = function (done) {
+    var actor = this, token = this._deathAnimation = {}, generation = this.node._combatGeneration;
+    require("GameToolsOverrides").cancel(this);
+    if (cc.resources) require("UnitHitFeedback").reset(this);
+    if (this.rigidBody) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; this.rigidBody.active = false; }
+    if (this.hpctrl && this.hpctrl.node) this.hpctrl.node.active = false;
+    var finish = function () {
+      if (actor._deathAnimation !== token || actor._isPooled || !cc.isValid(actor, true) || !cc.isValid(actor.node, true) || actor.node._combatGeneration !== generation || !actor.isDead()) return;
+      actor._deathAnimation = null;
+      done.call(actor);
+    };
+    var renderer = this.getSpAni ? this.getSpAni() : this.spAni;
+    var name = renderer && renderer.findAnimation && ["die", "dead1", "death"].filter(function (name) { return !!renderer.findAnimation(name); })[0];
+    if (name && renderer.setTrackCompleteListener) {
+      var entry = renderer.setAnimation(0, name, false);
+      if (entry) { renderer.setTrackCompleteListener(entry, finish); return; }
+    }
+    finish();
+  };
   _ctor.prototype.getBuff = function (t) {
     for (var e = 0; e < this.debuffInfo.length; e++) {
       var n = this.debuffInfo[e];

@@ -192,3 +192,64 @@ test('committing an unchanged building value emits no draft mutation', () => {
     assert.equal(f.messages.length, 0);
     assert.equal(f.store.changes().length, 0);
 });
+
+test('construction cards can be reordered and edited without changing upgrades or unit stats',async()=>{
+    const f=fixture(),building=f.store.documents.A.data.BuildEnum['3'];
+    building.InitialChoices=[1,2,5,8];f.panel._snapshot=f.store.snapshot();f.render('3');
+    const original=clone(building.levelList),units=clone(f.store.documents.A.data.AllyCfg);
+    const choice=fields(f.panel.$detail,'Construction choice 1')[0];assert(choice);
+    choice.value='5';choice.onchange();await f.panel._queue;
+    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','3','InitialChoices',0],value:5}]);
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['3'].levelList,original);
+    assert.deepEqual(f.store.documents.A.data.AllyCfg,units);
+    const earlier=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Move earlier')[0];
+    assert(earlier);earlier.onclick();await f.panel._queue;
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['3'].InitialChoices,[2,5,5,8]);
+    assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
+});
+
+test('tower controls create scoped partial drafts and reset preserves unrelated branch data',async()=>{
+    const f=fixture(),row=f.store.documents.A.data.BuildEnum['2'].levelList[0];
+    delete row.Tower;row.customFuture={retain:[7]};f.panel._snapshot=f.store.snapshot();f.render('2');
+    assert.equal(f.messages.length,0,'showing default controls does not seed Tower settings');
+    const targeting=fields(f.panel.$detail,'Tower targeting')[0];assert(targeting);
+    assert.deepEqual(targeting.children.map(option=>option.value),['nearest','highestHp','lowestHp','farthest']);
+    targeting.value='highestHp';targeting.onchange();await f.panel._queue;
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[0].Tower,{targeting:'highestHp'});
+    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','2','levelList',0,'Tower'],value:{targeting:'highestHp'}}]);
+    const reset=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Restore original tower attack')[0];assert(reset);
+    reset.onclick();await f.panel._queue;
+    assert.equal(Object.hasOwn(f.store.documents.A.data.BuildEnum['2'].levelList[0],'Tower'),false);
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[0].customFuture,{retain:[7]});
+    assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
+});
+
+test('sprite dimensions, offsets and muzzle positions are editable without altering artwork or timing defaults',async()=>{
+    const f=fixture(),row=f.store.documents.A.data.BuildEnum['2'].levelList[0];
+    row.Appearance={sprite:'buildings/towers/cannon-1',width:160,height:200,offsetX:0,offsetY:0,muzzleX:0,muzzleY:100,customFuture:'retain'};
+    f.panel._snapshot=f.store.snapshot();f.render('2');
+    const defaults=clone(f.store.documents.overrides.data.timingDefaults),sprite=row.Appearance.sprite;
+    assert.equal(f.messages.length,0);
+    const width=fields(f.panel.$detail,'Artwork width')[0],muzzle=fields(f.panel.$detail,'Muzzle offset Y')[0];assert(width&&muzzle);
+    width.value='180';width.onchange();await f.panel._queue;
+    const nextMuzzle=fields(f.panel.$detail,'Muzzle offset Y')[0];nextMuzzle.value='140';nextMuzzle.onchange();await f.panel._queue;
+    const after=f.store.documents.A.data.BuildEnum['2'].levelList[0].Appearance;
+    assert.equal(after.width,180);assert.equal(after.muzzleY,140);assert.equal(after.sprite,sprite);assert.equal(after.customFuture,'retain');
+    assert.deepEqual(f.store.documents.overrides.data.timingDefaults,defaults);
+    assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
+});
+
+test('weapon fitting edits only the selected layer and removal preserves the fixed base and gameplay stats',async()=>{
+    const f=fixture(),row=f.store.documents.A.data.BuildEnum['2'].levelList[0];
+    row.Appearance={sprite:'buildings/towers/base',width:180,height:220,offsetX:-3,offsetY:4,weapon:{sprite:'buildings/towers/weapon',width:120,height:70,pivotX:.3,pivotY:.5,offsetX:0,offsetY:160,muzzleX:90,muzzleY:12,unknown:{retain:true}}};
+    const initial=clone(row),defaults=clone(f.store.documents.overrides.data.timingDefaults);f.panel._snapshot=f.store.snapshot();f.render('2');
+    assert.equal(f.messages.length,0,'opening a weapon layer writes no defaults');
+    assert.equal(fields(f.panel.$detail,'Muzzle offset X').length,0,'legacy static muzzle controls are hidden when a weapon supplies the muzzle');
+    const pivot=fields(f.panel.$detail,'Weapon pivot X')[0];assert(pivot);pivot.value='.4';pivot.onchange();await f.panel._queue;
+    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','2','levelList',0,'Appearance','weapon','pivotX'],value:.4}]);
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[0].Appearance.weapon.unknown,{retain:true});
+    const remove=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Remove aiming weapon layer')[0];assert(remove);remove.onclick();await f.panel._queue;
+    const after=f.store.documents.A.data.BuildEnum['2'].levelList[0];delete initial.Appearance.weapon;
+    assert.deepEqual(after,initial);assert.deepEqual(f.store.documents.overrides.data.timingDefaults,defaults);
+    assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
+});

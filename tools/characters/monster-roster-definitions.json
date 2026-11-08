@@ -1,0 +1,1306 @@
+{
+  "version": 1,
+  "description": "Stable import IDs and baseline authoring presets for the two supplied monster packs. Registered rows are never overwritten by the importer.",
+  "units": [
+    {
+      "id": 91001,
+      "source": "monster1/Animal_Cat",
+      "name": "Cat",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91002,
+      "source": "monster1/Animal_Dog",
+      "name": "Dog",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91003,
+      "source": "monster1/Animal_Fox",
+      "name": "Fox",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91004,
+      "source": "monster1/Bear_Grizzly",
+      "name": "Grizzly Bear",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91005,
+      "source": "monster1/Bear_White",
+      "name": "Polar Bear",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91006,
+      "source": "monster1/Beetle_Blood",
+      "name": "Blood Beetle",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91007,
+      "source": "monster1/Beetle_Ice",
+      "name": "Ice Beetle",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91008,
+      "source": "monster1/Beetle_Iron",
+      "name": "Iron Beetle",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91009,
+      "source": "monster1/Beetle_Red",
+      "name": "Red Beetle",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91010,
+      "source": "monster1/Bird_Eagle",
+      "name": "Eagle",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91011,
+      "source": "monster1/Bird_Gull",
+      "name": "Gull",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91012,
+      "source": "monster1/Bird_Owl",
+      "name": "Owl",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91013,
+      "source": "monster1/Bird_Parrot",
+      "name": "Parrot",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91014,
+      "source": "monster1/Bird_Red",
+      "name": "Red Bird",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91015,
+      "source": "monster1/Bird_Snow",
+      "name": "Snow Bird",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91016,
+      "source": "monster1/Bird_Toucan",
+      "name": "Toucan",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91017,
+      "source": "monster1/Blowfish_Angry",
+      "name": "Angry Blowfish",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91018,
+      "source": "monster1/Blowfish_Beast",
+      "name": "Beast Blowfish",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91019,
+      "source": "monster1/Buffalo_Disco",
+      "name": "Disco Buffalo",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91020,
+      "source": "monster1/Buffalo_Wild",
+      "name": "Wild Buffalo",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91021,
+      "source": "monster1/Crab_Iron",
+      "name": "Iron Crab",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91022,
+      "source": "monster1/Crab_Rock",
+      "name": "Rock Crab",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91023,
+      "source": "monster1/Crab_Snow",
+      "name": "Snow Crab",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91024,
+      "source": "monster1/Goat_Angry",
+      "name": "Angry Goat",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91025,
+      "source": "monster1/Goat_Black",
+      "name": "Black Goat",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91026,
+      "source": "monster1/Goat_Mushroom",
+      "name": "Mushroom Goat",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91027,
+      "source": "monster1/Goby_Helmet",
+      "name": "Helmeted Goby",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91028,
+      "source": "monster1/Goby_Mad",
+      "name": "Mad Goby",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91029,
+      "source": "monster1/Jellyfish_Bouncy",
+      "name": "Bouncy Jellyfish",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91030,
+      "source": "monster1/Jellyfish_Ice",
+      "name": "Ice Jellyfish",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91031,
+      "source": "monster1/Lizard_Fire",
+      "name": "Fire Lizard",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91032,
+      "source": "monster1/Lizard_Horn",
+      "name": "Horned Lizard",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91033,
+      "source": "monster1/Lizard_Snail",
+      "name": "Snail Lizard",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91034,
+      "source": "monster1/Octopus_Ice",
+      "name": "Ice Octopus",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91035,
+      "source": "monster1/Octopus_Pirate",
+      "name": "Pirate Octopus",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91036,
+      "source": "monster1/Octopus_Ringed",
+      "name": "Ringed Octopus",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91037,
+      "source": "monster1/Slime_Green",
+      "name": "Green Slime",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91038,
+      "source": "monster1/Slime_Purple",
+      "name": "Purple Slime",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91039,
+      "source": "monster1/Snail_Blue",
+      "name": "Blue Snail",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Front)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91040,
+      "source": "monster1/Snail_Conch",
+      "name": "Conch Snail",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Front)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91041,
+      "source": "monster1/Snail_Green",
+      "name": "Green Snail",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Front)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91042,
+      "source": "monster1/Snake_Bell",
+      "name": "Bell Snake",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.7,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91043,
+      "source": "monster1/Snake_Fire",
+      "name": "Fire Snake",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91044,
+      "source": "monster1/Snake_Green",
+      "name": "Green Snake",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.7,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91045,
+      "source": "monster1/Snake_Mushroom",
+      "name": "Mushroom Snake",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.7,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91046,
+      "source": "monster1/Turtle_Alligator",
+      "name": "Alligator Turtle",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Eye)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91047,
+      "source": "monster1/Turtle_Tower",
+      "name": "Tower Turtle",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Eye)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91048,
+      "source": "monster1/Turtle_Volcano",
+      "name": "Volcano Turtle",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Eye)$",
+        "cropHeight": 0.9,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91049,
+      "source": "monster1/Wolf_Demon",
+      "name": "Demon Wolf",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91050,
+      "source": "monster1/Wolf_Gray",
+      "name": "Gray Wolf",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91051,
+      "source": "monster2/Alien_Vampire",
+      "name": "Vampire",
+      "role": "mystic",
+      "behaviorTemplate": 90009,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.55,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91052,
+      "source": "monster2/Alien_Wizard",
+      "name": "Wizard",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Mouth)$",
+        "cropHeight": 0.55,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91053,
+      "source": "monster2/Ant_Honey",
+      "name": "Honey Ant",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91054,
+      "source": "monster2/Ant_Jelly",
+      "name": "Jelly Ant",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91055,
+      "source": "monster2/Ant_Worker",
+      "name": "Worker Ant",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91056,
+      "source": "monster2/Ant_Yellow",
+      "name": "Yellow Ant",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91057,
+      "source": "monster2/Bat_Cave",
+      "name": "Cave Bat",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91058,
+      "source": "monster2/Bat_Pig",
+      "name": "Pig Bat",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91059,
+      "source": "monster2/Bat_Skull",
+      "name": "Skull Bat",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91060,
+      "source": "monster2/Bee_Devil",
+      "name": "Devil Bee",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91061,
+      "source": "monster2/Bee_Honey",
+      "name": "Honey Bee",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91062,
+      "source": "monster2/Bee_Hornet",
+      "name": "Hornet Bee",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91063,
+      "source": "monster2/Bud_Bomb",
+      "name": "Bomb Bud",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body(?:_Fire)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91064,
+      "source": "monster2/Bud_Fire",
+      "name": "Fire Bud",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body(?:_Fire)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91065,
+      "source": "monster2/Bud_Flower",
+      "name": "Flower Bud",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body(?:_Fire)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91066,
+      "source": "monster2/Cactus_Green",
+      "name": "Green Cactus",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.85,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91067,
+      "source": "monster2/Cactus_Snow",
+      "name": "Snow Cactus",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.85,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91068,
+      "source": "monster2/Dragonfly_Armor",
+      "name": "Armored Dragonfly",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91069,
+      "source": "monster2/Dragonfly_Bot",
+      "name": "Robot Dragonfly",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91070,
+      "source": "monster2/Dragonfly_Green",
+      "name": "Green Dragonfly",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91071,
+      "source": "monster2/Fairy_Dust",
+      "name": "Dust Fairy",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91072,
+      "source": "monster2/Fairy_Lamp",
+      "name": "Lantern Fairy",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91073,
+      "source": "monster2/Fairy_Snow",
+      "name": "Snow Fairy",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91074,
+      "source": "monster2/Fly_Bigeye",
+      "name": "Big-eye Fly",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91075,
+      "source": "monster2/Fly_Dumb",
+      "name": "Dumb Fly",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91076,
+      "source": "monster2/Fly_Glow",
+      "name": "Glow Fly",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91077,
+      "source": "monster2/Fly_Iron",
+      "name": "Iron Fly",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91078,
+      "source": "monster2/Fly_Palm",
+      "name": "Palm Fly",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91079,
+      "source": "monster2/Ghost_Baby",
+      "name": "Baby Ghost",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.68,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91080,
+      "source": "monster2/Ghost_Mask",
+      "name": "Mask Ghost",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.68,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91081,
+      "source": "monster2/Ghost_Pirate",
+      "name": "Pirate Ghost",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": true,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.68,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91082,
+      "source": "monster2/Golem_Iron",
+      "name": "Iron Golem",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Eye|Eye2)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91083,
+      "source": "monster2/Golem_Tree",
+      "name": "Tree Golem",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body|Eye|Eye2)$",
+        "cropHeight": 0.8,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91084,
+      "source": "monster2/Mantis_Flower",
+      "name": "Flower Mantis",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91085,
+      "source": "monster2/Mantis_Green",
+      "name": "Green Mantis",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91086,
+      "source": "monster2/Plant_Nepenthes",
+      "name": "Pitcher Plant",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Mouth)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91087,
+      "source": "monster2/Plant_Red",
+      "name": "Red Plant",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Mouth)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91088,
+      "source": "monster2/Plant_Spiky",
+      "name": "Spiky Plant",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Mouth)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91089,
+      "source": "monster2/Scorpion_Purple",
+      "name": "Purple Scorpion",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 0.72
+      }
+    },
+    {
+      "id": 91090,
+      "source": "monster2/Scorpion_Stone",
+      "name": "Stone Scorpion",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 1,
+        "cropWidth": 0.72
+      }
+    },
+    {
+      "id": 91091,
+      "source": "monster2/Skeleton_Soldier",
+      "name": "Skeleton Soldier",
+      "role": "fighter",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91092,
+      "source": "monster2/Skeleton_Warlord",
+      "name": "Skeleton Warlord",
+      "role": "bruiser",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91093,
+      "source": "monster2/Skeleton_Warrior",
+      "name": "Skeleton Warrior",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91094,
+      "source": "monster2/Spider_Frozen",
+      "name": "Frozen Spider",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91095,
+      "source": "monster2/Spider_Red",
+      "name": "Red Spider",
+      "role": "vanguard",
+      "behaviorTemplate": 90001,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91096,
+      "source": "monster2/Spider_Venom",
+      "name": "Venom Spider",
+      "role": "skirmisher",
+      "behaviorTemplate": 90003,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91097,
+      "source": "monster2/Walker_Box",
+      "name": "Box Walker",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.85,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91098,
+      "source": "monster2/Walker_Candle",
+      "name": "Candle Walker",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.85,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91099,
+      "source": "monster2/Walker_Mushroom",
+      "name": "Mushroom Walker",
+      "role": "mystic",
+      "behaviorTemplate": 90006,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.85,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91100,
+      "source": "monster2/Walker_Stump",
+      "name": "Stump Walker",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Body)$",
+        "cropHeight": 0.85,
+        "cropWidth": 1
+      }
+    }
+  ]
+}

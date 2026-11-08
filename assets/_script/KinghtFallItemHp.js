@@ -29,7 +29,8 @@ var def_KinghtFallItemHp = function (t) {
     }
     this.labPro && (this.labPro.node.active = false);
   };
-  _ctor.prototype.setType = function (t) {
+  _ctor.prototype.setType = function (t, actor) {
+    if (actor && this.actor !== actor) { this.actor = actor; this._hpLayoutSignature = null; }
     switch (t) {
       case $z1KinghtFallModle.KinghtFallGameArmy.None:
         this.sprPro = null;
@@ -46,6 +47,24 @@ var def_KinghtFallItemHp = function (t) {
         this.sprPro1 && (this.sprPro1.node.active = false);
         this.sprPro2 && (this.sprPro2.node.active = true);
     }
+  };
+  _ctor.prototype.lateUpdate = function () {
+    var actor = this.actor;
+    if (!actor || !actor.node || !this.node.parent || actor.isDead()) return;
+    var renderer = actor.getSpAni ? actor.getSpAni() : actor.spAni, visual = renderer && renderer.node;
+    if (!visual || !renderer.skeletonData || !visual.activeInHierarchy) return;
+    var signature = [visual.x, visual.y, visual.scaleX, visual.scaleY, visual.angle].join(":");
+    if (this._hpRenderer === renderer && this._hpData === renderer.skeletonData && this._hpParent === this.node.parent && this._hpLayoutSignature === signature) return;
+    var box = require("KinghtFallDepthView").bounds(renderer, actor.node);
+    if (!box) return;
+    var parent = this.node.parent, y = box.maxY + Math.max(10, (box.maxY - box.minY) * .1);
+    var left = parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.v2(box.minX, y)));
+    var right = parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.v2(box.maxX, y)));
+    var width = this.node.width || this.sprPro && this.sprPro.node.width;
+    if (!(width > 0)) return;
+    this.node.setPosition((left.x + right.x) / 2, Math.max(left.y, right.y));
+    this.node.scaleX = Math.abs(right.x - left.x) / width;
+    this._hpRenderer = renderer; this._hpData = renderer.skeletonData; this._hpParent = parent; this._hpLayoutSignature = signature;
   };
   _ctor.prototype.setProgress = function (t) {
     if (this.sprPro) {

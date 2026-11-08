@@ -29,14 +29,16 @@ function preserveMetadata(root,files,read){
     const next=JSON.parse(bytes),result=Object.assign({},next,previous(file));if(next.textures)result.textures=next.textures.map(id=>textures.get(id)||id);files.set(file,JSON.stringify(result,null,2)+'\n');
   }
 }
-function retime(rig,contract){
+function retime(rig,contract,preserveMoveTiming){
   const hit=require('./hit-animation').reaction(rig);
+  const death=rig.animations.die||rig.animations.dead1||rig.animations.death;
   const animations={};for(const [name,original]of Object.entries(contract.animations)){
-    const source=rig.animations[name]||rig.animations[name==='die'?'dead1':'idle'];if(!source)throw Error('Replacement model has no '+name+' animation');
-    const result=clone(source),from=duration(source),to=original.duration;
+    const gait=name==='move'&&!preserveMoveTiming&&(rig.animations.run||rig.animations.walk||rig.animations.move);
+    const source=gait||rig.animations[name]||rig.animations[name==='die'?'dead1':'idle'];if(!source)throw Error('Replacement model has no '+name+' animation');
+    const result=clone(source),from=duration(source),to=gait&&from>0?from:original.duration;
     function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((from?value.time*to/from:value.time).toFixed(7));Object.values(value).forEach(visit);}visit(result);
     if(original.events&&original.events.length)result.events=clone(original.events);else delete result.events;animations[name]=result;
-  }animations.hit=hit;rig.animations=animations;rig.events=clone(contract.events||{});
+  }if(death&&!animations.die){animations.die=clone(death);delete animations.die.events;}animations.hit=hit;rig.animations=animations;rig.events=clone(contract.events||{});
 }
 function bake(root,profile,id,contract,assets,read,options){
   if(!options&&profile.base.source){
@@ -81,8 +83,9 @@ function bake(root,profile,id,contract,assets,read,options){
     for(const slot of rig.slots)if(Core.isSkinSlot(slot.name))slot.color=tint(slot.color||'ffffffff');
     for(const animation of Object.values(rig.animations))for(const [name,slot]of Object.entries(animation.slots||{}))if(Core.isSkinSlot(name))for(const frame of slot.color||[])frame.color=tint(frame.color);
   }
-  retime(rig,contract);
-  // Preserve the old unit's world footprint, callback duration and hit events.
+  retime(rig,contract,!!profile.base.mount);
+  // Preserve the old unit's world footprint and combat callback/hit timing.
+  // Unmounted locomotion retains the imported gait's own cadence.
   // The hero and every combat statistic/timing table are left untouched.
   const factor=contract.height/(description.fitHeight||rig.skeleton.height||120),model=profile.models&&profile.models[layer.uuid]||{},scale=profile.scale||1;
   rig.bones.unshift({name:'__game_fit',x:((layer.x||0)*scale+(model.x||0))*factor,y:((layer.y||0)*scale+(model.y||0))*factor,rotation:(layer.angle||0)+(model.rotation||0),scaleX:factor*scale*(layer.scaleX===undefined?1:layer.scaleX)*(model.scaleX===undefined?1:model.scaleX),scaleY:factor*scale*(layer.scaleY===undefined?1:layer.scaleY)*(model.scaleY===undefined?1:model.scaleY)});for(let i=1;i<rig.bones.length;i++)if(!rig.bones[i].parent)rig.bones[i].parent='__game_fit';
