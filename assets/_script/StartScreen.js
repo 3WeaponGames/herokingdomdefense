@@ -29,7 +29,17 @@ var StartScreen = cc.Class({
   fitContent: function () {
     var size = cc.view.getVisibleSize();
     // Keep the complete title and tap target visible on short/wide displays.
-    this.content.setScale(Math.min(1, (size.width - 64) / 720, (size.height - 96) / 1120));
+    var scale = Math.min(1, (size.width - 64) / 720, (size.height - 96) / 1120);
+    this.content.setScale(scale);
+    var logo = this.content.getChildByName && this.content.getChildByName("GameLogo");
+    if (logo) {
+      var topInset = 44;
+      if (cc.sys && cc.sys.getSafeAreaRect && cc.view.getVisibleOrigin) {
+        var safe = cc.sys.getSafeAreaRect(), origin = cc.view.getVisibleOrigin();
+        topInset += Math.max(0, origin.y + size.height - safe.y - safe.height);
+      }
+      logo.y = (size.height / 2 - topInset) / scale - logo.height * Math.abs(logo.scaleY) * (1 - logo.anchorY);
+    }
   },
 
   onKeyDown: function (event) {
