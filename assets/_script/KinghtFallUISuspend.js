@@ -56,6 +56,24 @@ var def_KinghtFallUISuspend = function (t) {
       t.proY = -1;
     }, this);
     if (this.togCon) this.togCon.node.active = false;
+    this.layoutPauseTitle();
+  };
+  _ctor.prototype.layoutPauseTitle = function () {
+    if (!cc.view || !this.node) return;
+    var root = this.node.getChildByName("root"), ribbon = root && root.getChildByName("wg_gxhd_pd");
+    if (!ribbon) return;
+    var scale = 1;
+    for (var parent = root; parent; parent = parent.parent) scale *= Math.abs(parent.scaleY === undefined ? 1 : parent.scaleY);
+    if (scale < .01) return;
+    var origin = cc.view.getVisibleOrigin(), size = cc.view.getVisibleSize();
+    var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: size.width, height: size.height };
+    var top = root.convertToNodeSpaceAR(cc.v2(safe.x + safe.width / 2, safe.y + safe.height));
+    var game = $z1KinghtFallUIGame.default && $z1KinghtFallUIGame.default.instance;
+    var title = !this._stats && game && !game.isclose && game.node && game.node.activeInHierarchy && game.ndLevelInfo && game.ndLevelInfo.getChildByName("labName");
+    var target = title ? root.convertToNodeSpaceAR(title.convertToWorldSpaceAR(cc.v2(0, 0))) : cc.v2(top.x, top.y - 80);
+    var canvas = cc.Canvas && cc.Canvas.instance, badge = canvas && canvas.node.getChildByName("DevelopmentTestModeBadge");
+    if (badge && badge.active && badge.activeInHierarchy !== false) top.y = Math.min(top.y, root.convertToNodeSpaceAR(badge.convertToWorldSpaceAR(cc.v2(0, -badge.height * badge.anchorY))).y - 12);
+    ribbon.setPosition(target.x, Math.min(target.y, top.y - ribbon.height * Math.abs(ribbon.scaleY) / 2 - 18));
   };
   _ctor.prototype.initItem = function () {
     if (this._stats) {
@@ -125,6 +143,8 @@ var def_KinghtFallUISuspend = function (t) {
     if (this.ndTips.active && this._tipTrigger === t.currentTarget) { this.ndTips.active = false; return; }
     this._tipTrigger = t.currentTarget;
     this.ndTips.active = true;
+    this.ndTips.zIndex = Math.max(this.ndTips.zIndex || 0, (this.btnDismiss && this.btnDismiss.zIndex || 0) + 1);
+    if (cc.BlockInputEvents && !this.ndTips.getComponent(cc.BlockInputEvents)) this.ndTips.addComponent(cc.BlockInputEvents);
     var a = [];
     for (var o = 0; o < e.cfg.Pamer.length; o++) {
       if (e.cfg.isPerecentage && e.cfg.isPerecentage[o]) {
@@ -174,6 +194,7 @@ var def_KinghtFallUISuspend = function (t) {
     if (root) root.on(cc.Node.EventType.TOUCH_END, this.dismissPerkTip, this, true);
   };
   _ctor.prototype.lateUpdate = function () {
+    this.layoutPauseTitle();
     if (!this.ndTips || !this.ndTips.active) return;
     var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
     var safe = cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : {};

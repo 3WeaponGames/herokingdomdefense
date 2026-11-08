@@ -7,6 +7,7 @@ function fixture(){
   get parent(){return this._parent;}set parent(value){if(this._parent)this._parent.children.splice(this._parent.children.indexOf(this),1);this._parent=value;if(value)value.children.push(this);}
   get activeInHierarchy(){return this.active&&(!this.parent||this.parent.activeInHierarchy);}
   setContentSize(w,h){this.width=w;this.height=h;}setPosition(x,y){if(typeof x==='object')({x,y}=x);this.x=x;this.y=y;}
+  setScale(x,y=x){this.scaleX=x;this.scaleY=y;}
   addComponent(Type){const c=new Type();c.node=this;this.components.push(c);return c;}getComponent(Type){return this.components.find(c=>c instanceof Type);}
   getChildByName(name){return this.children.find(n=>n.name===name);}on(event,fn,target){(this.events[event]||(this.events[event]=[])).push({fn,target});}
   emit(event,data){for(const cb of this.events[event]||[])cb.fn.call(cb.target,data);}
@@ -17,11 +18,11 @@ function fixture(){
  Node.EventType={TOUCH_END:'end'};
  class Label{
   constructor(){this.string='';this.fontSize=20;this.lineHeight=24;}
-  _forceUpdateRenderData(){let lines=0;for(const paragraph of String(this.string).split('\n'))lines+=Math.max(1,Math.ceil(paragraph.length*this.fontSize*.56/Math.max(1,this.node.width)));this.node.height=lines*this.lineHeight;}
+  _forceUpdateRenderData(){if(this.overflow===0){this.node.width=String(this.string).length*this.fontSize*.56;this.node.height=this.lineHeight;return;}let lines=0;for(const paragraph of String(this.string).split('\n'))lines+=Math.max(1,Math.ceil(paragraph.length*this.fontSize*.56/Math.max(1,this.node.width)));this.node.height=lines*this.lineHeight;}
  }
- Label.Overflow={RESIZE_HEIGHT:3};Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};
+ Label.Overflow={NONE:0,RESIZE_HEIGHT:3};Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};
  class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SLICED:1};
- class Graphics{clear(){}roundRect(){}rect(){}fill(){}stroke(){}}
+ class Graphics{clear(){}roundRect(){}rect(){}circle(){}moveTo(){}lineTo(){}fill(){}stroke(){}}
  class ScrollView{scrollToTop(){this.content.y=0;this.scrolls=(this.scrolls||0)+1;}}
  class Mask{}Mask.Type={RECT:0};class BlockInputEvents{}class LabelOutline{}
  const size={width:750,height:1334},origin={x:-375,y:-667},safe={x:-375,y:-667,width:750,height:1334},keys=[];
@@ -56,6 +57,26 @@ test('guide describes queued enemies with the same current-wave scaling and live
  assert.equal(JSON.stringify(f.config),before);
 });
 
+test('upcoming portraits preload once and are ready when the guide opens, with a role icon and lore beside the head',()=>{
+ const f=fixture(),r=record(f);f.api.bind(f.ui,r);f.api.bind(f.ui,r);
+ const path=f.config.SoldierCfg[r.id].loadIcon.slice(6),requests=f.pending.filter(p=>p.key===path);assert.equal(requests.length,1);
+ const frame=f.frame();requests[0].done(frame);f.api.open(f.ui,r);const state=f.ui._enemyGuide;
+ assert.equal(state.portrait.spriteFrame,frame);assert.equal(state.portraitPlaceholder.active,false);
+ assert.equal(state.name._localizedFontRole,'body');assert(state.roleBadge.active);
+ assert.equal(state.roleIcon.node.parent,state.roleBadge);assert(state.roleIcon.node.width<state.roleBadge.width);
+ assert.equal(state.content.getChildByName('Role'),undefined);assert.equal(state.content.getChildByName('WaveContext'),undefined);assert.equal(state.content.getChildByName('LoreHeading'),undefined);
+ assert(state.lore.node.y>state.stats[0].node.y);
+ const close=f.pending.find(p=>p.key==='_res/textures/KinghtFallUIOnlineReward/wg_zy_gb');assert(close);close.done(frame);
+ assert.equal(state.close.getComponent(f.cc.Sprite).spriteFrame,frame);assert.equal(state.close.children.length,0);
+});
+
+test('all enemy records resolve to existing nonempty head portraits without generating or changing unit data',()=>{
+ const PNG=require('../../packages/hkd-characters/lib/png-atlas'),icons=new Set();
+ for(const row of Object.values(authored.SoldierCfg)){assert(row.loadIcon.startsWith('@icon/'));icons.add(row.loadIcon.slice(6));}
+ assert(icons.size>=112);
+ for(const icon of icons){const file=path.join(root,'assets/resources',icon+'.png');assert(fs.existsSync(file),icon);const image=PNG.decode(fs.readFileSync(file));let visible=0;for(let i=3;i<image.rgba.length;i+=4)if(image.rgba[i]>64)visible++;assert(visible>300,icon+' has no usable portrait');assert(fs.existsSync(file+'.meta'));}
+});
+
 test('all imported records and campaign aliases have finite supported stats and use their own authored name, portrait and guide',()=>{
  const f=fixture();for(const row of Object.values(f.config.SoldierCfg)){
   const model=f.api.describe(f.ui,row.ID,false);assert.equal(model.name,row.Name);assert.equal(model.icon,row.loadIcon);assert.equal(model.description,row.Guide&&row.Guide.description||model.description);
@@ -83,7 +104,7 @@ test('reused markers bind once and read their current unit; mixed offscreen grou
  r.id=91002;r._guideIds=[91001,91002,91001,91003];r.ndItem.emit('end',{stopPropagation(){},getLocation:()=>({x:0,y:0}),getStartLocation:()=>({x:0,y:0})});
  const state=f.ui._enemyGuide;assert.equal(state.model.id,91002);assert.equal(state.ids.length,3);assert.equal(state.index,1);assert(state.next.active);
  const old=f.pending[0];state.next.emit('end',{stopPropagation(){}});assert.equal(state.model.id,91003);assert(f.ui.isPauset);old.done(f.frame());assert.equal(state.portrait.spriteFrame,null);
- f.pending.at(-1).done(f.frame());assert(state.portrait.spriteFrame);f.api.close(f.ui);assert.equal(f.ui.isPauset,false);
+ f.pending.filter(p=>p.key===state.model.icon.slice(6)).at(-1).done(f.frame());assert(state.portrait.spriteFrame);f.api.close(f.ui);assert.equal(f.ui.isPauset,false);
  r.ndItem.emit('end',{stopPropagation(){},getLocation:()=>({x:90,y:0}),getStartLocation:()=>({x:0,y:0})});assert.equal(f.ui._enemyGuide,null,'Dragging a marker must not open the guide');
 });
 
@@ -124,7 +145,7 @@ test('GUI artwork is cloned before nine-slicing, and closed or replacement guide
 
 test('only planning portraits open guides; combat, transitions and live markers never capture movement or pause',()=>{
  for(const phase of [1,2,3,4,undefined]){
-  const f=fixture(),r=record(f);f.api.bind(f.ui,r);f.game.gameStatus=phase;f.api.update(f.ui);
+  const f=fixture(),r=record(f);f.game.gameStatus=phase;f.api.bind(f.ui,r);f.api.update(f.ui);
   assert.equal(r.ndItem._enemyGuideInputBlocker.enabled,false);
   let stopped=false;r.ndItem.emit('end',{stopPropagation(){stopped=true;}});f.api.open(f.ui,r);
   assert.equal(stopped,false);assert(!f.ui._enemyGuide);assert.equal(f.pending.length,0);assert.equal(f.ui._pauseOwners.size,0);

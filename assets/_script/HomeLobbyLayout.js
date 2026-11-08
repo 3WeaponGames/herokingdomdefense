@@ -81,6 +81,15 @@ function install(home) {
   quest.on(cc.Node.EventType.TOUCH_END, function () { require("UIMgr").UIMgr.getInstance().openUI(Config.KinghtFallUIID.UIQuests, Config.KinghtFallUIID.UIHome); });
   var items = [home.btnAchieve, home.btnPassport, home.btnOnline, home.btnSign, quest];
   var state = home._lobby = { bar: bar, view: view, content: content, scroll: scroll, items: items, quest: quest };
+  var icon = home.ndLevelInfo.getChildByName("sprIcon");
+  var preview = state.stagePreview = new cc.Node("StagePreview"); preview.parent = home.ndLevelInfo; preview.zIndex = -1;
+  state.previewOrigin = { x: icon.x, y: icon.y }; preview.setPosition(icon.x, icon.y);
+  ["sprIcon", "spAni", "ndAniClick"].forEach(function (name) {
+    var node = home.ndLevelInfo.getChildByName(name), x = node.x, y = node.y;
+    node.parent = preview; node.setPosition(x - preview.x, y - preview.y);
+  });
+  var title = home.ndLevelInfo.getChildByName("labName");
+  state.titleScale = { x: title.scaleX, y: title.scaleY };
   state.left = arrow(bar, -1, function () { scroll.scrollToOffset(cc.v2(Math.max(0, scrollOffset(scroll) - state.geometry.viewport), 0), .22); });
   state.right = arrow(bar, 1, function () { scroll.scrollToOffset(cc.v2(Math.min(scroll.getMaxScrollOffset().x, scrollOffset(scroll) + state.geometry.viewport), 0), .22); });
   var legacy = home.btnSubBg.children[0]; legacy.active = false; legacy.parent = home.node;
@@ -124,7 +133,8 @@ function layout(home) {
   if (footer) bounds.footer = Math.max(bounds.footer, home.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y);
   var points = logicalWidth(), geometry = Core.measure(bounds, points);
   var fonts = state.items.map(function (item) { var text = item.getChildByName("labName").getComponent(cc.Label); return [text.string, text.font && text.font.uuid, text.fontFamily, text.useSystemFont, text.fontSize]; });
-  var signature = JSON.stringify([bounds, points, Language.LanguageMgr.getInstance().currentLan, fonts]);
+  var stageIcon = state.stagePreview.getChildByName("sprIcon"), stageOrder = home.ndLevelInfo.getChildByName("labOrder");
+  var signature = JSON.stringify([bounds, points, Language.LanguageMgr.getInstance().currentLan, fonts, stageIcon.width, stageIcon.height, stageOrder.height]);
   if (signature !== state.signature) {
     var oldCell = state.geometry && state.geometry.cell, oldOffset = oldCell ? scrollOffset(state.scroll) / oldCell : 0;
     state.signature = signature; state.geometry = geometry;
@@ -158,6 +168,7 @@ function layout(home) {
     state.left.active = state.right.active = geometry.count < 5;
     home.ndLevelInfo.setScale(geometry.stageScale); home.ndLevelInfo.setPosition(geometry.center, geometry.stageY);
     home.ndBoxShow.setScale(geometry.stageScale); home.ndBoxShow.setPosition(geometry.center, geometry.stageY - 166 * geometry.stageScale);
+    layoutStage(home, bounds, points, geometry);
     home.btnBattle.setScale(geometry.buttonScale); home.btnBattle.setPosition(geometry.buttonRight, geometry.buttonY);
     state.defense.setScale(geometry.buttonScale); state.defense.setPosition(geometry.buttonLeft, geometry.buttonY);
     state.defenseCaption.setPosition(geometry.buttonLeft, geometry.buttonY - 73 * geometry.buttonScale - 21);
@@ -165,6 +176,28 @@ function layout(home) {
   }
   layoutHeader(home, bounds);
   refresh(home);
+}
+function layoutStage(home, bounds, points, geometry) {
+  var state = home._lobby, stage = home.ndLevelInfo, ribbon = stage.getChildByName("wg_zy_pd"), title = stage.getChildByName("labName");
+  ribbon.y = 390 + 28 * (geometry.titleScale - 1);
+  title.setScale(state.titleScale.x * geometry.titleScale, state.titleScale.y * geometry.titleScale);
+  (ribbon.getComponents(cc.Component) || []).forEach(function (component) {
+    if (component.ribbonTitle !== undefined) {
+      component.minWidth = component.maxWidth = 620 * geometry.titleScale;
+      component.minHeight = 112 * geometry.titleScale; component.invalidate();
+    }
+  });
+  var preview = state.stagePreview, icon = preview.getChildByName("sprIcon"), order = stage.getChildByName("labOrder");
+  preview.setScale(geometry.previewScale); preview.setPosition(state.previewOrigin.x, state.previewOrigin.y);
+  if (geometry.previewScale > 1) {
+    var bottom = order.y - order.height * Math.abs(order.scaleY) * order.anchorY;
+    var maximum = bottom - 14 * (bounds.right - bounds.left) / points / geometry.stageScale;
+    var top = preview.y + (icon.y + icon.height * Math.abs(icon.scaleY) * (1 - icon.anchorY)) * geometry.previewScale;
+    preview.y -= Math.max(0, top - maximum);
+  }
+  // Reserve the entire touch target, including its notification dot.
+  home.btnLeft.x = (bounds.left + geometry.stageArrowPadding - geometry.center) / geometry.stageScale + home.btnLeft.width * Math.abs(home.btnLeft.scaleX) * home.btnLeft.anchorX;
+  home.btnRight.x = (bounds.right - geometry.stageArrowPadding - geometry.center) / geometry.stageScale - home.btnRight.width * Math.abs(home.btnRight.scaleX) * (1 - home.btnRight.anchorX);
 }
 function layoutHeader(home, bounds) {
   var state = home._lobby, manager = require("UIMgr").UIMgr.getInstance();

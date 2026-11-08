@@ -19838,6 +19838,24 @@
         "hAlign": "CENTER",
         "vAlign": "CENTER"
       }
+    },
+    "enemyGuide.title": {
+      "en": {
+        "width": 530,
+        "height": 64,
+        "fontRole": "display",
+        "displayTextStyle": {
+          "minimumOutline": 2,
+          "outlineRatio": 0.04,
+          "minimumShadow": 1,
+          "shadowRatio": 0.02
+        }
+      },
+      "zh": {
+        "width": 530,
+        "height": 64,
+        "fontRole": "body"
+      }
     }
   },
   "nodeStyles": {

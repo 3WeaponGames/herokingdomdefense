@@ -93,6 +93,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.isAgg = false;
     this.rallyPoint = null;
     this.pathList = [];
+    this._rallyMarkerRemaining = 0;
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
     this._separateArmyCommands = true;
@@ -225,6 +226,12 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onUpdate = function (t) {
     var l;
+    if (this._rallyMarkerRemaining > 0) {
+      var markerDelta = cc.director && cc.director.getDeltaTime ? Math.min(.1, cc.director.getDeltaTime()) : t;
+      this._rallyMarkerRemaining = Math.max(0, this._rallyMarkerRemaining - markerDelta);
+      this.ndAggFlag.opacity = Math.round(255 * Math.min(1, this._rallyMarkerRemaining / .6));
+      if (this._rallyMarkerRemaining < .000001) { this._rallyMarkerRemaining = 0; this.ndAggFlag.active = false; }
+    }
     Navigation.beginFrame(this);
     if (this._projectileLooks) this._projectileLooks.update(t);
     GameToolsOverrides.tick(t, this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight);
@@ -458,6 +465,7 @@ var def_KinghtFallGameCtrl = function (t) {
       this.pathList = [this.rallyPoint];
       this.ndAggFlag.Flag = 1;
       this.ndAggFlag.active = true;
+      this.ndAggFlag.opacity = 255; this._rallyMarkerRemaining = 3;
       this.ndAggFlag.setPosition(this.rallyPoint.pos);
       this.ndAggFlag.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.rallyPoint.pos.y);
       var animation = this.ndAggFlag.getComponent(sp.Skeleton);
@@ -472,6 +480,7 @@ var def_KinghtFallGameCtrl = function (t) {
       this.pathList = [];
       this.ndAggFlag.Flag = 0;
       this.ndAggFlag.active = false;
+      this._rallyMarkerRemaining = 0;
     }
     this.ctrPlay.ndAgg.active = this.isAgg;
     this.applyArmyOrder();
@@ -492,6 +501,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.rallyPoint = { index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) };
     this.pathList = [this.rallyPoint];
     this.ndAggFlag.Flag = 1; this.ndAggFlag.active = true;
+    this.ndAggFlag.opacity = 255; this._rallyMarkerRemaining = 3;
     this.ndAggFlag.setPosition(this.rallyPoint.pos);
     this.ndAggFlag.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.rallyPoint.pos.y);
     var animation = this.ndAggFlag.getComponent(sp.Skeleton);
@@ -754,6 +764,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.pathList = [];
     this.ndAggFlag.Flag = 0;
     this.ndAggFlag.active = false;
+    this._rallyMarkerRemaining = 0;
     this.ctrPlay.ndAgg.active = false;
     this.gameData.getSoldierList().forEach(function (unit) { unit._followSelected = false; unit._rallyOrder = null; });
     this.applyArmyOrder();

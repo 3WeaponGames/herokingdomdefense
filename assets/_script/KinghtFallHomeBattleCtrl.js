@@ -213,8 +213,9 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
   };
   _ctor.prototype.initBtnListener = function () {
     var t = this;
-    this.ndLevelInfo.getChildByName("ndAniClick").on(cc.Node.EventType.TOUCH_END, function () {
-      var e = t.ndLevelInfo.getChildByName("spAni").getComponent(sp.Skeleton);
+    var stagePreview = this._lobby && this._lobby.stagePreview || this.ndLevelInfo;
+    stagePreview.getChildByName("ndAniClick").on(cc.Node.EventType.TOUCH_END, function () {
+      var e = stagePreview.getChildByName("spAni").getComponent(sp.Skeleton);
       if (e.skeletonData && "idle" == e.animation) {
         e.setAnimation(0, "attack", false);
         if (t._stageMonsterId) require("GameToolsOverrides").applyAttackPlayback({ cfg: { ID: t._stageMonsterId }, spAni: e }, "enemy");
@@ -302,7 +303,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     if (cc.view) require("StageStarPresentation").showLobby(this, e, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getStageInfo(e.Level), n);
     this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconMap, e.Map, function (e) {
       if (!cc.isValid(t, true) || t.selectStage !== selected) return;
-      t.ndLevelInfo.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = e;
+      (t._lobby && t._lobby.stagePreview || t.ndLevelInfo).getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = e;
     });
     this.loadStageMonster(e);
     this.hideBoxReward();
@@ -340,7 +341,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     var self = this, request = this._stageMonsterRequest = (this._stageMonsterRequest || 0) + 1;
     var unitId = { wqyl_bb: 90001, wqyl_zbb: 90002, wqyl_gb: 90003, wqyl_qb: 90004 }[stage.EnemyAni] || 90001;
     var cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(unitId);
-    var node = this.ndLevelInfo.getChildByName("spAni"), renderer = node.getComponent(sp.Skeleton);
+    var node = (this._lobby && this._lobby.stagePreview || this.ndLevelInfo).getChildByName("spAni"), renderer = node.getComponent(sp.Skeleton);
     if (!this._stageModelOrigin) this._stageModelOrigin = { x: node.x, y: node.y };
     node.active = false;
     // Read the renderer from the same prefab used by battle. Loading its asset

@@ -7128,16 +7128,19 @@
     },
     "content": [
       {
+        "__id__": 327
+      },
+      {
         "__id__": 330
       }
     ],
-    "paddingX": 8,
+    "paddingX": 10,
     "paddingY": 4,
-    "gap": 8,
+    "gap": 4,
     "minWidth": 0,
     "minHeight": 0,
-    "maxWidth": 160,
-    "reflowRows": false
+    "maxWidth": 640,
+    "reflowRows": true
   },
     {
         "__type__": "cc.Node",

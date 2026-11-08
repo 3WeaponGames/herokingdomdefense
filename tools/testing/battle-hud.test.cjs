@@ -52,13 +52,17 @@ test('task drawer begins closed, shows ready badge only while closed and retains
  hud.setOpen(ui,false);f.finish();assert.equal(s.view.width,0);assert.equal(s.red.active,true);hud.updateTasks(ui,false,false);assert.equal(s.handle.active,false);assert.equal(s.red.active,false);assert.equal(ui.ndTask.active,false);
 });
 
-test('Tasks keeps one row below the header and leaves the Buildings column clear',()=>{
+test('Tasks collapses directly below Silver and expands clear of the header and Buildings',()=>{
  const f=fixture(),{ui,hud}=f;
  const top=ui._battleHud.handle.y+ui._battleHud.handle.height/2;
  const wave=f.nodes[240],waveBottom=ui.ndLevelInfo.y+wave.y-wave.height*Math.abs(wave.scaleY)/2;
- assert(top<=ui.ndCoin.y-ui.ndCoin.height/2-12);assert(top<=waveBottom-12);
- hud.setOpen(ui,true);f.settle();
- assert.equal(ui._battleHud.handle.y+ui._battleHud.handle.height/2,top);
+ assert.equal(top,ui.ndCoin.y-ui.ndCoin.height/2-12);
+ assert(ui._battleHud.handle.width<160);
+ const title=ui._battleHud.title,arrow=ui._battleHud.arrow;
+ assert.equal(title.x+ui._battleHud.handle.width/2,12);
+ assert(Math.abs(arrow.x-7-title.x-title.width-10)<.001);
+ hud.setOpen(ui,true);f.settle();f.finish();
+ assert(ui._battleHud.handle.y+ui._battleHud.handle.height/2<=waveBottom-12);
  assert(ui._battleHud.handle.x+ui._battleHud.handle.width/2<ui.btnBuildInfo.x-ui.btnBuildInfo.width/2);
  assert(ui.ndLevelInfo.width<=460);
 });
@@ -71,11 +75,11 @@ test('drawer animation survives ordinary frame updates and reverses cleanly on a
 test('localized label resizing during a slide preserves its current position and animation',()=>{
  const f=fixture(),{ui,hud}=f,s=ui._battleHud;hud.setOpen(ui,true);s.view.width=100;f.nodes[200].width+=120;hud.layout(ui);assert(f.tweens.has(s.view));assert.equal(s.view.width,100);assert.equal(s.animating,true);f.finish();assert.equal(s.view.width,s.panelWidth);hud.setOpen(ui,false);hud.updateTasks(ui,false,false);assert(!f.tweens.has(s.view));assert.equal(ui.ndTask.active,false);
 });
-test('drawer keeps the same height and top edge and never covers its handle during either animation',()=>{
+test('drawer keeps one height and aligned backgrounds and never covers its handle during either animation',()=>{
  const f=fixture(),{ui,hud}=f,s=ui._battleHud;
  f.nodes[200].getComponent(f.cc.Label).string='Upgrade 1 Arrow Tower to Level 3 and defend the castle';f.settle();
  const height=s.handle.height,top=s.handle.y+height/2;assert.equal(height,ui.ndTask.height);
- for(const open of [true,false]){hud.setOpen(ui,open);for(const progress of [.1,.3,.7,.9]){s.view.width=progress*s.panelWidth;f.tweens.get(s.view).update();assert.equal(s.handle.height,height);assert.equal(s.handle.y+height/2,top);assert(s.handle.x-s.handle.width/2>=s.view.x+s.view.width);assert.equal(ui.ndTask.x,0);}f.finish();}
+ for(const open of [true,false]){hud.setOpen(ui,open);for(const progress of [.1,.3,.7,.9]){s.view.width=progress*s.panelWidth;f.tweens.get(s.view).update();assert.equal(s.handle.height,height);assert.equal(s.handle.y,s.view.y);assert(s.handle.y+height/2<=top);assert(s.handle.x-s.handle.width/2>=s.view.x+s.view.width);assert.equal(ui.ndTask.x,0);}f.finish();}
 });
 test('task backgrounds are 90 percent opaque while labels stay fully opaque and the stage title has no panel',()=>{
  const f=fixture(),s=f.ui._battleHud;assert.equal(f.ui.ndLevelInfo.getComponent(f.cc.Sprite).enabled,false);

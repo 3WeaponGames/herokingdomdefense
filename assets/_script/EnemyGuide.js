@@ -39,7 +39,7 @@ function describe(ui, id, live) {
   var roleName = role && role.name || "enemyGuide.unknown";
   var approvedRoles = { fighter: "Fighter", skirmisher: "Skirmisher", vanguard: "Vanguard", mystic: "Mystic", bruiser: "Bruiser", guardian: "Guardian" };
   if (role && approvedRoles[roleId] === role.name) roleName = "enemyGuide.role." + roleId;
-  return { id: id, name: cfg.Name, role: roleName, icon: cfg.loadIcon,
+  return { id: id, name: cfg.Name, role: roleName, roleIcon: role && role.icon, roleTint: role && role.tint, icon: cfg.loadIcon,
     wave: battle.round, live: !!live, description: cfg.Guide && cfg.Guide.description || fallback, lore: cfg.Guide && cfg.Guide.lore || "",
     stats: [
       ["health", actor && finite(actor.hp) ? display(actor.hp) + " / " + display(hp) : display(hp)],
@@ -61,6 +61,30 @@ function text(parent, name, size, color, displayFont) {
   return label;
 }
 function bindText(label, key, params) { language().bindLabel(label, key, params); }
+function loadIcon(ui, icon, done) {
+  var resource = icon && icon.indexOf("@icon/") === 0;
+  if (icon) ui.loadSpriteFrame(resource ? "resources" : "KinghtFallEnemy", resource ? icon.slice(6) : "icon/" + icon, done);
+}
+function loadPortrait(ui, icon, done) {
+  if (!icon) return;
+  var cache = ui._enemyGuidePortraitCache;
+  if (!cache || cache.generation !== ui._resourceGeneration) cache = ui._enemyGuidePortraitCache = { generation: ui._resourceGeneration, entries: {} };
+  var entry = cache.entries[icon] || (cache.entries[icon] = { callbacks: [] });
+  if (entry.frame && cc.isValid(entry.frame, true)) { if (done) done(entry.frame); return; }
+  if (done) entry.callbacks.push(done);
+  if (entry.loading) return; entry.loading = true;
+  loadIcon(ui, icon, function (frame) {
+    if (ui._enemyGuidePortraitCache !== cache || ui._resourceGeneration !== cache.generation || !cc.isValid(ui, true)) return;
+    entry.loading = false; entry.frame = frame;
+    entry.callbacks.splice(0).forEach(function (callback) { callback(frame); });
+  });
+}
+function fitPortrait(state) {
+  var frame = state.portrait.spriteFrame; if (!frame) return;
+  var original = frame.getOriginalSize && frame.getOriginalSize(), max = Math.min(128, state.content.width * .3);
+  var scale = original && Math.min(max / original.width, max / original.height);
+  state.portrait.node.setContentSize(scale ? original.width * scale : max, scale ? original.height * scale : max);
+}
 function graphic(item, fill, stroke, radius) {
   var g = item.getComponent(cc.Graphics) || item.addComponent(cc.Graphics); g.clear();
   g.fillColor = cc.color(fill); g.strokeColor = cc.color(stroke || fill); g.lineWidth = 3;
@@ -95,6 +119,16 @@ function button(parent, name, caption, handler) {
   item.on(cc.Node.EventType.TOUCH_END, function (event) { if (event) event.stopPropagation(); handler(); });
   return item;
 }
+function closeButton(parent, handler) {
+  var item = node(parent, "Close", 54, 56), g = item.addComponent(cc.Graphics);
+  if (cc.Graphics.LineCap) g.lineCap = cc.Graphics.LineCap.ROUND;
+  [ [16, "#13151c"], [10, "#ffffff"] ].forEach(function (style) {
+    g.lineWidth = style[0]; g.strokeColor = cc.color(style[1]);
+    g.moveTo(-14, -14); g.lineTo(14, 14); g.moveTo(-14, 14); g.lineTo(14, -14); g.stroke();
+  });
+  item.on(cc.Node.EventType.TOUCH_END, function (event) { if (event) event.stopPropagation(); handler(); });
+  return item;
+}
 function measure(label, width) {
   label.node.width = width; if (label._forceUpdateRenderData) label._forceUpdateRenderData();
   return Math.max(label.lineHeight, label.node.height);
@@ -107,7 +141,7 @@ function layout(ui, state) {
     state.screen = screen; state.root.setPosition((a.x + b.x) / 2, (a.y + b.y) / 2); state.root.setContentSize(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
     var shade = state.root.getComponent(cc.Graphics); shade.clear(); shade.fillColor = cc.color(0, 0, 0, 170); shade.rect(-state.root.width / 2, -state.root.height / 2, state.root.width, state.root.height); shade.fill();
   }
-  var bounds = safeBounds(state.parent), labels = [state.title, state.name, state.role, state.context, state.description, state.lore];
+  var bounds = safeBounds(state.parent), labels = [state.title, state.name, state.description, state.lore];
   var signature = [bounds.left, bounds.right, bounds.bottom, bounds.top, labels.map(function (label) { return [label.font && label.font.uuid, label.node.height, label.string].join(":"); }).join("|")].join("|");
   if (state.signature === signature) return;
   var width = Math.min(680, bounds.right - bounds.left - 40), height = Math.min(990, bounds.top - bounds.bottom - 40);
@@ -122,14 +156,26 @@ function layout(ui, state) {
   var contentWidth = width - 64, viewportHeight = height - 126 - (multiple ? 64 : 0);
   state.view.setContentSize(contentWidth, viewportHeight); state.view.setPosition(0, height / 2 - 94);
   state.content.width = contentWidth;
-  var portraitSize = Math.min(142, contentWidth * .3), left = -contentWidth / 2;
-  state.portraitCard.setContentSize(portraitSize + 12, portraitSize + 12); state.portraitCard.setPosition(left + portraitSize / 2 + 6, -portraitSize / 2 - 6); graphic(state.portraitCard, "#8b90a7", "#30323e", 18);
-  var headWidth = contentWidth - portraitSize - 30, textX = left + portraitSize + 24 + headWidth / 2;
-  var nameHeight = measure(state.name, headWidth), roleHeight = measure(state.role, headWidth);
-  state.name.node.setPosition(textX, -nameHeight / 2 - 4); state.role.node.setPosition(textX, -nameHeight - roleHeight / 2 - 10);
-  var contextHeight = measure(state.context, headWidth);
-  state.context.node.setPosition(textX, -nameHeight - roleHeight - contextHeight / 2 - 20);
-  var y = -Math.max(portraitSize + 26, nameHeight + roleHeight + contextHeight + 36), cellWidth = (contentWidth - 14) / 2;
+  var portraitSize = Math.min(128, contentWidth * .3), left = -contentWidth / 2;
+  state.portraitCard.setContentSize(portraitSize + 16, portraitSize + 16); state.portraitCard.setPosition(left + portraitSize / 2 + 8, -portraitSize / 2 - 8);
+  graphic(state.portraitCard, "#25314a", "#121824", 20);
+  state.portraitInset.setContentSize(portraitSize + 8, portraitSize + 8); graphic(state.portraitInset, "#6f89a3", "#dce8f4", 16);
+  fitPortrait(state);
+  state.portraitPlaceholder.setScale(portraitSize / 128);
+  var headWidth = contentWidth - portraitSize - 34, textX = left + portraitSize + 28 + headWidth / 2;
+  var iconSize = 38, gap = state.model.roleIcon ? 10 : 0, maximum = Math.max(40, headWidth - (state.model.roleIcon ? iconSize + gap : 0));
+  state.name.enableWrapText = false; state.name.overflow = cc.Label.Overflow.NONE;
+  if (state.name._forceUpdateRenderData) state.name._forceUpdateRenderData();
+  var nameWidth = Math.min(maximum, state.name.node.width);
+  if (state.name.node.width > maximum) { state.name.enableWrapText = true; state.name.overflow = cc.Label.Overflow.RESIZE_HEIGHT; }
+  var nameHeight = measure(state.name, nameWidth), rowHeight = Math.max(nameHeight, iconSize);
+  var rowWidth = nameWidth + (state.model.roleIcon ? iconSize + gap : 0), rowLeft = textX - rowWidth / 2;
+  state.name.node.anchorX = 0; state.name.node.setPosition(rowLeft, -rowHeight / 2 - 4);
+  state.roleBadge.setPosition(rowLeft + nameWidth + gap + iconSize / 2, -rowHeight / 2 - 4);
+  state.roleBadge.active = !!state.model.roleIcon;
+  var loreHeight = state.model.lore ? measure(state.lore, headWidth) : 0;
+  state.lore.node.active = !!state.model.lore; state.lore.node.setPosition(textX, -rowHeight - 14 - loreHeight / 2);
+  var y = -Math.max(portraitSize + 32, rowHeight + loreHeight + 38), cellWidth = (contentWidth - 14) / 2;
   state.stats.forEach(function (cell, index) {
     var labelHeight = measure(cell.label, cellWidth - 16), valueHeight = measure(cell.value, cellWidth - 16);
     cell.height = labelHeight + valueHeight + 18;
@@ -147,8 +193,6 @@ function layout(ui, state) {
     h = measure(body, contentWidth - 20); body.node.setPosition(0, y - h / 2); y -= h + 22;
   }
   paragraph(state.descriptionTitle, state.description);
-  state.loreTitle.node.active = state.lore.node.active = !!state.model.lore;
-  if (state.model.lore) paragraph(state.loreTitle, state.lore);
   state.previous.active = state.next.active = state.page.node.active = multiple;
   if (multiple) {
     state.previous.setPosition(-80, -height / 2 + 42); state.next.setPosition(80, -height / 2 + 42);
@@ -162,19 +206,21 @@ function refresh(ui, state) {
   if (!current(ui, state)) return;
   var model = state.model = describe(ui, state.ids[state.index], state.live); if (!model) return close(ui);
   state.version++; state.signature = null; state.resetScroll = true;
-  bindText(state.title, "enemyGuide.title"); bindText(state.name, model.name); bindText(state.role, model.role);
-  bindText(state.context, model.live ? "enemyGuide.live" : "enemyGuide.incoming", [model.wave]);
+  bindText(state.title, "enemyGuide.title"); bindText(state.name, model.name);
   bindText(state.descriptionTitle, "enemyGuide.description"); bindText(state.description, model.description);
-  bindText(state.loreTitle, "enemyGuide.lore"); bindText(state.lore, model.lore);
+  bindText(state.lore, model.lore);
   bindText(state.page, "enemyGuide.page", [state.index + 1, state.ids.length]);
   state.stats.forEach(function (cell, index) { bindText(cell.label, "enemyGuide." + model.stats[index][0]); bindText(cell.value, model.stats[index][1]); });
   state.portrait.spriteFrame = null;
-  var version = state.version, resource = model.icon && model.icon.indexOf("@icon/") === 0;
-  if (model.icon) ui.loadSpriteFrame(resource ? "resources" : "KinghtFallEnemy", resource ? model.icon.slice(6) : "icon/" + model.icon, function (frame) {
+  state.portraitPlaceholder.active = true; state.roleIcon.spriteFrame = null;
+  var version = state.version;
+  loadPortrait(ui, model.icon, function (frame) {
     if (!frame || !current(ui, state) || state.version !== version) return;
-    state.portrait.spriteFrame = frame;
-    var original = frame.getOriginalSize && frame.getOriginalSize(), max = Math.min(142, state.content.width * .3), scale = original && Math.min(max / original.width, max / original.height);
-    state.portrait.node.setContentSize(scale ? original.width * scale : max, scale ? original.height * scale : max);
+    state.portrait.spriteFrame = frame; state.portraitPlaceholder.active = false; fitPortrait(state);
+  });
+  loadIcon(ui, model.roleIcon, function (frame) {
+    if (!frame || !current(ui, state) || state.version !== version) return;
+    state.roleIcon.spriteFrame = frame; state.roleIcon.node.color = cc.color(model.roleTint || "#ffffff");
   });
   layout(ui, state);
 }
@@ -198,16 +244,23 @@ function open(ui, record) {
   state.skin = node(state.panel, "SharedPanelArtwork"); var skin = state.skin.addComponent(cc.Sprite); skin.sizeMode = cc.Sprite.SizeMode.CUSTOM; skin.type = cc.Sprite.Type.SLICED;
   state.header = node(state.panel, "Header"); state.title = text(state.panel, "Title", 38, "#ffffff", true);
   state.title.enableWrapText = false; state.title.overflow = cc.Label.Overflow.SHRINK;
-  state.close = button(state.panel, "Close", "×", function () { close(ui); });
+  state.close = closeButton(state.panel, function () { close(ui); });
   state.view = node(state.panel, "GuideScrollViewport"); state.view.anchorY = 1; state.view.addComponent(cc.Mask).type = cc.Mask.Type.RECT;
   state.content = node(state.view, "GuideContent"); state.content.anchorY = 1;
   state.scroll = state.view.addComponent(cc.ScrollView); state.scroll.content = state.content; state.scroll.horizontal = false; state.scroll.vertical = true; state.scroll.inertia = true; state.scroll.elastic = true; state.scroll.brake = .6; state.scroll.bounceDuration = .18; state.scroll.cancelInnerEvents = true;
-  state.portraitCard = node(state.content, "PortraitCard"); var portrait = node(state.portraitCard, "Portrait", 142, 142);
+  state.portraitCard = node(state.content, "PortraitCard"); state.portraitInset = node(state.portraitCard, "PortraitInset");
+  state.portraitPlaceholder = node(state.portraitCard, "PortraitLoading");
+  var placeholder = state.portraitPlaceholder.addComponent(cc.Graphics); placeholder.fillColor = cc.color("#b4c8da");
+  placeholder.circle(0, 18, 22); placeholder.fill(); placeholder.roundRect(-34, -45, 68, 36, 16); placeholder.fill();
+  var portrait = node(state.portraitCard, "Portrait", 128, 128);
   state.portrait = portrait.addComponent(cc.Sprite); state.portrait.sizeMode = cc.Sprite.SizeMode.CUSTOM;
-  state.name = text(state.content, "Name", 36, "#ffffff", true); state.role = text(state.content, "Role", 26); state.context = text(state.content, "WaveContext", 23);
+  state.name = text(state.content, "Name", 32, "#ffffff", false);
+  var nameOutline = state.name.node.addComponent(cc.LabelOutline); nameOutline.width = 2; nameOutline.color = cc.Color.BLACK;
+  state.roleBadge = node(state.content, "UnitTypeBadge", 38, 38); graphic(state.roleBadge, "#34445b", "#b7c8d8", 8);
+  state.roleIcon = node(state.roleBadge, "UnitType", 26, 26).addComponent(cc.Sprite); state.roleIcon.sizeMode = cc.Sprite.SizeMode.CUSTOM;
   state.stats = Array.from({ length: 6 }, function (_, i) { var cell = node(state.content, "Stat" + i); return { node: cell, label: text(cell, "Label", 23), value: text(cell, "Value", 29) }; });
   state.descriptionTitle = text(state.content, "DescriptionHeading", 28); state.description = text(state.content, "Description", 27);
-  state.loreTitle = text(state.content, "LoreHeading", 28); state.lore = text(state.content, "Lore", 26);
+  state.lore = text(state.content, "Lore", 24);
   state.previous = button(state.panel, "Previous", "‹", function () { state.index = (state.index + state.ids.length - 1) % state.ids.length; refresh(ui, state); });
   state.next = button(state.panel, "Next", "›", function () { state.index = (state.index + 1) % state.ids.length; refresh(ui, state); }); state.page = text(state.panel, "Page", 24);
   state.root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event) event.stopPropagation(); close(ui); });
@@ -224,6 +277,12 @@ function open(ui, record) {
     var copy = frame.clone(); copy.insetTop = 80; copy.insetBottom = 60; copy.insetLeft = copy.insetRight = 48;
     state.frames.push(copy); skin.spriteFrame = copy;
   });
+  ui.loadSpriteFrame("KinghtFallPrefabs", "_res/textures/KinghtFallUIOnlineReward/wg_zy_gb", function (frame) {
+    if (!frame || !current(ui, state)) return;
+    var fallback = state.close.getComponent(cc.Graphics); if (fallback) fallback.enabled = false;
+    var sprite = state.close.getComponent(cc.Sprite) || state.close.addComponent(cc.Sprite);
+    sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.spriteFrame = frame;
+  });
 }
 function bind(ui, record) {
   var item = record && record.ndItem; if (!item || !item.on) return;
@@ -232,6 +291,9 @@ function bind(ui, record) {
   item._enemyGuideBound = true;
   item._enemyGuideInputBlocker = item.addComponent(cc.BlockInputEvents);
   item._enemyGuideInputBlocker.enabled = planning(ui);
+  if (planning(ui)) (record._guideIds || [record.id]).forEach(function (id) {
+    var cfg = manager().getSoldierCfgById(id); if (cfg) loadPortrait(ui, cfg.loadIcon);
+  });
   ui._enemyGuideMarkersBound = true;
   item.on(cc.Node.EventType.TOUCH_END, function (event) {
     if (!planning(ui) || record._guideLive || !record.tag || item.activeInHierarchy === false) return;

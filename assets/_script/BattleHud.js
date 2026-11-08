@@ -37,7 +37,7 @@ function install(ui) {
   var root = ui.ctrUI.node, task = ui.ndTask;
   var handle = new cc.Node("BattleTasksToggle"); handle.parent = root; handle.setContentSize(180, 60);
   handle.addComponent(cc.BlockInputEvents);
-  var title = new cc.Node("TasksTitle"); title.parent = handle; title.setPosition(-12, 0); title.setContentSize(128, 46);
+  var title = new cc.Node("TasksTitle"); title.parent = handle; title.anchorX = 0; title.setContentSize(128, 46);
   label(title, 30); var outline = title.addComponent(cc.LabelOutline); outline.color = cc.Color.BLACK; outline.width = 2;
   require("LanguageMgr").LanguageMgr.getInstance().bindLabel(title.getComponent(cc.Label), "battle.tasks");
   var arrow = new cc.Node("DrawerArrow"); arrow.parent = handle; arrow.addComponent(cc.Graphics);
@@ -100,9 +100,11 @@ function layout(ui) {
   fitCoin(coin); rewardSpacing(ui);
   var name = ui.ndLevelInfo.getChildByName("labName"), wave = ui.ndLevelInfo.getChildByName("labOrder");
   var taskName = ui.ndTask.getChildByName("labName"), claim = ui.ndTask.getChildByName("labGet"), pending = ui.ndTask.getChildByName("labNoFinish");
+  var toggleText = state.title.getComponent(cc.Label);
   var signature = [bounds.left, bounds.right, bounds.top, badgeFloor, coin.width, coin.height, name.getComponent(cc.Label).string, wave.getComponent(cc.Label).string,
     [name, wave, taskName, claim, pending, buildings.getChildByName("labNum")].map(labelMetrics).join(";"),
-    taskName.getComponent(cc.Label).string, claim.getComponent(cc.Label).string, pending.getComponent(cc.Label).string, state.hasTask, state.ready, state.open].join("|");
+    taskName.getComponent(cc.Label).string, claim.getComponent(cc.Label).string, pending.getComponent(cc.Label).string,
+    toggleText.string, toggleText.fontSize, toggleText.font && toggleText.font.uuid, toggleText.fontFamily, state.hasTask, state.ready, state.open].join("|");
   state.handle.active = state.hasTask; state.red.active = state.hasTask && state.ready && !state.open;
   if (signature === state.signature) return; state.signature = signature;
   [coin, pause, buildings].forEach(function (node) { var widget = node.getComponent(cc.Widget); if (widget) widget.enabled = false; });
@@ -140,11 +142,15 @@ function layout(ui) {
   var statusSize = sizeLabel(status, 67, 0, false, 78);
   var description = sizeLabel(taskName, 67, Math.max(80, panelWidth - statusSize.width - 46), true, 78);
   var height = Math.max(66, Math.max(description.height, statusSize.height) + 20);
+  var toggleSize = sizeLabel(state.title, 30, 0, false, 38);
+  state.closedWidth = Math.max(100, Math.ceil(toggleSize.width + 48));
   var oldPanelWidth = state.panelWidth, progress = oldPanelWidth ? state.view.width / oldPanelWidth : 0;
   var taskTop = Math.min(coin.y - coin.height / 2, waveBottom);
   if (!besideControls) taskTop = Math.min(taskTop, buildingBottom);
   var taskY = taskTop - 12 - height / 2;
   state.drawerLeft = bounds.left + margin; state.taskY = taskY;
+  state.closedTaskY = coin.y - coin.height / 2 - 12 - height / 2;
+  state.openTaskY = taskY;
   state.handle.height = state.view.height = height;
   var g = state.arrow.getComponent(cc.Graphics), direction = state.open ? -1 : 1;
   g.clear(); g.strokeColor = cc.Color.WHITE; g.lineWidth = 4; g.moveTo(-direction * 5, 9); g.lineTo(direction * 5, 0); g.lineTo(-direction * 5, -9); g.stroke();
@@ -164,10 +170,13 @@ function layout(ui) {
 function renderDrawer(ui) {
   var state = ui._battleHud; if (!state || !state.panelWidth) return;
   var progress = Math.max(0, Math.min(1, state.view.width / state.panelWidth));
-  state.handle.width = 180 + (44 - 180) * progress;
+  state.taskY = state.closedTaskY + (state.openTaskY - state.closedTaskY) * progress;
+  state.view.y = state.rewardAnchor.y = state.taskY;
+  state.handle.width = state.closedWidth + (44 - state.closedWidth) * progress;
   state.handle.setPosition(state.drawerLeft + state.view.width + 6 * progress + state.handle.width / 2, state.taskY);
+  state.title.setPosition(-state.handle.width / 2 + 12, 0);
   state.title.opacity = Math.round(255 * Math.max(0, 1 - progress * 3));
-  state.title.active = progress < 1; state.arrow.x = 66 * (1 - progress);
+  state.title.active = true; state.arrow.x = (state.closedWidth / 2 - 19) * (1 - progress);
   state.red.setPosition(state.handle.width / 2 - 3, state.handle.height / 2 - 3);
   state.red.active = state.hasTask && state.ready && !state.open && !state.animating;
   state.view.active = ui.ndTask.active = state.hasTask;
