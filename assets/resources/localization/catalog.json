@@ -9840,6 +9840,26 @@
       "zh": "视野距离",
       "context": "Enemy guide interface"
     },
+    "enemyGuide.attackRateShort": {
+      "en": "Atk. Spd",
+      "zh": "攻速",
+      "context": "Compact enemy guide stat label; value remains attacks per second"
+    },
+    "enemyGuide.movementShort": {
+      "en": "Move Spd.",
+      "zh": "移速",
+      "context": "Compact enemy guide movement speed label"
+    },
+    "enemyGuide.rangeShort": {
+      "en": "Atk. Range",
+      "zh": "攻击距离",
+      "context": "Compact enemy guide attack range label"
+    },
+    "enemyGuide.sightShort": {
+      "en": "Sight",
+      "zh": "视野",
+      "context": "Compact enemy guide sight range label"
+    },
     "enemyGuide.description": {
       "en": "Attack & abilities",
       "zh": "攻击与能力",
@@ -9914,6 +9934,91 @@
       "en": "Guardian",
       "zh": "守卫",
       "context": "Enemy guide interface"
+    },
+    "enemyGuide.loreHeading": {
+      "en": "Lore",
+      "zh": "怪物传说",
+      "context": "Short heading in the redesigned Enemy Guide"
+    },
+    "enemyGuide.typesTitle": {
+      "en": "Unit Types",
+      "zh": "兵种说明",
+      "context": "Enemy guide type tooltip, using the same modal style"
+    },
+    "enemyGuide.dismissTypes": {
+      "en": "Tap anywhere to close",
+      "zh": "点击任意位置关闭",
+      "context": "Type tooltip dismissal hint; dragging still scrolls the content"
+    },
+    "enemyGuide.typeSummaryNote": {
+      "en": "Type matchups vary by unit.",
+      "zh": "同兵种单位的克制关系可能不同。",
+      "context": "Explain exact enemy counters versus aggregate type summaries without inventing balance rules"
+    },
+    "enemyGuide.strongHeading": {
+      "en": "Strong against",
+      "zh": "克制",
+      "context": "Heading above outgoing matchups in the clean two-column unit type layout"
+    },
+    "enemyGuide.weakHeading": {
+      "en": "Weak against",
+      "zh": "被克制",
+      "context": "Heading above incoming matchups in the clean two-column unit type layout"
+    },
+    "enemyGuide.strong": {
+      "en": "Strong against: {0}",
+      "zh": "克制：{0}",
+      "context": "Configured outgoing counter damage bonuses; parameter is a translated list of unit types"
+    },
+    "enemyGuide.weak": {
+      "en": "Weak against: {0}",
+      "zh": "被克制：{0}",
+      "context": "Types whose units have a configured counter damage bonus against this unit or type"
+    },
+    "enemyGuide.noCounterBonus": {
+      "en": "No counter bonus",
+      "zh": "无克制加成",
+      "context": "An empty counter setting must not imply an invented strength"
+    },
+    "enemyGuide.noTypeCounter": {
+      "en": "No type counter",
+      "zh": "无兵种克制",
+      "context": "No opposing unit is configured to counter this unit or type"
+    },
+    "enemyGuide.typeDescription.fighter": {
+      "en": "Frontline units that fight at close range.",
+      "zh": "在前线进行近距离战斗的单位。",
+      "context": "Brief tactical meaning of the Fighter role; individual stats remain authored"
+    },
+    "enemyGuide.typeDescription.skirmisher": {
+      "en": "Ranged units that attack from a distance.",
+      "zh": "从远处发起攻击的远程单位。",
+      "context": "Brief tactical meaning of the Skirmisher role"
+    },
+    "enemyGuide.typeDescription.vanguard": {
+      "en": "Mobile units suited to flanking and repositioning.",
+      "zh": "适合侧翼突击和快速转移的机动单位。",
+      "context": "Brief tactical meaning of the Vanguard role"
+    },
+    "enemyGuide.typeDescription.mystic": {
+      "en": "Units with magical attacks or support abilities.",
+      "zh": "拥有魔法攻击或支援能力的单位。",
+      "context": "Brief tactical meaning of the Mystic role"
+    },
+    "enemyGuide.typeDescription.bruiser": {
+      "en": "Heavy attackers built to deliver powerful hits.",
+      "zh": "擅长造成强力打击的重型攻击单位。",
+      "context": "Brief tactical meaning of the Bruiser role"
+    },
+    "enemyGuide.typeDescription.guardian": {
+      "en": "Defensive units that absorb damage and hold ground.",
+      "zh": "承受伤害并坚守阵地的防御单位。",
+      "context": "Brief tactical meaning of the Guardian role"
+    },
+    "enemyGuide.typeDescription.custom": {
+      "en": "A custom combat role. Check the unit's stats and abilities.",
+      "zh": "自定义战斗兵种，请查看单位的属性和能力。",
+      "context": "Fallback explanation for an editor-authored unit type without its own description"
     },
     "pause.currentStats": {
       "en": "Current Stats",
