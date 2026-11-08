@@ -103,7 +103,7 @@ test('health bars follow visible head bounds, double their length at 2x scale an
     const exports = {}, cc = { ...e.cc, Component: function () {}, Label: function () {}, Sprite: function () {} };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../../assets/_script/KinghtFallItemHp.js'), 'utf8'), {
         exports, cc, sp: { Skeleton: function () {} },
-        require: name => name === 'KinghtFallDepthView' ? { bounds: () => { measured++; return { minX: -30 * Math.abs(visual.scaleX), maxX: 30 * Math.abs(visual.scaleX), minY: 0, maxY: 100 * visual.scaleY }; } } : {},
+        require: name => name === 'KinghtFallDepthView' ? { bounds: () => { measured++; return { minX: -30 * Math.abs(visual.scaleX), maxX: 30 * Math.abs(visual.scaleX), minY: 0, maxY: 100 * visual.scaleY }; } } : name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: e.game } } } : {},
         __extends(C, B) { C.prototype = Object.create(B.prototype); }, __decorate: (_d, value, key) => key === undefined ? value : undefined
     });
     const hp = new exports.default(); hp.actor = actor; hp.node = new Node('bar', hpParent); hp.node.width = 48;
@@ -113,4 +113,17 @@ test('health bars follow visible head bounds, double their length at 2x scale an
     visual.scaleX = visual.scaleY = 2; hp.lateUpdate();
     assert.equal(hp.node.width * hp.node.scaleX, first * 2); assert.equal(hp.node.y + hpParent.y, 220);
     actor.getSpAni = () => ({ node: visual, skeletonData: {} }); hp.lateUpdate(); assert.equal(measured, 3);
+    actor.navigationTeam = 'friendly'; visual.scaleX = visual.scaleY = 1; hp.lateUpdate();
+    const infantryWidth = hp.node.width * hp.node.scaleX; assert.equal(infantryWidth,64);
+    visual.scaleX = 3; visual.scaleY = 1.5; hp.lateUpdate();
+    assert.equal(hp.node.width * hp.node.scaleX,infantryWidth,'horse and lance stretched the allied health bar');
+    assert.equal(hp.node.y + hpParent.y,165,'mounted bar did not stay above the rider');
+    actor.node.scaleX=2;actor.node.scaleY=1.5;hp.node.height=10;hp.lateUpdate();
+    const origin=hp.node.convertToWorldSpaceAR(e.cc.v2(0,0)),right=hp.node.convertToWorldSpaceAR(e.cc.v2(48,0)),top=hp.node.convertToWorldSpaceAR(e.cc.v2(0,10));
+    assert.equal(Math.hypot(right.x-origin.x,right.y-origin.y),64,'unit scale changed bar width');
+    assert.equal(Math.hypot(top.x-origin.x,top.y-origin.y),10,'unit scale changed bar thickness');
+    const heroBar=new Node('hero bar',e.game.ctrPlay.node);heroBar.width=64;heroBar.height=10;heroBar.scaleX=1.2;heroBar.scaleY=.75;
+    e.game.ctrPlay.ctrHp={node:heroBar};e.game.ctrPlay.node.scaleX=.75;e.game.ctrPlay.node.scaleY=.8;hp.lateUpdate();
+    function axes(n){const o=n.convertToWorldSpaceAR(e.cc.v2(0,0)),x=n.convertToWorldSpaceAR(e.cc.v2(n.width,0)),y=n.convertToWorldSpaceAR(e.cc.v2(0,n.height));return[Math.hypot(x.x-o.x,x.y-o.y),Math.hypot(y.x-o.x,y.y-o.y)];}
+    const expected=axes(heroBar),actual=axes(hp.node);for(let i=0;i<2;i++)assert(Math.abs(actual[i]-expected[i])<1e-8,'ally bar does not match live hero bar');
 });

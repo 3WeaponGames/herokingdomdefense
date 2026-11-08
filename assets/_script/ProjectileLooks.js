@@ -163,9 +163,10 @@ View.prototype.begin = function (key) {
         node.active = true; node.setPosition(0, 0); node.setScale(1); node.group = shot.node.group;
         view.renderer = draw(node, clip, options); view.node = node; view.clip = clip;
         // Hide only the authored renderers; leave every gameplay transform alone.
-        var root = shot.bullet || shot.node;
+        var root = shot._towerBehavior ? shot.node : shot.bullet || shot.node;
         root.getComponentsInChildren(cc.RenderComponent).forEach(function (renderer) {
           if (renderer === view.renderer) return;
+          if (renderer.node === shot._towerImpactNode || cc.MotionStreak && renderer instanceof cc.MotionStreak) return;
           view.original.push({ renderer: renderer, enabled: renderer.enabled }); renderer.enabled = false;
         });
       } catch (error) { visualError(view, error, descriptor); }

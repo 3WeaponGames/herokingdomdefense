@@ -4,21 +4,23 @@ const Document=require('../game-data-editor/lib/json-document');
 const {commit}=require('../hkd-characters/lib/asset-transaction');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const hash=value=>crypto.createHash('sha256').update(value).digest('hex');
+function towers(data){return (data.BuildEnum[2].levelList||[]).map((row,index)=>({row,index,key:'tower:2:'+(index+1)})).filter(item=>item.row.Tower&&['cannon','sniper'].includes(item.row.Tower.attackType));}
 class ProjectilesService {
   constructor(root){this.root=path.resolve(root);this.relative='assets/resources/projectiles/catalog.json';this.file=path.join(this.root,this.relative);this.version=0;this.reload();}
-  reload(){this.text=fs.readFileSync(this.file,'utf8');this.original=JSON.parse(this.text);this.data=clone(this.original);this.revision=hash(this.text);this.version++;return this.snapshot();}
-  config(){return JSON.parse(fs.readFileSync(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8'));}
+  reload(){this.text=fs.readFileSync(this.file,'utf8');this.original=JSON.parse(this.text);this.data=clone(this.original);this.revision=hash(this.text);this.configRelative='assets/KinghtFallConfig/GameJsonCfg.json';this.configFile=path.join(this.root,this.configRelative);this.configText=fs.readFileSync(this.configFile,'utf8');this.configData=JSON.parse(this.configText);this.configRevision=hash(this.configText);this.originalSpeeds=Object.fromEntries(towers(this.configData).map(item=>[item.key,require('../../assets/_script/TowerCombat').settings(item.row).projectileSpeed]));this.speeds=clone(this.originalSpeeds);this.version++;return this.snapshot();}
+  config(){return clone(this.configData);}
   units(){
     const data=this.config(),entries=JSON.parse(fs.readFileSync(path.join(this.root,'assets/resources/localization/catalog.json'),'utf8')).entries;
     const label=text=>String(text||'').replace(/\[\[loc:([^\]]+)\]\]/g,(_,key)=>entries[key]&&entries[key].en||key);
     const itemFile=path.join(this.root,'assets/resources/hero-items/catalog.json'),items=fs.existsSync(itemFile)?JSON.parse(fs.readFileSync(itemFile,'utf8')):{assignments:{},profiles:{}};
     const select=require('../../assets/_script/ProjectileLooks').select;
     const previewTiers=data.EquipCfg.find(row=>row.id===3).levelInfo.map(level=>{const profile=items.profiles[items.assignments['3:'+level.Level]],choice=select({assets:this.data.assets,assignments:{},heroArrowLayer:this.data.heroArrowLayer},'hero',level.Level,profile);return {level:level.Level,flight:choice.flight||'hero-skin:'+level.EquipSkin,tint:choice.tint};});
-    return [{key:'hero',name:'Hero · follows equipped Arrow item',speed:500,defaultFlight:previewTiers[0].flight,previewTiers},{key:'tower',name:'Castle & arrow towers',speed:550,defaultFlight:'original:arrow'},{key:'wall-defense',name:'Wall-defense mode · all cards',speed:'Authored battle setting',defaultFlight:'original:wall-arrow'}].concat(Object.values(data.SoldierCfg).filter(row=>row.AttackType===2).map(row=>({key:'enemy:'+row.ID,name:label(row.Name)+' · Enemy',speed:500,defaultFlight:row.ID===90008?'original:fireball':row.ID===90005?'original:stone':'original:arrow'})),[{key:'ally:90003',name:label(data.SoldierCfg[90003].Name)+' · Ally',speed:500,defaultFlight:'original:arrow'}]);
+    return [{key:'hero',name:'Hero · follows equipped Arrow item',speed:500,defaultFlight:previewTiers[0].flight,previewTiers},{key:'tower',name:'Castle & arrow towers',speed:550,defaultFlight:'original:arrow'}].concat(towers(data).map(item=>({key:item.key,name:label(item.row.Name),speed:this.speeds[item.key],speedEditable:true,builtinFlight:item.row.Tower.attackType})),[{key:'wall-defense',name:'Wall-defense mode · all cards',speed:'Authored battle setting',defaultFlight:'original:wall-arrow'}],Object.values(data.SoldierCfg).filter(row=>row.AttackType===2).map(row=>({key:'enemy:'+row.ID,name:label(row.Name)+' · Enemy',speed:500,defaultFlight:row.ID===90008?'original:fireball':row.ID===90005?'original:stone':'original:arrow'})),Object.values(data.AllyCfg||{}).filter(row=>row.AttackType===2).map(row=>({key:'ally:'+row.ID,name:label(row.Name)+' · Ally',speed:500,defaultFlight:'original:arrow'})));
   }
-  snapshot(){return {version:this.version,revision:this.revision,data:clone(this.data),dirty:!Document.equal(this.original,this.data),units:this.units()};}
+  dirty(){return !Document.equal(this.original,this.data)||!Document.equal(this.originalSpeeds,this.speeds);}
+  snapshot(){return {version:this.version,revision:this.revision,data:clone(this.data),speeds:clone(this.speeds),dirty:this.dirty(),units:this.units()};}
   check(request){if(!request||request.version!==this.version)throw Error('Another panel changed the projectile drafts. Reload before editing.');}
-  load(){if(Document.equal(this.original,this.data)&&hash(fs.readFileSync(this.file))!==this.revision)return this.reload();return this.snapshot();}
+  load(){if(!this.dirty()&&(hash(fs.readFileSync(this.file))!==this.revision||hash(fs.readFileSync(this.configFile))!==this.configRevision))return this.reload();return this.snapshot();}
   validate(data){
     if(!data||data.version!==1||!data.assignments||Array.isArray(data.assignments))throw Error('Invalid projectile catalog');
     if(!Document.equal(data.assets,this.original.assets)||!Document.equal(data.source,this.original.source)||data.heroArrowLayer!==this.original.heroArrowLayer)throw Error('Projectile library entries are read-only; reimport assets using the importer.');
@@ -37,12 +39,16 @@ class ProjectilesService {
     }
     return true;
   }
-  change(request){this.check(request);this.validate(request.data);if(!Document.equal(this.data,request.data)){this.data=clone(request.data);this.version++;}return this.snapshot();}
+  validateSpeeds(speeds){if(!speeds||Array.isArray(speeds)||Object.keys(speeds).length!==Object.keys(this.originalSpeeds).length)throw Error('Invalid tower speed drafts.');for(const [key,value]of Object.entries(speeds)){if(!Object.prototype.hasOwnProperty.call(this.originalSpeeds,key)||!Number.isFinite(value)||value<1||value>20000)throw Error('Projectile speed must be between 1 and 20000: '+key);}}
+  change(request){this.check(request);this.validate(request.data);const speeds=request.speeds===undefined?this.speeds:request.speeds;this.validateSpeeds(speeds);if(!Document.equal(this.data,request.data)||!Document.equal(this.speeds,speeds)){this.data=clone(request.data);this.speeds=clone(speeds);this.version++;}return this.snapshot();}
   discard(request){this.check(request);return this.reload();}
   save(request){
-    this.check(request);if(Document.equal(this.original,this.data))return {...this.snapshot(),result:{saved:false,files:[]}};
+    this.check(request);if(!this.dirty())return {...this.snapshot(),result:{saved:false,files:[]}};
     this.validate(this.data);const before=fs.readFileSync(this.file);if(hash(before)!==this.revision)throw Error('Projectile catalog changed outside this draft. Save cancelled; drafts retained.');
-    const text=Document.patch(this.text,this.original,this.data),result=commit(this.root,new Map([[this.relative,text]]),[[this.file,before]],this.relative);
+    this.validateSpeeds(this.speeds);const configBefore=fs.readFileSync(this.configFile);if(hash(configBefore)!==this.configRevision)throw Error('Building data changed outside this draft. Save cancelled; projectile drafts retained.');
+    const files=new Map();if(!Document.equal(this.original,this.data))files.set(this.relative,Document.patch(this.text,this.original,this.data));
+    if(!Document.equal(this.originalSpeeds,this.speeds)){const data=clone(this.configData);for(const item of towers(data))if(this.speeds[item.key]!==this.originalSpeeds[item.key])item.row.Tower.projectileSpeed=this.speeds[item.key];files.set(this.configRelative,Document.patch(this.configText,this.configData,data));}
+    const result=commit(this.root,files,[[this.file,before],[this.configFile,configBefore]],this.relative);
     this.reload();return {...this.snapshot(),result:{saved:true,...result}};
   }
   describe(request){

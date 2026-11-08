@@ -553,9 +553,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.1.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.1.levelList.0.Name"
     },
     "data.buildenum.1.levellist.1.levelupdescribe": {
-      "en": "Lose your castle, lose the battle. Upgrade it to <color=#61db3f>unlock more buildings</c>",
-      "zh": "被摧毁游戏失败，升级后<color=#61db3f>可建造更多建筑</c>",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.1.levelList.0.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.1.levelList.0.LevelUpDescribe"
+      "en": "Protects your army. Upgrade for more HP, damage, range and building unlocks.",
+      "zh": "守护军队。升级可提升生命、伤害、射程并解锁更多建筑。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.1.levellist.2.name": {
       "en": "Town Center",
@@ -573,9 +573,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.name; assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.0.Name"
     },
     "data.buildenum.2.levellist.1.levelupdescribe": {
-      "en": "Fires arrows at enemies. Upgrade for <color=#61db3f>more range and damage</c>",
-      "zh": "会从塔中射出箭矢，升级后<color=#61db3f>增加射程伤害</c>",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.0.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.0.LevelUpDescribe"
+      "en": "Fires arrows at nearby monsters. Upgrade for more damage and range.",
+      "zh": "向附近怪物射箭。升级可提升伤害和射程。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.2.levellist.2.name": {
       "en": "Wooden Arrow Tower",
@@ -583,9 +583,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.1.Name"
     },
     "data.buildenum.2.levellist.2.levelupdescribe": {
-      "en": "Damage and range <color=#61db3f>+30%</c>!",
-      "zh": "伤害、攻击距离提升<color=#61db3f>30%</c>！",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.1.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.1.LevelUpDescribe"
+      "en": "Final upgrade: stronger arrows with longer range.",
+      "zh": "最终升级：箭矢伤害更高，射程更远。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.2.levellist.3.name": {
       "en": "Stone Arrow Tower",
@@ -593,9 +593,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name"
     },
     "data.buildenum.2.levellist.3.levelupdescribe": {
-      "en": "Damage, range, and attack speed <color=#61db3f>+80%</c>!",
-      "zh": "伤害、攻击距离、攻击速度提升<color=#61db3f>80%</c>！",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.2.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.2.LevelUpDescribe"
+      "en": "Final upgrade: faster arrows with the highest damage and longest range.",
+      "zh": "最终升级：箭矢射速更快，伤害最高，射程最远。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.3.name": {
       "en": "Barracks",
@@ -708,9 +708,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.0.Name"
     },
     "data.buildenum.4.levellist.1.levelupdescribe": {
-      "en": "Produces silver if it survives the night. Upgrade to <color=#61db3f>earn more silver</c>",
-      "zh": "夜晚结束未被摧毁获得银币，升级后<color=#61db3f>增加银币获得</c>",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.0.LevelUpDescribe; assets\\configs\\GameJsonCfg.json:BuildEnum.5.levelList.0.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.0.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.5.levelList.0.LevelUpDescribe"
+      "en": "Earn silver after each wave if it survives. Upgrade to increase silver income.",
+      "zh": "存活至每波结束即可赚取白银。升级可增加白银收入。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.4.levellist.2.name": {
       "en": "Wooden House",
@@ -718,9 +718,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.1.Name"
     },
     "data.buildenum.4.levellist.2.levelupdescribe": {
-      "en": "<color=#61db3f>+2</c> silver each day",
-      "zh": "每天<color=#61db3f>+2</c>银币",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.1.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.1.LevelUpDescribe"
+      "en": "Final upgrade: earns 2 silver per wave while the house survives.",
+      "zh": "最终升级：房屋存活时，每波结束获得2白银。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.4.levellist.3.name": {
       "en": "Stone House",
@@ -728,9 +728,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.2.Name"
     },
     "data.buildenum.4.levellist.3.levelupdescribe": {
-      "en": "<color=#61db3f>+4</c> silver each day!",
-      "zh": "每天<color=#61db3f>+4</c>银币！",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.2.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.2.LevelUpDescribe"
+      "en": "Final upgrade: earns 4 silver per wave while the house survives.",
+      "zh": "最终升级：房屋存活时，每波结束获得4白银。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.5.name": {
       "en": "Mill",
@@ -743,9 +743,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.5.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.5.levelList.1.Name"
     },
     "data.buildenum.5.levellist.2.levelupdescribe": {
-      "en": "<color=#61db3f>+5</c> silver each day",
-      "zh": "每天<color=#61db3f>+5</c>银币",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.5.levelList.1.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.5.levelList.1.LevelUpDescribe"
+      "en": "Final upgrade: earns 5 silver per wave while the mill survives.",
+      "zh": "最终升级：磨坊存活时，每波结束获得5白银。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.5.levellist.3.name": {
       "en": "Stone Mill",
@@ -753,9 +753,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.5.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.5.levelList.2.Name"
     },
     "data.buildenum.5.levellist.3.levelupdescribe": {
-      "en": "<color=#61db3f>+7</c> silver each day!",
-      "zh": "每天<color=#61db3f>+7</c>银币！",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.5.levelList.2.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.5.levelList.2.LevelUpDescribe"
+      "en": "Final upgrade: earns 7 silver per wave while the mill survives.",
+      "zh": "最终升级：磨坊存活时，每波结束获得7白银。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.6.name": {
       "en": "Wall",
@@ -763,9 +763,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.name; assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.0.Name"
     },
     "data.buildenum.6.levellist.1.levelupdescribe": {
-      "en": "Blocks enemy movement. Upgrade to <color=#61db3f>increase HP</c>",
-      "zh": "敌人无法跨越此建筑，升级后<color=#61db3f>增加血量</c>",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.0.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.0.LevelUpDescribe"
+      "en": "Blocks monsters while allies pass through the gate. Upgrade for more wall HP.",
+      "zh": "阻挡怪物，友军可通过城门。升级可提升城墙生命。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.6.levellist.2.name": {
       "en": "Wooden Wall",
@@ -773,9 +773,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.1.Name"
     },
     "data.buildenum.6.levellist.2.levelupdescribe": {
-      "en": "HP <color=#61db3f>+40%</c>!",
-      "zh": "血量提升<color=#61db3f>40%</c>！",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.1.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.1.LevelUpDescribe"
+      "en": "Final upgrade: reinforced walls with more HP to hold back monsters.",
+      "zh": "最终升级：加固城墙拥有更多生命，可抵御怪物进攻。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.6.levellist.3.name": {
       "en": "Stone Wall",
@@ -783,9 +783,9 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.2.Name"
     },
     "data.buildenum.6.levellist.3.levelupdescribe": {
-      "en": "HP <color=#61db3f>+100%</c>!",
-      "zh": "血量提升<color=#61db3f>100%</c>！",
-      "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.2.LevelUpDescribe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.2.LevelUpDescribe"
+      "en": "Final upgrade: the strongest walls, with maximum HP for this branch.",
+      "zh": "最终升级：最坚固的城墙，拥有该分支的最高生命。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.equipcfg.1.describe": {
       "en": "Max HP: {0}",
@@ -6106,9 +6106,9 @@
       "context": "Buildings · Cannon Tower · Lv 1"
     },
     "data.building.cannon-1.description": {
-      "en": "Explosive shots damage groups of monsters.",
-      "zh": "爆炸炮弹对成群怪物造成伤害。",
-      "context": "Buildings · selection description"
+      "en": "Blasts groups of monsters. Upgrade for more damage, range and blast size.",
+      "zh": "炮弹爆炸打击成群怪物。升级可提升伤害、射程和爆炸范围。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.cannon-2.name": {
       "en": "Cannon Tower · Lv 2",
@@ -6116,9 +6116,9 @@
       "context": "Buildings · Cannon Tower · Lv 2"
     },
     "data.building.cannon-2.description": {
-      "en": "Explosive shots damage groups of monsters.",
-      "zh": "爆炸炮弹对成群怪物造成伤害。",
-      "context": "Buildings · selection description"
+      "en": "Larger blasts hit more monsters. Upgrade for stronger, faster, longer-range shots.",
+      "zh": "更大爆炸打击更多怪物。升级可提升伤害、射速和射程。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.cannon-3.name": {
       "en": "Cannon Tower · Lv 3",
@@ -6126,9 +6126,9 @@
       "context": "Buildings · Cannon Tower · Lv 3"
     },
     "data.building.cannon-3.description": {
-      "en": "Explosive shots damage groups of monsters.",
-      "zh": "爆炸炮弹对成群怪物造成伤害。",
-      "context": "Buildings · selection description"
+      "en": "Final upgrade: powerful, faster shells with the widest blast and longest range.",
+      "zh": "最终升级：炮弹更强、射速更快，拥有最大爆炸范围和最远射程。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-1.name": {
       "en": "Sniper Tower · Lv 1",
@@ -6136,9 +6136,9 @@
       "context": "Buildings · Sniper Tower · Lv 1"
     },
     "data.building.sniper-1.description": {
-      "en": "Long-range precision shots target the highest-health monster.",
-      "zh": "远距离精准射击，优先攻击生命值最高的怪物。",
-      "context": "Buildings · selection description"
+      "en": "Picks the highest-HP monster at long range. Upgrade for stronger, faster shots.",
+      "zh": "远距离优先攻击生命最高的怪物。升级可提升伤害、射速和射程。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-2.name": {
       "en": "Sniper Tower · Lv 2",
@@ -6146,9 +6146,9 @@
       "context": "Buildings · Sniper Tower · Lv 2"
     },
     "data.building.sniper-2.description": {
-      "en": "Long-range precision shots target the highest-health monster.",
-      "zh": "远距离精准射击，优先攻击生命值最高的怪物。",
-      "context": "Buildings · selection description"
+      "en": "Stronger precision shots. Upgrade for maximum damage, range and fire rate.",
+      "zh": "精准射击伤害更高。升级可获得最高伤害、最远射程和最快射速。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-3.name": {
       "en": "Sniper Tower · Lv 3",
@@ -6156,9 +6156,9 @@
       "context": "Buildings · Sniper Tower · Lv 3"
     },
     "data.building.sniper-3.description": {
-      "en": "Long-range precision shots target the highest-health monster.",
-      "zh": "远距离精准射击，优先攻击生命值最高的怪物。",
-      "context": "Buildings · selection description"
+      "en": "Final upgrade: strongest, fastest long-range shots at the highest-HP monster.",
+      "zh": "最终升级：以最强、最快的远程射击打击生命最高的怪物。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.royal-guard.1.name": {
       "en": "Royal Guard · Lv 1",
@@ -6166,9 +6166,9 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.royal-guard.description": {
-      "en": "Balanced frontline fighters.",
-      "zh": "攻守均衡的前排战士。",
-      "context": "Buildings · initial squad choice"
+      "en": "4 balanced frontline fighters. Upgrade to recruit 6.",
+      "zh": "提供4名均衡的前线战士。升级可招募6名。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.royal-guard.2.name": {
       "en": "Royal Guard · Lv 2",
@@ -6186,9 +6186,9 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.heavy-infantry.description": {
-      "en": "Durable troops for holding the line.",
-      "zh": "坚守战线的耐久部队。",
-      "context": "Buildings · initial squad choice"
+      "en": "4 tough defenders that hold the line. Upgrade to recruit 6.",
+      "zh": "提供4名坚守战线的重装步兵。升级可招募6名。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.heavy-infantry.2.name": {
       "en": "Heavy Infantry · Lv 2",
@@ -6206,9 +6206,9 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.crossbowmen.description": {
-      "en": "Ranged troops that fight from behind the frontline.",
-      "zh": "在前排后方作战的远程部队。",
-      "context": "Buildings · initial squad choice"
+      "en": "4 ranged troops that fight behind the frontline. Upgrade to recruit 6.",
+      "zh": "提供4名在前线后方作战的弩手。升级可招募6名。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.crossbowmen.2.name": {
       "en": "Crossbowmen · Lv 2",
@@ -6226,9 +6226,9 @@
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.vanguard.description": {
-      "en": "Mounted troops for rapid repositioning.",
-      "zh": "可快速调动的骑乘部队。",
-      "context": "Buildings · initial squad choice"
+      "en": "4 mounted troops for rapid repositioning. Upgrade to recruit 6.",
+      "zh": "提供4名可快速转移的骑兵。升级可招募6名。",
+      "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.vanguard.2.name": {
       "en": "Vanguard · Lv 2",
@@ -10099,6 +10099,61 @@
       "en": "All buildings shown",
       "zh": "已显示全部建筑",
       "context": "Buildings catalog · concept 1"
+    },
+    "data.building.guide.1.2.description": {
+      "en": "Unlocks more buildings and defends your army. Upgrade for more HP, damage and range.",
+      "zh": "解锁更多建筑并守护军队。升级可提升生命、伤害和射程。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.1.3.description": {
+      "en": "Final upgrade: the strongest castle, with maximum HP, damage and attack range.",
+      "zh": "最终升级：最强大的城堡，拥有最高生命、伤害和攻击射程。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.5.1.description": {
+      "en": "Earns 3 silver after each wave if it survives. Upgrade for more silver income.",
+      "zh": "磨坊存活时，每波结束获得3白银。升级可增加白银收入。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.12.description": {
+      "en": "6 balanced frontline fighters. Upgrade to recruit 8.",
+      "zh": "提供6名均衡的前线战士。升级可招募8名。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.13.description": {
+      "en": "Final upgrade: 8 balanced frontline fighters.",
+      "zh": "最终升级：提供8名均衡的前线战士。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.15.description": {
+      "en": "6 tough defenders that hold the line. Upgrade to recruit 8.",
+      "zh": "提供6名坚守战线的重装步兵。升级可招募8名。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.16.description": {
+      "en": "Final upgrade: 8 tough defenders that hold the line.",
+      "zh": "最终升级：提供8名坚守战线的重装步兵。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.18.description": {
+      "en": "6 ranged troops that fight behind the frontline. Upgrade to recruit 8.",
+      "zh": "提供6名在前线后方作战的弩手。升级可招募8名。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.19.description": {
+      "en": "Final upgrade: 8 ranged troops that fight behind the frontline.",
+      "zh": "最终升级：提供8名在前线后方作战的弩手。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.21.description": {
+      "en": "6 mounted troops for rapid repositioning. Upgrade to recruit 8.",
+      "zh": "提供6名可快速转移的骑兵。升级可招募8名。",
+      "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.building.guide.3.22.description": {
+      "en": "Final upgrade: 8 mounted troops for rapid repositioning.",
+      "zh": "最终升级：提供8名可快速转移的骑兵。",
+      "context": "Buildings · level capabilities and upgrade notes"
     }
   },
   "images": {
@@ -13280,10 +13335,10 @@
     },
     "ui.layout.kinghtfalluigame.133": {
       "en": {
-        "width": 236,
-        "height": 128,
-        "fontSize": 67,
-        "lineHeight": 64,
+        "width": 208,
+        "height": 124,
+        "fontSize": 54,
+        "lineHeight": 62,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "horizontalAlign": 1,
@@ -13291,10 +13346,10 @@
         "y": -48
       },
       "zh": {
-        "width": 212,
+        "width": 256,
         "height": 78,
-        "fontSize": 67,
-        "lineHeight": 78,
+        "fontSize": 54,
+        "lineHeight": 62,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
         "horizontalAlign": 1,
@@ -16592,10 +16647,10 @@
     },
     "ui.layout.kinghtfalluigame.141": {
       "en": {
-        "width": 520,
-        "height": 80,
-        "fontSize": 68,
-        "lineHeight": 79,
+        "width": 540,
+        "height": 112,
+        "fontSize": 82,
+        "lineHeight": 96,
         "wrap": false,
         "overflow": "NONE",
         "horizontalAlign": 1,

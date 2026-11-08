@@ -56,7 +56,7 @@ function actualUI() {
   vm.runInNewContext(fs.readFileSync(path.resolve(__dirname,'../../assets/_script/KinghtFallUIGame.js'),'utf8'),context);
   const ui=Object.create(context.exports.default.prototype),label={string:''};
   const item={active:true,getChildByName:()=>({getComponent:()=>label})};
-  Object.assign(ui,{speed:1,isPauset:false,_updateTestControls(){},_enemyIndicatorObstacles:()=>[],_placeEnemyIndicator(){},
+  Object.assign(ui,{speed:1,isPauset:false,_updateTestControls(){},_enemyIndicatorObstacles:()=>[],_placeEnemyIndicator(){},_placeUpcomingEnemyIndicators(){},
     ctrUI:{upGuide(){},node:{convertToNodeSpaceAR:p=>p}},ctrGame:{onUpdate(){},ndPath:{convertToWorldSpaceAR:p=>p},gameData:{baseBuild:{getLevel:()=>1},enemyQueue:{}}},
     enemyIconInfo:{1:{id:90001,tag:true,tagNode:{getPosition:()=>({x:0,y:0})},ndItem:item}}});
   return {ui,item,label,guideBindings};

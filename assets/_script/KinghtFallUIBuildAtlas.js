@@ -23,6 +23,18 @@ function atlasMeasure(label) {
   if (label._updateRichText) label._updateRichText();
   else if (label._forceUpdateRenderData) label._forceUpdateRenderData();
 }
+function atlasLevels(building, first) {
+  var levels = [], seen = new Set(), queue = [first];
+  // Follow authored upgrade links, including alternate final branches. Never
+  // infer levels from array positions or write preview state into game data.
+  while (queue.length) {
+    var index = queue.shift(), cfg = building.levelList[index - 1];
+    if (!Number.isInteger(index) || !cfg || seen.has(index)) continue;
+    seen.add(index); levels.push(cfg);
+    (cfg.BranchBuild || []).forEach(function (next) { queue.push(next); });
+  }
+  return levels;
+}
 var def_KinghtFallUIBuildAtlas = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -83,7 +95,7 @@ var def_KinghtFallUIBuildAtlas = function (t) {
         if (!building || !Array.isArray(building.levelList)) return;
         var choices = Array.isArray(building.InitialChoices) && building.InitialChoices.length ? building.InitialChoices : [1];
         choices.filter(function (index, at) { return Number.isInteger(index) && building.levelList[index - 1] && choices.indexOf(index) === at; }).forEach(function (index) {
-          var entry = self.createCatalogRow(building.levelList[index - 1], kind, index);
+          var entry = self.createCatalogRow(building, kind, index);
           group.entries.push(entry); self.entries.push(entry);
         });
       });
@@ -105,35 +117,52 @@ var def_KinghtFallUIBuildAtlas = function (t) {
     node.color = atlasColor(38, 60, 46);
     return label;
   };
-  _ctor.prototype.createCatalogRow = function (cfg, kind, index) {
+  _ctor.prototype.createCatalogRow = function (building, kind, index) {
     var self = this, node = atlasNode("BuildingEntry", this.ndParent);
-    var entry = { cfg: cfg, kind: kind, index: index, node: node, graphics: node.addComponent(cc.Graphics) };
+    var entry = { cfg: building.levelList[index - 1], levels: atlasLevels(building, index), preview: 0,
+      kind: kind, index: index, node: node, graphics: node.addComponent(cc.Graphics) };
     entry.icon = atlasNode("sprIcon", node);
     entry.sprite = entry.icon.addComponent(cc.Sprite);
     entry.sprite.sizeMode = cc.Sprite.SizeMode.TRIMMED;
-    entry.name = this.createCatalogLabel(node, "labName", 32, true);
+    entry.name = this.createCatalogLabel(node, "labName", 30, true);
     entry.name.node.anchorX = 0; entry.name.node.anchorY = 1;
     var description = atlasNode("labInfo", node);
     description.anchorX = 0; description.anchorY = 1; description.color = atlasColor(61, 62, 54);
     entry.info = description.addComponent(cc.RichText);
     entry.info._localizedFontRole = "body";
     entry.info.font = null; entry.info.fontFamily = "Arial";
-    entry.info.fontSize = 26; entry.info.lineHeight = 32; entry.info.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    entry.info.fontSize = 24; entry.info.lineHeight = 30; entry.info.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
     entry.badge = atlasNode("LevelBadge", node);
     entry.badgeGraphics = entry.badge.addComponent(cc.Graphics);
     entry.level = this.createCatalogLabel(entry.badge, "labLevel", 23, true);
     entry.level.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
     entry.level.verticalAlign = cc.Label.VerticalAlign.CENTER;
     entry.level.overflow = cc.Label.Overflow.SHRINK;
-    var generation = this._atlasGeneration;
+    entry.badge.on(cc.Node.EventType.TOUCH_END, function (event) {
+      if (event) event.stopPropagation();
+      self.cycleCatalogLevel(entry);
+    }, this);
+    this.loadCatalogIcon(entry);
+    return entry;
+  };
+  _ctor.prototype.loadCatalogIcon = function (entry) {
+    var self = this, cfg = entry.cfg, node = entry.node, generation = this._atlasGeneration;
+    var request = entry.iconRequest = (entry.iconRequest || 0) + 1;
+    entry.frame = null; entry.sprite.spriteFrame = null;
     // Layered defenses use the assembled portrait, not a bare aiming base.
     var artwork = cfg.Appearance && !cfg.Appearance.weapon && cfg.Appearance.sprite;
     this.loadSpriteFrame(artwork ? "resources" : $z1KinghtFallConfig.KinghtFallBundelName.IconBuild, artwork || cfg.Icon, function (frame) {
-      if (!frame || self.isclose || generation !== self._atlasGeneration || !cc.isValid(node, true)) return;
+      if (!frame || self.isclose || generation !== self._atlasGeneration || request !== entry.iconRequest || !cc.isValid(node, true)) return;
       entry.frame = frame; entry.sprite.spriteFrame = frame;
       self.fitCatalogIcon(entry);
     });
-    return entry;
+  };
+  _ctor.prototype.cycleCatalogLevel = function (entry) {
+    if (this.isclose || !entry || entry.levels.length < 2) return;
+    entry.preview = (entry.preview + 1) % entry.levels.length;
+    entry.cfg = entry.levels[entry.preview];
+    this.loadCatalogIcon(entry);
+    this.refreshCatalog();
   };
   _ctor.prototype.fitCatalogIcon = function (entry) {
     if (!entry.frame) return;
@@ -147,8 +176,12 @@ var def_KinghtFallUIBuildAtlas = function (t) {
     var self = this;
     this.entries.forEach(function (entry) {
       // The level belongs to its own badge; do not alter authored names/data.
-      entry.name.string = self.T(entry.cfg.Name).replace(/\s*[·•]\s*(?:Lv\.?\s*\d+|\d+\s*级)\s*$/i, "");
-      entry.info.string = self._atlasLanguage.format("<color=#3d3e36>{0}</color>", [self.T(entry.cfg.LevelUpDescribe)]);
+      // BaseUI.T returns a token, so stripping that token before translation
+      // cannot remove the level. Bind the already-resolved, shortened title.
+      var name = self._atlasLanguage.t(entry.cfg.Name).replace(/\s*(?:[·•–-]\s*)?(?:Lv\.?\s*\d+|\d+\s*级)\s*$/i, "").trim();
+      self._atlasLanguage.bindLabel(entry.name, name);
+      var description = self._atlasLanguage.t(entry.cfg.LevelUpDescribe).replace(/<[^>]*>/g, "");
+      self._atlasLanguage.bindLabel(entry.info, "<color=#3d3e36>" + description + "</color>");
       entry.level.string = self._atlasLanguage.format(self.T("[[loc:buildingAtlas.level]]"), [entry.cfg.level]);
     });
     this._atlasGroups.forEach(function (group) { group.label.string = self.T("[[loc:buildingAtlas." + group.id + "]]"); });
@@ -220,26 +253,26 @@ var def_KinghtFallUIBuildAtlas = function (t) {
   };
   _ctor.prototype.layoutCatalogRow = function (entry, width) {
     var wellWidth = Math.min(132, width * .22), textLeft = -width / 2 + wellWidth + 44;
-    var badgeWidth = 84, badgeLeft = width / 2 - 18 - badgeWidth;
-    entry.name.node.setContentSize(Math.max(60, badgeLeft - 12 - textLeft), 0);
+    var badgeWidth = Math.min(84, wellWidth - 8), badgeLeft = -width / 2 + 12 + wellWidth + 4 - badgeWidth;
+    entry.name.node.setContentSize(Math.max(60, width / 2 - 20 - textLeft), 0);
     entry.info.maxWidth = width / 2 - 20 - textLeft;
     atlasMeasure(entry.name); atlasMeasure(entry.info);
-    var nameHeight = Math.max(38, entry.name.node.height), infoHeight = Math.max(32, entry.info.node.height);
-    var height = Math.max(146, 20 + nameHeight + 8 + infoHeight + 20);
+    var nameHeight = Math.max(36, entry.name.node.height), infoHeight = Math.max(entry.info.lineHeight * 3 + entry.info.fontSize / 4, entry.info.node.height);
+    var height = Math.max(176, 16 + nameHeight + 4 + infoHeight + 16);
     entry.node.setContentSize(width, height);
-    entry.name.node.setPosition(textLeft, height / 2 - 20);
-    entry.info.node.setPosition(textLeft, height / 2 - 28 - nameHeight);
-    entry.badge.setPosition(badgeLeft + badgeWidth / 2, height / 2 - 38); entry.badge.setContentSize(badgeWidth, 36);
+    entry.name.node.setPosition(textLeft, height / 2 - 16);
+    entry.info.node.setPosition(textLeft, height / 2 - 20 - nameHeight);
+    entry.badge.setPosition(badgeLeft + badgeWidth / 2, 60); entry.badge.setContentSize(badgeWidth, 44);
     entry.level.node.setContentSize(badgeWidth - 8, 32);
     var graphics = entry.graphics;
     graphics.clear();
     atlasRound(graphics, -width / 2, -height / 2, width, height, 24, atlasColor(253, 248, 232), atlasColor(148, 122, 83), 2);
-    atlasRound(graphics, -width / 2 + 12, -62, wellWidth + 4, 124, 19, atlasColor(244, 230, 196));
+    atlasRound(graphics, -width / 2 + 12, -80, wellWidth + 4, 160, 19, atlasColor(244, 230, 196));
     graphics.strokeColor = atlasColor(204, 183, 143); graphics.lineWidth = 2;
     graphics.moveTo(textLeft - 14, -height / 2 + 20); graphics.lineTo(textLeft - 14, height / 2 - 20); graphics.stroke();
     entry.badgeGraphics.clear();
     atlasRound(entry.badgeGraphics, -badgeWidth / 2, -18, badgeWidth, 36, 15, atlasColor(215, 235, 205), atlasColor(99, 149, 115), 2);
-    entry.icon.setPosition(-width / 2 + 14 + wellWidth / 2, 0); entry.iconWidth = wellWidth - 10;
+    entry.icon.setPosition(-width / 2 + 14 + wellWidth / 2, -18); entry.iconWidth = wellWidth - 10;
     this.fitCatalogIcon(entry);
     return height;
   };

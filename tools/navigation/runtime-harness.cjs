@@ -155,7 +155,7 @@ function environment() {
   return { game, nav, unit, box, actor, load, cc, cfg, physics, stubs, setTime: value => { now = value; } };
 }
 
-function map01GateEnvironment(level, hero) {
+function map01GateEnvironment(level, hero, gateId = 17, fullMap = false) {
   const e = environment(), map = require('./fixtures/map01-authored.json');
   installIntersection(e.cc);
   const serialized = JSON.parse(fs.readFileSync(path.join(sourceDir, '../KinghtFallIconMap/Map01.prefab'), 'utf8'));
@@ -184,24 +184,26 @@ function map01GateEnvironment(level, hero) {
   }
   // Match the screenshot's left gate, its neighboring arrow tower, and castle.
   // Read each level's actual main/sibling collider, avoiding stale geometry copies.
-  for (const id of [1, 4, 17]) {
+  const idsToLoad = fullMap ? serialized.filter(row => row.node && row.ID && row.ndAniMain).map(row => row.ID) : [1, 4, gateId];
+  for (const id of idsToLoad) {
     const building = map.buildings.find(row => row.name.startsWith(id + '-') && !/[LR]$/.test(row.name));
-    const owner = components(building.index).find(component => component.ID === id);
-    const ids = [building.index].concat((owner.ndAniOther || []).map(ref => serialized[ref.__id__].node.__id__));
+    const owner = fullMap ? serialized.find(row => row.node && row.ID === id && row.ndAniMain) : components(building.index).find(component => component.ID === id);
+    const ids = [owner.node.__id__].concat((owner.ndAniOther || []).map(ref => serialized[ref.__id__].node.__id__));
     const parts = [];
     for (const index of ids) {
       const origin = position(index), node = new Node(serialized[index]._name, e.game.ndMain, origin.x, origin.y);
       for (const collider of components(index)) {
-        if (collider.__type__ !== 'cc.PhysicsPolygonCollider' || collider.tag !== (id === 17 ? level : 1)) continue;
-        const points = collider.points.map(point => position(index, point));
+        if (collider.__type__ !== 'cc.PhysicsPolygonCollider' || collider.sensor || collider.tag !== ([17,18,19].includes(id) ? level : 1)) continue;
+        const points = collider.points.map(point => position(index, { x: point.x + (collider._offset?.x || 0), y: point.y + (collider._offset?.y || 0) }));
         const shape = node.addComponent(PhysicsPolygonCollider);
         shape.points = points.map(point => ({ x: point.x - origin.x, y: point.y - origin.y }));
         parts.push({ tagNode: node, points, collider: shape });
       }
     }
-    e.game.gameData.buildings.push({ node: parts[0].tagNode, ndAniOther: parts.slice(1).map(part => ({ node: part.tagNode })),
+    if (!parts.length) continue;
+    e.game.gameData.buildings.push({ ID: id, node: parts[0].tagNode, ndAniOther: parts.slice(1).map(part => ({ node: part.tagNode })),
       getIsWork: () => true, getWposPhyCol2: () => parts, getWposPhyCol: () => parts.map(part => part.points),
-      getNavigationGateShapes: () => id === 17 ? [{ collider: parts[0].collider, points: parts[0].points }] : [] });
+      getNavigationGateShapes: () => [17,18,19].includes(id) ? [{ collider: parts[0].collider, points: parts[0].points }] : [] });
   }
   return e;
 }

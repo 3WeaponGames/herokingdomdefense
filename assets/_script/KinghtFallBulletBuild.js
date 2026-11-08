@@ -25,8 +25,15 @@ var def_KinghtFallBulletBuild = function (t) {
     this.state = 0;
   };
   _ctor.prototype.setTowerTag = function (origin, target, attack, behavior) {
-    this.setTag(origin, target, attack);
     this._towerBehavior = behavior;
+    // Draw the built-in fallback before bindTarget starts an asynchronous art
+    // override. A cached override can then hide it in the same frame as a cold one.
+    if (behavior.attackType !== "arrow") this._showTowerFlight(behavior.attackType);
+    this.setTag(origin, target, attack);
+    if (cc.MotionStreak) this.node.getComponentsInChildren(cc.MotionStreak).forEach(function (trail) {
+      trail.enabled = true;
+      trail.reset();
+    });
     if (behavior.attackType === "cannon") {
       // Artillery commits to a ground location. A killed/pool-reused primary
       // target must not cancel a blast that can still hit nearby enemies.
@@ -58,7 +65,6 @@ var def_KinghtFallBulletBuild = function (t) {
       this._dir = cc.v2(this.tagPos.x - origin.x, this.tagPos.y - origin.y).normalizeSelf();
       this.node.angle = 180 * cc.Vec2.RIGHT.signAngle(this._dir) / Math.PI;
     }
-    if (!behavior.projectileLook && behavior.attackType !== "arrow") this._showTowerFlight(behavior.attackType);
   };
   _ctor.prototype._showTowerFlight = function (type) {
     if (!cc.Graphics) return;
@@ -85,8 +91,9 @@ var def_KinghtFallBulletBuild = function (t) {
       graphics.fillColor = cc.color("#fff9da"); graphics.moveTo(18, 0); graphics.lineTo(8, 5); graphics.lineTo(8, -5); graphics.close(); graphics.fill();
     }
     this._towerOriginalRenderers = [];
-    this.node.getComponentsInChildren(cc.RenderComponent).forEach(function (renderer) {
+    this.bullet.getComponentsInChildren(cc.RenderComponent).forEach(function (renderer) {
       if (renderer === graphics || renderer.node === this._towerImpactNode) return;
+      if (cc.MotionStreak && renderer instanceof cc.MotionStreak) return;
       this._towerOriginalRenderers.push({ renderer: renderer, enabled: renderer.enabled }); renderer.enabled = false;
     }, this);
   };
@@ -121,12 +128,14 @@ var def_KinghtFallBulletBuild = function (t) {
     }
   };
   _ctor.prototype.cancel = function () {
+    // Artwork restores the fallback's saved enabled states first; then restore
+    // the authored arrow so pooling into a legacy tower cannot leave it hidden.
+    t.prototype.cancel.call(this);
     (this._towerOriginalRenderers || []).forEach(function (entry) { if (cc.isValid(entry.renderer, true)) entry.renderer.enabled = entry.enabled; });
     this._towerOriginalRenderers = null;
     if (this._towerFlightNode && cc.isValid(this._towerFlightNode, true)) this._towerFlightNode.active = false;
     if (this._towerImpactNode && cc.isValid(this._towerImpactNode, true)) this._towerImpactNode.active = false;
     this._towerBehavior = null; this._towerImpactPoint = null;
-    t.prototype.cancel.call(this);
   };
   _ctor.prototype.freeNode = function () {
     if (this.state === 2) return;

@@ -840,7 +840,7 @@ var def_KinghtFallUIGame = function (t) {
     button.x = low <= high ? Math.max(low, Math.min(high, this._buildInfoBaseX)) : (low + high) / 2;
     this._buildCaptionBoundsSignature = signature;
   };
-  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles, viewport) {
+  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles, viewport, placementTarget, gap) {
     var ui = this.ctrUI.node, arrow = node.getChildByName("ndArr");
     var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
     var footprint = enemyIndicatorBounds(node, ui, arrow);
@@ -858,7 +858,7 @@ var def_KinghtFallUIGame = function (t) {
     var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
     if (viewport) bounds = { minX: viewport.minX - footprint.minX + 16, maxX: viewport.maxX - footprint.maxX - 16,
       minY: viewport.minY - footprint.minY + 16, maxY: viewport.maxY - footprint.maxY - 16 };
-    var position = placeEnemyIndicator(target, footprint, bounds, obstacles, 12);
+    var position = placeEnemyIndicator(placementTarget || target, footprint, bounds, obstacles, gap === undefined ? 12 : gap);
     node.setPosition(position.x, position.y);
     obstacles.push({ minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
       minY: position.y + footprint.minY, maxY: position.y + footprint.maxY });
@@ -867,6 +867,32 @@ var def_KinghtFallUIGame = function (t) {
       arrow.active = dx * dx + dy * dy > 0.001;
       if (arrow.active) arrow.angle = 180 * Math.atan2(dy, dx) / Math.PI - 90;
     }
+  };
+  _ctor.prototype._placeUpcomingEnemyIndicators = function (markers, obstacles) {
+    var ui = this.ctrUI.node, width = ui.width || 750, height = ui.height || 1334, self = this;
+    var viewport = { minX: -width / 2, maxX: width / 2, minY: -height / 2, maxY: height / 2 }, groups = {};
+    markers.forEach(function (marker) {
+      var node = marker.record.ndItem, target = marker.target;
+      if (!node._compactUpcoming) {
+        node._compactUpcoming = true;
+        var sprite = node.getComponent(cc.Sprite);
+        if (sprite && cc.Sprite.SizeMode) sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+        node.setContentSize(112, 112);
+        node.getChildByName("ndArr").setContentSize(112, 112);
+      }
+      var x = target.x / width, y = target.y / height;
+      var side = Math.abs(x) >= Math.abs(y) ? (x < 0 ? "left" : "right") : (y < 0 ? "bottom" : "top");
+      var group = groups[side] || (groups[side] = { items: [], x: 0, y: 0 });
+      group.items.push(marker); group.x += target.x; group.y += target.y;
+    });
+    Object.keys(groups).forEach(function (side) {
+      var group = groups[side], anchor = { x: group.x / group.items.length, y: group.y / group.items.length };
+      if (side === "left" || side === "right") anchor.x = side === "left" ? viewport.minX : viewport.maxX;
+      else anchor.y = side === "bottom" ? viewport.minY : viewport.maxY;
+      // Pack one compact cluster per incoming side. Arrows still point to each
+      // actual spawn, and individual portraits/counts and planning clicks remain.
+      group.items.forEach(function (marker) { self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, anchor, 6); });
+    });
   };
   _ctor.prototype._updateOffscreenEnemies = function (obstacles) {
     var game = this.ctrGame, ui = this.ctrUI.node, camera = game.camera || cc.Camera.main;
@@ -973,7 +999,7 @@ var def_KinghtFallUIGame = function (t) {
       for (var e in this.enemyIconInfo) {
         Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).tag = false);
       }
-      var n = this.ctrGame.gameData.enemyQueue;
+      var n = this.ctrGame.gameData.enemyQueue, upcomingMarkers = [];
       var indicatorObstacles = this._enemyIndicatorObstacles();
       if (this.ctrGame.gameData.baseBuild.getLevel() >= 1) {
         var i = function (t) {
@@ -1008,7 +1034,7 @@ var def_KinghtFallUIGame = function (t) {
                 var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
                 var l = cc.Camera.main.getWorldToScreenPoint(s);
                 var c = a.ctrUI.node.convertToNodeSpaceAR(l);
-                a._placeEnemyIndicator(i.ndItem, c, indicatorObstacles);
+                upcomingMarkers.push({ record: i, target: c });
                 i.tag = true;
               }
             }
@@ -1019,6 +1045,7 @@ var def_KinghtFallUIGame = function (t) {
           i(e);
         }
       }
+      this._placeUpcomingEnemyIndicators(upcomingMarkers, indicatorObstacles);
       this._updateOffscreenEnemies(indicatorObstacles);
       for (var e in this.enemyIconInfo) {
         var o;

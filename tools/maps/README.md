@@ -1,5 +1,14 @@
 # Map baking
 
+In **Tools → Hero Kingdom Defense → Maps**, select an object layer and use
+**Paint blocker** or **Erase blocker**. The resizable round/square brush is
+freehand and ignores the placement Snap value. Connected strokes share one
+outline; erasing cuts the whole collision area, including imported colliders.
+The mask belongs to that layer and moves, rotates and scales with it. Use B/E
+to switch between painting and erasing, or Escape to cancel a gesture. Brush
+sizes down to 0.25 support fine detail. Undo/redo includes each whole gesture.
+Edits remain drafts until Save; opening a map performs no conversion or writes.
+
 `bake-map.cjs` composites the maintained source sprites in a map recipe into four opaque ground tiles and nine transparent terrain groups. Each output stays within a 2048-pixel texture limit. Terrain groups keep their own collision owner and ground anchor in the map prefab.
 
 Preview without changing production assets:

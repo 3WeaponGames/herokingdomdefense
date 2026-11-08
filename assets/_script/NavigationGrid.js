@@ -65,7 +65,7 @@ Heap.prototype.pop=function() {
   items[index]=last;return first;
 };
 
-function NavigationGrid(polygons,bounds,cellSize) {
+function NavigationGrid(polygons,bounds,cellSize,passages) {
   if(!bounds||![bounds.minX,bounds.minY,bounds.maxX,bounds.maxY].every(finite)||bounds.minX>=bounds.maxX||bounds.minY>=bounds.maxY) throw new RangeError("Navigation bounds must be a finite nonempty rectangle.");
   this.bounds={minX:bounds.minX,minY:bounds.minY,maxX:bounds.maxX,maxY:bounds.maxY};
   this.cellSize=cellSize===undefined?20:cellSize;
@@ -76,6 +76,7 @@ function NavigationGrid(polygons,bounds,cellSize) {
   if(this.count>MAX_CELLS)throw new RangeError("Navigation grid exceeds 65536 cells; use tighter bounds or a larger cell size.");
   this.polygons=[];this._index=new Map();this._indexSize=Math.max(80,this.cellSize*6);this._caches=new Map();
   this.lastSearch=null;this._centers=[];this._projections=new Map();
+  this._passages=passages||[];
   var self=this;
   (polygons||[]).forEach(function(vertices) {
     if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation polygons need at least three vertices.");
@@ -140,6 +141,41 @@ NavigationGrid.prototype._cache=function(radius) {
   cache={radius:radius,walk:new Uint8Array(this.count),walkKnown:new Uint8Array(this.count),checked:new Uint8Array(this.count),edges:new Uint8Array(this.count),seen:new Uint32Array(this.count),closed:new Uint32Array(this.count),g:new Float64Array(this.count),parent:new Int32Array(this.count),serial:0};
   if(this._caches.size>=8)this._caches.delete(this._caches.keys().next().value);
   this._caches.set(key,cache);return cache;
+};
+NavigationGrid.prototype._passageBridges=function(cache) {
+  if(cache.bridges)return cache.bridges;
+  var bridges=cache.bridges=new Map(),self=this,r=cache.radius;
+  cache.parentBridges=new Map();
+  this._passages.forEach(function(vertices){
+    var center={x:0,y:0},box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity},edge={length:0};
+    vertices.forEach(function(p,i){center.x+=p.x/vertices.length;center.y+=p.y/vertices.length;box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);var q=vertices[(i+1)%vertices.length],dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy);if(length>edge.length)edge={length:length,dx:dx,dy:dy};});
+    if(!edge.length)return;
+    var normal={x:-edge.dy/edge.length,y:edge.dx/edge.length},half=0;
+    vertices.forEach(function(p){half=Math.max(half,Math.abs((p.x-center.x)*normal.x+(p.y-center.y)*normal.y));});
+    var margin=r*2+self.cellSize*4,b=self.bounds;
+    var localBounds={minX:Math.max(b.minX,box.minX-margin),minY:Math.max(b.minY,box.minY-margin),maxX:Math.min(b.maxX,box.maxX+margin),maxY:Math.min(b.maxY,box.maxY+margin)};
+    if(localBounds.minX>=localBounds.maxX||localBounds.minY>=localBounds.maxY)return;
+    var fineCell=4;
+    while(Math.ceil((localBounds.maxX-localBounds.minX)/fineCell)*Math.ceil((localBounds.maxY-localBounds.minY)/fineCell)>MAX_CELLS)fineCell++;
+    var fine=new NavigationGrid(self.polygons.map(function(p){return p.vertices;}),localBounds,fineCell);
+    var reach=half+r+self.cellSize*2;
+    function anchors(sign){var p={x:center.x+normal.x*reach*sign,y:center.y+normal.y*reach*sign};return self._nearby(p,cache,self.cellSize*3).filter(function(a){return ((a.point.x-center.x)*normal.x+(a.point.y-center.y)*normal.y)*sign>half+r&&fine._inBounds(a.point,r);}).slice(0,2);}
+    function add(a,b,points){var list=bridges.get(a.id)||[],cost=0;for(var i=1;i<points.length;i++)cost+=distance(points[i-1],points[i]);list.push({id:b.id,points:points,cost:cost});bridges.set(a.id,list);}
+    var entrances=anchors(-1),exits=anchors(1);
+    // A gate portal may lie in a small sampled pocket beside a tower. Join its
+    // nearby clear cells using the same continuous body-clearance checks as
+    // start/goal anchors, rather than requiring a corner-cutting lattice edge.
+    entrances.concat(exits).forEach(function(a){self._anchors(a.point,cache).forEach(function(b){
+      if(a.id!==b.id){add(a,b,[a.point,b.point]);add(b,a,[b.point,a.point]);}
+    });});
+    entrances.forEach(function(a){exits.forEach(function(b){
+      var plan=fine.findPath(a.point,b.point,r);
+      if(!plan||!plan.reached||plan.escape)return;
+      if(!plan.points.every(function(p,i){return !i||self.segmentClear(plan.points[i-1],p,r);}))return;
+      add(a,b,plan.points);add(b,a,plan.points.slice().reverse());
+    });});
+  });
+  return bridges;
 };
 NavigationGrid.prototype._walkableCell=function(cache,id) {
   if(!cache.walkKnown[id]){cache.walk[id]=this.isWalkable(this._center(id),cache.radius)?1:0;cache.walkKnown[id]=1;}
@@ -265,6 +301,7 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius,allowPart
     }
   }
   var cache=this._cache(r);
+  var bridges=this._passageBridges(cache);
   if(!startFree) {
     var escaped=this._escape(start,cache,requestedGoal);if(!escaped)return null;
     escape={from:start,to:escaped,distance:distance(start,escaped)};start=escaped;
@@ -278,7 +315,7 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius,allowPart
   if(!goalFree){if(projectedId<0&&!allowPartial)return null;if(projectedId>=0){target=this._center(projectedId);goalIds.add(projectedId);}}
   var serial=++cache.serial;if(serial>=4294967295){cache.seen.fill(0);cache.closed.fill(0);cache.serial=serial=1;}
   var heap=new Heap(),found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity,frontier=-1,frontierDistance=Infinity;
-  starts.forEach(function(candidate){var g=Math.sqrt(candidate.d2);cache.seen[candidate.id]=serial;cache.g[candidate.id]=g;cache.parent[candidate.id]=-1;heap.push({id:candidate.id,g:g,f:g+distance(candidate.point,target)});});
+  starts.forEach(function(candidate){var g=Math.sqrt(candidate.d2);cache.seen[candidate.id]=serial;cache.g[candidate.id]=g;cache.parent[candidate.id]=-1;cache.parentBridges.delete(candidate.id);heap.push({id:candidate.id,g:g,f:g+distance(candidate.point,target)});});
   while(heap.items.length) {
     var item=heap.pop(),currentId=item.id;
     if(item.f>=bestCost-EPS)break;
@@ -296,8 +333,13 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius,allowPart
       var delta=DIRECTIONS[direction],nextId=currentId+delta[1]*this.columns+delta[0];
       if(cache.closed[nextId]===serial)continue;
       var next=this._center(nextId),nextG=item.g+distance(current,next);
-      if(cache.seen[nextId]!==serial||nextG<cache.g[nextId]-EPS){cache.seen[nextId]=serial;cache.g[nextId]=nextG;cache.parent[nextId]=currentId;heap.push({id:nextId,g:nextG,f:nextG+distance(next,target)});}
+      if(cache.seen[nextId]!==serial||nextG<cache.g[nextId]-EPS){cache.seen[nextId]=serial;cache.g[nextId]=nextG;cache.parent[nextId]=currentId;cache.parentBridges.delete(nextId);heap.push({id:nextId,g:nextG,f:nextG+distance(next,target)});}
     }
+    (bridges.get(currentId)||[]).forEach(function(bridge){
+      var nextId=bridge.id;if(cache.closed[nextId]===serial)return;
+      var nextG=item.g+bridge.cost;
+      if(cache.seen[nextId]!==serial||nextG<cache.g[nextId]-EPS){cache.seen[nextId]=serial;cache.g[nextId]=nextG;cache.parent[nextId]=currentId;cache.parentBridges.set(nextId,{serial:serial,points:bridge.points});heap.push({id:nextId,g:nextG,f:nextG+distance(self._center(nextId),target)});}
+    });
   }
   // For a blocked target, select its closest cell in the start's reachable
   // component if the globally closest boundary cell lies across another wall.
@@ -306,7 +348,7 @@ NavigationGrid.prototype.findPath=function(startValue,goalValue,radius,allowPart
   if(partial)found=frontier;
   if(found<0)return null;
   var reversed=[],cursor=found,guard=0;
-  while(cursor>=0&&guard++<=this.count){reversed.push(this._center(cursor));cursor=cache.parent[cursor];}
+  while(cursor>=0&&guard++<=this.count){reversed.push(this._center(cursor));var bridge=cache.parentBridges.get(cursor);if(bridge&&bridge.serial===serial)for(var p=bridge.points.length-2;p>0;p--)reversed.push(bridge.points[p]);cursor=cache.parent[cursor];}
   if(guard>this.count)return null;
   reversed.reverse();var points=[start];
   reversed.forEach(function(p){if(distance2(points[points.length-1],p)>EPS)points.push(p);});

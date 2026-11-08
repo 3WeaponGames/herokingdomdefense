@@ -152,7 +152,7 @@ function layout(home) {
           node.anchorX = .5; node.anchorY = 1; node.setPosition(0, -26);
           disable(node, cc.Widget);
           var limit = (geometry.cell - 20) / Math.abs(node.scaleX), text = node.getComponent(cc.Label);
-          var captionSize = 12.5;
+          var captionSize = 14;
           text._lobbyCaption = true; text.fontSize = Math.max(36, Math.round(captionSize * (bounds.right - bounds.left) / points / Math.abs(node.scaleX)));
           if (!/\s/.test(text.string) && text._forceUpdateRenderData) {
             text.overflow = cc.Label.Overflow.NONE; text.enableWrapText = false; text._forceUpdateRenderData();
@@ -175,7 +175,7 @@ function layout(home) {
     home.btnBattle.setScale(geometry.buttonScale); home.btnBattle.setPosition(geometry.buttonRight, geometry.buttonY);
     state.defense.setScale(geometry.buttonScale); state.defense.setPosition(geometry.buttonLeft, geometry.buttonY);
     state.defenseCaption.setPosition(geometry.buttonLeft, geometry.buttonY - 73 * geometry.buttonScale - 21);
-    home.btnSetting.setPosition(bounds.right - 60, bounds.top - 60); home.btnSetting.setScale(.8);
+    home.btnSetting.setPosition(bounds.right - 60, bounds.top - 62); home.btnSetting.setScale(1);
   }
   layoutHeader(home, bounds);
   refresh(home);
@@ -216,6 +216,12 @@ function layoutHeader(home, bounds) {
     var point = home.node.convertToWorldSpaceAR(cc.v2(bounds.left + cell * (index + .5) + 10, bounds.top - 62));
     saved.node.setPosition(saved.node.parent.convertToNodeSpaceAR(point));
   });
+  var currency = top.ndGold;
+  var lower = home.node.convertToNodeSpaceAR(currency.convertToWorldSpaceAR(cc.v2(0, -currency.height / 2)));
+  var upper = home.node.convertToNodeSpaceAR(currency.convertToWorldSpaceAR(cc.v2(0, currency.height / 2)));
+  var button = home.btnSetting, scale = Math.max(64, Math.abs(upper.y - lower.y)) / button.height;
+  button.setScale(scale);
+  button.setPosition(bounds.right - 24 - button.width * scale / 2, bounds.top - 62);
 }
 function releaseHeader(home) {
   var state = home._lobby; if (!state || !state.header) return;

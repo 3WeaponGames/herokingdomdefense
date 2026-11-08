@@ -48,8 +48,7 @@ var def_KinghtFallUISetting = function (t) {
     var i = $z1PlayerMgr.PlayerMgr.getInstance();
     this.version.string = require("LanguageMgr").LanguageMgr.getInstance().t("settings.version", [i.getTrackData().getVersionConf(), i.getTrackData().getVersionName(), i.getAbType()]);
     this.bindEvent();
-    require("LanguageOptions").attach(this.node, 6);
-    require("ControlIndicatorOptions").attach(this.node);
+    require("SettingsPanelLayout").settings(this);
     this.btnExchangeCode.on(cc.Node.EventType.TOUCH_END, function () {
       n.openUI($z1KinghtFallConfig.KinghtFallUIID.UIExchangeCode);
     }, this);
@@ -59,14 +58,7 @@ var def_KinghtFallUISetting = function (t) {
   };
   _ctor.prototype.bindEvent = function () {
     var t = this;
-    this.musicSlider.node.on("slide", function (e) {
-      t._musicBg2 && (t._musicBg2.fillRange = e.progress);
-      $z1AudioMgr.AudioMgr.getInstance().setMusicVolume(e.progress);
-    }, this);
-    this.effectSlider.node.on("slide", function (e) {
-      t._effectBg2 && (t._effectBg2.fillRange = e.progress);
-      $z1AudioMgr.AudioMgr.getInstance().setEffectVolume(e.progress);
-    }, this);
+    require("AudioOptions").bind(this);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, function () {
       t.closeUI();
     }, this);
@@ -78,6 +70,7 @@ var def_KinghtFallUISetting = function (t) {
       $z1ServerDataMgr.ServerdataMgr.clearAllData(function () {});
     }, this);
   };
+  _ctor.prototype.lateUpdate = function () { require("SettingsPanelLayout").settings(this); };
   _ctor.prototype.clickGM = function () {
     this.index++;
     if (!(this.index < 5)) {

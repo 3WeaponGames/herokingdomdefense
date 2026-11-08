@@ -225,3 +225,18 @@ test('an idle ready weapon keeps acquisition bounded when no enemies are in rang
   assert(scans >= 3 && scans <= 5, 'ready cooldown does not turn an empty acquisition scan into a per-frame task');
   assert(t.time.AttackTime >= 1, 'the next shot remains ready');
 });
+
+test('Cannon and Sniper keep and reset their authored motion trails, use saved level speeds and retain single impacts',()=>{
+ const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+ for(const type of ['cannon','sniper'])for(const cfg of config.BuildEnum[2].levelList.filter(r=>r.Tower?.attackType===type)){
+  const {h,bullet}=shotSetup();class Render{constructor(){this.enabled=true;}}class Trail extends Render{reset(){this.resets=(this.resets||0)+1;}}
+  class Graphics extends Render{clear(){}circle(){}fill(){}stroke(){}moveTo(){}lineTo(){}close(){}}
+  Object.assign(h.e.cc,{RenderComponent:Render,MotionStreak:Trail,Graphics,color:(...x)=>x});
+  Node.prototype.setScale=function(s){this.scaleX=this.scaleY=s;};
+  const trailNode=new Node('authored trail',bullet.node),trail=trailNode.addComponent(Trail),original=bullet.bullet.addComponent(Render),target=enemy('target',330,80,1000);
+  h.d.enemyList=[target];h.g.onShotBuild(tower(h,cfg),target);
+  assert.equal(bullet.speed,type==='cannon'?375:3000);assert.equal(trail.enabled,true);assert.equal(trail.resets,1);assert.equal(original.enabled,false);
+  complete(bullet);assert.deepEqual(target.hits,[50]);bullet.freeNode();assert.equal(trail.enabled,true);assert.equal(original.enabled,true);
+  h.g.onShotBuild(tower(h,cfg),target);assert.equal(trail.resets,2,'pooled shots retain an old trail');assert.equal(trail.enabled,true);complete(bullet);assert.deepEqual(target.hits,[50,50]);
+ }
+});

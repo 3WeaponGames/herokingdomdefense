@@ -4,8 +4,11 @@ Open **Tools → Hero Kingdom Defense → Projectiles** in Creator. The library
 contains the 25 imported arrows, original game projectiles (including the 18
 wall-defense variants), and 45 Toon clips. Select a ranged unit and choose its
 flight artwork, launch effect and impact effect. Size, rotation and tint affect
-artwork only. Damage, target selection, collision, speed and attack timing stay
-in their existing systems. Reset a unit to remove its visual overrides.
+artwork only. Cannon and Sniper levels also expose **Flight speed · units / second**.
+That saved speed is shared with Buildings and applies in Simulation Mode. Other
+units show their existing speed as read only. Damage, targeting, collision and
+attack timing stay in their existing systems. **Reset artwork & effects** removes
+visual overrides and keeps the saved gameplay speed.
 
 The hero follows the Arrow design saved for its equipped tier in **Items**.
 An explicit flight selection in Projectiles overrides that design. The equipment

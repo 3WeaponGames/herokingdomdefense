@@ -14,11 +14,11 @@ const box2dFile = path.join(engine, 'external/box2d/box2d.js');
 const enginePresent = fs.existsSync(colliderFile) && fs.existsSync(box2dFile);
 if (configured && !enginePresent) throw Error('Configured Cocos engine must contain CCPhysicsCollider.js and Box2D: ' + engine);
 
-function fixture(actualEngine = false) {
+function fixture(actualEngine = false, actualPolygon = false) {
   const tweens = [], delayed = [], state = { broadStops: 0, applies: 0, near: false };
   const physics = { pushDelayEvent(target, name, args) { delayed.push(() => target[name](...args)); }, _registerContactFixture() {}, _unregisterContactFixture() {} };
   function flush() { while (delayed.length) delayed.shift()(); }
-  class Vec2 { constructor(x = 0, y = 0) { this.x = x; this.y = y; } clone() { return new Vec2(this.x, this.y); } }
+  class Vec2 { constructor(x = 0, y = 0) { this.x = x; this.y = y; } clone() { return new Vec2(this.x, this.y); } equals(p) { return this.x === p.x && this.y === p.y; } }
   Vec2.ZERO = new Vec2();
   function Collider() { this._enabled = false; }
   Object.defineProperties(Collider.prototype, {
@@ -53,7 +53,7 @@ function fixture(actualEngine = false) {
       return Type;
     };
     const module = { exports: {} };
-    vm.runInNewContext(fs.readFileSync(colliderFile, 'utf8'), { module, cc, CC_DEV: false,
+    vm.runInNewContext(fs.readFileSync(colliderFile, 'utf8')+'\nmodule.exports._realmArray=Array;', { module, cc, CC_DEV: false,
       b2: { AABB: box2d.b2AABB, FixtureDef: box2d.b2FixtureDef },
       require(name) { if (name === '../CCPhysicsTypes') return { PTM_RATIO: 32 }; if (name === '../utils') return { getWorldScale: () => ({ x: 1, y: 1 }) }; throw Error(name); }
     }, { filename: colliderFile });
@@ -69,6 +69,17 @@ function fixture(actualEngine = false) {
     });
   }
   cc.PhysicsPolygonCollider = Physics;
+  let polygonBuilder;
+  if (actualPolygon) {
+    const separator={exports:{}},polygon={exports:{}};
+    vm.runInNewContext(fs.readFileSync(path.join(engine,'cocos2d/core/physics/CCPolygonSeparator.js'),'utf8'),{module:separator,cc});
+    const api={...cc,PhysicsCollider:Physics,Collider:{Polygon:{}},Class:definition=>definition._createShape};
+    vm.runInNewContext(fs.readFileSync(path.join(engine,'cocos2d/core/physics/collider/CCPhysicsPolygonCollider.js'),'utf8'),{
+      module:polygon,cc:api,CC_EDITOR:false,b2:{PolygonShape:box2d.b2PolygonShape,Vec2:box2d.b2Vec2,maxPolygonVertices:8},
+      require:name=>name==='../CCPhysicsTypes'?{PTM_RATIO:32}:separator.exports
+    });
+    polygonBuilder=polygon.exports;
+  }
   function node(name) {
     const value = { name, active: true, groupIndex: 0, colliders: [], get activeInHierarchy() { return this.active; }, getComponents() { return this.colliders; } };
     if (actualEngine) {
@@ -80,7 +91,8 @@ function fixture(actualEngine = false) {
   function collider(parent, tag) {
     const value = new Physics(); Object.assign(value, { node: parent, tag, uuid: parent.name + tag,
       points: [new Vec2(-20, -10), new Vec2(20, -10), new Vec2(20, 10), new Vec2(-20, 10)] });
-    if (actualEngine) value._createShape = function () {
+    if (actualPolygon) { value.offset=Vec2.ZERO;value._createShape=function(scale){const shapes=polygonBuilder.call(this,scale);Object.setPrototypeOf(shapes,Physics._realmArray.prototype);return shapes;}; }
+    else if (actualEngine) value._createShape = function () {
       const shape = new box2d.b2PolygonShape();
       shape.Set(this.points.map(p => new box2d.b2Vec2(p.x / 32, p.y / 32)), this.points.length); return shape;
     };
@@ -198,4 +210,21 @@ test('Creator collider/Box2D reproduces disabled apply and validates rapid resto
   disabled.filter(t => t.options && t.options.onUpdate).forEach(t => t.options.onUpdate(t.target, 1)); h.flush();
   assert.deepEqual(h.fixtures(), [0, 0, 0, 0, 0, 0]);
   assert.equal(h.leaves[0].points[0].x, -20, 'interrupted geometry remains authored for the next enable');
+});
+
+test('actual Creator triangulation reproduces zero-frame corruption and survives mill/house-style whole-map refreshes', { skip: !enginePresent }, () => {
+  const old=fixture(true,true),leaf=old.leaves[0];leaf.points=[0,0,0,0].map(()=>new old.cc.Vec2());
+  assert.throws(()=>{leaf.enabled=true;old.flush();for(let i=0;i<8;i++){leaf.apply();old.flush();}},/undefined|reading.*x/,'zero-sized vertices must reproduce the captured Area/Right error');
+  const h=fixture(true,true);h.wall.setLevel(1);h.step(0);
+  for(let refresh=0;refresh<12;refresh++){
+    // A mill build or house upgrade refreshes every wall, often before its
+    // growth tween has advanced from its first frame.
+    h.wall.setLevel(refresh<6?1:3);h.step(0);h.wall.ndAniOther[0].node.active=true;
+    for(const collider of h.leaves.concat(h.wings).filter(c=>c.enabled)){
+      assert(collider.points.length>=3);const points=collider.points,area=points.reduce((sum,p,i)=>{const q=points[(i+1)%points.length];return sum+p.x*q.y-q.x*p.y;},0);assert(Math.abs(area)>1);
+      collider.apply();h.flush();
+    }
+  }
+  h.step(1);assert.deepEqual(h.fixtures(),[0,0,1,0,0,1]);
+  for(const collider of [h.leaves[2],h.wings[2]])assert.deepEqual(Array.from(collider.points,p=>[p.x,p.y]),[[-20,-10],[20,-10],[20,10],[-20,10]]);
 });

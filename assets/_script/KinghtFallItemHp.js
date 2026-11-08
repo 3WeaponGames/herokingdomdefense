@@ -53,17 +53,37 @@ var def_KinghtFallItemHp = function (t) {
     if (!actor || !actor.node || !this.node.parent || actor.isDead()) return;
     var renderer = actor.getSpAni ? actor.getSpAni() : actor.spAni, visual = renderer && renderer.node;
     if (!visual || !renderer.skeletonData || !visual.activeInHierarchy) return;
-    var signature = [visual.x, visual.y, visual.scaleX, visual.scaleY, visual.angle].join(":");
+    var parent = this.node.parent, referenceWidth = 0, referenceHeight = 0;
+    if (actor.navigationTeam === "friendly") {
+      var UI = require("KinghtFallUIGame").default, game = UI && UI.instance && UI.instance.ctrGame;
+      var heroBar = game && game.ctrPlay && game.ctrPlay.ctrHp && game.ctrPlay.ctrHp.node;
+      if (heroBar && !cc.isValid(heroBar, true)) heroBar = null;
+      // Measure the hero's actual world-space bar, even when it is hidden at
+      // full health. Converting those axes through the ally's parent cancels
+      // every inherited unit/model scale, including a mounted rider's scale.
+      var origin = heroBar ? heroBar.convertToWorldSpaceAR(cc.v2(0, 0)) : cc.v2(0, 0);
+      var horizontal = heroBar ? heroBar.convertToWorldSpaceAR(cc.v2(heroBar.width, 0)) : cc.v2(64, 0);
+      var vertical = heroBar ? heroBar.convertToWorldSpaceAR(cc.v2(0, heroBar.height)) : cc.v2(0, 10);
+      origin = parent.convertToNodeSpaceAR(origin); horizontal = parent.convertToNodeSpaceAR(horizontal); vertical = parent.convertToNodeSpaceAR(vertical);
+      referenceWidth = Math.hypot(horizontal.x - origin.x, horizontal.y - origin.y);
+      referenceHeight = Math.hypot(vertical.x - origin.x, vertical.y - origin.y);
+    }
+    var signature = [visual.x, visual.y, visual.scaleX, visual.scaleY, visual.angle, referenceWidth, referenceHeight].join(":");
     if (this._hpRenderer === renderer && this._hpData === renderer.skeletonData && this._hpParent === this.node.parent && this._hpLayoutSignature === signature) return;
     var box = require("KinghtFallDepthView").bounds(renderer, actor.node);
     if (!box) return;
-    var parent = this.node.parent, y = box.maxY + Math.max(10, (box.maxY - box.minY) * .1);
-    var left = parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.v2(box.minX, y)));
-    var right = parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.v2(box.maxX, y)));
     var width = this.node.width || this.sprPro && this.sprPro.node.width;
     if (!(width > 0)) return;
+    var y = box.maxY + Math.max(10, (box.maxY - box.minY) * .1);
+    // Horse/weapon bounds position the bar above the rider. The hero's measured
+    // bar axes determine allied dimensions independently of those visual bounds.
+    var displayWidth = box.maxX - box.minX;
+    var center = (box.minX + box.maxX) / 2;
+    var left = parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.v2(center - displayWidth / 2, y)));
+    var right = parent.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.v2(center + displayWidth / 2, y)));
     this.node.setPosition((left.x + right.x) / 2, Math.max(left.y, right.y));
-    this.node.scaleX = Math.abs(right.x - left.x) / width;
+    this.node.scaleX = referenceWidth > 0 ? referenceWidth / width : Math.abs(right.x - left.x) / width;
+    if (referenceHeight > 0) this.node.scaleY = referenceHeight / (this.node.height || 10);
     this._hpRenderer = renderer; this._hpData = renderer.skeletonData; this._hpParent = parent; this._hpLayoutSignature = signature;
   };
   _ctor.prototype.setProgress = function (t) {

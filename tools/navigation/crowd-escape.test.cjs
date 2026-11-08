@@ -37,11 +37,12 @@ test('real Box2D shield contacts release the captured opposing gate pair and bot
     const e = map01GateEnvironment(3, {x: -600, y: 940});
     const nav = e.nav.get(e.game), grid = nav.gridFor({navigationTeam: 'friendly'});
     // Negative control reproduces the old nearest-exit policy against the
-    // same real collision solver. It verifies this fixture actually deadlocks.
-    if (nearestExitControl) grid._escape = function(start, cache) {
+    // same real collision solver and original coarse gate grid. The refined
+    // gate portals can independently release this old two-unit deadlock.
+    if (nearestExitControl) { grid._passages = []; grid._escape = function(start, cache) {
       const candidates = this._nearby(start, cache, this.cellSize * 3 + cache.radius * 2);
       return candidates.slice(0, 128).find(c => this._escapeClear(start, c.point, cache.radius))?.point || null;
-    };
+    }; }
     const world = new b.b2World(new b.b2Vec2(0, 0));
     const units = starts.map(p => {
       const unit = e.unit(p.x, p.y);

@@ -225,6 +225,10 @@ var def_KinghtFallBuildBase = function (t) {
     if (!owned) return;
     this._colliderTweens.delete(collider);
     owned.tween && owned.tween.stop();
+    // The next map refresh may enable this shape as soon as its node becomes
+    // active, before a new tween can run. Always leave complete authored points.
+    var points = this.colPoint[collider.uuid];
+    if (points && cc.isValid(collider, true)) collider.points = points.map(function (point) { return cc.v2(point.x, point.y); });
   };
   _ctor.prototype._stopColliderTweens = function () {
     if (!this._colliderTweens) return;
@@ -245,7 +249,12 @@ var def_KinghtFallBuildBase = function (t) {
             owner.enabled === false || owner.isDestroyed || !cc.isValid(owner.node, true) ||
             !cc.isValid(target, true) || target.enabled === false || target.enabledInHierarchy === false ||
             !target.node || target.node.activeInHierarchy === false || target.tag != owner.getColliderIndex()) return;
-        target.points = owner.colPoint[target.uuid].map(function (point) { return cc.v2(point.x * progress, point.y * progress); });
+        // Creator's polygon builder mutates coincident first/last vertices.
+        // A zero-sized tween frame can lose vertices on repeated apply/enable,
+        // then crash its Area/Right triangulation on the next building refresh.
+        // Retain a valid minimum footprint throughout the visual growth tween.
+        var scale = Math.max(.1, Math.min(1, progress));
+        target.points = owner.colPoint[target.uuid].map(function (point) { return cc.v2(point.x * scale, point.y * scale); });
         target.apply();
         if (progress >= 1 && owner._colliderTweens.get(collider) === operation) owner._colliderTweens.delete(collider);
       }

@@ -24,6 +24,8 @@ var def_KinghtFallUISuspend = function (t) {
     e.btnClose = null;
     e.btnDismiss = null;
     e.btnNewGame = null;
+    e.musicSlider = null;
+    e.effectSlider = null;
     e.newGameCall = null;
     e.breakCall = null;
     e.posX = [[-145, -50, 50, 150], [-200, -100, 0, 100, 200]];
@@ -46,6 +48,8 @@ var def_KinghtFallUISuspend = function (t) {
     var t = this;
     this.ndItem.active = false;
     this.ndTips.active = false;
+    require("SettingsPanelLayout").pause(this);
+    require("AudioOptions").bind(this);
     this.initItem();
     this.bindEvent();
     this.ndParent.node.on("scrolling", function (e) {
@@ -113,8 +117,8 @@ var def_KinghtFallUISuspend = function (t) {
   _ctor.prototype.initStats = function () {
     var content = this.ndParent.content, width = this.ndParent.node.width - 24;
     content.width = width;
-    content.height = this.ndParent.node.height;
-    this.ndParent.vertical = false;
+    content.height = Math.max(this.ndParent.node.height, this._stats.length * 56 + 26);
+    this.ndParent.vertical = content.height > this.ndParent.node.height;
     this.ndParent.elastic = false;
     var language = require("LanguageMgr").LanguageMgr.getInstance();
     for (var i = 0; i < this._stats.length; i++) {
@@ -194,6 +198,7 @@ var def_KinghtFallUISuspend = function (t) {
     if (root) root.on(cc.Node.EventType.TOUCH_END, this.dismissPerkTip, this, true);
   };
   _ctor.prototype.lateUpdate = function () {
+    require("SettingsPanelLayout").pause(this);
     this.layoutPauseTitle();
     if (!this.ndTips || !this.ndTips.active) return;
     var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
@@ -261,6 +266,8 @@ var def_KinghtFallUISuspend = function (t) {
   };
   cc__decorate([ccp_property(cc.ScrollView)], _ctor.prototype, "ndParent", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndItem", undefined);
+  cc__decorate([ccp_property(cc.Slider)], _ctor.prototype, "musicSlider", undefined);
+  cc__decorate([ccp_property(cc.Slider)], _ctor.prototype, "effectSlider", undefined);
   cc__decorate([ccp_property({
     type: cc.ToggleContainer,
     tooltip: "切换按钮组"

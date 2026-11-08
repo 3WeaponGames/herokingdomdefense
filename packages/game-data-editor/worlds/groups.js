@@ -5,10 +5,10 @@ function capture(map,ids,options,assets){
  options=options||{};const selected=new Set(ids||[]),layers=options.layerId?map.layers.filter(l=>l.id===options.layerId):map.layers.filter(l=>l.objects.some(o=>selected.has(o.id)));
  if(options.layerId)for(const o of (layers[0]||{objects:[]}).objects)selected.add(o.id);
  const objects=[],polygons=[],sources={};for(const layer of layers){M.assertEditable(layer);for(const object of layer.objects){if(!selected.has(object.id))continue;const o=copy(object),p=M.toWorld(layer.transform,object);o.x=p.x;o.y=p.y;o.scale*=(layer.transform.scale||1);o.angle=(o.angle||0)+(layer.transform.angle||0);if(layer.depth==='ground'&&!o.legacy)o.depth='ground';if(o.legacy){const data=o.legacy.sourceId?(map.legacySources||{})[o.legacy.sourceId]:map.legacyData;if(!Array.isArray(data))throw Error('The original artwork source for this group is missing.');const id=hash(data);sources[id]=copy(data);o.legacy.sourceId=id;}objects.push(o);}
- if(options.layerId&&options.includeBlockers)for(const shape of M.mergeCells(M.blockerCells(layer.blockers),20).concat(layer.polygons||[]))polygons.push(shape.map(p=>M.toWorld(layer.transform,p)));}
+ if(options.layerId&&options.includeBlockers)for(const shape of M.blockerPolygons({layers:[layer]}))polygons.push(shape.points);}
  if(!objects.length&&!polygons.length)throw Error('Select objects or a layer with scenery or blockers.');const temp={layers:[{transform:{x:0,y:0,scale:1,angle:0},objects}],ground:{foundation:{},roads:{},grass:{}}},bounds=Selection.bounds(temp,objects.map(o=>o.id),assets);
- const points=polygons.reduce((all,p)=>all.concat(p),[]);if(!bounds&&points.length){let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;for(const p of points){minX=Math.min(minX,p.x);minY=Math.min(minY,p.y);maxX=Math.max(maxX,p.x);maxY=Math.max(maxY,p.y);}Object.assign(temp,{bounds:{minX,minY,maxX,maxY}});}
- const b=bounds||temp.bounds,anchor={x:(b.minX+b.maxX)/2,y:(b.minY+b.maxY)/2};for(const o of objects){o.x-=anchor.x;o.y-=anchor.y;}
+ const points=polygons.reduce((all,p)=>all.concat(p),[]),b=bounds||{minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity};for(const p of points){b.minX=Math.min(b.minX,p.x);b.minY=Math.min(b.minY,p.y);b.maxX=Math.max(b.maxX,p.x);b.maxY=Math.max(b.maxY,p.y);}
+ const anchor={x:(b.minX+b.maxX)/2,y:(b.minY+b.maxY)/2};for(const o of objects){o.x-=anchor.x;o.y-=anchor.y;}
  return {group:{id:options.id||'group-'+crypto.randomBytes(6).toString('hex'),name:(options.name||'Scenery group').trim(),objects,polygons:polygons.map(shape=>shape.map(p=>({x:p.x-anchor.x,y:p.y-anchor.y}))),bounds:{minX:b.minX-anchor.x,minY:b.minY-anchor.y,maxX:b.maxX-anchor.x,maxY:b.maxY-anchor.y}},sources};
 }
 function stamp(map,group,sources,position,scale,angle){

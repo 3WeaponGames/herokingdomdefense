@@ -2,6 +2,27 @@
 // Keep attack events on track zero. Locomotion waits for the faster reaction
 // track to finish; repeated hits replace only that reaction.
 var TRACK = 1;
+function restoreDarkTint(renderer) {
+  function restore(slot) {
+    if (!slot) return;
+    var dark = slot.getDarkColor ? slot.getDarkColor() : slot.darkColor;
+    if (!dark) return;
+    var data = slot.getData ? slot.getData() : slot.data;
+    var setup = data && (data.getDarkColor ? data.getDarkColor() : data.darkColor);
+    dark.r = setup ? setup.r : 0; dark.g = setup ? setup.g : 0; dark.b = setup ? setup.b : 0;
+    if (setup) dark.a = setup.a;
+  }
+  if (renderer._skeleton && renderer._skeleton.slots) renderer._skeleton.slots.forEach(restore);
+  else {
+    // Creator 2.4's native Slot::setToSetupPose restores light colour and
+    // attachments, but leaves dark colour behind. Its bound Color properties
+    // write to the actual native slot; no engine patch or node tint is needed.
+    var json = renderer.skeletonData && renderer.skeletonData.skeletonJson;
+    if (json && json.slots && renderer.findSlot) json.slots.forEach(function (slot) {
+      if (slot.dark !== undefined) restore(renderer.findSlot(slot.name));
+    });
+  }
+}
 var Feedback = cc.Class({
   extends: cc.Component,
   init: function (actor) { this.actor = actor; },
@@ -27,6 +48,7 @@ var Feedback = cc.Class({
         if (feedback.token !== token) return;
         actor._hitReactionPlaying = false;
         feedback.entry = null;
+        restoreDarkTint(renderer);
       };
       if (renderer.setTrackCompleteListener) renderer.setTrackCompleteListener(entry, finished);
       if (renderer.setTrackDisposeListener) renderer.setTrackDisposeListener(entry, finished);
@@ -42,6 +64,7 @@ var Feedback = cc.Class({
     if (!entry || typeof time === "number" && typeof end === "number" && time >= end) {
       if (this.actor) this.actor._hitReactionPlaying = false;
       this.entry = null;
+      restoreDarkTint(this.renderer);
     }
   },
   reset: function () {
@@ -54,6 +77,7 @@ var Feedback = cc.Class({
       renderer.clearTrack(TRACK);
       // Runs only on death, pooling or reinitialization, never between attacks.
       renderer.setSlotsToSetupPose();
+      restoreDarkTint(renderer);
     }
   },
   onDisable: function () { this.reset(); },

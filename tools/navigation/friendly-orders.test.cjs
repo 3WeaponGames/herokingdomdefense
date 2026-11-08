@@ -225,6 +225,32 @@ test('Map01 intact gates let rallying and following allies cross both ways at ev
   }
 });
 
+test('all three stage-five gates pass real allied bodies both ways with every building present, including upgraded gate 19', () => {
+  for (const id of [17,18,19]) for (const level of [1,2,3]) for (const reverse of [false,true]) for (const mode of ['rally','follow']) {
+    const e=map01GateEnvironment(level,null,id,true),gate=e.game.gameData.buildings.find(b=>b.ID===id),leaf=gate.getNavigationGateShapes()[0].points;
+    const center={x:0,y:0};leaf.forEach(p=>{center.x+=p.x/leaf.length;center.y+=p.y/leaf.length;});
+    let edge={length:0};leaf.forEach((p,i)=>{const q=leaf[(i+1)%leaf.length],dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy);if(length>edge.length)edge={dx,dy,length};});
+    const normal={x:-edge.dy/edge.length,y:edge.dx/edge.length},sign=reverse?-1:1;
+    const a=id===17?{x:-600,y:940}:{x:center.x+normal.x*180,y:center.y+normal.y*180},b=id===17?{x:-300,y:600}:{x:center.x-normal.x*180,y:center.y-normal.y*180};
+    const start=reverse?b:a,goal=reverse?a:b;
+    const unit=soldier(e,start.x,start.y),body=require('./fixtures/unit-colliders.json').find(c=>c.file==='PlayItemEnemy04.prefab');
+    unit.node.addComponent(PhysicsPolygonCollider).points=body.points;
+    const nav=e.nav.get(e.game),grid=nav.gridFor(unit),radius=nav.radius(unit),plan=grid.findPath(start,goal,radius);
+    assert(plan?.reached,`no gate ${id}/${level} route, reverse=${reverse}`);
+    const bridges=grid._cache(radius).bridges;grid.findPath(goal,start,radius);assert.equal(grid._cache(radius).bridges,bridges,'passages rebuilt for each unit');
+    if(mode==='rally')rally(e,goal);else{e.game.ctrPlay.node.setPosition(goal);e.game.isAgg=true;unit.applyArmyOrder(e.game);}
+    let previous=unit.node.getPosition();
+    for(let frame=0;frame<650&&unit.state!==0;frame++){
+      advance(e,unit);const current=unit.node.getPosition(),route=unit._navigationState;
+      assert(grid.segmentClear(previous,current,radius)||route?.escape&&grid._escapeClear(previous,current,radius),`unsafe gate ${id}/${level} step`);
+      assert(distance(previous,current)<=3.000001,'gate movement teleported');previous=current;
+    }
+    assert.equal(unit.state,0,`${mode} stalled at gate ${id}/${level}, reverse=${reverse}`);
+    if(mode==='rally')assert(distance(unit.node.position,goal)<.01);else assert(e.nav.canStopFollowing(unit,e.game,goal));
+    assert(gate.ndAniOther.every(p=>p.node.getComponents(PhysicsPolygonCollider).every(c=>c.enabled)),'permanent wall disabled');
+  }
+});
+
 test('Following soldiers do not stop within follow range while a solid wall separates them from the hero', () => {
   const e = environment(), unit = soldier(e, -8, 0);
   e.box(0, 0, 2, 400);

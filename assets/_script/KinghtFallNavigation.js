@@ -104,7 +104,7 @@ Navigation.prototype.refresh = function () {
   if (this.grid && !this._refreshPending && now < this._nextRefresh) return;
   this._refreshPending = false;
   this._nextRefresh = now + 250;
-  var navigation = this, game = this.game, polygons = [], friendly = [], seen = new Set();
+  var navigation = this, game = this.game, polygons = [], friendly = [], passages = [], seen = new Set();
   game.gameData.obstacles.concat(game.gameData.getBulidList()).forEach(function (owner) {
     // Gate wings are sibling nodes referenced as Skeleton components, not
     // descendants of the gate. Their enabled physics shapes still block units.
@@ -113,7 +113,7 @@ Navigation.prototype.refresh = function () {
       if (seen.has(shape.collider)) return;
       seen.add(shape.collider);
       var polygon = navigation.shape(shape.collider, shape.points);
-      if (polygon.length >= 3) polygons.push(polygon);
+      if (polygon.length >= 3) { polygons.push(polygon); passages.push(polygon); }
     });
     var nodes = [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); }));
     nodes.forEach(function (node) {
@@ -133,6 +133,7 @@ Navigation.prototype.refresh = function () {
   if (!same) {
     this._polygons = polygons;
     this._friendlyPolygons = friendly;
+    this._friendlyPassages = passages;
     this.grid = new NavigationGrid(polygons, bounds, 20);
     this.friendlyGrid = null;
     this.revision++;
@@ -145,7 +146,9 @@ Navigation.prototype.gridFor = function (unit) {
   if (unit.navigationTeam !== "friendly") return this.grid;
   // The upgraded first-map gate has a valid body-width passage between its
   // wings that a 20-unit lattice misses. Keep body clearance; sample more finely.
-  if (!this.friendlyGrid) this.friendlyGrid = new NavigationGrid(this._friendlyPolygons, this.grid.bounds, 16);
+  // Gate-sized fine searches add safe bridges between ordinary lattice cells.
+  // Keep the whole map coarse and preserve the unit's real collision radius.
+  if (!this.friendlyGrid) this.friendlyGrid = new NavigationGrid(this._friendlyPolygons, this.grid.bounds, 16, this._friendlyPassages);
   return this.friendlyGrid;
 };
 Navigation.prototype.takeSearchTurn = function (unit) {

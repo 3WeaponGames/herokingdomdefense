@@ -38,3 +38,29 @@ test('hit movement lock lasts for the faster reaction and an old completion cann
  context.exports.play(actor);tracks[1].trackTime=.24;feedback.update();assert.equal(actor._hitReactionPlaying,false);
  context.exports.play(actor);context.exports.reset(actor);assert.equal(actor._hitReactionPlaying,false);
 });
+
+test('native slot reset clears interrupted white flashes at the planning boundary and preserves setup tints',()=>{
+ const catalog=require('../../assets/resources/characters/catalog.json'),key=Object.keys(catalog.assignments).find(k=>k.startsWith('ally:'));
+ assert(key,'deployed allied character missing');
+ for(const interrupt of [.01,.02,.03]){
+  const r=rig(path.join(root,'assets/resources/unit-library/runtime/default_'+catalog.assignments[key]+'.json'));
+  const tinted=r.skeleton.slots.find(s=>s.darkColor);assert(tinted);
+  tinted.data.darkColor.r=.04;tinted.data.darkColor.g=.03;tinted.data.darkColor.b=.02;
+  const attack=r.state.setAnimation(0,'attack',true),actor={node:{color:'#c08060'},isDead:()=>false};
+  const renderer=actor.spAni={skeletonData:{skeletonJson:r.json},findAnimation:n=>r.data.findAnimation(n),setAnimation:(...args)=>r.state.setAnimation(...args),
+   // Native getCurrent can return another wrapper around the same track.
+   getCurrent:i=>{const e=r.state.getCurrent(i);return e&&{getTrackTime:()=>e.trackTime,getAnimationEnd:()=>e.animationEnd};},
+   clearTrack:i=>r.state.clearTrack(i),findSlot:name=>{const slot=r.skeleton.findSlot(name);return slot&&{getDarkColor:()=>slot.darkColor,getData:()=>({getDarkColor:()=>slot.data.darkColor})};},
+   setSlotsToSetupPose(){const colors=r.skeleton.slots.map(s=>s.darkColor&&{...s.darkColor});r.skeleton.setSlotsToSetupPose();r.skeleton.slots.forEach((s,i)=>{if(s.darkColor)Object.assign(s.darkColor,colors[i]);});}};
+  const context={exports:{},cc:{Component:class{},isValid:()=>true,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/UnitHitFeedback.js'),'utf8'),context);
+  let feedback;actor.node.getComponent=()=>feedback;actor.node.addComponent=C=>(feedback=new C());
+  context.exports.play(actor);r.state.update(interrupt);r.state.apply(r.skeleton);feedback.update();
+  assert(actor._hitReactionPlaying,'native wrapper identity prematurely ended a hit');assert(r.skeleton.slots.some(s=>s.darkColor&&s.darkColor.r>.5));
+  context.exports.reset(actor);
+  for(const slot of r.skeleton.slots)if(slot.darkColor)for(const channel of ['r','g','b'])assert.equal(slot.darkColor[channel],slot.data.darkColor[channel]);
+  assert.equal(r.state.getCurrent(0),attack);assert.equal(r.state.getCurrent(1),null);assert.equal(actor._hitReactionPlaying,false);assert.equal(actor.node.color,'#c08060');
+  // Respawning/reusing the component must not retain a previous flash.
+  context.exports.play(actor);r.state.update(.02);r.state.apply(r.skeleton);feedback.onDisable();assert(r.skeleton.slots.every(s=>!s.darkColor||s.darkColor.r===s.data.darkColor.r));
+ }
+});

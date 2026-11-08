@@ -1125,8 +1125,8 @@ var def_KinghtFallGameCtrl = function (t) {
     a.combatContext = this;
     if (modern) {
       var game = this, effects = $z1KinghtFallUIGame.default.instance.ctrEffect;
-      if (behavior.projectileLook || behavior.attackType === "arrow") ProjectileLooks.prepare(a, this, behavior.projectileLook || "tower");
-      else ProjectileLooks.release(a);
+      var towerKey = t.buildInfo.cfg.ID && t.buildInfo.cfg.index ? "tower:" + t.buildInfo.cfg.ID + ":" + t.buildInfo.cfg.index : "tower";
+      ProjectileLooks.prepare(a, this, behavior.projectileLook || (behavior.attackType === "arrow" ? "tower" : towerKey));
       a.setTowerTag(i, e.node, function () {
         var center = behavior.attackType === "cannon" ? a._towerImpactPoint : require("TowerCombat").point(e.node, game.ndUI);
         require("TowerCombat").damage(game, e, center, o, behavior, function (actor, position, damage) {

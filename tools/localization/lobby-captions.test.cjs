@@ -24,3 +24,11 @@ test('ordinary localized labels still use their authored style dimensions', () =
     const f = fixture(false); f.apply();
     assert.deepEqual([f.node.width, f.node.height, f.node.x, f.node.y, f.label.fontSize], [90, 50, -20, 10, 60]);
 });
+
+test('responsive settings captions retain panel geometry after changing languages', () => {
+    const f = fixture(false); f.label._settingsLayout = true; f.apply();
+    assert.equal(f.label._localizedStyleKey, 'caption');
+    assert.deepEqual([f.node.width, f.node.height, f.node.x, f.node.y, f.label.fontSize], [270, 112, 0, -26, 30]);
+    f.manager.currentLan = 'zh'; f.apply();
+    assert.equal(f.node.width, 270);
+});

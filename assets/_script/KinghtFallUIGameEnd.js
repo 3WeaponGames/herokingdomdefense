@@ -41,6 +41,23 @@ var def_KinghtFallUIGameEnd = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.lateUpdate = function () {
     require("BattleResultTitle").sync(this, this.spAni, this.btnBreak, this.isWin);
+    this._layoutRewards();
+  };
+  _ctor.prototype._layoutRewards = function () {
+    if (!this._rewardNodes || !this.node || this.isclose) return;
+    var layout = require("BattleRewardLayout"), count = Math.max(this.getSkillList.length, this._rewardNodes.length), rects = [];
+    for (var i = 0; i < count; i++) {
+      var node = this._rewardNodes[i], item = node && node.getComponent($z1KinghtFallItemGood.default);
+      var label = item && item.labNum, outline = label && cc.LabelOutline && label.node.getComponent(cc.LabelOutline);
+      rects.push(node ? layout.measure(node, label, outline && outline.width) : { minX: -47.5, maxX: 47.5, minY: -47.5, maxY: 47.5 });
+    }
+    var maximum = Math.max(200, Math.min(660, (this.node.width || 750) - 80));
+    var signature = JSON.stringify([maximum, rects]);
+    if (signature === this._rewardLayoutSignature) return;
+    this._rewardLayoutSignature = signature;
+    var result = layout.arrange(rects, maximum, 28);
+    this.ndReward.node.setContentSize(result.width, result.height);
+    this._rewardNodes.forEach(function (node, index) { if (node) node.setPosition(result.positions[index]); });
   };
   _ctor.prototype.init = function (e) {
     t.prototype.init.call(this);
@@ -156,6 +173,10 @@ var def_KinghtFallUIGameEnd = function (t) {
       i.active = true;
       i.setScale(1);
       i.getComponent($z1KinghtFallItemGood.default).initView(t);
+      if (!n._rewardNodes) n._rewardNodes = [];
+      n._rewardNodes[e] = i;
+      n._rewardLayoutSignature = null;
+      n._layoutRewards();
       cc.tween(i).set({
         opacity: 0
       }).to(.3, {
