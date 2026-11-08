@@ -1,47 +1,89 @@
 'use strict';
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const { fixture } = require('./backend-ui-harness.cjs');
-const root = path.resolve(__dirname, '../..');
-
-function atlas(legacy = false) {
-  const h = fixture(), config = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json')));
-  const catalog = JSON.parse(fs.readFileSync(path.join(root, 'assets/resources/localization/catalog.json')));
-  if (legacy) for (const row of Object.values(config.BuildEnum)) delete row.InitialChoices;
-  const translate = value => typeof value === 'string' ? value.replace(/\[\[loc:(.+?)\]\]/g, (_match, key) => catalog.entries[key]?.en || key) : '';
-  h.cc.Sprite = function () {};
-  Object.assign(h.modules, {
-    KinghtFallConfig: { KinghtFallBundelName: { IconBuild: 'KinghtFallIconBuild' } },
-    KinghtFallEnum: { KinghtFallEnumBuildEnum: { CastleCenter: 1, ArrowTower: 2, Barracks: 3, PrivateHouse: 4, Mill: 5, Wall: 6 } },
-    KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => ({ getBuildCfgById: id => config.BuildEnum[id] }) } },
-    LanguageMgr: { LanguageMgr: { getInstance: () => ({ t: translate, format: (_template, values) => values.join('') }) } }
-  });
-  function child(parent, name) { const node = new h.cc.Node(name); node.ui = {}; node.parent = parent; return node; }
-  h.cc.instantiate = () => {
-    const node = new h.cc.Node('Building');
-    child(node, 'sprIcon'); child(node, 'labName'); child(node, 'labInfo');
-    return node;
-  };
-  const Type = h.load('KinghtFallUIBuildAtlas').default, ui = new Type(), loads = [];
-  ui.node = new h.cc.Node('Atlas'); ui.ndItem = new h.cc.Node('Template');
-  ui.ndParent = new h.cc.Node('List'); ui.btnClose = new h.cc.Node('Close'); ui.T = translate;
-  ui.loadSpriteFrame = (bundle, file, done) => { loads.push({ bundle, file }); done({ getOriginalSize: () => ({ width: 1000, height: 1200 }) }); };
-  ui.start();
-  return { ui, loads, names: ui.ndParent.children.map(node => node.getChildByName('labName').ui.string) };
+// Real catalog/controller with inert scene nodes; no game, storage, SDK or audio.
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {fixture}=require('./backend-ui-harness.cjs'),root=path.resolve(__dirname,'../..');
+function atlas(options={}){
+ const h=fixture(),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json')));
+ if(options.legacy)for(const cfg of Object.values(config.BuildEnum))delete cfg.InitialChoices;
+ if(options.edit)options.edit(config);
+ const before=JSON.stringify(config),listeners=[],loads=[];let language='en';
+ const translate=value=>String(value||'').replace(/\[\[loc:(.+?)\]\]/g,(_match,key)=>catalog.entries[key]?.[language]||catalog.entries[key]?.en||key);
+ const lang={t:translate,format:(text,values)=>text.replace(/\{(\d+)\}/g,(_match,id)=>values[id]),onChange(fn,owner){this.offChange(fn,owner);listeners.push({fn,owner});},offChange(fn,owner){for(let i=listeners.length-1;i>=0;i--)if(listeners[i].fn===fn&&listeners[i].owner===owner)listeners.splice(i,1);},setCurrentLanguage(value){language=value;listeners.slice().forEach(x=>x.fn.call(x.owner));}};
+ class Node extends h.cc.Node{
+  constructor(name){super(name);Object.assign(this,{components:new Map(),width:0,height:0,x:0,y:0,anchorX:.5,anchorY:.5,scale:1,scaleX:1,scaleY:1});}
+  addComponent(Type){const value=new Type();value.node=this;this.components.set(Type,value);return value;}
+  getComponent(Type){return this.components.get(Type);}
+  setPosition(x,y){if(typeof x==='object')({x,y}=x);this.x=x;this.y=y;}
+  setScale(value){this.scale=this.scaleX=this.scaleY=value;}
+  setSiblingIndex(index){if(this.parent){const siblings=this.parent.children;siblings.splice(siblings.indexOf(this),1);siblings.splice(index,0,this);}}
+  on(type,fn,owner){this.handlers[type]=owner?fn.bind(owner):fn;}
+  off(type){delete this.handlers[type];}
+ }
+ Node.EventType={TOUCH_END:'end',SIZE_CHANGED:'size'};
+ class Label{_forceUpdateRenderData(){if(this.overflow!==Label.Overflow.RESIZE_HEIGHT)return;const text=String(this.string||''),lines=Math.max(1,Math.ceil(text.length*this.fontSize*.55/Math.max(1,this.node.width)));this.node.height=lines*this.lineHeight+this.fontSize*.25;}}
+ Label.Overflow={RESIZE_HEIGHT:3,SHRINK:2};Label.HorizontalAlign={LEFT:0,CENTER:1};Label.VerticalAlign={TOP:0,CENTER:1};
+ class RichText{_updateRichText(){const text=String(this.string||'').replace(/<[^>]*>/g,''),lines=Math.max(1,Math.ceil(text.length*this.fontSize*.5/Math.max(1,this.maxWidth)));this.node.width=this.maxWidth;this.node.height=lines*this.lineHeight+this.fontSize*.25;}}
+ class Sprite{}Sprite.SizeMode={CUSTOM:0,TRIMMED:1};
+ class Graphics{clear(){}roundRect(){}fill(){}stroke(){}moveTo(){}lineTo(){}}
+ class Layout{}class Color{constructor(r,g,b,a){Object.assign(this,{r,g,b,a});}}
+ class Scroll{
+  constructor(){this.offset=0;}
+  getScrollOffset(){return{x:0,y:this.offset};}
+  getMaxScrollOffset(){return{x:0,y:Math.max(0,this.content.height-this.view.height)};}
+  scrollToOffset(point){this.offset=Math.max(0,Math.min(this.getMaxScrollOffset().y,point.y));}
+  stopAutoScroll(){this.stopped=true;}
+ }
+ Object.assign(h.cc,{Node,Label,RichText,Sprite,Graphics,Layout,Color,ScrollView:Scroll});
+ Object.assign(h.modules,{KinghtFallConfig:{KinghtFallBundelName:{IconBuild:'KinghtFallIconBuild'}},KinghtFallEnum:{KinghtFallEnumBuildEnum:{CastleCenter:1,ArrowTower:2,Barracks:3,PrivateHouse:4,Mill:5,Wall:6}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getBuildCfgById:id=>config.BuildEnum[id]})}},LanguageMgr:{LanguageMgr:{getInstance:()=>lang}}});
+ const Type=h.load('KinghtFallUIBuildAtlas').default,ui=new Type();ui.node=new Node('Atlas');ui.node.setContentSize(options.width||750,options.height||1334);ui.T=translate;
+ const node=(name,parent,Component)=>{const child=new Node(name);child.parent=parent;if(Component)child.addComponent(Component);return child;};
+ const parent=node('root',ui.node),banner=node('wg_jzfz_bt',parent,Sprite);node('title',banner,Label);
+ ui.btnClose=node('Close',parent,Sprite);ui.ndItem=node('Template',parent);
+ const scroll=node('New ScrollView',parent,Scroll),view=node('view',scroll);ui.ndParent=node('content',view,Layout);
+ const motion=scroll.getComponent(Scroll);motion.content=ui.ndParent;motion.view=view;
+ ui.loadSpriteFrame=(bundle,file,done)=>{loads.push({bundle,file,done});if(!options.defer)done({getRect:()=>({width:1000,height:1200})});};
+ ui.start();return{ui,h,config,before,loads,lang,listeners,visible:()=>ui.entries.filter(e=>e.node.active),names:()=>ui.entries.map(e=>e.name.string)};
 }
-
-test('Buildings details includes Cannon, Sniper, and all four starting squads', () => {
-  const result = atlas();
-  assert.equal(result.names.length, 11);
-  for (const name of ['Cannon Tower · Lv 1', 'Sniper Tower · Lv 1', 'Royal Guard · Lv 1', 'Heavy Infantry · Lv 1', 'Crossbowmen · Lv 1', 'Vanguard · Lv 1']) assert(result.names.includes(name), name);
-  assert.deepEqual(result.loads.filter(item => item.bundle === 'resources').map(item => item.file), ['buildings/towers/cannon-1', 'buildings/towers/sniper-1']);
-  assert(result.ui.ndParent.children.every(node => node.getChildByName('labInfo').ui.string.length > 0));
+function inside(entry){
+ const row=entry.node,half=row.height/2,name=entry.name.node,info=entry.info.node,badge=entry.badge;
+ assert(name.x>=-row.width/2+12);assert(name.x+name.width<=badge.x-badge.width/2-8);
+ assert(name.y<=half-12);assert(info.y-info.height>=-half+12);
+ assert(info.x+info.width<=row.width/2-12);assert(badge.x+badge.width/2<=row.width/2-12);
+ assert(entry.icon.width*entry.icon.scale<=entry.iconWidth+1e-8);assert(entry.icon.height*entry.icon.scale<=116+1e-8);
+}
+test('Buildings catalog includes every authored starting type with separate names/levels and complete tower portraits',()=>{
+ const p=atlas();assert.equal(p.ui.entries.length,11);
+ for(const name of ['Cannon Tower','Sniper Tower','Royal Guard','Heavy Infantry','Crossbowmen','Vanguard'])assert(p.names().includes(name),name);
+ assert(p.ui.entries.every(e=>e.level.string==='Lv 1'&&e.info.string.length>0));
+ for(const file of ['cannon-1','sniper-1'])assert(p.loads.some(x=>x.bundle==='KinghtFallIconBuild'&&x.file===file));
+ assert.equal(p.loads.filter(x=>x.bundle==='resources').length,0);p.ui.entries.forEach(inside);assert.equal(JSON.stringify(p.config),p.before);
 });
-
-test('Buildings details preserves the six original entries without initial choice configuration', () => {
-  const result = atlas(true);
-  assert.equal(result.names.length, 6);
-  assert.equal(result.loads.filter(item => item.bundle === 'resources').length, 0);
+test('category tabs show only their rows and reset scrolling without rebuilding portraits or changing data',()=>{
+ const p=atlas(),loads=p.loads.length;p.ui._atlasScroll.offset=300;
+ p.ui._atlasTabButtons.find(x=>x.id==='towers').node.handlers.end({stopPropagation(){}});
+ assert.deepEqual(Array.from(p.visible(),e=>e.name.string),['Arrow Tower','Cannon Tower','Sniper Tower']);assert.equal(p.ui._atlasScroll.offset,0);assert.equal(p.ui._atlasScroll.stopped,true);assert.equal(p.ui._atlasBar.node.active,false);
+ p.ui.selectCategory('barracks');assert.deepEqual(Array.from(p.visible(),e=>e.name.string),['Royal Guard','Heavy Infantry','Crossbowmen','Vanguard']);assert(p.ui._atlasGroups.filter(g=>g.node.active).every(g=>g.id==='barracks'));
+ p.ui.selectCategory('all');assert.equal(p.visible().length,11);assert.equal(p.loads.length,loads);assert.equal(JSON.stringify(p.config),p.before);
+});
+test('short screens and long authored descriptions grow their own card without name, badge or body collisions',()=>{
+ const p=atlas({width:540,height:820,edit(c){c.BuildEnum[2].levelList[0].Name='Very Long Authored Arrow Tower Name';c.BuildEnum[2].levelList[0].LevelUpDescribe='An unusually long custom description with many useful details, which should wrap over several lines while staying inside the card. '.repeat(3);}});
+ assert(p.ui.entries[0].node.height>146);p.ui.entries.forEach(inside);assert.equal(p.ui._atlasRoot.width,496);assert.equal(p.ui._atlasRoot.height,708);
+ assert(p.ui._atlasScrollNode.y+p.ui._atlasScrollNode.height/2<p.ui._atlasTabs.y-32);assert(p.ui._atlasScrollNode.y-p.ui._atlasScrollNode.height/2>p.ui._atlasFooter.node.y+21);
+});
+test('language changes refresh filtered labels and badges without reloading assets or changing building configuration',()=>{
+ const p=atlas(),loads=p.loads.length;p.ui.selectCategory('barracks');p.lang.setCurrentLanguage('zh');assert(p.names().includes('皇家卫兵'));assert(p.ui.entries.every(e=>e.level.string==='1级'));assert(p.visible().every(e=>!/[·•]/.test(e.name.string)));p.ui.entries.forEach(inside);
+ p.lang.setCurrentLanguage('en');assert(p.names().includes('Royal Guard'));assert.equal(p.loads.length,loads);assert.equal(JSON.stringify(p.config),p.before);
+});
+test('scroll guidance and thumb visibility follow the selected content and current position',()=>{
+ const p=atlas();assert.equal(p.ui._atlasFooter.string,'More buildings below ↓');assert.equal(p.ui._atlasBar.node.active,true);
+ p.ui._atlasScroll.offset=p.ui._atlasScroll.getMaxScrollOffset().y;p.ui.updateScrollHint();assert.equal(p.ui._atlasFooter.string,'All buildings shown');p.ui.selectCategory('towers');assert.equal(p.ui._atlasBar.node.active,false);assert.equal(p.ui._atlasFooter.string,'All buildings shown');
+});
+test('close retires late portrait callbacks and language subscriptions without touching gameplay',()=>{
+ const p=atlas({defer:true});assert.equal(p.listeners.length,1);p.ui.btnClose.handlers.end();assert.equal(p.ui.isclose,true);for(const request of p.loads)request.done({getRect:()=>({width:100,height:100})});assert(p.ui.entries.every(e=>!e.frame));p.ui.onDestroy();assert.equal(p.listeners.length,0);assert.equal(JSON.stringify(p.config),p.before);
+});
+test('legacy buildings without initial-choice settings retain their six original entries',()=>{
+ const p=atlas({legacy:true});assert.equal(p.ui.entries.length,6);assert.equal(p.loads.filter(x=>x.bundle==='resources').length,0);p.ui.selectCategory('towers');assert.equal(p.visible().length,1);p.ui.selectCategory('barracks');assert.equal(p.visible().length,1);
+});
+test('custom complete artwork uses Resources and malformed duplicate or missing initial choices are ignored',()=>{
+ const p=atlas({edit(c){delete c.BuildEnum[2].levelList[3].Appearance.weapon;c.BuildEnum[3].InitialChoices=[11,11,-1,999,14];}});assert(p.loads.some(x=>x.bundle==='resources'&&x.file==='buildings/towers/cannon-1'));p.ui.selectCategory('barracks');assert.equal(p.visible().length,2);assert.equal(JSON.stringify(p.config),p.before);
 });
