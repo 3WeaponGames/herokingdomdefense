@@ -125,6 +125,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.onLoad = function () {
     n.instance = this;
+    if (this.btnFollow) require("FollowButtonArtwork").install(this.btnFollow);
     this.ndEnemyIcon.active = false;
     this.ndBuildCoin.active = false;
     this.btnStartFight.active = false;

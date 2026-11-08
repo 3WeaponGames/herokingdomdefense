@@ -7156,6 +7156,9 @@
                 "__id__": 371
             },
             {
+                "__id__": 382
+            },
+            {
                 "__id__": 374
             }
         ],
@@ -7394,5 +7397,68 @@
         "asset": {
             "__id__": 0
         }
+    },
+  {
+    "__type__": "cc.Node",
+    "_name": "FollowBoot",
+    "_parent": {
+      "__id__": 367
+    },
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 383
+      }
+    ],
+    "_prefab": {
+      "__id__": 384
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 80,
+      "height": 80
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        2,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
     }
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_sizeMode": 0,
+    "_isTrimmedMode": false,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "261b289b-d856-47ca-8a60-d12ded1c4bf8"
+    },
+    "node": {
+      "__id__": 382
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "ulMVI7rz+5yeLAzHBIptnA"
+  }
 ]
