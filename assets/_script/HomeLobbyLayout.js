@@ -106,6 +106,9 @@ function install(home) {
   var label = caption.addComponent(cc.Label); label.fontSize = 26; label.lineHeight = 32; label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
   var outline = caption.addComponent(cc.LabelOutline); outline.color = cc.Color.BLACK; outline.width = 2;
   disable(home.btnSetting.parent, cc.Sprite);
+  // The old sidebar is now transparent and overlaps the reward carousel.
+  // Its children retain their own button input; the empty tray must not swallow touches.
+  disable(home.btnSetting.parent, cc.BlockInputEvents);
   home.btnSetting.parent = home.node; disable(home.btnSetting, cc.Widget);
   if (home.btnSubEnter) home.btnSubEnter.active = false;
   home.ndTaskInfo.active = false;
