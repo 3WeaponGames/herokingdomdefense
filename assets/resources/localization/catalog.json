@@ -9954,6 +9954,46 @@
       "en": "Barracks",
       "zh": "兵营",
       "context": "Initial barracks selection title"
+    },
+    "buildingAtlas.all": {
+      "en": "All",
+      "zh": "全部",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.towers": {
+      "en": "Towers",
+      "zh": "防御塔",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.barracks": {
+      "en": "Barracks",
+      "zh": "兵营",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.economy": {
+      "en": "Economy",
+      "zh": "经济",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.defenses": {
+      "en": "Defenses",
+      "zh": "防线",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.level": {
+      "en": "Lv {0}",
+      "zh": "{0}级",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.more": {
+      "en": "More buildings below ↓",
+      "zh": "向下滑动查看更多建筑 ↓",
+      "context": "Buildings catalog · concept 1"
+    },
+    "buildingAtlas.end": {
+      "en": "All buildings shown",
+      "zh": "已显示全部建筑",
+      "context": "Buildings catalog · concept 1"
     }
   },
   "images": {

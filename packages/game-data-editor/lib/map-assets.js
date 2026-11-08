@@ -38,7 +38,7 @@ function assetIndex(root, wanted) {
             if (!/\.(png|jpe?g|webp)\.meta$/i.test(entry.name)) return;
             let meta;
             try { meta = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return; }
-            if (meta.uuid) textures[meta.uuid] = file.slice(0, -5);
+            if (meta.uuid) textures[meta.uuid] = { file: file.slice(0, -5), width: meta.width, height: meta.height };
             Object.keys(meta.subMetas || {}).forEach(key => {
                 const frame = meta.subMetas[key];
                 if (frame.uuid && (!wanted || wanted.has(frame.uuid))) frames[frame.uuid] = frame;
@@ -47,11 +47,11 @@ function assetIndex(root, wanted) {
     }
     walk(path.join(root, 'assets'));
     Object.keys(frames).forEach(id => {
-        const frame = frames[id], file = textures[frame.rawTextureUuid];
+        const frame = frames[id], texture = textures[frame.rawTextureUuid], file = texture && texture.file;
         if (!file || !fs.existsSync(file)) return;
         result[id] = { url: url.pathToFileURL(file).href, x: frame.trimX || 0, y: frame.trimY || 0,
             width: frame.width, height: frame.height, rawWidth: frame.rawWidth, rawHeight: frame.rawHeight,
-            offsetX: frame.offsetX || 0, offsetY: frame.offsetY || 0, rotated: !!frame.rotated };
+            offsetX: frame.offsetX || 0, offsetY: frame.offsetY || 0, rotated: !!frame.rotated, textureWidth: texture.width || 0, textureHeight: texture.height || 0 };
     });
     return result;
 }
