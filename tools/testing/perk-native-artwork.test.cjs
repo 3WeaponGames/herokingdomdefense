@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const test = require('node:test');
+const Args = require('../../assets/_script/ArgsParseUtils').ArgsParseUtils;
 function harness(native = true) {
   function Base() {}
   Base.prototype.onLoad = function () { this.baseLoaded = true; };
@@ -72,10 +73,11 @@ test('unpacked native textures stay original and browser artwork keeps its exist
 test('every authored perk icon exists and asynchronous choice callbacks bind its original native artwork', () => {
   const root = path.resolve(__dirname, '../..'), config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
   for (const perk of Object.values(config.BuffCfg)) {
-    assert(fs.existsSync(path.join(root, 'assets/KinghtFallIconBuff', perk.Image + '.png')), 'Missing perk artwork: ' + perk.Image);
+    const resource = Args._makeloadSpriteFrameResrgs('KinghtFallIconBuff', perk.Image);
+    assert(fs.existsSync(path.join(root, 'assets', resource.bundle, resource.path + '.png')), 'Missing perk artwork: ' + perk.Image);
   }
   const { view, frame, texture, modules } = harness(), pending = [];
-  Object.assign(modules.KinghtFallConfig, { KinghtFallBundelName: { IconBuff: 'perks' } });
+  Object.assign(modules.KinghtFallConfig, { KinghtFallBundelName: { IconBuff: 'KinghtFallIconBuff' } });
   Object.assign(modules.KinghtFallDataMgr, { KinghtFallDataMgr: { getInstance: () => ({ getBuffCfgById: id => Object.values(config.BuffCfg).find(perk => perk.ID === id) }) } });
   Object.assign(modules.Utils, { Utils: { StringFormat: value => value } });
   modules.LanguageMgr = { LanguageMgr: { getInstance: () => ({ format: value => value }) } };
@@ -84,10 +86,15 @@ test('every authored perk icon exists and asynchronous choice callbacks bind its
   const children = { spAniBg: { getComponent: () => skeleton }, spAniIcon: {}, sprIcon: { getComponent: () => icon },
     sprBg: { getComponent: () => ({}) }, sprIocnBg: { getComponent: () => ({}) }, labInfo: { getComponent: () => rich } };
   view.ndItemList = [{ getChildByName: name => children[name] }];
-  view.loadSpriteFrame = (_bundle, image, done) => pending.push({ image, done });
+  view.loadSpriteFrame = (bundle, image, done) => {
+    const resource = Args._makeloadSpriteFrameResrgs(bundle, image, done);
+    pending.push({ bundle: resource.bundle, image: resource.path, done: resource.callback });
+  };
   for (const perk of Object.values(config.BuffCfg)) {
     view.selInfo = [perk.ID]; view.showItem(0);
-    const request = pending.pop(); assert.equal(request.image, perk.Image);
+    const request = pending.pop(), imported = perk.Image.indexOf('@icon/') === 0;
+    assert.equal(request.bundle, imported ? 'resources' : 'KinghtFallIconBuff');
+    assert.equal(request.image, imported ? perk.Image.slice(6) : perk.Image);
     request.done(frame);
     assert.equal(icon.spriteFrame.texture, texture, 'loaded perk icon did not reach its Sprite');
   }

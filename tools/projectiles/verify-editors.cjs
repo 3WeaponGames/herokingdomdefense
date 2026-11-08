@@ -43,7 +43,7 @@ async function main(){
     for(const kind of ['relics','equipment','talents','perks']){
       const p=await browser.newPage({viewport:{width:1560,height:960}});p.on('pageerror',e=>errors.push(kind+': '+e.message));await p.goto('http://127.0.0.1:'+generic.address().port+'/'+kind);
       try{await p.locator('#detail h2').waitFor({timeout:30000});await p.waitForFunction(()=>window.panel._assets.images.length>0);}catch(error){fs.writeFileSync(path.join(out,kind+'-failure.json'),JSON.stringify({errors,body:await p.locator('body').innerText()},null,2));throw error;}
-      if(kind==='relics')assert.equal(await p.locator('.gt-record').count(),27);
+      if(kind==='relics')assert.equal(await p.locator('.gt-record').count(),JSON.parse(fs.readFileSync(path.join(root,files.A),'utf8')).TreasureCfg.length);
       const picker=p.getByRole('button',{name:'Choose icon…',exact:true}).first(),draftBefore=await p.evaluate(()=>JSON.stringify(window.panel._snapshot.changes));await picker.click();
       assert.equal(await p.locator('.gt-icon-choice').count(),0,'the first page contains folders, not a flat icon grid');
       await p.getByRole('button',{name:'2D Minimal Icon Pack folder',exact:true}).waitFor();assert(await p.getByRole('button',{name:'← Back',exact:true}).isDisabled());

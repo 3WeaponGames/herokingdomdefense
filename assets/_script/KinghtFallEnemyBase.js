@@ -1,5 +1,7 @@
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
+var RelicCombat = require("RelicCombat");
+var RelicRuntime = require("RelicRuntime");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
@@ -59,6 +61,8 @@ var def_KinghtFallEnemyBase = function (t) {
     this._poolCfgID = t;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     GameToolsOverrides.cancel(this);
+    RelicCombat.releaseControl(this);
+    RelicRuntime.clearControl(this);
     this.releaseHealingEffects();
     var n = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
@@ -512,13 +516,17 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.doAttackFinish = function () {
     this.doIdel();
   };
-  _ctor.prototype.onAttacked = function (t) {
+  _ctor.prototype.onAttacked = function (t, source, secondary) {
     var e;
     if (!this.isDead()) {
+      t = RelicCombat.enemyDamage(this, t, source, secondary);
       this.hp -= t;
       if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         this.state = r.Dead;
+        RelicCombat.releaseControl(this);
+        RelicRuntime.clearControl(this);
+        RelicCombat.enemyKilled(this, source, secondary);
         this.delAllBuff();
         this.playDeath(function () {
           $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
@@ -541,10 +549,13 @@ var def_KinghtFallEnemyBase = function (t) {
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.Kill, 1);
       }
       null === (e = this.hpctrl) || undefined === e || e.setHp(this.hp, this.hpMax);
+      return t;
     }
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    RelicCombat.releaseControl(this);
+    RelicRuntime.clearControl(this);
     this._deathAnimation = null;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.hpctrl) this.hpctrl.setHp(0, this.hpMax);

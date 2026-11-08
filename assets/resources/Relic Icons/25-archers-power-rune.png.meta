@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "7aff7d95-919e-43f5-b3fd-e6c05200dd22",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "25-archers-power-rune": {
+      "ver": "1.0.6",
+      "uuid": "51530099-12cc-4051-9d42-7500eca7b8ab",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "7aff7d95-919e-43f5-b3fd-e6c05200dd22",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

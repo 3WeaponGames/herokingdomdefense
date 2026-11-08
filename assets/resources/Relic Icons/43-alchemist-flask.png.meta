@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "6a491227-925a-4a18-9e9e-7ed736ddaaca",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "43-alchemist-flask": {
+      "ver": "1.0.6",
+      "uuid": "cabac997-61a2-415b-ab93-aa424e1d5e30",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6a491227-925a-4a18-9e9e-7ed736ddaaca",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -73,7 +73,12 @@ function tick(dt, fighting) {
     }
     // UIGame supplies dt * game speed; skeleton.timeScale already uses that
     // same speed. Multiplying again would advance hit markers twice as fast.
-    entry.remaining -= dt;
+    var effectDelta = dt, control = owner._relicControl;
+    if (entry.type === "enemy" && control && control.generation === owner.node._combatGeneration) {
+      if (control.freeze > 0) effectDelta = Math.max(0, dt - control.freeze);
+      else if (control.duration > 0 && control.slow > 0) effectDelta -= Math.min(dt, control.duration) * control.slow;
+    }
+    entry.remaining -= effectDelta;
     if (entry.remaining <= 1e-9) {
       pending.splice(pending.indexOf(entry), 1);
       entry.callback.call(owner);

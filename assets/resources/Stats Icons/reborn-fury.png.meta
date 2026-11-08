@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "4e99ac15-f6b7-5f3e-a673-9a880c900e28",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "reborn-fury": {
+      "ver": "1.0.6",
+      "uuid": "227de870-e186-5ead-a6aa-88a905ae2882",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "4e99ac15-f6b7-5f3e-a673-9a880c900e28",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

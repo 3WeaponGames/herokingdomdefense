@@ -2,7 +2,7 @@
 
 // The one lobby header, shared by Battle, Gear, Talents, Relics and Shop.
 // Keep the Battle lobby's spacing here so every page changes together.
-var SPACING = { top: 62, settingsArea: 128, currencyOffset: 10, right: 24, minimumSettingsSize: 64 };
+var SPACING = { top: 62, settingsArea: 128, currencyOffset: 10, right: 24, minimumSettingsSize: 72 };
 function disableWidget(node) {
   var widget = node && node.getComponent(cc.Widget);
   if (widget) widget.enabled = false;

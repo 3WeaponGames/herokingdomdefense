@@ -12,6 +12,132 @@
     }
   ],
   "entries": {
+    "data.goodscfg.2033.name": {"en":"Energy Drink","zh":"体力药水","context":"Banked consumable · use one to gain20Energy"},
+    "ui.energy.items.title": {"en":"Energy Items","zh":"体力道具","context":"Energy+popup · consumable inventory"},
+    "ui.energy.items.owned": {"en":"Owned: {0}","zh":"持有：{0}","context":"Energy+popup · stored item count"},
+    "ui.energy.items.use": {"en":"Use 1 (+{0} Energy)","zh":"使用1个（+{0}体力）","context":"Energy+popup · consume exactly one item"},
+    "shop.resources.energyItems": {"en":"×{0} · {1} Energy stored","zh":"×{0} · 储存{1}体力","context":"Resource cards · stored consumables, not an instant refill"},
+    "shop.contents.runeBonus": {"en":"Rune bonus now: {0}% per draw. A Rune gained here can enable it. Pool odds are for base draws.","zh":"当前符文加成：每次抽取有{0}%概率额外获得1份。此处获得符文可启用加成。列表概率为基础抽取概率。","context":"Chest contents · current Doubling Rune chance, may activate during ordered draws"},
+    "shop.payment.unavailable": {"en":"Unavailable","zh":"暂不可购买","context":"Paid checkout disabled until a store is configured"},
+    "shop.payment.pending": {"en":"Confirming…","zh":"确认中…","context":"Unfinished payment"},
+    "shop.payment.referencePrice": {"en":"Reference: {0}","zh":"参考价：{0}","context":"Reference USD catalog price, never a live checkout price"},
+    "shop.payment.unavailableReason": {"en":"Purchases are not available on this platform yet. You can browse all contents.","zh":"此平台暂不支持付费购买，仍可查看全部内容。","context":"Paid offer notice"},
+    "shop.payment.pendingReason": {"en":"A purchase is still being confirmed. Retry to check its delivery.","zh":"有一笔购买仍在确认中，请重试以检查奖励发放。","context":"Pending store purchase recovery"},
+    "shop.payment.retry": {"en":"Retry purchases","zh":"重试购买","context":"Reload store products and recover unfinished purchases"},
+    "shop.payment.firstDouble": {"en":"FIRST PURCHASE ×2","zh":"首次购买双倍","context":"One first-purchase bonus per Gem pack"},
+    "shop.bundle.purchaseCount": {"en":"{0}/{1} bought","zh":"已购 {0}/{1}","context":"Lifetime purchase count per bundle"},
+    "shop.chests.openOwned": {"en":"Open ({0} owned)","zh":"开启（持有{0}）","context":"Open one banked chest without paying Gems"},
+    "shop.contents.drawSummary": {"en":"{0} relic draws total: {2} guaranteed, {1} remaining random.","zh":"共{0}次遗物抽取：保底{2}，其余{1}次随机抽取。","context":"Guaranteed draws are included in the total"},
+    "shop.contents.noFloor": {"en":"None","zh":"无","context":"No guaranteed rarity slots"},
+    "shop.contents.randomChance": {"en":"{0} · {1}% per random draw","zh":"{0} · 每次随机抽取概率{1}%","context":"Per-item chance among remaining random draws"},
+    "shop.contents.chanceAndFloor": {"en":"{0} · Random: {1}% · Guaranteed {2} draw: {3}%","zh":"{0} · 随机抽取：{1}% · 保底{2}抽取：{3}%","context":"Separate per-item chances in random and guaranteed-rarity draws"},
+    "shop.contents.floorChance": {"en":"{0} · {1} guarantee: {2}% per draw","zh":"{0} · 每次保底{1}抽取概率{2}%","context":"Per-item chance within guaranteed rarity"},
+    "shop.rarity.1": {"en":"Legendary","zh":"传说","context":"Orange relic rarity"},
+    "shop.rarity.2": {"en":"Epic","zh":"史诗","context":"Purple relic rarity"},
+    "shop.rarity.3": {"en":"Rare","zh":"稀有","context":"Blue relic rarity"},
+    "shop.rarity.4": {"en":"Common","zh":"普通","context":"Green relic rarity"},
+    "shop.confirm.money": {"en":"Buy {0} for {1}?","zh":"以{1}购买{0}？","context":"Paid offer confirmation with actual localized store price"},
+    "shop.bundle.convertConfirm": {"en":"Fully collected relics in this bundle will convert to {0} Gold.","zh":"礼包中已收集满的遗物将转化为{0}金币。","context":"Fixed relic conversion warning before paid checkout"},
+    "shop.error.paymentUnavailable": {"en":"Purchases are unavailable right now.","zh":"暂时无法进行付费购买。","context":"No configured store or unavailable product"},
+    "shop.error.paymentLoading": {"en":"Store prices are loading. Please retry shortly.","zh":"正在加载商店价格，请稍后重试。","context":"Store metadata loading"},
+    "shop.error.paymentPending": {"en":"A purchase is still being confirmed. Retry purchases to check again.","zh":"购买仍在确认中，请点击重试购买以再次检查。","context":"Unfinished purchase"},
+    "shop.error.pending": {"en":"A purchase is still being confirmed. Retry purchases to check again.","zh":"购买仍在确认中，请点击重试购买以再次检查。","context":"Runtime pending checkout"},
+    "shop.error.paymentCancelled": {"en":"Purchase cancelled.","zh":"已取消购买。","context":"Store checkout cancelled"},
+    "shop.error.paymentFailed": {"en":"Purchase could not be completed. Please retry.","zh":"未能完成购买，请重试。","context":"Store checkout failed"},
+    "shop.error.paymentQuoteChanged": {"en":"Your first-purchase bonus changed. Review the updated amount before buying.","zh":"首次购买奖励已更新，请确认新的数量后再购买。","context":"Another device changed first-purchase eligibility before checkout"},
+    "shop.error.verificationPending": {"en":"Purchase confirmation is pending. Retry purchases to check delivery.","zh":"购买尚待确认，请点击重试购买以检查奖励发放。","context":"Receipt verification pending"},
+    "shop.error.unverified": {"en":"The purchase has not been confirmed. Please retry purchases.","zh":"尚未确认此购买，请点击重试购买。","context":"Unconfirmed receipt"},
+    "shop.error.verification": {"en":"The purchase has not been confirmed. Please retry purchases.","zh":"尚未确认此购买，请点击重试购买。","context":"Unconfirmed paid fulfillment"},
+    "shop.error.purchaseLimit": {"en":"Both purchases of this bundle have been used.","zh":"此礼包的两次购买次数已用完。","context":"Permanent two-purchase bundle cap"},
+    "shop.error.accountMismatch": {"en":"Use the account that owns this saved progress to make purchases.","zh":"请使用此存档所属的账号进行购买。","context":"Store account differs from saved paid progress"},
+    "shop.error.notOwned": {"en":"You do not own this chest.","zh":"未持有此宝箱。","context":"Banked chest inventory empty"},
+    "shop.offer.archer-starter": {"en":"Archer Starter","zh":"弓手入门礼包","context":"Paid bundle"},
+    "shop.offer.guard-kit": {"en":"Guard Kit","zh":"卫队装备礼包","context":"Paid bundle"},
+    "shop.offer.royal-archer": {"en":"Royal Archer","zh":"皇家弓手礼包","context":"Paid bundle"},
+    "shop.offer.kings-war-chest": {"en":"King's War Chest","zh":"国王征战礼包","context":"Paid bundle"},
+    "shop.offer.crown-treasury": {"en":"Crown Treasury","zh":"王冠宝库礼包","context":"Paid bundle"},
+    "shop.offer.iron-chest": {"en":"Iron Chest","zh":"铁宝箱","context":"Chest"},
+    "shop.offer.knight-chest": {"en":"Knight Chest","zh":"骑士宝箱","context":"Chest"},
+    "shop.offer.epic-chest": {"en":"Epic Chest","zh":"史诗宝箱","context":"Chest"},
+    "shop.offer.legendary-chest": {"en":"Legendary Chest","zh":"传说宝箱","context":"Chest"},
+    "shop.offer.crown-chest": {"en":"Crown Chest","zh":"王冠宝箱","context":"Chest"},
+    "shop.offer.gold-vault": {"en":"Gold Vault","zh":"金币仓库","context":"Resource pack"},
+    "shop.offer.gold-treasury": {"en":"Gold Treasury","zh":"金币宝库","context":"Resource pack"},
+    "shop.offer.energy-case": {"en":"Energy Case","zh":"体力补给箱","context":"Resource pack"},
+    "shop.offer.energy-vault": {"en":"Energy Vault","zh":"体力储备箱","context":"Resource pack"},
+    "shop.offer.gems-100": {"en":"100 Gems","zh":"100宝石","context":"Paid Gem pack, normal quantity before first bonus"},
+    "shop.offer.gems-550": {"en":"550 Gems","zh":"550宝石","context":"Paid Gem pack, normal quantity before first bonus"},
+    "shop.offer.gems-1200": {"en":"1,200 Gems","zh":"1,200宝石","context":"Paid Gem pack, normal quantity before first bonus"},
+    "shop.offer.gems-2600": {"en":"2,600 Gems","zh":"2,600宝石","context":"Paid Gem pack, normal quantity before first bonus"},
+    "shop.offer.gems-7000": {"en":"7,000 Gems","zh":"7,000宝石","context":"Paid Gem pack, normal quantity before first bonus"},
+    "shop.offer.gems-15000": {"en":"15,000 Gems","zh":"15,000宝石","context":"Paid Gem pack, normal quantity before first bonus"},
+    "ui.energy.items.retry": {"en":"Could not use item. Try again.","zh":"暂时无法使用，请重试。","context":"Energy+popup · save or stale-token failure"},
+    "shop.title": {"en":"SHOP","zh":"商店","context":"Shop storefront · shop.title"},
+    "shop.tab.bundles": {"en":"Bundles","zh":"礼包","context":"Shop storefront · shop.tab.bundles"},
+    "shop.tab.chests": {"en":"Chests","zh":"宝箱","context":"Shop storefront · shop.tab.chests"},
+    "shop.tab.relics": {"en":"Relics","zh":"遗物","context":"Shop storefront · shop.tab.relics"},
+    "shop.tab.resources": {"en":"Resources","zh":"资源","context":"Shop storefront · shop.tab.resources"},
+    "shop.daily.title": {"en":"Daily Deal","zh":"每日福利","context":"Shop storefront · shop.daily.title"},
+    "shop.daily.reward": {"en":"500 Gold","zh":"500金币","context":"Shop storefront · shop.daily.reward"},
+    "shop.daily.claim": {"en":"CLAIM FREE","zh":"免费领取","context":"Shop storefront · shop.daily.claim"},
+    "shop.daily.claimed": {"en":"CLAIMED","zh":"已领取","context":"Shop storefront · shop.daily.claimed"},
+    "shop.daily.once": {"en":"Free once per day","zh":"每日免费领取一次","context":"Shop storefront · shop.daily.once"},
+    "shop.daily.resets": {"en":"Resets in {0}","zh":"距重置 {0}","context":"Shop storefront · shop.daily.resets"},
+    "shop.buy": {"en":"Buy","zh":"购买","context":"Shop storefront · shop.buy"},
+    "shop.soldOut": {"en":"SOLD OUT","zh":"已售罄","context":"Shop storefront · shop.soldOut"},
+    "shop.empty": {"en":"No offers available.","zh":"暂无商品。","context":"Shop storefront · shop.empty"},
+    "shop.unavailable": {"en":"Shop is unavailable. Please try again.","zh":"商店暂时无法使用，请重试。","context":"Shop storefront · shop.unavailable"},
+    "shop.success": {"en":"Rewards received!","zh":"已获得奖励！","context":"Shop storefront · shop.success"},
+    "shop.close": {"en":"Close","zh":"关闭","context":"Shop storefront · shop.close"},
+    "shop.cancel": {"en":"Cancel","zh":"取消","context":"Shop storefront · shop.cancel"},
+    "shop.confirm": {"en":"Confirm","zh":"确认","context":"Shop storefront · shop.confirm"},
+    "shop.confirm.title": {"en":"Confirm Purchase","zh":"确认购买","context":"Shop storefront · shop.confirm.title"},
+    "shop.confirm.gems": {"en":"Buy {0} for {1} Gems?","zh":"花费{1}宝石购买{0}？","context":"Shop storefront · shop.confirm.gems"},
+    "shop.confirm.gold": {"en":"Buy {0} for {1} Gold?","zh":"花费{1}金币购买{0}？","context":"Shop storefront · shop.confirm.gold"},
+    "shop.confirm.refresh": {"en":"Refresh all 12 relic offers for {0} Gems?","zh":"花费{0}宝石刷新全部12个遗物商品？","context":"Shop storefront · shop.confirm.refresh"},
+    "shop.contents.title": {"en":"Contents","zh":"完整内容","context":"Shop storefront · shop.contents.title"},
+    "shop.contents.tap": {"en":"Tap image for all contents","zh":"点击图片查看全部内容","context":"Shop storefront · shop.contents.tap"},
+    "shop.contents.odds": {"en":"All rewards & odds","zh":"全部奖励与概率","context":"Shop storefront · shop.contents.odds"},
+    "shop.contents.all": {"en":"All included rewards","zh":"包含以下全部奖励","context":"Shop storefront · shop.contents.all"},
+    "shop.contents.possible": {"en":"Fixed rewards and random relics. Base odds shown per draw.","zh":"固定奖励和随机遗物，以下为每次基础抽取的概率。","context":"Shop storefront · shop.contents.possible"},
+    "shop.contents.random": {"en":"{0} · Random","zh":"{0} · 随机","context":"Shop storefront · shop.contents.random"},
+    "shop.contents.chance": {"en":"{0} · {1}% per draw","zh":"{0} · 每次概率{1}%","context":"Shop storefront · shop.contents.chance"},
+    "shop.chests.possible": {"en":"Top possible rewards","zh":"可能获得的最高奖励","context":"Shop storefront · shop.chests.possible"},
+    "shop.relics.stock": {"en":"Relic Stock","zh":"遗物商品","context":"Shop storefront · shop.relics.stock"},
+    "shop.relics.uses": {"en":"Refreshes {0}/{1}","zh":"刷新次数 {0}/{1}","context":"Shop storefront · shop.relics.uses"},
+    "shop.relics.resets": {"en":"Free restock in {0}","zh":"距每日补货 {0}","context":"Shop storefront · shop.relics.resets"},
+    "shop.relics.refresh": {"en":"Refresh","zh":"刷新","context":"Shop storefront · shop.relics.refresh"},
+    "shop.relics.refreshFree": {"en":"Free Refresh","zh":"免费刷新","context":"Shop storefront · shop.relics.refreshFree"},
+    "shop.relics.refreshPaid": {"en":"{0} Gems","zh":"{0}宝石","context":"Shop storefront · shop.relics.refreshPaid"},
+    "shop.relics.limit": {"en":"10/10 Used","zh":"已用完10次","context":"Shop storefront · shop.relics.limit"},
+    "shop.relics.converts": {"en":"Maxed → {0} Gold","zh":"已收集满，将转为{0}金币","context":"Shop storefront · shop.relics.converts"},
+    "shop.relics.convertConfirm": {"en":"This relic is fully collected. Its purchase converts to {0} Gold.","zh":"此遗物已收集满，购买后将转化为{0}金币。","context":"Shop storefront · shop.relics.convertConfirm"},
+    "shop.relics.refreshed": {"en":"Relic stock refreshed.","zh":"遗物商品已刷新。","context":"Shop storefront · shop.relics.refreshed"},
+    "shop.error.busy": {"en":"The shop is updating. Please try again.","zh":"商店正在更新，请重试。","context":"Shop storefront · shop.error.busy"},
+    "shop.error.stale": {"en":"The shop changed. Please try again.","zh":"商品信息已更新，请重试。","context":"Shop storefront · shop.error.stale"},
+    "shop.error.save": {"en":"Your change is still saving. Please try again shortly.","zh":"正在保存，请稍后重试。","context":"Shop storefront · shop.error.save"},
+    "shop.error.funds": {"en":"Not enough currency.","zh":"货币不足。","context":"Shop storefront · shop.error.funds"},
+    "shop.error.claimed": {"en":"Today's free deal has already been claimed.","zh":"今日免费福利已领取。","context":"Shop storefront · shop.error.claimed"},
+    "shop.error.sold": {"en":"This slot is sold out until the next refresh.","zh":"此商品已售罄，刷新后可再次购买。","context":"Shop storefront · shop.error.sold"},
+    "shop.error.offer": {"en":"This offer is unavailable.","zh":"此商品暂时无法购买。","context":"Shop storefront · shop.error.offer"},
+    "shop.error.limit": {"en":"All 10 manual refreshes have been used today.","zh":"今日10次手动刷新已用完。","context":"Shop storefront · shop.error.limit"},
+    "shop.error.clock": {"en":"Relic refresh is paused until the device date reaches the saved shop day.","zh":"设备日期早于已保存的商店日期，暂时无法刷新。","context":"Shop storefront · shop.error.clock"},
+    "shop.error.state": {"en":"Shop progress could not be read safely. Your saved progress has been kept.","zh":"无法安全读取商店数据，已保留原有存档。","context":"Shop storefront · shop.error.state"},
+    "shop.error.catalog": {"en":"The shop is unavailable. Please reopen it after loading finishes.","zh":"商店暂时无法使用，请等待加载完成后重新打开。","context":"Shop storefront · shop.error.catalog"},
+    "shop.error.unavailable": {"en":"Shop is unavailable. Please try again.","zh":"商店暂时无法使用，请重试。","context":"Shop storefront · shop.error.unavailable"},
+    "shop.offer.daily-supplies": {"en":"Daily Deal","zh":"每日福利","context":"Shop storefront · shop.offer.daily-supplies"},
+    "shop.offer.archers-supplies": {"en":"Archer's Supplies","zh":"弓手补给","context":"Shop storefront · shop.offer.archers-supplies"},
+    "shop.offer.royal-guard": {"en":"Royal Guard Bundle","zh":"皇家卫队礼包","context":"Shop storefront · shop.offer.royal-guard"},
+    "shop.offer.kings-treasury": {"en":"King's Treasury","zh":"国王宝库","context":"Shop storefront · shop.offer.kings-treasury"},
+    "shop.offer.wooden-chest": {"en":"Wooden Chest","zh":"木制宝箱","context":"Shop storefront · shop.offer.wooden-chest"},
+    "shop.offer.silver-chest": {"en":"Silver Chest","zh":"白银宝箱","context":"Shop storefront · shop.offer.silver-chest"},
+    "shop.offer.royal-chest": {"en":"Royal Chest","zh":"皇家宝箱","context":"Shop storefront · shop.offer.royal-chest"},
+    "shop.offer.gold-pouch": {"en":"Gold Pouch","zh":"金币袋","context":"Shop storefront · shop.offer.gold-pouch"},
+    "shop.offer.gold-cart": {"en":"Gold Cart","zh":"金币车","context":"Shop storefront · shop.offer.gold-cart"},
+    "shop.offer.gem-pouch": {"en":"Gem Pouch","zh":"宝石袋","context":"Shop storefront · shop.offer.gem-pouch"},
+    "shop.offer.gem-chest": {"en":"Gem Chest","zh":"宝石箱","context":"Shop storefront · shop.offer.gem-chest"},
+    "shop.offer.energy-flask": {"en":"Energy Flask","zh":"体力补给","context":"Shop storefront · shop.offer.energy-flask"},
+    "shop.offer.energy-crate": {"en":"Energy Crate","zh":"大份体力补给","context":"Shop storefront · shop.offer.energy-crate"},
     "start.retry": {
       "en": "Tap to Retry",
       "zh": "点击重试",
@@ -3063,7 +3189,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:labTime"
     },
     "ui.kinghtfallhomepersonctrl.new_label.8": {
-      "en": "Power: ",
+      "en": "CP:",
       "zh": "战力：",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:New Label"
     },
@@ -4868,7 +4994,7 @@
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomeBattleCtrl.prefab:KinghtFallHomeBattleCtrl/btnSubEnter/subEnterBG/btnSubPlay1/Layout/labTime (localized control layout)"
     },
     "ui.layout.kinghtfallhomepersonctrl.8": {
-      "en": "Power: ",
+      "en": "CP:",
       "zh": "战力：",
       "context": "assets\\KinghtFallPrefabs\\home\\homectrl\\KinghtFallHomePersonCtrl.prefab:KinghtFallHomePersonCtrl/ndPersonInfo/ndPower/New Label (localized control layout)"
     },
@@ -5903,8 +6029,8 @@
       "context": "Energy refill popup · at or above natural cap"
     },
     "ui.energy.recovery_overflow": {
-      "en": "Gem and ad rewards can exceed this cap.",
-      "zh": "购买和广告奖励可超过此上限。",
+      "en": "Items, Gem purchases and ad rewards can exceed this cap.",
+      "zh": "道具、购买和广告奖励可超过此上限。",
       "context": "Energy refill popup · paid and ad overflow explanation"
     },
     "gear.stat.hp": {
@@ -10154,6 +10280,236 @@
       "en": "Final upgrade: 8 mounted troops for rapid repositioning.",
       "zh": "最终升级：提供8名可快速转移的骑兵。",
       "context": "Buildings · level capabilities and upgrade notes"
+    },
+    "data.goodscfg.2034.name": {
+      "en": "Phoenix Feather",
+      "zh": "凤凰之羽",
+      "context": "Relic 120028 name; GoodsCfg.2034.name"
+    },
+    "data.treasurecfg.28.describe": {
+      "en": "Once per battle, when a surviving castle falls below 25% HP, restore {0} of its maximum HP.",
+      "zh": "每场战斗一次，城堡存活且生命值首次低于25%时，恢复其最大生命值的{0}。",
+      "context": "Relic 120028 effect; TreasureCfg.27.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2035.name": {
+      "en": "Frost Crystal",
+      "zh": "寒霜水晶",
+      "context": "Relic 120029 name; GoodsCfg.2035.name"
+    },
+    "data.treasurecfg.29.describe": {
+      "en": "Friendly units deal {0} more damage to slowed enemies.",
+      "zh": "友方单位对减速敌人造成的伤害+{0}。",
+      "context": "Relic 120029 effect; TreasureCfg.28.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2036.name": {
+      "en": "Thunder Bottle",
+      "zh": "雷霆瓶",
+      "context": "Relic 120030 name; GoodsCfg.2036.name"
+    },
+    "data.treasurecfg.30.describe": {
+      "en": "Every 8th hero attack chains to up to 2 nearby enemies for {0} of its damage. Chain hits cannot trigger other relic effects.",
+      "zh": "主角每第8次攻击向附近最多2名敌人传导闪电，造成原伤害的{0}。闪电不会触发其他遗物效果。",
+      "context": "Relic 120030 effect; TreasureCfg.29.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2037.name": {
+      "en": "Lucky Clover",
+      "zh": "幸运四叶草",
+      "context": "Relic 120031 name; GoodsCfg.2037.name"
+    },
+    "data.treasurecfg.31.describe": {
+      "en": "Hero critical chance +{0}.",
+      "zh": "主角暴击率+{0}。",
+      "context": "Relic 120031 effect; TreasureCfg.30.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2038.name": {
+      "en": "Royal Crown",
+      "zh": "王者之冠",
+      "context": "Relic 120032 name; GoodsCfg.2038.name"
+    },
+    "data.treasurecfg.32.describe": {
+      "en": "Castle maximum HP +{0}.",
+      "zh": "城堡最大生命值+{0}。",
+      "context": "Relic 120032 effect; TreasureCfg.31.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2039.name": {
+      "en": "Moonstone Ring",
+      "zh": "月石戒指",
+      "context": "Relic 120033 name; GoodsCfg.2039.name"
+    },
+    "data.treasurecfg.33.describe": {
+      "en": "Ranged damage received by the hero -{0}.",
+      "zh": "主角受到的远程伤害-{0}。",
+      "context": "Relic 120033 effect; TreasureCfg.32.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2040.name": {
+      "en": "Sun Lantern",
+      "zh": "日耀提灯",
+      "context": "Relic 120034 name; GoodsCfg.2040.name"
+    },
+    "data.treasurecfg.34.describe": {
+      "en": "Hero damage against bosses +{0}.",
+      "zh": "主角对首领造成的伤害+{0}。",
+      "context": "Relic 120034 effect; TreasureCfg.33.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2041.name": {
+      "en": "Dragon Tooth",
+      "zh": "巨龙之牙",
+      "context": "Relic 120035 name; GoodsCfg.2041.name"
+    },
+    "data.treasurecfg.35.describe": {
+      "en": "Hero critical damage +{0}.",
+      "zh": "主角暴击伤害+{0}。",
+      "context": "Relic 120035 effect; TreasureCfg.34.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2042.name": {
+      "en": "Mermaid Pearl",
+      "zh": "人鱼珍珠",
+      "context": "Relic 120036 name; GoodsCfg.2042.name"
+    },
+    "data.treasurecfg.36.describe": {
+      "en": "Hero maximum HP +{0}.",
+      "zh": "主角最大生命值+{0}。",
+      "context": "Relic 120036 effect; TreasureCfg.35.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2043.name": {
+      "en": "Gravity Orb",
+      "zh": "引力宝珠",
+      "context": "Relic 120037 name; GoodsCfg.2043.name"
+    },
+    "data.treasurecfg.37.describe": {
+      "en": "Tower impacts create a gravity pulse that stops nearby normal enemies for {0}s (8s cooldown per tower). Bosses are slowed by 15% instead.",
+      "zh": "防御塔命中时产生引力脉冲，使附近普通敌人停止行动{0}秒（每座塔冷却8秒）。首领改为减速15%。",
+      "context": "Relic 120037 effect; TreasureCfg.36.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2044.name": {
+      "en": "Spirit Bell",
+      "zh": "灵魂之铃",
+      "context": "Relic 120038 name; GoodsCfg.2044.name"
+    },
+    "data.treasurecfg.38.describe": {
+      "en": "Soldier replacement time -{0}.",
+      "zh": "士兵补充时间-{0}。",
+      "context": "Relic 120038 effect; TreasureCfg.37.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2045.name": {
+      "en": "Mystic Compass",
+      "zh": "神秘罗盘",
+      "context": "Relic 120039 name; GoodsCfg.2045.name"
+    },
+    "data.treasurecfg.39.describe": {
+      "en": "Hero movement speed +{0}.",
+      "zh": "主角移动速度+{0}。",
+      "context": "Relic 120039 effect; TreasureCfg.38.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2046.name": {
+      "en": "Enchanted Mirror",
+      "zh": "魔法明镜",
+      "context": "Relic 120040 name; GoodsCfg.2046.name"
+    },
+    "data.treasurecfg.40.describe": {
+      "en": "Reflect {0} of ranged damage received by the hero back to its attacker. Reflected damage cannot trigger other relic effects.",
+      "zh": "将主角受到的远程伤害的{0}反弹给攻击者。反弹伤害不会触发其他遗物效果。",
+      "context": "Relic 120040 effect; TreasureCfg.39.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2047.name": {
+      "en": "Angel Wing",
+      "zh": "天使之翼",
+      "context": "Relic 120041 name; GoodsCfg.2047.name"
+    },
+    "data.treasurecfg.41.describe": {
+      "en": "Damage received by the hero while moving -{0}.",
+      "zh": "主角移动时受到的伤害-{0}。",
+      "context": "Relic 120041 effect; TreasureCfg.40.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2048.name": {
+      "en": "Vampire Fang",
+      "zh": "吸血鬼獠牙",
+      "context": "Relic 120042 name; GoodsCfg.2048.name"
+    },
+    "data.treasurecfg.42.describe": {
+      "en": "Hero kills restore {0} of maximum HP, up to 10% of maximum HP per combat wave.",
+      "zh": "主角击杀敌人时恢复最大生命值的{0}，每个战斗波次最多恢复最大生命值的10%。",
+      "context": "Relic 120042 effect; TreasureCfg.41.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2049.name": {
+      "en": "Alchemist Flask",
+      "zh": "炼金药剂",
+      "context": "Relic 120043 name; GoodsCfg.2049.name"
+    },
+    "data.treasurecfg.43.describe": {
+      "en": "After clearing a combat wave, restore {0} of the hero's maximum HP.",
+      "zh": "清除一个战斗波次后，恢复主角最大生命值的{0}。",
+      "context": "Relic 120043 effect; TreasureCfg.42.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2050.name": {
+      "en": "Pirate Spyglass",
+      "zh": "海盗望远镜",
+      "context": "Relic 120044 name; GoodsCfg.2050.name"
+    },
+    "data.treasurecfg.44.describe": {
+      "en": "Hero ranged attack range +{0}.",
+      "zh": "主角远程攻击范围+{0}。",
+      "context": "Relic 120044 effect; TreasureCfg.43.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2051.name": {
+      "en": "Wolf Totem",
+      "zh": "狼魂图腾",
+      "context": "Relic 120045 name; GoodsCfg.2051.name"
+    },
+    "data.treasurecfg.45.describe": {
+      "en": "Soldier damage against enemies below 25% HP +{0}.",
+      "zh": "士兵对生命值低于25%的敌人造成的伤害+{0}。",
+      "context": "Relic 120045 effect; TreasureCfg.44.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2052.name": {
+      "en": "Golem Heart",
+      "zh": "魔像之心",
+      "context": "Relic 120046 name; GoodsCfg.2052.name"
+    },
+    "data.treasurecfg.46.describe": {
+      "en": "Castle damage received -{0} while below 35% HP.",
+      "zh": "城堡生命值低于35%时，受到的伤害-{0}。",
+      "context": "Relic 120046 effect; TreasureCfg.45.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2053.name": {
+      "en": "Fairy Acorn",
+      "zh": "精灵橡果",
+      "context": "Relic 120047 name; GoodsCfg.2053.name"
+    },
+    "data.treasurecfg.47.describe": {
+      "en": "House and mill production +{0}.",
+      "zh": "民居和磨坊的产量+{0}。",
+      "context": "Relic 120047 effect; TreasureCfg.46.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2054.name": {
+      "en": "Crystal Key",
+      "zh": "水晶钥匙",
+      "context": "Relic 120048 name; GoodsCfg.2054.name"
+    },
+    "data.treasurecfg.48.describe": {
+      "en": "Gain {0} silver after every third cleared combat wave.",
+      "zh": "每清除3个战斗波次，获得{0}银币。",
+      "context": "Relic 120048 effect; TreasureCfg.47.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2055.name": {
+      "en": "Ancient Chalice",
+      "zh": "远古圣杯",
+      "context": "Relic 120049 name; GoodsCfg.2055.name"
+    },
+    "data.treasurecfg.49.describe": {
+      "en": "After clearing a combat wave, surviving soldiers recover {0} of maximum HP.",
+      "zh": "清除一个战斗波次后，存活士兵恢复最大生命值的{0}。",
+      "context": "Relic 120049 effect; TreasureCfg.48.Describe; {0} uses the current level magnitude"
+    },
+    "data.goodscfg.2056.name": {
+      "en": "Celestial Hourglass",
+      "zh": "星辰沙漏",
+      "context": "Relic 120050 name; GoodsCfg.2056.name"
+    },
+    "data.treasurecfg.50.describe": {
+      "en": "Once per battle, when the castle first falls below 50% HP, freeze normal enemies for {0}s. Bosses are slowed by 50% instead.",
+      "zh": "每场战斗一次，城堡生命值首次低于50%时，冻结普通敌人{0}秒。首领改为减速50%。",
+      "context": "Relic 120050 effect; TreasureCfg.49.Describe; {0} uses the current level magnitude"
     }
   },
   "images": {
@@ -16875,8 +17231,8 @@
     "ui.layout.kinghtfallhomepersonctrl.8": {
       "en": {
         "width": 213,
-        "wrap": true,
-        "overflow": "RESIZE_HEIGHT",
+        "wrap": false,
+        "overflow": "NONE",
         "height": 68.47999999999999,
         "fontSize": 67,
         "lineHeight": 78
@@ -16885,8 +17241,8 @@
         "fontSize": 67,
         "lineHeight": 78,
         "width": 213,
-        "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "overflow": "NONE",
+        "wrap": false
       }
     },
     "ui.layout.kinghtfallhomepersonctrl.13": {

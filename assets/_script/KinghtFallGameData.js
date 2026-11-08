@@ -13,7 +13,7 @@ var l = function () {
   this.buffList = [];
   this.businessList = {};
 };
-var checkpointFields = ["levelNum", "roundNum", "coin", "buffList", "buildingLevel", "businessList", "taskList"];
+var checkpointFields = ["levelNum", "roundNum", "coin", "buffList", "buildingLevel", "businessList", "taskList", "relicState"];
 function clone(value) { return value === undefined ? undefined : JSON.parse(JSON.stringify(value)); }
 function validCheckpoint(value) {
   return value && Number.isInteger(value.levelNum) && value.levelNum > 0 && Number.isInteger(value.roundNum) && value.roundNum > 0 &&
@@ -163,7 +163,7 @@ var exp_KinghtFallGameData = function (t) {
     if (Object.prototype.hasOwnProperty.call(this.data, "stageCheckpoints") || Object.keys(saves).length) data.stageCheckpoints = saves;
     if (this.data.levelNum === stage) {
       Object.assign(data, new l());
-      ["roundNum", "coin", "taskList"].forEach(function (key) { delete data[key]; });
+      ["roundNum", "coin", "taskList", "relicState"].forEach(function (key) { delete data[key]; });
     }
     delete data.pendingSettlement;
     return data;

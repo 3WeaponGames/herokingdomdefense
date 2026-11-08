@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "8db30419-6a4e-4585-af6f-87265fae12e5",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "23-house-of-plenty": {
+      "ver": "1.0.6",
+      "uuid": "2cba8d11-e5cb-4923-a4ba-1631e518a5b7",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8db30419-6a4e-4585-af6f-87265fae12e5",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

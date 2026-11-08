@@ -160,6 +160,8 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     for (e = 0; e < this.ndInfo.length; e++) {
       var i;
       (i = this.ndInfo[e]).node.zIndex = e;
+      // Keep missing-relic copy centered; owned relics retain their level caption.
+      i.node.getChildByName("labNum").y = i.info ? this.ndItem.getChildByName("labNum").y : 0;
       if (i.info) {
         i.node.getChildByName("labNum").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), i.info.level);
         i.node.getChildByName("ndMask").active = false;

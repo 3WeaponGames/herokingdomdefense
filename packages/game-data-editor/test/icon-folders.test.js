@@ -37,6 +37,8 @@ test('all 80 Stats Icons appear in their own final root collection after built-i
   assert.deepEqual(collection.assets.map(record=>record.asset.reference).sort(),stats.map(asset=>asset.reference).sort());
   assert.equal(library.search('stats icons stat-79')[0].asset.reference,'@icon/Stats Icons/stat-79');
   assert.equal(JSON.stringify(icons),before,'foldering and searching must not change draft assets or references');
+  const withRelics=Picker.createLibrary(icons.concat(image('Relic','assets/resources/Relic Icons/relic.png'))).root;
+  assert.deepEqual(withRelics.children.slice(-2).map(folder=>folder.name),['Stats Icons','Relic Icons'],'both new collections stay below the original and custom packs');
 });
 
 test('Stats Icons preserves exact spaced resource paths and optional subfolders',()=>{

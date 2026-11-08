@@ -4,6 +4,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const test = require('node:test');
 const { harness, config, clone } = require('./persistence-harness.cjs');
+const RelicRuntime = require('../../assets/_script/RelicRuntime');
 const root = path.resolve(__dirname, '../..');
 const singleton = object => ({ getInstance: () => object });
 
@@ -25,7 +26,7 @@ function context(h) {
   return {
     console, Date, Math, P: 'gameSIDE_BOARD_REWARD', sp: { Skeleton() {} },
     cc: { Node: { EventType: { TOUCH_END: 'touch' } }, Sprite() {}, Label() {}, v2: () => ({ x: 0, y: 0 }), tween: () => chain },
-    require: () => ({ LanguageMgr: singleton({ t: (_key, values) => values.join('') }) }),
+    require: name => name === 'RelicRuntime' ? RelicRuntime : ({ LanguageMgr: singleton({ t: (_key, values) => values.join('') }) }),
     $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(h.player) },
     $z1KinghtFallEnum: h.load('KinghtFallEnum'), $z1KinghtFallMissionData: h.load('KinghtFallMissionData'),
     $z1KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {}, KinghtFallBundelName: {} },
@@ -63,6 +64,9 @@ const operations = {
     const ctx = context(h), screen = ui({ T: String, labTitle1: {}, node: node(), ndLeft: node(), ndRight: node() });
     screen.onBtnBuy = method('KinghtFallUIAddStrength', 'onBtnBuy', ctx);
     screen.initEnergyInfo = method('KinghtFallUIAddStrength', 'initEnergyInfo', ctx);
+    // This fixture isolates the legacy Gem journal; the real inventory row is
+    // exercised separately by energy-items-ui.test.cjs without a game startup.
+    screen.initEnergyItems = function () {};
     method('KinghtFallUIAddStrength', 'start', ctx).call(screen);
     screen.ndLeft.getChildByName('ndBtn').click();
     return screen;
@@ -78,7 +82,7 @@ function assertResult(kind, h) {
   const u = h.player.udata, m = h.player.missionData;
   if (kind === 'equipment') { assert.equal(u.getGoldNum(), 18900); assert.equal(u.getPersonLevel(1), 3); assert.equal(m.getTaskNum('EquipUp'), 1); }
   if (kind === 'talent') { assert.equal(u.getGoldNum(), 17500); assert.equal(u.getTalentLevel(1).isLock, true); assert.equal(m.getTaskNum('TalentUp'), 1); }
-  if (kind === 'relic') { assert.equal(u.getGoldNum(), 19000); assert.equal(u.getTreasureLevel(120001).level, 2); assert.equal(u.getTreasureLevel(120001).frame, 3); assert.equal(m.getTaskNum('TreasureUp'), 1); }
+  if (kind === 'relic') { assert.equal(u.getGoldNum(), 19000); assert.equal(u.getTreasureLevel(120001).level, 2); assert.equal(u.getTreasureLevel(120001).frame, 5 - config.TreasureCfg[0].levelInfo[0].PieceCost); assert.equal(m.getTaskNum('TreasureUp'), 1); }
   if (kind === 'energy') {
     const e = h.load('KinghtFallEnum').KinghtFallEnumParameterCfg;
     assert.equal(u.getDiamondNum(), 2000 - Number(config.ParameterCfg[e.StaminaBuy].Value));
@@ -109,8 +113,9 @@ for (const file of ['KinghtFallHomeTreasureCtrl', 'KinghtFallUITreasureReward'])
     function fresh() { const h = prepare(); h.player.udata.data.treasureInfo = []; h.player.udata.saveData(); h.state.writes = 0; h.state.selected = 120001; return h; }
     function check(h) {
       assert.equal(h.player.udata.getDiamondNum(), 2000 - (count === 10 ? 900 : 100));
-      assert.equal(h.player.udata.getGoldNum(), 20000 + (count === 10 ? 10000 : 0));
-      assert.equal(h.player.udata.getTreasureLevel(120001).frame, count === 10 ? 5 : 0);
+      const relic = config.TreasureCfg[0], capacity = relic.levelInfo.slice(0, -1).reduce((sum, level) => sum + level.PieceCost, 0);
+      assert.equal(h.player.udata.getGoldNum(), 20000 + Math.max(0, count - 1 - capacity) * relic.Conversion[1]);
+      assert.equal(h.player.udata.getTreasureLevel(120001).frame, Math.min(count - 1, capacity));
       assert.equal(h.player.udata.getShopInfo(80001).time, 0);
       assert.equal(h.player.missionData.getTaskInfo().num, count);
     }
@@ -186,9 +191,13 @@ test('a pending mission reward advances the runtime task once and preserves late
 });
 test('checkpoints persist once, include business/tasks, and preserve unknown fields', () => {
   const h = prepare(); h.player.gameData.data.future = { keep: true }; const t = taskScreen(h);
+  t.screen.ctrGame.gameData.relicState = { phoenixUsed: true, heroAttackCount: 7, vampireHealedByWave: { 1: .04 } };
+  const snapshot = t.screen.ctrGame.getCheckpoint(); snapshot.relicState.heroAttackCount = 0;
+  assert.equal(t.screen.ctrGame.gameData.relicState.heroAttackCount, 7, 'checkpoint snapshots must not alias active relic charges');
   t.screen.ctrGame.gameData.businessAdd = { FlagWeapon: 1 }; h.state.writes = 0; t.screen.ctrGame.saveGame();
   assert.equal(h.state.writes, 1);
   const stored = JSON.parse(h.storage.get(h.player.gameData.gameKey)); assert.equal(stored.businessList.FlagWeapon, 1); assert.equal(stored.taskList.stage, 1); assert.equal(stored.future.keep, true);
+  assert.deepEqual(stored.relicState, { phoenixUsed: true, heroAttackCount: 7, vampireHealedByWave: { 1: .04 } });
 });
 test('equal-second cloud stamps prefer newer local data while strictly newer server still wins', () => {
   const h = prepare(), record = h.player.udata;

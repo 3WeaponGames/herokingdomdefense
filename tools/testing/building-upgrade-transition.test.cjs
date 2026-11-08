@@ -17,7 +17,7 @@ function fixture(family, index) {
   const h = setup({ KinghtFallEnum: enums, KinghtFallBuildInfo: infoModule,
     AudioMgr: { AudioMgr: singleton({ playEffectFree() { state.effects++; } }) },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getMissionData: () => ({ recordQuestEvent: noop }) }) } });
-  const Info = plainModule('KinghtFallBuildInfo', h.e.stubs).KinghtFallBuildInfo;
+  const Info = plainModule('KinghtFallBuildInfo', { ...h.e.stubs, RelicRuntime: h.load('RelicRuntime') }).KinghtFallBuildInfo;
   infoModule.KinghtFallBuildInfo = Info;
   Object.assign(h.d, { coin: 1000, treasureAddTime: {}, getBaseLevel: () => 3 });
   Object.assign(h.ui, { canStart: true, isclose: false, addTask: noop, onPauseGame(value) { state.paused = value; } });

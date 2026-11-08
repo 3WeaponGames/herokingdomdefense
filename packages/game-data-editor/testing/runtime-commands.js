@@ -41,6 +41,7 @@ function run(request, host) {
     function state() {
         return {
             currencies:{gold:user.getGoldNum(),gems:user.getDiamondNum(),diamonds:user.getDiamondNum(),stamina:user.getPowerNum(),passPoints:player.getMissionData().getAchPoint(),silver:battle?battle.gameData.coin:null},
+            inventory:{energyItems:user.data.energyItems===undefined?0:user.data.energyItems},
             equipment:equips.map(e=>({id:e.id,level:user.getPersonLevel(e.id)})),
             talents:clone(user.getTalent()),
             relics:clone(user.data.treasureInfo || []),
@@ -76,7 +77,11 @@ function run(request, host) {
     function grant(item, amount) {
         const id=Number(item.ID);
         if (item.type===1) {
-            if (id===2003) {
+            if (id===2033) {
+                // Store owned refills through the same durable journal as the
+                // shop; granting an item must never immediately add Energy.
+                if (player.claimRewards([{id,num:amount}],1,null,()=>{},()=>true)===null) throw Error('Energy item grant is still saving. Wait for save recovery before retrying.');
+            } else if (id===2003) {
                 if (!battle) throw Error('Battle silver requires an active battle in the managed test window.');
                 battle.gameData.coin += amount;
                 battle.saveGame();
@@ -122,7 +127,7 @@ function run(request, host) {
         const amount=number(request.amount,'Amount',1,999999);
         const list=action==='grant'?[find(goods,request.itemId,'item')]:goods;
         // Validate the whole bulk operation before the first write.
-        list.forEach(item=>{if(item.type!==1&&item.type!==2)throw Error('Unsupported item type '+item.type);if(item.type===1&&[2001,2002,2003,2004,2005].indexOf(Number(item.ID))<0)throw Error('Unsupported currency '+item.ID);if(item.type===2&&!(config.TreasureCfg||[]).some(t=>Number(t.goodID)===Number(item.ID)))throw Error('Missing relic definition '+item.ID);});
+        list.forEach(item=>{if(item.type!==1&&item.type!==2)throw Error('Unsupported item type '+item.type);if(item.type===1&&[2001,2002,2003,2004,2005,2033].indexOf(Number(item.ID))<0)throw Error('Unsupported currency '+item.ID);if(item.type===2&&!(config.TreasureCfg||[]).some(t=>Number(t.goodID)===Number(item.ID)))throw Error('Missing relic definition '+item.ID);});
         list.forEach(item=>{if(action==='grant-all'&&Number(item.ID)===2003&&!battle)skipped.push({id:2003,reason:'Battle silver requires an active battle.'});else grant(item,amount);});
         emit('TreasureUpdate');emit('UpdateRedPoint',31);
     } else if(action==='equipment') equipment(find(equips,request.id,'equipment'),request.level);

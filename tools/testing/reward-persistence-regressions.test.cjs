@@ -180,7 +180,7 @@ test('a stale double-reward callback cannot overwrite a newer saved run', () => 
 });
 
 for (const screen of ['KinghtFallHomeTreasureCtrl', 'KinghtFallUITreasureReward']) {
-  test(screen + ': all 27 max-level relic duplicates convert into their configured currency', () => {
+  test(screen + ': all authored max-level relic duplicates convert into their configured currency', () => {
     for (const relic of config.TreasureCfg) {
       const h = harness();
       h.player.udata.setTreasureLevel({ id: relic.ID, level: relic.levelInfo.length, frame: 0 });

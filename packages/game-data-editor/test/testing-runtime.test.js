@@ -4,45 +4,39 @@ const fs=require('fs');
 const path=require('path');
 const vm=require('vm');
 const {run,source}=require('../testing/runtime-commands');
+const {harness}=require('../../../tools/testing/persistence-harness.cjs');
 const root=path.resolve(__dirname,'../../..');
 const configFile=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json');
 function fixture(){
-    const data=JSON.parse(fs.readFileSync(configFile,'utf8')),saved=[],events=[],modules={};
-    function BaseData(){}
-    BaseData.prototype.saveData=function(){saved.push({key:this.gameKey,data:JSON.parse(JSON.stringify(this.data))});};
-    modules.BaseData={BaseData};modules.Config={GameConfig:{AppCacheName:'test-'}};
-    modules.KinghtFallConfig={KinghtFallParameter:{AppCacheName:'hkd',FollowMode:1},KinghtFallEventName:new Proxy({},{get:(_,key)=>key})};
-    modules.EventMgr={EventMgr:{getInstance:()=>({emit:(...args)=>events.push(args)})}};
-    modules.KinghtFallDataMgr={KinghtFallDataMgr:{getInstance:()=>({data,getGoodsCfgById:id=>data.GoodsCfg[id],getTreasureCfgById:id=>data.TreasureCfg.find(row=>row.ID===id)})}};
-    const real=['KinghtFallUserData','KinghtFallPlayerMgr','KinghtFallMissionData','KinghtFallEnum'];
-    function req(name){
-        if(modules[name])return modules[name];
-        if(!real.includes(name))return {};
-        const exports={};modules[name]=exports;
-        vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/'+name+'.js'),'utf8'),{exports,require:req,__extends(d,b){Object.setPrototypeOf(d,b);d.prototype=Object.create(b.prototype);d.prototype.constructor=d;},console});
-        return exports;
-    }
-    const player=req('KinghtFallPlayerMgr').KinghtFallPlayerMgr.getInstance();
-    player.udata=new (req('KinghtFallUserData').KinghtFallUserData)();player.udata.createData();player.udata.data.powerNum=30;
-    player.missionData=new (req('KinghtFallMissionData').KinghtFallMissionData)();player.missionData.createData();player.guideData={};
+    const data=JSON.parse(fs.readFileSync(configFile,'utf8')),saved=[],disk=harness(),events=disk.state.events,modules=disk.modules,player=disk.player,req=disk.load;
+    modules.KinghtFallConfig.KinghtFallEventName=new Proxy({},{get:(_,key)=>key});
+    const manager=modules.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+    Object.assign(manager,{data,getGoodsCfgById:id=>data.GoodsCfg[id],getTreasureCfgById:id=>data.TreasureCfg.find(row=>row.ID===id),getEquipCfgList:()=>data.EquipCfg,getTaskCfgById:id=>data.TaskCfg.find(row=>row.ID===id)});
+    const save=disk.Cache.saveData;
+    disk.Cache.saveData=function(key,value){const result=save.call(this,key,value);if(result!==false){let record;try{record=JSON.parse(value);}catch(_){record=value;}saved.push({key,data:record});}return result;};
+    player.udata.data.powerNum=30;
     const mode={enabled:false,isAvailable:()=>true,isEnabled(){return this.enabled;},setEnabled(value){this.enabled=value;return value;}};
     modules.TestMode={TestMode:{getInstance:()=>mode}};
-    modules.ServerDataMgr={ServerdataMgr:{getNeedSaveServer:()=>false}};
     modules.KinghtFallUIGame={default:{instance:null}};
-    const storage={original:'save'},localStorage={get length(){return Object.keys(storage).length;},key:i=>Object.keys(storage)[i],getItem:key=>storage[key]};
+    disk.storage.set('original','save');
+    const localStorage={get length(){return disk.storage.size;},key:i=>Array.from(disk.storage.keys())[i],getItem:key=>disk.storage.get(key)};
     const host={__quick_compile_project__:{require:req},localStorage,cc:{director:{getScene:()=>({name:'Main'})},isValid:()=>true,game:{pause(){events.push(['pause']);},resume(){events.push(['resume']);}}}};
-    return {host,player,data,saved,events,mode,modules,act:r=>run(r,host)};
+    return {host,player,data,saved,events,mode,modules,disk,act:r=>run(r,host)};
 }
 let count=0;
 function test(name,fn){fn();console.log('PASS '+name);count++;}
 test('status reads actual saved APIs without grants or enabling mode',()=>{const f=fixture(),r=f.act({action:'status'});assert(r.ready);assert.equal(r.state.currencies.gold,0);assert.equal(r.state.currencies.stamina,30);assert.equal(f.saved.length,0);assert(!f.mode.enabled);});
 test('start enables the TestMode singleton',()=>{const f=fixture();f.act({action:'start'});assert(f.mode.enabled);assert.equal(f.saved.length,0);});
 test('currency grants call existing economy and mission persistence',()=>{const f=fixture();for(const itemId of[2001,2002,2004,2005])f.act({action:'grant',itemId,amount:99999});const s=f.act({action:'status'}).state;assert.equal(s.currencies.gold,99999);assert.equal(s.currencies.gems,99999);assert.equal(s.currencies.stamina,100029);assert.equal(s.currencies.passPoints,99999);assert.equal(f.player.missionData.data.achievementInfo.length,2);assert(f.saved.length>=6);assert(f.events.some(e=>e[0]==='RefreshGold'));});
-test('all 32 goods use their actual IDs; absent battle silver is reported',()=>{const f=fixture(),r=f.act({action:'grant-all',amount:99999});assert.equal(r.results.length,31);assert.equal(r.skipped[0].id,2003);assert.equal(r.state.relics.length,27);assert(r.state.relics.every(t=>t.level===1&&t.frame===f.data.TreasureCfg.find(c=>c.ID===t.id).levelInfo.slice(0,-1).reduce((n,l)=>n+l.PieceCost,0)));assert(r.state.currencies.gold>99999);assert(f.saved.length<200,'bulk grants must not write per copy');});
-test('first relic copy unlocks and excess duplicates convert at the authored cap',()=>{const f=fixture();f.act({action:'grant',itemId:2006,amount:1});assert.equal(f.player.udata.getTreasureLevel(120001).frame,0);f.act({action:'grant',itemId:2006,amount:99999});assert.equal(f.player.udata.getTreasureLevel(120001).frame,5);assert.equal(f.player.udata.getGoldNum(),99994*2500);});
+test('all authored goods use their actual IDs; absent battle silver is reported',()=>{const f=fixture(),r=f.act({action:'grant-all',amount:99999});assert.equal(r.results.length,Object.keys(f.data.GoodsCfg).length-1);assert.equal(r.skipped[0].id,2003);assert.equal(r.state.relics.length,f.data.TreasureCfg.length);assert(r.state.relics.every(t=>t.level===1&&t.frame===f.data.TreasureCfg.find(c=>c.ID===t.id).levelInfo.slice(0,-1).reduce((n,l)=>n+l.PieceCost,0)));assert(r.state.currencies.gold>99999);assert.equal(r.state.inventory.energyItems,99999);assert.equal(r.state.currencies.stamina,100029);assert(f.saved.length<200,'bulk grants must not write per copy');});
+
+test('Energy item grant journals owned inventory without immediately increasing current Energy',()=>{const f=fixture(),before=f.act({action:'status'});assert.equal(before.state.inventory.energyItems,0);assert.equal(f.saved.length,0);const granted=f.act({action:'grant',itemId:2033,amount:4});assert.equal(granted.state.inventory.energyItems,4);assert.equal(granted.state.currencies.stamina,30);assert(f.saved.some(row=>row.key.endsWith('.rewardJournal')&&row.data&&row.data.records.some(record=>record.data.energyItems===4)));assert.equal(f.disk.storage.get(f.player.rewardJournalKey()),'');const items=f.disk.load('EnergyItems').create(f.player);assert.equal(items.useOne(items.getView().token).ok,true);assert.equal(f.act({action:'status'}).state.inventory.energyItems,3);assert.equal(f.act({action:'status'}).state.currencies.stamina,50);});
+
+test('failed Energy item grant journal keeps inventory and Energy unchanged until an explicit retry',()=>{const f=fixture();f.disk.state.failKeys.add(f.player.rewardJournalKey());assert.throws(()=>f.act({action:'grant',itemId:2033,amount:4}),/still saving/);assert.equal(f.player.udata.data.energyItems,0);assert.equal(f.player.udata.getPowerNum(),30);f.disk.state.failKeys.clear();const granted=f.act({action:'grant',itemId:2033,amount:4});assert.equal(granted.state.inventory.energyItems,4);assert.equal(granted.state.currencies.stamina,30);});
+test('first relic copy unlocks and excess duplicates convert at the authored cap',()=>{const f=fixture(),relic=f.data.TreasureCfg[0],capacity=relic.levelInfo.slice(0,-1).reduce((sum,level)=>sum+level.PieceCost,0);f.act({action:'grant',itemId:2006,amount:1});assert.equal(f.player.udata.getTreasureLevel(120001).frame,0);f.act({action:'grant',itemId:2006,amount:99999});assert.equal(f.player.udata.getTreasureLevel(120001).frame,capacity);assert.equal(f.player.udata.getGoldNum(),(99999-capacity)*relic.Conversion[1]);});
 
 test('managed bulk grants match the actual ordinary relic API for locked, owned and maximum relics',()=>{for(const owned of [null,{id:120001,level:1,frame:2},{id:120001,level:3,frame:0}]){const bulk=fixture(),ordinary=fixture();if(owned){bulk.player.udata.setTreasureLevel({...owned});ordinary.player.udata.setTreasureLevel({...owned});}bulk.act({action:'grant',itemId:2006,amount:10});ordinary.player.addTreasureReward(120001,10);assert.deepEqual(bulk.player.udata.getTreasureLevel(120001),ordinary.player.udata.getTreasureLevel(120001));assert.equal(bulk.player.udata.getGoldNum(),ordinary.player.udata.getGoldNum());}});
-test('finite authored duplicate cap uses the existing currency conversion API',()=>{const f=fixture();f.data.TreasureCfg[0].levelInfo[2].PieceCost=0;const r=f.act({action:'grant',itemId:2006,amount:10});assert.equal(r.state.relics[0].frame,5);assert.equal(r.state.currencies.gold,10000);assert.equal(r.results[0].convertedCopies,4);});
+test('finite authored duplicate cap uses the existing currency conversion API',()=>{const f=fixture(),relic=f.data.TreasureCfg[0],capacity=relic.levelInfo.slice(0,-1).reduce((sum,level)=>sum+level.PieceCost,0),converted=Math.max(0,9-capacity);relic.levelInfo[2].PieceCost=0;const r=f.act({action:'grant',itemId:2006,amount:10});assert.equal(r.state.relics[0].frame,Math.min(9,capacity));assert.equal(r.state.currencies.gold,converted*relic.Conversion[1]);assert.equal(r.results[0].convertedCopies,converted);});
 test('battle-only silver rejects at home without changing economy',()=>{const f=fixture();assert.throws(()=>f.act({action:'grant',itemId:2003,amount:99999}),/active battle/);assert.equal(f.saved.length,0);});
 test('silver updates and saves only the current managed battle',()=>{const f=fixture();let saves=0;f.modules.KinghtFallUIGame.default.instance={node:{activeInHierarchy:true},ctrGame:{gameData:{coin:10,levelCfg:{Level:1},round:2},saveGame(){saves++;}}};const r=f.act({action:'grant',itemId:2003,amount:99999});assert.equal(r.state.currencies.silver,100009);assert.equal(saves,1);assert.equal(r.state.currencies.gold,0);});
 test('invalid amount/item/type is rejected before player writes',()=>{const f=fixture();for(const amount of[-1,0,1.5,NaN,'99999',1e9])assert.throws(()=>f.act({action:'grant',itemId:2001,amount}));assert.throws(()=>f.act({action:'grant',itemId:9999,amount:1}));f.data.GoodsCfg[9999]={type:1};assert.throws(()=>f.act({action:'grant-all',amount:1}),/Unsupported currency/);assert.equal(f.saved.length,0);});

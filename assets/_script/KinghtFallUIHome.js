@@ -102,7 +102,7 @@ var def_KinghtFallUIHome = function (t) {
     for (var n = 0; n < this.togCon.toggleItems.length; n++) {
       var i = this.togCon.toggleItems[n];
       var a = this.isLock(n);
-      if (!(a || -1 == this.lockList[n][0] || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getFunctionUnlockInfo(n))) {
+      if (!(a || n === 4 || -1 == this.lockList[n][0] || $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getFunctionUnlockInfo(n))) {
         e.push(n);
       }
       i.node.getChildByName("ndLock").active = a;
@@ -126,7 +126,9 @@ var def_KinghtFallUIHome = function (t) {
     }, e);
   };
   _ctor.prototype.isLock = function (t) {
-    if (t === 4 && !this.preShop) return true;
+    // The storefront is available as soon as its page is installed. The old
+    // placeholder threshold was beyond the authored campaign's final stage.
+    if (t === 4) return !this.preShop;
     if (-1 == this.lockList[t][0]) {
       return false;
     }

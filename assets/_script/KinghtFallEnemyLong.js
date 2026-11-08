@@ -99,7 +99,7 @@ var def_KinghtFallEnemyLong = function (t) {
             e *= i;
           }
           var shooter = cc.isValid(t.node) && t.node._combatGeneration === shooterGeneration ? t : null;
-          $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), n.onAttacked(e, shooter));
+          $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), n.onAttacked(e, shooter, true));
           $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(n.node.getPosition(), "jian_lv1");
         }
       });

@@ -23,6 +23,8 @@ var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
 var Navigation = require("KinghtFallNavigation");
+var RelicBattle = require("RelicBattle");
+var RelicRuntime = require("RelicRuntime");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -58,7 +60,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     this.ndPro.active = false;
     if (this.buildInfo.cfg) {
       this.time[r.Reborn] = 0;
-      this.time[r.RebornMax] = this.buildInfo.cfg.Data[2];
+      this.time[r.RebornMax] = RelicBattle.replacementInterval(RelicRuntime.current(), this.buildInfo.cfg.Data[2]);
       this.initSoldier();
       this.waitEnemy = [];
     } else {

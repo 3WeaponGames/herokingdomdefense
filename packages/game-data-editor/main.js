@@ -67,7 +67,7 @@ const messages={
         if(warnings.length)snapshot.result.warning='Saved; Creator import needs attention: '+warnings.join('; ');
         return broadcast(Object.assign(getStore().snapshot(),{result:snapshot.result}));
     });},
-    'asset-index'(event){reply(event,()=>assets||(assets=require('./lib/assets').index(project())));},
+    'asset-index'(event,request){reply(event,()=>{if(request&&request.refresh)assets=null;return assets||(assets=require('./lib/assets').index(project()));});},
     'map-index'(event){reply(event,()=>require('./lib/map-assets').loadIndex(project(),getStore().snapshot().documents));},
     'load-map'(event,id){reply(event,()=>broadcast(getStore().addMap(typeof id==='string'?id:id.id)));},
     'map-route'(event,request){reply(event,()=>{const maps=require('./lib/map-assets'),s=getStore();s.addMap(request.id);return maps.routeTest(project(),s.snapshot().documents['map:'+request.id].data,request.start,request.goal,request.radius,request.includeBuildings);});},

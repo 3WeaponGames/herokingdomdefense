@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "eb8bd24f-d11f-43df-a830-eca1b98c6dea",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "42-vampire-fang": {
+      "ver": "1.0.6",
+      "uuid": "e4b5e8c0-f341-434f-bc66-53f476bb0279",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "eb8bd24f-d11f-43df-a830-eca1b98c6dea",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

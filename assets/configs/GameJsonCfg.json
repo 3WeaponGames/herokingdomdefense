@@ -4968,7 +4968,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2006.name]]",
       "sprBg": "wg_zb_pzd4",
-      "icon": "zb_01",
+      "icon": "@icon/Relic Icons/01-revive-token",
       "itemID": 120001
     },
     "2007": {
@@ -4977,7 +4977,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2007.name]]",
       "sprBg": "wg_zb_pzd4",
-      "icon": "zb_02",
+      "icon": "@icon/Relic Icons/02-slowing-charm",
       "itemID": 120002
     },
     "2008": {
@@ -4986,7 +4986,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2008.name]]",
       "sprBg": "wg_zb_pzd4",
-      "icon": "zb_03",
+      "icon": "@icon/Relic Icons/03-silver-pouch",
       "itemID": 120003
     },
     "2009": {
@@ -4995,7 +4995,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2009.name]]",
       "sprBg": "wg_zb_pzd4",
-      "icon": "zb_04",
+      "icon": "@icon/Relic Icons/04-tax-contract",
       "itemID": 120004
     },
     "2010": {
@@ -5004,7 +5004,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2010.name]]",
       "sprBg": "wg_zb_pzd4",
-      "icon": "zb_05",
+      "icon": "@icon/Relic Icons/05-emblem-of-wealth",
       "itemID": 120005
     },
     "2011": {
@@ -5013,7 +5013,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2011.name]]",
       "sprBg": "wg_zb_pzd4",
-      "icon": "zb_06",
+      "icon": "@icon/Relic Icons/06-doubling-rune",
       "itemID": 120006
     },
     "2012": {
@@ -5022,7 +5022,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2012.name]]",
       "sprBg": "wg_zb_pzd3",
-      "icon": "zb_07",
+      "icon": "@icon/Relic Icons/07-windstride-boots",
       "itemID": 120007
     },
     "2013": {
@@ -5031,7 +5031,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2013.name]]",
       "sprBg": "wg_zb_pzd3",
-      "icon": "zb_08",
+      "icon": "@icon/Relic Icons/08-ancestral-pact",
       "itemID": 120008
     },
     "2014": {
@@ -5040,7 +5040,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2014.name]]",
       "sprBg": "wg_zb_pzd3",
-      "icon": "zb_09",
+      "icon": "@icon/Relic Icons/09-token-of-thrift",
       "itemID": 120009
     },
     "2015": {
@@ -5049,7 +5049,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2015.name]]",
       "sprBg": "wg_zb_pzd3",
-      "icon": "zb_10",
+      "icon": "@icon/Relic Icons/10-wavebreaker-banner",
       "itemID": 120010
     },
     "2016": {
@@ -5058,7 +5058,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2016.name]]",
       "sprBg": "wg_zb_pzd3",
-      "icon": "zb_11",
+      "icon": "@icon/Relic Icons/11-guardian-shield",
       "itemID": 120011
     },
     "2017": {
@@ -5067,7 +5067,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2017.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_12",
+      "icon": "@icon/Relic Icons/12-book-of-thrift",
       "itemID": 120012
     },
     "2018": {
@@ -5076,7 +5076,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2018.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_13",
+      "icon": "@icon/Relic Icons/13-forging-charm",
       "itemID": 120013
     },
     "2019": {
@@ -5085,7 +5085,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2019.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_14",
+      "icon": "@icon/Relic Icons/14-swiftstrike-blade",
       "itemID": 120014
     },
     "2020": {
@@ -5094,7 +5094,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2020.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_15",
+      "icon": "@icon/Relic Icons/15-rapidfire-charm",
       "itemID": 120015
     },
     "2021": {
@@ -5103,7 +5103,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2021.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_16",
+      "icon": "@icon/Relic Icons/16-deadly-arrowhead",
       "itemID": 120016
     },
     "2022": {
@@ -5112,7 +5112,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2022.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_17",
+      "icon": "@icon/Relic Icons/17-farsight-scope",
       "itemID": 120017
     },
     "2023": {
@@ -5121,7 +5121,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2023.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_18",
+      "icon": "@icon/Relic Icons/18-close-combat-blade",
       "itemID": 120018
     },
     "2024": {
@@ -5130,7 +5130,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2024.name]]",
       "sprBg": "wg_zb_pzd2",
-      "icon": "zb_19",
+      "icon": "@icon/Relic Icons/19-vengeful-fury",
       "itemID": 120019
     },
     "2025": {
@@ -5139,7 +5139,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2025.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_20",
+      "icon": "@icon/Relic Icons/20-mill-of-plenty",
       "itemID": 120020
     },
     "2026": {
@@ -5148,7 +5148,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2026.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_21",
+      "icon": "@icon/Relic Icons/21-castles-might",
       "itemID": 120021
     },
     "2027": {
@@ -5157,7 +5157,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2027.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_22",
+      "icon": "@icon/Relic Icons/22-fortress-stone",
       "itemID": 120022
     },
     "2028": {
@@ -5166,7 +5166,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2028.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_23",
+      "icon": "@icon/Relic Icons/23-house-of-plenty",
       "itemID": 120023
     },
     "2029": {
@@ -5175,7 +5175,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2029.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_24",
+      "icon": "@icon/Relic Icons/24-knights-glory",
       "itemID": 120024
     },
     "2030": {
@@ -5184,7 +5184,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2030.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_25",
+      "icon": "@icon/Relic Icons/25-archers-power-rune",
       "itemID": 120025
     },
     "2031": {
@@ -5193,7 +5193,7 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2031.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_26",
+      "icon": "@icon/Relic Icons/26-tortoise-shell",
       "itemID": 120026
     },
     "2032": {
@@ -5202,8 +5202,223 @@
       "type": 2,
       "name": "[[loc:data.goodscfg.2032.name]]",
       "sprBg": "wg_zb_pzd1",
-      "icon": "zb_27",
+      "icon": "@icon/Relic Icons/27-steadfast-infantry-rune",
       "itemID": 120027
+    },
+    "2033": {
+      "enumValue": 2033,
+      "enumKey": "EnergyItem",
+      "type": 1,
+      "name": "[[loc:data.goodscfg.2033.name]]",
+      "sprBg": "wg_ty_jld2",
+      "icon": "@icon/icons/2d-minimal/Consumables/Consumable_Potion_03_Yellow"
+    },
+    "2034": {
+      "enumValue": 2034,
+      "enumKey": "PhoenixFeather",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2034.name]]",
+      "sprBg": "wg_zb_pzd4",
+      "icon": "@icon/Relic Icons/28-phoenix-feather",
+      "itemID": 120028
+    },
+    "2035": {
+      "enumValue": 2035,
+      "enumKey": "FrostCrystal",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2035.name]]",
+      "sprBg": "wg_zb_pzd2",
+      "icon": "@icon/Relic Icons/29-frost-crystal",
+      "itemID": 120029
+    },
+    "2036": {
+      "enumValue": 2036,
+      "enumKey": "ThunderBottle",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2036.name]]",
+      "sprBg": "wg_zb_pzd2",
+      "icon": "@icon/Relic Icons/30-thunder-bottle",
+      "itemID": 120030
+    },
+    "2037": {
+      "enumValue": 2037,
+      "enumKey": "LuckyClover",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2037.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/31-lucky-clover",
+      "itemID": 120031
+    },
+    "2038": {
+      "enumValue": 2038,
+      "enumKey": "RoyalCrown",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2038.name]]",
+      "sprBg": "wg_zb_pzd3",
+      "icon": "@icon/Relic Icons/32-royal-crown",
+      "itemID": 120032
+    },
+    "2039": {
+      "enumValue": 2039,
+      "enumKey": "MoonstoneRing",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2039.name]]",
+      "sprBg": "wg_zb_pzd3",
+      "icon": "@icon/Relic Icons/33-moonstone-ring",
+      "itemID": 120033
+    },
+    "2040": {
+      "enumValue": 2040,
+      "enumKey": "SunLantern",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2040.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/34-sun-lantern",
+      "itemID": 120034
+    },
+    "2041": {
+      "enumValue": 2041,
+      "enumKey": "DragonTooth",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2041.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/35-dragon-tooth",
+      "itemID": 120035
+    },
+    "2042": {
+      "enumValue": 2042,
+      "enumKey": "MermaidPearl",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2042.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/36-mermaid-pearl",
+      "itemID": 120036
+    },
+    "2043": {
+      "enumValue": 2043,
+      "enumKey": "GravityOrb",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2043.name]]",
+      "sprBg": "wg_zb_pzd3",
+      "icon": "@icon/Relic Icons/37-gravity-orb",
+      "itemID": 120037
+    },
+    "2044": {
+      "enumValue": 2044,
+      "enumKey": "SpiritBell",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2044.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/38-spirit-bell",
+      "itemID": 120038
+    },
+    "2045": {
+      "enumValue": 2045,
+      "enumKey": "MysticCompass",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2045.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/39-mystic-compass",
+      "itemID": 120039
+    },
+    "2046": {
+      "enumValue": 2046,
+      "enumKey": "EnchantedMirror",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2046.name]]",
+      "sprBg": "wg_zb_pzd2",
+      "icon": "@icon/Relic Icons/40-enchanted-mirror",
+      "itemID": 120040
+    },
+    "2047": {
+      "enumValue": 2047,
+      "enumKey": "AngelWing",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2047.name]]",
+      "sprBg": "wg_zb_pzd3",
+      "icon": "@icon/Relic Icons/41-angel-wing",
+      "itemID": 120041
+    },
+    "2048": {
+      "enumValue": 2048,
+      "enumKey": "VampireFang",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2048.name]]",
+      "sprBg": "wg_zb_pzd2",
+      "icon": "@icon/Relic Icons/42-vampire-fang",
+      "itemID": 120042
+    },
+    "2049": {
+      "enumValue": 2049,
+      "enumKey": "AlchemistFlask",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2049.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/43-alchemist-flask",
+      "itemID": 120043
+    },
+    "2050": {
+      "enumValue": 2050,
+      "enumKey": "PirateSpyglass",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2050.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/44-pirate-spyglass",
+      "itemID": 120044
+    },
+    "2051": {
+      "enumValue": 2051,
+      "enumKey": "WolfTotem",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2051.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/45-wolf-totem",
+      "itemID": 120045
+    },
+    "2052": {
+      "enumValue": 2052,
+      "enumKey": "GolemHeart",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2052.name]]",
+      "sprBg": "wg_zb_pzd2",
+      "icon": "@icon/Relic Icons/46-golem-heart",
+      "itemID": 120046
+    },
+    "2053": {
+      "enumValue": 2053,
+      "enumKey": "FairyAcorn",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2053.name]]",
+      "sprBg": "wg_zb_pzd1",
+      "icon": "@icon/Relic Icons/47-fairy-acorn",
+      "itemID": 120047
+    },
+    "2054": {
+      "enumValue": 2054,
+      "enumKey": "CrystalKey",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2054.name]]",
+      "sprBg": "wg_zb_pzd3",
+      "icon": "@icon/Relic Icons/48-crystal-key",
+      "itemID": 120048
+    },
+    "2055": {
+      "enumValue": 2055,
+      "enumKey": "AncientChalice",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2055.name]]",
+      "sprBg": "wg_zb_pzd2",
+      "icon": "@icon/Relic Icons/49-ancient-chalice",
+      "itemID": 120049
+    },
+    "2056": {
+      "enumValue": 2056,
+      "enumKey": "CelestialHourglass",
+      "type": 2,
+      "name": "[[loc:data.goodscfg.2056.name]]",
+      "sprBg": "wg_zb_pzd4",
+      "icon": "@icon/Relic Icons/50-celestial-hourglass",
+      "itemID": 120050
     }
   },
   "GuideCfg": [
@@ -13274,7 +13489,7 @@
     "60005": {
       "enumValue": 60005,
       "enumKey": "StaminaSupply",
-      "Value": "5,15"
+      "Value": "20,15"
     },
     "60006": {
       "enumValue": 60006,
@@ -13365,229 +13580,409 @@
       "ID": 80001001,
       "LibraryID": 81001,
       "RewardID": 120001,
-      "Weight": 1.5
+      "Weight": 1.125
     },
     {
       "ID": 80001002,
       "LibraryID": 81001,
       "RewardID": 120002,
-      "Weight": 1.5
+      "Weight": 1.125
     },
     {
       "ID": 80001003,
       "LibraryID": 81001,
       "RewardID": 120003,
-      "Weight": 1.5
+      "Weight": 1.125
     },
     {
       "ID": 80001004,
       "LibraryID": 81001,
       "RewardID": 120004,
-      "Weight": 1.5
+      "Weight": 1.125
     },
     {
       "ID": 80001005,
       "LibraryID": 81001,
       "RewardID": 120005,
-      "Weight": 1.5
+      "Weight": 1.125
     },
     {
       "ID": 80001006,
       "LibraryID": 81001,
       "RewardID": 120006,
-      "Weight": 1.5
+      "Weight": 1.125
     },
     {
       "ID": 80001007,
       "LibraryID": 81001,
       "RewardID": 120007,
-      "Weight": 15
+      "Weight": 7.5
     },
     {
       "ID": 80001008,
       "LibraryID": 81001,
       "RewardID": 120008,
-      "Weight": 15
+      "Weight": 7.5
     },
     {
       "ID": 80001009,
       "LibraryID": 81001,
       "RewardID": 120009,
-      "Weight": 15
+      "Weight": 7.5
     },
     {
       "ID": 80001010,
       "LibraryID": 81001,
       "RewardID": 120010,
-      "Weight": 15
+      "Weight": 7.5
     },
     {
       "ID": 80001011,
       "LibraryID": 81001,
       "RewardID": 120011,
-      "Weight": 15
+      "Weight": 7.5
     },
     {
       "ID": 80001012,
       "LibraryID": 81001,
       "RewardID": 120012,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001013,
       "LibraryID": 81001,
       "RewardID": 120013,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001014,
       "LibraryID": 81001,
       "RewardID": 120014,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001015,
       "LibraryID": 81001,
       "RewardID": 120015,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001016,
       "LibraryID": 81001,
       "RewardID": 120016,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001017,
       "LibraryID": 81001,
       "RewardID": 120017,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001018,
       "LibraryID": 81001,
       "RewardID": 120018,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001019,
       "LibraryID": 81001,
       "RewardID": 120019,
-      "Weight": 50
+      "Weight": 28.571428571428573
     },
     {
       "ID": 80001020,
       "LibraryID": 81001,
       "RewardID": 120020,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001021,
       "LibraryID": 81001,
       "RewardID": 120021,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001022,
       "LibraryID": 81001,
       "RewardID": 120022,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001023,
       "LibraryID": 81001,
       "RewardID": 120023,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001024,
       "LibraryID": 81001,
       "RewardID": 120024,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001025,
       "LibraryID": 81001,
       "RewardID": 120025,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001026,
       "LibraryID": 81001,
       "RewardID": 120026,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001027,
       "LibraryID": 81001,
       "RewardID": 120027,
-      "Weight": 100
+      "Weight": 44.44444444444444
     },
     {
       "ID": 80001028,
       "LibraryID": 81002,
       "RewardID": 120001,
-      "Weight": 2
+      "Weight": 1.5
     },
     {
       "ID": 80001029,
       "LibraryID": 81002,
       "RewardID": 120002,
-      "Weight": 2
+      "Weight": 1.5
     },
     {
       "ID": 80001030,
       "LibraryID": 81002,
       "RewardID": 120003,
-      "Weight": 2
+      "Weight": 1.5
     },
     {
       "ID": 80001031,
       "LibraryID": 81002,
       "RewardID": 120004,
-      "Weight": 2
+      "Weight": 1.5
     },
     {
       "ID": 80001032,
       "LibraryID": 81002,
       "RewardID": 120005,
-      "Weight": 2
+      "Weight": 1.5
     },
     {
       "ID": 80001033,
       "LibraryID": 81002,
       "RewardID": 120006,
-      "Weight": 2
+      "Weight": 1.5
     },
     {
       "ID": 80001034,
       "LibraryID": 81002,
       "RewardID": 120007,
-      "Weight": 50
+      "Weight": 25
     },
     {
       "ID": 80001035,
       "LibraryID": 81002,
       "RewardID": 120008,
-      "Weight": 50
+      "Weight": 25
     },
     {
       "ID": 80001036,
       "LibraryID": 81002,
       "RewardID": 120009,
-      "Weight": 50
+      "Weight": 25
     },
     {
       "ID": 80001037,
       "LibraryID": 81002,
       "RewardID": 120010,
-      "Weight": 50
+      "Weight": 25
     },
     {
       "ID": 80001038,
       "LibraryID": 81002,
       "RewardID": 120011,
-      "Weight": 50
+      "Weight": 25
+    },
+    {
+      "ID": 80001039,
+      "LibraryID": 81001,
+      "RewardID": 120028,
+      "Weight": 1.125
+    },
+    {
+      "ID": 80001040,
+      "LibraryID": 81001,
+      "RewardID": 120029,
+      "Weight": 28.571428571428573
+    },
+    {
+      "ID": 80001041,
+      "LibraryID": 81001,
+      "RewardID": 120030,
+      "Weight": 28.571428571428573
+    },
+    {
+      "ID": 80001042,
+      "LibraryID": 81001,
+      "RewardID": 120031,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001043,
+      "LibraryID": 81001,
+      "RewardID": 120032,
+      "Weight": 7.5
+    },
+    {
+      "ID": 80001044,
+      "LibraryID": 81001,
+      "RewardID": 120033,
+      "Weight": 7.5
+    },
+    {
+      "ID": 80001045,
+      "LibraryID": 81001,
+      "RewardID": 120034,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001046,
+      "LibraryID": 81001,
+      "RewardID": 120035,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001047,
+      "LibraryID": 81001,
+      "RewardID": 120036,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001048,
+      "LibraryID": 81001,
+      "RewardID": 120037,
+      "Weight": 7.5
+    },
+    {
+      "ID": 80001049,
+      "LibraryID": 81001,
+      "RewardID": 120038,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001050,
+      "LibraryID": 81001,
+      "RewardID": 120039,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001051,
+      "LibraryID": 81001,
+      "RewardID": 120040,
+      "Weight": 28.571428571428573
+    },
+    {
+      "ID": 80001052,
+      "LibraryID": 81001,
+      "RewardID": 120041,
+      "Weight": 7.5
+    },
+    {
+      "ID": 80001053,
+      "LibraryID": 81001,
+      "RewardID": 120042,
+      "Weight": 28.571428571428573
+    },
+    {
+      "ID": 80001054,
+      "LibraryID": 81001,
+      "RewardID": 120043,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001055,
+      "LibraryID": 81001,
+      "RewardID": 120044,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001056,
+      "LibraryID": 81001,
+      "RewardID": 120045,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001057,
+      "LibraryID": 81001,
+      "RewardID": 120046,
+      "Weight": 28.571428571428573
+    },
+    {
+      "ID": 80001058,
+      "LibraryID": 81001,
+      "RewardID": 120047,
+      "Weight": 44.44444444444444
+    },
+    {
+      "ID": 80001059,
+      "LibraryID": 81001,
+      "RewardID": 120048,
+      "Weight": 7.5
+    },
+    {
+      "ID": 80001060,
+      "LibraryID": 81001,
+      "RewardID": 120049,
+      "Weight": 28.571428571428573
+    },
+    {
+      "ID": 80001061,
+      "LibraryID": 81001,
+      "RewardID": 120050,
+      "Weight": 1.125
+    },
+    {
+      "ID": 80001062,
+      "LibraryID": 81002,
+      "RewardID": 120028,
+      "Weight": 1.5
+    },
+    {
+      "ID": 80001063,
+      "LibraryID": 81002,
+      "RewardID": 120032,
+      "Weight": 25
+    },
+    {
+      "ID": 80001064,
+      "LibraryID": 81002,
+      "RewardID": 120033,
+      "Weight": 25
+    },
+    {
+      "ID": 80001065,
+      "LibraryID": 81002,
+      "RewardID": 120037,
+      "Weight": 25
+    },
+    {
+      "ID": 80001066,
+      "LibraryID": 81002,
+      "RewardID": 120041,
+      "Weight": 25
+    },
+    {
+      "ID": 80001067,
+      "LibraryID": 81002,
+      "RewardID": 120048,
+      "Weight": 25
+    },
+    {
+      "ID": 80001068,
+      "LibraryID": 81002,
+      "RewardID": 120050,
+      "Weight": 1.5
     }
   ],
   "SoldierCfg": {
@@ -18438,7 +18833,7 @@
           "id": 120001,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             1
           ],
@@ -18450,7 +18845,7 @@
           "id": 120001,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             2
           ],
@@ -18485,7 +18880,7 @@
           "id": 120002,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.2
           ],
@@ -18497,7 +18892,7 @@
           "id": 120002,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.3
           ],
@@ -18532,7 +18927,7 @@
           "id": 120003,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             1
           ],
@@ -18544,7 +18939,7 @@
           "id": 120003,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             2
           ],
@@ -18579,7 +18974,7 @@
           "id": 120004,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             1
           ],
@@ -18591,7 +18986,7 @@
           "id": 120004,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             2
           ],
@@ -18626,7 +19021,7 @@
           "id": 120005,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18638,7 +19033,7 @@
           "id": 120005,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.3
           ],
@@ -18673,7 +19068,7 @@
           "id": 120006,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18685,7 +19080,7 @@
           "id": 120006,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.3
           ],
@@ -18720,7 +19115,7 @@
           "id": 120007,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18732,7 +19127,7 @@
           "id": 120007,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -18767,7 +19162,7 @@
           "id": 120008,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18779,7 +19174,7 @@
           "id": 120008,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.3
           ],
@@ -18814,7 +19209,7 @@
           "id": 120009,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             1
           ],
@@ -18826,7 +19221,7 @@
           "id": 120009,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             2
           ],
@@ -18861,7 +19256,7 @@
           "id": 120010,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18873,7 +19268,7 @@
           "id": 120010,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -18908,7 +19303,7 @@
           "id": 120011,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18920,7 +19315,7 @@
           "id": 120011,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.3
           ],
@@ -18955,7 +19350,7 @@
           "id": 120012,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -18967,7 +19362,7 @@
           "id": 120012,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19002,7 +19397,7 @@
           "id": 120013,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19014,7 +19409,7 @@
           "id": 120013,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19049,7 +19444,7 @@
           "id": 120014,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19061,7 +19456,7 @@
           "id": 120014,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19096,7 +19491,7 @@
           "id": 120015,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19108,7 +19503,7 @@
           "id": 120015,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19143,7 +19538,7 @@
           "id": 120016,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19155,7 +19550,7 @@
           "id": 120016,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.3
           ],
@@ -19190,7 +19585,7 @@
           "id": 120017,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.05
           ],
@@ -19202,7 +19597,7 @@
           "id": 120017,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.1
           ],
@@ -19237,7 +19632,7 @@
           "id": 120018,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19249,7 +19644,7 @@
           "id": 120018,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19284,7 +19679,7 @@
           "id": 120019,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19296,7 +19691,7 @@
           "id": 120019,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19331,7 +19726,7 @@
           "id": 120020,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19343,7 +19738,7 @@
           "id": 120020,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19378,7 +19773,7 @@
           "id": 120021,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19390,7 +19785,7 @@
           "id": 120021,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19425,7 +19820,7 @@
           "id": 120022,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19437,7 +19832,7 @@
           "id": 120022,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19472,7 +19867,7 @@
           "id": 120023,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1
           ],
@@ -19484,7 +19879,7 @@
           "id": 120023,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2
           ],
@@ -19519,7 +19914,7 @@
           "id": 120024,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1,
             0.1
@@ -19532,7 +19927,7 @@
           "id": 120024,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2,
             0.2
@@ -19569,7 +19964,7 @@
           "id": 120025,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1,
             0.1
@@ -19582,7 +19977,7 @@
           "id": 120025,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2,
             0.2
@@ -19619,7 +20014,7 @@
           "id": 120026,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1,
             0.1
@@ -19632,7 +20027,7 @@
           "id": 120026,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2,
             0.2
@@ -19669,7 +20064,7 @@
           "id": 120027,
           "Level": 1,
           "GoldCost": 1000,
-          "PieceCost": 2,
+          "PieceCost": 3,
           "param": [
             0.1,
             0.1
@@ -19682,7 +20077,7 @@
           "id": 120027,
           "Level": 2,
           "GoldCost": 6000,
-          "PieceCost": 3,
+          "PieceCost": 5,
           "param": [
             0.2,
             0.2
@@ -19700,6 +20095,1087 @@
           ],
           "vaulePercentage": [
             1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120028,
+      "Quality": 1,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.28.describe]]",
+      "goodID": 2034,
+      "Conversion": [
+        2001,
+        2500
+      ],
+      "levelInfo": [
+        {
+          "id": 120028,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.15
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120028,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.2
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120028,
+          "Level": 3,
+          "param": [
+            0.25
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120029,
+      "Quality": 3,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.29.describe]]",
+      "goodID": 2035,
+      "Conversion": [
+        2001,
+        1000
+      ],
+      "levelInfo": [
+        {
+          "id": 120029,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120029,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.08
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120029,
+          "Level": 3,
+          "param": [
+            0.12
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120030,
+      "Quality": 3,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.30.describe]]",
+      "goodID": 2036,
+      "Conversion": [
+        2001,
+        1000
+      ],
+      "levelInfo": [
+        {
+          "id": 120030,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.2
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120030,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.3
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120030,
+          "Level": 3,
+          "param": [
+            0.4
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120031,
+      "Quality": 4,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.31.describe]]",
+      "goodID": 2037,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120031,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.01
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120031,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.02
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120031,
+          "Level": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120032,
+      "Quality": 2,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.32.describe]]",
+      "goodID": 2038,
+      "Conversion": [
+        2001,
+        1500
+      ],
+      "levelInfo": [
+        {
+          "id": 120032,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.1
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120032,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.15
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120032,
+          "Level": 3,
+          "param": [
+            0.2
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120033,
+      "Quality": 2,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.33.describe]]",
+      "goodID": 2039,
+      "Conversion": [
+        2001,
+        1500
+      ],
+      "levelInfo": [
+        {
+          "id": 120033,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.06
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120033,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.09
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120033,
+          "Level": 3,
+          "param": [
+            0.12
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120034,
+      "Quality": 4,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.34.describe]]",
+      "goodID": 2040,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120034,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120034,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120034,
+          "Level": 3,
+          "param": [
+            0.07
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120035,
+      "Quality": 4,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.35.describe]]",
+      "goodID": 2041,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120035,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120035,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.08
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120035,
+          "Level": 3,
+          "param": [
+            0.12
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120036,
+      "Quality": 4,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.36.describe]]",
+      "goodID": 2042,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120036,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120036,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120036,
+          "Level": 3,
+          "param": [
+            0.07
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120037,
+      "Quality": 2,
+      "Talent": "9",
+      "Describe": "[[loc:data.treasurecfg.37.describe]]",
+      "goodID": 2043,
+      "Conversion": [
+        2001,
+        1500
+      ],
+      "levelInfo": [
+        {
+          "id": 120037,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.4
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        },
+        {
+          "id": 120037,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.6
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        },
+        {
+          "id": 120037,
+          "Level": 3,
+          "param": [
+            0.8
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120038,
+      "Quality": 4,
+      "Talent": "2",
+      "Describe": "[[loc:data.treasurecfg.38.describe]]",
+      "goodID": 2044,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120038,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120038,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120038,
+          "Level": 3,
+          "param": [
+            0.07
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120039,
+      "Quality": 4,
+      "Talent": "2",
+      "Describe": "[[loc:data.treasurecfg.39.describe]]",
+      "goodID": 2045,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120039,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120039,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120039,
+          "Level": 3,
+          "param": [
+            0.07
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120040,
+      "Quality": 3,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.40.describe]]",
+      "goodID": 2046,
+      "Conversion": [
+        2001,
+        1000
+      ],
+      "levelInfo": [
+        {
+          "id": 120040,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120040,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.08
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120040,
+          "Level": 3,
+          "param": [
+            0.12
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120041,
+      "Quality": 2,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.41.describe]]",
+      "goodID": 2047,
+      "Conversion": [
+        2001,
+        1500
+      ],
+      "levelInfo": [
+        {
+          "id": 120041,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.06
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120041,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.09
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120041,
+          "Level": 3,
+          "param": [
+            0.12
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120042,
+      "Quality": 3,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.42.describe]]",
+      "goodID": 2048,
+      "Conversion": [
+        2001,
+        1000
+      ],
+      "levelInfo": [
+        {
+          "id": 120042,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.005
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120042,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.0075
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120042,
+          "Level": 3,
+          "param": [
+            0.01
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120043,
+      "Quality": 4,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.43.describe]]",
+      "goodID": 2049,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120043,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.01
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120043,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.02
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120043,
+          "Level": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120044,
+      "Quality": 4,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.44.describe]]",
+      "goodID": 2050,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120044,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120044,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120044,
+          "Level": 3,
+          "param": [
+            0.07
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120045,
+      "Quality": 4,
+      "Talent": "3",
+      "Describe": "[[loc:data.treasurecfg.45.describe]]",
+      "goodID": 2051,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120045,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120045,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120045,
+          "Level": 3,
+          "param": [
+            0.07
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120046,
+      "Quality": 3,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.46.describe]]",
+      "goodID": 2052,
+      "Conversion": [
+        2001,
+        1000
+      ],
+      "levelInfo": [
+        {
+          "id": 120046,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.06
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120046,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.09
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120046,
+          "Level": 3,
+          "param": [
+            0.12
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120047,
+      "Quality": 4,
+      "Talent": "8",
+      "Describe": "[[loc:data.treasurecfg.47.describe]]",
+      "goodID": 2053,
+      "Conversion": [
+        2001,
+        500
+      ],
+      "levelInfo": [
+        {
+          "id": 120047,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.02
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120047,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120047,
+          "Level": 3,
+          "param": [
+            0.04
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120048,
+      "Quality": 2,
+      "Talent": "8",
+      "Describe": "[[loc:data.treasurecfg.48.describe]]",
+      "goodID": 2054,
+      "Conversion": [
+        2001,
+        1500
+      ],
+      "levelInfo": [
+        {
+          "id": 120048,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            2
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        },
+        {
+          "id": 120048,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            3
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        },
+        {
+          "id": 120048,
+          "Level": 3,
+          "param": [
+            4
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120049,
+      "Quality": 3,
+      "Talent": "1",
+      "Describe": "[[loc:data.treasurecfg.49.describe]]",
+      "goodID": 2055,
+      "Conversion": [
+        2001,
+        1000
+      ],
+      "levelInfo": [
+        {
+          "id": 120049,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            0.03
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120049,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            0.04
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        },
+        {
+          "id": 120049,
+          "Level": 3,
+          "param": [
+            0.05
+          ],
+          "vaulePercentage": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "ID": 120050,
+      "Quality": 1,
+      "Talent": "9",
+      "Describe": "[[loc:data.treasurecfg.50.describe]]",
+      "goodID": 2056,
+      "Conversion": [
+        2001,
+        2500
+      ],
+      "levelInfo": [
+        {
+          "id": 120050,
+          "Level": 1,
+          "GoldCost": 1000,
+          "PieceCost": 3,
+          "param": [
+            2
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        },
+        {
+          "id": 120050,
+          "Level": 2,
+          "GoldCost": 6000,
+          "PieceCost": 5,
+          "param": [
+            3
+          ],
+          "vaulePercentage": [
+            0
+          ]
+        },
+        {
+          "id": 120050,
+          "Level": 3,
+          "param": [
+            4
+          ],
+          "vaulePercentage": [
+            0
           ]
         }
       ]

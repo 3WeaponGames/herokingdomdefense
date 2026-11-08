@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "cea43873-fcac-4b46-979f-3168ff41c143",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "33-moonstone-ring": {
+      "ver": "1.0.6",
+      "uuid": "091d3398-74e1-4a0a-96d8-62c3c8955ed2",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "cea43873-fcac-4b46-979f-3168ff41c143",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

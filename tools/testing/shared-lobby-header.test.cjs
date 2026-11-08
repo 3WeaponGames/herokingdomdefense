@@ -27,7 +27,7 @@ function fixture(){
   function positions(){return ['ndPower','ndGold','ndDiamond','btnSetting'].map(name=>{const n=top[name],p=owner.convertToNodeSpaceAR(n.convertToWorldSpaceAR({x:0,y:0}));return{name,x:p.x,y:p.y,scaleX:n.scaleX,scaleY:n.scaleY};});}
   function check(){const a=owner.convertToNodeSpaceAR({x:Math.max(visible.x,safe.x),y:Math.max(visible.y,safe.y)}),b=owner.convertToNodeSpaceAR({x:Math.min(visible.x+visible.width,safe.x+safe.width),y:Math.min(visible.y+visible.height,safe.y+safe.height)}),cell=(b.x-a.x-128)/3;
     for(const [index,name]of ['ndPower','ndGold','ndDiamond'].entries()){const p=owner.convertToNodeSpaceAR(top[name].convertToWorldSpaceAR({x:0,y:0}));near(p.x,a.x+cell*(index+.5)+10,name+' x');near(p.y,b.y-62,name+' y');assert.equal(top[name].widget.enabled,false);}
-    const gold=top.ndGold,lo=owner.convertToNodeSpaceAR(gold.convertToWorldSpaceAR({x:0,y:-gold.height/2})),hi=owner.convertToNodeSpaceAR(gold.convertToWorldSpaceAR({x:0,y:gold.height/2})),scale=Math.max(64,Math.abs(hi.y-lo.y))/top.btnSetting.height;
+    const gold=top.ndGold,lo=owner.convertToNodeSpaceAR(gold.convertToWorldSpaceAR({x:0,y:-gold.height/2})),hi=owner.convertToNodeSpaceAR(gold.convertToWorldSpaceAR({x:0,y:gold.height/2})),scale=Math.max(72,Math.abs(hi.y-lo.y))/top.btnSetting.height;
     near(top.btnSetting.scaleX,scale,'settings scale');near(top.btnSetting.scaleY,scale,'settings scale');near(top.btnSetting.x,b.x-24-top.btnSetting.width*scale/2,'settings right edge');near(top.btnSetting.y,b.y-62,'settings row');assert.equal(top.btnSetting.widget.enabled,false);
   }
   return{top,owner,currencyParent,layout,cc,visible,safe,positions,check};

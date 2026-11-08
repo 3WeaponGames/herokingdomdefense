@@ -67,6 +67,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.outBuild = t;
   };
   _ctor.prototype.initData = function (t) {
+    this._relicSoldier = true;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     GameToolsOverrides.cancel(this);
     var e = this;
@@ -461,7 +462,7 @@ var def_KinghtFallSoldierBase = function (t) {
     if (n) {
       n.node.getPosition(this.vec2_2);
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
-      n.onAttacked(e);
+      n.onAttacked(e, this);
       $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
       $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(n.node.getPosition(), "xb_gj");
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);

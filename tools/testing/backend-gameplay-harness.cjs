@@ -24,13 +24,13 @@ function setup(overrides={}){
  e.stubs.AudioMgr={AudioMgr:singleton({getAudioSource:()=>({}),getMusicVolume:()=>.5})};
  e.stubs.TestMode={TestMode:singleton({shouldBypassAdLimits:()=>false})};
  Object.assign(e.stubs,overrides);
- function load(name){if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name];
-  const allowed=/^(GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
+ function load(name){if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;
+  const allowed=/^(RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
   if(!allowed.test(name))return e.load(name);
-  const ex={};mods[name]=ex;
-  vm.runInNewContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{exports:ex,module:{exports:ex},require:load,cc:e.cc,sp:{Skeleton:function(){}},console,
+  const module={exports:{}};mods[name]=module;
+  vm.runInNewContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{exports:module.exports,module,require:load,cc:e.cc,sp:{Skeleton:function(){}},console,
    __extends:(C,B)=>{Object.setPrototypeOf(C,B);C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},
-   __decorate:(ds,t,k)=>k===undefined?t:undefined,__spreadArrays:(...xs)=>[].concat(...xs)}, {filename:name+'.js'});return ex;
+   __decorate:(ds,t,k)=>k===undefined?t:undefined,__spreadArrays:(...xs)=>[].concat(...xs)}, {filename:name+'.js'});return module.exports;
  }
  const DM=load('KinghtFallGameCtrlData');e.stubs.KinghtFallGameCtrlData=DM;const D=DM.default,d=Object.create(D.prototype);
  Object.assign(d,{buffList:[],addTime:{},talentAdd:{},treasureAdd:{},treasureAddTime:{},businessAdd:{},businessPoints:[],weaponBusinessPoints:{node:{}},horseBusinessPoints:{node:{}},coin:20,time:{MonsterGenerate:0},enemyQueue:{},enemyList:[],soldierList:[],bulidPointMap:{},levelCfg:{Level:1,WaveCfg:[{},{}]},round:1});

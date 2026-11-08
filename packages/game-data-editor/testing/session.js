@@ -15,7 +15,7 @@ function catalog(root){
     const labels=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'),'utf8')).entries;
     const label=(value,fallback)=>typeof value==='string'?value.replace(/\[\[loc:([^\]]+)\]\]/g,(match,key)=>labels[key]&&labels[key].en||match):fallback;
     return {
-        goods:Object.keys(data.GoodsCfg).map(key=>{const row=data.GoodsCfg[key];return {id:Number(key),name:label(row.name,row.enumKey),type:row.type,relicId:row.itemID,requiresBattle:Number(key)===2003,kind:row.type===2?'Relic copies':'Currency',description:row.type===2?'First copy unlocks the relic; further copies add fragments using the existing reward rules.':Number(key)===2003?'Current battle only; not a permanent currency.':''};}),
+        goods:Object.keys(data.GoodsCfg).map(key=>{const row=data.GoodsCfg[key];return {id:Number(key),name:label(row.name,row.enumKey),type:row.type,relicId:row.itemID,requiresBattle:Number(key)===2003,kind:Number(key)===2033?'Consumable':row.type===2?'Relic copies':'Currency',description:Number(key)===2033?'Each stored item can be used for +20 Energy; granting it does not immediately refill Energy.':row.type===2?'First copy unlocks the relic; further copies add fragments using the existing reward rules.':Number(key)===2003?'Current battle only; not a permanent currency.':''};}),
         relics:data.TreasureCfg.map(row=>({id:row.ID,name:label(data.GoodsCfg[row.goodID].name,'Relic '+row.ID)})),
         equipment:data.EquipCfg.map(row=>({id:row.id,name:label(row.levelInfo[0].EquipName,'Equipment '+row.id),maxLevel:row.levelInfo.length})),
         talents:data.TalentLevelCfg.map(row=>({id:row.ID,name:label(data.TalentCfg[row.kindID].Name,'Talent '+row.ID),level:row.Level,kindId:row.kindID})),

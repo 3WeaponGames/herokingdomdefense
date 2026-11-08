@@ -14,7 +14,7 @@ The hero follows the Arrow design saved for its equipped tier in **Items**.
 An explicit flight selection in Projectiles overrides that design. The equipment
 tier selector is a silent preview setting; it never changes player progress.
 
-**Relics** edits the 27 existing relics, their level effects and costs, conversion
+**Relics** edits the 50 relics, their level effects and costs, conversion
 rewards, names, icons and icon backgrounds. Implemented effect IDs and goods
 bindings are fixed. **Choose icon…** is also available on image fields in
 Equipment, Talents, Battle Perks, Buildings and Units. It offers imported
@@ -22,6 +22,14 @@ SpriteFrames from runtime bundles. The picker opens with pack folders: 2D Minima
 Minimal Hero Equipment, GUI Pro, monster portraits and original game assets.
 Open a category to browse its icons; breadcrumbs and Back return to parent
 folders. Search finds matching names and folders across every pack.
+The **Relic Icons** collection contains all 50 transparent 128px icons and appears
+after the other collections. The catalog has 18 Common, 14 Rare, 10 Epic and
+8 Legendary relics. Every relic requires 3 fragments for level 1 → 2 and
+5 fragments for level 2 → 3. New combat effects live in `RelicCombat`,
+`RelicBattle` and `RelicRuntime`; their battle charges and wave reward ledgers
+are included in stage checkpoints. Rarity values run from 1 (Legendary) to
+4 (Common). Changing an effect parameter in Relics updates its owned runtime
+snapshot when a new battle or Continue session loads.
 Explicit icon choices take precedence over
 automatic item thumbnails. Icons do not alter the held equipment model.
 

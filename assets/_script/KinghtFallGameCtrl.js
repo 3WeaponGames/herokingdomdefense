@@ -134,6 +134,9 @@ var def_KinghtFallGameCtrl = function (t) {
     this._separateArmyCommands = true;
     var restoring = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(t);
     this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring);
+    var saved = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
+    var checkpoint = restoring && saved.getCheckpoint ? saved.getCheckpoint(t) : null;
+    require("RelicRuntime").restore(this.gameData, checkpoint && checkpoint.relicState);
     this.ctrPlay.initData();
     this.ctrPlay.ndAgg.active = false;
     this.buildBullet.node.active = false;
@@ -269,6 +272,8 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     Navigation.beginFrame(this);
     if (this._projectileLooks) this._projectileLooks.update(t);
+    if (this.gameData && this.gameData._relicSavePending && require("RelicRuntime").retry(this.gameData, t) && this.gameData._relicRoundCommitPending) this.gameData.tryEndGame();
+    if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.gameData) this.gameData._relicCombatTime = (this.gameData._relicCombatTime || 0) + t;
     GameToolsOverrides.tick(t, this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight);
     switch (this.gameStatus) {
       case $z1KinghtFallModle.KinghtFallGameStage.Prepare:
@@ -1043,7 +1048,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndPlayArr2.push(o);
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit >= Math.random();
-    s && (r *= this.ctrPlay.critDam);
+    s && (r *= this.ctrPlay.getCriticalDamage ? this.ctrPlay.getCriticalDamage() : this.ctrPlay.critDam);
     o.combatContext = this;
     ProjectileLooks.prepare(o, this, "hero");
     o.setTag(a, t.node, function () {
@@ -1055,7 +1060,7 @@ var def_KinghtFallGameCtrl = function (t) {
         $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(t.node.getPosition(), r, s);
         $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(t.node.getPosition(), "jian_" + e.ctrPlay.ctrPlayAni.arrName);
         n.active = false;
-        t.onAttacked(r);
+        t.onAttacked(r, e.ctrPlay);
         var i = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff08);
         i && t.isDead() && e.ctrPlay.addHpPro(i.Pamer[0]);
         var a = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff15);
@@ -1102,6 +1107,8 @@ var def_KinghtFallGameCtrl = function (t) {
     }
   };
   _ctor.prototype.onShotBuild = function (t, e) {
+    var game = this;
+    var shotData = this.gameData, shotEpoch = this._combatEpoch;
     var appearance = t.buildInfo && t.buildInfo.cfg && t.buildInfo.cfg.Appearance;
     var layered = appearance && appearance.weapon && appearance.weapon.sprite;
     if (layered) {
@@ -1128,23 +1135,27 @@ var def_KinghtFallGameCtrl = function (t) {
       var towerKey = t.buildInfo.cfg.ID && t.buildInfo.cfg.index ? "tower:" + t.buildInfo.cfg.ID + ":" + t.buildInfo.cfg.index : "tower";
       ProjectileLooks.prepare(a, this, behavior.projectileLook || (behavior.attackType === "arrow" ? "tower" : towerKey));
       a.setTowerTag(i, e.node, function () {
+        if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
         var center = behavior.attackType === "cannon" ? a._towerImpactPoint : require("TowerCombat").point(e.node, game.ndUI);
         require("TowerCombat").damage(game, e, center, o, behavior, function (actor, position, damage) {
           if (effects && cc.isValid(effects, true)) {
             effects.showDamageNum(position, damage);
             if (behavior.attackType !== "cannon") effects.onMonsterAttack(position, "jian_lv1");
           }
-        });
+        }, t);
+        if (game.gameData === shotData && game._combatEpoch === shotEpoch) require("RelicBattle").towerImpact(shotData, t, e, center, game.ndUI);
       }, behavior);
       return;
     }
     ProjectileLooks.prepare(a, this, behavior && behavior.projectileLook || "tower");
     a.setTag(i, e.node, function () {
+      if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
       if (cc.isValid(e) && cc.isValid(e.node)) {
         $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(e.node.getPosition(), o);
         $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(e.node.getPosition(), "jian_lv1");
         n.active = false;
-        e.onAttacked(o);
+        e.onAttacked(o, t);
+        if (game.gameData === shotData && game._combatEpoch === shotEpoch) require("RelicBattle").towerImpact(shotData, t, e, null, game.ndUI);
       }
     });
   };
@@ -1254,9 +1265,12 @@ var def_KinghtFallGameCtrl = function (t) {
       list: this.gameData.taskInfo.list,
       stage: this.gameData.taskInfo.stage
     };
-    return { levelNum: this.gameData.levelCfg.Level, roundNum: this.gameData.round,
+    var checkpoint = { levelNum: this.gameData.levelCfg.Level, roundNum: this.gameData.round,
       coin: this.gameData.coin, buffList: t, buildingLevel: e,
       businessList: this.gameData.businessAdd, taskList: n };
+    var relicState = require("RelicRuntime").snapshot(this.gameData);
+    if (relicState !== undefined) checkpoint.relicState = relicState;
+    return checkpoint;
   };
   _ctor.prototype.saveGame = function () {
     return $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setCheckpoint(this.getCheckpoint());

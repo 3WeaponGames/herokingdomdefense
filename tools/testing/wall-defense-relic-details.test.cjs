@@ -63,6 +63,18 @@ test('normal collection descriptions retain their Upgrade button and reset inspe
   assert.equal(panel.readOnly,false);assert.equal(panel.btnGold.active,true);assert.equal(panel.btnGold.handlers.end,panel.onGoldBtnClick);
 });
 
+test('Vampire Fang displays fractional healing precisely and the live upgrade rows show three then five fragments',()=>{
+  const h=setup(),panel=h.detail(),vampire=config.TreasureCfg.find(row=>row.ID===120042);
+  panel.T=value=>value;panel.init({...vampire,Describe:'Restore {0} HP per kill'});
+  h.owned.level=2;h.owned.frame=2;panel.start();
+  assert.match(panel.labInfo.string,/0\.75%/);
+  assert.equal(panel.ndPro.getChildByName('labPro').getComponent(h.cc.Label).string,'2/5');
+  h.owned.level=1;h.owned.frame=3;panel.initView();
+  assert.match(panel.labInfo.string,/0\.5%/);
+  assert.equal(panel.ndPro.getChildByName('labPro').getComponent(h.cc.Label).string,'3/3');
+  h.owned.level=3;panel.initView();assert.match(panel.labInfo.string,/1%/);assert.equal(panel.ndPro.active,false);
+});
+
 test('reward-grid taps inspect their own Relic while currency icons do not open descriptions',()=>{
   const h=setup(),second=config.TreasureCfg.find(item=>item.Quality===3),prefab={};
   h.modules.GAD_PlayerMgr.default.getInstance().getResult=()=>({activeMilliseconds:60000,clearedWaves:10,saved:true,

@@ -57,6 +57,18 @@ test('legacy towers retain nearest targeting and no override; partial authored s
   t.doAttack(); assert.equal(selected, near); assert.equal(t.time.AttackTime, 0);
 });
 
+test('a killing tower impact cannot apply a relic pulse to a replacement battle', () => {
+  for(const type of ['arrow','cannon']){
+    const {h,bullet}=shotSetup(),t=tower(h,{Tower:{attackType:type}});
+    t.buildCfg={enumValue:2};
+    const target=enemy('target',100,0,1),next=enemy('next-battle',100,0);
+    h.d.enemyList=[target];h.d.treasureAdd[120037]=[.8];
+    target.onAttacked=function(damage){this.hp-=damage;h.g._combatEpoch++;h.g.gameData={treasureAdd:{120037:[.8]},enemyList:[next],_relicCombatTime:0};};
+    h.g.onShotBuild(t,target);complete(bullet);
+    assert.equal(next._relicControl,undefined,type+' must not affect the replacement battle');
+  }
+});
+
 test('sniper prefers highest living HP in range with deterministic nearest ties and configurable priorities', () => {
   const h = setup(), t = tower(h, { Tower: { attackType: 'sniper' } });
   const near = enemy('near', 40, 0, 10), big = enemy('big', 400, 0, 500), beyond = enemy('beyond', 501, 0, 1000);

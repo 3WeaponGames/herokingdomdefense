@@ -53,7 +53,7 @@ function choose(enemies, origin, range, behavior, parent) {
   }
   return best;
 }
-function damage(game, target, center, amount, behavior, onHit) {
+function damage(game, target, center, amount, behavior, onHit, source) {
   if (!(amount > 0) || !isFinite(amount)) return;
   var epoch = game._combatEpoch, data = game.gameData;
   var radius = behavior && behavior.attackType === "cannon" ? behavior.splashRadius : 0;
@@ -76,7 +76,7 @@ function damage(game, target, center, amount, behavior, onHit) {
     if (!live(entry.actor) || entry.actor.node !== entry.node || entry.node._combatGeneration !== entry.generation || entry.amount <= 0) continue;
     if (onHit) onHit(entry.actor, entry.position, entry.amount);
     if (game._combatEpoch !== epoch || game.gameData !== data) break;
-    entry.actor.onAttacked(entry.amount);
+    entry.actor.onAttacked(entry.amount, source);
   }
 }
 exports.settings = settings;

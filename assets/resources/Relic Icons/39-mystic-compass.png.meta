@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "c7d638d4-d9eb-4c3e-b34e-a31b116222b0",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "39-mystic-compass": {
+      "ver": "1.0.6",
+      "uuid": "e3198320-6803-4e41-8b41-6a5485b428fb",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "c7d638d4-d9eb-4c3e-b34e-a31b116222b0",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

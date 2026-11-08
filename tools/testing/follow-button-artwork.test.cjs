@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab')));
+const RelicRuntime=require('../../assets/_script/RelicRuntime');
 test('Follow uses a mipmapped UI boot while Rally retains its flag frames',()=>{
  const find=name=>prefab.find(n=>n._name===name),follow=find('btnFollow'),rally=find('btnAgg');
  const boot=follow._children.map(r=>prefab[r.__id__]).find(n=>n._name==='FollowBoot');
@@ -64,6 +65,7 @@ test('fresh and restored battle initialization both disable gameplay Follow and 
  assert.notEqual(tags.find(n=>n._name==='ndTag1')._active,false);assert.equal(tags.find(n=>n._name==='ndTag2')._active,false);
  for(const restoring of [false,true]){
   const init=method('KinghtFallGameCtrl.js','initData',{GameToolsOverrides:{clear(){}},
+   require:name=>{assert.equal(name,'RelicRuntime');return RelicRuntime;},
    $z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getGameData:()=>({hasSave:()=>restoring})})}},
    $z1KinghtFallGameCtrlData:{default:function(){}}});
   const game={isAgg:true,_combatEpoch:0,ctrPlay:{initData(){},ndAgg:{active:true}},buildBullet:{node:{}},ndAggFlag:{active:true}};

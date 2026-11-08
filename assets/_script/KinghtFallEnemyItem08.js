@@ -74,7 +74,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
       return void i.ctr.setTag(i.pos, n.node, function () {
         $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
         var shooter = cc.isValid(t.node) && t.node._combatGeneration === shooterGeneration ? t : null;
-        n.onAttacked(e, shooter);
+        n.onAttacked(e, shooter, true);
       });
     }
   };

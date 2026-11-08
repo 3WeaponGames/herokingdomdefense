@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "15db5bab-4dc2-4272-8540-51841ccf891e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "45-wolf-totem": {
+      "ver": "1.0.6",
+      "uuid": "e2ddf31c-6fef-405b-9902-35c60ce4c415",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "15db5bab-4dc2-4272-8540-51841ccf891e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

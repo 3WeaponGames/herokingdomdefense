@@ -22,6 +22,8 @@ var $z1KinghtFallItemHp = require("KinghtFallItemHp");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallBuildInfo = require("KinghtFallBuildInfo");
+var RelicBattle = require("RelicBattle");
+var RelicRuntime = require("RelicRuntime");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -659,10 +661,14 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.onAttacked = function (t) {
     if (!this.isDestroyed) {
-      this.buildInfo.hp -= t;
+      var castle = this.buildInfo.BuildID === 1 || this.buildCfg && this.buildCfg.enumValue === 1;
+      var data = castle ? RelicRuntime.current() : null;
+      var damage = castle ? RelicBattle.castleIncomingDamage(data, this, t) : t;
+      this.buildInfo.hp -= damage;
+      if (castle) RelicBattle.afterCastleDamage(data, this);
       this.buildInfo.hp <= 0 && this.onDead();
       this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
-      return t;
+      return damage;
     }
   };
   _ctor.prototype.onDead = function () {

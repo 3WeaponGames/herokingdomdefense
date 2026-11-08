@@ -49,12 +49,12 @@ function create(kind){
       this.$reload.onclick=()=>this._load(true);this.$review.onclick=()=>this._review(false);this.$save.onclick=()=>this._review(true);
       this.$discard.onclick=()=>this._confirm('Discard all panel drafts?','This discards unsaved edits shared by every game-tools panel. Saved game files remain unchanged.',()=>this._action('discard'),'Discard drafts');
       this._load();
-      ipc('asset-index').then(assets=>{if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);this._render();}).catch(()=>{});
+      ipc('asset-index',{refresh:true}).then(assets=>{if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);this._render();}).catch(()=>{});
     },
     close(){this._closed=true;if(this._iconPicker)this._iconPicker.destroy();if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
     messages:{'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
     _status(message,error){this.$status.textContent=message;this.$status.className='gt-status'+(error?' error':'');},
-    async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
+    async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(explicit){const assets=await ipc('asset-index',{refresh:true});if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);}if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
     _apply(snapshot){if(!snapshot||this._closed)return;if(snapshot.result)this._lastResult=snapshot.result;else if(this._snapshot&&snapshot.version!==this._snapshot.version)this._lastResult=null;this._snapshot=snapshot;this._render();},
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
     _change(edits){

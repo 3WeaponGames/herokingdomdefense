@@ -196,11 +196,12 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "52ff32b4-138e-4522-b4f9-7d9cd2b526aa"
+      "__uuid__": "8defea6b-fa19-5e45-ba1d-db51b8d8aeca"
     },
     "node": {
       "__id__": 4
-    }
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -282,7 +283,9 @@
     "node": {
       "__id__": 7
     },
-    "_N$string": "[[loc:ui.layout.kinghtfallhomepersonctrl.8]]"
+    "_N$string": "[[loc:ui.layout.kinghtfallhomepersonctrl.8]]",
+    "_enableWrapText": false,
+    "_overflow": 0
   },
   {
     "__type__": "cc.LabelOutline",
@@ -2567,13 +2570,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 708,
+      "width": 689.19,
       "height": 220
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        0,
+        -9.405,
         -256,
         0,
         0,
@@ -3132,7 +3135,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "d0d6ab30-b4e2-4e2f-9fda-aea8132dddf3"
+      "__uuid__": "1d914abf-1dc8-431d-847a-02d0679bce23"
     },
     "node": {
       "__id__": 136

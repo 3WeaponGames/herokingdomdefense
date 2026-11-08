@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "6f88f537-4b23-4644-b655-2e0c415d4be6",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "12-book-of-thrift": {
+      "ver": "1.0.6",
+      "uuid": "746db737-eb47-43f4-a57a-f786eb302209",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6f88f537-4b23-4644-b655-2e0c415d4be6",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

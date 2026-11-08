@@ -98,7 +98,15 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
         s.setPosition(l);
         var g = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTalentCfg(i[n].kindID);
         a.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconTalent, g.Image, function (t) {
-          s.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
+          if (!t || !cc.isValid(s, true)) return;
+          var icon = s.getChildByName("sprIcon").getComponent(cc.Sprite);
+          icon.spriteFrame = t;
+          // Full-canvas stat sprites retain transparent padding. Keep their
+          // artwork inside the authored badge instead of adopting 128px size.
+          if (typeof g.Image === "string" && g.Image.indexOf("@icon/Stats Icons/") === 0) {
+            icon.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+            icon.node.setContentSize(96, 96);
+          }
         });
         s.on(cc.Node.EventType.TOUCH_END, function () {
           t.onClick(i[n]);

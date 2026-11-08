@@ -63,7 +63,7 @@ var def_KinghtFallUITreasureInfo = function (t) {
     for (var i = 0; i < this.cfg.levelInfo[e - 1].param.length; i++) {
       var a = this.cfg.levelInfo[e - 1].param[i];
       if (this.cfg.levelInfo[e - 1].vaulePercentage[i]) {
-        n.push("<color=#43a926>" + (100 * a).toFixed(0) + "%</c>");
+        n.push("<color=#43a926>" + Number((100 * a).toFixed(2)) + "%</c>");
       } else {
         n.push("<color=#43a926>" + a + "</c>");
       }

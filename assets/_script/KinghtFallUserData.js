@@ -16,6 +16,8 @@ var g = function () {
   this.diamondNum = 0;
   this.powerNum = 0;
   this.powerUpdateTime = 0;
+  this.energyItems = 0;
+  this.energyItemUseRevision = 0;
   this.curStage = 1;
   this.maxStage = 1;
   this.maxOrder = 0;
@@ -85,6 +87,8 @@ var exp_KinghtFallUserData = function (t) {
     t && this.saveData();
   };
   _ctor.prototype.validateSaveRecord = function (data) {
+    var energyFields = {};
+    ["energyItems", "energyItemUseRevision"].forEach(function (key) { energyFields[key] = !!data && Object.prototype.hasOwnProperty.call(data, key); });
     data = this.normalizeSaveRecord(data, new g());
     var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
     var equipment = config.getEquipCfgList();
@@ -104,6 +108,13 @@ var exp_KinghtFallUserData = function (t) {
         }
         return row;
       });
+    });
+    ["energyItems", "energyItemUseRevision"].forEach(function (key) {
+      // Older durable reward journals did not contain these fields. Keep their
+      // canonical snapshots valid; the inventory API reads absent values as 0.
+      if (!energyFields[key]) { delete data[key]; return; }
+      var value = data[key];
+      data[key] = typeof value === "number" && isFinite(value) && value >= 0 && value <= 9007199254740991 ? Math.floor(value) : 0;
     });
     data.curStage = Math.max(1, Math.floor(data.curStage));
     data.maxStage = Math.max(data.curStage, Math.floor(data.maxStage));
@@ -131,15 +142,17 @@ var exp_KinghtFallUserData = function (t) {
     var gold = 0;
     var diamond = 0;
     var power = 0;
+    var energyItems = 0;
     var totals = previous && receipt.rewardTotals ? Object.assign({}, receipt.rewardTotals) : {};
     var goods = $z1KinghtFallEnum.KinghtFallEnumGoodsCfg;
     function currency(reward, amount, apply) {
-      if ([goods.Coin, goods.Diamond, goods.stamina, goods.PassPoints].indexOf(reward.id) < 0) return false;
+      if ([goods.Coin, goods.Diamond, goods.stamina, goods.PassPoints, goods.EnergyItem].indexOf(reward.id) < 0) return false;
       totals[reward.id] = (totals[reward.id] || 0) + amount;
       if (apply) {
         if (reward.id === goods.Coin) gold += amount;
         else if (reward.id === goods.Diamond) diamond += amount;
         else if (reward.id === goods.stamina) power += amount;
+        else if (reward.id === goods.EnergyItem) energyItems += amount;
       }
       return true;
     }
@@ -156,6 +169,7 @@ var exp_KinghtFallUserData = function (t) {
           require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().addTreasureReward(config.itemID, amount, function (converted) { currency(converted, converted.num, true); });
         }
       });
+      if (energyItems) require("EnergyItems").add(this, energyItems);
     } finally { this.deferSave = deferred; }
     this.data.goldNum += gold;
     this.data.diamondNum += diamond;

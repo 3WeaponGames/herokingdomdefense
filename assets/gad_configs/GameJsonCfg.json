@@ -1159,7 +1159,7 @@
       "buffWord": "[[loc:data.bufftypecfg.1.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts1",
-      "buffIcon": "tf_13",
+      "buffIcon": "@icon/Stats Icons/attack-speed",
       "buffDes": "[[loc:data.bufftypecfg.1.buffdes]]",
       "buffLabel": "[[loc:gad.stat.speed]]",
       "buffValue": "[[loc:format.operation.add]]"
@@ -1172,7 +1172,7 @@
       "buffWord": "[[loc:data.bufftypecfg.2.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts5",
-      "buffIcon": "tf_13",
+      "buffIcon": "@icon/Stats Icons/attack-speed",
       "buffDes": "[[loc:data.bufftypecfg.2.buffdes]]",
       "buffLabel": "[[loc:gad.stat.speed]]",
       "buffValue": "[[loc:format.operation.subtract]]"
@@ -1185,7 +1185,7 @@
       "buffWord": "[[loc:data.bufftypecfg.3.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts2",
-      "buffIcon": "tf_02",
+      "buffIcon": "@icon/Stats Icons/attack-damage",
       "buffDes": "[[loc:data.bufftypecfg.3.buffdes]]",
       "buffLabel": "[[loc:gad.stat.atk]]",
       "buffValue": "[[loc:format.operation.add]]"
@@ -1198,7 +1198,7 @@
       "buffWord": "[[loc:data.bufftypecfg.4.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts6",
-      "buffIcon": "tf_02",
+      "buffIcon": "@icon/Stats Icons/attack-damage",
       "buffDes": "[[loc:data.bufftypecfg.4.buffdes]]",
       "buffLabel": "[[loc:gad.stat.atk]]",
       "buffValue": "[[loc:format.operation.subtract]]"
@@ -1211,7 +1211,7 @@
       "buffWord": "[[loc:data.bufftypecfg.5.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts3",
-      "buffIcon": "tf_99",
+      "buffIcon": "@icon/Stats Icons/soldier-capacity",
       "buffDes": "[[loc:data.bufftypecfg.5.buffdes]]",
       "buffLabel": "[[loc:gad.stat.member]]",
       "buffValue": "[[loc:format.operation.add]]"
@@ -1224,7 +1224,7 @@
       "buffWord": "[[loc:data.bufftypecfg.6.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts7",
-      "buffIcon": "tf_99",
+      "buffIcon": "@icon/Stats Icons/soldier-capacity",
       "buffDes": "[[loc:data.bufftypecfg.6.buffdes]]",
       "buffLabel": "[[loc:gad.stat.member]]",
       "buffValue": "[[loc:format.operation.subtract]]"
@@ -1237,7 +1237,7 @@
       "buffWord": "[[loc:data.bufftypecfg.7.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts4",
-      "buffIcon": "tf_03",
+      "buffIcon": "@icon/Stats Icons/health",
       "buffDes": "[[loc:data.bufftypecfg.7.buffdes]]",
       "buffLabel": "[[loc:gad.stat.hp]]",
       "buffValue": "[[loc:format.operation.add]]"
@@ -1250,7 +1250,7 @@
       "buffWord": "[[loc:data.bufftypecfg.8.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts8",
-      "buffIcon": "tf_03",
+      "buffIcon": "@icon/Stats Icons/health",
       "buffDes": "[[loc:data.bufftypecfg.8.buffdes]]",
       "buffLabel": "[[loc:gad.stat.hp]]",
       "buffValue": "[[loc:format.operation.subtract]]"
@@ -1287,7 +1287,7 @@
       "buffWord": "[[loc:data.bufftypecfg.11.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts1",
-      "buffIcon": "tf_13",
+      "buffIcon": "@icon/Stats Icons/attack-speed",
       "buffDes": "[[loc:data.bufftypecfg.11.buffdes]]",
       "buffLabel": "[[loc:gad.stat.speed]]",
       "buffValue": "[[loc:format.operation.multiply]]"
@@ -1300,7 +1300,7 @@
       "buffWord": "[[loc:data.bufftypecfg.12.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts5",
-      "buffIcon": "tf_13",
+      "buffIcon": "@icon/Stats Icons/attack-speed",
       "buffDes": "[[loc:data.bufftypecfg.12.buffdes]]",
       "buffLabel": "[[loc:gad.stat.speed]]",
       "buffValue": "[[loc:format.operation.divide]]"
@@ -1313,7 +1313,7 @@
       "buffWord": "[[loc:data.bufftypecfg.13.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts2",
-      "buffIcon": "tf_02",
+      "buffIcon": "@icon/Stats Icons/attack-damage",
       "buffDes": "[[loc:data.bufftypecfg.13.buffdes]]",
       "buffLabel": "[[loc:gad.stat.atk]]",
       "buffValue": "[[loc:format.operation.multiply]]"
@@ -1326,7 +1326,7 @@
       "buffWord": "[[loc:data.bufftypecfg.14.buffword]]",
       "hitEffect": 1,
       "buffImage": "buff_ts6",
-      "buffIcon": "tf_02",
+      "buffIcon": "@icon/Stats Icons/attack-damage",
       "buffDes": "[[loc:data.bufftypecfg.13.buffdes]]",
       "buffLabel": "[[loc:gad.stat.atk]]",
       "buffValue": "[[loc:format.operation.divide]]"

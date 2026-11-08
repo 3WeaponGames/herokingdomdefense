@@ -15,6 +15,13 @@ Object.keys(legacy).forEach(name=>test('unchanged synchronous ordered trace: '+n
 }));
 test('explicit delay dispatches once across a large time step',()=>{const log=[],a=actor(log);data.GameTools={timings:{'enemy:90001:default':{attack:.5}}};Timing.attack(a,'enemy',a.doAttack);assert.equal(log.length,0);Timing.tick(.2,true);assert.equal(log.length,0);Timing.tick(.4,true);assert.equal(log.length,1);Timing.tick(10,true);assert.equal(log.length,1);});
 test('no override and explicit zero remain synchronous',()=>{const log=[],a=actor(log);Timing.attack(a,'enemy',a.doAttack);assert.equal(log.length,1);data.GameTools={timings:{'enemy:90001:default':{attack:0}}};Timing.attack(a,'enemy',a.doAttack);assert.equal(log.length,2);assert(!Timing.isPending(a));});
+
+test('boss relic slowing also delays an already queued hit without changing its authored timing',()=>{
+    const log=[],a=actor(log);a.node._combatGeneration=1;
+    data.GameTools={timingDefaults:{'enemy:90001:default':{attack:.5}}};const saved=JSON.stringify(data);
+    Timing.attack(a,'enemy',a.doAttack);a._relicControl={generation:1,freeze:0,slow:.5,duration:2};
+    Timing.tick(.5,true);assert.equal(log.length,0);Timing.tick(.5,true);assert.equal(log.length,1);assert.equal(JSON.stringify(data),saved);
+});
 test('saved animation defaults dispatch enemy, allied and hero attacks at their authored markers',()=>{
     const cases=[['enemy',90001,.5],['ally',90004,.5],['hero','hero',.1667]];
     cases.forEach(([type,id,at])=>{const log=[],a=actor(log);a.cfg.ID=id;data.GameTools={timingDefaults:{[Timing.keyFor(a,type)]:{attack:at}}};Timing.attack(a,type,a.doAttack);Timing.tick(at-.0001,true);assert.equal(log.length,0,type);Timing.tick(.0001,true);assert.equal(log.length,1,type);Timing.tick(1,true);assert.equal(log.length,1,type);});

@@ -192,7 +192,7 @@ var def_KinghtFallGameCtrlData = function () {
     var restoring = !t && this._restoringCheckpoint;
     this._restoringCheckpoint = false;
     this.pendingEnemySpawns = 0;
-    if (t) this.addTime = {};
+    if (t) { this.addTime = {}; require("RelicRuntime").restore(this, null); }
     var e = this.getBulidList();
     for (var n = 0; n < e.length; n++) {
       e[n].reset(t);
@@ -306,6 +306,7 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     if (e > 0) {
+      e += require("RelicBattle").productionBonus(this, e);
       if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract]) {
         this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] += e, this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] >= 10 && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] -= 10, e += this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract][0], $z1LogMgr.LogMgr.getInstance().info("***税收契约", this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract][0]));
       }
@@ -461,7 +462,7 @@ var def_KinghtFallGameCtrlData = function () {
     }
     }
     for (var o = 0; o < this.enemyList.length; o++) {
-      (a = this.enemyList[o]).onUpdate(t);
+      require("RelicCombat").updateEnemy(this.enemyList[o], t);
     }
     if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] += t, this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] >= 5)) {
       this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] -= 5;
@@ -515,13 +516,39 @@ var def_KinghtFallGameCtrlData = function () {
     }
   };
   _ctor.prototype.tryEndGame = function () {
+    var relicCommitReady = false;
+    if (this._relicRoundCommitPending) {
+      if (this._relicSavePending) return;
+      var pendingSilver = this._relicRoundCoinPending || 0;
+      delete this._relicRoundCommitPending;
+      delete this._relicRoundCoinPending;
+      relicCommitReady = true;
+      if (pendingSilver > 0) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, pendingSilver);
+    }
     if (this.authoredTimeline && this.authoredTimeline.pending()) return;
     var t = 0;
     for (var e in this.enemyQueue) {
       !this.authoredTimeline && Object.prototype.hasOwnProperty.call(this.enemyQueue, e) && (t += this.enemyQueue[e].length);
     }
-    if (!this._roundCompleted && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
+    if ((relicCommitReady || !this._roundCompleted) && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
       this._roundCompleted = true;
+      if (require("RelicRuntime").active(this)) {
+        var coinBefore = this.coin;
+        if (require("RelicBattle").waveCleared(this, this.ctrPar && this.ctrPar.ctrPlay, this.round)) {
+          var silver = this.coin - coinBefore;
+          if (!require("RelicRuntime").commit(this)) {
+            this._relicRoundCommitPending = true;
+            this._relicRoundCoinPending = silver;
+            return;
+          }
+          if (silver > 0) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, silver);
+        } else if (this._relicSavePending) {
+          // A failed earlier legendary-charge save must also become durable
+          // before this battle advances past its cleared wave.
+          this._relicRoundCommitPending = true;
+          return;
+        }
+      }
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.start_X_Y, this.levelCfg.Level + "_" + this.round);
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().passOrder(this.levelCfg.Level, this.round);
       if (this.round < this.levelCfg.WaveCfg.length) {

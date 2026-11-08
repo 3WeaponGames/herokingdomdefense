@@ -61,6 +61,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.onShotSoldier(this);
+      var sourceGeneration = this.node._combatGeneration;
       i.ctr.setParent(this);
       return void i.ctr.setTag(i.pos, n.node, function () {
         var i;
@@ -69,7 +70,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
             var a = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
             e *= a;
           }
-          n.onAttacked(e);
+          n.onAttacked(e, t.node && t.node._combatGeneration === sourceGeneration ? t : null);
           $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
           $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(n.node.getPosition(), "jian_lv1");
         }

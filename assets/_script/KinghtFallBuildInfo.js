@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.KinghtFallBuildInfo = undefined;
 var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
+var RelicRuntime = require("RelicRuntime");
 var exp_KinghtFallBuildInfo = function () {
   function _ctor(t, e) {
     this.canUpgrade = false;
@@ -57,6 +58,7 @@ var exp_KinghtFallBuildInfo = function () {
         }
       }
       this.BuildID == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Wall && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.FortDurableStone] && (t += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.FortDurableStone][0]);
+      if (this.BuildID == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter) t += RelicRuntime.value(RelicRuntime.current(), 120032);
       this.hpMax = this.cfg.Hp * t;
       this.hp = this.hpMax;
     }

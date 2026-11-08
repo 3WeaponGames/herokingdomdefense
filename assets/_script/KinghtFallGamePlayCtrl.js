@@ -1,4 +1,6 @@
 var GameToolsOverrides = require("GameToolsOverrides");
+var RelicCombat = require("RelicCombat");
+var RelicRuntime = require("RelicRuntime");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -80,6 +82,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.initData = function () {
     GameToolsOverrides.cancel(this);
+    this._relicHero = true;
+    this._relicMoving = false;
     this.node._combatActor = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     this._regenerationDisabled = false;
@@ -111,7 +115,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
           this.moveSpeed = a.Parameters;
       }
     }
+    this.hpMax = this.baseHp * (1 + RelicRuntime.value(RelicRuntime.current(), 120036));
+    this.hp = this.hpMax;
     this._baseAttackRange = this.attackRange;
+    this.attackRange *= 1 + RelicRuntime.value(RelicRuntime.current(), 120044);
     if (cc.resources) require("CharacterAppearance").reset(this);
     this.ctrPlayAni.initView();
     if (cc.resources) require("CharacterAppearance").bind(this, "hero");
@@ -130,6 +137,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onRestart = function (t) {
     GameToolsOverrides.cancel(this);
+    this._relicMoving = false;
     this.node._combatActor = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     this.time[C.Attack] = 0;
@@ -154,6 +162,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.delAllBuff();
   };
   _ctor.prototype.doMove = function (t, e) {
+    this._relicMoving = !this.isDead() && !!(t.x || t.y);
     if (this.state != r.Reborn) {
       this.setLeft(t.x);
       if (cc.v2(0, 0).equals(t)) {
@@ -230,7 +239,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.getSpeed = function () {
     var t = 1;
-    return this.moveSpeed * ((t += this.time[C.MoveSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] || 0));
+    return this.moveSpeed * ((t += this.time[C.MoveSpeed] || 0) + ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] || 0) + RelicRuntime.value(RelicRuntime.current(), 120039));
   };
   _ctor.prototype.setPause = function (t) {
     this.ctrPlayAni.setPause(t);
@@ -244,8 +253,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   _ctor.prototype.isDead = function () {
     return this.state != r.Alive;
   };
-  _ctor.prototype.onAttacked = function (t) {
+  _ctor.prototype.onAttacked = function (t, attacker, ranged) {
     if (!(this.time[C.NoDie] > 0)) {
+      t = RelicCombat.heroIncoming(this, t, attacker, ranged);
+      var received = Math.max(0, Math.min(this.hp, t));
       $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.player_hurt);
       this.time[C.NoDie] = this.time[C.NoDieTime];
       if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield] && Math.random() < $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield][0]) {
@@ -258,6 +269,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         this.onDead();
       }
       this.ctrHp.setHp(this.hp, this.hpMax);
+      RelicCombat.afterHeroHit(this, received, attacker);
       return t;
     }
   };
@@ -270,6 +282,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onDead = function () {
     GameToolsOverrides.cancel(this);
+    this._relicMoving = false;
     var generation = this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = this;
     this.tagEnemy = null;
@@ -362,6 +375,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       e.sort(function (t, e) {
         return t.len - e.len;
       });
+      RelicCombat.heroAttack(this, e[0].tag, this.getAttack(e[0].tag));
       for (var o = 0; o < this.attNum; o++) {
         var r = e[o];
         r && $z1KinghtFallUIGame.default.instance.ctrGame.onPlayAttack(r.tag);
@@ -391,6 +405,9 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     (n += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] || 0) < 0 && (n = 0);
     return e * n;
   };
+  _ctor.prototype.getCriticalDamage = function () {
+    return this.critDam * (1 + RelicRuntime.value(RelicRuntime.current(), 120035));
+  };
   _ctor.prototype.getAttSpeed = function () {
     var t = this.attackSpeed;
     var e = 1;
@@ -412,7 +429,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.initBuffData = function () {
     if (this._baseAttackRange === undefined) this._baseAttackRange = this.attackRange;
-    this.attackRange = this._baseAttackRange;
+    this.attackRange = this._baseAttackRange * (1 + RelicRuntime.value(RelicRuntime.current(), 120044));
     var previousHpMax = this.hpMax;
     this.hpMax = this.baseHp;
     this._regenerationDisabled = false;
@@ -423,6 +440,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     e && (this.crit += e.Pamer[0]);
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff37);
     n && (this.crit += n.Pamer[0]);
+    this.crit += RelicRuntime.value(RelicRuntime.current(), 120031);
     this.time[C.MoveSpeed] = 0;
     var i = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff21);
     i && (this.time[C.MoveSpeed] += i.Pamer[0]);
@@ -438,6 +456,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this._regenerationDisabled = true;
       this.hpMax = (1 + s.Pamer[0]) * this.baseHp;
     }
+    this.hpMax += this.baseHp * RelicRuntime.value(RelicRuntime.current(), 120036);
     // Recomputing an owned perk must not repeatedly heal existing damage.
     this.hp = Math.max(0, Math.min(this.hpMax, this.hp + this.hpMax - previousHpMax));
     this.ctrHp.setHp(this.hp, this.hpMax);

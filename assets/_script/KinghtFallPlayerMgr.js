@@ -394,6 +394,9 @@ var exp_KinghtFallPlayerMgr = function () {
               this.missionData.addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetDiamonds, l);
               !this.claimingRewardTransaction && n && $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.AniDiamond, n);
               break;
+            case 2033: // Owned +20 Energy consumable; not current Energy.
+              require("EnergyItems").add(this.udata, l);
+              break;
             case $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.stamina:
               this.udata.addPowerNum(l);
               break;
