@@ -1122,12 +1122,14 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.loadGame = function () {
     var t = this;
-    if ($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(this.gameData.levelCfg.Level)) {
+    var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData(), stage = this.gameData.levelCfg.Level;
+    if (record.hasSave(stage)) {
+      record.activateStage(stage);
       this.gameData.setRound();
-      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getBuffList().forEach(function (e) {
+      record.getBuffList(stage).forEach(function (e) {
         t.gameData.addGameBuff(e, true);
       });
-      var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getBuildInfoList();
+      var e = record.getBuildInfoList(stage);
       var n = this.gameData.getBulidList();
       for (var i = 0; i < n.length; i++) {
         var a = n[i];
@@ -1136,7 +1138,7 @@ var def_KinghtFallGameCtrl = function (t) {
           a.ID == r.point && a.setSave(r);
         }
       }
-      this.gameData.businessAdd = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getBusinessList();
+      this.gameData.businessAdd = Object.assign({}, record.getBusinessList(stage));
       if (1 == this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.FlagWeapon]) {
         this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] = .5;
         this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.AttackSpeed] = .5;
@@ -1155,10 +1157,10 @@ var def_KinghtFallGameCtrl = function (t) {
         this.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Speed] = 1;
         this.ctrPlay.ctrPlayAni.setBus(4);
       }
-      var s = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getTaskInfo();
+      var s = record.getTaskInfo(stage);
       if (s) {
         this.gameData.taskInfo.index = s.index;
-        this.gameData.taskInfo.list = s.list;
+        this.gameData.taskInfo.list = s.list.slice();
         this.gameData.taskInfo.stage = s.stage;
       }
       return true;

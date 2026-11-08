@@ -57,58 +57,54 @@ var def_GAD_UIGameView = function (t) {
     }
   };
   _ctor.prototype.start = function () {
-    var t = this;
     this.addEvent($z1GAD_Configs.emGADEventName.GAD_Show_Hit_Text, this.onShowHitText);
     this.addEvent($z1GAD_Configs.emGADEventName.GAD_Show_Warn, this.playWarn);
     this.addEvent($z1GAD_Configs.emGADEventName.GAD_Show_Hit_Effect, this.showHitEffect);
     this.addEvent($z1GAD_Configs.emGADEventName.GAD_Show_Buff_Tip, this.showBuffTip);
     this.addEvent($z1GAD_Configs.emGADEventName.GAD_WebPause, this.webPause);
     this.ndWarn.scale = Math.max(cc.winSize.width / this.ndWarn.width, cc.winSize.height / this.ndWarn.height);
-    this.btnPause.on(cc.Node.EventType.TOUCH_END, function () {
-      t.webPause();
-    });
+    this.btnPause.on(cc.Node.EventType.TOUCH_END, this.webPause, this);
     this.ndLayer.active = false;
-    this.btnExit.on(cc.Node.EventType.TOUCH_END, function (event) {
-      if (event) event.stopPropagation();
-      var game = require("GAD_UIGame").default.script;
-      if (!game || game.isclose || !cc.isValid(game, true)) return;
-      var generation = game._resourceGeneration;
-      $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1GAD_Configs.GAD_UIID.UIPause, $z1Config.UIID.UINONE, {
-        parent: game,
-        isCurrent: game.resourceOptions(generation).isCurrent,
-        onOpened: function (node) { game._decisionNode = node; }
-      }, function (e) {
-        if (game.isclose || !cc.isValid(t.node, true) || game._resourceGeneration !== generation ||
-            $z1GAD_PlayerMgr.default.getInstance().getState() == $z1GAD_Configs.emGADGameState.Over) return;
-        if (e) {
-          t.ndLayer.active = false;
-          t.btnPause.active = true;
-          $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
-        } else {
-          t.sendEvent($z1GAD_Configs.emGADEventName.GAD_Setting_Back);
-        }
-      });
-    });
-    this.ndLayer.on(cc.Node.EventType.TOUCH_END, function () {
-      if (!t.ndLayer.active || $z1GAD_PlayerMgr.default.getInstance().getState() != $z1GAD_Configs.emGADGameState.Pause) return;
-      t.webPause();
-    });
   };
-  _ctor.prototype.webPause = function () {
+  _ctor.prototype.webPause = function (event) {
+    if (event && event.stopPropagation) event.stopPropagation();
     var game = require("GAD_UIGame").default.script;
-    if (game && (game._decisionNode && cc.isValid(game._decisionNode, true) || game._pendingUIOpens && game._pendingUIOpens.size)) return;
-    var state = $z1GAD_PlayerMgr.default.getInstance().getState();
-    if (state == $z1GAD_Configs.emGADGameState.Game || state == $z1GAD_Configs.emGADGameState.Pause && this.ndLayer.active) {
-      if (this.ndLayer.active) {
-        this.ndLayer.active = false;
-        this.btnPause.active = true;
-        $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Game);
-      } else {
-        this.ndLayer.active = true;
-        this.btnPause.active = false;
-        $z1GAD_PlayerMgr.default.getInstance().setState($z1GAD_Configs.emGADGameState.Pause);
-      }
+    if (!game || game.isclose || !cc.isValid(game, true) || this._pauseDialog ||
+        game._decisionNode && cc.isValid(game._decisionNode, true) || game._pendingUIOpens && game._pendingUIOpens.size) return;
+    var player = $z1GAD_PlayerMgr.default.getInstance();
+    if (player.getState() != $z1GAD_Configs.emGADGameState.Game) return;
+    var view = this, generation = game._resourceGeneration, dialog = this._pauseDialog = {};
+    dialog.isCurrent = function () {
+      return view._pauseDialog === dialog && require("GAD_UIGame").default.script === game &&
+        !game.isclose && cc.isValid(game, true) && cc.isValid(view, true) &&
+        game._resourceGeneration === generation && player.getState() === $z1GAD_Configs.emGADGameState.Pause;
+    };
+    function release(resume) {
+      var current = dialog.isCurrent();
+      if (view._pauseDialog !== dialog) return;
+      view._pauseDialog = null;
+      if (game._decisionNode === dialog.node) game._decisionNode = null;
+      if (resume && current) player.setState($z1GAD_Configs.emGADGameState.Game);
     }
+    player.setState($z1GAD_Configs.emGADGameState.Pause);
+    var cards = game._cardCtrl, language = require("LanguageMgr").LanguageMgr.getInstance();
+    var stats = [
+      { label: "pause.damage", value: language.formatNumber(Math.round(cards.getAtkDamage()), "battle") },
+      { label: "pause.attackSpeed", value: language.format("pause.speedMultiplier", [Math.round(cards.getCDParam() * 100) / 100]) },
+      { label: "pause.projectiles", value: String(cards._cards.length + cards._extraProjectiles) },
+      { label: "pause.wallHealth", value: language.format("pause.healthValue", [language.formatNumber(Math.floor(cards.hp), "battle"), language.formatNumber(Math.floor(cards.maxHp), "battle")]) }
+    ];
+    dialog.request = $z1UIMgr.UIMgr.getInstance().openUIWithOwner($z1GAD_Configs.GAD_UIID.UIPause, game.uid || $z1Config.UIID.UINONE, {
+      parent: game,
+      recoveryCancelAllowed: true,
+      isCurrent: dialog.isCurrent,
+      onCancel: function () { release(true); },
+      onOpened: function (node) { dialog.node = node; game._decisionNode = node; }
+    }, null, function () {
+      if (!dialog.isCurrent()) return false;
+      release(false);
+      view.sendEvent($z1GAD_Configs.emGADEventName.GAD_Setting_Back);
+    }, function () { release(true); }, stats);
   };
   _ctor.prototype.onShowHitText = function (t, e) {
     var n;
@@ -193,6 +189,9 @@ var def_GAD_UIGameView = function (t) {
     }).start();
   };
   _ctor.prototype.onDestroy = function () {
+    var dialog = this._pauseDialog;
+    this._pauseDialog = null;
+    if (dialog && dialog.request) dialog.request.cancel();
     var pools = $z1PoolMgr.PoolMgr.getInstance();
     if (pools.poolMap.get("pbt_hit_effect") === this._hitPool) pools.clearPool("pbt_hit_effect");
     if (pools.poolMap.get("pbt_buff_img") === this._buffPool) pools.clearPool("pbt_buff_img");

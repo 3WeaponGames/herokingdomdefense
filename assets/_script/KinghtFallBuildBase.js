@@ -413,6 +413,11 @@ var def_KinghtFallBuildBase = function (t) {
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None || !this.buildInfo) {
       return false;
     }
+    if (this.buildInfo.canUpgrade === false) {
+      this.buildInfo.standTime = 0;
+      return false;
+    }
+    var upgradeInfo = this.buildInfo;
     if (e) {
       this.buildInfo.standTime += t;
       if (this.buildInfo.standTime >= this.standTimeMax) {
@@ -557,7 +562,11 @@ var def_KinghtFallBuildBase = function (t) {
       this.buildInfo.standTime -= t;
       this.buildInfo.standTime < 0 && (this.buildInfo.standTime = 0);
     }
+    // A one-choice upgrade commits synchronously and replaces BuildInfo. The
+    // completed frame belongs to the old tier; terminal tiers have no marker.
+    if (this.buildInfo !== upgradeInfo) return false;
     var o = this.ndLockList[this.getLevel()];
+    if (!o) return false;
     o.getChildByName("sprPro") && (o.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.buildInfo.standTime / this.standTimeMax);
     var r = null === (n = o.getChildByName("spAni")) || undefined === n ? undefined : n.getComponent(sp.Skeleton);
     if (r) {

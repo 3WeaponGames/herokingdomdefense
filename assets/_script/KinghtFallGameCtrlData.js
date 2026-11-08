@@ -137,7 +137,7 @@ var def_KinghtFallGameCtrlData = function () {
   };
   _ctor.prototype.setRound = function () {
     this._roundCompleted = false;
-    this.round = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getRoundNum();
+    this.round = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getRoundNum(this.levelCfg.Level);
     var t = this.levelCfg.WaveCfg[this.round - 1];
     this.videoCoin = t.CommerceSliver;
     this.enemyQueue = {};
@@ -157,7 +157,7 @@ var def_KinghtFallGameCtrlData = function () {
         }
       }
     }
-    this.coin = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getCoin();
+    this.coin = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getCoin(this.levelCfg.Level);
     this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
     if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };

@@ -147,6 +147,7 @@ var def_KinghtFallUIOnlineReward = function (t) {
       m.active = false;
       y.active = true;
     }
+    t.getComponent(cc.Sprite).enabled = !m.active;
   };
   cc__decorate([ccp_property({
     type: cc.Node,

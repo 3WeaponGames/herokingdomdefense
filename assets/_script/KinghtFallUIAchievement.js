@@ -203,6 +203,7 @@ var def_KinghtFallUIAchievement = function (t) {
         f.active = false;
         m.active = true;
     }
+    t.getComponent(cc.Sprite).enabled = !u.active;
     this.layoutDescription(t);
   };
   _ctor.prototype.layoutDescription = function (row) {

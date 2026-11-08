@@ -42,12 +42,12 @@ exports.GAD_UICF = ((i = {})[o.UIGame] = {
   zIndex: 1e3,
   bundleName: r.prefabs
 }, i[o.UIPause] = {
-  prefab: "ui/GAD_UIPause",
-  name: "GAD_UIPause",
+  prefab: "gamePop/KinghtFallUISuspend",
+  name: "KinghtFallUISuspend",
   showTop: true,
   showMult: false,
   zIndex: 1e3,
-  bundleName: r.prefabs
+  bundleName: "KinghtFallPrefabs"
 }, i[o.UILottery] = {
   prefab: "ui/GAD_UILottery",
   name: "GAD_UILottery",

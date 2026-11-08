@@ -374,13 +374,16 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 61
       },
-      {
+            {
         "__id__": 82
-      }
-    ],
+      },
+            {
+                "__id__": 98
+            }
+        ],
     "_prefab": {
       "__id__": 62
     },
@@ -410,12 +413,12 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndFinish",
-    "_parent": {
+        "__type__": "cc.Node",
+        "_name": "ndFinish",
+        "_parent": {
       "__id__": 17
     },
-    "_children": [
+        "_children": [
       {
         "__id__": 19
       },
@@ -429,15 +432,16 @@
         "__id__": 37
       }
     ],
-    "_prefab": {
+        "_prefab": {
       "__id__": 45
     },
-    "_contentSize": {
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 564,
       "height": 180
-    }
-  },
+    },
+        "_active": false
+    },
   {
     "__type__": "cc.Node",
     "_name": "ndBg",
@@ -1623,10 +1627,16 @@
       "__id__": 51
     },
     "mirrorBackgrounds": [
-      {
+            {
         "__id__": 18
-      }
-    ],
+      },
+            {
+                "__id__": 19
+            },
+            {
+                "__id__": 22
+            }
+        ],
     "paddingX": 12,
     "paddingY": 20,
     "gap": 12,
@@ -1924,5 +1934,12 @@
     },
     "fileId": "hkdQuestsEmpty",
     "sync": false
+  },
+  {
+    "__type__": "91fcdIYRxBK0bbIvoQydoMe",
+    "node": {
+      "__id__": 17
+    },
+    "adaptiveSize": true
   }
 ]

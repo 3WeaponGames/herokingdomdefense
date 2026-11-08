@@ -22,6 +22,7 @@ var def_KinghtFallUISuspend = function (t) {
     e.sprfBgList = [];
     e.ndTips = null;
     e.btnClose = null;
+    e.btnDismiss = null;
     e.btnNewGame = null;
     e.newGameCall = null;
     e.breakCall = null;
@@ -33,11 +34,13 @@ var def_KinghtFallUISuspend = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.init = function (t, e, releasePause) {
+  _ctor.prototype.init = function (t, e, releasePause, stats) {
     this.newGameCall = t;
     this.breakCall = e;
     this.releasePause = releasePause;
+    this._stats = stats || null;
     this._pauseReleased = false;
+    this._returningHome = false;
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -55,6 +58,12 @@ var def_KinghtFallUISuspend = function (t) {
     if (this.togCon) this.togCon.node.active = false;
   };
   _ctor.prototype.initItem = function () {
+    if (this._stats) {
+      var language = require("LanguageMgr").LanguageMgr.getInstance();
+      language.bindLabel(this.node.getChildByName("root").getChildByName("title").getComponent(cc.Label), "pause.currentStats");
+      this.initStats();
+      return;
+    }
     var t = this;
     var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.buffList;
     var n = 0;
@@ -82,6 +91,35 @@ var def_KinghtFallUISuspend = function (t) {
       a(r);
     }
     this.ndParent.content.height = Math.abs(this.posY[0] + (n + 1) * this.posY[1]);
+  };
+  _ctor.prototype.initStats = function () {
+    var content = this.ndParent.content, width = this.ndParent.node.width - 24;
+    content.width = width;
+    content.height = this.ndParent.node.height;
+    this.ndParent.vertical = false;
+    this.ndParent.elastic = false;
+    var language = require("LanguageMgr").LanguageMgr.getInstance();
+    for (var i = 0; i < this._stats.length; i++) {
+      var row = this._stats[i];
+      for (var column = 0; column < 2; column++) {
+        var node = new cc.Node("PauseStat" + i + (column ? "Value" : "Name"));
+        node.parent = content;
+        node.anchorX = column ? 1 : 0;
+        node.setPosition(column ? width / 2 : -width / 2, -30 - i * 56);
+        var label = node.addComponent(cc.Label);
+        label.fontSize = 29; label.lineHeight = 38;
+        label.isBold = true; label.enableWrapText = false;
+        label.overflow = cc.Label.Overflow.SHRINK;
+        label.horizontalAlign = column ? cc.Label.HorizontalAlign.RIGHT : cc.Label.HorizontalAlign.LEFT;
+        label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+        if (column) label.string = row.value;
+        else language.bindLabel(label, row.label);
+        // A newly enabled Label initially measures its empty text. Give its
+        // final box after configuration so native SHRINK never keeps a zero width.
+        node.setContentSize(column ? width * .42 : width * .56, 50);
+        node.color = cc.color("#6e6159");
+      }
+    }
   };
   _ctor.prototype.onClick = function (t, e) {
     if (this.ndTips.active && this._tipTrigger === t.currentTarget) { this.ndTips.active = false; return; }
@@ -162,13 +200,16 @@ var def_KinghtFallUISuspend = function (t) {
   _ctor.prototype.bindEvent = function () {
     var t = this;
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.resumeGame, this);
+    if (this.btnDismiss) this.btnDismiss.on(cc.Node.EventType.TOUCH_END, this.resumeGame, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
-      if (t.breakCall() === false) return;
+      if (t.isclose || t._pauseReleased || t._returningHome) return;
+      t._returningHome = true;
+      if (t.breakCall() === false) { t._returningHome = false; return; }
       t.closeUI();
     }, this);
   };
   _ctor.prototype.resumeGame = function () {
-    if (this._pauseReleased || this.isclose) return;
+    if (this._pauseReleased || this._returningHome || this.isclose) return;
     if (!this.releasePause) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
     this.onClose();
     this.closeUI();
@@ -206,6 +247,7 @@ var def_KinghtFallUISuspend = function (t) {
   cc__decorate([ccp_property([cc.SpriteFrame])], _ctor.prototype, "sprfBgList", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndTips", undefined);
   cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnClose", undefined);
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "btnDismiss", undefined);
   cc__decorate([ccp_property({
     type: cc.Node,
     tooltip: "兑换码"
