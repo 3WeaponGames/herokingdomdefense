@@ -526,13 +526,16 @@
       }
     ],
     "_components": [
-      {
+            {
         "__id__": 76
       },
-      {
+            {
         "__id__": 111
-      }
-    ],
+      },
+            {
+                "__id__": 112
+            }
+        ],
     "_prefab": {
       "__id__": 77
     },
@@ -720,12 +723,12 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndFinish",
-    "_parent": {
+        "__type__": "cc.Node",
+        "_name": "ndFinish",
+        "_parent": {
       "__id__": 24
     },
-    "_children": [
+        "_children": [
       {
         "__id__": 34
       },
@@ -739,15 +742,16 @@
         "__id__": 52
       }
     ],
-    "_prefab": {
+        "_prefab": {
       "__id__": 60
     },
-    "_contentSize": {
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 532,
       "height": 180
-    }
-  },
+    },
+        "_active": false
+    },
   {
     "__type__": "cc.Node",
     "_name": "ndBg",
@@ -2198,15 +2202,28 @@
       "__id__": 66
     },
     "mirrorBackgrounds": [
-      {
+            {
         "__id__": 33
-      }
-    ],
+      },
+            {
+                "__id__": 34
+            },
+            {
+                "__id__": 37
+            }
+        ],
     "paddingX": 12,
     "paddingY": 20,
     "gap": 12,
     "minHeight": 180,
     "maxWidth": 700,
     "reflowRows": false
+  },
+  {
+    "__type__": "91fcdIYRxBK0bbIvoQydoMe",
+    "node": {
+      "__id__": 24
+    },
+    "adaptiveSize": true
   }
 ]

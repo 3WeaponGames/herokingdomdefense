@@ -48,6 +48,7 @@ var def_KinghtFallUIBuildSel = function (t) {
     var t = this;
     var e = this.choiceIndexes || (this.build.getUpgradeChoices ? this.build.getUpgradeChoices() : this.build.buildInfo.cfg.BranchBuild);
     var grid = e.length > 3;
+    var squadChoice = this.initialChoice && this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks;
     this._nameBadgeRows = [];
     this._choiceRows = [];
     this._initialChoiceDescriptions = [];
@@ -81,7 +82,7 @@ var def_KinghtFallUIBuildSel = function (t) {
         }
         if (grid) {
           var size = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
-          e.scale = Math.min(186 / Math.max(1, size.width), 126 / Math.max(1, size.height));
+          e.scale = Math.min((squadChoice ? 224 : 186) / Math.max(1, size.width), (squadChoice ? 156 : 126) / Math.max(1, size.height));
           e.setPosition(0, 65);
         }
       });
@@ -94,7 +95,17 @@ var def_KinghtFallUIBuildSel = function (t) {
         "ndNormal" == p.name && (p.active = i.initialChoice || !!o.BuildSliverCost);
         "ndVideo" == p.name && (p.active = !i.initialChoice && !o.BuildSliverCost);
       }
-      r.getChildByName("labInfo").getComponent(cc.RichText).string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
+      var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
+      rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(squadChoice ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
+      if (squadChoice) {
+        rich.font = null;
+        rich.fontFamily = "Arial";
+        info.color = new cc.Color(61, 57, 53, 255);
+        [cc.LabelOutline, cc.LabelShadow].forEach(function (Type) {
+          var effect = Type && info.getComponent(Type);
+          if (effect) effect.enabled = false;
+        });
+      }
       if (grid) i.layoutChoiceCard(r, n);
       else if (i.initialChoice) i.layoutInitialChoiceRow(r, n, e.length);
       if (i.initialChoice || o.BuildSliverCost) {
@@ -189,9 +200,9 @@ var def_KinghtFallUIBuildSel = function (t) {
     var root = this.node.getChildByName("root"), banner = root && root.getChildByName("wg_jzfz_bt");
     if (root) root.setScale(Math.min(1, Math.max(.1, (this.node.width - 40) / 680), Math.max(.1, (this.node.height - 48) / 904)));
     var title = banner && banner.getChildByName("labTitle"), hint = root && root.getChildByName("labTitle");
-    if (title) title.getComponent(cc.Label).string = this.T(this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks ?
-      "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.choose_tower]]");
-    if (hint) hint.getComponent(cc.Label).string = this.T("[[loc:ui.building.initial_choice_hint]]");
+    var squadChoice = this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks;
+    if (title) title.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.barracks_title]]" : "[[loc:ui.building.choose_tower]]");
+    if (hint) hint.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.initial_choice_hint]]");
     if (!root || this._cancelButton) return;
     var button = new cc.Node("CancelInitialBuild"); button.parent = root; button.setPosition(0, -386); button.setContentSize(252, 66);
     var background = button.addComponent(cc.Graphics);

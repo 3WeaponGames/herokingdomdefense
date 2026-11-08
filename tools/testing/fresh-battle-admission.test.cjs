@@ -115,6 +115,15 @@ test('asset retries deliver one admission and a continued checkpoint never purch
   assert.equal(resumed.user.getPowerNum(), 100 - cost); assert.equal(resumed.earnedSilver(), f.earnedSilver());
 });
 
+test('starting an unsaved earlier stage opens directly and preserves a different stage checkpoint', () => {
+  const h = harness(); h.player.udata.data.powerNum = 100; h.player.udata.data.maxStage = 5; h.player.udata.saveData();
+  h.player.gameData.setCheckpoint({ levelNum: 5, roundNum: 6, coin: 77, buildingLevel: [], buffList: [], businessList: {} });
+  const f = fixture(h.persist()); f.begin(); f.prefabReady(); f.mapReady();
+  assert.equal(f.player.gameData.getRoundNum(5), 6); assert.equal(f.player.gameData.getCoin(5), 77);
+  assert.equal(f.player.gameData.hasSave(stage), true); assert.equal(f.user.getPowerNum(), 100 - cost);
+  const reloaded = harness(f.disk.persist()); assert.equal(reloaded.player.gameData.getRoundNum(5), 6);
+});
+
 test('failed journal admission keeps balances unchanged and target write failure recovers the charge with its checkpoint exactly once', () => {
   for (const boundary of ['journal','user','mission','checkpoint']) {
     const f = fixture(); f.begin(); f.prefabReady(); const p = f.player;

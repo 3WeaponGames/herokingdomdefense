@@ -176,7 +176,7 @@ test('owned popup request keeps its lifetime through pop queue and cancels witho
 
 function checkpoint(saved){
  const mission={num:100,writes:0,addAchNum(type,n){assert.equal(type,'GetSliver');this.num+=n;this.writes++;}};
- const record={hasSave:()=>saved,readyForNewBattle:()=>true,getRoundNum:()=>6,getCoin:()=>77,getBuffList:()=>['Buff10'],getBuildInfoList:()=>[],getBusinessList:()=>({}),getTaskInfo:()=>({index:2,list:[1,2,3],stage:1})};
+ const record={hasSave:()=>saved,activateStage(stage){assert.equal(stage,1);return saved;},readyForNewBattle:()=>true,getRoundNum:()=>6,getCoin:()=>77,getBuffList:()=>['Buff10'],getBuildInfoList:()=>[],getBusinessList:()=>({}),getTaskInfo:()=>({index:2,list:[1,2,3],stage:1})};
  const player={getUserData:()=>({getTreasureLevel:()=>null,getTalent:()=>[]}),getMissionData:()=>mission,getGameData:()=>record};
  const h=setup({KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single(player)}}),dm=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();Object.assign(dm,{getLevelCfgById:()=>authored.LevelCfg[0],getGameTask:()=>authored.InGameTaskCfg[0],getTreasureCfg:()=>[],getParamsCfgById:()=>.5});
  h.g.ctrPlay.initData=noop;h.g.buildBullet={node:{}};

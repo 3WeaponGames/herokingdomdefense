@@ -4553,8 +4553,8 @@
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/title (localized control layout)"
     },
     "ui.layout.kinghtfalluinewgame.13": {
-      "en": "Continue the battle?",
-      "zh": "是否继续战斗？",
+      "en": "Continue the battle on\nStage {0}, Wave {1}?",
+      "zh": "继续第 {0} 关\n第 {1} 波的战斗？",
       "context": "assets\\KinghtFallPrefabs\\homePop\\KinghtFallUINewGame.prefab:KinghtFallUINewGame/root/version (localized control layout)"
     },
     "ui.layout.kinghtfalluinewgame.17": {
@@ -6243,7 +6243,7 @@
     "ui.building.choose_squad": {
       "en": "Choose your squad",
       "zh": "选择你的部队",
-      "context": "Initial barracks selection title"
+      "context": "Initial barracks selection hint"
     },
     "ui.building.choose_tower": {
       "en": "Choose your tower",
@@ -9909,6 +9909,46 @@
       "en": "Guardian",
       "zh": "守卫",
       "context": "Enemy guide interface"
+    },
+    "pause.currentStats": {
+      "en": "Current Stats",
+      "zh": "当前属性",
+      "context": "Shared battle pause panel"
+    },
+    "pause.wallHealth": {
+      "en": "Wall Health",
+      "zh": "城墙生命",
+      "context": "Shared battle pause panel"
+    },
+    "pause.speedMultiplier": {
+      "en": "{0}×",
+      "zh": "{0}倍",
+      "context": "Shared battle pause panel"
+    },
+    "pause.healthValue": {
+      "en": "{0} / {1}",
+      "zh": "{0} / {1}",
+      "context": "Shared battle pause panel"
+    },
+    "pause.damage": {
+      "en": "Damage",
+      "zh": "伤害",
+      "context": "Shared battle pause statistics; independent of equipment label geometry"
+    },
+    "pause.attackSpeed": {
+      "en": "Attack Speed",
+      "zh": "攻击速度",
+      "context": "Shared battle pause statistics; independent of equipment label geometry"
+    },
+    "pause.projectiles": {
+      "en": "Projectiles",
+      "zh": "弹道",
+      "context": "Shared battle pause statistics; independent of equipment label geometry"
+    },
+    "ui.building.barracks_title": {
+      "en": "Barracks",
+      "zh": "兵营",
+      "context": "Initial barracks selection title"
     }
   },
   "images": {
@@ -13539,19 +13579,22 @@
     },
     "ui.layout.kinghtfalluisuspend.16": {
       "en": {
-        "width": 600,
+        "width": 832,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
-        "height": 123.92,
+        "height": 100,
         "fontSize": 76,
-        "lineHeight": 92
+        "lineHeight": 92,
+        "x": -16
       },
       "zh": {
         "fontSize": 76,
         "lineHeight": 92,
-        "width": 464,
+        "width": 832,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 100,
+        "x": -16
       }
     },
     "ui.layout.kinghtfalluisuspend.40": {
@@ -15498,19 +15541,20 @@
     },
     "ui.layout.kinghtfalluinewgame.13": {
       "en": {
-        "width": 600,
+        "width": 900,
         "wrap": true,
         "overflow": "RESIZE_HEIGHT",
-        "height": 113.4,
+        "height": 160,
         "fontSize": 60,
-        "lineHeight": 90
+        "lineHeight": 80
       },
       "zh": {
         "fontSize": 60,
-        "lineHeight": 90,
-        "width": 420,
+        "lineHeight": 80,
+        "width": 900,
         "overflow": "RESIZE_HEIGHT",
-        "wrap": true
+        "wrap": true,
+        "height": 160
       }
     },
     "ui.layout.kinghtfalluinewgame.17": {
@@ -18208,7 +18252,7 @@
         "fontSize": 72,
         "lineHeight": 83,
         "width": 88,
-        "overflow": "SHRINK",
+        "overflow": "CLAMP",
         "wrap": false,
         "height": 96,
         "horizontalAlign": 0
@@ -18217,7 +18261,7 @@
         "fontSize": 72,
         "lineHeight": 83,
         "width": 88,
-        "overflow": "SHRINK",
+        "overflow": "CLAMP",
         "wrap": false,
         "height": 96,
         "horizontalAlign": 0

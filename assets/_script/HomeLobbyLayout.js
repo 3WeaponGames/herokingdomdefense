@@ -42,7 +42,7 @@ function lockButtonSize(node) {
   var amount = row.getChildByName("labNum"), number = amount.getComponent(cc.Label);
   amount.setAnchorPoint(0, .5); amount.setScale(.5); amount.setPosition(2, 0); amount.setContentSize(88, 96);
   number.fontSize = 72; number.lineHeight = 83; number.enableWrapText = false;
-  number.overflow = cc.Label.Overflow.SHRINK;
+  number.overflow = cc.Label.Overflow.CLAMP;
   number.horizontalAlign = cc.Label.HorizontalAlign.LEFT; number.verticalAlign = cc.Label.VerticalAlign.CENTER;
 }
 function applyModeSkin(node, frame) {

@@ -49,8 +49,9 @@ test('Barracks saved ownership survives first start and real roster refresh',()=
  b.setSave({point:7,level:4,data:3});b.initSoldier();assert.equal(b.enemyList.filter(Boolean).length,13);b.start();b.initSoldier();assert.equal(b.getSave().data,3);assert.equal(b.enemyList.filter(Boolean).length,13);assert.equal(removed.length,0);
  b.initBuffData=()=>{};b.reset(true);assert.equal(b.VideoTimes,0);assert.equal(b.enemyList.length,0);assert.equal(new B().VideoTimes,0);
 });
-test('GAD pause toggles its own overlay without resuming another modal state',()=>{
- const h=setup();let state='Game';const C=load('GAD_UIGameView',h.e.cc,{...h.e.stubs,GAD_Configs:{emGADGameState:{Game:'Game',Pause:'Pause'}},GAD_PlayerMgr:{default:{getInstance:()=>({getState:()=>state,setState:s=>state=s})}}}).default,u=new C();u.ndLayer={active:false};u.btnPause={active:true};
- u.webPause();assert.equal(state,'Pause');assert(u.ndLayer.active);u.webPause();assert.equal(state,'Game');assert(!u.ndLayer.active);assert(u.btnPause.active);
- state='Pause';u.webPause();assert.equal(state,'Pause');for(const other of ['Lottery','Over']){state=other;u.ndLayer.active=true;u.webPause();assert.equal(state,other);}
+test('Wall Defense pause ignores lottery, results, and unrelated pause owners',()=>{
+ const h=setup();let state='Pause',opens=0;const game={_cardCtrl:{},_resourceGeneration:1};
+ const C=load('GAD_UIGameView',h.e.cc,{...h.e.stubs,GAD_UIGame:{default:{script:game}},GAD_Configs:{emGADGameState:{Game:'Game',Pause:'Pause'}},GAD_PlayerMgr:{default:{getInstance:()=>({getState:()=>state,setState:s=>state=s})}},UIMgr:{UIMgr:{getInstance:()=>({openUIWithOwner(){opens++;}})}}}).default,u=new C();
+ for(const other of ['Pause','Lottery','Over']){state=other;u.webPause();assert.equal(state,other);}
+ assert.equal(opens,0);
 });

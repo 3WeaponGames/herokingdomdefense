@@ -4,6 +4,11 @@ async function install(spec){
  const req=window.__quick_compile_project__.require.bind(window.__quick_compile_project__),cc=window.cc;
  const data=req('KinghtFallDataMgr').KinghtFallDataMgr.getInstance(),player=req('KinghtFallPlayerMgr').KinghtFallPlayerMgr.getInstance(),server=req('ServerDataMgr').ServerdataMgr;
  if(server.curServer||(server.getNeedSaveServer&&server.getNeedSaveServer()))throw Error('Draft preview requires a local ephemeral player.');
+ // Authoring previews show the map immediately. Override guide queries only in
+ // this ephemeral window; never seed or save guide/player progression.
+ const guide=player.getGuideData&&player.getGuideData();
+ if(guide){guide.getGuideEnd=function(){return true;};guide.getGroupId=function(){return guide.endId||4;};guide.getGuideTips=function(){return true;};}
+ const ui=req('UIMgr').UIMgr.getInstance();ui.closeById(req('Config').UIID.UIGuide);
  // Use the saved source tables in this isolated window, including newly imported units.
  // Creator may otherwise serve an older cached JsonAsset during ongoing authoring.
  Object.keys(spec.sharedConfig||{}).forEach(function(key){data.data[key]=spec.sharedConfig[key];});
@@ -16,7 +21,16 @@ async function install(spec){
  const textures={},assets={};for(const file of spec.textures){textures[file.name]=await new Promise((resolve,reject)=>cc.assetManager.loadRemote(file.url,{ext:'.png'},(e,t)=>e?reject(e):resolve(t)));for(const key of Object.keys(file.meta.subMetas)){const frame=file.meta.subMetas[key];assets[frame.uuid]=new cc.SpriteFrame(textures[file.name],cc.rect(frame.trimX,frame.trimY,frame.width,frame.height),false,cc.v2(0,0),cc.size(frame.width,frame.height));}}
  const Game=req('KinghtFallUIGame').default,old=Game.prototype.loadPrefab;Game.prototype.loadPrefab=function(bundle,name,callback){const self=this;if(name!=='__world_draft__')return old.apply(this,arguments);Promise.all(spec.sourcePrefabs.map(source=>new Promise(resolve=>old.call(self,bundle,source,resolve)))).then(async()=>{const details=new cc.deserialize.Details(),prefab=cc.deserialize(spec.prefab,details);for(let i=0;i<details.uuidList.length;i++){const uuid=details.uuidList[i];if(!assets[uuid])assets[uuid]=cc.assetManager.assets.get(uuid)||await new Promise((resolve,reject)=>cc.assetManager.loadAny(uuid,(error,asset)=>error?reject(error):resolve(asset)));details.uuidObjList[i][details.uuidPropList[i]]=assets[uuid];}prefab.addRef();window.__worldDraftPrefab=prefab;callback(prefab);}).catch(error=>{window.__worldDraftError=error.message||String(error);cc.error(error);});};
  // Persistent saves live in a separate partition; preview state exists only in this window.
- const ids=req('KinghtFallConfig').KinghtFallUIID,ui=req('UIMgr').UIMgr.getInstance();
+ const ids=req('KinghtFallConfig').KinghtFallUIID;
+ // Main starts loading Home asynchronously. Opening the battle before that
+ // request settles can put the late Home screen in front of the draft battle.
+ const waitStarted=Date.now();
+ while(!ui.getUIById(ids.UIHome)||ui.isopening){
+  ui.closeById(req('Config').UIID.UIGuide);
+  if(Date.now()-waitStarted>20000)throw Error('The preview lobby did not finish loading. Retry the draft preview.');
+  await new Promise(resolve=>setTimeout(resolve,50));
+ }
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
  ui.openUIOfCallback(ids.UIGame,req('Config').UIID.UINONE,function(){const home=ui.getUIById(ids.UIHome);if(home)home.node.active=false;},spec.config.Level);
  return {started:true,level:spec.config.Level};
 }

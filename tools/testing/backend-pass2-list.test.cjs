@@ -125,3 +125,17 @@ test('single selection retains item identity when deleting before, at, or after 
     assert.deepEqual(h.seen, [removed]);
   }
 });
+
+test('adaptive reward rows preserve list gaps when long copy grows and a recycled row returns to the template height', () => {
+  const h=scrolling(false),list=h.list;let resized=0,refreshed=0;
+  list._lineGap=10;list._resizeContent=()=>resized++;list.updateAll=()=>refreshed++;
+  const row={_listId:1,width:10,height:30};list._onItemAdaptive(row);
+  assert.equal(list._customSize[1],30);assert.equal(list._calcItemPos(2).top,-60);
+  for(const height of [30,10,10,24,10]){
+    row.height=height;list._onItemAdaptive(row);
+    const first=list._calcItemPos(0),middle=list._calcItemPos(1),last=list._calcItemPos(2);
+    assert.equal(middle.top-middle.bottom,height);
+    assert.equal(first.bottom-middle.top,10);assert.equal(middle.bottom-last.top,10);
+  }
+  assert.equal(resized,4,'unchanged sizes never trigger extra layout work');assert.equal(refreshed,4);
+});

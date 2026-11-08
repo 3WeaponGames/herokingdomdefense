@@ -932,7 +932,10 @@ var def_List = function (t) {
     this.checkInited(false) && this._onScrolling();
   };
   _ctor.prototype._onItemAdaptive = function (t) {
-    if (!this._sizeType && t.width != this._itemSize.width || this._sizeType && t.height != this._itemSize.height) {
+    // A recycled text row can also shrink back to the template size. Replace
+    // its previous measurement so following cards keep the authored gap.
+    if (!this._sizeType && t.width != this._itemSize.width || this._sizeType && t.height != this._itemSize.height ||
+        this._customSize && this._customSize[t._listId] !== undefined) {
       this._customSize || (this._customSize = {});
       var e = this._sizeType ? t.height : t.width;
       if (this._customSize[t._listId] != e) {

@@ -126,19 +126,22 @@
       "__id__": 1
     },
     "_children": [
-      {
+            {
         "__id__": 7
       },
-      {
+            {
         "__id__": 12
       },
-      {
+            {
         "__id__": 15
       },
-      {
+            {
         "__id__": 23
-      }
-    ],
+      },
+            {
+                "__id__": 39
+            }
+        ],
     "_components": [
       {
         "__id__": 31
@@ -295,8 +298,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 420,
-      "height": 113.4
+      "width": 900,
+      "height": 160
     },
     "_trs": {
       "ctor": "Float64Array",
@@ -316,23 +319,25 @@
     }
   },
   {
-    "__type__": "cc.Label",
-    "_string": "[[loc:ui.layout.kinghtfalluinewgame.13]]",
-    "_fontSize": 60,
-    "_lineHeight": 90,
-    "_styleFlags": 1,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_materials": [
+        "__type__": "cc.Label",
+        "_string": "[[loc:ui.layout.kinghtfalluinewgame.13]]",
+        "_fontSize": 60,
+        "_lineHeight": 80,
+        "_styleFlags": 1,
+        "_N$horizontalAlign": 1,
+        "_N$verticalAlign": 1,
+        "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
-    "node": {
+        "node": {
       "__id__": 12
     },
-    "_N$string": "[[loc:ui.layout.kinghtfalluinewgame.13]]"
-  },
+        "_N$string": "[[loc:ui.layout.kinghtfalluinewgame.13]]",
+        "_N$overflow": 3,
+        "_N$enableWrapText": true
+    },
   {
     "__type__": "cc.PrefabInfo",
     "fileId": "2cQp7e6DhNcJ9653GKI9UC",
@@ -700,17 +705,23 @@
     }
   },
   {
-    "__type__": "503c91+B3JORYC800b1JmTJ",
-    "btnContinue": {
+        "__type__": "503c91+B3JORYC800b1JmTJ",
+        "btnContinue": {
       "__id__": 23
     },
-    "btnBreak": {
+        "btnBreak": {
       "__id__": 15
     },
-    "node": {
+        "node": {
       "__id__": 1
-    }
-  },
+    },
+        "btnClose": {
+            "__id__": 39
+        },
+        "labInfo": {
+            "__id__": 13
+        }
+    },
   {
     "__type__": "cc.PrefabInfo",
     "asset": {
@@ -755,5 +766,74 @@
     "minHeight": 92,
     "maxWidth": 264,
     "reflowRows": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "btnClose",
+    "_parent": {
+      "__id__": 6
+    },
+    "_components": [
+      {
+        "__id__": 40
+      },
+      {
+        "__id__": 41
+      }
+    ],
+    "_prefab": {
+      "__id__": 42
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 49,
+      "height": 52
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        253,
+        202,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "e131e9e9-5f7f-4b61-94a0-fc639a0c8db1"
+    },
+    "node": {
+      "__id__": 39
+    }
+  },
+  {
+    "__type__": "08526eaTJpCXYM9VKuRXAnP",
+    "node": {
+      "__id__": 39
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "hkdResumeClose",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
   }
 ]

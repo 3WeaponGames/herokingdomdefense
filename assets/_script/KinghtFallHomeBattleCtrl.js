@@ -765,7 +765,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
             $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = false;
           }, stage);
         });
-      });
+      }, stage);
     } else if (player.getUserData().getPowerNum() >= cost) {
       this.sendEvent($z1Appcfg.BaseEventName.ShowTransition, true, function () {
         var manager = $z1UIMgr.UIMgr.getInstance(), ids = $z1KinghtFallConfig.KinghtFallUIID;

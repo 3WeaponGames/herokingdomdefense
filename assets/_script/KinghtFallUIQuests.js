@@ -44,6 +44,9 @@ var UI = cc.Class({
     rich.string = "<b>" + Utils.StringFormat.apply(Utils, [this.T(row.cfg.MissionDescribe)].concat(row.cfg.Argument)) + "</b>";
     var ready = row.progress.ready, finish = node.getChildByName("ndFinish"), claim = finish.getChildByName("btnGet");
     finish.active = ready; finish.getChildByName("mask").active = ready;
+    // The pending card is a renderer on the row itself. Keep the content
+    // active, but never draw that card behind the completed-state panel.
+    node.getComponent(cc.Sprite).enabled = !ready;
     finish.getChildByName("btnFinish").active = false; claim.active = ready;
     claim.off(cc.Node.EventType.TOUCH_END);
     claim.on(cc.Node.EventType.TOUCH_END, function (event) { if (event) event.stopPropagation(); this.claimQuest(id, reward); }, this);

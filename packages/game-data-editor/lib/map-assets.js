@@ -55,19 +55,21 @@ function assetIndex(root, wanted) {
     });
     return result;
 }
-function loadIndex(root, documents) {
-    const wanted = new Set(), maps = IDS.map(id => {
+function indexSources(root, documents, extraFrames) {
+    const wanted = new Set(extraFrames || []), maps = IDS.map(id => {
         const data = loadMap(root, id).data;
         data.forEach(component => { if (component && component._spriteFrame) wanted.add(component._spriteFrame.__uuid__); });
         return { id, name: Catalog.maps[id].name, path: fileFor(id), stages: stagesFor(id, documents), data };
     });
     const images = assetIndex(root, wanted);
-    return maps.map(map => {
+    const entries = maps.map(map => {
         const used = {};
         map.data.forEach(component => { const id = component && component._spriteFrame && component._spriteFrame.__uuid__; if (id && images[id]) used[id] = images[id]; });
         return { id: map.id, name: map.name, path: map.path, stages: map.stages, images: used };
     });
+    return { maps: entries, images };
 }
+function loadIndex(root, documents) { return indexSources(root, documents).maps; }
 function multiply(a, b) {
     return [a[0] * b[0] + a[2] * b[1], a[1] * b[0] + a[3] * b[1],
         a[0] * b[2] + a[2] * b[3], a[1] * b[2] + a[3] * b[3],
@@ -316,5 +318,5 @@ function routeTest(root, data, start, goal, radius, includeBuildings) {
     const pathResult = grid.findPath(start, goal, radius);
     return { path: pathResult, polygons: polygons.length, bounds: info.bounds, note: 'Authored collision state. Battle upgrades can enable different building shapes.' };
 }
-module.exports = { IDS, OBSTACLE, loadMap, loadIndex, stagesFor, model, transform, multiply, inverse, point, colliderPoints,
+module.exports = { IDS, OBSTACLE, loadMap, loadIndex, indexSources, stagesFor, model, transform, multiply, inverse, point, colliderPoints,
     trsEdit, moveEdit, moveObjectEdits, duplicateObstacle, validate, issuesFor, routeTest, fileFor };

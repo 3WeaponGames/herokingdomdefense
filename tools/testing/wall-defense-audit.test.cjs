@@ -200,16 +200,18 @@ test('door cooldown and width interpolation remain frozen while a reward or paus
   assert.equal(door._coolTime, .98); assert.equal(resizes, 1);
 });
 
-test('opening the pause menu consumes the exit touch and ignores a stale resume callback', () => {
+test('one pause touch directly opens the shared panel and ignores a stale resume callback', () => {
   const h = battle(), view = new (h.load('GAD_UIGameView').default)(), handlers = {};
   h.cc.Node.EventType = { TOUCH_END: 'end' }; h.cc.winSize = { width: 750, height: 1334 };
   const node = name => ({ active: true, width: 100, height: 100, on(event, fn) { handlers[name] = fn; } });
   Object.assign(view, { node: {}, ndWarn: node('warn'), btnPause: node('pause'), btnExit: node('exit'), ndLayer: node('layer'), addEvent() {} });
-  let owner, resume, stopped = 0;
-  h.stubs.UIMgr.UIMgr.getInstance().openUIWithOwner = (_id, _from, nextOwner, callback) => { owner = nextOwner; resume = callback; };
+  let owner, resume, stopped = 0, opened = 0;
+  h.stubs.UIMgr.UIMgr.getInstance().openUIWithOwner = (_id, _from, nextOwner, _restart, _home, release) => { opened++; owner = nextOwner; resume = release; };
+  Object.assign(h.game._cardCtrl, { getAtkDamage: () => 500, getCDParam: () => 17, _cards: [{}], _extraProjectiles: 14, hp: 80, maxHp: 100 });
   h.Game.script = h.game; h.game._resourceGeneration = 3; h.game.resourceOptions = () => ({ isCurrent: () => true });
-  view.start(); view.webPause(); handlers.exit({ stopPropagation() { stopped++; } });
-  assert.equal(stopped, 1); assert.equal(h.state(), h.config.emGADGameState.Pause); assert.equal(owner.parent, h.game);
+  view.start(); handlers.pause.call(view, { stopPropagation() { stopped++; } }); view.webPause();
+  assert.equal(stopped, 1); assert.equal(opened, 1); assert.equal(view.ndLayer.active, false);
+  assert.equal(h.state(), h.config.emGADGameState.Pause); assert.equal(owner.parent, h.game);
   h.game._resourceGeneration++; resume(true); assert.equal(h.state(), h.config.emGADGameState.Pause);
 });
 
@@ -219,7 +221,7 @@ test('Space and background touches cannot resume behind an open or loading pause
   h.stubs.GAD_PlayerMgr.default.getInstance().setState(h.config.emGADGameState.Pause);
   h.game._decisionNode = {}; view.webPause(); assert.equal(h.state(), h.config.emGADGameState.Pause);
   h.game._decisionNode = null; h.game._pendingUIOpens = new Set([{}]); view.webPause(); assert.equal(h.state(), h.config.emGADGameState.Pause);
-  h.game._pendingUIOpens.clear(); view.webPause(); assert.equal(h.state(), h.config.emGADGameState.Game);
+  h.game._pendingUIOpens.clear(); view.webPause(); assert.equal(h.state(), h.config.emGADGameState.Pause);
 });
 
 test('delayed hit effects return to the pool that issued them across mode restarts', () => {

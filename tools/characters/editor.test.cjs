@@ -25,8 +25,8 @@ test('explicit Save backs up exact source, preserves unknown fields/format and n
   const f=fixture(t),before=fs.readFileSync(f.file,'utf8'),config=fs.readFileSync(f.config,'utf8');
   const nothing=f.store.save({version:f.store.version});assert.equal(nothing.result.saved,false);assert.equal(fs.existsSync(path.join(f.dir,'local')),false);
   edit(f.store,data=>data.profiles.guard.parts[0].x=7.5);const result=f.store.save({version:f.store.version}),written=fs.readFileSync(f.file,'utf8');
-  assert.equal(result.result.saved,true);assert.equal(fs.readFileSync(path.join(f.dir,result.result.backup),'utf8'),before);assert(written.includes('"value": 1.00'));assert.equal(JSON.parse(written).profiles.guard.future.keep,13);assert.equal(fs.readFileSync(f.config,'utf8'),config);
-  const mtime=fs.statSync(f.file).mtimeMs;assert.equal(f.store.save({version:f.store.version}).result.saved,false);assert.equal(fs.statSync(f.file).mtimeMs,mtime);assert.equal(fs.readdirSync(path.dirname(path.join(f.dir,result.result.backup))).length,1);
+  assert.equal(result.result.saved,true);assert.equal(fs.readFileSync(path.resolve(f.dir,result.result.backup),'utf8'),before);assert(written.includes('"value": 1.00'));assert.equal(JSON.parse(written).profiles.guard.future.keep,13);assert.equal(fs.readFileSync(f.config,'utf8'),config);
+  const mtime=fs.statSync(f.file).mtimeMs;assert.equal(f.store.save({version:f.store.version}).result.saved,false);assert.equal(fs.statSync(f.file).mtimeMs,mtime);assert.equal(fs.readdirSync(path.dirname(path.resolve(f.dir,result.result.backup))).length,1);
 });
 test('external edits and competing editor revisions cannot overwrite a saved file or lose the draft',t=>{
   const f=fixture(t),version=f.store.version;edit(f.store,data=>data.profiles.guard.name='My draft');assert.throws(()=>f.store.change({version,data:f.store.data}),/another window/);
