@@ -87,6 +87,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this._orderTarget = null;
     this._targetRefresh = 0;
     this._settledPoint = null;
+    this._standingGoal = null;
     this._retaliationTarget = null;
     this._retaliationTime = 0;
     this._retaliationPosition = null;
@@ -213,6 +214,7 @@ var def_KinghtFallSoldierBase = function (t) {
       if (target) {
         goal = Navigation.positionOf(target.node, game);
         this._settledPoint = null;
+        this._standingGoal = null;
         this._armyProgressPoint = null;
         this._armyStalledTime = 0;
         if (cc.Vec2.distance(position, goal) <= this.attackRange) {
@@ -230,7 +232,14 @@ var def_KinghtFallSoldierBase = function (t) {
       } else if (this.rallyPoint) {
         goal = this.rallyPoint.pos;
         formation = game.getArmyOrderGoal && game.getArmyOrderGoal(this, goal);
-        if (!formation && this._settledPoint && cc.Vec2.distance(position, this._settledPoint) < 3) {
+        if (!formation && this.isHoldingPosition()) {
+          if (!this._standingGoal && cc.Vec2.distance(position, goal) <= 64) {
+            var standing = Navigation.findStandingPoint(this, game, goal, goal);
+            if (standing) this._standingGoal = { pos: standing };
+          }
+          if (this._standingGoal) goal = this._standingGoal.pos;
+        }
+        if (!formation && this._settledPoint && cc.Vec2.distance(position, this._settledPoint) <= 12 && Navigation.canStopFollowing(this, game, goal)) {
           if (this.state != s.Idle) this.doIdel();
           return;
         }
@@ -641,6 +650,7 @@ var def_KinghtFallSoldierBase = function (t) {
     }
     this.pathList = null;
     this._settledPoint = null;
+    this._standingGoal = null;
     this._armyProgressPoint = null;
     this._armyStalledTime = 0;
     this._syncFollowMarker();
@@ -656,6 +666,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.setPersonalRallyPoint = function (position, remember) {
     this._rallyOrder = null;
+    this._standingGoal = null;
     this._personalRallyPoint = { pos: { x: position.x, y: position.y } };
     if (remember && this.outBuild && this.outBuild.setSoldierRallyPoint) this.outBuild.setSoldierRallyPoint(this, position);
   };

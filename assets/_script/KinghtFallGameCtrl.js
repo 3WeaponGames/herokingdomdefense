@@ -32,6 +32,41 @@ var $z1KinghtFallGamePlayCtrl = require("KinghtFallGamePlayCtrl");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var Navigation = require("KinghtFallNavigation");
+function armyRole(unit) {
+  if (Number(unit.cfg.ID) === 90004) return "flank";
+  return unit.cfg.AttackType === 2 ? "rear" : "front";
+}
+function armyLayout(soldiers, spacing, center, forward, heroRadius, radius) {
+  var groups = { front: [], rear: [], flank: [] }, preferred = new Map();
+  soldiers.forEach(function (unit) { groups[armyRole(unit)].push(unit); });
+  // Heavy infantry fills the leading row before the other front-line troops.
+  groups.front.sort(function (a, b) { return (Number(b.cfg.ID) === 90002 ? 1 : 0) - (Number(a.cfg.ID) === 90002 ? 1 : 0); });
+  var columns = Math.max(2, Math.ceil(Math.sqrt(Math.max(groups.front.length, groups.rear.length))));
+  var depth = Math.max(spacing, heroRadius + radius + 6), flank = Math.max(depth, (columns + 1) * spacing / 2);
+  function world(x, y) { return { x: center.x + forward.y * x + forward.x * y, y: center.y - forward.x * x + forward.y * y }; }
+  ["front", "rear"].forEach(function (role) {
+    var members = groups[role], ranks = Math.ceil(members.length / columns);
+    members.forEach(function (unit, index) {
+      var row = Math.floor(index / columns), count = Math.min(columns, members.length - row * columns);
+      var column = index % columns, x = (column - (count - 1) / 2) * spacing;
+      var y = depth + (role === "front" ? ranks - row - 1 : row) * spacing;
+      if (!groups.front.length || !groups.rear.length) y = depth + ((ranks - 1) / 2 - row) * spacing;
+      preferred.set(unit, world(x, role === "front" ? y : -y));
+    });
+  });
+  groups.flank.forEach(function (unit, index) {
+    var side = index % 2 ? 1 : -1, sideCount = Math.ceil((groups.flank.length - index % 2) / 2);
+    preferred.set(unit, world(side * flank, (Math.floor(index / 2) - (sideCount - 1) / 2) * spacing));
+  });
+  return { preferred: preferred, groups: groups, flank: flank, spacing: spacing, forward: forward };
+}
+function rolePosition(layout, unit, point, center) {
+  var x = point.x - center.x, y = point.y - center.y, along = x * layout.forward.x + y * layout.forward.y;
+  var side = x * layout.forward.y - y * layout.forward.x, role = armyRole(unit);
+  if (role === "front" && layout.groups.rear.length && along < 0) return false;
+  if (role === "rear" && layout.groups.front.length && along > 0) return false;
+  return role !== "flank" || !layout.groups.front.length && !layout.groups.rear.length || Math.abs(side) >= layout.flank - layout.spacing * .6;
+}
 var DepthRendering = require("KinghtFallDepthView");
 var DepthView = DepthRendering.DepthView;
 var TestMode = require("TestMode").TestMode;
@@ -641,10 +676,20 @@ var def_KinghtFallGameCtrl = function (t) {
       radii.set(soldier, r);
       radius = Math.max(radius, r);
     });
-    // Navigation adds at least two pixels to each body's enclosing radius.
-    // Share that clearance between neighbours while retaining a two-pixel gap;
-    // terrain checks below still use the full navigation radius.
-    var spacing = radius * 2 - 2, candidates = [], reserved = [], slots = new Map();
+    // Add modest space between ranks. Tight terrain can use body-clear
+    // fallback cells while retaining the same front/rear/flank preferences.
+    var spacing = radius * 2 + 6, candidates = [], reserved = [], slots = new Map();
+    var forward = previous && previous.forward || { x: 0, y: 1 }, headingAnchor = previous && previous.headingAnchor || center;
+    var travel = previous ? { x: center.x - headingAnchor.x, y: center.y - headingAnchor.y } : null;
+    if (!previous || previous.order !== this.rallyPoint) {
+      var average = soldiers.reduce(function (sum, soldier) { var p = Navigation.positionOf(soldier.node, navigation.game); sum.x += p.x / soldiers.length; sum.y += p.y / soldiers.length; return sum; }, { x: 0, y: 0 });
+      travel = { x: center.x - average.x, y: center.y - average.y };
+    }
+    if (travel && Math.hypot(travel.x, travel.y) >= spacing) {
+      var length = Math.hypot(travel.x, travel.y);
+      forward = { x: travel.x / length, y: travel.y / length }; headingAnchor = center;
+    }
+    var layout = armyLayout(soldiers, spacing, center, forward, heroRadius, radius);
     var limit = Math.min(480, Math.max(spacing * 3, spacing * (Math.ceil(Math.sqrt(soldiers.length)) + 2)));
     var gatePolygons = [], main = this.ndMain;
     this.gameData.getBulidList().forEach(function (building) {
@@ -691,45 +736,62 @@ var def_KinghtFallGameCtrl = function (t) {
     if (selective) allSoldiers.forEach(function (soldier) {
       if (soldiers.indexOf(soldier) < 0 && !soldier.isDead() && soldier.node.activeInHierarchy) reserved.push({ pos: Navigation.positionOf(soldier.node, navigation.game), radius: navigation.radius(soldier) });
     });
+    // Use the full rank spacing when the whole planned formation fits. A
+    // constrained area keeps the denser fallback lattice so no member is
+    // stranded merely because the decorative spacing cannot fit the terrain.
+    var preferExact = soldiers.every(function (soldier) {
+      var desired = layout.preferred.get(soldier);
+      return cc.Vec2.distance(desired, center) <= limit && valid(desired, radii.get(soldier));
+    });
     if (previous) soldiers.forEach(function (soldier) {
       var old = previous.slots.get(soldier);
       if (!old || !old.pos) return;
-      var point = { x: center.x + old.pos.x - previous.anchor.x, y: center.y + old.pos.y - previous.anchor.y };
-      if (cc.Vec2.distance(point, center) <= limit && valid(point, radii.get(soldier))) reserve(soldier, point);
+      var dx = old.pos.x - previous.anchor.x, dy = old.pos.y - previous.anchor.y, oldForward = previous.forward || forward;
+      var side = dx * oldForward.y - dy * oldForward.x, along = dx * oldForward.x + dy * oldForward.y;
+      var point = { x: center.x + forward.y * side + forward.x * along, y: center.y - forward.x * side + forward.y * along };
+      if (cc.Vec2.distance(point, center) <= limit && rolePosition(layout, soldier, point, center) && valid(point, radii.get(soldier))) reserve(soldier, point);
     });
     // A hexagonal lattice packs the actual body clearance into narrow outdoor
     // approaches without letting the larger hero inflate every soldier slot.
     if (slots.size < soldiers.length) {
-      var rowHeight = spacing * Math.sqrt(3) / 2, rows = Math.ceil(limit / rowHeight), columns = Math.ceil(limit / spacing);
+      // Keep body-clear fallback cells available in tight terrain; preferred
+      // role positions use the wider spacing above in open ground.
+      var lattice = radius * 2 - 2, rowHeight = lattice * Math.sqrt(3) / 2, rows = Math.ceil(limit / rowHeight), columns = Math.ceil(limit / lattice);
       for (var row = -rows; row <= rows; row++) for (var column = -columns; column <= columns; column++) {
-        var candidate = { x: center.x + (column + (row % 2) / 2) * spacing, y: center.y + row * rowHeight };
+        var candidate = { x: center.x + (column + (row % 2) / 2) * lattice, y: center.y + row * rowHeight };
         var distance = cc.Vec2.distance(candidate, center);
         if (distance <= limit) candidates.push({ pos: candidate, distance: distance });
       }
       candidates.sort(function (a, b) { return a.distance - b.distance || a.pos.y - b.pos.y || a.pos.x - b.pos.x; });
     }
-    soldiers.forEach(function (soldier) {
+    layout.groups.front.concat(layout.groups.rear, layout.groups.flank).forEach(function (soldier) {
       if (slots.has(soldier)) return;
       // Terrain and gate-side checks are shared at the largest body radius.
       // Evaluate only candidates reached by this layout, at most once each;
       // reservations alone change while assigning the remaining bodies.
+      var desired = layout.preferred.get(soldier), best = null, bestScore = Infinity;
+      if (preferExact && valid(desired, radii.get(soldier))) { reserve(soldier, desired); return; }
       for (var j = 0; j < candidates.length; j++) {
         var candidate = candidates[j];
         if (candidate.clear === false || !available(candidate.pos, radii.get(soldier))) continue;
+        var dx = candidate.pos.x - desired.x, dy = candidate.pos.y - desired.y;
+        var score = dx * dx + dy * dy + (rolePosition(layout, soldier, candidate.pos, center) ? 0 : limit * limit * 4);
+        if (score >= bestScore) continue;
         if (candidate.clear === undefined) candidate.clear = clearGateApproach(candidate.pos, radius) && navigation.grid.isWalkable(candidate.pos, radius) && navigation.grid.segmentClear(center, candidate.pos, 0);
         if (!candidate.clear) continue;
-        reserve(soldier, candidate.pos);
-        break;
+        best = candidate; bestScore = score;
       }
+      if (best) reserve(soldier, best.pos);
       if (!slots.has(soldier)) slots.set(soldier, { pending: true });
     });
     this[cache] = { frame: navigation._frameId, order: this.rallyPoint, following: this.isAgg, anchor: center,
-      revision: navigation.revision, members: soldiers.slice(), slots: slots };
+      revision: navigation.revision, members: soldiers.slice(), slots: slots, forward: forward, headingAnchor: headingAnchor, layout: layout };
     return slots.get(unit);
   };
   _ctor.prototype.settleArmyCrowd = function (unit, position) {
     var formation = this._separateArmyCommands ? (unit.isAgg ? this._followFormation : this._rallyFormation) : this._armyFormation;
     if (!formation || !formation.slots.has(unit)) return false;
+    if (formation.layout && !rolePosition(formation.layout, unit, position, formation.anchor)) return false;
     var navigation = Navigation.get(this), radius = navigation.radius(unit);
     navigation.refresh();
     if (!navigation.grid.isWalkable(position, radius) || !navigation.grid.segmentClear(formation.anchor, position, 0)) return false;

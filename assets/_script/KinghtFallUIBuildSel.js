@@ -47,15 +47,17 @@ var def_KinghtFallUIBuildSel = function (t) {
   _ctor.prototype.initView = function () {
     var t = this;
     var e = this.choiceIndexes || (this.build.getUpgradeChoices ? this.build.getUpgradeChoices() : this.build.buildInfo.cfg.BranchBuild);
-    var grid = e.length > 3;
-    var squadChoice = this.initialChoice && this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks;
+    // Every starting building family uses the same cards, including families
+    // with only three choices. New choices fill the next grid slot.
+    var grid = this.initialChoice || e.length > 3;
+    this._choiceGridExtra = Math.max(0, Math.ceil(e.length / 2) - 2) * 304;
     this._nameBadgeRows = [];
     this._choiceRows = [];
     this._initialChoiceDescriptions = [];
-    if (grid || this.initialChoice) {
+    if (grid) {
       var layout = this.ndParent.getComponent(cc.Layout);
       if (layout) layout.enabled = false;
-      this.ndParent.setContentSize(620, grid ? 600 : 620);
+      this.ndParent.setContentSize(620, 600 + this._choiceGridExtra);
       this.ndParent.setPosition(0, -5);
     }
     if (this.initialChoice) this.initInitialChoiceView();
@@ -75,14 +77,14 @@ var def_KinghtFallUIBuildSel = function (t) {
         e.getComponent(cc.Sprite).spriteFrame = t;
         e.scale = o.Zoom;
         e.setPosition(o.Excursion ? cc.v2(o.Excursion[0] || 0, o.Excursion[1] || 0) : cc.v2(0, 0));
-        if ((artwork || i.initialChoice) && !grid) {
+        if (artwork && !grid) {
           var artworkSize = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
           e.scale = Math.min(174 / Math.max(1, artworkSize.width), 128 / Math.max(1, artworkSize.height));
           e.setPosition(-202, 36);
         }
         if (grid) {
           var size = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
-          e.scale = Math.min((squadChoice ? 224 : 186) / Math.max(1, size.width), (squadChoice ? 156 : 126) / Math.max(1, size.height));
+          e.scale = Math.min((i.initialChoice ? 224 : 186) / Math.max(1, size.width), (i.initialChoice ? 156 : 126) / Math.max(1, size.height));
           e.setPosition(0, 65);
         }
       });
@@ -96,8 +98,8 @@ var def_KinghtFallUIBuildSel = function (t) {
         "ndVideo" == p.name && (p.active = !i.initialChoice && !o.BuildSliverCost);
       }
       var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
-      rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(squadChoice ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
-      if (squadChoice) {
+      rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(i.initialChoice ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
+      if (i.initialChoice) {
         rich.font = null;
         rich.fontFamily = "Arial";
         info.color = new cc.Color(61, 57, 53, 255);
@@ -106,8 +108,7 @@ var def_KinghtFallUIBuildSel = function (t) {
           if (effect) effect.enabled = false;
         });
       }
-      if (grid) i.layoutChoiceCard(r, n);
-      else if (i.initialChoice) i.layoutInitialChoiceRow(r, n, e.length);
+      if (grid) i.layoutChoiceCard(r, n, e.length);
       if (i.initialChoice || o.BuildSliverCost) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
           if (!t._decisionPending) t.finishDecision(t.callBack, a);
@@ -153,9 +154,11 @@ var def_KinghtFallUIBuildSel = function (t) {
       n(a);
     }
   };
-  _ctor.prototype.layoutChoiceCard = function (row, index) {
+  _ctor.prototype.layoutChoiceCard = function (row, index, count) {
     row.setContentSize(300, 280);
-    row.setPosition(index % 2 ? 160 : -160, 150 - Math.floor(index / 2) * 304);
+    var extra = Math.max(0, Math.ceil(count / 2) - 2) * 304;
+    var x = count % 2 && index === count - 1 ? 0 : index % 2 ? 160 : -160;
+    row.setPosition(x, (count > 2 ? 150 : 0) + extra / 2 - Math.floor(index / 2) * 304);
     var rootSprite = row.getComponent(cc.Sprite);
     if (rootSprite) { rootSprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; rootSprite.type = cc.Sprite.Type.SLICED; }
     row.children.forEach(function (node) {
@@ -171,40 +174,25 @@ var def_KinghtFallUIBuildSel = function (t) {
     label.fontSize = 46; label.lineHeight = 52; label.enableWrapText = true; label.overflow = cc.Label.Overflow.SHRINK;
     name.setContentSize(548, 114);
     var info = row.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
-    info.setPosition(0, -98); info.setScale(.5);
+    info.setPosition(0, -88); info.setScale(.5);
     rich.fontSize = 38; rich.lineHeight = 43; rich.maxWidth = 540;
     rich.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
     this._initialChoiceDescriptions.push({ label: rich, maxHeight: 76, baseFontSize: 38, baseLineHeight: 43 });
   };
-  _ctor.prototype.layoutInitialChoiceRow = function (row, index, count) {
-    row.setContentSize(620, 180);
-    row.setPosition(0, (count - 1) * 106 - index * 212);
-    row.children.forEach(function (node) {
-      if (node.name !== "ndNormal" && node.name !== "ndVideo") return;
-      var sprite = node.getComponent(cc.Sprite);
-      if (sprite) { sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.type = cc.Sprite.Type.SLICED; }
-      if (node.y < -20) { node.setContentSize(212, 66); node.setPosition(-202, -53); }
-      else { node.setContentSize(620, 180); node.setPosition(0, 0); }
-    });
-    var name = row.getChildByName("labName"), label = name.getComponent(cc.Label);
-    name.setPosition(-202, -53); name.setScale(.5);
-    label.fontSize = 44; label.lineHeight = 48; label.enableWrapText = true; label.overflow = cc.Label.Overflow.SHRINK;
-    name.setContentSize(400, 116);
-    var info = row.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
-    info.setPosition(112, 0); info.setScale(.5);
-    rich.fontSize = 46; rich.lineHeight = 52; rich.maxWidth = 696;
-    rich.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
-    this._initialChoiceDescriptions.push({ label: rich, maxHeight: 148, baseFontSize: 46, baseLineHeight: 52 });
-  };
   _ctor.prototype.initInitialChoiceView = function () {
     var root = this.node.getChildByName("root"), banner = root && root.getChildByName("wg_jzfz_bt");
-    if (root) root.setScale(Math.min(1, Math.max(.1, (this.node.width - 40) / 680), Math.max(.1, (this.node.height - 48) / 904)));
+    var extra = this._choiceGridExtra || 0;
+    if (root) root.setScale(Math.min(1, Math.max(.1, (this.node.width - 40) / 680), Math.max(.1, (this.node.height - 48) / (904 + extra))));
     var title = banner && banner.getChildByName("labTitle"), hint = root && root.getChildByName("labTitle");
+    if (!this._choiceHeaderY) this._choiceHeaderY = { banner: banner && banner.y, hint: hint && hint.y };
+    if (banner) banner.y = this._choiceHeaderY.banner + extra / 2;
+    if (hint) hint.y = this._choiceHeaderY.hint + extra / 2;
     var squadChoice = this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks;
-    if (title) title.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.barracks_title]]" : "[[loc:ui.building.choose_tower]]");
-    if (hint) hint.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.initial_choice_hint]]");
+    if (title) title.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.barracks_title]]" : "[[loc:ui.building.towers_title]]");
+    if (hint) hint.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.choose_tower]]");
+    if (this._cancelButton) this._cancelButton.y = -386 - extra / 2;
     if (!root || this._cancelButton) return;
-    var button = new cc.Node("CancelInitialBuild"); button.parent = root; button.setPosition(0, -386); button.setContentSize(252, 66);
+    var button = new cc.Node("CancelInitialBuild"); button.parent = root; button.setPosition(0, -386 - extra / 2); button.setContentSize(252, 66);
     var background = button.addComponent(cc.Graphics);
     background.fillColor = new cc.Color(72, 73, 94, 255); background.strokeColor = new cc.Color(0, 0, 0, 255); background.lineWidth = 3;
     background.roundRect(-126, -33, 252, 66, 15); background.fill(); background.stroke();

@@ -27715,6 +27715,18 @@
       }
     },
     "visuals": {
+      "ally:90001:default": {
+        "scaleX": 0.9,
+        "scaleY": 0.9
+      },
+      "ally:90002:default": {
+        "scaleX": 0.9,
+        "scaleY": 0.9
+      },
+      "ally:90004:default": {
+        "scaleX": 1.5,
+        "scaleY": 1.5
+      },
       "enemy:90001:default": {
         "mirrorX": true
       },

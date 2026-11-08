@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { fixture } = require('./backend-ui-harness.cjs');
 
-function panel(count, width = 750, height = 1334, layered = false) {
+function panel(count, width = 750, height = 1334, layered = false, family = count === 4 ? 'barracks' : 'tower') {
   const h = fixture(), choices = [], ads = [], loaded = [];
   class Node {
     constructor(name) { Object.assign(this, { name, children: [], components: new Map(), active: true, x: 0, y: 0, scale: 1, width: 620, height: 156, events: {} }); }
@@ -44,13 +44,14 @@ function panel(count, width = 750, height = 1334, layered = false) {
   const UI = h.load('KinghtFallUIBuildSel').default, ui = new UI();
   ui.node = new Node('Panel'); ui.node.setContentSize(width, height);
   const root = child(ui.node, 'root'), banner = child(root, 'wg_jzfz_bt');
-  child(banner, 'labTitle', Label); child(root, 'labTitle', Label);
+  banner.y = 398.674;
+  child(banner, 'labTitle', Label); child(root, 'labTitle', Label).y = 341.291;
   ui.ndParent = child(root, 'ndMain', Layout); ui.ndItem = new Node('Template');
   ui.loadSpriteFrame = (bundle, path, done) => { loaded.push([bundle, path]); done({ getOriginalSize: () => ({ width: 1000, height: 1200 }) }); };
   ui.T = value => value;
   const rows = Array.from({ length: count }, (_, i) => ({ level: 1, Name: 'Unit ' + i, LevelUpDescribe: 'Hold the frontline', Zoom: .35,
-    Icon: 'unit-' + i, Appearance: count === 3 ? { sprite: 'buildings/towers/tower-' + i, weapon: layered ? { sprite: 'buildings/towers/weapon-' + i } : undefined } : undefined }));
-  ui.onOpened(); ui.init({ buildInfo: {}, buildCfg: { enumValue: count === 4 ? 3 : 2, levelList: rows } }, value => choices.push(value), () => {}, rows.map((_, i) => i + 1));
+    Icon: 'unit-' + i, Appearance: family === 'tower' ? { sprite: 'buildings/towers/tower-' + i, weapon: layered ? { sprite: 'buildings/towers/weapon-' + i } : undefined } : undefined }));
+  ui.onOpened(); ui.init({ buildInfo: {}, buildCfg: { enumValue: family === 'tower' ? 2 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map((_, i) => i + 1));
   ui.start();
   return { ui, h, root, choices, ads, loaded };
 }
@@ -78,16 +79,41 @@ test('tower starting choices use generated artwork through the resources bundle'
   assert.deepEqual(p.loaded, [0, 1, 2].map(i => ['resources', 'buildings/towers/tower-' + i]));
   for (const row of p.ui._choiceRows) {
     const icon = row.getChildByName('sprIcon');
-    assert.equal(icon.x, -202); assert.equal(icon.y, 36); assert.equal(icon.scale, 128 / 1200);
+    assert.equal(icon.x, 0); assert.equal(icon.y, 65); assert.equal(icon.scale, 156 / 1200);
     const name = row.getChildByName('labName'), info = row.getChildByName('labInfo');
-    assert(name.width * name.scale <= 212);
+    assert(name.width * name.scale < row.width);
     assert.equal(name.getComponent(p.h.cc.Label).overflow, p.h.cc.Label.Overflow.SHRINK);
     const rich = info.getComponent(p.h.cc.RichText);
     assert(info.x + rich.maxWidth * info.scale / 2 < row.width / 2);
-    assert(info.x - rich.maxWidth * info.scale / 2 > name.x + 212 / 2);
-    assert.equal(rich.fontSize, 46); assert.equal(row.height, 180);
+    assert.equal(info.x, 0); assert.equal(rich.fontFamily, 'Arial'); assert.doesNotMatch(rich.string, /<outline|<b>/);
+    assert.equal(rich.fontSize, 38); assert.equal(row.height, 280);
   }
-  assert.deepEqual(Array.from(p.ui._choiceRows, row => row.y), [212, 0, -212]);
+  assert.deepEqual(Array.from(p.ui._choiceRows, row => [row.x, row.y]), [[-160, 150], [160, 150], [0, -154]]);
+  assert.equal(p.root.getChildByName('wg_jzfz_bt').getChildByName('labTitle').getComponent(p.h.cc.Label).string, '[[loc:ui.building.towers_title]]');
+  assert.equal(p.root.getChildByName('labTitle').getComponent(p.h.cc.Label).string, '[[loc:ui.building.choose_tower]]');
+});
+
+test('adding a fourth tower uses the exact same cards, artwork bounds and spacing as four squads', () => {
+  const tower = panel(4, 750, 1334, false, 'tower'), squad = panel(4);
+  function geometry(p) { return Array.from(p.ui._choiceRows, row => ({
+    card: [row.x, row.y, row.width, row.height],
+    children: ['sprIcon', 'labName', 'labInfo'].map(name => { const n = row.getChildByName(name); return [n.x, n.y, n.width, n.height, n.scale]; }),
+    description: row.getChildByName('labInfo').getComponent(p.h.cc.RichText).fontSize
+  })); }
+  assert.deepEqual(geometry(tower), geometry(squad));
+  assert.equal(squad.root.getChildByName('labTitle').getComponent(squad.h.cc.Label).string, '[[loc:ui.building.choose_squad]]');
+  tower.ui._choiceRows[3].events.end(); assert.deepEqual(tower.choices, [4]); assert.deepEqual(tower.ads, []);
+});
+
+test('additional card rows keep the title, choices and cancel button inside a short screen', () => {
+  for (const count of [5, 6]) {
+    const p = panel(count, 540, 820), height = 904 + 304;
+    assert(p.root.scale * height <= 820 - 48);
+    assert(p.root.getChildByName('wg_jzfz_bt').y > p.ui._choiceRows[0].y + 140);
+    const bottom = p.ui._choiceRows.at(-1).y - 140;
+    assert(p.ui._cancelButton.y + p.ui._cancelButton.height / 2 < bottom);
+    assert(p.ui._cancelButton.y - p.ui._cancelButton.height / 2 >= -height / 2);
+  }
 });
 
 test('layered tower choices retain the complete tower icon instead of displaying only an empty base', () => {
@@ -108,7 +134,7 @@ test('initial chooser fits short screens and provides a reachable cancellation c
 test('long localized initial descriptions shrink within their card and reset for a shorter translation', () => {
   const p = panel(3), rich = p.ui._choiceRows[0].getChildByName('labInfo').getComponent(p.h.cc.RichText);
   rich.node.height = 500; p.ui.lateUpdate();
-  assert(rich.fontSize < 46); assert(rich.lineHeight < 52);
-  rich.string = 'Short description'; rich.node.height = 52; p.ui.lateUpdate();
-  assert.equal(rich.fontSize, 46); assert.equal(rich.lineHeight, 52);
+  assert(rich.fontSize < 38); assert(rich.lineHeight < 43);
+  rich.string = 'Short description'; rich.node.height = 43; p.ui.lateUpdate();
+  assert.equal(rich.fontSize, 38); assert.equal(rich.lineHeight, 43);
 });

@@ -100,7 +100,12 @@ test('a selected casualty respawns at its barracks and walks to its last release
  e.game.ctrPlay.node.setPosition(20,20);e.game.changeAge();e.game.selectFollower(unit);unit.node.setPosition(70,25);
  unit.onAttacked(1000);assert(!unit._followSelected&&!unit.isAgg);assert.equal(barracks.waitEnemy.length,1);
  barracks.doTime(1.1);assert(unit.node.active);near(unit.node.x,-150);assert(!unit.isAgg);
- near(unit.rallyPoint.pos.x,20);near(unit.rallyPoint.pos.y,20);e.tick([unit],110);near(distance(unit.node,{x:20,y:20}),0);
+ near(unit.rallyPoint.pos.x,20);near(unit.rallyPoint.pos.y,20);e.tick([unit],110);
+ const navigation=e.nav.get(e.game),rest=unit.node.position;
+ assert(distance(rest,{x:20,y:20})<=64,'revived unit abandoned its saved post');
+ assert(distance(rest,e.game.ctrPlay.node)>=navigation.radius(unit)+navigation.radius(e.game.ctrPlay),'revived unit tried to stand inside the hero');
+ assert.equal(unit.state,0);e.tick([unit],60);near(distance(unit.node,rest),0);
+ near(unit.rallyPoint.pos.x,20);near(unit.rallyPoint.pos.y,20);
 });
 test('barracks checkpoint and replacement roster slots retain posts without changing legacy save fields',()=>{
  const e=setup(),B=e.load('KinghtFallBuildBarracks').default,b=new B(),unit=e.soldier(-20);

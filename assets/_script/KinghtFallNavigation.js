@@ -295,6 +295,30 @@ function get(game) {
 }
 exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit, target, dt); };
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };
+exports.findStandingPoint = function (unit, game, anchor, preferred) {
+  var navigation = get(game); navigation.refresh();
+  var radius = Math.max(unit._spawnBodyRadius || 0, navigation.radius(unit));
+  var grid = navigation.gridFor(unit), reserved = [];
+  game.gameData.getSoldierList().concat(game.gameData.getEnemyList(), [game.ctrPlay]).forEach(function (other) {
+    if (other === unit || !other || !other.node || !other.node.activeInHierarchy || other._isPooled || other.isDead && other.isDead()) return;
+    var clearance = radius + Math.max(other._spawnBodyRadius || 0, navigation.radius(other)) + 4;
+    reserved.push({ pos: point(other.node, game.ndMain), clearance: clearance });
+    if (!other.isAgg && other._standingGoal) reserved.push({ pos: other._standingGoal.pos, clearance: clearance });
+  });
+  function clear(candidate) {
+    if (!grid.isWalkable(candidate, radius) || !navigation.grid.segmentClear(anchor, candidate, 0)) return false;
+    return reserved.every(function (other) { return distance(candidate, other.pos) >= other.clearance; });
+  }
+  if (preferred && clear(preferred)) return { x: preferred.x, y: preferred.y };
+  if (clear(anchor)) return { x: anchor.x, y: anchor.y };
+  var start = point(unit.node, game.ndMain), angle = Math.atan2(start.y - anchor.y, start.x - anchor.x), spacing = radius * 2 + 6;
+  for (var ring = 1; ring <= 8; ring++) for (var index = 0; index < ring * 6; index++) {
+    var direction = angle + 2 * Math.PI * index / (ring * 6);
+    var candidate = { x: anchor.x + Math.cos(direction) * ring * spacing, y: anchor.y + Math.sin(direction) * ring * spacing };
+    if (clear(candidate)) return candidate;
+  }
+  return null;
+};
 exports.canStopFollowing = function (unit, game, target) {
   var navigation = get(game); navigation.refresh();
   return navigation.grid.segmentClear(point(unit.node, game.ndMain), target, 0);

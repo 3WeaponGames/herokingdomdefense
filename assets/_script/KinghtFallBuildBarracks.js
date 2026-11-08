@@ -22,6 +22,7 @@ var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallSoldierBase = require("KinghtFallSoldierBase");
 var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
+var Navigation = require("KinghtFallNavigation");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -73,7 +74,16 @@ var def_KinghtFallBuildBarracks = function (t) {
     e += this.VideoTimes;
     var i = (this.stratAge + 360 * t / e) * Math.PI / 180;
     var a = cc.v2(Math.cos(i), Math.sin(i)).multiplyScalar(20);
-    return cc.v2(this.node.x + this.ndBotnNodeList.x + a.x, this.node.y + this.ndBotnNodeList.y + a.y);
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
+    var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
+    var preferred = cc.v2(anchor.x + a.x, anchor.y + a.y);
+    if (!unit) return preferred;
+    unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit));
+    if (!this._spawnPosts) this._spawnPosts = [];
+    var position = Navigation.findStandingPoint(unit, game, anchor, this._spawnPosts[t] || preferred);
+    if (!position) return preferred;
+    this._spawnPosts[t] = { x: position.x, y: position.y };
+    return cc.v2(position.x, position.y);
   };
   _ctor.prototype.addDie = function (t) {
     this.time[r.Reborn] >= this.time[r.RebornMax] && (this.time[r.Reborn] = 0);
@@ -144,7 +154,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
   };
   _ctor.prototype.reset = function (e) {
-    if (e) this._soldierRallyPosts = [];
+    if (e) { this._soldierRallyPosts = []; this._spawnPosts = []; }
     this._rosterSignature = null;
     this._rosterRequests = {};
     t.prototype.reset.call(this, e);

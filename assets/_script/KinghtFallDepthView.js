@@ -254,6 +254,31 @@ function bodyVisuals(actor) {
   var animation = actor.ctrPlayAni;
   return animation ? ["spAniMa", "spAniBody", "spAniDrap", "spAniHead", "spAniBow", "spAniArrow", "spAniHand"].map(function (key) { return animation[key]; }).filter(Boolean) : [];
 }
+function objectRoot(node, main) {
+  while (node && node.parent && node.parent !== main) node = node.parent;
+  return node && node.parent === main ? node : null;
+}
+function refreshBuildingSources(object) {
+  if (!object.buildings) return;
+  var changed = false;
+  object.buildings.forEach(function (binding) {
+    var state = binding.owner._buildingAppearance;
+    var base = state && state.sprite && cc.isValid(state.sprite, true) ? state.sprite : null;
+    var weapon = state && state.weaponSprite && cc.isValid(state.weaponSprite, true) ? state.weaponSprite : null;
+    var ruins = state && state.destroyedSprite && cc.isValid(state.destroyedSprite, true) ? state.destroyedSprite : null;
+    if (binding.base !== base || binding.weapon !== weapon || binding.ruins !== ruins) changed = true;
+    binding.base = base; binding.weapon = weapon; binding.ruins = ruins;
+  });
+  if (!changed) return;
+  object.sources = object.baseSources.slice();
+  object.buildings.forEach(function (binding) {
+    [binding.base, binding.weapon, binding.ruins].forEach(function (source) { if (source && object.sources.indexOf(source) < 0) object.sources.push(source); });
+  });
+  object.signature = null;
+  // Browser captures contain render-only copies of the original sources.
+  // Rebuild those copies when asynchronously loaded artwork replaces a model.
+  if (object.capture) { object.capture.active = false; object.capture.destroy(); object.capture = null; object.visuals = null; }
+}
 
 function DepthView(game) {
   this.game = game;
@@ -307,9 +332,15 @@ DepthView.prototype.prepareObjects = function () {
     });
   });
   var buildings = this.game.gameData.bulidPointMap;
-  var byNode = new Map();
+  var byNode = new Map(), buildingOwners = new Map();
   Object.keys(buildings).forEach(function (id) {
     var build = buildings[id];
+    var ownerRoot = objectRoot(build.node, main);
+    if (ownerRoot) {
+      if (!byNode.has(ownerRoot)) byNode.set(ownerRoot, []);
+      if (!buildingOwners.has(ownerRoot)) buildingOwners.set(ownerRoot, []);
+      buildingOwners.get(ownerRoot).push({ owner: build, base: null, weapon: null, ruins: null });
+    }
     [build.ndAniMain, build.ndAniDown].concat(build.ndAniOther || []).filter(Boolean).forEach(function (renderer) {
       var root = renderer.node;
       while (root.parent !== main && root.parent) root = root.parent;
@@ -326,9 +357,11 @@ DepthView.prototype.prepareObjects = function () {
     if (shop.spAni) byNode.set(shop.node, [shop.spAni]);
   });
   byNode.forEach(function (renderers, root) {
-    if (!renderers.length) return;
-    if (!root._depthGround) root._depthGround = renderers[0].node;
-    self.objects.push({ node: root, sources: renderers, masks: new Map(), capture: null, texture: null, frame: null, signature: "" });
+    var bindings = buildingOwners.get(root);
+    if (!renderers.length && !bindings) return;
+    if (!root._depthGround) root._depthGround = renderers.length ? renderers[0].node : bindings[0].owner.node;
+    self.objects.push({ node: root, sources: renderers, baseSources: renderers, buildings: bindings,
+      masks: new Map(), capture: null, texture: null, frame: null, signature: "" });
   });
 };
 DepthView.prototype.sort = function () {
@@ -484,6 +517,7 @@ DepthView.prototype.update = function () {
   var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
   var activeActors=new Set(active.map(function(entry){return entry.actor;}));
   this.objects.forEach(function (object) {
+    refreshBuildingSources(object);
     var box = object.node.activeInHierarchy ? object.sources.reduce(function (value, source) { return union(value, bounds(source, self.main,cache)); }, null) : null;
     var ground = point(object.node._depthGround || object.node, self.main).y;
     var hidden=[];

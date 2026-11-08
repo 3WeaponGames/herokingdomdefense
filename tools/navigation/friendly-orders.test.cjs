@@ -463,11 +463,16 @@ test('Sixty-unit formations bound geometry work and reuse retained slots when fo
     if (!actualMap) {
       walks = segments = 0;
       const moved = { x: 25, y: 0 }; game.ctrPlay.node.setPosition(moved); e.nav.beginFrame(game);
+      let relocated = 0;
       units.forEach((unit, i) => {
         const next = game.getArmyOrderGoal(unit, moved);
-        near(next.pos.x, slots[i].pos.x + 25); near(next.pos.y, slots[i].pos.y);
+        const translated = { x: slots[i].pos.x + 25, y: slots[i].pos.y };
+        if (walk.call(navigation.grid, translated, navigation.radius(unit))) {
+          near(next.pos.x, translated.x); near(next.pos.y, translated.y);
+        } else { relocated++; assert(walk.call(navigation.grid, next.pos, navigation.radius(unit)), 'wide formation must move an edge slot back inside the map'); }
       });
-      assert(walks <= 61 && segments <= 61, 'following inspected unused candidates after retaining every slot: ' + walks + '/' + segments);
+      const budget = relocated ? 500 : 61;
+      assert(walks <= budget && segments <= budget, 'following repeated geometry work after retaining its clear slots: ' + walks + '/' + segments);
     }
     assert.equal(navigation.stats.searches, 0, 'formation allocation performed path searches');
   }

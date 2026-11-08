@@ -6248,6 +6248,11 @@
     "ui.building.choose_tower": {
       "en": "Choose your tower",
       "zh": "选择你的防御塔",
+      "context": "Initial tower selection hint"
+    },
+    "ui.building.towers_title": {
+      "en": "Towers",
+      "zh": "防御塔",
       "context": "Initial tower selection title"
     },
     "ui.building.initial_choice_hint": {

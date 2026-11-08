@@ -207,6 +207,45 @@ test('silhouette sources include the full equipped hero and exclude smoke/revive
   const soldier = { spAni: {} };
   assert.equal(bodyVisuals(soldier)[0], soldier.spAni);
 });
+
+for (const nativeCapture of [false, true]) test('late tower artwork and its weapon replace occlusion sources through upgrades and removal (' + (nativeCapture ? 'native' : 'browser') + ')', () => {
+  const { Node, Vec2 } = require('../navigation/runtime-harness.cjs');
+  class Skeleton {} class Sprite {}
+  const cc = { Sprite, v2: (x, y) => new Vec2(x, y), isValid: value => !!value && !value.destroyed };
+  const { DepthView } = load(cc, { Skeleton });
+  const main = new Node('Map'), tower = new Node('Tower', main), model = new Node('OriginalTower', tower);
+  const skeleton = model.addComponent(Skeleton); skeleton.enabled = true;
+  const owner = { node: tower, ndAniMain: skeleton }, game = { ndMain: main, ctrPlay: { node: { activeInHierarchy: false } },
+    gameData: { bulidPointMap: { tower: owner }, getSoldierList: () => [], getEnemyList: () => [] } };
+  const view = { main, game, objects: [], nativeCapture, nativeActors: new Map(), sort() {} };
+  DepthView.prototype.prepareObjects.call(view);
+  assert.equal(view.objects.length, 1);
+  const object = view.objects[0]; assert.deepEqual(Array.from(object.sources), [skeleton]);
+  let capturesReleased = 0;
+  object.capture = { active: true, destroy() { capturesReleased++; } };
+  const base = new Node('BuildingArtwork', tower).addComponent(Sprite), pivot = new Node('WeaponPivot', tower);
+  const weapon = new Node('BuildingWeapon', pivot).addComponent(Sprite);
+  base.enabled = weapon.enabled = true; skeleton.enabled = false;
+  owner._buildingAppearance = { sprite: base, weaponSprite: weapon };
+  DepthView.prototype.update.call(view);
+  assert.deepEqual(Array.from(object.sources), [skeleton, base, weapon]);
+  assert.equal(capturesReleased, 1); assert.equal(object.capture, null);
+  assert.equal(tower._depthGround, model, 'replacement artwork must retain the authored ground point');
+  const stable = object.sources;
+  for (let i = 0; i < 30; i++) DepthView.prototype.update.call(view);
+  assert.equal(object.sources, stable, 'steady frames should not rebuild source arrays or captures');
+  base.spriteFrame = { name: 'next tower level' }; weapon.spriteFrame = { name: 'next weapon level' };
+  DepthView.prototype.update.call(view); assert.equal(object.sources, stable);
+  const ruins = new Node('BuildingRuins', tower).addComponent(Sprite); ruins.enabled = true;
+  base.node.active = false; pivot.active = false; owner._buildingAppearance.destroyedSprite = ruins;
+  DepthView.prototype.update.call(view);
+  assert.deepEqual(Array.from(object.sources).filter(source => source.enabled && source.node.activeInHierarchy), [ruins]);
+  const old = object.capture = { active: true, destroy() { capturesReleased++; } };
+  owner._buildingAppearance = null; skeleton.enabled = true;
+  DepthView.prototype.update.call(view);
+  assert.equal(old.active, false); assert.equal(capturesReleased, 2);
+  assert.deepEqual(Array.from(object.sources), [skeleton]);
+});
 test('multiple hidden units share one object stencil and contain render components only', () => {
   const added = [];
   class Node { constructor(name) { this.name = name; } addComponent(Type) { added.push(Type); return new Type(); } }
