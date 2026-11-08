@@ -389,6 +389,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.onDestroy = function () {
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
+    if (this.btnFollow) require("FollowButtonArtwork").dispose(this.btnFollow);
     try { this.cancelBattleDialog(); }
     finally { t.prototype.onDestroy.call(this); }
   };

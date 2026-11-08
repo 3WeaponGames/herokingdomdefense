@@ -1,20 +1,36 @@
 "use strict";
 
-// Reuse Rally's original antialiased rim textures. Only cover the old flag
-// inside their white face; the separate boot stays stationary in both states.
+// The gold Rally face is identical in both states. Only its translucent dark
+// outer rim changes to blue while Follow is enabled.
+function activeRim() {
+  var size = 256, pixels = new Uint8Array(size * size * 4), scale = size / 128;
+  for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
+    var dx = x + .5 - size / 2, dy = y + .5 - size / 2, radius = Math.sqrt(dx * dx + dy * dy) / scale;
+    var coverage = Math.max(0, Math.min(1, (52 - radius) * scale + .5)) *
+      Math.max(0, Math.min(1, (radius - 45) * scale + .5)), i = (y * size + x) * 4;
+    pixels[i] = 31; pixels[i + 1] = 204; pixels[i + 2] = 241; pixels[i + 3] = Math.round(255 * coverage);
+  }
+  // Analytic edge coverage and mipmaps keep this thin rim smooth in both the
+  // browser and native renderer, without blurring or recoloring the artwork.
+  var texture = new cc.Texture2D();
+  texture.genMipmaps = true;
+  texture.initWithData(pixels, cc.Texture2D.PixelFormat.RGBA8888, size, size);
+  texture.setFilters(cc.Texture2D.Filter.LINEAR, cc.Texture2D.Filter.LINEAR);
+  texture.update({ mipFilter: cc.Texture2D.Filter.LINEAR });
+  return { texture: texture, frame: new cc.SpriteFrame(texture) };
+}
+
 exports.install = function (button) {
-  if (!button) return;
-  var names = ["ndTag1", "ndTag2"], frames = names.map(function (name) {
-    var node = button.getChildByName(name), sprite = node && node.getComponent(cc.Sprite);
-    return sprite && sprite.spriteFrame;
-  });
-  names.forEach(function (name, index) {
-    var node = button.getChildByName(name);
-    if (!node || node._followBootBackground) return;
-    node._followBootBackground = true;
+  if (!button || button._followBootArtwork) return;
+  var idle = button.getChildByName("ndTag1"), active = button.getChildByName("ndTag2");
+  var gold = idle && idle.getComponent(cc.Sprite);
+  if (!idle || !active || !gold || !gold.spriteFrame) return;
+  var frame = gold.spriteFrame;
+  [idle, active].forEach(function (node) {
     var sprite = node.getComponent(cc.Sprite);
-    // Follow already uses cyan when inactive and gold while following.
-    if (sprite) { if (frames[1 - index]) sprite.spriteFrame = frames[1 - index]; sprite.enabled = true; }
+    sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
+    sprite.spriteFrame = frame; sprite.enabled = true;
+    node.setContentSize(104, 104);
     var background = new cc.Node("FollowCircle");
     background.parent = node;
     background.setContentSize(82, 82);
@@ -24,4 +40,20 @@ exports.install = function (button) {
     // tessellation never defines the visible outline of the button.
     g.fillColor = cc.color(255, 255, 255); g.circle(0, 0, 38); g.fill();
   });
+  var rim = activeRim(), highlight = new cc.Node("FollowActiveRim");
+  highlight.parent = active;
+  var sprite = highlight.addComponent(cc.Sprite);
+  sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.spriteFrame = rim.frame;
+  highlight.setContentSize(128, 128);
+  rim.sprite = sprite; button._followBootArtwork = rim;
+  // Gameplay initializes Follow to false; the first visible frame agrees.
+  idle.active = true; active.active = false;
+};
+
+exports.dispose = function (button) {
+  var rim = button && button._followBootArtwork;
+  if (!rim) return;
+  rim.sprite.spriteFrame = null;
+  rim.frame.destroy(); rim.texture.destroy();
+  button._followBootArtwork = null;
 };

@@ -7198,7 +7198,7 @@
   {
     "__type__": "cc.Node",
     "_name": "ndTag1",
-    "_active": false,
+    "_active": true,
     "_parent": {
       "__id__": 367
     },
@@ -7243,6 +7243,7 @@
   {
     "__type__": "cc.Node",
     "_name": "ndTag2",
+    "_active": false,
     "_parent": {
       "__id__": 367
     },
