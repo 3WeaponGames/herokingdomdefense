@@ -49,7 +49,6 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     e.btnPassport = null;
     e.btnOnline = null;
     e.btnSign = null;
-    e.btnSetting = null;
     e.btnAddDesktop = null;
     e.btnSideBoard = null;
     e.btnSubEnter = null;
@@ -261,9 +260,6 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     }, this);
     this.btnSign.on(cc.Node.EventType.TOUCH_END, function () {
       $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UISignIn, $z1Config.UIID.UIHome);
-    }, this);
-    this.btnSetting.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1UIMgr.UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UISetting, $z1Config.UIID.UIHome);
     }, this);
     var a = $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE || $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.KuaiShou || $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.EDITOR;
     this.btnSideBoard.active = a;
@@ -581,7 +577,6 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     popup.scale = 1;
   };
   _ctor.prototype.onDisable = function () {
-    if (this._lobby) require("HomeLobbyLayout").releaseHeader(this);
     this.stopMissionDrawerTweens();
     this._missionDrawerLayout = null;
     if (this._boxRewardInputRoot) this._boxRewardInputRoot.off(cc.Node.EventType.TOUCH_END, this.onBoxRewardTouchEnd, this, true);
@@ -990,10 +985,6 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
     type: cc.Node,
     tooltip: "签到"
   })], _ctor.prototype, "btnSign", undefined);
-  cc__decorate([ccp_property({
-    type: cc.Node,
-    tooltip: "设置"
-  })], _ctor.prototype, "btnSetting", undefined);
   cc__decorate([ccp_property({
     type: cc.Node,
     tooltip: "添加桌面"

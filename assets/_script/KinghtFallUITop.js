@@ -20,6 +20,7 @@ var def_KinghtFallUITop = function (t) {
     e.ndGold = null;
     e.ndDiamond = null;
     e.ndPower = null;
+    e.btnSetting = null;
     e.goldLayout = null;
     e.toolLayout = null;
     return e;
@@ -27,9 +28,14 @@ var def_KinghtFallUITop = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.onLoad = function () {
     this.userData = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    require("LobbyHeaderLayout").install(this);
   };
   _ctor.prototype.onEnable = function () {
     this.initView();
+    require("LobbyHeaderLayout").layout(this);
+  };
+  _ctor.prototype.lateUpdate = function () {
+    require("LobbyHeaderLayout").layout(this);
   };
   _ctor.prototype.start = function () {
     this.initEventListener();
@@ -48,6 +54,8 @@ var def_KinghtFallUITop = function (t) {
   };
   _ctor.prototype.initBtnListener = function () {
     var t = this;
+    if (this._headerButtonsBound) return;
+    this._headerButtonsBound = true;
     this.ndGold.on(cc.Node.EventType.TOUCH_END, function () {
       t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddCurrency, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin);
     }, this);
@@ -56,6 +64,9 @@ var def_KinghtFallUITop = function (t) {
     }, this);
     this.ndPower.on(cc.Node.EventType.TOUCH_END, function () {
       t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddStrength);
+    }, this);
+    if (this.btnSetting) this.btnSetting.on(cc.Node.EventType.TOUCH_END, function () {
+      require("UIMgr").UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UISetting, $z1KinghtFallConfig.KinghtFallUIID.UIHome);
     }, this);
   };
   _ctor.prototype.initView = function () {
@@ -150,6 +161,10 @@ var def_KinghtFallUITop = function (t) {
     type: cc.Node,
     tooltip: "体力节点"
   })], _ctor.prototype, "ndPower", undefined);
+  cc__decorate([ccp_property({
+    type: cc.Node,
+    tooltip: "Shared lobby Settings button"
+  })], _ctor.prototype, "btnSetting", undefined);
   cc__decorate([ccp_property({
     type: cc.Node,
     tooltip: "体力节点"

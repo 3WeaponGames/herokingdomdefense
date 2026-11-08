@@ -15,6 +15,9 @@
       },
       {
         "__id__": 4
+      },
+      {
+        "__id__": 109
       }
     ],
     "_components": [
@@ -1902,6 +1905,9 @@
     },
     "node": {
       "__id__": 1
+    },
+    "btnSetting": {
+      "__id__": 109
     }
   },
   {
@@ -2019,6 +2025,125 @@
     "alignMode": 2,
     "node": {
       "__id__": 35
+    }
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "btnSetting",
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [
+      {
+        "__id__": 110
+      }
+    ],
+    "_components": [
+      {
+        "__id__": 113
+      }
+    ],
+    "_prefab": {
+      "__id__": 114
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 100,
+      "height": 100
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        319,
+        605,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.64,
+        0.64,
+        1
+      ],
+      "__type__": "TypedArray"
+    },
+    "_active": true
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "sprIcon",
+    "_parent": {
+      "__id__": 109
+    },
+    "_components": [
+      {
+        "__id__": 111
+      }
+    ],
+    "_prefab": {
+      "__id__": 112
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 74,
+      "height": 74
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        -14.21,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "222a8ece-1a86-41af-9a7a-fbe8ff3ee0e6"
+    },
+    "node": {
+      "__id__": 110
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "cd3WxGbKJPtafbs+ccTMO1",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    }
+  },
+  {
+    "__type__": "08526eaTJpCXYM9VKuRXAnP",
+    "_N$transition": 3,
+    "node": {
+      "__id__": 109
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "fileId": "f84wjdN+1AA6xuwJKXVoUG",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
     }
   }
 ]

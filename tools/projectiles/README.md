@@ -18,7 +18,11 @@ tier selector is a silent preview setting; it never changes player progress.
 rewards, names, icons and icon backgrounds. Implemented effect IDs and goods
 bindings are fixed. **Choose icon…** is also available on image fields in
 Equipment, Talents, Battle Perks, Buildings and Units. It offers imported
-SpriteFrames from runtime bundles. Explicit icon choices take precedence over
+SpriteFrames from runtime bundles. The picker opens with pack folders: 2D Minimal,
+Minimal Hero Equipment, GUI Pro, monster portraits and original game assets.
+Open a category to browse its icons; breadcrumbs and Back return to parent
+folders. Search finds matching names and folders across every pack.
+Explicit icon choices take precedence over
 automatic item thumbnails. Icons do not alter the held equipment model.
 
 All panels keep drafts until **Save**. A no-change save writes nothing. Saves

@@ -4691,6 +4691,7 @@
     {
     "__type__": "cc.Node",
     "_name": "btnSetting",
+    "_active": false,
     "_parent": {
       "__id__": 230
     },
@@ -6570,9 +6571,6 @@
     },
     "btnAddDesktop": {
       "__id__": 243
-    },
-    "btnSetting": {
-      "__id__": 231
     },
     "btnSign": {
       "__id__": 205

@@ -1,11 +1,55 @@
 "use strict";
 
-// Small vector icons and stat-row surfaces stay crisp in Browser and Simulator.
-// All values and localized captions are separate authored child labels.
+// Stat artwork is separate from the authored values and localized captions.
+// Keep the procedural glyph until its resource finishes loading successfully.
+var STAT_ICONS = { 1: "health", 2: "health-regeneration", 3: "attack-damage", 4: "attack-range", 5: "attack-speed", 6: "movement-speed" };
 cc.Class({
   extends: cc.Component,
   properties: { statType: 1 },
   onLoad: function () {
+    this._statIconDestroyed = false;
+    this._loadStatIcon();
+  },
+  _loadStatIcon: function () {
+    var owner = this, type = this.statType, name = STAT_ICONS[type];
+    var generation = this._statIconGeneration = (this._statIconGeneration || 0) + 1;
+    if (this._statIconNode) this._statIconNode.active = false;
+    this._drawStatRow(true);
+    if (!name || !cc.resources || typeof cc.resources.load !== "function") return;
+    cc.resources.load("Stats Icons/" + name, cc.SpriteFrame, function (error, frame) {
+      if (error || !frame || owner._statIconDestroyed || generation !== owner._statIconGeneration || type !== owner.statType ||
+          !cc.isValid(owner, true) || !cc.isValid(owner.node, true)) return;
+      if (!cc.isValid(owner._statIconNode, true)) {
+        owner._statIconNode = new cc.Node("StatIcon");
+        owner._statIconNode.parent = owner.node;
+        owner._statIconNode.addComponent(cc.Sprite).sizeMode = cc.Sprite.SizeMode.CUSTOM;
+      }
+      // This component owns exactly one resource reference, independent of UI
+      // opening/closing order and the shared resource loader cache.
+      frame.addRef();
+      var previous = owner._statIconFrame;
+      owner._statIconFrame = frame;
+      var image = owner._statIconNode;
+      image.getComponent(cc.Sprite).spriteFrame = frame;
+      image.setContentSize(40, 40);
+      image.setPosition(-owner.node.width / 2 + 28, 0);
+      image.active = true;
+      owner._drawStatRow(false);
+      if (previous) previous.decRef();
+    });
+  },
+  onDestroy: function () {
+    this._statIconDestroyed = true;
+    this._statIconGeneration = (this._statIconGeneration || 0) + 1;
+    if (cc.isValid(this._statIconNode, true)) {
+      this._statIconNode.getComponent(cc.Sprite).spriteFrame = null;
+      this._statIconNode.destroy();
+    }
+    this._statIconNode = null;
+    if (this._statIconFrame) this._statIconFrame.decRef();
+    this._statIconFrame = null;
+  },
+  _drawStatRow: function (fallback) {
     var g = this.getComponent(cc.Graphics) || this.addComponent(cc.Graphics);
     var dark = cc.color("#142654");
     g.clear();
@@ -14,6 +58,7 @@ cc.Class({
     g.lineWidth = 2;
     g.roundRect(-this.node.width / 2, -this.node.height / 2, this.node.width, this.node.height, 14);
     g.fill(); g.stroke();
+    if (!fallback) return;
     var x = -this.node.width / 2 + 28;
     function polygon(points, color) {
       g.fillColor = cc.color(color); g.strokeColor = dark; g.lineWidth = 2.5;

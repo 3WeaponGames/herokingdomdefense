@@ -105,11 +105,11 @@ function install(home) {
   var caption = state.defenseCaption = new cc.Node("WallDefenseStatus"); caption.parent = home.node; caption.setContentSize(341, 38);
   var label = caption.addComponent(cc.Label); label.fontSize = 26; label.lineHeight = 32; label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
   var outline = caption.addComponent(cc.LabelOutline); outline.color = cc.Color.BLACK; outline.width = 2;
-  disable(home.btnSetting.parent, cc.Sprite);
+  var legacyTray = home.node.getChildByName("ndBtnRight");
+  disable(legacyTray, cc.Sprite);
   // The old sidebar is now transparent and overlaps the reward carousel.
   // Its children retain their own button input; the empty tray must not swallow touches.
-  disable(home.btnSetting.parent, cc.BlockInputEvents);
-  home.btnSetting.parent = home.node; disable(home.btnSetting, cc.Widget);
+  disable(legacyTray, cc.BlockInputEvents);
   if (home.btnSubEnter) home.btnSubEnter.active = false;
   home.ndTaskInfo.active = false;
   var ribbon = home.ndLevelInfo.getChildByName("wg_zy_pd");
@@ -175,9 +175,7 @@ function layout(home) {
     home.btnBattle.setScale(geometry.buttonScale); home.btnBattle.setPosition(geometry.buttonRight, geometry.buttonY);
     state.defense.setScale(geometry.buttonScale); state.defense.setPosition(geometry.buttonLeft, geometry.buttonY);
     state.defenseCaption.setPosition(geometry.buttonLeft, geometry.buttonY - 73 * geometry.buttonScale - 21);
-    home.btnSetting.setPosition(bounds.right - 60, bounds.top - 62); home.btnSetting.setScale(1);
   }
-  layoutHeader(home, bounds);
   refresh(home);
 }
 function layoutStage(home, bounds, points, geometry) {
@@ -202,32 +200,6 @@ function layoutStage(home, bounds, points, geometry) {
   home.btnLeft.x = (bounds.left + geometry.stageArrowPadding - geometry.center) / geometry.stageScale + home.btnLeft.width * Math.abs(home.btnLeft.scaleX) * home.btnLeft.anchorX;
   home.btnRight.x = (bounds.right - geometry.stageArrowPadding - geometry.center) / geometry.stageScale - home.btnRight.width * Math.abs(home.btnRight.scaleX) * (1 - home.btnRight.anchorX);
 }
-function layoutHeader(home, bounds) {
-  var state = home._lobby, manager = require("UIMgr").UIMgr.getInstance();
-  var top = manager.getUIById(Config.KinghtFallUIID.UITop); if (!top) return;
-  var nodes = [top.ndPower, top.ndGold, top.ndDiamond]; if (!nodes.every(Boolean)) return;
-  if (!state.header) state.header = nodes.map(function (node) {
-    var widget = node.getComponent(cc.Widget);
-    return { node: node, x: node.x, y: node.y, widget: widget, enabled: widget && widget.enabled };
-  });
-  var available = bounds.right - bounds.left - 128, cell = available / 3;
-  state.header.forEach(function (saved, index) {
-    if (saved.widget) saved.widget.enabled = false;
-    var point = home.node.convertToWorldSpaceAR(cc.v2(bounds.left + cell * (index + .5) + 10, bounds.top - 62));
-    saved.node.setPosition(saved.node.parent.convertToNodeSpaceAR(point));
-  });
-  var currency = top.ndGold;
-  var lower = home.node.convertToNodeSpaceAR(currency.convertToWorldSpaceAR(cc.v2(0, -currency.height / 2)));
-  var upper = home.node.convertToNodeSpaceAR(currency.convertToWorldSpaceAR(cc.v2(0, currency.height / 2)));
-  var button = home.btnSetting, scale = Math.max(64, Math.abs(upper.y - lower.y)) / button.height;
-  button.setScale(scale);
-  button.setPosition(bounds.right - 24 - button.width * scale / 2, bounds.top - 62);
-}
-function releaseHeader(home) {
-  var state = home._lobby; if (!state || !state.header) return;
-  state.header.forEach(function (saved) { if (!cc.isValid(saved.node, true)) return; saved.node.setPosition(saved.x, saved.y); if (saved.widget) { saved.widget.enabled = saved.enabled; if (saved.enabled) saved.widget.updateAlignment(); } });
-  state.header = null;
-}
 function refresh(home) {
   var state = home._lobby; if (!state || !state.geometry) return;
   var ready = state.items.map(function (item) { var red = item.getChildByName("ndRed"); return !!(red && red.active); });
@@ -248,4 +220,3 @@ exports.install = install;
 exports.layout = layout;
 exports.refresh = refresh;
 exports.modeState = modeState;
-exports.releaseHeader = releaseHeader;

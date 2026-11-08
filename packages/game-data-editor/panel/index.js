@@ -4,6 +4,7 @@ const MapCatalog=require('../lib/map-catalog');
 const fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
 const Buildings=require('../buildings/client');
+const IconPicker=require('./icon-picker');
 const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Unit Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
 const clone=Schema.clone;
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o||{},k);
@@ -48,9 +49,9 @@ function create(kind){
       this.$reload.onclick=()=>this._load(true);this.$review.onclick=()=>this._review(false);this.$save.onclick=()=>this._review(true);
       this.$discard.onclick=()=>this._confirm('Discard all panel drafts?','This discards unsaved edits shared by every game-tools panel. Saved game files remain unchanged.',()=>this._action('discard'),'Discard drafts');
       this._load();
-      ipc('asset-index').then(assets=>{if(this._closed)return;this._assets=assets||this._assets;this._render();}).catch(()=>{});
+      ipc('asset-index').then(assets=>{if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);this._render();}).catch(()=>{});
     },
-    close(){this._closed=true;if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
+    close(){this._closed=true;if(this._iconPicker)this._iconPicker.destroy();if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
     messages:{'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
     _status(message,error){this.$status.textContent=message;this.$status.className='gt-status'+(error?' error':'');},
     async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
@@ -138,12 +139,10 @@ function create(kind){
       if(options.help)wrap.appendChild(node('small',options.help));container.appendChild(wrap);return input;
     },
     _pickIcon(value,onchange,options){
-      const body=this._modal('Choose icon · draft only'),search=node('input'),grid=node('div');
-      search.placeholder='Search names or folders';grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:500px;overflow:auto';body.appendChild(search);body.appendChild(grid);
-      const assets=(this._assets.images||[]).filter(a=>a.reference);
-      let page=0;const render=()=>{clear(grid);const query=search.value.trim().toLowerCase(),all=assets.filter(a=>a.path.toLowerCase().includes(query)),slice=all.slice(0,(page+1)*120);slice.forEach(a=>{const b=button('',()=>{this.$modal.hidden=true;const next=a.reference||a.name;if(next!==value)onchange(next);},'gt-icon-choice'),img=node('img');img.src=a.url;img.loading='lazy';img.style.cssText='width:64px;height:64px;object-fit:contain';b.title=a.path;b.appendChild(img);b.appendChild(node('small',a.name));grid.appendChild(b);});if(slice.length<all.length)grid.appendChild(button('Show more ('+all.length+')',()=>{page++;render();}));};
-      search.oninput=()=>{page=0;render();};render();this.$modalActions.appendChild(button('Cancel',()=>this.$modal.hidden=true));
-      body.appendChild(node('p','Original icons and imported resource images. Choosing an icon changes this draft only; Save applies it to the game.'));
+      const focus=document.activeElement,body=this._modal('Choose icon · draft only');
+      const close=()=>{if(this._iconPicker)this._iconPicker.destroy();this._iconPicker=null;this.$modal.hidden=true;if(focus&&focus.isConnected)focus.focus();};
+      this._iconPicker=IconPicker.mount(body,{images:this._assets.images||[],value,onCancel:close,onSelect:reference=>{close();onchange(reference);}});
+      this.$modalActions.appendChild(button('Cancel',close));
     },
     _localized(container,doc,keys,value,label,options){
       const fieldOptions=Object.assign({wide:true,multiline:/description/i.test(label)},options),key=Schema.token(value);if(!key){this._field(container,label,value,v=>this._set(doc,keys,v),fieldOptions);return;}
@@ -406,7 +405,7 @@ function create(kind){
       if(!this._mapsClient){clear(this.$detail);try{this._mapsClient=require('../maps/client').mount(this.$detail,{ipc,onChange:edits=>this._change(edits),onSnapshot:snapshot=>this._apply(snapshot)});}catch(error){this._note('Map tools are loading. '+error.message,true);}}
       if(this._mapsClient&&this._mapsClient.update)this._mapsClient.update(this._snapshot);
     },
-    _modal(title){this.$modalTitle.textContent=title;clear(this.$modalBody);clear(this.$modalActions);this.$modal.hidden=false;return this.$modalBody;},
+    _modal(title){if(this._iconPicker){this._iconPicker.destroy();this._iconPicker=null;}this.$modalTitle.textContent=title;clear(this.$modalBody);clear(this.$modalActions);this.$modal.hidden=false;return this.$modalBody;},
     _confirm(title,text,action,label){const body=this._modal(title);body.appendChild(node('p',text));this.$modalActions.appendChild(button('Cancel',()=>this.$modal.hidden=true));this.$modalActions.appendChild(button(label||'Continue',()=>{this.$modal.hidden=true;action();},'gt-danger'));},
     _recover(recovery){
       const snapshot=this._snapshot,body=this._modal('Recover interrupted save');body.appendChild(node('p','This explicit recovery restores these files to their verified contents before the interrupted save. Opening a panel never performs recovery automatically.'));
