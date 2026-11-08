@@ -62,10 +62,13 @@ test('new tower previews use map sprite artwork and carry authored transforms wi
 test('layered tower previews resolve base and weapon independently and preserve invalid weapon drafts',()=>{
     const temporary=require('./owned-temp'),fixtureRoot=temporary('hkd-tower-layer-preview-');
     function sprite(name){const file=path.join(fixtureRoot,'assets/resources/buildings/towers',name+'.png');fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,'fixture');fs.writeFileSync(file+'.meta',JSON.stringify({subMetas:{fixture:{importer:'sprite-frame'}}}));return file;}
-    const baseFile=sprite('base'),weaponFile=sprite('weapon'),appearance={sprite:'buildings/towers/base',width:180,height:220,weapon:{sprite:'buildings/towers/weapon',width:120,height:80,pivotX:.2,pivotY:.6,offsetX:10,offsetY:180,muzzleX:90,muzzleY:15}};
+    const northFile=sprite('north'),southeastFile=sprite('southeast'),southFile=sprite('south');
+    const baseFile=sprite('base'),weaponFile=sprite('weapon'),appearance={sprite:'buildings/towers/base',width:180,height:220,weapon:{sprite:'buildings/towers/weapon',width:120,height:80,pivotX:.2,pivotY:.6,offsetX:10,offsetY:180,muzzleX:90,muzzleY:15,views:{north:{sprite:'buildings/towers/north'},southeast:{sprite:'buildings/towers/southeast'},south:{sprite:'buildings/towers/south'}}}};
     const record={levelList:[{Icon:'full-tower-icon',Appearance:appearance}]},before=JSON.stringify(record),request={type:'building',id:'2',documents:{A:{data:{}}},record};
     const result=Assets.describe(fixtureRoot,request);
     assert.equal(result.image,url.pathToFileURL(baseFile).href);assert.equal(result.weaponImage,url.pathToFileURL(weaponFile).href);assert.deepEqual(result.appearance,appearance);assert.equal(JSON.stringify(record),before);
+    assert.equal(result.weaponImages.north,url.pathToFileURL(northFile).href);assert.equal(result.weaponImages.south,url.pathToFileURL(southFile).href);
+    assert.equal(result.weaponImages.southeast,url.pathToFileURL(southeastFile).href);
     appearance.weapon.sprite='missing/weapon';const missing=Assets.describe(fixtureRoot,request);
     assert.equal(missing.image,url.pathToFileURL(baseFile).href);assert.equal(missing.weaponImage,null);assert.equal(appearance.weapon.sprite,'missing/weapon','preview never repairs a missing resource');
     Assets.invalidate();

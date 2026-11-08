@@ -1,4 +1,5 @@
 "use strict";
+var WeaponPose = require("BuildingWeaponPose");
 
 // Layered artwork shares the original map controller, collider and save row.
 // Old appearances without a weapon retain their static presentation.
@@ -9,7 +10,15 @@ function weaponConfig(appearance) {
   var weapon = appearance && appearance.weapon;
   return weapon && typeof weapon.sprite === "string" && weapon.sprite ? weapon : null;
 }
-function key(appearance) { var weapon = weaponConfig(appearance); return appearance.sprite + "\n" + (weapon ? weapon.sprite : ""); }
+function destroyedConfig(appearance) {
+  var destroyed = appearance && appearance.destroyed;
+  return destroyed && typeof destroyed.sprite === "string" && destroyed.sprite ? destroyed : null;
+}
+function key(appearance) {
+  var weapon = weaponConfig(appearance), paths = [appearance.sprite];
+  if (weapon) { var views = WeaponPose.views(weapon); Object.keys(views).forEach(function (name) { paths.push(views[name].sprite); }); }
+  return paths.join("\n");
+}
 function ready(owner) {
   var appearance = owner && owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
   if (!weaponConfig(appearance)) return true;
@@ -64,6 +73,20 @@ function synchronizeMuzzle(owner, state) {
   owner.ndShot.setPosition(local.x, local.y);
 }
 function targetNode(target) { return target && (target.node || target); }
+function weaponPose(owner, state, targetAngle) {
+  var weapon = weaponConfig(owner.buildInfo.cfg.Appearance), pose = WeaponPose.pose(weapon, targetAngle);
+  state.weaponNode.setContentSize(pose.width, pose.height); state.weaponNode.setAnchorPoint(pose.pivotX, pose.pivotY);
+  state.weaponPivot.setPosition(pose.x, pose.y);
+  state.weaponPivot.scaleX = pose.flipX; state.weaponPivot.scaleY = 1; state.weaponPivot.angle = pose.angle;
+  state.muzzleX = pose.muzzleX; state.muzzleY = pose.muzzleY; state.weaponView = pose.view; state.weaponFacing = pose.facing;
+  if (state.weaponFrames && state.weaponFrames[pose.view]) state.weaponSprite.spriteFrame = state.weaponFrames[pose.view];
+  if (state.recoilRemaining) {
+    var length = Math.sqrt(state.muzzleX * state.muzzleX + state.muzzleY * state.muzzleY), distance = state.recoilDistance;
+    state.recoilX = state.muzzleX / length * distance; state.recoilY = state.muzzleY / length * distance;
+    if (valid(state.flash)) state.flash.setPosition(state.muzzleX, state.muzzleY);
+    step(owner, 0);
+  }
+}
 function aim(owner, target) {
   var state = owner && owner._buildingAppearance, node = targetNode(target);
   if (!state || owner.isDestroyed || !valid(node)) return false;
@@ -74,19 +97,69 @@ function aim(owner, target) {
   var world = node.convertToWorldSpaceAR(cc.v2(0, 0)), local = owner.node.convertToNodeSpaceAR(world);
   var dx = local.x - state.weaponPivot.x, dy = local.y - state.weaponPivot.y;
   if (!isFinite(dx) || !isFinite(dy) || dx * dx + dy * dy < .000001) return false;
-  var flip = dx < 0 ? -1 : 1, mx = state.muzzleX, my = state.muzzleY;
-  if (mx * mx + my * my < .000001) { mx = 1; my = 0; }
-  var rotation = (Math.atan2(dy, dx) - Math.atan2(my, flip * mx)) * 180 / Math.PI;
-  rotation = (rotation + 540) % 360 - 180;
-  state.weaponPivot.scaleX = flip; state.weaponPivot.scaleY = 1; state.weaponPivot.angle = rotation;
+  weaponPose(owner, state, Math.atan2(dy, dx) * 180 / Math.PI);
   synchronizeMuzzle(owner, state); healthAboveArtwork(owner, state);
   return true;
+}
+function idle(owner) {
+  var state = owner && owner._buildingAppearance;
+  var appearance = owner && owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
+  var weapon = weaponConfig(appearance);
+  if (!state || !weapon || !WeaponPose.views(weapon).southeast || owner.isDestroyed) return;
+  state.target = null; state.targetGeneration = null;
+  if (state.recoilRemaining || !valid(state.weaponPivot) || !state.weaponPivot.active || !valid(state.weaponNode)) return;
+  if (state.weaponView === "side" && state.weaponPivot.angle === 0 && state.weaponPivot.scaleX === 1) return;
+  weaponPose(owner, state, null);
+  synchronizeMuzzle(owner, state); healthAboveArtwork(owner, state);
 }
 function makeSprite(name, parent, anchorX, anchorY) {
   var node = new cc.Node(name); node.parent = parent; node.group = parent.group;
   node.setAnchorPoint(anchorX, anchorY);
   var sprite = node.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
   return { node: node, sprite: sprite };
+}
+function showDestroyed(owner, state, appearance) {
+  var destroyed = destroyedConfig(appearance);
+  if (!destroyed || state.destroyedPath !== destroyed.sprite || !state.destroyedFrame) return false;
+  if (!valid(state.destroyedNode)) {
+    var layer = makeSprite("BuildingRuins", owner.node, .5, 0);
+    state.destroyedNode = layer.node; state.destroyedSprite = layer.sprite;
+  }
+  state.destroyedSprite.spriteFrame = state.destroyedFrame;
+  state.destroyedNode.setContentSize(Math.max(1, number(destroyed.width, number(appearance.width, 160))),
+    Math.max(1, number(destroyed.height, number(appearance.height, 200))));
+  state.destroyedNode.setPosition(number(destroyed.offsetX, number(appearance.offsetX, 0)),
+    number(destroyed.offsetY, number(appearance.offsetY, 0)));
+  state.destroyedNode.active = true;
+  quietSkeletons(owner, state);
+  return true;
+}
+function preloadDestroyed(owner, state, appearance) {
+  var destroyed = destroyedConfig(appearance);
+  if (!destroyed) {
+    if (state.destroyedLoading || state.destroyedPath) {
+      state.destroyedGeneration = (state.destroyedGeneration || 0) + 1;
+      state.destroyedLoading = null; state.destroyedPath = null; state.destroyedFrame = null;
+    }
+    return;
+  }
+  if (!owner.loadSpriteFrame || state.destroyedPath === destroyed.sprite && state.destroyedFrame ||
+      state.destroyedLoading === destroyed.sprite) return;
+  var generation = state.destroyedGeneration = (state.destroyedGeneration || 0) + 1, path = destroyed.sprite;
+  state.destroyedLoading = path; state.destroyedPath = null; state.destroyedFrame = null;
+  if (valid(state.destroyedNode)) state.destroyedNode.active = false;
+  // Warm the ruins independently of aiming/base artwork. Death may happen
+  // while either layer loads; a late callback must never resurrect a tower.
+  owner.loadSpriteFrame("resources", path, function (frame) {
+    var latest = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
+    var current = destroyedConfig(latest);
+    if (!valid(owner) || !valid(owner.node) || owner._buildingAppearance !== state ||
+        state.destroyedGeneration !== generation || !current || current.sprite !== path) return;
+    state.destroyedLoading = null;
+    if (!frame) return;
+    state.destroyedPath = path; state.destroyedFrame = frame;
+    if (owner.isDestroyed) showDestroyed(owner, state, latest);
+  });
 }
 function position(owner, state, appearance) {
   var height = Math.max(1, number(appearance.height, 200)), weapon = weaponConfig(appearance);
@@ -101,13 +174,10 @@ function position(owner, state, appearance) {
   }
   if (valid(state.weaponPivot)) state.weaponPivot.active = !!weapon && !owner.isDestroyed;
   if (weapon && valid(state.weaponNode) && valid(state.weaponPivot)) {
-    state.weaponNode.setContentSize(Math.max(1, number(weapon.width, 120)), Math.max(1, number(weapon.height, 80)));
-    state.weaponNode.setAnchorPoint(number(weapon.pivotX, .5), number(weapon.pivotY, .5));
     state.weaponNode.setPosition(0, 0);
     state.weaponPivot.setPosition(number(weapon.offsetX, 0), number(weapon.offsetY, 150));
-    state.muzzleX = number(weapon.muzzleX, 90); state.muzzleY = number(weapon.muzzleY, 0);
     if (valid(state.target) && state.target._combatGeneration === state.targetGeneration) aim(owner, state.target);
-    else { state.weaponPivot.angle = 0; state.weaponPivot.setScale(1); }
+    else weaponPose(owner, state, null);
     synchronizeMuzzle(owner, state);
   }
   healthAboveArtwork(owner, state);
@@ -116,8 +186,10 @@ function hide(owner) {
   var state = owner && owner._buildingAppearance;
   if (!state) return;
   state.generation++; state.loading = null; state.path = null; state.key = null; state.target = null;
+  state.destroyedGeneration = (state.destroyedGeneration || 0) + 1; state.destroyedLoading = null;
   stop(state);
   if (valid(state.node)) state.node.active = false;
+  if (valid(state.destroyedNode)) state.destroyedNode.active = false;
   if (valid(state.weaponPivot)) state.weaponPivot.active = false;
   restoreSkeletons(state);
   if (state.shotPosition && valid(owner.ndShot)) owner.ndShot.setPosition(state.shotPosition.x, state.shotPosition.y);
@@ -130,6 +202,8 @@ function apply(owner) {
   var state = owner._buildingAppearance;
   if (!state) state = owner._buildingAppearance = { generation: 0, originals: [], path: null, key: null, node: null, loading: null };
   if (owner.isDestroyed) { onDead(owner); return; }
+  if (valid(state.destroyedNode)) state.destroyedNode.active = false;
+  preloadDestroyed(owner, state, appearance);
   var currentKey = key(appearance), weapon = weaponConfig(appearance);
   if (state.key === currentKey && valid(state.node) && state.sprite && state.sprite.spriteFrame &&
       (!weapon || valid(state.weaponNode) && state.weaponSprite && state.weaponSprite.spriteFrame)) {
@@ -141,19 +215,20 @@ function apply(owner) {
   if (valid(state.weaponPivot)) state.weaponPivot.active = false;
   restoreSkeletons(state);
   if (!owner.loadSpriteFrame) return;
-  var generation = ++state.generation, baseFrame = null, weaponFrame = null, receivedBase = false, receivedWeapon = !weapon;
+  var generation = ++state.generation, baseFrame = null, weaponFrames = {}, receivedBase = false;
+  var views = weapon ? WeaponPose.views(weapon) : {}, viewNames = Object.keys(views);
   state.loading = currentKey;
   function current() {
     var latest = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
     return valid(owner) && valid(owner.node) && owner._buildingAppearance === state && !owner.isDestroyed &&
       state.generation === generation && state.loading === currentKey && latest && key(latest) === currentKey;
   }
-  function ready(frame, isWeapon) {
-    if (!current() || isWeapon && receivedWeapon || !isWeapon && receivedBase) return;
+  function ready(frame, view) {
+    if (!current() || view && weaponFrames[view] || !view && receivedBase) return;
     if (!frame) { state.loading = null; return; }
-    if (isWeapon) { weaponFrame = frame; receivedWeapon = true; }
+    if (view) weaponFrames[view] = frame;
     else { baseFrame = frame; receivedBase = true; }
-    if (!receivedBase || !receivedWeapon) return;
+    if (!receivedBase || viewNames.some(function (name) { return !weaponFrames[name]; })) return;
     // Commit both layers together. Never show half a tower or hide its
     // existing authored model while either resource is still outstanding.
     if (!valid(state.node)) {
@@ -164,13 +239,13 @@ function apply(owner) {
       var layer = makeSprite("BuildingWeapon", state.weaponPivot, .5, .5); state.weaponNode = layer.node; state.weaponSprite = layer.sprite;
     }
     state.sprite.spriteFrame = baseFrame;
-    if (weapon) state.weaponSprite.spriteFrame = weaponFrame;
+    if (weapon) { state.weaponFrames = weaponFrames; state.weaponSprite.spriteFrame = weaponFrames.side; }
     state.loading = null; state.path = appearance.sprite; state.key = currentKey;
     state.node.active = true; quietSkeletons(owner, state);
     position(owner, state, owner.buildInfo.cfg.Appearance);
   }
-  owner.loadSpriteFrame("resources", appearance.sprite, function (frame) { ready(frame, false); });
-  if (weapon) owner.loadSpriteFrame("resources", weapon.sprite, function (frame) { ready(frame, true); });
+  owner.loadSpriteFrame("resources", appearance.sprite, function (frame) { ready(frame, null); });
+  viewNames.forEach(function (name) { owner.loadSpriteFrame("resources", views[name].sprite, function (frame) { ready(frame, name); }); });
 }
 function muzzle(owner, game) {
   if (!owner || !valid(owner.node)) return null;
@@ -216,6 +291,7 @@ function fire(owner) {
   makeFlash(owner, state, cannon, layered ? state.weaponNode : owner.node);
   if (layered) {
     var length = Math.sqrt(state.muzzleX * state.muzzleX + state.muzzleY * state.muzzleY), recoil = cannon ? 5 : 2.5;
+    state.recoilDistance = recoil;
     state.recoilX = length > .0001 ? state.muzzleX / length * recoil : recoil;
     state.recoilY = length > .0001 ? state.muzzleY / length * recoil : 0;
     state.recoilDuration = cannon ? .24 : .16; state.recoilRemaining = state.recoilDuration;
@@ -237,6 +313,17 @@ function onDead(owner) {
   state.generation++; state.loading = null; state.target = null;
   stop(state);
   if (valid(state.weaponPivot)) state.weaponPivot.active = false;
+  var appearance = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
+  if (valid(state.destroyedNode)) state.destroyedNode.active = false;
+  if (destroyedConfig(appearance)) {
+    if (valid(state.node)) state.node.active = false;
+    // If destruction arrives before the ruins finish loading, retain the
+    // original authored destruction animation instead of an intact overlay.
+    if (!showDestroyed(owner, state, appearance)) restoreSkeletons(state);
+    preloadDestroyed(owner, state, appearance);
+    return;
+  }
+  preloadDestroyed(owner, state, appearance);
   if (valid(state.node) && state.node.active) {
     state.node.setPosition(state.x, state.y); state.node.setScale(1, .72); state.node.color = cc.color(135, 132, 125); state.node.opacity = 180;
     quietSkeletons(owner, state); healthAboveArtwork(owner, state);
@@ -247,6 +334,7 @@ function dispose(owner) {
   if (!state) return;
   hide(owner);
   if (valid(state.node)) state.node.destroy();
+  if (valid(state.destroyedNode)) state.destroyedNode.destroy();
   if (valid(state.weaponPivot)) state.weaponPivot.destroy();
   if (valid(state.flash)) state.flash.destroy();
   owner._buildingAppearance = null;
@@ -255,6 +343,7 @@ exports.apply = apply;
 exports.ready = ready;
 exports.hide = hide;
 exports.aim = aim;
+exports.idle = idle;
 exports.step = step;
 exports.muzzle = muzzle;
 exports.fire = fire;

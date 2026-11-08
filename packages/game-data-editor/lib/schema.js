@@ -261,6 +261,15 @@ function validate(documents, changes) {
           if(typeof appearance.sprite!=='string'||!appearance.sprite.trim()||!require('./asset-validation').resourcePath(appearance.sprite)||/\.(png|jpe?g|webp)$/i.test(appearance.sprite))issue('A',at.concat('sprite'),'Choose an extension-free sprite resource path inside assets/resources.');
           ['width','height'].forEach(key=>{if(own(appearance,key))number('A',at.concat(key),appearance[key],Number.MIN_VALUE,false);});
           ['offsetX','offsetY','muzzleX','muzzleY'].forEach(key=>{if(own(appearance,key)&&(typeof appearance[key]!=='number'||!Number.isFinite(appearance[key])))issue('A',at.concat(key),'Artwork offsets must be finite numbers.');});
+          if(own(appearance,'destroyed')){
+            const destroyed=appearance.destroyed,where=at.concat('destroyed');
+            if(!destroyed||typeof destroyed!=='object'||Array.isArray(destroyed))issue('A',where,'Destroyed artwork must retain its object format, or remove it for the legacy destruction effect.');
+            else {
+              if(typeof destroyed.sprite!=='string'||!destroyed.sprite.trim()||!require('./asset-validation').resourcePath(destroyed.sprite)||/\.(png|jpe?g|webp)$/i.test(destroyed.sprite))issue('A',where.concat('sprite'),'Choose an extension-free destroyed sprite path inside assets/resources.');
+              ['width','height'].forEach(key=>{if(own(destroyed,key))number('A',where.concat(key),destroyed[key],Number.MIN_VALUE,false);});
+              ['offsetX','offsetY'].forEach(key=>{if(own(destroyed,key)&&(typeof destroyed[key]!=='number'||!Number.isFinite(destroyed[key])))issue('A',where.concat(key),'Destroyed artwork offsets must be finite numbers.');});
+            }
+          }
           if(own(appearance,'weapon')){
             const weapon=appearance.weapon,where=at.concat('weapon');
             if(!weapon||typeof weapon!=='object'||Array.isArray(weapon))issue('A',where,'Aiming weapon must retain its object format, or remove it for static artwork.');
@@ -269,6 +278,19 @@ function validate(documents, changes) {
               ['width','height'].forEach(key=>{if(own(weapon,key))number('A',where.concat(key),weapon[key],Number.MIN_VALUE,false);});
               ['pivotX','pivotY'].forEach(key=>{if(own(weapon,key)){number('A',where.concat(key),weapon[key],0,false);if(weapon[key]>1)issue('A',where.concat(key),'Weapon pivot must be between 0 and 1.');}});
               ['offsetX','offsetY','muzzleX','muzzleY'].forEach(key=>{if(own(weapon,key)&&(typeof weapon[key]!=='number'||!Number.isFinite(weapon[key])))issue('A',where.concat(key),'Weapon offsets must be finite numbers.');});
+              if(own(weapon,'views')){
+                const views=weapon.views,viewsAt=where.concat('views');
+                if(!views||typeof views!=='object'||Array.isArray(views))issue('A',viewsAt,'Directional artwork must retain its object format.');
+                else ['north','southeast','south'].forEach(name=>{
+                  if(!own(views,name))return;
+                  const view=views[name],viewAt=viewsAt.concat(name);
+                  if(!view||typeof view!=='object'||Array.isArray(view)){issue('A',viewAt,'A weapon view must retain its object format.');return;}
+                  if(typeof view.sprite!=='string'||!view.sprite.trim()||!require('./asset-validation').resourcePath(view.sprite)||/\.(png|jpe?g|webp)$/i.test(view.sprite))issue('A',viewAt.concat('sprite'),'Choose an extension-free directional sprite path inside assets/resources.');
+                  ['width','height'].forEach(key=>{if(own(view,key))number('A',viewAt.concat(key),view[key],Number.MIN_VALUE,false);});
+                  ['pivotX','pivotY'].forEach(key=>{if(own(view,key)){number('A',viewAt.concat(key),view[key],0,false);if(view[key]>1)issue('A',viewAt.concat(key),'Weapon pivot must be between 0 and 1.');}});
+                  ['muzzleX','muzzleY'].forEach(key=>{if(own(view,key)&&(typeof view[key]!=='number'||!Number.isFinite(view[key])))issue('A',viewAt.concat(key),'Directional muzzle offsets must be finite numbers.');});
+                });
+              }
             }
           }
         }

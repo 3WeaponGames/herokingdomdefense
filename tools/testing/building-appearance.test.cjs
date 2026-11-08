@@ -6,7 +6,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 
-function fixture(weapon = false) {
+function fixture(weapon = false, ruins = false, directions = false) {
   class Node {
     constructor(name) { this.name = name; this.active = true; this.x = this.y = this.angle = 0; this.scaleX = this.scaleY = 1; this.components = []; this.anchorX = this.anchorY = .5; }
     setContentSize(width, height) { this.width = width; this.height = height; }
@@ -32,13 +32,18 @@ function fixture(weapon = false) {
     color: (...values) => values, Color: { WHITE: 'white' }, v2: (x, y) => ({ x, y }),
     Tween: { stopAllByTarget() {} }, tween: () => ({ to() { return this; }, call() { return this; }, start() {} }) };
   const mod = { exports: {} };
-  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingAppearance.js'), 'utf8'), { cc, exports: mod.exports, module: mod });
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingAppearance.js'), 'utf8'), { cc, exports: mod.exports, module: mod, require: name => require(path.join(root, 'assets/_script', name)) });
   const loads = [], node = new Node('tower'), shot = new Node('shot'); shot.parent = node; shot.setPosition(-3, 97);
   const owner = { node, ndShot: shot, ndAniMain: { enabled: true }, ndAniOther: [],
     buildInfo: { cfg: { Appearance: { sprite: 'buildings/towers/cannon-1', width: 187, height: 212, offsetY: -38, muzzleX: 40, muzzleY: 130 }, Tower: { attackType: 'cannon' } } },
     loadSpriteFrame(bundle, path, callback) { loads.push({ bundle, path, callback }); } };
   if (weapon) owner.buildInfo.cfg.Appearance.weapon = { sprite: 'buildings/towers/cannon-1-weapon', width: 120, height: 80,
     pivotX: .25, pivotY: .4, offsetX: 0, offsetY: 150, muzzleX: 80, muzzleY: 12 };
+  if (ruins) owner.buildInfo.cfg.Appearance.destroyed = { sprite: 'buildings/towers/cannon-1-destroyed', width: 187, height: 187, offsetY: -38 };
+  if (directions) owner.buildInfo.cfg.Appearance.weapon.views = {
+    north: { sprite: 'buildings/towers/cannon-1-weapon-north', width: 70, height: 60, pivotX: .5, pivotY: .4, muzzleX: 0, muzzleY: 24 },
+    south: { sprite: 'buildings/towers/cannon-1-weapon-south', width: 72, height: 64, pivotX: .5, pivotY: .6, muzzleX: 0, muzzleY: -26 }
+  };
   return { api: mod.exports, owner, loads, Node };
 }
 
@@ -155,6 +160,135 @@ test('a weapon-only asset change and disposal retire both outstanding layers', (
   h.loads[2].callback({ name: 'late' }); h.loads[3].callback({ name: 'late' }); assert.equal(h.owner._buildingAppearance, null);
 });
 
+test('destroyed artwork replaces both intact layers at full opacity; repair restores the selected tower', () => {
+  const h = fixture(true, true); h.api.apply(h.owner);
+  h.loads.forEach(load => load.callback({ name: load.path }));
+  const state = h.owner._buildingAppearance;
+  assert.equal(state.destroyedNode, undefined, 'preloading does not display ruins on a healthy tower');
+  h.api.fire(h.owner); h.owner.isDestroyed = true; h.api.onDead(h.owner);
+  assert.equal(state.node.active, false); assert.equal(state.weaponPivot.active, false); assert.equal(state.flash.active, false);
+  assert.equal(state.destroyedNode.active, true); assert.equal(state.destroyedNode.anchorY, 0);
+  assert.equal(state.destroyedNode.width, 187); assert.equal(state.destroyedNode.height, 187); assert.equal(state.destroyedNode.y, -38);
+  assert.equal(state.destroyedNode.scaleY, 1, 'ruins are drawn at their authored proportions');
+  assert.match(state.destroyedSprite.spriteFrame.name, /-destroyed$/); assert.equal(h.owner.ndAniMain.enabled, false);
+  h.api.onDead(h.owner); assert.equal(h.loads.length, 3, 'repeated destruction does not reload a warm sprite');
+  h.owner.isDestroyed = false; h.api.apply(h.owner);
+  assert.equal(state.destroyedNode.active, false); assert.equal(state.node.active, true); assert.equal(state.weaponPivot.active, true);
+  assert.equal(state.node.scaleY, 1); assert.equal(h.loads.length, 3, 'repair reuses the intact layers');
+  const rubble = state.destroyedNode; h.api.dispose(h.owner); assert.equal(rubble.destroyed, true);
+});
+
+test('death during an intact-art load uses authored destruction until the ruins arrive', () => {
+  const h = fixture(true, true); h.api.apply(h.owner);
+  const ruined = h.loads.find(load => /-destroyed$/.test(load.path));
+  h.owner.isDestroyed = true; h.api.onDead(h.owner);
+  h.loads.filter(load => load !== ruined).forEach(load => load.callback({ name: 'late intact layer' }));
+  const state = h.owner._buildingAppearance;
+  assert.equal(state.node, null); assert.equal(h.owner.ndAniMain.enabled, true);
+  ruined.callback({ name: 'ruins' }); assert.equal(state.destroyedNode.active, true); assert.equal(h.owner.ndAniMain.enabled, false);
+  h.owner.isDestroyed = false; h.api.apply(h.owner);
+  assert.equal(state.destroyedNode.active, false); assert.equal(h.owner.ndAniMain.enabled, true);
+  h.loads.slice(3).forEach(load => load.callback({ name: 'repaired layer' }));
+  assert.equal(state.node.active, true); assert.equal(state.weaponPivot.active, true); assert.equal(h.api.ready(h.owner), true);
+});
+
+test('a late ruins callback cannot replace repaired or sold artwork', () => {
+  for (const sold of [false, true]) {
+    const h = fixture(false, true); h.api.apply(h.owner);
+    h.loads.find(load => !/-destroyed$/.test(load.path)).callback({ name: 'intact' });
+    h.owner.isDestroyed = true; h.api.onDead(h.owner);
+    h.owner.isDestroyed = false;
+    if (sold) h.owner.buildInfo.cfg = null;
+    h.api.apply(h.owner);
+    h.loads[0].callback({ name: 'late ruins' });
+    const state = h.owner._buildingAppearance;
+    assert.equal(state.destroyedNode, undefined); assert.equal(state.node.active, !sold);
+    assert.equal(h.owner.ndAniMain.enabled, sold);
+  }
+});
+
+test('upgrading or removing destroyed artwork invalidates the previous resource request', () => {
+  const h = fixture(false, true); h.api.apply(h.owner);
+  const oldRuins = h.loads[0]; h.owner.buildInfo.cfg.Appearance.destroyed.sprite = 'buildings/towers/cannon-2-destroyed'; h.api.apply(h.owner);
+  oldRuins.callback({ name: 'old ruins' });
+  const next = h.loads.find(load => /cannon-2-destroyed$/.test(load.path));
+  delete h.owner.buildInfo.cfg.Appearance.destroyed; h.api.apply(h.owner); next.callback({ name: 'removed ruins' });
+  h.owner.buildInfo.cfg.Appearance.destroyed = { sprite: next.path }; h.api.apply(h.owner);
+  const retry = h.loads[h.loads.length - 1]; assert.equal(retry.path, next.path); assert.notEqual(retry, next);
+  retry.callback({ name: 'current ruins' }); h.owner.isDestroyed = true; h.api.onDead(h.owner);
+  assert.equal(h.owner._buildingAppearance.destroyedSprite.spriteFrame.name, 'current ruins');
+});
+
+test('failed ruins keep the original destruction model and can retry without an intact overlay', () => {
+  const h = fixture(false, true); h.api.apply(h.owner);
+  h.loads[1].callback({ name: 'intact' }); h.loads[0].callback(null);
+  h.owner.isDestroyed = true; h.api.onDead(h.owner);
+  const state = h.owner._buildingAppearance;
+  assert.equal(state.node.active, false); assert.equal(h.owner.ndAniMain.enabled, true);
+  h.loads[2].callback({ name: 'retry ruins' }); assert.equal(state.destroyedNode.active, true); assert.equal(h.owner.ndAniMain.enabled, false);
+});
+
+test('an initially destroyed building needs only its ruins; disposal retires outstanding loads', () => {
+  const h = fixture(true, true); h.owner.isDestroyed = true; h.api.apply(h.owner);
+  assert.equal(h.loads.length, 1); assert.match(h.loads[0].path, /-destroyed$/);
+  h.api.dispose(h.owner); h.loads[0].callback({ name: 'stale' }); assert.equal(h.owner._buildingAppearance, null);
+});
+
+test('directional frames commit together, select north/south perspectives and mirror only the side view', () => {
+  const h=fixture(true,false,true);h.api.apply(h.owner);
+  assert.equal(h.loads.length,4);
+  h.loads.slice(0,3).forEach(load=>load.callback({name:load.path}));
+  assert.equal(h.owner.ndAniMain.enabled,true);assert.equal(h.api.ready(h.owner),false);
+  h.loads[3].callback({name:h.loads[3].path});const state=h.owner._buildingAppearance;
+  const base={x:state.node.x,y:state.node.y,scaleX:state.node.scaleX,scaleY:state.node.scaleY};
+  for(const [x,y,view,flip]of [[0,500,'north',1],[500,150,'side',1],[0,-500,'south',1],[-500,150,'side',-1]]){
+    const target=new h.Node('target');target.setPosition(x,y);h.api.aim(h.owner,target);
+    assert.equal(state.weaponView,view);assert.equal(state.weaponPivot.scaleX,flip);
+    assert.equal(state.weaponSprite.spriteFrame.name,state.weaponFrames[view].name);
+    if(view!=='side')assert(Math.abs(state.weaponPivot.angle)<1e-6,'cardinal front/rear frames stay upright');
+    assert.deepEqual({x:state.node.x,y:state.node.y,scaleX:state.node.scaleX,scaleY:state.node.scaleY},base);
+    const tip=state.weaponNode.convertToWorldSpaceAR({x:state.muzzleX,y:state.muzzleY});
+    const origin=h.api.muzzle(h.owner,{ndUI:new h.Node('effects')});assert.deepEqual(origin,tip);
+  }
+});
+
+test('view changes during recoil keep the flash and shot on the current sprite muzzle',()=>{
+  const h=fixture(true,false,true);h.api.apply(h.owner);h.loads.forEach(load=>load.callback({name:load.path}));
+  const target=new h.Node('target');target.setPosition(300,150);h.api.aim(h.owner,target);h.api.fire(h.owner);
+  const state=h.owner._buildingAppearance;target.setPosition(0,-400);h.api.aim(h.owner,target);
+  assert.equal(state.weaponView,'south');assert.equal(state.recoilX,0);assert(state.recoilY<0);assert(state.weaponNode.y>0);
+  const flash=state.flash.convertToWorldSpaceAR({x:0,y:0});
+  assert.deepEqual(flash,state.weaponNode.convertToWorldSpaceAR({x:state.muzzleX,y:state.muzzleY}));
+  h.api.step(h.owner,1);assert.equal(state.weaponNode.y,0);assert.equal(state.flash.active,false);
+});
+
+test('changing only a directional sprite or destroying a loading tower retires every older view',()=>{
+  const h=fixture(true,false,true);h.api.apply(h.owner);const stale=h.loads.slice();
+  h.owner.buildInfo.cfg.Appearance.weapon.views.south.sprite='buildings/towers/replacement-south';h.api.apply(h.owner);
+  stale.forEach(load=>load.callback({name:'old'}));assert.equal(h.owner._buildingAppearance.node,null);
+  h.owner.isDestroyed=true;h.api.onDead(h.owner);h.loads.slice(4).forEach(load=>load.callback({name:'late'}));
+  assert.equal(h.owner._buildingAppearance.node,null);h.owner.isDestroyed=false;h.api.apply(h.owner);
+  h.loads.slice(8).forEach(load=>load.callback({name:load.path}));
+  const target=new h.Node('target');target.setPosition(0,-300);h.api.aim(h.owner,target);
+  assert.match(h.owner._buildingAppearance.weaponSprite.spriteFrame.name,/replacement-south$/);
+});
+
+test('eight-direction towers mirror the southeast layer and return northeast after recoil settles',()=>{
+  const h=fixture(true,false,true),w=h.owner.buildInfo.cfg.Appearance.weapon;
+  w.views.southeast={sprite:'buildings/towers/cannon-1-weapon-southeast',width:100,height:70,pivotX:.4,pivotY:.5,muzzleX:38,muzzleY:-22};
+  h.api.apply(h.owner);h.loads.forEach(load=>load.callback({name:load.path}));const s=h.owner._buildingAppearance;
+  for(const [x,y,flip]of [[400,-250,1],[-400,-250,-1]]){
+    const target=new h.Node('target');target.setPosition(x,y);h.api.aim(h.owner,target);
+    assert.equal(s.weaponView,'southeast');assert.equal(s.weaponPivot.scaleX,flip);assert.equal(s.weaponSprite.spriteFrame.name,w.views.southeast.sprite);
+  }
+  h.api.fire(h.owner);h.api.idle(h.owner);assert.equal(s.weaponView,'southeast','finish the visible shot recoil first');
+  h.api.step(h.owner,1);h.api.idle(h.owner);assert.equal(s.weaponView,'side');assert.equal(s.weaponPivot.angle,0);assert.equal(s.weaponPivot.scaleX,1);assert.equal(s.target,null);
+  assert.equal(s.weaponSprite.spriteFrame.name,w.sprite);assert.equal(s.weaponFacing,'northeast');
+  const legacy=fixture(true);legacy.api.apply(legacy.owner);legacy.loads.forEach(load=>load.callback({}));
+  const target=new legacy.Node('target');target.setPosition(-300,150);legacy.api.aim(legacy.owner,target);legacy.api.idle(legacy.owner);
+  assert.equal(legacy.owner._buildingAppearance.weaponPivot.scaleX,-1,'existing appearances without southeast retain their previous idle behavior');
+});
+
 test('production tower families each contain three imported levels with independent tuning', () => {
   const cfg = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json')));
   const levels = cfg.BuildEnum['2'].levelList;
@@ -166,6 +300,22 @@ test('production tower families each contain three imported levels with independ
       assert.equal(fs.readFileSync(file).subarray(1, 4).toString(), 'PNG');
       const meta = JSON.parse(fs.readFileSync(file + '.meta'));
       assert.equal(meta.type, 'sprite'); assert.equal(Object.values(meta.subMetas)[0].trimType, 'none');
+      for (const direction of ['north','southeast','south']) {
+        const view=row.Appearance.weapon.views[direction];
+        assert.equal(view.sprite,row.Appearance.weapon.sprite+'-'+direction);
+        assert.equal(view.muzzleX>0,direction==='southeast');assert(direction==='north'?view.muzzleY>0:view.muzzleY<0);
+        const viewMeta=JSON.parse(fs.readFileSync(path.join(root,'assets/resources',view.sprite+'.png.meta')));
+        assert(viewMeta.width>=1024);assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
+        assert.equal(Object.values(viewMeta.subMetas)[0].trimType,'none');
+      }
+      const ruins = row.Appearance.destroyed;
+      assert.equal(ruins.sprite, row.Appearance.sprite + '-destroyed');
+      const ruinFile = path.join(root, 'assets/resources', ruins.sprite + '.png');
+      assert.equal(fs.readFileSync(ruinFile).subarray(1, 4).toString(), 'PNG');
+      const ruinMeta = JSON.parse(fs.readFileSync(ruinFile + '.meta'));
+      assert.equal(ruinMeta.type, 'sprite'); assert.equal(ruinMeta.packable, false); assert.equal(ruinMeta.genMipmaps, false);
+      assert.equal(Object.values(ruinMeta.subMetas)[0].trimType, 'none');
+      assert.equal(ruins.width, row.Appearance.width); assert.equal(ruins.offsetY, row.Appearance.offsetY);
       assert.equal(row.ColliderIndex >= 1 && row.ColliderIndex <= 3, true);
       assert.ok(row.Data[0] > 0 && row.Data[1] > 0 && row.Data[2] > 0);
     }

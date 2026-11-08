@@ -69,13 +69,15 @@ function describe(root, request) {
     const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'));
     if (type === 'building') {
         const record = request.record || cfg.BuildEnum[id], level = record && record.levelList && record.levelList[request.levelIndex || 0];
-        let file = null,weaponFile=null;
+        let file = null,weaponFile=null;const weaponImages={};
         if (level) {
             try { file = level.Appearance ? AssetValidation.imported(root,'resources',level.Appearance.sprite,'sprite').file : AssetValidation.imported(root, 'KinghtFallIconBuild', level.Icon, 'sprite').file; }
             catch (_) { /* An absent or invalid draft icon has no static preview. */ }
             if(level.Appearance&&level.Appearance.weapon)try{weaponFile=AssetValidation.imported(root,'resources',level.Appearance.weapon.sprite,'sprite').file;}catch(_){/* Invalid draft weapon artwork has no preview. */}
+            const views=level.Appearance&&level.Appearance.weapon&&level.Appearance.weapon.views;
+            if(views)['north','southeast','south'].forEach(name=>{if(views[name])try{weaponImages[name]=url.pathToFileURL(AssetValidation.imported(root,'resources',views[name].sprite,'sprite').file).href;}catch(_){weaponImages[name]=null;}});
         }
-        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, weaponImage:weaponFile?url.pathToFileURL(weaponFile).href:null, label: level ? level.Icon : 'Building', appearance:level&&level.Appearance||null, runtimePath: null };
+        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, weaponImage:weaponFile?url.pathToFileURL(weaponFile).href:null, weaponImages, label: level ? level.Icon : 'Building', appearance:level&&level.Appearance||null, runtimePath: null };
     }
     if (['hero', 'enemy', 'ally'].indexOf(type) < 0) throw new Error('Unknown unit category.');
     const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && UnitRecords.boss(id);

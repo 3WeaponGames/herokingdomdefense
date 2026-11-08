@@ -88,6 +88,13 @@ async function main(){
         button(root,'Reset reference pose').onclick();assert(images[1].style.cssText.includes('rotate(0deg) scaleX(1)'));assert.equal(edits.length,0);assert.deepStrictEqual(description,before);
         client.destroy();
     });
+    await test('directional building preview swaps front/rear sprites and mirrors west without draft edits',async()=>{
+        const root=new Element('div'),edits=[],description={type:'building',id:'2',layers:[],image:'file:///base.png',weaponImage:'file:///side.png',weaponImages:{north:'file:///north.png',southeast:'file:///southeast.png',south:'file:///south.png'},appearance:{sprite:'base',width:187,height:230,weapon:{sprite:'side',width:110,height:70,offsetY:133,muzzleX:48,muzzleY:27,views:{north:{sprite:'north',width:110,height:64,pivotX:.5,pivotY:.5,muzzleX:0,muzzleY:28},southeast:{sprite:'southeast',width:110,height:74,pivotX:.45,pivotY:.56,muzzleX:46,muzzleY:-25},south:{sprite:'south',width:110,height:64,pivotX:.5,pivotY:.5,muzzleX:0,muzzleY:-28}}}},runtimePath:null};
+        const before=clone(description),client=Client.mount(root,{ipc:async()=>description,onChange:value=>edits.push(value)});client.setBuilding({id:'2',record:{},documents:{}});await flush();
+        const images=all(root,node=>node.tagName==='img'),baseStyle=images[0].style.cssText,aim=field(root,'Preview aim (degrees)');
+        for(const [angle,image]of [[90,'north'],[-90,'south'],[45,'side'],[135,'side'],[-45,'southeast'],[-135,'southeast'],[0,'side'],[180,'side']]){aim.value=String(angle);aim.oninput();assert.equal(images[1].src,'file:///'+image+'.png');assert.equal(images[0].style.cssText,baseStyle);assert(images[1].style.cssText.includes('scaleX('+(Math.abs(angle)>112.5?-1:1)+')'));}
+        assert(images[1].style.cssText.includes('scaleX(-1)'));assert.equal(edits.length,0);assert.deepStrictEqual(description,before);client.destroy();
+    });
     console.log(checks+' unit preview marker checks passed.');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

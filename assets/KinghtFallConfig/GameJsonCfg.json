@@ -2342,7 +2342,43 @@
               "offsetX": 0,
               "offsetY": 104,
               "muzzleX": 31.724647,
-              "muzzleY": 13.151485
+              "muzzleY": 13.151485,
+              "views": {
+                "north": {
+                  "sprite": "buildings/towers/cannon-1-weapon-north",
+                  "width": 64.8,
+                  "height": 63,
+                  "pivotX": 0.5,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": 22.68
+                },
+                "south": {
+                  "sprite": "buildings/towers/cannon-1-weapon-south",
+                  "width": 64.8,
+                  "height": 63,
+                  "pivotX": 0.5,
+                  "pivotY": 0.64,
+                  "muzzleX": 0,
+                  "muzzleY": -23.94
+                },
+                "southeast": {
+                  "sprite": "buildings/towers/cannon-1-weapon-southeast",
+                  "width": 99,
+                  "height": 66,
+                  "pivotX": 0.41,
+                  "pivotY": 0.61,
+                  "muzzleX": 30.195,
+                  "muzzleY": -17.49
+                }
+              }
+            },
+            "destroyed": {
+              "sprite": "buildings/towers/cannon-1-destroyed",
+              "width": 187,
+              "height": 187,
+              "offsetX": 0,
+              "offsetY": -38
             }
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-1.description]]",
@@ -2394,7 +2430,43 @@
               "offsetX": 6,
               "offsetY": 118,
               "muzzleX": 37.681669,
-              "muzzleY": 16.716715
+              "muzzleY": 16.716715,
+              "views": {
+                "north": {
+                  "sprite": "buildings/towers/cannon-2-weapon-north",
+                  "width": 72,
+                  "height": 70,
+                  "pivotX": 0.5,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": 25.2
+                },
+                "south": {
+                  "sprite": "buildings/towers/cannon-2-weapon-south",
+                  "width": 72,
+                  "height": 70,
+                  "pivotX": 0.5,
+                  "pivotY": 0.64,
+                  "muzzleX": 0,
+                  "muzzleY": -26.6
+                },
+                "southeast": {
+                  "sprite": "buildings/towers/cannon-2-weapon-southeast",
+                  "width": 110,
+                  "height": 73.3333,
+                  "pivotX": 0.41,
+                  "pivotY": 0.59,
+                  "muzzleX": 36.3,
+                  "muzzleY": -18.3333
+                }
+              }
+            },
+            "destroyed": {
+              "sprite": "buildings/towers/cannon-2-destroyed",
+              "width": 187,
+              "height": 187,
+              "offsetX": 0,
+              "offsetY": -38
             }
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-2.description]]",
@@ -2446,7 +2518,43 @@
               "offsetX": 7,
               "offsetY": 133,
               "muzzleX": 48.674766,
-              "muzzleY": 17.567221
+              "muzzleY": 17.567221,
+              "views": {
+                "north": {
+                  "sprite": "buildings/towers/cannon-3-weapon-north",
+                  "width": 79.2,
+                  "height": 77,
+                  "pivotX": 0.5,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": 27.72
+                },
+                "south": {
+                  "sprite": "buildings/towers/cannon-3-weapon-south",
+                  "width": 79.2,
+                  "height": 77,
+                  "pivotX": 0.5,
+                  "pivotY": 0.64,
+                  "muzzleX": 0,
+                  "muzzleY": -29.26
+                },
+                "southeast": {
+                  "sprite": "buildings/towers/cannon-3-weapon-southeast",
+                  "width": 121,
+                  "height": 80.6667,
+                  "pivotX": 0.42,
+                  "pivotY": 0.6,
+                  "muzzleX": 36.3,
+                  "muzzleY": -19.36
+                }
+              }
+            },
+            "destroyed": {
+              "sprite": "buildings/towers/cannon-3-destroyed",
+              "width": 187,
+              "height": 187,
+              "offsetX": 0,
+              "offsetY": -38
             }
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-3.description]]"
@@ -2494,7 +2602,43 @@
               "offsetX": 0,
               "offsetY": 133,
               "muzzleX": 48.728277,
-              "muzzleY": 27.139337
+              "muzzleY": 27.139337,
+              "views": {
+                "north": {
+                  "sprite": "buildings/towers/sniper-1-weapon-north",
+                  "width": 110,
+                  "height": 63.8,
+                  "pivotX": 0.5,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": 28.072
+                },
+                "south": {
+                  "sprite": "buildings/towers/sniper-1-weapon-south",
+                  "width": 110,
+                  "height": 63.8,
+                  "pivotX": 0.5,
+                  "pivotY": 0.53,
+                  "muzzleX": 0,
+                  "muzzleY": -29.029
+                },
+                "southeast": {
+                  "sprite": "buildings/towers/sniper-1-weapon-southeast",
+                  "width": 121,
+                  "height": 80.6667,
+                  "pivotX": 0.46,
+                  "pivotY": 0.54,
+                  "muzzleX": 43.197,
+                  "muzzleY": -35.4933
+                }
+              }
+            },
+            "destroyed": {
+              "sprite": "buildings/towers/sniper-1-destroyed",
+              "width": 187,
+              "height": 187,
+              "offsetX": 0,
+              "offsetY": -38
             }
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-1.description]]",
@@ -2546,7 +2690,43 @@
               "offsetX": 0,
               "offsetY": 123,
               "muzzleX": 53.07652,
-              "muzzleY": 28.779077
+              "muzzleY": 28.779077,
+              "views": {
+                "north": {
+                  "sprite": "buildings/towers/sniper-2-weapon-north",
+                  "width": 115,
+                  "height": 66.7,
+                  "pivotX": 0.5,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": 29.348
+                },
+                "south": {
+                  "sprite": "buildings/towers/sniper-2-weapon-south",
+                  "width": 115,
+                  "height": 66.7,
+                  "pivotX": 0.5,
+                  "pivotY": 0.53,
+                  "muzzleX": 0,
+                  "muzzleY": -30.3485
+                },
+                "southeast": {
+                  "sprite": "buildings/towers/sniper-2-weapon-southeast",
+                  "width": 126.5,
+                  "height": 84.3333,
+                  "pivotX": 0.47,
+                  "pivotY": 0.5,
+                  "muzzleX": 49.9675,
+                  "muzzleY": -34.5767
+                }
+              }
+            },
+            "destroyed": {
+              "sprite": "buildings/towers/sniper-2-destroyed",
+              "width": 187,
+              "height": 187,
+              "offsetX": 0,
+              "offsetY": -38
             }
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-2.description]]",
@@ -2598,7 +2778,43 @@
               "offsetX": 6,
               "offsetY": 139,
               "muzzleX": 60.616388,
-              "muzzleY": 24.4735
+              "muzzleY": 24.4735,
+              "views": {
+                "north": {
+                  "sprite": "buildings/towers/sniper-3-weapon-north",
+                  "width": 120,
+                  "height": 69.6,
+                  "pivotX": 0.5,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": 30.624
+                },
+                "south": {
+                  "sprite": "buildings/towers/sniper-3-weapon-south",
+                  "width": 120,
+                  "height": 69.6,
+                  "pivotX": 0.5,
+                  "pivotY": 0.53,
+                  "muzzleX": 0,
+                  "muzzleY": -31.668
+                },
+                "southeast": {
+                  "sprite": "buildings/towers/sniper-3-weapon-southeast",
+                  "width": 132,
+                  "height": 88,
+                  "pivotX": 0.475,
+                  "pivotY": 0.52,
+                  "muzzleX": 47.124,
+                  "muzzleY": -37.84
+                }
+              }
+            },
+            "destroyed": {
+              "sprite": "buildings/towers/sniper-3-destroyed",
+              "width": 187,
+              "height": 187,
+              "offsetX": 0,
+              "offsetY": -38
             }
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-3.description]]"

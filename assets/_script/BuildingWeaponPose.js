@@ -1,0 +1,43 @@
+"use strict";
+
+// Pure pose geometry shared by the game and the read-only building preview.
+function finite(value, fallback) { return typeof value === "number" && isFinite(value) ? value : fallback; }
+function positive(value, fallback) { return Math.max(1, finite(value, fallback)); }
+function normalize(angle) { return ((angle + 180) % 360 + 360) % 360 - 180; }
+function views(weapon) {
+  var result = { side: weapon };
+  ["north", "southeast", "south"].forEach(function (name) {
+    var view = weapon && weapon.views && weapon.views[name];
+    if (view && typeof view.sprite === "string" && view.sprite) result[name] = view;
+  });
+  return result;
+}
+function pose(weapon, targetAngle) {
+  var available = views(weapon), name = "side", flip = 1, targeted = typeof targetAngle === "number" && isFinite(targetAngle);
+  var radians = targeted ? targetAngle * Math.PI / 180 : 0;
+  if (targeted && available.southeast) {
+    // The base image is northeast. North/south each own a 45-degree sector;
+    // the two diagonal perspectives share the remaining upper/lower halves.
+    var angle = normalize(targetAngle);
+    if (angle >= 67.5 && angle <= 112.5 && available.north) name = "north";
+    else if (angle >= -112.5 && angle <= -67.5 && available.south) name = "south";
+    else if (angle < 0 && angle > -180) name = "southeast";
+  } else if (targeted && Math.abs(Math.sin(radians)) > Math.abs(Math.cos(radians)) + .000001) {
+    var facing = Math.sin(radians) > 0 ? "north" : "south";
+    if (available[facing]) name = facing;
+  }
+  if ((name === "side" || name === "southeast") && targeted && Math.cos(radians) < 0) flip = -1;
+  var view = available[name];
+  function value(key, fallback) { return finite(view[key], finite(weapon[key], fallback)); }
+  var mx = value("muzzleX", 90), my = value("muzzleY", 0);
+  if (mx * mx + my * my < .000001) { mx = 1; my = 0; }
+  var reference = Math.atan2(my, flip * mx) * 180 / Math.PI;
+  var facing = name === "side" ? flip < 0 ? "west" : "east" : name;
+  if (available.southeast) facing = targeted ? ["east", "northeast", "north", "northwest", "west", "southwest", "south", "southeast"][(Math.round(normalize(targetAngle) / 45) + 8) % 8] : "northeast";
+  return { view: name, facing: facing,
+    sprite: view.sprite, width: positive(value("width", 120), 120), height: positive(value("height", 80), 80),
+    pivotX: value("pivotX", .5), pivotY: value("pivotY", .5), x: finite(weapon.offsetX, 0), y: finite(weapon.offsetY, 150),
+    muzzleX: mx, muzzleY: my, flipX: flip, angle: targeted ? normalize(targetAngle - reference) : 0, reference: reference };
+}
+exports.views = views;
+exports.pose = pose;

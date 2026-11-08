@@ -113,6 +113,7 @@ var def_KinghtFallBuildBartizan = function (t) {
     }
     var artwork = require("BuildingAppearance");
     if (this._towerAimTarget && artwork.aim) artwork.aim(this, this._towerAimTarget);
+    else if (artwork.idle) artwork.idle(this);
   };
   _ctor.prototype.getTowerSettings = function () {
     return TowerCombat.settings(this.buildInfo && this.buildInfo.cfg);

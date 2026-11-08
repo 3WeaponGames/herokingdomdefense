@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "06275557-6ea9-420d-a412-e168ea591b83",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 1254,
+  "height": 1254,
+  "platformSettings": {},
+  "subMetas": {
+    "cannon-3-weapon-south": {
+      "ver": "1.0.6",
+      "uuid": "bcb07bd1-a02e-4a36-a37c-8e38b28f9313",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "06275557-6ea9-420d-a412-e168ea591b83",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1254,
+      "height": 1254,
+      "rawWidth": 1254,
+      "rawHeight": 1254,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

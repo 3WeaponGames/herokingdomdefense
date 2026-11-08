@@ -10,6 +10,11 @@ const root = path.resolve(__dirname, '../..');
 const { setup } = require('./backend-gameplay-harness.cjs');
 const close = (a, b, label = '') => assert(Math.abs(a - b) < 1e-6, `${label}: ${a} != ${b}`);
 const pointClose = (a, b, label = '') => { close(a.x, b.x, label + ' x'); close(a.y, b.y, label + ' y'); };
+function localMuzzle(h) {
+  const weapon=h.owner.buildInfo.cfg.Appearance.weapon,state=h.owner._buildingAppearance;
+  const view=weapon.views?.[state.weaponView]||weapon;
+  return{x:view.muzzleX,y:view.muzzleY};
+}
 
 function fixture(type = 'cannon', level = 1) {
   class Vec2 {
@@ -79,7 +84,7 @@ for (const type of ['cannon', 'sniper']) for (const level of [1, 2, 3]) test(`${
     const target = h.target(0, 0); target.node.setPosition(h.owner.node.convertToWorldSpaceAR(localTarget));
     h.api.aim(h.owner, target); h.api.step(h.owner, 1);
     const state = h.owner._buildingAppearance;
-    const visible = state.weaponNode.convertToWorldSpaceAR({ x: h.weapon.muzzleX, y: h.weapon.muzzleY });
+    const visible = state.weaponNode.convertToWorldSpaceAR(localMuzzle(h));
     const muzzle = h.api.muzzle(h.owner, h.game);
     pointClose(muzzle, h.game.ndUI.convertToNodeSpaceAR(visible), 'visible barrel tip');
     const worldPivot = state.weaponPivot.convertToWorldSpaceAR({ x: 0, y: 0 });
@@ -99,7 +104,7 @@ test('aim respects rotated/scaled/translated map, building, enemy and effects pa
   h.api.apply(h.owner); h.resolve();
   const target = h.target(-420, 90, enemies); h.api.aim(h.owner, target); h.api.step(h.owner, 1);
   const state = h.owner._buildingAppearance;
-  const tip = state.weaponNode.convertToWorldSpaceAR({ x: h.weapon.muzzleX, y: h.weapon.muzzleY });
+  const tip = state.weaponNode.convertToWorldSpaceAR(localMuzzle(h));
   pointClose(h.api.muzzle(h.owner, h.game), h.game.ndUI.convertToNodeSpaceAR(tip));
   const pivot = state.weaponPivot.convertToWorldSpaceAR({ x: 0, y: 0 }), to = target.node.convertToWorldSpaceAR({ x: 0, y: 0 });
   close((tip.x - pivot.x) * (to.y - pivot.y) - (tip.y - pivot.y) * (to.x - pivot.x), 0);
@@ -110,7 +115,7 @@ test('left/right crossings keep the barrel upright and never move or mirror the 
   const state = h.owner._buildingAppearance, base = { x: state.node.x, y: state.node.y, angle: state.node.angle, scaleX: state.node.scaleX, scaleY: state.node.scaleY };
   for (const x of [300, 1, -1, -300, -1, 1, 300]) {
     const target = h.target(x, 330); h.api.aim(h.owner, target); h.api.step(h.owner, .5);
-    assert.equal(state.weaponPivot.scaleX < 0, x < h.weapon.offsetX);
+    assert.equal(state.weaponPivot.scaleX < 0, state.weaponView === 'side' && x < h.weapon.offsetX);
     assert(Math.abs(state.weaponPivot.angle) <= 90.000001, 'art stays upright rather than rotating upside down');
     assert.deepEqual({ x: state.node.x, y: state.node.y, angle: state.node.angle, scaleX: state.node.scaleX, scaleY: state.node.scaleY }, base);
   }
@@ -151,7 +156,7 @@ function controllerFixture(type = 'cannon', level = 1, loadArtwork = true) {
   world.g.ndUI = h.game.ndUI; world.ui.ctrEffect = { showDamageNum() {}, onMonsterAttack() {} };
   const shots = [], originalShot = world.g.onShotBuild;
   world.g.onShotBuild = function (tower, actor) {
-    const tip = tower._buildingAppearance.weaponNode.convertToWorldSpaceAR({ x: h.weapon.muzzleX, y: h.weapon.muzzleY });
+    const tip = tower._buildingAppearance.weaponNode.convertToWorldSpaceAR(localMuzzle(h));
     const expected = this.ndUI.convertToNodeSpaceAR(tip), node = new h.Node('Projectile');
     node.parent = this.ndUI; node.setSiblingIndex = () => {};
     const bullet = { node, speed: 550, setTowerTag(origin, target, attack, behavior) { shots.push({ origin, target, expected, nodePosition: node.getPosition(), behavior }); } };
@@ -168,7 +173,7 @@ test('ready shots wait for both artwork layers without spending cooldown or allo
   assert.equal(h.shots.length, 0); assert(h.owner.time.AttackTime >= 1);
   assert.doesNotThrow(() => h.fireDirect(h.owner, target));
   assert.equal(h.world.g.ndBuildArr2.length, 0, 'direct callbacks cannot allocate an invisible shot');
-  h.loads[0].done({ name: 'base-only' }); h.owner.doTime(.01);
+  h.loads.find(load => load.file === h.row.Appearance.sprite).done({ name: 'base-only' }); h.owner.doTime(.01);
   assert.equal(h.shots.length, 0); assert(h.owner.time.AttackTime >= 1);
   h.resolve(); h.owner.doTime(.01);
   assert.equal(h.shots.length, 1); assert.equal(h.owner.time.AttackTime, 0);
@@ -184,16 +189,19 @@ for (const type of ['cannon', 'sniper']) for (const level of [1, 2, 3]) test(`${
     const shot = h.shots.at(-1); assert.equal(h.shots.length, direction + 1);
     pointClose(shot.origin, shot.expected, 'committed shot muzzle'); pointClose(shot.nodePosition, shot.expected, 'spawned projectile');
     const state = h.owner._buildingAppearance;
-    pointClose(state.flash.convertToWorldSpaceAR({ x: 0, y: 0 }), state.weaponNode.convertToWorldSpaceAR({ x: h.weapon.muzzleX, y: h.weapon.muzzleY }), 'flash follows the barrel tip');
+    pointClose(state.flash.convertToWorldSpaceAR({ x: 0, y: 0 }), state.weaponNode.convertToWorldSpaceAR(localMuzzle(h)), 'flash follows the barrel tip');
   }
 });
 
 test('layer pair becomes visible atomically and recoil moves only the weapon, not the building', () => {
   const h = fixture(); h.api.apply(h.owner);
-  assert.equal(h.loads.length, 2);
-  h.loads[0].done({ name: 'base' }); assert.equal(h.owner.ndAniMain.enabled, true, 'fallback remains while weapon is outstanding');
+  assert.equal(h.loads.length, 3 + Object.keys(h.weapon.views || {}).length, 'intact layers and the independent destroyed sprite preload');
+  h.loads.find(load => load.file === h.row.Appearance.sprite).done({ name: 'base' }); assert.equal(h.owner.ndAniMain.enabled, true, 'fallback remains while weapon is outstanding');
   assert(!h.owner._buildingAppearance.node || !h.owner._buildingAppearance.node.active);
-  h.resolve(); const state = h.owner._buildingAppearance;
+  h.loads.filter(load => load.file !== h.row.Appearance.sprite && load.file !== h.row.Appearance.destroyed.sprite).forEach(load => load.done({ name: load.file }));
+  const state = h.owner._buildingAppearance;
+  assert.equal(h.api.ready(h.owner), true, 'ruins loading never delays a healthy tower firing');
+  assert.equal(state.destroyedFrame, null);
   h.api.aim(h.owner, h.target(-300, 200));
   const base = { x: state.node.x, y: state.node.y, scaleX: state.node.scaleX, scaleY: state.node.scaleY };
   h.api.fire(h.owner); assert(state.recoilRemaining > 0); assert(Math.hypot(state.weaponNode.x, state.weaponNode.y) > 0);
@@ -246,4 +254,14 @@ test('paused battle update preserves the weapon pose and cooldown while enemies 
   const update = vm.runInNewContext('(' + source.slice(begin, end).split(' = ').slice(1).join(' = ').replace(/;$/, '') + ')');
   update.call({ isPauset: true, _updateTestControls() {}, ctrGame: { onUpdate: dt => h.owner.doTime(dt) } }, .1);
   assert.equal(h.owner._buildingAppearance.weaponPivot.angle, before); assert.equal(h.owner.time.AttackTime, cooldown); assert.equal(h.shots.length, 0);
+});
+
+test('losing the final live enemy returns an eight-direction tower to northeast after its recoil',()=>{
+  const h=controllerFixture('sniper'),target=h.target(300,-250);h.world.d.enemyList=[target];
+  h.owner.time.AttackTime=1;h.owner.doTime(.01);assert.equal(h.shots.length,1);assert.equal(h.owner._buildingAppearance.weaponView,'southeast');
+  target.hp=0;h.world.d.enemyList=[];h.owner.doTime(.01);
+  assert.equal(h.owner._buildingAppearance.weaponView,'southeast','a spent shot finishes recoiling');
+  h.owner.doTime(1);const state=h.owner._buildingAppearance;
+  assert.equal(state.weaponView,'side');assert.equal(state.weaponFacing,'northeast');assert.equal(state.weaponPivot.angle,0);assert.equal(state.weaponPivot.scaleX,1);
+  assert.equal(h.shots.length,1);assert.equal(h.owner._towerAimTarget,null);
 });
