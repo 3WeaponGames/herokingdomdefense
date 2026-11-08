@@ -103,7 +103,9 @@ function layout(home) {
   var bounds = { left: a.x, right: b.x, bottom: a.y, top: b.y, footer: a.y + 120 };
   var manager = require("UIMgr").UIMgr.getInstance(), ui = manager.getUIById(Config.KinghtFallUIID.UIHome), footer = ui && ui.node.getChildByName("ndBottom");
   if (footer) bounds.footer = Math.max(bounds.footer, home.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y);
-  var points = logicalWidth(), geometry = Core.measure(bounds, points), signature = JSON.stringify([bounds, points, Language.LanguageMgr.getInstance().currentLan]);
+  var points = logicalWidth(), geometry = Core.measure(bounds, points);
+  var fonts = state.items.map(function (item) { var text = item.getChildByName("labName").getComponent(cc.Label); return [text.string, text.font && text.font.uuid, text.fontFamily, text.useSystemFont, text.fontSize]; });
+  var signature = JSON.stringify([bounds, points, Language.LanguageMgr.getInstance().currentLan, fonts]);
   if (signature !== state.signature) {
     var oldCell = state.geometry && state.geometry.cell, oldOffset = oldCell ? scrollOffset(state.scroll) / oldCell : 0;
     state.signature = signature; state.geometry = geometry;
@@ -111,18 +113,20 @@ function layout(home) {
     var background = graphics(state.bar); background.clear(); background.fillColor = new cc.Color(19, 61, 159, 155); background.roundRect(-geometry.barWidth / 2, -geometry.barHeight / 2, geometry.barWidth, geometry.barHeight, 22); background.fill();
     state.view.setContentSize(geometry.viewport, geometry.barHeight); state.content.setContentSize(geometry.cell * 5, geometry.barHeight); state.content.setPosition(-geometry.viewport / 2, 0);
     state.items.forEach(function (item, i) {
+      disable(item, cc.Layout); disable(item, cc.Widget);
       item.active = true; item.setPosition(geometry.cell * (i + .5), 0); item.setContentSize(geometry.cell - 4, geometry.barHeight - 10);
       item.children.forEach(function (node) {
         if (node.name === "labName") {
           node.anchorX = .5; node.anchorY = 1; node.setPosition(0, -26);
-          var limit = (geometry.cell - 8) / Math.abs(node.scaleX), text = node.getComponent(cc.Label);
-          var captionSize = item === home.btnAchieve ? 11 : 12.5;
+          disable(node, cc.Widget);
+          var limit = (geometry.cell - 20) / Math.abs(node.scaleX), text = node.getComponent(cc.Label);
+          var captionSize = 12.5;
           text._lobbyCaption = true; text.fontSize = Math.max(36, Math.round(captionSize * (bounds.right - bounds.left) / points / Math.abs(node.scaleX)));
           if (!/\s/.test(text.string) && text._forceUpdateRenderData) {
             text.overflow = cc.Label.Overflow.NONE; text.enableWrapText = false; text._forceUpdateRenderData();
             if (node.width > limit) text.fontSize = Math.floor(text.fontSize * limit / node.width);
           }
-          text.lineHeight = text.fontSize * 1.08; text.overflow = cc.Label.Overflow.CLAMP; text.enableWrapText = true;
+          text.lineHeight = text.fontSize * 1.08; text.overflow = cc.Label.Overflow.SHRINK; text.enableWrapText = /\s/.test(text.string);
           text.horizontalAlign = cc.Label.HorizontalAlign.CENTER; text.verticalAlign = cc.Label.VerticalAlign.TOP;
           node.setContentSize(limit, 112);
         }
@@ -177,7 +181,7 @@ function modeState(home, unlocked, best, unlockStage) {
   var button = state.defense.getComponent(cc.Button); if (button) button.interactable = unlocked;
   var key = unlocked ? "lobby.wallBestWave" : "lobby.wallUnlock", value = unlocked ? best : unlockStage;
   if (state.status !== key + value) { state.status = key + value; bind(state.defenseCaption, key, [value]); }
-  var amount = state.defense.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label); amount.string = String(home.costEnergy);
+  var amount = state.defense.getChildByName("Layout").getChildByName("labNum").getComponent(cc.Label); amount.string = String(require("GAD_Configs").GADConfig.EnergyCost);
 }
 exports.install = install;
 exports.layout = layout;

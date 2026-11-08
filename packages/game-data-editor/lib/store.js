@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const JSONDocument=require('./json-document');
+const MapCatalog=require('./map-catalog');
 const clone=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
 const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 const hash=text=>crypto.createHash('sha256').update(text).digest('hex');
@@ -33,7 +34,7 @@ class Store {
     }
     checkVersion(request){if(!request||request.version!==this.version)throw Error('Another panel changed these drafts. Refresh this panel and try again.');}
     addMap(id){
-        if(!/^Map0[1-4]$/.test(id))throw Error('Unknown playable map');const key='map:'+id;
+        if(!MapCatalog.has(id))throw Error('Unknown playable map');const key='map:'+id;
         if(!this.documents[key]){this.documents[key]=this.readDocument(key,'assets/KinghtFallIconMap/'+id+'.prefab');this.version++;}
         return this.snapshot();
     }

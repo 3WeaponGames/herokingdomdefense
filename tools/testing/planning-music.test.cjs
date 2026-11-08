@@ -18,7 +18,7 @@ test('all authored desert stages select Sands of the Keep on initial planning en
  for(const level of levels){
   h.method.call({levelId:level.Level});
   const call=h.calls.at(-1),asset=exportsConfig.KinghtFallAudioCF[call.id];
-  assert.equal(asset.path,[3,7,11,15,19].includes(level.Level)?'Sands_of_the_Keep':'Skybound_Horns','stage '+level.Level);
+  assert.equal(asset.path,[3,11,15,19].includes(level.Level)?'Sands_of_the_Keep':'Skybound_Horns','stage '+level.Level);
   assert.equal(call.channel,exportsConfig.KinghtFallParameter.BGMusic);
   assert.equal(call.options.length,0,'retain AudioMgr looping and player Music volume defaults');
   assert.ok(fs.existsSync(path.join(root,'assets',asset.bundle,asset.path+'.mp3')));

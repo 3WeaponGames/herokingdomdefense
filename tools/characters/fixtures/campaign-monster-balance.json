@@ -1,0 +1,1037 @@
+{
+  "version": 1,
+  "description": "Approved pre-appearance campaign balance; project IDs back through CampaignBaseUnit to compare.",
+  "stageHashes": {
+    "A": [
+      "a9258cd10fe497d354c1d07221e0efa59ed1b6825770df2aa20d79f31550ab06",
+      "2a3a7ef3918f94256310845a859cd4c972ffefbdbfa42197ba9034ad66c8fb87",
+      "ea2311d07cc56525d979ef129df868fd05676e541ba1273b1667a15102fc4a19",
+      "3d7ca37ddd936edde0997a152c508260c6feef2d9d509b9c2e1b2930b22b6bf1",
+      "b591d9252ab9614fc25686d0069caa632c522d19b3290f279c4acef711ffae3f",
+      "12479f44cfdb74a7728bca8447ef706f9353fae3d90c91238fdbd4429b7a7cf1",
+      "aa4be74e3c2c35d5ba59583fe1b7b35fd4275724fb9bf89cf61c556851dfd7da",
+      "a834d255723dd8fdec943187e91be26a21d6bdb383a331d32879683185daf381",
+      "273834d086d4f07a805c92f778634e8c84bd06cea19203f946c2541ab3540fb9",
+      "805de40ebdb5184be9374841e668c14216b7d7bc4d5e5ec31b948f7b1e298d9c",
+      "896a29fddb293cb861028934bdc102835ce00d2309b3379c3b9ee6d6057a9023",
+      "4dfdca06277bc0ff1e3c32717b6c193bc06059639b3b4d1624e7c55d301b81ac",
+      "c9a62f5fa84644b49ee33150dc6c695ed9c23d02bd5a58f8d3437aa56a2c8bea",
+      "5801836b70ae0174402e5456936304c7a434c82146a86e2dad29b10dee272d17",
+      "62303d6a75de8a879819833017f2b6d0837a916326700925dd6e887dad36eeef",
+      "9d7965f96336f87d83ba3455fe57f4a67c797dc9b6980239e42e1e7aabc0ff13",
+      "b9847b0eb6285c7498b563ad4efcc73e97173418919ceaf57303139d95d4c472",
+      "10ce4e745c93e94313e0899fafaab5e92fc07e3035a74a57b9bbeae789e1f581",
+      "90d829aba0ac1a9c7f87fc1e33d246e8b0783f2f275bc31805b86fb9cb7d438f",
+      "564cefd24e641e80d40a0b17bf7b8e91bdcc8bfc2a56320765ef3859be8828be"
+    ],
+    "B": [
+      "23365a15ea096b105cb1f5cd79317238fd1bb59d136625caf8567a4d81be7f9f",
+      "9f26c0063367b59700a66db4cd7f5b630e00b3fab2540b1dbd738d9278e990ee",
+      "b367f05c3b5542feccc16c0dcce38155cea01b97e107ec42f63b08a10f45d4a9",
+      "93d89cbf24c90f5b2f257696d5f86b395bf0d55cbd92fce2d9ba71b579869091",
+      "87c9e870fe2a9c8ca139c1bfa80416d3c3bc8036910f534f0a2bffbfc4522c99",
+      "0edbcaef70c6433148390c352af784882edb6ef9a4328c7eb41a127a94d9151f",
+      "05ac8f74dd0134c2a406f186d5369b40d56598b8b9dee79c25ce032d51c4638e",
+      "2d0a038ff822cea85eabf888944aacad9679677cfd1293799da490b305961fa9",
+      "1eea20cde9530b11ff47f0b95fe7b20a43c405b26c0fce336bfd89f21286729e",
+      "5682cb4284e3e2f2b219407cc58da6e335df5337d3b9418d382b39334f5d0603",
+      "3086611615557566c7e94142e0fd5e784f09cd8849e77ddd31b5cb900adfdf5d",
+      "2783e47e2075620d332fabef1237b4ad2ca9f0eb62e27b9e6e769d7bee8b5996",
+      "01bef4e50ba03392517c67a51cc448cc78c5bfc56ffb0f931c8649c6e2eaf7f2",
+      "dd8b2fdd744b4e0f628d6ef0499fac87776847f783229a9839f097241625619f",
+      "2be62d8af30a8c2faea7eac43151856a72a5c02bcab080fcf57d61225597c5a2",
+      "84f0830424cfea91d423ebda03a79541b9db571d4fb766834c62ffea9e75f285",
+      "20248585468c202d957c4494708d794018f252e525143d97293862a2ed98fa2e",
+      "a687b394892640075dd9f4bc89a143f337d3da7f74fa5a9dacc8603afb099e9d",
+      "15a58b492b270b5a1f883832d4a1246994a2127ab07b380ae556db94612ea2c0",
+      "46cae971802940a2d0b0b821c36652e076ea54c2942a1131fb8863a8daa559bb"
+    ],
+    "D": [
+      "e5272f483dc6c65ef2545dac42887dbfe513f6ab290e3e7af008964bee910427",
+      "296872a901c317afbc973b6f69087fe5c435804b4a2d6ed7391a5c814601d52d",
+      "2c795752314e45ef89d3a5f97d7107a7b6235765c4da3dffd696917c878064ac",
+      "4ed2efe35dc63bc50e863df6f78d2549cec83c0c49a93fbe90654863db0631e6",
+      "8d3584b4f1d245ba75041ca416a06380e775903ba031e4fef05ef1a9fe5883b8",
+      "2deba3259e4c1d779f18b38c64e98cfc3771d38c40eaeb8207da2f834dcee542",
+      "89e65a130befa435e81f7603ef7cef01ee118727eb70f8734547889f90c4c1bb",
+      "b14cebfb7036bb95d4c28882d5bf1dbfdd954339329dd1323cf10a5c43fe7e51",
+      "58eb7a304b65f28ff850ba427b304a5fb3ece490762d921a9a30f1efa1b36fe6",
+      "d0ef8303fff5a333752160d310c5186637cb3403d93d9a6f7ec45953055cc846",
+      "980473d75846091382a87ef9d0870cf01f8aabdb70e8eb6d49d8e3f94960463e",
+      "edd9580e568c2c83f39a2655373f1d4a8486e6a8d3b21dbfc930f3d82f531814",
+      "8cafd8dcb60c2ce26fb5fde9f321d55466e00d77aba8249c3dd5e67cbc8e8e1d",
+      "d097f89a1794242df99edc040ce306359b61662121b9cbd48467228f83f45a4a",
+      "4edcc1db345a04bc0a6ae0b0e0d4cefe05e3ff60194ab44ebef87da828675450",
+      "cb6cb4a26f7efa906a1ceceb06a62b686c3bd58215388ba155d1205f150a349f",
+      "a81cec0cc485e11ee970c7852bb61070abb5d55e4ca430bce1fe6debe4088443",
+      "1d68b412c9f7ed91a7e09fbc489328b4700c41f4f0396bc78b6e42e650934796",
+      "1ca9de0a98470ddcae8f932d3fc38480d3516c48fbedb7e5e526f6daf1aae52a",
+      "12ab069e3a675c24cb91a6ca8c64eb390d0d4c49f4f02ad75630ddd3fdd4c453"
+    ]
+  },
+  "unitHashes": {
+    "90001": "24b8efc17c3f6491d0f4c3a8ba95b02e7339e134c98df66c5e06743741d42f67",
+    "90002": "525da3cc324385be1fd24be2e7d10d867a2660d3db8279e3aae696e81d76737f",
+    "90003": "c914b2c1ef7da5c22dd7a74bf6b1646086df2a26cd87163cf48b4db4601f142f",
+    "90004": "f0f2b410eaaef555b43d66dc24e865c3a549c712f4b83c8815c6c3e34bf6404e",
+    "90005": "8d6ebc73cfd8680d492c3bbcbe214f12ce40dab59e736cf73fcf2a5813d5e87c",
+    "90006": "fce1364d0543fa4910cc861c09c7ab42d1e1ba842bccdb67d688151df4fa3aa6",
+    "90007": "75821be4e884e907110fe6c03dec39176e2d1804d8f1d99bbcd6a3a38e10d642",
+    "90008": "6544a134882295b90e9f61bfb1d105a4de0af501d8e09bb29c39268e8baf3c8e",
+    "90009": "1c0bf1b8510287eb8c0e7b3808bbaa38d78493b37508afdf903b43280e3ab793",
+    "90010": "a1a14a29585eedec3ca4b1c5058f16003a70c172af140ab2d7655ad28ee80360",
+    "90011": "cb3ab2863fa25d869e7c77e98789953e74be9bdbc56fc8e3cc26d3c2736a8e14",
+    "90012": "5a00b77805d98cbff31aeb5917316e516aacebf79dfd60ae142cc71b6893a7d7",
+    "91001": "4ef6da93dfad51719cb52c0327a8d6188cb56362a303eaf056aeefa746f8657a",
+    "91002": "45cef90125d5ae6190871deb09adfd671d4f3be624ecdd875339489c31b4a572",
+    "91003": "2cec6b5cdae1fbbbcdd29f505e46b04c55bfdefa7d9222a737400c1dbe7be670",
+    "91004": "cd3668421d90414760f92cfc78b6a913e1ac7ab67a6ca5da6736a8516df32903",
+    "91005": "99e55f38080bda735e461afd0b0752260fd3a0ba79d4316ba3c5647887832102",
+    "91006": "6d8a0d18b8048457a070edc4d2df695245dfec8f41ea0c69faee904994bf6212",
+    "91007": "aa2d839195b5a60dd6eb4d00ef18c7e8c819bd7eac48740484f9192554bfd8a9",
+    "91008": "8a0b8133134d885d2e699a62a1c24d85bbb20c6877f3b66d67d618e2d5cb2892",
+    "91009": "45eca74fac6cf77bd572462ac4fbb2748676dc063963e5874772ef4484dbb87c",
+    "91010": "ffb635826f8a7306177080dd23e949fed2168291cc34966c535c553ea1f79daf",
+    "91011": "570843b1e19d0da3081de581c6f91b5f2a9c681d9ab392ea50acf1177ecdaa66",
+    "91012": "223ad1c2ddf9d972c89d2e5aa7b3b95d9dad2beb6eb0fb96947d71185eaeebd5",
+    "91013": "faca554e4222f27321f7b6b018c4dcca5eb39fb30ffe17cb549995805e3ba9e0",
+    "91014": "8ac10548a57f9224d7d5f06070f9a65601cc706c42d6a4c4d3411fee404c8b94",
+    "91015": "0578af24f272960d0b0fa0166fe17d710c915491c9039f18da9fddcbc4d2fd02",
+    "91016": "db8726057abe2c8f08de0c32e5b32fc9523438781d49ad423431c19a8ff327c3",
+    "91017": "eff94d3d58501c651700ba2b14b571fbde95e5f50cff9669552f4c37ac2393da",
+    "91018": "26c778d5a07884f637dc7473b455cea844f70bcbeed922e9148298446dfa3311",
+    "91019": "1fe9220a5698cad9c1cf94d08df4a7facf32d92da949dc14b9c13a1099e4fc3e",
+    "91020": "46d503d929fa475e221b200d4c9cd6418b0439ce1d00499cbe7764f62c77bff5",
+    "91021": "813ff3b8226571cf3d70128704a3a94265e18db3780ef1a215a491888461791c",
+    "91022": "56b0eae649e23d3f4818491735d1285487e7c91b6f674720ef06b5975013ec0a",
+    "91023": "c3de715e05de2d2867121585be5fec55ff3be77563fada1273a386c74b68094e",
+    "91024": "85fa86938b4f6309ecc84ffce4d7295985e3653c6ef8fdbfb40b39be191351fd",
+    "91025": "7930ff46933058218eb643bf2ab75f654bf5c9fc3db272372f2a7c2fa1210dff",
+    "91026": "7ccb9077e467efa1dfabc7b9d6ee3181140a0be305ac649169c759449fbd2695",
+    "91027": "81438ffe770de363660698ca18a8c8b6217f170b2921592e6cbcd3f1982a505d",
+    "91028": "882549a919ea0e61d731dd4fbc850be0d91f9e3e9f40cb528281ead216a19eed",
+    "91029": "96826b50b902681d2ef5cfbb89af71786e870c15e4247583f0fea8bc38dfebe2",
+    "91030": "48c13d8ebf74cf136ef5f5eba40558e38b3f9f5ba8d751321f2d2e9e950bab6d",
+    "91031": "2bf9b481c8125b53a61922dcb2d9ca58d625139c7fef193db33f8725b16381d0",
+    "91032": "927a657b6c98fee3475deed9960b0c089538e3bfd2f6621cfd7aa0c0f8efc4c4",
+    "91033": "517f4c3a00356a50f5fcbbbf207e58e0ef6f051d42fa250e628bcf9daa5407f5",
+    "91034": "482532f144a68311ee3cfe583331f02c0ed3ab083314f1e1c9111315cb1acb9d",
+    "91035": "96454ad78185f7424df8f8ed7aa85da80384cff6113ad7de102c5567dfe8b548",
+    "91036": "54f656bc5681cf596ed58b0cc8f7a94552462e4caabfe81096e86dcff7bfc2f1",
+    "91037": "426b2a9190031f00bc1bf70f904be184430862aa92c7dc71e2d21369ae601c83",
+    "91038": "f988dde72cb8e354a67cacb8e07e035e4444c8da7bdb29b7311b6acfe63d3560",
+    "91039": "d543bb3fefeeb0bd63a6259aa71f3c2f827b53074ceec5e2b3cf2c215cd738dd",
+    "91040": "ac135ea3767c1f3e73fcb773240ed41dce2c6e9f04a62e410a23d22d7a211052",
+    "91041": "6947746b1e5eef5f19a0952d353eb6c72395c933d79c5bf05f7252a221ad25a9",
+    "91042": "d8afb693c769bf8ffdf5653714b6092eff79ff9023186a1c8cade67b7ce07c6e",
+    "91043": "83b48fe8301600e1ea7718b12645e8bdae9cc2bc0e188287b2fda8d30cfdb006",
+    "91044": "ccf7976731a416015fdf30e75583fa3ed3f9af8e22a0064039c04f3a07bdbec8",
+    "91045": "44dafa3650ea3680e99b99992bf0ff125a30302fa4d0491100f4097ca8376317",
+    "91046": "86df3e1a6b980416ec81ff9972d26cdba59f72a74ea490e33f4d7db28af7d967",
+    "91047": "b1c1cd78de61777a85bce2019ef624c4028cd425cbd651e28792b910b08c1fa1",
+    "91048": "cb03a5904d8ebe290ea87a04505e31c1d47874da6decd811192bfc6086b99838",
+    "91049": "0d2c98aefb4c6e53c7eea75edc16882c4d64e32f859c460441738f0053421db2",
+    "91050": "3fdd79514eb848cc7f7a8b369f104f7fbadbad161db1c9955ea3b168b23fb4f1",
+    "91051": "c9c00688df3cefa0c9a74bc0691edb6f323df287da23bc004f6139c43a5f371f",
+    "91052": "40a450aa9d59d2dd2d0bcb9ed28d48c80dc67875b2a6d747fc5e6647b2d73ece",
+    "91053": "9e6663ef61e058b5dd2f93f844e2bc8a96e64b735c8773dabe893c410645ad4e",
+    "91054": "514127bfc0692ab73a3eba3c74248da76cfd6187ef9e8fe95ba5d817a84cb155",
+    "91055": "1aadb793994cee4808bc0011808a5ade2e50f6c09358e18581d1eb2a69f87825",
+    "91056": "91897cb7f1065cfb4985b97f55e06aee3a9531410c58f8508a6df8073e6cf2c9",
+    "91057": "ff8c61c2c492f05bee16774371c9d4aea12ed752d0b3c1174090e9015b74cb8a",
+    "91058": "d1205792921dc3bffe7693efcd8e215e28c0d4b5f3b42d22eb3ddeb4247f3598",
+    "91059": "0e5e600c3b1fe0ecbbff588480b7b12ec2e150e0c79bf20614695d537cf33eff",
+    "91060": "c0f1610329ff35d3e7efaa38004475666d22e85c1c92f237b69d31d05b587580",
+    "91061": "982ebb1319896fd244453fdeb72604f833f710a149918eecef4e62ab7b91406a",
+    "91062": "17831b7236d57d339cc5d3fbe5366bcf545999fedc08d6e67cca928996b5a9b7",
+    "91063": "ae5b988f3a54df93eaa988096fdc9bdb953d398adadb76c3c3e5700ac97eb930",
+    "91064": "ce09212c9d3d1d61f2efdda43ebfe431118893e318a9ec33f7a74c1263fe6acf",
+    "91065": "72b1a16c7fbf123c3a3391d6b25fb5fa7e47eda13275a7eff7e3bc6224c66eea",
+    "91066": "d2a4fb5996f8df4e571235c0c9bdc1499dbbfc9ea539f5e968185852aa077608",
+    "91067": "ed7c7f92a6cb3e616f3bd47c0a7b2e5b659ed9f8a3f82ba03829e39ce4d316d9",
+    "91068": "8bdbae4941dcc9886b1c13a96c63b0ab1cca84d53b8a3d0384968f5ba79fe40c",
+    "91069": "6500a23303194dc92c3f33bac06e46995cfbd07700d545887ba4e4456165b59a",
+    "91070": "50b5dea02d9fe90412615e15a5c9971aaa3881b63e6aa44ccfc90c3d99c91246",
+    "91071": "88dbebca2770559e93eb0e9debe1710409b27ac7dd12ee39ebd74f36d1c3eca8",
+    "91072": "72c1740c9b62d035f745c400ef41d00b4e35a08a87824e126df7c6009fbd848b",
+    "91073": "b65f48e2881672a47f6bb0369b5e1d5f8d7887810528acdaea25a70df610cd09",
+    "91074": "29f7d012b795e59a0a353020ec6cc8029afb88b7e7a6de589022dc053ac27387",
+    "91075": "6561133f408adb4c1f981275c5f4b60d0dab3a919c81fada46f1d51d493b4912",
+    "91076": "0cba3b1d6dae7f72aee37facf77d792e46d9494988ea41875ceee713b733957e",
+    "91077": "cb29239afe7deb3651b32b07fab8ceb31ba16ca4c174d02c3c000620a9d67253",
+    "91078": "43743347d8dbc5a0b9926952d92d53f41208f7be274f99b1b9eb10d1ff160d75",
+    "91079": "3fc1c923c813e9a5acb9c55d43ea218d23460a34af41d145ca0753e7210e8b34",
+    "91080": "4deb7016061bb93d9ff0a9b3a5dc55ff524d922a301ca6f45c642a5ac14da8bd",
+    "91081": "fcf25a6a60294dc6edadcea8f8f35bdf5648b7eba8464b635a7c749a5ef3d4b1",
+    "91082": "da23b883cf08b100c97ae6dafcbca9dca281d957dc6a669a7293691599f78f35",
+    "91083": "961672bea9c058155ff761408b29054b220836ed0ce3a10f0a6f3f0ad8023ef6",
+    "91084": "10e7a9d4fb46ea2bfcb408e000ae56f5e0bedb6165e8a5e6b900555b79eb60d6",
+    "91085": "5b2da754939e6edd8ffde8c00d777dff2592812a0fc865cc73c6cb940488302e",
+    "91086": "ab3cda4c7358853860b04fbecab5e87c10ed738c2a5ad7f7b1b35a819fca8bf1",
+    "91087": "4a420880d055c5f8cd45c67fce83bce5548d336ade13960d251bf74a1ce17942",
+    "91088": "4e8ad181cd1447b7c25cf2fbe7ee7059636d51c3125390d1ce18f81ca43d3d52",
+    "91089": "d487c8c2ddb6f8e92b081202f87c43a0d4be66929c0d94ef3a5233860db79745",
+    "91090": "3478d4fe362aedd6ad9d2d039ff7c7dad274c4ddc84258c2b8e93ec2d84ea5ae",
+    "91091": "8ebb9bf4bcf3f90d9e403a3b23c3190b5c5771ee87a82d0a1a3b00ab78c4150e",
+    "91092": "bb932246fca36a86f9687d3ad7fd40b428383b1305bcaaf514aae94ab4ac1f52",
+    "91093": "41720d1a5b2b0aed7fbe1f0c1c00ed7d3742907eb04109a0f6bb8e7610eda492",
+    "91094": "f873c5c24aa8fd99b948fe16735387e9da1b8cf5c7cb988608e005371aeff85f",
+    "91095": "f37b286dad1ae78fee8a2ba6a950623e1f4cda4a714c2bc1e080697f95622e4c",
+    "91096": "c75f74da556a379d25b895f1a60cd2ecd9733f3714384a27427b3793845f99d7",
+    "91097": "c6be41bfdd0da69c43283357414b121df43d2163cc13f1a88cfa2e7d900870ab",
+    "91098": "f5aecdca007b76a0465f2de50fc791b43ae5a9e8fda9389e2b398f66246ae6fa",
+    "91099": "46b3d4f3c92659432f9a19a57fd456effdaa9a2f113603be19381c19288692c6",
+    "91100": "4a22f8f2b8ad5e9763042a612c7607c647bf47efc82e766a036728c4eddcad02"
+  },
+  "settings": {
+    "version": 1,
+    "timings": {
+      "enemy:90001:default": {
+        "attack": 0.5
+      }
+    },
+    "parameters": {},
+    "perks": {},
+    "timingDefaults": {
+      "hero:hero:default": {
+        "attack": 0.1667
+      },
+      "enemy:90001:default": {
+        "attack": 0.5
+      },
+      "enemy:90002:default": {
+        "attack": 0.5
+      },
+      "enemy:90003:default": {
+        "attack": 0.5
+      },
+      "enemy:90004:default": {
+        "attack": 0.5
+      },
+      "enemy:90005:default": {
+        "attack": 0.5
+      },
+      "enemy:90006:default": {
+        "attack": 0.5
+      },
+      "enemy:90007:default": {
+        "attack": 0.5
+      },
+      "enemy:90008:default": {
+        "attack": 0.5
+      },
+      "enemy:90009:default": {
+        "attack": 0.5
+      },
+      "enemy:90010:1": {
+        "attack": 0.5
+      },
+      "enemy:90011:2": {
+        "attack": 0.5
+      },
+      "enemy:90012:3": {
+        "attack": 0.5
+      },
+      "ally:90001:default": {
+        "attack": 0.5
+      },
+      "ally:90002:default": {
+        "attack": 0.5
+      },
+      "ally:90003:default": {
+        "attack": 0.5
+      },
+      "ally:90004:default": {
+        "attack": 0.5
+      },
+      "enemy:91001:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91002:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91003:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91004:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91005:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91006:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91007:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91008:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91009:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91010:default": {
+        "attack": 0.5
+      },
+      "enemy:91011:default": {
+        "attack": 0.5
+      },
+      "enemy:91012:default": {
+        "attack": 0.5
+      },
+      "enemy:91013:default": {
+        "attack": 0.5
+      },
+      "enemy:91014:default": {
+        "attack": 0.5
+      },
+      "enemy:91015:default": {
+        "attack": 0.5
+      },
+      "enemy:91016:default": {
+        "attack": 0.5
+      },
+      "enemy:91017:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91018:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91019:default": {
+        "attack": 0.5
+      },
+      "enemy:91020:default": {
+        "attack": 0.5
+      },
+      "enemy:91021:default": {
+        "attack": 0.5416667
+      },
+      "enemy:91022:default": {
+        "attack": 0.5416667
+      },
+      "enemy:91023:default": {
+        "attack": 0.5416667
+      },
+      "enemy:91024:default": {
+        "attack": 0.375
+      },
+      "enemy:91025:default": {
+        "attack": 0.375
+      },
+      "enemy:91026:default": {
+        "attack": 0.375
+      },
+      "enemy:91027:default": {
+        "attack": 0.375
+      },
+      "enemy:91028:default": {
+        "attack": 0.375
+      },
+      "enemy:91029:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91030:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91031:default": {
+        "attack": 0.5
+      },
+      "enemy:91032:default": {
+        "attack": 0.5
+      },
+      "enemy:91033:default": {
+        "attack": 0.5
+      },
+      "enemy:91034:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91035:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91036:default": {
+        "attack": 0.4583333
+      },
+      "enemy:91037:default": {
+        "attack": 0.2916667
+      },
+      "enemy:91038:default": {
+        "attack": 0.2916667
+      },
+      "enemy:91039:default": {
+        "attack": 0.4166667
+      },
+      "enemy:91040:default": {
+        "attack": 0.4166667
+      },
+      "enemy:91041:default": {
+        "attack": 0.4166667
+      },
+      "enemy:91042:default": {
+        "attack": 0.375
+      },
+      "enemy:91043:default": {
+        "attack": 0.375
+      },
+      "enemy:91044:default": {
+        "attack": 0.375
+      },
+      "enemy:91045:default": {
+        "attack": 0.375
+      },
+      "enemy:91046:default": {
+        "attack": 0.375
+      },
+      "enemy:91047:default": {
+        "attack": 0.375
+      },
+      "enemy:91048:default": {
+        "attack": 0.375
+      },
+      "enemy:91049:default": {
+        "attack": 0.25
+      },
+      "enemy:91050:default": {
+        "attack": 0.25
+      },
+      "enemy:91051:default": {
+        "attack": 0.75
+      },
+      "enemy:91052:default": {
+        "attack": 0.75
+      },
+      "enemy:91053:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91054:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91055:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91056:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91057:default": {
+        "attack": 0.5
+      },
+      "enemy:91058:default": {
+        "attack": 0.5
+      },
+      "enemy:91059:default": {
+        "attack": 0.5
+      },
+      "enemy:91060:default": {
+        "attack": 0.6
+      },
+      "enemy:91061:default": {
+        "attack": 0.6
+      },
+      "enemy:91062:default": {
+        "attack": 0.6
+      },
+      "enemy:91063:default": {
+        "attack": 0.5916666
+      },
+      "enemy:91064:default": {
+        "attack": 0.5916666
+      },
+      "enemy:91065:default": {
+        "attack": 0.5916666
+      },
+      "enemy:91066:default": {
+        "attack": 0.55
+      },
+      "enemy:91067:default": {
+        "attack": 0.55
+      },
+      "enemy:91068:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91069:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91070:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91071:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91072:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91073:default": {
+        "attack": 0.5833333
+      },
+      "enemy:91074:default": {
+        "attack": 0.5
+      },
+      "enemy:91075:default": {
+        "attack": 0.5
+      },
+      "enemy:91076:default": {
+        "attack": 0.5
+      },
+      "enemy:91077:default": {
+        "attack": 0.5
+      },
+      "enemy:91078:default": {
+        "attack": 0.5
+      },
+      "enemy:91079:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91080:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91081:default": {
+        "attack": 0.6666667
+      },
+      "enemy:91082:default": {
+        "attack": 0.3583333
+      },
+      "enemy:91083:default": {
+        "attack": 0.3583333
+      },
+      "enemy:91084:default": {
+        "attack": 0.475
+      },
+      "enemy:91085:default": {
+        "attack": 0.475
+      },
+      "enemy:91086:default": {
+        "attack": 0.5
+      },
+      "enemy:91087:default": {
+        "attack": 0.5
+      },
+      "enemy:91088:default": {
+        "attack": 0.5
+      },
+      "enemy:91089:default": {
+        "attack": 0.5
+      },
+      "enemy:91090:default": {
+        "attack": 0.5
+      },
+      "enemy:91091:default": {
+        "attack": 0.5
+      },
+      "enemy:91092:default": {
+        "attack": 0.5
+      },
+      "enemy:91093:default": {
+        "attack": 0.5
+      },
+      "enemy:91094:default": {
+        "attack": 0.5
+      },
+      "enemy:91095:default": {
+        "attack": 0.5
+      },
+      "enemy:91096:default": {
+        "attack": 0.5
+      },
+      "enemy:91097:default": {
+        "attack": 0.425
+      },
+      "enemy:91098:default": {
+        "attack": 0.425
+      },
+      "enemy:91099:default": {
+        "attack": 0.425
+      },
+      "enemy:91100:default": {
+        "attack": 0.425
+      }
+    },
+    "visuals": {
+      "enemy:90001:default": {
+        "mirrorX": true
+      },
+      "enemy:90002:default": {
+        "mirrorX": true
+      },
+      "enemy:90003:default": {
+        "mirrorX": true
+      },
+      "enemy:90004:default": {
+        "mirrorX": true
+      },
+      "enemy:90005:default": {
+        "mirrorX": true
+      },
+      "enemy:90006:default": {
+        "mirrorX": true
+      },
+      "enemy:90007:default": {
+        "mirrorX": true
+      },
+      "enemy:90008:default": {
+        "mirrorX": true
+      },
+      "enemy:90009:default": {
+        "mirrorX": true
+      },
+      "enemy:90010:1": {
+        "mirrorX": true
+      },
+      "enemy:90011:2": {
+        "mirrorX": true
+      },
+      "enemy:90012:3": {
+        "mirrorX": true
+      },
+      "enemy:91001:default": {
+        "mirrorX": true
+      },
+      "enemy:91002:default": {
+        "mirrorX": true
+      },
+      "enemy:91003:default": {
+        "mirrorX": true
+      },
+      "enemy:91004:default": {
+        "mirrorX": true
+      },
+      "enemy:91005:default": {
+        "mirrorX": true
+      },
+      "enemy:91006:default": {
+        "mirrorX": true
+      },
+      "enemy:91007:default": {
+        "mirrorX": true
+      },
+      "enemy:91008:default": {
+        "mirrorX": true
+      },
+      "enemy:91009:default": {
+        "mirrorX": true
+      },
+      "enemy:91010:default": {
+        "mirrorX": true
+      },
+      "enemy:91011:default": {
+        "mirrorX": true
+      },
+      "enemy:91012:default": {
+        "mirrorX": true
+      },
+      "enemy:91013:default": {
+        "mirrorX": true
+      },
+      "enemy:91014:default": {
+        "mirrorX": true
+      },
+      "enemy:91015:default": {
+        "mirrorX": true
+      },
+      "enemy:91016:default": {
+        "mirrorX": true
+      },
+      "enemy:91017:default": {
+        "mirrorX": true
+      },
+      "enemy:91018:default": {
+        "mirrorX": true
+      },
+      "enemy:91019:default": {
+        "mirrorX": true
+      },
+      "enemy:91020:default": {
+        "mirrorX": true
+      },
+      "enemy:91021:default": {
+        "mirrorX": true
+      },
+      "enemy:91022:default": {
+        "mirrorX": true
+      },
+      "enemy:91023:default": {
+        "mirrorX": true
+      },
+      "enemy:91024:default": {
+        "mirrorX": true
+      },
+      "enemy:91025:default": {
+        "mirrorX": true
+      },
+      "enemy:91026:default": {
+        "mirrorX": true
+      },
+      "enemy:91027:default": {
+        "mirrorX": true
+      },
+      "enemy:91028:default": {
+        "mirrorX": true
+      },
+      "enemy:91029:default": {
+        "mirrorX": true
+      },
+      "enemy:91030:default": {
+        "mirrorX": true
+      },
+      "enemy:91031:default": {
+        "mirrorX": true
+      },
+      "enemy:91032:default": {
+        "mirrorX": true
+      },
+      "enemy:91033:default": {
+        "mirrorX": true
+      },
+      "enemy:91034:default": {
+        "mirrorX": true
+      },
+      "enemy:91035:default": {
+        "mirrorX": true
+      },
+      "enemy:91036:default": {
+        "mirrorX": true
+      },
+      "enemy:91037:default": {
+        "mirrorX": true
+      },
+      "enemy:91038:default": {
+        "mirrorX": true
+      },
+      "enemy:91039:default": {
+        "mirrorX": true
+      },
+      "enemy:91040:default": {
+        "mirrorX": true
+      },
+      "enemy:91041:default": {
+        "mirrorX": true
+      },
+      "enemy:91042:default": {
+        "mirrorX": true
+      },
+      "enemy:91043:default": {
+        "mirrorX": true
+      },
+      "enemy:91044:default": {
+        "mirrorX": true
+      },
+      "enemy:91045:default": {
+        "mirrorX": true
+      },
+      "enemy:91046:default": {
+        "mirrorX": true
+      },
+      "enemy:91047:default": {
+        "mirrorX": true
+      },
+      "enemy:91048:default": {
+        "mirrorX": true
+      },
+      "enemy:91049:default": {
+        "mirrorX": true
+      },
+      "enemy:91050:default": {
+        "mirrorX": true
+      },
+      "enemy:91051:default": {
+        "mirrorX": true
+      },
+      "enemy:91052:default": {
+        "mirrorX": true
+      },
+      "enemy:91053:default": {
+        "mirrorX": true
+      },
+      "enemy:91054:default": {
+        "mirrorX": true
+      },
+      "enemy:91055:default": {
+        "mirrorX": true
+      },
+      "enemy:91056:default": {
+        "mirrorX": true
+      },
+      "enemy:91057:default": {
+        "mirrorX": true
+      },
+      "enemy:91058:default": {
+        "mirrorX": true
+      },
+      "enemy:91059:default": {
+        "mirrorX": true
+      },
+      "enemy:91060:default": {
+        "mirrorX": true
+      },
+      "enemy:91061:default": {
+        "mirrorX": true
+      },
+      "enemy:91062:default": {
+        "mirrorX": true
+      },
+      "enemy:91063:default": {
+        "mirrorX": true
+      },
+      "enemy:91064:default": {
+        "mirrorX": true
+      },
+      "enemy:91065:default": {
+        "mirrorX": true
+      },
+      "enemy:91066:default": {
+        "mirrorX": true
+      },
+      "enemy:91067:default": {
+        "mirrorX": true
+      },
+      "enemy:91068:default": {
+        "mirrorX": true
+      },
+      "enemy:91069:default": {
+        "mirrorX": true
+      },
+      "enemy:91070:default": {
+        "mirrorX": true
+      },
+      "enemy:91071:default": {
+        "mirrorX": true
+      },
+      "enemy:91072:default": {
+        "mirrorX": true
+      },
+      "enemy:91073:default": {
+        "mirrorX": true
+      },
+      "enemy:91074:default": {
+        "mirrorX": true
+      },
+      "enemy:91075:default": {
+        "mirrorX": true
+      },
+      "enemy:91076:default": {
+        "mirrorX": true
+      },
+      "enemy:91077:default": {
+        "mirrorX": true
+      },
+      "enemy:91078:default": {
+        "mirrorX": true
+      },
+      "enemy:91079:default": {
+        "mirrorX": true
+      },
+      "enemy:91080:default": {
+        "mirrorX": true
+      },
+      "enemy:91081:default": {
+        "mirrorX": true
+      },
+      "enemy:91082:default": {
+        "mirrorX": true
+      },
+      "enemy:91083:default": {
+        "mirrorX": true
+      },
+      "enemy:91084:default": {
+        "mirrorX": true
+      },
+      "enemy:91085:default": {
+        "mirrorX": true
+      },
+      "enemy:91086:default": {
+        "mirrorX": true
+      },
+      "enemy:91087:default": {
+        "mirrorX": true
+      },
+      "enemy:91088:default": {
+        "mirrorX": true
+      },
+      "enemy:91089:default": {
+        "mirrorX": true
+      },
+      "enemy:91090:default": {
+        "mirrorX": true
+      },
+      "enemy:91091:default": {
+        "mirrorX": true
+      },
+      "enemy:91092:default": {
+        "mirrorX": true
+      },
+      "enemy:91093:default": {
+        "mirrorX": true
+      },
+      "enemy:91094:default": {
+        "mirrorX": true
+      },
+      "enemy:91095:default": {
+        "mirrorX": true
+      },
+      "enemy:91096:default": {
+        "mirrorX": true
+      },
+      "enemy:91097:default": {
+        "mirrorX": true
+      },
+      "enemy:91098:default": {
+        "mirrorX": true
+      },
+      "enemy:91099:default": {
+        "mirrorX": true
+      },
+      "enemy:91100:default": {
+        "mirrorX": true
+      }
+    },
+    "unitTypes": {
+      "fighter": {
+        "name": "Fighter",
+        "icon": "wg_zd_dr1",
+        "tint": "#ffffff"
+      },
+      "skirmisher": {
+        "name": "Skirmisher",
+        "icon": "wg_zd_dr3",
+        "tint": "#ffffff"
+      },
+      "vanguard": {
+        "name": "Vanguard",
+        "icon": "wg_zd_dr4",
+        "tint": "#ffffff"
+      },
+      "mystic": {
+        "name": "Mystic",
+        "icon": "wg_zd_dr6",
+        "tint": "#ffffff"
+      },
+      "bruiser": {
+        "name": "Bruiser",
+        "icon": "wg_zd_dr2",
+        "tint": "#ffffff"
+      },
+      "guardian": {
+        "name": "Guardian",
+        "icon": "wg_zd_dr2",
+        "tint": "#ffffff"
+      }
+    },
+    "unitTypeAssignments": {
+      "enemy:90001:default": "fighter",
+      "enemy:90002:default": "guardian",
+      "enemy:90003:default": "skirmisher",
+      "enemy:90004:default": "vanguard",
+      "enemy:90005:default": "skirmisher",
+      "enemy:90006:default": "mystic",
+      "enemy:90007:default": "guardian",
+      "enemy:90008:default": "skirmisher",
+      "enemy:90009:default": "mystic",
+      "enemy:90010:1": "bruiser",
+      "enemy:90011:2": "guardian",
+      "enemy:90012:3": "bruiser",
+      "ally:90001:default": "fighter",
+      "ally:90002:default": "guardian",
+      "ally:90003:default": "skirmisher",
+      "ally:90004:default": "vanguard",
+      "enemy:91001:default": "vanguard",
+      "enemy:91002:default": "vanguard",
+      "enemy:91003:default": "vanguard",
+      "enemy:91004:default": "guardian",
+      "enemy:91005:default": "guardian",
+      "enemy:91006:default": "bruiser",
+      "enemy:91007:default": "guardian",
+      "enemy:91008:default": "guardian",
+      "enemy:91009:default": "fighter",
+      "enemy:91010:default": "vanguard",
+      "enemy:91011:default": "vanguard",
+      "enemy:91012:default": "vanguard",
+      "enemy:91013:default": "vanguard",
+      "enemy:91014:default": "vanguard",
+      "enemy:91015:default": "vanguard",
+      "enemy:91016:default": "vanguard",
+      "enemy:91017:default": "bruiser",
+      "enemy:91018:default": "bruiser",
+      "enemy:91019:default": "vanguard",
+      "enemy:91020:default": "vanguard",
+      "enemy:91021:default": "guardian",
+      "enemy:91022:default": "guardian",
+      "enemy:91023:default": "guardian",
+      "enemy:91024:default": "vanguard",
+      "enemy:91025:default": "fighter",
+      "enemy:91026:default": "mystic",
+      "enemy:91027:default": "guardian",
+      "enemy:91028:default": "bruiser",
+      "enemy:91029:default": "mystic",
+      "enemy:91030:default": "mystic",
+      "enemy:91031:default": "skirmisher",
+      "enemy:91032:default": "vanguard",
+      "enemy:91033:default": "guardian",
+      "enemy:91034:default": "mystic",
+      "enemy:91035:default": "mystic",
+      "enemy:91036:default": "mystic",
+      "enemy:91037:default": "fighter",
+      "enemy:91038:default": "bruiser",
+      "enemy:91039:default": "guardian",
+      "enemy:91040:default": "guardian",
+      "enemy:91041:default": "guardian",
+      "enemy:91042:default": "vanguard",
+      "enemy:91043:default": "skirmisher",
+      "enemy:91044:default": "vanguard",
+      "enemy:91045:default": "mystic",
+      "enemy:91046:default": "skirmisher",
+      "enemy:91047:default": "guardian",
+      "enemy:91048:default": "bruiser",
+      "enemy:91049:default": "bruiser",
+      "enemy:91050:default": "fighter",
+      "enemy:91051:default": "mystic",
+      "enemy:91052:default": "mystic",
+      "enemy:91053:default": "fighter",
+      "enemy:91054:default": "guardian",
+      "enemy:91055:default": "fighter",
+      "enemy:91056:default": "vanguard",
+      "enemy:91057:default": "vanguard",
+      "enemy:91058:default": "vanguard",
+      "enemy:91059:default": "vanguard",
+      "enemy:91060:default": "vanguard",
+      "enemy:91061:default": "mystic",
+      "enemy:91062:default": "vanguard",
+      "enemy:91063:default": "bruiser",
+      "enemy:91064:default": "skirmisher",
+      "enemy:91065:default": "mystic",
+      "enemy:91066:default": "guardian",
+      "enemy:91067:default": "guardian",
+      "enemy:91068:default": "guardian",
+      "enemy:91069:default": "skirmisher",
+      "enemy:91070:default": "vanguard",
+      "enemy:91071:default": "mystic",
+      "enemy:91072:default": "mystic",
+      "enemy:91073:default": "mystic",
+      "enemy:91074:default": "skirmisher",
+      "enemy:91075:default": "fighter",
+      "enemy:91076:default": "mystic",
+      "enemy:91077:default": "guardian",
+      "enemy:91078:default": "vanguard",
+      "enemy:91079:default": "mystic",
+      "enemy:91080:default": "mystic",
+      "enemy:91081:default": "skirmisher",
+      "enemy:91082:default": "guardian",
+      "enemy:91083:default": "guardian",
+      "enemy:91084:default": "vanguard",
+      "enemy:91085:default": "fighter",
+      "enemy:91086:default": "skirmisher",
+      "enemy:91087:default": "bruiser",
+      "enemy:91088:default": "guardian",
+      "enemy:91089:default": "skirmisher",
+      "enemy:91090:default": "bruiser",
+      "enemy:91091:default": "fighter",
+      "enemy:91092:default": "bruiser",
+      "enemy:91093:default": "guardian",
+      "enemy:91094:default": "mystic",
+      "enemy:91095:default": "vanguard",
+      "enemy:91096:default": "skirmisher",
+      "enemy:91097:default": "guardian",
+      "enemy:91098:default": "mystic",
+      "enemy:91099:default": "mystic",
+      "enemy:91100:default": "guardian"
+    }
+  }
+}

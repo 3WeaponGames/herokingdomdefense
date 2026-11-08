@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "a5756c73-7253-4aab-8ab2-3a1db8dd89b3",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 1484,
+  "height": 1060,
+  "platformSettings": {},
+  "subMetas": {
+    "sniper-3-weapon": {
+      "ver": "1.0.6",
+      "uuid": "e0e9f2b1-37c3-44af-bb48-27374a6b96b0",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "a5756c73-7253-4aab-8ab2-3a1db8dd89b3",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1484,
+      "height": 1060,
+      "rawWidth": 1484,
+      "rawHeight": 1060,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

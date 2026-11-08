@@ -327,7 +327,7 @@ DepthView.prototype.prepareObjects = function () {
   });
   byNode.forEach(function (renderers, root) {
     if (!renderers.length) return;
-    root._depthGround = renderers[0].node;
+    if (!root._depthGround) root._depthGround = renderers[0].node;
     self.objects.push({ node: root, sources: renderers, masks: new Map(), capture: null, texture: null, frame: null, signature: "" });
   });
 };

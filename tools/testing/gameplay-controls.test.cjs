@@ -65,7 +65,9 @@ function fixture() {
   ui.btnAgg.getChildByName = name => tags[name];
   function build(options = {}) {
     const b = Object.create(buildProto);
-    Object.assign(b, { uuid: 'slot', standTimeMax: 1.5, buildCfg: { enumValue: 1 },
+    Object.assign(b, { uuid: 'slot', standTimeMax: 1.5, buildCfg: { enumValue: 1, levelList: [
+      { level: 1, BranchBuild: [2, 3] }, { level: 2, BranchBuild: [] }, { level: 2, BranchBuild: [] }
+    ] },
       buildInfo: { standTime: 0.2, cfg: { level: 1, BranchBuild: [2, 3] } },
       getLevel: () => 1, getSell: () => options.price === undefined ? 10 : options.price,
       getLockPoint: () => options.locked ? null : [{ x: -10, y: -10 }, { x: 10, y: 10 }],
@@ -144,6 +146,7 @@ test('Space calls the real purchase path immediately, charges silver and preserv
   assert.equal(f.game.gameData.coin, 10); assert.equal(slot.buildInfo.standTime, 1.5);
   assert.equal(f.game.upBulid, slot); assert.equal(f.state.opens[0][0], f.ids.UIBuildSel);
   assert.equal(f.state.opens[0][2], slot); assert.equal(typeof f.state.opens[0][3], 'function');
+  assert.deepEqual(Array.from(f.state.opens[0][5]), [2, 3], 'The keyboard purchase offers the actual two configured upgrade rows');
   f.game.testInstantBuild(); assert.equal(f.game.gameData.coin, 10, 'Cannot buy the same occupied slot twice');
 });
 

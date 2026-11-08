@@ -2,8 +2,8 @@
 const fs=require('fs'),path=require('path');
 const {NavigationGrid}=require('../../assets/_script/NavigationGrid.js');
 const results=[];
-for(let id=1;id<=4;id++){
-  const f=require('./fixtures/map0'+id+'-authored.json');
+for(const id of require('../../packages/game-data-editor/lib/map-catalog').IDS){
+  const f=require('./fixtures/'+id.toLowerCase()+'-authored.json');
   const grid=new NavigationGrid(f.obstacles.flatMap(o=>o.polygons),f.bounds,20);
   const row={map:f.map,bounds:f.bounds,tests:[],blockedPoints:[],directSegmentsBlocked:[]};
   for(const radius of [16,20,30]){

@@ -1,4 +1,5 @@
 'use strict';
+const UnitRecords=require('./unit-records');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -68,15 +69,16 @@ function describe(root, request) {
     const documents = request.documents || {}, cfg = documents.A ? documents.A.data : json(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'));
     if (type === 'building') {
         const record = request.record || cfg.BuildEnum[id], level = record && record.levelList && record.levelList[request.levelIndex || 0];
-        let file = null;
+        let file = null,weaponFile=null;
         if (level) {
-            try { file = AssetValidation.imported(root, 'KinghtFallIconBuild', level.Icon, 'sprite').file; }
+            try { file = level.Appearance ? AssetValidation.imported(root,'resources',level.Appearance.sprite,'sprite').file : AssetValidation.imported(root, 'KinghtFallIconBuild', level.Icon, 'sprite').file; }
             catch (_) { /* An absent or invalid draft icon has no static preview. */ }
+            if(level.Appearance&&level.Appearance.weapon)try{weaponFile=AssetValidation.imported(root,'resources',level.Appearance.weapon.sprite,'sprite').file;}catch(_){/* Invalid draft weapon artwork has no preview. */}
         }
-        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, label: level ? level.Icon : 'Building', runtimePath: null };
+        return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, weaponImage:weaponFile?url.pathToFileURL(weaponFile).href:null, label: level ? level.Icon : 'Building', appearance:level&&level.Appearance||null, runtimePath: null };
     }
     if (['hero', 'enemy', 'ally'].indexOf(type) < 0) throw new Error('Unknown unit category.');
-    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && [90010, 90011, 90012].indexOf(Number(id)) >= 0;
+    const record = request.record || (type === 'ally' && cfg.AllyCfg && cfg.AllyCfg[id]) || cfg.SoldierCfg[id], boss = type === 'enemy' && UnitRecords.boss(id);
     if (type !== 'hero' && !record) throw new Error('Unit does not exist.');
     const prefabName = type === 'hero' ? null : boss ? 'ItemEnemy10' : (type === 'ally' ? 'Play' : '') + record.prefab;
     if (prefabName && !/^[A-Za-z0-9_-]+$/.test(prefabName)) throw new Error('Invalid unit prefab name.');
@@ -103,14 +105,14 @@ function describe(root, request) {
         if (f === file) return;
         try { if (json(f).some(c => c.__type__ === 'sp.Skeleton' && c._N$skeletonData && sourceSet.has(c._N$skeletonData.__uuid__))) shared.push(relative(root, f)); } catch (_) {}
     });
-    const form = boss ? String(Number(id) - 90009) : 'default';
-    const effect = type === 'hero' || record && record.AttackType === 2 ? 'Projectile release' : Number(id) === 90006 ? 'Attack-speed buff' : Number(id) === 90009 ? 'Healing pulse' : Number(id) === 90007 ? 'Hit and splash damage' : 'Melee hit';
+    const form = UnitRecords.form(type,id), behavior=UnitRecords.behavior(record,id);
+    const effect = type === 'hero' || record && record.AttackType === 2 ? 'Projectile release' : behavior === 90006 ? 'Attack-speed buff' : behavior === 90009 ? 'Healing pulse' : behavior === 90007 ? 'Hit and splash damage' : 'Melee hit';
     let shotPrefab = prefab;
     if (type === 'hero') shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
     const timing = AttackTimings.fromLayers(layers);
     return { type, id, form, key: type + ':' + id + ':' + form, source: relative(root, file), layers, shared, equipment,
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
-        effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, id) : null,
+        effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, behavior) : null,
         forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
         runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }

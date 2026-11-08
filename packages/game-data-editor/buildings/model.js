@@ -12,7 +12,7 @@ function alliedUnits(base,catalog,language){
 function branchSummary(id,level,base,catalog,language){
   const data=Array.isArray(level.Data)?level.Data:[];
   switch(Number(id)){
-    case 1:case 2:return data[0]+' damage · '+data[1]+' attacks/s · '+data[2]+' range';
+    case 1:case 2:{const attack=Number(id)===2&&level.Tower;return (attack&&attack.attackType?attack.attackType+' · ':'')+data[0]+' damage · '+data[1]+' attacks/s · '+data[2]+' range'+(attack&&attack.attackType==='cannon'?' · '+(attack.splashRadius===undefined?90:attack.splashRadius)+' splash':'');}
     case 3:{const unit=(base.AllyCfg||base.SoldierCfg||{})[data[1]];return data[0]+' × '+name(unit&&unit.Name,catalog,language,'Unit '+data[1])+' · '+data[2]+'s respawn';}
     case 4:case 5:return data[0]+' silver / wave';
     default:return level.Hp+' HP';

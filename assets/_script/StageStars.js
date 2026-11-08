@@ -43,6 +43,23 @@ var Stars = cc.Class({
     var sprite = node.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.spriteFrame = frame;
     return node;
   },
+  setOutline: function (width) {
+    this.build();
+    width = Number(width); if (!isFinite(width) || width < 0) width = 0;
+    var self = this;
+    this.stars.forEach(function (star) {
+      if (width > 0 && !star.outline) {
+        // A tinted copy keeps the artwork's exact silhouette behind either
+        // earned state; retain it when switching stages instead of rebuilding.
+        star.outline = self.sprite(star.node, "Outline", self.starFrame, star.size);
+        star.outline.color = cc.Color.BLACK; star.outline.zIndex = -1;
+      }
+      if (star.outline) {
+        star.outline.active = width > 0;
+        star.outline.setContentSize(star.size + width * 2, star.size + width * 2);
+      }
+    });
+  },
   show: function (count, animate) {
     this.build(); this.stop();
     count = Math.max(0, Math.min(3, Math.floor(count) || 0)); this.count = count;

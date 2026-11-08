@@ -1,0 +1,5685 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "env-0198510308748754f8616ac840c631c9",
+      "name": "Ice Snow 6",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-0198510308748754f8616ac840c631c9.png",
+      "width": 415,
+      "height": 323,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "bb23bad83d0453199300dbe1cb03e8142fa13dd068b3c348a467e263e805aa6a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0198510308748754f8616ac840c631c9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_06.png"
+      }
+    },
+    {
+      "id": "env-02d249533c54bae4f878c6e3f2a8b8ec",
+      "name": "Bush Ice 1",
+      "category": "bushes",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-02d249533c54bae4f878c6e3f2a8b8ec.png",
+      "width": 80,
+      "height": 66,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "eb016d9f33daa99abfe11abdfbf8cb8d55eafcb32df78755ad3bd23de753602a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "02d249533c54bae4f878c6e3f2a8b8ec",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Bush/Bush_Ice_01.png"
+      }
+    },
+    {
+      "id": "env-037a77b18a79f8f4692ed6b22be4eef5",
+      "name": "Stone Gray1 8",
+      "category": "rocks",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-037a77b18a79f8f4692ed6b22be4eef5.png",
+      "width": 212,
+      "height": 210,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "4753f568492c0f946750cf2d91db740ce9523f59f8175ed2884cf1401ec02e93",
+      "source": {
+        "pack": "environment-1",
+        "guid": "037a77b18a79f8f4692ed6b22be4eef5",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_08.png"
+      }
+    },
+    {
+      "id": "env-05a35c6f5a6f2884ba0ae4b2a727b280",
+      "name": "Plam Green 3",
+      "category": "trees",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-05a35c6f5a6f2884ba0ae4b2a727b280.png",
+      "width": 288,
+      "height": 522,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8e0b46c65b434ec382967cee08b9c624bb59148c9194cc88d60132546b89d6c4",
+      "source": {
+        "pack": "environment-1",
+        "guid": "05a35c6f5a6f2884ba0ae4b2a727b280",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Plam_Green_03.png"
+      }
+    },
+    {
+      "id": "env-06b9c91b8aa852147aeff0d9e840e700",
+      "name": "Fire Texture 9",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-06b9c91b8aa852147aeff0d9e840e700.png",
+      "width": 337,
+      "height": 255,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "aedcf949da32b7116bd0188cad9e38a380aa391919f3b2675fc97d7dc4e838cc",
+      "source": {
+        "pack": "environment-2",
+        "guid": "06b9c91b8aa852147aeff0d9e840e700",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_09.png"
+      }
+    },
+    {
+      "id": "env-06dd7dbb3f573ba4684eb20159b8072a",
+      "name": "Bush Snow 3",
+      "category": "bushes",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-06dd7dbb3f573ba4684eb20159b8072a.png",
+      "width": 91,
+      "height": 46,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "eeae3258166a47e55701c8cbaf95da519b4b7088aa99654a1ad0370fe20710b0",
+      "source": {
+        "pack": "environment-2",
+        "guid": "06dd7dbb3f573ba4684eb20159b8072a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Bush/Bush_Snow_03.png"
+      }
+    },
+    {
+      "id": "env-06ea9c7e4ba3ccd4194fe937cab98082",
+      "name": "Tree Snow Dead LightBrown 3",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-06ea9c7e4ba3ccd4194fe937cab98082.png",
+      "width": 142,
+      "height": 211,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "ebea61dd6d3257ef3b4991e24c87768d0c273bfc2d68e84810273a7ba8b17fc8",
+      "source": {
+        "pack": "environment-2",
+        "guid": "06ea9c7e4ba3ccd4194fe937cab98082",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Dead_LightBrown_03.png"
+      }
+    },
+    {
+      "id": "env-0720eb12620388142bc3434178744ee5",
+      "name": "Bush Snow 1",
+      "category": "bushes",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-0720eb12620388142bc3434178744ee5.png",
+      "width": 101,
+      "height": 75,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "e1163c0bc106b7db235aaf1a1379207f29904d7c4f6ea26b95522e4841551601",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0720eb12620388142bc3434178744ee5",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Bush/Bush_Snow_01.png"
+      }
+    },
+    {
+      "id": "env-0752af18fc5fcae4cb7738b97b4b2b37",
+      "name": "DeepForest Flower 2",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-0752af18fc5fcae4cb7738b97b4b2b37.png",
+      "width": 27,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "49ad2fe14d5197c4c96a3d1898353c03b0de6d41148471eb2f2f27ea5df24563",
+      "source": {
+        "pack": "environment-1",
+        "guid": "0752af18fc5fcae4cb7738b97b4b2b37",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/DeepForest_Flower_02.png"
+      }
+    },
+    {
+      "id": "env-07b8b164cf5403844ae3da29fb1a9404",
+      "name": "Birch Yellow 2",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-07b8b164cf5403844ae3da29fb1a9404.png",
+      "width": 288,
+      "height": 702,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "13465f76035e1943ab1f857a6938d19fdcbd9386704ad9b42930525a1c08c0a6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "07b8b164cf5403844ae3da29fb1a9404",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Birch_Yellow_02.png"
+      }
+    },
+    {
+      "id": "env-0803a605ba81f1147bbc236f18763e2b",
+      "name": "Tree Snow Bare Brown 3",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-0803a605ba81f1147bbc236f18763e2b.png",
+      "width": 251,
+      "height": 363,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8d61c4d0951beb8f9854a666c34f743a3166a7675ef10fcb79f1ecb0149086fe",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0803a605ba81f1147bbc236f18763e2b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_Brown_03.png"
+      }
+    },
+    {
+      "id": "env-087def4e9e2ecc74d86011413b2b4d30",
+      "name": "Tree Green 8",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-087def4e9e2ecc74d86011413b2b4d30.png",
+      "width": 284,
+      "height": 418,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a528273a4f5ace9db940fa008342e3465f5737914b4f5e0d3b5a8c1daf972388",
+      "source": {
+        "pack": "environment-1",
+        "guid": "087def4e9e2ecc74d86011413b2b4d30",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_08.png"
+      }
+    },
+    {
+      "id": "env-08c0594fd46f2844ea8f3d85f895f62f",
+      "name": "Snow White 2",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-08c0594fd46f2844ea8f3d85f895f62f.png",
+      "width": 498,
+      "height": 95,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e675b6be35b5ceeb5edca4b225cfc4b3c85a2fcfae1fdbe6d79bdeabca70702d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "08c0594fd46f2844ea8f3d85f895f62f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_White_02.png"
+      }
+    },
+    {
+      "id": "env-0903943501ab5ae4f8a8199bf1e46795",
+      "name": "Tree Yellow Green 12",
+      "category": "trees",
+      "biomes": [
+        "deep-forest",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-0903943501ab5ae4f8a8199bf1e46795.png",
+      "width": 257,
+      "height": 536,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3c799a24ff0a8f6551f69dfec58c43f1b1af6fb714d694f387495e371f881266",
+      "source": {
+        "pack": "environment-1",
+        "guid": "0903943501ab5ae4f8a8199bf1e46795",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_12.png"
+      }
+    },
+    {
+      "id": "env-0a7c4e47995d7044ab9f87b459a98fe4",
+      "name": "Stone Fire Dark 9",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-0a7c4e47995d7044ab9f87b459a98fe4.png",
+      "width": 176,
+      "height": 93,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a6366c79ffb674a2c21c5b9962b1542377aee0a44ecb041b9cc3f2dfe16f0523",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0a7c4e47995d7044ab9f87b459a98fe4",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_09.png"
+      }
+    },
+    {
+      "id": "env-0b70b270ad0d8594788bafd0e9cd097f",
+      "name": "Small Tree Snow LightBrown 1",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-0b70b270ad0d8594788bafd0e9cd097f.png",
+      "width": 194,
+      "height": 213,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "832ab87100b5277e8f381afbbf36d71573909b159982e27449cec3f91c548cd0",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0b70b270ad0d8594788bafd0e9cd097f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Small_Tree_Snow_LightBrown_01.png"
+      }
+    },
+    {
+      "id": "env-0d0396dc77a84cc44b16f99ef49876c3",
+      "name": "Snow Up 4",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-0d0396dc77a84cc44b16f99ef49876c3.png",
+      "width": 304,
+      "height": 165,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "558842e15f27417b0a159245c7b7ef275e00fe4c8376ba9bc4ec4dee3cfa0270",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0d0396dc77a84cc44b16f99ef49876c3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Up_04.png"
+      }
+    },
+    {
+      "id": "env-0de98be6a0f09c941831281cd67767af",
+      "name": "Lava 3",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-0de98be6a0f09c941831281cd67767af.png",
+      "width": 721,
+      "height": 244,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "c755bdcdd2d07d0885173153b484c678a4827ec3efecefc6c4b3a7e6313e7577",
+      "source": {
+        "pack": "environment-2",
+        "guid": "0de98be6a0f09c941831281cd67767af",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_03.png"
+      }
+    },
+    {
+      "id": "env-0e9535b308fa44f45830fc55fcb6c9e0",
+      "name": "Stone Gray1 5",
+      "category": "rocks",
+      "biomes": [
+        "desert",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-0e9535b308fa44f45830fc55fcb6c9e0.png",
+      "width": 69,
+      "height": 50,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2f9c7cd65fd8da672b99f5eb2067865414efef45a7ebd79298ef766e575e2390",
+      "source": {
+        "pack": "environment-1",
+        "guid": "0e9535b308fa44f45830fc55fcb6c9e0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_05.png"
+      }
+    },
+    {
+      "id": "env-0e9db89abb5f91847a1f059f7c917878",
+      "name": "Ork",
+      "category": "details",
+      "biomes": [
+        "autumn",
+        "deep-forest",
+        "desert",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-0e9db89abb5f91847a1f059f7c917878.png",
+      "width": 78,
+      "height": 86,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f1ffe1a1670162472dea76a2fac4c84dff555442051ecd2c035b71e3ff0ddd88",
+      "source": {
+        "pack": "environment-1",
+        "guid": "0e9db89abb5f91847a1f059f7c917878",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Ork.png"
+      }
+    },
+    {
+      "id": "env-0faf34e166b358440b5eb1edd95637a1",
+      "name": "Tree Yellow Green 4",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-0faf34e166b358440b5eb1edd95637a1.png",
+      "width": 270,
+      "height": 323,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b2c94b03293892a6c1d10086214545d0107e447dcb60d04c15b78bf1dc42cd03",
+      "source": {
+        "pack": "environment-1",
+        "guid": "0faf34e166b358440b5eb1edd95637a1",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_04.png"
+      }
+    },
+    {
+      "id": "env-117c27d2186fa914ab689691b5ec7665",
+      "name": "Fire Texture 10",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-117c27d2186fa914ab689691b5ec7665.png",
+      "width": 342,
+      "height": 293,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "71493478507034ef2142d606352e286f3bdd3695d729c38a27d5756ad5f0857a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "117c27d2186fa914ab689691b5ec7665",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_10.png"
+      }
+    },
+    {
+      "id": "env-1244086878ea0e945bd879b5c5134bab",
+      "name": "Road Forest",
+      "category": "roads",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-1244086878ea0e945bd879b5c5134bab.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e21388862a73084a390f7898945f30474d7f0881e1cb9dc5592aae6f5463d934",
+      "source": {
+        "pack": "environment-1",
+        "guid": "1244086878ea0e945bd879b5c5134bab",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_Forest.png"
+      }
+    },
+    {
+      "id": "env-12da2f9450ae93b4d83938db92b0c75e",
+      "name": "Plam Yellow Green 1",
+      "category": "trees",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-12da2f9450ae93b4d83938db92b0c75e.png",
+      "width": 301,
+      "height": 459,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d8804b6e5a6059136c1e308018cff4432429eb60c95cc1cf8f41a8a9d2662ccb",
+      "source": {
+        "pack": "environment-1",
+        "guid": "12da2f9450ae93b4d83938db92b0c75e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Plam_Yellow_Green_01.png"
+      }
+    },
+    {
+      "id": "env-15aa4583a1b888644935274234cbef04",
+      "name": "Snow Up 5",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-15aa4583a1b888644935274234cbef04.png",
+      "width": 156,
+      "height": 93,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "b8ffe463b582ff3762bb1d7edc53d8613c3f4df8f49463247eb271d8f576b9ed",
+      "source": {
+        "pack": "environment-2",
+        "guid": "15aa4583a1b888644935274234cbef04",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Up_05.png"
+      }
+    },
+    {
+      "id": "env-16374cea168f7f34faacaac9dfc9875f",
+      "name": "Tree Snow Green 2",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-16374cea168f7f34faacaac9dfc9875f.png",
+      "width": 325,
+      "height": 529,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b65cbf936dae5ef83cc1307ae85911c3a78dd161639788d00f6c0cdeeb57e96c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "16374cea168f7f34faacaac9dfc9875f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Green_02.png"
+      }
+    },
+    {
+      "id": "env-172264f016e663649bbf743f6efd0db0",
+      "name": "Birch Yellow 1",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-172264f016e663649bbf743f6efd0db0.png",
+      "width": 257,
+      "height": 660,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "6dffc3a8ee21cec9b650bb3e9bdfeeadc9b7d76f06613df8831cc74eb4d7beb2",
+      "source": {
+        "pack": "environment-1",
+        "guid": "172264f016e663649bbf743f6efd0db0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Birch_Yellow_01.png"
+      }
+    },
+    {
+      "id": "env-1af552e62d517564bb2e5dbf01328fe3",
+      "name": "Tree Fire Bare 1",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-1af552e62d517564bb2e5dbf01328fe3.png",
+      "width": 302,
+      "height": 526,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "81faacfe6f300ede4a2ca1f34f3321cdedbd2be587fd2c51752175640362262f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "1af552e62d517564bb2e5dbf01328fe3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Bare_01.png"
+      }
+    },
+    {
+      "id": "env-1b57ca2094acef9408db64c8c0603bb3",
+      "name": "Ice Snow 13",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-1b57ca2094acef9408db64c8c0603bb3.png",
+      "width": 317,
+      "height": 142,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "d75881c348b7635d8eccf4fbd9a41c550cf7a6c02e9b5f06980aee2682e701f0",
+      "source": {
+        "pack": "environment-2",
+        "guid": "1b57ca2094acef9408db64c8c0603bb3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_13.png"
+      }
+    },
+    {
+      "id": "env-1b9bde30e71ab484f8908ec7e0e4bca7",
+      "name": "Ice Snow 7",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-1b9bde30e71ab484f8908ec7e0e4bca7.png",
+      "width": 510,
+      "height": 245,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "66ca2ac8f5c01fcaf7d9bc10dfeaa96088759f4ca1eacba9d4aed019bd8d5fde",
+      "source": {
+        "pack": "environment-2",
+        "guid": "1b9bde30e71ab484f8908ec7e0e4bca7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_07.png"
+      }
+    },
+    {
+      "id": "env-1bd5d3305589f094d81280b946821ac6",
+      "name": "Road Lava",
+      "category": "roads",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-1bd5d3305589f094d81280b946821ac6.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "5978cb2feadeace9b16ca929d2f98a48714bfac7f86c1d424fb8dddf095281c9",
+      "source": {
+        "pack": "environment-2",
+        "guid": "1bd5d3305589f094d81280b946821ac6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_Lava.png"
+      }
+    },
+    {
+      "id": "env-1df52abf3baf68c479ae4f648574fa6e",
+      "name": "Bush Green 2",
+      "category": "bushes",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-1df52abf3baf68c479ae4f648574fa6e.png",
+      "width": 124,
+      "height": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d66f014cbc7fa62cf4b5e7bc5601ee85fc2389409d22e22dd2930f338a17e76d",
+      "source": {
+        "pack": "environment-1",
+        "guid": "1df52abf3baf68c479ae4f648574fa6e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Green_02.png"
+      }
+    },
+    {
+      "id": "env-1f6e62f8cea27504c9329b99501fe935",
+      "name": "Stone Fire Dark 10",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-1f6e62f8cea27504c9329b99501fe935.png",
+      "width": 317,
+      "height": 132,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "93a5a446913af3b3c1d398a97c618476e05ff5fca5efce0b5e165b6f2f321b95",
+      "source": {
+        "pack": "environment-2",
+        "guid": "1f6e62f8cea27504c9329b99501fe935",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_10.png"
+      }
+    },
+    {
+      "id": "env-20e260197e88ab642b75418c56393952",
+      "name": "Bush Ice 2",
+      "category": "bushes",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-20e260197e88ab642b75418c56393952.png",
+      "width": 110,
+      "height": 70,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "035b19c123785a66ebb726f1d549ad907f801551c6156ac1792fa51c245d413c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "20e260197e88ab642b75418c56393952",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Bush/Bush_Ice_02.png"
+      }
+    },
+    {
+      "id": "env-22d2cd90888d52b41b4ba0f99c981b52",
+      "name": "Tree Yellow Green 15",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-22d2cd90888d52b41b4ba0f99c981b52.png",
+      "width": 432,
+      "height": 505,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "c70d59ac8e784d0988abf0634a98dd0a54cc5d48df1c3af40e392da490187745",
+      "source": {
+        "pack": "environment-1",
+        "guid": "22d2cd90888d52b41b4ba0f99c981b52",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_15.png"
+      }
+    },
+    {
+      "id": "env-22f42b5b6b9980f40a06c480990a6b9a",
+      "name": "Stone Gray2 6",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-22f42b5b6b9980f40a06c480990a6b9a.png",
+      "width": 66,
+      "height": 37,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "4f9e4612e769bb0d6c2785ec8ad1579f5d82929529e3a174ed67a7f0e1df6d37",
+      "source": {
+        "pack": "environment-1",
+        "guid": "22f42b5b6b9980f40a06c480990a6b9a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_06.png"
+      }
+    },
+    {
+      "id": "env-24626c4d86a877542b28d6d2362934c4",
+      "name": "Fire Texture 11",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-24626c4d86a877542b28d6d2362934c4.png",
+      "width": 348,
+      "height": 250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "11e0ca6ed229b622ccf04a831f3c52971eb7a5c254bfc75073039ecfcef978ff",
+      "source": {
+        "pack": "environment-2",
+        "guid": "24626c4d86a877542b28d6d2362934c4",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_11.png"
+      }
+    },
+    {
+      "id": "env-25542138e69ecd242a55a2780f1bbffb",
+      "name": "Tree Fire Dead 5",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-25542138e69ecd242a55a2780f1bbffb.png",
+      "width": 135,
+      "height": 119,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2c3fb828badcd3c85b748135ade78c6e171b238f02135c24cbdc4e3abf3d57b0",
+      "source": {
+        "pack": "environment-2",
+        "guid": "25542138e69ecd242a55a2780f1bbffb",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_05.png"
+      }
+    },
+    {
+      "id": "env-25b431636d638bf4d9582c51053d32dd",
+      "name": "Tree Fire Dead 6",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-25b431636d638bf4d9582c51053d32dd.png",
+      "width": 91,
+      "height": 89,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "61da87ce19a6fcb8e51fd84256d4bd4ba424ed3a506fb4f5b891b8a0a5cf4233",
+      "source": {
+        "pack": "environment-2",
+        "guid": "25b431636d638bf4d9582c51053d32dd",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_06.png"
+      }
+    },
+    {
+      "id": "env-26bc7704ee34f6047962f010f1fc774c",
+      "name": "Field DeepForest",
+      "category": "field",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-26bc7704ee34f6047962f010f1fc774c.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "74a5e01091ba061f6bb689f1e39c3008a27f6a814742deab93e3099ab2179bfc",
+      "source": {
+        "pack": "environment-1",
+        "guid": "26bc7704ee34f6047962f010f1fc774c",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Field_DeepForest.png"
+      }
+    },
+    {
+      "id": "env-274d100f185f48f4cb5993200e9a7dfc",
+      "name": "Tree Green 7",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-274d100f185f48f4cb5993200e9a7dfc.png",
+      "width": 263,
+      "height": 331,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1269031ea650af9b6696c868e91bbb845b1997bf57665fba847a46eee776280d",
+      "source": {
+        "pack": "environment-1",
+        "guid": "274d100f185f48f4cb5993200e9a7dfc",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_07.png"
+      }
+    },
+    {
+      "id": "env-27c21b847b2c3d84093bb026d3cb120a",
+      "name": "Stone Fire Dark 6",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-27c21b847b2c3d84093bb026d3cb120a.png",
+      "width": 136,
+      "height": 90,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "18f295ffc2b502c2d88524781f155cd4e04a25d4fb243ad2b1ee5826de44838a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "27c21b847b2c3d84093bb026d3cb120a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_06.png"
+      }
+    },
+    {
+      "id": "env-28af8956a102ed34f80f067d721c3a25",
+      "name": "Stone Lava 17",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-28af8956a102ed34f80f067d721c3a25.png",
+      "width": 176,
+      "height": 438,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "09385757f7cd40c90a24ef1e6374bfdc0f7e9da4cb628a7243be1eb20d35f113",
+      "source": {
+        "pack": "environment-2",
+        "guid": "28af8956a102ed34f80f067d721c3a25",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_17.png"
+      }
+    },
+    {
+      "id": "env-293c9013848d92940b02c27eb09fdf25",
+      "name": "Stone Gray2 3",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-293c9013848d92940b02c27eb09fdf25.png",
+      "width": 133,
+      "height": 53,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d4d332891c07a6e5822bac9feffe73c13a9a801797e457fb0a789869e453ae3a",
+      "source": {
+        "pack": "environment-1",
+        "guid": "293c9013848d92940b02c27eb09fdf25",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_03.png"
+      }
+    },
+    {
+      "id": "env-2a087536ecefdb84c98e53f2515653a6",
+      "name": "Stone Fire Red 6",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-2a087536ecefdb84c98e53f2515653a6.png",
+      "width": 136,
+      "height": 90,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "69c0e23d0eb9a61bfb09055097c2406752b9e7f3769c93e90489357e27e26a0f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "2a087536ecefdb84c98e53f2515653a6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Red_06.png"
+      }
+    },
+    {
+      "id": "env-2a2095d4f3a1067419eefb35410375ed",
+      "name": "Tree Fire Bare 6",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-2a2095d4f3a1067419eefb35410375ed.png",
+      "width": 189,
+      "height": 250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1d95345ee8d726073d414267a2c50c9a4da0b60cadc44e0a6139c80999bca78d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "2a2095d4f3a1067419eefb35410375ed",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Bare_06.png"
+      }
+    },
+    {
+      "id": "env-2a427a7b6b4fac447b816918fd6e7929",
+      "name": "Road up Fire",
+      "category": "roads",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-2a427a7b6b4fac447b816918fd6e7929.png",
+      "width": 253,
+      "height": 45,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "6c69b6c1f604ffa7049d366832c633af3618646e1a381fac9d8992cdc3e3d9af",
+      "source": {
+        "pack": "environment-2",
+        "guid": "2a427a7b6b4fac447b816918fd6e7929",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_up_Fire.png"
+      }
+    },
+    {
+      "id": "env-2a48cf1b1ed9e294a90eedb043028845",
+      "name": "Stone Snow 2",
+      "category": "rocks",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-2a48cf1b1ed9e294a90eedb043028845.png",
+      "width": 64,
+      "height": 48,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "ac59f696d2a644f864ae71322b1f040f6a932420073879664aa288f66345df84",
+      "source": {
+        "pack": "environment-2",
+        "guid": "2a48cf1b1ed9e294a90eedb043028845",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Snow_02.png"
+      }
+    },
+    {
+      "id": "env-2ada25ca07af4cc4aa66f40852b22377",
+      "name": "Tree Snow Bare LightBrown 6",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-2ada25ca07af4cc4aa66f40852b22377.png",
+      "width": 189,
+      "height": 250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1f31d520c185b204596c07d993617cf4e3b8ca504878c681a3e82d1319621aad",
+      "source": {
+        "pack": "environment-2",
+        "guid": "2ada25ca07af4cc4aa66f40852b22377",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_06.png"
+      }
+    },
+    {
+      "id": "env-2c7060b621317b742af20af80fe0399a",
+      "name": "Plam Yellow Green 2",
+      "category": "trees",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-2c7060b621317b742af20af80fe0399a.png",
+      "width": 288,
+      "height": 410,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "f59f56350fcdbed8783b0f609ffd83fb56b77d419918fe9c9eb4aebcc30644b6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "2c7060b621317b742af20af80fe0399a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Plam_Yellow_Green_02.png"
+      }
+    },
+    {
+      "id": "env-2c8be3c3ad14e7c42af41c5ed3db91f3",
+      "name": "Stone Gray1 1",
+      "category": "rocks",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-2c8be3c3ad14e7c42af41c5ed3db91f3.png",
+      "width": 137,
+      "height": 103,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2d96ebf4c7b5e17ece00d951a3c452da6419a599dbf5816a5e5d937261deb164",
+      "source": {
+        "pack": "environment-1",
+        "guid": "2c8be3c3ad14e7c42af41c5ed3db91f3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_01.png"
+      }
+    },
+    {
+      "id": "env-2cc2b12fc7e21754881091121d700363",
+      "name": "Small Tree Yellow Green 2",
+      "category": "trees",
+      "biomes": [
+        "deep-forest",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-2cc2b12fc7e21754881091121d700363.png",
+      "width": 246,
+      "height": 240,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "0530d9309ee2ae8f752e86fd9ad8f6a18d37e0974365b3da83c7f0a0dc106961",
+      "source": {
+        "pack": "environment-1",
+        "guid": "2cc2b12fc7e21754881091121d700363",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Yellow_Green_02.png"
+      }
+    },
+    {
+      "id": "env-2db258c3cf2f7c247852da416ed29ac2",
+      "name": "Tree Snow Bare LightBrown 2",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-2db258c3cf2f7c247852da416ed29ac2.png",
+      "width": 346,
+      "height": 612,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "32cebc5f318c3aae7ee2db19baa86861018cef0ee67fbff91aa92a524363475d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "2db258c3cf2f7c247852da416ed29ac2",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_02.png"
+      }
+    },
+    {
+      "id": "env-2e76b17d58bc3e64b80134ab16c2d831",
+      "name": "Stone Brown 5",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-2e76b17d58bc3e64b80134ab16c2d831.png",
+      "width": 170,
+      "height": 87,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b702717360fdfc961cd5f92bc4856df9b55d62869db6a6449c92276fdfc77eb4",
+      "source": {
+        "pack": "environment-1",
+        "guid": "2e76b17d58bc3e64b80134ab16c2d831",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_05.png"
+      }
+    },
+    {
+      "id": "env-31f6446c4ee0f6d4b8413a6c5a87acc3",
+      "name": "Ice Flower 2",
+      "category": "grass",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-31f6446c4ee0f6d4b8413a6c5a87acc3.png",
+      "width": 65,
+      "height": 95,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e9d8d60d0748f147c80b89aa0cf8d7214dada625e1105c78c3a7e548457264fb",
+      "source": {
+        "pack": "environment-2",
+        "guid": "31f6446c4ee0f6d4b8413a6c5a87acc3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Flower_02.png"
+      }
+    },
+    {
+      "id": "env-32433a601e577ff48b87bcaa6f4b8238",
+      "name": "Road up Autumn",
+      "category": "roads",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-32433a601e577ff48b87bcaa6f4b8238.png",
+      "width": 253,
+      "height": 34,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "908c9c766f7c8f77b0ea35f1fa2458d736cd51d3c120ddf57b313f41e534f859",
+      "source": {
+        "pack": "environment-1",
+        "guid": "32433a601e577ff48b87bcaa6f4b8238",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_up_Autumn.png"
+      }
+    },
+    {
+      "id": "env-33862241f71e4c44aa6221d6bb2a6af9",
+      "name": "Snow Up 1",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-33862241f71e4c44aa6221d6bb2a6af9.png",
+      "width": 91,
+      "height": 51,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4cf3720f003e38d3345e57960335903c78a9fc041eaa452d3bbe7ddbb94770a6",
+      "source": {
+        "pack": "environment-2",
+        "guid": "33862241f71e4c44aa6221d6bb2a6af9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Up_01.png"
+      }
+    },
+    {
+      "id": "env-345bbbf21399bf74a9245fe65543a4ae",
+      "name": "DeepForest Flower 1",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-345bbbf21399bf74a9245fe65543a4ae.png",
+      "width": 27,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "0acc0df2754f6ea0f831206a0553b7bd7abea2a580217371b48bc314e2277cc3",
+      "source": {
+        "pack": "environment-1",
+        "guid": "345bbbf21399bf74a9245fe65543a4ae",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/DeepForest_Flower_01.png"
+      }
+    },
+    {
+      "id": "env-348202185b50d8340b0051b1f960a85f",
+      "name": "Lava Solid 3",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-348202185b50d8340b0051b1f960a85f.png",
+      "width": 221,
+      "height": 47,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "7c7ffbc646638385e2e517071e2ea5eeb6a74c9129992f61aa616d398e389610",
+      "source": {
+        "pack": "environment-2",
+        "guid": "348202185b50d8340b0051b1f960a85f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_Solid_03.png"
+      }
+    },
+    {
+      "id": "env-374b6fa475c1c1e4cbe21e4b3da5290e",
+      "name": "Lava Solid 4",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-374b6fa475c1c1e4cbe21e4b3da5290e.png",
+      "width": 170,
+      "height": 55,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "7fe15847a999680aae31f58f9223fb2219507b2e862143e332ae82aa0be75b1c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "374b6fa475c1c1e4cbe21e4b3da5290e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_Solid_04.png"
+      }
+    },
+    {
+      "id": "env-37682020c78b6824c9e9397a44c82bb0",
+      "name": "Stone Lava 14",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-37682020c78b6824c9e9397a44c82bb0.png",
+      "width": 451,
+      "height": 147,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "6b56ca904bbdd565984aafdb723fb4044b39aeb1ca932580d37c61dce5093ec7",
+      "source": {
+        "pack": "environment-2",
+        "guid": "37682020c78b6824c9e9397a44c82bb0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_14.png"
+      }
+    },
+    {
+      "id": "env-37a5970a33da508469c5ce0b6b641d5f",
+      "name": "Road up Desert",
+      "category": "roads",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-37a5970a33da508469c5ce0b6b641d5f.png",
+      "width": 253,
+      "height": 43,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "96b9005d57ed6c5c274904a539db0e69c317f9e38d6282793fe0de54c5b840ec",
+      "source": {
+        "pack": "environment-1",
+        "guid": "37a5970a33da508469c5ce0b6b641d5f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_up_Desert.png"
+      }
+    },
+    {
+      "id": "env-38bf39936fa253f45adf0129b7b7e640",
+      "name": "Fire Texture 5",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-38bf39936fa253f45adf0129b7b7e640.png",
+      "width": 433,
+      "height": 221,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4e9e67c5f937930ac82b0fb6e0606a8a1a54964b5d219c70998cb44e838e11b5",
+      "source": {
+        "pack": "environment-2",
+        "guid": "38bf39936fa253f45adf0129b7b7e640",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_05.png"
+      }
+    },
+    {
+      "id": "env-3a6638cebc1d1634bb21605b4c726f16",
+      "name": "Dead Tree Brown 2",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-3a6638cebc1d1634bb21605b4c726f16.png",
+      "width": 150,
+      "height": 151,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "bc876758608e7e9a498f5fe87c154c799ceead971d54ca77b9878ab7e067da81",
+      "source": {
+        "pack": "environment-1",
+        "guid": "3a6638cebc1d1634bb21605b4c726f16",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Dead_Tree_Brown_02.png"
+      }
+    },
+    {
+      "id": "env-3afac796f34b6a640a47928bd74a3f65",
+      "name": "Tree Snow Bare Brown 4",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-3afac796f34b6a640a47928bd74a3f65.png",
+      "width": 223,
+      "height": 371,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "af77644bb960c9763c5378747202f12e2ec76f2303054888f927fe1f2f0b2495",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3afac796f34b6a640a47928bd74a3f65",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_Brown_04.png"
+      }
+    },
+    {
+      "id": "env-3b9e681ebf5e456408ce7f352ec94562",
+      "name": "Lava Solid 1",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-3b9e681ebf5e456408ce7f352ec94562.png",
+      "width": 215,
+      "height": 55,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "1120d2719157be484be62db4a39441d7ba6ddc69748588e4fe0ab4db8e504578",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3b9e681ebf5e456408ce7f352ec94562",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_Solid_01.png"
+      }
+    },
+    {
+      "id": "env-3bfffa93008c46345966a42a702e20c0",
+      "name": "Tree Snow Bare LightBrown 7",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-3bfffa93008c46345966a42a702e20c0.png",
+      "width": 356,
+      "height": 482,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b51a7e1c073968254a7368ca2d954cd0714bb623f9762cf38d61ddc8aea4693d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3bfffa93008c46345966a42a702e20c0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_07.png"
+      }
+    },
+    {
+      "id": "env-3d30b0fb6df04e340b912af3a17b751e",
+      "name": "Stone Fire Dark 3",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-3d30b0fb6df04e340b912af3a17b751e.png",
+      "width": 318,
+      "height": 266,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "334d26bc5e19d58dcf1ee398c0359211aaf6dd16ece560e35217afdde03241c0",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3d30b0fb6df04e340b912af3a17b751e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_03.png"
+      }
+    },
+    {
+      "id": "env-3d693d727a4ecbd4e85448fe60cc630c",
+      "name": "Autumn Flower 2",
+      "category": "grass",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-3d693d727a4ecbd4e85448fe60cc630c.png",
+      "width": 20,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "1001ec9b17b6b1290d5bef2bfda33d75ef4535a2470d77ae1cf2951372fafd24",
+      "source": {
+        "pack": "environment-1",
+        "guid": "3d693d727a4ecbd4e85448fe60cc630c",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Autumn_Flower_02.png"
+      }
+    },
+    {
+      "id": "env-3ecffd363d6aa6d44b23cc435069c07e",
+      "name": "Stone Lava 7",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-3ecffd363d6aa6d44b23cc435069c07e.png",
+      "width": 297,
+      "height": 142,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "39c67e057ee0e77e007013de541ee73aa09da9d1e4e72f137f6890bf315fcf89",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3ecffd363d6aa6d44b23cc435069c07e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_07.png"
+      }
+    },
+    {
+      "id": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
+      "name": "Field Fire",
+      "category": "field",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-3f043afdcd5a1594cb2a4cbb9f982bec.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "54c83d72b6d84e7f95113e5ab4a076a8fd3e1365cac66ff45ecebdeec23d5fce",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3f043afdcd5a1594cb2a4cbb9f982bec",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Field_Fire.png"
+      }
+    },
+    {
+      "id": "env-3fd158c0033f53443bbc9a6d994d6f5e",
+      "name": "Tree Snow Bare LightBrown 4",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-3fd158c0033f53443bbc9a6d994d6f5e.png",
+      "width": 223,
+      "height": 371,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "f591ff4a61afd8c957dc9e729e67ec74774a71978ae7a6d4990f116c116d5df3",
+      "source": {
+        "pack": "environment-2",
+        "guid": "3fd158c0033f53443bbc9a6d994d6f5e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_04.png"
+      }
+    },
+    {
+      "id": "env-40c6788869b911f46a7b2b4e401577dc",
+      "name": "Tree Fire Bare 3",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-40c6788869b911f46a7b2b4e401577dc.png",
+      "width": 251,
+      "height": 363,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "57ce6c53b47df1aa04ed79ae311d73fae0ec2cde7d1ceb8ef692880e63a192ba",
+      "source": {
+        "pack": "environment-2",
+        "guid": "40c6788869b911f46a7b2b4e401577dc",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Bare_03.png"
+      }
+    },
+    {
+      "id": "env-40df0aef196c6474ba5dbb94cdc63cd1",
+      "name": "Road up Forest",
+      "category": "roads",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-40df0aef196c6474ba5dbb94cdc63cd1.png",
+      "width": 253,
+      "height": 33,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a4809d3bb7366af63d779602d06eafda5fcd00b1e2cda7dbc8b311f290090707",
+      "source": {
+        "pack": "environment-1",
+        "guid": "40df0aef196c6474ba5dbb94cdc63cd1",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_up_Forest.png"
+      }
+    },
+    {
+      "id": "env-414b54c7dff446d449a0877031dfae3d",
+      "name": "Mushroom Wihte 1",
+      "category": "grass",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-414b54c7dff446d449a0877031dfae3d.png",
+      "width": 43,
+      "height": 59,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "846ba93b4f1cfc48c04f07112b0d7f8fc0bf6b3741a3d5bd90144960ab6017b4",
+      "source": {
+        "pack": "environment-1",
+        "guid": "414b54c7dff446d449a0877031dfae3d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Wihte_01.png"
+      }
+    },
+    {
+      "id": "env-41c1f33859300444ba9a4dbc7276bb03",
+      "name": "Tree Snow Green 4",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-41c1f33859300444ba9a4dbc7276bb03.png",
+      "width": 210,
+      "height": 411,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "41ab3bf2d3841705da5a10b6afc4c50e9dffd0543715a85d1cff3c9d468238a6",
+      "source": {
+        "pack": "environment-2",
+        "guid": "41c1f33859300444ba9a4dbc7276bb03",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Green_04.png"
+      }
+    },
+    {
+      "id": "env-42227bf2bc0b1b14badfaf4252bf8eac",
+      "name": "Stone Gray2 8",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-42227bf2bc0b1b14badfaf4252bf8eac.png",
+      "width": 212,
+      "height": 210,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "de11dd868bbbb9204cca726ade1d7e9207988006b6f41b4b8d18aef2db440ad3",
+      "source": {
+        "pack": "environment-1",
+        "guid": "42227bf2bc0b1b14badfaf4252bf8eac",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_08.png"
+      }
+    },
+    {
+      "id": "env-43f029703fd39d441b97efdb3b5aecf9",
+      "name": "Cactus Green2 1",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-43f029703fd39d441b97efdb3b5aecf9.png",
+      "width": 115,
+      "height": 149,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "ec0519aee32ae9bb96852e24738f8747ac774b2382ab69c6d62d94ea67dc6f60",
+      "source": {
+        "pack": "environment-1",
+        "guid": "43f029703fd39d441b97efdb3b5aecf9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Cactus/Cactus_Green2_01.png"
+      }
+    },
+    {
+      "id": "env-43ffaaa6ddb21e740838a8bfce941396",
+      "name": "Small Tree Orange 3",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-43ffaaa6ddb21e740838a8bfce941396.png",
+      "width": 203,
+      "height": 232,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "44fe8abad7e9344ee8f183e928344dd967def25abb660b2948638a94ddb80d86",
+      "source": {
+        "pack": "environment-1",
+        "guid": "43ffaaa6ddb21e740838a8bfce941396",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Orange_03.png"
+      }
+    },
+    {
+      "id": "env-44b33cb79ca144c40b3f120b143cf286",
+      "name": "Lava Solid 2",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-44b33cb79ca144c40b3f120b143cf286.png",
+      "width": 149,
+      "height": 31,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "0be1015dde863003be5a649ab0c676cfd4389645a1d3cb06f96e9c1937d5f1b2",
+      "source": {
+        "pack": "environment-2",
+        "guid": "44b33cb79ca144c40b3f120b143cf286",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_Solid_02.png"
+      }
+    },
+    {
+      "id": "env-45c9fdf5f49a64b4498d5ab1c4d008f0",
+      "name": "Stone Brown 1",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-45c9fdf5f49a64b4498d5ab1c4d008f0.png",
+      "width": 138,
+      "height": 142,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "370bded772de505207b5da55c32fb0f597067514200142bf32cb58033a8f6b00",
+      "source": {
+        "pack": "environment-1",
+        "guid": "45c9fdf5f49a64b4498d5ab1c4d008f0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_01.png"
+      }
+    },
+    {
+      "id": "env-468c6b3f22c9ce147ba12109f4e390de",
+      "name": "Road DeepForest",
+      "category": "roads",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-468c6b3f22c9ce147ba12109f4e390de.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4b2452a3534a869a9f5a1e390a05cc9b1362ccb66af9104880630f73f845c2ac",
+      "source": {
+        "pack": "environment-1",
+        "guid": "468c6b3f22c9ce147ba12109f4e390de",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_DeepForest.png"
+      }
+    },
+    {
+      "id": "env-46b9af7fab6387f4abc8bae86df4531e",
+      "name": "Tree Snow Green 6",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-46b9af7fab6387f4abc8bae86df4531e.png",
+      "width": 163,
+      "height": 274,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a5800012fe3797c159d8e299d3db700e0dcf6446b198f0a0c87593066f267dd1",
+      "source": {
+        "pack": "environment-2",
+        "guid": "46b9af7fab6387f4abc8bae86df4531e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Green_06.png"
+      }
+    },
+    {
+      "id": "env-477847caba3b8d04bb01e1b3edac8e80",
+      "name": "Stone Brown 3",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-477847caba3b8d04bb01e1b3edac8e80.png",
+      "width": 72,
+      "height": 46,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "609bfbbc64b135b41e01d4e2f4558b318f4215d47e7b1ce4ae00ebd322050707",
+      "source": {
+        "pack": "environment-1",
+        "guid": "477847caba3b8d04bb01e1b3edac8e80",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_03.png"
+      }
+    },
+    {
+      "id": "env-484902a0e6589c94fb80317e0c26d55d",
+      "name": "Stone Lava 9",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-484902a0e6589c94fb80317e0c26d55d.png",
+      "width": 715,
+      "height": 227,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d33f7c8bd0b1cd9932d419258a0bb8a8897db6844cc849a4ef2cef6bb45d5cb7",
+      "source": {
+        "pack": "environment-2",
+        "guid": "484902a0e6589c94fb80317e0c26d55d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_09.png"
+      }
+    },
+    {
+      "id": "env-48a68e0cd85228b4ead7216331d45616",
+      "name": "Tree Yellow Green 13",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-48a68e0cd85228b4ead7216331d45616.png",
+      "width": 261,
+      "height": 569,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "9ae0f4c7df4519e8910e63aca9d1e6c40cb7b18f27c03fc8a66c933f2a9d0fdb",
+      "source": {
+        "pack": "environment-1",
+        "guid": "48a68e0cd85228b4ead7216331d45616",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_13.png"
+      }
+    },
+    {
+      "id": "env-490046566f680944e9002990ea86dc40",
+      "name": "Tree Bare 1",
+      "category": "trees",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-490046566f680944e9002990ea86dc40.png",
+      "width": 348,
+      "height": 406,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "aa14fc28df9816aaa5117039fb3f738a7d35e9764601cbb15f85a96eab5720a7",
+      "source": {
+        "pack": "environment-1",
+        "guid": "490046566f680944e9002990ea86dc40",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Bare_01.png"
+      }
+    },
+    {
+      "id": "env-4a2a70cb3242943419b2f1e5a4d5b590",
+      "name": "Small Tree Snow LightBrown 2",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-4a2a70cb3242943419b2f1e5a4d5b590.png",
+      "width": 175,
+      "height": 153,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a467d37be6323ea328b06fa8dbf4d4bc51f24eb4dc9d26b724c18d281a3c6e07",
+      "source": {
+        "pack": "environment-2",
+        "guid": "4a2a70cb3242943419b2f1e5a4d5b590",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Small_Tree_Snow_LightBrown_02.png"
+      }
+    },
+    {
+      "id": "env-4c51c071c71b0c04b8c929ce7d70fbda",
+      "name": "Road Snow",
+      "category": "roads",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-4c51c071c71b0c04b8c929ce7d70fbda.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "caed191c928ac3f79dedca7f6433eae33a63578ce0a8c9e840a2601a55f93bc7",
+      "source": {
+        "pack": "environment-2",
+        "guid": "4c51c071c71b0c04b8c929ce7d70fbda",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_Snow.png"
+      }
+    },
+    {
+      "id": "env-4d223584fe204164f8f9f5e9007f9a7b",
+      "name": "Tree Green 14",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-4d223584fe204164f8f9f5e9007f9a7b.png",
+      "width": 291,
+      "height": 531,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "0825b636696c055304a37c3548f975a4e3f35d5c2bbfbf10adc921eb95555871",
+      "source": {
+        "pack": "environment-1",
+        "guid": "4d223584fe204164f8f9f5e9007f9a7b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_14.png"
+      }
+    },
+    {
+      "id": "env-4ddf917d8b990bd4a9c0152ce0e2af12",
+      "name": "Snow Hole 3",
+      "category": "details",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-4ddf917d8b990bd4a9c0152ce0e2af12.png",
+      "width": 308,
+      "height": 139,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a5268ef1072170b360d534031cf7ea48b41489d6b1fb4d43cddbbb4f906e02d6",
+      "source": {
+        "pack": "environment-2",
+        "guid": "4ddf917d8b990bd4a9c0152ce0e2af12",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Hole_03.png"
+      }
+    },
+    {
+      "id": "env-4df35e1db853a9a47a719ea690d4df84",
+      "name": "Stone Lava 10",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-4df35e1db853a9a47a719ea690d4df84.png",
+      "width": 663,
+      "height": 286,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "f88d8a54c6013649a3182ef3b0c34436eee6357c4049a617095de7470dff7060",
+      "source": {
+        "pack": "environment-2",
+        "guid": "4df35e1db853a9a47a719ea690d4df84",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_10.png"
+      }
+    },
+    {
+      "id": "env-4dffb94adf0b56c449af327aa75797a3",
+      "name": "Fire Texture 2",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-4dffb94adf0b56c449af327aa75797a3.png",
+      "width": 342,
+      "height": 242,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "ac0af9d6b029e74f45b959635f3c1efd26b2ffb5e4161e4d45eb4db10cf4044c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "4dffb94adf0b56c449af327aa75797a3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_02.png"
+      }
+    },
+    {
+      "id": "env-4efb9284e84eb674f9007f57f85d8123",
+      "name": "Tree Fire Dead 4",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-4efb9284e84eb674f9007f57f85d8123.png",
+      "width": 79,
+      "height": 74,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8a8945269906ed33dcdc3056b43cfd99ba7806feb2d8b17ee8ca521af1c00d0b",
+      "source": {
+        "pack": "environment-2",
+        "guid": "4efb9284e84eb674f9007f57f85d8123",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_04.png"
+      }
+    },
+    {
+      "id": "env-4f0d6d0ca3aa8d244b6891829818daed",
+      "name": "Road up DeepForest",
+      "category": "roads",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-4f0d6d0ca3aa8d244b6891829818daed.png",
+      "width": 253,
+      "height": 33,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "7a7039d984e6b7c25ffe2beab2cbb8c6309d5eb0a5c4074236fa66d1fd2974a9",
+      "source": {
+        "pack": "environment-1",
+        "guid": "4f0d6d0ca3aa8d244b6891829818daed",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_up_DeepForest.png"
+      }
+    },
+    {
+      "id": "env-52064f1b24daad04da48cea4cdbac081",
+      "name": "Ice Snow 9",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-52064f1b24daad04da48cea4cdbac081.png",
+      "width": 203,
+      "height": 349,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e6ea15598b55d3d541c44298195b8782b08d2d2ac77c048bcd757acb8e8e6004",
+      "source": {
+        "pack": "environment-2",
+        "guid": "52064f1b24daad04da48cea4cdbac081",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_09.png"
+      }
+    },
+    {
+      "id": "env-5219dc974e4ae1149a97694f017e9236",
+      "name": "Mushroom Pink 2",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-5219dc974e4ae1149a97694f017e9236.png",
+      "width": 66,
+      "height": 70,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "6e9476f1a93b4819b62a2dcd93571168b9e1d0a792e4ca6fa5d7cffbecc349ff",
+      "source": {
+        "pack": "environment-1",
+        "guid": "5219dc974e4ae1149a97694f017e9236",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Pink_02.png"
+      }
+    },
+    {
+      "id": "env-52a5dc67b8c28834c94f0d5fc8a83a93",
+      "name": "Stone Lava 4",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-52a5dc67b8c28834c94f0d5fc8a83a93.png",
+      "width": 124,
+      "height": 70,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "eb93f51b42880ba2029f090dc863e7ba7db62252c1ae87ccbf3156441db08128",
+      "source": {
+        "pack": "environment-2",
+        "guid": "52a5dc67b8c28834c94f0d5fc8a83a93",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_04.png"
+      }
+    },
+    {
+      "id": "env-536cf72b942d0cb4d9a004687f536002",
+      "name": "Tree Yellow Green 8",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-536cf72b942d0cb4d9a004687f536002.png",
+      "width": 284,
+      "height": 418,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d8aba43fe2c2331b8b606e4e7c581f2fe88f2cded359690d98c3774a3f2573cd",
+      "source": {
+        "pack": "environment-1",
+        "guid": "536cf72b942d0cb4d9a004687f536002",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_08.png"
+      }
+    },
+    {
+      "id": "env-53ec88f52bc969f4f9e77b078e5aabdd",
+      "name": "Field Forest",
+      "category": "field",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-53ec88f52bc969f4f9e77b078e5aabdd.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "ea258bfd83cd95454ab1257e297b799a647c8dc092a48c41a12d02f4c48d7cc5",
+      "source": {
+        "pack": "environment-1",
+        "guid": "53ec88f52bc969f4f9e77b078e5aabdd",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Field_Forest.png"
+      }
+    },
+    {
+      "id": "env-54e033cb831746b4aa3a30831ca24fd7",
+      "name": "Stone Fire Dark 1",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-54e033cb831746b4aa3a30831ca24fd7.png",
+      "width": 198,
+      "height": 116,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "01700ca56b4ceabb5dac659024dffc2ac078a5f804e7c561ac3c0b19aba8f44e",
+      "source": {
+        "pack": "environment-2",
+        "guid": "54e033cb831746b4aa3a30831ca24fd7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_01.png"
+      }
+    },
+    {
+      "id": "env-551ed639f73b99043bd413629d8c115c",
+      "name": "Tree Yellow Green 7",
+      "category": "trees",
+      "biomes": [
+        "deep-forest",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-551ed639f73b99043bd413629d8c115c.png",
+      "width": 263,
+      "height": 331,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "5eb6dda5067a9aa17ccd4c468de433380949054647ff533f0c085614559a0b31",
+      "source": {
+        "pack": "environment-1",
+        "guid": "551ed639f73b99043bd413629d8c115c",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_07.png"
+      }
+    },
+    {
+      "id": "env-555991fdbf802c24ca9da61ba35c2578",
+      "name": "Stone Gray1 6",
+      "category": "rocks",
+      "biomes": [
+        "desert",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-555991fdbf802c24ca9da61ba35c2578.png",
+      "width": 66,
+      "height": 37,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "066e619d63d849463a797e1f544c0316b545570177cb02987a1da7ab01d567e4",
+      "source": {
+        "pack": "environment-1",
+        "guid": "555991fdbf802c24ca9da61ba35c2578",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_06.png"
+      }
+    },
+    {
+      "id": "env-585761f1f31292e47a3cc2721c484166",
+      "name": "Fire Texture 7",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-585761f1f31292e47a3cc2721c484166.png",
+      "width": 834,
+      "height": 365,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "1eee3c93f1781d030cca51fac3c98bb470004577283eb160be5f560a30953145",
+      "source": {
+        "pack": "environment-2",
+        "guid": "585761f1f31292e47a3cc2721c484166",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_07.png"
+      }
+    },
+    {
+      "id": "env-58bdcd7446b4d484fbfba94cb6e4a7d5",
+      "name": "Stone Gray1 11",
+      "category": "rocks",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-58bdcd7446b4d484fbfba94cb6e4a7d5.png",
+      "width": 126,
+      "height": 223,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "baa70fc9403a7e49f40cd2b95680e29f29702701f22421194b91ef43e6b29bc6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "58bdcd7446b4d484fbfba94cb6e4a7d5",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_11.png"
+      }
+    },
+    {
+      "id": "env-5d630d827e5534249acf9e82e45f2d14",
+      "name": "Stone Snow 5",
+      "category": "rocks",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-5d630d827e5534249acf9e82e45f2d14.png",
+      "width": 333,
+      "height": 210,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7cd4e6879f589059f2a847c5baff742728587c92cfa5d6a9890cf264226fcf29",
+      "source": {
+        "pack": "environment-2",
+        "guid": "5d630d827e5534249acf9e82e45f2d14",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Snow_05.png"
+      }
+    },
+    {
+      "id": "env-5d82e41b415f78b4bb2048fce135792e",
+      "name": "Tree Green 10",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-5d82e41b415f78b4bb2048fce135792e.png",
+      "width": 271,
+      "height": 443,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "21510460b7875ab19475ff0b63ad39a444a66246046b4c27d4be92aeb931dac6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "5d82e41b415f78b4bb2048fce135792e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_10.png"
+      }
+    },
+    {
+      "id": "env-5da416b7fee08084ca6d9ae64b48d7b6",
+      "name": "Stone Gray1 4",
+      "category": "rocks",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-5da416b7fee08084ca6d9ae64b48d7b6.png",
+      "width": 121,
+      "height": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1b6928f0c9b79d338a13ba16805e14e3201a31636871d60bd787e61667f68eb7",
+      "source": {
+        "pack": "environment-1",
+        "guid": "5da416b7fee08084ca6d9ae64b48d7b6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_04.png"
+      }
+    },
+    {
+      "id": "env-5e1143150c9cc504781caab0bad8300a",
+      "name": "Stone Gray1 12",
+      "category": "rocks",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-5e1143150c9cc504781caab0bad8300a.png",
+      "width": 197,
+      "height": 224,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1c5bfd6cffcb5073aaff44cf0497e380f8f471711e3842e1b40ef852016980be",
+      "source": {
+        "pack": "environment-1",
+        "guid": "5e1143150c9cc504781caab0bad8300a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_12.png"
+      }
+    },
+    {
+      "id": "env-5fcf67fce5027894986c08f45f48b3a9",
+      "name": "Tree Fire Bare 2",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-5fcf67fce5027894986c08f45f48b3a9.png",
+      "width": 346,
+      "height": 612,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1e4624c6472413679502febae90d7db4ac134e9fd89094177c9fd50cc4827e52",
+      "source": {
+        "pack": "environment-2",
+        "guid": "5fcf67fce5027894986c08f45f48b3a9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Bare_02.png"
+      }
+    },
+    {
+      "id": "env-60ef7abb153d7e2418fd44d7fdde3d19",
+      "name": "Stone Gray1 2",
+      "category": "rocks",
+      "biomes": [
+        "desert",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-60ef7abb153d7e2418fd44d7fdde3d19.png",
+      "width": 162,
+      "height": 154,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "c143fb9b852f1facafd46f1dcafd924eced1e4416dbd33d1d8051ebdfb3f6a18",
+      "source": {
+        "pack": "environment-1",
+        "guid": "60ef7abb153d7e2418fd44d7fdde3d19",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_02.png"
+      }
+    },
+    {
+      "id": "env-60fc033c18f73014dbd93a170a817a89",
+      "name": "Tree Snow Teal 1",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-60fc033c18f73014dbd93a170a817a89.png",
+      "width": 315,
+      "height": 641,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "633312d21bd6cfa029e7aa4f883120b6884d3a517c2bdb8931144eb321a8cf0b",
+      "source": {
+        "pack": "environment-2",
+        "guid": "60fc033c18f73014dbd93a170a817a89",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Teal_01.png"
+      }
+    },
+    {
+      "id": "env-6219c685c18b95442b6fd823406f05a4",
+      "name": "Ork",
+      "category": "details",
+      "biomes": [
+        "ice",
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-6219c685c18b95442b6fd823406f05a4.png",
+      "width": 78,
+      "height": 86,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f1ffe1a1670162472dea76a2fac4c84dff555442051ecd2c035b71e3ff0ddd88",
+      "source": {
+        "pack": "environment-2",
+        "guid": "6219c685c18b95442b6fd823406f05a4",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Etc/Ork.png"
+      }
+    },
+    {
+      "id": "env-624aeac9e6e03d442a4e1e4f6baed9ca",
+      "name": "Ice Flower 1",
+      "category": "grass",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-624aeac9e6e03d442a4e1e4f6baed9ca.png",
+      "width": 70,
+      "height": 48,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4ffaf9042ad540342efb9057502d83450ce957c9c9c819d7534eab0493f8dabf",
+      "source": {
+        "pack": "environment-2",
+        "guid": "624aeac9e6e03d442a4e1e4f6baed9ca",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Flower_01.png"
+      }
+    },
+    {
+      "id": "env-641b2f2aab9d37746958b0504b280266",
+      "name": "Tree Fire Dead 2",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-641b2f2aab9d37746958b0504b280266.png",
+      "width": 54,
+      "height": 126,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "6882fd2747e6b8675c7266bcdab53a62099265f748bb93957142c17f25e27f0f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "641b2f2aab9d37746958b0504b280266",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_02.png"
+      }
+    },
+    {
+      "id": "env-6470465bc2c133c43b1fa158c5b943df",
+      "name": "Ice Snow 12",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-6470465bc2c133c43b1fa158c5b943df.png",
+      "width": 162,
+      "height": 227,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "47010a0c54723d73f628a20cb2471f0816a7b515c2c534cf8dd67393ffb9065f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "6470465bc2c133c43b1fa158c5b943df",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_12.png"
+      }
+    },
+    {
+      "id": "env-665117c778eae544e8a689aeca792c7a",
+      "name": "Fire Texture 8",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-665117c778eae544e8a689aeca792c7a.png",
+      "width": 585,
+      "height": 285,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f9126c1b2fccda575609aaf063fb55c4fffce018644c7515a5e3ca875b1e9bfa",
+      "source": {
+        "pack": "environment-2",
+        "guid": "665117c778eae544e8a689aeca792c7a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_08.png"
+      }
+    },
+    {
+      "id": "env-666eb33ab2b31a34aac8fc727f279189",
+      "name": "Stone Fire Red 5",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-666eb33ab2b31a34aac8fc727f279189.png",
+      "width": 149,
+      "height": 213,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b24180889610cc4d3bf2632e0e249a17aa3ad3bdd94b058de07d1905bc7c69d9",
+      "source": {
+        "pack": "environment-2",
+        "guid": "666eb33ab2b31a34aac8fc727f279189",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Red_05.png"
+      }
+    },
+    {
+      "id": "env-6671e456a3174b548ada64c68dd28cd3",
+      "name": "Road Fire",
+      "category": "roads",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-6671e456a3174b548ada64c68dd28cd3.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "278cfeb536bbfcc2f284ac0477f69076cb816e77a948c5f6faebdacb1ce61be9",
+      "source": {
+        "pack": "environment-2",
+        "guid": "6671e456a3174b548ada64c68dd28cd3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_Fire.png"
+      }
+    },
+    {
+      "id": "env-6930a84ff76c0174ea4924a5d6cd4ec6",
+      "name": "Tree Snow Bare LightBrown 1",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-6930a84ff76c0174ea4924a5d6cd4ec6.png",
+      "width": 302,
+      "height": 526,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "ed9da6f6c44d774d06d09266aeeec27f0adff6740072a7ca9334c826a168f96c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "6930a84ff76c0174ea4924a5d6cd4ec6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_01.png"
+      }
+    },
+    {
+      "id": "env-69724078869c7f349896ceebcb2a38b9",
+      "name": "Stone Lava 16",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-69724078869c7f349896ceebcb2a38b9.png",
+      "width": 394,
+      "height": 382,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "966906c17f56ec72bd89c485e6ba68d1cadbef0ffc7a6bf58747c9918b8283b4",
+      "source": {
+        "pack": "environment-2",
+        "guid": "69724078869c7f349896ceebcb2a38b9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_16.png"
+      }
+    },
+    {
+      "id": "env-6a12304d67afe6b4aa9e643804925d87",
+      "name": "Lava 1",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-6a12304d67afe6b4aa9e643804925d87.png",
+      "width": 593,
+      "height": 212,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e3ffb5b0eb76700f202e16df2e75a4af906cd9c619e373679fb20e9fb070ae9b",
+      "source": {
+        "pack": "environment-2",
+        "guid": "6a12304d67afe6b4aa9e643804925d87",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_01.png"
+      }
+    },
+    {
+      "id": "env-6a9375ee45ff7c44c99f94f10b0176a2",
+      "name": "Stone Gray2 1",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-6a9375ee45ff7c44c99f94f10b0176a2.png",
+      "width": 137,
+      "height": 103,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3dc78f5b93a48ae0b504f7235b00faf0e23525d469d4c5c176a9f5b2403308ab",
+      "source": {
+        "pack": "environment-1",
+        "guid": "6a9375ee45ff7c44c99f94f10b0176a2",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_01.png"
+      }
+    },
+    {
+      "id": "env-6b8d11e530739664eb4129b9044326ee",
+      "name": "Mushroom Yellow 2",
+      "category": "grass",
+      "biomes": [
+        "deep-forest",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-6b8d11e530739664eb4129b9044326ee.png",
+      "width": 66,
+      "height": 70,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "be42d77411dccaeb008e7360cd3c1ad37431e4e2c8aeec0b47b3b767029c4a7f",
+      "source": {
+        "pack": "environment-1",
+        "guid": "6b8d11e530739664eb4129b9044326ee",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Yellow_02.png"
+      }
+    },
+    {
+      "id": "env-6f34043099cd39043968146b96a4a5c7",
+      "name": "Tree Green 9",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-6f34043099cd39043968146b96a4a5c7.png",
+      "width": 287,
+      "height": 433,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "c8c959410c02c3216de46e7b4d239100161e43b20362e085189cd5e2c3bb19af",
+      "source": {
+        "pack": "environment-1",
+        "guid": "6f34043099cd39043968146b96a4a5c7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_09.png"
+      }
+    },
+    {
+      "id": "env-71a6ca1b66908f042986f10564e6a32d",
+      "name": "Stone Brown 6",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-71a6ca1b66908f042986f10564e6a32d.png",
+      "width": 64,
+      "height": 32,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7620ad546f1dc4c9130b908343d1c00b31dd05add3c6fef2a2b5ebd225dc5e8e",
+      "source": {
+        "pack": "environment-1",
+        "guid": "71a6ca1b66908f042986f10564e6a32d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_06.png"
+      }
+    },
+    {
+      "id": "env-71bfb2580b1146849810414cfb01276d",
+      "name": "Small Tree Snow LightBrown 3",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-71bfb2580b1146849810414cfb01276d.png",
+      "width": 204,
+      "height": 200,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "061a85d7f819bc596a1af471dee87f1f8c6b5ca74f5af2c38c188c72b57aca26",
+      "source": {
+        "pack": "environment-2",
+        "guid": "71bfb2580b1146849810414cfb01276d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Small_Tree_Snow_LightBrown_03.png"
+      }
+    },
+    {
+      "id": "env-72ca62082ad5c904ca885d84cd91e8ff",
+      "name": "Tree Orange 2",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-72ca62082ad5c904ca885d84cd91e8ff.png",
+      "width": 180,
+      "height": 262,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "56b484438bc337a94ef3453a35a3ca9e608f152576f8d860d401ac984a4821b0",
+      "source": {
+        "pack": "environment-1",
+        "guid": "72ca62082ad5c904ca885d84cd91e8ff",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Orange_02.png"
+      }
+    },
+    {
+      "id": "env-7338e787c3a7a0740ba44951b612ac05",
+      "name": "Bush Snow 2",
+      "category": "bushes",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-7338e787c3a7a0740ba44951b612ac05.png",
+      "width": 115,
+      "height": 127,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b176f4f8219e4fd66e3483ff780b2bb361e3ecfafc99cd35cb3c95ce8dcd5af1",
+      "source": {
+        "pack": "environment-2",
+        "guid": "7338e787c3a7a0740ba44951b612ac05",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Bush/Bush_Snow_02.png"
+      }
+    },
+    {
+      "id": "env-74ca0b363cd39de49a50aabda543413b",
+      "name": "Coconut 2",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-74ca0b363cd39de49a50aabda543413b.png",
+      "width": 49,
+      "height": 36,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "2fed5fa8d61a051e091ea15cb2c0f66102156b97e53a2cc828ca4d2d2490f96f",
+      "source": {
+        "pack": "environment-1",
+        "guid": "74ca0b363cd39de49a50aabda543413b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Coconut_02.png"
+      }
+    },
+    {
+      "id": "env-754fe0205d141b84da3ff492417a3ea0",
+      "name": "Dead Tree Brown 1",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-754fe0205d141b84da3ff492417a3ea0.png",
+      "width": 141,
+      "height": 201,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "16e39aac7d6feff9eb63b280ffb70045b3ad98e9258d3029ba1391b69167b4ea",
+      "source": {
+        "pack": "environment-1",
+        "guid": "754fe0205d141b84da3ff492417a3ea0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Dead_Tree_Brown_01.png"
+      }
+    },
+    {
+      "id": "env-76808eefd50abcb4090dbeaacdf89481",
+      "name": "Stone Lava 3",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-76808eefd50abcb4090dbeaacdf89481.png",
+      "width": 307,
+      "height": 126,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "e472b447dd409b1410b1f3b532da33b920d394d12e7e74509d821345587e1ef5",
+      "source": {
+        "pack": "environment-2",
+        "guid": "76808eefd50abcb4090dbeaacdf89481",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_03.png"
+      }
+    },
+    {
+      "id": "env-76b1723ace2a01f4f80ec62af3bc160d",
+      "name": "Tree Snow Teal 4",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-76b1723ace2a01f4f80ec62af3bc160d.png",
+      "width": 210,
+      "height": 411,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "727249dd9554ce490f6ca04723197d7d27629c2ff7ab4dc16c08ab48e4fa216b",
+      "source": {
+        "pack": "environment-2",
+        "guid": "76b1723ace2a01f4f80ec62af3bc160d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Teal_04.png"
+      }
+    },
+    {
+      "id": "env-77ed84a8dc206fe459e41f8e5214d717",
+      "name": "Bush Green 1",
+      "category": "bushes",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-77ed84a8dc206fe459e41f8e5214d717.png",
+      "width": 165,
+      "height": 129,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "207f7f7ac9d7543070a5fa880faded19858671ae24bd2e6cae2bd1f0277641ca",
+      "source": {
+        "pack": "environment-1",
+        "guid": "77ed84a8dc206fe459e41f8e5214d717",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Green_01.png"
+      }
+    },
+    {
+      "id": "env-7834edb37214bad4ba8b5308fd0a348e",
+      "name": "Stone Fire Dark 8",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-7834edb37214bad4ba8b5308fd0a348e.png",
+      "width": 199,
+      "height": 115,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "09628292e0373d20f901e9ba5abe1cf1a3a7ff2a89897bc1a15e38c228fa554d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "7834edb37214bad4ba8b5308fd0a348e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_08.png"
+      }
+    },
+    {
+      "id": "env-78dfe8bec2b1e3640b65325e0b42b703",
+      "name": "Small Tree Green 1",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-78dfe8bec2b1e3640b65325e0b42b703.png",
+      "width": 169,
+      "height": 218,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d3d8953ac2c82ffedd689966c437a507a3741e6f676dd9a66312047fb6d0c18a",
+      "source": {
+        "pack": "environment-1",
+        "guid": "78dfe8bec2b1e3640b65325e0b42b703",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Green_01.png"
+      }
+    },
+    {
+      "id": "env-7bfedffde8997c74bbeb7110e170ea94",
+      "name": "Stone Fire Dark 4",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-7bfedffde8997c74bbeb7110e170ea94.png",
+      "width": 106,
+      "height": 59,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "27eb109857e614f83ecd1130ff1c2c1361582759e3b05ebcd9f4da1c3f904880",
+      "source": {
+        "pack": "environment-2",
+        "guid": "7bfedffde8997c74bbeb7110e170ea94",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_04.png"
+      }
+    },
+    {
+      "id": "env-7d7f286d601d6344fa3eefa29765b4a8",
+      "name": "Coconut 1",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-7d7f286d601d6344fa3eefa29765b4a8.png",
+      "width": 49,
+      "height": 30,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a6842731e85a755039cc3df6962785acc11a1d70e549a34321f982fdd2579910",
+      "source": {
+        "pack": "environment-1",
+        "guid": "7d7f286d601d6344fa3eefa29765b4a8",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Coconut_01.png"
+      }
+    },
+    {
+      "id": "env-7f3ad81ccfc2b0141bb9eaf1a9172eea",
+      "name": "Cactus Green1 3",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-7f3ad81ccfc2b0141bb9eaf1a9172eea.png",
+      "width": 144,
+      "height": 163,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "d363828c5ae23faea9712ace6377774da0f02c04db24c628332dd03008731adb",
+      "source": {
+        "pack": "environment-1",
+        "guid": "7f3ad81ccfc2b0141bb9eaf1a9172eea",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Cactus/Cactus_Green1_03.png"
+      }
+    },
+    {
+      "id": "env-809ea76507076bf4692a6c4b3f586285",
+      "name": "Ice Snow 10",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-809ea76507076bf4692a6c4b3f586285.png",
+      "width": 132,
+      "height": 182,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "bde0723c643205aebf5bdc66682d0d703a9da86b97d56d99b78bcfa2c5d44555",
+      "source": {
+        "pack": "environment-2",
+        "guid": "809ea76507076bf4692a6c4b3f586285",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_10.png"
+      }
+    },
+    {
+      "id": "env-80b469f250f41e74eab58f33de28166e",
+      "name": "Mushroom Wihte 3",
+      "category": "grass",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-80b469f250f41e74eab58f33de28166e.png",
+      "width": 72,
+      "height": 76,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "3c31dbaa23600876c8baa3f28db1321142fcceb6135af41d88793f4016349184",
+      "source": {
+        "pack": "environment-1",
+        "guid": "80b469f250f41e74eab58f33de28166e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Wihte_03.png"
+      }
+    },
+    {
+      "id": "env-8438892e8f2ed3a45899a920adbbdc94",
+      "name": "Tree Snow Dead LightBrown 1",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-8438892e8f2ed3a45899a920adbbdc94.png",
+      "width": 72,
+      "height": 138,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7853e9ff92ae1de65f04e9d1def33b6fea2719147c24a352f9a751b4456f305e",
+      "source": {
+        "pack": "environment-2",
+        "guid": "8438892e8f2ed3a45899a920adbbdc94",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Dead_LightBrown_01.png"
+      }
+    },
+    {
+      "id": "env-86f35830f9ce0e4458eedc260b2a86d2",
+      "name": "Ice Snow 2",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-86f35830f9ce0e4458eedc260b2a86d2.png",
+      "width": 180,
+      "height": 150,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "0fb263d486c19d7538708e0908c2365249dd436cf31fb3894571ae23470bab5e",
+      "source": {
+        "pack": "environment-2",
+        "guid": "86f35830f9ce0e4458eedc260b2a86d2",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_02.png"
+      }
+    },
+    {
+      "id": "env-8711e413efb7123498a150757ac50b0b",
+      "name": "Tree Snow Green 5",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-8711e413efb7123498a150757ac50b0b.png",
+      "width": 166,
+      "height": 278,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "86015d2afc518928740fd44ddb6cd28edac75098a156796cd03871d3e8823a7d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "8711e413efb7123498a150757ac50b0b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Green_05.png"
+      }
+    },
+    {
+      "id": "env-87b8b027b87874f469f9f112af2bfa5a",
+      "name": "Ice Snow 11",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-87b8b027b87874f469f9f112af2bfa5a.png",
+      "width": 233,
+      "height": 134,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "7cf6db4b974fa5a968f2866e87198931ace2e10253fd73590e4e1e8e03fdc98d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "87b8b027b87874f469f9f112af2bfa5a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_11.png"
+      }
+    },
+    {
+      "id": "env-889db5c0ae8279c48ad8b0ad49d28c7e",
+      "name": "Bush Green 5",
+      "category": "bushes",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-889db5c0ae8279c48ad8b0ad49d28c7e.png",
+      "width": 84,
+      "height": 61,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "22c759ca4acb85317f4db8d8b855df380e6af91fd14a7744d1cb6e0856978e81",
+      "source": {
+        "pack": "environment-1",
+        "guid": "889db5c0ae8279c48ad8b0ad49d28c7e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Green_05.png"
+      }
+    },
+    {
+      "id": "env-890075409d3f661449263dbcc59c1f68",
+      "name": "Tree Snow Bare Brown 6",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-890075409d3f661449263dbcc59c1f68.png",
+      "width": 189,
+      "height": 250,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "03d6cfeda9da40bef5fe236f7f4d95167928194053d783f7c33c2543e3e95040",
+      "source": {
+        "pack": "environment-2",
+        "guid": "890075409d3f661449263dbcc59c1f68",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_Brown_06.png"
+      }
+    },
+    {
+      "id": "env-8981b0f67968e10478825b35372cf717",
+      "name": "Road Autumn",
+      "category": "roads",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-8981b0f67968e10478825b35372cf717.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e11d4b4379cc6f3ef3a1cea7c3cdf708ce6ed8f9a7d0e685db85cd3ec592d701",
+      "source": {
+        "pack": "environment-1",
+        "guid": "8981b0f67968e10478825b35372cf717",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_Autumn.png"
+      }
+    },
+    {
+      "id": "env-89ef9fd0e49cdd44884be51ad96700f5",
+      "name": "Tree Snow Dead LightBrown 4",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-89ef9fd0e49cdd44884be51ad96700f5.png",
+      "width": 81,
+      "height": 110,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "e72730bc38de797c4e482fa6cae2ea9a9e8222dbeabf771d33c937b67d75b872",
+      "source": {
+        "pack": "environment-2",
+        "guid": "89ef9fd0e49cdd44884be51ad96700f5",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Dead_LightBrown_04.png"
+      }
+    },
+    {
+      "id": "env-8a1e883890400a34ea49ad7740d86182",
+      "name": "Stone Snow 4",
+      "category": "rocks",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-8a1e883890400a34ea49ad7740d86182.png",
+      "width": 300,
+      "height": 153,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "46684d2b7d49b1e64a40ee162fc4fe8678ded96e7619fd75117d967fb42c0bd9",
+      "source": {
+        "pack": "environment-2",
+        "guid": "8a1e883890400a34ea49ad7740d86182",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Snow_04.png"
+      }
+    },
+    {
+      "id": "env-8d58423d493ae3a439a14a04576608f3",
+      "name": "Stone Gray2 7",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-8d58423d493ae3a439a14a04576608f3.png",
+      "width": 216,
+      "height": 103,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "92bc3acddc6e49234336189262a660f20e1107568968fe961a1ba16bd2528b36",
+      "source": {
+        "pack": "environment-1",
+        "guid": "8d58423d493ae3a439a14a04576608f3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_07.png"
+      }
+    },
+    {
+      "id": "env-8d7a8f50985ac1345a66c10b0aa485cc",
+      "name": "Stone Snow 1",
+      "category": "rocks",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-8d7a8f50985ac1345a66c10b0aa485cc.png",
+      "width": 103,
+      "height": 118,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b2012d8afe37f6ab11fd7b3e3a33f51322859c5cc96a0caea681a2f2b13376d6",
+      "source": {
+        "pack": "environment-2",
+        "guid": "8d7a8f50985ac1345a66c10b0aa485cc",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Snow_01.png"
+      }
+    },
+    {
+      "id": "env-8d970c734609a404e8cdcb4101d53e3b",
+      "name": "Stone Gray1 3",
+      "category": "rocks",
+      "biomes": [
+        "desert",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-8d970c734609a404e8cdcb4101d53e3b.png",
+      "width": 133,
+      "height": 53,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "047945228cd85b6f3e358cbddbdb6d018f27cfc0f2eeb6d8f31633a413a39318",
+      "source": {
+        "pack": "environment-1",
+        "guid": "8d970c734609a404e8cdcb4101d53e3b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_03.png"
+      }
+    },
+    {
+      "id": "env-8e5295b4dcb714c439f9280b516adf5b",
+      "name": "Ice Snow 5",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-8e5295b4dcb714c439f9280b516adf5b.png",
+      "width": 152,
+      "height": 196,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "7138189034bca5243f3fc7314e7b3ac75b7510047b1ff35c976cae9a6aa6ce7d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "8e5295b4dcb714c439f9280b516adf5b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_05.png"
+      }
+    },
+    {
+      "id": "env-91dde90b392e3744185ee2c008bddd0e",
+      "name": "Plam Green 2",
+      "category": "trees",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-91dde90b392e3744185ee2c008bddd0e.png",
+      "width": 288,
+      "height": 410,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "99301341334724e15dad3997aaa190b5ac91831d8bea1165256748497736bc6e",
+      "source": {
+        "pack": "environment-1",
+        "guid": "91dde90b392e3744185ee2c008bddd0e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Plam_Green_02.png"
+      }
+    },
+    {
+      "id": "env-92149bb820a6f354e8c98775cb9bc8b7",
+      "name": "Stone Lava 18",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-92149bb820a6f354e8c98775cb9bc8b7.png",
+      "width": 131,
+      "height": 187,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "72a997627f118e3d701ba3e03ce7bf741fae5f1a18632d46092a3f2dc284ffd6",
+      "source": {
+        "pack": "environment-2",
+        "guid": "92149bb820a6f354e8c98775cb9bc8b7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_18.png"
+      }
+    },
+    {
+      "id": "env-94a808e74f3e34741900c482e6090c2a",
+      "name": "Road up Snow",
+      "category": "roads",
+      "biomes": [
+        "ice",
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-94a808e74f3e34741900c482e6090c2a.png",
+      "width": 253,
+      "height": 47,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "2798fcd4ed398bae31cda9b8ba19d491d5dbadd7cb8c03d6aa32a64e7942a192",
+      "source": {
+        "pack": "environment-2",
+        "guid": "94a808e74f3e34741900c482e6090c2a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_up_Snow.png"
+      }
+    },
+    {
+      "id": "env-94bc877022c627b4894ced2251a3270c",
+      "name": "Stone Lava 6",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-94bc877022c627b4894ced2251a3270c.png",
+      "width": 234,
+      "height": 124,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "39c0c19801ed790df2c3d284f65566aa12d668322b0a996c4c12aa52cff85b41",
+      "source": {
+        "pack": "environment-2",
+        "guid": "94bc877022c627b4894ced2251a3270c",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_06.png"
+      }
+    },
+    {
+      "id": "env-964ccb1ff9aa090419d4db40bf1700af",
+      "name": "Fire Texture 6",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-964ccb1ff9aa090419d4db40bf1700af.png",
+      "width": 570,
+      "height": 224,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "58465cd1241c7dcc316c24bee8a5c91654146f0fe763418f0f8572acfccb6745",
+      "source": {
+        "pack": "environment-2",
+        "guid": "964ccb1ff9aa090419d4db40bf1700af",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_06.png"
+      }
+    },
+    {
+      "id": "env-96b52b4b5573ebe4f9227a02dfa7b49a",
+      "name": "Snow Hole 1",
+      "category": "details",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-96b52b4b5573ebe4f9227a02dfa7b49a.png",
+      "width": 752,
+      "height": 158,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "38fda57022b9738d5eee50859366934dea973920439f1b361bf74f92be9e6e36",
+      "source": {
+        "pack": "environment-2",
+        "guid": "96b52b4b5573ebe4f9227a02dfa7b49a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Hole_01.png"
+      }
+    },
+    {
+      "id": "env-98029dcad6e868d43bf01314db375b7f",
+      "name": "Tree Snow Dead LightBrown 2",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-98029dcad6e868d43bf01314db375b7f.png",
+      "width": 54,
+      "height": 126,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3b41e96ef9a720d555e94051ecf80a81b459146a1f44fdbba6c6a8eb191ada8c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "98029dcad6e868d43bf01314db375b7f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Dead_LightBrown_02.png"
+      }
+    },
+    {
+      "id": "env-9821fd9e2bcfa1945b2fca8327e0d6d6",
+      "name": "Tree Fire Dead 1",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-9821fd9e2bcfa1945b2fca8327e0d6d6.png",
+      "width": 72,
+      "height": 138,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "12f5fd8d9f61e2ff19c6727519e5c2452c770bb2924fa3b0e3c4d7e339771f39",
+      "source": {
+        "pack": "environment-2",
+        "guid": "9821fd9e2bcfa1945b2fca8327e0d6d6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_01.png"
+      }
+    },
+    {
+      "id": "env-98e1e0f44ea5f7445be9f04e01cf6f35",
+      "name": "Cactus Green2 5",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-98e1e0f44ea5f7445be9f04e01cf6f35.png",
+      "width": 60,
+      "height": 74,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "034c0190ce2113a0c835cd39e006d6f2abdb829334a526af61495fba7b6763bf",
+      "source": {
+        "pack": "environment-1",
+        "guid": "98e1e0f44ea5f7445be9f04e01cf6f35",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Cactus/Cactus_Green2_05.png"
+      }
+    },
+    {
+      "id": "env-9944e2de78ba9f44c9ec294e752690d7",
+      "name": "Stone Fire Dark 7",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-9944e2de78ba9f44c9ec294e752690d7.png",
+      "width": 320,
+      "height": 199,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "96d164b9dcba1f61f04e60028545b799a8edc83d825d4881931e09526d24d05a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "9944e2de78ba9f44c9ec294e752690d7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_07.png"
+      }
+    },
+    {
+      "id": "env-9cc39a95eaf97a5438bac2636c789156",
+      "name": "Snow White 1",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-9cc39a95eaf97a5438bac2636c789156.png",
+      "width": 565,
+      "height": 137,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4156d63eb605e2ed0cf1095caad8a1c37963a125d49e648f28100cf0c43be611",
+      "source": {
+        "pack": "environment-2",
+        "guid": "9cc39a95eaf97a5438bac2636c789156",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_White_01.png"
+      }
+    },
+    {
+      "id": "env-9f48d86892c1aac4eac35ee6216a3f69",
+      "name": "Stone Fire Red 7",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-9f48d86892c1aac4eac35ee6216a3f69.png",
+      "width": 320,
+      "height": 199,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "cc6ec5d274a3a04fb3a35d4e70cf2f862db65b6b5fa9ff4a6b793d561373d352",
+      "source": {
+        "pack": "environment-2",
+        "guid": "9f48d86892c1aac4eac35ee6216a3f69",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Red_07.png"
+      }
+    },
+    {
+      "id": "env-a04fa94a929bbcd478cfdddbbd845a6a",
+      "name": "Road Ice",
+      "category": "roads",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-a04fa94a929bbcd478cfdddbbd845a6a.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a57cbda0da99cd286421c8051f50252872033b2407f3dd15d0383ac25b1a4614",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a04fa94a929bbcd478cfdddbbd845a6a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_Ice.png"
+      }
+    },
+    {
+      "id": "env-a064e9ae7d594b04db972146f2a6b4e5",
+      "name": "Fire Texture 4",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-a064e9ae7d594b04db972146f2a6b4e5.png",
+      "width": 328,
+      "height": 107,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "3045e2a192a531acde3d545ddf3fbf74a6988fa832bd59c803302a8ca71fcea2",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a064e9ae7d594b04db972146f2a6b4e5",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_04.png"
+      }
+    },
+    {
+      "id": "env-a0f44bee72b22dc4cbb928ba7e8a257a",
+      "name": "Field Lava",
+      "category": "field",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-a0f44bee72b22dc4cbb928ba7e8a257a.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f7f59d03f6dd672a2f270a09924165c12c3eb2e222b15bfe3354656b07a9a323",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a0f44bee72b22dc4cbb928ba7e8a257a",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Field_Lava.png"
+      }
+    },
+    {
+      "id": "env-a42aad69f8bda3d4bbd9e5873a0aa932",
+      "name": "Stone Lava 13",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-a42aad69f8bda3d4bbd9e5873a0aa932.png",
+      "width": 219,
+      "height": 142,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "817d9a5a4dea087d2734b5d8d2d5b8233a5d070687c50d0e20d56b295a1afac5",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a42aad69f8bda3d4bbd9e5873a0aa932",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_13.png"
+      }
+    },
+    {
+      "id": "env-a4c4265cd9fe3df4d924d50c4634e071",
+      "name": "Small Tree Green 3",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-a4c4265cd9fe3df4d924d50c4634e071.png",
+      "width": 203,
+      "height": 232,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "0ec80c4cc921649c0506ced18cdbb4025b69700432453d09a188a29450fc2e7c",
+      "source": {
+        "pack": "environment-1",
+        "guid": "a4c4265cd9fe3df4d924d50c4634e071",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Green_03.png"
+      }
+    },
+    {
+      "id": "env-a5617a5e558ad3f42a43f7fcc552f57b",
+      "name": "Snow White 3",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-a5617a5e558ad3f42a43f7fcc552f57b.png",
+      "width": 296,
+      "height": 81,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "3af53c99c2c323f9f9fd0575bc35e46cdba4dbf546cab5fb00ace6f6185f94a3",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a5617a5e558ad3f42a43f7fcc552f57b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_White_03.png"
+      }
+    },
+    {
+      "id": "env-a5fdbcf956be3954cb2bad46fe7d8247",
+      "name": "Tree Snow Green 7",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-a5fdbcf956be3954cb2bad46fe7d8247.png",
+      "width": 113,
+      "height": 203,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7254e6527d86d6fa00eb203ab21c2656bab2bb9697d019c2e89b22ee2f4ef54e",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a5fdbcf956be3954cb2bad46fe7d8247",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Green_07.png"
+      }
+    },
+    {
+      "id": "env-a737ec99f4336de40a2357fe2bb5521c",
+      "name": "Tree Green 15",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-a737ec99f4336de40a2357fe2bb5521c.png",
+      "width": 432,
+      "height": 505,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "4d4dab7b9c55a4f197e5304e47fe06c91f8c671e0dfddca687a0c0e793067b94",
+      "source": {
+        "pack": "environment-1",
+        "guid": "a737ec99f4336de40a2357fe2bb5521c",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_15.png"
+      }
+    },
+    {
+      "id": "env-a84be0c02f1ba3e44ab953d506e5b74d",
+      "name": "Road up Lava",
+      "category": "roads",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-a84be0c02f1ba3e44ab953d506e5b74d.png",
+      "width": 408,
+      "height": 102,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4443d0cf1b182d9bd41176abd0fb2544fff4793fa4b574fb24e971b27c7df3ac",
+      "source": {
+        "pack": "environment-2",
+        "guid": "a84be0c02f1ba3e44ab953d506e5b74d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Road_up_Lava.png"
+      }
+    },
+    {
+      "id": "env-a8b5e9abfaed9914c9e158ac6dcd298d",
+      "name": "Cactus Green1 2",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-a8b5e9abfaed9914c9e158ac6dcd298d.png",
+      "width": 61,
+      "height": 77,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "dd16c3c33b0addbf9b0aad2b56ae70492916ff8032d0f2b638b03f5b4523e02c",
+      "source": {
+        "pack": "environment-1",
+        "guid": "a8b5e9abfaed9914c9e158ac6dcd298d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Cactus/Cactus_Green1_02.png"
+      }
+    },
+    {
+      "id": "env-aa1fd500d3eff0b4f84bcf00b5856282",
+      "name": "Ice Flower 3",
+      "category": "grass",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-aa1fd500d3eff0b4f84bcf00b5856282.png",
+      "width": 83,
+      "height": 50,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "da47c343d08e26f040be50dd430b891d4e0a5c99963f296874e910ed53b1da1f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "aa1fd500d3eff0b4f84bcf00b5856282",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Flower_03.png"
+      }
+    },
+    {
+      "id": "env-aadbf80c41a667446bcb0f9f1b29d3cf",
+      "name": "Stone Lava 2",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-aadbf80c41a667446bcb0f9f1b29d3cf.png",
+      "width": 571,
+      "height": 185,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "dd7b7e14a9c09eb3e5ecfd625b9aad7c40701b2ac4c9b2586fa841713efb92bf",
+      "source": {
+        "pack": "environment-2",
+        "guid": "aadbf80c41a667446bcb0f9f1b29d3cf",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_02.png"
+      }
+    },
+    {
+      "id": "env-ae247b161e7da99468abfb5fac7bb545",
+      "name": "Tree Orange 1",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-ae247b161e7da99468abfb5fac7bb545.png",
+      "width": 99,
+      "height": 203,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8c25c85978356ea04a32f3a1e4e827b59cbc839641523b5cca087745d0dea7f1",
+      "source": {
+        "pack": "environment-1",
+        "guid": "ae247b161e7da99468abfb5fac7bb545",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Orange_01.png"
+      }
+    },
+    {
+      "id": "env-af4cf667fc9908f44b63b417e6dd32f5",
+      "name": "Tree Snow Teal 5",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-af4cf667fc9908f44b63b417e6dd32f5.png",
+      "width": 166,
+      "height": 278,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "4d7d7f180f16103bdcc748ad78d8c061c6736617473689f997bfb01687993c10",
+      "source": {
+        "pack": "environment-2",
+        "guid": "af4cf667fc9908f44b63b417e6dd32f5",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Teal_05.png"
+      }
+    },
+    {
+      "id": "env-af9984dd4b065f4419a1dbda4537cdb3",
+      "name": "Tree Fire Dead 3",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-af9984dd4b065f4419a1dbda4537cdb3.png",
+      "width": 79,
+      "height": 75,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b94613ab808a28c4aa8398c1a1591a5b145f1d57ca56a599ff2c564cf91d1c40",
+      "source": {
+        "pack": "environment-2",
+        "guid": "af9984dd4b065f4419a1dbda4537cdb3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_03.png"
+      }
+    },
+    {
+      "id": "env-af9d1d450d3cf54418fd566411d65152",
+      "name": "Snow Hole 2",
+      "category": "details",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-af9d1d450d3cf54418fd566411d65152.png",
+      "width": 628,
+      "height": 238,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f153ac1c284d4db7fb8f4a134894fc8614c3c698bfcdce577921cd498a5a9669",
+      "source": {
+        "pack": "environment-2",
+        "guid": "af9d1d450d3cf54418fd566411d65152",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Hole_02.png"
+      }
+    },
+    {
+      "id": "env-b130887dde5dfed45af656f9c02c654d",
+      "name": "Stone Brown 7",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-b130887dde5dfed45af656f9c02c654d.png",
+      "width": 89,
+      "height": 33,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "510167f7c4316a4195211343f8e59a839861515f0aad7bed249dca0211a2067a",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b130887dde5dfed45af656f9c02c654d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_07.png"
+      }
+    },
+    {
+      "id": "env-b1407eb2933efda4abc53c1f60022a77",
+      "name": "Road Desert",
+      "category": "roads",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-b1407eb2933efda4abc53c1f60022a77.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "777f8bd818dec21337a671c04e6d07f450d055f4f0a1a1d3601e8d04cfb12ad2",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b1407eb2933efda4abc53c1f60022a77",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_Desert.png"
+      }
+    },
+    {
+      "id": "env-b48c8acfefa82784d89230d88f0642c9",
+      "name": "Field Desert",
+      "category": "field",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-b48c8acfefa82784d89230d88f0642c9.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a8fb206e4daec02e225b1e1355543c4c0ef05b0d5b026aa173ce32d1bd7a79ed",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b48c8acfefa82784d89230d88f0642c9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Field_Desert.png"
+      }
+    },
+    {
+      "id": "env-b68a7a04805d4634ba98ceeb1ec41700",
+      "name": "Bush Yellow Green 3",
+      "category": "bushes",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-b68a7a04805d4634ba98ceeb1ec41700.png",
+      "width": 248,
+      "height": 148,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "016bba4b5dfb7db9d624a7480854ffd4e9373fa85c3e3b5f7639d0e4e9c9138b",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b68a7a04805d4634ba98ceeb1ec41700",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Yellow_Green_03.png"
+      }
+    },
+    {
+      "id": "env-b73fe61f539dfb940ba082283be9aa07",
+      "name": "Bush Yellow Green 2",
+      "category": "bushes",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-b73fe61f539dfb940ba082283be9aa07.png",
+      "width": 124,
+      "height": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "685556cbca2b9d061428e22fe73c730f77c1f6e1ca7a0057094b4ed10f0890cb",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b73fe61f539dfb940ba082283be9aa07",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Yellow_Green_02.png"
+      }
+    },
+    {
+      "id": "env-b746d522c58db074d9651c963b527e00",
+      "name": "Bush Yellow Green 5",
+      "category": "bushes",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-b746d522c58db074d9651c963b527e00.png",
+      "width": 84,
+      "height": 61,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "9dcd1eabf1f6287c2a8e7aef195a8e6f5341ea5b669f31fa8913ed3d6769bf4a",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b746d522c58db074d9651c963b527e00",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Yellow_Green_05.png"
+      }
+    },
+    {
+      "id": "env-b7ef965477a2177408801ed804681da9",
+      "name": "Tree Yellow Green 10",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-b7ef965477a2177408801ed804681da9.png",
+      "width": 271,
+      "height": 443,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "e0faa7784fd6a5b7a91d5578fcc0c3c2892be9f7224d732f7c9c00d48caf5522",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b7ef965477a2177408801ed804681da9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_10.png"
+      }
+    },
+    {
+      "id": "env-b8252091ca292ad47950c1b627617140",
+      "name": "Forest Flower 1",
+      "category": "grass",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-b8252091ca292ad47950c1b627617140.png",
+      "width": 27,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "873a5359769eb3e1579f125b0a9212f832f7512452b5584d2146d8494dbe6b21",
+      "source": {
+        "pack": "environment-1",
+        "guid": "b8252091ca292ad47950c1b627617140",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Forest_Flower_01.png"
+      }
+    },
+    {
+      "id": "env-b96f62f957243f147b6d6578508d3356",
+      "name": "Stone Snow 3",
+      "category": "rocks",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-b96f62f957243f147b6d6578508d3356.png",
+      "width": 184,
+      "height": 112,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "78bbc644de9618ee831ef7a4a0a6671ed56473b1b9890b6367939bcc92ed3dba",
+      "source": {
+        "pack": "environment-2",
+        "guid": "b96f62f957243f147b6d6578508d3356",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Snow_03.png"
+      }
+    },
+    {
+      "id": "env-b9f4becbad1afba4f9eb2fc2a0932664",
+      "name": "Field Snow",
+      "category": "field",
+      "biomes": [
+        "ice",
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-b9f4becbad1afba4f9eb2fc2a0932664.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "32c8d13ba3cbf3b00830cbe2c751bded89b335cd9cdb1bbff19bf9f7bf26471d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "b9f4becbad1afba4f9eb2fc2a0932664",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field/Field_Snow.png"
+      }
+    },
+    {
+      "id": "env-bc58c0614af41cc4e9377ad52893e867",
+      "name": "Stone Gray2 11",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-bc58c0614af41cc4e9377ad52893e867.png",
+      "width": 126,
+      "height": 223,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a5a528578a7ea1b7ae7cf0a9bfd2a9632489675eddd8376c250a7432b9835288",
+      "source": {
+        "pack": "environment-1",
+        "guid": "bc58c0614af41cc4e9377ad52893e867",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_11.png"
+      }
+    },
+    {
+      "id": "env-bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+      "name": "Cactus Green2 4",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-bdb6c0f77865a2d4aa21fa8f0fcf37fa.png",
+      "width": 139,
+      "height": 222,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f4fe82855ed0ed45185109b2fe0540c618fd7e5c3e6424cbd1b20ba62618afcc",
+      "source": {
+        "pack": "environment-1",
+        "guid": "bdb6c0f77865a2d4aa21fa8f0fcf37fa",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Cactus/Cactus_Green2_04.png"
+      }
+    },
+    {
+      "id": "env-bf46a6b1904b8c44ea6a143d701b6429",
+      "name": "Forest Grass",
+      "category": "grass",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-bf46a6b1904b8c44ea6a143d701b6429.png",
+      "width": 46,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a4abd430ff1c56a95714beef28ff9d8e6edbcc53ec5a45f1a4e4532f10202b0e",
+      "source": {
+        "pack": "environment-1",
+        "guid": "bf46a6b1904b8c44ea6a143d701b6429",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Forest_Grass.png"
+      }
+    },
+    {
+      "id": "env-bfcf3d481e9dd744ca1e034c193ad694",
+      "name": "Mushroom Yellow 1",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-bfcf3d481e9dd744ca1e034c193ad694.png",
+      "width": 43,
+      "height": 59,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f4b7223f43e534e52e25781a02d52b783300551a73703f726b24f39b3a52af81",
+      "source": {
+        "pack": "environment-1",
+        "guid": "bfcf3d481e9dd744ca1e034c193ad694",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Yellow_01.png"
+      }
+    },
+    {
+      "id": "env-bfde01d4b9f2b3846b447444ef9d2690",
+      "name": "Ice Snow 15",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-bfde01d4b9f2b3846b447444ef9d2690.png",
+      "width": 287,
+      "height": 261,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4c31cfa4205e4dbc34acbc86768ebebb17189bb19595a69f2fce49536990437a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "bfde01d4b9f2b3846b447444ef9d2690",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_15.png"
+      }
+    },
+    {
+      "id": "env-c020e429982385a4ba493331ef6dd4a3",
+      "name": "Snow Grass",
+      "category": "grass",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-c020e429982385a4ba493331ef6dd4a3.png",
+      "width": 44,
+      "height": 26,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "4e7c81d089b6b418c43afa4797b778635ae6b14931907066cd3ff9c7279ed91e",
+      "source": {
+        "pack": "environment-2",
+        "guid": "c020e429982385a4ba493331ef6dd4a3",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Etc/Snow_Grass.png"
+      }
+    },
+    {
+      "id": "env-c059b5ac1ffb50041844f3300e4fc31d",
+      "name": "DeepForest Grass",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-c059b5ac1ffb50041844f3300e4fc31d.png",
+      "width": 46,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "bc3ee90c72bf9db77e7711ec2aca563c12f346876f852942c249815997277df1",
+      "source": {
+        "pack": "environment-1",
+        "guid": "c059b5ac1ffb50041844f3300e4fc31d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/DeepForest_Grass.png"
+      }
+    },
+    {
+      "id": "env-c0659dd473e071140ad1e1e919d0be43",
+      "name": "Ice Light",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-c0659dd473e071140ad1e1e919d0be43.png",
+      "width": 146,
+      "height": 123,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "c605017713e550b222dc220d3f597b6f99809b3762a8b3e5e2526600405e825b",
+      "source": {
+        "pack": "environment-2",
+        "guid": "c0659dd473e071140ad1e1e919d0be43",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Light.png"
+      }
+    },
+    {
+      "id": "env-c155ecf506265904aa13fb543bdd5175",
+      "name": "Lava 4",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-c155ecf506265904aa13fb543bdd5175.png",
+      "width": 447,
+      "height": 65,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "48cba06daeeb25560bf1ce8ed3498258c8bd51ccdfea17e7a11d1279ddff5f2c",
+      "source": {
+        "pack": "environment-2",
+        "guid": "c155ecf506265904aa13fb543bdd5175",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_04.png"
+      }
+    },
+    {
+      "id": "env-c2a927a63b4471e4a97b1e6cdea73039",
+      "name": "Stone Fire Dark 2",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-c2a927a63b4471e4a97b1e6cdea73039.png",
+      "width": 321,
+      "height": 281,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "f8136d9cfa8ec961feb044e1b66a6a02fa1140a11f8aedd191901a2bceb308fe",
+      "source": {
+        "pack": "environment-2",
+        "guid": "c2a927a63b4471e4a97b1e6cdea73039",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Dark_02.png"
+      }
+    },
+    {
+      "id": "env-c2c01a600c6746e46833c332bbd5f06e",
+      "name": "Stone Gray2 2",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-c2c01a600c6746e46833c332bbd5f06e.png",
+      "width": 162,
+      "height": 154,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "80a513c7cb2556eac58a87f20ffd78df310bc81b16bd81f482295dbfcc7948de",
+      "source": {
+        "pack": "environment-1",
+        "guid": "c2c01a600c6746e46833c332bbd5f06e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_02.png"
+      }
+    },
+    {
+      "id": "env-c4234843afb206f41a56e3a11818c5e9",
+      "name": "Stone Gray2 4",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-c4234843afb206f41a56e3a11818c5e9.png",
+      "width": 121,
+      "height": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "796b70a92412bb5d0af43b22220854315f411c468f2d0ce2dddb6927b04720da",
+      "source": {
+        "pack": "environment-1",
+        "guid": "c4234843afb206f41a56e3a11818c5e9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_04.png"
+      }
+    },
+    {
+      "id": "env-c57d3910e4223c54fa1e272e60074dc9",
+      "name": "Stone Brown 2",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-c57d3910e4223c54fa1e272e60074dc9.png",
+      "width": 134,
+      "height": 91,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8fb06563b475957989fa2e49a9371c883f4a3d64e01b496f656d9f8e39cab4d0",
+      "source": {
+        "pack": "environment-1",
+        "guid": "c57d3910e4223c54fa1e272e60074dc9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_02.png"
+      }
+    },
+    {
+      "id": "env-c65b854ff67975d49af28b5a7f41fea0",
+      "name": "Cactus Green2 3",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-c65b854ff67975d49af28b5a7f41fea0.png",
+      "width": 144,
+      "height": 163,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e7cce2c083ee741e2395ef7802f1ece93f6dc797d8d635086ecf140ca3e92102",
+      "source": {
+        "pack": "environment-1",
+        "guid": "c65b854ff67975d49af28b5a7f41fea0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Cactus/Cactus_Green2_03.png"
+      }
+    },
+    {
+      "id": "env-c97d17e65114c0e439189c734b3aa155",
+      "name": "Mushroom Yellow 3",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-c97d17e65114c0e439189c734b3aa155.png",
+      "width": 72,
+      "height": 76,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "bb5ca517e5056aced88a9290d46ae1b0336eba21f091e4d8be62413bde40e8fe",
+      "source": {
+        "pack": "environment-1",
+        "guid": "c97d17e65114c0e439189c734b3aa155",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Yellow_03.png"
+      }
+    },
+    {
+      "id": "env-cd482d91ae516b144956666b23a8e2ff",
+      "name": "Stone Lava 15",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-cd482d91ae516b144956666b23a8e2ff.png",
+      "width": 454,
+      "height": 274,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8ea1a3bd67c36a80f684c492cb74904a1b3adf58e4c5e57a0e7bf4675f068fb2",
+      "source": {
+        "pack": "environment-2",
+        "guid": "cd482d91ae516b144956666b23a8e2ff",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_15.png"
+      }
+    },
+    {
+      "id": "env-ce2e6e9b4fc7f744a9916ae1c61d93f1",
+      "name": "Tree Fire Dead 7",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-ce2e6e9b4fc7f744a9916ae1c61d93f1.png",
+      "width": 95,
+      "height": 42,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2844de7083c72d5c0570c2ab3f3c1ffa48bb40f909779c2855709afed784253a",
+      "source": {
+        "pack": "environment-2",
+        "guid": "ce2e6e9b4fc7f744a9916ae1c61d93f1",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Dead_07.png"
+      }
+    },
+    {
+      "id": "env-ce635900400bcc24fad3e3daad0ca6a6",
+      "name": "Bush Yellow Green 1",
+      "category": "bushes",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-ce635900400bcc24fad3e3daad0ca6a6.png",
+      "width": 165,
+      "height": 129,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2d0da0ed4922bea641c782e4bda0bac4951c2e794c5f7e049a5e7bc0bdfe717c",
+      "source": {
+        "pack": "environment-1",
+        "guid": "ce635900400bcc24fad3e3daad0ca6a6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Yellow_Green_01.png"
+      }
+    },
+    {
+      "id": "env-d0c46dd800b190d479f8be63d807a3db",
+      "name": "Tree Yellow Green 14",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-d0c46dd800b190d479f8be63d807a3db.png",
+      "width": 291,
+      "height": 531,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "4b19e9a3952ad246cdc341f37be2fdf2ae43a193ccb19b7d237a4be80c0da512",
+      "source": {
+        "pack": "environment-1",
+        "guid": "d0c46dd800b190d479f8be63d807a3db",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_14.png"
+      }
+    },
+    {
+      "id": "env-d1075b5fdd878424b818845c8cca464d",
+      "name": "Snow Up 3",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-d1075b5fdd878424b818845c8cca464d.png",
+      "width": 182,
+      "height": 63,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "cacdba3b03da6e2f950d51650ed06d4da7d0bd08f33fff07dbe37b217c13d3c8",
+      "source": {
+        "pack": "environment-2",
+        "guid": "d1075b5fdd878424b818845c8cca464d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Up_03.png"
+      }
+    },
+    {
+      "id": "env-d13d59b8358fa6942a52c15ed35cb861",
+      "name": "Ice Snow 8",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-d13d59b8358fa6942a52c15ed35cb861.png",
+      "width": 133,
+      "height": 90,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "643fd976ee56be63f03b2e31f0e1ce7ff69bce44bf435626b30b5ef4c0bdeab7",
+      "source": {
+        "pack": "environment-2",
+        "guid": "d13d59b8358fa6942a52c15ed35cb861",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_08.png"
+      }
+    },
+    {
+      "id": "env-d25e583bb9c4dd94d9799135a0505a0e",
+      "name": "Ice Snow 14",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-d25e583bb9c4dd94d9799135a0505a0e.png",
+      "width": 319,
+      "height": 438,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "3a57366055573cc8e48d759389dc6b70bc993e3b31ac38d5152b4e074c2634d2",
+      "source": {
+        "pack": "environment-2",
+        "guid": "d25e583bb9c4dd94d9799135a0505a0e",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_14.png"
+      }
+    },
+    {
+      "id": "env-d2f950400fa0f5948b34e1c93a72e949",
+      "name": "Stone Lava 1",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-d2f950400fa0f5948b34e1c93a72e949.png",
+      "width": 271,
+      "height": 129,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "df4d00a81ca824616a58ae98686ca37d6f869beebb7b17d06d0850dff0e5cbb3",
+      "source": {
+        "pack": "environment-2",
+        "guid": "d2f950400fa0f5948b34e1c93a72e949",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_01.png"
+      }
+    },
+    {
+      "id": "env-d3381ff01a981794dbd142ea7727c5f8",
+      "name": "Field Autumn",
+      "category": "field",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-d3381ff01a981794dbd142ea7727c5f8.png",
+      "width": 128,
+      "height": 128,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "5f8a4f17ee0475d17a59464b7329c3757f6a88cc86abadb6c2a21de35d652b6f",
+      "source": {
+        "pack": "environment-1",
+        "guid": "d3381ff01a981794dbd142ea7727c5f8",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Field_Autumn.png"
+      }
+    },
+    {
+      "id": "env-d5fccd4f5ce31f44f981e2e3477853b6",
+      "name": "Ice Flower 4",
+      "category": "grass",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-d5fccd4f5ce31f44f981e2e3477853b6.png",
+      "width": 68,
+      "height": 63,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "8aad739410f521d24e91f38143ff030f395346124b0211a39163183b8abcacbd",
+      "source": {
+        "pack": "environment-2",
+        "guid": "d5fccd4f5ce31f44f981e2e3477853b6",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Flower_04.png"
+      }
+    },
+    {
+      "id": "env-d622aa51f77b0ee428fe839f184a4a48",
+      "name": "Ice Snow 3",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-d622aa51f77b0ee428fe839f184a4a48.png",
+      "width": 149,
+      "height": 137,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "62525704c4f50280c6a53cd0ef6110adc9aa819c1e42274730e4f033f0d7b9d9",
+      "source": {
+        "pack": "environment-2",
+        "guid": "d622aa51f77b0ee428fe839f184a4a48",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_03.png"
+      }
+    },
+    {
+      "id": "env-d691023725bfcc948b013d515f8c1f14",
+      "name": "Bush Yellow Green 4",
+      "category": "bushes",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-d691023725bfcc948b013d515f8c1f14.png",
+      "width": 91,
+      "height": 70,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "bd9eea462839a47fc6ef83282a461136668f9dfd755fdcb023c10f98b71b2dec",
+      "source": {
+        "pack": "environment-1",
+        "guid": "d691023725bfcc948b013d515f8c1f14",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Yellow_Green_04.png"
+      }
+    },
+    {
+      "id": "env-d70de8f89e2d45a42984afd969ef31df",
+      "name": "Autumn Flower 1",
+      "category": "grass",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-d70de8f89e2d45a42984afd969ef31df.png",
+      "width": 27,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "18e2c75eeced159d97e3ce5164e3c8c450ae9566ac0e7c7a98da68b95884a362",
+      "source": {
+        "pack": "environment-1",
+        "guid": "d70de8f89e2d45a42984afd969ef31df",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Autumn_Flower_01.png"
+      }
+    },
+    {
+      "id": "env-d8f000083b0e2cd4e9f97cdd412a991d",
+      "name": "Stone Gray1 7",
+      "category": "rocks",
+      "biomes": [
+        "desert",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-d8f000083b0e2cd4e9f97cdd412a991d.png",
+      "width": 216,
+      "height": 103,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1006a061fa0d50ff1ea48a9229222a49b13df78cb2d9d0a4537610f47b0550fb",
+      "source": {
+        "pack": "environment-1",
+        "guid": "d8f000083b0e2cd4e9f97cdd412a991d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray1_07.png"
+      }
+    },
+    {
+      "id": "env-daa4a3a86f96f1542ab7ce822547914d",
+      "name": "Stone Brown 4",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-daa4a3a86f96f1542ab7ce822547914d.png",
+      "width": 144,
+      "height": 125,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3a173f1d00e2aaab16386d0fc0da78282a9e52881ddc95af69d024cb5a4850f9",
+      "source": {
+        "pack": "environment-1",
+        "guid": "daa4a3a86f96f1542ab7ce822547914d",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Brown_04.png"
+      }
+    },
+    {
+      "id": "env-dadd83dc41247fd4cb46558d354211cf",
+      "name": "Fire Texture 1",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-dadd83dc41247fd4cb46558d354211cf.png",
+      "width": 604,
+      "height": 359,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "b07cf265a575c3263a66520f112639bf85a19c7a64b39a05831e65958090a920",
+      "source": {
+        "pack": "environment-2",
+        "guid": "dadd83dc41247fd4cb46558d354211cf",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_01.png"
+      }
+    },
+    {
+      "id": "env-db889a293ba9cc547be6d41e6c3f3b61",
+      "name": "Lava Solid 5",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-db889a293ba9cc547be6d41e6c3f3b61.png",
+      "width": 384,
+      "height": 147,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "b28b59f083c672d91f5499d29cb855e3bde3b5301e9c38e951039fe29afd1aa3",
+      "source": {
+        "pack": "environment-2",
+        "guid": "db889a293ba9cc547be6d41e6c3f3b61",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_Solid_05.png"
+      }
+    },
+    {
+      "id": "env-dc15320d3ba4de143ace16330095b866",
+      "name": "Stone Lava 8",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-dc15320d3ba4de143ace16330095b866.png",
+      "width": 953,
+      "height": 240,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "c456817e25d09346c64e4a90121bd9ef2f0f067b08c37fe95fbd79c7e850c7f2",
+      "source": {
+        "pack": "environment-2",
+        "guid": "dc15320d3ba4de143ace16330095b866",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_08.png"
+      }
+    },
+    {
+      "id": "env-dd10ab534afb4fa41875bea7f0150143",
+      "name": "Tree Orange 6",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-dd10ab534afb4fa41875bea7f0150143.png",
+      "width": 328,
+      "height": 387,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "1ad9c8d3333a449d4a6784a2da37ff1686bb99aeddc5d1a43f9176c027066ce5",
+      "source": {
+        "pack": "environment-1",
+        "guid": "dd10ab534afb4fa41875bea7f0150143",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Orange_06.png"
+      }
+    },
+    {
+      "id": "env-dddc257af55ea2345b330aa933b40102",
+      "name": "Tree Snow Teal 3",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-dddc257af55ea2345b330aa933b40102.png",
+      "width": 185,
+      "height": 475,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a409ddc9382c369ef1e714534c928a3ba7f0eb3f966ea4dda46e1aa5a240c976",
+      "source": {
+        "pack": "environment-2",
+        "guid": "dddc257af55ea2345b330aa933b40102",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Teal_03.png"
+      }
+    },
+    {
+      "id": "env-de2cfdc2807376b41867859e5d37d2a8",
+      "name": "Tree Yellow Green 9",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-de2cfdc2807376b41867859e5d37d2a8.png",
+      "width": 287,
+      "height": 433,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "6eb97b6c595c9cec08b2773ba89da12124cf259fb5c193c432ebeb4b404b2bc6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "de2cfdc2807376b41867859e5d37d2a8",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Yellow_Green_09.png"
+      }
+    },
+    {
+      "id": "env-dffa55e3396bb7b4db1e3a3d86cb752f",
+      "name": "Lava 2",
+      "category": "details",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-dffa55e3396bb7b4db1e3a3d86cb752f.png",
+      "width": 808,
+      "height": 350,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "0db2417319b6b9b831d2fa58f88fe4a851baa8f900a2c118a481eb086dc4fb2f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "dffa55e3396bb7b4db1e3a3d86cb752f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Lava/Lava_02.png"
+      }
+    },
+    {
+      "id": "env-e18f44543b34ff845b1e9aa3d7136d60",
+      "name": "Small Tree Yellow Green 1",
+      "category": "trees",
+      "biomes": [
+        "deep-forest",
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-e18f44543b34ff845b1e9aa3d7136d60.png",
+      "width": 169,
+      "height": 218,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "46baabc885c191f362143b0125111f340b05fa39d58c29652e2064f4668a40e0",
+      "source": {
+        "pack": "environment-1",
+        "guid": "e18f44543b34ff845b1e9aa3d7136d60",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Yellow_Green_01.png"
+      }
+    },
+    {
+      "id": "env-e3c9a893ae0fa5744aee7a257adbf804",
+      "name": "Small Tree Yellow Green 3",
+      "category": "trees",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-e3c9a893ae0fa5744aee7a257adbf804.png",
+      "width": 203,
+      "height": 232,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "62a263f6e5b2f19229d2f5d7e5bf236d6fc31ff2fb998fc0b1d4dcac4a33cfd6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "e3c9a893ae0fa5744aee7a257adbf804",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Yellow_Green_03.png"
+      }
+    },
+    {
+      "id": "env-e4f6fc4be795f3a4eb4a607e02286cfb",
+      "name": "Ice Snow 4",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-e4f6fc4be795f3a4eb4a607e02286cfb.png",
+      "width": 147,
+      "height": 175,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "0b5d5880989c0cf445d37b7cc929dcea60eada41ff8777ecf2fa39aabdbb1c84",
+      "source": {
+        "pack": "environment-2",
+        "guid": "e4f6fc4be795f3a4eb4a607e02286cfb",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_04.png"
+      }
+    },
+    {
+      "id": "env-e666c090d3e54214b9416cf6464b55ba",
+      "name": "Ice Snow 16",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-e666c090d3e54214b9416cf6464b55ba.png",
+      "width": 690,
+      "height": 320,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a566ea4b3b3ca1bb76ddb2915d084a185e0ba05a9b85aac7ea6c5760115074d6",
+      "source": {
+        "pack": "environment-2",
+        "guid": "e666c090d3e54214b9416cf6464b55ba",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Snow_16.png"
+      }
+    },
+    {
+      "id": "env-e831296a4803e27448b9824ee20efed7",
+      "name": "Stone Gray2 5",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-e831296a4803e27448b9824ee20efed7.png",
+      "width": 69,
+      "height": 50,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "6a1b7b99c049db07d576749ba3939f49602c4219f84c0be59ae863d90e9178f8",
+      "source": {
+        "pack": "environment-1",
+        "guid": "e831296a4803e27448b9824ee20efed7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Stone/Stone_Gray2_05.png"
+      }
+    },
+    {
+      "id": "env-e875842eb5d2fd446bf6fa0491bb8d4f",
+      "name": "Ice Flower 5",
+      "category": "grass",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-e875842eb5d2fd446bf6fa0491bb8d4f.png",
+      "width": 54,
+      "height": 56,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "b2f97f2b72055e2878a35ee0daeb3ccec2b75f786f1048fd28aea87584ca2a5d",
+      "source": {
+        "pack": "environment-2",
+        "guid": "e875842eb5d2fd446bf6fa0491bb8d4f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Ice/Ice_Flower_05.png"
+      }
+    },
+    {
+      "id": "env-e8da70ae473404d4e9244418364e5e48",
+      "name": "Bush Green 3",
+      "category": "bushes",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-e8da70ae473404d4e9244418364e5e48.png",
+      "width": 248,
+      "height": 148,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "62829cbfb455b5e6cff2d584054da599c52961ddc93953db2acf9a4caeb81e88",
+      "source": {
+        "pack": "environment-1",
+        "guid": "e8da70ae473404d4e9244418364e5e48",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Green_03.png"
+      }
+    },
+    {
+      "id": "env-ea666b9083945fd41a480b494da793d2",
+      "name": "Mushroom Pink 1",
+      "category": "grass",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-ea666b9083945fd41a480b494da793d2.png",
+      "width": 43,
+      "height": 59,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "e5154264487e0c97dd1a726e92fadf561af9be1693d741d54d662709ce3cad2c",
+      "source": {
+        "pack": "environment-1",
+        "guid": "ea666b9083945fd41a480b494da793d2",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Mushroom/Mushroom_Pink_01.png"
+      }
+    },
+    {
+      "id": "env-ea7be898b8391ad42ac3788fb93b23a9",
+      "name": "Bush Ice 3",
+      "category": "bushes",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-ea7be898b8391ad42ac3788fb93b23a9.png",
+      "width": 96,
+      "height": 82,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "0222d293d3401280d03c4c909f75d5e4fc9b61276ba9005269538e7ec566a87e",
+      "source": {
+        "pack": "environment-2",
+        "guid": "ea7be898b8391ad42ac3788fb93b23a9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Bush/Bush_Ice_03.png"
+      }
+    },
+    {
+      "id": "env-ec0e87c88e3eef046bfece935b6c8d24",
+      "name": "Tree Green 13",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-ec0e87c88e3eef046bfece935b6c8d24.png",
+      "width": 261,
+      "height": 569,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "12bfe3b11bef7435bce161dff16a090e7f2a3f2af4c03162add1c5a960fe478e",
+      "source": {
+        "pack": "environment-1",
+        "guid": "ec0e87c88e3eef046bfece935b6c8d24",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Green_13.png"
+      }
+    },
+    {
+      "id": "env-ecf0a5eae96b40d43bdabc78b693b0c2",
+      "name": "Tree Snow Teal 6",
+      "category": "trees",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-ecf0a5eae96b40d43bdabc78b693b0c2.png",
+      "width": 163,
+      "height": 274,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "bf65f9655b39ce706ff9e15759e606a3580998bf179b338e2149460d1967d761",
+      "source": {
+        "pack": "environment-2",
+        "guid": "ecf0a5eae96b40d43bdabc78b693b0c2",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Teal_06.png"
+      }
+    },
+    {
+      "id": "env-eddd2be0cd39e324195474c3f8636ea9",
+      "name": "Plam Yellow Green 3",
+      "category": "trees",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-eddd2be0cd39e324195474c3f8636ea9.png",
+      "width": 288,
+      "height": 522,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d4fc680bfab9615553258d43fdc879c6d63abfbd46e1ab5595488cd07f357b94",
+      "source": {
+        "pack": "environment-1",
+        "guid": "eddd2be0cd39e324195474c3f8636ea9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Plam_Yellow_Green_03.png"
+      }
+    },
+    {
+      "id": "env-eee349f60eee28b44b9d87fb05517e69",
+      "name": "Tree Orange 3",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-eee349f60eee28b44b9d87fb05517e69.png",
+      "width": 197,
+      "height": 302,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "de248749c4a93cefb8ce3a75eaf579355320c4790b92a100d720482efac89e06",
+      "source": {
+        "pack": "environment-1",
+        "guid": "eee349f60eee28b44b9d87fb05517e69",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Tree_Orange_03.png"
+      }
+    },
+    {
+      "id": "env-f009c5533752b464f95b85cc3da3398b",
+      "name": "Fire Texture 3",
+      "category": "details",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-f009c5533752b464f95b85cc3da3398b.png",
+      "width": 459,
+      "height": 276,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "d0c435e474215e5f8e06508c28072cde6b776a28aaf5645b9be0ea432c158465",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f009c5533752b464f95b85cc3da3398b",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Fire/Fire_Texture_03.png"
+      }
+    },
+    {
+      "id": "env-f067bd76916d39b4ca67fd05888d0cd7",
+      "name": "Small Tree Orange 1",
+      "category": "trees",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/env-f067bd76916d39b4ca67fd05888d0cd7.png",
+      "width": 169,
+      "height": 218,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "eb6a7693ce5eed7bec450c88e06b701a7dde00dd20c21bb9246774eaae8ce43b",
+      "source": {
+        "pack": "environment-1",
+        "guid": "f067bd76916d39b4ca67fd05888d0cd7",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Small_Tree_Orange_01.png"
+      }
+    },
+    {
+      "id": "env-f4379c3766514b346a046d2e876b26ae",
+      "name": "Stone Lava 5",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-f4379c3766514b346a046d2e876b26ae.png",
+      "width": 354,
+      "height": 156,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "49cca26969b326ae87e24dcc69c97212cc19d823c4919d9ae09814c968d233e2",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f4379c3766514b346a046d2e876b26ae",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_05.png"
+      }
+    },
+    {
+      "id": "env-f4b0b405aba838a4daac365c141d6449",
+      "name": "Stone Lava 11",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-f4b0b405aba838a4daac365c141d6449.png",
+      "width": 312,
+      "height": 223,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "5297de04d4ece2b6b46bfeab464048b8f6f7307ad4b4fb5abb12dc74c5f5b421",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f4b0b405aba838a4daac365c141d6449",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_11.png"
+      }
+    },
+    {
+      "id": "env-f4dd69af97385ab49b3f728784d3c899",
+      "name": "Snow Up 2",
+      "category": "details",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-f4dd69af97385ab49b3f728784d3c899.png",
+      "width": 107,
+      "height": 42,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "bba82a43721b53a048eee16f52c891b079f3c73cce06dbf6df10f34738511497",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f4dd69af97385ab49b3f728784d3c899",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Field_Snow/Snow_Up_02.png"
+      }
+    },
+    {
+      "id": "env-f5528f6a2d1083244871b04c87bb52c0",
+      "name": "Stone Lava 12",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/env-f5528f6a2d1083244871b04c87bb52c0.png",
+      "width": 273,
+      "height": 108,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3836f4006e08aa40a0f1600d7e108ad33fbda95ee5993da956f1e58063f07bb0",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f5528f6a2d1083244871b04c87bb52c0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Lava_12.png"
+      }
+    },
+    {
+      "id": "env-f5feb86034b16734f98d17ec9c3977b9",
+      "name": "Dead Tree Brown 3",
+      "category": "trees",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-f5feb86034b16734f98d17ec9c3977b9.png",
+      "width": 117,
+      "height": 247,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "41a65adef0fe36e483fc62c19ba021f0c91974425e06a8dc869cb512a5a74717",
+      "source": {
+        "pack": "environment-1",
+        "guid": "f5feb86034b16734f98d17ec9c3977b9",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Tree/Dead_Tree_Brown_03.png"
+      }
+    },
+    {
+      "id": "env-f6c22842b3b797240af93daa4c6c6d14",
+      "name": "Big Bone",
+      "category": "details",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/env-f6c22842b3b797240af93daa4c6c6d14.png",
+      "width": 376,
+      "height": 264,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a3c8cd79ee069b8f5e0e935fca2487af51c0fe242dd2debd413f9071371f329f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f6c22842b3b797240af93daa4c6c6d14",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Etc/Big_Bone.png"
+      }
+    },
+    {
+      "id": "env-f7032f38019671243a8c65530cf9e6a0",
+      "name": "Tree Fire Bare 5",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-f7032f38019671243a8c65530cf9e6a0.png",
+      "width": 242,
+      "height": 395,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a30bf3414168f05fb88e9ec701b88ebfd13a6c6b3c7f3006b14b2312d78b9f34",
+      "source": {
+        "pack": "environment-2",
+        "guid": "f7032f38019671243a8c65530cf9e6a0",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Bare_05.png"
+      }
+    },
+    {
+      "id": "env-f9d3a7413f16d1547ae507170d548b50",
+      "name": "Bush Green 4",
+      "category": "bushes",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/env-f9d3a7413f16d1547ae507170d548b50.png",
+      "width": 91,
+      "height": 70,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "eb0012956ee4d5bad87bb90b726054b0a3dff60bd8606db3511dd53976abb5e8",
+      "source": {
+        "pack": "environment-1",
+        "guid": "f9d3a7413f16d1547ae507170d548b50",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Bush/Bush_Green_04.png"
+      }
+    },
+    {
+      "id": "env-f9ebcfb357ce8da4eb03c637eea02513",
+      "name": "Desert Dune",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/env-f9ebcfb357ce8da4eb03c637eea02513.png",
+      "width": 530,
+      "height": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "18a88eefbac89ad3c6a4aed83802dd5fedcc575545d9cf7a1458273a7852abd6",
+      "source": {
+        "pack": "environment-1",
+        "guid": "f9ebcfb357ce8da4eb03c637eea02513",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Desert_Dune.png"
+      }
+    },
+    {
+      "id": "env-fa15fe4635317ff42b8069ecc919a545",
+      "name": "Tree Fire Bare 4",
+      "category": "trees",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-fa15fe4635317ff42b8069ecc919a545.png",
+      "width": 223,
+      "height": 371,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "b6217e45aa660dea7f0711e8c2991f02ebb0257d6ab898eeaaaf565192e6284f",
+      "source": {
+        "pack": "environment-2",
+        "guid": "fa15fe4635317ff42b8069ecc919a545",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Fire_Bare_04.png"
+      }
+    },
+    {
+      "id": "env-fabdb9a5390eb104aaff3a4b9d836c09",
+      "name": "Forest Flower 2",
+      "category": "grass",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/env-fabdb9a5390eb104aaff3a4b9d836c09.png",
+      "width": 27,
+      "height": 20,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "bda381f647763ec7b14689aef171aae9b1cb8a249303011fd7715634ad665784",
+      "source": {
+        "pack": "environment-1",
+        "guid": "fabdb9a5390eb104aaff3a4b9d836c09",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Etc/Forest_Flower_02.png"
+      }
+    },
+    {
+      "id": "env-fc349432bebfc674294a6f2190e4a81f",
+      "name": "Stone Fire Red 10",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/env-fc349432bebfc674294a6f2190e4a81f.png",
+      "width": 317,
+      "height": 132,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "233afc76e5a8117a9f0831abf0473727dd887a74e6f734a33cbbeb971a65eff3",
+      "source": {
+        "pack": "environment-2",
+        "guid": "fc349432bebfc674294a6f2190e4a81f",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Stone/Stone_Fire_Red_10.png"
+      }
+    },
+    {
+      "id": "env-fd332a52614a84141afaeabab5a37564",
+      "name": "Tree Snow Bare LightBrown 5",
+      "category": "trees",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/env-fd332a52614a84141afaeabab5a37564.png",
+      "width": 242,
+      "height": 395,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "03827badc89695fce23ac1e416caa3ed68fcb7c51f52458e2319926fb30e2716",
+      "source": {
+        "pack": "environment-2",
+        "guid": "fd332a52614a84141afaeabab5a37564",
+        "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_05.png"
+      }
+    }
+  ],
+  "biomes": [
+    "forest",
+    "deep-forest",
+    "autumn",
+    "desert",
+    "snow",
+    "ice",
+    "fire",
+    "lava"
+  ]
+}

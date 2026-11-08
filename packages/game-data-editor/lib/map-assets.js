@@ -5,7 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const crypto = require('crypto');
-const IDS = ['Map01', 'Map02', 'Map03', 'Map04'];
+const Catalog = require('./map-catalog');
+const IDS = Catalog.IDS;
 const OBSTACLE = '18fdaVPwQRBIrhl5kY8QMeg';
 const PHYSICS = ['cc.PhysicsPolygonCollider', 'cc.PhysicsBoxCollider', 'cc.PhysicsCircleCollider'];
 const identity = [1, 0, 0, 1, 0, 0];
@@ -57,13 +58,13 @@ function assetIndex(root, wanted) {
 function loadIndex(root, documents) {
     const wanted = new Set(), maps = IDS.map(id => {
         const data = loadMap(root, id).data;
-        data.forEach(component => { if (component._spriteFrame) wanted.add(component._spriteFrame.__uuid__); });
-        return { id, name: id, path: fileFor(id), stages: stagesFor(id, documents), data };
+        data.forEach(component => { if (component && component._spriteFrame) wanted.add(component._spriteFrame.__uuid__); });
+        return { id, name: Catalog.maps[id].name, path: fileFor(id), stages: stagesFor(id, documents), data };
     });
     const images = assetIndex(root, wanted);
     return maps.map(map => {
         const used = {};
-        map.data.forEach(component => { const id = component._spriteFrame && component._spriteFrame.__uuid__; if (id && images[id]) used[id] = images[id]; });
+        map.data.forEach(component => { const id = component && component._spriteFrame && component._spriteFrame.__uuid__; if (id && images[id]) used[id] = images[id]; });
         return { id: map.id, name: map.name, path: map.path, stages: map.stages, images: used };
     });
 }
@@ -182,6 +183,32 @@ function moveEdit(data, nodeId, worldPosition, doc) {
     const local = parent ? point(inverse(parent.world), worldPosition) : worldPosition;
     return trsEdit(data, nodeId, local, doc);
 }
+function moveObjectEdits(data, nodeId, worldPosition, doc) {
+    const info = model(data), node = info.byId[nodeId];
+    if (!node) throw new Error('Select a map node first.');
+    const roots = new Set([nodeId]);
+    if (node.kind === 'building') {
+        const component = data[node.ownerComponent];
+        const layers = new Set([info.roots.ndMain, info.roots.ndDown, info.roots.ndUI, info.roots.ndTrack]);
+        function add(ref) {
+            let id = reference(ref), value = data[id];
+            if (value && value.__type__ !== 'cc.Node') id = reference(value.node);
+            let part = info.byId[id];
+            while (part && !layers.has(part.parent)) part = info.byId[part.parent];
+            if (part && !layers.has(part.id)) roots.add(part.id);
+        }
+        ['ndLockList', 'ndAniOther', 'ndAniDown', 'ndAniEffect'].forEach(key => {
+            const refs = component[key]; (Array.isArray(refs) ? refs : [refs]).filter(Boolean).forEach(add);
+        });
+        // Mill fields are separate floor sprites in the authored prefabs.
+        info.nodes.filter(n => n.parent === info.roots.ndDown && n.name === node.slot + '-td').forEach(n => roots.add(n.id));
+    }
+    const delta = { x: worldPosition.x - node.position.x, y: worldPosition.y - node.position.y };
+    return Array.from(roots).map(id => {
+        const p = info.byId[id].position;
+        return moveEdit(data, id, { x: p.x + delta.x, y: p.y + delta.y }, doc);
+    });
+}
 function duplicateObstacle(data, nodeId, doc) {
     const info = model(data), original = info.byId[nodeId];
     if (!original || original.kind !== 'obstacle') throw new Error('Only an obstacle owner can be duplicated. Select it in the Obstacles list.');
@@ -290,4 +317,4 @@ function routeTest(root, data, start, goal, radius, includeBuildings) {
     return { path: pathResult, polygons: polygons.length, bounds: info.bounds, note: 'Authored collision state. Battle upgrades can enable different building shapes.' };
 }
 module.exports = { IDS, OBSTACLE, loadMap, loadIndex, stagesFor, model, transform, multiply, inverse, point, colliderPoints,
-    trsEdit, moveEdit, duplicateObstacle, validate, issuesFor, routeTest, fileFor };
+    trsEdit, moveEdit, moveObjectEdits, duplicateObstacle, validate, issuesFor, routeTest, fileFor };

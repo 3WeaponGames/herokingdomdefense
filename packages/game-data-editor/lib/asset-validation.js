@@ -1,4 +1,6 @@
 'use strict';
+const UnitRecords=require('./unit-records');
+const MapCatalog=require('./map-catalog');
 
 // Validate the resource paths used by the actual runtime readers, rather than
 // accepting a matching filename from an unrelated bundle. Read-only throughout.
@@ -95,7 +97,7 @@ function createContext(root, documents) {
     function buildings() {
         if (buildingAssets) return buildingAssets;
         buildingAssets = {};
-        ['Map01', 'Map02', 'Map03', 'Map04'].forEach(id => {
+        MapCatalog.IDS.forEach(id => {
             const prefab = map(id);
             prefab.forEach(component => {
                 const type = component.ndAniMain && buildingType(component); if (!type) return;
@@ -184,7 +186,7 @@ function validate(root, documents, changes) {
                 if (!changedMap && !touched(changes, doc, at.concat(key))) return;
                 try {
                     const prefab = context.map(stage.prefab), slots = {};
-                    prefab.forEach(component => { if (component.ID && component.ndAniMain) slots[component.ID] = context.buildingType(component); });
+                    prefab.forEach(component => { if (component && component.ID && component.ndAniMain) slots[component.ID] = context.buildingType(component); });
                     (stage[key] || []).forEach((pair, pi) => {
                         if (slots[pair[1]] && slots[pair[1]] !== pair[0]) issue(doc, at.concat(key, pi), 'Map slot ' + pair[1] + ' uses building type ' + slots[pair[1]] + ', not type ' + pair[0] + '. Choose a compatible slot.');
                     });
@@ -196,9 +198,11 @@ function validate(root, documents, changes) {
     for(const table of ['SoldierCfg','AllyCfg'])Object.keys(base[table] || {}).forEach(id => {
         const unit = base[table][id], at = [table, id], allied=table==='AllyCfg';
         check('A', at.concat('prefab'), unit.prefab, name => {
-            if (Number(id) >= 90011) throw new Error('Boss transformation forms have no directly spawnable prefab.');
+            if (!allied && [90011,90012].includes(Number(id))) throw new Error('Boss transformation forms have no directly spawnable prefab.');
             const candidate = imported(root, 'KinghtFallEnemy', (allied?'Play':'')+name, 'prefab').data;
-            const canonical = (allied?'Play':'')+'ItemEnemy' + String(Number(id) - 90000).padStart(2, '0');
+            const templateID=UnitRecords.behavior(unit,id);
+            if(unit.BehaviorTemplate!==undefined&&!UnitRecords.BEHAVIOR_TEMPLATES.includes(templateID))throw new Error('Choose an implemented monster behavior template.');
+            const canonical = (allied?'Play':'')+'ItemEnemy' + String(templateID - 90000).padStart(2, '0');
             const template = imported(root, 'KinghtFallEnemy', canonical, 'prefab').data;
             const types = template.filter(c => c.__type__ && c.__type__.indexOf('.') < 0).map(c => c.__type__);
             if (!types.some(type => candidate.some(c => c.__type__ === type))) throw new Error('Selected prefab has a different gameplay controller. Use a model variant of ' + canonical + '.');
@@ -211,8 +215,14 @@ function validate(root, documents, changes) {
                 context.unitModel(ally, allyTemplate);
             }
             if (!candidate.some(c => c.__type__ === 'sp.Skeleton')) throw new Error('Selected unit prefab has no animated model.');
-        }, Number(id) >= 90011);
-        check('A', at.concat('loadIcon'), unit.loadIcon, name => imported(root, 'KinghtFallEnemy', 'icon/' + name, 'sprite'), Number(id) >= 90011);
+        }, !allied && [90011,90012].includes(Number(id)));
+        check('A', at.concat('loadIcon'), unit.loadIcon, name => imported(root, 'KinghtFallEnemy', 'icon/' + name, 'sprite'), !allied && [90011,90012].includes(Number(id)));
+        if(unit.MonsterSource!==undefined)check('A',at.concat('MonsterSource'),unit.MonsterSource,source=>{
+            if(typeof source!=='string'||!/^monster[12]\/[A-Za-z0-9_-]+$/.test(source))throw new Error('Choose a known imported monster source.');
+            const [pack,name]=source.split('/'),catalog=read(path.join(root,'assets/resources/unit-library',pack,'catalog.json'));
+            if(!catalog.units.some(unit=>unit.id===source))throw new Error('Monster source is not present in its imported pack catalog.');
+            imported(root,'resources','unit-library/'+pack+'/Units/'+name,'spine');
+        });
     });
     Object.keys(base.BuildEnum || {}).forEach(id => {
         const building = base.BuildEnum[id];
@@ -220,6 +230,10 @@ function validate(root, documents, changes) {
             const at = ['BuildEnum', id, 'levelList', index];
             sprite('A', at.concat('Icon'), level.Icon, 'KinghtFallIconBuild');
             check('A', at.concat('Skin'), level.Skin, name => context.skin(name, context.buildings()[id]));
+            if(level.Appearance&&typeof level.Appearance==='object'&&!Array.isArray(level.Appearance)){
+                check('A',at.concat('Appearance','sprite'),level.Appearance.sprite,name=>imported(root,'resources',name,'sprite'));
+                if(level.Appearance.weapon&&typeof level.Appearance.weapon==='object'&&!Array.isArray(level.Appearance.weapon))check('A',at.concat('Appearance','weapon','sprite'),level.Appearance.weapon.sprite,name=>imported(root,'resources',name,'sprite'));
+            }
         });
     });
     (base.EquipCfg || []).forEach((equipment, index) => (equipment.levelInfo || []).forEach((level, li) => {
@@ -235,7 +249,7 @@ function validate(root, documents, changes) {
     ['timings', 'timingDefaults'].forEach(group => Object.keys(overrides[group] || {}).forEach(key => {
         const parts = key.split(':'), side = parts[0], id = Number(parts[1]), form = parts[2];
         if (!touched(changes, 'overrides', [group, key]) && !touched(changes, 'A', [side==='ally'&&base.AllyCfg?'AllyCfg':'SoldierCfg', parts[1], 'prefab'])) return;
-        const valid = key === 'hero:hero:default' || parts.length === 3 && String(id) === parts[1] && (side === 'enemy' && ((id >= 90001 && id <= 90009 && form === 'default') || (id >= 90010 && id <= 90012 && form === String(id - 90009))) || side === 'ally' && id >= 90001 && id <= 90004 && form === 'default');
+        const valid = parts.length === 3 && UnitRecords.reachable(base,side,parts[1],form);
         if (!valid) { issue('overrides', [group, key], 'Timing key does not identify a reachable unit and form.'); return; }
         const item = overrides[group][key];
         if (!item || typeof item.attack !== 'number' || !Number.isFinite(item.attack)) return;
@@ -248,7 +262,7 @@ function validate(root, documents, changes) {
             } else {
                 const unit = (side==='ally'&&base.AllyCfg||base.SoldierCfg||{})[id];
                 if (!unit) throw new Error('Timing unit no longer exists.');
-                const boss = side === 'enemy' && id >= 90010;
+                const boss = side === 'enemy' && UnitRecords.boss(id);
                 const prefab = imported(root, 'KinghtFallEnemy', boss ? 'ItemEnemy10' : (side === 'ally' ? 'Play' : '') + unit.prefab, 'prefab').data;
                 component = prefab.filter(c => c.__type__ === 'sp.Skeleton')[boss ? id - 90010 : 0];
             }

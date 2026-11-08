@@ -3,7 +3,7 @@ const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
-const themes = { Map01: 'meadow', Map02: 'forest', Map03: 'desert', Map04: 'snowfield' };
+const themes = { Map01: 'meadow', Map02: 'forest', Map03: 'desert', Map04: 'snowfield', Map07: 'fire' };
 
 function bus(object = {}) {
   const listeners = [];
@@ -115,7 +115,7 @@ test('background state survives lobby enable cycles and releases resize listener
   f.controller.onDisable();
 });
 
-test('lobby prefab references all four production textures and retires the moving blue pattern', () => {
+test('lobby prefab references every production biome backdrop and retires the moving blue pattern', () => {
   const prefab = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallPrefabs/home/KinghtFallUIHome.prefab')));
   const node = prefab.find(object => object._name === 'ndBg');
   const components = node._components.map(ref => prefab[ref.__id__]);
@@ -136,6 +136,6 @@ test('lobby prefab references all four production textures and retires the movin
     assert.equal(png.readUInt32BE(16), 1024); assert.equal(png.readUInt32BE(20), 1536);
     ids.add(frame.uuid);
   }
-  assert.equal(ids.size, 4);
+  assert.equal(ids.size, Object.keys(themes).length);
   assert.equal(components.find(component => component.__type__ === 'cc.Sprite')._spriteFrame.__uuid__, controller.meadow.__uuid__);
 });

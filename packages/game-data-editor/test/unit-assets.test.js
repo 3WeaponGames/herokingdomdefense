@@ -44,13 +44,41 @@ test('building draft previews resolve nested runtime icon references and preserv
     Assets.invalidate();
 });
 
+test('new tower previews use map sprite artwork and carry authored transforms without loading gameplay',()=>{
+    const temporary=require('./owned-temp'),fixtureRoot=temporary('hkd-tower-artwork-preview-');
+    const file=path.join(fixtureRoot,'assets/resources/buildings/towers/cannon-1.png');
+    fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,'fixture');
+    fs.writeFileSync(file+'.meta',JSON.stringify({subMetas:{fixture:{importer:'sprite-frame'}}}));
+    const appearance={sprite:'buildings/towers/cannon-1',width:160,height:200,offsetX:-10,offsetY:4,muzzleX:3,muzzleY:100};
+    const record={levelList:[{Icon:'old-icon',Appearance:appearance}]},before=JSON.stringify(record);
+    const result=Assets.describe(fixtureRoot,{type:'building',id:'2',documents:{A:{data:{}}},record});
+    assert.equal(result.image,url.pathToFileURL(file).href);assert.deepEqual(result.appearance,appearance);
+    assert.equal(result.runtimePath,null);assert.deepEqual(result.layers,[]);assert.equal(JSON.stringify(record),before);
+    record.levelList[0].Appearance.sprite='missing';
+    assert.equal(Assets.describe(fixtureRoot,{type:'building',id:'2',documents:{A:{data:{}}},record}).image,null,'invalid map artwork never pretends the old icon is the runtime sprite');
+    Assets.invalidate();
+});
+
+test('layered tower previews resolve base and weapon independently and preserve invalid weapon drafts',()=>{
+    const temporary=require('./owned-temp'),fixtureRoot=temporary('hkd-tower-layer-preview-');
+    function sprite(name){const file=path.join(fixtureRoot,'assets/resources/buildings/towers',name+'.png');fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,'fixture');fs.writeFileSync(file+'.meta',JSON.stringify({subMetas:{fixture:{importer:'sprite-frame'}}}));return file;}
+    const baseFile=sprite('base'),weaponFile=sprite('weapon'),appearance={sprite:'buildings/towers/base',width:180,height:220,weapon:{sprite:'buildings/towers/weapon',width:120,height:80,pivotX:.2,pivotY:.6,offsetX:10,offsetY:180,muzzleX:90,muzzleY:15}};
+    const record={levelList:[{Icon:'full-tower-icon',Appearance:appearance}]},before=JSON.stringify(record),request={type:'building',id:'2',documents:{A:{data:{}}},record};
+    const result=Assets.describe(fixtureRoot,request);
+    assert.equal(result.image,url.pathToFileURL(baseFile).href);assert.equal(result.weaponImage,url.pathToFileURL(weaponFile).href);assert.deepEqual(result.appearance,appearance);assert.equal(JSON.stringify(record),before);
+    appearance.weapon.sprite='missing/weapon';const missing=Assets.describe(fixtureRoot,request);
+    assert.equal(missing.image,url.pathToFileURL(baseFile).href);assert.equal(missing.weaponImage,null);assert.equal(appearance.weapon.sprite,'missing/weapon','preview never repairs a missing resource');
+    Assets.invalidate();
+});
+
 test('actual Creator model/skin/attack/backward-seek integration for every reachable unit',{skip:engineUnavailable||false},()=>{
     function layersFor(description){return description.layers.map(d=>{const atlas=new spine.TextureAtlas(d.atlas,name=>{const png=fs.readFileSync(url.fileURLToPath(d.pages[name]));return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});});const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(d.json),skeleton=new spine.Skeleton(data);assert(data.findSkin(d.skin),'skin '+d.skin);skeleton.setSkinByName(d.skin);return{description:d,data,skeleton,atlas};});}
     function coordinates(layers){return layers.map(l=>Renderer.geometry(spine,l).map(g=>Array.from(g.vertices)));}
     for(const type of ['enemy','ally','hero'])for(const id of type==='hero'?['hero']:Object.keys(cfg.SoldierCfg).filter(id=>type==='enemy'||Number(id)<=90004)){
         const description=describe({type,id}),layers=layersFor(description);assert(layers.length>0);
         Renderer.seek(spine,layers,'attack',0,false);const zero=coordinates(layers);assert(zero.some(layer=>layer.length>0));
-        Renderer.seek(spine,layers,'attack',.5,false);assert.notDeepEqual(coordinates(layers),zero,'attack pose changes '+type+id);
+        const attackDuration=Math.max(...layers.map(layer=>layer.data.findAnimation('attack').duration));
+        assert([.25,.5,.75].some(fraction=>{Renderer.seek(spine,layers,'attack',attackDuration*fraction,false);return JSON.stringify(coordinates(layers))!==JSON.stringify(zero);}), 'attack pose changes '+type+id);
         Renderer.seek(spine,layers,'attack',0,false);assert.deepEqual(coordinates(layers),zero,'backward seek is deterministic '+type+id);
         const box=Renderer.bounds(spine,layers);assert(box.width>0&&box.height>0&&isFinite(box.width));
         if(type==='hero')assert.equal(layers.length,7);

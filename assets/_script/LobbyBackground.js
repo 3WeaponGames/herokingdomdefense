@@ -1,6 +1,6 @@
 "use strict";
 
-var mapThemes = { Map01: "meadow", Map02: "forest", Map03: "desert", Map04: "snowfield" };
+var mapThemes = { Map01: "meadow", Map02: "forest", Map03: "desert", Map04: "snowfield", Map07: "fire" };
 
 function coverSize(width, height, imageWidth, imageHeight) {
   if (![width, height, imageWidth, imageHeight].every(function (value) { return isFinite(value) && value > 0; })) return null;
@@ -14,7 +14,8 @@ var LobbyBackground = cc.Class({
     meadow: cc.SpriteFrame,
     forest: cc.SpriteFrame,
     desert: cc.SpriteFrame,
-    snowfield: cc.SpriteFrame
+    snowfield: cc.SpriteFrame,
+    fire: cc.SpriteFrame
   },
   onLoad: function () {
     this.setMap(this._mapPrefab || "Map01");
@@ -31,6 +32,7 @@ var LobbyBackground = cc.Class({
     cc.view.off("canvas-resize", this.fit, this);
   },
   setMap: function (prefab) {
+    prefab = {forest:'Map01','deep-forest':'Map02',autumn:'Map02',desert:'Map03',snow:'Map04',ice:'Map04',fire:'Map07',lava:'Map07'}[prefab] || prefab;
     this._mapPrefab = Object.prototype.hasOwnProperty.call(mapThemes, prefab) ? prefab : "Map01";
     var frame = this[mapThemes[this._mapPrefab]] || this.meadow;
     var sprite = this.node.getComponent(cc.Sprite);

@@ -34,19 +34,13 @@ var def_KinghtFallEnemyItem10 = function (t) {
     this.spAni2.setCompleteListener(function (t) {
       switch (t.animation.name) {
         case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack:
-          e.doAttackFinish();
-          break;
-        case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Die:
-          e.freeNode();
+          if (!e.isDead() && !e._isPooled) e.doAttackFinish();
       }
     });
     this.spAni3.setCompleteListener(function (t) {
       switch (t.animation.name) {
         case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack:
-          e.doAttackFinish();
-          break;
-        case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Die:
-          e.freeNode();
+          if (!e.isDead() && !e._isPooled) e.doAttackFinish();
       }
     });
   };
@@ -131,12 +125,12 @@ var def_KinghtFallEnemyItem10 = function (t) {
   };
   _ctor.prototype.initData = function (e, n) {
     this._transform = null;
-    t.prototype.initData.call(this, e, n);
     this.spIdx = 0;
     this.spAni.node.active = true;
     this.spAni2.node.active = false;
     this.spAni3.node.active = false;
     this.spAniUp.node.active = false;
+    t.prototype.initData.call(this, e, n);
     this.time[r.Spell] = 0;
     this.time[r.SpellMax] = this.cfg.Data[1];
     this.setBody(this.getSpAni().node);
@@ -182,6 +176,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
   _ctor.prototype.onUpdate = function (e) {
     if (!this.isDead()) {
       this.time[r.Spell] += e;
+      if (this._hitReactionPlaying) { this.updateCombatTimers(e); this.rigidBody.linearVelocity = cc.Vec2.ZERO; return; }
       // The transform owns this Wait state until its animation completes.
       // Ordinary enemies that reach the end of their route still reacquire targets.
       if (this._transform) {
@@ -294,6 +289,12 @@ var def_KinghtFallEnemyItem10 = function (t) {
       case 2:
         return this.spAni3;
     }
+  };
+  _ctor.prototype.playDeath = function (done) {
+    this._transform = null;
+    this.spAniUp.node.active = false;
+    this.getSpAni().node.active = true;
+    t.prototype.playDeath.call(this, done);
   };
   _ctor.prototype.onChangeSpeed = function () {
     var t = $z1KinghtFallUIGame.default.instance.speed;

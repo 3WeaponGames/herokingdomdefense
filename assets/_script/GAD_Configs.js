@@ -20,6 +20,7 @@ exports.emGADHitState = exports.emGADGameState = exports.emGADRoleState = export
   t.configs = "gad_configs";
 })(r = exports.emGADBundles || (exports.emGADBundles = {}));
 exports.GADConfig = {
+  EnergyCost: 10,
   WallWidth: 350,
   EnemyFixedWidth: 188,
   BgMusic: "BraveTowerBG",

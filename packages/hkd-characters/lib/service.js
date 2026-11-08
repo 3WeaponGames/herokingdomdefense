@@ -17,7 +17,7 @@ class Service{
     const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero'}];
     for(const type of ['ally','enemy'])for(const row of Object.values(type==='ally'&&cfg.AllyCfg||cfg.SoldierCfg)){
       if(type==='ally'&&(!row.prefab||!fs.existsSync(path.join(this.root,'assets/KinghtFallEnemy/Play'+row.prefab+'.prefab'))))continue;
-      const boss=type==='enemy'&&row.ID>=90010,form=boss?String(row.ID-90009):'default';
+      const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
       result.push({type,id:String(row.ID),key:type+':'+row.ID+':'+form,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies'});
     }
     return result;

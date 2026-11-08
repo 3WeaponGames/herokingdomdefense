@@ -1,0 +1,568 @@
+{
+  "version": 1,
+  "description": "Initial enemy guide copy. Explicit saves in the Units editor own subsequent wording.",
+  "profiles": {
+    "90001": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。"
+    },
+    "90002": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。"
+    },
+    "90003": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。"
+    },
+    "90004": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。"
+    },
+    "90005": {
+      "en": "Launches a heavy ranged projectile at one target, with a long pause between attacks.",
+      "zh": "向单个目标发射重型远程投射物，两次攻击之间的间隔较长。"
+    },
+    "90006": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。"
+    },
+    "90007": {
+      "en": "Strikes a nearby target and deals splash damage to additional targets around the impact.",
+      "zh": "攻击附近的目标，并对落点周围的其他目标造成溅射伤害。"
+    },
+    "90008": {
+      "en": "Moves through obstacles and fires homing projectiles at targets within range.",
+      "zh": "可穿过障碍，向射程内的目标发射追踪投射物。"
+    },
+    "90009": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。"
+    },
+    "90010": {
+      "en": "The first form of a transforming monster. It strikes in melee before changing into its next form during battle.",
+      "zh": "变形怪物的第一形态，以近战攻击，并在战斗中转为下一形态。"
+    },
+    "90011": {
+      "en": "The second form of a transforming monster. It attacks in melee and can change into its final form.",
+      "zh": "变形怪物的第二形态，以近战攻击，并可转为最终形态。"
+    },
+    "90012": {
+      "en": "The final form of a transforming monster, combining melee strikes with periodic attacks against several nearby targets.",
+      "zh": "变形怪物的最终形态，既能近战攻击，也会定期攻击附近的多个目标。"
+    }
+  },
+  "lore": {
+    "91001": {
+      "en": "A fence-side prowler that treats the frontier grasslands as its private hunting ground.",
+      "zh": "这位篱笆旁的潜行客，把边境草原当成了自己的私家猎场。"
+    },
+    "91002": {
+      "en": "This restless stray follows old cart tracks wherever they wind across the plains.",
+      "zh": "这只闲不住的流浪犬，循着旧车辙走遍了平原。"
+    },
+    "91003": {
+      "en": "A flash of russet among the meadow stones, always curious about an unattended camp.",
+      "zh": "草甸乱石间闪过一抹赤褐色，它总对无人看守的营地充满好奇。"
+    },
+    "91004": {
+      "en": "Deep forest hollows are home to this shaggy wanderer and its muddy pawprints.",
+      "zh": "这位毛茸茸的漫游者住在密林深处，沿途留下沾泥的脚印。"
+    },
+    "91005": {
+      "en": "A pale shape from the snowfields, familiar with every ridge of the winter landscape.",
+      "zh": "来自雪原的苍白身影，熟悉冬日大地上的每一道山脊。"
+    },
+    "91006": {
+      "en": "Its crimson shell brings a startling splash of color to the sun-baked desert.",
+      "zh": "赤红的甲壳，为烈日烘烤的荒漠添上了一抹醒目的颜色。"
+    },
+    "91007": {
+      "en": "Frost-colored plates make this beetle look like a shard of the northern glaciers.",
+      "zh": "冰霜色的甲片，让这只甲虫仿佛成了北方冰川的一块碎片。"
+    },
+    "91008": {
+      "en": "Travelers once mistook its metallic shell for a relic half-buried in the sand.",
+      "zh": "旅人曾把它金属般的甲壳，当成半埋在沙里的古老遗物。"
+    },
+    "91009": {
+      "en": "The forest floor is full of secrets, and this red-shelled scavenger inspects them all.",
+      "zh": "林地上藏着无数秘密，这位红甲拾荒者总要逐一探个究竟。"
+    },
+    "91010": {
+      "en": "A proud plains hunter, drawn to the open sky above the scattered grazing grounds.",
+      "zh": "这位骄傲的平原猎手，钟爱散落牧场上方的开阔天空。"
+    },
+    "91011": {
+      "en": "Riverbank camps know this noisy visitor almost as well as they know the morning mist.",
+      "zh": "河岸营地对这位吵闹的访客，就像对清晨薄雾一样熟悉。"
+    },
+    "91012": {
+      "en": "An old resident of the quiet forest, watching the paths long after dusk.",
+      "zh": "寂静森林的老住客，在暮色降临许久后仍注视着林间小径。"
+    },
+    "91013": {
+      "en": "Its bright plumage is a colorful reminder of warmer groves beyond the open plains.",
+      "zh": "鲜亮的羽毛，让人想起开阔平原之外那些温暖的林园。"
+    },
+    "91014": {
+      "en": "A red flicker over the grass, like a wandering ember that never found its campfire.",
+      "zh": "草叶上掠过一道红影，仿佛找不到归属篝火的流浪余烬。"
+    },
+    "91015": {
+      "en": "The snow bird belongs to the still mornings when the whole north seems to hold its breath.",
+      "zh": "雪鸟属于那些寂静的清晨，仿佛整个北境都屏住了呼吸。"
+    },
+    "91016": {
+      "en": "Its oversized beak has made it the subject of many a plains traveler's sketch.",
+      "zh": "夸张的大喙，让它成了许多平原旅人速写本上的主角。"
+    },
+    "91017": {
+      "en": "A perpetually offended riverbank resident, unimpressed by every passerby.",
+      "zh": "这位河岸住客总是一脸不悦，对每个过路人都不以为然。"
+    },
+    "91018": {
+      "en": "River folklore describes this rough-looking blowfish as a beast from the muddy shallows.",
+      "zh": "河畔传说把这只粗犷的刺鲀，称作来自泥泞浅滩的野兽。"
+    },
+    "91019": {
+      "en": "Even the quietest meadow seems ready for a celebration when this colorful buffalo appears.",
+      "zh": "只要这头色彩鲜明的野牛出现，再安静的草甸也像要开一场庆典。"
+    },
+    "91020": {
+      "en": "A familiar silhouette on the plains, following trails older than the frontier settlements.",
+      "zh": "平原上熟悉的身影，沿着比边境村落更古老的兽径漫游。"
+    },
+    "91021": {
+      "en": "Its iron-like shell recalls the broken tools scattered around abandoned desert mines.",
+      "zh": "铁一般的甲壳，让人想起废弃沙漠矿场里散落的旧工具。"
+    },
+    "91022": {
+      "en": "Among the desert stones, this crab looks like another boulder that decided to wander.",
+      "zh": "在荒漠乱石间，它像一块突然决定四处游荡的石头。"
+    },
+    "91023": {
+      "en": "A pale wanderer of the icy banks, carrying a little piece of winter wherever it goes.",
+      "zh": "冰岸边的苍白漫游者，无论走到哪里都带着几分冬日气息。"
+    },
+    "91024": {
+      "en": "Plains shepherds know this goat by its stubborn temper and untidy wandering routes.",
+      "zh": "平原牧人都认得这只山羊，认得它的倔脾气和毫无章法的漫游路线。"
+    },
+    "91025": {
+      "en": "A dark-coated figure often glimpsed between the trunks of the silent forest.",
+      "zh": "沉寂森林的树干之间，时常能瞥见它深色的身影。"
+    },
+    "91026": {
+      "en": "Some say the mushroom groves simply grew tired of standing still and sent out this goat.",
+      "zh": "有人说，蘑菇林厌倦了原地不动，于是派出了这只山羊。"
+    },
+    "91027": {
+      "en": "A riverbank oddity whose helmet has inspired more questions than any traveler can answer.",
+      "zh": "这位河岸怪客的头盔，引出了无数旅人也答不上的问题。"
+    },
+    "91028": {
+      "en": "The shallows have many strange residents, but few wear such a permanently wild expression.",
+      "zh": "浅滩住着许多怪异生灵，却很少有谁像它这样始终神情狂放。"
+    },
+    "91029": {
+      "en": "A drifting curiosity that looks more at home in an ancient forest dream than in a field guide.",
+      "zh": "飘游的奇异生灵，比起野外图鉴，更像来自古老森林的一场梦。"
+    },
+    "91030": {
+      "en": "Its glassy winter colors recall the blue light beneath a frozen lake.",
+      "zh": "通透的冬日色泽，令人想起冰封湖面下的幽蓝光芒。"
+    },
+    "91031": {
+      "en": "The desert's glowing sunsets seem to have lent this lizard their fiery colors.",
+      "zh": "荒漠灿烂的落日，仿佛把火焰般的颜色借给了这只蜥蜴。"
+    },
+    "91032": {
+      "en": "Its striking horn makes even a small desert trail feel like the entrance to an old legend.",
+      "zh": "醒目的尖角，让一条小小的沙漠兽径也像通向古老传说的入口。"
+    },
+    "91033": {
+      "en": "A curious forest lizard whose unusual silhouette has puzzled generations of scouts.",
+      "zh": "这只轮廓奇特的林中蜥蜴，让一代又一代斥候困惑不已。"
+    },
+    "91034": {
+      "en": "A strange visitor in winter colors, like a tale carried inland from the frozen coast.",
+      "zh": "披着冬日色彩的奇异访客，仿佛是从冰封海岸传入内陆的一则故事。"
+    },
+    "91035": {
+      "en": "A river wanderer dressed for adventures far beyond the shadowed forest banks.",
+      "zh": "这位河流漫游者的一身装束，像是准备去阴影林岸之外闯荡远方。"
+    },
+    "91036": {
+      "en": "Its vivid rings are a favorite subject of naturalists studying the forest waterways.",
+      "zh": "鲜明的环纹，是研究森林水道的博物学家最喜爱的题材之一。"
+    },
+    "91037": {
+      "en": "A small green mystery, leaving frontier travelers to argue about what a slime really is.",
+      "zh": "一团小小的绿色谜团，让边境旅人争论起史莱姆究竟是什么。"
+    },
+    "91038": {
+      "en": "Its rich purple hue stands out among the gold and green of the plains.",
+      "zh": "浓郁的紫色，在平原的金黄与翠绿之间格外醒目。"
+    },
+    "91039": {
+      "en": "The blue shell looks like a polished keepsake from a winter stream.",
+      "zh": "蓝色的壳，像是从冬日溪流里拾来的温润珍藏。"
+    },
+    "91040": {
+      "en": "A traveler with a spiral shell, forever carrying a reminder of distant waters.",
+      "zh": "背着螺旋外壳的旅者，始终带着一份对远方水域的记忆。"
+    },
+    "91041": {
+      "en": "Mossy paths and rain-dark leaves provide the perfect backdrop for this green forest resident.",
+      "zh": "长苔的小径和雨后深色的树叶，是这位绿色林中住客最相衬的背景。"
+    },
+    "91042": {
+      "en": "Its bell-like adornment has given rise to stories about lost caravans in the desert.",
+      "zh": "铃铛般的装饰，引出了许多关于荒漠失踪商队的故事。"
+    },
+    "91043": {
+      "en": "A ribbon of fiery color winding through a landscape of ochre sand and dark stone.",
+      "zh": "一道火焰般的色彩，蜿蜒于赭色沙地与深色岩石之间。"
+    },
+    "91044": {
+      "en": "The forest undergrowth has a familiar green shape that seldom belongs to a branch.",
+      "zh": "林下草丛中那道熟悉的绿色形状，往往并不是一根树枝。"
+    },
+    "91045": {
+      "en": "Mushroom collectors tell each other to count their baskets again after this snake passes.",
+      "zh": "采蘑菇的人会互相提醒，这条蛇经过后，最好再数一遍篮子。"
+    },
+    "91046": {
+      "en": "A riverbank creature whose rugged appearance suits the old marsh tales of the rolling plains.",
+      "zh": "粗犷的模样，与起伏平原上那些古老的沼泽传说十分相衬。"
+    },
+    "91047": {
+      "en": "Its towering outline has inspired stories about wandering fortresses on the far plains.",
+      "zh": "高耸的轮廓，催生了远方平原上流浪堡垒的种种传说。"
+    },
+    "91048": {
+      "en": "Its volcanic colors recall the dark ridges beyond the blazing desert.",
+      "zh": "火山般的色彩，让人想起炽热荒漠之外那些深色山脊。"
+    },
+    "91049": {
+      "en": "A wolf from the darker plains legends, where every distant howl becomes a story.",
+      "zh": "来自平原暗色传说的狼，在那里，每一声远处的长嗥都会成为故事。"
+    },
+    "91050": {
+      "en": "A familiar gray shadow on the frontier, woven into the oldest stories of the grasslands.",
+      "zh": "边境上熟悉的灰色身影，早已融入草原最古老的故事。"
+    },
+    "91051": {
+      "en": "An enigmatic desert visitor whose crimson appearance recalls forgotten evening courts.",
+      "zh": "神秘的荒漠访客，绯红的身影令人想起被遗忘的暮色宫廷。"
+    },
+    "91052": {
+      "en": "A wandering scholar of the barren places, tracing imaginary constellations in the desert dust.",
+      "zh": "荒芜之地的流浪学者，在沙尘中描画想象中的星座。"
+    },
+    "91053": {
+      "en": "A familiar presence in the honey-scented clearings of the verdant forest.",
+      "zh": "在翠绿森林中那些弥漫蜜香的空地上，总能见到它的身影。"
+    },
+    "91054": {
+      "en": "Its unusual appearance has kept the forest's curious children debating for years.",
+      "zh": "奇特的模样，让森林里好奇的孩子们争论了许多年。"
+    },
+    "91055": {
+      "en": "A tireless-looking little resident of the paths beneath the frontier grass.",
+      "zh": "边境草叶下的小径旁，住着这位看上去永远闲不住的小居民。"
+    },
+    "91056": {
+      "en": "Its sandy yellow colors blend into the long tracks between desert stones.",
+      "zh": "沙黄色的身影，融入了荒漠石块之间绵长的路径。"
+    },
+    "91057": {
+      "en": "A creature of the shadow forest's caves, where old roots vanish into the dark.",
+      "zh": "阴影森林洞穴中的生灵，古老树根在它身旁伸入黑暗。"
+    },
+    "91058": {
+      "en": "Its peculiar snout has made this bat the subject of more jokes than ghost stories.",
+      "zh": "奇特的鼻吻，让这只蝙蝠成为笑话主角的次数，比成为鬼故事主角还多。"
+    },
+    "91059": {
+      "en": "Snowfield storytellers call its pale markings the signature of a forgotten winter.",
+      "zh": "雪原上的说书人，把它苍白的纹样称作被遗忘寒冬留下的印记。"
+    },
+    "91060": {
+      "en": "Its devilish silhouette is a familiar detail in tales of the cursed desert outposts.",
+      "zh": "恶魔般的轮廓，是那些诅咒荒漠哨站传说中的熟悉身影。"
+    },
+    "91061": {
+      "en": "The honey bee belongs to sunny forest clearings and the endless gossip of the flowers.",
+      "zh": "蜜蜂属于阳光明媚的林间空地，也属于花朵们没完没了的闲谈。"
+    },
+    "91062": {
+      "en": "A sharp-lined wanderer of the dry lands, often sketched beside weathered desert maps.",
+      "zh": "轮廓鲜明的旱地漫游者，常被画在风化泛旧的沙漠地图旁。"
+    },
+    "91063": {
+      "en": "Its round bud resembles a forgotten curiosity from a desert tinker's workshop.",
+      "zh": "圆鼓鼓的花苞，像是沙漠工匠作坊里遗忘的一件奇妙造物。"
+    },
+    "91064": {
+      "en": "A fiery blossom of the dry lands, bright against the desert's blackened stones.",
+      "zh": "旱地上一朵火焰般的花，在荒漠焦黑的岩石间分外明亮。"
+    },
+    "91065": {
+      "en": "A wandering bloom that seems to have strayed from the heart of a forest garden.",
+      "zh": "一朵漫游的花，仿佛误走出了森林花园的深处。"
+    },
+    "91066": {
+      "en": "The desert's familiar green sentinel has acquired a life of its own.",
+      "zh": "荒漠中那道熟悉的绿色守望身影，拥有了自己的生命。"
+    },
+    "91067": {
+      "en": "A curious meeting of desert shape and snowfield colors.",
+      "zh": "沙漠的形状与雪原的色彩，在它身上奇妙地相遇。"
+    },
+    "91068": {
+      "en": "Its plated appearance recalls the old metalwork found in the desert ruins.",
+      "zh": "甲片般的外观，令人想起沙漠遗迹中发现的古旧金属工艺。"
+    },
+    "91069": {
+      "en": "A mechanical-looking marvel that has left plains inventors arguing over its origins.",
+      "zh": "宛如机械奇迹的外形，让平原发明家们争论起它的来历。"
+    },
+    "91070": {
+      "en": "A green flicker in the wide meadows, as familiar as the bending reeds.",
+      "zh": "开阔草甸中一闪而过的绿色，像摇曳的芦苇一样令人熟悉。"
+    },
+    "91071": {
+      "en": "An elusive figure from the sunlit dust between the forest trees.",
+      "zh": "一道若隐若现的身影，仿佛来自林木间阳光照亮的微尘。"
+    },
+    "91072": {
+      "en": "A little lantern-shaped wonder from the oldest paths of the ancient forest.",
+      "zh": "古老森林最悠久的小径旁，藏着这位灯笼般的小小奇迹。"
+    },
+    "91073": {
+      "en": "A winter-colored fairy from stories told beside the snowfield hearths.",
+      "zh": "冬日色彩的仙灵，来自雪原炉火旁流传的故事。"
+    },
+    "91074": {
+      "en": "Its oversized eyes give this plains visitor an air of permanent astonishment.",
+      "zh": "夸张的大眼睛，让这位平原访客看上去永远满是惊讶。"
+    },
+    "91075": {
+      "en": "A meadow wanderer that always seems to have forgotten where it was going.",
+      "zh": "草甸上的漫游者，总像是忘记了自己原本要去哪里。"
+    },
+    "91076": {
+      "en": "A bright little detail in the shadow forest's long, mysterious evenings.",
+      "zh": "阴影森林漫长而神秘的夜晚中，一点明亮的小小身影。"
+    },
+    "91077": {
+      "en": "Its iron-colored body looks oddly at home among the abandoned desert workings.",
+      "zh": "铁色的身体，在废弃的沙漠工地之间显得意外地相衬。"
+    },
+    "91078": {
+      "en": "The palm groves have their own strange visitors, and this one rarely goes unnoticed.",
+      "zh": "棕榈林里不乏奇怪访客，而它总是让人很难忽视。"
+    },
+    "91079": {
+      "en": "A small ghost from the stories whispered around the lifeless desert's empty camps.",
+      "zh": "一个小小的幽灵，来自荒凉沙漠空营地旁低声讲述的故事。"
+    },
+    "91080": {
+      "en": "The mask hides a mystery that desert storytellers are happy to embellish.",
+      "zh": "面具背后藏着的谜团，是沙漠说书人最乐于添枝加叶的话题。"
+    },
+    "91081": {
+      "en": "A spectral traveler whose pirate trappings suggest a voyage that never quite ended.",
+      "zh": "一位幽灵旅者，海盗装束仿佛诉说着一场始终没有结束的航程。"
+    },
+    "91082": {
+      "en": "An iron-shaped relic of an older age, out of place yet unforgettable in the frozen north.",
+      "zh": "旧时代留下的钢铁身影，在冰封北境中显得突兀，却让人难以忘怀。"
+    },
+    "91083": {
+      "en": "The ancient forest seems to have gathered its oldest branches into one wandering shape.",
+      "zh": "古老森林仿佛把最年迈的枝干，聚成了一个漫游的身影。"
+    },
+    "91084": {
+      "en": "Its floral colors have inspired many arguments about where the garden ends and the creature begins.",
+      "zh": "花朵般的色彩，让人分不清花园在哪里结束，生灵又从哪里开始。"
+    },
+    "91085": {
+      "en": "A familiar green silhouette among the long stems of the vast forest.",
+      "zh": "广阔森林的修长草茎间，一道熟悉的绿色轮廓。"
+    },
+    "91086": {
+      "en": "A strange bloom from the damp corners of the ancient forest, beloved by eccentric botanists.",
+      "zh": "来自古老森林潮湿角落的奇异花朵，深受古怪植物学家的喜爱。"
+    },
+    "91087": {
+      "en": "Its vivid red form stands out like an unwritten warning in the ancient undergrowth.",
+      "zh": "鲜红的身形，在古老林下如同一则尚未写下的警示。"
+    },
+    "91088": {
+      "en": "A prickly-looking resident of the forest's tangled and seldom-traveled paths.",
+      "zh": "古老森林纠结而罕有人迹的小径上，住着这位模样带刺的居民。"
+    },
+    "91089": {
+      "en": "Purple against the desert ochre, this scorpion is a striking subject for caravan tales.",
+      "zh": "紫色与荒漠赭黄相映，让这只蝎子成了商队故事中醒目的主角。"
+    },
+    "91090": {
+      "en": "Its stone-like shape belongs among the weathered monuments of the arid desert.",
+      "zh": "岩石般的外形，仿佛本就属于干旱沙漠中那些风蚀的古迹。"
+    },
+    "91091": {
+      "en": "A forgotten soldier in a white landscape, carrying the memory of a vanished regiment.",
+      "zh": "白色大地上一名被遗忘的士兵，带着一支消逝军团的记忆。"
+    },
+    "91092": {
+      "en": "The high snowfields remember the banners that once followed this forgotten commander.",
+      "zh": "高地雪原仍记得，那些曾追随这位遗忘统帅的旗帜。"
+    },
+    "91093": {
+      "en": "An old warrior from the north's longest tales, where winter outlives every kingdom.",
+      "zh": "北境漫长传说中的古老战士，在那里，寒冬比每个王国都更长久。"
+    },
+    "91094": {
+      "en": "Its wintry appearance recalls the delicate patterns along a frozen woodland path.",
+      "zh": "冬日般的外观，让人想起冰封林间小径旁那些精巧的纹样。"
+    },
+    "91095": {
+      "en": "A red mark among the shadow forest's roots, memorable even to seasoned scouts.",
+      "zh": "阴影森林根系间的一抹红色，连老练斥候也过目难忘。"
+    },
+    "91096": {
+      "en": "Its ominous name features in countless campfire warnings along the shadow forest roads.",
+      "zh": "沿着阴影森林的道路，它不祥的名字出现在无数营火旁的告诫中。"
+    },
+    "91097": {
+      "en": "The abandoned outposts have many strange boxes, but not all of them stay where they are left.",
+      "zh": "废弃哨站里有许多奇怪的箱子，却并非每一只都会留在原地。"
+    },
+    "91098": {
+      "en": "A candle-shaped traveler from the desert's deserted halls and half-remembered ceremonies.",
+      "zh": "蜡烛般的旅者，来自荒漠荒废的厅堂与记忆模糊的仪式。"
+    },
+    "91099": {
+      "en": "A walking piece of the mushroom groves, as curious as the forest that raised it.",
+      "zh": "蘑菇林中会行走的一小部分，和孕育它的森林一样充满好奇。"
+    },
+    "91100": {
+      "en": "An old forest stump with an unexpected interest in the world beyond its clearing.",
+      "zh": "一截古老的树桩，对林间空地之外的世界产生了意想不到的兴趣。"
+    }
+  },
+  "legacySources": {
+    "90001": "monster1/Wolf_Gray",
+    "90002": "monster1/Bear_Grizzly",
+    "90003": "monster2/Plant_Nepenthes",
+    "90004": "monster1/Buffalo_Wild",
+    "90005": "monster1/Turtle_Alligator",
+    "90006": "monster2/Alien_Wizard",
+    "90007": "monster2/Golem_Iron",
+    "90008": "monster2/Ghost_Pirate",
+    "90009": "monster2/Alien_Vampire",
+    "90010": "monster2/Scorpion_Stone",
+    "90011": "monster2/Golem_Tree",
+    "90012": "monster2/Skeleton_Warlord"
+  },
+  "ui": {
+    "enemyGuide.title": {
+      "en": "Enemy Guide",
+      "zh": "敌人图鉴"
+    },
+    "enemyGuide.incoming": {
+      "en": "Incoming · Wave {0}",
+      "zh": "即将来袭 · 第 {0} 波"
+    },
+    "enemyGuide.live": {
+      "en": "On the battlefield · Wave {0}",
+      "zh": "战场上 · 第 {0} 波"
+    },
+    "enemyGuide.health": {
+      "en": "Health",
+      "zh": "生命值"
+    },
+    "enemyGuide.damage": {
+      "en": "Damage",
+      "zh": "伤害"
+    },
+    "enemyGuide.attackRate": {
+      "en": "Attacks / sec",
+      "zh": "每秒攻击"
+    },
+    "enemyGuide.movement": {
+      "en": "Movement speed",
+      "zh": "移动速度"
+    },
+    "enemyGuide.range": {
+      "en": "Attack range",
+      "zh": "攻击距离"
+    },
+    "enemyGuide.sight": {
+      "en": "Sight range",
+      "zh": "视野距离"
+    },
+    "enemyGuide.description": {
+      "en": "Attack & abilities",
+      "zh": "攻击与能力"
+    },
+    "enemyGuide.lore": {
+      "en": "Creature lore",
+      "zh": "怪物传说"
+    },
+    "enemyGuide.unknown": {
+      "en": "—",
+      "zh": "—"
+    },
+    "enemyGuide.fallbackMelee": {
+      "en": "Attacks nearby targets in melee.",
+      "zh": "近战攻击附近目标。"
+    },
+    "enemyGuide.fallbackRanged": {
+      "en": "Attacks targets within range with a projectile.",
+      "zh": "发射投射物攻击射程内的目标。"
+    },
+    "enemyGuide.fallbackBuffer": {
+      "en": "Supports nearby monsters with an attack-speed boost.",
+      "zh": "提升附近怪物的攻击速度。"
+    },
+    "enemyGuide.fallbackHealer": {
+      "en": "Restores health to nearby monsters.",
+      "zh": "恢复附近怪物的生命值。"
+    },
+    "enemyGuide.close": {
+      "en": "Close",
+      "zh": "关闭"
+    },
+    "enemyGuide.page": {
+      "en": "{0} / {1}",
+      "zh": "{0} / {1}"
+    },
+    "enemyGuide.role.fighter": {
+      "en": "Fighter",
+      "zh": "斗士"
+    },
+    "enemyGuide.role.skirmisher": {
+      "en": "Skirmisher",
+      "zh": "游击手"
+    },
+    "enemyGuide.role.vanguard": {
+      "en": "Vanguard",
+      "zh": "先锋"
+    },
+    "enemyGuide.role.mystic": {
+      "en": "Mystic",
+      "zh": "秘术师"
+    },
+    "enemyGuide.role.bruiser": {
+      "en": "Bruiser",
+      "zh": "猛攻者"
+    },
+    "enemyGuide.role.guardian": {
+      "en": "Guardian",
+      "zh": "守卫"
+    }
+  }
+}

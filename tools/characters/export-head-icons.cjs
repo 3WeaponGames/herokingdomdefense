@@ -12,9 +12,9 @@ const selections={
   vampire:['monster2/Alien_Vampire',/\/Body$/,.58],scorpion:['monster2/Scorpion_Stone',/\/Body$/,1,.72],
   'tree-golem':['monster2/Golem_Tree',/\/(?:Body|Eye|Eye2)$/,1],skeleton:['monster2/Skeleton_Warlord',/\/Head$/,1]
 };
-function portrait(root,selection,read=fs.readFileSync){
+function portrait(root,selection,read=fs.readFileSync,decoded=new Map()){
   const spine=require(Units.enginePath()),layer=Library.describe(root,selection[0],true).layers[0];
-  const atlas=new spine.TextureAtlas(layer.atlas,name=>new spine.FakeTexture(PNG.decode(read(url.fileURLToPath(layer.pages[name])))));
+  const atlas=new spine.TextureAtlas(layer.atlas,name=>{const file=url.fileURLToPath(layer.pages[name]);if(!decoded.has(file))decoded.set(file,PNG.decode(read(file)));return new spine.FakeTexture(decoded.get(file));});
   const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(layer.json),s=new spine.Skeleton(data);
   s.setSkinByName(layer.skin||'default');s.setToSetupPose();data.findAnimation('idle').apply(s,0,0,false,null,1,spine.MixBlend.replace,spine.MixDirection.mixIn);s.updateWorldTransform();
   const pieces=[];let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;

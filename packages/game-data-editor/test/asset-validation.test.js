@@ -72,6 +72,27 @@ test('building skins must work on every main/down/gate model part', () => {
     assert(check('A', ['BuildEnum', '6', 'levelList', 0, 'Skin'], 'cb-1').some(issue => /Skin.*missing/.test(issue.message)));
     assert(check('A', ['BuildEnum', '2', 'levelList', 0, 'Icon'], 'tf_01').some(issue => /KinghtFallIconBuild/.test(issue.message)));
 });
+
+test('new building map artwork must resolve an imported Resources sprite frame',()=>{
+    const at=['BuildEnum','2','levelList',0,'Appearance'];
+    assert.deepStrictEqual(check('A',at,{sprite:'icons/enemy-heads/wolf',width:160,height:200}),[]);
+    for(const sprite of ['missing/tower','../KinghtFallIconBuild/other','icons/enemy-heads/wolf.png']){
+        const issues=check('A',at,{sprite});
+        assert(issues.some(issue=>issue.path.join('/')==='BuildEnum/2/levelList/0/Appearance/sprite'),sprite);
+    }
+    const edit=edited('A',at,{sprite:'missing/tower'});
+    assert.deepStrictEqual(Assets.validate(root,edit.next,[{doc:'A',path:['BuildEnum','2','levelList',0,'Data',0]}]),[],'unrelated stat edits do not repair or fail existing missing artwork');
+});
+
+test('separate aiming weapons require their own imported resource and retain the base artwork reference',()=>{
+    const at=['BuildEnum','2','levelList',0,'Appearance'];
+    assert.deepStrictEqual(check('A',at,{sprite:'icons/enemy-heads/wolf',weapon:{sprite:'icons/enemy-heads/bear'}}),[]);
+    for(const sprite of ['missing/weapon','../outside','icons/enemy-heads/wolf.png']){
+        const issues=check('A',at,{sprite:'icons/enemy-heads/wolf',weapon:{sprite}});
+        assert(issues.some(issue=>issue.path.join('/')==='BuildEnum/2/levelList/0/Appearance/weapon/sprite'),sprite);
+        assert(!issues.some(issue=>issue.path.join('/')==='BuildEnum/2/levelList/0/Appearance/sprite'));
+    }
+});
 test('changed stage building unlocks must match the map slot controller', () => {
     const edit = edited('A', ['LevelCfg', 0, 'HomeLevel1Unlock', 0], [3, 4]);
     assert(Assets.validate(root, edit.next, edit.changes).some(issue => /slot 4 uses building type 2/.test(issue.message)));
@@ -92,7 +113,7 @@ test('timing markers cannot exceed the actual animation duration', () => {
     assert.strictEqual(Assets.clipDuration({ bones: { arm: { rotate: [{ angle: 0 }, { time: .75, angle: 15 }] } }, events: [{ time: .5 }] }), .75);
 });
 test('saved default markers obey the same reachable-unit and clip limits as custom timings', () => {
-    const defaults = require('../lib/attack-timing-defaults').collect(root);
+    const defaults = require('../lib/attack-timing-defaults').collect(root,require('./fixtures/legacy-units')(root,docs));
     assert.deepStrictEqual(check('overrides', ['timingDefaults'], defaults), []);
     assert(check('overrides', ['timingDefaults'], { 'ally:90005:default': { attack: .5 } }).some(issue => /reachable/.test(issue.message)));
     assert(check('overrides', ['timingDefaults'], { 'enemy:90001:default': { attack: 9 } }).some(issue => /exceeds the actual/.test(issue.message)));

@@ -1,0 +1,968 @@
+{
+  "version": 1,
+  "map": "Map07",
+  "stage": 7,
+  "width": 1860,
+  "height": 3028,
+  "seed": 707,
+  "groundBrightness": 1.14,
+  "groundTint": {
+    "color": "#a05a64",
+    "opacity": 0.08
+  },
+  "output": "assets/KinghtFallIconMap/Map07/map",
+  "thumbnail": {
+    "output": "assets/KinghtFallIconMap/wg_zy_gq7.png",
+    "width": 426,
+    "height": 364
+  },
+  "images": {
+    "Field_Fire": "source/Field_Fire.png",
+    "Road_Fire": "source/Road_Fire.png",
+    "Tree_Fire_Bare_01": "source/Tree_Fire_Bare_01.png",
+    "Tree_Fire_Bare_02": "source/Tree_Fire_Bare_02.png",
+    "Tree_Fire_Bare_03": "source/Tree_Fire_Bare_03.png",
+    "Tree_Fire_Bare_04": "source/Tree_Fire_Bare_04.png",
+    "Tree_Fire_Bare_05": "source/Tree_Fire_Bare_05.png",
+    "Tree_Fire_Bare_06": "source/Tree_Fire_Bare_06.png",
+    "Tree_Fire_Dead_01": "source/Tree_Fire_Dead_01.png",
+    "Tree_Fire_Dead_02": "source/Tree_Fire_Dead_02.png",
+    "Tree_Fire_Dead_03": "source/Tree_Fire_Dead_03.png",
+    "Tree_Fire_Dead_04": "source/Tree_Fire_Dead_04.png",
+    "Tree_Fire_Dead_05": "source/Tree_Fire_Dead_05.png",
+    "Tree_Fire_Dead_06": "source/Tree_Fire_Dead_06.png",
+    "Tree_Fire_Dead_07": "source/Tree_Fire_Dead_07.png",
+    "Stone_Fire_Dark_04": "source/Stone_Fire_Dark_04.png",
+    "Stone_Fire_Dark_06": "source/Stone_Fire_Dark_06.png",
+    "Stone_Fire_Dark_09": "source/Stone_Fire_Dark_09.png",
+    "Stone_Fire_Dark_10": "source/Stone_Fire_Dark_10.png",
+    "Stone_Fire_Red_06": "source/Stone_Fire_Red_06.png",
+    "Fire_Texture_07": "source/Fire_Texture_07.png",
+    "Fire_Texture_08": "source/Fire_Texture_08.png",
+    "Fire_Texture_09": "source/Fire_Texture_09.png",
+    "Fire_Texture_10": "source/Fire_Texture_10.png",
+    "Fire_Texture_11": "source/Fire_Texture_11.png",
+    "terrain": "source/terrain-cliffs.png"
+  },
+  "owners": [
+    {
+      "id": 988,
+      "key": "north",
+      "templateName": "dt2_2",
+      "x": 163,
+      "groundY": 1014.3799999999999,
+      "origin": {
+        "x": 163,
+        "y": 1490
+      }
+    },
+    {
+      "id": 998,
+      "key": "island",
+      "templateName": "dt2_1",
+      "x": -189,
+      "groundY": 772.14,
+      "origin": {
+        "x": -189,
+        "y": 1359
+      }
+    },
+    {
+      "id": 1008,
+      "key": "south-ridge",
+      "templateName": "dt2_10",
+      "x": 563,
+      "groundY": -687.356,
+      "origin": {
+        "x": 563,
+        "y": -432
+      }
+    },
+    {
+      "id": 1023,
+      "key": "east-upper",
+      "templateName": "dt2_4_1",
+      "x": 815,
+      "groundY": 575.32,
+      "origin": {
+        "x": 815,
+        "y": 1138
+      }
+    },
+    {
+      "id": 1031,
+      "key": "east-lower",
+      "templateName": "dt2_4_2",
+      "x": 770,
+      "groundY": -381.528,
+      "origin": {
+        "x": 770,
+        "y": 397
+      }
+    },
+    {
+      "id": 1041,
+      "key": "southwest",
+      "templateName": "dt2_7",
+      "x": -558,
+      "groundY": -1514,
+      "origin": {
+        "x": -558,
+        "y": -596
+      }
+    },
+    {
+      "id": 1049,
+      "key": "southeast",
+      "templateName": "dt2_8",
+      "x": 484,
+      "groundY": -1514,
+      "origin": {
+        "x": 484,
+        "y": -783
+      }
+    },
+    {
+      "id": 1057,
+      "key": "ravine",
+      "templateName": "dt2_9",
+      "x": -723,
+      "groundY": -287.6599999999999,
+      "origin": {
+        "x": -723,
+        "y": 1498
+      }
+    },
+    {
+      "id": 1083,
+      "key": "west-grove",
+      "templateName": "dt2_6",
+      "x": -592,
+      "groundY": -684.328,
+      "origin": {
+        "x": -592,
+        "y": -112
+      }
+    }
+  ],
+  "props": [
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.209,
+      "y": 0.066,
+      "height": 94,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.308,
+      "y": 0.073,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.394,
+      "y": 0.088,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.426,
+      "y": 0.106,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.551,
+      "y": 0.082,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.625,
+      "y": 0.082,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.702,
+      "y": 0.114,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.798,
+      "y": 0.147,
+      "height": 104,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.856,
+      "y": 0.178,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.409,
+      "y": 0.145,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.465,
+      "y": 0.185,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.485,
+      "y": 0.212,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.933,
+      "y": 0.215,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.979,
+      "y": 0.265,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.924,
+      "y": 0.359,
+      "height": 114,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.954,
+      "y": 0.407,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.933,
+      "y": 0.467,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.897,
+      "y": 0.515,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.977,
+      "y": 0.552,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.961,
+      "y": 0.591,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.959,
+      "y": 0.627,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.171,
+      "y": 0.469,
+      "height": 99,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.192,
+      "y": 0.501,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.171,
+      "y": 0.538,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.124,
+      "y": 0.583,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.072,
+      "y": 0.62,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.16,
+      "y": 0.61,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.24,
+      "y": 0.664,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.3,
+      "y": 0.685,
+      "height": 109,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.36,
+      "y": 0.709,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.6,
+      "y": 0.71,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.72,
+      "y": 0.69,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.85,
+      "y": 0.68,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.918,
+      "y": 0.68,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.371,
+      "y": 0.78,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.396,
+      "y": 0.826,
+      "height": 94,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.415,
+      "y": 0.898,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.348,
+      "y": 0.946,
+      "height": 104,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.321,
+      "y": 0.906,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.119,
+      "y": 0.947,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.847,
+      "y": 0.806,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_06",
+      "x": 0.928,
+      "y": 0.776,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_01",
+      "x": 0.962,
+      "y": 0.758,
+      "height": 104,
+      "layer": "foreground",
+      "flip": true
+    },
+    {
+      "image": "Tree_Fire_Bare_02",
+      "x": 0.968,
+      "y": 0.825,
+      "height": 109,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_03",
+      "x": 0.913,
+      "y": 0.924,
+      "height": 114,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_04",
+      "x": 0.853,
+      "y": 0.926,
+      "height": 94,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Bare_05",
+      "x": 0.948,
+      "y": 0.951,
+      "height": 99,
+      "layer": "foreground",
+      "flip": false
+    },
+    {
+      "image": "Tree_Fire_Dead_01",
+      "x": 0.215,
+      "y": 0.702,
+      "height": 26,
+      "layer": "foreground"
+    },
+    {
+      "image": "Tree_Fire_Dead_02",
+      "x": 0.3,
+      "y": 0.689,
+      "height": 31,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_03",
+      "x": 0.409,
+      "y": 0.699,
+      "height": 36,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_04",
+      "x": 0.783,
+      "y": 0.117,
+      "height": 41,
+      "layer": "foreground"
+    },
+    {
+      "image": "Tree_Fire_Dead_05",
+      "x": 0.906,
+      "y": 0.216,
+      "height": 26,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_06",
+      "x": 0.973,
+      "y": 0.254,
+      "height": 31,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_07",
+      "x": 0.936,
+      "y": 0.615,
+      "height": 36,
+      "layer": "foreground"
+    },
+    {
+      "image": "Tree_Fire_Dead_01",
+      "x": 0.836,
+      "y": 0.838,
+      "height": 41,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_02",
+      "x": 0.933,
+      "y": 0.784,
+      "height": 26,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_03",
+      "x": 0.075,
+      "y": 0.599,
+      "height": 31,
+      "layer": "foreground"
+    },
+    {
+      "image": "Tree_Fire_Dead_04",
+      "x": 0.417,
+      "y": 0.83,
+      "height": 36,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_05",
+      "x": 0.625,
+      "y": 0.082,
+      "height": 41,
+      "layer": "ground"
+    },
+    {
+      "image": "Tree_Fire_Dead_06",
+      "x": 0.937,
+      "y": 0.961,
+      "height": 26,
+      "layer": "foreground"
+    },
+    {
+      "image": "Tree_Fire_Dead_07",
+      "x": 0.34,
+      "y": 0.963,
+      "height": 31,
+      "layer": "ground"
+    },
+    {
+      "image": "Stone_Fire_Dark_04",
+      "x": 0.926,
+      "y": 0.022,
+      "width": 34,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Dark_06",
+      "x": 0.809,
+      "y": 0.013,
+      "width": 45,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_09",
+      "x": 0.258,
+      "y": 0.039,
+      "width": 56,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_10",
+      "x": 0.533,
+      "y": 0.067,
+      "width": 67,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Red_06",
+      "x": 0.575,
+      "y": 0.095,
+      "width": 34,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_04",
+      "x": 0.733,
+      "y": 0.161,
+      "width": 45,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_06",
+      "x": 0.913,
+      "y": 0.238,
+      "width": 56,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Dark_09",
+      "x": 0.976,
+      "y": 0.284,
+      "width": 67,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_10",
+      "x": 0.944,
+      "y": 0.428,
+      "width": 34,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Red_06",
+      "x": 0.891,
+      "y": 0.443,
+      "width": 45,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Dark_04",
+      "x": 0.961,
+      "y": 0.58,
+      "width": 56,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_06",
+      "x": 0.715,
+      "y": 0.535,
+      "width": 67,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_09",
+      "x": 0.81,
+      "y": 0.684,
+      "width": 34,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Dark_10",
+      "x": 0.12,
+      "y": 0.65,
+      "width": 45,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Red_06",
+      "x": 0.061,
+      "y": 0.634,
+      "width": 56,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_04",
+      "x": 0.203,
+      "y": 0.397,
+      "width": 67,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Dark_06",
+      "x": 0.208,
+      "y": 0.42,
+      "width": 34,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_09",
+      "x": 0.492,
+      "y": 0.881,
+      "width": 45,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_10",
+      "x": 0.384,
+      "y": 0.907,
+      "width": 56,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Red_06",
+      "x": 0.679,
+      "y": 0.931,
+      "width": 67,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_04",
+      "x": 0.926,
+      "y": 0.912,
+      "width": 34,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_06",
+      "x": 0.965,
+      "y": 0.815,
+      "width": 45,
+      "layer": "ground",
+      "flip": true
+    },
+    {
+      "image": "Stone_Fire_Dark_09",
+      "x": 0.811,
+      "y": 0.799,
+      "width": 56,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Stone_Fire_Dark_10",
+      "x": 0.553,
+      "y": 0.765,
+      "width": 67,
+      "layer": "ground",
+      "flip": false
+    },
+    {
+      "image": "Fire_Texture_07",
+      "x": 0.262,
+      "y": 0.06,
+      "width": 100,
+      "layer": "foreground"
+    },
+    {
+      "image": "Fire_Texture_08",
+      "x": 0.629,
+      "y": 0.065,
+      "width": 115,
+      "layer": "foreground"
+    },
+    {
+      "image": "Fire_Texture_09",
+      "x": 0.923,
+      "y": 0.238,
+      "width": 130,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_10",
+      "x": 0.933,
+      "y": 0.441,
+      "width": 100,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_11",
+      "x": 0.947,
+      "y": 0.568,
+      "width": 115,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_07",
+      "x": 0.14,
+      "y": 0.559,
+      "width": 130,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_08",
+      "x": 0.061,
+      "y": 0.681,
+      "width": 100,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_09",
+      "x": 0.901,
+      "y": 0.804,
+      "width": 115,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_10",
+      "x": 0.652,
+      "y": 0.925,
+      "width": 130,
+      "layer": "ground"
+    },
+    {
+      "image": "Fire_Texture_11",
+      "x": 0.104,
+      "y": 0.978,
+      "width": 100,
+      "layer": "ground"
+    }
+  ],
+  "paths": [
+    [
+      [
+        0.135,
+        0
+      ],
+      [
+        0.12,
+        0.085
+      ],
+      [
+        0.145,
+        0.17
+      ],
+      [
+        0.225,
+        0.245
+      ],
+      [
+        0.31,
+        0.32
+      ]
+    ],
+    [
+      [
+        0.5,
+        1
+      ],
+      [
+        0.48,
+        0.9
+      ],
+      [
+        0.52,
+        0.8
+      ],
+      [
+        0.5,
+        0.7
+      ],
+      [
+        0.5,
+        0.6
+      ]
+    ],
+    [
+      [
+        0,
+        0.74
+      ],
+      [
+        0.22,
+        0.75
+      ],
+      [
+        0.38,
+        0.765
+      ],
+      [
+        0.5,
+        0.7
+      ]
+    ],
+    [
+      [
+        1,
+        0.77
+      ],
+      [
+        0.81,
+        0.78
+      ],
+      [
+        0.64,
+        0.77
+      ],
+      [
+        0.5,
+        0.7
+      ]
+    ]
+  ]
+}

@@ -43,6 +43,11 @@ test('discard restores current saved appearance without writing any files',t=>{
   const f=fixture(t),before=fs.readFileSync(f.file,'utf8');edit(f.store,d=>d.profiles.guard.name='Draft');const result=f.store.discard({version:f.store.version});assert.equal(result.dirty,false);assert.equal(result.data.profiles.guard.name,'Guard');assert.equal(fs.readFileSync(f.file,'utf8'),before);
 });
 test('shipped example and every supported base validate without running the game or requiring an engine',()=>{
-  const store=new Service(root);assert.equal(store.validate(store.data),true);const units=store.units();assert.equal(units.length,17);assert.equal(units.filter(u=>u.group==='Allies').length,4);
+  const store=new Service(root);assert.equal(store.validate(store.data),true);const units=store.units(),cfg=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8'));
+  const imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);
+  const campaign=Object.values(cfg.SoldierCfg).filter(unit=>unit.CampaignBaseUnit);assert.equal(campaign.length,127);
+  assert.equal(units.length,17+imported.length+campaign.length);assert.equal(imported.length,100);assert.equal(units.filter(u=>u.group==='Allies').length,4);
+  assert.equal(units.filter(u=>u.type!=='enemy'||Number(u.id)<=90012).length,17,'original hero/allied/campaign bases stay available');
+  for(const unit of imported)assert(units.some(base=>base.key==='enemy:'+unit.ID+':default'),unit.MonsterSource);
   for(const base of units){const description=store.describe(base,true);assert(description.layers.length);assert.equal(description.runtimePath,null);}
 });

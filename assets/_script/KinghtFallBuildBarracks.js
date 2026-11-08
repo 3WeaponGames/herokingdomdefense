@@ -278,6 +278,7 @@ var def_KinghtFallBuildBarracks = function (t) {
       level: this.index,
       data: this.VideoTimes
     };
+    if (this._freeInitialBuild && this.index === 0) save.freeInitialBuild = true;
     if (this._soldierRallyPosts && this._soldierRallyPosts.some(Boolean)) save.rallyPosts = this._soldierRallyPosts.map(function (point) { return point ? { x: point.x, y: point.y } : null; });
     return save;
   };

@@ -390,6 +390,10 @@ LanguageMgr.prototype._applyLabelStyle = function (label, recipe) {
   var styles = this.catalog.labelStyles && this.catalog.labelStyles[key];
   if (!styles) return;
   label._localizedStyleKey = key;
+  // The scrolling lobby lays out these captions after measuring their live
+  // font. Localization still supplies text/typefaces, but must not restore the
+  // old five-icon prefab dimensions over that measured layout.
+  if (label._lobbyCaption) return;
   if (!label._localizedBaseStyle) label._localizedBaseStyle = {
     width: node.width, height: node.height, x: node.x, y: node.y,
     fontSize: label.fontSize, lineHeight: label.lineHeight,

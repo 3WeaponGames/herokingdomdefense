@@ -3728,21 +3728,24 @@
     }
   },
   {
-    "__type__": "b7caecdP3VEjovXKYZ6LuYu",
-    "node": {
+        "__type__": "b7caecdP3VEjovXKYZ6LuYu",
+        "node": {
       "__id__": 2
     },
-    "meadow": {
+        "meadow": {
       "__uuid__": "7414b70c-afeb-475d-b915-f447bcf9b4b0"
     },
-    "forest": {
+        "forest": {
       "__uuid__": "07dbbef9-5aaa-4b9c-84b6-eba1d4db6b18"
     },
-    "desert": {
+        "desert": {
       "__uuid__": "0cb50b52-6d0d-45b8-8529-a703b7624067"
     },
-    "snowfield": {
+        "snowfield": {
       "__uuid__": "273a73ea-41bd-435e-83f3-2656e374b55e"
+    },
+        "fire": {
+            "__uuid__": "00ec5f37-34cf-433a-9e63-0eba1ea6ee73"
+        }
     }
-  }
 ]

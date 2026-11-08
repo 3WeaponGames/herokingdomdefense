@@ -31,7 +31,11 @@ var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
 function resolveEnemyPictogram(settings, id) {
-  var key = 'enemy:' + id + ':' + (Number(id) >= 90010 ? Number(id) - 90009 : 'default');
+  var number = Number(id);
+  // Only the three original boss records share the transforming boss prefab.
+  // Independent monster records use their own default appearance and role.
+  var form = number >= 90010 && number <= 90012 ? number - 90009 : 'default';
+  var key = 'enemy:' + id + ':' + form;
   var typeId = settings && settings.unitTypeAssignments && settings.unitTypeAssignments[key];
   return settings && settings.unitTypes && settings.unitTypes[typeId] || null;
 }
@@ -203,7 +207,7 @@ var def_KinghtFallUIGame = function (t) {
     var config = this.ctrGame && this.ctrGame.gameData && this.ctrGame.gameData.levelCfg ||
       $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(this.levelId);
     var audio = $z1KinghtFallConfig.KinghtFallAudioId;
-    var id = config && config.prefab === "Map03" ? audio.desert_ready_bgm : audio.ready_bgm;
+    var id = config && (config.EnvironmentBiome === "desert" || (config.EnvironmentMapId || config.prefab) === "Map03") ? audio.desert_ready_bgm : audio.ready_bgm;
     $z1AudioMgr.AudioMgr.getInstance().playMusic(id, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
   };
   _ctor.prototype.initBtnEvent = function () {
@@ -322,6 +326,7 @@ var def_KinghtFallUIGame = function (t) {
     this._refreshArmyButtons();
   };
   _ctor.prototype.beginBattleDialog = function (kind) {
+    if (this._enemyGuide) require("EnemyGuide").close(this, kind === "end");
     var ui = this, game = this.ctrGame, data = game.gameData, epoch = game._combatEpoch, round = data.round;
     if (this._battleDialog && this._battleDialog.kind === kind && this._battleDialog.isCurrent()) return null;
     this.cancelBattleDialog();
@@ -373,6 +378,7 @@ var def_KinghtFallUIGame = function (t) {
     }, function () { self.finishBattleDialog(dialog); });
   };
   _ctor.prototype.onClose = function () {
+    if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
     this.cancelBattleDialog();
     this._stopTestMovement();
@@ -380,6 +386,7 @@ var def_KinghtFallUIGame = function (t) {
     $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
     try { this.cancelBattleDialog(); }
     finally { t.prototype.onDestroy.call(this); }
@@ -389,12 +396,14 @@ var def_KinghtFallUIGame = function (t) {
     require("LanguageMgr").LanguageMgr.getInstance().onChange(this._refreshStartBattleCaption, this);
   };
   _ctor.prototype.onDisable = function () {
+    if (this._enemyGuide) require("EnemyGuide").close(this);
     this._stopTestMovement();
     TestMode.getInstance().removeGameplayTarget(this);
     require("LanguageMgr").LanguageMgr.getInstance().offChange(this._refreshStartBattleCaption, this);
   };
   _ctor.prototype.onRestart = function (t) {
     if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return false;
+    if (this._enemyGuide) require("EnemyGuide").close(this, true);
     this.cancelBattleDialog();
     this.btnBuildInfo.active = true;
     this.canBreak = true;
@@ -584,6 +593,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.startRoundGame = function () {
     var t = this;
+    if (this._enemyGuide) require("EnemyGuide").close(this);
     var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = false;
     this.btnStartFight.active = false;
@@ -591,6 +601,7 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrUI.ndLight.active = true;
     this.isGet = false;
     this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Transition;
+    if (this._enemyGuideMarkersBound) require("EnemyGuide").update(this);
     $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.fight_bgm, $z1KinghtFallConfig.KinghtFallParameter.BGMusic);
     cc.tween(this.ctrUI.ndLight).set({
       opacity: 0
@@ -711,6 +722,7 @@ var def_KinghtFallUIGame = function (t) {
       this.ctrGame.gameData.taskInfo.index < this.ctrGame.gameData.taskInfo.list.length, this.ctrGame.gameData.taskInfo.stage === 1);
   };
   _ctor.prototype.lateUpdate = function (t) {
+    if (this._enemyGuide || this._enemyGuideMarkersBound) require("EnemyGuide").update(this);
     this.isPauset || this.ctrGame.onLateUpdate(t);
     this._fitBuildingsButton();
     if (this._battleHud) require("BattleHud").layout(this);
@@ -764,6 +776,9 @@ var def_KinghtFallUIGame = function (t) {
     var point = cc.v2(restX, restY);
     if (rod.parent !== root) point = rod.parent.convertToNodeSpaceAR(root.convertToWorldSpaceAR(point));
     control.setJoystickRest(point);
+  };
+  _ctor.prototype._bindEnemyGuide = function (record) {
+    require("EnemyGuide").bind(this, record);
   };
   _ctor.prototype._loadEnemyPictogram = function (record, id) {
     var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
@@ -866,7 +881,8 @@ var def_KinghtFallUIGame = function (t) {
       if (target.x >= viewport.minX && target.x <= viewport.maxX && target.y >= viewport.minY && target.y <= viewport.maxY) return;
       var dx = target.x - center.x, dy = target.y - center.y;
       var sector = Math.floor((Math.atan2(dy, dx) + Math.PI + Math.PI / 8) / (Math.PI / 4)) % 8;
-      var group = groups[sector] || (groups[sector] = { count: 0, x: 0, y: 0, nearest: Infinity });
+      var group = groups[sector] || (groups[sector] = { ids: [], count: 0, x: 0, y: 0, nearest: Infinity });
+      if (group.ids.indexOf(enemy.cfg.ID) < 0) group.ids.push(enemy.cfg.ID);
       group.count++; group.x += target.x; group.y += target.y;
       var distance = dx * dx + dy * dy;
       if (distance < group.nearest) { group.nearest = distance; group.id = enemy.cfg.ID; }
@@ -884,6 +900,7 @@ var def_KinghtFallUIGame = function (t) {
         var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(group.id), id = group.id;
         self._loadEnemyPictogram(record, id);
       }
+      record._guideLive = true; record._guideIds = group.ids;
       var caption = record.ndItem.getChildByName("labName"), label = caption.getComponent(cc.Label);
       label.string = "[[loc:ui.battle.offscreen-enemies]]";
       label.fontSize = 56; label.lineHeight = 64;
@@ -908,6 +925,10 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype._updateTestControls = function () {
     var mode = TestMode.getInstance(), input = mode.readGameplayInput(this);
+    if (this._enemyGuide) {
+      if (input && input.pause) require("EnemyGuide").close(this);
+      this._stopTestMovement(); mode.clearGameplayInput(true); return;
+    }
     if (!input || !this.ctrGame || !this.ctrGame.ctrPlay ||
         this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.End) {
       this._stopTestMovement(); return;
@@ -979,6 +1000,9 @@ var def_KinghtFallUIGame = function (t) {
                   a._loadEnemyPictogram(i, o.id);
                 }
                 i.ndItem.getChildByName("labNum").getComponent(cc.Label).string = "" + o.num;
+                i._guideLive = false;
+                i._guideIds = e.filter(function (entry) { return entry.id !== -1 && entry.num > 0; }).map(function (entry) { return entry.id; });
+                if (a._bindEnemyGuide) a._bindEnemyGuide(i);
                 var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
                 var l = cc.Camera.main.getWorldToScreenPoint(s);
                 var c = a.ctrUI.node.convertToNodeSpaceAR(l);

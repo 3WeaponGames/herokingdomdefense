@@ -4,7 +4,20 @@ const {harness,config}=require('./persistence-harness.cjs');
 const rules=require('../../assets/_script/GAD_RewardRules');
 const settings=require('../../assets/gad_configs/GameJsonCfg.json').wallDefenseRewards;
 function settle(h,id,sequence=1){const result=rules.createResult({id:'admission-test-'+sequence,sequence,endReason:'return-home',activeMilliseconds:0,clearedWaves:0},settings,config.TreasureCfg,[],()=>0);result.admissionId=id;return h.player.settleWallDefense(result);}
-test('Campaign and Wall Defense use the authored 10 energy admission cost',()=>{assert.equal(Number(config.ParameterCfg['60010'].Value),10);});
+test('Campaign costs 5 energy while Wall Defense retains its separate 10 energy admission',()=>{
+ assert.equal(Number(config.ParameterCfg['60010'].Value),5);
+ assert.equal(require('../../assets/_script/GAD_Configs').GADConfig.EnergyCost,10);
+});
+
+test('the Wall Defense button displays its own 10 energy price beside Campaign at 5',()=>{
+ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),exports={},label={string:''};
+ const modules={GAD_Configs:require('../../assets/_script/GAD_Configs')};
+ const context={exports,require:name=>modules[name]||{},cc:{Button:function(){},Label:function(){}}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HomeLobbyLayout.js'),'utf8'),context);
+ const defense={_blueState:true,getComponent:()=>({}),getChildByName:()=>({getChildByName:()=>({getComponent:()=>label})})};
+ exports.modeState({costEnergy:5,_lobby:{defense,defenseCaption:{},status:'lobby.wallBestWave12'}},true,12,3);
+ assert.equal(label.string,'10');
+});
 test('Wall Defense charges once, retains an unused entry through reload, and consumes it at settlement',()=>{
  const h=harness(),u=h.player.udata;
  u.data.powerNum=30;u.saveData();const before=u.getPowerNum();assert.equal(before,30);

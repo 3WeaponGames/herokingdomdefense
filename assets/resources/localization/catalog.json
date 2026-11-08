@@ -93,8 +93,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.4.Name; assets\\configs\\GameJsonCfg.json:TalentCfg.100022.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.4.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100022.Name"
     },
     "data.buffcfg.5.describe": {
-      "en": "Arrow Towers become invincible for <color=#5fe33a>{0}</c> seconds when near destruction",
-      "zh": "箭塔即将被摧毁时，获得<color=#5fe33a> {0} </c>秒无敌效果",
+      "en": "Towers become invincible for <color=#5fe33a>{0}</c> seconds when near destruction",
+      "zh": "防御塔即将被摧毁时，获得<color=#5fe33a> {0} </c>秒无敌效果",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.4.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.4.Describe"
     },
     "data.buffcfg.6.name": {
@@ -163,8 +163,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.11.Name; assets\\configs\\GameJsonCfg.json:TalentCfg.100021.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.11.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100021.Name"
     },
     "data.buffcfg.12.describe": {
-      "en": "Build <color=#5fe33a>{0}</c> Arrow Tower at an available site",
-      "zh": "随机建立<color=#5fe33a> {0} </c>座箭塔（若无可建造箭塔则不生效）",
+      "en": "Build <color=#5fe33a>{0}</c> Tower at an available site",
+      "zh": "随机建立<color=#5fe33a> {0} </c>座防御塔（若无可建造防御塔则不生效）",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.11.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.11.Describe"
     },
     "data.buffcfg.13.name": {
@@ -283,8 +283,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.23.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.23.Name"
     },
     "data.buffcfg.24.describe": {
-      "en": "<color=#f43838>Spend all silver</c> to upgrade every eligible Arrow Tower",
-      "zh": "升级所有箭塔，<color=#f43838>扣除所有银币</c>（无可升级箭塔不生效）",
+      "en": "<color=#f43838>Spend all silver</c> to upgrade every eligible Tower",
+      "zh": "升级所有防御塔，<color=#f43838>扣除所有银币</c>（无可升级防御塔不生效）",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.23.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.23.Describe"
     },
     "data.buffcfg.25.name": {
@@ -338,8 +338,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.29.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.29.Name"
     },
     "data.buffcfg.30.describe": {
-      "en": "Castle and Arrow Tower attack range <color=#5fe33a>+{0}</c>",
-      "zh": "主堡及箭塔的攻击范围<color=#5fe33a> +{0} </c>",
+      "en": "Castle and Tower attack range <color=#5fe33a>+{0}</c>",
+      "zh": "主堡及防御塔的攻击范围<color=#5fe33a> +{0} </c>",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.29.Describe; assets\\configs\\GameJsonCfg.json:BuffCfg.50.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.29.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.50.Describe"
     },
     "data.buffcfg.31.name": {
@@ -403,8 +403,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.38.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.38.Name"
     },
     "data.buffcfg.39.describe": {
-      "en": "Arrow Tower HP <color=#5fe33a>+{0}</c>",
-      "zh": "箭塔血量<color=#5fe33a> +{0} </c>",
+      "en": "Tower HP <color=#5fe33a>+{0}</c>",
+      "zh": "防御塔血量<color=#5fe33a> +{0} </c>",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.38.Describe; assets\\configs\\GameJsonCfg.json:BuffCfg.54.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.38.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.54.Describe"
     },
     "data.buffcfg.40.name": {
@@ -473,8 +473,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.45.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.45.Name"
     },
     "data.buffcfg.46.describe": {
-      "en": "Arrow Tower damage <color=#5fe33a>+{0}</c>, all building HP <color=#f43838>-{1}</c>",
-      "zh": "箭塔<color=#5fe33a> +{0} </c>伤害，所有建筑<color=#f43838> -{1} </c>血量",
+      "en": "Tower damage <color=#5fe33a>+{0}</c>, all building HP <color=#f43838>-{1}</c>",
+      "zh": "防御塔<color=#5fe33a> +{0} </c>伤害，所有建筑<color=#f43838> -{1} </c>血量",
       "context": "assets\\configs\\GameJsonCfg.json:BuffCfg.45.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:BuffCfg.45.Describe"
     },
     "data.buffcfg.47.name": {
@@ -1183,8 +1183,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.15.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.15.Describe"
     },
     "data.guidecfg.17.describe": {
-      "en": "<b>Arrow Towers have <color=#106cff>powerful attacks</c> to help hold off enemies.</b>",
-      "zh": "<b>箭塔拥有<color=#106cff>强大的攻击力</c>可以帮助你抵御敌人</b>",
+      "en": "<b>Towers have <color=#106cff>powerful attacks</c> to help hold off enemies.</b>",
+      "zh": "<b>防御塔拥有<color=#106cff>强大的攻击力</c>可以帮助你抵御敌人</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.16.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.16.Describe"
     },
     "data.guidecfg.18.describe": {
@@ -1203,8 +1203,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.19.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.19.Describe"
     },
     "data.ingametaskenum.1.name": {
-      "en": "Build 1 Arrow Tower",
-      "zh": "建造1座箭塔",
+      "en": "Build 1 Tower",
+      "zh": "建造1座防御塔",
       "context": "assets\\configs\\GameJsonCfg.json:InGameTaskEnum.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:InGameTaskEnum.1.Name"
     },
     "data.ingametaskenum.2.name": {
@@ -1233,8 +1233,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:InGameTaskEnum.6.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:InGameTaskEnum.6.Name"
     },
     "data.ingametaskenum.7.name": {
-      "en": "Upgrade 1 Arrow Tower",
-      "zh": "升级1次箭塔",
+      "en": "Upgrade 1 Tower",
+      "zh": "升级1次防御塔",
       "context": "assets\\configs\\GameJsonCfg.json:InGameTaskEnum.7.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:InGameTaskEnum.7.Name"
     },
     "data.ingametaskenum.8.name": {
@@ -1288,8 +1288,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.5.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.5.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.5.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.5.Name"
     },
     "data.levelcfg.7.name": {
-      "en": "7. Blazing Desert",
-      "zh": "7.炽热荒漠",
+      "en": "7. Ashen Pass",
+      "zh": "7.灰烬隘口",
       "context": "assets\\configs\\GameJsonCfg.json:LevelCfg.6.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:LevelCfg.6.Name; assets\\KinghtFallConfigB\\GameJsonCfg.json:LevelCfg.6.Name; assets\\KinghtFallConfigD\\GameJsonCfg.json:LevelCfg.6.Name"
     },
     "data.levelcfg.8.name": {
@@ -1568,13 +1568,13 @@
       "context": "assets\\configs\\GameJsonCfg.json:TalentCfg.100020.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100020.Describe"
     },
     "data.talentcfg.100021.describe": {
-      "en": "<color=#43a926>Unlocks Perk:</c> Build 1 Arrow Tower at an available site",
-      "zh": "<color=#43a926>【灵光解锁】 </c>随机建立1座箭塔（若无可建造箭塔则不生效）",
+      "en": "<color=#43a926>Unlocks Perk:</c> Build 1 Tower at an available site",
+      "zh": "<color=#43a926>【灵光解锁】 </c>随机建立1座防御塔（若无可建造防御塔则不生效）",
       "context": "assets\\configs\\GameJsonCfg.json:TalentCfg.100021.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100021.Describe"
     },
     "data.talentcfg.100022.describe": {
-      "en": "<color=#43a926>Unlocks Perk:</c> Arrow Towers become invincible for 3 seconds when near destruction",
-      "zh": "<color=#43a926>【灵光解锁】 </c>箭塔即将被摧毁时，获得3秒无敌效果",
+      "en": "<color=#43a926>Unlocks Perk:</c> Towers become invincible for 3 seconds when near destruction",
+      "zh": "<color=#43a926>【灵光解锁】 </c>防御塔即将被摧毁时，获得3秒无敌效果",
       "context": "assets\\configs\\GameJsonCfg.json:TalentCfg.100022.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TalentCfg.100022.Describe"
     },
     "data.talentcfg.100023.describe": {
@@ -2388,13 +2388,13 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.14.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.14.Describe"
     },
     "data.treasurecfg.16.describe": {
-      "en": "Arrow Tower attack +{0}",
-      "zh": "箭塔攻击+{0}",
+      "en": "Tower attack +{0}",
+      "zh": "防御塔攻击+{0}",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.15.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.15.Describe"
     },
     "data.treasurecfg.17.describe": {
-      "en": "Arrow Tower range +{0}",
-      "zh": "箭塔攻击范围+{0}",
+      "en": "Tower range +{0}",
+      "zh": "防御塔攻击范围+{0}",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.16.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.16.Describe"
     },
     "data.treasurecfg.18.describe": {
@@ -6099,6 +6099,3816 @@
       "en": "Tasks",
       "zh": "任务",
       "context": "Battle HUD task drawer toggle"
+    },
+    "data.building.cannon-1.name": {
+      "en": "Cannon Tower · Lv 1",
+      "zh": "加农炮塔 · 1级",
+      "context": "Buildings · Cannon Tower · Lv 1"
+    },
+    "data.building.cannon-1.description": {
+      "en": "Explosive shots damage groups of monsters.",
+      "zh": "爆炸炮弹对成群怪物造成伤害。",
+      "context": "Buildings · selection description"
+    },
+    "data.building.cannon-2.name": {
+      "en": "Cannon Tower · Lv 2",
+      "zh": "加农炮塔 · 2级",
+      "context": "Buildings · Cannon Tower · Lv 2"
+    },
+    "data.building.cannon-2.description": {
+      "en": "Explosive shots damage groups of monsters.",
+      "zh": "爆炸炮弹对成群怪物造成伤害。",
+      "context": "Buildings · selection description"
+    },
+    "data.building.cannon-3.name": {
+      "en": "Cannon Tower · Lv 3",
+      "zh": "加农炮塔 · 3级",
+      "context": "Buildings · Cannon Tower · Lv 3"
+    },
+    "data.building.cannon-3.description": {
+      "en": "Explosive shots damage groups of monsters.",
+      "zh": "爆炸炮弹对成群怪物造成伤害。",
+      "context": "Buildings · selection description"
+    },
+    "data.building.sniper-1.name": {
+      "en": "Sniper Tower · Lv 1",
+      "zh": "狙击塔 · 1级",
+      "context": "Buildings · Sniper Tower · Lv 1"
+    },
+    "data.building.sniper-1.description": {
+      "en": "Long-range precision shots target the highest-health monster.",
+      "zh": "远距离精准射击，优先攻击生命值最高的怪物。",
+      "context": "Buildings · selection description"
+    },
+    "data.building.sniper-2.name": {
+      "en": "Sniper Tower · Lv 2",
+      "zh": "狙击塔 · 2级",
+      "context": "Buildings · Sniper Tower · Lv 2"
+    },
+    "data.building.sniper-2.description": {
+      "en": "Long-range precision shots target the highest-health monster.",
+      "zh": "远距离精准射击，优先攻击生命值最高的怪物。",
+      "context": "Buildings · selection description"
+    },
+    "data.building.sniper-3.name": {
+      "en": "Sniper Tower · Lv 3",
+      "zh": "狙击塔 · 3级",
+      "context": "Buildings · Sniper Tower · Lv 3"
+    },
+    "data.building.sniper-3.description": {
+      "en": "Long-range precision shots target the highest-health monster.",
+      "zh": "远距离精准射击，优先攻击生命值最高的怪物。",
+      "context": "Buildings · selection description"
+    },
+    "data.building.barracks.royal-guard.1.name": {
+      "en": "Royal Guard · Lv 1",
+      "zh": "皇家卫兵 · 1级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.royal-guard.description": {
+      "en": "Balanced frontline fighters.",
+      "zh": "攻守均衡的前排战士。",
+      "context": "Buildings · initial squad choice"
+    },
+    "data.building.barracks.royal-guard.2.name": {
+      "en": "Royal Guard · Lv 2",
+      "zh": "皇家卫兵 · 2级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.royal-guard.3.name": {
+      "en": "Royal Guard · Lv 3",
+      "zh": "皇家卫兵 · 3级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.heavy-infantry.1.name": {
+      "en": "Heavy Infantry · Lv 1",
+      "zh": "重装步兵 · 1级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.heavy-infantry.description": {
+      "en": "Durable troops for holding the line.",
+      "zh": "坚守战线的耐久部队。",
+      "context": "Buildings · initial squad choice"
+    },
+    "data.building.barracks.heavy-infantry.2.name": {
+      "en": "Heavy Infantry · Lv 2",
+      "zh": "重装步兵 · 2级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.heavy-infantry.3.name": {
+      "en": "Heavy Infantry · Lv 3",
+      "zh": "重装步兵 · 3级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.crossbowmen.1.name": {
+      "en": "Crossbowmen · Lv 1",
+      "zh": "弩手 · 1级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.crossbowmen.description": {
+      "en": "Ranged troops that fight from behind the frontline.",
+      "zh": "在前排后方作战的远程部队。",
+      "context": "Buildings · initial squad choice"
+    },
+    "data.building.barracks.crossbowmen.2.name": {
+      "en": "Crossbowmen · Lv 2",
+      "zh": "弩手 · 2级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.crossbowmen.3.name": {
+      "en": "Crossbowmen · Lv 3",
+      "zh": "弩手 · 3级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.vanguard.1.name": {
+      "en": "Vanguard · Lv 1",
+      "zh": "先锋骑兵 · 1级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.vanguard.description": {
+      "en": "Mounted troops for rapid repositioning.",
+      "zh": "可快速调动的骑乘部队。",
+      "context": "Buildings · initial squad choice"
+    },
+    "data.building.barracks.vanguard.2.name": {
+      "en": "Vanguard · Lv 2",
+      "zh": "先锋骑兵 · 2级",
+      "context": "Buildings · barracks squad"
+    },
+    "data.building.barracks.vanguard.3.name": {
+      "en": "Vanguard · Lv 3",
+      "zh": "先锋骑兵 · 3级",
+      "context": "Buildings · barracks squad"
+    },
+    "ui.building.choose_squad": {
+      "en": "Choose your squad",
+      "zh": "选择你的部队",
+      "context": "Initial barracks selection title"
+    },
+    "ui.building.choose_tower": {
+      "en": "Choose your tower",
+      "zh": "选择你的防御塔",
+      "context": "Initial tower selection title"
+    },
+    "ui.building.initial_choice_hint": {
+      "en": "Choose a type to build",
+      "zh": "选择建造类型",
+      "context": "Initial building selection hint"
+    },
+    "ui.building.cancel": {
+      "en": "Cancel",
+      "zh": "取消",
+      "context": "Cancel an initial building choice"
+    },
+    "data.building.tower-site.name": {
+      "en": "Tower",
+      "zh": "防御塔",
+      "context": "Shared building plot for Arrow, Cannon and Sniper towers"
+    },
+    "data.monster-roster.91001.name": {
+      "en": "Cat",
+      "zh": "猫",
+      "context": "Imported monster1 monster · monster1/Animal_Cat"
+    },
+    "data.monster-roster.91002.name": {
+      "en": "Dog",
+      "zh": "狗",
+      "context": "Imported monster1 monster · monster1/Animal_Dog"
+    },
+    "data.monster-roster.91003.name": {
+      "en": "Fox",
+      "zh": "狐狸",
+      "context": "Imported monster1 monster · monster1/Animal_Fox"
+    },
+    "data.monster-roster.91004.name": {
+      "en": "Grizzly Bear",
+      "zh": "灰熊",
+      "context": "Imported monster1 monster · monster1/Bear_Grizzly"
+    },
+    "data.monster-roster.91005.name": {
+      "en": "Polar Bear",
+      "zh": "白熊",
+      "context": "Imported monster1 monster · monster1/Bear_White"
+    },
+    "data.monster-roster.91006.name": {
+      "en": "Blood Beetle",
+      "zh": "血色甲虫",
+      "context": "Imported monster1 monster · monster1/Beetle_Blood"
+    },
+    "data.monster-roster.91007.name": {
+      "en": "Ice Beetle",
+      "zh": "冰霜甲虫",
+      "context": "Imported monster1 monster · monster1/Beetle_Ice"
+    },
+    "data.monster-roster.91008.name": {
+      "en": "Iron Beetle",
+      "zh": "铁甲甲虫",
+      "context": "Imported monster1 monster · monster1/Beetle_Iron"
+    },
+    "data.monster-roster.91009.name": {
+      "en": "Red Beetle",
+      "zh": "红色甲虫",
+      "context": "Imported monster1 monster · monster1/Beetle_Red"
+    },
+    "data.monster-roster.91010.name": {
+      "en": "Eagle",
+      "zh": "鹰",
+      "context": "Imported monster1 monster · monster1/Bird_Eagle"
+    },
+    "data.monster-roster.91011.name": {
+      "en": "Gull",
+      "zh": "海鸥",
+      "context": "Imported monster1 monster · monster1/Bird_Gull"
+    },
+    "data.monster-roster.91012.name": {
+      "en": "Owl",
+      "zh": "猫头鹰",
+      "context": "Imported monster1 monster · monster1/Bird_Owl"
+    },
+    "data.monster-roster.91013.name": {
+      "en": "Parrot",
+      "zh": "鹦鹉",
+      "context": "Imported monster1 monster · monster1/Bird_Parrot"
+    },
+    "data.monster-roster.91014.name": {
+      "en": "Red Bird",
+      "zh": "红色鸟",
+      "context": "Imported monster1 monster · monster1/Bird_Red"
+    },
+    "data.monster-roster.91015.name": {
+      "en": "Snow Bird",
+      "zh": "冰雪鸟",
+      "context": "Imported monster1 monster · monster1/Bird_Snow"
+    },
+    "data.monster-roster.91016.name": {
+      "en": "Toucan",
+      "zh": "巨嘴鸟",
+      "context": "Imported monster1 monster · monster1/Bird_Toucan"
+    },
+    "data.monster-roster.91017.name": {
+      "en": "Angry Blowfish",
+      "zh": "愤怒刺鲀",
+      "context": "Imported monster1 monster · monster1/Blowfish_Angry"
+    },
+    "data.monster-roster.91018.name": {
+      "en": "Beast Blowfish",
+      "zh": "野兽刺鲀",
+      "context": "Imported monster1 monster · monster1/Blowfish_Beast"
+    },
+    "data.monster-roster.91019.name": {
+      "en": "Disco Buffalo",
+      "zh": "迪斯科野牛",
+      "context": "Imported monster1 monster · monster1/Buffalo_Disco"
+    },
+    "data.monster-roster.91020.name": {
+      "en": "Wild Buffalo",
+      "zh": "野生野牛",
+      "context": "Imported monster1 monster · monster1/Buffalo_Wild"
+    },
+    "data.monster-roster.91021.name": {
+      "en": "Iron Crab",
+      "zh": "铁甲蟹",
+      "context": "Imported monster1 monster · monster1/Crab_Iron"
+    },
+    "data.monster-roster.91022.name": {
+      "en": "Rock Crab",
+      "zh": "岩石蟹",
+      "context": "Imported monster1 monster · monster1/Crab_Rock"
+    },
+    "data.monster-roster.91023.name": {
+      "en": "Snow Crab",
+      "zh": "冰雪蟹",
+      "context": "Imported monster1 monster · monster1/Crab_Snow"
+    },
+    "data.monster-roster.91024.name": {
+      "en": "Angry Goat",
+      "zh": "愤怒山羊",
+      "context": "Imported monster1 monster · monster1/Goat_Angry"
+    },
+    "data.monster-roster.91025.name": {
+      "en": "Black Goat",
+      "zh": "黑色山羊",
+      "context": "Imported monster1 monster · monster1/Goat_Black"
+    },
+    "data.monster-roster.91026.name": {
+      "en": "Mushroom Goat",
+      "zh": "蘑菇山羊",
+      "context": "Imported monster1 monster · monster1/Goat_Mushroom"
+    },
+    "data.monster-roster.91027.name": {
+      "en": "Helmeted Goby",
+      "zh": "铁盔虾虎鱼",
+      "context": "Imported monster1 monster · monster1/Goby_Helmet"
+    },
+    "data.monster-roster.91028.name": {
+      "en": "Mad Goby",
+      "zh": "狂怒虾虎鱼",
+      "context": "Imported monster1 monster · monster1/Goby_Mad"
+    },
+    "data.monster-roster.91029.name": {
+      "en": "Bouncy Jellyfish",
+      "zh": "弹跳水母",
+      "context": "Imported monster1 monster · monster1/Jellyfish_Bouncy"
+    },
+    "data.monster-roster.91030.name": {
+      "en": "Ice Jellyfish",
+      "zh": "冰霜水母",
+      "context": "Imported monster1 monster · monster1/Jellyfish_Ice"
+    },
+    "data.monster-roster.91031.name": {
+      "en": "Fire Lizard",
+      "zh": "火焰蜥蜴",
+      "context": "Imported monster1 monster · monster1/Lizard_Fire"
+    },
+    "data.monster-roster.91032.name": {
+      "en": "Horned Lizard",
+      "zh": "尖角蜥蜴",
+      "context": "Imported monster1 monster · monster1/Lizard_Horn"
+    },
+    "data.monster-roster.91033.name": {
+      "en": "Snail Lizard",
+      "zh": "蜗牛蜥蜴",
+      "context": "Imported monster1 monster · monster1/Lizard_Snail"
+    },
+    "data.monster-roster.91034.name": {
+      "en": "Ice Octopus",
+      "zh": "冰霜章鱼",
+      "context": "Imported monster1 monster · monster1/Octopus_Ice"
+    },
+    "data.monster-roster.91035.name": {
+      "en": "Pirate Octopus",
+      "zh": "海盗章鱼",
+      "context": "Imported monster1 monster · monster1/Octopus_Pirate"
+    },
+    "data.monster-roster.91036.name": {
+      "en": "Ringed Octopus",
+      "zh": "环纹章鱼",
+      "context": "Imported monster1 monster · monster1/Octopus_Ringed"
+    },
+    "data.monster-roster.91037.name": {
+      "en": "Green Slime",
+      "zh": "绿色史莱姆",
+      "context": "Imported monster1 monster · monster1/Slime_Green"
+    },
+    "data.monster-roster.91038.name": {
+      "en": "Purple Slime",
+      "zh": "紫色史莱姆",
+      "context": "Imported monster1 monster · monster1/Slime_Purple"
+    },
+    "data.monster-roster.91039.name": {
+      "en": "Blue Snail",
+      "zh": "蓝色蜗牛",
+      "context": "Imported monster1 monster · monster1/Snail_Blue"
+    },
+    "data.monster-roster.91040.name": {
+      "en": "Conch Snail",
+      "zh": "海螺蜗牛",
+      "context": "Imported monster1 monster · monster1/Snail_Conch"
+    },
+    "data.monster-roster.91041.name": {
+      "en": "Green Snail",
+      "zh": "绿色蜗牛",
+      "context": "Imported monster1 monster · monster1/Snail_Green"
+    },
+    "data.monster-roster.91042.name": {
+      "en": "Bell Snake",
+      "zh": "铃铛蛇",
+      "context": "Imported monster1 monster · monster1/Snake_Bell"
+    },
+    "data.monster-roster.91043.name": {
+      "en": "Fire Snake",
+      "zh": "火焰蛇",
+      "context": "Imported monster1 monster · monster1/Snake_Fire"
+    },
+    "data.monster-roster.91044.name": {
+      "en": "Green Snake",
+      "zh": "绿色蛇",
+      "context": "Imported monster1 monster · monster1/Snake_Green"
+    },
+    "data.monster-roster.91045.name": {
+      "en": "Mushroom Snake",
+      "zh": "蘑菇蛇",
+      "context": "Imported monster1 monster · monster1/Snake_Mushroom"
+    },
+    "data.monster-roster.91046.name": {
+      "en": "Alligator Turtle",
+      "zh": "鳄龟",
+      "context": "Imported monster1 monster · monster1/Turtle_Alligator"
+    },
+    "data.monster-roster.91047.name": {
+      "en": "Tower Turtle",
+      "zh": "高塔龟",
+      "context": "Imported monster1 monster · monster1/Turtle_Tower"
+    },
+    "data.monster-roster.91048.name": {
+      "en": "Volcano Turtle",
+      "zh": "火山龟",
+      "context": "Imported monster1 monster · monster1/Turtle_Volcano"
+    },
+    "data.monster-roster.91049.name": {
+      "en": "Demon Wolf",
+      "zh": "恶魔狼",
+      "context": "Imported monster1 monster · monster1/Wolf_Demon"
+    },
+    "data.monster-roster.91050.name": {
+      "en": "Gray Wolf",
+      "zh": "灰色狼",
+      "context": "Imported monster1 monster · monster1/Wolf_Gray"
+    },
+    "data.monster-roster.91051.name": {
+      "en": "Vampire",
+      "zh": "异星吸血鬼",
+      "context": "Imported monster2 monster · monster2/Alien_Vampire"
+    },
+    "data.monster-roster.91052.name": {
+      "en": "Wizard",
+      "zh": "异星巫师",
+      "context": "Imported monster2 monster · monster2/Alien_Wizard"
+    },
+    "data.monster-roster.91053.name": {
+      "en": "Honey Ant",
+      "zh": "蜂蜜蚂蚁",
+      "context": "Imported monster2 monster · monster2/Ant_Honey"
+    },
+    "data.monster-roster.91054.name": {
+      "en": "Jelly Ant",
+      "zh": "果冻蚂蚁",
+      "context": "Imported monster2 monster · monster2/Ant_Jelly"
+    },
+    "data.monster-roster.91055.name": {
+      "en": "Worker Ant",
+      "zh": "工蚂蚁",
+      "context": "Imported monster2 monster · monster2/Ant_Worker"
+    },
+    "data.monster-roster.91056.name": {
+      "en": "Yellow Ant",
+      "zh": "黄色蚂蚁",
+      "context": "Imported monster2 monster · monster2/Ant_Yellow"
+    },
+    "data.monster-roster.91057.name": {
+      "en": "Cave Bat",
+      "zh": "洞穴蝙蝠",
+      "context": "Imported monster2 monster · monster2/Bat_Cave"
+    },
+    "data.monster-roster.91058.name": {
+      "en": "Pig Bat",
+      "zh": "猪鼻蝙蝠",
+      "context": "Imported monster2 monster · monster2/Bat_Pig"
+    },
+    "data.monster-roster.91059.name": {
+      "en": "Skull Bat",
+      "zh": "颅骨蝙蝠",
+      "context": "Imported monster2 monster · monster2/Bat_Skull"
+    },
+    "data.monster-roster.91060.name": {
+      "en": "Devil Bee",
+      "zh": "恶魔蜂",
+      "context": "Imported monster2 monster · monster2/Bee_Devil"
+    },
+    "data.monster-roster.91061.name": {
+      "en": "Honey Bee",
+      "zh": "蜂蜜蜂",
+      "context": "Imported monster2 monster · monster2/Bee_Honey"
+    },
+    "data.monster-roster.91062.name": {
+      "en": "Hornet Bee",
+      "zh": "胡蜂蜂",
+      "context": "Imported monster2 monster · monster2/Bee_Hornet"
+    },
+    "data.monster-roster.91063.name": {
+      "en": "Bomb Bud",
+      "zh": "炸弹芽灵",
+      "context": "Imported monster2 monster · monster2/Bud_Bomb"
+    },
+    "data.monster-roster.91064.name": {
+      "en": "Fire Bud",
+      "zh": "火焰芽灵",
+      "context": "Imported monster2 monster · monster2/Bud_Fire"
+    },
+    "data.monster-roster.91065.name": {
+      "en": "Flower Bud",
+      "zh": "花朵芽灵",
+      "context": "Imported monster2 monster · monster2/Bud_Flower"
+    },
+    "data.monster-roster.91066.name": {
+      "en": "Green Cactus",
+      "zh": "绿色仙人掌",
+      "context": "Imported monster2 monster · monster2/Cactus_Green"
+    },
+    "data.monster-roster.91067.name": {
+      "en": "Snow Cactus",
+      "zh": "冰雪仙人掌",
+      "context": "Imported monster2 monster · monster2/Cactus_Snow"
+    },
+    "data.monster-roster.91068.name": {
+      "en": "Armored Dragonfly",
+      "zh": "装甲蜻蜓",
+      "context": "Imported monster2 monster · monster2/Dragonfly_Armor"
+    },
+    "data.monster-roster.91069.name": {
+      "en": "Robot Dragonfly",
+      "zh": "机械蜻蜓",
+      "context": "Imported monster2 monster · monster2/Dragonfly_Bot"
+    },
+    "data.monster-roster.91070.name": {
+      "en": "Green Dragonfly",
+      "zh": "绿色蜻蜓",
+      "context": "Imported monster2 monster · monster2/Dragonfly_Green"
+    },
+    "data.monster-roster.91071.name": {
+      "en": "Dust Fairy",
+      "zh": "星尘仙灵",
+      "context": "Imported monster2 monster · monster2/Fairy_Dust"
+    },
+    "data.monster-roster.91072.name": {
+      "en": "Lantern Fairy",
+      "zh": "灯笼仙灵",
+      "context": "Imported monster2 monster · monster2/Fairy_Lamp"
+    },
+    "data.monster-roster.91073.name": {
+      "en": "Snow Fairy",
+      "zh": "冰雪仙灵",
+      "context": "Imported monster2 monster · monster2/Fairy_Snow"
+    },
+    "data.monster-roster.91074.name": {
+      "en": "Big-eye Fly",
+      "zh": "大眼苍蝇",
+      "context": "Imported monster2 monster · monster2/Fly_Bigeye"
+    },
+    "data.monster-roster.91075.name": {
+      "en": "Dumb Fly",
+      "zh": "呆呆苍蝇",
+      "context": "Imported monster2 monster · monster2/Fly_Dumb"
+    },
+    "data.monster-roster.91076.name": {
+      "en": "Glow Fly",
+      "zh": "荧光苍蝇",
+      "context": "Imported monster2 monster · monster2/Fly_Glow"
+    },
+    "data.monster-roster.91077.name": {
+      "en": "Iron Fly",
+      "zh": "铁甲苍蝇",
+      "context": "Imported monster2 monster · monster2/Fly_Iron"
+    },
+    "data.monster-roster.91078.name": {
+      "en": "Palm Fly",
+      "zh": "棕榈苍蝇",
+      "context": "Imported monster2 monster · monster2/Fly_Palm"
+    },
+    "data.monster-roster.91079.name": {
+      "en": "Baby Ghost",
+      "zh": "幼年幽灵",
+      "context": "Imported monster2 monster · monster2/Ghost_Baby"
+    },
+    "data.monster-roster.91080.name": {
+      "en": "Mask Ghost",
+      "zh": "面具幽灵",
+      "context": "Imported monster2 monster · monster2/Ghost_Mask"
+    },
+    "data.monster-roster.91081.name": {
+      "en": "Pirate Ghost",
+      "zh": "海盗幽灵",
+      "context": "Imported monster2 monster · monster2/Ghost_Pirate"
+    },
+    "data.monster-roster.91082.name": {
+      "en": "Iron Golem",
+      "zh": "钢铁魔像",
+      "context": "Imported monster2 monster · monster2/Golem_Iron"
+    },
+    "data.monster-roster.91083.name": {
+      "en": "Tree Golem",
+      "zh": "树人魔像",
+      "context": "Imported monster2 monster · monster2/Golem_Tree"
+    },
+    "data.monster-roster.91084.name": {
+      "en": "Flower Mantis",
+      "zh": "花朵螳螂",
+      "context": "Imported monster2 monster · monster2/Mantis_Flower"
+    },
+    "data.monster-roster.91085.name": {
+      "en": "Green Mantis",
+      "zh": "绿色螳螂",
+      "context": "Imported monster2 monster · monster2/Mantis_Green"
+    },
+    "data.monster-roster.91086.name": {
+      "en": "Pitcher Plant",
+      "zh": "猪笼草",
+      "context": "Imported monster2 monster · monster2/Plant_Nepenthes"
+    },
+    "data.monster-roster.91087.name": {
+      "en": "Red Plant",
+      "zh": "红色食人花",
+      "context": "Imported monster2 monster · monster2/Plant_Red"
+    },
+    "data.monster-roster.91088.name": {
+      "en": "Spiky Plant",
+      "zh": "尖刺食人花",
+      "context": "Imported monster2 monster · monster2/Plant_Spiky"
+    },
+    "data.monster-roster.91089.name": {
+      "en": "Purple Scorpion",
+      "zh": "紫色蝎子",
+      "context": "Imported monster2 monster · monster2/Scorpion_Purple"
+    },
+    "data.monster-roster.91090.name": {
+      "en": "Stone Scorpion",
+      "zh": "石头蝎子",
+      "context": "Imported monster2 monster · monster2/Scorpion_Stone"
+    },
+    "data.monster-roster.91091.name": {
+      "en": "Skeleton Soldier",
+      "zh": "士兵骷髅",
+      "context": "Imported monster2 monster · monster2/Skeleton_Soldier"
+    },
+    "data.monster-roster.91092.name": {
+      "en": "Skeleton Warlord",
+      "zh": "督军骷髅",
+      "context": "Imported monster2 monster · monster2/Skeleton_Warlord"
+    },
+    "data.monster-roster.91093.name": {
+      "en": "Skeleton Warrior",
+      "zh": "战士骷髅",
+      "context": "Imported monster2 monster · monster2/Skeleton_Warrior"
+    },
+    "data.monster-roster.91094.name": {
+      "en": "Frozen Spider",
+      "zh": "冰冻蜘蛛",
+      "context": "Imported monster2 monster · monster2/Spider_Frozen"
+    },
+    "data.monster-roster.91095.name": {
+      "en": "Red Spider",
+      "zh": "红色蜘蛛",
+      "context": "Imported monster2 monster · monster2/Spider_Red"
+    },
+    "data.monster-roster.91096.name": {
+      "en": "Venom Spider",
+      "zh": "剧毒蜘蛛",
+      "context": "Imported monster2 monster · monster2/Spider_Venom"
+    },
+    "data.monster-roster.91097.name": {
+      "en": "Box Walker",
+      "zh": "箱子行走者",
+      "context": "Imported monster2 monster · monster2/Walker_Box"
+    },
+    "data.monster-roster.91098.name": {
+      "en": "Candle Walker",
+      "zh": "蜡烛行走者",
+      "context": "Imported monster2 monster · monster2/Walker_Candle"
+    },
+    "data.monster-roster.91099.name": {
+      "en": "Mushroom Walker",
+      "zh": "蘑菇行走者",
+      "context": "Imported monster2 monster · monster2/Walker_Mushroom"
+    },
+    "data.monster-roster.91100.name": {
+      "en": "Stump Walker",
+      "zh": "树桩行走者",
+      "context": "Imported monster2 monster · monster2/Walker_Stump"
+    },
+    "data.campaign-monster.92001.name": {
+      "en": "Cat",
+      "zh": "猫",
+      "context": "Campaign monster1/Animal_Cat; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92002.name": {
+      "en": "Dog",
+      "zh": "狗",
+      "context": "Campaign monster1/Animal_Dog; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92003.name": {
+      "en": "Fox",
+      "zh": "狐狸",
+      "context": "Campaign monster1/Animal_Fox; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92004.name": {
+      "en": "Grizzly Bear",
+      "zh": "灰熊",
+      "context": "Campaign monster1/Bear_Grizzly; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92005.name": {
+      "en": "Grizzly Bear",
+      "zh": "灰熊",
+      "context": "Campaign monster1/Bear_Grizzly; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92006.name": {
+      "en": "Grizzly Bear",
+      "zh": "灰熊",
+      "context": "Campaign monster1/Bear_Grizzly; legacy combat profile 90007"
+    },
+    "data.campaign-monster.92007.name": {
+      "en": "Polar Bear",
+      "zh": "白熊",
+      "context": "Campaign monster1/Bear_White; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92008.name": {
+      "en": "Blood Beetle",
+      "zh": "血色甲虫",
+      "context": "Campaign monster1/Beetle_Blood; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92009.name": {
+      "en": "Ice Beetle",
+      "zh": "冰霜甲虫",
+      "context": "Campaign monster1/Beetle_Ice; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92010.name": {
+      "en": "Ice Beetle",
+      "zh": "冰霜甲虫",
+      "context": "Campaign monster1/Beetle_Ice; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92011.name": {
+      "en": "Iron Beetle",
+      "zh": "铁甲甲虫",
+      "context": "Campaign monster1/Beetle_Iron; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92012.name": {
+      "en": "Red Beetle",
+      "zh": "红色甲虫",
+      "context": "Campaign monster1/Beetle_Red; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92013.name": {
+      "en": "Eagle",
+      "zh": "鹰",
+      "context": "Campaign monster1/Bird_Eagle; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92014.name": {
+      "en": "Eagle",
+      "zh": "鹰",
+      "context": "Campaign monster1/Bird_Eagle; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92015.name": {
+      "en": "Gull",
+      "zh": "海鸥",
+      "context": "Campaign monster1/Bird_Gull; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92016.name": {
+      "en": "Owl",
+      "zh": "猫头鹰",
+      "context": "Campaign monster1/Bird_Owl; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92017.name": {
+      "en": "Owl",
+      "zh": "猫头鹰",
+      "context": "Campaign monster1/Bird_Owl; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92018.name": {
+      "en": "Parrot",
+      "zh": "鹦鹉",
+      "context": "Campaign monster1/Bird_Parrot; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92019.name": {
+      "en": "Red Bird",
+      "zh": "红色鸟",
+      "context": "Campaign monster1/Bird_Red; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92020.name": {
+      "en": "Snow Bird",
+      "zh": "冰雪鸟",
+      "context": "Campaign monster1/Bird_Snow; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92021.name": {
+      "en": "Toucan",
+      "zh": "巨嘴鸟",
+      "context": "Campaign monster1/Bird_Toucan; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92022.name": {
+      "en": "Angry Blowfish",
+      "zh": "愤怒刺鲀",
+      "context": "Campaign monster1/Blowfish_Angry; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92023.name": {
+      "en": "Beast Blowfish",
+      "zh": "野兽刺鲀",
+      "context": "Campaign monster1/Blowfish_Beast; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92024.name": {
+      "en": "Disco Buffalo",
+      "zh": "迪斯科野牛",
+      "context": "Campaign monster1/Buffalo_Disco; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92025.name": {
+      "en": "Wild Buffalo",
+      "zh": "野生野牛",
+      "context": "Campaign monster1/Buffalo_Wild; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92026.name": {
+      "en": "Wild Buffalo",
+      "zh": "野生野牛",
+      "context": "Campaign monster1/Buffalo_Wild; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92027.name": {
+      "en": "Iron Crab",
+      "zh": "铁甲蟹",
+      "context": "Campaign monster1/Crab_Iron; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92028.name": {
+      "en": "Rock Crab",
+      "zh": "岩石蟹",
+      "context": "Campaign monster1/Crab_Rock; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92029.name": {
+      "en": "Snow Crab",
+      "zh": "冰雪蟹",
+      "context": "Campaign monster1/Crab_Snow; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92030.name": {
+      "en": "Angry Goat",
+      "zh": "愤怒山羊",
+      "context": "Campaign monster1/Goat_Angry; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92031.name": {
+      "en": "Angry Goat",
+      "zh": "愤怒山羊",
+      "context": "Campaign monster1/Goat_Angry; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92032.name": {
+      "en": "Black Goat",
+      "zh": "黑色山羊",
+      "context": "Campaign monster1/Goat_Black; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92033.name": {
+      "en": "Mushroom Goat",
+      "zh": "蘑菇山羊",
+      "context": "Campaign monster1/Goat_Mushroom; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92034.name": {
+      "en": "Helmeted Goby",
+      "zh": "铁盔虾虎鱼",
+      "context": "Campaign monster1/Goby_Helmet; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92035.name": {
+      "en": "Mad Goby",
+      "zh": "狂怒虾虎鱼",
+      "context": "Campaign monster1/Goby_Mad; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92036.name": {
+      "en": "Bouncy Jellyfish",
+      "zh": "弹跳水母",
+      "context": "Campaign monster1/Jellyfish_Bouncy; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92037.name": {
+      "en": "Ice Jellyfish",
+      "zh": "冰霜水母",
+      "context": "Campaign monster1/Jellyfish_Ice; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92038.name": {
+      "en": "Ice Jellyfish",
+      "zh": "冰霜水母",
+      "context": "Campaign monster1/Jellyfish_Ice; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92039.name": {
+      "en": "Fire Lizard",
+      "zh": "火焰蜥蜴",
+      "context": "Campaign monster1/Lizard_Fire; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92040.name": {
+      "en": "Horned Lizard",
+      "zh": "尖角蜥蜴",
+      "context": "Campaign monster1/Lizard_Horn; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92041.name": {
+      "en": "Snail Lizard",
+      "zh": "蜗牛蜥蜴",
+      "context": "Campaign monster1/Lizard_Snail; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92042.name": {
+      "en": "Ice Octopus",
+      "zh": "冰霜章鱼",
+      "context": "Campaign monster1/Octopus_Ice; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92043.name": {
+      "en": "Ice Octopus",
+      "zh": "冰霜章鱼",
+      "context": "Campaign monster1/Octopus_Ice; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92044.name": {
+      "en": "Pirate Octopus",
+      "zh": "海盗章鱼",
+      "context": "Campaign monster1/Octopus_Pirate; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92045.name": {
+      "en": "Ringed Octopus",
+      "zh": "环纹章鱼",
+      "context": "Campaign monster1/Octopus_Ringed; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92046.name": {
+      "en": "Ringed Octopus",
+      "zh": "环纹章鱼",
+      "context": "Campaign monster1/Octopus_Ringed; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92047.name": {
+      "en": "Green Slime",
+      "zh": "绿色史莱姆",
+      "context": "Campaign monster1/Slime_Green; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92048.name": {
+      "en": "Purple Slime",
+      "zh": "紫色史莱姆",
+      "context": "Campaign monster1/Slime_Purple; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92049.name": {
+      "en": "Purple Slime",
+      "zh": "紫色史莱姆",
+      "context": "Campaign monster1/Slime_Purple; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92050.name": {
+      "en": "Blue Snail",
+      "zh": "蓝色蜗牛",
+      "context": "Campaign monster1/Snail_Blue; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92051.name": {
+      "en": "Conch Snail",
+      "zh": "海螺蜗牛",
+      "context": "Campaign monster1/Snail_Conch; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92052.name": {
+      "en": "Green Snail",
+      "zh": "绿色蜗牛",
+      "context": "Campaign monster1/Snail_Green; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92053.name": {
+      "en": "Bell Snake",
+      "zh": "铃铛蛇",
+      "context": "Campaign monster1/Snake_Bell; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92054.name": {
+      "en": "Fire Snake",
+      "zh": "火焰蛇",
+      "context": "Campaign monster1/Snake_Fire; legacy combat profile 90005"
+    },
+    "data.campaign-monster.92055.name": {
+      "en": "Green Snake",
+      "zh": "绿色蛇",
+      "context": "Campaign monster1/Snake_Green; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92056.name": {
+      "en": "Green Snake",
+      "zh": "绿色蛇",
+      "context": "Campaign monster1/Snake_Green; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92057.name": {
+      "en": "Mushroom Snake",
+      "zh": "蘑菇蛇",
+      "context": "Campaign monster1/Snake_Mushroom; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92058.name": {
+      "en": "Alligator Turtle",
+      "zh": "鳄龟",
+      "context": "Campaign monster1/Turtle_Alligator; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92059.name": {
+      "en": "Alligator Turtle",
+      "zh": "鳄龟",
+      "context": "Campaign monster1/Turtle_Alligator; legacy combat profile 90005"
+    },
+    "data.campaign-monster.92060.name": {
+      "en": "Tower Turtle",
+      "zh": "高塔龟",
+      "context": "Campaign monster1/Turtle_Tower; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92061.name": {
+      "en": "Volcano Turtle",
+      "zh": "火山龟",
+      "context": "Campaign monster1/Turtle_Volcano; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92062.name": {
+      "en": "Demon Wolf",
+      "zh": "恶魔狼",
+      "context": "Campaign monster1/Wolf_Demon; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92063.name": {
+      "en": "Gray Wolf",
+      "zh": "灰色狼",
+      "context": "Campaign monster1/Wolf_Gray; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92064.name": {
+      "en": "Gray Wolf",
+      "zh": "灰色狼",
+      "context": "Campaign monster1/Wolf_Gray; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92065.name": {
+      "en": "Vampire",
+      "zh": "异星吸血鬼",
+      "context": "Campaign monster2/Alien_Vampire; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92066.name": {
+      "en": "Wizard",
+      "zh": "异星巫师",
+      "context": "Campaign monster2/Alien_Wizard; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92067.name": {
+      "en": "Honey Ant",
+      "zh": "蜂蜜蚂蚁",
+      "context": "Campaign monster2/Ant_Honey; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92068.name": {
+      "en": "Honey Ant",
+      "zh": "蜂蜜蚂蚁",
+      "context": "Campaign monster2/Ant_Honey; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92069.name": {
+      "en": "Jelly Ant",
+      "zh": "果冻蚂蚁",
+      "context": "Campaign monster2/Ant_Jelly; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92070.name": {
+      "en": "Worker Ant",
+      "zh": "工蚂蚁",
+      "context": "Campaign monster2/Ant_Worker; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92071.name": {
+      "en": "Yellow Ant",
+      "zh": "黄色蚂蚁",
+      "context": "Campaign monster2/Ant_Yellow; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92072.name": {
+      "en": "Cave Bat",
+      "zh": "洞穴蝙蝠",
+      "context": "Campaign monster2/Bat_Cave; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92073.name": {
+      "en": "Pig Bat",
+      "zh": "猪鼻蝙蝠",
+      "context": "Campaign monster2/Bat_Pig; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92074.name": {
+      "en": "Skull Bat",
+      "zh": "颅骨蝙蝠",
+      "context": "Campaign monster2/Bat_Skull; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92075.name": {
+      "en": "Devil Bee",
+      "zh": "恶魔蜂",
+      "context": "Campaign monster2/Bee_Devil; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92076.name": {
+      "en": "Honey Bee",
+      "zh": "蜂蜜蜂",
+      "context": "Campaign monster2/Bee_Honey; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92077.name": {
+      "en": "Honey Bee",
+      "zh": "蜂蜜蜂",
+      "context": "Campaign monster2/Bee_Honey; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92078.name": {
+      "en": "Hornet Bee",
+      "zh": "胡蜂蜂",
+      "context": "Campaign monster2/Bee_Hornet; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92079.name": {
+      "en": "Bomb Bud",
+      "zh": "炸弹芽灵",
+      "context": "Campaign monster2/Bud_Bomb; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92080.name": {
+      "en": "Fire Bud",
+      "zh": "火焰芽灵",
+      "context": "Campaign monster2/Bud_Fire; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92081.name": {
+      "en": "Flower Bud",
+      "zh": "花朵芽灵",
+      "context": "Campaign monster2/Bud_Flower; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92082.name": {
+      "en": "Flower Bud",
+      "zh": "花朵芽灵",
+      "context": "Campaign monster2/Bud_Flower; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92083.name": {
+      "en": "Green Cactus",
+      "zh": "绿色仙人掌",
+      "context": "Campaign monster2/Cactus_Green; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92084.name": {
+      "en": "Green Cactus",
+      "zh": "绿色仙人掌",
+      "context": "Campaign monster2/Cactus_Green; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92085.name": {
+      "en": "Snow Cactus",
+      "zh": "冰雪仙人掌",
+      "context": "Campaign monster2/Cactus_Snow; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92086.name": {
+      "en": "Armored Dragonfly",
+      "zh": "装甲蜻蜓",
+      "context": "Campaign monster2/Dragonfly_Armor; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92087.name": {
+      "en": "Robot Dragonfly",
+      "zh": "机械蜻蜓",
+      "context": "Campaign monster2/Dragonfly_Bot; legacy combat profile 90008"
+    },
+    "data.campaign-monster.92088.name": {
+      "en": "Green Dragonfly",
+      "zh": "绿色蜻蜓",
+      "context": "Campaign monster2/Dragonfly_Green; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92089.name": {
+      "en": "Green Dragonfly",
+      "zh": "绿色蜻蜓",
+      "context": "Campaign monster2/Dragonfly_Green; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92090.name": {
+      "en": "Dust Fairy",
+      "zh": "星尘仙灵",
+      "context": "Campaign monster2/Fairy_Dust; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92091.name": {
+      "en": "Dust Fairy",
+      "zh": "星尘仙灵",
+      "context": "Campaign monster2/Fairy_Dust; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92092.name": {
+      "en": "Lantern Fairy",
+      "zh": "灯笼仙灵",
+      "context": "Campaign monster2/Fairy_Lamp; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92093.name": {
+      "en": "Lantern Fairy",
+      "zh": "灯笼仙灵",
+      "context": "Campaign monster2/Fairy_Lamp; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92094.name": {
+      "en": "Snow Fairy",
+      "zh": "冰雪仙灵",
+      "context": "Campaign monster2/Fairy_Snow; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92095.name": {
+      "en": "Snow Fairy",
+      "zh": "冰雪仙灵",
+      "context": "Campaign monster2/Fairy_Snow; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92096.name": {
+      "en": "Big-eye Fly",
+      "zh": "大眼苍蝇",
+      "context": "Campaign monster2/Fly_Bigeye; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92097.name": {
+      "en": "Dumb Fly",
+      "zh": "呆呆苍蝇",
+      "context": "Campaign monster2/Fly_Dumb; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92098.name": {
+      "en": "Glow Fly",
+      "zh": "荧光苍蝇",
+      "context": "Campaign monster2/Fly_Glow; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92099.name": {
+      "en": "Iron Fly",
+      "zh": "铁甲苍蝇",
+      "context": "Campaign monster2/Fly_Iron; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92100.name": {
+      "en": "Palm Fly",
+      "zh": "棕榈苍蝇",
+      "context": "Campaign monster2/Fly_Palm; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92101.name": {
+      "en": "Baby Ghost",
+      "zh": "幼年幽灵",
+      "context": "Campaign monster2/Ghost_Baby; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92102.name": {
+      "en": "Mask Ghost",
+      "zh": "面具幽灵",
+      "context": "Campaign monster2/Ghost_Mask; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92103.name": {
+      "en": "Mask Ghost",
+      "zh": "面具幽灵",
+      "context": "Campaign monster2/Ghost_Mask; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92104.name": {
+      "en": "Pirate Ghost",
+      "zh": "海盗幽灵",
+      "context": "Campaign monster2/Ghost_Pirate; legacy combat profile 90008"
+    },
+    "data.campaign-monster.92105.name": {
+      "en": "Iron Golem",
+      "zh": "钢铁魔像",
+      "context": "Campaign monster2/Golem_Iron; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92106.name": {
+      "en": "Tree Golem",
+      "zh": "树人魔像",
+      "context": "Campaign monster2/Golem_Tree; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92107.name": {
+      "en": "Flower Mantis",
+      "zh": "花朵螳螂",
+      "context": "Campaign monster2/Mantis_Flower; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92108.name": {
+      "en": "Green Mantis",
+      "zh": "绿色螳螂",
+      "context": "Campaign monster2/Mantis_Green; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92109.name": {
+      "en": "Pitcher Plant",
+      "zh": "猪笼草",
+      "context": "Campaign monster2/Plant_Nepenthes; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92110.name": {
+      "en": "Pitcher Plant",
+      "zh": "猪笼草",
+      "context": "Campaign monster2/Plant_Nepenthes; legacy combat profile 90005"
+    },
+    "data.campaign-monster.92111.name": {
+      "en": "Red Plant",
+      "zh": "红色食人花",
+      "context": "Campaign monster2/Plant_Red; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92112.name": {
+      "en": "Spiky Plant",
+      "zh": "尖刺食人花",
+      "context": "Campaign monster2/Plant_Spiky; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92113.name": {
+      "en": "Purple Scorpion",
+      "zh": "紫色蝎子",
+      "context": "Campaign monster2/Scorpion_Purple; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92114.name": {
+      "en": "Stone Scorpion",
+      "zh": "石头蝎子",
+      "context": "Campaign monster2/Scorpion_Stone; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92115.name": {
+      "en": "Skeleton Soldier",
+      "zh": "士兵骷髅",
+      "context": "Campaign monster2/Skeleton_Soldier; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92116.name": {
+      "en": "Skeleton Warlord",
+      "zh": "督军骷髅",
+      "context": "Campaign monster2/Skeleton_Warlord; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92117.name": {
+      "en": "Skeleton Warrior",
+      "zh": "战士骷髅",
+      "context": "Campaign monster2/Skeleton_Warrior; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92118.name": {
+      "en": "Frozen Spider",
+      "zh": "冰冻蜘蛛",
+      "context": "Campaign monster2/Spider_Frozen; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92119.name": {
+      "en": "Red Spider",
+      "zh": "红色蜘蛛",
+      "context": "Campaign monster2/Spider_Red; legacy combat profile 90001"
+    },
+    "data.campaign-monster.92120.name": {
+      "en": "Venom Spider",
+      "zh": "剧毒蜘蛛",
+      "context": "Campaign monster2/Spider_Venom; legacy combat profile 90003"
+    },
+    "data.campaign-monster.92121.name": {
+      "en": "Box Walker",
+      "zh": "箱子行走者",
+      "context": "Campaign monster2/Walker_Box; legacy combat profile 90002"
+    },
+    "data.campaign-monster.92122.name": {
+      "en": "Candle Walker",
+      "zh": "蜡烛行走者",
+      "context": "Campaign monster2/Walker_Candle; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92123.name": {
+      "en": "Candle Walker",
+      "zh": "蜡烛行走者",
+      "context": "Campaign monster2/Walker_Candle; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92124.name": {
+      "en": "Mushroom Walker",
+      "zh": "蘑菇行走者",
+      "context": "Campaign monster2/Walker_Mushroom; legacy combat profile 90006"
+    },
+    "data.campaign-monster.92125.name": {
+      "en": "Mushroom Walker",
+      "zh": "蘑菇行走者",
+      "context": "Campaign monster2/Walker_Mushroom; legacy combat profile 90009"
+    },
+    "data.campaign-monster.92126.name": {
+      "en": "Stump Walker",
+      "zh": "树桩行走者",
+      "context": "Campaign monster2/Walker_Stump; legacy combat profile 90004"
+    },
+    "data.campaign-monster.92127.name": {
+      "en": "Stump Walker",
+      "zh": "树桩行走者",
+      "context": "Campaign monster2/Walker_Stump; legacy combat profile 90007"
+    },
+    "data.unitguide.90001.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90001.lore": {
+      "en": "A familiar gray shadow on the frontier, woven into the oldest stories of the grasslands.",
+      "zh": "边境上熟悉的灰色身影，早已融入草原最古老的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90002.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90002.lore": {
+      "en": "Deep forest hollows are home to this shaggy wanderer and its muddy pawprints.",
+      "zh": "这位毛茸茸的漫游者住在密林深处，沿途留下沾泥的脚印。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90003.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90003.lore": {
+      "en": "A strange bloom from the damp corners of the ancient forest, beloved by eccentric botanists.",
+      "zh": "来自古老森林潮湿角落的奇异花朵，深受古怪植物学家的喜爱。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90004.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90004.lore": {
+      "en": "A familiar silhouette on the plains, following trails older than the frontier settlements.",
+      "zh": "平原上熟悉的身影，沿着比边境村落更古老的兽径漫游。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90005.description": {
+      "en": "Launches a heavy ranged projectile at one target, with a long pause between attacks.",
+      "zh": "向单个目标发射重型远程投射物，两次攻击之间的间隔较长。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90005.lore": {
+      "en": "A riverbank creature whose rugged appearance suits the old marsh tales of the rolling plains.",
+      "zh": "粗犷的模样，与起伏平原上那些古老的沼泽传说十分相衬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90006.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90006.lore": {
+      "en": "A wandering scholar of the barren places, tracing imaginary constellations in the desert dust.",
+      "zh": "荒芜之地的流浪学者，在沙尘中描画想象中的星座。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90007.description": {
+      "en": "Strikes a nearby target and deals splash damage to additional targets around the impact.",
+      "zh": "攻击附近的目标，并对落点周围的其他目标造成溅射伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90007.lore": {
+      "en": "An iron-shaped relic of an older age, out of place yet unforgettable in the frozen north.",
+      "zh": "旧时代留下的钢铁身影，在冰封北境中显得突兀，却让人难以忘怀。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90008.description": {
+      "en": "Moves through obstacles and fires homing projectiles at targets within range.",
+      "zh": "可穿过障碍，向射程内的目标发射追踪投射物。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90008.lore": {
+      "en": "A spectral traveler whose pirate trappings suggest a voyage that never quite ended.",
+      "zh": "一位幽灵旅者，海盗装束仿佛诉说着一场始终没有结束的航程。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90009.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90009.lore": {
+      "en": "An enigmatic desert visitor whose crimson appearance recalls forgotten evening courts.",
+      "zh": "神秘的荒漠访客，绯红的身影令人想起被遗忘的暮色宫廷。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90010.description": {
+      "en": "The first form of a transforming monster. It strikes in melee before changing into its next form during battle.",
+      "zh": "变形怪物的第一形态，以近战攻击，并在战斗中转为下一形态。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90010.lore": {
+      "en": "Its stone-like shape belongs among the weathered monuments of the arid desert.",
+      "zh": "岩石般的外形，仿佛本就属于干旱沙漠中那些风蚀的古迹。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90011.description": {
+      "en": "The second form of a transforming monster. It attacks in melee and can change into its final form.",
+      "zh": "变形怪物的第二形态，以近战攻击，并可转为最终形态。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90011.lore": {
+      "en": "The ancient forest seems to have gathered its oldest branches into one wandering shape.",
+      "zh": "古老森林仿佛把最年迈的枝干，聚成了一个漫游的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.90012.description": {
+      "en": "The final form of a transforming monster, combining melee strikes with periodic attacks against several nearby targets.",
+      "zh": "变形怪物的最终形态，既能近战攻击，也会定期攻击附近的多个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.90012.lore": {
+      "en": "The high snowfields remember the banners that once followed this forgotten commander.",
+      "zh": "高地雪原仍记得，那些曾追随这位遗忘统帅的旗帜。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91001.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91001.lore": {
+      "en": "A fence-side prowler that treats the frontier grasslands as its private hunting ground.",
+      "zh": "这位篱笆旁的潜行客，把边境草原当成了自己的私家猎场。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91002.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91002.lore": {
+      "en": "This restless stray follows old cart tracks wherever they wind across the plains.",
+      "zh": "这只闲不住的流浪犬，循着旧车辙走遍了平原。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91003.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91003.lore": {
+      "en": "A flash of russet among the meadow stones, always curious about an unattended camp.",
+      "zh": "草甸乱石间闪过一抹赤褐色，它总对无人看守的营地充满好奇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91004.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91004.lore": {
+      "en": "Deep forest hollows are home to this shaggy wanderer and its muddy pawprints.",
+      "zh": "这位毛茸茸的漫游者住在密林深处，沿途留下沾泥的脚印。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91005.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91005.lore": {
+      "en": "A pale shape from the snowfields, familiar with every ridge of the winter landscape.",
+      "zh": "来自雪原的苍白身影，熟悉冬日大地上的每一道山脊。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91006.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91006.lore": {
+      "en": "Its crimson shell brings a startling splash of color to the sun-baked desert.",
+      "zh": "赤红的甲壳，为烈日烘烤的荒漠添上了一抹醒目的颜色。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91007.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91007.lore": {
+      "en": "Frost-colored plates make this beetle look like a shard of the northern glaciers.",
+      "zh": "冰霜色的甲片，让这只甲虫仿佛成了北方冰川的一块碎片。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91008.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91008.lore": {
+      "en": "Travelers once mistook its metallic shell for a relic half-buried in the sand.",
+      "zh": "旅人曾把它金属般的甲壳，当成半埋在沙里的古老遗物。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91009.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91009.lore": {
+      "en": "The forest floor is full of secrets, and this red-shelled scavenger inspects them all.",
+      "zh": "林地上藏着无数秘密，这位红甲拾荒者总要逐一探个究竟。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91010.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91010.lore": {
+      "en": "A proud plains hunter, drawn to the open sky above the scattered grazing grounds.",
+      "zh": "这位骄傲的平原猎手，钟爱散落牧场上方的开阔天空。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91011.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91011.lore": {
+      "en": "Riverbank camps know this noisy visitor almost as well as they know the morning mist.",
+      "zh": "河岸营地对这位吵闹的访客，就像对清晨薄雾一样熟悉。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91012.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91012.lore": {
+      "en": "An old resident of the quiet forest, watching the paths long after dusk.",
+      "zh": "寂静森林的老住客，在暮色降临许久后仍注视着林间小径。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91013.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91013.lore": {
+      "en": "Its bright plumage is a colorful reminder of warmer groves beyond the open plains.",
+      "zh": "鲜亮的羽毛，让人想起开阔平原之外那些温暖的林园。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91014.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91014.lore": {
+      "en": "A red flicker over the grass, like a wandering ember that never found its campfire.",
+      "zh": "草叶上掠过一道红影，仿佛找不到归属篝火的流浪余烬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91015.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91015.lore": {
+      "en": "The snow bird belongs to the still mornings when the whole north seems to hold its breath.",
+      "zh": "雪鸟属于那些寂静的清晨，仿佛整个北境都屏住了呼吸。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91016.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91016.lore": {
+      "en": "Its oversized beak has made it the subject of many a plains traveler's sketch.",
+      "zh": "夸张的大喙，让它成了许多平原旅人速写本上的主角。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91017.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91017.lore": {
+      "en": "A perpetually offended riverbank resident, unimpressed by every passerby.",
+      "zh": "这位河岸住客总是一脸不悦，对每个过路人都不以为然。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91018.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91018.lore": {
+      "en": "River folklore describes this rough-looking blowfish as a beast from the muddy shallows.",
+      "zh": "河畔传说把这只粗犷的刺鲀，称作来自泥泞浅滩的野兽。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91019.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91019.lore": {
+      "en": "Even the quietest meadow seems ready for a celebration when this colorful buffalo appears.",
+      "zh": "只要这头色彩鲜明的野牛出现，再安静的草甸也像要开一场庆典。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91020.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91020.lore": {
+      "en": "A familiar silhouette on the plains, following trails older than the frontier settlements.",
+      "zh": "平原上熟悉的身影，沿着比边境村落更古老的兽径漫游。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91021.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91021.lore": {
+      "en": "Its iron-like shell recalls the broken tools scattered around abandoned desert mines.",
+      "zh": "铁一般的甲壳，让人想起废弃沙漠矿场里散落的旧工具。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91022.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91022.lore": {
+      "en": "Among the desert stones, this crab looks like another boulder that decided to wander.",
+      "zh": "在荒漠乱石间，它像一块突然决定四处游荡的石头。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91023.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91023.lore": {
+      "en": "A pale wanderer of the icy banks, carrying a little piece of winter wherever it goes.",
+      "zh": "冰岸边的苍白漫游者，无论走到哪里都带着几分冬日气息。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91024.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91024.lore": {
+      "en": "Plains shepherds know this goat by its stubborn temper and untidy wandering routes.",
+      "zh": "平原牧人都认得这只山羊，认得它的倔脾气和毫无章法的漫游路线。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91025.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91025.lore": {
+      "en": "A dark-coated figure often glimpsed between the trunks of the silent forest.",
+      "zh": "沉寂森林的树干之间，时常能瞥见它深色的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91026.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91026.lore": {
+      "en": "Some say the mushroom groves simply grew tired of standing still and sent out this goat.",
+      "zh": "有人说，蘑菇林厌倦了原地不动，于是派出了这只山羊。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91027.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91027.lore": {
+      "en": "A riverbank oddity whose helmet has inspired more questions than any traveler can answer.",
+      "zh": "这位河岸怪客的头盔，引出了无数旅人也答不上的问题。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91028.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91028.lore": {
+      "en": "The shallows have many strange residents, but few wear such a permanently wild expression.",
+      "zh": "浅滩住着许多怪异生灵，却很少有谁像它这样始终神情狂放。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91029.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91029.lore": {
+      "en": "A drifting curiosity that looks more at home in an ancient forest dream than in a field guide.",
+      "zh": "飘游的奇异生灵，比起野外图鉴，更像来自古老森林的一场梦。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91030.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91030.lore": {
+      "en": "Its glassy winter colors recall the blue light beneath a frozen lake.",
+      "zh": "通透的冬日色泽，令人想起冰封湖面下的幽蓝光芒。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91031.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91031.lore": {
+      "en": "The desert's glowing sunsets seem to have lent this lizard their fiery colors.",
+      "zh": "荒漠灿烂的落日，仿佛把火焰般的颜色借给了这只蜥蜴。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91032.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91032.lore": {
+      "en": "Its striking horn makes even a small desert trail feel like the entrance to an old legend.",
+      "zh": "醒目的尖角，让一条小小的沙漠兽径也像通向古老传说的入口。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91033.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91033.lore": {
+      "en": "A curious forest lizard whose unusual silhouette has puzzled generations of scouts.",
+      "zh": "这只轮廓奇特的林中蜥蜴，让一代又一代斥候困惑不已。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91034.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91034.lore": {
+      "en": "A strange visitor in winter colors, like a tale carried inland from the frozen coast.",
+      "zh": "披着冬日色彩的奇异访客，仿佛是从冰封海岸传入内陆的一则故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91035.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91035.lore": {
+      "en": "A river wanderer dressed for adventures far beyond the shadowed forest banks.",
+      "zh": "这位河流漫游者的一身装束，像是准备去阴影林岸之外闯荡远方。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91036.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91036.lore": {
+      "en": "Its vivid rings are a favorite subject of naturalists studying the forest waterways.",
+      "zh": "鲜明的环纹，是研究森林水道的博物学家最喜爱的题材之一。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91037.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91037.lore": {
+      "en": "A small green mystery, leaving frontier travelers to argue about what a slime really is.",
+      "zh": "一团小小的绿色谜团，让边境旅人争论起史莱姆究竟是什么。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91038.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91038.lore": {
+      "en": "Its rich purple hue stands out among the gold and green of the plains.",
+      "zh": "浓郁的紫色，在平原的金黄与翠绿之间格外醒目。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91039.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91039.lore": {
+      "en": "The blue shell looks like a polished keepsake from a winter stream.",
+      "zh": "蓝色的壳，像是从冬日溪流里拾来的温润珍藏。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91040.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91040.lore": {
+      "en": "A traveler with a spiral shell, forever carrying a reminder of distant waters.",
+      "zh": "背着螺旋外壳的旅者，始终带着一份对远方水域的记忆。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91041.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91041.lore": {
+      "en": "Mossy paths and rain-dark leaves provide the perfect backdrop for this green forest resident.",
+      "zh": "长苔的小径和雨后深色的树叶，是这位绿色林中住客最相衬的背景。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91042.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91042.lore": {
+      "en": "Its bell-like adornment has given rise to stories about lost caravans in the desert.",
+      "zh": "铃铛般的装饰，引出了许多关于荒漠失踪商队的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91043.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91043.lore": {
+      "en": "A ribbon of fiery color winding through a landscape of ochre sand and dark stone.",
+      "zh": "一道火焰般的色彩，蜿蜒于赭色沙地与深色岩石之间。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91044.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91044.lore": {
+      "en": "The forest undergrowth has a familiar green shape that seldom belongs to a branch.",
+      "zh": "林下草丛中那道熟悉的绿色形状，往往并不是一根树枝。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91045.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91045.lore": {
+      "en": "Mushroom collectors tell each other to count their baskets again after this snake passes.",
+      "zh": "采蘑菇的人会互相提醒，这条蛇经过后，最好再数一遍篮子。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91046.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91046.lore": {
+      "en": "A riverbank creature whose rugged appearance suits the old marsh tales of the rolling plains.",
+      "zh": "粗犷的模样，与起伏平原上那些古老的沼泽传说十分相衬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91047.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91047.lore": {
+      "en": "Its towering outline has inspired stories about wandering fortresses on the far plains.",
+      "zh": "高耸的轮廓，催生了远方平原上流浪堡垒的种种传说。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91048.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91048.lore": {
+      "en": "Its volcanic colors recall the dark ridges beyond the blazing desert.",
+      "zh": "火山般的色彩，让人想起炽热荒漠之外那些深色山脊。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91049.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91049.lore": {
+      "en": "A wolf from the darker plains legends, where every distant howl becomes a story.",
+      "zh": "来自平原暗色传说的狼，在那里，每一声远处的长嗥都会成为故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91050.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91050.lore": {
+      "en": "A familiar gray shadow on the frontier, woven into the oldest stories of the grasslands.",
+      "zh": "边境上熟悉的灰色身影，早已融入草原最古老的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91051.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91051.lore": {
+      "en": "An enigmatic desert visitor whose crimson appearance recalls forgotten evening courts.",
+      "zh": "神秘的荒漠访客，绯红的身影令人想起被遗忘的暮色宫廷。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91052.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91052.lore": {
+      "en": "A wandering scholar of the barren places, tracing imaginary constellations in the desert dust.",
+      "zh": "荒芜之地的流浪学者，在沙尘中描画想象中的星座。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91053.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91053.lore": {
+      "en": "A familiar presence in the honey-scented clearings of the verdant forest.",
+      "zh": "在翠绿森林中那些弥漫蜜香的空地上，总能见到它的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91054.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91054.lore": {
+      "en": "Its unusual appearance has kept the forest's curious children debating for years.",
+      "zh": "奇特的模样，让森林里好奇的孩子们争论了许多年。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91055.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91055.lore": {
+      "en": "A tireless-looking little resident of the paths beneath the frontier grass.",
+      "zh": "边境草叶下的小径旁，住着这位看上去永远闲不住的小居民。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91056.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91056.lore": {
+      "en": "Its sandy yellow colors blend into the long tracks between desert stones.",
+      "zh": "沙黄色的身影，融入了荒漠石块之间绵长的路径。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91057.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91057.lore": {
+      "en": "A creature of the shadow forest's caves, where old roots vanish into the dark.",
+      "zh": "阴影森林洞穴中的生灵，古老树根在它身旁伸入黑暗。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91058.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91058.lore": {
+      "en": "Its peculiar snout has made this bat the subject of more jokes than ghost stories.",
+      "zh": "奇特的鼻吻，让这只蝙蝠成为笑话主角的次数，比成为鬼故事主角还多。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91059.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91059.lore": {
+      "en": "Snowfield storytellers call its pale markings the signature of a forgotten winter.",
+      "zh": "雪原上的说书人，把它苍白的纹样称作被遗忘寒冬留下的印记。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91060.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91060.lore": {
+      "en": "Its devilish silhouette is a familiar detail in tales of the cursed desert outposts.",
+      "zh": "恶魔般的轮廓，是那些诅咒荒漠哨站传说中的熟悉身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91061.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91061.lore": {
+      "en": "The honey bee belongs to sunny forest clearings and the endless gossip of the flowers.",
+      "zh": "蜜蜂属于阳光明媚的林间空地，也属于花朵们没完没了的闲谈。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91062.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91062.lore": {
+      "en": "A sharp-lined wanderer of the dry lands, often sketched beside weathered desert maps.",
+      "zh": "轮廓鲜明的旱地漫游者，常被画在风化泛旧的沙漠地图旁。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91063.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91063.lore": {
+      "en": "Its round bud resembles a forgotten curiosity from a desert tinker's workshop.",
+      "zh": "圆鼓鼓的花苞，像是沙漠工匠作坊里遗忘的一件奇妙造物。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91064.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91064.lore": {
+      "en": "A fiery blossom of the dry lands, bright against the desert's blackened stones.",
+      "zh": "旱地上一朵火焰般的花，在荒漠焦黑的岩石间分外明亮。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91065.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91065.lore": {
+      "en": "A wandering bloom that seems to have strayed from the heart of a forest garden.",
+      "zh": "一朵漫游的花，仿佛误走出了森林花园的深处。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91066.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91066.lore": {
+      "en": "The desert's familiar green sentinel has acquired a life of its own.",
+      "zh": "荒漠中那道熟悉的绿色守望身影，拥有了自己的生命。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91067.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91067.lore": {
+      "en": "A curious meeting of desert shape and snowfield colors.",
+      "zh": "沙漠的形状与雪原的色彩，在它身上奇妙地相遇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91068.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91068.lore": {
+      "en": "Its plated appearance recalls the old metalwork found in the desert ruins.",
+      "zh": "甲片般的外观，令人想起沙漠遗迹中发现的古旧金属工艺。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91069.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91069.lore": {
+      "en": "A mechanical-looking marvel that has left plains inventors arguing over its origins.",
+      "zh": "宛如机械奇迹的外形，让平原发明家们争论起它的来历。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91070.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91070.lore": {
+      "en": "A green flicker in the wide meadows, as familiar as the bending reeds.",
+      "zh": "开阔草甸中一闪而过的绿色，像摇曳的芦苇一样令人熟悉。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91071.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91071.lore": {
+      "en": "An elusive figure from the sunlit dust between the forest trees.",
+      "zh": "一道若隐若现的身影，仿佛来自林木间阳光照亮的微尘。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91072.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91072.lore": {
+      "en": "A little lantern-shaped wonder from the oldest paths of the ancient forest.",
+      "zh": "古老森林最悠久的小径旁，藏着这位灯笼般的小小奇迹。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91073.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91073.lore": {
+      "en": "A winter-colored fairy from stories told beside the snowfield hearths.",
+      "zh": "冬日色彩的仙灵，来自雪原炉火旁流传的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91074.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91074.lore": {
+      "en": "Its oversized eyes give this plains visitor an air of permanent astonishment.",
+      "zh": "夸张的大眼睛，让这位平原访客看上去永远满是惊讶。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91075.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91075.lore": {
+      "en": "A meadow wanderer that always seems to have forgotten where it was going.",
+      "zh": "草甸上的漫游者，总像是忘记了自己原本要去哪里。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91076.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91076.lore": {
+      "en": "A bright little detail in the shadow forest's long, mysterious evenings.",
+      "zh": "阴影森林漫长而神秘的夜晚中，一点明亮的小小身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91077.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91077.lore": {
+      "en": "Its iron-colored body looks oddly at home among the abandoned desert workings.",
+      "zh": "铁色的身体，在废弃的沙漠工地之间显得意外地相衬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91078.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91078.lore": {
+      "en": "The palm groves have their own strange visitors, and this one rarely goes unnoticed.",
+      "zh": "棕榈林里不乏奇怪访客，而它总是让人很难忽视。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91079.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91079.lore": {
+      "en": "A small ghost from the stories whispered around the lifeless desert's empty camps.",
+      "zh": "一个小小的幽灵，来自荒凉沙漠空营地旁低声讲述的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91080.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91080.lore": {
+      "en": "The mask hides a mystery that desert storytellers are happy to embellish.",
+      "zh": "面具背后藏着的谜团，是沙漠说书人最乐于添枝加叶的话题。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91081.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91081.lore": {
+      "en": "A spectral traveler whose pirate trappings suggest a voyage that never quite ended.",
+      "zh": "一位幽灵旅者，海盗装束仿佛诉说着一场始终没有结束的航程。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91082.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91082.lore": {
+      "en": "An iron-shaped relic of an older age, out of place yet unforgettable in the frozen north.",
+      "zh": "旧时代留下的钢铁身影，在冰封北境中显得突兀，却让人难以忘怀。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91083.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91083.lore": {
+      "en": "The ancient forest seems to have gathered its oldest branches into one wandering shape.",
+      "zh": "古老森林仿佛把最年迈的枝干，聚成了一个漫游的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91084.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91084.lore": {
+      "en": "Its floral colors have inspired many arguments about where the garden ends and the creature begins.",
+      "zh": "花朵般的色彩，让人分不清花园在哪里结束，生灵又从哪里开始。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91085.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91085.lore": {
+      "en": "A familiar green silhouette among the long stems of the vast forest.",
+      "zh": "广阔森林的修长草茎间，一道熟悉的绿色轮廓。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91086.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91086.lore": {
+      "en": "A strange bloom from the damp corners of the ancient forest, beloved by eccentric botanists.",
+      "zh": "来自古老森林潮湿角落的奇异花朵，深受古怪植物学家的喜爱。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91087.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91087.lore": {
+      "en": "Its vivid red form stands out like an unwritten warning in the ancient undergrowth.",
+      "zh": "鲜红的身形，在古老林下如同一则尚未写下的警示。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91088.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91088.lore": {
+      "en": "A prickly-looking resident of the forest's tangled and seldom-traveled paths.",
+      "zh": "古老森林纠结而罕有人迹的小径上，住着这位模样带刺的居民。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91089.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91089.lore": {
+      "en": "Purple against the desert ochre, this scorpion is a striking subject for caravan tales.",
+      "zh": "紫色与荒漠赭黄相映，让这只蝎子成了商队故事中醒目的主角。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91090.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91090.lore": {
+      "en": "Its stone-like shape belongs among the weathered monuments of the arid desert.",
+      "zh": "岩石般的外形，仿佛本就属于干旱沙漠中那些风蚀的古迹。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91091.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91091.lore": {
+      "en": "A forgotten soldier in a white landscape, carrying the memory of a vanished regiment.",
+      "zh": "白色大地上一名被遗忘的士兵，带着一支消逝军团的记忆。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91092.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91092.lore": {
+      "en": "The high snowfields remember the banners that once followed this forgotten commander.",
+      "zh": "高地雪原仍记得，那些曾追随这位遗忘统帅的旗帜。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91093.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91093.lore": {
+      "en": "An old warrior from the north's longest tales, where winter outlives every kingdom.",
+      "zh": "北境漫长传说中的古老战士，在那里，寒冬比每个王国都更长久。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91094.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91094.lore": {
+      "en": "Its wintry appearance recalls the delicate patterns along a frozen woodland path.",
+      "zh": "冬日般的外观，让人想起冰封林间小径旁那些精巧的纹样。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91095.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91095.lore": {
+      "en": "A red mark among the shadow forest's roots, memorable even to seasoned scouts.",
+      "zh": "阴影森林根系间的一抹红色，连老练斥候也过目难忘。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91096.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91096.lore": {
+      "en": "Its ominous name features in countless campfire warnings along the shadow forest roads.",
+      "zh": "沿着阴影森林的道路，它不祥的名字出现在无数营火旁的告诫中。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91097.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91097.lore": {
+      "en": "The abandoned outposts have many strange boxes, but not all of them stay where they are left.",
+      "zh": "废弃哨站里有许多奇怪的箱子，却并非每一只都会留在原地。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91098.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91098.lore": {
+      "en": "A candle-shaped traveler from the desert's deserted halls and half-remembered ceremonies.",
+      "zh": "蜡烛般的旅者，来自荒漠荒废的厅堂与记忆模糊的仪式。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91099.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91099.lore": {
+      "en": "A walking piece of the mushroom groves, as curious as the forest that raised it.",
+      "zh": "蘑菇林中会行走的一小部分，和孕育它的森林一样充满好奇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.91100.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.91100.lore": {
+      "en": "An old forest stump with an unexpected interest in the world beyond its clearing.",
+      "zh": "一截古老的树桩，对林间空地之外的世界产生了意想不到的兴趣。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92001.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92001.lore": {
+      "en": "A fence-side prowler that treats the frontier grasslands as its private hunting ground.",
+      "zh": "这位篱笆旁的潜行客，把边境草原当成了自己的私家猎场。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92002.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92002.lore": {
+      "en": "This restless stray follows old cart tracks wherever they wind across the plains.",
+      "zh": "这只闲不住的流浪犬，循着旧车辙走遍了平原。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92003.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92003.lore": {
+      "en": "A flash of russet among the meadow stones, always curious about an unattended camp.",
+      "zh": "草甸乱石间闪过一抹赤褐色，它总对无人看守的营地充满好奇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92004.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92004.lore": {
+      "en": "Deep forest hollows are home to this shaggy wanderer and its muddy pawprints.",
+      "zh": "这位毛茸茸的漫游者住在密林深处，沿途留下沾泥的脚印。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92005.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92005.lore": {
+      "en": "Deep forest hollows are home to this shaggy wanderer and its muddy pawprints.",
+      "zh": "这位毛茸茸的漫游者住在密林深处，沿途留下沾泥的脚印。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92006.description": {
+      "en": "Strikes a nearby target and deals splash damage to additional targets around the impact.",
+      "zh": "攻击附近的目标，并对落点周围的其他目标造成溅射伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92006.lore": {
+      "en": "Deep forest hollows are home to this shaggy wanderer and its muddy pawprints.",
+      "zh": "这位毛茸茸的漫游者住在密林深处，沿途留下沾泥的脚印。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92007.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92007.lore": {
+      "en": "A pale shape from the snowfields, familiar with every ridge of the winter landscape.",
+      "zh": "来自雪原的苍白身影，熟悉冬日大地上的每一道山脊。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92008.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92008.lore": {
+      "en": "Its crimson shell brings a startling splash of color to the sun-baked desert.",
+      "zh": "赤红的甲壳，为烈日烘烤的荒漠添上了一抹醒目的颜色。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92009.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92009.lore": {
+      "en": "Frost-colored plates make this beetle look like a shard of the northern glaciers.",
+      "zh": "冰霜色的甲片，让这只甲虫仿佛成了北方冰川的一块碎片。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92010.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92010.lore": {
+      "en": "Frost-colored plates make this beetle look like a shard of the northern glaciers.",
+      "zh": "冰霜色的甲片，让这只甲虫仿佛成了北方冰川的一块碎片。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92011.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92011.lore": {
+      "en": "Travelers once mistook its metallic shell for a relic half-buried in the sand.",
+      "zh": "旅人曾把它金属般的甲壳，当成半埋在沙里的古老遗物。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92012.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92012.lore": {
+      "en": "The forest floor is full of secrets, and this red-shelled scavenger inspects them all.",
+      "zh": "林地上藏着无数秘密，这位红甲拾荒者总要逐一探个究竟。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92013.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92013.lore": {
+      "en": "A proud plains hunter, drawn to the open sky above the scattered grazing grounds.",
+      "zh": "这位骄傲的平原猎手，钟爱散落牧场上方的开阔天空。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92014.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92014.lore": {
+      "en": "A proud plains hunter, drawn to the open sky above the scattered grazing grounds.",
+      "zh": "这位骄傲的平原猎手，钟爱散落牧场上方的开阔天空。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92015.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92015.lore": {
+      "en": "Riverbank camps know this noisy visitor almost as well as they know the morning mist.",
+      "zh": "河岸营地对这位吵闹的访客，就像对清晨薄雾一样熟悉。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92016.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92016.lore": {
+      "en": "An old resident of the quiet forest, watching the paths long after dusk.",
+      "zh": "寂静森林的老住客，在暮色降临许久后仍注视着林间小径。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92017.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92017.lore": {
+      "en": "An old resident of the quiet forest, watching the paths long after dusk.",
+      "zh": "寂静森林的老住客，在暮色降临许久后仍注视着林间小径。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92018.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92018.lore": {
+      "en": "Its bright plumage is a colorful reminder of warmer groves beyond the open plains.",
+      "zh": "鲜亮的羽毛，让人想起开阔平原之外那些温暖的林园。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92019.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92019.lore": {
+      "en": "A red flicker over the grass, like a wandering ember that never found its campfire.",
+      "zh": "草叶上掠过一道红影，仿佛找不到归属篝火的流浪余烬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92020.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92020.lore": {
+      "en": "The snow bird belongs to the still mornings when the whole north seems to hold its breath.",
+      "zh": "雪鸟属于那些寂静的清晨，仿佛整个北境都屏住了呼吸。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92021.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92021.lore": {
+      "en": "Its oversized beak has made it the subject of many a plains traveler's sketch.",
+      "zh": "夸张的大喙，让它成了许多平原旅人速写本上的主角。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92022.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92022.lore": {
+      "en": "A perpetually offended riverbank resident, unimpressed by every passerby.",
+      "zh": "这位河岸住客总是一脸不悦，对每个过路人都不以为然。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92023.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92023.lore": {
+      "en": "River folklore describes this rough-looking blowfish as a beast from the muddy shallows.",
+      "zh": "河畔传说把这只粗犷的刺鲀，称作来自泥泞浅滩的野兽。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92024.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92024.lore": {
+      "en": "Even the quietest meadow seems ready for a celebration when this colorful buffalo appears.",
+      "zh": "只要这头色彩鲜明的野牛出现，再安静的草甸也像要开一场庆典。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92025.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92025.lore": {
+      "en": "A familiar silhouette on the plains, following trails older than the frontier settlements.",
+      "zh": "平原上熟悉的身影，沿着比边境村落更古老的兽径漫游。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92026.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92026.lore": {
+      "en": "A familiar silhouette on the plains, following trails older than the frontier settlements.",
+      "zh": "平原上熟悉的身影，沿着比边境村落更古老的兽径漫游。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92027.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92027.lore": {
+      "en": "Its iron-like shell recalls the broken tools scattered around abandoned desert mines.",
+      "zh": "铁一般的甲壳，让人想起废弃沙漠矿场里散落的旧工具。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92028.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92028.lore": {
+      "en": "Among the desert stones, this crab looks like another boulder that decided to wander.",
+      "zh": "在荒漠乱石间，它像一块突然决定四处游荡的石头。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92029.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92029.lore": {
+      "en": "A pale wanderer of the icy banks, carrying a little piece of winter wherever it goes.",
+      "zh": "冰岸边的苍白漫游者，无论走到哪里都带着几分冬日气息。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92030.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92030.lore": {
+      "en": "Plains shepherds know this goat by its stubborn temper and untidy wandering routes.",
+      "zh": "平原牧人都认得这只山羊，认得它的倔脾气和毫无章法的漫游路线。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92031.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92031.lore": {
+      "en": "Plains shepherds know this goat by its stubborn temper and untidy wandering routes.",
+      "zh": "平原牧人都认得这只山羊，认得它的倔脾气和毫无章法的漫游路线。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92032.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92032.lore": {
+      "en": "A dark-coated figure often glimpsed between the trunks of the silent forest.",
+      "zh": "沉寂森林的树干之间，时常能瞥见它深色的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92033.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92033.lore": {
+      "en": "Some say the mushroom groves simply grew tired of standing still and sent out this goat.",
+      "zh": "有人说，蘑菇林厌倦了原地不动，于是派出了这只山羊。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92034.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92034.lore": {
+      "en": "A riverbank oddity whose helmet has inspired more questions than any traveler can answer.",
+      "zh": "这位河岸怪客的头盔，引出了无数旅人也答不上的问题。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92035.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92035.lore": {
+      "en": "The shallows have many strange residents, but few wear such a permanently wild expression.",
+      "zh": "浅滩住着许多怪异生灵，却很少有谁像它这样始终神情狂放。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92036.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92036.lore": {
+      "en": "A drifting curiosity that looks more at home in an ancient forest dream than in a field guide.",
+      "zh": "飘游的奇异生灵，比起野外图鉴，更像来自古老森林的一场梦。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92037.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92037.lore": {
+      "en": "Its glassy winter colors recall the blue light beneath a frozen lake.",
+      "zh": "通透的冬日色泽，令人想起冰封湖面下的幽蓝光芒。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92038.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92038.lore": {
+      "en": "Its glassy winter colors recall the blue light beneath a frozen lake.",
+      "zh": "通透的冬日色泽，令人想起冰封湖面下的幽蓝光芒。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92039.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92039.lore": {
+      "en": "The desert's glowing sunsets seem to have lent this lizard their fiery colors.",
+      "zh": "荒漠灿烂的落日，仿佛把火焰般的颜色借给了这只蜥蜴。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92040.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92040.lore": {
+      "en": "Its striking horn makes even a small desert trail feel like the entrance to an old legend.",
+      "zh": "醒目的尖角，让一条小小的沙漠兽径也像通向古老传说的入口。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92041.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92041.lore": {
+      "en": "A curious forest lizard whose unusual silhouette has puzzled generations of scouts.",
+      "zh": "这只轮廓奇特的林中蜥蜴，让一代又一代斥候困惑不已。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92042.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92042.lore": {
+      "en": "A strange visitor in winter colors, like a tale carried inland from the frozen coast.",
+      "zh": "披着冬日色彩的奇异访客，仿佛是从冰封海岸传入内陆的一则故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92043.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92043.lore": {
+      "en": "A strange visitor in winter colors, like a tale carried inland from the frozen coast.",
+      "zh": "披着冬日色彩的奇异访客，仿佛是从冰封海岸传入内陆的一则故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92044.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92044.lore": {
+      "en": "A river wanderer dressed for adventures far beyond the shadowed forest banks.",
+      "zh": "这位河流漫游者的一身装束，像是准备去阴影林岸之外闯荡远方。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92045.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92045.lore": {
+      "en": "Its vivid rings are a favorite subject of naturalists studying the forest waterways.",
+      "zh": "鲜明的环纹，是研究森林水道的博物学家最喜爱的题材之一。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92046.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92046.lore": {
+      "en": "Its vivid rings are a favorite subject of naturalists studying the forest waterways.",
+      "zh": "鲜明的环纹，是研究森林水道的博物学家最喜爱的题材之一。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92047.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92047.lore": {
+      "en": "A small green mystery, leaving frontier travelers to argue about what a slime really is.",
+      "zh": "一团小小的绿色谜团，让边境旅人争论起史莱姆究竟是什么。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92048.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92048.lore": {
+      "en": "Its rich purple hue stands out among the gold and green of the plains.",
+      "zh": "浓郁的紫色，在平原的金黄与翠绿之间格外醒目。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92049.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92049.lore": {
+      "en": "Its rich purple hue stands out among the gold and green of the plains.",
+      "zh": "浓郁的紫色，在平原的金黄与翠绿之间格外醒目。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92050.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92050.lore": {
+      "en": "The blue shell looks like a polished keepsake from a winter stream.",
+      "zh": "蓝色的壳，像是从冬日溪流里拾来的温润珍藏。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92051.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92051.lore": {
+      "en": "A traveler with a spiral shell, forever carrying a reminder of distant waters.",
+      "zh": "背着螺旋外壳的旅者，始终带着一份对远方水域的记忆。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92052.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92052.lore": {
+      "en": "Mossy paths and rain-dark leaves provide the perfect backdrop for this green forest resident.",
+      "zh": "长苔的小径和雨后深色的树叶，是这位绿色林中住客最相衬的背景。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92053.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92053.lore": {
+      "en": "Its bell-like adornment has given rise to stories about lost caravans in the desert.",
+      "zh": "铃铛般的装饰，引出了许多关于荒漠失踪商队的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92054.description": {
+      "en": "Launches a heavy ranged projectile at one target, with a long pause between attacks.",
+      "zh": "向单个目标发射重型远程投射物，两次攻击之间的间隔较长。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92054.lore": {
+      "en": "A ribbon of fiery color winding through a landscape of ochre sand and dark stone.",
+      "zh": "一道火焰般的色彩，蜿蜒于赭色沙地与深色岩石之间。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92055.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92055.lore": {
+      "en": "The forest undergrowth has a familiar green shape that seldom belongs to a branch.",
+      "zh": "林下草丛中那道熟悉的绿色形状，往往并不是一根树枝。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92056.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92056.lore": {
+      "en": "The forest undergrowth has a familiar green shape that seldom belongs to a branch.",
+      "zh": "林下草丛中那道熟悉的绿色形状，往往并不是一根树枝。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92057.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92057.lore": {
+      "en": "Mushroom collectors tell each other to count their baskets again after this snake passes.",
+      "zh": "采蘑菇的人会互相提醒，这条蛇经过后，最好再数一遍篮子。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92058.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92058.lore": {
+      "en": "A riverbank creature whose rugged appearance suits the old marsh tales of the rolling plains.",
+      "zh": "粗犷的模样，与起伏平原上那些古老的沼泽传说十分相衬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92059.description": {
+      "en": "Launches a heavy ranged projectile at one target, with a long pause between attacks.",
+      "zh": "向单个目标发射重型远程投射物，两次攻击之间的间隔较长。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92059.lore": {
+      "en": "A riverbank creature whose rugged appearance suits the old marsh tales of the rolling plains.",
+      "zh": "粗犷的模样，与起伏平原上那些古老的沼泽传说十分相衬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92060.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92060.lore": {
+      "en": "Its towering outline has inspired stories about wandering fortresses on the far plains.",
+      "zh": "高耸的轮廓，催生了远方平原上流浪堡垒的种种传说。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92061.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92061.lore": {
+      "en": "Its volcanic colors recall the dark ridges beyond the blazing desert.",
+      "zh": "火山般的色彩，让人想起炽热荒漠之外那些深色山脊。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92062.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92062.lore": {
+      "en": "A wolf from the darker plains legends, where every distant howl becomes a story.",
+      "zh": "来自平原暗色传说的狼，在那里，每一声远处的长嗥都会成为故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92063.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92063.lore": {
+      "en": "A familiar gray shadow on the frontier, woven into the oldest stories of the grasslands.",
+      "zh": "边境上熟悉的灰色身影，早已融入草原最古老的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92064.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92064.lore": {
+      "en": "A familiar gray shadow on the frontier, woven into the oldest stories of the grasslands.",
+      "zh": "边境上熟悉的灰色身影，早已融入草原最古老的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92065.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92065.lore": {
+      "en": "An enigmatic desert visitor whose crimson appearance recalls forgotten evening courts.",
+      "zh": "神秘的荒漠访客，绯红的身影令人想起被遗忘的暮色宫廷。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92066.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92066.lore": {
+      "en": "A wandering scholar of the barren places, tracing imaginary constellations in the desert dust.",
+      "zh": "荒芜之地的流浪学者，在沙尘中描画想象中的星座。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92067.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92067.lore": {
+      "en": "A familiar presence in the honey-scented clearings of the verdant forest.",
+      "zh": "在翠绿森林中那些弥漫蜜香的空地上，总能见到它的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92068.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92068.lore": {
+      "en": "A familiar presence in the honey-scented clearings of the verdant forest.",
+      "zh": "在翠绿森林中那些弥漫蜜香的空地上，总能见到它的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92069.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92069.lore": {
+      "en": "Its unusual appearance has kept the forest's curious children debating for years.",
+      "zh": "奇特的模样，让森林里好奇的孩子们争论了许多年。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92070.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92070.lore": {
+      "en": "A tireless-looking little resident of the paths beneath the frontier grass.",
+      "zh": "边境草叶下的小径旁，住着这位看上去永远闲不住的小居民。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92071.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92071.lore": {
+      "en": "Its sandy yellow colors blend into the long tracks between desert stones.",
+      "zh": "沙黄色的身影，融入了荒漠石块之间绵长的路径。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92072.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92072.lore": {
+      "en": "A creature of the shadow forest's caves, where old roots vanish into the dark.",
+      "zh": "阴影森林洞穴中的生灵，古老树根在它身旁伸入黑暗。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92073.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92073.lore": {
+      "en": "Its peculiar snout has made this bat the subject of more jokes than ghost stories.",
+      "zh": "奇特的鼻吻，让这只蝙蝠成为笑话主角的次数，比成为鬼故事主角还多。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92074.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92074.lore": {
+      "en": "Snowfield storytellers call its pale markings the signature of a forgotten winter.",
+      "zh": "雪原上的说书人，把它苍白的纹样称作被遗忘寒冬留下的印记。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92075.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92075.lore": {
+      "en": "Its devilish silhouette is a familiar detail in tales of the cursed desert outposts.",
+      "zh": "恶魔般的轮廓，是那些诅咒荒漠哨站传说中的熟悉身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92076.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92076.lore": {
+      "en": "The honey bee belongs to sunny forest clearings and the endless gossip of the flowers.",
+      "zh": "蜜蜂属于阳光明媚的林间空地，也属于花朵们没完没了的闲谈。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92077.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92077.lore": {
+      "en": "The honey bee belongs to sunny forest clearings and the endless gossip of the flowers.",
+      "zh": "蜜蜂属于阳光明媚的林间空地，也属于花朵们没完没了的闲谈。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92078.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92078.lore": {
+      "en": "A sharp-lined wanderer of the dry lands, often sketched beside weathered desert maps.",
+      "zh": "轮廓鲜明的旱地漫游者，常被画在风化泛旧的沙漠地图旁。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92079.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92079.lore": {
+      "en": "Its round bud resembles a forgotten curiosity from a desert tinker's workshop.",
+      "zh": "圆鼓鼓的花苞，像是沙漠工匠作坊里遗忘的一件奇妙造物。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92080.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92080.lore": {
+      "en": "A fiery blossom of the dry lands, bright against the desert's blackened stones.",
+      "zh": "旱地上一朵火焰般的花，在荒漠焦黑的岩石间分外明亮。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92081.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92081.lore": {
+      "en": "A wandering bloom that seems to have strayed from the heart of a forest garden.",
+      "zh": "一朵漫游的花，仿佛误走出了森林花园的深处。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92082.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92082.lore": {
+      "en": "A wandering bloom that seems to have strayed from the heart of a forest garden.",
+      "zh": "一朵漫游的花，仿佛误走出了森林花园的深处。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92083.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92083.lore": {
+      "en": "The desert's familiar green sentinel has acquired a life of its own.",
+      "zh": "荒漠中那道熟悉的绿色守望身影，拥有了自己的生命。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92084.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92084.lore": {
+      "en": "The desert's familiar green sentinel has acquired a life of its own.",
+      "zh": "荒漠中那道熟悉的绿色守望身影，拥有了自己的生命。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92085.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92085.lore": {
+      "en": "A curious meeting of desert shape and snowfield colors.",
+      "zh": "沙漠的形状与雪原的色彩，在它身上奇妙地相遇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92086.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92086.lore": {
+      "en": "Its plated appearance recalls the old metalwork found in the desert ruins.",
+      "zh": "甲片般的外观，令人想起沙漠遗迹中发现的古旧金属工艺。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92087.description": {
+      "en": "Moves through obstacles and fires homing projectiles at targets within range.",
+      "zh": "可穿过障碍，向射程内的目标发射追踪投射物。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92087.lore": {
+      "en": "A mechanical-looking marvel that has left plains inventors arguing over its origins.",
+      "zh": "宛如机械奇迹的外形，让平原发明家们争论起它的来历。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92088.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92088.lore": {
+      "en": "A green flicker in the wide meadows, as familiar as the bending reeds.",
+      "zh": "开阔草甸中一闪而过的绿色，像摇曳的芦苇一样令人熟悉。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92089.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92089.lore": {
+      "en": "A green flicker in the wide meadows, as familiar as the bending reeds.",
+      "zh": "开阔草甸中一闪而过的绿色，像摇曳的芦苇一样令人熟悉。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92090.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92090.lore": {
+      "en": "An elusive figure from the sunlit dust between the forest trees.",
+      "zh": "一道若隐若现的身影，仿佛来自林木间阳光照亮的微尘。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92091.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92091.lore": {
+      "en": "An elusive figure from the sunlit dust between the forest trees.",
+      "zh": "一道若隐若现的身影，仿佛来自林木间阳光照亮的微尘。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92092.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92092.lore": {
+      "en": "A little lantern-shaped wonder from the oldest paths of the ancient forest.",
+      "zh": "古老森林最悠久的小径旁，藏着这位灯笼般的小小奇迹。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92093.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92093.lore": {
+      "en": "A little lantern-shaped wonder from the oldest paths of the ancient forest.",
+      "zh": "古老森林最悠久的小径旁，藏着这位灯笼般的小小奇迹。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92094.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92094.lore": {
+      "en": "A winter-colored fairy from stories told beside the snowfield hearths.",
+      "zh": "冬日色彩的仙灵，来自雪原炉火旁流传的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92095.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92095.lore": {
+      "en": "A winter-colored fairy from stories told beside the snowfield hearths.",
+      "zh": "冬日色彩的仙灵，来自雪原炉火旁流传的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92096.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92096.lore": {
+      "en": "Its oversized eyes give this plains visitor an air of permanent astonishment.",
+      "zh": "夸张的大眼睛，让这位平原访客看上去永远满是惊讶。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92097.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92097.lore": {
+      "en": "A meadow wanderer that always seems to have forgotten where it was going.",
+      "zh": "草甸上的漫游者，总像是忘记了自己原本要去哪里。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92098.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92098.lore": {
+      "en": "A bright little detail in the shadow forest's long, mysterious evenings.",
+      "zh": "阴影森林漫长而神秘的夜晚中，一点明亮的小小身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92099.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92099.lore": {
+      "en": "Its iron-colored body looks oddly at home among the abandoned desert workings.",
+      "zh": "铁色的身体，在废弃的沙漠工地之间显得意外地相衬。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92100.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92100.lore": {
+      "en": "The palm groves have their own strange visitors, and this one rarely goes unnoticed.",
+      "zh": "棕榈林里不乏奇怪访客，而它总是让人很难忽视。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92101.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92101.lore": {
+      "en": "A small ghost from the stories whispered around the lifeless desert's empty camps.",
+      "zh": "一个小小的幽灵，来自荒凉沙漠空营地旁低声讲述的故事。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92102.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92102.lore": {
+      "en": "The mask hides a mystery that desert storytellers are happy to embellish.",
+      "zh": "面具背后藏着的谜团，是沙漠说书人最乐于添枝加叶的话题。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92103.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92103.lore": {
+      "en": "The mask hides a mystery that desert storytellers are happy to embellish.",
+      "zh": "面具背后藏着的谜团，是沙漠说书人最乐于添枝加叶的话题。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92104.description": {
+      "en": "Moves through obstacles and fires homing projectiles at targets within range.",
+      "zh": "可穿过障碍，向射程内的目标发射追踪投射物。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92104.lore": {
+      "en": "A spectral traveler whose pirate trappings suggest a voyage that never quite ended.",
+      "zh": "一位幽灵旅者，海盗装束仿佛诉说着一场始终没有结束的航程。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92105.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92105.lore": {
+      "en": "An iron-shaped relic of an older age, out of place yet unforgettable in the frozen north.",
+      "zh": "旧时代留下的钢铁身影，在冰封北境中显得突兀，却让人难以忘怀。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92106.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92106.lore": {
+      "en": "The ancient forest seems to have gathered its oldest branches into one wandering shape.",
+      "zh": "古老森林仿佛把最年迈的枝干，聚成了一个漫游的身影。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92107.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92107.lore": {
+      "en": "Its floral colors have inspired many arguments about where the garden ends and the creature begins.",
+      "zh": "花朵般的色彩，让人分不清花园在哪里结束，生灵又从哪里开始。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92108.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92108.lore": {
+      "en": "A familiar green silhouette among the long stems of the vast forest.",
+      "zh": "广阔森林的修长草茎间，一道熟悉的绿色轮廓。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92109.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92109.lore": {
+      "en": "A strange bloom from the damp corners of the ancient forest, beloved by eccentric botanists.",
+      "zh": "来自古老森林潮湿角落的奇异花朵，深受古怪植物学家的喜爱。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92110.description": {
+      "en": "Launches a heavy ranged projectile at one target, with a long pause between attacks.",
+      "zh": "向单个目标发射重型远程投射物，两次攻击之间的间隔较长。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92110.lore": {
+      "en": "A strange bloom from the damp corners of the ancient forest, beloved by eccentric botanists.",
+      "zh": "来自古老森林潮湿角落的奇异花朵，深受古怪植物学家的喜爱。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92111.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92111.lore": {
+      "en": "Its vivid red form stands out like an unwritten warning in the ancient undergrowth.",
+      "zh": "鲜红的身形，在古老林下如同一则尚未写下的警示。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92112.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92112.lore": {
+      "en": "A prickly-looking resident of the forest's tangled and seldom-traveled paths.",
+      "zh": "古老森林纠结而罕有人迹的小径上，住着这位模样带刺的居民。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92113.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92113.lore": {
+      "en": "Purple against the desert ochre, this scorpion is a striking subject for caravan tales.",
+      "zh": "紫色与荒漠赭黄相映，让这只蝎子成了商队故事中醒目的主角。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92114.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92114.lore": {
+      "en": "Its stone-like shape belongs among the weathered monuments of the arid desert.",
+      "zh": "岩石般的外形，仿佛本就属于干旱沙漠中那些风蚀的古迹。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92115.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92115.lore": {
+      "en": "A forgotten soldier in a white landscape, carrying the memory of a vanished regiment.",
+      "zh": "白色大地上一名被遗忘的士兵，带着一支消逝军团的记忆。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92116.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92116.lore": {
+      "en": "The high snowfields remember the banners that once followed this forgotten commander.",
+      "zh": "高地雪原仍记得，那些曾追随这位遗忘统帅的旗帜。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92117.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92117.lore": {
+      "en": "An old warrior from the north's longest tales, where winter outlives every kingdom.",
+      "zh": "北境漫长传说中的古老战士，在那里，寒冬比每个王国都更长久。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92118.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92118.lore": {
+      "en": "Its wintry appearance recalls the delicate patterns along a frozen woodland path.",
+      "zh": "冬日般的外观，让人想起冰封林间小径旁那些精巧的纹样。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92119.description": {
+      "en": "Closes in and strikes one nearby target in melee.",
+      "zh": "接近目标后，以近战攻击单个敌人。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92119.lore": {
+      "en": "A red mark among the shadow forest's roots, memorable even to seasoned scouts.",
+      "zh": "阴影森林根系间的一抹红色，连老练斥候也过目难忘。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92120.description": {
+      "en": "Attacks a single target from range with a projectile.",
+      "zh": "从远处发射投射物，攻击单个目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92120.lore": {
+      "en": "Its ominous name features in countless campfire warnings along the shadow forest roads.",
+      "zh": "沿着阴影森林的道路，它不祥的名字出现在无数营火旁的告诫中。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92121.description": {
+      "en": "A durable close-combat fighter that strikes nearby targets.",
+      "zh": "耐久的近战战士，攻击身边的目标。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92121.lore": {
+      "en": "The abandoned outposts have many strange boxes, but not all of them stay where they are left.",
+      "zh": "废弃哨站里有许多奇怪的箱子，却并非每一只都会留在原地。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92122.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92122.lore": {
+      "en": "A candle-shaped traveler from the desert's deserted halls and half-remembered ceremonies.",
+      "zh": "蜡烛般的旅者，来自荒漠荒废的厅堂与记忆模糊的仪式。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92123.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92123.lore": {
+      "en": "A candle-shaped traveler from the desert's deserted halls and half-remembered ceremonies.",
+      "zh": "蜡烛般的旅者，来自荒漠荒废的厅堂与记忆模糊的仪式。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92124.description": {
+      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
+      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92124.lore": {
+      "en": "A walking piece of the mushroom groves, as curious as the forest that raised it.",
+      "zh": "蘑菇林中会行走的一小部分，和孕育它的森林一样充满好奇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92125.description": {
+      "en": "Restores the health of nearby monsters instead of dealing direct damage.",
+      "zh": "恢复附近怪物的生命值，不直接造成伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92125.lore": {
+      "en": "A walking piece of the mushroom groves, as curious as the forest that raised it.",
+      "zh": "蘑菇林中会行走的一小部分，和孕育它的森林一样充满好奇。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92126.description": {
+      "en": "A fast-moving melee attacker that closes the distance before striking.",
+      "zh": "移动迅速的近战进攻者，接近目标后发动攻击。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92126.lore": {
+      "en": "An old forest stump with an unexpected interest in the world beyond its clearing.",
+      "zh": "一截古老的树桩，对林间空地之外的世界产生了意想不到的兴趣。",
+      "context": "Creature lore"
+    },
+    "data.unitguide.92127.description": {
+      "en": "Strikes a nearby target and deals splash damage to additional targets around the impact.",
+      "zh": "攻击附近的目标，并对落点周围的其他目标造成溅射伤害。",
+      "context": "Attack and ability description; numeric stats stay dynamic"
+    },
+    "data.unitguide.92127.lore": {
+      "en": "An old forest stump with an unexpected interest in the world beyond its clearing.",
+      "zh": "一截古老的树桩，对林间空地之外的世界产生了意想不到的兴趣。",
+      "context": "Creature lore"
+    },
+    "enemyGuide.title": {
+      "en": "Enemy Guide",
+      "zh": "敌人图鉴",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.incoming": {
+      "en": "Incoming · Wave {0}",
+      "zh": "即将来袭 · 第 {0} 波",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.live": {
+      "en": "On the battlefield · Wave {0}",
+      "zh": "战场上 · 第 {0} 波",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.health": {
+      "en": "Health",
+      "zh": "生命值",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.damage": {
+      "en": "Damage",
+      "zh": "伤害",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.attackRate": {
+      "en": "Attacks / sec",
+      "zh": "每秒攻击",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.movement": {
+      "en": "Movement speed",
+      "zh": "移动速度",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.range": {
+      "en": "Attack range",
+      "zh": "攻击距离",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.sight": {
+      "en": "Sight range",
+      "zh": "视野距离",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.description": {
+      "en": "Attack & abilities",
+      "zh": "攻击与能力",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.lore": {
+      "en": "Creature lore",
+      "zh": "怪物传说",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.unknown": {
+      "en": "—",
+      "zh": "—",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.fallbackMelee": {
+      "en": "Attacks nearby targets in melee.",
+      "zh": "近战攻击附近目标。",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.fallbackRanged": {
+      "en": "Attacks targets within range with a projectile.",
+      "zh": "发射投射物攻击射程内的目标。",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.fallbackBuffer": {
+      "en": "Supports nearby monsters with an attack-speed boost.",
+      "zh": "提升附近怪物的攻击速度。",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.fallbackHealer": {
+      "en": "Restores health to nearby monsters.",
+      "zh": "恢复附近怪物的生命值。",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.close": {
+      "en": "Close",
+      "zh": "关闭",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.page": {
+      "en": "{0} / {1}",
+      "zh": "{0} / {1}",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.role.fighter": {
+      "en": "Fighter",
+      "zh": "斗士",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.role.skirmisher": {
+      "en": "Skirmisher",
+      "zh": "游击手",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.role.vanguard": {
+      "en": "Vanguard",
+      "zh": "先锋",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.role.mystic": {
+      "en": "Mystic",
+      "zh": "秘术师",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.role.bruiser": {
+      "en": "Bruiser",
+      "zh": "猛攻者",
+      "context": "Enemy guide interface"
+    },
+    "enemyGuide.role.guardian": {
+      "en": "Guardian",
+      "zh": "守卫",
+      "context": "Enemy guide interface"
     }
   },
   "images": {

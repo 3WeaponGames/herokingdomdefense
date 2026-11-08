@@ -16,12 +16,13 @@ const source=fs.readFileSync(path.join(__dirname,'../preview/client.js'),'utf8')
 const runtime={exports:{},require(name){if(name==='./spine-renderer')return {
     createLayers:async(_spine,layers)=>layers.map(description=>({description,data:{findAnimation:()=>({duration:1}),findSkin:()=>true},skeleton:{setSkinByName(){},color:{set(){}}}})),
     seek(){},bounds(){return{width:1,height:1};},drawCanvas(){},destroyCanvas(){}
-};if(name==='./projectile')return{simulate:()=>null};if(name==='fixture-spine')return{};return require(name);},document:{createElement:tag=>new Element(tag)},requestAnimationFrame(){throw Error('Playback was not requested');},cancelAnimationFrame(){},__dirname:path.join(__dirname,'../preview'),isFinite};
+};if(name==='./projectile')return{simulate:()=>null};if(name==='./building-artwork'){const child=Object.assign({},runtime,{module:{exports:{}}});vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../preview/building-artwork.js'),'utf8'),child);return child.module.exports;}if(name==='fixture-spine')return{};return require(name);},document:{createElement:tag=>new Element(tag)},requestAnimationFrame(){throw Error('Playback was not requested');},cancelAnimationFrame(){},__dirname:path.join(__dirname,'../preview'),isFinite};
 runtime.module={exports:{}};vm.runInNewContext(source,runtime,{filename:'preview/client.js'});const Client=runtime.module.exports;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function fixture(options){
     options=options||{};const root=new Element('div'),edits=[];
     const description={type:'enemy',id:'90001',form:'default',key:'enemy:90001:default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
+    if(options.events!==undefined){description.layers[0].json.animations.attack.events=options.events;description.defaultTiming=null;description.timingDefaultSource='No authored attack event.';}
     const request={type:'enemy',id:'90001',record:{ID:90001},documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
     if(options.default!==undefined)request.documents.overrides.data.timingDefaults[description.key]={attack:options.default};
     if(options.custom!==undefined)request.documents.overrides.data.timings[description.key]={attack:options.custom};
@@ -36,6 +37,12 @@ async function main(){
         assert.equal(active.length,1);assert.equal(active[0].style.left,'50%');assert.equal(references[0].style.left,'40%');
         assert(active[0].title.includes('active gold marker'));assert(references[0].title.includes('original animation reference'));
         assert.equal(all(f.root,n=>/preview-marker (original|gameplay)/.test(n.className||'')).length,0);f.client.destroy();
+    });
+    await test('eventless imported rigs show saved gameplay timing without inventing an animation reference',async()=>{
+        const f=fixture({default:.5,events:[]});await flush();assert.equal(f.client.getState().effect,.5);assert.equal(f.edits.length,0);
+        assert.equal(all(f.root,n=>n.className==='preview-marker reference').length,0);
+        assert.equal(all(f.root,n=>n.className==='preview-marker active')[0].style.left,'50%');
+        assert.deepStrictEqual(f.description,f.before);f.client.destroy();
     });
     await test('Use current frame moves only active gold and creates a scoped draft',async()=>{
         const f=fixture({default:.5});await flush();const seconds=field(f.root,'Position (seconds)');seconds.value=.65;seconds.onchange();assert.equal(f.edits.length,0);
@@ -72,6 +79,14 @@ async function main(){
         button(f.root,'Reset attack speed').onclick();assert.equal(f.client.getState().attackSpeed,1);assert.equal(f.client.getState().effect,.7);
         assert.deepStrictEqual(f.edits[1],[{doc:'overrides',path:['animationSpeeds'],value:{}}]);
         const count=f.edits.length;for(const value of ['0','5','NaN']){speed.value=value;speed.onchange();assert.equal(f.edits.length,count);}f.client.destroy();
+    });
+    await test('building weapon aiming previews live composition without drafts or base movement',async()=>{
+        const root=new Element('div'),edits=[],description={type:'building',id:'2',layers:[],image:'file:///base.png',weaponImage:'file:///weapon.png',appearance:{sprite:'base',width:180,height:220,offsetX:-8,offsetY:3,weapon:{sprite:'weapon',width:120,height:70,pivotX:.2,pivotY:.7,offsetX:10,offsetY:175,muzzleX:85,muzzleY:20}},runtimePath:null};
+        const before=clone(description),client=Client.mount(root,{ipc:async()=>description,onChange:value=>edits.push(value)});client.setBuilding({id:'2',record:{},documents:{}});await flush();
+        const images=all(root,node=>node.tagName==='img');assert.equal(images.length,2);assert.equal(images[0].src,'file:///base.png');assert.equal(images[1].src,'file:///weapon.png');const baseStyle=images[0].style.cssText;
+        const aim=field(root,'Preview aim (degrees)');aim.value='180';aim.oninput();assert(images[1].style.cssText.includes('scaleX(-1)'));assert.equal(images[0].style.cssText,baseStyle);
+        button(root,'Reset reference pose').onclick();assert(images[1].style.cssText.includes('rotate(0deg) scaleX(1)'));assert.equal(edits.length,0);assert.deepStrictEqual(description,before);
+        client.destroy();
     });
     console.log(checks+' unit preview marker checks passed.');
 }

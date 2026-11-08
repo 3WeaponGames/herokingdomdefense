@@ -1,4 +1,6 @@
 'use strict';
+const UnitRecords=require('../lib/unit-records');
+const MapCatalog=require('../lib/map-catalog');
 const fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
 const Buildings=require('../buildings/client');
@@ -20,10 +22,15 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 function create(kind){
   return Editor.Panel.extend({
     template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:''),
-    $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
+    $:{root:'#root',title:'#title',toolbar:'#toolbar',variant:'#variant',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
-      this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitGroup='enemy';this._variant='A';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
+      this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitPack='all';this._variant='A';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
       this.$title.textContent=TITLES[kind]||kind;
+      if(kind==='maps'||kind==='stages'){
+        this.$toolbar.style.display='none';this.$sidebar.style.display='none';this.$preview.style.display='none';this.$issues.hidden=true;this.$root.querySelector('.gt-header').style.display='none';this.$status.style.display='none';this.$footer.style.display='none';
+        this.$detail.className='gt-world-host';this.$detail.style.cssText='flex:1;min-width:0;padding:0;overflow:hidden;display:flex';
+        this._worldClient=require('../worlds/client').mount(this.$detail,{ipc,kind});return;
+      }
       if(kind==='unit-types')this.$toolbar.appendChild(button('New type',()=>this._newUnitType(),'gt-primary'));
       if(kind==='testing'){
         this.$toolbar.style.display='none';this.$sidebar.style.display='none';this.$preview.style.display='none';this.$issues.hidden=true;
@@ -36,21 +43,22 @@ function create(kind){
       this.$variant.onchange=()=>{this._variant=this.$variant.value;this._selected=null;this._wave=0;this._render();};
       this.$language.onchange=()=>{this._language=this.$language.value;this._render();};
       this.$search.oninput=()=>this._renderList();
+      this.$unitPack.hidden=kind!=='units';this.$unitPack.onchange=()=>{this._unitPack=this.$unitPack.value;this._selected=null;this._render();};
       this.$undo.onclick=()=>this._action('undo');this.$redo.onclick=()=>this._action('redo');
       this.$reload.onclick=()=>this._load(true);this.$review.onclick=()=>this._review(false);this.$save.onclick=()=>this._review(true);
       this.$discard.onclick=()=>this._confirm('Discard all panel drafts?','This discards unsaved edits shared by every game-tools panel. Saved game files remain unchanged.',()=>this._action('discard'),'Discard drafts');
       this._load();
       ipc('asset-index').then(assets=>{if(this._closed)return;this._assets=assets||this._assets;this._render();}).catch(()=>{});
     },
-    close(){this._closed=true;if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
-    messages:{'game-data-editor:changed'(){if(this._closed||kind==='testing')return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
+    close(){this._closed=true;if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
+    messages:{'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
     _status(message,error){this.$status.textContent=message;this.$status.className='gt-status'+(error?' error':'');},
     async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
     _apply(snapshot){if(!snapshot||this._closed)return;if(snapshot.result)this._lastResult=snapshot.result;else if(this._snapshot&&snapshot.version!==this._snapshot.version)this._lastResult=null;this._snapshot=snapshot;this._render();},
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
     _change(edits){
       this._queue=this._queue.catch(()=>{}).then(async()=>{
-        try{const snapshot=await ipc('change',{version:this._snapshot.version,edits});this._apply(snapshot);return snapshot;}
+        try{const snapshot=await ipc('change',{version:this._snapshot.version,edits:typeof edits==='function'?edits():edits});this._apply(snapshot);return snapshot;}
         catch(error){this._status(error.message,true);throw error;}
       });return this._queue;
     },
@@ -89,7 +97,7 @@ function create(kind){
       if(kind==='talents')Object.keys(data.TalentCfg||{}).forEach(id=>{const r=data.TalentCfg[id],count=(data.TalentLevelCfg||[]).filter(l=>l.kindID===Number(id)).length;add(id,this._text(r.Name),id+' · '+count+' progression records',r,['TalentCfg',id],{icon:r.Image});});
       if(kind==='units'){
         add('hero','Hero','Base stats are linked to Equipment',{},[],{unitType:'hero'});
-        Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id];add('enemy:'+id,this._text(r.Name),(r.prefab?'Enemy':'Boss form')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
+        Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id],pack=r.MonsterPack==='monster1'?'Monster Pack 1':r.MonsterPack==='monster2'?'Monster Pack 2':r.CampaignBaseUnit?'Campaign profile':r.prefab?'Enemy':'Boss form',role=this._unitRole('enemy',id);add('enemy:'+id,this._text(r.Name),pack+(role?' · '+role:'')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
         Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=(data.AllyCfg||data.SoldierCfg)[id];add('ally:'+id,this._text(r.Name)+' · Ally','Allied unit - independent stats',r,[data.AllyCfg?'AllyCfg':'SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
       }
       if(kind==='unit-types')Object.keys(this._data('overrides').unitTypes||{}).forEach(id=>{const type=this._data('overrides').unitTypes[id],assigned=Object.values(this._data('overrides').unitTypeAssignments||{}).filter(value=>value===id).length;add(id,type.name,id+' - '+assigned+' unit assignment(s)',type,['unitTypes',id],{doc:'overrides',icon:type.icon});});
@@ -100,8 +108,8 @@ function create(kind){
       return rows;
     },
     _renderList(){
-      const all=this._rows(),query=this.$search.value.trim().toLowerCase(),rows=all.filter(r=>(r.label+' '+r.subtitle).toLowerCase().indexOf(query)>=0);
-      if(!all.some(r=>r.key===this._selected))this._selected=rows.length?rows[0].key:null;
+      const all=this._rows(),pack=this._unitPack||'all',scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.record.MonsterPack:r.record.MonsterPack===pack)),query=this.$search.value.trim().toLowerCase(),rows=scoped.filter(r=>(r.label+' '+r.subtitle+' '+(r.record.MonsterSource||'')).toLowerCase().indexOf(query)>=0);
+      if(!scoped.some(r=>r.key===this._selected))this._selected=rows.length?rows[0].key:null;
       clear(this.$list);this.$count.textContent=rows.length+' / '+all.length+' items';
       rows.forEach(row=>{const b=button('',()=>{this._selected=row.key;this._wave=0;this._level=0;this._talentLevel=0;this.$detail.scrollTop=0;this._render();},'gt-record'+(row.key===this._selected?' active':''));
         const asset=this._image(row.icon);if(asset){const image=node('img');image.src=asset.url;image.alt='';b.appendChild(image);}else b.appendChild(node('span',row.label.slice(0,2),'gt-initial'));
@@ -137,10 +145,10 @@ function create(kind){
       search.oninput=()=>{page=0;render();};render();this.$modalActions.appendChild(button('Cancel',()=>this.$modal.hidden=true));
       body.appendChild(node('p','Original icons and imported resource images. Choosing an icon changes this draft only; Save applies it to the game.'));
     },
-    _localized(container,doc,keys,value,label){
-      const key=Schema.token(value);if(!key){this._field(container,label,value,v=>this._set(doc,keys,v),{wide:true,multiline:/description/i.test(label)});return;}
+    _localized(container,doc,keys,value,label,options){
+      const fieldOptions=Object.assign({wide:true,multiline:/description/i.test(label)},options),key=Schema.token(value);if(!key){this._field(container,label,value,v=>this._set(doc,keys,v),fieldOptions);return;}
       const catalog=this._data('catalog'),entry=(catalog.entries||{})[key]||{},language=this._language;
-      const wrap=node('div',undefined,'gt-localized');this._field(wrap,label+' · '+language,entry[language]||'',v=>this._set('catalog',['entries',key,language],v),{multiline:/description/i.test(label),wide:true});
+      const wrap=node('div',undefined,'gt-localized');this._field(wrap,label+' · '+language,entry[language]||'',v=>this._set('catalog',['entries',key,language],v),fieldOptions);
       let usages=0;['A','B','D'].forEach(id=>{const text=JSON.stringify(this._data(id));usages+=(text.split(value).length-1);});
       wrap.appendChild(node('div',usages>1?'Shared wording used by '+usages+' records. Saving this text updates every usage.':'Localized wording. Numbered placeholders must remain intact.','gt-shared'));
       container.appendChild(wrap);
@@ -161,7 +169,7 @@ function create(kind){
         }
         if(key==='Data'){
           const fields=node('div',undefined,'gt-fields');block.appendChild(fields);value.forEach((v,i)=>{
-            const d=Schema.dataDescriptor(context,i);
+            const d=Schema.dataDescriptor(Object.assign({},context,{unit:record}),i);
             if(context.table==='BuildEnum'&&Number(context.id)===3&&i===1)d.options=this._unitOptions(false,'ally').filter(o=>o.value>=90001&&o.value<=90004);
             if(context.table==='SoldierCfg'&&[90010,90011].indexOf(Number(context.id))>=0&&i===2)d.options=this._unitOptions(true).filter(o=>o.value!==-1);
             this._field(fields,d.label,v,n=>this._set(doc,keys.concat(i),n),d);
@@ -192,7 +200,8 @@ function create(kind){
       if(key==='CounterType')meta.options=[{value:'',label:'None'},...Object.entries(this._data('overrides').unitTypes||{}).map(([value,type])=>({value,label:type.name}))];
       this._field(container,meta.label,value,v=>this._set(doc,keys,v),meta);
     },
-    _unitOptions(forms,side){const data=this._data('A'),units=(side==='ally'&&data.AllyCfg)||data.SoldierCfg||{};return [{value:-1,label:'Wait (spawn ticks)'}].concat(Object.keys(units).filter(id=>forms||units[id].prefab).map(id=>({value:Number(id),label:this._text(units[id].Name)+' · '+id})));},
+    _unitRole(side,id){const tools=this._data('overrides'),key=(side||'enemy')+':'+id+':'+UnitRecords.form(side||'enemy',id),role=(tools.unitTypeAssignments||{})[key];return ((tools.unitTypes||{})[role]||{}).name||'';},
+    _unitOptions(forms,side){const data=this._data('A'),units=(side==='ally'&&data.AllyCfg)||data.SoldierCfg||{};return [{value:-1,label:'Wait (spawn ticks)'}].concat(Object.keys(units).filter(id=>forms||units[id].prefab).map(id=>{const role=this._unitRole(side,id),pack=units[id].MonsterPack==='monster1'?'Pack 1':units[id].MonsterPack==='monster2'?'Pack 2':units[id].CampaignBaseUnit?'Campaign profile '+units[id].CampaignBaseUnit:'';return {value:Number(id),label:this._text(units[id].Name)+(role?' · '+role:'')+(pack?' · '+pack:'')+' · '+id};}));},
     _rewardRows(parent,doc,keys,rewards){
       const goods=this._data('A').GoodsCfg||{},options=Object.keys(goods).map(id=>({value:Number(id),label:this._text(goods[id].Name||goods[id].name||id)+' · '+id}));
       rewards.forEach((reward,i)=>{const row=node('div',undefined,'gt-array-row');parent.appendChild(row);this._field(row,'Reward item',reward[0],v=>this._set(doc,keys.concat(i,0),v),{options});this._field(row,'Amount',reward[1],v=>this._set(doc,keys.concat(i,1),v),{integer:true,min:0});row.appendChild(button('Remove',()=>{const next=clone(rewards);next.splice(i,1);this._set(doc,keys,next);},'gt-mini'));});parent.appendChild(button('Add reward',()=>this._set(doc,keys,rewards.concat([[2001,1]])),'gt-mini'));
@@ -227,7 +236,7 @@ function create(kind){
     },
     _spawns(parent,doc,keys,encoded,map){
       const title=node('h3','Spawn lanes & ordered groups');title.style.marginTop='18px';parent.appendChild(title);
-      const maxLane={Map01:9,Map02:12,Map03:12,Map04:15}[map]||15,options=this._unitOptions(false);
+      const maxLane=MapCatalog.lanes(map)||15,options=this._unitOptions(false);
       encoded.forEach((text,i)=>{
         let data;try{data=Schema.parseSpawn(text);}catch(error){this._note('Unrecognized spawn record '+(i+1)+': '+error.message,true,parent);return;}
         const lane=node('div',undefined,'gt-spawn-lane'),head=node('div',undefined,'gt-lane-header');lane.appendChild(head);parent.appendChild(lane);
@@ -297,8 +306,11 @@ function create(kind){
         fields.appendChild(button('Open Equipment panel',()=>openPanel('equipment').catch(e=>this._status(e.message,true))));return;
       }
       const id=Number(row.unitID);this._note(row.unitType==='ally'?'Allied unit: its name, model, stats, equipment and timing are independent of enemies.':'Enemy unit: its name, model, stats and timing are independent of allies.');
+      if(row.record.MonsterSource)this._note('Imported source: '+row.record.MonsterSource+' · Behavior controller: '+row.record.BehaviorTemplate+'. Names, stats, roles, model transforms and attack timing are editable independently for this unit.');
+      if(row.record.CampaignBaseUnit)this._note('Campaign profile: controller '+row.record.CampaignBaseUnit+' · Appearance source unit '+row.record.AppearanceSourceUnit+'. Its initial combat settings preserve the original campaign profile; editing this record changes this profile independently of the source-roster monster.');
+      this._unitGuide(row);
       if(!row.record.prefab)this._note('This is a boss transformation form. It is reached through the boss’s behavior and is not a directly spawnable unit.');
-      const typeKey=row.unitType+':'+row.unitID+':'+(row.unitType==='enemy'&&id>=90010?id-90009:'default'),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Unit type & map pictogram');
+      const typeKey=row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,id),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Unit type & map pictogram');
       this._field(typeFields,'Unit type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
       this._field(typeFields,'Countered unit type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
       typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));
@@ -307,8 +319,23 @@ function create(kind){
       for(const [key,label,initial,min,max]of [['x','Offset X',0,-4096,4096],['y','Offset Y',0,-4096,4096],['scaleX','Scale X',1,.01,20],['scaleY','Scale Y',1,.01,20],['rotation','Rotation',0,-3600,3600]])this._field(visualFields,label,visual[key]===undefined?initial:visual[key],value=>setVisual(key,value),{min,max});
       this._field(visualFields,'Model tint',visual.tint||'#ffffff',value=>setVisual('tint',value),{color:true});
       visualFields.appendChild(button('Edit rider, horse & parts',()=>ipc('open-characters').catch(error=>this._status(error.message,true))));
-      this._properties(this._section('Stats & behavior'),'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID,side:row.unitType},['Suppressed','CounterType']);
+      this._properties(this._section('Stats & behavior'),'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID,side:row.unitType},['Suppressed','CounterType','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide']);
       this._note('Attack rate controls how often attacks begin. The preview timeline controls the release or effect moment inside a selected attack. Existing behavior stays unchanged until an override is saved.');
+    },
+    _unitGuide(row){
+      const guide=row.record.Guide,fields=this._section('Unit guide');
+      this._note('Description and lore shown in the unit guide. Localized entries follow the Language selector. Combat role and statistics are read from this unit’s current settings.',false,fields).style.gridColumn='1 / -1';
+      if(guide!==undefined&&(!guide||typeof guide!=='object'||Array.isArray(guide))){this._note('The existing Guide value is not an object. It is preserved; correct its source format before editing guide text.',true,fields).style.gridColumn='1 / -1';return;}
+      for(const [key,label]of [['description','Guide description'],['lore','Lore']]){
+        const value=guide&&guide[key]!==undefined?guide[key]:'';
+        if(typeof value!=='string'){this._field(fields,label,display(value),()=>{},{readOnly:true,wide:true,multiline:true});continue;}
+        if(Schema.token(value)){this._localized(fields,'A',row.path.concat('Guide',key),value,label,{multiline:true});continue;}
+        this._field(fields,label,value,next=>this._change(()=>{
+          const current=get(this._data('A'),row.path.concat('Guide'));
+          if(current!==undefined&&(!current||typeof current!=='object'||Array.isArray(current)))throw Error('The guide format changed in another draft. Refresh before editing.');
+          return [{doc:'A',path:row.path.concat('Guide'),value:Object.assign({},current,{[key]:next})}];
+        }).catch(()=>{}),{wide:true,multiline:true});
+      }
     },
     _newUnitType(){const types=clone(this._data('overrides').unitTypes||{});let id='new-type',index=2;while(own(types,id))id='new-type-'+index++;types[id]={name:'New type',icon:'',tint:'#ffffff'};this._selected=id;return this._set('overrides',['unitTypes'],types);},
     _unitType(row){

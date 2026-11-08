@@ -71,3 +71,49 @@ test('a new connection on a formerly final branch needs its own next purchase co
   level.BuildSliverCost=0;
   assert.equal(buildingIssues(d,[{doc:'A',path:at},{doc:'A',path:at.slice(0,-1).concat('BuildSliverCost')}]).length,0,'an explicit zero cost is supported');
 });
+
+test('construction choices preserve branch references and reject missing, duplicated or oversized cards',()=>{
+  const d=docs(),building=d.A.data.BuildEnum['3'],at=['BuildEnum','3','InitialChoices'];
+  building.InitialChoices=[1,2,5,8];
+  const before=JSON.stringify(d);
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0);
+  assert.equal(JSON.stringify(d),before);
+  for(const value of [null,[],{},[1,1],[1,999],[1,2,3,4,5],[1,'2']]){
+    building.InitialChoices=value;
+    assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.severity==='error'&&issue.path.includes('InitialChoices')),JSON.stringify(value));
+  }
+  delete building.InitialChoices;
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'removing the optional list restores original construction');
+});
+
+test('new level-three towers require explicit original collision footprints without changing legacy caps',()=>{
+  const d=docs(),building=d.A.data.BuildEnum['2'],position=building.levelList.length;
+  const row=Schema.clone(building.levelList[0]);row.index=position+1;row.level=3;row.ColliderIndex=1;delete row.BranchBuild;
+  building.levelList.push(row);
+  const at=['BuildEnum','2','levelList',position];
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0);
+  assert.equal(Schema.descriptor('level',{table:'BuildEnum',id:'2',building,levelIndex:position}).max,3);
+  delete row.ColliderIndex;
+  assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.path.at(-1)==='level'));
+  row.ColliderIndex=position+1;
+  assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.path.at(-1)==='ColliderIndex'));
+});
+
+test('tower combat and sprite authoring validates explicit values while retaining optional and unknown data',()=>{
+  const d=docs(),row=d.A.data.BuildEnum['2'].levelList[0],at=['BuildEnum','2','levelList',0];
+  row.Tower={attackType:'cannon',targeting:'highestHp',projectileSpeed:300,splashRadius:90,splashFalloff:.5,projectileLook:'',future:{retain:true}};
+  row.Appearance={sprite:'buildings/towers/cannon-1',width:160,height:200,offsetX:-20,offsetY:10,muzzleX:-12,muzzleY:120,future:'keep'};
+  const before=JSON.stringify(d);
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0);
+  assert.equal(JSON.stringify(d),before);
+  row.Tower={projectileSpeed:450};assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'partial overrides retain runtime defaults');
+  for(const [field,value]of [['attackType','laser'],['targeting','unsupported'],['projectileSpeed',0],['projectileSpeed','300'],['splashRadius',-1],['splashFalloff',1.1],['splashFalloff',-1],['projectileLook',42]]){
+    row.Tower={[field]:value};assert(buildingIssues(d,[{doc:'A',path:at.concat('Tower',field)}]).some(issue=>issue.severity==='error'&&issue.path.includes('Tower')),field);
+  }
+  delete row.Tower;
+  for(const [field,value]of [['sprite','../outside'],['sprite','/outside'],['sprite','buildings/tower.png'],['width',0],['height',-2],['offsetX','2'],['muzzleY',Infinity]]){
+    const original=row.Appearance[field];row.Appearance[field]=value;
+    assert(buildingIssues(d,[{doc:'A',path:at.concat('Appearance',field)}]).some(issue=>issue.severity==='error'&&issue.path.includes('Appearance')),field+':'+value);
+    row.Appearance[field]=original;
+  }
+});
