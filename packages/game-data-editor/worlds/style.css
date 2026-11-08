@@ -11,3 +11,11 @@
 .world-map .world-side{overflow:hidden}.world-map #world-palette{overflow:auto;flex:1 1 0;min-height:0;padding-right:3px}.world-library-shelf>div{max-height:230px;overflow:auto}
 
 .world-map .world-main{min-height:300px}.world-layers .world-layer{min-width:0}.world-layer-name{min-width:40px}
+
+.world-blocker-mode .world-side,.world-blocker-mode .world-layers,.world-blocker-mode .world-splitter-y,.world-blocker-mode .world-splitter-x[data-side=left]{display:none}.world-blocker-mode .world-dock>.world-inspector{flex:1 1 auto!important}
+
+.world-auto-blocker-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto;border:1px solid #494949;padding:7px}.world-auto-blocker-list label{align-items:flex-start;cursor:pointer}.world-auto-blocker-list label>span{overflow-wrap:anywhere}.world-auto-blocker-list input[type=checkbox]{margin:2px 4px 0 0;flex-shrink:0}
+
+.world-auto-apply{position:sticky;bottom:0;z-index:3;background:#303030;display:flex;flex-direction:column;gap:5px;padding:5px 0;box-shadow:0 -2px 5px #222}
+
+.world-auto-blocker-list{flex:0 0 auto;min-height:100px}

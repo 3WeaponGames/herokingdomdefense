@@ -85,17 +85,21 @@ test('the shared daily reward is claimable once and stale callbacks cannot claim
 
 test('buying all twelve relics preserves sold slots until refresh, then makes all slots purchasable again', () => {
   const f = initialized(), stock = clone(f.player.udata.data.shopState.slots);
+  const totals = rows => rows.reduce((sum, row) => { sum[row.cost.currency] = (sum[row.cost.currency] || 0) + row.cost.amount; return sum; }, { 2001: 0, 2002: 0 });
+  const firstCost = totals(ready(f).relics);
+  assert.deepEqual(firstCost, { 2001: 0, 2002: 3700 }, 'two Legendary, four Rare and six Common slots use the approved Gem prices');
   for (const row of stock) assert.equal(buy(f, 'relics', row.slotId).ok, true);
   assert(ready(f).relics.every(row => row.soldOut && !row.available));
   assert.deepEqual(clone(f.player.udata.data.shopState.slots).map(row => row.relicId), stock.map(row => row.relicId));
   assert.equal(f.player.udata.data.shopState.generation, 1);
   const soldView = ready(f); assert.equal(f.service.purchase('relics', stock[0].slotId, soldView.token).code, 'soldout');
-  assert.equal(f.player.udata.getGoldNum(), 994000); assert.equal(f.player.udata.getDiamondNum(), 99400);
+  assert.equal(f.player.udata.getGoldNum(), 1000000 - firstCost[2001]); assert.equal(f.player.udata.getDiamondNum(), 100000 - firstCost[2002]);
   assert.equal(f.service.refreshRelics(soldView.token).ok, true);
   assert(ready(f).relics.every(row => !row.soldOut && row.available));
   f.player.udata.data.shopState.slots.forEach((row, index) => assert.notEqual(row.relicId, stock[index].relicId));
-  for (const row of ready(f).relics) assert.equal(buy(f, 'relics', row.id).ok, true);
-  assert.equal(f.player.udata.getGoldNum(), 988000); assert.equal(f.player.udata.getDiamondNum(), 98800);
+  const secondOffers = ready(f).relics, secondCost = totals(secondOffers);
+  for (const row of secondOffers) assert.equal(buy(f, 'relics', row.id).ok, true);
+  assert.equal(f.player.udata.getGoldNum(), 1000000 - firstCost[2001] - secondCost[2001]); assert.equal(f.player.udata.getDiamondNum(), 100000 - firstCost[2002] - secondCost[2002]);
 });
 
 test('manual refresh has one free use, escalating paid costs and a ten-use cap; old refresh buttons cannot charge', () => {
@@ -119,7 +123,7 @@ test('insufficient currency, unknown offers and stale sold-slot buttons do not g
   const view = ready(f), before = account(f), calls = f.randomCalls(), writes = f.state.writes;
   assert.equal(f.service.purchase('resources', view.resources[0].id, view.token).code, 'insufficientGems');
   const common = view.relics.find(row => row.quality === 4);
-  assert.equal(f.service.purchase('relics', common.id, view.token).code, 'insufficientGold');
+  assert.equal(f.service.purchase('relics', common.id, view.token).code, common.cost.currency === 2001 ? 'insufficientGold' : 'insufficientGems');
   assert.equal(f.service.purchase('relics', 'missing', view.token).code, 'unavailable');
   assert.equal(f.service.purchase('__proto__', 'missing', view.token).code, 'unavailable');
   assert.deepEqual(account(f), before); assert.equal(f.randomCalls(), calls); assert.equal(f.state.writes, writes);
@@ -155,6 +159,29 @@ test('currency names retain authored localization markers in normal offers, fixe
   assert.equal(claim.rewards[0].name, f.manager.getGoodsCfgById(2001).name);
   const energy = buy(f, 'resources', 'energy-flask'); assert.equal(energy.ok, true);
   assert.equal(energy.rewards[0].name, f.manager.getGoodsCfgById(2033).name);
+});
+
+test('all shop relic rewards expose authored inspection IDs, rarity and frame metadata without mutating progress or random state', () => {
+  const f = initialized(), before = account(f), writes = f.state.writes, calls = f.randomCalls(), quote = ready(f), qualities = new Set();
+  const offers = quote.bundles.concat(quote.chests, quote.relics, quote.resources);
+  for (const offer of offers) {
+    for (const row of (offer.rewards || []).concat(offer.highlights || [], offer.possibleRewards || [])) {
+      const good = f.manager.getGoodsCfgById(row.id);
+      if (good && good.type === 2) {
+        const relic = f.manager.getTreasureCfgById(good.itemID); qualities.add(relic.Quality);
+        assert.equal(row.relicId, relic.ID); assert.equal(row.quality, relic.Quality);
+        assert.deepEqual(clone(row.rarityFrame), { bundle: 'KinghtFallIconGood', path: good.sprBg });
+      } else {
+        assert.equal(row.relicId, undefined); assert.equal(row.quality, undefined); assert.equal(row.rarityFrame, undefined);
+      }
+    }
+  }
+  assert.deepEqual([...qualities].sort(), [1, 2, 3, 4]);
+  for (const row of quote.relics) assert.deepEqual(clone(row.rarityFrame), clone(row.rewards[0].rarityFrame));
+  assert.deepEqual(account(f), before); assert.equal(f.state.writes, writes); assert.equal(f.randomCalls(), calls);
+  const purchased = buy(f, 'relics', quote.relics.find(row => row.quality === 4).id); assert.equal(purchased.ok, true);
+  const reward = purchased.rewards[0], good = f.manager.getGoodsCfgById(reward.id);
+  assert.equal(reward.relicId, good.itemID); assert.equal(reward.quality, 4); assert.equal(reward.rarityFrame.path, good.sprBg);
 });
 
 test('random pool and actual reward rows never inherit fixed conversion quotes from Array.map indexes', () => {

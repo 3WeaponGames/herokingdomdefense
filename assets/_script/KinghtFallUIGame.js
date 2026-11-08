@@ -355,7 +355,7 @@ var def_KinghtFallUIGame = function (t) {
       finally { if (dialog.node && cc.isValid(dialog.node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(dialog.node); }
     }
   };
-  _ctor.prototype.openBattleDialog = function (dialog, id, onOpened, first, second, third) {
+  _ctor.prototype.openBattleDialog = function (dialog, id, onOpened, first, second, third, fourth, fifth) {
     var ui = this;
     dialog.request = $z1UIMgr.UIMgr.getInstance().openUIWithOwner(id, this.uid, {
       parent: this,
@@ -363,7 +363,7 @@ var def_KinghtFallUIGame = function (t) {
       isCurrent: dialog.isCurrent,
       onCancel: function () { ui.finishBattleDialog(dialog); },
       onOpened: function (node) { dialog.node = node; if (onOpened) onOpened(node); }
-    }, first, second, third);
+    }, first, second, third, fourth, fifth);
   };
   _ctor.prototype.openPause = function () {
     if (!this.canBreak) return;
@@ -372,11 +372,26 @@ var def_KinghtFallUIGame = function (t) {
     dialog.paused = true;
     this.onPauseGame(true, dialog);
     this.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UISuspend, null, function () {
-      if (dialog.isCurrent()) self.onRestart(true);
+      return self.restartPausedBattle(dialog);
     }, function () {
       if (!dialog.isCurrent() || self.ctrGame.saveGame() === false) return false;
       self.closeUI();
-    }, function () { self.finishBattleDialog(dialog); });
+    }, function () { self.finishBattleDialog(dialog); }, null, {
+      mode: "campaign", stageTitle: function () {
+        var title = self.ndLevelInfo && self.ndLevelInfo.getChildByName("labName");
+        return title ? title.getComponent(cc.Label).string : self.T(self.ctrGame.gameData.levelCfg.Name);
+      }
+    });
+  };
+  _ctor.prototype.restartPausedBattle = function (dialog) {
+    if (!dialog || !dialog.isCurrent()) return false;
+    var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
+    var stage = this.ctrGame.gameData.levelCfg.Level;
+    // Retire only this stage's old checkpoint before changing the live map.
+    // The paid battle stays mounted, so restarting never purchases another entry.
+    if (!record.readyForNewBattle() || record.setNewGame(stage) === false) return false;
+    if (this.onRestart(true) === false) return false;
+    return this.ctrGame.saveGame() !== false;
   };
   _ctor.prototype.onClose = function () {
     if (this._enemyGuide) require("EnemyGuide").close(this, true);

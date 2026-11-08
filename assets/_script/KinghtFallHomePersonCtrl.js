@@ -43,12 +43,15 @@ var def_KinghtFallHomePersonCtrl = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.onEnable = function () {
     if (!this._homeTabReady) return;
+    this.layoutScrollToFooter();
     this.refreshEquipmentLimits();
     this.initView();
     this.scheduleHomeGuide();
   };
   _ctor.prototype.onDisable = function () {
     this.unschedule(this.showHomeGuide);
+    this.unschedule(this.finishScrollFooterLayout);
+    this._gearFooterLayoutPending = false;
   };
   _ctor.prototype.refreshEquipmentLimits = function () {
     var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
@@ -93,8 +96,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     for (var l = 0; l < this.cfgEquip.length; l++) {
       r(l);
     }
-    this.scrView.node.height = cc.winSize.height / 2 + this.scrView.node.y - 140;
-    this.scrView.node.children[0].getComponent(cc.Widget).updateAlignment();
+    this.bindScrollFooter();
+    this.layoutScrollToFooter();
     this.initView();
     if (cc.resources) this._cancelItemLookReady = HeroItemLooks.whenReady(function () {
       e._cancelItemLookReady = null;
@@ -103,6 +106,47 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     this.initEventListener();
     this._homeTabReady = true;
     this.scheduleHomeGuide();
+  };
+  _ctor.prototype.bindScrollFooter = function () {
+    if (this._gearScrollBoundsBound) return;
+    var parent = this.node;
+    while (parent && !this._gearFooter) {
+      this._gearFooter = parent.getChildByName("ndBottom");
+      parent = parent.parent;
+    }
+    this.node.on(cc.Node.EventType.SIZE_CHANGED, this.layoutScrollToFooter, this);
+    if (this._gearFooter) {
+      this._gearFooter.on(cc.Node.EventType.SIZE_CHANGED, this.layoutScrollToFooter, this);
+      this._gearFooter.on(cc.Node.EventType.POSITION_CHANGED, this.layoutScrollToFooter, this);
+    }
+    this._gearScrollBoundsBound = true;
+  };
+  _ctor.prototype.finishScrollFooterLayout = function () {
+    this._gearFooterLayoutPending = false;
+    this.layoutScrollToFooter(true);
+  };
+  _ctor.prototype.layoutScrollToFooter = function (finalPass) {
+    var scroll = this.scrView && this.scrView.node, widget = scroll && scroll.getComponent(cc.Widget);
+    if (!widget) return;
+    // Native Creator can run start and size callbacks before ancestor Widgets
+    // and their transforms are initialized. Recheck once after that frame's
+    // alignment, coalescing all geometry notifications into the same callback.
+    if (finalPass !== true && !this._gearFooterLayoutPending) {
+      this._gearFooterLayoutPending = true;
+      this.scheduleOnce(this.finishScrollFooterLayout, 0);
+    }
+    var footer = this._gearFooter, target = widget.target || scroll.parent;
+    if (footer && target) {
+      if (!(target.height > 0)) return;
+      // Measure the navigation's actual upper edge; a safe-area offset or a
+      // resized footer must not leave a strip or expose controls behind it.
+      var top = target.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y;
+      widget.isAbsoluteBottom = true;
+      widget.bottom = top + target.height * target.anchorY;
+    }
+    widget.updateAlignment();
+    var viewport = scroll.children[0], viewWidget = viewport && viewport.getComponent(cc.Widget);
+    if (viewWidget) viewWidget.updateAlignment();
   };
   _ctor.prototype.scheduleHomeGuide = function () {
     this.unschedule(this.showHomeGuide);
@@ -114,6 +158,15 @@ var def_KinghtFallHomePersonCtrl = function (t) {
   _ctor.prototype.onDestroy = function () {
     if (this._cancelItemLookReady) this._cancelItemLookReady();
     this._cancelItemLookReady = null;
+    this.unschedule(this.finishScrollFooterLayout);
+    this._gearFooterLayoutPending = false;
+    if (this._gearScrollBoundsBound) {
+      this.node.off(cc.Node.EventType.SIZE_CHANGED, this.layoutScrollToFooter, this);
+      if (this._gearFooter) {
+        this._gearFooter.off(cc.Node.EventType.SIZE_CHANGED, this.layoutScrollToFooter, this);
+        this._gearFooter.off(cc.Node.EventType.POSITION_CHANGED, this.layoutScrollToFooter, this);
+      }
+    }
     t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.initEventListener = function () {

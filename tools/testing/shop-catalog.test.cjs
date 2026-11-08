@@ -23,7 +23,7 @@ const bundlePlan = [
   ['crown-treasury', 4999, [120002, 120005, 120006], 'epic-chest', 3, 3500, 200000, 16]
 ];
 
-test('expanded catalog construction is synchronous and read-only, preserving daily stock and legacy economy', () => {
+test('expanded catalog uses approved relic Gem prices without rewriting authored config or daily stock', () => {
   const before = JSON.stringify(config), first = Catalog.create(data(config)), second = Catalog.create(data(config));
   assert.deepEqual(first, second); assert.equal(JSON.stringify(config), before);
   assert.equal(first.relics.length, config.TreasureCfg.length); assert.equal(first.bundles.length, 5); assert.equal(first.chests.length, 8); assert.equal(first.resources.length, 14);
@@ -32,7 +32,7 @@ test('expanded catalog construction is synchronous and read-only, preserving dai
   for (const relic of first.relics) {
     const authored = config.TreasureCfg.find(r => r.ID === relic.relicId); assert.equal(first.relicById[relic.relicId], relic);
     assert.equal(config.GoodsCfg[relic.goodId].itemID, authored.ID); assert.equal(relic.quality, authored.Quality);
-    assert.deepEqual(relic.cost, authored.Quality === 4 ? { id: 2001, num: 1000 } : { id: 2002, num: authored.Quality === 1 ? 200 : authored.Quality === 2 ? 100 : 50 });
+    assert.deepEqual(relic.cost, { id: 2002, num: { 1: 800, 2: 600, 3: 300, 4: 150 }[authored.Quality] });
   }
   const context = { exports: {}, Math: Object.assign(Object.create(Math), { random() { throw Error('catalog browsing rolled a reward'); } }) };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/ShopCatalog.js'), 'utf8'), context);

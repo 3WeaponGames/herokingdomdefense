@@ -200,4 +200,82 @@ test('Saved display defaults survive layout replacement and respect an explicit 
   f.manager.catalog.labelStyles.a.en={fontSize:36};f.manager.refreshLabel(label);assert.equal(label.font,font);
   f.manager.catalog.labelStyles.a.en.fontRole='body';f.manager.refreshLabel(label);assert.equal(label.font,original);
 });
+function shopTypographyFixture(){
+  const f=fixture();
+  class Outline{constructor(){this.enabled=true;this.width=4;this.color='original';}}
+  class Shadow{constructor(){this.enabled=true;this.offset={x:0,y:-4};this.blur=2;this.color='original';}}
+  f.cc.LabelOutline=Outline;f.cc.LabelShadow=Shadow;f.cc.v2=(x,y)=>({x,y});f.cc.color=x=>x;f.cc.TTFFont=function(){};
+  f.Node.prototype.addComponent=f.Node.prototype.add;
+  f.manager.catalog.fonts={en:'localization/fonts/Lilita One'};
+  f.manager.catalog.fontRoles={en:{a:'display'}};
+  f.manager.catalog.displayTextStyle={en:{minimumOutline:6,outlineRatio:.075,minimumShadow:5,shadowRatio:.08,outlineColor:'#000000',shadowColor:'#000000'}};
+  f.makeLabel=function(name,options){const node=new f.Node(name),label=node.add(f.Label),outline=node.add(Outline),shadow=node.add(Shadow);label.font=null;label.fontFamily='Arial';label.useSystemFont=true;label.isBold=true;label.fontSize=34;label._localizedFontRole='display';if(options)label._shopTypography=options;return{node,label,outline,shadow};};
+  return f;
+}
+test('Shop typography keeps exact thin strokes and no shadows through binding, language changes and late display-font completion',()=>{
+  const f=shopTypographyFixture(),pending=[],font={name:'Lilita One'};f.cc.resources.load=(url,type,callback)=>pending.push(callback);
+  const body=f.makeLabel('ShopBody',{fontRole:'body',fontFamily:'Arial',isBold:false,outlineWidth:0});
+  const header=f.makeLabel('ShopHeader',{fontRole:'body',isBold:true,outlineWidth:1});
+  const title=f.makeLabel('ShopTitle',{fontRole:'display',outlineWidth:2});
+  const victory=f.makeLabel('ExistingVictory');
+  const root=new f.Node();root.children=[body.node,header.node,title.node,victory.node];f.cc.director.getScene=()=>root;
+  for(const item of [body,header,title,victory])f.manager.bindLabel(item.label,'a');
+  function shopStyles(){assert.equal(body.outline.width,0);assert.equal(body.outline.enabled,false);assert.equal(header.outline.width,1);assert.equal(title.outline.width,2);for(const item of [body,header,title])assert.equal(item.shadow.enabled,false);assert.equal(body.label.fontFamily,'Arial');assert.equal(body.label.useSystemFont,true);assert.equal(body.label.isBold,false);assert.equal(header.label.isBold,true);}
+  shopStyles();assert.equal(victory.outline.width,6);assert.equal(victory.shadow.enabled,true);assert.equal(victory.shadow.offset.y,-5);assert.equal(pending.length,1);
+  f.manager.refreshTree(root);pending[0](null,font);shopStyles();assert.equal(body.label.font,null);assert.equal(header.label.font,null);assert.equal(title.label.font,font);assert.equal(title.label.isBold,false);assert.equal(victory.label.font,font);
+  f.manager.setCurrentLanguage('zh');shopStyles();assert.equal(body.label.string,'强化');assert.equal(title.label.font,null);assert.equal(victory.outline.width,4);assert.equal(victory.shadow.blur,2);
+  f.manager.setCurrentLanguage('en');shopStyles();assert.equal(title.label.font,font);assert.equal(victory.outline.width,6);assert.equal(victory.shadow.blur,0);
+});
+test('opting an in-flight display label into Shop body text cancels its old font and global outline recipe',()=>{
+  const f=shopTypographyFixture();let finish;f.cc.resources.load=(url,type,callback)=>{finish=callback;};
+  const item=f.makeLabel('LateShop');f.manager.bindLabel(item.label,'a');assert.equal(item.outline.width,6);
+  item.label._shopTypography={fontRole:'body',fontFamily:'Arial',isBold:true,outlineWidth:0};f.manager.refreshLabel(item.label);
+  finish(null,{name:'Lilita One'});assert.equal(item.label.font,null);assert.equal(item.label.useSystemFont,true);assert.equal(item.label.isBold,true);assert.equal(item.outline.enabled,false);assert.equal(item.shadow.enabled,false);
+  item.label.string='12,000';item.label.onEnable();assert.equal(item.label.fontFamily,'Arial');assert.equal(item.outline.width,0);assert.equal(item.shadow.enabled,false);
+});
+test('large kit card captions retain a controlled three-unit stroke through font loading and locale changes',()=>{
+  const f=shopTypographyFixture(),pending=[],font={name:'Lilita One'};f.cc.resources.load=(url,type,done)=>pending.push(done);
+  const amount=f.makeLabel('KitAmount',{fontRole:'display',outlineWidth:3}),body=f.makeLabel('KitBody',{fontRole:'body',fontFamily:'Arial',outlineWidth:0});
+  f.manager.bindLabel(amount.label,'a');f.manager.bindLabel(body.label,'a');
+  function verify(){assert.equal(amount.outline.width,3);assert.equal(amount.shadow.enabled,false);assert.equal(body.outline.enabled,false);assert.equal(body.shadow.enabled,false);}
+  verify();pending[0](null,font);verify();assert.equal(amount.label.font,font);f.manager.setCurrentLanguage('zh');verify();f.manager.setCurrentLanguage('en');verify();
+});
+test('cloned Shop labels retain independent local typography through scene scans while unmarked buttons retain global effects',()=>{
+  const f=shopTypographyFixture(),font={name:'Lilita One'};f.cc.resources.load=(url,type,callback)=>callback(null,font);
+  const source=f.makeLabel('ShopCaption',{fontRole:'body',isBold:true,outlineWidth:1});f.manager.bindLabel(source.label,'a');
+  const clone=f.cc.instantiate(source.node),label=clone.getComponent(f.Label),outline=clone.getComponent(f.cc.LabelOutline),shadow=clone.getComponent(f.cc.LabelShadow);
+  assert.notEqual(label._shopTypography,source.label._shopTypography);assert.equal(label._shopTypography.outlineWidth,1);assert.equal(outline.width,1);assert.equal(shadow.enabled,false);
+  source.label._shopTypography.outlineWidth=2;f.manager.refreshTree(source.node);f.manager.refreshTree(clone);assert.equal(source.outline.width,2);assert.equal(outline.width,1);
+  f.manager.setCurrentLanguage('zh');f.manager.setCurrentLanguage('en');assert.equal(label.font,null);assert.equal(label.fontFamily,'Arial');assert.equal(outline.width,1);assert.equal(shadow.enabled,false);
+  const other=f.makeLabel('UnchangedButton');f.manager.bindLabel(other.label,'a');assert.equal(other.label.font,font);assert.equal(other.outline.width,6);assert.equal(other.shadow.enabled,true);
+});
+test('shared panel typography keeps thin title strokes and clean instructions through cloning, language changes and delayed fonts',()=>{
+  const f=shopTypographyFixture(),pending=[],font={name:'Lilita One'};f.cc.resources.load=(url,type,done)=>pending.push(done);
+  const title=f.makeLabel('RelicTitle'),instruction=f.makeLabel('RelicInstruction'),ordinary=f.makeLabel('UnchangedHeading');
+  title.label._uiTypography={fontRole:'display',outlineWidth:2,outlineColor:'#26383b'};
+  instruction.label._uiTypography={fontRole:'body',fontFamily:'Arial',isBold:true,outlineWidth:0};
+  for(const item of [title,instruction,ordinary])f.manager.bindLabel(item.label,'a');
+  const clone=f.cc.instantiate(title.node),copied=clone.getComponent(f.Label);
+  assert.notEqual(copied._uiTypography,title.label._uiTypography);assert.equal(copied._shopTypography,undefined);
+  pending[0](null,font);assert.equal(title.label.font,font);assert.equal(instruction.label.font,null);assert.equal(instruction.label.fontFamily,'Arial');
+  function verify(){assert.equal(title.outline.width,2);assert.equal(title.shadow.enabled,false);assert.equal(clone.getComponent(f.cc.LabelOutline).width,2);assert.equal(clone.getComponent(f.cc.LabelShadow).enabled,false);assert.equal(instruction.outline.enabled,false);assert.equal(instruction.shadow.enabled,false);assert.equal(instruction.label.isBold,true);}
+  verify();f.manager.setCurrentLanguage('zh');verify();f.manager.setCurrentLanguage('en');verify();
+  assert.equal(ordinary.outline.width,6);assert.equal(ordinary.shadow.enabled,true);
+});
+
+test('shared relic header and outside instruction retain their authored safe rectangles in both languages',()=>{
+  const f=shopTypographyFixture(),catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/resources/localization/catalog.json'),'utf8'));
+  const prefab=JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/KinghtFallPrefabs/homePop/KinghtFallUITreasureInfo.prefab'),'utf8'));
+  f.cc.Label.Overflow={NONE:0,CLAMP:1,SHRINK:2,RESIZE_HEIGHT:3};f.manager.catalog.labelStyles=catalog.labelStyles;
+  const title=f.makeLabel('RelicTitle'),instruction=f.makeLabel('RelicInstruction');
+  title.label._localizedStyleKey='ui.layout.kinghtfalluitreasureinfo.8';title.label._uiTypography={fontRole:'display',outlineWidth:2};
+  instruction.label._localizedStyleKey='ui.layout.kinghtfalluitreasureinfo.66';instruction.label._uiTypography={fontRole:'body',fontFamily:'Arial',outlineWidth:0};
+  const titleNode=prefab.find(n=>n.__type__==='cc.Node'&&n._name==='labTitle'),close=prefab.find(n=>n.__type__==='cc.Node'&&n._name==='btnClose');
+  for(const language of ['en','zh']){
+    f.manager.setCurrentLanguage(language);for(const item of [title,instruction]){item.node.x=.504;item.node.y=item===title?196.781:-298.17;f.manager.refreshLabel(item.label);assert.equal(item.label.enableWrapText,false);assert.equal(item.label.overflow,1);}
+    const scale=titleNode._trs.array[7],titleRight=title.node.x+title.node.width*scale/2,closeLeft=close._trs.array[0]-close._contentSize.width/2;
+    assert(closeLeft-titleRight>=24,'title leaves a readable gap before Close');assert(title.node.y+title.node.height*scale/2<237,'title stays in the header');assert(title.node.y-title.node.height*scale/2>154,'title clears the body');
+    assert(instruction.node.y+instruction.node.height*.5/2< -237,'instruction sits beneath panel');assert(instruction.node.width*.5<=584,'instruction width stays within the panel width');
+  }
+});
 console.log(passed+' localization lifecycle checks passed.');

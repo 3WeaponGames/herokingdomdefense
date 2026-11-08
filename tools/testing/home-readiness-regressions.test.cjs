@@ -29,7 +29,7 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
     },
     resources: { load(id, type, done) { if (++requests === 1) done(Error('temporary catalog failure')); else retry = done; } }
   };
-  cc.Node.EventType = { TOUCH_END: 'touch' };
+  cc.Node.EventType = { TOUCH_END: 'touch', SIZE_CHANGED: 'size', POSITION_CHANGED: 'position' };
   const modules = {
     BaseUI: { default: Component }, KinghtFallEnum: { KinghtFallEnumTreasureEnum: { ForgeAmulet: 1 } },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: once({ getUserData: () => ({ getTreasureLevel: () => null, getMaxStage: () => 2 }) }) },
@@ -42,11 +42,11 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
   modules.BaseCtrl = load('BaseCtrl', context);
   modules.HeroItemLooks = load('HeroItemLooks', context);
   const Person = load('KinghtFallHomePersonCtrl', context).default, Home = load('KinghtFallUIHome', context).default;
-  const home = Object.assign(new Home(), { tag: '', tag1: {}, ndMain: {}, preWeap: { equipment: true }, preBattle: {}, isLock: () => false, showTag: noop });
+  const home = Object.assign(new Home(), { tag: '', tag1: {}, ndMain: { getChildByName: () => null }, preWeap: { equipment: true }, preBattle: {}, isLock: () => false, showTag: noop });
   const visual = () => ({ getChildByName: visual, getComponent: () => ({}), on: noop });
   let refreshes = 0, baseTeardowns = 0;
   cc.instantiate = prefab => {
-    const node = { equipment: !!prefab.equipment, activeInHierarchy: true, destroy() {
+    const node = { equipment: !!prefab.equipment, activeInHierarchy: true, getChildByName: () => null, on: noop, off: noop, destroy() {
       this.destroyed = true; this.activeInHierarchy = false;
       if (this.controller) {
         this.controller.onDestroy();
@@ -54,7 +54,7 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
       }
     }, getComponentsInChildren() { return this.controller ? [this.controller] : []; } };
     if (node.equipment) node.controller = Object.assign(new Person(), {
-      node, spPower: { node: {} }, scrView: { node: { y: 0, children: [{ getComponent: () => ({ updateAlignment: noop }) }] } },
+      node, spPower: { node: {} }, scrView: { node: { y: 0, getComponent: () => ({ updateAlignment: noop }), children: [{ getComponent: () => ({ updateAlignment: noop }) }] } },
       ndItemTop: equipment.map(visual), ndItemDown: equipment.map(visual), labNum: equipment.map(visual), T: () => '',
       initView() { refreshes++; }, initEventListener: noop, scheduleOnce: noop, unschedule: noop
     });

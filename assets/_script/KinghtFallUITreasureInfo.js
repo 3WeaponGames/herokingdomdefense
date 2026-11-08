@@ -37,6 +37,20 @@ var def_KinghtFallUITreasureInfo = function (t) {
     this.cfg = t;
     this.readOnly = !!readOnly;
     this.cfgGoods = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGoodsCfgById(this.cfg.goodID);
+    this.initTypography();
+  };
+  _ctor.prototype.initTypography = function () {
+    var title = this.labName;
+    if (!title || !title.node) return;
+    var language = require("LanguageMgr").LanguageMgr.getInstance();
+    title._uiTypography = { fontRole: "display", outlineWidth: 2, outlineColor: "#26383b" };
+    language.refreshLabel(title);
+    var root = title.node.parent, instruction = root && root.getChildByName("labClose");
+    var label = instruction && instruction.getComponent(cc.Label);
+    if (label) {
+      label._uiTypography = { fontRole: "body", fontFamily: "Arial", isBold: true, outlineWidth: 0 };
+      language.refreshLabel(label);
+    }
   };
   _ctor.prototype.start = function () {
     this.info = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTreasureLevel(this.cfg.ID);

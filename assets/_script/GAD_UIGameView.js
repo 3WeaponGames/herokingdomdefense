@@ -100,11 +100,15 @@ var def_GAD_UIGameView = function (t) {
       isCurrent: dialog.isCurrent,
       onCancel: function () { release(true); },
       onOpened: function (node) { dialog.node = node; game._decisionNode = node; }
-    }, null, function () {
+    }, function () {
+      return dialog.isCurrent() && game.restartPausedRun();
+    }, function () {
       if (!dialog.isCurrent()) return false;
       release(false);
       view.sendEvent($z1GAD_Configs.emGADEventName.GAD_Setting_Back);
-    }, function () { release(true); }, stats);
+    }, function () { release(true); }, stats, { mode: "wallDefense", stageTitle: function () {
+      return language.t("lobby.wallDefense") + " · " + language.t("script.kinghtfalltextconfig.homebattle02.15", [Math.max(1, game._curWave)]);
+    } });
   };
   _ctor.prototype.onShowHitText = function (t, e) {
     var n;

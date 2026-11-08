@@ -16,6 +16,7 @@ var def_KinghtFallItemHp = function (t) {
     e.labPro = null;
     e.spAni = null;
     e.sprPro = null;
+    e.guiProStyle = false;
     return e;
   }
   cc__extends(_ctor, t);
@@ -28,6 +29,10 @@ var def_KinghtFallItemHp = function (t) {
       });
     }
     this.labPro && (this.labPro.node.active = false);
+    if (this.guiProStyle) {
+      if (this.sprPro1) this.setFillProgress(this.sprPro1, this.sprPro1.fillRange);
+      if (this.sprPro2) this.setFillProgress(this.sprPro2, this.sprPro2.fillRange);
+    }
   };
   _ctor.prototype.setType = function (t, actor) {
     if (actor && this.actor !== actor) { this.actor = actor; this._hpLayoutSignature = null; }
@@ -86,13 +91,24 @@ var def_KinghtFallItemHp = function (t) {
     if (referenceHeight > 0) this.node.scaleY = referenceHeight / (this.node.height || 10);
     this._hpRenderer = renderer; this._hpData = renderer.skeletonData; this._hpParent = parent; this._hpLayoutSignature = signature;
   };
+  _ctor.prototype.setFillProgress = function (sprite, progress) {
+    sprite.fillRange = progress;
+    if (this.guiProStyle) {
+      // Sliced kit artwork keeps its border and gloss while health changes.
+      // Use geometry rather than stretching/cropping the entire fill texture;
+      // this also works in the native simulator and Canvas previews.
+      sprite.node.anchorX = 0;
+      sprite.node.x = -this.node.width / 2 + 2;
+      sprite.node.width = Math.max(0, this.node.width - 4) * progress;
+    }
+  };
   _ctor.prototype.setProgress = function (t) {
     if (this.sprPro) {
       if (t >= 1 || t <= 0) {
         this.node.active = false;
       } else {
         this.node.active = true;
-        this.sprPro.fillRange = t;
+        this.setFillProgress(this.sprPro, t);
       }
     }
   };
@@ -102,7 +118,7 @@ var def_KinghtFallItemHp = function (t) {
         this.node.active = false;
       } else {
         this.node.active = true;
-        this.sprPro.fillRange = t / e;
+        this.setFillProgress(this.sprPro, t / e);
         this.labPro && (this.labPro.string = t.toFixed(2) + "/" + e.toFixed(2));
       }
     }
@@ -113,6 +129,9 @@ var def_KinghtFallItemHp = function (t) {
       this.spAni.setAnimation(0, this.spAni.defaultAnimation, false);
     }
   };
+  cc__decorate([ccp_property({
+    tooltip: "Use the sliced GUI Pro unit health bar artwork"
+  })], _ctor.prototype, "guiProStyle", undefined);
   cc__decorate([ccp_property({
     type: cc.Sprite,
     tooltip: "我方血条"

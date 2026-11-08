@@ -25,7 +25,7 @@ function harness() {
   }
   const button = () => ({ on(event, callback) { this.click = callback; } });
   const screen = () => ({ btnBreak: button(), btnContinue: button(), btnVideo: button(), btnNewGame: button(), btnClose: button(),
-    closeUI: () => state.closed++, call: () => state.resumed++, sendEvent() {} });
+    closeUI: () => state.closed++, call: () => state.resumed++, settingsOpen: () => false, sendEvent() {} });
   return { state, method, screen, context };
 }
 

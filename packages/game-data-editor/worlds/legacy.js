@@ -7,7 +7,8 @@ const configFile=v=>'assets/KinghtFallConfig'+(v==='A'?'':v)+'/GameJsonCfg.json'
 const read=(root,file)=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8').replace(/^\uFEFF/,''));
 function compress(uuid){const s=uuid.replace(/-/g,''),chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';let out=s.slice(0,5);for(let i=5;i<s.length;i+=3){const n=parseInt(s.slice(i,i+3),16);out+=chars[n>>6]+chars[n&63];}return out;}
 const scriptIds=new Map();
-function script(root,name){const key=root+':'+name;if(!scriptIds.has(key))scriptIds.set(key,compress(read(root,'assets/_script/'+name+'.js.meta').uuid));return scriptIds.get(key);}
+function invalidateScripts(root){const prefix=path.resolve(root)+':';for(const key of scriptIds.keys())if(key.startsWith(prefix))scriptIds.delete(key);}
+function script(root,name){const key=path.resolve(root)+':'+name;if(!scriptIds.has(key))scriptIds.set(key,compress(read(root,'assets/_script/'+name+'.js.meta').uuid));return scriptIds.get(key);}
 function descendants(data,root,ids){ids=ids||new Set();if(ids.has(root)||!data[root])return ids;ids.add(root);for(const r of data[root]._children||[])descendants(data,r.__id__,ids);return ids;}
 function family(data,info,node){return Maps.moveObjectEdits(data,node.id,node.position).map(e=>e.path[0]);}
 function sprites(info,ids){return info.sprites.filter(s=>ids.has(s.node)&&s.enabled).map(s=>{const n=info.byId[s.node];return {frame:s.frame,matrix:n.world,width:n.width,height:n.height,anchor:n.anchor,color:n.source._color||{r:255,g:255,b:255,a:255},active:n.active};});}
@@ -32,4 +33,4 @@ function adaptStage(root,variant,level,config){config=clone(config||read(root,co
  return stage;
 }
 function index(root){const documents={};for(const v of ['A','B','D'])documents[v]=read(root,configFile(v));const wanted=new Set(),add=data=>{for(const value of data||[]){const frame=value&&value._spriteFrame&&value._spriteFrame.__uuid__;if(frame)wanted.add(frame);}},folder=path.join(root,'authoring/worlds/maps');if(fs.existsSync(folder))for(const file of fs.readdirSync(folder).filter(f=>f.endsWith('.json'))){const map=read(root,path.relative(root,path.join(folder,file)));add(map.legacyData);for(const source of Object.values(map.legacySources||{}))add(source);}const groupsFile='authoring/worlds/library/groups.json';if(fs.existsSync(path.join(root,groupsFile)))for(const source of Object.values(read(root,groupsFile).sources||{}))add(source);const indexed=Maps.indexSources(root,documents,wanted),maps=indexed.maps;return {maps,images:indexed.images,stages:['A','B','D'].reduce((all,v)=>all.concat(documents[v].LevelCfg.map(s=>({id:v+'-'+s.Level,variant:v,level:s.Level,name:s.Name,mapId:s.EnvironmentMapId||s.prefab,prefab:s.prefab,waves:s.WaveCfg.length}))),[]),documents,library:loadLibrary(root)};}
-module.exports={read,hash,compress,script,descendants,family,sprites,configFile,loadLibrary,inspect,adaptMap,adaptStage,index};
+module.exports={read,hash,compress,script,invalidateScripts,descendants,family,sprites,configFile,loadLibrary,inspect,adaptMap,adaptStage,index};

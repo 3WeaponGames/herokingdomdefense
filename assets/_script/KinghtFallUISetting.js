@@ -8,11 +8,11 @@ var $z1BasePlatform = require("BasePlatform");
 var $z1BaseUI = require("BaseUI");
 var $z1PlatformConfig = require("PlatformConfig");
 var $z1PlatformSetting = require("PlatformSetting");
-var $z1AudioMgr = require("AudioMgr");
 var $z1SdkMgr = require("SdkMgr");
 var $z1ServerDataMgr = require("ServerDataMgr");
 var $z1PlayerMgr = require("PlayerMgr");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
+var $z1Appcfg = require("Appcfg");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -26,28 +26,28 @@ var def_KinghtFallUISetting = function (t) {
     e.version = null;
     e.btnCleardata = null;
     e.btnExchangeCode = null;
-    e._musicBg2 = null;
-    e._effectBg2 = null;
     e.index = 0;
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.init = function (context) {
+    this._pauseParent = context && context.pauseParent || null;
+    this._battleChildren = [];
+    if (t.prototype.init) t.prototype.init.call(this);
+  };
+  _ctor.prototype.onOpen = function () {
+    if (this._pauseParent && cc.isValid(this._pauseParent, true)) this.node.zIndex = Math.max(this.node.zIndex, this._pauseParent.node.zIndex + 1);
+  };
   _ctor.prototype.onEnable = function () {
     this.btnExchangeCode.active = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().hasActiveGiftCode();
-    this.musicSlider.progress = $z1AudioMgr.AudioMgr.getInstance().getMusicVolume();
-    this.effectSlider.progress = $z1AudioMgr.AudioMgr.getInstance().getEffectVolume();
+    require("AudioOptions").refresh(this);
   };
   _ctor.prototype.start = function () {
-    var t;
-    var e;
     var n = this;
-    this._musicBg2 = null === (t = this.musicSlider.node.getChildByName("Background2")) || undefined === t ? undefined : t.getComponent(cc.Sprite);
-    this._effectBg2 = null === (e = this.effectSlider.node.getChildByName("Background2")) || undefined === e ? undefined : e.getComponent(cc.Sprite);
-    this._musicBg2 && (this._musicBg2.fillRange = this.musicSlider.progress);
-    this._effectBg2 && (this._effectBg2.fillRange = this.effectSlider.progress);
     var i = $z1PlayerMgr.PlayerMgr.getInstance();
     this.version.string = require("LanguageMgr").LanguageMgr.getInstance().t("settings.version", [i.getTrackData().getVersionConf(), i.getTrackData().getVersionName(), i.getAbType()]);
     this.bindEvent();
+    this.addEvent($z1Appcfg.BaseEventName.OpenUI, this.raiseBattleChild);
     require("SettingsPanelLayout").settings(this);
     this.btnExchangeCode.on(cc.Node.EventType.TOUCH_END, function () {
       n.openUI($z1KinghtFallConfig.KinghtFallUIID.UIExchangeCode);
@@ -55,6 +55,19 @@ var def_KinghtFallUISetting = function (t) {
     ($z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe_ABD) || $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.EDITOR || $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK) && this.ndTitle.on(cc.Node.EventType.TOUCH_END, function () {
       n.clickGM();
     }, this);
+  };
+  _ctor.prototype.raiseBattleChild = function (id, node) {
+    if (!this._pauseParent || !node || node === this.node || this.isclose) return;
+    var child = node.getComponent($z1BaseUI.default);
+    if (child && child.fromId === this.uid) {
+      node.zIndex = Math.max(node.zIndex, this.node.zIndex + 1);
+      this._battleChildren.push(child);
+    }
+  };
+  _ctor.prototype.onClose = function () {
+    (this._battleChildren || []).forEach(function (child) { if (cc.isValid(child, true) && !child.isclose) child.closeUI(); });
+    this._battleChildren = [];
+    this._pauseParent = null;
   };
   _ctor.prototype.bindEvent = function () {
     var t = this;

@@ -8,9 +8,10 @@ function load(name,dependencies,extra={}){
 test('the header never displays a timer while energy recovery and full/overflow balances retain their behavior',()=>{
  const now=1750000000000;let power=26,updated=now-32000,grants=[];const user={maxPower:30,powerRecoveryTime:300000,getPowerNum:()=>power,getPowerUpdateTime:()=>updated,addPowerNum(amount,elapsed){grants.push([amount,elapsed]);power=Math.min(30,power+amount);updated+=elapsed;}};
  const label={string:''},timer={active:true,removeFromParent(){},destroy(){}},Top=load('KinghtFallUITop',{BaseUI:{default:function(){}},KinghtFallModle:{default:{getInstance:()=>({numberFomat:String})}}},{Date:{now:()=>now}}),top=new Top();top.userData=user;top.ndPower={getChildByName:name=>name==='labTime'?timer:{getComponent:()=>label}};
- top.onRefreshPower();assert.equal(timer.active,false);assert.equal(label.string,'26');assert.equal(grants.length,0);
- updated=now-610000;timer.active=true;top.onRefreshPower();assert.equal(label.string,'28');assert.equal(timer.active,false);assert.deepEqual(grants,[[2,600000]]);
- power=35;updated=now-900000;top.onRefreshPower();assert.equal(label.string,'35');assert.equal(grants.length,1);assert.equal(timer.active,false);
+ top.onRefreshPower();assert.equal(timer.active,false);assert.equal(label.string,'26/30');assert.equal(grants.length,0);
+ updated=now-610000;timer.active=true;top.onRefreshPower();assert.equal(label.string,'28/30');assert.equal(timer.active,false);assert.deepEqual(grants,[[2,600000]]);
+ power=35;updated=now-900000;top.onRefreshPower();assert.equal(label.string,'35/30');assert.equal(grants.length,1);assert.equal(timer.active,false);
+ user.maxPower=40;power=40;top.onRefreshPower();assert.equal(label.string,'40/40');assert.equal(grants.length,1,'opening the header never clamps or recovers an at-cap balance');
 });
 test('clicking the energy counter opens the energy panel that owns the countdown',()=>{
  const ids={UIAddStrength:'energy',UIAddCurrency:'currency'},Top=load('KinghtFallUITop',{BaseUI:{default:function(){}},KinghtFallConfig:{KinghtFallUIID:ids},KinghtFallEnum:{KinghtFallEnumGoodsCfg:{Coin:1,Diamond:2}}}),top=new Top(),handlers={};

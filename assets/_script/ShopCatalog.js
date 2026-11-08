@@ -3,6 +3,7 @@
 // New storefront prices live here. Authored legacy relic draws, progression,
 // duplicate fragments and overflow conversion continue using their own config.
 var GOLD = 2001, GEMS = 2002, ENERGY = 2033;
+var RELIC_PRICES = { 1: 800, 2: 600, 3: 300, 4: 150 };
 var REFRESH_COSTS = [0, 10, 20, 30, 40, 50, 75, 100, 125, 150];
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function positive(value) { return typeof value === "number" && isFinite(value) && Math.floor(value) === value && value > 0; }
@@ -78,7 +79,7 @@ function create(dataMgr) {
         !good || good.type !== 2 || good.itemID !== entry.ID || typeof good.icon !== "string" || !good.icon) return;
     if (relicById[entry.ID]) throw new Error("Duplicate authored relic " + entry.ID);
     // Relic qualities are historical: 1 orange, 2 purple, 3 blue, 4 green.
-    var cost = entry.Quality === 4 ? reward(GOLD, 1000) : reward(GEMS, entry.Quality === 1 ? 200 : entry.Quality === 2 ? 100 : 50);
+    var cost = reward(GEMS, RELIC_PRICES[entry.Quality]);
     var row = { relicId: entry.ID, goodId: entry.goodID, quality: entry.Quality, cost: cost, rewards: [reward(entry.goodID, 1)],
       nameKey: good.name, fallbackName: "Relic " + entry.ID, icon: goodIcon(good) };
     relics.push(row); relicById[row.relicId] = row;
@@ -145,9 +146,9 @@ function create(dataMgr) {
     return paid(value, "hkd.bundle." + id, priceMinor);
   }
   var bundles = [
-    bundle("archer-starter", "Archer Starter", icon("KinghtFallIconCharacter", "wg_rw_gj4"), 199, [120016, 120017], "wooden-chest", 1, 50, 5000, 2),
+    bundle("archer-starter", "Archer Starter", icon("resources", "icons/2d-minimal/Equipment/Gear_Bow_01"), 199, [120016, 120017], "wooden-chest", 1, 50, 5000, 2),
     bundle("guard-kit", "Guard Kit", icon("resources", "icons/GUI-Pro/Icons/Icon_Shield"), 499, [120011, 120007], "iron-chest", 1, 250, 10000, 3),
-    bundle("royal-archer", "Royal Archer", icon("KinghtFallIconCharacter", "wg_rw_gj3"), 999, [120005, 120015, 120016], "silver-chest", 2, 500, 25000, 5),
+    bundle("royal-archer", "Royal Archer", icon("resources", "icons/2d-minimal-hero-equipment/Weapons/Weapon_RecurveBowSteel"), 999, [120005, 120015, 120016], "silver-chest", 2, 500, 25000, 5),
     bundle("kings-war-chest", "King's War Chest", icon("resources", "icons/GUI-Pro/Icons/Icon_Chest"), 1999, [120001, 120006, 120008], "knight-chest", 3, 1200, 60000, 8),
     bundle("crown-treasury", "Crown Treasury", icon("resources", "icons/GUI-Pro/Icons/Icon_Crown"), 4999, [120002, 120005, 120006], "epic-chest", 3, 3500, 200000, 16)
   ];

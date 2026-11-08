@@ -2,6 +2,7 @@
 const assert=require('node:assert/strict'),test=require('node:test');
 const {fixture}=require('./backend-ui-harness.cjs');
 const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+const {harness}=require('./persistence-harness.cjs');
 const single=value=>({getInstance:()=>value}),noop=()=>{};
 
 function setup(){
@@ -61,6 +62,37 @@ test('normal collection descriptions retain their Upgrade button and reset inspe
   const h=setup(),panel=h.detail();panel.init(h.relic,true);panel.start();assert.equal(panel.btnGold.active,false);
   panel.init(h.relic);panel.initView();panel.initBtnListener();
   assert.equal(panel.readOnly,false);assert.equal(panel.btnGold.active,true);assert.equal(panel.btnGold.handlers.end,panel.onGoldBtnClick);
+});
+
+test('the same shared panel selects crisp title and instruction typography for collection and read-only owners',()=>{
+  const h=setup(),refreshed=[];
+  h.modules.LanguageMgr.LanguageMgr.getInstance=()=>({refreshLabel:label=>refreshed.push(label)});
+  for(const readOnly of [false,true]){
+    const panel=h.detail(),root=new h.cc.Node('root'),title=new h.cc.Node('labTitle'),instruction=new h.cc.Node('labClose');title.parent=root;instruction.parent=root;
+    panel.labName={node:title};instruction.ui={node:instruction};panel.init(h.relic,readOnly);
+    assert.equal(panel.labName._uiTypography.fontRole,'display');assert.equal(panel.labName._uiTypography.outlineWidth,2);
+    assert.equal(instruction.ui._uiTypography.fontFamily,'Arial');assert.equal(instruction.ui._uiTypography.outlineWidth,0);assert.equal(instruction.ui._uiTypography.isBold,true);
+    assert.equal(panel.readOnly,readOnly);
+  }
+  assert.equal(refreshed.length,4);assert.equal(h.purchases(),0);assert.equal(h.owned.level,1);assert.equal(h.owned.frame,2);
+});
+
+for(const ownership of ['unowned','owned','maxed'])test('shared read-only Relic inspection keeps '+ownership+' progress unchanged with no Upgrade action or saves',()=>{
+  const h=setup(),p=harness(),cfg=h.relic;
+  p.player.udata.data.goldNum=1000000;
+  p.player.udata.data.treasureInfo=ownership==='unowned'?[]:[{id:cfg.ID,level:ownership==='maxed'?cfg.levelInfo.length:1,frame:2}];
+  p.player.purchase=()=>{throw Error('Read-only inspection attempted a purchase');};
+  h.modules.KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance=()=>p.player;
+  const before=JSON.stringify(p.player.rewardRecords().map(record=>record.data)),saved=JSON.stringify(p.persist());p.state.writes=0;
+  const panel=h.detail();panel.init(cfg,true);panel.start();
+  assert.equal(panel.btnGold.active,false);assert.equal(panel.btnGold.handlers.end,undefined);
+  assert.equal(panel.ndLock.active,ownership==='unowned');assert.equal(panel.ndPro.active,ownership==='owned');
+  const shownLevel=ownership==='maxed'?cfg.levelInfo.length:1;
+  assert.equal(panel.ndItem.getChildByName('labNum').getComponent(h.cc.Label).string,'Lv.'+shownLevel);
+  assert.equal(typeof panel.labInfo.string,'string');assert(panel.labInfo.string.length>0);
+  panel.onGoldBtnClick();
+  assert.equal(JSON.stringify(p.player.rewardRecords().map(record=>record.data)),before);
+  assert.equal(JSON.stringify(p.persist()),saved);assert.equal(p.state.writes,0);
 });
 
 test('Vampire Fang displays fractional healing precisely and the live upgrade rows show three then five fragments',()=>{

@@ -1285,11 +1285,32 @@
       "width": 60,
       "height": 6
     },
-    "groupIndex": 1
+    "groupIndex": 1,
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0.5
+    },
+    "_trs": {
+      "ctor": "Float64Array",
+      "array": [
+        -30,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "__type__": "TypedArray"
+    }
   },
   {
     "__type__": "cc.Sprite",
-    "_type": 3,
+    "_type": 1,
     "node": {
       "__id__": 65
     },
@@ -1299,8 +1320,9 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "8ca3c13e-74d0-454f-bffe-3bc0bd87435f"
-    }
+      "__uuid__": "f07dc597-10e4-41d5-82ce-5f4cb0c72549"
+    },
+    "_sizeMode": 0
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -1375,11 +1397,13 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "a6d1de9f-cf93-4ba9-85b8-40f43b6ac80b"
+      "__uuid__": "7653f234-2ad9-4e9e-afb8-400b8452fb5d"
     },
     "node": {
       "__id__": 64
-    }
+    },
+    "_type": 1,
+    "_sizeMode": 0
   },
   {
     "__type__": "02b8btphmxNmbLwrJa31qvT",
@@ -1391,7 +1415,8 @@
     },
     "labPro": {
       "__id__": 69
-    }
+    },
+    "guiProStyle": true
   },
   {
     "__type__": "cc.PrefabInfo",

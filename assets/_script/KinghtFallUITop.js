@@ -56,15 +56,25 @@ var def_KinghtFallUITop = function (t) {
     var t = this;
     if (this._headerButtonsBound) return;
     this._headerButtonsBound = true;
-    this.ndGold.on(cc.Node.EventType.TOUCH_END, function () {
+    function currencyButton(node, clicked) {
+      node.on(cc.Node.EventType.TOUCH_END, clicked, t);
+      // Keep the currency icon clickable as well as the full card, without
+      // opening the panel twice via bubbling.
+      var icon = node.getChildByName && node.getChildByName("sprIcon");
+      if (icon) icon.on(cc.Node.EventType.TOUCH_END, function (event) {
+        if (event) event.stopPropagation();
+        clicked.call(t);
+      }, t);
+    }
+    currencyButton(this.ndGold, function () {
       t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddCurrency, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Coin);
-    }, this);
-    this.ndDiamond.on(cc.Node.EventType.TOUCH_END, function () {
+    });
+    currencyButton(this.ndDiamond, function () {
       t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddCurrency, $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.Diamond);
-    }, this);
-    this.ndPower.on(cc.Node.EventType.TOUCH_END, function () {
+    });
+    currencyButton(this.ndPower, function () {
       t.openUI($z1KinghtFallConfig.KinghtFallUIID.UIAddStrength);
-    }, this);
+    });
     if (this.btnSetting) this.btnSetting.on(cc.Node.EventType.TOUCH_END, function () {
       require("UIMgr").UIMgr.getInstance().openUI($z1KinghtFallConfig.KinghtFallUIID.UISetting, $z1KinghtFallConfig.KinghtFallUIID.UIHome);
     }, this);
@@ -86,7 +96,7 @@ var def_KinghtFallUITop = function (t) {
         return void this.onRefreshPower();
       }
     }
-    this.ndPower.getChildByName("labNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(t);
+    this.ndPower.getChildByName("labNum").getComponent(cc.Label).string = String(t) + "/" + String(this.userData.maxPower);
   };
   _ctor.prototype.onRefreshGold = function () {
     this.ndGold.getChildByName("labNum").getComponent(cc.Label).string = $z1KinghtFallModle.default.getInstance().numberFomat(this.userData.getGoldNum());

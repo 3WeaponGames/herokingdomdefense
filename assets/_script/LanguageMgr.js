@@ -191,7 +191,9 @@ LanguageMgr.prototype._typefaceResource = function (text, label) {
   var styles = label && this.catalog.labelStyles && this.catalog.labelStyles[label._localizedStyleKey];
   var style = styles && styles[this.currentLan];
   var roles = this.catalog.fontRoles && this.catalog.fontRoles[this.currentLan];
-  var role = style && style.fontRole || roles && label && roles[label._localizedStyleKey] || label && label._localizedFontRole;
+  var shop = label && (label._uiTypography || label._shopTypography);
+  if (shop && shop.fontFamily) return null;
+  var role = shop ? shop.fontRole : style && style.fontRole || roles && label && roles[label._localizedStyleKey] || label && label._localizedFontRole;
   if (role !== "display") return null;
   return this.catalog.fonts && this.catalog.fonts[this.currentLan];
 };
@@ -199,6 +201,8 @@ LanguageMgr.prototype._applyLabelTypeface = function (label, text) {
   var resource = this._typefaceResource(text, label), original = label._localizedBaseFont;
   var styles = this.catalog.labelStyles && this.catalog.labelStyles[label._localizedStyleKey];
   var style = styles && styles[this.currentLan];
+  var shop = label._uiTypography || label._shopTypography;
+  if (shop) style = { fontFamily: shop.fontFamily || (shop.fontRole === "display" ? null : "Arial") };
   this._applyDisplayEffects(label, style && style.fontFamily ? null : resource);
   // Body copy can explicitly use a system sans face while display captions
   // continue to use the project's localized title font.
@@ -209,7 +213,7 @@ LanguageMgr.prototype._applyLabelTypeface = function (label, text) {
     label.font = null;
     label.fontFamily = style.fontFamily;
     if (typeof label.useSystemFont === "boolean") label.useSystemFont = true;
-    if (typeof label.isBold === "boolean") label.isBold = false;
+    if (typeof label.isBold === "boolean") label.isBold = shop ? !!shop.isBold : false;
     label._localizedTypeface = "system:" + style.fontFamily;
     return;
   }
@@ -248,6 +252,18 @@ LanguageMgr.prototype._applyDisplayEffects = function (label, resource) {
   var base = label._localizedBaseEffects, node = label.node;
   if (!cc.LabelOutline || !cc.LabelShadow || !(label instanceof cc.Label) || label instanceof cc.RichText) return;
   var outline = node.getComponent(cc.LabelOutline), shadow = node.getComponent(cc.LabelShadow);
+  var shop = label._uiTypography || label._shopTypography;
+  if (shop) {
+    // Polished panels opt into exact local strokes. They must not inherit the
+    // large Lilita outline/shadow intended for existing game buttons/titles.
+    var stroke = Number(shop.outlineWidth);
+    stroke = isFinite(stroke) ? Math.max(0, Math.min(3, stroke)) : 0;
+    if (stroke > 0) outline = outline || node.addComponent(cc.LabelOutline);
+    if (outline) { outline.enabled = stroke > 0; outline.width = stroke; outline.color = cc.color(shop.outlineColor || "#242632"); }
+    if (shadow) shadow.enabled = false;
+    label._localizedEffectsActive = false;
+    return;
+  }
   if (!resource || !options) {
     if (!base || !label._localizedEffectsActive) return;
     if (outline) { outline.enabled = base.outline.enabled; if (base.outline.exists) { outline.width = base.outline.width; outline.color = base.outline.color; } }
@@ -396,7 +412,7 @@ LanguageMgr.prototype._applyLabelStyle = function (label, recipe) {
   // The scrolling lobby lays out these captions after measuring their live
   // font. Localization still supplies text/typefaces, but must not restore the
   // old five-icon prefab dimensions over that measured layout.
-  if (label._lobbyCaption || label._settingsLayout) return;
+  if (label._lobbyCaption || label._settingsLayout || label._lobbyHeaderLayout) return;
   if (!label._localizedBaseStyle) label._localizedBaseStyle = {
     width: node.width, height: node.height, x: node.x, y: node.y,
     fontSize: label.fontSize, lineHeight: label.lineHeight,
@@ -537,6 +553,8 @@ LanguageMgr.prototype._copyNodeBindings = function (source, clone) {
     if (label._localizedEffectsActive) copy._localizedEffectsActive = true;
     if (label._localizedTypeface) copy._localizedTypeface = label._localizedTypeface;
     if (label._localizedFontRole) copy._localizedFontRole = label._localizedFontRole;
+    if (label._shopTypography) copy._shopTypography = Object.assign({}, label._shopTypography);
+    if (label._uiTypography) copy._uiTypography = Object.assign({}, label._uiTypography);
     if (label._localizedStyleKey) copy._localizedStyleKey = label._localizedStyleKey;
     if (label._localizedRecipe) {
       copy._localizedRecipe = JSON.parse(JSON.stringify(label._localizedRecipe));

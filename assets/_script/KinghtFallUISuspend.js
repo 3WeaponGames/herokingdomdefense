@@ -16,6 +16,7 @@ var ccp_property = cc__decorator.property;
 var def_KinghtFallUISuspend = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
+    e.bgOpacity = 204;
     e.ndParent = null;
     e.ndItem = null;
     e.togCon = null;
@@ -36,11 +37,12 @@ var def_KinghtFallUISuspend = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.init = function (t, e, releasePause, stats) {
+  _ctor.prototype.init = function (t, e, releasePause, stats, menu) {
     this.newGameCall = t;
     this.breakCall = e;
     this.releasePause = releasePause;
     this._stats = stats || null;
+    this.menuMetadata = menu || null;
     this._pauseReleased = false;
     this._returningHome = false;
   };
@@ -49,7 +51,6 @@ var def_KinghtFallUISuspend = function (t) {
     this.ndItem.active = false;
     this.ndTips.active = false;
     require("SettingsPanelLayout").pause(this);
-    require("AudioOptions").bind(this);
     this.initItem();
     this.bindEvent();
     this.ndParent.node.on("scrolling", function (e) {
@@ -65,7 +66,7 @@ var def_KinghtFallUISuspend = function (t) {
   _ctor.prototype.layoutPauseTitle = function () {
     if (!cc.view || !this.node) return;
     var root = this.node.getChildByName("root"), ribbon = root && root.getChildByName("wg_gxhd_pd");
-    if (!ribbon) return;
+    if (!ribbon || !ribbon.active) return;
     var scale = 1;
     for (var parent = root; parent; parent = parent.parent) scale *= Math.abs(parent.scaleY === undefined ? 1 : parent.scaleY);
     if (scale < .01) return;
@@ -140,6 +141,7 @@ var def_KinghtFallUISuspend = function (t) {
         // final box after configuration so native SHRINK never keeps a zero width.
         node.setContentSize(column ? width * .42 : width * .56, 50);
         node.color = cc.color("#6e6159");
+        require("PauseMenuLayout").stat(label, column);
       }
     }
   };
@@ -225,23 +227,52 @@ var def_KinghtFallUISuspend = function (t) {
   };
   _ctor.prototype.bindEvent = function () {
     var t = this;
+    if (this.btnSettings) this.btnSettings.on(cc.Node.EventType.TOUCH_END, this.openSettings, this);
+    if (this.btnRestart) this.btnRestart.on(cc.Node.EventType.TOUCH_END, this.restartGame, this);
     this.btnClose.on(cc.Node.EventType.TOUCH_END, this.resumeGame, this);
     if (this.btnDismiss) this.btnDismiss.on(cc.Node.EventType.TOUCH_END, this.resumeGame, this);
     this.btnNewGame.on(cc.Node.EventType.TOUCH_END, function () {
-      if (t.isclose || t._pauseReleased || t._returningHome) return;
+      if (t.isclose || t._pauseReleased || t._returningHome || t._restarting || t.settingsOpen()) return;
       t._returningHome = true;
       if (t.breakCall() === false) { t._returningHome = false; return; }
       t.closeUI();
     }, this);
   };
+  _ctor.prototype.settingsOpen = function () {
+    return !!(this._settingsRequest || this._settingsUI && !this._settingsUI.isclose && cc.isValid(this._settingsUI, true));
+  };
+  _ctor.prototype.openSettings = function () {
+    if (this.isclose || this._pauseReleased || this._returningHome || this._restarting || this.settingsOpen()) return;
+    var owner = this, request;
+    request = require("UIMgr").UIMgr.getInstance().openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UISetting, this.uid, {
+      parent: this,
+      recoveryCancelAllowed: true,
+      isCurrent: function () { return !owner.isclose && !owner._pauseReleased && !owner._returningHome && !owner._restarting && cc.isValid(owner, true); },
+      onCancel: function () { owner._settingsRequest = null; },
+      onOpened: function (node) { owner._settingsRequest = null; owner._settingsUI = node.getComponent($z1BaseUI.default); }
+    }, { pauseParent: this });
+    if (!request.finished) this._settingsRequest = request;
+  };
+  _ctor.prototype.restartGame = function () {
+    if (this.isclose || this._pauseReleased || this._returningHome || this._restarting || this.settingsOpen() || !this.newGameCall) return;
+    this._restarting = true;
+    try {
+      if (this.newGameCall() === false) { this._restarting = false; return; }
+      if (!this.isclose) { this.onClose(); this.closeUI(); }
+    } catch (error) { this._restarting = false; throw error; }
+  };
   _ctor.prototype.resumeGame = function () {
-    if (this._pauseReleased || this._returningHome || this.isclose) return;
+    if (this._pauseReleased || this._returningHome || this._restarting || this.isclose || this.settingsOpen()) return;
     if (!this.releasePause) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
     this.onClose();
     this.closeUI();
   };
   _ctor.prototype.onClose = function () {
     this.unbindTipDismissal();
+    var request = this._settingsRequest, settings = this._settingsUI;
+    this._settingsRequest = this._settingsUI = null;
+    if (request) request.cancel();
+    if (settings && !settings.isclose && cc.isValid(settings, true)) settings.closeUI();
     if (this._pauseReleased) return;
     this._pauseReleased = true;
     var release = this.releasePause;

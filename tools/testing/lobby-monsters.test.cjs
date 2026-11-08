@@ -83,5 +83,5 @@ test('the currency prefab has no energy countdown node or text renderer',()=>{
  const timer={active:true,removeFromParent(){this.removed=true;},destroy(){this.destroyed=true;}};const number={};
  const refresh=method('KinghtFallUITop','onRefreshPower',{cc:{Label:function(){}},$z1KinghtFallModle:{default:{getInstance:()=>({numberFomat:String})}}});
  refresh.call({userData:{getPowerNum:()=>15,maxPower:30,getPowerUpdateTime:()=>Date.now(),powerRecoveryTime:300000},ndPower:{getChildByName:name=>name==='labTime'?timer:{getComponent:()=>number}}});
- assert(timer.removed&&timer.destroyed);assert.equal(timer.active,false);assert.equal(number.string,'15');
+ assert(timer.removed&&timer.destroyed);assert.equal(timer.active,false);assert.equal(number.string,'15/30');
 });

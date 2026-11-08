@@ -52,6 +52,14 @@ exports.create = function (player, dataMgr, options) {
     if (!row.icon && good && good.icon) {
       row.icon = good.icon.indexOf("@icon/") === 0 ? { bundle: "resources", path: good.icon.slice(6) } : { bundle: "KinghtFallIconGood", path: good.icon };
     }
+    if (good && good.type === 2) {
+      var relic = dataMgr.getTreasureCfgById(good.itemID);
+      if (relic) {
+        row.relicId = relic.ID;
+        row.quality = relic.Quality;
+        if (good.sprBg) row.rarityFrame = good.sprBg.indexOf("@icon/") === 0 ? { bundle: "resources", path: good.sprBg.slice(6) } : { bundle: "KinghtFallIconGood", path: good.sprBg };
+      }
+    }
     if (quoteConversion === true && good && good.type === 2) row.conversionGold = conversionGold(good.itemID) * row.num;
     return row;
   }
@@ -139,6 +147,7 @@ exports.create = function (player, dataMgr, options) {
     result.id = slot.slotId;
     result.relicId = slot.relicId;
     result.quality = slot.quality;
+    if (result.rewards[0] && result.rewards[0].rarityFrame) result.rarityFrame = copy(result.rewards[0].rarityFrame);
     result.soldOut = slot.bought;
     result.available = !slot.bought;
     result.conversionGold = conversionGold(slot.relicId);

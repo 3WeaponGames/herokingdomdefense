@@ -50,11 +50,17 @@ async function inGameChecks() {
         const shop = await until(() => home.tagNode && home.tagNode.activeInHierarchy && home.tagNode.getComponent(request('KinghtFallHomeShopCtrl').default), 'Shop instantiated');
         await until(() => shop.view && shop.view.ready, 'Persisted stock ready');
         await delay(1000);
+        await until(() => Object.keys(shop._iconPending).length === 0, 'Shop artwork and authored button skins loaded');
         window.__shopTest = { shop, player, home, tap, find, report };
         check(shop.tabButtons.length === 4, 'Four inner Shop tabs');
         check(shop.view.relics.length === 12, 'Twelve relic slots');
         check([1, 3, 4].map(q => shop.view.relics.filter(o => o.quality === q).length).join(',') === '2,4,6', 'Two legendary, four rare, six common slots');
         check(new Set(shop.view.relics.map(o => o.relicId)).size === 12, 'Relic stock is distinct');
+        const footer = home.node.getChildByName('ndBottom');
+        const footerTopWorld = footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)));
+        const shopFooterTop = shop.scrollNode.parent.convertToNodeSpaceAR(footerTopWorld).y;
+        check(Math.abs(shop.scrollNode.y - shop.scrollNode.height / 2 - shopFooterTop) < .5, 'Shop list reaches the footer with no blank strip');
+        check(shop.dailyTimer.node.zIndex > shop.dailyTimerStrip.zIndex, 'Daily reset text renders above its strip');
         const dailyNode = shop.daily;
         for (const tab of ['chests', 'relics', 'resources', 'bundles']) {
             shop.selectTab(tab); check(shop.daily === dailyNode && dailyNode.activeInHierarchy, 'Daily Deal pinned on ' + tab);
@@ -73,6 +79,14 @@ async function inGameChecks() {
         check(list.children.length === bundle.rewards.length, 'Bundle modal lists every included reward');
         const bundleIntroduction = find(shop.modal, 'Introduction'), bundleScroll = find(shop.modal, 'ContentsScroll');
         check(bundleScroll.y + bundleScroll.height / 2 <= bundleIntroduction.y - bundleIntroduction.height / 2 - 10, 'Bundle contents keep the introduction clear of the first reward row');
+        const contentsScroll = bundleScroll.getComponent(cc.ScrollView), contentsCue = find(shop.modal, 'ScrollCue');
+        check(contentsCue && contentsCue.active, 'Overflowing bundle contents display a separate down-scroll cue');
+        contentsScroll.scrollToBottom(.1);
+        await until(() => !contentsCue.active, 'Actual ScrollView node events hide the cue at the bottom');
+        check(!contentsCue.active, 'Contents cue hides after actual animated scrolling to the final reward');
+        contentsScroll.scrollToTop(.1);
+        await until(() => contentsCue.active, 'Actual ScrollView node events restore the cue at the top');
+        check(contentsCue.active, 'Contents cue reappears when rewards remain below');
         shop.closeModal();
         shop.selectTab('chests'); check(shop.view.chests.length === 8 && shop.view.chests.every(o => o.highlights.length === 2), 'Eight chests each expose exactly two top possible rewards');
         check(shop.view.chests.map(o => o.draws).join(',') === '2,2,3,3,4,4,5,6', 'Chest base-draw counts match the approved restrained tiers');
@@ -81,6 +95,47 @@ async function inGameChecks() {
         check(find(shop.modal, 'ContentsScroll').getComponent(cc.ScrollView).content.children.length === chest.rewards.length + chest.possibleRewards.length, 'Chest details include fixed rewards and all per-draw outcomes');
         shop.closeModal();
         shop.selectTab('relics');
+        const approvedRelicPrices = { 1: 800, 2: 600, 3: 300, 4: 150 };
+        check(shop.view.relics.every(row => row.cost.currency === 2002 && row.cost.amount === approvedRelicPrices[row.quality]), 'All relic tiers use the approved Gem prices');
+        const relicCards = shop.content.children.filter(node => node.activeInHierarchy && node.name.startsWith('Offer_'));
+        await until(() => relicCards.every(row => { const frame = find(row, 'RarityFrame'); return frame && frame.getComponent(cc.Sprite).spriteFrame; }), 'Authored relic rarity frames loaded');
+        check(relicCards.length === 12, 'All twelve stock relics display their authored frames');
+        await until(() => relicCards.every(row => { const skin = find(row, 'CardSkin'); return skin && skin.getComponent(cc.Sprite).spriteFrame; }), 'Kit relic card skins loaded');
+        const cardFrames = relicCards.map(row => find(row, 'CardSkin').getComponent(cc.Sprite).spriteFrame._uuid);
+        check(new Set(cardFrames).size === 1, 'Relic cards share one kit surface while authored frames carry rarity');
+        const inspectId = shop.view.relics[0].relicId, originalRelics = JSON.parse(JSON.stringify(player.udata.data.treasureInfo));
+        const inspectionStates = [null, { id: inspectId, level: 1, frame: 0 }, { id: inspectId, level: 3, frame: 0 }];
+        for (const owned of inspectionStates) {
+            player.udata.data.treasureInfo = originalRelics.filter(row => row.id !== inspectId);
+            if (owned) player.udata.data.treasureInfo.push(owned);
+            player.udata.saveData(); shop.refresh();
+            const before = JSON.stringify([player.udata.getGoldNum(), player.udata.getDiamondNum(), player.udata.data.treasureInfo]);
+            const card = shop.content.children.find(node => node.activeInHierarchy && node.name === 'Offer_' + shop.view.relics[0].id);
+            tap(find(card, 'RarityFrame').parent);
+            const details = await until(() => { const panel = manager.getUIById(config.KinghtFallUIID.UITreasureInfo); return panel && !panel.isclose && Object.prototype.hasOwnProperty.call(panel, 'info') && panel; }, 'Shared read-only relic inspection');
+            check(details.cfg.ID === inspectId && details.readOnly && !details.btnGold.active, 'Shop uses the shared relic panel without Upgrade for ' + (owned ? 'level ' + owned.level : 'an unowned relic'));
+            check(details.node.zIndex > manager.getUIById(config.KinghtFallUIID.UITop).node.zIndex, 'Shared Shop inspection covers the persistent currency and Settings HUD');
+            const titleOutline = details.labName.node.getComponent(cc.LabelOutline), titleShadow = details.labName.node.getComponent(cc.LabelShadow);
+            const outsideLabel = find(details.node, 'labClose').getComponent(cc.Label), outsideOutline = outsideLabel.node.getComponent(cc.LabelOutline), outsideShadow = outsideLabel.node.getComponent(cc.LabelShadow);
+            check(details.labName._uiTypography && titleOutline.width <= 2 && (!titleShadow || !titleShadow.enabled) && !details.labName.enableWrapText, 'Shared relic heading stays sharp and fits one line');
+            check(outsideLabel._uiTypography && (!outsideOutline || !outsideOutline.enabled) && (!outsideShadow || !outsideShadow.enabled) && !outsideLabel.enableWrapText, 'Shared outside instruction stays clean and on one line');
+            if (!owned) {
+                const language = request('LanguageMgr').LanguageMgr.getInstance(), data = request('KinghtFallDataMgr').KinghtFallDataMgr.getInstance();
+                for (const relic of data.getTreasureCfg()) {
+                    const name = language.t(data.getGoodsCfgById(relic.goodID).name);
+                    details.labName.string = name; await delay(35);
+                    check(details.labName.actualFontSize >= 67 && details.labName.overflow === cc.Label.Overflow.CLAMP, 'Shared title retains readable authored size for ' + name + ' (actual=' + details.labName.actualFontSize + ', configured=' + details.labName.fontSize + ', overflow=' + details.labName.overflow + ')');
+                }
+                details.labName.string = language.t(data.getGoodsCfgById(details.cfg.goodID).name);
+            }
+            details.onGoldBtnClick();
+            check(JSON.stringify([player.udata.getGoldNum(), player.udata.getDiamondNum(), player.udata.data.treasureInfo]) === before, 'Relic inspection cannot spend, buy, unlock or upgrade');
+            details.closeUI();
+            await until(() => !manager.getUIById(config.KinghtFallUIID.UITreasureInfo), 'Relic panel closed');
+        }
+        player.udata.data.treasureInfo = originalRelics; player.udata.saveData(); shop.refresh();
+        const shopLabels = shop.node.getComponentsInChildren(cc.Label).filter(label => label.node.activeInHierarchy && label._shopTypography);
+        check(shopLabels.length > 20 && shopLabels.every(label => { let card = label.node; while (card && !card._kitCard) card = card.parent; const outline = label.node.getComponent(cc.LabelOutline), shadow = label.node.getComponent(cc.LabelShadow); return (!outline || !outline.enabled || outline.width <= (card || label === shop.title ? 3 : 2)) && (!shadow || !shadow.enabled); }), 'Shop typography keeps controlled kit strokes and no hard shadows');
         const slot = shop.view.relics[0], beforeOrder = shop.view.relics.map(o => o.relicId).join(',');
         shop.buy('relics', slot, shop.view.token); check(!!shop.modal, 'Relic purchase requests confirmation'); tap(find(shop.modal, 'Confirm'));
         check(shop.view.relics[0].soldOut && shop.view.relics.map(o => o.relicId).join(',') === beforeOrder, 'Purchase marks the same slot sold without replacing stock');
@@ -189,6 +244,16 @@ async function inGameChecks() {
         check(shop.view.bundles.every(o => o.soldOut && o.purchaseCount === 2), 'Lifetime bundle caps remain when returning to production-disabled checkout');
         check(!request('ShopPayments').getInstance().describe(catalog.bundles[0].payment).available, 'The production payment singleton remains unconfigured');
         report.simulatedStore = true;
+        player.udata.data.maxStage = 20; player.udata.saveData(); home.initViewTogg();
+        const gearToggle = home.togCon.toggleItems[0]; gearToggle.isChecked = true; home.showView(gearToggle);
+        const gear = await until(() => home.tagNode && home.tagNode.getComponent(request('KinghtFallHomePersonCtrl').default), 'Gear page ready');
+        await until(() => gear._homeTabReady && gear.scrView, 'Gear layout initialized');
+        const gearViewport = gear.scrView.content.parent, gearBottom = gearViewport.convertToWorldSpaceAR(cc.v2(0, -gearViewport.height * gearViewport.anchorY)).y;
+        check(Math.abs(gearBottom - footerTopWorld.y) < .5, 'Gear list reaches the same footer edge without a blank strip');
+        window.__shopTest.gear = gear;
+        toggle.isChecked = true; home.showView(toggle);
+        await until(() => shop.node.activeInHierarchy, 'Return to Shop after Gear footer check');
+        shop.refresh();
         request('LanguageMgr').LanguageMgr.getInstance().setCurrentLanguage('zh'); await delay(400);
         check(shop.title.string === '商店', 'Shop copy switches to Chinese');
         shop.selectTab('bundles'); shop.contents(shop.view.bundles[0]);
@@ -196,7 +261,7 @@ async function inGameChecks() {
         check(chineseContents.includes('金币') && chineseContents.includes('钻石'), 'Chinese bundle contents use the authored Gold and Gems names');
         shop.closeModal();
         request('LanguageMgr').LanguageMgr.getInstance().setCurrentLanguage('en'); await delay(400);
-        check(shop.title.string === 'SHOP', 'Shop copy switches back to English');
+        check(shop.title.string === 'Shop', 'Shop copy switches back to English');
         report.ready = true; report.stage = 'ready-for-captures';
     } catch (error) { report.errors.push(error.stack || String(error)); report.stage = 'failed'; }
     return report;
@@ -214,7 +279,7 @@ async function main() {
     const errors = [], warnings = [];
     try {
         browser = await chromium.launch({ executablePath: process.env.BROWSER_EXECUTABLE || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', headless: true, args: ['--mute-audio', '--autoplay-policy=user-gesture-required'] });
-        const context = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 1 });
+        const context = await browser.newContext({ viewport: { width: 375, height: 667 }, deviceScaleFactor: 1 });
         page = await context.newPage();
         page.on('pageerror', error => errors.push(error.stack || error.message));
         page.on('console', message => { if (message.type() === 'warning') warnings.push(message.text()); });
@@ -239,15 +304,127 @@ async function main() {
         });
         const result = await page.evaluate(inGameChecks);
         if (result.ready) {
+            // Direct node.dispatchEvent bypasses hit-testing. Use actual browser
+            // pointer input to ensure a modal blocks the persistent chrome.
+            const canvas = await page.locator('#GameCanvas').boundingBox();
+            const targets = await page.evaluate(() => {
+                const t = window.__shopTest, request = name => window.__quick_compile_project__.require(name, '');
+                const manager = request('UIMgr').UIMgr.getInstance(), config = request('KinghtFallConfig');
+                t.shop.selectTab('bundles'); t.shop.contents(t.shop.view.bundles[0]);
+                window.__shopModalInput = { modal: t.shop.modal, tag: t.home.tag };
+                const origin = cc.view.getVisibleOrigin(), size = cc.view.getVisibleSize();
+                const point = node => { const p = node.convertToWorldSpaceAR(cc.Vec2.ZERO); return { x: (p.x - origin.x) / size.width, y: 1 - (p.y - origin.y) / size.height }; };
+                return [point(t.home.togCon.toggleItems[2].node), point(manager.getUIById(config.KinghtFallUIID.UITop).btnSetting)];
+            });
+            await page.waitForTimeout(300);
+            for (const [index, target] of targets.entries()) {
+                await page.mouse.click(canvas.x + target.x * canvas.width, canvas.y + target.y * canvas.height); await page.waitForTimeout(250);
+                await page.evaluate(index => {
+                    const t = window.__shopTest, original = window.__shopModalInput, request = name => window.__quick_compile_project__.require(name, '');
+                    if (t.shop.modal !== original.modal || !t.shop.node.activeInHierarchy || t.home.tag !== original.tag || request('UIMgr').UIMgr.getInstance().getUIById(request('KinghtFallConfig').KinghtFallUIID.UISetting)) throw Error('Modal pointer input reached ' + (index ? 'Settings' : 'footer navigation'));
+                    t.report.checks.push('Real pointer input is blocked over ' + (index ? 'Settings' : 'footer navigation') + ' while Shop contents are open');
+                }, index);
+            }
+            const closePoint = await page.evaluate(() => {
+                const t = window.__shopTest, origin = cc.view.getVisibleOrigin(), size = cc.view.getVisibleSize(), p = t.find(t.shop.modal, 'Close').convertToWorldSpaceAR(cc.Vec2.ZERO);
+                return { x: (p.x - origin.x) / size.width, y: 1 - (p.y - origin.y) / size.height };
+            });
+            await page.mouse.click(canvas.x + closePoint.x * canvas.width, canvas.y + closePoint.y * canvas.height); await page.waitForTimeout(200);
+            await page.evaluate(() => { const t = window.__shopTest; if (t.shop.modal) throw Error('Real Close pointer did not release Shop modal'); t.report.checks.push('Actual Close pointer releases the detached overlay'); });
+            // Exercise the new card hit areas with actual pointer hit-testing,
+            // including transparent art containers and the separate footer.
+            for (const [tab, target] of [['bundles', 'ProductImage'], ['chests', 'FullContents']]) {
+                await page.evaluate(tab => { const s = window.__shopTest.shop; s.selectTab(tab); s.scroll.scrollToTop(0); }, tab);
+                await page.waitForTimeout(250);
+                const point = await page.evaluate(name => {
+                    const t = window.__shopTest, row = t.shop.content.children.find(n => n.activeInHierarchy && n.name.startsWith('Offer_'));
+                    const p = t.find(row, name).convertToWorldSpaceAR(cc.Vec2.ZERO), origin = cc.view.getVisibleOrigin(), size = cc.view.getVisibleSize();
+                    return { x: (p.x - origin.x) / size.width, y: 1 - (p.y - origin.y) / size.height };
+                }, target);
+                await page.mouse.click(canvas.x + point.x * canvas.width, canvas.y + point.y * canvas.height);
+                await page.waitForFunction(() => !!window.__shopTest.shop.modal);
+                await page.evaluate(name => { const t = window.__shopTest; t.report.checks.push('Actual pointer opens contents through ' + name); t.shop.closeModal(); }, tab + '/' + target);
+            }
             for (const tab of ['bundles', 'chests', 'relics', 'resources']) {
                 await page.evaluate(tab => { window.__shopTest.shop.selectTab(tab); window.__shopTest.shop.scroll.scrollToTop(0); }, tab);
                 await page.waitForTimeout(700); await page.locator('#GameCanvas').screenshot({ path: path.join(out, 'shop-' + tab + '.png') });
             }
+            // Probe actual engine transforms after device resize, including
+            // the small phone size where selectively scaled headers overlapped.
+            for (const [width, height] of [[320, 568], [375, 667], [430, 932], [768, 1024]]) {
+                await page.setViewportSize({ width, height }); await page.waitForTimeout(500);
+                for (const tab of ['bundles', 'chests', 'relics', 'resources']) {
+                    await page.evaluate(tab => { const s = window.__shopTest.shop; s.selectTab(tab); s.scroll.scrollToTop(0); }, tab);
+                    await page.waitForTimeout(400);
+                    await page.evaluate(({ width, height, tab }) => {
+                        const { shop, home, report } = window.__shopTest;
+                        const rect = (n, parent) => {
+                            const a = parent.convertToNodeSpaceAR(n.convertToWorldSpaceAR(cc.v2(-n.width * n.anchorX, -n.height * n.anchorY)));
+                            const b = parent.convertToNodeSpaceAR(n.convertToWorldSpaceAR(cc.v2(n.width * (1 - n.anchorX), n.height * (1 - n.anchorY))));
+                            return { left: a.x, right: b.x, bottom: a.y, top: b.y };
+                        };
+                        const footer = home.node.getChildByName('ndBottom'), edge = shop.surface.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y;
+                        if (Math.abs(rect(shop.scrollNode, shop.surface).bottom - edge) > .5) throw Error('Footer gap at ' + width + '×' + height);
+                        const rows = shop.content.children.filter(n => n.activeInHierarchy && n.name.startsWith('Offer_'));
+                        for (const row of rows) {
+                            const headerNode = row.getChildByName('Header'), header = rect(headerNode, row), art = rect(row.getChildByName('ProductImage'), row);
+                            const buy = rect(row.getChildByName('Buy_' + row.name.slice(6)), row);
+                            const card = rect(row, row);
+                            if (headerNode.activeInHierarchy && art.top > header.bottom + .5 || art.bottom < card.bottom - .5 || art.left < card.left - .5 || art.right > card.right + .5 || buy.bottom < card.bottom - .5) throw Error('Card bounds at ' + width + '×' + height + ' ' + row.name);
+                            const quantity = row.getChildByName('PackageQuantity');
+                            if (quantity && quantity.activeInHierarchy) {
+                                const amount = rect(quantity, row);
+                                if (!(art.right <= amount.left || art.left >= amount.right || art.top <= amount.bottom || art.bottom >= amount.top)) throw Error('Artwork overlaps quantity at ' + width + '×' + height + ' ' + row.name);
+                            }
+                            if (!(art.right <= buy.left || art.left >= buy.right || art.top <= buy.bottom || art.bottom >= buy.top)) throw Error('Artwork covers purchase at ' + width + '×' + height);
+                            // A SHRINK label can fit its node while silently
+                            // becoming unreadable. Check the actual engine font
+                            // size after layout, not only the containing boxes.
+                            for (const name of ['FullContents', 'TopPossibleRewards', 'PurchaseCount', 'EnergyTotal']) {
+                                const item = row.getChildByName(name);
+                                if (!item) continue;
+                                const label = item.caption || item.getComponent(cc.Label);
+                                if (label.node.height + .5 < label.lineHeight || label.actualFontSize < Math.floor(label.fontSize * .95)) throw Error('Card support text shrank at ' + width + '×' + height + ' ' + row.name + '/' + name + ': ' + label.actualFontSize + '/' + label.fontSize);
+                            }
+                        }
+                        const first = rect(rows[0], shop.viewport), view = rect(shop.viewport, shop.viewport);
+                        if (first.bottom >= view.top || first.top <= view.bottom) throw Error('Blank tab after resize: ' + tab);
+                        if (tab === 'bundles' || tab === 'relics') {
+                            for (const row of rows.slice(0, tab === 'relics' ? 2 : 1)) {
+                                const control = row.getChildByName('Buy_' + row.name.slice(6)), action = rect(control, shop.viewport);
+                                if (shop.content.getChildByName('StoreNotice')) {
+                                    // Paid test receipts bind this private save
+                                    // to their account. Returning to the disabled
+                                    // provider correctly adds a recovery notice;
+                                    // prove its extra row leaves actions reachable.
+                                    shop.scroll.scrollToOffset(cc.v2(0, Math.max(0, view.bottom - action.bottom + 8)), 0);
+                                    const scrolled = rect(control, shop.viewport);
+                                    if (scrolled.bottom < view.bottom - .5 || scrolled.top > view.top + .5) throw Error('Recovery notice leaves purchase unreachable at ' + width + '×' + height);
+                                    shop.scroll.scrollToTop(0);
+                                } else if (action.bottom < view.bottom - .5 || action.top > view.top + .5) throw Error('First purchase hidden below fold at ' + width + '×' + height + ' ' + row.name);
+                            }
+                        }
+                        report.checks.push(width + '×' + height + ' ' + tab + ': visible products, separated artwork and exact footer');
+                    }, { width, height, tab });
+                    await page.locator('#GameCanvas').screenshot({ path: path.join(out, `shop-${tab}-${width}x${height}.png`) });
+                }
+            }
+            await page.setViewportSize({ width: 375, height: 667 }); await page.waitForTimeout(500);
             await page.evaluate(() => { const s = window.__shopTest.shop; s.selectTab('bundles'); s.contents(s.view.bundles[0]); });
             await page.waitForTimeout(400); await page.locator('#GameCanvas').screenshot({ path: path.join(out, 'shop-bundle-contents.png') });
+            await page.evaluate(() => {
+                const s = window.__shopTest.shop; s.closeModal();
+                s.confirm('shop.confirm.gems', ['Celestial Hourglass', 800], () => { throw Error('Visual confirmation audit cannot purchase'); }, 2500);
+            });
+            await page.waitForTimeout(200); await page.locator('#GameCanvas').screenshot({ path: path.join(out, 'shop-conversion-confirmation.png') });
+            await page.evaluate(() => { const t = window.__shopTest; t.shop.closeModal(); t.home.togCon.toggleItems[0].isChecked = true; t.home.showView(t.home.togCon.toggleItems[0]); });
+            await page.waitForTimeout(400);
+            await page.evaluate(() => window.__shopTest.gear.scrView.scrollToBottom(0));
+            await page.waitForTimeout(300); await page.locator('#GameCanvas').screenshot({ path: path.join(out, 'gear-footer.png') });
         } else await page.screenshot({ path: path.join(out, 'failure.png') });
+        result.checks = await page.evaluate(() => window.__shopTest ? window.__shopTest.report.checks : window.__shopVerification.checks);
         result.pageErrors = errors; result.warnings = warnings; result.mutedBeforeNavigation = true;
-        result.sourceHashes = Object.fromEntries(['ShopCore', 'ShopCatalog', 'ShopCommerce', 'ShopPayments', 'ShopRuntime', 'ShopViewCore', 'KinghtFallHomeShopCtrl', 'KinghtFallUIHome'].map(name => [name, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'))).digest('hex')]));
+        result.sourceHashes = Object.fromEntries(['ShopCore', 'ShopCatalog', 'ShopCommerce', 'ShopPayments', 'ShopRuntime', 'ShopViewCore', 'KinghtFallHomeShopCtrl', 'KinghtFallUIHome', 'KinghtFallHomePersonCtrl', 'KinghtFallUITreasureInfo', 'LanguageMgr'].map(name => [name, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'))).digest('hex')]));
         fs.writeFileSync(path.join(out, 'browser-result.json'), JSON.stringify(result, null, 2));
         console.log(JSON.stringify({ out, checks: result.checks.length, errors: result.errors, pageErrors: errors, warningCount: warnings.length, warnings: Array.from(new Set(warnings)).slice(0, 8) }));
         if (!result.ready || result.errors.length || errors.length) process.exitCode = 1;

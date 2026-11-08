@@ -19,3 +19,25 @@ test('saved group bounds include blockers extending beyond the scenery artwork',
 
 test('freehand concave masks, holes and fine details compile through Creator polygon partitioning and Box2D',t=>{const fs=require('fs'),vm=require('vm'),engine=process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine',file=path.join(engine,'cocos2d/core/physics/collider/CCPhysicsPolygonCollider.js');if(!fs.existsSync(file)){t.skip('Creator engine not installed');return;}const box=require(path.join(engine,'external/box2d/box2d.js'));class Vec2{constructor(x=0,y=0){this.x=x;this.y=y;}equals(p){return this.x===p.x&&this.y===p.y;}}const cc={v2:(x,y)=>new Vec2(x,y),Class:d=>d._createShape,PhysicsCollider(){},Collider:{Polygon:{}}},separator={exports:{}},builder={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(engine,'cocos2d/core/physics/CCPolygonSeparator.js'),'utf8'),{module:separator,cc});vm.runInNewContext(fs.readFileSync(file,'utf8'),{module:builder,cc,CC_EDITOR:false,b2:{PolygonShape:box.b2PolygonShape,Vec2:box.b2Vec2,maxPolygonVertices:8},require:name=>name==='../CCPhysicsTypes'?{PTM_RATIO:32}:separator.exports});
  let map=M.createMap('physics','Physics','forest'),id=map.layers[0].id;map=paint(map,id,[{x:-70,y:-50},{x:0,y:20},{x:70,y:-50}],80);map=paint(map,id,[{x:0,y:-5}],24,'erase');map=paint(map,id,[{x:140.125,y:17.375}],.25,'paint','square');map=paint(map,id,[{x:160.125,y:17.375}],.25);const world=new box.b2World(new box.b2Vec2(0,0)),body=world.CreateBody(new box.b2BodyDef());let count=0;for(const polygon of M.blockerPolygons(map)){const collider={points:polygon.points.map(p=>new Vec2(p.x,p.y)),offset:new Vec2()},shapes=builder.exports.call(collider,{x:1,y:1});for(const shape of shapes){const definition=new box.b2FixtureDef();definition.shape=shape;body.CreateFixture(definition);count++;}}assert(count>5);world.Step(1/60,8,3);assert.deepEqual(M.validateMap(map),[]);});
+
+test('round strokes share endpoint geometry for westward, retraced and repeated-point gestures',()=>{
+ for(const size of [7.5,120,1000])for(const distance of [.01,1,100]){
+  const points=[{x:0,y:0},{x:-distance,y:0},{x:-distance,y:0}],mask=B.brush({size,shape:'round',points});
+  assert.deepEqual(B.issues(mask),[]);assert.equal(mask.length,1);
+  for(const p of points)assert(mask.some(region=>M.pointInPolygon(p,region[0].map(q=>({x:q[0],y:q[1]})))));
+ }
+});
+test('long river-edge masks paint, erase and undo without losing fractional precision',()=>{
+ let map=M.createMap('river','River','fire'),id=map.layers[0].id;
+ const points=Array.from({length:401},(_,i)=>({x:-780.125+100*Math.sin(i/65),y:1400.375-i*6}));
+ const before=M.clone(map);map=paint(map,id,points,120);
+ assert.deepEqual(M.validateMap(map),[]);for(const p of points.filter((_,i)=>i%20===0))assert(inside(map,p));
+ const painted=M.clone(map),center=points[200];map=paint(map,id,[{x:center.x-100,y:center.y},{x:center.x+100,y:center.y}],35,'erase');
+ assert(!inside(map,center));assert(inside(map,points[100]));const edits=History.diff(painted,map);History.apply(map,edits,false);assert.deepEqual(map,painted);assert.equal(before.layers[0].blockerMask,undefined);
+});
+test('incremental river previews agree with release geometry and retain the saved document',()=>{
+ const map=M.createMap('preview-river','Preview river','fire'),id=map.layers[0].id,original=JSON.stringify(map),points=Array.from({length:121},(_,i)=>({x:-850.25+90*Math.sin(i/24),y:1350.125-i*12}));let preview=map;
+ for(let i=1;i<points.length;i++)preview=M.previewBlockerStroke(preview,id,{size:120,shape:'round',op:'paint',points:points.slice(i-1,i+1)});
+ const committed=paint(map,id,points,120);assert.equal(JSON.stringify(map),original);assert.deepEqual(M.validateMap(preview),[]);
+ for(let i=0;i<points.length;i+=5)for(const dx of [-30,0,30]){const p={x:points[i].x+dx,y:points[i].y};assert.equal(inside(preview,p),inside(committed,p));}
+});

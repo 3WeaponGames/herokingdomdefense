@@ -57,7 +57,7 @@
   {
     "__type__": "cc.Node",
     "_name": "bg",
-    "_opacity": 180,
+    "_opacity": 204,
     "_parent": {
       "__id__": 1
     },
@@ -75,9 +75,9 @@
     "_color": {
       "__type__": "cc.Color",
       "a": 255,
-      "b": 0,
-      "g": 0,
-      "r": 0
+      "b": 24,
+      "g": 13,
+      "r": 5
     },
     "_contentSize": {
       "__type__": "cc.Size",

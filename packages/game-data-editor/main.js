@@ -41,6 +41,8 @@ const messages={
     'world-refresh'(event,request){reply(event,()=>worldBroadcast(getWorlds().refresh(request)));},
     'world-recover'(event,request){reply(event,async()=>{const snapshot=getWorlds().recover(request);if(snapshot.result&&snapshot.result.recovered){const files=snapshot.result.files.filter(f=>f.startsWith('assets/')&&!f.endsWith('.meta'));const warnings=await refreshImports(files);if(warnings.length)snapshot.result.warning=warnings.join('; ');}return worldBroadcast(snapshot);});},
     'world-import'(event,request){reply(event,()=>getWorlds().importImage(request));},
+    'world-auto-blockers'(event,request){reply(event,async()=>worldBroadcast(await getWorlds().autoBlockers(request)));},
+    'world-auto-blockers-preview'(event,request){reply(event,()=>getWorlds().autoBlockerPreview(request));},
     'world-favorite'(event,request){reply(event,()=>worldBroadcast(getWorlds().favorite(request)));},
     'world-library-action'(event,request){reply(event,()=>worldBroadcast(getWorlds().libraryAction(request)));},
     'world-library-save'(event,request){reply(event,async()=>worldBroadcast(await getWorlds().saveLibrary(request)));},

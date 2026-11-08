@@ -60,6 +60,13 @@ var def_GAD_UIGame = function (t) {
     this._wallAdmission = null;
     if (!entry) return;
     var player = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+    if (Object.prototype.hasOwnProperty.call(entry, "restartAdmissionId")) {
+      var reserved = player.getUserData().data.wallDefenseAdmission;
+      if (!entry.isCurrent || !entry.isCurrent() || entry.restartAdmissionId &&
+          (!reserved || reserved.id !== entry.restartAdmissionId || reserved.used)) { this.isclose = true; return; }
+      this._wallAdmission = entry.restartAdmissionId || null;
+      return;
+    }
     var admitted = player.admitWallDefense(entry.cost, function () { return entry.isCurrent() && player.getUserData().getMaxStage() >= entry.unlockStage; });
     if (!admitted) { this.isclose = true; return; }
     this._wallAdmission = admitted;
@@ -297,6 +304,35 @@ var def_GAD_UIGame = function (t) {
         if (!game.isclose && cc.isValid(game, true) && game._resourceGeneration === generation) game.openDecision($z1GAD_Configs.GAD_UIID.UIResult, e);
       }, t);
     }
+  };
+  _ctor.prototype.restartPausedRun = function () {
+    var player = $z1GAD_PlayerMgr.default.getInstance();
+    if (this.isclose || n.script !== this || this._restarting || !this._rewardRun || this._rewardRun.finalized || player.getState() !== $z1GAD_Configs.emGADGameState.Pause ||
+        player._run !== this._rewardRun || !player.readyForRun()) return false;
+    var main = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance();
+    var admission = this._wallAdmission, reserved = main.getUserData().data.wallDefenseAdmission;
+    if (admission && (!reserved || reserved.id !== admission || reserved.used)) return false;
+    var app = require("GAD_App").default.instance, manager = $z1UIMgr.UIMgr.getInstance();
+    this._restarting = true;
+    var generation = app._entryGeneration = (app._entryGeneration || 0) + 1;
+    if (app._entryOpen) app._entryOpen.cancel();
+    app._entryOpen = null;
+    var entry = { restartAdmissionId: admission || null, isCurrent: function () { return app._entryGeneration === generation; } };
+    // Discard the unfinished attempt before teardown so onClose cannot settle it.
+    // A fresh prefab resets every wave, projectile, card, buff and HP value.
+    // Keep the original admission for the replacement run's eventual settlement.
+    player.reset();
+    try {
+      manager.closeUI(this.node);
+      app._entryOpen = manager.openUIWithOwner($z1GAD_Configs.GAD_UIID.UIGame, $z1Config.UIID.UINONE, {
+        isCurrent: entry.isCurrent,
+        onCancel: function () { if (entry.isCurrent()) app.exit_App(0); }
+      }, entry);
+    } catch (error) {
+      if (entry.isCurrent()) app.exit_App(0);
+      return false;
+    }
+    return true;
   };
   _ctor.prototype.openDecision = function (id, value) {
     var game = this;
