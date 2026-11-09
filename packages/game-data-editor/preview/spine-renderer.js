@@ -103,10 +103,7 @@ function tintedImage(image,color) {
     const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);ctx.globalCompositeOperation='multiply';ctx.fillStyle='rgb('+key+')';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='destination-in';ctx.drawImage(image,0,0);
     if(cache.size>=24)cache.delete(cache.keys().next().value);cache.set(key,canvas);return canvas;
 }
-function draw(spine, ctx, layers, options) {
-    const viewport=options.bounds || bounds(spine,layers), width=options.width, height=options.height;
-    const scale=Math.min((width-32)/viewport.width,(height-24)/viewport.height)*(options.zoom||1), facing=options.facing||1;
-    ctx.save();ctx.translate(width/2,height-12+viewport.minY*scale);ctx.scale(scale*facing,-scale);ctx.translate(-(viewport.minX+viewport.maxX)/2,0);
+function drawWorld(spine, ctx, layers) {
     layers.forEach(layer => {
         ctx.save();const m=layer.description._mountMotion;if(m)ctx.transform(m.a,m.c,m.b,m.d,m.x,m.y);ctx.translate(layer.description.x,layer.description.y);if(layer.description.rotation)ctx.rotate(layer.description.rotation*Math.PI/180);ctx.scale(layer.description.scaleX,layer.description.scaleY);
         geometry(spine,layer).forEach(g=>{
@@ -117,7 +114,12 @@ function draw(spine, ctx, layers, options) {
         });
         ctx.restore();
     });
-    ctx.restore();
+}
+function draw(spine, ctx, layers, options) {
+    const viewport=options.bounds || bounds(spine,layers), width=options.width, height=options.height;
+    const scale=Math.min((width-32)/viewport.width,(height-24)/viewport.height)*(options.zoom||1), facing=options.facing||1;
+    ctx.save();ctx.translate(width/2,height-12+viewport.minY*scale);ctx.scale(scale*facing,-scale);ctx.translate(-(viewport.minX+viewport.maxX)/2,0);
+    drawWorld(spine,ctx,layers);ctx.restore();
 }
 const canvasStates=new WeakMap();
 function shader(gl,type,source){const value=gl.createShader(type);gl.shaderSource(value,source);gl.compileShader(value);if(!gl.getShaderParameter(value,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(value));return value;}
@@ -146,4 +148,4 @@ function drawCanvas(spine,canvas,layers,options){
     }));
 }
 function destroyCanvas(canvas){const state=canvasStates.get(canvas);if(state&&state.gl){const gl=state.gl;state.textures.forEach(texture=>gl.deleteTexture(texture));gl.deleteBuffer(state.vertices);gl.deleteBuffer(state.indices);gl.deleteShader(state.vertex);gl.deleteShader(state.fragment);gl.deleteProgram(state.program);const extension=gl.getExtension('WEBGL_lose_context');if(extension)extension.loseContext();}canvasStates.delete(canvas);}
-module.exports={createLayers,seek,geometry,bounds,draw,drawCanvas,destroyCanvas,transformPoint,inversePoint};
+module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint};

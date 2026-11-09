@@ -5,3 +5,8 @@
 .character-editor input[type="color"]{height:38px;padding:4px;cursor:pointer;}
 .character-editor input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
 .character-editor input[type="color"]::-webkit-color-swatch{border:0;border-radius:3px;}
+
+.character-editor{display:flex;flex-direction:column}
+.character-editor header{height:auto;min-height:87px;flex-shrink:0;flex-wrap:wrap}
+.character-editor .body{height:auto;flex:1;min-height:0}
+.character-editor footer{flex-shrink:0}

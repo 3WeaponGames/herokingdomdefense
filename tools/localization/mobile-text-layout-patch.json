@@ -1839,14 +1839,20 @@
     },
     "ui.mobile.kinghtfalluibuff.39": {
       "en": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 898
+        "fontSize": 60,
+        "lineHeight": 66,
+        "width": 824,
+        "x": 84,
+        "y": 0,
+        "horizontalAlign": 0
       },
       "zh": {
-        "fontSize": 67,
-        "lineHeight": 78,
-        "width": 898
+        "fontSize": 60,
+        "lineHeight": 66,
+        "width": 824,
+        "x": 84,
+        "y": 0,
+        "horizontalAlign": 0
       }
     },
     "ui.layout.kinghtfalluibuff.51": {

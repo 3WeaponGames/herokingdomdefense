@@ -2,7 +2,7 @@
 const path=require('path'),http=require('http'),crypto=require('crypto');
 const M=require('./model'),P=require('./prefab'),B=require('./baker'),Runtime=require('./preview-runtime');
 const sessions=new Set(),sleep=ms=>new Promise(r=>setTimeout(r,ms));
-let generation=0;
+let generation=0,currentOwner=null;
 async function close(entry){
  if(entry.window&&!entry.window.isDestroyed())entry.window.destroy();
  if(entry.server){entry.server.close();entry.server=null;}
@@ -20,6 +20,7 @@ function stageForMap(service,mapId){
  return service.loadStage(matches[0].id).data;
 }
 async function start(Editor,service,request){
+ if(request.owner!==undefined&&typeof request.owner!=='string')throw Error('Preview owner must identify an editor panel.');
  const doc=service.doc(request.key),isMap=request.key.startsWith('map:'),map=isMap?doc.data:service.loadMap(doc.data.mapId).data,stage=M.clone(isMap?stageForMap(service,map.id):doc.data);
  stage.mapId=map.id;
  const issues=M.validateMap(map,service.assetTable()).concat(M.validateStage(stage,map,service.index().documents.A.SoldierCfg));
@@ -27,6 +28,7 @@ async function start(Editor,service,request){
  const port=Number(Editor.PreviewServer&&Editor.PreviewServer._previewPort);
  if(!port)throw Error('Creator preview server is unavailable.');
  const ticket=++generation,current=()=>{if(ticket!==generation)throw Error('Draft preview was cancelled.');};
+ currentOwner=request.owner===undefined?null:request.owner;
  for(const entry of Array.from(sessions))await close(entry);
  current();
  const baked=await B.bake(service.root,map,service.index().library,{artifacts:service.artifacts,render:service.options.render});
@@ -90,5 +92,5 @@ async function start(Editor,service,request){
   throw Error('Draft assets did not finish loading.');
  }catch(error){await close(entry);throw error;}
 }
-function shutdown(){generation++;for(const entry of Array.from(sessions))close(entry);}
+function shutdown(owner){if(owner!==undefined&&owner!==currentOwner)return false;generation++;currentOwner=null;for(const entry of Array.from(sessions))close(entry);return true;}
 module.exports={start,shutdown,_sessions:sessions};

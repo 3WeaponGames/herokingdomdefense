@@ -67,8 +67,10 @@ function fixture(type = 'cannon', level = 1) {
     buildInfo: { cfg: row }, loadSpriteFrame(bundle, file, done) { loads.push({ bundle, file, done }); } };
   const game = { ndUI: new Node('Effects') };
   const mod = { exports: {} };
+  const lighting = { exports: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingLighting.js'), 'utf8'), { cc, module: lighting, exports: lighting.exports });
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingAppearance.js'), 'utf8'), {
-    cc, module: mod, exports: mod.exports, require: name => name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: game } } } : require(path.join(root, 'assets/_script', name))
+    cc, module: mod, exports: mod.exports, require: name => name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: game } } } : name === 'BuildingLighting' ? lighting.exports : require(path.join(root, 'assets/_script', name))
   }, { filename: 'BuildingAppearance.js' });
   let resolved = 0;
   function resolve() { let limit = 50; while (resolved < loads.length && limit--) { const load = loads[resolved++]; load.done({ name: load.file }); } assert(limit > 0); }

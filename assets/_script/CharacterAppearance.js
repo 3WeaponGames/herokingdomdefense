@@ -2,6 +2,98 @@
 var Core = require("CharacterPartsCore");
 var library = null, looks = null, loading = false, retryAt = 0, failures = {}, textureJobs = {}, profileKeys = new WeakMap();
 var nativePartsNotice = false;
+var bakedJobs = {};
+function allyLevel(actor) {
+  var build = actor && actor.outBuild, row = build && build.buildInfo && build.buildInfo.cfg;
+  var level = row && row.level;
+  if (level === undefined && build && typeof build.getLevel === "function") level = build.getLevel();
+  return typeof level === "number" && isFinite(level) && level > 0 && Math.floor(level) === level ? level : null;
+}
+function assignedLook(data, actor, team) {
+  var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor);
+  var exact = level && data.assignments["ally:" + actor.cfg.ID + ":level:" + level];
+  var id = exact && data.profiles[exact] ? exact : data.assignments[key];
+  return { id: id, profile: id && data.profiles[id] };
+}
+function bakedAsset(resource) {
+  var job = bakedJobs[resource];
+  if (!job || job.retryAt && Date.now() >= job.retryAt) {
+    job = bakedJobs[resource] = {};
+    try {
+      cc.resources.load(resource, sp.SkeletonData, function (error, asset) {
+        if (error || !asset) job.retryAt = Date.now() + 1000;
+        else job.asset = asset;
+      });
+    } catch (error) { job.retryAt = Date.now() + 1000; }
+  }
+  return job.asset;
+}
+function trackValue(track, name) {
+  var getter = "get" + name.charAt(0).toUpperCase() + name.slice(1);
+  return track && (typeof track[getter] === "function" ? track[getter]() : track[name]);
+}
+function setTrackValue(track, name, value) {
+  if (!track || value === undefined) return;
+  var setter = "set" + name.charAt(0).toUpperCase() + name.slice(1);
+  if (typeof track[setter] === "function") track[setter](value);
+  else track[name] = value;
+}
+function switchAllyRig(component, actor, renderers, profile) {
+  var ready = true;
+  renderers.forEach(function (renderer) {
+    if (!renderer.skeletonData) return;
+    var records = component.bakedModels || (component.bakedModels = []);
+    var record = records.filter(function (value) { return value.renderer === renderer; })[0];
+    var baked = profile && profile.baked, target;
+    if (baked && renderer.skeletonData.uuid === baked.uuid) return;
+    if (baked && baked.resource) {
+      target = bakedAsset(baked.resource);
+      if (!target) { ready = false; return; }
+    } else if (record) target = record.original;
+    else return;
+    if (renderer.skeletonData === target) return;
+    // A rig change replaces track entries. Wait for gameplay callbacks and the
+    // separate hit-reaction track to finish rather than replaying or losing one.
+    var track = renderer.getCurrent && renderer.getCurrent(0), animation = trackValue(track, "animation");
+    var name = animation && (animation.name || typeof animation.getName === "function" && animation.getName());
+    var loop = trackValue(track, "loop");
+    if (!track) { name = renderer.animation; loop = renderer.loop; }
+    if (actor._isPooled || actor._hitReactionPlaying || actor.isDead && actor.isDead() ||
+        actor.time && actor.time.Attack === -1 || !/^(idle|move|walk|run)$/.test(name || "") || loop === false) {
+      ready = false; return;
+    }
+    if (renderer.getCurrent && renderer.getCurrent(1)) { ready = false; return; }
+    if (!record) {
+      record = { renderer: renderer, original: renderer.skeletonData, defaultSkin: renderer.defaultSkin, defaultAnimation: renderer.defaultAnimation,
+        skin: renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name || renderer.defaultSkin };
+      records.push(record);
+    }
+    var time = trackValue(track, "trackTime"), speed = trackValue(track, "timeScale");
+    component.clear();
+    renderer.skeletonData = target;
+    record.applied = target;
+    var skin = target === record.original ? record.skin : "default";
+    if (skin) renderer.setSkin(skin);
+    renderer.defaultSkin = target === record.original ? record.defaultSkin : "default";
+    renderer.defaultAnimation = record.defaultAnimation;
+    if (name) {
+      var resumed = renderer.setAnimation(0, name, loop !== false);
+      setTrackValue(resumed, "trackTime", time);
+      setTrackValue(resumed, "timeScale", speed);
+    }
+  });
+  return ready;
+}
+function restoreAllyRigs(component) {
+  (component.bakedModels || []).forEach(function (record) {
+    var renderer = record.renderer;
+    if (!cc.isValid(renderer, true) || !cc.isValid(renderer.node, true) || renderer.skeletonData !== record.applied) return;
+    renderer.skeletonData = record.original;
+    if (record.skin) renderer.setSkin(record.skin);
+    renderer.defaultSkin = record.defaultSkin; renderer.defaultAnimation = record.defaultAnimation;
+  });
+  component.bakedModels = [];
+}
 function profileKey(profile) {
   if (!profileKeys.has(profile)) profileKeys.set(profile, JSON.stringify(profile));
   return profileKeys.get(profile);
@@ -54,7 +146,7 @@ function visuals(actor, type) {
 }
 var Appearance = cc.Class({
   extends: cc.Component,
-  init: function (actor, type) { this.clear(); this.owner = actor; this.team = type; load(); },
+  init: function (actor, type) { this.clear(); restoreAllyRigs(this); this.owner = actor; this.team = type; load(); },
   clear: function () {
     (this.states || []).forEach(Core.restore);
     (this.models || []).forEach(function (model) {
@@ -72,9 +164,10 @@ var Appearance = cc.Class({
     if (!actor || !actor.node.activeInHierarchy) return;
     if (!looks || !library) load();
     if (!looks || !library || !actor.cfg && this.team !== "hero") return;
-    var key = Core.actorKey(actor, this.team), id = looks.assignments[key], profile = id && looks.profiles[id];
+    var selected = assignedLook(looks, actor, this.team), id = selected.id, profile = selected.profile;
     if (this.team === "hero") profile = require("HeroItemLooks").current(profile);
     var renderers = visuals(actor, this.team);
+    if (this.team === "ally" && !switchAllyRig(this, actor, renderers, profile)) return;
     var heroBaked = this.team === "hero" ? require("HeroBakedLooks") : null;
     if (heroBaked) heroBaked.apply(renderers, profile);
     if (!profile) { if (this.models.length) this.clear(); return; }
@@ -128,8 +221,8 @@ var Appearance = cc.Class({
     });
     this.states.forEach(Core.apply);
   },
-  onDisable: function () { this.clear(); },
-  onDestroy: function () { this.clear(); this.owner = null; }
+  onDisable: function () { this.clear(); restoreAllyRigs(this); },
+  onDestroy: function () { this.clear(); restoreAllyRigs(this); this.owner = null; }
 });
 exports.bind = function (actor, type) {
   if (!actor || !actor.node || !actor.node.addComponent || !cc.resources) return;
@@ -141,3 +234,4 @@ exports.reset = function (actor) {
   var appearance = actor.node.getComponent(Appearance); if (appearance) appearance.clear();
 };
 exports.component = Appearance;
+exports.allyLevel = allyLevel; exports.assignedLook = assignedLook;

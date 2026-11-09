@@ -88,7 +88,8 @@ function bake(root,profile,id,contract,assets,read,options){
   // Unmounted locomotion retains the imported gait's own cadence.
   // The hero and every combat statistic/timing table are left untouched.
   const factor=contract.height/(description.fitHeight||rig.skeleton.height||120),model=profile.models&&profile.models[layer.uuid]||{},scale=profile.scale||1;
-  rig.bones.unshift({name:'__game_fit',x:((layer.x||0)*scale+(model.x||0))*factor,y:((layer.y||0)*scale+(model.y||0))*factor,rotation:(layer.angle||0)+(model.rotation||0),scaleX:factor*scale*(layer.scaleX===undefined?1:layer.scaleX)*(model.scaleX===undefined?1:model.scaleX),scaleY:factor*scale*(layer.scaleY===undefined?1:layer.scaleY)*(model.scaleY===undefined?1:model.scaleY)});for(let i=1;i<rig.bones.length;i++)if(!rig.bones[i].parent)rig.bones[i].parent='__game_fit';
+  let fitBone='__game_fit';for(let suffix=2;rig.bones.some(bone=>bone.name===fitBone);suffix++)fitBone='__game_fit_'+suffix;
+  rig.bones.unshift({name:fitBone,x:((layer.x||0)*scale+(model.x||0))*factor,y:((layer.y||0)*scale+(model.y||0))*factor,rotation:(layer.angle||0)+(model.rotation||0),scaleX:factor*scale*(layer.scaleX===undefined?1:layer.scaleX)*(model.scaleX===undefined?1:model.scaleX),scaleY:factor*scale*(layer.scaleY===undefined?1:layer.scaleY)*(model.scaleY===undefined?1:model.scaleY)});for(let i=1;i<rig.bones.length;i++)if(!rig.bones[i].parent)rig.bones[i].parent=fitBone;
   for(const skin of rig.skins)for(const variants of Object.values(skin.attachments))for(const a of Object.values(variants))if(a.vertices&&a.uvs&&a.vertices.length!==a.uvs.length)for(let i=0;i<a.vertices.length;){const count=a.vertices[i++];for(let j=0;j<count;j++){a.vertices[i]++;i+=4;}}
   if(model.opacity!==undefined){const fade=color=>color.slice(0,6)+Math.round(parseInt(color.slice(6,8),16)*model.opacity).toString(16).padStart(2,'0');for(const slot of rig.slots)slot.color=fade(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const key of slot.color||[])key.color=fade(key.color);}
   if(model.tint){const tint=color=>[0,2,4].map(at=>Math.round(parseInt(color.slice(at,at+2),16)*parseInt(model.tint.slice(at+1,at+3),16)/255).toString(16).padStart(2,'0')).join('')+color.slice(6,8);for(const slot of rig.slots)slot.color=tint(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const frame of slot.color||[])frame.color=tint(frame.color);}
@@ -105,23 +106,48 @@ function outputFiles(root,profile,id,rig,pictures,read){
     [output+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:uuid(output+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n'],
     [output+'.png.meta',JSON.stringify(textureMeta(output+'.png',image.width,image.height),null,2)+'\n']]);
   preserveMetadata(root,files,read);
-  return{uuid:JSON.parse(files.get(output+'.json.meta')).uuid,files,source:profile.base.source};
+  return{uuid:JSON.parse(files.get(output+'.json.meta')).uuid,resource:output.slice('assets/resources/'.length),files,source:profile.base.source||null};
+}
+// Equipment-only ally variants can use the existing authored prefab, including
+// a previously baked one. Read that exact asset through the save transaction;
+// prefab transforms stay on the runtime node and must not be baked twice.
+function originalDescription(root,contract,read){
+  const prefab=JSON.parse(read(path.join(root,contract.prefab)).toString('utf8')),component=prefab[contract.component],reference=component._N$skeletonData&&component._N$skeletonData.__uuid__;
+  const file=require('../../game-data-editor/lib/unit-assets').index(root).uuids[reference];
+  if(!file||!file.endsWith('.json'))throw Error('The ally original model could not be found.');
+  const metadata=JSON.parse(read(file+'.meta').toString('utf8'));if(metadata.uuid!==reference)throw Error('The ally original model changed while preparing its appearance.');
+  const json=JSON.parse(read(file).toString('utf8')),atlas=read(file.replace(/\.json$/,'.atlas')).toString('utf8'),pages={},lines=atlas.split(/\r?\n/);
+  lines.forEach((line,index)=>{if(line.trim()&&(!index||!lines[index-1].trim())&&lines[index+1]&&/^(size|format):/.test(lines[index+1].trim())){
+    const page=path.resolve(path.dirname(file),line.trim());if(path.dirname(page)!==path.dirname(file))throw Error('The ally original atlas page leaves its asset folder.');pages[line.trim()]=require('url').pathToFileURL(page).href;
+  }});
+  return{layers:[{uuid:reference,source:path.relative(root,file).replace(/\\/g,'/'),name:'Original ally',json,atlas,pages,skin:component.defaultSkin||'default',x:0,y:0,scaleX:1,scaleY:1,angle:0}]};
 }
 function plan(root,data,assets,original){
   const contractFile=path.join(root,'assets/resources/unit-library/runtime/contracts.json');
   if(!fs.existsSync(contractFile))return{data,files:new Map(),reads:new Map()};
-  const contracts=JSON.parse(fs.readFileSync(contractFile,'utf8')),files=new Map(),reads=new Map(),prefabs=new Map(),updated=clone(data);
-  if(!contracts.enabled)return{data,files,reads};
+  const files=new Map(),reads=new Map(),prefabs=new Map(),updated=clone(data),lookup=new Map(assets.map(p=>[p.id,p]));
   const read=file=>{file=path.resolve(file);if(!reads.has(file))reads.set(file,fs.readFileSync(file));return reads.get(file);};
-  read(contractFile);
+  const contracts=JSON.parse(read(contractFile).toString('utf8'));
+  if(!contracts.enabled)return{data,files,reads};
+  function compile(id,profile,contract,level){
+    if(profile.baked&&original&&Document.equal(original.profiles[id],profile)&&(!level||profile.baked.resource))return profile.baked.uuid;
+    const options=!profile.base.source?{description:originalDescription(root,contract,read)}:undefined;
+    const result=bake(root,profile,id,contract,lookup,read,options);for(const [file,bytes]of result.files)files.set(file,bytes);
+    profile.baked=Object.assign({},profile.baked,{uuid:result.uuid,resource:result.resource,source:result.source});return result.uuid;
+  }
   for(const [key,contract]of Object.entries(contracts.units)){
     const id=data.assignments[key],profile=id&&updated.profiles[id];let target=contract.defaultUuid;
-    if(profile&&profile.base.source){
-      if(profile.baked&&original&&Document.equal(original.profiles[id],profile))target=profile.baked.uuid;
-      else{const result=bake(root,profile,id,contract,new Map(assets.map(p=>[p.id,p])),read);for(const [file,bytes]of result.files)files.set(file,bytes);target=result.uuid;profile.baked=Object.assign({},profile.baked,{uuid:result.uuid,source:result.source});}
-    }
+    if(profile&&profile.base.source)target=compile(id,profile,contract,false);
     const file=path.join(root,contract.prefab);if(!prefabs.has(file)){const text=read(file).toString('utf8');prefabs.set(file,{text,original:JSON.parse(text),data:JSON.parse(text)});}
     const prefab=prefabs.get(file).data,component=prefab[contract.component];component._N$skeletonData={__uuid__:target};component.defaultSkin='default';
+  }
+  // A level assignment changes only its own resource. The shared prefab keeps
+  // the existing all-levels/default reference and unconfigured levels inherit it.
+  for(const [key,id]of Object.entries(data.assignments)){
+    const match=/^ally:([^:]+):level:([1-9]\d*)$/.exec(key);if(!match)continue;
+    const contract=contracts.units['ally:'+match[1]+':default'],profile=updated.profiles[id];
+    if(!contract||!profile)throw Error('The ally level appearance has no original gameplay animation contract: '+key);
+    compile(id,profile,contract,true);
   }
   for(const [file,prefab]of prefabs)if(!Document.equal(prefab.original,prefab.data))files.set(path.relative(root,file),Document.patch(prefab.text,prefab.original,prefab.data));
   return{data:updated,files,reads};

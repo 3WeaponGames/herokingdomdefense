@@ -36,6 +36,15 @@ function near(a,b){assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);}
 function clear(a,b,gap=0){return a.maxX+gap<=b.minX+1e-6||a.minX-gap>=b.maxX-1e-6||a.maxY+gap<=b.minY+1e-6||a.minY-gap>=b.maxY-1e-6;}
 function bounds(node,ui){return context.enemyIndicatorBounds(node,ui);}
 function arrowPoints(node,target){const arrow=node.getChildByName('ndArr');assert(arrow.active);near(arrow.angle,Math.atan2(target.y-node.y,target.x-node.x)*180/Math.PI-90);}
+function liveFixture(width=750,height=1334){
+ const f=fixture(),enemies=[];f.ui.width=width;f.ui.height=height;
+ cc.view={getVisibleSize:()=>({width,height}),getVisibleOrigin:()=>({x:-width/2,y:-height/2})};cc.instantiate=()=>f.indicator();
+ Object.assign(f.state,{isPauset:false,speed:1,enemyIconInfo:{},ctrGame:{onUpdate(){},camera:{getWorldToScreenPoint:p=>p},gameData:{baseBuild:{getLevel:()=>0},enemyQueue:{},getEnemyList:()=>enemies}},loadSpriteFrame(_bundle,_key,done){done({});}});
+ f.enemy=(x,y,id=90001)=>{const enemy={node:new Node('enemy',f.ui),cfg:{ID:id},isDead:()=>false};enemy.node.setPosition(x,y);enemies.push(enemy);return enemy;};
+ f.tick=()=>{update.call(f.state,.016);return Object.values(f.state.enemyIconInfo).filter(record=>record._guideLive&&record.ndItem.active);};
+ f.count=()=>f.tick().reduce((total,record)=>total+Number(record.ndItem.getChildByName('labNum').getComponent(Label).string),0);
+ f.enemies=enemies;return f;
+}
 let passed=0;function test(name,run){run();passed++;console.log('PASS '+name);}
 test('Unobstructed targets retain their original position and offscreen centers stay within original limits',()=>{const p=context.placeEnemyIndicator,shape={minX:-65,maxX:65,minY:-65,maxY:65},limits={minX:-246,maxX:246,minY:-442,maxY:442};const a=p({x:20,y:30},shape,limits,[],12);near(a.x,20);near(a.y,30);const b=p({x:-900,y:1000},shape,limits,[],12);near(b.x,-246);near(b.y,442);});
 test('Actual English and Chinese prefab bounds avoid Buildings, taskbar, and visible HUD controls',()=>{for(const english of[true,false]){const f=fixture(english),node=f.indicator(),obstacles=getObstacles.call(f.state),fixed=obstacles.slice(),target={x:-246,y:396};place.call(f.state,node,target,obstacles);for(const obstacle of fixed)assert(clear(obstacles.at(-1),obstacle,12));assert(node.x>=-246&&node.x<=246&&node.y>=-442&&node.y<=442);arrowPoints(node,target);assert(clear(bounds(node,f.ui),bounds(f.state.btnBuildInfo,f.ui)));}});
@@ -77,6 +86,57 @@ test('Live markers use the world camera even when a different UI camera becomes 
   try{cc.Camera.main={getWorldToScreenPoint:()=>({x:0,y:0})};f.state.ctrGame.camera.getWorldToScreenPoint=p=>p;update.call(f.state,.016);assert.equal(Object.values(f.state.enemyIconInfo).filter(r=>r.ndItem.active).length,1);}
   finally{cc.Camera.main=previous;}
 });
+test('Near-edge enemies beside visible units stay quiet on all edges and corners',()=>{
+ const pairs=[[[475,0],[325,0]],[[-475,0],[-325,0]],[[0,767],[0,617]],[[0,-767],[0,-617]]];
+ for(const sx of[-1,1])for(const sy of[-1,1])pairs.push([[sx*450,sy*742],[sx*350,sy*642]]);
+ for(const [outside,inside]of pairs){const f=liveFixture();f.enemy(...outside);f.enemy(...inside);assert.equal(f.count(),0,JSON.stringify(outside));}
+});
+test('Isolated near-edge enemies and groups without a visible neighbor retain portraits',()=>{
+ const f=liveFixture();f.enemy(400,0);assert.equal(f.count(),1);
+ f.enemy(440,50);assert.equal(f.count(),2,'offscreen neighbors must not suppress each other');
+});
+test('Only living active visible enemies suppress nearby portraits, regardless of list order',()=>{
+ for(const reverse of[false,true]){const f=liveFixture(),positions=reverse?[[350,0],[450,0]]:[[450,0],[350,0]];positions.forEach(point=>f.enemy(...point));assert.equal(f.count(),0);}
+ for(const state of['dead','pooled','inactive','destroyed']){
+  const f=liveFixture();f.enemy(450,0);const neighbor=f.enemy(350,0);
+  if(state==='dead')neighbor.isDead=()=>true;else if(state==='pooled')neighbor._isPooled=true;else if(state==='inactive')neighbor.node.active=false;else neighbor.node.destroyed=true;
+  assert.equal(f.count(),1,state+' visible enemy incorrectly suppressed a portrait');
+ }
+});
+test('Distant counts exclude nearby suppressed enemies and live captions use no screen space',()=>{
+ const f=liveFixture();f.enemy(350,0,90001);f.enemy(450,0,90002);f.enemy(1000,0,90003);f.enemy(1200,10,90004);
+ const markers=f.tick();assert.equal(markers.length,1);assert.equal(markers[0].count,2);assert.deepEqual(Array.from(markers[0]._guideIds).sort(),[90003,90004]);
+ assert.equal(markers[0].ndItem.getChildByName('labName').active,false);
+ const isolated=liveFixture();isolated.enemy(350,0);isolated.enemy(535,0);assert.equal(isolated.count(),1,'an enemy beyond the near-edge band must retain its portrait');
+});
+test('Portrait suppression has a small edge and neighbor-distance buffer without sticking',()=>{
+ const f=liveFixture();f.enemy(350,0);const enemy=f.enemy(520,0);
+ assert.equal(f.count(),0);enemy.node.setPosition(545,0);assert.equal(f.count(),0,'small edge movement should not flicker');
+ enemy.node.setPosition(556,0);assert.equal(f.count(),1,'moving past the edge buffer must show the portrait');
+ enemy.node.setPosition(535,0);assert.equal(f.count(),1,'a shown portrait needs the entry distance before suppressing again');
+ enemy.node.setPosition(520,0);assert.equal(f.count(),0);
+ enemy.node.setPosition(450,199);assert.equal(f.count(),0);enemy.node.setPosition(450,230);assert.equal(f.count(),0,'small neighbor-distance movement should not flicker');
+ enemy.node.setPosition(450,236);assert.equal(f.count(),1,'moving past the neighbor buffer must show the portrait');
+ enemy.node.setPosition(450,220);assert.equal(f.count(),1);enemy.node.setPosition(450,199);assert.equal(f.count(),0);
+});
+test('Suppression resets when enemies become visible, die, pool, or deactivate and when the visible neighbor disappears',()=>{
+ for(const reset of['visible','dead','pooled','inactive']){
+  const f=liveFixture();f.enemy(350,0);const enemy=f.enemy(450,0);assert.equal(f.count(),0);
+  if(reset==='visible')enemy.node.setPosition(350,0);else if(reset==='dead')enemy.isDead=()=>true;else if(reset==='pooled')enemy._isPooled=true;else enemy.node.active=false;
+  assert.equal(f.count(),0);enemy.isDead=()=>false;enemy._isPooled=false;enemy.node.active=true;enemy.node.setPosition(535,0);
+  assert.equal(f.count(),1,reset+' must reset the prior suppression buffer');
+ }
+ const f=liveFixture(),neighbor=f.enemy(350,0),enemy=f.enemy(450,0);assert.equal(f.count(),0);
+ neighbor.node.active=false;assert.equal(f.count(),1,'a visible living neighbor is required even during the buffer');
+ enemy.node.setPosition(535,0);neighbor.node.active=true;assert.equal(f.count(),1);
+});
+test('Proximity uses projected UI coordinates and scales with viewport and canvas transforms',()=>{
+ const wide=liveFixture(1500,2668);wide.enemy(700,0);const enemy=wide.enemy(1000,0);assert.equal(wide.count(),0,'thresholds should scale with the shortest viewport side');
+ enemy.node.setPosition(1120,0);assert.equal(wide.count(),1,'scaled edge limit must still preserve distant alerts');
+ const transformed=liveFixture();transformed.canvas.scaleX=transformed.canvas.scaleY=.5;transformed.enemy(700,0);transformed.enemy(1000,0);assert.equal(transformed.count(),0,'viewport and targets must share UI coordinates');
+ const projected=liveFixture(),world=new Node('World');const nearEnemy=projected.enemy(2450,0),visibleEnemy=projected.enemy(2350,0);nearEnemy.node.setParent(world);visibleEnemy.node.setParent(world);
+ projected.state.ctrGame.camera.getWorldToScreenPoint=p=>({x:p.x-2000,y:p.y});assert.equal(projected.count(),0,'world positions must be projected before proximity checks');
+});
 test('custom monster pictograms preserve aspect ratio, reject stale callbacks and fall back to the original icon on load failure',()=>{
  const f=fixture(),pending=[],manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance;
  const settings={unitTypes:{wolf:{icon:'@icon/unit-library/wolf',tint:'#80c0ff'}},unitTypeAssignments:{'enemy:90001:default':'wolf','enemy:90002:default':'wolf'}};
@@ -107,7 +167,7 @@ test('Upcoming portraits from one side pack closer together and retain their tru
  const f=fixture(),markers=[-350,0,350].map(y=>({record:{ndItem:f.indicator()},target:{x:1200,y}})),rectangles=[];
  updateUpcoming.call(f.state,markers,rectangles);
  const positions=markers.map(m=>m.record.ndItem.getPosition());
- for(const marker of markers){const node=marker.record.ndItem;assert.equal(node.width,112);arrowPoints(node,marker.target);const r=bounds(node,f.ui);assert(r.minX>=-359&&r.maxX<=359&&r.minY>=-651&&r.maxY<=651);}
+ for(const marker of markers){const node=marker.record.ndItem;assert.equal(node.width,112);assert.equal(node.getChildByName('labName').active,true,'upcoming-wave captions remain available');arrowPoints(node,marker.target);const r=bounds(node,f.ui);assert(r.minX>=-359&&r.maxX<=359&&r.minY>=-651&&r.maxY<=651);}
  assert(Math.max(...positions.map(p=>p.y))-Math.min(...positions.map(p=>p.y))<400,'incoming-side markers still spread across the screen');
  for(let i=0;i<rectangles.length;i++)for(let j=0;j<i;j++)assert(clear(rectangles[i],rectangles[j],6));
  assert.equal(catalog.labelStyles['ui.layout.kinghtfalluigame.133'].en.fontSize,54);

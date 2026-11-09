@@ -1,5 +1,5 @@
 'use strict';
-const path=require('path'),M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets');
+const path=require('path'),M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),GateSource=require('./gate-facing');
 
 function colliderIndex(building,hall,config){
  const definition=config&&config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
@@ -18,7 +18,7 @@ function colliderIndex(building,hall,config){
  return building.kind!==6&&Number.isInteger(override)&&override>0?override:index;
 }
 function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){
- const source=stage.templates&&stage.templates[building.template.prefab]||service.source(building.template.prefab),ids=new Set();
+ const source=GateSource.project(stage.templates&&stage.templates[building.template.prefab]||service.source(building.template.prefab),building),ids=new Set();
  let info=sourceModels.get(source);if(!info){info=Maps.model(source);sourceModels.set(source,info);}
  building.template.roots.forEach(root=>L.descendants(source,root,ids));
  const owner=info.byId[building.template.node];if(!owner)throw Error('A building source was removed. Refresh its template.');
@@ -63,4 +63,4 @@ function preview(service,request){
  }
  return {points,message:frontier?'Approach reaches an obstacle frontier. Closed gates may be attacked here.':'Approach reaches the authored goal.',frontier,polygons:polygons.length};
 }
-module.exports={preview};
+module.exports={preview,buildingPolygons,colliderIndex};

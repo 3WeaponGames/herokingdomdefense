@@ -2,15 +2,17 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab')));
 const RelicRuntime=require('../../assets/_script/RelicRuntime');
-test('Follow uses a mipmapped UI boot while Rally retains its flag frames',()=>{
+test('Rally and Follow use the requested white flag and connect pictograms above their state rims',()=>{
  const find=name=>prefab.find(n=>n._name===name),follow=find('btnFollow'),rally=find('btnAgg');
- const boot=follow._children.map(r=>prefab[r.__id__]).find(n=>n._name==='FollowBoot');
- assert(boot);assert.equal(boot._contentSize.width,80);assert.equal(boot._contentSize.height,80);
- const meta=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/icons/Follow_Boot_Blue.png.meta')));
- assert.equal(prefab[boot._components[0].__id__]._spriteFrame.__uuid__,meta.subMetas.Follow_Boot_Blue.uuid);
- assert(meta.width>=128);assert.equal(meta.width&(meta.width-1),0,'mipmaps need a power-of-two texture');assert.equal(meta.height,meta.width);
- assert.equal(meta.packable,false);assert.equal(meta.genMipmaps,true);
- assert.equal(meta.filterMode,'bilinear');assert.equal(meta.subMetas.Follow_Boot_Blue.trimType,'none');
+ for(const [button,nodeName,asset]of[[follow,'FollowIcon','Pictoicon_Connect'],[rally,'RallyIcon','Pictoicon_Flag_0']]){
+  const children=button._children.map(r=>prefab[r.__id__]),icon=children.find(n=>n._name===nodeName);
+  assert(icon);assert.equal(icon._contentSize.width,80);assert.equal(icon._contentSize.height,80);
+  const meta=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/icons/Pictograms',asset+'.png.meta')));
+  assert.equal(prefab[icon._components[0].__id__]._spriteFrame.__uuid__,meta.subMetas[asset].uuid);
+  assert.equal(meta.packable,false);assert.equal(meta.filterMode,'bilinear');assert.equal(meta.subMetas[asset].trimType,'none');
+  assert(children.indexOf(icon)>children.findIndex(n=>n._name==='ndTag2'),'the white symbol must draw above both state faces');
+  assert(!children.some(n=>n._name==='FollowBoot'),'old boot must not cover the replacement');
+ }
  assert.deepEqual(rally._children.slice(0,2).map(r=>prefab[prefab[r.__id__]._components[0].__id__]._spriteFrame.__uuid__),['28d4cf80-8983-4a85-b5a3-e02690edcc36','f198d5cd-6af4-4088-8132-c59fb0af3771']);
 });
 function artworkFixture(){
@@ -34,22 +36,22 @@ function artworkFixture(){
  return{cc,button,nodes,artwork:exports};
 }
 
-test('Follow keeps its gold face fixed and only the enabled state replaces the dark outer rim with blue',()=>{
+test('white command pictograms retain a dark face and a blue enabled rim without resetting live state',()=>{
  const f=artworkFixture();f.artwork.install(f.button);
- const {ndTag1:idle,ndTag2:active}=f.nodes,rim=f.button._followBootArtwork;
+ const {ndTag1:idle,ndTag2:active}=f.nodes,rim=f.button._armyButtonArtwork;
  assert(idle.active);assert(!active.active,'Follow must not start highlighted');
  for(const node of [idle,active]){
   assert.equal(node.getComponent(f.cc.Sprite).spriteFrame,'gold');assert.equal(node.width,104);assert.equal(node.height,104);
-  const face=node.getChildByName('FollowCircle').getComponent(f.cc.Graphics);
-  assert.equal(face.disks.length,1);assert.equal(face.disks[0].radius,38);assert.deepEqual({...face.disks[0].color},{r:255,g:255,b:255,a:255});
+  const face=node.getChildByName('CommandFace').getComponent(f.cc.Graphics);
+  assert.equal(face.disks.length,1);assert.equal(face.disks[0].radius,38);assert.deepEqual({...face.disks[0].color},{r:36,g:45,b:57,a:255});
  }
- assert(!idle.getChildByName('FollowActiveRim'));assert(active.getChildByName('FollowActiveRim'));
+ assert(!idle.getChildByName('CommandActiveRim'));assert(active.getChildByName('CommandActiveRim'));
  const texture=rim.texture;assert(texture.genMipmaps);assert.deepEqual(texture.filters,[1,1]);assert.equal(texture.mipFilter,1);
  const alphaAt=r=>texture.pixels[(128*256+Math.floor(128+r*256/128))*4+3];
  assert.equal(alphaAt(40),0,'gold ring must remain uncovered');assert.equal(alphaAt(48),255);assert.equal(alphaAt(53),0);
  assert(texture.pixels.some((value,index)=>index%4===3&&value>0&&value<255),'rim requires antialiased edge coverage');
  idle.active=false;active.active=true;f.artwork.install(f.button);
- assert.equal(f.button._followBootArtwork,rim);assert(active.active,'reinstall must not reset a live Follow state');
+ assert.equal(f.button._armyButtonArtwork,rim);assert(active.active,'reinstall must not reset a live Follow state');
  assert.equal(active.children.length,2);
  f.artwork.dispose(f.button);f.artwork.dispose(f.button);assert(rim.texture.destroyed&&rim.frame.destroyed);
 });

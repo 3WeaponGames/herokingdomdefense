@@ -500,7 +500,6 @@ var def_KinghtFallSoldierBase = function (t) {
         this._syncFollowMarker();
         this.delAllBuff();
         this.playDeath(function () {
-          $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
           this.node.active = false;
           if (this.outBuild && this.outBuild.addDie) this.outBuild.addDie(this);
           else this.freeNode();

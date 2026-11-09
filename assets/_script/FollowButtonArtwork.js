@@ -1,7 +1,7 @@
 "use strict";
 
-// The gold Rally face is identical in both states. Only its translucent dark
-// outer rim changes to blue while Follow is enabled.
+// Rally and Follow share the same gold rim and dark face behind their white
+// pictograms. Only the outer rim changes to blue while a command is enabled.
 function activeRim() {
   var size = 256, pixels = new Uint8Array(size * size * 4), scale = size / 128;
   for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
@@ -21,7 +21,7 @@ function activeRim() {
 }
 
 exports.install = function (button) {
-  if (!button || button._followBootArtwork) return;
+  if (!button || button._armyButtonArtwork) return;
   var idle = button.getChildByName("ndTag1"), active = button.getChildByName("ndTag2");
   var gold = idle && idle.getComponent(cc.Sprite);
   if (!idle || !active || !gold || !gold.spriteFrame) return;
@@ -31,29 +31,29 @@ exports.install = function (button) {
     sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
     sprite.spriteFrame = frame; sprite.enabled = true;
     node.setContentSize(104, 104);
-    var background = new cc.Node("FollowCircle");
+    var background = new cc.Node("CommandFace");
     background.parent = node;
     background.setContentSize(82, 82);
     var g = background.addComponent(cc.Graphics);
     g.clear();
-    // This edge sits on the texture's existing white fill, so its native
-    // tessellation never defines the visible outline of the button.
-    g.fillColor = cc.color(255, 255, 255); g.circle(0, 0, 38); g.fill();
+    // Cover the old baked-in flag with a contrasting face. The existing
+    // textured rim still defines the button's smooth outer edge.
+    g.fillColor = cc.color(36, 45, 57); g.circle(0, 0, 38); g.fill();
   });
-  var rim = activeRim(), highlight = new cc.Node("FollowActiveRim");
+  var rim = activeRim(), highlight = new cc.Node("CommandActiveRim");
   highlight.parent = active;
   var sprite = highlight.addComponent(cc.Sprite);
   sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.spriteFrame = rim.frame;
   highlight.setContentSize(128, 128);
-  rim.sprite = sprite; button._followBootArtwork = rim;
-  // Gameplay initializes Follow to false; the first visible frame agrees.
+  rim.sprite = sprite; button._armyButtonArtwork = rim;
+  // Gameplay initializes both commands inactive; the first frame agrees.
   idle.active = true; active.active = false;
 };
 
 exports.dispose = function (button) {
-  var rim = button && button._followBootArtwork;
+  var rim = button && button._armyButtonArtwork;
   if (!rim) return;
   rim.sprite.spriteFrame = null;
   rim.frame.destroy(); rim.texture.destroy();
-  button._followBootArtwork = null;
+  button._armyButtonArtwork = null;
 };

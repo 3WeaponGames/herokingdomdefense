@@ -529,7 +529,6 @@ var def_KinghtFallEnemyBase = function (t) {
         RelicCombat.enemyKilled(this, source, secondary);
         this.delAllBuff();
         this.playDeath(function () {
-          $z1KinghtFallUIGame.default.instance.ctrEffect.onSoldierDead(this.node.getPosition(), .25);
           this.freeNode();
         });
         var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();

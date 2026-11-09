@@ -10,31 +10,32 @@ function deathRenderer() {
         setTrackCompleteListener(entry, done) { completions.push(done); } };
 }
 
-test('allied death finishes visibly before dust, disappearance and the barracks respawn queue', () => {
+test('allied death finishes once before disappearance and respawn without an extra ghost', () => {
     const e = environment(), actor = e.actor('KinghtFallSoldierBase'), events = [], renderer = deathRenderer();
     delete actor.isDead;
     actor.spAni = renderer; actor.hp = 10; actor.ndEffect = { removeAllChildren() {} };
     actor.outBuild = { addDie: () => events.push('respawn-queue') };
-    e.stubs.KinghtFallUIGame.default.instance.ctrEffect = { onSoldierDead: () => events.push('dust') };
+    e.stubs.KinghtFallUIGame.default.instance.ctrEffect = { onSoldierDead: () => events.push('extra-ghost') };
     actor.onAttacked(20);
     assert.equal(actor.isDead(), true); assert.equal(actor.node.active, true);
     assert.equal(actor.rigidBody.active, false); assert.deepEqual(events, []);
     renderer.completions[0]();
-    assert.equal(actor.node.active, false); assert.deepEqual(events, ['dust', 'respawn-queue']);
-    renderer.completions[0](); assert.equal(events.length, 2);
+    assert.equal(actor.node.active, false); assert.deepEqual(events, ['respawn-queue']);
+    renderer.completions[0](); assert.deepEqual(events, ['respawn-queue']);
 });
 
-test('enemy death finishes before dust and pooling, while kill credit is recorded once', () => {
+test('enemy death finishes once before pooling without an extra ghost and credits one kill', () => {
     const e = environment(), renderer = deathRenderer(), events = [];
     e.stubs.KinghtFallPlayerMgr = { KinghtFallPlayerMgr: { getInstance: () => ({ getMissionData: () => ({ getTaskInfo: () => ({ type: -1 }), addTaskNum: () => events.push('kill-credit') }) }) } };
     e.stubs.KinghtFallMissionData = { KinghtFallTaskCountName: { Kill: 'kill' } };
     const actor = e.actor('KinghtFallEnemyBase'); delete actor.isDead;
     actor.spAni = renderer; actor.hp = 10; actor.ndEffect = { removeAllChildren() {} };
     actor.freeNode = () => { actor._isPooled = true; events.push('pool'); };
-    e.stubs.KinghtFallUIGame.default.instance.ctrEffect = { onSoldierDead: () => events.push('dust') };
+    e.stubs.KinghtFallUIGame.default.instance.ctrEffect = { onSoldierDead: () => events.push('extra-ghost') };
     actor.onAttacked(20); assert.deepEqual(events, ['kill-credit']);
     actor.onAttacked(20); assert.equal(renderer.completions.length, 1);
-    renderer.completions[0](); assert.deepEqual(events, ['kill-credit', 'dust', 'pool']);
+    renderer.completions[0](); assert.deepEqual(events, ['kill-credit', 'pool']);
+    renderer.completions[0](); assert.deepEqual(events, ['kill-credit', 'pool']);
 });
 
 test('a death callback cannot remove a reused unit or complete a previous boss form', () => {
