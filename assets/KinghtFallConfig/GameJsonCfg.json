@@ -30142,32 +30142,32 @@
     "unitTypes": {
       "fighter": {
         "name": "Fighter",
-        "icon": "wg_zd_dr1",
+        "icon": "@icon/icons/Pictograms/Pictoicon_Fist",
         "tint": "#ffffff"
       },
       "skirmisher": {
         "name": "Skirmisher",
-        "icon": "wg_zd_dr3",
+        "icon": "@icon/icons/Pictograms/Pictoicon_Target",
         "tint": "#ffffff"
       },
       "vanguard": {
         "name": "Vanguard",
-        "icon": "wg_zd_dr4",
+        "icon": "@icon/icons/Pictograms/Pictoicon_Wing",
         "tint": "#ffffff"
       },
       "mystic": {
         "name": "Mystic",
-        "icon": "wg_zd_dr6",
+        "icon": "@icon/icons/Pictograms/Pictoicon_Blackhole",
         "tint": "#ffffff"
       },
       "bruiser": {
         "name": "Bruiser",
-        "icon": "wg_zd_dr2",
+        "icon": "@icon/icons/Pictograms/Pictoicon_Bang",
         "tint": "#ffffff"
       },
       "guardian": {
         "name": "Guardian",
-        "icon": "wg_zd_dr2",
+        "icon": "@icon/icons/Pictograms/Pictoicon_Armor",
         "tint": "#ffffff"
       }
     },
@@ -30422,7 +30422,7 @@
       "ID": 90001,
       "Name": "[[loc:data.allycfg.90001.name]]",
       "prefab": "ItemEnemy01",
-      "loadIcon": "wg_zd_dr1",
+      "loadIcon": "@icon/icons/Pictograms/Pictoicon_Fight",
       "AttackType": 1,
       "Health": 40,
       "AttackDamage": 10,
@@ -30444,7 +30444,7 @@
       "ID": 90002,
       "Name": "[[loc:data.allycfg.90002.name]]",
       "prefab": "ItemEnemy02",
-      "loadIcon": "wg_zd_dr2",
+      "loadIcon": "@icon/icons/Pictograms/Pictoicon_Axe",
       "AttackType": 1,
       "Health": 60,
       "AttackDamage": 15,
@@ -30466,7 +30466,7 @@
       "ID": 90003,
       "Name": "[[loc:data.allycfg.90003.name]]",
       "prefab": "ItemEnemy03",
-      "loadIcon": "wg_zd_dr3",
+      "loadIcon": "@icon/icons/Pictograms/Pictoicon_Goal",
       "AttackType": 2,
       "Health": 20,
       "AttackDamage": 20,
@@ -30488,7 +30488,7 @@
       "ID": 90004,
       "Name": "[[loc:data.allycfg.90004.name]]",
       "prefab": "ItemEnemy04",
-      "loadIcon": "wg_zd_dr4",
+      "loadIcon": "@icon/icons/Pictograms/Pictoicon_Chess_Knight",
       "AttackType": 1,
       "Health": 50,
       "AttackDamage": 15,

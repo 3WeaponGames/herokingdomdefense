@@ -5,49 +5,48 @@
       "name": "Royal Guard",
       "base": { "type": "ally", "id": "90001", "source": "character-maker/Character" },
       "parts": [
-        { "id": "chest", "sprite": "Chest/FA_Chest_032_Blue", "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c", "slot": "Rider/Body/Chest", "bone": "Rider/Body/Chest", "opacity": 1, "order": 0, "hideSlots": [], "forceVisible": true, "lockAspect": true, "x": 0, "y": 0, "rotation": 0, "scaleX": 1, "scaleY": 1 },
-        { "id": "helmet", "sprite": "Helmet/FA_Helmet_047_White", "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c", "slot": "Rider/Body/Head/Helmet", "bone": "Rider/Body/Head/Helmet", "opacity": 1, "order": 0, "hideSlots": [], "forceVisible": true, "lockAspect": true, "x": 0, "y": 0, "rotation": 0, "scaleX": 1, "scaleY": 1 },
+        { "id": "shield", "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_012_Blue", "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c", "slot": "Rider/HandLeft/Shield", "bone": "Rider/HandLeft/Shield", "opacity": 1, "order": 0, "hideSlots": [], "forceVisible": true, "lockAspect": true, "x": 0, "y": 0, "rotation": 0, "scaleX": 1, "scaleY": 1 },
+        { "id": "helmet", "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_014_SilverBlue", "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c", "slot": "Rider/Body/Head/Helmet", "bone": "Rider/Body/Head/Helmet", "x": 0, "y": 0, "rotation": 0, "scaleX": 1, "scaleY": 1, "opacity": 1, "order": 0, "hideSlots": [], "forceVisible": true },
         {
-          "id": "weapon",
-          "sprite": "HandRight/Sword/FA_WP_Main_Sword_022_DarkGary",
+          "id": "sword",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/HandRight/Sword/FA_WP_Main_Sword_001_Silver",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
           "slot": "Rider/HandRight/Sword",
           "bone": "Rider/HandRight/Sword",
-          "opacity": 1,
-          "order": 0,
-          "hideSlots": [],
-          "forceVisible": true,
-          "lockAspect": true,
           "x": 0,
           "y": 0,
           "rotation": 0,
           "scaleX": 1,
-          "scaleY": 1
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
         },
         {
-          "id": "shield",
-          "sprite": "HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",
+          "id": "chest",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Chest/FA_Chest_018_Silver",
           "layer": "1595ea11-c62a-52ec-afd4-d387a05ae10c",
-          "slot": "Rider/HandLeft/Shield",
-          "bone": "Rider/HandLeft/Shield",
-          "opacity": 1,
-          "order": 0,
-          "hideSlots": [],
-          "forceVisible": true,
-          "lockAspect": true,
+          "slot": "Rider/Body/Chest",
+          "bone": "Rider/Body/Chest",
           "x": 0,
           "y": 0,
           "rotation": 0,
           "scaleX": 1,
-          "scaleY": 1
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
         }
       ],
       "scale": 1,
       "faceless": true,
       "baked": {
-        "uuid": "70c569e7-fb9c-574d-a6ef-f60524599b52",
+        "uuid": "08d8f261-3836-560b-aed5-c1a08d428ad4",
         "source": "character-maker/Character"
-      }
+      },
+      "skinTint": "#f3c89f"
     },
     "heavy-infantry": {
       "name": "Heavy Infantry",
