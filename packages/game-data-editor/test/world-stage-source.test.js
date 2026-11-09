@@ -40,3 +40,8 @@ test('source recovery rejects changed source images or concurrent panel edits be
   assert.equal(JSON.stringify(f.doc.data),before);assert.equal(f.service.stagedAssets.size,0);assert.equal(f.library.length,1);
  }
 });
+
+test('explicit source recovery creates an ordinary ground-detail layer if the former pinned layer was deleted',async()=>{
+ const f=fixture();f.doc.data=M.removeLayer(f.map,'grass-detail');f.doc.original=M.clone(f.doc.data);f.recipe.props.push({image:'Tree',layer:'ground',x:.3,y:.7,height:10});fs.writeFileSync(path.join(f.folder,'recipe.json'),JSON.stringify(f.recipe));const before=JSON.stringify(f.doc.data);
+ const result=await Stage.recover(f.service,f.request),layer=result.value.layers.find(l=>l.name==='Ground detail');assert(layer);assert.equal(layer.depth,'ground');assert(!layer.pinned);assert.equal(layer.objects.length,1);assert.equal(layer.objects[0].assetId,'tree');assert.equal(layer.objects[0].scale,.5);near(layer.objects[0],{x:-40,y:-60});assert(!JSON.parse(before).layers.some(l=>l.id==='grass-detail'));assert(!result.value.layers.some(l=>l.id==='grass-detail'));assert.deepEqual(M.removeLayer(result.value,layer.id).layers.map(l=>l.id),f.doc.original.layers.map(l=>l.id));
+});

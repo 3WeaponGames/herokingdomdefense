@@ -100,7 +100,7 @@ function createContext(root, documents) {
         MapCatalog.IDS.forEach(id => {
             const prefab = map(id);
             prefab.forEach(component => {
-                const type = component.ndAniMain && buildingType(component); if (!type) return;
+                const type = component && component.ndAniMain && buildingType(component); if (!type) return;
                 const assets = buildingAssets[type] || (buildingAssets[type] = new Map());
                 [component.ndAniMain, component.ndAniDown].concat(component.ndAniOther || []).filter(Boolean).forEach(ref => {
                     const asset = skeleton(prefab[ref.__id__]); assets.set(asset.file, asset);

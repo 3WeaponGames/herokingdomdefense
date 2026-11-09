@@ -103,12 +103,26 @@ function facing(owner, type, left) {
   var settings = config(), item = settings && settings.visuals && settings.visuals[keyFor(owner, type)];
   return (left ? -1 : 1) * (item && item.mirrorX === true ? -1 : 1);
 }
+function validPlayback(value) { return typeof value === "number" && isFinite(value) && value >= .1 && value <= 4; }
 function attackPlayback(owner, type) {
-  var settings = config(), value = settings && settings.animationSpeeds && settings.animationSpeeds[keyFor(owner, type)];
-  return typeof value === "number" && isFinite(value) && value >= .1 && value <= 4 ? value : 1;
+  var settings = config(), speeds = settings && settings.animationSpeeds;
+  if (type === "ally" && speeds) {
+    // Match the authored Barracks level used by unit stats and appearances.
+    // Branch identifiers are independent of the level and may be sparse.
+    var build = owner && owner.outBuild, row = build && build.buildInfo && build.buildInfo.cfg;
+    var level = row && row.level;
+    if (level === undefined && build && typeof build.getLevel === "function") level = build.getLevel();
+    if (typeof level === "number" && isFinite(level) && level > 0 && Math.floor(level) === level) {
+      var scoped = speeds["ally:" + owner.cfg.ID + ":level:" + level];
+      if (validPlayback(scoped)) return scoped;
+    }
+  }
+  var value = speeds && speeds[keyFor(owner, type)];
+  return validPlayback(value) ? value : 1;
 }
+var playbackTracks = new WeakMap();
 function applyAttackPlayback(owner, type) {
-  var speed = attackPlayback(owner, type); if (speed === 1) return;
+  var speed = attackPlayback(owner, type);
   var layers = owner.ctrPlayAni;
   var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand] : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
@@ -116,8 +130,17 @@ function applyAttackPlayback(owner, type) {
     var animation = track && (track.animation || track.getAnimation && track.getAnimation());
     var name = animation && (animation.name || animation.getName && animation.getName());
     if (!/^attack(?:_|$)/.test(name)) return;
+    // An inherited 1x level must clear this helper's previous override on a
+    // retained/native track, while untouched authored tracks keep their speed.
+    if (speed === 1 && !playbackTracks.has(track)) return;
+    if (!playbackTracks.has(track)) {
+      var original = typeof track.getTimeScale === "function" ? track.getTimeScale() : track.timeScale;
+      playbackTracks.set(track, typeof original === "number" && isFinite(original) && original > 0 ? original : 1);
+    }
+    var applied = speed === 1 ? playbackTracks.get(track) : speed;
     // Native TrackEntry exposes setters; the browser Spine runtime exposes fields.
-    if (typeof track.setTimeScale === "function") track.setTimeScale(speed); else track.timeScale = speed;
+    if (typeof track.setTimeScale === "function") track.setTimeScale(applied); else track.timeScale = applied;
+    if (speed === 1) playbackTracks.delete(track);
   });
 }
 var visualNodes = new WeakMap();

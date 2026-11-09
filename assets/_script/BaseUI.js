@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -79,6 +80,7 @@ var def_BaseUI = function (t) {
     this._resourceGeneration++;
     this._decisionCompleted = false;
     this._decisionPending = false;
+    if (BattleSounds.ui) BattleSounds.ui("ui-panel-open", this);
     var target = this;
     (this.eventList || []).forEach(function (bindings) {
       bindings.forEach(function (callback, name) {
@@ -89,7 +91,10 @@ var def_BaseUI = function (t) {
   _ctor.prototype.finishDecision = function (callback, value, generation) {
     if (this.isclose || this._decisionCompleted || !cc.isValid(this) || generation !== undefined && generation !== this._resourceGeneration) return false;
     this._decisionCompleted = true;
-    try { if (callback) callback(value); }
+    try {
+      if (callback) callback(value);
+      if (BattleSounds.ui && value !== false && (!Array.isArray(value) || value.length)) BattleSounds.ui("ui-selection-confirm", this);
+    }
     finally { this.closeUI(); }
     return true;
   };
@@ -179,6 +184,7 @@ var def_BaseUI = function (t) {
   _ctor.prototype.closeUI = function (t, e, n, i, a) {
     var o = this;
     if (this.isclose) return;
+    if (BattleSounds.ui) BattleSounds.ui("ui-panel-close", this, true);
     this.isclose = true;
     this._resourceGeneration++;
     var releaseError = null;

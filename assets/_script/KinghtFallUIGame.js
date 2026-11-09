@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -171,6 +172,7 @@ var def_KinghtFallUIGame = function (t) {
         t.ctrUI.ndGuide.setParent(game.ndPath);
         if (!entry && game.loadGame()) t.onRestart(false);
         game.gameData.initCom();
+        if (BattleSounds.start) BattleSounds.start(game);
         if (entry) t.initView();
       }
       if (entry) {
@@ -395,6 +397,7 @@ var def_KinghtFallUIGame = function (t) {
     return this.ctrGame.saveGame() !== false;
   };
   _ctor.prototype.onClose = function () {
+    if (this.ctrGame && BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
     if (this.ctrGame && this.ctrGame._unitVoices) require("UnitVoices").dispose(this.ctrGame);
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
@@ -429,6 +432,7 @@ var def_KinghtFallUIGame = function (t) {
     this.canBreak = true;
     this.onPauseGame(false);
     this.ctrGame.onRestart(t);
+    if (BattleSounds.start) BattleSounds.start(this.ctrGame);
     this.ctrUI.setRevive(0);
     this.initView();
     this.initBtnView();
@@ -578,6 +582,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.onGameOver = function (t) {
     var e = this, dialog = this.beginBattleDialog('end');
     if (!dialog) return;
+    if (BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
     this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.End;
     this.ctrGame.moveFun(null);
     this.ctrGame.onPauseGame();
@@ -612,6 +617,7 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrGame.moveFun(t);
   };
   _ctor.prototype.startRoundGame = function () {
+    if (BattleSounds.wave) BattleSounds.wave(this.ctrGame, "start");
     var t = this;
     if (this._enemyGuide) require("EnemyGuide").close(this);
     var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
@@ -652,6 +658,7 @@ var def_KinghtFallUIGame = function (t) {
     var t = this;
     var dialog = this.beginBattleDialog('perk');
     if (!dialog) return;
+    if (BattleSounds.wave) BattleSounds.wave(this.ctrGame, "clear");
     var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = true;
     this.canBreak = false;

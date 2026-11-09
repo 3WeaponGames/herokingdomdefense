@@ -54,6 +54,7 @@ function heal(actor, fraction) {
   var hp = actor.ctrHp || actor.hpctrl;
   if (hp && hp.setHp) hp.setHp(actor.hp, actor.hpMax);
   if (actor.upHpView) actor.upHpView();
+  if (actor.hp > before) relicSound("healing-receive", actor);
   return actor.hp - before;
 }
 function boss(enemy) {
@@ -67,9 +68,11 @@ function applyControl(enemy, seconds, bossSlow) {
   var control = enemy._relicControl;
   if (!control || control.generation !== generation) control = enemy._relicControl = { generation: generation, freeze: 0, slow: 0, duration: 0 };
   if (boss(enemy)) {
+    relicSound("slow-apply", enemy);
     control.slow = Math.max(control.slow, Math.min(.9, Math.max(0, bossSlow === undefined ? .5 : bossSlow)));
     control.duration = Math.max(control.duration, seconds);
   } else {
+    relicSound("freeze-apply", enemy);
     control.freeze = Math.max(control.freeze, seconds);
     // Cancel a queued authored hit before the next scheduler tick. The authored
     // default and custom attack timings remain untouched.
@@ -98,3 +101,9 @@ function slowed(enemy, data) {
 }
 module.exports = { current: current, values: values, value: value, active: active, state: state, restore: restore, snapshot: snapshot,
   commit: commit, retry: retry, living: living, heal: heal, boss: boss, applyControl: applyControl, clearControl: clearControl, controlDelta: controlDelta, slowed: slowed };
+
+function relicSound(id, actor) {
+  if (typeof cc === "undefined" || !cc.resources) return;
+  var sound = require("BattleSounds");
+  if (sound.effect) sound.effect(id, actor);
+}

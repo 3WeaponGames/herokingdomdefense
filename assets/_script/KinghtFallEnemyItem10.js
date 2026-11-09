@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
 var cc__extends = __extends;
@@ -57,6 +58,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
     GameToolsOverrides.attack(this, "enemy", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
     var t = this;
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
@@ -137,6 +139,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
   };
   _ctor.prototype.upData = function (t) {
     var boss = this, transform = this._transform = {};
+    if (BattleSounds.effect) BattleSounds.effect("boss-transformation", this);
     GameToolsOverrides.cancel(this);
     this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Wait;
     this.rigidBody.linearVelocity = cc.Vec2.ZERO;
@@ -195,6 +198,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
       this.upData(this.cfg.Data[2]);
     } else {
       this.time[r.Spell] = 0;
+      if (BattleSounds.effect) BattleSounds.effect("boss-special-cast", this);
       var t = [];
       this.node.getPosition(this.vec2_1);
       var e = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;

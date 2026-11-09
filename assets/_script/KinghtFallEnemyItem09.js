@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -29,6 +30,7 @@ var def_KinghtFallEnemyItem09 = function (t) {
     this.node.getComponent(cc.CircleCollider).radius = this.cfg.Data[1];
   };
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
     this.time[r.Attack] = 0;
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     this.node.getPosition(this.vec2_1);

@@ -8,7 +8,7 @@ const root=path.resolve(__dirname,'../..');
 function fixture(){
   const data=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')));
   const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab')));
-  const levels=[10,2,1,1,1,1],user={getGoldNum:()=>100000,getMaxStage:()=>2,getMaxOrder:()=>1,getPersonLevel:id=>levels[id-1]};
+  const levels=[10,2,1,1,1,1],user={getGoldNum:()=>100000,getMaxStage:()=>2,getMaxOrder:()=>1,getPersonLevel:id=>levels[id-1],getHeroWeapon:()=>require('../../assets/_script/HeroWeapons').styles[0]};
   const Label=function(){},Sprite=function(){},Button=function(){},noop=()=>{};
   function node(id){
     const original=prefab[id],label={string:'stale'},sprite={},button={interactable:true};

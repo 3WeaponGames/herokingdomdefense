@@ -81,5 +81,9 @@ test('the deployed roster uses faceless Maker allies and monster enemies with th
     assert(rig.animations.die,'The deployed unit retains its death animation');
     if(profile.faceless)for(const skin of rig.skins)for(const [name,attachments]of Object.entries(skin.attachments))if(Core.isFacialSlot(name))assert.equal(Object.keys(attachments).length,0);
   }
-  const hero=Units.describe(root,{type:'hero',id:'hero',noRuntime:true});assert.equal(hero.layers.length,7);assert(hero.layers.slice(1).every(layer=>layer.json._heroMaker),'All six rider layers use Maker bones');assert(hero.layers[0].source.startsWith('assets/KinghtFallEnemyAni/wqyl_lead/'),'The hero retains its original upgraded horses');
+  const hero=Units.describe(root,{type:'hero',id:'hero',noRuntime:true}),horse=hero.layers[0],riders=hero.layers.slice(1),originalHorse='assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_ma/wqyl_lead_ma.json';assert.equal(hero.layers.length,7);
+  assert.equal(horse.source,'assets/resources/hero-maker/wqyl_lead_ma.json');assert.deepEqual(horse.json._heroMakerMount,{version:1,source:JSON.parse(fs.readFileSync(path.join(root,originalHorse+'.meta'))).uuid});
+  assert.deepEqual(horse.skins,JSON.parse(fs.readFileSync(path.join(root,originalHorse))).skins.map(skin=>skin.name),'The synchronized Maker mount retains every original upgraded horse skin');assert(horse.json.bones.some(bone=>bone.name==='bone2'),'The mount keeps its animated saddle anchor');
+  assert.deepEqual(riders.map(layer=>layer.json._heroMaker.role).sort(),[0,1,2,3,4,5]);
+  for(const layer of riders){const maker=layer.json._heroMaker;assert.equal(maker.version,2);assert.equal(maker.source,'character-maker/Character');assert.equal(maker.riderScale,.78);assert(Number.isFinite(maker.saddle.x)&&Number.isFinite(maker.saddle.y));assert.deepEqual(maker.saddle,riders[0].json._heroMaker.saddle,'All six rider layers follow the same mount saddle');}
 });

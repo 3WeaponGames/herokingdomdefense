@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -166,6 +167,7 @@ var def_KinghtFallGameCtrlData = function () {
     this.round++;
     var t = this.levelCfg.WaveCfg[this.round - 1];
     if (!restoring) this.coin += t.StartSliver;
+    if (!restoring && t.StartSliver > 0 && BattleSounds.effect) BattleSounds.effect("battle-silver-reward", null, { game: this.ctrPar });
     this.videoCoin = t.CommerceSliver;
     if (!restoring) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
     this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
@@ -311,6 +313,7 @@ var def_KinghtFallGameCtrlData = function () {
         this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] += e, this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] >= 10 && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] -= 10, e += this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract][0], $z1LogMgr.LogMgr.getInstance().info("***税收契约", this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract][0]));
       }
       this.coin += e;
+      if (BattleSounds.effect) BattleSounds.effect("battle-silver-reward", null, { game: this.ctrPar });
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, e);
     }
     this.soldierList.forEach(function (t) {

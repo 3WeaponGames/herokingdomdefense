@@ -41,13 +41,15 @@ async function recover(service,request){
    entry.layer.objects=entry.layer.objects.map(o=>o===old?object:o);
   }
  }
+ let detailLayer=map.layers.find(layer=>layer.id==='grass-detail');
  for(const prop of recipe.props){
+  if(prop.layer==='ground'&&!detailLayer){Object.assign(map,M.createLayer(map,'Ground detail'));detailLayer=map.layers[map.layers.length-1];detailLayer.depth='ground';}
   let asset=sourceAssets[prop.image];
   if(!asset){
    const source=path.resolve(path.dirname(file),recipe.images[prop.image]),hash=L.hash(fs.readFileSync(source));
    asset=library.find(a=>a.sha256===hash);if(!asset)throw Error('Original prop is absent from the maintained palette: '+prop.image);sourceAssets[prop.image]=asset;
   }
-  const entry=owners[prop.region||region(prop.x,prop.y)],layer=prop.layer==='ground'?M.layerOf(map,'grass-detail'):entry&&entry.layer;
+  const entry=owners[prop.region||region(prop.x,prop.y)],layer=prop.layer==='ground'?detailLayer:entry&&entry.layer;
   if(!layer)throw Error('Original cliff layer was removed.');
   const point={x:prop.x*recipe.width-recipe.width/2,y:recipe.height/2-prop.y*recipe.height},old=prop.layer==='ground'?null:entry.object;
   let position=point;

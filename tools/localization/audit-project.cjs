@@ -31,7 +31,7 @@ function tokens(s, source) { if(source.endsWith('.js')) s=s.replace(/\/\*[\s\S]*
 function meaningful(s) { return /[A-Za-z\u3400-\u9fff]/.test(s.replace(token,'').replace(/<[^>]*>/g,'').replace(/\{[^}]*\}/g,'')); }
 function textCheck(s, source) { if (typeof s !== 'string' || !s) return; tokens(s,source); if (meaningful(s)) error('raw-display-text',source,s); }
 function getStyleKey(node, data, component, assetUuid) {
-  const info = data[node._prefab && node._prefab.__id__];
+  const info = node && data[node._prefab && node._prefab.__id__];
   const fileId = info && info.fileId;
   const nodes = catalog.nodeStyles || {};
   const sourceKey = /\[\[loc:([\w.-]+)\]\]/.exec(component._string || component._N$string || '');
@@ -54,7 +54,7 @@ for (const file of walk(assetRoot)) {
     const data = JSON.parse(fs.readFileSync(file,'utf8'));
     const uuid = JSON.parse(fs.readFileSync(file+'.meta','utf8')).uuid;
     data.forEach((component, index) => {
-      if (!['cc.Label','cc.RichText','cc.EditBox'].includes(component.__type__)) return;
+      if (!component || !['cc.Label','cc.RichText','cc.EditBox'].includes(component.__type__)) return;
       const node = data[component.node && component.node.__id__];
       if (component.__type__ === 'cc.EditBox') {
         report.counts.editBoxes++;

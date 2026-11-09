@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -69,6 +70,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     }
   };
   _ctor.prototype.onUpgradeCommitted = function () {
+    if (BattleSounds.effect) BattleSounds.effect("barracks-squad-spawn", this);
     if (cc.resources) require("UnitVoices").announce(this);
   };
   _ctor.prototype.getPos = function (t) {

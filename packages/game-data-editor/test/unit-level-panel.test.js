@@ -4,6 +4,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {test}=require('node:test'),{createRequire}=require('node:module');
 const Schema=require('../lib/schema'),Stats=require('../../../assets/_script/UnitLevelStats');
+const Cadence=require('../../../assets/_script/AttackCadence'),AttackRates=require('../panel/attack-rate');
 const clone=value=>JSON.parse(JSON.stringify(value));
 function fixture(){
     const filename=path.join(__dirname,'building-panel.test.js');
@@ -38,7 +39,10 @@ test('every allied unit exposes its authored levels immediately below the title 
             f.tabs().find(tab=>Number(tab.getAttribute('data-unit-level'))===level).onclick();
             assert.equal(f.panel._selectedUnitLevel(f.row('ally:'+id)),level);assert.equal(f.preview().level,level);
             assert.equal(f.tabs().find(tab=>tab.getAttribute('aria-selected')==='true').textContent,'Lvl '+level);
-            for(const field of Stats.FIELDS)assert.equal(Number(f.levelField(level,field).value),f.row('ally:'+id).record[field]);
+            for(const field of Stats.FIELDS){
+                if(field==='AttackInterval')assert.equal(f.levelField(level,field).value,Cadence.format(AttackRates.measured(f.panel,f.row('ally:'+id),level).rate));
+                else assert.equal(Number(f.levelField(level,field).value),f.row('ally:'+id).record[field]);
+            }
         }
         const shared=f.section('Shared base stats');assert(shared);assert.equal(shared.open,false,'shared defaults remain separate from selected-level edits');
     }

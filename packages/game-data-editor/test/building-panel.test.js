@@ -8,6 +8,7 @@ const vm = require('node:vm');
 const { createRequire } = require('node:module');
 const { test } = require('node:test');
 const { Store } = require('../lib/store');
+const AttackRates = require('../panel/attack-rate');
 const project = path.resolve(__dirname, '../../..');
 const clone = value => JSON.parse(JSON.stringify(value));
 
@@ -104,6 +105,11 @@ function fixture() {
         _variant: 'A', _language: 'en', _queue: Promise.resolve(), _closed: false,
         _assets: { images: [], prefabs: [], animations: [] }, _snapshot: store.snapshot()
     });
+    // The real preview supplies these read-only metrics asynchronously. Keep
+    // this DOM fixture deterministic without launching the renderer or adding
+    // metadata IPC calls to tests that inspect draft mutations.
+    Object.keys(panel._data('A').SoldierCfg || {}).forEach(id => AttackRates.metrics(panel,{type:'enemy',id,level:0,duration:1}));
+    for(const id of ['90001','90002','90003','90004'])for(const level of [1,2,3])AttackRates.metrics(panel,{type:'ally',id,level,duration:1});
     function render(key, level) { panel._selected = key; panel._level = level || 0; panel._render(); }
     return { panel, store, messages, previews, render, previewChange: edits => previewActions.onChange(edits) };
 }

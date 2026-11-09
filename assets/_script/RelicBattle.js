@@ -25,12 +25,14 @@ function afterCastleDamage(data, castle) {
   // Evaluate both thresholds against the hit before Phoenix repairs the castle.
   if (duration > 0 && hpRatio < .5 && !state.hourglassUsed) {
     state.hourglassUsed = true;
+    relicSound("hourglass-activate", castle);
     var enemies = typeof data.getEnemyList === "function" ? data.getEnemyList().slice() : (data.enemyList || []).slice();
     enemies.forEach(function (enemy) { if (living(enemy)) Runtime.applyControl(enemy, duration, .5); });
     triggered = true;
   }
   if (phoenix > 0 && hpRatio < .25 && !state.phoenixUsed) {
     state.phoenixUsed = true;
+    relicSound("phoenix-castle-repair", castle);
     info.hp = Math.min(info.hpMax, info.hp + info.hpMax * phoenix);
     if (castle.ctrHp) castle.ctrHp.setHp(info.hp, info.hpMax);
     triggered = true;
@@ -70,6 +72,7 @@ function towerImpact(data, tower, target, center, parent) {
   tower._relicGravityData = data;
   tower._relicGravityGeneration = data._relicGeneration;
   tower._relicGravityAt = now;
+  relicSound("gravity-proc", target);
   affected.forEach(function (enemy) { Runtime.applyControl(enemy, duration, .15); });
   return true;
 }
@@ -104,3 +107,9 @@ exports.replacementInterval = replacementInterval;
 exports.productionBonus = productionBonus;
 exports.towerImpact = towerImpact;
 exports.waveCleared = waveCleared;
+
+function relicSound(id, actor) {
+  if (typeof cc === "undefined" || !cc.resources) return;
+  var sound = require("BattleSounds");
+  if (sound.effect) sound.effect(id, actor);
+}

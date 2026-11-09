@@ -164,9 +164,9 @@ async function verify(){
  {
   const f=await fixture();
   try{
-   const name=f.state.snap.value.ground.foundation.name;await f.root.querySelector('[data-layer="foundation"] [aria-label="Rename layer"]').onclick();let dialog=f.root.querySelector('.world-modal');dialog.querySelector('input').value='   ';await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Apply to draft').onclick();await f.state.pending;
+   const name=f.state.snap.value.ground.roads.name;await f.root.querySelector('[data-layer="roads"] [aria-label="Rename layer"]').onclick();let dialog=f.root.querySelector('.world-modal');dialog.querySelector('input').value='   ';await Array.from(dialog.querySelectorAll('button')).find(b=>b.textContent==='Apply to draft').onclick();await f.state.pending;
    assert(!!f.root.querySelector('.world-modal')&&f.root.textContent.includes('Enter a layer name.'),'invalid layer names retain the dialog and expose validation for correction');
-   assert(f.state.snap.value.ground.foundation.name===name&&!f.env.calls.some(c=>c.name==='world-change'),'invalid rename does not mutate the draft');
+   assert(f.state.snap.value.ground.roads.name===name&&!f.env.calls.some(c=>c.name==='world-change'),'invalid rename does not mutate the draft');
   }finally{f.close();}
  }
  return {checks};

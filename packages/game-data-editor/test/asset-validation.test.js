@@ -67,6 +67,11 @@ test('equipment skins are checked on the real equipment layer and projectile', (
     assert(check('A', ['EquipCfg', 0, 'levelInfo', 0, 'EquipSkin'], 'hong').some(issue => /Skin.*missing/.test(issue.message)));
     assert(check('A', ['EquipCfg', 0, 'levelInfo', 0, 'EquipBottom'], 'wg_rw_pf1').some(issue => /KinghtFallIconGood/.test(issue.message)));
 });
+test('unreferenced null slots in compacted map prefabs do not break building skin validation',()=>{
+    const next=clone(docs),map=require('../lib/map-assets').loadMap(root,'Map01').data;map.push(null);next['map:Map01']={data:map};const before=JSON.stringify(next);
+    assert.deepStrictEqual(Assets.validate(root,next,[{doc:'A',path:['BuildEnum','1','levelList',0,'Skin']}]),[]);assert.strictEqual(JSON.stringify(next),before);
+});
+
 test('building skins must work on every main/down/gate model part', () => {
     assert.deepStrictEqual(check('A', ['BuildEnum', '6', 'levelList', 0, 'Skin'], 'cq-2-1'), []);
     assert(check('A', ['BuildEnum', '6', 'levelList', 0, 'Skin'], 'cb-1').some(issue => /Skin.*missing/.test(issue.message)));

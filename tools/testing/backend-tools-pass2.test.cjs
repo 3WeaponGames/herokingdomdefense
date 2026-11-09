@@ -9,13 +9,13 @@ function moduleVM(relative,globals={},overrides={}){const file=path.join(root,re
 function timers(){let id=0;const jobs=new Map();return{jobs,setTimeout(fn,ms){const key=++id;jobs.set(key,{fn,ms});return key;},clearTimeout:key=>jobs.delete(key)};}
 
 test('item-look catalogs retry only failed dependencies, throttle repeated failures and notify waiters once',()=>{
-  let now=0;const requests=[],calls=[],c=moduleVM('assets/_script/HeroItemLooks.js',{Date:{now:()=>now},cc:{JsonAsset:function(){},resources:{load(file,type,done){requests.push({file,done});}}}}),api=c.exports;
+  let now=0;const requests=[],calls=[],c=moduleVM('assets/_script/HeroItemLooks.js',{Date:{now:()=>now},cc:{JsonAsset:function(){},resources:{load(file,type,done){requests.push({file,done});}}}},{HeroWeapons:require('../../assets/_script/HeroWeapons'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({})})}}}),api=c.exports;
   const data={assignments:{'2:1':'hat'},profiles:{hat:{parts:[{sprite:'hat'}]}}};
   api.whenReady(()=>calls.push('ready'));requests[0].done(Error('catalog failed'));for(let i=0;i<20;i++)api.image(2,1);assert.equal(requests.length,1);
-  now=1000;api.image(2,1);requests[1].done(null,{json:data});requests[2].done(Error('parts failed'));assert.deepEqual(calls,[]);
-  for(let i=0;i<20;i++)api.image(2,1);assert.equal(requests.length,3);
-  now=2000;api.image(2,1);api.image(2,1);assert.equal(requests.length,4);assert.equal(requests[3].file,'character-parts/catalog');
-  requests[3].done(null,{json:{parts:[{id:'hat',image:'hat.png'}]}});assert.equal(api.image(2,1).image,'hat.png');assert.deepEqual(calls,['ready']);assert.equal(requests.length,4);
+  now=1000;api.image(2,1);requests[1].done(null,{json:data});assert.equal(requests[2].file,'hero-maker/catalog');requests[2].done(null,{json:{icons:{}}});requests[3].done(Error('parts failed'));assert.deepEqual(calls,[]);
+  for(let i=0;i<20;i++)api.image(2,1);assert.equal(requests.length,4);
+  now=2000;api.image(2,1);api.image(2,1);assert.equal(requests.length,5);assert.equal(requests[4].file,'character-parts/catalog');
+  requests[4].done(null,{json:{parts:[{id:'hat',image:'hat.png'}]}});assert.equal(api.image(2,1).image,'hat.png');assert.deepEqual(calls,['ready']);assert.equal(requests.length,5);
 });
 
 test('custom HTML/EJS/Jade preview templates retain exact bytes across enable, reinject and disable',t=>{
@@ -91,7 +91,8 @@ test('failed unit preview layers can retry without editing timing or loading a g
   const file=path.join(root,'packages/game-data-editor/test/unit-preview-client.test.js'),prefix=fs.readFileSync(file,'utf8').split('const source=')[0];let attempts=0;
   const c={require:createRequire(file),__dirname:path.dirname(file),exports:{},module:{exports:{}},requestAnimationFrame(){throw Error('No playback requested');},cancelAnimationFrame(){}};vm.createContext(c);vm.runInContext(prefix,c);c.document={createElement:tag=>vm.runInContext('new Element('+JSON.stringify(tag)+')',c)};
   const artwork=moduleVM('packages/game-data-editor/preview/building-artwork.js',{document:c.document}).module.exports;
-  c.require=id=>id==='./spine-renderer'?{async createLayers(spine,layers){attempts++;if(attempts===1)throw Error('temporary image failure');return layers.map(description=>({description,data:{findAnimation:()=>({duration:1})}}));},seek(){},bounds(){return{};},drawCanvas(){},destroyCanvas(){}}:id==='./projectile'?{simulate:()=>null}:id==='./building-artwork'?artwork:{};
+  const pure={'../../../assets/_script/AttackCadence':require('../../assets/_script/AttackCadence'),'../lib/attack-profile':require('../../packages/game-data-editor/lib/attack-profile')};
+  c.require=id=>Object.hasOwn(pure,id)?pure[id]:id==='./spine-renderer'?{async createLayers(spine,layers){attempts++;if(attempts===1)throw Error('temporary image failure');return layers.map(description=>({description,data:{findAnimation:()=>({duration:1})}}));},seek(){},bounds(){return{};},drawCanvas(){},destroyCanvas(){}}:id==='./projectile'?{simulate:()=>null}:id==='./building-artwork'?artwork:{};
   vm.runInContext('(function(){'+fs.readFileSync(path.join(root,'packages/game-data-editor/preview/client.js'),'utf8')+'})()',c);
   const description={type:'enemy',id:'90001',key:'enemy:90001:default',form:'default',effect:'Melee hit',defaultTiming:.4,runtimePath:'mock',shared:[],layers:[{json:{animations:{attack:{events:[]}}},animations:['idle','attack'],skins:['default']}]};
   const client=c.module.exports.mount(vm.runInContext('new Element("div")',c),{ipc:async()=>description,onChange(){assert.fail('Preview changed a draft');}}),request={type:'enemy',id:'90001'};

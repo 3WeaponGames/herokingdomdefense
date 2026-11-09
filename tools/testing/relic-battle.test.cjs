@@ -11,7 +11,7 @@ function fixture(owned={}){
   const Runtime=load('RelicRuntime'),Battle=load('RelicBattle');
   return {data,Runtime,Battle,load,commits:()=>commits};
 }
-function method(file,name,globals){const text=source(file),start=text.indexOf('_ctor.prototype.'+name+' = function'),end=text.indexOf('\n  };',start);assert(start>=0&&end>start);const body=text.slice(text.indexOf('function',start),end+4);return vm.runInNewContext('('+body+')',globals);}
+function method(file,name,globals){const text=source(file),start=text.indexOf('_ctor.prototype.'+name+' = function'),end=text.indexOf('\n  };',start);assert(start>=0&&end>start);const body=text.slice(text.indexOf('function',start),end+4);return vm.runInNewContext('('+body+')',{BattleSounds:{},...globals});}
 function actor(hp=50){return {hp,hpMax:100,node:new Node(),isDead(){return this.hp<=0;},ctrHp:{setHp(){}},cfg:{}};}
 function castle(hp=100){return {buildInfo:{BuildID:1,hp,hpMax:100},buildCfg:{enumValue:1},ctrHp:{setHp(){}},deaths:0,onDead(){this.deaths++;this.isDestroyed=true;}};}
 

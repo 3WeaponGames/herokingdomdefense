@@ -39,7 +39,11 @@ async function test(name,fn){await fn();console.log('PASS '+name);checks++;}
         assert.deepStrictEqual(r.catalog.goods.map(g=>g.id).sort((a,b)=>a-b),Object.keys(authored.GoodsCfg).map(Number).sort((a,b)=>a-b),'every authored good is available, including newly added consumables');
         const energyItem=r.catalog.goods.find(g=>g.id===2033);assert(energyItem&&energyItem.type===1&&!energyItem.requiresBattle&&!energyItem.relicId,'stored Energy Items appear as a home-usable grant choice');
         assert.equal(energyItem.kind,'Consumable');assert.match(energyItem.description,/\+20 Energy/);assert.match(energyItem.description,/stored/i);
-        assert.equal(r.catalog.relics.length,authored.TreasureCfg.length);assert.equal(r.catalog.equipment.length,6);assert.equal(r.catalog.talents.length,140);assert.equal(r.catalog.stages.length,20);assert(r.catalog.goods.find(g=>g.id===2006).relicId);
+        assert.equal(r.catalog.relics.length,authored.TreasureCfg.length);
+        assert.deepStrictEqual(r.catalog.equipment.map(row=>row.id),authored.EquipCfg.map(row=>row.id),'every authored equipment category is available');
+        assert.deepStrictEqual(r.catalog.talents.map(row=>row.id),authored.TalentLevelCfg.map(row=>row.ID),'every authored talent level is available, including added style branches');
+        assert.deepStrictEqual(r.catalog.stages.map(row=>row.stage),authored.LevelCfg.map(row=>row.Level),'every authored stage is available');
+        assert(r.catalog.goods.find(g=>g.id===2006).relicId);
     });
     await test('explicit start isolates and mutes before any load',async()=>{const r=await backend.handle(Editor,temp,{action:'start'},deps);assert(r.ready);assert.equal(created.length,1);assert.equal(created[0].options.webPreferences.partition,'hkd-qa-session-test');assert.equal(r.target.profile,'hkd-qa-session-test');assert(trace.indexOf('mute')<trace.findIndex(t=>t.startsWith('load:')));assert(!trace.includes('show'));});
     await test('IPC request cannot override the managed profile or inject a command',async()=>{const r=await backend.handle(Editor,temp,{action:'status',profile:'default'});assert.equal(r.target.profile,'hkd-qa-session-test');await assert.rejects(()=>backend.handle(Editor,temp,{action:'eval',code:'1'}),/Unknown/);});

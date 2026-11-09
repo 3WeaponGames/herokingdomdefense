@@ -286,3 +286,23 @@ test('world persistence: rollback writes remain atomic and an interrupted rollba
  assert.equal(fs.readFileSync(aFile,'utf8'),'new-a');assert.equal(fs.readFileSync(bFile,'utf8'),'old-b');assert.equal(s.recoveries().length,1);
  const restored=s.recover({key:'map:map-test',version:s.version});assert(restored.result.recovered);assert.equal(fs.readFileSync(aFile,'utf8'),'old-a');assert.equal(fs.readFileSync(bFile,'utf8'),'old-b');assert.equal(s.recoveries().length,0);
 });
+
+async function savedAssetReplacementFixture(){
+ const f=stagedImageFixture(),s=f.service,value=M.placeGroundImage(f.snap.value,'roads',f.asset,{x:0,y:0}).map;s.change({key:f.key,version:s.version,value});await s.save({key:f.key,version:s.version});
+ const manifest=L.read(f.root,'authoring/worlds/library/manifest.json'),old=manifest.assets.find(a=>a.id===f.asset.id);old.FutureLegacyMetadata={keep:['stable',17]};manifest.FutureManifestMetadata={keep:true};f.write('authoring/worlds/library/manifest.json',manifest);
+ const replacement=Buffer.from('verified replacement of existing artwork'),replacementHash=L.hash(replacement);fs.writeFileSync(f.upload,replacement);
+ const staged=s.index().library.find(a=>a.id===f.asset.id);Object.assign(staged,{sha256:replacementHash,width:24,height:32,anchor:{x:.25,y:.1},stagedFile:f.upload,url:require('url').pathToFileURL(f.upload).href,FutureStagedMetadata:{keep:'new'}});s.stagedAssets.set(staged.id,staged);rename(s,f.key,'Replaced artwork');
+ return Object.assign(f,{replacement,replacementHash,old:clone(old),staged});
+}
+test('world persistence: stable source replacement updates verified bytes and metadata while retaining unknown manifest fields',async()=>{
+ const f=await savedAssetReplacementFixture(),s=f.service,baker=require('../worlds/baker'),bake=baker.bake,restore=changeUploadAfterRead(f.upload,Buffer.from('later external edit after verified replacement read'));
+ try{baker.bake=async()=>({writes:[],ground:[],assets:{}});const result=await s.save({key:f.key,version:s.version});assert(result.result.saved);}finally{baker.bake=bake;restore();}
+ const manifest=L.read(f.root,'authoring/worlds/library/manifest.json'),rows=manifest.assets.filter(a=>a.id===f.asset.id),saved=rows[0],file=path.join(f.root,saved.file);
+ assert.equal(rows.length,1);assert(fs.readFileSync(file).equals(f.replacement));assert.equal(saved.sha256,f.replacementHash);assert.equal(fingerprint(file),saved.sha256);assert.equal(saved.width,24);assert.equal(saved.height,32);assert.deepEqual(saved.anchor,{x:.25,y:.1});assert.deepEqual(saved.FutureLegacyMetadata,f.old.FutureLegacyMetadata);assert.deepEqual(saved.FutureStagedMetadata,{keep:'new'});assert.deepEqual(manifest.FutureManifestMetadata,{keep:true});assert.equal(saved.id,f.old.id);assert.equal(saved.file,f.old.file);assert(!Object.hasOwn(saved,'url'));assert(!Object.hasOwn(saved,'stagedFile'));
+ const fresh=new Service(f.root,{artifacts:temporary('hkd-world-stable-source-reopen-'),render:async()=>({files:[],ground:[],assets:{}})}),opened=fresh.snapshot(f.key),source=fresh.index().library.find(a=>a.id===f.asset.id);assert.deepEqual(opened.issues,[]);assert.equal(source.sha256,f.replacementHash);assert.equal(require('url').fileURLToPath(source.url),file);assert(!source.stagedFile);assert.deepEqual(source.FutureLegacyMetadata,f.old.FutureLegacyMetadata);
+ const before={source:fingerprint(file),manifest:fingerprint(path.join(f.root,'authoring/worlds/library/manifest.json')),map:fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json'))},noop=await fresh.save({key:f.key,version:fresh.version});assert(!noop.result.saved);assert.deepEqual(noop.result.files,[]);assert.equal(fingerprint(file),before.source);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/library/manifest.json')),before.manifest);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),before.map);
+});
+test('world persistence: an unverified stable source replacement leaves the saved bytes and manifest unchanged',async()=>{
+ const f=await savedAssetReplacementFixture(),manifestFile=path.join(f.root,'authoring/worlds/library/manifest.json'),source=path.join(f.root,f.asset.file),before={source:fingerprint(source),manifest:fingerprint(manifestFile),map:fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json'))};fs.writeFileSync(f.upload,Buffer.from('source changed before the stable replacement save'));
+ await assert.rejects(f.service.save({key:f.key,version:f.service.version}),/Imported source changed/);assert.equal(fingerprint(source),before.source);assert.equal(fingerprint(manifestFile),before.manifest);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),before.map);assert(f.service.snapshot(f.key).dirty);
+});

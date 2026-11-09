@@ -37,6 +37,7 @@ function harness() {
     }) }
   };
   modules.QuestBoardCore = require('../../assets/_script/QuestBoardCore');
+  modules.HeroWeapons = require('../../assets/_script/HeroWeapons');
   function load(name) {
     if (modules[name]) return modules[name];
     const context = { exports: {}, require: id => modules[id] || {}, console,

@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -132,11 +133,13 @@ var def_KinghtFallBuildBartizan = function (t) {
   _ctor.prototype.onAttacked = function (t) {
     if (!(this.isDestroyed || this.time[r.Invincible] >= 0)) {
       this.buildInfo.hp -= t;
+      if (BattleSounds.hit) BattleSounds.hit(this, null, t);
       if (this.buildInfo.hp <= 0 && -1 == this.time[r.Invincible]) {
         var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff05);
         if (e) {
           this.time[r.Invincible] = e.Pamer[0];
           this.buildInfo.hp = 1;
+          if (BattleSounds.effect) BattleSounds.effect("shield-activate", this);
         }
       }
       this.buildInfo.hp <= 0 && this.onDead();

@@ -82,7 +82,7 @@ async function globalBlockers(){
  try{
   const original=JSON.stringify(M.mapBlockerRegions(f.map())),pane=f.root.querySelector('.world-layers'),render=f.client._renderer.blockers;let drawn=null;f.client._renderer.blockers=map=>{drawn=JSON.stringify(M.mapBlockerRegions(map));return render(map);};f.state.showBlockers=true;await f.click('Front',pane);await f.tool('Move whole layer');f.down(0,0);f.move(60,30);
   await f.settle();assert(drawn===original,'live layer movement keeps the displayed global blocker mask stationary');await f.up();assert(JSON.stringify(M.mapBlockerRegions(f.map()))===original,'committed layer movement keeps blockers stationary');await f.click('Undo');
-  await f.tool('Delete Object');f.down(0,-8);await f.up();assert(JSON.stringify(M.mapBlockerRegions(f.map()))===original,'deleting artwork preserves global blocker geometry');await f.click('Undo');
+  await f.tool('Delete Object (Del / Ctrl+D)');f.down(0,-8);await f.up();assert(JSON.stringify(M.mapBlockerRegions(f.map()))===original,'deleting artwork preserves global blocker geometry');await f.click('Undo');
   const layer=f.map().layers[1].id;await pane.querySelector('[data-layer="'+layer+'"] [aria-label="Hide layer"]').onclick();await f.settle();assert(JSON.stringify(M.mapBlockerRegions(f.map()))===original,'hiding scenery does not hide or remove global blockers');
   return {checks};
  }finally{f.close();}
@@ -96,8 +96,8 @@ async function scaledGround(){
   finally{f.close();}
  }
  {
-  const f=await fixture((map,library)=>{map.layers.forEach(l=>l.objects=[]);map=M.placeGroundImage(map,'foundation',library[1],{x:0,y:0}).map;map=M.placeGroundImage(map,'roads',library[0],{x:0,y:0}).map;map.ground.roads.opacity=0;return map;});
-  try{await f.click('Ground');const lower=f.map().ground.foundation.images[0].id,hidden=f.map().ground.roads.images[0].id;f.down(0,0);await f.up();assert(f.state.selection[0]===lower,'zero-opacity ground layers pass picking to visible images below');f.down(-60,-60);f.move(60,60);await f.up();assert(f.state.selection.includes(lower)&&!f.state.selection.includes(hidden),'marquee selection excludes zero-opacity ground layers');}
+  const f=await fixture((map,library)=>{map.layers.forEach(l=>l.objects=[]);map=M.placeGroundImage(map,'roads',library[1],{x:0,y:0}).map;map=M.placeGroundImage(map,'grass',library[0],{x:0,y:0}).map;map.ground.grass.opacity=0;return map;});
+  try{await f.click('Ground');const lower=f.map().ground.roads.images[0].id,hidden=f.map().ground.grass.images[0].id;f.down(0,0);await f.up();assert(f.state.selection[0]===lower,'zero-opacity ground layers pass picking to visible images below');f.down(-60,-60);f.move(60,60);await f.up();assert(f.state.selection.includes(lower)&&!f.state.selection.includes(hidden),'marquee selection excludes zero-opacity ground layers');}
   finally{f.close();}
  }
  return {checks};
@@ -135,7 +135,7 @@ async function roadErasePreview(){
 
 async function soloSelection(){
  const checks=[],assert=(ok,name)=>{if(!ok)throw Error(name);checks.push(name);};
- for(const action of ['Delete','duplicate']){
+ for(const action of ['Delete','Ctrl+D']){
   const f=await fixture();try{f.down(0,-8);await f.up();const id=f.map().layers[1].objects[0].id,pane=f.root.querySelector('.world-layers');assert(f.state.selection.includes(id),'fixture selects visible Front artwork before '+action);await pane.querySelector('[data-layer="'+f.map().layers[2].id+'"] [aria-label="Solo Back"]').onclick();await f.settle();
    if(action==='Delete')f.key('Delete');else f.key('d',{ctrlKey:true});await f.settle();
    assert(f.changes()===0&&f.map().layers[1].objects.length===1,'Solo '+action+' cannot modify a selection hidden by entering Solo');

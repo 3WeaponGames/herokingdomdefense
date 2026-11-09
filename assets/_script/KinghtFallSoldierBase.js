@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
 var UnitLevelStats = require("UnitLevelStats");
@@ -441,6 +442,7 @@ var def_KinghtFallSoldierBase = function (t) {
     GameToolsOverrides.attack(this, "ally", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "ally");
     var t = this;
     this.time[l.Attack] = 0;
     this.node.getPosition(this.vec2_1);
@@ -494,6 +496,7 @@ var def_KinghtFallSoldierBase = function (t) {
         }
       }
       this.hp -= t * e;
+      if (BattleSounds.hit) BattleSounds.hit(this, attacker, t * e);
       if (t * e > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         this.state = s.Dead;
@@ -595,8 +598,10 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.addHpPro = function (t) {
     if (!this.isDead()) {
+      var soundHp = this.hp;
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
+      if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
       this.hpctrl && this.hpctrl.setHp(this.hp, this.hpMax);
     }
   };
@@ -609,6 +614,7 @@ var def_KinghtFallSoldierBase = function (t) {
     // retained soldier may now belong to the next barracks tier.
     if (this._refreshLevelStats()) this.initBuffData();
     if (respawning) {
+      if (BattleSounds.effect) BattleSounds.effect("barracks-squad-spawn", this, { allowDead: true });
       this._followSelected = false;
       // Returning casualties keep their saved post. A stationary ring along
       // that return route must not immediately recruit them again.

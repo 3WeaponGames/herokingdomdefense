@@ -36,6 +36,7 @@ function afterHeroHit(hero, damage, source) {
   var data = current(), ratio = Runtime.value(data, 120040);
   if (!(damage > 0 && ratio > 0) || !source || !source.cfg || Number(source.cfg.AttackType) !== 2 || !living(source)) return;
   var reflected = damage * ratio;
+  relicSound("mirror-reflect", hero);
   source.onAttacked(reflected, hero, true);
   feedback(source, reflected);
 }
@@ -49,7 +50,10 @@ function enemyKilled(target, source, secondary) {
   var before = source.hp;
   Runtime.heal(source, Math.min(fraction, remaining));
   var actual = Math.max(0, source.hp - before) / source.hpMax;
-  if (actual > 0) used[key] = Math.min(.1, (Number(used[key]) || 0) + actual);
+  if (actual > 0) {
+    used[key] = Math.min(.1, (Number(used[key]) || 0) + actual);
+    relicSound("life-steal", source);
+  }
 }
 function heroAttack(hero, primary, damage) {
   var data = current(), ratio = Runtime.value(data, 120030);
@@ -67,6 +71,7 @@ function heroAttack(hero, primary, damage) {
     if (distance <= 200 * 200) nearby.push({ enemy: enemy, distance: distance, generation: enemy.node && enemy.node._combatGeneration });
   }
   nearby.sort(function (a, b) { return a.distance - b.distance; });
+  if (nearby.length) relicSound("chain-lightning", primary);
   var game = data.ctrPar, epoch = game && game._combatEpoch, heroGeneration = hero.node && hero.node._combatGeneration;
   for (var i = 0; i < Math.min(2, nearby.length); i++) {
     if (current() !== data || game && game._combatEpoch !== epoch || !living(hero) || hero.node && hero.node._combatGeneration !== heroGeneration) break;
@@ -106,3 +111,9 @@ exports.enemyKilled = enemyKilled;
 exports.heroAttack = heroAttack;
 exports.updateEnemy = updateEnemy;
 exports.releaseControl = releaseControl;
+
+function relicSound(id, actor) {
+  if (typeof cc === "undefined" || !cc.resources) return;
+  var sound = require("BattleSounds");
+  if (sound.effect) sound.effect(id, actor);
+}

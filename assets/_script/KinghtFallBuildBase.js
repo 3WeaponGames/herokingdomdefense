@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -681,6 +682,7 @@ var def_KinghtFallBuildBase = function (t) {
       var data = castle ? RelicRuntime.current() : null;
       var damage = castle ? RelicBattle.castleIncomingDamage(data, this, t) : t;
       this.buildInfo.hp -= damage;
+      if (BattleSounds.hit) BattleSounds.hit(this, null, damage);
       if (castle) RelicBattle.afterCastleDamage(data, this);
       this.buildInfo.hp <= 0 && this.onDead();
       this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);

@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var ProjectileLooks = require("ProjectileLooks");
 var GameToolsOverrides = require("GameToolsOverrides");
 var i;
@@ -120,6 +121,7 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._projectileLooks) this._projectileLooks.dispose();
     this._projectileLooks = null;
     GameToolsOverrides.clear();
@@ -203,6 +205,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
     GameToolsOverrides.clear();
     if (this._depthView) this._depthView.destroy();
@@ -214,6 +217,7 @@ var def_KinghtFallGameCtrl = function (t) {
     t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.onRestart = function (t) {
+    if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     this.clearArmyOrder(false);
     this._battleSettlement = null;
     t && (this.gameData.buffList = []);
@@ -264,6 +268,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return false;
   };
   _ctor.prototype.onUpdate = function (t) {
+    if (this._battleSounds && BattleSounds.tick) BattleSounds.tick(this);
     if (this._unitVoices) require("UnitVoices").tick(this);
     var l;
     if (this._rallyMarkerRemaining > 0) {
@@ -532,6 +537,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return this._separateArmyCommands || $z1KinghtFallConfig.KinghtFallParameter.FollowMode === 2;
   };
   _ctor.prototype.followCommand = function () {
+    if (BattleSounds.effect) BattleSounds.effect(this.isAgg ? "order-hold" : "order-follow", null, { game: this });
     if (this.isAgg) this.holdSelectedFollowers();
     this.isAgg = !this.isAgg;
     if (this.isAgg) this.gameData.getSoldierList().forEach(function (unit) { unit._followPickupBlocked = false; });
@@ -613,6 +619,7 @@ var def_KinghtFallGameCtrl = function (t) {
   _ctor.prototype.selectFollower = function (unit) {
     if (this.gameData.getSoldierList().indexOf(unit) < 0 || !this.isUnitInFollowRing(unit)) return false;
     if (unit._followSelected) return true;
+    if (BattleSounds.effect) BattleSounds.effect("unit-select", unit);
     unit._followSelected = true;
     unit._followPickupBlocked = false;
     unit._rallyOrder = null;
@@ -635,6 +642,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
+    if (changed && BattleSounds.effect) BattleSounds.effect("order-hold", null, { game: this });
     if (changed && this.gameData.levelCfg) this.saveGame();
   };
   _ctor.prototype.enterSelectiveFollow = function () {
@@ -844,6 +852,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.pathList = [{ index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) }];
   };
   _ctor.prototype.onPauseGame = function () {
+    if (BattleSounds.suspend) BattleSounds.suspend(this, true);
     this.ctrPlay.setPause(true);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -855,6 +864,7 @@ var def_KinghtFallGameCtrl = function (t) {
     }
   };
   _ctor.prototype.onResumeGame = function () {
+    if (BattleSounds.suspend) BattleSounds.suspend(this, false);
     this.ctrPlay.setPause(false);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -919,6 +929,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.cleanMap();
   };
   _ctor.prototype.cleanMap = function () {
+    if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
     if (this.upBulid && this.upBulid.cancelUpgrade) this.upBulid.cancelUpgrade();
     this._combatEpoch++;
@@ -944,6 +955,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndBuildArr2 = [];
   };
   _ctor.prototype.addEnemy = function (t, e, authoredRoute) {
+    var announceSound = !!this._battleSounds;
     var n = this;
     var epoch = this._combatEpoch;
     if (-1 != t) {
@@ -959,6 +971,7 @@ var def_KinghtFallGameCtrl = function (t) {
         n._authoredRouteOverride = authoredRoute || null;
         try { o.initData(t, e); } finally { n._authoredRouteOverride = null; }
         n.gameData.addEnemy(o);
+        if (BattleSounds.spawnEnemy) BattleSounds.spawnEnemy(o, announceSound);
       };
       var r = $z1PoolMgr.PoolMgr.getInstance().getNode(a);
       if (r) {
@@ -1064,7 +1077,8 @@ var def_KinghtFallGameCtrl = function (t) {
         $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(t.node.getPosition(), r, s);
         $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(t.node.getPosition(), "jian_" + e.ctrPlay.ctrPlayAni.arrName);
         n.active = false;
-        t.onAttacked(r, e.ctrPlay);
+        var soundDamage = t.onAttacked(r, e.ctrPlay);
+        if (s && soundDamage > 0 && BattleSounds.effect) BattleSounds.effect("critical-hit", t, { allowDead: true });
         var i = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff08);
         i && t.isDead() && e.ctrPlay.addHpPro(i.Pamer[0]);
         var a = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff15);
@@ -1124,6 +1138,7 @@ var def_KinghtFallGameCtrl = function (t) {
     n.setSiblingIndex(0);
     n.active = true;
     var behavior = t.getTowerSettings ? t.getTowerSettings() : null;
+    if (BattleSounds.attack) BattleSounds.attack(t, "tower", behavior);
     if (layered && !behavior) behavior = require("TowerCombat").settings({ Tower: {} });
     var modern = behavior && (behavior.attackType !== "arrow" || layered);
     var i = modern ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
@@ -1141,6 +1156,7 @@ var def_KinghtFallGameCtrl = function (t) {
       a.setTowerTag(i, e.node, function () {
         if (game.gameData !== shotData || game._combatEpoch !== shotEpoch) return;
         var center = behavior.attackType === "cannon" ? a._towerImpactPoint : require("TowerCombat").point(e.node, game.ndUI);
+        if (behavior.attackType === "cannon" && BattleSounds.effect) BattleSounds.effect("cannon-impact-explosion", null, { game: game, point: center });
         require("TowerCombat").damage(game, e, center, o, behavior, function (actor, position, damage) {
           if (effects && cc.isValid(effects, true)) {
             effects.showDamageNum(position, damage);

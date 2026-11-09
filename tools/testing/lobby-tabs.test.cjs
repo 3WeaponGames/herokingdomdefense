@@ -32,7 +32,7 @@ test('locked, missing and already-selected tabs keep the current page; destroyed
   f.visit(4);assert.equal(f.home.tagNode,battle);assert.equal(f.created.length,1);f.visit(0);battle.destroyed=true;battle.active=false;f.visit(2);assert.notEqual(f.home.tagNode,battle);assert.equal(f.created.length,3);
 });
 function controller(name,deps){
-  function Base(){}const C=load(name,{BaseCtrl:{default:Base},...deps},{v2:()=>({}),Size:function(){},Node:{},Label:function(){},Sprite:function(){},ScrollView:function(){},Graphics:function(){}}),owner=new C();
+  function Base(){}const C=load(name,{BaseCtrl:{default:Base},HeroWeaponPicker:{close(){}},...deps},{v2:()=>({}),Size:function(){},Node:{},Label:function(){},Sprite:function(){},ScrollView:function(){},Graphics:function(){}}),owner=new C();
   owner.node={activeInHierarchy:true};owner.pending=new Set();owner.scheduleOnce=fn=>owner.pending.add(fn);owner.unschedule=fn=>owner.pending.delete(fn);return owner;
 }
 test('cached talent and relic pages refresh current data without reconstructing their lists or repeating hidden guides',()=>{

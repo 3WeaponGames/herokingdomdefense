@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -27,6 +28,7 @@ var exp_KinghtFallInterface = function (t) {
   };
   _ctor.prototype.playDeath = function (done) {
     var actor = this, token = this._deathAnimation = {}, generation = this.node._combatGeneration;
+    if (BattleSounds.death) BattleSounds.death(this);
     require("GameToolsOverrides").cancel(this);
     if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.rigidBody) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; this.rigidBody.active = false; }
@@ -64,6 +66,8 @@ var exp_KinghtFallInterface = function (t) {
   _ctor.prototype.addBuff = function (t, e) {
     var n = this;
     var i = new exp_KinghtFallEnemyBuffInfo(t, e);
+    if (BattleSounds.effect && t === p.MoveSpeed && e.subNum > 0) BattleSounds.effect("slow-apply", this);
+    if (BattleSounds.effect && t === p.DamageCut) BattleSounds.effect("debuff-apply", this);
     var generation = this.node && this.node._combatGeneration;
     // Pool hits may complete synchronously, so register ownership first.
     this.debuffInfo.push(i);

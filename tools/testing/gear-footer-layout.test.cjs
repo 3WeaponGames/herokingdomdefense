@@ -70,7 +70,7 @@ function fixture(width, height, safeBottom = 0, scale = 1) {
   const page = tree(gear, 1, lobby.getChildByName('ndMain')); page.parent.children.push(page); align(lobby);
   const scroll = page.getChildByName('ScrollView'), viewport = scroll.getChildByName('view'), content = viewport.getChildByName('content');
   function Base() {} Base.prototype.onDestroy = function () { this.baseDestroyed = true; };
-  const context = { exports: {}, require: name => name === 'BaseCtrl' ? { default: Base } : {},
+  const context = { exports: {}, require: name => name === 'BaseCtrl' ? { default: Base } : name === 'HeroWeaponPicker' ? { close() {} } : {},
     cc: { _decorator: { ccclass: value => value, property: () => () => {} }, Node, Widget, Label: function () {}, Sprite: function () {}, ScrollView: function () {}, v2: (x, y) => ({ x, y }) },
     sp: { Skeleton: function () {} }, __extends(C, B) { C.prototype = Object.create(B.prototype); C.prototype.constructor = C; }, __decorate: (_decorators, value) => value };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallHomePersonCtrl.js'), 'utf8'), context);

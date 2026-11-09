@@ -43,7 +43,7 @@ test('Every authored Label and RichText has readable mobile typography in both l
     const data=JSON.parse(fs.readFileSync(file)),uuid=JSON.parse(fs.readFileSync(file+'.meta')).uuid;
     function nodePath(n){return n._parent?nodePath(data[n._parent.__id__])+'/'+n._name:n._name;}
     function scale(n){return Math.abs(n._trs?.array?.[7]??1)*(n._parent?scale(data[n._parent.__id__]):1);}
-    for(const label of data.filter(c=>['cc.Label','cc.RichText'].includes(c.__type__))){
+    for(const label of data.filter(c=>c&&['cc.Label','cc.RichText'].includes(c.__type__))){
       const node=data[label.node.__id__],fid=data[node._prefab?.__id__]?.fileId;
       // Match LanguageMgr's prefab identity/path suffix/token precedence.
       // Keep legacy serialized path metadata for script-owned labels too.

@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
 var RelicCombat = require("RelicCombat");
@@ -457,6 +458,7 @@ var def_KinghtFallEnemyBase = function (t) {
     GameToolsOverrides.attack(this, "enemy", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
     var t = this;
     this.time[s.Attack] = 0;
     this.node.getPosition(this.vec2_1);
@@ -521,6 +523,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (!this.isDead()) {
       t = RelicCombat.enemyDamage(this, t, source, secondary);
       this.hp -= t;
+      if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary });
       if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
         this.state = r.Dead;
@@ -619,8 +622,10 @@ var def_KinghtFallEnemyBase = function (t) {
     var e;
     var n;
     if (!this.isDead()) {
+      var soundHp = this.hp;
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
+      if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
       null === (e = this.hpctrl) || undefined === e || e.setHp(this.hp, this.hpMax);
       null === (n = this.hpctrl) || undefined === n || n.showAni();
     }

@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var GameToolsOverrides = require("GameToolsOverrides");
 var i;
 var cc__extends = __extends;
@@ -37,6 +38,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
     GameToolsOverrides.attack(this, "ally", this.doAttack);
   };
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "ally");
     var t = this;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();

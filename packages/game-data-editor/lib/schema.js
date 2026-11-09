@@ -1,6 +1,7 @@
 'use strict';
 const UnitRecords=require('./unit-records');
 const MapCatalog=require('./map-catalog');
+const HeroWeapons=require('../../../assets/_script/HeroWeapons');
 
 // Editing metadata. Storage keys and runtime identifiers intentionally stay unchanged.
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o || {}, k);
@@ -328,10 +329,24 @@ function validate(documents, changes) {
     (equipment.levelInfo||[]).forEach((level,li)=>{const q=p.concat('levelInfo',li);if(level.Level!==li+1||level.ID!==equipment.id)issue('A',q,'Equipment level and owner ID must match their position.');number('A',q.concat('Parameters'),level.Parameters,0,false);number('A',q.concat('GoldCost'),level.GoldCost,0,true);});
     if(equipment.Unlock){['A','B','D'].forEach(variant=>{const stage=docs[variant]&&docs[variant].LevelCfg&&docs[variant].LevelCfg[equipment.Unlock[0]-1];if(!stage||equipment.Unlock[1]<1||equipment.Unlock[1]>stage.WaveCfg.length)issue('A',p.concat('Unlock'),'Equipment unlock must reference an existing stage/wave in variant '+variant+'.');});}
   });
-  let lastLevel=0;
-  (base.TalentLevelCfg||[]).forEach((level,i)=>{
-    const p=['TalentLevelCfg',i];if(level.ID!==i+1)issue('A',p.concat('ID'),'Talent record IDs must retain their existing order.');
-    if(!Number.isInteger(level.Level)||level.Level<lastLevel||level.Level>lastLevel+1)issue('A',p.concat('Level'),'Talent rows must stay ordered with no skipped progression levels.');lastLevel=level.Level;
+  const talentRows=base.TalentLevelCfg||[],styleBranch=level=>level.OptionalBranch===true||own(level,'HeroStyle')||own(level,'HeroStat'),legacyLevels=new Set(talentRows.filter(level=>!styleBranch(level)).map(level=>level.Level)),talentIds=new Set();
+  let lastLevel=0,legacyTalentIndex=0;
+  talentRows.forEach((level,i)=>{
+    const p=['TalentLevelCfg',i];
+    if(talentIds.has(level.ID))issue('A',p.concat('ID'),'Talent record IDs must be unique.');talentIds.add(level.ID);
+    if(styleBranch(level)){
+      if(level.OptionalBranch!==true)issue('A',p.concat('OptionalBranch'),'Hero style talents must remain optional branches.');
+      if(!Number.isInteger(level.ID)||level.ID<10001)issue('A',p.concat('ID'),'Hero style talent IDs must use their independent range starting at 10001.');
+      if(!HeroWeapons.find(level.HeroStyle))issue('A',p.concat('HeroStyle'),'Choose an implemented hero weapon style.');
+      if(!['damage','speed','health'].includes(level.HeroStat))issue('A',p.concat('HeroStat'),'Choose an implemented hero style bonus.');
+      if(!Number.isInteger(level.Level)||level.Level<1||!legacyLevels.has(level.Level))issue('A',p.concat('Level'),'Hero style talents must join an existing progression level.');
+      if(![-1,1].includes(level.BranchColumn))issue('A',p.concat('BranchColumn'),'Hero style talents use the left or right optional branch.');
+      if(!Array.isArray(level.EffectNumber)||level.EffectNumber.length!==1)issue('A',p.concat('EffectNumber'),'Hero style talents need one bonus value.');
+    }else{
+      legacyTalentIndex++;
+      if(level.ID!==legacyTalentIndex)issue('A',p.concat('ID'),'Talent record IDs must retain their existing order.');
+      if(!Number.isInteger(level.Level)||level.Level<lastLevel||level.Level>lastLevel+1)issue('A',p.concat('Level'),'Talent rows must stay ordered with no skipped progression levels.');lastLevel=level.Level;
+    }
     if(!talents[level.kindID])issue('A',p.concat('kindID'),'Talent effect does not exist.');number('A',p.concat('GoldCost'),level.GoldCost,0,true);
     if(level.vedioCount!==undefined)number('A',p.concat('vedioCount'),level.vedioCount,0,true);
     if(level.EffectNumber&&(level.EffectNumber.length!==(level.vaulePercentage||[]).length))issue('A',p.concat('EffectNumber'),'Talent values must match percentage display flags.');
@@ -403,7 +418,10 @@ function validate(documents, changes) {
     if(overrides.animationSpeeds!==undefined&&(!overrides.animationSpeeds||typeof overrides.animationSpeeds!=='object'||Array.isArray(overrides.animationSpeeds)))issue('overrides',['animationSpeeds'],'Attack animation speeds must be a unit table.');
     for(const [key,speed]of Object.entries(overrides.animationSpeeds||{})){
       const [side,id,form,...extra]=key.split(':');
-      if(extra.length||(side==='hero'?(key!=='hero:hero:default'):(!['enemy','ally'].includes(side)||!UnitRecords.reachable(base,side,id,form))))issue('overrides',['animationSpeeds',key],'Choose a reachable unit and form.');
+      const level=/^ally:([1-9]\d*):level:([1-9]\d*)$/.exec(key);
+      const levelKey=!!level&&UnitRecords.levels(base,'ally',level[1]).includes(Number(level[2]));
+      const unitKey=!extra.length&&(side==='hero'?key==='hero:hero:default':['enemy','ally'].includes(side)&&UnitRecords.reachable(base,side,id,form));
+      if(!levelKey&&!unitKey)issue('overrides',['animationSpeeds',key],'Choose a reachable unit and form, or an existing allied unit level.');
       if(typeof speed!=='number'||!Number.isFinite(speed)||speed<.1||speed>4)issue('overrides',['animationSpeeds',key],'Attack animation speed must be between 0.1 and 4.');
     }
     const perks=overrides.perks||{};

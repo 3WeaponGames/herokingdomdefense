@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -147,6 +148,7 @@ var def_KinghtFallBuildWall = function (t) {
     if (n) this._openGateCollider();
     if (n != this.isOpen) {
       this.isOpen = n;
+      if (BattleSounds.effect) BattleSounds.effect(this.isOpen ? "gate-open" : "gate-close", this);
       if (this.isOpen) {
         t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.open : $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night;
       } else {
@@ -204,6 +206,7 @@ var def_KinghtFallBuildWall = function (t) {
     var e = this;
     if (!this.isDestroyed) {
       this.buildInfo.hp -= t;
+      if (BattleSounds.hit) BattleSounds.hit(this, null, t);
       if (this.buildInfo.hp <= 0) {
         this.onDead();
         this.ndAniEffect.node.active = true;

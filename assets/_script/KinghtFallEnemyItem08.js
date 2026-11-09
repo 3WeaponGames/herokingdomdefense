@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var cc__extends = __extends;
 var cc__decorate = __decorate;
@@ -16,6 +17,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
     var t = this;
     this.node.getPosition(this.vec2_1);
     this.rigidBody.active = true;

@@ -106,7 +106,7 @@ function mechanics(panel, row, level, at, context) {
             panel._note('Level '+value+' stats are shared with Units → '+panel._text(unit.Name)+' → Level '+value+' and its Characters appearance. Unchanged fields use the shared base stats. To change the roster, use Soldier type above.', false, stats);
             UnitLevelStats.FIELDS.filter(key=>own(unit,key)).forEach(key=>{
                 const meta=Schema.descriptor(key,{table:'SoldierCfg',side:'ally'}), overridden=own(custom,key);
-                const input=panel._field(stats,meta.label,effective[key],next=>panel._unitLevelEdit(unitRow,value,key,next).catch(()=>{}),Object.assign({},meta,{help:overridden?'Custom for Level '+value+'.':'Shared base: '+unit[key]}));
+                const input=key==='AttackInterval'?panel._attackRateField(stats,unitRow,value,next=>panel._unitLevelEdit(unitRow,value,key,next),{help:overridden?'Custom cooldown for this level.':'Uses the shared base cooldown.'}):panel._field(stats,meta.label,effective[key],next=>panel._unitLevelEdit(unitRow,value,key,next).catch(()=>{}),Object.assign({},meta,{help:overridden?'Custom for Level '+value+'.':'Shared base: '+unit[key]}));
                 input.setAttribute('aria-label','Level '+value+' '+meta.label);
                 if(overridden)input.parentNode.appendChild(button('Use base',()=>panel._unitLevelEdit(unitRow,value,key).catch(()=>{}),'gt-mini'));
             });
@@ -259,7 +259,7 @@ function preview(panel, row, api) {
     }
     if (!panel._previewClient) {
         while (panel.$preview.firstChild) panel.$preview.removeChild(panel.$preview.firstChild);
-        panel._previewClient = require('../preview/client').mount(panel.$preview, {ipc:api.ipc, onChange:edits => panel._change(edits)});
+        panel._previewClient = require('../preview/client').mount(panel.$preview, {ipc:api.ipc, onChange:edits => panel._previewChange(edits),onAttackMetrics:value=>panel._attackRateMetrics(value)});
     }
     const input = {documents:panel._snapshot.documents, version:panel._snapshot.version};
     const level = (row.record.levelList || [])[panel._level || 0];

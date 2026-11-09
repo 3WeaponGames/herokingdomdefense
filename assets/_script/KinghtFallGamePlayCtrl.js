@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var GameToolsOverrides = require("GameToolsOverrides");
 var RelicCombat = require("RelicCombat");
 var RelicRuntime = require("RelicRuntime");
@@ -178,7 +179,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this.ctrPlayAni.setMove();
       if (!(0 != this.time[C.RenSoundTime] || this.isDead())) {
         this.time[C.RenSoundTime] = 1;
-        $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.run, $z1KinghtFallConfig.KinghtFallParameter.RunMusic);
+        // BattleSounds follows actual movement and selects the active biome.
+        if (!BattleSounds.tick) $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.run, $z1KinghtFallConfig.KinghtFallParameter.RunMusic);
       }
     }
   };
@@ -257,14 +259,17 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.state != r.Alive;
   };
   _ctor.prototype.onAttacked = function (t, attacker, ranged) {
+    if (t > 0 && this.time[C.NoDie] > 0 && BattleSounds.effect) BattleSounds.effect("impact-shield", this);
     if (!(this.time[C.NoDie] > 0)) {
       t = RelicCombat.heroIncoming(this, t, attacker, ranged);
       var received = Math.max(0, Math.min(this.hp, t));
+      if (BattleSounds.hit) BattleSounds.hit(this, attacker, received);
       $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.player_hurt);
       this.time[C.NoDie] = this.time[C.NoDieTime];
       if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield] && Math.random() < $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield][0]) {
         $z1LogMgr.LogMgr.getInstance().info("***守护之盾");
         this.time[C.NoDie] += 3;
+        if (BattleSounds.effect) BattleSounds.effect("shield-activate", this);
       }
       this.hp -= t;
       if (this.hp <= 0) {
@@ -278,8 +283,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.addHpPro = function (t) {
     if (!this.isDead()) {
+      var soundHp = this.hp;
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
+      if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
       this.ctrHp.setHp(this.hp, this.hpMax);
     }
   };
@@ -358,7 +365,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   _ctor.prototype.doAttack = function () {
     // The damage event completes the windup even if its target has left range.
     this.time[C.Attack] = 0;
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack);
+    if (BattleSounds.attack) BattleSounds.attack(this, "hero");
+    else $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack);
     this.node.getPosition(this.vec2_1);
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     var e = [];

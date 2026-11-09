@@ -22,6 +22,20 @@ test('wave order is validated rather than silently reindexed',()=>{const d=fixtu
 test('building branch cycles and unknown barracks units are rejected',()=>{const d=fixture();d.A.data.BuildEnum['1'].levelList[2].BranchBuild=[1];d.A.data.BuildEnum['3'].levelList[0].Data[1]=123;const errors=introduced(d);assert(errors.some(i=>/cycle/.test(i.message)));assert(errors.some(i=>/Barracks unit/.test(i.message)));});
 test('hero equipment stat edits preserve identifiers and source schema',()=>{const d=fixture();d.A.data.EquipCfg[0].levelInfo[0].Parameters=150;assert.deepStrictEqual(introduced(d),[]);d.A.data.EquipCfg[0].levelInfo[0].Level=2;assert(introduced(d).some(i=>/Equipment level/.test(i.message)));});
 test('talent row gaps and missing effect references are rejected',()=>{const d=fixture();d.A.data.TalentLevelCfg[0].Level=2;d.A.data.TalentLevelCfg[0].kindID=999;const errors=introduced(d);assert(errors.some(i=>/skipped progression/.test(i.message)));assert(errors.some(i=>/Talent effect does not exist/.test(i.message)));});
+
+test('optional hero style talents retain independent IDs and progression without changing legacy rows',()=>{
+ const d=fixture(),before=JSON.stringify(d),legacy=d.A.data.TalentLevelCfg.filter(row=>!row.OptionalBranch),optional=d.A.data.TalentLevelCfg.filter(row=>row.OptionalBranch);
+ assert.equal(legacy.length,140);assert.equal(optional.length,18);assert.deepStrictEqual(Schema.validate(d).filter(i=>i.path[0]==='TalentLevelCfg'),[]);assert.equal(JSON.stringify(d),before);
+ // The runtime groups branches by Level, independently of their array position.
+ d.A.data.TalentLevelCfg=legacy.flatMap(row=>[row,...optional.filter(branch=>branch.Level===row.Level&&legacy.find(center=>center.Level===row.Level)===row)]);
+ assert.deepStrictEqual(Schema.validate(d).filter(i=>i.path[0]==='TalentLevelCfg'),[]);assert.deepStrictEqual(d.A.data.TalentLevelCfg.filter(row=>!row.OptionalBranch),legacy);
+});
+
+test('hero style branch validation rejects unsupported metadata while retaining common talent checks',()=>{
+ const mutations=[['ID',5,/independent range/],['ID',10001,/unique/],['OptionalBranch',false,/remain optional/],['HeroStyle','missing-style',/weapon style/],['HeroStat','armor',/style bonus/],['Level',999,/existing progression/],['Level',3.5,/existing progression/],['BranchColumn',0,/left or right/],['EffectNumber',[.05,.1],/one bonus/],['GoldCost',-1,/zero or greater/],['kindID',999,/Talent effect does not exist/]];
+ for(const [key,value,message]of mutations){const d=fixture(),row=d.A.data.TalentLevelCfg.find(row=>row.ID===10002);row[key]=value;const before=JSON.stringify(d),issues=Schema.validate(d).filter(i=>i.path[0]==='TalentLevelCfg');assert(issues.some(i=>message.test(i.message)),key+': '+issues.map(i=>i.message).join('; '));assert.equal(JSON.stringify(d),before);}
+ const legacy=fixture();Object.assign(legacy.A.data.TalentLevelCfg[0],{OptionalBranch:true,HeroStyle:'fighter',HeroStat:'damage',BranchColumn:-1});assert(Schema.validate(legacy).some(i=>i.path[0]==='TalentLevelCfg'&&/independent range/.test(i.message)),'optional metadata cannot bypass legacy identifier protection');
+});
 test('percentage preview renders the existing parameter and localization together',()=>{const d=fixture(),p=d.A.data.BuffCfg.find(x=>x.ID===50053);p.Pamer[0]=.15;assert(Schema.formatEffect(p,d.catalog.data,'en').includes('15%'));assert.strictEqual(Schema.dataDescriptor({table:'SoldierCfg',id:90009},0).percent,true);});
 test('translation edits preserve numbered parameter placeholders',()=>{const d=fixture(),p=d.A.data.BuffCfg[1],key=Schema.token(p.Describe);d.catalog.data.entries[key].en='No values';assert(introduced(d).some(i=>/placeholders/.test(i.message)));});
 test('global settings preserve their existing string storage type',()=>{const d=fixture();d.A.data.ParameterCfg['60018'].Value=.6;assert(introduced(d).some(i=>/string storage/.test(i.message)));d.A.data.ParameterCfg['60018'].Value='0.6';assert.deepStrictEqual(introduced(d),[]);});

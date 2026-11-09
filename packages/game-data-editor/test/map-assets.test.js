@@ -31,13 +31,26 @@ test('map index resolves actual artwork and shared A/B/D stage usages', () => {
     const index = Maps.loadIndex(root, documents);
     assert.strictEqual(index.length, Maps.IDS.length);
     index.forEach(map => {
-        assert(Object.keys(map.images).length > 20);
+        const frames=new Set(Maps.loadMap(root,map.id).data.filter(Boolean).map(component=>component._spriteFrame&&component._spriteFrame.__uuid__).filter(Boolean));
+        // Creator's built-in white sprite has no project texture metadata.
+        frames.delete('a23235d1-15db-4b95-8439-a2e005bfff91');
+        assert(frames.size>0);assert.deepStrictEqual(Object.keys(map.images).sort(),Array.from(frames).sort());
         assert(map.stages.some(stage => stage.variant === 'A'));
         assert(map.stages.some(stage => stage.variant === 'B'));
         assert(map.stages.some(stage => stage.variant === 'D'));
         Object.keys(map.images).forEach(id => assert(/^file:\/\//.test(map.images[id].url)));
     });
 });
+test('sprite-atlas frame metadata resolves its PNG texture and exact crop',()=>{
+    const temporary=temporaryProject('hkd-map-atlas-index-'),frame='generated-frame',texture='generated-texture';
+    function write(file,data){const target=path.join(temporary,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify(data));}
+    Maps.IDS.forEach(id=>write(Maps.fileFor(id),[{__type__:'cc.Sprite',_spriteFrame:{__uuid__:frame}}]));
+    const image=path.join(temporary,'assets/Atlas/terrain.png');fs.mkdirSync(path.dirname(image),{recursive:true});fs.writeFileSync(image,'required atlas fixture');
+    write('assets/Atlas/terrain.png.meta',{uuid:texture,importer:'texture',type:'raw',width:256,height:128,subMetas:{}});
+    write('assets/Atlas/terrain.plist.meta',{uuid:'atlas-uuid',importer:'sprite-atlas',rawTextureUuid:texture,subMetas:{cliff:{uuid:frame,importer:'sprite-frame',rawTextureUuid:texture,trimX:4,trimY:7,width:11,height:13,rawWidth:15,rawHeight:17,offsetX:2,offsetY:-3}}});
+    const index=Maps.loadIndex(temporary,{});index.forEach(map=>{const actual=map.images[frame];assert(actual);assert.strictEqual(require('url').fileURLToPath(actual.url),image);assert.deepStrictEqual([actual.x,actual.y,actual.width,actual.height,actual.rawWidth,actual.rawHeight,actual.offsetX,actual.offsetY,actual.textureWidth,actual.textureHeight],[4,7,11,13,15,17,2,-3,256,128]);});
+});
+
 test('local transform edits preserve rotation, scale, and all unrelated fields', () => {
     const source = Maps.loadMap(root, 'Map01').data, model = Maps.model(source), node = model.owners[0], before = clone(source);
     const edit = Maps.trsEdit(source, node.id, { x: 123.456 }, 'map:Map01');

@@ -10426,6 +10426,186 @@
       "en": "Once per battle, when the castle first falls below 50% HP, freeze normal enemies for {0}s. Bosses are slowed by 50% instead.",
       "zh": "每场战斗一次，城堡生命值首次低于50%时，冻结普通敌人{0}秒。首领改为减速50%。",
       "context": "Relic 120050 effect; TreasureCfg.49.Describe; {0} uses the current level magnitude"
+    },
+    "data.talentcfg.101001.name": {
+      "en": "Skirmisher · Damage",
+      "zh": "游击手 · 伤害",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101001.Name"
+    },
+    "data.talentcfg.101001.describe": {
+      "en": "Skirmisher damage +{0}. Applies only while Skirmisher is equipped.",
+      "zh": "游击手伤害提高 {0}。仅在使用游击手时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101001.Describe"
+    },
+    "data.talentcfg.101002.name": {
+      "en": "Fighter · Damage",
+      "zh": "斗士 · 伤害",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101002.Name"
+    },
+    "data.talentcfg.101002.describe": {
+      "en": "Fighter damage +{0}. Applies only while Fighter is equipped.",
+      "zh": "斗士伤害提高 {0}。仅在使用斗士时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101002.Describe"
+    },
+    "data.talentcfg.101003.name": {
+      "en": "Vanguard · Damage",
+      "zh": "先锋 · 伤害",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101003.Name"
+    },
+    "data.talentcfg.101003.describe": {
+      "en": "Vanguard damage +{0}. Applies only while Vanguard is equipped.",
+      "zh": "先锋伤害提高 {0}。仅在使用先锋时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101003.Describe"
+    },
+    "data.talentcfg.101004.name": {
+      "en": "Mystic · Damage",
+      "zh": "秘术师 · 伤害",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101004.Name"
+    },
+    "data.talentcfg.101004.describe": {
+      "en": "Mystic damage +{0}. Applies only while Mystic is equipped.",
+      "zh": "秘术师伤害提高 {0}。仅在使用秘术师时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101004.Describe"
+    },
+    "data.talentcfg.101005.name": {
+      "en": "Bruiser · Damage",
+      "zh": "猛攻者 · 伤害",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101005.Name"
+    },
+    "data.talentcfg.101005.describe": {
+      "en": "Bruiser damage +{0}. Applies only while Bruiser is equipped.",
+      "zh": "猛攻者伤害提高 {0}。仅在使用猛攻者时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101005.Describe"
+    },
+    "data.talentcfg.101006.name": {
+      "en": "Guardian · Damage",
+      "zh": "守卫 · 伤害",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101006.Name"
+    },
+    "data.talentcfg.101006.describe": {
+      "en": "Guardian damage +{0}. Applies only while Guardian is equipped.",
+      "zh": "守卫伤害提高 {0}。仅在使用守卫时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101006.Describe"
+    },
+    "data.talentcfg.101007.name": {
+      "en": "Skirmisher · Attack speed",
+      "zh": "游击手 · 攻速",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101007.Name"
+    },
+    "data.talentcfg.101007.describe": {
+      "en": "Skirmisher attack speed +{0}. Applies only while Skirmisher is equipped.",
+      "zh": "游击手攻击速度提高 {0}。仅在使用游击手时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101007.Describe"
+    },
+    "data.talentcfg.101008.name": {
+      "en": "Fighter · Attack speed",
+      "zh": "斗士 · 攻速",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101008.Name"
+    },
+    "data.talentcfg.101008.describe": {
+      "en": "Fighter attack speed +{0}. Applies only while Fighter is equipped.",
+      "zh": "斗士攻击速度提高 {0}。仅在使用斗士时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101008.Describe"
+    },
+    "data.talentcfg.101009.name": {
+      "en": "Vanguard · Attack speed",
+      "zh": "先锋 · 攻速",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101009.Name"
+    },
+    "data.talentcfg.101009.describe": {
+      "en": "Vanguard attack speed +{0}. Applies only while Vanguard is equipped.",
+      "zh": "先锋攻击速度提高 {0}。仅在使用先锋时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101009.Describe"
+    },
+    "data.talentcfg.101010.name": {
+      "en": "Mystic · Attack speed",
+      "zh": "秘术师 · 攻速",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101010.Name"
+    },
+    "data.talentcfg.101010.describe": {
+      "en": "Mystic attack speed +{0}. Applies only while Mystic is equipped.",
+      "zh": "秘术师攻击速度提高 {0}。仅在使用秘术师时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101010.Describe"
+    },
+    "data.talentcfg.101011.name": {
+      "en": "Bruiser · Attack speed",
+      "zh": "猛攻者 · 攻速",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101011.Name"
+    },
+    "data.talentcfg.101011.describe": {
+      "en": "Bruiser attack speed +{0}. Applies only while Bruiser is equipped.",
+      "zh": "猛攻者攻击速度提高 {0}。仅在使用猛攻者时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101011.Describe"
+    },
+    "data.talentcfg.101012.name": {
+      "en": "Guardian · Attack speed",
+      "zh": "守卫 · 攻速",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101012.Name"
+    },
+    "data.talentcfg.101012.describe": {
+      "en": "Guardian attack speed +{0}. Applies only while Guardian is equipped.",
+      "zh": "守卫攻击速度提高 {0}。仅在使用守卫时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101012.Describe"
+    },
+    "data.talentcfg.101013.name": {
+      "en": "Skirmisher · Health",
+      "zh": "游击手 · 血量",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101013.Name"
+    },
+    "data.talentcfg.101013.describe": {
+      "en": "Skirmisher health +{0}. Applies only while Skirmisher is equipped.",
+      "zh": "游击手血量提高 {0}。仅在使用游击手时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101013.Describe"
+    },
+    "data.talentcfg.101014.name": {
+      "en": "Fighter · Health",
+      "zh": "斗士 · 血量",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101014.Name"
+    },
+    "data.talentcfg.101014.describe": {
+      "en": "Fighter health +{0}. Applies only while Fighter is equipped.",
+      "zh": "斗士血量提高 {0}。仅在使用斗士时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101014.Describe"
+    },
+    "data.talentcfg.101015.name": {
+      "en": "Vanguard · Health",
+      "zh": "先锋 · 血量",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101015.Name"
+    },
+    "data.talentcfg.101015.describe": {
+      "en": "Vanguard health +{0}. Applies only while Vanguard is equipped.",
+      "zh": "先锋血量提高 {0}。仅在使用先锋时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101015.Describe"
+    },
+    "data.talentcfg.101016.name": {
+      "en": "Mystic · Health",
+      "zh": "秘术师 · 血量",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101016.Name"
+    },
+    "data.talentcfg.101016.describe": {
+      "en": "Mystic health +{0}. Applies only while Mystic is equipped.",
+      "zh": "秘术师血量提高 {0}。仅在使用秘术师时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101016.Describe"
+    },
+    "data.talentcfg.101017.name": {
+      "en": "Bruiser · Health",
+      "zh": "猛攻者 · 血量",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101017.Name"
+    },
+    "data.talentcfg.101017.describe": {
+      "en": "Bruiser health +{0}. Applies only while Bruiser is equipped.",
+      "zh": "猛攻者血量提高 {0}。仅在使用猛攻者时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101017.Describe"
+    },
+    "data.talentcfg.101018.name": {
+      "en": "Guardian · Health",
+      "zh": "守卫 · 血量",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101018.Name"
+    },
+    "data.talentcfg.101018.describe": {
+      "en": "Guardian health +{0}. Applies only while Guardian is equipped.",
+      "zh": "守卫血量提高 {0}。仅在使用守卫时生效。",
+      "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101018.Describe"
     }
   },
   "images": {

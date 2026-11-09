@@ -5670,6 +5670,186 @@
         "guid": "fd332a52614a84141afaeabab5a37564",
         "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 2/ResourcesData/Sprites/Tree/Tree_Snow_Bare_LightBrown_05.png"
       }
+    },
+    {
+      "id": "custom-c8c6b45e7b1257308a266174",
+      "name": "west-ravine",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/west-ravine.png",
+      "width": 724,
+      "height": 2172,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "682a3a4976daa37e18b360a9140696c5699575ab3ee4d159788e7a5c18c0649a"
+    },
+    {
+      "id": "custom-753785316aa22501bfb7dab0",
+      "name": "northeast-cliff",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/northeast-cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "753785316aa22501bfb7dab0cde5c4330ec781dc97ee667afc05e683f85efe70"
+    },
+    {
+      "id": "custom-5999d933b4bd927241acc10b",
+      "name": "north-rock-island",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/north-rock-island.png",
+      "width": 1293,
+      "height": 1216,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "5999d933b4bd927241acc10bc7f362573975432d76114d0ef32db677ccd6ca74"
+    },
+    {
+      "id": "custom-393e27ae0f008002371c9524",
+      "name": "east-rocks",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/east-rocks.png",
+      "width": 776,
+      "height": 2027,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "393e27ae0f008002371c95245e8e7dbc31ce1ba94167cdb21f20bc646296a9f7"
+    },
+    {
+      "id": "custom-bdcfb1ea58b55d08fce58bfd",
+      "name": "southeast-rocks",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/southeast-rocks.png",
+      "width": 1374,
+      "height": 1145,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "bdcfb1ea58b55d08fce58bfd10eeb45a52b797c5aeaf3e92324e85e1d3fb0773"
+    },
+    {
+      "id": "custom-3652525f5e1732f91b7664a0",
+      "name": "southwest-rocks",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/southwest-rocks.png",
+      "width": 1360,
+      "height": 1157,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3652525f5e1732f91b7664a01593730603d324cfe730461631f46c3ae4b80438"
+    },
+    {
+      "id": "custom-be84d29ed367c4d6acc39c98",
+      "name": "clean-ground-1",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-1.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "be84d29ed367c4d6acc39c9868ed3595afc4dae84bfd498e1c4715d74ef79ea5"
+    },
+    {
+      "id": "custom-2030a9ba92caa920181a816b",
+      "name": "clean-ground-2",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-2.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2030a9ba92caa920181a816b8c0ce206456c6b52edd27586edd66eb3d2efebe0"
+    },
+    {
+      "id": "custom-18c740e640314dccd58725c2",
+      "name": "clean-ground-3",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-3.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "18c740e640314dccd58725c2b4e6d456b5f947ec804d8e2e0e067103d35e7d33"
+    },
+    {
+      "id": "custom-f1819c830e57f5100a548c49",
+      "name": "clean-ground-4",
+      "category": "custom",
+      "biomes": [
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-4.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "f1819c830e57f5100a548c4948d0ddf0c0fb522977a24226b00349fe545d6434"
     }
   ],
   "biomes": [

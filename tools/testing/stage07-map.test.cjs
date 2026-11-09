@@ -14,14 +14,18 @@ test('Stage 7 has a separate full-size map, valid references and bounded baked t
  assert(Catalog.has('Map07'));assert.equal(Catalog.lanes('Map07'),12);assert.equal(source[0]._name,'Map07');
  assert.deepEqual(info.bounds,{minX:-930,minY:-1514,maxX:930,maxY:1514});
  assert.deepEqual(Maps.validate(source).filter(x=>x.severity==='error'),[]);
- const owners=info.owners.filter(n=>n.kind==='obstacle');assert.equal(owners.length,9);assert.equal(terrain.length,9);
+ const owners=info.owners.filter(n=>n.kind==='obstacle'&&n.name!=='Blocker map-blockers'),blocker=info.owners.filter(n=>n.kind==='obstacle'&&n.name==='Blocker map-blockers');assert.equal(owners.length,6);assert.equal(blocker.length,1);assert.equal(terrain.length,4);assert(terrain.every(c=>c.owner===blocker[0].id),'terrain collision belongs to the fixed global mask');
  for(const collider of terrain)for(const point of collider.source.points)assert.equal(point.__type__,'cc.Vec2','physics points must deserialize as engine vectors');
- const files=fs.readdirSync(path.join(root,'assets/KinghtFallIconMap/Map07/map')).filter(f=>f.endsWith('.png'));assert.equal(files.length,13);
+ const textureFolder='assets/KinghtFallIconMap/Generated/Maps/Map07',files=fs.readdirSync(path.join(root,textureFolder)).filter(f=>f.endsWith('.png'));assert.equal(files.filter(f=>f.startsWith('ground-')).length,2);assert.equal(files.filter(f=>f.startsWith('objects-')).length,5);
  const frames=new Set();let pixels=0;
- for(const file of files){const bytes=fs.readFileSync(path.join(root,'assets/KinghtFallIconMap/Map07/map',file)),meta=read('assets/KinghtFallIconMap/Map07/map/'+file+'.meta'),w=bytes.readUInt32BE(16),h=bytes.readUInt32BE(20),frame=meta.subMetas[path.basename(file,'.png')];assert(w<=2048&&h<=2048);assert.equal(frame.rawWidth,w);assert.equal(frame.rawHeight,h);assert.equal(meta.packable,false);assert(!frames.has(frame.uuid));frames.add(frame.uuid);pixels+=w*h;}
- assert(pixels*4<42*1048576,'decoded map textures exceed their memory budget');
+ for(const file of files){const bytes=fs.readFileSync(path.join(root,textureFolder,file)),meta=read(textureFolder+'/'+file+'.meta'),w=bytes.readUInt32BE(16),h=bytes.readUInt32BE(20);assert(w<=2048&&h<=2048);assert.equal(meta.width,w);assert.equal(meta.height,h);assert.equal(meta.packable,false);pixels+=w*h;}
+ for(const file of fs.readdirSync(path.join(root,textureFolder)).filter(f=>f.endsWith('.plist.meta')||f.startsWith('ground-')&&f.endsWith('.png.meta')))for(const frame of Object.values(read(textureFolder+'/'+file).subMetas||{})){assert(frame.rawWidth>0&&frame.rawHeight>0);assert(!frames.has(frame.uuid));frames.add(frame.uuid);}
+ assert(frames.size>=8,'all generated scenery and floor frames must be represented');
+ // Six full-resolution cutouts plus two floor tiles are bounded independently
+ // from the discarded nine pre-baked scenery slices.
+ assert(pixels*4<72*1048576,'decoded map textures exceed the authored six-layer memory budget');
  const anchorType=compressed(read('assets/_script/MapTerrainLayer.js.meta').uuid);
- for(const owner of owners){const anchor=owner.components.find(c=>c.value.__type__===anchorType);assert(anchor,'ground anchor is required');assert.equal(source[anchor.value.ground.__id__]._parent.__id__,owner.id);assert.equal(source[anchor.value.artwork.__id__]._name,'Baked artwork');}
+ for(const owner of owners){const anchor=owner.components.find(c=>c.value.__type__===anchorType);assert(anchor,'ground anchor is required');assert.equal(source[anchor.value.ground.__id__]._parent.__id__,owner.id);assert.equal(source[anchor.value.artwork.__id__].__type__,'cc.Node');assert.equal(source[anchor.value.artwork.__id__]._parent.__id__,owner.id);assert(info.sprites.some(sprite=>info.byId[sprite.node].owner===owner.id),'scenery artwork must retain its sprite binding');}
  const legacy=new Set();for(const file of fs.readdirSync(path.join(root,'assets/KinghtFallIconMap/Map02/map')).filter(f=>/\.(png|jpg)\.meta$/.test(f)))Object.values(read('assets/KinghtFallIconMap/Map02/map/'+file).subMetas||{}).forEach(f=>legacy.add(f.uuid));
  assert(!info.sprites.some(s=>legacy.has(s.frame)),'old forest textures must not be pulled into the fire map');
 });
@@ -55,10 +59,10 @@ test('navigation regression fixture matches the current production map',()=>{
  assert.deepEqual(JSON.parse(JSON.stringify(extract(path.join(root,'assets/KinghtFallIconMap/Map07.prefab')))),read('tools/navigation/fixtures/map07-authored.json'));
 });
 
-test('dragging a terrain group carries its artwork, ground anchor and physics together',()=>{
- const owner=info.owners.find(n=>n.kind==='obstacle'),delta={x:83,y:-41},before=JSON.stringify(source),draft=apply(clone(source),Maps.moveObjectEdits(source,owner.id,{x:owner.position.x+delta.x,y:owner.position.y+delta.y},'map:Map07')),next=Maps.model(draft);
+test('dragging a terrain group moves its artwork and anchor while the global blocker remains fixed',()=>{
+ const owner=info.owners.find(n=>n.kind==='obstacle'&&n.name!=='Blocker map-blockers'),delta={x:83,y:-41},before=JSON.stringify(source),draft=apply(clone(source),Maps.moveObjectEdits(source,owner.id,{x:owner.position.x+delta.x,y:owner.position.y+delta.y},'map:Map07')),next=Maps.model(draft);
  for(const node of info.nodes.filter(n=>n.owner===owner.id)){assert(Math.abs(next.byId[node.id].position.x-node.position.x-delta.x)<1e-8);assert(Math.abs(next.byId[node.id].position.y-node.position.y-delta.y)<1e-8);}
- const old=terrain.find(c=>c.owner===owner.id),moved=next.colliders.find(c=>c.id===old.id);old.points.forEach((p,i)=>assert(Math.hypot(moved.points[i].x-p.x-delta.x,moved.points[i].y-p.y-delta.y)<1e-8));assert.equal(JSON.stringify(source),before);
+ for(const old of terrain){const fixed=next.colliders.find(c=>c.id===old.id);assert.deepEqual(fixed.points,old.points,'global collision must stay fixed when scenery moves');}assert.equal(JSON.stringify(source),before);
 });
 
 test('dragging a gate keeps separate wall wings, smoke and floor markers aligned',()=>{

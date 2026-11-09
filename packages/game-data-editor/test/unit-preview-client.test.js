@@ -14,22 +14,24 @@ const field=(root,label)=>all(root,n=>n.tagName==='label'&&n.textContent===label
 const clone=value=>JSON.parse(JSON.stringify(value));
 const source=fs.readFileSync(path.join(__dirname,'../preview/client.js'),'utf8');
 const runtime={exports:{},require(name){if(name==='./spine-renderer')return {
-    createLayers:async(_spine,layers)=>layers.map(description=>({description,data:{findAnimation:()=>({duration:1}),findSkin:()=>true},skeleton:{setSkinByName(){},color:{set(){}}}})),
+    createLayers:async(_spine,layers)=>layers.map(description=>({description,data:{findAnimation:name=>({duration:name==='attack'?description.attackDuration||1:1}),findSkin:()=>true},skeleton:{setSkinByName(){},color:{set(){}}}})),
     seek(){},bounds(){return{width:1,height:1};},drawCanvas(){},destroyCanvas(){}
 };if(name==='./projectile')return{simulate:()=>null};if(name==='./building-artwork'){const child=Object.assign({},runtime,{module:{exports:{}}});vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../preview/building-artwork.js'),'utf8'),child);return child.module.exports;}if(name==='fixture-spine')return{};return require(name);},document:{createElement:tag=>new Element(tag)},requestAnimationFrame(){throw Error('Playback was not requested');},cancelAnimationFrame(){},__dirname:path.join(__dirname,'../preview'),isFinite};
 runtime.module={exports:{}};vm.runInNewContext(source,runtime,{filename:'preview/client.js'});const Client=runtime.module.exports;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function fixture(options){
-    options=options||{};const root=new Element('div'),edits=[],requests=[],type=options.type||'enemy';
-    const description={type,id:'90001',form:'default',key:type+':90001:default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
+    options=options||{};const root=new Element('div'),edits=[],requests=[],metrics=[],type=options.type||'enemy',id=String(options.id||90001);
+    const description={type,id,form:'default',key:type+':'+id+':default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
     if(type==='ally')description.levels=[1,2,3];
     if(options.events!==undefined){description.layers[0].json.animations.attack.events=options.events;description.defaultTiming=null;description.timingDefaultSource='No authored attack event.';}
-    const request={type,id:'90001',record:{ID:90001},documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
+    const request={type,id,record:Object.assign({ID:Number(id),AttackInterval:options.rate===undefined?1:options.rate},options.record),documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
+    if(options.duration!==undefined)description.layers[0].attackDuration=options.duration;
+    if(options.speeds)request.documents.overrides.data.animationSpeeds=clone(options.speeds);
     if(options.level!==undefined)request.level=options.level;
     if(options.default!==undefined)request.documents.overrides.data.timingDefaults[description.key]={attack:options.default};
     if(options.custom!==undefined)request.documents.overrides.data.timings[description.key]={attack:options.custom};
-    const before=clone(description),client=Client.mount(root,{ipc:async(_message,payload)=>{requests.push(clone(payload));return description;},onChange:value=>edits.push(clone(value))});client.setUnit(request);
-    return{root,edits,requests,description,before,request,client};
+    const before=clone(description),client=Client.mount(root,{ipc:async(_message,payload)=>{requests.push(clone(payload));return description;},onChange:value=>edits.push(clone(value)),onAttackMetrics:value=>metrics.push(clone(value))});client.setUnit(request);
+    return{root,edits,requests,metrics,description,before,request,client};
 }
 async function main(){
     let checks=0;async function test(name,body){await body();console.log('PASS '+name);checks++;}
@@ -74,13 +76,59 @@ async function main(){
         const f=fixture({default:.5,custom:.7});await flush();assert.equal(f.edits.length,0);assert.equal(f.client.getState().attackSpeed,1);
         const speed=field(f.root,'Attack animation speed (saved)');speed.value='1.2';speed.onchange();
         assert.equal(f.client.getState().attackSpeed,1.2);assert.equal(f.client.getState().effect,.7);
-        assert.deepStrictEqual(f.edits,[[{doc:'overrides',path:['animationSpeeds'],value:{'enemy:90001:default':1.2}}]]);
+        assert.deepStrictEqual(f.edits,[[{doc:'overrides',path:['animationSpeeds','enemy:90001:default'],value:1.2}]]);
         assert.equal(all(f.root,n=>n.className==='preview-marker reference')[0].style.left,'40%');
         assert.equal(all(f.root,n=>n.className==='preview-marker active')[0].style.left,'70%');
         f.request.documents.overrides.data.animationSpeeds={[f.description.key]:.8};f.client.setUnit(f.request);assert.equal(f.client.getState().attackSpeed,.8);
         button(f.root,'Reset attack speed').onclick();assert.equal(f.client.getState().attackSpeed,1);assert.equal(f.client.getState().effect,.7);
-        assert.deepStrictEqual(f.edits[1],[{doc:'overrides',path:['animationSpeeds'],value:{}}]);
+        assert.deepStrictEqual(f.edits[1],[{doc:'overrides',path:['animationSpeeds','enemy:90001:default'],remove:true}]);
         const count=f.edits.length;for(const value of ['0','5','NaN']){speed.value=value;speed.onchange();assert.equal(f.edits.length,count);}f.client.destroy();
+    });
+    await test('ally playback is independent per level, inherits the shared speed and resets only its selected level',async()=>{
+        const speeds={'ally:90001:default':1.2,'ally:90001:level:2':2,'ally:90001:level:3':.5,'future:setting':{retained:true}};
+        const f=fixture({type:'ally',level:2,default:.5,rate:.2,speeds});await flush();
+        const before=clone(f.request.documents);assert.equal(f.client.getState().attackSpeed,2);assert.equal(f.edits.length,0);
+        assert(all(f.root,n=>n.tagName==='p'&&n.textContent.includes('Saved for Level 2 only.')).length);
+        const input=field(f.root,'Attack animation speed (saved)');input.value='2.5';input.onchange();
+        assert.deepStrictEqual(f.edits[0],[{doc:'overrides',path:['animationSpeeds','ally:90001:level:2'],value:2.5}]);
+        assert.equal(f.client.getState().attackSpeed,2.5);button(f.root,'Reset attack speed').onclick();
+        assert.deepStrictEqual(f.edits[1],[{doc:'overrides',path:['animationSpeeds','ally:90001:level:2'],remove:true}]);
+        assert.equal(f.client.getState().attackSpeed,1.2,'Reset inherits the previously authored shared unit speed');
+        f.request.level=1;f.client.setUnit(f.request);await flush();assert.equal(f.client.getState().attackSpeed,1.2);assert.equal(button(f.root,'Reset attack speed').disabled,true);
+        const count=f.edits.length;button(f.root,'Reset attack speed').onclick();assert.equal(f.edits.length,count,'Resetting an inherited value does not create a draft');
+        f.request.level=3;f.client.setUnit(f.request);await flush();assert.equal(f.client.getState().attackSpeed,.5);
+        assert.deepStrictEqual(f.request.documents,before,'Preview and per-key draft requests never mutate other level speeds, future fields or timing defaults');f.client.destroy();
+    });
+    await test('actual attack metrics update with level, speed, marker and cooldown while display stays at two decimals',async()=>{
+        const f=fixture({type:'ally',level:2,default:.5,rate:.2,speeds:{'ally:90001:level:2':1}});await flush();
+        let metric=f.metrics.at(-1);assert.equal(metric.type,'ally');assert.equal(metric.id,'90001');assert.equal(metric.level,2);assert.equal(metric.cooldownRate,.2);assert.equal(metric.hitTime,.5);assert.equal(metric.duration,1);assert.equal(metric.animationSpeed,1);assert(Math.abs(metric.rate-1/5.5)<1e-12);
+        assert(all(f.root,n=>n.className==='preview-help preview-attack-rate'&&n.textContent.startsWith('Actual attacks per second: 0.18 ·')).length);
+        const count=f.metrics.length;f.client.setUnit(f.request);assert.equal(f.metrics.length,count,'An unchanged shared snapshot does not emit a duplicate metrics callback');
+        const input=field(f.root,'Attack animation speed (saved)');input.value='2';input.onchange();metric=f.metrics.at(-1);assert.equal(metric.animationSpeed,2);assert(Math.abs(metric.rate-1/5.25)<1e-12);
+        assert(all(f.root,n=>n.className==='preview-help preview-attack-rate'&&n.textContent.startsWith('Actual attacks per second: 0.19 ·')).length);
+        const marker=field(f.root,'Gold marker time (seconds)');marker.value='.8';marker.onchange();metric=f.metrics.at(-1);assert.equal(metric.hitTime,.8);assert(Math.abs(metric.rate-1/5.4)<1e-12);
+        f.request.record.AttackInterval=.5;f.client.setUnit(f.request);assert.equal(f.metrics.at(-1),null,'Reloading a changed model/stat record invalidates old metrics immediately');await flush();metric=f.metrics.at(-1);assert.equal(metric.cooldownRate,.5);assert.equal(metric.level,2);
+        f.request.level=3;f.client.setUnit(f.request);assert.equal(f.metrics.at(-1),null);await flush();assert.equal(f.metrics.at(-1).level,3);assert.equal(f.metrics.at(-1).animationSpeed,1);
+        const edits=f.edits.length;f.client.destroy();assert.equal(f.metrics.at(-1),null);assert.equal(f.edits.length,edits);
+    });
+    await test('actual attack metrics honor the full attack animation limit instead of promising impossible hit frequency',async()=>{
+        const f=fixture({duration:2,default:.5,rate:4});await flush();assert.equal(f.metrics.at(-1).rate,.5);
+        const speed=field(f.root,'Attack animation speed (saved)');speed.value='2';speed.onchange();assert.equal(f.metrics.at(-1).rate,1);
+        const preview=field(f.root,'Preview speed'),before=f.metrics.length;preview.value='.25';if(preview.onchange)preview.onchange();assert.equal(f.metrics.length,before,'Temporary viewer speed never changes authored attack frequency');
+        assert.equal(f.metrics.at(-1).animationSpeed,2);assert.equal(f.metrics.at(-1).duration,2);f.client.destroy();
+    });
+    await test('ranged units overlap cooldown with windup and report their actual animation-limited rate',async()=>{
+        const f=fixture({type:'ally',id:90003,level:1,record:{prefab:'ItemEnemy03'},duration:1.2,default:.5,rate:1});await flush();
+        assert.equal(f.metrics.at(-1).cooldownStart,'start');assert(Math.abs(f.metrics.at(-1).rate-1/1.2)<1e-12);
+        assert(all(f.root,n=>n.className==='preview-help preview-attack-rate'&&n.textContent.startsWith('Actual attacks per second: 0.83 ·')).length);
+        const input=field(f.root,'Attack animation speed (saved)');input.value='2';input.onchange();assert.equal(f.metrics.at(-1).rate,1,'Faster firing animations retain the original one-second overlapping cooldown');
+        assert.equal(f.metrics.at(-1).speedKey,'ally:90003:level:1');f.client.destroy();
+    });
+    await test('actual rate uses only saved gameplay timings while authored event markers remain visual references',async()=>{
+        const absent=fixture({rate:1,duration:.6});await flush();assert.equal(absent.client.getState().effect,.4,'The authored event remains visible as an animation reference');assert.equal(absent.metrics.at(-1).hitTime,0);assert.equal(absent.metrics.at(-1).rate,1,'No saved default retains the immediate runtime hit path');
+        const marker=field(absent.root,'Gold marker time (seconds)');marker.value='.5';marker.onchange();assert.equal(absent.metrics.at(-1).hitTime,.5);assert(Math.abs(absent.metrics.at(-1).rate-1/1.5)<1e-12,'A local committed timing draft updates the actual rate before the IPC snapshot returns');
+        button(absent.root,'Reset to default').onclick();assert.equal(absent.metrics.at(-1).hitTime,0);assert.equal(absent.metrics.at(-1).rate,1);absent.client.destroy();
+        const malformed=fixture({rate:1,duration:.6,default:.5,custom:'invalid'});await flush();assert.equal(malformed.metrics.at(-1).hitTime,0,'An invalid custom setting suppresses default fallback exactly as runtime does');assert.equal(malformed.metrics.at(-1).rate,1);button(malformed.root,'Reset to default').onclick();assert.equal(malformed.metrics.at(-1).hitTime,.5);malformed.client.destroy();
     });
     await test('the Units level selector controls the matching appearance without a second conflicting selector or draft edits',async()=>{
         const f=fixture({type:'ally',level:1,default:.5});await flush();

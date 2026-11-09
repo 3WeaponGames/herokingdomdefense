@@ -27,11 +27,17 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
       }
       return !!node && !node.destroyed && !(strictMode && node.toDestroy);
     },
-    resources: { load(id, type, done) { if (++requests === 1) done(Error('temporary catalog failure')); else retry = done; } }
+    resources: { load(id, type, done) {
+      requests++;
+      if (id === 'hero-items/catalog') { if (requests === 1) done(Error('temporary catalog failure')); else retry = done; }
+      else if (id === 'hero-maker/catalog') done(null, { json: require('../../assets/resources/hero-maker/catalog.json') });
+      else if (id === 'character-parts/catalog') done(null, { json: require('../../assets/resources/character-parts/catalog.json') });
+      else assert.fail('Unexpected catalog request: ' + id);
+    } }
   };
   cc.Node.EventType = { TOUCH_END: 'touch', SIZE_CHANGED: 'size', POSITION_CHANGED: 'position' };
   const modules = {
-    BaseUI: { default: Component }, KinghtFallEnum: { KinghtFallEnumTreasureEnum: { ForgeAmulet: 1 } },
+    BaseUI: { default: Component }, HeroWeapons: require('../../assets/_script/HeroWeapons'), HeroWeaponPicker: { close() {} }, KinghtFallEnum: { KinghtFallEnumTreasureEnum: { ForgeAmulet: 1 } },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: once({ getUserData: () => ({ getTreasureLevel: () => null, getMaxStage: () => 2 }) }) },
     KinghtFallDataMgr: { KinghtFallDataMgr: once({ getEquipCfgList: () => equipment, getLevelCfgById2: () => ({ EquipLevelCap: 10 }) }) },
     Utils: { Utils: { StringFormat: () => '' } }, KinghtFallTextConfig: { KinghtFallTextConfig: {} },
@@ -77,13 +83,13 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
   const before = refreshes;
   retiredChecks = pendingDestroyChecks = liveChecks = 0;
   retry(null, { json: catalog });
-  assert.equal(requests, 2); assert.equal(refreshes - before, 1);
+  assert.equal(requests, 3); assert.equal(refreshes - before, 1);
   assert.equal(retiredChecks, 0); assert.equal(pendingDestroyChecks, 1); assert.equal(liveChecks, 1);
   finishDestroy();
   assert.equal(baseTeardowns, 1);
   open('Toggle3'); open('Toggle1');
   assert.equal(refreshes - before, 2, 'an already-ready catalog needs only the normal initial view refresh');
-  assert.equal(requests, 2);
+  assert.equal(requests, 3);
 });
 
 test('item catalog cancellation is idempotent and cannot remove a later subscription', () => {
@@ -100,6 +106,7 @@ test('item catalog cancellation is idempotent and cannot remove a later subscrip
   api.whenReady(() => { visits.push('first'); cancelLater(); });
   cancelLater = api.whenReady(() => visits.push('retired during delivery'));
   deliver(null, { json: { assignments: {}, profiles: {} } });
+  deliver(null, { json: { icons: {} } });
   assert.deepEqual(visits, ['current', 'first']);
   assert.equal(api.whenReady(() => visits.push('duplicate ready refresh')), undefined);
   assert.deepEqual(visits, ['current', 'first']);
@@ -110,7 +117,8 @@ test('one catalog callback error leaves the other live listeners deliverable', (
   const api = load('HeroItemLooks', { cc: { resources: { load(id, type, callback) { deliver = callback; } } } });
   api.whenReady(() => { throw Error('controlled view refresh failure'); });
   api.whenReady(() => completed++);
-  assert.throws(() => deliver(null, { json: { assignments: {}, profiles: {} } }), /controlled view refresh failure/);
+  deliver(null, { json: { assignments: {}, profiles: {} } });
+  assert.throws(() => deliver(null, { json: { icons: {} } }), /controlled view refresh failure/);
   assert.equal(completed, 1);
 });
 

@@ -35,10 +35,11 @@ function assetIndex(root, wanted) {
         fs.readdirSync(directory, { withFileTypes: true }).forEach(entry => {
             const file = path.join(directory, entry.name);
             if (entry.isDirectory()) return walk(file);
-            if (!/\.(png|jpe?g|webp)\.meta$/i.test(entry.name)) return;
+            const textureMeta = /\.(png|jpe?g|webp)\.meta$/i.test(entry.name);
+            if (!textureMeta && !/\.plist\.meta$/i.test(entry.name)) return;
             let meta;
             try { meta = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return; }
-            if (meta.uuid) textures[meta.uuid] = { file: file.slice(0, -5), width: meta.width, height: meta.height };
+            if (textureMeta && meta.uuid) textures[meta.uuid] = { file: file.slice(0, -5), width: meta.width, height: meta.height };
             Object.keys(meta.subMetas || {}).forEach(key => {
                 const frame = meta.subMetas[key];
                 if (frame.uuid && (!wanted || wanted.has(frame.uuid))) frames[frame.uuid] = frame;

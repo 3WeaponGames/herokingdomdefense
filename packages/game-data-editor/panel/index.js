@@ -1,6 +1,7 @@
 'use strict';
 const UnitRecords=require('../lib/unit-records');
 const UnitLevelStats=require('../../../assets/_script/UnitLevelStats');
+const AttackRate=require('./attack-rate');
 const MapCatalog=require('../lib/map-catalog');
 const fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
@@ -54,9 +55,9 @@ function create(kind){
       ipc('asset-index',{refresh:true}).then(assets=>{if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);this._render();}).catch(()=>{});
     },
     close(){this._closed=true;if(this._unitKeyHandler)this.$root.removeEventListener('keydown',this._unitKeyHandler,true);if(this._unitPointerHandler)this.$root.removeEventListener('pointerdown',this._unitPointerHandler);if(this._iconPicker)this._iconPicker.destroy();if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
-    messages:{'hkd-characters:published'(){if(!this._closed&&this._previewClient)this._previewClient.refreshAppearance();},'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
+    messages:{'hkd-characters:published'(){if(this._closed)return;if(kind==='units'||kind==='buildings')AttackRate.reload(this,ipc);if(this._previewClient)this._previewClient.refreshAppearance();},'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
     _status(message,error){this.$status.textContent=message;this.$status.className='gt-status'+(error?' error':'');},
-    async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(explicit){const assets=await ipc('asset-index',{refresh:true});if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);}if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
+    async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(explicit){if(kind==='units'||kind==='buildings'){AttackRate.invalidate(this);if(this._previewClient){this._previewClient.destroy();this._previewClient=null;}}const assets=await ipc('asset-index',{refresh:true});if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);}if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
     _apply(snapshot){if(!snapshot||this._closed)return;if(snapshot.result)this._lastResult=snapshot.result;else if(this._snapshot&&snapshot.version!==this._snapshot.version)this._lastResult=null;this._snapshot=snapshot;this._render();},
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
     _change(edits){
@@ -64,6 +65,25 @@ function create(kind){
         try{const snapshot=await ipc('change',{version:this._snapshot.version,edits:typeof edits==='function'?edits():edits});this._apply(snapshot);return snapshot;}
         catch(error){this._status(error.message,true);throw error;}
       });return this._queue;
+    },
+    _previewChange(edits){
+      return this._change(()=>{
+        const result=[],created=new Map(),settings=this._data('overrides');
+        for(const edit of edits){
+          const table=edit.path&&edit.path[0];
+          if(edit.doc!=='overrides'||edit.path.length!==2||!['animationSpeeds','timings'].includes(table)){result.push(edit);continue;}
+          const existing=settings[table];
+          if(existing!==undefined){
+            if(!existing||typeof existing!=='object'||Array.isArray(existing))throw Error('The '+table+' table has an invalid format. Refresh before editing.');
+            result.push(edit);continue;
+          }
+          if(edit.remove)continue;
+          if(!created.has(table))created.set(table,{});
+          created.get(table)[edit.path[1]]=edit.value;
+        }
+        for(const [table,value]of created)result.push({doc:'overrides',path:[table],value});
+        return result;
+      }).catch(()=>{});
     },
     _set(doc,keys,value){return this._change([{doc,path:keys,value}]).catch(()=>{});},
     _data(doc){const d=this._snapshot&&this._snapshot.documents[doc||'A'];return d?d.data:{};},
@@ -82,7 +102,7 @@ function create(kind){
     _render(){
       if(!this._snapshot)return;this._toolbar();
       if(kind==='maps'){this._renderMaps();return;}
-      this._renderList();const scroll=this.$detail.scrollTop;clear(this.$detail);
+      this._renderList();const scroll=this.$detail.scrollTop;clear(this.$detail);AttackRate.begin(this);
       const row=this._rows().find(r=>r.key===this._selected);
       if(!row){this.$detail.appendChild(node('div','Choose an item to inspect its settings.','gt-empty'));return;}
       this.$detail.appendChild(node('h2',row.label));if(kind==='units'&&row.unitType==='ally')this._unitLevelTabs(row);if(kind==='buildings')Buildings.levelTabs(this,row);this.$detail.appendChild(node('p',row.subtitle||'Changes are drafts until saved.','gt-subtitle'));
@@ -160,6 +180,9 @@ function create(kind){
     },
     _value(container,doc,keys,value,key,context,record){
       const meta=Schema.descriptor(key,context);
+      if(key==='AttackInterval'&&context.table==='SoldierCfg'&&context.side==='enemy'){
+        this._attackRateField(container,{unitType:'enemy',unitID:String(context.id),record,path:keys.slice(0,-1)},0,next=>this._change(()=>[{doc,path:keys,value:typeof next==='function'?next():next}]));return;
+      }
       if(typeof value==='string'&&Schema.token(value)){this._localized(container,doc,keys,value,meta.label);return;}
       if(value===null){this._field(container,meta.label,'Not set',()=>{},{readOnly:true});return;}
       if(Array.isArray(value)){
@@ -326,10 +349,16 @@ function create(kind){
       if(row.unitType==='ally'){
         const base=this._section('Shared base stats',undefined,true);
         this._note('These values supply every level until you customize that level. Perks, talents and relic bonuses are applied afterward in battle.',false,base).style.gridColumn='1 / -1';
-        for(const field of UnitLevelStats.FIELDS)this._value(base,'A',row.path.concat(field),row.record[field],field,{table:'SoldierCfg',id:row.unitID,side:'ally'},row.record);
+        for(const field of UnitLevelStats.FIELDS){
+          if(field==='AttackInterval')this._field(base,'Base attack cooldown (seconds)',1/row.record[field],value=>this._set('A',row.path.concat(field),1/value),{min:0.000001,help:'Shared waiting time after the hit. Each level’s Attacks per second also includes its windup and animation duration.'});
+          else this._value(base,'A',row.path.concat(field),row.record[field],field,{table:'SoldierCfg',id:row.unitID,side:'ally'},row.record);
+        }
       }
-      this._note('Attack rate controls how often attacks begin. The preview timeline controls the release or effect moment inside a selected attack. Existing behavior stays unchanged until an override is saved.');
+      this._note('Attacks per second includes the cooldown, hit windup and full attack animation. Changing the selected level’s animation speed or hit timing recalculates its rate. Perks, movement and interruptions can change the rate during battle.');
     },
+    _attackRateField(container,row,level,write,options){return AttackRate.field(this,container,row,level,write,options,ipc);},
+    _attackRateCell(element,row,level){return AttackRate.cell(this,element,row,level,ipc);},
+    _attackRateMetrics(value){AttackRate.metrics(this,value);},
     _selectedUnitLevel(row){const levels=UnitRecords.levels(this._data('A'),row.unitType,row.unitID);if(!levels.includes(this._unitLevel))this._unitLevel=levels[0]||0;return this._unitLevel;},
     _selectUnitLevel(row,level){if(!UnitRecords.levels(this._data('A'),row.unitType,row.unitID).includes(level))return;this._unitLevel=level;this._render();if(this.$root.focus)this.$root.focus({preventScroll:true});},
     _unitLevelTabs(row){
@@ -343,26 +372,27 @@ function create(kind){
       this._note('Uses Barracks level '+level+' and Characters → '+this._text(row.record.Name)+' → Level '+level+'. Adjusting a value customizes only this level.',false,fields).style.gridColumn='1 / -1';
       for(const field of ['Health','AttackDamage','AttackRange','AttackInterval','SearchRange','Speed']){
         const meta=Schema.descriptor(field,{table:'SoldierCfg',side:'ally'}),overridden=own(custom,field);
-        const input=this._field(fields,meta.label,effective[field],value=>this._unitLevelEdit(row,level,field,value).catch(()=>{}),Object.assign({},meta,{help:(overridden?'Custom for this level.':'Uses shared base '+row.record[field]+'.')+(meta.help?' '+meta.help:'')}));
+        const input=field==='AttackInterval'?this._attackRateField(fields,row,level,value=>this._unitLevelEdit(row,level,field,value),{help:overridden?'Custom cooldown for this level.':'Uses the shared base cooldown.'}):this._field(fields,meta.label,effective[field],value=>this._unitLevelEdit(row,level,field,value).catch(()=>{}),Object.assign({},meta,{help:(overridden?'Custom for this level.':'Uses shared base '+row.record[field]+'.')+(meta.help?' '+meta.help:'')}));
         input.setAttribute('aria-label','Level '+level+' '+meta.label);
-        if(overridden){const reset=button('Use base',()=>this._unitLevelEdit(row,level,field).catch(()=>{}),'gt-mini');reset.title='Reset '+meta.label+' to shared base '+row.record[field];reset.setAttribute('aria-label','Reset level '+meta.label+' to base');input.parentNode.appendChild(reset);}
+        if(overridden){const reset=button('Use base',()=>this._unitLevelEdit(row,level,field).catch(()=>{}),'gt-mini');reset.title=field==='AttackInterval'?'Use the shared base attack cooldown':'Reset '+meta.label+' to shared base '+row.record[field];reset.setAttribute('aria-label','Reset level '+meta.label+' to base');input.parentNode.appendChild(reset);}
       }
       const actions=node('div',undefined,'gt-unit-level-actions');fields.appendChild(actions);
       const reset=button('Reset Level '+level+' stats',()=>this._unitLevelEdit(row,level,null).catch(()=>{}),'gt-mini');reset.disabled=!UnitLevelStats.FIELDS.some(field=>own(custom,field));actions.appendChild(reset);
       actions.appendChild(button('Edit level appearance in Characters',()=>ipc('open-characters',{type:'ally',id:String(row.unitID),level}).catch(error=>this._status(error.message,true)),'gt-mini'));
-      const overview=this._section('All level stats',undefined,true),table=node('table',undefined,'gt-grid-table'),head=node('tr');['Level','HP','Damage','Attack rate','Range','Speed'].forEach(label=>head.appendChild(node('th',label)));table.appendChild(head);
-      for(const value of UnitRecords.levels(this._data('A'),'ally',row.unitID)){const stats=UnitLevelStats.resolve(row.record,settings,value),tr=node('tr',undefined,value===level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>this._selectUnitLevel(row,value);[value,stats.Health,stats.AttackDamage,stats.AttackInterval,stats.AttackRange,stats.Speed].forEach(value=>tr.appendChild(node('td',value)));table.appendChild(tr);}overview.appendChild(table);
+      const overview=this._section('All level stats',undefined,true),table=node('table',undefined,'gt-grid-table'),head=node('tr');['Level','HP','Damage','Attacks/sec','Range','Speed'].forEach(label=>head.appendChild(node('th',label)));table.appendChild(head);
+      for(const value of UnitRecords.levels(this._data('A'),'ally',row.unitID)){const stats=UnitLevelStats.resolve(row.record,settings,value),tr=node('tr',undefined,value===level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>this._selectUnitLevel(row,value);[value,stats.Health,stats.AttackDamage,stats.AttackInterval,stats.AttackRange,stats.Speed].forEach((item,index)=>{const cell=node('td',index===3?'…':item);tr.appendChild(cell);if(index===3)this._attackRateCell(cell,row,value);});table.appendChild(tr);}overview.appendChild(table);
     },
     _unitLevelEdit(row,level,field,value){
       return this._change(()=>{
+        const resolved=typeof value==='function'?value():value;
         if(!UnitRecords.levels(this._data('A'),row.unitType,row.unitID).includes(level))throw Error('This unit level changed. Refresh before editing.');
-        if(field!==null&&(!UnitLevelStats.FIELDS.includes(field)||value!==undefined&&!UnitLevelStats.valid(field,value)))throw Error('Enter a supported level stat value.');
+        if(field!==null&&(!UnitLevelStats.FIELDS.includes(field)||resolved!==undefined&&!UnitLevelStats.valid(field,resolved)))throw Error('Enter a supported level stat value.');
         const settings=this._data('overrides'),original=settings.unitLevels;
         if(original!==undefined&&(!original||typeof original!=='object'||Array.isArray(original)))throw Error('The unit level table has an invalid format.');
         const table=clone(original||{}),key=UnitLevelStats.key(row.unitID,level),existing=table[key];
         if(existing!==undefined&&(!existing||typeof existing!=='object'||Array.isArray(existing)))throw Error('The unit level stats have an invalid format.');
         const next=Object.assign({},existing),base=get(this._data('A'),row.path);
-        for(const name of field===null?UnitLevelStats.FIELDS:[field]){if(value===undefined||field===null||value===base[name])delete next[name];else next[name]=value;}
+        for(const name of field===null?UnitLevelStats.FIELDS:[field]){if(resolved===undefined||field===null||resolved===base[name])delete next[name];else next[name]=resolved;}
         if(Object.keys(next).length)table[key]=next;else delete table[key];
         if(JSON.stringify(original||{})===JSON.stringify(table))return [];
         return [Object.keys(table).length?{doc:'overrides',path:['unitLevels'],value:table}:{doc:'overrides',path:['unitLevels'],remove:true}];
@@ -435,7 +465,7 @@ function create(kind){
       if(kind==='buildings'){try{Buildings.preview(this,row,{ipc});}catch(error){this._status('Preview: '+error.message,true);}return;}
       const hasModel=kind==='units'||kind==='buildings'||kind==='equipment';
       if(hasModel){
-        if(!this._previewClient){clear(this.$preview);try{this._previewClient=require('../preview/client').mount(this.$preview,{ipc,onChange:edits=>this._change(edits)});}catch(error){this.$preview.appendChild(node('div','Animation preview is loading. '+error.message,'gt-note'));}}
+        if(!this._previewClient){clear(this.$preview);try{this._previewClient=require('../preview/client').mount(this.$preview,{ipc,onChange:edits=>this._previewChange(edits),onAttackMetrics:value=>this._attackRateMetrics(value)});}catch(error){this.$preview.appendChild(node('div','Animation preview is loading. '+error.message,'gt-note'));}}
         if(this._previewClient){const input={documents:this._snapshot.documents,version:this._snapshot.version};try{
           if(kind==='units'){const level=row.unitType==='ally'?this._selectedUnitLevel(row):undefined;this._previewClient.setUnit(Object.assign(input,{type:row.unitType,id:row.unitID||'hero',level,record:level?UnitLevelStats.resolve(row.record,this._data('overrides'),level):row.record}));}
           else if(kind==='buildings')this._previewClient.setBuilding(Object.assign(input,{id:row.key,record:row.record,levelIndex:this._level}));

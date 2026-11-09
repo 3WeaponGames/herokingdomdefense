@@ -1,3 +1,4 @@
+var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
 var cc__extends = __extends;
@@ -46,6 +47,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     }
   };
   _ctor.prototype.doAttack = function () {
+    if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
     var t = this;
     this.time[r.Attack] = 0;
     this.node.getPosition(this.vec2_1);
