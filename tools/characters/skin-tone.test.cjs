@@ -10,6 +10,10 @@ test('Faceless hides only eye slots, preserving beards, hair, eyebrows, mouth an
  for(let frame=0;frame<20;frame++){Core.restore(state);s.slots.forEach((slot,i)=>slot.attachment=original[i]);Core.apply(state);for(let i=0;i<s.slots.length;i++)assert.equal(s.slots[i].attachment,i===2||i===3?null:original[i]);}
  Core.restore(state);assert.deepEqual(s.slots.map(slot=>slot.attachment),original);
 });
+test('the default skin preset matches the reference peach while custom and non-Maker skin choices keep their values',()=>{
+ assert.equal(Core.DEFAULT_SKIN_TINT,'#ffbdab');assert.equal(Options.skinTones[0].value,Core.DEFAULT_SKIN_TINT);assert.equal(Core.skinTint({base:{source:'character-maker/Character'}}),'#ffbdab');
+ assert.equal(Core.skinTint({base:{source:'character-maker/Character'},skinTint:'#704a34'}),'#704a34');assert.equal(Core.skinTint({base:{type:'enemy',source:'monster1/Wolf'}}),null);
+});
 test('skin tint affects only exposed Maker body/head, never compounds and preserves fade alpha and original colors',()=>{
  const s=fixture(),state=Core.prepare({},s,[],{},{},{skinTint:'#cc9966'});for(let frame=0;frame<100;frame++)Core.apply(state);
  for(let i=0;i<s.slots.length;i++){const color=s.slots[i].color;assert.equal(color.r,i<2?.8:1);assert.equal(color.g,i<2?.6:1);assert.equal(color.b,i<2?.4:1);assert.equal(color.a,.7);}

@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path'),url=require('url'),Units=require('../../game-data-editor/lib/unit-assets'),Library=require('./unit-library');
 const clone=v=>JSON.parse(JSON.stringify(v));
 function duration(animation){let last=0;function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')last=Math.max(last,value.time);Object.values(value).forEach(visit);}visit(animation);return last;}
-const ANIMATION_VERSION=2;
+const ANIMATION_VERSION=3;
 function strideDuration(animation){
   const full=duration(animation),frames=animation.bones&&animation.bones.bone&&animation.bones.bone.translate;if(!frames||frames.length<3)return full;
   const first=frames[0];let moved=false;for(const frame of frames.slice(1)){const same=Math.abs((frame.x||0)-(first.x||0))<1e-5&&Math.abs((frame.y||0)-(first.y||0))<1e-5;if(!same)moved=true;else if(moved&&frame.time>0)return frame.time;}return full;
@@ -40,6 +40,7 @@ function alignAnimations(horse,rider){
     if(!source)continue;const from=move?strideDuration(source):duration(source),clip=move?gaitCycle(source,from):clone(source),to=duration(target),factor=from>0&&to>0?to/from:1;
     function retime(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((value.time*factor).toFixed(7));Object.values(value).forEach(retime);}retime(clip);delete clip.events;animations[name]=clip;
     horse.animationSync[name]={sourceCycle:from,targetCycle:to};
+    if(name==='attack')horse.animationSync[name].thrust=require('./mount-attack').synchronize(clip,target);
   }
   horse.json.animations=animations;horse.animations=Object.keys(animations);
 }

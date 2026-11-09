@@ -1,5 +1,6 @@
 'use strict';
 const skinTones=[
+  {value:'#ffbdab',label:'Default'},
   {value:'#f6debd',label:'Light'},
   {value:'#f3c89f',label:'Warm'},
   {value:'#cc9a70',label:'Tan'},

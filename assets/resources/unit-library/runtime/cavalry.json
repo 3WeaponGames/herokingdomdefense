@@ -1041,7 +1041,7 @@
       "name": "layer1/Rider/Body",
       "bone": "layer1/Rider/Body",
       "attachment": "layer1/u_0a7e6d409c450e145bcb203db6e508b8",
-      "color": "f3c89fff",
+      "color": "ffbdabff",
       "dark": "000000"
     },
     {
@@ -1061,7 +1061,7 @@
       "name": "layer1/Rider/Body/Head",
       "bone": "layer1/Rider/Body/Head",
       "attachment": "layer1/u_ecaa646274c180041a64a55d1ae93f75",
-      "color": "f3c89fff",
+      "color": "ffbdabff",
       "dark": "000000"
     },
     {
@@ -5797,7 +5797,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "y": 0.6,
               "curve": 0.081,
               "c2": 0.44,
@@ -5805,13 +5805,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "y": 4.02,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9
+              "time": 1.0811944
             }
           ]
         },
@@ -5823,7 +5823,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "x": 39.3,
               "y": 123.78,
               "curve": 0.081,
@@ -5832,14 +5832,14 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "x": -18.56,
               "y": -205.29,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "x": 32.89,
               "y": 73.21,
               "curve": 0.25,
@@ -5858,7 +5858,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": 7.64,
               "curve": 0.081,
               "c2": 0.44,
@@ -5866,13 +5866,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": -9.76,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": 4.7,
               "curve": 0.25,
               "c3": 0.75
@@ -5890,7 +5890,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": -7.39,
               "curve": 0.081,
               "c2": 0.44,
@@ -5898,13 +5898,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": 4.09,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": 4.41,
               "curve": 0.25,
               "c3": 0.75
@@ -5920,7 +5920,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "x": 9.63,
               "y": 5.35,
               "curve": 0.081,
@@ -5929,35 +5929,35 @@
               "c4": 0.82
             },
             {
-              "time": 0.5
+              "time": 0.8484636
             }
           ]
         },
         "layer0/humanr_head2": {
           "rotate": [
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "curve": 0.081,
               "c2": 0.44,
               "c3": 0.52,
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": 2.92,
               "curve": 0.256,
               "c3": 0.619,
               "c4": 0.46
             },
             {
-              "time": 0.6667,
+              "time": 0.9454542,
               "angle": -5.49,
               "curve": 0.365,
               "c2": 0.45,
               "c3": 0.754
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": -14.09,
               "curve": 0.25,
               "c3": 0.75
@@ -5989,7 +5989,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": 15.53,
               "curve": 0.081,
               "c2": 0.44,
@@ -5997,13 +5997,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": 4.21,
               "curve": 0.25,
               "c3": 0.75
@@ -6016,24 +6016,24 @@
         "layer0/horse_w_3": {
           "rotate": [
             {
-              "time": 0.0667,
+              "time": 0.1212818,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": 15.53,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.5667,
+              "time": 0.8872715,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9667,
+              "time": 1.1200023,
               "angle": 4.21,
               "curve": 0.244,
               "c3": 0.693,
@@ -6047,24 +6047,24 @@
         "layer0/horse_w_4": {
           "rotate": [
             {
-              "time": 0.1333,
+              "time": 0.2423818,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.4,
+              "time": 0.7030418,
               "angle": 15.53,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.6333,
+              "time": 0.9260212,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 1.0333,
+              "time": 1.1587519,
               "angle": 4.21,
               "curve": 0.243,
               "c3": 0.654,
@@ -6078,24 +6078,24 @@
         "layer0/horse_w_5": {
           "rotate": [
             {
-              "time": 0.2,
+              "time": 0.3636636,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.4667,
+              "time": 0.8000382,
               "angle": 15.53,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.7,
+              "time": 0.964829,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 1.1,
+              "time": 1.1975598,
               "angle": 4.21,
               "curve": 0.248,
               "c3": 0.629,
@@ -6170,7 +6170,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": 15.53,
               "curve": 0.081,
               "c2": 0.44,
@@ -6178,13 +6178,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": 4.21,
               "curve": 0.25,
               "c3": 0.75
@@ -6197,24 +6197,24 @@
         "layer0/horse_m_3": {
           "rotate": [
             {
-              "time": 0.0667,
+              "time": 0.1212818,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": 15.53,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.5667,
+              "time": 0.8872715,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9667,
+              "time": 1.1200023,
               "angle": 4.21,
               "curve": 0.244,
               "c3": 0.693,
@@ -6228,24 +6228,24 @@
         "layer0/horse_m_4": {
           "rotate": [
             {
-              "time": 0.1333,
+              "time": 0.2423818,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.4,
+              "time": 0.7030418,
               "angle": 15.53,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.6333,
+              "time": 0.9260212,
               "angle": -11.5,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 1.0333,
+              "time": 1.1587519,
               "angle": 4.21,
               "curve": 0.243,
               "c3": 0.654,
@@ -6264,7 +6264,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "x": 0.8,
               "y": 14.92,
               "curve": 0.081,
@@ -6273,14 +6273,14 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "x": -1.84,
               "y": -25.15,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9
+              "time": 1.0811944
             }
           ]
         },
@@ -6292,7 +6292,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": -26.91,
               "curve": 0.081,
               "c2": 0.44,
@@ -6300,13 +6300,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": 25.85,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": -29.74,
               "curve": 0.25,
               "c3": 0.75
@@ -6324,7 +6324,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "angle": 35.42,
               "curve": 0.081,
               "c2": 0.44,
@@ -6332,13 +6332,13 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": 31.99,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "angle": 2.49,
               "curve": 0.25,
               "c3": 0.75
@@ -6357,31 +6357,31 @@
               "c4": 0.64
             },
             {
-              "time": 0.0333,
+              "time": 0.0605499,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.3,
+              "time": 0.5454954,
               "angle": -6.08,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.5333,
+              "time": 0.8678385,
               "angle": 16.62,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9333,
+              "time": 1.1005692,
               "angle": -17.77,
               "curve": 0.242,
               "c3": 0.671,
               "c4": 0.68
             },
             {
-              "time": 1.2667,
+              "time": 1.2945504,
               "angle": -2.91,
               "curve": 0.359,
               "c2": 0.46,
@@ -6403,25 +6403,25 @@
               "c4": 0.64
             },
             {
-              "time": 0.2,
+              "time": 0.3636636,
               "angle": -6.08,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.4333,
+              "time": 0.7514672,
               "angle": 16.62,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.8333,
+              "time": 1.0423866,
               "angle": -17.77,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 1.2667,
+              "time": 1.2945504,
               "curve": 0.276,
               "c3": 0.621,
               "c4": 0.4
@@ -6435,26 +6435,26 @@
         "layer0/humanr_head10": {
           "rotate": [
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "curve": 0.081,
               "c2": 0.44,
               "c3": 0.52,
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "angle": 9.35,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.6667,
+              "time": 0.9454542,
               "angle": -2.04,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.8
+              "time": 1.0230117
             }
           ]
         },
@@ -6466,7 +6466,7 @@
               "c4": 0.64
             },
             {
-              "time": 0.3333,
+              "time": 0.6060454,
               "x": -26.41,
               "y": -18.01,
               "curve": 0.081,
@@ -6475,14 +6475,14 @@
               "c4": 0.82
             },
             {
-              "time": 0.5,
+              "time": 0.8484636,
               "x": 15.4,
               "y": -8.18,
               "curve": 0.25,
               "c3": 0.75
             },
             {
-              "time": 0.9,
+              "time": 1.0811944,
               "x": -10.9,
               "y": -6.36,
               "curve": 0.25,
@@ -23745,11 +23745,11 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 1.3333,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             }
           ]
         },
@@ -23781,11 +23781,11 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 1.3333,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             }
           ]
         },
@@ -29773,11 +29773,11 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 1.3333,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             }
           ]
         },
@@ -29809,11 +29809,11 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 1.3333,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             }
           ]
         },
@@ -34007,11 +34007,11 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 0.6666667,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             }
           ]
         },
@@ -34043,11 +34043,11 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 0.6666667,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             }
           ]
         },
@@ -38744,55 +38744,55 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 0.6,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 0.6166667,
-              "color": "f3c89ff8"
+              "color": "ffbdabf8"
             },
             {
               "time": 0.6333333,
-              "color": "f3c89fe4"
+              "color": "ffbdabe4"
             },
             {
               "time": 0.65,
-              "color": "f3c89fc8"
+              "color": "ffbdabc8"
             },
             {
               "time": 0.6666667,
-              "color": "f3c89fa5"
+              "color": "ffbdaba5"
             },
             {
               "time": 0.6833333,
-              "color": "f3c89f80"
+              "color": "ffbdab80"
             },
             {
               "time": 0.7,
-              "color": "f3c89f5a"
+              "color": "ffbdab5a"
             },
             {
               "time": 0.7166667,
-              "color": "f3c89f37"
+              "color": "ffbdab37"
             },
             {
               "time": 0.7333333,
-              "color": "f3c89f1b"
+              "color": "ffbdab1b"
             },
             {
               "time": 0.75,
-              "color": "f3c89f07"
+              "color": "ffbdab07"
             },
             {
               "time": 0.7666667,
-              "color": "f3c89f00"
+              "color": "ffbdab00"
             },
             {
               "time": 1,
-              "color": "f3c89f00"
+              "color": "ffbdab00"
             }
           ]
         },
@@ -38868,55 +38868,55 @@
           "color": [
             {
               "time": 0,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 0.6,
-              "color": "f3c89fff"
+              "color": "ffbdabff"
             },
             {
               "time": 0.6166667,
-              "color": "f3c89ff8"
+              "color": "ffbdabf8"
             },
             {
               "time": 0.6333333,
-              "color": "f3c89fe4"
+              "color": "ffbdabe4"
             },
             {
               "time": 0.65,
-              "color": "f3c89fc8"
+              "color": "ffbdabc8"
             },
             {
               "time": 0.6666667,
-              "color": "f3c89fa5"
+              "color": "ffbdaba5"
             },
             {
               "time": 0.6833333,
-              "color": "f3c89f80"
+              "color": "ffbdab80"
             },
             {
               "time": 0.7,
-              "color": "f3c89f5a"
+              "color": "ffbdab5a"
             },
             {
               "time": 0.7166667,
-              "color": "f3c89f37"
+              "color": "ffbdab37"
             },
             {
               "time": 0.7333333,
-              "color": "f3c89f1b"
+              "color": "ffbdab1b"
             },
             {
               "time": 0.75,
-              "color": "f3c89f07"
+              "color": "ffbdab07"
             },
             {
               "time": 0.7666667,
-              "color": "f3c89f00"
+              "color": "ffbdab00"
             },
             {
               "time": 1,
-              "color": "f3c89f00"
+              "color": "ffbdab00"
             }
           ]
         },
@@ -49034,22 +49034,22 @@
           "twoColor": [
             {
               "time": 0,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.035,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.12,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "000000"
             },
             {
               "time": 0.24,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "000000"
             }
           ]
@@ -49106,22 +49106,22 @@
           "twoColor": [
             {
               "time": 0,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.035,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.12,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "000000"
             },
             {
               "time": 0.24,
-              "light": "f3c89fff",
+              "light": "ffbdabff",
               "dark": "000000"
             }
           ]
@@ -49924,5 +49924,5 @@
   ],
   "_unitSource": "character-maker/Character",
   "_unitLook": "cavalry",
-  "_mountAnimationVersion": 2
+  "_mountAnimationVersion": 3
 }

@@ -26,9 +26,10 @@ function fixture(options={}){
  const units=[{type:'ally',id:'90001',key:'ally:90001:default',name:'Guard',group:'Allies',levels:[1,2,3]},{type:'ally',id:'90002',key:'ally:90002:default',name:'Infantry',group:'Allies',levels:[1,2,3]}];
  const part={id:'helmet',sprite:'helmet',layer:'rider',slot:'Rider/Helmet',bone:'Rider',x:0,y:0,rotation:0,scaleX:1,scaleY:1,opacity:1,order:0,hideSlots:[]};
  const initial={version:1,profiles:{guard:{name:'Guard',base:{type:'ally',id:'90001',source:'character-maker/Character'},parts:options.equipment?[part]:[]},infantry:{name:'Infantry',base:{type:'ally',id:'90002',source:'character-maker/Character'},parts:[]}},assignments:{'ally:90001:default':'guard','ally:90002:default':'infantry'}};
+ if(options.base)Object.assign(initial.profiles.guard.base,options.base);
  let data=clone(initial);const savedData=clone(initial),snapshot=()=>({data:clone(data),savedData:clone(savedData),version,canUndo:false,canRedo:false});
  const description={layers:[{uuid:'horse',name:'wqyl_lead_ma',x:0,y:0,scaleX:1,scaleY:1,skin:'default',skins:['default'],animations:['idle','attack','die'],json:{bones:[],slots:[]}},{uuid:'rider',name:'Character',x:0,y:0,scaleX:1,scaleY:1,skin:'default',skins:['default'],animations:['idle','attack','die'],json:{bones:[{name:'Rider'}],slots:[{name:'Rider/Helmet',bone:'Rider'}]}}]};
- const parts=[{id:'helmet',name:'Helmet',category:'Helmet',sourcePack:'character-maker',image:'helmet.png',thumbnail:'helmet.png',width:32,height:32}];
+ const parts=options.parts||[{id:'helmet',name:'Helmet',category:'Helmet',sourcePack:'character-maker',image:'helmet.png',thumbnail:'helmet.png',width:32,height:32}];
  const core={restore(){},prepare(_sp,skeleton,equipment){return{skeleton,equipment};},apply(state){state.skeleton.fitted=state.equipment.length;},isFacialSlot:()=>false,skinTint:()=>null};
  const renderer={createLayers:async(_sp,layers)=>layers.map(description=>({description,data:{findAnimation:name=>({duration:name==='die'?1:name==='idle'?1.3333:.8333}),findSkin:()=>true},skeleton:{bones:[],slots:[],color:{set(){}},skin:{name:'default'},findSlot:()=>null,setSkinByName(){}}})),seek(_sp,layers,name,time,loop){calls.seeks.push({name,time,loop});},bounds:()=>({minX:0,minY:0,maxX:100,maxY:100,width:100,height:100}),drawCanvas(_sp,_canvas,layers){calls.draws.push(layers.map(layer=>layer.skeleton.fitted));},destroyCanvas(){}};
  const api={renderer,core,runtime:()=>({FakeTexture:class{},RegionAttachment:class{}}),image:value=>value,async ipc(name,request){
@@ -40,6 +41,6 @@ function fixture(options={}){
  const context={module:{exports:{}},require:createRequire(file),document:{createElement:tag=>new Element(tag)},requestAnimationFrame:callback=>{frames.set(++frameId,callback);return frameId;},cancelAnimationFrame:id=>frames.delete(id),Image,queueMicrotask,Date};
  vm.runInNewContext(fs.readFileSync(file,'utf8'),context,{filename:file});const client=context.module.exports.mount(host,api);
  const byLabel=label=>host.querySelector('[aria-label="'+label+'"]'),button=text=>host.querySelectorAll('button').find(b=>b.textContent===text);
- return{host,client,calls,frames,pendingImages,initial,byLabel,button,snapshot,tick(time){const scheduled=[...frames.values()];frames.clear();scheduled.forEach(callback=>callback(time));},async settle(){for(let i=0;i<4;i++)await flush();},close(){client.destroy();}};
+ return{host,client,calls,frames,pendingImages,parts,initial,byLabel,button,snapshot,tick(time){const scheduled=[...frames.values()];frames.clear();scheduled.forEach(callback=>callback(time));},async settle(){for(let i=0;i<4;i++)await flush();},close(){client.destroy();}};
 }
 module.exports={fixture,flush};

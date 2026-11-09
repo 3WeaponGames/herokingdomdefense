@@ -4,6 +4,8 @@ const LabelScrub=require('./lib/label-scrub');
 const CharacterOptions=require('./lib/character-options');
 const Levels=require('./lib/character-levels');
 const Catalog=require('./lib/character-catalog');
+const OriginalMounts=require('./lib/original-mounts');
+const MountAttack=require('./lib/mount-attack');
 function mount(host,api){
   const itemMode=api.kind==='items';
   const el=(tag,text,parent,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;if(parent)parent.appendChild(n);return n;};
@@ -72,6 +74,12 @@ function mount(host,api){
   function message(text,error){status.textContent=text;status.classList.toggle('error',!!error);}
   function dirty(){const current=JSON.stringify(data),changed=current!==JSON.stringify(saved),pending=!!data&&current!==lastSent;saveState.textContent=changed?'● Unsaved draft':'All changes saved';saveButton.disabled=busy||!changed;discardButton.disabled=busy||!changed;undoButton.disabled=busy||!canUndo&&!pending;redoButton.disabled=busy||!canRedo||pending;return changed;}
   function historyState(result){canUndo=!!result.canUndo;canRedo=!!result.canRedo;dirty();}
+  function refreshLibrary(result){
+    if(result.units)units=result.units;if(result.sources)sources=result.sources;if(!result.parts)return;
+    const entries=itemMode?result.parts:OriginalMounts.include(result.parts),selectedCategory=category.value;
+    parts=itemMode?CharacterOptions.libraryParts(entries):CharacterOptions.characterParts(entries);assets=Object.fromEntries(entries.map(part=>[part.id,part]));search.placeholder='Search '+parts.length+' parts…';
+    category.innerHTML='';const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(CharacterOptions.partCategory))].sort()){const option=el('option',name,category);option.value=name;}category.value=Array.from(category.options).some(option=>option.value===selectedCategory)?selectedCategory:'';
+  }
   function setBusy(value){busy=value;root.querySelectorAll('input,select,button').forEach(control=>{control.disabled=value||control.hasAttribute('data-readonly');});dirty();}
   function stage(){
     if(!data)return stages;const value=JSON.stringify(data);if(value===lastSent)return stages;lastSent=value;const draft=clone(data);
@@ -98,7 +106,7 @@ function mount(host,api){
     const actions=el('div',undefined,dialog,'row'),close=()=>{creator.remove();creator=null;};button(actions,'Cancel',close);button(actions,'Create character',()=>{
       if(!name.value.trim())throw Error('Enter a character name.');if(Catalog.listed(data,units).some(unit=>unit.name.toLowerCase()===name.value.trim().toLowerCase()))throw Error('A character with this name already exists.');const baseUnit=kind.value==='maker'?units.find(unit=>unit.type==='ally'):units.find(unit=>unit.key===model.value);if(!baseUnit)throw Error('Choose a unit model.');
       const id=unique('character-'+name.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40),data.profiles),base=kind.value==='maker'?{...Catalog.defaults(baseUnit),source:Catalog.maker}:{type:baseUnit.type,id:baseUnit.id,currentModel:true};
-      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:'#f3c89f'}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitFilter.value='';selectProfile(id);changed();
+      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitFilter.value='';selectProfile(id);changed();
     },'primary');name.focus();
   }
   async function save(){
@@ -106,6 +114,7 @@ function mount(host,api){
   }
   async function acceptDraft(result,history){
     const before=data,base=profile()&&clone(profile().base),previousPart=selectedPart;
+    refreshLibrary(result);
     version=result.version;data=clone(result.data);saved=clone(result.savedData);stageError=null;lastSent=JSON.stringify(data);historyState(result);
     const touched=history&&Object.keys(data.profiles).filter(id=>JSON.stringify(before.profiles[id])!==JSON.stringify(data.profiles[id]));
     const id=touched&&touched.includes(selected)?selected:touched&&touched[0]|| (data.profiles[selected]?selected:'');
@@ -317,7 +326,7 @@ function mount(host,api){
   async function loadRig(){
     const p=profile(),serial=++token;states.forEach(api.core.restore);states=[];layers=baseLayers=[];rig=null;selectedModel='';fittingRetryAfter=0;viewFitKey='';current.canvas.style.opacity=current.handles.style.opacity='0';current.box.setAttribute('aria-busy','true');inspector.querySelectorAll('[data-action="add-part"],[data-action="replace-part"]').forEach(control=>{control.disabled=true;});if(!p)return;message('Loading '+p.name+'…');previewName.textContent=p.name;
     const nextViewKey=JSON.stringify(p.base);if(viewKey!==nextViewKey){viewPan={x:0,y:0};viewKey=nextViewKey;}
-    try{const description=await api.ipc('describe',p.base);if(serial!==token||disposed)return;rig=description;spine=api.runtime(description);
+    try{const description=await api.ipc('describe',p.base);if(serial!==token||disposed)return;if(p.base.mount){const rider=description.layers.find(layer=>layer.json.bones.some(bone=>bone.name==='Rider/Mount/Mount')),horse=description.layers.find(layer=>layer.mount)||rider&&description.layers.find(layer=>layer!==rider);if(horse&&rider){horse.mount=true;MountAttack.synchronize(horse.json.animations.attack,rider.json.animations.attack);}}rig=description;spine=api.runtime(description);
       const result=await Promise.all([api.renderer.createLayers(spine,description.layers),api.renderer.createLayers(spine,description.layers),Promise.all([...new Set(p.parts.map(part=>part.sprite))].map(async id=>[id,await imageFor(assets[id])]))]);if(serial!==token||disposed)return;
       layers=result[0];baseLayers=result[1];const textures=Object.fromEntries(result[2].map(([id,img])=>[id,new spine.FakeTexture(img)]));states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless,skinTint:api.core.skinTint(p)}));fittingKey=fittingSignature(p);animation.innerHTML='';const names=[...new Set([].concat.apply([],description.layers.map(l=>l.animations)))];for(const name of names){const option=el('option',name,animation);option.value=name;}animation.value=names.includes('idle')?'idle':names[0];time=0;last=0;updateDuration();fitBounds();renderInspector();draw();fitBounds(true);draw();current.canvas.style.opacity=current.handles.style.opacity='';current.box.setAttribute('aria-busy','false');message('Ready · '+parts.length+' imported parts. Changes remain drafts until Save.');
     }catch(error){if(serial===token)message(error.message,true);}
@@ -401,7 +410,7 @@ function mount(host,api){
   function step(amount){playing=false;play.textContent='Play';time=Math.max(0,Math.min(duration,displayTime()+amount/30));last=0;draw();}
   animation.onchange=()=>{time=0;updateDuration();draw();};scrub.oninput=()=>{playing=false;play.textContent='Play';time=Number(scrub.value);draw();};
   function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time+=(now-last)/1000*Number(speed.value);if(!loopToggle.checked&&time>=duration){time=duration;playing=false;play.textContent='Play';}draw();}last=now;raf=requestAnimationFrame(frame);}
-  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);parts=itemMode?CharacterOptions.libraryParts(result.parts):CharacterOptions.characterParts(result.parts);units=result.units;sources=result.sources||[];search.placeholder='Search '+parts.length+' parts…';assets=Object.fromEntries(result.parts.map(p=>[p.id,p]));lastSent=JSON.stringify(data);const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(CharacterOptions.partCategory))].sort()){const option=el('option',name,category);option.value=name;}unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
+  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);refreshLibrary(result);lastSent=JSON.stringify(data);unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
   return {destroy(){disposed=true;token++;root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
 }
 module.exports={mount};

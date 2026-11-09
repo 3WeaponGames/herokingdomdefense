@@ -46,7 +46,7 @@ function restore(state) {
 function isFacialSlot(name) {
   return /(?:^|\/)(?:Eyes?(?:[_/]|$)|Ani_Eye(?:\/|$))/i.test(name);
 }
-var DEFAULT_SKIN_TINT = "#f3c89f";
+var DEFAULT_SKIN_TINT = "#ffbdab";
 function isSkinSlot(name) { return /(?:^|\/)Rider\/Body(?:\/Head)?$/.test(name); }
 function skinTint(profile) {
   return profile && profile.base && /^character-maker\//.test(profile.base.source || "") ? profile.skinTint || DEFAULT_SKIN_TINT : null;

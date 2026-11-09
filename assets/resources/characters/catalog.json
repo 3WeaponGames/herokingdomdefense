@@ -47,7 +47,7 @@
         "source": "character-maker/Character",
         "resource": "unit-library/runtime/royal-guard"
       },
-      "skinTint": "#f3c89f"
+      "skinTint": "#ffbdab"
     },
     "crossbowman": {
       "name": "Crossbowman",
@@ -132,7 +132,8 @@
         "uuid": "3e5ae353-47b9-511f-a3a4-107525db2a2d",
         "source": "character-maker/Character",
         "resource": "unit-library/runtime/crossbowman"
-      }
+      },
+      "skinTint": "#ffbdab"
     },
     "cavalry": {
       "name": "Cavalry",
@@ -219,7 +220,8 @@
         "source": "character-maker/Character",
         "resource": "unit-library/runtime/cavalry"
       },
-      "mount": "original-mount/legacy-cavalry/lan"
+      "mount": "original-mount/legacy-cavalry/lan",
+      "skinTint": "#ffbdab"
     },
     "monster-1": {
       "name": "Wolf Gray",
@@ -668,7 +670,7 @@
       ],
       "scale": 0.9,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "baked": {
         "uuid": "b1551bb4-582b-5c6f-a797-5f59ffff2c3f",
         "resource": "unit-library/runtime/ally-90001-level-3-3",
@@ -754,7 +756,7 @@
       ],
       "scale": 0.9,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "baked": {
         "uuid": "5830b836-a466-5199-a64c-d1bc78ad086e",
         "resource": "unit-library/runtime/ally-90001-level-1-3",
@@ -838,7 +840,7 @@
       ],
       "scale": 0.95,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "baked": {
         "uuid": "fdc6efe8-e5b2-5651-a1cb-37ac37e7924e",
         "resource": "unit-library/runtime/ally-90001-level-2-3",
@@ -922,7 +924,7 @@
       ],
       "scale": 1,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "baked": {
         "uuid": "46642107-7d94-5e2e-ab2f-e874103cffff",
         "resource": "unit-library/runtime/ally-90001-level-3-4",
@@ -1005,7 +1007,7 @@
       ],
       "scale": 0.9,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "skins": {},
       "models": {},
       "baked": {
@@ -1090,7 +1092,7 @@
       ],
       "scale": 0.95,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "skins": {},
       "models": {},
       "baked": {
@@ -1175,7 +1177,7 @@
       ],
       "scale": 1,
       "faceless": true,
-      "skinTint": "#f3c89f",
+      "skinTint": "#ffbdab",
       "skins": {},
       "models": {},
       "baked": {
@@ -1268,7 +1270,8 @@
         "uuid": "b539ea29-578e-5426-af72-3c7440fe4470",
         "resource": "unit-library/runtime/ally-90003-level-1-2",
         "source": "character-maker/Character"
-      }
+      },
+      "skinTint": "#ffbdab"
     },
     "ally-90003-level-2": {
       "name": "Crossbowman · Level 2",
@@ -1354,7 +1357,8 @@
         "uuid": "5814d396-0a0d-5f29-a5b2-5a4ce2017945",
         "resource": "unit-library/runtime/ally-90003-level-2",
         "source": "character-maker/Character"
-      }
+      },
+      "skinTint": "#ffbdab"
     },
     "ally-90003-level-3": {
       "name": "Crossbowman · Level 3",
@@ -1440,7 +1444,8 @@
         "uuid": "8d144ecf-b7be-5373-acf8-3d2fa3218adb",
         "resource": "unit-library/runtime/ally-90003-level-3",
         "source": "character-maker/Character"
-      }
+      },
+      "skinTint": "#ffbdab"
     }
   },
   "assignments": { "ally:90001:default": "royal-guard", "ally:90002:default": "ally-90001-level-3-3", "ally:90003:default": "crossbowman", "ally:90004:default": "cavalry", "enemy:90001:default": "monster-1", "enemy:90002:default": "monster-2", "enemy:90003:default": "monster-3", "enemy:90004:default": "monster-4", "enemy:90005:default": "monster-5", "enemy:90006:default": "monster-6", "enemy:90007:default": "monster-7", "enemy:90008:default": "monster-8", "enemy:90009:default": "monster-9", "enemy:90010:1": "monster-10", "enemy:90011:2": "monster-11", "enemy:90012:3": "monster-12", "ally:90001:level:1": "ally-90001-level-1-3", "ally:90001:level:2": "ally-90001-level-2-3", "ally:90001:level:3": "ally-90001-level-3-4", "ally:90002:level:1": "ally-90002-level-1-2", "ally:90002:level:2": "ally-90002-level-2-2", "ally:90002:level:3": "ally-90002-level-3-2", "ally:90003:level:1": "ally-90003-level-1-2", "ally:90003:level:2": "ally-90003-level-2", "ally:90003:level:3": "ally-90003-level-3" }
