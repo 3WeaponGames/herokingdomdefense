@@ -50,6 +50,7 @@ class Service{
           const value=model[key];if(typeof value!=='number'||!Number.isFinite(value)||(['x','y'].includes(key)&&Math.abs(value)>4096)||(key==='rotation'&&Math.abs(value)>3600)||(['scaleX','scaleY'].includes(key)&&(value<.01||value>20))||(key==='opacity'&&(value<0||value>1)))throw Error(profile.name+': invalid model '+key+'.');
         }
       }
+      if(profile.parts.some(p=>!p||typeof p!=='object'||Array.isArray(p)))throw Error(profile.name+': choose a valid equipment part.');
       for(const p of profile.parts){
         if(p.forceVisible!==undefined&&typeof p.forceVisible!=='boolean')throw Error(profile.name+': part visibility must be enabled or disabled.');
         if(p.tint!==undefined&&!/^#[a-f0-9]{6}$/i.test(p.tint))throw Error(profile.name+': choose a valid part tint.');

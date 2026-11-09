@@ -42,6 +42,11 @@ test('invalid textures, slots, bones, transforms and assignments are refused bef
 test('discard restores current saved appearance without writing any files',t=>{
   const f=fixture(t),before=fs.readFileSync(f.file,'utf8');edit(f.store,d=>d.profiles.guard.name='Draft');const result=f.store.discard({version:f.store.version});assert.equal(result.dirty,false);assert.equal(result.data.profiles.guard.name,'Guard');assert.equal(fs.readFileSync(f.file,'utf8'),before);
 });
+test('malformed equipment entries are rejected with an authoring error without changing the draft or writing files',t=>{
+  const f=fixture(t),before=fs.readFileSync(f.file),snapshot=f.store.snapshot();
+  for(const value of [null,[],false,'helmet'])for(const at of [0,1]){const data=structuredClone(snapshot.data);data.profiles.guard.parts.splice(at,0,value);assert.throws(()=>f.store.change({version:f.store.version,data}),/valid equipment part/);}
+  assert.deepEqual(f.store.snapshot(),snapshot);assert.deepEqual(fs.readFileSync(f.file),before);
+});
 test('shipped example and every supported base validate without running the game or requiring an engine',()=>{
   const store=new Service(root);assert.equal(store.validate(store.data),true);const units=store.units(),cfg=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8'));
   const imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);

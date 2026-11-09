@@ -2,13 +2,44 @@
 const fs=require('fs'),path=require('path'),url=require('url'),Units=require('../../game-data-editor/lib/unit-assets'),Library=require('./unit-library');
 const clone=v=>JSON.parse(JSON.stringify(v));
 function duration(animation){let last=0;function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')last=Math.max(last,value.time);Object.values(value).forEach(visit);}visit(animation);return last;}
+const ANIMATION_VERSION=2;
+function strideDuration(animation){
+  const full=duration(animation),frames=animation.bones&&animation.bones.bone&&animation.bones.bone.translate;if(!frames||frames.length<3)return full;
+  const first=frames[0];let moved=false;for(const frame of frames.slice(1)){const same=Math.abs((frame.x||0)-(first.x||0))<1e-5&&Math.abs((frame.y||0)-(first.y||0))<1e-5;if(!same)moved=true;else if(moved&&frame.time>0)return frame.time;}return full;
+}
+function gaitCycle(source,period){
+  const result=clone(source),defaults={translate:{x:0,y:0},rotate:{angle:0},scale:{x:1,y:1},shear:{x:0,y:0}};
+  for(const tracks of Object.values(result.bones||{}))for(const [kind,values]of Object.entries(tracks)){
+    if(!defaults[kind]||!Array.isArray(values)||!values.length)continue;
+    const start=values[0].time?{...defaults[kind],time:0,curve:'stepped'}:clone(values[0]),frames=values.filter(frame=>(frame.time||0)<period-1e-6);
+    if(!frames.length||frames[0].time)frames.unshift(start);
+    const last=frames[frames.length-1],keys=Object.keys(defaults[kind]),value=(frame,key)=>frame[key]===undefined?defaults[kind][key]:frame[key];
+    const changed=keys.some(key=>Math.abs(value(last,key)-value(start,key))>1e-5),boundary=values.find(frame=>(frame.time||0)>=period-1e-6);
+    const held=!boundary||keys.every(key=>Math.abs(value(boundary,key)-value(last,key))<1e-5),closeAt=period*.85;
+    // Several original upper-leg offsets stop mid-clip. Ease those held
+    // offsets back into the first pose instead of snapping at the loop seam.
+    if(changed&&held&&(last.time||0)<closeAt)frames.push({...clone(last),time:closeAt,curve:.25,c2:0,c3:.75,c4:1});
+    const end={time:period};for(const key of keys)end[key]=value(start,key);frames.push(end);tracks[kind]=frames;
+  }
+  // The level-one hero horse also animates its weighted mesh vertices. A
+  // cropped deformation must return to the same offsets as the first frame.
+  for(const slots of Object.values(result.deform||{}))for(const attachments of Object.values(slots))for(const [name,values]of Object.entries(attachments)){
+    const start=values[0].time?{time:0,curve:'stepped'}:clone(values[0]),frames=values.filter(frame=>(frame.time||0)<period-1e-6);
+    if(!frames.length||frames[0].time)frames.unshift(start);frames.push({...clone(start),time:period});attachments[name]=frames;
+  }
+  // Keep any imported attachment and constraint timelines in the same stride.
+  function crop(value){if(!value||typeof value!=='object')return;for(const [key,child]of Object.entries(value)){if(Array.isArray(child)&&child.every(frame=>frame&&typeof frame==='object'&&!Array.isArray(frame))){value[key]=child.filter(frame=>frame.time===undefined||frame.time<=period);}else if(!Array.isArray(child))crop(child);}}
+  for(const key of ['slots','ik','transform','paths'])crop(result[key]);if(result.drawOrder)result.drawOrder=result.drawOrder.filter(frame=>(frame.time||0)<=period);
+  return result;
+}
 function alignAnimations(horse,rider){
-  const original=horse.json.animations,animations={};
+  const original=horse.json.animations,animations={};horse.animationSync={};
   for(const [name,target]of Object.entries(rider.json.animations)){
     const move=/^(move|walk|run)$/.test(name),attack=/attack|skill/.test(name),death=/^(die|dead)/.test(name);
     const source=original[name]||original[move?'move':attack?'attack':death?'wqyl_lead_die':'idle']||original.idle;
-    if(!source)continue;const clip=clone(source),from=duration(source),to=duration(target),factor=from>0&&to>0?to/from:1;
+    if(!source)continue;const from=move?strideDuration(source):duration(source),clip=move?gaitCycle(source,from):clone(source),to=duration(target),factor=from>0&&to>0?to/from:1;
     function retime(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((value.time*factor).toFixed(7));Object.values(value).forEach(retime);}retime(clip);delete clip.events;animations[name]=clip;
+    horse.animationSync[name]={sourceCycle:from,targetCycle:to};
   }
   horse.json.animations=animations;horse.animations=Object.keys(animations);
 }
@@ -146,4 +177,4 @@ function orderMounted(rig,description){
   }
   rig.slots=next;
 }
-module.exports={describe,merge,bindRider,splitHead,orderMounted,alignAnimations,duration};
+module.exports={describe,merge,bindRider,splitHead,orderMounted,alignAnimations,duration,strideDuration,ANIMATION_VERSION};

@@ -32,16 +32,16 @@ async function fixture(t,{missingLevel=false,itemMode=false,initialFocus,deferLo
   const make=(name,id,level)=>({name,base:{type:itemMode?'item':'ally',id,...(level?{level}:{})},parts:[{id:'helmet',sprite:'helmet',layer:'model',slot:'head',bone:'root',x:7,y:3,scaleX:1,scaleY:1,rotation:0,opacity:1,order:0,hideSlots:[]}],models:{model:{x:4}},future:{keep:true}});
   const data=itemMode?{version:1,profiles:{helmet:make('Fitted helmet','2:1')},assignments:{'2:1':'helmet'}}:
     {version:1,profiles:{guard3:make('Royal Guard · Level 3','90001',3),guard:make('Royal Guard','90001'),heavy:make('Heavy Infantry','90002'),heavy3:make('Heavy Infantry · Level 3','90002',3)},assignments:{'ally:90001:default':'guard','ally:90001:level:3':'guard3','ally:90002:default':'heavy',...(!missingLevel?{'ally:90002:level:3':'heavy3'}:{})}};
-  const initial=clone(data),snapshot={version:1,data:clone(data),savedData:clone(data),parts:[{id:'helmet',name:'Helmet',category:'Helmet',thumbnail:'helmet.png'}],units,sources:[]};
+  const initial=clone(data),snapshot={version:1,data:clone(data),savedData:clone(data),parts:[{id:'helmet',name:'Helmet',category:'Helmet',image:'helmet.png',thumbnail:'helmet.png'}],units,sources:[]};
   if(initialFocus)snapshot.focus=clone(initialFocus);let finishLoad;const pendingLoad=deferLoad?new Promise(resolve=>{finishLoad=()=>resolve(clone(snapshot));}):null;
   const rig={defaultLayer:'model',layers:[{uuid:'model',name:'Body',x:0,y:0,scaleX:1,scaleY:1,skins:['default'],animations:['idle'],json:{bones:[{name:'root'}],slots:[{name:'head',bone:'root'}]}}]};
-  const context={module:{exports:{}},require:createRequire(file),document:{createElement:tag=>new Element(tag)},requestAnimationFrame:()=>1,cancelAnimationFrame(){}};
+  const context={module:{exports:{}},require:createRequire(file),document:{createElement:tag=>new Element(tag)},Image:class{constructor(){this.width=this.height=32;}set src(_value){Promise.resolve().then(()=>this.onload());}},requestAnimationFrame:()=>1,cancelAnimationFrame(){}};
   vm.runInNewContext(source,context,{filename:file});
   const client=context.module.exports.mount(root,{kind:itemMode?'items':'characters',ipc:async(name,request)=>{
     calls.push({name,request:clone(request||{})});if(name==='load')return pendingLoad||clone(snapshot);if(name==='describe')return clone(rig);
     if(name==='change'){snapshot.data=clone(request.data);return{version:2,canUndo:true};}
     throw Error('Unexpected editor command '+name);
-  },image:value=>value,runtime:()=>({}),core:{restore(){},isFacialSlot:()=>false,skinTint:()=>null},renderer:{createLayers:async()=>[],destroyCanvas(){}}});
+  },image:value=>value,runtime:()=>({FakeTexture:class{}}),core:{restore(){},isFacialSlot:()=>false,skinTint:()=>null},renderer:{createLayers:async()=>[],destroyCanvas(){}}});
   t.after(()=>client.destroy());
   const flush=async()=>{await new Promise(resolve=>setImmediate(resolve));const status=root.querySelector('.status');assert(!status.className.split(' ').includes('error'),status.textContent);};await flush();
   const field=(label,parent=root)=>descendants(parent).find(n=>n.attributes['aria-label']===label);

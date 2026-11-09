@@ -40,6 +40,20 @@ function retime(rig,contract,preserveMoveTiming){
     if(original.events&&original.events.length)result.events=clone(original.events);else delete result.events;animations[name]=result;
   }if(death&&!animations.die){animations.die=clone(death);delete animations.die.events;}animations.hit=hit;rig.animations=animations;rig.events=clone(contract.events||{});
 }
+function selectSkin(rig,skinName){
+  const chosen=rig.skins.find(s=>s.name===skinName)||rig.skins[0],fallback=rig.skins.find(s=>s.name==='default'),attachments=clone(fallback&&fallback.attachments||{});
+  // Spine resolves missing attachments through the default skin. Flatten that
+  // same fallback into the published skin, including default-only shadows.
+  for(const [slot,variants]of Object.entries(chosen.attachments))attachments[slot]=Object.assign(attachments[slot]||{},clone(variants));
+  for(const animation of Object.values(rig.animations))if(animation.deform){
+    const deform={};for(const [slot,variants]of Object.entries(attachments))for(const name of Object.keys(variants)){
+      const owner=chosen.attachments[slot]&&chosen.attachments[slot][name]?chosen.name:'default',frames=animation.deform[owner]&&animation.deform[owner][slot]&&animation.deform[owner][slot][name];
+      if(frames)(deform[slot]||(deform[slot]={}))[name]=clone(frames);
+    }
+    animation.deform=Object.keys(deform).length?{default:deform}:{};
+  }
+  rig.skins=[Object.assign(clone(chosen),{name:'default',attachments})];
+}
 function bake(root,profile,id,contract,assets,read,options){
   if(!options&&profile.base.source){
     const source=Library.load(root).sources.find(s=>s.id===profile.base.source);
@@ -49,13 +63,12 @@ function bake(root,profile,id,contract,assets,read,options){
   const description=options&&options.description||(profile.base.source?require('./mounts').describe(root,profile.base,true):null);
   if(description&&description.layers.length>1){
     const pieces=description.layers.map(layer=>bake(root,Object.assign({},profile,{parts:profile.parts.filter(p=>p.layer===layer.uuid)}),id,contract,assets,read,{raw:true,description:{layers:[layer],fitHeight:description.fitHeight}}));
-    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.orderMounted(merged.rig,description);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
+    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.orderMounted(merged.rig,description);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;merged.rig._mountAnimationVersion=mounts.ANIMATION_VERSION;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
   }
   if(!description)throw Error('Choose a Character Maker or monster base before saving this unit');
   const layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read),pictures={};
   const skinName=profile.skins&&profile.skins[layer.uuid]||layer.skin||'default';
-  rig.skins=[clone(rig.skins.find(s=>s.name===skinName)||rig.skins[0])];rig.skins[0].name='default';
-  for(const animation of Object.values(rig.animations))if(animation.deform){const deform=animation.deform[skinName];animation.deform=deform?{default:deform}:{};}
+  selectSkin(rig,skinName);
   const attachments=rig.skins[0].attachments,slots=new Map(rig.slots.map(slot=>[slot.name,slot])),replaced=new Set(),hidden=new Set();
   for(const part of profile.parts){
     if(part.layer!==layer.uuid)throw Error('Part belongs to a different imported base: '+part.id);
@@ -170,4 +183,4 @@ function plan(root,data,assets,original){
   if(!Document.equal(originalContracts,contracts))files.set(path.relative(root,contractFile),JSON.stringify(contracts,null,2)+'\n');
   return{data:updated,files,reads};
 }
-module.exports={bake,plan,retime,duration,uuid,textureMeta,readAtlas,preserveMetadata};
+module.exports={bake,plan,retime,duration,uuid,textureMeta,readAtlas,preserveMetadata,selectSkin};
