@@ -45,7 +45,7 @@ function layer(root, component, prefab, files) {
         if (lines[i].trim() && (i === 0 || !lines[i - 1].trim()) && lines[i + 1] && /^(size|format):/.test(lines[i + 1].trim())) {
             const name = lines[i].trim(), texture = path.resolve(path.dirname(file), name);
             if (path.dirname(texture) !== path.dirname(file) || !fs.existsSync(texture)) throw new Error('Missing atlas page ' + name);
-            pages[name] = url.pathToFileURL(texture).href;
+            pages[name] = url.pathToFileURL(texture).href+'?revision='+fs.statSync(texture).mtimeMs;
         }
     }
     const node = prefab[component.node.__id__], trs = node._trs && node._trs.array;
@@ -88,7 +88,13 @@ function describe(root, request) {
     const prefab = json(file), skeletons = prefab.filter(c => c.__type__ === 'sp.Skeleton');
     let chosen = type === 'hero' ? skeletons : [skeletons[boss ? Number(id) - 90010 : 0]];
     if (!chosen[0]) throw new Error('Unit has no display skeleton.');
-    const layers = chosen.map(c => layer(root, c, prefab, files));
+    const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(id)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
+    let levelProfile=null;
+    if(type==='ally'&&request.level){
+        if(!Number.isInteger(request.level)||!(levels.length?levels:[1]).includes(request.level))throw Error('Choose an existing ally level.');
+        const file=path.join(root,'assets/resources/characters/catalog.json');if(fs.existsSync(file)){const looks=json(file),selected=looks.assignments['ally:'+id+':level:'+request.level]||looks.assignments['ally:'+id+':default'];levelProfile=looks.profiles[selected];}
+    }
+    const layers = chosen.map(c => layer(root,levelProfile&&levelProfile.baked?Object.assign({},c,{_N$skeletonData:{__uuid__:levelProfile.baked.uuid},defaultSkin:'default'}):c,prefab,files));
     const equipment = [];
     if (type === 'hero') {
         const roles = { ma: 6, doupeng: 1, tou: 2, gong: 4, jian: 3, shou: 5 };
@@ -116,6 +122,6 @@ function describe(root, request) {
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
         effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, behavior) : null,
         forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],
-        runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
+        ...(type==='ally'?{levels:levels.length?levels:[1],level:request.level||0}:{}),runtimePath: request.noRuntime ? null : enginePath(), silence: 'Render only; audio and gameplay are not loaded.' };
 }
 module.exports = { describe, index, enginePath, invalidate: function () { cachedIndex = null; } };

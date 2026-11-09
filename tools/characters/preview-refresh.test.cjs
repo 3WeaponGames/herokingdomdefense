@@ -1,0 +1,26 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{createRequire}=require('node:module'),assert=require('node:assert/strict'),{test}=require('node:test');
+const root=path.resolve(__dirname,'../..'),flush=()=>new Promise(resolve=>setImmediate(resolve));
+test('published appearances reload the current unit and level without changing its draft timing or stats',async()=>{
+ const harness=path.join(root,'packages/game-data-editor/test/unit-preview-client.test.js'),prefix=fs.readFileSync(harness,'utf8').split('const source=')[0],file=path.join(root,'packages/game-data-editor/preview/client.js'),calls=[];
+ const context={require:createRequire(file),module:{exports:{}},requestAnimationFrame(){assert.fail('Refresh must not start playback');},cancelAnimationFrame(){}};vm.createContext(context);vm.runInContext(prefix,context);context.document={createElement:tag=>vm.runInContext('new Element('+JSON.stringify(tag)+')',context)};
+ const renderer={createLayers:async(spine,layers)=>layers.map(description=>({description,data:{findAnimation:()=>({duration:1}),findSkin:()=>true},skeleton:{color:{set(){}}}})),seek(){},bounds:()=>({width:1,height:1}),drawCanvas(){},destroyCanvas(){}};
+ context.require=id=>id==='./spine-renderer'?renderer:id==='./projectile'?{simulate:()=>null}:id==='./building-artwork'?{mount:()=>({hide(){},destroy(){}})}:{};
+ vm.runInContext('(function(){'+fs.readFileSync(file,'utf8')+'})()',context,{filename:file});
+ const documents={overrides:{data:{timingDefaults:{'ally:90002:default':{attack:.5}},timings:{'ally:90002:default':{attack:.7}},animationSpeeds:{}}}},before=JSON.stringify(documents),description={type:'ally',id:'90002',key:'ally:90002:default',form:'default',effect:'Melee hit',levels:[1,2,3],layers:[{uuid:'model',animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[]}}}}],shared:[],equipment:[]};
+ const host=vm.runInContext('new Element("div")',context),client=context.module.exports.mount(host,{ipc:async(name,payload)=>{calls.push({name,payload});return description;},onChange(){assert.fail('Appearance refresh changed game data');}}),request={type:'ally',id:'90002',record:{ID:90002,Health:90},documents};
+ client.setUnit(request);await flush();client.setUnit(request);assert.equal(calls.length,1);client.refreshAppearance();await flush();assert.equal(calls.length,2);assert.equal(client.getState().effect,.7);
+ const field=vm.runInContext('field',context),level=field(host,'Character level');level.value='3';level.onchange();await flush();assert.equal(calls.at(-1).payload.level,3);client.refreshAppearance();await flush();assert.equal(calls.at(-1).payload.level,3);assert.equal(client.getState().level,3);assert.equal(JSON.stringify(documents),before);
+ client.destroy();const count=calls.length;client.refreshAppearance();await flush();assert.equal(calls.length,count);
+});
+test('Units level previews resolve the exact saved character resource without changing saved data',()=>{
+ const Units=require('../../packages/game-data-editor/lib/unit-assets'),file=path.join(root,'assets/resources/characters/catalog.json'),before=fs.readFileSync(file),data=JSON.parse(before);
+ for(const id of ['90001','90002','90003'])for(const level of [1,2,3]){const profile=data.profiles[data.assignments['ally:'+id+':level:'+level]],description=Units.describe(root,{type:'ally',id,level,noRuntime:true});assert.equal(description.layers[0].uuid,profile.baked.uuid);assert.equal(description.level,level);assert.deepEqual(description.levels,[1,2,3]);}
+ assert.throws(()=>Units.describe(root,{type:'ally',id:'90002',level:99,noRuntime:true}),/existing ally level/);assert.deepEqual(fs.readFileSync(file),before);
+});
+test('Creator publishes only after appearance imports and the receiving panel only refreshes its preview',async()=>{
+ const calls=[],file=path.join(root,'packages/hkd-characters/main.js');class Service{constructor(){this.root=root;this.revision='saved';}save(){return{result:{saved:true,files:['assets/model.png']}};}snapshot(){return{revision:'saved'};}}
+ const context={module:{exports:{}},Editor:{Project:{path:root},Ipc:{sendToAll(name){calls.push(name);}}},require:id=>id==='path'?path:id==='./lib/service'?{Service}:id==='./lib/import-refresh'?{refresh:async()=>{calls.push('imported');}}:null};vm.runInNewContext(fs.readFileSync(file,'utf8'),context);
+ await new Promise((resolve,reject)=>context.module.exports.messages.save({reply(error){error?reject(Error(error)):resolve();}},{}));assert.deepEqual(calls,['imported','hkd-characters:published']);
+ const panelFile=path.join(root,'packages/game-data-editor/panel/index.js'),panel={module:{exports:{}},__dirname:path.dirname(panelFile),Editor:{Panel:{extend:value=>value}},require:createRequire(panelFile)};vm.runInNewContext(fs.readFileSync(panelFile,'utf8'),panel);const definition=panel.module.exports.create('units'),instance={_closed:false,_previewClient:{refreshAppearance(){calls.push('preview');}}};definition.messages['hkd-characters:published'].call(instance);assert.equal(calls.at(-1),'preview');instance._closed=true;const count=calls.length;definition.messages['hkd-characters:published'].call(instance);assert.equal(calls.length,count);
+});

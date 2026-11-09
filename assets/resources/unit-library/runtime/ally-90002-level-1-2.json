@@ -10,21 +10,12 @@
   },
   "bones": [
     {
-      "name": "__game_fit_2",
-      "x": 0,
-      "y": 0,
-      "rotation": 0,
-      "scaleX": 0.9,
-      "scaleY": 0.9
-    },
-    {
       "name": "__game_fit",
       "x": 0,
       "y": 0,
       "rotation": 0,
-      "scaleX": 1.0239286951660023,
-      "scaleY": 1.0239286951660023,
-      "parent": "__game_fit_2"
+      "scaleX": 0.9215358256494021,
+      "scaleY": 0.9215358256494021
     },
     {
       "name": "__size",
@@ -39132,22 +39123,22 @@
           "twoColor": [
             {
               "time": 0,
-              "light": "ffffffff",
+              "light": "ffffff00",
               "dark": "a6a6a6"
             },
             {
               "time": 0.035,
-              "light": "ffffffff",
+              "light": "ffffff00",
               "dark": "a6a6a6"
             },
             {
               "time": 0.12,
-              "light": "ffffffff",
+              "light": "ffffff00",
               "dark": "000000"
             },
             {
               "time": 0.24,
-              "light": "ffffffff",
+              "light": "ffffff00",
               "dark": "000000"
             }
           ]
@@ -39204,22 +39195,22 @@
           "twoColor": [
             {
               "time": 0,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.035,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.12,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "000000"
             },
             {
               "time": 0.24,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "000000"
             }
           ]
@@ -39228,22 +39219,22 @@
           "twoColor": [
             {
               "time": 0,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.035,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "a6a6a6"
             },
             {
               "time": 0.12,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "000000"
             },
             {
               "time": 0.24,
-              "light": "ffffff00",
+              "light": "ffffffff",
               "dark": "000000"
             }
           ]
@@ -39856,5 +39847,6 @@
       "string": "attack"
     }
   },
+  "_unitSource": "character-maker/Character",
   "_unitLook": "ally-90002-level-1-2"
 }

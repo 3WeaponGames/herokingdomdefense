@@ -7,6 +7,7 @@ test('original cavalry horse and every hero horse skin keep animated weighted me
  const hero=Mounts.describe(root,{source:'character-maker/Character',mount:'hero-horse'},true).layers[0];
  for(const [mount,skin]of [['legacy-cavalry','lan'],['legacy-cavalry','hong'],...hero.skins.map(s=>['hero-horse',s])]){
   const {rig,data,spine,description}=compile(mount,skin),s=new spine.Skeleton(data);assert.equal(rig.bones.find(b=>b.name==='layer1/__game_fit').parent,'layer0/bone2');
+  assert(Math.abs(Baker.duration(rig.animations.move)-Baker.duration(description.layers[1].json.animations.move))<1e-6,'mounted locomotion uses the Maker movement cycle');
   assert(rig.slots.some(slot=>slot.name.startsWith('layer0/')));assert(rig.slots.some(slot=>slot.name.includes('Rider/Body/Head/Helmet')));
   const front=new Set(description.layers[0].foregroundSlots.map(name=>'layer0/'+name));assert(front.size>0);
   const rank=slot=>front.has(slot.data.name)?3:slot.data.name.startsWith('layer0/')?0:/\/Rider\/HandRight\//.test(slot.data.name)?4:/\/Rider\/HandLeft\//.test(slot.data.name)?2:1;
@@ -16,6 +17,17 @@ test('original cavalry horse and every hero horse skin keep animated weighted me
    const order=s.drawOrder.map(rank);assert(order.every((value,i)=>!i||value>=order[i-1]),mount+'/'+skin+'/'+animation.name+' keeps body/rider/left/head/right draw groups');
    for(const slot of s.slots){const a=slot.getAttachment();if(Core.isFacialSlot(slot.data.name))assert.equal(a,null);if(!a)continue;const v=[];if(a instanceof spine.RegionAttachment)a.computeWorldVertices(slot.bone,v,0,2);else if(a instanceof spine.MeshAttachment)a.computeWorldVertices(slot,0,a.worldVerticesLength,v,0,2);assert(v.every(Number.isFinite),mount+'/'+skin+'/'+animation.name+'/'+slot.data.name);}
   }
+ }
+});
+
+test('original horse legs keep their weighted animation while each cycle matches Maker idle, attack, walk and run',()=>{
+ for(const mount of ['legacy-cavalry','hero-horse']){
+  const description=Mounts.describe(root,{source:'character-maker/Character',mount},true),[horse,rider]=description.layers;
+  for(const name of ['idle','attack','walk','run','move'])assert(Math.abs(Mounts.duration(horse.json.animations[name])-Mounts.duration(rider.json.animations[name]))<1e-6,mount+'/'+name+' stays in phase with Maker');
+  const original=JSON.parse(fs.readFileSync(path.join(root,horse.source))),from=Mounts.duration(original.animations.move),to=Mounts.duration(rider.json.animations.walk),aligned=structuredClone(horse.json.animations.walk.bones);
+  function undoTime(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((value.time*from/to).toFixed(4));Object.values(value).forEach(undoTime);}undoTime(aligned);
+  assert.deepEqual(aligned,original.animations.move.bones,'retiming changes frame times while preserving every leg/body key and curve');
+  assert(horse.json.bones.some(bone=>/horse_.*(?:q|h)_/.test(bone.name)));assert(horse.json.skins.some(skin=>Object.values(skin.attachments).some(attachments=>Object.values(attachments).some(a=>a.type==='mesh'&&a.vertices))));
  }
 });
 test('mount selection is explicit and unsupported horse paths cannot be read',()=>{const base={source:'character-maker/Character'};assert.equal(Mounts.describe(root,base,true).layers.length,1);assert.throws(()=>Mounts.describe(root,{...base,mount:'../../outside'},true),/existing horse/);});

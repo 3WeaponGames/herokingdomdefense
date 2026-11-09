@@ -6,7 +6,7 @@ function rig(file){const json=JSON.parse(fs.readFileSync(file)),atlasText=fs.rea
 test('all deployed units retain authored hit art or equipped-part white flashes without changing attack contracts',()=>{
  const contracts=require('../../assets/resources/unit-library/runtime/contracts.json'),catalog=require('../../assets/resources/characters/catalog.json');
  for(const [key,contract]of Object.entries(contracts.units)){
-  const id=catalog.assignments[key],r=rig(path.join(root,'assets/resources/unit-library/runtime/default_'+id+'.json'));
+  const id=catalog.assignments[key],profile=catalog.profiles[id],r=rig(path.join(root,'assets/resources',profile.baked.resource+'.json'));
   for(const [name,original]of Object.entries(contract.animations)){if(name!=='move')assert(Math.abs(Bake.duration(r.json.animations[name])-original.duration)<1e-6);assert.deepEqual(r.json.animations[name].events||[],original.events);}
   assert(r.data.findAnimation('hit'),key);assert(!r.json.animations.hit.events);
   const attack=r.state.setAnimation(0,'attack',true),hit=r.state.setAnimation(1,'hit',false);hit.mixDuration=0;hit.trackEnd=hit.animationEnd;

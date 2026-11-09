@@ -20,8 +20,9 @@ class Element{
   }));}
   querySelector(selector){return this.querySelectorAll(selector)[0]||null;}
   addEventListener(){} removeEventListener(){} focus(){} hasPointerCapture(){return false;}
+  contains(node){return node===this||descendants(this).includes(node);}
 }
-async function fixture(t,{missingLevel=false,itemMode=false}={}){
+async function fixture(t,{missingLevel=false,itemMode=false,initialFocus,deferLoad=false}={}){
   const root=new Element('div'),calls=[],units=itemMode?
     [{type:'item',id:'2:1',key:'2:1',name:'Helmet 1',group:'Helmet'},{type:'item',id:'2:2',key:'2:2',name:'Helmet 2',group:'Helmet'}]:
     [{type:'ally',id:'90001',key:'ally:90001:default',name:'Royal Guard',group:'Allies',levels:[1,2,3]},
@@ -32,46 +33,62 @@ async function fixture(t,{missingLevel=false,itemMode=false}={}){
   const data=itemMode?{version:1,profiles:{helmet:make('Fitted helmet','2:1')},assignments:{'2:1':'helmet'}}:
     {version:1,profiles:{guard3:make('Royal Guard · Level 3','90001',3),guard:make('Royal Guard','90001'),heavy:make('Heavy Infantry','90002'),heavy3:make('Heavy Infantry · Level 3','90002',3)},assignments:{'ally:90001:default':'guard','ally:90001:level:3':'guard3','ally:90002:default':'heavy',...(!missingLevel?{'ally:90002:level:3':'heavy3'}:{})}};
   const initial=clone(data),snapshot={version:1,data:clone(data),savedData:clone(data),parts:[{id:'helmet',name:'Helmet',category:'Helmet',thumbnail:'helmet.png'}],units,sources:[]};
+  if(initialFocus)snapshot.focus=clone(initialFocus);let finishLoad;const pendingLoad=deferLoad?new Promise(resolve=>{finishLoad=()=>resolve(clone(snapshot));}):null;
   const rig={defaultLayer:'model',layers:[{uuid:'model',name:'Body',x:0,y:0,scaleX:1,scaleY:1,skins:['default'],animations:['idle'],json:{bones:[{name:'root'}],slots:[{name:'head',bone:'root'}]}}]};
   const context={module:{exports:{}},require:createRequire(file),document:{createElement:tag=>new Element(tag)},requestAnimationFrame:()=>1,cancelAnimationFrame(){}};
   vm.runInNewContext(source,context,{filename:file});
   const client=context.module.exports.mount(root,{kind:itemMode?'items':'characters',ipc:async(name,request)=>{
-    calls.push({name,request:clone(request||{})});if(name==='load')return clone(snapshot);if(name==='describe')return clone(rig);
+    calls.push({name,request:clone(request||{})});if(name==='load')return pendingLoad||clone(snapshot);if(name==='describe')return clone(rig);
     if(name==='change'){snapshot.data=clone(request.data);return{version:2,canUndo:true};}
     throw Error('Unexpected editor command '+name);
   },image:value=>value,runtime:()=>({}),core:{restore(){},isFacialSlot:()=>false,skinTint:()=>null},renderer:{createLayers:async()=>[],destroyCanvas(){}}});
   t.after(()=>client.destroy());
   const flush=async()=>{await new Promise(resolve=>setImmediate(resolve));const status=root.querySelector('.status');assert(!status.className.split(' ').includes('error'),status.textContent);};await flush();
-  const field=label=>descendants(root).find(n=>n.attributes['aria-label']===label);
-  const choose=async(key)=>{const input=field(itemMode?'Equipment tier':'Base character');assert(input&&!input.disabled,'character selector is available');input.value=key;input.onchange();await flush();};
+  const field=(label,parent=root)=>descendants(parent).find(n=>n.attributes['aria-label']===label);
   const button=text=>descendants(root).find(n=>n.tagName==='button'&&n.textContent===text);
-  return{root,calls,initial,snapshot,client,field,choose,button,flush};
+  const choose=async(key)=>{if(itemMode){const input=field('Equipment tier');input.value=key;input.onchange();}else{const unit=units.find(unit=>unit.key===key);await button(unit.group+' · '+unit.name).onclick();}await flush();};
+  const level=async(value)=>{const input=field('Level');input.value=String(value);input.onchange();await flush();};
+  return{root,calls,initial,snapshot,client,field,choose,level,button,flush,finishLoad};
 }
-test('right character selection opens the target unit level without retargeting the current draft or its assignment',async t=>{
+test('one character list selects independent appearances without base selectors, Saved looks, duplicates or activation switches',async t=>{
   const f=await fixture(t);assert.equal(f.client.getState().selected,'guard3');
-  await f.choose('ally:90002:default');assert.equal(f.client.getState().selected,'heavy3');
+  assert.equal(f.field('Base character'),undefined);assert.equal(f.field('Base model'),undefined);assert.equal(f.button('Duplicate'),undefined);
+  assert(!descendants(f.root).some(node=>node.textContent==='Saved looks'||node.textContent==='Use this look for this unit'));
+  await f.choose('ally:90002:default');assert.equal(f.client.getState().selected,'heavy');await f.level(3);assert.equal(f.client.getState().selected,'heavy3');
   assert.equal(f.field('Character name').value,'Heavy Infantry · Level 3');assert.equal(f.field('Level').value,3);
-  await f.choose('ally:90001:default');assert.equal(f.client.getState().selected,'guard3');
+  await f.choose('ally:90001:default');await f.level(3);assert.equal(f.client.getState().selected,'guard3');
   await f.button('Allies · Heavy Infantry').onclick();await f.flush();assert.equal(f.client.getState().selected,'heavy');
   assert.equal(f.field('Character name').value,'Heavy Infantry');assert.equal(f.client.getState().dirty,false);
   assert.deepEqual(f.snapshot.data,f.initial);assert(!f.calls.some(call=>call.name==='change'||call.name==='save'));
 });
-test('unconfigured levels use the target default and keep navigation available; unsupported levels fall back to default',async t=>{
-  const f=await fixture(t,{missingLevel:true});await f.choose('ally:90002:default');
-  assert.equal(f.client.getState().selected,'');assert(f.button('Customize level 3'));assert.equal(f.field('Level').value,3);
-  assert.equal(f.field('Base character').value,'ally:90002:default');
-  await f.choose('ally:90001:default');assert.equal(f.client.getState().selected,'guard3');
-  await f.choose('ally:90003:default');assert.equal(f.field('Level').value,0);assert(f.button('Edit this character'));
+test('browsing unconfigured levels stays read-only; editing directly creates exactly one assigned level appearance',async t=>{
+  const f=await fixture(t,{missingLevel:true});await f.choose('ally:90002:default');await f.level(3);
+  assert.equal(f.client.getState().selected,'');assert.equal(f.button('Customize level 3'),undefined);assert.equal(f.field('Level').value,3);assert(f.field('Character name'));
+  assert.equal(f.client.getState().dirty,false);assert(!f.calls.some(call=>call.name==='change'));
+  const size=f.field('Character size');size.value='1.1';size.onchange();await f.flush();const id=f.client.getState().selected;
+  assert(id);assert.equal(f.snapshot.data.assignments['ally:90002:level:3'],id);assert.equal(f.snapshot.data.profiles[id].scale,1.1);
+  size.value='1.2';size.onchange();await f.flush();assert.equal(f.client.getState().selected,id);assert.equal(Object.keys(f.snapshot.data.profiles).length,Object.keys(f.initial.profiles).length+1);
+  assert.deepEqual(f.snapshot.data.profiles.heavy,f.initial.profiles.heavy);await f.choose('ally:90001:default');await f.choose('ally:90002:default');await f.level(3);assert.equal(f.client.getState().selected,id);
+  await f.choose('ally:90003:default');assert.equal(f.field('Level').value,0);assert.equal(f.button('Edit this character'),undefined);
   await f.button('Allies · Royal Guard').onclick();await f.flush();await f.choose('enemy:90001:default');
-  assert.equal(f.field('Level'),undefined);assert(f.button('Edit this character'));assert.equal(f.client.getState().dirty,false);
-  assert(!f.calls.some(call=>call.name==='change'||call.name==='save'));
+  assert.equal(f.field('Level'),undefined);assert.equal(f.button('Edit this character'),undefined);assert(!f.calls.some(call=>call.name==='save'));
 });
 test('unsaved equipment and names survive switching between units and their levels',async t=>{
   const f=await fixture(t),name=f.field('Character name');name.value='My unsaved guard';name.oninput();name.onchange();await f.flush();
-  const staged=clone(f.snapshot.data);await f.choose('ally:90002:default');await f.choose('ally:90001:default');
+  const staged=clone(f.snapshot.data);await f.choose('ally:90002:default');await f.choose('ally:90001:default');await f.level(3);
   assert.equal(f.field('Character name').value,'My unsaved guard');assert.deepEqual(f.snapshot.data,staged);
   assert.deepEqual(f.snapshot.data.profiles.guard3.parts,f.initial.profiles.guard3.parts);assert.deepEqual(f.snapshot.data.assignments,f.initial.assignments);
   assert.equal(f.calls.filter(call=>call.name==='change').length,1);assert(!f.calls.some(call=>call.name==='save'));
+});
+test('creation adds independent named Maker and finished-model characters to the same list and supports their levels',async t=>{
+  const f=await fixture(t);await f.button('New character').onclick();const dialog=descendants(f.root).find(node=>node.attributes.role==='dialog');
+  f.field('Character name',dialog).value='Silver Knight';await f.button('Create character').onclick();await f.flush();const id=f.client.getState().selected;
+  assert(f.snapshot.data.characters[id]);assert.equal(f.snapshot.data.profiles[id].base.source,'character-maker/Character');assert(f.button('Created · Silver Knight'));assert.equal(f.field('Level').value,0);
+  await f.level(2);f.field('Character name').value='Silver Knight · Level 2';f.field('Character name').onchange();await f.flush();assert(f.snapshot.data.characters[id].levels[2]);
+  await f.button('New character').onclick();const second=descendants(f.root).find(node=>node.attributes.role==='dialog'),kind=f.field('Starting model',second);kind.value='finished';kind.onchange();f.field('Unit model',second).value='ally:90002:default';f.field('Character name',second).value='Finished Knight';
+  await f.button('Create character').onclick();await f.flush();const finished=f.snapshot.data.profiles[f.client.getState().selected];assert.equal(finished.base.currentModel,true);assert.equal(finished.base.id,'90002');assert.equal(finished.base.source,undefined);assert(f.button('Created · Finished Knight'));
+  assert.deepEqual(f.snapshot.data.profiles.guard3,f.initial.profiles.guard3);assert.deepEqual(f.snapshot.data.profiles.heavy,f.initial.profiles.heavy);assert(!f.calls.some(call=>call.name==='save'));
+  await f.button('Delete character').onclick();await f.flush();assert.equal(f.button('Created · Finished Knight'),undefined);assert(f.button('Created · Silver Knight'));
 });
 test('shared item editor retains its explicit equipment-tier editing behavior',async t=>{
   const f=await fixture(t,{itemMode:true});await f.choose('2:2');

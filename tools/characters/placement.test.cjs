@@ -5,6 +5,21 @@ test('headgear fits the active head skin rather than the hero mount; Maker slots
   assert.equal(Placement.layerFor({layers:[horse,head]},helmet),head);assert.equal(Placement.socket(head,helmet).name,'humanr_headgear_2');assert.equal(Placement.fitAspect(200,100,100,100),.5);assert.deepEqual(Placement.intended({...helmet,pixelsPerUnit:200,pivot:{x:.25,y:.75}}),{x:12.5,y:-6.25,rotation:0,scaleX:.5,scaleY:.5});
   assert.equal(Placement.role({id:'HandRight/Crossbow/Wood_Down'}),'Crossbow_Down');
 });
+
+test('mounted Maker equipment always targets rider sockets even when the horse is first and the default layer',()=>{
+  const horse={name:'Original cavalry horse',uuid:'horse',mount:true,json:{slots:[{name:'horse-body',bone:'horse'}]}},rider={name:'Character',uuid:'rider',json:{slots:[{name:'Rider/Body/Head/Helmet',bone:'head'},{name:'Rider/Body/Chest',bone:'body'},{name:'Rider/HandLeft/Shield',bone:'left'},{name:'Rider/HandRight/Sword',bone:'right'}]}};
+  const rig={layers:[horse,rider],defaultLayer:'horse'};
+  for(const [category,slot]of [['Helmet','Rider/Body/Head/Helmet'],['Chest','Rider/Body/Chest'],['HandLeft/Shield','Rider/HandLeft/Shield'],['HandRight/Sword','Rider/HandRight/Sword']]){
+    const asset={id:category+'/Equipment',category};assert.equal(Placement.layerFor(rig,asset),rider);assert.equal(Placement.socket(Placement.layerFor(rig,asset),asset).name,slot);
+  }
+  assert.equal(Placement.layerFor(rig,{id:'Character Maker/Beard/Test',category:'Character Maker/Beard'}),rider);
+});
+
+test('the character backend rejects equipment on a horse layer without accepting a changed draft',()=>{
+  const root=require('node:path').resolve(__dirname,'../..'),{Service}=require('../../packages/hkd-characters/lib/service'),service=new Service(root),before=service.snapshot(),data=structuredClone(before.data),profile=data.profiles.cavalry,horse=service.describe(profile.base,true).layers.find(layer=>layer.mount),part=profile.parts[0];
+  part.layer=horse.uuid;part.slot=horse.json.slots[0].name;part.bone=horse.json.slots[0].bone;part.hideSlots=[];
+  assert.throws(()=>service.change({version:service.version,data}),/equipment belongs to the rider/);assert.deepEqual(service.snapshot(),before);
+});
 test('drag labels update continuously, support fine control, cancel cleanly and commit once on release',()=>{
   const values=[],commits=[],classes=new Set();let capture=null;
   const label={classList:{add:n=>classes.add(n),remove:n=>classes.delete(n)},focus(){},setPointerCapture:id=>capture=id,hasPointerCapture:id=>capture===id,releasePointerCapture:()=>{capture=null;}},input={value:'1',disabled:false};

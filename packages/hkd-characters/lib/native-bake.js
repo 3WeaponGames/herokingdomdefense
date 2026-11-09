@@ -33,7 +33,7 @@ function retime(rig,contract,preserveMoveTiming){
   const hit=require('./hit-animation').reaction(rig);
   const death=rig.animations.die||rig.animations.dead1||rig.animations.death;
   const animations={};for(const [name,original]of Object.entries(contract.animations)){
-    const gait=name==='move'&&!preserveMoveTiming&&(rig.animations.run||rig.animations.walk||rig.animations.move);
+    const gait=name==='move'&&(preserveMoveTiming?rig.animations.move:rig.animations.run||rig.animations.walk||rig.animations.move);
     const source=gait||rig.animations[name]||rig.animations[name==='die'?'dead1':'idle'];if(!source)throw Error('Replacement model has no '+name+' animation');
     const result=clone(source),from=duration(source),to=gait&&from>0?from:original.duration;
     function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((from?value.time*to/from:value.time).toFixed(7));Object.values(value).forEach(visit);}visit(result);
@@ -84,7 +84,9 @@ function bake(root,profile,id,contract,assets,read,options){
     for(const slot of rig.slots)if(Core.isSkinSlot(slot.name))slot.color=tint(slot.color||'ffffffff');
     for(const animation of Object.values(rig.animations))for(const [name,slot]of Object.entries(animation.slots||{}))if(Core.isSkinSlot(name))for(const frame of slot.color||[])frame.color=tint(frame.color);
   }
-  retime(rig,contract,!!profile.base.mount);
+  // A current-unit snapshot already carries its authored gameplay events and
+  // gait cadence. Keep those exact clips when fitting equipment onto it.
+  if(!profile.base.currentModel)retime(rig,contract,!!profile.base.mount);
   // Preserve the old unit's world footprint and combat callback/hit timing.
   // Unmounted locomotion retains the imported gait's own cadence.
   // The hero and every combat statistic/timing table are left untouched.
@@ -130,15 +132,29 @@ function plan(root,data,assets,original){
   const read=file=>{file=path.resolve(file);if(!reads.has(file))reads.set(file,fs.readFileSync(file));return reads.get(file);};
   const contracts=JSON.parse(read(contractFile).toString('utf8'));
   if(!contracts.enabled)return{data,files,reads};
+  const originalContracts=clone(contracts),models=new Map();
+  for(const [id,profile]of Object.entries(updated.profiles))if(profile.base.currentModel){
+    const description=require('./current-model').capture(root,profile.base,files,read);
+    // The prefab still applies its node transform. It is only included in the
+    // editor preview, never applied a second time by the native bake.
+    const raw=clone(description);for(const layer of raw.layers){layer.x=layer.y=0;layer.scaleX=layer.scaleY=1;}
+    models.set(id,raw);
+  }
+  for(const [key,id]of Object.entries(updated.assignments)){
+    const profile=updated.profiles[id];if(contracts.units[key]||!profile||!profile.base.currentModel||profile.base.type!=='enemy')continue;
+    const description=require('../../game-data-editor/lib/unit-assets').describe(root,{type:profile.base.type,id:profile.base.id,noRuntime:true}),prefab=JSON.parse(read(path.join(root,description.source)).toString('utf8')),layer=description.layers[0];
+    const component=prefab.findIndex(value=>value.__type__==='sp.Skeleton'&&value._N$skeletonData&&value._N$skeletonData.__uuid__===layer.uuid),json=JSON.parse(read(path.join(root,layer.source)).toString('utf8'));
+    contracts.units[key]={prefab:description.source,component,height:json.skeleton.height||120,defaultUuid:layer.uuid,events:clone(json.events||{}),animations:Object.fromEntries(Object.entries(json.animations).map(([name,animation])=>[name,{duration:duration(animation),events:clone(animation.events||[])}]))};
+  }
   function compile(id,profile,contract,level){
     if(profile.baked&&original&&Document.equal(original.profiles[id],profile)&&(!level||profile.baked.resource))return profile.baked.uuid;
-    const options=!profile.base.source?{description:originalDescription(root,contract,read)}:undefined;
+    const options=models.has(id)?{description:models.get(id)}:!profile.base.source?{description:originalDescription(root,contract,read)}:undefined;
     const result=bake(root,profile,id,contract,lookup,read,options);for(const [file,bytes]of result.files)files.set(file,bytes);
     profile.baked=Object.assign({},profile.baked,{uuid:result.uuid,resource:result.resource,source:result.source});return result.uuid;
   }
   for(const [key,contract]of Object.entries(contracts.units)){
     const id=data.assignments[key],profile=id&&updated.profiles[id];let target=contract.defaultUuid;
-    if(profile&&profile.base.source)target=compile(id,profile,contract,false);
+    if(profile&&(profile.base.source||profile.base.currentModel))target=compile(id,profile,contract,false);
     const file=path.join(root,contract.prefab);if(!prefabs.has(file)){const text=read(file).toString('utf8');prefabs.set(file,{text,original:JSON.parse(text),data:JSON.parse(text)});}
     const prefab=prefabs.get(file).data,component=prefab[contract.component];component._N$skeletonData={__uuid__:target};component.defaultSkin='default';
   }
@@ -151,6 +167,7 @@ function plan(root,data,assets,original){
     compile(id,profile,contract,true);
   }
   for(const [file,prefab]of prefabs)if(!Document.equal(prefab.original,prefab.data))files.set(path.relative(root,file),Document.patch(prefab.text,prefab.original,prefab.data));
+  if(!Document.equal(originalContracts,contracts))files.set(path.relative(root,contractFile),JSON.stringify(contracts,null,2)+'\n');
   return{data:updated,files,reads};
 }
 module.exports={bake,plan,retime,duration,uuid,textureMeta,readAtlas,preserveMetadata};

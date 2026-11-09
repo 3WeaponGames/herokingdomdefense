@@ -1,6 +1,17 @@
 'use strict';
 const fs=require('fs'),path=require('path'),url=require('url'),Units=require('../../game-data-editor/lib/unit-assets'),Library=require('./unit-library');
 const clone=v=>JSON.parse(JSON.stringify(v));
+function duration(animation){let last=0;function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')last=Math.max(last,value.time);Object.values(value).forEach(visit);}visit(animation);return last;}
+function alignAnimations(horse,rider){
+  const original=horse.json.animations,animations={};
+  for(const [name,target]of Object.entries(rider.json.animations)){
+    const move=/^(move|walk|run)$/.test(name),attack=/attack|skill/.test(name),death=/^(die|dead)/.test(name);
+    const source=original[name]||original[move?'move':attack?'attack':death?'wqyl_lead_die':'idle']||original.idle;
+    if(!source)continue;const clip=clone(source),from=duration(source),to=duration(target),factor=from>0&&to>0?to/from:1;
+    function retime(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((value.time*factor).toFixed(7));Object.values(value).forEach(retime);}retime(clip);delete clip.events;animations[name]=clip;
+  }
+  horse.json.animations=animations;horse.animations=Object.keys(animations);
+}
 // The original horses share head/body weighted meshes. Keep every vertex,
 // weight, UV and deform value, and partition only their triangle lists so the
 // head can cover the far hand without putting the whole horse over the rider.
@@ -61,6 +72,7 @@ function describe(root,base,noRuntime){
   horse=clone(horse);horse.mount=true;horse.name=base.mount==='hero-horse'?'Hero horse':horse.name;
   horse.foregroundSlots=splitHead(horse.json);
   const rider=result.layers[0];rider.x=-10;rider.y=46;rider.scaleX=rider.scaleY=.6;
+  alignAnimations(horse,rider);
   const shadow=rider.json.slots.find(s=>s.name==='Rider/Shadow');if(shadow)shadow.color='ffffff00';
   for(const clip of Object.values(rider.json.animations))if(clip.slots)delete clip.slots['Rider/Shadow'];
   rider.followMount={layer:horse.uuid,bone:'bone2'};
@@ -134,4 +146,4 @@ function orderMounted(rig,description){
   }
   rig.slots=next;
 }
-module.exports={describe,merge,bindRider,splitHead,orderMounted};
+module.exports={describe,merge,bindRider,splitHead,orderMounted,alignAnimations,duration};

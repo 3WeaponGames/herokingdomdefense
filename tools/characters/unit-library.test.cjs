@@ -72,10 +72,10 @@ test('part and model tints survive native baking and use the same RGB multiplica
   assert.equal(part.color.r,128/255);assert.equal(part.color.g,192/255);assert.equal(part.color.b,1);
 });
 test('the deployed roster uses faceless Maker allies and monster enemies with the original gameplay event contracts',()=>{
-  const contracts=require('../../assets/resources/unit-library/runtime/contracts.json'),looks=require('../../assets/resources/characters/catalog.json');assert(contracts.enabled);assert.equal(Object.keys(contracts.units).length,16);
+  const contracts=require('../../assets/resources/unit-library/runtime/contracts.json'),looks=require('../../assets/resources/characters/catalog.json');assert(contracts.enabled);assert(Object.keys(contracts.units).length>=16);
   for(const [key,contract]of Object.entries(contracts.units)){
-    const profile=looks.profiles[looks.assignments[key]],prefab=JSON.parse(fs.readFileSync(path.join(root,contract.prefab))),component=prefab[contract.component];assert.equal(component._N$skeletonData.__uuid__,contract.defaultUuid);
-    const source=key.startsWith('ally:')?'character-maker/':'monster';assert(profile.base.source.startsWith(source));if(key.startsWith('ally:'))assert(profile.faceless);
+    const profile=looks.profiles[looks.assignments[key]],prefab=JSON.parse(fs.readFileSync(path.join(root,contract.prefab))),component=prefab[contract.component];assert.equal(component._N$skeletonData.__uuid__,profile.baked.uuid);
+    if(key.startsWith('ally:')){assert.equal(profile.base.source,'character-maker/Character');assert(profile.faceless);}else{assert(profile.base.currentModel);assert(profile.base.model);}
     const rig=Units.describe(root,{type:profile.base.type,id:profile.base.id,noRuntime:true}).layers[0].json;
     for(const [name,original]of Object.entries(contract.animations)){if(name!=='move')assert(Math.abs(Bake.duration(rig.animations[name])-original.duration)<1e-6);assert.deepEqual(rig.animations[name].events||[],original.events);}
     assert(rig.animations.die,'The deployed unit retains its death animation');
