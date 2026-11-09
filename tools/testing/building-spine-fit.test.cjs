@@ -1,6 +1,6 @@
 'use strict';
 // Preserve the authored building skeleton and effects beneath the documented
-// Royal Knight body/light layers and the added castle-derived flag rig.
+// Royal Knight and cavalry layers, with the added castle-derived Royal flag rig.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),fixture=require('./building-spine-fit.fixture.json');
 const {decode}=require('../../packages/hkd-characters/lib/png-atlas');
@@ -39,10 +39,17 @@ function sourceSkeleton(asset){
       for(const key of ['bones','slots'])if(animation[key]&&!Object.keys(animation[key]).length)delete animation[key];
     }
   }
+  if(asset==='by'&&fixture.cavalry){
+    json.slots=json.slots.filter(s=>s.name!==fixture.cavalry.slot);
+    for(const animation of Object.values(json.animations)){
+      if(animation.slots)delete animation.slots[fixture.cavalry.slot];
+      if(animation.slots&&!Object.keys(animation.slots).length)delete animation.slots;
+    }
+  }
   for(const fit of fixture.lightFits.filter(f=>f.asset===asset&&!fixture.aliases.some(a=>a.alias===f.skin))){
     const skin=json.skins.find(s=>s.name===fit.skin);translated(skin.attachments[fit.slot][fit.attachment],fit.logicalOffset,-1);
   }
-  const aliases=new Set(fixture.aliases.map(a=>a.alias));json.skins=json.skins.filter(s=>!aliases.has(s.name));
+  const aliases=new Set([...fixture.aliases,...(fixture.cavalry?.aliases||[])].map(a=>a.alias));json.skins=json.skins.filter(s=>!aliases.has(s.name));
   for(const animation of Object.values(json.animations))for(const alias of aliases)if(animation.deform)delete animation.deform[alias];
   return json;
 }
@@ -80,13 +87,13 @@ test('Royal Knight tiers have proportional independent bodies, aligned aperture 
     assert.deepEqual(Object.keys(actual.attachments).sort(),[alias.region,'royal_windows',...(alias.alias==='by-royal-3'?['royal_flag','royal_flag_pole']:[])].sort());
     for(const animation of Object.values(json.animations))assert.equal(animation.deform?.[alias.alias],undefined,'Narrow window cores use fixed masks, so no source deformation can slide them onto a wall');
   }
-  const meta=read(filename('by','json.meta')),page=read(directory('by')+'/by-royal.png.meta');assert.equal(meta.textures.length,2);assert.equal(meta.textures[1],page.uuid);
+  const meta=read(filename('by','json.meta')),page=read(directory('by')+'/by-royal.png.meta');assert.equal(meta.textures.length,3);assert.equal(meta.textures[1],page.uuid);
   const image=decode(fs.readFileSync(path.join(root,directory('by')+'/by-royal.png')));assert.deepEqual([image.width,image.height],[page.width,page.height]);
 });
 
 test('original Cocos UUIDs, sampling, icon geometry and asset metadata stay stable',()=>{
   for(const[file,expected]of Object.entries(fixture.metadata)){
-    const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,2);meta.textures=meta.textures.slice(0,1);}
+    const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,3);meta.textures=meta.textures.slice(0,1);}
     assert.equal(hash(meta),expected,file);
   }
 });
@@ -109,7 +116,43 @@ test('building fitting preserves barracks IDs, progression, colliders, stats, ti
     const row=barracks.levelList.find(row=>row.index===10+level);assert.equal(row.index,10+level);assert.equal(row.Skin,'by-royal-'+level);assert.equal(row.Icon,'royal-guard-'+level);
     row.Skin=sourceSkin;row.Icon=sourceIcon;
   }
-  assert.equal(hash(barracks),fixture.barracks,'The fitting changes only three visual Skin/Icon bindings');
+  for(const alias of fixture.cavalry.aliases){
+    const row=barracks.levelList.find(row=>row.index===alias.index);assert.equal(row.Skin,alias.alias);assert.equal(row.Icon,alias.slot);row.Skin=alias.skin;
+  }
+  assert.equal(barracks.levelList.find(row=>row.index===22).Skin,'qby-3-2');
+  assert.equal(hash(barracks),fixture.barracks,'The fitting changes only the documented visual bindings');
+});
+
+test('cavalry revised tiers retain proportions, ground anchors, lighting transitions and asset references',()=>{
+  const json=read(filename('by','json')),source=sourceSkeleton('by'),atlas=atlasRegions(fs.readFileSync(path.join(root,filename('by','atlas')),'utf8'));
+  for(const alias of fixture.cavalry.aliases){
+    const skin=json.skins.find(s=>s.name===alias.alias),body=skin.attachments[alias.slot][alias.slot];
+    const old=source.skins.find(s=>s.name===alias.skin).attachments[alias.slot][alias.slot];
+    assert.equal(body.path,alias.region);assert.equal(body.width,old.width);assert.equal(body.x,old.x);
+    assert(Math.abs(body.y-body.height/2-(old.y-old.height/2))<.00001,'Ground anchor stays fixed');
+    assert(Math.abs(body.width/body.height-atlas[body.path].orig[0]/atlas[body.path].orig[1])<.00001,'Artwork stays proportional');
+    const light=skin.attachments.cavalry_windows.cavalry_windows;assert.deepEqual(light,{...body,path:alias.region+'_lights'});
+    assert.deepEqual(atlas[light.path].orig,atlas[body.path].orig);
+    assert.deepEqual(Object.keys(skin.attachments).sort(),[alias.slot,'cavalry_windows'].sort(),'No source light mesh overlays the revised building');
+    for(const animation of Object.values(json.animations))assert.equal(animation.deform?.[alias.alias],undefined,'Apertures cannot slide onto walls');
+  }
+  assert.equal(json.slots.find(s=>s.name==='cavalry_windows').bone,'bone3');
+  assert.equal(json.animations.idle.slots.cavalry_windows.color[0].color,'ffffff00');
+  assert.deepEqual(json.animations.Fade_in.slots.cavalry_windows,json.animations.Fade_in.slots.royal_windows);
+  assert.deepEqual(json.animations.destroy.slots.cavalry_windows.attachment,[{time:.1667,name:null}]);
+  assert.deepEqual(json.animations.idle_night.slots.cavalry_windows.color.map(k=>k.time||0),[0,1,2]);
+  for(const skin of json.skins.filter(s=>!s.name.startsWith('qby-revised-')))assert.equal(skin.attachments.cavalry_windows,undefined);
+  const meta=read(filename('by','json.meta')),page=read(directory('by')+'/'+fixture.cavalry.page+'.meta');assert.equal(meta.textures[2],page.uuid);
+  const image=decode(fs.readFileSync(path.join(root,directory('by')+'/'+fixture.cavalry.page)));assert.deepEqual([image.width,image.height],[page.width,page.height]);
+});
+
+test('cavalry tier 3 restores the exact original body pixels, icon and authored light mesh',()=>{
+  const json=read(filename('by','json'));assert.equal(hash(json.skins.find(s=>s.name==='qby-3-2')),fixture.cavalry.originalTier3Skin);
+  assert.equal(sha(fs.readFileSync(path.join(root,'assets/KinghtFallIconBuild/qby_3_2.png'))),fixture.cavalry.originalTier3IconSha256);
+  const image=decode(fs.readFileSync(path.join(root,filename('by','png')))),region=fixture.cavalry.originalTier3Region;
+  const [x,y]=region.xy,[w,h]=region.size,rows=[];
+  for(let iy=0;iy<h;iy++)rows.push(image.rgba.subarray(((y+iy)*image.width+x)*4,((y+iy)*image.width+x+w)*4));
+  assert.equal(sha(Buffer.concat(rows)),fixture.cavalry.originalTier3BodyPixels);
 });
 
 test('Royal Knight flag reuses the castle wave keys and all added layers follow construction, night and destruction',()=>{

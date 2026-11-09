@@ -1143,17 +1143,6 @@
       "body": "qby_3_1"
     },
     {
-      "asset": "by",
-      "skin": "qby-3-2",
-      "slot": "qby_3_2_g",
-      "attachment": "qby_3_2_g",
-      "logicalOffset": [
-        -1.9965753424657535,
-        -18
-      ],
-      "body": "qby_3_2"
-    },
-    {
       "asset": "mz",
       "skin": "mz-1",
       "slot": "mz_1_1",
@@ -1439,5 +1428,40 @@
       "royal_flag_pole"
     ],
     "source": "Approved military Royal Knight concepts; original skeleton restored by removing these additions and the three aliases."
+  },
+  "cavalry": {
+    "aliases": [
+      {
+        "level": 1,
+        "index": 20,
+        "skin": "qby-2-1",
+        "alias": "qby-revised-1",
+        "slot": "qby_2_1",
+        "region": "qby_revised_1"
+      },
+      {
+        "level": 2,
+        "index": 21,
+        "skin": "qby-3-1",
+        "alias": "qby-revised-2",
+        "slot": "qby_3_1",
+        "region": "qby_revised_2"
+      }
+    ],
+    "slot": "cavalry_windows",
+    "page": "by-cavalry.png",
+    "originalTier3IconSha256": "6a525a22bbb62a34a7af47ed3c8cab1e8b9a77796a177f1530b9d51be2444eae",
+    "originalTier3BodyPixels": "da56024e6954316c8a964614ea9d625db8cf38e4654a55305ad1ec042206be40",
+    "originalTier3Region": {
+      "xy": [
+        2,
+        749
+      ],
+      "size": [
+        290,
+        281
+      ]
+    },
+    "originalTier3Skin": "3fba35170139d9e6081308f8c30e5617cbc89077ae99bb7b59099ae7082b2b9a"
   }
 }

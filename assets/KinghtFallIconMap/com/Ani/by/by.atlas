@@ -619,3 +619,37 @@ by_royal_flag_pole
   orig: 10, 41
   offset: 0, 0
   index: -1
+
+by-cavalry.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+qby_revised_1
+  rotate: false
+  xy: 2, 2
+  size: 284, 175
+  orig: 284, 175
+  offset: 0, 0
+  index: -1
+qby_revised_2
+  rotate: false
+  xy: 290, 2
+  size: 280, 230
+  orig: 280, 230
+  offset: 0, 0
+  index: -1
+qby_revised_1_lights
+  rotate: false
+  xy: 2, 236
+  size: 33, 22
+  orig: 284, 175
+  offset: 171, 57
+  index: -1
+qby_revised_2_lights
+  rotate: false
+  xy: 39, 236
+  size: 26, 96
+  orig: 280, 230
+  offset: 183, 55
+  index: -1
