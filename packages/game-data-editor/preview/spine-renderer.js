@@ -57,10 +57,39 @@ function geometry(spine, layer) {
             for (let i = 0; i < clipped.length; i += 8) { outVertices.push(clipped[i], clipped[i+1]); outUvs.push(clipped[i+6], clipped[i+7]); }
             vertices = outVertices; uvs = outUvs; triangles = clipper.clippedTriangles.slice();
         }
-        result.push({ vertices, uvs, triangles, image: attachment.region.texture.getImage(), color, blend: slot.data.blendMode });
+        result.push({ vertices, uvs, triangles, image: attachment.region.texture.getImage(), color, blend: slot.data.blendMode, slot: slot.data.name });
         clipper.clipEndWithSlot(slot);
     });
     clipper.clipEnd(); return result;
+}
+const pickPixels=new WeakMap();
+function opaqueAt(image,u,v){
+    if(!pickPixels.has(image)){
+        try{const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);pickPixels.set(image,ctx.getImageData(0,0,image.width,image.height).data);}
+        catch(_){pickPixels.set(image,null);}
+    }
+    const pixels=pickPixels.get(image);if(!pixels)return true;
+    const x=Math.max(0,Math.min(image.width-1,Math.floor(u*image.width))),y=Math.max(0,Math.min(image.height-1,Math.floor(v*image.height)));
+    return pixels[(y*image.width+x)*4+3]>0;
+}
+// Pick the topmost visible texel in the same clipped, animated geometry used
+// to draw the preview. Transparent padding must not hide a part behind it.
+function hitTest(spine,layers,point){
+    for(let l=layers.length-1;l>=0;l--){
+        const layer=layers[l];if(layer.description.opacity===0)continue;
+        const local=inversePoint(layer.description,point.x,point.y),pieces=geometry(spine,layer);
+        for(let p=pieces.length-1;p>=0;p--){
+            const g=pieces[p];if(g.color.a<=0)continue;
+            for(let i=g.triangles.length-3;i>=0;i-=3){
+                const a=g.triangles[i]*2,b=g.triangles[i+1]*2,c=g.triangles[i+2]*2,ax=g.vertices[a],ay=g.vertices[a+1],bx=g.vertices[b],by=g.vertices[b+1],cx=g.vertices[c],cy=g.vertices[c+1];
+                const det=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy);if(Math.abs(det)<1e-8)continue;
+                const wa=((by-cy)*(local.x-cx)+(cx-bx)*(local.y-cy))/det,wb=((cy-ay)*(local.x-cx)+(ax-cx)*(local.y-cy))/det,wc=1-wa-wb;
+                if(wa< -1e-6||wb< -1e-6||wc< -1e-6)continue;
+                if(opaqueAt(g.image,wa*g.uvs[a]+wb*g.uvs[b]+wc*g.uvs[c],wa*g.uvs[a+1]+wb*g.uvs[b+1]+wc*g.uvs[c+1]))return{layer,slot:g.slot};
+            }
+        }
+    }
+    return null;
 }
 function triangle(ctx, image, positions, texture) {
     const x0=positions[0],y0=positions[1],x1=positions[2],y1=positions[3],x2=positions[4],y2=positions[5];
@@ -118,7 +147,7 @@ function drawWorld(spine, ctx, layers) {
 function draw(spine, ctx, layers, options) {
     const viewport=options.bounds || bounds(spine,layers), width=options.width, height=options.height;
     const scale=Math.min((width-32)/viewport.width,(height-24)/viewport.height)*(options.zoom||1), facing=options.facing||1;
-    ctx.save();ctx.translate(width/2,height-12+viewport.minY*scale);ctx.scale(scale*facing,-scale);ctx.translate(-(viewport.minX+viewport.maxX)/2,0);
+    ctx.save();ctx.translate(width/2+(options.panX||0),height-12+viewport.minY*scale+(options.panY||0));ctx.scale(scale*facing,-scale);ctx.translate(-(viewport.minX+viewport.maxX)/2,0);
     drawWorld(spine,ctx,layers);ctx.restore();
 }
 const canvasStates=new WeakMap();
@@ -141,11 +170,11 @@ function drawCanvas(spine,canvas,layers,options){
         if(!g.triangles.length)return;
         let texture=state.textures.get(g.image);if(!texture){texture=gl.createTexture();state.textures.set(g.image,texture);gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,g.image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);}else gl.bindTexture(gl.TEXTURE_2D,texture);
         const vertices=new Float32Array(g.vertices.length*2),d=layer.description;
-        for(let i=0,j=0;i<g.vertices.length;i+=2,j+=4){const point=transformPoint(d,g.vertices[i],g.vertices[i+1]),x=(point.x-cx)*scale*facing+w/2,y=h-12+box.minY*scale-point.y*scale;vertices[j]=x/w*2-1;vertices[j+1]=1-y/h*2;vertices[j+2]=g.uvs[i];vertices[j+3]=g.uvs[i+1];}
+        for(let i=0,j=0;i<g.vertices.length;i+=2,j+=4){const point=transformPoint(d,g.vertices[i],g.vertices[i+1]),x=(point.x-cx)*scale*facing+w/2+(options.panX||0),y=h-12+box.minY*scale-point.y*scale+(options.panY||0);vertices[j]=x/w*2-1;vertices[j+1]=1-y/h*2;vertices[j+2]=g.uvs[i];vertices[j+3]=g.uvs[i+1];}
         gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.STREAM_DRAW);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(g.triangles),gl.STREAM_DRAW);gl.uniform4f(state.color,g.color.r,g.color.g,g.color.b,g.color.a*(d.opacity===undefined?1:d.opacity));
         if(g.blend===1)gl.blendFunc(gl.SRC_ALPHA,gl.ONE);else if(g.blend===2)gl.blendFunc(gl.DST_COLOR,gl.ONE_MINUS_SRC_ALPHA);else if(g.blend===3)gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_COLOR);else gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
         gl.drawElements(gl.TRIANGLES,g.triangles.length,gl.UNSIGNED_SHORT,0);
     }));
 }
 function destroyCanvas(canvas){const state=canvasStates.get(canvas);if(state&&state.gl){const gl=state.gl;state.textures.forEach(texture=>gl.deleteTexture(texture));gl.deleteBuffer(state.vertices);gl.deleteBuffer(state.indices);gl.deleteShader(state.vertex);gl.deleteShader(state.fragment);gl.deleteProgram(state.program);const extension=gl.getExtension('WEBGL_lose_context');if(extension)extension.loseContext();}canvasStates.delete(canvas);}
-module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint};
+module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest};

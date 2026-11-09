@@ -19,6 +19,18 @@ test('skin tint affects only exposed Maker body/head, never compounds and preser
 test('character library categories exclude monster pieces while retaining the complete authoring asset index',()=>{
  const Service=require('../../packages/hkd-characters/lib/service').Service,service=new Service(root),all=service.assets().parts,before=JSON.stringify(all),visible=Options.characterParts(all);
  assert(visible.length<all.length);assert(!visible.some(part=>/^Monster Pack/.test(part.category)));assert(visible.some(part=>part.sourcePack==='character-maker'));assert.equal(JSON.stringify(all),before);
+ const categories=[...new Set(visible.map(Options.partCategory))];
+ assert(!categories.some(category=>category.startsWith('Character Maker/')||/^Hand(?:Left|Right)\//.test(category)||category.includes('assets/')||category.endsWith('/.')));
+ for(const category of ['Chest','Helmet','Shield','Sword']){
+   const group=visible.filter(part=>Options.partCategory(part)===category);
+   assert(group.some(part=>part.sourcePack==='character-maker'),category+' includes Maker equipment');
+   assert(group.some(part=>!part.sourcePack),category+' includes existing equipment');
+ }
+ for(const category of ['Beard','Eye','Hair','Mount','Sub Items'])assert(categories.includes(category),category+' stays available');
+ const helpers=all.filter(part=>part.sourcePack==='character-maker'&&/\/Common\/Sprites\/Other\//.test(part.image||''));assert(helpers.length>0);
+ for(const helper of helpers){assert(!visible.some(part=>part.id===helper.id));assert(!Options.libraryParts(all).some(part=>part.id===helper.id));}
+ assert(!categories.includes('Other'),'helper sprite group is hidden from the equipment library');
+ assert.equal(JSON.stringify(all),before,'display groups do not change asset metadata or saved references');
  const sources=[{id:'character-maker/Character',pack:'character-maker'},{id:'monster1/Wolf',pack:'monster1'},{id:'monster2/Ogre',pack:'monster2'}];assert.deepEqual(Options.characterSources(sources).map(source=>source.id),['character-maker/Character']);assert.deepEqual(Options.characterSources(sources,'monster1/Wolf').map(source=>source.id),['character-maker/Character','monster1/Wolf']);
  for(const tone of Options.skinTones)assert.match(tone.value,/^#[a-f0-9]{6}$/);
  const draft=service.load().data,id=Object.keys(draft.profiles).find(id=>draft.profiles[id].base.source?.startsWith('character-maker/'));draft.profiles[id].skinTint='red';assert.throws(()=>service.validate(draft),/skin tint/);

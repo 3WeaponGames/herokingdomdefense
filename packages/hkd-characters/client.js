@@ -7,10 +7,12 @@ function mount(host,api){
   const itemMode=api.kind==='items';
   const el=(tag,text,parent,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;if(parent)parent.appendChild(n);return n;};
   const root=el('section',undefined,host,'character-editor');
+  root.tabIndex=-1;
   const header=el('header',undefined,root),heading=el('div',undefined,header);el('h1',itemMode?'Items':'Characters',heading);el('p',itemMode?'Fit hero gear. Keep current upgrades. Add new items when ready.':'Build a look. Fit the parts. Bring it into battle.',heading,'muted');
   const tools=el('div',undefined,header,'toolbar');
   const button=(parent,text,fn,cls)=>{const b=el('button',text,parent,cls);b.type='button';b.onclick=()=>{if(busy)return;return Promise.resolve().then(fn).catch(error=>message(error.message,true));};return b;};
   const newButton=button(tools,itemMode?'New item':'New character',createProfile),cloneButton=button(tools,'Duplicate',duplicateProfile),discardButton=button(tools,'Discard changes',discard),saveButton=button(tools,itemMode?'Save items':'Save characters',save,'primary');
+  saveButton.title=(itemMode?'Save items':'Save characters')+' (Ctrl+S)';saveButton.setAttribute('aria-keyshortcuts','Control+S');
   const undoButton=button(tools,'Undo',()=>travel('undo')),redoButton=button(tools,'Redo',()=>travel('redo'));
   tools.insertBefore(undoButton,discardButton);tools.insertBefore(redoButton,discardButton);
   undoButton.title='Undo (Ctrl+Z)';redoButton.title='Redo (Ctrl+Shift+Z)';
@@ -26,24 +28,37 @@ function mount(host,api){
   const previewTitle=el('div',undefined,main,'preview-title'),previewName=el('strong','Character preview',previewTitle);el('span','SILENT · PREVIEW ONLY',previewTitle,'badge');
   const previews=el('div',undefined,main,'previews');
   function canvasCard(label,overlay){const box=el('div',undefined,previews,'preview-card');el('span',label,box,'caption');const canvas=el('canvas',undefined,box);canvas.width=540;canvas.height=650;let handles=null;if(overlay){handles=el('canvas',undefined,box,'overlay');handles.width=540;handles.height=650;handles.setAttribute('aria-label','Drag selected character part');}return{box,canvas,handles};}
-  const original=canvasCard('Original',false),current=canvasCard('Current look',true);
+  const current=canvasCard('Current look',true);
   current.handles.tabIndex=0;
+  current.handles.setAttribute('aria-keyshortcuts','Space');current.handles.title='Left drag: move part · Middle drag: pan · Right-click: select · Space: pause/play · Ctrl+wheel: zoom';
   const playback=el('div',undefined,main,'playback'),transport=el('div',undefined,playback,'row wrap');
   const play=button(transport,'Pause',()=>{playing=!playing;play.textContent=playing?'Pause':'Play';last=0;});
+  play.title='Pause/play (Space when the preview is focused)';play.setAttribute('aria-keyshortcuts','Space');
   button(transport,'◀ Frame',()=>step(-1));button(transport,'Frame ▶',()=>step(1));
   const animation=el('select',undefined,transport);animation.setAttribute('aria-label','Preview animation');
   const speed=el('select',undefined,transport);for(const n of [.25,.5,1,2]){const o=el('option',n+'×',speed);o.value=n;}speed.value=1;speed.setAttribute('aria-label','Animation speed');
   const facing=button(transport,'Face left',()=>{direction*=-1;facing.textContent=direction===1?'Face left':'Face right';draw();});
-  const zoom=el('select',undefined,transport);for(const n of [.5,.75,1,1.5,2]){const o=el('option',Math.round(n*100)+'%',zoom);o.value=n;}zoom.value=1;zoom.setAttribute('aria-label','Preview zoom');zoom.onchange=draw;
+  const zoom=el('select',undefined,transport);for(const n of [.25,.5,.75,1,1.5,2,3,4]){const o=el('option',Math.round(n*100)+'%',zoom);o.value=n;}zoom.value=1;zoom.setAttribute('aria-label','Preview zoom');zoom.title='Ctrl+mouse wheel over the preview to zoom';zoom.onchange=draw;
+  function previewWheel(event){
+    if(!(event.ctrlKey||event.metaKey)||event.altKey||!event.deltaY)return;
+    event.preventDefault();event.stopPropagation();
+    const delta=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?current.box.clientHeight:1);
+    const value=Number(Math.max(.25,Math.min(4,Number(zoom.value)*Math.exp(-delta*.001))).toFixed(3));
+    const previous=zoom.querySelector('[data-wheel-zoom]');if(previous)previous.remove();
+    if(!Array.from(zoom.options).some(option=>Number(option.value)===value)){const option=el('option',Math.round(value*100)+'%',zoom);option.value=value;option.setAttribute('data-wheel-zoom','');}
+    zoom.value=value;draw();
+  }
+  current.box.addEventListener('wheel',previewWheel,{passive:false});
   const options=el('div',undefined,playback,'row wrap');
   function check(parent,text,value,fn){const label=el('label',undefined,parent,'check-row'),input=el('input',undefined,label);input.type='checkbox';input.checked=value;el('span',text,label);input.onchange=()=>fn(input.checked);return input;}
-  check(options,'Compare original',true,value=>{original.box.hidden=!value;});const bonesToggle=check(options,'Show anchor bones',false,draw);
-  button(options,'Fit preview',()=>{fitBounds(true);draw();});
+  const bonesToggle=check(options,'Show anchor bones',false,draw);
+  button(options,'Fit preview',()=>{viewPan={x:0,y:0};zoom.value=1;fitBounds(true);draw();});
   const position=el('span','0.000 s',options,'time'),scrub=el('input',undefined,playback,'timeline');scrub.type='range';scrub.min=0;scrub.max=1;scrub.step='any';scrub.value=0;scrub.setAttribute('aria-label','Animation position');
-  el('p','Select a fitted part to drag it in the preview. Parts follow the existing animation bones.',main,'help');
+  el('p','Left drag moves equipment. Middle drag pans the preview. Right-click selects the part or model under the cursor.',main,'help');
   const footer=el('footer',undefined,root),status=el('span','Loading character library…',footer,'status'),saveState=el('span','',footer);
   let data=null,saved=null,version=0,parts=[],units=[],sources=[],assets={},selected='',virtual=null,selectedPart='',selectedAsset='',selectedModel='',rig=null,spine=null,layers=[],baseLayers=[],states=[],fittingKey='',poseBounds=null,token=0,disposed=false,playing=true,time=0,duration=1,last=0,raf=null,direction=1,limit=60,drag=null,stages=Promise.resolve(),lastSent='',stageError=null,busy=false;
   let canUndo=false,canRedo=false,scrubs=[];
+  let viewPan={x:0,y:0},renderPan={x:0,y:0},panDrag=null,viewKey='';
   const images=new Map();let fittingRetryAfter=0,viewFitKey='';
   const clone=v=>JSON.parse(JSON.stringify(v));
   const profile=()=>data&&(data.profiles[selected]||virtual);
@@ -87,11 +102,38 @@ function mount(host,api){
   async function discard(){if(!data||busy)return;cancelGestures();token++;setBusy(true);try{await stages;await acceptDraft(await api.ipc('discard',{version}));message('Unsaved changes discarded.');}finally{setBusy(false);}}
   async function reloadDraft(){if(!data||busy)return;cancelGestures();token++;setBusy(true);try{await stages;await acceptDraft(await api.ipc('load'));message('Latest shared draft loaded. Changes still require Save.');}finally{setBusy(false);}}
   function editorKey(event){
-    if(event.defaultPrevented||event.isComposing||event.altKey||!(event.ctrlKey||event.metaKey)||String(event.key).toLowerCase()!=='z')return;
+    if(event.defaultPrevented||event.isComposing||event.altKey)return;
+    const key=String(event.key).toLowerCase(),target=event.target,tag=String(target&&target.tagName||'').toLowerCase();
+    if((event.code==='Space'||key===' ')&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&current.box.contains(target)){
+      event.stopPropagation();event.preventDefault();if(!event.repeat&&!busy)play.click();return;
+    }
+    if(key==='delete'&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey){
+      event.stopPropagation();
+      if(target&&(target.isContentEditable||tag==='textarea'||tag==='input'&&!['range','color','checkbox','radio','button'].includes(target.type)))return;
+      event.preventDefault();
+      const remove=inspector.querySelector('[data-action="remove-part"]');
+      if(!event.repeat&&remove&&!remove.disabled){remove.click();current.handles.focus({preventScroll:true});}
+      return;
+    }
+    if(!(event.ctrlKey||event.metaKey))return;
+    if(key==='s'&&!event.shiftKey){
+      event.stopPropagation();event.preventDefault();
+      if(!event.repeat&&!busy&&!saveButton.disabled){const focus=current.box.contains(target)?current.handles:root;if(target&&typeof target.blur==='function')target.blur();saveButton.click();focus.focus({preventScroll:true});}
+      return;
+    }
+    if(key==='a'&&!event.shiftKey){
+      event.stopPropagation();
+      // Keep Select All available while editing names, searches and numbers.
+      if(target&&(target.isContentEditable||tag==='textarea'||tag==='input'&&!['range','color','checkbox','radio','button'].includes(target.type)))return;
+      event.preventDefault();
+      const add=inspector.querySelector('[data-action="add-part"]');
+      if(!event.repeat&&add&&!add.disabled)add.click();
+      return;
+    }
+    if(key!=='z')return;
     // Native text undo stays inside text fields. Never let this panel's
     // shortcut bubble into Creator's scene history, even with no draft edits.
     event.stopPropagation();
-    const target=event.target,tag=String(target&&target.tagName||'').toLowerCase();
     if(target&&(target.isContentEditable||tag==='textarea'||tag==='input'&&!['number','range','color','checkbox','radio','button'].includes(target.type)))return;
     event.preventDefault();if(!event.repeat)travel(event.shiftKey?'redo':'undo').catch(error=>message(error.message,true));
   }
@@ -115,8 +157,8 @@ function mount(host,api){
   }
   async function selectProfile(id,preferredPart){finishGestures();virtual=null;selected=id;const p=profile();selectedPart=p&&p.parts.some(part=>part.id===preferredPart)?preferredPart:p&&p.parts[0]?p.parts[0].id:'';selectedAsset=part()?part().sprite:'';renderLooks();renderInspector();renderAssets();await loadRig();}
   function installScrub(label,input,options){const cancel=LabelScrub.install(label,input,options);scrubs.push(cancel);return cancel;}
-  function finishGestures(){for(const cancel of scrubs.slice())cancel.commit();finishPreviewDrag();}
-  function cancelGestures(){for(const cancel of scrubs.slice())cancel();if(drag){const previous=drag;drag=null;previous.part.x=previous.x;previous.part.y=previous.y;releaseDrag(previous);}}
+  function finishGestures(){for(const cancel of scrubs.slice())cancel.commit();finishPreviewDrag();finishPan();}
+  function cancelGestures(){for(const cancel of scrubs.slice())cancel();finishPan();if(drag){const previous=drag;drag=null;previous.part.x=previous.x;previous.part.y=previous.y;releaseDrag(previous);}}
   function releaseDrag(previous){if(current.handles.hasPointerCapture(previous.pointer))current.handles.releasePointerCapture(previous.pointer);}
   function finishPreviewDrag(){if(!drag)return;const previous=drag;drag=null;releaseDrag(previous);renderInspector();activateItem();stage();}
   function field(parent,label,value,onChange,options){const wrap=el('label',undefined,parent,'field');el('span',label,wrap);const input=el(options?'select':'input',undefined,wrap);if(options){for(const item of options){const option=el('option',item.label===undefined?item.value:item.label,input);option.value=item.value;}}else input.type='text';input.value=value===undefined?'':value;input.setAttribute('aria-label',label);input.disabled=busy;input.onchange=()=>{if(!busy)onChange(input.value);};return input;}
@@ -188,8 +230,9 @@ function mount(host,api){
     if(p.base.level)button(inspector,'Use default for this level',async()=>{const unit=unitFor(p);delete data.assignments[assignmentKey(p)];changed();await selectUnit(unit,p.base.level);});
     el('p',itemMode?'Saving an edited item applies it to this tier. Existing stats, upgrade cost and unlocks are preserved.':'Appearance only. Combat stats and attack timing stay in the Units tool.',inspector,'help');if(itemMode)button(inspector,'Edit stats and upgrades',()=>api.openEquipment?api.openEquipment():message('Open Tools → Hero Kingdom Defense → Equipment in Creator.'));
     modelInspector(p);
-    const rows=el('div',undefined,inspector,'part-list');p.parts.forEach(item=>{const b=button(rows,'',()=>{selectedPart=item.id;selectedAsset=item.sprite;renderInspector();renderAssets();draw();});b.classList.toggle('selected',item.id===selectedPart);const image=el('img',undefined,b);image.src=api.image(assets[item.sprite].thumbnail);el('span',item.id,b);});
-    const add=el('div',undefined,inspector,'row');button(add,'Add selected part',addPart);button(add,'Remove part',()=>{if(!part())return;p.parts.splice(p.parts.indexOf(part()),1);selectedPart=(p.parts[0]&&p.parts[0].id)||'';changed(true);});
+    const rows=el('div',undefined,inspector,'part-list');p.parts.forEach(item=>{const b=button(rows,'',()=>{selectedPart=item.id;selectedAsset=item.sprite;renderInspector();renderAssets();draw();const selectedButton=inspector.querySelector('.part-list button.selected');if(selectedButton)selectedButton.focus({preventScroll:true});});b.classList.toggle('selected',item.id===selectedPart);const image=el('img',undefined,b);image.src=api.image(assets[item.sprite].thumbnail);el('span',item.id,b);});
+    const add=el('div',undefined,inspector,'row'),addButton=button(add,'Add selected part',addPart);addButton.setAttribute('data-action','add-part');addButton.setAttribute('aria-keyshortcuts','Control+A');addButton.title='Add selected part (Ctrl+A)';
+    const removeButton=button(add,'Remove part',()=>{if(!part())return;p.parts.splice(p.parts.indexOf(part()),1);selectedPart=(p.parts[0]&&p.parts[0].id)||'';changed(true);});removeButton.setAttribute('data-action','remove-part');removeButton.setAttribute('aria-keyshortcuts','Delete');removeButton.title='Remove selected part (Delete)';
     const currentPart=part();if(!currentPart){el('p','Choose a part in the library, then Add selected part.',inspector,'help');button(inspector,itemMode?'Delete item':'Delete character',removeProfile,'danger');return;}
     el('div',undefined,inspector,'divider');el('h2','FIT SELECTED PART',inspector);
     const a=assets[currentPart.sprite],assetBox=el('div',undefined,inspector,'selected-asset'),img=el('img',undefined,assetBox);img.src=api.image(a.thumbnail);el('span',a.name,assetBox);
@@ -213,9 +256,9 @@ function mount(host,api){
   }
   function renderAssets(){
     const filter=search.value.trim().toLowerCase(),selectedCategory=category.value;
-    const found=parts.filter(p=>(!selectedCategory||p.category===selectedCategory)&&(!filter||(p.name+' '+p.id).toLowerCase().includes(filter)));
+    const found=parts.filter(p=>(!selectedCategory||CharacterOptions.partCategory(p)===selectedCategory)&&(!filter||(p.name+' '+p.id).toLowerCase().includes(filter)));
     count.textContent=found.length+' parts · '+(selectedAsset?assets[selectedAsset].name:'select a part');gallery.innerHTML='';
-    for(const asset of found.slice(0,limit)){const b=button(gallery,'',()=>{selectedAsset=asset.id;renderAssets();});b.className='asset-tile'+(selectedAsset===asset.id?' selected':'');b.title=asset.name;b.setAttribute('aria-label',asset.name);const image=el('img',undefined,b);image.loading='lazy';image.src=api.image(asset.thumbnail);image.alt=asset.name;}
+    for(const asset of found.slice(0,limit)){const b=button(gallery,'',()=>{selectedAsset=asset.id;renderAssets();const selectedTile=gallery.querySelector('.asset-tile.selected');if(selectedTile)selectedTile.focus({preventScroll:true});});b.className='asset-tile'+(selectedAsset===asset.id?' selected':'');b.title=asset.name;b.setAttribute('aria-label',asset.name);const image=el('img',undefined,b);image.loading='lazy';image.src=api.image(asset.thumbnail);image.alt=asset.name;}
     more.hidden=found.length<=limit;
   }
   search.oninput=()=>{limit=60;renderAssets();};category.onchange=()=>{limit=60;renderAssets();};
@@ -243,6 +286,7 @@ function mount(host,api){
   function imageFor(asset){const source=api.image(asset.image);if(!images.has(source)){const promise=new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('Cannot load part '+asset.name));img.src=source;}).catch(error=>{if(images.get(source)===promise)images.delete(source);throw error;});images.set(source,promise);}return images.get(source);}
   async function loadRig(){
     const p=profile(),serial=++token;states.forEach(api.core.restore);states=[];layers=baseLayers=[];rig=null;selectedModel='';fittingRetryAfter=0;viewFitKey='';if(!p)return;message('Loading '+p.name+'…');previewName.textContent=p.name;
+    const nextViewKey=JSON.stringify(p.base);if(viewKey!==nextViewKey){viewPan={x:0,y:0};viewKey=nextViewKey;}
     try{const description=await api.ipc('describe',p.base);if(serial!==token||disposed)return;rig=description;spine=api.runtime(description);
       const result=await Promise.all([api.renderer.createLayers(spine,description.layers),api.renderer.createLayers(spine,description.layers)]);if(serial!==token||disposed)return;
       layers=result[0];baseLayers=result[1];fittingKey='';states=[];animation.innerHTML='';const names=[...new Set([].concat.apply([],description.layers.map(l=>l.animations)))];for(const name of names){const option=el('option',name,animation);option.value=name;}animation.value=names.includes('idle')?'idle':names[0];time=0;updateDuration();fitBounds();renderInspector();draw();message('Ready · '+parts.length+' imported parts. Changes remain drafts until Save.');
@@ -269,13 +313,14 @@ function mount(host,api){
       for(const layer of layers){const skin=p.skins&&p.skins[layer.description.uuid]||rig.layers.find(l=>l.uuid===layer.description.uuid).skin;if(layer.data.findSkin(skin)&&(layer.skeleton.skin||{}).name!==skin)layer.skeleton.setSkinByName(skin);}
       states.forEach(api.core.restore);api.renderer.seek(spine,layers,animation.value,time,true);api.renderer.seek(spine,baseLayers,animation.value,time,true);prepareFitting();states.forEach(api.core.apply);
       resizeCanvases();
-      const options={width:current.canvas.width,height:current.canvas.height,bounds:poseBounds,zoom:Number(zoom.value),facing:direction};
-      if(!original.box.hidden)api.renderer.drawCanvas(spine,original.canvas,baseLayers,{...options,width:original.canvas.width,height:original.canvas.height});api.renderer.drawCanvas(spine,current.canvas,layers,options);drawHandles();position.textContent=time.toFixed(3)+' s';scrub.value=time;
+      const options={width:current.canvas.width,height:current.canvas.height,bounds:poseBounds,zoom:Number(zoom.value),facing:direction,panX:renderPan.x,panY:renderPan.y};
+      api.renderer.drawCanvas(spine,current.canvas,layers,options);drawHandles();position.textContent=time.toFixed(3)+' s';scrub.value=time;
     }catch(error){message(error.message,true);}
   }
-  function resizeCanvases(){const ratio=Math.min(2,typeof devicePixelRatio==='number'?devicePixelRatio:1);for(const card of [original,current]){if(card.box.hidden)continue;const rect=card.box.getBoundingClientRect(),width=Math.max(2,Math.round((rect.width-2)*ratio)),height=Math.max(2,Math.round((rect.height-2)*ratio));for(const canvas of [card.canvas,card.handles].filter(Boolean))if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}}}
-  function projectPoint(layer,point){const box=poseBounds,w=current.canvas.width,h=current.canvas.height,scale=Math.min((w-32)/box.width,(h-24)/box.height)*Number(zoom.value),p=api.renderer.transformPoint(layer.description,point.x,point.y);return {x:(p.x-(box.minX+box.maxX)/2)*scale*direction+w/2,y:h-12+box.minY*scale-p.y*scale};}
-  function localPoint(layer,bone,screen){const box=poseBounds,w=current.canvas.width,h=current.canvas.height,s=Math.min((w-32)/box.width,(h-24)/box.height)*Number(zoom.value),at=api.renderer.inversePoint(layer.description,(screen.x-w/2)/(s*direction)+(box.minX+box.maxX)/2,(h-12+box.minY*s-screen.y)/s),p=new spine.Vector2(at.x,at.y);bone.worldToLocal(p);return p;}
+  function resizeCanvases(){const ratio=Math.min(2,typeof devicePixelRatio==='number'?devicePixelRatio:1),rect=current.box.getBoundingClientRect(),width=Math.max(2,Math.round((rect.width-2)*ratio)),height=Math.max(2,Math.round((rect.height-2)*ratio));for(const canvas of [current.canvas,current.handles])if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}const screen=current.handles.getBoundingClientRect();renderPan={x:viewPan.x*width/Math.max(1,screen.width),y:viewPan.y*height/Math.max(1,screen.height)};}
+  function projectPoint(layer,point){const box=poseBounds,w=current.canvas.width,h=current.canvas.height,scale=Math.min((w-32)/box.width,(h-24)/box.height)*Number(zoom.value),p=api.renderer.transformPoint(layer.description,point.x,point.y);return {x:(p.x-(box.minX+box.maxX)/2)*scale*direction+w/2+renderPan.x,y:h-12+box.minY*scale-p.y*scale+renderPan.y};}
+  function worldPoint(screen){const box=poseBounds,w=current.canvas.width,h=current.canvas.height,s=Math.min((w-32)/box.width,(h-24)/box.height)*Number(zoom.value);return{x:(screen.x-w/2-renderPan.x)/(s*direction)+(box.minX+box.maxX)/2,y:(h-12+box.minY*s+renderPan.y-screen.y)/s};}
+  function localPoint(layer,bone,screen){const point=worldPoint(screen),at=api.renderer.inversePoint(layer.description,point.x,point.y),p=new spine.Vector2(at.x,at.y);bone.worldToLocal(p);return p;}
   function drawHandles(){
     const ctx=current.handles.getContext('2d');ctx.clearRect(0,0,current.handles.width,current.handles.height);const selectedPartObject=part();
     if(bonesToggle.checked)for(const layer of layers)for(const bone of layer.skeleton.bones){const p=projectPoint(layer,{x:bone.worldX,y:bone.worldY});ctx.fillStyle=selectedPartObject&&bone.data.name===selectedPartObject.bone?'#ffcf74':'#8cadd5';ctx.beginPath();ctx.arc(p.x,p.y,selectedPartObject&&bone.data.name===selectedPartObject.bone?4:2.5,0,Math.PI*2);ctx.fill();if(selectedPartObject&&bone.data.name===selectedPartObject.bone){ctx.font='13px Arial';ctx.fillText(bone.data.name,p.x+7,p.y-5);}}
@@ -283,9 +328,31 @@ function mount(host,api){
     const vertices=[];attachment.computeWorldVertices(slot.bone,vertices,0,2);ctx.strokeStyle='#ffcf74';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);ctx.beginPath();for(let i=0;i<8;i+=2){const p=projectPoint(layer,{x:vertices[i],y:vertices[i+1]});i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y);}ctx.closePath();ctx.stroke();ctx.setLineDash([]);
   }
   function screenPoint(event){const box=current.handles.getBoundingClientRect();return {x:(event.clientX-box.left)*current.handles.width/box.width,y:(event.clientY-box.top)*current.handles.height/box.height};}
-  current.handles.onpointerdown=event=>{if(busy)return;current.handles.focus();if(!part()||!layers.length)return;const p=part(),layer=layers.find(l=>l.description.uuid===p.layer),bone=layer.skeleton.findBone(p.bone);drag={pointer:event.pointerId,part:p,layer,bone,start:localPoint(layer,bone,screenPoint(event)),x:p.x,y:p.y};current.handles.setPointerCapture(event.pointerId);};
-  current.handles.onpointermove=event=>{if(!drag||!part())return;const at=localPoint(drag.layer,drag.bone,screenPoint(event));part().x=Math.max(-4096,Math.min(4096,Math.round((drag.x+at.x-drag.start.x)*10)/10));part().y=Math.max(-4096,Math.min(4096,Math.round((drag.y+at.y-drag.start.y)*10)/10));fittingKey='';draw();dirty();};
-  current.handles.onpointerup=finishPreviewDrag;current.handles.onpointercancel=finishPreviewDrag;current.handles.onlostpointercapture=finishPreviewDrag;
+  function finishPan(){if(!panDrag)return;const previous=panDrag;panDrag=null;current.handles.style.cursor='';releaseDrag(previous);}
+  function pickPreview(event){
+    if(!layers.length||!poseBounds||virtual)return;finishGestures();
+    const hit=api.renderer.hitTest(spine,layers,worldPoint(screenPoint(event)));if(!hit)return;
+    const selectedPartObject=profile().parts.find(p=>p.layer===hit.layer.description.uuid&&p.slot===hit.slot);
+    selectedModel=hit.layer.description.uuid;selectedPart=selectedPartObject?selectedPartObject.id:'';if(selectedPartObject)selectedAsset=selectedPartObject.sprite;
+    renderInspector();renderAssets();draw();
+    const model=inspector.querySelector('.model-settings');if(!selectedPartObject&&model){model.open=true;model.scrollIntoView({block:'nearest'});}else{const row=inspector.querySelector('.part-list button.selected');if(row)row.scrollIntoView({block:'nearest'});}
+    current.handles.focus({preventScroll:true});
+  }
+  current.handles.onpointerdown=event=>{
+    if(busy)return;current.handles.focus({preventScroll:true});
+    if(event.button===2){event.preventDefault();pickPreview(event);return;}
+    if(event.button===1){event.preventDefault();if(drag||panDrag)return;panDrag={pointer:event.pointerId,start:{x:event.clientX,y:event.clientY},x:viewPan.x,y:viewPan.y};current.handles.style.cursor='grabbing';current.handles.setPointerCapture(event.pointerId);return;}
+    if(event.button!==0||panDrag||drag||!part()||!layers.length)return;
+    event.preventDefault();const p=part(),layer=layers.find(l=>l.description.uuid===p.layer),bone=layer.skeleton.findBone(p.bone);drag={pointer:event.pointerId,part:p,layer,bone,start:localPoint(layer,bone,screenPoint(event)),x:p.x,y:p.y};current.handles.setPointerCapture(event.pointerId);
+  };
+  current.handles.onpointermove=event=>{
+    if(panDrag&&event.pointerId===panDrag.pointer){if(!(event.buttons&4)){finishPan();return;}viewPan={x:panDrag.x+event.clientX-panDrag.start.x,y:panDrag.y+event.clientY-panDrag.start.y};draw();return;}
+    if(!drag||event.pointerId!==drag.pointer||!part())return;if(!(event.buttons&1)||event.buttons&4){finishPreviewDrag();return;}
+    const at=localPoint(drag.layer,drag.bone,screenPoint(event));drag.part.x=Math.max(-4096,Math.min(4096,Math.round((drag.x+at.x-drag.start.x)*10)/10));drag.part.y=Math.max(-4096,Math.min(4096,Math.round((drag.y+at.y-drag.start.y)*10)/10));fittingKey='';draw();dirty();
+  };
+  function finishPointer(event){if(panDrag&&event.pointerId===panDrag.pointer&&(event.type!=='pointerup'||event.button===1))finishPan();if(drag&&event.pointerId===drag.pointer&&(event.type!=='pointerup'||event.button===0))finishPreviewDrag();}
+  current.handles.onpointerup=finishPointer;current.handles.onpointercancel=finishPointer;current.handles.onlostpointercapture=finishPointer;
+  current.handles.oncontextmenu=event=>event.preventDefault();current.handles.onauxclick=event=>{if(event.button===1)event.preventDefault();};
   function fitPart(commit){
     const p=part();if(!p||!layers.length)return;const asset=assets[p.sprite],target=Placement.layerFor(rig,asset),socket=Placement.socket(target,asset,profile().skins&&profile().skins[target.uuid]);
     if(socket){p.layer=target.uuid;p.slot=socket.name;p.bone=socket.bone;p.hideSlots=p.hideSlots.filter(name=>target.json.slots.some(slot=>slot.name===name)&&name!==p.slot);if(Placement.role(asset)==='Helmet'&&target.name==='wqyl_lead_tou')p.hideSlots=[...new Set(p.hideSlots.concat(target.json.slots.filter(slot=>/headgear/i.test(slot.name)&&slot.name!==p.slot).map(slot=>slot.name)))];}
@@ -300,7 +367,7 @@ function mount(host,api){
   function step(amount){playing=false;play.textContent='Play';time=Math.max(0,Math.min(duration,time+amount/30));draw();}
   animation.onchange=()=>{time=0;updateDuration();draw();};scrub.oninput=()=>{playing=false;play.textContent='Play';time=Number(scrub.value);draw();};
   function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time=(time+(now-last)/1000*Number(speed.value))%duration;draw();}last=now;raf=requestAnimationFrame(frame);}
-  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);parts=itemMode?result.parts:CharacterOptions.characterParts(result.parts);units=result.units;sources=result.sources||[];search.placeholder='Search '+parts.length+' parts…';assets=Object.fromEntries(result.parts.map(p=>[p.id,p]));lastSent=JSON.stringify(data);const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(p=>p.category))].sort()){const option=el('option',name,category);option.value=name;}unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
-  return {destroy(){disposed=true;token++;root.removeEventListener('keydown',editorKey,true);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(original.canvas);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
+  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);parts=itemMode?CharacterOptions.libraryParts(result.parts):CharacterOptions.characterParts(result.parts);units=result.units;sources=result.sources||[];search.placeholder='Search '+parts.length+' parts…';assets=Object.fromEntries(result.parts.map(p=>[p.id,p]));lastSent=JSON.stringify(data);const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(CharacterOptions.partCategory))].sort()){const option=el('option',name,category);option.value=name;}unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
+  return {destroy(){disposed=true;token++;root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
 }
 module.exports={mount};
