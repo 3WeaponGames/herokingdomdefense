@@ -17,22 +17,59 @@ function skins(controller) {
   });
 }
 function name(track) { var animation = track && (track.animation || track.getAnimation && track.getAnimation()); return animation && (animation.name || animation.getName && animation.getName()); }
+function mountMetadata(controller) { var data=controller.spAniMa&&controller.spAniMa.skeletonData;return data&&data.skeletonJson&&data.skeletonJson._heroMakerMount; }
+function clock(track,master) {
+  var time=typeof master.getTrackTime==='function'?master.getTrackTime():master.trackTime;
+  var speed=typeof master.getTimeScale==='function'?master.getTimeScale():master.timeScale;
+  if(typeof time==='number'){if(typeof track.setTrackTime==='function')track.setTrackTime(time);else track.trackTime=time;}
+  if(typeof speed==='number'){if(typeof track.setTimeScale==='function')track.setTimeScale(speed);else track.timeScale=speed;}
+}
+function attacking(controller) { var track=controller.spAniBody&&controller.spAniBody.getCurrent&&controller.spAniBody.getCurrent(0);return !!mountMetadata(controller)&&track&&!track.loop&&/^attack(?:_|$)/.test(name(track)); }
+function prepareAttack(controller,animation) {
+  if(!metadata(controller)||!mountMetadata(controller))return;
+  keys.concat(['spAniMa']).forEach(function(key){var renderer=controller[key];if(!renderer||!renderer.setMix)return;
+    ['idle','move'].forEach(function(pose){renderer.setMix(pose,animation,.08);renderer.setMix(animation,pose,.12);});
+  });
+}
+function queue(controller,renderer,animation) {
+  var next=controller.isMove?'move':'idle';
+  if(!metadata(controller)||!mountMetadata(controller))return renderer.addAnimation(0,'idle',true);
+  var track=renderer.getCurrent(0),end=track&&(typeof track.getAnimationEnd==='function'?track.getAnimationEnd():track.animationEnd);
+  // Explicit delay prevents Spine from subtracting the outro blend from the
+  // attack duration and entering locomotion before the attack completes.
+  return renderer.addAnimation(0,next,true,typeof end==='number'?end:.8333);
+}
+function locomotion(renderer,animation) {
+  var previous=renderer.getCurrent(0),from=name(previous);
+  if(renderer.setMix&&from&&from!==animation)renderer.setMix(from,animation,.1);
+  return renderer.setAnimation(0,animation,true);
+}
+function attack(controller,animation) {
+  if(!metadata(controller)||!mountMetadata(controller))return;
+  var horse=controller.spAniMa,track=horse.setAnimation(0,animation,false),master=controller.spAniBody.getCurrent(0);
+  queue(controller,horse,animation);
+  if(track&&master)clock(track,master);
+}
 function update(controller) {
   if (!metadata(controller)) return;
   var horse = controller.spAniMa, mount = horse && horse.getCurrent && horse.getCurrent(0), body = controller.spAniBody, master = body.getCurrent && body.getCurrent(0);
   if (!master) return;
   if (!controller.isDie && master.loop) {
     var desired = controller.isMove ? "move" : "idle";
-    if (name(master) !== desired) master = body.setAnimation(0, desired, true);
-    if (mount && name(mount) === desired) master.trackTime = mount.trackTime;
+    if (name(master) !== desired) master = locomotion(body,desired);
+    if(mountMetadata(controller)&&(!mount||name(mount)!==desired||!mount.loop))mount=locomotion(horse,desired);
+    if (mount && name(mount) === desired) clock(master,mount);
+  }else if(attacking(controller)){
+    if(!mount||name(mount)!==name(master)||mount.loop){attack(controller,name(master));mount=horse.getCurrent(0);}
+    if(mount)clock(mount,master);
   }
   // All equipment shares the body's animation clock, including a queued idle
   // after firing while moving. Never restart a live attack or its callbacks.
   keys.slice(1).forEach(function (key) {
     var renderer = controller[key], track = renderer && renderer.getCurrent && renderer.getCurrent(0);
     if (!track) return;
-    if (master.loop && name(track) !== name(master)) track = renderer.setAnimation(0, name(master), true);
-    if (name(track) === name(master)) track.trackTime = master.trackTime;
+    if (master.loop && name(track) !== name(master)) track = locomotion(renderer,name(master));
+    if (name(track) === name(master)) clock(track,master);
   });
   follow(controller);
 }
@@ -63,3 +100,5 @@ function removeFollow(controller) {
 exports.isMaker = metadata; exports.attackName = attackName; exports.skins = skins; exports.update = update; exports.style = style;
 exports.follow = follow; exports.removeFollow = removeFollow;
 exports.projectileOrigin = projectileOrigin;
+exports.attack = attack; exports.attacking = attacking;
+exports.prepareAttack = prepareAttack; exports.queue = queue;

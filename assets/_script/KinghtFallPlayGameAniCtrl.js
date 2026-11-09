@@ -101,29 +101,32 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniHand.node.scaleX = t < 0 ? -1 : 1;
   };
   _ctor.prototype.setAttack = function (t) {
-    var attackName = require("HeroMakerRider").attackName(this);
+    var rider = require("HeroMakerRider"), attackName = rider.attackName(this);
+    rider.prepareAttack(this, attackName);
     var e = this.spAniBody.setAnimation(0, attackName, false);
     t && this.spAniBody.setTrackCompleteListener(e, function () {
       t();
     });
-    this.spAniBody.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+    rider.queue(this, this.spAniBody, attackName);
     this.spAniDrap.setAnimation(0, attackName, false);
-    this.spAniDrap.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+    rider.queue(this, this.spAniDrap, attackName);
     this.spAniHead.setAnimation(0, attackName, false);
-    this.spAniHead.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+    rider.queue(this, this.spAniHead, attackName);
     this.spAniBow.setAnimation(0, attackName, false);
-    this.spAniBow.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+    rider.queue(this, this.spAniBow, attackName);
     this.spAniArrow.setAnimation(0, attackName, false);
-    this.spAniArrow.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+    rider.queue(this, this.spAniArrow, attackName);
     this.spAniHand.setAnimation(0, attackName, false);
-    this.spAniHand.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+    rider.queue(this, this.spAniHand, attackName);
+    rider.attack(this, attackName);
   };
   _ctor.prototype.setIdle = function () {
     var t;
     if (this.isMove) {
       this.isMove = false;
       if (!this.isDie) {
-        this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true), null === (t = this.spAniSmoke) || undefined === t || t.setAnimation(0, "move_3", false);
+        if (!require("HeroMakerRider").attacking(this)) this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
+        null === (t = this.spAniSmoke) || undefined === t || t.setAnimation(0, "move_3", false);
       }
     }
   };
@@ -131,7 +134,8 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     if (!this.isMove) {
       this.isMove = true;
       if (!this.isDie) {
-        this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Move, true), this.spAniSmoke.setAnimation(0, "move_1", false), this.spAniSmoke.addAnimation(0, "move_2", true);
+        if (!require("HeroMakerRider").attacking(this)) this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Move, true);
+        this.spAniSmoke.setAnimation(0, "move_1", false), this.spAniSmoke.addAnimation(0, "move_2", true);
       }
     }
   };

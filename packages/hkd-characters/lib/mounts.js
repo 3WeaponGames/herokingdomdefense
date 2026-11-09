@@ -25,7 +25,13 @@ function gaitCycle(source,period){
   // cropped deformation must return to the same offsets as the first frame.
   for(const slots of Object.values(result.deform||{}))for(const attachments of Object.values(slots))for(const [name,values]of Object.entries(attachments)){
     const start=values[0].time?{time:0,curve:'stepped'}:clone(values[0]),frames=values.filter(frame=>(frame.time||0)<period-1e-6);
-    if(!frames.length||frames[0].time)frames.unshift(start);frames.push({...clone(start),time:period});attachments[name]=frames;
+    if(!frames.length||frames[0].time)frames.unshift(start);
+    const end={...clone(start),time:period};
+    // A curve describes the segment to the next key. Native Spine allocates
+    // one fewer curve than frames, so a copied curve on the closing key would
+    // index past its C++ vector even though the browser runtime tolerates it.
+    for(const key of ['curve','c2','c3','c4'])delete end[key];
+    frames.push(end);attachments[name]=frames;
   }
   // Keep any imported attachment and constraint timelines in the same stride.
   function crop(value){if(!value||typeof value!=='object')return;for(const [key,child]of Object.entries(value)){if(Array.isArray(child)&&child.every(frame=>frame&&typeof frame==='object'&&!Array.isArray(frame))){value[key]=child.filter(frame=>frame.time===undefined||frame.time<=period);}else if(!Array.isArray(child))crop(child);}}

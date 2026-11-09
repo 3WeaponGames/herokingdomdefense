@@ -11,7 +11,7 @@
   "bones": [
     {
       "name": "__game_fit",
-      "x": -12,
+      "x": 0,
       "y": 55,
       "rotation": 0,
       "scaleX": 0.78,
@@ -133458,7 +133458,7 @@
   "_unitSource": "character-maker/Character",
   "_unitLook": "hero-maker",
   "_heroMaker": {
-    "version": 1,
+    "version": 2,
     "role": 5,
     "source": "character-maker/Character",
     "riderScale": 0.78,

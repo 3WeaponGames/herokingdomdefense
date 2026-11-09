@@ -83,6 +83,21 @@ function writeRig(root,files,read,name,rig,pictures){
   files.set(base+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:Bake.uuid(base+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n');files.set(base+'.png.meta',JSON.stringify(Bake.textureMeta(base+'.png',image.width,image.height),null,2)+'\n');
   return {base,uuid:Bake.uuid(base+'.json')};
 }
+function horse(root,maker,files,read){
+  const original=source(root,'ma',read),aligned=clone(original);
+  // Use the same stride and preparation/thrust/recovery synchronization as
+  // cavalry, then fit both horse and rider into the hero's gameplay contract.
+  // All six skins share these tracks; their original meshes and legs remain.
+  require('./mounts').alignAnimations(aligned,maker);
+  animations(aligned.json,original.json);
+  for(const [name,clip]of Object.entries(original.json.animations))if(!['idle','move','attack'].includes(name))aligned.json.animations[name]=clone(clip);
+  aligned.json._heroMakerMount={version:1,source:original.uuid};
+  const base=folder+'/wqyl_lead_ma',texture=read(url.fileURLToPath(original.pages['wqyl_lead_ma.png']));
+  files.set(base+'.json',JSON.stringify(aligned.json,null,2)+'\n');files.set(base+'.atlas',original.atlas);files.set(base+'.png',texture);
+  files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures:[Bake.uuid(base+'.png')],scale:1,subMetas:{}},null,2)+'\n');
+  files.set(base+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:Bake.uuid(base+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n');files.set(base+'.png.meta',JSON.stringify(Bake.textureMeta(base+'.png',texture.readUInt32BE(16),texture.readUInt32BE(20)),null,2)+'\n');
+  return {from:original.uuid,to:Bake.uuid(base+'.json')};
+}
 function plan(root){
   const files=new Map(),reads=new Map(),read=file=>{file=path.resolve(file);const relative=path.relative(root,file).replace(/\\/g,'/');if(files.has(relative))return Buffer.from(files.get(relative));if(!reads.has(file))reads.set(file,fs.readFileSync(file));return reads.get(file);};
   const images=new Map(),decode=bytes=>{const key=require('crypto').createHash('sha256').update(bytes).digest('hex');if(!images.has(key))images.set(key,PNG.decode(bytes));return images.get(key);};
@@ -94,7 +109,7 @@ function plan(root){
   for(const [name,role]of Object.entries(roles)){
     const original=source(root,name,read),base=clone(maker),originalUuid=original.uuid;base.uuid=Bake.uuid(folder+'/wqyl_lead_'+name+'.json');
     // 30% larger than the .6 cavalry rider, retaining the full-size hero horse.
-    base.x=-12;base.y=55;base.scaleX=base.scaleY=.78;
+    base.x=0;base.y=55;base.scaleX=base.scaleY=.78;
     base.json.slots.forEach(slot=>{if(!belongs(slot.name,role))delete slot.attachment;});
     base.json.skins.forEach(skin=>{for(const slot of Object.keys(skin.attachments))if(!belongs(slot,role))delete skin.attachments[slot];});
     animations(base.json,original.json);
@@ -104,7 +119,7 @@ function plan(root){
       const match=/^(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_(.+)$/.exec(skin),style=match?match[1]:'skirmisher',tierName=match?match[2]:skin,tier=/^vip/.test(tierName)?4:Math.min(4,Number(tierName.replace(/\D/g,''))||1),parts=[];
       function add(asset,slot,overrides){if(!asset)throw Error('Missing hero equipment for '+slot);parts.push({...attachment(asset,slot,slot.replace(/[^a-z0-9]/gi,'_')+'_'+skin),layer:base.uuid,...overrides});}
       if(role===0)add(assets.get('Hero/Boots/default'),'Rider/Body/Boots');
-      if(role===1){add(tier===1?assets.get('Chest/FA_Chest_032_Blue'):choose('Chest',tier),slotFor('Chest'),{x:-19.9,y:-5.5});add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape');}
+      if(role===1){add(tier===1?assets.get('Chest/FA_Chest_032_Blue'):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape');}
       if(role===2)add(tier===1?assets.get('Helmet/FA_Helmet_047_White'):choose('Helmet',tier),slotFor('Helmet'));
       if(role===3&&style==='skirmisher')add(choose('HandRight/Arrow',tier),slotFor('Arrow'),{forceVisible:false});
       if(role===4){const type=family[style];add(weapon(style,tier),slotFor(type));if(style==='guardian')add(assets.get('HandLeft/Shield/FA_WP_Sub_Shield_012_Blue')||choose('HandLeft/Shield',tier),slotFor('Shield'));}
@@ -130,9 +145,10 @@ function plan(root){
         else if(target.color)target.color=target.color.map(frame=>({...frame,color:frame.color.slice(0,6)+'ff'}));
       }
     }
-    rig._heroMaker={version:1,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
+    rig._heroMaker={version:2,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
     const written=writeRig(root,files,read,name,rig,pictures);replacements.set(originalUuid,written.uuid);
   }
+  const mount=horse(root,maker,files,read);replacements.set(mount.from,mount.to);
   require('./current-model').folderMetadata(root,folder,files,read);require('./current-model').folderMetadata(root,equipmentFolder,files,read);
   const iconFile=folder+'/catalog.json';files.set(iconFile,JSON.stringify({version:1,icons},null,2)+'\n');files.set(iconFile+'.meta',JSON.stringify({ver:'1.3.0',uuid:Bake.uuid(iconFile),importer:'json',subMetas:{}},null,2)+'\n');
   const next=clone(catalog);for(const asset of custom){const at=next.parts.findIndex(p=>p.id===asset.id);if(at<0)next.parts.push(asset);else next.parts[at]={...next.parts[at],...asset};}files.set(catalogFile,Document.patch(text,catalog,next));
