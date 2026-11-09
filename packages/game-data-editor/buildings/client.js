@@ -5,6 +5,7 @@ const path = require('path');
 const Model = require('./model');
 const Settings = require('./settings');
 const Schema = require('../lib/schema');
+const UnitLevelStats = require('../../../assets/_script/UnitLevelStats');
 const own = (record, key) => Object.prototype.hasOwnProperty.call(record || {}, key);
 function node(tag, text, className) {
     const element = document.createElement(tag);
@@ -17,9 +18,20 @@ function button(text, action, className) {
     element.type = 'button'; element.onclick = action; return element;
 }
 function catalog(panel) { return Model.catalog(panel._data('A'), panel._data('catalog'), panel._language); }
+function typeID(row) { return String(row.typeID || row.key); }
+function families(panel) { return Model.families(panel._data('A'), panel._data('catalog'), panel._language); }
 function rows(panel) {
-    const buildings = catalog(panel), count = buildings.reduce((sum, row) => sum + (row.record.levelList || []).length, 0);
-    return [{key:'__all__', label:'All buildings', subtitle:buildings.length+' building types · '+count+' upgrade branches', overview:true, record:{}, path:[], doc:'A'}].concat(buildings);
+    const buildings = catalog(panel), current = families(panel);
+    const result = [{key:'__all__', label:'All buildings', subtitle:current.length+' construction families · '+buildings.length+' building categories', overview:true, record:{}, path:[], doc:'A'}];
+    buildings.forEach(building => {
+        const active = current.filter(row => row.typeID === building.key);
+        if (building.key!=='2'&&building.key!=='3'&&active.length === 1) result.push(Object.assign({}, active[0], {key:building.key, family:true}));
+        else {
+            result.push(Object.assign({}, building, {typeID:building.key, category:true, subtitle:active.length+' construction choices'}));
+            active.forEach(row => result.push(Object.assign({}, row, {family:true, indented:true})));
+        }
+    });
+    return result;
 }
 function select(panel, key, position) {
     panel._selected = key; panel._level = position || 0; panel.$detail.scrollTop = 0; panel._render();
@@ -29,30 +41,52 @@ function artwork(panel, parent, icon, className) {
     if (!asset) return;
     const image = node('img', undefined, className); image.src = asset.url; image.alt = ''; parent.appendChild(image);
 }
-function overview(panel) {
+function familyCards(panel, list) {
     const grid = node('div', undefined, 'bld-catalog'); panel.$detail.appendChild(grid);
-    catalog(panel).forEach(row => {
-        const card = button('', () => select(panel, row.key), 'bld-card');
+    list.forEach(row => {
+        const card = button('', () => select(panel, row.key, row.rootPosition), 'bld-card');
+        card.setAttribute('data-building-family', row.key);
         artwork(panel, card, row.icon, 'bld-card-art');
         card.appendChild(node('strong', row.label));
         card.appendChild(node('small', row.subtitle));
-        const branches = Model.branches(row.record, row.key, panel._data('A'), panel._data('catalog'), panel._language);
-        card.appendChild(node('span', branches[0] ? branches[0].summary : 'No branches', 'bld-card-summary'));
+        const first = row.root || row.branches[0];
+        card.appendChild(node('span', first ? first.summary : 'No levels', 'bld-card-summary'));
         grid.appendChild(card);
     });
-    panel._note('Choose a building to edit every authored upgrade branch, its costs, health, appearance and gameplay settings. Barracks also links directly to the assigned unit’s stats.');
-    const section = panel._section('All upgrade branches'); section.className = 'bld-table-wrap';
+}
+function overview(panel) {
+    const list = rows(panel).filter(row => row.family);
+    familyCards(panel, list);
+    panel._note('Choose a construction family, then use its level tabs to edit costs, health, artwork and gameplay. Barracks unit stats use the same levels as Units and Characters.');
+    const section = panel._section('All current building levels', undefined, true); section.className = 'bld-table-wrap';
     const table = node('table', undefined, 'gt-grid-table');
     const head = node('tr'); ['Building / branch', 'Level', 'Gameplay', 'Next'].forEach(text => head.appendChild(node('th', text))); table.appendChild(head);
-    catalog(panel).forEach(row => Model.branches(row.record, row.key, panel._data('A'), panel._data('catalog'), panel._language).forEach(branch => {
+    list.forEach(row => row.branches.forEach(branch => {
         const tr = node('tr'); tr.setAttribute('data-click', 'true');
         tr.onclick = () => select(panel, row.key, branch.position);
         [row.label+' · #'+branch.index+' '+branch.label, branch.level, branch.summary, branch.next.length ? branch.next.map(value => '#'+value).join(', ') : 'Final'].forEach(text => tr.appendChild(node('td', text)));
         table.appendChild(tr);
     })); section.appendChild(table);
 }
+function selectedBranch(panel, row) {
+    const branches = row.branches || [];
+    if (!branches.some(branch => branch.position === panel._level)) panel._level = row.rootPosition == null ? branches[0] && branches[0].position : row.rootPosition;
+    return branches.find(branch => branch.position === panel._level);
+}
+function levelTabs(panel, row) {
+    if (!row.family) return;
+    const selected = selectedBranch(panel, row), tabs = node('div', undefined, 'bld-level-tabs');
+    tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Building levels');
+    (row.levels || []).forEach(group => {
+        const active = selected && group.level === selected.level;
+        const tab = button('Lvl '+group.level, () => {if(!active)panel._level=group.branches[0].position;panel._render();}, active ? 'active' : '');
+        tab.setAttribute('role','tab'); tab.setAttribute('data-building-level',group.level); tab.setAttribute('aria-selected',String(!!active));
+        tabs.appendChild(tab);
+    });
+    panel.$detail.appendChild(tabs);
+}
 function mechanics(panel, row, level, at, context) {
-    const type = Number(row.key), values = level.Data;
+    const type = Number(typeID(row)), values = level.Data;
     const title = type === 3 ? 'Barracks roster' : type === 1 || type === 2 ? 'Building attack' : type === 4 || type === 5 ? 'Silver production' : 'Wall properties';
     const section = panel._section(title);
     if (Array.isArray(values) && values.length) {
@@ -67,11 +101,20 @@ function mechanics(panel, row, level, at, context) {
         const data=panel._data('A'), table=data.AllyCfg?'AllyCfg':'SoldierCfg', id = values && values[1], unit = (data[table] || {})[id];
         if (unit) {
             const stats = panel._section('Assigned unit · '+panel._text(unit.Name)+' · '+id);
-            panel._note('Allied unit record: these stats affect barracks branches using this ally. Enemy records are independent. To change this branch’s roster, use Soldier type above.', false, stats);
-            const primary = ['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed','BuildingCross','CounterType','DeathAni'];
-            primary.filter(key => own(unit, key)).forEach(key => panel._value(stats, 'A', [table, String(id), key], unit[key], key, {table:'SoldierCfg', id,side:'ally'}, unit));
-            const advanced = panel._section('Unit name, artwork & additional properties', undefined, true);
-            panel._properties(advanced, 'A', [table, String(id)], unit, {table:'SoldierCfg', id,side:'ally'}, primary.concat('Suppressed'));
+            const unitRow={record:unit,path:[table,String(id)],unitType:'ally',unitID:String(id)}, value=Number(level.level), settings=panel._data('overrides');
+            const effective=UnitLevelStats.resolve(unit,settings,value), custom=(settings.unitLevels||{})[UnitLevelStats.key(id,value)]||{};
+            panel._note('Level '+value+' stats are shared with Units → '+panel._text(unit.Name)+' → Level '+value+' and its Characters appearance. Unchanged fields use the shared base stats. To change the roster, use Soldier type above.', false, stats);
+            UnitLevelStats.FIELDS.filter(key=>own(unit,key)).forEach(key=>{
+                const meta=Schema.descriptor(key,{table:'SoldierCfg',side:'ally'}), overridden=own(custom,key);
+                const input=panel._field(stats,meta.label,effective[key],next=>panel._unitLevelEdit(unitRow,value,key,next).catch(()=>{}),Object.assign({},meta,{help:overridden?'Custom for Level '+value+'.':'Shared base: '+unit[key]}));
+                input.setAttribute('aria-label','Level '+value+' '+meta.label);
+                if(overridden)input.parentNode.appendChild(button('Use base',()=>panel._unitLevelEdit(unitRow,value,key).catch(()=>{}),'gt-mini'));
+            });
+            const actions=node('div',undefined,'bld-actions'); stats.appendChild(actions);
+            const reset=button('Reset Level '+value+' unit stats',()=>panel._unitLevelEdit(unitRow,value,null).catch(()=>{}),'gt-mini');reset.disabled=!UnitLevelStats.FIELDS.some(key=>own(custom,key));actions.appendChild(reset);
+            actions.appendChild(button('Edit Level '+value+' appearance in Characters',()=>Editor.Ipc.sendToMain('game-data-editor:open-characters',{type:'ally',id:String(id),level:value},error=>{if(error)panel._status(String(error),true);}),'gt-mini'));
+            const advanced = panel._section('Shared unit properties · all levels', undefined, true);
+            panel._properties(advanced, 'A', [table, String(id)], unit, {table:'SoldierCfg', id,side:'ally'}, UnitLevelStats.FIELDS.concat('Suppressed'));
         } else panel._note('The assigned unit is missing. Choose an implemented allied unit above before saving.', true, section);
     }
 }
@@ -85,36 +128,35 @@ function construction(panel) {
 }
 function initialChoices(panel, row, branches) {
     const building=row.record, choices=building.InitialChoices, at=row.path.concat('InitialChoices');
-    const section=panel._section('Construction choices');
+    const section=panel._section('Construction menu · advanced',undefined,true);
+    section.classList.add('bld-construction-fields');
     panel._note('These branches are offered before an empty plot is purchased. Order controls the cards. Existing buildings and saved branch IDs are unchanged.',false,section);
+    const roots=branches.filter(branch=>branch.level===1);
     if (!Array.isArray(choices)) {
-        panel._note('Original construction: the first branch is built directly.',false,section);
-        section.appendChild(button('Offer a choice when building',()=>panel._set('A',at,[branches[0].index]),'gt-mini'));
+        panel._note('Choose the level-one buildings offered when purchasing an empty plot.',false,section);
+        if(roots.length)section.appendChild(button('Configure construction choices',()=>panel._set('A',at,roots.slice(0,4).map(branch=>branch.index)),'gt-mini'));
         return;
     }
     choices.forEach((value,index)=>{
         const line=node('div',undefined,'gt-array-row');section.appendChild(line);
-        panel._field(line,'Construction choice '+(index+1),value,next=>panel._set('A',at.concat(index),next),{options:branches.map(branch=>({value:branch.index,label:'#'+branch.index+' · Level '+branch.level+' · '+branch.label}))});
-        line.appendChild(button('Remove',()=>panel._set('A',at,choices.filter((_item,i)=>i!==index)),'gt-mini'));
+        panel._field(line,'Construction choice '+(index+1),value,next=>panel._set('A',at.concat(index),next),{options:roots.map(branch=>({value:branch.index,label:'#'+branch.index+' · '+branch.label}))});
+        const remove=button('Remove',()=>panel._set('A',at,choices.filter((_item,i)=>i!==index)),'gt-mini');remove.disabled=choices.length<=1;line.appendChild(remove);
         if(index)line.appendChild(button('Move earlier',()=>{const next=choices.slice(),previous=next[index-1];next[index-1]=next[index];next[index]=previous;return panel._set('A',at,next);},'gt-mini'));
     });
     if(choices.length<4)section.appendChild(button('Add construction choice',()=>{
-        const next=branches.find(branch=>choices.indexOf(branch.index)<0);
+        const next=roots.find(branch=>choices.indexOf(branch.index)<0);
         if(next)return panel._set('A',at,choices.concat(next.index));
     },'gt-mini'));
-    section.appendChild(button('Restore original direct construction',()=>panel._change([{doc:'A',path:at,remove:true}]).catch(()=>{}),'gt-mini'));
 }
 function towerSettings(panel, row, level, at) {
-    if(Number(row.key)!==2)return;
+    if(Number(typeID(row))!==2)return;
     const section=panel._section('Tower attack & targeting');
-    panel._note('Without a saved Tower override, this branch keeps the original arrow behavior. Editing a field creates a draft for this branch only.',false,section);
+    panel._note('Attack type, targeting and projectile settings apply to this tower level. Editing a field changes only this level’s draft.',false,section);
     Settings.towerFields(level.Tower).forEach(field=>panel._field(section,field.label,field.value,next=>level.Tower&&typeof level.Tower==='object'&&!Array.isArray(level.Tower)?panel._set('A',at.concat('Tower',field.key),next):panel._set('A',at.concat('Tower'),{[field.key]:next}),field));
-    if(own(level,'Tower'))section.appendChild(button('Restore original tower attack',()=>panel._change([{doc:'A',path:at.concat('Tower'),remove:true}]).catch(()=>{}),'gt-mini'));
 }
 function appearanceSettings(panel, row, level, at) {
     const section=panel._section('Map artwork & footprint',undefined,!level.Appearance);
     panel._field(section,'Collision footprint branch',own(level,'ColliderIndex')?level.ColliderIndex:level.index,next=>panel._set('A',at.concat('ColliderIndex'),next),{integer:true,min:1,help:'Reuses an existing map collider tag. The saved branch index stays fixed.'});
-    if(own(level,'ColliderIndex'))section.appendChild(button('Use branch’s original footprint',()=>panel._change([{doc:'A',path:at.concat('ColliderIndex'),remove:true}]).catch(()=>{}),'gt-mini'));
     const value=level.Appearance;
     if(!value||typeof value!=='object'||Array.isArray(value)) {
         panel._note('This branch uses its original animated building model.',false,section);
@@ -124,10 +166,9 @@ function appearanceSettings(panel, row, level, at) {
     panel._field(section,'Map sprite resource path',value.sprite||'',next=>panel._set('A',at.concat('Appearance','sprite'),next),{wide:true,help:'Extension-free path inside assets/resources, for example buildings/towers/cannon-1.'});
     const images=(panel._assets.images||[]).filter(asset=>asset.resource&&asset.reference&&asset.resource.startsWith('buildings/'));
     if(images.length)panel._field(section,'Choose Resources artwork',value.sprite||'',next=>panel._set('A',at.concat('Appearance','sprite'),next),{options:[{value:value.sprite||'',label:value.sprite||'Choose imported artwork'}].concat(images.filter(asset=>asset.resource!==value.sprite).map(asset=>({value:asset.resource,label:asset.resource}))),wide:true,help:'Imported resources/buildings artwork. Other Resources paths can be entered above.'});
-    Settings.APPEARANCE_FIELDS.filter(field=>!/^muzzle/.test(field.key)||Number(row.key)===2&&!value.weapon).forEach(field=>panel._field(section,field.label,own(value,field.key)?value[field.key]:field.value,next=>panel._set('A',at.concat('Appearance',field.key),next),field));
+    Settings.APPEARANCE_FIELDS.filter(field=>!/^muzzle/.test(field.key)||Number(typeID(row))===2&&!value.weapon).forEach(field=>panel._field(section,field.label,own(value,field.key)?value[field.key]:field.value,next=>panel._set('A',at.concat('Appearance',field.key),next),field));
     panel._note('The image is anchored at its bottom center. Width and height include transparent margins. Offsets and muzzle position use building-local world units.',false,section);
-    if(Number(row.key)===2||own(value,'weapon'))weaponSettings(panel,section,value,at.concat('Appearance'),images);
-    section.appendChild(button('Restore original animated artwork',()=>panel._change([{doc:'A',path:at.concat('Appearance'),remove:true}]).catch(()=>{}),'gt-mini'));
+    if(Number(typeID(row))===2||own(value,'weapon'))weaponSettings(panel,section,value,at.concat('Appearance'),images);
 }
 function weaponSettings(panel,parent,appearance,at,images){
     const section=panel._section('Aiming weapon layer',parent,!appearance.weapon),value=appearance.weapon;
@@ -144,18 +185,33 @@ function weaponSettings(panel,parent,appearance,at,images){
 }
 function render(panel, row) {
     if (row.overview) { overview(panel); return; }
-    const building = row.record, at = row.path;
-    const branches = Model.branches(building, row.key, panel._data('A'), panel._data('catalog'), panel._language);
-    panel._properties(panel._section('Building type', undefined, true), 'A', at, building, {table:'BuildEnum', id:row.key}, ['levelList','InitialChoices']);
-    if (!branches.length) { panel._note('No upgrade branches are configured for this building.', true); return; }
-    if(Number(row.key)===2||Number(row.key)===3||own(building,'InitialChoices'))initialChoices(panel,row,branches);
-    panel._level = Math.max(0, Math.min(panel._level || 0, branches.length - 1));
-    const branch = branches[panel._level], level = branch.record, keys = at.concat('levelList', branch.position);
-    const context = {table:'BuildEnum', id:row.key, building, levelIndex:branch.position};
-    const selector = panel._section('Upgrade branch');
-    panel._field(selector, 'Edit branch', panel._level, position => { panel._level = position; panel._render(); },
-        {options:branches.map(item => ({value:item.position, label:'#'+item.index+' · Level '+item.level+' · '+item.label}))});
-    const section = panel._section('Every upgrade branch', undefined, true); section.className = 'bld-table-wrap';
+    const building = row.record, at = row.path, id = typeID(row);
+    const allBranches = Model.branches(building, id, panel._data('A'), panel._data('catalog'), panel._language);
+    if (row.category) {
+        const list=rows(panel).filter(item=>item.typeID===id&&item.family);
+        panel._note(Number(id)===3?'An empty Barracks plot offers these squad types. Each has its own building and level progression.':'An empty Tower plot offers these tower types. Each has its own attack settings and level progression.');
+        familyCards(panel,list);
+        if(!list.length)panel._note('No valid construction choices are configured. Review the construction menu below.',true);
+        initialChoices(panel,row,allBranches);
+        panel._properties(panel._section('Shared building category',undefined,true),'A',at,building,{table:'BuildEnum',id},['levelList','InitialChoices']);
+        construction(panel); return;
+    }
+    const branches=row.branches||allBranches, branch=selectedBranch(panel,row);
+    if (!branch) { panel._note('No building levels are configured for this family.', true); return; }
+    (row.diagnostics||[]).forEach(issue=>panel._note(typeof issue==='string'?issue:issue.message||JSON.stringify(issue),true));
+    const level = branch.record, keys = at.concat('levelList', branch.position);
+    const context = {table:'BuildEnum', id, building, levelIndex:branch.position};
+    {
+        const group=(row.levels||[]).find(group=>group.level===branch.level);
+        if(group&&group.branches.length>1){
+            const section=panel._section('Level '+branch.level+' variants'), label='Level '+branch.level+' variant';
+            const input=panel._field(section,label,panel._level,position=>{panel._level=position;panel._render();},{options:group.branches.map(item=>({value:item.position,label:item.label+' · #'+item.index}))});
+            input.setAttribute('aria-label',label);
+        }
+    }
+    const selected = node('div', undefined, 'bld-selected'); artwork(panel, selected, level.Icon, 'bld-selected-art');
+    const text = node('div'); text.appendChild(node('h3', 'Level '+level.level+' · '+panel._text(level.Name))); text.appendChild(node('span', branch.summary)); selected.appendChild(text); panel.$detail.appendChild(selected);
+    const section = panel._section('All levels in this family', undefined, true); section.className = 'bld-table-wrap';
     const table = node('table', undefined, 'gt-grid-table'); const head = node('tr');
     ['Branch / name','Level','Gameplay','Next'].forEach(text => head.appendChild(node('th', text))); table.appendChild(head);
     branches.forEach(item => {
@@ -164,9 +220,7 @@ function render(panel, row) {
         ['#'+item.index+' · '+item.label, item.level, item.summary, item.next.length ? item.next.map(value => '#'+value).join(', ') : 'Final'].forEach(text => tr.appendChild(node('td', text)));
         table.appendChild(tr);
     }); section.appendChild(table);
-    const selected = node('div', undefined, 'bld-selected'); artwork(panel, selected, level.Icon, 'bld-selected-art');
-    const text = node('div'); text.appendChild(node('h3', 'Branch #'+level.index+' · '+panel._text(level.Name))); text.appendChild(node('span', branch.summary)); selected.appendChild(text); panel.$detail.appendChild(selected);
-    if (Number(row.key) === 3) {
+    if (Number(id) === 3) {
         const tabs = node('div', undefined, 'gt-switch');
         [['building','Building artwork'],['unit','Assigned unit & attack timing']].forEach(([value, label]) => tabs.appendChild(button(label, () => { panel._buildingPreview = value; panel._render(); }, (panel._buildingPreview || 'building') === value ? 'active' : '')));
         panel.$detail.appendChild(tabs);
@@ -181,7 +235,7 @@ function render(panel, row) {
     const visualKeys = ['Name','Describe','LevelUpDescribe','Icon','Skin','Zoom','Excursion'];
     visualKeys.filter(key => own(level, key)).forEach(key => panel._value(appearance, 'A', keys.concat(key), level[key], key, context, level));
     appearanceSettings(panel,row,level,keys);
-    const connections = panel._section('Next upgrade branches');
+    const connections = panel._section('Next upgrade branches · advanced',undefined,true);
     if (own(level, 'BranchBuild')) panel._value(connections, 'A', keys.concat('BranchBuild'), level.BranchBuild, 'BranchBuild', context, level);
     else {
         panel._note('This is a final branch.', false, connections);
@@ -192,11 +246,13 @@ function render(panel, row) {
     }
     const other = panel._section('Identifiers & additional authored properties', undefined, true);
     panel._properties(other, 'A', keys, level, context, visualKeys.concat(['Data','Hp','level','BuildSliverCost','VedioCount','BranchBuild','Tower','Appearance','ColliderIndex']));
+    panel._properties(panel._section('Shared building category',undefined,true),'A',at,building,{table:'BuildEnum',id},['levelList','InitialChoices']);
+    if(Number(id)===2||Number(id)===3)panel.$detail.appendChild(button('Manage '+(Number(id)===3?'Barracks':'Tower')+' construction choices',()=>select(panel,id),'gt-mini'));
     construction(panel);
     panel._note('Branch IDs stay fixed so map unlocks and saved progress keep their references. All changes remain drafts until Save changes.');
 }
 function preview(panel, row, api) {
-    if (row.overview) {
+    if (row.overview || row.category || !selectedBranch(panel,row)) {
         if (panel._previewClient) { panel._previewClient.destroy(); panel._previewClient = null; }
         while (panel.$preview.firstChild) panel.$preview.removeChild(panel.$preview.firstChild);
         return;
@@ -208,7 +264,7 @@ function preview(panel, row, api) {
     const input = {documents:panel._snapshot.documents, version:panel._snapshot.version};
     const level = (row.record.levelList || [])[panel._level || 0];
     const id = level && level.Data && level.Data[1], data=panel._data('A'), unit = (data.AllyCfg || data.SoldierCfg || {})[id];
-    if (row.key === '3' && panel._buildingPreview === 'unit' && unit) panel._previewClient.setUnit(Object.assign(input, {type:'ally', id:String(id), record:unit}));
-    else panel._previewClient.setBuilding(Object.assign(input, {id:row.key, record:row.record, levelIndex:panel._level}));
+    if (typeID(row) === '3' && panel._buildingPreview === 'unit' && unit) panel._previewClient.setUnit(Object.assign(input, {type:'ally', id:String(id), level:Number(level.level), record:UnitLevelStats.resolve(unit,panel._data('overrides'),Number(level.level))}));
+    else panel._previewClient.setBuilding(Object.assign(input, {id:typeID(row), record:row.record, levelIndex:panel._level}));
 }
-module.exports = {rows, render, preview, style:fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8')};
+module.exports = {rows, levelTabs, render, preview, style:fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8')};

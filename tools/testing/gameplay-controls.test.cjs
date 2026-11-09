@@ -66,7 +66,7 @@ function fixture() {
   function build(options = {}) {
     const b = Object.create(buildProto);
     Object.assign(b, { uuid: 'slot', standTimeMax: 1.5, buildCfg: { enumValue: 1, levelList: [
-      { level: 1, BranchBuild: [2, 3] }, { level: 2, BranchBuild: [] }, { level: 2, BranchBuild: [] }
+      { index: 1, level: 1, BranchBuild: [2, 3] }, { index: 2, level: 2, BranchBuild: [] }, { index: 3, level: 2, BranchBuild: [] }
     ] },
       buildInfo: { standTime: 0.2, cfg: { level: 1, BranchBuild: [2, 3] } },
       getLevel: () => 1, getSell: () => options.price === undefined ? 10 : options.price,

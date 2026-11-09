@@ -15,7 +15,7 @@ test('building catalog shows every authored type and branch without modifying so
     assert.deepEqual(row.path,['BuildEnum',row.key]);assert.equal(row.record,base.BuildEnum[row.key]);
     const branches=Model.branches(row.record,row.key,base,catalog,'en');
     assert.equal(branches.length,row.record.levelList.length);
-    branches.forEach((b,i)=>{assert.equal(b.position,i);assert.equal(b.index,i+1);assert.equal(b.record,row.record.levelList[i]);assert(b.summary);assert(b.label&&!b.label.includes('[[loc:'));if(b.next.length)b.next.push(999);});
+    branches.forEach((b,i)=>{assert.equal(b.position,i);assert.equal(b.index,row.record.levelList[i].index);assert.equal(b.record,row.record.levelList[i]);assert(b.summary);assert(b.label&&!b.label.includes('[[loc:'));if(b.next.length)b.next.push(999);});
   }
   assert.equal(JSON.stringify(base),before,'view models never seed, normalize, or mutate branches');
   assert.equal(buildingIssues(docs()).length,0,'existing optional fields and terminal branches remain valid');
@@ -54,39 +54,71 @@ test('unsafe roster, rate, level and upgrade connection drafts are rejected with
   const d=docs();delete d.A.data.AllyCfg['90001'].prefab;
   assert(buildingIssues(d,[{doc:'A',path:['AllyCfg','90001','prefab']}]).some(i=>i.severity==='error'&&/Barracks unit/.test(i.message)));
 });
-test('unrelated legacy building problems remain advisory and valid roster edits preserve unknown fields',()=>{
+test('unrelated existing building problems remain advisory and valid roster edits preserve unknown fields',()=>{
   const d=docs();d.A.data.BuildEnum['2'].levelList[0].level=-1;
   d.A.data.BuildEnum['3'].levelList[0].Data[0]=0;
-  d.A.data.BuildEnum['3'].levelList[0].legacy={untouched:[1,'unknown']};
+  d.A.data.BuildEnum['3'].levelList[0].futureAuthored={untouched:[1,'unknown']};
   const issues=buildingIssues(d,[{doc:'A',path:['BuildEnum','3','levelList',0,'Data',0]}]);
   assert(issues.length&&issues.every(i=>i.severity==='warning'));
-  assert.deepEqual(d.A.data.BuildEnum['3'].levelList[0].legacy,{untouched:[1,'unknown']});
+  assert.deepEqual(d.A.data.BuildEnum['3'].levelList[0].futureAuthored,{untouched:[1,'unknown']});
 });
 test('a new connection on a formerly final branch needs its own next purchase cost',()=>{
-  const d=docs(),level=d.A.data.BuildEnum['3'].levelList[3],at=['BuildEnum','3','levelList',3,'BranchBuild'];
+  const d=docs(),building=d.A.data.BuildEnum['3'],position=building.levelList.findIndex(level=>level.index===13);
+  const level=building.levelList[position],at=['BuildEnum','3','levelList',position,'BranchBuild'];
   assert(!Object.prototype.hasOwnProperty.call(level,'BuildSliverCost'));
-  level.BranchBuild=[3];
+  level.BranchBuild=[16];
   assert(buildingIssues(d,[{doc:'A',path:at}]).some(i=>i.severity==='error'&&/next purchase cost/.test(i.message)));
   assert.equal(Object.prototype.hasOwnProperty.call(level,'BuildSliverCost'),false,'validation never inserts a default cost');
   level.BuildSliverCost=0;
   assert.equal(buildingIssues(d,[{doc:'A',path:at},{doc:'A',path:at.slice(0,-1).concat('BuildSliverCost')}]).length,0,'an explicit zero cost is supported');
 });
 
-test('construction choices preserve branch references and reject missing, duplicated or oversized cards',()=>{
+test('construction choices retain current branch IDs and reject missing, duplicated, upgraded or oversized cards',()=>{
   const d=docs(),building=d.A.data.BuildEnum['3'],at=['BuildEnum','3','InitialChoices'];
-  building.InitialChoices=[1,2,5,8];
+  building.InitialChoices=[11,14,17,20];
   const before=JSON.stringify(d);
   assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0);
   assert.equal(JSON.stringify(d),before);
-  for(const value of [null,[],{},[1,1],[1,999],[1,2,3,4,5],[1,'2']]){
+  for(const value of [null,[],{},[1],[11,11],[11,999],[11,14,17,20,12],[11,'14'],[12],[11,15]]){
     building.InitialChoices=value;
     assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.severity==='error'&&issue.path.includes('InitialChoices')),JSON.stringify(value));
   }
   delete building.InitialChoices;
-  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'removing the optional list restores original construction');
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'removing the optional list uses the first authored construction branch');
 });
 
-test('new level-three towers require explicit original collision footprints without changing legacy caps',()=>{
+test('compacted current barracks keep stable IDs and authored map tags without obsolete branch records',()=>{
+  const d=docs(),building=d.A.data.BuildEnum['3'],at=['BuildEnum','3'];
+  assert.deepEqual(building.levelList.map(level=>level.index),Array.from({length:12},(_value,i)=>i+11));
+  assert.deepEqual(building.InitialChoices,[11,14,17,20]);
+  assert(building.levelList.every(level=>!building.levelList.some(other=>other.index===level.ColliderIndex)),
+    'map collider tags remain valid independently of removed branch IDs 1–10');
+  building.levelList.reverse();
+  const before=JSON.stringify(d);
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'branch references follow authored IDs rather than array offsets');
+  assert.equal(JSON.stringify(d),before,'validation does not reorder or renumber source records');
+});
+
+test('compacted barracks reject obsolete references, missing or duplicate IDs and invalid map footprints',()=>{
+  for(const [label,mutate,expected] of [
+    ['obsolete construction reference',building=>{building.InitialChoices=[1];},/Construction choice must reference/],
+    ['obsolete upgrade reference',building=>{building.levelList[0].BranchBuild=[2];},/Upgrade branch does not exist/],
+    ['missing branch index',building=>{delete building.levelList[0].index;},/unique positive indices/],
+    ['duplicate branch index',building=>{building.levelList[1].index=building.levelList[0].index;},/unique positive indices/],
+    ['missing category owner',building=>{delete building.levelList[0].ID;},/category owner ID/],
+    ['incorrect category owner',building=>{building.levelList[0].ID=2;},/category owner ID/],
+    ['absent map tag',building=>{building.levelList[0].ColliderIndex=11;},/authored map collider tag/],
+    ['fractional map tag',building=>{building.levelList[0].ColliderIndex=1.5;},/whole number/i],
+    ['zero map tag',building=>{building.levelList[0].ColliderIndex=0;},/1 or greater/]
+  ]){
+    const d=docs();mutate(d.A.data.BuildEnum['3']);
+    const before=JSON.stringify(d),issues=buildingIssues(d,[{doc:'A',path:['BuildEnum','3']}]);
+    assert(issues.some(issue=>issue.severity==='error'&&expected.test(issue.message)),label+': '+issues.map(issue=>issue.message).join('; '));
+    assert.equal(JSON.stringify(d),before,label+' is reported without repairing the authored data');
+  }
+});
+
+test('new level-three towers require authored map footprints without changing the original arrow cap',()=>{
   const d=docs(),building=d.A.data.BuildEnum['2'],position=building.levelList.length;
   const row=Schema.clone(building.levelList[0]);row.index=position+1;row.level=3;row.ColliderIndex=1;delete row.BranchBuild;
   building.levelList.push(row);

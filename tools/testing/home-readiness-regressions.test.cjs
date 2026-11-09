@@ -161,7 +161,7 @@ test('crowded allies share a failed texture retry deadline and apply the authore
   class Component{} class SkeletonTexture{setRealTexture(image){this.image=image;}}
   const cc={Component,Texture2D:class{},JsonAsset:class{},isValid:()=>true,Class(def){function C(){}C.prototype=Object.assign(Object.create(Component.prototype),def);return C;},
     resources:{load(id,type,callback){requests.set(id,(requests.get(id)||0)+1);if(id==='character-parts/catalog')return callback(null,{json:library});if(id==='characters/catalog')return callback(null,{json:looks});pending.set(id,callback);}}};
-  const api=load('CharacterAppearance',{cc,sp:{SkeletonTexture},Date:{now:()=>now},require:()=>({ actorKey:core.actorKey,skinTint:core.skinTint,restore(){},prepare(spine,skeleton){return{skeleton};},apply(){applied++;} })});
+  const api=load('CharacterAppearance',{cc,sp:{SkeletonTexture},Date:{now:()=>now},require:id=>id==='UnitLevelStats'?require('../../assets/_script/UnitLevelStats'):({ actorKey:core.actorKey,skinTint:core.skinTint,restore(){},prepare(spine,skeleton){return{skeleton};},apply(){applied++;} })});
   const units=Array.from({length:30},(_,i)=>api.bind({cfg:{ID:90001},node:{activeInHierarchy:true,getComponent:()=>null,addComponent:C=>new C()},
     spAni:{node:{activeInHierarchy:true,scaleX:1,scaleY:1},skeletonData:{uuid:profile.parts[0].layer},uuid:'r'+i,_skeleton:{}}},'ally'));
   const frame=()=>units.forEach(unit=>unit.lateUpdate());frame();pending.get(parts[0].resource)(Error('unavailable'));pending.get(parts[1].resource)(null,{width:10,height:10});

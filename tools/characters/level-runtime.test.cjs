@@ -37,7 +37,7 @@ function fixture(options = {}) {
     }}
   };
   const context = {exports: {}, cc, sp: {SkeletonData: class {}}, Date: {now: () => now},
-    require(name) { assert.equal(name, 'CharacterPartsCore'); return Core; }};
+    require(name) { if(name==='UnitLevelStats')return require('../../assets/_script/UnitLevelStats');assert.equal(name, 'CharacterPartsCore'); return Core; }};
   vm.runInNewContext(source, context, {filename: 'CharacterAppearance.js'});
   function add(id = 90001, level = 1) {
     const node = {activeInHierarchy: true, scaleX: -.5, scaleY: .5, x: 4, y: 8, angle: 2, opacity: 230};

@@ -49,9 +49,9 @@ function panel(count, width = 750, height = 1334, layered = false, family = coun
   ui.ndParent = child(root, 'ndMain', Layout); ui.ndItem = new Node('Template');
   ui.loadSpriteFrame = (bundle, path, done) => { loaded.push([bundle, path]); done({ getOriginalSize: () => ({ width: 1000, height: 1200 }) }); };
   ui.T = value => value;
-  const rows = Array.from({ length: count }, (_, i) => ({ level: 1, Name: 'Unit ' + i, LevelUpDescribe: 'Hold the frontline', Zoom: .35,
+  const rows = Array.from({ length: count }, (_, i) => ({ index: (family === 'barracks' ? 11 : 1) + i * 3, level: 1, Name: 'Unit ' + i, LevelUpDescribe: 'Hold the frontline', Zoom: .35,
     Icon: 'unit-' + i, Appearance: family === 'tower' ? { sprite: 'buildings/towers/tower-' + i, weapon: layered ? { sprite: 'buildings/towers/weapon-' + i } : undefined } : undefined }));
-  ui.onOpened(); ui.init({ buildInfo: {}, buildCfg: { enumValue: family === 'tower' ? 2 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map((_, i) => i + 1));
+  ui.onOpened(); ui.init({ buildInfo: {}, buildCfg: { enumValue: family === 'tower' ? 2 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map(row => row.index));
   ui.start();
   return { ui, h, root, choices, ads, loaded };
 }
@@ -71,7 +71,7 @@ test('four starting squads render as separate, readable cards and select once wi
     assert.equal(row.children.filter(n => n.name === 'ndVideo' && n.active).length, 0);
   }
   rows[2].events.end(); rows[0].events.end();
-  assert.deepEqual(p.choices, [3]); assert.deepEqual(p.ads, []);
+  assert.deepEqual(p.choices, [17]); assert.deepEqual(p.ads, []);
 });
 
 test('tower starting choices use generated artwork through the resources bundle', () => {
@@ -102,7 +102,7 @@ test('adding a fourth tower uses the exact same cards, artwork bounds and spacin
   })); }
   assert.deepEqual(geometry(tower), geometry(squad));
   assert.equal(squad.root.getChildByName('labTitle').getComponent(squad.h.cc.Label).string, '[[loc:ui.building.choose_squad]]');
-  tower.ui._choiceRows[3].events.end(); assert.deepEqual(tower.choices, [4]); assert.deepEqual(tower.ads, []);
+  tower.ui._choiceRows[3].events.end(); assert.deepEqual(tower.choices, [10]); assert.deepEqual(tower.ads, []);
 });
 
 test('additional card rows keep the title, choices and cancel button inside a short screen', () => {

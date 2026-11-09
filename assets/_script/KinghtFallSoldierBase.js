@@ -1,5 +1,6 @@
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
+var UnitLevelStats = require("UnitLevelStats");
 var cc__extends = __extends;
 var cc__decorate = __decorate;
 var cc__spreadArrays = __spreadArrays;
@@ -93,6 +94,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this._retaliationTime = 0;
     this._retaliationPosition = null;
     this.cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t, "ally");
+    this._unitBaseCfg = this.cfg;
     if (this.spAni) this.setLeft(false);
     this.attackRange = this.cfg.AttackRange;
     var n = this.node.getComponents(cc.CircleCollider);
@@ -499,6 +501,7 @@ var def_KinghtFallSoldierBase = function (t) {
         this.isAgg = false;
         this._syncFollowMarker();
         this.delAllBuff();
+        if (cc.resources) require("UnitVoices").death(this);
         this.playDeath(function () {
           this.node.active = false;
           if (this.outBuild && this.outBuild.addDie) this.outBuild.addDie(this);
@@ -602,6 +605,9 @@ var def_KinghtFallSoldierBase = function (t) {
     if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.rigidBody) this.rigidBody.active = true;
     var respawning = this.isDead() || !this.node.activeInHierarchy;
+    // Capture the casualty state before new tier HP heals this actor. A
+    // retained soldier may now belong to the next barracks tier.
+    if (this._refreshLevelStats()) this.initBuffData();
     if (respawning) {
       this._followSelected = false;
       // Returning casualties keep their saved post. A stationary ring along
@@ -713,7 +719,22 @@ var def_KinghtFallSoldierBase = function (t) {
     this.setPath($z1KinghtFallUIGame.default.instance.ctrGame.pathList, this.isAgg);
     this.doMove();
   };
+  _ctor.prototype._refreshLevelStats = function () {
+    if (!this.cfg) return false;
+    var previous = this.cfg, base = this._unitBaseCfg || (this._unitBaseCfg = previous);
+    var data = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+    var next = UnitLevelStats.resolve(base, data && data.GameTools, UnitLevelStats.level(this));
+    this.cfg = next;
+    if (previous.AttackInterval !== next.AttackInterval) {
+      var multiplier = 1;
+      var talents = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.talentAdd[$z1KinghtFallEnum.KinghtFallEnumTalentCfg.TalenType02];
+      if (talents) for (var i = 0; i < talents.length; i++) multiplier += talents[i][0];
+      this.attSpeed = next.AttackInterval * multiplier;
+    }
+    return UnitLevelStats.FIELDS.some(function (field) { return previous[field] !== next[field]; });
+  };
   _ctor.prototype.initBuffData = function () {
+    this._refreshLevelStats();
     var t = 1;
     this.hpMax = this.cfg.Health;
     var e = 1;

@@ -64,19 +64,19 @@ test('failed quit preserves the pause menu so the player can retry or resume', (
   h.state.ready = true; ui.btnNewGame.click(); assert.equal(h.state.closed, 1);
 });
 
-test('saved building levels are bounded to the current building configuration', () => {
+test('saved building branch IDs must exist in the current building configuration', () => {
   const h = harness(), restore = h.method('KinghtFallBuildBase', 'setSave');
-  const building = { buildCfg: { levelList: [{}, {}, {}] }, setLevel(level) { this.level = level; } };
-  for (const [saved, expected] of [[999, 3], [2.9, 2], [-1, 0], [NaN, 0], [Infinity, 0], ['2', 0], [0, 0], [2, 2]]) {
+  const building = { buildCfg: { levelList: [{index:1}, {index:2}, {index:3}] }, getBranchCfg:h.method('KinghtFallBuildBase', 'getBranchCfg'), setLevel(level) { this.level = level; } };
+  for (const [saved, expected] of [[999, 0], [2.9, 2], [-1, 0], [NaN, 0], [Infinity, 0], ['2', 0], [0, 0], [2, 2]]) {
     restore.call(building, { level: saved }); assert.equal(building.level, expected);
   }
 });
 
-test('barracks restore shares level bounds and repairs invalid bonus troop counts', () => {
+test('barracks restore validates sparse branch IDs and repairs invalid bonus troop counts', () => {
   const h = harness();
   h.context.$z1KinghtFallBuildBase = { default: { prototype: { setSave: h.method('KinghtFallBuildBase', 'setSave') } } };
   const restore = h.method('KinghtFallBuildBarracks', 'setSave');
-  const building = { buildCfg: { levelList: [{}, {}, {}] }, setLevel(level) { this.level = level; } };
-  restore.call(building, { level: 999, data: 'bad' }); assert.equal(building.level, 3); assert.equal(building.VideoTimes, 0);
-  restore.call(building, { level: 2, data: 4 }); assert.equal(building.level, 2); assert.equal(building.VideoTimes, 4);
+  const building = { buildCfg: { levelList: [{index:11}, {index:12}, {index:13}] }, getBranchCfg:h.method('KinghtFallBuildBase', 'getBranchCfg'), setLevel(level) { this.level = level; } };
+  restore.call(building, { level: 999, data: 'bad' }); assert.equal(building.level, 0); assert.equal(building.VideoTimes, 0);
+  restore.call(building, { level: 12, data: 4 }); assert.equal(building.level, 12); assert.equal(building.VideoTimes, 4);
 });

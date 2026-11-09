@@ -48,7 +48,7 @@ test('initial branch ColliderIndex is honored for built scenery previews without
  const f=fixture([{x:-100,y:-100},{x:100,y:-100}]),source=P.skeleton('Template',f.map),info=Maps.model(source),owner=P.append(source,'Barracks',info.roots.ndMain,0,0),art=P.append(source,'Artwork',owner,0,0);
  P.component(source,owner,{__type__:'Building',ID:2,ndAniMain:{__id__:art},ndAniOther:[]});
  for(const tag of [1,2])P.component(source,owner,{__type__:'cc.PhysicsPolygonCollider',tag,_enabled:tag===1,points:rect(-tag*10,-tag*10,tag*20,tag*20)});
- f.stage.buildings=[{id:2,kind:3,unlock:1,x:0,y:0,scale:1,angle:0,template:{prefab:'test',node:owner,roots:[owner]}}];f.stage.templates={test:source};f.service.index=()=>({documents:{A:{BuildEnum:{3:{InitialChoices:[3],levelList:[{level:1},{level:2},{level:1,ColliderIndex:2}]}}}}});
+ f.stage.buildings=[{id:2,kind:3,unlock:1,x:0,y:0,scale:1,angle:0,template:{prefab:'test',node:owner,roots:[owner]}}];f.stage.templates={test:source};f.service.index=()=>({documents:{A:{BuildEnum:{3:{InitialChoices:[17],levelList:[{index:11,level:1},{index:12,level:2},{index:17,level:1,ColliderIndex:2}]}}}}});
  const before=JSON.stringify(f.stage),result=capturePreview(f.service,f.request);
  assert.equal(result.captured.polygons.length,1);assert.deepEqual(result.captured.polygons[0],rect(-20,-20,40,40));assert.equal(JSON.stringify(f.stage),before);
 });

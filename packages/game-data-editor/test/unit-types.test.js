@@ -34,6 +34,7 @@ test('Units exposes six role counters and edits the allied record without touchi
  const rows=f.panel._rows();assert.equal(rows.length,1+Object.keys(before.A.SoldierCfg).length+Object.keys(before.A.AllyCfg).length);assert.deepEqual(Array.from(rows.find(row=>row.key==='ally:90001').path),['AllyCfg','90001']);assert.deepEqual(Array.from(rows.find(row=>row.key==='enemy:90001').path),['SoldierCfg','90001']);
  f.render('ally:90001');assert.equal(f.store.changes().length,0);const counter=fields(f.panel.$detail,'Countered unit type')[0];assert(counter);assert.equal(counter.children.length,7);assert.deepEqual(Array.from(counter.children,o=>o.value).sort(),['','fighter','skirmisher','vanguard','mystic','bruiser','guardian'].sort());
  counter.value='guardian';counter.onchange();await f.panel._queue;
- const health=fields(f.panel.$detail,Schema.descriptor('Health',{table:'SoldierCfg',id:'90001'}).label)[0];assert(health);health.value=String(before.A.AllyCfg['90001'].Health+17);health.onchange();await f.panel._queue;
+ const shared=f.panel.$detail.children.find(element=>element.tagName==='details'&&element.children[0].textContent==='Shared base stats');assert(shared);
+ const health=fields(shared,Schema.descriptor('Health',{table:'SoldierCfg',id:'90001'}).label)[0];assert(health);health.value=String(before.A.AllyCfg['90001'].Health+17);health.onchange();await f.panel._queue;
  const after=f.store.draftState();assert.equal(after.A.AllyCfg['90001'].CounterType,'guardian');assert.equal(after.A.AllyCfg['90001'].Health,before.A.AllyCfg['90001'].Health+17);assert.deepEqual(after.A.SoldierCfg,before.A.SoldierCfg);assert.deepEqual(after.overrides.timingDefaults,before.overrides.timingDefaults);assert.deepEqual(fs.readFileSync(file),bytes);
 });

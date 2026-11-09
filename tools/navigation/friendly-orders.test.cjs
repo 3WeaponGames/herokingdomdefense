@@ -171,7 +171,7 @@ test('Gate triggers admit friendly soldiers from either side and keep side walls
     const unit = soldier(e, x, 0);
     assert.equal(gate.hasFriendlyAtGate(e.game), true, 'soldier did not open the gate from side ' + x);
     gate.doTime();
-    assert.equal(gate.isOpen, true); assert.equal(leaf.enabled, false);
+    assert.equal(gate.isOpen, true); assert.equal(leaf.enabled, true, 'open gate retains its enemy-only physical barrier');
     assert.equal(wing.enabled, true, 'opening disabled a permanent side wall');
     const shapes = gate.getNavigationGateShapes();
     assert.equal(shapes.length, 1); assert.equal(shapes[0].collider, leaf);

@@ -203,6 +203,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._unitVoices) require("UnitVoices").dispose(this);
     GameToolsOverrides.clear();
     if (this._depthView) this._depthView.destroy();
     this._depthView = null;
@@ -263,6 +264,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return false;
   };
   _ctor.prototype.onUpdate = function (t) {
+    if (this._unitVoices) require("UnitVoices").tick(this);
     var l;
     if (this._rallyMarkerRemaining > 0) {
       var markerDelta = cc.director && cc.director.getDeltaTime ? Math.min(.1, cc.director.getDeltaTime()) : t;
@@ -917,6 +919,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.cleanMap();
   };
   _ctor.prototype.cleanMap = function () {
+    if (this._unitVoices) require("UnitVoices").dispose(this);
     if (this.upBulid && this.upBulid.cancelUpgrade) this.upBulid.cancelUpgrade();
     this._combatEpoch++;
     for (var t = 0; t < this.ndPlayArr2.length; t++) {

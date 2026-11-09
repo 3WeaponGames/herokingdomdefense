@@ -69,6 +69,7 @@ function fixture(options = {}) {
   const context = { exports: {}, cc, sp, Date: { now: () => now },
     require(id) {
       if (id === 'CharacterPartsCore') return browserCore;
+      if (id === 'UnitLevelStats') return require('../../assets/_script/UnitLevelStats');
       if (id === 'HeroItemLooks') return { current: base => base || profile };
       if (id === 'HeroBakedLooks') return require('../../assets/_script/HeroBakedLooks');
       throw Error('Unexpected module ' + id);

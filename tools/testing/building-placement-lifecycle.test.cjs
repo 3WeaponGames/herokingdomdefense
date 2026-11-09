@@ -48,7 +48,7 @@ function fixture(type='cannon',level=1){
   function rowFor(at){const row=JSON.parse(JSON.stringify(config.BuildEnum['2'].levelList.find(r=>r.Tower?.attackType===type&&r.level===at)));delete row.Appearance.destroyed;return row;}
   const node=new Node('Tower'),shot=new Node('Shot'),hp=new Node('HP anchor'),sourceNode=new Node('Archer spine'),bar=new Node('HP bar'),ui=new Node('Effects');shot.parent=hp.parent=sourceNode.parent=node;shot.setPosition(-4,91);hp.setPosition(0,163);bar.parent=ui;
   const collider=node.addComponent(Polygon),source=sourceNode.addComponent(Skeleton),sourceData={name:'original Archer data',skeletonJson:JSON.parse(JSON.stringify(archer))};Object.assign(source,{skeletonData:sourceData,premultipliedAlpha:false,enableBatch:true,defaultSkin:'jt-1',eventListener:()=>{throw Error('source event listeners must not be copied');}});
-  const loads=[],owner={node,ndShot:shot,ndHp:hp,ctrHp:{node:bar},ndAniMain:source,ndAniOther:[],enabled:true,isDestroyed:false,buildInfo:{cfg:rowFor(level)},index:level,
+  const loads=[],owner={node,ndShot:shot,ndHp:hp,ctrHp:{node:bar},ndAniMain:source,ndAniOther:[],enabled:true,isDestroyed:false,buildInfo:{cfg:rowFor(level)},index:rowFor(level).index,
     loadSpriteFrame(bundle,file,done){loads.push({bundle,file,done,resolved:false});}};
   const game={ndUI:ui},module={exports:{}};
   const lighting={exports:{}};vm.runInNewContext(fs.readFileSync(path.join(scripts,'BuildingLighting.js'),'utf8'),{cc,exports:lighting.exports,module:lighting},{filename:'BuildingLighting.js'});
@@ -144,8 +144,8 @@ test('failed replacement artwork restores the original Spine and cannot leave ol
 test('the real build hook plays create/upgrade once; refresh/restore do not replay and disable settles it',()=>{
   const h=fixture(),{Base,build,singleton,placeCalls}=h.baseClass();h.owner=build;
   build.doUpgreadAni();h.resolveAll();assert.deepEqual(placeCalls,['create']);assert.equal(build.ndAniMain.calls.filter(c=>c[0]==='animation'&&c[2]==='create').length,1);let state=build._buildingAppearance,tween=state.placement.tween;tween.update(.5);const pose=transform(state.presentation);
-  build.upData();assert.deepEqual(placeCalls,['create']);assert.deepEqual(transform(state.presentation),pose);build.setSave({level:1});assert.deepEqual(placeCalls,['create']);assert.deepEqual(transform(state.presentation),pose);
-  build.setLevel(2);assert.deepEqual(placeCalls,['create']);build.doUpgreadAni();h.resolveAll();assert.deepEqual(placeCalls,['create','upgrade']);state=build._buildingAppearance;tween=state.placement.tween;assert.equal(state.placement.kind,'upgrade');singleton.speed=0;build.onChangeSpeed();assert.equal(state.placementSpine.timeScale,0);singleton.speed=2;build.onChangeSpeed();assert.equal(state.placementSpine.timeScale,2);
+  build.upData();assert.deepEqual(placeCalls,['create']);assert.deepEqual(transform(state.presentation),pose);build.setSave({level:h.rowFor(1).index});assert.deepEqual(placeCalls,['create']);assert.deepEqual(transform(state.presentation),pose);
+  build.setLevel(h.rowFor(2).index);assert.deepEqual(placeCalls,['create']);build.doUpgreadAni();h.resolveAll();assert.deepEqual(placeCalls,['create','upgrade']);state=build._buildingAppearance;tween=state.placement.tween;assert.equal(state.placement.kind,'upgrade');singleton.speed=0;build.onChangeSpeed();assert.equal(state.placementSpine.timeScale,0);singleton.speed=2;build.onChangeSpeed();assert.equal(state.placementSpine.timeScale,2);
   build.enabled=false;Base.prototype.onDisable.call(build);assertRest(state);const rest=transform(state.presentation);tween.update(.9);tween.complete();assert.deepEqual(transform(state.presentation),rest);
 });
 

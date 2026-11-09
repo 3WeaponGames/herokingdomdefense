@@ -8,7 +8,13 @@ const clone=M.clone,number=(v,f)=>typeof v==='number'&&Number.isFinite(v)?v:f,po
 function read(file,json){const stat=fs.statSync(file),revision=stat.mtimeMs+':'+stat.ctimeMs+':'+stat.size,old=files.get(file);if(old&&old.revision===revision)return old.value;const text=fs.readFileSync(file,'utf8'),value=json?JSON.parse(text.replace(/^\uFEFF/,'')):text;files.set(file,{revision,value});return value;}
 function reference(data,ref){const value=ref&&data[ref.__id__];return value&&value.__type__==='cc.Node'?ref.__id__:value&&value.node&&value.node.__id__;}
 function multiply(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
-function rowFor(config,building,hall){const definition=config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];let index=1;if(building.kind===1){const at=rows.findIndex(row=>row.level===hall);index=at<0?hall:at+1;}else if(definition&&Array.isArray(definition.InitialChoices)){const first=definition.InitialChoices.find(v=>Number.isInteger(v)&&v>0&&rows[v-1]&&rows[v-1].level===1);if(first!==undefined)index=first;}return {index,row:rows[index-1]};}
+function rowFor(config,building,hall){
+ const definition=config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
+ let row=rows[0];
+ if(building.kind===1)row=rows.find(row=>row.level===hall);
+ else if(definition&&Array.isArray(definition.InitialChoices))row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
+ return {index:row&&row.index,row};
+}
 function sprite(info,s,ground){const n=info.byId[s.node];return {frame:s.frame,matrix:n.world.slice(),width:n.width,height:n.height,anchor:clone(n.anchor),color:clone(n.source._color||{r:255,g:255,b:255,a:255}),active:true,ground:!!ground};}
 function skeleton(root,component,info,assetIndex,skin,ground,cache){
  const uuid=component._N$skeletonData&&component._N$skeletonData.__uuid__,file=assetIndex.uuids[uuid];

@@ -4,7 +4,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const {fixture}=require('./backend-ui-harness.cjs'),root=path.resolve(__dirname,'../..');
 function atlas(options={}){
  const h=fixture(),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json')));
- if(options.legacy)for(const cfg of Object.values(config.BuildEnum))delete cfg.InitialChoices;
+ if(options.direct)for(const cfg of Object.values(config.BuildEnum))delete cfg.InitialChoices;
  if(options.edit)options.edit(config);
  const before=JSON.stringify(config),listeners=[],loads=[];let language='en';
  const translate=value=>String(value||'').replace(/\[\[loc:(.+?)\]\]/g,(_match,key)=>catalog.entries[key]?.[language]||catalog.entries[key]?.en||key);
@@ -83,8 +83,8 @@ test('scroll guidance and thumb visibility follow the selected content and curre
 test('close retires late portrait callbacks and language subscriptions without touching gameplay',()=>{
  const p=atlas({defer:true});assert.equal(p.listeners.length,1);p.ui.btnClose.handlers.end();assert.equal(p.ui.isclose,true);for(const request of p.loads)request.done({getRect:()=>({width:100,height:100})});assert(p.ui.entries.every(e=>!e.frame));p.ui.onDestroy();assert.equal(p.listeners.length,0);assert.equal(JSON.stringify(p.config),p.before);
 });
-test('legacy buildings without initial-choice settings retain their six original entries',()=>{
- const p=atlas({legacy:true});assert.equal(p.ui.entries.length,6);assert.equal(p.loads.filter(x=>x.bundle==='resources').length,0);p.ui.selectCategory('towers');assert.equal(p.visible().length,1);p.ui.selectCategory('barracks');assert.equal(p.visible().length,1);
+test('direct construction uses each category’s first authored branch without assuming branch one exists',()=>{
+ const p=atlas({direct:true});assert.equal(p.ui.entries.length,6);assert.equal(p.loads.filter(x=>x.bundle==='resources').length,0);p.ui.selectCategory('towers');assert.equal(p.visible().length,1);p.ui.selectCategory('barracks');assert.equal(p.visible().length,1);assert.equal(p.visible()[0].index,11);
 });
 test('custom complete artwork uses Resources and malformed duplicate or missing initial choices are ignored',()=>{
  const p=atlas({edit(c){delete c.BuildEnum[2].levelList[3].Appearance.weapon;c.BuildEnum[3].InitialChoices=[11,11,-1,999,14];}});assert(p.loads.some(x=>x.bundle==='resources'&&x.file==='buildings/towers/cannon-1'));p.ui.selectCategory('barracks');assert.equal(p.visible().length,2);assert.equal(JSON.stringify(p.config),p.before);

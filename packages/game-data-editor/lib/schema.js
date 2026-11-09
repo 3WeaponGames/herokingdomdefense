@@ -33,6 +33,8 @@ const RARITIES = ['Common','Rare','Epic','Legendary'];
 const BUILDINGS = {1:'Castle Keep',2:'Arrow Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall'};
 // Map01–Map04 have lock/interaction nodes only for these authored levels.
 const BUILDING_LEVEL_CAP = {1:3,2:2,3:3,4:2,5:2,6:2};
+// Collider tags identify map geometry independently of building branch IDs.
+const BUILDING_COLLIDER_CAP = {1:3,2:3,3:10,4:3,5:3,6:3};
 function buildingLevelCap(id,level){return Number(id)===2&&level&&own(level,'ColliderIndex')?3:BUILDING_LEVEL_CAP[id];}
 const PERK_LABELS = {
   50001:['Targets per attack'],50002:['Soldier HP bonus','Soldier attack bonus'],50003:['Kills required','Silver reward'],50004:['Silver each day'],
@@ -227,19 +229,21 @@ function validate(documents, changes) {
     const building=base.BuildEnum[id],p=['BuildEnum',id],levels=building.levelList;
     number('A',p.concat('lockCose'),building.lockCose,0,true);
     if(!Array.isArray(levels)||!levels.length){issue('A',p.concat('levelList'),'A building requires at least one authored branch.');return;}
+    const byIndex=new Map(levels.map(level=>[level.index,level])),indices=new Set();
     if(own(building,'InitialChoices')){
       const choices=building.InitialChoices,at=p.concat('InitialChoices');
-      if(!Array.isArray(choices)||!choices.length||choices.length>4)issue('A',at,'Choose one to four construction branches, or remove the list for original direct construction.');
-      else choices.forEach((choice,j)=>{if(!Number.isInteger(choice)||choice<1||choice>levels.length)issue('A',at.concat(j),'Construction choice must reference an existing branch.');else if(choices.indexOf(choice)!==j)issue('A',at.concat(j),'A construction branch cannot be offered twice.');});
+      if(!Array.isArray(choices)||!choices.length||choices.length>4)issue('A',at,'Choose one to four level-one construction branches.');
+      else choices.forEach((choice,j)=>{if(!Number.isInteger(choice)||choice<1||!byIndex.has(choice))issue('A',at.concat(j),'Construction choice must reference an existing branch.');else if(byIndex.get(choice).level!==1)issue('A',at.concat(j),'Construction choices must start at level one.');else if(choices.indexOf(choice)!==j)issue('A',at.concat(j),'A construction branch cannot be offered twice.');});
     }
     const graph={};levels.forEach((level,i)=>{
-      const q=p.concat('levelList',i);if(level.index!==i+1||level.ID!==Number(id))issue('A',q,'Building branch index and owner ID must match their position.');
+      const q=p.concat('levelList',i);if(!Number.isInteger(level.index)||level.index<1||indices.has(level.index)||level.ID!==Number(id))issue('A',q,'Building branches need unique positive indices and their category owner ID.');
+      indices.add(level.index);
       number('A',q.concat('level'),level.level,1,true);
       const cap=buildingLevelCap(id,level);
       if(own(BUILDING_LEVEL_CAP,id)&&level.level>cap)issue('A',q.concat('level'),'This building has authored map interaction nodes only through level '+cap+'.');
       if(own(level,'ColliderIndex')){
         number('A',q.concat('ColliderIndex'),level.ColliderIndex,1,true);
-        if(!levels[level.ColliderIndex-1]||own(levels[level.ColliderIndex-1],'ColliderIndex'))issue('A',q.concat('ColliderIndex'),'Collision footprint must reference an original authored branch, not another footprint override.');
+        if(own(BUILDING_COLLIDER_CAP,id)&&level.ColliderIndex>BUILDING_COLLIDER_CAP[id])issue('A',q.concat('ColliderIndex'),'Collision footprint must reference an authored map collider tag (1–'+BUILDING_COLLIDER_CAP[id]+').');
       }
       if(own(level,'Tower')){
         const tower=level.Tower,at=q.concat('Tower');
@@ -300,7 +304,7 @@ function validate(documents, changes) {
       graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
       if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');
       if(graph[level.index].length&&!own(level,'BuildSliverCost'))issue('A',q.concat('BranchBuild'),'An upgrade connection needs a next purchase cost on this branch.');
-      graph[level.index].forEach((next,j)=>{if(!Number.isInteger(next)||next<1||next>levels.length)issue('A',q.concat('BranchBuild',j),'Upgrade branch does not exist.');else if(graph[level.index].indexOf(next)!==j)issue('A',q.concat('BranchBuild',j),'An upgrade branch cannot be connected twice.');});
+      graph[level.index].forEach((next,j)=>{if(!Number.isInteger(next)||next<1||!byIndex.has(next))issue('A',q.concat('BranchBuild',j),'Upgrade branch does not exist.');else if(graph[level.index].indexOf(next)!==j)issue('A',q.concat('BranchBuild',j),'An upgrade branch cannot be connected twice.');});
       const expected=id==='1'||id==='2'||id==='3'?3:id==='4'||id==='5'?1:0;
       if(expected&&(!Array.isArray(level.Data)||level.Data.length<expected))issue('A',q.concat('Data'),'Building properties are missing required runtime values.');
       if(Array.isArray(level.Data))level.Data.forEach((v,j)=>{const d=dataDescriptor({table:'BuildEnum',id},j);number('A',q.concat('Data',j),v,d.min,d.integer);});
@@ -367,6 +371,19 @@ function validate(documents, changes) {
   const overrides=docs.overrides||base.GameTools;
   if(overrides){
     if(overrides.version!==1)issue('overrides',['version'],'Unsupported override format.');
+    if(overrides.unitLevels!==undefined){
+      const table=overrides.unitLevels,fields=['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed'];
+      if(!table||typeof table!=='object'||Array.isArray(table))issue('overrides',['unitLevels'],'Unit level stats must be a table of allied unit levels.');
+      else for(const [key,item]of Object.entries(table)){
+        const at=['unitLevels',key],match=/^ally:([1-9]\d*):level:([1-9]\d*)$/.exec(key);
+        if(!match||!UnitRecords.levels(base,'ally',match[1]).includes(Number(match[2])))issue('overrides',at,'Choose an existing allied unit and barracks level.');
+        if(!item||typeof item!=='object'||Array.isArray(item)){issue('overrides',at,'Unit level stats must retain their object format.');continue;}
+        for(const [field,value]of Object.entries(item)){
+          if(!fields.includes(field)){issue('overrides',at.concat(field),'Unsupported unit level stat. Choose HP, attack damage, attack rate, attack range, search range or movement speed.');continue;}
+          number('overrides',at.concat(field),value,['Health','AttackInterval'].includes(field)?Number.MIN_VALUE:0,false);
+        }
+      }
+    }
     if(overrides.visuals!==undefined&&(!overrides.visuals||typeof overrides.visuals!=='object'||Array.isArray(overrides.visuals)))issue('overrides',['visuals'],'Model facing must be a unit table.');
     Object.keys(overrides.visuals||{}).forEach(key=>{const item=overrides.visuals[key],parts=key.split(':'),type=parts[0];if(parts.length!==3||!['enemy','ally'].includes(type)||!UnitRecords.reachable(base,type,parts[1],parts[2]))issue('overrides',['visuals',key],'Model facing must identify an allied troop or enemy form.');if(!item||item.mirrorX!==undefined&&typeof item.mirrorX!=='boolean')issue('overrides',['visuals',key],'Mirror model must be enabled or disabled.');});
     for(const [key,item]of Object.entries(overrides.visuals||{}))if(item&&typeof item==='object'){

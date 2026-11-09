@@ -23,12 +23,15 @@ function atlasMeasure(label) {
   if (label._updateRichText) label._updateRichText();
   else if (label._forceUpdateRenderData) label._forceUpdateRenderData();
 }
+function atlasBranch(building, index) {
+  return building.levelList.find(function (row) { return row.index === index; });
+}
 function atlasLevels(building, first) {
   var levels = [], seen = new Set(), queue = [first];
   // Follow authored upgrade links, including alternate final branches. Never
   // infer levels from array positions or write preview state into game data.
   while (queue.length) {
-    var index = queue.shift(), cfg = building.levelList[index - 1];
+    var index = queue.shift(), cfg = atlasBranch(building, index);
     if (!Number.isInteger(index) || !cfg || seen.has(index)) continue;
     seen.add(index); levels.push(cfg);
     (cfg.BranchBuild || []).forEach(function (next) { queue.push(next); });
@@ -93,8 +96,8 @@ var def_KinghtFallUIBuildAtlas = function (t) {
       definition[1].forEach(function (kind) {
         var building = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuildCfgById(kind);
         if (!building || !Array.isArray(building.levelList)) return;
-        var choices = Array.isArray(building.InitialChoices) && building.InitialChoices.length ? building.InitialChoices : [1];
-        choices.filter(function (index, at) { return Number.isInteger(index) && building.levelList[index - 1] && choices.indexOf(index) === at; }).forEach(function (index) {
+        var choices = Array.isArray(building.InitialChoices) && building.InitialChoices.length ? building.InitialChoices : building.levelList.length ? [building.levelList[0].index] : [];
+        choices.filter(function (index, at) { return Number.isInteger(index) && atlasBranch(building, index) && choices.indexOf(index) === at; }).forEach(function (index) {
           var entry = self.createCatalogRow(building, kind, index);
           group.entries.push(entry); self.entries.push(entry);
         });
@@ -119,7 +122,7 @@ var def_KinghtFallUIBuildAtlas = function (t) {
   };
   _ctor.prototype.createCatalogRow = function (building, kind, index) {
     var self = this, node = atlasNode("BuildingEntry", this.ndParent);
-    var entry = { cfg: building.levelList[index - 1], levels: atlasLevels(building, index), preview: 0,
+    var entry = { cfg: atlasBranch(building, index), levels: atlasLevels(building, index), preview: 0,
       kind: kind, index: index, node: node, graphics: node.addComponent(cc.Graphics) };
     entry.icon = atlasNode("sprIcon", node);
     entry.sprite = entry.icon.addComponent(cc.Sprite);

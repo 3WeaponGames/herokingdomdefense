@@ -63,7 +63,7 @@ var def_KinghtFallUIBuildSel = function (t) {
     if (this.initialChoice) this.initInitialChoiceView();
     var n = function (n) {
       var a = e[n];
-      var o = i.build.buildCfg.levelList[a - 1];
+      var o = i.build.buildCfg.levelList.find(function (row) { return row.index === a; });
       var r = cc.instantiate(i.ndItem);
       r.parent = i.ndParent;
       r.active = true;

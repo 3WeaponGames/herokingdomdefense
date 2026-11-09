@@ -12,11 +12,9 @@ function branch(initial=false){
  e.stubs.UIMgr={UIMgr:single(h.ui)};e.stubs.EventMgr={EventMgr:single({emit:noop})};e.stubs.PlayerMgr={PlayerMgr:single({getTrackData:()=>({youmengTrack:noop})})};e.stubs.GameTrackDataEvent={TrackId:{}};e.stubs.AudioMgr={AudioMgr:single({playEffectFree:noop})};e.stubs.KinghtFallPlayerMgr={KinghtFallPlayerMgr:single({getMissionData:()=>({getTaskInfo:()=>({}),setTaskInfo:noop})})};
  e.stubs.KinghtFallConfig.KinghtFallUIID={UIBuildSel:'choice',UIGame:'game'};e.stubs.KinghtFallConfig.KinghtFallEventName={};e.stubs.KinghtFallConfig.KinghtFallAudioId={};
  e.stubs.KinghtFallBuildInfo={KinghtFallBuildInfo:function(id,cfg){this.cfg=cfg;this.standTime=0;}};
- const B=e.load('KinghtFallBuildBase').default,b=new B();Object.assign(b,{node:new Node(),buildCfg:{enumValue:'Barracks',levelList:[{level:1,BranchBuild:[2,3]},{level:2},{level:2}]},buildInfo:{standTime:0,cfg:{level:1,BranchBuild:[2,3]}},getSell:()=>5,getLevel(){return this.buildInfo.cfg.level;},ndLockList:[null,{getChildByName:()=>null},{getChildByName:()=>null}],doUpgreadAni:noop,scheduleOnce:fn=>h.scheduled.push(fn)});ui.addTask=noop;
+ const B=e.load('KinghtFallBuildBase').default,b=new B();Object.assign(b,{node:new Node(),buildCfg:{enumValue:'ArrowTower',levelList:[{index:1,level:1,BranchBuild:[2,3]},{index:2,level:2},{index:3,level:2}]},buildInfo:{standTime:0,cfg:{index:1,level:1,BranchBuild:[2,3]}},getSell:()=>5,getLevel(){return this.buildInfo.cfg.level;},ndLockList:[null,{getChildByName:()=>null},{getChildByName:()=>null}],doUpgreadAni:noop,scheduleOnce:fn=>h.scheduled.push(fn)});ui.addTask=noop;
  if(initial){
-  b.buildCfg.InitialChoices=[11,14,17,20];
-  while(b.buildCfg.levelList.length<10)b.buildCfg.levelList.push({level:3});
-  for(const [type,start] of b.buildCfg.InitialChoices.entries())for(let level=1;level<=3;level++)b.buildCfg.levelList.push({level,Data:[4,90001+type,8],ColliderIndex:level===1?1:type===0?2:type===1?3:type===2?6:9,BranchBuild:level<3?[start+level]:[]});
+  b.buildCfg={enumValue:'Barracks',InitialChoices:[11,14,17,20],levelList:JSON.parse(JSON.stringify(authored.BuildEnum[3].levelList.filter(row=>row.index>=11)))};
   b.buildInfo={standTime:0,cfg:undefined};b.index=0;b.getLevel=function(){return this.buildInfo.cfg?this.buildInfo.cfg.level:0;};
   b.ndLockList[0]={getChildByName:()=>null};b.sendEvent=noop;
  }
@@ -38,9 +36,15 @@ for(const [unit,index] of [[90001,11],[90002,14],[90003,17],[90004,20]])test(`ne
  assert.equal(h.battleUI.isPauset,false);assert.equal(h.battleUI.canStart,true);
 });
 
+test('current barracks checkpoints retain every sparse authored ID and discard removed branches',()=>{
+ const h=branch(true);h.b.setLevel=value=>{h.b.index=value;};
+ assert.equal(h.b.buildCfg.levelList.length,12);assert.deepEqual(h.b.buildCfg.levelList.map(row=>row.index),Array.from({length:12},(_,i)=>i+11));
+ for(let index=11;index<=22;index++){h.b.setSave({level:index});assert.equal(h.b.index,index);assert.equal(h.b.getSave().level,index);}
+ for(const index of [1,2,3,4,5,6,7,8,9,10,23,999]){h.b.setSave({level:index});assert.equal(h.b.index,0);}
+});
+
 test('new tower uses the same initial chooser; closing it refunds once and cannot build from a late click',()=>{
- const h=branch(true);h.b.buildCfg.enumValue='ArrowTower';h.b.buildCfg.InitialChoices=[1,4,7];
- for(const index of [1,4,7])h.b.buildCfg.levelList[index-1].level=1;
+ const h=branch(true);h.b.buildCfg={enumValue:'ArrowTower',InitialChoices:[1,4,7],levelList:JSON.parse(JSON.stringify(authored.BuildEnum[2].levelList))};
  h.begin();h.requests[0].done(null,h.asset);const panel=h.ui.uistatck.get('choice'),callback=panel.callBack;
  assert.deepEqual(Array.from(panel.choiceIndexes),[1,4,7]);h.ui.closeUI(panel.node);h.b.cancelUpgrade();callback(4);
  assert.equal(h.game.gameData.coin,20);assert.equal(h.b.index,0);assert.equal(h.b.buildInfo.cfg,undefined);assert.equal(h.battleUI.isPauset,false);
@@ -54,8 +58,8 @@ test('initial chooser rejects invalid callbacks and filters duplicate/missing/no
 
 test('build families without an initial choice field retain the original first-row construction',()=>{
  const h=branch(true);delete h.b.buildCfg.InitialChoices;
- assert.deepEqual(Array.from(h.b.getUpgradeChoices()),[1]);h.begin();h.flush();
- assert.equal(h.requests.length,0);assert.equal(h.b.index,1);assert.equal(h.game.gameData.coin,15);
+ assert.deepEqual(Array.from(h.b.getUpgradeChoices()),[11]);h.begin();h.flush();
+ assert.equal(h.requests.length,0);assert.equal(h.b.index,11);assert.equal(h.game.gameData.coin,15);
 });
 
 test('Covenant free building keeps its choice through cancellation and never charges or refunds silver',()=>{
@@ -69,24 +73,24 @@ test('Covenant free building keeps its choice through cancellation and never cha
  assert.equal(h.game.gameData.coin,0);assert.equal(h.b.hasFreeInitialChoice(),false);assert.equal(h.b.buildInfo.cfg.Data[1],90003);
 });
 
-test('Covenant auto-build remains unchanged for legacy families while typed families await selection',()=>{
+test('Covenant auto-build follows the first authored branch while choice families await selection',()=>{
  for(const typed of [false,true]){
   const h=branch(true);h.b.ID=9;if(!typed)delete h.b.buildCfg.InitialChoices;
   h.game.gameData.canLock=()=>true;h.game.gameData.treasureAddTime={CovenantOfPatriarchs:9};
   h.b.upHpView=noop;let requested;h.b.setLevel=value=>requested=value;h.b.upData();
-  assert.equal(requested,typed?0:1);
+  assert.equal(requested,typed?0:11);
  }
 });
 
 test('free upgrades follow the chosen linear family and safely ignore a completed building',()=>{
- const h=branch(true);h.b.buildInfo.cfg=h.b.buildCfg.levelList[16];h.b.index=17;
+ const h=branch(true);h.b.buildInfo.cfg=h.b.getBranchCfg(17);h.b.index=17;
  assert.equal(h.b.onBuffUpgrade(),true);assert.equal(h.b.index,18);
- h.b.buildInfo.cfg=h.b.buildCfg.levelList[18];h.b.index=19;
+ h.b.buildInfo.cfg=h.b.getBranchCfg(19);h.b.index=19;
  assert.equal(h.b.onBuffUpgrade(),false);assert.equal(h.b.index,19);
 });
 
 test('level-three tower can update its price view without an unused upgrade-plot node',()=>{
- const h=branch(true);h.b.index=19;h.b.buildInfo.cfg=h.b.buildCfg.levelList[18];h.b.ndLockList.length=3;
+ const h=branch(true);h.b.index=19;h.b.buildInfo.cfg=h.b.getBranchCfg(19);h.b.ndLockList.length=3;
  assert.doesNotThrow(()=>h.b.upSellView());
 });
 

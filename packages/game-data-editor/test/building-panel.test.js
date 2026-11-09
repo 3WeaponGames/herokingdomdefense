@@ -49,6 +49,11 @@ function fields(root, label) {
     return all(root, element => element.tagName === 'label' && element.children[0] && element.children[0].textContent === label)
         .map(element => all(element, child => ['input', 'select', 'textarea'].includes(child.tagName))[0]);
 }
+function branchPosition(f, typeID, index) {
+    const position=f.store.documents.A.data.BuildEnum[typeID].levelList.findIndex(branch=>branch.index===index);
+    assert(position>=0,'Building '+typeID+' branch '+index+' must exist.');
+    return position;
+}
 function fixture() {
     const store = new Store(project), messages = [], previews = [], modules = new Map();
     let previewActions;
@@ -107,13 +112,15 @@ test('building catalog includes every configured building and browsing every bra
     const f = fixture(), before = clone(f.store.draftState());
     const rows = f.panel._rows(), ids = Object.keys(before.A.BuildEnum).filter(id => id !== '0');
     assert(rows.some(row => row.key === '__all__' && row.overview));
-    assert.deepEqual(clone(rows.filter(row => !row.overview).map(row => row.key).sort()), ids.sort());
+    assert.deepEqual([...new Set(rows.filter(row => !row.overview).map(row => row.typeID))].sort(), ids.sort());
     f.render('__all__');
-    const branchCount = ids.reduce((count, id) => count + before.A.BuildEnum[id].levelList.length, 0);
-    assert.equal(all(f.panel.$detail, element => element.className === 'bld-card').length, ids.length);
-    assert.equal(all(f.panel.$detail, element => element.tagName === 'tr').length, branchCount + 1);
+    assert.equal(all(f.panel.$detail, element => element.className.split(' ').includes('bld-card')).length, 11);
     for (const id of ids) {
-        before.A.BuildEnum[id].levelList.forEach((_branch, index) => f.render(id, index));
+        const reachable = new Set();
+        rows.filter(row => row.typeID === id && row.family).forEach(row => row.branches.forEach(branch => {
+            f.render(row.key, branch.position); reachable.add(f.panel._level);
+        }));
+        assert.deepEqual([...reachable].sort((a,b) => a-b), before.A.BuildEnum[id].levelList.map((_branch, index) => index), 'Every stored branch remains reachable for building '+id);
     }
     assert.deepEqual(f.store.draftState(), before);
     assert.equal(f.store.changes().length, 0);
@@ -122,56 +129,62 @@ test('building catalog includes every configured building and browsing every bra
 });
 
 test('barracks roster controls edit the selected branch only and retain supported unit choices', async () => {
-    const f = fixture(); f.render('3', 4);
+    const f = fixture(), position=branchPosition(f,'3',15); f.render('3:14', position);
     const original = clone(f.store.documents.A.data.BuildEnum['3'].levelList);
     const capacity = fields(f.panel.$detail, 'Soldier capacity')[0];
     const unit = fields(f.panel.$detail, 'Soldier type')[0];
     const respawn = fields(f.panel.$detail, 'Respawn time (seconds)')[0];
     assert(capacity && unit && respawn, 'Named barracks controls must be available.');
-    assert.equal(capacity.value, String(original[4].Data[0]));
-    assert.equal(unit.value, String(original[4].Data[1]));
-    assert.equal(respawn.value, String(original[4].Data[2]));
+    assert.equal(capacity.value, String(original[position].Data[0]));
+    assert.equal(unit.value, String(original[position].Data[1]));
+    assert.equal(respawn.value, String(original[position].Data[2]));
     assert.deepEqual(unit.children.map(option => Number(option.value)).sort(), [90001, 90002, 90003, 90004]);
-    const next = original[4].Data[0] + 3;
+    const next = original[position].Data[0] + 3;
     capacity.value = String(next); capacity.onchange(); await f.panel._queue;
-    assert.equal(f.store.documents.A.data.BuildEnum['3'].levelList[4].Data[0], next);
-    assert.deepEqual(clone(f.messages[0].request.edits), [{ doc: 'A', path: ['BuildEnum', '3', 'levelList', 4, 'Data', 0], value: next }]);
+    assert.equal(f.store.documents.A.data.BuildEnum['3'].levelList[position].Data[0], next);
+    assert.deepEqual(clone(f.messages[0].request.edits), [{ doc: 'A', path: ['BuildEnum', '3', 'levelList', position, 'Data', 0], value: next }]);
     assert.deepEqual(f.store.documents.A.data.BuildEnum['3'].levelList[0], original[0]);
     assert.equal(f.messages.some(item => item.message === 'game-data-editor:save'), false);
 });
 
-test('inline barracks unit statistics edit only the allied record and preserve the matching enemy', async () => {
-    const f = fixture(); f.render('3', 0);
-    const branch = f.store.documents.A.data.BuildEnum['3'].levelList[0], id = String(branch.Data[1]);
-    const originalBuildingHp = branch.Hp, enemy=clone(f.store.documents.A.data.SoldierCfg[id]), next = f.store.documents.A.data.AllyCfg[id].Health + 17;
+test('inline barracks unit statistics edit only the assigned allied level and preserve shared and enemy records', async () => {
+    const f = fixture();
+    for (const version of ['original','data']) {
+        delete f.store.documents.overrides[version].unitLevels;
+        if (f.store.documents.A[version].GameTools) delete f.store.documents.A[version].GameTools.unitLevels;
+    }
+    const position=branchPosition(f,'3',12);
+    f.panel._snapshot=f.store.snapshot(); f.render('3:11', position);
+    const branch = f.store.documents.A.data.BuildEnum['3'].levelList[position], id = String(branch.Data[1]), name='ally:'+id+':level:2';
+    const originalBuildingHp = branch.Hp, enemy=clone(f.store.documents.A.data.SoldierCfg[id]), ally=clone(f.store.documents.A.data.AllyCfg[id]), next = ally.Health + 17;
     const summary = all(f.panel.$detail, element => element.tagName === 'summary' && element.textContent.startsWith('Assigned unit ·'))[0];
     assert(summary, 'Assigned unit section must be available.');
     const unitHp = fields(summary.parentNode, 'HP')[0];
     assert(unitHp, 'Assigned unit HP must be editable in the Buildings panel.');
     assert.match(f.panel.$detail.textContent, /shared/i);
     unitHp.value = String(next); unitHp.onchange(); await f.panel._queue;
-    assert.equal(f.store.documents.A.data.AllyCfg[id].Health, next);
+    assert.equal(f.store.documents.overrides.data.unitLevels[name].Health, next);
+    assert.deepEqual(f.store.documents.A.data.AllyCfg[id],ally);
     assert.deepEqual(f.store.documents.A.data.SoldierCfg[id],enemy);
-    assert.deepEqual(clone(f.messages[0].request.edits), [{ doc: 'A', path: ['AllyCfg', id, 'Health'], value: next }]);
-    assert.equal(f.store.documents.A.data.BuildEnum['3'].levelList[0].Hp, originalBuildingHp);
+    assert(f.store.changes().every(change=>change.doc==='overrides'&&change.path[0]==='unitLevels'));
+    assert.equal(f.store.documents.A.data.BuildEnum['3'].levelList[position].Hp, originalBuildingHp);
     assert.equal(f.messages.some(item => item.message === 'game-data-editor:save'), false);
 });
 
-test('changing building or upgrade branch selection does not change game data', () => {
-    const f = fixture(); f.render('3', 0);
+test('changing building level selection does not change game data', () => {
+    const f = fixture(); f.render('3:11', branchPosition(f,'3',11));
     const before = clone(f.store.draftState());
-    const branchButton = all(f.panel.$detail, element => element.tagName === 'button' && /#2\b/.test(element.textContent))[0];
-    const branchRow = all(f.panel.$detail, element => element.tagName === 'tr' && typeof element.onclick === 'function')[1];
-    assert(branchButton || branchRow, 'Upgrade branches must be navigable.');
-    (branchButton || branchRow).onclick();
-    assert(f.panel._level > 0);
+    const levelButton = all(f.panel.$detail, element => element.tagName === 'button' && element.getAttribute('data-building-level')==='2')[0];
+    assert(levelButton, 'Building levels must be navigable.');
+    levelButton.onclick();
+    assert.equal(f.panel._level,branchPosition(f,'3',12));
     assert.deepEqual(f.store.draftState(), before);
     assert.equal(f.messages.length, 0);
 });
 
 test('assigned unit preview forwards only ally timing edits and preserves saved defaults', async () => {
-    const f = fixture(); f.render('3', 4);
-    const id = String(f.store.documents.A.data.BuildEnum['3'].levelList[4].Data[1]), key = 'ally:' + id + ':default';
+    const f = fixture(), position=branchPosition(f,'3',15); f.render('3:14', position);
+    const id = String(f.store.documents.A.data.BuildEnum['3'].levelList[position].Data[1]), key = 'ally:' + id + ':default';
     const defaults = clone(f.store.documents.overrides.data.timingDefaults || {});
     const toggle = all(f.panel.$detail, element => element.tagName === 'button' && element.textContent === 'Assigned unit & attack timing')[0];
     assert(toggle); toggle.onclick();
@@ -186,7 +199,7 @@ test('assigned unit preview forwards only ally timing edits and preserves saved 
 });
 
 test('committing an unchanged building value emits no draft mutation', () => {
-    const f = fixture(); f.render('3');
+    const f = fixture(); f.render('3:11');
     const capacity = fields(f.panel.$detail, 'Soldier capacity')[0];
     capacity.onchange();
     assert.equal(f.messages.length, 0);
@@ -195,61 +208,65 @@ test('committing an unchanged building value emits no draft mutation', () => {
 
 test('construction cards can be reordered and edited without changing upgrades or unit stats',async()=>{
     const f=fixture(),building=f.store.documents.A.data.BuildEnum['3'];
-    building.InitialChoices=[1,2,5,8];f.panel._snapshot=f.store.snapshot();f.render('3');
+    building.InitialChoices=[11,14,17];f.panel._snapshot=f.store.snapshot();f.render('3');
     const original=clone(building.levelList),units=clone(f.store.documents.A.data.AllyCfg);
     const choice=fields(f.panel.$detail,'Construction choice 1')[0];assert(choice);
-    choice.value='5';choice.onchange();await f.panel._queue;
-    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','3','InitialChoices',0],value:5}]);
+    choice.value='20';choice.onchange();await f.panel._queue;
+    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','3','InitialChoices',0],value:20}]);
     assert.deepEqual(f.store.documents.A.data.BuildEnum['3'].levelList,original);
     assert.deepEqual(f.store.documents.A.data.AllyCfg,units);
     const earlier=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Move earlier')[0];
     assert(earlier);earlier.onclick();await f.panel._queue;
-    assert.deepEqual(f.store.documents.A.data.BuildEnum['3'].InitialChoices,[2,5,5,8]);
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['3'].InitialChoices,[14,20,17]);
     assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
 });
 
-test('tower controls create scoped partial drafts and reset preserves unrelated branch data',async()=>{
-    const f=fixture(),row=f.store.documents.A.data.BuildEnum['2'].levelList[0];
-    delete row.Tower;row.customFuture={retain:[7]};f.panel._snapshot=f.store.snapshot();f.render('2');
-    assert.equal(f.messages.length,0,'showing default controls does not seed Tower settings');
+test('tower targeting edits retain its attack type, unknown properties and every other branch',async()=>{
+    const f=fixture(),position=branchPosition(f,'2',4),row=f.store.documents.A.data.BuildEnum['2'].levelList[position];
+    row.Tower.customFuture={retain:[7]};row.customFuture={retain:[8]};
+    const original=clone(f.store.documents.A.data.BuildEnum['2'].levelList);
+    f.panel._snapshot=f.store.snapshot();f.render('2:4',position);
+    assert.equal(f.messages.length,0,'Browsing authored tower controls does not create drafts');
     const targeting=fields(f.panel.$detail,'Tower targeting')[0];assert(targeting);
     assert.deepEqual(targeting.children.map(option=>option.value),['nearest','highestHp','lowestHp','farthest']);
     targeting.value='highestHp';targeting.onchange();await f.panel._queue;
-    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[0].Tower,{targeting:'highestHp'});
-    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','2','levelList',0,'Tower'],value:{targeting:'highestHp'}}]);
-    const reset=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Restore original tower attack')[0];assert(reset);
-    reset.onclick();await f.panel._queue;
-    assert.equal(Object.hasOwn(f.store.documents.A.data.BuildEnum['2'].levelList[0],'Tower'),false);
-    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[0].customFuture,{retain:[7]});
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[position].Tower,Object.assign({},original[position].Tower,{targeting:'highestHp'}));
+    const next=fields(f.panel.$detail,'Tower targeting')[0];next.value='nearest';next.onchange();await f.panel._queue;
+    assert.deepEqual(clone(f.messages.map(message=>message.request.edits)),[
+        [{doc:'A',path:['BuildEnum','2','levelList',position,'Tower','targeting'],value:'highestHp'}],
+        [{doc:'A',path:['BuildEnum','2','levelList',position,'Tower','targeting'],value:'nearest'}]
+    ]);
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList,original);
+    assert.equal(f.store.documents.A.data.BuildEnum['2'].levelList[position].Tower.attackType,'cannon');
     assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
 });
 
 test('sprite dimensions, offsets and muzzle positions are editable without altering artwork or timing defaults',async()=>{
-    const f=fixture(),row=f.store.documents.A.data.BuildEnum['2'].levelList[0];
+    const f=fixture(),position=branchPosition(f,'2',1),row=f.store.documents.A.data.BuildEnum['2'].levelList[position];
     row.Appearance={sprite:'buildings/towers/cannon-1',width:160,height:200,offsetX:0,offsetY:0,muzzleX:0,muzzleY:100,customFuture:'retain'};
-    f.panel._snapshot=f.store.snapshot();f.render('2');
+    f.panel._snapshot=f.store.snapshot();f.render('2:1');
     const defaults=clone(f.store.documents.overrides.data.timingDefaults),sprite=row.Appearance.sprite;
     assert.equal(f.messages.length,0);
     const width=fields(f.panel.$detail,'Artwork width')[0],muzzle=fields(f.panel.$detail,'Muzzle offset Y')[0];assert(width&&muzzle);
     width.value='180';width.onchange();await f.panel._queue;
     const nextMuzzle=fields(f.panel.$detail,'Muzzle offset Y')[0];nextMuzzle.value='140';nextMuzzle.onchange();await f.panel._queue;
-    const after=f.store.documents.A.data.BuildEnum['2'].levelList[0].Appearance;
+    const after=f.store.documents.A.data.BuildEnum['2'].levelList[position].Appearance;
     assert.equal(after.width,180);assert.equal(after.muzzleY,140);assert.equal(after.sprite,sprite);assert.equal(after.customFuture,'retain');
     assert.deepEqual(f.store.documents.overrides.data.timingDefaults,defaults);
     assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
 });
 
 test('weapon fitting edits only the selected layer and removal preserves the fixed base and gameplay stats',async()=>{
-    const f=fixture(),row=f.store.documents.A.data.BuildEnum['2'].levelList[0];
+    const f=fixture(),position=branchPosition(f,'2',1),row=f.store.documents.A.data.BuildEnum['2'].levelList[position];
     row.Appearance={sprite:'buildings/towers/base',width:180,height:220,offsetX:-3,offsetY:4,weapon:{sprite:'buildings/towers/weapon',width:120,height:70,pivotX:.3,pivotY:.5,offsetX:0,offsetY:160,muzzleX:90,muzzleY:12,unknown:{retain:true}}};
-    const initial=clone(row),defaults=clone(f.store.documents.overrides.data.timingDefaults);f.panel._snapshot=f.store.snapshot();f.render('2');
+    const initial=clone(row),defaults=clone(f.store.documents.overrides.data.timingDefaults);f.panel._snapshot=f.store.snapshot();f.render('2:1');
     assert.equal(f.messages.length,0,'opening a weapon layer writes no defaults');
-    assert.equal(fields(f.panel.$detail,'Muzzle offset X').length,0,'legacy static muzzle controls are hidden when a weapon supplies the muzzle');
+    assert.equal(fields(f.panel.$detail,'Muzzle offset X').length,0,'static muzzle controls are hidden when a weapon supplies the muzzle');
     const pivot=fields(f.panel.$detail,'Weapon pivot X')[0];assert(pivot);pivot.value='.4';pivot.onchange();await f.panel._queue;
-    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','2','levelList',0,'Appearance','weapon','pivotX'],value:.4}]);
-    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[0].Appearance.weapon.unknown,{retain:true});
+    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','2','levelList',position,'Appearance','weapon','pivotX'],value:.4}]);
+    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[position].Appearance.weapon.unknown,{retain:true});
     const remove=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Remove aiming weapon layer')[0];assert(remove);remove.onclick();await f.panel._queue;
-    const after=f.store.documents.A.data.BuildEnum['2'].levelList[0];delete initial.Appearance.weapon;
+    const after=f.store.documents.A.data.BuildEnum['2'].levelList[position];delete initial.Appearance.weapon;
     assert.deepEqual(after,initial);assert.deepEqual(f.store.documents.overrides.data.timingDefaults,defaults);
     assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
 });

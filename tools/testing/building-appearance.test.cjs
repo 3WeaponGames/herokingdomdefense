@@ -324,5 +324,5 @@ test('production tower families each contain three imported levels with independ
       assert.ok(row.Data[0] > 0 && row.Data[1] > 0 && row.Data[2] > 0);
     }
   }
-  assert.deepEqual(cfg.BuildEnum['3'].InitialChoices.map(index => cfg.BuildEnum['3'].levelList[index - 1].Data[1]), [90001, 90002, 90003, 90004]);
+  assert.deepEqual(cfg.BuildEnum['3'].InitialChoices.map(index => cfg.BuildEnum['3'].levelList.find(row => row.index === index).Data[1]), [90001, 90002, 90003, 90004]);
 });

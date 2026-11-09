@@ -3,15 +3,13 @@ const path=require('path'),M=require('./model'),L=require('./legacy'),Maps=requi
 
 function colliderIndex(building,hall,config){
  const definition=config&&config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
- let index=1;
+ let row=rows[0];
  if(building.kind===1){
-  const at=rows.findIndex(row=>row.level===hall);
-  index=at<0?hall:at+1;
+  row=rows.find(row=>row.level===hall);
  }else if(definition&&Array.isArray(definition.InitialChoices)){
-  const choice=definition.InitialChoices.find(value=>Number.isInteger(value)&&value>0&&rows[value-1]&&rows[value-1].level===1);
-  if(choice!==undefined)index=choice;
+  row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
  }
- const row=rows[index-1],override=row&&row.ColliderIndex;
+ const index=row?row.index:building.kind===1?hall:1,override=row&&row.ColliderIndex;
  // Navigation previews assume eligible buildings are built, using the first
  // offered branch. The serialized prefab may have every level disabled (or
  // enabled); runtime setLevel selects the matching collider tag explicitly.

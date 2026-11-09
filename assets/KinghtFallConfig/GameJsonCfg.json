@@ -3203,240 +3203,13 @@
       "levelList": [
         {
           "ID": 3,
-          "index": 1,
-          "level": 1,
-          "Name": "[[loc:data.buildenum.3.name]]",
-          "BuildSliverCost": 8,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.1.levelupdescribe]]",
-          "Icon": "by_1",
-          "Zoom": 0.35,
-          "Skin": "by-1",
-          "Hp": 150,
-          "BranchBuild": [
-            2,
-            5,
-            8
-          ],
-          "Excursion": [
-            -200,
-            34
-          ],
-          "Data": [
-            4,
-            90001,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 2,
-          "level": 2,
-          "Name": "[[loc:data.buildenum.3.levellist.2.name]]",
-          "BuildSliverCost": 16,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.2.levelupdescribe]]",
-          "Icon": "dxby_2_1",
-          "Zoom": 0.35,
-          "Skin": "dxby-2-1",
-          "Hp": 250,
-          "BranchBuild": [
-            3,
-            4
-          ],
-          "Excursion": [
-            -200,
-            34
-          ],
-          "Data": [
-            4,
-            90002,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 3,
-          "level": 3,
-          "Name": "[[loc:data.buildenum.3.levellist.3.name]]",
-          "BuildSliverCost": 16,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.3.levelupdescribe]]",
-          "Icon": "dxby_3_1",
-          "Zoom": 0.35,
-          "Skin": "dxby-3-1",
-          "Hp": 400,
-          "Excursion": [
-            -200,
-            34
-          ],
-          "Data": [
-            8,
-            90002,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 4,
-          "level": 3,
-          "Name": "[[loc:data.buildenum.3.levellist.4.name]]",
-          "VedioCount": 1,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.4.levelupdescribe]]",
-          "Icon": "dxby_3_2",
-          "Zoom": 0.35,
-          "Skin": "dxby-3-2",
-          "Hp": 450,
-          "Excursion": [
-            -200,
-            41
-          ],
-          "Data": [
-            10,
-            90002,
-            5
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 5,
-          "level": 2,
-          "Name": "[[loc:data.buildenum.3.levellist.5.name]]",
-          "BuildSliverCost": 16,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.5.levelupdescribe]]",
-          "Icon": "gby_2_1",
-          "Zoom": 0.35,
-          "Skin": "gby-2-1",
-          "Hp": 250,
-          "BranchBuild": [
-            6,
-            7
-          ],
-          "Excursion": [
-            -200,
-            41
-          ],
-          "Data": [
-            4,
-            90003,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 6,
-          "level": 3,
-          "Name": "[[loc:data.buildenum.3.levellist.6.name]]",
-          "BuildSliverCost": 16,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.6.levelupdescribe]]",
-          "Icon": "gby_3_1",
-          "Zoom": 0.35,
-          "Skin": "gby-3-1",
-          "Hp": 400,
-          "Excursion": [
-            -200,
-            46
-          ],
-          "Data": [
-            8,
-            90003,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 7,
-          "level": 3,
-          "Name": "[[loc:data.buildenum.3.levellist.7.name]]",
-          "VedioCount": 1,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.7.levelupdescribe]]",
-          "Icon": "gby_3_2",
-          "Zoom": 0.35,
-          "Skin": "gby-3-2",
-          "Hp": 450,
-          "Excursion": [
-            -200,
-            46
-          ],
-          "Data": [
-            10,
-            90003,
-            5
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 8,
-          "level": 2,
-          "Name": "[[loc:data.buildenum.3.levellist.8.name]]",
-          "BuildSliverCost": 16,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.8.levelupdescribe]]",
-          "Icon": "qby_2_1",
-          "Zoom": 0.35,
-          "Skin": "qby-2-1",
-          "Hp": 250,
-          "BranchBuild": [
-            9,
-            10
-          ],
-          "Excursion": [
-            -200,
-            33
-          ],
-          "Data": [
-            4,
-            90004,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 9,
-          "level": 3,
-          "Name": "[[loc:data.buildenum.3.levellist.9.name]]",
-          "BuildSliverCost": 16,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.9.levelupdescribe]]",
-          "Icon": "qby_3_1",
-          "Zoom": 0.35,
-          "Skin": "qby-3-1",
-          "Hp": 400,
-          "Excursion": [
-            -200,
-            42
-          ],
-          "Data": [
-            8,
-            90004,
-            8
-          ]
-        },
-        {
-          "ID": 3,
-          "index": 10,
-          "level": 3,
-          "Name": "[[loc:data.buildenum.3.levellist.10.name]]",
-          "VedioCount": 1,
-          "LevelUpDescribe": "[[loc:data.buildenum.3.levellist.10.levelupdescribe]]",
-          "Icon": "qby_3_2",
-          "Zoom": 0.35,
-          "Skin": "qby-3-2",
-          "Hp": 450,
-          "Excursion": [
-            -200,
-            43
-          ],
-          "Data": [
-            10,
-            90004,
-            5
-          ]
-        },
-        {
-          "ID": 3,
           "index": 11,
           "level": 1,
           "Name": "[[loc:data.building.barracks.royal-guard.1.name]]",
           "LevelUpDescribe": "[[loc:data.building.barracks.royal-guard.description]]",
-          "Icon": "by_1",
+          "Icon": "royal-guard-1",
           "Zoom": 0.35,
-          "Skin": "by-1",
+          "Skin": "by-royal-1",
           "Hp": 150,
           "ColliderIndex": 1,
           "Excursion": [
@@ -3459,9 +3232,9 @@
           "level": 2,
           "Name": "[[loc:data.building.barracks.royal-guard.2.name]]",
           "LevelUpDescribe": "[[loc:data.building.guide.3.12.description]]",
-          "Icon": "dxby_2_1",
+          "Icon": "royal-guard-2",
           "Zoom": 0.35,
-          "Skin": "dxby-2-1",
+          "Skin": "by-royal-2",
           "Hp": 250,
           "ColliderIndex": 2,
           "Excursion": [
@@ -3484,9 +3257,9 @@
           "level": 3,
           "Name": "[[loc:data.building.barracks.royal-guard.3.name]]",
           "LevelUpDescribe": "[[loc:data.building.guide.3.13.description]]",
-          "Icon": "dxby_3_1",
+          "Icon": "royal-guard-3",
           "Zoom": 0.35,
-          "Skin": "dxby-3-1",
+          "Skin": "by-royal-3",
           "Hp": 400,
           "ColliderIndex": 3,
           "Excursion": [

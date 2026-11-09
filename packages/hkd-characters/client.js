@@ -62,6 +62,7 @@ function mount(host,api){
   const footer=el('footer',undefined,root),status=el('span','Loading character library…',footer,'status'),saveState=el('span','',footer);
   let data=null,saved=null,version=0,parts=[],units=[],sources=[],assets={},selected='',virtual=null,selectedPart='',selectedAsset='',selectedModel='',rig=null,spine=null,layers=[],baseLayers=[],states=[],fittingKey='',poseBounds=null,token=0,disposed=false,playing=true,time=0,duration=1,last=0,raf=null,direction=1,limit=60,drag=null,stages=Promise.resolve(),lastSent='',stageError=null,busy=false;
   let canUndo=false,canRedo=false,scrubs=[],virtualUnit=null,creator=null;
+  let pendingFocus=null,focusTask=null,focusSequence=0;
   let viewPan={x:0,y:0},renderPan={x:0,y:0},panDrag=null,viewKey='';
   const images=new Map();let fittingRetryAfter=0,viewFitKey='';
   const clone=v=>JSON.parse(JSON.stringify(v));
@@ -80,7 +81,27 @@ function mount(host,api){
     parts=itemMode?CharacterOptions.libraryParts(entries):CharacterOptions.characterParts(entries);assets=Object.fromEntries(entries.map(part=>[part.id,part]));search.placeholder='Search '+parts.length+' parts…';
     category.innerHTML='';const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(CharacterOptions.partCategory))].sort()){const option=el('option',name,category);option.value=name;}category.value=Array.from(category.options).some(option=>option.value===selectedCategory)?selectedCategory:'';
   }
-  function setBusy(value){busy=value;root.querySelectorAll('input,select,button').forEach(control=>{control.disabled=value||control.hasAttribute('data-readonly');});dirty();}
+  function setBusy(value){busy=value;root.querySelectorAll('input,select,button').forEach(control=>{control.disabled=value||control.hasAttribute('data-readonly');});dirty();if(!value)applyFocus();}
+  function focusUnit(request){
+    if(disposed||itemMode||!request)return Promise.resolve(false);
+    if(Number.isSafeInteger(request.sequence)){if(request.sequence<focusSequence)return Promise.resolve(false);focusSequence=request.sequence;}
+    pendingFocus={type:request.type,id:String(request.id),...(request.level===undefined||request.level===0?{}:{level:request.level})};
+    return applyFocus();
+  }
+  function applyFocus(){
+    if(focusTask)return focusTask;if(!pendingFocus||!data||busy||creator||disposed)return Promise.resolve(false);
+    focusTask=Promise.resolve().then(async()=>{
+      let applied=false;
+      while(pendingFocus&&!busy&&!creator&&!disposed){
+        const target=pendingFocus;pendingFocus=null;const unit=units.find(unit=>unit.type===target.type&&unit.id===target.id);
+        if(!unit)throw Error('Choose an existing character unit.');
+        if(target.level!==undefined&&(!Number.isInteger(target.level)||!Levels.levels(unit).includes(target.level)))throw Error('Choose an existing character level.');
+        unitFilter.value='';await selectUnit(unit,target.level);applied=true;
+      }
+      return applied;
+    }).catch(error=>{if(!disposed)message(error.message,true);return false;}).finally(()=>{focusTask=null;if(pendingFocus&&!busy&&!creator&&!disposed)applyFocus();});
+    return focusTask;
+  }
   function stage(){
     if(!data)return stages;const value=JSON.stringify(data);if(value===lastSent)return stages;lastSent=value;const draft=clone(data);
     // Validation can fail for an intermediate draft. A corrected draft must
@@ -103,7 +124,7 @@ function mount(host,api){
     if(!data||creator)return;creator=el('div',undefined,root,'creator-backdrop');const dialog=el('div',undefined,creator,'creator-dialog');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-label','New character');el('h2','New character',dialog);
     const name=field(dialog,'Character name','New character',()=>{}),kind=field(dialog,'Starting model','maker',()=>{model.parentElement.hidden=kind.value!=='finished';},[{value:'maker',label:'Create a Character Maker character'},{value:'finished',label:'Use a finished unit model'}]);
     const choices=Catalog.listed(data,units).filter(unit=>!unit.character),model=field(dialog,'Unit model',choices[0].key,()=>{},choices.map(unit=>({value:unit.key,label:unit.group+' · '+unit.name})));model.parentElement.hidden=true;
-    const actions=el('div',undefined,dialog,'row'),close=()=>{creator.remove();creator=null;};button(actions,'Cancel',close);button(actions,'Create character',()=>{
+    const actions=el('div',undefined,dialog,'row'),close=()=>{creator.remove();creator=null;Promise.resolve().then(applyFocus);};button(actions,'Cancel',close);button(actions,'Create character',()=>{
       if(!name.value.trim())throw Error('Enter a character name.');if(Catalog.listed(data,units).some(unit=>unit.name.toLowerCase()===name.value.trim().toLowerCase()))throw Error('A character with this name already exists.');const baseUnit=kind.value==='maker'?units.find(unit=>unit.type==='ally'):units.find(unit=>unit.key===model.value);if(!baseUnit)throw Error('Choose a unit model.');
       const id=unique('character-'+name.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40),data.profiles),base=kind.value==='maker'?{...Catalog.defaults(baseUnit),source:Catalog.maker}:{type:baseUnit.type,id:baseUnit.id,currentModel:true};
       data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitFilter.value='';selectProfile(id);changed();
@@ -120,7 +141,7 @@ function mount(host,api){
     const id=touched&&touched.includes(selected)?selected:touched&&touched[0]|| (data.profiles[selected]?selected:'');
     if(id){const restored=data.profiles[id].parts.find(p=>!(before.profiles[id]&&before.profiles[id].parts.some(old=>old.id===p.id)));await selectProfile(id,restored?restored.id:previousPart);}
     else{const unit=base&&units.find(u=>u.type===base.type&&u.id===String(base.id));if(unit)await selectUnit(unit,base.level);else await selectProfile(Object.keys(data.profiles)[0]||'');}
-    dirty();
+    dirty();if(result.focus)focusUnit(result.focus);
   }
   async function travel(action){
     if(!data||busy||disposed)return;finishGestures();setBusy(true);
@@ -410,7 +431,7 @@ function mount(host,api){
   function step(amount){playing=false;play.textContent='Play';time=Math.max(0,Math.min(duration,displayTime()+amount/30));last=0;draw();}
   animation.onchange=()=>{time=0;updateDuration();draw();};scrub.oninput=()=>{playing=false;play.textContent='Play';time=Number(scrub.value);draw();};
   function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time+=(now-last)/1000*Number(speed.value);if(!loopToggle.checked&&time>=duration){time=duration;playing=false;play.textContent='Play';}draw();}last=now;raf=requestAnimationFrame(frame);}
-  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);refreshLibrary(result);lastSent=JSON.stringify(data);unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
-  return {destroy(){disposed=true;token++;root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
+  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);refreshLibrary(result);lastSent=JSON.stringify(data);unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(result.focus)focusUnit(result.focus);if(pendingFocus)applyFocus();else if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
+  return {focusUnit,destroy(){disposed=true;pendingFocus=null;token++;root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
 }
 module.exports={mount};

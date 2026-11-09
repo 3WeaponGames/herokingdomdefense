@@ -274,7 +274,7 @@ test('battle retry and building branch handlers resolve exactly one choice', () 
   h.modules.KinghtFallConfig.KinghtFallBundelName = { IconBuild: 'build' };
   branch.onOpened(); branch.ndItem = {}; branch.ndParent = {}; branch.loadSpriteFrame = () => {}; branch.T = value => value;
   h.modules.LanguageMgr.LanguageMgr = { getInstance: () => ({ format: value => value }) };
-  branch.init({ buildInfo: { cfg: { BranchBuild: [1, 2] } }, buildCfg: { levelList: [{ BuildSliverCost: 1 }, { BuildSliverCost: 1 }] } }, value => chosen.push(value));
+  branch.init({ buildInfo: { cfg: { BranchBuild: [1, 2] } }, buildCfg: { levelList: [{ index: 1, BuildSliverCost: 1 }, { index: 2, BuildSliverCost: 1 }] } }, value => chosen.push(value));
   branch.initView(); rows[0].press(); rows[1].press(); assert.deepEqual(chosen, [1]);
 });
 

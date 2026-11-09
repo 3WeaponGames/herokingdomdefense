@@ -1,0 +1,1443 @@
+{
+  "version": 2,
+  "source": "Original authored building geometry and effects before the visual refresh.",
+  "assets": [
+    {
+      "asset": "cb",
+      "sourceSkeleton": "1fdfd8be917862dccbec3b8025f8aa413f19c8ea2846bbe193d21d6bf3741f6e",
+      "originalAtlas": "603da017385b2024aba58e9f1029cd42e8c31d301417eca685b0839c86e74519",
+      "atlasSize": [
+        1413,
+        348
+      ],
+      "artRegions": [
+        {
+          "name": "cc_1_4",
+          "rotate": false,
+          "xy": [
+            704,
+            96
+          ],
+          "size": [
+            348,
+            250
+          ],
+          "orig": [
+            348,
+            250
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "cc_2_3",
+          "rotate": false,
+          "xy": [
+            353,
+            96
+          ],
+          "size": [
+            349,
+            250
+          ],
+          "orig": [
+            349,
+            250
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "cc_3_3",
+          "rotate": false,
+          "xy": [
+            2,
+            9
+          ],
+          "size": [
+            349,
+            337
+          ],
+          "orig": [
+            349,
+            337
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "2f4902ae40903120bc9f8abc52b45a5271f3abda6f88cc3d8b57eca51cbb84f7",
+      "bones": "8931eb68d3f56bfc105a0e68d83ad035a21612218bb8875ad2f4d8e5d944f370",
+      "slots": "ff556a9faeffc356d2ca57f4ad6350b15e1639cc2dc1b393188cb6a93be57fe1"
+    },
+    {
+      "asset": "by",
+      "sourceSkeleton": "8bc38045a797704390ff8ef318fee9760185c35dbde8c42f6b6a3a6c3f6acf03",
+      "originalAtlas": "1df5b90b8a39b2f2c6ae4a0f34623ff84063da0e82804cacfd81a0d28fae220d",
+      "atlasSize": [
+        856,
+        1032
+      ],
+      "artRegions": [
+        {
+          "name": "by_1",
+          "rotate": false,
+          "xy": [
+            563,
+            396
+          ],
+          "size": [
+            266,
+            176
+          ],
+          "orig": [
+            268,
+            178
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "dxby_2_1",
+          "rotate": false,
+          "xy": [
+            2,
+            2
+          ],
+          "size": [
+            269,
+            215
+          ],
+          "orig": [
+            271,
+            217
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "dxby_3_1",
+          "rotate": false,
+          "xy": [
+            578,
+            574
+          ],
+          "size": [
+            274,
+            220
+          ],
+          "orig": [
+            276,
+            222
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "dxby_3_2",
+          "rotate": true,
+          "xy": [
+            294,
+            757
+          ],
+          "size": [
+            273,
+            282
+          ],
+          "orig": [
+            275,
+            284
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "gby_2_1",
+          "rotate": false,
+          "xy": [
+            578,
+            796
+          ],
+          "size": [
+            271,
+            234
+          ],
+          "orig": [
+            273,
+            236
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "gby_3_1",
+          "rotate": false,
+          "xy": [
+            2,
+            219
+          ],
+          "size": [
+            272,
+            245
+          ],
+          "orig": [
+            274,
+            247
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "gby_3_2",
+          "rotate": false,
+          "xy": [
+            2,
+            466
+          ],
+          "size": [
+            279,
+            281
+          ],
+          "orig": [
+            281,
+            283
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "qby_2_1",
+          "rotate": false,
+          "xy": [
+            294,
+            582
+          ],
+          "size": [
+            282,
+            173
+          ],
+          "orig": [
+            284,
+            181
+          ],
+          "offset": [
+            1,
+            7
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "qby_3_1",
+          "rotate": false,
+          "xy": [
+            283,
+            352
+          ],
+          "size": [
+            278,
+            228
+          ],
+          "orig": [
+            280,
+            230
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "qby_3_2",
+          "rotate": false,
+          "xy": [
+            2,
+            749
+          ],
+          "size": [
+            290,
+            281
+          ],
+          "orig": [
+            292,
+            283
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "fca4f55207c33d225e4b88fe8d0cbbfdaccf4c08bbbafed8c85842c58531910d",
+      "bones": "c6b58fe6ff9866fdff10507fa6b1e6a8f75e79a81aedd2c2bc704607ce34bc04",
+      "slots": "91e18902ad7f956ce21c298581e8837e582e790ff018e52ce30f8dc35e4b8024"
+    },
+    {
+      "asset": "mz",
+      "sourceSkeleton": "c07413c71dbc570412dec8d61da489da523ad5345157016256aef181d0571a97",
+      "originalAtlas": "ea95f963cd5a07629cc25476702468fbb4b70ff2aa0e0df9fdd37847eedf590d",
+      "atlasSize": [
+        1108,
+        205
+      ],
+      "artRegions": [
+        {
+          "name": "mz_1_2",
+          "rotate": false,
+          "xy": [
+            296,
+            58
+          ],
+          "size": [
+            144,
+            145
+          ],
+          "orig": [
+            144,
+            145
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "mz_2_2",
+          "rotate": true,
+          "xy": [
+            2,
+            55
+          ],
+          "size": [
+            148,
+            145
+          ],
+          "orig": [
+            148,
+            145
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "mz_3_3",
+          "rotate": true,
+          "xy": [
+            149,
+            55
+          ],
+          "size": [
+            148,
+            145
+          ],
+          "orig": [
+            148,
+            145
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "2c883e51a6d74caa58f92b4fe75f81cd14b8271030d65a75c61b44949c757e33",
+      "bones": "52609563a2247bcd5f44eaa29bbadbce035a739c4aa947bf4646595de0925f90",
+      "slots": "ad9363c3702d5842011e054c8c4bdefc9a1ef656c1c714900338d6d8c7a4ed5c"
+    },
+    {
+      "asset": "mf",
+      "sourceSkeleton": "682d5fd1fc40a47b42cacc29fc6abe0ecf92efc0f944ca49235569baf820ba28",
+      "originalAtlas": "35e45ce9a585e46a22bf5356b8bc4e5a863bc3065ac98491475229302c6ab9ae",
+      "atlasSize": [
+        824,
+        269
+      ],
+      "artRegions": [
+        {
+          "name": "mf_1",
+          "rotate": false,
+          "xy": [
+            2,
+            97
+          ],
+          "size": [
+            115,
+            170
+          ],
+          "orig": [
+            146,
+            172
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "mf_2",
+          "rotate": false,
+          "xy": [
+            119,
+            97
+          ],
+          "size": [
+            115,
+            170
+          ],
+          "orig": [
+            146,
+            172
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "mf_3",
+          "rotate": false,
+          "xy": [
+            236,
+            97
+          ],
+          "size": [
+            115,
+            170
+          ],
+          "orig": [
+            146,
+            172
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "td_3",
+          "rotate": false,
+          "xy": [
+            353,
+            135
+          ],
+          "size": [
+            132,
+            132
+          ],
+          "orig": [
+            134,
+            134
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "599ff798ec449df81668d20e75490cbabb05dd79ae749d3bc3151ee1b7578620",
+      "bones": "774d523ac24f489bfaf88a67f5725003d28153fb6f98b64a1c21c73d53c527bd",
+      "slots": "8be6f26059ba7fc623c1d90ba5ec95f034b1d9423d1d82e3dbf612c14e8688b5"
+    },
+    {
+      "asset": "td",
+      "sourceSkeleton": "26851107cda074951148a5e34fd6c2670f779f309874dffe5d673d8426508838",
+      "originalAtlas": "d237b9cfe05629c8c776302ae5604af53d58d5a55172be92f5af13cb02f91380",
+      "atlasSize": [
+        567,
+        269
+      ],
+      "artRegions": [
+        {
+          "name": "td_1",
+          "rotate": false,
+          "xy": [
+            2,
+            134
+          ],
+          "size": [
+            162,
+            133
+          ],
+          "orig": [
+            164,
+            135
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "td_2",
+          "rotate": false,
+          "xy": [
+            2,
+            134
+          ],
+          "size": [
+            162,
+            133
+          ],
+          "orig": [
+            164,
+            135
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "td_5",
+          "rotate": false,
+          "xy": [
+            2,
+            134
+          ],
+          "size": [
+            162,
+            133
+          ],
+          "orig": [
+            164,
+            135
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "td_6",
+          "rotate": false,
+          "xy": [
+            2,
+            134
+          ],
+          "size": [
+            162,
+            133
+          ],
+          "orig": [
+            164,
+            135
+          ],
+          "offset": [
+            1,
+            1
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "81f97ebb8ef0ae75f311d487378b9d5b1e1eb974417d5ebaaa66f77a789280ad",
+      "bones": "24776d2ad9ce68afb017261cfca80dd917fd4ab485339549f3682d8b7ed1896c",
+      "slots": "3b100235eb55b8568eddb2383eba20c15ee4ba59677dd1e69178d748ea9f902e"
+    },
+    {
+      "asset": "cq/cq1",
+      "sourceSkeleton": "056812df1946a072493975b818e077ec7c0481d631110c1732c8cbcbe753755b",
+      "originalAtlas": "0e3f2346ca462f7d4968df9d639771fe558bcdc877811235f8feef2cd0bf5e92",
+      "atlasSize": [
+        110,
+        794
+      ],
+      "artRegions": [
+        {
+          "name": "men1_3",
+          "rotate": false,
+          "xy": [
+            44,
+            2
+          ],
+          "size": [
+            58,
+            100
+          ],
+          "orig": [
+            59,
+            100
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men1_4",
+          "rotate": false,
+          "xy": [
+            72,
+            693
+          ],
+          "size": [
+            36,
+            99
+          ],
+          "orig": [
+            36,
+            99
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men2_mu_1",
+          "rotate": false,
+          "xy": [
+            54,
+            369
+          ],
+          "size": [
+            40,
+            118
+          ],
+          "orig": [
+            40,
+            118
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men2_mu_2",
+          "rotate": false,
+          "xy": [
+            54,
+            249
+          ],
+          "size": [
+            40,
+            118
+          ],
+          "orig": [
+            40,
+            118
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men2_4",
+          "rotate": false,
+          "xy": [
+            70,
+            513
+          ],
+          "size": [
+            37,
+            97
+          ],
+          "orig": [
+            37,
+            97
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men3_3",
+          "rotate": false,
+          "xy": [
+            2,
+            360
+          ],
+          "size": [
+            50,
+            148
+          ],
+          "orig": [
+            51,
+            148
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men3_4",
+          "rotate": false,
+          "xy": [
+            2,
+            627
+          ],
+          "size": [
+            68,
+            165
+          ],
+          "orig": [
+            68,
+            165
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "ed12d5da74e11e09c7bee2542d3fec0450dec3913110efa918ab878d801ac55b",
+      "bones": "37ce10f998a8cbb86fe16f41f6e575ce2fd529ee2f674b0d316686fb5ddc09fd",
+      "slots": "efbd1442fbf231ad7338ae36878e3172194c05bb8e279b00197d985a847e65db"
+    },
+    {
+      "asset": "cq/cq2",
+      "sourceSkeleton": "e4adbccafd81e72679051115b25ca5109ec19d56c462749577a008d98a82fbc9",
+      "originalAtlas": "f7b53719e82111d82b4e53b31682424d1b8214023d64e39798fcdb8b57c2ae87",
+      "atlasSize": [
+        316,
+        264
+      ],
+      "artRegions": [
+        {
+          "name": "men1_2",
+          "rotate": false,
+          "xy": [
+            169,
+            162
+          ],
+          "size": [
+            58,
+            100
+          ],
+          "orig": [
+            59,
+            100
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men1_1",
+          "rotate": false,
+          "xy": [
+            229,
+            163
+          ],
+          "size": [
+            36,
+            99
+          ],
+          "orig": [
+            36,
+            99
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men2_1",
+          "rotate": true,
+          "xy": [
+            104,
+            61
+          ],
+          "size": [
+            37,
+            97
+          ],
+          "orig": [
+            37,
+            97
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men3_2",
+          "rotate": false,
+          "xy": [
+            2,
+            44
+          ],
+          "size": [
+            51,
+            148
+          ],
+          "orig": [
+            51,
+            148
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men3_1",
+          "rotate": true,
+          "xy": [
+            2,
+            194
+          ],
+          "size": [
+            68,
+            165
+          ],
+          "orig": [
+            68,
+            165
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men2_mu_1",
+          "rotate": true,
+          "xy": [
+            104,
+            100
+          ],
+          "size": [
+            40,
+            118
+          ],
+          "orig": [
+            40,
+            118
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "men2_mu_2",
+          "rotate": false,
+          "xy": [
+            273,
+            42
+          ],
+          "size": [
+            40,
+            118
+          ],
+          "orig": [
+            40,
+            118
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "deaef4c8c6d770f4f75919386ce61d282b84f7f4bd969af261e247a844a71a47",
+      "bones": "10f77bb0340a7818fd4fd99535caa61bcdc728bb092e103571a720a59c07ade0",
+      "slots": "ba088312e82e737e6e89b321488234c9efe490b3b48348623bcd405c44c05729"
+    },
+    {
+      "asset": "cq/cq3",
+      "sourceSkeleton": "595bd18a626a4dce6ba7b717ed464f66eb4e10c7d42a8ee7fb7ef41288364f61",
+      "originalAtlas": "8dc90cc2a573fbbd254c82786c96c08f3054e026be47b5e542156effe36102df",
+      "atlasSize": [
+        256,
+        45
+      ],
+      "artRegions": [
+        {
+          "name": "cq_wq",
+          "rotate": true,
+          "xy": [
+            178,
+            2
+          ],
+          "size": [
+            41,
+            76
+          ],
+          "orig": [
+            41,
+            76
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "cq_2_1_wq",
+          "rotate": true,
+          "xy": [
+            76,
+            3
+          ],
+          "size": [
+            40,
+            100
+          ],
+          "orig": [
+            40,
+            100
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "cm3_q2",
+          "rotate": true,
+          "xy": [
+            2,
+            10
+          ],
+          "size": [
+            33,
+            72
+          ],
+          "orig": [
+            33,
+            72
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "dabc06f444bd046cb553d35a2fc4331191adce8d7662aa7594c71aad2d156167",
+      "bones": "f2078001c894425993734c5d0b6f7742ba14c56982032a141927cebc73df798f",
+      "slots": "6e58035d5e8bf5da4936738dea550375bce691a29577bccf55db34f89117e9e5"
+    },
+    {
+      "asset": "cq/cq4",
+      "sourceSkeleton": "b4b837f401dc415b184c049af6c3f6ad96a721037a09ae48d9a23aa32390757c",
+      "originalAtlas": "b58af5de64ee9c911ec8de46a208caacfafdfe03db87fd9e27fc32243fffab4a",
+      "atlasSize": [
+        262,
+        47
+      ],
+      "artRegions": [
+        {
+          "name": "cm3_q3",
+          "rotate": true,
+          "xy": [
+            182,
+            2
+          ],
+          "size": [
+            43,
+            78
+          ],
+          "orig": [
+            43,
+            78
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "cq_wq",
+          "rotate": true,
+          "xy": [
+            104,
+            4
+          ],
+          "size": [
+            41,
+            76
+          ],
+          "orig": [
+            41,
+            76
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        },
+        {
+          "name": "cq_2_1_wq",
+          "rotate": true,
+          "xy": [
+            2,
+            5
+          ],
+          "size": [
+            40,
+            100
+          ],
+          "orig": [
+            40,
+            100
+          ],
+          "offset": [
+            0,
+            0
+          ],
+          "index": "-1"
+        }
+      ],
+      "nonArtPixels": "09e27da095f51fb7699cc28c38d90813d10449ba8c04a796fe79d648d295af7e",
+      "bones": "e2bdf675c3b94473739d59b09825776d3064db9bbe21fdf5cac8ed1727475dc9",
+      "slots": "3d2747a943f31666004863f468fdf69fecc5ca4430f9f798425660ad1c300843"
+    }
+  ],
+  "lightFits": [
+    {
+      "asset": "cb",
+      "skin": "cb-1",
+      "slot": "cc_1_3",
+      "attachment": "cc_1_3",
+      "logicalOffset": [
+        -2,
+        0
+      ],
+      "body": "cc_1_4"
+    },
+    {
+      "asset": "by",
+      "skin": "dxby-2-1",
+      "slot": "dxby_2_1_g",
+      "attachment": "dxby_2_1_g",
+      "logicalOffset": [
+        -9.981549815498155,
+        -11.972350230414747
+      ],
+      "body": "dxby_2_1"
+    },
+    {
+      "asset": "by",
+      "skin": "dxby-3-1",
+      "slot": "dxby_3_1_g",
+      "attachment": "dxby_3_1_g",
+      "logicalOffset": [
+        -1.9963768115942029,
+        -6
+      ],
+      "body": "dxby_3_1"
+    },
+    {
+      "asset": "by",
+      "skin": "dxby-3-2",
+      "slot": "dxby_3_2_g_1",
+      "attachment": "dxby_3_2_g_1",
+      "logicalOffset": [
+        8,
+        0
+      ],
+      "body": "dxby_3_2"
+    },
+    {
+      "asset": "by",
+      "skin": "dxby-3-2",
+      "slot": "dxby_3_2_g_2",
+      "attachment": "dxby_3_2_g_2",
+      "logicalOffset": [
+        4,
+        0
+      ],
+      "body": "dxby_3_2"
+    },
+    {
+      "asset": "by",
+      "skin": "gby-3-2",
+      "slot": "gby_3_2_g_2",
+      "attachment": "gby_3_2_g_2",
+      "logicalOffset": [
+        14,
+        0
+      ],
+      "body": "gby_3_2"
+    },
+    {
+      "asset": "by",
+      "skin": "gby-3-2",
+      "slot": "gby_3_2_g_1",
+      "attachment": "gby_3_2_g_1",
+      "logicalOffset": [
+        4,
+        0
+      ],
+      "body": "gby_3_2"
+    },
+    {
+      "asset": "by",
+      "skin": "qby-3-1",
+      "slot": "qby_3_1_g",
+      "attachment": "qby_3_1_g",
+      "logicalOffset": [
+        1.9964285714285714,
+        0
+      ],
+      "body": "qby_3_1"
+    },
+    {
+      "asset": "by",
+      "skin": "qby-3-2",
+      "slot": "qby_3_2_g",
+      "attachment": "qby_3_2_g",
+      "logicalOffset": [
+        -1.9965753424657535,
+        -18
+      ],
+      "body": "qby_3_2"
+    },
+    {
+      "asset": "mz",
+      "skin": "mz-1",
+      "slot": "mz_1_1",
+      "attachment": "mz_1_1",
+      "logicalOffset": [
+        -2,
+        -6
+      ],
+      "body": "mz_1_2"
+    },
+    {
+      "asset": "mz",
+      "skin": "mz-2-2",
+      "slot": "mz_3_1",
+      "attachment": "mz_3_1",
+      "logicalOffset": [
+        2,
+        0
+      ],
+      "body": "mz_3_3"
+    },
+    {
+      "asset": "mz",
+      "skin": "mz-2-2",
+      "slot": "mz_3_2",
+      "attachment": "mz_3_2",
+      "logicalOffset": [
+        0,
+        -2
+      ],
+      "body": "mz_3_3"
+    },
+    {
+      "asset": "mf",
+      "skin": "mf-2-1",
+      "slot": "guang_2",
+      "attachment": "td_4",
+      "logicalOffset": [
+        4,
+        0
+      ],
+      "body": "mf_2"
+    }
+  ],
+  "aliases": [
+    {
+      "skin": "by-1",
+      "alias": "by-royal-1",
+      "region": "by_1",
+      "newRegion": "by_royal_1",
+      "icon": "royal-guard-1"
+    },
+    {
+      "skin": "dxby-2-1",
+      "alias": "by-royal-2",
+      "region": "dxby_2_1",
+      "newRegion": "by_royal_2",
+      "icon": "royal-guard-2"
+    },
+    {
+      "skin": "dxby-3-1",
+      "alias": "by-royal-3",
+      "region": "dxby_3_1",
+      "newRegion": "by_royal_3",
+      "icon": "royal-guard-3"
+    }
+  ],
+  "metadata": {
+    "assets/KinghtFallIconMap/com/Ani/cb/cb.json.meta": "4052ce31f13236a306f89e5bf2774cfcb312dde6927d1d46f42d8bce390059c6",
+    "assets/KinghtFallIconMap/com/Ani/cb/cb.atlas.meta": "27cc9178d9b7c1ba728c4dc9e472145f1cd49c269429c59dc98420b093492444",
+    "assets/KinghtFallIconMap/com/Ani/cb/cb.png.meta": "0dc330013008a7096f614d374535dafc2a7fac58b3b607707ffacd191704ce1a",
+    "assets/KinghtFallIconMap/com/Ani/by/by.json.meta": "f405aa6c125bcfd72534bdbea848eb72b3900b9c262970821ec5f323ce188128",
+    "assets/KinghtFallIconMap/com/Ani/by/by.atlas.meta": "61ea73799da5ca38ebfdde5185a549ceff1eb1edab98233c2aa9cbaa8cb9a438",
+    "assets/KinghtFallIconMap/com/Ani/by/by.png.meta": "be7e5454673c1b2f1b338cdf9889f01bcb2cde39b6019f7f033c5be942b76cbf",
+    "assets/KinghtFallIconMap/com/Ani/mz/mz.json.meta": "513dfa26ed3d2b831293757c6153baf1c2de26395adef4b4cb404c81de3b8b77",
+    "assets/KinghtFallIconMap/com/Ani/mz/mz.atlas.meta": "dd384c9316c520b60d9fb538dfe7c635325c6ed412dce1f41192b5cddbf53808",
+    "assets/KinghtFallIconMap/com/Ani/mz/mz.png.meta": "6caf600cf16e9dfa07a4d956c58957ca203d6db42e11c8e0e79b5f5d1f77e74e",
+    "assets/KinghtFallIconMap/com/Ani/mf/mf.json.meta": "a18941375fa9b1ebc45466d559532ab5f8044ee906c62e872d3755504e1dd5a1",
+    "assets/KinghtFallIconMap/com/Ani/mf/mf.atlas.meta": "dbc642f5f27318a2074640080d3042050a09bee8f6c974b3f0e8932e27d7c2c2",
+    "assets/KinghtFallIconMap/com/Ani/mf/mf.png.meta": "9b35c102f5273f372e63eb20809a7a6013bdec146d8fcb1a55a9e1880358cd7c",
+    "assets/KinghtFallIconMap/com/Ani/td/td.json.meta": "5ecebed7f8d1dc017a62d0ead4dcacb2fbe098d53fca16ba22c152bea5ee9470",
+    "assets/KinghtFallIconMap/com/Ani/td/td.atlas.meta": "dc105c06fcbd77408cce59545d13043b5f7051f8ff103f6ade6bd2e6d20f2dd3",
+    "assets/KinghtFallIconMap/com/Ani/td/td.png.meta": "91a18d95129d8d328de8126fedb829170bddf2cc5a99db12e214e071bfddbb97",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq1/cq1.json.meta": "e5aad84ecb3d1a62d03ce91f4386eb477997e92a5dbbe60f57461e642fb28ce2",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq1/cq1.atlas.meta": "b4cf8568c76be63be89431818b14a46886b545f4046a462af5ff8f0adc7c0b5a",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq1/cq1.png.meta": "5baacbc685a61bea0132e917a73237f89f5370cb57b80d59f83fa4d6f7d74e70",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq2/cq2.json.meta": "4bc341f0c43ea1c1c2e191b316362a8ca363e269e418f40dabd95547eb004a66",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq2/cq2.atlas.meta": "646ed0afcfd363806d3da7c7e4c727cd7279a185a2c279b021b21095a1eef03c",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq2/cq2.png.meta": "43e07b227852d4770e673d32265d4551052bcd5120763ea8cfbf4c49e26dff57",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq3/cq3.json.meta": "9121fb7a849e6ed0da1feefbb36a1ae571e6963f23acc7721202d8d9e3aea5cd",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq3/cq3.atlas.meta": "8795682752bcd94c71f81985679a9e065d61d2ae70e5a03e99253af8f94c801f",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq3/cq3.png.meta": "8617d122005fee07882156fd0f30e8bc62c7fb34b540b4277d91c00f340f9980",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq4/cq4.json.meta": "ce519fd9276442df85d373bd5905095d671e96d61c2a18d7f930c0355bbd2cd5",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq4/cq4.atlas.meta": "3b7a4aab1576572d4e02244bc50732bc4c2595b204f0073fa8ce3b55f7cb02a0",
+    "assets/KinghtFallIconMap/com/Ani/cq/cq4/cq4.png.meta": "a2eb229172bca9c90e093869cec00a3128e5940163a6ac63caa47007a6d4eaa0",
+    "assets/KinghtFallIconBuild/cb_1.png.meta": "e8e6a8398e797149e5babf61f05642af1ccbeb438e8576151af469f5e44b5874",
+    "assets/KinghtFallIconBuild/cb_2.png.meta": "5d52cd7362a39e4acb23d129ea080e2df0c658c22f31d9ef621e25cac24168bf",
+    "assets/KinghtFallIconBuild/cb_3.png.meta": "b99653cef0ee17c27d1afcc426ca021f5fa422918ffe8a0c3f08123e0ce14527",
+    "assets/KinghtFallIconBuild/by_1.png.meta": "40cd24e81dc59412d637e0d5675bc90750c9d6a6c2b941ba1224efcd1cb8efb1",
+    "assets/KinghtFallIconBuild/dxby_2_1.png.meta": "3fefd3d1bc680a5e07ed624cd4ca22816dbbf258859b95e00ea807eeabe39be4",
+    "assets/KinghtFallIconBuild/dxby_3_1.png.meta": "7fb73c42545716b922045e9d4938b1ef1bbb9e76ecf92967d8c7e7639f734e52",
+    "assets/KinghtFallIconBuild/dxby_3_2.png.meta": "8d622d08f7791b8b9d405af3ea80c8c6ad7e1021480c981ef860361b10e242f6",
+    "assets/KinghtFallIconBuild/gby_2_1.png.meta": "2619c63e8937c8ad6981a7e0a5e9a5132b2bedd10b31d76cafd310448420eeb8",
+    "assets/KinghtFallIconBuild/gby_3_1.png.meta": "3c86f2d0de6cad949144158fe0f7a827c9c92eeff6f38af081f684116dcb000b",
+    "assets/KinghtFallIconBuild/gby_3_2.png.meta": "2601b9d024f4bd3a6790329b28b46805933a4a53f030857c8bd36276e6c68833",
+    "assets/KinghtFallIconBuild/qby_2_1.png.meta": "065141990e73180305dfca6d2d92b85ed53f7f176347e56a58399fac5f697d8b",
+    "assets/KinghtFallIconBuild/qby_3_1.png.meta": "17a68bc548a2e0af38f74c4e4c711aaa622ae9093ab05f9ae11a47eb7c0eb14d",
+    "assets/KinghtFallIconBuild/qby_3_2.png.meta": "366869db1fbf8ba4fe31d15122bad665f4f9cdd70b2b0041e2139e4781ec704b",
+    "assets/KinghtFallIconBuild/mz_1.png.meta": "a1d326ae2391ff36d197750012184c3a9ecff5eda59960d4852632f3e9d5f6d6",
+    "assets/KinghtFallIconBuild/mz_2_1.png.meta": "af377314853f2ece870eeb3188c18b718ece51426a7b2db7b5551de531fa0666",
+    "assets/KinghtFallIconBuild/mz_2_2.png.meta": "6164a20fb412c92d8f41ed52934923955dd06c0150ad5482a6db49e33ecfc7e5",
+    "assets/KinghtFallIconBuild/mf_1.png.meta": "196886d8183a40453ac091f80682fc3483d22f18ac6b2adc77957cc3e811136f",
+    "assets/KinghtFallIconBuild/mf_2_1.png.meta": "10b6e3bfabdde58ded73e286a445f3d23f5ee86f1ff6fc078715a7e7c13078ae",
+    "assets/KinghtFallIconBuild/mf_2_2.png.meta": "1cf5d08984cbbbb801df4ae90f143ef3bc9eeb09693026e4fb709556fa5f76a7",
+    "assets/KinghtFallIconBuild/cq_1.png.meta": "ca36cd8423c99eb2709d9d2c3415780ac41706d2e6e10a4da7ff3527ccee3f95",
+    "assets/KinghtFallIconBuild/cq_2_1.png.meta": "43a315fdf55013dd2f3c98fdb3e9ed9bd2e35b041eae42591f593c67686edfbe",
+    "assets/KinghtFallIconBuild/cp_2_2.png.meta": "7d53c3d8e8de0a5cbbc8b2e9724568aef1ba718e97ebc723218493c902d8c473"
+  },
+  "icons": [
+    {
+      "name": "cb_1",
+      "sourceIcon": "cb_1",
+      "family": "castle",
+      "level": 1
+    },
+    {
+      "name": "cb_2",
+      "sourceIcon": "cb_2",
+      "family": "castle",
+      "level": 2
+    },
+    {
+      "name": "cb_3",
+      "sourceIcon": "cb_3",
+      "family": "castle",
+      "level": 3
+    },
+    {
+      "name": "by_1",
+      "sourceIcon": "by_1",
+      "family": "royal-guard",
+      "level": 1
+    },
+    {
+      "name": "royal-guard-2",
+      "sourceIcon": "dxby_2_1",
+      "family": "royal-guard",
+      "level": 2
+    },
+    {
+      "name": "royal-guard-3",
+      "sourceIcon": "dxby_3_1",
+      "family": "royal-guard",
+      "level": 3
+    },
+    {
+      "name": "dxby_2_1",
+      "sourceIcon": "dxby_2_1",
+      "family": "heavy-infantry",
+      "level": 1
+    },
+    {
+      "name": "dxby_3_1",
+      "sourceIcon": "dxby_3_1",
+      "family": "heavy-infantry",
+      "level": 2
+    },
+    {
+      "name": "dxby_3_2",
+      "sourceIcon": "dxby_3_2",
+      "family": "heavy-infantry",
+      "level": 3
+    },
+    {
+      "name": "gby_2_1",
+      "sourceIcon": "gby_2_1",
+      "family": "crossbowmen",
+      "level": 1
+    },
+    {
+      "name": "gby_3_1",
+      "sourceIcon": "gby_3_1",
+      "family": "crossbowmen",
+      "level": 2
+    },
+    {
+      "name": "gby_3_2",
+      "sourceIcon": "gby_3_2",
+      "family": "crossbowmen",
+      "level": 3
+    },
+    {
+      "name": "qby_2_1",
+      "sourceIcon": "qby_2_1",
+      "family": "vanguard",
+      "level": 1
+    },
+    {
+      "name": "qby_3_1",
+      "sourceIcon": "qby_3_1",
+      "family": "vanguard",
+      "level": 2
+    },
+    {
+      "name": "qby_3_2",
+      "sourceIcon": "qby_3_2",
+      "family": "vanguard",
+      "level": 3
+    },
+    {
+      "name": "mz_1",
+      "sourceIcon": "mz_1",
+      "family": "house",
+      "level": 1
+    },
+    {
+      "name": "mz_2_1",
+      "sourceIcon": "mz_2_1",
+      "family": "house",
+      "level": 2
+    },
+    {
+      "name": "mz_2_2",
+      "sourceIcon": "mz_2_2",
+      "family": "house",
+      "level": 3
+    },
+    {
+      "name": "mf_1",
+      "sourceIcon": "mf_1",
+      "family": "mill",
+      "level": 1
+    },
+    {
+      "name": "mf_2_1",
+      "sourceIcon": "mf_2_1",
+      "family": "mill",
+      "level": 2
+    },
+    {
+      "name": "mf_2_2",
+      "sourceIcon": "mf_2_2",
+      "family": "mill",
+      "level": 3
+    },
+    {
+      "name": "cq_1",
+      "sourceIcon": "cq_1",
+      "family": "wall-gate",
+      "level": 1
+    },
+    {
+      "name": "cq_2_1",
+      "sourceIcon": "cq_2_1",
+      "family": "wall-gate",
+      "level": 2
+    },
+    {
+      "name": "cp_2_2",
+      "sourceIcon": "cp_2_2",
+      "family": "wall-gate",
+      "level": 3
+    },
+    {
+      "name": "royal-guard-1",
+      "sourceIcon": "by_1",
+      "family": "royal-guard",
+      "level": 1
+    }
+  ],
+  "barracks": "19ee91e613fd1bf091550a0ac6dc18546f22366ba79fc872919b03292298aef8",
+  "royalMilitary": {
+    "bones": [
+      "royal_flag_mount",
+      "royal_flag_wave_0",
+      "royal_flag_wave_1",
+      "royal_flag_wave_2",
+      "royal_flag_wave_3"
+    ],
+    "slots": [
+      "royal_windows",
+      "royal_flag",
+      "royal_flag_pole"
+    ],
+    "source": "Approved military Royal Knight concepts; original skeleton restored by removing these additions and the three aliases."
+  }
+}

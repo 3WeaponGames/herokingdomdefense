@@ -20,14 +20,16 @@ const runtime={exports:{},require(name){if(name==='./spine-renderer')return {
 runtime.module={exports:{}};vm.runInNewContext(source,runtime,{filename:'preview/client.js'});const Client=runtime.module.exports;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function fixture(options){
-    options=options||{};const root=new Element('div'),edits=[];
-    const description={type:'enemy',id:'90001',form:'default',key:'enemy:90001:default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
+    options=options||{};const root=new Element('div'),edits=[],requests=[],type=options.type||'enemy';
+    const description={type,id:'90001',form:'default',key:type+':90001:default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
+    if(type==='ally')description.levels=[1,2,3];
     if(options.events!==undefined){description.layers[0].json.animations.attack.events=options.events;description.defaultTiming=null;description.timingDefaultSource='No authored attack event.';}
-    const request={type:'enemy',id:'90001',record:{ID:90001},documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
+    const request={type,id:'90001',record:{ID:90001},documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
+    if(options.level!==undefined)request.level=options.level;
     if(options.default!==undefined)request.documents.overrides.data.timingDefaults[description.key]={attack:options.default};
     if(options.custom!==undefined)request.documents.overrides.data.timings[description.key]={attack:options.custom};
-    const before=clone(description),client=Client.mount(root,{ipc:async()=>description,onChange:value=>edits.push(clone(value))});client.setUnit(request);
-    return{root,edits,description,before,request,client};
+    const before=clone(description),client=Client.mount(root,{ipc:async(_message,payload)=>{requests.push(clone(payload));return description;},onChange:value=>edits.push(clone(value))});client.setUnit(request);
+    return{root,edits,requests,description,before,request,client};
 }
 async function main(){
     let checks=0;async function test(name,body){await body();console.log('PASS '+name);checks++;}
@@ -79,6 +81,53 @@ async function main(){
         button(f.root,'Reset attack speed').onclick();assert.equal(f.client.getState().attackSpeed,1);assert.equal(f.client.getState().effect,.7);
         assert.deepStrictEqual(f.edits[1],[{doc:'overrides',path:['animationSpeeds'],value:{}}]);
         const count=f.edits.length;for(const value of ['0','5','NaN']){speed.value=value;speed.onchange();assert.equal(f.edits.length,count);}f.client.destroy();
+    });
+    await test('the Units level selector controls the matching appearance without a second conflicting selector or draft edits',async()=>{
+        const f=fixture({type:'ally',level:1,default:.5});await flush();
+        assert.equal(f.requests[0].level,1);assert.equal(f.client.getState().level,1);
+        assert.equal(field(f.root,'Character level').parentNode.hidden,true);
+        assert(all(f.root,n=>n.tagName==='h3'&&n.textContent==='Unit 90001 · Level 1').length);
+        f.request.level=2;f.client.setUnit(f.request);await flush();
+        assert.equal(f.requests.length,2);assert.equal(f.requests[1].level,2);assert.equal(f.client.getState().level,2);
+        assert.equal(f.client.getState().description.key,'ally:90001:default');assert.equal(f.client.getState().effect,.5);
+        assert.deepStrictEqual(f.edits,[]);assert.deepStrictEqual(f.description,f.before);f.client.destroy();
+    });
+    await test('stat and saved-appearance refreshes retain the controlled level and preserve approved timing keys',async()=>{
+        const f=fixture({type:'ally',level:2,default:.5,custom:.7});await flush();
+        const timings=clone(f.request.documents.overrides.data);
+        f.request.record={ID:90001,Health:200,AttackDamage:30};f.client.setUnit(f.request);await flush();
+        assert.equal(f.requests.length,2);assert.equal(f.requests[1].level,2);assert.equal(f.requests[1].record.Health,200);
+        f.client.refreshAppearance();await flush();assert.equal(f.requests[2].level,2);assert.equal(f.client.getState().level,2);
+        const count=f.requests.length;f.client.setUnit(f.request);await flush();assert.equal(f.requests.length,count,'an unchanged shared draft does not reload the rig');
+        assert.equal(f.client.getState().effect,.7);assert.equal(f.client.getState().description.key,'ally:90001:default');
+        assert.deepStrictEqual(f.request.documents.overrides.data,timings);assert.deepStrictEqual(f.edits,[]);f.client.destroy();
+    });
+    await test('standalone ally previews keep their own read-only level selector across stat refreshes',async()=>{
+        const f=fixture({type:'ally'});await flush();
+        const input=field(f.root,'Character level');assert.equal(input.parentNode.hidden,false);assert.equal(f.requests[0].level,undefined);
+        input.value='3';input.onchange();await flush();assert.equal(f.requests[1].level,3);assert.equal(f.client.getState().level,3);
+        f.request.record={ID:90001,AttackRange:75};f.client.setUnit(f.request);await flush();assert.equal(f.requests[2].level,3);
+        f.client.refreshAppearance();await flush();assert.equal(f.requests[3].level,3);
+        assert.deepStrictEqual(f.edits,[]);f.client.destroy();
+    });
+    await test('playback API and Play button share pause behavior without edits, while loading and closed previews stay stopped',async()=>{
+        const originalFrame=runtime.requestAnimationFrame,originalCancel=runtime.cancelAnimationFrame,scheduled=new Map();let id=0;
+        runtime.requestAnimationFrame=callback=>{scheduled.set(++id,callback);return id;};runtime.cancelAnimationFrame=key=>scheduled.delete(key);
+        let f;
+        try{
+            f=fixture({type:'ally',level:2});assert.equal(f.client.togglePlayback(),false,'loading has no playable model');await flush();
+            const data=clone(f.request.documents);assert.equal(f.client.togglePlayback(),true);assert.equal(f.client.getState().playing,true);assert(button(f.root,'Pause'));assert.equal(scheduled.size,1);
+            assert.equal(button(f.root,'Pause').onclick(),true);assert.equal(f.client.getState().playing,false);assert(button(f.root,'Play'));assert.equal(scheduled.size,0,'pausing cancels the queued frame');
+            assert.equal(button(f.root,'Play').onclick(),true);assert.equal(f.client.getState().playing,true);
+            f.client.refreshAppearance();assert.equal(f.client.getState().playing,false);assert.equal(f.client.togglePlayback(),false);assert.equal(scheduled.size,0);await flush();
+            assert.equal(f.client.getState().playing,false);assert.equal(f.client.getState().level,2);assert.deepStrictEqual(f.request.documents,data);assert.deepStrictEqual(f.edits,[]);
+            f.client.destroy();assert.equal(f.client.togglePlayback(),false);assert.equal(scheduled.size,0);
+        }finally{if(f)f.client.destroy();runtime.requestAnimationFrame=originalFrame;runtime.cancelAnimationFrame=originalCancel;}
+    });
+    await test('playback API leaves unloaded and static building previews untouched',async()=>{
+        const root=new Element('div'),edits=[],client=Client.mount(root,{ipc:async()=>({type:'building',id:'2',layers:[],image:'file:///base.png',runtimePath:null}),onChange:value=>edits.push(value)});
+        assert.equal(client.togglePlayback(),false);client.setBuilding({id:'2',record:{}});await flush();
+        assert.equal(client.getState().loaded,true);assert.equal(client.togglePlayback(),false);assert.equal(client.getState().playing,false);assert.deepStrictEqual(edits,[]);client.destroy();
     });
     await test('building weapon aiming previews live composition without drafts or base movement',async()=>{
         const root=new Element('div'),edits=[],description={type:'building',id:'2',layers:[],image:'file:///base.png',weaponImage:'file:///weapon.png',appearance:{sprite:'base',width:180,height:220,offsetX:-8,offsetY:3,weapon:{sprite:'weapon',width:120,height:70,pivotX:.2,pivotY:.7,offsetX:10,offsetY:175,muzzleX:85,muzzleY:20}},runtimePath:null};

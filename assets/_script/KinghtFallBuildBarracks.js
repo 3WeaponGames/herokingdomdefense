@@ -68,6 +68,9 @@ var def_KinghtFallBuildBarracks = function (t) {
       this._rosterRequests = {};
     }
   };
+  _ctor.prototype.onUpgradeCommitted = function () {
+    if (cc.resources) require("UnitVoices").announce(this);
+  };
   _ctor.prototype.getPos = function (t) {
     var e = this.buildInfo.cfg.Data[0];
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff23);

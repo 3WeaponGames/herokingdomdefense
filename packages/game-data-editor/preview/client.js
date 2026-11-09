@@ -14,7 +14,7 @@ function mount(container, api) {
     const canvas=el('canvas',undefined,box);canvas.width=700;canvas.height=580;
     const buildingArtwork=BuildingArtwork.mount(box);
     const controls=el('div',undefined,root), first=el('div',undefined,controls);first.className='preview-row';
-    const play=button(first,'Play',()=>{if(disposed||!description||description.type==='building'||!spine||!layers.length||controls.hidden)return;if(playing)stop();else{if(!loop.checked&&current>=duration)seekTime(0);playing=true;play.textContent='Pause';last=0;animate();}});
+    const play=button(first,'Play',()=>togglePlayback());
     button(first,'|◀',()=>{playing=false;play.textContent='Play';seekTime(0);});
     button(first,'◀ Frame',()=>step(-1));button(first,'Frame ▶',()=>step(1));
     const animationRow=el('label','Animation',controls),animations=select(animationRow,[],'');
@@ -50,9 +50,11 @@ function mount(container, api) {
     const impact=el('p','',shot);impact.className='preview-help';
     const shared=el('p','',root);shared.className='preview-help';
     let request=null,description=null,spine=null,layers=[],poseBounds=null,playing=false,current=0,playbackTime=0,duration=1,effect=0,customTiming=false,raf=null,last=0,token=0,direction=1,mirrored=false,disposed=false,trajectory=null,heroLevels={},identity='',savedAttackSpeed=1,customSpeed=false,allyLevel=0;
-    characterLevel.onchange=()=>{allyLevel=Number(characterLevel.value)||0;load(request);};
+    function controlledLevel(next){return next&&next.type==='ally'&&Number.isInteger(next.level)&&next.level>0?next.level:0;}
+    characterLevel.onchange=()=>{if(controlledLevel(request)){characterLevel.value=allyLevel;return;}allyLevel=Number(characterLevel.value)||0;load(request);};
     attackSpeed.onchange=()=>{const value=Number(attackSpeed.value);if(!description||!Number.isFinite(value)||value<.1||value>4){attackSpeed.value=savedAttackSpeed;status.textContent='Choose an attack animation speed between 0.1 and 4.';return;}if(value===savedAttackSpeed)return;savedAttackSpeed=value;customSpeed=true;const next=Object.assign({},timingData().animationSpeeds||{},{[description.key]:value});api.onChange([{doc:'overrides',path:['animationSpeeds'],value:next}]);updateTiming();render();};
     function stop(){playing=false;play.textContent='Play';if(raf!==null)cancelAnimationFrame(raf);raf=null;last=0;}
+    function togglePlayback(){if(disposed||!description||description.type==='building'||!spine||!layers.length||controls.hidden)return false;if(playing)stop();else{if(!loop.checked&&current>=duration)seekTime(0);playing=true;play.textContent='Pause';last=0;animate();}return true;}
     function step(change){stop();seekTime(Math.max(0,Math.min(duration,current+change/Number(grid.value))));}
     function updatePosition(){scrub.value=current;seconds.value=Number(current.toFixed(6));position.textContent=current.toFixed(3)+' s · frame '+(current*Number(grid.value)).toFixed(2);render();}
     function seekTime(value){current=Math.max(0,Math.min(duration,Number(value)||0));playbackTime=current;updatePosition();}
@@ -80,7 +82,7 @@ function mount(container, api) {
     async function load(next){request=next;const currentToken=++token;description=null;layers=[];stop();controls.hidden=timing.hidden=canvas.hidden=true;buildingArtwork.hide();status.className='preview-help';status.textContent='Loading model…';try{
         const payload={type:next.type,id:next.id,record:next.record,heroLevels,levelIndex:next.levelIndex,...(allyLevel&&next.type==='ally'?{level:allyLevel}:{})};
         const data=await api.ipc('unit-preview',payload);if(disposed||currentToken!==token)return;
-        title.textContent=data.type==='building'?'Building preview':data.type==='hero'?'Hero & equipment preview':'Unit '+data.id+(data.form!=='default'?' · form '+data.form:'');
+        title.textContent=data.type==='building'?'Building preview':data.type==='hero'?'Hero & equipment preview':'Unit '+data.id+(data.type==='ally'&&allyLevel?' · Level '+allyLevel:'')+(data.form!=='default'?' · form '+data.form:'');
         if(data.type==='building'){description=data;controls.hidden=timing.hidden=true;canvas.hidden=true;buildingArtwork.set(data);const artwork=data.appearance;status.textContent=!data.image?'Map artwork resource is missing or not imported.':artwork&&artwork.weapon&&!data.weaponImage?'Weapon artwork resource is missing or not imported.':artwork&&artwork.weapon?'Fixed base and aiming weapon.':artwork?'Map artwork · '+(Number(artwork.width)||160)+' × '+(Number(artwork.height)||200)+' world units.':'Authored building icon.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
         canvas.hidden=false;controls.hidden=timing.hidden=false;
         spine=require(data.runtimePath);const loaded=await Renderer.createLayers(spine,data.layers);if(disposed||currentToken!==token)return;layers=loaded;description=data;
@@ -88,14 +90,14 @@ function mount(container, api) {
         Renderer.seek(spine,layers,'idle',0,false);poseBounds=Renderer.bounds(spine,layers);
         skins.innerHTML='';(data.layers[0].skins||[]).forEach(name=>{const o=el('option',name,skins);o.value=name;});skins.value=data.layers[0].skin;skinsRow.hidden=data.type==='hero';
         equipment.innerHTML='';(data.equipment||[]).forEach(item=>{const label=el('label',item.label,equipment),input=el('input',undefined,label);input.type='number';input.min=1;input.max=item.max;input.value=item.level;input.onchange=()=>{heroLevels[item.id]=Math.min(item.max,Math.max(1,Math.round(Number(input.value)||1)));load(request);};});
-        levelRow.hidden=data.type!=='ally'||!(data.levels||[]).length;characterLevel.innerHTML='';for(const value of [0,...(data.levels||[])]){const option=el('option',value?'Level '+value:'Default appearance',characterLevel);option.value=value;}characterLevel.value=allyLevel;
+        levelRow.hidden=!!controlledLevel(next)||data.type!=='ally'||!(data.levels||[]).length;characterLevel.innerHTML='';for(const value of [0,...(data.levels||[])]){const option=el('option',value?'Level '+value:'Default appearance',characterLevel);option.value=value;}characterLevel.value=allyLevel;
         readEffect();readMirror();readPlayback();trajectory=Projectile.simulate(data.projectile,Math.max(25,Number(distance.value)||250),60);shot.hidden=!data.projectile;
         status.textContent='Animation preview only. '+(data.type==='hero'?'Equipment levels here do not change your saved progression.':'No gameplay or audio is running.');
         shared.textContent=data.shared.length?'Animation assets are shared with '+data.shared.length+' other prefab(s). Timing edits stay scoped to this unit.':'This preview never writes animation assets.';
         shared.title=data.shared.join('\n');animations.onchange();
     }catch(error){if(!disposed&&currentToken===token){description=null;layers=[];controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help preview-error';status.textContent='Preview unavailable: '+error.message;}}}
-    function setUnit(next){next=Object.assign({},next);const equipmentData=next.type==='hero'&&next.documents&&next.documents.A?next.documents.A.data.EquipCfg:null;const nextIdentity=next.type+':'+next.id+':'+JSON.stringify(next.record||{})+':'+JSON.stringify(equipmentData);if(identity===nextIdentity&&description&&description.type!=='building'){request=next;readEffect();readMirror();readPlayback();updateTiming();render();return;}identity=nextIdentity;heroLevels={};allyLevel=0;load(next);}
+    function setUnit(next){next=Object.assign({},next);const equipmentData=next.type==='hero'&&next.documents&&next.documents.A?next.documents.A.data.EquipCfg:null,level=controlledLevel(next),sameUnit=request&&request.type===next.type&&String(request.id)===String(next.id);const nextIdentity=next.type+':'+next.id+':'+level+':'+JSON.stringify(next.record||{})+':'+JSON.stringify(equipmentData);if(identity===nextIdentity&&description&&description.type!=='building'){request=next;readEffect();readMirror();readPlayback();updateTiming();render();return;}identity=nextIdentity;heroLevels={};allyLevel=level||(sameUnit?allyLevel:0);load(next);}
     function setBuilding(next){identity='';load(Object.assign({},next,{type:'building'}));}
-    return{setUnit,setBuilding,refreshAppearance(){if(request&&!disposed)load(request);},destroy(){disposed=true;token++;stop();layers=[];buildingArtwork.destroy();Renderer.destroyCanvas(canvas);root.remove();},getState(){return{loaded:!!description,description:description&&{id:description.id,type:description.type,key:description.key},time:current,effect,playing,mirrored,attackSpeed:savedAttackSpeed,level:allyLevel,silent:true};}};
+    return{setUnit,setBuilding,togglePlayback,refreshAppearance(){if(request&&!disposed)load(request);},destroy(){disposed=true;token++;stop();layers=[];buildingArtwork.destroy();Renderer.destroyCanvas(canvas);root.remove();},getState(){return{loaded:!!description,description:description&&{id:description.id,type:description.type,key:description.key},time:current,effect,playing,mirrored,attackSpeed:savedAttackSpeed,level:allyLevel,silent:true};}};
 }
 module.exports={mount};

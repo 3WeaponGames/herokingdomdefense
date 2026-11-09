@@ -1,14 +1,10 @@
 "use strict";
 var Core = require("CharacterPartsCore");
+var UnitLevelStats = require("UnitLevelStats");
 var library = null, looks = null, loading = false, retryAt = 0, failures = {}, textureJobs = {}, profileKeys = new WeakMap();
 var nativePartsNotice = false;
 var bakedJobs = {};
-function allyLevel(actor) {
-  var build = actor && actor.outBuild, row = build && build.buildInfo && build.buildInfo.cfg;
-  var level = row && row.level;
-  if (level === undefined && build && typeof build.getLevel === "function") level = build.getLevel();
-  return typeof level === "number" && isFinite(level) && level > 0 && Math.floor(level) === level ? level : null;
-}
+function allyLevel(actor) { return UnitLevelStats.level(actor); }
 function assignedLook(data, actor, team) {
   var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor);
   var exact = level && data.assignments["ally:" + actor.cfg.ID + ":level:" + level];

@@ -77,7 +77,7 @@ const messages={
     'unit-preview'(event,request){reply(event,()=>require('./lib/unit-assets').describe(project(),Object.assign({},request,{documents:getStore().snapshot().documents})));},
     testing(event,request){reply(event,()=>require('./testing/session').handle(Editor,project(),request));},
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
-    'open-characters'(event){reply(event,()=>{Editor.Panel.open('hkd-characters');return true;});},
+    'open-characters'(event,request){reply(event,()=>{if(!request){Editor.Panel.open('hkd-characters');return true;}return new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result)));});},
     'open-panel'(event,kind){reply(event,()=>{open(kind);return true;});},
     'open-map'(event,id){reply(event,()=>{
         if(!require('./lib/map-catalog').has(id))throw Error('Unknown map');

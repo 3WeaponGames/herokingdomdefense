@@ -557,3 +557,65 @@ qby_3_2_g
   orig: 78, 75
   offset: 0, 0
   index: -1
+
+by-royal.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+by_royal_1
+  rotate: false
+  xy: 2, 2
+  size: 268, 243
+  orig: 268, 243
+  offset: 0, 0
+  index: -1
+by_royal_2
+  rotate: false
+  xy: 274, 2
+  size: 271, 256
+  orig: 271, 256
+  offset: 0, 0
+  index: -1
+by_royal_3
+  rotate: false
+  xy: 549, 2
+  size: 276, 266
+  orig: 276, 266
+  offset: 0, 0
+  index: -1
+by_royal_1_lights
+  rotate: false
+  xy: 2, 272
+  size: 185, 68
+  orig: 268, 243
+  offset: 37, 51
+  index: -1
+by_royal_2_lights
+  rotate: false
+  xy: 191, 272
+  size: 183, 67
+  orig: 271, 256
+  offset: 39, 53
+  index: -1
+by_royal_3_lights
+  rotate: false
+  xy: 378, 272
+  size: 185, 66
+  orig: 276, 266
+  offset: 41, 56
+  index: -1
+by_royal_flag
+  rotate: false
+  xy: 567, 272
+  size: 33, 25
+  orig: 33, 25
+  offset: 0, 0
+  index: -1
+by_royal_flag_pole
+  rotate: false
+  xy: 900, 2
+  size: 10, 41
+  orig: 10, 41
+  offset: 0, 0
+  index: -1

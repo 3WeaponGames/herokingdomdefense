@@ -81,7 +81,8 @@ function fixture(actualEngine = false, actualPolygon = false) {
     polygonBuilder=polygon.exports;
   }
   function node(name) {
-    const value = { name, active: true, groupIndex: 0, colliders: [], get activeInHierarchy() { return this.active; }, getComponents() { return this.colliders; } };
+    const value = { name, active: true, groupIndex: 0, colliders: [], get activeInHierarchy() { return this.active; }, getComponents() { return this.colliders; }, getComponent() { return this.bodyComponent; } };
+    value.bodyComponent = { node: value, enabledContactListener: false };
     if (actualEngine) {
       const body = world.CreateBody(new box2d.b2BodyDef());
       value.bodyComponent = { node: value, _getBody: () => body, enabledContactListener: false };
@@ -123,7 +124,7 @@ function fixture(actualEngine = false, actualPolygon = false) {
   const wall = new Wall(); wall.node = node('leaf'); wall.ndAniMain = animation('main'); wall.ndAniDown = animation('floor');
   wall.ndAniOther = [animation('wing')]; wall.ndAniEffect = animation('effect'); wall.ndLockList = [];
   wall.ndCoin = { getChildByName: () => ({ getComponent: () => ({ string: '' }) }) };
-  wall.buildCfg = { enumValue: 1, levelList: [1, 2, 3].map(level => ({ level, Skin: 'skin' + level })) };
+  wall.buildCfg = { enumValue: 1, levelList: [1, 2, 3].map(level => ({ index: level, level, Skin: 'skin' + level })) };
   wall.getSell = () => 0; wall.hasFriendlyAtGate = () => state.near;
   const leaves = [1, 2, 3].map(tag => collider(wall.node, tag));
   const wings = [1, 2, 3].map(tag => collider(wall.ndAniOther[0].node, tag));
@@ -135,7 +136,7 @@ function fixture(actualEngine = false, actualPolygon = false) {
     }
     flush();
   }
-  return { wall, leaves, wings, tweens, state, cc, flush, step, fixtures: () => leaves.concat(wings).map(c => c._fixtures.length) };
+  return { wall, leaves, wings, tweens, state, cc, flush, step, world, box2d, fixtures: () => leaves.concat(wings).map(c => c._fixtures.length) };
 }
 
 function rapidLevels(h) {
@@ -152,7 +153,7 @@ function rapidLevels(h) {
 
 test('appended building variants reuse the authored collider footprint and retire late growth callbacks', () => {
   const h = fixture();
-  h.wall.buildCfg.levelList.push({ level: 1, Skin: 'skin1', ColliderIndex: 1 }, { level: 2, Skin: 'skin3', ColliderIndex: 3 });
+  h.wall.buildCfg.levelList.push({ index: 4, level: 1, Skin: 'skin1', ColliderIndex: 1 }, { index: 5, level: 2, Skin: 'skin3', ColliderIndex: 3 });
   h.wall.setLevel(4); h.step(.5);
   assert.equal(h.wall.getColliderIndex(), 1);
   const stale = h.tweens.slice(); h.wall.setLevel(5); h.step(1);
@@ -175,13 +176,28 @@ test('hide, death, disable and destroy retire old collider callbacks including f
   }
 });
 
-test('opening during gate-close tween removes leaf fixtures while side walls remain enabled', () => {
+test('opening during gate-close tween restores the complete enemy barrier and keeps side walls enabled', () => {
   const h = fixture(); h.wall.setLevel(3); h.step(1); h.state.near = true; h.wall.doTime(); h.flush();
-  assert.deepEqual(h.fixtures(), [0, 0, 0, 0, 0, 1]);
+  assert.deepEqual(h.fixtures(), [0, 0, 1, 0, 0, 1]);
   h.state.near = false; h.wall.doTime(); h.step(.5);
   const closing = h.tweens.at(-1); assert.equal(closing.duration, .1);
   h.state.near = true; h.wall.doTime(); h.flush(); closing.options.onUpdate(closing.target, 1); h.flush();
-  assert.equal(h.wall.isOpen, true); assert.equal(closing.stopped, true); assert.deepEqual(h.fixtures(), [0, 0, 0, 0, 0, 1]);
+  assert.equal(h.wall.isOpen, true); assert.equal(closing.stopped, true); assert.deepEqual(h.fixtures(), [0, 0, 1, 0, 0, 1]);
+  assert.deepEqual(Array.from(h.leaves[2].points, p => [p.x, p.y]), [[-20, -10], [20, -10], [20, 10], [-20, 10]]);
+});
+
+test('open gate filters friendly contacts per step while retaining enemy and wing collisions', () => {
+  const h = fixture(); h.wall.setLevel(1); h.step(1); h.state.near = true; h.wall.doTime(); h.flush();
+  assert.equal(h.wall.node.bodyComponent.enabledContactListener, true);
+  const actor = team => ({ body: { node: { getComponents: () => team ? [{ navigationTeam: team }] : [] } } });
+  for (const team of ['friendly', undefined]) {
+    const contact = {}; h.wall.onPreSolve(contact, h.leaves[0], actor(team));
+    assert.equal(contact.disabledOnce, true); assert.equal(contact.disabled, undefined);
+  }
+  const enemy = {}; h.wall.onPreSolve(enemy, h.leaves[0], actor('enemy')); assert(!enemy.disabledOnce);
+  const wing = {}; h.wall.onPreSolve(wing, h.wings[0], actor('friendly')); assert(!wing.disabledOnce);
+  h.state.near = false; h.wall.doTime();
+  const shut = {}; h.wall.onPreSolve(shut, h.leaves[0], actor('friendly')); assert(!shut.disabledOnce);
 });
 
 test('component disable during growth retains authored footprint for re-enable without setLevel', () => {
@@ -200,7 +216,7 @@ test('Creator collider/Box2D reproduces disabled apply and validates rapid resto
   assert.equal(leaf.enabled, false); assert.equal(leaf._fixtures.length, 1, 'actual Creator negative control recreates disabled fixture');
   leaf.onDisable(); control.flush();
   const h = fixture(true); rapidLevels(h);
-  h.state.near = true; h.wall.doTime(); h.flush(); assert.deepEqual(h.fixtures(), [0, 0, 0, 0, 0, 1]);
+  h.state.near = true; h.wall.doTime(); h.flush(); assert.deepEqual(h.fixtures(), [0, 0, 1, 0, 0, 1]);
   h.wall.setLevel(1); h.step(.5); const stale = h.tweens.slice(); h.wall.hide(); h.flush();
   stale.filter(t => t.options && t.options.onUpdate).forEach(t => t.options.onUpdate(t.target, 1)); h.flush();
   assert.deepEqual(h.fixtures(), [0, 0, 0, 0, 0, 0]);
@@ -210,6 +226,45 @@ test('Creator collider/Box2D reproduces disabled apply and validates rapid resto
   disabled.filter(t => t.options && t.options.onUpdate).forEach(t => t.options.onUpdate(t.target, 1)); h.flush();
   assert.deepEqual(h.fixtures(), [0, 0, 0, 0, 0, 0]);
   assert.equal(h.leaves[0].points[0].x, -20, 'interrupted geometry remains authored for the next enable');
+});
+
+test('actual Box2D open leaf admits allies and hero but withstands an enemy pushed from either side', { skip: !enginePresent }, () => {
+  for (const side of [-1, 1]) for (const team of ['enemy', 'friendly', undefined]) {
+    const h = fixture(true), b2 = h.box2d;
+    h.wall.setLevel(3); h.step(1); h.wings.forEach(c => { c.enabled = false; });
+    h.state.near = true; h.wall.doTime(); h.flush();
+    let gateContacts = 0, crowdContacts = 0;
+    function actor(y, navigationTeam) {
+      const def = new b2.b2BodyDef(); def.type = b2.b2BodyType.b2_dynamicBody; def.position.Set(0, y); def.fixedRotation = true;
+      const body = h.world.CreateBody(def), shape = new b2.b2CircleShape(.18), fixture = body.CreateFixture(shape, 1);
+      fixture.collider = { body: { node: { getComponents: () => [{ navigationTeam }] } } };
+      return body;
+    }
+    const subject = actor(side, team), pusher = team === 'enemy' ? actor(side * 1.5, 'friendly') : null;
+    const listener = new b2.b2ContactListener();
+    listener.PreSolve = contact => {
+      const a = contact.GetFixtureA().collider, b = contact.GetFixtureB().collider;
+      const leaf = a === h.leaves[2] ? a : b === h.leaves[2] ? b : null;
+      if (!leaf) { crowdContacts++; return; }
+      gateContacts++;
+      const event = {}; h.wall.onPreSolve(event, leaf, leaf === a ? b : a);
+      if (event.disabledOnce) contact.SetEnabled(false);
+    };
+    h.world.SetContactListener(listener);
+    let nearest = Infinity;
+    for (let frame = 0; frame < 150; frame++) {
+      subject.SetLinearVelocity(new b2.b2Vec2(0, -side * 1.5));
+      if (pusher) pusher.SetLinearVelocity(new b2.b2Vec2(0, -side * 3));
+      h.world.Step(1 / 60, 8, 8);
+      nearest = Math.min(nearest, subject.GetPosition().y * side);
+    }
+    assert(gateContacts > 0, 'the actual gate fixture received contacts');
+    if (team === 'enemy') {
+      assert(crowdContacts > 0, 'the allied body applied physical crowd pressure');
+      assert(nearest > .45, 'the enemy stayed outside the leaf under physical pressure');
+    } else assert(subject.GetPosition().y * side < -.5, 'an open gate admitted the friendly body');
+    assert.equal(h.leaves[2]._fixtures.length, 1);
+  }
 });
 
 test('actual Creator triangulation reproduces zero-frame corruption and survives mill/house-style whole-map refreshes', { skip: !enginePresent }, () => {

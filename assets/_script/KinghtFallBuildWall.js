@@ -27,6 +27,33 @@ var def_KinghtFallBuildWall = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.onLoad = function () {
+    // Register leaf contacts before its fixtures are created. Allies and enemies
+    // share a physics group, so opening must filter contacts rather than remove
+    // the body that prevents a crowd from pushing enemies through the gate.
+    var body = this.node.getComponent(cc.RigidBody);
+    if (body) body.enabledContactListener = true;
+    t.prototype.onLoad.call(this);
+  };
+  _ctor.prototype.onPreSolve = function (contact, self, other) {
+    if (!this.isOpen || self.node !== this.node || self.tag != this.getColliderIndex()) return;
+    var node = other.body ? other.body.node : other.node;
+    var enemy = node.getComponents(cc.Component).some(function (component) {
+      return component.navigationTeam === "enemy";
+    });
+    // Re-evaluate every physics step: a friendly contact can remain alive while
+    // the gate shuts. A permanently disabled contact would let it cross later.
+    if (!enemy) contact.disabledOnce = true;
+  };
+  _ctor.prototype._openGateCollider = function () {
+    var gate = this;
+    this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (collider) {
+      var growing = gate._colliderTweens && gate._colliderTweens.has(collider);
+      gate._stopColliderTween(collider);
+      collider.enabled = collider.tag == gate.getColliderIndex();
+      if (growing && collider.enabled) collider.apply();
+    });
+  };
   _ctor.prototype.start = function () {
     t.prototype.start.call(this);
     this.ndAniEffect.node.active = false;
@@ -117,16 +144,11 @@ var def_KinghtFallBuildWall = function (t) {
     var e = this;
     if (!this.index || this.isDestroyed) return;
     var n = this.hasFriendlyAtGate($z1KinghtFallUIGame.default.instance.ctrGame);
-    if (n && this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
-      e._stopColliderTween(t);
-      t.enabled = false;
-    }), n != this.isOpen) {
+    if (n) this._openGateCollider();
+    if (n != this.isOpen) {
       this.isOpen = n;
       if (this.isOpen) {
-        t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.open : $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
-          e._stopColliderTween(t);
-          t.enabled = false;
-        });
+        t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.open : $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night;
       } else {
         t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut : $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
           e._stopColliderTween(t);

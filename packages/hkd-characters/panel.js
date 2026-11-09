@@ -9,6 +9,8 @@ Editor.Panel.extend({
     image:file=>require('url').pathToFileURL(path.join(root,file)).href,
     runtime:description=>require(description.runtimePath),
     renderer:require('../game-data-editor/preview/spine-renderer'),core:require('../../assets/_script/CharacterPartsCore')
-  };this._client=require('./client').mount(this.$root,api);},
-  close(){if(this._client)this._client.destroy();}
+  };this._api=api;this._closed=false;this._client=require('./client').mount(this.$root,api);if(this._focusAvailable)this._claimFocus();},
+  _claimFocus(){if(this._closed)return;if(!this._client){this._focusAvailable=true;return;}this._focusAvailable=false;this._api.ipc('take-focus').then(target=>{if(!this._closed&&target)return this._client.focusUnit(target);}).catch(error=>Editor.warn('Characters: '+error.message));},
+  messages:{'hkd-characters:focus-available'(){this._claimFocus();}},
+  close(){this._closed=true;if(this._client)this._client.destroy();}
 });

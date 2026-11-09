@@ -395,6 +395,7 @@ var def_KinghtFallUIGame = function (t) {
     return this.ctrGame.saveGame() !== false;
   };
   _ctor.prototype.onClose = function () {
+    if (this.ctrGame && this.ctrGame._unitVoices) require("UnitVoices").dispose(this.ctrGame);
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
     this.cancelBattleDialog();

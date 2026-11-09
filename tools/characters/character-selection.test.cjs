@@ -96,3 +96,31 @@ test('shared item editor retains its explicit equipment-tier editing behavior',a
   assert.equal(f.snapshot.data.assignments['2:2'],'helmet');assert.equal(f.snapshot.data.assignments['2:1'],undefined);
   assert.deepEqual(f.snapshot.data.profiles.helmet.parts,f.initial.profiles.helmet.parts);assert(f.client.getState().dirty);
 });
+
+test('a Units deep link browses the exact level while retaining every unsaved appearance edit',async t=>{
+  const f=await fixture(t),name=f.field('Character name');name.value='Unsaved guard';name.oninput();name.onchange();await f.flush();
+  const staged=clone(f.snapshot.data),writes=f.calls.filter(call=>call.name==='change').length;
+  assert.equal(await f.client.focusUnit({type:'ally',id:'90002',level:3}),true);await f.flush();
+  assert.equal(f.client.getState().selected,'heavy3');assert.equal(f.field('Level').value,3);
+  await f.client.focusUnit({type:'ally',id:'90001',level:3});await f.flush();assert.equal(f.field('Character name').value,'Unsaved guard');
+  assert.deepEqual(f.snapshot.data,staged);assert.equal(f.calls.filter(call=>call.name==='change').length,writes);
+  assert.equal(f.calls.filter(call=>call.name==='load').length,1);assert(!f.calls.some(call=>['save','discard'].includes(call.name)));
+});
+
+test('deep-link startup and unconfigured levels remain read-only and newer queued requests win',async t=>{
+  const f=await fixture(t,{missingLevel:true,deferLoad:true,initialFocus:{type:'ally',id:'90001',level:3,sequence:1}});
+  await f.client.focusUnit({type:'ally',id:'90002',level:3,sequence:2});f.finishLoad();await f.flush();
+  assert.equal(f.client.getState().selected,'');assert.equal(f.field('Level').value,3);assert.equal(f.field('Character name').value,'Heavy Infantry · Level 3');
+  assert.deepEqual(f.snapshot.data,f.initial);assert(!f.calls.some(call=>['change','save','discard'].includes(call.name)));
+  assert.equal(await f.client.focusUnit({type:'ally',id:'90001',level:3,sequence:1}),false);assert.equal(f.field('Character name').value,'Heavy Infantry · Level 3');
+  const start=await fixture(t,{initialFocus:{type:'ally',id:'90002',level:3,sequence:7}});assert.equal(start.client.getState().selected,'heavy3');assert.deepEqual(start.snapshot.data,start.initial);
+});
+
+test('a focus request waits for an open creation dialog and rejects invalid units without changing drafts',async t=>{
+  const f=await fixture(t);await f.button('New character').onclick();const dialog=descendants(f.root).find(node=>node.attributes.role==='dialog');f.field('Character name',dialog).value='Unfinished design';
+  assert.equal(await f.client.focusUnit({type:'ally',id:'90002',level:3}),false);assert.equal(f.field('Character name',dialog).value,'Unfinished design');assert.equal(f.client.getState().selected,'guard3');
+  await f.button('Cancel').onclick();await f.flush();assert.equal(f.client.getState().selected,'heavy3');
+  assert.equal(await f.client.focusUnit({type:'ally',id:'90002',level:99}),false);assert.equal(f.client.getState().selected,'heavy3');
+  assert.deepEqual(f.snapshot.data,f.initial);await f.client.focusUnit({type:'ally',id:'90001',level:3});await f.flush();assert.equal(f.client.getState().selected,'guard3');
+  assert(!f.calls.some(call=>['change','save','discard'].includes(call.name)));
+});
