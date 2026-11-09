@@ -34,7 +34,9 @@ function encode(image){const header=Buffer.alloc(13);header.writeUInt32BE(image.
 function crop(image,x,y,width,height,rotate){
   const result={width:rotate?height:width,height:rotate?width:height,rgba:Buffer.alloc(width*height*4)};
   for(let row=0;row<height;row++)for(let col=0;col<width;col++){
-    const from=((y+row)*image.width+x+col)*4,to=rotate?((width-col-1)*height+row)*4:(row*width+col)*4;
+    // Spine's rotated UVs map logical (u,v) to atlas (v,1-u).
+    // Undo that rotation before packing the region without rotation.
+    const from=((y+row)*image.width+x+col)*4,to=rotate?(col*height+height-row-1)*4:(row*width+col)*4;
     image.rgba.copy(result.rgba,to,from,from+4);
   }return result;
 }

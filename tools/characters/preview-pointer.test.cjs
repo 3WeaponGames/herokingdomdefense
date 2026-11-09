@@ -33,3 +33,11 @@ test('Canvas preview pan is a screen translation and defaults preserve the exist
   Renderer.draw(spine,ctx,[],options);assert.deepEqual(translations[0],[250,388]);
   translations.length=0;Renderer.draw(spine,ctx,[],{...options,panX:24,panY:-18});assert.deepEqual(translations[0],[274,370]);
 });
+test('mounted preview and picking interleave rider, left equipment, horse head and right equipment',t=>{
+  pixels(t);const horse=layer([slot('body'),slot('mane'),slot('head')],{uuid:'horse',foregroundSlots:['head','mane']}),rider=layer([slot('Rider/Body'),slot('Rider/HandLeft/Shield'),slot('Rider/HandRight/Sword')],{uuid:'rider',followMount:{layer:'horse',bone:'saddle'}});
+  const pieces=Renderer.renderPasses(spine,[horse,rider]).flatMap(pass=>pass.pieces.map(g=>g.slot));
+  assert.deepEqual(pieces,['body','Rider/Body','Rider/HandLeft/Shield','head','mane','Rider/HandRight/Sword']);
+  assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'Rider/HandRight/Sword');
+  rider.skeleton.drawOrder[2].color.a=0;assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'mane');
+  horse.skeleton.drawOrder[1].color.a=0;horse.skeleton.drawOrder[2].color.a=0;assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'Rider/HandLeft/Shield');
+});

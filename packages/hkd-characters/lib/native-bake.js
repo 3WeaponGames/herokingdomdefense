@@ -49,7 +49,7 @@ function bake(root,profile,id,contract,assets,read,options){
   const description=options&&options.description||(profile.base.source?require('./mounts').describe(root,profile.base,true):null);
   if(description&&description.layers.length>1){
     const pieces=description.layers.map(layer=>bake(root,Object.assign({},profile,{parts:profile.parts.filter(p=>p.layer===layer.uuid)}),id,contract,assets,read,{raw:true,description:{layers:[layer],fitHeight:description.fitHeight}}));
-    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
+    const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.orderMounted(merged.rig,description);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
   }
   if(!description)throw Error('Choose a Character Maker or monster base before saving this unit');
   const layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read),pictures={};
@@ -72,6 +72,7 @@ function bake(root,profile,id,contract,assets,read,options){
     replaced.add(slot.name);(part.hideSlots||[]).forEach(name=>hidden.add(name));
   }
   if(profile.faceless)for(const slot of rig.slots)if(Core.isFacialSlot(slot.name))hidden.add(slot.name);
+  for(const [head,source]of Object.entries(layer.json._mountHeadSources||{}))if(!replaced.has(head)&&(replaced.has(source)||hidden.has(source)))hidden.add(head);
   for(const name of hidden){const slot=slots.get(name);if(!slot)continue;delete slot.attachment;attachments[name]={};for(const anim of Object.values(rig.animations))if(anim.slots&&anim.slots[name]){delete anim.slots[name].attachment;}}
   for(const part of profile.parts){const at=rig.slots.findIndex(slot=>slot.name===part.slot);if(at>=0&&part.order){const slot=rig.slots.splice(at,1)[0];rig.slots.splice(Math.max(0,Math.min(rig.slots.length,at+part.order)),0,slot);}}
   for(const [slotName,variants]of Object.entries(attachments))for(const [name,attachment]of Object.entries(variants)){
