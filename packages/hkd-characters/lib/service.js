@@ -3,12 +3,13 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto'),url=require
 const Units=require('../../game-data-editor/lib/unit-assets');
 const JSONDocument=require('../../game-data-editor/lib/json-document');
 const UnitLibrary=require('./unit-library');
+const Levels=require('./character-levels');
 const clone=value=>JSON.parse(JSON.stringify(value)),hash=text=>crypto.createHash('sha256').update(text).digest('hex');
 function read(file){return JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));}
 class Service{
   constructor(root,options){this.root=path.resolve(root);this.relativeFile=options&&options.file||'assets/resources/characters/catalog.json';this.file=path.join(this.root,this.relativeFile);this.version=0;this.reload();}
-  reload(){this.text=fs.readFileSync(this.file,'utf8');this.revision=hash(this.text);this.original=JSON.parse(this.text);this.data=clone(this.original);this.version++;return this.snapshot();}
-  snapshot(){return {version:this.version,revision:this.revision,dirty:!JSONDocument.equal(this.original,this.data),data:clone(this.data),savedData:clone(this.original)};}
+  reload(){const text=fs.readFileSync(this.file,'utf8'),original=JSON.parse(text);this.text=text;this.revision=hash(text);this.original=original;this.data=clone(original);this.undoStack=[];this.redoStack=[];this.version++;return this.snapshot();}
+  snapshot(){return {version:this.version,revision:this.revision,dirty:!JSONDocument.equal(this.original,this.data),canUndo:!!this.undoStack.length,canRedo:!!this.redoStack.length,data:clone(this.data),savedData:clone(this.original)};}
   check(request){if(!request||request.version!==this.version)throw Error('The character draft changed in another window. Reload the latest draft before editing.');}
   assets(){const original=read(path.join(this.root,'assets/resources/character-parts/catalog.json'));return Object.assign({},original,{parts:original.parts.concat(UnitLibrary.load(this.root).parts)});}
   units(){
@@ -18,7 +19,8 @@ class Service{
     for(const type of ['ally','enemy'])for(const row of Object.values(type==='ally'&&cfg.AllyCfg||cfg.SoldierCfg)){
       if(type==='ally'&&(!row.prefab||!fs.existsSync(path.join(this.root,'assets/KinghtFallEnemy/Play'+row.prefab+'.prefab'))))continue;
       const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
-      result.push({type,id:String(row.ID),key:type+':'+row.ID+':'+form,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies'});
+      const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
+      result.push({type,id:String(row.ID),key:type+':'+row.ID+':'+form,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',...(type==='ally'?{levels:levels.length?levels:[1]}:{})});
     }
     return result;
   }
@@ -30,6 +32,7 @@ class Service{
     for(const [id,profile]of Object.entries(data.profiles)){
       if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!profile||typeof profile.name!=='string'||!profile.name.trim()||profile.name.length>100)throw Error('Choose a valid character name and identifier.');
       if(!profile.base||!Array.isArray(profile.parts)||profile.parts.length>40)throw Error('Invalid character base or part list.');
+      if(profile.base.level!==undefined){const unit=units.find(u=>u.type===profile.base.type&&u.id===String(profile.base.id));if(!Number.isInteger(profile.base.level)||!Levels.levels(unit).includes(profile.base.level))throw Error(profile.name+': choose an existing ally level.');}
       if(profile.faceless!==undefined&&typeof profile.faceless!=='boolean')throw Error('Faceless must be enabled or disabled.');
       if(profile.skinTint!==undefined&&!/^#[a-f0-9]{6}$/i.test(profile.skinTint))throw Error(profile.name+': choose a valid skin tint.');
       const rig=this.describe(profile.base,true),layers=new Map(rig.layers.map(l=>[l.uuid,l])),ids=new Set(),targets=new Set();
@@ -59,12 +62,17 @@ class Service{
       }
     }
     for(const [key,id]of Object.entries(data.assignments)){
-      const unit=units.find(u=>u.key===key),profile=data.profiles[id];
-      if(!unit||!profile||profile.base.type!==unit.type||String(profile.base.id)!==unit.id)throw Error('A character look can only be assigned to its matching base: '+key);
+      const target=Levels.target(units,key),unit=target&&target.unit,profile=data.profiles[id];
+      if(!unit||!profile||profile.base.type!==unit.type||String(profile.base.id)!==unit.id||profile.base.level!==target.level)throw Error('A character look can only be assigned to its matching base and level: '+key);
     }
     return true;
   }
-  change(request){this.check(request);this.validate(request.data);this.data=clone(request.data);this.version++;return this.snapshot();}
+  // History stays in the shared draft and never publishes assets. Bound the
+  // full-document snapshots so long fitting sessions do not grow indefinitely.
+  remember(stack,value){stack.push(clone(value));if(stack.length>100)stack.shift();}
+  change(request){this.check(request);this.validate(request.data);if(JSONDocument.equal(this.data,request.data))return this.snapshot();this.remember(this.undoStack,this.data);this.redoStack=[];this.data=clone(request.data);this.version++;return this.snapshot();}
+  undo(request){this.check(request);if(!this.undoStack.length)return this.snapshot();this.remember(this.redoStack,this.data);this.data=this.undoStack.pop();this.version++;return this.snapshot();}
+  redo(request){this.check(request);if(!this.redoStack.length)return this.snapshot();this.remember(this.undoStack,this.data);this.data=this.redoStack.pop();this.version++;return this.snapshot();}
   discard(request){this.check(request);return this.reload();}
   save(request){
     this.check(request);if(JSONDocument.equal(this.original,this.data))return {...this.snapshot(),result:{saved:false,files:[]}};
@@ -75,7 +83,7 @@ class Service{
     files.set(this.relativeFile,output);baked.reads.set(this.file,Buffer.from(before));
     const result=require('./asset-transaction').commit(this.root,files,baked.reads,this.relativeFile);
     Units.invalidate();
-    this.data=baked.data;this.text=output;this.revision=hash(output);this.original=clone(this.data);this.version++;
+    this.data=baked.data;this.text=output;this.revision=hash(output);this.original=clone(this.data);this.undoStack=[];this.redoStack=[];this.version++;
     return {...this.snapshot(),result:Object.assign({saved:true},result)};
   }
   partImage(part){return url.pathToFileURL(path.join(this.root,part.image)).href;}

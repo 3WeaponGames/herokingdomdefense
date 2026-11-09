@@ -113,6 +113,7 @@ function environment() {
   const dataManager = { data: {}, getSoldierCfgById: () => cfg };
   const stubs = {
     BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {}, fire() {}, muzzle: owner => owner.getAttPos() },
+    BuildingLighting: { setNight(owner, night) { owner._buildingNight = !!night; } },
     NavigationGrid: { NavigationGrid }, BaseCtrl: { default: BaseCtrl }, KinghtFallUIGame: ui,
     KinghtFallConfig: { KinghtFallParameter: { FollowRange: 40, FollowMode: 1 }, KinghtFallBundelName: {}, KinghtFallPrefabName: {}, KinghtFallPoolName: {} },
     KinghtFallDataMgr: { KinghtFallDataMgr: { getInstance: () => dataManager } },

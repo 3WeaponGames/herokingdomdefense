@@ -264,6 +264,9 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.onDisable = function () {
     this.cancelUpgrade();
+    var artwork = require("BuildingAppearance");
+    if (artwork.cancelPlacement) artwork.cancelPlacement(this);
+    if (this._buildingAppearance && this._buildingAppearance._buildingLighting) require("BuildingLighting").hide(this, this._buildingAppearance);
     var owner = this, interrupted = this._colliderTweens ? Array.from(this._colliderTweens.keys()) : [];
     this._stopColliderTweens();
     // A disabled component may be enabled again without setLevel. Retain its
@@ -315,7 +318,9 @@ var def_KinghtFallBuildBase = function (t) {
         });
       });
     }
-    require("BuildingAppearance").apply(this);
+    var artwork = require("BuildingAppearance");
+    artwork.apply(this);
+    if (artwork.place) artwork.place(this, this.getLevel() === 1 ? "create" : "upgrade");
   };
   _ctor.prototype.getWposPhyCol = function () {
     return this.getWposPhyCol2().map(function (part) { return part.points; });
@@ -371,6 +376,7 @@ var def_KinghtFallBuildBase = function (t) {
     return t;
   };
   _ctor.prototype.setLight = function (t) {
+    require("BuildingLighting").setNight(this, t);
     var e = this;
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
       this.ndLockList.forEach(function (n, i) {
@@ -733,6 +739,8 @@ var def_KinghtFallBuildBase = function (t) {
     this.ndAniOther.forEach(function (e) {
       e.timeScale = t;
     });
+    var artwork = require("BuildingAppearance");
+    if (artwork.placementSpeed) artwork.placementSpeed(this);
   };
   _ctor.prototype.endRoundGame = function () {
     this.isDestroyed = false;

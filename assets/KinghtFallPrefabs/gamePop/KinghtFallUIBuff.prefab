@@ -803,13 +803,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 800,
+      "width": 824,
       "height": 149.16
     },
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        83.576,
+        84,
         0,
         0,
         0,
@@ -826,9 +826,10 @@
   {
     "__type__": "cc.RichText",
     "_N$string": "[[loc:ui.kinghtfalluibuff.labinfo.39]]",
-    "_N$fontSize": 67,
-    "_N$maxWidth": 800,
-    "_N$lineHeight": 78,
+    "_N$fontSize": 60,
+    "_N$maxWidth": 824,
+    "_N$lineHeight": 66,
+    "_N$horizontalAlign": 0,
     "node": {
       "__id__": 38
     }

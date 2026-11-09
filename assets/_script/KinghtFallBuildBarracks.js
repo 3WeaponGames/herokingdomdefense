@@ -275,12 +275,18 @@ var def_KinghtFallBuildBarracks = function (t) {
     if (this.ndVideoSoldier.SolID != this.buildInfo.cfg.Data[1]) {
       this.ndVideoSoldier.SolID = this.buildInfo.cfg.Data[1];
       var s = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(this.buildInfo.cfg.Data[1], "ally");
+      var previewRequest = this._appearancePreviewRequest = { id: this.buildInfo.cfg.Data[1] };
       this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, "Play" + s.prefab, function (e) {
+        if (t._appearancePreviewRequest !== previewRequest || !cc.isValid(t, true) || !cc.isValid(t.node, true) ||
+            !cc.isValid(t.ndVideoSoldier, true) || !t.buildInfo.cfg || t.buildInfo.cfg.Data[1] !== previewRequest.id) return;
         var n = e.data.getComponent($z1KinghtFallSoldierBase.default);
         var i = t.ndVideoSoldier.getChildByName("spAni").getComponent(sp.Skeleton);
         i.skeletonData = n.spAni.skeletonData;
         i.setSkin(n.spAni.defaultSkin);
         i.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Idle, true);
+        // A presentation actor shares the barracks level but never joins the
+        // gameplay roster, so the offer matches the troops it will produce.
+        require("CharacterAppearance").bind({ node: i.node, spAni: i, cfg: s, outBuild: t }, "ally");
       });
     }
   };

@@ -32,7 +32,9 @@ function fixture(weapon = false, ruins = false, directions = false) {
     color: (...values) => values, Color: { WHITE: 'white' }, v2: (x, y) => ({ x, y }),
     Tween: { stopAllByTarget() {} }, tween: () => ({ to() { return this; }, call() { return this; }, start() {} }) };
   const mod = { exports: {} };
-  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingAppearance.js'), 'utf8'), { cc, exports: mod.exports, module: mod, require: name => require(path.join(root, 'assets/_script', name)) });
+  const lighting = { exports: {} };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingLighting.js'), 'utf8'), { cc, exports: lighting.exports, module: lighting });
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingAppearance.js'), 'utf8'), { cc, exports: mod.exports, module: mod, require: name => name === 'BuildingLighting' ? lighting.exports : require(path.join(root, 'assets/_script', name)) });
   const loads = [], node = new Node('tower'), shot = new Node('shot'); shot.parent = node; shot.setPosition(-3, 97);
   const owner = { node, ndShot: shot, ndAniMain: { enabled: true }, ndAniOther: [],
     buildInfo: { cfg: { Appearance: { sprite: 'buildings/towers/cannon-1', width: 187, height: 212, offsetY: -38, muzzleX: 40, muzzleY: 130 }, Tower: { attackType: 'cannon' } } },
@@ -53,7 +55,7 @@ test('static artwork waits for its frame and preserves collider-owning skeleton 
   assert.equal(h.loads[0].bundle, 'resources'); h.loads[0].callback({ name: 'cannon-1' });
   const state = h.owner._buildingAppearance;
   assert.equal(h.owner.ndAniMain.enabled, false); assert.equal(h.owner.node.active, true);
-  assert.equal(state.node.parent, h.owner.node); assert.equal(state.node.anchorY, 0);
+  assert.equal(state.node.parent, state.presentation); assert.equal(state.presentation.parent, h.owner.node); assert.equal(state.node.anchorY, 0);
   assert.equal(state.node.width, 187); assert.equal(state.node.height, 212); assert.equal(state.node.y, -38);
   assert.equal(h.owner.ndShot.x, 40); assert.equal(h.owner.ndShot.y, 130);
   h.api.apply(h.owner); assert.equal(h.loads.length, 1, 'reapplying a loaded level does not load another frame');
@@ -112,7 +114,7 @@ for (const first of [0, 1]) test('layered tower keeps its fallback until both fr
   const state = h.owner._buildingAppearance;
   assert.equal(h.owner.ndAniMain.enabled, false); assert.equal(state.node.active, true); assert.equal(state.weaponPivot.active, true);
   assert.equal(h.api.ready(h.owner), true);
-  assert.equal(state.weaponPivot.parent, h.owner.node); assert.equal(state.weaponNode.parent, state.weaponPivot);
+  assert.equal(state.weaponPivot.parent, state.presentation); assert.equal(state.presentation.parent, h.owner.node); assert.equal(state.weaponNode.parent, state.weaponPivot);
   assert.equal(state.weaponNode.anchorX, .25); assert.equal(state.weaponNode.anchorY, .4);
   assert.equal(state.weaponNode.width, 120); assert.equal(state.weaponNode.height, 80);
   assert.equal(state.node.group, 'world'); assert.equal(state.weaponPivot.group, 'world'); assert.equal(state.weaponNode.group, 'world');
@@ -305,7 +307,7 @@ test('production tower families each contain three imported levels with independ
         assert.equal(view.sprite,row.Appearance.weapon.sprite+'-'+direction);
         assert.equal(view.muzzleX>0,direction==='southeast');assert(direction==='north'?view.muzzleY>0:view.muzzleY<0);
         const viewMeta=JSON.parse(fs.readFileSync(path.join(root,'assets/resources',view.sprite+'.png.meta')));
-        assert(viewMeta.width>=1024);assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
+        assert.equal(viewMeta.width,Math.round(view.width));assert.equal(viewMeta.height,Math.round(view.height));assert.equal(viewMeta.filterMode,'bilinear');assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
         assert.equal(Object.values(viewMeta.subMetas)[0].trimType,'none');
       }
       const ruins = row.Appearance.destroyed;
@@ -316,6 +318,8 @@ test('production tower families each contain three imported levels with independ
       assert.equal(ruinMeta.type, 'sprite'); assert.equal(ruinMeta.packable, false); assert.equal(ruinMeta.genMipmaps, false);
       assert.equal(Object.values(ruinMeta.subMetas)[0].trimType, 'none');
       assert.equal(ruins.width, row.Appearance.width); assert.equal(ruins.offsetY, row.Appearance.offsetY);
+      assert.equal(row.Appearance.nightTint,'#A7A7A7');assert(row.Appearance.lighting.length>0);
+      for(const light of row.Appearance.lighting){assert(light.points.length>=3);assert(light.points.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)&&Math.abs(p.x)<=row.Appearance.width/2&&p.y>=0&&p.y<=row.Appearance.height));}
       assert.equal(row.ColliderIndex >= 1 && row.ColliderIndex <= 3, true);
       assert.ok(row.Data[0] > 0 && row.Data[1] > 0 && row.Data[2] > 0);
     }

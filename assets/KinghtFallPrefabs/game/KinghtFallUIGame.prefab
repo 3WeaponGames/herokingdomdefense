@@ -4814,6 +4814,9 @@
         "__id__": 250
       },
       {
+        "__id__": 385
+      },
+      {
         "__id__": 253
       }
     ],
@@ -7426,7 +7429,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "FollowBoot",
+    "_name": "FollowIcon",
     "_parent": {
       "__id__": 367
     },
@@ -7447,8 +7450,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        2,
-        -1,
+        0,
+        0,
         0,
         0,
         0,
@@ -7471,7 +7474,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "261b289b-d856-47ca-8a60-d12ded1c4bf8"
+      "__uuid__": "326b619a-ca01-5720-a7b7-58c5e38e843c"
     },
     "node": {
       "__id__": 382
@@ -7486,5 +7489,52 @@
       "__id__": 0
     },
     "fileId": "ulMVI7rz+5yeLAzHBIptnA"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "RallyIcon",
+    "_parent": {
+      "__id__": 246
+    },
+    "_children": [],
+    "_components": [
+      {
+        "__id__": 386
+      }
+    ],
+    "_prefab": {
+      "__id__": 387
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 80,
+      "height": 80
+    }
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_sizeMode": 0,
+    "_isTrimmedMode": false,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_spriteFrame": {
+      "__uuid__": "7dd5aa65-1565-5a06-a931-02c0218dd111"
+    },
+    "node": {
+      "__id__": 385
+    }
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "vGga0eZcBGXpL1IvJ5THiD"
   }
 ]

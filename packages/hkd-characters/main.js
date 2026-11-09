@@ -8,6 +8,8 @@ module.exports={load(){},unload(){if(service&&service.snapshot().dirty)Editor.wa
   open(){Editor.Panel.open('hkd-characters');},
   load(event){reply(event,()=>current().load());},
   change(event,request){reply(event,()=>current().change(request));},
+  undo(event,request){reply(event,()=>current().undo(request));},
+  redo(event,request){reply(event,()=>current().redo(request));},
   discard(event,request){reply(event,()=>current().discard(request));},
   describe(event,request){reply(event,()=>current().describe(request));},
   save(event,request){reply(event,async()=>{const store=current(),result=store.save(request);if(result.result.saved)try{await require('./lib/import-refresh').refresh(Editor,result.result.files);}catch(error){result.result.warning='Saved on disk; refresh the character assets in Creator: '+error.message;}return Object.assign(store.snapshot(),{result:result.result});});}

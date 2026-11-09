@@ -16,6 +16,28 @@ test('world preview backend: unassigned maps require an authored stage and never
  await assert.rejects(f.start(),/Assign this map to a stage/);assert.equal(bakes,0);assert.equal(f.windows.length,0);
 });
 function deferred(){let resolve,reject;const promise=new Promise((r,j)=>{resolve=r;reject=j;});return {promise,resolve,reject};}
+test('world preview backend: owner teardown cancels its pending startup before any game window opens',async()=>{
+ const gate=deferred(),f=fixture({bake:()=>gate.promise}),work=f.start('maps-panel'),rejected=assert.rejects(work,/cancelled/);
+ assert.equal(f.preview.shutdown('maps-panel'),true);gate.resolve(f.baked);await rejected;assert.equal(f.windows.length,0);assert.equal(f.preview._sessions.size,0);
+});
+test('world preview backend: closing an older owner cannot cancel a newer panel startup',async()=>{
+ const gates=[deferred(),deferred()];let at=0;const f=fixture({bake:()=>gates[at++].promise}),old=f.start('maps-panel'),rejected=assert.rejects(old,/cancelled/),latest=f.start('stages-panel');
+ assert.equal(f.preview.shutdown('maps-panel'),false);gates[1].resolve(f.baked);await latest;gates[0].resolve(f.baked);await rejected;
+ assert.equal(f.windows.filter(w=>!w.destroyed).length,1);assert.equal(f.windows[0].shown,true);assert.equal(f.preview.shutdown('stages-panel'),true);assert.equal(f.preview._sessions.size,0);
+});
+test('world preview backend: owner close preserves another active preview while global unload still closes it',async()=>{
+ const f=fixture();try{await f.start('stages-panel');assert.equal(f.preview.shutdown('maps-panel'),false);assert.equal(f.windows[0].destroyed,false);assert.equal(f.preview._sessions.size,1);}finally{f.preview.shutdown();}
+ assert.equal(f.windows[0].destroyed,true);assert.equal(f.preview._sessions.size,0);
+});
+test('world preview backend: malformed ownership cannot take over an existing panel preview',async()=>{
+ const f=fixture();try{await f.start('stages-panel');await assert.rejects(f.start({invalid:true}),/owner/);assert.equal(f.preview._sessions.size,1);assert.equal(f.windows[0].destroyed,false);}finally{f.preview.shutdown();}
+});
+test('world preview main process forwards panel ownership without changing legacy global close',()=>{
+ const file=path.resolve(__dirname,'../main.js'),unit=new Module(file,module),calls=[];unit.filename=file;unit.paths=Module._nodeModulePaths(path.dirname(file));unit.require=name=>name==='./worlds/preview'?{shutdown(owner){calls.push(owner);return owner===undefined||owner==='maps-panel';}}:Module.prototype.require.call(unit,name);
+ unit._compile(fs.readFileSync(file,'utf8'),file);const handler=unit.exports.messages['world-preview-close'],replies=[],event={reply(error,value){assert.equal(error,null);replies.push(value);}};
+ handler(event,{owner:'maps-panel'});handler(event,{owner:'stages-panel'});handler(event);handler(event,null);
+ assert.deepEqual(calls,['maps-panel','stages-panel',undefined,undefined]);assert.deepEqual(replies,[{closed:true},{closed:false},{closed:true},{closed:true}]);
+});
 function fixture(options={}){
  const windows=[],stages={config:{WaveCfg:[]},mapId:'test',variant:'A',buildings:[],specials:[],spawns:[],graphs:[],hero:{x:0,y:0}},map={id:'test'},documents={A:{SoldierCfg:{}}},baked={writes:[{file:'assets/ground.png',bytes:Buffer.from('png bytes')},{file:'assets/ground.png.meta',bytes:Buffer.from(JSON.stringify({subMetas:{}}))}],ground:[],assets:{}};
  class Window extends EventEmitter{
@@ -34,7 +56,7 @@ function fixture(options={}){
   return Module.prototype.require.call(unit,name);
  };
  unit._compile(fs.readFileSync(filename,'utf8'),filename);
- const preview=unit.exports,service={root:'unused',options:{},artifacts:'unused',doc:()=>({data:map}),loadStage:()=>({data:stages}),assetTable:()=>({}),index:()=>({documents,library:[],stages:options.catalog||[{id:'A-1',variant:'A',level:1,mapId:'test'}]})},Editor={PreviewServer:{_previewPort:7456}},start=()=>preview.start(Editor,service,{key:'map:test'});
+ const preview=unit.exports,service={root:'unused',options:{},artifacts:'unused',doc:()=>({data:map}),loadStage:()=>({data:stages}),assetTable:()=>({}),index:()=>({documents,library:[],stages:options.catalog||[{id:'A-1',variant:'A',level:1,mapId:'test'}]})},Editor={PreviewServer:{_previewPort:7456}},start=owner=>preview.start(Editor,service,Object.assign({key:'map:test'},owner===undefined?{}:{owner}));
  return {preview,service,Editor,start,windows,baked};
 }
 test('world preview backend: closing while a bake is pending cancels the later window',async()=>{

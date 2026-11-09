@@ -3,15 +3,15 @@
 const Paint=require('./paint'),Model=require('./model'),Terrain=require('./terrain');
 function create(options){
  const budget=options&&options.bytes||48*1024*1024,layers=new Map(),blockerCache=new Map();
- let raster=null,preview=null,objectsRaster=null,objectsKey=null,key=null,bytes=0,builds=0,layerBuilds=0,objectsBuilds=0,blockerBuilds=0;
+ let raster=null,preview=null,objectsRaster=null,objectsKey=null,key=null,bytes=0,builds=0,layerBuilds=0,objectsBuilds=0,blockerBuilds=0,imageSerial=0,imageIds=new WeakMap();
  function release(c){if(c){c.width=1;c.height=1;}}
- function clear(){for(const entry of layers.values())release(entry.canvas);layers.clear();blockerCache.clear();release(raster);release(preview);release(objectsRaster);raster=preview=objectsRaster=null;key=objectsKey=null;bytes=0;}
- function ready(images,ids){return Array.from(ids).sort().map(id=>{const s=images[id],i=s&&s.image;return [id,i&&i.complete&&i.naturalWidth||0,i&&i.src||''];});}
+ function clear(){for(const entry of layers.values())release(entry.canvas);layers.clear();blockerCache.clear();release(raster);release(preview);release(objectsRaster);raster=preview=objectsRaster=null;key=objectsKey=null;bytes=0;imageIds=new WeakMap();imageSerial=0;}
+ function ready(images,ids){return Array.from(ids).sort().map(id=>{const s=images[id],i=s&&s.image;if(i&&!imageIds.has(i))imageIds.set(i,++imageSerial);const a=s&&s.anchor;return [id,i?imageIds.get(i):0,i&&i.complete&&i.naturalWidth||0,i&&i.complete&&i.naturalHeight||0,i&&i.src||'',s&&s.url,s&&s.x,s&&s.y,s&&s.width,s&&s.height,a&&a.x,a&&a.y,s&&s.maxMaskEdge];});}
  function references(map,layer,id){const ids=new Set();if(layer.baseAsset)ids.add(layer.baseAsset);for(const o of (layer.images||[]).concat(layer.tiles||[]))ids.add(o.assetId);for(const s of layer.strokes||[])for(const id of Terrain.strokeAssets(s))ids.add(id);if(id==='foundation'&&map.legacyGround)for(const s of map.legacyGround.sprites)ids.add(s.frame);return ids;}
  function draw(ctx,map,images,transient){
   const scale=Math.min(1,2048/map.size.width,2048/map.size.height),w=Math.max(1,Math.ceil(map.size.width*scale)),h=Math.max(1,Math.ceil(map.size.height*scale)),view=[scale,0,0,-scale,w/2,h/2];
   const groundObjects=map.layers.filter(l=>!l.hidden).map(l=>({id:l.id,depth:l.depth,transform:l.transform,objects:l.objects.filter(o=>!o.legacy&&(l.depth==='ground'||o.depth==='ground'))})).filter(l=>l.objects.length);
-  const needed=new Set();for(const id of map.ground.order||['foundation','roads','grass']){const layer=map.ground[id]||(map.ground.custom||[]).find(l=>l.id===id);if(layer)for(const key of references(map,layer,id))needed.add(key);}for(const l of groundObjects)for(const o of l.objects)needed.add(o.assetId);
+  const needed=new Set();for(const id of map.ground.order||['foundation','roads','grass']){const layer=map.ground[id]||(map.ground.custom||[]).find(l=>l.id===id);if(layer&&!layer.hidden&&layer.opacity!==0)for(const key of references(map,layer,id))needed.add(key);}for(const l of groundObjects)for(const o of l.objects)needed.add(o.assetId);
   const imageKey=JSON.stringify(ready(images,needed)),next=JSON.stringify([map.id,map.size,map.ground,map.legacyGround,groundObjects,imageKey]);
   if(next!==key){
    if(!raster||raster.width!==w||raster.height!==h){clear();raster=Paint.canvas(w,h);}

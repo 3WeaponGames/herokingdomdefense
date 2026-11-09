@@ -13,3 +13,14 @@ test('drag labels update continuously, support fine control, cancel cleanly and 
   label.onpointerdown(event(100));label.onpointermove(event(120));assert.equal(Number(input.value),2);assert.equal(commits.length,0);label.onpointermove(event(120,{shiftKey:true}));assert.equal(Number(input.value),1.1);label.onpointerup();assert.equal(commits.length,1);
   label.onpointerdown(event(100));label.onpointermove(event(140));label.onkeydown({key:'Escape',preventDefault(){}});assert.equal(Number(input.value),1.1);assert.equal(commits.length,1);assert.equal(capture,null);assert(values.length>=3);
 });
+
+test('history can finish a label drag once before replacing the inspector',()=>{
+  let commits=0,cancels=0,capture=null;
+  const label={classList:{add(){},remove(){}},focus(){},setPointerCapture:id=>capture=id,hasPointerCapture:id=>capture===id,releasePointerCapture:()=>{capture=null;}},input={value:'1',disabled:false};
+  const cancel=Scrub.install(label,input,{step:1,min:-100,max:100,preview(){},commit(){commits++;},cancel(){cancels++;}});
+  label.onpointerdown({button:0,pointerId:3,clientX:10,preventDefault(){}});
+  label.onpointermove({pointerId:3,clientX:20});cancel.commit();
+  assert.equal(input.value,'11');assert.equal(commits,1);assert.equal(capture,null);
+  label.onpointerup();label.onlostpointercapture();cancel();cancel.commit();
+  assert.equal(commits,1);assert.equal(cancels,0,'late capture events must not undo a restored draft');
+});

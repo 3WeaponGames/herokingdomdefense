@@ -23,6 +23,7 @@ var def_KinghtFallBuildWall = function (t) {
     e.ndAniEffect = null;
     e.polyPoints = [];
     e.isOpen = false;
+    e.wallFacing = "";
     return e;
   }
   cc__extends(_ctor, t);
@@ -71,6 +72,7 @@ var def_KinghtFallBuildWall = function (t) {
     return false;
   };
   _ctor.prototype.setLevel = function (e) {
+    if (this.wallFacing || this._gateFacingRuntime) require("GateFacingRuntime").apply(this);
     t.prototype.setLevel.call(this, e);
     this.ndAniEffect.node.active = false;
     this.isOpen = false;
@@ -206,6 +208,10 @@ var def_KinghtFallBuildWall = function (t) {
     }
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game01), this.T(this.buildCfg.name)));
   };
+  _ctor.prototype.onDestroy = function () {
+    if (this._gateFacingRuntime) require("GateFacingRuntime").dispose(this);
+    if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
+  };
   _ctor.prototype.onChangeSpeed = function () {
     var t = $z1KinghtFallUIGame.default.instance.speed;
     this.ndAniMain.timeScale = t;
@@ -219,6 +225,9 @@ var def_KinghtFallBuildWall = function (t) {
     type: sp.Skeleton,
     tooltip: "建筑其他部分"
   })], _ctor.prototype, "ndAniEffect", undefined);
+  cc__decorate([ccp_property({
+    tooltip: "Explicit outward gate facing. Empty preserves the authored legacy animation."
+  })], _ctor.prototype, "wallFacing", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBuildBase.default);
 exports.default = def_KinghtFallBuildWall;

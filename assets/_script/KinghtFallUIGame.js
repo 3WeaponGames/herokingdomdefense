@@ -125,6 +125,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.onLoad = function () {
     n.instance = this;
+    if (this.btnAgg) require("FollowButtonArtwork").install(this.btnAgg);
     if (this.btnFollow) require("FollowButtonArtwork").install(this.btnFollow);
     this.ndEnemyIcon.active = false;
     this.ndBuildCoin.active = false;
@@ -404,6 +405,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.onDestroy = function () {
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
+    if (this.btnAgg) require("FollowButtonArtwork").dispose(this.btnAgg);
     if (this.btnFollow) require("FollowButtonArtwork").dispose(this.btnFollow);
     try { this.cancelBattleDialog(); }
     finally { t.prototype.onDestroy.call(this); }
@@ -917,11 +919,44 @@ var def_KinghtFallUIGame = function (t) {
     var b = ui.convertToNodeSpaceAR(cc.v2(origin.x + size.width, origin.y + size.height));
     var viewport = { minX: Math.min(a.x, b.x), maxX: Math.max(a.x, b.x), minY: Math.min(a.y, b.y), maxY: Math.max(a.y, b.y) };
     var center = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, groups = {}, self = this;
+    // At the 750-unit design width, ignore enemies up to 150 units beyond the
+    // edge when a visible enemy is within 225 units. Measure after projection
+    // so zoom and aspect ratio follow the area the player can actually see.
+    var shortSide = Math.min(viewport.maxX - viewport.minX, viewport.maxY - viewport.minY);
+    var edgeRange = shortSide * .2, nearbyRange = shortSide * .3, buffer = shortSide * .04;
+    var cellSize = nearbyRange + buffer, visible = {}, candidates = [];
+    var suppressed = this._nearbyEnemyIndicators || (this._nearbyEnemyIndicators = new WeakMap());
     game.gameData.getEnemyList().forEach(function (enemy) {
-      if (enemy._isPooled || !enemy.node.activeInHierarchy || enemy.isDead()) return;
+      if (enemy._isPooled || !cc.isValid(enemy.node, true) || !enemy.node.activeInHierarchy || enemy.isDead()) { suppressed.delete(enemy.node); return; }
       var screen = camera.getWorldToScreenPoint(enemy.node.convertToWorldSpaceAR(cc.v2(0, 0)));
       var target = ui.convertToNodeSpaceAR(screen);
-      if (target.x >= viewport.minX && target.x <= viewport.maxX && target.y >= viewport.minY && target.y <= viewport.maxY) return;
+      if (target.x >= viewport.minX && target.x <= viewport.maxX && target.y >= viewport.minY && target.y <= viewport.maxY) {
+        var key = Math.floor(target.x / cellSize) + ":" + Math.floor(target.y / cellSize);
+        (visible[key] || (visible[key] = [])).push(target);
+        suppressed.delete(enemy.node);
+      } else candidates.push({ enemy: enemy, target: target });
+    });
+    candidates.forEach(function (candidate) {
+      var enemy = candidate.enemy, target = candidate.target, extra = suppressed.has(enemy.node) ? buffer : 0;
+      var outsideX = Math.max(viewport.minX - target.x, 0, target.x - viewport.maxX);
+      var outsideY = Math.max(viewport.minY - target.y, 0, target.y - viewport.maxY);
+      var nearby = false, radius = nearbyRange + extra;
+      if (outsideX * outsideX + outsideY * outsideY <= (edgeRange + extra) * (edgeRange + extra)) {
+        // Only visible enemies provide context; never hide a whole offscreen
+        // chain. Buckets avoid comparing every pair in a large battle.
+        var cellX = Math.floor(target.x / cellSize), cellY = Math.floor(target.y / cellSize);
+        for (var x = cellX - 1; x <= cellX + 1 && !nearby; x++) {
+          for (var y = cellY - 1; y <= cellY + 1 && !nearby; y++) {
+            var neighbors = visible[x + ":" + y] || [];
+            nearby = neighbors.some(function (point) {
+              var dx = target.x - point.x, dy = target.y - point.y;
+              return dx * dx + dy * dy <= radius * radius;
+            });
+          }
+        }
+      }
+      if (nearby) { suppressed.set(enemy.node, true); return; }
+      suppressed.delete(enemy.node);
       var dx = target.x - center.x, dy = target.y - center.y;
       var sector = Math.floor((Math.atan2(dy, dx) + Math.PI + Math.PI / 8) / (Math.PI / 4)) % 8;
       var group = groups[sector] || (groups[sector] = { ids: [], count: 0, x: 0, y: 0, nearest: Infinity });
@@ -930,8 +965,8 @@ var def_KinghtFallUIGame = function (t) {
       var distance = dx * dx + dy * dy;
       if (distance < group.nearest) { group.nearest = distance; group.id = enemy.cfg.ID; }
     });
-    // Eight directional groups bound HUD work even for large waves. Every
-    // living offscreen enemy contributes to a visible group's count.
+    // Eight directional groups bound HUD work even for large waves. Counts
+    // include only enemies that still need an offscreen alert.
     Object.keys(groups).forEach(function (sector) {
       var group = groups[sector], key = "live:" + sector, record = self.enemyIconInfo[key];
       if (!record) {
@@ -944,11 +979,7 @@ var def_KinghtFallUIGame = function (t) {
         self._loadEnemyPictogram(record, id);
       }
       record._guideLive = true; record._guideIds = group.ids;
-      var caption = record.ndItem.getChildByName("labName"), label = caption.getComponent(cc.Label);
-      label.string = "[[loc:ui.battle.offscreen-enemies]]";
-      label.fontSize = 56; label.lineHeight = 64;
-      label.enableWrapText = false; label.overflow = cc.Label.Overflow.CLAMP;
-      caption.setContentSize(260, 88);
+      record.ndItem.getChildByName("labName").active = false;
       var count = record.ndItem.getChildByName("labNum").getComponent(cc.Label);
       if (record.count !== group.count) {
         record.count = group.count;
