@@ -1,0 +1,819 @@
+{
+  "version": 1,
+  "icons": {
+    "1": {
+      "lv1": {
+        "resource": "character-parts/Parts/Chest/FA_Chest_032_Blue",
+        "width": 76,
+        "height": 68,
+        "id": "Chest/FA_Chest_032_Blue"
+      },
+      "lv2": {
+        "resource": "character-parts/Parts/Chest/FA_Chest_031_Green",
+        "width": 76,
+        "height": 68,
+        "id": "Chest/FA_Chest_031_Green"
+      },
+      "lv3": {
+        "resource": "character-parts/Parts/Chest/FA_Chest_032_Blue",
+        "width": 76,
+        "height": 68,
+        "id": "Chest/FA_Chest_032_Blue"
+      },
+      "lv4": {
+        "resource": "character-parts/Parts/Chest/FA_Chest_033_Blue",
+        "width": 76,
+        "height": 68,
+        "id": "Chest/FA_Chest_033_Blue"
+      }
+    },
+    "2": {
+      "lv1": {
+        "resource": "character-parts/Parts/Helmet/FA_Helmet_047_White",
+        "width": 118,
+        "height": 106,
+        "id": "Helmet/FA_Helmet_047_White"
+      },
+      "lv2": {
+        "resource": "character-parts/Parts/Helmet/FA_Helmet_041_Green",
+        "width": 118,
+        "height": 106,
+        "id": "Helmet/FA_Helmet_041_Green"
+      },
+      "lv3": {
+        "resource": "character-parts/Parts/Helmet/FA_Helmet_042_Purple",
+        "width": 118,
+        "height": 106,
+        "id": "Helmet/FA_Helmet_042_Purple"
+      },
+      "lv4": {
+        "resource": "character-parts/Parts/Helmet/FA_Helmet_043_Red",
+        "width": 118,
+        "height": 106,
+        "id": "Helmet/FA_Helmet_043_Red"
+      }
+    },
+    "3": {
+      "lv1": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_009",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_009"
+      },
+      "lv2": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_012",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_012"
+      },
+      "lv3": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_015",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_015"
+      },
+      "lv4": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
+      },
+      "vip1": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
+      },
+      "vip2": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
+      },
+      "skirmisher_lv1": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_009",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_009"
+      },
+      "skirmisher_lv2": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_012",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_012"
+      },
+      "skirmisher_lv3": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_015",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_015"
+      },
+      "skirmisher_lv4": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
+      },
+      "skirmisher_vip1": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
+      },
+      "skirmisher_vip2": {
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_018",
+        "width": 86,
+        "height": 34,
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
+      },
+      "fighter_lv1": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_020_Black",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_020_Black"
+      },
+      "fighter_lv2": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_021_Blue",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_021_Blue"
+      },
+      "fighter_lv3": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_022_BrownYellow",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_022_BrownYellow"
+      },
+      "fighter_lv4": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_023_Purple",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_023_Purple"
+      },
+      "fighter_vip1": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_023_Purple",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_023_Purple"
+      },
+      "fighter_vip2": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_023_Purple",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_023_Purple"
+      },
+      "vanguard_lv1": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_011_Gray",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_011_Gray"
+      },
+      "vanguard_lv2": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_012_Blue",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_012_Blue"
+      },
+      "vanguard_lv3": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_013_DarkRed",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_013_DarkRed"
+      },
+      "vanguard_lv4": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_014_Gold",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_014_Gold"
+      },
+      "vanguard_vip1": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_014_Gold",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_014_Gold"
+      },
+      "vanguard_vip2": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_014_Gold",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_014_Gold"
+      },
+      "mystic_lv1": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_011_Brown",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_011_Brown"
+      },
+      "mystic_lv2": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_012_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_012_Wood"
+      },
+      "mystic_lv3": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_013_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_013_Wood"
+      },
+      "mystic_lv4": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_014_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_014_Wood"
+      },
+      "mystic_vip1": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_014_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_014_Wood"
+      },
+      "mystic_vip2": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_014_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_014_Wood"
+      },
+      "bruiser_lv1": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_013_DarkRed",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_013_DarkRed"
+      },
+      "bruiser_lv2": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_014_BrownBlue",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_014_BrownBlue"
+      },
+      "bruiser_lv3": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_015_BrownDark",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_015_BrownDark"
+      },
+      "bruiser_lv4": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_016_BrownGold",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_016_BrownGold"
+      },
+      "bruiser_vip1": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_016_BrownGold",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_016_BrownGold"
+      },
+      "bruiser_vip2": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_016_BrownGold",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_016_BrownGold"
+      },
+      "guardian_lv1": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_017_DarkGreen",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_017_DarkGreen"
+      },
+      "guardian_lv2": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_017_Red",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_017_Red"
+      },
+      "guardian_lv3": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_017_Sky",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_017_Sky"
+      },
+      "guardian_lv4": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple"
+      },
+      "guardian_vip1": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple"
+      },
+      "guardian_vip2": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple"
+      }
+    },
+    "4": {
+      "lv1": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_010_Gray",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_010_Gray"
+      },
+      "lv2": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_012_Green",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_012_Green"
+      },
+      "lv3": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_013_DarkGreen",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_013_DarkGreen"
+      },
+      "lv4": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
+      },
+      "vip1": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
+      },
+      "vip2": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
+      },
+      "skirmisher_lv1": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_010_Gray",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_010_Gray"
+      },
+      "skirmisher_lv2": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_012_Green",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_012_Green"
+      },
+      "skirmisher_lv3": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_013_DarkGreen",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_013_DarkGreen"
+      },
+      "skirmisher_lv4": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
+      },
+      "skirmisher_vip1": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
+      },
+      "skirmisher_vip2": {
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow",
+        "width": 130,
+        "height": 71,
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
+      },
+      "fighter_lv1": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_020_Black",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_020_Black"
+      },
+      "fighter_lv2": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_021_Blue",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_021_Blue"
+      },
+      "fighter_lv3": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_022_BrownYellow",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_022_BrownYellow"
+      },
+      "fighter_lv4": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_023_Purple",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_023_Purple"
+      },
+      "fighter_vip1": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_023_Purple",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_023_Purple"
+      },
+      "fighter_vip2": {
+        "resource": "character-parts/Parts/HandRight/Sword/FA_WP_Main_Sword_023_Purple",
+        "width": 118,
+        "height": 59,
+        "id": "HandRight/Sword/FA_WP_Main_Sword_023_Purple"
+      },
+      "vanguard_lv1": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_011_Gray",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_011_Gray"
+      },
+      "vanguard_lv2": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_012_Blue",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_012_Blue"
+      },
+      "vanguard_lv3": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_013_DarkRed",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_013_DarkRed"
+      },
+      "vanguard_lv4": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_014_Gold",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_014_Gold"
+      },
+      "vanguard_vip1": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_014_Gold",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_014_Gold"
+      },
+      "vanguard_vip2": {
+        "resource": "character-parts/Parts/HandRight/Spear/FA_WP_Main_Spear_014_Gold",
+        "width": 155,
+        "height": 57,
+        "id": "HandRight/Spear/FA_WP_Main_Spear_014_Gold"
+      },
+      "mystic_lv1": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_011_Brown",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_011_Brown"
+      },
+      "mystic_lv2": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_012_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_012_Wood"
+      },
+      "mystic_lv3": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_013_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_013_Wood"
+      },
+      "mystic_lv4": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_014_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_014_Wood"
+      },
+      "mystic_vip1": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_014_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_014_Wood"
+      },
+      "mystic_vip2": {
+        "resource": "character-parts/Parts/HandRight/Staff/FA_WP_Main_Staff_014_Wood",
+        "width": 68,
+        "height": 135,
+        "id": "HandRight/Staff/FA_WP_Main_Staff_014_Wood"
+      },
+      "bruiser_lv1": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_013_DarkRed",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_013_DarkRed"
+      },
+      "bruiser_lv2": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_014_BrownBlue",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_014_BrownBlue"
+      },
+      "bruiser_lv3": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_015_BrownDark",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_015_BrownDark"
+      },
+      "bruiser_lv4": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_016_BrownGold",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_016_BrownGold"
+      },
+      "bruiser_vip1": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_016_BrownGold",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_016_BrownGold"
+      },
+      "bruiser_vip2": {
+        "resource": "character-parts/Parts/HandRight/Axe/FA_WP_Main_Axe_016_BrownGold",
+        "width": 108,
+        "height": 85,
+        "id": "HandRight/Axe/FA_WP_Main_Axe_016_BrownGold"
+      },
+      "guardian_lv1": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_017_DarkGreen",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_017_DarkGreen"
+      },
+      "guardian_lv2": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_017_Red",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_017_Red"
+      },
+      "guardian_lv3": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_017_Sky",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_017_Sky"
+      },
+      "guardian_lv4": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple"
+      },
+      "guardian_vip1": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple"
+      },
+      "guardian_vip2": {
+        "resource": "character-parts/Parts/HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple",
+        "width": 113,
+        "height": 75,
+        "id": "HandRight/Blunt/FA_WP_Main_Blunt_024_GoldPurple"
+      }
+    },
+    "5": {
+      "lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "skirmisher_lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "skirmisher_lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "skirmisher_lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "skirmisher_lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "skirmisher_vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "skirmisher_vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "fighter_lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "fighter_lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "fighter_lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "fighter_lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "fighter_vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "fighter_vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "vanguard_lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "vanguard_lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "vanguard_lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "vanguard_lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "vanguard_vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "vanguard_vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "mystic_lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "mystic_lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "mystic_lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "mystic_lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "mystic_vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "mystic_vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "bruiser_lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "bruiser_lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "bruiser_lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "bruiser_lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "bruiser_vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "bruiser_vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "guardian_lv1": {
+        "resource": "hero-maker/equipment/gloves-lv1",
+        "width": 49,
+        "height": 45,
+        "id": "Hero/Gloves/lv1"
+      },
+      "guardian_lv2": {
+        "resource": "hero-maker/equipment/gloves-lv2",
+        "width": 50,
+        "height": 48,
+        "id": "Hero/Gloves/lv2"
+      },
+      "guardian_lv3": {
+        "resource": "hero-maker/equipment/gloves-lv3",
+        "width": 53,
+        "height": 49,
+        "id": "Hero/Gloves/lv3"
+      },
+      "guardian_lv4": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "guardian_vip1": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      },
+      "guardian_vip2": {
+        "resource": "hero-maker/equipment/gloves-lv4",
+        "width": 52,
+        "height": 49,
+        "id": "Hero/Gloves/lv4"
+      }
+    }
+  }
+}

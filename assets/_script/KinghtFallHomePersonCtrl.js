@@ -49,6 +49,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     this.scheduleHomeGuide();
   };
   _ctor.prototype.onDisable = function () {
+    require("HeroWeaponPicker").close(this);
     this.unschedule(this.showHomeGuide);
     this.unschedule(this.finishScrollFooterLayout);
     this._gearFooterLayoutPending = false;
@@ -84,6 +85,10 @@ var def_KinghtFallHomePersonCtrl = function (t) {
         ndInfo: s.ndItemDown[t]
       };
       s.ndItemTop[t].getChildByName("spAni").active = false;
+      if (n.id === 4) {
+        s.ndItemTop[t].on(cc.Node.EventType.TOUCH_END, function () { require("HeroWeaponPicker").open(e); }, s);
+        s.ndItemDown[t].getChildByName("ndItem").on(cc.Node.EventType.TOUCH_END, function () { require("HeroWeaponPicker").open(e); }, s);
+      }
       s.ndItemDown[t].getChildByName("btnUpgeade").on(cc.Node.EventType.TOUCH_END, function () {
         e.onUpgeade(n.id);
       }, s);
@@ -156,6 +161,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     if (this.node.activeInHierarchy) this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.NewbieGuide, 4, this.nodeInfo[0].ndInfo.getChildByName("btnUpgeade"));
   };
   _ctor.prototype.onDestroy = function () {
+    require("HeroWeaponPicker").close(this);
     if (this._cancelItemLookReady) this._cancelItemLookReady();
     this._cancelItemLookReady = null;
     this.unschedule(this.finishScrollFooterLayout);
@@ -213,6 +219,11 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       if (hasNextLevel) g.getChildByName("labNum2").getComponent(cc.Label).string = "" + r.cfg.levelInfo[l].Parameters;
       var customItem = cc.resources && HeroItemLooks.item(r.type, l);
       r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = customItem ? customItem.name : o.T(r.cfg.levelInfo[l - 1].EquipName);
+      if (r.type === 4) {
+        var style = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon();
+        r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = style.name + " · " + style.weapon + "\nTap to switch";
+      }
+      if (r.type === 3) r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon().name + " · Power";
       r.ndInfo.getChildByName("labName").active = c;
       if (c) {
         g.active = true;

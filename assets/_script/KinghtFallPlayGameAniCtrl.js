@@ -66,7 +66,9 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniRevive.node.active = false;
     this.spAniLevelUp.node.active = false;
     this.ndReviveTail.active = false;
+    require("HeroMakerRider").skins(this);
   };
+  _ctor.prototype.lateUpdate = function () { require("HeroMakerRider").update(this); };
   _ctor.prototype.setAttackEvent = function (t) {
     this.spAniBody.setEventListener(function (e, n) {
       switch (n.data.name) {
@@ -77,8 +79,10 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
   };
   _ctor.prototype.setAttackEnd = function (t) {
     var e = this;
-    this.spAniBody.setCompleteListener(function () {
-      e.spAniBody.animation == $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack && t();
+    this.spAniBody.setCompleteListener(function (entry) {
+      var animation = entry && (entry.animation || entry.getAnimation && entry.getAnimation());
+      var name = animation && (animation.name || animation.getName && animation.getName()) || e.spAniBody.animation;
+      /^attack(?:_|$)/.test(name) && t();
     });
   };
   _ctor.prototype.setMaLeft = function (t) {
@@ -97,20 +101,21 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     this.spAniHand.node.scaleX = t < 0 ? -1 : 1;
   };
   _ctor.prototype.setAttack = function (t) {
-    var e = this.spAniBody.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack, false);
+    var attackName = require("HeroMakerRider").attackName(this);
+    var e = this.spAniBody.setAnimation(0, attackName, false);
     t && this.spAniBody.setTrackCompleteListener(e, function () {
       t();
     });
     this.spAniBody.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
-    this.spAniDrap.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack, false);
+    this.spAniDrap.setAnimation(0, attackName, false);
     this.spAniDrap.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
-    this.spAniHead.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack, false);
+    this.spAniHead.setAnimation(0, attackName, false);
     this.spAniHead.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
-    this.spAniBow.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack, false);
+    this.spAniBow.setAnimation(0, attackName, false);
     this.spAniBow.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
-    this.spAniArrow.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack, false);
+    this.spAniArrow.setAnimation(0, attackName, false);
     this.spAniArrow.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
-    this.spAniHand.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Attack, false);
+    this.spAniHand.setAnimation(0, attackName, false);
     this.spAniHand.addAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle, true);
   };
   _ctor.prototype.setIdle = function () {
@@ -242,6 +247,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
   _ctor.prototype.setBus = function (t) {
     switch (t) {
       case 0:
+        this._weaponTierBattle = null;
         var e = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getEquipCfgList();
         for (var n = 0; n < e.length; n++) {
           var i = e[n];
@@ -260,6 +266,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
         }
         break;
       case 1:
+        this._weaponTierBattle = "vip1";
         this.arrName = "vip1";
         this.spAniArrow.setSkin("vip1");
         this.spAniBow.setSkin("vip1");
@@ -270,6 +277,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
         this.setLevelUp();
         break;
       case 3:
+        this._weaponTierBattle = "vip2";
         this.arrName = "vip2";
         this.spAniArrow.setSkin("vip2");
         this.spAniBow.setSkin("vip2");
@@ -279,6 +287,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
         this.spAniMa.setSkin("vip2");
         this.setLevelUp();
     }
+    require("HeroMakerRider").skins(this);
   };
   cc__decorate([ccp_property({
     type: sp.Skeleton,

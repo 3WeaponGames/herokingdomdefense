@@ -5,7 +5,8 @@ const Document=require('../../game-data-editor/lib/json-document');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const uuid=value=>{const h=crypto.createHash('sha256').update('hkd-native-unit:'+value).digest('hex');return h.slice(0,8)+'-'+h.slice(8,12)+'-5'+h.slice(13,16)+'-a'+h.slice(17,20)+'-'+h.slice(20,32);};
 function duration(animation){let result=0;function visit(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')result=Math.max(result,value.time);Object.values(value).forEach(visit);}visit(animation);return result;}
-function readAtlas(layer,read){
+function readAtlas(layer,read,decode){
+  decode=decode||PNG.decode;
   const regions={},lines=layer.atlas.split(/\r?\n/);let page=null,current=null;
   for(let i=0;i<lines.length;i++){
     const line=lines[i];if(!line.trim()){current=null;continue;}
@@ -15,7 +16,7 @@ function readAtlas(layer,read){
     }else if(current){const at=line.indexOf(':'),key=line.slice(0,at).trim(),value=line.slice(at+1).trim();if(key==='xy'||key==='size'||key==='orig'||key==='offset')current[key]=value.split(',').map(Number);if(key==='rotate')current.rotate=value==='true';}
   }
   const decoded=new Map();
-  return name=>{const r=regions[name];if(!r)throw Error('Missing imported atlas region: '+name);if(!decoded.has(r.page))decoded.set(r.page,PNG.decode(read(r.page)));const image=decoded.get(r.page);return PNG.crop(image,r.xy[0],r.xy[1],r.rotate?r.size[1]:r.size[0],r.rotate?r.size[0]:r.size[1],r.rotate);};
+  return name=>{const r=regions[name];if(!r)throw Error('Missing imported atlas region: '+name);if(!decoded.has(r.page))decoded.set(r.page,decode(read(r.page)));const image=decoded.get(r.page);return PNG.crop(image,r.xy[0],r.xy[1],r.rotate?r.size[1]:r.size[0],r.rotate?r.size[0]:r.size[1],r.rotate);};
 }
 function textureMeta(relative,width,height){return{ver:'2.3.7',uuid:uuid(relative),importer:'texture',type:'sprite',wrapMode:'clamp',filterMode:'bilinear',premultiplyAlpha:false,genMipmaps:false,packable:false,width,height,platformSettings:{},subMetas:{[path.basename(relative,'.png')]:{ver:'1.0.6',uuid:uuid(relative+'#sprite'),importer:'sprite-frame',rawTextureUuid:uuid(relative),trimType:'none',trimThreshold:1,rotated:false,offsetX:0,offsetY:0,trimX:0,trimY:0,width,height,rawWidth:width,rawHeight:height,borderTop:0,borderBottom:0,borderLeft:0,borderRight:0,subMetas:{}}}};}
 function preserveMetadata(root,files,read){
@@ -66,14 +67,14 @@ function bake(root,profile,id,contract,assets,read,options){
     const mounts=require('./mounts'),merged=mounts.merge(pieces);mounts.orderMounted(merged.rig,description);mounts.bindRider(root,merged,description);merged.rig._unitSource=profile.base.source;merged.rig._unitLook=id;merged.rig._mountAnimationVersion=mounts.ANIMATION_VERSION;return outputFiles(root,profile,id,merged.rig,merged.pictures,read);
   }
   if(!description)throw Error('Choose a Character Maker or monster base before saving this unit');
-  const layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read),pictures={};
+  const decode=options&&options.decode||PNG.decode,layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read,decode),pictures={};
   const skinName=profile.skins&&profile.skins[layer.uuid]||layer.skin||'default';
   selectSkin(rig,skinName);
   const attachments=rig.skins[0].attachments,slots=new Map(rig.slots.map(slot=>[slot.name,slot])),replaced=new Set(),hidden=new Set();
   for(const part of profile.parts){
     if(part.layer!==layer.uuid)throw Error('Part belongs to a different imported base: '+part.id);
     const slot=slots.get(part.slot),asset=assets.get(part.sprite);if(!slot||!asset)throw Error('Missing part or equipment slot: '+part.id);
-    const region='part_'+part.id,texture=PNG.decode(read(path.join(root,asset.image)));pictures[region]=texture;
+    const region='part_'+part.id,texture=decode(read(path.join(root,asset.image)));pictures[region]=texture;
     slot.bone=part.bone;slot.attachment=region;
     attachments[slot.name]={[region]:{path:region,x:part.x,y:part.y,rotation:part.rotation,scaleX:part.scaleX,scaleY:part.scaleY,width:asset.width,height:asset.height,color:(part.tint||'#ffffff').slice(1)+Math.round(part.opacity*255).toString(16).padStart(2,'0')}};
     const visibility=/^Rider\//.test(slot.name)&&slots.get('Rider/Body');

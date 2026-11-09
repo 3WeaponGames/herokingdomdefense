@@ -801,6 +801,186 @@
       "width": 128,
       "height": 128,
       "sha256": "f2672afce21bb60497df0dfcdcc2f640ecafd246099870105dd3933e87db0c38"
+    },
+    {
+      "number": 81,
+      "id": "hero-skirmisher-damage",
+      "meaning": "skirmisher damage talent",
+      "image": "assets/resources/Stats Icons/hero-skirmisher-damage.png",
+      "reference": "@icon/Stats Icons/hero-skirmisher-damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "8420a8e344b1717834c18e1b53faeaacb0409587396f2fc8518d5d78d6e446cd"
+    },
+    {
+      "number": 82,
+      "id": "hero-skirmisher-speed",
+      "meaning": "skirmisher speed talent",
+      "image": "assets/resources/Stats Icons/hero-skirmisher-speed.png",
+      "reference": "@icon/Stats Icons/hero-skirmisher-speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "9cb86b4b31fc658c2de58b3a9ac162fa0e44acf83b6e9da7dd71ed48e38c64a0"
+    },
+    {
+      "number": 83,
+      "id": "hero-skirmisher-health",
+      "meaning": "skirmisher health talent",
+      "image": "assets/resources/Stats Icons/hero-skirmisher-health.png",
+      "reference": "@icon/Stats Icons/hero-skirmisher-health",
+      "width": 128,
+      "height": 128,
+      "sha256": "551755a444d6332e45ef2d426df042560c3c50e8aa9a801effc8240dcdda0c18"
+    },
+    {
+      "number": 84,
+      "id": "hero-fighter-damage",
+      "meaning": "fighter damage talent",
+      "image": "assets/resources/Stats Icons/hero-fighter-damage.png",
+      "reference": "@icon/Stats Icons/hero-fighter-damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "e0731ef366ae7d06830aadc73a3a730ddbb56bd548d93afcf1a070209ce2c9c5"
+    },
+    {
+      "number": 85,
+      "id": "hero-fighter-speed",
+      "meaning": "fighter speed talent",
+      "image": "assets/resources/Stats Icons/hero-fighter-speed.png",
+      "reference": "@icon/Stats Icons/hero-fighter-speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "b24fb093ebeb860172815c4fda4a991a98ec1715e5217d701eba0c2c9255eda2"
+    },
+    {
+      "number": 86,
+      "id": "hero-fighter-health",
+      "meaning": "fighter health talent",
+      "image": "assets/resources/Stats Icons/hero-fighter-health.png",
+      "reference": "@icon/Stats Icons/hero-fighter-health",
+      "width": 128,
+      "height": 128,
+      "sha256": "5b412350ca53a510b653bc5f46fe1a1b51eba4883665cc31398772ec35c8ab75"
+    },
+    {
+      "number": 87,
+      "id": "hero-vanguard-damage",
+      "meaning": "vanguard damage talent",
+      "image": "assets/resources/Stats Icons/hero-vanguard-damage.png",
+      "reference": "@icon/Stats Icons/hero-vanguard-damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "b7218480ac0ad09bd2f3a4a13117c5056d66c43333ce9d6e80a60e0eff342d01"
+    },
+    {
+      "number": 88,
+      "id": "hero-vanguard-speed",
+      "meaning": "vanguard speed talent",
+      "image": "assets/resources/Stats Icons/hero-vanguard-speed.png",
+      "reference": "@icon/Stats Icons/hero-vanguard-speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "7635c49c8bb27fad35325342273b11c70d54640bb8aae55d84c33fd73dee295f"
+    },
+    {
+      "number": 89,
+      "id": "hero-vanguard-health",
+      "meaning": "vanguard health talent",
+      "image": "assets/resources/Stats Icons/hero-vanguard-health.png",
+      "reference": "@icon/Stats Icons/hero-vanguard-health",
+      "width": 128,
+      "height": 128,
+      "sha256": "e346c47016dc817482c4550ee2383fa4580b9119790fb080710f560acfb92b6e"
+    },
+    {
+      "number": 90,
+      "id": "hero-mystic-damage",
+      "meaning": "mystic damage talent",
+      "image": "assets/resources/Stats Icons/hero-mystic-damage.png",
+      "reference": "@icon/Stats Icons/hero-mystic-damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "14d24401799a81178ab21da381ac7ecc971668e73f0f86f83d83d38f919bf279"
+    },
+    {
+      "number": 91,
+      "id": "hero-mystic-speed",
+      "meaning": "mystic speed talent",
+      "image": "assets/resources/Stats Icons/hero-mystic-speed.png",
+      "reference": "@icon/Stats Icons/hero-mystic-speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "c19626a672a360b1ed5f4fff0fc8a135288b8c69c1fb59e089c0cbbca1088bdb"
+    },
+    {
+      "number": 92,
+      "id": "hero-mystic-health",
+      "meaning": "mystic health talent",
+      "image": "assets/resources/Stats Icons/hero-mystic-health.png",
+      "reference": "@icon/Stats Icons/hero-mystic-health",
+      "width": 128,
+      "height": 128,
+      "sha256": "0edc2b4fd2fad9471196e0fe40594cf4ab7cc56855bb1c93cedd8b2e887125a9"
+    },
+    {
+      "number": 93,
+      "id": "hero-bruiser-damage",
+      "meaning": "bruiser damage talent",
+      "image": "assets/resources/Stats Icons/hero-bruiser-damage.png",
+      "reference": "@icon/Stats Icons/hero-bruiser-damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "efbd44fd9b05ed5bac4469626af01b9b759d4c0dd9c1aa39eecc7d2c9890c713"
+    },
+    {
+      "number": 94,
+      "id": "hero-bruiser-speed",
+      "meaning": "bruiser speed talent",
+      "image": "assets/resources/Stats Icons/hero-bruiser-speed.png",
+      "reference": "@icon/Stats Icons/hero-bruiser-speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "cc83e73a3206d0d94e5478ddd929578d62498531f73d9d4c39cf938ecd59fd9a"
+    },
+    {
+      "number": 95,
+      "id": "hero-bruiser-health",
+      "meaning": "bruiser health talent",
+      "image": "assets/resources/Stats Icons/hero-bruiser-health.png",
+      "reference": "@icon/Stats Icons/hero-bruiser-health",
+      "width": 128,
+      "height": 128,
+      "sha256": "167e5405b148803ba77344d53a3b986ebdb027a018e978b2fd922d4a350e8097"
+    },
+    {
+      "number": 96,
+      "id": "hero-guardian-damage",
+      "meaning": "guardian damage talent",
+      "image": "assets/resources/Stats Icons/hero-guardian-damage.png",
+      "reference": "@icon/Stats Icons/hero-guardian-damage",
+      "width": 128,
+      "height": 128,
+      "sha256": "627450c9e9db02a851f71dec6a530035de7ebf21542dd5856644cf212eebee3a"
+    },
+    {
+      "number": 97,
+      "id": "hero-guardian-speed",
+      "meaning": "guardian speed talent",
+      "image": "assets/resources/Stats Icons/hero-guardian-speed.png",
+      "reference": "@icon/Stats Icons/hero-guardian-speed",
+      "width": 128,
+      "height": 128,
+      "sha256": "c14854fbe574e06e35d50429f770f5456040fd806d171542dc5cbf6520632e91"
+    },
+    {
+      "number": 98,
+      "id": "hero-guardian-health",
+      "meaning": "guardian health talent",
+      "image": "assets/resources/Stats Icons/hero-guardian-health.png",
+      "reference": "@icon/Stats Icons/hero-guardian-health",
+      "width": 128,
+      "height": 128,
+      "sha256": "ddb01a39aafd146619ea9fbd9f156ed1475786ee99e959dc53cb557663d8a7f6"
     }
   ],
   "replacements": {

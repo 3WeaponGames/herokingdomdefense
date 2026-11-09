@@ -7463,6 +7463,105 @@
       "width": 118,
       "height": 106,
       "sha256": "a934a5d44364554c90bb60238cf2ad06b486cabb3bb291eb392a55b1bdf3c7f8"
+    },
+    {
+      "id": "Hero/Cape/lv1",
+      "name": "Hero Cape lv1",
+      "category": "Cape",
+      "image": "assets/resources/hero-maker/equipment/cape-lv1.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/cape-lv1.png",
+      "resource": "hero-maker/equipment/cape-lv1",
+      "width": 84,
+      "height": 89,
+      "pixelsPerUnit": 416.6666666666667
+    },
+    {
+      "id": "Hero/Cape/lv2",
+      "name": "Hero Cape lv2",
+      "category": "Cape",
+      "image": "assets/resources/hero-maker/equipment/cape-lv2.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/cape-lv2.png",
+      "resource": "hero-maker/equipment/cape-lv2",
+      "width": 85,
+      "height": 89,
+      "pixelsPerUnit": 416.6666666666667
+    },
+    {
+      "id": "Hero/Cape/lv3",
+      "name": "Hero Cape lv3",
+      "category": "Cape",
+      "image": "assets/resources/hero-maker/equipment/cape-lv3.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/cape-lv3.png",
+      "resource": "hero-maker/equipment/cape-lv3",
+      "width": 85,
+      "height": 89,
+      "pixelsPerUnit": 416.6666666666667
+    },
+    {
+      "id": "Hero/Cape/lv4",
+      "name": "Hero Cape lv4",
+      "category": "Cape",
+      "image": "assets/resources/hero-maker/equipment/cape-lv4.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/cape-lv4.png",
+      "resource": "hero-maker/equipment/cape-lv4",
+      "width": 86,
+      "height": 91,
+      "pixelsPerUnit": 416.6666666666667
+    },
+    {
+      "id": "Hero/Gloves/lv1",
+      "name": "Hero Gloves lv1",
+      "category": "Gloves",
+      "image": "assets/resources/hero-maker/equipment/gloves-lv1.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/gloves-lv1.png",
+      "resource": "hero-maker/equipment/gloves-lv1",
+      "width": 49,
+      "height": 45,
+      "pixelsPerUnit": 454.54545454545456
+    },
+    {
+      "id": "Hero/Gloves/lv2",
+      "name": "Hero Gloves lv2",
+      "category": "Gloves",
+      "image": "assets/resources/hero-maker/equipment/gloves-lv2.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/gloves-lv2.png",
+      "resource": "hero-maker/equipment/gloves-lv2",
+      "width": 50,
+      "height": 48,
+      "pixelsPerUnit": 454.54545454545456
+    },
+    {
+      "id": "Hero/Gloves/lv3",
+      "name": "Hero Gloves lv3",
+      "category": "Gloves",
+      "image": "assets/resources/hero-maker/equipment/gloves-lv3.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/gloves-lv3.png",
+      "resource": "hero-maker/equipment/gloves-lv3",
+      "width": 53,
+      "height": 49,
+      "pixelsPerUnit": 454.54545454545456
+    },
+    {
+      "id": "Hero/Gloves/lv4",
+      "name": "Hero Gloves lv4",
+      "category": "Gloves",
+      "image": "assets/resources/hero-maker/equipment/gloves-lv4.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/gloves-lv4.png",
+      "resource": "hero-maker/equipment/gloves-lv4",
+      "width": 52,
+      "height": 49,
+      "pixelsPerUnit": 454.54545454545456
+    },
+    {
+      "id": "Hero/Boots/default",
+      "name": "Hero Boots default",
+      "category": "Boots",
+      "image": "assets/resources/hero-maker/equipment/boots-default.png",
+      "thumbnail": "assets/resources/hero-maker/equipment/boots-default.png",
+      "resource": "hero-maker/equipment/boots-default",
+      "width": 35,
+      "height": 45,
+      "pixelsPerUnit": 263.1578947368421
     }
   ]
 }

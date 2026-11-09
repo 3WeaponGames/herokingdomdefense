@@ -48,7 +48,8 @@ function plan(root,sourceDir,catalog){
   const folderMeta=target+'.meta',existingFolder=read(path.join(root,folderMeta));
   if(existingFolder){const meta=parse(existingFolder,folderMeta);if(meta.importer!=='folder'||meta.isBundle)throw Error('Stats Icons must remain a resources folder, not a separate bundle.');}
   files.set(folderMeta,existingFolder||JSON.stringify({ver:'1.1.3',uuid:Bake.uuid(folderMeta),importer:'folder',isBundle:false,bundleName:'',priority:1,compressionType:{},optimizeHotUpdate:{},inlineSpriteFrames:{},isRemoteBundle:{},subMetas:{}},null,2)+'\n');
-  const registry=Object.assign({},oldCatalog,{version:1,resolution:128,icons});
+  const retained=(oldCatalog.icons||[]).filter(icon=>!icons.some(next=>next.id===icon.id));
+  const registry=Object.assign({},oldCatalog,{version:1,resolution:128,icons:icons.concat(retained)});
   files.set(manifest,JSON.stringify(registry,null,2)+'\n');
   return{count:icons.length,files,reads,registry,manifest};
 }

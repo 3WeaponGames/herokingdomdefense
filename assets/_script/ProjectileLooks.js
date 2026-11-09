@@ -146,6 +146,9 @@ View.prototype.begin = function (key) {
       }
     }
     var options = select(data, key, level, item), descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
+    if (key === "hero" && !options.flight && bank.owner.ctrPlay && bank.owner.ctrPlay.heroStyle === "mystic") {
+      options.flight = "original:fireball"; descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
+    }
     if (!descriptor && !options.launch && !options.impact) return;
     applied = true;
     if (key === "wall-defense") options.rotation = (options.rotation || 0) + 90;

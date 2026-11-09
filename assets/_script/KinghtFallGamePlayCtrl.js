@@ -115,6 +115,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
           this.moveSpeed = a.Parameters;
       }
     }
+    require("HeroWeaponCombat").configure(this, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data);
     this.hpMax = this.baseHp * (1 + RelicRuntime.value(RelicRuntime.current(), 120036));
     this.hp = this.hpMax;
     this._baseAttackRange = this.attackRange;
@@ -248,6 +249,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return this.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
   };
   _ctor.prototype.getAttWpos = function () {
+    var origin = require("HeroMakerRider").projectileOrigin(this.ctrPlayAni);
+    if (origin) return origin;
     return this.node.convertToWorldSpaceAR(this.ctrArr.node.getPosition());
   };
   _ctor.prototype.isDead = function () {

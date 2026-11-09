@@ -75,7 +75,7 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
       for (var i = 0; i < e.length; i++) {
         e[i].Level == t && n.push(e[i]);
       }
-      return n;
+      return n.sort(function (left, right) { return (left.BranchColumn || 0) - (right.BranchColumn || 0); });
     };
     var i = function (e) {
       var i = n(e);
@@ -146,7 +146,11 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     var n = this.nodeInfo[t];
     var i = this.nodeInfo[t + 1];
     if (n && i) {
-      if (1 == n.cfgList.length && 1 == i.cfgList.length) {
+      if (n.cfgList.length > 1 && i.cfgList.length > 1) {
+        var middle = (n.pos[0].y + i.pos[0].y) / 2, center = this.stratPos.x;
+        n.pos.forEach(function (point) { e.moveTo(point.x, point.y); e.lineTo(point.x, middle); e.lineTo(center, middle); });
+        i.pos.forEach(function (point) { e.moveTo(center, middle); e.lineTo(point.x, middle); e.lineTo(point.x, point.y); });
+      } else if (1 == n.cfgList.length && 1 == i.cfgList.length) {
         var a = n.pos[0];
         var o = i.pos[0];
         e.moveTo(a.x, a.y);
@@ -244,6 +248,9 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     }
     if (i) {
       var s = this.nodeInfo[t.Level - 1];
+      // The three visible paths are optional purchases. One opens the next
+      // tier; buying siblings later never forces an ad or blocks progression.
+      if (require("HeroStyleTalents").optional(t, s.cfgList)) return 2;
       if (s.cfgList.length > 1) {
         for (a = 0; a < s.cfgList.length; a++) {
           o = s.cfgList[a];
@@ -261,7 +268,10 @@ var def_KinghtFallHomeTalentCtrl = function (t) {
     var i = this.nodeInfo[t.Level - 1];
     var a = this.nodeInfo[e.Level - 1];
     if (i && a) {
-      if (1 == i.cfgList.length && 1 == a.cfgList.length) {
+      if (i.cfgList.length > 1 && a.cfgList.length > 1) {
+        var from = i.pos[i.cfgList.findIndex(function (row) { return row.ID === t.ID; })], to = a.pos[a.cfgList.findIndex(function (row) { return row.ID === e.ID; })], middle = (from.y + to.y) / 2;
+        n.moveTo(from.x,from.y);n.lineTo(from.x,middle);n.lineTo(to.x,middle);n.lineTo(to.x,to.y);
+      } else if (1 == i.cfgList.length && 1 == a.cfgList.length) {
         var o = i.pos[0];
         var r = a.pos[0];
         n.moveTo(o.x, o.y);

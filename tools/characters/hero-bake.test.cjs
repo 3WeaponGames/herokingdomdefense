@@ -6,7 +6,7 @@ test('a saved helmet becomes a normal native Spine rig with its tint, all origin
   const description=Units.describe(root,{type:'hero',id:'hero',noRuntime:true}),layer=description.layers.find(l=>l.uuid===profile.parts[0].layer),source=JSON.stringify(layer.json),assets=new Map(require('../../assets/resources/character-parts/catalog.json').parts.map(a=>[a.id,a]));
   const result=Baker.bake(root,profile,'test-helmet',description,assets,file=>fs.readFileSync(file));assert(result.bakedLayers[layer.uuid]);const file=[...result.files.keys()].find(f=>f.endsWith('.json')),rig=JSON.parse(result.files.get(file));
   assert.deepEqual(rig.animations,layer.json.animations);assert.equal(JSON.stringify(layer.json),source);
-  for(const skin of rig.skins){const hats=Object.keys(skin.attachments).filter(n=>/headgear/.test(n));assert.deepEqual(hats,[profile.parts[0].slot]);assert.equal(Object.values(skin.attachments[hats[0]])[0].color,'80c0ffff');}
+  for(const skin of rig.skins){const hats=Object.keys(skin.attachments).filter(n=>/headgear|\/Helmet$/.test(n));assert.deepEqual(hats,[profile.parts[0].slot]);assert.equal(Object.values(skin.attachments[hats[0]])[0].color,'80c0ffff');}
   const spine=require(Units.enginePath()),png=result.files.get(file.replace('.json','.png')),atlas=new spine.TextureAtlas(result.files.get(file.replace('.json','.atlas')),()=>new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)}));
   assert.doesNotThrow(()=>new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(rig));
 });

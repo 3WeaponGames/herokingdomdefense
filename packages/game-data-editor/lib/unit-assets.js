@@ -98,7 +98,21 @@ function describe(root, request) {
         if(!Number.isInteger(request.level)||!(levels.length?levels:[1]).includes(request.level))throw Error('Choose an existing ally level.');
         const file=path.join(root,'assets/resources/characters/catalog.json');if(fs.existsSync(file)){const looks=json(file),selected=looks.assignments['ally:'+id+':level:'+request.level]||looks.assignments['ally:'+id+':default'];levelProfile=looks.profiles[selected];}
     }
-    const layers = chosen.map(c => layer(root,levelProfile&&levelProfile.baked?Object.assign({},c,{_N$skeletonData:{__uuid__:levelProfile.baked.uuid},defaultSkin:'default'}):c,prefab,files));
+    let layers = chosen.map(c => layer(root,levelProfile&&levelProfile.baked?Object.assign({},c,{_N$skeletonData:{__uuid__:levelProfile.baked.uuid},defaultSkin:'default'}):c,prefab,files));
+    if(type==='hero'&&!request.noAppearance){
+        const characters=path.join(root,'assets/resources/characters/catalog.json'),items=path.join(root,'assets/resources/hero-items/catalog.json'),profiles=[];
+        if(fs.existsSync(characters)){const catalog=json(characters);profiles.push(catalog.profiles[catalog.assignments['hero:hero:default']]);}
+        if(fs.existsSync(items)){
+            const catalog=json(items),Weapons=require('../../../assets/_script/HeroWeapons'),style=(Weapons.find(request.heroStyle)||Weapons.styles[0]).id;
+            for(const gear of cfg.EquipCfg){const level=Math.max(1,Math.min(gear.levelInfo.length,Number((request.heroLevels||{})[gear.id])||1));profiles.push(catalog.profiles[catalog.assignments[Weapons.itemKey(gear.id,level,style)]]);}
+        }
+        const replacements=Object.assign({},...profiles.filter(Boolean).map(profile=>profile.bakedLayers||{}));
+        layers=layers.map((original,index)=>{
+            const saved=replacements[original.uuid];if(!saved||!files.uuids[saved.uuid])return original;
+            const published=layer(root,Object.assign({},chosen[index],{_N$skeletonData:{__uuid__:saved.uuid}}),prefab,files);
+            return Object.assign(published,{uuid:original.uuid,publishedUuid:saved.uuid,name:original.name});
+        });
+    }
     const equipment = [];
     if (type === 'hero') {
         const roles = { ma: 6, doupeng: 1, tou: 2, gong: 4, jian: 3, shou: 5 };
@@ -111,6 +125,10 @@ function describe(root, request) {
             l.skin = equip.levelInfo[level].EquipSkin;
             equipment.push({ id: equip.id, label: {1:'Cape',2:'Head',3:'Arrow',4:'Bow',5:'Gloves',6:'Mount'}[equip.id], level: level + 1, max: equip.levelInfo.length });
         });
+        const style=require('../../../assets/_script/HeroWeapons').find(request.heroStyle)||require('../../../assets/_script/HeroWeapons').styles[0];
+        for(const l of layers)if(l.json._heroMaker&&[3,4,5].includes(l.json._heroMaker.role))l.skin=style.id+'_'+l.skin;
+        const horse=layers.find(l=>l.name==='wqyl_lead_ma');
+        if(horse&&layers.some(l=>l.json._heroMaker))for(const l of layers.filter(l=>l.json._heroMaker))l.followMount={layer:horse.uuid,bone:'bone2',translationOnly:true};
     }
     const sourceSet = new Set(layers.map(l => l.uuid)), shared = [];
     files.files.filter(f => /(?:ItemEnemy\d+|ndPlay)\.prefab$/.test(f)).forEach(f => {

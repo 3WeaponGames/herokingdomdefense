@@ -96,6 +96,7 @@ var exp_KinghtFallUserData = function (t) {
       data[key] = data[key].map(function (value) { return typeof value === "number" && isFinite(value) && value >= 0 ? Math.floor(value) : 0; });
     });
     data.personLevel = data.personLevel.slice(0, equipment.length).map(function (value, index) { return Math.max(1, Math.min(equipment[index].levelInfo.length, value)); });
+    require("HeroWeapons").validate(data, equipment);
     ["talentInfo", "treasureInfo", "shopInfo"].forEach(function (key) {
       data[key] = data[key].filter(function (row) { return row && typeof row === "object" && Number.isInteger(row.id) && row.id > 0; }).map(function (row) {
         ["level", "frame", "video", "time"].forEach(function (field) {
@@ -345,6 +346,7 @@ var exp_KinghtFallUserData = function (t) {
     this.saveData();
   };
   _ctor.prototype.getPersonLevel = function (t) {
+    if (t === 3 || t === 4) return require("HeroWeapons").level(this.data, t);
     if (this.data.personLevel[t - 1]) {
       return this.data.personLevel[t - 1];
     } else {
@@ -352,8 +354,18 @@ var exp_KinghtFallUserData = function (t) {
     }
   };
   _ctor.prototype.setPersonLevel = function (t, e) {
-    this.data.personLevel[t - 1] = e;
+    require("HeroWeapons").upgrade(this.data, t, e);
     this.saveData();
+  };
+  _ctor.prototype.getHeroWeapon = function () { return require("HeroWeapons").selected(this.data); };
+  _ctor.prototype.getHeroWeaponLevel = function (style, slot) { return require("HeroWeapons").level(this.data, slot, style); };
+  _ctor.prototype.setHeroWeaponLevel = function (style, slot, level) {
+    if (!require("HeroWeapons").find(style) || (slot !== 3 && slot !== 4)) return false;
+    require("HeroWeapons").upgrade(this.data, slot, level, style); this.saveData(); return true;
+  };
+  _ctor.prototype.setHeroWeapon = function (id) {
+    if (!require("HeroWeapons").select(this.data, id)) return false;
+    this.saveData(); return true;
   };
   _ctor.prototype.getShopInfo = function (t) {
     for (var e = 0; e < this.data.shopInfo.length; e++) {

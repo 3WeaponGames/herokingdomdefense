@@ -1,9 +1,10 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const {ItemsService}=require('../../packages/hkd-items/service'),root=path.resolve(__dirname,'../..');
-test('Items includes all 210 current upgrade tiers across all six hero equipment slots',()=>{
+test('Items includes every legacy tier and independent power and weapon tiers for all six styles',()=>{
   const service=new ItemsService(root),units=service.units(),source=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
-  assert.equal(units.length,210);assert.deepEqual([...new Set(units.map(u=>u.group))],['Cape','Helmet','Arrow','Bow','Gloves','Mount']);
+  const total=source.EquipCfg.reduce((sum,equip)=>sum+equip.levelInfo.length*([3,4].includes(equip.id)?6:1),0);assert.equal(units.length,total);assert.deepEqual([...new Set(units.map(u=>u.slot))],[1,2,3,4,5,6]);
+  for(const style of require('../../assets/_script/HeroWeapons').styles)for(const slot of [3,4])assert(units.some(unit=>unit.slot===slot&&unit.style===style.id));
   for(const equip of source.EquipCfg)for(const row of equip.levelInfo){const item=units.find(u=>u.id===equip.id+':'+row.Level);assert(item);assert.equal(item.skin,row.EquipSkin);assert.equal(item.value,row.Parameters);assert.equal(item.cost,row.GoldCost);}
   for(const equip of source.EquipCfg)for(const row of [equip.levelInfo[0],equip.levelInfo[equip.levelInfo.length-1]]){const description=service.describe({type:'item',id:equip.id+':'+row.Level},true);assert(description.layers.some(l=>l.uuid===description.defaultLayer));assert.equal(description.item.level,row.Level);}
 });

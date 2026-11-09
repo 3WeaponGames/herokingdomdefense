@@ -21893,6 +21893,132 @@
       "Name": "[[loc:data.buffcfg.7.name]]",
       "Describe": "[[loc:data.talentcfg.100027.describe]]",
       "Image": "@icon/Stats Icons/house-income"
+    },
+    "101001": {
+      "enumValue": 101001,
+      "enumKey": "Hero_skirmisher_damage",
+      "Name": "Skirmisher · Damage",
+      "Describe": "Skirmisher damage +{0}. Applies only while Skirmisher is equipped.",
+      "Image": "@icon/Stats Icons/hero-skirmisher-damage"
+    },
+    "101002": {
+      "enumValue": 101002,
+      "enumKey": "Hero_fighter_damage",
+      "Name": "Fighter · Damage",
+      "Describe": "Fighter damage +{0}. Applies only while Fighter is equipped.",
+      "Image": "@icon/Stats Icons/hero-fighter-damage"
+    },
+    "101003": {
+      "enumValue": 101003,
+      "enumKey": "Hero_vanguard_damage",
+      "Name": "Vanguard · Damage",
+      "Describe": "Vanguard damage +{0}. Applies only while Vanguard is equipped.",
+      "Image": "@icon/Stats Icons/hero-vanguard-damage"
+    },
+    "101004": {
+      "enumValue": 101004,
+      "enumKey": "Hero_mystic_damage",
+      "Name": "Mystic · Damage",
+      "Describe": "Mystic damage +{0}. Applies only while Mystic is equipped.",
+      "Image": "@icon/Stats Icons/hero-mystic-damage"
+    },
+    "101005": {
+      "enumValue": 101005,
+      "enumKey": "Hero_bruiser_damage",
+      "Name": "Bruiser · Damage",
+      "Describe": "Bruiser damage +{0}. Applies only while Bruiser is equipped.",
+      "Image": "@icon/Stats Icons/hero-bruiser-damage"
+    },
+    "101006": {
+      "enumValue": 101006,
+      "enumKey": "Hero_guardian_damage",
+      "Name": "Guardian · Damage",
+      "Describe": "Guardian damage +{0}. Applies only while Guardian is equipped.",
+      "Image": "@icon/Stats Icons/hero-guardian-damage"
+    },
+    "101007": {
+      "enumValue": 101007,
+      "enumKey": "Hero_skirmisher_speed",
+      "Name": "Skirmisher · Attack speed",
+      "Describe": "Skirmisher attack speed +{0}. Applies only while Skirmisher is equipped.",
+      "Image": "@icon/Stats Icons/hero-skirmisher-speed"
+    },
+    "101008": {
+      "enumValue": 101008,
+      "enumKey": "Hero_fighter_speed",
+      "Name": "Fighter · Attack speed",
+      "Describe": "Fighter attack speed +{0}. Applies only while Fighter is equipped.",
+      "Image": "@icon/Stats Icons/hero-fighter-speed"
+    },
+    "101009": {
+      "enumValue": 101009,
+      "enumKey": "Hero_vanguard_speed",
+      "Name": "Vanguard · Attack speed",
+      "Describe": "Vanguard attack speed +{0}. Applies only while Vanguard is equipped.",
+      "Image": "@icon/Stats Icons/hero-vanguard-speed"
+    },
+    "101010": {
+      "enumValue": 101010,
+      "enumKey": "Hero_mystic_speed",
+      "Name": "Mystic · Attack speed",
+      "Describe": "Mystic attack speed +{0}. Applies only while Mystic is equipped.",
+      "Image": "@icon/Stats Icons/hero-mystic-speed"
+    },
+    "101011": {
+      "enumValue": 101011,
+      "enumKey": "Hero_bruiser_speed",
+      "Name": "Bruiser · Attack speed",
+      "Describe": "Bruiser attack speed +{0}. Applies only while Bruiser is equipped.",
+      "Image": "@icon/Stats Icons/hero-bruiser-speed"
+    },
+    "101012": {
+      "enumValue": 101012,
+      "enumKey": "Hero_guardian_speed",
+      "Name": "Guardian · Attack speed",
+      "Describe": "Guardian attack speed +{0}. Applies only while Guardian is equipped.",
+      "Image": "@icon/Stats Icons/hero-guardian-speed"
+    },
+    "101013": {
+      "enumValue": 101013,
+      "enumKey": "Hero_skirmisher_health",
+      "Name": "Skirmisher · Health",
+      "Describe": "Skirmisher health +{0}. Applies only while Skirmisher is equipped.",
+      "Image": "@icon/Stats Icons/hero-skirmisher-health"
+    },
+    "101014": {
+      "enumValue": 101014,
+      "enumKey": "Hero_fighter_health",
+      "Name": "Fighter · Health",
+      "Describe": "Fighter health +{0}. Applies only while Fighter is equipped.",
+      "Image": "@icon/Stats Icons/hero-fighter-health"
+    },
+    "101015": {
+      "enumValue": 101015,
+      "enumKey": "Hero_vanguard_health",
+      "Name": "Vanguard · Health",
+      "Describe": "Vanguard health +{0}. Applies only while Vanguard is equipped.",
+      "Image": "@icon/Stats Icons/hero-vanguard-health"
+    },
+    "101016": {
+      "enumValue": 101016,
+      "enumKey": "Hero_mystic_health",
+      "Name": "Mystic · Health",
+      "Describe": "Mystic health +{0}. Applies only while Mystic is equipped.",
+      "Image": "@icon/Stats Icons/hero-mystic-health"
+    },
+    "101017": {
+      "enumValue": 101017,
+      "enumKey": "Hero_bruiser_health",
+      "Name": "Bruiser · Health",
+      "Describe": "Bruiser health +{0}. Applies only while Bruiser is equipped.",
+      "Image": "@icon/Stats Icons/hero-bruiser-health"
+    },
+    "101018": {
+      "enumValue": 101018,
+      "enumKey": "Hero_guardian_health",
+      "Name": "Guardian · Health",
+      "Describe": "Guardian health +{0}. Applies only while Guardian is equipped.",
+      "Image": "@icon/Stats Icons/hero-guardian-health"
     }
   },
   "TalentLevelCfg": [
@@ -23617,6 +23743,294 @@
       "vaulePercentage": [
         1
       ]
+    },
+    {
+      "ID": 10001,
+      "Level": 3,
+      "kindID": 101001,
+      "GoldCost": 3400,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "skirmisher",
+      "HeroStat": "damage",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10002,
+      "Level": 3,
+      "kindID": 101002,
+      "GoldCost": 3400,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "fighter",
+      "HeroStat": "damage",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10003,
+      "Level": 4,
+      "kindID": 101003,
+      "GoldCost": 4300,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "vanguard",
+      "HeroStat": "damage",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10004,
+      "Level": 4,
+      "kindID": 101004,
+      "GoldCost": 4300,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "mystic",
+      "HeroStat": "damage",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10005,
+      "Level": 6,
+      "kindID": 101005,
+      "GoldCost": 6900,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "bruiser",
+      "HeroStat": "damage",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10006,
+      "Level": 6,
+      "kindID": 101006,
+      "GoldCost": 6900,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "guardian",
+      "HeroStat": "damage",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10007,
+      "Level": 7,
+      "kindID": 101007,
+      "GoldCost": 8700,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "skirmisher",
+      "HeroStat": "speed",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10008,
+      "Level": 7,
+      "kindID": 101008,
+      "GoldCost": 8700,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "fighter",
+      "HeroStat": "speed",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10009,
+      "Level": 8,
+      "kindID": 101009,
+      "GoldCost": 10700,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "vanguard",
+      "HeroStat": "speed",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10010,
+      "Level": 8,
+      "kindID": 101010,
+      "GoldCost": 10700,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "mystic",
+      "HeroStat": "speed",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10011,
+      "Level": 9,
+      "kindID": 101011,
+      "GoldCost": 13100,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "bruiser",
+      "HeroStat": "speed",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10012,
+      "Level": 9,
+      "kindID": 101012,
+      "GoldCost": 13100,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "guardian",
+      "HeroStat": "speed",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10013,
+      "Level": 11,
+      "kindID": 101013,
+      "GoldCost": 18600,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "skirmisher",
+      "HeroStat": "health",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10014,
+      "Level": 11,
+      "kindID": 101014,
+      "GoldCost": 18600,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "fighter",
+      "HeroStat": "health",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10015,
+      "Level": 12,
+      "kindID": 101015,
+      "GoldCost": 21800,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "vanguard",
+      "HeroStat": "health",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10016,
+      "Level": 12,
+      "kindID": 101016,
+      "GoldCost": 21800,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "mystic",
+      "HeroStat": "health",
+      "BranchColumn": 1
+    },
+    {
+      "ID": 10017,
+      "Level": 13,
+      "kindID": 101017,
+      "GoldCost": 25300,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "bruiser",
+      "HeroStat": "health",
+      "BranchColumn": -1
+    },
+    {
+      "ID": 10018,
+      "Level": 13,
+      "kindID": 101018,
+      "GoldCost": 25300,
+      "EffectNumber": [
+        0.05
+      ],
+      "vaulePercentage": [
+        1
+      ],
+      "OptionalBranch": true,
+      "HeroStyle": "guardian",
+      "HeroStat": "health",
+      "BranchColumn": 1
     }
   ],
   "TaskCfg": [

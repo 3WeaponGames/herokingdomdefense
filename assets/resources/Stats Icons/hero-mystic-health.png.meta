@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "b02a1e7d-2b41-5332-a2ff-8f0fe6833b9f",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "hero-mystic-health": {
+      "ver": "1.0.6",
+      "uuid": "c5d4ec9f-1cc5-5f21-a02d-db184b28376e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "b02a1e7d-2b41-5332-a2ff-8f0fe6833b9f",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

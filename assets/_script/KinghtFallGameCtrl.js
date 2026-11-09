@@ -1038,6 +1038,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return n;
   };
   _ctor.prototype.onPlayAttack = function (t) {
+    if (require("HeroWeaponCombat").melee(this, t)) return;
     var e = this;
     var n = this.ndPlayArr1.shift();
     n || (n = cc.instantiate(this.ctrPlay.ctrArr.node)).setParent(this.ndUI);

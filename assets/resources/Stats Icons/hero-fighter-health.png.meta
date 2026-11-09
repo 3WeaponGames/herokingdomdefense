@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "f114b4d4-b9ba-526b-af48-2fcf72dadf4c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "hero-fighter-health": {
+      "ver": "1.0.6",
+      "uuid": "c2d0c782-54ad-5fe2-ab78-ceda16a69bbc",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "f114b4d4-b9ba-526b-af48-2fcf72dadf4c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

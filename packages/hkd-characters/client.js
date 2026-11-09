@@ -274,7 +274,7 @@ function mount(host,api){
     el('h2',itemMode?'ITEM':'CHARACTER',inspector);const nameInput=field(inspector,itemMode?'Item name':'Character name',p.name,v=>{p.name=v.trim()||p.name;renderLooks();previewName.textContent=p.name;changed();});nameInput.oninput=()=>{if(!nameInput.value.trim()||nameInput.value.length>100)return;ensureDraft();p.name=nameInput.value;renderLooks();previewName.textContent=p.name;dirty();};
     if(itemMode)field(inspector,'Equipment tier',(unitFor(p)||{}).key,v=>{const unit=units.find(u=>u.key===v);p.base={type:unit.type,id:unit.id};Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===selected)delete data.assignments[k];});changed();renderLooks();renderInspector();loadRig();},units.map(u=>({value:u.key,label:u.group+' · '+u.name})));
     levelInspector(p);
-    if(!itemMode&&rig&&rig.layers.some(layer=>layer.json.slots.some(slot=>api.core.isFacialSlot(slot.name)))){
+    if(!itemMode&&rig&&!rig.layers.some(layer=>layer.json._heroMaker)&&rig.layers.some(layer=>layer.json.slots.some(slot=>api.core.isFacialSlot(slot.name)))){
       check(inspector,'Faceless (hide eyes)',!!p.faceless,value=>{p.faceless=value;changed();});
       el('p','Hide only the eyes through every animation. Beards, hair, eyebrows and other parts stay visible.',inspector,'help');
     }

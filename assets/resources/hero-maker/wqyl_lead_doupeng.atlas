@@ -1,0 +1,62 @@
+
+wqyl_lead_doupeng.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+part_Rider_Body_Cape_lv4
+  rotate: false
+  xy: 2, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv1
+  rotate: false
+  xy: 92, 2
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv2
+  rotate: false
+  xy: 180, 2
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv3
+  rotate: false
+  xy: 269, 2
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Chest_lv1
+  rotate: false
+  xy: 358, 2
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Chest_lv2
+  rotate: false
+  xy: 438, 2
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Chest_lv3
+  rotate: false
+  xy: 518, 2
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Chest_lv4
+  rotate: false
+  xy: 598, 2
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1

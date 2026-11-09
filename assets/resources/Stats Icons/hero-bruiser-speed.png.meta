@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "faf1e568-e3a9-5eda-a1dc-415891e1f826",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "hero-bruiser-speed": {
+      "ver": "1.0.6",
+      "uuid": "fa00c15a-7ee6-5016-aa39-8edb7aaa7a13",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "faf1e568-e3a9-5eda-a1dc-415891e1f826",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

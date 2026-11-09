@@ -51,7 +51,7 @@ function plan(root,data,assets,original,options){
   const ids=options.kind==='characters'?[data.assignments['hero:hero:default']]:new Set(Object.values(data.assignments)),heroStamp=stamp(options.heroBase),lookup=new Map(assets.map(asset=>[asset.id,asset]));
   for(const id of ids){
     const profile=updated.profiles[id];if(!profile||original&&Document.equal(profile,original.profiles[id])&&profile.bakedLayers&&profile.bakedVersion===2&&(profile.base.type==='hero'||profile.bakedWithHero===heroStamp))continue;
-    const [slot,level]=profile.base.id.split(':').map(Number),description=Units.describe(root,{type:'hero',id:'hero',heroLevels:profile.base.type==='item'?{[slot]:level}:undefined,noRuntime:true}),compiled=profile.base.type==='item'?compose(options.heroBase,profile,lookup):profile,result=bake(root,compiled,id,description,lookup,read);
+    const [rawSlot,rawLevel,style]=profile.base.id.split(':'),slot=Number(rawSlot),level=Number(rawLevel),description=Units.describe(root,{type:'hero',id:'hero',heroLevels:profile.base.type==='item'?{[slot]:level}:undefined,heroStyle:style,noRuntime:true,noAppearance:true}),compiled=profile.base.type==='item'?compose(options.heroBase,profile,lookup):profile,result=bake(root,compiled,id,description,lookup,read);
     for(const [file,bytes]of result.files)files.set(file,bytes);profile.bakedLayers=result.bakedLayers;
     profile.bakedVersion=2;if(profile.base.type==='item')profile.bakedWithHero=heroStamp;
     const icon=assets.find(asset=>profile.parts[0]&&asset.id===profile.parts[0].sprite);if(icon)profile.icon={id:icon.id,resource:icon.resource,width:icon.width,height:icon.height,tint:profile.parts[0].tint||'#ffffff'};else delete profile.icon;

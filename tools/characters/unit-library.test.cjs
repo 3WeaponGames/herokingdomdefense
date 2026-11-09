@@ -81,5 +81,5 @@ test('the deployed roster uses faceless Maker allies and monster enemies with th
     assert(rig.animations.die,'The deployed unit retains its death animation');
     if(profile.faceless)for(const skin of rig.skins)for(const [name,attachments]of Object.entries(skin.attachments))if(Core.isFacialSlot(name))assert.equal(Object.keys(attachments).length,0);
   }
-  const hero=Units.describe(root,{type:'hero',id:'hero',noRuntime:true});assert.equal(hero.layers.length,7);assert(hero.layers.every(layer=>layer.source.startsWith('assets/KinghtFallEnemyAni/wqyl_lead/')),'The existing hero was replaced');
+  const hero=Units.describe(root,{type:'hero',id:'hero',noRuntime:true});assert.equal(hero.layers.length,7);assert(hero.layers.slice(1).every(layer=>layer.json._heroMaker),'All six rider layers use Maker bones');assert(hero.layers[0].source.startsWith('assets/KinghtFallEnemyAni/wqyl_lead/'),'The hero retains its original upgraded horses');
 });

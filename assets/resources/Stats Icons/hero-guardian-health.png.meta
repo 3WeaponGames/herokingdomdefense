@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "5b80dbeb-284c-51bf-a20a-0b684205a208",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "hero-guardian-health": {
+      "ver": "1.0.6",
+      "uuid": "a045db9a-9ae0-59fd-a436-dfc3c34b7860",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "5b80dbeb-284c-51bf-a20a-0b684205a208",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

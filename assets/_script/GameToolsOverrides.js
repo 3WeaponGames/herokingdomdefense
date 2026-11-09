@@ -13,9 +13,10 @@ function keyFor(owner, type) {
   return type + ":" + owner.cfg.ID + ":" + form;
 }
 function counters(owner, target) {
-  if (!owner || !owner.cfg || !target || !target.cfg) return false;
-  if (owner.cfg.CounterType === undefined) return !!owner.cfg.Suppressed && owner.cfg.Suppressed == target.cfg.ID;
+  if (!owner || !owner.cfg || !target || !target.cfg && !target.heroStyle) return false;
+  if (owner.cfg.CounterType === undefined) return !!(owner.cfg.Suppressed && target.cfg && owner.cfg.Suppressed == target.cfg.ID);
   if (!owner.cfg.CounterType) return false;
+  if (target.heroStyle) return owner.cfg.CounterType === target.heroStyle;
   var settings = config(), side = target.navigationTeam === "friendly" ? "ally" : target.navigationTeam === "enemy" ? "enemy" : null;
   if (!settings || !side) return false;
   var assignments = settings.unitTypeAssignments || {};
@@ -114,7 +115,7 @@ function applyAttackPlayback(owner, type) {
     var track = renderer && renderer.getCurrent && renderer.getCurrent(0);
     var animation = track && (track.animation || track.getAnimation && track.getAnimation());
     var name = animation && (animation.name || animation.getName && animation.getName());
-    if (name !== "attack") return;
+    if (!/^attack(?:_|$)/.test(name)) return;
     // Native TrackEntry exposes setters; the browser Spine runtime exposes fields.
     if (typeof track.setTimeScale === "function") track.setTimeScale(speed); else track.timeScale = speed;
   });

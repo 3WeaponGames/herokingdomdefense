@@ -140,10 +140,15 @@ function visuals(actor, type) {
   var animation = actor.ctrPlayAni;
   return ["spAniMa", "spAniBody", "spAniDrap", "spAniHead", "spAniBow", "spAniArrow", "spAniHand"].map(function (key) { return animation[key]; }).filter(Boolean);
 }
+function makerRider(appearance) {
+  var actor=appearance.owner,controller=appearance.team==='hero'&&actor&&actor.ctrPlayAni,data=controller&&controller.spAniBody&&controller.spAniBody.skeletonData;
+  return data&&data.skeletonJson&&data.skeletonJson._heroMaker?require("HeroMakerRider"):null;
+}
 var Appearance = cc.Class({
   extends: cc.Component,
   init: function (actor, type) { this.clear(); restoreAllyRigs(this); this.owner = actor; this.team = type; load(); },
   clear: function () {
+    var maker=makerRider(this);if(maker)maker.removeFollow(this.owner.ctrPlayAni);
     (this.states || []).forEach(Core.restore);
     (this.models || []).forEach(function (model) {
       if (!cc.isValid(model.renderer.node)) return;
@@ -158,6 +163,8 @@ var Appearance = cc.Class({
   lateUpdate: function () {
     var actor = this.owner;
     if (!actor || !actor.node.activeInHierarchy) return;
+    var maker=makerRider(this);if(maker)maker.removeFollow(actor.ctrPlayAni);
+    try {
     if (!looks || !library) load();
     if (!looks || !library || !actor.cfg && this.team !== "hero") return;
     var selected = assignedLook(looks, actor, this.team), id = selected.id, profile = selected.profile;
@@ -216,6 +223,7 @@ var Appearance = cc.Class({
       if (skin && current !== skin) { model.skin = current; model.renderer.setSkin(skin); model.renderer.setSlotsToSetupPose(); model.appliedSkin = skin; }
     });
     this.states.forEach(Core.apply);
+    } finally { if(maker)maker.follow(actor.ctrPlayAni); }
   },
   onDisable: function () { this.clear(); restoreAllyRigs(this); },
   onDestroy: function () { this.clear(); restoreAllyRigs(this); this.owner = null; }

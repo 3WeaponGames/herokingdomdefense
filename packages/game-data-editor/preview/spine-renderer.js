@@ -22,7 +22,7 @@ function seek(spine, layers, animation, time, loop) {
         const skeleton = layer.skeleton;
         skeleton.setToSetupPose();
         // In the game the horse keeps its idle pose while the hero fires.
-        const name = layer.description.name === 'wqyl_lead_ma' && animation === 'attack' ? 'idle' : animation;
+        const name = layer.description.name === 'wqyl_lead_ma' && /^attack(?:_|$)/.test(animation) ? 'idle' : animation;
         const clip = layer.data.findAnimation(name) || layer.data.findAnimation('idle');
         if (clip) clip.apply(skeleton, 0, Math.max(0, time), !!loop, null, 1, spine.MixBlend.replace, spine.MixDirection.mixIn);
         skeleton.updateWorldTransform();
@@ -34,7 +34,7 @@ function seek(spine, layers, animation, time, loop) {
         const world=b=>({a:cos*sx*b.a-sin*sy*b.c,b:cos*sx*b.b-sin*sy*b.d,c:sin*sx*b.a+cos*sy*b.c,d:sin*sx*b.b+cos*sy*b.d,x:cos*sx*b.x-sin*sy*b.y+md.x,y:sin*sx*b.x+cos*sy*b.y+md.y});
         const p=world(rest),q=world({a:bone.a,b:bone.b,c:bone.c,d:bone.d,x:bone.worldX,y:bone.worldY}),det=p.a*p.d-p.b*p.c;
         const a=(q.a*p.d-q.b*p.c)/det,b=(-q.a*p.b+q.b*p.a)/det,c=(q.c*p.d-q.d*p.c)/det,d=(-q.c*p.b+q.d*p.a)/det;
-        layer.description._mountMotion={a,b,c,d,x:q.x-a*p.x-b*p.y,y:q.y-c*p.x-d*p.y};
+        layer.description._mountMotion=follow.translationOnly?{a:1,b:0,c:0,d:1,x:q.x-p.x,y:q.y-p.y}:{a,b,c,d,x:q.x-a*p.x-b*p.y,y:q.y-c*p.x-d*p.y};
     });
 }
 function geometry(spine, layer) {

@@ -48,7 +48,9 @@ var def_KinghtFallPlayAniCtrl = function (t) {
           this.spAniMa.setSkin(n.levelInfo[i - 1].EquipSkin);
       }
     }
+    require("HeroMakerRider").skins(this);
   };
+  _ctor.prototype.lateUpdate = function () { require("HeroMakerRider").update(this); };
   cc__decorate([ccp_property({
     type: sp.Skeleton,
     tooltip: "马"
