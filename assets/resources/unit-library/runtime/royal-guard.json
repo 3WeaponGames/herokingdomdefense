@@ -14,8 +14,8 @@
       "x": 0,
       "y": 0,
       "rotation": 0,
-      "scaleX": 1.0074770274273959,
-      "scaleY": 1.0074770274273959
+      "scaleX": 0.9067293246846563,
+      "scaleY": 0.9067293246846563
     },
     {
       "name": "__size",
@@ -889,8 +889,8 @@
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
-            "width": 120,
-            "height": 108,
+            "width": 118,
+            "height": 106,
             "color": "ffffffff"
           }
         },
@@ -898,7 +898,7 @@
           "part_shield": {
             "path": "part_shield",
             "x": 0,
-            "y": 0.2,
+            "y": -0.1,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -917,10 +917,10 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 120,
-            "height": 61,
+            "scaleX": 0.9,
+            "scaleY": 0.9,
+            "width": 118,
+            "height": 59,
             "color": "ffffffff"
           }
         },
