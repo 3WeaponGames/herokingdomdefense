@@ -115,6 +115,15 @@ function mount(host,api){
       if(!event.repeat&&remove&&!remove.disabled){remove.click();current.handles.focus({preventScroll:true});}
       return;
     }
+    if(event.shiftKey&&!event.ctrlKey&&!event.metaKey&&/^(?:Digit|Numpad)[1-5]$/.test(event.code)){
+      event.stopPropagation();
+      if(target&&(target.isContentEditable||tag==='textarea'||tag==='input'&&!['range','color','checkbox','radio','button'].includes(target.type)))return;
+      event.preventDefault();
+      const p=profile(),unit=p&&unitFor(p),levels=Levels.levels(unit),level=Number(event.code.slice(-1));
+      if(levels.length<=1||!levels.includes(level))return;
+      if(!event.repeat&&!busy&&p.base.level!==level)selectUnit(unit,level).catch(error=>message(error.message,true));
+      return;
+    }
     if(!(event.ctrlKey||event.metaKey))return;
     if(key==='s'&&!event.shiftKey){
       event.stopPropagation();event.preventDefault();
@@ -153,7 +162,7 @@ function mount(host,api){
   function editOriginal(){if(!virtual)return;const p=clone(virtual),id=unique(p.base.type+'-'+p.base.id.replace(/:/g,'-')+(p.base.level?'-level-'+p.base.level:''),data.profiles),key=assignmentKey(p);for(const name of ['baked','bakedLayers','bakedVersion','bakedWithHero'])delete p[name];data.profiles[id]=p;data.assignments[key]=id;selectProfile(id);changed();}
   function levelInspector(p){
     const unit=unitFor(p);if(itemMode||!Levels.levels(unit).length)return;
-    field(inspector,'Level',p.base.level||0,value=>selectUnit(unit,Number(value)||undefined),[{value:0,label:'All levels (default)'},...Levels.levels(unit).map(level=>({value:level,label:'Level '+level}))]);
+    const fieldLevel=field(inspector,'Level',p.base.level||0,value=>selectUnit(unit,Number(value)||undefined),[{value:0,label:'All levels (default)'},...Levels.levels(unit).map(level=>({value:level,label:'Level '+level}))]);fieldLevel.title='Shift+1 through Shift+5: switch to an available unit level';fieldLevel.setAttribute('aria-keyshortcuts',Levels.levels(unit).filter(level=>level<=5).map(level=>'Shift+'+level).join(' '));
   }
   async function selectProfile(id,preferredPart){finishGestures();virtual=null;selected=id;const p=profile();selectedPart=p&&p.parts.some(part=>part.id===preferredPart)?preferredPart:p&&p.parts[0]?p.parts[0].id:'';selectedAsset=part()?part().sprite:'';renderLooks();renderInspector();renderAssets();await loadRig();}
   function installScrub(label,input,options){const cancel=LabelScrub.install(label,input,options);scrubs.push(cancel);return cancel;}

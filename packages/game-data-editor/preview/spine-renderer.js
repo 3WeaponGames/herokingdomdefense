@@ -74,10 +74,25 @@ function opaqueAt(image,u,v){
 }
 // Pick the topmost visible texel in the same clipped, animated geometry used
 // to draw the preview. Transparent padding must not hide a part behind it.
+function renderPasses(spine,layers){
+    const pieces=new Map(),passes=[];
+    const geometryFor=layer=>{if(!pieces.has(layer))pieces.set(layer,geometry(spine,layer).filter(g=>{const source=layer.description.json&&layer.description.json._mountHeadSources&&layer.description.json._mountHeadSources[g.slot];if(!source)return true;const own=layer.skeleton.findSlot(g.slot).getAttachment(),body=layer.skeleton.findSlot(source).getAttachment();return own&&own.name.startsWith('character:')||body&&!body.name.startsWith('character:');}));return pieces.get(layer);};
+    for(const layer of layers){
+        const rider=layers.find(l=>l.description.followMount&&l.description.followMount.layer===layer.description.uuid);
+        if(rider&&layer.description.foregroundSlots&&layer.description.foregroundSlots.length){const front=new Set(layer.description.foregroundSlots);passes.push({layer,pieces:geometryFor(layer).filter(g=>!front.has(g.slot))});continue;}
+        const horse=layer.description.followMount&&layers.find(l=>l.description.uuid===layer.description.followMount.layer);
+        if(horse&&horse.description.foregroundSlots&&horse.description.foregroundSlots.length){
+            const front=new Map(horse.description.foregroundSlots.map((slot,i)=>[slot,i])),all=geometryFor(layer),right=g=>/^Rider\/HandRight\//.test(g.slot),left=g=>/^Rider\/HandLeft\//.test(g.slot);
+            passes.push({layer,pieces:all.filter(g=>!right(g)&&!left(g))},{layer,pieces:all.filter(left)},{layer:horse,pieces:geometryFor(horse).filter(g=>front.has(g.slot)).sort((a,b)=>front.get(a.slot)-front.get(b.slot))},{layer,pieces:all.filter(right)});
+        }else passes.push({layer,pieces:geometryFor(layer)});
+    }
+    return passes;
+}
 function hitTest(spine,layers,point){
-    for(let l=layers.length-1;l>=0;l--){
-        const layer=layers[l];if(layer.description.opacity===0)continue;
-        const local=inversePoint(layer.description,point.x,point.y),pieces=geometry(spine,layer);
+    const passes=renderPasses(spine,layers);
+    for(let l=passes.length-1;l>=0;l--){
+        const {layer,pieces}=passes[l];if(layer.description.opacity===0)continue;
+        const local=inversePoint(layer.description,point.x,point.y);
         for(let p=pieces.length-1;p>=0;p--){
             const g=pieces[p];if(g.color.a<=0)continue;
             for(let i=g.triangles.length-3;i>=0;i-=3){
@@ -133,9 +148,9 @@ function tintedImage(image,color) {
     if(cache.size>=24)cache.delete(cache.keys().next().value);cache.set(key,canvas);return canvas;
 }
 function drawWorld(spine, ctx, layers) {
-    layers.forEach(layer => {
+    renderPasses(spine,layers).forEach(({layer,pieces}) => {
         ctx.save();const m=layer.description._mountMotion;if(m)ctx.transform(m.a,m.c,m.b,m.d,m.x,m.y);ctx.translate(layer.description.x,layer.description.y);if(layer.description.rotation)ctx.rotate(layer.description.rotation*Math.PI/180);ctx.scale(layer.description.scaleX,layer.description.scaleY);
-        geometry(spine,layer).forEach(g=>{
+        pieces.forEach(g=>{
             ctx.globalAlpha=g.color.a*(layer.description.opacity===undefined?1:layer.description.opacity);
             ctx.globalCompositeOperation=['source-over','lighter','multiply','screen'][g.blend]||'source-over';
             const image=tintedImage(g.image,g.color);
@@ -166,7 +181,7 @@ function drawCanvas(spine,canvas,layers,options){
     gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(state.program);gl.enable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.activeTexture(gl.TEXTURE0);
     gl.bindBuffer(gl.ARRAY_BUFFER,state.vertices);gl.enableVertexAttribArray(state.position);gl.enableVertexAttribArray(state.uv);gl.vertexAttribPointer(state.position,2,gl.FLOAT,false,16,0);gl.vertexAttribPointer(state.uv,2,gl.FLOAT,false,16,8);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,state.indices);
-    layers.forEach(layer=>geometry(spine,layer).forEach(g=>{
+    renderPasses(spine,layers).forEach(({layer,pieces})=>pieces.forEach(g=>{
         if(!g.triangles.length)return;
         let texture=state.textures.get(g.image);if(!texture){texture=gl.createTexture();state.textures.set(g.image,texture);gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,g.image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);}else gl.bindTexture(gl.TEXTURE_2D,texture);
         const vertices=new Float32Array(g.vertices.length*2),d=layer.description;
@@ -177,4 +192,4 @@ function drawCanvas(spine,canvas,layers,options){
     }));
 }
 function destroyCanvas(canvas){const state=canvasStates.get(canvas);if(state&&state.gl){const gl=state.gl;state.textures.forEach(texture=>gl.deleteTexture(texture));gl.deleteBuffer(state.vertices);gl.deleteBuffer(state.indices);gl.deleteShader(state.vertex);gl.deleteShader(state.fragment);gl.deleteProgram(state.program);const extension=gl.getExtension('WEBGL_lose_context');if(extension)extension.loseContext();}canvasStates.delete(canvas);}
-module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest};
+module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest,renderPasses};

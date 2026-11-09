@@ -1,6 +1,41 @@
 'use strict';
 const fs=require('fs'),path=require('path'),url=require('url'),Units=require('../../game-data-editor/lib/unit-assets'),Library=require('./unit-library');
 const clone=v=>JSON.parse(JSON.stringify(v));
+// The original horses share head/body weighted meshes. Keep every vertex,
+// weight, UV and deform value, and partition only their triangle lists so the
+// head can cover the far hand without putting the whole horse over the rider.
+function splitHead(json){
+  const headBones=new Set(['horse_s_5']);for(const bone of json.bones)if(headBones.has(bone.parent))headBones.add(bone.name);
+  const foreground=[];
+  for(const slot of json.slots.slice()){
+    const records=[];
+    for(const skin of json.skins)for(const [name,attachment]of Object.entries(skin.attachments[slot.name]||{})){
+      if(attachment.type==='mesh'&&attachment.uvs&&attachment.triangles){
+        const weights=[];
+        if(attachment.vertices.length===attachment.uvs.length)for(let i=0;i<attachment.uvs.length;i+=2)weights.push(headBones.has(slot.bone)?1:0);
+        else for(let i=0;i<attachment.vertices.length;){const count=attachment.vertices[i++];let head=0,total=0;for(let j=0;j<count;j++,i+=4){const weight=attachment.vertices[i+3];total+=weight;if(headBones.has(json.bones[attachment.vertices[i]].name))head+=weight;}weights.push(total?head/total:0);}
+        const front=[],back=[];for(let i=0;i<attachment.triangles.length;i+=3){const triangle=attachment.triangles.slice(i,i+3);((weights[triangle[0]]+weights[triangle[1]]+weights[triangle[2]])/3>=.5?front:back).push(...triangle);}
+        records.push({skin,name,attachment,front,back});
+      }else records.push({skin,name,attachment,front:headBones.has(slot.bone)?true:false,back:!headBones.has(slot.bone)});
+    }
+    if(!records.some(r=>r.front===true||r.front.length))continue;
+    if(records.every(r=>r.back===false||Array.isArray(r.back)&&!r.back.length)){foreground.push(slot.name);continue;}
+    let name=slot.name+'__mount_head';while(json.slots.some(s=>s.name===name))name+='_';
+    json.slots.push({...clone(slot),name});foreground.push(name);(json._mountHeadSources||(json._mountHeadSources={}))[name]=slot.name;
+    for(const record of records){
+      if(record.front===false||Array.isArray(record.front)&&!record.front.length)continue;
+      const copy=clone(record.attachment);copy.path=copy.path||copy.name||record.name;
+      if(Array.isArray(record.front)){copy.triangles=record.front;record.attachment.triangles=record.back;}
+      else record.attachment.color=(record.attachment.color||'ffffffff').slice(0,6)+'00';
+      (record.skin.attachments[name]||(record.skin.attachments[name]={}))[record.name]=copy;
+    }
+    for(const clip of Object.values(json.animations)){
+      if(clip.slots&&clip.slots[slot.name])clip.slots[name]=clone(clip.slots[slot.name]);
+      for(const skin of Object.values(clip.deform||{}))if(skin[slot.name])skin[name]=clone(skin[slot.name]);
+    }
+  }
+  return foreground;
+}
 function describe(root,base,noRuntime){
   const result=Library.describe(root,base.source,noRuntime);
   if(!base.mount)return result;
@@ -24,6 +59,7 @@ function describe(root,base,noRuntime){
     horse={name:'Original cavalry horse',uuid:'d65efc08-b43e-54a9-a753-214538694c40',source:path.relative(root,file).replace(/\\/g,'/'),json,atlas,pages,skin:'lan',skins:json.skins.map(s=>s.name),animations:Object.keys(json.animations),x:0,y:0,scaleX:1,scaleY:1};
   }
   horse=clone(horse);horse.mount=true;horse.name=base.mount==='hero-horse'?'Hero horse':horse.name;
+  horse.foregroundSlots=splitHead(horse.json);
   const rider=result.layers[0];rider.x=-10;rider.y=46;rider.scaleX=rider.scaleY=.6;
   const shadow=rider.json.slots.find(s=>s.name==='Rider/Shadow');if(shadow)shadow.color='ffffff00';
   for(const clip of Object.values(rider.json.animations))if(clip.slots)delete clip.slots['Rider/Shadow'];
@@ -75,4 +111,27 @@ function bindRider(root,merged,description){
     Object.assign(bone,{parent:saddle.data.name,x:ia*x+ib*y,y:ic*x+id*y,rotation,scaleX:Math.hypot(a,b),scaleY:Math.hypot(c,d),shearY:Math.atan2(d,c)*180/Math.PI-rotation-90});
   });
 }
-module.exports={describe,merge,bindRider};
+// Interleave complete render groups while leaving bones, attachments, events
+// and animation times intact. Re-express any animated draw order against the
+// new setup order, rather than keeping offsets tied to the old slot indices.
+function orderMounted(rig,description){
+  const ranks=new Map(),headOrder=new Map();let active=false;
+  description.layers.forEach((rider,index)=>{
+    if(!rider.followMount)return;const mountIndex=description.layers.findIndex(l=>l.uuid===rider.followMount.layer),horse=description.layers[mountIndex];if(!horse||!horse.foregroundSlots||!horse.foregroundSlots.length)return;
+    active=true;const front=new Set(horse.foregroundSlots);horse.foregroundSlots.forEach((slot,i)=>headOrder.set('layer'+mountIndex+'/'+slot,i));
+    horse.json.slots.forEach(slot=>ranks.set('layer'+mountIndex+'/'+slot.name,front.has(slot.name)?3:0));
+    rider.json.slots.forEach(slot=>ranks.set('layer'+index+'/'+slot.name,/^Rider\/HandRight\//.test(slot.name)?4:/^Rider\/HandLeft\//.test(slot.name)?2:1));
+  });
+  if(!active)return;
+  const setup=rig.slots.slice(),sorted=list=>list.slice().sort((a,b)=>(ranks.get(a.name)||0)-(ranks.get(b.name)||0)||(ranks.get(a.name)===3?headOrder.get(a.name)-headOrder.get(b.name):0));
+  const next=sorted(setup),indices=new Map(next.map((slot,i)=>[slot.name,i]));
+  for(const animation of Object.values(rig.animations))for(const frame of animation.drawOrder||[]){
+    const order=new Array(setup.length).fill(-1),unchanged=[];let original=0;
+    for(const offset of frame.offsets||[]){const at=setup.findIndex(slot=>slot.name===offset.slot);while(original<at)unchanged.push(original++);order[original+offset.offset]=original++;}
+    while(original<setup.length)unchanged.push(original++);for(let i=order.length-1;i>=0;i--)if(order[i]===-1)order[i]=unchanged.pop();
+    const target=sorted(order.map(i=>setup[i])),positions=new Map(target.map((slot,i)=>[slot.name,i]));
+    frame.offsets=next.map(slot=>({slot:slot.name,offset:positions.get(slot.name)-indices.get(slot.name)})).filter(o=>o.offset);
+  }
+  rig.slots=next;
+}
+module.exports={describe,merge,bindRider,splitHead,orderMounted};

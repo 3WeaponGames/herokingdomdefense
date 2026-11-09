@@ -39,8 +39,18 @@ test('101 imported bases and every converted animation parse and produce finite 
 });
 test('native atlas copying retains pixels, rotation and extrusion without stretching',()=>{
   const original={width:2,height:3,rgba:Buffer.from(Array.from({length:24},(_,i)=>i*9%256))};assert.deepEqual(PNG.decode(PNG.encode(original)),original);
-  const rotated=PNG.crop(original,0,0,2,3,true);assert.equal(rotated.width,3);assert.equal(rotated.height,2);assert.deepEqual([...rotated.rgba.subarray(0,4)],[...original.rgba.subarray(4,8)]);
+  const rotated=PNG.crop(original,0,0,2,3,true);assert.equal(rotated.width,3);assert.equal(rotated.height,2);assert.deepEqual([...rotated.rgba.subarray(0,4)],[...original.rgba.subarray(16,20)]);
   const packed=PNG.pack({a:original}),p=packed.positions.a;assert.deepEqual(PNG.crop(packed,p.x,p.y,2,3,false),original);assert.deepEqual([...packed.rgba.subarray(((p.y-1)*packed.width+p.x-1)*4,((p.y-1)*packed.width+p.x-1)*4+4)],[...original.rgba.subarray(0,4)]);
+});
+
+test('unrotating atlas regions agrees with the actual Spine mesh UV transform at every pixel',()=>{
+  const spine=require(Units.enginePath()),original={width:3,height:2,rgba:Buffer.from(Array.from({length:24},(_,i)=>(i*17)%256))};
+  const atlas=new spine.TextureAtlas('\nsource.png\nsize: 3,2\nformat: RGBA8888\nfilter: Linear,Linear\nrepeat: none\npart\n  rotate: true\n  xy: 0,0\n  size: 2,3\n  orig: 2,3\n  offset: 0,0\n  index: -1\n',()=>new spine.FakeTexture({width:3,height:2}));
+  const mesh=new spine.MeshAttachment('part');mesh.region=atlas.findRegion('part');const restored=PNG.crop(original,0,0,3,2,true);
+  for(let y=0;y<restored.height;y++)for(let x=0;x<restored.width;x++){
+    mesh.regionUVs=[(x+.5)/restored.width,(y+.5)/restored.height];mesh.updateUVs();const sx=Math.floor(mesh.uvs[0]*original.width),sy=Math.floor(mesh.uvs[1]*original.height),source=(sy*original.width+sx)*4,target=(y*restored.width+x)*4;
+    assert.deepEqual(restored.rgba.subarray(target,target+4),original.rgba.subarray(source,source+4));
+  }
 });
 test('rebaking preserves Creator texture settings and authored UUIDs while updating dimensions and linked references',()=>{
   const base='assets/resources/unit-library/runtime/default_royal-guard',texture=JSON.parse(fs.readFileSync(path.join(root,base+'.png.meta'))),model=JSON.parse(fs.readFileSync(path.join(root,base+'.json.meta'))),next=Bake.textureMeta(base+'.png',512,256);
