@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "21684819-d5c3-4a68-ab48-e299c5c5e682",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "1917406e-6206-42b0-a97f-63642407dda9",
+  "size": {
+    "width": 891,
+    "height": 1778
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-lava-mountain-0-0": {
+      "ver": "1.0.6",
+      "uuid": "4d00f74b-dc61-47f6-a33c-8ff910120dc6",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "1917406e-6206-42b0-a97f-63642407dda9",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 887,
+      "height": 1774,
+      "rawWidth": 887,
+      "rawHeight": 1774,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

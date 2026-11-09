@@ -3,13 +3,31 @@
 // before publishing its palette entries; failed recovery never edits the map.
 const fs=require('fs'),path=require('path'),url=require('url'),M=require('./model'),L=require('./legacy'),B=require('./baker');
 function region(x,y){if(x<.20&&y<.66)return 'ravine';if(y>.715&&x<.48)return 'southwest';if(y>.74&&x>.5)return 'southeast';if(y>.625&&y<.75&&x>.52)return 'south-ridge';if(y>.515&&y<.75&&x<.52)return 'west-grove';if(x>.77&&y>.31)return 'east-lower';if(x>.77&&y>.12)return 'east-upper';if(x>.17&&x<.62&&y>.065&&y<.27)return 'island';return 'north';}
+// Explicit legacy-floor extraction only. The authored road contribution mask
+// identifies which pixels can move to Roads; cleaned field pixels elsewhere
+// must remain untouched. Opaque composited RGB preserves the old floor exactly,
+// including its original antialiasing, while a later erase reveals clean field.
+function separateRoadPixels(current,pristine,roadMask,width,height){
+ const length=width*height*4;
+ if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<1||height<1||!Number.isSafeInteger(length)||!current||!pristine||!roadMask||current.length!==length||pristine.length!==length||roadMask.length!==length)throw Error('Road extraction needs equally sized RGBA rasters.');
+ const foundation=new Uint8ClampedArray(current),roads=new Uint8ClampedArray(length);let pixels=0;
+ for(let p=0;p<length;p+=4)if(roadMask[p+3]>0){
+  for(let channel=0;channel<4;channel++){foundation[p+channel]=pristine[p+channel];roads[p+channel]=current[p+channel];}
+  pixels++;
+ }
+ return {foundation,roads,pixels};
+}
 async function recover(service,request){
  service.expect(request.version);
  const doc=service.doc(request.key);
  if(doc.data.id!=='Map07'||doc.data.sourcePiecesRecovered)throw Error('Original Stage 7 pieces are already available, or this is another map.');
  if(JSON.stringify(doc.data)!==JSON.stringify(doc.original))throw Error('Save or discard this map draft before recovering its original pieces.');
+ for(const name of ['foundation','roads']){
+  const layer=doc.data.ground[name];
+  if(layer&&(layer.hidden||layer.opacity!==undefined&&layer.opacity!==1||layer.blend!==undefined&&layer.blend!=='source-over'))throw Error('Show the '+(name==='foundation'?'Foundation':'Roads')+' pass and use 100% opacity and Normal blend before recovering original pieces. Your saved settings and draft are unchanged.');
+ }
  const file=path.join(service.root,'tools/maps/stage07/recipe.json'),recipeBytes=fs.readFileSync(file),recipe=JSON.parse(recipeBytes.toString('utf8').replace(/^\uFEFF/,'')),spec=M.clone(recipe),observed=new Map([[file,L.hash(recipeBytes)]]);
- spec.mode='stage07-source';spec.props=[];spec.thumbnail=null;
+ spec.mode='stage07-source';spec.props=[];spec.thumbnail=null;spec.separateRoads=true;
  for(const key of Object.keys(spec.images)){
   const source=path.resolve(path.dirname(file),spec.images[key]);
   observed.set(source,L.hash(fs.readFileSync(source)));spec.images[key]=url.pathToFileURL(source).href;
@@ -17,7 +35,7 @@ async function recover(service,request){
  const result=await(service.options&&service.options.render||B.renderElectron)(spec,service.artifacts);
  service.expect(request.version);
  for(const [source,revision]of observed)if(!fs.existsSync(source)||L.hash(fs.readFileSync(source))!==revision)throw Error('Stage 7 source artwork changed during recovery. Retry after reviewing the source.');
- const map=M.clone(doc.data),sourceAssets={},owners={},assets=new Map(),library=service.index().library;
+ const map=M.clone(doc.data),sourceAssets={},owners={},assets=new Map(),recoveredRoads=[],library=service.index().library;
  map.legacyGround=null;map.ground.foundation.tiles=[];map.sourcePiecesRecovered=true;
  for(const owner of recipe.owners){
   const layer=map.layers.find(l=>l.objects.some(o=>o.legacy&&o.legacy.roots.includes(owner.id)));
@@ -29,9 +47,12 @@ async function recover(service,request){
   if(!assets.has(id))assets.set(id,{asset,buffer});return asset;
  }
  for(const image of result.files){
-  if(image.role==='ground'){
-   const asset=assetFor('Stage 7 ground '+image.tile,image.png,image.width,image.height,{x:.5,y:.5},'ground'),column=(image.tile-1)%2,row=Math.floor((image.tile-1)/2);
-   map.ground.foundation.tiles.push({id:'object-'+map.nextObject++,name:asset.name,assetId:asset.id,x:-recipe.width/2+(column+.5)*image.width,y:recipe.height/2-(row+.5)*image.height,scale:1,angle:0,flipX:false,depth:'ground',ground:{x:0,y:0}});
+  if(image.role==='ground'||image.role==='roads'){
+   const asset=assetFor('Stage 7 '+(image.role==='roads'?'roads ':'ground ')+image.tile,image.png,image.width,image.height,{x:.5,y:.5},'ground'),column=(image.tile-1)%2,row=Math.floor((image.tile-1)/2);
+   const placement={id:'object-'+map.nextObject++,name:asset.name,assetId:asset.id,x:-recipe.width/2+(column+.5)*image.width,y:recipe.height/2-(row+.5)*image.height,scale:1,angle:0,flipX:false,depth:'ground',ground:{x:0,y:0}};
+   if(image.role==='roads'){
+    recoveredRoads.push(placement);
+   }else map.ground.foundation.tiles.push(placement);
   }else if(image.role==='obstacle'){
    const entry=owners[image.key];if(!entry)throw Error('Original cliff layer was removed.');
    const old=entry.object,left=image.center.x-image.width/2,bottom=image.center.y-image.height/2,asset=assetFor('Stage 7 '+image.key+' cliffs',image.png,image.width,image.height,{x:(image.ground.x-left)/image.width,y:(image.ground.y-bottom)/image.height},'world'),origin=old.legacy.origin;
@@ -40,6 +61,20 @@ async function recover(service,request){
    delete object.legacy;delete object.ignoreLegacyColliders;
    entry.layer.objects=entry.layer.objects.map(o=>o===old?object:o);
   }
+ }
+ if(recoveredRoads.length){
+  if(!map.ground.roads)map.ground.roads={strokes:[]};
+  const foundation=map.ground.foundation.transform||{},target=map.ground.roads.transform||{};
+  for(const placement of recoveredRoads){
+   const local=M.toLocal(target,M.toWorld(foundation,placement));
+   placement.x=local.x;placement.y=local.y;
+   placement.scale*=(foundation.scale===undefined?1:foundation.scale)/(target.scale===undefined?1:target.scale);
+   placement.angle+=(foundation.angle||0)-(target.angle||0);
+  }
+  // Legacy roads were below the user's Roads artwork in the foundation.
+  // Keep that same order after making the recovered tiles independently editable.
+  map.ground.roads.images=recoveredRoads.concat(map.ground.roads.images||[]);
+  if(map.ground.order&&!map.ground.order.includes('roads'))map.ground.order.splice(1,0,'roads');
  }
  let detailLayer=map.layers.find(layer=>layer.id==='grass-detail');
  for(const prop of recipe.props){
@@ -68,4 +103,4 @@ async function recover(service,request){
  }
  return service.change({key:doc.key,version:request.version,value:map});
 }
-module.exports={recover,region};
+module.exports={recover,region,separateRoadPixels};

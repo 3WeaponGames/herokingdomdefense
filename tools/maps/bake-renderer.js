@@ -22,10 +22,13 @@
     if (spec.groundTint) { ctx.save(); ctx.globalAlpha = spec.groundTint.opacity; ctx.fillStyle = spec.groundTint.color; ctx.fillRect(0, 0, width, height); ctx.restore(); }
     var randomState = spec.seed >>> 0;
     function random() { randomState = (1664525 * randomState + 1013904223) >>> 0; return randomState / 4294967296; }
-    ctx.save(); ctx.filter = 'brightness(1.1)'; ctx.globalAlpha = .35; ctx.strokeStyle = ctx.createPattern(images.Road_Fire, 'repeat'); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    spec.paths.forEach(function (points) { ctx.beginPath(); points.forEach(function (p, i) { if (i) ctx.lineTo(p[0] * width, p[1] * height); else ctx.moveTo(p[0] * width, p[1] * height); }); ctx.lineWidth = 125; ctx.stroke(); }); ctx.restore();
-    ctx.save(); ctx.filter = 'brightness(1.2)'; ctx.globalAlpha = .2; ctx.fillStyle = ctx.createPattern(images.Road_Fire, 'repeat');
-    for (var i = 0; i < 78; i++) { var x = random() * width, y = random() * height, w = 35 + random() * 120, h = 16 + random() * 32; ctx.beginPath(); ctx.moveTo(x - w / 2, y); ctx.lineTo(x, y - h / 2); ctx.lineTo(x + w / 2, y); ctx.lineTo(x + w * .15, y + h / 2); ctx.lineTo(x - w * .4, y + h * .2); ctx.closePath(); ctx.fill(); } ctx.restore();
+    // Recovery can retain the exact authored road artwork in an editable pass
+    // rather than flattening it permanently into the hidden foundation.
+    var roadCanvas = spec.separateRoads ? canvas(width, height) : null, roadCtx = roadCanvas ? roadCanvas.getContext('2d') : ctx;
+    roadCtx.save(); roadCtx.filter = 'brightness(1.1)'; roadCtx.globalAlpha = .35; roadCtx.strokeStyle = roadCtx.createPattern(images.Road_Fire, 'repeat'); roadCtx.lineCap = 'round'; roadCtx.lineJoin = 'round';
+    spec.paths.forEach(function (points) { roadCtx.beginPath(); points.forEach(function (p, i) { if (i) roadCtx.lineTo(p[0] * width, p[1] * height); else roadCtx.moveTo(p[0] * width, p[1] * height); }); roadCtx.lineWidth = 125; roadCtx.stroke(); }); roadCtx.restore();
+    roadCtx.save(); roadCtx.filter = 'brightness(1.2)'; roadCtx.globalAlpha = .2; roadCtx.fillStyle = roadCtx.createPattern(images.Road_Fire, 'repeat');
+    for (var i = 0; i < 78; i++) { var x = random() * width, y = random() * height, w = 35 + random() * 120, h = 16 + random() * 32; roadCtx.beginPath(); roadCtx.moveTo(x - w / 2, y); roadCtx.lineTo(x, y - h / 2); roadCtx.lineTo(x + w / 2, y); roadCtx.lineTo(x + w * .15, y + h / 2); roadCtx.lineTo(x - w * .4, y + h * .2); roadCtx.closePath(); roadCtx.fill(); } roadCtx.restore();
     function drawProp(context, prop, left, top) {
       var image = images[prop.image], w = prop.width || prop.height * image.width / image.height, h = prop.height || prop.width * image.height / image.width;
       var px = prop.x * width, py = prop.y * height;
@@ -58,6 +61,10 @@
     for (var row = 0; row < 2; row++) for (var column = 0; column < 2; column++) {
       var tile = canvas(width / 2, height / 2); tile.getContext('2d').drawImage(ground, column * width / 2, row * height / 2, width / 2, height / 2, 0, 0, tile.width, tile.height);
       add(tile, 'stage07-ground-' + (row * 2 + column + 1) + '.png', { role: 'ground', tile: row * 2 + column + 1 });
+      if (roadCanvas) {
+        var roadTile = canvas(width / 2, height / 2); roadTile.getContext('2d').drawImage(roadCanvas, column * width / 2, row * height / 2, width / 2, height / 2, 0, 0, roadTile.width, roadTile.height);
+        add(roadTile, 'stage07-roads-' + (row * 2 + column + 1) + '.png', { role: 'roads', tile: row * 2 + column + 1 });
+      }
     }
     for (var owner of spec.owners) {
       var e = extents[owner.key], selected = props.filter(function (p) { return p.layer !== 'ground' && p.region === owner.key; });
@@ -73,7 +80,7 @@
       var info = { role: 'obstacle', owner: owner.id, key: owner.key, center: { x: (minX + maxX) / 2 - width / 2, y: height / 2 - (minY + maxY) / 2 }, ground: { x: owner.x, y: groundY }, props: selected.length };
       add(baked, 'stage07-' + owner.key + '.png', info); layers.push({ image: baked, minX: minX, minY: minY, groundY: groundY });
     }
-    var preview = canvas(width, height), pc = preview.getContext('2d'); pc.drawImage(ground, 0, 0);
+    var preview = canvas(width, height), pc = preview.getContext('2d'); pc.drawImage(ground, 0, 0); if (roadCanvas) pc.drawImage(roadCanvas, 0, 0);
     layers.sort(function (a, b) { return b.groundY - a.groundY; }).forEach(function (layer) { pc.drawImage(layer.image, layer.minX, layer.minY); });
     var thumbnail = null;
     if (spec.thumbnail) {

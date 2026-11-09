@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "221b9ba9-1513-47be-a54f-1129ef0ba82d",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "de5655f1-7d99-432b-aaa2-1355a64a1c88",
+  "size": {
+    "width": 1452,
+    "height": 1090
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-autumn-ruins-0-0": {
+      "ver": "1.0.6",
+      "uuid": "4d55b72c-d9b2-4f01-aabf-3b479542c98e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "de5655f1-7d99-432b-aaa2-1355a64a1c88",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1448,
+      "height": 1086,
+      "rawWidth": 1448,
+      "rawHeight": 1086,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

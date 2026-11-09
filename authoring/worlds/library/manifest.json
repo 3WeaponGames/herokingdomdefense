@@ -5850,6 +5850,1066 @@
       },
       "depth": "world",
       "sha256": "f1819c830e57f5100a548c4948d0ddf0c0fb522977a24226b00349fe545d6434"
+    },
+    {
+      "id": "custom-92e66f1aa5d04a2eb21eda1e",
+      "name": "Map 7 clean field 1",
+      "category": "field",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/field-1.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "92e66f1aa5d04a2eb21eda1e5a316a9353fe3718cdb8dbac293b68021ba2e692"
+    },
+    {
+      "id": "custom-fe6e6c0bc1b51a33cba68361",
+      "name": "Map 7 editable roads 1",
+      "category": "roads",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/roads-1.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "fe6e6c0bc1b51a33cba68361560408b41685fd2d1e5e8c9f51bfc7a1b16b5643"
+    },
+    {
+      "id": "custom-76876189e0fda138fae8d6e4",
+      "name": "Map 7 clean field 2",
+      "category": "field",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/field-2.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "76876189e0fda138fae8d6e47080d3c91fab9dafe4ebe687eba32d0855d8e029"
+    },
+    {
+      "id": "custom-839bac6d37780d11428862d5",
+      "name": "Map 7 editable roads 2",
+      "category": "roads",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/roads-2.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "839bac6d37780d11428862d50050078291cba9f5b947e99414c6220419b311d1"
+    },
+    {
+      "id": "custom-102c3717eeb27c1ada945455",
+      "name": "Map 7 clean field 3",
+      "category": "field",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/field-3.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "102c3717eeb27c1ada945455e585574b0fac810be9a0c9b0c08ebe11419259d1"
+    },
+    {
+      "id": "custom-d03d2720c1762e4ecdb2430f",
+      "name": "Map 7 editable roads 3",
+      "category": "roads",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/roads-3.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "d03d2720c1762e4ecdb2430fa65e375184f552e2001fc655b9b98d3698146a88"
+    },
+    {
+      "id": "custom-3656d674b7c98f9f91882bf1",
+      "name": "Map 7 clean field 4",
+      "category": "field",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/field-4.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "3656d674b7c98f9f91882bf1bc67bb1666d6acf21b09c1d7466f1d017da1ab9f"
+    },
+    {
+      "id": "custom-438e5d024a012ea84dd26162",
+      "name": "Map 7 editable roads 4",
+      "category": "roads",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/map07-editable-roads/roads-4.png",
+      "width": 930,
+      "height": 1514,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "438e5d024a012ea84dd26162b39b435c2dc5c0a009cba7eef4be81f8c3fdd98a"
+    },
+    {
+      "id": "terrain-forest-river-boundary",
+      "name": "forest River boundary",
+      "category": "water",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/river-boundary.png",
+      "width": 724,
+      "height": 2172,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "f5be34a1bd28fcedf32197b8c09f8be0190a61df59cb422d3d677ad0b7d74975",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-forest-cliff",
+      "name": "forest Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d63ceaecf366d70226a39a2a791ad6a3a13851f2e7574237e95a1dd0e0a0492b",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-forest-rocky-hill",
+      "name": "forest Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/rocky-hill.png",
+      "width": 1290,
+      "height": 1219,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "fcccacb182f354a901b0f3215ce6dc25c368b8a81e0b60efb57aa496f0872e69",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-forest-mountain",
+      "name": "forest Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d71c41ef7e49d2b267d95f7529e9833307ef2d650e7aeb0f118ffd9a52c8e8c8",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-forest-lake",
+      "name": "forest Lake basin",
+      "category": "water",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/lake.png",
+      "width": 1481,
+      "height": 1062,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "d6547d9c4320d0d48b30874e44f0051efc2a06194253e2aa89c55f053884dcfc",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-forest-ruins",
+      "name": "forest Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/ruins.png",
+      "width": 1484,
+      "height": 1060,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "4e37eb130a171025e082e7154f87762962805bdc81e48107cc044b4373256af5",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "ruins"
+      }
+    },
+    {
+      "id": "terrain-deep-forest-river-boundary",
+      "name": "deep forest River boundary",
+      "category": "water",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/river-boundary.png",
+      "width": 724,
+      "height": 2172,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "c49ce414286c415213299a6cb4815994f6afe46adbd0e312df14923118720be0",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-deep-forest-cliff",
+      "name": "deep forest Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7974d0632ee5b9076d71a15fdeb47bac2983abe6243a3aa2a45db3a2e8ded83a",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-deep-forest-rocky-hill",
+      "name": "deep forest Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/rocky-hill.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "d2003d816f2ffdce27b101c3c22f31cb4096cc4f3a1581a61a984283406669a7",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-deep-forest-mountain",
+      "name": "deep forest Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "baab01872893ee4fa3846d74fd9d837bfe25c670aa71fc4f76df4590ef629d7f",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-deep-forest-lake",
+      "name": "deep forest Lake basin",
+      "category": "water",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/lake.png",
+      "width": 1536,
+      "height": 1024,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "17800a0b07a1cd542ae3f9dcde632699a276db8b89f796312e57cfc82f05c6ba",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-deep-forest-ruins",
+      "name": "deep forest Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/ruins.png",
+      "width": 1448,
+      "height": 1086,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "3404c58f058418c47b3b2eda833ecb09f83219a07d6401c58f05f7c132ea14c5",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "ruins"
+      }
+    },
+    {
+      "id": "terrain-autumn-river-boundary",
+      "name": "autumn River boundary",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/river-boundary.png",
+      "width": 724,
+      "height": 2172,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "2b28684a4e828d93e99c9b741c763537090cd2fe941e87ccf082448f0ddc2a7a",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-autumn-cliff",
+      "name": "autumn Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "beb647e9fd076bc9d19d768a57c2a61b89c429b26a71215ea2e009d4eeaaa37b",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-autumn-rocky-hill",
+      "name": "autumn Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/rocky-hill.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "a91728f55e1df77822daf7ede712210ecfde86f6094512740c8335d7a5cfd0ab",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-autumn-mountain",
+      "name": "autumn Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "07c9a521ef6a1b3bc7b6ffcc72e02324ba183340598c6d7333d9acd21cd9e3d8",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-autumn-lake",
+      "name": "autumn Lake basin",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/lake.png",
+      "width": 1536,
+      "height": 1024,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "45d153450b16c7061f3eb02846a9ee4b55452b250130833c159ec1a6367ec047",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-autumn-ruins",
+      "name": "autumn Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/ruins.png",
+      "width": 1448,
+      "height": 1086,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7f70993d7520f11c1c6c256c3d88914528e44ea51378d18479ce768aa7aef5d1",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "ruins"
+      }
+    },
+    {
+      "id": "terrain-desert-river-boundary",
+      "name": "desert River boundary",
+      "category": "water",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/river-boundary.png",
+      "width": 729,
+      "height": 2156,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "515a0fe3c5812a954b4a857eee7103c7ef74e6117b10f11456326a391bcad3d5",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-desert-cliff",
+      "name": "desert Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "624dc9c64f4d981b05361b3de58baf1412778b1e349820f5191fd654495fdf4d",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-desert-rocky-hill",
+      "name": "desert Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/rocky-hill.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "16967692302003711c1d3659c3edc932ba73e198f2ffa161e25369fe54f5df00",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-desert-mountain",
+      "name": "desert Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "61433e6b6e8d8676c5fba4ff02c826220c5d1cc8455b10f706681c39a71ed3e1",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-desert-lake",
+      "name": "desert Lake basin",
+      "category": "water",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/lake.png",
+      "width": 1536,
+      "height": 1024,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "a96a45db5ddd84ebb8ba7a086aaa0e1e48d3bd19a7de346c24c79c6b3f166b8a",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-desert-ruins",
+      "name": "desert Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/ruins.png",
+      "width": 1430,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2ffaf19bf9d78f5c55fba254b7a56b0b8c4d14795361700ebb64ebcda558ccbf",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "ruins"
+      }
+    },
+    {
+      "id": "terrain-snow-river-boundary",
+      "name": "snow River boundary",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/river-boundary.png",
+      "width": 727,
+      "height": 2164,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "8bdad2d40990123dde0206ae6ad38e7e5991a2b297bb5b3bc5843721b84cedec",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-snow-cliff",
+      "name": "snow Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "04c78a6c6aa744456117449f3360b3df6817f641f1ebe3d5b940952b95a3d3c6",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-snow-rocky-hill",
+      "name": "snow Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/rocky-hill.png",
+      "width": 1263,
+      "height": 1246,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8c7ed7b4975556ab5330830335bef60c4e3fbed1e89903aa9beaf64c64b7f08b",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-snow-mountain",
+      "name": "snow Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "5252a685cce7473a8a474c30c89af28ee72aaddce010bf5bcb12da424f0a06e6",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-snow-lake",
+      "name": "snow Lake basin",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/lake.png",
+      "width": 1536,
+      "height": 1024,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "39234449130b5aa740c6a27da76b0f84a3bac3a160ebd0796af5b347e9b209f5",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-snow-ruins",
+      "name": "snow Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/ruins.png",
+      "width": 1430,
+      "height": 1100,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "2c4a84558591705bc4b1f39bab26826f440f687c15372bce4c2ca73e5dcf0112",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "ruins"
+      }
+    },
+    {
+      "id": "terrain-ice-river-boundary",
+      "name": "ice River boundary",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/river-boundary.png",
+      "width": 729,
+      "height": 2156,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "7f43835da0f988cd9016828267a21c05733af498acabe8c8e868d70e05c1186e",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-ice-cliff",
+      "name": "ice Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/cliff.png",
+      "width": 2170,
+      "height": 725,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "99f058d6c18e126cccc56239ce4e8ed2ee82846b62ad1b138804ebae38761b10",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-ice-rocky-hill",
+      "name": "ice Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/rocky-hill.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "ac95809dc7fa0e880df5d47a67cc97fa4f65cf4c5427a296d5a750b3143af6ac",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-ice-mountain",
+      "name": "ice Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "811c5f8e49a17df6aafaa6c4448c082b265840c15cde2f8fb3b82ad040f93443",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-ice-lake",
+      "name": "ice Lake basin",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/lake.png",
+      "width": 1536,
+      "height": 1024,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "8a90072e3763a802e70479da2c391e13ea752e93695c2f3c76359f30b120766d",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-ice-ruins",
+      "name": "ice Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/ruins.png",
+      "width": 1431,
+      "height": 1099,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "7f76208b5ce9d96a63a74ec875464a85074105c876b3a984f33ef6f2b50c146b",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "ruins"
+      }
+    },
+    {
+      "id": "terrain-lava-river-boundary",
+      "name": "lava River boundary",
+      "category": "water",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/river-boundary.png",
+      "width": 724,
+      "height": 2172,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "11b04786289101a1c491f58d01699712f2d176e5795a20a360cdda5c9eaff0b9",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "river-boundary"
+      }
+    },
+    {
+      "id": "terrain-lava-cliff",
+      "name": "lava Cliff plateau",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/cliff.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "c8c89d1e9f3406624c826f00f440ec997996aa53feff427994610e54bf834d18",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "cliff"
+      }
+    },
+    {
+      "id": "terrain-lava-rocky-hill",
+      "name": "lava Rocky hill",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/rocky-hill.png",
+      "width": 1347,
+      "height": 1167,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "8507b2b28af0eac7aff1fdc44fd6257fc2c00a0aa3ce1386d7fa312fb1153743",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "rocky-hill"
+      }
+    },
+    {
+      "id": "terrain-lava-mountain",
+      "name": "lava Mountain ridge",
+      "category": "mountains",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/mountain.png",
+      "width": 887,
+      "height": 1774,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "28f3252a09ef90602c28aba192afc294c9801ef4239cabf84266905aeb1aed59",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "mountain"
+      }
+    },
+    {
+      "id": "terrain-lava-lake",
+      "name": "lava Lake basin",
+      "category": "water",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/lake.png",
+      "width": 1536,
+      "height": 1024,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "ground",
+      "sha256": "ebe6b57cd571e63023c7c746f5564786498b66283fe0027e017c934fe2cd24e5",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "lake"
+      }
+    },
+    {
+      "id": "terrain-lava-ruins",
+      "name": "lava Ancient ruins",
+      "category": "ruins",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/ruins.png",
+      "width": 1448,
+      "height": 1086,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "sha256": "0d3d9b05dbe7213b9e5c8e73dfc8212e38c011f10baf5ece5c58ed943e4c4c2f",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "ruins"
+      }
     }
   ],
   "biomes": [

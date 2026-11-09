@@ -9,6 +9,19 @@ function fixture(){
  return {root,artifacts,folder,recipe,map,old,library,doc,service,request:{key:doc.key,version:1}};
 }
 const near=(a,b)=>assert(Math.hypot(a.x-b.x,a.y-b.y)<1e-7,JSON.stringify([a,b]));
+
+test('legacy road extraction is explicit, pixel-exact and retains cleaned field pixels outside authored road coverage',()=>{
+ const current=Uint8ClampedArray.from([30,40,50,255,70,80,90,255,10,20,30,255,110,120,130,255]),before=Array.from(current),pristine=Uint8ClampedArray.from([1,2,3,255,4,5,6,255,7,8,9,255,10,11,12,255]),mask=Uint8ClampedArray.from([0,0,0,0,0,0,0,89,0,0,0,1,0,0,0,0]);
+ const result=Stage.separateRoadPixels(current,pristine,mask,2,2);
+ assert.equal(result.pixels,2);assert.deepEqual(Array.from(current),before);
+ for(let pixel=0;pixel<4;pixel++){
+  const at=pixel*4,covered=mask[at+3]>0;
+  assert.deepEqual(Array.from(result.foundation.slice(at,at+4)),Array.from((covered?pristine:current).slice(at,at+4)));
+  assert.deepEqual(Array.from(result.roads.slice(at,at+4)),covered?Array.from(current.slice(at,at+4)):[0,0,0,0]);
+  assert.deepEqual(Array.from((covered?result.roads:result.foundation).slice(at,at+4)),before.slice(at,at+4));
+ }
+ for(const size of [[0,2],[1.5,2],[3,2]])assert.throws(()=>Stage.separateRoadPixels(current,pristine,mask,...size),/equally sized/);
+});
 test('identical recovered pixels with different ground anchors keep independent asset metadata',async()=>{
  const f=fixture(),second=M.clone(f.old);second.id='second';second.legacy.roots=[12];f.map.layers[1].objects.push(second);f.doc.original=M.clone(f.map);
  f.recipe.owners.push({key:'other',id:12});fs.writeFileSync(path.join(f.folder,'recipe.json'),JSON.stringify(f.recipe));
@@ -32,12 +45,58 @@ test('source recovery failure does not publish partial palette entries or edit t
  await assert.rejects(Stage.recover(f.service,f.request),/maintained palette/);
  assert.equal(JSON.stringify(f.doc.data),before);assert.equal(f.library.length,0);assert.equal(f.service.stagedAssets.size,0);assert(!fs.existsSync(path.join(f.artifacts,'source-pieces')));
 });
+
+test('explicit source recovery places baked roads in the editable Roads pass below its existing erase strokes',async()=>{
+ const f=fixture(),erase={op:'erase',size:40,hardness:.4,opacity:.5,points:[{x:3,y:8}]};
+ f.map.ground.roads={strokes:[erase],FutureRoadField:{keep:true}};f.doc.original=M.clone(f.map);
+ f.map.ground.order=['foundation','grass'];f.doc.original=M.clone(f.map);
+ const render=f.service.options.render;f.service.options.render=async spec=>{
+  assert.equal(spec.separateRoads,true);const result=await render(spec);
+  for(let i=0;i<4;i++)result.files.push({role:'roads',tile:i+1,width:100,height:150,png:png('roads-'+i)});
+  return result;
+ };
+ const result=await Stage.recover(f.service,f.request),roads=result.value.ground.roads;
+ assert.equal(roads.images.length,4);assert.deepEqual(roads.strokes,[erase]);assert.deepEqual(roads.FutureRoadField,{keep:true});
+ assert.deepEqual(result.value.ground.order,['foundation','roads','grass']);assert.equal(result.value.ground.foundation.tiles.length,4);
+ assert(roads.images.every(o=>!result.value.ground.foundation.tiles.some(t=>t.assetId===o.assetId)));
+ assert.deepEqual(roads.images.map(o=>[o.x,o.y]),[[-50,75],[50,75],[-50,-75],[50,-75]]);
+ assert.equal(f.service.stagedAssets.size,9);
+});
 test('source recovery rejects changed source images or concurrent panel edits before applying anything',async()=>{
  for(const reason of ['source','version']){
   const f=fixture(),render=f.service.options.render,before=JSON.stringify(f.doc.data);
   f.service.options.render=async spec=>{const result=await render(spec);if(reason==='source')fs.writeFileSync(path.join(f.folder,'tree.png'),'changed');else f.service.version++;return result;};
   await assert.rejects(Stage.recover(f.service,f.request),reason==='source'?/source artwork changed/:/Another panel/);
   assert.equal(JSON.stringify(f.doc.data),before);assert.equal(f.service.stagedAssets.size,0);assert.equal(f.library.length,1);
+ }
+});
+
+test('recovered road tiles stay below existing uploaded Roads images without reversing either order',async()=>{
+ const f=fixture(),uploads=[{id:'user-road-a',assetId:'a',x:10,y:20,scale:2,angle:30,mask:[{op:'erase',size:4,points:[{x:1,y:2}]}],Future:{keep:17}},{id:'user-road-b',assetId:'b',x:30,y:40,scale:1,angle:0}];
+ f.map.ground.roads.images=M.clone(uploads);f.doc.original=M.clone(f.map);const render=f.service.options.render;
+ f.service.options.render=async spec=>{const result=await render(spec);for(let i=0;i<4;i++)result.files.push({role:'roads',tile:i+1,width:100,height:150,png:png('roads-'+i)});return result;};
+ const images=(await Stage.recover(f.service,f.request)).value.ground.roads.images;
+ assert.deepEqual(images.slice(4),uploads);assert.deepEqual(f.map.ground.roads.images,uploads);
+ assert.deepEqual(images.slice(0,4).map(o=>o.name),['Stage 7 roads 1','Stage 7 roads 2','Stage 7 roads 3','Stage 7 roads 4']);
+ assert.deepEqual(images.slice(0,4).map(o=>[o.x,o.y]),[[-50,75],[50,75],[-50,-75],[50,-75]]);
+});
+
+test('recovered road tiles preserve foundation world transforms inside a different translated rotated scaled Roads pass',async()=>{
+ const f=fixture(),foundation={x:-40,y:70,scale:.8,angle:-15},roads={x:100,y:200,scale:1.5,angle:20};
+ f.map.ground.foundation.transform=M.clone(foundation);f.map.ground.roads.transform=M.clone(roads);f.doc.original=M.clone(f.map);
+ const render=f.service.options.render;f.service.options.render=async spec=>{const result=await render(spec);for(let i=0;i<4;i++)result.files.push({role:'roads',tile:i+1,width:100,height:150,png:png('roads-'+i)});return result;};
+ const result=(await Stage.recover(f.service,f.request)).value;
+ assert.deepEqual(result.ground.foundation.transform,foundation);assert.deepEqual(result.ground.roads.transform,roads);
+ for(let i=0;i<4;i++){
+  const base=result.ground.foundation.tiles[i],road=result.ground.roads.images[i];near(M.toWorld(foundation,base),M.toWorld(roads,road));
+  for(const offset of [{x:0,y:0},{x:37,y:-21},{x:-50,y:75}])near(M.toWorld(foundation,M.toWorld(base,offset)),M.toWorld(roads,M.toWorld(road,offset)));
+ }
+});
+
+test('source recovery rejects unsupported layer compositing before rendering without changing saved settings or drafts',async()=>{
+ for(const name of ['foundation','roads'])for(const settings of [{hidden:true},{opacity:0},{opacity:.5},{blend:'multiply'}]){
+  const f=fixture();Object.assign(f.map.ground[name],settings);f.doc.original=M.clone(f.map);const before=JSON.stringify(f.map);let renders=0;f.service.options.render=async()=>{renders++;throw Error('unexpected render');};
+  await assert.rejects(Stage.recover(f.service,f.request),/100% opacity and Normal blend/);assert.equal(renders,0);assert.equal(JSON.stringify(f.map),before);assert.equal(f.service.stagedAssets.size,0);assert.equal(f.library.length,1);
  }
 });
 

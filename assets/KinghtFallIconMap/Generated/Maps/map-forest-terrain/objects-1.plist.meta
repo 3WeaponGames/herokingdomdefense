@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "ab49285d-c708-441c-aadf-e0a8de9f86da",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "8c455cb4-7b49-4b31-ae7a-359c68e0bf63",
+  "size": {
+    "width": 891,
+    "height": 1778
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-forest-mountain-0-0": {
+      "ver": "1.0.6",
+      "uuid": "8fcafb78-73d2-4236-a7ee-6f684fe156d6",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8c455cb4-7b49-4b31-ae7a-359c68e0bf63",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 887,
+      "height": 1774,
+      "rawWidth": 887,
+      "rawHeight": 1774,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

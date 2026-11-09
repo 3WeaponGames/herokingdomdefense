@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "14111329-cb34-41a3-a109-e67f6ef64133",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "54246dfc-a951-4823-acf7-7ddde98d0146",
+  "size": {
+    "width": 1488,
+    "height": 1064
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-forest-ruins-0-0": {
+      "ver": "1.0.6",
+      "uuid": "bc43c011-8612-4a29-a55a-287a2afbae12",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "54246dfc-a951-4823-acf7-7ddde98d0146",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1484,
+      "height": 1060,
+      "rawWidth": 1484,
+      "rawHeight": 1060,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
