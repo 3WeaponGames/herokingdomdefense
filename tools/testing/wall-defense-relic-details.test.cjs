@@ -64,17 +64,20 @@ test('normal collection descriptions retain their Upgrade button and reset inspe
   assert.equal(panel.readOnly,false);assert.equal(panel.btnGold.active,true);assert.equal(panel.btnGold.handlers.end,panel.onGoldBtnClick);
 });
 
-test('the same shared panel selects crisp title and instruction typography for collection and read-only owners',()=>{
-  const h=setup(),refreshed=[];
+test('the same shared panel selects crisp typography and unit flow for collection and read-only owners',()=>{
+  const h=setup(),refreshed=[],expected=[];
   h.modules.LanguageMgr.LanguageMgr.getInstance=()=>({refreshLabel:label=>refreshed.push(label)});
   for(const readOnly of [false,true]){
     const panel=h.detail(),root=new h.cc.Node('root'),title=new h.cc.Node('labTitle'),instruction=new h.cc.Node('labClose');title.parent=root;instruction.parent=root;
     panel.labName={node:title};instruction.ui={node:instruction};panel.init(h.relic,readOnly);
     assert.equal(panel.labName._uiTypography.fontRole,'display');assert.equal(panel.labName._uiTypography.outlineWidth,2);
     assert.equal(instruction.ui._uiTypography.fontFamily,'Arial');assert.equal(instruction.ui._uiTypography.outlineWidth,0);assert.equal(instruction.ui._uiTypography.isBold,true);
+    assert.equal(panel.labInfo._localizedTextFlow.keepValueUnits,true);
+    assert.equal(panel.labInfo._uiTypography,undefined,'description flow must preserve its existing font and effects');
+    expected.push(panel.labInfo,panel.labName,instruction.ui);
     assert.equal(panel.readOnly,readOnly);
   }
-  assert.equal(refreshed.length,4);assert.equal(h.purchases(),0);assert.equal(h.owned.level,1);assert.equal(h.owned.frame,2);
+  assert.deepEqual(refreshed,expected);assert.equal(h.purchases(),0);assert.equal(h.owned.level,1);assert.equal(h.owned.frame,2);
 });
 
 for(const ownership of ['unowned','owned','maxed'])test('shared read-only Relic inspection keeps '+ownership+' progress unchanged with no Upgrade action or saves',()=>{

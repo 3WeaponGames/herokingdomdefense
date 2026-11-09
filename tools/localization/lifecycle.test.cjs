@@ -240,6 +240,17 @@ test('large kit card captions retain a controlled three-unit stroke through font
   function verify(){assert.equal(amount.outline.width,3);assert.equal(amount.shadow.enabled,false);assert.equal(body.outline.enabled,false);assert.equal(body.shadow.enabled,false);}
   verify();pending[0](null,font);verify();assert.equal(amount.label.font,font);f.manager.setCurrentLanguage('zh');verify();f.manager.setCurrentLanguage('en');verify();
 });
+
+test('opt-in Shop shadows keep a crisp bounded depth through locale changes, cloning and delayed fonts',()=>{
+  const f=shopTypographyFixture(),pending=[];f.cc.resources.load=(url,type,done)=>pending.push(done);
+  const title=f.makeLabel('ShopTitle',{fontRole:'display',outlineWidth:3.2,shadowDepth:4});
+  const body=f.makeLabel('ShopBody',{fontRole:'body',fontFamily:'Arial',outlineWidth:0});
+  f.manager.bindLabel(title.label,'a');f.manager.bindLabel(body.label,'a');
+  function verify(){assert.equal(title.outline.width,3.2);assert.equal(title.shadow.enabled,true);assert.equal(title.shadow.blur,0);assert.deepEqual(title.shadow.offset,{x:0,y:-4});assert.equal(body.shadow.enabled,false);}
+  verify();pending[0](null,{name:'Lilita One'});verify();f.manager.setCurrentLanguage('zh');verify();f.manager.setCurrentLanguage('en');verify();
+  const clone=f.cc.instantiate(title.node),label=clone.getComponent(f.Label);f.manager.refreshTree(clone);assert.equal(label._shopTypography.shadowDepth,4);assert.equal(clone.getComponent(f.cc.LabelShadow).offset.y,-4);assert.equal(clone.getComponent(f.cc.LabelShadow).blur,0);
+  title.label._shopTypography.shadowDepth=99;f.manager.refreshLabel(title.label);assert.equal(title.shadow.offset.y,-4,'oversized local shadows are bounded');
+});
 test('cloned Shop labels retain independent local typography through scene scans while unmarked buttons retain global effects',()=>{
   const f=shopTypographyFixture(),font={name:'Lilita One'};f.cc.resources.load=(url,type,callback)=>callback(null,font);
   const source=f.makeLabel('ShopCaption',{fontRole:'body',isBold:true,outlineWidth:1});f.manager.bindLabel(source.label,'a');

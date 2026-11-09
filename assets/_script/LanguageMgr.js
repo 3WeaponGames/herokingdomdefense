@@ -257,10 +257,13 @@ LanguageMgr.prototype._applyDisplayEffects = function (label, resource) {
     // Polished panels opt into exact local strokes. They must not inherit the
     // large Lilita outline/shadow intended for existing game buttons/titles.
     var stroke = Number(shop.outlineWidth);
-    stroke = isFinite(stroke) ? Math.max(0, Math.min(3, stroke)) : 0;
+    stroke = isFinite(stroke) ? Math.max(0, Math.min(label._shopTypography ? 4 : 3, stroke)) : 0;
     if (stroke > 0) outline = outline || node.addComponent(cc.LabelOutline);
     if (outline) { outline.enabled = stroke > 0; outline.width = stroke; outline.color = cc.color(shop.outlineColor || "#242632"); }
-    if (shadow) shadow.enabled = false;
+    var localDepth = Number(shop.shadowDepth);
+    localDepth = isFinite(localDepth) ? Math.max(0, Math.min(4, localDepth)) : 0;
+    if (localDepth > 0) shadow = shadow || node.addComponent(cc.LabelShadow);
+    if (shadow) { shadow.enabled = localDepth > 0; shadow.blur = 0; shadow.offset = cc.v2(0, -localDepth); shadow.color = cc.color(shop.shadowColor || "#000000"); }
     label._localizedEffectsActive = false;
     return;
   }
@@ -440,7 +443,50 @@ LanguageMgr.prototype._applyLabelStyle = function (label, recipe) {
     label._localizedPositionOverride = style.x !== undefined || style.y !== undefined;
   }
 };
+LanguageMgr.prototype._installValueUnitFlow = function (label) {
+  if (label._localizedUnitWrapOriginal || typeof label._updateRichTextWithMaxWidth !== "function" || typeof label._measureText !== "function" || typeof label._updateLineInfo !== "function" || typeof label._addLabelSegment !== "function") return;
+  var original = label._updateRichTextWithMaxWidth;
+  label._localizedUnitWrapOriginal = original;
+  label._updateRichTextWithMaxWidth = function (text, width, styleIndex) {
+    if (!this._localizedTextFlow || !this._localizedTextFlow.keepValueUnits || !(this.maxWidth > 0)) return original.apply(this, arguments);
+    // The stock CJK fragmenter can split both literal and styled time/percent
+    // units. Keep these short tokens and an opening parenthesis with its
+    // following CJK character atomic on this instance.
+    var tokens = /[（(]*[+\-\u2212]?\d+(?:[.,]\d+)*(?:ms|s|秒|%)(?![A-Za-z])[。，、！？；：,.!?;:…）)》”’]*|[（(]+[\u3400-\u4dbf\u4e00-\u9fff]/gi, match, end = 0;
+    while ((match = tokens.exec(text))) {
+      var before = text.slice(end, match.index);
+      if (before) original.call(this, before, this._measureText(styleIndex, before), styleIndex);
+      var token = match[0], tokenWidth = this._measureText(styleIndex, token);
+      if (tokenWidth > this.maxWidth) original.call(this, token, tokenWidth, styleIndex);
+      else {
+        var reserveWidth = tokenWidth, next = this._textArray && this._textArray[styleIndex + 1];
+        if (tokens.lastIndex === text.length && next && next.text) {
+          var punctuation = /^[。，、！？；：,.!?;:…）)》”’]+/.exec(next.text);
+          if (punctuation) {
+            var together = tokenWidth + this._measureText(styleIndex + 1, punctuation[0]);
+            if (together <= this.maxWidth) reserveWidth = together;
+          }
+        }
+        if (this._lineOffsetX > 0 && this._lineOffsetX + reserveWidth > this.maxWidth) this._updateLineInfo();
+        this._lineOffsetX += tokenWidth;
+        this._addLabelSegment(token, styleIndex);
+      }
+      end = tokens.lastIndex;
+    }
+    if (!end) return original.apply(this, arguments);
+    var after = text.slice(end);
+    if (after) return original.call(this, after, this._measureText(styleIndex, after), styleIndex);
+  };
+  label._layoutDirty = true;
+};
 LanguageMgr.prototype._styleLabelText = function (label, text) {
+  if (label._localizedTextFlow && label._localizedTextFlow.keepValueUnits && cc.RichText && label instanceof cc.RichText) {
+    this._installValueUnitFlow(label);
+    // RichText wraps styled segments independently. Keep an attached sign and
+    // time unit with the colored value, so neither becomes an orphaned run.
+    text = text.replace(/([+\-\u2212]?)(<color=[^>]+>)([+\-\u2212]?\d+(?:[.,]\d+)*%?)<\/c>(ms|s|秒)(?![A-Za-z])/gi, "$2$1$3$4</c>");
+    text = text.replace(/([+\-\u2212])(<color=[^>]+>)(\d+(?:[.,]\d+)*%)<\/c>/gi, "$2$1$3</c>");
+  }
   var styles = this.catalog.labelStyles && this.catalog.labelStyles[label._localizedStyleKey];
   var style = styles && styles[this.currentLan];
   if (style && style.highlightColor && cc.RichText && label instanceof cc.RichText) {
@@ -555,6 +601,7 @@ LanguageMgr.prototype._copyNodeBindings = function (source, clone) {
     if (label._localizedFontRole) copy._localizedFontRole = label._localizedFontRole;
     if (label._shopTypography) copy._shopTypography = Object.assign({}, label._shopTypography);
     if (label._uiTypography) copy._uiTypography = Object.assign({}, label._uiTypography);
+    if (label._localizedTextFlow) copy._localizedTextFlow = Object.assign({}, label._localizedTextFlow);
     if (label._localizedStyleKey) copy._localizedStyleKey = label._localizedStyleKey;
     if (label._localizedRecipe) {
       copy._localizedRecipe = JSON.parse(JSON.stringify(label._localizedRecipe));

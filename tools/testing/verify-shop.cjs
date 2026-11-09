@@ -65,6 +65,9 @@ async function inGameChecks() {
         for (const tab of ['chests', 'relics', 'resources', 'bundles']) {
             shop.selectTab(tab); check(shop.daily === dailyNode && dailyNode.activeInHierarchy, 'Daily Deal pinned on ' + tab);
         }
+        // Capture the actual initial catalog before this private commerce run
+        // consumes first-purchase bonuses and fills the lifetime bundle caps.
+        if (typeof window.__captureShopInitial === 'function') await window.__captureShopInitial();
         const gold = player.udata.getGoldNum(); tap(shop.dailyClaim);
         check(player.udata.getGoldNum() === gold + 500, 'Daily claim credits exactly 500 Gold');
         check(shop.view.dailyDeal.claimed && !shop.dailyClaim._enabled, 'Daily claim becomes disabled with reset timer');
@@ -135,7 +138,7 @@ async function inGameChecks() {
         }
         player.udata.data.treasureInfo = originalRelics; player.udata.saveData(); shop.refresh();
         const shopLabels = shop.node.getComponentsInChildren(cc.Label).filter(label => label.node.activeInHierarchy && label._shopTypography);
-        check(shopLabels.length > 20 && shopLabels.every(label => { let card = label.node; while (card && !card._kitCard) card = card.parent; const outline = label.node.getComponent(cc.LabelOutline), shadow = label.node.getComponent(cc.LabelShadow); return (!outline || !outline.enabled || outline.width <= (card || label === shop.title ? 3 : 2)) && (!shadow || !shadow.enabled); }), 'Shop typography keeps controlled kit strokes and no hard shadows');
+        check(shopLabels.length > 20 && shopLabels.every(label => { const outline = label.node.getComponent(cc.LabelOutline), shadow = label.node.getComponent(cc.LabelShadow); return (!outline || !outline.enabled || outline.width <= 4) && (!shadow || !shadow.enabled || shadow.blur === 0 && shadow.offset.x === 0 && shadow.offset.y <= 0 && shadow.offset.y >= -4); }), 'Shop typography keeps bounded outlines and crisp downward shadows without blur');
         const slot = shop.view.relics[0], beforeOrder = shop.view.relics.map(o => o.relicId).join(',');
         shop.buy('relics', slot, shop.view.token); check(!!shop.modal, 'Relic purchase requests confirmation'); tap(find(shop.modal, 'Confirm'));
         check(shop.view.relics[0].soldOut && shop.view.relics.map(o => o.relicId).join(',') === beforeOrder, 'Purchase marks the same slot sold without replacing stock');
@@ -146,6 +149,9 @@ async function inGameChecks() {
         tap(find(shop.content, 'RefreshRelics')); check(!!shop.modal, 'Paid refresh requests confirmation'); tap(find(shop.modal, 'Confirm'));
         check(player.udata.getDiamondNum() === gems - 10 && shop.view.refresh.used === 2, 'Confirmed second refresh debits exactly 10 Gems');
         shop.selectTab('resources'); check(shop.view.resources.length === 14, 'Four Gold, four Energy and six Gem packages');
+        const resourceIds = shop.content.children.filter(n => n.activeInHierarchy && n.name.startsWith('Offer_')).map(n => n.name.slice(6));
+        check(resourceIds.slice(0, 6).join(',') === 'gold-pouch,gold-cart,gems-100,gems-550,energy-flask,energy-crate', 'Resources opens with Gold, first-bonus Gems and Energy entry rows');
+        check(resourceIds.length === 14 && new Set(resourceIds).size === 14 && shop.view.resources.every(o => resourceIds.includes(o.id)), 'Reordered resource display retains every catalog offer exactly once');
         check(shop.view.resources.every(o => !o.cost || o.cost.currency === 2002), 'The old Gold-to-Gem exchange is absent');
         check(shop.content.children.filter(n => n.activeInHierarchy && n.name.indexOf('Offer_') === 0).every(n => !!find(n, 'PackageQuantity')), 'Resource cards expose package amounts');
         const refill = shop.view.resources.find(o => o.rewards.some(r => r.id === 2033));
@@ -302,6 +308,36 @@ async function main() {
             if (start) start.beginLoading();
             else if (!ui.getUIById(request('KinghtFallConfig').KinghtFallUIID.UIHome)) cc.director.loadScene('loading');
         });
+        await page.exposeFunction('__captureShopInitial', async () => {
+            const diagnostics = [];
+            for (const tab of ['bundles', 'chests', 'relics', 'resources']) {
+                await page.evaluate(tab => { const s = window.__shopTest.shop; s.selectTab(tab); s.scroll.scrollToTop(0); }, tab);
+                await page.waitForFunction(() => Object.keys(window.__shopTest.shop._iconPending).length === 0);
+                await page.waitForTimeout(350);
+                diagnostics.push(await page.evaluate(tab => {
+                    const { shop, report } = window.__shopTest;
+                    if (shop.view.dailyDeal.claimed || shop.view.bundles.some(o => o.purchaseCount) || shop.view.resources.filter(o => o.payment).some(o => !o.firstPurchaseAvailable || o.available)) throw Error('Initial-state capture ran after commerce or enabled the unconfigured store');
+                    const labels = shop.content.getComponentsInChildren(cc.Label).filter(l => l.node.activeInHierarchy && (l.node.name === 'Caption' && l.node.parent.name.startsWith('Buy_') || l.node.name === 'Name' || l.node.name === 'FirstPurchaseBonus'));
+                    const metrics = labels.map(l => ({ name: l.node.name, text: l.string, configured: l.fontSize, actual: l.actualFontSize, width: l.node.width, height: l.node.height }));
+                    for (const l of labels) {
+                        // Numeric prices must never silently shrink because one
+                        // offer contains wider digits or a grouping separator.
+                        if (l.node.name === 'Caption' && /^[\d,]+$/.test(l.string) && l.actualFontSize < Math.floor(l.fontSize * .98)) throw Error('Initial numeric price shrank: ' + l.string);
+                    }
+                    report.checks.push('Fresh ' + tab + ': unclaimed Daily, disabled store, intact first bonuses and measured price fonts');
+                    return { tab, metrics };
+                }, tab));
+                await page.locator('#GameCanvas').screenshot({ path: path.join(out, 'initial-' + tab + '.png') });
+            }
+            await page.evaluate(() => {
+                const s = window.__shopTest.shop, row = s.content.getChildByName('Offer_gems-100');
+                s.scroll.scrollToOffset(cc.v2(0, Math.max(0, -row.y - row.height / 2)), 0);
+            });
+            await page.waitForTimeout(300);
+            await page.locator('#GameCanvas').screenshot({ path: path.join(out, 'initial-resources-first-gems.png') });
+            fs.writeFileSync(path.join(out, 'initial-fonts.json'), JSON.stringify(diagnostics, null, 2));
+            await page.evaluate(() => { const s = window.__shopTest.shop; s.selectTab('bundles'); s.scroll.scrollToTop(0); });
+        });
         const result = await page.evaluate(inGameChecks);
         if (result.ready) {
             // Direct node.dispatchEvent bypasses hit-testing. Use actual browser
@@ -385,6 +421,11 @@ async function main() {
                                 if (!item) continue;
                                 const label = item.caption || item.getComponent(cc.Label);
                                 if (label.node.height + .5 < label.lineHeight || label.actualFontSize < Math.floor(label.fontSize * .95)) throw Error('Card support text shrank at ' + width + '×' + height + ' ' + row.name + '/' + name + ': ' + label.actualFontSize + '/' + label.fontSize);
+                            }
+                            for (const label of row.getComponentsInChildren(cc.Label).filter(l => l.node.activeInHierarchy && l.node.name === 'Caption' && l.node.parent.name.startsWith('Buy_') && /^[\d,]+$/.test(l.string))) {
+                                if (label.actualFontSize < Math.floor(label.fontSize * .98)) throw Error('Numeric price shrank at ' + width + '×' + height + ': ' + label.string);
+                                const slot = label.node.parent, icon = slot.getChildByName('PriceIcon'), caption = rect(label.node, slot), area = rect(slot, slot), glyph = rect(icon, slot);
+                                if (caption.left < area.left - .5 || caption.right > area.right + .5 || caption.bottom < area.bottom - .5 || caption.top > area.top + .5 || glyph.left < area.left - .5 || glyph.right > area.right + .5 || glyph.bottom < area.bottom - .5 || glyph.top > area.top + .5 || Math.abs(glyph.left + caption.right) > 1) throw Error('Currency-price group is clipped or off-center at ' + width + '×' + height + ': ' + label.string);
                             }
                         }
                         const first = rect(rows[0], shop.viewport), view = rect(shop.viewport, shop.viewport);

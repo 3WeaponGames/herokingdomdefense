@@ -14,6 +14,12 @@ function fitSkin(item, width, height) {
   var scale = item._referenceHeight && height > 0 ? height / item._referenceHeight : 1;
   item.setScale(scale); item.setContentSize(width / scale, height / scale);
 }
+function textShadow(label, depth) {
+  depth = Math.max(0, Math.min(4, Number(depth) || 0)); label._shopTypography.shadowDepth = depth;
+  var effect = label.node.getComponent(cc.LabelShadow);
+  if (depth) effect = effect || label.node.addComponent(cc.LabelShadow);
+  if (effect) { effect.enabled = depth > 0; effect.blur = 0; effect.color = cc.color("#000000"); effect.offset = cc.v2(0, -depth); }
+}
 function cardSurface(item, header) {
   var g = item.getComponent(cc.Graphics) || item.addComponent(cc.Graphics), w = item.width, h = item.height; g.clear();
   g.fillColor = cc.color("#8e744b"); g.roundRect(-w / 2, -h / 2 - 3, w, h, 19); g.fill();
@@ -38,7 +44,7 @@ function buttonSurface(item, fill) {
 var Shop = cc.Class({
   extends: Base,
   onLoad: function () {
-    this._shopGeneration = 0; this._visibilityGeneration = 0; this._iconCache = Object.create(null); this._iconPending = Object.create(null); this._offsets = Object.create(null); this.tab = "bundles";
+    this._shopGeneration = 0; this._visibilityGeneration = 0; this._iconCache = Object.create(null); this._frameParts = Object.create(null); this._iconPending = Object.create(null); this._offsets = Object.create(null); this.tab = "bundles";
     this._language = Language.getInstance(); this.service = require("ShopRuntime").create(Player.getInstance(), Data.getInstance());
     this.build(); this.node.on(cc.Node.EventType.SIZE_CHANGED, this.relayout, this);
     this.addEvent(Config.KinghtFallEventName.RefreshGold, this.refresh);
@@ -57,6 +63,7 @@ var Shop = cc.Class({
   onDestroy: function () {
     this.observeFooter(null); this.unschedule(this.tick); this.unschedule(this.hideFeedback); if (this._language) this._language.offChange(this.languageChanged, this);
     this.closeModal(); this.closeRelicDetails(); this._shopGeneration++; this._visibilityGeneration++; this.node.off(cc.Node.EventType.SIZE_CHANGED, this.relayout, this);
+    Object.keys(this._frameParts).forEach(function (key) { this._frameParts[key].destroy(); }, this); this._frameParts = Object.create(null);
     Base.prototype.onDestroy.call(this);
   },
   layoutTitle: function () {
@@ -64,6 +71,7 @@ var Shop = cc.Class({
     place(this.titleRoot, 0, this.geometry.title, w, 80 * s);
     place(this.title.node, 0, 0, w - 24 * s, 80 * s);
     this.title.fontSize = 64 * s; this.title.lineHeight = 78 * s;
+    textShadow(this.title, 4 * s);
   },
   layoutCategories: function () {
     var w = this.geometry.width, s = this.geometry.chromeScale, width = w / TABS.length;
@@ -86,11 +94,12 @@ var Shop = cc.Class({
   },
   text: function (parent, name, size, bold, color, typography) {
     var item = node(parent, name), label = item.addComponent(cc.Label); item.color = cc.color(color || COLORS.body);
-    var style = label._shopTypography = Object.assign({ fontRole: "body", fontFamily: "Arial", isBold: !!bold, outlineWidth: 0, outlineColor: "#26383b" }, typography || {});
+    var style = label._shopTypography = Object.assign({ fontRole: "body", fontFamily: "Arial", isBold: !!bold, outlineWidth: 0, outlineColor: "#26383b", shadowDepth: typography && typography.fontRole === "display" ? Math.min(4, size * .08) : 0 }, typography || {});
     label.fontFamily = "Arial"; label.useSystemFont = true; label._localizedFontRole = style.fontRole; label.enableBold = style.isBold;
     label.fontSize = size; label.lineHeight = Math.ceil(size * 1.2); label.enableWrapText = false; label.overflow = cc.Label.Overflow.SHRINK;
     label.horizontalAlign = cc.Label.HorizontalAlign.CENTER; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
     if (style.outlineWidth > 0) { var outline = item.addComponent(cc.LabelOutline); outline.color = cc.color(style.outlineColor); outline.width = style.outlineWidth; }
+    textShadow(label, style.shadowDepth);
     return label;
   },
   bind: function (label, key, params) { this._language.bindLabel(label, key, params); },
@@ -121,14 +130,26 @@ var Shop = cc.Class({
     var style = item.caption._shopTypography, signature = [kit, whiteText].join(":");
     item.caption.node.color = cc.color(whiteText ? "#ffffff" : kit ? "#1c4a78" : COLORS.body);
     if (item._captionStyle !== signature) {
-      item._captionStyle = signature; style.fontRole = kit ? "display" : "body"; style.fontFamily = kit ? null : "Arial"; style.isBold = !kit; style.outlineWidth = kit && whiteText ? 2 : 0; style.outlineColor = "#000000";
+      item._captionStyle = signature; style.fontRole = kit ? "display" : "body"; style.fontFamily = kit ? null : "Arial"; style.isBold = !kit; style.outlineWidth = kit && whiteText ? 3 : 0; style.outlineColor = "#000000";
       item.caption._localizedFontRole = style.fontRole;
       if (this._language.refreshLabel) this._language.refreshLabel(item.caption);
     }
+    textShadow(item.caption, kit ? 4 * height / 84 : 0);
     item.goldSkin.active = item._enabled && !item._alwaysGray && (!fill || fill === COLORS.gold); item.skySkin.active = item._enabled && !item._alwaysGray && fill === COLORS.blue; item.disabledSkin.active = !item._enabled || !!item._alwaysGray;
     [item.goldSkin, item.skySkin, item.disabledSkin].forEach(function (skin) { fitSkin(skin, width, height); });
     item._refreshSurface();
     if (kit) item.caption.node.y = 3 * height / 84;
+  },
+  framePart: function (frame, key, descriptor) {
+    if (!descriptor.frameRect) return frame;
+    var region = descriptor.frameRect, borders = descriptor.insets || [0, 0, 0, 0], source = frame.getRect();
+    if (region.length !== 4 || region.some(function (v) { return !isFinite(v) || v < 0; }) || region[2] <= borders[0] + borders[1] || region[3] <= borders[2] + borders[3] || region[0] + region[2] > source.width || region[1] + region[3] > source.height) throw new Error("Invalid Shop frame region: " + key);
+    var partKey = key + ":" + region.join(",") + ":" + borders.join(",");
+    if (!this._frameParts[partKey]) {
+      var part = frame.clone(); part.name = (frame.name || "ShopCard") + "@" + region.join(","); part.setRect(cc.rect(source.x + region[0], source.y + region[1], region[2], region[3])); part.setOriginalSize(cc.size(region[2], region[3])); part.setOffset(cc.v2(0, 0));
+      part.insetLeft = borders[0]; part.insetRight = borders[1]; part.insetTop = borders[2]; part.insetBottom = borders[3]; this._frameParts[partKey] = part;
+    }
+    return this._frameParts[partKey];
   },
   icon: function (parent, descriptor, size, name, persistent) {
     var self = this, item = node(parent, name || "Icon", size, size), sprite = item.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
@@ -139,7 +160,7 @@ var Shop = cc.Class({
     if (descriptor.sliced) { sprite.type = cc.Sprite.Type.SLICED; item._referenceHeight = descriptor.referenceHeight || 0; }
     function assign(frame) {
       if (!frame || self.isDestroy || !persistent && generation !== self._shopGeneration || !cc.isValid(item, true)) return;
-      sprite.spriteFrame = frame;
+      sprite.spriteFrame = self.framePart(frame, key, descriptor);
       if (descriptor.sliced) { fitSkin(item, item._skinWidth === undefined ? parent.width : item._skinWidth, item._skinHeight === undefined ? parent.height : item._skinHeight); if (parent._refreshSurface) parent._refreshSurface(); return; }
       // SIMPLE sprites render the trimmed frame; its bounds preserve the
       // artwork's proportions even when the source PNG has square padding.
@@ -230,8 +251,8 @@ var Shop = cc.Class({
       return item;
     });
     this.daily = node(this.surface, "DailyDeal");
-    this.dailySkin = this.icon(this.daily, Object.assign(this.cardAsset("Frame_ListFrame14_n_Blue"), { sliced: true, referenceHeight: 158 / .65 }), 100, "DailySkin", true);
-    this.dailyRim = this.icon(this.daily, Object.assign(this.cardAsset("Frame_ListFrame14_s"), { sliced: true, referenceHeight: 158 / .32 }), 100, "DailyRim", true); this.dailyRim.opacity = 90;
+    this.dailySkin = this.icon(this.daily, Object.assign(this.cardAsset("Frame_ListFrame14_n_Blue"), { sliced: true, referenceHeight: 158 / .85 }), 100, "DailySkin", true);
+    this.dailyRim = this.icon(this.daily, Object.assign(this.cardAsset("Frame_ListFrame14_s"), { sliced: true, referenceHeight: 158 / .40 }), 100, "DailyRim", true); this.dailyRim.opacity = 90;
     this.dailyGiftGlow = this.icon(this.daily, this.cardAsset("Common_Glow_Circle_White"), 144, "GiftGlow", true); this.dailyGiftGlow.color = cc.color("#91e5ff"); this.dailyGiftGlow.opacity = 180;
     this.dailyIcon = this.icon(this.daily, { bundle: "resources", path: "icons/2d-minimal/UI/Rewards/UI_Rewards_Gift_01_Red" }, 150, "Gift", true); this.dailyTitle = this.text(this.daily, "DailyTitle", 44, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 2, outlineColor: "#000000" }); this.bind(this.dailyTitle, "shop.daily.title");
     this.dailyGold = this.icon(this.daily, this.currencyIcon(2001), 48, "RewardGold", true);
@@ -239,7 +260,7 @@ var Shop = cc.Class({
     this.dailyTitle.horizontalAlign = this.dailyReward.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
     this.dailyTimer.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
     this.dailyTimerStrip = node(this.daily, "ResetStrip"); this.dailyTimerStrip.addComponent(cc.Graphics); this.dailyTimer.node.zIndex = 1;
-    this.dailyClock = this.icon(this.daily, { bundle: "resources", path: "icons/Pictograms/Pictoicon_Time" }, 28, "ResetClock", true);
+    this.dailyClock = this.icon(this.daily, { bundle: "resources", path: "icons/Pictograms/Pictoicon_Time" }, 44, "ResetClock", true);
     this.dailyClaim = this.button(this.daily, "ClaimDaily", "shop.daily.claim", function () { var view = self.view; if (view && view.ready !== false && view.dailyDeal && !view.dailyDeal.claimed) self.act("claimDaily", null, view.token); }, COLORS.blue);
     this.dailyClaimCheck = this.text(this.dailyClaim, "ClaimedCheck", 26, true, "#ffffff"); this.dailyClaimCheck.string = "✓"; this.dailyClaimCheck.node.active = false;
     this.scrollNode = node(this.surface, "Products"); this.scrollNode.addComponent(cc.BlockInputEvents);
@@ -279,12 +300,12 @@ var Shop = cc.Class({
     place(this.daily, 0, geometry.daily, w, 158 * s); fitSkin(this.dailySkin, w, this.daily.height); fitSkin(this.dailyRim, w - 8 * s, this.daily.height - 8 * s);
     this.dailyGiftGlow.setPosition(-w / 2 + 84 * s, 0); this.dailyGiftGlow.setScale(s);
     this.dailyIcon.setPosition(-w / 2 + 84 * s, 0); this.dailyIcon.setScale(s);
-    place(this.dailyTitle.node, -w / 2 + 336 * s, 48 * s, 264 * s, 54 * s); this.dailyTitle.fontSize = 44 * s; this.dailyTitle.lineHeight = 52 * s;
+    place(this.dailyTitle.node, -w / 2 + 328 * s, 48 * s, 264 * s, 54 * s); this.dailyTitle.fontSize = 44 * s; this.dailyTitle.lineHeight = 52 * s; textShadow(this.dailyTitle, 3.52 * s);
     this.dailyGold.setPosition(-w / 2 + 222 * s, -7 * s); this.dailyGold.setScale(s);
-    place(this.dailyReward.node, -w / 2 + 380 * s, -7 * s, 236 * s, 48 * s); this.dailyReward.fontSize = 40 * s; this.dailyReward.lineHeight = 48 * s;
+    place(this.dailyReward.node, -w / 2 + 374 * s, -7 * s, 248 * s, 48 * s); this.dailyReward.fontSize = 40 * s; this.dailyReward.lineHeight = 48 * s; textShadow(this.dailyReward, 3.2 * s);
     place(this.dailyTimerStrip, -w / 2 + 174 * s, 0, 2 * s, 112 * s); var reset = this.dailyTimerStrip.getComponent(cc.Graphics); reset.clear(); reset.strokeColor = cc.color("#47b5eb"); reset.lineWidth = 2 * s; reset.moveTo(0, -56 * s); reset.lineTo(0, 56 * s); reset.stroke();
     this.dailyClock.setPosition(-w / 2 + 218 * s, -53 * s); this.dailyClock.setScale(s);
-    place(this.dailyTimer.node, -w / 2 + 371 * s, -53 * s, 242 * s, 36 * s); this.dailyTimer.fontSize = 26 * s; this.dailyTimer.lineHeight = 34 * s;
+    place(this.dailyTimer.node, -w / 2 + 371 * s, -53 * s, 242 * s, 36 * s); this.dailyTimer.fontSize = 26 * s; this.dailyTimer.lineHeight = 34 * s; textShadow(this.dailyTimer, 2.08 * s);
     this.layoutDailyClaim();
     place(this.scrollNode, 0, geometry.listY, w, geometry.listHeight); place(this.viewport, 0, 0, w, geometry.listHeight); this.content.setPosition(0, geometry.listHeight / 2); this.content.width = w;
     place(this.status.node, 0, geometry.listY, w - 24 * s, 120 * s); this.closeModal(); this._renderToken = null; if (this.view) this.renderProducts();
@@ -317,27 +338,30 @@ var Shop = cc.Class({
     scale = scale || 1;
     var supplied = (offer.rewards || [])[0], bundleIndex = this.tab === "bundles" ? (this.view.bundles || []).indexOf(offer) : 0, theme = this.tab === "bundles" ? bundleIndex % 2 === 1 ? "Purple" : "Green" : this.tab === "resources" && supplied && supplied.id === 2001 ? "Yellow" : this.tab === "resources" && supplied && supplied.id === 2002 ? "Purple" : "Blue";
     var row = node(parent, "Offer_" + offer.id, width, height), premium = this.tab === "bundles", relic = this.tab === "relics", chest = this.tab === "chests", energy = this.tab === "resources" && supplied && supplied.id === 2033;
-    row._kitCard = true; row._cardTheme = theme.toLowerCase(); row._footerHeight = (premium ? 84 : relic ? this._relicConversionRows ? 84 : 60 : chest ? 80 : energy ? 64 : theme === "Purple" ? 96 : 76) * scale;
+    row._kitCard = true; row._cardTheme = theme.toLowerCase(); row._footerHeight = (premium ? 92 : relic ? this._relicConversionRows ? 84 : 66 : chest ? 80 : energy ? 64 : theme === "Purple" ? 96 : 76) * scale;
+    row.cardBacking = this.icon(row, Object.assign(this.cardAsset("Frame_CardFrame00_Base"), { sliced: true, referenceHeight: (height + 8 * scale) / (2.2 * scale) }), 100, "CardBacking"); row.cardBacking.color = cc.color("#000000"); fitSkin(row.cardBacking, width + 4 * scale, height + 8 * scale); row.cardBacking.y = -2 * scale;
     if (premium) {
-      row.cardFill = this.icon(row, Object.assign(this.cardAsset("Frame_CardFrame00_Base"), { sliced: true, referenceHeight: height / (1.5 * scale) }), 100, "CardFill"); row.cardFill.color = cc.color(theme === "Green" ? "#00b271" : "#a229ff"); fitSkin(row.cardFill, width - 4 * scale, height - 8 * scale); row.cardFill.y = 2 * scale;
+      row.cardFill = this.icon(row, Object.assign(this.cardAsset("Frame_CardFrame00_Base"), { sliced: true, referenceHeight: (height - 8 * scale) / (2 * scale) }), 100, "CardFill"); row.cardFill.color = cc.color(theme === "Green" ? "#00b271" : "#a229ff"); fitSkin(row.cardFill, width - 4 * scale, height - 8 * scale); row.cardFill.y = 2 * scale;
       var footer = node(row, "FooterBand", width - 6 * scale, row._footerHeight - 4 * scale); footer.y = -height / 2 + row._footerHeight / 2 + 3 * scale; var g = footer.addComponent(cc.Graphics); g.fillColor = cc.color(theme === "Green" ? "#70d900" : "#ce52fe"); g.roundRect(-footer.width / 2, -footer.height / 2, footer.width, footer.height, 16 * scale); g.rect(-footer.width / 2, 0, footer.width, footer.height / 2); g.fill();
-      row.cardSkin = this.icon(row, Object.assign(this.cardAsset("Frame_CardFrame02_Frame"), { sliced: true, referenceHeight: height / scale }), 100, "CardSkin"); row.cardSkin.color = cc.color(theme === "Green" ? "#01765c" : "#5c08a7"); fitSkin(row.cardSkin, width, height);
+      row.cardSkin = this.icon(row, Object.assign(this.cardAsset("Frame_CardFrame02_Frame"), { sliced: true, frameRect: [0, 0, 40, 50], insets: [20, 19, 19, 30], referenceHeight: height / (2 * scale) }), 100, "CardSkin"); row.cardSkin.color = cc.color(theme === "Green" ? "#01765c" : "#5c08a7"); fitSkin(row.cardSkin, width, height);
     } else {
-      var skinScale = row._footerHeight / (theme === "Yellow" ? 133 : 134);
-      row.cardSkin = this.icon(row, Object.assign(this.cardAsset("Frame_ListFrame12_" + theme), { sliced: true, referenceHeight: height / skinScale }), 100, "CardSkin"); fitSkin(row.cardSkin, width, height);
+      var bodyHeight = height - row._footerHeight, skin = this.cardAsset("Frame_ListFrame12_" + theme);
+      // Preserve the kit's corner sizes independently of the footer height.
+      // Both slices refer to the original texture; the shared asset is intact.
+      row.cardSkin = this.icon(row, Object.assign({}, skin, { sliced: true, frameRect: [0, 0, 61, 33], insets: [30, 30, 25, 0], referenceHeight: bodyHeight / scale }), 100, "CardSkin"); fitSkin(row.cardSkin, width, bodyHeight); row.cardSkin.y = row._footerHeight / 2;
+      row.cardFooter = this.icon(row, Object.assign({}, skin, { sliced: true, frameRect: [0, 33, 61, 124], insets: [30, 30, 2, 15], referenceHeight: row._footerHeight / scale }), 100, "CardFooter"); fitSkin(row.cardFooter, width, row._footerHeight); row.cardFooter.y = -height / 2 + row._footerHeight / 2;
     }
     var band = node(row, "Header", chest ? width * .46 : width - 24 * scale, (premium ? 64 : chest ? 58 : 48) * scale); band.y = height / 2 - (premium ? 38 : chest ? 34 : 26) * scale; if (chest) band.x = -width * .25;
-    var title = this.text(band, "Name", (premium ? 52 : chest ? 46 : 40) * scale, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 2.5 * scale, outlineColor: "#000000" }); place(title.node, premium ? -40 * scale : 0, 0, band.width - (premium ? 150 : 8) * scale, band.height); if (chest) title.horizontalAlign = cc.Label.HorizontalAlign.LEFT; title.lineHeight = (premium ? 62 : chest ? 56 : 46) * scale; this.named(title, offer); return row;
+    var title = this.text(band, "Name", (premium ? 52 : chest ? 46 : 40) * scale, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 3.2 * scale, outlineColor: "#000000" }); place(title.node, 0, 0, band.width - (premium ? 232 : 8) * scale, band.height); if (chest) title.horizontalAlign = cc.Label.HorizontalAlign.LEFT; title.lineHeight = (premium ? 62 : chest ? 56 : 46) * scale; this.named(title, offer); return row;
   },
   cardAsset: function (name) { return { bundle: "resources", path: "icons/GUI-Pro/ShopCards/" + name }; },
   cardGlow: function (parent, x, y, size, tint) {
-    var s = this.geometry.scale, header = parent.getChildByName("Header"), top = header && header.active ? header.y - header.height / 2 - 8 * s : parent.height / 2 - 12 * s, bottom = -parent.height / 2 + parent._footerHeight + 8 * s;
+    var s = this.geometry.scale, top = parent.height / 2 - 12 * s, bottom = -parent.height / 2 + parent._footerHeight + 8 * s;
     var width = Math.min(parent.width * .94, Math.max(0, parent.width - 24 * s - Math.abs(x) * 2)), height = Math.min(width * .948, Math.max(0, top - bottom));
-    var centerY = Math.max(bottom + height / 2, Math.min(top - height / 2, y)), rays = this.icon(parent, this.cardAsset("fx_rotate_line_small"), size, "ArtworkRays"); rays.setPosition(x, centerY); rays.scaleX = width / size; rays.scaleY = height / size; rays.color = cc.color(tint); rays.opacity = 65;
+    var centerY = Math.max(bottom + height / 2, Math.min(top - height / 2, y));
     var glow = this.icon(parent, this.cardAsset("Common_Glow_Circle_White"), size, "ArtworkGlow"); glow.setPosition(x, centerY);
-    // Unity uses this translucent texture at full opacity over most of the
-    // card width. Keep its oval within the body without adding stencil masks.
-    glow.scaleX = width / size; glow.scaleY = height / size; glow.color = cc.color(tint); glow.opacity = 255; return glow;
+    glow.scaleX = width / size; glow.scaleY = height / size; glow.color = cc.color(tint); glow.opacity = 190;
+    var rays = this.icon(parent, this.cardAsset("fx_rotate_line_small"), size, "ArtworkRays"); rays.setPosition(x, centerY); rays.scaleX = width / size; rays.scaleY = height / size; rays.color = cc.color(tint); rays.opacity = 110; return glow;
   },
   cardAction: function (parent, name, key, handler, x, y, width, height, enabled, typography) {
     var self = this, item = node(parent, name, width, height), button = item.addComponent(cc.Button); item.setPosition(x, y); item._enabled = enabled !== false; item._integratedAction = true; button.interactable = item._enabled; button.transition = cc.Button.Transition.SCALE; button.zoomScale = 1.025;
@@ -349,6 +373,7 @@ var Shop = cc.Class({
     var scale = this.geometry.scale;
     if (!possible) this.icon(card, this.cardAsset("Frame_ItemFrame01_Color_Green"), Math.min(width, height), "RewardTile");
     var displayed = reward.id === 2001 || reward.id === 2002 ? Object.assign({}, reward, { icon: this.currencyIcon(reward.id) }) : reward, icon = this.relicVisual(card, displayed, (possible ? 144 : 110) * scale, "RewardIcon"); icon.y = possible ? 0 : 23 * scale;
+    if (possible) icon.getChildByName("Icon").setScale(1.12);
     if (!possible) { var amount = this.text(card, "Quantity", 36 * scale, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 2 * scale, outlineColor: "#000000" }); place(amount.node, 0, -55 * scale, width - 10 * scale, 42 * scale); amount.lineHeight = 42 * scale; amount.string = "×" + Layout.formatAmount(reward.num); }
     this.bindInspection(card, reward);
     return card;
@@ -356,8 +381,8 @@ var Shop = cc.Class({
   costButton: function (parent, offer, x, y, width, height, kind, token) {
     var self = this, unit = this.geometry.scale, payment = offer.payment, pending = this.isPending() || payment && (this.isPaymentPending() || payment.pending);
     var available = offer.available !== false && !offer.soldOut && !pending && (!payment || payment.available && !!payment.formattedPrice);
-    var font = (kind === "resources" ? (offer.rewards || [])[0] && offer.rewards[0].id === 2033 ? 52 : 60 : kind === "relics" ? offer.conversionGold ? 42 : 46 : kind === "chests" ? 56 : 64) * unit;
-    var button = this.cardAction(parent, "Buy_" + offer.id, offer.soldOut ? "shop.soldOut" : "shop.buy", function () { self.buy(kind, offer, token); }, x, y, width, height, available, { outlineWidth: 2.5 * unit });
+    var font = (kind === "resources" ? payment || (offer.rewards || [])[0] && offer.rewards[0].id === 2033 ? 52 : 60 : kind === "relics" ? offer.conversionGold ? 42 : 50 : kind === "chests" ? 56 : 64) * unit;
+    var button = this.cardAction(parent, "Buy_" + offer.id, offer.soldOut ? "shop.soldOut" : "shop.buy", function () { self.buy(kind, offer, token); }, x, y, width, height, available, { outlineWidth: 3.5 * unit, shadowDepth: 4 * unit });
     button.caption.fontSize = font; button.caption.lineHeight = Math.ceil(font * 1.15);
     if (payment) {
       if (offer.soldOut) return button;
@@ -366,13 +391,18 @@ var Shop = cc.Class({
         button.caption.string = payment.formattedPrice || (payment.currency === "USD" ? "US $" + (payment.priceMinor / 100).toFixed(2) : Layout.referencePrice(payment)); button.caption.node.color = cc.color("#ffffff");
         var price = this.text(button, "ReferencePrice", 24 * unit, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.2 * unit, outlineColor: "#000000" }); this.bind(price, pending ? "shop.payment.pending" : "shop.payment.unavailable"); price.lineHeight = 28 * unit;
         if (kind === "bundles") { place(button.caption.node, 0, 0, 340 * unit, height); place(price.node, width / 2 - 90 * unit, 0, 160 * unit, 32 * unit); }
-        else { button.caption.fontSize = 52 * unit; button.caption.lineHeight = 60 * unit; place(button.caption.node, 0, 14 * unit, width - 16 * unit, 64 * unit); place(price.node, 0, -32 * unit, width - 16 * unit, 28 * unit); }
+        else { button.caption.fontSize = 52 * unit; button.caption.lineHeight = 60 * unit; place(button.caption.node, 0, 18 * unit, width - 16 * unit, 60 * unit); place(price.node, 0, -28 * unit, width - 16 * unit, 28 * unit); }
       }
     } else if (!offer.soldOut) {
-      var cost = Layout.cost(offer.cost); button.caption.string = Layout.formatAmount(cost.amount);
-      var iconSize = font * .95, gap = 12 * unit, textWidth = Math.min(width - iconSize - gap - 14 * unit, Math.max(font * .65, button.caption.string.length * font * .62)), total = iconSize + gap + textWidth, baseline = 0;
-      place(button.caption.node, (iconSize + gap) / 2, baseline, textWidth, Math.min(height, font * 1.2));
-      var icon = this.icon(button, this.currencyIcon(cost.currency), iconSize, "PriceIcon"); icon.setPosition(-total / 2 + iconSize / 2, baseline);
+      var cost = Layout.cost(offer.cost); button.caption.string = Layout.formatAmount(cost.amount); button.caption.overflow = cc.Label.Overflow.NONE;
+      // NONE sizes the node using one line plus Creator's 0.26 baseline
+      // allowance. Keep the transparent padding inside the fixed price slot.
+      button.caption.lineHeight = Math.max(1, (height - button.caption._shopTypography.outlineWidth * 2 - 4 * unit) / 1.26);
+      var iconSize = font * (kind === "chests" ? 1.12 : kind === "relics" && !offer.conversionGold ? 1.04 : .95), gap = 12 * unit;
+      var icon = this.icon(button, this.currencyIcon(cost.currency), iconSize, "PriceIcon");
+      function centerPrice() { if (!cc.isValid(button, true)) return; var total = icon.width + gap + button.caption.node.width; icon.setPosition(-total / 2 + icon.width / 2, 0); button.caption.node.setPosition(total / 2 - button.caption.node.width / 2, 0); }
+      button.caption.node.on(cc.Node.EventType.SIZE_CHANGED, centerPrice); icon.on(cc.Node.EventType.SIZE_CHANGED, centerPrice);
+      if (button.caption._forceUpdateRenderData) button.caption._forceUpdateRenderData(true); centerPrice();
     }
     return button;
   },
@@ -385,7 +415,7 @@ var Shop = cc.Class({
     return y - 116 * scale;
   },
   renderProducts: function () {
-    if (!this.view || this.view.ready === false || !this.geometry) return; var self = this, view = this.view, w = this.geometry.width, s = this.geometry.scale, offers = view[this.tab] || [];
+    if (!this.view || this.view.ready === false || !this.geometry) return; var self = this, view = this.view, w = this.geometry.width, s = this.geometry.scale, offers = this.tab === "resources" ? Layout.resourceDisplayOrder(view.resources || []) : view[this.tab] || [];
     this.closeRelicDetails(); this._shopGeneration++; this._renderToken = view.token; this._renderTab = this.tab; this._renderPending = this.isPending(); this._renderPresentation = Layout.presentationSignature(view); this.refreshTimer = null;
     this.content.children.slice().forEach(function (item) { item.active = false; item.destroy(); }); var y = -8 * s;
     this.layoutCategories();
@@ -393,9 +423,11 @@ var Shop = cc.Class({
     if (noticeShown) y = this.storeNotice(y, w, s);
     if (this.tab === "relics") {
       var tools = node(this.content, "RelicRefresh", w, 72 * s); tools.y = y - 36 * s; y -= 88 * s; var strip = this.icon(tools, { bundle: "resources", path: "icons/GUI-Pro/Buttons/Frame_BarFrame_Top01_Navy", sliced: true }, 100, "RefreshStrip"); fitSkin(strip, w, 72 * s);
-      var title = this.text(tools, "RotationTitle", 32 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.5 }); this.bind(title, "shop.relics.stock"); place(title.node, -w / 2 + 103 * s, 0, 190 * s, 44 * s);
+      var title = this.text(tools, "RotationTitle", 36 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.5 }); this.bind(title, "shop.relics.stock"); place(title.node, -w / 2 + 99 * s, 0, 178 * s, 48 * s); title.lineHeight = 44 * s;
+      var clockDivider = node(tools, "StockDivider", 2 * s, 48 * s); clockDivider.x = -w / 2 + 201 * s; var clockLine = clockDivider.addComponent(cc.Graphics); clockLine.strokeColor = cc.color("#44caff"); clockLine.lineWidth = 2 * s; clockLine.moveTo(0, -24 * s); clockLine.lineTo(0, 24 * s); clockLine.stroke();
+      var restockClock = self.icon(tools, { bundle: "resources", path: "icons/Pictograms/Pictoicon_Time" }, 40 * s, "RestockClock"); restockClock.x = -w / 2 + 229 * s;
       var counter = this.text(tools, "RefreshUses", 28 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.5 }); this.bind(counter, "shop.relics.uses", [view.refresh.used, view.refresh.limit]); place(counter.node, w / 2 - 263 * s, 0, 72 * s, 40 * s);
-      this.refreshTimer = this.text(tools, "RestockTimer", 30 * s, false, "#ffe13c", { fontRole: "display", fontFamily: null, outlineWidth: 1.5 }); this.bind(this.refreshTimer, "shop.relics.resets", [Layout.time(view.refresh.remainingSeconds)]); place(this.refreshTimer.node, -w / 2 + 330 * s, 0, 190 * s, 42 * s);
+      this.refreshTimer = this.text(tools, "RestockTimer", 30 * s, false, "#ffe13c", { fontRole: "display", fontFamily: null, outlineWidth: 1.5 }); this.bind(this.refreshTimer, "shop.relics.resets", [Layout.time(view.refresh.remainingSeconds)]); place(this.refreshTimer.node, -w / 2 + 337 * s, 0, 156 * s, 42 * s);
       this._restockTimer = Layout.time(view.refresh.remainingSeconds);
       var refresh = this.button(tools, "RefreshRelics", "shop.relics.refresh", function () { self.confirmRefresh(view); }, COLORS.blue), refreshCost = Layout.cost(view.refresh.cost);
       this.sizeButton(refresh, w / 2 - 116 * s, 0, 216 * s, 60 * s, view.refresh.enabled && !this.isPending(), COLORS.blue);
@@ -403,12 +435,11 @@ var Shop = cc.Class({
       var refreshIcon = this.icon(refresh, { bundle: "resources", path: "icons/Pictograms/Pictoicon_Refresh" }, 32 * s); refreshIcon.x = -refresh.width / 2 + 23 * s;
       place(refresh.caption.node, 14 * s, 2 * s, refresh.width - 48 * s, 48 * s); refresh.caption.fontSize = 28 * s; refresh.caption.lineHeight = 34 * s;
     }
-    var grid = this.tab === "relics" || this.tab === "resources", gap = 16 * s, cell = (w - gap) / 2, currentRowHeight = 0;
-    function productHeight(offer) { if (self.tab === "relics") return (self._relicConversionRows ? 304 : 280) * s; if (self.tab !== "resources") return (self.tab === "bundles" ? 620 : 344) * s; var supplied = (offer.rewards || [])[0]; return (supplied && supplied.id === 2033 ? 216 : supplied && supplied.id === 2002 ? 352 : 292) * s; }
+    var grid = this.tab === "relics" || this.tab === "resources", gap = 16 * s, rowGap = 24 * s, cell = (w - gap) / 2, currentRowHeight = 0;
+    function productHeight(offer) { if (self.tab === "relics") return (self._relicConversionRows ? 304 : 280) * s; if (self.tab !== "resources") return (self.tab === "bundles" ? 620 : 336) * s; var supplied = (offer.rewards || [])[0]; return (supplied && supplied.id === 2033 ? 216 : supplied && supplied.id === 2002 ? 352 : 292) * s; }
     offers.forEach(function (offer, index) {
-      var chestGeometry = Layout.chestLayout(w, s);
-      var height = productHeight(offer), width = grid ? cell : w;
-      if (grid && index % 2 === 0) { if (index) y -= currentRowHeight + gap; currentRowHeight = Math.max(height, offers[index + 1] ? productHeight(offers[index + 1]) : height); }
+      var height = productHeight(offer), width = (grid ? cell : w) - 4 * s, chestGeometry = Layout.chestLayout(width, s);
+      if (grid && index % 2 === 0) { if (index) y -= currentRowHeight + rowGap; currentRowHeight = Math.max(height, offers[index + 1] ? productHeight(offers[index + 1]) : height); }
       if (grid) height = currentRowHeight;
       var row = self.header(self.content, width, height, offer, s);
       row.setPosition(grid ? (index % 2 ? 1 : -1) * (cell + gap) / 2 : 0, y - height / 2);
@@ -423,13 +454,13 @@ var Shop = cc.Class({
           displayed = Object.assign({}, offer, { icon: artDescriptor });
         }
         var imageY = self.tab === "relics" ? self._relicConversionRows ? 20 : 8 : energyItem ? 24 : supplied && supplied.id === 2002 ? firstPurchase ? 35 : 3 : offer.id === "gold-cart" ? 0 : -1;
-        self.cardGlow(row, energyItem ? -64 * s : 0, imageY * s, 208 * s, row._cardTheme === "yellow" ? "#fcff69" : row._cardTheme === "purple" ? "#ff64ff" : "#c6fffa");
+        self.cardGlow(row, energyItem ? -78 * s : 0, imageY * s, 208 * s, row._cardTheme === "yellow" ? "#fcff69" : row._cardTheme === "purple" ? "#ff64ff" : "#c6fffa");
         if (self.tab === "relics") {
           self.relicVisual(row, displayed, 156 * s, "ProductImage").setPosition(0, imageY * s);
           var info = self.cardAction(row, "RelicInfo", "shop.contents.title", function () { if (offer.relicId) self.openRelicDetails(offer.relicId); }, width / 2 - 27 * s, height / 2 - 72 * s, 40 * s, 40 * s, true); info.caption.node.active = false; self.icon(info, self.cardAsset("Icon_ImageIcon_Info"), 40 * s, "InfoIcon");
         } else {
-          var image = node(row, "ProductImage", (energyItem ? 144 : offer.id === "gold-cart" ? 192 : 176) * s, (energyItem ? 128 : supplied && supplied.id === 2002 ? firstPurchase ? 124 : 148 : offer.id === "gold-cart" ? 136 : 128) * s); image.setPosition(energyItem ? -64 * s : 0, imageY * s);
-          if (energyItem) { var bottles = Math.min(3, Number(energyItem.num) || 1); for (var bottle = 0; bottle < bottles; bottle++) { var vial = node(image, "EnergyBottle_" + bottle, 90 * s, 124 * s); vial.setPosition((bottle - (bottles - 1) / 2) * 26 * s, 0); self.icon(vial, Object.assign(self.cardAsset("Icon_Potion01_Blue"), { fitWidth: 90 * s, fitHeight: 124 * s }), 124 * s, "Bottle"); self.icon(vial, self.asset("Icon_Energy_Yellow"), 28 * s, "EnergyEmblem").setPosition(-9 * s, -14 * s); } }
+          var image = node(row, "ProductImage", (energyItem ? 180 : offer.id === "gold-cart" ? 192 : 176) * s, (energyItem ? 130 : supplied && supplied.id === 2002 ? firstPurchase ? 124 : 148 : offer.id === "gold-cart" ? 136 : 128) * s); image.setPosition(energyItem ? -78 * s : 0, imageY * s);
+          if (energyItem) { var bottles = Math.min(3, Number(energyItem.num) || 1); for (var bottle = 0; bottle < bottles; bottle++) { var vial = node(image, "EnergyBottle_" + bottle, 130 * s, 130 * s); vial.setPosition((bottle - (bottles - 1) / 2) * 20 * s, 0); self.icon(vial, Object.assign(self.cardAsset("Icon_Potion01_Blue"), { fitWidth: 130 * s, fitHeight: 130 * s }), 130 * s, "Bottle"); self.icon(vial, self.asset("Icon_Energy_Yellow"), 40 * s, "EnergyEmblem").setPosition(-13 * s, -20 * s); } }
           else self.icon(image, Object.assign({}, displayed.icon, { fitWidth: image.width, fitHeight: image.height }), 176 * s, "Icon");
         }
         if (self.tab === "resources") {
@@ -443,34 +474,43 @@ var Shop = cc.Class({
           var ribbon = self.icon(first, Object.assign(self.cardAsset("Label_LeftLabel02"), { sliced: true, referenceHeight: 86 }), 100, "PromotionRibbon"); fitSkin(ribbon, first.width, first.height);
           var firstCaption = self.text(first, "Caption", 34 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.5 * s, outlineColor: "#000000" }); self.bind(firstCaption, "shop.payment.firstDouble"); place(firstCaption.node, 4 * s, 2 * s, first.width - 24 * s, 42 * s); firstCaption.lineHeight = 40 * s;
         }
-        var priceHeight = self.tab === "relics" ? offer.conversionGold || !self._relicConversionRows ? 54 : 76 : energyItem ? 60 : supplied && supplied.id === 2002 ? 96 : 72, priceY = self.tab === "relics" ? offer.conversionGold ? 28 : !self._relicConversionRows ? 30 : 42 : energyItem ? 32 : supplied && supplied.id === 2002 ? 48 : 38;
+        var priceHeight = self.tab === "relics" ? offer.conversionGold ? 54 : !self._relicConversionRows ? 60 : 76 : energyItem ? 60 : supplied && supplied.id === 2002 ? 96 : 72, priceY = self.tab === "relics" ? offer.conversionGold ? 28 : !self._relicConversionRows ? 33 : 42 : energyItem ? 32 : supplied && supplied.id === 2002 ? 48 : 38;
         self.costButton(row, offer, 0, -height / 2 + priceY * s, width - 12 * s, priceHeight * s, self.tab, view.token);
         if (offer.conversionGold) { var convert = self.text(row, "ConversionNote", 24 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.2 * s, outlineColor: "#000000" }); self.bind(convert, "shop.relics.converts", [Layout.formatAmount(offer.conversionGold)]); place(convert.node, 0, -height / 2 + 70 * s, width - 18 * s, 28 * s); convert.lineHeight = 28 * s; }
       } else {
         self.cardGlow(row, self.tab === "bundles" ? 0 : chestGeometry.iconX, self.tab === "bundles" ? 114 * s : chestGeometry.iconY, (self.tab === "bundles" ? 232 : 172) * s, self.tab === "bundles" ? "#c7ff8f" : "#c6fffa");
-        var art = node(row, "ProductImage", (self.tab === "bundles" ? 386 : 228) * s, (self.tab === "bundles" ? 244 : 188) * s); art.setPosition(self.tab === "bundles" ? 0 : chestGeometry.iconX, self.tab === "bundles" ? 114 * s : chestGeometry.iconY);
+        var art = node(row, "ProductImage", (self.tab === "bundles" ? 386 : 228) * s, (self.tab === "bundles" ? 224 : 188) * s); art.setPosition(self.tab === "bundles" ? 0 : chestGeometry.iconX, self.tab === "bundles" ? 114 * s : chestGeometry.iconY);
         if (self.tab === "bundles") { self.icon(art, self.cardAsset("Icon_Chest"), 268 * s, "FeaturedChest").setPosition(-36 * s, 0); self.icon(art, offer.heroIcon || offer.icon, 164 * s, "HeroOverlay").setPosition(110 * s, -12 * s); }
         else self.icon(art, offer.icon, 228 * s, "ChestArtwork");
         if (self.tab === "bundles" && offer.purchaseLimit) {
           var counter = self.text(row, "PurchaseCount", 36 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 2 * s, outlineColor: "#000000" }); self.bind(counter, "shop.bundle.purchaseCount", [offer.purchaseCount || 0, offer.purchaseLimit]); counter.lineHeight = 44 * s; counter.horizontalAlign = cc.Label.HorizontalAlign.RIGHT;
-          place(counter.node, w / 2 - 70 * s, height / 2 - 38 * s, 100 * s, 48 * s);
+          place(counter.node, width / 2 - 70 * s, height / 2 - 38 * s, 100 * s, 48 * s);
         }
-        if (self.tab === "chests") { var possible = self.text(row, "TopPossibleRewards", 32 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.5, outlineColor: "#000000" }); self.bind(possible, "shop.chests.possible"); place(possible.node, (chestGeometry.previewX[0] + chestGeometry.previewX[1]) / 2, 116 * s, w * .47, 42 * s); possible.lineHeight = 38 * s; }
+        if (self.tab === "chests") { var possible = self.text(row, "TopPossibleRewards", 32 * s, false, "#ffffff", { fontRole: "display", fontFamily: null, outlineWidth: 1.5, outlineColor: "#000000" }); self.bind(possible, "shop.chests.possible"); place(possible.node, (chestGeometry.previewX[0] + chestGeometry.previewX[1]) / 2, 112 * s, width * .47, 42 * s); possible.lineHeight = 38 * s; }
+        if (self.tab === "chests") {
+          var bodyDivider = node(row, "BodyDivider", 3 * s, 180 * s); bodyDivider.setPosition(-width * .035, 12 * s); var bodyLine = bodyDivider.addComponent(cc.Graphics); bodyLine.strokeColor = cc.color("#4bd4ff"); bodyLine.lineWidth = 3 * s; bodyLine.moveTo(0, -90 * s); bodyLine.lineTo(0, 90 * s); bodyLine.stroke();
+          var footerDivider = node(row, "FooterDivider", 3 * s, 56 * s); footerDivider.setPosition(-width * .115, -128 * s); var footerLine = footerDivider.addComponent(cc.Graphics); footerLine.strokeColor = cc.color("#4bd4ff"); footerLine.lineWidth = 3 * s; footerLine.moveTo(0, -28 * s); footerLine.lineTo(0, 28 * s); footerLine.stroke();
+        }
         art.on(cc.Node.EventType.TOUCH_END, function (event) { if (event) event.stopPropagation(); if (Layout.tap(event)) self.contents(offer, view.token); });
         var preview = (offer.highlights || offer.rewards || []).slice(0, self.tab === "bundles" ? 3 : 2), previewW = self.tab === "bundles" ? 168 * s : chestGeometry.previewWidth;
-        preview.forEach(function (reward, at) { self.reward(row, reward, self.tab === "bundles" ? (at - 1) * w * .274 : chestGeometry.previewX[at], self.tab === "bundles" ? -100 * s : chestGeometry.previewY, previewW, self.tab === "bundles" ? 168 * s : chestGeometry.previewHeight, self.tab === "chests"); });
+        preview.forEach(function (reward, at) { self.reward(row, reward, self.tab === "bundles" ? (at - 1) * width * .274 : chestGeometry.previewX[at], self.tab === "bundles" ? -86 * s : chestGeometry.previewY, previewW, self.tab === "bundles" ? 168 * s : chestGeometry.previewHeight, self.tab === "chests"); });
         var hint;
-        if (self.tab === "bundles") { hint = self.cardAction(row, "FullContents", "shop.contents.tap", function () { self.contents(offer, view.token); }, 0, -202 * s, w - 64 * s, 44 * s, true); hint.caption.fontSize = 32 * s; hint.caption.lineHeight = 38 * s; }
+        if (self.tab === "bundles") {
+          hint = self.cardAction(row, "FullContents", "shop.contents.tap", function () { self.contents(offer, view.token); }, 0, -192 * s, width - 64 * s, 44 * s, true); hint.caption.fontSize = 30 * s; hint.caption.lineHeight = 30 * s; hint.caption.overflow = cc.Label.Overflow.NONE;
+          var contentsIcon = self.icon(hint, self.cardAsset("Icon_ImageIcon_Info"), 40 * s, "InfoIcon");
+          function centerContents() { if (!cc.isValid(hint, true)) return; var combined = contentsIcon.width + 12 * s + hint.caption.node.width; contentsIcon.setPosition(-combined / 2 + contentsIcon.width / 2, 0); hint.caption.node.setPosition(combined / 2 - hint.caption.node.width / 2, 0); }
+          hint.caption.node.on(cc.Node.EventType.SIZE_CHANGED, centerContents); contentsIcon.on(cc.Node.EventType.SIZE_CHANGED, centerContents); if (hint.caption._forceUpdateRenderData) hint.caption._forceUpdateRenderData(true); centerContents();
+        }
         else { hint = self.button(row, "FullContents", "shop.contents.viewRewards", function () { self.contents(offer, view.token); }, COLORS.blue); self.sizeButton(hint, chestGeometry.hintX, chestGeometry.hintY, chestGeometry.hintWidth, chestGeometry.hintHeight, true, COLORS.blue); hint.caption.fontSize = 30 * s; hint.caption.lineHeight = 36 * s; }
         if (self.tab === "chests") {
           self.costButton(row, offer, chestGeometry.buyX, chestGeometry.buyY, chestGeometry.buyWidth, chestGeometry.buyHeight, self.tab, view.token);
           var open = self.button(row, "OpenOwned_" + offer.id, "shop.chests.openCount", function () { self.act("openChest", [offer.id], view.token); }, COLORS.blue);
           open._alwaysGray = true; self.bind(open.caption, "shop.chests.openCount", [offer.ownedCount || 0]); self.sizeButton(open, chestGeometry.openX, chestGeometry.openY, chestGeometry.openWidth, chestGeometry.openHeight, offer.ownedCount > 0 && !self.isPending(), COLORS.blue); open.caption.fontSize = 36 * s; open.caption.lineHeight = 44 * s;
-        } else self.costButton(row, offer, 0, -height / 2 + 42 * s, w - 24 * s, 84 * s, self.tab, view.token);
+        } else self.costButton(row, offer, 0, -height / 2 + 46 * s, width - 24 * s, 84 * s, self.tab, view.token);
       }
-      if (!grid) y -= height + gap;
+      if (!grid) y -= height + rowGap;
     });
-    if (grid && offers.length) y -= currentRowHeight + gap;
+    if (grid && offers.length) y -= currentRowHeight + rowGap;
     this.content.height = Math.max(this.geometry.listHeight, -y + 12 * s);
     this.scroll.stopAutoScroll(); this.scroll.scrollToOffset(cc.v2(0, Math.min(this._offsets[this.tab] || 0, Math.max(0, this.content.height - this.geometry.listHeight))), 0);
     if (!offers.length) { this.status.node.active = true; this.bind(this.status, "shop.empty"); }

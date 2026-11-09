@@ -3,17 +3,31 @@
 exports.layout = function (bounds) {
   var baseWidth = Math.max(1, Math.min(900, bounds.right - bounds.left - 36));
   var currencyScale = Math.min(1, baseWidth / 722), center = (bounds.left + bounds.right) / 2;
-  var top = bounds.top - 122 * currencyScale;
+  var top = bounds.top - 86 * currencyScale;
   var bottom = Math.min(bounds.top, isFinite(bounds.footer) ? Math.max(bounds.bottom, bounds.footer) : bounds.bottom + 120);
   var available = Math.max(0, top - bottom);
   // Keep the selected concept's card proportions, including a complete first
   // bundle, on shorter screens. Currency clearance uses the full lobby width.
-  var width = Math.max(1, Math.min(baseWidth, available * 722 / 974)), scale = Math.min(1, width / 722);
-  var chromeScale = Math.min(scale, available / 338);
+  var width = Math.max(1, Math.min(baseWidth, available * 722 / 966)), scale = Math.min(1, width / 722);
+  var chromeScale = Math.min(scale, available / 330);
   var title = top - 40 * chromeScale, tabs = title - 80 * chromeScale, daily = tabs - 123 * chromeScale;
-  var listTop = Math.max(bottom, daily - 95 * chromeScale), height = listTop - bottom;
+  var listTop = Math.max(bottom, daily - 87 * chromeScale), height = listTop - bottom;
   return { width: width, scale: scale, currencyScale: currencyScale, chromeScale: chromeScale, center: center, title: title, tabs: tabs, daily: daily,
     listTop: listTop, listBottom: bottom, listHeight: height, listY: (listTop + bottom) / 2 };
+};
+// Show a row from each resource group before the later pack sizes.
+exports.resourceDisplayOrder = function (offers) {
+  var groups = [[], [], []], other = [], ordered = [];
+  (offers || []).forEach(function (offer) {
+    var supplied = offer && (offer.rewards || [])[0];
+    var group = supplied && supplied.id === 2001 ? groups[0] : supplied && supplied.id === 2002 ? groups[1] : supplied && supplied.id === 2033 ? groups[2] : other;
+    group.push(offer);
+  });
+  var count = Math.max(groups[0].length, groups[1].length, groups[2].length);
+  for (var start = 0; start < count; start += 2) groups.forEach(function (group) {
+    for (var i = start; i < group.length && i < start + 2; i++) ordered.push(group[i]);
+  });
+  return ordered.concat(other);
 };
 exports.cost = function (value) { if (typeof value === "number") return { currency: 2002, amount: value }; value = value || {}; return { currency: Number(value.currency === undefined ? value.id : value.currency), amount: Number(value.amount === undefined ? value.num : value.amount) || 0 }; };
 // JSB's Number.toLocaleString does not consistently group digits like Browser.
@@ -27,12 +41,12 @@ exports.referencePrice = function (payment) {
 };
 exports.percent = function (chance) { return Math.round(Math.max(0, Math.min(1, Number(chance) || 0)) * 10000) / 100; };
 exports.chestLayout = function (width, scale) {
-  return { height: 344 * scale, iconX: -width * .26, iconY: 9 * scale,
-    previewX: [width * .11, width * .35], previewY: 12 * scale,
+  return { height: 336 * scale, iconX: -width * .26, iconY: 9 * scale,
+    previewX: [width * .11, width * .35], previewY: 8 * scale,
     previewWidth: 148 * scale, previewHeight: 148 * scale,
-    buyX: -width * .305, buyY: -128 * scale, buyWidth: width * .35, buyHeight: 72 * scale,
-    openX: width * .055, openY: -126 * scale, openWidth: width * .25, openHeight: 64 * scale,
-    hintX: width * .335, hintY: -126 * scale, hintWidth: width * .285, hintHeight: 64 * scale };
+    buyX: -width * .305, buyY: -124 * scale, buyWidth: width * .35, buyHeight: 72 * scale,
+    openX: width * .055, openY: -122 * scale, openWidth: width * .25, openHeight: 64 * scale,
+    hintX: width * .335, hintY: -122 * scale, hintWidth: width * .285, hintHeight: 64 * scale };
 };
 exports.presentationSignature = function (view) {
   return JSON.stringify([view.pending, ["bundles", "chests", "relics", "resources"].map(function (kind) {

@@ -26,7 +26,7 @@
     "shop.payment.unavailableReason": {"en":"Purchases are not available on this platform yet. You can browse all contents.","zh":"此平台暂不支持付费购买，仍可查看全部内容。","context":"Paid offer notice"},
     "shop.payment.pendingReason": {"en":"A purchase is still being confirmed. Retry to check its delivery.","zh":"有一笔购买仍在确认中，请重试以检查奖励发放。","context":"Pending store purchase recovery"},
     "shop.payment.retry": {"en":"Retry purchases","zh":"重试购买","context":"Reload store products and recover unfinished purchases"},
-    "shop.payment.firstDouble": {"en":"FIRST PURCHASE ×2","zh":"首次购买双倍","context":"One first-purchase bonus per Gem pack"},
+    "shop.payment.firstDouble": {"en":"First purchase ×2","zh":"首次购买双倍","context":"One first-purchase bonus per Gem pack"},
     "shop.bundle.purchaseCount": {"en":"{0}/{1}","zh":"{0}/{1}","context":"Lifetime purchase count per bundle"},
     "shop.chests.openOwned": {"en":"Open ({0} owned)","zh":"开启（持有{0}）","context":"Open one banked chest without paying Gems"},
     "shop.contents.drawSummary": {"en":"{0} relic draws total: {2} guaranteed, {1} remaining random.","zh":"共{0}次遗物抽取：保底{2}，其余{1}次随机抽取。","context":"Guaranteed draws are included in the total"},
@@ -16555,7 +16555,7 @@
       "zh": {
         "fontSize": 76,
         "lineHeight": 88,
-        "width": 228,
+        "width": 600,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true
       }
@@ -16572,7 +16572,7 @@
       "zh": {
         "fontSize": 64,
         "lineHeight": 74,
-        "width": 140,
+        "width": 424,
         "overflow": "RESIZE_HEIGHT",
         "wrap": true
       }
