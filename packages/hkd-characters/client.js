@@ -159,6 +159,7 @@ function mount(host,api){
     if(level){virtual.base.level=level;virtual.name=unit.name+' · Level '+level;}
     selectedPart=selectedAsset='';renderLooks();renderInspector();renderAssets();await loadRig();
   }
+  function chooseCharacter(key){const unit=units.find(unit=>unit.key===key);if(!unit)return;const p=profile(),level=p&&p.base.level;return selectUnit(unit,Levels.levels(unit).includes(level)?level:undefined);}
   function editOriginal(){if(!virtual)return;const p=clone(virtual),id=unique(p.base.type+'-'+p.base.id.replace(/:/g,'-')+(p.base.level?'-level-'+p.base.level:''),data.profiles),key=assignmentKey(p);for(const name of ['baked','bakedLayers','bakedVersion','bakedWithHero'])delete p[name];data.profiles[id]=p;data.assignments[key]=id;selectProfile(id);changed();}
   function levelInspector(p){
     const unit=unitFor(p);if(itemMode||!Levels.levels(unit).length)return;
@@ -215,14 +216,14 @@ function mount(host,api){
     if(virtual){
       el('h2',p.name,inspector);el('p',p.base.level?'Uses the default appearance':itemMode?'Current equipment appearance':'Original appearance',inspector,'muted');
       if(!itemMode&&p.base.type==='ally'){
-        const baseField=field(inspector,'Base character',(unitFor(p)||{}).key,()=>{},units.map(u=>({value:u.key,label:u.group+' · '+u.name})));baseField.disabled=true;baseField.setAttribute('data-readonly','');
+        field(inspector,'Base character',(unitFor(p)||{}).key,chooseCharacter,units.map(u=>({value:u.key,label:u.group+' · '+u.name})));
         const modelField=field(inspector,'Base model',p.base.source||'',()=>{},[{value:'',label:'Current unit model'},...CharacterOptions.characterSources(sources,p.base.source).map(source=>({value:source.id,label:source.name}))]);modelField.disabled=true;modelField.setAttribute('data-readonly','');
         levelInspector(p);
       }
       button(inspector,p.base.level?'Customize level '+p.base.level:itemMode?'Edit this item':'Edit this character',editOriginal,'primary wide');el('p',p.base.level?'Create an independent draft from the default look, then fit this level’s equipment. Save characters publishes your changes.':itemMode?'Browse freely. Create a draft to adjust this item or fit new parts.':'Browse freely. Create an appearance draft to adjust this character or fit new parts.',inspector,'help');return;
     }
     el('h2',itemMode?'ITEM':'CHARACTER',inspector);const nameInput=field(inspector,itemMode?'Item name':'Character name',p.name,v=>{p.name=v.trim()||p.name;renderLooks();previewName.textContent=p.name;changed();});nameInput.oninput=()=>{if(!nameInput.value.trim()||nameInput.value.length>100)return;p.name=nameInput.value;renderLooks();previewName.textContent=p.name;dirty();};
-    field(inspector,itemMode?'Equipment tier':'Base character',(unitFor(p)||{}).key,v=>{const unit=units.find(u=>u.key===v);p.base={type:unit.type,id:unit.id};if(!itemMode){p.parts=[];p.skins={};p.models={};selectedPart='';}Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===selected)delete data.assignments[k];});changed();renderLooks();renderInspector();loadRig();},units.map(u=>({value:u.key,label:u.group+' · '+u.name+' '+(u.id==='hero'?'':u.id)})));
+    field(inspector,itemMode?'Equipment tier':'Base character',(unitFor(p)||{}).key,itemMode?v=>{const unit=units.find(u=>u.key===v);p.base={type:unit.type,id:unit.id};Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===selected)delete data.assignments[k];});changed();renderLooks();renderInspector();loadRig();}:chooseCharacter,units.map(u=>({value:u.key,label:u.group+' · '+u.name+' '+(u.id==='hero'?'':u.id)})));
     if(!itemMode&&p.base.type!=='hero'&&(sources.length||p.base.type==='ally'))field(inspector,'Base model',p.base.source||'',value=>{
       if(value)p.base.source=value;else delete p.base.source;
       delete p.base.mount;
