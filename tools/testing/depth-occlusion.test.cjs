@@ -275,9 +275,9 @@ test('pooled/dead actors lose their overlays immediately and inactive scenery ca
   assert.equal(object.masks.size, 0);
   assert.equal(object.overlay.node.active, false);
 });
-const engine = process.env.COCOS_ENGINE_ROOT || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
+const engine = process.env.COCOS_ENGINE_ROOT || process.env.COCOS_SPINE_ROOT || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 const runtime = path.join(engine, 'extensions/spine/lib/spine.js');
-test('real Spine pose, attachments, deform, draw order and alpha survive flat silhouette copying', { skip: !fs.existsSync(runtime) && !process.env.COCOS_ENGINE_ROOT ? 'Install Creator 2.4.13 for real Spine integration' : false }, () => {
+test('real Spine pose, attachments, deform, draw order and alpha survive flat silhouette copying', { skip: !fs.existsSync(runtime) && !process.env.COCOS_ENGINE_ROOT && !process.env.COCOS_SPINE_ROOT ? 'Install Creator 2.4.13 for real Spine integration' : false }, () => {
   const spine = require(runtime), { copyPose } = load();
   const data = new spine.SkeletonData();
   data.bones.push(new spine.BoneData(0, 'root', null), new spine.BoneData(1, 'head', null));

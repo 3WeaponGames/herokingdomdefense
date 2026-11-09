@@ -1,13 +1,13 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Core=require('../../assets/_script/CharacterPartsCore');
-const engine=process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
+const engine=process.env.COCOS_ENGINE_ROOT||process.env.COCOS_SPINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 const runtime=path.join(engine,'extensions/spine/lib/spine.js');
 test('appearance keys isolate allies, enemies, hero and all boss forms',()=>{
   assert.equal(Core.actorKey({cfg:{ID:90001}},'ally'),'ally:90001:default');assert.equal(Core.actorKey({cfg:{ID:90001}},'enemy'),'enemy:90001:default');
   assert.equal(Core.actorKey({},'hero'),'hero:hero:default');assert.equal(Core.actorKey({cfg:{ID:90011},spIdx:1},'enemy'),'enemy:90011:2');
 });
-if(!fs.existsSync(runtime)&&!process.env.COCOS_ENGINE_ROOT)test('real Spine character part integration',{skip:'Install Creator 2.4.13 or set COCOS_ENGINE_ROOT'},()=>{});
+if(!fs.existsSync(runtime)&&!process.env.COCOS_ENGINE_ROOT&&!process.env.COCOS_SPINE_ROOT)test('real Spine character part integration',{skip:'Install Creator 2.4.13 or set COCOS_ENGINE_ROOT'},()=>{});
 else{
 const spine=require(runtime),manifest=require('../../assets/resources/character-parts/catalog.json'),looks=require('./fixtures/legacy-look.json');
 const assets=Object.fromEntries(manifest.parts.map(v=>[v.id,v])),example=looks.profiles['royal-guard'];

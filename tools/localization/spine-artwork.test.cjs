@@ -2,9 +2,9 @@
 // Exercise actual Creator 2.4.13 Spine AnimationState/timelines, with a small
 // Creator component/asset adapter. Set COCOS_ENGINE_ROOT on other installations.
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
-const engine=process.env.COCOS_ENGINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
+const engine=process.env.COCOS_ENGINE_ROOT||process.env.COCOS_SPINE_ROOT||'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 const engineRuntime=path.join(engine,'extensions/spine/lib/spine.js');
-if (!fs.existsSync(engineRuntime) && !process.env.COCOS_ENGINE_ROOT) {
+if (!fs.existsSync(engineRuntime) && !process.env.COCOS_ENGINE_ROOT && !process.env.COCOS_SPINE_ROOT) {
   require('node:test')('Real Cocos Spine animation integration', {skip: 'Install Creator 2.4.13 or set COCOS_ENGINE_ROOT to run this engine integration check'}, () => {});
 } else {
 const spine=require(engineRuntime);

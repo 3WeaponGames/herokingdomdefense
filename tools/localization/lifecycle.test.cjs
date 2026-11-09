@@ -72,6 +72,18 @@ test('Scene roots are traversed without reading their unsupported component gett
   const input=inputNode.add(f.cc.EditBox);input.textLabel=typed.add(f.Label);input.textLabel.string='Player text';
   assert.equal(f.manager._ownsLabel(input.textLabel),false);assert.equal(sceneReads,0);
 });
+test('Serialized localization tokens retain typography when Creator omits or renames the scene root',()=>{
+  for(const sceneName of ['Start','','RenamedScene']){
+    const f=fixture(),scene=new f.Node(sceneName),canvas=new f.Node('StartCanvas'),caption=new f.Node('TapToStart');
+    canvas.parent=scene;caption.parent=canvas;
+    const label=caption.add(f.Label);label._string='[[loc:a]]';
+    f.manager.catalog.nodePathStyles={'Start/StartCanvas/TapToStart':'a'};
+    f.manager.catalog.labelStyles.a={en:{fontSize:44,lineHeight:60},zh:{fontSize:46,lineHeight:62}};
+    f.manager.refreshTree(caption);assert.equal(label.fontSize,44);assert.equal(label.lineHeight,60);
+    f.manager.setCurrentLanguage('zh');assert.equal(label.fontSize,46);assert.equal(label.lineHeight,62);
+  }
+});
+
 test('Late serialized Label/RichText and pooled enable retain their keys through language changes',()=>{
   const f=fixture(),node=new f.Node(),label=node.add(f.Label),richNode=new f.Node(),rich=richNode.add(f.RichText);
   label._string='[[loc:a]]';rich._string='<b>[[loc:b]]</b>';label.onEnable();rich.onEnable();assert.equal(label.string,'Upgrade');assert.equal(rich.string,'<b>Upgrade</b>');

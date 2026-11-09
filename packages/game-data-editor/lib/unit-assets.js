@@ -24,9 +24,13 @@ function index(root) {
     walk(path.join(root, 'assets')); cachedRoot = root; cachedIndex = result; return result;
 }
 function enginePath() {
-    if (process.env.COCOS_ENGINE_ROOT) {
-        const configured = path.join(process.env.COCOS_ENGINE_ROOT, 'extensions/spine/lib/spine.js');
-        if (!fs.existsSync(configured)) throw new Error('Configured COCOS_ENGINE_ROOT has no Creator Spine runtime: ' + configured);
+    // A standalone Spine dependency supports asset authoring and headless
+    // validation without pretending a complete Creator installation exists.
+    const configuredRoot = process.env.COCOS_ENGINE_ROOT || process.env.COCOS_SPINE_ROOT;
+    if (configuredRoot) {
+        const configuredName = process.env.COCOS_ENGINE_ROOT ? 'COCOS_ENGINE_ROOT' : 'COCOS_SPINE_ROOT';
+        const configured = path.join(configuredRoot, 'extensions/spine/lib/spine.js');
+        if (!fs.existsSync(configured) || !fs.statSync(configured).isFile()) throw new Error('Configured ' + configuredName + ' has no Creator Spine runtime: ' + configured);
         return configured;
     }
     const roots = [process.env.COCOS_ENGINE_ROOT, path.join(path.dirname(process.execPath), 'resources/engine'), 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine'].filter(Boolean);

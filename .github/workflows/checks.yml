@@ -3,11 +3,15 @@ on: [push, pull_request]
 jobs:
   checks:
     runs-on: ubuntu-latest
+    env:
+      COCOS_SPINE_ROOT: ${{ runner.temp }}/cocos-spine-2.4.13
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Prepare Creator Spine test dependencies
+        run: node tools/testing/prepare-creator-spine.cjs "$COCOS_SPINE_ROOT"
       - run: npm test
       - uses: actions/upload-artifact@v4
         if: always()

@@ -4,7 +4,7 @@ const Assets=require('../lib/unit-assets'),Renderer=require('../preview/spine-re
 const root=path.resolve(__dirname,'../../..'),cfg=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8'));
 let spine,runtime,engineUnavailable;
 try { runtime=Assets.enginePath(); }
-catch(error) { if(process.env.COCOS_ENGINE_ROOT)throw error;engineUnavailable=error.message; }
+catch(error) { if(process.env.COCOS_ENGINE_ROOT||process.env.COCOS_SPINE_ROOT)throw error;engineUnavailable=error.message; }
 if(runtime)spine=require(runtime);
 const describe=request=>Assets.describe(root,Object.assign({noRuntime:true},request));
 

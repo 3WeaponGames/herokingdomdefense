@@ -12,9 +12,29 @@ test('all sixty stage definitions retain every wave field and exact spawn queues
     assert.equal(used.size,100,key+' must feature the complete source roster');
   }
 });
-test('all legacy and source roster combat records and existing GameTools settings remain byte-value equivalent',()=>{
+test('all legacy and source roster combat records and existing gameplay settings remain byte-value equivalent',()=>{
   for(const [id,digest]of Object.entries(Baseline.unitHashes))assert.equal(hash(withoutGuide(cfg.SoldierCfg[id])),digest,'Existing combat record '+id);
-  for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value))assert.deepEqual(cfg.GameTools[table][key],entry,table+'/'+key);}
+  // Unit-type icons were intentionally reauthored after this migration. Keep
+  // the historical combat/settings contract without freezing that artwork.
+  const gameplayEntry=(table,entry)=>{const copy=structuredClone(entry);if(table==='unitTypes')delete copy.icon;return copy;};
+  for(const [table,value]of Object.entries(Baseline.settings)){if(!value||typeof value!=='object'){assert.deepEqual(cfg.GameTools[table],value);continue;}for(const [key,entry]of Object.entries(value))assert.deepEqual(gameplayEntry(table,cfg.GameTools[table][key]),gameplayEntry(table,entry),table+'/'+key);}
+});
+
+test('rerunning the migration preserves later authored unit-type icons and unknown fields without writes',t=>{
+  const temporary=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'hkd-campaign-authored-icons-'));
+  t.after(()=>fs.rmSync(temporary,{recursive:true,force:true}));
+  const before=new Map();
+  for(const file of [...Object.values(Migration.CONFIGS),'assets/resources/localization/catalog.json']){
+    const bytes=fs.readFileSync(path.join(root,file));
+    const target=path.join(temporary,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,bytes);before.set(file,bytes);
+  }
+  const file=Migration.CONFIGS.A,target=path.join(temporary,file),authored=read(file);
+  authored.GameTools.unitTypes.fighter.icon='@icon/custom/fighter';
+  authored.GameTools.unitTypes.fighter.futurePresentation={preserved:true};
+  before.set(file,Buffer.from(JSON.stringify(authored)));fs.writeFileSync(target,before.get(file));
+  const plan=Migration.plan(temporary,Copy);
+  assert.equal(plan.files.size,0,'A completed migration must not restore historical icons or normalize later authoring');
+  for(const [file,bytes]of before)assert.deepEqual(fs.readFileSync(path.join(temporary,file)),bytes,file);
 });
 test('each campaign variant preserves every baseline combat field, counter, movement setting and gameplay clock',()=>{
   assert.equal(aliases.length,Definition.variants.length);assert.equal(aliases.length,127);

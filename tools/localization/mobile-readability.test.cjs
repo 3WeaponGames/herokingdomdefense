@@ -45,7 +45,15 @@ test('Every authored Label and RichText has readable mobile typography in both l
     function scale(n){return Math.abs(n._trs?.array?.[7]??1)*(n._parent?scale(data[n._parent.__id__]):1);}
     for(const label of data.filter(c=>['cc.Label','cc.RichText'].includes(c.__type__))){
       const node=data[label.node.__id__],fid=data[node._prefab?.__id__]?.fileId;
-      const key=catalog.nodeStyles[uuid+':'+fid]||catalog.nodeStyles[fid]||catalog.nodePathStyles[nodePath(node)];
+      // Match LanguageMgr's prefab identity/path suffix/token precedence.
+      // Keep legacy serialized path metadata for script-owned labels too.
+      let key=fid&&(catalog.nodeStyles[uuid+':'+fid]||catalog.nodeStyles[fid]);
+      const parts=[];
+      for(let current=node;!key&&current;current=current._parent&&data[current._parent.__id__]){
+        parts.unshift(current._name||'');
+        key=catalog.nodePathStyles[parts.join('/')];
+      }
+      if(!key)key=catalog.nodePathStyles[nodePath(node)]||/\[\[loc:([\w.-]+)\]\]/.exec(label._string||label._N$string||'')?.[1];
       assert.ok(catalog.labelStyles[key],path.relative(root,file)+':'+nodePath(node)+' needs a layout');
       for(const language of ['en','zh']){
         const style=catalog.labelStyles[key][language];
