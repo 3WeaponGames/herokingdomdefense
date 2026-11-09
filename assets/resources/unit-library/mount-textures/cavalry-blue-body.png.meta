@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "fe7e3777-d6f5-5bb3-a93f-99a77b2b10db",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 92,
+  "height": 54,
+  "platformSettings": {},
+  "subMetas": {
+    "cavalry-blue-body": {
+      "ver": "1.0.6",
+      "uuid": "3899a399-d952-58b2-ab46-0da9b38fcc33",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "fe7e3777-d6f5-5bb3-a93f-99a77b2b10db",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 92,
+      "height": 54,
+      "rawWidth": 92,
+      "rawHeight": 54,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -100,6 +100,7 @@ function describe(root,base,noRuntime){
     const atlas=fs.readFileSync(file.replace('.json','.atlas'),'utf8'),pages={};
     atlas.split(/\r?\n/).forEach((line,i,lines)=>{if(line.trim()&&(!i||!lines[i-1].trim())&&/\.png$/i.test(line.trim()))pages[line.trim()]=url.pathToFileURL(path.join(path.dirname(file),line.trim())).href;});
     horse={name:'Original cavalry horse',uuid:'d65efc08-b43e-54a9-a753-214538694c40',source:path.relative(root,file).replace(/\\/g,'/'),json,atlas,pages,skin:'lan',skins:json.skins.map(s=>s.name),animations:Object.keys(json.animations),x:0,y:0,scaleX:1,scaleY:1};
+    require('./cavalry-material').apply(root,horse);
   }
   horse=clone(horse);horse.mount=true;horse.name=base.mount==='hero-horse'?'Hero horse':horse.name;
   horse.foregroundSlots=splitHead(horse.json);
