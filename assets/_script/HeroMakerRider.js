@@ -44,6 +44,10 @@ function locomotion(renderer,animation) {
   if(renderer.setMix&&from&&from!==animation)renderer.setMix(from,animation,.1);
   return renderer.setAnimation(0,animation,true);
 }
+function setLocomotion(controller,animation) {
+  var horse=controller.spAniMa;
+  return metadata(controller)&&mountMetadata(controller)?locomotion(horse,animation):horse.setAnimation(0,animation,true);
+}
 function attack(controller,animation) {
   if(!metadata(controller)||!mountMetadata(controller))return;
   var horse=controller.spAniMa,track=horse.setAnimation(0,animation,false),master=controller.spAniBody.getCurrent(0);
@@ -102,3 +106,4 @@ exports.follow = follow; exports.removeFollow = removeFollow;
 exports.projectileOrigin = projectileOrigin;
 exports.attack = attack; exports.attacking = attacking;
 exports.prepareAttack = prepareAttack; exports.queue = queue;
+exports.setLocomotion = setLocomotion;

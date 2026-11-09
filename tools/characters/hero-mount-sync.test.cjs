@@ -19,6 +19,7 @@ function controller(style,models){
   actor[keys[index]]=renderer;renderer.setAnimation(0,'idle',true);return renderer;
  });
  actor.spAniSmoke={setAnimation(){},addAnimation(){}};
+ actor.setIdle();
  return {actor,rider,renderers,step(dt){renderers.forEach(r=>{r.state.update(dt);r.state.apply(r.layer.skeleton);r.layer.skeleton.updateWorldTransform();});rider.update(actor);}};
 }
 test('all original hero horse skins use the same Maker preparation, thrust and recovery phases as every equipped weapon',()=>{
@@ -65,4 +66,12 @@ test('real animation states keep horse and all equipment synchronized through at
 test('native TrackEntry getters and setters keep horse attack speed and phase aligned with the master clock',()=>{
  const api=helper('fighter'),calls=[],master={animation:{name:'attack_fighter'},loop:false,getTrackTime:()=>.32,getTimeScale:()=>1.7},mount={animation:{name:'attack_fighter'},loop:false,setTrackTime:v=>calls.push(['time',v]),setTimeScale:v=>calls.push(['speed',v])};
  const actor={spAniBody:{skeletonData:{skeletonJson:{_heroMaker:{}}},getCurrent:()=>master},spAniMa:{skeletonData:{skeletonJson:{_heroMakerMount:{}}},getCurrent:()=>mount}};api.update(actor);assert.deepEqual(calls,[['time',.32],['speed',1.7]]);
+});
+test('the first idle-to-walk transition and stopping blend horse geometry before any attack has initialized it',()=>{
+ const models=layers(),h=controller('fighter',models);h.step(.25);
+ const points=()=>Renderer.geometry(spine,models[0]).filter(g=>g.color.a>0).flatMap(g=>[...g.vertices]),idle=points();
+ h.actor.setMove();const track=h.actor.spAniMa.getCurrent(0);assert.equal(track.animation.name,'move');assert.equal(track.mixingFrom.animation.name,'idle');
+ h.step(1/60);const blended=points();Renderer.seek(spine,models,'move',1/60,false);const raw=points(),gap=values=>Math.max(...values.map((v,i)=>Math.abs(v-idle[i])));
+ assert(gap(blended)<gap(raw)/2,'the first frame blends out of idle instead of jumping to the walking leg pose');
+ h.actor.setIdle();const stopped=h.actor.spAniMa.getCurrent(0);assert.equal(stopped.animation.name,'idle');assert.equal(stopped.mixingFrom.animation.name,'move');
 });
