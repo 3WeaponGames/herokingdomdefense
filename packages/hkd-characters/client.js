@@ -164,7 +164,14 @@ function mount(host,api){
     const unit=unitFor(p);if(itemMode||!Levels.levels(unit).length)return;
     const fieldLevel=field(inspector,'Level',p.base.level||0,value=>selectUnit(unit,Number(value)||undefined),[{value:0,label:'All levels (default)'},...Levels.levels(unit).map(level=>({value:level,label:'Level '+level}))]);fieldLevel.title='Shift+1 through Shift+5: switch to an available unit level';fieldLevel.setAttribute('aria-keyshortcuts',Levels.levels(unit).filter(level=>level<=5).map(level=>'Shift+'+level).join(' '));
   }
-  async function selectProfile(id,preferredPart){finishGestures();virtual=null;selected=id;const p=profile();selectedPart=p&&p.parts.some(part=>part.id===preferredPart)?preferredPart:p&&p.parts[0]?p.parts[0].id:'';selectedAsset=part()?part().sprite:'';renderLooks();renderInspector();renderAssets();await loadRig();}
+  function selectEquippedPart(id){
+    selectedPart=id;const item=part();selectedAsset=item?item.sprite:'';if(!item)return;
+    const asset=assets[item.sprite];if(!asset)return;
+    const group=CharacterOptions.partCategory(asset),index=parts.filter(candidate=>CharacterOptions.partCategory(candidate)===group).findIndex(candidate=>candidate.id===asset.id);
+    if(index<0)return;
+    category.value=group;search.value='';limit=Math.max(60,Math.ceil((index+1)/60)*60);
+  }
+  async function selectProfile(id,preferredPart){finishGestures();virtual=null;selected=id;const p=profile();selectEquippedPart(p&&p.parts.some(part=>part.id===preferredPart)?preferredPart:p&&p.parts[0]?p.parts[0].id:'');renderLooks();renderInspector();renderAssets();await loadRig();}
   function installScrub(label,input,options){const cancel=LabelScrub.install(label,input,options);scrubs.push(cancel);return cancel;}
   function finishGestures(){for(const cancel of scrubs.slice())cancel.commit();finishPreviewDrag();finishPan();}
   function cancelGestures(){for(const cancel of scrubs.slice())cancel();finishPan();if(drag){const previous=drag;drag=null;previous.part.x=previous.x;previous.part.y=previous.y;releaseDrag(previous);}}
@@ -239,7 +246,7 @@ function mount(host,api){
     if(p.base.level)button(inspector,'Use default for this level',async()=>{const unit=unitFor(p);delete data.assignments[assignmentKey(p)];changed();await selectUnit(unit,p.base.level);});
     el('p',itemMode?'Saving an edited item applies it to this tier. Existing stats, upgrade cost and unlocks are preserved.':'Appearance only. Combat stats and attack timing stay in the Units tool.',inspector,'help');if(itemMode)button(inspector,'Edit stats and upgrades',()=>api.openEquipment?api.openEquipment():message('Open Tools → Hero Kingdom Defense → Equipment in Creator.'));
     modelInspector(p);
-    const rows=el('div',undefined,inspector,'part-list');p.parts.forEach(item=>{const b=button(rows,'',()=>{selectedPart=item.id;selectedAsset=item.sprite;renderInspector();renderAssets();draw();const selectedButton=inspector.querySelector('.part-list button.selected');if(selectedButton)selectedButton.focus({preventScroll:true});});b.classList.toggle('selected',item.id===selectedPart);const image=el('img',undefined,b);image.src=api.image(assets[item.sprite].thumbnail);el('span',item.id,b);});
+    const rows=el('div',undefined,inspector,'part-list');p.parts.forEach(item=>{const b=button(rows,'',()=>{selectEquippedPart(item.id);renderInspector();renderAssets();draw();const selectedButton=inspector.querySelector('.part-list button.selected');if(selectedButton)selectedButton.focus({preventScroll:true});});b.classList.toggle('selected',item.id===selectedPart);const image=el('img',undefined,b);image.src=api.image(assets[item.sprite].thumbnail);el('span',item.id,b);});
     const add=el('div',undefined,inspector,'row'),addButton=button(add,'Add selected part',addPart);addButton.setAttribute('data-action','add-part');addButton.setAttribute('aria-keyshortcuts','Control+A');addButton.title='Add selected part (Ctrl+A)';
     const removeButton=button(add,'Remove part',()=>{if(!part())return;p.parts.splice(p.parts.indexOf(part()),1);selectedPart=(p.parts[0]&&p.parts[0].id)||'';changed(true);});removeButton.setAttribute('data-action','remove-part');removeButton.setAttribute('aria-keyshortcuts','Delete');removeButton.title='Remove selected part (Delete)';
     const currentPart=part();if(!currentPart){el('p','Choose a part in the library, then Add selected part.',inspector,'help');button(inspector,itemMode?'Delete item':'Delete character',removeProfile,'danger');return;}
@@ -342,7 +349,7 @@ function mount(host,api){
     if(!layers.length||!poseBounds||virtual)return;finishGestures();
     const hit=api.renderer.hitTest(spine,layers,worldPoint(screenPoint(event)));if(!hit)return;
     const selectedPartObject=profile().parts.find(p=>p.layer===hit.layer.description.uuid&&p.slot===hit.slot);
-    selectedModel=hit.layer.description.uuid;selectedPart=selectedPartObject?selectedPartObject.id:'';if(selectedPartObject)selectedAsset=selectedPartObject.sprite;
+    selectedModel=hit.layer.description.uuid;if(selectedPartObject)selectEquippedPart(selectedPartObject.id);else selectedPart='';
     renderInspector();renderAssets();draw();
     const model=inspector.querySelector('.model-settings');if(!selectedPartObject&&model){model.open=true;model.scrollIntoView({block:'nearest'});}else{const row=inspector.querySelector('.part-list button.selected');if(row)row.scrollIntoView({block:'nearest'});}
     current.handles.focus({preventScroll:true});
