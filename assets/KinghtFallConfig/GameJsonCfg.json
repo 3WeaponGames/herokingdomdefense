@@ -6762,7 +6762,7 @@
       "Name": "[[loc:data.levelcfg.1.name]]",
       "Map": "wg_zy_gq1",
       "EnemyAni": "wqyl_bb",
-      "prefab": "Map01",
+      "prefab": "Generated/Stages/A-1",
       "InGameCoefficient": 1,
       "GoldSupplyCoefficient": 2,
       "ConversionCoefficient": 2,
@@ -7317,7 +7317,10 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest",
+      "StageLayoutId": "A-1"
     },
     {
       "Level": 2,
@@ -10898,7 +10901,7 @@
       "Name": "[[loc:data.levelcfg.7.name]]",
       "Map": "wg_zy_gq7",
       "EnemyAni": "wqyl_qb",
-      "prefab": "Map07",
+      "prefab": "Generated/Stages/A-7",
       "InGameCoefficient": 22,
       "GoldSupplyCoefficient": 23,
       "ConversionCoefficient": 23,
@@ -11776,7 +11779,8 @@
         }
       ],
       "EnvironmentMapId": "Map07",
-      "EnvironmentBiome": "fire"
+      "EnvironmentBiome": "fire",
+      "StageLayoutId": "A-7"
     },
     {
       "Level": 8,
@@ -39691,6 +39695,60 @@
       "enemy:92125:default": "mystic",
       "enemy:92126:default": "vanguard",
       "enemy:92127:default": "guardian"
+    },
+    "unitLevels": {
+      "ally:90001:level:2": {
+        "Health": 65,
+        "AttackDamage": 15,
+        "Speed": 107
+      },
+      "ally:90001:level:3": {
+        "Health": 100,
+        "AttackDamage": 20,
+        "Speed": 115
+      },
+      "ally:90002:level:2": {
+        "Health": 90,
+        "Speed": 90
+      },
+      "ally:90002:level:1": {
+        "AttackDamage": 11
+      },
+      "ally:90002:level:3": {
+        "AttackDamage": 20,
+        "Speed": 95,
+        "Health": 135
+      },
+      "ally:90003:level:1": {
+        "AttackDamage": 13,
+        "AttackRange": 200,
+        "Health": 10
+      },
+      "ally:90001:level:1": {
+        "Health": 45,
+        "AttackDamage": 12
+      },
+      "ally:90003:level:2": {
+        "AttackRange": 225,
+        "AttackDamage": 19,
+        "Health": 15
+      },
+      "ally:90003:level:3": {
+        "AttackDamage": 23,
+        "Health": 25
+      },
+      "ally:90004:level:1": {
+        "Health": 30,
+        "AttackDamage": 13
+      },
+      "ally:90004:level:2": {
+        "Speed": 180
+      },
+      "ally:90004:level:3": {
+        "Speed": 190,
+        "AttackDamage": 18,
+        "Health": 85
+      }
     }
   },
   "AllyCfg": {

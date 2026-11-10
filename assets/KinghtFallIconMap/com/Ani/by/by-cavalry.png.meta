@@ -11,5 +11,28 @@
   "width": 1024,
   "height": 512,
   "platformSettings": {},
-  "subMetas": {}
+  "subMetas": {
+    "by-cavalry": {
+      "ver": "1.0.6",
+      "uuid": "cb14ff4e-bd9a-468c-b295-3dbe1b253d02",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6edc2cd9-63b8-5e88-8e31-11197ae31a3b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -226,
+      "offsetY": 89,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 572,
+      "height": 334,
+      "rawWidth": 1024,
+      "rawHeight": 512,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
 }
