@@ -6903,7 +6903,7 @@
       "Name": "[[loc:data.levelcfg.1.name]]",
       "Map": "wg_zy_gq1",
       "EnemyAni": "wqyl_bb",
-      "prefab": "Map01",
+      "prefab": "Generated/Stages/A-1",
       "InGameCoefficient": 1,
       "GoldSupplyCoefficient": 2,
       "ConversionCoefficient": 2,
@@ -7060,7 +7060,7 @@
             {
               "id": "legacy-1-0",
               "spawnId": 1,
-              "unitId": 92063,
+              "unitId": 92047,
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -7068,7 +7068,7 @@
             {
               "id": "legacy-2-0",
               "spawnId": 2,
-              "unitId": 92058,
+              "unitId": 92048,
               "count": 3,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -7100,7 +7100,7 @@
             {
               "id": "legacy-1-0",
               "spawnId": 1,
-              "unitId": 92070,
+              "unitId": 92069,
               "count": 7,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -7458,7 +7458,10 @@
             }
           ]
         }
-      ]
+      ],
+      "EnvironmentMapId": "Map01",
+      "EnvironmentBiome": "forest",
+      "StageLayoutId": "A-1"
     },
     {
       "Level": 2,
