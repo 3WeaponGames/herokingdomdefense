@@ -78,7 +78,9 @@ async function verify(){
   assert(color(sample('environment-after-hide',20,10),[20,91,234]),'hiding placements restores the uncovered scenery pixels');
   await clickStage('A-1');await decoded(red.id);
   maps.Map01.layers[1].objects[0].buildingOverlap='front';version++;await refresh();
-  assert(color(sample('explicit-front',20,10),[20,91,234]),'an explicit front-of-buildings object covers the building on real Canvas');
+  assert(color(sample('default-above-all',20,10),[232,42,37]),'Default building assignment covers all object layers, including former foreground overrides');
+  stages['A-1'].buildings[0].renderAfter='ground';version++;await refresh();assert(color(sample('building-below-scenery',20,10),[20,91,234]),'ground-only assignment moves the whole building behind the object layer on real Canvas');
+  stages['A-1'].buildings[0].renderAfter=maps.Map01.layers[1].id;version++;await refresh();assert(color(sample('building-after-scenery-layer',20,10),[232,42,37]),'assigning after the scenery layer restores the full building in front');delete stages['A-1'].buildings[0].renderAfter;
   delete maps.Map01.layers[1].objects[0].buildingOverlap;version++;await refresh();
   assert(color(sample('default-restored',20,10),[232,42,37]),'shared map refresh restores default building foreground order');
 

@@ -106,7 +106,8 @@ test('Royal Knight tiers have proportional independent bodies, aligned aperture 
     assert(Math.abs(body.width/body.height-atlas[body.path].orig[0]/atlas[body.path].orig[1])<.00001,'Never stretch the architecture');
     assert.deepEqual(light,{...body,path:alias.newRegion+'_lights'},'Light map must use the identical body transform');
     assert.deepEqual(atlas[light.path].orig,atlas[body.path].orig);
-    assert.deepEqual(Object.keys(actual.attachments).sort(),[alias.region,'royal_windows',...(alias.alias==='by-royal-3'?['royal_flag','royal_flag_pole']:[])].sort());
+    const flag=fixture.royalMilitary.roofFlags.find(f=>f.skin===alias.alias);
+    assert.deepEqual(Object.keys(actual.attachments).sort(),[alias.region,'royal_windows',flag.flagSlot,flag.poleSlot].sort());
     for(const animation of Object.values(json.animations))assert.equal(animation.deform?.[alias.alias],undefined,'Narrow window cores use fixed masks, so no source deformation can slide them onto a wall');
   }
   const meta=read(filename('by','json.meta')),page=read(directory('by')+'/by-royal.png.meta');assert.equal(meta.textures.length,3);assert.equal(meta.textures[1],page.uuid);
@@ -194,24 +195,31 @@ test('cavalry tier 3 restores the exact original body pixels, icon and authored 
 
 test('Royal Knight flag reuses the castle wave keys and all added layers follow construction, night and destruction',()=>{
   const json=read(filename('by','json')),castle=read(filename('cb','json'));
-  for(const name of ['idle','idle_night','Fade_in','upgrade'])for(let i=0;i<4;i++){
-    assert.deepEqual(json.animations[name].bones['royal_flag_wave_'+i],castle.animations[name].bones['bone'+(5+i)],'Reuse the authored flag easing and phase');
+  assert.equal(fixture.royalMilitary.roofFlags.length,3,'Every tier has its own centered roof rig');
+  for(const rig of fixture.royalMilitary.roofFlags){
+    for(const name of ['idle','idle_night','Fade_in','upgrade'])for(let i=0;i<4;i++)assert.deepEqual(json.animations[name].bones[rig.waves[i]],castle.animations[name].bones['bone'+(5+i)],'Reuse the authored castle flag easing and phase');
+    const skin=json.skins.find(s=>s.name===rig.skin),alias=fixture.aliases.find(a=>a.alias===rig.skin),body=skin.attachments[alias.region][alias.region];
+    const roof=json.bones.find(b=>b.name===rig.roofBone),mount=json.bones.find(b=>b.name===rig.mount);
+    assert.equal(roof.parent,'bone3','Roof pole inherits construction and upgrade motion');
+    assert(Math.abs(roof.x-(body.x+(rig.roofUV.x-.5)*body.width))<.00001,'Pole is centered on this tier roof');
+    assert(Math.abs(roof.y-(body.y+(.5-rig.roofUV.y)*body.height))<.00001,'Pole foot touches the roof plane');
+    assert.equal(mount.parent,roof.name);assert.equal(mount.scaleX,-1,'The cloth extends left, like the castle');
+    assert.equal(rig.heading,'SE');assert.equal(rig.azimuth,-45);
+    assert.equal(json.slots.find(s=>s.name===rig.poleSlot).bone,roof.name);assert.equal(json.slots.find(s=>s.name===rig.flagSlot).bone,mount.name);
+    const pole=skin.attachments[rig.poleSlot][rig.poleSlot],flag=skin.attachments[rig.flagSlot][rig.flagSlot];
+    assert.equal(pole.path,'by_royal_flag_pole');assert.equal(pole.y-pole.height/2,0,'Pole base must touch the roof');
+    assert.equal(flag.type,'mesh');assert(flag.vertices.length>flag.uvs.length,'Flag cloth must be weighted, not a baked body sprite');
+    for(const slot of [rig.poleSlot,rig.flagSlot])assert.deepEqual(json.animations.destroy.slots[slot].attachment,[{time:.1667,name:null}],'No pole or flag remains after destruction');
+    for(const other of fixture.royalMilitary.roofFlags.filter(f=>f.skin!==rig.skin))assert.equal(skin.attachments[other.flagSlot],undefined,'Only the active tier flag is visible');
   }
-  const mount=json.bones.find(b=>b.name==='royal_flag_mount');assert.equal(mount.parent,'bone3','Flag must inherit spawn motion');
-  const body=json.skins.find(s=>s.name==='by-royal-3').attachments.dxby_3_1.dxby_3_1;
-  assert(mount.x<-body.width*.25&&mount.y<body.y+body.height*.35,'Flag must sit on the front-left parapet, not the rear');
-  assert.equal(json.slots.find(s=>s.name==='royal_flag_pole').bone,mount.name,'Pole and cloth must move together');
-  assert.equal(json.skins.find(s=>s.name==='by-royal-3').attachments.royal_flag_pole.royal_flag_pole.path,'by_royal_flag_pole');
-  const flag=json.skins.find(s=>s.name==='by-royal-3').attachments.royal_flag.royal_flag;
-  assert.equal(flag.type,'mesh');assert(flag.vertices.length>flag.uvs.length,'Flag cloth must be weighted, not a baked body sprite');
   assert.equal(json.animations.idle.slots.royal_windows.color[0].color,'ffffff00');
   assert.deepEqual(json.animations.Fade_in.slots.royal_windows,json.animations.Fade_in.slots.by_1_g_1,'Retain the half-second night fade');
   const pulse=json.animations.idle_night.slots.royal_windows.color;assert.deepEqual(pulse.map(k=>k.time||0),[0,1,2]);assert.notEqual(pulse[0].color,pulse[1].color);
-  for(const slot of ['royal_windows','royal_flag','royal_flag_pole'])assert.deepEqual(json.animations.destroy.slots[slot].attachment,[{time:.1667,name:null}],'No glowing windows, pole or flag left after destruction');
+  assert.deepEqual(json.animations.destroy.slots.royal_windows.attachment,[{time:.1667,name:null}],'No glowing doorway or windows remain after destruction');
   for(const s of json.skins.filter(s=>!s.name.startsWith('by-royal-')))for(const name of fixture.royalMilitary.slots)assert.equal(s.attachments[name],undefined,'Other families must not acquire Royal layers');
 });
 
-test('Royal Knight light maps contain exactly three narrow apertures and no lit door hardware or roof',()=>{
+test('Royal Knight light maps illuminate the open door and three windows while keeping frames, props and roof dark',()=>{
   const regions=atlasRegions(fs.readFileSync(path.join(root,filename('by','atlas')),'utf8'));
   const page=decode(fs.readFileSync(path.join(root,directory('by')+'/by-royal.png')));
   for(const alias of fixture.aliases){
@@ -222,7 +230,9 @@ test('Royal Knight light maps contain exactly three narrow apertures and no lit 
       while(pending.length){const p=pending.pop();group.push(p);const px=p%w,py=Math.floor(p/w);for(const q of [px>0?p-1:-1,px<w-1?p+1:-1,py>0?p-w:-1,py<h-1?p+w:-1])if(points.delete(q))pending.push(q);}
       groups.push(group);
     }
-    assert.equal(groups.length,3,'Only the three actual arrow slits should emit light');
-    for(const group of groups){const xs=group.map(p=>p%w),ys=group.map(p=>Math.floor(p/w));assert(group.length>40);assert(Math.max(...ys)-Math.min(...ys)>2*(Math.max(...xs)-Math.min(...xs)),'Arrow slits stay narrow');}
+    assert.equal(groups.length,4,'Only the doorway and three actual window apertures emit light');
+    groups.sort((a,b)=>b.length-a.length);assert(groups[0].length>5*groups[1].length,'The broad open door emits warm light');
+    const widths=[];for(const group of groups.slice(1)){const xs=group.map(p=>p%w),ys=group.map(p=>Math.floor(p/w));assert(group.length>40);const width=Math.max(...xs)-Math.min(...xs),height=Math.max(...ys)-Math.min(...ys);assert(height>1.5*width,'Barracks windows stay defensive and narrow');widths.push(width);}
+    assert(Math.max(...widths)>1.3*Math.min(...widths),'The side window is modestly wider than the front slits');
   }
 });

@@ -15,7 +15,7 @@ function colliderIndex(building,hall,config){
  // enabled); runtime setLevel selects the matching collider tag explicitly.
  return building.kind!==6&&Number.isInteger(override)&&override>0?override:index;
 }
-function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){
+function buildingColliderData(service,stage,building,hall,gate,config,sourceModels){
  const source=GateSource.project(stage.templates&&stage.templates[building.template.prefab]||service.source(building.template.prefab),building),ids=new Set();
  let info=sourceModels.get(source);if(!info){info=Maps.model(source);sourceModels.set(source,info);}
  building.template.roots.forEach(root=>L.descendants(source,root,ids));
@@ -26,15 +26,16 @@ function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){
   if(node!==undefined)controlled.add(node);
  }
  const tag=colliderIndex(building,hall,config),origin=owner.position;
- return info.colliders.filter(c=>{
+ const colliders=info.colliders.filter(c=>{
   if(!ids.has(c.node)||c.sensor)return false;
   // Opening the leaf does not remove the fixed wings beside its passage.
   if(building.kind===6&&gate==='open'&&c.node===owner.id&&c.type==='cc.PhysicsPolygonCollider')return false;
   // BuildBase changes polygon fixtures only; boxes/circles keep their static
   // enabled state even when attached directly to a level-controlled node.
   return controlled.has(c.node)&&c.type==='cc.PhysicsPolygonCollider'?Number(c.source.tag)===tag:c.active;
- }).map(c=>c.points.map(p=>M.toWorld(building,{x:p.x-origin.x,y:p.y-origin.y})));
+ });return {colliders,origin,owner:owner.id};
 }
+function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels);return data.colliders.map(c=>c.points.map(p=>M.toWorld(building,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
 function preview(service,request){
  const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=stage.spawns.find(s=>s.id===request.spawnId&&s.enabled!==false);
  if(!spawn)throw Error('Select an enabled spawn');
@@ -64,4 +65,4 @@ function preview(service,request){
  const fallback=!!(request.graphId&&route[0]&&route[0].graphId!==request.graphId),message=(fallback?'The selected conditional path is unavailable; showing its fallback. ':'')+(frontier?'Approach reaches an obstacle frontier. Closed gates may be attacked here.':'Approach reaches the authored goal.');
  return {points,message,frontier,polygons:polygons.length,fallback};
 }
-module.exports={preview,buildingPolygons,colliderIndex};
+module.exports={preview,buildingPolygons,buildingColliderData,colliderIndex};

@@ -319,11 +319,13 @@ DepthView.prototype.prepareObjects = function () {
   var self = this, main = this.main;
   var hero = this.game.ctrPlay && this.game.ctrPlay.node;
   var kinds = this._depthKinds || (this._depthKinds = new Map());
-  function kind(root, building) {
+  function kind(root, building, owner) {
     if (!root) return;
-    if (!kinds.has(root)) kinds.set(root, { building:root._depthBuilding, scenery:root._depthScenery });
+    if (!kinds.has(root)) kinds.set(root, { building:root._depthBuilding, scenery:root._depthScenery, owner:root._depthBuildingOwner, order:root._depthBuildingOrder, groundVisual:root._depthGroundVisual });
     root._depthBuilding = building;
     root._depthScenery = !building;
+    if (building) { root._depthBuildingOwner = owner ? objectRoot(owner.node, main) || owner.node : root;root._depthBuildingOrder = owner && Number.isFinite(owner.renderLayerOrder) && owner.renderLayerOrder >= 0 ? owner.renderLayerOrder : null; }
+    else { delete root._depthBuildingOwner;delete root._depthBuildingOrder; }
   }
   // Gate side containers group columns at different Y positions. Flatten only
   // their render/physics nodes, preserving transforms and component references.
@@ -350,19 +352,32 @@ DepthView.prototype.prepareObjects = function () {
     var build = buildings[id];
     var ownerRoot = objectRoot(build.node, main);
     if (ownerRoot) {
-      kind(ownerRoot, true);
+      kind(ownerRoot, true, build);
       if (!byNode.has(ownerRoot)) byNode.set(ownerRoot, []);
       if (!buildingOwners.has(ownerRoot)) buildingOwners.set(ownerRoot, []);
       buildingOwners.get(ownerRoot).push({ owner: build, base: null, weapon: null, ruins: null });
     }
     [build.ndAniMain, build.ndAniDown].concat(build.ndAniOther || []).filter(Boolean).forEach(function (renderer) {
       var root = renderer.node;
-      while (root.parent !== main && root.parent) root = root.parent;
-      // Ground/shadow layers are deliberately outside the occluding layer.
+      while (root.parent && root.parent !== main && root.parent !== self.game.ndDown) root = root.parent;
+      if (root.parent === self.game.ndDown && self.game.ndDown) {
+        var pose = nodeTransform(root, main);
+        root.setParent(main);root.setPosition(pose.x, pose.y);root.angle = pose.angle;root.scaleX=pose.scaleX;root.scaleY=pose.scaleY;
+      }
       if (root.parent !== main) return;
-      kind(root, true);
+      kind(root, true, build);
+      if (renderer === build.ndAniDown) { root._depthGroundVisual = true;if(root.setSiblingIndex)root.setSiblingIndex(0);return; }
       if (!byNode.has(root)) byNode.set(root, []);
       byNode.get(root).push(renderer);
+    });
+  });
+  Object.keys(buildings).forEach(function (id) {
+    var build = buildings[id];
+    (build.ndLockList || []).filter(Boolean).forEach(function (field) {
+      var root = field;
+      while (root.parent && root.parent !== main && root.parent !== self.game.ndDown) root = root.parent;
+      if (root.parent === self.game.ndDown && self.game.ndDown) { var pose = nodeTransform(root, main);root.setParent(main);root.setPosition(pose.x, pose.y);root.angle = pose.angle;root.scaleX=pose.scaleX;root.scaleY=pose.scaleY; }
+      if (root.parent === main) { kind(root, true, build);root._depthGroundVisual = true;if(root.setSiblingIndex)root.setSiblingIndex(0); }
     });
   });
   (this.game.gameData.obstacles || []).forEach(function (obstacle) {
@@ -381,23 +396,32 @@ DepthView.prototype.prepareObjects = function () {
   });
 };
 DepthView.prototype.sort = function () {
-  var hero = this.game.ctrPlay.node, main = this.main;
-  var ordered = this.main.children.filter(function (node) { return !node._occlusionMask; });
-  ordered=ordered.map(function(node,index){return {node:node,ground:node._depthGround?point(node._depthGround,main).y:node.y,actor:node._combatActor||node===hero?1:0,index:index};});
-  var buildingGround = -Infinity;
-  ordered.forEach(function (entry) {
-    if (entry.node._depthBuilding && entry.node.activeInHierarchy !== false) buildingGround = Math.max(buildingGround, entry.ground);
+  var hero = this.game.ctrPlay.node, main = this.main, groups = new Map(), maximum = 1;
+  main.children.forEach(function (node, index) {
+    if (node._occlusionMask) return;
+    var owner = node._depthBuildingOwner || node, group = groups.get(owner);
+    if (!group) {
+      var building = !!node._depthBuilding, ground = owner._depthGround ? point(owner._depthGround, main).y : owner.y;
+      group = { owner:owner, ground:ground, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:node._depthMapForeground?1:0, nodes:[] };
+      group.band = building ? node._depthBuildingOrder : node._depthLayerOrder;
+      if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
+      if (Number.isFinite(group.band)) maximum = Math.max(maximum, group.band);
+      groups.set(owner, group);
+    }
+    group.nodes.push(node);
   });
-  ordered.forEach(function (entry) {
-    // Buildings always cover map objects. Moving units into the same band once
-    // they pass a building preserves every unit/building ground relationship;
-    // units behind all buildings still use the original scenery depth ordering.
-    entry.band = entry.node._depthMapForeground ? 2 : entry.node._depthBuilding || !(entry.node._depthScenery || entry.node._depthMapObject) && entry.ground <= buildingGround ? 1 : 0;
+  var ordered = Array.from(groups.values());
+  ordered.forEach(function (group) { if (group.building && !Number.isFinite(group.band)) group.band = maximum + 2; });
+  // Actors retain their ground relationship with scenery and complete buildings.
+  // One frontier lets actor lookup stay logarithmic in the number of props.
+  var frontier = ordered.filter(function (g) { return !g.actor && Number.isFinite(g.band) && g.owner.activeInHierarchy !== false; }).sort(function (a,b) { return b.ground-a.ground; }), running = 0;
+  frontier.forEach(function (g) { running = Math.max(running,g.band);g.frontBand = running; });
+  ordered.forEach(function (g) {
+    if (g.actor) { var lo=0,hi=frontier.length;while(lo<hi){var mid=(lo+hi)>>1;if(frontier[mid].ground>=g.ground)lo=mid+1;else hi=mid;}g.band=lo?frontier[lo-1].frontBand:0; }
+    else if (!Number.isFinite(g.band)) g.band=0;
   });
-  ordered.sort(function(a,b){return a.band-b.band||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
-  ordered.forEach(function (entry, index) { entry.node.zIndex = index * 2; });
-  // This pass runs after EVENT_AFTER_UPDATE, when Creator normally flushes
-  // delayed child sorting. Apply the new ground order before this frame draws.
+  ordered.sort(function(a,b){return a.band-b.band||a.priority-b.priority||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
+  ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*2;}); });
   if (main.sortAllChildren) main.sortAllChildren();
 };
 DepthView.prototype.makeMask = function (object, actor, sources) {
@@ -624,6 +648,9 @@ DepthView.prototype.destroy = function () {
     this._depthKinds.forEach(function (previous, node) {
       if (previous.building === undefined) delete node._depthBuilding; else node._depthBuilding = previous.building;
       if (previous.scenery === undefined) delete node._depthScenery; else node._depthScenery = previous.scenery;
+      if (previous.owner === undefined) delete node._depthBuildingOwner; else node._depthBuildingOwner = previous.owner;
+      if (previous.order === undefined) delete node._depthBuildingOrder; else node._depthBuildingOrder = previous.order;
+      if (previous.groundVisual === undefined) delete node._depthGroundVisual; else node._depthGroundVisual = previous.groundVisual;
     });
     this._depthKinds.clear();
   }

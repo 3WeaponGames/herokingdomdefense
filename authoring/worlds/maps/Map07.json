@@ -6937,20 +6937,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -279.1594343845372,
-          156.24699999999996,
+          -339.58105798819713,
+          176.09037639634002,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -6986,8 +6992,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          111,
-          105,
+          0,
+          0,
           0,
           0,
           0,
@@ -7002,7 +7008,13 @@
       "_parent": {
         "__id__": 18
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -7261,8 +7273,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          111,
-          105,
+          0,
+          0,
           0,
           0,
           0,
@@ -7277,7 +7289,13 @@
       "_parent": {
         "__id__": 18
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -7474,8 +7492,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          111,
-          105,
+          0,
+          0,
           0,
           0,
           0,
@@ -7490,7 +7508,13 @@
       "_parent": {
         "__id__": 18
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -7687,8 +7711,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          111,
-          105,
+          0,
+          0,
           0,
           0,
           0,
@@ -7703,7 +7727,13 @@
       "_parent": {
         "__id__": 18
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -7902,8 +7932,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -223.36377619532044,
-          553.6949999999999,
+          -215.92170020540817,
+          684.3669240100877,
           0,
           0,
           0,
@@ -7915,7 +7945,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -7951,8 +7987,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24,
-          152,
+          0,
+          0,
           0,
           0,
           0,
@@ -7967,7 +8003,13 @@
       "_parent": {
         "__id__": 63
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -8226,8 +8268,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24,
-          152,
+          0,
+          0,
           0,
           0,
           0,
@@ -8242,7 +8284,13 @@
       "_parent": {
         "__id__": 63
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -8439,8 +8487,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24,
-          152,
+          0,
+          0,
           0,
           0,
           0,
@@ -8455,7 +8503,13 @@
       "_parent": {
         "__id__": 63
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -8654,8 +8708,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -390.63029094608333,
-          346.8905,
+          -374.9017544118133,
+          472.44596346572985,
           0,
           0,
           0,
@@ -8667,7 +8721,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -8703,8 +8763,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          36.498,
-          153.822,
+          0,
+          0,
           0,
           0,
           0,
@@ -8719,7 +8779,13 @@
       "_parent": {
         "__id__": 98
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -8978,8 +9044,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          36.498,
-          153.822,
+          0,
+          0,
           0,
           0,
           0,
@@ -8994,7 +9060,13 @@
       "_parent": {
         "__id__": 98
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -9191,8 +9263,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          36.498,
-          153.822,
+          0,
+          0,
           0,
           0,
           0,
@@ -9207,7 +9279,13 @@
       "_parent": {
         "__id__": 98
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -9406,8 +9484,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -337.86295320447607,
-          -89.479,
+          -331.21844211437775,
+          40.791488909901716,
           0,
           0,
           0,
@@ -9419,7 +9497,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -9455,8 +9539,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          22.579,
-          150.55,
+          0,
+          0,
           0,
           0,
           0,
@@ -9471,7 +9555,13 @@
       "_parent": {
         "__id__": 133
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -9730,8 +9820,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          22.579,
-          150.55,
+          0,
+          0,
           0,
           0,
           0,
@@ -9746,7 +9836,13 @@
       "_parent": {
         "__id__": 133
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -9943,8 +10039,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          22.579,
-          150.55,
+          0,
+          0,
           0,
           0,
           0,
@@ -9959,7 +10055,13 @@
       "_parent": {
         "__id__": 133
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -10158,8 +10260,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          187.76242726347917,
-          -50.76099999999991,
+          194.24604227382173,
+          79.19938498965747,
           0,
           0,
           0,
@@ -10171,7 +10273,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -10207,8 +10315,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          22.579,
-          150.55,
+          0,
+          0,
           0,
           0,
           0,
@@ -10223,7 +10331,13 @@
       "_parent": {
         "__id__": 168
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -10482,8 +10596,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          22.579,
-          150.55,
+          0,
+          0,
           0,
           0,
           0,
@@ -10498,7 +10612,13 @@
       "_parent": {
         "__id__": 168
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -10695,8 +10815,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          22.579,
-          150.55,
+          0,
+          0,
           0,
           0,
           0,
@@ -10711,7 +10831,13 @@
       "_parent": {
         "__id__": 168
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -10910,8 +11036,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -162.28060427263478,
-          -620.8240000000001,
+          -151.6343592670284,
+          -494.6132450056063,
           0,
           0,
           0,
@@ -10923,7 +11049,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -10959,8 +11091,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          30.587,
-          152.923,
+          0,
+          0,
           0,
           0,
           0,
@@ -10975,7 +11107,13 @@
       "_parent": {
         "__id__": 203
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -11234,8 +11372,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          30.587,
-          152.923,
+          0,
+          0,
           0,
           0,
           0,
@@ -11250,7 +11388,13 @@
       "_parent": {
         "__id__": 203
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -11447,8 +11591,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          30.587,
-          152.923,
+          0,
+          0,
           0,
           0,
           0,
@@ -11463,7 +11607,13 @@
       "_parent": {
         "__id__": 203
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -11662,20 +11812,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          217.85610986775177,
-          -616.1780000000001,
+          205.09582008649744,
+          -499.80828978125436,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -11711,8 +11867,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          39.087,
-          154.482,
+          0,
+          0,
           0,
           0,
           0,
@@ -11727,7 +11883,13 @@
       "_parent": {
         "__id__": 238
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -11986,8 +12148,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          39.087,
-          154.482,
+          0,
+          0,
           0,
           0,
           0,
@@ -12002,7 +12164,13 @@
       "_parent": {
         "__id__": 238
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -12199,8 +12367,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          39.087,
-          154.482,
+          0,
+          0,
           0,
           0,
           0,
@@ -12215,7 +12383,13 @@
       "_parent": {
         "__id__": 238
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -12417,8 +12591,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          257.76893489318405,
-          923.7204999999999,
+          300.81746137288724,
+          1009.7029735202967,
           0,
           0,
           0,
@@ -12430,7 +12604,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -12466,8 +12646,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          72.012,
-          128.555,
+          0,
+          0,
           0,
           0,
           0,
@@ -12482,7 +12662,13 @@
       "_parent": {
         "__id__": 273
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -12741,8 +12927,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          72.012,
-          128.555,
+          0,
+          0,
           0,
           0,
           0,
@@ -12757,7 +12943,13 @@
       "_parent": {
         "__id__": 273
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -12954,8 +13146,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          72.012,
-          128.555,
+          0,
+          0,
           0,
           0,
           0,
@@ -12970,7 +13162,13 @@
       "_parent": {
         "__id__": 273
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -13167,8 +13365,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          72.443,
-          127.961,
+          0,
+          0,
           0,
           0,
           0,
@@ -13183,7 +13381,13 @@
       "_parent": {
         "__id__": 273
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -13385,8 +13589,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -299.6001159715158,
-          -453.43399999999986,
+          -264.59291325518694,
+          -357.0292027163287,
           0,
           0,
           0,
@@ -13398,7 +13602,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -13434,8 +13644,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -13450,7 +13660,13 @@
       "_parent": {
         "__id__": 318
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -13709,8 +13925,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -13725,7 +13941,13 @@
       "_parent": {
         "__id__": 318
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -13922,8 +14144,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -13938,7 +14160,13 @@
       "_parent": {
         "__id__": 318
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -14135,8 +14363,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -14151,7 +14379,13 @@
       "_parent": {
         "__id__": 318
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -14353,20 +14587,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          332.74595422177,
-          -345.1025000000001,
+          305.96764311584934,
+          -266.4398111059208,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           -1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -14402,8 +14642,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -14418,7 +14658,13 @@
       "_parent": {
         "__id__": 363
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -14677,8 +14923,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -14693,7 +14939,13 @@
       "_parent": {
         "__id__": 363
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -14890,8 +15142,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -14906,7 +15158,13 @@
       "_parent": {
         "__id__": 363
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -15103,8 +15361,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          66.406,
-          144.224,
+          0,
+          0,
           0,
           0,
           0,
@@ -15119,7 +15377,13 @@
       "_parent": {
         "__id__": 363
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -15318,20 +15582,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          189.52410478128186,
-          666.831,
+          170.97189236185363,
+          813.5177875805717,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -15367,8 +15637,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          27.282,
-          156.708,
+          0,
+          0,
           0,
           0,
           0,
@@ -15383,7 +15653,13 @@
       "_parent": {
         "__id__": 408
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -15642,8 +15918,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          27.282,
-          156.708,
+          0,
+          0,
           0,
           0,
           0,
@@ -15658,7 +15934,13 @@
       "_parent": {
         "__id__": 408
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -15855,8 +16137,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          27.282,
-          156.708,
+          0,
+          0,
           0,
           0,
           0,
@@ -15871,7 +16153,13 @@
       "_parent": {
         "__id__": 408
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -16070,20 +16358,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          424.95129298067144,
-          675.7645,
+          415.7262713503457,
+          819.8594783696743,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -16119,8 +16413,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          17.591,
-          153.735,
+          0,
+          0,
           0,
           0,
           0,
@@ -16135,7 +16429,13 @@
       "_parent": {
         "__id__": 443
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -16394,8 +16694,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          17.591,
-          153.735,
+          0,
+          0,
           0,
           0,
           0,
@@ -16410,7 +16710,13 @@
       "_parent": {
         "__id__": 443
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -16607,8 +16913,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          17.591,
-          153.735,
+          0,
+          0,
           0,
           0,
           0,
@@ -16623,7 +16929,13 @@
       "_parent": {
         "__id__": 443
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -16822,20 +17134,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          266.5556124109867,
-          485.143,
+          254.66243000113957,
+          622.8108175901527,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -16871,8 +17189,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24.901,
-          153.735,
+          0,
+          0,
           0,
           0,
           0,
@@ -16887,7 +17205,13 @@
       "_parent": {
         "__id__": 478
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -17146,8 +17470,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24.901,
-          153.735,
+          0,
+          0,
           0,
           0,
           0,
@@ -17162,7 +17486,13 @@
       "_parent": {
         "__id__": 478
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -17359,8 +17689,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24.901,
-          153.735,
+          0,
+          0,
           0,
           0,
           0,
@@ -17375,7 +17705,13 @@
       "_parent": {
         "__id__": 478
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -17574,20 +17910,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          517.3666347914547,
-          482.166,
+          503.7303284887827,
+          622.1126936973279,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -17623,8 +17965,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          26,
-          155,
+          0,
+          0,
           0,
           0,
           0,
@@ -17639,7 +17981,13 @@
       "_parent": {
         "__id__": 513
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -17898,8 +18246,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          26,
-          155,
+          0,
+          0,
           0,
           0,
           0,
@@ -17914,7 +18262,13 @@
       "_parent": {
         "__id__": 513
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -18111,8 +18465,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          26,
-          155,
+          0,
+          0,
           0,
           0,
           0,
@@ -18127,7 +18481,13 @@
       "_parent": {
         "__id__": 513
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -18326,20 +18686,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          181.65277110885054,
-          280.042,
+          164.89491830057145,
+          421.3701471917209,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -18375,8 +18741,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          28.513,
-          155.477,
+          0,
+          0,
           0,
           0,
           0,
@@ -18391,7 +18757,13 @@
       "_parent": {
         "__id__": 548
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -18650,8 +19022,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          28.513,
-          155.477,
+          0,
+          0,
           0,
           0,
           0,
@@ -18666,7 +19038,13 @@
       "_parent": {
         "__id__": 548
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -18863,8 +19241,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          28.513,
-          155.477,
+          0,
+          0,
           0,
           0,
           0,
@@ -18879,7 +19257,13 @@
       "_parent": {
         "__id__": 548
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -19078,20 +19462,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          425.1586266531028,
-          282.43799999999993,
+          413.0731055395792,
+          421.6744788864764,
           0,
           0,
           0,
-          0,
+          1,
+          6.123233995736766e-17,
           1,
           -1,
-          1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -19127,8 +19517,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24.572,
-          154.482,
+          0,
+          0,
           0,
           0,
           0,
@@ -19143,7 +19533,13 @@
       "_parent": {
         "__id__": 583
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -19402,8 +19798,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24.572,
-          154.482,
+          0,
+          0,
           0,
           0,
           0,
@@ -19418,7 +19814,13 @@
       "_parent": {
         "__id__": 583
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -19615,8 +20017,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          24.572,
-          154.482,
+          0,
+          0,
           0,
           0,
           0,
@@ -19631,7 +20033,13 @@
       "_parent": {
         "__id__": 583
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -19830,20 +20238,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -155.2832583926755,
-          -459.98450000000014,
+          -11.66258057318646,
+          -329.91717781948915,
           0,
           0,
           0,
           0,
           1,
-          -1,
+          1,
           1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -19879,8 +20293,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -75.006,
-          96.877,
+          0,
+          0,
           0,
           0,
           0,
@@ -19895,7 +20309,13 @@
       "_parent": {
         "__id__": 618
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -20154,8 +20574,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -75.006,
-          96.877,
+          0,
+          0,
           0,
           0,
           0,
@@ -20170,7 +20590,13 @@
       "_parent": {
         "__id__": 618
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -20367,8 +20793,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -75.006,
-          96.877,
+          0,
+          0,
           0,
           0,
           0,
@@ -20383,7 +20809,13 @@
       "_parent": {
         "__id__": 618
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -20582,20 +21014,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          569.311961342828,
-          26.119500000000095,
-          0,
+          420.9203480220025,
+          155.1118866791745,
           0,
           0,
           0,
           1,
+          6.123233995736766e-17,
           1,
-          1,
+          -1,
           1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 180
+      }
     },
     {
       "__type__": "cc.Node",
@@ -20631,8 +21069,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -74.194,
-          96.877,
+          0,
+          0,
           0,
           0,
           0,
@@ -20647,7 +21085,13 @@
       "_parent": {
         "__id__": 653
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -20906,8 +21350,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -74.194,
-          96.877,
+          0,
+          0,
           0,
           0,
           0,
@@ -20922,7 +21366,13 @@
       "_parent": {
         "__id__": 653
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -21119,8 +21569,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -74.194,
-          96.877,
+          0,
+          0,
           0,
           0,
           0,
@@ -21135,7 +21585,13 @@
       "_parent": {
         "__id__": 653
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -21334,8 +21790,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -496.2462990844353,
-          625.7220000000001,
+          -476.9198482306863,
+          761.837549146251,
           0,
           0,
           0,
@@ -21347,7 +21803,13 @@
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -21383,8 +21845,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          33.455,
-          153.879,
+          0,
+          0,
           0,
           0,
           0,
@@ -21399,7 +21861,13 @@
       "_parent": {
         "__id__": 688
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -21658,8 +22126,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          33.455,
-          153.879,
+          0,
+          0,
           0,
           0,
           0,
@@ -21674,7 +22142,13 @@
       "_parent": {
         "__id__": 688
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -21871,8 +22345,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          33.455,
-          153.879,
+          0,
+          0,
           0,
           0,
           0,
@@ -21887,7 +22361,13 @@
       "_parent": {
         "__id__": 688
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -22086,20 +22566,26 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -47.6255829094609,
-          -835.7509999999999,
+          91.59141709053911,
+          -560.6829999999999,
           0,
           0,
           0,
           0,
           1,
-          -1,
+          1,
           1,
           -1
         ],
         "__type__": "TypedArray"
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -22135,8 +22621,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -139.217,
-          275.068,
+          0,
+          0,
           0,
           0,
           0,
@@ -22151,7 +22637,13 @@
       "_parent": {
         "__id__": 723
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -22410,8 +22902,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -139.217,
-          275.068,
+          0,
+          0,
           0,
           0,
           0,
@@ -22426,7 +22918,13 @@
       "_parent": {
         "__id__": 723
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -22623,8 +23121,8 @@
       "_trs": {
         "ctor": "Float64Array",
         "array": [
-          -139.217,
-          275.068,
+          0,
+          0,
           0,
           0,
           0,
@@ -22639,7 +23137,13 @@
       "_parent": {
         "__id__": 723
       },
-      "groupIndex": 1
+      "groupIndex": 1,
+      "_eulerAngles": {
+        "__type__": "cc.Vec3",
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
     },
     {
       "__type__": "cc.Node",
@@ -30927,6 +31431,12 @@
       },
       "node": {
         "__id__": 1093
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -31343,6 +31853,12 @@
       },
       "node": {
         "__id__": 1111
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -31759,6 +32275,12 @@
       },
       "node": {
         "__id__": 1129
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -32133,6 +32655,12 @@
       },
       "node": {
         "__id__": 1147
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -32549,6 +33077,12 @@
       },
       "node": {
         "__id__": 1163
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -33922,6 +34456,12 @@
       },
       "node": {
         "__id__": 1181
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -35337,6 +35877,12 @@
       },
       "node": {
         "__id__": 1226
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -36792,6 +37338,12 @@
       },
       "node": {
         "__id__": 1273
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -37149,6 +37701,12 @@
       },
       "node": {
         "__id__": 1320
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -37506,6 +38064,12 @@
       },
       "node": {
         "__id__": 1336
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -37863,6 +38427,12 @@
       },
       "node": {
         "__id__": 1352
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -38220,6 +38790,12 @@
       },
       "node": {
         "__id__": 1368
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -38577,6 +39153,12 @@
       },
       "node": {
         "__id__": 1384
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -38934,6 +39516,12 @@
       },
       "node": {
         "__id__": 1400
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -39370,6 +39958,12 @@
       },
       "node": {
         "__id__": 1416
+      },
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -39805,6 +40399,12 @@
       },
       "node": {
         "__id__": 1432
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -40671,6 +41271,13 @@
       },
       "node": {
         "__id__": 1464
+      },
+      "wallFacing": "NW",
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -41678,6 +42285,12 @@
       },
       "node": {
         "__id__": 1502
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -42094,6 +42707,12 @@
       },
       "node": {
         "__id__": 1520
+      },
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 0,
+        "y": 0
       }
     },
     {
@@ -43234,6 +43853,13 @@
       },
       "node": {
         "__id__": 1561
+      },
+      "wallFacing": "SW",
+      "purchaseSide": "default",
+      "purchaseOffset": {
+        "__type__": "cc.Vec2",
+        "x": 17.71488582863097,
+        "y": 114.06311417136908
       }
     },
     {

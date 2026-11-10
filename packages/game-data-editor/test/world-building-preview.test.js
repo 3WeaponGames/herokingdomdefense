@@ -49,7 +49,7 @@ test('embedded saved templates determine model transforms and hero step geometry
 });
 test('placement-only snapshots reuse composition while source, config, and explicit refresh changes invalidate it',()=>{
  const f=fixture(),tower=f.stage.buildings.find(b=>b.kind===2);f.stage.buildings=[tower];let index=f.service.index();f.service.index=()=>index;
- const first=Preview.describe(f.service,f.stage);tower.x+=20;tower.angle+=40;assert.equal(Preview.describe(f.service,f.stage),first);
+ const first=Preview.describe(f.service,f.stage);tower.x+=20;assert.equal(Preview.describe(f.service,f.stage),first);tower.angle+=40;assert.notEqual(Preview.describe(f.service,f.stage),first,'fixed field direction compensates building rotation and invalidates its composition');
  f.source.data[tower.template.node]._trs.array[0]+=5;const moved=Preview.describe(f.service,f.stage);assert.notEqual(moved,first);assert.equal(moved.buildings[tower.id].levels[1].origin.x,first.buildings[tower.id].levels[1].origin.x+5);
  f.config.BuildEnum[2].InitialChoices=[4];const changed=Preview.describe(f.service,f.stage);assert.notEqual(changed,moved);assert.equal(changed.buildings[tower.id].levels[1].skeletons.length,0);
  index=Object.assign({},index);assert.notEqual(Preview.describe(f.service,f.stage),changed);

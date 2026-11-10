@@ -2886,8 +2886,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -198.12176330004542,
-        137.94817104543733,
+        -258.54338690370537,
+        157.7915474417774,
         0,
         0,
         0,
@@ -2907,10 +2907,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 67
       },
@@ -2921,7 +2921,7 @@
         "__id__": 71
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 73
       },
@@ -2929,17 +2929,17 @@
         "__id__": 74
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        111,
-        105,
+        0,
+        0,
         0,
         0,
         0,
@@ -2951,11 +2951,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 65
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -3136,11 +3142,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 76
       },
@@ -3148,7 +3154,7 @@
         "__id__": 78
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 80
       },
@@ -3156,17 +3162,17 @@
         "__id__": 81
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        111,
-        105,
+        0,
+        0,
         0,
         0,
         0,
@@ -3178,11 +3184,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 65
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -3313,11 +3325,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 83
       },
@@ -3325,7 +3337,7 @@
         "__id__": 85
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 87
       },
@@ -3333,17 +3345,17 @@
         "__id__": 88
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        111,
-        105,
+        0,
+        0,
         0,
         0,
         0,
@@ -3355,11 +3367,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 65
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -3490,11 +3508,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv3",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv3",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 90
       },
@@ -3502,7 +3520,7 @@
         "__id__": 92
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 94
       },
@@ -3510,17 +3528,17 @@
         "__id__": 95
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        111,
-        105,
+        0,
+        0,
         0,
         0,
         0,
@@ -3532,11 +3550,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 65
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -4124,9 +4148,9 @@
     }
   },
   {
-    "__type__": "f9e0beH73NJeqtcAhg8UY/n",
-    "ID": 1,
-    "ndMove": [
+        "__type__": "f9e0beH73NJeqtcAhg8UY/n",
+        "ID": 1,
+        "ndMove": [
       {
         "__id__": 100
       },
@@ -4134,7 +4158,7 @@
         "__id__": 101
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 66
       },
@@ -4148,22 +4172,28 @@
         "__id__": 89
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 99
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 102
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 97
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 98
     },
-    "node": {
+        "node": {
       "__id__": 96
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "4",
@@ -4187,8 +4217,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -337.86295320447607,
-        -89.479,
+        -331.21844211437775,
+        40.791488909901716,
         0,
         0,
         0,
@@ -4208,10 +4238,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 110
       },
@@ -4222,7 +4252,7 @@
         "__id__": 114
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 116
       },
@@ -4230,17 +4260,17 @@
         "__id__": 117
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        22.579,
-        150.55,
+        0,
+        0,
         0,
         0,
         0,
@@ -4252,11 +4282,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 108
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -4437,11 +4473,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 119
       },
@@ -4449,7 +4485,7 @@
         "__id__": 121
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 123
       },
@@ -4457,17 +4493,17 @@
         "__id__": 124
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        22.579,
-        150.55,
+        0,
+        0,
         0,
         0,
         0,
@@ -4479,11 +4515,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 108
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -4614,11 +4656,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 126
       },
@@ -4626,7 +4668,7 @@
         "__id__": 128
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 130
       },
@@ -4634,17 +4676,17 @@
         "__id__": 131
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        22.579,
-        150.55,
+        0,
+        0,
         0,
         0,
         0,
@@ -4656,11 +4698,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 108
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -5103,9 +5151,9 @@
     }
   },
   {
-    "__type__": "e940aPyVsxOyI+kLrYdgzkq",
-    "ID": 4,
-    "ndMove": [
+        "__type__": "e940aPyVsxOyI+kLrYdgzkq",
+        "ID": 4,
+        "ndMove": [
       {
         "__id__": 136
       },
@@ -5113,7 +5161,7 @@
         "__id__": 137
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 109
       },
@@ -5124,22 +5172,28 @@
         "__id__": 125
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 135
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 138
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 133
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 134
     },
-    "node": {
+        "node": {
       "__id__": 132
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "5",
@@ -5163,8 +5217,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        187.76242726347917,
-        -50.76099999999991,
+        194.24604227382173,
+        79.19938498965747,
         0,
         0,
         0,
@@ -5184,10 +5238,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 146
       },
@@ -5198,7 +5252,7 @@
         "__id__": 150
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 152
       },
@@ -5206,17 +5260,17 @@
         "__id__": 153
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        22.579,
-        150.55,
+        0,
+        0,
         0,
         0,
         0,
@@ -5228,11 +5282,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 144
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -5413,11 +5473,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 155
       },
@@ -5425,7 +5485,7 @@
         "__id__": 157
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 159
       },
@@ -5433,17 +5493,17 @@
         "__id__": 160
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        22.579,
-        150.55,
+        0,
+        0,
         0,
         0,
         0,
@@ -5455,11 +5515,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 144
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -5590,11 +5656,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 162
       },
@@ -5602,7 +5668,7 @@
         "__id__": 164
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 166
       },
@@ -5610,17 +5676,17 @@
         "__id__": 167
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        22.579,
-        150.55,
+        0,
+        0,
         0,
         0,
         0,
@@ -5632,11 +5698,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 144
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -6079,9 +6151,9 @@
     }
   },
   {
-    "__type__": "e940aPyVsxOyI+kLrYdgzkq",
-    "ID": 5,
-    "ndMove": [
+        "__type__": "e940aPyVsxOyI+kLrYdgzkq",
+        "ID": 5,
+        "ndMove": [
       {
         "__id__": 172
       },
@@ -6089,7 +6161,7 @@
         "__id__": 173
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 145
       },
@@ -6100,22 +6172,28 @@
         "__id__": 161
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 171
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 174
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 169
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 170
     },
-    "node": {
+        "node": {
       "__id__": 168
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "6",
@@ -6139,8 +6217,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -162.28060427263478,
-        -620.8240000000001,
+        -151.6343592670284,
+        -494.6132450056063,
         0,
         0,
         0,
@@ -6160,10 +6238,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 182
       },
@@ -6174,7 +6252,7 @@
         "__id__": 186
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 188
       },
@@ -6182,17 +6260,17 @@
         "__id__": 189
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        30.587,
-        152.923,
+        0,
+        0,
         0,
         0,
         0,
@@ -6204,11 +6282,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 180
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -6389,11 +6473,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 191
       },
@@ -6401,7 +6485,7 @@
         "__id__": 193
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 195
       },
@@ -6409,17 +6493,17 @@
         "__id__": 196
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        30.587,
-        152.923,
+        0,
+        0,
         0,
         0,
         0,
@@ -6431,11 +6515,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 180
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -6566,11 +6656,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 198
       },
@@ -6578,7 +6668,7 @@
         "__id__": 200
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 202
       },
@@ -6586,17 +6676,17 @@
         "__id__": 203
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        30.587,
-        152.923,
+        0,
+        0,
         0,
         0,
         0,
@@ -6608,11 +6698,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 180
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -7028,14 +7124,14 @@
     }
   },
   {
-    "__type__": "e940aPyVsxOyI+kLrYdgzkq",
-    "ID": 6,
-    "ndMove": [
+        "__type__": "e940aPyVsxOyI+kLrYdgzkq",
+        "ID": 6,
+        "ndMove": [
       {
         "__id__": 208
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 181
       },
@@ -7046,22 +7142,28 @@
         "__id__": 197
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 207
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 209
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 205
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 206
     },
-    "node": {
+        "node": {
       "__id__": 204
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "7",
@@ -7085,8 +7187,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        217.85610986775177,
-        -616.1780000000001,
+        205.09582008649747,
+        -499.8082897812543,
         0,
         0,
         0,
@@ -7106,10 +7208,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 217
       },
@@ -7120,7 +7222,7 @@
         "__id__": 221
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 223
       },
@@ -7128,17 +7230,17 @@
         "__id__": 224
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        39.087,
-        154.482,
+        0,
+        0,
         0,
         0,
         0,
@@ -7150,11 +7252,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 215
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -7335,11 +7443,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 226
       },
@@ -7347,7 +7455,7 @@
         "__id__": 228
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 230
       },
@@ -7355,17 +7463,17 @@
         "__id__": 231
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        39.087,
-        154.482,
+        0,
+        0,
         0,
         0,
         0,
@@ -7377,11 +7485,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 215
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -7512,11 +7626,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 233
       },
@@ -7524,7 +7638,7 @@
         "__id__": 235
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 237
       },
@@ -7532,17 +7646,17 @@
         "__id__": 238
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        39.087,
-        154.482,
+        0,
+        0,
         0,
         0,
         0,
@@ -7554,11 +7668,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 215
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -8001,9 +8121,9 @@
     }
   },
   {
-    "__type__": "e940aPyVsxOyI+kLrYdgzkq",
-    "ID": 7,
-    "ndMove": [
+        "__type__": "e940aPyVsxOyI+kLrYdgzkq",
+        "ID": 7,
+        "ndMove": [
       {
         "__id__": 243
       },
@@ -8011,7 +8131,7 @@
         "__id__": 244
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 216
       },
@@ -8022,22 +8142,28 @@
         "__id__": 232
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 242
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 245
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 240
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 241
     },
-    "node": {
+        "node": {
       "__id__": 239
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "9",
@@ -8064,8 +8190,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -299.6001159715158,
-        -453.43399999999986,
+        -264.59291325518694,
+        -357.0292027163287,
         0,
         0,
         0,
@@ -8085,10 +8211,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 253
       },
@@ -8099,7 +8225,7 @@
         "__id__": 257
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 259
       },
@@ -8107,17 +8233,17 @@
         "__id__": 260
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -8129,11 +8255,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 251
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -8314,11 +8446,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 262
       },
@@ -8326,7 +8458,7 @@
         "__id__": 264
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 266
       },
@@ -8334,17 +8466,17 @@
         "__id__": 267
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -8356,11 +8488,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 251
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -8491,11 +8629,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 269
       },
@@ -8503,7 +8641,7 @@
         "__id__": 271
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 273
       },
@@ -8511,17 +8649,17 @@
         "__id__": 274
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -8533,11 +8671,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 251
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -8668,11 +8812,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv3",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv3",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 276
       },
@@ -8680,7 +8824,7 @@
         "__id__": 278
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 280
       },
@@ -8688,17 +8832,17 @@
         "__id__": 281
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -8710,11 +8854,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 251
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -10051,9 +10201,9 @@
     }
   },
   {
-    "__type__": "629e7+qS7xMuJivPYZGL1Ry",
-    "ID": 9,
-    "ndMove": [
+        "__type__": "629e7+qS7xMuJivPYZGL1Ry",
+        "ID": 9,
+        "ndMove": [
       {
         "__id__": 300
       },
@@ -10061,7 +10211,7 @@
         "__id__": 301
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 252
       },
@@ -10075,28 +10225,34 @@
         "__id__": 275
       }
     ],
-    "ndVideoSoldier": {
+        "ndVideoSoldier": {
       "__id__": 291
     },
-    "ndBotnNodeList": {
+        "ndBotnNodeList": {
       "__id__": 290
     },
-    "ndPro": {
+        "ndPro": {
       "__id__": 285
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 302
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 283
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 284
     },
-    "node": {
+        "node": {
       "__id__": 282
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "10",
@@ -10123,8 +10279,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        332.74595422177,
-        -345.1025000000001,
+        305.96764311584934,
+        -266.4398111059208,
         0,
         0,
         0,
@@ -10144,10 +10300,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 317
       },
@@ -10158,7 +10314,7 @@
         "__id__": 321
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 323
       },
@@ -10166,17 +10322,17 @@
         "__id__": 324
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -10188,11 +10344,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 315
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -10373,11 +10535,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 326
       },
@@ -10385,7 +10547,7 @@
         "__id__": 328
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 330
       },
@@ -10393,17 +10555,17 @@
         "__id__": 331
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -10415,11 +10577,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 315
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -10550,11 +10718,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 333
       },
@@ -10562,7 +10730,7 @@
         "__id__": 335
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 337
       },
@@ -10570,17 +10738,17 @@
         "__id__": 338
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -10592,11 +10760,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 315
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -10727,11 +10901,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv3",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv3",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 340
       },
@@ -10739,7 +10913,7 @@
         "__id__": 342
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 344
       },
@@ -10747,17 +10921,17 @@
         "__id__": 345
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        66.406,
-        144.224,
+        0,
+        0,
         0,
         0,
         0,
@@ -10769,11 +10943,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 315
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -12150,9 +12330,9 @@
     }
   },
   {
-    "__type__": "629e7+qS7xMuJivPYZGL1Ry",
-    "ID": 10,
-    "ndMove": [
+        "__type__": "629e7+qS7xMuJivPYZGL1Ry",
+        "ID": 10,
+        "ndMove": [
       {
         "__id__": 364
       },
@@ -12160,7 +12340,7 @@
         "__id__": 365
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 316
       },
@@ -12174,28 +12354,34 @@
         "__id__": 339
       }
     ],
-    "ndVideoSoldier": {
+        "ndVideoSoldier": {
       "__id__": 355
     },
-    "ndBotnNodeList": {
+        "ndBotnNodeList": {
       "__id__": 354
     },
-    "ndPro": {
+        "ndPro": {
       "__id__": 349
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 366
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 347
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 348
     },
-    "node": {
+        "node": {
       "__id__": 346
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "12",
@@ -12219,8 +12405,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        424.95129298067144,
-        675.7645,
+        415.7262713503457,
+        819.8594783696743,
         0,
         0,
         0,
@@ -12240,10 +12426,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 381
       },
@@ -12254,7 +12440,7 @@
         "__id__": 385
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 387
       },
@@ -12262,17 +12448,17 @@
         "__id__": 388
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        17.591,
-        153.735,
+        0,
+        0,
         0,
         0,
         0,
@@ -12284,11 +12470,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 379
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -12469,11 +12661,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 390
       },
@@ -12481,7 +12673,7 @@
         "__id__": 392
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 394
       },
@@ -12489,17 +12681,17 @@
         "__id__": 395
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        17.591,
-        153.735,
+        0,
+        0,
         0,
         0,
         0,
@@ -12511,11 +12703,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 379
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -12646,11 +12844,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 397
       },
@@ -12658,7 +12856,7 @@
         "__id__": 399
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 401
       },
@@ -12666,17 +12864,17 @@
         "__id__": 402
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        17.591,
-        153.735,
+        0,
+        0,
         0,
         0,
         0,
@@ -12688,11 +12886,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 379
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -13091,9 +13295,9 @@
     }
   },
   {
-    "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
-    "ID": 12,
-    "ndMove": [
+        "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
+        "ID": 12,
+        "ndMove": [
       {
         "__id__": 406
       },
@@ -13101,7 +13305,7 @@
         "__id__": 407
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 380
       },
@@ -13112,19 +13316,25 @@
         "__id__": 396
       }
     ],
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 408
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 404
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 405
     },
-    "node": {
+        "node": {
       "__id__": 403
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "13",
@@ -13148,8 +13358,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        266.5556124109867,
-        485.143,
+        254.66243000113957,
+        622.8108175901529,
         0,
         0,
         0,
@@ -13169,10 +13379,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 416
       },
@@ -13183,7 +13393,7 @@
         "__id__": 420
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 422
       },
@@ -13191,17 +13401,17 @@
         "__id__": 423
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        24.901,
-        153.735,
+        0,
+        0,
         0,
         0,
         0,
@@ -13213,11 +13423,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 414
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -13398,11 +13614,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 425
       },
@@ -13410,7 +13626,7 @@
         "__id__": 427
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 429
       },
@@ -13418,17 +13634,17 @@
         "__id__": 430
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        24.901,
-        153.735,
+        0,
+        0,
         0,
         0,
         0,
@@ -13440,11 +13656,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 414
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -13575,11 +13797,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 432
       },
@@ -13587,7 +13809,7 @@
         "__id__": 434
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 436
       },
@@ -13595,17 +13817,17 @@
         "__id__": 437
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        24.901,
-        153.735,
+        0,
+        0,
         0,
         0,
         0,
@@ -13617,11 +13839,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 414
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -14020,9 +14248,9 @@
     }
   },
   {
-    "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
-    "ID": 13,
-    "ndMove": [
+        "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
+        "ID": 13,
+        "ndMove": [
       {
         "__id__": 441
       },
@@ -14030,7 +14258,7 @@
         "__id__": 442
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 415
       },
@@ -14041,19 +14269,25 @@
         "__id__": 431
       }
     ],
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 443
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 439
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 440
     },
-    "node": {
+        "node": {
       "__id__": 438
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "14",
@@ -14077,8 +14311,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        517.3666347914547,
-        482.166,
+        503.7303284887827,
+        622.1126936973279,
         0,
         0,
         0,
@@ -14098,10 +14332,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 451
       },
@@ -14112,7 +14346,7 @@
         "__id__": 455
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 457
       },
@@ -14120,17 +14354,17 @@
         "__id__": 458
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        26,
-        155,
+        0,
+        0,
         0,
         0,
         0,
@@ -14142,11 +14376,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 449
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -14327,11 +14567,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 460
       },
@@ -14339,7 +14579,7 @@
         "__id__": 462
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 464
       },
@@ -14347,17 +14587,17 @@
         "__id__": 465
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        26,
-        155,
+        0,
+        0,
         0,
         0,
         0,
@@ -14369,11 +14609,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 449
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -14504,11 +14750,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 467
       },
@@ -14516,7 +14762,7 @@
         "__id__": 469
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 471
       },
@@ -14524,17 +14770,17 @@
         "__id__": 472
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        26,
-        155,
+        0,
+        0,
         0,
         0,
         0,
@@ -14546,11 +14792,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 449
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -14949,9 +15201,9 @@
     }
   },
   {
-    "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
-    "ID": 14,
-    "ndMove": [
+        "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
+        "ID": 14,
+        "ndMove": [
       {
         "__id__": 476
       },
@@ -14959,7 +15211,7 @@
         "__id__": 477
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 450
       },
@@ -14970,19 +15222,25 @@
         "__id__": 466
       }
     ],
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 478
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 474
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 475
     },
-    "node": {
+        "node": {
       "__id__": 473
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "15",
@@ -15006,8 +15264,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        181.65277110885054,
-        280.042,
+        164.89491830057148,
+        421.3701471917209,
         0,
         0,
         0,
@@ -15027,10 +15285,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 486
       },
@@ -15041,7 +15299,7 @@
         "__id__": 490
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 492
       },
@@ -15049,17 +15307,17 @@
         "__id__": 493
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        28.513,
-        155.477,
+        0,
+        0,
         0,
         0,
         0,
@@ -15071,11 +15329,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 484
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -15256,11 +15520,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 495
       },
@@ -15268,7 +15532,7 @@
         "__id__": 497
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 499
       },
@@ -15276,17 +15540,17 @@
         "__id__": 500
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        28.513,
-        155.477,
+        0,
+        0,
         0,
         0,
         0,
@@ -15298,11 +15562,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 484
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -15433,11 +15703,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 502
       },
@@ -15445,7 +15715,7 @@
         "__id__": 504
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 506
       },
@@ -15453,17 +15723,17 @@
         "__id__": 507
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        28.513,
-        155.477,
+        0,
+        0,
         0,
         0,
         0,
@@ -15475,11 +15745,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 484
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -15878,9 +16154,9 @@
     }
   },
   {
-    "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
-    "ID": 15,
-    "ndMove": [
+        "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
+        "ID": 15,
+        "ndMove": [
       {
         "__id__": 511
       },
@@ -15888,7 +16164,7 @@
         "__id__": 512
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 485
       },
@@ -15899,19 +16175,25 @@
         "__id__": 501
       }
     ],
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 513
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 509
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 510
     },
-    "node": {
+        "node": {
       "__id__": 508
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "17",
@@ -15935,15 +16217,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        569.311961342828,
-        26.1195000000001,
-        0,
+        420.9203480220025,
+        155.1118866791745,
         0,
         0,
         0,
         1,
+        6.123233995736766e-17,
         1,
-        1,
+        -1,
         1
       ]
     },
@@ -15952,14 +16234,14 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 0
+      "z": 180
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 521
       },
@@ -15970,7 +16252,7 @@
         "__id__": 525
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 527
       },
@@ -15978,17 +16260,17 @@
         "__id__": 528
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -74.194,
-        96.877,
+        0,
+        0,
         0,
         0,
         0,
@@ -16000,11 +16282,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 519
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -16185,11 +16473,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 530
       },
@@ -16197,7 +16485,7 @@
         "__id__": 532
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 534
       },
@@ -16205,17 +16493,17 @@
         "__id__": 535
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -74.194,
-        96.877,
+        0,
+        0,
         0,
         0,
         0,
@@ -16227,11 +16515,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 519
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -16362,11 +16656,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 537
       },
@@ -16374,7 +16668,7 @@
         "__id__": 539
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 541
       },
@@ -16382,17 +16676,17 @@
         "__id__": 542
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -74.194,
-        96.877,
+        0,
+        0,
         0,
         0,
         0,
@@ -16404,11 +16698,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 519
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -16942,9 +17242,9 @@
     }
   },
   {
-    "__type__": "39149tY4UpGi5NbppEIigh6",
-    "ID": 17,
-    "ndMove": [
+        "__type__": "39149tY4UpGi5NbppEIigh6",
+        "ID": 17,
+        "ndMove": [
       {
         "__id__": 548
       },
@@ -16952,7 +17252,7 @@
         "__id__": 549
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 520
       },
@@ -16963,22 +17263,28 @@
         "__id__": 536
       }
     ],
-    "ndAniDown": {
+        "ndAniDown": {
       "__id__": 544
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 550
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 546
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 547
     },
-    "node": {
+        "node": {
       "__id__": 545
-    }
-  },
+    },
+        "purchaseSide": "flip",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "18",
@@ -17002,15 +17308,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -155.2832583926755,
-        -459.98450000000014,
+        -11.662580573186432,
+        -329.9171778194892,
+        0,
         0,
         0,
         0,
         1,
-        6.123233995736766e-17,
         1,
-        -1,
+        1,
         1
       ]
     },
@@ -17019,14 +17325,14 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 180
+      "z": 0
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 558
       },
@@ -17037,7 +17343,7 @@
         "__id__": 562
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 564
       },
@@ -17045,17 +17351,17 @@
         "__id__": 565
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -75.006,
-        96.877,
+        0,
+        0,
         0,
         0,
         0,
@@ -17067,11 +17373,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 556
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "ndLock",
@@ -17252,11 +17564,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 567
       },
@@ -17264,7 +17576,7 @@
         "__id__": 569
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 571
       },
@@ -17272,17 +17584,17 @@
         "__id__": 572
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -75.006,
-        96.877,
+        0,
+        0,
         0,
         0,
         0,
@@ -17294,11 +17606,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 556
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -17429,11 +17747,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 574
       },
@@ -17441,7 +17759,7 @@
         "__id__": 576
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 578
       },
@@ -17449,17 +17767,17 @@
         "__id__": 579
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -75.006,
-        96.877,
+        0,
+        0,
         0,
         0,
         0,
@@ -17471,11 +17789,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 556
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -18008,9 +18332,9 @@
     }
   },
   {
-    "__type__": "39149tY4UpGi5NbppEIigh6",
-    "ID": 18,
-    "ndMove": [
+        "__type__": "39149tY4UpGi5NbppEIigh6",
+        "ID": 18,
+        "ndMove": [
       {
         "__id__": 585
       },
@@ -18018,7 +18342,7 @@
         "__id__": 586
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 557
       },
@@ -18029,22 +18353,28 @@
         "__id__": 573
       }
     ],
-    "ndAniDown": {
+        "ndAniDown": {
       "__id__": 581
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 587
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 583
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 584
     },
-    "node": {
+        "node": {
       "__id__": 582
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "19",
@@ -18068,8 +18398,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -422.64471222607654,
-        684.4706523746797,
+        -403.31826137232747,
+        820.5862015209307,
         0,
         0,
         0,
@@ -18089,10 +18419,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 595
       },
@@ -18103,7 +18433,7 @@
         "__id__": 599
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 601
       },
@@ -18111,17 +18441,17 @@
         "__id__": 602
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        33.455,
-        153.879,
+        0,
+        0,
         0,
         0,
         0,
@@ -18133,11 +18463,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 593
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -18318,11 +18654,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 604
       },
@@ -18330,7 +18666,7 @@
         "__id__": 606
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 608
       },
@@ -18338,17 +18674,17 @@
         "__id__": 609
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        33.455,
-        153.879,
+        0,
+        0,
         0,
         0,
         0,
@@ -18360,11 +18696,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 593
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -18495,11 +18837,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 611
       },
@@ -18507,7 +18849,7 @@
         "__id__": 613
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 615
       },
@@ -18515,17 +18857,17 @@
         "__id__": 616
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        33.455,
-        153.879,
+        0,
+        0,
         0,
         0,
         0,
@@ -18537,11 +18879,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 593
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -19375,9 +19723,9 @@
     }
   },
   {
-    "__type__": "fb490SeYcZD8Jvwd2rHxqmd",
-    "ID": 19,
-    "ndMove": [
+        "__type__": "fb490SeYcZD8Jvwd2rHxqmd",
+        "ID": 19,
+        "ndMove": [
       {
         "__id__": 637
       },
@@ -19385,7 +19733,7 @@
         "__id__": 638
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 594
       },
@@ -19396,7 +19744,7 @@
         "__id__": 610
       }
     ],
-    "ndAniOther": [
+        "ndAniOther": [
       {
         "__id__": 619
       },
@@ -19410,25 +19758,32 @@
         "__id__": 653
       }
     ],
-    "ndAniEffect": {
+        "ndAniEffect": {
       "__id__": 659
     },
-    "ndAniDown": {
+        "ndAniDown": {
       "__id__": 635
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 633
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 631
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 636
     },
-    "node": {
+        "node": {
       "__id__": 630
-    }
-  },
+    },
+        "wallFacing": "NW",
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.RigidBody",
     "_type": 0,
@@ -20067,8 +20422,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -70.12412955240103,
-        683.2374476104014,
+        -62.682053562488775,
+        813.9093716204892,
         0,
         0,
         0,
@@ -20088,10 +20443,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 662
       },
@@ -20102,7 +20457,7 @@
         "__id__": 666
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 668
       },
@@ -20110,17 +20465,17 @@
         "__id__": 669
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        24,
-        152,
+        0,
+        0,
         0,
         0,
         0,
@@ -20132,11 +20487,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 660
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -20317,11 +20678,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 671
       },
@@ -20329,7 +20690,7 @@
         "__id__": 673
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 675
       },
@@ -20337,17 +20698,17 @@
         "__id__": 676
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        24,
-        152,
+        0,
+        0,
         0,
         0,
         0,
@@ -20359,11 +20720,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 660
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -20494,11 +20861,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 678
       },
@@ -20506,7 +20873,7 @@
         "__id__": 680
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 682
       },
@@ -20514,17 +20881,17 @@
         "__id__": 683
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        24,
-        152,
+        0,
+        0,
         0,
         0,
         0,
@@ -20536,11 +20903,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 660
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -20983,9 +21356,9 @@
     }
   },
   {
-    "__type__": "e940aPyVsxOyI+kLrYdgzkq",
-    "ID": 2,
-    "ndMove": [
+        "__type__": "e940aPyVsxOyI+kLrYdgzkq",
+        "ID": 2,
+        "ndMove": [
       {
         "__id__": 688
       },
@@ -20993,7 +21366,7 @@
         "__id__": 689
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 661
       },
@@ -21004,22 +21377,28 @@
         "__id__": 677
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 687
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 690
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 685
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 686
     },
-    "node": {
+        "node": {
       "__id__": 684
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "3",
@@ -21043,8 +21422,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -390.63029094608333,
-        346.8905,
+        -374.9017544118133,
+        472.44596346572985,
         0,
         0,
         0,
@@ -21064,10 +21443,10 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 698
       },
@@ -21078,7 +21457,7 @@
         "__id__": 702
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 704
       },
@@ -21086,17 +21465,17 @@
         "__id__": 705
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        36.498,
-        153.822,
+        0,
+        0,
         0,
         0,
         0,
@@ -21108,11 +21487,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 696
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -21293,11 +21678,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 707
       },
@@ -21305,7 +21690,7 @@
         "__id__": 709
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 711
       },
@@ -21313,17 +21698,17 @@
         "__id__": 712
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        36.498,
-        153.822,
+        0,
+        0,
         0,
         0,
         0,
@@ -21335,11 +21720,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 696
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -21470,11 +21861,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 714
       },
@@ -21482,7 +21873,7 @@
         "__id__": 716
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 718
       },
@@ -21490,17 +21881,17 @@
         "__id__": 719
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        36.498,
-        153.822,
+        0,
+        0,
         0,
         0,
         0,
@@ -21512,11 +21903,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 696
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -21959,9 +22356,9 @@
     }
   },
   {
-    "__type__": "e940aPyVsxOyI+kLrYdgzkq",
-    "ID": 3,
-    "ndMove": [
+        "__type__": "e940aPyVsxOyI+kLrYdgzkq",
+        "ID": 3,
+        "ndMove": [
       {
         "__id__": 724
       },
@@ -21969,7 +22366,7 @@
         "__id__": 725
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 697
       },
@@ -21980,22 +22377,28 @@
         "__id__": 713
       }
     ],
-    "ndShot": {
+        "ndShot": {
       "__id__": 723
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 726
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 721
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 722
     },
-    "node": {
+        "node": {
       "__id__": 720
-    }
-  },
+    },
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 0,
+            "y": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "20",
@@ -22019,15 +22422,15 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -47.6255829094609,
-        -835.7509999999999,
+        91.59141709053914,
+        -560.6829999999999,
+        0,
         0,
         0,
         0,
         1,
-        6.123233995736766e-17,
         1,
-        -1,
+        1,
         1
       ]
     },
@@ -22036,14 +22439,14 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 180
+      "z": 0
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv0",
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 734
       },
@@ -22054,7 +22457,7 @@
         "__id__": 738
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 740
       },
@@ -22062,17 +22465,17 @@
         "__id__": 741
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -139.217,
-        275.068,
+        0,
+        0,
         0,
         0,
         0,
@@ -22084,11 +22487,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 732
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -22269,11 +22678,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv1",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 743
       },
@@ -22281,7 +22690,7 @@
         "__id__": 745
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 747
       },
@@ -22289,17 +22698,17 @@
         "__id__": 748
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -139.217,
-        275.068,
+        0,
+        0,
         0,
         0,
         0,
@@ -22311,11 +22720,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 732
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -22446,11 +22861,11 @@
     }
   },
   {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
+        "__type__": "cc.Node",
+        "_name": "ndLv2",
+        "_active": false,
+        "_groupIndex": 1,
+        "_children": [
       {
         "__id__": 750
       },
@@ -22458,7 +22873,7 @@
         "__id__": 752
       }
     ],
-    "_components": [
+        "_components": [
       {
         "__id__": 754
       },
@@ -22466,17 +22881,17 @@
         "__id__": 755
       }
     ],
-    "_prefab": null,
-    "_contentSize": {
+        "_prefab": null,
+        "_contentSize": {
       "__type__": "cc.Size",
       "width": 171,
       "height": 100
     },
-    "_trs": {
+        "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -139.217,
-        275.068,
+        0,
+        0,
         0,
         0,
         0,
@@ -22488,11 +22903,17 @@
       ],
       "__type__": "TypedArray"
     },
-    "_parent": {
+        "_parent": {
       "__id__": 732
     },
-    "groupIndex": 1
-  },
+        "groupIndex": 1,
+        "_eulerAngles": {
+            "__type__": "cc.Vec3",
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
   {
     "__type__": "cc.Node",
     "_name": "sprPro",
@@ -23585,9 +24006,9 @@
     }
   },
   {
-    "__type__": "fb490SeYcZD8Jvwd2rHxqmd",
-    "ID": 20,
-    "ndMove": [
+        "__type__": "fb490SeYcZD8Jvwd2rHxqmd",
+        "ID": 20,
+        "ndMove": [
       {
         "__id__": 782
       },
@@ -23595,7 +24016,7 @@
         "__id__": 784
       }
     ],
-    "ndLockList": [
+        "ndLockList": [
       {
         "__id__": 733
       },
@@ -23606,7 +24027,7 @@
         "__id__": 749
       }
     ],
-    "ndAniOther": [
+        "ndAniOther": [
       {
         "__id__": 764
       },
@@ -23623,25 +24044,32 @@
         "__id__": 758
       }
     ],
-    "ndAniEffect": {
+        "ndAniEffect": {
       "__id__": 806
     },
-    "ndAniDown": {
+        "ndAniDown": {
       "__id__": 780
     },
-    "ndAniMain": {
+        "ndAniMain": {
       "__id__": 778
     },
-    "ndHp": {
+        "ndHp": {
       "__id__": 776
     },
-    "ndEffect": {
+        "ndEffect": {
       "__id__": 781
     },
-    "node": {
+        "node": {
       "__id__": 775
-    }
-  },
+    },
+        "wallFacing": "SW",
+        "purchaseSide": "default",
+        "purchaseOffset": {
+            "__type__": "cc.Vec2",
+            "x": 17.71488582863097,
+            "y": 114.06311417136911
+        }
+    },
   {
     "__type__": "cc.RigidBody",
     "_type": 0,

@@ -54,11 +54,10 @@ async function verify(){
    assert(!gate.preview&&!gate.variants&&!gate.placement&&!gate.catalogId,'palette helper metadata is excluded from '+face+' placement');placedGates.push(gate);
   }
   assert(new Set(placedGates.map(b=>b.id)).size===4&&new Set(placedGates.map(b=>b.template.node)).size===1,'four facing placements have unique gameplay IDs and share one original template');
-  const gate=placedGates[3],gateView=field('Gate state'),beforeGateView=JSON.stringify(state.snap.value),closed=state.snap.buildingPreview.buildings[gate.id].levels[3];
+  const gate=placedGates[3],gateView=Array.from(tool.querySelectorAll('.world-inspector label')).find(l=>l.querySelector('span')?.textContent==='Gate state'),beforeGateView=JSON.stringify(state.snap.value),closed=state.snap.buildingPreview.buildings[gate.id].levels[3];
   assert(closed.blockers.length===5&&closed.openBlockers.length===4,'closed gates contain the leaf plus wings; open ally passage retains the wings');
-  gateView.value='open';gateView.onchange();await ready();
-  assert(state.gate==='open'&&JSON.stringify(state.snap.value)===beforeGateView,'outward open-gate model and footprint previews never change saved gates');
-  assert(tool.querySelector('.world-inspector').textContent.includes('enemies still attack'),'open-passage preview explains enemy gate blocking');
+  assert(!gateView&&state.gate==='closed'&&JSON.stringify(state.snap.value)===beforeGateView,'building placement stays closed without an editable gate-state control');
+  assert(tool.querySelector('.world-inspector').textContent.includes('open automatically for nearby allies'),'building preview explains automatic gameplay gates');
   await click('Select / move');const edited=field('Wall facing');edited.value='NE';edited.onchange();await state.pending;await ready();
   assert(state.snap.value.buildings.find(b=>b.id===gate.id).wallFacing==='NE','an existing gate can explicitly change facing in the draft');
   const savedStats=client._buildingRenderer.stats();client.destroy();assert(client._buildingRenderer.stats().poses===0&&savedStats.ready>0,'closing releases placed and unplaced model previews');

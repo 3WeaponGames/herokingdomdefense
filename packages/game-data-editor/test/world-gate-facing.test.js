@@ -9,10 +9,10 @@ function step(info,controller){const id=controller.ndLockList[0].__id__,node=inf
 // updateLocalMatrix2D uses _eulerAngles. Missing Euler metadata means zero.
 function cocosInit(data){const result=M.clone(data);for(const node of result)if(node&&node.__type__==='cc.Node'&&node._trs){const a=node._trs.array,half=(node._eulerAngles&&node._eulerAngles.z||0)*Math.PI/360;a[3]=a[4]=0;a[5]=Math.sin(half);a[6]=Math.cos(half);}return result;}
 
-test('legacy gates keep source identity and explicit facing projects a detached, idempotent source with an interior construction step',()=>{
+test('current gates keep source identity and changed facing projects an idempotent source with an interior construction step',()=>{
  for(const slot of [17,19]){const f=fixture(slot),before=JSON.stringify(f.source.data);assert.equal(GateSource.project(f.source.data,f.building),f.source.data);
   for(const face of faces){const b=Object.assign({},f.building,{wallFacing:face}),source=GateSource.project(f.source.data,b),info=Maps.model(source),owner=info.byId[b.template.node],controller=source[owner.ownerComponent],main=info.byId[source[controller.ndAniMain.__id__].node.__id__];
-   assert.notEqual(source,f.source.data);assert.equal(GateSource.project(source,b),source);assert.equal(controller.wallFacing,face);
+   if(face===f.building.wallFacing)assert.equal(source,f.source.data);else assert.notEqual(source,f.source.data);assert.equal(GateSource.project(source,b),source);assert.equal(controller.wallFacing,face);
    assert.equal(main.world[0]*main.world[3]-main.world[1]*main.world[2]<0,Facing.mirrorX(face));
    const plate=info.byId[controller.ndLockList[0].__id__],normal=Facing.normal(face),k=Math.abs(normal.y/normal.x),dx=plate.position.x-owner.position.x,dy=plate.position.y-owner.position.y;assert(dx*normal.x+dy*normal.y/(k*k)<0,'hero stands inside, opposite '+face+' outward opening');
   }
@@ -48,7 +48,7 @@ test('explicit compass faces invalidate preview composition and reverse only the
 });
 
 test('wall-facing metadata validates explicit compass choices without adding a default to legacy records',()=>{
- const f=fixture(),original=JSON.stringify(f.stage);for(const face of faces){f.building.wallFacing=face;assert(!M.validateStage(f.stage).some(i=>/Wall facing/.test(i)));}
+ const f=fixture();delete f.building.wallFacing;const original=JSON.stringify(f.stage);for(const face of faces){f.building.wallFacing=face;assert(!M.validateStage(f.stage).some(i=>/Wall facing/.test(i)));}
  for(const value of ['north','',null,4]){f.building.wallFacing=value;assert(M.validateStage(f.stage).some(i=>/Wall facing/.test(i)));}
  delete f.building.wallFacing;assert.equal(JSON.stringify(f.stage),original);assert(!M.validateStage(f.stage).some(i=>/Wall facing/.test(i)));
  const data=M.clone(f.source.data),before=JSON.stringify(data);GateSource.finishExport(f.source.data,f.building,data,{});assert.equal(JSON.stringify(data),before,'legacy export has no optional-facing adjustments');
@@ -62,5 +62,5 @@ test('recovery from exported prefabs retains explicit compass faces and baked ge
   assert.equal(GateSource.project(exported,building),exported,'generated source geometry is already projected, including its placement rotation');
   const service={root,source:()=>exported,index:f.service.index},record=Preview.describe(service,recovered).buildings[building.id].levels[1];assert(record.skeletons.length);assert.equal(record.skeletons[0].revision.endsWith(':reverse-gate'),Facing.reverse(face));
  }
- assert(L.adaptStage(root,'A',1).buildings.every(b=>!Object.prototype.hasOwnProperty.call(b,'wallFacing')),'opening legacy sources never seeds a facing');
+ const source=L.inspect(root,'Map01'),before=JSON.stringify(source.data),adapted=L.adaptStage(root,'A',1);assert(adapted.buildings.filter(b=>b.kind===6).every(b=>Facing.valid(b.wallFacing)),'opening migrated sources retains their explicit compass faces');assert.equal(JSON.stringify(source.data),before,'opening sources never writes or reseeds their metadata');
 });

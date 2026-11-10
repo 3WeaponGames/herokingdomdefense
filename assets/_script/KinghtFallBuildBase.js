@@ -36,6 +36,9 @@ var def_KinghtFallBuildBase = function (t) {
     e.ndHp = null;
     e.ndLockList = [null];
     e.purchaseSide = "";
+    e.purchaseOffset = null;
+    e.renderAfter = "top";
+    e.renderLayerOrder = -1;
     e.ndAniMain = null;
     e.ndAniDown = null;
     e.ndAniOther = [];
@@ -221,9 +224,10 @@ var def_KinghtFallBuildBase = function (t) {
             scale: 1
           }).start();
         }
-        n.ndCoin.scaleX = t.parent.scaleX;
         n.ndCoin.setParent(t);
         n.ndCoin.setPosition(cc.Vec2.ZERO);
+        if (n.purchaseSide === "default" || n.purchaseSide === "flip") n._alignPurchaseCost(t);
+        else n.ndCoin.scaleX = t.parent.scaleX;
         n.ndCoin.active = true;
       } else {
         t.show = false;
@@ -231,6 +235,18 @@ var def_KinghtFallBuildBase = function (t) {
       }
     });
     require("BuildingAppearance").apply(this);
+  };
+  _ctor.prototype._alignPurchaseCost = function (field) {
+    var origin = field.convertToWorldSpaceAR(cc.v2(0, 0));
+    var x = field.convertToWorldSpaceAR(cc.v2(1, 0)), y = field.convertToWorldSpaceAR(cc.v2(0, 1));
+    var sx = Math.hypot(x.x - origin.x, x.y - origin.y), sy = Math.hypot(y.x - origin.x, y.y - origin.y);
+    if (sx < 1e-8 || sy < 1e-8) return;
+    var a = (x.x - origin.x) / sx, b = (x.y - origin.y) / sx;
+    var c = (y.x - origin.x) / sy, d = (y.y - origin.y) / sy, determinant = a * d - b * c;
+    if (Math.abs(determinant) < 1e-8) return;
+    this.ndCoin.angle = Math.atan2(-b / determinant, d / determinant) * 180 / Math.PI;
+    this.ndCoin.scaleX = 1;
+    this.ndCoin.scaleY = determinant < 0 ? -1 : 1;
   };
   _ctor.prototype._stopColliderTween = function (collider) {
     var owned = this._colliderTweens && this._colliderTweens.get(collider);
@@ -829,8 +845,11 @@ var def_KinghtFallBuildBase = function (t) {
   })], _ctor.prototype, "ndLockList", undefined);
   cc__decorate([ccp_property({
     visible: false,
-    tooltip: "Authored purchase-field side"
+    tooltip: "Purchase field: default southeast or flipped southwest"
   })], _ctor.prototype, "purchaseSide", undefined);
+  cc__decorate([ccp_property({tooltip: "Object layer behind the whole building"})], _ctor.prototype, "renderAfter", undefined);
+  cc__decorate([ccp_property({tooltip: "Generated building layer order"})], _ctor.prototype, "renderLayerOrder", undefined);
+  cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Manual purchase field offset" })], _ctor.prototype, "purchaseOffset", undefined);
   cc__decorate([ccp_property({
     type: sp.Skeleton,
     tooltip: "建筑主体"

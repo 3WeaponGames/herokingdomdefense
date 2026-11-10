@@ -1416,18 +1416,109 @@
   "barracks": "19ee91e613fd1bf091550a0ac6dc18546f22366ba79fc872919b03292298aef8",
   "royalMilitary": {
     "bones": [
-      "royal_flag_mount",
-      "royal_flag_wave_0",
-      "royal_flag_wave_1",
-      "royal_flag_wave_2",
-      "royal_flag_wave_3"
+      "royal_roof_1",
+      "royal_flag_1_mount",
+      "royal_flag_1_wave_0",
+      "royal_flag_1_wave_1",
+      "royal_flag_1_wave_2",
+      "royal_flag_1_wave_3",
+      "royal_roof_2",
+      "royal_flag_2_mount",
+      "royal_flag_2_wave_0",
+      "royal_flag_2_wave_1",
+      "royal_flag_2_wave_2",
+      "royal_flag_2_wave_3",
+      "royal_roof_3",
+      "royal_flag_3_mount",
+      "royal_flag_3_wave_0",
+      "royal_flag_3_wave_1",
+      "royal_flag_3_wave_2",
+      "royal_flag_3_wave_3"
     ],
     "slots": [
       "royal_windows",
-      "royal_flag",
-      "royal_flag_pole"
+      "royal_flag_pole_1",
+      "royal_flag_1",
+      "royal_flag_pole_2",
+      "royal_flag_2",
+      "royal_flag_pole_3",
+      "royal_flag_3"
     ],
-    "source": "Approved military Royal Knight concepts; original skeleton restored by removing these additions and the three aliases."
+    "source": "Southeast aligned Royal Guard artwork, four aperture light maps, per-tier centered leftward castle-wave flag rigs. Original skeleton is restored by removing these layers and the three aliases.",
+    "roofFlags": [
+      {
+        "skin": "by-royal-1",
+        "roof": {
+          "x": -12.812639,
+          "y": 108.107602
+        },
+        "mount": "royal_flag_1_mount",
+        "waves": [
+          "royal_flag_1_wave_0",
+          "royal_flag_1_wave_1",
+          "royal_flag_1_wave_2",
+          "royal_flag_1_wave_3"
+        ],
+        "poleSlot": "royal_flag_pole_1",
+        "flagSlot": "royal_flag_1",
+        "poleHeight": 220,
+        "roofUV": {
+          "x": 0.48221936589545844,
+          "y": 0.32781583463198904
+        },
+        "heading": "SE",
+        "azimuth": -45,
+        "roofBone": "royal_roof_1"
+      },
+      {
+        "skin": "by-royal-2",
+        "roof": {
+          "x": 0.581981,
+          "y": 46.025876
+        },
+        "mount": "royal_flag_2_mount",
+        "waves": [
+          "royal_flag_2_wave_0",
+          "royal_flag_2_wave_1",
+          "royal_flag_2_wave_2",
+          "royal_flag_2_wave_3"
+        ],
+        "poleSlot": "royal_flag_pole_2",
+        "flagSlot": "royal_flag_2",
+        "poleHeight": 220,
+        "roofUV": {
+          "x": 0.49978184991273994,
+          "y": 0.34904976210760846
+        },
+        "heading": "SE",
+        "azimuth": -45,
+        "roofBone": "royal_roof_2"
+      },
+      {
+        "skin": "by-royal-3",
+        "roof": {
+          "x": 5.72965,
+          "y": 66.582172
+        },
+        "mount": "royal_flag_3_mount",
+        "waves": [
+          "royal_flag_3_wave_0",
+          "royal_flag_3_wave_1",
+          "royal_flag_3_wave_2",
+          "royal_flag_3_wave_3"
+        ],
+        "poleSlot": "royal_flag_pole_3",
+        "flagSlot": "royal_flag_3",
+        "poleHeight": 220,
+        "roofUV": {
+          "x": 0.49460916442048525,
+          "y": 0.3564801050162595
+        },
+        "heading": "SE",
+        "azimuth": -45,
+        "roofBone": "royal_roof_3"
+      }
+    ]
   },
   "cavalry": {
     "aliases": [

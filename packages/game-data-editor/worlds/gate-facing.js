@@ -13,6 +13,18 @@ function matrix(node,value){
 }
 function localMatrix(info,node,world){const parent=info.byId[node.parent];return parent?Maps.multiply(Maps.inverse(parent.world),world):world;}
 function triggerPoints(info,data,id){const n=info.byId[id],trigger=n&&n.components.find(c=>c.value.__type__==='cc.PolygonCollider'),a=n&&n.source._trs&&n.source._trs.array;if(!trigger)return null;return {component:trigger.id,points:(trigger.value.points||[]).map(p=>Maps.point(n.world,{x:p.x/(a?a[7]:1),y:p.y/(a?a[8]:1)}))};}
+function facing(source,building){
+ if(building&&Facing.valid(building.wallFacing))return building.wallFacing;
+ const info=Maps.model(source),owner=info.byId[building.template.node],controller=owner&&owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));
+ if(!controller)throw Error('Cannot determine facing: the wall controller is missing.');
+ if(Facing.valid(controller.value.wallFacing))return controller.value.wallFacing;
+ const main=info.byId[reference(source,controller.value.ndAniMain)],plate=info.byId[reference(source,(controller.value.ndLockList||[])[0])];
+ if(!main||!plate)throw Error('Cannot determine facing: the wall model or purchase field is missing.');
+ const inverse=Maps.inverse(owner.world),relative=Maps.multiply(inverse,main.world),inside=Maps.point(inverse,plate.position),faces=relative[0]*relative[3]-relative[1]*relative[2]<0?['NW','SE']:['NE','SW'];
+ const score=face=>{const n=Facing.normal(face);return inside.x*n.x+inside.y*n.y/(n.y*n.y);};
+ if(Math.hypot(inside.x,inside.y)<1e-6)throw Error('Cannot determine facing: the purchase field is centered on the wall.');
+ return score(faces[0])<=score(faces[1])?faces[0]:faces[1];
+}
 function faceProject(source,building){
  if(!building||building.kind!==6||!Facing.valid(building.wallFacing))return source;
  const info=Maps.model(source),owner=info.byId[building.template.node];if(!owner)throw Error('A wall source was removed. Refresh its template.');
@@ -86,4 +98,4 @@ function finishExport(source,building,target,mapping){
   component.points=trigger.points.map((p,i)=>{const x=p.x-owner.position.x,y=p.y-owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*a[7],y:local.y*a[8]});});
  }
 }
-module.exports={project,finishExport,around};
+module.exports={project,finishExport,around,facing};

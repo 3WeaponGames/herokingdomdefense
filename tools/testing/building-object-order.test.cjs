@@ -34,7 +34,7 @@ test('building priority keeps rocks behind structures while preserving every uni
   tower.activeInHierarchy = gate.activeInHierarchy = false; DepthView.prototype.sort.call(view);
   assert(front.zIndex < rock.zIndex, 'invisible structures do not leave a sticky foreground band on actors');
   rock._depthMapForeground = true; rock.y = 10000; tower.activeInHierarchy = gate.activeInHierarchy = true; DepthView.prototype.sort.call(view);
-  assert(rock.zIndex > tower.zIndex && rock.zIndex > gate.zIndex, 'explicit foreground scenery overrides the default building priority');
+  assert(rock.zIndex < tower.zIndex && rock.zIndex < gate.zIndex, 'Default covers every object layer');tower._depthBuildingOrder=gate._depthBuildingOrder=0;DepthView.prototype.sort.call(view);assert(rock.zIndex>tower.zIndex&&rock.zIndex>gate.zIndex,'assigning buildings below object layers moves the entire structure behind scenery');
 });
 
 test('authored building roots, detached wings, offers and ordinary decoration receive only render classifications', () => {
@@ -72,7 +72,7 @@ test('new terrain objects keep scenery priority through movement and leave no co
   for (const y of [1000, -1000]) { node.y = y; DepthView.prototype.sort.call(view); assert(node.zIndex < tower.zIndex); }
   type.onDestroy.call(component); assert.equal(node._depthMapObject, undefined); assert.equal(node._depthGround, undefined);
   component.frontOfBuildings = true; type.onLoad.call(component); DepthView.prototype.sort.call(view);
-  assert.equal(node._depthMapForeground, true); assert(node.zIndex > tower.zIndex, 'the saved per-object override reaches the live renderer');
+  assert.equal(node._depthMapForeground, true); assert(node.zIndex < tower.zIndex, 'Default buildings stay above every object layer');tower._depthBuildingOrder=0;DepthView.prototype.sort.call(view);assert(node.zIndex>tower.zIndex,'a lower building slot allows objects to cover it');
   type.onDestroy.call(component); assert.equal(node._depthMapForeground, undefined);
 });
 
@@ -96,5 +96,15 @@ test('occlusion captures follow actual render order after building priority, wit
   assert.equal(object.overlay.node.active, true);
   hero.y = 0; DepthView.prototype.update.call(view); assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'the old silhouette clears when the actor returns in front');
   rock._depthMapForeground = true; hero.y = -20; DepthView.prototype.update.call(view);
-  assert.equal(captures, 2); assert.equal(object.overlay.node.active, true, 'explicitly foreground artwork keeps an overlapped unit visible even across its ground point');
+  assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'a unit in front of the whole building stack needs no stale scenery silhouette');
+});
+
+
+test('every building model, door, wing and purchase field shares one Z order, with selectable object-layer slots',()=>{
+ const {DepthView,Skeleton}=load(),main=new Node('ndMain'),down=new Node('ndDown'),hero=new Node('Hero',main,0,1000),owner=new Node('Building',main,0,50),wing=new Node('Door wing',main,10,-90),shadow=new Node('Shadow',down,0,50),fieldParent=new Node('Purchase fields',down,0,-50),field=new Node('Level 0',fieldParent),tree=new Node('Trees',main,0,-500),cliff=new Node('Cliffs',main,0,500);
+ tree._depthLayerOrder=3;cliff._depthLayerOrder=1;const model=owner.addComponent(Skeleton),side=wing.addComponent(Skeleton),ground=shadow.addComponent(Skeleton),build={node:owner,ndAniMain:model,ndAniDown:ground,ndAniOther:[side],ndLockList:[field],renderLayerOrder:-1},game={ndDown:down,ctrPlay:{node:hero},gameData:{bulidPointMap:{one:build}}},view={main,game,objects:[]};
+ const originals=[owner,wing,shadow,fieldParent].map(node=>node.convertToWorldSpaceAR(new Vec2(0,0)));DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);
+ for(const node of [wing,shadow,fieldParent])assert.equal(node.zIndex,owner.zIndex,'all visible building roots share exactly one Z index');assert(owner.zIndex>tree.zIndex&&owner.zIndex>cliff.zIndex,'Default is in front of the last object layer');[owner,wing,shadow,fieldParent].forEach((node,i)=>assert.deepEqual(node.convertToWorldSpaceAR(new Vec2(0,0)),originals[i],'grouping retains world placement'));
+ build.renderLayerOrder=2;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(cliff.zIndex<owner.zIndex&&owner.zIndex<tree.zIndex,'assigning after Cliffs puts the entire building before Trees');for(const node of [wing,shadow,fieldParent])assert.equal(node.zIndex,owner.zIndex);
+ build.renderLayerOrder=0;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(owner.zIndex<cliff.zIndex&&owner.zIndex<tree.zIndex,'ground-only slot places the whole building behind all objects');
 });

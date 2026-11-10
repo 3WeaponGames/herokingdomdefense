@@ -1,0 +1,24 @@
+'use strict';
+// Explicit migration only. Browsing editor panels never invokes this command.
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const L=require('../../packages/game-data-editor/worlds/legacy'),Gate=require('../../packages/game-data-editor/worlds/gate-facing'),Facing=require('../../assets/_script/GateFacing'),JSONDoc=require('../../packages/game-data-editor/lib/json-document');
+function files(root,folder,extension){const out=[];function visit(dir){if(!fs.existsSync(dir))return;for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())visit(file);else if(entry.name.endsWith(extension))out.push(path.relative(root,file).split(path.sep).join('/'));}}visit(path.join(root,folder));return out;}
+function plan(root){
+ const script=L.script(root,'KinghtFallBuildWall'),documents=new Map(),originals={},converted=[],read=file=>{if(!documents.has(file)){const text=fs.readFileSync(path.join(root,file),'utf8');documents.set(file,{text,before:JSON.parse(text.replace(/^\uFEFF/,'')),value:JSON.parse(text.replace(/^\uFEFF/,''))});originals[file]=L.hash(Buffer.from(text));}return documents.get(file);};
+ const prefabs=files(root,'assets/KinghtFallIconMap','.prefab'),authoring=files(root,'authoring/worlds','.json');
+ function convertSource(data,label){for(let index=0;index<data.length;index++){const component=data[index];if(!component||component.__type__!==script||Facing.valid(component.wallFacing))continue;const node=component.node&&component.node.__id__;if(!Number.isInteger(node))throw Error('Wall node is missing in '+label);component.wallFacing=Gate.facing(data,{kind:6,template:{node}});converted.push({source:label,id:component.ID,face:component.wallFacing});}}
+ function snapshots(value,label){if(Array.isArray(value)){if(value[0]&&value[0].__type__==='cc.Prefab'){convertSource(value,label);return;}value.forEach((child,i)=>snapshots(child,label+'/'+i));}else if(value&&typeof value==='object')for(const key of Object.keys(value))snapshots(value[key],label+'/'+key);}
+ for(const file of prefabs)convertSource(read(file).value,file);
+ for(const file of authoring)snapshots(read(file).value,file);
+ for(const file of authoring){const doc=read(file).value;if(!Array.isArray(doc.buildings))continue;for(const building of doc.buildings){if(building.kind!==6||Facing.valid(building.wallFacing))continue;const prefab=building.template&&building.template.prefab;if(!prefab)throw Error('Wall template is missing in '+file);const source=doc.templates&&doc.templates[prefab]||read('assets/KinghtFallIconMap/'+prefab+'.prefab').value;building.wallFacing=Gate.facing(source,building);converted.push({source:file,id:building.id,face:building.wallFacing});}}
+ // Refresh only revision references that exactly matched a source before this
+ // migration. Already-stale revisions remain detectable instead of being repaired.
+ const revisions=new Map();for(const file of prefabs){const doc=read(file);if(!JSONDoc.equal(doc.before,doc.value)){const text=JSONDoc.patch(doc.text,doc.before,doc.value);revisions.set(originals[file],L.hash(Buffer.from(text)));}}
+ function revisionRefs(value){if(!value||typeof value!=='object')return;if(typeof value.revision==='string'&&revisions.has(value.revision))value.revision=revisions.get(value.revision);if(Array.isArray(value))value.forEach(revisionRefs);else Object.values(value).forEach(revisionRefs);}
+ for(const file of authoring)revisionRefs(read(file).value);
+ const writes=[];for(const [file,doc]of documents){if(JSONDoc.equal(doc.before,doc.value))continue;const edits=JSONDoc.diff(doc.before,doc.value);if(edits.some(edit=>!['wallFacing','revision'].includes(String(edit.path[edit.path.length-1]))))throw Error('Migration attempted an unrelated edit in '+file);writes.push({file,bytes:Buffer.from(JSONDoc.patch(doc.text,doc.before,doc.value))});}
+ return {writes,originals,converted};
+}
+function run(root,options={}){const result=plan(root),summary={changedFiles:result.writes.map(write=>write.file),convertedWalls:result.converted.length,faces:result.converted.reduce((out,item)=>(out[item.face]=(out[item.face]||0)+1,out),{}),written:false};if(options.write){const artifacts=options.artifacts||path.join(os.homedir(),'Documents','Codex Artifacts','HeroKingdomDefense','wall-facing-conversion'),service=new(require('../../packages/game-data-editor/worlds/service').Service)(root,{artifacts});const saved=service.commit(result.writes,result.originals);Object.assign(summary,{written:!!saved.saved,backup:saved.backup});}return summary;}
+module.exports={plan,run};
+if(require.main===module){const args=process.argv.slice(2),at=args.indexOf('--artifacts');console.log(JSON.stringify(run(path.resolve(__dirname,'../..'),{write:args.includes('--write'),artifacts:at>=0?path.resolve(args[at+1]):undefined}),null,2));}
