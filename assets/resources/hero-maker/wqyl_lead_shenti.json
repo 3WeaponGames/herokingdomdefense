@@ -591,11 +591,6 @@
       "color": "ffffff00"
     },
     {
-      "name": "Rider/Body/Cape",
-      "bone": "Rider/Body/Cape",
-      "color": "ffffffff"
-    },
-    {
       "name": "Rider/Body",
       "bone": "Rider/Body",
       "attachment": "u_0a7e6d409c450e145bcb203db6e508b8",
@@ -604,6 +599,11 @@
     {
       "name": "Rider/Body/Chest",
       "bone": "Rider/Body/Chest",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/Body/Cape",
+      "bone": "Rider/Body/Cape",
       "color": "ffffffff"
     },
     {

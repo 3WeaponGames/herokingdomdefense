@@ -585,12 +585,6 @@
       "color": "ffffff00"
     },
     {
-      "name": "Rider/Body/Cape",
-      "bone": "Rider/Body/Cape",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Body_Cape"
-    },
-    {
       "name": "Rider/Body",
       "bone": "Rider/Body",
       "color": "ffbdabff"
@@ -600,6 +594,12 @@
       "bone": "Rider/Body/Chest",
       "attachment": "hero_Rider_Body_Chest",
       "color": "ffffffff"
+    },
+    {
+      "name": "Rider/Body/Cape",
+      "bone": "Rider/Body/Cape",
+      "color": "ffffffff",
+      "attachment": "hero_Rider_Body_Cape"
     },
     {
       "name": "Rider/Mount/Mount_Down2",

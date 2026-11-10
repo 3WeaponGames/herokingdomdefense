@@ -22,7 +22,7 @@ function expand(rig){
   ];
   // Bow's visible item is a child of its aiming bone. Other weapons use their
   // own animated pivot directly. Boots and cape follow the torso's motion.
-  for(const bone of extras){rig.bones.push(bone);const slot={name:bone.name,bone:bone.name,color:'ffffffff'};const at=/Cape$/.test(bone.name)?rig.slots.findIndex(s=>s.name==='Rider/Body'):rig.slots.length;rig.slots.splice(at,0,slot);}
+  for(const bone of extras){rig.bones.push(bone);const slot={name:bone.name,bone:bone.name,color:'ffffffff'};const at=/Cape$/.test(bone.name)?rig.slots.findIndex(s=>s.name==='Rider/Body/Chest')+1:rig.slots.length;rig.slots.splice(at,0,slot);}
   for(const clip of Object.values(rig.animations)){
     const length=Bake.duration(clip);if(!length)continue;
     clip.bones=clip.bones||{};clip.bones['Rider/Body/Cape']={rotate:[{time:0,angle:0},{time:length*.25,angle:4},{time:length*.5,angle:0},{time:length*.75,angle:-4},{time:length,angle:0}]};
