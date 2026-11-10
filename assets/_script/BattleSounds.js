@@ -10,7 +10,7 @@ function manager() { return require("AudioMgr").AudioMgr.getInstance(); }
 function supported() { return typeof cc !== "undefined" && cc.resources && !(typeof CC_EDITOR !== "undefined" && CC_EDITOR); }
 function available(audio) { return audio && audio.loadClip && audio.playSource && audio.getAudioSource && audio.getEffectVolume; }
 function audible(state) { return !state.hidden && !state.manager.appHidden && state.manager.getEffectVolume() > 0 && require("CacheUtils").CacheUtils.canPlayEffect(); }
-function validNode(owner) { return !owner || cc.isValid(owner, true) && (!owner.node || cc.isValid(owner.node, true) && owner.node.activeInHierarchy !== false); }
+function validNode(owner) { return !owner || cc.isValid(owner, true) && !!owner.node && cc.isValid(owner.node, true) && owner.node.activeInHierarchy !== false; }
 function current(state) {
   if (!state || state.disposed) return false;
   if (!state.game) return true;
@@ -20,9 +20,9 @@ function current(state) {
     (end === undefined || state.game.gameStatus !== end);
 }
 function makeState(game) {
-  var state = { game: game, ui: view(), data: game && game.gameData, epoch: game && game._combatEpoch,
+  var state = { game: game, ui: game ? view() : null, data: game && game.gameData, epoch: game && game._combatEpoch,
     manager: manager(), prefix: "battle-sfx-" + (++serial) + "-", sources: Object.create(null), loops: Object.create(null),
-    last: Object.create(null), ownerLast: new WeakMap(), deaths: new WeakMap(), positions: new WeakMap(), once: Object.create(null), effectsEpoch: 0 };
+    last: Object.create(null), ownerLast: new WeakMap(), deaths: new WeakMap(), positions: new WeakMap(), once: Object.create(null), effectsEpoch: 0, cancelEpoch: 0 };
   state.onHide = function () { state.hidden = true; stopAll(state); state.effectsEpoch++; };
   state.onShow = function () { state.hidden = false; state.positions = new WeakMap(); };
   if (cc.game && cc.game.on) {
@@ -86,11 +86,11 @@ function effect(id, owner, options) {
   if (state.last[id] !== undefined && now - state.last[id] < cooldown) return false;
   var location = options.point || point(owner), distanceGain = attenuation(state, location);
   if (!distanceGain) return false;
-  var generation = owner && owner.node && owner.node._combatGeneration, version = state.effectsEpoch;
+  var generation = owner && owner.node && owner.node._combatGeneration, version = state.effectsEpoch, cancelEpoch = state.cancelEpoch, managerEpoch = state.manager.effectEpoch;
   var resourceGeneration = owner && owner._resourceGeneration, closing = !!options.closing;
   state.last[id] = now;
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function (clip) {
-    if (!clip || !current(state) || !audible(state) || Date.now() - now > 500 || !closingMenu && !validNode(owner)) return;
+    if (!clip || !current(state) || !audible(state) || state.cancelEpoch !== cancelEpoch || state.manager.effectEpoch !== managerEpoch || Date.now() - now > 500 || !closingMenu && !validNode(owner)) return;
     if (entry.group !== "signal" && entry.group !== "ui" && (state.paused || state.effectsEpoch !== version)) return;
     if (owner && owner.node && owner.node._combatGeneration !== generation) return;
     if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return;
@@ -186,6 +186,7 @@ function stopLoop(state, key) {
 function loop(state, key, id, level) {
   var active = state.loops[key];
   if (!id) { stopLoop(state, key); return; }
+  if (active && active.managerEpoch !== state.manager.effectEpoch) { stopLoop(state, key); active = null; }
   if (active && active.id === id) {
     active.level = level;
     if (active.source) active.source.volume = gain(state, level);
@@ -195,10 +196,11 @@ function loop(state, key, id, level) {
     stopLoop(state, key);
   }
   stopLoop(state, key);
-  var request = state.loops[key] = { id: id, level: level }, entry = entries[id];
+  var request = state.loops[key] = { id: id, level: level, managerEpoch: state.manager.effectEpoch }, entry = entries[id];
   if (!entry) { stopLoop(state, key); return; }
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function (clip) {
     if (state.loops[key] !== request || !current(state) || !audible(state) || state.paused) return;
+    if (state.manager.effectEpoch !== request.managerEpoch) { stopLoop(state, key); return; }
     if (!clip) { request.failedAt = Date.now(); return; }
     var channel = getSource(state, "loop-" + key); request.source = channel.source;
     request.startedAt = Date.now();
@@ -207,6 +209,9 @@ function loop(state, key, id, level) {
   }); } catch (error) { stopLoop(state, key); }
 }
 function stopAll(state) {
+  // Also retire requests that have not allocated a source yet. UI and signal
+  // cues may survive a battle pause, but none may replay after hide or mute.
+  state.cancelEpoch++;
   Object.keys(state.loops).forEach(function (key) { stopLoop(state, key); });
   Object.keys(state.sources).forEach(function (key) { state.manager.stopSource(state.sources[key]); });
 }
@@ -225,6 +230,7 @@ function tick(game) {
   if (!audible(state) || state.paused) { stopAll(state); state.positions = new WeakMap(); return; }
   var surface = biome(game), horse = false, foot = null, flying = false;
   var hero = game.ctrPlay, center = point(hero), data = game.gameData;
+  if (!center) { stopAll(state); state.positions = new WeakMap(); return; }
   var actors = [hero].concat(data.getSoldierList ? data.getSoldierList() : [], data.getEnemyList ? data.getEnemyList() : []);
   actors.forEach(function (actor) {
     if (!actor || !validNode(actor) || actor._isPooled || actor.isDead && actor.isDead()) return;

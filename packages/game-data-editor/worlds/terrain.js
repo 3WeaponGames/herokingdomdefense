@@ -1,23 +1,25 @@
 'use strict';
 // Library classification only: never rewrites imported records or map data.
-const groundAsset=asset=>!!asset&&['field','roads','shadows','custom'].includes(asset.category);
-const objectAsset=asset=>!!asset&&!['field','roads'].includes(asset.category);
+const terrainRole=asset=>!asset?null:asset.terrainRole||(asset.category==='field'?'field':asset.category==='roads'?(/^road\s+up\s+/i.test(asset.terrainName||asset.name||'')?'edge':/^road\s+/i.test(asset.terrainName||asset.name||'')?'road':null):null);
+const groundAsset=asset=>!!asset&&!asset.paletteHidden&&(['field','road','edge'].includes(terrainRole(asset))||asset.brush==='shadow');
+const objectAsset=asset=>!!asset&&!asset.paletteHidden&&!asset.brush&&!['field','roads'].includes(asset.category);
+const inPalette=(asset,tab,biome)=>(tab==='Ground'?groundAsset(asset):objectAsset(asset))&&!(asset.paletteHiddenBiomes||[]).includes(biome);
 const sortPalette=assets=>assets.slice().sort((a,b)=>Number(a.paletteLast===true)-Number(b.paletteLast===true));
-const isRoad=asset=>!!asset&&asset.category==='roads'&&/^road(?:\s+up)?\s+/i.test(asset.name||'');
-const roadSurface=asset=>!!asset&&asset.category==='roads'&&/^road\s+(?!up\s)/i.test(asset.name||'');
+const isRoad=asset=>!!asset&&['road','edge'].includes(terrainRole(asset));
+const roadSurface=asset=>terrainRole(asset)==='road';
 function roadPair(asset,library,context){
  if(!asset||!['roads','field'].includes(asset.category))return null;
- const suffix=(asset.name||'').replace(/^(?:road(?:\s+up)?|field)\s+/i,'').toLowerCase(),biomes=asset.biomes||[];
+ const suffix=(asset.terrainName||asset.name||'').replace(/^(?:road(?:\s+up)?|field)\s+/i,'').toLowerCase(),biomes=asset.biomes||[];
  // Snow and Ice share an edge and field. The current authoring biome chooses
  // their fill, while an explicitly chosen Road fill always keeps its identity.
  const contextual=!roadSurface(asset)&&biomes.length>1&&biomes.includes(context);
  const matches=a=>biomes.some(b=>(a.biomes||[]).includes(b));
  const choose=test=>{
   const candidates=contextual?library.filter(a=>(a.biomes||[]).includes(context)):library;
-  return candidates.find(a=>test(a)&&(a.name||'').toLowerCase().endsWith(' '+suffix))||candidates.find(a=>test(a)&&matches(a));
+  return candidates.find(a=>test(a)&&(a.terrainName||a.name||'').toLowerCase().endsWith(' '+suffix))||candidates.find(a=>test(a)&&matches(a));
  };
  const surface=roadSurface(asset)?asset:choose(roadSurface);
- const edge=choose(a=>a.category==='roads'&&/^road\s+up\s+/i.test(a.name||''));
+ const edge=choose(a=>terrainRole(a)==='edge');
  const field=choose(a=>a.category==='field');
  return surface&&edge?{surface,edge,field}:null;
 }
@@ -31,4 +33,4 @@ function roadDefaults(asset,library,context){
  return defaults;
 }
 function strokeAssets(stroke){return stroke.op==='erase'?[]:[stroke.assetId,stroke.mode==='road'&&stroke.edgeAssetId].filter(Boolean);}
-module.exports={groundAsset,objectAsset,sortPalette,isRoad,roadPair,roadDefaults,strokeAssets};
+module.exports={terrainRole,groundAsset,objectAsset,inPalette,sortPalette,isRoad,roadPair,roadDefaults,strokeAssets};

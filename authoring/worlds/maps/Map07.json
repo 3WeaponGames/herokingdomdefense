@@ -13,74 +13,9 @@
   },
   "ground": {
     "foundation": {
-      "baseAsset": null,
+      "baseAsset": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
       "strokes": [],
-      "tiles": [
-        {
-          "id": "map07-clean-ground-1",
-          "name": "Clean field 1",
-          "assetId": "custom-92e66f1aa5d04a2eb21eda1e",
-          "x": -465,
-          "y": 0,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "id": "map07-clean-ground-2",
-          "name": "Clean field 2",
-          "assetId": "custom-76876189e0fda138fae8d6e4",
-          "x": 465,
-          "y": 0,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "id": "map07-clean-ground-3",
-          "name": "Clean field 3",
-          "assetId": "custom-102c3717eeb27c1ada945455",
-          "x": -465,
-          "y": -1514,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "id": "map07-clean-ground-4",
-          "name": "Clean field 4",
-          "assetId": "custom-3656d674b7c98f9f91882bf1",
-          "x": 465,
-          "y": -1514,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        }
-      ]
+      "tiles": []
     },
     "roads": {
       "strokes": [
@@ -4160,72 +4095,7 @@
           "edgeWidthMode": "fixed"
         }
       ],
-      "images": [
-        {
-          "id": "map07-editable-road-1",
-          "name": "Editable roads 1",
-          "assetId": "custom-fe6e6c0bc1b51a33cba68361",
-          "x": -465,
-          "y": 0,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "id": "map07-editable-road-2",
-          "name": "Editable roads 2",
-          "assetId": "custom-839bac6d37780d11428862d5",
-          "x": 465,
-          "y": 0,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "id": "map07-editable-road-3",
-          "name": "Editable roads 3",
-          "assetId": "custom-d03d2720c1762e4ecdb2430f",
-          "x": -465,
-          "y": -1514,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "id": "map07-editable-road-4",
-          "name": "Editable roads 4",
-          "assetId": "custom-438e5d024a012ea84dd26162",
-          "x": 465,
-          "y": -1514,
-          "scale": 1,
-          "angle": 0,
-          "flipX": false,
-          "opacity": 1,
-          "depth": "ground",
-          "ground": {
-            "x": 0,
-            "y": 0
-          }
-        }
-      ],
+      "images": [],
       "hidden": false
     },
     "grass": {
@@ -4935,7 +4805,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5298,7 +5168,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5457,7 +5327,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-2030a9ba92caa920181a816b",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5572,7 +5442,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-f1819c830e57f5100a548c49",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5655,7 +5525,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-18c740e640314dccd58725c2",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5778,7 +5648,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5901,7 +5771,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5984,7 +5854,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -5999,7 +5869,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -6014,7 +5884,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -6037,7 +5907,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -6052,7 +5922,7 @@
           "shape": "round",
           "hardness": 0.7,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -6075,7 +5945,7 @@
           "shape": "round",
           "hardness": 1,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -6090,7 +5960,7 @@
           "shape": "round",
           "hardness": 1,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },
@@ -6105,7 +5975,7 @@
           "shape": "round",
           "hardness": 1,
           "opacity": 1,
-          "assetId": "custom-be84d29ed367c4d6acc39c98",
+          "assetId": "env-3f043afdcd5a1594cb2a4cbb9f982bec",
           "textureScale": 1,
           "op": "paint"
         },

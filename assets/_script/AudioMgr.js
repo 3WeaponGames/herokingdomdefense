@@ -8,6 +8,36 @@ var $z1BaseMgr = require("BaseMgr");
 var $z1CacheUtils = require("CacheUtils");
 var $z1LogMgr = require("LogMgr");
 var $z1ResourceMgr = require("ResourceMgr");
+function audioVolume(value) {
+  var number = Number(value);
+  return isFinite(number) ? Math.max(0, Math.min(1, number)) : null;
+}
+function initializingAudio(source) {
+  var states = cc._Audio && cc._Audio.State;
+  var initializing = states && (states.INITIALIZING === undefined ? states.INITIALZING : states.INITIALIZING);
+  return initializing !== undefined && source.audio && source.audio.getState && source.audio.getState() === initializing;
+}
+function pauseAudio(source, state) {
+  // The native and browser pause APIs ignore INITIALIZING. Stop that pending
+  // start and keep the loaded clip ready for an explicitly permitted resume.
+  if (state && state.started && initializingAudio(source)) {
+    source.stop();
+    state.started = false;
+  } else source.pause();
+}
+function audioOwner(options) {
+  if (!options || !options.owner && !options.game) return null;
+  var owner = options.owner, node = owner && owner.node, game = options.game;
+  var resource = owner && owner._resourceGeneration, generation = node && node._combatGeneration, tag = owner && owner._tagID;
+  var data = game && game.gameData, epoch = game && game._combatEpoch, status = game && game.gameStatus;
+  var pauseEpoch = game && game._audioPauseEpoch;
+  function live(value) { return value && (!cc.isValid || cc.isValid(value, true)); }
+  return function () {
+    return (!owner || live(owner) && owner.node === node && live(node) && node.activeInHierarchy !== false &&
+      owner._resourceGeneration === resource && node._combatGeneration === generation && owner._tagID === tag) &&
+      (!game || live(game) && live(game.node) && game.node.activeInHierarchy !== false && game.gameData === data && game._combatEpoch === epoch && game.gameStatus === status && game._audioPauseEpoch === pauseEpoch);
+  };
+}
 var exp_AudioMgr = function (t) {
   function _ctor() {
     var e = t.call(this) || this;
@@ -18,11 +48,13 @@ var exp_AudioMgr = function (t) {
     e.otherADConf = [];
     e.musicKeys = [];
     e.effectVolume = 1;
+    e.effectEpoch = 0;
     e.musicVolume = 1;
     e.channelStates = new Map();
     e.releasedSources = new WeakSet();
     e.pendingClips = new Map();
     e.allMusicPaused = false;
+    e.musicPauseOwners = new Set();
     e.appHidden = false;
     return e;
   }
@@ -34,9 +66,9 @@ var exp_AudioMgr = function (t) {
   _ctor.prototype.init = function (t) {
     this.ADConf = t;
     var e = $z1CacheUtils.CacheUtils.getData("EFFECTVOLUME");
-    e !== null && e !== undefined && e !== "" && (this.effectVolume = Number(e));
+    e !== null && e !== undefined && e !== "" && audioVolume(e) !== null && (this.effectVolume = audioVolume(e));
     var n = $z1CacheUtils.CacheUtils.getData("MUSICVOLUME");
-    n !== null && n !== undefined && n !== "" && (this.musicVolume = Number(n));
+    n !== null && n !== undefined && n !== "" && audioVolume(n) !== null && (this.musicVolume = audioVolume(n));
     if (!this.audioLifecycleBound && cc.game && cc.game.on) {
       this.audioLifecycleBound = true;
       cc.game.on(cc.game.EVENT_HIDE, this.onAudioHide, this);
@@ -118,26 +150,24 @@ var exp_AudioMgr = function (t) {
   };
   _ctor.prototype.setEffectVolume = function (t) {
     undefined === t && (t = 1);
-    this.effectVolume = Math.max(0, t);
+    var volume = audioVolume(t);
+    if (volume === null) return;
+    if (volume === 0 && this.effectVolume !== 0) this.effectEpoch++;
+    this.effectVolume = volume;
+    var manager = this;
     this.channelStates.forEach(function (state, source) {
-      if (!state.music && state.volume) source.volume = state.volume();
+      if (!state.music && state.volume) source.volume = state.volume() * state.gain;
+      if (!state.music && volume === 0) manager.stopSource(source);
     });
     $z1CacheUtils.CacheUtils.saveData("EFFECTVOLUME", this.effectVolume + "");
   };
   _ctor.prototype.setMusicVolume = function (t) {
-    var e = this;
     undefined === t && (t = 1);
-    this.musicVolume = Math.max(0, t);
-    this.musicKeys.forEach(function (t) {
-      var n = e.getAudioSource(t);
-      if (null != n) {
-        n.volume = e.musicVolume;
-      } else {
-        $z1LogMgr.LogMgr.getInstance().error("audioSourceName：" + t + "不存在");
-      }
-    });
+    var volume = audioVolume(t);
+    if (volume === null) return;
+    this.musicVolume = volume;
     this.channelStates.forEach(function (state, source) {
-      if (state.music && state.volume) source.volume = state.volume();
+      if (state.music && state.volume) source.volume = state.volume() * state.gain;
     });
     $z1CacheUtils.CacheUtils.saveData("MUSICVOLUME", this.musicVolume + "");
   };
@@ -146,6 +176,14 @@ var exp_AudioMgr = function (t) {
   };
   _ctor.prototype.getMusicVolume = function () {
     return this.musicVolume;
+  };
+  _ctor.prototype.setChannelGain = function (key, value) {
+    var source = this.audioSourceMap.get(key), gain = audioVolume(value);
+    if (!source || gain === null) return false;
+    var state = this.channelState(source);
+    state.gain = gain;
+    if (state.volume) source.volume = state.volume() * gain;
+    return true;
   };
   _ctor.prototype.getAudioSource = function (t) {
     if (this.audioSourceMap.has(t)) {
@@ -157,7 +195,7 @@ var exp_AudioMgr = function (t) {
   _ctor.prototype.channelState = function (source) {
     var state = this.channelStates.get(source);
     if (!state) {
-      state = { version: 0, active: false, loading: false, ready: false, started: false, paused: false };
+      state = { version: 0, active: false, loading: false, ready: false, started: false, paused: false, gain: 1 };
       this.channelStates.set(source, state);
     }
     return state;
@@ -167,15 +205,17 @@ var exp_AudioMgr = function (t) {
     // Asset identity is independent of channel names and legacy cache aliases.
     cacheKey = JSON.stringify([bundle, String(path)]);
     var cached = this.audioClipMap.get(cacheKey);
-    if (cached && (!cc.isValid || cc.isValid(cached))) return complete(cached);
+    if (cached && cached.loaded !== false && (!cc.isValid || cc.isValid(cached))) return complete(cached);
     this.audioClipMap.delete(cacheKey);
     var key = cacheKey;
     var callbacks = this.pendingClips.get(key);
     if (callbacks) { callbacks.push({ key: cacheKey, complete: complete }); return; }
     callbacks = [{ key: cacheKey, complete: complete }];
     this.pendingClips.set(key, callbacks);
-    var finish = function (clip) {
+    var nativePending = false, nativeTimer;
+    var publish = function (clip) {
       if (manager.pendingClips.get(key) !== callbacks) return;
+      if (nativeTimer !== undefined) clearTimeout(nativeTimer);
       manager.pendingClips.delete(key);
       if (clip && cc.isValid && !cc.isValid(clip)) clip = null;
       var failure, failed = false;
@@ -186,42 +226,80 @@ var exp_AudioMgr = function (t) {
       });
       if (failed) throw failure;
     };
-    $z1ResourceMgr.ResourceMgr.getInstance().loadRes(bundle, path, cc.AudioClip, finish, {
-      onError: function (error, retry, cancel) {
-        // Audio is optional: keep the previous track instead of blocking gameplay.
-        cancel && cancel();
-        finish(null);
+    var finish = function (clip) {
+      if (manager.pendingClips.get(key) !== callbacks) return;
+      if (!clip || clip.loaded !== false) return publish(clip);
+      if (nativePending) return;
+      nativePending = true;
+      // A deferred browser clip queues unguarded play/stop callbacks inside
+      // Creator. Load its native data before it ever reaches an AudioSource.
+      if (!cc.assetManager || !cc.assetManager.postLoadNative) return publish(null);
+      nativeTimer = setTimeout(function () { publish(null); }, 30000);
+      try {
+        cc.assetManager.postLoadNative(clip, function (error) {
+          publish(!error && clip.loaded !== false ? clip : null);
+        });
+      } catch (error) {
+        if (manager.pendingClips.get(key) !== callbacks) throw error;
+        $z1LogMgr.LogMgr.getInstance().error("Audio native load failed:", bundle, path, error);
+        publish(null);
       }
-    });
+    };
+    try {
+      $z1ResourceMgr.ResourceMgr.getInstance().loadRes(bundle, path, cc.AudioClip, finish, {
+        onError: function (error, retry, cancel) {
+          // Audio is optional: keep the previous track instead of blocking gameplay.
+          cancel && cancel();
+          finish(null);
+        }
+      });
+    } catch (error) {
+      // A loader can fail before invoking its callbacks. Retire the shared
+      // request so later attempts do not join an orphaned pending entry.
+      if (this.pendingClips.get(key) !== callbacks) throw error;
+      $z1LogMgr.LogMgr.getInstance().error("Audio load failed:", bundle, path, error);
+      finish(null);
+    }
   };
-  _ctor.prototype.playSource = function (source, config, key, loop, music, volume, complete, cacheKey) {
-    if (!source || this.releasedSources.has(source)) return false;
+  _ctor.prototype.playSource = function (source, config, key, loop, music, volume, complete, cacheKey, options) {
+    if (!source || this.releasedSources.has(source) || !music && this.appHidden) return false;
+    var isCurrent = audioOwner(options);
+    if (isCurrent && !isCurrent()) return false;
     var manager = this;
     var state = this.channelState(source);
     var version = ++state.version;
     state.active = true;
     state.loading = true;
-    state.music = music;
-    state.loop = loop;
     state.key = key;
-    state.volume = volume;
-    if (music && this.allMusicPaused) state.paused = true;
-    if (music) loop ? this.addMusicKey(key) : this.removeMusicKey(key);
+    // A replacement is only committed after loading. Until then, gain and
+    // interruption recovery still belong to the clip that is actually playing.
+    if (!state.ready) {
+      state.music = music;
+      state.loop = loop;
+      state.volume = volume;
+      music && loop ? this.addMusicKey(key) : this.removeMusicKey(key);
+    }
     this.loadClip(config.bundle, config.path, cacheKey || config.path, function (clip) {
       if (state.version !== version || !state.active) return;
       state.loading = false;
+      // An obsolete replacement must not cut off the previous valid sound.
+      if (isCurrent && !isCurrent()) clip = null;
       var enabled = music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect();
       if (!enabled) { manager.stopSource(source); manager.removeMusicKey(key); return; }
       if (!clip) {
         state.active = state.ready;
         state.loop = !!source.loop;
-        if (music) state.active && state.loop ? manager.addMusicKey(key) : manager.removeMusicKey(key);
+        state.music && state.active && state.loop ? manager.addMusicKey(key) : manager.removeMusicKey(key);
         return;
       }
       source.stop();
       source.clip = clip;
       source.loop = loop;
-      source.volume = volume();
+      source.volume = volume() * state.gain;
+      state.music = music;
+      state.loop = loop;
+      state.volume = volume;
+      music && loop ? manager.addMusicKey(key) : manager.removeMusicKey(key);
       state.ready = true;
       state.started = false;
       if (!manager.appHidden && !state.paused) manager.resumeSource(source, state, false);
@@ -229,7 +307,7 @@ var exp_AudioMgr = function (t) {
     });
   };
   _ctor.prototype.resumeSource = function (source, state, recover) {
-    if (!state.active || !state.ready || state.paused || this.appHidden) return;
+    if (!state.active || !state.ready || state.paused || this.appHidden || state.music && this.allMusicPaused) return;
     if (!(state.music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect())) return;
     if (!state.started) { source.play(); state.started = true; return; }
     if (source.isPlaying) return;
@@ -249,12 +327,15 @@ var exp_AudioMgr = function (t) {
   };
   _ctor.prototype.sourceBusy = function (source) {
     var state = this.channelStates.get(source);
-    return source.isPlaying || !!(state && state.active && (state.loading || state.paused));
+    return source.isPlaying || !!(state && state.active && (state.loading || state.paused || initializingAudio(source)));
   };
   _ctor.prototype.onAudioHide = function () {
     this.appHidden = true;
+    this.effectEpoch++;
+    var manager = this;
     this.channelStates.forEach(function (state, source) {
-      if (state.music && state.active) source.pause();
+      if (state.music && state.active) pauseAudio(source, state);
+      else if (!state.music) manager.stopSource(source);
     });
   };
   _ctor.prototype.onAudioShow = function () {
@@ -278,8 +359,9 @@ var exp_AudioMgr = function (t) {
   _ctor.prototype.pauseMusic = function (key) {
     var source = this.audioSourceMap.get(key);
     if (!source) return;
-    this.channelState(source).paused = true;
-    source.pause();
+    var state = this.channelState(source);
+    state.paused = true;
+    pauseAudio(source, state);
   };
   _ctor.prototype.resumeMusic = function (key) {
     var source = this.audioSourceMap.get(key);
@@ -288,28 +370,34 @@ var exp_AudioMgr = function (t) {
     state.paused = false;
     this.resumeSource(source, state, false);
   };
-  _ctor.prototype.pauseAllMusic = function () {
+  _ctor.prototype.pauseAllMusic = function (owner) {
+    this.musicPauseOwners.add(owner === undefined ? this : owner);
     this.allMusicPaused = true;
-    var manager = this;
-    this.musicKeys.forEach(function (key) { manager.pauseMusic(key); });
+    this.channelStates.forEach(function (state, source) {
+      if (state.music && state.active) pauseAudio(source, state);
+    });
   };
-  _ctor.prototype.resumeAllMusic = function () {
-    this.allMusicPaused = false;
+  _ctor.prototype.resumeAllMusic = function (owner) {
+    this.musicPauseOwners.delete(owner === undefined ? this : owner);
+    this.allMusicPaused = this.musicPauseOwners.size > 0;
+    if (this.allMusicPaused) return;
     var manager = this;
-    this.musicKeys.forEach(function (key) { manager.resumeMusic(key); });
+    this.channelStates.forEach(function (state, source) {
+      if (state.music && state.active) manager.resumeSource(source, state, false);
+    });
   };
   _ctor.prototype.stopMusic = function (key) {
     this.removeMusicKey(key);
     this.stopSource(this.audioSourceMap.get(key));
   };
   _ctor.prototype.stopAll = function () {
+    this.effectEpoch++;
     var manager = this;
     this.audioSourceMap.forEach(function (source) { manager.stopSource(source); });
     this.EffectAduioSource && this.stopSource(this.EffectAduioSource);
     this.musicKeys.length = 0;
-    this.allMusicPaused = false;
   };
-  _ctor.prototype.playEffect = function (id, volume) {
+  _ctor.prototype.playEffect = function (id, volume, options) {
     if (!$z1CacheUtils.CacheUtils.canPlayEffect()) return;
     var config = this.getAdConf(id);
     if (!config) return void $z1LogMgr.LogMgr.getInstance().error("Audio configuration missing:", id);
@@ -317,9 +405,9 @@ var exp_AudioMgr = function (t) {
     if (volume === undefined) volume = 1;
     this.playSource(this.EffectAduioSource || this.getAudioSource("effect"), config, "effect", false, false, function () {
       return volume * manager.effectVolume;
-    });
+    }, undefined, undefined, options);
   };
-  _ctor.prototype.playNamedEffect = function (id, key, volume) {
+  _ctor.prototype.playNamedEffect = function (id, key, volume, options) {
     if (!$z1CacheUtils.CacheUtils.canPlayEffect()) return;
     var config = this.getAdConf(id);
     if (!config) return void $z1LogMgr.LogMgr.getInstance().error("Audio configuration missing:", id);
@@ -327,9 +415,9 @@ var exp_AudioMgr = function (t) {
     if (volume === undefined) volume = 1;
     this.playSource(this.getAudioSource(key), config, key, false, false, function () {
       return volume * manager.effectVolume;
-    });
+    }, undefined, undefined, options);
   };
-  _ctor.prototype.playEffectFree = function (id, volume, count) {
+  _ctor.prototype.playEffectFree = function (id, volume, count, options) {
     if (!$z1CacheUtils.CacheUtils.canPlayEffect()) return;
     var config = this.getAdConf(id);
     if (!config) return void $z1LogMgr.LogMgr.getInstance().error("Audio configuration missing:", id);
@@ -343,11 +431,11 @@ var exp_AudioMgr = function (t) {
       if (!this.sourceBusy(source)) {
         this.playSource(source, config, key, false, false, function () {
           return volume * manager.effectVolume;
-        });
+        }, undefined, undefined, options);
         return;
       }
     }
-    this.playEffect(id, volume);
+    this.playEffect(id, volume, options);
   };
   _ctor.prototype.playAudioFromPath = function (bundle, path, key, loop, complete) {
     if (!$z1CacheUtils.CacheUtils.canPlayMusin()) return;

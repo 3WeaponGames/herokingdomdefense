@@ -117,7 +117,7 @@ var def_GAD_Door = function (t) {
     if (!this.isUseful || !this.node.active || this.hasColliderGroupID(t.getGroupID())) {
       return $z1GAD_Configs.emGADHitState.None;
     }
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.strike);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.strike, undefined, undefined, { owner: this });
     this._coolTime = $z1GAD_DataMgr.default.getInstance().getParam($z1GADGameEnumData.enumGADBasicCfg.IntervalTime, .1);
     this.addColliderTagID(t.getTagID());
     this.addColliderGroupID(t.getGroupID());

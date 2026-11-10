@@ -4,14 +4,15 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const root = path.resolve(__dirname, '../..'), source = path.join(root, 'assets/_script/UnitVoices.js');
 const authored = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 
-function fixture() {
+function fixture(options = {}) {
   let now = 1000;
   const pending = [], played = [], listeners = [], preferences = { enabled: true }, cache = new Map();
   const node = () => ({ activeInHierarchy: true });
   const game = { node: node(), gameData: {}, _combatEpoch: 1, gameStatus: 0 };
   const ui = { ctrGame: game, node: node(), isclose: false };
-  const manager = { appHidden: false, volume: .5, audioSourceMap: new Map(), channelStates: new Map(),
+  const manager = { appHidden: false, volume: .5, effectEpoch: 0, audioSourceMap: new Map(), channelStates: new Map(),
     getEffectVolume() { return this.volume; },
+    setEffectVolume(value) { if (!value && this.volume) this.effectEpoch++; this.volume = value; },
     loadClip(bundle, file, key, done) { if (cache.has(file)) done(cache.get(file)); else pending.push({ file, done }); },
     getAudioSource(key) {
       if (!this.audioSourceMap.has(key)) {
@@ -24,13 +25,13 @@ function fixture() {
     releaseAudioSource(key, owned) { if (this.audioSourceMap.get(key) !== owned) return false;this.stopSource(owned);this.audioSourceMap.delete(key);this.channelStates.delete(owned);owned.destroy();return true; },
     playSource(value, config, key, loop, music, volume, done) {
       assert(cache.has(config.path), 'playback must use an already loaded clip');
-      value.state = 1; played.push({ file: config.path, key, loop, music, volume: volume(), source: value });
+      value.state = options.nativeInitializing ? 0 : 1; played.push({ file: config.path, key, loop, music, volume: volume(), source: value });
       done && done(value);
     }
   };
   const modules = { AudioMgr: { AudioMgr: { getInstance: () => manager } }, CacheUtils: { CacheUtils: { canPlayEffect: () => preferences.enabled } },
     KinghtFallUIGame: { default: { instance: ui } }, KinghtFallModle: { KinghtFallGameStage: { End: 3 } } };
-  const exports = {}, cc = { isValid: value => !!value && !value.destroyed, _Audio: { State: { STOPPED: 3, ERROR: -1 } },
+  const exports = {}, cc = { isValid: value => !!value && !value.destroyed, _Audio: { State: { STOPPED: 3, ERROR: -1, PLAYING: 1, [options.initialStateName || 'INITIALIZING']: 0 } },
     game: { EVENT_HIDE: 'hide', on(event, fn, target) { listeners.push({ event, fn, target }); }, off(event, fn, target) { const i = listeners.findIndex(x => x.event === event && x.fn === fn && x.target === target); if (i >= 0) listeners.splice(i, 1); } } };
   vm.runInNewContext(fs.readFileSync(source, 'utf8'), { exports, require: name => modules[name], cc, WeakMap, Date: { now: () => now }, Math: { ...Math, random: () => .1, floor: Math.floor } });
   function building(unit = 90001, tier = 1) {
@@ -38,7 +39,7 @@ function fixture() {
     return { node: node(), index: tier, buildCfg: { enumValue: 3 }, buildInfo: { cfg }, getBranchCfg() { return this.buildInfo.cfg; } };
   }
   function soldier(unit = 90001) { return { node: { ...node(), _combatGeneration: 1 }, cfg: { ID: unit }, isDead: () => true }; }
-  function finishAll() { while (pending.length) { const p = pending.shift(), clip = { duration: 4 }; cache.set(p.file, clip); p.done(clip); } }
+  function finishAll() { while (pending.length) { const p = pending.shift(), clip = { duration: options.clipDuration === undefined ? 4 : options.clipDuration }; cache.set(p.file, clip); p.done(clip); } }
   return { voices: exports, game, ui, manager, pending, played, preferences, listeners, building, soldier, finishAll,
     advance(ms) { now += ms; }, end() { if (game._unitVoices && game._unitVoices.active) game._unitVoices.active.source.state = 3; }, hide() { listeners.slice().forEach(x => x.fn.call(x.target)); } };
 }
@@ -93,6 +94,46 @@ test('an audio load that never completes expires without blocking later announce
   assert.equal(f.played.length, 1); assert(f.played[0].file.includes('crossbowman-level-1'));
 });
 
+test('native initializing and invalid source durations fall back to the clip and retain bounded voice expiry', () => {
+  for (const duration of [-1, Infinity, NaN, 0]) {
+    const f = fixture(), original = f.manager.getAudioSource;
+    f.manager.getAudioSource = function (key) { const source = original.call(this, key); source.getDuration = () => duration; return source; };
+    f.voices.announce(f.building()); f.voices.tick(f.game); f.finishAll();
+    assert.equal(f.game._unitVoices.active.duration, 4, 'native duration ' + duration);
+    f.advance(100); f.voices.tick(f.game); assert(f.game._unitVoices.active, 'initializing native audio was cut off');
+    f.advance(4500); f.voices.tick(f.game); assert.equal(f.game._unitVoices.active, null, 'voice expiry was unbounded');
+  }
+});
+
+test('invalid native and clip durations still use a finite positive voice timeout', () => {
+  for (const clipDuration of [-1, Infinity, NaN, 0]) {
+    const f = fixture({ clipDuration }), original = f.manager.getAudioSource;
+    f.manager.getAudioSource = function (key) { const source = original.call(this, key); source.getDuration = () => -1; return source; };
+    f.voices.announce(f.building()); f.voices.tick(f.game); f.finishAll();
+    assert.equal(f.game._unitVoices.active.duration, 6); f.advance(6600); f.voices.tick(f.game); assert.equal(f.game._unitVoices.active, null);
+  }
+});
+
+test('delayed native decoding starts the voice duration timeout on PLAYING for both initialization enum spellings', () => {
+  for (const initialStateName of ['INITIALIZING', 'INITIALZING']) {
+    const f = fixture({ nativeInitializing: true, initialStateName });
+    f.voices.announce(f.building()); f.voices.tick(f.game); f.finishAll(); const source = f.game._unitVoices.active.source;
+    f.advance(2000); f.voices.tick(f.game); assert(f.game._unitVoices.active);
+    source.state = 1; f.voices.tick(f.game); f.advance(4000); f.voices.tick(f.game);
+    assert(f.game._unitVoices.active, 'decoder startup consumed the voice playback timeout');
+    f.advance(600); f.voices.tick(f.game); assert.equal(f.game._unitVoices.active, null);
+  }
+});
+
+test('a stuck native decoder expires after ten seconds and does not block a later announcement', () => {
+  const options = { nativeInitializing: true }, f = fixture(options);
+  f.voices.announce(f.building()); f.voices.tick(f.game); f.finishAll();
+  f.advance(9500); f.voices.tick(f.game); assert(f.game._unitVoices.active, 'native initialization used a clip-length timeout');
+  f.advance(600); f.voices.tick(f.game); assert.equal(f.game._unitVoices.active, null);
+  options.nativeInitializing = false; f.voices.announce(f.building(90003)); f.voices.tick(f.game); f.finishAll();
+  assert.equal(f.played.length, 2); assert.equal(f.game._unitVoices.active.source.state, 1);
+});
+
 test('muting effects drops active and queued lines; app hide and disposal release owned sources', () => {
   const f = fixture(); f.voices.announce(f.building()); f.voices.announce(f.building(90003)); f.voices.tick(f.game); f.finishAll();
   f.manager.volume = 0; f.voices.tick(f.game); assert.equal(f.played[0].source.state, 3);
@@ -100,6 +141,46 @@ test('muting effects drops active and queued lines; app hide and disposal releas
   f.voices.announce(f.building()); f.voices.tick(f.game); f.finishAll(); f.hide();
   assert.equal(f.game._unitVoices, undefined); assert.equal(f.manager.audioSourceMap.size, 0); assert.equal(f.listeners.length, 0);
   assert(f.played.every(p => p.source.destroyed));
+});
+
+test('pausing cancels active voices, queued announcements and pending death loads without replay on resume', () => {
+  const f = fixture(); f.voices.announce(f.building()); f.voices.announce(f.building(90003)); f.voices.tick(f.game); f.finishAll();
+  f.voices.death(f.soldier(90002));
+  f.ui.isPauset = true; f.voices.suspend(f.game, true);
+  assert.equal(f.played[0].source.state, 3); assert.equal(f.game._unitVoices.active, null); assert.equal(f.game._unitVoices.queue.length, 0);
+  assert.equal(f.voices.announce(f.building()), false); assert.equal(f.voices.death(f.soldier(90002)), false);
+  f.ui.isPauset = false; f.voices.suspend(f.game, false); f.finishAll(); f.voices.tick(f.game); f.finishAll();
+  assert.equal(f.played.length, 1, 'a pre-pause cue replayed after resume');
+  assert.equal(f.voices.announce(f.building()), true); f.voices.tick(f.game); f.finishAll(); assert.equal(f.played.length, 2);
+});
+
+test('a first voice request during pause stays silent and creates no owned state', () => {
+  const f = fixture(); f.ui.isPauset = true;
+  assert.equal(f.voices.announce(f.building()), false); assert.equal(f.voices.death(f.soldier()), false);
+  assert.equal(f.game._unitVoices, undefined); assert.equal(f.pending.length, 0);
+});
+
+test('muting cancels pending death vocals even when effects are restored before their load finishes', () => {
+  const f = fixture(); f.voices.death(f.soldier());
+  f.manager.volume = 0; f.voices.tick(f.game); f.manager.volume = .5; f.finishAll();
+  assert.equal(f.played.length, 0);
+});
+
+test('a mute/restore without a gameplay tick retires pending and queued voices before any source exists', () => {
+  const f = fixture(); f.voices.announce(f.building()); f.voices.announce(f.building(90003)); f.voices.tick(f.game); f.voices.death(f.soldier(90002));
+  f.manager.setEffectVolume(0); f.manager.setEffectVolume(.5); f.finishAll(); f.voices.tick(f.game); f.finishAll();
+  assert.equal(f.played.length, 0);
+  assert.equal(f.voices.announce(f.building()), true); f.voices.tick(f.game); f.finishAll(); assert.equal(f.played.length, 1);
+});
+
+test('death vocals expire instead of playing long after the death animation began', () => {
+  const f = fixture(); f.voices.death(f.soldier()); f.advance(1000); f.finishAll(); assert.equal(f.played.length, 0);
+});
+
+test('detached building and soldier components cannot start voices or dereference a missing node', () => {
+  const f = fixture(), building = f.building(), soldier = f.soldier(); building.node = soldier.node = null;
+  assert.equal(f.voices.announce(building), false); assert.equal(f.voices.death(soldier), false);
+  assert.equal(f.game._unitVoices, undefined); assert.equal(f.pending.length, 0);
 });
 
 test('death vocals use the matching actor once per life, share simultaneous copies, and stay bounded', () => {

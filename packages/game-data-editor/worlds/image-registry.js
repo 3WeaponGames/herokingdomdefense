@@ -1,4 +1,5 @@
 'use strict';
+const Paint=require('./paint');
 // Panel-owned decoded artwork. Unreferenced or replaced images are cancelled,
 // and late image events cannot redraw a different map or a closed panel.
 let serial=0;
@@ -11,7 +12,7 @@ function create(options){
  }
  function signature(source){
   const a=source.anchor||{x:.5,y:0};
-  return JSON.stringify([source.url,source.sha256,source.x,source.y,source.width,source.height,source.rawWidth,source.rawHeight,source.offsetX,source.offsetY,source.rotated,source.textureWidth,source.textureHeight,a.x,a.y,source.maxMaskEdge]);
+  return JSON.stringify([source.url,source.sha256,source.x,source.y,source.width,source.height,source.rawWidth,source.rawHeight,source.offsetX,source.offsetY,source.rotated,source.textureWidth,source.textureHeight,a.x,a.y,source.maxMaskEdge,source.colorShift]);
  }
  function current(id,entry){return !destroyed&&entries.get(id)===entry;}
  function notify(id,error){if(!destroyed&&options.onError)options.onError(id,error);}
@@ -31,6 +32,7 @@ function create(options){
   if(onload)entry.callbacks.add(onload);entries.set(id,entry);records[id]=record;
   image.onload=()=>{
    if(!current(id,entry))return;
+   try{record.image=Paint.prepareImage(image,source);}catch(error){entry.failed=true;entry.callbacks.clear();notify(id,error);return;}
    entry.ready=true;const callbacks=Array.from(entry.callbacks);entry.callbacks.clear();
    if(options.onLoad)try{options.onLoad(id,record);}catch(error){notify(id,error);}
    for(const callback of callbacks){if(!current(id,entry))break;try{callback();}catch(error){notify(id,error);}}

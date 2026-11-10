@@ -22,3 +22,9 @@ test('invalid authored JSON fails explicitly rather than silently replacing rout
  const f=fixture(),info=Maps.model(f.data),holder=info.nodes.find(n=>n.name==='Authored routes'),component=holder.components.find(c=>c.value.__type__===L.script(f.root,'AuthoredStagePaths'));f.data[component.id].graphs='{broken';f.write(f.file,f.data);const before=tree(f.root);
  assert.throws(()=>L.adaptStage(f.root,'A',1,f.config),/authored route metadata is invalid JSON/);assert.deepEqual(tree(f.root),before);
 });
+test('spawn circles and optional path widths survive prefab round trips without rewriting source positions or unknown fields',()=>{
+ const f=fixture();f.stage.spawns[0].radius=82;f.stage.graphs[0].spread=45;
+ const data=P.compact(P.compose(f.root,f.map,f.stage,{ground:[],assets:{}},{}));f.write(f.file,data);const before=tree(f.root),loaded=L.adaptStage(f.root,'A',1,f.config);
+ assert.deepEqual(loaded.spawns,f.stage.spawns);assert.deepEqual(loaded.graphs,f.stage.graphs);assert.deepEqual(tree(f.root),before);
+ const node=Maps.model(data).nodes.find(n=>n.kind==='spawn');assert.deepEqual(node.position,{x:10,y:20});
+});

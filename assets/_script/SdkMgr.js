@@ -89,7 +89,7 @@ var exp_SdkMgr = function () {
       }, function () {
         request.blocked && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true, request);
       }, function () {
-        request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
+        request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic(request);
       }, function () {
         for (var i = 0; i < request.rejectedCallbacks.length; i++) {
           try {
@@ -124,7 +124,7 @@ var exp_SdkMgr = function () {
     }
     try {
       request.paused = true;
-      $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
+      $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic(request);
       request.blocked = true;
       $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false, request);
       request.adStarted = true;
@@ -173,7 +173,7 @@ var exp_SdkMgr = function () {
       completeAdSteps([function () {
         request.blocked && $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, true, request);
       }, function () {
-        request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
+        request.paused && $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic(request);
       }, function () {
         request.rejectedCallbacks.forEach(function (callback) {
           try { callback(); } catch (error) { $z1LogMgr.LogMgr.getInstance().debug(error); }
@@ -185,7 +185,7 @@ var exp_SdkMgr = function () {
     }
     try {
       request.paused = true;
-      $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
+      $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic(request);
       request.blocked = true;
       $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.blocktouch, false, request);
       request.timer = setTimeout(function () { finish(false); }, $z1AdPlacements.REWARDED_AD_TIMEOUT_MS);
@@ -197,10 +197,24 @@ var exp_SdkMgr = function () {
     return true;
   };
   _ctor.prototype.showInsert = function (t) {
-    $z1AudioMgr.AudioMgr.getInstance().pauseAllMusic();
-    $z1PlatformManager.PlatformManager.getInstance().showInsertAd(t, function () {
-      $z1AudioMgr.AudioMgr.getInstance().resumeAllMusic();
-    });
+    var audio = $z1AudioMgr.AudioMgr.getInstance();
+    var request = { done: false, paused: false, timer: null };
+    function finish() {
+      if (request.done) return;
+      request.done = true;
+      if (request.timer !== null) clearTimeout(request.timer);
+      request.timer = null;
+      if (request.paused) audio.resumeAllMusic(request);
+    }
+    try {
+      request.paused = true;
+      audio.pauseAllMusic(request);
+      request.timer = setTimeout(finish, $z1AdPlacements.REWARDED_AD_TIMEOUT_MS);
+      $z1PlatformManager.PlatformManager.getInstance().showInsertAd(t, finish);
+    } catch (error) {
+      finish();
+      $z1LogMgr.LogMgr.getInstance().debug(error && error.message || error);
+    }
   };
   _ctor.prototype.showBanner = function (t) {
     $z1PlatformManager.PlatformManager.getInstance().showBanner(t);

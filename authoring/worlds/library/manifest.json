@@ -1633,6 +1633,14 @@
         "pack": "environment-1",
         "guid": "40df0aef196c6474ba5dbb94cdc63cd1",
         "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Road_up_Forest.png"
+      },
+      "colorShift": {
+        "rgb": [
+          23,
+          16,
+          2
+        ],
+        "greenOnly": true
       }
     },
     {
@@ -2205,6 +2213,14 @@
         "pack": "environment-1",
         "guid": "53ec88f52bc969f4f9e77b078e5aabdd",
         "path": "Assets/Layer Lab/2D Minimal-Environment/Environment 1/ResourcesData/Sprites/Field/Field_Forest.png"
+      },
+      "colorShift": {
+        "rgb": [
+          23,
+          16,
+          2
+        ],
+        "greenOnly": true
       }
     },
     {
@@ -5786,214 +5802,6 @@
       "defaultScale": 0.8505408062930186
     },
     {
-      "id": "custom-be84d29ed367c4d6acc39c98",
-      "name": "clean-ground-1",
-      "category": "custom",
-      "biomes": [
-        "fire",
-        "lava"
-      ],
-      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-1.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "world",
-      "sha256": "be84d29ed367c4d6acc39c9868ed3595afc4dae84bfd498e1c4715d74ef79ea5"
-    },
-    {
-      "id": "custom-2030a9ba92caa920181a816b",
-      "name": "clean-ground-2",
-      "category": "custom",
-      "biomes": [
-        "fire",
-        "lava"
-      ],
-      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-2.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "world",
-      "sha256": "2030a9ba92caa920181a816b8c0ce206456c6b52edd27586edd66eb3d2efebe0"
-    },
-    {
-      "id": "custom-18c740e640314dccd58725c2",
-      "name": "clean-ground-3",
-      "category": "custom",
-      "biomes": [
-        "fire",
-        "lava"
-      ],
-      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-3.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "world",
-      "sha256": "18c740e640314dccd58725c2b4e6d456b5f947ec804d8e2e0e067103d35e7d33"
-    },
-    {
-      "id": "custom-f1819c830e57f5100a548c49",
-      "name": "clean-ground-4",
-      "category": "custom",
-      "biomes": [
-        "fire",
-        "lava"
-      ],
-      "file": "authoring/worlds/library/images/map07-six-layers/clean-ground-4.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "world",
-      "sha256": "f1819c830e57f5100a548c4948d0ddf0c0fb522977a24226b00349fe545d6434"
-    },
-    {
-      "id": "custom-92e66f1aa5d04a2eb21eda1e",
-      "name": "Map 7 clean field 1",
-      "category": "field",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/field-1.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "92e66f1aa5d04a2eb21eda1e5a316a9353fe3718cdb8dbac293b68021ba2e692"
-    },
-    {
-      "id": "custom-fe6e6c0bc1b51a33cba68361",
-      "name": "Map 7 editable roads 1",
-      "category": "roads",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/roads-1.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "fe6e6c0bc1b51a33cba68361560408b41685fd2d1e5e8c9f51bfc7a1b16b5643"
-    },
-    {
-      "id": "custom-76876189e0fda138fae8d6e4",
-      "name": "Map 7 clean field 2",
-      "category": "field",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/field-2.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "76876189e0fda138fae8d6e47080d3c91fab9dafe4ebe687eba32d0855d8e029"
-    },
-    {
-      "id": "custom-839bac6d37780d11428862d5",
-      "name": "Map 7 editable roads 2",
-      "category": "roads",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/roads-2.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "839bac6d37780d11428862d50050078291cba9f5b947e99414c6220419b311d1"
-    },
-    {
-      "id": "custom-102c3717eeb27c1ada945455",
-      "name": "Map 7 clean field 3",
-      "category": "field",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/field-3.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "102c3717eeb27c1ada945455e585574b0fac810be9a0c9b0c08ebe11419259d1"
-    },
-    {
-      "id": "custom-d03d2720c1762e4ecdb2430f",
-      "name": "Map 7 editable roads 3",
-      "category": "roads",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/roads-3.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "d03d2720c1762e4ecdb2430fa65e375184f552e2001fc655b9b98d3698146a88"
-    },
-    {
-      "id": "custom-3656d674b7c98f9f91882bf1",
-      "name": "Map 7 clean field 4",
-      "category": "field",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/field-4.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "3656d674b7c98f9f91882bf1bc67bb1666d6acf21b09c1d7466f1d017da1ab9f"
-    },
-    {
-      "id": "custom-438e5d024a012ea84dd26162",
-      "name": "Map 7 editable roads 4",
-      "category": "roads",
-      "biomes": [
-        "fire"
-      ],
-      "file": "authoring/worlds/library/images/map07-editable-roads/roads-4.png",
-      "width": 930,
-      "height": 1514,
-      "anchor": {
-        "x": 0.5,
-        "y": 0
-      },
-      "depth": "ground",
-      "sha256": "438e5d024a012ea84dd26162b39b435c2dc5c0a009cba7eef4be81f8c3fdd98a"
-    },
-    {
       "id": "terrain-forest-river-boundary",
       "name": "forest River boundary",
       "category": "water",
@@ -6960,38 +6768,6 @@
       "defaultScale": 0.5
     },
     {
-      "id": "shadow-tree-overlay",
-      "name": "Shadow Overlay (10.2%)",
-      "category": "shadows",
-      "biomes": [
-        "forest",
-        "deep-forest",
-        "autumn",
-        "desert",
-        "snow",
-        "ice",
-        "fire",
-        "lava"
-      ],
-      "file": "authoring/worlds/library/images/shadow-tree-overlay.png",
-      "width": 274,
-      "height": 129,
-      "anchor": {
-        "x": 0.5,
-        "y": 0.5
-      },
-      "depth": "ground",
-      "defaultScale": 1,
-      "paletteLast": true,
-      "sha256": "d7d5e08651668bf08abffd204af8b0149d6c7dfb9cf9f0f0513e144f715c7805",
-      "source": {
-        "kind": "derived-shadow-mask",
-        "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
-        "color": "#000000",
-        "alpha": 26
-      }
-    },
-    {
       "id": "terrain-forest-bridge-ew",
       "name": "forest bridge",
       "category": "bridges",
@@ -7499,6 +7275,32 @@
         "kit": "bridge-oblique-v2"
       },
       "defaultScale": 1.85
+    },
+    {
+      "id": "shadow-brush",
+      "name": "Shadow brush",
+      "category": "shadows",
+      "biomes": [
+        "forest",
+        "deep-forest",
+        "autumn",
+        "desert",
+        "snow",
+        "ice",
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/shadow-brush.png",
+      "width": 32,
+      "height": 32,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "sha256": "f7ca00a32030aabd69040babb67db89f1e356d753ea1fed62bc9c77370088af1",
+      "paletteLast": true,
+      "brush": "shadow"
     }
   ],
   "biomes": [

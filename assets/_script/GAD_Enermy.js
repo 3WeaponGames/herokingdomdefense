@@ -216,7 +216,7 @@ var def_GAD_Enermy = function (t) {
       // Identical simultaneous hits share one sound; damage remains per arrow.
       if (frame < 0 || _ctor._hitAudioFrame !== frame) {
         _ctor._hitAudioFrame = frame;
-        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit);
+        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit, undefined, undefined, { owner: this });
       }
       this.addColliderTagID(t.getTagID());
       return this._hp <= 0 ? (this.onDie(), $z1GAD_Configs.emGADHitState.HitDie) : $z1GAD_Configs.emGADHitState.HitHurt;
