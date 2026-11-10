@@ -20,6 +20,8 @@ function ambient(actor) {
   stop(renderer);
   if (renderer.findAnimation && !renderer.findAnimation(effect.ambientAnimation)) return;
   var entry = renderer.setAnimation(TRACK, effect.ambientAnimation, true); if (!entry) return;
+  var json = renderer.skeletonData.skeletonJson, pack = json && json._fantasy && json._fantasy.pack, speed = pack === "fantasy-bosses" ? .65 : pack === "fantasy-monsters" ? .75 : 1;
+  if (entry.setTimeScale) entry.setTimeScale(speed); else entry.timeScale = speed;
   if (entry.setMixDuration) entry.setMixDuration(0); else entry.mixDuration = 0;
   states.set(renderer, { asset: renderer.skeletonData, generation: generation, name: effect.ambientAnimation, slots: effect.ambientSlots || [] });
 }

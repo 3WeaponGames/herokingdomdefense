@@ -23,6 +23,7 @@ function fixture(options){
     options=options||{};const root=new Element('div'),edits=[],requests=[],metrics=[],type=options.type||'enemy',id=String(options.id||90001);
     const description={type,id,form:'default',key:type+':'+id+':default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
     if(type==='ally')description.levels=[1,2,3];
+    if(options.pack)description.layers[0].json._fantasy={pack:options.pack};
     if(options.events!==undefined){description.layers[0].json.animations.attack.events=options.events;description.defaultTiming=null;description.timingDefaultSource='No authored attack event.';}
     const request={type,id,record:Object.assign({ID:Number(id),AttackInterval:options.rate===undefined?1:options.rate},options.record),documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
     if(options.duration!==undefined)description.layers[0].attackDuration=options.duration;
@@ -35,6 +36,12 @@ function fixture(options){
 }
 async function main(){
     let checks=0;async function test(name,body){await body();console.log('PASS '+name);checks++;}
+    await test('Fantasy Boss previews inherit 0.65 attack speed and metrics without writing an override',async()=>{
+        const f=fixture({pack:'fantasy-bosses',default:.52});await flush();assert.equal(f.client.getState().attackSpeed,.65);assert.equal(f.client.getState().attackMetrics.animationSpeed,.65);assert.equal(f.edits.length,0);assert.equal(field(f.root,'Attack animation speed (saved)').value,.65);f.client.destroy();
+    });
+    await test('Fantasy Monsters previews inherit 0.75 attack speed and metrics without writing an override',async()=>{
+        const f=fixture({pack:'fantasy-monsters',default:.6});await flush();assert.equal(f.client.getState().attackSpeed,.75);assert.equal(f.client.getState().attackMetrics.animationSpeed,.75);assert.equal(f.edits.length,0);f.client.destroy();
+    });
     await test('opening uses the saved default for gold and leaves animation reference green without edits',async()=>{
         const f=fixture({default:.5});await flush();assert.equal(f.client.getState().effect,.5);assert.equal(f.edits.length,0);
         const active=all(f.root,n=>n.className==='preview-marker active'),references=all(f.root,n=>n.className==='preview-marker reference');

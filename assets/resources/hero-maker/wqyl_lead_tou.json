@@ -494,10 +494,22 @@
       "parent": "Rider/Mount"
     },
     {
-      "name": "Rider/Body/Cape",
+      "name": "Rider/Body/CapeAnchor",
       "parent": "Rider/Body",
       "x": -48,
-      "y": -26,
+      "y": -26
+    },
+    {
+      "name": "Rider/Body/CapeShoulder",
+      "parent": "Rider/Body/CapeAnchor",
+      "x": 30.24,
+      "y": 35.58
+    },
+    {
+      "name": "Rider/Body/Cape",
+      "parent": "Rider/Body/CapeShoulder",
+      "x": -30.24,
+      "y": -35.58,
       "rotation": 0
     },
     {
@@ -827,8 +839,8 @@
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
-            "width": 118,
-            "height": 106,
+            "width": 120,
+            "height": 108,
             "color": "ffffffff"
           }
         }
@@ -18107,7 +18119,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -23565,7 +23577,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -28349,7 +28361,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -32512,7 +32524,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -39136,7 +39148,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -42148,7 +42160,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -59843,7 +59855,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -77616,7 +77628,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -95389,7 +95401,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -113162,7 +113174,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,
@@ -130935,7 +130947,7 @@
             }
           ]
         },
-        "Rider/Body/Cape": {
+        "Rider/Body/CapeShoulder": {
           "rotate": [
             {
               "time": 0,

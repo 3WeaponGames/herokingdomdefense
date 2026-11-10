@@ -3,10 +3,10 @@
   "icons": {
     "1": {
       "lv1": {
-        "resource": "character-parts/Parts/Chest/FA_Chest_032_Blue",
+        "resource": "character-parts/Parts/Chest/FA_Chest_050_Gold",
         "width": 76,
         "height": 68,
-        "id": "Chest/FA_Chest_032_Blue"
+        "id": "Chest/FA_Chest_050_Gold"
       },
       "lv2": {
         "resource": "character-parts/Parts/Chest/FA_Chest_031_Green",
@@ -29,10 +29,10 @@
     },
     "2": {
       "lv1": {
-        "resource": "character-parts/Parts/Helmet/FA_Helmet_047_White",
-        "width": 118,
-        "height": 106,
-        "id": "Helmet/FA_Helmet_047_White"
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_003_Wood",
+        "width": 120,
+        "height": 108,
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_003_Wood"
       },
       "lv2": {
         "resource": "character-parts/Parts/Helmet/FA_Helmet_041_Green",
@@ -55,10 +55,10 @@
     },
     "3": {
       "lv1": {
-        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_009",
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_021",
         "width": 86,
         "height": 34,
-        "id": "HandRight/Arrow/FA_Consumable_Arrow_009"
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_021"
       },
       "lv2": {
         "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_012",
@@ -91,10 +91,10 @@
         "id": "HandRight/Arrow/FA_Consumable_Arrow_018"
       },
       "skirmisher_lv1": {
-        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_009",
+        "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_021",
         "width": 86,
         "height": 34,
-        "id": "HandRight/Arrow/FA_Consumable_Arrow_009"
+        "id": "HandRight/Arrow/FA_Consumable_Arrow_021"
       },
       "skirmisher_lv2": {
         "resource": "character-parts/Parts/HandRight/Arrow/FA_Consumable_Arrow_012",
@@ -309,10 +309,10 @@
     },
     "4": {
       "lv1": {
-        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_010_Gray",
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_Brown",
         "width": 130,
         "height": 71,
-        "id": "HandRight/Bow/FA_WP_Main_Bow_010_Gray"
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_Brown"
       },
       "lv2": {
         "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_012_Green",
@@ -345,10 +345,10 @@
         "id": "HandRight/Bow/FA_WP_Main_Bow_014_GrayYellow"
       },
       "skirmisher_lv1": {
-        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_010_Gray",
+        "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_014_Brown",
         "width": 130,
         "height": 71,
-        "id": "HandRight/Bow/FA_WP_Main_Bow_010_Gray"
+        "id": "HandRight/Bow/FA_WP_Main_Bow_014_Brown"
       },
       "skirmisher_lv2": {
         "resource": "character-parts/Parts/HandRight/Bow/FA_WP_Main_Bow_012_Green",

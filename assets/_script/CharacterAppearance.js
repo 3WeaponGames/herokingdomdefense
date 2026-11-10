@@ -166,6 +166,8 @@ var Appearance = cc.Class({
     var effectData = this.team === "enemy" && actor.spAni && actor.spAni.skeletonData && actor.spAni.skeletonData.skeletonJson;
     var hasAmbient = effectData && effectData._fantasy && effectData._fantasy.effects && effectData._fantasy.effects.ambientAnimation;
     if (hasAmbient || this.fantasyAmbient) { require("FantasyEffects").ambient(actor); this.fantasyAmbient = !!hasAmbient; }
+    var hasFantasyPlayback = effectData && effectData._fantasy && ["fantasy-bosses", "fantasy-monsters"].indexOf(effectData._fantasy.pack) >= 0;
+    if (hasFantasyPlayback || this.fantasyPlayback) { require("GameToolsOverrides").applyAnimationPlayback(actor, this.team); this.fantasyPlayback = !!hasFantasyPlayback; }
     var maker=makerRider(this);if(maker)maker.removeFollow(actor.ctrPlayAni);
     try {
     if (!looks || !library) load();

@@ -2,6 +2,11 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Library=require('../../packages/hkd-characters/lib/unit-library'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Renderer=require('../../packages/game-data-editor/preview/spine-renderer'),Bake=require('../../packages/hkd-characters/lib/native-bake');
 const sources=Library.load(root).sources.filter(source=>source.pack.startsWith('fantasy-'));
+
+test('Fantasy previews hide empty hit placeholders and keep real hit animations available',()=>{
+ for(const source of sources){const json=Library.describe(root,source.id,true).layers[0].json;assert(!Renderer.animationNames(json).includes('hit'),source.id);assert(Renderer.animationNames(json).includes('attack'));}
+ const json={_fantasy:{},slots:[{name:'body'}],animations:{hit:{slots:{body:{color:[{time:0,color:'ff0000ff'},{time:.16,color:'ffffffff'}]}}}}};assert(Renderer.animationNames(json).includes('hit'),'A real hit flash is still selectable');
+});
 test('particle import preserves all 166 original body animations, bones and authored event contracts',()=>{
  const crypto=require('node:crypto'),contracts=require('./fixtures/fantasy-body-animation-contracts.json'),hash=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');assert.equal(Object.keys(contracts).length,166);
  for(const source of sources){const rig=Library.describe(root,source.id,true).layers[0].json,animations=structuredClone(rig.animations);delete animations.__fx_ambient;for(const clip of Object.values(animations))for(const key of ['bones','slots'])for(const name of Object.keys(clip[key]||{}))if(name.startsWith('__fx/'))delete clip[key][name];assert.equal(hash(animations),contracts[source.id].animations,source.id+' body animation');assert.equal(hash(rig.bones.filter(bone=>!bone.name.startsWith('__fx/'))),contracts[source.id].bones,source.id+' bones');assert.equal(hash(rig.events||{}),contracts[source.id].events,source.id+' authored events');}

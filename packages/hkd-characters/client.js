@@ -25,7 +25,7 @@ function mount(host,api){
   const body=el('div',undefined,root,'body'),library=el('aside',undefined,body,itemMode?'library':'library resizable-library'),main=el('main',undefined,body),inspector=el('aside',undefined,body,'inspector');
   el('h2',itemMode?'HERO ITEMS':'CHARACTERS',library);const unitFilter=el('select',undefined,library);unitFilter.className='wide';unitFilter.setAttribute('aria-label','Character group');for(const group of ['All characters','Hero','Allies','Enemies']){const option=el('option',group,unitFilter);option.value=group==='All characters'?'':group;}const unitList=el('div',undefined,library,'look-list');unitList.style.marginTop='7px';
   const packageFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');unitSort.setAttribute('aria-label','Sort characters');
-  for(const option of [{id:'',label:'All packages'},...UnitPacks.packs,{id:'original',label:'Original game'}]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
+  for(const option of [{id:'',label:'All packages'},...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
   for(const [value,label]of [['name','Sort by name'],['package','Sort by package']]){const entry=el('option',label,unitSort);entry.value=value;}
   let looks=null;if(itemMode){const savedLooks=el('details',undefined,library);el('summary','Saved looks',savedLooks);looks=el('div',undefined,savedLooks,'look-list');}
   const librarySplit=el('div',undefined,library,itemMode?'divider':'library-splitter'),partLibrary=el('section',undefined,library,'part-library');el('h2','PART LIBRARY',partLibrary);
@@ -58,7 +58,7 @@ function mount(host,api){
   play.title='Pause/play (Space when the preview is focused)';play.setAttribute('aria-keyshortcuts','Space');
   button(transport,'◀ Frame',()=>step(-1));button(transport,'Frame ▶',()=>step(1));
   const animation=el('select',undefined,transport);animation.setAttribute('aria-label','Preview animation');
-  const speed=el('select',undefined,transport);for(const n of [.25,.5,1,2]){const o=el('option',n+'×',speed);o.value=n;}speed.value=1;speed.setAttribute('aria-label','Animation speed');
+  const speed=el('select',undefined,transport);for(const n of [.25,.5,.65,.75,1,2]){const o=el('option',n+'×',speed);o.value=n;}speed.value=1;speed.setAttribute('aria-label','Animation speed');
   const facing=button(transport,'Face left',()=>{direction*=-1;facing.textContent=direction===1?'Face left':'Face right';draw();});
   const zoom=el('select',undefined,transport);for(const n of [.25,.5,.75,1,1.5,2,3,4]){const o=el('option',Math.round(n*100)+'%',zoom);o.value=n;}zoom.value=1;zoom.setAttribute('aria-label','Preview zoom');zoom.title='Ctrl+mouse wheel over the preview to zoom';zoom.onchange=draw;
   function previewWheel(event){
@@ -83,6 +83,7 @@ function mount(host,api){
   let canUndo=false,canRedo=false,scrubs=[],virtualUnit=null,creator=null;
   let pendingFocus=null,focusTask=null,focusSequence=0;
   let selectedBossSlot='',selectedBossVariant='',libraryKey='';
+  let previewSpeedKey='';
   let viewPan={x:0,y:0},renderPan={x:0,y:0},panDrag=null,viewKey='';
   const images=new Map();let fittingRetryAfter=0,viewFitKey='';
   const clone=v=>JSON.parse(JSON.stringify(v));
@@ -409,7 +410,8 @@ function mount(host,api){
     renderInspector();renderAssets();const nextViewKey=JSON.stringify(p.base);if(viewKey!==nextViewKey){viewPan={x:0,y:0};viewKey=nextViewKey;}
     try{const description=await api.ipc('describe',p.base);if(serial!==token||disposed)return;if(p.base.mount){const rider=description.layers.find(layer=>layer.json.bones.some(bone=>bone.name==='Rider/Mount/Mount')),horse=description.layers.find(layer=>layer.mount)||rider&&description.layers.find(layer=>layer!==rider);if(horse&&rider){horse.mount=true;MountAttack.synchronize(horse.json.animations.attack,rider.json.animations.attack);}}rig=description;spine=api.runtime(description);for(const layer of description.layers)if(BossModel.metadata(layer.json))BossModel.apply(layer.json,p.boss);
       const result=await Promise.all([api.renderer.createLayers(spine,description.layers),api.renderer.createLayers(spine,description.layers),Promise.all([...new Set(p.parts.map(part=>part.sprite))].map(async id=>[id,await imageFor(assets[id])]))]);if(serial!==token||disposed)return;
-      layers=result[0];baseLayers=result[1];const textures=Object.fromEntries(result[2].map(([id,img])=>[id,new spine.FakeTexture(img)]));states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless,skinTint:api.core.skinTint(p)}));fittingKey=fittingSignature(p);animation.innerHTML='';const names=[...new Set([].concat.apply([],description.layers.map(l=>l.animations)))];for(const name of names){const option=el('option',name,animation);option.value=name;}animation.value=previousPose&&names.includes(previousPose.animation)?previousPose.animation:names.includes('idle')?'idle':names[0];time=previousPose?previousPose.time:0;last=0;updateDuration();fitBounds();syncPartLibrary();renderInspector();renderAssets();draw();fitBounds(true);draw();current.canvas.style.opacity=current.handles.style.opacity='';current.box.setAttribute('aria-busy','false');message('Ready · Changes remain drafts until Save.');
+      const speedKey=p.base.type+':'+p.base.id;if(previewSpeedKey!==speedKey){const fantasy=description.layers.map(layer=>layer.json._fantasy).find(Boolean);speed.value=fantasy&&fantasy.pack==='fantasy-bosses'?.65:fantasy&&fantasy.pack==='fantasy-monsters'?.75:1;previewSpeedKey=speedKey;}
+      layers=result[0];baseLayers=result[1];const textures=Object.fromEntries(result[2].map(([id,img])=>[id,new spine.FakeTexture(img)]));states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless,skinTint:api.core.skinTint(p)}));fittingKey=fittingSignature(p);animation.innerHTML='';const names=[...new Set([].concat.apply([],description.layers.map(l=>api.renderer.animationNames?api.renderer.animationNames(l.json):l.animations)))];for(const name of names){const option=el('option',name,animation);option.value=name;}animation.value=previousPose&&names.includes(previousPose.animation)?previousPose.animation:names.includes('idle')?'idle':names[0];time=previousPose?previousPose.time:0;last=0;updateDuration();fitBounds();syncPartLibrary();renderInspector();renderAssets();draw();fitBounds(true);draw();current.canvas.style.opacity=current.handles.style.opacity='';current.box.setAttribute('aria-busy','false');message('Ready · Changes remain drafts until Save.');
     }catch(error){if(serial===token)message(error.message,true);}
   }
   function updateDuration(){duration=Math.max(1/30,...layers.map(l=>(l.data.findAnimation(animation.value)||{}).duration||0));scrub.max=duration;time=Math.min(time,duration);}

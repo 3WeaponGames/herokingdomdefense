@@ -12,6 +12,11 @@ function description(){return {type:'ally',id:'90004',key:'ally:90004:default',f
 ]};}
 const request=(level=2)=>({type:'ally',id:90004,level,record:{ID:90004,AttackInterval:.829}});
 
+test('Fantasy Boss metrics inherit 0.65 playback without creating settings and honor explicit attack speed edits',()=>{
+ const source=description();source.layers[0].json._fantasy={pack:'fantasy-bosses'};const settings={timingDefaults:{'enemy:94001:default':{attack:.52}}},before=clone(settings),input={type:'enemy',id:94001,record:{AttackInterval:1}};
+ assert.equal(Profile.describe(source,settings,input).animationSpeed,.65);assert.deepEqual(settings,before);source.layers[0].json._fantasy.pack='fantasy-monsters';assert.equal(Profile.describe(source,settings,input).animationSpeed,.75);settings.animationSpeeds={'enemy:94001:default':1.2};assert.equal(Profile.describe(source,settings,input).animationSpeed,1.2);
+});
+
 test('attack profile measures the complete selected appearance across bones, slots, deforms, draw order and events',()=>{
   const source=description(),before=clone(source),profile=Profile.describe(source,{},request());
   assert.equal(profile.duration,1.6);assert.equal(profile.cooldownRate,.829,'The profile keeps source precision for calculation');

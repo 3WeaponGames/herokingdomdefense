@@ -196,4 +196,14 @@ function drawCanvas(spine,canvas,layers,options){
     }));
 }
 function destroyCanvas(canvas){const state=canvasStates.get(canvas);if(state&&state.gl){const gl=state.gl;state.textures.forEach(texture=>gl.deleteTexture(texture));gl.deleteBuffer(state.vertices);gl.deleteBuffer(state.indices);gl.deleteShader(state.vertex);gl.deleteShader(state.fragment);gl.deleteProgram(state.program);const extension=gl.getExtension('WEBGL_lose_context');if(extension)extension.loseContext();}canvasStates.delete(canvas);}
-module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest,renderPasses};
+function animationNames(json){
+    const setup=new Map((json.slots||[]).map(slot=>[slot.name,slot.color||'ffffffff']));
+    return Object.entries(json.animations||{}).filter(([name,clip])=>{
+        if(name==='__fx_ambient')return false;
+        if(name!=='hit'||!json._fantasy)return true;
+        // Imported Fantasy hit placeholders only repeat setup colors. Keep
+        // real pose, tint or sprite timelines available if added later.
+        return Object.entries(clip).some(([key,value])=>key==='bones'?Object.keys(value||{}).length:key!=='slots'?true:Object.entries(value||{}).some(([slot,channels])=>Object.entries(channels).some(([channel,frames])=>channel!=='color'||frames.some(frame=>frame.color!==(setup.get(slot)||'ffffffff')))));
+    }).map(([name])=>name);
+}
+module.exports={createLayers,seek,geometry,bounds,draw,drawWorld,drawCanvas,destroyCanvas,transformPoint,inversePoint,hitTest,renderPasses,animationNames};
