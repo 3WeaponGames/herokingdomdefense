@@ -20,6 +20,7 @@ var exp_AudioMgr = function (t) {
     e.effectVolume = 1;
     e.musicVolume = 1;
     e.channelStates = new Map();
+    e.releasedSources = new WeakSet();
     e.pendingClips = new Map();
     e.allMusicPaused = false;
     e.appHidden = false;
@@ -89,13 +90,31 @@ var exp_AudioMgr = function (t) {
     var e = new cc.AudioSource();
     if (this.audioSourceMap.has(t)) {
       var old = this.audioSourceMap.get(t);
-      this.stopSource(old);
-      this.channelStates.delete(old);
-      old.destroy();
-      this.freeEffectMap.has(t) && this.freeEffectMap.set(t, e);
+      var free = this.freeEffectMap.get(t) === old;
+      this.releaseAudioSource(t, old);
+      if (free) this.freeEffectMap.set(t, e);
     }
     this.audioSourceMap.set(t, e);
     return e;
+  };
+  _ctor.prototype.releaseAudioSource = function (key, expected) {
+    var source = this.audioSourceMap.get(key);
+    if (!source || expected && expected !== source || this.releasedSources.has(source)) return false;
+    // Cancel pending loads before releasing the handle. A standalone AudioSource
+    // has no node: Component.destroy() would also poison deferred destruction.
+    try { this.stopSource(source); }
+    catch (error) { $z1LogMgr.LogMgr.getInstance().error("Audio channel stop failed:", key, error); }
+    this.releasedSources.add(source);
+    if (this.audioSourceMap.get(key) === source) { this.audioSourceMap.delete(key); this.removeMusicKey(key); }
+    if (this.freeEffectMap.get(key) === source) this.freeEffectMap.delete(key);
+    if (this.EffectAduioSource === source) this.EffectAduioSource = null;
+    this.channelStates.delete(source);
+    try {
+      if (source.node) {
+        if ((!cc.isValid || cc.isValid(source, true)) && source.destroy) source.destroy();
+      } else if (source.audio && source.audio.destroy) source.audio.destroy();
+    } catch (error) { $z1LogMgr.LogMgr.getInstance().error("Audio channel release failed:", key, error); }
+    return true;
   };
   _ctor.prototype.setEffectVolume = function (t) {
     undefined === t && (t = 1);
@@ -176,6 +195,7 @@ var exp_AudioMgr = function (t) {
     });
   };
   _ctor.prototype.playSource = function (source, config, key, loop, music, volume, complete, cacheKey) {
+    if (!source || this.releasedSources.has(source)) return false;
     var manager = this;
     var state = this.channelState(source);
     var version = ++state.version;
@@ -221,7 +241,7 @@ var exp_AudioMgr = function (t) {
     if (recover && state.loop && states && (current === states.ERROR || current === states.STOPPED)) source.play();
   };
   _ctor.prototype.stopSource = function (source) {
-    if (!source) return;
+    if (!source || this.releasedSources.has(source)) return;
     var state = this.channelState(source);
     state.version++;
     state.active = state.loading = state.ready = state.started = state.paused = false;

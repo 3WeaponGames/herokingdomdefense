@@ -927,6 +927,9 @@ var def_KinghtFallGameCtrl = function (t) {
       l(s);
     }
     this.cleanMap();
+    // Wave cleanup retires transient combat channels; the planning phase and
+    // next wave need a fresh session tied to the new combat epoch.
+    if (BattleSounds.start) BattleSounds.start(this);
   };
   _ctor.prototype.cleanMap = function () {
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
