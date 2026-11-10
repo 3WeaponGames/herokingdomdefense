@@ -5994,84 +5994,96 @@
       "name": "Spawn 1",
       "x": -540.3931512823877,
       "y": 1411.990875068345,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 2,
       "name": "Spawn 2",
       "x": -635.6025789350355,
       "y": 1345.5104671006382,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 3,
       "name": "Spawn 3",
       "x": -501.8828683244444,
       "y": 1347.6918487176122,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 4,
       "name": "Spawn 4",
       "x": -771.9,
       "y": -623.7679999999999,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 5,
       "name": "Spawn 5",
       "x": -846.3000000000001,
       "y": -654.0479999999999,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 6,
       "name": "Spawn 6",
       "x": -883.5,
       "y": -605.5999999999999,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 7,
       "name": "Spawn 7",
       "x": -56.638,
       "y": -1458.365,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
       "x": 33.882,
       "y": -1393.344096787691,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 9,
       "name": "Spawn 9",
       "x": -95.663,
       "y": -1372.007,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 10,
       "name": "Spawn 10",
       "x": 781.2,
       "y": -708.5519999999999,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 11,
       "name": "Spawn 11",
       "x": 866.76,
       "y": -666.16,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     },
     {
       "id": 12,
       "name": "Spawn 12",
       "x": 714.24,
       "y": -705.524,
-      "enabled": true
+      "enabled": true,
+      "radius": 150
     }
   ],
   "graphs": [

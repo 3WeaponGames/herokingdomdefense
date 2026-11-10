@@ -142,6 +142,37 @@ NavigationGrid.prototype.segmentClear=function(start,end,radius) {
   for(var i=0;i<ids.length;i++)if(this._hitsPolygon(a,b,r,this.polygons[ids[i]].vertices))return false;
   return true;
 };
+// One-way terrain: an existing overlap may continue until it exits. Every new
+// obstacle and every re-entry is still forbidden, including the unit's radius.
+function exitPolygonClear(start,end,radius,vertices) {
+  var dx=end.x-start.x,dy=end.y-start.y,rr=radius+EPS,intervals=[],times=[0,1],length2=dx*dx+dy*dy;
+  function add(lo,hi){lo=Math.max(0,lo);hi=Math.min(1,hi);if(lo<=hi)intervals.push([lo,hi]);}
+  function circle(center){var x=start.x-center.x,y=start.y-center.y,c=x*x+y*y-rr*rr;if(!length2){if(c<=0)add(0,1);return;}var b=x*dx+y*dy,disc=b*b-length2*c;if(disc<0)return;var root=Math.sqrt(disc);add((-b-root)/length2,(-b+root)/length2);}
+  function clip(range,p,d,lo,hi){if(Math.abs(d)<EPS)return p>=lo&&p<=hi;var a=(lo-p)/d,b=(hi-p)/d;range[0]=Math.max(range[0],Math.min(a,b));range[1]=Math.min(range[1],Math.max(a,b));return range[0]<=range[1];}
+  for(var i=0;i<vertices.length;i++){
+    var a=vertices[i],b=vertices[(i+1)%vertices.length],ex=b.x-a.x,ey=b.y-a.y,len=Math.hypot(ex,ey),den=dx*ey-dy*ex;
+    if(Math.abs(den)>EPS){var ax=a.x-start.x,ay=a.y-start.y,t=(ax*ey-ay*ex)/den,u=(ax*dy-ay*dx)/den;if(t>0&&t<1&&u>=0&&u<=1)times.push(t);}
+    circle(a);if(!len)continue;
+    var x=start.x-a.x,y=start.y-a.y,range=[0,1];
+    if(clip(range,(x*ex+y*ey)/len,(dx*ex+dy*ey)/len,0,len)&&clip(range,(x*-ey+y*ex)/len,(dx*-ey+dy*ex)/len,-rr,rr))add(range[0],range[1]);
+  }
+  times.sort(function(a,b){return a-b;});
+  for(var j=1;j<times.length;j++){var lo=times[j-1],hi=times[j],middle=(lo+hi)/2;if(inside({x:start.x+dx*middle,y:start.y+dy*middle},vertices))add(lo,hi);}
+  if(!intervals.length)return true;
+  intervals.sort(function(a,b){return a[0]-b[0];});
+  if(intervals[0][0]>EPS)return false;
+  var endOfOverlap=intervals[0][1];
+  for(var k=1;k<intervals.length;k++){if(intervals[k][0]>endOfOverlap+EPS)return false;endOfOverlap=Math.max(endOfOverlap,intervals[k][1]);}
+  return true;
+}
+NavigationGrid.prototype.canExitBlocked=function(start,end,radius) {
+  var a=readPoint(start),b=readPoint(end),r=radiusValue(radius),bounds=this.bounds;
+  function inward(from,to,min,max){return from<min-EPS?to>=from-EPS&&to<=max+EPS:from>max+EPS?to<=from+EPS&&to>=min-EPS:to>=min-EPS&&to<=max+EPS;}
+  if(!inward(a.x,b.x,bounds.minX+r,bounds.maxX-r)||!inward(a.y,b.y,bounds.minY+r,bounds.maxY-r))return false;
+  var ids=this._query(Math.min(a.x,b.x)-r,Math.min(a.y,b.y)-r,Math.max(a.x,b.x)+r,Math.max(a.y,b.y)+r);
+  for(var i=0;i<ids.length;i++)if(!exitPolygonClear(a,b,r,this.polygons[ids[i]].vertices))return false;
+  return true;
+};
 NavigationGrid.prototype._center=function(id) {
   if(this._centers[id])return this._centers[id];
   var x=id%this.columns,y=Math.floor(id/this.columns),b=this.bounds,s=this.cellSize;
@@ -222,9 +253,22 @@ function anchorTask(grid,p,cache){
   var child=nearestTask(grid,p,cache,grid.cellSize*2.5),heap=null,result=[];
   return new Task(function(job){if(!heap){child.step(1);if(child.done){heap=child.result;child=null;}return;}if(!heap.items.length||result.length===12){job._finish(result);return;}var candidate=heap.pop();if(grid.segmentClear(p,candidate.point,cache.radius))result.push(candidate);},function(){if(child)child.cancel();heap=null;result=null;});
 }
+function egressTask(grid,start,cache,goal){
+  // Directed edges permit travel inside an existing blocker. Unlike ordinary
+  // occupancy search they never allow clear ground to enter a blocked cell.
+  var heap=new Heap(),seen=new Uint8Array(grid.count),closed=new Uint8Array(grid.count),cost=new Float64Array(grid.count),parent=new Int32Array(grid.count),phase='seed',seed=0,current=null,direction=0,cursor=-1,route=[],cx=Math.max(0,Math.min(grid.columns-1,Math.floor((start.x-grid.bounds.minX)/grid.cellSize))),cy=Math.max(0,Math.min(grid.rows-1,Math.floor((start.y-grid.bounds.minY)/grid.cellSize)));
+  function offer(id,from,g){if(id<0||id>=grid.count||closed[id]||seen[id]&&cost[id]<=g)return;seen[id]=1;cost[id]=g;parent[id]=from;heap.push({id:id,g:g,f:g+distance(grid._center(id),goal)});}
+  return new Task(function(job){
+    if(phase==='seed'){if(seed>=9){phase='pop';return;}var x=cx+seed%3-1,y=cy+Math.floor(seed/3)-1;seed++;if(x<0||x>=grid.columns||y<0||y>=grid.rows)return;var id=y*grid.columns+x,p=grid._center(id);if(grid._inBounds(p,cache.radius)&&grid.canExitBlocked(start,p,cache.radius))offer(id,-1,distance(start,p));return;}
+    if(phase==='pop'){if(!heap.items.length){job._finish(null);return;}current=heap.pop();if(closed[current.id]||current.g!==cost[current.id])return;closed[current.id]=1;if(grid._walkableCell(cache,current.id)){cursor=current.id;phase='route';return;}direction=0;phase='edges';return;}
+    if(phase==='edges'){if(direction>=DIRECTIONS.length){phase='pop';return;}var delta=DIRECTIONS[direction++],x=current.id%grid.columns+delta[0],y=Math.floor(current.id/grid.columns)+delta[1];if(x<0||x>=grid.columns||y<0||y>=grid.rows)return;var id=y*grid.columns+x,a=grid._center(current.id),b=grid._center(id);if(!closed[id]&&grid._inBounds(b,cache.radius)&&grid.canExitBlocked(a,b,cache.radius))offer(id,current.id,current.g+distance(a,b));return;}
+    if(cursor>=0){route.push(point(grid._center(cursor)));cursor=parent[cursor];return;}
+    route.reverse();route.unshift(point(start));var exit=point(route[route.length-1]);exit.exitPoints=route;job._finish(exit);
+  },function(){heap=null;seen=null;closed=null;cost=null;parent=null;route=null;});
+}
 function escapeTask(grid,start,cache,goal){
   var child=nearestTask(grid,start,cache,grid.cellSize*3+cache.radius*2),near=null,chosen=new Heap(function(a,b){return a.f<b.f||a.f===b.f&&(a.d2<b.d2||a.d2===b.d2&&a.id<b.id);}),count=0,phase=0,candidate=null;
-  return new Task(function(job){if(phase===0){child.step(1);if(child.done){near=child.result;child=null;phase=1;}return;}if(phase===1){if(!near.items.length||count===128){near=null;phase=2;return;}var item=near.pop();item.f=Math.sqrt(item.d2)+distance(item.point,goal);chosen.push(item);count++;return;}if(!child){if(!chosen.items.length){job._finish(null);return;}candidate=chosen.pop();child=clearanceTask(grid,start,candidate.point,cache.radius);}child.step(1);if(child.done){var clear=child.result;child=null;if(clear)job._finish(candidate.point);}},function(){if(child)child.cancel();near=null;chosen=null;candidate=null;});
+  return new Task(function(job){if(phase===3){child.step(1);if(child.done)job._finish(child.result);return;}if(phase===0){child.step(1);if(child.done){near=child.result;child=null;phase=1;}return;}if(phase===1){if(!near.items.length||count===128){near=null;phase=2;return;}var item=near.pop();item.f=Math.sqrt(item.d2)+distance(item.point,goal);chosen.push(item);count++;return;}if(!child){if(!chosen.items.length){if(grid.isWalkable(goal,cache.radius)&&grid.canExitBlocked(start,goal,cache.radius)){job._finish(point(goal));return;}child=egressTask(grid,start,cache,goal);phase=3;return;}candidate=chosen.pop();child=clearanceTask(grid,start,candidate.point,cache.radius);}child.step(1);if(child.done){var clear=child.result;child=null;if(clear)job._finish(candidate.point);}},function(){if(child)child.cancel();near=null;chosen=null;candidate=null;});
 }
 function projectionTask(grid,goal,cache,start){
   var key=cache.radius+":"+goal.x+","+goal.y,ties=grid._projections.get(key),b=grid.bounds;
@@ -245,6 +289,7 @@ function smoothTask(grid,points,radius){
 }
 function detachTask(plan){
   var result={points:[],goal:point(plan.goal),reached:plan.reached,escape:plan.escape?{from:point(plan.escape.from),to:point(plan.escape.to),distance:plan.escape.distance}:null},index=0;
+  if(plan.escape&&plan.escape.points){result.escape.points=plan.escape.points.map(point);result.points=plan.escape.points.slice(1,-1).map(point);}
   if(plan.partial!==undefined)result.partial=plan.partial;
   return new Task(function(job){if(index<plan.points.length)result.points.push(point(plan.points[index++]));else job._finish(result);},function(){plan=null;result=null;});
 }
@@ -291,14 +336,14 @@ NavigationGrid.prototype.createSearch=function(startValue,goalValue,radius,allow
     job.phase=phase;
     if(phase==='start'){if(r>(grid.bounds.maxX-grid.bounds.minX)/2+EPS||r>(grid.bounds.maxY-grid.bounds.minY)/2+EPS){finish(job,null);return;}startFree=grid.isWalkable(start,r);phase='goal';return;}
     if(phase==='goal'){goalFree=grid.isWalkable(requestedGoal,r);phase='direct';return;}
-    if(phase==='direct'){if(startFree&&goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null});return;}cachedRoutes=startFree&&goalFree&&grid._routes?Array.from(grid._routes.values()).reverse():[];routeIndex=0;phase='route-cache';return;}
+    if(phase==='direct'){if(!startFree&&!goalFree&&distance2(start,requestedGoal)>EPS*EPS&&grid.canExitBlocked(start,requestedGoal,r)){detach({points:[start,requestedGoal],goal:requestedGoal,reached:true,escape:{from:start,to:requestedGoal,distance:distance(start,requestedGoal)}});return;}if(startFree&&goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null});return;}cachedRoutes=startFree&&goalFree&&grid._routes?Array.from(grid._routes.values()).reverse():[];routeIndex=0;phase='route-cache';return;}
     if(phase==='route-cache'){if(routeIndex>=cachedRoutes.length){cachedRoutes=null;sharedKey=allowPartial&&startFree?r+":"+requestedGoal.x+":"+requestedGoal.y:null;shared=sharedKey&&grid._partialRoutes&&grid._partialRoutes.get(sharedKey);join=shared?shared.points.length-1:-1;phase='shared';return;}cachedRoute=cachedRoutes[routeIndex++];var nearStart=Math.max(grid.cellSize*3,r*2+grid.cellSize*2),nearGoal=Math.max(grid.cellSize*6,r*4+grid.cellSize*2);if(cachedRoute.radius!==r||distance2(start,cachedRoute.start)>nearStart*nearStart||distance2(requestedGoal,cachedRoute.goal)>nearGoal*nearGoal)return;tailIndex=0;phase='route-tail';return;}
     if(phase==='route-tail'){if(tailIndex>=cachedRoute.points.length){phase='route-cache';return;}if(grid.segmentClear(cachedRoute.points[tailIndex],requestedGoal,r)){joinIndex=tailIndex;phase='route-join';}else tailIndex++;return;}
     if(phase==='route-join'){if(joinIndex<0){phase='route-cache';return;}if(!grid.segmentClear(start,cachedRoute.points[joinIndex],r)){joinIndex--;return;}var reused=[start].concat(cachedRoute.points.slice(joinIndex,tailIndex+1));if(reused[reused.length-1].x!==requestedGoal.x||reused[reused.length-1].y!==requestedGoal.y)reused.push(requestedGoal);stats.reused=true;detach({points:reused,goal:requestedGoal,reached:true,partial:false,escape:null});return;}
     if(phase==='shared'){if(shared&&distance2(start,shared.start)<=grid.cellSize*grid.cellSize*9&&join>=0){if(grid.segmentClear(start,shared.points[join],r)){stats.shared=true;detach({points:[start].concat(shared.points.slice(join)),goal:shared.goal,reached:false,partial:true,escape:null});return;}join--;return;}phase='cache';return;}
     if(phase==='cache'){cache=grid._cache(r);child=bridgeTask(grid,cache);phase='bridges';return;}
     if(phase==='bridges'){child.step(1);if(child.done){bridges=child.result;child=null;phase=startFree?'starts':'escape';}return;}
-    if(phase==='escape'){if(!child)child=escapeTask(grid,start,cache,requestedGoal);child.step(1);if(child.done){var escaped=child.result;child=null;if(!escaped){finish(job,null);return;}escape={from:start,to:escaped,distance:distance(start,escaped)};start=escaped;phase='escaped-direct';}return;}
+    if(phase==='escape'){if(!child)child=escapeTask(grid,start,cache,requestedGoal);child.step(1);if(child.done){var escaped=child.result;child=null;if(!escaped){finish(job,null);return;}escape={from:start,to:point(escaped),distance:distance(start,escaped)};if(escaped.exitPoints)escape.points=escaped.exitPoints;start=point(escaped);phase='escaped-direct';}return;}
     if(phase==='escaped-direct'){if(goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:escape});return;}phase='starts';return;}
     if(phase==='starts'){if(!child)child=anchorTask(grid,start,cache);child.step(1);if(child.done){starts=child.result;child=null;if(!starts.length){finish(job,null);return;}phase=goalFree?'goals':'projection';goalIds=new Set();}return;}
     if(phase==='goals'){if(!child)child=anchorTask(grid,requestedGoal,cache);child.step(1);if(child.done){goalAnchors=child.result;child=null;if(!goalAnchors.length&&!allowPartial){finish(job,null);return;}for(var a=0;a<goalAnchors.length;a++)goalIds.add(goalAnchors[a].id);phase='workspace';}return;}

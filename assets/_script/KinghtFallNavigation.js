@@ -34,11 +34,6 @@ function setMainPosition(node, main, position) {
 function activeCollider(collider) {
   return collider.enabled && !collider.sensor && collider.node.activeInHierarchy && (!collider.body || collider.body.active !== false);
 }
-function onEscape(start, escape) {
-  // Physics can nudge a newly spawned body while its short exit is in progress.
-  // A teleport away from that exit must request a new path instead.
-  return escape && distance(escape.from, start) + distance(start, escape.to) <= escape.distance + 0.01;
-}
 function colliderPoints(collider) {
   var offset = collider.offset || { x: 0, y: 0 };
   var points;
@@ -111,7 +106,7 @@ Navigation.prototype.refresh = function () {
   if (this.grid && !this._refreshPending && now < this._nextRefresh) return;
   this._refreshPending = false;
   this._nextRefresh = now + 250;
-  var navigation = this, game = this.game, polygons = [], friendly = [], passages = [], seen = new Set();
+  var navigation = this, game = this.game, polygons = [], friendly = [], passages = [], terrain = [], friendlyTerrain = [], seen = new Set();
   game.gameData.obstacles.concat(game.gameData.getBulidList()).forEach(function (owner) {
     // Gate wings are sibling nodes referenced as Skeleton components, not
     // descendants of the gate. Their enabled physics shapes still block units.
@@ -120,7 +115,7 @@ Navigation.prototype.refresh = function () {
       if (seen.has(shape.collider)) return;
       seen.add(shape.collider);
       var polygon = navigation.shape(shape.collider, shape.points);
-      if (polygon.length >= 3) { polygons.push(polygon); passages.push(polygon); }
+      if (polygon.length >= 3) { polygons.push(polygon); terrain.push(shape.collider); passages.push(polygon); }
     });
     var nodes = [owner.node].concat((owner.ndAniOther || []).map(function (part) { return part && (part.node || part); }));
     nodes.forEach(function (node) {
@@ -129,7 +124,7 @@ Navigation.prototype.refresh = function () {
         if (seen.has(collider) || !activeCollider(collider)) return;
         seen.add(collider);
         var polygon = navigation.shape(collider);
-        if (polygon.length >= 3) { polygons.push(polygon); friendly.push(polygon); }
+        if (polygon.length >= 3) { polygons.push(polygon); terrain.push(collider); friendly.push(polygon); friendlyTerrain.push(collider); }
       });
     });
   });
@@ -144,6 +139,8 @@ Navigation.prototype.refresh = function () {
     this._friendlyPolygons = friendly;
     this._friendlyPassages = passages;
     this.grid = new NavigationGrid(polygons, bounds, 20);
+    this.grid.terrainColliders = terrain;
+    this._friendlyTerrain = friendlyTerrain;
     this.friendlyGrid = null;
     this.revision++;
     this.stats.revisions++;
@@ -157,8 +154,43 @@ Navigation.prototype.gridFor = function (unit) {
   // wings that a 20-unit lattice misses. Keep body clearance; sample more finely.
   // Gate-sized fine searches add safe bridges between ordinary lattice cells.
   // Keep the whole map coarse and preserve the unit's real collision radius.
-  if (!this.friendlyGrid) this.friendlyGrid = new NavigationGrid(this._friendlyPolygons, this.grid.bounds, 16, this._friendlyPassages);
+  if (!this.friendlyGrid) { this.friendlyGrid = new NavigationGrid(this._friendlyPolygons, this.grid.bounds, 16, this._friendlyPassages); this.friendlyGrid.terrainColliders = this._friendlyTerrain; }
   return this.friendlyGrid;
+};
+function recordTerrainExit(unit,navigation,grid,start,radius) {
+  var candidates=grid._query(start.x-radius,start.y-radius,start.x+radius,start.y+radius),overlap=new Map();
+  for(var i=0;i<candidates.length;i++){var id=candidates[i],collider=grid.terrainColliders&&grid.terrainColliders[id];if(collider&&grid._hitsPolygon(start,start,radius,grid.polygons[id].vertices))overlap.set(collider,grid.polygons[id].vertices);}
+  // Capture overlaps before voluntary movement. This exception can never be
+  // acquired by attempting to walk into a new wall during the same step.
+  unit._terrainExit=overlap.size?{owner:navigation,revision:navigation.revision,grid:grid,radius:radius,colliders:overlap}:null;
+  if(overlap.size)exports.enableTerrainContacts(unit);
+}
+exports.enableTerrainContacts=function(unit){
+  var body=unit.rigidBody;if(!body)return;body.enabledContactListener=true;
+  // Creator 2.4 registers fixtures when they are created. Setting the flag
+  // later must also register existing fixtures, without recreating the body.
+  var manager=cc.director&&cc.director.getPhysicsManager&&cc.director.getPhysicsManager(),listener=manager&&manager._contactListener,registered=listener&&listener._contactFixtures;
+  if(!registered||!manager._registerContactFixture)return;
+  colliders(unit.node).forEach(function(collider){if(collider.body&&collider.body!==body)return;(collider._fixtures||[]).forEach(function(fixture){if(registered.indexOf(fixture)<0)manager._registerContactFixture(fixture);});});
+};
+exports.allowBlockedExit=function(unit,contact,other){
+  var exit=unit._terrainExit,vertices=exit&&exit.colliders.get(other);
+  if(vertices&&exit.revision===exit.owner.revision){var start=point(unit.node,exit.owner.game.ndMain);if(exit.grid._hitsPolygon(start,start,exit.radius,vertices))contact.disabledOnce=true;else exit.colliders.delete(other);}
+};
+exports.prepareTerrainExit=function(unit,game){
+  if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;return;}
+  var navigation=get(game),grid=navigation.gridFor(unit);recordTerrainExit(unit,navigation,grid,point(unit.node,game.ndMain),navigation.radius(unit));
+};
+exports.moveManual=function(unit,game,localPosition){
+  if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;unit.node.setPosition(localPosition);return;}
+  var navigation=get(game),grid=navigation.gridFor(unit),radius=navigation.radius(unit),start=point(unit.node,game.ndMain),world=unit.node.parent?unit.node.parent.convertToWorldSpaceAR(localPosition):localPosition,target=game.ndMain.convertToNodeSpaceAR(world);
+  recordTerrainExit(unit,navigation,grid,start,radius);
+  if(!grid.canExitBlocked(start,target,radius)){
+    var x={x:target.x,y:start.y},y={x:start.x,y:target.y},canX=distance(start,x)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,x,radius),canY=distance(start,y)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,y,radius);
+    if(canX||canY)target=canX&&(!canY||distance(x,target)<=distance(y,target))?x:y;
+    else{var lo=0,hi=1;for(var i=0;i<12;i++){var f=(lo+hi)/2,p={x:start.x+(target.x-start.x)*f,y:start.y+(target.y-start.y)*f};if(grid.canExitBlocked(start,p,radius))lo=f;else hi=f;}target={x:start.x+(target.x-start.x)*lo,y:start.y+(target.y-start.y)*lo};}
+  }
+  setMainPosition(unit.node,game.ndMain,target);
 };
 function unavailable(unit, frame) {
   return unit._isPooled || unit.isDead && unit.isDead() || unit._hitReactionPlaying || !unit.node || !cc.isValid(unit.node, true) || unit.node.activeInHierarchy === false || frame - unit._navigationRequestFrame > 2;
@@ -250,6 +282,7 @@ Navigation.prototype.move = function (unit, target, dt) {
     this.refresh();
     var grid = this.gridFor(unit);
     var radius = this.radius(unit);
+    recordTerrainExit(unit,this,grid,start,radius);
     state = unit._navigationState;
     // Let a bounded in-flight query finish when its moving target advances.
     // Restarting it on every target update can starve pursuit indefinitely.
@@ -265,7 +298,7 @@ Navigation.prototype.move = function (unit, target, dt) {
         while (state.index + 1 < state.points.length && grid.segmentClear(start, state.points[state.index + 1], radius)) state.index++;
         changed = !grid.segmentClear(start, state.points[state.index], radius);
       } else {
-        changed = state.index !== 0 || !onEscape(start, state.escape);
+        changed = !grid.canExitBlocked(start, state.points[state.index], radius);
       }
     }
     if (changed) {
@@ -328,7 +361,7 @@ Navigation.prototype.move = function (unit, target, dt) {
         if (grid.isWalkable(start, radius)) {
           while (state.index + 1 < state.points.length && grid.segmentClear(start, state.points[state.index + 1], radius)) state.index++;
           safe = state.index >= state.points.length || grid.segmentClear(start, state.points[state.index], radius);
-        } else safe = onEscape(start, state.escape);
+        } else safe = state.index >= state.points.length || grid.canExitBlocked(start, state.points[state.index], radius);
         if (!safe) { exports.reset(unit); return { arrived: false, reached: false, blocked: false, deferred: true, directionX: 0 }; }
       }
     }
@@ -428,6 +461,7 @@ exports.reset = function (unit) {
   cancelRequest(unit);
   unit._navigationState = null;
   unit._navigationProgress = null;
+  unit._terrainExit = null;
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
 };
 exports.resumeEnemyRoute = function (unit, game) {

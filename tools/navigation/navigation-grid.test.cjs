@@ -7,13 +7,12 @@ const bounds = { minX: -100, minY: -100, maxX: 100, maxY: 100 };
 function box(x0,y0,x1,y1) { return [{x:x0,y:y0},{x:x1,y:y0},{x:x1,y:y1},{x:x0,y:y1}]; }
 function safePath(grid,result,radius) {
   assert(result, 'Expected a path'); assert(result.points.length > 0);
-  for (const p of result.points) assert(grid.isWalkable(p,radius), 'Unsafe path point '+JSON.stringify(p));
-  for (let i=1;i<result.points.length;i++) assert(grid.segmentClear(result.points[i-1],result.points[i],radius),'Unsafe smoothed segment');
+  let previous=result.escape?result.escape.from:result.points[0],exited=grid.isWalkable(previous,radius);
+  for(const p of result.points){if(exited){assert(grid.isWalkable(p,radius),'Unsafe path point '+JSON.stringify(p));assert(grid.segmentClear(previous,p,radius),'Unsafe smoothed segment');}else assert(grid.canExitBlocked(previous,p,radius),'An escape entered or re-entered blocked terrain');if(grid.isWalkable(p,radius))exited=true;previous=p;}
   assert.deepEqual(result.points[result.points.length-1],result.goal);
   assert(grid.lastSearch.expanded<=grid.count,'A* must expand each numeric cell at most once');
   if(result.escape) {
-    assert.deepEqual(result.points[0],result.escape.to);
-    assert(result.escape.distance<=3*grid.cellSize+2*radius+1e-6,'Escape is locally bounded');
+    assert(result.points.some(p=>p.x===result.escape.to.x&&p.y===result.escape.to.y),'The exit must remain on the movement route');
   }
 }
 let passed=0;
@@ -78,7 +77,7 @@ test('An overlapping start has a short outward escape, not a cross-wall teleport
   assert(result.escape);assert(result.escape.to.x<-10);assert.equal(grid.segmentClear(start,result.escape.to,5),false);
   assert(result.points.some(p=>Math.abs(p.y)>60),'It must still route around the wall after escaping to its near side');
   const deep=new NavigationGrid([box(-80,-80,80,80)],bounds,10);
-  assert.equal(deep.findPath({x:0,y:0},{x:90,y:90},5),null,'Deep placement is not silently teleported through a building');
+  const exit=deep.findPath({x:0,y:0},{x:90,y:90},5);assert(exit&&exit.reached&&exit.escape,'Deep placement can walk out and resume its objective');assert(deep.canExitBlocked({x:0,y:0},exit.points[0],5));assert(!deep.canExitBlocked({x:90,y:90},{x:0,y:0},5),'A cleared unit cannot enter again');
 });
 test('Negative world coordinates, reversed routes, and unit-sized narrow passages remain valid',()=>{
   const shifted=new NavigationGrid([box(-950,-1950,-930,-1880)],{minX:-1000,minY:-2000,maxX:-800,maxY:-1800},10);
@@ -86,7 +85,7 @@ test('Negative world coordinates, reversed routes, and unit-sized narrow passage
   safePath(shifted,shifted.findPath({x:-820,y:-1900},{x:-980,y:-1900},8),8);
   const narrow=new NavigationGrid([box(-100,-100,100,-15),box(-100,15,100,100)],bounds,10);
   safePath(narrow,narrow.findPath({x:-80,y:0},{x:80,y:0},12),12);
-  assert.equal(narrow.findPath({x:-80,y:0},{x:80,y:0},20),null);
+  const overlapping=narrow.findPath({x:-80,y:0},{x:80,y:0},20);assert(overlapping&&overlapping.reached,'An already-overlapping body can still move within the area');assert.equal(narrow.segmentClear({x:-80,y:0},{x:80,y:0},20),false,'The passage still blocks ordinary entry by an oversized unit');
 });
 test('Radius caches are isolated and bounded; very large off-map polygons do not inflate the index',()=>{
   const grid=new NavigationGrid([box(-10,-40,10,40)],bounds,10);

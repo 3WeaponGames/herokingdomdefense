@@ -7558,6 +7558,1629 @@
       "sha256": "f7ca00a32030aabd69040babb67db89f1e356d753ea1fed62bc9c77370088af1",
       "paletteLast": true,
       "brush": "shadow"
+    },
+    {
+      "id": "concept-01-snow-middle-shelf",
+      "name": "01 Switchback Pass · Middle Shelf",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/01-snow/middle-shelf.png",
+      "width": 2048,
+      "height": 768,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.546875,
+      "sha256": "c5e208a08bce070673970daaab54ad8b7366cd54010c03b3b1502a1adeb0d130",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 1,
+        "conceptName": "Switchback Pass",
+        "role": "middle-shelf",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-01-snow-north-shelf",
+      "name": "01 Switchback Pass · North Shelf",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/01-snow/north-shelf.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.5755064456721916,
+      "sha256": "3aef163daba2bb72841bad1ec12434cb2990052ed85df03e900f5b3da9504e67",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 1,
+        "conceptName": "Switchback Pass",
+        "role": "north-shelf",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-01-snow-south-shelf",
+      "name": "01 Switchback Pass · South Shelf",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/01-snow/south-shelf.png",
+      "width": 2043,
+      "height": 770,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.5971610376896721,
+      "sha256": "915c27ec7bad37f1942de3a4f6f2afd39e6942440d4e756b4c3e3072d66bd729",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 1,
+        "conceptName": "Switchback Pass",
+        "role": "south-shelf",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-01-snow-tapered-ramp",
+      "name": "01 Switchback Pass · Tapered Ramp",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/01-snow/tapered-ramp.png",
+      "width": 1682,
+      "height": 935,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 0.535077288941736,
+      "sha256": "53ddf419cc9da94f2815c8624ded3105b8eabd233a05f700ea210e01caee74af",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 1,
+        "conceptName": "Switchback Pass",
+        "role": "tapered-ramp",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-02-forest-interior-lake",
+      "name": "02 Lakeward Basin · Interior Lake",
+      "category": "water",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/02-forest/interior-lake.png",
+      "width": 1024,
+      "height": 1536,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.1,
+      "sha256": "76d97b76874306051d0239ae889d82c3b8534909b8bb466c2a26f621ab368daf",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              25,
+              55,
+              8
+            ],
+            "max": [
+              180,
+              215,
+              150
+            ],
+            "to": [
+              120,
+              151,
+              82
+            ],
+            "greenOnly": true,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 2,
+        "conceptName": "Lakeward Basin",
+        "role": "interior-lake",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#789752"
+      }
+    },
+    {
+      "id": "concept-02-forest-shore-cliff",
+      "name": "02 Lakeward Basin · Shore Cliff",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/02-forest/shore-cliff.png",
+      "width": 1024,
+      "height": 1536,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.65,
+      "sha256": "1df324df081851a02cab6afd919fc865e39f1fe6b468e09e9d82ca903574508f",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              25,
+              55,
+              8
+            ],
+            "max": [
+              180,
+              215,
+              150
+            ],
+            "to": [
+              120,
+              151,
+              82
+            ],
+            "greenOnly": true,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 2,
+        "conceptName": "Lakeward Basin",
+        "role": "shore-cliff",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#789752"
+      }
+    },
+    {
+      "id": "concept-02-forest-tapered-hillpath",
+      "name": "02 Lakeward Basin · Tapered Hillpath",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/02-forest/tapered-hillpath.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 0.5,
+      "sha256": "56af69ffcc7671ca9a84c2b50df3aef87774564a678db5d0acf64679da4f0405",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              25,
+              55,
+              8
+            ],
+            "max": [
+              180,
+              215,
+              150
+            ],
+            "to": [
+              120,
+              151,
+              82
+            ],
+            "greenOnly": true,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 2,
+        "conceptName": "Lakeward Basin",
+        "role": "tapered-hillpath",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#789752"
+      }
+    },
+    {
+      "id": "concept-04-lava-eastern-rim",
+      "name": "04 Broken Crown · Eastern Rim",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/04-lava/eastern-rim.png",
+      "width": 816,
+      "height": 1926,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.6487,
+      "sha256": "37e6526d27ef4c60c4a50de7a2c3ce274f300d9d502f6ca1d1b805015f92fb97",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 4,
+        "conceptName": "Broken Crown",
+        "role": "eastern-rim",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#fcbc58"
+      }
+    },
+    {
+      "id": "concept-04-lava-northeast-rim",
+      "name": "04 Broken Crown · Northeast Rim",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/04-lava/northeast-rim.png",
+      "width": 1287,
+      "height": 1222,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.7011,
+      "sha256": "19ff6fc7d8c21579642ca073eb9e52b05ec1029160fadb42e219dfbb49afa1af",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 4,
+        "conceptName": "Broken Crown",
+        "role": "northeast-rim",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#fcbc58"
+      }
+    },
+    {
+      "id": "concept-04-lava-northwest-rim",
+      "name": "04 Broken Crown · Northwest Rim",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/04-lava/northwest-rim.png",
+      "width": 1122,
+      "height": 1402,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.7528,
+      "sha256": "68816518555512deefb6034a9a61e2a9c758377a1d126ccb11ccb4ff07c61c03",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 4,
+        "conceptName": "Broken Crown",
+        "role": "northwest-rim",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#fcbc58"
+      }
+    },
+    {
+      "id": "concept-04-lava-southern-rim",
+      "name": "04 Broken Crown · Southern Rim",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/04-lava/southern-rim.png",
+      "width": 1842,
+      "height": 854,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.602,
+      "sha256": "1150083dcf0b17f4ea5dfe9ee8f3c03470044a146b0a274d9557392757c7d9ea",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 4,
+        "conceptName": "Broken Crown",
+        "role": "southern-rim",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#fcbc58"
+      }
+    },
+    {
+      "id": "concept-04-lava-western-rim",
+      "name": "04 Broken Crown · Western Rim",
+      "category": "rocks",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/04-lava/western-rim.png",
+      "width": 962,
+      "height": 1635,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.5915,
+      "sha256": "069ea5fb6c32a25e3aaf86d4711af0ac53b52fb4f798762b0cc97595fecafcb2",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 4,
+        "conceptName": "Broken Crown",
+        "role": "western-rim",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#fcbc58"
+      }
+    },
+    {
+      "id": "concept-05-deep-forest-middle-hill",
+      "name": "05 Six-Gate Woodland · Middle Hill",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/05-deep-forest/middle-hill.png",
+      "width": 1683,
+      "height": 935,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.55,
+      "sha256": "12547e0c9207dbdb3639525dce71f8278ac25b8b1f6c8e67dd631383d758fcab",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              62,
+              98,
+              60
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 5,
+        "conceptName": "Six-Gate Woodland",
+        "role": "middle-hill",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#3e623c"
+      }
+    },
+    {
+      "id": "concept-05-deep-forest-north-hill",
+      "name": "05 Six-Gate Woodland · North Hill",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/05-deep-forest/north-hill.png",
+      "width": 1434,
+      "height": 1097,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.6,
+      "sha256": "22b3be952b40305aeab4a2f0c46809e59712bdec58fa5a572d920a8dc5a3baa9",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              62,
+              98,
+              60
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 5,
+        "conceptName": "Six-Gate Woodland",
+        "role": "north-hill",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#3e623c"
+      }
+    },
+    {
+      "id": "concept-05-deep-forest-south-hill",
+      "name": "05 Six-Gate Woodland · South Hill",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/05-deep-forest/south-hill.png",
+      "width": 995,
+      "height": 1580,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.62,
+      "sha256": "f99560d024420bfafe7f8e15df1f2ad8a591c52e2544f01331a50fe7f61ddc73",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              62,
+              98,
+              60
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 5,
+        "conceptName": "Six-Gate Woodland",
+        "role": "south-hill",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#3e623c"
+      }
+    },
+    {
+      "id": "concept-07-fire-crescent-ridge",
+      "name": "07 Crescent Ridge · Crescent Ridge",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/07-fire/crescent-ridge.png",
+      "width": 975,
+      "height": 1612,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 1.1827,
+      "sha256": "ca2642cb79d20b85a79f20bd87cfda2bb46437d3d096deb45aed873a8672defd",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 7,
+        "conceptName": "Crescent Ridge",
+        "role": "crescent-ridge",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#745f61"
+      }
+    },
+    {
+      "id": "concept-07-fire-hillpath",
+      "name": "07 Crescent Ridge · Hillpath",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/07-fire/hillpath.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 0.5195,
+      "sha256": "45fc5dd7043c517f44e6a8bb283a5b73a177a58a9ebcdab181fa02799ff6315d",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              116,
+              95,
+              97
+            ],
+            "opaque": true
+          },
+          {
+            "min": [
+              155,
+              85,
+              0
+            ],
+            "max": [
+              255,
+              225,
+              110
+            ],
+            "to": [
+              116,
+              95,
+              97
+            ],
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 7,
+        "conceptName": "Crescent Ridge",
+        "role": "hillpath",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#745f61"
+      }
+    },
+    {
+      "id": "concept-08-desert-longwall",
+      "name": "08 Longwall Frontier · Longwall",
+      "category": "details",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/08-desert/longwall.png",
+      "width": 2180,
+      "height": 721,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.746,
+      "sha256": "5e336fe3a98b8432fe0c5cfcfb328e8c4962d86e1a833f279bc5d8483b90ae52",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": []
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 8,
+        "conceptName": "Longwall Frontier",
+        "role": "longwall",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#d4bd75"
+      }
+    },
+    {
+      "id": "concept-09-autumn-tapered-hillpath",
+      "name": "09 Terrace Citadel · Tapered Hillpath",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/09-autumn/tapered-hillpath.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 0.5,
+      "sha256": "a5ccdc25bbd2cf8ffcdec1bd14817836b5dea1a12b090179944ff9e7bd23aa26",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              255,
+              172,
+              65
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 9,
+        "conceptName": "Terrace Citadel",
+        "role": "tapered-hillpath",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#ffac41"
+      }
+    },
+    {
+      "id": "concept-09-autumn-three-ramp-plateau",
+      "name": "09 Terrace Citadel · Three Ramp Plateau",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/09-autumn/three-ramp-plateau.png",
+      "width": 1086,
+      "height": 1448,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.1,
+      "sha256": "310358958fb531feeebcd9c8122294a4595249e968c95a47ed5c4df4ebdfd4bc",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              255,
+              172,
+              65
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 9,
+        "conceptName": "Terrace Citadel",
+        "role": "three-ramp-plateau",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#ffac41"
+      }
+    },
+    {
+      "id": "concept-11-deep-forest-ruined-hall",
+      "name": "11 Twin Courtyards · Ruined Hall",
+      "category": "details",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/11-deep-forest/ruined-hall.png",
+      "width": 724,
+      "height": 2172,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.6,
+      "sha256": "48f0c1e9d8c458d86529fe66500d1696332b612024057a60cf83bf7015917038",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              62,
+              98,
+              60
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 11,
+        "conceptName": "Twin Courtyards",
+        "role": "ruined-hall",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#3e623c"
+      }
+    },
+    {
+      "id": "concept-12-ice-forked-inlet",
+      "name": "12 Forked Harbor · Forked Inlet",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/12-ice/forked-inlet.png",
+      "width": 966,
+      "height": 1628,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.3457556935817805,
+      "sha256": "338b3fb0055b7624ebfb99c3ba57bf770433744ebec4c357c58be86c9a16f410",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 12,
+        "conceptName": "Forked Harbor",
+        "role": "forked-inlet",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-12-ice-headland-cliff",
+      "name": "12 Forked Harbor · Headland Cliff",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/12-ice/headland-cliff.png",
+      "width": 1566,
+      "height": 1004,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.49808429118773945,
+      "sha256": "fabb377865a75dba08bb6abebdfe84e91754e0a4a492db9a5dbe0e3f6a168bde",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 12,
+        "conceptName": "Forked Harbor",
+        "role": "headland-cliff",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-14-desert-middle-mesa",
+      "name": "14 Stonefield Outpost · Middle Mesa",
+      "category": "rocks",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/14-desert/middle-mesa.png",
+      "width": 1139,
+      "height": 1381,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.4468,
+      "sha256": "94238790c4013545cc50f8a9b443840612876a59777f6744badea881af660643",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": false,
+            "opaque": true
+          },
+          {
+            "min": [
+              25,
+              55,
+              8
+            ],
+            "max": [
+              180,
+              215,
+              150
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": true,
+            "opaque": true
+          },
+          {
+            "min": [
+              180,
+              155,
+              75
+            ],
+            "max": [
+              245,
+              230,
+              175
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": false,
+            "opaque": true
+          },
+          {
+            "min": [
+              100,
+              60,
+              0
+            ],
+            "max": [
+              220,
+              150,
+              90
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 14,
+        "conceptName": "Stonefield Outpost",
+        "role": "middle-mesa",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#d4bd75"
+      }
+    },
+    {
+      "id": "concept-14-desert-north-mesa",
+      "name": "14 Stonefield Outpost · North Mesa",
+      "category": "rocks",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/14-desert/north-mesa.png",
+      "width": 1192,
+      "height": 1319,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.4961,
+      "sha256": "8b9d85d709ef1877b0060e1db9aee5526514d31529fe39d177e1686d1241cfa2",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": false,
+            "opaque": true
+          },
+          {
+            "min": [
+              25,
+              55,
+              8
+            ],
+            "max": [
+              180,
+              215,
+              150
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": true,
+            "opaque": true
+          },
+          {
+            "min": [
+              180,
+              155,
+              75
+            ],
+            "max": [
+              245,
+              230,
+              175
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 14,
+        "conceptName": "Stonefield Outpost",
+        "role": "north-mesa",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#d4bd75"
+      }
+    },
+    {
+      "id": "concept-14-desert-south-mesa",
+      "name": "14 Stonefield Outpost · South Mesa",
+      "category": "rocks",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/14-desert/south-mesa.png",
+      "width": 1341,
+      "height": 1173,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "depth": "world",
+      "defaultScale": 0.4281,
+      "sha256": "9d1bae883743d430ee5d0d5cab88e9cd62dab79f88b50fa9538ce341659fa848",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              205,
+              120,
+              10
+            ],
+            "max": [
+              255,
+              225,
+              145
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": false,
+            "opaque": true
+          },
+          {
+            "min": [
+              25,
+              55,
+              8
+            ],
+            "max": [
+              180,
+              215,
+              150
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": true,
+            "opaque": true
+          },
+          {
+            "min": [
+              180,
+              155,
+              75
+            ],
+            "max": [
+              245,
+              230,
+              175
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "greenOnly": false,
+            "opaque": true
+          },
+          {
+            "min": [
+              100,
+              60,
+              0
+            ],
+            "max": [
+              220,
+              150,
+              90
+            ],
+            "to": [
+              212,
+              189,
+              117
+            ],
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 14,
+        "conceptName": "Stonefield Outpost",
+        "role": "south-mesa",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#d4bd75"
+      }
+    },
+    {
+      "id": "concept-15-snow-northwest-lake",
+      "name": "15 Twinwater Saddle · Northwest Lake",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/15-snow/northwest-lake.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1.0047846889952152,
+      "sha256": "1b62fd74701313d02ce1ece16ec287cf854229cae4da5f7869dcc6d8f89e9ebb",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 128,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 15,
+        "conceptName": "Twinwater Saddle",
+        "role": "northwest-lake",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
+    },
+    {
+      "id": "concept-15-snow-southeast-lake",
+      "name": "15 Twinwater Saddle · Southeast Lake",
+      "category": "water",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-v1/15-snow/southeast-lake.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 0.9728867623604466,
+      "sha256": "ebe7446f3beba3b99b9da07bdae9e14f338b2f86d9fc3835af3baa7743e2dc9f",
+      "colorShift": {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "alphaCutoff": 16,
+        "solidAlpha": 246,
+        "palette": [
+          {
+            "min": [
+              200,
+              230,
+              230
+            ],
+            "max": [
+              255,
+              255,
+              255
+            ],
+            "to": [
+              229,
+              255,
+              254
+            ],
+            "greenOnly": false,
+            "opaque": true
+          }
+        ]
+      },
+      "source": {
+        "kind": "openai-imagegen",
+        "mode": "built-in",
+        "conceptNumber": 15,
+        "conceptName": "Twinwater Saddle",
+        "role": "southeast-lake",
+        "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
+        "fieldColor": "#e5fffe"
+      }
     }
   ],
   "biomes": [
