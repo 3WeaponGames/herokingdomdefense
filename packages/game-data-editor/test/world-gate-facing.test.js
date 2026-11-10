@@ -29,7 +29,7 @@ test('all four faces keep preview models, navigation, exported fixtures and actu
   near(step(info,controller),record.step.map(p=>M.toWorld(b,p)),'runtime hero build trigger');
   const refs=[controller.ndAniDown,controller.ndAniMain].concat(controller.ndAniOther),placement=M.matrix(b),offset=[1,0,0,1,-record.origin.x,-record.origin.y];
   refs.forEach((ref,i)=>near(info.byId[exported[ref.__id__].node.__id__].world,Maps.multiply(placement,Maps.multiply(offset,record.skeletons[i].matrix)),'exported upright model matrix'));
-  assert.equal(record.openBlockers.length,4);near(Navigation.buildingPolygons(f.service,stage,b,1,'open',f.config,new Map()),record.openBlockers.map(shape=>shape.map(p=>M.toWorld(b,p))),'open ally passage retains wings');
+  assert.equal(record.openBlockers.length,2);near(Navigation.buildingPolygons(f.service,stage,b,1,'open',f.config,new Map()),record.openBlockers.map(shape=>shape.map(p=>M.toWorld(b,p))),'open ally passage retains wings');
  }
  assert.equal(JSON.stringify({source:f.source.data,stage:f.stage}),before);
 });

@@ -198,11 +198,12 @@ var def_KinghtFallUIGame = function (t) {
           return;
         }
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide3);
-        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
+        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of, undefined, undefined, { game: t.ctrGame });
       } else prepareMap();
       t.sendEvent($z1Appcfg.BaseEventName.ShowTransition, false, function () {
         if (t.isclose) return;
         t.isPauset = false;
+        if (t.ctrGame.setAudioPaused) t.ctrGame.setAudioPaused(false);
         t.startGuide();
       });
     });
@@ -320,7 +321,7 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.rallyCommand = function () {
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of, undefined, undefined, { game: this.ctrGame });
     this.ctrGame.rallyCommand();
     this._refreshArmyButtons();
   };
@@ -397,6 +398,7 @@ var def_KinghtFallUIGame = function (t) {
     return this.ctrGame.saveGame() !== false;
   };
   _ctor.prototype.onClose = function () {
+    if (this.ctrGame) $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this.ctrGame);
     if (this.ctrGame && BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
     if (this.ctrGame && this.ctrGame._unitVoices) require("UnitVoices").dispose(this.ctrGame);
     $z1AudioMgr.AudioMgr.getInstance().setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, 1);
@@ -570,6 +572,7 @@ var def_KinghtFallUIGame = function (t) {
     t = !!this._legacyGamePause || this._pauseOwners.size > 0;
     if (t) { TestMode.getInstance().clearGameplayInput(true); this._stopTestMovement(); }
     this.isPauset = t;
+    if (this.ctrGame.setAudioPaused) this.ctrGame.setAudioPaused(t);
     this.scheduleOnce(function () {
       if (e.isPauset !== t) return;
       if (t) {
@@ -697,11 +700,18 @@ var def_KinghtFallUIGame = function (t) {
         t.finishBattleDialog(dialog);
         t.canBreak = true;
         t.ctrGame.ctrPlay.ctrPlayAni.setLevelUp();
-        for (var n = 0; n < e.length; n++) {
-          var i = e[n];
-          t.ctrGame.gameData.addGameBuff(i);
+        var game = t.ctrGame, data = game.gameData, generation = t._resourceGeneration;
+        var upgradeAudio = new Set(), previousUpgradeAudio = game._upgradeAudioQueue;
+        game._upgradeAudioQueue = upgradeAudio;
+        try {
+          for (var n = 0; n < e.length; n++) {
+            var i = e[n];
+            data.addGameBuff(i);
+          }
+          game.endRoundGame();
+        } finally {
+          game._upgradeAudioQueue = previousUpgradeAudio;
         }
-        t.ctrGame.endRoundGame();
         var a = 0;
         a += t.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.KillSoldier2];
         var o = t.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff04);
@@ -714,6 +724,16 @@ var def_KinghtFallUIGame = function (t) {
         t.ctrGame.gameData.upMap();
         t.initBtnView();
         t.ctrGame.saveGame();
+        // Upgrade presentation belongs to the committed roster after wave cleanup.
+        if (upgradeAudio.size && require("KinghtFallUIGame").default.instance === t && !t.isclose &&
+            cc.isValid(t, true) && t.node && cc.isValid(t.node, true) && t.node.activeInHierarchy !== false &&
+            t._resourceGeneration === generation && t.ctrGame === game && cc.isValid(game, true) &&
+            game.node && cc.isValid(game.node, true) && game.node.activeInHierarchy !== false && game.gameData === data) {
+          upgradeAudio.forEach(function (building) {
+            if (cc.isValid(building, true) && building.node && cc.isValid(building.node, true) &&
+                building.node.activeInHierarchy !== false && building.enabled !== false && !building.isDestroyed && building._playUpgradeAudio) building._playUpgradeAudio();
+          });
+        }
       });
     }, 1);
   };
@@ -1216,6 +1236,7 @@ var def_KinghtFallUIGame = function (t) {
                 this.isPauset = false;
             }
         }
+        if (this.ctrGame.setAudioPaused) this.ctrGame.setAudioPaused(this.isPauset);
         if (h) {
           this.openUICallBack($z1Config.UIID.UIGuide, function () {
             if (s[g + 1]) {

@@ -18,14 +18,14 @@ function harness(name) {
     GAD_App: { default: { instance: { enter_App: (done, exit, entry) => { state.entryCost = entry.cost; state.entered++; done(); } } } },
     GAD_Configs: require('../../assets/_script/GAD_Configs'),
     GameTrackDataEvent: { TrackId: {} },
-    KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} },
+    KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {}, KinghtFallParameter: { BGMusic: 'bg' } },
     KinghtFallMissionData: { KinghtFallTaskCountName: {} },
     KinghtFallTextConfig: { KinghtFallTextConfig: { HomeTalent01: 'Unlock' } },
     TextConfig: { TextConfig: { Tips19: 'Reach level {0}' } },
     Config: { UIID: {} },
     UIMgr: { UIMgr: singleton({ openUI() {}, getUIById:()=>({node:{active:true}}) }) },
     Utils: { Utils: { StringFormat: s => s } },
-    AudioMgr: { AudioMgr: singleton({ playEffect() {} }) },
+    AudioMgr: { AudioMgr: singleton({ playEffect() {}, stopMusic() {} }) },
     LanguageMgr: { LanguageMgr: singleton({ t: (key, args) => args.join('') }) },
     BaseUI: { default: Base }, BaseCtrl: { default: Base }, KinghtFallBuildBase: { default: Base }
   };

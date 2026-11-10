@@ -77,20 +77,27 @@ var def_KinghtFallUIGameEnd = function (t) {
     this.initBtnEvent();
     $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1KinghtFallConfig.KinghtFallParameter.BGMusic);
     if (this.isWin) {
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.game_success);
+      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.game_success, undefined, undefined, { owner: this, game: this });
       var e = this.spAni.setAnimation(0, "victory_appear", false);
       this.spAni.addAnimation(0, "victory_idle", true);
       this.spAni.setTrackCompleteListener(e, function () {
         t.canAni = true;
       });
     } else {
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.game_fail);
+      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.game_fail, undefined, undefined, { owner: this, game: this });
       e = this.spAni.setAnimation(0, "fail_appear", false);
       this.spAni.addAnimation(0, "fail_idle", true);
       this.spAni.setTrackCompleteListener(e, function () {
         t.canAni = true;
       });
     }
+  };
+  _ctor.prototype.onClose = function () {
+    $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this);
+  };
+  _ctor.prototype.onDestroy = function () {
+    try { this.onClose(); }
+    finally { t.prototype.onDestroy.call(this); }
   };
   _ctor.prototype.initData = function () {
     var t;

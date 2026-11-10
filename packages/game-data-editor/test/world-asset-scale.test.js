@@ -27,3 +27,37 @@ test('invalid asset calibrations fail without changing the map or consuming rand
  for(const defaultScale of [0,-1,NaN,Infinity,'1',null])assert.throws(()=>M.place(map,map.layers[0].id,{id:'bad',defaultScale},{x:0,y:0},1,1,.5),/world scale/);
  assert.equal(JSON.stringify(map),before);
 });
+
+test('stock native sizing places at scale one and preserves previously saved geometry',()=>{
+ const Selection=require('../worlds/selection'),map=M.createMap('native','Native','forest'),asset={id:'tree',name:'Tree',width:203,height:121,nativeScale:.45};
+ const old={id:'saved',assetId:asset.id,x:0,y:0,scale:.7,angle:0},before=JSON.stringify(old);
+ const placed=M.place(map,map.layers[0].id,asset,{x:0,y:0},1,1,0).object;
+ assert.equal(placed.scale,1);assert.equal(placed.nativeSize,true);
+ assert.deepEqual(M.assetSize(asset,placed),{width:91.35000000000001,height:54.45});
+ assert.deepEqual(M.assetSize(asset,old),{width:203,height:121});assert.equal(JSON.stringify(old),before);
+ const bounds=Selection.objectPoints(placed,map.layers[0],{tree:asset});
+ assert(Math.abs(Math.max(...bounds.map(p=>p.x))-Math.min(...bounds.map(p=>p.x))-203*.45)<1e-10);
+ const ground=M.placeGroundImage(map,'roads',asset,{x:0,y:0}).object;
+ assert.equal(ground.scale,1);assert.equal(ground.nativeSize,true);assert.deepEqual(M.assetSize(asset,ground),M.assetSize(asset,placed));
+});
+
+test('custom terrain retains its existing default scale and source dimensions',()=>{
+ const map=M.createMap('custom','Custom','forest'),asset={id:'lake',name:'Lake',width:1500,height:1049,defaultScale:.5};
+ const placed=M.place(map,map.layers[0].id,asset,{x:0,y:0},1,1,0).object;
+ assert.equal(placed.scale,.5);assert(!Object.hasOwn(placed,'nativeSize'));assert.deepEqual(M.assetSize(asset,placed),{width:1500,height:1049});
+});
+
+test('new terrain strokes use native texture sizing without altering existing strokes',()=>{
+ const map=M.createMap('roads','Roads','forest'),old={size:80,assetId:'road',edgeAssetId:'edge',textureScale:1,edgeScale:1,points:[{x:0,y:0}]};
+ map.ground.roads.strokes.push(M.clone(old));const before=JSON.stringify(map),next=M.stroke(map,'roads',Object.assign({},old,{nativeSize:true}));
+ assert.equal(next.ground.roads.strokes[1].nativeSize,true);assert.deepEqual(next.ground.roads.strokes[0],old);assert.equal(JSON.stringify(map),before);
+ assert.deepEqual(M.stroke(map,'roads',old).ground.roads.strokes[1],old,'scripted strokes without the new setting retain their exact behavior');
+});
+
+test('all stock Environment assets including RoadUp have the new native size; custom art is excluded',()=>{
+ const fs=require('fs'),path=require('path'),root=path.resolve(__dirname,'../../..'),manifest=JSON.parse(fs.readFileSync(path.join(root,'authoring/worlds/library/manifest.json'),'utf8'));
+ const stock=manifest.assets.filter(a=>/^environment-[12]$/.test(a.source&&a.source.pack));assert(stock.length>=257);
+ for(const asset of stock){assert.equal(asset.nativeScale,.45,asset.name);const bytes=fs.readFileSync(path.join(root,asset.file));assert.equal(bytes.readUInt32BE(16),asset.width);assert.equal(bytes.readUInt32BE(20),asset.height);}
+ assert(stock.filter(a=>/^Road up /i.test(a.terrainName||a.name)).length>=7);
+ for(const asset of manifest.assets.filter(a=>!stock.includes(a)))assert.equal(asset.nativeScale,undefined,asset.name);
+});

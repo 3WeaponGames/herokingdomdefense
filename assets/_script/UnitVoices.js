@@ -108,7 +108,7 @@ function tick(game) {
   var path = pathFor(request.unit, "-level-" + request.tier + "-variant-" + variant);
   state.manager.loadClip(BUNDLE, path, path, function (clip) {
     if (state.active !== request) return;
-    if (!clip || !validRequest(state, request) || !enabled(state.manager)) { state.active = null; return; }
+    if (!clip || !validRequest(state, request) || !enabled(state.manager) || Date.now() - request.createdAt >= 10000) { state.active = null; return; }
     var channel = source(state, "barracks");
     request.source = channel.source;
     try {

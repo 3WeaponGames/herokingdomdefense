@@ -2337,42 +2337,63 @@
             "muzzleY": 117.151485,
             "weapon": {
               "sprite": "buildings/towers/cannon-1-weapon",
-              "width": 90,
-              "height": 82.248476,
-              "pivotX": 0.41327949,
-              "pivotY": 0.49021067,
+              "width": 72,
+              "height": 60,
+              "pivotX": 0.5625,
+              "pivotY": 0.54717,
               "offsetX": 0,
               "offsetY": 104,
-              "muzzleX": 31.724647,
-              "muzzleY": 13.151485,
+              "muzzleX": 27.389423,
+              "muzzleY": -1.91582,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-1-weapon-north",
-                  "width": 64.8,
-                  "height": 63,
+                  "width": 56,
+                  "height": 66,
                   "pivotX": 0.5,
-                  "pivotY": 0.5,
+                  "pivotY": 0.508475,
                   "muzzleX": 0,
-                  "muzzleY": 22.68
+                  "muzzleY": 30.4431,
+                  "referenceAngle": 90
                 },
-                "south": {
-                  "sprite": "buildings/towers/cannon-1-weapon-south",
-                  "width": 64.8,
-                  "height": 63,
-                  "pivotX": 0.5,
-                  "pivotY": 0.64,
-                  "muzzleX": 0,
-                  "muzzleY": -23.94
+                "northeast": {
+                  "sprite": "buildings/towers/cannon-1-weapon-northeast",
+                  "width": 60,
+                  "height": 66,
+                  "pivotX": 0.490566,
+                  "pivotY": 0.517241,
+                  "muzzleX": 21.367925,
+                  "muzzleY": 23.327587,
+                  "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-1-weapon-southeast",
-                  "width": 99,
+                  "width": 63,
                   "height": 66,
-                  "pivotX": 0.41,
-                  "pivotY": 0.61,
-                  "muzzleX": 30.195,
-                  "muzzleY": -17.49
+                  "pivotX": 0.517857,
+                  "pivotY": 0.517241,
+                  "muzzleX": 12.9375,
+                  "muzzleY": -1.706897,
+                  "referenceAngle": -45
+                },
+                "south": {
+                  "sprite": "buildings/towers/cannon-1-weapon-south",
+                  "width": 56,
+                  "height": 60,
+                  "pivotX": 0.5,
+                  "pivotY": 0.433962,
+                  "muzzleX": 0,
+                  "muzzleY": -2.264151,
+                  "referenceAngle": -90
                 }
+              },
+              "referenceAngle": 0,
+              "motion": {
+                "type": "spring",
+                "distance": 17.42236,
+                "speed": 20,
+                "damping": 5,
+                "reloadTime": 0
               }
             },
             "destroyed": {
@@ -2481,42 +2502,63 @@
             "muzzleY": 134.716715,
             "weapon": {
               "sprite": "buildings/towers/cannon-2-weapon",
-              "width": 100,
-              "height": 75,
-              "pivotX": 0.40519646,
-              "pivotY": 0.45876209,
+              "width": 80,
+              "height": 69,
+              "pivotX": 0.5625,
+              "pivotY": 0.507246,
               "offsetX": 6,
               "offsetY": 118,
-              "muzzleX": 37.681669,
-              "muzzleY": 16.716715,
+              "muzzleX": 32.333333,
+              "muzzleY": -2.166667,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-2-weapon-north",
-                  "width": 72,
-                  "height": 70,
+                  "width": 66,
+                  "height": 76,
                   "pivotX": 0.5,
-                  "pivotY": 0.5,
+                  "pivotY": 0.473684,
                   "muzzleX": 0,
-                  "muzzleY": 25.2
+                  "muzzleY": 37.357143,
+                  "referenceAngle": 90
                 },
-                "south": {
-                  "sprite": "buildings/towers/cannon-2-weapon-south",
-                  "width": 72,
-                  "height": 70,
-                  "pivotX": 0.5,
-                  "pivotY": 0.64,
-                  "muzzleX": 0,
-                  "muzzleY": -26.6
+                "northeast": {
+                  "sprite": "buildings/towers/cannon-2-weapon-northeast",
+                  "width": 70,
+                  "height": 75,
+                  "pivotX": 0.485714,
+                  "pivotY": 0.493333,
+                  "muzzleX": 26.5,
+                  "muzzleY": 28.785714,
+                  "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-2-weapon-southeast",
-                  "width": 110,
-                  "height": 73.3333,
-                  "pivotX": 0.41,
-                  "pivotY": 0.59,
-                  "muzzleX": 36.3,
-                  "muzzleY": -18.3333
+                  "width": 70,
+                  "height": 78,
+                  "pivotX": 0.5,
+                  "pivotY": 0.474359,
+                  "muzzleX": 15,
+                  "muzzleY": 1,
+                  "referenceAngle": -45
+                },
+                "south": {
+                  "sprite": "buildings/towers/cannon-2-weapon-south",
+                  "width": 66,
+                  "height": 71,
+                  "pivotX": 0.5,
+                  "pivotY": 0.408451,
+                  "muzzleX": 0,
+                  "muzzleY": -1,
+                  "referenceAngle": -90
                 }
+              },
+              "referenceAngle": 0,
+              "motion": {
+                "type": "spring",
+                "distance": 15.486542,
+                "speed": 20,
+                "damping": 5,
+                "reloadTime": 0
               }
             },
             "destroyed": {
@@ -2625,42 +2667,63 @@
             "muzzleY": 150.567221,
             "weapon": {
               "sprite": "buildings/towers/cannon-3-weapon",
-              "width": 110,
-              "height": 73.333333,
-              "pivotX": 0.38612994,
-              "pivotY": 0.41933473,
+              "width": 88,
+              "height": 70,
+              "pivotX": 0.567308,
+              "pivotY": 0.54878,
               "offsetX": 7,
               "offsetY": 133,
-              "muzzleX": 48.674766,
-              "muzzleY": 17.567221,
+              "muzzleX": 35.852748,
+              "muzzleY": -2.926829,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-3-weapon-north",
-                  "width": 79.2,
-                  "height": 77,
-                  "pivotX": 0.5,
+                  "width": 58,
+                  "height": 79,
+                  "pivotX": 0.492754,
                   "pivotY": 0.5,
                   "muzzleX": 0,
-                  "muzzleY": 27.72
+                  "muzzleY": 37.314894,
+                  "referenceAngle": 90
                 },
-                "south": {
-                  "sprite": "buildings/towers/cannon-3-weapon-south",
-                  "width": 79.2,
-                  "height": 77,
+                "northeast": {
+                  "sprite": "buildings/towers/cannon-3-weapon-northeast",
+                  "width": 71,
+                  "height": 76,
                   "pivotX": 0.5,
-                  "pivotY": 0.64,
-                  "muzzleX": 0,
-                  "muzzleY": -29.26
+                  "pivotY": 0.5,
+                  "muzzleX": 25.960884,
+                  "muzzleY": 29.314286,
+                  "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-3-weapon-southeast",
-                  "width": 121,
-                  "height": 80.6667,
-                  "pivotX": 0.42,
-                  "pivotY": 0.6,
-                  "muzzleX": 36.3,
-                  "muzzleY": -19.36
+                  "width": 75,
+                  "height": 70,
+                  "pivotX": 0.516854,
+                  "pivotY": 0.542169,
+                  "muzzleX": 18.146067,
+                  "muzzleY": -3.148594,
+                  "referenceAngle": -45
+                },
+                "south": {
+                  "sprite": "buildings/towers/cannon-3-weapon-south",
+                  "width": 58,
+                  "height": 68,
+                  "pivotX": 0.492754,
+                  "pivotY": 0.5,
+                  "muzzleX": 0,
+                  "muzzleY": -7.225,
+                  "referenceAngle": -90
                 }
+              },
+              "referenceAngle": 0,
+              "motion": {
+                "type": "spring",
+                "distance": 13.103997,
+                "speed": 20,
+                "damping": 5,
+                "reloadTime": 0
               }
             },
             "destroyed": {
@@ -2766,41 +2829,67 @@
             "weapon": {
               "sprite": "buildings/towers/sniper-1-weapon",
               "width": 110,
-              "height": 73.333333,
-              "pivotX": 0.46001046,
-              "pivotY": 0.51155202,
+              "height": 67,
+              "pivotX": 0.442149,
+              "pivotY": 0.493243,
               "offsetX": 0,
               "offsetY": 133,
-              "muzzleX": 48.728277,
-              "muzzleY": 27.139337,
+              "muzzleX": 58.090909,
+              "muzzleY": 7.877027,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/sniper-1-weapon-north",
-                  "width": 110,
-                  "height": 63.8,
+                  "width": 105,
+                  "height": 81,
                   "pivotX": 0.5,
-                  "pivotY": 0.5,
+                  "pivotY": 0.365169,
                   "muzzleX": 0,
-                  "muzzleY": 28.072
+                  "muzzleY": 49.081059,
+                  "referenceAngle": 90,
+                  "emptySprite": "buildings/towers/sniper-1-weapon-north-empty"
                 },
-                "south": {
-                  "sprite": "buildings/towers/sniper-1-weapon-south",
-                  "width": 110,
-                  "height": 63.8,
-                  "pivotX": 0.5,
-                  "pivotY": 0.53,
-                  "muzzleX": 0,
-                  "muzzleY": -29.029
+                "northeast": {
+                  "sprite": "buildings/towers/sniper-1-weapon-northeast",
+                  "width": 94,
+                  "height": 69,
+                  "pivotX": 0.480583,
+                  "pivotY": 0.375,
+                  "muzzleX": 35.592233,
+                  "muzzleY": 41.309211,
+                  "referenceAngle": 45,
+                  "emptySprite": "buildings/towers/sniper-1-weapon-northeast-empty"
                 },
                 "southeast": {
                   "sprite": "buildings/towers/sniper-1-weapon-southeast",
-                  "width": 121,
-                  "height": 80.6667,
-                  "pivotX": 0.46,
-                  "pivotY": 0.54,
-                  "muzzleX": 43.197,
-                  "muzzleY": -35.4933
+                  "width": 94,
+                  "height": 57,
+                  "pivotX": 0.470874,
+                  "pivotY": 0.452381,
+                  "muzzleX": 36.504854,
+                  "muzzleY": -18.547619,
+                  "referenceAngle": -45,
+                  "emptySprite": "buildings/towers/sniper-1-weapon-southeast-empty"
+                },
+                "south": {
+                  "sprite": "buildings/towers/sniper-1-weapon-south",
+                  "width": 108,
+                  "height": 67,
+                  "pivotX": 0.5,
+                  "pivotY": 0.560811,
+                  "muzzleX": 0,
+                  "muzzleY": -34.254504,
+                  "referenceAngle": -90,
+                  "emptySprite": "buildings/towers/sniper-1-weapon-south-empty"
                 }
+              },
+              "referenceAngle": 0,
+              "emptySprite": "buildings/towers/sniper-1-weapon-empty",
+              "motion": {
+                "type": "spring",
+                "distance": 9.444445,
+                "speed": 20,
+                "damping": 5,
+                "reloadTime": 1
               }
             },
             "destroyed": {
@@ -2910,41 +2999,67 @@
             "weapon": {
               "sprite": "buildings/towers/sniper-2-weapon",
               "width": 115,
-              "height": 78.051905,
-              "pivotX": 0.46881984,
-              "pivotY": 0.50025385,
+              "height": 77,
+              "pivotX": 0.442446,
+              "pivotY": 0.532258,
               "offsetX": 0,
               "offsetY": 123,
-              "muzzleX": 53.07652,
-              "muzzleY": 28.779077,
+              "muzzleX": 61.163926,
+              "muzzleY": 7.629032,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/sniper-2-weapon-north",
-                  "width": 115,
-                  "height": 66.7,
-                  "pivotX": 0.5,
-                  "pivotY": 0.5,
+                  "width": 129,
+                  "height": 84,
+                  "pivotX": 0.503205,
+                  "pivotY": 0.397059,
                   "muzzleX": 0,
-                  "muzzleY": 29.348
+                  "muzzleY": 48.588235,
+                  "referenceAngle": 90,
+                  "emptySprite": "buildings/towers/sniper-2-weapon-north-empty"
                 },
-                "south": {
-                  "sprite": "buildings/towers/sniper-2-weapon-south",
-                  "width": 115,
-                  "height": 66.7,
-                  "pivotX": 0.5,
-                  "pivotY": 0.53,
-                  "muzzleX": 0,
-                  "muzzleY": -30.3485
+                "northeast": {
+                  "sprite": "buildings/towers/sniper-2-weapon-northeast",
+                  "width": 109,
+                  "height": 74,
+                  "pivotX": 0.473485,
+                  "pivotY": 0.421348,
+                  "muzzleX": 37.737121,
+                  "muzzleY": 40.492135,
+                  "referenceAngle": 45,
+                  "emptySprite": "buildings/towers/sniper-2-weapon-northeast-empty"
                 },
                 "southeast": {
                   "sprite": "buildings/towers/sniper-2-weapon-southeast",
-                  "width": 126.5,
-                  "height": 84.3333,
-                  "pivotX": 0.47,
-                  "pivotY": 0.5,
-                  "muzzleX": 49.9675,
-                  "muzzleY": -34.5767
+                  "width": 108,
+                  "height": 62,
+                  "pivotX": 0.469466,
+                  "pivotY": 0.513333,
+                  "muzzleX": 38.885496,
+                  "muzzleY": -22.457778,
+                  "referenceAngle": -45,
+                  "emptySprite": "buildings/towers/sniper-2-weapon-southeast-empty"
+                },
+                "south": {
+                  "sprite": "buildings/towers/sniper-2-weapon-south",
+                  "width": 129,
+                  "height": 71,
+                  "pivotX": 0.503205,
+                  "pivotY": 0.575581,
+                  "muzzleX": 0,
+                  "muzzleY": -37.839147,
+                  "referenceAngle": -90,
+                  "emptySprite": "buildings/towers/sniper-2-weapon-south-empty"
                 }
+              },
+              "referenceAngle": 0,
+              "emptySprite": "buildings/towers/sniper-2-weapon-empty",
+              "motion": {
+                "type": "spring",
+                "distance": 8.595124,
+                "speed": 20,
+                "damping": 5,
+                "reloadTime": 1
               }
             },
             "destroyed": {
@@ -3054,41 +3169,67 @@
             "weapon": {
               "sprite": "buildings/towers/sniper-3-weapon",
               "width": 120,
-              "height": 85.714286,
-              "pivotX": 0.43960737,
-              "pivotY": 0.56023055,
+              "height": 82,
+              "pivotX": 0.445513,
+              "pivotY": 0.542453,
               "offsetX": 6,
               "offsetY": 139,
-              "muzzleX": 60.616388,
-              "muzzleY": 24.4735,
+              "muzzleX": 63.653846,
+              "muzzleY": 6.575472,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/sniper-3-weapon-north",
-                  "width": 120,
-                  "height": 69.6,
-                  "pivotX": 0.5,
-                  "pivotY": 0.5,
+                  "width": 129,
+                  "height": 86,
+                  "pivotX": 0.502976,
+                  "pivotY": 0.397321,
                   "muzzleX": 0,
-                  "muzzleY": 30.624
+                  "muzzleY": 49.782738,
+                  "referenceAngle": 90,
+                  "emptySprite": "buildings/towers/sniper-3-weapon-north-empty"
                 },
-                "south": {
-                  "sprite": "buildings/towers/sniper-3-weapon-south",
-                  "width": 120,
-                  "height": 69.6,
-                  "pivotX": 0.5,
-                  "pivotY": 0.53,
-                  "muzzleX": 0,
-                  "muzzleY": -31.668
+                "northeast": {
+                  "sprite": "buildings/towers/sniper-3-weapon-northeast",
+                  "width": 108,
+                  "height": 74,
+                  "pivotX": 0.496429,
+                  "pivotY": 0.421875,
+                  "muzzleX": 39.471429,
+                  "muzzleY": 40.982639,
+                  "referenceAngle": 45,
+                  "emptySprite": "buildings/towers/sniper-3-weapon-northeast-empty"
                 },
                 "southeast": {
                   "sprite": "buildings/towers/sniper-3-weapon-southeast",
-                  "width": 132,
-                  "height": 88,
-                  "pivotX": 0.475,
-                  "pivotY": 0.52,
-                  "muzzleX": 47.124,
-                  "muzzleY": -37.84
+                  "width": 110,
+                  "height": 63,
+                  "pivotX": 0.5,
+                  "pivotY": 0.530488,
+                  "muzzleX": 39.615385,
+                  "muzzleY": -23.817073,
+                  "referenceAngle": -45,
+                  "emptySprite": "buildings/towers/sniper-3-weapon-southeast-empty"
+                },
+                "south": {
+                  "sprite": "buildings/towers/sniper-3-weapon-south",
+                  "width": 130,
+                  "height": 72,
+                  "pivotX": 0.5,
+                  "pivotY": 0.590426,
+                  "muzzleX": 0,
+                  "muzzleY": -39.702127,
+                  "referenceAngle": -90,
+                  "emptySprite": "buildings/towers/sniper-3-weapon-south-empty"
                 }
+              },
+              "referenceAngle": 0,
+              "emptySprite": "buildings/towers/sniper-3-weapon-empty",
+              "motion": {
+                "type": "spring",
+                "distance": 7.991453,
+                "speed": 20,
+                "damping": 5,
+                "reloadTime": 1
               }
             },
             "destroyed": {

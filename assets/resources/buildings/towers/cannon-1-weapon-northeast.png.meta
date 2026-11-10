@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "774de91d-1e1a-4814-80a5-be51f073c5b9",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 60,
+  "height": 66,
+  "platformSettings": {},
+  "subMetas": {
+    "cannon-1-weapon-northeast": {
+      "ver": "1.0.6",
+      "uuid": "22710f97-9a93-44d7-985c-536308a2cd36",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "774de91d-1e1a-4814-80a5-be51f073c5b9",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 60,
+      "height": 66,
+      "rawWidth": 60,
+      "rawHeight": 66,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

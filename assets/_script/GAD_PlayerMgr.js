@@ -16,13 +16,21 @@ var def_GAD_PlayerMgr = function () {
     this._run = null;
     this._result = null;
     this._suspended = false;
+    this._audioGame = null;
     this._suspendOwners = new Set();
   }
   _ctor.getInstance = function () {
     this._instance || (this._instance = new _ctor());
     return this._instance;
   };
+  _ctor.prototype.retireAudio = function () {
+    var game = this._audioGame;
+    if (!game) return;
+    game._audioPauseEpoch = (game._audioPauseEpoch || 0) + 1;
+    require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(game);
+  };
   _ctor.prototype.reset = function () {
+    this.retireAudio();
     this._state = 0;
     this._cards = [];
     this._run = this._result = null;
@@ -43,6 +51,7 @@ var def_GAD_PlayerMgr = function () {
   _ctor.prototype.setState = function (t) {
     if (this._run && this._run.finalized && t === $z1GAD_Configs.emGADGameState.Game) return;
     this.tickRun();
+    if (this._state !== t && t !== $z1GAD_Configs.emGADGameState.Game) this.retireAudio();
     this._state = t;
     if (this._run) this._run.clockAt = t === $z1GAD_Configs.emGADGameState.Game && !this._suspended ? this.clockNow() : null;
   };
@@ -65,6 +74,7 @@ var def_GAD_PlayerMgr = function () {
     this.tickRun();
     owner = owner || "app";
     if (suspended) this._suspendOwners.add(owner); else this._suspendOwners.delete(owner);
+    if (!this._suspended && this._suspendOwners.size > 0) this.retireAudio();
     this._suspended = this._suspendOwners.size > 0;
     if (this._run) this._run.clockAt = !this._suspended && this._state === $z1GAD_Configs.emGADGameState.Game ? this.clockNow() : null;
   };
@@ -101,6 +111,7 @@ var def_GAD_PlayerMgr = function () {
     var run = this._run;
     if (!run) return null;
     if (!run.finalized) {
+      this.retireAudio();
       this.tickRun();
       this._state = $z1GAD_Configs.emGADGameState.Over;
       run.finalized = true;

@@ -8,6 +8,7 @@ var $z1AudioMgr = require("AudioMgr");
 var $z1GAD_Configs = require("GAD_Configs");
 var $z1GADGameEnumData = require("GADGameEnumData");
 var $z1GAD_DataMgr = require("GAD_DataMgr");
+var $z1GAD_PlayerMgr = require("GAD_PlayerMgr");
 var $z1GAD_Base = require("GAD_Base");
 var $z1GAD_Bubble = require("GAD_Bubble");
 var $z1GAD_Enemy_Ani = require("GAD_Enemy_Ani");
@@ -216,7 +217,7 @@ var def_GAD_Enermy = function (t) {
       // Identical simultaneous hits share one sound; damage remains per arrow.
       if (frame < 0 || _ctor._hitAudioFrame !== frame) {
         _ctor._hitAudioFrame = frame;
-        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit, undefined, undefined, { owner: this });
+        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.enemyHit, undefined, undefined, { owner: this, game: $z1GAD_PlayerMgr.default.getInstance()._audioGame });
       }
       this.addColliderTagID(t.getTagID());
       return this._hp <= 0 ? (this.onDie(), $z1GAD_Configs.emGADHitState.HitDie) : $z1GAD_Configs.emGADHitState.HitHurt;

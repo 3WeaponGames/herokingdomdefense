@@ -8,7 +8,9 @@ function fixture(surface = 'forest') {
   const pending = [], played = [], writes = [], listeners = [];
   const preferences = { effects: true, music: true }, states = { ERROR: -1, INITIALIZING: 0, PLAYING: 1, PAUSED: 2, STOPPED: 3 };
   class Source {
-    constructor() { this.state = 3; this.mute = true; this.loop = false; this.audio = { getState: () => this.state }; }
+    constructor() { this.state = 3; this.mute = true; this.loop = false; this._volume = 1; this.volumeWrites = 0; this.audio = { getState: () => this.state }; }
+    get volume() { return this._volume; }
+    set volume(value) { this._volume = value; this.volumeWrites++; }
     get isPlaying() { return this.state === 1; }
     play() { this.state = 1; played.push({ path: this.clip.path, loop: this.loop, volume: this.volume, source: this }); }
     stop() { this.state = 3; } pause() { this.state = 2; } resume() { if (this.state === 2) this.state = 1; }
@@ -57,6 +59,25 @@ test('explicit biome wins over shared legacy maps, while legacy and invalid valu
   f.data.levelCfg.EnvironmentBiome = 'unknown'; f.data.levelCfg.prefab = 'missing'; assert.equal(f.sounds.biome(f.game), 'forest');
 });
 
+test('steady loops avoid iOS volume restarts while speech ducking and master volume still update once', () => {
+  const f = fixture(); f.start(); f.tick(); f.hero.node.x++; f.tick();
+  const loops = f.played.filter(p => p.loop).map(p => p.source), before = loops.map(s => s.volumeWrites);
+  assert.equal(loops.length, 2);
+  function frames() { for (let i = 0; i < 100; i++) { f.hero.node.x++; f.tick(); } }
+  frames(); assert.deepEqual(loops.map(s => s.volumeWrites), before, 'unchanged gains still reached the iOS-restarting setter');
+  f.game._unitVoices = { active: { playing: true } }; f.hero.node.x++; f.tick();
+  loops.forEach((s, i) => assert.equal(s.volumeWrites, before[i] + 1));
+  assert.equal(loops[0].volume, .5 * .5 * .65);
+  frames(); loops.forEach((s, i) => assert.equal(s.volumeWrites, before[i] + 1));
+  f.manager.setEffectVolume(.8);
+  loops.forEach((s, i) => assert.equal(s.volumeWrites, before[i] + 2));
+  assert.equal(loops[0].volume, .5 * .8 * .65);
+  frames(); loops.forEach((s, i) => assert.equal(s.volumeWrites, before[i] + 2));
+  f.game._unitVoices.active = null; f.hero.node.x++; f.tick();
+  loops.forEach((s, i) => assert.equal(s.volumeWrites, before[i] + 3));
+  assert.equal(loops[0].volume, .5 * .8);
+});
+
 test('nearby cavalry shares one biome horse loop; infantry and flying movement remain bounded', () => {
   const f = fixture('desert'); f.start();
   for (let i = 0; i < 20; i++) f.soldiers.push(f.actor(90004, { navigationTeam: 'friendly' }));
@@ -94,6 +115,31 @@ test('a late loop from another biome, a paused game or a retired battle cannot s
     if (mode === 'retire') f.game._combatEpoch++;
     f.finishAll(); assert(!f.played.some(p => p.path === 'sfx/hooves-snow-loop'));
     if (mode === 'biome') assert(f.played.some(p => p.path === 'sfx/hooves-ice-loop'));
+  }
+});
+
+test('the immediate UI pause blocks pending combat cues and loops before the deferred actor pause', () => {
+  const f = fixture(); f.start();
+  assert.equal(f.sounds.effect('sword-heavy-swing', f.hero), true);
+  f.ui.isPauset = true;
+  f.finishAll();
+  assert.equal(f.played.length, 0, 'a pending combat cue started before the actor pause was applied');
+  assert.equal(f.sounds.effect('sword-light-swing', f.hero), false);
+  f.tick(); assert.equal(f.played.length, 0, 'ambience started while the UI was paused');
+  assert.equal(f.sounds.effect('castle-low-health', f.hero), true, 'pause still permits signal feedback');
+  f.finishAll(); assert.equal(f.played.length, 1);
+  f.ui.isPauset = false; f.tick();
+  assert(f.played.some(p => p.path === 'sfx/ambience-forest-loop'));
+});
+
+test('a loop preload declined during a temporary pause or mute can retry after it is allowed again', () => {
+  for (const mode of ['pause', 'mute']) {
+    const f = fixture(); f.start(); f.sounds.tick(f.game);
+    if (mode === 'pause') f.ui.isPauset = true;
+    else f.preferences.effects = false;
+    f.finishAll(); assert.equal(f.played.length, 0);
+    f.ui.isPauset = false; f.preferences.effects = true;
+    f.tick(); assert(f.played.some(p => p.path === 'sfx/ambience-forest-loop'), mode + ' left a dead loop request');
   }
 });
 

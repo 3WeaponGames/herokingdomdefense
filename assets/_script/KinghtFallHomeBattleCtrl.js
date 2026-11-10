@@ -882,6 +882,7 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
           $z1GAD_App.default.instance.enter_App(function () {
             e._wallDefenseEntering = false;
             $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = false;
+            $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1KinghtFallConfig.KinghtFallParameter.BGMusic);
           }, function () {
             $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
             $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData().setSubTimeByIndex(t, Date.now());

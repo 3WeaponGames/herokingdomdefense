@@ -5,7 +5,7 @@ function entry(map,id){return entries(map,false).concat(entries(map,true)).find(
 function objectPoints(object,layer,assets){
  const points=[],world=p=>M.toWorld(layer.transform,M.toWorld(object,{x:object.flipX?-p.x:p.x,y:p.y}));
  if(object.legacy){for(const s of object.legacy.sprites||[]){if(s.active===false)continue;const a=s.anchor||{x:.5,y:0};for(const p of [[-a.x*s.width,-a.y*s.height],[(1-a.x)*s.width,-a.y*s.height],[(1-a.x)*s.width,(1-a.y)*s.height],[-a.x*s.width,(1-a.y)*s.height]]){const q=M.point(s.matrix,{x:p[0],y:p[1]});points.push(world({x:q.x-object.legacy.origin.x,y:q.y-object.legacy.origin.y}));}}}
- else{const asset=assets[object.assetId];if(asset){const a=asset.anchor||{x:.5,y:0};for(const p of [[-a.x*asset.width,-a.y*asset.height],[(1-a.x)*asset.width,-a.y*asset.height],[(1-a.x)*asset.width,(1-a.y)*asset.height],[-a.x*asset.width,(1-a.y)*asset.height]])points.push(world({x:p[0],y:p[1]}));}}
+ else{const asset=assets[object.assetId];if(asset){const a=asset.anchor||{x:.5,y:0},size=M.assetSize(asset,object);for(const p of [[-a.x*size.width,-a.y*size.height],[(1-a.x)*size.width,-a.y*size.height],[(1-a.x)*size.width,(1-a.y)*size.height],[-a.x*size.width,(1-a.y)*size.height]])points.push(world({x:p[0],y:p[1]}));}}
  if(!points.length)points.push(M.toWorld(layer.transform,object));return points;
 }
 function index(map){return new Map(entries(map,false).concat(entries(map,true)).map(e=>[e.object.id,e]));}

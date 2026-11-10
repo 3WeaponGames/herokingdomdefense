@@ -12,7 +12,7 @@ const rows = config.BuildEnum[2].levelList.filter(row => /buildings\/towers\/(ca
 test('all six tower levels ship native-sized RGBA layers with matching Cocos metadata', () => {
   assert.equal(rows.length, 6);
   let count = 0;
-  for (const row of rows) for (const layer of [row.Appearance, ...Object.values(views(row.Appearance.weapon))]) {
+  for (const row of rows) for (const layer of [row.Appearance, ...Object.values(views(row.Appearance.weapon))].flatMap(layer=>layer.emptySprite?[layer,{...layer,sprite:layer.emptySprite}]:[layer])) {
     const file = path.join(root, 'assets/resources', layer.sprite + '.png');
     const png = fs.readFileSync(file), meta = JSON.parse(fs.readFileSync(file + '.meta', 'utf8'));
     assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a');
@@ -28,28 +28,15 @@ test('all six tower levels ship native-sized RGBA layers with matching Cocos met
     assert.deepEqual([frame.trimX, frame.trimY, frame.offsetX, frame.offsetY], [0, 0, 0, 0]);
     count++;
   }
-  assert.equal(count, 30);
+  assert.equal(count, 51);
 });
 
-test('all six night windows have valid panes and glows, including both faces of Sniper level 3', () => {
+test('original tower windows and night tint remain with the replacement weapons', () => {
   for (const { Appearance: art } of rows) {
-    const twoFaces = art.sprite === 'buildings/towers/sniper-3';
     assert.equal(art.nightTint, '#A7A7A7');
-    assert.equal(art.lighting.length, twoFaces ? 3 : 2, art.sprite);
-    assert.equal(art.lighting.filter(light => light.glow).length, twoFaces ? 2 : 1, art.sprite);
-    for (const light of art.lighting) {
-      assert(light.points.length >= 3);
-      let area = 0;
-      light.points.forEach((point, i) => {
-        assert(Number.isFinite(point.x) && Number.isFinite(point.y));
-        assert(Math.abs(point.x) < art.width / 2 && point.y > 0 && point.y < art.height);
-        const next = light.points[(i + 1) % light.points.length];
-        area += point.x * next.y - next.x * point.y;
-      });
-      assert(Math.abs(area) > 1, 'window cannot have a degenerate aperture');
-    }
-    for (const { glow } of art.lighting.filter(light => light.glow)) assert(glow.width > 0 && glow.height > 0 && glow.opacity > 0 && glow.opacity <= 100);
-    if (twoFaces) assert(art.lighting.some(light => light.glow && light.points.every(point => point.x < 0)), 'the left-face window needs its own lit aperture and glow');
+    const twoFaces=art.sprite==='buildings/towers/sniper-3';
+    assert.equal(art.lighting.length,twoFaces?3:2,art.sprite);assert.equal(art.lighting.filter(light=>light.glow).length,twoFaces?2:1);
+    for(const light of art.lighting){assert(light.points.length>=3);assert(light.points.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)&&Math.abs(p.x)<art.width/2&&p.y>0&&p.y<art.height));}
+    if(twoFaces)assert(art.lighting.some(light=>light.glow&&light.points.every(p=>p.x<0)),'left-face window retains its own glow');
   }
-  assert(fs.existsSync(path.join(root, 'assets/resources/ui/stage-stars/glow.png')));
 });

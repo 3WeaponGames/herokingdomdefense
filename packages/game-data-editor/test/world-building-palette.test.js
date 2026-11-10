@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('path'),os=require('os');
-const {Service,fingerprint}=require('../worlds/service'),L=require('../worlds/legacy'),M=require('../worlds/model');
+const {Service,fingerprint}=require('../worlds/service'),L=require('../worlds/legacy'),M=require('../worlds/model'),Kit=require('../../../assets/_script/WallKit');
 const root=path.resolve(__dirname,'../../..');
 
 test('all four gate faces export their previewed model and collision transforms on a new map',()=>{
@@ -27,7 +27,7 @@ test('building placement cards keep six simple names with four compass gate faci
  assert.deepEqual(cards[5].variants.map(v=>v.placement.id),[19,19,19,19]);
  for(let i=0;i<cards.length;i++)for(const variant of cards[i].variants){
   assert(!/level|Map\d|\d/.test(cards[i].name+variant.label));
-  const original=i===5?source.buildings.find(b=>b.id===variant.placement.id):catalog[i],expected=M.clone(original);delete expected.catalogId;expected.name=cards[i].name;if(i===5){expected.wallFacing=variant.id;expected.purchaseSide=variant.placement.purchaseSide;expected.purchaseOffset=M.clone(variant.placement.purchaseOffset);}
+  const original=i===5?source.buildings.find(b=>b.id===variant.placement.id):catalog[i],expected=M.clone(original);delete expected.catalogId;expected.name=cards[i].name;if(i===5){expected.wallFacing=variant.id;expected.wallRotation=0;expected.wallRun=Kit.nativeRun({nativeVersion:2,left:1,right:1,gate:true,start:'post',end:'post'});expected.purchaseSide=variant.placement.purchaseSide;expected.purchaseOffset=M.clone(variant.placement.purchaseOffset);}
   assert.deepEqual(variant.placement,expected,'template, sprite records, identifiers and upgrade roots remain the complete authored family');
   assert(!('preview' in variant.placement)&&!('variants' in variant.placement)&&!('catalogId' in variant.placement));
   assert.deepEqual(Object.keys(variant.preview).sort(),['errors','images','levels','runtimePath']);
@@ -45,4 +45,13 @@ test('browsing building variants leaves sources, config, catalog placements and 
  assert.equal(JSON.stringify(catalog),catalogBefore);assert.equal(JSON.stringify(index.documents),configBefore);assert.equal(service.version,version);assert.deepEqual(service.docs,{});assert.equal(service.undo.length,0);
  cards[0].variants[0].placement.x+=100;cards[0].variants[0].placement.template.roots.push(-1);
  assert.equal(JSON.stringify(catalog),catalogBefore,'placement records are detached from the cached source catalog');
+});
+
+test('new gate assets start with one complete native wall on either side and remain editable',()=>{
+ const service=new Service(root,{artifacts:path.join(os.tmpdir(),'hkd-building-palette-read-only')}),Editor=require('../worlds/wall-layout-editor');
+ for(const variant of service.buildingPlacements().find(c=>c.name==='Wall / Gate').variants){
+  const run=variant.placement.wallRun,before=M.clone(run);assert.equal(run.nativeVersion,2);assert.equal(run.left,1);assert.equal(run.right,1);assert.equal(run.gate,true);assert.equal(variant.placement.wallRotation,0);
+  for(const level of Object.values(variant.preview.levels)){const main=level.skeletons.find(s=>s.json.wallKit);assert.equal(main.json.wallKit.layout.leftCount,1);assert.equal(main.json.wallKit.layout.rightCount,1);assert.equal(Kit.posts(main.json.wallKit.layout).length,4);}
+  const extended=Editor.extend(run,'right',{u:1,v:0},2);assert.equal(extended.right,3);assert.equal(extended.left,1);assert.equal(Editor.count(extended,'right',0).right,0);assert.deepEqual(run,before);
+ }
 });

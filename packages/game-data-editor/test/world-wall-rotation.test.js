@@ -36,7 +36,7 @@ test('fine-angle preview, open-gate navigation and exported native models/collid
   near(step(info,c),record.step.map(p=>M.toWorld(b,p)),'unchanged purchase field retains runtime hero trigger');
   const refs=[c.ndAniDown,c.ndAniMain].concat(c.ndAniOther),placement=M.matrix(b),offset=[1,0,0,1,-record.origin.x,-record.origin.y];
   refs.forEach((ref,i)=>near(info.byId[exported[ref.__id__].node.__id__].world,Maps.multiply(placement,Maps.multiply(offset,record.skeletons[i].matrix)),'runtime wall model matches its preview'));
-  assert.equal(record.openBlockers.length,4);near(Navigation.buildingPolygons(f.service,stage,b,1,'open',f.config,new Map()),record.openBlockers.map(shape=>shape.map(p=>M.toWorld(b,p))),'open ally passage retains rotated wings');
+  assert.equal(record.openBlockers.length,2);near(Navigation.buildingPolygons(f.service,stage,b,1,'open',f.config,new Map()),record.openBlockers.map(shape=>shape.map(p=>M.toWorld(b,p))),'open ally passage retains rotated wings');
  }
  assert.equal(JSON.stringify(f.stage),original);
  const before=Preview.describe(f.service,f.stage);f.building.wallRotation=12;const after=Preview.describe(f.service,f.stage);assert.notEqual(after,before,'fine rotation invalidates the composition cache');near(after.buildings[f.building.id].levels[1].step,before.buildings[f.building.id].levels[1].step,'fine rotation does not change the plate preview');

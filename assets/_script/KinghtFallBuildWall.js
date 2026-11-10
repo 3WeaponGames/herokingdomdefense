@@ -25,8 +25,10 @@ var def_KinghtFallBuildWall = function (t) {
     e.polyPoints = [];
     e.isOpen = false;
     e.wallFacing = "";
+    e.wallOpening = "";
     e.wallRotation = 0;
     e.wallRun = "";
+    e.wallFixtureTags = "";
     e.wallHasGate = true;
     return e;
   }
@@ -110,6 +112,10 @@ var def_KinghtFallBuildWall = function (t) {
     this.ndAniEffect.node.active = false;
     this.isOpen = false;
   };
+  _ctor.prototype._gateAnimation = function (component, name) {
+    var json=component&&component.skeletonData&&component.skeletonData.skeletonJson;
+    return require("GateFacing").animation(json,name,this.wallOpening,this.isOpen);
+  };
   _ctor.prototype.setLight = function (t) {
     var e = this;
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
@@ -123,19 +129,19 @@ var def_KinghtFallBuildWall = function (t) {
           this.isDestroyed = false, this.doUpgreadAni();
         } else if (t) {
           if (this.isOpen) {
-            this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in, false), this.ndAniMain.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night, false), this.ndAniDown && (this.ndAniDown.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in, false), this.ndAniDown.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night, false)), this.ndAniOther.forEach(function (t) {
-              t.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in, false);
-              t.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night, false);
+            this.ndAniMain.setAnimation(0, this._gateAnimation(this.ndAniMain, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in), false), this.ndAniMain.addAnimation(0, this._gateAnimation(this.ndAniMain, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night), false), this.ndAniDown && (this.ndAniDown.setAnimation(0, this._gateAnimation(this.ndAniDown, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in), false), this.ndAniDown.addAnimation(0, this._gateAnimation(this.ndAniDown, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night), false)), this.ndAniOther.forEach(function (t) {
+              t.setAnimation(0, e._gateAnimation(t, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in), false);
+              t.addAnimation(0, e._gateAnimation(t, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night), false);
             });
           } else {
-            this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in, false), this.ndAniMain.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle_night, true), this.ndAniDown && (this.ndAniDown.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in, false), this.ndAniDown.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle_night, true)), this.ndAniOther.forEach(function (t) {
-              t.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in, false);
+            this.ndAniMain.setAnimation(0, this._gateAnimation(this.ndAniMain, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in), false), this.ndAniMain.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle_night, true), this.ndAniDown && (this.ndAniDown.setAnimation(0, this._gateAnimation(this.ndAniDown, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in), false), this.ndAniDown.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle_night, true)), this.ndAniOther.forEach(function (t) {
+              t.setAnimation(0, e._gateAnimation(t, $z1KinghtFallBuildBase.KinghtFallBuildAniName.fade_in), false);
               t.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle_night, true);
             });
           }
         } else if (this.isOpen) {
-          this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open, false), this.ndAniDown && this.ndAniDown.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open, false), this.ndAniOther.forEach(function (t) {
-            t.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open, false);
+          this.ndAniMain.setAnimation(0, this._gateAnimation(this.ndAniMain, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open), false), this.ndAniDown && this.ndAniDown.setAnimation(0, this._gateAnimation(this.ndAniDown, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open), false), this.ndAniOther.forEach(function (t) {
+            t.setAnimation(0, e._gateAnimation(t, $z1KinghtFallBuildBase.KinghtFallBuildAniName.open), false);
           });
         } else {
           this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, true), this.ndAniDown && this.ndAniDown.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, true), this.ndAniOther.forEach(function (t) {
@@ -164,9 +170,9 @@ var def_KinghtFallBuildWall = function (t) {
         });
       }
       if (this.ndAniMain.animation == $z1KinghtFallBuildBase.KinghtFallBuildAniName.create || this.ndAniMain.animation == $z1KinghtFallBuildBase.KinghtFallBuildAniName.upgrade) {
-        this.ndAniMain.addAnimation(0, t, false), this.ndAniDown.addAnimation(0, t, false);
+        this.ndAniMain.addAnimation(0, this._gateAnimation(this.ndAniMain, t), false), this.ndAniDown.addAnimation(0, this._gateAnimation(this.ndAniDown, t), false);
       } else {
-        this.ndAniMain.setAnimation(0, t, false), this.ndAniDown.setAnimation(0, t, false);
+        this.ndAniMain.setAnimation(0, this._gateAnimation(this.ndAniMain, t), false), this.ndAniDown.setAnimation(0, this._gateAnimation(this.ndAniDown, t), false);
       }
     }
   };
@@ -259,10 +265,12 @@ var def_KinghtFallBuildWall = function (t) {
   cc__decorate([ccp_property({
     tooltip: "Explicit outward gate facing. Empty preserves the authored legacy animation."
   })], _ctor.prototype, "wallFacing", undefined);
+  cc__decorate([ccp_property({visible:false,tooltip:"Optional inward or outward opening. Empty retains the default animation."})], _ctor.prototype, "wallOpening", undefined);
   cc__decorate([ccp_property({
     visible: false,
     tooltip: "Fine wall-only rotation in degrees. Models and built fixtures are baked; construction fields stay fixed."
   })], _ctor.prototype, "wallRotation", undefined);
+  cc__decorate([ccp_property({visible:false})], _ctor.prototype, "wallFixtureTags", undefined);
   cc__decorate([ccp_property({visible:false,tooltip:"Optional stage-authored modular wall run. Empty retains the existing layout."})], _ctor.prototype, "wallRun", undefined);
   cc__decorate([ccp_property({visible:false})], _ctor.prototype, "wallHasGate", undefined);
   return cc__decorate([ccp_ccclass], _ctor);

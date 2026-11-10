@@ -12,7 +12,7 @@ function setup(){
     KinghtFallDataMgr:{KinghtFallDataMgr:single({getGoodsCfgById:id=>config.GoodsCfg[id],getTreasureCfg:()=>config.TreasureCfg})},
     KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getUserData:()=>({getTreasureLevel:()=>owned}),purchase(){purchases++;throw Error('Description cannot purchase');}})},
     KinghtFallTextConfig:{KinghtFallTextConfig:{HomeTrea02:'Lv.{0}'}},KinghtFallMissionData:{},KinghtFallEnum:{},
-    KinghtFallModle:{default:single({numberFomat:String})},AudioMgr:{},GAD_Configs:{},GAD_App:{},GAD_PlayerMgr:{default:single({})},KinghtFallItemGood:{},
+    KinghtFallModle:{default:single({numberFomat:String})},AudioMgr:{AudioMgr:single({stopOwnedEffects:noop})},GAD_Configs:{},GAD_App:{},GAD_PlayerMgr:{default:single({})},KinghtFallItemGood:{},
     Utils:{Utils:{StringFormat:(text,...values)=>text.replace(/\{(\d+)\}/g,(_match,index)=>values[index])}}
   });
   const language={t:key=>key,token:key=>key,format:(text,values)=>text.replace('{0}',values[0]),bindLabel:(label,_key,values)=>{label.string=values.join(' ');}};

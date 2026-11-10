@@ -70,19 +70,21 @@ function compassProject(source,building){
  const existing=projected.get(source);if(existing)source=existing.source;
  if(!building||building.kind!==6)return source;
  if(building.wallRotation!==undefined&&(typeof building.wallRotation!=='number'||!Number.isFinite(building.wallRotation)))throw Error('Wall rotation requires a finite angle.');
- if(!Facing.valid(building.wallFacing)&&building.wallRotation===undefined)return source;
- const signature=JSON.stringify(source),key=JSON.stringify([building.template.node,building.template.roots,building.wallFacing,building.wallRotation]);let saved=cache.get(source);
+ if(building.wallOpening!==undefined&&!Facing.validOpening(building.wallOpening))throw Error('Choose an inward or outward gate opening.');
+ if(!Facing.valid(building.wallFacing)&&building.wallRotation===undefined&&building.wallOpening===undefined)return source;
+ const signature=JSON.stringify(source),key=JSON.stringify([building.template.node,building.template.roots,building.wallFacing,building.wallRotation,building.wallOpening]);let saved=cache.get(source);
  if(!saved||saved.signature!==signature){saved={signature,values:new Map()};cache.set(source,saved);}if(saved.values.has(key)){const value=saved.values.get(key);saved.values.delete(key);saved.values.set(key,value);return value;}
  const info=Maps.model(source),owner=info.byId[building.template.node];if(!owner)throw Error('A wall source was removed. Refresh its template.');
  const controller=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)throw Error('A wall controller is missing from its template.');
- const old=rotation(controller.value.wallRotation),angle=building.wallRotation===undefined?old:building.wallRotation,faceChanged=Facing.valid(building.wallFacing)&&controller.value.wallFacing!==building.wallFacing;
- if(!faceChanged&&angle===old)return source;
+ const old=rotation(controller.value.wallRotation),angle=building.wallRotation===undefined?old:building.wallRotation,faceChanged=Facing.valid(building.wallFacing)&&controller.value.wallFacing!==building.wallFacing,openingChanged=building.wallOpening!==undefined&&controller.value.wallOpening!==building.wallOpening;
+ if(!faceChanged&&angle===old&&!openingChanged)return source;
  let result=source;
  if(faceChanged){
   // Unbake a recovered fine angle before changing compass orientation, then
   // reapply it. Mirroring an already-rotated family would invert its angle.
   result=rotateWall(result,building,-old);result=faceProject(result,building);result=rotateWall(result,building,angle);
  }else result=rotateWall(result,building,angle-old);
+ if(openingChanged){if(result===source)result=clone(source);result[controller.id].wallOpening=building.wallOpening;}
  if(building.wallRotation!==undefined||old)result[controller.id].wallRotation=angle;
  projected.set(result,{source,key});saved.values.set(key,result);
  // Fine-angle edits have unbounded distinct values; retain only recent poses
@@ -98,5 +100,5 @@ function finishExport(source,building,target,mapping){
   component.points=trigger.points.map((p,i)=>{const x=p.x-owner.position.x,y=p.y-owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*a[7],y:local.y*a[8]});});
  }
 }
-function project(source,building){return require('./wall-run').project(compassProject(source,building),building);}
+function project(source,building,root){return require('./wall-run').project(compassProject(source,building),building,root);}
 module.exports={project,finishExport,around,facing};

@@ -30,7 +30,7 @@ function fixture(saved) {
     KinghtFallEnum: enums, KinghtFallConfig: gameConfig, Config: { UIID: { UINONE: 'none', UITouch: 'touch' } }, Appcfg: { BaseEventName: { ShowTransition: 'transition', blocktouch: 'input', OpenUI: 'open' } },
     EventMgr: { EventMgr: singleton({ emit: (...args) => events.push(args) }) }, KinghtFallModle: { default: singleton({ randomArray: (list, count) => list.slice(0, count) }), KinghtFallGameStage: {} },
     TestMode: { TestMode: singleton({ setGameplayTarget() {}, removeGameplayTarget() {}, readGameplayInput: () => ({ pause: true, x: 1 }) }) },
-    AudioMgr: { AudioMgr: singleton({ playMusic() {}, playEffectFree() {}, setChannelGain() {} }) }, GameToolsOverrides: { clear() {} },
+    AudioMgr: { AudioMgr: singleton({ playMusic() {}, playEffectFree() {}, setChannelGain() {}, stopOwnedEffects() {} }) }, GameToolsOverrides: { clear() {} },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) }, GameTrackDataEvent: { TrackId: {} },
     LogMgr: { LogMgr: singleton({ error() {} }) }, TimeUtils: { TimeUtils: { GetTimeBySecond: () => 0 } },
     ResCacheMgr: { ResCacheMgr: singleton({ getAssets: () => null, addAssets() {} }) } });
@@ -81,6 +81,7 @@ test('fresh entry waits through transition, prefab and map loads, then journals 
   view.update(.016); view.lateUpdate(.016); assert.deepEqual(f.input, []);
   const pending = f.requests.at(-1); f.mapReady(); pending.done(null, { map: true, addRef() {} });
   assert.equal(f.user.getPowerNum(), 100 - cost); assert.equal(f.user.getStage(), stage); assert.equal(view.isPauset, false);
+  assert.equal(view.ctrGame._audioPaused, false, 'the completed entry transition releases presentation pause');
   assert.equal(f.player.gameData.hasSave(stage), true); assert.equal(f.player.gameData.getRoundNum(), 1);
   assert.equal(f.earnedSilver(), config.LevelCfg[stage - 1].WaveCfg[0].StartSliver);
   assert.equal(f.player.gameData.getCoin(), f.earnedSilver()); assert.deepEqual(f.input, ['bound','events']);

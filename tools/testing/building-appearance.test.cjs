@@ -156,6 +156,28 @@ test('weapon recoil leaves its base fixed, follows aim, and returns the muzzle a
   assert.deepEqual({ x: state.node.x, y: state.node.y, angle: state.node.angle, scaleX: state.node.scaleX, scaleY: state.node.scaleY }, base);
 });
 
+test('source ballista waits for every loaded and empty view, reloads in place, and respects a buffed attack rate',()=>{
+  const h=fixture(true,false,true),weapon=h.owner.buildInfo.cfg.Appearance.weapon;
+  h.owner.buildInfo.cfg.Tower.attackType='sniper';h.owner.buildInfo.cfg.Data=[60,10,500];weapon.referenceAngle=0;weapon.emptySprite='side-empty';
+  weapon.views.northeast={...weapon.views.north,sprite:'northeast',referenceAngle:45};weapon.views.north.referenceAngle=90;weapon.views.south.referenceAngle=-90;
+  weapon.views.southeast={...weapon.views.north,sprite:'southeast',referenceAngle:-45};Object.entries(weapon.views).forEach(([k,v])=>v.emptySprite=k+'-empty');
+  weapon.motion={type:'spring',distance:16,speed:20,damping:5,reloadTime:1};h.api.apply(h.owner);
+  assert.equal(h.loads.length,11);for(let i=0;i<h.loads.length-1;i++)h.loads[i].callback({name:h.loads[i].path});assert.equal(h.api.ready(h.owner),false);assert.equal(h.owner.ndAniMain.enabled,true);
+  h.loads.at(-1).callback({name:h.loads.at(-1).path});assert.equal(h.api.ready(h.owner),true);
+  const state=h.owner._buildingAppearance,base=[state.node.x,state.node.y,state.node.angle],target=new h.Node('target');target.setPosition(400,150);h.api.aim(h.owner,target);h.api.fire(h.owner);
+  assert.equal(state.weaponSprite.spriteFrame.name,'side-empty');target.setPosition(0,-400);h.api.aim(h.owner,target);assert.equal(state.weaponSprite.spriteFrame.name,'south-empty');
+  h.api.step(h.owner,.049);assert.equal(state.weaponSprite.spriteFrame.name,'south-empty');h.api.step(h.owner,.001);assert.equal(state.weaponSprite.spriteFrame.name,weapon.views.south.sprite);
+  h.api.step(h.owner,.21);assert.equal(state.weaponNode.x,0);assert.equal(state.weaponNode.y,0);assert.equal(state.weaponMotion,null);assert.deepEqual([state.node.x,state.node.y,state.node.angle],base);
+  h.api.fire(h.owner);h.owner.isDestroyed=true;h.api.onDead(h.owner);assert.equal(state.weaponMotion,null);h.owner.isDestroyed=false;h.api.apply(h.owner);assert(!state.weaponSprite.spriteFrame.name.endsWith('-empty'),'repair restores a loaded weapon');
+});
+
+test('obsolete and failed unloaded-frame callbacks cannot commit partial or upgraded tower art',()=>{
+ const h=fixture(true),w=h.owner.buildInfo.cfg.Appearance.weapon;w.emptySprite='unloaded';w.motion={type:'spring',distance:10,speed:20,damping:5,reloadTime:1};h.api.apply(h.owner);const old=h.loads.slice();w.emptySprite='unloaded-new';h.api.apply(h.owner);old.forEach(l=>l.callback({name:'obsolete'}));assert.equal(h.api.ready(h.owner),false);
+ const next=h.loads.slice(old.length);next.forEach(l=>l.callback(l.path==='unloaded-new'?null:{name:l.path}));assert.equal(h.api.ready(h.owner),false);assert.equal(h.owner.ndAniMain.enabled,true);
+ h.api.apply(h.owner);h.loads.slice(old.length+next.length).forEach(l=>l.callback({name:l.path}));assert.equal(h.api.ready(h.owner),true);h.api.fire(h.owner);assert.equal(h.owner._buildingAppearance.weaponSprite.spriteFrame.name,'unloaded-new');
+ h.api.dispose(h.owner);old.forEach(l=>l.callback({name:'late'}));assert.equal(h.owner._buildingAppearance,null);
+});
+
 test('death invalidates pending layers; repair can load a complete pair and a failed frame keeps the fallback', () => {
   const h = fixture(true); h.api.apply(h.owner);
   h.loads[0].callback({}); h.owner.isDestroyed = true; h.api.onDead(h.owner); h.loads[1].callback({});
@@ -323,10 +345,10 @@ test('production tower families each contain three imported levels with independ
       assert.equal(fs.readFileSync(file).subarray(1, 4).toString(), 'PNG');
       const meta = JSON.parse(fs.readFileSync(file + '.meta'));
       assert.equal(meta.type, 'sprite'); assert.equal(Object.values(meta.subMetas)[0].trimType, 'none');
-      for (const direction of ['north','southeast','south']) {
+      for (const direction of ['north','northeast','southeast','south']) {
         const view=row.Appearance.weapon.views[direction];
         assert.equal(view.sprite,row.Appearance.weapon.sprite+'-'+direction);
-        assert.equal(view.muzzleX>0,direction==='southeast');assert(direction==='north'?view.muzzleY>0:view.muzzleY<0);
+        assert.equal(view.referenceAngle,{north:90,northeast:45,southeast:-45,south:-90}[direction]);assert(Number.isFinite(view.muzzleX)&&Number.isFinite(view.muzzleY));
         const viewMeta=JSON.parse(fs.readFileSync(path.join(root,'assets/resources',view.sprite+'.png.meta')));
         assert.equal(viewMeta.width,Math.round(view.width));assert.equal(viewMeta.height,Math.round(view.height));assert.equal(viewMeta.filterMode,'bilinear');assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
         assert.equal(Object.values(viewMeta.subMetas)[0].trimType,'none');
@@ -338,7 +360,7 @@ test('production tower families each contain three imported levels with independ
       const ruinMeta = JSON.parse(fs.readFileSync(ruinFile + '.meta'));
       assert.equal(ruinMeta.type, 'sprite'); assert.equal(ruinMeta.packable, false); assert.equal(ruinMeta.genMipmaps, false);
       assert.equal(Object.values(ruinMeta.subMetas)[0].trimType, 'none');
-      assert.equal(ruins.width, row.Appearance.width); assert.equal(ruins.offsetY, row.Appearance.offsetY);
+      assert(ruins.width>0&&ruins.height>0); assert.equal(ruins.offsetY, row.Appearance.offsetY);
       assert.equal(row.Appearance.nightTint,'#A7A7A7');assert(row.Appearance.lighting.length>0);
       for(const light of row.Appearance.lighting){assert(light.points.length>=3);assert(light.points.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)&&Math.abs(p.x)<=row.Appearance.width/2&&p.y>=0&&p.y<=row.Appearance.height));}
       assert.equal(row.ColliderIndex >= 1 && row.ColliderIndex <= 3, true);

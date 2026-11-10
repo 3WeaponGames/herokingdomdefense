@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "3056f70d-65bb-400d-9a66-dec4dfde8f8c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 109,
+  "height": 74,
+  "platformSettings": {},
+  "subMetas": {
+    "sniper-2-weapon-northeast": {
+      "ver": "1.0.6",
+      "uuid": "6ff032c6-6781-4fbf-9ff1-71be4370a71a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "3056f70d-65bb-400d-9a66-dec4dfde8f8c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 109,
+      "height": 74,
+      "rawWidth": 109,
+      "rawHeight": 74,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
