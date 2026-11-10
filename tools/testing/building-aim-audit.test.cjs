@@ -90,7 +90,8 @@ for (const type of ['cannon', 'sniper']) for (const level of [1, 2, 3]) test(`${
     const muzzle = h.api.muzzle(h.owner, h.game);
     pointClose(muzzle, h.game.ndUI.convertToNodeSpaceAR(visible), 'visible barrel tip');
     const worldPivot = state.weaponPivot.convertToWorldSpaceAR({ x: 0, y: 0 });
-    const vector = { x: visible.x - worldPivot.x, y: visible.y - worldPivot.y };
+    const axis=state.weaponPivot.convertToWorldSpaceAR({x:state.weaponAimX,y:state.weaponAimY});
+    const vector = { x: axis.x - worldPivot.x, y: axis.y - worldPivot.y };
     const toward = { x: target.node.x - worldPivot.x, y: target.node.y - worldPivot.y };
     close(vector.x * toward.y - vector.y * toward.x, 0, 'barrel must point at target');
     assert(vector.x * toward.x + vector.y * toward.y > 0, 'barrel must point forward');
@@ -108,8 +109,8 @@ test('aim respects rotated/scaled/translated map, building, enemy and effects pa
   const state = h.owner._buildingAppearance;
   const tip = state.weaponNode.convertToWorldSpaceAR(localMuzzle(h));
   pointClose(h.api.muzzle(h.owner, h.game), h.game.ndUI.convertToNodeSpaceAR(tip));
-  const pivot = state.weaponPivot.convertToWorldSpaceAR({ x: 0, y: 0 }), to = target.node.convertToWorldSpaceAR({ x: 0, y: 0 });
-  close((tip.x - pivot.x) * (to.y - pivot.y) - (tip.y - pivot.y) * (to.x - pivot.x), 0);
+  const local=state.weaponPivot.parent.convertToNodeSpaceAR(target.node.convertToWorldSpaceAR({x:0,y:0})),dx=local.x-state.weaponPivot.x,dy=local.y-state.weaponPivot.y;
+  assert.equal(state.weaponPivot.angle,0);assert((state.weaponAimX*state.weaponPivot.scaleX*dx+state.weaponAimY*dy)/Math.hypot(dx,dy)>=Math.cos(Math.PI/8)-1e-8,'nearest heading uses the transformed target');
 });
 
 test('left/right crossings keep the barrel upright and never move or mirror the base', () => {
@@ -117,7 +118,7 @@ test('left/right crossings keep the barrel upright and never move or mirror the 
   const state = h.owner._buildingAppearance, base = { x: state.node.x, y: state.node.y, angle: state.node.angle, scaleX: state.node.scaleX, scaleY: state.node.scaleY };
   for (const x of [300, 1, -1, -300, -1, 1, 300]) {
     const target = h.target(x, 330); h.api.aim(h.owner, target); h.api.step(h.owner, .5);
-    assert.equal(state.weaponPivot.scaleX < 0, state.weaponView === 'side' && x < h.weapon.offsetX);
+    assert.equal(state.weaponPivot.scaleX < 0, ['side','northeast','southeast'].includes(state.weaponView) && x < h.weapon.offsetX);
     assert(Math.abs(state.weaponPivot.angle) <= 90.000001, 'art stays upright rather than rotating upside down');
     assert.deepEqual({ x: state.node.x, y: state.node.y, angle: state.node.angle, scaleX: state.node.scaleX, scaleY: state.node.scaleY }, base);
   }
@@ -129,7 +130,7 @@ test('weapon loading is generation-owned across upgrade, sale, death, repair and
   h.api.apply(h.owner); h.resolve();
   stale.forEach(load => load.done({ name: 'obsolete' }));
   let state = h.owner._buildingAppearance;
-  assert.equal(state.sprite.spriteFrame.name, 'new-base'); assert.equal(state.weaponSprite.spriteFrame.name, 'new-weapon');
+  assert.equal(state.sprite.spriteFrame.name, 'new-base'); assert.equal(state.weaponFrames.side.name, 'new-weapon');
   h.owner.isDestroyed = true; h.api.onDead(h.owner);
   assert.equal(state.weaponPivot.active, false);
   h.owner.isDestroyed = false; h.api.apply(h.owner); h.resolve(); assert.equal(state.weaponPivot.active, true);
@@ -212,16 +213,16 @@ test('layer pair becomes visible atomically and recoil moves only the weapon, no
   h.api.step(h.owner, 1); pointClose(state.weaponNode.getPosition(), { x: 0, y: 0 }); assert.equal(state.flash.active, false);
 });
 
-test('tower tracks a moving target continuously during cooldown and actual shot starts at the rendered barrel tip', () => {
+test('tower selects fixed directional sprites during cooldown and actual shot starts at the rendered barrel tip', () => {
   const h = controllerFixture('sniper'), target = h.target(300, 230);
   h.world.d.enemyList = [target];
-  const angles = [];
+  const facings = [];
   for (const [x, y] of [[300, 230], [200, 400], [-150, 350], [-300, 100], [200, -200]]) {
     target.node.setPosition(x, y); h.owner.doTime(.1);
-    angles.push(h.owner._buildingAppearance.weaponPivot.angle);
+    assert.equal(h.owner._buildingAppearance.weaponPivot.angle,0);facings.push(h.owner._buildingAppearance.weaponFacing);
   }
   assert.equal(h.shots.length, 0, 'tracking does not consume/skip the authored cooldown');
-  assert(new Set(angles.map(a => Math.round(a))).size >= 4, 'aim changes before the next shot is ready');
+  assert(new Set(facings).size >= 4, 'directional textures change before the next shot is ready');
   h.owner.time.AttackTime = 1; h.owner.doTime(.01);
   assert.equal(h.shots.length, 1); pointClose(h.shots[0].origin, h.shots[0].expected, 'shot origin');
   pointClose(h.shots[0].nodePosition, h.shots[0].expected, 'projectile node');
@@ -263,7 +264,7 @@ test('losing the final live enemy returns an eight-direction tower to northeast 
   h.owner.time.AttackTime=1;h.owner.doTime(.01);assert.equal(h.shots.length,1);assert.equal(h.owner._buildingAppearance.weaponView,'southeast');
   target.hp=0;h.world.d.enemyList=[];h.owner.doTime(.01);
   assert.equal(h.owner._buildingAppearance.weaponView,'southeast','a spent shot finishes recoiling');
-  h.owner.doTime(1);const state=h.owner._buildingAppearance;
-  assert.equal(state.weaponView,'side');assert.equal(state.weaponFacing,'northeast');assert.equal(state.weaponPivot.angle,0);assert.equal(state.weaponPivot.scaleX,1);
+  h.owner.doTime(1);assert.equal(h.owner._buildingAppearance.weaponView,'southeast','finish the authored reload kick before returning idle');h.owner.doTime(.25);const state=h.owner._buildingAppearance;
+  assert.equal(state.weaponView,'northeast');assert.equal(state.weaponFacing,'northeast');assert.equal(state.weaponPivot.angle,0);assert.equal(state.weaponPivot.scaleX,1);
   assert.equal(h.shots.length,1);assert.equal(h.owner._towerAimTarget,null);
 });

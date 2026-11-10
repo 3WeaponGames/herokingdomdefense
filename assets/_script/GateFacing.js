@@ -7,11 +7,21 @@ var SLOPE = Math.tan(Math.PI / 6);
 function valid(value) { return value === "NE" || value === "NW" || value === "SE" || value === "SW"; }
 function mirrorX(value) { return value === "NW" || value === "SE"; }
 function reverse(value) { return value === "NE" || value === "NW"; }
+function validOpening(value) { return value === "outward" || value === "inward"; }
+// Legacy skeletons have only the original open/shut tracks. Select a directional
+// track only when it actually exists, so old scripted calls keep their behavior.
+function animation(json, name, opening, isOpen) {
+  var direction=opening==="inward"?"inward":"outward",selected;
+  if(name==="Fade_in"&&isOpen)selected="Fade_in_open_"+direction;
+  else if(/^(open|shut)(?:_night)?$/.test(name)){var night=/_night$/.test(name),base=name.replace(/_night$/,"");selected=base+"_"+direction+(night?"_night":"");}
+  else return name;
+  return json&&json.animations&&json.animations[selected]?selected:name;
+}
 function normal(value) {
   if (!valid(value)) return null;
   return { x: value === "NW" || value === "SW" ? -1 : 1, y: value === "NE" || value === "NW" ? SLOPE : -SLOPE };
 }
-function reflected(x, y) { return { x: -y / SLOPE, y: -x * SLOPE }; }
+function reflected(x, y, slope) { slope=slope||SLOPE;return { x: -y / slope, y: -x * slope }; }
 function leaf(name) { return /^(men1_[23]|men3_[23]|men2_mu_[12])$/.test(name); }
 function mesh(value, label) {
   if (!value || value.type !== "mesh" || !Array.isArray(value.uvs) || !Array.isArray(value.vertices) ||
@@ -47,6 +57,10 @@ function closedPoint(value, u, v) {
 }
 function mirrorJson(json) {
   if (!json || !Array.isArray(json.skins)) return json;
+  if(json.wallGate&&json.wallGate.style==="matched")return json;
+  if(json.wallKit&&json.wallKit.gateStyle==="matched"){
+    var matched=require("./WallDoor").reverse(json);require("./WallKit").updateBounds(matched);return matched;
+  }
   var targets = {}, found = false;
   json.skins.forEach(function (skin) {
     Object.keys(skin.attachments || {}).forEach(function (slot) {
@@ -56,7 +70,8 @@ function mirrorJson(json) {
         var original = mesh(skin.attachments[slot][name], skin.name + "/" + slot), alternate = /^(men1_[23]|men3_[23])_2$/.test(slot);
         var primarySlot = alternate ? slot.slice(0, -1) + "1" : slot;
         var primary = mesh(skin.attachments[primarySlot] && skin.attachments[primarySlot][name], skin.name + "/" + primarySlot);
-        targets[skin.name + "/" + slot + "/" + name] = { original: original, primary: primary, alternate: alternate };
+        var nativeGate=/^cq-rts-/.test(skin.name)&&(json.wallGate||json.wallKit&&json.wallKit.gateStyle==="original");
+        targets[skin.name + "/" + slot + "/" + name] = { original: original, primary: primary, alternate: alternate,slope:nativeGate?require("./WallAssembly").axis.slope:SLOPE };
       });
     });
   });
@@ -74,7 +89,7 @@ function mirrorJson(json) {
         if (!target.alternate) return;
         for (var i = 0; i < value.vertices.length; i += 2) {
           var rest = closedPoint(target.primary, value.uvs[i], value.uvs[i + 1]);
-          var move = reflected(target.original.vertices[i] - rest.x, target.original.vertices[i + 1] - rest.y);
+          var move = reflected(target.original.vertices[i] - rest.x, target.original.vertices[i + 1] - rest.y,target.slope);
           value.vertices[i] = rest.x + move.x; value.vertices[i + 1] = rest.y + move.y;
         }
       });
@@ -92,18 +107,20 @@ function mirrorJson(json) {
             var length = target.original.vertices.length, offset = frame.offset || 0, deltas = Array(length).fill(0);
             if (!Number.isInteger(offset) || offset < 0 || offset + frame.vertices.length > length) throw new Error("Invalid gate leaf deformation range.");
             frame.vertices.forEach(function (n, i) { if (typeof n !== "number" || !isFinite(n)) throw new Error("Gate leaf deformation needs finite coordinates."); deltas[offset + i] = n; });
-            for (var i = 0; i < length; i += 2) { var move = reflected(deltas[i], deltas[i + 1]); deltas[i] = move.x; deltas[i + 1] = move.y; }
+            for (var i = 0; i < length; i += 2) { var move = reflected(deltas[i], deltas[i + 1],target.slope); deltas[i] = move.x; deltas[i + 1] = move.y; }
             frame.vertices = deltas; delete frame.offset;
           });
         });
       });
     });
   });
-  if (result.wallKit && result.wallKit.volume) require("./WallKit").reverseVolumes(result);
+  if(result.wallGate||result.wallKit&&result.wallKit.gateStyle==="original")require("./WallKit").updateBounds(result);
   return result;
 }
 exports.valid = valid;
 exports.mirrorX = mirrorX;
 exports.reverse = reverse;
+exports.validOpening = validOpening;
+exports.animation = animation;
 exports.normal = normal;
 exports.mirrorJson = mirrorJson;

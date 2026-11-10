@@ -236,7 +236,8 @@ function validate(root, documents, changes) {
                 if(level.Appearance.destroyed&&typeof level.Appearance.destroyed==='object'&&!Array.isArray(level.Appearance.destroyed))check('A',at.concat('Appearance','destroyed','sprite'),level.Appearance.destroyed.sprite,name=>imported(root,'resources',name,'sprite'));
                 if(level.Appearance.weapon&&typeof level.Appearance.weapon==='object'&&!Array.isArray(level.Appearance.weapon))check('A',at.concat('Appearance','weapon','sprite'),level.Appearance.weapon.sprite,name=>imported(root,'resources',name,'sprite'));
                 const views=level.Appearance.weapon&&level.Appearance.weapon.views;
-                if(views&&typeof views==='object'&&!Array.isArray(views))['north','southeast','south'].forEach(direction=>{if(views[direction]&&typeof views[direction]==='object')check('A',at.concat('Appearance','weapon','views',direction,'sprite'),views[direction].sprite,name=>imported(root,'resources',name,'sprite'));});
+                if(views&&typeof views==='object'&&!Array.isArray(views))['north','northeast','southeast','south'].forEach(direction=>{if(views[direction]&&typeof views[direction]==='object'){check('A',at.concat('Appearance','weapon','views',direction,'sprite'),views[direction].sprite,name=>imported(root,'resources',name,'sprite'));if(views[direction].emptySprite)check('A',at.concat('Appearance','weapon','views',direction,'emptySprite'),views[direction].emptySprite,name=>imported(root,'resources',name,'sprite'));}});
+                if(level.Appearance.weapon&&level.Appearance.weapon.emptySprite)check('A',at.concat('Appearance','weapon','emptySprite'),level.Appearance.weapon.emptySprite,name=>imported(root,'resources',name,'sprite'));
             }
         });
     });

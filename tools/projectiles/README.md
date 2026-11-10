@@ -10,6 +10,10 @@ units show their existing speed as read only. Damage, targeting, collision and
 attack timing stay in their existing systems. **Reset artwork & effects** removes
 visual overrides and keeps the saved gameplay speed.
 
+Tiny Kingdom's original cannonball and ballista bolt are available under
+**Tiny Kingdom** in the library and assigned to the three Cannon and Sniper
+tiers. Their sprites use the existing flight, targeting and hit logic.
+
 The hero follows the Arrow design saved for its equipped tier in **Items**.
 An explicit flight selection in Projectiles overrides that design. The equipment
 tier selector is a silent preview setting; it never changes player progress.

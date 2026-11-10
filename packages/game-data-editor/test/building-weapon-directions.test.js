@@ -63,3 +63,18 @@ test('southeast transforms and resources receive the same save validation as nor
   }
   row.Appearance.weapon.views.southeast.sprite='missing/southeast';assert(Assets.validate(root,docs,[{doc:'A',path:at.concat('sprite')}]).some(issue=>issue.path.includes('southeast')));
 });
+
+function five(){const value=eight(),w=value.weapon;w.referenceAngle=0;w.views.northeast={...w.views.southeast,sprite:'northeast',referenceAngle:45};w.views.north.referenceAngle=90;w.views.south.referenceAngle=-90;w.views.southeast.referenceAngle=-45;w.emptySprite='side-empty';Object.values(w.views).forEach(v=>v.emptySprite=v.sprite+'-empty');return value;}
+test('five source textures select eight fixed facings without rotating any sprite',()=>{
+ const value=five(),before=JSON.stringify(value),idle=Pose.pose(value.weapon,null);
+ assert.equal(idle.view,'northeast');assert.equal(idle.angle,0);assert.equal(idle.facing,'northeast');
+ for(const [angle,view,flip]of [[0,'side',1],[45,'northeast',1],[90,'north',1],[135,'northeast',-1],[180,'side',-1],[-135,'southeast',-1],[-90,'south',1],[-45,'southeast',1]]){const p=Pose.pose(value.weapon,angle);assert.equal(p.view,view);assert.equal(p.flipX,flip);assert.equal(p.angle,0);assert(p.emptySprite);}
+ for(let degrees=-180;degrees<=180;degrees+=.25){const p=Pose.pose(value.weapon,degrees),x=p.aimX*p.flipX,y=p.aimY,target=degrees*Math.PI/180;assert.equal(p.angle,0,'authored textures never receive a rotation correction');assert(x*Math.cos(target)+y*Math.sin(target)>=Math.cos(Math.PI/8)-1e-8,'choose the nearest fixed heading');}
+ assert.equal(JSON.stringify(value),before,'read-only previews retain their authored geometry');
+});
+test('new directional reload textures and spring settings validate drafts without repairing them',()=>{
+ const docs={A:{data:Schema.clone(base)},catalog:{data:Schema.clone(catalog)}},row=docs.A.data.BuildEnum[2].levelList[0];row.Appearance=five();row.Appearance.weapon.motion={type:'spring',distance:15,speed:20,damping:5,reloadTime:1};
+ const at=['BuildEnum','2','levelList',0,'Appearance','weapon'],checks=[['referenceAngle',181],['emptySprite','../escape'],['views.northeast.referenceAngle',NaN],['views.northeast.emptySprite','missing.png'],['motion.damping',0],['motion.reloadTime',-1],['motion.speed',Infinity]];
+ for(const [key,value]of checks){const parts=key.split('.'),parent=parts.slice(0,-1).reduce((p,k)=>p[k],row.Appearance.weapon),last=parts.at(-1),old=parent[last];parent[last]=value;const before=JSON.stringify(docs);assert(Schema.validate(docs,[{doc:'A',path:at.concat(parts)}]).some(i=>i.path.includes(last)));assert.equal(JSON.stringify(docs),before);parent[last]=old;}
+ row.Appearance.weapon.views.northeast.emptySprite='missing/unloaded';assert(Assets.validate(root,docs,[{doc:'A',path:at.concat('views','northeast','emptySprite')}]).some(i=>i.path.includes('emptySprite')));
+});

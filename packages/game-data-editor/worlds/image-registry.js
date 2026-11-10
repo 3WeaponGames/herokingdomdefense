@@ -12,7 +12,7 @@ function create(options){
  }
  function signature(source){
   const a=source.anchor||{x:.5,y:0};
-  return JSON.stringify([source.url,source.sha256,source.x,source.y,source.width,source.height,source.rawWidth,source.rawHeight,source.offsetX,source.offsetY,source.rotated,source.textureWidth,source.textureHeight,a.x,a.y,source.maxMaskEdge,source.colorShift]);
+  return JSON.stringify([source.url,source.sha256,source.x,source.y,source.width,source.height,source.rawWidth,source.rawHeight,source.offsetX,source.offsetY,source.rotated,source.textureWidth,source.textureHeight,a.x,a.y,source.maxMaskEdge,source.colorShift,source.nativeScale]);
  }
  function current(id,entry){return !destroyed&&entries.get(id)===entry;}
  function notify(id,error){if(!destroyed&&options.onError)options.onError(id,error);}

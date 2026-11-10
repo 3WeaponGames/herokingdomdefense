@@ -12,6 +12,13 @@ test('library includes all imported arrows, wall variants and 45 complete Toon c
   for(const asset of catalog.assets){const file=path.join(root,'assets',asset.bundle||'resources',asset.resource+(asset.kind==='spine'?'.json':'.png'));assert(fs.existsSync(file),asset.id);assert(fs.existsSync(file+'.meta'),asset.id);if(asset.kind==='sprite')Assets.imported(root,asset.bundle||'resources',asset.resource,'sprite');if(asset.kind==='flipbook'){const png=fs.readFileSync(file);assert.equal(png.readUInt32BE(16),asset.cell*asset.columns);assert.equal(png.readUInt32BE(20),asset.cell*Math.ceil(asset.frames/asset.columns));}}
 });
 
+test('all cannon and sniper tiers select the original Tiny Kingdom projectile sprites',()=>{
+ const config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8')),rebuilt=require('./build-library.cjs').library(root),ids=['tiny-kingdom:cannonball','tiny-kingdom:ballista-bolt'];
+ for(const id of ids){assert.equal(catalog.assets.filter(a=>a.id===id).length,1);assert.equal(rebuilt.assets.filter(a=>a.id===id).length,1,'library rebuild retains imported pack entries');}
+ let count=0;for(const [position,row]of config.BuildEnum[2].levelList.entries())if(['cannon','sniper'].includes(row.Tower?.attackType)){
+  const key='tower:2:'+(position+1),choice=catalog.assignments[key];assert.equal(choice.flight,ids[row.Tower.attackType==='cannon'?0:1]);assert(choice.size>0);const asset=catalog.assets.find(a=>a.id===choice.flight),bytes=fs.readFileSync(path.join(root,asset.image));assert.equal(bytes[25],6,'projectiles retain transparent backgrounds');count++;
+ }assert.equal(count,6);
+});
 test('opening and previewing are read-only; no-change Save has no writes',t=>{const f=fixture(t),before=fs.readFileSync(f.file),stamp=fs.statSync(f.file).mtimeMs;f.service.load();f.service.units();f.service.describe({id:catalog.assets.find(a=>a.sourcePart).id});assert.equal(f.service.save({version:f.service.version}).result.saved,false);assert.deepEqual(fs.readFileSync(f.file),before);assert.equal(fs.statSync(f.file).mtimeMs,stamp);assert(!fs.existsSync(path.join(f.dir,'local')));});
 test('explicit assignment save preserves unknown fields and all balance/timing data',t=>{
   const f=fixture(t),data=JSON.parse(fs.readFileSync(f.file,'utf8'));data.future={retain:true};fs.writeFileSync(f.file,JSON.stringify(data,null,2));f.service.reload();

@@ -97,7 +97,7 @@ function create(){
    return false;
   }
   const asset=assets[object.assetId],original=images[object.assetId];if(!asset||!dimensions(original&&original.image))return false;
-  const width=original.width||asset.width,height=original.height||asset.height,anchor=original.anchor||asset.anchor||{x:.5,y:0};
+  const sizeInWorld=M.assetSize(original,object),width=sizeInWorld.width||asset.width,height=sizeInWorld.height||asset.height,anchor=original.anchor||asset.anchor||{x:.5,y:0};
   if(!(width>0)||!(height>0)||!clip(a,b,{x:-anchor.x*width,y:-anchor.y*height,width,height}))return false;
   const source=Paint.objectImage(object,images),size=dimensions(source&&source.image);if(!size)return false;
   const convert=p=>({x:(p.x/width+anchor.x)*size.width,y:(1-anchor.y-p.y/height)*size.height});

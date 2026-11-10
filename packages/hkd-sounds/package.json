@@ -1,0 +1,8 @@
+{
+  "name": "hkd-sounds",
+  "version": "1.0.0",
+  "description": "Sound library, audition player and saved review checklist",
+  "main": "main.js",
+  "main-menu": { "Tools/Hero Kingdom Defense/Sound Editor": { "message": "hkd-sounds:open" } },
+  "panel": { "main": "panel.js", "type": "dockable", "title": "Sound Editor", "width": 1380, "height": 880, "min-width": 850, "min-height": 600 }
+}

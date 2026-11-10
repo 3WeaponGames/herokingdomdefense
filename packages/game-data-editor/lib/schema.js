@@ -288,17 +288,26 @@ function validate(documents, changes) {
             else {
               if(typeof weapon.sprite!=='string'||!weapon.sprite.trim()||!require('./asset-validation').resourcePath(weapon.sprite)||/\.(png|jpe?g|webp)$/i.test(weapon.sprite))issue('A',where.concat('sprite'),'Choose an extension-free weapon sprite path inside assets/resources.');
               ['width','height'].forEach(key=>{if(own(weapon,key))number('A',where.concat(key),weapon[key],Number.MIN_VALUE,false);});
+              if(own(weapon,'emptySprite')&&(typeof weapon.emptySprite!=='string'||!require('./asset-validation').resourcePath(weapon.emptySprite)||/\.(png|jpe?g|webp)$/i.test(weapon.emptySprite)))issue('A',where.concat('emptySprite'),'Choose an extension-free unloaded weapon sprite path.');
               ['pivotX','pivotY'].forEach(key=>{if(own(weapon,key)){number('A',where.concat(key),weapon[key],0,false);if(weapon[key]>1)issue('A',where.concat(key),'Weapon pivot must be between 0 and 1.');}});
               ['offsetX','offsetY','muzzleX','muzzleY'].forEach(key=>{if(own(weapon,key)&&(typeof weapon[key]!=='number'||!Number.isFinite(weapon[key])))issue('A',where.concat(key),'Weapon offsets must be finite numbers.');});
+              if(own(weapon,'referenceAngle')){number('A',where.concat('referenceAngle'),weapon.referenceAngle,-180,false);if(weapon.referenceAngle>180)issue('A',where.concat('referenceAngle'),'Weapon reference heading must be between -180 and 180 degrees.');}
+              if(own(weapon,'motion')){
+                const motion=weapon.motion,motionAt=where.concat('motion');
+                if(!motion||typeof motion!=='object'||Array.isArray(motion)||motion.type!=='spring')issue('A',motionAt,'Choose the supported spring weapon motion.');
+                else {['distance','speed','reloadTime'].forEach(key=>{if(own(motion,key))number('A',motionAt.concat(key),motion[key],0,false);});if(own(motion,'damping'))number('A',motionAt.concat('damping'),motion.damping,Number.MIN_VALUE,false);}
+              }
               if(own(weapon,'views')){
                 const views=weapon.views,viewsAt=where.concat('views');
                 if(!views||typeof views!=='object'||Array.isArray(views))issue('A',viewsAt,'Directional artwork must retain its object format.');
-                else ['north','southeast','south'].forEach(name=>{
+                else ['north','northeast','southeast','south'].forEach(name=>{
                   if(!own(views,name))return;
                   const view=views[name],viewAt=viewsAt.concat(name);
                   if(!view||typeof view!=='object'||Array.isArray(view)){issue('A',viewAt,'A weapon view must retain its object format.');return;}
                   if(typeof view.sprite!=='string'||!view.sprite.trim()||!require('./asset-validation').resourcePath(view.sprite)||/\.(png|jpe?g|webp)$/i.test(view.sprite))issue('A',viewAt.concat('sprite'),'Choose an extension-free directional sprite path inside assets/resources.');
                   ['width','height'].forEach(key=>{if(own(view,key))number('A',viewAt.concat(key),view[key],Number.MIN_VALUE,false);});
+                  if(own(view,'emptySprite')&&(typeof view.emptySprite!=='string'||!require('./asset-validation').resourcePath(view.emptySprite)||/\.(png|jpe?g|webp)$/i.test(view.emptySprite)))issue('A',viewAt.concat('emptySprite'),'Choose an extension-free unloaded directional sprite path.');
+                  if(own(view,'referenceAngle')){number('A',viewAt.concat('referenceAngle'),view.referenceAngle,-180,false);if(view.referenceAngle>180)issue('A',viewAt.concat('referenceAngle'),'Weapon reference heading must be between -180 and 180 degrees.');}
                   ['pivotX','pivotY'].forEach(key=>{if(own(view,key)){number('A',viewAt.concat(key),view[key],0,false);if(view[key]>1)issue('A',viewAt.concat(key),'Weapon pivot must be between 0 and 1.');}});
                   ['muzzleX','muzzleY'].forEach(key=>{if(own(view,key)&&(typeof view[key]!=='number'||!Number.isFinite(view[key])))issue('A',viewAt.concat(key),'Directional muzzle offsets must be finite numbers.');});
                 });

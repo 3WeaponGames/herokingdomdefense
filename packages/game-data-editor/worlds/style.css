@@ -125,3 +125,14 @@
 .world-stage-map-notice{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;background:#222;color:#c9d6df;text-align:center}.world-stage-map-notice p{max-width:420px;line-height:1.5}
 
 .world-asset-menu{position:fixed;z-index:10000;min-width:145px;padding:4px;display:flex;flex-direction:column;gap:2px;background:#343434;border:1px solid #616161;box-shadow:0 4px 16px #0008;border-radius:3px}.world-asset-menu button{text-align:left;padding:7px 12px;border:0;background:transparent}.world-asset-menu button:hover,.world-asset-menu button:focus{background:#486c82;outline:1px solid #81b0cd}
+
+/* Wall route controls keep usable sizes inside the stage modal's flex rows. */
+.world-stages .world-modal>.world-wall-layout-dialog{gap:10px}
+.world-stages .world-wall-layout-dialog>.world-actions:not(:last-child){flex:0 0 auto;gap:8px 12px;padding:6px 0 10px}
+.world-stages .world-wall-layout-dialog .world-actions>label{flex:0 0 auto;min-width:0;min-height:28px;gap:6px;white-space:nowrap}
+.world-stages .world-wall-layout-dialog .world-actions>label>span{flex:0 0 auto;min-width:0}
+.world-stages .world-wall-layout-dialog .world-actions>label>select{flex:0 0 76px;min-width:70px;width:76px}
+.world-stages .world-wall-layout-dialog .world-actions>label>input[type=number]{flex:0 0 65px;min-width:65px;width:65px}
+.world-stages .world-wall-layout-dialog .world-actions>label>input[type=checkbox]{flex:0 0 16px;min-width:16px;width:16px;height:16px;min-height:16px;margin:0;padding:0}
+.world-stages .world-wall-layout-dialog>.world-wall-layout-canvas{display:block;flex:0 0 auto;height:auto!important;aspect-ratio:820/430}
+.world-stages .world-wall-layout-dialog>.world-note{flex:0 0 auto}

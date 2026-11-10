@@ -30,6 +30,8 @@ function library(root){
     else {const renderer=prefab.find(c=>c.__type__==='cc.Sprite'),image=renderer&&frames.get(renderer._spriteFrame&&renderer._spriteFrame.__uuid__);if(image){const resource=path.relative(path.join(root,'assets/gad_prefabs'),image).replace(/\\/g,'/').replace(/\.png$/,'');sprite('wall:'+i,'Wall projectile '+i,'gad_prefabs',resource,-90,48);}}
   }
   const toon=read(path.join(root,'assets/resources/projectiles/toon/library.json'));assets.push(...toon.assets);
+  const tiny=path.join(root,'assets/resources/projectiles/tiny-kingdom/library.json');
+  if(fs.existsSync(tiny))assets.push(...read(tiny).assets);
   return JSON.parse(JSON.stringify({version:1,heroArrowLayer:'972aecf8-ffbc-4df5-a9a6-a264b323c9dd',source:toon.source,assets,assignments:{}}));
 }
 function build(root){

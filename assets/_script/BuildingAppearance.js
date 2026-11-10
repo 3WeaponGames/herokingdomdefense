@@ -1,5 +1,6 @@
 "use strict";
 var WeaponPose = require("BuildingWeaponPose");
+var WeaponMotion = require("BuildingWeaponMotion");
 var Placement = require("BuildingPlacement");
 var Lighting = require("BuildingLighting");
 
@@ -18,7 +19,7 @@ function destroyedConfig(appearance) {
 }
 function key(appearance) {
   var weapon = weaponConfig(appearance), paths = [appearance.sprite];
-  if (weapon) { var views = WeaponPose.views(weapon); Object.keys(views).forEach(function (name) { paths.push(views[name].sprite); }); }
+  if (weapon) { var views = WeaponPose.views(weapon); Object.keys(views).forEach(function (name) { paths.push(views[name].sprite); if (views[name].emptySprite) paths.push(views[name].emptySprite); }); }
   return paths.join("\n");
 }
 function ready(owner) {
@@ -44,6 +45,13 @@ function stop(state) {
   if (valid(state.flash)) state.flash.active = false;
   if (valid(state.weaponNode)) state.weaponNode.setPosition(0, 0);
   state.recoilRemaining = 0;
+  state.weaponMotion = null;
+  weaponFrame(state);
+}
+function weaponFrame(state) {
+  var name = state.weaponView || "side", empty = state.weaponMotion && !state.weaponMotion.loaded;
+  var frame = empty && state.weaponEmptyFrames && state.weaponEmptyFrames[name] || state.weaponFrames && state.weaponFrames[name];
+  if (frame && state.weaponSprite) state.weaponSprite.spriteFrame = frame;
 }
 function healthPosition(owner) {
   if (!valid(owner.ndHp) || !owner.ctrHp || !valid(owner.ctrHp.node) || !valid(owner.ctrHp.node.parent)) return;
@@ -81,10 +89,11 @@ function weaponPose(owner, state, targetAngle) {
   state.weaponPivot.setPosition(pose.x, pose.y);
   state.weaponPivot.scaleX = pose.flipX; state.weaponPivot.scaleY = 1; state.weaponPivot.angle = pose.angle;
   state.muzzleX = pose.muzzleX; state.muzzleY = pose.muzzleY; state.weaponView = pose.view; state.weaponFacing = pose.facing;
-  if (state.weaponFrames && state.weaponFrames[pose.view]) state.weaponSprite.spriteFrame = state.weaponFrames[pose.view];
+  state.weaponAimX = pose.aimX; state.weaponAimY = pose.aimY;
+  weaponFrame(state);
   if (state.recoilRemaining) {
-    var length = Math.sqrt(state.muzzleX * state.muzzleX + state.muzzleY * state.muzzleY), distance = state.recoilDistance;
-    state.recoilX = state.muzzleX / length * distance; state.recoilY = state.muzzleY / length * distance;
+    var distance = state.recoilDistance;
+    state.recoilX = pose.aimX * distance; state.recoilY = pose.aimY * distance;
     if (valid(state.flash)) state.flash.setPosition(state.muzzleX, state.muzzleY);
     step(owner, 0);
   }
@@ -334,20 +343,22 @@ function apply(owner) {
   if (valid(state.weaponPivot)) state.weaponPivot.active = false;
   restoreSkeletons(state);
   if (!owner.loadSpriteFrame) return;
-  var generation = ++state.generation, baseFrame = null, weaponFrames = {}, receivedBase = false;
+  var generation = ++state.generation, baseFrame = null, weaponFrames = {}, emptyFrames = {}, receivedBase = false;
   var views = weapon ? WeaponPose.views(weapon) : {}, viewNames = Object.keys(views);
+  var emptyNames = viewNames.filter(function (name) { return typeof views[name].emptySprite === "string" && views[name].emptySprite; });
   state.loading = currentKey;
   function current() {
     var latest = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
     return valid(owner) && valid(owner.node) && owner._buildingAppearance === state && !owner.isDestroyed &&
       state.generation === generation && state.loading === currentKey && latest && key(latest) === currentKey;
   }
-  function ready(frame, view) {
-    if (!current() || view && weaponFrames[view] || !view && receivedBase) return;
+  function ready(frame, view, empty) {
+    var frames = empty ? emptyFrames : weaponFrames;
+    if (!current() || view && frames[view] || !view && receivedBase) return;
     if (!frame) { state.loading = null; cancelPlacement(owner); restoreSkeletons(state); return; }
-    if (view) weaponFrames[view] = frame;
+    if (view) frames[view] = frame;
     else { baseFrame = frame; receivedBase = true; }
-    if (!receivedBase || viewNames.some(function (name) { return !weaponFrames[name]; })) return;
+    if (!receivedBase || viewNames.some(function (name) { return !weaponFrames[name]; }) || emptyNames.some(function (name) { return !emptyFrames[name]; })) return;
     // Commit both layers together. Never show half a tower or hide its
     // existing authored model while either resource is still outstanding.
     if (!valid(state.node)) {
@@ -358,7 +369,7 @@ function apply(owner) {
       var layer = makeSprite("BuildingWeapon", state.weaponPivot, .5, .5); state.weaponNode = layer.node; state.weaponSprite = layer.sprite;
     }
     state.sprite.spriteFrame = baseFrame;
-    if (weapon) { state.weaponFrames = weaponFrames; state.weaponSprite.spriteFrame = weaponFrames.side; }
+    if (weapon) { state.weaponFrames = weaponFrames; state.weaponEmptyFrames = emptyFrames; state.weaponSprite.spriteFrame = weaponFrames.side; }
     state.loading = null; state.path = appearance.sprite; state.key = currentKey;
     state.node.active = true; quietSkeletons(owner, state);
     position(owner, state, owner.buildInfo.cfg.Appearance);
@@ -367,6 +378,7 @@ function apply(owner) {
   }
   owner.loadSpriteFrame("resources", appearance.sprite, function (frame) { ready(frame, null); });
   viewNames.forEach(function (name) { owner.loadSpriteFrame("resources", views[name].sprite, function (frame) { ready(frame, name); }); });
+  emptyNames.forEach(function (name) { owner.loadSpriteFrame("resources", views[name].emptySprite, function (frame) { ready(frame, name, true); }); });
 }
 function muzzle(owner, game) {
   if (!owner || !valid(owner.node)) return null;
@@ -395,6 +407,19 @@ function makeFlash(owner, state, cannon, parent) {
 function step(owner, dt) {
   var state = owner && owner._buildingAppearance;
   if (state) Lighting.update(owner, state, dt);
+  if (state && state.weaponMotion && !owner.isDestroyed) {
+    var motion = state.weaponMotion;
+    WeaponMotion.step(motion, dt);
+    state.recoilRemaining = Math.max(0, 1 / motion.settings.damping - motion.kickAge);
+    var kick = WeaponMotion.factor(motion) * motion.settings.distance;
+    if (valid(state.weaponNode) && valid(state.weaponPivot) && state.weaponPivot.active) {
+      state.weaponNode.setPosition(kick && state.weaponAimX ? -state.weaponAimX * kick : 0, kick && state.weaponAimY ? -state.weaponAimY * kick : 0);
+      weaponFrame(state); synchronizeMuzzle(owner, state); healthAboveArtwork(owner, state);
+    }
+    if (valid(state.flash)) { var fade = Math.max(0, 1 - motion.age / .12); state.flash.opacity = 230 * fade; state.flash.active = fade > 0; }
+    if (!motion.active) state.weaponMotion = null;
+    return;
+  }
   if (!state || !state.recoilRemaining || owner.isDestroyed) return;
   state.recoilRemaining = Math.max(0, state.recoilRemaining - Math.max(0, number(dt, 0)));
   var progress = state.recoilRemaining / state.recoilDuration;
@@ -412,6 +437,15 @@ function fire(owner) {
   var layered = valid(state.weaponNode) && valid(state.weaponPivot) && state.weaponPivot.active;
   makeFlash(owner, state, cannon, layered ? state.weaponNode : owner.node);
   if (layered) {
+    var weapon = weaponConfig(appearance), rate = owner.time && owner.time.AttackSpeed || owner.buildInfo.cfg.Data && owner.buildInfo.cfg.Data[1];
+    var motion = WeaponMotion.start(weapon, rate > 0 ? 1 / rate : null);
+    if (motion) {
+      state.weaponMotion = motion; state.recoilDistance = motion.settings.distance;
+      state.recoilX = state.weaponAimX * motion.settings.distance; state.recoilY = state.weaponAimY * motion.settings.distance;
+      state.flash.setPosition(state.muzzleX, state.muzzleY);
+      step(owner, 0);
+      return;
+    }
     var length = Math.sqrt(state.muzzleX * state.muzzleX + state.muzzleY * state.muzzleY), recoil = cannon ? 5 : 2.5;
     state.recoilDistance = recoil;
     state.recoilX = length > .0001 ? state.muzzleX / length * recoil : recoil;

@@ -1,6 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('path'),fs=require('fs'),temporary=require('./owned-temp');
-const Preview=require('../worlds/building-preview'),L=require('../worlds/legacy'),M=require('../worlds/model'),Maps=require('../lib/map-assets'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose');
+const Preview=require('../worlds/building-preview'),L=require('../worlds/legacy'),M=require('../worlds/model'),Maps=require('../lib/map-assets'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose'),GateSource=require('../worlds/gate-facing');
 const root=path.resolve(__dirname,'../../..');
 function fixture(map){
  const config=M.clone(L.read(root,L.configFile('A'))),source=L.inspect(root,map||'Map01'),stage=L.adaptStage(root,'A',1,Object.assign({},config.LevelCfg[0],{prefab:map||'Map01'}));
@@ -23,8 +23,8 @@ test('mirrored wall wings and gate retain each source matrix and only one built 
  const level=Preview.describe(f.service,f.stage).buildings[17].levels[1],refs=[controller.ndAniDown,controller.ndAniMain].concat(controller.ndAniOther);
  assert.equal(level.skeletons.length,6);assert(level.skeletons[0].ground);assert(level.skeletons.slice(1).every(s=>!s.ground));
  refs.forEach((ref,i)=>{const component=f.source.data[ref.__id__],node=f.source.info.byId[component.node.__id__];close(level.skeletons[i].matrix,node.world);assert(node.world[0]<0,'wall assembly is mirrored in gameplay');assert.equal(level.skeletons[i].skin,f.config.BuildEnum[6].levelList[0].Skin);});
- assert.equal(level.blockers.length,5);const ownerPoints=f.source.info.colliders.find(c=>c.node===owner.id&&c.source.tag===1).points.map(p=>({x:p.x-owner.position.x,y:p.y-owner.position.y}));assert(level.blockers.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));
- assert.equal(level.openBlockers.length,4);assert(!level.openBlockers.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)),'open ally passage removes only the gate leaf');
+ assert.equal(level.blockers.length,3);const projected=Maps.model(GateSource.project(f.source.data,gate,root)),ownerPoints=projected.colliders.find(c=>c.node===owner.id&&c.source.tag===1).points.map(p=>({x:p.x-owner.position.x,y:p.y-owner.position.y}));assert(level.blockers.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));
+ assert.equal(level.openBlockers.length,2);assert(!level.openBlockers.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)),'open ally passage removes only the gate leaf');
 });
 test('hall preview changes the hall model while other placements remain at their first offered level',()=>{
  const f=fixture();f.stage.buildings=f.stage.buildings.filter(b=>[1,2].includes(b.id));f.stage.variant='B';
@@ -37,7 +37,7 @@ test('Appearance initial choices use the actual base and idle weapon layers with
  const f=fixture(),tower=f.stage.buildings.find(b=>b.kind===2);f.stage.buildings=[tower];f.config.BuildEnum[2].InitialChoices=[4];
  const row=f.config.BuildEnum[2].levelList[3],result=Preview.describe(f.service,f.stage),level=result.buildings[tower.id].levels[1],owner=f.source.info.byId[tower.template.node],pose=WeaponPose.pose(row.Appearance.weapon,null);
  assert.equal(result.runtimePath,null);assert.equal(level.skeletons.length,0);assert.equal(level.sprites.length,3);
- const [plate,base,weapon]=level.sprites;assert(plate.ground);assert(!base.ground&&!weapon.ground);assert.match(result.images[base.frame].url,/cannon-1\.png/);assert.match(result.images[weapon.frame].url,/cannon-1-weapon\.png/);
+ const [plate,base,weapon]=level.sprites;assert(plate.ground);assert(!base.ground&&!weapon.ground);assert.match(result.images[base.frame].url,/cannon-1\.png/);assert(result.images[weapon.frame].url.endsWith(pose.sprite+'.png'));
  assert.equal(base.width,row.Appearance.width);assert.equal(base.height,row.Appearance.height);close(base.matrix,[1,0,0,1,owner.position.x+row.Appearance.offsetX,owner.position.y+row.Appearance.offsetY]);close(weapon.matrix,[1,0,0,1,owner.position.x+pose.x,owner.position.y+pose.y]);assert.deepEqual(weapon.anchor,{x:pose.pivotX,y:pose.pivotY});
  const original=f.source.info.colliders.find(c=>c.node===owner.id&&c.source.tag===row.ColliderIndex).points.map(p=>({x:p.x-owner.position.x,y:p.y-owner.position.y}));assert.deepEqual(level.blockers,[original]);
 });

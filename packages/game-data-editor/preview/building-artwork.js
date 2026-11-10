@@ -20,7 +20,7 @@ function geometry(appearance,targetAngle){
     let frameBounds={minX,minY,maxX,maxY,width:maxX-minX,height:maxY-minY};
     if(weapon){
         const w=weapon,views=WeaponPose.views(value.weapon),radius=Math.max(...Object.keys(views).map(name=>{
-            const angle=name==='north'?90:name==='south'?-90:name==='southeast'?-45:null,p=WeaponPose.pose(value.weapon,angle);
+            const angle=name==='north'?90:name==='south'?-90:name==='southeast'?-45:name==='northeast'?45:value.weapon.views&&value.weapon.views.northeast?0:null,p=WeaponPose.pose(value.weapon,angle);
             return Math.max(Math.hypot(p.pivotX*p.width,p.pivotY*p.height),Math.hypot((1-p.pivotX)*p.width,p.pivotY*p.height),Math.hypot(p.pivotX*p.width,(1-p.pivotY)*p.height),Math.hypot((1-p.pivotX)*p.width,(1-p.pivotY)*p.height),Math.hypot(p.muzzleX,p.muzzleY));
         }));
         const left=Math.min(base.x-base.width/2,w.x-radius),bottom=Math.min(base.y,w.y-radius),right=Math.max(base.x+base.width/2,w.x+radius),top=Math.max(base.y+base.height,w.y+radius);

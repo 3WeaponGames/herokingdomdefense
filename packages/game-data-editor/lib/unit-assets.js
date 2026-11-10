@@ -79,7 +79,7 @@ function describe(root, request) {
             catch (_) { /* An absent or invalid draft icon has no static preview. */ }
             if(level.Appearance&&level.Appearance.weapon)try{weaponFile=AssetValidation.imported(root,'resources',level.Appearance.weapon.sprite,'sprite').file;}catch(_){/* Invalid draft weapon artwork has no preview. */}
             const views=level.Appearance&&level.Appearance.weapon&&level.Appearance.weapon.views;
-            if(views)['north','southeast','south'].forEach(name=>{if(views[name])try{weaponImages[name]=url.pathToFileURL(AssetValidation.imported(root,'resources',views[name].sprite,'sprite').file).href;}catch(_){weaponImages[name]=null;}});
+            if(views)['north','northeast','southeast','south'].forEach(name=>{if(views[name])try{weaponImages[name]=url.pathToFileURL(AssetValidation.imported(root,'resources',views[name].sprite,'sprite').file).href;}catch(_){weaponImages[name]=null;}});
         }
         return { type, id, layers: [], image: file ? url.pathToFileURL(file).href : null, weaponImage:weaponFile?url.pathToFileURL(weaponFile).href:null, weaponImages, label: level ? level.Icon : 'Building', appearance:level&&level.Appearance||null, runtimePath: null };
     }

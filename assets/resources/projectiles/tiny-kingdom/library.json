@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "source": {
+    "name": "Tiny Kingdom Tower Defense 1.6",
+    "sha256": "0ac067b1ec3b5b22c270e46631e9a6581756417302e071439ea1f704f10eb928"
+  },
+  "assets": [
+    {
+      "id": "tiny-kingdom:cannonball",
+      "name": "Tiny Kingdom cannonball",
+      "category": "Tiny Kingdom",
+      "role": "flight",
+      "kind": "sprite",
+      "image": "assets/resources/projectiles/tiny-kingdom/cannonball.png",
+      "resource": "projectiles/tiny-kingdom/cannonball",
+      "rotation": 0,
+      "size": 20,
+      "sourcePack": "Tiny Kingdom Tower Defense 1.6",
+      "width": 103,
+      "height": 103
+    },
+    {
+      "id": "tiny-kingdom:ballista-bolt",
+      "name": "Tiny Kingdom ballista bolt",
+      "category": "Tiny Kingdom",
+      "role": "flight",
+      "kind": "sprite",
+      "image": "assets/resources/projectiles/tiny-kingdom/ballista-bolt.png",
+      "resource": "projectiles/tiny-kingdom/ballista-bolt",
+      "rotation": 0,
+      "size": 44,
+      "sourcePack": "Tiny Kingdom Tower Defense 1.6",
+      "width": 230,
+      "height": 61
+    }
+  ]
+}

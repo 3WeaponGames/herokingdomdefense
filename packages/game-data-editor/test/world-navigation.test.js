@@ -84,8 +84,8 @@ test('static boxes and circles retain enabled state when their owner level chang
 test('real Map01 gate previews retain wings when open and select a single collider level',()=>{
  const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map01'),layout=L.adaptStage(root,'A',1),gate=layout.buildings.find(b=>b.kind===6);gate.enabled=true;gate.unlock=1;f.stage.buildings=[gate];f.stage.templates={Map01:source.data};
  const closed=capturePreview(f.service,f.request).captured.polygons,open=capturePreview(f.service,Object.assign({},f.request,{gate:'open'})).captured.polygons;
- assert.equal(closed.length,5);assert.equal(open.length,4);
- const ownerPoints=source.info.colliders.find(c=>c.node===gate.template.node&&c.source.tag===1).points;
+ assert.equal(closed.length,3);assert.equal(open.length,2);
+ const native=Maps.model(require('../worlds/gate-facing').project(source.data,gate,root)),ownerPoints=native.colliders.find(c=>c.node===gate.template.node&&c.source.tag===1).points;
  assert(closed.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));assert(!open.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));
 });
 test('real Map03 main hall is present even though all source-level colliders are serialized disabled',()=>{
@@ -94,10 +94,11 @@ test('real Map03 main hall is present even though all source-level colliders are
  f.stage.buildings=[hall];f.stage.templates={Map03:source.data};
  for(const level of [1,2,3]){const result=capturePreview(f.service,Object.assign({},f.request,{hall:level})).captured.polygons;assert.equal(result.length,1);assert.deepEqual(result[0],source.info.colliders.find(c=>c.node===hall.template.node&&c.source.tag===level).points);}
 });
-test('one preview models each shared source once, while the next preview sees source edits',()=>{
+test('one preview models each distinct projected source once, while the next preview sees source edits',()=>{
  const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map01'),layout=L.adaptStage(root,'A',1);
  f.stage.buildings=layout.buildings.filter(b=>b.enabled!==false);f.stage.templates={Map01:source.data};
- const first=capturePreview(f.service,f.request);assert.equal(first.modelCalls,1);assert(first.captured.polygons.length>1);
+ const expectedModels=()=>new Set(f.stage.buildings.map(b=>require('../worlds/gate-facing').project(source.data,b,root))).size;
+ const first=capturePreview(f.service,f.request);assert.equal(first.modelCalls,expectedModels());assert(first.captured.polygons.length>1);
  const tower=f.stage.buildings.find(b=>b.kind===2),collider=source.info.colliders.find(c=>c.node===tower.template.node&&c.source.tag===1);collider.source.points[0].x+=20;
- const second=capturePreview(f.service,f.request);assert.equal(second.modelCalls,1);assert.notDeepEqual(second.captured.polygons,first.captured.polygons);
+ const second=capturePreview(f.service,f.request);assert.equal(second.modelCalls,expectedModels());assert.notDeepEqual(second.captured.polygons,first.captured.polygons);
 });
