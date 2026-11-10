@@ -46,7 +46,10 @@ function directions(matrix){
  const candidates=[{u:1,v:0},{u:0,v:1},{u:-1,v:0},{u:0,v:-1}],names=['NE','NW','SE','SW'],targets=[[1,1],[-1,1],[1,-1],[-1,-1]];let best=null,score=-Infinity;
  function visit(order,available){if(!available.length){let value=0;order.forEach((at,i)=>{const d=candidates[at],x=45*(d.u+d.v),y=30*(-d.u+d.v),px=matrix[0]*x+matrix[2]*y,py=matrix[1]*x+matrix[3]*y;value+=(px*targets[i][0]+py*targets[i][1])/Math.hypot(px,py);});if(value>score){score=value;best=order.slice();}return;}for(const at of available)visit(order.concat(at),available.filter(v=>v!==at));}visit([],candidates.map((_,i)=>i));return Object.fromEntries(names.map((name,i)=>[name,clone(candidates[best[i]])]));
 }
-function supportsOpening(record){return !!(record&&(record.skeletons||[]).some(part=>[part.json,part._wallSourceJson].some(json=>json&&(json.wallDoor&&json.wallDoor.version===2||json.animations&&json.animations.open_inward))));}
+function supportsOpening(record){
+ const sources=(record&&record.skeletons||[]).flatMap(part=>[part.json,part._wallSourceJson]).filter(Boolean);
+ return !sources.some(json=>json.wallDoor&&json.wallDoor.closedOnly===true)&&sources.some(json=>json.wallDoor&&json.wallDoor.version===2||json.animations&&json.animations.open_inward);
+}
 function mount(host,options){
  const main=options.record.skeletons.find(s=>s.json.wallKit);if(!main)throw Error('Refresh the wall asset before editing its layout.');
  const authored=main.json.wallKit.layout,defaults={nativeVersion:2,left:authored.leftCount,right:authored.rightCount,gate:authored.gate!==false,start:authored.start||'post',end:authored.end||'post',spacing:1};for(const key of ['nativeOrigin','nativeGateSpan','routes'])if(authored[key]!==undefined)defaults[key]=clone(authored[key]);

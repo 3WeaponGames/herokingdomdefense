@@ -47,9 +47,21 @@ function editGroup(stage,index,id,patch,interval){
  if(own(patch,'routeGraphId'))validRoute(stage,entry);wave.SpawnTimeline=next;return id;
 }
 function removeGroup(stage,index,id,interval){const wave=waveAt(stage,index),next=entries(wave,interval),at=next.findIndex(entry=>entry.id===id);if(at<0)throw Error('This unit group no longer exists.');next.splice(at,1);wave.SpawnTimeline=next;return id;}
+function chooseGroups(stage,index,unitIds,settings,interval,replaceId){
+ const chosen=Array.from(new Set(unitIds));if(!chosen.length)throw Error('Select at least one unit model.');
+ const source=waveAt(stage,index),next=Object.assign({},stage,{config:Object.assign({},stage.config,{WaveCfg:stage.config.WaveCfg.slice()})});next.config.WaveCfg[index]=clone(source);
+ const original=replaceId===undefined?null:entries(source,interval).find(entry=>entry.id===replaceId);if(replaceId!==undefined&&!original)throw Error('This unit group no longer exists.');
+ let additions=chosen,updated=null,template=null;
+ if(original){const retained=chosen.includes(original.unitId),unitId=retained?original.unitId:chosen[0],patch=Object.assign({},settings,{unitId});additions=chosen.filter(id=>id!==unitId);
+  if(Object.keys(patch).some(key=>JSON.stringify(original[key])!==JSON.stringify(patch[key]))){editGroup(next,index,replaceId,patch,interval);updated=replaceId;}
+  template=entries(next.config.WaveCfg[index],interval).find(entry=>entry.id===replaceId);
+ }
+ const added=[];for(const unitId of additions){const value=Object.assign({},settings,{unitId});if(template&&template.routeGraphId)value.routeGraphId=template.routeGraphId;added.push(addGroup(next,index,value,interval));}
+ stage.config.WaveCfg[index]=next.config.WaveCfg[index];return {updated,added};
+}
 function stageLevel(stage){const level=stage.config.Level===undefined?stage.level:stage.config.Level;if(!Number.isSafeInteger(level)||level<=0)throw Error('The stage needs a valid level ID.');return level;}
 function appendWave(stage,sourceIndex,blank){const source=waveAt(stage,sourceIndex);if(!source||typeof source!=='object'||Array.isArray(source))throw Error('Repair the selected wave before copying its settings.');const level=stageLevel(stage),next=clone(source),list=waves(stage);next.Wave=list.length+1;next.id=level;if(blank){next.SpawnTimeline=[];next.RefreshSoldierKind=[];}list.push(next);return list.length-1;}
 function addWave(stage,sourceIndex){const list=waves(stage);return appendWave(stage,sourceIndex===undefined?list.length-1:sourceIndex,true);}
 function duplicateWave(stage,index){return appendWave(stage,index,false);}
 function removeWave(stage,index){waveAt(stage,index);const list=waves(stage);if(list.length===1)throw Error('Keep at least one wave in the stage.');const remaining=list.filter((wave,at)=>at!==index);if(remaining.some(wave=>!wave||typeof wave!=='object'||Array.isArray(wave)))throw Error('Repair the other malformed wave rows before removing this wave.');list.splice(index,1);list.forEach((wave,index)=>{wave.Wave=index+1;});return Math.min(index,list.length-1);}
-module.exports={entries,summary,addGroup,editGroup,removeGroup,addWave,duplicateWave,removeWave};
+module.exports={entries,summary,addGroup,editGroup,removeGroup,chooseGroups,addWave,duplicateWave,removeWave};

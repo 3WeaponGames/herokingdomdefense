@@ -3,7 +3,7 @@ const path=require('path');
 const Store=require('./lib/store').Store;
 const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
 let store=null,assets=null,restoreMetadataSave=null,worlds=null;
-function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root);return worlds;}
+function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;return selected&&selected.BuildEnum?selected:docs.A.data;}});return worlds;}
 function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
 function project(){const root=Editor.Project&&Editor.Project.path||Editor.projectPath;if(!root)throw Error('Open HeroKingdomDefense first');return root;}
 function getStore(){
@@ -14,7 +14,7 @@ function getStore(){
         store=new Store(root,{validators,backupRoot});assets=null;
     }return store;
 }
-function broadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:changed',{version:snapshot.version});return snapshot;}
+function broadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:changed',{version:snapshot.version});Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:worlds&&worlds.version});return snapshot;}
 function reply(event,fn){try{const result=fn();if(result&&typeof result.then==='function')result.then(r=>event.reply(null,r),e=>event.reply(e.message||String(e)));else event.reply(null,result);}catch(e){event.reply(e.message||String(e));}}
 function open(kind){if(!panels[kind])throw Error('Unknown tool panel');if(kind==='maps'||kind==='stages')return require('./worlds/panel-routing').open(Editor,kind);Editor.Panel.open('hkd-'+kind);}
 function refreshImports(files){
@@ -32,6 +32,7 @@ function refreshImports(files){
 }
 const messages={
     'world-catalog'(event){reply(event,()=>getWorlds().catalog());},
+    'world-unit-preview'(event,request){reply(event,()=>getWorlds().unitPreview(request));},
     'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key));},
     'world-copy-stage'(event,request){reply(event,()=>getWorlds().copyStage(request));},
     'world-paste-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().pasteStage(request)));},
@@ -82,6 +83,7 @@ const messages={
     'load-map'(event,id){reply(event,()=>broadcast(getStore().addMap(typeof id==='string'?id:id.id)));},
     'map-route'(event,request){reply(event,()=>{const maps=require('./lib/map-assets'),s=getStore();s.addMap(request.id);return maps.routeTest(project(),s.snapshot().documents['map:'+request.id].data,request.start,request.goal,request.radius,request.includeBuildings);});},
     'unit-preview'(event,request){reply(event,()=>require('./lib/unit-assets').describe(project(),Object.assign({},request,{documents:getStore().snapshot().documents})));},
+    'building-blocker-preview'(event,request){reply(event,()=>require('./buildings/blocker-data').describe(getWorlds(),request));},
     testing(event,request){reply(event,()=>require('./testing/session').handle(Editor,project(),request));},
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
     'open-characters'(event,request){reply(event,()=>{if(!request){Editor.Panel.open('hkd-characters');return true;}return new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result)));});},

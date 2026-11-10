@@ -317,10 +317,11 @@ function validate(documents, changes) {
         }
       }
       ['Hp','Zoom'].forEach(k=>number('A',q.concat(k),level[k],Number.MIN_VALUE,false));
-      ['BuildSliverCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
+      ['BuildSliverCost','BuildCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
+      if(own(level,'Blocker'))require('../buildings/blocker-data').issues(level.Blocker,id==='6').forEach(message=>issue('A',q.concat('Blocker'),message));
       graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
       if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');
-      if(graph[level.index].length&&!own(level,'BuildSliverCost'))issue('A',q.concat('BranchBuild'),'An upgrade connection needs a next purchase cost on this branch.');
+      if(graph[level.index].length&&!own(level,'BuildSliverCost')&&!graph[level.index].every(index=>{const target=building.levelList.find(row=>row.index===index);return target&&typeof target.BuildCost==='number'&&Number.isFinite(target.BuildCost)&&target.BuildCost>=0;}))issue('A',q.concat('BranchBuild'),'Set a cost for each destination building level.');
       graph[level.index].forEach((next,j)=>{if(!Number.isInteger(next)||next<1||!byIndex.has(next))issue('A',q.concat('BranchBuild',j),'Upgrade branch does not exist.');else if(graph[level.index].indexOf(next)!==j)issue('A',q.concat('BranchBuild',j),'An upgrade branch cannot be connected twice.');});
       const expected=id==='1'||id==='2'||id==='3'?3:id==='4'||id==='5'?1:0;
       if(expected&&(!Array.isArray(level.Data)||level.Data.length<expected))issue('A',q.concat('Data'),'Building properties are missing required runtime values.');

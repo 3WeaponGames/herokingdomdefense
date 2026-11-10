@@ -69,4 +69,5 @@ function fitRecord(record,component,face){
   record.skeletons[at]=Object.assign({},part,{json,_wallSourceJson:raw,_wallSourceRevision:revision,revision:revision+':wall-run:'+stamp+(reverse?':reverse-gate':'')});
  }
 }
-module.exports={project,fitRecord,readRun};
+function anchors(root,source,building){const {info,c}=controller(source,building),main=info.byId[reference(source,c.value.ndAniMain)],native=main&&nativeLayoutData(root,source,info,c.value,main);return native&&native.points;}
+module.exports={project,fitRecord,readRun,anchors};
