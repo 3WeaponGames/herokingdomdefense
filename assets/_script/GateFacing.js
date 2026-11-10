@@ -66,8 +66,12 @@ function mirrorJson(json) {
     Object.keys(skin.attachments || {}).forEach(function (slot) {
       Object.keys(skin.attachments[slot]).forEach(function (name) {
         var target = targets[skin.name + "/" + slot + "/" + name];
-        if (!target || !target.alternate) return;
+        if (!target) return;
         var value = skin.attachments[slot][name];
+        // The modular kit supplies both gate surfaces. Keep its PNG walls and
+        // posts intact while selecting the matching opposite moving surface.
+        if (typeof value.path === "string") value.path = value.path.replace(/^rts_gate_(sw|nw)_/, function (_, face) { return "rts_gate_" + (face === "sw" ? "nw" : "sw") + "_"; });
+        if (!target.alternate) return;
         for (var i = 0; i < value.vertices.length; i += 2) {
           var rest = closedPoint(target.primary, value.uvs[i], value.uvs[i + 1]);
           var move = reflected(target.original.vertices[i] - rest.x, target.original.vertices[i + 1] - rest.y);
@@ -95,6 +99,7 @@ function mirrorJson(json) {
       });
     });
   });
+  if (result.wallKit && result.wallKit.volume) require("./WallKit").reverseVolumes(result);
   return result;
 }
 exports.valid = valid;

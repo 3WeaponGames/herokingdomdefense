@@ -1776,5 +1776,386 @@
         "height": 582
       }
     }
+  },
+  "castleRts": {
+    "page": "cb-rts.png",
+    "slots": [
+      "rts_castle_windows",
+      "rts_castle_flag"
+    ],
+    "durations": {
+      "Fade_in": 0.5,
+      "create": 1.2,
+      "destroy": 1.1667,
+      "idle": 2,
+      "idle_night": 2,
+      "upgrade": 0.6667
+    },
+    "sourceTextureSha256": "19dd29c1ad9de9aa546b97e426d13084a7a8574e88cbdef470b3dc61532ee8f3",
+    "gameplay": "070285615bf26e0fc4f4c6fc433094a45f77a397fc2518d2d34e52da8981dc57",
+    "aliases": [
+      {
+        "alias": "cb-rts-1",
+        "skin": "cb-1",
+        "slot": "cc_1_4",
+        "region": "cb_rts_1",
+        "packTier": 1,
+        "sourceSize": [
+          344,
+          331
+        ],
+        "sourcePixels": "f5b1e59e4dcce05b5b7c8d96aacd4658335ed076d6a9151764f4955038010df0"
+      },
+      {
+        "alias": "cb-rts-2",
+        "skin": "cb-2",
+        "slot": "cc_2_3",
+        "region": "cb_rts_2",
+        "packTier": 4,
+        "sourceSize": [
+          320,
+          337
+        ],
+        "sourcePixels": "08e9de9fc07e07d9652303c2a96c8e678c7bfb0e76a175ec2d6bf9d4c7f3eac6",
+        "flagSourceXY": [
+          177,
+          35
+        ]
+      },
+      {
+        "alias": "cb-rts-3",
+        "skin": "cb-3",
+        "slot": "cc_3_3",
+        "region": "cb_rts_3",
+        "packTier": 7,
+        "sourceSize": [
+          340,
+          358
+        ],
+        "sourcePixels": "8f65a00a0d1827185698e81ca2f9f069f82d43c7a2e31abbd8f1b02de164a42d",
+        "flagSourceXY": [
+          185,
+          32
+        ]
+      }
+    ],
+    "frames": [
+      {
+        "region": "rts_flag_00",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "0423e6219b9a82649b20a28e8aa212377affc759870b8d4d75dec727accadc4e"
+      },
+      {
+        "region": "rts_flag_01",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "16f4a56e5bf64e2983bd0c59ab8266c20c25a5f5526e7c486b2769de3b84c17d"
+      },
+      {
+        "region": "rts_flag_02",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "fbd561e6ae2eb3243526303a12d62b43db93c525ed2a93a07b13d651d8ee7adc"
+      },
+      {
+        "region": "rts_flag_03",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "18bc84a698a3082c3e9f44b878859edb67a6ba99027daf2576313bfc3a200cc0"
+      },
+      {
+        "region": "rts_flag_04",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "53a91898a3f85a20cbe4e54bc6a3715433ba15288b5fd70fcb5cd7a72a2612c5"
+      },
+      {
+        "region": "rts_flag_05",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "382e53cd08d2606f34243e84e42bbb3fee64f8a1d6a9f41f975d0ed13667084e"
+      },
+      {
+        "region": "rts_flag_06",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "03b9fe80d16a1e6637365211232d9f56a7b238962f3f624c9bc033f4bfe836de"
+      },
+      {
+        "region": "rts_flag_07",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "191b126c2c4fab7354795529282755590408d70dd2217caa8850011e80d411e8"
+      },
+      {
+        "region": "rts_flag_08",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "b624c07477b77fcb0d63beb5589e42fdfc9f6376160c5877958b678f046c6f16"
+      },
+      {
+        "region": "rts_flag_09",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "7a79d67b8112754f9269b69d68d15e72b273e47a6d6eaf10d589eb49cfb09e4e"
+      },
+      {
+        "region": "rts_flag_10",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "462fa84c99671a8d5425d6cb34b300aa394d10c7002e2127347d76b1a0c29be9"
+      },
+      {
+        "region": "rts_flag_11",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "bf10ca1b44afa65d8956618197f7c67a0a1f4971114edd372ca788d1a6ea5384"
+      },
+      {
+        "region": "rts_flag_12",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "d72d4b5cd8916d9cfd25046df76fe5064dacd87d30dfb9f88691ca85b461db18"
+      },
+      {
+        "region": "rts_flag_13",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "553b83ee35614f0b4c28ec5ade56be66df52b1b76d69ac2f060810f649cb8ddf"
+      },
+      {
+        "region": "rts_flag_14",
+        "size": [
+          59,
+          38
+        ],
+        "pixels": "8b2323434050634f6c027037943f11cfba53a852e33a3d52beb55b22e65d3062"
+      }
+    ]
+  },
+  "wallKit": {
+    "assets": [
+      "cq/cq1",
+      "cq/cq2",
+      "cq/cq3",
+      "cq/cq4"
+    ],
+    "aliases": [
+      "cq-rts-1",
+      "cq-rts-2",
+      "cq-rts-3"
+    ],
+    "packTiers": [
+      2,
+      4,
+      7
+    ],
+    "page": "wall-rts.png",
+    "gameplay": "da0e4d808cdf97f542327529db50e4e6f32788a5f7b43223034789731332f673",
+    "regions": [
+      {
+        "region": "rts_wall_post_1",
+        "native": true,
+        "packTier": 2,
+        "size": [
+          90,
+          80
+        ],
+        "pixels": "963c03ea609a7d7c1f49f0c5185662b8bb5ff3d20856d396358dfaed660dc159"
+      },
+      {
+        "region": "rts_wall_top_1",
+        "native": true,
+        "packTier": 2,
+        "size": [
+          97,
+          80
+        ],
+        "pixels": "a721e11d35f7a416c099ac60d9c0f27db00dfcf3ad1476be30a4ee87fc736873"
+      },
+      {
+        "region": "rts_wall_right_1",
+        "native": true,
+        "packTier": 2,
+        "size": [
+          115,
+          80
+        ],
+        "pixels": "a102d10722d5292ad5c1440cf95462430927b77b91545ea24f5e5693fb59ae52"
+      },
+      {
+        "region": "rts_wall_corner_1",
+        "native": true,
+        "packTier": 2,
+        "size": [
+          122,
+          80
+        ],
+        "pixels": "ca2ac3a26096f4ee5026bc52d135dad5942b853d859a7dc5710d7a36d3356ea0"
+      },
+      {
+        "region": "rts_gate_sw_1",
+        "native": false,
+        "size": [
+          256,
+          111
+        ],
+        "pixels": "de2a4759dd0dcd55d4145619989a053afb8c8f1bd00270912e506f2e945370cd"
+      },
+      {
+        "region": "rts_gate_nw_1",
+        "native": false,
+        "size": [
+          256,
+          111
+        ],
+        "pixels": "1915e26db4271e1c849e5d865babf5524c6639fe72a315b8b79eab51db5321ef"
+      },
+      {
+        "region": "rts_wall_post_2",
+        "native": true,
+        "packTier": 4,
+        "size": [
+          89,
+          94
+        ],
+        "pixels": "6296a8f4f7ec527e972b1888bfb19b729e4baac482f4636ba22f2b5a7f057dbc"
+      },
+      {
+        "region": "rts_wall_top_2",
+        "native": true,
+        "packTier": 4,
+        "size": [
+          93,
+          94
+        ],
+        "pixels": "3f368280fd5b9fadd3342d5f20937dd6fed4c2b657b7fbb3291567c197c0d695"
+      },
+      {
+        "region": "rts_wall_right_2",
+        "native": true,
+        "packTier": 4,
+        "size": [
+          114,
+          94
+        ],
+        "pixels": "7f5fef6290ecbcfcd664d65cc5f5bdeef5f4a190a41738d0fec85add7a8b5053"
+      },
+      {
+        "region": "rts_wall_corner_2",
+        "native": true,
+        "packTier": 4,
+        "size": [
+          118,
+          94
+        ],
+        "pixels": "9ff88941e455f9e50a112ce336d47c3f052afe85087429baccc5080df20cf4e0"
+      },
+      {
+        "region": "rts_gate_sw_2",
+        "native": false,
+        "size": [
+          256,
+          100
+        ],
+        "pixels": "079e6ef2a0051c83a3eb956b60124f39d25e4b47be5f4e9c81b96bc9d78deda1"
+      },
+      {
+        "region": "rts_gate_nw_2",
+        "native": false,
+        "size": [
+          256,
+          100
+        ],
+        "pixels": "caee1b6008f47649fcb8035689e24a0deba6072a7bc88b396114a8d7561ee308"
+      },
+      {
+        "region": "rts_wall_post_3",
+        "native": true,
+        "packTier": 7,
+        "size": [
+          89,
+          95
+        ],
+        "pixels": "8a88bdd66a3b8e48d65561833b9db83475a6c6a2432c5f0d4114f3347e369a69"
+      },
+      {
+        "region": "rts_wall_top_3",
+        "native": true,
+        "packTier": 7,
+        "size": [
+          95,
+          96
+        ],
+        "pixels": "17b62b3cc6cf77af32711a04ddb835a14be97f2fe53fedef0253796165a2e144"
+      },
+      {
+        "region": "rts_wall_right_3",
+        "native": true,
+        "packTier": 7,
+        "size": [
+          118,
+          95
+        ],
+        "pixels": "3f5c8b7d2e44943e5426625830419b3948c8cf7e53fe0445cf7b929c75123493"
+      },
+      {
+        "region": "rts_wall_corner_3",
+        "native": true,
+        "packTier": 7,
+        "size": [
+          125,
+          96
+        ],
+        "pixels": "2a94dc35654b9454f59dec2516630f991bd5a4fa5287352ccfbb4beed802ae62"
+      },
+      {
+        "region": "rts_gate_sw_3",
+        "native": false,
+        "size": [
+          256,
+          113
+        ],
+        "pixels": "468d8441274b6d8fbc1a29f9d413fdd2ac5b8a2f8500ba548250feace7b8d5f1"
+      },
+      {
+        "region": "rts_gate_nw_3",
+        "native": false,
+        "size": [
+          256,
+          114
+        ],
+        "pixels": "f5b7b3590daa1e145fe19e23c9d423f762e49dfd976373850ecc9d04bee8caeb"
+      }
+    ]
   }
 }

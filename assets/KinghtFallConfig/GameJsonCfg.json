@@ -2175,7 +2175,7 @@
           "LevelUpDescribe": "[[loc:data.buildenum.1.levellist.1.levelupdescribe]]",
           "Icon": "cb_1",
           "Zoom": 0.3,
-          "Skin": "cb-1",
+          "Skin": "cb-rts-1",
           "Hp": 500,
           "BranchBuild": [
             2
@@ -2198,7 +2198,7 @@
           "BuildSliverCost": 10,
           "Icon": "cb_2",
           "Zoom": 0.3,
-          "Skin": "cb-2",
+          "Skin": "cb-rts-2",
           "Hp": 800,
           "BranchBuild": [
             3
@@ -2217,7 +2217,7 @@
           "Name": "[[loc:data.buildenum.1.levellist.3.name]]",
           "Icon": "cb_3",
           "Zoom": 0.3,
-          "Skin": "cb-3",
+          "Skin": "cb-rts-3",
           "Hp": 1000,
           "Data": [
             60,
@@ -3652,7 +3652,7 @@
           "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.1.levelupdescribe]]",
           "Icon": "cq_1",
           "Zoom": 0.35,
-          "Skin": "cq-1",
+          "Skin": "cq-rts-1",
           "Hp": 500,
           "BranchBuild": [
             2,
@@ -3672,7 +3672,7 @@
           "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.2.levelupdescribe]]",
           "Icon": "cq_2_1",
           "Zoom": 0.35,
-          "Skin": "cq-2-1",
+          "Skin": "cq-rts-2",
           "Hp": 700,
           "Excursion": [
             -200,
@@ -3688,7 +3688,7 @@
           "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.3.levelupdescribe]]",
           "Icon": "cp_2_2",
           "Zoom": 0.35,
-          "Skin": "cq-2-2",
+          "Skin": "cq-rts-3",
           "Hp": 1000,
           "Excursion": [
             -200,

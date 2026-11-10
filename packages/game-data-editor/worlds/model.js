@@ -160,6 +160,7 @@ function validateStage(stage,map,units){
  for(const p of buildings.concat(specials)){
   if(p.scale!==undefined&&(!finite(p.scale)||p.scale<=0)||p.angle!==undefined&&!finite(p.angle))issues.push('Placement transforms need positive scale and finite rotation.');
   if(p.wallFacing!==undefined&&(p.kind!==6||!GateFacing.valid(p.wallFacing)))issues.push('Wall facing must be Northeast, Northwest, Southeast or Southwest.');
+  if(p.wallRun!==undefined&&(p.kind!==6||!require('../../../assets/_script/WallKit').validRun(p.wallRun)))issues.push('Wall runs need 0–32 sections per side, at most 48 total, valid end joins, and a gate or at least one section.');
  }
  const placements=buildings.concat(specials,spawns,[stage.hero]);
  if(placements.some(p=>!p||!finite(p.x)||!finite(p.y)))issues.push('Placement coordinates must be finite.');

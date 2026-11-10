@@ -26,6 +26,8 @@ var def_KinghtFallBuildWall = function (t) {
     e.isOpen = false;
     e.wallFacing = "";
     e.wallRotation = 0;
+    e.wallRun = "";
+    e.wallHasGate = true;
     return e;
   }
   cc__extends(_ctor, t);
@@ -63,7 +65,7 @@ var def_KinghtFallBuildWall = function (t) {
   // The leaf remains an enemy obstacle while the visual gate admits allies.
   // Use the authored points: upgrade/shut tweens temporarily shrink physics.
   _ctor.prototype.getNavigationGateShapes = function () {
-    if (!this.index || this.isDestroyed || !this.node.activeInHierarchy) return [];
+    if (!this.index || this.isDestroyed || !this.node.activeInHierarchy || this.wallHasGate === false) return [];
     var gate = this;
     return this.node.getComponents(cc.PhysicsPolygonCollider).filter(function (collider) {
       return collider.tag == gate.index;
@@ -75,6 +77,7 @@ var def_KinghtFallBuildWall = function (t) {
     });
   };
   _ctor.prototype.hasFriendlyAtGate = function (game) {
+    if (this.wallHasGate === false) return false;
     var trigger = this.node.getComponent(cc.PolygonCollider);
     if (!trigger || !trigger.points || trigger.points.length < 3) return false;
     var offset = trigger.offset || cc.Vec2.ZERO;
@@ -101,6 +104,7 @@ var def_KinghtFallBuildWall = function (t) {
     return false;
   };
   _ctor.prototype.setLevel = function (e) {
+    if (this._wallRunRuntime || this.ndAniMain && this.ndAniMain.skeletonData && this.ndAniMain.skeletonData.skeletonJson && this.ndAniMain.skeletonData.skeletonJson.wallKit) require("WallRunRuntime").apply(this);
     if (this.wallFacing || this._gateFacingRuntime) require("GateFacingRuntime").apply(this);
     t.prototype.setLevel.call(this, e);
     this.ndAniEffect.node.active = false;
@@ -144,7 +148,7 @@ var def_KinghtFallBuildWall = function (t) {
   _ctor.prototype.doTime = function () {
     var t;
     var e = this;
-    if (!this.index || this.isDestroyed) return;
+    if (!this.index || this.isDestroyed || this.wallHasGate === false) return;
     var n = this.hasFriendlyAtGate($z1KinghtFallUIGame.default.instance.ctrGame);
     if (n) this._openGateCollider();
     if (n != this.isOpen) {
@@ -236,6 +240,7 @@ var def_KinghtFallBuildWall = function (t) {
   };
   _ctor.prototype.onDestroy = function () {
     if (this._gateFacingRuntime) require("GateFacingRuntime").dispose(this);
+    if (this._wallRunRuntime) require("WallRunRuntime").dispose(this);
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.onChangeSpeed = function () {
@@ -258,6 +263,8 @@ var def_KinghtFallBuildWall = function (t) {
     visible: false,
     tooltip: "Fine wall-only rotation in degrees. Models and built fixtures are baked; construction fields stay fixed."
   })], _ctor.prototype, "wallRotation", undefined);
+  cc__decorate([ccp_property({visible:false,tooltip:"Optional stage-authored modular wall run. Empty retains the existing layout."})], _ctor.prototype, "wallRun", undefined);
+  cc__decorate([ccp_property({visible:false})], _ctor.prototype, "wallHasGate", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBuildBase.default);
 exports.default = def_KinghtFallBuildWall;

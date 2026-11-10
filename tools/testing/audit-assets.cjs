@@ -11,11 +11,15 @@ for (const file of files.filter(f => f.endsWith('.meta'))) {
     Object.values(value).forEach(v => { if (v && typeof v === 'object') visit(v); });
   } visit(data);
 }
+const scriptFiles = new Set(files.filter(f => f.endsWith('.js')).map(f=>path.resolve(f)));
 const scripts = new Set(files.filter(f => f.endsWith('.js')).map(f => path.basename(f, '.js'))), imports = [];
 for (const file of files.filter(f => f.endsWith('.js'))) {
   const text = fs.readFileSync(file, 'utf8');
   try { new vm.Script(text, { filename: file }); } catch (error) { syntaxErrors.push({ file: rel(file), error: error.message }); }
-  for (const match of text.matchAll(/require\(["']([^"']+)["']\)/g)) if (!scripts.has(match[1])) imports.push({ file: rel(file), module: match[1] });
+  for (const match of text.matchAll(/require\(["']([^"']+)["']\)/g)) {
+    const target=path.resolve(path.dirname(file),match[1]),relative=match[1].startsWith('.')&&[target,target+'.js',path.join(target,'index.js')].some(candidate=>scriptFiles.has(candidate));
+    if (!scripts.has(match[1])&&!relative) imports.push({ file: rel(file), module: match[1] });
+  }
 }
 let serialized = 0;
 for (const file of files.filter(f => /\.(prefab|fire)$/.test(f))) {

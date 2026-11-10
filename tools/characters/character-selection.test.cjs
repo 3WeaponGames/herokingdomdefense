@@ -20,6 +20,7 @@ class Element{
   }));}
   querySelector(selector){return this.querySelectorAll(selector)[0]||null;}
   addEventListener(){} removeEventListener(){} focus(){} hasPointerCapture(){return false;}
+  getBoundingClientRect(){return{left:0,top:0,width:540,height:650};}
   contains(node){return node===this||descendants(this).includes(node);}
 }
 async function fixture(t,{missingLevel=false,itemMode=false,initialFocus,deferLoad=false}={}){
