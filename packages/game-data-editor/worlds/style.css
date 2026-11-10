@@ -123,3 +123,5 @@
 .world-stages .world-unit-picker{max-height:clamp(70px,calc(var(--world-editor-height,100vh) - 370px),310px)}
 
 .world-stage-map-notice{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;background:#222;color:#c9d6df;text-align:center}.world-stage-map-notice p{max-width:420px;line-height:1.5}
+
+.world-asset-menu{position:fixed;z-index:10000;min-width:145px;padding:4px;display:flex;flex-direction:column;gap:2px;background:#343434;border:1px solid #616161;box-shadow:0 4px 16px #0008;border-radius:3px}.world-asset-menu button{text-align:left;padding:7px 12px;border:0;background:transparent}.world-asset-menu button:hover,.world-asset-menu button:focus{background:#486c82;outline:1px solid #81b0cd}

@@ -3,6 +3,15 @@
 // The raw browser baker has no CommonJS model. Match its pure depth predicate.
 isGroundObject=isGroundObject||function(layer,object){return object.buildingOverlap!=='front'&&(layer.depth==='ground'||object.depth==='ground');};
 function canvas(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c;}
+// A library palette adjustment preserves native silhouettes, alpha and every
+// texture mark. The same function is used for panel images and saved map bakes.
+function prepareImage(img,record){
+ if(!record.colorShift)return img;
+ var c=canvas(img.naturalWidth||img.width,img.naturalHeight||img.height),g=c.getContext('2d');g.drawImage(img,0,0);
+ var pixels=g.getImageData(0,0,c.width,c.height),p=pixels.data,shift=record.colorShift;
+ for(var i=0;i<p.length;i+=4)if(p[i+3]&&(!shift.greenOnly||p[i+1]>p[i]+4&&p[i+1]>p[i+2]+4))for(var k=0;k<3;k++)p[i+k]=Math.max(0,Math.min(255,p[i+k]+shift.rgb[k]));
+ g.putImageData(pixels,0,0);c.complete=true;c.naturalWidth=c.width;c.naturalHeight=c.height;return c;
+}
 function matrix(t){var a=(t.angle||0)*Math.PI/180,s=t.scale===undefined?1:t.scale;return [Math.cos(a)*s,Math.sin(a)*s,-Math.sin(a)*s,Math.cos(a)*s,t.x||0,t.y||0];}
 function apply(ctx,m){ctx.transform.apply(ctx,m);}
 function image(ctx,img,frame,width,height,anchor){if(!img||img.tagName==='IMG'&&(!img.complete||!img.naturalWidth))return;anchor=anchor||{x:.5,y:0};ctx.save();ctx.scale(1,-1);if(frame)ctx.drawImage(img,frame.x||0,frame.y||0,frame.width,frame.height,-anchor.x*width,-(1-anchor.y)*height,width,height);else ctx.drawImage(img,-anchor.x*width,-(1-anchor.y)*height,width,height);ctx.restore();}
@@ -39,8 +48,21 @@ function groundLayer(ctx,map,layer,key,images,options){
  for(var o of layer.images||[])object(ctx,o,{transform:{}},images);
  strokes(ctx,layer.strokes||[],images,options);ctx.restore();
 }
-function ground(ctx,map,images,viewport,cache,options){var width=ctx.canvas.width,height=ctx.canvas.height;for(var key of map.ground.order||['foundation','roads','grass']){var layer=map.ground[key]||(map.ground.custom||[]).find(function(l){return l.id===key;});if(!layer||layer.hidden||layer.opacity===0)continue;if(!(layer.images||[]).length&&!(layer.strokes||[]).length&&!(layer.tiles||[]).length&&!layer.baseAsset&&!(key==='foundation'&&map.legacyGround))continue;var c;if(cache)c=cache(layer,key);else{c=canvas(width,height);var g=c.getContext('2d');g.setTransform.apply(g,viewport);groundLayer(g,map,layer,key,images,options);}ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=layer.opacity===undefined?1:layer.opacity;ctx.globalCompositeOperation=layer.blend||'source-over';ctx.drawImage(c,0,0);ctx.restore();}for(var l of map.layers){if(l.hidden)continue;for(var o of l.objects)if(!o.legacy&&isGroundObject(l,o))object(ctx,o,l,images);}}
-async function loadImages(spec){var images={};for(var id of Object.keys(spec.images)){var record=spec.images[id],img=new Image();await new Promise(function(resolve,reject){img.onload=resolve;img.onerror=function(){reject(Error('Unable to load '+id));};img.src=record.url;});images[id]=Object.assign({},record,{image:img});}return images;}
+function ground(ctx,map,images,viewport,cache,options){
+ var width=ctx.canvas.width,height=ctx.canvas.height,shadows=[];
+ function composite(layer,key){
+  if(!layer||layer.hidden||layer.opacity===0)return;
+  if(!(layer.images||[]).length&&!(layer.strokes||[]).length&&!(layer.tiles||[]).length&&!layer.baseAsset&&!(key==='foundation'&&map.legacyGround))return;
+  var c;if(cache)c=cache(layer,key);else{c=canvas(width,height);var g=c.getContext('2d');g.setTransform.apply(g,viewport);groundLayer(g,map,layer,key,images,options);}
+  ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=layer.opacity===undefined?1:layer.opacity;ctx.globalCompositeOperation=layer.blend||'source-over';ctx.drawImage(c,0,0);ctx.restore();
+ }
+ for(var key of map.ground.order||['foundation','roads','grass']){var layer=map.ground[key]||(map.ground.custom||[]).find(function(l){return l.id===key;});if(layer&&layer.purpose==='shadow-paint')shadows.push({layer,key});else composite(layer,key);}
+ for(var l of map.layers){if(l.hidden)continue;for(var o of l.objects)if(!o.legacy&&isGroundObject(l,o))object(ctx,o,l,images);}
+ // Ground artwork includes connected river/bridge images. Painted shadows sit
+ // over those surfaces while upright scenery and gameplay objects stay above.
+ for(var shadow of shadows)composite(shadow.layer,shadow.key);
+}
+async function loadImages(spec){var images={};for(var id of Object.keys(spec.images)){var record=spec.images[id],img=new Image();await new Promise(function(resolve,reject){img.onload=resolve;img.onerror=function(){reject(Error('Unable to load '+id));};img.src=record.url;});images[id]=Object.assign({},record,{image:prepareImage(img,record)});}return images;}
 function atlasPlan(items){
  var pages=[],assets={},page=null;function next(){page={name:'objects-'+pages.length,x:2,y:2,row:0,width:1,height:1};pages.push(page);}
  for(var item of items){var frames=[],anchor=item.anchor||{x:.5,y:0};for(var sy=0;sy<item.height;sy+=2044)for(var sx=0;sx<item.width;sx+=2044){var w=Math.min(2044,item.width-sx),h=Math.min(2044,item.height-sy);if(!page)next();if(page.x+w+2>2048){page.x=2;page.y+=page.row;page.row=0;}if(page.y+h+2>2048)next();page.width=Math.max(page.width,page.x+w+2);page.height=Math.max(page.height,page.y+h+2);frames.push({name:item.id+'-'+sx+'-'+sy,atlas:page.name,trimX:page.x,trimY:page.y,width:w,height:h,sx,sy,x:sx-anchor.x*item.width,y:(1-anchor.y)*item.height-sy-h});page.x+=w+4;page.row=Math.max(page.row,h+4);}assets[item.id]={frames};}
@@ -53,5 +75,5 @@ async function bake(spec){var images=await loadImages(spec),map=spec.map,files=[
  for(var page of packing.pages){var c=canvas(page.width,page.height),pctx=c.getContext('2d');for(var id of Object.keys(assetFrames))for(var f of assetFrames[id].frames)if(f.atlas===page.name)pctx.drawImage(rendered[id].image,f.sx,f.sy,f.width,f.height,f.trimX,f.trimY,f.width,f.height);files.push({name:page.name,width:page.width,height:page.height,png:c.toDataURL('image/png')});}
  var thumb=canvas(192,312),ctx=thumb.getContext('2d'),scale=Math.min(192/W,312/H),view=[scale,0,0,-scale,96,156];ctx.setTransform.apply(ctx,view);ground(ctx,map,images,view,null,{canonicalCoverage:true});var world=[];for(var layer of map.layers)if(!layer.hidden)for(var o of layer.objects)if(o.legacy||!isGroundObject(layer,o))world.push({o,layer,y:(function(){var m=matrix(layer.transform),t=matrix(o),p=o.ground||{x:0,y:0},x=o.flipX?-p.x:p.x,y=p.y;return m[1]*(t[0]*x+t[2]*y+t[4])+m[3]*(t[1]*x+t[3]*y+t[5])+m[5];}())});world.sort(function(a,b){return (a.o.buildingOverlap==='front'?1:0)-(b.o.buildingOverlap==='front'?1:0)||b.y-a.y;}).forEach(function(v){object(ctx,v.o,v.layer,images);});files.push({name:'thumbnail',width:192,height:312,png:thumb.toDataURL('image/png')});return {files,ground:groundTiles,assets:assetFrames};
 }
-return {strokes,atlasPlan,apply,groundLayer,clearMasks,assetKey,objectImage,canvas,matrix,image,sprites,points,brush,object,ground,loadImages,bake};
+return {prepareImage,strokes,atlasPlan,apply,groundLayer,clearMasks,assetKey,objectImage,canvas,matrix,image,sprites,points,brush,object,ground,loadImages,bake};
 }));
