@@ -13,8 +13,8 @@
       "x": 0,
       "y": 0,
       "rotation": 0,
-      "scaleX": 1.009440399095535,
-      "scaleY": 1.009440399095535
+      "scaleX": 0.9084963591859815,
+      "scaleY": 0.9084963591859815
     },
     {
       "name": "layer0/root",
@@ -413,11 +413,11 @@
     },
     {
       "name": "layer1/__game_fit",
-      "x": -22.1437561174723,
-      "y": -7.324464905675849,
+      "x": -69.40306165312481,
+      "y": -53.72449842912868,
       "rotation": -90.00000531822965,
-      "scaleX": 2.3200020600021043,
-      "scaleY": 2.3200020603215634,
+      "scaleX": 2.320002060002104,
+      "scaleY": 2.3200020603215643,
       "parent": "layer0/bone2",
       "shearY": -0.000003988640031593604
     },
@@ -5650,8 +5650,8 @@
         "layer1/Rider/Body/Chest": {
           "layer1/part_chest": {
             "path": "layer1/part_chest",
-            "x": -19.9,
-            "y": -5.5,
+            "x": 0,
+            "y": 0,
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
@@ -5688,8 +5688,8 @@
             "rotation": 0,
             "scaleX": 1,
             "scaleY": 1,
-            "width": 118,
-            "height": 106,
+            "width": 120,
+            "height": 108,
             "color": "ffffffff"
           }
         },

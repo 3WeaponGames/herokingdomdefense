@@ -21,6 +21,9 @@ let serialized = 0;
 for (const file of files.filter(f => /\.(prefab|fire)$/.test(f))) {
   serialized++;
   try { const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (Array.isArray(data)) data.forEach((value, index) => {
+      if (value === null) brokenFiles.push({ file: rel(file), at: 'root.' + index, error: 'Null serialized object slot can stall Cocos Creator 2.4 imports; use an empty object to reserve the index.' });
+    });
     function visit(value, at) { if (!value || typeof value !== 'object') return;
       if (value.__uuid__ && !ids.has(value.__uuid__) && !builtinIds.has(value.__uuid__)) missingRefs.push({ file: rel(file), at, uuid: value.__uuid__ });
       if (value.__id__ !== undefined && (!Number.isInteger(value.__id__) || !data[value.__id__])) brokenFiles.push({ file: rel(file), at, invalidIndex: value.__id__ });
