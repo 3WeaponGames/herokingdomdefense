@@ -7427,6 +7427,78 @@
         "piece": "raised-ledge"
       },
       "defaultScale": 0.5
+    },
+    {
+      "id": "bridge-oblique-v2-forest-connected-crossing",
+      "name": "Forest · River + Bridge",
+      "category": "water",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/bridge-oblique-v2/forest/connected-crossing.png",
+      "width": 1246,
+      "height": 1149,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "sha256": "675541ed7f7c453c372bbb9861ab384a9cc066c50f6ddd8ffa26089eada1ecca",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "connected-crossing",
+        "kit": "bridge-oblique-v2"
+      },
+      "defaultScale": 2.1
+    },
+    {
+      "id": "bridge-oblique-v2-autumn-connected-crossing",
+      "name": "Autumn · River + Bridge",
+      "category": "water",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/bridge-oblique-v2/autumn/connected-crossing.png",
+      "width": 953,
+      "height": 1599,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "sha256": "1f331d0c8c4cecb1785a286f60b3652140d9dffc98d456c0808e38ff9c2376c6",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "connected-crossing",
+        "kit": "bridge-oblique-v2"
+      },
+      "defaultScale": 1.75
+    },
+    {
+      "id": "bridge-oblique-v2-ice-connected-crossing",
+      "name": "Ice · River + Bridge",
+      "category": "water",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/bridge-oblique-v2/ice/connected-crossing.png",
+      "width": 1881,
+      "height": 833,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "sha256": "1580b5c730a5af6edd520382e72e2e4aa801ce785942bc25ee33973f9e7eab0d",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "connected-crossing",
+        "kit": "bridge-oblique-v2"
+      },
+      "defaultScale": 1.85
     }
   ],
   "biomes": [
