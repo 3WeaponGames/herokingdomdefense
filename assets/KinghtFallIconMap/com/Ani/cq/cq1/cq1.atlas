@@ -172,3 +172,135 @@ men3_4
   orig: 68, 165
   offset: 0, 0
   index: -1
+
+wall-rts.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+rts_gate_nw_3
+  rotate: false
+  xy: 2, 2
+  size: 256, 114
+  orig: 256, 114
+  offset: 0, 0
+  index: -1
+rts_gate_sw_3
+  rotate: false
+  xy: 262, 2
+  size: 256, 113
+  orig: 256, 113
+  offset: 0, 0
+  index: -1
+rts_gate_sw_1
+  rotate: false
+  xy: 522, 2
+  size: 256, 111
+  orig: 256, 111
+  offset: 0, 0
+  index: -1
+rts_gate_nw_1
+  rotate: false
+  xy: 2, 120
+  size: 256, 111
+  orig: 256, 111
+  offset: 0, 0
+  index: -1
+rts_gate_sw_2
+  rotate: false
+  xy: 262, 120
+  size: 256, 100
+  orig: 256, 100
+  offset: 0, 0
+  index: -1
+rts_gate_nw_2
+  rotate: false
+  xy: 522, 120
+  size: 256, 100
+  orig: 256, 100
+  offset: 0, 0
+  index: -1
+rts_wall_top_3
+  rotate: false
+  xy: 782, 120
+  size: 95, 96
+  orig: 95, 96
+  offset: 0, 0
+  index: -1
+rts_wall_corner_3
+  rotate: false
+  xy: 881, 120
+  size: 125, 96
+  orig: 125, 96
+  offset: 0, 0
+  index: -1
+rts_wall_post_3
+  rotate: false
+  xy: 2, 235
+  size: 89, 95
+  orig: 89, 95
+  offset: 0, 0
+  index: -1
+rts_wall_right_3
+  rotate: false
+  xy: 95, 235
+  size: 118, 95
+  orig: 118, 95
+  offset: 0, 0
+  index: -1
+rts_wall_post_2
+  rotate: false
+  xy: 217, 235
+  size: 89, 94
+  orig: 89, 94
+  offset: 0, 0
+  index: -1
+rts_wall_top_2
+  rotate: false
+  xy: 310, 235
+  size: 93, 94
+  orig: 93, 94
+  offset: 0, 0
+  index: -1
+rts_wall_right_2
+  rotate: false
+  xy: 407, 235
+  size: 114, 94
+  orig: 114, 94
+  offset: 0, 0
+  index: -1
+rts_wall_corner_2
+  rotate: false
+  xy: 525, 235
+  size: 118, 94
+  orig: 118, 94
+  offset: 0, 0
+  index: -1
+rts_wall_post_1
+  rotate: false
+  xy: 647, 235
+  size: 90, 80
+  orig: 90, 80
+  offset: 0, 0
+  index: -1
+rts_wall_top_1
+  rotate: false
+  xy: 741, 235
+  size: 97, 80
+  orig: 97, 80
+  offset: 0, 0
+  index: -1
+rts_wall_right_1
+  rotate: false
+  xy: 842, 235
+  size: 115, 80
+  orig: 115, 80
+  offset: 0, 0
+  index: -1
+rts_wall_corner_1
+  rotate: false
+  xy: 2, 334
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1

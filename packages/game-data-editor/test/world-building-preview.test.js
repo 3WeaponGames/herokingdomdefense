@@ -22,14 +22,14 @@ test('mirrored wall wings and gate retain each source matrix and only one built 
  const f=fixture(),gate=f.stage.buildings.find(b=>b.id===17),owner=f.source.info.byId[gate.template.node],controller=f.source.data[owner.ownerComponent];f.stage.buildings=[gate];
  const level=Preview.describe(f.service,f.stage).buildings[17].levels[1],refs=[controller.ndAniDown,controller.ndAniMain].concat(controller.ndAniOther);
  assert.equal(level.skeletons.length,6);assert(level.skeletons[0].ground);assert(level.skeletons.slice(1).every(s=>!s.ground));
- refs.forEach((ref,i)=>{const component=f.source.data[ref.__id__],node=f.source.info.byId[component.node.__id__];close(level.skeletons[i].matrix,node.world);assert(node.world[0]<0,'wall assembly is mirrored in gameplay');assert.equal(level.skeletons[i].skin,'cq-1');});
+ refs.forEach((ref,i)=>{const component=f.source.data[ref.__id__],node=f.source.info.byId[component.node.__id__];close(level.skeletons[i].matrix,node.world);assert(node.world[0]<0,'wall assembly is mirrored in gameplay');assert.equal(level.skeletons[i].skin,f.config.BuildEnum[6].levelList[0].Skin);});
  assert.equal(level.blockers.length,5);const ownerPoints=f.source.info.colliders.find(c=>c.node===owner.id&&c.source.tag===1).points.map(p=>({x:p.x-owner.position.x,y:p.y-owner.position.y}));assert(level.blockers.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));
  assert.equal(level.openBlockers.length,4);assert(!level.openBlockers.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)),'open ally passage removes only the gate leaf');
 });
 test('hall preview changes the hall model while other placements remain at their first offered level',()=>{
  const f=fixture();f.stage.buildings=f.stage.buildings.filter(b=>[1,2].includes(b.id));f.stage.variant='B';
  const result=Preview.describe(f.service,f.stage).buildings;
- for(const hall of [1,2,3]){assert.equal(result[1].levels[hall].skeletons[0].skin,'cb-'+hall);assert.equal(result[2].levels[hall].skeletons[0].skin,'jt-1');}
+ for(const hall of [1,2,3]){assert.equal(result[1].levels[hall].skeletons[0].skin,f.config.BuildEnum[1].levelList.find(row=>row.level===hall).Skin);assert.equal(result[2].levels[hall].skeletons[0].skin,'jt-1');}
  assert.notDeepEqual(result[1].levels[1].blockers,result[1].levels[3].blockers);
  assert.deepEqual(result[2].levels[1].blockers,result[2].levels[3].blockers);
 });
@@ -68,6 +68,18 @@ test('explicit refresh versions model, atlas, and texture edits even when their 
  json.skeleton.hash='updated';fs.writeFileSync(file+'.new',JSON.stringify(json));fs.renameSync(file+'.new',file);const changedModel=refresh();assert.equal(changedModel.uuid,first.uuid);assert.equal(changedModel.skin,first.skin);assert.notEqual(changedModel.revision,first.revision);assert.equal(changedModel.json.skeleton.hash,'updated');assert.equal(changedModel.pages['page.png'],originalPage);
  fs.writeFileSync(atlasFile,atlas.replace('Linear,Linear','Nearest,Nearest'));const changedAtlas=refresh();assert.notEqual(changedAtlas.revision,changedModel.revision);assert.match(changedAtlas.atlas,/Nearest,Nearest/);
  const textureBytes=fs.readFileSync(texture);fs.writeFileSync(texture,Buffer.concat([textureBytes,Buffer.from([0])]));const changedPage=refresh();assert.notEqual(changedPage.pages['page.png'],changedAtlas.pages['page.png']);assert.notEqual(changedPage.revision,changedAtlas.revision);assert.equal(new URL(changedPage.pages['page.png']).pathname,new URL(originalPage).pathname);
+});
+
+test('live model, atlas and texture changes invalidate a stable service composition without editing its draft',()=>{
+ const f=fixture(),hall=f.stage.buildings.find(b=>b.kind===1);f.stage.buildings=[hall];const owner=f.source.info.byId[hall.template.node],controller=f.source.data[owner.ownerComponent],uuid=f.source.data[controller.ndAniMain.__id__]._N$skeletonData.__uuid__,directory=temporary('hkd-building-live-art-'),folder=path.join(directory,'assets','model');fs.mkdirSync(folder,{recursive:true});f.service.root=directory;
+ const file=path.join(folder,'hall.json'),atlasFile=path.join(folder,'hall.atlas'),texture=path.join(folder,'page.png'),json={skeleton:{hash:'original',spine:'3.8.99'},bones:[{name:'root'}],slots:[],skins:[{name:'default',attachments:{}}],animations:{idle:{}}},atlas='page.png\nsize: 1,1\nformat: RGBA8888\nfilter: Linear,Linear\nrepeat: none\n';
+ fs.writeFileSync(file,JSON.stringify(json));fs.writeFileSync(file+'.meta',JSON.stringify({uuid,importer:'spine'}));fs.writeFileSync(atlasFile,atlas);fs.writeFileSync(texture,Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a8XYAAAAASUVORK5CYII=','base64'));
+ const index=f.service.index();f.service.index=()=>index;const before=JSON.stringify({stage:f.stage,source:f.source.data,config:f.config}),describe=()=>Preview.describe(f.service,f.stage),layer=value=>value.buildings[hall.id].levels[1].skeletons[0],first=describe();assert.equal(describe(),first,'unchanged snapshots reuse the composition');
+ json.skeleton.hash='replacement';fs.writeFileSync(file+'.new',JSON.stringify(json));fs.renameSync(file+'.new',file);const model=describe();assert.notEqual(model,first);assert.equal(layer(model).json.skeleton.hash,'replacement');assert.notEqual(layer(model).revision,layer(first).revision);assert.notEqual(model.revision,first.revision,'artwork has a revision independently of the draft version');
+ fs.writeFileSync(atlasFile,atlas.replace('Linear,Linear','Nearest,Nearest'));const mapped=describe();assert.notEqual(mapped,model);assert.match(layer(mapped).atlas,/Nearest,Nearest/);assert.notEqual(layer(mapped).revision,layer(model).revision);
+ fs.appendFileSync(texture,Buffer.from([0]));const painted=describe();assert.notEqual(painted,mapped);assert.notEqual(layer(painted).pages['page.png'],layer(mapped).pages['page.png']);assert.notEqual(layer(painted).revision,layer(mapped).revision);assert.notEqual(painted.revision,mapped.revision);hall.x+=10;assert.equal(describe(),painted,'moving a placement still reuses its current composition');hall.x-=10;
+ fs.unlinkSync(texture);const missing=describe();assert(missing.errors.some(error=>/Missing building atlas page/.test(error)));assert.notEqual(missing,painted,'a deleted page cannot silently retain the old building');
+ assert.equal(JSON.stringify({stage:f.stage,source:f.source.data,config:f.config}),before,'live preview invalidation never modifies game sources or the draft');
 });
 
 

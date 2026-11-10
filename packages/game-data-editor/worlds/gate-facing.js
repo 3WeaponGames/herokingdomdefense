@@ -66,7 +66,7 @@ function rotateWall(source,building,angle){
  }
  return result;
 }
-function project(source,building){
+function compassProject(source,building){
  const existing=projected.get(source);if(existing)source=existing.source;
  if(!building||building.kind!==6)return source;
  if(building.wallRotation!==undefined&&(typeof building.wallRotation!=='number'||!Number.isFinite(building.wallRotation)))throw Error('Wall rotation requires a finite angle.');
@@ -98,4 +98,5 @@ function finishExport(source,building,target,mapping){
   component.points=trigger.points.map((p,i)=>{const x=p.x-owner.position.x,y=p.y-owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*a[7],y:local.y*a[8]});});
  }
 }
+function project(source,building){return require('./wall-run').project(compassProject(source,building),building);}
 module.exports={project,finishExport,around,facing};

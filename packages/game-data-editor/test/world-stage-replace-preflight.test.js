@@ -1,5 +1,5 @@
 'use strict';
-const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {Service,tree}=require('../worlds/service'),M=require('../worlds/model'),P=require('../worlds/prefab'),Replace=require('../worlds/stage-replace'),temporary=require('./owned-temp');
 const clone=M.clone,key='stage:B-20',sourceKey='stage:A-19';
 function fixture(){
@@ -12,7 +12,12 @@ function fixture(){
   templates:{Portable:P.skeleton('Portable',maps[0])},config:{Level:19,Name:'Source',HomeLevel1Unlock:[],HomeLevel2Unlock:[],HomeLevel3Unlock:[],WaveCfg:[{id:19,Wave:1,SpawnTimeline:[{id:'group',spawnId:1,unitId:1,count:1,startSeconds:0,intervalSeconds:1}]}]}};
  const destination=clone(source);Object.assign(destination,{id:'B-20',variant:'B',level:20,name:'Destination',sourceRevision:'destination',mapId:'DestinationMap'});Object.assign(destination.config,{Level:20,Name:'Destination'});destination.config.WaveCfg[0].id=20;
  s.indexData={maps:maps.map(map=>({id:map.id,name:map.name,biome:map.biome})),stages:[source,destination].map(stage=>({id:stage.id,variant:stage.variant,level:stage.level,mapId:stage.mapId})),library:[],documents:{}};
- for(const variant of ['A','B','D'])s.indexData.documents[variant]={BuildEnum:{}};
+ for(const variant of ['A','B','D']){
+  const config=s.indexData.documents[variant]={BuildEnum:{}},file=path.join(root,'assets/KinghtFallConfig'+(variant==='A'?'':variant)+'/GameJsonCfg.json');
+  // The real preview reads saved visual settings independently of the cached
+  // authoring index. Supply minimal saved files before recording read-only state.
+  fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(config));
+ }
  for(const map of maps){const mapKey='map:'+map.id;s.docs[mapKey]={key:mapKey,file:'authoring/worlds/maps/'+map.id+'.json',data:clone(map),original:clone(map),revision:null};}
  for(const value of [source,destination]){const stageKey='stage:'+value.id;s.docs[stageKey]={key:stageKey,file:'authoring/worlds/stages/'+value.id+'.json',data:clone(value),original:clone(value),revision:null};}
  // Keep the real Service.snapshot and preview path. These domain readers expose

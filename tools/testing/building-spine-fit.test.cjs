@@ -1,6 +1,6 @@
 'use strict';
 // Preserve the authored building skeleton and effects beneath the documented
-// Royal Knight and cavalry layers, with the added castle-derived Royal flag rig.
+// Royal Knight, cavalry and RTS castle layers, including the Royal flag rig.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),fixture=require('./building-spine-fit.fixture.json');
 const {decode}=require('../../packages/hkd-characters/lib/png-atlas');
@@ -51,7 +51,16 @@ function translated(mesh,offset,sign){
   mesh.vertices=mesh.vertices.map((value,i)=>Math.round((value+sign*offset[i%2])*1e6)/1e6);
 }
 function sourceSkeleton(asset){
-  const json=clone(read(filename(asset,'json')));
+  let json=clone(read(filename(asset,'json')));
+  if(fixture.wallKit&&fixture.wallKit.assets.includes(asset)){json=require('../../assets/_script/WallKit').source(json);delete json.wallAnchors;}
+  if(asset==='cb'&&fixture.castleRts){
+    const addedSlots=new Set(fixture.castleRts.slots);
+    json.slots=json.slots.filter(s=>!addedSlots.has(s.name));
+    for(const animation of Object.values(json.animations)){
+      for(const name of addedSlots)if(animation.slots)delete animation.slots[name];
+      if(animation.slots&&!Object.keys(animation.slots).length)delete animation.slots;
+    }
+  }
   if(asset==='by'&&fixture.royalMilitary){
     const bones=new Set(fixture.royalMilitary.bones),slots=new Set(fixture.royalMilitary.slots);
     json.bones=json.bones.filter(b=>!bones.has(b.name));json.slots=json.slots.filter(s=>!slots.has(s.name));
@@ -71,7 +80,7 @@ function sourceSkeleton(asset){
   for(const fit of fixture.lightFits.filter(f=>f.asset===asset&&!fixture.aliases.some(a=>a.alias===f.skin))){
     const skin=json.skins.find(s=>s.name===fit.skin);translated(skin.attachments[fit.slot][fit.attachment],fit.logicalOffset,-1);
   }
-  const aliases=new Set([...fixture.aliases,...(fixture.cavalry?.aliases||[])].map(a=>a.alias));json.skins=json.skins.filter(s=>!aliases.has(s.name));
+  const aliases=new Set([...fixture.aliases,...(fixture.cavalry?.aliases||[]),...(fixture.castleRts?.aliases||[])].map(a=>a.alias));json.skins=json.skins.filter(s=>!aliases.has(s.name));
   for(const animation of Object.values(json.animations))for(const alias of aliases)if(animation.deform)delete animation.deform[alias];
   return json;
 }
@@ -84,7 +93,7 @@ for(const asset of fixture.assets){
   });
   test(asset.asset+' changes only its allowed art rectangles and retains every light and effect pixel',()=>{
     const text=fs.readFileSync(path.join(root,filename(asset.asset,'atlas')),'utf8').replace(/\r\n/g,'\n');
-    const original=asset.asset==='by'?text.split(/\n\s*\nby-royal\.png\n/)[0].trim():text.trim();
+    const original=asset.asset==='by'?text.split(/\n\s*\nby-royal\.png\n/)[0].trim():asset.asset==='cb'?text.split(/\n\s*\ncb-rts\.png\n/)[0].trim():asset.asset==='cq/cq1'?text.split(/\n\s*\nwall-rts\.png\n/)[0].trim():text.trim();
     assert.equal(sha(original),asset.originalAtlas,'Keep all original atlas coordinates, rotations, trim offsets and sampling');
     const regions=atlasRegions(text);for(const region of asset.artRegions)assert.deepEqual(regions[region.name],region);
     const image=decode(fs.readFileSync(path.join(root,filename(asset.asset,'png'))));assert.deepEqual([image.width,image.height],asset.atlasSize);
@@ -117,6 +126,8 @@ test('Royal Knight tiers have proportional independent bodies, aligned aperture 
 test('original Cocos UUIDs, sampling, icon geometry and asset metadata stay stable',()=>{
   for(const[file,expected]of Object.entries(fixture.metadata)){
     const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,3);meta.textures=meta.textures.slice(0,1);}
+    if(file===filename('cb','json.meta')&&fixture.castleRts){assert.equal(meta.textures.length,2);meta.textures=meta.textures.slice(0,1);}
+    if(file===filename('cq/cq1','json.meta')&&fixture.wallKit){assert.equal(meta.textures.length,2);meta.textures=meta.textures.slice(0,1);}
     const image=fixture.metadataTrims?.[file]?decode(fs.readFileSync(path.join(root,file.slice(0,-5)))):null;
     assert.equal(hash(metadataForHash(file,meta,image)),expected,file);
   }

@@ -473,3 +473,149 @@ leven_up_light
   orig: 29, 99
   offset: 2, 2
   index: -1
+
+cb-rts.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cb_rts_3
+  rotate: false
+  xy: 2, 2
+  size: 340, 358
+  orig: 340, 358
+  offset: 0, 0
+  index: -1
+cb_rts_3_lights
+  rotate: false
+  xy: 346, 2
+  size: 340, 358
+  orig: 340, 358
+  offset: 0, 0
+  index: -1
+cb_rts_2
+  rotate: false
+  xy: 690, 2
+  size: 320, 337
+  orig: 320, 337
+  offset: 0, 0
+  index: -1
+cb_rts_2_lights
+  rotate: false
+  xy: 1014, 2
+  size: 320, 337
+  orig: 320, 337
+  offset: 0, 0
+  index: -1
+cb_rts_1
+  rotate: false
+  xy: 1338, 2
+  size: 344, 331
+  orig: 344, 331
+  offset: 0, 0
+  index: -1
+rts_flag_00
+  rotate: false
+  xy: 1686, 2
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_01
+  rotate: false
+  xy: 1749, 2
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_02
+  rotate: false
+  xy: 1812, 2
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_03
+  rotate: false
+  xy: 1875, 2
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_04
+  rotate: false
+  xy: 1938, 2
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_05
+  rotate: false
+  xy: 2, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_06
+  rotate: false
+  xy: 65, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_07
+  rotate: false
+  xy: 128, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_08
+  rotate: false
+  xy: 191, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_09
+  rotate: false
+  xy: 254, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_10
+  rotate: false
+  xy: 317, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_11
+  rotate: false
+  xy: 380, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_12
+  rotate: false
+  xy: 443, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_13
+  rotate: false
+  xy: 506, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
+rts_flag_14
+  rotate: false
+  xy: 569, 364
+  size: 59, 38
+  orig: 59, 38
+  offset: 0, 0
+  index: -1
