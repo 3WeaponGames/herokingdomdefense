@@ -15,7 +15,7 @@ function locate(stage,graphId,nodeId){
  return{index:value.index,before:graph,graph:clone(graph)};
 }
 function unique(list,prefix){const ids=new Set(list.map(value=>value.id));let index=1;while(ids.has(prefix+index))index++;return prefix+index;}
-function reachesGoal(graph){const nodes=new Map(graph.nodes.map(node=>[node.id,node])),seen=new Set(),todo=[graph.entry],out=new Map();for(const edge of graph.edges)if(edge.weight>0){if(!out.has(edge.from))out.set(edge.from,[]);out.get(edge.from).push(edge.to);}while(todo.length){const id=todo.pop();if(seen.has(id))continue;seen.add(id);if(nodes.get(id)&&nodes.get(id).goal)return true;todo.push(...(out.get(id)||[]));}return false;}
+function reachesGoal(graph){const nodes=new Map(graph.nodes.map(node=>[node.id,node])),seen=new Set(),todo=[graph.entry],out=new Map();for(const edge of graph.edges)if(edge.weight>0){if(!out.has(edge.from))out.set(edge.from,[]);out.get(edge.from).push(edge.to);}while(todo.length){const id=todo.pop();if(seen.has(id))continue;seen.add(id);if(nodes.get(id)&&nodes.get(id).goal)return true;for(const next of out.get(id)||[])todo.push(next);}return false;}
 function validate(before,after){
  if(!after.nodes.length||!after.nodes.some(node=>node.id===after.entry)||!reachesGoal(after))throw Error('Keep a connected entry and at least one reachable goal.');
  const existing=new Set(M.graphIssues(before)),introduced=M.graphIssues(after).filter(issue=>!existing.has(issue));if(introduced.length)throw Error(introduced[0]);

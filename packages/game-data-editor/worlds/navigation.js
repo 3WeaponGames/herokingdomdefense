@@ -38,13 +38,15 @@ function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){
 function preview(service,request){
  const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=stage.spawns.find(s=>s.id===request.spawnId&&s.enabled!==false);
  if(!spawn)throw Error('Select an enabled spawn');
+ for(const graph of stage.graphs.filter(graph=>graph.spawnIds.includes(spawn.id))){const issues=M.graphIdentifierIssues(graph);if(issues.length)throw Error(issues.join('\n'));}
+ if(request.graphId){const selected=stage.graphs.find(graph=>graph.id===request.graphId);if(!selected||!selected.spawnIds.includes(spawn.id))throw Error('Choose a path assigned to the selected spawn.');}
  const hall=request.hall===undefined?3:request.hall,radius=request.radius===undefined?18:request.radius,gate=request.gate||'closed';
  if(!Number.isInteger(hall)||hall<1||hall>3)throw Error('Choose main hall level 1, 2 or 3.');
  if(!Number.isFinite(radius)||radius<0)throw Error('Unit radius must be finite and non-negative.');
  if(!['closed','open'].includes(gate))throw Error('Choose an open or closed gate.');
  const Grid=require(path.join(service.root,'assets/_script/NavigationGrid')).NavigationGrid,polygons=M.blockerPolygons(map).map(p=>p.points);
  if(!M.hasGlobalBlockers(map))for(const layer of map.layers)if(!layer.hidden)for(const object of layer.objects)for(const shape of object.polygons||[])polygons.push(shape.map(p=>M.toWorld(layer.transform,M.toWorld(object,{x:object.flipX?-p.x:p.x,y:p.y}))));
- const documents=typeof service.index==='function'?service.index().documents:null,config=documents&&documents[stage.variant||'A'],buildings=stage.buildings.filter(b=>b.enabled!==false&&b.unlock<=hall);
+ const documents=typeof service.index==='function'?service.index().documents:null,variant=documents&&documents[stage.variant||'A'],config=variant&&variant.BuildEnum?variant:documents&&documents.A,buildings=stage.buildings.filter(b=>b.enabled!==false&&(b.kind===1||(b.unlock||1)<=hall));
  const sourceModels=new Map();
  for(const building of buildings)polygons.push(...buildingPolygons(service,stage,building,hall,gate,config,sourceModels));
  const route=require(path.join(service.root,'assets/_script/AuthoredSpawnPlan')).route(stage.graphs,spawn.id,buildings.map(b=>b.id),request.graphId||null,()=>.25);
@@ -59,6 +61,7 @@ function preview(service,request){
   // collider. Continue from that reached point, never from inside the obstacle.
   start=segment[segment.length-1];
  }
- return {points,message:frontier?'Approach reaches an obstacle frontier. Closed gates may be attacked here.':'Approach reaches the authored goal.',frontier,polygons:polygons.length};
+ const fallback=!!(request.graphId&&route[0]&&route[0].graphId!==request.graphId),message=(fallback?'The selected conditional path is unavailable; showing its fallback. ':'')+(frontier?'Approach reaches an obstacle frontier. Closed gates may be attacked here.':'Approach reaches the authored goal.');
+ return {points,message,frontier,polygons:polygons.length,fallback};
 }
 module.exports={preview,buildingPolygons,colliderIndex};

@@ -29,7 +29,7 @@ function route(graphs, spawnId, built, override, random) {
   var eligible = graphs.filter(function (g) { return g.spawnIds.indexOf(spawnId) >= 0 && (!override || g.id === override) && allowed(g.requiresAnyBuilding, built); });
   if (!eligible.length && override) eligible = graphs.filter(function (g) { return g.spawnIds.indexOf(spawnId) >= 0 && allowed(g.requiresAnyBuilding, built); });
   if (!eligible.length) return [];
-  var graph = choose(eligible, random), nodes = {}, path = [], current = graph.entry, seen = {};
+  var graph = choose(eligible, random), nodes = Object.create(null), path = [], current = graph.entry, seen = Object.create(null);
   graph.nodes.forEach(function (n) { nodes[n.id] = n; });
   while (nodes[current] && !seen[current]) {
     seen[current] = true; path.push({ graphId: graph.id, nodeId: current, x: nodes[current].x, y: nodes[current].y });

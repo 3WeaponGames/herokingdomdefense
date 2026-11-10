@@ -16,7 +16,7 @@ function ipc(message,payload){return new Promise((resolve,reject)=>{
 });}
 function node(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
 function button(label,action,cls){const n=node('button',label,cls);n.type='button';n.onclick=action;return n;}
-function openPanel(kind){return Promise.resolve().then(()=>{if(!own(TITLES,kind))throw Error('Unknown tool panel');if(Editor.Panel&&typeof Editor.Panel.open==='function')return Editor.Panel.open('hkd-'+kind);return ipc('open-panel',kind);});}
+function openPanel(kind){return Promise.resolve().then(()=>{if(!own(TITLES,kind))throw Error('Unknown tool panel');if(kind==='maps'||kind==='stages')return ipc('open-world',{view:kind});if(Editor.Panel&&typeof Editor.Panel.open==='function')return Editor.Panel.open('hkd-'+kind);return ipc('open-panel',kind);});}
 function clear(el){while(el.firstChild)el.removeChild(el.firstChild);}
 function stripRich(text){return String(text||'').replace(/<[^>]*>/g,'');}
 function get(obj,keys){return keys.reduce((v,key)=>v==null?undefined:v[key],obj);}
@@ -32,7 +32,7 @@ function create(kind){
       if(kind==='maps'||kind==='stages'){
         this.$toolbar.style.display='none';this.$sidebar.style.display='none';this.$preview.style.display='none';this.$issues.hidden=true;this.$root.querySelector('.gt-header').style.display='none';this.$status.style.display='none';this.$footer.style.display='none';
         this.$detail.className='gt-world-host';this.$detail.style.cssText='flex:1;min-width:0;padding:0;overflow:hidden;display:flex';
-        this._worldClient=require('../worlds/client').mount(this.$detail,{ipc,kind});return;
+        this._worldClient=require('../worlds/workspace').mount(this.$detail,{ipc,kind,autoStart:false});return;
       }
       if(kind==='unit-types')this.$toolbar.appendChild(button('New type',()=>this._newUnitType(),'gt-primary'));
       if(kind==='testing'){
@@ -54,6 +54,7 @@ function create(kind){
       this._load();
       ipc('asset-index',{refresh:true}).then(assets=>{if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);this._render();}).catch(()=>{});
     },
+    run(argv){if(this._worldClient)return this._worldClient.open(Object.assign({view:kind},argv||{})).then(opened=>{if(opened)return this._worldClient.focus();}).catch(()=>{});},
     close(){this._closed=true;if(this._unitKeyHandler)this.$root.removeEventListener('keydown',this._unitKeyHandler,true);if(this._unitPointerHandler)this.$root.removeEventListener('pointerdown',this._unitPointerHandler);if(this._iconPicker)this._iconPicker.destroy();if(this._worldClient)this._worldClient.destroy();if(this._previewClient)this._previewClient.destroy();if(this._mapsClient)this._mapsClient.destroy();if(this._testingClient)this._testingClient.destroy();if(this._refreshTimer)clearTimeout(this._refreshTimer);},
     messages:{'hkd-characters:published'(){if(this._closed)return;if(kind==='units'||kind==='buildings')AttackRate.reload(this,ipc);if(this._previewClient)this._previewClient.refreshAppearance();},'game-data-editor:world-changed'(){if(this._worldClient)this._worldClient.changed();},'game-data-editor:world-focus-map'(event,id){if(this._worldClient&&kind==='maps')this._worldClient.focusMap(id);},'game-data-editor:changed'(){if(this._closed||kind==='testing'||this._worldClient)return;if(this._refreshTimer)clearTimeout(this._refreshTimer);this._refreshTimer=setTimeout(()=>this._load(false),80);}},
     _status(message,error){this.$status.textContent=message;this.$status.className='gt-status'+(error?' error':'');},

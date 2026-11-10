@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "513ee3e5-2c0d-4474-af20-a370dda977d1",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "0fc91ac1-ecd4-43fd-a33a-79e19c967e5a",
+  "size": {
+    "width": 1457,
+    "height": 1087
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-lava-ruins-0-0": {
+      "ver": "1.0.6",
+      "uuid": "4b3559a0-c4a0-4222-a0c7-53f73213466f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0fc91ac1-ecd4-43fd-a33a-79e19c967e5a",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1453,
+      "height": 1083,
+      "rawWidth": 1453,
+      "rawHeight": 1083,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

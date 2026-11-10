@@ -5,7 +5,7 @@
   "rawTextureUuid": "17e9de24-4caa-4256-a8b3-b421eac18aba",
   "size": {
     "width": 2048,
-    "height": 1978
+    "height": 1456
   },
   "type": "Texture Packer",
   "subMetas": {
@@ -47,28 +47,6 @@
       "height": 724,
       "rawWidth": 128,
       "rawHeight": 724,
-      "borderTop": 0,
-      "borderBottom": 0,
-      "borderLeft": 0,
-      "borderRight": 0,
-      "subMetas": {}
-    },
-    "terrain-snow-rocky-hill-0-0": {
-      "ver": "1.0.6",
-      "uuid": "6b775686-db42-45c6-a5ba-46b0875cf89b",
-      "importer": "sprite-frame",
-      "rawTextureUuid": "17e9de24-4caa-4256-a8b3-b421eac18aba",
-      "trimType": "custom",
-      "trimThreshold": 1,
-      "rotated": false,
-      "offsetX": 0,
-      "offsetY": 0,
-      "trimX": 134,
-      "trimY": 730,
-      "width": 1263,
-      "height": 1246,
-      "rawWidth": 1263,
-      "rawHeight": 1246,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

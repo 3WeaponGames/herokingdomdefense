@@ -55,3 +55,8 @@ test('initial authored stage paths support reversible midpoint insertion without
  for(const level of [1,3,7,10,15,20]){const s=L.adaptStage(root,'A',level),before=JSON.stringify(s);for(const original of s.graphs.slice()){if(!original.nodes.length)continue;const id=original.nodes[original.nodes.length-1].id;if(!P.availability(s,original.id,id).insert)continue;const inserted=P.insertNode(s,original.id,id);assert.equal(M.graphIssues(s.graphs.find(graph=>graph.id===original.id)).length,0);P.removeNode(s,original.id,inserted);assert.equal(JSON.stringify(s),before,'stage '+level+' '+original.id);checked++;}}
  assert(checked>=6,'Exercise actual routes across early, middle and later stages.');
 });
+
+test('reachability checks support large authored branch sets without spread-argument stack overflow',()=>{
+ const count=150000,s={graphs:[{id:'large',entry:'start',spawnIds:[1],nodes:[{id:'start',x:0,y:0}],edges:[]}]},g=s.graphs[0];for(let index=0;index<count;index++){g.nodes.push({id:'goal-'+index,x:index,y:100,goal:true});g.edges.push({id:'edge-'+index,from:'start',to:'goal-'+index,weight:1});}
+ const inserted=P.insertNode(s,'large','goal-0');assert.equal(s.graphs[0].nodes.length,count+2);assert(s.graphs[0].edges.some(edge=>edge.from===inserted&&edge.to==='goal-0'));assert.equal(s.graphs[0].entry,'start');assert(s.graphs[0].nodes.find(node=>node.id==='goal-0').goal);
+});

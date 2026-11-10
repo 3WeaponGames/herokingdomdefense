@@ -5,7 +5,7 @@
   "rawTextureUuid": "0d7b3d4c-f532-47ae-a632-d93e424e434a",
   "size": {
     "width": 2048,
-    "height": 1986
+    "height": 1456
   },
   "type": "Texture Packer",
   "subMetas": {
@@ -47,28 +47,6 @@
       "height": 724,
       "rawWidth": 128,
       "rawHeight": 724,
-      "borderTop": 0,
-      "borderBottom": 0,
-      "borderLeft": 0,
-      "borderRight": 0,
-      "subMetas": {}
-    },
-    "terrain-deep-forest-rocky-hill-0-0": {
-      "ver": "1.0.6",
-      "uuid": "8f848269-eac8-4531-ad7d-8419aa65434f",
-      "importer": "sprite-frame",
-      "rawTextureUuid": "0d7b3d4c-f532-47ae-a632-d93e424e434a",
-      "trimType": "custom",
-      "trimThreshold": 1,
-      "rotated": false,
-      "offsetX": 0,
-      "offsetY": 0,
-      "trimX": 134,
-      "trimY": 730,
-      "width": 1254,
-      "height": 1254,
-      "rawWidth": 1254,
-      "rawHeight": 1254,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

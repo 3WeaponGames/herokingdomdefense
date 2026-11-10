@@ -44,3 +44,37 @@ test('wave add/duplicate/remove preserve stage IDs, settings, routes and unknown
  // An ID equal to an old wave number is still the stage ID, never renumbered.
  s.config.WaveCfg=Array.from({length:8},(_,index)=>({...clone(original),id:7,Wave:index+1}));W.removeWave(s,0);assert(s.config.WaveCfg.every((wave,index)=>wave.id===7&&wave.Wave===index+1));
 });
+
+
+test('explicit group edits reject unsafe integers, unreachable final emission times and newly disabled lanes atomically',()=>{
+ for(const patch of [{count:1e308},{unitId:Number.MAX_SAFE_INTEGER+1},{spawnId:1e308},{count:3,intervalSeconds:1e308}]){
+  const s=timed(),before=JSON.stringify(s);assert.throws(()=>W.addGroup(s,0,{unitId:90001,spawnId:1,count:2,...patch},.5));assert.equal(JSON.stringify(s),before);
+  assert.throws(()=>W.editGroup(s,0,'first',patch,.5));assert.equal(JSON.stringify(s),before);
+ }
+ const s=timed(),before=JSON.stringify(s);assert.throws(()=>W.editGroup(s,0,'first',{spawnId:3},.5),/Enable/);assert.equal(JSON.stringify(s),before);
+ // An older disabled lane can still be inspected and its unrelated values
+ // edited; changing that lane intentionally to an enabled one repairs it.
+ s.config.WaveCfg[0].SpawnTimeline[0].spawnId=3;W.editGroup(s,0,'first',{count:4},.5);assert.equal(s.config.WaveCfg[0].SpawnTimeline[0].spawnId,3);W.editGroup(s,0,'first',{spawnId:2},.5);assert.equal(s.config.WaveCfg[0].SpawnTimeline[0].spawnId,2);
+});
+
+test('wave summaries handle large schedules without stack overflow, display-ID repair or metadata copies',()=>{
+ const entry={id:'original',spawnId:2,unitId:90001,count:1,startSeconds:5,intervalSeconds:.5,future:{keep:[1,2]}},wave={SpawnTimeline:Array(150000).fill(entry)};
+ assert.deepEqual(W.summary(wave,.5),{units:150000,groups:150000,spawnIds:[2],duration:5});assert(wave.SpawnTimeline.every(row=>row===entry));assert.deepEqual(entry.future,{keep:[1,2]});assert.equal(entry.id,'original');
+});
+
+
+test('malformed schedule readers fail clearly without mutating or normalizing imported values',()=>{
+ for(const wave of [null,[],{SpawnTimeline:null},{SpawnTimeline:{}},{SpawnTimeline:[null]},{SpawnTimeline:[42]},{SpawnTimeline:[[]]},{RefreshSoldierKind:{}},{RefreshSoldierKind:[null]}]){const before=JSON.stringify(wave);for(const read of [W.entries,W.summary])assert.throws(()=>read(wave,.5),/wave must|must be|schedule must/);assert.equal(JSON.stringify(wave),before);}
+});
+
+test('overflowing display summaries fail clearly without mutating imported schedules',()=>{
+ for(const wave of [{SpawnTimeline:[{spawnId:1,count:1e308,startSeconds:0,intervalSeconds:0},{spawnId:1,count:1e308,startSeconds:0,intervalSeconds:0}]},{SpawnTimeline:[{spawnId:1,count:1e308,startSeconds:0,intervalSeconds:1e308}]}]){const before=JSON.stringify(wave);assert.throws(()=>W.summary(wave,.5),/must be finite/);assert.equal(JSON.stringify(wave),before);}
+});
+
+test('removing a wave fails atomically when another row cannot be renumbered, and can remove the malformed row itself',()=>{
+ const s=timed();s.config.WaveCfg.push(null);const before=JSON.stringify(s);assert.throws(()=>W.removeWave(s,0),/malformed wave rows/);assert.equal(JSON.stringify(s),before);assert.equal(W.removeWave(s,1),0);assert.equal(s.config.WaveCfg.length,1);assert.equal(s.config.WaveCfg[0].Wave,1);assert.equal(s.config.WaveCfg[0].id,7);assert.deepEqual(s.config.WaveCfg[0].future,{keep:[1]});
+});
+
+test('copying malformed wave settings fails clearly before adding or altering a row',()=>{
+ for(const value of [null,[],42])for(const copy of [W.addWave,W.duplicateWave]){const s=timed();s.config.WaveCfg.push(value);const before=JSON.stringify(s);assert.throws(()=>copy(s,1),/Repair the selected wave/);assert.equal(JSON.stringify(s),before);}
+});

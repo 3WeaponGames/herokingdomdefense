@@ -75,6 +75,21 @@ test('clipboard rejects stale/busy/non-stage requests and empty paste without ch
  assert.equal(s.version,version);assert.equal(s.undo.length,0);assert.equal(s.stageClipboard,clipboard);assert.deepEqual(tree(root),files);assert.deepEqual(fs.readdirSync(artifacts),[]);
 });
 
+test('explicit cross-stage paste rehomes existing wave owner IDs and preserves every other wave field',()=>{
+ const {s,source,destination}=fixture();for(const key of ['stage:A-1','stage:B-2'])for(const wave of s.docs[key].data.config.WaveCfg)wave.id=s.docs[key].data.config.Level;
+ const expected=clone(s.docs['stage:A-1'].data.config.WaveCfg);expected.forEach(w=>w.id=destination.config.Level);
+ s.copyStage({key:'stage:A-1',version:s.version});const pasted=s.pasteStage({key:'stage:B-2',version:s.version});
+ assert.deepEqual(pasted.value.config.WaveCfg,expected);assert(s.stageClipboard.value.config.WaveCfg.every(w=>w.id===source.config.Level));
+ s.history({key:'stage:B-2',version:s.version},false);assert(s.docs['stage:B-2'].data.config.WaveCfg.every(w=>w.id===destination.config.Level));
+ s.history({key:'stage:B-2',version:s.version},true);assert.deepEqual(s.docs['stage:B-2'].data.config.WaveCfg,expected);
+});
+
+test('stage draft changes reject owner identity edits before publishing history or recovery',()=>{
+ const {s,root,artifacts}=fixture(),before=JSON.stringify(s.docs),files=tree(root),version=s.version;
+ for(const mutate of [v=>v.variant='D',v=>v.level=17,v=>v.config.Level=17]){const value=clone(s.docs['stage:A-1'].data);mutate(value);assert.throws(()=>s.change({key:'stage:A-1',version,value}),/Identifiers cannot be changed/);}
+ assert.equal(JSON.stringify(s.docs),before);assert.equal(s.version,version);assert.equal(s.undo.length,0);assert.equal(s.redo.length,0);assert.deepEqual(tree(root),files);assert.deepEqual(fs.readdirSync(artifacts),[]);
+});
+
 test('pasting an unchanged stage is a no-op and missing destination identity fields stay absent',()=>{
  const {root,artifacts,s}=fixture(),files=tree(root),version=s.version;s.copyStage({key:'stage:A-1',version});
  assert(!s.pasteStage({key:'stage:A-1',version}).dirty);assert.equal(s.version,version);assert.equal(s.undo.length,0);assert.deepEqual(fs.readdirSync(artifacts),[]);

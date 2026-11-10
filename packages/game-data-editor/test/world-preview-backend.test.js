@@ -11,6 +11,15 @@ test('world preview backend: current stage draft map assignments take precedence
  const before=JSON.stringify(f.service.docs);f.service.loadStage=id=>{throw Error('selected '+id);};
  await assert.rejects(f.start(),/selected A-10/);assert.equal(JSON.stringify(f.service.docs),before);assert.equal(f.windows.length,0);
 });
+
+test('world preview backend: unloaded authored map assignments use the same effective catalog as map usage',async()=>{
+ const f=fixture({catalog:[{id:'A-1',variant:'A',level:1,mapId:'test'},{id:'B-1',variant:'B',level:1,mapId:'other'}]}),effective=[{id:'A-1',variant:'A',level:1,mapId:'other'},{id:'A-7',variant:'A',level:7,mapId:'test'},{id:'B-1',variant:'B',level:1,mapId:'test'}];let reads=0;
+ f.service.stageCatalog=()=>{reads++;return effective;};f.service.loadStage=id=>{throw Error('selected '+id);};const before=JSON.stringify(effective);await assert.rejects(f.start(),/selected A-7/);assert.equal(reads,1);assert.equal(JSON.stringify(effective),before);assert.equal(f.windows.length,0);
+});
+
+test('world preview backend: editable stage schema errors reject before baking or opening gameplay',async()=>{
+ let bakes=0,checks=0;const f=fixture({bake:async()=>{bakes++;return f.baked;}});f.service.stageIssues=()=>{checks++;return['Wave rewards must be an array.'];};await assert.rejects(f.start(),/Wave rewards must be an array/);assert.equal(checks,1);assert.equal(bakes,0);assert.equal(f.windows.length,0);assert.equal(f.preview._sessions.size,0);
+});
 test('world preview backend: unassigned maps require an authored stage and never launch an unrelated layout',async()=>{
  let bakes=0;const f=fixture({catalog:[],bake:async()=>{bakes++;return f.baked;}});
  await assert.rejects(f.start(),/Assign this map to a stage/);assert.equal(bakes,0);assert.equal(f.windows.length,0);
@@ -37,6 +46,14 @@ test('world preview main process forwards panel ownership without changing legac
  unit._compile(fs.readFileSync(file,'utf8'),file);const handler=unit.exports.messages['world-preview-close'],replies=[],event={reply(error,value){assert.equal(error,null);replies.push(value);}};
  handler(event,{owner:'maps-panel'});handler(event,{owner:'stages-panel'});handler(event);handler(event,null);
  assert.deepEqual(calls,['maps-panel','stages-panel',undefined,undefined]);assert.deepEqual(replies,[{closed:true},{closed:false},{closed:true},{closed:true}]);
+});
+
+test('world save IPC retains committed-recovery warnings when Creator import also needs attention',async()=>{
+ const file=path.resolve(__dirname,'../main.js'),unit=new Module(file,module),root=path.resolve('unused'),snapshot={version:2,result:{saved:true,files:['assets/saved.json'],warning:'Saved on disk; recovery copy needs attention.'}};unit.filename=file;unit.paths=Module._nodeModulePaths(path.dirname(file));
+ unit.require=name=>name==='./worlds/service'?{Service:class{constructor(){this.root=root;}async save(){return snapshot;}}}:Module.prototype.require.call(unit,name);
+ global.__worldSaveIPCEditor={Project:{path:root},assetdb:{refresh(_url,done){done(Error('Creator import needs retry'));}},Ipc:{sendToAll(){}}};
+ unit._compile('const Editor=global.__worldSaveIPCEditor;'+fs.readFileSync(file,'utf8'),file);
+ try{const result=await new Promise((resolve,reject)=>unit.exports.messages['world-save']({reply(error,value){if(error)reject(Error(error));else resolve(value);}},{key:'stage:A-1',version:1}));assert(result.result.saved);assert.match(result.result.warning,/recovery copy needs attention/);assert.match(result.result.warning,/Creator import needs retry/);}finally{delete global.__worldSaveIPCEditor;}
 });
 function fixture(options={}){
  const windows=[],stages={config:{WaveCfg:[]},mapId:'test',variant:'A',buildings:[],specials:[],spawns:[],graphs:[],hero:{x:0,y:0}},map={id:'test'},documents={A:{SoldierCfg:{}}},baked={writes:[{file:'assets/ground.png',bytes:Buffer.from('png bytes')},{file:'assets/ground.png.meta',bytes:Buffer.from(JSON.stringify({subMetas:{}}))}],ground:[],assets:{}};

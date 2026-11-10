@@ -21,8 +21,9 @@ function createLayer(map,name){const next=clone(map),number=next.nextLayer++,id=
 function layerOf(map,id){const layer=map.layers.find(l=>l.id===id);if(!layer)throw Error('Select a decoration layer first.');return layer;}
 function place(map,layerId,asset,position,min,max,sample){
  if(!asset||!asset.id)throw Error('Select an asset first.');if(!finite(min)||!finite(max)||min<=0||max<min)throw Error('Scale range needs positive minimum and maximum values.');
+ const baseScale=asset.defaultScale===undefined?1:asset.defaultScale;if(!finite(baseScale)||baseScale<=0)throw Error('Asset world scale must be a positive finite number.');
  const next=clone(map),layer=layerOf(next,layerId);assertEditable(layer);const random=sample===undefined?Math.random():sample;if(!finite(random)||random<0||random>1)throw Error('Invalid scale sample');
- const local=toLocal(layer.transform,position),object={id:'object-'+next.nextObject++,assetId:asset.id,name:asset.name,x:local.x,y:local.y,scale:min+(max-min)*random,angle:0,flipX:false,depth:asset.depth||'world',ground:{x:0,y:0}};layer.objects.push(object);return {map:next,object};
+ const local=toLocal(layer.transform,position),object={id:'object-'+next.nextObject++,assetId:asset.id,name:asset.name,x:local.x,y:local.y,scale:(min+(max-min)*random)*baseScale,angle:0,flipX:false,depth:asset.depth||'world',ground:{x:0,y:0}};layer.objects.push(object);return {map:next,object};
 }
 function matrix(t){t=t||{};const angle=(t.angle||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle),scale=t.scale===undefined?1:t.scale;return [c*scale,s*scale,-s*scale,c*scale,t.x||0,t.y||0];}
 function point(m,p){return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};}
@@ -49,8 +50,15 @@ function stroke(map,target,stroke){if(!finite(stroke.size)||stroke.size<=0||!str
 function newSpawn(stage,position){const next=clone(stage),id=next.nextSpawn++;next.spawns.push({id,name:'Spawn '+id,x:position.x,y:position.y,enabled:true,graphId:null});const graphId='route-'+id,goal='goal-'+id,entry='entry-'+id;next.graphs.push({id:graphId,name:'Spawn '+id+' approach',spawnIds:[id],entry,nodes:[{id:entry,x:position.x,y:position.y},{id:goal,x:(next.buildings.find(b=>b.kind===1)||next.hero).x,y:(next.buildings.find(b=>b.kind===1)||next.hero).y+100,goal:true}],edges:[{id:'edge-'+id,from:entry,to:goal,weight:1}],legacy:false});next.spawns[next.spawns.length-1].graphId=graphId;return next;}
 function removeSpawn(stage,id){const next=clone(stage);next.spawns=next.spawns.filter(s=>s.id!==id);next.graphs.forEach(g=>{g.spawnIds=g.spawnIds.filter(x=>x!==id);});for(const wave of next.config.WaveCfg){if(wave.SpawnTimeline)wave.SpawnTimeline=wave.SpawnTimeline.filter(e=>e.spawnId!==id);wave.RefreshSoldierKind=(wave.RefreshSoldierKind||[]).filter(row=>Number(row.split('#')[0])!==id);}return next;}
 function legacyTimeline(encoded,interval){const entries=[],effective=new Map();for(const row of encoded||[])effective.set(Number(row.split('#')[0]),row);for(const value of Array.from(effective.entries()).sort((a,b)=>a[0]-b[0]).map(pair=>pair[1])){const parts=value.split('#'),spawnId=Number(parts[0]);let tick=1;for(const [i,group]of parts[1].split(';').entries()){const pair=group.split(',').map(Number);if(pair[0]!==-1)entries.push({id:'legacy-'+spawnId+'-'+i,spawnId,unitId:pair[0],count:pair[1],startSeconds:tick*interval,intervalSeconds:interval});tick+=pair[1];}}return entries;}
+function graphIdentifierIssues(graph){
+ const issues=[],valid=id=>typeof id==='string'&&id.trim().length>0;
+ if(!graph||!valid(graph.id))issues.push('Path IDs must be non-empty strings.');
+ for(const node of graph&&Array.isArray(graph.nodes)?graph.nodes:[])if(!node||!valid(node.id))issues.push('Path point IDs must be non-empty strings.');
+ for(const edge of graph&&Array.isArray(graph.edges)?graph.edges:[])if(!edge||!valid(edge.id))issues.push('Path connection IDs must be non-empty strings.');
+ return Array.from(new Set(issues));
+}
 function graphIssues(graph,spawnIds,buildingIds){
- const issues=[],nodes=new Map(),edges=graph.edges||[],outgoing=new Map(),edgeIds=new Set();
+ const issues=graphIdentifierIssues(graph),nodes=new Map(),edges=graph.edges||[],outgoing=new Map(),edgeIds=new Set();
  if(graph.weight!==undefined&&(!finite(graph.weight)||graph.weight<0))issues.push('Path weight must be zero or greater.');
  for(const n of graph.nodes||[]){
   if(nodes.has(n.id))issues.push('Duplicate path node '+n.id);nodes.set(n.id,n);
@@ -67,19 +75,22 @@ function graphIssues(graph,spawnIds,buildingIds){
   while(stack.length){
    const frame=stack[stack.length-1],list=outgoing.get(frame.id)||[];
    if(frame.at===list.length){state.set(frame.id,2);stack.pop();continue;}
-   const id=list[frame.at++].to;if(!nodes.has(id))continue;
+   const edge=list[frame.at++];if(!(edge.weight>0))continue;const id=edge.to;if(!nodes.has(id))continue;
    if(state.get(id)===1)issues.push('Paths cannot contain loops.');
    else if(!state.has(id)){state.set(id,1);stack.push({id,at:0});}
   }
  }
- for(const b of graph.requiresAnyBuilding||[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
+ if(graph.requiresAnyBuilding!==undefined&&graph.requiresAnyBuilding!==null&&!Array.isArray(graph.requiresAnyBuilding))issues.push('Path building conditions must be an array.');
+ for(const b of Array.isArray(graph.requiresAnyBuilding)?graph.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
  for(const e of edges){
   if(!nodes.has(e.from)||!nodes.has(e.to))issues.push('Path has a disconnected edge.');
   if(!finite(e.weight)||e.weight<0)issues.push('Branch chance cannot be negative.');
-  for(const b of e.requiresAnyBuilding||[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
+  if(e.requiresAnyBuilding!==undefined&&e.requiresAnyBuilding!==null&&!Array.isArray(e.requiresAnyBuilding))issues.push('Connection building conditions must be an array.');
+  for(const b of Array.isArray(e.requiresAnyBuilding)?e.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
  }
  for(const [id,node]of nodes){
   const out=(outgoing.get(id)||[]).filter(e=>e.weight>0);
+  if(!Number.isFinite(out.reduce((total,edge)=>total+edge.weight,0)))issues.push('Branch weights at a junction need a finite total.');
   if(!out.length&&!node.goal)issues.push('Every path must end at a goal.');
   if(node.goal&&out.length)issues.push('Goal nodes cannot have outgoing branches.');
   if(out.length&&!out.some(e=>!(e.requiresAnyBuilding||[]).length))issues.push('Every junction needs an unconditional fallback.');
@@ -99,25 +110,35 @@ function validateMap(map,assets){
  for(const tile of map.ground.foundation.tiles||[])object(tile,map.ground.foundation.transform&&map.ground.foundation.transform.scale||1);for(const layer of map.layers||[]){claim(layer.id);transform(layer.transform);strokes(layer.blockers);if(layer.blockerMask!==undefined)issues.push(...Blockers.issues(layer.blockerMask));polygons(layer.polygons);for(const o of layer.objects||[])object(o,layer.transform&&layer.transform.scale||1);}return Array.from(new Set(issues));
 }
 function validateStage(stage,map,units){
- const issues=[],buildings=(stage.buildings||[]).filter(b=>b.enabled!==false),ids=new Set(buildings.map(b=>b.id)),spawns=(stage.spawns||[]).filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),graphs=stage.graphs||[],graphIds=new Set(),buildingIds=new Set((stage.buildings||[]).map(b=>b.id));
+ const issues=[],allBuildings=stage.buildings||[],allSpawns=stage.spawns||[],buildings=allBuildings.filter(b=>b.enabled!==false),ids=new Set(allBuildings.map(b=>b.id)),spawns=allSpawns.filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),allSpawnIds=new Set(allSpawns.map(s=>s.id)),graphs=stage.graphs||[],graphIds=new Set(),buildingIds=new Set(allBuildings.map(b=>b.id));
  if(buildings.filter(b=>b.kind===1).length!==1||!buildings.some(b=>b.kind===1&&b.id===1))issues.push('Place exactly one main hall.');
- if(ids.size!==buildings.length)issues.push('Duplicate building ID.');
- for(const b of buildings){if(!Number.isInteger(b.id)||b.id<1)issues.push('Building IDs must be positive whole numbers.');if(![1,2,3,4,5,6].includes(b.kind))issues.push('Choose a valid building type.');if(b.kind!==1&&![1,2,3].includes(b.unlock))issues.push('Choose main hall level 1, 2 or 3 for '+b.name);}
+ if(ids.size!==allBuildings.length)issues.push('Duplicate building ID.');
+ for(const b of allBuildings)if(!Number.isSafeInteger(b.id)||b.id<1)issues.push('Building IDs must be positive safe whole numbers.');
+ for(const b of buildings){if(![1,2,3,4,5,6].includes(b.kind))issues.push('Choose a valid building type.');if(b.kind!==1&&![1,2,3].includes(b.unlock))issues.push('Choose main hall level 1, 2 or 3 for '+b.name);}
  for(const building of stage.buildings||[]){if(building.wallRotation!==undefined&&(building.kind!==6||typeof building.wallRotation!=='number'||!Number.isFinite(building.wallRotation)))issues.push('Wall rotation requires a finite angle on a wall / gate.');if(building.purchaseSide!==undefined&&!['southwest','southeast'].includes(building.purchaseSide))issues.push('Choose an authored, southwest, or southeast purchase field.');}
- if(spawnIds.size!==spawns.length)issues.push('Duplicate spawn ID.');
- for(const s of spawns)if(!Number.isInteger(s.id)||s.id<1)issues.push('Spawn IDs must be positive whole numbers.');
- for(const graph of graphs){if(graphIds.has(graph.id))issues.push('Duplicate path ID.');graphIds.add(graph.id);issues.push(...graphIssues(graph,spawnIds,buildingIds));}
+ if(allSpawnIds.size!==allSpawns.length)issues.push('Duplicate spawn ID.');
+ for(const s of allSpawns)if(!Number.isSafeInteger(s.id)||s.id<1)issues.push('Spawn IDs must be positive safe whole numbers.');
+ // Disabled lanes retain their authored paths for later re-enabling. Only wave
+ // groups and active-lane fallbacks need an enabled spawn.
+ for(const graph of graphs){if(graphIds.has(graph.id))issues.push('Duplicate path ID.');graphIds.add(graph.id);issues.push(...graphIssues(graph,allSpawnIds,buildingIds));}
  for(const s of spawns){
+  if(!Number.isFinite(graphs.filter(g=>g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)).reduce((total,g)=>total+(g.weight===undefined?1:g.weight),0)))issues.push(s.name+' needs a finite total path weight.');
   if(!graphs.some(g=>g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)))issues.push(s.name+' needs a route.');
   else if(!graphs.some(g=>g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)&&!(g.requiresAnyBuilding||[]).length))issues.push(s.name+' needs an unconditional fallback route.');
  }
- for(const wave of stage.config.WaveCfg||[]){
-  if(!wave.SpawnTimeline){for(const encoded of wave.RefreshSoldierKind||[]){const lane=Number(encoded.split('#')[0]);if(!spawnIds.has(lane))issues.push('Wave '+wave.Wave+' uses a removed spawn.');}continue;}
+ const waves=stage.config&&stage.config.WaveCfg;
+ if(!Array.isArray(waves)||!waves.length)issues.push('A stage requires a non-empty wave array.');
+ for(const wave of Array.isArray(waves)?waves:[]){
+  if(!wave||typeof wave!=='object'||Array.isArray(wave)){issues.push('Every wave must be an object.');continue;}
+  if(Object.prototype.hasOwnProperty.call(wave,'SpawnTimeline')&&!Array.isArray(wave.SpawnTimeline)){issues.push('Wave '+wave.Wave+' needs a timed spawn array.');continue;}
+  if(!Array.isArray(wave.SpawnTimeline)){if(!Array.isArray(wave.RefreshSoldierKind)){issues.push('Wave '+wave.Wave+' needs a legacy spawn array.');continue;}for(const encoded of wave.RefreshSoldierKind){if(!encoded)continue;if(typeof encoded!=='string'||!encoded.includes('#')){issues.push('Wave '+wave.Wave+' has an invalid legacy spawn group.');continue;}const lane=Number(encoded.split('#')[0]);if(!spawnIds.has(lane))issues.push('Wave '+wave.Wave+' uses a removed spawn.');}continue;}
   let count=0;
   for(const e of wave.SpawnTimeline){
-   if(!spawnIds.has(e.spawnId))issues.push('Wave '+wave.Wave+' uses a removed spawn.');
+   if(!e||typeof e!=='object'||Array.isArray(e)){issues.push('Wave '+wave.Wave+' has an invalid timed spawn group.');continue;}
+   if(!Number.isSafeInteger(e.spawnId)||!spawnIds.has(e.spawnId))issues.push('Wave '+wave.Wave+' uses a removed or disabled spawn.');
+   if(!Number.isSafeInteger(e.unitId)||e.unitId<1)issues.push('Choose a spawnable unit.');
    if(units&&(!units[e.unitId]||!units[e.unitId].prefab||[90011,90012].includes(Number(e.unitId))))issues.push('Choose a spawnable unit.');
-   if(!Number.isInteger(e.count)||e.count<1||!finite(e.startSeconds)||e.startSeconds<0||!finite(e.intervalSeconds)||e.intervalSeconds<0||e.count>1&&e.intervalSeconds<=0)issues.push('Invalid spawn time, count or interval.');
+   if(!Number.isSafeInteger(e.count)||e.count<1||!finite(e.startSeconds)||e.startSeconds<0||!finite(e.intervalSeconds)||e.intervalSeconds<0||e.count>1&&e.intervalSeconds<=0||!finite(e.startSeconds+(e.count-1)*e.intervalSeconds))issues.push('Invalid spawn time, count or interval.');
    if(e.routeGraphId&&!graphs.some(g=>g.id===e.routeGraphId&&g.spawnIds.includes(e.spawnId)))issues.push('Spawn entry uses an unrelated route.');
    count+=e.count;
   }
@@ -134,4 +155,4 @@ function validateStage(stage,map,units){
  if(map){const bounds={x:map.size.width/2,y:map.size.height/2};for(const p of placements)if(p&&(Math.abs(p.x)>bounds.x||Math.abs(p.y)>bounds.y))issues.push('A placement is outside the map.');}
  return Array.from(new Set(issues));
 }
-module.exports={isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIssues,validateMap,validateStage};
+module.exports={isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,graphIssues,validateMap,validateStage};

@@ -13,7 +13,7 @@ function bounded(promise,milliseconds,message){
 }
 function stageForMap(service,mapId){
  const candidates=new Map();
- for(const entry of service.index().stages||[])candidates.set(entry.id,entry);
+ for(const entry of (typeof service.stageCatalog==='function'?service.stageCatalog():service.index().stages)||[])candidates.set(entry.id,entry);
  for(const doc of Object.values(service.docs||{}))if(doc.key.startsWith('stage:'))candidates.set(doc.data.id,doc.data);
  const matches=Array.from(candidates.values()).filter(stage=>stage.mapId===mapId).sort((a,b)=>Number(b.variant==='A')-Number(a.variant==='A')||a.level-b.level||String(a.id).localeCompare(String(b.id)));
  if(!matches.length)throw Error('Assign this map to a stage in Stages & Waves before starting a gameplay preview.');
@@ -23,7 +23,7 @@ async function start(Editor,service,request){
  if(request.owner!==undefined&&typeof request.owner!=='string')throw Error('Preview owner must identify an editor panel.');
  const doc=service.doc(request.key),isMap=request.key.startsWith('map:'),map=isMap?doc.data:service.loadMap(doc.data.mapId).data,stage=M.clone(isMap?stageForMap(service,map.id):doc.data);
  stage.mapId=map.id;
- const issues=M.validateMap(map,service.assetTable()).concat(M.validateStage(stage,map,service.index().documents.A.SoldierCfg));
+ const stageIssues=typeof service.stageIssues==='function'?service.stageIssues(stage,map):M.validateStage(stage,map,service.index().documents.A.SoldierCfg),issues=M.validateMap(map,service.assetTable()).concat(stageIssues);
  if(issues.length)throw Error(issues.join('\n'));
  const port=Number(Editor.PreviewServer&&Editor.PreviewServer._previewPort);
  if(!port)throw Error('Creator preview server is unavailable.');

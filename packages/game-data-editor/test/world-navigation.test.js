@@ -4,7 +4,7 @@ const M=require('../worlds/model'),L=require('../worlds/legacy'),P=require('../w
 const root=path.resolve(__dirname,'../../..'),rect=(x,y,w,h)=>[{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];
 function fixture(points){
  const map=M.createMap('navigation-audit','Navigation audit','forest');map.size=map.playable={width:400,height:400};map.blockerMask=[];
- const stage={id:'audit',variant:'A',mapId:map.id,buildings:[],spawns:[{id:1,x:points[0].x,y:points[0].y,enabled:true}],graphs:[{id:'route',spawnIds:[1],entry:'n0',nodes:points.map((p,i)=>Object.assign({id:'n'+i,goal:i===points.length-1},p)),edges:points.slice(1).map((p,i)=>({from:'n'+i,to:'n'+(i+1),weight:1}))}]};
+ const stage={id:'audit',variant:'A',mapId:map.id,buildings:[],spawns:[{id:1,x:points[0].x,y:points[0].y,enabled:true}],graphs:[{id:'route',spawnIds:[1],entry:'n0',nodes:points.map((p,i)=>Object.assign({id:'n'+i,goal:i===points.length-1},p)),edges:points.slice(1).map((p,i)=>({id:'edge-'+i,from:'n'+i,to:'n'+(i+1),weight:1}))}]};
  return {map,stage,service:{root,doc:()=>({data:stage}),loadMap:()=>({data:map})},request:{key:'stage:audit',spawnId:1,radius:2,hall:3,gate:'closed'}};
 }
 function capturePreview(service,request){
@@ -34,6 +34,21 @@ test('preview respects an explicit zero radius, disabled spawns, and finite prev
  for(const change of [{hall:0},{hall:4},{hall:NaN},{radius:-1},{radius:NaN},{gate:'missing'}])assert.throws(()=>Nav.preview(f.service,Object.assign({},f.request,change)));
  f.stage.spawns[0].enabled=false;assert.throws(()=>Nav.preview(f.service,f.request),/enabled spawn/);
 });
+
+test('an explicit preview path must exist and belong to the selected spawn',()=>{
+ const f=fixture([{x:-100,y:0},{x:100,y:0}]),other=M.clone(f.stage.graphs[0]);other.id='other';other.spawnIds=[2];f.stage.graphs.push(other);const before=JSON.stringify(f.stage);
+ for(const graphId of ['missing','other'])assert.throws(()=>Nav.preview(f.service,Object.assign({},f.request,{graphId})),/path assigned to the selected spawn/);
+ assert.equal(JSON.stringify(f.stage),before);assert(!Nav.preview(f.service,Object.assign({},f.request,{graphId:'route'})).fallback);
+});
+
+test('navigation preview diagnoses numeric IDs instead of calculating an ambiguously coerced route',()=>{
+ const f=fixture([{x:-100,y:0},{x:100,y:0}]),g=f.stage.graphs[0];g.entry=1;g.nodes[0].id=1;g.edges[0].from=1;g.nodes.push({id:'1',x:99,y:0});const before=JSON.stringify(f.stage);assert.throws(()=>Nav.preview(f.service,f.request),/point IDs must be non-empty strings/);assert.equal(JSON.stringify(f.stage),before);
+});
+
+test('an associated conditional preview clearly reports the same fallback used by runtime',()=>{
+ const f=fixture([{x:-100,y:0},{x:100,y:0}]),conditional=M.clone(f.stage.graphs[0]);conditional.id='conditional';conditional.requiresAnyBuilding=[2];conditional.nodes[1].y=80;f.stage.graphs.push(conditional);const before=JSON.stringify(f.stage);
+ const result=Nav.preview(f.service,Object.assign({},f.request,{graphId:'conditional'}));assert(result.fallback);assert.match(result.message,/conditional path is unavailable.*fallback/);assert.deepEqual(result.points.at(-1),{x:100,y:0});assert.equal(JSON.stringify(f.stage),before);
+});
 test('built-level preview chooses source tags instead of serialized enabled state and retains static child collision',()=>{
  const f=fixture([{x:-100,y:-100},{x:100,y:-100}]),source=P.skeleton('Template',f.map),info=Maps.model(source),owner=P.append(source,'Hall',info.roots.ndMain,0,0),child=P.append(source,'Static addition',owner,20,0);
  P.component(source,owner,{__type__:'Building',ID:1,ndAniMain:{__id__:child},ndAniOther:[]});
@@ -43,6 +58,7 @@ test('built-level preview chooses source tags instead of serialized enabled stat
  f.stage.buildings=[{id:1,kind:1,unlock:1,x:0,y:0,scale:1,angle:0,template:{prefab:'test',node:owner,roots:[owner]}}];f.stage.templates={test:source};
  const first=capturePreview(f.service,Object.assign({},f.request,{hall:1})).captured.polygons,third=capturePreview(f.service,f.request).captured.polygons;
  assert.equal(first.length,2);assert.equal(third.length,2);assert.deepEqual(first[0],rect(-10,-10,20,20));assert.deepEqual(third[0],rect(-30,-30,60,60));assert.deepEqual(first[1],rect(18,-2,4,4));
+ delete f.stage.buildings[0].unlock;assert.deepEqual(capturePreview(f.service,Object.assign({},f.request,{hall:1})).captured.polygons,first,'main hall exists when the optional unlock property is absent');
 });
 test('initial branch ColliderIndex is honored for built scenery previews without changing authored sources',()=>{
  const f=fixture([{x:-100,y:-100},{x:100,y:-100}]),source=P.skeleton('Template',f.map),info=Maps.model(source),owner=P.append(source,'Barracks',info.roots.ndMain,0,0),art=P.append(source,'Artwork',owner,0,0);
@@ -51,6 +67,8 @@ test('initial branch ColliderIndex is honored for built scenery previews without
  f.stage.buildings=[{id:2,kind:3,unlock:1,x:0,y:0,scale:1,angle:0,template:{prefab:'test',node:owner,roots:[owner]}}];f.stage.templates={test:source};f.service.index=()=>({documents:{A:{BuildEnum:{3:{InitialChoices:[17],levelList:[{index:11,level:1},{index:12,level:2},{index:17,level:1,ColliderIndex:2}]}}}}});
  const before=JSON.stringify(f.stage),result=capturePreview(f.service,f.request);
  assert.equal(result.captured.polygons.length,1);assert.deepEqual(result.captured.polygons[0],rect(-20,-20,40,40));assert.equal(JSON.stringify(f.stage),before);
+ const primary=f.service.index().documents.A;
+ for(const variant of ['B','D']){f.stage.variant=variant;f.service.index=()=>({documents:{A:primary,[variant]:{LevelCfg:[]}}});assert.deepEqual(capturePreview(f.service,f.request).captured.polygons,result.captured.polygons,'alternate stages inherit the runtime primary building definitions');}
 });
 test('static boxes and circles retain enabled state when their owner level changes or its gate opens',()=>{
  const f=fixture([{x:-100,y:-100},{x:100,y:-100}]),source=P.skeleton('Template',f.map),info=Maps.model(source),owner=P.append(source,'Gate',info.roots.ndMain,0,0),art=P.append(source,'Artwork',owner,0,0);

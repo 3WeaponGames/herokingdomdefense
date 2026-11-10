@@ -4,14 +4,14 @@
   "importer": "sprite-atlas",
   "rawTextureUuid": "ed82b85c-d60b-42f5-abc9-9d7b625777c8",
   "size": {
-    "width": 1434,
-    "height": 1104
+    "width": 1258,
+    "height": 1258
   },
   "type": "Texture Packer",
   "subMetas": {
-    "terrain-desert-ruins-0-0": {
+    "terrain-desert-rocky-hill-0-0": {
       "ver": "1.0.6",
-      "uuid": "a8f75193-9f2f-40e9-a1be-1db2b2f9090c",
+      "uuid": "d7df76d3-11ae-433a-ab1a-bac20b2c3b37",
       "importer": "sprite-frame",
       "rawTextureUuid": "ed82b85c-d60b-42f5-abc9-9d7b625777c8",
       "trimType": "custom",
@@ -21,10 +21,10 @@
       "offsetY": 0,
       "trimX": 2,
       "trimY": 2,
-      "width": 1430,
-      "height": 1100,
-      "rawWidth": 1430,
-      "rawHeight": 1100,
+      "width": 1254,
+      "height": 1254,
+      "rawWidth": 1254,
+      "rawHeight": 1254,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

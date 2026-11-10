@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "d3461836-fe05-4abb-a491-e2ddc2aa5aa5",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "c141bb08-0b09-444e-afd4-2753fbe77444",
+  "size": {
+    "width": 1433,
+    "height": 1104
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-desert-ruins-0-0": {
+      "ver": "1.0.6",
+      "uuid": "327938c8-3cbf-4337-afd0-5c39004675f5",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "c141bb08-0b09-444e-afd4-2753fbe77444",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1429,
+      "height": 1100,
+      "rawWidth": 1429,
+      "rawHeight": 1100,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

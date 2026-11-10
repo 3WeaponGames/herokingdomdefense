@@ -1,7 +1,8 @@
 'use strict';
 // Library classification only: never rewrites imported records or map data.
-const groundAsset=asset=>!!asset&&['field','roads','custom'].includes(asset.category);
+const groundAsset=asset=>!!asset&&['field','roads','shadows','custom'].includes(asset.category);
 const objectAsset=asset=>!!asset&&!['field','roads'].includes(asset.category);
+const sortPalette=assets=>assets.slice().sort((a,b)=>Number(a.paletteLast===true)-Number(b.paletteLast===true));
 const isRoad=asset=>!!asset&&asset.category==='roads'&&/^road(?:\s+up)?\s+/i.test(asset.name||'');
 const roadSurface=asset=>!!asset&&asset.category==='roads'&&/^road\s+(?!up\s)/i.test(asset.name||'');
 function roadPair(asset,library,context){
@@ -30,4 +31,4 @@ function roadDefaults(asset,library,context){
  return defaults;
 }
 function strokeAssets(stroke){return stroke.op==='erase'?[]:[stroke.assetId,stroke.mode==='road'&&stroke.edgeAssetId].filter(Boolean);}
-module.exports={groundAsset,objectAsset,isRoad,roadPair,roadDefaults,strokeAssets};
+module.exports={groundAsset,objectAsset,sortPalette,isRoad,roadPair,roadDefaults,strokeAssets};

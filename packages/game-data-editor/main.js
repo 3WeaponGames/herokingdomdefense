@@ -16,7 +16,7 @@ function getStore(){
 }
 function broadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:changed',{version:snapshot.version});return snapshot;}
 function reply(event,fn){try{const result=fn();if(result&&typeof result.then==='function')result.then(r=>event.reply(null,r),e=>event.reply(e.message||String(e)));else event.reply(null,result);}catch(e){event.reply(e.message||String(e));}}
-function open(kind){if(!panels[kind])throw Error('Unknown tool panel');Editor.Panel.open('hkd-'+kind);}
+function open(kind){if(!panels[kind])throw Error('Unknown tool panel');if(kind==='maps'||kind==='stages')return require('./worlds/panel-routing').open(Editor,kind);Editor.Panel.open('hkd-'+kind);}
 function refreshImports(files){
     const pending=new Set(files),warnings=[];
     if(!pending.size)return Promise.resolve(warnings);
@@ -35,6 +35,7 @@ const messages={
     'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key));},
     'world-copy-stage'(event,request){reply(event,()=>getWorlds().copyStage(request));},
     'world-paste-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().pasteStage(request)));},
+    'world-replace-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().replaceStage(request)));},
     'world-change'(event,request){reply(event,()=>worldBroadcast(getWorlds().change(request)));},
     'world-create'(event,request){reply(event,()=>worldBroadcast(getWorlds().create(request)));},
     'world-undo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,false)));},
@@ -52,13 +53,14 @@ const messages={
     'world-group-place'(event,request){reply(event,()=>worldBroadcast(getWorlds().placeGroup(request)));},
     'world-buildings'(event){reply(event,()=>getWorlds().buildingCatalog());},
     'world-building-placements'(event){reply(event,()=>getWorlds().buildingPlacements());},
-    'world-focus-map'(event,request){reply(event,()=>{open('maps');Editor.Ipc.sendToAll('game-data-editor:world-focus-map',request.id);return true;});},
+    'open-world'(event,request){reply(event,()=>require('./worlds/panel-routing').open(Editor,request&&request.view,request));},
+    'world-focus-map'(event,request){reply(event,()=>require('./worlds/panel-routing').open(Editor,'maps',{mapId:request&&request.id}));},
     'world-navigation'(event,request){reply(event,()=>require('./worlds/navigation').preview(getWorlds(),request));},
     'world-unit-radius'(event,request){reply(event,()=>getWorlds().unitRadius(request.id));},
     'world-preview'(event,request){reply(event,()=>{getWorlds().expect(request.version);return require('./worlds/preview').start(Editor,getWorlds(),request);});},
     'world-preview-close'(event,request){reply(event,()=>({closed:require('./worlds/preview').shutdown(request?request.owner:undefined)}));},
     'world-recover-stage07'(event,request){reply(event,async()=>worldBroadcast(await require('./worlds/stage07').recover(getWorlds(),request)));},
-    'world-save'(event,request){reply(event,async()=>{const snapshot=await getWorlds().save(request),files=snapshot.result&&snapshot.result.files||[],imports=files.filter(f=>f.startsWith('assets/')&&!f.endsWith('.meta')&&!f.startsWith('assets/KinghtFallIconMap/Generated/')),warnings=await refreshImports(imports.concat(files.some(f=>f.startsWith('assets/KinghtFallIconMap/Generated/'))?['assets/KinghtFallIconMap/Generated']:[]));if(warnings.length)snapshot.result.warning=warnings.join('; ');return worldBroadcast(snapshot);});},
+    'world-save'(event,request){reply(event,async()=>{const snapshot=await getWorlds().save(request),files=snapshot.result&&snapshot.result.files||[],imports=files.filter(f=>f.startsWith('assets/')&&!f.endsWith('.meta')&&!f.startsWith('assets/KinghtFallIconMap/Generated/')),warnings=await refreshImports(imports.concat(files.some(f=>f.startsWith('assets/KinghtFallIconMap/Generated/'))?['assets/KinghtFallIconMap/Generated']:[]));if(warnings.length)snapshot.result.warning=[snapshot.result.warning,warnings.join('; ')].filter(Boolean).join('; ');return worldBroadcast(snapshot);});},
     load(event){reply(event,()=>getStore().snapshot());},
     refresh(event){reply(event,()=>{const snapshot=getStore().refresh();assets=null;require('./lib/unit-assets').invalidate();return broadcast(snapshot);});},
     change(event,request){reply(event,()=>broadcast(getStore().change(request)));},

@@ -154,28 +154,34 @@ function validate(documents, changes) {
     if(typeof value==='string') {const key=token(value);if(key&&!own(catalog.entries,key))issue(doc,path,'Missing translation: '+key);}
     else if(value&&typeof value==='object')Object.keys(value).forEach(k=>checkTokens(value[k],doc,path.concat(Array.isArray(value)?Number(k):k)));
   }
-  function rewards(value,doc,path) {(value||[]).forEach((reward,i)=>{if(!Array.isArray(reward)||reward.length!==2) return issue(doc,path.concat(i),'Reward must contain a goods ID and amount.');number(doc,path.concat(i,1),reward[1],0,true);if(!base.GoodsCfg || !base.GoodsCfg[reward[0]])issue(doc,path.concat(i,0),'Unknown reward item '+reward[0]+'.');});}
+  function rewards(value,doc,path) {if(value===undefined)return;if(!Array.isArray(value))return issue(doc,path,'Rewards must be an array of goods ID and amount pairs.');value.forEach((reward,i)=>{if(!Array.isArray(reward)||reward.length!==2) return issue(doc,path.concat(i),'Reward must contain a goods ID and amount.');number(doc,path.concat(i,1),reward[1],0,true);if(!base.GoodsCfg || !base.GoodsCfg[reward[0]])issue(doc,path.concat(i,0),'Unknown reward item '+reward[0]+'.');});}
   ['A','B','D'].forEach(doc=>{
     const data=docs[doc]; if(!data)return;
     checkTokens(data,doc,[]);
     (data.LevelCfg || []).forEach((stage,index)=>{
       const p=['LevelCfg',index];
+      if(!stage||typeof stage!=='object'||Array.isArray(stage))return issue(doc,p,'Each stage must be an object.');
       if(stage.Level!==index+1)issue(doc,p.concat('Level'),'Stage IDs must remain contiguous and match their array position.');
       if(!MapCatalog.has(stage.prefab))issue(doc,p.concat('prefab'),'Choose an authored playable map ('+MapCatalog.IDS.join(', ')+').');
       ['InGameCoefficient','GoldSupplyCoefficient','ConversionCoefficient','EquipLevelCap'].forEach(k=>number(doc,p.concat(k),stage[k],0,k==='EquipLevelCap'));
       if(!Array.isArray(stage.WaveCfg)||!stage.WaveCfg.length)return issue(doc,p.concat('WaveCfg'),'A stage requires at least one wave.');
       stage.WaveCfg.forEach((wave,wi)=>{
         const w=p.concat('WaveCfg',wi);
+        if(!wave||typeof wave!=='object'||Array.isArray(wave))return issue(doc,w,'Each wave must be an object.');
         if(wave.Wave!==wi+1||wave.id!==stage.Level)issue(doc,w,'Wave number and stage ID must match their position.');
         ['HealthCoefficient','AttackCoefficient','StartSliver','CommerceSliver'].forEach(k=>number(doc,w.concat(k),wave[k],0,/Sliver/.test(k)));
         const lanes=new Set();let total=0;
+        if(own(wave,'SpawnTimeline')&&!Array.isArray(wave.SpawnTimeline))issue(doc,w.concat('SpawnTimeline'),'Timed spawns must be an array.');
         if(Array.isArray(wave.SpawnTimeline))wave.SpawnTimeline.forEach((entry,si)=>{
           const s=w.concat('SpawnTimeline',si);
+          if(!entry||typeof entry!=='object'||Array.isArray(entry))return issue(doc,s,'Each timed spawn group must be an object.');
           number(doc,s.concat('spawnId'),entry.spawnId,1,true);number(doc,s.concat('count'),entry.count,1,true);
+          for(const key of ['spawnId','unitId','count'])if(!Number.isSafeInteger(entry[key])||entry[key]<1)issue(doc,s.concat(key),'Spawn IDs and quantities must be positive safe whole numbers.');
           number(doc,s.concat('startSeconds'),entry.startSeconds,0,false);number(doc,s.concat('intervalSeconds'),entry.intervalSeconds,entry.count>1?0.000001:0,false);
+          if(!Number.isFinite(entry.startSeconds+(entry.count-1)*entry.intervalSeconds))issue(doc,s.concat('intervalSeconds'),'The final spawn time must be finite.');
           if(!units[entry.unitId]||!units[entry.unitId].prefab)issue(doc,s.concat('unitId'),'Choose a spawnable unit.');
           total+=entry.count;
-        });else (wave.RefreshSoldierKind||[]).forEach((encoded,si)=>{
+        });else if(!Array.isArray(wave.RefreshSoldierKind))issue(doc,w.concat('RefreshSoldierKind'),'Legacy spawns must be an array.');else wave.RefreshSoldierKind.forEach((encoded,si)=>{
           const s=w.concat('RefreshSoldierKind',si);let parsed;
           try {parsed=parseSpawn(encoded);} catch(e){issue(doc,s,e.message);return;}
           const maxLane=MapCatalog.lanes(stage.prefab);
@@ -184,14 +190,14 @@ function validate(documents, changes) {
           parsed.groups.forEach(g=>{if(g.unit!==-1&&(!units[g.unit]||!units[g.unit].prefab))issue(doc,s,'Unit '+g.unit+' cannot spawn directly (missing unit or prefab).');if(!Number.isInteger(g.count)||g.count<=0)issue(doc,s,'Unit quantity must be a positive whole number.');if(g.unit!==-1)total+=g.count;});
         });
         if(total<=0)issue(doc,w.concat(Array.isArray(wave.SpawnTimeline)?'SpawnTimeline':'RefreshSoldierKind'),'A wave requires at least one spawning unit.');
-        rewards(wave.WaveReward,doc,w.concat('WaveReward'));
+        if(!Array.isArray(wave.WaveReward))issue(doc,w.concat('WaveReward'),'Wave rewards must be an array.');else rewards(wave.WaveReward,doc,w.concat('WaveReward'));
       });
       ['HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock'].forEach(key=>(stage[key]||[]).forEach((row,i)=>{
         if(!Array.isArray(row)||row.length!==2||!BUILDINGS[row[0]]||!Number.isInteger(row[1])||row[1]<1)issue(doc,p.concat(key,i),'Choose a valid building type and positive map slot ID.');
       }));
       if((stage.Challenge||[]).length!==(stage.ChallengeReward||[]).length)issue(doc,p.concat('ChallengeReward'),'Each challenge needs its matching reward list.');
       (stage.Challenge||[]).forEach((v,i)=>{if([1,2,3].indexOf(v)<0)issue(doc,p.concat('Challenge',i),'Choose an existing challenge (1: clear, 2: hero survives, 3: castle unharmed).');});
-      (stage.ChallengeReward||[]).forEach((r,i)=>rewards(r,doc,p.concat('ChallengeReward',i)));
+      if(stage.ChallengeReward!==undefined&&!Array.isArray(stage.ChallengeReward))issue(doc,p.concat('ChallengeReward'),'Challenge rewards must be an array of reward lists.');else (stage.ChallengeReward||[]).forEach((r,i)=>rewards(r,doc,p.concat('ChallengeReward',i)));
     });
   });
   (base.BuffCfg||[]).forEach((perk,i)=>{

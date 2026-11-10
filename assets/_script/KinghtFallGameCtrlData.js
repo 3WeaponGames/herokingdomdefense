@@ -142,7 +142,10 @@ var def_KinghtFallGameCtrlData = function () {
     var t = this.levelCfg.WaveCfg[this.round - 1];
     this.videoCoin = t.CommerceSliver;
     this.enemyQueue = {};
-    for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
+    this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
+    // Timed schedules replace the legacy queue completely. Do not parse stale
+    // or absent compatibility strings before constructing the effective queue.
+    if (!this.authoredTimeline) for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
       var n = t.RefreshSoldierKind[e];
       if (n) {
         var i = n.split("#");
@@ -159,7 +162,6 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     this.coin = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getCoin(this.levelCfg.Level);
-    this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
     if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };
   _ctor.prototype.loadMonster = function (restoring) {
@@ -172,7 +174,7 @@ var def_KinghtFallGameCtrlData = function () {
     if (!restoring) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
     this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
     this.enemyQueue = {};
-    for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
+    if (!this.authoredTimeline) for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
       var n = t.RefreshSoldierKind[e];
       if (n) {
         var i = n.split("#");

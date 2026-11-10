@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "a07a6450-e9c6-47d0-a9c1-9b1e2ccdc441",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "da2e2ffc-8d28-4c9c-a93f-b955015a6c2d",
+  "size": {
+    "width": 1486,
+    "height": 1065
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "terrain-snow-ruins-0-0": {
+      "ver": "1.0.6",
+      "uuid": "73b0fba9-8e68-44b1-ac53-3c86aa2161b3",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "da2e2ffc-8d28-4c9c-a93f-b955015a6c2d",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1482,
+      "height": 1061,
+      "rawWidth": 1482,
+      "rawHeight": 1061,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

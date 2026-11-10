@@ -269,6 +269,29 @@ test('world persistence: map save accepts a BOM manifest and preserves untouched
  const f=fixture(),s=f.service,key='map:map-test',text='\uFEFF{\r\n  "version": 1,\r\n  "assets": [],\r\n  "FutureField": {"keep": 1}\r\n}\r\n',file=f.write('authoring/worlds/library/manifest.json',text);
  rename(s,key,'BOM-safe save');const saved=await s.save({key,version:s.version});assert(saved.result.saved);assert.equal(fs.readFileSync(file,'utf8'),text);const again=await s.save({key,version:s.version});assert(!again.result.saved);assert.equal(fs.readFileSync(file,'utf8'),text);
 });
+
+test('world persistence: a committed save returns success plus a warning if external recovery changes during baking',async()=>{
+ const f=fixture(),s=f.service,key='map:map-test',other=Buffer.from('{"external":"preserved concurrent recovery"}');rename(s,key,'Committed map edit');rename(s,'map:map-other','Independent draft');const independent=clone(s.snapshot('map:map-other').value);
+ s.options.render=async()=>{fs.writeFileSync(s.recovery,other);return{files:[],ground:[],assets:{}};};
+ const saved=await s.save({key,version:s.version});assert(saved.result.saved);assert(saved.result.files.includes('authoring/worlds/maps/map-test.json'));assert.match(saved.result.warning,/Saved on disk.*recovery copy could not be updated/);assert.equal(L.read(f.root,'authoring/worlds/maps/map-test.json').name,'Committed map edit');assert(!s.snapshot(key).dirty);assert(fs.readFileSync(s.recovery).equals(other));assert.deepEqual(s.snapshot('map:map-other').value,independent);assert(s.snapshot('map:map-other').canUndo);assert(!s.busy);
+});
+
+test('world persistence: stage identifier aliases cannot create separate authoring documents for one runtime stage',()=>{
+ const f=timedSaveFixture(),s=f.service;for(const id of ['A-01','A-0001','B-01','D-01','A-9007199254740992']){const version=s.version,keys=Object.keys(s.docs);assert.throws(()=>s.loadStage(id),/canonical stage identifier/);assert.equal(s.version,version);assert.deepEqual(Object.keys(s.docs),keys);}
+ assert.equal(s.loadStage('A-1').data.id,'A-1');assert.equal(s.loadStage('A-1').data.config.Level,1);
+});
+
+test('world persistence: invalid path conditions remain inspectable and explicitly repairable through real snapshots',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',value=clone(s.snapshot(key).value);value.graphs[0].requiresAnyBuilding={unknown:'retained'};value.graphs[0].edges[0].requiresAnyBuilding={unknown:'edge'};
+ const snap=s.change({key,version:s.version,value});assert(snap.issues.some(issue=>/Path building conditions must be an array/.test(issue)));assert(snap.issues.some(issue=>/Connection building conditions must be an array/.test(issue)));assert.deepEqual(snap.value.graphs,value.graphs);
+ let bakes=0;s.options.render=async()=>{bakes++;return{files:[],ground:[],assets:{}};};await assert.rejects(s.save({key,version:s.version}),/conditions must be an array/);assert.equal(bakes,0);const repair=clone(s.snapshot(key).value);repair.graphs[0].requiresAnyBuilding=[];repair.graphs[0].edges[0].requiresAnyBuilding=[];const fixed=s.change({key,version:s.version,value:repair});assert(!fixed.issues.some(issue=>/conditions must be an array/.test(issue)));assert(snap.dirty&&fixed.dirty);
+});
+
+test('world persistence: numeric route identifiers block Save and gameplay preview without modifying authoring data',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',value=clone(s.snapshot(key).value),g=value.graphs[0];g.id=1;g.nodes[0].id=1;g.entry=1;g.edges[0].from=1;g.edges[0].id=1;const snap=s.change({key,version:s.version,value}),before=JSON.stringify(snap.value);
+ assert(snap.issues.some(issue=>/IDs must be non-empty strings/.test(issue)));let renders=0;s.options.render=async()=>{renders++;return{files:[],ground:[],assets:{}};};await assert.rejects(s.save({key,version:s.version}),/IDs must be non-empty strings/);
+ await assert.rejects(require('../worlds/preview').start({PreviewServer:{_previewPort:0}},s,{key,version:s.version}),/IDs must be non-empty strings/);assert.equal(renders,0);assert.equal(JSON.stringify(s.snapshot(key).value),before);
+});
 test('world persistence: shared-map saves clear history belonging to clean reloaded stage baselines',async()=>{
  const f=fixture(),s=f.service,key='stage:A-1',cfg={Level:1,prefab:'Generated/Stages/A-1',EnvironmentMapId:'map-test',WaveCfg:[]};
  f.write(L.configFile('A'),{LevelCfg:[cfg],SoldierCfg:{},ParameterCfg:{}});f.write('assets/_script/AuthoredStagePaths.js.meta',{uuid:'11111111-1111-4111-a111-111111111111'});

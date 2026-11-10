@@ -23,6 +23,22 @@ test('legacy spawn counts are positive integers and units need spawnable prefabs
 test('legacy map lane maximum follows the actual playable map',()=>{const d=legacyFixture();d.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind=['10#90001,1'];assert(introduced(d).some(i=>/1–9/.test(i.message)));d.A.data.LevelCfg[0].prefab='Map04';assert(!introduced(d).some(i=>/authored lane/.test(i.message)));});
 test('active timed schedules validate counts, timing and units independently of retained legacy strings',()=>{const d=fixture(),wave=d.A.data.LevelCfg[0].WaveCfg[0];wave.RefreshSoldierKind=['999#90011,0'];assert.deepStrictEqual(introduced(d),[]);Object.assign(wave.SpawnTimeline[0],{unitId:90011,count:0,startSeconds:-1,intervalSeconds:-1});const errors=introduced(d);for(const field of ['unitId','count','startSeconds','intervalSeconds'])assert(errors.some(i=>i.path[i.path.length-1]===field),field);});
 test('wave order is validated rather than silently reindexed',()=>{const d=fixture();d.D.data.LevelCfg[0].WaveCfg[0].Wave=2;assert(introduced(d).some(i=>/Wave number/.test(i.message)));assert.strictEqual(d.D.data.LevelCfg[0].WaveCfg[0].Wave,2);});
+
+test('timed quantities remain exactly representable and their final spawn must be reachable',()=>{
+ for(const patch of [{count:Number.MAX_SAFE_INTEGER+1},{spawnId:Number.MAX_SAFE_INTEGER+1},{unitId:Number.MAX_SAFE_INTEGER+1},{count:3,intervalSeconds:1e308}]){
+  const d=fixture(),entry=d.A.data.LevelCfg[0].WaveCfg[0].SpawnTimeline[0];Object.assign(entry,patch);const before=JSON.stringify(d);assert(introduced(d).some(i=>/safe whole|final spawn time/.test(i.message)));assert.strictEqual(JSON.stringify(d),before);
+ }
+});
+
+test('malformed wave arrays and groups produce editable diagnostics without changing their source',()=>{
+ for(const mutate of [w=>w.SpawnTimeline={},w=>w.SpawnTimeline=[null],w=>{delete w.SpawnTimeline;w.RefreshSoldierKind={};}]){const d=fixture();mutate(d.A.data.LevelCfg[0].WaveCfg[0]);const before=JSON.stringify(d);assert(introduced(d).length);assert.strictEqual(JSON.stringify(d),before);}
+ const d=fixture();d.A.data.LevelCfg[0].WaveCfg=[null];assert(introduced(d).some(i=>/wave must be an object/.test(i.message)));
+});
+
+test('reward JSON shape errors are diagnostics rather than crashing shared-stage snapshots',()=>{
+ for(const value of [{},null,17,'bad']){const d=fixture();d.A.data.LevelCfg[0].WaveCfg[0].WaveReward=value;const before=JSON.stringify(d);assert(introduced(d).some(i=>i.path.includes('WaveReward')));assert.strictEqual(JSON.stringify(d),before);}
+ for(const value of [{},null,[{}],[null]]){const d=fixture();d.A.data.LevelCfg[0].ChallengeReward=value;const before=JSON.stringify(d);assert(introduced(d).some(i=>i.path.includes('ChallengeReward')));assert.strictEqual(JSON.stringify(d),before);}
+});
 test('building branch cycles and unknown barracks units are rejected',()=>{const d=fixture();d.A.data.BuildEnum['1'].levelList[2].BranchBuild=[1];d.A.data.BuildEnum['3'].levelList[0].Data[1]=123;const errors=introduced(d);assert(errors.some(i=>/cycle/.test(i.message)));assert(errors.some(i=>/Barracks unit/.test(i.message)));});
 test('hero equipment stat edits preserve identifiers and source schema',()=>{const d=fixture();d.A.data.EquipCfg[0].levelInfo[0].Parameters=150;assert.deepStrictEqual(introduced(d),[]);d.A.data.EquipCfg[0].levelInfo[0].Level=2;assert(introduced(d).some(i=>/Equipment level/.test(i.message)));});
 test('talent row gaps and missing effect references are rejected',()=>{const d=fixture();d.A.data.TalentLevelCfg[0].Level=2;d.A.data.TalentLevelCfg[0].kindID=999;const errors=introduced(d);assert(errors.some(i=>/skipped progression/.test(i.message)));assert(errors.some(i=>/Talent effect does not exist/.test(i.message)));});

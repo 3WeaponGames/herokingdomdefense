@@ -12,12 +12,65 @@ test('backend validation detects colliding path and edge IDs and invalid graph w
  const g=stage().graphs[0];g.edges.push(M.clone(g.edges[0]));assert(M.graphIssues(g).some(i=>i.includes('Duplicate path edge')));
  for(const weight of [-1,NaN,Infinity]){g.weight=weight;assert(M.graphIssues(g).some(i=>i.includes('Path weight')));}
  const zero=stage();zero.graphs[0].weight=0;assert(M.validateStage(zero).some(i=>i.includes('needs a route')));
+ const overflow=stage(),other=M.clone(overflow.graphs[0]);other.id='other';overflow.graphs.push(other);overflow.graphs.forEach(g=>g.weight=1e308);assert(M.validateStage(overflow).some(i=>/finite total path weight/.test(i)));
+ const branches=stage().graphs[0];branches.edges[0].weight=1e308;branches.edges.push({id:'other',from:'start',to:'goal',weight:1e308});assert(M.graphIssues(branches).some(i=>/finite total/.test(i)));
+});
+
+test('disabled unused spawns retain their authored paths but cannot receive wave units',()=>{
+ const s=stage(),parked={id:2,name:'Parked lane',x:40,y:100,enabled:false};s.spawns.push(parked);const graph=M.clone(s.graphs[0]);graph.id='parked';graph.spawnIds=[2];s.graphs.push(graph);const before=JSON.stringify(s);
+ assert.deepEqual(M.validateStage(s),[]);assert.equal(JSON.stringify(s),before);
+ s.config.WaveCfg[0].SpawnTimeline[0].spawnId=2;assert(M.validateStage(s).some(i=>/disabled spawn/.test(i)));
+ s.config.WaveCfg[0].SpawnTimeline[0].spawnId=1;s.spawns.pop();assert(M.validateStage(s).includes('Path references a removed spawn.'));
+});
+
+test('disabled placements cannot hide colliding or unsafe identifiers',()=>{
+ const s=stage();s.buildings.push({id:1,kind:2,enabled:false});s.spawns.push({id:1,enabled:false});
+ assert(M.validateStage(s).includes('Duplicate building ID.'));assert(M.validateStage(s).includes('Duplicate spawn ID.'));
+ s.buildings[1].id=Number.MAX_SAFE_INTEGER+1;s.spawns[1].id=Number.MAX_SAFE_INTEGER+1;
+ assert(M.validateStage(s).some(i=>/Building IDs/.test(i)));assert(M.validateStage(s).some(i=>/Spawn IDs/.test(i)));
+});
+
+test('timed wave validation rejects imprecise counts and unreachable overflowing spawn times without editing',()=>{
+ for(const patch of [{count:Number.MAX_SAFE_INTEGER+1},{count:3,intervalSeconds:1e308},{spawnId:Number.MAX_SAFE_INTEGER+1},{unitId:Number.MAX_SAFE_INTEGER+1}]){
+  const s=stage();Object.assign(s.config.WaveCfg[0].SpawnTimeline[0],patch);const before=JSON.stringify(s);assert(M.validateStage(s).length,JSON.stringify(patch));assert.equal(JSON.stringify(s),before);
+ }
+});
+
+test('malformed editable wave documents return diagnostics instead of preventing the repair panel from opening',()=>{
+ for(const mutate of [s=>s.config.WaveCfg={},s=>s.config.WaveCfg=null,s=>s.config.WaveCfg=[null],s=>s.config.WaveCfg[0].SpawnTimeline={},s=>s.config.WaveCfg[0].SpawnTimeline=[null],s=>{delete s.config.WaveCfg[0].SpawnTimeline;s.config.WaveCfg[0].RefreshSoldierKind={};}]){const s=stage();mutate(s);const before=JSON.stringify(s);assert(M.validateStage(s).length);assert.equal(JSON.stringify(s),before);}
 });
 test('backend graph validation handles deep DAGs, disconnected cycles and shared joins without recursion',()=>{
  const count=20000,g={id:'deep',entry:'n0',spawnIds:[],nodes:Array.from({length:count},(_,i)=>({id:'n'+i,x:i,y:0,goal:i===count-1})),edges:Array.from({length:count-1},(_,i)=>({id:'e'+i,from:'n'+i,to:'n'+(i+1),weight:1}))};
  const before=JSON.stringify(g);assert.deepEqual(M.graphIssues(g),[]);assert.equal(JSON.stringify(g),before);
  g.nodes.push({id:'island',x:0,y:0});g.edges.push({id:'cycle',from:'island',to:'island',weight:1});assert(M.graphIssues(g).some(i=>i.includes('loops')));
  const join=stage().graphs[0];join.nodes.push({id:'other',x:20,y:80});join.edges.push({id:'branch',from:'start',to:'other',weight:1},{id:'join',from:'other',to:'goal',weight:1});assert.deepEqual(M.graphIssues(join),[]);
+});
+
+test('zero-weight connections are inactive for cycle checks exactly as they are at runtime',()=>{
+ const Plan=require('../../../assets/_script/AuthoredSpawnPlan'),s=stage(),graph=s.graphs[0];
+ graph.edges.push({id:'disabled-back',from:'goal',to:'start',weight:0});const before=JSON.stringify(s);
+ assert.deepEqual(M.validateStage(s),[]);assert.deepEqual(Plan.route([graph],1,[],null,()=>0).map(point=>point.nodeId),['start','goal']);assert.equal(JSON.stringify(s),before);
+ graph.edges[1].weight=1;assert(M.graphIssues(graph).includes('Paths cannot contain loops.'));
+});
+
+test('malformed path conditions return repairable diagnostics without mutating or throwing',()=>{
+ for(const value of [{},'1',true,17])for(const where of ['graph','edge']){const s=stage(),graph=s.graphs[0];(where==='graph'?graph:graph.edges[0]).requiresAnyBuilding=value;const before=JSON.stringify(s);assert(M.validateStage(s).some(issue=>issue.includes('conditions must be an array')));assert.equal(JSON.stringify(s),before);}
+});
+
+test('runtime routes preserve authored node IDs that match Object prototype properties',()=>{
+ const Plan=require('../../../assets/_script/AuthoredSpawnPlan');
+ for(const id of ['toString','constructor','__proto__','hasOwnProperty']){const s=stage(),graph=s.graphs[0];graph.nodes[0].id=id;graph.entry=id;graph.edges[0].from=id;const before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[]);assert.deepEqual(Plan.route([graph],1,[],null,()=>0).map(point=>point.nodeId),[id,'goal']);assert.equal(JSON.stringify(s),before);}
+ const s=stage(),graph=s.graphs[0];graph.nodes[1].id='__proto__';graph.edges[0].to='__proto__';assert.deepEqual(Plan.route([graph],1,[],null,()=>0).map(point=>point.nodeId),['start','__proto__']);
+});
+
+test('route IDs use nonempty authored strings without coercion, prototype exclusions or metadata rewrites',()=>{
+ for(const value of [0,1,null,{},[],true,'','   '])for(const type of ['graph','node','edge']){const s=stage(),g=s.graphs[0];(type==='graph'?g:type==='node'?g.nodes[0]:g.edges[0]).id=value;const before=JSON.stringify(s);assert(M.validateStage(s).some(issue=>issue.includes('IDs must be non-empty strings')),type+' '+JSON.stringify(value));assert.equal(JSON.stringify(s),before);}
+ const s=stage(),g=s.graphs[0];g.id='__proto__';g.nodes[0].id='point:一';g.entry='point:一';g.edges[0].id='constructor';g.edges[0].from=g.entry;assert.deepEqual(M.graphIdentifierIssues(g),[]);assert.deepEqual(M.validateStage(s),[]);
+});
+
+test('numeric/string identifier collisions are diagnosed before export without normalizing either authored ID',()=>{
+ const s=stage(),g=s.graphs[0],P=require('../worlds/prefab'),map=M.createMap('test','Test','forest');g.entry=1;g.nodes[0].id=1;g.edges[0].from=1;g.nodes.push({id:'1',x:99,y:0});g.edges.push({id:'second',from:'1',to:'goal',weight:1});const before=JSON.stringify(s);
+ assert(M.validateStage(s).some(issue=>/point IDs/.test(issue)));assert.throws(()=>P.compose('unused',map,s,{ground:[],assets:{}},{}),/point IDs must be non-empty strings/);assert.equal(JSON.stringify(s),before);assert.equal(g.nodes[0].id,1);assert.equal(g.nodes[2].id,'1');
 });
 test('backend map validation catches malformed object collision shapes without editing the draft',()=>{
  const map=M.createMap('test','Test','forest'),o={id:'object',assetId:'tree',x:0,y:0,scale:1,polygons:[[{x:0,y:0},{x:1,y:0},{x:0,y:NaN}]]};map.layers[0].objects.push(o);

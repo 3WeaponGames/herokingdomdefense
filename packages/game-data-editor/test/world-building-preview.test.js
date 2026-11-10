@@ -69,3 +69,12 @@ test('explicit refresh versions model, atlas, and texture edits even when their 
  fs.writeFileSync(atlasFile,atlas.replace('Linear,Linear','Nearest,Nearest'));const changedAtlas=refresh();assert.notEqual(changedAtlas.revision,changedModel.revision);assert.match(changedAtlas.atlas,/Nearest,Nearest/);
  const textureBytes=fs.readFileSync(texture);fs.writeFileSync(texture,Buffer.concat([textureBytes,Buffer.from([0])]));const changedPage=refresh();assert.notEqual(changedPage.pages['page.png'],changedAtlas.pages['page.png']);assert.notEqual(changedPage.revision,changedAtlas.revision);assert.equal(new URL(changedPage.pages['page.png']).pathname,new URL(originalPage).pathname);
 });
+
+
+test('unset facing overrides inherit embedded gate animation metadata exactly as runtime export does',()=>{
+ const Gate=require('../worlds/gate-facing'),P=require('../worlds/prefab');
+ for(const face of ['NE','NW']){
+  const f=fixture(),gate=f.stage.buildings.find(building=>building.id===19);f.stage.buildings=[gate];f.stage.specials=[];gate.enabled=true;gate.unlock=1;f.stage.templates={Map01:M.clone(Gate.project(f.source.data,{...gate,wallFacing:face,wallRotation:11}))};delete gate.wallFacing;delete gate.wallRotation;f.service.source=()=>{throw Error('Embedded sources must win');};const before=JSON.stringify(f.stage),inherited=Preview.describe(f.service,f.stage).buildings[gate.id].levels[1],explicitStage=M.clone(f.stage);explicitStage.buildings[0].wallFacing=face;const explicit=Preview.describe(f.service,explicitStage).buildings[gate.id].levels[1];
+  assert(inherited.skeletons[0].revision.endsWith(':reverse-gate'));assert(inherited.skeletons[1].revision.endsWith(':reverse-gate'));assert.deepEqual(inherited,explicit);const output=P.compose(root,M.createMap('inherited-gate','Inherited gate','forest'),f.stage,{ground:[],assets:{}},f.stage.templates),runtime=output.find(value=>value&&value.ndAniMain&&value.ID===gate.id);assert.equal(runtime.wallFacing,face);assert.equal(runtime.wallRotation,11);assert.equal(JSON.stringify(f.stage),before,'Preview must not seed optional overrides or rewrite embedded geometry');
+ }
+});

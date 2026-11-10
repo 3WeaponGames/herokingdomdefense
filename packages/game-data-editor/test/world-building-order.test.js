@@ -9,6 +9,7 @@ const vm = require('node:vm');
 const Buildings = require('../worlds/building-renderer');
 const source = fs.readFileSync(path.resolve(__dirname, '../worlds/client.js'), 'utf8');
 const composition = source.slice(source.indexOf(' function drawStageArtwork('), source.indexOf(' function drawGateFacing('));
+const previewSelection = source.slice(source.indexOf(' function previewBuildings('), source.indexOf(' function visibleBuildings('));
 
 for (const stageMode of [true, false]) test((stageMode ? 'stage editor' : 'map stage showcase') + ' paints every building above scenery without changing authored data', () => {
   const stage = { buildings: [{ id: 1, x: 0, y: 120, scale: 1, angle: 0 }, { id: 2, x: 0, y: -120, scale: 1, angle: 0 }], specials: [{ id: 'offer', y: -60, sprites: [{ frame: 'offer' }] }, { id: 'disabled', y: -2000, enabled: false, sprites: [{ frame: 'disabled' }] }] };
@@ -18,13 +19,13 @@ for (const stageMode of [true, false]) test((stageMode ? 'stage editor' : 'map s
   const before = JSON.stringify({ stage, records, objects }), calls = [], renderer = Buildings.create();
   renderer.draw = (_ctx, part) => calls.push({ name: part.sprite.frame, ground: part.ground, y: part.y });
   const context = {
-    stageMode, state: { snap: { buildingPreview: {} }, images: {} },
-    values: () => stage, placementStage: () => stage, visibleBuildings: () => stage.buildings,
+    stageMode, state: { snap: { buildingPreview: {} }, images: {}, tab: 'Buildings', selection: [], previewHall: 3 },
+    values: () => stage, placementStage: () => stage,
     stageRecord: building => records[building.id], buildingRuntime: () => null,
     buildingRenderer: renderer, ctx: { save() {}, restore() {} },
     Paint: { object(_ctx, object) { calls.push({ name: object.id, scenery: true }); }, apply() {}, matrix: () => [], sprites(_ctx, sprites) { calls.push({ name: sprites[0].frame, y: stage.specials.find(s => s.sprites === sprites).y }); } }
   };
-  vm.createContext(context); vm.runInContext(composition, context); context.drawStageArtwork({}, objects);
+  vm.createContext(context); vm.runInContext(previewSelection + composition, context); context.drawStageArtwork({}, objects);
   const index = name => calls.findIndex(call => call.name === name);
   assert(index('tower-step') < index('rear-tree') && index('gate-shadow') < index('rear-tree'), 'floor plates and shadows stay in the ground pass');
   for (const name of ['tower', 'gate-front', 'gate-rear', 'offer']) assert(index(name) > index('foreground-rock'), name + ' was hidden by foreground scenery');

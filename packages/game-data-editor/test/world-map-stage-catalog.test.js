@@ -35,3 +35,9 @@ test('shared stage drafts immediately move map usage and retain their dirty stat
  service.docs['stage:B-2'].data=structuredClone(original);
  assert.equal(service.stageCatalog().find(s=>s.id==='B-2').mapId,'Map07');assert.equal(service.stageCatalog().find(s=>s.id==='B-2').dirty,false);
 });
+
+test('stage catalog uses live draft wave counts without trusting stale saved config copies or writing',()=>{
+ const {root,service}=fixture();saved(root,'B-2',{id:'B-2',mapId:'Map07',config:{WaveCfg:[]}});assert.equal(service.stageCatalog()[1].waves,12);
+ const data={id:'B-2',mapId:'Map07',config:{WaveCfg:[{Wave:1},{Wave:2}]}};service.docs['stage:B-2']={data,original:structuredClone(data)};const before=JSON.stringify(service.docs),files=tree(root);
+ assert.equal(service.stageCatalog()[1].waves,2);assert.equal(JSON.stringify(service.docs),before);assert.deepEqual(tree(root),files);assert.equal(service.version,1);
+});

@@ -5674,7 +5674,7 @@
     {
       "id": "custom-c8c6b45e7b1257308a266174",
       "name": "west-ravine",
-      "category": "custom",
+      "category": "water",
       "biomes": [
         "fire",
         "lava"
@@ -5687,12 +5687,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "682a3a4976daa37e18b360a9140696c5699575ab3ee4d159788e7a5c18c0649a"
+      "sha256": "682a3a4976daa37e18b360a9140696c5699575ab3ee4d159788e7a5c18c0649a",
+      "defaultScale": 0.9552730696798494
     },
     {
       "id": "custom-753785316aa22501bfb7dab0",
       "name": "northeast-cliff",
-      "category": "custom",
+      "category": "cliffs",
       "biomes": [
         "fire",
         "lava"
@@ -5705,12 +5706,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "753785316aa22501bfb7dab0cde5c4330ec781dc97ee667afc05e683f85efe70"
+      "sha256": "283fdccc8d1930c2d43969b1b5214929157d49dd7620ff7ea305be51ee9a2727",
+      "defaultScale": 0.7319189971070396
     },
     {
       "id": "custom-5999d933b4bd927241acc10b",
       "name": "north-rock-island",
-      "category": "custom",
+      "category": "rocks",
       "biomes": [
         "fire",
         "lava"
@@ -5723,12 +5725,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "5999d933b4bd927241acc10bc7f362573975432d76114d0ef32db677ccd6ca74"
+      "sha256": "e032deeba1c2e8d51b226e8bdacca0984d9c2ef04915bce67cd256af41d3ae1e",
+      "defaultScale": 0.617678381256656
     },
     {
       "id": "custom-393e27ae0f008002371c9524",
       "name": "east-rocks",
-      "category": "custom",
+      "category": "rocks",
       "biomes": [
         "fire",
         "lava"
@@ -5741,12 +5744,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "393e27ae0f008002371c95245e8e7dbc31ce1ba94167cdb21f20bc646296a9f7"
+      "sha256": "6c70600c17d9ccdde20ba87cee86484e98857679bc72fa19989ed07d1198e5b9",
+      "defaultScale": 0.7936507936507936
     },
     {
       "id": "custom-bdcfb1ea58b55d08fce58bfd",
       "name": "southeast-rocks",
-      "category": "custom",
+      "category": "rocks",
       "biomes": [
         "fire",
         "lava"
@@ -5759,12 +5763,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "bdcfb1ea58b55d08fce58bfd10eeb45a52b797c5aeaf3e92324e85e1d3fb0773"
+      "sha256": "96ea4aaadab25f4bd14625cd890967dfe108b01bee14df930951c55c79b89981",
+      "defaultScale": 0.7586206896551724
     },
     {
       "id": "custom-3652525f5e1732f91b7664a0",
       "name": "southwest-rocks",
-      "category": "custom",
+      "category": "rocks",
       "biomes": [
         "fire",
         "lava"
@@ -5777,7 +5782,8 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "3652525f5e1732f91b7664a01593730603d324cfe730461631f46c3ae4b80438"
+      "sha256": "815c5a3b3618c5ef94382d3046c23c88061b63c1699e2916b9752f16512addcc",
+      "defaultScale": 0.8505408062930186
     },
     {
       "id": "custom-be84d29ed367c4d6acc39c98",
@@ -6002,12 +6008,13 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "f5be34a1bd28fcedf32197b8c09f8be0190a61df59cb422d3d677ad0b7d74975",
+      "sha256": "5e6fab7da61c62c04783094b94efec842ef4f199360ae53f182bfb4b7371c9ab",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 1.05
     },
     {
       "id": "terrain-forest-cliff",
@@ -6024,12 +6031,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "d63ceaecf366d70226a39a2a791ad6a3a13851f2e7574237e95a1dd0e0a0492b",
+      "sha256": "7e2ee3c15adefa4e3f184ab524f9d15003fd33ac24db14da5fd4ace5b7f1c04a",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.6395451105884069
     },
     {
       "id": "terrain-forest-rocky-hill",
@@ -6046,12 +6054,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "fcccacb182f354a901b0f3215ce6dc25c368b8a81e0b60efb57aa496f0872e69",
+      "sha256": "ef377ecb124b7bbf0f60dc9ecc9a14b66d170547c0278186c40c13c941afcd4e",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.5372807017543859
     },
     {
       "id": "terrain-forest-mountain",
@@ -6068,12 +6077,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "d71c41ef7e49d2b267d95f7529e9833307ef2d650e7aeb0f118ffd9a52c8e8c8",
+      "sha256": "98b66773fd85421e1d99e410fff6ed9b130588ba97e9a5334b03f222915de34b",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-forest-lake",
@@ -6083,19 +6093,20 @@
         "forest"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/forest/lake.png",
-      "width": 1481,
-      "height": 1062,
+      "width": 1500,
+      "height": 1049,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "d6547d9c4320d0d48b30874e44f0051efc2a06194253e2aa89c55f053884dcfc",
+      "sha256": "f5069c3f722cf7b5b36126240279a6e7620b8ea035e4888bd1364196c24eb928",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-forest-ruins",
@@ -6105,19 +6116,20 @@
         "forest"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/forest/ruins.png",
-      "width": 1484,
-      "height": 1060,
+      "width": 1454,
+      "height": 1082,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "4e37eb130a171025e082e7154f87762962805bdc81e48107cc044b4373256af5",
+      "sha256": "281db3ee2f72703977de7460d026208e7a4e8dc400d0fdb3b9ee32c61cda2a36",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "ruins"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-deep-forest-river-boundary",
@@ -6127,19 +6139,20 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/deep-forest/river-boundary.png",
-      "width": 724,
-      "height": 2172,
+      "width": 887,
+      "height": 1774,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "c49ce414286c415213299a6cb4815994f6afe46adbd0e312df14923118720be0",
+      "sha256": "524ce3de777dcc04d0277cd4e7a92ff2de09f7e70ecc86cea0998aca58c69dda",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-deep-forest-cliff",
@@ -6156,12 +6169,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "7974d0632ee5b9076d71a15fdeb47bac2983abe6243a3aa2a45db3a2e8ded83a",
+      "sha256": "a996fb306dc607128daf612d5be094b56e9af0baf83747955a093ae4d8e10f07",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.2920057443752992
     },
     {
       "id": "terrain-deep-forest-rocky-hill",
@@ -6178,12 +6192,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "d2003d816f2ffdce27b101c3c22f31cb4096cc4f3a1581a61a984283406669a7",
+      "sha256": "b74c05cac2b7775017351a67d318fba9aa6daef2d0d1d6bbb4f209162cd2f695",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.4195804195804196
     },
     {
       "id": "terrain-deep-forest-mountain",
@@ -6193,19 +6208,20 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/deep-forest/mountain.png",
-      "width": 887,
-      "height": 1774,
+      "width": 953,
+      "height": 1651,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "baab01872893ee4fa3846d74fd9d837bfe25c670aa71fc4f76df4590ef629d7f",
+      "sha256": "75e9aa217e202ee83a748f94e349f4ab77e4196de5469012a4d4e2e8c9ccf0fa",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.44573643410852715
     },
     {
       "id": "terrain-deep-forest-lake",
@@ -6222,12 +6238,13 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "17800a0b07a1cd542ae3f9dcde632699a276db8b89f796312e57cfc82f05c6ba",
+      "sha256": "8916d399f4ee133e8cc7c55efaa46dac7d1ed56010c9b2fe7183d0255f313097",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-deep-forest-ruins",
@@ -6237,19 +6254,20 @@
         "deep-forest"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/deep-forest/ruins.png",
-      "width": 1448,
-      "height": 1086,
+      "width": 1514,
+      "height": 1039,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "3404c58f058418c47b3b2eda833ecb09f83219a07d6401c58f05f7c132ea14c5",
+      "sha256": "57409eb6b4866f773314e54764acb7a51f238d9415fda109ea55e571f3be37a2",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
         "piece": "ruins"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-autumn-river-boundary",
@@ -6259,19 +6277,20 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/autumn/river-boundary.png",
-      "width": 724,
-      "height": 2172,
+      "width": 2172,
+      "height": 724,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "2b28684a4e828d93e99c9b741c763537090cd2fe941e87ccf082448f0ddc2a7a",
+      "sha256": "389d0c3edf1ff9a702dc6b0d064fa6d7e3d6d315ff64e6b3c11db970b6d39fa6",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 0.95
     },
     {
       "id": "terrain-autumn-cliff",
@@ -6288,12 +6307,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "beb647e9fd076bc9d19d768a57c2a61b89c429b26a71215ea2e009d4eeaaa37b",
+      "sha256": "b251b2217d7c71e716d1ca5dd21db090e628fa048462c8e9ed3e7c25a14ffc94",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-autumn-rocky-hill",
@@ -6310,12 +6330,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "a91728f55e1df77822daf7ede712210ecfde86f6094512740c8335d7a5cfd0ab",
+      "sha256": "e918c48582aef6ec070582365e5a48a246706458989c28c5d51e413d793b2e67",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-autumn-mountain",
@@ -6325,19 +6346,20 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/autumn/mountain.png",
-      "width": 887,
-      "height": 1774,
+      "width": 953,
+      "height": 1651,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "07c9a521ef6a1b3bc7b6ffcc72e02324ba183340598c6d7333d9acd21cd9e3d8",
+      "sha256": "846a820616deabe8b2632d5534108cf2b4ddcefec3b605f2840514440412f839",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.502283105022831
     },
     {
       "id": "terrain-autumn-lake",
@@ -6347,19 +6369,20 @@
         "autumn"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/autumn/lake.png",
-      "width": 1536,
-      "height": 1024,
+      "width": 1500,
+      "height": 1049,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "45d153450b16c7061f3eb02846a9ee4b55452b250130833c159ec1a6367ec047",
+      "sha256": "3e6ddabbdbedeea0783f5032a80134d1f351412ceef7590749e3be13b73a9ae8",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-autumn-ruins",
@@ -6376,12 +6399,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "7f70993d7520f11c1c6c256c3d88914528e44ea51378d18479ce768aa7aef5d1",
+      "sha256": "556604ba91a746454b8317c6a4f5eb47312ddbe6ca541819610865c1225157bd",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "ruins"
-      }
+      },
+      "defaultScale": 0.4658385093167702
     },
     {
       "id": "terrain-desert-river-boundary",
@@ -6391,19 +6415,20 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/desert/river-boundary.png",
-      "width": 729,
-      "height": 2156,
+      "width": 887,
+      "height": 1774,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "515a0fe3c5812a954b4a857eee7103c7ef74e6117b10f11456326a391bcad3d5",
+      "sha256": "7225ed6e50e69383582ba3d60734a1903326dbe73c38d8eed9eb846cf056de72",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-desert-cliff",
@@ -6420,12 +6445,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "624dc9c64f4d981b05361b3de58baf1412778b1e349820f5191fd654495fdf4d",
+      "sha256": "330df6ca3e3a213ae38b1b5beb4851ac1a1c8174b457f7dd3f4bd07dd03c87a8",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.6738350016599671
     },
     {
       "id": "terrain-desert-rocky-hill",
@@ -6442,12 +6468,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "16967692302003711c1d3659c3edc932ba73e198f2ffa161e25369fe54f5df00",
+      "sha256": "d1969bc9cab978093e5c12e66b06fe657fc9362052e870519222e5cedbcbf014",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.37037037037037035
     },
     {
       "id": "terrain-desert-mountain",
@@ -6457,19 +6484,20 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/desert/mountain.png",
-      "width": 887,
-      "height": 1774,
+      "width": 953,
+      "height": 1651,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "61433e6b6e8d8676c5fba4ff02c826220c5d1cc8455b10f706681c39a71ed3e1",
+      "sha256": "c15709f819aa292b0bbbb1424c63f52d371ca209770ad9812c554d5b52486b49",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.39095907147220527
     },
     {
       "id": "terrain-desert-lake",
@@ -6486,12 +6514,13 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "a96a45db5ddd84ebb8ba7a086aaa0e1e48d3bd19a7de346c24c79c6b3f166b8a",
+      "sha256": "e807a1810846e7f09eb5a1292fa8b4acf0b6021088635e69f4a170e9d2c171cd",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.3240058910162003
     },
     {
       "id": "terrain-desert-ruins",
@@ -6501,19 +6530,20 @@
         "desert"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/desert/ruins.png",
-      "width": 1430,
+      "width": 1429,
       "height": 1100,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "2ffaf19bf9d78f5c55fba254b7a56b0b8c4d14795361700ebb64ebcda558ccbf",
+      "sha256": "f43e02b0b49a6526f57603514d7d9ed900d65b01510a159b5347aaf2a6995342",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
         "piece": "ruins"
-      }
+      },
+      "defaultScale": 0.36450079239302696
     },
     {
       "id": "terrain-snow-river-boundary",
@@ -6523,19 +6553,20 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/snow/river-boundary.png",
-      "width": 727,
-      "height": 2164,
+      "width": 1277,
+      "height": 1232,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "8bdad2d40990123dde0206ae6ad38e7e5991a2b297bb5b3bc5843721b84cedec",
+      "sha256": "3d3612d2c642b3340e74b46db8bf273a186d26fef82aee194010f4c24fb58d46",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 0.6
     },
     {
       "id": "terrain-snow-cliff",
@@ -6552,12 +6583,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "04c78a6c6aa744456117449f3360b3df6817f641f1ebe3d5b940952b95a3d3c6",
+      "sha256": "c8814386fdc81cbbde8b133e2e7e6a393ba4b03786bf680cb0c2609c70418a35",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.3448275862068966
     },
     {
       "id": "terrain-snow-rocky-hill",
@@ -6567,19 +6599,20 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/snow/rocky-hill.png",
-      "width": 1263,
-      "height": 1246,
+      "width": 1254,
+      "height": 1254,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "8c7ed7b4975556ab5330830335bef60c4e3fbed1e89903aa9beaf64c64b7f08b",
+      "sha256": "599a1b8853132966685e86a1d9ade346c419efdaa58db3cccc72518d157576a8",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-snow-mountain",
@@ -6589,19 +6622,20 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/snow/mountain.png",
-      "width": 887,
-      "height": 1774,
+      "width": 953,
+      "height": 1651,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "5252a685cce7473a8a474c30c89af28ee72aaddce010bf5bcb12da424f0a06e6",
+      "sha256": "6c948e538b07a66bc46e8d5c9d72ef0042db25c3a26d19f2477581eacb8764ce",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-snow-lake",
@@ -6618,12 +6652,13 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "39234449130b5aa740c6a27da76b0f84a3bac3a160ebd0796af5b347e9b209f5",
+      "sha256": "0e8e9c895535864435ecc93479de22ab687772bf767235937b92433ee75a0797",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.3248259860788863
     },
     {
       "id": "terrain-snow-ruins",
@@ -6633,19 +6668,20 @@
         "snow"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/snow/ruins.png",
-      "width": 1430,
-      "height": 1100,
+      "width": 1482,
+      "height": 1061,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "2c4a84558591705bc4b1f39bab26826f440f687c15372bce4c2ca73e5dcf0112",
+      "sha256": "3c0d24f3985b9fc0de06e73edd69f1278bccf7b0cb36b0d1b0e81bd22936d6ca",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
         "piece": "ruins"
-      }
+      },
+      "defaultScale": 0.45819935691318325
     },
     {
       "id": "terrain-ice-river-boundary",
@@ -6655,19 +6691,20 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/ice/river-boundary.png",
-      "width": 729,
-      "height": 2156,
+      "width": 1287,
+      "height": 1222,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "7f43835da0f988cd9016828267a21c05733af498acabe8c8e868d70e05c1186e",
+      "sha256": "2ae01136523599d7761fb4c4934634e8ac1d79b281faecd7a4a97400afe2d5ff",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 1.1
     },
     {
       "id": "terrain-ice-cliff",
@@ -6677,19 +6714,20 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/ice/cliff.png",
-      "width": 2170,
-      "height": 725,
+      "width": 2172,
+      "height": 724,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "99f058d6c18e126cccc56239ce4e8ed2ee82846b62ad1b138804ebae38761b10",
+      "sha256": "a8ef1c2bf3618935eef3985a34175e6a3c33aa614645f898b4206856f347e4a4",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-ice-rocky-hill",
@@ -6706,12 +6744,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "ac95809dc7fa0e880df5d47a67cc97fa4f65cf4c5427a296d5a750b3143af6ac",
+      "sha256": "fafbcbf55265f03ce7b6f6719904e112aa8059356e3ffd6f20af6ef01253ed8c",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.3996447602131439
     },
     {
       "id": "terrain-ice-mountain",
@@ -6728,12 +6767,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "811c5f8e49a17df6aafaa6c4448c082b265840c15cde2f8fb3b82ad040f93443",
+      "sha256": "0e8d6f03375b44b9101ce1220b56ad628804ecd0a7ad3ee490afa952a9b76813",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.46272493573264784
     },
     {
       "id": "terrain-ice-lake",
@@ -6743,19 +6783,20 @@
         "ice"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/ice/lake.png",
-      "width": 1536,
-      "height": 1024,
+      "width": 1500,
+      "height": 1049,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "8a90072e3763a802e70479da2c391e13ea752e93695c2f3c76359f30b120766d",
+      "sha256": "2d7e6e4eed254f99c59ba1203a23c178929deb3e51e2825ab0d8058597742f6e",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-ice-ruins",
@@ -6772,12 +6813,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "7f76208b5ce9d96a63a74ec875464a85074105c876b3a984f33ef6f2b50c146b",
+      "sha256": "3856c35c10e9e8ec114eebdc06a63ec6967fd69ba4c7b6ca501bdfe6faf2eded",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
         "piece": "ruins"
-      }
+      },
+      "defaultScale": 0.3650190114068441
     },
     {
       "id": "terrain-lava-river-boundary",
@@ -6787,19 +6829,20 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/lava/river-boundary.png",
-      "width": 724,
-      "height": 2172,
+      "width": 887,
+      "height": 1774,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "11b04786289101a1c491f58d01699712f2d176e5795a20a360cdda5c9eaff0b9",
+      "sha256": "e7b98d62bdb9574042131ab6fb7d0698593823139299467b9351c09e59747a39",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
         "piece": "river-boundary"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-lava-cliff",
@@ -6816,12 +6859,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "c8c89d1e9f3406624c826f00f440ec997996aa53feff427994610e54bf834d18",
+      "sha256": "44a55ff3dcc6ec90c31472a1ed0c14886ad21d2d83ae2948dd6acdddcb5bc341",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
         "piece": "cliff"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-lava-rocky-hill",
@@ -6838,12 +6882,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "8507b2b28af0eac7aff1fdc44fd6257fc2c00a0aa3ce1386d7fa312fb1153743",
+      "sha256": "92121a3e30991109301492f326be17229ef3cd5a3f1c306a7c5f7a08e4ad11b8",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
         "piece": "rocky-hill"
-      }
+      },
+      "defaultScale": 0.3986429177268872
     },
     {
       "id": "terrain-lava-mountain",
@@ -6860,12 +6905,13 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "28f3252a09ef90602c28aba192afc294c9801ef4239cabf84266905aeb1aed59",
+      "sha256": "f27230ac1484c8c8c19563c771bd0209b0093639a0b77ae07112606d6e7debfa",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
         "piece": "mountain"
-      }
+      },
+      "defaultScale": 0.532043530834341
     },
     {
       "id": "terrain-lava-lake",
@@ -6875,19 +6921,20 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/lava/lake.png",
-      "width": 1536,
-      "height": 1024,
+      "width": 1500,
+      "height": 1049,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "ground",
-      "sha256": "ebe6b57cd571e63023c7c746f5564786498b66283fe0027e017c934fe2cd24e5",
+      "sha256": "6c9ae22b4b7f75ae371f2745e320b8b06b03113ed94dc4bb1a87834a526fe3a8",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
         "piece": "lake"
-      }
+      },
+      "defaultScale": 0.5
     },
     {
       "id": "terrain-lava-ruins",
@@ -6897,19 +6944,489 @@
         "lava"
       ],
       "file": "authoring/worlds/library/images/biome-terrain/lava/ruins.png",
-      "width": 1448,
-      "height": 1086,
+      "width": 1453,
+      "height": 1083,
       "anchor": {
         "x": 0.5,
         "y": 0
       },
       "depth": "world",
-      "sha256": "0d3d9b05dbe7213b9e5c8e73dfc8212e38c011f10baf5ece5c58ed943e4c4c2f",
+      "sha256": "f3d9134feb9951cdb456cc8de323294adee541a24096286dd78e9c59da68cdad",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
         "piece": "ruins"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "shadow-tree-overlay",
+      "name": "Shadow Overlay (10.2%)",
+      "category": "shadows",
+      "biomes": [
+        "forest",
+        "deep-forest",
+        "autumn",
+        "desert",
+        "snow",
+        "ice",
+        "fire",
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/shadow-tree-overlay.png",
+      "width": 274,
+      "height": 129,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "depth": "ground",
+      "defaultScale": 1,
+      "paletteLast": true,
+      "sha256": "d7d5e08651668bf08abffd204af8b0149d6c7dfb9cf9f0f0513e144f715c7805",
+      "source": {
+        "kind": "derived-shadow-mask",
+        "assetId": "env-087def4e9e2ecc74d86011413b2b4d30",
+        "color": "#000000",
+        "alpha": 26
       }
+    },
+    {
+      "id": "terrain-forest-bridge-ew",
+      "name": "forest bridge",
+      "category": "bridges",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/bridge.png",
+      "width": 1852,
+      "height": 849,
+      "anchor": {
+        "x": 0.5002699784017278,
+        "y": 0.5094228504122498
+      },
+      "depth": "ground",
+      "sha256": "39c73f180eedd338b2d41891599f795f25884d2cdece455d72afd780c58ced0e",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "bridge"
+      },
+      "defaultScale": 0.3864734299516908
+    },
+    {
+      "id": "terrain-autumn-bridge-ns",
+      "name": "autumn bridge",
+      "category": "bridges",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/bridge.png",
+      "width": 931,
+      "height": 1690,
+      "anchor": {
+        "x": 0.49946294307196565,
+        "y": 0.5103550295857988
+      },
+      "depth": "ground",
+      "sha256": "31f766ac2c6be9c4e657c0ed8ad3bd225a58fd2a9302f570754758dd34a05892",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "bridge"
+      },
+      "defaultScale": 0.4606240713224368
+    },
+    {
+      "id": "terrain-ice-bridge-ne-sw",
+      "name": "ice bridge",
+      "category": "bridges",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/bridge.png",
+      "width": 1254,
+      "height": 1254,
+      "anchor": {
+        "x": 0.49760765550239233,
+        "y": 0.4964114832535884
+      },
+      "depth": "ground",
+      "sha256": "58b5ef3c1b952a53de313fb5dfe51d6daf89078969492f63f72059ecd8755499",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "bridge"
+      },
+      "defaultScale": 0.5873266441152801
+    },
+    {
+      "id": "terrain-forest-plateau-wide",
+      "name": "forest Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/plateau-wide.png",
+      "width": 1568,
+      "height": 1003,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.094715852442672
+      },
+      "depth": "world",
+      "sha256": "2d5a0ae358624b1f4f5e6ea5fe6152ef5f27143fa059b4227b488bf0f2115e8d",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-forest-raised-ledge",
+      "name": "forest Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/forest/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.4993093922651934,
+        "y": 0.16436464088397795
+      },
+      "depth": "world",
+      "sha256": "f39913760db6ef2c07bf21bd0609673d1aa6c5ab381ccc5a9c7379ff8b6f58f7",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "forest",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-deep-forest-plateau-wide",
+      "name": "deep forest Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/plateau-wide.png",
+      "width": 1585,
+      "height": 992,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.15120967741935487
+      },
+      "depth": "world",
+      "sha256": "ea1ff559f2494454441bbc00e836583a9623b72894e6eec6cab1cb791507f45e",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-deep-forest-raised-ledge",
+      "name": "deep forest Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "deep-forest"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/deep-forest/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5002302025782689,
+        "y": 0.1712707182320442
+      },
+      "depth": "world",
+      "sha256": "c1b4f1b663981be6f1283715335dc685c24ce160ee6e373f046a203d492cf5cb",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "deep-forest",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-autumn-plateau-wide",
+      "name": "autumn Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/plateau-wide.png",
+      "width": 1568,
+      "height": 1003,
+      "anchor": {
+        "x": 0.5003188775510204,
+        "y": 0.094715852442672
+      },
+      "depth": "world",
+      "sha256": "e0569700a2e9d31c067dc13e9299ef3060b407497c3c57fd29a77e1827d97b7b",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-autumn-raised-ledge",
+      "name": "autumn Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "autumn"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/autumn/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.18784530386740328
+      },
+      "depth": "world",
+      "sha256": "4ece669bc88a3794217f687529a2614650985372633b9d73b658e0daba026c5f",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "autumn",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-desert-plateau-wide",
+      "name": "desert Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/plateau-wide.png",
+      "width": 1585,
+      "height": 992,
+      "anchor": {
+        "x": 0.5009463722397476,
+        "y": 0.09072580645161288
+      },
+      "depth": "world",
+      "sha256": "7ed81cf9619c94e1a97c39191778837ffef87ebca581e9d2146c778efbce4cbc",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-desert-raised-ledge",
+      "name": "desert Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "desert"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/desert/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.17817679558011046
+      },
+      "depth": "world",
+      "sha256": "8e8ce6b85599bd4e9d9f0e5533d044a72b8c3a9952195c8a09139698bea256fc",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "desert",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-snow-plateau-wide",
+      "name": "snow Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/plateau-wide.png",
+      "width": 1568,
+      "height": 1003,
+      "anchor": {
+        "x": 0.5022321428571429,
+        "y": 0.13758723828514452
+      },
+      "depth": "world",
+      "sha256": "b97a61f63292bf65a97d965cde66fdb016657025ee094b10c08c77642ea739c0",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-snow-raised-ledge",
+      "name": "snow Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/snow/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5002302025782689,
+        "y": 0.19613259668508287
+      },
+      "depth": "world",
+      "sha256": "fdcadb3ab2b7ea6c33ffc1ef3e94d1a5bfdfe36f302e3c915a0eb77d9c1be936",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "snow",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-ice-plateau-wide",
+      "name": "ice Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/plateau-wide.png",
+      "width": 1585,
+      "height": 992,
+      "anchor": {
+        "x": 0.4993690851735016,
+        "y": 0.12298387096774188
+      },
+      "depth": "world",
+      "sha256": "fb4c8d3af01ca3d82b45b63dff1b13f150a4afcb5ecfa1c47ef004bdbdf6b269",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-ice-raised-ledge",
+      "name": "ice Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "ice"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/ice/raised-ledge.png",
+      "width": 2206,
+      "height": 713,
+      "anchor": {
+        "x": 0.49977334542157753,
+        "y": 0.1514726507713885
+      },
+      "depth": "world",
+      "sha256": "149510ef42b1f4359ea61efe0d69b4595f76bf3d857b27a4a714fdf974135981",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "ice",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-lava-plateau-wide",
+      "name": "lava Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/plateau-wide.png",
+      "width": 1586,
+      "height": 992,
+      "anchor": {
+        "x": 0.5003152585119798,
+        "y": 0.1078629032258065
+      },
+      "depth": "world",
+      "sha256": "6a4c63383a9ec0778c7cd55e099496c26987d9a991945160faf960bc8640ec37",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-lava-raised-ledge",
+      "name": "lava Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "lava"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/lava/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.23066298342541436
+      },
+      "depth": "world",
+      "sha256": "f639c7876c3a363d8fba87fe2f1e84161575a8bd11d6b868c92a4b1de4b1418f",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "lava",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-fire-plateau-wide",
+      "name": "fire Wide plateau",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/fire/plateau-wide.png",
+      "width": 1568,
+      "height": 1003,
+      "anchor": {
+        "x": 0.5003188775510204,
+        "y": 0.07876370887337991
+      },
+      "depth": "world",
+      "sha256": "5d75f6bb148c329127a6fd3170fc49bfd186ed22d11252ffee07a5b5112ba25d",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "fire",
+        "piece": "plateau-wide"
+      },
+      "defaultScale": 0.5
+    },
+    {
+      "id": "terrain-fire-raised-ledge",
+      "name": "fire Raised ledge",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/biome-terrain/fire/raised-ledge.png",
+      "width": 2172,
+      "height": 724,
+      "anchor": {
+        "x": 0.5011510128913443,
+        "y": 0.18508287292817682
+      },
+      "depth": "world",
+      "sha256": "fa85f3bea827e2afcce50b28d03c19443da5d0103ba3471c7548901cce3d4397",
+      "source": {
+        "kind": "openai-imagegen",
+        "biome": "fire",
+        "piece": "raised-ledge"
+      },
+      "defaultScale": 0.5
     }
   ],
   "biomes": [

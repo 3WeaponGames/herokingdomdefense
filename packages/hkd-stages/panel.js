@@ -1,2 +1,2 @@
 'use strict';
-require('../game-data-editor/panel/index').create('stages');
+require('../game-data-editor/worlds/panel-routing').createLegacy(Editor);

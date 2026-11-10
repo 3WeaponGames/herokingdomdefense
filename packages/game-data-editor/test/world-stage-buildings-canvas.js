@@ -34,7 +34,7 @@ async function verify(){
   const previewBefore=JSON.stringify(state.snap.value),hall=Array.from(tool.querySelectorAll('.world-tabs label')).find(l=>l.querySelector('span').textContent==='Hall preview').querySelector('select');
   hall.value='1';hall.onchange();await ready();assert(JSON.stringify(state.snap.value)===previewBefore&&changes===0,'changing hall preview updates poses without editing stage data');
   const count=state.snap.value.buildings.length;await cards.find(c=>c.textContent.includes('House')).onclick();await raf();
-  const event={button:0,clientX:canvas.getBoundingClientRect().left+canvas.width/2,clientY:canvas.getBoundingClientRect().top+canvas.height/2,preventDefault(){},pointerId:1};canvas.onpointerdown(event);await state.pending;await ready();
+  const event={button:0,clientX:canvas.getBoundingClientRect().left+canvas.getBoundingClientRect().width/2,clientY:canvas.getBoundingClientRect().top+canvas.getBoundingClientRect().height/2,preventDefault(){},pointerId:1};canvas.onpointerdown(event);await state.pending;await ready();
   const placed=state.snap.value.buildings[state.snap.value.buildings.length-1];assert(state.snap.value.buildings.length===count+1&&placed.kind===4&&placed.name==='House','placing a card creates one correctly named first-level building in the draft');
   assert(state.snap.buildingPreview.buildings[placed.id].levels[1].skeletons.length>0,'new placements receive the same real model and footprint preview');
   assert(placed.template&&placed.template.roots.length&&placed.id!==palette.find(b=>b.kind===4).id,'placement retains its authored family and receives a unique gameplay ID');
@@ -42,7 +42,7 @@ async function verify(){
   await Array.from(tool.querySelectorAll('.world-side .world-asset')).find(c=>c.textContent==='Wall / Gate').onclick();await ready();
   const faces=['NE','NW','SE','SW'],names=['Northeast ↗','Northwest ↖','Southeast ↘','Southwest ↙'];
   assert(Array.from(field('Wall facing').options).map(o=>o.textContent).join('|')===names.join('|'),'new gates offer exactly four outward compass facings');
-  const xy=(x,y)=>{const r=canvas.getBoundingClientRect();return {clientX:r.left+canvas.width/2+state.pan.x+x*state.zoom,clientY:r.top+canvas.height/2+state.pan.y-y*state.zoom,pointerId:1,button:0,preventDefault(){}};};
+  const xy=(x,y)=>{const r=canvas.getBoundingClientRect();return {clientX:r.left+(canvas.width/2+state.pan.x+x*state.zoom)*r.width/canvas.width,clientY:r.top+(canvas.height/2+state.pan.y-y*state.zoom)*r.height/canvas.height,pointerId:1,button:0,preventDefault(){}};};
   const placedGates=[];
   for(const [index,face] of faces.entries()){
    const beforeFacing=JSON.stringify(state.snap.value),beforeChanges=changes,input=field('Wall facing');input.value=face;input.onchange();await ready();
