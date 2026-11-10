@@ -287,9 +287,9 @@ function mount(host,api){
   function modelInspector(p){
     if(!rig)return;const section=el('details',undefined,inspector,'model-settings');section.open=itemMode||!!p.base.mount;el('summary',p.base.mount?'Adjust rider & horse':'Adjust original model',section);
     if(!rig.layers.some(l=>l.uuid===selectedModel))selectedModel=rig.defaultLayer||rig.layers[0].uuid;
-    field(section,'Original model layer',selectedModel,v=>{selectedModel=v;renderInspector();},rig.layers.map(l=>({value:l.uuid,label:l.name})));
+    field(section,'Original model layer',selectedModel,v=>{selectedModel=v;renderInspector();},rig.layers.map(l=>({value:l.uuid,label:CharacterOptions.layerLabel(l)})));
     const layer=rig.layers.find(l=>l.uuid===selectedModel),isCurrent=()=>profile()===p&&rig&&rig.layers.some(l=>l.uuid===layer.uuid);
-    if(itemMode||!layer.mount)field(section,'Original model skin',p.skins&&p.skins[layer.uuid]||'',v=>{if(!isCurrent())return;p.skins=p.skins||{};if(v)p.skins[layer.uuid]=v;else delete p.skins[layer.uuid];changed();},[{value:'',label:'Original skin'},...layer.skins.map(s=>({value:s,label:s}))]);
+    if(itemMode||!layer.mount)field(section,'Original model skin',CharacterOptions.skinValue(layer,p.skins&&p.skins[layer.uuid]||''),v=>{if(!isCurrent())return;p.skins=p.skins||{};if(v)p.skins[layer.uuid]=v;else delete p.skins[layer.uuid];changed();},[{value:'',label:'Original skin'},...CharacterOptions.skinOptions(layer)]);
     const grid=el('div',undefined,section,'grid-2'),model=p.models&&p.models[layer.uuid]||{};
     tintField(section,'Model tint',model.tint,value=>{if(!isCurrent())return;p.models=p.models||{};p.models[layer.uuid]=p.models[layer.uuid]||{};p.models[layer.uuid].tint=value;});
     for(const [key,label,initial,min,max,step]of [['x','Model X',0,-4096,4096,.1],['y','Model Y',0,-4096,4096,.1],['scaleX','Model scale X',1,.01,20,.05],['scaleY','Model scale Y',1,.01,20,.05],['rotation','Model rotation',0,-3600,3600,1],['opacity','Model opacity',1,0,1,.05]]){
@@ -334,11 +334,11 @@ function mount(host,api){
     el('p','Tint multiplies the existing colors and keeps black outlines dark. White resets the tint.',inspector,'help');
     const replaceButton=button(inspector,'Use library selection',()=>{const asset=assets[selectedAsset];if(!asset||!layers.length)return;if(asset.mount||['Mount','Mount_Down'].includes(Placement.role(asset)))return addPart();currentPart.sprite=selectedAsset;fitPart(false);changed(true);});replaceButton.disabled=busy||!layers.length;replaceButton.setAttribute('data-action','replace-part');
     if(!rig)return;
-    field(inspector,'Model layer',currentPart.layer,v=>{const l=rig.layers.find(l=>l.uuid===v),socket=!itemMode&&Placement.socket(l,assets[currentPart.sprite],p.skins&&p.skins[l.uuid])||l.json.slots[0];currentPart.layer=v;currentPart.slot=socket.name;currentPart.bone=itemMode?l.json.bones[0].name:socket.bone||l.json.bones[0].name;currentPart.hideSlots=[];if(!itemMode)fitPart(false);changed(true);},rig.layers.filter(l=>itemMode||!l.mount).map(l=>({value:l.uuid,label:l.name})));
+    field(inspector,'Model layer',currentPart.layer,v=>{const l=rig.layers.find(l=>l.uuid===v),socket=!itemMode&&Placement.socket(l,assets[currentPart.sprite],p.skins&&p.skins[l.uuid])||l.json.slots[0];currentPart.layer=v;currentPart.slot=socket.name;currentPart.bone=itemMode?l.json.bones[0].name:socket.bone||l.json.bones[0].name;currentPart.hideSlots=[];if(!itemMode)fitPart(false);changed(true);},rig.layers.filter(l=>itemMode||!l.mount).map(l=>({value:l.uuid,label:CharacterOptions.layerLabel(l)})));
     const layer=rig.layers.find(l=>l.uuid===currentPart.layer);if(!layer)return;
     field(inspector,'Replace slot',currentPart.slot,v=>{currentPart.slot=v;currentPart.hideSlots=currentPart.hideSlots.filter(s=>s!==v);changed(true);},layer.json.slots.map(s=>({value:s.name,label:s.name+' · '+s.bone})));
     field(inspector,'Anchor bone',currentPart.bone,v=>{currentPart.bone=v;changed();},layer.json.bones.map(b=>({value:b.name,label:b.name})));
-    field(inspector,'Base skin',p.skins&&p.skins[layer.uuid]||'',v=>{p.skins=p.skins||{};if(v)p.skins[layer.uuid]=v;else delete p.skins[layer.uuid];changed();},[{value:'',label:'Original skin'},...layer.skins.map(s=>({value:s,label:s}))]);
+    field(inspector,'Base skin',CharacterOptions.skinValue(layer,p.skins&&p.skins[layer.uuid]||''),v=>{p.skins=p.skins||{};if(v)p.skins[layer.uuid]=v;else delete p.skins[layer.uuid];changed();},[{value:'',label:'Original skin'},...CharacterOptions.skinOptions(layer)]);
     const positions=el('div',undefined,inspector,'grid-2');number(positions,'Offset X','x',currentPart.x,.1,-4096,4096);number(positions,'Offset Y','y',currentPart.y,.1,-4096,4096);
     const scales=el('div',undefined,inspector,'grid-2');number(scales,'Scale X','scaleX',currentPart.scaleX,.05,-20,20);number(scales,'Scale Y','scaleY',currentPart.scaleY,.05,-20,20);
     check(inspector,'Keep proportions',currentPart.lockAspect!==false,value=>{currentPart.lockAspect=value;changed();});

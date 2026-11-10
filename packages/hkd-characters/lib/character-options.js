@@ -26,4 +26,12 @@ function partCategory(part){
   return category==='Sub_Item'?'Sub Items':category;
 }
 function characterSources(sources,current){return sources.filter(source=>source.pack==='character-maker'||source.id===current);}
-module.exports={skinTones,libraryParts,characterParts,partCategory,characterSources};
+function layerLabel(layer){return {wqyl_lead_ma:'Mount',wqyl_lead_shenti:'Body',wqyl_lead_doupeng:'Armor & cape',wqyl_lead_tou:'Head',wqyl_lead_gong:'Weapon',wqyl_lead_jian:'Arrow',wqyl_lead_shou:'Gloves'}[layer.name]||layer.name;}
+function skinValue(layer,value){return /^(?:lv|vip)\d+$/.test(value)&&(layer.skins||[]).includes('skirmisher_'+value)?'skirmisher_'+value:value;}
+function skinLabel(value){
+  const style=/^(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_(lv|vip)(\d+)$/.exec(value);
+  if(style)return style[1][0].toUpperCase()+style[1].slice(1)+(style[2]==='vip'?' VIP':'')+' '+style[3];
+  const tier=/^(lv|vip)(\d+)$/.exec(value);return tier?(tier[1]==='vip'?'VIP ':'Level ')+tier[2]:value==='default'?'Default':value;
+}
+function skinOptions(layer){return (layer.skins||[]).filter(value=>skinValue(layer,value)===value).map(value=>({value,label:skinLabel(value)}));}
+module.exports={skinTones,libraryParts,characterParts,partCategory,characterSources,layerLabel,skinValue,skinOptions};
