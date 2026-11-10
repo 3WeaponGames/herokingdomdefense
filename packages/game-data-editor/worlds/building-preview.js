@@ -2,7 +2,7 @@
 // Read-only building composition. This describes assets and authored geometry;
 // it never instantiates gameplay components, loads a scene, or writes a draft.
 const fs=require('fs'),path=require('path'),url=require('url');
-const M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),Units=require('../lib/unit-assets'),Assets=require('../lib/asset-validation'),Navigation=require('./navigation'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose'),GateSource=require('./gate-facing'),GateFacing=require('../../../assets/_script/GateFacing');
+const M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),Units=require('../lib/unit-assets'),Assets=require('../lib/asset-validation'),Navigation=require('./navigation'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose'),GateSource=require('./gate-facing'),GateFacing=require('../../../assets/_script/GateFacing'),Purchase=require('./purchase-field');
 const NAMES={1:'Main Hall',2:'Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall / Gate'},files=new Map(),descriptions=new WeakMap();
 const clone=M.clone,number=(v,f)=>typeof v==='number'&&Number.isFinite(v)?v:f,positive=(v,f)=>Math.max(1,number(v,f));
 function read(file,json){const stat=fs.statSync(file),revision=stat.mtimeMs+':'+stat.ctimeMs+':'+stat.size,old=files.get(file);if(old&&old.revision===revision)return old.value;const text=fs.readFileSync(file,'utf8'),value=json?JSON.parse(text.replace(/^\uFEFF/,'')):text;files.set(file,{revision,value});return value;}
@@ -35,10 +35,10 @@ function describe(service,stage){
  // one result per service while checking embedded template contents and config
  // rows, so drafts and refreshes can never reuse stale authored geometry.
  for(const building of stage.buildings||[]){const id=building.template.prefab;if(!sources.has(id)){try{const data=stage.templates&&stage.templates[id]||service.source(id);sources.set(id,{data,revision:L.hash(JSON.stringify(data))});}catch(error){sources.set(id,{data:null,revision:'missing'});errors.push(error.message);}}}
- const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.wallFacing,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum]),previous=descriptions.get(service);
+ const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.wallFacing,b.wallRotation,b.purchaseSide,b.purchaseSide?b.angle:undefined,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum]),previous=descriptions.get(service);
  if(previous&&previous.index===index&&previous.signature===signature)return previous.value;
  for(const building of stage.buildings||[]){
-  const result=buildings[building.id]={name:NAMES[building.kind]||'Building',levels:{}},rawSource=sources.get(building.template.prefab).data;if(!rawSource)continue;let source;try{source=GateSource.project(rawSource,building);}catch(error){errors.push(error.message);continue;}let info=sourceModels.get(source);if(!info){try{info=Maps.model(source);sourceModels.set(source,info);}catch(error){errors.push(error.message);continue;}}
+  const result=buildings[building.id]={name:NAMES[building.kind]||'Building',levels:{}},rawSource=sources.get(building.template.prefab).data;if(!rawSource)continue;let source;try{source=Purchase.project(GateSource.project(rawSource,building),building);}catch(error){errors.push(error.message);continue;}let info=sourceModels.get(source);if(!info){try{info=Maps.model(source);sourceModels.set(source,info);}catch(error){errors.push(error.message);continue;}}
   const owner=info.byId[building.template.node];if(!owner){errors.push('A building source was removed. Refresh its template.');continue;}
   const controller=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)errors.push('A building controller is missing from its template.');const component=controller?controller.value:{},origin=clone(owner.position),plateId=reference(source,(component.ndLockList||[])[0]),plate=info.byId[plateId],ids=new Set(),excluded=new Set();
   for(const root of building.template.roots)L.descendants(source,root,ids);
@@ -50,7 +50,7 @@ function describe(service,stage){
   for(const hall of [1,2,3]){
    const chosen=rowFor(config,building,hall),row=chosen.row,look=row&&row.Appearance,level={origin:clone(origin),sprites:plateSprites.concat(native),skeletons:[],blockers:Navigation.buildingPolygons(service,stage,Object.assign({},building,{x:0,y:0,scale:1,angle:0}),hall,'closed',config,sourceModels),step:step&&clone(step)};
    if(building.kind===6)level.openBlockers=Navigation.buildingPolygons(service,stage,Object.assign({},building,{x:0,y:0,scale:1,angle:0}),hall,'open',config,sourceModels);
-   if(look&&typeof look.sprite==='string'&&look.sprite){try{level.sprites=level.sprites.concat(appearanceSprites(service.root,look,owner,images));}catch(error){errors.push(error.message);}}
+   if(look&&typeof look.sprite==='string'&&look.sprite){try{const renderedOwner=building.kind===6&&component.wallRotation?Object.assign({},owner,{world:Maps.multiply(GateSource.around(origin,component.wallRotation),owner.world)}):owner;level.sprites=level.sprites.concat(appearanceSprites(service.root,look,renderedOwner,images));}catch(error){errors.push(error.message);}}
    else{
     const refs=[{ref:component.ndAniDown,ground:true},{ref:component.ndAniMain,ground:false}].concat((component.ndAniOther||[]).map(ref=>({ref,ground:false})));
     for(const part of refs){const value=part.ref&&source[part.ref.__id__];if(!value||value.__type__!=='sp.Skeleton')continue;try{if(!assetIndex)assetIndex=Units.index(service.root);let description=skeleton(service.root,value,info,assetIndex,row&&row.Skin,part.ground,assetCache);if(building.kind===6&&GateFacing.valid(building.wallFacing)&&GateFacing.reverse(building.wallFacing)&&(part.ref===component.ndAniDown||part.ref===component.ndAniMain)){description=Object.assign({},description,{json:GateFacing.mirrorJson(description.json),revision:description.revision+':reverse-gate'});}level.skeletons.push(description);needsRuntime=true;}catch(error){errors.push(error.message);}}

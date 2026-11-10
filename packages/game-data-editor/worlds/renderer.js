@@ -10,7 +10,7 @@ function create(options){
  function references(map,layer,id){const ids=new Set();if(layer.baseAsset)ids.add(layer.baseAsset);for(const o of (layer.images||[]).concat(layer.tiles||[]))ids.add(o.assetId);for(const s of layer.strokes||[])for(const id of Terrain.strokeAssets(s))ids.add(id);if(id==='foundation'&&map.legacyGround)for(const s of map.legacyGround.sprites)ids.add(s.frame);return ids;}
  function draw(ctx,map,images,transient){
   const scale=Math.min(1,2048/map.size.width,2048/map.size.height),w=Math.max(1,Math.ceil(map.size.width*scale)),h=Math.max(1,Math.ceil(map.size.height*scale)),view=[scale,0,0,-scale,w/2,h/2];
-  const groundObjects=map.layers.filter(l=>!l.hidden).map(l=>({id:l.id,depth:l.depth,transform:l.transform,objects:l.objects.filter(o=>!o.legacy&&(l.depth==='ground'||o.depth==='ground'))})).filter(l=>l.objects.length);
+  const groundObjects=map.layers.filter(l=>!l.hidden).map(l=>({id:l.id,depth:l.depth,transform:l.transform,objects:l.objects.filter(o=>!o.legacy&&Model.isGroundObject(l,o))})).filter(l=>l.objects.length);
   const needed=new Set();for(const id of map.ground.order||['foundation','roads','grass']){const layer=map.ground[id]||(map.ground.custom||[]).find(l=>l.id===id);if(layer&&!layer.hidden&&layer.opacity!==0)for(const key of references(map,layer,id))needed.add(key);}for(const l of groundObjects)for(const o of l.objects)needed.add(o.assetId);
   const imageKey=JSON.stringify(ready(images,needed)),next=JSON.stringify([map.id,map.size,map.ground,map.legacyGround,groundObjects,imageKey]);
   if(next!==key){

@@ -3,6 +3,7 @@ const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const { harness } = require('./persistence-harness.cjs');
 const { setup, hero, authored } = require('./backend-gameplay-harness.cjs');
+const AuthoredSpawnPlan = require('../../assets/_script/AuthoredSpawnPlan');
 const single = value => ({ getInstance: () => value }), noop = () => {};
 function method(name, member, context) {
   const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script', name + '.js'), 'utf8').replace(/\r\n/g, '\n');
@@ -12,7 +13,7 @@ function method(name, member, context) {
 }
 function runtime(persistence, stage = 1, loadHero = false) {
   const player = persistence.player;
-  const h = setup({ KinghtFallPlayerMgr: { KinghtFallPlayerMgr: single(player) }, KinghtFallEnum: persistence.load('KinghtFallEnum') });
+  const h = setup({ AuthoredSpawnPlan, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: single(player) }, KinghtFallEnum: persistence.load('KinghtFallEnum') });
   const data = h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
   Object.assign(data, { getLevelCfgById: id => authored.LevelCfg.find(row => row.Level === id), getGameTask: () => authored.InGameTaskCfg[0],
     getTreasureCfg: () => loadHero ? authored.TreasureCfg : [], getEquipCfgList: () => authored.EquipCfg,

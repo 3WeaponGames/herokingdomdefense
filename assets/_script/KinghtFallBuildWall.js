@@ -25,6 +25,7 @@ var def_KinghtFallBuildWall = function (t) {
     e.polyPoints = [];
     e.isOpen = false;
     e.wallFacing = "";
+    e.wallRotation = 0;
     return e;
   }
   cc__extends(_ctor, t);
@@ -253,6 +254,10 @@ var def_KinghtFallBuildWall = function (t) {
   cc__decorate([ccp_property({
     tooltip: "Explicit outward gate facing. Empty preserves the authored legacy animation."
   })], _ctor.prototype, "wallFacing", undefined);
+  cc__decorate([ccp_property({
+    visible: false,
+    tooltip: "Fine wall-only rotation in degrees. Models and built fixtures are baked; construction fields stay fixed."
+  })], _ctor.prototype, "wallRotation", undefined);
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallBuildBase.default);
 exports.default = def_KinghtFallBuildWall;

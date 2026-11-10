@@ -33,6 +33,8 @@ function refreshImports(files){
 const messages={
     'world-catalog'(event){reply(event,()=>getWorlds().catalog());},
     'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key));},
+    'world-copy-stage'(event,request){reply(event,()=>getWorlds().copyStage(request));},
+    'world-paste-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().pasteStage(request)));},
     'world-change'(event,request){reply(event,()=>worldBroadcast(getWorlds().change(request)));},
     'world-create'(event,request){reply(event,()=>worldBroadcast(getWorlds().create(request)));},
     'world-undo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,false)));},

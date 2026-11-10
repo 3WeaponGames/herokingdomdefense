@@ -127,6 +127,9 @@ function presentation(owner, state) {
     state.presentation = new cc.Node("BuildingPresentation");
     state.presentation.parent = owner.node; state.presentation.group = owner.node.group;
   }
+  // Wall models can turn independently of their controller/purchase field.
+  // Reflection changes the sign needed in this local presentation frame.
+  state.presentation.angle = number(owner.wallRotation, 0) * (owner.node.scaleX * owner.node.scaleY < 0 ? -1 : 1);
   return state.presentation;
 }
 function cancelPlacement(owner) {
@@ -234,7 +237,7 @@ function showDestroyed(owner, state, appearance) {
   var destroyed = destroyedConfig(appearance);
   if (!destroyed || state.destroyedPath !== destroyed.sprite || !state.destroyedFrame) return false;
   if (!valid(state.destroyedNode)) {
-    var layer = makeSprite("BuildingRuins", owner.node, .5, 0);
+    var layer = makeSprite("BuildingRuins", number(owner.wallRotation, 0) ? presentation(owner, state) : owner.node, .5, 0);
     state.destroyedNode = layer.node; state.destroyedSprite = layer.sprite;
   }
   state.destroyedSprite.spriteFrame = state.destroyedFrame;

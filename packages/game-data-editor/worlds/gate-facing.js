@@ -13,11 +13,8 @@ function matrix(node,value){
 }
 function localMatrix(info,node,world){const parent=info.byId[node.parent];return parent?Maps.multiply(Maps.inverse(parent.world),world):world;}
 function triggerPoints(info,data,id){const n=info.byId[id],trigger=n&&n.components.find(c=>c.value.__type__==='cc.PolygonCollider'),a=n&&n.source._trs&&n.source._trs.array;if(!trigger)return null;return {component:trigger.id,points:(trigger.value.points||[]).map(p=>Maps.point(n.world,{x:p.x/(a?a[7]:1),y:p.y/(a?a[8]:1)}))};}
-function project(source,building){
- const existing=projected.get(source);if(existing)source=existing.source;
+function faceProject(source,building){
  if(!building||building.kind!==6||!Facing.valid(building.wallFacing))return source;
- const signature=JSON.stringify(source),key=JSON.stringify([building.template.node,building.template.roots,building.wallFacing]);let saved=cache.get(source);
- if(!saved||saved.signature!==signature){saved={signature,values:new Map()};cache.set(source,saved);}if(saved.values.has(key))return saved.values.get(key);
  const info=Maps.model(source),owner=info.byId[building.template.node];if(!owner)throw Error('A wall source was removed. Refresh its template.');
  const controller=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)throw Error('A wall controller is missing from its template.');
  // A generated prefab already bakes its compass geometry. Reopening it when
@@ -38,14 +35,55 @@ function project(source,building){
  for(const lock of locks){if(!lock.trigger)continue;const node=next.byId[lock.id],inverse=Maps.inverse(node.world),a=node.source._trs&&node.source._trs.array,component=result[lock.trigger.component],points=component.points||[];
   component.points=lock.trigger.points.map((p,i)=>{const target=Maps.point(H,p),local=Maps.point(inverse,{x:target.x+lock.delta.x,y:target.y+lock.delta.y});return Object.assign({},points[i],{x:local.x*(a?a[7]:1),y:local.y*(a?a[8]:1)});});
  }
- result[controller.id].wallFacing=building.wallFacing;projected.set(result,{source,key});saved.values.set(key,result);return result;
+ result[controller.id].wallFacing=building.wallFacing;return result;
+}
+function rotation(value){return typeof value==='number'&&Number.isFinite(value)?value:0;}
+function around(origin,angle){const radians=angle*Math.PI/180,c=Math.cos(radians),s=Math.sin(radians);return[c,s,-s,c,origin.x-c*origin.x+s*origin.y,origin.y-s*origin.x-c*origin.y];}
+function rotateWall(source,building,angle){
+ if(!angle)return source;
+ const info=Maps.model(source),owner=info.byId[building.template.node],controller=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID)),result=clone(source),R=around(owner.position,angle),targets=new Set();
+ for(const name of ['ndAniMain','ndAniDown','ndAniOther','ndAniEffect','ndEffect','ndMove'])for(const ref of Array.isArray(controller.value[name])?controller.value[name]:[controller.value[name]]){const id=reference(source,ref);if(id!==undefined&&id!==owner.id)targets.add(id);}
+ // Rotate model assemblies and their standing points, never their purchase
+ // plates or HP captions. Wing colliders follow their model node transforms.
+ for(const id of targets){const node=info.byId[id];if(!node)continue;let parent=info.byId[node.parent],nested=false;while(parent){if(targets.has(parent.id)){nested=true;break;}parent=info.byId[parent.parent];}if(!nested)matrix(result[id],localMatrix(info,node,Maps.multiply(R,node.world)));}
+ const local=Maps.multiply(Maps.inverse(owner.world),Maps.multiply(R,owner.world));
+ // The leaf body and its friendly-proximity trigger live on the controller
+ // node, whose transform stays fixed so its purchase field cannot turn.
+ for(const component of owner.components)if(['cc.PhysicsPolygonCollider','cc.PolygonCollider'].includes(component.value.__type__)){
+  const offset=component.value.offset||{x:0,y:0};result[component.id].points=(component.value.points||[]).map(point=>{const p=Maps.point(local,{x:point.x+(offset.x||0),y:point.y+(offset.y||0)});return Object.assign({},point,{x:p.x-(offset.x||0),y:p.y-(offset.y||0)});});
+ }
+ return result;
+}
+function project(source,building){
+ const existing=projected.get(source);if(existing)source=existing.source;
+ if(!building||building.kind!==6)return source;
+ if(building.wallRotation!==undefined&&(typeof building.wallRotation!=='number'||!Number.isFinite(building.wallRotation)))throw Error('Wall rotation requires a finite angle.');
+ if(!Facing.valid(building.wallFacing)&&building.wallRotation===undefined)return source;
+ const signature=JSON.stringify(source),key=JSON.stringify([building.template.node,building.template.roots,building.wallFacing,building.wallRotation]);let saved=cache.get(source);
+ if(!saved||saved.signature!==signature){saved={signature,values:new Map()};cache.set(source,saved);}if(saved.values.has(key)){const value=saved.values.get(key);saved.values.delete(key);saved.values.set(key,value);return value;}
+ const info=Maps.model(source),owner=info.byId[building.template.node];if(!owner)throw Error('A wall source was removed. Refresh its template.');
+ const controller=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)throw Error('A wall controller is missing from its template.');
+ const old=rotation(controller.value.wallRotation),angle=building.wallRotation===undefined?old:building.wallRotation,faceChanged=Facing.valid(building.wallFacing)&&controller.value.wallFacing!==building.wallFacing;
+ if(!faceChanged&&angle===old)return source;
+ let result=source;
+ if(faceChanged){
+  // Unbake a recovered fine angle before changing compass orientation, then
+  // reapply it. Mirroring an already-rotated family would invert its angle.
+  result=rotateWall(result,building,-old);result=faceProject(result,building);result=rotateWall(result,building,angle);
+ }else result=rotateWall(result,building,angle-old);
+ if(building.wallRotation!==undefined||old)result[controller.id].wallRotation=angle;
+ projected.set(result,{source,key});saved.values.set(key,result);
+ // Fine-angle edits have unbounded distinct values; retain only recent poses
+ // instead of keeping a detached copy of the complete prefab for every edit.
+ if(saved.values.size>32)saved.values.delete(saved.values.keys().next().value);
+ return result;
 }
 function finishExport(source,building,target,mapping){
- if(!building||building.kind!==6||!Facing.valid(building.wallFacing))return;
+ if(!building||building.kind!==6||!Facing.valid(building.wallFacing)&&!building.wallRotation)return;
  const info=Maps.model(source),owner=info.byId[building.template.node],controller=owner&&owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!controller)return;
  const next=Maps.model(target),scale=building.scale===undefined?1:building.scale,angle=(building.angle||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
  for(const ref of controller.value.ndLockList||[]){const id=reference(source,ref),trigger=triggerPoints(info,source,id),node=next.byId[mapping[id]];if(!trigger||!node)continue;const inverse=Maps.inverse(node.world),a=node.source._trs.array,component=target[mapping[trigger.component]],points=component.points||[];
   component.points=trigger.points.map((p,i)=>{const x=p.x-owner.position.x,y=p.y-owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*a[7],y:local.y*a[8]});});
  }
 }
-module.exports={project,finishExport};
+module.exports={project,finishExport,around};

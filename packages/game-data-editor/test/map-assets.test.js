@@ -109,11 +109,21 @@ test('validation catches broken references, geometry, spawn lanes, and stage slo
     const source = Maps.loadMap(root, 'Map01').data, info = Maps.model(source), collider = info.colliders[0], docs = clone(documents);
     source[collider.id].points = [{ x: 0, y: 0 }, { x: 1, y: 1 }];
     source[info.owners[0].id]._children.push({ __id__: source.length + 30 });
+    delete docs.A.data.LevelCfg[0].WaveCfg[0].SpawnTimeline;
     docs.A.data.LevelCfg[0].WaveCfg[0].RefreshSoldierKind = ['999#90001,5'];
     docs.A.data.LevelCfg[0].HomeLevel1Unlock.push([1, 999]);
     const issues = Maps.issuesFor(source, 'Map01', docs);
     assert(issues.some(i => /Broken prefab reference/.test(i.message))); assert(issues.some(i => /three finite/.test(i.message)));
     assert(issues.some(i => /spawn lane 999/.test(i.message))); assert(issues.some(i => /building slot 999/.test(i.message)));
+});
+test('map lane validation follows active timed schedules and ignores retained legacy queues', () => {
+    const source = Maps.loadMap(root, 'Map01').data, docs = clone(documents), wave = docs.A.data.LevelCfg[0].WaveCfg[0];
+    wave.RefreshSoldierKind = ['999#90001,5'];
+    assert(!Maps.issuesFor(source, 'Map01', docs).some(i => /spawn lane 999/.test(i.message)));
+    wave.SpawnTimeline[0].spawnId = 999;
+    const before = JSON.stringify({source,docs}), issues = Maps.issuesFor(source, 'Map01', docs), invalid = issues.find(i => /spawn lane 999/.test(i.message));
+    assert(invalid);assert.deepStrictEqual(invalid.path, ['LevelCfg',0,'WaveCfg',0,'SpawnTimeline',0]);
+    assert.strictEqual(JSON.stringify({source,docs}), before);
 });
 test('route checks reuse the game planner and leave prefab bytes untouched', () => {
     const source = Maps.loadMap(root, 'Map01').data, info = Maps.model(source), start = info.nodes.find(n => n.kind === 'hero').position;

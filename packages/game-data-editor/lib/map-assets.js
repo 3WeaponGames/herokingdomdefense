@@ -294,10 +294,13 @@ function issuesFor(data, id, documents) {
             ['HomeLevel1Unlock', 'HomeLevel2Unlock', 'HomeLevel3Unlock'].forEach(key => {
                 (stage[key] || []).forEach((pair, pi) => { if (!slots.has(pair[1])) issues.push({ severity: 'error', doc: variant, path: ['LevelCfg', si, key, pi], message: id + ' has no building slot ' + pair[1] }); });
             });
-            (stage.WaveCfg || []).forEach((wave, wi) => (wave.RefreshSoldierKind || []).forEach((group, gi) => {
-                const lane = Number(String(group).split('#')[0]);
-                if (!lanes.has(lane)) issues.push({ severity: 'error', doc: variant, path: ['LevelCfg', si, 'WaveCfg', wi, 'RefreshSoldierKind', gi], message: id + ' has no spawn lane ' + lane });
-            }));
+            (stage.WaveCfg || []).forEach((wave, wi) => {
+                const timed = Array.isArray(wave.SpawnTimeline), field = timed ? 'SpawnTimeline' : 'RefreshSoldierKind';
+                (wave[field] || []).forEach((group, gi) => {
+                    const lane = timed ? group.spawnId : Number(String(group).split('#')[0]);
+                    if (!lanes.has(lane)) issues.push({ severity: 'error', doc: variant, path: ['LevelCfg', si, 'WaveCfg', wi, field, gi], message: id + ' has no spawn lane ' + lane });
+                });
+            });
         });
     });
     return issues;

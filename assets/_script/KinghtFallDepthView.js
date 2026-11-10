@@ -317,6 +317,14 @@ function DepthView(game) {
 }
 DepthView.prototype.prepareObjects = function () {
   var self = this, main = this.main;
+  var hero = this.game.ctrPlay && this.game.ctrPlay.node;
+  var kinds = this._depthKinds || (this._depthKinds = new Map());
+  function kind(root, building) {
+    if (!root) return;
+    if (!kinds.has(root)) kinds.set(root, { building:root._depthBuilding, scenery:root._depthScenery });
+    root._depthBuilding = building;
+    root._depthScenery = !building;
+  }
   // Gate side containers group columns at different Y positions. Flatten only
   // their render/physics nodes, preserving transforms and component references.
   main.children.slice().forEach(function (root) {
@@ -331,12 +339,18 @@ DepthView.prototype.prepareObjects = function () {
       part.setScale(scale, scale ? (a * (y.y - o.y) - b * (y.x - o.x)) / scale : 0);
     });
   });
+  // Everything authored in the map starts as scenery. Render roots belonging
+  // to buildings/offers are promoted below; actors keep their live ground order.
+  main.children.forEach(function (root) {
+    if (root !== hero && !root._combatActor && !root._occlusionMask) kind(root, false);
+  });
   var buildings = this.game.gameData.bulidPointMap;
   var byNode = new Map(), buildingOwners = new Map();
   Object.keys(buildings).forEach(function (id) {
     var build = buildings[id];
     var ownerRoot = objectRoot(build.node, main);
     if (ownerRoot) {
+      kind(ownerRoot, true);
       if (!byNode.has(ownerRoot)) byNode.set(ownerRoot, []);
       if (!buildingOwners.has(ownerRoot)) buildingOwners.set(ownerRoot, []);
       buildingOwners.get(ownerRoot).push({ owner: build, base: null, weapon: null, ruins: null });
@@ -346,6 +360,7 @@ DepthView.prototype.prepareObjects = function () {
       while (root.parent !== main && root.parent) root = root.parent;
       // Ground/shadow layers are deliberately outside the occluding layer.
       if (root.parent !== main) return;
+      kind(root, true);
       if (!byNode.has(root)) byNode.set(root, []);
       byNode.get(root).push(renderer);
     });
@@ -353,7 +368,8 @@ DepthView.prototype.prepareObjects = function () {
   (this.game.gameData.obstacles || []).forEach(function (obstacle) {
     byNode.set(obstacle.node, obstacle.node.getComponentsInChildren(cc.Sprite).concat(obstacle.node.getComponentsInChildren(sp.Skeleton)));
   });
-  (this.game.gameData.businessPoints || []).concat([this.game.gameData.weaponBusinessPoints, this.game.gameData.horseBusinessPoints]).filter(Boolean).forEach(function (shop) {
+  (this.game.gameData.businessPoints || []).concat([this.game.gameData.weaponBusinessPoints, this.game.gameData.horseBusinessPoints]).filter(Boolean).reduce(function (all, shop) { return all.concat(shop._offers || [shop]); }, []).forEach(function (shop) {
+    kind(objectRoot(shop.node, main), true);
     if (shop.spAni) byNode.set(shop.node, [shop.spAni]);
   });
   byNode.forEach(function (renderers, root) {
@@ -368,7 +384,17 @@ DepthView.prototype.sort = function () {
   var hero = this.game.ctrPlay.node, main = this.main;
   var ordered = this.main.children.filter(function (node) { return !node._occlusionMask; });
   ordered=ordered.map(function(node,index){return {node:node,ground:node._depthGround?point(node._depthGround,main).y:node.y,actor:node._combatActor||node===hero?1:0,index:index};});
-  ordered.sort(function(a,b){return b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
+  var buildingGround = -Infinity;
+  ordered.forEach(function (entry) {
+    if (entry.node._depthBuilding && entry.node.activeInHierarchy !== false) buildingGround = Math.max(buildingGround, entry.ground);
+  });
+  ordered.forEach(function (entry) {
+    // Buildings always cover map objects. Moving units into the same band once
+    // they pass a building preserves every unit/building ground relationship;
+    // units behind all buildings still use the original scenery depth ordering.
+    entry.band = entry.node._depthMapForeground ? 2 : entry.node._depthBuilding || !(entry.node._depthScenery || entry.node._depthMapObject) && entry.ground <= buildingGround ? 1 : 0;
+  });
+  ordered.sort(function(a,b){return a.band-b.band||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
   ordered.forEach(function (entry, index) { entry.node.zIndex = index * 2; });
   // This pass runs after EVENT_AFTER_UPDATE, when Creator normally flushes
   // delayed child sorting. Apply the new ground order before this frame draws.
@@ -522,7 +548,11 @@ DepthView.prototype.update = function () {
     var ground = point(object.node._depthGround || object.node, self.main).y;
     var hidden=[];
     if(box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
-      if(entry.actor.node.y<=ground)return;
+      // Priority layers can put the full actor above an object even when its
+      // ground point is behind it. Such actors need no hidden-unit capture.
+      if(Number.isFinite(entry.actor.node.zIndex)&&Number.isFinite(object.node.zIndex)){
+        if(entry.actor.node.zIndex>=object.node.zIndex)return;
+      }else if(entry.actor.node.y<=ground)return;
       if(!entry.sources){entry.sources=bodyVisuals(entry.actor);entry.bounds=entry.sources.reduce(function(value,source){return union(value,bounds(source,self.main,cache));},null);}
       if(overlaps(entry.bounds,box)&&(!visible||overlaps(entry.bounds,visible)))hidden.push(entry);
     });
@@ -590,6 +620,13 @@ DepthView.prototype.destroy = function () {
   });
   this._vertexStore = null;
   this._vertexConsumers = null;
+  if (this._depthKinds) {
+    this._depthKinds.forEach(function (previous, node) {
+      if (previous.building === undefined) delete node._depthBuilding; else node._depthBuilding = previous.building;
+      if (previous.scenery === undefined) delete node._depthScenery; else node._depthScenery = previous.scenery;
+    });
+    this._depthKinds.clear();
+  }
   if (cc.isValid(this.capture, true)) this.capture.destroy();
   if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
   if (this.nativeMaterial) this.nativeMaterial.destroy();

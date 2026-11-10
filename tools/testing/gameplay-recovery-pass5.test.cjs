@@ -2,6 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {fixture}=require('./backend-ui-harness.cjs');
 const {setup,Node,authored}=require('./backend-gameplay-harness.cjs');
+const AuthoredSpawnPlan=require('../../assets/_script/AuthoredSpawnPlan');
 const single=x=>({getInstance:()=>x}),noop=()=>{};
 
 function branch(initial=false){
@@ -182,7 +183,7 @@ function checkpoint(saved){
  const mission={num:100,writes:0,addAchNum(type,n){assert.equal(type,'GetSliver');this.num+=n;this.writes++;}};
  const record={hasSave:()=>saved,activateStage(stage){assert.equal(stage,1);return saved;},readyForNewBattle:()=>true,getRoundNum:()=>6,getCoin:()=>77,getBuffList:()=>['Buff10'],getBuildInfoList:()=>[],getBusinessList:()=>({}),getTaskInfo:()=>({index:2,list:[1,2,3],stage:1})};
  const player={getUserData:()=>({getTreasureLevel:()=>null,getTalent:()=>[]}),getMissionData:()=>mission,getGameData:()=>record};
- const h=setup({KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single(player)}}),dm=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();Object.assign(dm,{getLevelCfgById:()=>authored.LevelCfg[0],getGameTask:()=>authored.InGameTaskCfg[0],getTreasureCfg:()=>[],getParamsCfgById:()=>.5});
+ const h=setup({AuthoredSpawnPlan,KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single(player)}}),dm=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();Object.assign(dm,{getLevelCfgById:()=>authored.LevelCfg[0],getGameTask:()=>authored.InGameTaskCfg[0],getTreasureCfg:()=>[],getParamsCfgById:()=>.5});
  h.g.ctrPlay.initData=noop;h.g.buildBullet={node:{}};
  function start(){h.g.initData(1);const d=h.g.gameData;d.upMap=d.initCom=noop;if(h.g.loadGame())d.onRestart(false);return d;}
  return{...h,start,mission,record};

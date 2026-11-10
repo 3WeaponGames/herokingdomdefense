@@ -1,6 +1,8 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const {setup,Node,Vec2,authored}=require('./backend-gameplay-harness.cjs');
+const {setup:gameplaySetup,Node,Vec2,authored}=require('./backend-gameplay-harness.cjs');
+const AuthoredSpawnPlan=require('../../assets/_script/AuthoredSpawnPlan');
+const setup=(overrides={})=>gameplaySetup({AuthoredSpawnPlan,...overrides});
 const source=path.resolve(__dirname,'../../assets/_script');
 function load(name,cc,modules){const exports={};function Base(){};
  vm.runInNewContext(fs.readFileSync(path.join(source,name+'.js'),'utf8'),{exports,require:n=>modules[n]||{default:Base},cc,sp:{Skeleton:function(){}},console:{log(){}},
@@ -24,6 +26,7 @@ test('Perk take-all and actual round completion each commit once',()=>{
  Object.assign(h.g,{endRoundGame:()=>h.d.loadMonster(),saveGame(){},ctrPlay:{endRoundGame(){},ctrPlayAni:{setLevelUp(){}}}});
  Object.assign(u,{btnBuildInfo:{},ctrGame:h.g,ctrUI:{},scheduleOnce:fn=>fn(),onPauseGame(){},openBattleDialog(_dialog,_id,_ready,done){callback=done;},initView(){},initBtnView(){}});
  u.endRoundGame();callback([50001]);callback([50001]);assert.equal(h.d.round,2);assert.equal(buffs,1);assert.equal(h.d.coin,authored.LevelCfg[0].WaveCfg[1].StartSliver);
+ assert(h.d.authoredTimeline instanceof AuthoredSpawnPlan.Timeline);
 });
 test('Pending perk ads block competing choice; failure releases choice and duplicates are ignored',()=>{
  const p=perkDialog();p.b.btnGetAll.handlers.touchend();p.b.clickItem(0);p.b.btnRefresh.handlers.touchend();assert.equal(p.requests.length,1);

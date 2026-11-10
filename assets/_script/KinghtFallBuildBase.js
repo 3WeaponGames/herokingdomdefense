@@ -35,6 +35,7 @@ var def_KinghtFallBuildBase = function (t) {
     e.ndMove = [];
     e.ndHp = null;
     e.ndLockList = [null];
+    e.purchaseSide = "";
     e.ndAniMain = null;
     e.ndAniDown = null;
     e.ndAniOther = [];
@@ -826,6 +827,10 @@ var def_KinghtFallBuildBase = function (t) {
     type: [cc.Node],
     tooltip: "解锁/升级"
   })], _ctor.prototype, "ndLockList", undefined);
+  cc__decorate([ccp_property({
+    visible: false,
+    tooltip: "Authored purchase-field side"
+  })], _ctor.prototype, "purchaseSide", undefined);
   cc__decorate([ccp_property({
     type: sp.Skeleton,
     tooltip: "建筑主体"

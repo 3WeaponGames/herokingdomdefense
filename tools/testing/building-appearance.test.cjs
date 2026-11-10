@@ -61,6 +61,27 @@ test('static artwork waits for its frame and preserves collider-owning skeleton 
   h.api.apply(h.owner); assert.equal(h.loads.length, 1, 'reapplying a loaded level does not load another frame');
 });
 
+test('custom wall artwork and ruins rotate independently while the controller and purchase field stay fixed', () => {
+  for (const mirrored of [false, true]) for (const angle of [-17, 13.5]) {
+    const h = fixture(false, true); h.owner.wallRotation = angle;
+    h.owner.node.x = 25; h.owner.node.y = -10; h.owner.node.angle = 29;
+    h.owner.node.scaleX = mirrored ? -1.4 : 1.4; h.owner.node.scaleY = 1.4;
+    const plate = new h.Node('purchase'); plate.parent = h.owner.node; plate.setPosition(-100, -80); h.owner.ndLockList = [plate];
+    const point = plate.convertToWorldSpaceAR({x:0,y:0}), controller = {x:h.owner.node.x,y:h.owner.node.y,angle:h.owner.node.angle,scaleX:h.owner.node.scaleX,scaleY:h.owner.node.scaleY};
+    h.api.apply(h.owner); h.loads.forEach(load => load.callback({name:load.path}));
+    const state = h.owner._buildingAppearance;
+    assert.equal(state.presentation.angle, mirrored ? -angle : angle);
+    assert.deepEqual(plate.convertToWorldSpaceAR({x:0,y:0}), point);
+    assert.deepEqual({x:h.owner.node.x,y:h.owner.node.y,angle:h.owner.node.angle,scaleX:h.owner.node.scaleX,scaleY:h.owner.node.scaleY}, controller);
+    const pivot = h.owner.node.convertToWorldSpaceAR({x:0,y:0}), original = h.owner.node.convertToWorldSpaceAR({x:0,y:-38}), radians=angle*Math.PI/180;
+    const expected={x:pivot.x+Math.cos(radians)*(original.x-pivot.x)-Math.sin(radians)*(original.y-pivot.y),y:pivot.y+Math.sin(radians)*(original.x-pivot.x)+Math.cos(radians)*(original.y-pivot.y)};
+    const actual=state.node.convertToWorldSpaceAR({x:0,y:0});assert(Math.hypot(actual.x-expected.x,actual.y-expected.y)<1e-7);
+    h.owner.isDestroyed = true; h.api.onDead(h.owner);
+    assert.equal(state.destroyedNode.parent,state.presentation);assert.deepEqual(plate.convertToWorldSpaceAR({x:0,y:0}), point);
+    h.api.dispose(h.owner);
+  }
+});
+
 test('out-of-order loads cannot replace an upgraded tower or revive a sold tower', () => {
   const h = fixture(); h.api.apply(h.owner);
   h.owner.buildInfo.cfg.Appearance.sprite = 'buildings/towers/cannon-2'; h.api.apply(h.owner);
