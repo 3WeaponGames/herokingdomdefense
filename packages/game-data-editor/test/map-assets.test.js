@@ -27,7 +27,7 @@ test('only allowlisted runtime map paths can be opened', () => {
     assert.throws(() => Maps.loadMap(root, '../../project'), /Unknown runtime map/);
     assert.throws(() => Maps.fileFor('Map1'), /Unknown runtime map/);
 });
-test('map index resolves actual artwork and shared A/B/D stage usages', () => {
+test('map index resolves actual artwork and authored A/B/D stage usages', () => {
     const index = Maps.loadIndex(root, documents);
     assert.strictEqual(index.length, Maps.IDS.length);
     index.forEach(map => {
@@ -35,9 +35,10 @@ test('map index resolves actual artwork and shared A/B/D stage usages', () => {
         // Creator's built-in white sprite has no project texture metadata.
         frames.delete('a23235d1-15db-4b95-8439-a2e005bfff91');
         assert(frames.size>0);assert.deepStrictEqual(Object.keys(map.images).sort(),Array.from(frames).sort());
-        assert(map.stages.some(stage => stage.variant === 'A'));
-        assert(map.stages.some(stage => stage.variant === 'B'));
-        assert(map.stages.some(stage => stage.variant === 'D'));
+        const usages = Object.entries(documents).flatMap(([variant, document]) => document.data.LevelCfg
+            .filter(stage => stage.prefab === map.id)
+            .map(stage => ({ variant, level: stage.Level, name: stage.Name })));
+        assert.deepStrictEqual(map.stages, usages);
         Object.keys(map.images).forEach(id => assert(/^file:\/\//.test(map.images[id].url)));
     });
 });

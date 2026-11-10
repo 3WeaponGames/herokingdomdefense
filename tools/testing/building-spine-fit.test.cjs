@@ -13,6 +13,28 @@ function canonical(value){
   return value;
 }
 const hash=value=>sha(JSON.stringify(canonical(value))),clone=value=>JSON.parse(JSON.stringify(value));
+// Creator can recompute tight auto-trim bounds after an import. Keep the
+// original metadata hash, but first prove that the imported crop preserves
+// the raw image coordinates and every visible pixel. Only the six derived
+// crop fields of documented auto frames are normalized for that hash.
+function metadataForHash(file,meta,image){
+  const result=clone(meta),trims=fixture.metadataTrims?.[file];
+  if(!trims)return result;
+  assert.deepEqual([meta.width,meta.height],[image.width,image.height],file+' raw image size');
+  for(const[name,baseline]of Object.entries(trims)){
+    const frame=meta.subMetas[name];assert(frame,file+' missing sprite frame '+name);
+    assert.equal(frame.trimType,'auto',file+' must retain automatic trimming');assert.equal(frame.rotated,false,file+' must retain its unrotated frame');
+    assert.deepEqual([frame.rawWidth,frame.rawHeight],[image.width,image.height],file+' raw frame size');
+    assert([frame.trimX,frame.trimY,frame.width,frame.height].every(Number.isSafeInteger),file+' crop must use whole pixels');
+    assert(frame.trimX>=0&&frame.trimY>=0&&frame.width>0&&frame.height>0&&frame.trimX+frame.width<=image.width&&frame.trimY+frame.height<=image.height,file+' crop must stay inside the raw image');
+    assert(Math.abs(frame.offsetX-(frame.trimX+frame.width/2-frame.rawWidth/2))<.000001,file+' horizontal source coordinates changed');
+    assert(Math.abs(frame.offsetY-(frame.rawHeight/2-frame.trimY-frame.height/2))<.000001,file+' vertical source coordinates changed');
+    assert(Number.isFinite(frame.trimThreshold)&&frame.trimThreshold>=0&&frame.trimThreshold<=255,file+' invalid trim threshold');
+    for(let y=0;y<image.height;y++)for(let x=0;x<image.width;x++)if(image.rgba[(y*image.width+x)*4+3]>frame.trimThreshold)assert(x>=frame.trimX&&x<frame.trimX+frame.width&&y>=frame.trimY&&y<frame.trimY+frame.height,file+' clips a visible pixel');
+    for(const key of ['offsetX','offsetY','trimX','trimY','width','height'])result.subMetas[name][key]=baseline[key];
+  }
+  return result;
+}
 const directory=asset=>'assets/KinghtFallIconMap/com/Ani/'+asset;
 const filename=(asset,ext)=>directory(asset)+'/'+asset.split('/').pop()+'.'+ext;
 function atlasRegions(text){
@@ -94,7 +116,22 @@ test('Royal Knight tiers have proportional independent bodies, aligned aperture 
 test('original Cocos UUIDs, sampling, icon geometry and asset metadata stay stable',()=>{
   for(const[file,expected]of Object.entries(fixture.metadata)){
     const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,3);meta.textures=meta.textures.slice(0,1);}
-    assert.equal(hash(meta),expected,file);
+    const image=fixture.metadataTrims?.[file]?decode(fs.readFileSync(path.join(root,file.slice(0,-5)))):null;
+    assert.equal(hash(metadataForHash(file,meta,image)),expected,file);
+  }
+});
+
+test('automatic crop normalization still rejects clipping, shifted source coordinates and metadata drift',()=>{
+  const file=filename('cb','png.meta'),meta=read(file),image=decode(fs.readFileSync(path.join(root,file.slice(0,-5))));
+  assert.equal(hash(metadataForHash(file,meta,image)),fixture.metadata[file]);
+  const clipped=clone(meta);clipped.subMetas.cb.trimX++;clipped.subMetas.cb.width--;clipped.subMetas.cb.offsetX+=.5;
+  assert.throws(()=>metadataForHash(file,clipped,image),/clips a visible pixel/);
+  const shifted=clone(meta);shifted.subMetas.cb.offsetY++;
+  assert.throws(()=>metadataForHash(file,shifted,image),/source coordinates changed/);
+  const resized=clone(meta);resized.subMetas.cb.rawWidth++;
+  assert.throws(()=>metadataForHash(file,resized,image),/raw frame size/);
+  for(const mutate of [m=>m.uuid='different',m=>m.filterMode='nearest',m=>m.futureSetting=true]){
+    const changed=clone(meta);mutate(changed);assert.notEqual(hash(metadataForHash(file,changed,image)),fixture.metadata[file],'UUIDs, sampling and unknown metadata remain strict');
   }
 });
 

@@ -4,6 +4,7 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const themes = { Map01: 'meadow', Map02: 'forest', Map03: 'desert', Map04: 'snowfield', Map07: 'fire' };
+const biomeThemes = { forest: 'meadow', 'deep-forest': 'forest', autumn: 'forest', desert: 'desert', snow: 'snowfield', ice: 'snowfield', fire: 'fire', lava: 'fire' };
 
 function bus(object = {}) {
   const listeners = [];
@@ -73,10 +74,11 @@ test('every configured stage selects its map background through the real lobby r
     ndBoxShow: { getChildByName: () => ({ getChildByName: name => name === 'ndRed' ? red : { getComponent: () => name === 'spAni' ? spine : label } }) }
   };
   for (const stage of [...config.LevelCfg, ...config.LevelCfg.slice().reverse()]) {
-    assert(themes[stage.prefab], 'configured map needs a background: ' + stage.prefab);
+    const theme = biomeThemes[stage.EnvironmentBiome] || themes[stage.EnvironmentMapId] || themes[stage.prefab];
+    assert(theme, 'configured map needs a background: ' + stage.prefab);
     home.selectStage = stage.Level;
     init.call(home);
-    assert.equal(f.sprite.spriteFrame, f.controller[themes[stage.prefab]]);
+    assert.equal(f.sprite.spriteFrame, f.controller[theme]);
   }
   // No deferred loads can overwrite a rapidly selected stage.
   f.api.showForStage(f.page, 'Map02'); f.api.showForStage(f.page, 'Map04');

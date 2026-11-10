@@ -315,7 +315,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  },false,true);
 }
  async function save(){
- if(state.closed||state.loading||state.drag||activeDialog||state.saveReviewBusy)return;
+ if(state.closed||!state.active||state.loading||state.drag||activeDialog||state.saveReviewBusy)return;
  const context=currentContext(),failure=state.editFailures||0;state.saveReviewBusy=true;
  try{
   const control=document.activeElement,label=control&&control.closest('label');
@@ -323,7 +323,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
    if(label&&label.dataset.focusContext!==focusContext())return;
    if(typeof control.onchange==='function'&&control.onchange()===false)return;
   }
-  await state.pending;if(!isCurrent(context)||failure!==(state.editFailures||0))return;
+  await state.pending;if(!isCurrent(context)||!state.active||state.loading||state.drag||activeDialog||failure!==(state.editFailures||0))return;
   if(!state.snap.dirty){message('No changes; no files written.');return;}
   const key=currentKey(),reviewVersion=state.snap.version;
   modal('Save '+(stageMode?'stage layout':'shared map'),dialog=>{
@@ -341,8 +341,10 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   message(notice.text,notice.warning||notice.error);if(notice.warning&&!notice.error)status.className='world-status world-warn';
  }
  async function replaceStage(){
-  if(!stageMode||state.closed||state.loading||state.drag||activeDialog)return;
-  const context=currentContext();await state.pending;if(!isCurrent(context))return;
+  if(!stageMode||state.closed||!state.active||state.loading||state.drag||activeDialog||state.replaceReviewBusy)return;
+  const context=currentContext();state.replaceReviewBusy=true;
+  try{
+  await state.pending;if(!isCurrent(context)||!state.active||state.loading||state.drag||activeDialog)return;
   const destination=state.catalog.stages.find(row=>row.id===values().id)||values(),version=state.snap.version,
    sources=state.catalog.stages.filter(row=>row.id!==destination.id).slice().sort((a,b)=>Number(b.variant===destination.variant)-Number(a.variant===destination.variant)||a.variant.localeCompare(b.variant)||a.level-b.level),
    previous=sources.filter(row=>row.variant===destination.variant&&row.level<destination.level).pop(),preferred=previous||sources.find(row=>row.variant===destination.variant)||sources[0];
@@ -382,6 +384,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
     return snapshot;
    },true).finally(()=>formControls.forEach(control=>{if(control.isConnected)control.disabled=false;}));
   },'Replace stage');
+  }finally{state.replaceReviewBusy=false;}
  }
  function newPath(){const spawnId=state.spawn;return edit(stage=>{const spawn=stage.spawns.find(p=>p.id===spawnId)||stage.spawns.find(p=>p.enabled!==false);if(!spawn)throw Error('Add a spawn in the Spawns tab first.');const base=M.newSpawn(Object.assign({},stage,{nextSpawn:stage.nextSpawn}),spawn),graph=base.graphs[base.graphs.length-1];graph.id=uniqueId(stage.graphs,'path-');graph.spawnIds=[spawn.id];graph.name='New approach';stage.graphs.push(graph);state.graph=graph.id;state.spawn=spawn.id;state.selection=[];});}
  function insertPathNode(id){const graph=state.graph;return edit(stage=>{const selected=PathEditor.insertNode(stage,graph,id);if(state.graph===graph&&state.tab==='Paths')state.selection=['node:'+selected];});}

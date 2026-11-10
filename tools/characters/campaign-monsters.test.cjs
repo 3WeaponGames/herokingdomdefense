@@ -4,10 +4,10 @@ const root=path.resolve(__dirname,'../..'),Migration=require('./publish-campaign
 const cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),catalog=require('../../assets/resources/localization/catalog.json'),read=relative=>JSON.parse(fs.readFileSync(path.join(root,relative),'utf8'));
 const hash=value=>crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const aliases=Object.values(cfg.SoldierCfg).filter(row=>row.CampaignBaseUnit),withoutGuide=row=>{const copy=structuredClone(row);delete copy.Guide;return copy;};
-// Later map/biome authoring and the explicit queue-to-timeline conversion have
+// Later map/biome/stage-layout authoring and the explicit queue-to-timeline conversion have
 // their own assertions. The original queues and all balance/reward fields still
 // use the historical hash; world-wave-conversion tests verify timed schedules.
-function projectStage(stage){const projected=structuredClone(stage);delete projected.EnvironmentMapId;delete projected.EnvironmentBiome;for(const wave of projected.WaveCfg){delete wave.SpawnTimeline;wave.RefreshSoldierKind=wave.RefreshSoldierKind.map(line=>line.replace(/\b(92\d{3})(?=,)/g,id=>{assert(cfg.SoldierCfg[id]&&cfg.SoldierCfg[id].CampaignBaseUnit,'Unknown appearance '+id);return String(cfg.SoldierCfg[id].CampaignBaseUnit);}));}return projected;}
+function projectStage(stage){const projected=structuredClone(stage);if(projected.StageLayoutId){assert.equal(projected.prefab,'Generated/Stages/'+projected.StageLayoutId);projected.prefab=projected.EnvironmentMapId;delete projected.StageLayoutId;}delete projected.EnvironmentMapId;delete projected.EnvironmentBiome;for(const wave of projected.WaveCfg){delete wave.SpawnTimeline;wave.RefreshSoldierKind=wave.RefreshSoldierKind.map(line=>line.replace(/\b(92\d{3})(?=,)/g,id=>{assert(cfg.SoldierCfg[id]&&cfg.SoldierCfg[id].CampaignBaseUnit,'Unknown appearance '+id);return String(cfg.SoldierCfg[id].CampaignBaseUnit);}));}return projected;}
 test('stage seven retains its explicitly authored Map07 fire environment in every campaign variant',()=>{
   for(const [key,file]of Object.entries(Migration.CONFIGS)){
     const stage=read(file).LevelCfg.find(row=>row.Level===7);assert(stage,key+' stage seven');assert.equal(stage.EnvironmentMapId,'Map07',key);assert.equal(stage.EnvironmentBiome,'fire',key);

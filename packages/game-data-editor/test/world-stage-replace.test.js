@@ -59,7 +59,7 @@ test('wave replacement preserves both legacy and timed authored schedules and on
 });
 
 for(const scope of ['spawns','paths'])test(scope+' replacement prevents subsequent Add spawn from colliding with imported or retained route IDs',()=>{
- const f=fixture();if(scope==='spawns'){f.s.docs['stage:B-20'].data.graphs.push({id:'route-5',nodes:[],edges:[]},{id:'route-6',nodes:[],edges:[]});}else{f.s.docs['stage:A-19'].data.graphs.push({id:'route-2',nodes:[],edges:[]},{id:'route-3',nodes:[],edges:[]});}
+ const f=fixture();if(scope==='spawns'){f.s.docs['stage:B-20'].data.graphs.push({id:'route-5',nodes:[],edges:[]},{id:'route-6',nodes:[],edges:[]});}else{f.s.docs['stage:A-19'].data.graphs.push({id:'route-2',spawnIds:[],nodes:[],edges:[]},{id:'route-3',spawnIds:[],nodes:[],edges:[]});}
  const before=replace(f,scope).value,next=M.newSpawn(before,{x:0,y:0}),last=next.spawns[next.spawns.length-1],route=next.graphs[next.graphs.length-1];assert.equal(next.spawns.filter(spawn=>spawn.id===last.id).length,1);assert.equal(next.graphs.filter(graph=>graph.id===route.id).length,1);assert.deepEqual(next.spawns.slice(0,-1),before.spawns);assert.deepEqual(next.graphs.slice(0,-1),before.graphs);
 });
 

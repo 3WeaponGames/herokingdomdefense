@@ -4,6 +4,15 @@ const {clone}=require('./model');
 const own=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 const SCOPES=Object.freeze(['stage','buildings','spawns','paths','waves']);
 const SECTIONS=Object.freeze(['buildings','spawns','paths','waves','settings']);
+const record=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
+function records(value,name){if(!Array.isArray(value)||value.some(item=>!record(item)))throw Error('The source stage has an invalid '+name+'. Repair it before replacing content.');}
+function selectedShape(source,selected){
+ if(!record(source)||selected.some(section=>['settings','buildings','waves'].includes(section))&&!record(source.config))throw Error('The source stage has an invalid configuration. Repair it before replacing content.');
+ if(selected.includes('buildings')){records(source.buildings,'building list');records(source.specials,'special offer list');}
+ if(selected.includes('spawns')){records(source.spawns,'spawn point list');if(!record(source.hero))throw Error('The source stage has an invalid hero start. Repair it before replacing content.');}
+ if(selected.includes('paths')){records(source.graphs,'path list');for(const graph of source.graphs){records(graph.nodes,'path point list');records(graph.edges,'path connection list');if(!Array.isArray(graph.spawnIds))throw Error('The source stage has invalid path spawn associations. Repair it before replacing content.');}}
+ if(selected.includes('waves')&&!Array.isArray(source.config.WaveCfg))throw Error('The source stage has an invalid wave list. Repair it before replacing waves.');
+}
 function sections(value){
  if(!Array.isArray(value)||!value.length)throw Error('Choose at least one stage section to replace.');
  if(value.some(section=>!SECTIONS.includes(section))||new Set(value).size!==value.length)throw Error('Choose each valid stage section only once.');
@@ -28,7 +37,7 @@ function replace(target,source,selection){
  // Only the legacy clipboard uses a string scope. The public replacement API
  // supplies a nonempty selection of sections, applied in a fixed order.
  const selected=sections(Array.isArray(selection)?selection:selection==='stage'?SECTIONS:SCOPES.includes(selection)?[selection]:null),all=selected.length===SECTIONS.length;
- if(!source||typeof source!=='object'||Array.isArray(source)||selected.some(section=>['settings','buildings','waves'].includes(section))&&(!source.config||typeof source.config!=='object'||Array.isArray(source.config)))throw Error('The source stage has an invalid configuration. Repair it before replacing content.');
+ selectedShape(source,selected);
  if(!target||!target.config||typeof target.config!=='object'||Array.isArray(target.config))throw Error('The current destination stage has an invalid configuration.');
  let next=all?merge(target,source):clone(target);
  if(all){

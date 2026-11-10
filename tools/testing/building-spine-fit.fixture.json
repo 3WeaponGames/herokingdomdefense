@@ -1463,5 +1463,227 @@
       ]
     },
     "originalTier3Skin": "3fba35170139d9e6081308f8c30e5617cbc89077ae99bb7b59099ae7082b2b9a"
+  },
+  "metadataTrims": {
+    "assets/KinghtFallIconMap/com/Ani/cb/cb.png.meta": {
+      "cb": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 2,
+        "trimY": 2,
+        "width": 1409,
+        "height": 344
+      }
+    },
+    "assets/KinghtFallIconBuild/cb_1.png.meta": {
+      "cb_1": {
+        "offsetX": -0.5,
+        "offsetY": -34.5,
+        "trimX": 1,
+        "trimY": 69,
+        "width": 691,
+        "height": 600
+      }
+    },
+    "assets/KinghtFallIconBuild/cb_2.png.meta": {
+      "cb_2": {
+        "offsetX": 0,
+        "offsetY": -34.5,
+        "trimX": 1,
+        "trimY": 69,
+        "width": 692,
+        "height": 600
+      }
+    },
+    "assets/KinghtFallIconBuild/cb_3.png.meta": {
+      "cb_3": {
+        "offsetX": 0.5,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 0,
+        "width": 693,
+        "height": 669
+      }
+    },
+    "assets/KinghtFallIconBuild/by_1.png.meta": {
+      "by_1": {
+        "offsetX": -24.5,
+        "offsetY": -50.5,
+        "trimX": 5,
+        "trimY": 159,
+        "width": 531,
+        "height": 350
+      }
+    },
+    "assets/KinghtFallIconBuild/dxby_2_1.png.meta": {
+      "dxby_2_1": {
+        "offsetX": -20,
+        "offsetY": -66,
+        "trimX": 7,
+        "trimY": 135,
+        "width": 536,
+        "height": 429
+      }
+    },
+    "assets/KinghtFallIconBuild/dxby_3_1.png.meta": {
+      "dxby_3_1": {
+        "offsetX": -12.5,
+        "offsetY": -63,
+        "trimX": 9,
+        "trimY": 127,
+        "width": 547,
+        "height": 439
+      }
+    },
+    "assets/KinghtFallIconBuild/dxby_3_2.png.meta": {
+      "dxby_3_2": {
+        "offsetX": -22,
+        "offsetY": -2,
+        "trimX": 0,
+        "trimY": 4,
+        "width": 546,
+        "height": 563
+      }
+    },
+    "assets/KinghtFallIconBuild/gby_2_1.png.meta": {
+      "gby_2_1": {
+        "offsetX": -15,
+        "offsetY": -23.5,
+        "trimX": 9,
+        "trimY": 74,
+        "width": 542,
+        "height": 466
+      }
+    },
+    "assets/KinghtFallIconBuild/gby_3_1.png.meta": {
+      "gby_3_1": {
+        "offsetX": -14,
+        "offsetY": -36.5,
+        "trimX": 9,
+        "trimY": 76,
+        "width": 544,
+        "height": 488
+      }
+    },
+    "assets/KinghtFallIconBuild/gby_3_2.png.meta": {
+      "gby_3_2": {
+        "offsetX": -7.5,
+        "offsetY": 0.5,
+        "trimX": 8,
+        "trimY": 2,
+        "width": 559,
+        "height": 562
+      }
+    },
+    "assets/KinghtFallIconBuild/qby_2_1.png.meta": {
+      "qby_2_1": {
+        "offsetX": -7.5,
+        "offsetY": -50,
+        "trimX": 6,
+        "trimY": 160,
+        "width": 563,
+        "height": 347
+      }
+    },
+    "assets/KinghtFallIconBuild/qby_3_1.png.meta": {
+      "qby_3_1": {
+        "offsetX": -3.5,
+        "offsetY": -20.5,
+        "trimX": 14,
+        "trimY": 76,
+        "width": 555,
+        "height": 456
+      }
+    },
+    "assets/KinghtFallIconBuild/mz_1.png.meta": {
+      "mz_1": {
+        "offsetX": 2,
+        "offsetY": 0,
+        "trimX": 8,
+        "trimY": 0,
+        "width": 280,
+        "height": 286
+      }
+    },
+    "assets/KinghtFallIconBuild/mz_2_1.png.meta": {
+      "mz_2_1": {
+        "offsetX": -2,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 288,
+        "height": 286
+      }
+    },
+    "assets/KinghtFallIconBuild/mz_2_2.png.meta": {
+      "mz_2_2": {
+        "offsetX": -2,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 288,
+        "height": 286
+      }
+    },
+    "assets/KinghtFallIconBuild/mf_1.png.meta": {
+      "mf_1": {
+        "offsetX": 9.5,
+        "offsetY": -0.5,
+        "trimX": 19,
+        "trimY": 1,
+        "width": 648,
+        "height": 474
+      }
+    },
+    "assets/KinghtFallIconBuild/mf_2_1.png.meta": {
+      "mf_2_1": {
+        "offsetX": 9.5,
+        "offsetY": 0,
+        "trimX": 19,
+        "trimY": 0,
+        "width": 648,
+        "height": 475
+      }
+    },
+    "assets/KinghtFallIconBuild/mf_2_2.png.meta": {
+      "mf_2_2": {
+        "offsetX": 0.5,
+        "offsetY": 0,
+        "trimX": 1,
+        "trimY": 0,
+        "width": 666,
+        "height": 475
+      }
+    },
+    "assets/KinghtFallIconBuild/cq_1.png.meta": {
+      "cq_1": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 578,
+        "height": 438
+      }
+    },
+    "assets/KinghtFallIconBuild/cq_2_1.png.meta": {
+      "cq_2_1": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 575,
+        "height": 482
+      }
+    },
+    "assets/KinghtFallIconBuild/cp_2_2.png.meta": {
+      "cp_2_2": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 643,
+        "height": 582
+      }
+    }
   }
 }

@@ -33,12 +33,10 @@ test('Stage 7 has a separate full-size map, valid references and bounded baked t
 test('every Stage 7 unlock uses an existing structure of the right type in A, B and D',()=>{
  const classes={1:'KinghtFallBuildMainFortress',2:'KinghtFallBuildBartizan',3:'KinghtFallBuildBarracks',4:'KinghtFallBuildHome',5:'KinghtFallBuildMill',6:'KinghtFallBuildWall'};
  const typeByScript=Object.fromEntries(Object.entries(classes).map(([type,name])=>[compressed(read('assets/_script/'+name+'.js.meta').uuid),Number(type)]));
- const slots=new Map(info.owners.filter(n=>n.kind==='building').map(n=>[n.slot,{node:n,type:typeByScript[source[n.ownerComponent].__type__]}]));
- assert.equal(slots.size,20);assert.equal(slots.get(1).type,1);
- for(const config of configs){const stage=config.LevelCfg.find(s=>s.Level===7),seen=new Set([1]);assert.equal(stage.prefab,'Map07');assert.equal(stage.Map,'wg_zy_gq7');
+ for(const config of configs){const stage=config.LevelCfg.find(s=>s.Level===7),seen=new Set([1]),stageSource=read('assets/KinghtFallIconMap/'+stage.prefab+'.prefab'),stageInfo=Maps.model(stageSource),buildings=stageInfo.owners.filter(n=>n.kind==='building'),slots=new Map(buildings.map(n=>[n.slot,{node:n,type:typeByScript[stageSource[n.ownerComponent].__type__]}]));assert.equal(stage.EnvironmentMapId||stage.prefab,'Map07');assert.equal(stage.Map,'wg_zy_gq7');assert.equal(slots.size,buildings.length,'configured structures have unique site IDs');assert.equal([...slots.values()].filter(b=>b.type===1).length,1);assert.equal(slots.get(1).type,1);
   for(const key of ['HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock'])for(const [type,id]of stage[key]){assert(slots.has(id),'missing site '+id);assert.equal(slots.get(id).type,type,'wrong structure at '+id);assert(!seen.has(id),'duplicate site '+id);seen.add(id);}
   assert.equal([...seen].filter(id=>slots.get(id).type===6).length,2);
-  for(const wave of stage.WaveCfg)for(const encoded of wave.RefreshSoldierKind){const lane=Number(encoded.split('#')[0]);assert(info.nodes.some(n=>n.kind==='spawn'&&n.lane===lane),'wave uses a missing entrance');}
+  for(const wave of stage.WaveCfg){const lanes=Array.isArray(wave.SpawnTimeline)?wave.SpawnTimeline.map(entry=>entry.spawnId):(wave.RefreshSoldierKind||[]).filter(Boolean).map(encoded=>Number(encoded.split('#')[0]));for(const lane of lanes)assert(stageInfo.nodes.some(n=>n.kind==='spawn'&&n.lane===lane),'wave uses a missing entrance');}
  }
 });
 
