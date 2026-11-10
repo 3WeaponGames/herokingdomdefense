@@ -12,11 +12,11 @@ class Element{
  set textContent(value){this._text=String(value);this.children=[];}get textContent(){return this._text+this.children.map(child=>child.textContent).join('');}
  set innerHTML(value){if(value!=='')throw Error('Only empty DOM replacement is supported');this._text='';this.children=[];}
  setAttribute(name,value){this.attributes[name]=String(value);}getAttribute(name){return this.attributes[name]??null;}hasAttribute(name){return name in this.attributes;}
- querySelectorAll(selector){const found=[],matches=node=>selector.split(',').some(part=>{part=part.trim();const attr=/^\[([^=\]]+)(?:="([^"]*)")?\]$/.exec(part);if(attr)return node.hasAttribute(attr[1])&&(attr[2]===undefined||node.getAttribute(attr[1])===attr[2]);if(part.startsWith('.'))return node.className.split(' ').includes(part.slice(1));return node.tagName.toLowerCase()===part;});function visit(node){for(const child of node.children){if(matches(child))found.push(child);visit(child);}}visit(this);return found;}
+ querySelectorAll(selector){const found=[],matches=node=>selector.split(',').some(part=>{part=part.trim();const attr=/^\[([^=\]]+)(?:="([^"]*)")?\]$/.exec(part);if(attr)return node.hasAttribute(attr[1])&&(attr[2]===undefined||node.getAttribute(attr[1])===attr[2]);if(part.startsWith('.'))return part.slice(1).split('.').every(name=>node.className.split(' ').includes(name));return node.tagName.toLowerCase()===part;});function visit(node){for(const child of node.children){if(matches(child))found.push(child);visit(child);}}visit(this);return found;}
  querySelector(selector){return this.querySelectorAll(selector)[0]||null;}get options(){return this.children;}
  contains(node){return node===this||this.children.some(child=>child.contains(node));}
  addEventListener(name,fn){this.listeners[name]=fn;}removeEventListener(name){delete this.listeners[name];}
- focus(){}blur(){}scrollIntoView(){}setPointerCapture(){}releasePointerCapture(){}hasPointerCapture(){return false;}
+ focus(){if(this.ownerDocument)this.ownerDocument.activeElement=this;}blur(){}scrollIntoView(){}setPointerCapture(){}releasePointerCapture(){}hasPointerCapture(){return false;}
  click(){return this.onclick&&this.onclick();}
  getBoundingClientRect(){return{left:0,top:0,width:540,height:650};}get clientHeight(){return 650;}
  getContext(){return new Proxy({},{get:()=>()=>{}});}
@@ -38,9 +38,10 @@ function fixture(options={}){
   if(name==='save'){calls.saves++;return{...snapshot(),result:{saved:false,files:[]}};}throw Error('Unexpected operation '+name);
  }};
  class Image{set src(value){this.width=this.height=32;if(options.delayImages)pendingImages.push(()=>this.onload());else queueMicrotask(()=>this.onload());}}
- const context={module:{exports:{}},require:createRequire(file),document:{createElement:tag=>new Element(tag)},requestAnimationFrame:callback=>{frames.set(++frameId,callback);return frameId;},cancelAnimationFrame:id=>frames.delete(id),Image,queueMicrotask,Date};
+ const document={createElement:tag=>{const node=new Element(tag);node.ownerDocument=document;return node;}};host.ownerDocument=document;
+ const context={module:{exports:{}},require:createRequire(file),document,requestAnimationFrame:callback=>{frames.set(++frameId,callback);return frameId;},cancelAnimationFrame:id=>frames.delete(id),Image,queueMicrotask,Date};
  vm.runInNewContext(fs.readFileSync(file,'utf8'),context,{filename:file});const client=context.module.exports.mount(host,api);
  const byLabel=label=>host.querySelector('[aria-label="'+label+'"]'),button=text=>host.querySelectorAll('button').find(b=>b.textContent===text);
- return{host,client,calls,frames,pendingImages,parts,initial,byLabel,button,snapshot,tick(time){const scheduled=[...frames.values()];frames.clear();scheduled.forEach(callback=>callback(time));},async settle(){for(let i=0;i<4;i++)await flush();},close(){client.destroy();}};
+ return{host,client,calls,frames,pendingImages,parts,initial,byLabel,button,snapshot,get activeElement(){return document.activeElement;},tick(time){const scheduled=[...frames.values()];frames.clear();scheduled.forEach(callback=>callback(time));},async settle(){for(let i=0;i<4;i++)await flush();},close(){client.destroy();}};
 }
 module.exports={fixture,flush};

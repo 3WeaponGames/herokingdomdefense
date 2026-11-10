@@ -15,3 +15,13 @@
 .character-editor .creator-dialog h2{font-size:19px;margin-bottom:18px;color:#e9eef7}
 .character-editor .creator-dialog .row{justify-content:flex-end;margin-top:18px}
 .character-editor{position:relative}
+
+.character-editor aside.resizable-library{display:flex;flex-direction:column;overflow:hidden}
+.character-editor .resizable-library>h2,.character-editor .resizable-library>select{flex-shrink:0}
+.character-editor .resizable-library>.look-list{flex:0 1 175px;min-height:72px;max-height:none;margin-bottom:0}
+.character-editor .resizable-library>.part-library{flex:1;min-height:120px;overflow-y:auto;overflow-x:hidden}
+.character-editor .library-splitter{flex:0 0 20px;position:relative;cursor:row-resize;touch-action:none;user-select:none;outline-offset:-2px}
+.character-editor .library-splitter::before{content:'';position:absolute;left:0;right:0;top:9px;height:1px;background:#43516a}
+.character-editor .library-splitter::after{content:'';position:absolute;width:36px;height:3px;left:calc(50% - 18px);top:8px;border-radius:3px;background:#7186a2}
+.character-editor .library-splitter:hover::after,.character-editor .library-splitter.resizing::after{background:#74b6ff}
+.character-editor .library-splitter:focus-visible{outline:2px solid #74b6ff}

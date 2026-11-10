@@ -15,3 +15,13 @@ test('fixed monster packs expose no equipment or appearance actions and filterin
   for(const label of ['Outfit','Part outfit','Part tint','Skin tone','Model layer','Character size'])assert.equal(f.byLabel(label),null,label);
   assert.equal(f.button('Add selected part'),undefined);assert.equal(f.button('Hide part'),undefined);const filter=f.byLabel('Character package');filter.value='monster3';filter.onchange();const sort=f.byLabel('Sort characters');sort.value='package';sort.onchange();assert.equal(f.calls.changes.length,0);assert.equal(f.calls.saves,0);
 });
+
+test('choosing a compatible part keeps keyboard focus in the editor so Ctrl+A applies it without saving',async t=>{
+  const f=fixture({...options('fantasy-bosses'),describe:description});t.after(()=>f.close());await f.settle();
+  const tile=f.host.querySelector('.parts-grid').querySelector('[aria-label="Ice"]');tile.focus();await tile.click();await f.settle();
+  const selected=f.host.querySelector('.parts-grid').querySelector('.asset-tile.selected');assert.notEqual(selected,tile);assert.equal(f.activeElement,selected);assert.equal(f.calls.changes.length,0);
+  const event={key:'a',ctrlKey:true,target:f.activeElement,preventDefault(){this.defaultPrevented=true;},stopPropagation(){this.stopped=true;}};
+  f.host.querySelector('.character-editor').listeners.keydown(event);await f.settle();
+  assert(event.defaultPrevented);assert(event.stopped);assert.equal(f.snapshot().data.profiles.stone.boss.slots.Body.variant,'Ice');assert.equal(f.calls.saves,0);
+  const typing={...event,target:f.byLabel('Character name'),defaultPrevented:false};f.host.querySelector('.character-editor').listeners.keydown(typing);await f.settle();assert.equal(typing.defaultPrevented,false);assert.equal(f.calls.changes.length,1);
+});
