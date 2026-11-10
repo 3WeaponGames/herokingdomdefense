@@ -150,6 +150,11 @@ View.prototype.begin = function (key, sourceActor) {
     if (key === "hero" && !options.flight && bank.owner.ctrPlay && bank.owner.ctrPlay.heroStyle === "mystic") {
       options.flight = "original:fireball"; descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     }
+    if (key === "hero" && !options.flight && (!bank.owner.ctrPlay || bank.owner.ctrPlay.heroStyle === "skirmisher")) {
+      var items = require("HeroItemLooks"), icon = items.image && items.image(3, level);
+      descriptor = icon && data.assets.find(function (asset) { return asset.sourcePart === icon.id; });
+      if (descriptor) options.flight = descriptor.id;
+    }
     if (!descriptor && !options.launch && !options.impact) return;
     applied = true;
     if (key === "wall-defense") options.rotation = (options.rotation || 0) + 90;

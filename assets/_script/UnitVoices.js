@@ -128,15 +128,13 @@ function death(owner) {
 function dispose(game) {
   var state = game && game._unitVoices;
   if (!state) return;
-  state.disposed = true; state.queue = []; stopActive(state);
+  delete game._unitVoices;
+  state.disposed = true; state.queue = []; state.active = null;
   Object.keys(state.sources).forEach(function (key) {
-    var owned = state.sources[key]; state.manager.stopSource(owned);
-    if (state.manager.audioSourceMap) state.manager.audioSourceMap.delete(key);
-    if (state.manager.channelStates) state.manager.channelStates.delete(owned);
-    if (owned.destroy) owned.destroy();
+    state.manager.releaseAudioSource(key, state.sources[key]);
   });
   if (cc.game && cc.game.off) cc.game.off(cc.game.EVENT_HIDE, state.onHide, state);
-  delete game._unitVoices;
+  state.sources = Object.create(null);
 }
 exports.announce = announce;
 exports.tick = tick;

@@ -21,6 +21,7 @@ function fixture() {
       return this.audioSourceMap.get(key);
     },
     stopSource(value) { value.state = 3; },
+    releaseAudioSource(key, owned) { if (this.audioSourceMap.get(key) !== owned) return false;this.stopSource(owned);this.audioSourceMap.delete(key);this.channelStates.delete(owned);owned.destroy();return true; },
     playSource(value, config, key, loop, music, volume, done) {
       assert(cache.has(config.path), 'playback must use an already loaded clip');
       value.state = 1; played.push({ file: config.path, key, loop, music, volume: volume(), source: value });

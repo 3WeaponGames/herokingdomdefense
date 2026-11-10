@@ -104,6 +104,11 @@ function facing(owner, type, left) {
   return (left ? -1 : 1) * (item && item.mirrorX === true ? -1 : 1);
 }
 function validPlayback(value) { return typeof value === "number" && isFinite(value) && value >= .1 && value <= 4; }
+function defaultPlayback(owner, type) {
+  var renderer = owner && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = renderer && renderer.skeletonData && renderer.skeletonData.skeletonJson;
+  var pack = type === "enemy" && json && json._fantasy && json._fantasy.pack;
+  return pack === "fantasy-bosses" ? .65 : pack === "fantasy-monsters" ? .75 : 1;
+}
 function attackPlayback(owner, type) {
   var settings = config(), speeds = settings && settings.animationSpeeds;
   if (type === "ally" && speeds) {
@@ -118,18 +123,22 @@ function attackPlayback(owner, type) {
     }
   }
   var value = speeds && speeds[keyFor(owner, type)];
-  return validPlayback(value) ? value : 1;
+  return validPlayback(value) ? value : defaultPlayback(owner, type);
 }
 var playbackTracks = new WeakMap();
 function applyAttackPlayback(owner, type) {
-  var speed = attackPlayback(owner, type);
+  applyPlayback(owner, type, false);
+}
+function applyPlayback(owner, type, all) {
   var layers = owner.ctrPlayAni;
   var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand] : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
     var track = renderer && renderer.getCurrent && renderer.getCurrent(0);
     var animation = track && (track.animation || track.getAnimation && track.getAnimation());
     var name = animation && (animation.name || animation.getName && animation.getName());
-    if (!/^attack(?:_|$)/.test(name)) return;
+    var attack = /^attack(?:_|$)/.test(name);
+    if (!all && !attack) return;
+    var speed = attack ? attackPlayback(owner, type) : defaultPlayback(owner, type);
     // An inherited 1x level must clear this helper's previous override on a
     // retained/native track, while untouched authored tracks keep their speed.
     if (speed === 1 && !playbackTracks.has(track)) return;
@@ -168,3 +177,4 @@ exports.facing = facing;
 exports.applyModel = applyModel;
 exports.attackPlayback = attackPlayback;
 exports.applyAttackPlayback = applyAttackPlayback;
+exports.applyAnimationPlayback = function (owner, type) { applyPlayback(owner, type, true); };

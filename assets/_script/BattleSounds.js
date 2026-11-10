@@ -255,15 +255,13 @@ function suspend(game, paused) {
 }
 function dispose(game) {
   var state = game && game._battleSounds; if (!state) return;
-  state.disposed = true; stopAll(state);
+  delete game._battleSounds;
+  state.disposed = true; state.loops = Object.create(null);
   Object.keys(state.sources).forEach(function (key) {
-    var owned = state.sources[key];
-    if (state.manager.audioSourceMap) state.manager.audioSourceMap.delete(key);
-    if (state.manager.channelStates) state.manager.channelStates.delete(owned);
-    if (owned.destroy) owned.destroy();
+    state.manager.releaseAudioSource(key, state.sources[key]);
   });
   if (cc.game && cc.game.off) { cc.game.off(cc.game.EVENT_HIDE, state.onHide, state); cc.game.off(cc.game.EVENT_SHOW, state.onShow, state); }
-  delete game._battleSounds;
+  state.sources = Object.create(null);
 }
 function uiEffect(id, owner, closing) {
   if (!owner || !owner.uid || owner.uid.indexOf("KinghtFall") !== 0) return false;

@@ -9,23 +9,30 @@ const clone=value=>JSON.parse(JSON.stringify(value));
 const folder='assets/resources/hero-maker',equipmentFolder=folder+'/equipment';
 const roles={shenti:0,doupeng:1,tou:2,jian:3,gong:4,shou:5};
 const family={skirmisher:'Bow',fighter:'Sword',vanguard:'Spear',mystic:'Staff',bruiser:'Axe',guardian:'Blunt'};
+const starter={helmet:'character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_003_Wood',chest:'Chest/FA_Chest_050_Gold',bow:'HandRight/Bow/FA_WP_Main_Bow_014_Brown',arrow:'HandRight/Arrow/FA_Consumable_Arrow_021'};
+const capeFit={x:9.5,y:6,scaleX:.68,scaleY:.68},capePivot={x:30.24,y:35.58};
 function source(root,name,read){
   const file='assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_'+name+'/wqyl_lead_'+name+'.json',atlas=read(path.join(root,file.replace('.json','.atlas'))).toString('utf8'),pages={};
   atlas.split(/\r?\n/).forEach((line,i,lines)=>{if(line.trim()&&(!i||!lines[i-1].trim())&&/\.png$/i.test(line.trim()))pages[line.trim()]=url.pathToFileURL(path.join(root,path.dirname(file),line.trim())).href;});
   return {name:'wqyl_lead_'+name,uuid:JSON.parse(read(path.join(root,file+'.meta'))).uuid,json:JSON.parse(read(path.join(root,file))),atlas,pages};
 }
 function expand(rig){
+  // Keep the public Cape bone as the cloth's fitting origin, including drafts
+  // authored before the shoulder hinge was introduced.
+  rig.bones.push({name:'Rider/Body/CapeAnchor',parent:'Rider/Body',x:-48,y:-26},{name:'Rider/Body/CapeShoulder',parent:'Rider/Body/CapeAnchor',...capePivot});
   const extras=[
-    {name:'Rider/Body/Cape',parent:'Rider/Body',x:-48,y:-26,rotation:0},
+    {name:'Rider/Body/Cape',parent:'Rider/Body/CapeShoulder',x:-capePivot.x,y:-capePivot.y,rotation:0},
     {name:'Rider/Body/Boots',parent:'Rider/Body',x:-11,y:-24},
     ...Object.entries(family).map(([style,type])=>({name:'Rider/Gloves/'+style,parent:'Rider/HandRight/'+type,x:10,y:0}))
   ];
   // Bow's visible item is a child of its aiming bone. Other weapons use their
   // own animated pivot directly. Boots and cape follow the torso's motion.
   for(const bone of extras){rig.bones.push(bone);const slot={name:bone.name,bone:bone.name,color:'ffffffff'};const at=/Cape$/.test(bone.name)?rig.slots.findIndex(s=>s.name==='Rider/Body/Chest')+1:rig.slots.length;rig.slots.splice(at,0,slot);}
+  // The shoulder is the hinge. The inverse child offset keeps the authored
+  // fitting coordinates intact while only the cloth below the hinge swings.
   for(const clip of Object.values(rig.animations)){
     const length=Bake.duration(clip);if(!length)continue;
-    clip.bones=clip.bones||{};clip.bones['Rider/Body/Cape']={rotate:[{time:0,angle:0},{time:length*.25,angle:4},{time:length*.5,angle:0},{time:length*.75,angle:-4},{time:length,angle:0}]};
+    clip.bones=clip.bones||{};clip.bones['Rider/Body/CapeShoulder']={rotate:[{time:0,angle:0},{time:length*.25,angle:4},{time:length*.5,angle:0},{time:length*.75,angle:-4},{time:length,angle:0}]};
   }
   return rig;
 }
@@ -105,10 +112,10 @@ function plan(root){
   const files=new Map(),reads=new Map(),read=file=>{file=path.resolve(file);const relative=path.relative(root,file).replace(/\\/g,'/');if(files.has(relative))return Buffer.from(files.get(relative));if(!reads.has(file))reads.set(file,fs.readFileSync(file));return reads.get(file);};
   const images=new Map(),decode=bytes=>{const key=require('crypto').createHash('sha256').update(bytes).digest('hex');if(!images.has(key))images.set(key,PNG.decode(bytes));return images.get(key);};
   const library=Library.describe(root,'character-maker/Character',true),maker=clone(library.layers[0]);read(path.join(root,library.source));read(path.join(root,library.source.replace('.json','.atlas')));expand(maker.json);
-  const catalogFile='assets/resources/character-parts/catalog.json',text=read(path.join(root,catalogFile)).toString('utf8'),catalog=JSON.parse(text),custom=customEquipment(root,files,read),assets=new Map(catalog.parts.concat(custom).map(asset=>[asset.id,asset]));
+  const catalogFile='assets/resources/character-parts/catalog.json',text=read(path.join(root,catalogFile)).toString('utf8'),catalog=JSON.parse(text),custom=customEquipment(root,files,read),assets=new Map(catalog.parts.concat(Library.load(root).parts.filter(asset=>asset.sourcePack==='character-maker'),custom).map(asset=>[asset.id,asset]));
   const replacements=new Map(),icons={},gearAssets=type=>[...assets.values()].filter(a=>a.id.startsWith(type+'/'));
   const choose=(type,tier)=>{const list=gearAssets(type);if(!list.length)throw Error('Missing Maker '+type);return list[Math.min(list.length-1,(tier-1)*3)];};
-  const weapon=(style,tier)=>style==='guardian'?assets.get('HandRight/Blunt/FA_WP_Main_Blunt_'+['017_DarkGreen','017_Red','017_Sky','024_GoldPurple'][tier-1]):choose('HandRight/'+family[style],tier);
+  const weapon=(style,tier)=>style==='guardian'?assets.get('HandRight/Blunt/FA_WP_Main_Blunt_'+['017_DarkGreen','017_Red','017_Sky','024_GoldPurple'][tier-1]):style==='skirmisher'&&tier===1?assets.get(starter.bow):choose('HandRight/'+family[style],tier);
   for(const [name,role]of Object.entries(roles)){
     const original=source(root,name,read),base=clone(maker),originalUuid=original.uuid;base.uuid=Bake.uuid(folder+'/wqyl_lead_'+name+'.json');
     // 30% larger than the .6 cavalry rider, retaining the full-size hero horse.
@@ -121,9 +128,9 @@ function plan(root){
     for(const skin of skins){
       const match=/^(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_(.+)$/.exec(skin),style=match?match[1]:'skirmisher',tierName=match?match[2]:skin,tier=/^vip/.test(tierName)?4:Math.min(4,Number(tierName.replace(/\D/g,''))||1),parts=[];
       function add(asset,slot,overrides){if(!asset)throw Error('Missing hero equipment for '+slot);parts.push({...attachment(asset,slot,slot.replace(/[^a-z0-9]/gi,'_')+'_'+skin),layer:base.uuid,...overrides});}
-      if(role===1){add(tier===1?assets.get('Chest/FA_Chest_032_Blue'):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape',{scaleX:.95});}
-      if(role===2)add(tier===1?assets.get('Helmet/FA_Helmet_047_White'):choose('Helmet',tier),slotFor('Helmet'));
-      if(role===3&&style==='skirmisher')add(choose('HandRight/Arrow',tier),slotFor('Arrow'),{forceVisible:false});
+      if(role===1){add(tier===1?assets.get(starter.chest):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape',capeFit);}
+      if(role===2)add(tier===1?assets.get(starter.helmet):choose('Helmet',tier),slotFor('Helmet'));
+      if(role===3&&style==='skirmisher')add(tier===1?assets.get(starter.arrow):choose('HandRight/Arrow',tier),slotFor('Arrow'),{forceVisible:false});
       if(role===4){const type=family[style];add(weapon(style,tier),slotFor(type));if(style==='guardian')add(assets.get('HandLeft/Shield/FA_WP_Sub_Shield_012_Blue')||choose('HandLeft/Shield',tier),slotFor('Shield'));}
       // Gloves retain their independent upgrade skins and Gear icons, while
       // the rider uses the Maker silhouette without added gloves or boots.
@@ -138,6 +145,9 @@ function plan(root){
       // is shared across skins, just as with the original independently skinned gear.
       for(const slot of rig.slots){const own=compiled.rig.slots.find(s=>s.name===slot.name);if(own.attachment&&own.attachment.startsWith('part_')){const variants=current.attachments[slot.name];if(variants){const [key,value]=Object.entries(variants)[0];const stable='hero_'+slot.name.replace(/[^a-z0-9]/gi,'_');delete variants[key];variants[stable]={...value,path:value.path||key};slot.attachment=stable;}}}
     }
+    // Keep the starter arrow nocked in the idle/walking outfit. Attacks retain
+    // the Maker draw/release fade so the hand empties when the shot leaves.
+    if(role===3){const slot=rig.slots.find(slot=>slot.name===slotFor('Arrow'));slot.color='ffffffff';for(const action of ['idle','move']){const clip=rig.animations[action],body=clip.slots&&clip.slots['Rider/Body'];(clip.slots||(clip.slots={}))[slot.name]={color:body&&body.color?body.color.map(frame=>({time:frame.time,color:'ffffff'+frame.color.slice(6,8)})):[{time:0,color:'ffffffff'},{time:Bake.duration(clip),color:'ffffffff'}]};}}
     // A skin chooses which item is present; it must not inherit the first
     // (bow) skin's hidden shield or alternate-weapon visibility tracks.
     // The arrow alone retains its authored draw/release fade.
@@ -167,8 +177,12 @@ function plan(root){
     const role=Placement.role(assets.get(part.sprite)||{});if(role!=='Helmet')throw Error('Fit existing hero gear before replacing its legacy model.');
     Object.assign(part,{layer:replacements.get(part.layer),slot:slotFor('Helmet'),bone:slotFor('Helmet'),...Placement.intended(assets.get(part.sprite)),hideSlots:[]});delete profile.bakedLayers;delete profile.bakedVersion;
   }
-  files.set(itemFile,Document.patch(itemText,items,nextItems));Bake.preserveMetadata(root,files,read);
+  files.set(itemFile,Document.patch(itemText,items,nextItems));
+  // Metadata must come from disk, not the generated-file overlay, to retain
+  // Creator UUIDs, importer versions and any custom texture settings.
+  Bake.preserveMetadata(root,files,file=>{file=path.resolve(file);if(!reads.has(file))reads.set(file,fs.readFileSync(file));return reads.get(file);});
+  for(const [relative,bytes]of files)if(relative.endsWith('.meta')){const previous=reads.get(path.join(root,relative));if(previous&&Document.equal(JSON.parse(previous),JSON.parse(bytes)))files.set(relative,previous);}
   for(const relative of files.keys()){const file=path.join(root,relative);if(!reads.has(file))reads.set(file,fs.existsSync(file)?fs.readFileSync(file):null);}
   return {files,reads};
 }
-module.exports={plan,expand,animations,belongs,folder,family,slotFor};
+module.exports={plan,expand,animations,belongs,folder,family,slotFor,starter,capeFit,capePivot};

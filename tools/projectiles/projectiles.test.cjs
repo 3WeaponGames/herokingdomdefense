@@ -38,18 +38,23 @@ test('missing saved speeds retain scripted defaults without normalization and ma
  const f=fixture(t),configFile=path.join(f.dir,'assets/KinghtFallConfig/GameJsonCfg.json'),config=JSON.parse(fs.readFileSync(configFile));delete config.BuildEnum[2].levelList[3].Tower.projectileSpeed;fs.writeFileSync(configFile,JSON.stringify(config));const original=fs.readFileSync(configFile),s=f.service.load();assert.equal(s.speeds['tower:2:4'],300);assert.equal(s.dirty,false);assert.equal(f.service.save({version:f.service.version}).result.saved,false);assert.deepEqual(fs.readFileSync(configFile),original);
  for(const bad of [0,-1,Infinity,NaN,'300',20001]){const speeds=structuredClone(s.speeds);speeds['tower:2:4']=bad;assert.throws(()=>f.service.change({version:f.service.version,data:s.data,speeds}),/speed/);}
 });
-function visualFixture(data,item){
+function visualFixture(data,item,defaultIcon){
   class Renderer{constructor(){this.enabled=true;}destroy(){this.destroyed=true;}}
   class Sprite extends Renderer{}Sprite.SizeMode={CUSTOM:1};
   class Node{constructor(name){this.name=name;this.children=[];this.components=[];this.x=13;this.y=17;this.width=7;this.height=9;this.angle=0;this.active=true;}setParent(p){this.parent=p;p.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(x,y){this.x=typeof x==='object'?x.x:x;this.y=typeof x==='object'?x.y:y;}setScale(x){this.scaleX=this.scaleY=x;}setContentSize(w,h){this.width=w;this.height=h;}getComponent(C){return this.components.find(c=>c instanceof C);}addComponent(C){const c=new C();c.node=this;this.components.push(c);return c;}getComponentsInChildren(C){return this.components.filter(c=>c instanceof C).concat(...this.children.filter(n=>!n.destroyed).map(n=>n.getComponentsInChildren(C)));}destroy(){this.destroyed=true;}}
   class Frame{constructor(asset,rect){this.width=rect?rect.width:80;this.height=rect?rect.height:30;}getOriginalSize(){return{width:this.width,height:this.height};}destroy(){this.destroyed=true;}addRef(){}decRef(){}}
   const pending=[],cc={Node,Sprite,RenderComponent:Renderer,SpriteFrame:Frame,Texture2D:function(){},JsonAsset:function(){},color:c=>c,rect:(x,y,width,height)=>({x,y,width,height}),isValid:o=>!!o&&!o.destroyed,resources:{load(resource,type,cb){pending.push(()=>cb(null,resource==='projectiles/catalog'?{json:data}:type===Frame?new Frame():{addRef(){},decRef(){}}));}}};
-  const ex={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:ex,cc,console,require(name){if(name==='FantasyEffects')return require('../../assets/_script/FantasyEffects');if(name==='HeroItemLooks')return {item:()=>item,whenReady(){}};if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getPersonLevel:()=>3})})}};throw Error(name);}});
+  const ex={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:ex,cc,console,require(name){if(name==='FantasyEffects')return require('../../assets/_script/FantasyEffects');if(name==='HeroItemLooks')return {item:()=>item,image:()=>defaultIcon,whenReady(){}};if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getPersonLevel:()=>3})})}};throw Error(name);}});
   const owner={_combatEpoch:1},node=new Node('shot'),parent=new Node('world');node.setParent(parent);const bullet=new Node('original');bullet.setParent(node);const original=bullet.addComponent(Sprite);
   const shot={node,bullet,_shot:{},speed:500,angle:30,state:0};
   return {api:ex,shot,owner,original,cc,pending,flush(){while(pending.length)pending.shift()();}};
 }
 const visualData=()=>({assets:[{id:'arrow',kind:'sprite',resource:'arrow',sourcePart:'item-arrow',size:44},{id:'fx',kind:'flipbook',resource:'fx',frames:4,columns:2,cell:16,fps:24}],assignments:{'ally:90003':{flight:'arrow',launch:'fx',impact:'fx',size:64}}});
+
+test('an uncustomized starting bow fires the arrow shown by its default gear icon while explicit projectile choices retain precedence',()=>{
+ const data=visualData(),f=visualFixture(data,null,{id:'item-arrow'});f.owner.ctrPlay={heroStyle:'skirmisher'};f.api.prepare(f.shot,f.owner,'hero');f.shot._launchProjectileLook();f.flush();assert.equal(f.shot._projectileVisual.clip.descriptor.id,'arrow');assert.equal(f.shot.speed,500);f.owner._projectileLooks.dispose();
+ data.assignments.hero={flight:'fx'};const g=visualFixture(data,null,{id:'item-arrow'});g.owner.ctrPlay={heroStyle:'skirmisher'};g.api.prepare(g.shot,g.owner,'hero');g.shot._launchProjectileLook();g.flush();assert.equal(g.shot._projectileVisual.clip.descriptor.id,'fx');g.owner._projectileLooks.dispose();
+});
 
 test('Fantasy projectile defaults follow the launched model, snapshot its appearance, and retain explicit overrides',()=>{
  const data=visualData(),f=visualFixture(data),source={spAni:{skeletonData:{skeletonJson:{_fantasy:{effects:{projectile:{flight:'arrow',impact:'fx',size:80}}}}}}};

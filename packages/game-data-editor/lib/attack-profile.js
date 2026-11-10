@@ -46,7 +46,8 @@ function describe(description,settings,request){
   const key=type==='hero'?'hero:hero:default':prefix+form;
   const speedKey=level?'ally:'+id+':level:'+level:key;
   const speeds=settings.animationSpeeds||{},scoped=speeds[speedKey],shared=speeds[key];
-  const animationSpeed=validSpeed(scoped)?scoped:validSpeed(shared)?shared:1;
+  const model=(Array.isArray(description.layers)?description.layers:[]).map(layer=>layer&&layer.json&&layer.json._fantasy).find(Boolean),modelSpeed=model&&model.pack==='fantasy-bosses'?.65:model&&model.pack==='fantasy-monsters'?.75:1;
+  const animationSpeed=validSpeed(scoped)?scoped:validSpeed(shared)?shared:modelSpeed;
   let timing=settings.timings&&settings.timings[key];
   if(timing===undefined)timing=settings.timingDefaults&&settings.timingDefaults[key];
   const marker=timing&&timing.attack;
