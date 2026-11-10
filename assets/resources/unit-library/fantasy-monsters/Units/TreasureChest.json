@@ -1,0 +1,635 @@
+{
+  "skeleton": {
+    "spine": "3.8.99",
+    "images": "",
+    "audio": "",
+    "x": -90.0,
+    "y": 0,
+    "width": 180.0,
+    "height": 120
+  },
+  "bones": [
+    {
+      "name": "__size",
+      "scaleX": 0.46875,
+      "scaleY": 0.46875,
+      "x": -0.0,
+      "y": 30.703125
+    },
+    {
+      "name": "__root",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 0.5,
+      "scaleY": 0.5,
+      "parent": "__size"
+    },
+    {
+      "name": "Body",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "__root"
+    },
+    {
+      "name": "Body/Normal",
+      "x": 60.0,
+      "y": 125.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/Broken",
+      "x": 60.0,
+      "y": 125.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "AnchorStatus",
+      "x": 0,
+      "y": 350.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "__root"
+    },
+    {
+      "name": "Shadow",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 3,
+      "scaleY": 1,
+      "parent": "__root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "Shadow",
+      "bone": "Shadow",
+      "attachment": "sprite_Shadow",
+      "color": "ffffffc8"
+    },
+    {
+      "name": "Body/Normal",
+      "bone": "Body/Normal",
+      "attachment": "sprite_BodyNormal",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/Broken",
+      "bone": "Body/Broken",
+      "attachment": "sprite_BodyBroken",
+      "color": "ffffff00"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Normal": {
+          "sprite_BodyNormal": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_53235200570bf7da660dc91d5d1e4243"
+          }
+        },
+        "Body/Broken": {
+          "sprite_BodyBroken": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce695e1d55db57b6848d661d753dcb29"
+          }
+        }
+      }
+    },
+    {
+      "name": "MimicChest",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Normal": {
+          "sprite_BodyNormal": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_781fe9f41d6acb5989ebbec0a2a3f916"
+          }
+        },
+        "Body/Broken": {
+          "sprite_BodyBroken": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_2f4c03492765e7b40264f5e478960adf"
+          }
+        }
+      }
+    },
+    {
+      "name": "TreasureChest",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Normal": {
+          "sprite_BodyNormal": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_53235200570bf7da660dc91d5d1e4243"
+          }
+        },
+        "Body/Broken": {
+          "sprite_BodyBroken": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce695e1d55db57b6848d661d753dcb29"
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "idle": {
+      "bones": {},
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 1,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/Normal": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Broken": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    },
+    "die": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 11.35002
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 24.79997
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 39.45
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 54.40003
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 68.74997
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 81.6
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 92.05002
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 99.19999
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 102.15
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 99.99999
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 89.60003
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 70.80001
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 47.19995
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 22.40005
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 2.32
+            },
+            {
+              "time": 0.0333333,
+              "angle": 4.95999
+            },
+            {
+              "time": 0.05,
+              "angle": 7.44
+            },
+            {
+              "time": 0.0666667,
+              "angle": 9.28
+            },
+            {
+              "time": 0.0833333,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1,
+              "angle": 9.28
+            },
+            {
+              "time": 0.1166667,
+              "angle": 7.44
+            },
+            {
+              "time": 0.1333333,
+              "angle": 4.96001
+            },
+            {
+              "time": 0.15,
+              "angle": 2.32
+            },
+            {
+              "time": 0.1666667,
+              "angle": -0.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -2.31999
+            },
+            {
+              "time": 0.2,
+              "angle": -4.96
+            },
+            {
+              "time": 0.2166667,
+              "angle": -7.44
+            },
+            {
+              "time": 0.2333333,
+              "angle": -9.28
+            },
+            {
+              "time": 0.25,
+              "angle": -10.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -9.28
+            },
+            {
+              "time": 0.2833333,
+              "angle": -7.44
+            },
+            {
+              "time": 0.3,
+              "angle": -4.96
+            },
+            {
+              "time": 0.3166667,
+              "angle": -2.32
+            },
+            {
+              "time": 0.3333333,
+              "angle": -1e-05
+            },
+            {
+              "time": 0.33333334,
+              "angle": -0.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/Normal": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body/Broken": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "move": {
+      "bones": {},
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 1,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/Normal": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Broken": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    },
+    "attack": {
+      "bones": {},
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 1,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/Normal": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 1,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Broken": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 1,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    },
+    "hit": {
+      "bones": {},
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/Normal": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Broken": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": {},
+  "_fantasy": {
+    "version": 1,
+    "pack": "fantasy-monsters",
+    "family": "Inanimate",
+    "preset": "fantasy-monsters/TreasureChest",
+    "presets": [
+      {
+        "id": "fantasy-monsters/MimicChest",
+        "name": "Mimic Chest"
+      },
+      {
+        "id": "fantasy-monsters/TreasureChest",
+        "name": "Treasure Chest"
+      }
+    ],
+    "slots": {
+      "Body/Normal": {
+        "label": "Normal",
+        "variants": [
+          "MimicChest",
+          "TreasureChest"
+        ]
+      },
+      "Body/Broken": {
+        "label": "Broken",
+        "variants": [
+          "MimicChest",
+          "TreasureChest"
+        ]
+      }
+    },
+    "expressions": [],
+    "animationAliases": [
+      "move",
+      "attack"
+    ]
+  }
+}

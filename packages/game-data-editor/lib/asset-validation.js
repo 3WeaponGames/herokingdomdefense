@@ -1,5 +1,6 @@
 'use strict';
 const UnitRecords=require('./unit-records');
+const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 const MapCatalog=require('./map-catalog');
 
 // Validate the resource paths used by the actual runtime readers, rather than
@@ -218,7 +219,7 @@ function validate(root, documents, changes) {
         }, !allied && [90011,90012].includes(Number(id)));
         check('A', at.concat('loadIcon'), unit.loadIcon, name => imported(root, 'KinghtFallEnemy', 'icon/' + name, 'sprite'), !allied && [90011,90012].includes(Number(id)));
         if(unit.MonsterSource!==undefined)check('A',at.concat('MonsterSource'),unit.MonsterSource,source=>{
-            if(typeof source!=='string'||!/^monster[12]\/[A-Za-z0-9_-]+$/.test(source))throw new Error('Choose a known imported monster source.');
+            if(!UnitPacks.isMonsterSource(source))throw new Error('Choose a known imported monster source.');
             const [pack,name]=source.split('/'),catalog=read(path.join(root,'assets/resources/unit-library',pack,'catalog.json'));
             if(!catalog.units.some(unit=>unit.id===source))throw new Error('Monster source is not present in its imported pack catalog.');
             imported(root,'resources','unit-library/'+pack+'/Units/'+name,'spine');

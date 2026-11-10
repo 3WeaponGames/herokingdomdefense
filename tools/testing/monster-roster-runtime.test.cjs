@@ -13,8 +13,8 @@ const monsters = Object.values(config.SoldierCfg).filter(row => row.MonsterSourc
 const classFor = { 90001: 'KinghtFallEnemyItem01', 90002: 'KinghtFallEnemyItem02', 90003: 'KinghtFallEnemyItem03', 90006: 'KinghtFallEnemyItem06', 90009: 'KinghtFallEnemyItem09' };
 
 test('every new runtime prefab binds its own imported rig to the intended controller and preserves ranged projectile references', () => {
-  assert.equal(monsters.length, 100);
-  const sources = new Map(['monster1', 'monster2'].flatMap(pack =>
+  assert.equal(monsters.length, 316);
+  const sources = new Map([...new Set(monsters.map(unit=>unit.MonsterPack))].flatMap(pack =>
     require('../../assets/resources/unit-library/' + pack + '/catalog.json').units.map(unit => [unit.id, unit])));
   const readPrefab = name => JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallEnemy', name + '.prefab'), 'utf8'));
   for (const row of monsters) {
@@ -59,7 +59,7 @@ test('independent pack monsters use default role keys while the original transfo
 });
 
 test('every imported monster spawns through the shipped enemy factory with its own prefab and pool, including warm reuse', () => {
-  assert.equal(monsters.length, 100);
+  assert.equal(monsters.length, 316);
   const pool = new Map(), requests = [], allocations = [];
   const manager = {
     getNode: key => { const values = pool.get(key); return values && values.pop(); },
@@ -83,14 +83,14 @@ test('every imported monster spawns through the shipped enemy factory with its o
     };
   }
   for (const row of monsters) h.g.addEnemy(row.ID, row.ID % 3 + 1);
-  assert.equal(h.d.pendingEnemySpawns, 100);
+  assert.equal(h.d.pendingEnemySpawns, monsters.length);
   assert.deepEqual(requests.map(request => request.prefab), monsters.map(row => row.prefab));
   assert(requests.every(request => request.bundle === 'units'));
   // Resource completion order must not change the record or lane being spawned.
   for (let i = requests.length - 1; i >= 0; i--) requests[i].callback(prefab(monsters[i]));
   assert.equal(h.d.pendingEnemySpawns, 0);
-  assert.equal(h.d.enemyList.length, 100);
-  assert.equal(new Set(allocations.map(row => row.key)).size, 100);
+  assert.equal(h.d.enemyList.length, monsters.length);
+  assert.equal(new Set(allocations.map(row => row.key)).size, monsters.length);
   for (const actor of h.d.enemyList) {
     assert.equal(actor.node.parent, h.g.ndMain);
     assert.deepEqual(actor.initArgs, [actor.cfg.ID, actor.cfg.ID % 3 + 1]);
@@ -98,9 +98,9 @@ test('every imported monster spawns through the shipped enemy factory with its o
   }
   h.d.enemyList = [];
   for (const row of monsters) h.g.addEnemy(row.ID, 2);
-  assert.equal(requests.length, 100, 'Warm spawns should reuse the individual unit pools');
-  assert.equal(allocations.length, 100);
-  assert.equal(h.d.enemyList.length, 100);
+  assert.equal(requests.length, monsters.length, 'Warm spawns should reuse the individual unit pools');
+  assert.equal(allocations.length, monsters.length);
+  assert.equal(h.d.enemyList.length, monsters.length);
   assert(h.d.enemyList.every(actor => actor.initArgs[1] === 2));
 });
 
@@ -133,7 +133,7 @@ function actorFixture(row) {
 }
 
 test('all added monsters initialize their real melee, ranged, buff or healing controller and perform that behavior', () => {
-  assert.equal(monsters.length, 100);
+  assert.equal(monsters.length, 316);
   const behaviors = new Set();
   for (const row of monsters) {
     assert(classFor[row.BehaviorTemplate], row.MonsterSource);
@@ -142,7 +142,8 @@ test('all added monsters initialize their real melee, ranged, buff or healing co
     assert.equal(actor.cfg, row);
     assert(Number.isFinite(actor.hp) && actor.hp > 0, row.MonsterSource);
     if (row.BehaviorTemplate !== 90006 && row.BehaviorTemplate !== 90009) {
-      assert(Number.isFinite(actor.getAttack()) && actor.getAttack() > 0, row.MonsterSource);
+      const passive=require('../characters/monster-roster-definitions.json').units.find(unit=>unit.id===row.ID).passive;
+      assert(Number.isFinite(actor.getAttack()) && (passive?actor.getAttack()===0:actor.getAttack()>0),row.MonsterSource);
     }
     assert.equal(actor.rigidBody.active, !!row.BuildingCross);
     actor.doAttack();
@@ -184,7 +185,7 @@ test('flying imported monsters retain their obstacle-crossing behavior and reach
 });
 
 test('new monster timing, mirror and counter settings use independent default keys without mutating authored settings', () => {
-  assert.equal(monsters.length, 100);
+  assert.equal(monsters.length, 316);
   const e = environment(), settings = structuredClone(config.GameTools);
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data = { GameTools: settings };
   const tools = e.load('GameToolsOverrides');

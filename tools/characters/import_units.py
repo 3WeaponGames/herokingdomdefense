@@ -333,7 +333,7 @@ def plan_atlas_layout(tx, kinds):
 
 def repair_atlas_layout(project, artifacts, kinds=None, dry_run=False):
     tx = Transaction(project, artifacts)
-    result = plan_atlas_layout(tx, kinds or ["character-maker", "monster1", "monster2"])
+    result = plan_atlas_layout(tx, kinds or ["character-maker", "monster1", "monster2", "monster3"])
     result["backup"] = None if dry_run else tx.commit()
     result["dryRun"] = dry_run
     return result
@@ -411,7 +411,7 @@ def import_pack(project, file, kind, artifacts):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("package",type=Path,nargs="?");parser.add_argument("--kind",choices=["monster1","monster2","character-maker"])
+    parser.add_argument("package",type=Path,nargs="?");parser.add_argument("--kind",choices=["monster1","monster2","monster3","character-maker"])
     parser.add_argument("--repair-atlas-layout",action="store_true",help="Add shared sibling atlas pages for Creator 2.4; preserve unit resources and UUIDs")
     parser.add_argument("--dry-run",action="store_true",help="Validate an atlas-layout repair without writing files")
     parser.add_argument("--project",type=Path,default=Path(__file__).resolve().parents[2])

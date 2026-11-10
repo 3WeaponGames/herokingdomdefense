@@ -28,7 +28,7 @@ test('saved model mirroring, independent scales and tint are scoped by side/form
  api.applyModel(owner,'ally',node,false);assert.equal(node.scaleX,.7);assert.equal(node.scaleY,.7);assert.equal(node.x,2);assert.equal(node.y,3);assert.equal(node.angle,5);assert.equal(node.color,'original');
  const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
  const legacyKeys=Array.from({length:12},(_,i)=>{const id=90001+i;assert(config.SoldierCfg[id]&&!config.SoldierCfg[id].MonsterSource);return'enemy:'+id+':'+(id>=90010?id-90009:'default');});
- const imported=Object.values(config.SoldierCfg).filter(unit=>unit.MonsterSource);assert.equal(imported.length,100);
+ const imported=Object.values(config.SoldierCfg).filter(unit=>unit.MonsterSource);assert.equal(imported.length,316);
  const importedKeys=imported.map(unit=>'enemy:'+unit.ID+':default');
  const mirrored=Object.keys(config.GameTools.visuals).filter(k=>k.startsWith('enemy:')&&config.GameTools.visuals[k].mirrorX);
  const campaignKeys=Object.values(config.SoldierCfg).filter(unit=>unit.CampaignBaseUnit).map(unit=>'enemy:'+unit.ID+':default');assert.equal(campaignKeys.length,127);

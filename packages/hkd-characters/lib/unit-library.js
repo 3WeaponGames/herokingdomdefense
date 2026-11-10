@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('fs'),path=require('path'),url=require('url');
 const Units=require('../../game-data-editor/lib/unit-assets');
-const packs=['character-maker','monster1','monster2'];
+const Packs=require('./unit-packs'),packs=Packs.packs.map(pack=>pack.id);
 const cached=new Map();
 function load(root){
   const sources=[],parts=[];
@@ -17,8 +17,8 @@ function load(root){
       const marker=pack==='character-maker'?/\/(Character|Parts|Mount)\/(.+)$/:/\/ResourcesData\/Sprites\/(.+)$/;
       const match=marker.exec(part.image);
       if(!match&&pack==='character-maker'&&!/\/Common\/Sprites\/(Character|Other)\//.test(part.image))continue;
-      const folder=(match&&match[1]==='Mount'?'Mount/':'')+path.dirname(match?match[match.length-1]:part.image).replace(/\\/g,'/');
-      const category=(pack==='character-maker'?'Character Maker':pack==='monster1'?'Monster Pack 1':'Monster Pack 2')+'/'+folder;
+      const folder=pack.startsWith('fantasy-')?'Body parts':(match&&match[1]==='Mount'?'Mount/':'')+path.dirname(match?match[match.length-1]:part.image).replace(/\\/g,'/');
+      const category=Packs.info(pack).label+'/'+folder;
       const thumb=thumbs.get(path.basename(part.image));
       entries.push(Object.assign({},part,{category,thumbnail:thumb?thumb.image:part.image,sourcePack:pack}));
     }

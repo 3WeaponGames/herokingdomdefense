@@ -15,7 +15,7 @@ const Units = require('../lib/unit-assets');
 const Records = require('../lib/unit-records');
 const root = path.resolve(__dirname, '../../..');
 const read = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
-const catalogs = ['monster1', 'monster2'].flatMap(pack => read('assets/resources/unit-library/' + pack + '/catalog.json').units);
+const catalogs = require('../../../tools/characters/monster-roster-definitions.json').units.map(unit=>unit.source.split('/')[0]).filter((pack,index,all)=>all.indexOf(pack)===index).flatMap(pack => read('assets/resources/unit-library/' + pack + '/catalog.json').units);
 const clone = value => JSON.parse(JSON.stringify(value));
 
 function panelFixture() {
@@ -31,7 +31,7 @@ function panelFixture() {
 test('every imported monster is an independent spawnable Units record with its actual rig and all five animations', () => {
     const store = new Store(root), documents = store.snapshot().documents, cfg = documents.A.data;
     const monsters = Object.values(cfg.SoldierCfg).filter(unit => unit.MonsterSource);
-    assert.equal(catalogs.length, 100);
+    assert.equal(catalogs.length, 316);
     assert.equal(monsters.length, catalogs.length);
     assert.equal(new Set(monsters.map(unit => unit.MonsterSource)).size, catalogs.length);
     assert.equal(new Set(monsters.map(unit => unit.prefab)).size, catalogs.length);
@@ -50,8 +50,10 @@ test('every imported monster is an independent spawnable Units record with its a
         assert.equal(layer.uuid, source.uuid);
         assert(layer.skins.includes(layer.skin));
         for (const animation of ['idle', 'move', 'attack', 'hit', 'die']) assert(layer.animations.includes(animation), source.id + ' / ' + animation);
-        assert.equal(description.defaultTiming, null, 'eventless rig must not acquire an invented green reference');
-        assert.equal(description.timingEvents.length, 0);
+        const authored=JSON.parse(fs.readFileSync(path.join(root,source.skeleton))).animations.attack.events||[];
+        const hits=authored.filter(event=>event.name==='attack');
+        assert.equal(description.defaultTiming,hits.length===1?hits[0].time:null);
+        assert.equal(description.timingEvents.length,authored.length);
         const key = description.key;
         assert(cfg.GameTools.unitTypes[cfg.GameTools.unitTypeAssignments[key]], key + ' role');
         assert(Number.isFinite(cfg.GameTools.timingDefaults[key].attack), key + ' saved gameplay timing');
@@ -66,7 +68,7 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
     const rows = f.panel._rows(), monsters = rows.filter(row => row.record.MonsterSource);
     assert.equal(monsters.length, catalogs.length);
     for (const row of monsters) f.render(row.key);
-    for (const pack of ['monster1', 'monster2', 'campaign', 'allies']) {
+    for (const pack of ['monster1','monster2','monster3','fantasy-bosses','fantasy-monsters','campaign','allies']) {
         f.panel._unitPack = pack; f.panel._selected = null; f.panel.$search.value = ''; f.panel._render();
         const expected = pack === 'allies' ? 5 : pack === 'campaign' ? Object.values(before.A.SoldierCfg).filter(unit => !unit.MonsterPack).length : catalogs.filter(unit => unit.pack === pack).length;
         assert.equal(f.panel.$list.children.length, expected, pack);
@@ -79,7 +81,7 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
         assert(choice, row.key + ' wave choice');
         assert(choice.label.includes(row.label));
         assert(choice.label.includes(f.panel._unitRole('enemy', row.unitID)));
-        assert(choice.label.includes(row.record.MonsterPack === 'monster1' ? 'Pack 1' : 'Pack 2'));
+        assert(choice.label.includes(require('../../hkd-characters/lib/unit-packs').info(row.record.MonsterPack).label.replace('Monster Pack','Pack')));
     }
     assert(!choices.some(option => option.value === 90011 || option.value === 90012), 'transformation forms remain unspawnable');
     assert.deepEqual(f.store.draftState(), before);

@@ -1,0 +1,4473 @@
+{
+  "skeleton": {
+    "spine": "3.8.99",
+    "images": "",
+    "audio": "",
+    "x": -72.83763277693474,
+    "y": 0,
+    "width": 145.67526555386948,
+    "height": 120
+  },
+  "bones": [
+    {
+      "name": "__size",
+      "scaleX": 0.4552352048558421,
+      "scaleY": 0.4552352048558421,
+      "x": -0.0,
+      "y": 18.209408194233685
+    },
+    {
+      "name": "__root",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 0.5,
+      "scaleY": 0.5,
+      "parent": "__size"
+    },
+    {
+      "name": "Body",
+      "x": 0,
+      "y": 160.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "__root"
+    },
+    {
+      "name": "Body/Head",
+      "x": -43.0,
+      "y": 60.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/Wing",
+      "x": 6.0,
+      "y": 10.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/LegL",
+      "x": 25.0,
+      "y": -73.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/LegR",
+      "x": -15.0,
+      "y": -63.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/Tail",
+      "x": 60.0,
+      "y": 30.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorBody",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorWeapon",
+      "x": -200,
+      "y": -50.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorStatus",
+      "x": 0,
+      "y": 200,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Shadow",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 2,
+      "scaleY": 1,
+      "parent": "__root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "Body/Tail",
+      "bone": "Body/Tail",
+      "attachment": "sprite_Tail",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Shadow",
+      "bone": "Shadow",
+      "attachment": "sprite_Shadow",
+      "color": "ffffffc8"
+    },
+    {
+      "name": "Body/LegR",
+      "bone": "Body/LegR",
+      "attachment": "sprite_Leg",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body",
+      "bone": "Body",
+      "attachment": "sprite_Body",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/LegL",
+      "bone": "Body/LegL",
+      "attachment": "sprite_Leg",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/Head",
+      "bone": "Body/Head",
+      "attachment": "sprite_HeadNormal",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/Wing",
+      "bone": "Body/Wing",
+      "attachment": "sprite_Wing",
+      "color": "ffffffff"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": 48.00000000000001,
+            "y": 31.999999999999993,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_578dda104373fd210cfe1ddcb7142c3e"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/LegR": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_381aceaa274ad1ed5b4aeef97db57c0d"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 640.0,
+            "height": 480.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e440b3e2d67be3683fcee692d4366b72"
+          }
+        },
+        "Body/LegL": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_381aceaa274ad1ed5b4aeef97db57c0d"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadNormal": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b4dd270d2c911bdfaafb3888b52afc93"
+          },
+          "sprite_HeadDead": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_83a36ca2dcf0aefe30fd7180e1b6d675"
+          },
+          "sprite_HeadAngry": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_6a06a752f766a4ae403b75563d6beb80"
+          }
+        },
+        "Body/Wing": {
+          "sprite_Wing": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": 32.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_838da8032ad5c98a072a1b409a251f75"
+          }
+        }
+      }
+    },
+    {
+      "name": "ForestTurkey",
+      "attachments": {
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": 48.00000000000001,
+            "y": 31.999999999999993,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_578dda104373fd210cfe1ddcb7142c3e"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/LegR": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_381aceaa274ad1ed5b4aeef97db57c0d"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 640.0,
+            "height": 480.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e440b3e2d67be3683fcee692d4366b72"
+          }
+        },
+        "Body/LegL": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_381aceaa274ad1ed5b4aeef97db57c0d"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadNormal": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b4dd270d2c911bdfaafb3888b52afc93"
+          },
+          "sprite_HeadDead": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_83a36ca2dcf0aefe30fd7180e1b6d675"
+          },
+          "sprite_HeadAngry": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_6a06a752f766a4ae403b75563d6beb80"
+          }
+        },
+        "Body/Wing": {
+          "sprite_Wing": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": 32.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_838da8032ad5c98a072a1b409a251f75"
+          }
+        }
+      }
+    },
+    {
+      "name": "Gobbler",
+      "attachments": {
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": 48.00000000000001,
+            "y": 31.999999999999993,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9c261906e6e73d6d9ef54c26aa4726df"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/LegR": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_001e720b88be9e874efb691334fb8a90"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 640.0,
+            "height": 480.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_3827e92d066360dc67c763464aa8073f"
+          }
+        },
+        "Body/LegL": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_001e720b88be9e874efb691334fb8a90"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadNormal": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_6ea96b2c201186d996a8d561a350a55b"
+          },
+          "sprite_HeadDead": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_df6da1bc9b7d56939c537ae1fc9da7fb"
+          },
+          "sprite_HeadAngry": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_13dbc32a68599b28bf1fc8fab53b8529"
+          }
+        },
+        "Body/Wing": {
+          "sprite_Wing": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": 32.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_635309cdd8125c1ec2d27f2f4235756a"
+          }
+        }
+      }
+    },
+    {
+      "name": "Turkey",
+      "attachments": {
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": 48.00000000000001,
+            "y": 31.999999999999993,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_bc80b93086f36898b19a2f13ffeaeb00"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/LegR": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e06f9c600731240ec18f5ef08aa6af1d"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 640.0,
+            "height": 480.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_53a54e33b0f2057c9430e8e48aac3839"
+          }
+        },
+        "Body/LegL": {
+          "sprite_Leg": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": -9.920000000000009,
+            "y": -38.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e06f9c600731240ec18f5ef08aa6af1d"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadNormal": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_d95d60ce293d8aef5f2640baac5543a2"
+          },
+          "sprite_HeadDead": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b542a85ce0f602161cdccc0c60feb4e6"
+          },
+          "sprite_HeadAngry": {
+            "width": 320.0,
+            "height": 320.0,
+            "x": -9.600000000000009,
+            "y": 67.2,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_20e4bc2b3002994b65d5005a556b95ac"
+          }
+        },
+        "Body/Wing": {
+          "sprite_Wing": {
+            "width": 160.0,
+            "height": 160.0,
+            "x": 32.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_952d8f8aa155f721f4202bb61b35ca7f"
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "idle": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": -0.12741
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": -0.48592
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": -1.04
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": -1.75408
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": -2.59259
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": -3.52
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": -4.50074
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": -5.49926
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": -6.48
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": -7.40741
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": -8.24592
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": -8.96
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": -9.51408
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": -9.87259
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": -10.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": -9.87259
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": -9.51408
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": -8.96
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": -8.24592
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": -7.40741
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": -6.48
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": -5.49926
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": -4.50074
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": -3.52
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": -2.59259
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": -1.75408
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": -1.04
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": -0.48592
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": -0.12741
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "Body/LegL": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 0.12741
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 0.48592
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 1.04
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 1.75408
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 2.59259
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 3.52
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 4.50074
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 5.49926
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 6.48
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 7.40741
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 8.24592
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 8.96
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 9.51408
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 9.87259
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 10.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 9.87259
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 9.51408
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": 8.96
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": 8.24592
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": 7.40741
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": 6.48
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": 5.49926
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": 4.50074
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": 3.52
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": 2.59259
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": 1.75408
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": 1.04
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": 0.48592
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": 0.12741
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "Body/LegR": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 0.12741
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 0.48592
+            },
+            {
+              "time": 0.05,
+              "x": -0.0,
+              "y": 1.04
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 1.75408
+            },
+            {
+              "time": 0.0833333,
+              "x": -0.0,
+              "y": 2.59259
+            },
+            {
+              "time": 0.1,
+              "x": -0.0,
+              "y": 3.52
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 4.50074
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 5.49926
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 6.48
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 7.40741
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 8.24592
+            },
+            {
+              "time": 0.2,
+              "x": -0.0,
+              "y": 8.96
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 9.51408
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 9.87259
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 10.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 9.87259
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 9.51408
+            },
+            {
+              "time": 0.3,
+              "x": -0.0,
+              "y": 8.96
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": 8.24592
+            },
+            {
+              "time": 0.3333333,
+              "x": -0.0,
+              "y": 7.40741
+            },
+            {
+              "time": 0.35,
+              "x": -0.0,
+              "y": 6.48
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": 5.49926
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": 4.50074
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": 3.52
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": 2.59259
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": 1.75408
+            },
+            {
+              "time": 0.45,
+              "x": -0.0,
+              "y": 1.04
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": 0.48592
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": 0.12741
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "Body/Wing": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.12741
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.48592
+            },
+            {
+              "time": 0.05,
+              "angle": -1.04
+            },
+            {
+              "time": 0.0666667,
+              "angle": -1.75408
+            },
+            {
+              "time": 0.0833333,
+              "angle": -2.59259
+            },
+            {
+              "time": 0.1,
+              "angle": -3.52
+            },
+            {
+              "time": 0.1166667,
+              "angle": -4.50074
+            },
+            {
+              "time": 0.1333333,
+              "angle": -5.49926
+            },
+            {
+              "time": 0.15,
+              "angle": -6.48
+            },
+            {
+              "time": 0.1666667,
+              "angle": -7.40741
+            },
+            {
+              "time": 0.1833333,
+              "angle": -8.24592
+            },
+            {
+              "time": 0.2,
+              "angle": -8.96
+            },
+            {
+              "time": 0.2166667,
+              "angle": -9.51408
+            },
+            {
+              "time": 0.2333333,
+              "angle": -9.87259
+            },
+            {
+              "time": 0.25,
+              "angle": -10.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -9.87259
+            },
+            {
+              "time": 0.2833333,
+              "angle": -9.51408
+            },
+            {
+              "time": 0.3,
+              "angle": -8.96
+            },
+            {
+              "time": 0.3166667,
+              "angle": -8.24592
+            },
+            {
+              "time": 0.3333333,
+              "angle": -7.40741
+            },
+            {
+              "time": 0.35,
+              "angle": -6.48
+            },
+            {
+              "time": 0.3666667,
+              "angle": -5.49926
+            },
+            {
+              "time": 0.3833333,
+              "angle": -4.50074
+            },
+            {
+              "time": 0.4,
+              "angle": -3.52
+            },
+            {
+              "time": 0.4166667,
+              "angle": -2.59259
+            },
+            {
+              "time": 0.4333333,
+              "angle": -1.75408
+            },
+            {
+              "time": 0.45,
+              "angle": -1.04
+            },
+            {
+              "time": 0.4666667,
+              "angle": -0.48592
+            },
+            {
+              "time": 0.4833333,
+              "angle": -0.12741
+            },
+            {
+              "time": 0.5,
+              "angle": -0.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.0637
+            },
+            {
+              "time": 0.0333333,
+              "angle": 0.24296
+            },
+            {
+              "time": 0.05,
+              "angle": 0.52
+            },
+            {
+              "time": 0.0666667,
+              "angle": 0.87704
+            },
+            {
+              "time": 0.0833333,
+              "angle": 1.2963
+            },
+            {
+              "time": 0.1,
+              "angle": 1.76
+            },
+            {
+              "time": 0.1166667,
+              "angle": 2.25037
+            },
+            {
+              "time": 0.1333333,
+              "angle": 2.74963
+            },
+            {
+              "time": 0.15,
+              "angle": 3.24
+            },
+            {
+              "time": 0.1666667,
+              "angle": 3.7037
+            },
+            {
+              "time": 0.1833333,
+              "angle": 4.12296
+            },
+            {
+              "time": 0.2,
+              "angle": 4.48
+            },
+            {
+              "time": 0.2166667,
+              "angle": 4.75704
+            },
+            {
+              "time": 0.2333333,
+              "angle": 4.9363
+            },
+            {
+              "time": 0.25,
+              "angle": 5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 4.9363
+            },
+            {
+              "time": 0.2833333,
+              "angle": 4.75704
+            },
+            {
+              "time": 0.3,
+              "angle": 4.48
+            },
+            {
+              "time": 0.3166667,
+              "angle": 4.12296
+            },
+            {
+              "time": 0.3333333,
+              "angle": 3.7037
+            },
+            {
+              "time": 0.35,
+              "angle": 3.24
+            },
+            {
+              "time": 0.3666667,
+              "angle": 2.74963
+            },
+            {
+              "time": 0.3833333,
+              "angle": 2.25037
+            },
+            {
+              "time": 0.4,
+              "angle": 1.76
+            },
+            {
+              "time": 0.4166667,
+              "angle": 1.2963
+            },
+            {
+              "time": 0.4333333,
+              "angle": 0.87704
+            },
+            {
+              "time": 0.45,
+              "angle": 0.52
+            },
+            {
+              "time": 0.4666667,
+              "angle": 0.24296
+            },
+            {
+              "time": 0.4833333,
+              "angle": 0.0637
+            },
+            {
+              "time": 0.5,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.0637
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.24296
+            },
+            {
+              "time": 0.05,
+              "angle": -0.52
+            },
+            {
+              "time": 0.0666667,
+              "angle": -0.87704
+            },
+            {
+              "time": 0.0833333,
+              "angle": -1.2963
+            },
+            {
+              "time": 0.1,
+              "angle": -1.76
+            },
+            {
+              "time": 0.1166667,
+              "angle": -2.25037
+            },
+            {
+              "time": 0.1333333,
+              "angle": -2.74963
+            },
+            {
+              "time": 0.15,
+              "angle": -3.24
+            },
+            {
+              "time": 0.1666667,
+              "angle": -3.7037
+            },
+            {
+              "time": 0.1833333,
+              "angle": -4.12296
+            },
+            {
+              "time": 0.2,
+              "angle": -4.48
+            },
+            {
+              "time": 0.2166667,
+              "angle": -4.75704
+            },
+            {
+              "time": 0.2333333,
+              "angle": -4.9363
+            },
+            {
+              "time": 0.25,
+              "angle": -5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -4.9363
+            },
+            {
+              "time": 0.2833333,
+              "angle": -4.75704
+            },
+            {
+              "time": 0.3,
+              "angle": -4.48
+            },
+            {
+              "time": 0.3166667,
+              "angle": -4.12296
+            },
+            {
+              "time": 0.3333333,
+              "angle": -3.7037
+            },
+            {
+              "time": 0.35,
+              "angle": -3.24
+            },
+            {
+              "time": 0.3666667,
+              "angle": -2.74963
+            },
+            {
+              "time": 0.3833333,
+              "angle": -2.25037
+            },
+            {
+              "time": 0.4,
+              "angle": -1.76
+            },
+            {
+              "time": 0.4166667,
+              "angle": -1.2963
+            },
+            {
+              "time": 0.4333333,
+              "angle": -0.87704
+            },
+            {
+              "time": 0.45,
+              "angle": -0.52
+            },
+            {
+              "time": 0.4666667,
+              "angle": -0.24296
+            },
+            {
+              "time": 0.4833333,
+              "angle": -0.0637
+            },
+            {
+              "time": 0.5,
+              "angle": -0.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/LegR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/Wing": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "move": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": -0.12741
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": -0.48592
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": -1.04
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": -1.75408
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": -2.59259
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": -3.52
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": -4.50074
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": -5.49926
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": -6.48
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": -7.40741
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": -8.24592
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": -8.96
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": -9.51408
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": -9.87259
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": -10.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": -9.87259
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": -9.51408
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": -8.96
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": -8.24592
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": -7.40741
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": -6.48
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": -5.49926
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": -4.50074
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": -3.52
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": -2.59259
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": -1.75408
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": -1.04
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": -0.48592
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": -0.12741
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "Body/LegL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 30.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 29.23555
+            },
+            {
+              "time": 0.0333333,
+              "angle": 27.08445
+            },
+            {
+              "time": 0.05,
+              "angle": 23.76
+            },
+            {
+              "time": 0.0666667,
+              "angle": 19.47555
+            },
+            {
+              "time": 0.0833333,
+              "angle": 14.44445
+            },
+            {
+              "time": 0.1,
+              "angle": 8.88
+            },
+            {
+              "time": 0.1166667,
+              "angle": 2.99554
+            },
+            {
+              "time": 0.1333333,
+              "angle": -2.99554
+            },
+            {
+              "time": 0.15,
+              "angle": -8.88
+            },
+            {
+              "time": 0.1666667,
+              "angle": -14.44445
+            },
+            {
+              "time": 0.1833333,
+              "angle": -19.47555
+            },
+            {
+              "time": 0.2,
+              "angle": -23.76
+            },
+            {
+              "time": 0.2166667,
+              "angle": -27.08445
+            },
+            {
+              "time": 0.2333333,
+              "angle": -29.23555
+            },
+            {
+              "time": 0.25,
+              "angle": -30.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -29.23555
+            },
+            {
+              "time": 0.2833333,
+              "angle": -27.08445
+            },
+            {
+              "time": 0.3,
+              "angle": -23.76
+            },
+            {
+              "time": 0.3166667,
+              "angle": -19.47555
+            },
+            {
+              "time": 0.3333333,
+              "angle": -14.44445
+            },
+            {
+              "time": 0.35,
+              "angle": -8.88
+            },
+            {
+              "time": 0.3666667,
+              "angle": -2.99554
+            },
+            {
+              "time": 0.3833333,
+              "angle": 2.99554
+            },
+            {
+              "time": 0.4,
+              "angle": 8.88
+            },
+            {
+              "time": 0.4166667,
+              "angle": 14.44445
+            },
+            {
+              "time": 0.4333333,
+              "angle": 19.47555
+            },
+            {
+              "time": 0.45,
+              "angle": 23.76
+            },
+            {
+              "time": 0.4666667,
+              "angle": 27.08445
+            },
+            {
+              "time": 0.4833333,
+              "angle": 29.23555
+            },
+            {
+              "time": 0.5,
+              "angle": 30.0
+            }
+          ]
+        },
+        "Body/LegR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -30.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -29.23555
+            },
+            {
+              "time": 0.0333333,
+              "angle": -27.08445
+            },
+            {
+              "time": 0.05,
+              "angle": -23.76
+            },
+            {
+              "time": 0.0666667,
+              "angle": -19.47555
+            },
+            {
+              "time": 0.0833333,
+              "angle": -14.44445
+            },
+            {
+              "time": 0.1,
+              "angle": -8.88
+            },
+            {
+              "time": 0.1166667,
+              "angle": -2.99554
+            },
+            {
+              "time": 0.1333333,
+              "angle": 2.99554
+            },
+            {
+              "time": 0.15,
+              "angle": 8.88
+            },
+            {
+              "time": 0.1666667,
+              "angle": 14.44445
+            },
+            {
+              "time": 0.1833333,
+              "angle": 19.47555
+            },
+            {
+              "time": 0.2,
+              "angle": 23.76
+            },
+            {
+              "time": 0.2166667,
+              "angle": 27.08445
+            },
+            {
+              "time": 0.2333333,
+              "angle": 29.23555
+            },
+            {
+              "time": 0.25,
+              "angle": 30.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 29.23555
+            },
+            {
+              "time": 0.2833333,
+              "angle": 27.08445
+            },
+            {
+              "time": 0.3,
+              "angle": 23.76
+            },
+            {
+              "time": 0.3166667,
+              "angle": 19.47555
+            },
+            {
+              "time": 0.3333333,
+              "angle": 14.44445
+            },
+            {
+              "time": 0.35,
+              "angle": 8.88
+            },
+            {
+              "time": 0.3666667,
+              "angle": 2.99554
+            },
+            {
+              "time": 0.3833333,
+              "angle": -2.99554
+            },
+            {
+              "time": 0.4,
+              "angle": -8.88
+            },
+            {
+              "time": 0.4166667,
+              "angle": -14.44445
+            },
+            {
+              "time": 0.4333333,
+              "angle": -19.47555
+            },
+            {
+              "time": 0.45,
+              "angle": -23.76
+            },
+            {
+              "time": 0.4666667,
+              "angle": -27.08445
+            },
+            {
+              "time": 0.4833333,
+              "angle": -29.23555
+            },
+            {
+              "time": 0.5,
+              "angle": -30.0
+            }
+          ]
+        },
+        "Body/Wing": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -10.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -9.74518
+            },
+            {
+              "time": 0.0333333,
+              "angle": -9.02815
+            },
+            {
+              "time": 0.05,
+              "angle": -7.92
+            },
+            {
+              "time": 0.0666667,
+              "angle": -6.49185
+            },
+            {
+              "time": 0.0833333,
+              "angle": -4.81482
+            },
+            {
+              "time": 0.1,
+              "angle": -2.96
+            },
+            {
+              "time": 0.1166667,
+              "angle": -0.99851
+            },
+            {
+              "time": 0.1333333,
+              "angle": 0.99851
+            },
+            {
+              "time": 0.15,
+              "angle": 2.96
+            },
+            {
+              "time": 0.1666667,
+              "angle": 4.81482
+            },
+            {
+              "time": 0.1833333,
+              "angle": 6.49185
+            },
+            {
+              "time": 0.2,
+              "angle": 7.92
+            },
+            {
+              "time": 0.2166667,
+              "angle": 9.02815
+            },
+            {
+              "time": 0.2333333,
+              "angle": 9.74518
+            },
+            {
+              "time": 0.25,
+              "angle": 10.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 9.74518
+            },
+            {
+              "time": 0.2833333,
+              "angle": 9.02815
+            },
+            {
+              "time": 0.3,
+              "angle": 7.92
+            },
+            {
+              "time": 0.3166667,
+              "angle": 6.49185
+            },
+            {
+              "time": 0.3333333,
+              "angle": 4.81482
+            },
+            {
+              "time": 0.35,
+              "angle": 2.96
+            },
+            {
+              "time": 0.3666667,
+              "angle": 0.99851
+            },
+            {
+              "time": 0.3833333,
+              "angle": -0.99851
+            },
+            {
+              "time": 0.4,
+              "angle": -2.96
+            },
+            {
+              "time": 0.4166667,
+              "angle": -4.81482
+            },
+            {
+              "time": 0.4333333,
+              "angle": -6.49185
+            },
+            {
+              "time": 0.45,
+              "angle": -7.92
+            },
+            {
+              "time": 0.4666667,
+              "angle": -9.02815
+            },
+            {
+              "time": 0.4833333,
+              "angle": -9.74518
+            },
+            {
+              "time": 0.5,
+              "angle": -10.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 5.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 4.87259
+            },
+            {
+              "time": 0.0333333,
+              "angle": 4.51408
+            },
+            {
+              "time": 0.05,
+              "angle": 3.96
+            },
+            {
+              "time": 0.0666667,
+              "angle": 3.24592
+            },
+            {
+              "time": 0.0833333,
+              "angle": 2.40741
+            },
+            {
+              "time": 0.1,
+              "angle": 1.48
+            },
+            {
+              "time": 0.1166667,
+              "angle": 0.49926
+            },
+            {
+              "time": 0.1333333,
+              "angle": -0.49926
+            },
+            {
+              "time": 0.15,
+              "angle": -1.48
+            },
+            {
+              "time": 0.1666667,
+              "angle": -2.40741
+            },
+            {
+              "time": 0.1833333,
+              "angle": -3.24592
+            },
+            {
+              "time": 0.2,
+              "angle": -3.96
+            },
+            {
+              "time": 0.2166667,
+              "angle": -4.51408
+            },
+            {
+              "time": 0.2333333,
+              "angle": -4.87259
+            },
+            {
+              "time": 0.25,
+              "angle": -5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -4.87259
+            },
+            {
+              "time": 0.2833333,
+              "angle": -4.51408
+            },
+            {
+              "time": 0.3,
+              "angle": -3.96
+            },
+            {
+              "time": 0.3166667,
+              "angle": -3.24592
+            },
+            {
+              "time": 0.3333333,
+              "angle": -2.40741
+            },
+            {
+              "time": 0.35,
+              "angle": -1.48
+            },
+            {
+              "time": 0.3666667,
+              "angle": -0.49926
+            },
+            {
+              "time": 0.3833333,
+              "angle": 0.49926
+            },
+            {
+              "time": 0.4,
+              "angle": 1.48
+            },
+            {
+              "time": 0.4166667,
+              "angle": 2.40741
+            },
+            {
+              "time": 0.4333333,
+              "angle": 3.24592
+            },
+            {
+              "time": 0.45,
+              "angle": 3.96
+            },
+            {
+              "time": 0.4666667,
+              "angle": 4.51408
+            },
+            {
+              "time": 0.4833333,
+              "angle": 4.87259
+            },
+            {
+              "time": 0.5,
+              "angle": 5.0
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 10.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 9.74518
+            },
+            {
+              "time": 0.0333333,
+              "angle": 9.02815
+            },
+            {
+              "time": 0.05,
+              "angle": 7.92
+            },
+            {
+              "time": 0.0666667,
+              "angle": 6.49185
+            },
+            {
+              "time": 0.0833333,
+              "angle": 4.81482
+            },
+            {
+              "time": 0.1,
+              "angle": 2.96
+            },
+            {
+              "time": 0.1166667,
+              "angle": 0.99851
+            },
+            {
+              "time": 0.1333333,
+              "angle": -0.99851
+            },
+            {
+              "time": 0.15,
+              "angle": -2.96
+            },
+            {
+              "time": 0.1666667,
+              "angle": -4.81482
+            },
+            {
+              "time": 0.1833333,
+              "angle": -6.49185
+            },
+            {
+              "time": 0.2,
+              "angle": -7.92
+            },
+            {
+              "time": 0.2166667,
+              "angle": -9.02815
+            },
+            {
+              "time": 0.2333333,
+              "angle": -9.74518
+            },
+            {
+              "time": 0.25,
+              "angle": -10.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -9.74518
+            },
+            {
+              "time": 0.2833333,
+              "angle": -9.02815
+            },
+            {
+              "time": 0.3,
+              "angle": -7.92
+            },
+            {
+              "time": 0.3166667,
+              "angle": -6.49185
+            },
+            {
+              "time": 0.3333333,
+              "angle": -4.81482
+            },
+            {
+              "time": 0.35,
+              "angle": -2.96
+            },
+            {
+              "time": 0.3666667,
+              "angle": -0.99851
+            },
+            {
+              "time": 0.3833333,
+              "angle": 0.99851
+            },
+            {
+              "time": 0.4,
+              "angle": 2.96
+            },
+            {
+              "time": 0.4166667,
+              "angle": 4.81482
+            },
+            {
+              "time": 0.4333333,
+              "angle": 6.49185
+            },
+            {
+              "time": 0.45,
+              "angle": 7.92
+            },
+            {
+              "time": 0.4666667,
+              "angle": 9.02815
+            },
+            {
+              "time": 0.4833333,
+              "angle": 9.74518
+            },
+            {
+              "time": 0.5,
+              "angle": 10.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/LegR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/Wing": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "attack": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": -0.195,
+              "y": -0.28
+            },
+            {
+              "time": 0.0333333,
+              "x": -0.76,
+              "y": -1.04
+            },
+            {
+              "time": 0.05,
+              "x": -1.665,
+              "y": -2.16
+            },
+            {
+              "time": 0.0666667,
+              "x": -2.88,
+              "y": -3.52
+            },
+            {
+              "time": 0.0833333,
+              "x": -4.375,
+              "y": -5.0
+            },
+            {
+              "time": 0.1,
+              "x": -6.12,
+              "y": -6.48
+            },
+            {
+              "time": 0.1166667,
+              "x": -8.085,
+              "y": -7.84
+            },
+            {
+              "time": 0.1333333,
+              "x": -10.24,
+              "y": -8.96
+            },
+            {
+              "time": 0.15,
+              "x": -12.555,
+              "y": -9.72
+            },
+            {
+              "time": 0.1666667,
+              "x": -15.00001,
+              "y": -10.0
+            },
+            {
+              "time": 0.1833333,
+              "x": -18.00499,
+              "y": -5.80002
+            },
+            {
+              "time": 0.2,
+              "x": -21.84,
+              "y": 5.59999
+            },
+            {
+              "time": 0.2166667,
+              "x": -26.23501,
+              "y": 22.40003
+            },
+            {
+              "time": 0.2333333,
+              "x": -30.91999,
+              "y": 42.79995
+            },
+            {
+              "time": 0.25,
+              "x": -35.625,
+              "y": 64.99999
+            },
+            {
+              "time": 0.2666667,
+              "x": -40.08001,
+              "y": 87.20004
+            },
+            {
+              "time": 0.2833333,
+              "x": -44.01499,
+              "y": 107.59996
+            },
+            {
+              "time": 0.3,
+              "x": -47.16,
+              "y": 124.4
+            },
+            {
+              "time": 0.3166667,
+              "x": -49.245,
+              "y": 135.80001
+            },
+            {
+              "time": 0.3333333,
+              "x": -50.0,
+              "y": 140.0
+            },
+            {
+              "time": 0.4166667,
+              "x": -50.0,
+              "y": 140.0
+            },
+            {
+              "time": 0.4333333,
+              "x": -48.6,
+              "y": 136.08001
+            },
+            {
+              "time": 0.45,
+              "x": -44.8,
+              "y": 125.43999
+            },
+            {
+              "time": 0.4666667,
+              "x": -39.19998,
+              "y": 109.75995
+            },
+            {
+              "time": 0.4833333,
+              "x": -32.40001,
+              "y": 90.72002
+            },
+            {
+              "time": 0.5,
+              "x": -24.99999,
+              "y": 69.99997
+            },
+            {
+              "time": 0.5166667,
+              "x": -17.59997,
+              "y": 49.27993
+            },
+            {
+              "time": 0.5333333,
+              "x": -10.8,
+              "y": 30.24001
+            },
+            {
+              "time": 0.55,
+              "x": -5.19999,
+              "y": 14.55998
+            },
+            {
+              "time": 0.5666667,
+              "x": -1.39999,
+              "y": 3.91997
+            },
+            {
+              "time": 0.5833333,
+              "x": -0.0,
+              "y": 0.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.56
+            },
+            {
+              "time": 0.0333333,
+              "angle": 2.08
+            },
+            {
+              "time": 0.05,
+              "angle": 4.32
+            },
+            {
+              "time": 0.0666667,
+              "angle": 7.04001
+            },
+            {
+              "time": 0.0833333,
+              "angle": 9.99999
+            },
+            {
+              "time": 0.1,
+              "angle": 12.96
+            },
+            {
+              "time": 0.1166667,
+              "angle": 15.68
+            },
+            {
+              "time": 0.1333333,
+              "angle": 17.92
+            },
+            {
+              "time": 0.15,
+              "angle": 19.44
+            },
+            {
+              "time": 0.1666667,
+              "angle": 20.0
+            },
+            {
+              "time": 0.3333333,
+              "angle": 20.0
+            },
+            {
+              "time": 0.35,
+              "angle": 19.74519
+            },
+            {
+              "time": 0.3666667,
+              "angle": 19.02815
+            },
+            {
+              "time": 0.3833333,
+              "angle": 17.92
+            },
+            {
+              "time": 0.4,
+              "angle": 16.49185
+            },
+            {
+              "time": 0.4166667,
+              "angle": 14.81481
+            },
+            {
+              "time": 0.4333333,
+              "angle": 12.96
+            },
+            {
+              "time": 0.45,
+              "angle": 10.99852
+            },
+            {
+              "time": 0.4666667,
+              "angle": 9.00148
+            },
+            {
+              "time": 0.4833333,
+              "angle": 7.04
+            },
+            {
+              "time": 0.5,
+              "angle": 5.18518
+            },
+            {
+              "time": 0.5166667,
+              "angle": 3.50814
+            },
+            {
+              "time": 0.5333333,
+              "angle": 2.08
+            },
+            {
+              "time": 0.55,
+              "angle": 0.97185
+            },
+            {
+              "time": 0.5666667,
+              "angle": 0.25481
+            },
+            {
+              "time": 0.5833333,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegL": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": -0.28
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": -1.04
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": -2.16
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": -3.52
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": -5.0
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": -6.48
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": -7.84
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": -8.96
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": -9.72
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": -10.0
+            },
+            {
+              "time": 0.1833333,
+              "x": -0.0,
+              "y": -9.72
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": -8.96
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": -7.84
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": -6.48
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": -5.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": -3.52
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": -2.16
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": -1.04
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": -0.28
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": -0.0
+            },
+            {
+              "time": 0.5833333,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -5.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -5.7
+            },
+            {
+              "time": 0.0333333,
+              "angle": -7.59999
+            },
+            {
+              "time": 0.05,
+              "angle": -10.4
+            },
+            {
+              "time": 0.0666667,
+              "angle": -13.80001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -17.49999
+            },
+            {
+              "time": 0.1,
+              "angle": -21.2
+            },
+            {
+              "time": 0.1166667,
+              "angle": -24.60001
+            },
+            {
+              "time": 0.1333333,
+              "angle": -27.4
+            },
+            {
+              "time": 0.15,
+              "angle": -29.3
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -28.04001
+            },
+            {
+              "time": 0.2,
+              "angle": -22.72
+            },
+            {
+              "time": 0.2166667,
+              "angle": -14.87999
+            },
+            {
+              "time": 0.2333333,
+              "angle": -5.36002
+            },
+            {
+              "time": 0.25,
+              "angle": 5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 15.36002
+            },
+            {
+              "time": 0.2833333,
+              "angle": 24.87998
+            },
+            {
+              "time": 0.3,
+              "angle": 32.72
+            },
+            {
+              "time": 0.3166667,
+              "angle": 38.04001
+            },
+            {
+              "time": 0.3333333,
+              "angle": 40.0
+            },
+            {
+              "time": 0.35,
+              "angle": 31.68
+            },
+            {
+              "time": 0.3666667,
+              "angle": 11.83996
+            },
+            {
+              "time": 0.3833333,
+              "angle": -11.83996
+            },
+            {
+              "time": 0.4,
+              "angle": -31.68
+            },
+            {
+              "time": 0.4166667,
+              "angle": -40.0
+            },
+            {
+              "time": 0.4333333,
+              "angle": -39.02
+            },
+            {
+              "time": 0.45,
+              "angle": -36.36
+            },
+            {
+              "time": 0.4666667,
+              "angle": -32.43999
+            },
+            {
+              "time": 0.4833333,
+              "angle": -27.68001
+            },
+            {
+              "time": 0.5,
+              "angle": -22.49999
+            },
+            {
+              "time": 0.5166667,
+              "angle": -17.31998
+            },
+            {
+              "time": 0.5333333,
+              "angle": -12.56
+            },
+            {
+              "time": 0.55,
+              "angle": -8.63999
+            },
+            {
+              "time": 0.5666667,
+              "angle": -5.97999
+            },
+            {
+              "time": 0.5833333,
+              "angle": -5.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.84
+            },
+            {
+              "time": 0.0333333,
+              "angle": -3.11999
+            },
+            {
+              "time": 0.05,
+              "angle": -6.48
+            },
+            {
+              "time": 0.0666667,
+              "angle": -10.56001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -14.99999
+            },
+            {
+              "time": 0.1,
+              "angle": -19.44
+            },
+            {
+              "time": 0.1166667,
+              "angle": -23.52001
+            },
+            {
+              "time": 0.1333333,
+              "angle": -26.87999
+            },
+            {
+              "time": 0.15,
+              "angle": -29.16
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.0
+            },
+            {
+              "time": 0.3333333,
+              "angle": -30.0
+            },
+            {
+              "time": 0.35,
+              "angle": -21.68
+            },
+            {
+              "time": 0.3666667,
+              "angle": -1.83996
+            },
+            {
+              "time": 0.3833333,
+              "angle": 21.83996
+            },
+            {
+              "time": 0.4,
+              "angle": 41.68
+            },
+            {
+              "time": 0.4166667,
+              "angle": 50.0
+            },
+            {
+              "time": 0.4333333,
+              "angle": 48.6
+            },
+            {
+              "time": 0.45,
+              "angle": 44.8
+            },
+            {
+              "time": 0.4666667,
+              "angle": 39.19998
+            },
+            {
+              "time": 0.4833333,
+              "angle": 32.40001
+            },
+            {
+              "time": 0.5,
+              "angle": 24.99999
+            },
+            {
+              "time": 0.5166667,
+              "angle": 17.59997
+            },
+            {
+              "time": 0.5333333,
+              "angle": 10.8
+            },
+            {
+              "time": 0.55,
+              "angle": 5.19999
+            },
+            {
+              "time": 0.5666667,
+              "angle": 1.39999
+            },
+            {
+              "time": 0.5833333,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -5.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -5.7
+            },
+            {
+              "time": 0.0333333,
+              "angle": -7.59999
+            },
+            {
+              "time": 0.05,
+              "angle": -10.4
+            },
+            {
+              "time": 0.0666667,
+              "angle": -13.80001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -17.49999
+            },
+            {
+              "time": 0.1,
+              "angle": -21.2
+            },
+            {
+              "time": 0.1166667,
+              "angle": -24.60001
+            },
+            {
+              "time": 0.1333333,
+              "angle": -27.4
+            },
+            {
+              "time": 0.15,
+              "angle": -29.3
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -28.04001
+            },
+            {
+              "time": 0.2,
+              "angle": -22.72
+            },
+            {
+              "time": 0.2166667,
+              "angle": -14.87999
+            },
+            {
+              "time": 0.2333333,
+              "angle": -5.36002
+            },
+            {
+              "time": 0.25,
+              "angle": 5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 15.36002
+            },
+            {
+              "time": 0.2833333,
+              "angle": 24.87998
+            },
+            {
+              "time": 0.3,
+              "angle": 32.72
+            },
+            {
+              "time": 0.3166667,
+              "angle": 38.04001
+            },
+            {
+              "time": 0.3333333,
+              "angle": 40.0
+            },
+            {
+              "time": 0.35,
+              "angle": 31.68
+            },
+            {
+              "time": 0.3666667,
+              "angle": 11.83996
+            },
+            {
+              "time": 0.3833333,
+              "angle": -11.83996
+            },
+            {
+              "time": 0.4,
+              "angle": -31.68
+            },
+            {
+              "time": 0.4166667,
+              "angle": -40.0
+            },
+            {
+              "time": 0.4333333,
+              "angle": -39.02
+            },
+            {
+              "time": 0.45,
+              "angle": -36.36
+            },
+            {
+              "time": 0.4666667,
+              "angle": -32.43999
+            },
+            {
+              "time": 0.4833333,
+              "angle": -27.68001
+            },
+            {
+              "time": 0.5,
+              "angle": -22.49999
+            },
+            {
+              "time": 0.5166667,
+              "angle": -17.31998
+            },
+            {
+              "time": 0.5333333,
+              "angle": -12.56
+            },
+            {
+              "time": 0.55,
+              "angle": -8.63999
+            },
+            {
+              "time": 0.5666667,
+              "angle": -5.97999
+            },
+            {
+              "time": 0.5833333,
+              "angle": -5.0
+            }
+          ]
+        },
+        "Body/Wing": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 1.12
+            },
+            {
+              "time": 0.0333333,
+              "angle": 4.15999
+            },
+            {
+              "time": 0.05,
+              "angle": 8.64
+            },
+            {
+              "time": 0.0666667,
+              "angle": 14.08001
+            },
+            {
+              "time": 0.0833333,
+              "angle": 19.99999
+            },
+            {
+              "time": 0.1,
+              "angle": 25.92
+            },
+            {
+              "time": 0.1166667,
+              "angle": 31.36001
+            },
+            {
+              "time": 0.1333333,
+              "angle": 35.83999
+            },
+            {
+              "time": 0.15,
+              "angle": 38.88
+            },
+            {
+              "time": 0.1666667,
+              "angle": 40.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 37.48001
+            },
+            {
+              "time": 0.2,
+              "angle": 30.64
+            },
+            {
+              "time": 0.2166667,
+              "angle": 20.55998
+            },
+            {
+              "time": 0.2333333,
+              "angle": 8.32003
+            },
+            {
+              "time": 0.25,
+              "angle": -5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -18.32002
+            },
+            {
+              "time": 0.2833333,
+              "angle": -30.55997
+            },
+            {
+              "time": 0.3,
+              "angle": -40.64
+            },
+            {
+              "time": 0.3166667,
+              "angle": -47.48001
+            },
+            {
+              "time": 0.3333333,
+              "angle": -50.0
+            },
+            {
+              "time": 0.35,
+              "angle": -43.76
+            },
+            {
+              "time": 0.3666667,
+              "angle": -28.87997
+            },
+            {
+              "time": 0.3833333,
+              "angle": -11.12003
+            },
+            {
+              "time": 0.4,
+              "angle": 3.76
+            },
+            {
+              "time": 0.4166667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.4333333,
+              "angle": 9.72
+            },
+            {
+              "time": 0.45,
+              "angle": 8.96
+            },
+            {
+              "time": 0.4666667,
+              "angle": 7.84
+            },
+            {
+              "time": 0.4833333,
+              "angle": 6.48
+            },
+            {
+              "time": 0.5,
+              "angle": 5.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 3.51999
+            },
+            {
+              "time": 0.5333333,
+              "angle": 2.16
+            },
+            {
+              "time": 0.55,
+              "angle": 1.04
+            },
+            {
+              "time": 0.5666667,
+              "angle": 0.28
+            },
+            {
+              "time": 0.5833333,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.33
+            },
+            {
+              "time": 0.0333333,
+              "angle": -1.24
+            },
+            {
+              "time": 0.05,
+              "angle": -2.61
+            },
+            {
+              "time": 0.0666667,
+              "angle": -4.32
+            },
+            {
+              "time": 0.0833333,
+              "angle": -6.25
+            },
+            {
+              "time": 0.1,
+              "angle": -8.28
+            },
+            {
+              "time": 0.1166667,
+              "angle": -10.29
+            },
+            {
+              "time": 0.1333333,
+              "angle": -12.16
+            },
+            {
+              "time": 0.15,
+              "angle": -13.77
+            },
+            {
+              "time": 0.1666667,
+              "angle": -15.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -15.95
+            },
+            {
+              "time": 0.2,
+              "angle": -16.8
+            },
+            {
+              "time": 0.2166667,
+              "angle": -17.55
+            },
+            {
+              "time": 0.2333333,
+              "angle": -18.2
+            },
+            {
+              "time": 0.25,
+              "angle": -18.75
+            },
+            {
+              "time": 0.2666667,
+              "angle": -19.2
+            },
+            {
+              "time": 0.2833333,
+              "angle": -19.55
+            },
+            {
+              "time": 0.3,
+              "angle": -19.8
+            },
+            {
+              "time": 0.3166667,
+              "angle": -19.95
+            },
+            {
+              "time": 0.3333333,
+              "angle": -20.0
+            },
+            {
+              "time": 0.35,
+              "angle": -15.84
+            },
+            {
+              "time": 0.3666667,
+              "angle": -5.91998
+            },
+            {
+              "time": 0.3833333,
+              "angle": 5.91998
+            },
+            {
+              "time": 0.4,
+              "angle": 15.84
+            },
+            {
+              "time": 0.4166667,
+              "angle": 20.0
+            },
+            {
+              "time": 0.4333333,
+              "angle": 19.44
+            },
+            {
+              "time": 0.45,
+              "angle": 17.92
+            },
+            {
+              "time": 0.4666667,
+              "angle": 15.67999
+            },
+            {
+              "time": 0.4833333,
+              "angle": 12.96
+            },
+            {
+              "time": 0.5,
+              "angle": 10.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 7.03999
+            },
+            {
+              "time": 0.5333333,
+              "angle": 4.32
+            },
+            {
+              "time": 0.55,
+              "angle": 2.08
+            },
+            {
+              "time": 0.5666667,
+              "angle": 0.56
+            },
+            {
+              "time": 0.5833333,
+              "angle": 0.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/LegR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            },
+            {
+              "time": 0.16666667,
+              "name": "sprite_HeadAngry"
+            },
+            {
+              "time": 0.41666666,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/Wing": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5833333,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "die": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.95,
+              "y": 3.92001
+            },
+            {
+              "time": 0.0333333,
+              "x": 3.59999,
+              "y": 14.55997
+            },
+            {
+              "time": 0.05,
+              "x": 7.65,
+              "y": 30.24
+            },
+            {
+              "time": 0.0666667,
+              "x": 12.80001,
+              "y": 49.28004
+            },
+            {
+              "time": 0.0833333,
+              "x": 18.74999,
+              "y": 69.99996
+            },
+            {
+              "time": 0.1,
+              "x": 25.2,
+              "y": 90.72
+            },
+            {
+              "time": 0.1166667,
+              "x": 31.85001,
+              "y": 109.76003
+            },
+            {
+              "time": 0.1333333,
+              "x": 38.39999,
+              "y": 125.43997
+            },
+            {
+              "time": 0.15,
+              "x": 44.55,
+              "y": 136.08
+            },
+            {
+              "time": 0.1666667,
+              "x": 50.00001,
+              "y": 140.0
+            },
+            {
+              "time": 0.1833333,
+              "x": 55.44999,
+              "y": 134.12003
+            },
+            {
+              "time": 0.2,
+              "x": 61.6,
+              "y": 118.16001
+            },
+            {
+              "time": 0.2166667,
+              "x": 68.15001,
+              "y": 94.63996
+            },
+            {
+              "time": 0.2333333,
+              "x": 74.79998,
+              "y": 66.08007
+            },
+            {
+              "time": 0.25,
+              "x": 81.25,
+              "y": 35.00001
+            },
+            {
+              "time": 0.2666667,
+              "x": 87.20001,
+              "y": 3.91995
+            },
+            {
+              "time": 0.2833333,
+              "x": 92.34999,
+              "y": -24.63994
+            },
+            {
+              "time": 0.3,
+              "x": 96.4,
+              "y": -48.16
+            },
+            {
+              "time": 0.3166667,
+              "x": 99.05,
+              "y": -64.12002
+            },
+            {
+              "time": 0.3333333,
+              "x": 100.0,
+              "y": -70.0
+            },
+            {
+              "time": 0.33333334,
+              "x": 100.0,
+              "y": -70.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.1666667,
+              "angle": -0.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -0.84
+            },
+            {
+              "time": 0.2,
+              "angle": -3.12
+            },
+            {
+              "time": 0.2166667,
+              "angle": -6.48001
+            },
+            {
+              "time": 0.2333333,
+              "angle": -10.55999
+            },
+            {
+              "time": 0.25,
+              "angle": -15.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -19.44001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -23.51999
+            },
+            {
+              "time": 0.3,
+              "angle": -26.88
+            },
+            {
+              "time": 0.3166667,
+              "angle": -29.16
+            },
+            {
+              "time": 0.3333333,
+              "angle": -30.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -30.0
+            }
+          ]
+        },
+        "Body/LegR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -5.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -5.4525
+            },
+            {
+              "time": 0.0333333,
+              "angle": -6.72
+            },
+            {
+              "time": 0.05,
+              "angle": -8.6675
+            },
+            {
+              "time": 0.0666667,
+              "angle": -11.16
+            },
+            {
+              "time": 0.0833333,
+              "angle": -14.06249
+            },
+            {
+              "time": 0.1,
+              "angle": -17.24
+            },
+            {
+              "time": 0.1166667,
+              "angle": -20.55751
+            },
+            {
+              "time": 0.1333333,
+              "angle": -23.87999
+            },
+            {
+              "time": 0.15,
+              "angle": -27.0725
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.00001
+            },
+            {
+              "time": 0.1833333,
+              "angle": -33.06749
+            },
+            {
+              "time": 0.2,
+              "angle": -36.64
+            },
+            {
+              "time": 0.2166667,
+              "angle": -40.52251
+            },
+            {
+              "time": 0.2333333,
+              "angle": -44.51999
+            },
+            {
+              "time": 0.25,
+              "angle": -48.4375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -52.08001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -55.25249
+            },
+            {
+              "time": 0.3,
+              "angle": -57.76
+            },
+            {
+              "time": 0.3166667,
+              "angle": -59.4075
+            },
+            {
+              "time": 0.3333333,
+              "angle": -60.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -60.0
+            }
+          ]
+        },
+        "Body/LegL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -5.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -5.4525
+            },
+            {
+              "time": 0.0333333,
+              "angle": -6.72
+            },
+            {
+              "time": 0.05,
+              "angle": -8.6675
+            },
+            {
+              "time": 0.0666667,
+              "angle": -11.16
+            },
+            {
+              "time": 0.0833333,
+              "angle": -14.06249
+            },
+            {
+              "time": 0.1,
+              "angle": -17.24
+            },
+            {
+              "time": 0.1166667,
+              "angle": -20.55751
+            },
+            {
+              "time": 0.1333333,
+              "angle": -23.87999
+            },
+            {
+              "time": 0.15,
+              "angle": -27.0725
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.00001
+            },
+            {
+              "time": 0.1833333,
+              "angle": -33.06749
+            },
+            {
+              "time": 0.2,
+              "angle": -36.64
+            },
+            {
+              "time": 0.2166667,
+              "angle": -40.52251
+            },
+            {
+              "time": 0.2333333,
+              "angle": -44.51999
+            },
+            {
+              "time": 0.25,
+              "angle": -48.4375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -52.08001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -55.25249
+            },
+            {
+              "time": 0.3,
+              "angle": -57.76
+            },
+            {
+              "time": 0.3166667,
+              "angle": -59.4075
+            },
+            {
+              "time": 0.3333333,
+              "angle": -60.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -60.0
+            }
+          ]
+        },
+        "Body/Wing": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.1666667,
+              "angle": -0.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -1.39999
+            },
+            {
+              "time": 0.2,
+              "angle": -5.2
+            },
+            {
+              "time": 0.2166667,
+              "angle": -10.80001
+            },
+            {
+              "time": 0.2333333,
+              "angle": -17.59998
+            },
+            {
+              "time": 0.25,
+              "angle": -25.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -32.40001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -39.19999
+            },
+            {
+              "time": 0.3,
+              "angle": -44.8
+            },
+            {
+              "time": 0.3166667,
+              "angle": -48.6
+            },
+            {
+              "time": 0.3333333,
+              "angle": -50.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -50.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.1
+            },
+            {
+              "time": 0.0333333,
+              "angle": 0.4
+            },
+            {
+              "time": 0.05,
+              "angle": 0.9
+            },
+            {
+              "time": 0.0666667,
+              "angle": 1.6
+            },
+            {
+              "time": 0.0833333,
+              "angle": 2.5
+            },
+            {
+              "time": 0.1,
+              "angle": 3.6
+            },
+            {
+              "time": 0.1166667,
+              "angle": 4.9
+            },
+            {
+              "time": 0.1333333,
+              "angle": 6.4
+            },
+            {
+              "time": 0.15,
+              "angle": 8.1
+            },
+            {
+              "time": 0.1666667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 13.01999
+            },
+            {
+              "time": 0.2,
+              "angle": 17.76
+            },
+            {
+              "time": 0.2166667,
+              "angle": 23.74001
+            },
+            {
+              "time": 0.2333333,
+              "angle": 30.47998
+            },
+            {
+              "time": 0.25,
+              "angle": 37.5
+            },
+            {
+              "time": 0.2666667,
+              "angle": 44.32001
+            },
+            {
+              "time": 0.2833333,
+              "angle": 50.45999
+            },
+            {
+              "time": 0.3,
+              "angle": 55.44
+            },
+            {
+              "time": 0.3166667,
+              "angle": 58.78
+            },
+            {
+              "time": 0.3333333,
+              "angle": 60.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 60.0
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.2125
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.8
+            },
+            {
+              "time": 0.05,
+              "angle": -1.6875
+            },
+            {
+              "time": 0.0666667,
+              "angle": -2.8
+            },
+            {
+              "time": 0.0833333,
+              "angle": -4.0625
+            },
+            {
+              "time": 0.1,
+              "angle": -5.4
+            },
+            {
+              "time": 0.1166667,
+              "angle": -6.7375
+            },
+            {
+              "time": 0.1333333,
+              "angle": -8.0
+            },
+            {
+              "time": 0.15,
+              "angle": -9.1125
+            },
+            {
+              "time": 0.1666667,
+              "angle": -10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -10.7475
+            },
+            {
+              "time": 0.2,
+              "angle": -11.48
+            },
+            {
+              "time": 0.2166667,
+              "angle": -12.1825
+            },
+            {
+              "time": 0.2333333,
+              "angle": -12.84
+            },
+            {
+              "time": 0.25,
+              "angle": -13.4375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -13.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": -14.3925
+            },
+            {
+              "time": 0.3,
+              "angle": -14.72
+            },
+            {
+              "time": 0.3166667,
+              "angle": -14.9275
+            },
+            {
+              "time": 0.3333333,
+              "angle": -15.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -15.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/LegR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadDead"
+            }
+          ]
+        },
+        "Body/Wing": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "hit": {
+      "bones": {},
+      "slots": {
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffc8"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffc8"
+            }
+          ]
+        },
+        "Body/LegR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Wing": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": {},
+  "_fantasy": {
+    "version": 1,
+    "pack": "fantasy-monsters",
+    "family": "Birds",
+    "preset": "fantasy-monsters/ForestTurkey",
+    "presets": [
+      {
+        "id": "fantasy-monsters/ForestTurkey",
+        "name": "Forest Turkey"
+      },
+      {
+        "id": "fantasy-monsters/Gobbler",
+        "name": "Gobbler"
+      },
+      {
+        "id": "fantasy-monsters/Turkey",
+        "name": "Turkey"
+      }
+    ],
+    "slots": {
+      "Body/Tail": {
+        "label": "Tail",
+        "variants": [
+          "ForestTurkey",
+          "Gobbler",
+          "Turkey"
+        ]
+      },
+      "Body/LegR": {
+        "label": "Leg R",
+        "variants": [
+          "ForestTurkey",
+          "Gobbler",
+          "Turkey"
+        ]
+      },
+      "Body": {
+        "label": "Body",
+        "variants": [
+          "ForestTurkey",
+          "Gobbler",
+          "Turkey"
+        ]
+      },
+      "Body/LegL": {
+        "label": "Leg L",
+        "variants": [
+          "ForestTurkey",
+          "Gobbler",
+          "Turkey"
+        ]
+      },
+      "Body/Head": {
+        "label": "Head",
+        "variants": [
+          "ForestTurkey",
+          "Gobbler",
+          "Turkey"
+        ]
+      },
+      "Body/Wing": {
+        "label": "Wing",
+        "variants": [
+          "ForestTurkey",
+          "Gobbler",
+          "Turkey"
+        ]
+      }
+    },
+    "expressions": [
+      {
+        "field": "Head",
+        "slot": "Body/Head",
+        "states": [
+          "sprite_HeadNormal",
+          "sprite_HeadAngry",
+          "sprite_HeadDead"
+        ]
+      }
+    ],
+    "animationAliases": []
+  }
+}

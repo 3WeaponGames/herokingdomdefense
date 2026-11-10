@@ -22,18 +22,18 @@ test('duplicate roster/campaign names form one editable appearance while combat 
  const f=fixture(t),units=f.store.units(),listed=Catalog.listed(f.store.data,units);assert.equal(units.filter(unit=>unit.type==='enemy').length,2);assert.equal(listed.filter(unit=>unit.type==='enemy').length,1);assert.equal(listed.find(unit=>unit.type==='enemy').members.length,2);
  assert.equal(save(f).result.saved,false);assert.equal(fs.existsSync(path.join(f.root,'assets/resources/unit-library/models')),false);
 });
-test('Save captures finished models, publishes shared appearances with original per-unit events and keeps a stable base for removal',t=>{
+test('Save captures finished models and shared names while preserving the original per-unit appearance and events',t=>{
  const f=fixture(t),config=fs.readFileSync(path.join(f.root,'assets/KinghtFallConfig/GameJsonCfg.json'));
- edit(f,data=>{data.profiles.mushroom={name:'Mushroom Walker',base:{type:'enemy',id:'91001',currentModel:true},parts:[{id:'helmet',sprite:'helmet',layer:'source-model',slot:'gear',bone:'root',x:0,y:0,rotation:0,scaleX:1,scaleY:1,opacity:1,order:0,hideSlots:[]}]};data.assignments['enemy:91001:default']='mushroom';});
+ edit(f,data=>{data.profiles.mushroom={name:'Mushroom Walker',base:{type:'enemy',id:'91001',currentModel:true},parts:[]};data.assignments['enemy:91001:default']='mushroom';});
  assert.equal(fs.existsSync(path.join(f.root,'assets/resources/unit-library/models')),false);const saved=save(f);assert(saved.result.saved);
- const data=f.store.snapshot().data,main=data.profiles.mushroom,linked=data.profiles[data.assignments['enemy:92001:default']];assert(main.base.model);assert(linked.base.model);assert.equal(linked.base.id,'92001');assert.equal(linked.parts[0].sprite,'helmet');
+ const data=f.store.snapshot().data,main=data.profiles.mushroom,linked=data.profiles[data.assignments['enemy:92001:default']];assert(main.base.model);assert(linked.base.model);assert.equal(linked.base.id,'92001');assert.deepEqual(linked.parts,[]);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(f.root,main.base.model.layers[0].file))),f.rig);
  const output=()=>JSON.parse(fs.readFileSync(path.join(f.root,'assets/resources',f.store.data.profiles.mushroom.baked.resource+'.json')));
- assert.deepEqual(output().animations.attack.events,f.rig.animations.attack.events);assert.equal(output().slots.find(slot=>slot.name==='gear').attachment,'part_helmet');assert.equal(output().bones[0].scaleX,1);
+ assert.deepEqual(output().animations.attack.events,f.rig.animations.attack.events);assert.equal(output().slots.find(slot=>slot.name==='gear').attachment,undefined);assert.equal(output().bones[0].scaleX,1);
  assert.deepEqual(fs.readFileSync(path.join(f.root,'assets/KinghtFallConfig/GameJsonCfg.json')),config);assert.deepEqual(JSON.parse(fs.readFileSync(path.join(f.root,'assets/model/body.json'))),f.rig);
  const contract=JSON.parse(fs.readFileSync(path.join(f.root,'assets/resources/unit-library/runtime/contracts.json')));assert.equal(contract.future.retain,true);assert.deepEqual(contract.units['enemy:92001:default'].animations.attack.events,f.rig.animations.attack.events);
  const snapshot=JSON.stringify(main.base.model),stamp=fs.statSync(f.store.file).mtimeMs;assert.equal(save(f).result.saved,false);assert.equal(fs.statSync(f.store.file).mtimeMs,stamp);
- edit(f,data=>{data.profiles.mushroom.parts=[];});save(f);assert.equal(JSON.stringify(f.store.data.profiles.mushroom.base.model),snapshot);assert.equal(output().slots.find(slot=>slot.name==='gear').attachment,undefined);assert.deepEqual(output().skins[0].attachments.body,f.rig.skins[0].attachments.body);assert.deepEqual(f.store.data.profiles[f.store.data.assignments['enemy:92001:default']].parts,[]);
+ edit(f,data=>{data.profiles.mushroom.name='Renamed mushroom';});save(f);assert.equal(JSON.stringify(f.store.data.profiles.mushroom.base.model),snapshot);assert.equal(output().slots.find(slot=>slot.name==='gear').attachment,undefined);assert.deepEqual(output().skins[0].attachments.body,f.rig.skins[0].attachments.body);assert.deepEqual(f.store.data.profiles[f.store.data.assignments['enemy:92001:default']].parts,[]);
  assert.deepEqual(fs.readFileSync(path.join(f.root,'assets/KinghtFallConfig/GameJsonCfg.json')),config);
 });
 test('created characters and their levels survive pruning; unused look copies do not',()=>{

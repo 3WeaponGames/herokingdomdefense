@@ -2,6 +2,7 @@
 const UnitRecords=require('./unit-records');
 const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
+const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 
 // Editing metadata. Storage keys and runtime identifiers intentionally stay unchanged.
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o || {}, k);
@@ -214,8 +215,8 @@ function validate(documents, changes) {
   for(const table of ['SoldierCfg','AllyCfg'])Object.keys(base[table]||{}).forEach(id=>{
     const unit=base[table][id],p=[table,id],opponents=table==='AllyCfg'?units:base.AllyCfg||units;
     if(unit.ID!==Number(id))issue('A',p.concat('ID'),'Unit ID must match its table key.');
-    if(own(unit,'MonsterSource')&&(typeof unit.MonsterSource!=='string'||!/^monster[12]\/[A-Za-z0-9_-]+$/.test(unit.MonsterSource)))issue('A',p.concat('MonsterSource'),'Imported monster source must identify Monster Pack 1 or 2.');
-    if(own(unit,'MonsterPack')&&!['monster1','monster2'].includes(unit.MonsterPack))issue('A',p.concat('MonsterPack'),'Choose Monster Pack 1 or 2.');
+    if(own(unit,'MonsterSource')&&!UnitPacks.isMonsterSource(unit.MonsterSource))issue('A',p.concat('MonsterSource'),'Choose a source from an imported monster pack.');
+    if(own(unit,'MonsterPack')&&!UnitPacks.packs.some(pack=>pack.id===unit.MonsterPack&&pack.id!=='character-maker'))issue('A',p.concat('MonsterPack'),'Choose an imported monster pack.');
     if(own(unit,'BehaviorTemplate')){const template=units[unit.BehaviorTemplate];if(!UnitRecords.BEHAVIOR_TEMPLATES.includes(unit.BehaviorTemplate)||!template||unit.AttackType!==template.AttackType)issue('A',p.concat('BehaviorTemplate'),'Imported monster behavior must match an existing implemented controller template.');}
     if(own(unit,'CampaignBaseUnit')&&(!Number.isInteger(unit.CampaignBaseUnit)||unit.CampaignBaseUnit<90001||unit.CampaignBaseUnit>90009||!units[unit.CampaignBaseUnit]||unit.BehaviorTemplate!==unit.CampaignBaseUnit))issue('A',p.concat('CampaignBaseUnit'),'Campaign profile must reference its implemented legacy enemy controller.');
     if(own(unit,'AppearanceSourceUnit')&&(!Number.isInteger(unit.AppearanceSourceUnit)||!units[unit.AppearanceSourceUnit]||!units[unit.AppearanceSourceUnit].MonsterSource))issue('A',p.concat('AppearanceSourceUnit'),'Campaign appearance must reference an imported source-roster monster.');

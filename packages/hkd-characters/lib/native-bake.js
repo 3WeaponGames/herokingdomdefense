@@ -68,6 +68,7 @@ function bake(root,profile,id,contract,assets,read,options){
   }
   if(!description)throw Error('Choose a Character Maker or monster base before saving this unit');
   const decode=options&&options.decode||PNG.decode,layer=description.layers[0],rig=clone(layer.json),cut=readAtlas(layer,read,decode),pictures={};
+  if(rig._fantasy)require('./boss-model').apply(rig,profile.boss);
   const skinName=profile.skins&&profile.skins[layer.uuid]||layer.skin||'default';
   selectSkin(rig,skinName);
   const attachments=rig.skins[0].attachments,slots=new Map(rig.slots.map(slot=>[slot.name,slot])),replaced=new Set(),hidden=new Set();
@@ -100,7 +101,7 @@ function bake(root,profile,id,contract,assets,read,options){
   }
   // A current-unit snapshot already carries its authored gameplay events and
   // gait cadence. Keep those exact clips when fitting equipment onto it.
-  if(!profile.base.currentModel)retime(rig,contract,!!profile.base.mount);
+  if(!profile.base.currentModel&&!rig._fantasy)retime(rig,contract,!!profile.base.mount);
   // Preserve the old unit's world footprint and combat callback/hit timing.
   // Unmounted locomotion retains the imported gait's own cadence.
   // The hero and every combat statistic/timing table are left untouched.
@@ -155,7 +156,7 @@ function plan(root,data,assets,original){
     models.set(id,raw);
   }
   for(const [key,id]of Object.entries(updated.assignments)){
-    const profile=updated.profiles[id];if(contracts.units[key]||!profile||!profile.base.currentModel||profile.base.type!=='enemy')continue;
+    const profile=updated.profiles[id];if(contracts.units[key]||!profile||!(profile.base.currentModel||profile.base.source)||profile.base.type!=='enemy')continue;
     const description=require('../../game-data-editor/lib/unit-assets').describe(root,{type:profile.base.type,id:profile.base.id,noRuntime:true}),prefab=JSON.parse(read(path.join(root,description.source)).toString('utf8')),layer=description.layers[0];
     const component=prefab.findIndex(value=>value.__type__==='sp.Skeleton'&&value._N$skeletonData&&value._N$skeletonData.__uuid__===layer.uuid),json=JSON.parse(read(path.join(root,layer.source)).toString('utf8'));
     contracts.units[key]={prefab:description.source,component,height:json.skeleton.height||120,defaultUuid:layer.uuid,events:clone(json.events||{}),animations:Object.fromEntries(Object.entries(json.animations).map(([name,animation])=>[name,{duration:duration(animation),events:clone(animation.events||[])}]))};

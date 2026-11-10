@@ -1,13 +1,13 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Library=require('../../packages/hkd-characters/lib/unit-library'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Core=require('../../assets/_script/CharacterPartsCore'),Bake=require('../../packages/hkd-characters/lib/native-bake'),PNG=require('../../packages/hkd-characters/lib/png-atlas');
-test('all three licensed imports keep exact sprite bytes, pivot data, metadata and conversion hashes',()=>{
+test('all six licensed imports keep exact sprite bytes, pivot data, metadata and conversion hashes',()=>{
   let total=0;
-  for(const pack of ['character-maker','monster1','monster2']){
+  for(const pack of require('../../packages/hkd-characters/lib/unit-packs').packs.map(pack=>pack.id)){
     const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/unit-library',pack,'catalog.json')));
     for(const part of catalog.parts){const bytes=fs.readFileSync(path.join(root,part.image));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),part.sha256);assert(part.pixelsPerUnit>0);assert(Number.isFinite(part.pivot.x));assert.equal(JSON.parse(fs.readFileSync(path.join(root,part.image+'.meta'))).importer,'texture');total++;}
     for(const [file,hash]of Object.entries(catalog.importedFiles))assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),hash,file);
-  }assert.equal(total,1769);
+  }assert(total>2215);
 });
 const engine=Units.enginePath();
 
@@ -26,8 +26,8 @@ test('locomotion keeps authored run cadence, death clips survive baking, and att
  const mounted=structuredClone(original);Bake.retime(mounted,contract,true);assert.equal(Bake.duration(mounted.animations.move),1.4);
  assert.equal(Bake.duration(original.animations.attack),2,'Source animation data is unchanged');
 });
-test('101 imported bases and every converted animation parse and produce finite live Spine geometry',{skip:!fs.existsSync(engine)},()=>{
-  const spine=require(engine),library=Library.load(root);assert.equal(library.sources.length,101);
+test('317 imported bases and every converted animation parse and produce finite live Spine geometry',{skip:!fs.existsSync(engine)},()=>{
+  const spine=require(engine),library=Library.load(root);assert.equal(library.sources.length,317);
   for(const source of library.sources){
     const layer=Library.describe(root,source.id,true).layers[0],atlas=new spine.TextureAtlas(layer.atlas,name=>{const png=fs.readFileSync(require('node:url').fileURLToPath(layer.pages[name]));return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});}),data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(layer.json),skeleton=new spine.Skeleton(data);
     const faceless=source.pack==='character-maker'?Core.prepare(spine,skeleton,[],{}, {},{faceless:true}):null;

@@ -1,5 +1,6 @@
 'use strict';
 const UnitRecords=require('../lib/unit-records');
+const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 const UnitLevelStats=require('../../../assets/_script/UnitLevelStats');
 const AttackRate=require('./attack-rate');
 const MapCatalog=require('../lib/map-catalog');
@@ -121,7 +122,7 @@ function create(kind){
       if(kind==='talents')Object.keys(data.TalentCfg||{}).forEach(id=>{const r=data.TalentCfg[id],count=(data.TalentLevelCfg||[]).filter(l=>l.kindID===Number(id)).length;add(id,this._text(r.Name),id+' · '+count+' progression records',r,['TalentCfg',id],{icon:r.Image});});
       if(kind==='units'){
         add('hero','Hero','Base stats are linked to Equipment',{},[],{unitType:'hero'});
-        Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id],pack=r.MonsterPack==='monster1'?'Monster Pack 1':r.MonsterPack==='monster2'?'Monster Pack 2':r.CampaignBaseUnit?'Campaign profile':r.prefab?'Enemy':'Boss form',role=this._unitRole('enemy',id);add('enemy:'+id,this._text(r.Name),pack+(role?' · '+role:'')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
+        Object.keys(data.SoldierCfg||{}).forEach(id=>{const r=data.SoldierCfg[id],info=UnitPacks.info(r.MonsterPack),pack=info?info.label:r.CampaignBaseUnit?'Campaign profile':r.prefab?'Enemy':'Boss form',role=this._unitRole('enemy',id);add('enemy:'+id,this._text(r.Name),pack+(role?' · '+role:'')+' · '+id,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id});});
         Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=(data.AllyCfg||data.SoldierCfg)[id];add('ally:'+id,this._text(r.Name)+' · Ally','Allied unit - independent stats',r,[data.AllyCfg?'AllyCfg':'SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
       }
       if(kind==='unit-types')Object.keys(this._data('overrides').unitTypes||{}).forEach(id=>{const type=this._data('overrides').unitTypes[id],assigned=Object.values(this._data('overrides').unitTypeAssignments||{}).filter(value=>value===id).length;add(id,type.name,id+' - '+assigned+' unit assignment(s)',type,['unitTypes',id],{doc:'overrides',icon:type.icon});});
@@ -226,7 +227,7 @@ function create(kind){
       this._field(container,meta.label,value,v=>this._set(doc,keys,v),meta);
     },
     _unitRole(side,id){const tools=this._data('overrides'),key=(side||'enemy')+':'+id+':'+UnitRecords.form(side||'enemy',id),role=(tools.unitTypeAssignments||{})[key];return ((tools.unitTypes||{})[role]||{}).name||'';},
-    _unitOptions(forms,side){const data=this._data('A'),units=(side==='ally'&&data.AllyCfg)||data.SoldierCfg||{};return [{value:-1,label:'Wait (spawn ticks)'}].concat(Object.keys(units).filter(id=>forms||units[id].prefab).map(id=>{const role=this._unitRole(side,id),pack=units[id].MonsterPack==='monster1'?'Pack 1':units[id].MonsterPack==='monster2'?'Pack 2':units[id].CampaignBaseUnit?'Campaign profile '+units[id].CampaignBaseUnit:'';return {value:Number(id),label:this._text(units[id].Name)+(role?' · '+role:'')+(pack?' · '+pack:'')+' · '+id};}));},
+    _unitOptions(forms,side){const data=this._data('A'),units=(side==='ally'&&data.AllyCfg)||data.SoldierCfg||{};return [{value:-1,label:'Wait (spawn ticks)'}].concat(Object.keys(units).filter(id=>forms||units[id].prefab).map(id=>{const role=this._unitRole(side,id),pack=UnitPacks.info(units[id].MonsterPack)?UnitPacks.info(units[id].MonsterPack).label.replace('Monster Pack','Pack'):units[id].CampaignBaseUnit?'Campaign profile '+units[id].CampaignBaseUnit:'';return {value:Number(id),label:this._text(units[id].Name)+(role?' · '+role:'')+(pack?' · '+pack:'')+' · '+id};}));},
     _rewardRows(parent,doc,keys,rewards){
       const goods=this._data('A').GoodsCfg||{},options=Object.keys(goods).map(id=>({value:Number(id),label:this._text(goods[id].Name||goods[id].name||id)+' · '+id}));
       rewards.forEach((reward,i)=>{const row=node('div',undefined,'gt-array-row');parent.appendChild(row);this._field(row,'Reward item',reward[0],v=>this._set(doc,keys.concat(i,0),v),{options});this._field(row,'Amount',reward[1],v=>this._set(doc,keys.concat(i,1),v),{integer:true,min:0});row.appendChild(button('Remove',()=>{const next=clone(rewards);next.splice(i,1);this._set(doc,keys,next);},'gt-mini'));});parent.appendChild(button('Add reward',()=>this._set(doc,keys,rewards.concat([[2001,1]])),'gt-mini'));

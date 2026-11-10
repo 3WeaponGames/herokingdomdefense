@@ -1,0 +1,3222 @@
+{
+  "skeleton": {
+    "spine": "3.8.99",
+    "images": "",
+    "audio": "",
+    "x": -43.24324324324324,
+    "y": 0,
+    "width": 86.48648648648648,
+    "height": 120
+  },
+  "bones": [
+    {
+      "name": "__size",
+      "scaleX": 0.42229729729729726,
+      "scaleY": 0.42229729729729726,
+      "x": -0.0,
+      "y": 5.405405405405405
+    },
+    {
+      "name": "__root",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 0.4,
+      "scaleY": 0.4,
+      "parent": "__size"
+    },
+    {
+      "name": "Body",
+      "x": 0,
+      "y": 300,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "__root"
+    },
+    {
+      "name": "Body/Head",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/WingUpL",
+      "x": 30.0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/WingUpL/WingDownL",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body/WingUpL"
+    },
+    {
+      "name": "Body/WingUpR",
+      "x": -70.0,
+      "y": 20.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/WingUpR/WingDownR",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body/WingUpR"
+    },
+    {
+      "name": "Body/AnchorBody",
+      "x": -20.0,
+      "y": -20.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorWeapon",
+      "x": -50.0,
+      "y": -20.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorStatus",
+      "x": 0,
+      "y": 250.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Shadow",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 2,
+      "scaleY": 1,
+      "parent": "__root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "Shadow",
+      "bone": "Shadow",
+      "attachment": "sprite_Shadow",
+      "color": "000000c8"
+    },
+    {
+      "name": "Body/WingUpR",
+      "bone": "Body/WingUpR",
+      "attachment": "sprite_WingUp",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/WingUpR/WingDownR",
+      "bone": "Body/WingUpR/WingDownR",
+      "attachment": "sprite_WingDown",
+      "color": "ffffff00"
+    },
+    {
+      "name": "Body",
+      "bone": "Body",
+      "attachment": "sprite_HeadNormal",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/WingUpL",
+      "bone": "Body/WingUpL",
+      "attachment": "sprite_WingUp",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/WingUpL/WingDownL",
+      "bone": "Body/WingUpL/WingDownL",
+      "attachment": "sprite_WingDown",
+      "color": "ffffff00"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/WingUpR": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5fff984cc6d83dd79590bf7689943e37"
+          }
+        },
+        "Body/WingUpR/WingDownR": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_647fd089aa77d0775a1969f8b526eeb1"
+          }
+        },
+        "Body": {
+          "sprite_HeadNormal": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_74aa6dfddf27cf1f3ba3e4e83b5cab97"
+          },
+          "sprite_HeadAngry": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_35f867c19d91d0f4b2b627d671d4ca59"
+          },
+          "sprite_HeadDead": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce6e117529931323c0edeced0eeb7692"
+          }
+        },
+        "Body/WingUpL": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5fff984cc6d83dd79590bf7689943e37"
+          }
+        },
+        "Body/WingUpL/WingDownL": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_647fd089aa77d0775a1969f8b526eeb1"
+          }
+        }
+      }
+    },
+    {
+      "name": "Bat",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/WingUpR": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_3b47fd99452eee4d1897b1f0dba671f6"
+          }
+        },
+        "Body/WingUpR/WingDownR": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4f358f8abb4999b18cce068a3d65388f"
+          }
+        },
+        "Body": {
+          "sprite_HeadNormal": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_6d9d8df20edfb39b2c625905c19061be"
+          },
+          "sprite_HeadAngry": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_35f867c19d91d0f4b2b627d671d4ca59"
+          },
+          "sprite_HeadDead": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce6e117529931323c0edeced0eeb7692"
+          }
+        },
+        "Body/WingUpL": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_3b47fd99452eee4d1897b1f0dba671f6"
+          }
+        },
+        "Body/WingUpL/WingDownL": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4f358f8abb4999b18cce068a3d65388f"
+          }
+        }
+      }
+    },
+    {
+      "name": "DreadEye",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/WingUpR": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5fff984cc6d83dd79590bf7689943e37"
+          }
+        },
+        "Body/WingUpR/WingDownR": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_647fd089aa77d0775a1969f8b526eeb1"
+          }
+        },
+        "Body": {
+          "sprite_HeadNormal": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_74aa6dfddf27cf1f3ba3e4e83b5cab97"
+          },
+          "sprite_HeadAngry": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_35f867c19d91d0f4b2b627d671d4ca59"
+          },
+          "sprite_HeadDead": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce6e117529931323c0edeced0eeb7692"
+          }
+        },
+        "Body/WingUpL": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5fff984cc6d83dd79590bf7689943e37"
+          }
+        },
+        "Body/WingUpL/WingDownL": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_647fd089aa77d0775a1969f8b526eeb1"
+          }
+        }
+      }
+    },
+    {
+      "name": "EvilEye",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/WingUpR": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_7a1165d29a0df68eb035663f510543ee"
+          }
+        },
+        "Body/WingUpR/WingDownR": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_f67e44b912049085367224ebd2350bfb"
+          }
+        },
+        "Body": {
+          "sprite_HeadNormal": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce8489759c204d8ee63b381cbcd80fe0"
+          },
+          "sprite_HeadAngry": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b0783a5f7d9930ef32b3752eb0e3b157"
+          },
+          "sprite_HeadDead": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_bd0847b7c417112730dbd08219feca3c"
+          }
+        },
+        "Body/WingUpL": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_7a1165d29a0df68eb035663f510543ee"
+          }
+        },
+        "Body/WingUpL/WingDownL": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_f67e44b912049085367224ebd2350bfb"
+          }
+        }
+      }
+    },
+    {
+      "name": "MohawkBat",
+      "attachments": {
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/WingUpR": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce06f0fd9868084bc366e0e20042c2a5"
+          }
+        },
+        "Body/WingUpR/WingDownR": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_7011edc549d3840a16602a2750bc28f2"
+          }
+        },
+        "Body": {
+          "sprite_HeadNormal": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_7fa3e5ced71a3b1a8b109edc72f52d5c"
+          },
+          "sprite_HeadAngry": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_35f867c19d91d0f4b2b627d671d4ca59"
+          },
+          "sprite_HeadDead": {
+            "width": 256.0,
+            "height": 256.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce6e117529931323c0edeced0eeb7692"
+          }
+        },
+        "Body/WingUpL": {
+          "sprite_WingUp": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": 102.4,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce06f0fd9868084bc366e0e20042c2a5"
+          }
+        },
+        "Body/WingUpL/WingDownL": {
+          "sprite_WingDown": {
+            "width": 256.0,
+            "height": 512.0,
+            "x": 76.8,
+            "y": -102.39999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_7011edc549d3840a16602a2750bc28f2"
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "idle": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 1.7334
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 4.1901
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 7.25488
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 10.81251
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 14.74771
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 18.94531
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 23.29005
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 27.66666
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 31.95996
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 36.05469
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 39.8356
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 43.1875
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 45.99512
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 48.14322
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 49.5166
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 50.0
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 49.36035
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": 47.5599
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": 44.77636
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": 41.18751
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": 36.97104
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": 32.30469
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": 27.36623
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": 22.33334
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": 17.38379
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": 12.69533
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": 8.44564
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": 4.8125
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": 1.97364
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": 0.10677
+            },
+            {
+              "time": 0.5166667,
+              "x": 0.0,
+              "y": -0.61035
+            },
+            {
+              "time": 0.5333333,
+              "x": 0.0,
+              "y": -0.0
+            },
+            {
+              "time": 0.53333336,
+              "x": 0.0,
+              "y": -0.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": -60.0,
+              "y": 70.0
+            },
+            {
+              "time": 0.0166667,
+              "x": -60.0,
+              "y": 70.34912
+            },
+            {
+              "time": 0.0333333,
+              "x": -60.0,
+              "y": 70.72526
+            },
+            {
+              "time": 0.05,
+              "x": -60.0,
+              "y": 71.12158
+            },
+            {
+              "time": 0.0666667,
+              "x": -60.0,
+              "y": 71.53125
+            },
+            {
+              "time": 0.0833333,
+              "x": -60.0,
+              "y": 71.94743
+            },
+            {
+              "time": 0.1,
+              "x": -60.0,
+              "y": 72.36328
+            },
+            {
+              "time": 0.1166667,
+              "x": -60.0,
+              "y": 72.77197
+            },
+            {
+              "time": 0.1333333,
+              "x": -60.0,
+              "y": 73.16667
+            },
+            {
+              "time": 0.15,
+              "x": -60.0,
+              "y": 73.54053
+            },
+            {
+              "time": 0.1666667,
+              "x": -60.0,
+              "y": 73.88672
+            },
+            {
+              "time": 0.1833333,
+              "x": -60.0,
+              "y": 74.1984
+            },
+            {
+              "time": 0.2,
+              "x": -60.0,
+              "y": 74.46875
+            },
+            {
+              "time": 0.2166667,
+              "x": -60.0,
+              "y": 74.69092
+            },
+            {
+              "time": 0.2333333,
+              "x": -60.0,
+              "y": 74.85807
+            },
+            {
+              "time": 0.25,
+              "x": -60.0,
+              "y": 74.96338
+            },
+            {
+              "time": 0.2666667,
+              "x": -60.0,
+              "y": 75.0
+            },
+            {
+              "time": 0.2833333,
+              "x": -60.0,
+              "y": 74.92432
+            },
+            {
+              "time": 0.3,
+              "x": -60.0,
+              "y": 74.71224
+            },
+            {
+              "time": 0.3166667,
+              "x": -60.0,
+              "y": 74.38623
+            },
+            {
+              "time": 0.3333333,
+              "x": -60.0,
+              "y": 73.96875
+            },
+            {
+              "time": 0.35,
+              "x": -60.0,
+              "y": 73.48226
+            },
+            {
+              "time": 0.3666667,
+              "x": -60.0,
+              "y": 72.94922
+            },
+            {
+              "time": 0.3833333,
+              "x": -60.0,
+              "y": 72.39209
+            },
+            {
+              "time": 0.4,
+              "x": -60.0,
+              "y": 71.83333
+            },
+            {
+              "time": 0.4166667,
+              "x": -60.0,
+              "y": 71.29541
+            },
+            {
+              "time": 0.4333333,
+              "x": -60.0,
+              "y": 70.80078
+            },
+            {
+              "time": 0.45,
+              "x": -60.0,
+              "y": 70.37191
+            },
+            {
+              "time": 0.4666667,
+              "x": -60.0,
+              "y": 70.03125
+            },
+            {
+              "time": 0.4833333,
+              "x": -60.0,
+              "y": 69.80127
+            },
+            {
+              "time": 0.5,
+              "x": -60.0,
+              "y": 69.70443
+            },
+            {
+              "time": 0.5166667,
+              "x": -60.0,
+              "y": 69.76318
+            },
+            {
+              "time": 0.5333333,
+              "x": -60.0,
+              "y": 70.0
+            },
+            {
+              "time": 0.53333336,
+              "x": -60.0,
+              "y": 70.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "000000c8"
+            },
+            {
+              "time": 0.53333336,
+              "color": "000000c8"
+            }
+          ]
+        },
+        "Body/WingUpR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.3833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.53333336,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpR/WingDownR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.2666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.3833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.53333336,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.53333336,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/WingUpL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.3833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.53333336,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpL/WingDownL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.2666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.3833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.53333336,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    },
+    "move": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 0.63704
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 2.42962
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 5.2
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 8.77038
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 12.96296
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 17.6
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 22.50371
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 27.49629
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 32.4
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 37.03704
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 41.22962
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 44.8
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 47.57038
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 49.36296
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 50.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 49.36296
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 47.57038
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": 44.8
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": 41.22962
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": 37.03704
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": 32.4
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": 27.49629
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": 22.50371
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": 17.6
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": 12.96296
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": 8.77038
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": 5.2
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": 2.42962
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": 0.63704
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 15.0
+            },
+            {
+              "time": 0.5,
+              "angle": 15.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": -60.0,
+              "y": 70.0
+            },
+            {
+              "time": 0.0166667,
+              "x": -60.0,
+              "y": 70.0637
+            },
+            {
+              "time": 0.0333333,
+              "x": -60.0,
+              "y": 70.24296
+            },
+            {
+              "time": 0.05,
+              "x": -60.0,
+              "y": 70.52
+            },
+            {
+              "time": 0.0666667,
+              "x": -60.0,
+              "y": 70.87704
+            },
+            {
+              "time": 0.0833333,
+              "x": -60.0,
+              "y": 71.2963
+            },
+            {
+              "time": 0.1,
+              "x": -60.0,
+              "y": 71.76
+            },
+            {
+              "time": 0.1166667,
+              "x": -60.0,
+              "y": 72.25037
+            },
+            {
+              "time": 0.1333333,
+              "x": -60.0,
+              "y": 72.74963
+            },
+            {
+              "time": 0.15,
+              "x": -60.0,
+              "y": 73.24
+            },
+            {
+              "time": 0.1666667,
+              "x": -60.0,
+              "y": 73.7037
+            },
+            {
+              "time": 0.1833333,
+              "x": -60.0,
+              "y": 74.12296
+            },
+            {
+              "time": 0.2,
+              "x": -60.0,
+              "y": 74.48
+            },
+            {
+              "time": 0.2166667,
+              "x": -60.0,
+              "y": 74.75704
+            },
+            {
+              "time": 0.2333333,
+              "x": -60.0,
+              "y": 74.9363
+            },
+            {
+              "time": 0.25,
+              "x": -60.0,
+              "y": 75.0
+            },
+            {
+              "time": 0.2666667,
+              "x": -60.0,
+              "y": 74.9363
+            },
+            {
+              "time": 0.2833333,
+              "x": -60.0,
+              "y": 74.75704
+            },
+            {
+              "time": 0.3,
+              "x": -60.0,
+              "y": 74.48
+            },
+            {
+              "time": 0.3166667,
+              "x": -60.0,
+              "y": 74.12296
+            },
+            {
+              "time": 0.3333333,
+              "x": -60.0,
+              "y": 73.7037
+            },
+            {
+              "time": 0.35,
+              "x": -60.0,
+              "y": 73.24
+            },
+            {
+              "time": 0.3666667,
+              "x": -60.0,
+              "y": 72.74963
+            },
+            {
+              "time": 0.3833333,
+              "x": -60.0,
+              "y": 72.25037
+            },
+            {
+              "time": 0.4,
+              "x": -60.0,
+              "y": 71.76
+            },
+            {
+              "time": 0.4166667,
+              "x": -60.0,
+              "y": 71.2963
+            },
+            {
+              "time": 0.4333333,
+              "x": -60.0,
+              "y": 70.87704
+            },
+            {
+              "time": 0.45,
+              "x": -60.0,
+              "y": 70.52
+            },
+            {
+              "time": 0.4666667,
+              "x": -60.0,
+              "y": 70.24296
+            },
+            {
+              "time": 0.4833333,
+              "x": -60.0,
+              "y": 70.0637
+            },
+            {
+              "time": 0.5,
+              "x": -60.0,
+              "y": 70.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "000000c8"
+            },
+            {
+              "time": 0.5,
+              "color": "000000c8"
+            }
+          ]
+        },
+        "Body/WingUpR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpR/WingDownR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/WingUpL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpL/WingDownL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    },
+    "attack": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 2.54816,
+              "y": 1.27408
+            },
+            {
+              "time": 0.0333333,
+              "x": 9.7185,
+              "y": 4.85925
+            },
+            {
+              "time": 0.05,
+              "x": 20.8,
+              "y": 10.4
+            },
+            {
+              "time": 0.0666667,
+              "x": 35.08151,
+              "y": 17.54076
+            },
+            {
+              "time": 0.0833333,
+              "x": 51.85182,
+              "y": 25.92591
+            },
+            {
+              "time": 0.1,
+              "x": 70.4,
+              "y": 35.2
+            },
+            {
+              "time": 0.1166667,
+              "x": 90.01485,
+              "y": 45.00743
+            },
+            {
+              "time": 0.1333333,
+              "x": 109.98515,
+              "y": 54.99257
+            },
+            {
+              "time": 0.15,
+              "x": 129.6,
+              "y": 64.8
+            },
+            {
+              "time": 0.1666667,
+              "x": 148.14818,
+              "y": 74.07409
+            },
+            {
+              "time": 0.1833333,
+              "x": 164.91849,
+              "y": 82.45924
+            },
+            {
+              "time": 0.2,
+              "x": 179.2,
+              "y": 89.6
+            },
+            {
+              "time": 0.2166667,
+              "x": 190.2815,
+              "y": 95.14075
+            },
+            {
+              "time": 0.2333333,
+              "x": 197.45184,
+              "y": 98.72592
+            },
+            {
+              "time": 0.25,
+              "x": 200.0,
+              "y": 100.0
+            },
+            {
+              "time": 0.2666667,
+              "x": 158.39986,
+              "y": 89.59996
+            },
+            {
+              "time": 0.2833333,
+              "x": 59.20024,
+              "y": 64.80006
+            },
+            {
+              "time": 0.3,
+              "x": -59.19996,
+              "y": 35.20001
+            },
+            {
+              "time": 0.3166667,
+              "x": -158.40013,
+              "y": 10.39997
+            },
+            {
+              "time": 0.3333333,
+              "x": -200.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.35,
+              "x": -194.40001,
+              "y": -0.0
+            },
+            {
+              "time": 0.3666667,
+              "x": -179.19996,
+              "y": 0.0
+            },
+            {
+              "time": 0.3833333,
+              "x": -156.80006,
+              "y": 0.0
+            },
+            {
+              "time": 0.4,
+              "x": -129.60002,
+              "y": 0.0
+            },
+            {
+              "time": 0.4166667,
+              "x": -99.99994,
+              "y": 0.0
+            },
+            {
+              "time": 0.4333333,
+              "x": -70.40007,
+              "y": 0.0
+            },
+            {
+              "time": 0.45,
+              "x": -43.20001,
+              "y": 0.0
+            },
+            {
+              "time": 0.4666667,
+              "x": -20.79996,
+              "y": 0.0
+            },
+            {
+              "time": 0.4833333,
+              "x": -5.60003,
+              "y": 0.0
+            },
+            {
+              "time": 0.5,
+              "x": -0.0,
+              "y": 0.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.24222
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.93778
+            },
+            {
+              "time": 0.05,
+              "angle": -2.04
+            },
+            {
+              "time": 0.0666667,
+              "angle": -3.50223
+            },
+            {
+              "time": 0.0833333,
+              "angle": -5.27777
+            },
+            {
+              "time": 0.1,
+              "angle": -7.32
+            },
+            {
+              "time": 0.1166667,
+              "angle": -9.58223
+            },
+            {
+              "time": 0.1333333,
+              "angle": -12.01777
+            },
+            {
+              "time": 0.15,
+              "angle": -14.58
+            },
+            {
+              "time": 0.1666667,
+              "angle": -17.22223
+            },
+            {
+              "time": 0.1833333,
+              "angle": -19.89777
+            },
+            {
+              "time": 0.2,
+              "angle": -22.56
+            },
+            {
+              "time": 0.2166667,
+              "angle": -25.16223
+            },
+            {
+              "time": 0.2333333,
+              "angle": -27.65777
+            },
+            {
+              "time": 0.25,
+              "angle": -30.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -33.00001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -36.89999
+            },
+            {
+              "time": 0.3,
+              "angle": -40.8
+            },
+            {
+              "time": 0.3166667,
+              "angle": -43.8
+            },
+            {
+              "time": 0.3333333,
+              "angle": -45.0
+            },
+            {
+              "time": 0.35,
+              "angle": -43.74
+            },
+            {
+              "time": 0.3666667,
+              "angle": -40.31999
+            },
+            {
+              "time": 0.3833333,
+              "angle": -35.28001
+            },
+            {
+              "time": 0.4,
+              "angle": -29.16
+            },
+            {
+              "time": 0.4166667,
+              "angle": -22.49999
+            },
+            {
+              "time": 0.4333333,
+              "angle": -15.84002
+            },
+            {
+              "time": 0.45,
+              "angle": -9.72
+            },
+            {
+              "time": 0.4666667,
+              "angle": -4.67999
+            },
+            {
+              "time": 0.4833333,
+              "angle": -1.26001
+            },
+            {
+              "time": 0.5,
+              "angle": -0.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": -60.0,
+              "y": 70.0
+            },
+            {
+              "time": 0.0166667,
+              "x": -60.0725,
+              "y": 70.0725
+            },
+            {
+              "time": 0.0333333,
+              "x": -60.28,
+              "y": 70.28
+            },
+            {
+              "time": 0.05,
+              "x": -60.6075,
+              "y": 70.6075
+            },
+            {
+              "time": 0.0666667,
+              "x": -61.04,
+              "y": 71.04
+            },
+            {
+              "time": 0.0833333,
+              "x": -61.5625,
+              "y": 71.5625
+            },
+            {
+              "time": 0.1,
+              "x": -62.16,
+              "y": 72.16
+            },
+            {
+              "time": 0.1166667,
+              "x": -62.8175,
+              "y": 72.8175
+            },
+            {
+              "time": 0.1333333,
+              "x": -63.52,
+              "y": 73.52
+            },
+            {
+              "time": 0.15,
+              "x": -64.2525,
+              "y": 74.2525
+            },
+            {
+              "time": 0.1666667,
+              "x": -65.0,
+              "y": 75.0
+            },
+            {
+              "time": 0.1833333,
+              "x": -65.7475,
+              "y": 75.7475
+            },
+            {
+              "time": 0.2,
+              "x": -66.48,
+              "y": 76.48
+            },
+            {
+              "time": 0.2166667,
+              "x": -67.1825,
+              "y": 77.1825
+            },
+            {
+              "time": 0.2333333,
+              "x": -67.84,
+              "y": 77.84
+            },
+            {
+              "time": 0.25,
+              "x": -68.4375,
+              "y": 78.4375
+            },
+            {
+              "time": 0.2666667,
+              "x": -68.96,
+              "y": 78.96
+            },
+            {
+              "time": 0.2833333,
+              "x": -69.3925,
+              "y": 79.3925
+            },
+            {
+              "time": 0.3,
+              "x": -69.72,
+              "y": 79.72
+            },
+            {
+              "time": 0.3166667,
+              "x": -69.9275,
+              "y": 79.9275
+            },
+            {
+              "time": 0.3333333,
+              "x": -70.0,
+              "y": 80.0
+            },
+            {
+              "time": 0.35,
+              "x": -69.72,
+              "y": 79.72
+            },
+            {
+              "time": 0.3666667,
+              "x": -68.96,
+              "y": 78.96
+            },
+            {
+              "time": 0.3833333,
+              "x": -67.84,
+              "y": 77.84
+            },
+            {
+              "time": 0.4,
+              "x": -66.48,
+              "y": 76.48
+            },
+            {
+              "time": 0.4166667,
+              "x": -65.0,
+              "y": 75.0
+            },
+            {
+              "time": 0.4333333,
+              "x": -63.52,
+              "y": 73.52
+            },
+            {
+              "time": 0.45,
+              "x": -62.16,
+              "y": 72.16
+            },
+            {
+              "time": 0.4666667,
+              "x": -61.04,
+              "y": 71.04
+            },
+            {
+              "time": 0.4833333,
+              "x": -60.28,
+              "y": 70.28
+            },
+            {
+              "time": 0.5,
+              "x": -60.0,
+              "y": 70.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.20963
+            },
+            {
+              "time": 0.0333333,
+              "angle": 0.81037
+            },
+            {
+              "time": 0.05,
+              "angle": 1.76
+            },
+            {
+              "time": 0.0666667,
+              "angle": 3.0163
+            },
+            {
+              "time": 0.0833333,
+              "angle": 4.53703
+            },
+            {
+              "time": 0.1,
+              "angle": 6.28
+            },
+            {
+              "time": 0.1166667,
+              "angle": 8.20297
+            },
+            {
+              "time": 0.1333333,
+              "angle": 10.2637
+            },
+            {
+              "time": 0.15,
+              "angle": 12.42
+            },
+            {
+              "time": 0.1666667,
+              "angle": 14.62963
+            },
+            {
+              "time": 0.1833333,
+              "angle": 16.85037
+            },
+            {
+              "time": 0.2,
+              "angle": 19.04
+            },
+            {
+              "time": 0.2166667,
+              "angle": 21.1563
+            },
+            {
+              "time": 0.2333333,
+              "angle": 23.15703
+            },
+            {
+              "time": 0.25,
+              "angle": 25.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 27.16
+            },
+            {
+              "time": 0.2833333,
+              "angle": 29.77999
+            },
+            {
+              "time": 0.3,
+              "angle": 32.32
+            },
+            {
+              "time": 0.3166667,
+              "angle": 34.24
+            },
+            {
+              "time": 0.3333333,
+              "angle": 35.0
+            },
+            {
+              "time": 0.35,
+              "angle": 34.02
+            },
+            {
+              "time": 0.3666667,
+              "angle": 31.35999
+            },
+            {
+              "time": 0.3833333,
+              "angle": 27.44001
+            },
+            {
+              "time": 0.4,
+              "angle": 22.68
+            },
+            {
+              "time": 0.4166667,
+              "angle": 17.49999
+            },
+            {
+              "time": 0.4333333,
+              "angle": 12.32001
+            },
+            {
+              "time": 0.45,
+              "angle": 7.56
+            },
+            {
+              "time": 0.4666667,
+              "angle": 3.63999
+            },
+            {
+              "time": 0.4833333,
+              "angle": 0.98
+            },
+            {
+              "time": 0.5,
+              "angle": 0.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "000000c8"
+            },
+            {
+              "time": 0.5,
+              "color": "000000c8"
+            }
+          ]
+        },
+        "Body/WingUpR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpR/WingDownR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            },
+            {
+              "time": 0.083333336,
+              "name": "sprite_HeadAngry"
+            },
+            {
+              "time": 0.41666666,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/WingUpL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpL/WingDownL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.0833333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.2333333,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.25,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.3333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.4166667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.4833333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "time": 0.33333334,
+          "name": "attack"
+        }
+      ]
+    },
+    "die": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 2.80001
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 10.39998
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 21.6
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 35.20003
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 49.99997
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 64.8
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 78.40002
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 89.59998
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 97.2
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 100.0
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 97.46251
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 90.2
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 78.73748
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 63.60003
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 45.31251
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 24.39996
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 1.38756
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": -23.2
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": -48.83754
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": -74.99995
+            },
+            {
+              "time": 0.35,
+              "x": 0.0,
+              "y": -101.16249
+            },
+            {
+              "time": 0.3666667,
+              "x": 0.0,
+              "y": -126.80006
+            },
+            {
+              "time": 0.3833333,
+              "x": 0.0,
+              "y": -151.38745
+            },
+            {
+              "time": 0.4,
+              "x": 0.0,
+              "y": -174.40001
+            },
+            {
+              "time": 0.4166667,
+              "x": 0.0,
+              "y": -195.31254
+            },
+            {
+              "time": 0.4333333,
+              "x": 0.0,
+              "y": -213.59997
+            },
+            {
+              "time": 0.45,
+              "x": 0.0,
+              "y": -228.7375
+            },
+            {
+              "time": 0.4666667,
+              "x": 0.0,
+              "y": -240.20002
+            },
+            {
+              "time": 0.4833333,
+              "x": 0.0,
+              "y": -247.46249
+            },
+            {
+              "time": 0.5,
+              "x": 0.0,
+              "y": -250.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.1666667,
+              "angle": -0.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -1.26874
+            },
+            {
+              "time": 0.2,
+              "angle": -4.9
+            },
+            {
+              "time": 0.2166667,
+              "angle": -10.63126
+            },
+            {
+              "time": 0.2333333,
+              "angle": -18.19998
+            },
+            {
+              "time": 0.25,
+              "angle": -27.34374
+            },
+            {
+              "time": 0.2666667,
+              "angle": -37.80002
+            },
+            {
+              "time": 0.2833333,
+              "angle": -49.30622
+            },
+            {
+              "time": 0.3,
+              "angle": -61.6
+            },
+            {
+              "time": 0.3166667,
+              "angle": -74.41877
+            },
+            {
+              "time": 0.3333333,
+              "angle": -87.49998
+            },
+            {
+              "time": 0.35,
+              "angle": -100.58125
+            },
+            {
+              "time": 0.3666667,
+              "angle": -113.40003
+            },
+            {
+              "time": 0.3833333,
+              "angle": -125.69372
+            },
+            {
+              "time": 0.4,
+              "angle": -137.2
+            },
+            {
+              "time": 0.4166667,
+              "angle": -147.65627
+            },
+            {
+              "time": 0.4333333,
+              "angle": -156.79999
+            },
+            {
+              "time": 0.45,
+              "angle": -164.36875
+            },
+            {
+              "time": 0.4666667,
+              "angle": -170.10001
+            },
+            {
+              "time": 0.4833333,
+              "angle": -173.73124
+            },
+            {
+              "time": 0.5,
+              "angle": -175.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": -60.0,
+              "y": 70.0
+            },
+            {
+              "time": 0.1666667,
+              "x": -60.0,
+              "y": 70.0
+            },
+            {
+              "time": 0.1833333,
+              "x": -60.0145,
+              "y": 69.78975
+            },
+            {
+              "time": 0.2,
+              "x": -60.056,
+              "y": 69.188
+            },
+            {
+              "time": 0.2166667,
+              "x": -60.1215,
+              "y": 68.23825
+            },
+            {
+              "time": 0.2333333,
+              "x": -60.208,
+              "y": 66.984
+            },
+            {
+              "time": 0.25,
+              "x": -60.3125,
+              "y": 65.46875
+            },
+            {
+              "time": 0.2666667,
+              "x": -60.432,
+              "y": 63.736
+            },
+            {
+              "time": 0.2833333,
+              "x": -60.5635,
+              "y": 61.82925
+            },
+            {
+              "time": 0.3,
+              "x": -60.704,
+              "y": 59.792
+            },
+            {
+              "time": 0.3166667,
+              "x": -60.8505,
+              "y": 57.66775
+            },
+            {
+              "time": 0.3333333,
+              "x": -61.0,
+              "y": 55.5
+            },
+            {
+              "time": 0.35,
+              "x": -61.1495,
+              "y": 53.33225
+            },
+            {
+              "time": 0.3666667,
+              "x": -61.296,
+              "y": 51.208
+            },
+            {
+              "time": 0.3833333,
+              "x": -61.4365,
+              "y": 49.17075
+            },
+            {
+              "time": 0.4,
+              "x": -61.568,
+              "y": 47.264
+            },
+            {
+              "time": 0.4166667,
+              "x": -61.6875,
+              "y": 45.53125
+            },
+            {
+              "time": 0.4333333,
+              "x": -61.792,
+              "y": 44.016
+            },
+            {
+              "time": 0.45,
+              "x": -61.8785,
+              "y": 42.76175
+            },
+            {
+              "time": 0.4666667,
+              "x": -61.944,
+              "y": 41.812
+            },
+            {
+              "time": 0.4833333,
+              "x": -61.9855,
+              "y": 41.21025
+            },
+            {
+              "time": 0.5,
+              "x": -62.0,
+              "y": 41.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "000000c8"
+            },
+            {
+              "time": 0.5,
+              "color": "000000c8"
+            }
+          ]
+        },
+        "Body/WingUpR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body/WingUpR/WingDownR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadDead"
+            }
+          ]
+        },
+        "Body/WingUpL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body/WingUpL/WingDownL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.15,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.1666667,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "hit": {
+      "bones": {},
+      "slots": {
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "000000c8"
+            },
+            {
+              "time": 0.16,
+              "color": "000000c8"
+            }
+          ]
+        },
+        "Body/WingUpR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpR/WingDownR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingUpL/WingDownL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff00"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": {
+    "attack": {}
+  },
+  "_fantasy": {
+    "version": 1,
+    "pack": "fantasy-monsters",
+    "family": "Bats",
+    "preset": "fantasy-monsters/DreadEye",
+    "presets": [
+      {
+        "id": "fantasy-monsters/Bat",
+        "name": "Bat"
+      },
+      {
+        "id": "fantasy-monsters/DreadEye",
+        "name": "Dread Eye"
+      },
+      {
+        "id": "fantasy-monsters/EvilEye",
+        "name": "Evil Eye"
+      },
+      {
+        "id": "fantasy-monsters/MohawkBat",
+        "name": "Mohawk Bat"
+      }
+    ],
+    "slots": {
+      "Body/WingUpR": {
+        "label": "Wing Up R",
+        "variants": [
+          "Bat",
+          "DreadEye",
+          "EvilEye",
+          "MohawkBat"
+        ]
+      },
+      "Body/WingUpR/WingDownR": {
+        "label": "Wing Down R",
+        "variants": [
+          "Bat",
+          "DreadEye",
+          "EvilEye",
+          "MohawkBat"
+        ]
+      },
+      "Body": {
+        "label": "Body",
+        "variants": [
+          "DreadEye",
+          "EvilEye"
+        ]
+      },
+      "Body/WingUpL": {
+        "label": "Wing Up L",
+        "variants": [
+          "Bat",
+          "DreadEye",
+          "EvilEye",
+          "MohawkBat"
+        ]
+      },
+      "Body/WingUpL/WingDownL": {
+        "label": "Wing Down L",
+        "variants": [
+          "Bat",
+          "DreadEye",
+          "EvilEye",
+          "MohawkBat"
+        ]
+      }
+    },
+    "expressions": [
+      {
+        "field": "Head",
+        "slot": "Body",
+        "states": [
+          "sprite_HeadNormal",
+          "sprite_HeadAngry",
+          "sprite_HeadDead"
+        ]
+      }
+    ],
+    "animationAliases": []
+  }
+}

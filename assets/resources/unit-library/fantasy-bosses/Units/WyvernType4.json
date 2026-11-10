@@ -1,0 +1,8240 @@
+{
+  "skeleton": {
+    "spine": "3.8.99",
+    "images": "",
+    "audio": "",
+    "x": -104.80798984119572,
+    "y": 0,
+    "width": 209.61597968239144,
+    "height": 180
+  },
+  "bones": [
+    {
+      "name": "__size",
+      "scaleX": 0.2627276973376927,
+      "scaleY": 0.2627276973376927,
+      "x": -3.9205540635217226,
+      "y": 8.407286314806166
+    },
+    {
+      "name": "__root",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 0.5,
+      "scaleY": 0.5,
+      "parent": "__size"
+    },
+    {
+      "name": "Body",
+      "x": 0,
+      "y": 800,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "__root"
+    },
+    {
+      "name": "Body/Head",
+      "x": -210.0,
+      "y": 60.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/ArmL",
+      "x": 30.0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/ArmR",
+      "x": -60.0,
+      "y": 10.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/LegBackL",
+      "x": 100,
+      "y": -250.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/LegBackR",
+      "x": 20.0,
+      "y": -220.00000000000003,
+      "rotation": -20.00000953371908,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/Tail",
+      "x": 83.0,
+      "y": -279.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/WingL",
+      "x": 60.0,
+      "y": 80.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/WingR",
+      "x": -160.0,
+      "y": 70.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorBody",
+      "x": -50.0,
+      "y": 50.0,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorWeapon",
+      "x": -350.0,
+      "y": -100,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Body/AnchorStatus",
+      "x": 0,
+      "y": 600,
+      "rotation": 0.0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "parent": "Body"
+    },
+    {
+      "name": "Shadow",
+      "x": 0,
+      "y": 0,
+      "rotation": 0.0,
+      "scaleX": 6,
+      "scaleY": 2,
+      "parent": "__root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "Body/ArmR",
+      "bone": "Body/ArmR",
+      "attachment": "sprite_Arm",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/LegBackR",
+      "bone": "Body/LegBackR",
+      "attachment": "sprite_Leg",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Shadow",
+      "bone": "Shadow",
+      "attachment": "sprite_Shadow",
+      "color": "ffffff64"
+    },
+    {
+      "name": "Body/Tail",
+      "bone": "Body/Tail",
+      "attachment": "sprite_Tail",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/WingR",
+      "bone": "Body/WingR",
+      "attachment": "sprite_Wing",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body",
+      "bone": "Body",
+      "attachment": "sprite_Body",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/Head",
+      "bone": "Body/Head",
+      "attachment": "sprite_HeadNormal",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/ArmL",
+      "bone": "Body/ArmL",
+      "attachment": "sprite_Arm",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/LegBackL",
+      "bone": "Body/LegBackL",
+      "attachment": "sprite_Leg",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Body/WingL",
+      "bone": "Body/WingL",
+      "attachment": "sprite_Wing",
+      "color": "ffffffff"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0e6345d760d57c6c5c8c9f92dfac05f1"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_fb7651acfa2a8f5c8afeb697ede8b28d"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_68be9da8402f66559f418e905f5f2ebb"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_aa367931b3838d0304bc5cf4a20c1242"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_554cbaadc227324e9d73511a76767972"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4ddbc9f8cc78ff1b96b43564fb38d9c5"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_bc460204df832812758187e8ff6563a2"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_16ab6debdbbd13758b1fbaa01ad92640"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0e6345d760d57c6c5c8c9f92dfac05f1"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_fb7651acfa2a8f5c8afeb697ede8b28d"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_aa367931b3838d0304bc5cf4a20c1242"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType1",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_44ceccc4cc5930ed5134520785f0a177"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_adfa03f5d039913db7ef805b7416621e"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e85b70be5e223da77a9dbd1a92fdc7ff"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_1dd1a5b19d78a38e5cfad42d1564c6ea"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_38f671fe060db1480808963b460bb645"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4521b836ee0768b2f78a595f7292c096"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_de5d7561ea8b92900c3535dcdc00fa0a"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_509ba4dd1d8bba9c098f3ee8122a1afb"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_44ceccc4cc5930ed5134520785f0a177"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_adfa03f5d039913db7ef805b7416621e"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_1dd1a5b19d78a38e5cfad42d1564c6ea"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType10",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b745aeeebbe6b57127c2840cd215d2da"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_adcd6dc9ab2e5ff7d559327c839f6caf"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0343b24fe250531932a7be168253a003"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_a4b599e5c6f6cb01251ae1f268e9f6c5"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_a6253236c9a424d611e4875b8def6e5f"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ad2dc0377accd1428dc66e4a94c07fa2"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_292a1053e8a7ab9f62aaba6de8b94cdf"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9e4f9a36724280edb7842c985bf46d7e"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b745aeeebbe6b57127c2840cd215d2da"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_adcd6dc9ab2e5ff7d559327c839f6caf"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_a4b599e5c6f6cb01251ae1f268e9f6c5"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType2",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_23e494e648c0452a1b082c0a867a55cd"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_6a959782fde2cb8f123511cb145a6ba1"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_8a389b1d6d14c5b6ef7e984387dbe560"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_043f2dd1c2be4d40561f60b062e00a3d"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e2228d0bf26d12ffbed359a8bfecea96"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_24d4dcc07212a5da4ce2163c17773a25"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_73dbf9b191ec5d8f4e3d7817ad17319d"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ce1373195d170a40daf841bdee2d69e3"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_23e494e648c0452a1b082c0a867a55cd"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_6a959782fde2cb8f123511cb145a6ba1"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_043f2dd1c2be4d40561f60b062e00a3d"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType3",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b167bcac656150246cdc8d8728e8a67a"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_2e5b30496c67183aafe458c5bef8b473"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_d7a03841af63009185aa5658d4781e48"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_a4f5be7da29b29e79609def150e4143f"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e797d3390bcb030fe9bc6aae1ccdd690"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ffa7efe60638877a79f07fa3e0d4a16a"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_880481cd910ccb25269b2f55825b66c5"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_873d88ad34fa4b3700e2cecb235ba2a8"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b167bcac656150246cdc8d8728e8a67a"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_2e5b30496c67183aafe458c5bef8b473"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_a4f5be7da29b29e79609def150e4143f"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType4",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0e6345d760d57c6c5c8c9f92dfac05f1"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_fb7651acfa2a8f5c8afeb697ede8b28d"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_68be9da8402f66559f418e905f5f2ebb"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_aa367931b3838d0304bc5cf4a20c1242"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_554cbaadc227324e9d73511a76767972"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4ddbc9f8cc78ff1b96b43564fb38d9c5"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_bc460204df832812758187e8ff6563a2"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_16ab6debdbbd13758b1fbaa01ad92640"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0e6345d760d57c6c5c8c9f92dfac05f1"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_fb7651acfa2a8f5c8afeb697ede8b28d"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_aa367931b3838d0304bc5cf4a20c1242"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType5",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b8622cd9bf4ba318db43402952518282"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_751523c43e7d5ccfd3e94b9ec1c70d67"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_a1d2737475182a9b0b5c93defe5bca75"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_5d006fe58c91a87daef2e42680b1086d"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9430c1e218c727aa9d3def7fc88daacc"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_8381a37c1b5f2a9a2d5f878aba43157f"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_d05d47e7b1abbbb0262a2d49a431cb85"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_342c90c77795c7e1c2ef3d7c0e077631"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b8622cd9bf4ba318db43402952518282"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_751523c43e7d5ccfd3e94b9ec1c70d67"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5d006fe58c91a87daef2e42680b1086d"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType6",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5e5ed608cf7f24be9908d31ddbdfe3e8"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_453ad7cee70c8d9f903bedbd05e5d2c3"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_8c270c97271e8079db18a22dc7c758d2"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_f1e24708ecc7086f68d2a0cefd8bff4b"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e8786d6817e18adc5b0b125d70762db9"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_f8d0020eb21f507cb28b246ed7cc6add"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_269b788df5bdd508f905634f3054cb76"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e6967101fd8adaaad3b85f0c348cf776"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_5e5ed608cf7f24be9908d31ddbdfe3e8"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_453ad7cee70c8d9f903bedbd05e5d2c3"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_f1e24708ecc7086f68d2a0cefd8bff4b"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType7",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0836d4279138155c08b849aaea2124e7"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b5b3f44975ffb046d28cacd9d2b72558"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9b0b8ae68f77e0a006a29959a82d47b2"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_9162cc545cf9b54574ba15459215ec6b"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ef0282e9703270909527e2a5f2efdbe8"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_cd9895172ecf27cd02b292821e22c42e"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_a40ca6b317cc9a5b97ac8918b457a662"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_13d724b16063ea73fc8834188cacc7ea"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0836d4279138155c08b849aaea2124e7"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b5b3f44975ffb046d28cacd9d2b72558"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9162cc545cf9b54574ba15459215ec6b"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType8",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_1b03a32de9d7ebe15eee88e309f1d464"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9a51966c3f3d5bba6c5905f7550e9854"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_318ee7dc91592544e13a8a4fda9feca4"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_e3c6a77b75e5e0fa792c4b5160821559"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e473f436d63261c48c652f02c985426c"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_05f0b79a6e8208c94597d6ad8f8c7e38"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_087438a8d6d922bdec4ed924987e462f"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_2b9b1f55498abba47db0f1e612496768"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_1b03a32de9d7ebe15eee88e309f1d464"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_9a51966c3f3d5bba6c5905f7550e9854"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_e3c6a77b75e5e0fa792c4b5160821559"
+          }
+        }
+      }
+    },
+    {
+      "name": "WyvernType9",
+      "attachments": {
+        "Body/ArmR": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0dcdb0e661d46c8b63d2b7486bad25aa"
+          }
+        },
+        "Body/LegBackR": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b1e5c52183f677c0db050064c106c7ea"
+          }
+        },
+        "Shadow": {
+          "sprite_Shadow": {
+            "width": 256.0,
+            "height": 64.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_4129e69f70b726a9bed4c27cbc3386c7"
+          }
+        },
+        "Body/Tail": {
+          "sprite_Tail": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": -159.84,
+            "y": -159.84,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_f5f693e860470738cfc027e127690a1b"
+          }
+        },
+        "Body/WingR": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": -1,
+            "scaleY": 1,
+            "path": "u_c7c86682f6c2bdc478279a3dec606526"
+          }
+        },
+        "Body": {
+          "sprite_Body": {
+            "width": 666.0,
+            "height": 666.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_ef87c107c85d42c679e28990820b0dd7"
+          }
+        },
+        "Body/Head": {
+          "sprite_HeadAngry": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b0591eef1a2a406c996db6892082329b"
+          },
+          "sprite_HeadDead": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_050e06d09d8b6431c324da274efd0ee0"
+          },
+          "sprite_HeadNormal": {
+            "width": 666.0,
+            "height": 664.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_f46458fcf3dbb57b691b207167b134b0"
+          }
+        },
+        "Body/ArmL": {
+          "sprite_Arm": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": -9.930000000000009,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_0dcdb0e661d46c8b63d2b7486bad25aa"
+          }
+        },
+        "Body/LegBackL": {
+          "sprite_Leg": {
+            "width": 331.0,
+            "height": 333.0,
+            "x": 0.0,
+            "y": -66.59999999999998,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b1e5c52183f677c0db050064c106c7ea"
+          }
+        },
+        "Body/WingL": {
+          "sprite_Wing": {
+            "width": 997.0,
+            "height": 666.0,
+            "x": 269.19,
+            "y": 93.24000000000001,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_c7c86682f6c2bdc478279a3dec606526"
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "idle": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 10.90002
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 23.19997
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 36.3
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 49.60002
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 62.49997
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 74.4
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 84.70002
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 92.79999
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 98.1
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 100.0
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 98.10001
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 92.8
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 84.69999
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 74.40003
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 62.5
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 49.59998
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 36.30003
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": 23.2
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": 10.89998
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": 3e-05
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ]
+        },
+        "Body/WingL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -4.36001
+            },
+            {
+              "time": 0.0333333,
+              "angle": -9.27999
+            },
+            {
+              "time": 0.05,
+              "angle": -14.52
+            },
+            {
+              "time": 0.0666667,
+              "angle": -19.84001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -24.99999
+            },
+            {
+              "time": 0.1,
+              "angle": -29.76
+            },
+            {
+              "time": 0.1166667,
+              "angle": -33.88001
+            },
+            {
+              "time": 0.1333333,
+              "angle": -37.11999
+            },
+            {
+              "time": 0.15,
+              "angle": -39.24
+            },
+            {
+              "time": 0.1666667,
+              "angle": -40.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -39.24
+            },
+            {
+              "time": 0.2,
+              "angle": -37.12
+            },
+            {
+              "time": 0.2166667,
+              "angle": -33.87999
+            },
+            {
+              "time": 0.2333333,
+              "angle": -29.76001
+            },
+            {
+              "time": 0.25,
+              "angle": -25.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -19.83999
+            },
+            {
+              "time": 0.2833333,
+              "angle": -14.52001
+            },
+            {
+              "time": 0.3,
+              "angle": -9.28
+            },
+            {
+              "time": 0.3166667,
+              "angle": -4.35999
+            },
+            {
+              "time": 0.3333333,
+              "angle": -1e-05
+            },
+            {
+              "time": 0.33333334,
+              "angle": -0.0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0.0,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.05,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.0666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.0833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.1,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.1166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.1333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.15,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.1666667,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.1833333,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.2,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.2166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.2333333,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.25,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.2666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.2833333,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.3,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.3166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.3333333,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.33333334,
+              "x": 1.0,
+              "y": 1.0
+            }
+          ]
+        },
+        "Body/WingR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 4.36001
+            },
+            {
+              "time": 0.0333333,
+              "angle": 9.27999
+            },
+            {
+              "time": 0.05,
+              "angle": 14.52
+            },
+            {
+              "time": 0.0666667,
+              "angle": 19.84001
+            },
+            {
+              "time": 0.0833333,
+              "angle": 24.99999
+            },
+            {
+              "time": 0.1,
+              "angle": 29.76
+            },
+            {
+              "time": 0.1166667,
+              "angle": 33.88001
+            },
+            {
+              "time": 0.1333333,
+              "angle": 37.11999
+            },
+            {
+              "time": 0.15,
+              "angle": 39.24
+            },
+            {
+              "time": 0.1666667,
+              "angle": 40.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 39.24
+            },
+            {
+              "time": 0.2,
+              "angle": 37.12
+            },
+            {
+              "time": 0.2166667,
+              "angle": 33.87999
+            },
+            {
+              "time": 0.2333333,
+              "angle": 29.76001
+            },
+            {
+              "time": 0.25,
+              "angle": 25.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 19.83999
+            },
+            {
+              "time": 0.2833333,
+              "angle": 14.52001
+            },
+            {
+              "time": 0.3,
+              "angle": 9.28
+            },
+            {
+              "time": 0.3166667,
+              "angle": 4.35999
+            },
+            {
+              "time": 0.3333333,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0.0,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.05,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.0666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.0833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.1,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.1166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.1333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.15,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.1666667,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.1833333,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.2,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.2166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.2333333,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.25,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.2666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.2833333,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.3,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.3166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.3333333,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.33333334,
+              "x": 1.0,
+              "y": 1.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 1.09
+            },
+            {
+              "time": 0.0333333,
+              "angle": 2.32
+            },
+            {
+              "time": 0.05,
+              "angle": 3.63
+            },
+            {
+              "time": 0.0666667,
+              "angle": 4.96
+            },
+            {
+              "time": 0.0833333,
+              "angle": 6.25
+            },
+            {
+              "time": 0.1,
+              "angle": 7.44
+            },
+            {
+              "time": 0.1166667,
+              "angle": 8.47
+            },
+            {
+              "time": 0.1333333,
+              "angle": 9.28
+            },
+            {
+              "time": 0.15,
+              "angle": 9.81
+            },
+            {
+              "time": 0.1666667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 9.81
+            },
+            {
+              "time": 0.2,
+              "angle": 9.28
+            },
+            {
+              "time": 0.2166667,
+              "angle": 8.47
+            },
+            {
+              "time": 0.2333333,
+              "angle": 7.44
+            },
+            {
+              "time": 0.25,
+              "angle": 6.25
+            },
+            {
+              "time": 0.2666667,
+              "angle": 4.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": 3.63
+            },
+            {
+              "time": 0.3,
+              "angle": 2.32
+            },
+            {
+              "time": 0.3166667,
+              "angle": 1.09
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 1.09
+            },
+            {
+              "time": 0.0333333,
+              "angle": 2.32
+            },
+            {
+              "time": 0.05,
+              "angle": 3.63
+            },
+            {
+              "time": 0.0666667,
+              "angle": 4.96
+            },
+            {
+              "time": 0.0833333,
+              "angle": 6.25
+            },
+            {
+              "time": 0.1,
+              "angle": 7.44
+            },
+            {
+              "time": 0.1166667,
+              "angle": 8.47
+            },
+            {
+              "time": 0.1333333,
+              "angle": 9.28
+            },
+            {
+              "time": 0.15,
+              "angle": 9.81
+            },
+            {
+              "time": 0.1666667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 9.81
+            },
+            {
+              "time": 0.2,
+              "angle": 9.28
+            },
+            {
+              "time": 0.2166667,
+              "angle": 8.47
+            },
+            {
+              "time": 0.2333333,
+              "angle": 7.44
+            },
+            {
+              "time": 0.25,
+              "angle": 6.25
+            },
+            {
+              "time": 0.2666667,
+              "angle": 4.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": 3.63
+            },
+            {
+              "time": 0.3,
+              "angle": 2.32
+            },
+            {
+              "time": 0.3166667,
+              "angle": 1.09
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.54499
+            },
+            {
+              "time": 0.0333333,
+              "angle": -1.15999
+            },
+            {
+              "time": 0.05,
+              "angle": -1.81499
+            },
+            {
+              "time": 0.0666667,
+              "angle": -2.47999
+            },
+            {
+              "time": 0.0833333,
+              "angle": -3.12499
+            },
+            {
+              "time": 0.1,
+              "angle": -3.71999
+            },
+            {
+              "time": 0.1166667,
+              "angle": -4.23499
+            },
+            {
+              "time": 0.1333333,
+              "angle": -4.63999
+            },
+            {
+              "time": 0.15,
+              "angle": -4.90499
+            },
+            {
+              "time": 0.1666667,
+              "angle": -4.99999
+            },
+            {
+              "time": 0.1833333,
+              "angle": -4.90499
+            },
+            {
+              "time": 0.2,
+              "angle": -4.63999
+            },
+            {
+              "time": 0.2166667,
+              "angle": -4.23499
+            },
+            {
+              "time": 0.2333333,
+              "angle": -3.71999
+            },
+            {
+              "time": 0.25,
+              "angle": -3.12499
+            },
+            {
+              "time": 0.2666667,
+              "angle": -2.47999
+            },
+            {
+              "time": 0.2833333,
+              "angle": -1.81499
+            },
+            {
+              "time": 0.3,
+              "angle": -1.15999
+            },
+            {
+              "time": 0.3166667,
+              "angle": -0.54499
+            },
+            {
+              "time": 0.3333333,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.33333334,
+              "angle": 1e-05
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.545
+            },
+            {
+              "time": 0.0333333,
+              "angle": 1.16
+            },
+            {
+              "time": 0.05,
+              "angle": 1.815
+            },
+            {
+              "time": 0.0666667,
+              "angle": 2.48
+            },
+            {
+              "time": 0.0833333,
+              "angle": 3.125
+            },
+            {
+              "time": 0.1,
+              "angle": 3.72
+            },
+            {
+              "time": 0.1166667,
+              "angle": 4.235
+            },
+            {
+              "time": 0.1333333,
+              "angle": 4.64
+            },
+            {
+              "time": 0.15,
+              "angle": 4.905
+            },
+            {
+              "time": 0.1666667,
+              "angle": 5.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 4.905
+            },
+            {
+              "time": 0.2,
+              "angle": 4.64
+            },
+            {
+              "time": 0.2166667,
+              "angle": 4.235
+            },
+            {
+              "time": 0.2333333,
+              "angle": 3.72
+            },
+            {
+              "time": 0.25,
+              "angle": 3.125
+            },
+            {
+              "time": 0.2666667,
+              "angle": 2.48
+            },
+            {
+              "time": 0.2833333,
+              "angle": 1.815
+            },
+            {
+              "time": 0.3,
+              "angle": 1.16
+            },
+            {
+              "time": 0.3166667,
+              "angle": 0.545
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.14
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.52
+            },
+            {
+              "time": 0.05,
+              "angle": -1.08
+            },
+            {
+              "time": 0.0666667,
+              "angle": -1.76
+            },
+            {
+              "time": 0.0833333,
+              "angle": -2.5
+            },
+            {
+              "time": 0.1,
+              "angle": -3.24
+            },
+            {
+              "time": 0.1166667,
+              "angle": -3.92
+            },
+            {
+              "time": 0.1333333,
+              "angle": -4.48
+            },
+            {
+              "time": 0.15,
+              "angle": -4.86
+            },
+            {
+              "time": 0.1666667,
+              "angle": -5.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -4.86
+            },
+            {
+              "time": 0.2,
+              "angle": -4.48
+            },
+            {
+              "time": 0.2166667,
+              "angle": -3.92
+            },
+            {
+              "time": 0.2333333,
+              "angle": -3.24
+            },
+            {
+              "time": 0.25,
+              "angle": -2.5
+            },
+            {
+              "time": 0.2666667,
+              "angle": -1.76
+            },
+            {
+              "time": 0.2833333,
+              "angle": -1.08
+            },
+            {
+              "time": 0.3,
+              "angle": -0.52
+            },
+            {
+              "time": 0.3166667,
+              "angle": -0.14
+            },
+            {
+              "time": 0.3333333,
+              "angle": -0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -0.0
+            }
+          ]
+        },
+        "Body/ArmR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.14
+            },
+            {
+              "time": 0.0333333,
+              "angle": 0.52
+            },
+            {
+              "time": 0.05,
+              "angle": 1.08
+            },
+            {
+              "time": 0.0666667,
+              "angle": 1.76
+            },
+            {
+              "time": 0.0833333,
+              "angle": 2.5
+            },
+            {
+              "time": 0.1,
+              "angle": 3.24
+            },
+            {
+              "time": 0.1166667,
+              "angle": 3.92
+            },
+            {
+              "time": 0.1333333,
+              "angle": 4.48
+            },
+            {
+              "time": 0.15,
+              "angle": 4.86
+            },
+            {
+              "time": 0.1666667,
+              "angle": 5.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 4.86
+            },
+            {
+              "time": 0.2,
+              "angle": 4.48
+            },
+            {
+              "time": 0.2166667,
+              "angle": 3.92
+            },
+            {
+              "time": 0.2333333,
+              "angle": 3.24
+            },
+            {
+              "time": 0.25,
+              "angle": 2.5
+            },
+            {
+              "time": 0.2666667,
+              "angle": 1.76
+            },
+            {
+              "time": 0.2833333,
+              "angle": 1.08
+            },
+            {
+              "time": 0.3,
+              "angle": 0.52
+            },
+            {
+              "time": 0.3166667,
+              "angle": 0.14
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/ArmR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff64"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffff64"
+            }
+          ]
+        },
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "move": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.0,
+              "y": 10.90002
+            },
+            {
+              "time": 0.0333333,
+              "x": 0.0,
+              "y": 23.19997
+            },
+            {
+              "time": 0.05,
+              "x": 0.0,
+              "y": 36.3
+            },
+            {
+              "time": 0.0666667,
+              "x": 0.0,
+              "y": 49.60002
+            },
+            {
+              "time": 0.0833333,
+              "x": 0.0,
+              "y": 62.49997
+            },
+            {
+              "time": 0.1,
+              "x": 0.0,
+              "y": 74.4
+            },
+            {
+              "time": 0.1166667,
+              "x": 0.0,
+              "y": 84.70002
+            },
+            {
+              "time": 0.1333333,
+              "x": 0.0,
+              "y": 92.79999
+            },
+            {
+              "time": 0.15,
+              "x": 0.0,
+              "y": 98.1
+            },
+            {
+              "time": 0.1666667,
+              "x": 0.0,
+              "y": 100.0
+            },
+            {
+              "time": 0.1833333,
+              "x": 0.0,
+              "y": 98.10001
+            },
+            {
+              "time": 0.2,
+              "x": 0.0,
+              "y": 92.8
+            },
+            {
+              "time": 0.2166667,
+              "x": 0.0,
+              "y": 84.69999
+            },
+            {
+              "time": 0.2333333,
+              "x": 0.0,
+              "y": 74.40003
+            },
+            {
+              "time": 0.25,
+              "x": 0.0,
+              "y": 62.5
+            },
+            {
+              "time": 0.2666667,
+              "x": 0.0,
+              "y": 49.59998
+            },
+            {
+              "time": 0.2833333,
+              "x": 0.0,
+              "y": 36.30003
+            },
+            {
+              "time": 0.3,
+              "x": 0.0,
+              "y": 23.2
+            },
+            {
+              "time": 0.3166667,
+              "x": 0.0,
+              "y": 10.89998
+            },
+            {
+              "time": 0.3333333,
+              "x": 0.0,
+              "y": 3e-05
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.0,
+              "y": 0.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 20.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 20.0
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.42
+            },
+            {
+              "time": 0.0333333,
+              "angle": 1.56
+            },
+            {
+              "time": 0.05,
+              "angle": 3.24
+            },
+            {
+              "time": 0.0666667,
+              "angle": 5.28
+            },
+            {
+              "time": 0.0833333,
+              "angle": 7.5
+            },
+            {
+              "time": 0.1,
+              "angle": 9.72
+            },
+            {
+              "time": 0.1166667,
+              "angle": 11.76
+            },
+            {
+              "time": 0.1333333,
+              "angle": 13.44
+            },
+            {
+              "time": 0.15,
+              "angle": 14.58
+            },
+            {
+              "time": 0.1666667,
+              "angle": 15.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 14.58
+            },
+            {
+              "time": 0.2,
+              "angle": 13.44
+            },
+            {
+              "time": 0.2166667,
+              "angle": 11.76
+            },
+            {
+              "time": 0.2333333,
+              "angle": 9.72001
+            },
+            {
+              "time": 0.25,
+              "angle": 7.5
+            },
+            {
+              "time": 0.2666667,
+              "angle": 5.28
+            },
+            {
+              "time": 0.2833333,
+              "angle": 3.24
+            },
+            {
+              "time": 0.3,
+              "angle": 1.56
+            },
+            {
+              "time": 0.3166667,
+              "angle": 0.42
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/ArmR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.28
+            },
+            {
+              "time": 0.0333333,
+              "angle": 1.04
+            },
+            {
+              "time": 0.05,
+              "angle": 2.16
+            },
+            {
+              "time": 0.0666667,
+              "angle": 3.52
+            },
+            {
+              "time": 0.0833333,
+              "angle": 5.0
+            },
+            {
+              "time": 0.1,
+              "angle": 6.48
+            },
+            {
+              "time": 0.1166667,
+              "angle": 7.84
+            },
+            {
+              "time": 0.1333333,
+              "angle": 8.96
+            },
+            {
+              "time": 0.15,
+              "angle": 9.72
+            },
+            {
+              "time": 0.1666667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 9.72
+            },
+            {
+              "time": 0.2,
+              "angle": 8.96
+            },
+            {
+              "time": 0.2166667,
+              "angle": 7.84
+            },
+            {
+              "time": 0.2333333,
+              "angle": 6.48
+            },
+            {
+              "time": 0.25,
+              "angle": 5.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 3.52
+            },
+            {
+              "time": 0.2833333,
+              "angle": 2.16
+            },
+            {
+              "time": 0.3,
+              "angle": 1.04
+            },
+            {
+              "time": 0.3166667,
+              "angle": 0.28
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 1.09
+            },
+            {
+              "time": 0.0333333,
+              "angle": 2.32
+            },
+            {
+              "time": 0.05,
+              "angle": 3.63
+            },
+            {
+              "time": 0.0666667,
+              "angle": 4.96
+            },
+            {
+              "time": 0.0833333,
+              "angle": 6.25
+            },
+            {
+              "time": 0.1,
+              "angle": 7.44
+            },
+            {
+              "time": 0.1166667,
+              "angle": 8.47
+            },
+            {
+              "time": 0.1333333,
+              "angle": 9.28
+            },
+            {
+              "time": 0.15,
+              "angle": 9.81
+            },
+            {
+              "time": 0.1666667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 9.81
+            },
+            {
+              "time": 0.2,
+              "angle": 9.28
+            },
+            {
+              "time": 0.2166667,
+              "angle": 8.47
+            },
+            {
+              "time": 0.2333333,
+              "angle": 7.44
+            },
+            {
+              "time": 0.25,
+              "angle": 6.25
+            },
+            {
+              "time": 0.2666667,
+              "angle": 4.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": 3.63
+            },
+            {
+              "time": 0.3,
+              "angle": 2.32
+            },
+            {
+              "time": 0.3166667,
+              "angle": 1.09
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 1.635
+            },
+            {
+              "time": 0.0333333,
+              "angle": 3.48
+            },
+            {
+              "time": 0.05,
+              "angle": 5.445
+            },
+            {
+              "time": 0.0666667,
+              "angle": 7.44
+            },
+            {
+              "time": 0.0833333,
+              "angle": 9.375
+            },
+            {
+              "time": 0.1,
+              "angle": 11.16
+            },
+            {
+              "time": 0.1166667,
+              "angle": 12.705
+            },
+            {
+              "time": 0.1333333,
+              "angle": 13.92
+            },
+            {
+              "time": 0.15,
+              "angle": 14.715
+            },
+            {
+              "time": 0.1666667,
+              "angle": 15.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 14.715
+            },
+            {
+              "time": 0.2,
+              "angle": 13.92
+            },
+            {
+              "time": 0.2166667,
+              "angle": 12.705
+            },
+            {
+              "time": 0.2333333,
+              "angle": 11.16
+            },
+            {
+              "time": 0.25,
+              "angle": 9.375
+            },
+            {
+              "time": 0.2666667,
+              "angle": 7.44
+            },
+            {
+              "time": 0.2833333,
+              "angle": 5.445
+            },
+            {
+              "time": 0.3,
+              "angle": 3.48
+            },
+            {
+              "time": 0.3166667,
+              "angle": 1.635
+            },
+            {
+              "time": 0.3333333,
+              "angle": 0.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -4.99999
+            },
+            {
+              "time": 0.0166667,
+              "angle": -3.90999
+            },
+            {
+              "time": 0.0333333,
+              "angle": -2.67999
+            },
+            {
+              "time": 0.05,
+              "angle": -1.36999
+            },
+            {
+              "time": 0.0666667,
+              "angle": -0.03999
+            },
+            {
+              "time": 0.0833333,
+              "angle": 1.25001
+            },
+            {
+              "time": 0.1,
+              "angle": 2.44001
+            },
+            {
+              "time": 0.1166667,
+              "angle": 3.47001
+            },
+            {
+              "time": 0.1333333,
+              "angle": 4.28001
+            },
+            {
+              "time": 0.15,
+              "angle": 4.81001
+            },
+            {
+              "time": 0.1666667,
+              "angle": 5.00001
+            },
+            {
+              "time": 0.1833333,
+              "angle": 4.81001
+            },
+            {
+              "time": 0.2,
+              "angle": 4.28001
+            },
+            {
+              "time": 0.2166667,
+              "angle": 3.47001
+            },
+            {
+              "time": 0.2333333,
+              "angle": 2.44001
+            },
+            {
+              "time": 0.25,
+              "angle": 1.25001
+            },
+            {
+              "time": 0.2666667,
+              "angle": -0.03999
+            },
+            {
+              "time": 0.2833333,
+              "angle": -1.36999
+            },
+            {
+              "time": 0.3,
+              "angle": -2.67999
+            },
+            {
+              "time": 0.3166667,
+              "angle": -3.90999
+            },
+            {
+              "time": 0.3333333,
+              "angle": -4.99999
+            },
+            {
+              "time": 0.33333334,
+              "angle": -4.99999
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": -5.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -3.91
+            },
+            {
+              "time": 0.0333333,
+              "angle": -2.68
+            },
+            {
+              "time": 0.05,
+              "angle": -1.37
+            },
+            {
+              "time": 0.0666667,
+              "angle": -0.04
+            },
+            {
+              "time": 0.0833333,
+              "angle": 1.25
+            },
+            {
+              "time": 0.1,
+              "angle": 2.44
+            },
+            {
+              "time": 0.1166667,
+              "angle": 3.47
+            },
+            {
+              "time": 0.1333333,
+              "angle": 4.28
+            },
+            {
+              "time": 0.15,
+              "angle": 4.81
+            },
+            {
+              "time": 0.1666667,
+              "angle": 5.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 4.81
+            },
+            {
+              "time": 0.2,
+              "angle": 4.28
+            },
+            {
+              "time": 0.2166667,
+              "angle": 3.47
+            },
+            {
+              "time": 0.2333333,
+              "angle": 2.44
+            },
+            {
+              "time": 0.25,
+              "angle": 1.25
+            },
+            {
+              "time": 0.2666667,
+              "angle": -0.04
+            },
+            {
+              "time": 0.2833333,
+              "angle": -1.37
+            },
+            {
+              "time": 0.3,
+              "angle": -2.68
+            },
+            {
+              "time": 0.3166667,
+              "angle": -3.91
+            },
+            {
+              "time": 0.3333333,
+              "angle": -5.0
+            },
+            {
+              "time": 0.33333334,
+              "angle": -5.0
+            }
+          ]
+        },
+        "Body/WingL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -4.36001
+            },
+            {
+              "time": 0.0333333,
+              "angle": -9.27999
+            },
+            {
+              "time": 0.05,
+              "angle": -14.52
+            },
+            {
+              "time": 0.0666667,
+              "angle": -19.84001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -24.99999
+            },
+            {
+              "time": 0.1,
+              "angle": -29.76
+            },
+            {
+              "time": 0.1166667,
+              "angle": -33.88001
+            },
+            {
+              "time": 0.1333333,
+              "angle": -37.11999
+            },
+            {
+              "time": 0.15,
+              "angle": -39.24
+            },
+            {
+              "time": 0.1666667,
+              "angle": -40.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -39.24
+            },
+            {
+              "time": 0.2,
+              "angle": -37.12
+            },
+            {
+              "time": 0.2166667,
+              "angle": -33.87999
+            },
+            {
+              "time": 0.2333333,
+              "angle": -29.76001
+            },
+            {
+              "time": 0.25,
+              "angle": -25.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -19.83999
+            },
+            {
+              "time": 0.2833333,
+              "angle": -14.52001
+            },
+            {
+              "time": 0.3,
+              "angle": -9.28
+            },
+            {
+              "time": 0.3166667,
+              "angle": -4.35999
+            },
+            {
+              "time": 0.3333333,
+              "angle": -1e-05
+            },
+            {
+              "time": 0.33333334,
+              "angle": -0.0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0.0,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.05,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.0666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.0833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.1,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.1166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.1333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.15,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.1666667,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.1833333,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.2,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.2166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.2333333,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.25,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.2666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.2833333,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.3,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.3166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.3333333,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.33333334,
+              "x": 1.0,
+              "y": 1.0
+            }
+          ]
+        },
+        "Body/WingR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 4.36001
+            },
+            {
+              "time": 0.0333333,
+              "angle": 9.27999
+            },
+            {
+              "time": 0.05,
+              "angle": 14.52
+            },
+            {
+              "time": 0.0666667,
+              "angle": 19.84001
+            },
+            {
+              "time": 0.0833333,
+              "angle": 24.99999
+            },
+            {
+              "time": 0.1,
+              "angle": 29.76
+            },
+            {
+              "time": 0.1166667,
+              "angle": 33.88001
+            },
+            {
+              "time": 0.1333333,
+              "angle": 37.11999
+            },
+            {
+              "time": 0.15,
+              "angle": 39.24
+            },
+            {
+              "time": 0.1666667,
+              "angle": 40.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 39.24
+            },
+            {
+              "time": 0.2,
+              "angle": 37.12
+            },
+            {
+              "time": 0.2166667,
+              "angle": 33.87999
+            },
+            {
+              "time": 0.2333333,
+              "angle": 29.76001
+            },
+            {
+              "time": 0.25,
+              "angle": 25.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": 19.83999
+            },
+            {
+              "time": 0.2833333,
+              "angle": 14.52001
+            },
+            {
+              "time": 0.3,
+              "angle": 9.28
+            },
+            {
+              "time": 0.3166667,
+              "angle": 4.35999
+            },
+            {
+              "time": 0.3333333,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.33333334,
+              "angle": 0.0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0.0,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.05,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.0666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.0833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.1,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.1166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.1333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.15,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.1666667,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.1833333,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.2,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.2166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.2333333,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.25,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.2666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.2833333,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.3,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.3166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.3333333,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.33333334,
+              "x": 1.0,
+              "y": 1.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/ArmR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff64"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffff64"
+            }
+          ]
+        },
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.33333334,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "attack": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 22.37505,
+              "y": 11.18753
+            },
+            {
+              "time": 0.0333333,
+              "x": 48.99993,
+              "y": 24.49997
+            },
+            {
+              "time": 0.05,
+              "x": 79.12501,
+              "y": 39.5625
+            },
+            {
+              "time": 0.0666667,
+              "x": 112.00006,
+              "y": 56.00003
+            },
+            {
+              "time": 0.0833333,
+              "x": 146.87494,
+              "y": 73.43747
+            },
+            {
+              "time": 0.1,
+              "x": 182.99999,
+              "y": 91.5
+            },
+            {
+              "time": 0.1166667,
+              "x": 219.62509,
+              "y": 109.81255
+            },
+            {
+              "time": 0.1333333,
+              "x": 255.99993,
+              "y": 127.99996
+            },
+            {
+              "time": 0.15,
+              "x": 291.37502,
+              "y": 145.68751
+            },
+            {
+              "time": 0.1666667,
+              "x": 325.00007,
+              "y": 162.50003
+            },
+            {
+              "time": 0.1833333,
+              "x": 356.12493,
+              "y": 178.06247
+            },
+            {
+              "time": 0.2,
+              "x": 384.00001,
+              "y": 192.0
+            },
+            {
+              "time": 0.2166667,
+              "x": 407.87504,
+              "y": 203.93752
+            },
+            {
+              "time": 0.2333333,
+              "x": 426.99998,
+              "y": 213.49999
+            },
+            {
+              "time": 0.25,
+              "x": 440.62501,
+              "y": 220.3125
+            },
+            {
+              "time": 0.2666667,
+              "x": 448.00002,
+              "y": 224.00001
+            },
+            {
+              "time": 0.2833333,
+              "x": 448.37502,
+              "y": 224.18751
+            },
+            {
+              "time": 0.3,
+              "x": 441.00001,
+              "y": 220.5
+            },
+            {
+              "time": 0.3166667,
+              "x": 425.12497,
+              "y": 212.56249
+            },
+            {
+              "time": 0.3333333,
+              "x": 400.00009,
+              "y": 200.00004
+            },
+            {
+              "time": 0.35,
+              "x": 355.10004,
+              "y": 177.55002
+            },
+            {
+              "time": 0.3666667,
+              "x": 284.79984,
+              "y": 142.39992
+            },
+            {
+              "time": 0.3833333,
+              "x": 195.70025,
+              "y": 97.85012
+            },
+            {
+              "time": 0.4,
+              "x": 94.40006,
+              "y": 47.20003
+            },
+            {
+              "time": 0.4166667,
+              "x": -12.50022,
+              "y": -6.25011
+            },
+            {
+              "time": 0.4333333,
+              "x": -118.39974,
+              "y": -59.19987
+            },
+            {
+              "time": 0.45,
+              "x": -216.69996,
+              "y": -108.34998
+            },
+            {
+              "time": 0.4666667,
+              "x": -300.80016,
+              "y": -150.40008
+            },
+            {
+              "time": 0.4833333,
+              "x": -364.09988,
+              "y": -182.04994
+            },
+            {
+              "time": 0.5,
+              "x": -399.99999,
+              "y": -200.0
+            },
+            {
+              "time": 0.5166667,
+              "x": -408.6,
+              "y": -204.3
+            },
+            {
+              "time": 0.5333333,
+              "x": -396.80006,
+              "y": -198.40003
+            },
+            {
+              "time": 0.55,
+              "x": -368.20004,
+              "y": -184.10002
+            },
+            {
+              "time": 0.5666667,
+              "x": -326.39996,
+              "y": -163.19998
+            },
+            {
+              "time": 0.5833333,
+              "x": -275.0002,
+              "y": -137.5001
+            },
+            {
+              "time": 0.6,
+              "x": -217.60009,
+              "y": -108.80004
+            },
+            {
+              "time": 0.6166667,
+              "x": -157.79997,
+              "y": -78.89998
+            },
+            {
+              "time": 0.6333333,
+              "x": -99.20022,
+              "y": -49.60011
+            },
+            {
+              "time": 0.65,
+              "x": -45.40009,
+              "y": -22.70005
+            },
+            {
+              "time": 0.6666667,
+              "x": -1e-05,
+              "y": -1e-05
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -1.1425
+            },
+            {
+              "time": 0.0333333,
+              "angle": -2.54
+            },
+            {
+              "time": 0.05,
+              "angle": -4.1475
+            },
+            {
+              "time": 0.0666667,
+              "angle": -5.92
+            },
+            {
+              "time": 0.0833333,
+              "angle": -7.8125
+            },
+            {
+              "time": 0.1,
+              "angle": -9.78
+            },
+            {
+              "time": 0.1166667,
+              "angle": -11.77751
+            },
+            {
+              "time": 0.1333333,
+              "angle": -13.76
+            },
+            {
+              "time": 0.15,
+              "angle": -15.6825
+            },
+            {
+              "time": 0.1666667,
+              "angle": -17.5
+            },
+            {
+              "time": 0.1833333,
+              "angle": -19.1675
+            },
+            {
+              "time": 0.2,
+              "angle": -20.64
+            },
+            {
+              "time": 0.2166667,
+              "angle": -21.8725
+            },
+            {
+              "time": 0.2333333,
+              "angle": -22.82
+            },
+            {
+              "time": 0.25,
+              "angle": -23.4375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -23.68
+            },
+            {
+              "time": 0.2833333,
+              "angle": -23.5025
+            },
+            {
+              "time": 0.3,
+              "angle": -22.86
+            },
+            {
+              "time": 0.3166667,
+              "angle": -21.7075
+            },
+            {
+              "time": 0.3333333,
+              "angle": -20.00001
+            },
+            {
+              "time": 0.35,
+              "angle": -17.07
+            },
+            {
+              "time": 0.3666667,
+              "angle": -12.55999
+            },
+            {
+              "time": 0.3833333,
+              "angle": -6.89002
+            },
+            {
+              "time": 0.4,
+              "angle": -0.48
+            },
+            {
+              "time": 0.4166667,
+              "angle": 6.25001
+            },
+            {
+              "time": 0.4333333,
+              "angle": 12.87998
+            },
+            {
+              "time": 0.45,
+              "angle": 18.99
+            },
+            {
+              "time": 0.4666667,
+              "angle": 24.16001
+            },
+            {
+              "time": 0.4833333,
+              "angle": 27.96999
+            },
+            {
+              "time": 0.5,
+              "angle": 30.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 30.24
+            },
+            {
+              "time": 0.5333333,
+              "angle": 29.12
+            },
+            {
+              "time": 0.55,
+              "angle": 26.88
+            },
+            {
+              "time": 0.5666667,
+              "angle": 23.76
+            },
+            {
+              "time": 0.5833333,
+              "angle": 20.00001
+            },
+            {
+              "time": 0.6,
+              "angle": 15.84001
+            },
+            {
+              "time": 0.6166667,
+              "angle": 11.52
+            },
+            {
+              "time": 0.6333333,
+              "angle": 7.28002
+            },
+            {
+              "time": 0.65,
+              "angle": 3.36001
+            },
+            {
+              "time": 0.6666667,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/WingL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -5.58501
+            },
+            {
+              "time": 0.0333333,
+              "angle": -12.07999
+            },
+            {
+              "time": 0.05,
+              "angle": -19.095
+            },
+            {
+              "time": 0.0666667,
+              "angle": -26.24001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -33.12499
+            },
+            {
+              "time": 0.1,
+              "angle": -39.36
+            },
+            {
+              "time": 0.1166667,
+              "angle": -44.55501
+            },
+            {
+              "time": 0.1333333,
+              "angle": -48.31999
+            },
+            {
+              "time": 0.15,
+              "angle": -50.265
+            },
+            {
+              "time": 0.1666667,
+              "angle": -50.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -46.50001
+            },
+            {
+              "time": 0.2,
+              "angle": -39.6
+            },
+            {
+              "time": 0.2166667,
+              "angle": -30.19998
+            },
+            {
+              "time": 0.2333333,
+              "angle": -19.20003
+            },
+            {
+              "time": 0.25,
+              "angle": -7.5
+            },
+            {
+              "time": 0.2666667,
+              "angle": 4.00002
+            },
+            {
+              "time": 0.2833333,
+              "angle": 14.39998
+            },
+            {
+              "time": 0.3,
+              "angle": 22.8
+            },
+            {
+              "time": 0.3166667,
+              "angle": 28.30001
+            },
+            {
+              "time": 0.3333333,
+              "angle": 30.0
+            },
+            {
+              "time": 0.35,
+              "angle": 27.21
+            },
+            {
+              "time": 0.3666667,
+              "angle": 20.47998
+            },
+            {
+              "time": 0.3833333,
+              "angle": 10.77003
+            },
+            {
+              "time": 0.4,
+              "angle": -0.95999
+            },
+            {
+              "time": 0.4166667,
+              "angle": -13.75003
+            },
+            {
+              "time": 0.4333333,
+              "angle": -26.63997
+            },
+            {
+              "time": 0.45,
+              "angle": -38.66999
+            },
+            {
+              "time": 0.4666667,
+              "angle": -48.88002
+            },
+            {
+              "time": 0.4833333,
+              "angle": -56.30999
+            },
+            {
+              "time": 0.5,
+              "angle": -60.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": -60.075
+            },
+            {
+              "time": 0.5333333,
+              "angle": -57.60001
+            },
+            {
+              "time": 0.55,
+              "angle": -53.02501
+            },
+            {
+              "time": 0.5666667,
+              "angle": -46.79999
+            },
+            {
+              "time": 0.5833333,
+              "angle": -39.37503
+            },
+            {
+              "time": 0.6,
+              "angle": -31.20001
+            },
+            {
+              "time": 0.6166667,
+              "angle": -22.725
+            },
+            {
+              "time": 0.6333333,
+              "angle": -14.40003
+            },
+            {
+              "time": 0.65,
+              "angle": -6.67501
+            },
+            {
+              "time": 0.6666667,
+              "angle": -0.0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0.0,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.05,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.0666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.0833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.1,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.1166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.1333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.15,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.1666667,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.1833333,
+              "x": 1.1944,
+              "y": 0.7084
+            },
+            {
+              "time": 0.2,
+              "x": 1.1792,
+              "y": 0.7312
+            },
+            {
+              "time": 0.2166667,
+              "x": 1.1568,
+              "y": 0.7648
+            },
+            {
+              "time": 0.2333333,
+              "x": 1.1296,
+              "y": 0.8056
+            },
+            {
+              "time": 0.25,
+              "x": 1.1,
+              "y": 0.85
+            },
+            {
+              "time": 0.2666667,
+              "x": 1.0704,
+              "y": 0.8944
+            },
+            {
+              "time": 0.2833333,
+              "x": 1.0432,
+              "y": 0.9352
+            },
+            {
+              "time": 0.3,
+              "x": 1.0208,
+              "y": 0.9688
+            },
+            {
+              "time": 0.3166667,
+              "x": 1.0056,
+              "y": 0.9916
+            },
+            {
+              "time": 0.3333333,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.35,
+              "x": 1.0056,
+              "y": 0.9916
+            },
+            {
+              "time": 0.3666667,
+              "x": 1.0208,
+              "y": 0.9688
+            },
+            {
+              "time": 0.3833333,
+              "x": 1.0432,
+              "y": 0.9352
+            },
+            {
+              "time": 0.4,
+              "x": 1.0704,
+              "y": 0.8944
+            },
+            {
+              "time": 0.4166667,
+              "x": 1.1,
+              "y": 0.85
+            },
+            {
+              "time": 0.4333333,
+              "x": 1.1296,
+              "y": 0.8056
+            },
+            {
+              "time": 0.45,
+              "x": 1.1568,
+              "y": 0.7648
+            },
+            {
+              "time": 0.4666667,
+              "x": 1.1792,
+              "y": 0.7312
+            },
+            {
+              "time": 0.4833333,
+              "x": 1.1944,
+              "y": 0.7084
+            },
+            {
+              "time": 0.5,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.5166667,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.5333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.55,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.5666667,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.5833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.6,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.6166667,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.6333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.65,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.6666667,
+              "x": 1.0,
+              "y": 1.0
+            }
+          ]
+        },
+        "Body/WingR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 5.58501
+            },
+            {
+              "time": 0.0333333,
+              "angle": 12.07999
+            },
+            {
+              "time": 0.05,
+              "angle": 19.095
+            },
+            {
+              "time": 0.0666667,
+              "angle": 26.24001
+            },
+            {
+              "time": 0.0833333,
+              "angle": 33.12499
+            },
+            {
+              "time": 0.1,
+              "angle": 39.36
+            },
+            {
+              "time": 0.1166667,
+              "angle": 44.55501
+            },
+            {
+              "time": 0.1333333,
+              "angle": 48.31999
+            },
+            {
+              "time": 0.15,
+              "angle": 50.265
+            },
+            {
+              "time": 0.1666667,
+              "angle": 50.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 46.68001
+            },
+            {
+              "time": 0.2,
+              "angle": 40.24
+            },
+            {
+              "time": 0.2166667,
+              "angle": 31.45998
+            },
+            {
+              "time": 0.2333333,
+              "angle": 21.12002
+            },
+            {
+              "time": 0.25,
+              "angle": 10.0
+            },
+            {
+              "time": 0.2666667,
+              "angle": -1.12002
+            },
+            {
+              "time": 0.2833333,
+              "angle": -11.45998
+            },
+            {
+              "time": 0.3,
+              "angle": -20.24
+            },
+            {
+              "time": 0.3166667,
+              "angle": -26.68001
+            },
+            {
+              "time": 0.3333333,
+              "angle": -30.0
+            },
+            {
+              "time": 0.35,
+              "angle": -29.95
+            },
+            {
+              "time": 0.3666667,
+              "angle": -27.19999
+            },
+            {
+              "time": 0.3833333,
+              "angle": -22.35001
+            },
+            {
+              "time": 0.4,
+              "angle": -16.0
+            },
+            {
+              "time": 0.4166667,
+              "angle": -8.74998
+            },
+            {
+              "time": 0.4333333,
+              "angle": -1.20002
+            },
+            {
+              "time": 0.45,
+              "angle": 6.05
+            },
+            {
+              "time": 0.4666667,
+              "angle": 12.40001
+            },
+            {
+              "time": 0.4833333,
+              "angle": 17.24999
+            },
+            {
+              "time": 0.5,
+              "angle": 20.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 20.835
+            },
+            {
+              "time": 0.5333333,
+              "angle": 20.48
+            },
+            {
+              "time": 0.55,
+              "angle": 19.145
+            },
+            {
+              "time": 0.5666667,
+              "angle": 17.04
+            },
+            {
+              "time": 0.5833333,
+              "angle": 14.37501
+            },
+            {
+              "time": 0.6,
+              "angle": 11.36
+            },
+            {
+              "time": 0.6166667,
+              "angle": 8.205
+            },
+            {
+              "time": 0.6333333,
+              "angle": 5.12001
+            },
+            {
+              "time": 0.65,
+              "angle": 2.315
+            },
+            {
+              "time": 0.6666667,
+              "angle": 0.0
+            }
+          ],
+          "scale": [
+            {
+              "time": 0.0,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.0166667,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.05,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.0666667,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.0833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.1,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.1166667,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.1333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.15,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.1666667,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.1833333,
+              "x": 1.1944,
+              "y": 0.7084
+            },
+            {
+              "time": 0.2,
+              "x": 1.1792,
+              "y": 0.7312
+            },
+            {
+              "time": 0.2166667,
+              "x": 1.1568,
+              "y": 0.7648
+            },
+            {
+              "time": 0.2333333,
+              "x": 1.1296,
+              "y": 0.8056
+            },
+            {
+              "time": 0.25,
+              "x": 1.1,
+              "y": 0.85
+            },
+            {
+              "time": 0.2666667,
+              "x": 1.0704,
+              "y": 0.8944
+            },
+            {
+              "time": 0.2833333,
+              "x": 1.0432,
+              "y": 0.9352
+            },
+            {
+              "time": 0.3,
+              "x": 1.0208,
+              "y": 0.9688
+            },
+            {
+              "time": 0.3166667,
+              "x": 1.0056,
+              "y": 0.9916
+            },
+            {
+              "time": 0.3333333,
+              "x": 1.0,
+              "y": 1.0
+            },
+            {
+              "time": 0.35,
+              "x": 1.0056,
+              "y": 0.9916
+            },
+            {
+              "time": 0.3666667,
+              "x": 1.0208,
+              "y": 0.9688
+            },
+            {
+              "time": 0.3833333,
+              "x": 1.0432,
+              "y": 0.9352
+            },
+            {
+              "time": 0.4,
+              "x": 1.0704,
+              "y": 0.8944
+            },
+            {
+              "time": 0.4166667,
+              "x": 1.1,
+              "y": 0.85
+            },
+            {
+              "time": 0.4333333,
+              "x": 1.1296,
+              "y": 0.8056
+            },
+            {
+              "time": 0.45,
+              "x": 1.1568,
+              "y": 0.7648
+            },
+            {
+              "time": 0.4666667,
+              "x": 1.1792,
+              "y": 0.7312
+            },
+            {
+              "time": 0.4833333,
+              "x": 1.1944,
+              "y": 0.7084
+            },
+            {
+              "time": 0.5,
+              "x": 1.2,
+              "y": 0.7
+            },
+            {
+              "time": 0.5166667,
+              "x": 1.1962,
+              "y": 0.7057
+            },
+            {
+              "time": 0.5333333,
+              "x": 1.1856,
+              "y": 0.7216
+            },
+            {
+              "time": 0.55,
+              "x": 1.1694,
+              "y": 0.7459
+            },
+            {
+              "time": 0.5666667,
+              "x": 1.1488,
+              "y": 0.7768
+            },
+            {
+              "time": 0.5833333,
+              "x": 1.125,
+              "y": 0.8125
+            },
+            {
+              "time": 0.6,
+              "x": 1.0992,
+              "y": 0.8512
+            },
+            {
+              "time": 0.6166667,
+              "x": 1.0726,
+              "y": 0.8911
+            },
+            {
+              "time": 0.6333333,
+              "x": 1.0464,
+              "y": 0.9304
+            },
+            {
+              "time": 0.65,
+              "x": 1.0218,
+              "y": 0.9673
+            },
+            {
+              "time": 0.6666667,
+              "x": 1.0,
+              "y": 1.0
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.55938
+            },
+            {
+              "time": 0.0333333,
+              "angle": -1.225
+            },
+            {
+              "time": 0.05,
+              "angle": -1.97813
+            },
+            {
+              "time": 0.0666667,
+              "angle": -2.8
+            },
+            {
+              "time": 0.0833333,
+              "angle": -3.67187
+            },
+            {
+              "time": 0.1,
+              "angle": -4.575
+            },
+            {
+              "time": 0.1166667,
+              "angle": -5.49063
+            },
+            {
+              "time": 0.1333333,
+              "angle": -6.4
+            },
+            {
+              "time": 0.15,
+              "angle": -7.28438
+            },
+            {
+              "time": 0.1666667,
+              "angle": -8.125
+            },
+            {
+              "time": 0.1833333,
+              "angle": -8.90312
+            },
+            {
+              "time": 0.2,
+              "angle": -9.6
+            },
+            {
+              "time": 0.2166667,
+              "angle": -10.19688
+            },
+            {
+              "time": 0.2333333,
+              "angle": -10.675
+            },
+            {
+              "time": 0.25,
+              "angle": -11.01563
+            },
+            {
+              "time": 0.2666667,
+              "angle": -11.2
+            },
+            {
+              "time": 0.2833333,
+              "angle": -11.20938
+            },
+            {
+              "time": 0.3,
+              "angle": -11.025
+            },
+            {
+              "time": 0.3166667,
+              "angle": -10.62812
+            },
+            {
+              "time": 0.3333333,
+              "angle": -10.0
+            },
+            {
+              "time": 0.35,
+              "angle": -8.8775
+            },
+            {
+              "time": 0.3666667,
+              "angle": -7.12
+            },
+            {
+              "time": 0.3833333,
+              "angle": -4.89251
+            },
+            {
+              "time": 0.4,
+              "angle": -2.36
+            },
+            {
+              "time": 0.4166667,
+              "angle": 0.31251
+            },
+            {
+              "time": 0.4333333,
+              "angle": 2.95999
+            },
+            {
+              "time": 0.45,
+              "angle": 5.4175
+            },
+            {
+              "time": 0.4666667,
+              "angle": 7.52
+            },
+            {
+              "time": 0.4833333,
+              "angle": 9.1025
+            },
+            {
+              "time": 0.5,
+              "angle": 10.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 10.215
+            },
+            {
+              "time": 0.5333333,
+              "angle": 9.92
+            },
+            {
+              "time": 0.55,
+              "angle": 9.205
+            },
+            {
+              "time": 0.5666667,
+              "angle": 8.16
+            },
+            {
+              "time": 0.5833333,
+              "angle": 6.875
+            },
+            {
+              "time": 0.6,
+              "angle": 5.44
+            },
+            {
+              "time": 0.6166667,
+              "angle": 3.945
+            },
+            {
+              "time": 0.6333333,
+              "angle": 2.48001
+            },
+            {
+              "time": 0.65,
+              "angle": 1.135
+            },
+            {
+              "time": 0.6666667,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 1.16625
+            },
+            {
+              "time": 0.0333333,
+              "angle": 2.63
+            },
+            {
+              "time": 0.05,
+              "angle": 4.33875
+            },
+            {
+              "time": 0.0666667,
+              "angle": 6.24
+            },
+            {
+              "time": 0.0833333,
+              "angle": 8.28125
+            },
+            {
+              "time": 0.1,
+              "angle": 10.41
+            },
+            {
+              "time": 0.1166667,
+              "angle": 12.57376
+            },
+            {
+              "time": 0.1333333,
+              "angle": 14.72
+            },
+            {
+              "time": 0.15,
+              "angle": 16.79625
+            },
+            {
+              "time": 0.1666667,
+              "angle": 18.75
+            },
+            {
+              "time": 0.1833333,
+              "angle": 20.52875
+            },
+            {
+              "time": 0.2,
+              "angle": 22.08
+            },
+            {
+              "time": 0.2166667,
+              "angle": 23.35125
+            },
+            {
+              "time": 0.2333333,
+              "angle": 24.29
+            },
+            {
+              "time": 0.25,
+              "angle": 24.84375
+            },
+            {
+              "time": 0.2666667,
+              "angle": 24.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": 24.58625
+            },
+            {
+              "time": 0.3,
+              "angle": 23.67
+            },
+            {
+              "time": 0.3166667,
+              "angle": 22.15875
+            },
+            {
+              "time": 0.3333333,
+              "angle": 20.00001
+            },
+            {
+              "time": 0.35,
+              "angle": 16.385
+            },
+            {
+              "time": 0.3666667,
+              "angle": 10.87999
+            },
+            {
+              "time": 0.3833333,
+              "angle": 3.99502
+            },
+            {
+              "time": 0.4,
+              "angle": -3.76
+            },
+            {
+              "time": 0.4166667,
+              "angle": -11.87502
+            },
+            {
+              "time": 0.4333333,
+              "angle": -19.83998
+            },
+            {
+              "time": 0.45,
+              "angle": -27.145
+            },
+            {
+              "time": 0.4666667,
+              "angle": -33.28001
+            },
+            {
+              "time": 0.4833333,
+              "angle": -37.73499
+            },
+            {
+              "time": 0.5,
+              "angle": -40.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": -40.05
+            },
+            {
+              "time": 0.5333333,
+              "angle": -38.40001
+            },
+            {
+              "time": 0.55,
+              "angle": -35.35
+            },
+            {
+              "time": 0.5666667,
+              "angle": -31.2
+            },
+            {
+              "time": 0.5833333,
+              "angle": -26.25002
+            },
+            {
+              "time": 0.6,
+              "angle": -20.80001
+            },
+            {
+              "time": 0.6166667,
+              "angle": -15.15
+            },
+            {
+              "time": 0.6333333,
+              "angle": -9.60002
+            },
+            {
+              "time": 0.65,
+              "angle": -4.45001
+            },
+            {
+              "time": 0.6666667,
+              "angle": -0.0
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -1.095
+            },
+            {
+              "time": 0.0333333,
+              "angle": -2.36
+            },
+            {
+              "time": 0.05,
+              "angle": -3.765
+            },
+            {
+              "time": 0.0666667,
+              "angle": -5.28
+            },
+            {
+              "time": 0.0833333,
+              "angle": -6.875
+            },
+            {
+              "time": 0.1,
+              "angle": -8.52
+            },
+            {
+              "time": 0.1166667,
+              "angle": -10.185
+            },
+            {
+              "time": 0.1333333,
+              "angle": -11.84
+            },
+            {
+              "time": 0.15,
+              "angle": -13.455
+            },
+            {
+              "time": 0.1666667,
+              "angle": -15.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -16.445
+            },
+            {
+              "time": 0.2,
+              "angle": -17.76
+            },
+            {
+              "time": 0.2166667,
+              "angle": -18.915
+            },
+            {
+              "time": 0.2333333,
+              "angle": -19.88
+            },
+            {
+              "time": 0.25,
+              "angle": -20.625
+            },
+            {
+              "time": 0.2666667,
+              "angle": -21.12
+            },
+            {
+              "time": 0.2833333,
+              "angle": -21.335
+            },
+            {
+              "time": 0.3,
+              "angle": -21.24
+            },
+            {
+              "time": 0.3166667,
+              "angle": -20.805
+            },
+            {
+              "time": 0.3333333,
+              "angle": -20.0
+            },
+            {
+              "time": 0.35,
+              "angle": -18.44
+            },
+            {
+              "time": 0.3666667,
+              "angle": -15.91999
+            },
+            {
+              "time": 0.3833333,
+              "angle": -12.68001
+            },
+            {
+              "time": 0.4,
+              "angle": -8.96
+            },
+            {
+              "time": 0.4166667,
+              "angle": -4.99999
+            },
+            {
+              "time": 0.4333333,
+              "angle": -1.04001
+            },
+            {
+              "time": 0.45,
+              "angle": 2.68
+            },
+            {
+              "time": 0.4666667,
+              "angle": 5.92001
+            },
+            {
+              "time": 0.4833333,
+              "angle": 8.44
+            },
+            {
+              "time": 0.5,
+              "angle": 10.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 10.62
+            },
+            {
+              "time": 0.5333333,
+              "angle": 10.56
+            },
+            {
+              "time": 0.55,
+              "angle": 9.94
+            },
+            {
+              "time": 0.5666667,
+              "angle": 8.88
+            },
+            {
+              "time": 0.5833333,
+              "angle": 7.50001
+            },
+            {
+              "time": 0.6,
+              "angle": 5.92
+            },
+            {
+              "time": 0.6166667,
+              "angle": 4.26
+            },
+            {
+              "time": 0.6333333,
+              "angle": 2.64001
+            },
+            {
+              "time": 0.65,
+              "angle": 1.18
+            },
+            {
+              "time": 0.6666667,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/ArmR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -1.16625
+            },
+            {
+              "time": 0.0333333,
+              "angle": -2.63
+            },
+            {
+              "time": 0.05,
+              "angle": -4.33875
+            },
+            {
+              "time": 0.0666667,
+              "angle": -6.24
+            },
+            {
+              "time": 0.0833333,
+              "angle": -8.28125
+            },
+            {
+              "time": 0.1,
+              "angle": -10.41
+            },
+            {
+              "time": 0.1166667,
+              "angle": -12.57376
+            },
+            {
+              "time": 0.1333333,
+              "angle": -14.72
+            },
+            {
+              "time": 0.15,
+              "angle": -16.79625
+            },
+            {
+              "time": 0.1666667,
+              "angle": -18.75
+            },
+            {
+              "time": 0.1833333,
+              "angle": -20.52875
+            },
+            {
+              "time": 0.2,
+              "angle": -22.08
+            },
+            {
+              "time": 0.2166667,
+              "angle": -23.35125
+            },
+            {
+              "time": 0.2333333,
+              "angle": -24.29
+            },
+            {
+              "time": 0.25,
+              "angle": -24.84375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -24.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": -24.58625
+            },
+            {
+              "time": 0.3,
+              "angle": -23.67
+            },
+            {
+              "time": 0.3166667,
+              "angle": -22.15875
+            },
+            {
+              "time": 0.3333333,
+              "angle": -20.00001
+            },
+            {
+              "time": 0.35,
+              "angle": -16.385
+            },
+            {
+              "time": 0.3666667,
+              "angle": -10.87999
+            },
+            {
+              "time": 0.3833333,
+              "angle": -3.99502
+            },
+            {
+              "time": 0.4,
+              "angle": 3.76
+            },
+            {
+              "time": 0.4166667,
+              "angle": 11.87502
+            },
+            {
+              "time": 0.4333333,
+              "angle": 19.83998
+            },
+            {
+              "time": 0.45,
+              "angle": 27.145
+            },
+            {
+              "time": 0.4666667,
+              "angle": 33.28001
+            },
+            {
+              "time": 0.4833333,
+              "angle": 37.73499
+            },
+            {
+              "time": 0.5,
+              "angle": 40.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 40.05
+            },
+            {
+              "time": 0.5333333,
+              "angle": 38.40001
+            },
+            {
+              "time": 0.55,
+              "angle": 35.35
+            },
+            {
+              "time": 0.5666667,
+              "angle": 31.2
+            },
+            {
+              "time": 0.5833333,
+              "angle": 26.25002
+            },
+            {
+              "time": 0.6,
+              "angle": 20.80001
+            },
+            {
+              "time": 0.6166667,
+              "angle": 15.15
+            },
+            {
+              "time": 0.6333333,
+              "angle": 9.60002
+            },
+            {
+              "time": 0.65,
+              "angle": 4.45001
+            },
+            {
+              "time": 0.6666667,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -1.70188
+            },
+            {
+              "time": 0.0333333,
+              "angle": -3.76499
+            },
+            {
+              "time": 0.05,
+              "angle": -6.12563
+            },
+            {
+              "time": 0.0666667,
+              "angle": -8.72
+            },
+            {
+              "time": 0.0833333,
+              "angle": -11.48437
+            },
+            {
+              "time": 0.1,
+              "angle": -14.355
+            },
+            {
+              "time": 0.1166667,
+              "angle": -17.26813
+            },
+            {
+              "time": 0.1333333,
+              "angle": -20.15999
+            },
+            {
+              "time": 0.15,
+              "angle": -22.96688
+            },
+            {
+              "time": 0.1666667,
+              "angle": -25.62501
+            },
+            {
+              "time": 0.1833333,
+              "angle": -28.07062
+            },
+            {
+              "time": 0.2,
+              "angle": -30.24
+            },
+            {
+              "time": 0.2166667,
+              "angle": -32.06938
+            },
+            {
+              "time": 0.2333333,
+              "angle": -33.495
+            },
+            {
+              "time": 0.25,
+              "angle": -34.45313
+            },
+            {
+              "time": 0.2666667,
+              "angle": -34.88
+            },
+            {
+              "time": 0.2833333,
+              "angle": -34.71188
+            },
+            {
+              "time": 0.3,
+              "angle": -33.885
+            },
+            {
+              "time": 0.3166667,
+              "angle": -32.33562
+            },
+            {
+              "time": 0.3333333,
+              "angle": -30.00001
+            },
+            {
+              "time": 0.35,
+              "angle": -25.9475
+            },
+            {
+              "time": 0.3666667,
+              "angle": -19.67999
+            },
+            {
+              "time": 0.3833333,
+              "angle": -11.78252
+            },
+            {
+              "time": 0.4,
+              "angle": -2.84001
+            },
+            {
+              "time": 0.4166667,
+              "angle": 6.56252
+            },
+            {
+              "time": 0.4333333,
+              "angle": 15.83998
+            },
+            {
+              "time": 0.45,
+              "angle": 24.4075
+            },
+            {
+              "time": 0.4666667,
+              "angle": 31.68001
+            },
+            {
+              "time": 0.4833333,
+              "angle": 37.07249
+            },
+            {
+              "time": 0.5,
+              "angle": 40.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 40.455
+            },
+            {
+              "time": 0.5333333,
+              "angle": 39.04001
+            },
+            {
+              "time": 0.55,
+              "angle": 36.085
+            },
+            {
+              "time": 0.5666667,
+              "angle": 31.92
+            },
+            {
+              "time": 0.5833333,
+              "angle": 26.87502
+            },
+            {
+              "time": 0.6,
+              "angle": 21.28001
+            },
+            {
+              "time": 0.6166667,
+              "angle": 15.465
+            },
+            {
+              "time": 0.6333333,
+              "angle": 9.76002
+            },
+            {
+              "time": 0.65,
+              "angle": 4.49501
+            },
+            {
+              "time": 0.6666667,
+              "angle": 0.0
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.23024
+            },
+            {
+              "time": 0.0333333,
+              "angle": 0.40853
+            },
+            {
+              "time": 0.05,
+              "angle": 0.54404
+            },
+            {
+              "time": 0.0666667,
+              "angle": 0.64594
+            },
+            {
+              "time": 0.0833333,
+              "angle": 0.72339
+            },
+            {
+              "time": 0.1,
+              "angle": 0.78556
+            },
+            {
+              "time": 0.1166667,
+              "angle": 0.84163
+            },
+            {
+              "time": 0.1333333,
+              "angle": 0.90075
+            },
+            {
+              "time": 0.15,
+              "angle": 0.97209
+            },
+            {
+              "time": 0.1666667,
+              "angle": 1.06482
+            },
+            {
+              "time": 0.1833333,
+              "angle": 1.18811
+            },
+            {
+              "time": 0.2,
+              "angle": 1.35112
+            },
+            {
+              "time": 0.2166667,
+              "angle": 1.56302
+            },
+            {
+              "time": 0.2333333,
+              "angle": 1.83297
+            },
+            {
+              "time": 0.25,
+              "angle": 2.17015
+            },
+            {
+              "time": 0.2666667,
+              "angle": 2.58371
+            },
+            {
+              "time": 0.2833333,
+              "angle": 3.08283
+            },
+            {
+              "time": 0.3,
+              "angle": 3.67668
+            },
+            {
+              "time": 0.3166667,
+              "angle": 4.37441
+            },
+            {
+              "time": 0.3333333,
+              "angle": 5.18519
+            },
+            {
+              "time": 0.35,
+              "angle": 6.32834
+            },
+            {
+              "time": 0.3666667,
+              "angle": 7.92298
+            },
+            {
+              "time": 0.3833333,
+              "angle": 9.82797
+            },
+            {
+              "time": 0.4,
+              "angle": 11.90223
+            },
+            {
+              "time": 0.4166667,
+              "angle": 14.00464
+            },
+            {
+              "time": 0.4333333,
+              "angle": 15.99408
+            },
+            {
+              "time": 0.45,
+              "angle": 17.72945
+            },
+            {
+              "time": 0.4666667,
+              "angle": 19.06964
+            },
+            {
+              "time": 0.4833333,
+              "angle": 19.87353
+            },
+            {
+              "time": 0.5,
+              "angle": 20.00001
+            },
+            {
+              "time": 0.5166667,
+              "angle": 19.41001
+            },
+            {
+              "time": 0.5333333,
+              "angle": 18.22816
+            },
+            {
+              "time": 0.55,
+              "angle": 16.5589
+            },
+            {
+              "time": 0.5666667,
+              "angle": 14.50667
+            },
+            {
+              "time": 0.5833333,
+              "angle": 12.17594
+            },
+            {
+              "time": 0.6,
+              "angle": 9.67112
+            },
+            {
+              "time": 0.6166667,
+              "angle": 7.09667
+            },
+            {
+              "time": 0.6333333,
+              "angle": 4.55706
+            },
+            {
+              "time": 0.65,
+              "angle": 2.15668
+            },
+            {
+              "time": 0.6666667,
+              "angle": 1e-05
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/ArmR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff64"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffff64"
+            }
+          ]
+        },
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadNormal"
+            },
+            {
+              "time": 0.33333334,
+              "name": "sprite_HeadAngry"
+            },
+            {
+              "time": 0.5,
+              "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "die": {
+      "bones": {
+        "Body": {
+          "translate": [
+            {
+              "time": 0.0,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "time": 0.0166667,
+              "x": 0.3625,
+              "y": -5.07502
+            },
+            {
+              "time": 0.0333333,
+              "x": 1.4,
+              "y": -19.59995
+            },
+            {
+              "time": 0.05,
+              "x": 3.0375,
+              "y": -42.525
+            },
+            {
+              "time": 0.0666667,
+              "x": 5.2,
+              "y": -72.80005
+            },
+            {
+              "time": 0.0833333,
+              "x": 7.81249,
+              "y": -109.37493
+            },
+            {
+              "time": 0.1,
+              "x": 10.8,
+              "y": -151.19998
+            },
+            {
+              "time": 0.1166667,
+              "x": 14.08751,
+              "y": -197.22511
+            },
+            {
+              "time": 0.1333333,
+              "x": 17.59999,
+              "y": -246.39989
+            },
+            {
+              "time": 0.15,
+              "x": 21.2625,
+              "y": -297.67502
+            },
+            {
+              "time": 0.1666667,
+              "x": 25.00001,
+              "y": -350.00009
+            },
+            {
+              "time": 0.1833333,
+              "x": 28.73749,
+              "y": -402.32486
+            },
+            {
+              "time": 0.2,
+              "x": 32.4,
+              "y": -453.59999
+            },
+            {
+              "time": 0.2166667,
+              "x": 35.9125,
+              "y": -502.77506
+            },
+            {
+              "time": 0.2333333,
+              "x": 39.19999,
+              "y": -548.79991
+            },
+            {
+              "time": 0.25,
+              "x": 42.1875,
+              "y": -590.62498
+            },
+            {
+              "time": 0.2666667,
+              "x": 44.8,
+              "y": -627.20007
+            },
+            {
+              "time": 0.2833333,
+              "x": 46.9625,
+              "y": -657.47493
+            },
+            {
+              "time": 0.3,
+              "x": 48.6,
+              "y": -680.4
+            },
+            {
+              "time": 0.3166667,
+              "x": 49.6375,
+              "y": -694.92502
+            },
+            {
+              "time": 0.3333333,
+              "x": 50.0,
+              "y": -700.0
+            },
+            {
+              "time": 0.35,
+              "x": 50.0,
+              "y": -688.80001
+            },
+            {
+              "time": 0.3666667,
+              "x": 50.0,
+              "y": -658.39992
+            },
+            {
+              "time": 0.3833333,
+              "x": 50.0,
+              "y": -613.60013
+            },
+            {
+              "time": 0.4,
+              "x": 50.0,
+              "y": -559.20003
+            },
+            {
+              "time": 0.4166667,
+              "x": 49.99999,
+              "y": -499.99987
+            },
+            {
+              "time": 0.4333333,
+              "x": 49.99999,
+              "y": -440.80014
+            },
+            {
+              "time": 0.45,
+              "x": 49.99999,
+              "y": -386.40002
+            },
+            {
+              "time": 0.4666667,
+              "x": 49.99999,
+              "y": -341.59992
+            },
+            {
+              "time": 0.4833333,
+              "x": 49.99999,
+              "y": -311.20005
+            },
+            {
+              "time": 0.5,
+              "x": 49.99999,
+              "y": -300.0
+            },
+            {
+              "time": 0.5166667,
+              "x": 51.39999,
+              "y": -308.40003
+            },
+            {
+              "time": 0.5333333,
+              "x": 55.19998,
+              "y": -331.19994
+            },
+            {
+              "time": 0.55,
+              "x": 60.79999,
+              "y": -364.79997
+            },
+            {
+              "time": 0.5666667,
+              "x": 67.6,
+              "y": -405.60005
+            },
+            {
+              "time": 0.5833333,
+              "x": 74.99997,
+              "y": -449.99985
+            },
+            {
+              "time": 0.6,
+              "x": 82.39999,
+              "y": -494.39995
+            },
+            {
+              "time": 0.6166667,
+              "x": 89.2,
+              "y": -535.20003
+            },
+            {
+              "time": 0.6333333,
+              "x": 94.79998,
+              "y": -568.79989
+            },
+            {
+              "time": 0.65,
+              "x": 98.59999,
+              "y": -591.59997
+            },
+            {
+              "time": 0.6666667,
+              "x": 100.0,
+              "y": -600.0
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.33188
+            },
+            {
+              "time": 0.0333333,
+              "angle": -1.305
+            },
+            {
+              "time": 0.05,
+              "angle": -2.88563
+            },
+            {
+              "time": 0.0666667,
+              "angle": -5.04001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -7.73437
+            },
+            {
+              "time": 0.1,
+              "angle": -10.935
+            },
+            {
+              "time": 0.1166667,
+              "angle": -14.60813
+            },
+            {
+              "time": 0.1333333,
+              "angle": -18.71999
+            },
+            {
+              "time": 0.15,
+              "angle": -23.23687
+            },
+            {
+              "time": 0.1666667,
+              "angle": -28.12501
+            },
+            {
+              "time": 0.1833333,
+              "angle": -33.35061
+            },
+            {
+              "time": 0.2,
+              "angle": -38.88
+            },
+            {
+              "time": 0.2166667,
+              "angle": -44.67938
+            },
+            {
+              "time": 0.2333333,
+              "angle": -50.71498
+            },
+            {
+              "time": 0.25,
+              "angle": -56.95312
+            },
+            {
+              "time": 0.2666667,
+              "angle": -63.36
+            },
+            {
+              "time": 0.2833333,
+              "angle": -69.90185
+            },
+            {
+              "time": 0.3,
+              "angle": -76.54499
+            },
+            {
+              "time": 0.3166667,
+              "angle": -83.25564
+            },
+            {
+              "time": 0.3333333,
+              "angle": -89.99998
+            },
+            {
+              "time": 0.35,
+              "angle": -96.74436
+            },
+            {
+              "time": 0.3666667,
+              "angle": -103.45501
+            },
+            {
+              "time": 0.3833333,
+              "angle": -110.0981
+            },
+            {
+              "time": 0.4,
+              "angle": -116.64
+            },
+            {
+              "time": 0.4166667,
+              "angle": -123.04688
+            },
+            {
+              "time": 0.4333333,
+              "angle": -129.28499
+            },
+            {
+              "time": 0.45,
+              "angle": -135.32062
+            },
+            {
+              "time": 0.4666667,
+              "angle": -141.12
+            },
+            {
+              "time": 0.4833333,
+              "angle": -146.64936
+            },
+            {
+              "time": 0.5,
+              "angle": -151.87499
+            },
+            {
+              "time": 0.5166667,
+              "angle": -156.76313
+            },
+            {
+              "time": 0.5333333,
+              "angle": -161.27999
+            },
+            {
+              "time": 0.55,
+              "angle": -165.39187
+            },
+            {
+              "time": 0.5666667,
+              "angle": -169.065
+            },
+            {
+              "time": 0.5833333,
+              "angle": -172.26561
+            },
+            {
+              "time": 0.6,
+              "angle": -174.95999
+            },
+            {
+              "time": 0.6166667,
+              "angle": -177.11437
+            },
+            {
+              "time": 0.6333333,
+              "angle": -178.69499
+            },
+            {
+              "time": 0.65,
+              "angle": -179.66812
+            },
+            {
+              "time": 0.6666667,
+              "angle": -180.0
+            }
+          ]
+        },
+        "Body/WingL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.725
+            },
+            {
+              "time": 0.0333333,
+              "angle": -2.79999
+            },
+            {
+              "time": 0.05,
+              "angle": -6.075
+            },
+            {
+              "time": 0.0666667,
+              "angle": -10.40001
+            },
+            {
+              "time": 0.0833333,
+              "angle": -15.62499
+            },
+            {
+              "time": 0.1,
+              "angle": -21.6
+            },
+            {
+              "time": 0.1166667,
+              "angle": -28.17502
+            },
+            {
+              "time": 0.1333333,
+              "angle": -35.19998
+            },
+            {
+              "time": 0.15,
+              "angle": -42.525
+            },
+            {
+              "time": 0.1666667,
+              "angle": -50.00001
+            },
+            {
+              "time": 0.1833333,
+              "angle": -57.47498
+            },
+            {
+              "time": 0.2,
+              "angle": -64.8
+            },
+            {
+              "time": 0.2166667,
+              "angle": -71.82501
+            },
+            {
+              "time": 0.2333333,
+              "angle": -78.39999
+            },
+            {
+              "time": 0.25,
+              "angle": -84.375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -89.60001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -93.92499
+            },
+            {
+              "time": 0.3,
+              "angle": -97.2
+            },
+            {
+              "time": 0.3166667,
+              "angle": -99.275
+            },
+            {
+              "time": 0.3333333,
+              "angle": -100.0
+            },
+            {
+              "time": 0.35,
+              "angle": -99.71
+            },
+            {
+              "time": 0.3666667,
+              "angle": -98.88
+            },
+            {
+              "time": 0.3833333,
+              "angle": -97.57
+            },
+            {
+              "time": 0.4,
+              "angle": -95.84
+            },
+            {
+              "time": 0.4166667,
+              "angle": -93.75
+            },
+            {
+              "time": 0.4333333,
+              "angle": -91.36001
+            },
+            {
+              "time": 0.45,
+              "angle": -88.73
+            },
+            {
+              "time": 0.4666667,
+              "angle": -85.92
+            },
+            {
+              "time": 0.4833333,
+              "angle": -82.99001
+            },
+            {
+              "time": 0.5,
+              "angle": -80.00001
+            },
+            {
+              "time": 0.5166667,
+              "angle": -77.01
+            },
+            {
+              "time": 0.5333333,
+              "angle": -74.08001
+            },
+            {
+              "time": 0.55,
+              "angle": -71.27
+            },
+            {
+              "time": 0.5666667,
+              "angle": -68.64
+            },
+            {
+              "time": 0.5833333,
+              "angle": -66.25001
+            },
+            {
+              "time": 0.6,
+              "angle": -64.16
+            },
+            {
+              "time": 0.6166667,
+              "angle": -62.43
+            },
+            {
+              "time": 0.6333333,
+              "angle": -61.12
+            },
+            {
+              "time": 0.65,
+              "angle": -60.29
+            },
+            {
+              "time": 0.6666667,
+              "angle": -60.0
+            }
+          ]
+        },
+        "Body/WingR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.725
+            },
+            {
+              "time": 0.0333333,
+              "angle": 2.79999
+            },
+            {
+              "time": 0.05,
+              "angle": 6.075
+            },
+            {
+              "time": 0.0666667,
+              "angle": 10.40001
+            },
+            {
+              "time": 0.0833333,
+              "angle": 15.62499
+            },
+            {
+              "time": 0.1,
+              "angle": 21.6
+            },
+            {
+              "time": 0.1166667,
+              "angle": 28.17502
+            },
+            {
+              "time": 0.1333333,
+              "angle": 35.19998
+            },
+            {
+              "time": 0.15,
+              "angle": 42.525
+            },
+            {
+              "time": 0.1666667,
+              "angle": 50.00001
+            },
+            {
+              "time": 0.1833333,
+              "angle": 57.47498
+            },
+            {
+              "time": 0.2,
+              "angle": 64.8
+            },
+            {
+              "time": 0.2166667,
+              "angle": 71.82501
+            },
+            {
+              "time": 0.2333333,
+              "angle": 78.39999
+            },
+            {
+              "time": 0.25,
+              "angle": 84.375
+            },
+            {
+              "time": 0.2666667,
+              "angle": 89.60001
+            },
+            {
+              "time": 0.2833333,
+              "angle": 93.92499
+            },
+            {
+              "time": 0.3,
+              "angle": 97.2
+            },
+            {
+              "time": 0.3166667,
+              "angle": 99.275
+            },
+            {
+              "time": 0.3333333,
+              "angle": 100.0
+            },
+            {
+              "time": 0.35,
+              "angle": 99.71
+            },
+            {
+              "time": 0.3666667,
+              "angle": 98.88
+            },
+            {
+              "time": 0.3833333,
+              "angle": 97.57
+            },
+            {
+              "time": 0.4,
+              "angle": 95.84
+            },
+            {
+              "time": 0.4166667,
+              "angle": 93.75
+            },
+            {
+              "time": 0.4333333,
+              "angle": 91.36001
+            },
+            {
+              "time": 0.45,
+              "angle": 88.73
+            },
+            {
+              "time": 0.4666667,
+              "angle": 85.92
+            },
+            {
+              "time": 0.4833333,
+              "angle": 82.99001
+            },
+            {
+              "time": 0.5,
+              "angle": 80.00001
+            },
+            {
+              "time": 0.5166667,
+              "angle": 77.01
+            },
+            {
+              "time": 0.5333333,
+              "angle": 74.08001
+            },
+            {
+              "time": 0.55,
+              "angle": 71.27
+            },
+            {
+              "time": 0.5666667,
+              "angle": 68.64
+            },
+            {
+              "time": 0.5833333,
+              "angle": 66.25001
+            },
+            {
+              "time": 0.6,
+              "angle": 64.16
+            },
+            {
+              "time": 0.6166667,
+              "angle": 62.43
+            },
+            {
+              "time": 0.6333333,
+              "angle": 61.12
+            },
+            {
+              "time": 0.65,
+              "angle": 60.29
+            },
+            {
+              "time": 0.6666667,
+              "angle": 60.0
+            }
+          ]
+        },
+        "Body/Tail": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.0725
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.28
+            },
+            {
+              "time": 0.05,
+              "angle": -0.6075
+            },
+            {
+              "time": 0.0666667,
+              "angle": -1.04
+            },
+            {
+              "time": 0.0833333,
+              "angle": -1.5625
+            },
+            {
+              "time": 0.1,
+              "angle": -2.16
+            },
+            {
+              "time": 0.1166667,
+              "angle": -2.8175
+            },
+            {
+              "time": 0.1333333,
+              "angle": -3.52
+            },
+            {
+              "time": 0.15,
+              "angle": -4.2525
+            },
+            {
+              "time": 0.1666667,
+              "angle": -5.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -5.7475
+            },
+            {
+              "time": 0.2,
+              "angle": -6.48
+            },
+            {
+              "time": 0.2166667,
+              "angle": -7.1825
+            },
+            {
+              "time": 0.2333333,
+              "angle": -7.84
+            },
+            {
+              "time": 0.25,
+              "angle": -8.4375
+            },
+            {
+              "time": 0.2666667,
+              "angle": -8.96
+            },
+            {
+              "time": 0.2833333,
+              "angle": -9.3925
+            },
+            {
+              "time": 0.3,
+              "angle": -9.72
+            },
+            {
+              "time": 0.3166667,
+              "angle": -9.9275
+            },
+            {
+              "time": 0.3333333,
+              "angle": -10.0
+            },
+            {
+              "time": 0.35,
+              "angle": -9.44
+            },
+            {
+              "time": 0.3666667,
+              "angle": -7.92
+            },
+            {
+              "time": 0.3833333,
+              "angle": -5.68001
+            },
+            {
+              "time": 0.4,
+              "angle": -2.96
+            },
+            {
+              "time": 0.4166667,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.4333333,
+              "angle": 2.95999
+            },
+            {
+              "time": 0.45,
+              "angle": 5.68
+            },
+            {
+              "time": 0.4666667,
+              "angle": 7.92
+            },
+            {
+              "time": 0.4833333,
+              "angle": 9.44
+            },
+            {
+              "time": 0.5,
+              "angle": 10.0
+            },
+            {
+              "time": 0.5166667,
+              "angle": 9.44
+            },
+            {
+              "time": 0.5333333,
+              "angle": 7.92
+            },
+            {
+              "time": 0.55,
+              "angle": 5.68
+            },
+            {
+              "time": 0.5666667,
+              "angle": 2.96
+            },
+            {
+              "time": 0.5833333,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.6,
+              "angle": -2.96
+            },
+            {
+              "time": 0.6166667,
+              "angle": -5.68
+            },
+            {
+              "time": 0.6333333,
+              "angle": -7.91999
+            },
+            {
+              "time": 0.65,
+              "angle": -9.44
+            },
+            {
+              "time": 0.6666667,
+              "angle": -10.0
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.435
+            },
+            {
+              "time": 0.0333333,
+              "angle": -1.68
+            },
+            {
+              "time": 0.05,
+              "angle": -3.645
+            },
+            {
+              "time": 0.0666667,
+              "angle": -6.24
+            },
+            {
+              "time": 0.0833333,
+              "angle": -9.37499
+            },
+            {
+              "time": 0.1,
+              "angle": -12.96
+            },
+            {
+              "time": 0.1166667,
+              "angle": -16.90501
+            },
+            {
+              "time": 0.1333333,
+              "angle": -21.11999
+            },
+            {
+              "time": 0.15,
+              "angle": -25.515
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.00001
+            },
+            {
+              "time": 0.1833333,
+              "angle": -34.48499
+            },
+            {
+              "time": 0.2,
+              "angle": -38.88
+            },
+            {
+              "time": 0.2166667,
+              "angle": -43.09501
+            },
+            {
+              "time": 0.2333333,
+              "angle": -47.03999
+            },
+            {
+              "time": 0.25,
+              "angle": -50.625
+            },
+            {
+              "time": 0.2666667,
+              "angle": -53.76001
+            },
+            {
+              "time": 0.2833333,
+              "angle": -56.35499
+            },
+            {
+              "time": 0.3,
+              "angle": -58.32
+            },
+            {
+              "time": 0.3166667,
+              "angle": -59.565
+            },
+            {
+              "time": 0.3333333,
+              "angle": -60.0
+            },
+            {
+              "time": 0.6666667,
+              "angle": -60.0
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 1e-05
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.43499
+            },
+            {
+              "time": 0.0333333,
+              "angle": -1.67999
+            },
+            {
+              "time": 0.05,
+              "angle": -3.64499
+            },
+            {
+              "time": 0.0666667,
+              "angle": -6.23999
+            },
+            {
+              "time": 0.0833333,
+              "angle": -9.37498
+            },
+            {
+              "time": 0.1,
+              "angle": -12.95999
+            },
+            {
+              "time": 0.1166667,
+              "angle": -16.905
+            },
+            {
+              "time": 0.1333333,
+              "angle": -21.11998
+            },
+            {
+              "time": 0.15,
+              "angle": -25.51499
+            },
+            {
+              "time": 0.1666667,
+              "angle": -30.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -34.48498
+            },
+            {
+              "time": 0.2,
+              "angle": -38.87999
+            },
+            {
+              "time": 0.2166667,
+              "angle": -43.095
+            },
+            {
+              "time": 0.2333333,
+              "angle": -47.03998
+            },
+            {
+              "time": 0.25,
+              "angle": -50.62499
+            },
+            {
+              "time": 0.2666667,
+              "angle": -53.76
+            },
+            {
+              "time": 0.2833333,
+              "angle": -56.35498
+            },
+            {
+              "time": 0.3,
+              "angle": -58.31999
+            },
+            {
+              "time": 0.3166667,
+              "angle": -59.56499
+            },
+            {
+              "time": 0.3333333,
+              "angle": -59.99999
+            },
+            {
+              "time": 0.6666667,
+              "angle": -59.99999
+            }
+          ]
+        },
+        "Body/ArmR": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.2175
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.84
+            },
+            {
+              "time": 0.05,
+              "angle": -1.8225
+            },
+            {
+              "time": 0.0666667,
+              "angle": -3.12
+            },
+            {
+              "time": 0.0833333,
+              "angle": -4.6875
+            },
+            {
+              "time": 0.1,
+              "angle": -6.48
+            },
+            {
+              "time": 0.1166667,
+              "angle": -8.4525
+            },
+            {
+              "time": 0.1333333,
+              "angle": -10.56
+            },
+            {
+              "time": 0.15,
+              "angle": -12.7575
+            },
+            {
+              "time": 0.1666667,
+              "angle": -15.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -17.24249
+            },
+            {
+              "time": 0.2,
+              "angle": -19.44
+            },
+            {
+              "time": 0.2166667,
+              "angle": -21.5475
+            },
+            {
+              "time": 0.2333333,
+              "angle": -23.52
+            },
+            {
+              "time": 0.25,
+              "angle": -25.3125
+            },
+            {
+              "time": 0.2666667,
+              "angle": -26.88
+            },
+            {
+              "time": 0.2833333,
+              "angle": -28.1775
+            },
+            {
+              "time": 0.3,
+              "angle": -29.16
+            },
+            {
+              "time": 0.3166667,
+              "angle": -29.7825
+            },
+            {
+              "time": 0.3333333,
+              "angle": -30.0
+            },
+            {
+              "time": 0.6666667,
+              "angle": -30.0
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": -0.2175
+            },
+            {
+              "time": 0.0333333,
+              "angle": -0.84
+            },
+            {
+              "time": 0.05,
+              "angle": -1.8225
+            },
+            {
+              "time": 0.0666667,
+              "angle": -3.12
+            },
+            {
+              "time": 0.0833333,
+              "angle": -4.6875
+            },
+            {
+              "time": 0.1,
+              "angle": -6.48
+            },
+            {
+              "time": 0.1166667,
+              "angle": -8.4525
+            },
+            {
+              "time": 0.1333333,
+              "angle": -10.56
+            },
+            {
+              "time": 0.15,
+              "angle": -12.7575
+            },
+            {
+              "time": 0.1666667,
+              "angle": -15.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": -17.24249
+            },
+            {
+              "time": 0.2,
+              "angle": -19.44
+            },
+            {
+              "time": 0.2166667,
+              "angle": -21.5475
+            },
+            {
+              "time": 0.2333333,
+              "angle": -23.52
+            },
+            {
+              "time": 0.25,
+              "angle": -25.3125
+            },
+            {
+              "time": 0.2666667,
+              "angle": -26.88
+            },
+            {
+              "time": 0.2833333,
+              "angle": -28.1775
+            },
+            {
+              "time": 0.3,
+              "angle": -29.16
+            },
+            {
+              "time": 0.3166667,
+              "angle": -29.7825
+            },
+            {
+              "time": 0.3333333,
+              "angle": -30.0
+            },
+            {
+              "time": 0.6666667,
+              "angle": -30.0
+            }
+          ]
+        },
+        "Body/Head": {
+          "rotate": [
+            {
+              "time": 0.0,
+              "angle": 0.0
+            },
+            {
+              "time": 0.0166667,
+              "angle": 0.145
+            },
+            {
+              "time": 0.0333333,
+              "angle": 0.56
+            },
+            {
+              "time": 0.05,
+              "angle": 1.215
+            },
+            {
+              "time": 0.0666667,
+              "angle": 2.08
+            },
+            {
+              "time": 0.0833333,
+              "angle": 3.125
+            },
+            {
+              "time": 0.1,
+              "angle": 4.32
+            },
+            {
+              "time": 0.1166667,
+              "angle": 5.635
+            },
+            {
+              "time": 0.1333333,
+              "angle": 7.04
+            },
+            {
+              "time": 0.15,
+              "angle": 8.505
+            },
+            {
+              "time": 0.1666667,
+              "angle": 10.0
+            },
+            {
+              "time": 0.1833333,
+              "angle": 11.495
+            },
+            {
+              "time": 0.2,
+              "angle": 12.96
+            },
+            {
+              "time": 0.2166667,
+              "angle": 14.365
+            },
+            {
+              "time": 0.2333333,
+              "angle": 15.68
+            },
+            {
+              "time": 0.25,
+              "angle": 16.875
+            },
+            {
+              "time": 0.2666667,
+              "angle": 17.92
+            },
+            {
+              "time": 0.2833333,
+              "angle": 18.785
+            },
+            {
+              "time": 0.3,
+              "angle": 19.44
+            },
+            {
+              "time": 0.3166667,
+              "angle": 19.855
+            },
+            {
+              "time": 0.3333333,
+              "angle": 20.0
+            },
+            {
+              "time": 0.35,
+              "angle": 19.6375
+            },
+            {
+              "time": 0.3666667,
+              "angle": 18.6
+            },
+            {
+              "time": 0.3833333,
+              "angle": 16.9625
+            },
+            {
+              "time": 0.4,
+              "angle": 14.8
+            },
+            {
+              "time": 0.4166667,
+              "angle": 12.18749
+            },
+            {
+              "time": 0.4333333,
+              "angle": 9.20001
+            },
+            {
+              "time": 0.45,
+              "angle": 5.9125
+            },
+            {
+              "time": 0.4666667,
+              "angle": 2.4
+            },
+            {
+              "time": 0.4833333,
+              "angle": -1.26249
+            },
+            {
+              "time": 0.5,
+              "angle": -4.99999
+            },
+            {
+              "time": 0.5166667,
+              "angle": -8.7375
+            },
+            {
+              "time": 0.5333333,
+              "angle": -12.39999
+            },
+            {
+              "time": 0.55,
+              "angle": -15.9125
+            },
+            {
+              "time": 0.5666667,
+              "angle": -19.2
+            },
+            {
+              "time": 0.5833333,
+              "angle": -22.18749
+            },
+            {
+              "time": 0.6,
+              "angle": -24.8
+            },
+            {
+              "time": 0.6166667,
+              "angle": -26.9625
+            },
+            {
+              "time": 0.6333333,
+              "angle": -28.6
+            },
+            {
+              "time": 0.65,
+              "angle": -29.6375
+            },
+            {
+              "time": 0.6666667,
+              "angle": -30.0
+            }
+          ]
+        }
+      },
+      "slots": {
+        "Body/ArmR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff64"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffff64"
+            }
+          ]
+        },
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0,
+              "name": "sprite_HeadDead"
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.6666667,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    },
+    "hit": {
+      "bones": {},
+      "slots": {
+        "Body/ArmR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Shadow": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffff64"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffff64"
+            }
+          ]
+        },
+        "Body/Tail": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingR": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/Head": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/ArmL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/LegBackL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        },
+        "Body/WingL": {
+          "color": [
+            {
+              "time": 0.0,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.16,
+              "color": "ffffffff"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": {},
+  "_fantasy": {
+    "version": 1,
+    "pack": "fantasy-bosses",
+    "family": "FlyingWyverns",
+    "preset": "fantasy-bosses/WyvernType4",
+    "presets": [
+      {
+        "id": "fantasy-bosses/WyvernType1",
+        "name": "Wyvern Type 1"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType10",
+        "name": "Wyvern Type 10"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType2",
+        "name": "Wyvern Type 2"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType3",
+        "name": "Wyvern Type 3"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType4",
+        "name": "Wyvern Type 4"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType5",
+        "name": "Wyvern Type 5"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType6",
+        "name": "Wyvern Type 6"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType7",
+        "name": "Wyvern Type 7"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType8",
+        "name": "Wyvern Type 8"
+      },
+      {
+        "id": "fantasy-bosses/WyvernType9",
+        "name": "Wyvern Type 9"
+      }
+    ],
+    "slots": {
+      "Body/ArmR": {
+        "label": "Arm R",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/LegBackR": {
+        "label": "Leg Back R",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/Tail": {
+        "label": "Tail",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/WingR": {
+        "label": "Wing R",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body": {
+        "label": "Body",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/Head": {
+        "label": "Head",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/ArmL": {
+        "label": "Arm L",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/LegBackL": {
+        "label": "Leg Back L",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      },
+      "Body/WingL": {
+        "label": "Wing L",
+        "variants": [
+          "WyvernType1",
+          "WyvernType10",
+          "WyvernType2",
+          "WyvernType3",
+          "WyvernType4",
+          "WyvernType5",
+          "WyvernType6",
+          "WyvernType7",
+          "WyvernType8",
+          "WyvernType9"
+        ]
+      }
+    },
+    "expressions": [
+      {
+        "field": "Head",
+        "slot": "Body/Head",
+        "states": [
+          "sprite_HeadNormal",
+          "sprite_HeadAngry",
+          "sprite_HeadDead"
+        ]
+      }
+    ],
+    "animationAliases": []
+  }
+}

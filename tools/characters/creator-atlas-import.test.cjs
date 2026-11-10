@@ -12,7 +12,7 @@ const runtime = Units.enginePath();
 const importerFile = path.resolve(path.dirname(runtime), '../editor/spine-meta.js');
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 
-test('Creator imports all 101 library rigs with their exact sibling texture UUIDs', async () => {
+test('Creator imports all 317 library rigs with their exact sibling texture UUIDs', async () => {
     // Run the installed importer's real postImport path without starting the
     // editor or writing its library cache. Only Editor services are replaced.
     const errors = [];
@@ -47,7 +47,7 @@ test('Creator imports all 101 library rigs with their exact sibling texture UUID
     vm.runInNewContext(fs.readFileSync(importerFile, 'utf8'), context, { filename: importerFile });
     const SpineMeta = context.module.exports;
     let units = 0;
-    for (const pack of ['character-maker', 'monster1', 'monster2']) {
+    for (const pack of require('../../packages/hkd-characters/lib/unit-packs').packs.map(pack=>pack.id)) {
         const catalog = readJson(path.join(root, 'assets/resources/unit-library', pack, 'catalog.json'));
         for (const unit of catalog.units) {
             const file = path.join(root, unit.skeleton);
@@ -73,6 +73,6 @@ test('Creator imports all 101 library rigs with their exact sibling texture UUID
             units++;
         }
     }
-    assert.equal(units, 101);
-    assert.equal(saved.size, 101);
+    assert.equal(units, 317);
+    assert.equal(saved.size, 317);
 });

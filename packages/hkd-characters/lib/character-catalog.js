@@ -13,7 +13,7 @@ function listed(data,units){
 }
 function profileId(data,unit,level){if(unit.character)return level?(data.characters[unit.character].levels||{})[level]:unit.character;return data.assignments[Levels.key(unit,level)];}
 function assign(data,unit,level,id){if(unit.character){const record=data.characters[unit.character];record.levels=record.levels||{};record.levels[level]=id;}else data.assignments[Levels.key(unit,level)]=id;}
-function defaults(unit){return {type:unit.type,id:unit.id,...(unit.type==='ally'?{source:maker}:unit.type==='enemy'?{currentModel:true}:{})};}
+function defaults(unit){return {type:unit.type,id:unit.id,...(unit.type==='ally'?{source:maker}:unit.type==='enemy'?require('./unit-packs').forUnit(unit).mode==='modular'?{source:unit.appearance}:{currentModel:true}:{})};}
 function retained(data){const ids=new Set(Object.values(data.assignments));for(const [id,entry]of Object.entries(data.characters||{})){ids.add(id);Object.values(entry.levels||{}).forEach(id=>ids.add(id));}return ids;}
 function prune(data){const keep=retained(data),removed=[];for(const id of Object.keys(data.profiles))if(!keep.has(id)){delete data.profiles[id];removed.push(id);}return removed;}
 module.exports={maker,owner,created,listed,profileId,assign,defaults,retained,prune};

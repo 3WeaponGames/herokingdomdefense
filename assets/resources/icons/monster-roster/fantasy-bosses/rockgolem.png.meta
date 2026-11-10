@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "1f445895-5561-52fa-a0ea-ffb1b3e6c17c",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "rockgolem": {
+      "ver": "1.0.6",
+      "uuid": "1a77a28e-47c3-5495-a237-ccb70f757053",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "1f445895-5561-52fa-a0ea-ffb1b3e6c17c",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

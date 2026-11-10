@@ -14,7 +14,7 @@ function folders(asset){
     if(pack==='2d-minimal-hero-equipment')return ['Minimal Hero Equipment'].concat(rest);
     if(pack==='GUI-Pro')return ['GUI Pro Kit'].concat(rest);
     if(pack==='Pictograms')return ['GUI Pro Kit','Pictograms'].concat(rest);
-    if(pack==='monster-roster')return ['Monster Portraits'].concat(rest.map(n=>n==='monster1'?'Monster Pack 1':n==='monster2'?'Monster Pack 2':n));
+    if(pack==='monster-roster')return ['Monster Portraits'].concat(rest.map(n=>n==='monster1'?'Monster Pack 1':n==='monster2'?'Monster Pack 2':n==='monster3'?'Monster Pack 3':n==='fantasy-bosses'?'Fantasy Bosses':n==='fantasy-monsters'?'Fantasy Monsters':n));
     if(pack==='enemy-heads')return ['Monster Portraits','Campaign Enemies'].concat(rest);
     if(parts.length>4)return [readable(pack)].concat(rest);
     return ['Original Game Icons','Interface'];

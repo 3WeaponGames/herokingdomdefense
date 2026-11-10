@@ -25,7 +25,7 @@ function plan(root,definitions=Definitions){
   const read=file=>{file=path.resolve(file);if(!reads.has(file))reads.set(file,fs.existsSync(file)?fs.readFileSync(file):null);const value=reads.get(file);if(value===null)throw Error('Required source is missing: '+file);return value;};
   const cfgFile=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),cfgText=read(cfgFile).toString('utf8'),before=JSON.parse(cfgText),cfg=structuredClone(before);
   const catFile=path.join(root,'assets/resources/localization/catalog.json'),catText=read(catFile).toString('utf8'),oldCatalog=JSON.parse(catText),catalog=structuredClone(oldCatalog);
-  const sourceUnits=new Map();for(const pack of ['monster1','monster2']){const file=path.join(root,'assets/resources/unit-library',pack,'catalog.json');for(const unit of JSON.parse(read(file)).units)sourceUnits.set(unit.id,unit);}
+  const sourceUnits=new Map();for(const pack of new Set(definitions.units.map(unit=>unit.source.split('/')[0]))){const file=path.join(root,'assets/resources/unit-library',pack,'catalog.json');for(const unit of JSON.parse(read(file)).units)sourceUnits.set(unit.id,unit);}
   const bySource=new Map();for(const record of Object.values(cfg.SoldierCfg))if(record.MonsterSource){if(bySource.has(record.MonsterSource))throw Error('Duplicate imported monster record: '+record.MonsterSource);bySource.set(record.MonsterSource,record);}
   const imported=[];
   function stage(relative,value){const absolute=path.join(root,relative);if(!reads.has(absolute))reads.set(absolute,fs.existsSync(absolute)?fs.readFileSync(absolute):null);files.set(relative,value);}
@@ -53,12 +53,14 @@ function plan(root,definitions=Definitions){
     stageNew(iconFile,PNG.encode(picture));stageNew(iconFile+'.meta',JSON.stringify(Bake.textureMeta(iconFile,128,128),null,2)+'\n');
     const record=structuredClone(template),key='data.monster-roster.'+definition.id+'.name';record.ID=definition.id;record.Name='[[loc:'+key+']]';record.prefab=name;record.loadIcon='@icon/'+icon;record.MonsterSource=source.id;record.MonsterPack=source.pack;record.BehaviorTemplate=definition.behaviorTemplate;
     record.DeathAni=Number(duration(rig.animations.die).toFixed(7));record.BuildingCross=definition.aerial?0:1;delete record.Suppressed;record.CounterType='';
+    if(definition.passive)record.AttackDamage=0;
     if(definition.role==='vanguard')record.Speed=Math.max(record.Speed,150);
     if(definition.role==='bruiser'){record.Health=Math.max(record.Health,100);record.AttackDamage=Math.max(record.AttackDamage||0,25);record.AttackInterval=Math.min(record.AttackInterval,.67);}
     if(record.AttackType===3){record.AttackDamage=0;record.AttackRange=definition.behaviorTemplate===90006?record.Data[2]:record.Data[1];}
     cfg.SoldierCfg[definition.id]=record;catalog.entries[key]={en:definition.name,zh:chinese(source.id,definition.name),context:'Imported '+source.pack+' monster · '+source.id};
     cfg.GameTools=cfg.GameTools||{};const unitKey='enemy:'+definition.id+':default';
-    for(const [table,value]of [['visuals',{mirrorX:true}],['unitTypeAssignments',definition.role],['timingDefaults',{attack:Number((duration(rig.animations.attack)/2).toFixed(7))}]]){cfg.GameTools[table]=cfg.GameTools[table]||{};if(!own(cfg.GameTools[table],unitKey))cfg.GameTools[table][unitKey]=value;}
+    const hits=(rig.animations.attack.events||[]).filter(event=>event.name==='attack'),windup=hits.length===1?hits[0].time:duration(rig.animations.attack)/2;
+    for(const [table,value]of [['visuals',{mirrorX:true}],['unitTypeAssignments',definition.role],['timingDefaults',{attack:Number(windup.toFixed(7))}]]){cfg.GameTools[table]=cfg.GameTools[table]||{};if(!own(cfg.GameTools[table],unitKey))cfg.GameTools[table][unitKey]=value;}
     imported.push({id:record.ID,source:source.id,prefab:name,icon,attackWindup:cfg.GameTools.timingDefaults[unitKey].attack});
   }
   if(imported.length){stage('assets/KinghtFallConfig/GameJsonCfg.json',Document.patch(cfgText,before,cfg));stage('assets/resources/localization/catalog.json',Document.patch(catText,oldCatalog,catalog));}

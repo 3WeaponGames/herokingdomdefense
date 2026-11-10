@@ -77,11 +77,13 @@ test('layered tower previews resolve base and weapon independently and preserve 
 test('actual Creator model/skin/attack/backward-seek integration for every reachable unit',{skip:engineUnavailable||false},()=>{
     function layersFor(description){return description.layers.map(d=>{const atlas=new spine.TextureAtlas(d.atlas,name=>{const png=fs.readFileSync(url.fileURLToPath(d.pages[name]));return new spine.FakeTexture({width:png.readUInt32BE(16),height:png.readUInt32BE(20)});});const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(d.json),skeleton=new spine.Skeleton(data);assert(data.findSkin(d.skin),'skin '+d.skin);skeleton.setSkinByName(d.skin);skeleton.setToSetupPose();skeleton.updateWorldTransform();const restBones={};for(const bone of skeleton.bones)restBones[bone.data.name]={a:bone.a,b:bone.b,c:bone.c,d:bone.d,x:bone.worldX,y:bone.worldY};return{description:d,data,skeleton,atlas,restBones};});}
     function coordinates(layers){return layers.map(l=>Renderer.geometry(spine,l).map(g=>Array.from(g.vertices)));}
+    const stationaryAttacks=new Set(require('../../hkd-characters/lib/unit-library').load(root).sources.filter(source=>(source.animationAliases||[]).includes('attack')).map(source=>source.id));
     for(const type of ['enemy','ally','hero'])for(const id of type==='hero'?['hero']:Object.keys(cfg.SoldierCfg).filter(id=>type==='enemy'||Number(id)<=90004)){
         const description=describe({type,id}),layers=layersFor(description);assert(layers.length>0);
         Renderer.seek(spine,layers,'attack',0,false);const zero=coordinates(layers);assert(zero.some(layer=>layer.length>0));
         const attackDuration=Math.max(...layers.map(layer=>layer.data.findAnimation('attack').duration));
-        assert([.25,.5,.75].some(fraction=>{Renderer.seek(spine,layers,'attack',attackDuration*fraction,false);return JSON.stringify(coordinates(layers))!==JSON.stringify(zero);}), 'attack pose changes '+type+id);
+        if(type==='enemy'&&stationaryAttacks.has(cfg.SoldierCfg[id].MonsterSource))assert.equal(cfg.SoldierCfg[id].AttackDamage,0,'Stationary chest presets have no authored attack and deal no damage');
+        else assert([.25,.5,.75].some(fraction=>{Renderer.seek(spine,layers,'attack',attackDuration*fraction,false);return JSON.stringify(coordinates(layers))!==JSON.stringify(zero);}), 'attack pose changes '+type+id);
         Renderer.seek(spine,layers,'attack',0,false);assert.deepEqual(coordinates(layers),zero,'backward seek is deterministic '+type+id);
         const box=Renderer.bounds(spine,layers);assert(box.width>0&&box.height>0&&isFinite(box.width));
         if(type==='hero')assert.equal(layers.length,7);

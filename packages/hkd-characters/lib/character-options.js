@@ -9,7 +9,7 @@ const skinTones=[
   {value:'#ffffff',label:'Original white'}
 ];
 function libraryParts(parts){return parts.filter(part=>!(part.sourcePack==='character-maker'&&/\/Common\/Sprites\/Other\//.test(part.image||'')));}
-function characterParts(parts){return libraryParts(parts).filter(part=>!/^monster\d+$/.test(part.sourcePack||'')&&!/^Monster Pack \d+\//.test(part.category||''));}
+function characterParts(parts){return libraryParts(parts).filter(part=>!part.sourcePack||['character-maker','original-mounts'].includes(part.sourcePack));}
 // Library groups describe equipment, not its source pack. Keep the asset's
 // original category intact for fitting, saved references and future imports.
 function partCategory(part){

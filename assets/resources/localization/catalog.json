@@ -10606,6 +10606,1086 @@
       "en": "Guardian health +{0}. Applies only while Guardian is equipped.",
       "zh": "守卫血量提高 {0}。仅在使用守卫时生效。",
       "context": "assets/KinghtFallConfig/GameJsonCfg.json:TalentCfg.101018.Describe"
+    },
+    "data.monster-roster.91101.name": {
+      "en": "Carapace Angler",
+      "zh": "Carapace Angler",
+      "context": "Imported monster3 monster · monster3/Carapace_Angler"
+    },
+    "data.monster-roster.91102.name": {
+      "en": "Carapace Castle",
+      "zh": "Carapace Castle",
+      "context": "Imported monster3 monster · monster3/Carapace_Castle"
+    },
+    "data.monster-roster.91103.name": {
+      "en": "Carapace Green",
+      "zh": "Carapace Green",
+      "context": "Imported monster3 monster · monster3/Carapace_Green"
+    },
+    "data.monster-roster.91104.name": {
+      "en": "Carapace Iron",
+      "zh": "Carapace Iron",
+      "context": "Imported monster3 monster · monster3/Carapace_Iron"
+    },
+    "data.monster-roster.91105.name": {
+      "en": "Evilmass Angry",
+      "zh": "Evilmass Angry",
+      "context": "Imported monster3 monster · monster3/Evilmass_Angry"
+    },
+    "data.monster-roster.91106.name": {
+      "en": "Evilmass Boxer",
+      "zh": "Evilmass Boxer",
+      "context": "Imported monster3 monster · monster3/Evilmass_Boxer"
+    },
+    "data.monster-roster.91107.name": {
+      "en": "Evilmass Knight",
+      "zh": "Evilmass Knight",
+      "context": "Imported monster3 monster · monster3/Evilmass_Knight"
+    },
+    "data.monster-roster.91108.name": {
+      "en": "Flower Berry",
+      "zh": "Flower Berry",
+      "context": "Imported monster3 monster · monster3/Flower_Berry"
+    },
+    "data.monster-roster.91109.name": {
+      "en": "Flower Candy",
+      "zh": "Flower Candy",
+      "context": "Imported monster3 monster · monster3/Flower_Candy"
+    },
+    "data.monster-roster.91110.name": {
+      "en": "Flower Daisy",
+      "zh": "Flower Daisy",
+      "context": "Imported monster3 monster · monster3/Flower_Daisy"
+    },
+    "data.monster-roster.91111.name": {
+      "en": "Flower Dandelion",
+      "zh": "Flower Dandelion",
+      "context": "Imported monster3 monster · monster3/Flower_Dandelion"
+    },
+    "data.monster-roster.91112.name": {
+      "en": "Flower Tulip",
+      "zh": "Flower Tulip",
+      "context": "Imported monster3 monster · monster3/Flower_Tulip"
+    },
+    "data.monster-roster.91113.name": {
+      "en": "Fungus Horn",
+      "zh": "Fungus Horn",
+      "context": "Imported monster3 monster · monster3/Fungus_Horn"
+    },
+    "data.monster-roster.91114.name": {
+      "en": "Fungus Rock",
+      "zh": "Fungus Rock",
+      "context": "Imported monster3 monster · monster3/Fungus_Rock"
+    },
+    "data.monster-roster.91115.name": {
+      "en": "Horn Rabbit Crystal",
+      "zh": "Horn Rabbit Crystal",
+      "context": "Imported monster3 monster · monster3/HornRabbit_Crystal"
+    },
+    "data.monster-roster.91116.name": {
+      "en": "Horn Rabbit Demon",
+      "zh": "Horn Rabbit Demon",
+      "context": "Imported monster3 monster · monster3/HornRabbit_Demon"
+    },
+    "data.monster-roster.91117.name": {
+      "en": "Horn Rabbit Jelly",
+      "zh": "Horn Rabbit Jelly",
+      "context": "Imported monster3 monster · monster3/HornRabbit_Jelly"
+    },
+    "data.monster-roster.91118.name": {
+      "en": "Horse Bronco",
+      "zh": "Horse Bronco",
+      "context": "Imported monster3 monster · monster3/Horse_Bronco"
+    },
+    "data.monster-roster.91119.name": {
+      "en": "Horse Nightmare",
+      "zh": "Horse Nightmare",
+      "context": "Imported monster3 monster · monster3/Horse_Nightmare"
+    },
+    "data.monster-roster.91120.name": {
+      "en": "Horse Unicorn",
+      "zh": "Horse Unicorn",
+      "context": "Imported monster3 monster · monster3/Horse_Unicorn"
+    },
+    "data.monster-roster.91121.name": {
+      "en": "Larva Green",
+      "zh": "Larva Green",
+      "context": "Imported monster3 monster · monster3/Larva_Green"
+    },
+    "data.monster-roster.91122.name": {
+      "en": "Larva Knight",
+      "zh": "Larva Knight",
+      "context": "Imported monster3 monster · monster3/Larva_Knight"
+    },
+    "data.monster-roster.91123.name": {
+      "en": "Larva Leech",
+      "zh": "Larva Leech",
+      "context": "Imported monster3 monster · monster3/Larva_Leech"
+    },
+    "data.monster-roster.91124.name": {
+      "en": "Orc Smasher Berserker",
+      "zh": "Orc Smasher Berserker",
+      "context": "Imported monster3 monster · monster3/OrcSmasher_Berserker"
+    },
+    "data.monster-roster.91125.name": {
+      "en": "Orc Smasher Red",
+      "zh": "Orc Smasher Red",
+      "context": "Imported monster3 monster · monster3/OrcSmasher_Red"
+    },
+    "data.monster-roster.91126.name": {
+      "en": "Orc Smasher Warlord",
+      "zh": "Orc Smasher Warlord",
+      "context": "Imported monster3 monster · monster3/OrcSmasher_Warlord"
+    },
+    "data.monster-roster.91127.name": {
+      "en": "Orc Sword Butcher",
+      "zh": "Orc Sword Butcher",
+      "context": "Imported monster3 monster · monster3/OrcSword_Butcher"
+    },
+    "data.monster-roster.91128.name": {
+      "en": "Orc Sword Rookie",
+      "zh": "Orc Sword Rookie",
+      "context": "Imported monster3 monster · monster3/OrcSword_Rookie"
+    },
+    "data.monster-roster.91129.name": {
+      "en": "Orc Sword Veteran",
+      "zh": "Orc Sword Veteran",
+      "context": "Imported monster3 monster · monster3/OrcSword_Veteran"
+    },
+    "data.monster-roster.91130.name": {
+      "en": "Pumpkin Orange",
+      "zh": "Pumpkin Orange",
+      "context": "Imported monster3 monster · monster3/Pumpkin_Orange"
+    },
+    "data.monster-roster.91131.name": {
+      "en": "Pumpkin Steel",
+      "zh": "Pumpkin Steel",
+      "context": "Imported monster3 monster · monster3/Pumpkin_Steel"
+    },
+    "data.monster-roster.91132.name": {
+      "en": "Raptor Mechanic",
+      "zh": "Raptor Mechanic",
+      "context": "Imported monster3 monster · monster3/Raptor_Mechanic"
+    },
+    "data.monster-roster.91133.name": {
+      "en": "Raptor Swamp",
+      "zh": "Raptor Swamp",
+      "context": "Imported monster3 monster · monster3/Raptor_Swamp"
+    },
+    "data.monster-roster.91134.name": {
+      "en": "Reaper Blood",
+      "zh": "Reaper Blood",
+      "context": "Imported monster3 monster · monster3/Reaper_Blood"
+    },
+    "data.monster-roster.91135.name": {
+      "en": "Reaper Death",
+      "zh": "Reaper Death",
+      "context": "Imported monster3 monster · monster3/Reaper_Death"
+    },
+    "data.monster-roster.91136.name": {
+      "en": "Rhino Armor",
+      "zh": "Rhino Armor",
+      "context": "Imported monster3 monster · monster3/Rhino_Armor"
+    },
+    "data.monster-roster.91137.name": {
+      "en": "Rhino Huge",
+      "zh": "Rhino Huge",
+      "context": "Imported monster3 monster · monster3/Rhino_Huge"
+    },
+    "data.monster-roster.91138.name": {
+      "en": "Toad Giant",
+      "zh": "Toad Giant",
+      "context": "Imported monster3 monster · monster3/Toad_Giant"
+    },
+    "data.monster-roster.91139.name": {
+      "en": "Toad Horn",
+      "zh": "Toad Horn",
+      "context": "Imported monster3 monster · monster3/Toad_Horn"
+    },
+    "data.monster-roster.91140.name": {
+      "en": "Toad King",
+      "zh": "Toad King",
+      "context": "Imported monster3 monster · monster3/Toad_King"
+    },
+    "data.monster-roster.91141.name": {
+      "en": "Wing Demon Apple",
+      "zh": "Wing Demon Apple",
+      "context": "Imported monster3 monster · monster3/WingDemon_Apple"
+    },
+    "data.monster-roster.91142.name": {
+      "en": "Wing Demon Bee",
+      "zh": "Wing Demon Bee",
+      "context": "Imported monster3 monster · monster3/WingDemon_Bee"
+    },
+    "data.monster-roster.91143.name": {
+      "en": "Wing Demon Bomb",
+      "zh": "Wing Demon Bomb",
+      "context": "Imported monster3 monster · monster3/WingDemon_Bomb"
+    },
+    "data.monster-roster.91144.name": {
+      "en": "Wing Demon Eye",
+      "zh": "Wing Demon Eye",
+      "context": "Imported monster3 monster · monster3/WingDemon_Eye"
+    },
+    "data.monster-roster.91145.name": {
+      "en": "Wing Demon Vampire",
+      "zh": "Wing Demon Vampire",
+      "context": "Imported monster3 monster · monster3/WingDemon_Vampire"
+    },
+    "data.monster-roster.91146.name": {
+      "en": "Winter Ice",
+      "zh": "Winter Ice",
+      "context": "Imported monster3 monster · monster3/Winter_Ice"
+    },
+    "data.monster-roster.91147.name": {
+      "en": "Winter Iron",
+      "zh": "Winter Iron",
+      "context": "Imported monster3 monster · monster3/Winter_Iron"
+    },
+    "data.monster-roster.91148.name": {
+      "en": "Winter Snow",
+      "zh": "Winter Snow",
+      "context": "Imported monster3 monster · monster3/Winter_Snow"
+    },
+    "data.monster-roster.91149.name": {
+      "en": "Worm Lightning",
+      "zh": "Worm Lightning",
+      "context": "Imported monster3 monster · monster3/Worm_Lightning"
+    },
+    "data.monster-roster.91150.name": {
+      "en": "Worm Poison",
+      "zh": "Worm Poison",
+      "context": "Imported monster3 monster · monster3/Worm_Poison"
+    },
+    "data.monster-roster.94001.name": {
+      "en": "Black Dragon",
+      "zh": "Black Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/BlackDragon"
+    },
+    "data.monster-roster.94002.name": {
+      "en": "Emerald Dragon",
+      "zh": "Emerald Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/EmeraldDragon"
+    },
+    "data.monster-roster.94003.name": {
+      "en": "Golden Dragon",
+      "zh": "Golden Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/GoldenDragon"
+    },
+    "data.monster-roster.94004.name": {
+      "en": "Green Dragon",
+      "zh": "Green Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/GreenDragon"
+    },
+    "data.monster-roster.94005.name": {
+      "en": "Grey Dragon",
+      "zh": "Grey Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/GreyDragon"
+    },
+    "data.monster-roster.94006.name": {
+      "en": "Ice Dragon",
+      "zh": "Ice Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/IceDragon"
+    },
+    "data.monster-roster.94007.name": {
+      "en": "Mechanical Dragon",
+      "zh": "Mechanical Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/MechanicalDragon"
+    },
+    "data.monster-roster.94008.name": {
+      "en": "Purple Dragon",
+      "zh": "Purple Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/PurpleDragon"
+    },
+    "data.monster-roster.94009.name": {
+      "en": "Red Dragon",
+      "zh": "Red Dragon",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/RedDragon"
+    },
+    "data.monster-roster.94010.name": {
+      "en": "Wyvern Type 1",
+      "zh": "Wyvern Type 1",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType1"
+    },
+    "data.monster-roster.94011.name": {
+      "en": "Wyvern Type 10",
+      "zh": "Wyvern Type 10",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType10"
+    },
+    "data.monster-roster.94012.name": {
+      "en": "Wyvern Type 2",
+      "zh": "Wyvern Type 2",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType2"
+    },
+    "data.monster-roster.94013.name": {
+      "en": "Wyvern Type 3",
+      "zh": "Wyvern Type 3",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType3"
+    },
+    "data.monster-roster.94014.name": {
+      "en": "Wyvern Type 4",
+      "zh": "Wyvern Type 4",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType4"
+    },
+    "data.monster-roster.94015.name": {
+      "en": "Wyvern Type 5",
+      "zh": "Wyvern Type 5",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType5"
+    },
+    "data.monster-roster.94016.name": {
+      "en": "Wyvern Type 6",
+      "zh": "Wyvern Type 6",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType6"
+    },
+    "data.monster-roster.94017.name": {
+      "en": "Wyvern Type 7",
+      "zh": "Wyvern Type 7",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType7"
+    },
+    "data.monster-roster.94018.name": {
+      "en": "Wyvern Type 8",
+      "zh": "Wyvern Type 8",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType8"
+    },
+    "data.monster-roster.94019.name": {
+      "en": "Wyvern Type 9",
+      "zh": "Wyvern Type 9",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/WyvernType9"
+    },
+    "data.monster-roster.94020.name": {
+      "en": "Fancy Worm",
+      "zh": "Fancy Worm",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/FancyWorm"
+    },
+    "data.monster-roster.94021.name": {
+      "en": "Green Worm",
+      "zh": "Green Worm",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/GreenWorm"
+    },
+    "data.monster-roster.94022.name": {
+      "en": "Ice Worm",
+      "zh": "Ice Worm",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/IceWorm"
+    },
+    "data.monster-roster.94023.name": {
+      "en": "Mechanical Worm Type A",
+      "zh": "Mechanical Worm Type A",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/MechanicalWormTypeA"
+    },
+    "data.monster-roster.94024.name": {
+      "en": "Mechanical Worm Type B",
+      "zh": "Mechanical Worm Type B",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/MechanicalWormTypeB"
+    },
+    "data.monster-roster.94025.name": {
+      "en": "Mosquito Worm",
+      "zh": "Mosquito Worm",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/MosquitoWorm"
+    },
+    "data.monster-roster.94026.name": {
+      "en": "Volcano Worm",
+      "zh": "Volcano Worm",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/VolcanoWorm"
+    },
+    "data.monster-roster.94027.name": {
+      "en": "Ice Golem",
+      "zh": "Ice Golem",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/IceGolem"
+    },
+    "data.monster-roster.94028.name": {
+      "en": "Mechanical Golem",
+      "zh": "Mechanical Golem",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/MechanicalGolem"
+    },
+    "data.monster-roster.94029.name": {
+      "en": "Rock Golem",
+      "zh": "Rock Golem",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/RockGolem"
+    },
+    "data.monster-roster.94030.name": {
+      "en": "Sand Golem",
+      "zh": "Sand Golem",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/SandGolem"
+    },
+    "data.monster-roster.94031.name": {
+      "en": "Stone Golem",
+      "zh": "Stone Golem",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/StoneGolem"
+    },
+    "data.monster-roster.94032.name": {
+      "en": "Volcano Golem",
+      "zh": "Volcano Golem",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/VolcanoGolem"
+    },
+    "data.monster-roster.94033.name": {
+      "en": "Croc 01",
+      "zh": "Croc 01",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Croc01"
+    },
+    "data.monster-roster.94034.name": {
+      "en": "Croc 02",
+      "zh": "Croc 02",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Croc02"
+    },
+    "data.monster-roster.94035.name": {
+      "en": "Croc 03",
+      "zh": "Croc 03",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Croc03"
+    },
+    "data.monster-roster.94036.name": {
+      "en": "Demon 01",
+      "zh": "Demon 01",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Demon01"
+    },
+    "data.monster-roster.94037.name": {
+      "en": "Demon 02",
+      "zh": "Demon 02",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Demon02"
+    },
+    "data.monster-roster.94038.name": {
+      "en": "Demon 03",
+      "zh": "Demon 03",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Demon03"
+    },
+    "data.monster-roster.94039.name": {
+      "en": "Lizard 01",
+      "zh": "Lizard 01",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Lizard01"
+    },
+    "data.monster-roster.94040.name": {
+      "en": "Lizard 02",
+      "zh": "Lizard 02",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Lizard02"
+    },
+    "data.monster-roster.94041.name": {
+      "en": "Lizard 03",
+      "zh": "Lizard 03",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Lizard03"
+    },
+    "data.monster-roster.94042.name": {
+      "en": "Megabear 01",
+      "zh": "Megabear 01",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Megabear01"
+    },
+    "data.monster-roster.94043.name": {
+      "en": "Megabear 02",
+      "zh": "Megabear 02",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Megabear02"
+    },
+    "data.monster-roster.94044.name": {
+      "en": "Megabear 03",
+      "zh": "Megabear 03",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Megabear03"
+    },
+    "data.monster-roster.94045.name": {
+      "en": "Minotaur 01",
+      "zh": "Minotaur 01",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Minotaur01"
+    },
+    "data.monster-roster.94046.name": {
+      "en": "Minotaur 02",
+      "zh": "Minotaur 02",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Minotaur02"
+    },
+    "data.monster-roster.94047.name": {
+      "en": "Minotaur 03",
+      "zh": "Minotaur 03",
+      "context": "Imported fantasy-bosses monster · fantasy-bosses/Minotaur03"
+    },
+    "data.monster-roster.93001.name": {
+      "en": "Monkey",
+      "zh": "Monkey",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Monkey"
+    },
+    "data.monster-roster.93002.name": {
+      "en": "Bat",
+      "zh": "Bat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Bat"
+    },
+    "data.monster-roster.93003.name": {
+      "en": "Dread Eye",
+      "zh": "Dread Eye",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/DreadEye"
+    },
+    "data.monster-roster.93004.name": {
+      "en": "Evil Eye",
+      "zh": "Evil Eye",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/EvilEye"
+    },
+    "data.monster-roster.93005.name": {
+      "en": "Mohawk Bat",
+      "zh": "Mohawk Bat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MohawkBat"
+    },
+    "data.monster-roster.93006.name": {
+      "en": "Advanced Hen",
+      "zh": "Advanced Hen",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/AdvancedHen"
+    },
+    "data.monster-roster.93007.name": {
+      "en": "Bully Rooster",
+      "zh": "Bully Rooster",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BullyRooster"
+    },
+    "data.monster-roster.93008.name": {
+      "en": "Chick",
+      "zh": "Chick",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Chick"
+    },
+    "data.monster-roster.93009.name": {
+      "en": "Chicken",
+      "zh": "Chicken",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Chicken"
+    },
+    "data.monster-roster.93010.name": {
+      "en": "Drake",
+      "zh": "Drake",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Drake"
+    },
+    "data.monster-roster.93011.name": {
+      "en": "Duck",
+      "zh": "Duck",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Duck"
+    },
+    "data.monster-roster.93012.name": {
+      "en": "Forest Turkey",
+      "zh": "Forest Turkey",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/ForestTurkey"
+    },
+    "data.monster-roster.93013.name": {
+      "en": "Gobbler",
+      "zh": "Gobbler",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Gobbler"
+    },
+    "data.monster-roster.93014.name": {
+      "en": "Goose",
+      "zh": "Goose",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Goose"
+    },
+    "data.monster-roster.93015.name": {
+      "en": "Hen",
+      "zh": "Hen",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Hen"
+    },
+    "data.monster-roster.93016.name": {
+      "en": "Rooster",
+      "zh": "Rooster",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Rooster"
+    },
+    "data.monster-roster.93017.name": {
+      "en": "Turkey",
+      "zh": "Turkey",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Turkey"
+    },
+    "data.monster-roster.93018.name": {
+      "en": "Wild Rooster",
+      "zh": "Wild Rooster",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WildRooster"
+    },
+    "data.monster-roster.93019.name": {
+      "en": "Bunny",
+      "zh": "Bunny",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Bunny"
+    },
+    "data.monster-roster.93020.name": {
+      "en": "Dark Bunny",
+      "zh": "Dark Bunny",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/DarkBunny"
+    },
+    "data.monster-roster.93021.name": {
+      "en": "Little Bunny",
+      "zh": "Little Bunny",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/LittleBunny"
+    },
+    "data.monster-roster.93022.name": {
+      "en": "Bull",
+      "zh": "Bull",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Bull"
+    },
+    "data.monster-roster.93023.name": {
+      "en": "Burro",
+      "zh": "Burro",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Burro"
+    },
+    "data.monster-roster.93024.name": {
+      "en": "Cow",
+      "zh": "Cow",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Cow"
+    },
+    "data.monster-roster.93025.name": {
+      "en": "Donkey",
+      "zh": "Donkey",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Donkey"
+    },
+    "data.monster-roster.93026.name": {
+      "en": "Goat",
+      "zh": "Goat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Goat"
+    },
+    "data.monster-roster.93027.name": {
+      "en": "Ox",
+      "zh": "Ox",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Ox"
+    },
+    "data.monster-roster.93028.name": {
+      "en": "Ram",
+      "zh": "Ram",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Ram"
+    },
+    "data.monster-roster.93029.name": {
+      "en": "Sheep",
+      "zh": "Sheep",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Sheep"
+    },
+    "data.monster-roster.93030.name": {
+      "en": "Wild Goat",
+      "zh": "Wild Goat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WildGoat"
+    },
+    "data.monster-roster.93031.name": {
+      "en": "Bear",
+      "zh": "Bear",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Bear"
+    },
+    "data.monster-roster.93032.name": {
+      "en": "Black Bear",
+      "zh": "Black Bear",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BlackBear"
+    },
+    "data.monster-roster.93033.name": {
+      "en": "Black Wolf",
+      "zh": "Black Wolf",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BlackWolf"
+    },
+    "data.monster-roster.93034.name": {
+      "en": "Cerberus",
+      "zh": "Cerberus",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Cerberus"
+    },
+    "data.monster-roster.93035.name": {
+      "en": "Husky",
+      "zh": "Husky",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Husky"
+    },
+    "data.monster-roster.93036.name": {
+      "en": "Nightmare",
+      "zh": "Nightmare",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Nightmare"
+    },
+    "data.monster-roster.93037.name": {
+      "en": "Possessed Black Bear",
+      "zh": "Possessed Black Bear",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PossessedBlackBear"
+    },
+    "data.monster-roster.93038.name": {
+      "en": "Possessed Warg",
+      "zh": "Possessed Warg",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PossessedWarg"
+    },
+    "data.monster-roster.93039.name": {
+      "en": "Possessed Watchdog",
+      "zh": "Possessed Watchdog",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PossessedWatchdog"
+    },
+    "data.monster-roster.93040.name": {
+      "en": "Possessed Wolf",
+      "zh": "Possessed Wolf",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PossessedWolf"
+    },
+    "data.monster-roster.93041.name": {
+      "en": "Pug",
+      "zh": "Pug",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Pug"
+    },
+    "data.monster-roster.93042.name": {
+      "en": "Warg",
+      "zh": "Warg",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Warg"
+    },
+    "data.monster-roster.93043.name": {
+      "en": "Watchdog",
+      "zh": "Watchdog",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Watchdog"
+    },
+    "data.monster-roster.93044.name": {
+      "en": "White Wolf",
+      "zh": "White Wolf",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WhiteWolf"
+    },
+    "data.monster-roster.93045.name": {
+      "en": "Winter Bear",
+      "zh": "Winter Bear",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WinterBear"
+    },
+    "data.monster-roster.93046.name": {
+      "en": "Winter Warg",
+      "zh": "Winter Warg",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WinterWarg"
+    },
+    "data.monster-roster.93047.name": {
+      "en": "Winter Wolf Type A",
+      "zh": "Winter Wolf Type A",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WinterWolfTypeA"
+    },
+    "data.monster-roster.93048.name": {
+      "en": "Winter Wolf Type B",
+      "zh": "Winter Wolf Type B",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WinterWolfTypeB"
+    },
+    "data.monster-roster.93049.name": {
+      "en": "Wolf",
+      "zh": "Wolf",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Wolf"
+    },
+    "data.monster-roster.93050.name": {
+      "en": "Wolf Hound",
+      "zh": "Wolf Hound",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WolfHound"
+    },
+    "data.monster-roster.93051.name": {
+      "en": "Battle Panther",
+      "zh": "Battle Panther",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BattlePanther"
+    },
+    "data.monster-roster.93052.name": {
+      "en": "Lion",
+      "zh": "Lion",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Lion"
+    },
+    "data.monster-roster.93053.name": {
+      "en": "Panther",
+      "zh": "Panther",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Panther"
+    },
+    "data.monster-roster.93054.name": {
+      "en": "Sabretooth Tiger",
+      "zh": "Sabretooth Tiger",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/SabretoothTiger"
+    },
+    "data.monster-roster.93055.name": {
+      "en": "Tiger",
+      "zh": "Tiger",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Tiger"
+    },
+    "data.monster-roster.93056.name": {
+      "en": "Butcher",
+      "zh": "Butcher",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Butcher"
+    },
+    "data.monster-roster.93057.name": {
+      "en": "Cannibal",
+      "zh": "Cannibal",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Cannibal"
+    },
+    "data.monster-roster.93058.name": {
+      "en": "Dreadnought",
+      "zh": "Dreadnought",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Dreadnought"
+    },
+    "data.monster-roster.93059.name": {
+      "en": "Juggernaut",
+      "zh": "Juggernaut",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Juggernaut"
+    },
+    "data.monster-roster.93060.name": {
+      "en": "Maneater",
+      "zh": "Maneater",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Maneater"
+    },
+    "data.monster-roster.93061.name": {
+      "en": "Ogre",
+      "zh": "Ogre",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Ogre"
+    },
+    "data.monster-roster.93062.name": {
+      "en": "Punisher",
+      "zh": "Punisher",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Punisher"
+    },
+    "data.monster-roster.93063.name": {
+      "en": "Troll",
+      "zh": "Troll",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Troll"
+    },
+    "data.monster-roster.93064.name": {
+      "en": "Winter Ogre",
+      "zh": "Winter Ogre",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WinterOgre"
+    },
+    "data.monster-roster.93065.name": {
+      "en": "Zombie",
+      "zh": "Zombie",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Zombie"
+    },
+    "data.monster-roster.93066.name": {
+      "en": "Horse",
+      "zh": "Horse",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Horse"
+    },
+    "data.monster-roster.93067.name": {
+      "en": "Pony",
+      "zh": "Pony",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Pony"
+    },
+    "data.monster-roster.93068.name": {
+      "en": "Mimic",
+      "zh": "Mimic",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Mimic"
+    },
+    "data.monster-roster.93069.name": {
+      "en": "Mimic Chest",
+      "zh": "Mimic Chest",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MimicChest"
+    },
+    "data.monster-roster.93070.name": {
+      "en": "Treasure Chest",
+      "zh": "Treasure Chest",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/TreasureChest"
+    },
+    "data.monster-roster.93071.name": {
+      "en": "Bug Queen",
+      "zh": "Bug Queen",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BugQueen"
+    },
+    "data.monster-roster.93072.name": {
+      "en": "Caterpillar",
+      "zh": "Caterpillar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Caterpillar"
+    },
+    "data.monster-roster.93073.name": {
+      "en": "Cave Caterpillar",
+      "zh": "Cave Caterpillar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/CaveCaterpillar"
+    },
+    "data.monster-roster.93074.name": {
+      "en": "Crawler",
+      "zh": "Crawler",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Crawler"
+    },
+    "data.monster-roster.93075.name": {
+      "en": "Larva",
+      "zh": "Larva",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Larva"
+    },
+    "data.monster-roster.93076.name": {
+      "en": "Meat Bug",
+      "zh": "Meat Bug",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MeatBug"
+    },
+    "data.monster-roster.93077.name": {
+      "en": "Moss Queen",
+      "zh": "Moss Queen",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MossQueen"
+    },
+    "data.monster-roster.93078.name": {
+      "en": "Purple Scarab",
+      "zh": "Purple Scarab",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PurpleScarab"
+    },
+    "data.monster-roster.93079.name": {
+      "en": "Scarab",
+      "zh": "Scarab",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Scarab"
+    },
+    "data.monster-roster.93080.name": {
+      "en": "Slug Queen",
+      "zh": "Slug Queen",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/SlugQueen"
+    },
+    "data.monster-roster.93081.name": {
+      "en": "Wasp",
+      "zh": "Wasp",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Wasp"
+    },
+    "data.monster-roster.93082.name": {
+      "en": "Bear Mounted",
+      "zh": "Bear Mounted",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BearMounted"
+    },
+    "data.monster-roster.93083.name": {
+      "en": "Boar Mounted",
+      "zh": "Boar Mounted",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BoarMounted"
+    },
+    "data.monster-roster.93084.name": {
+      "en": "Bull Mounted",
+      "zh": "Bull Mounted",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BullMounted"
+    },
+    "data.monster-roster.93085.name": {
+      "en": "Moss Queen Mounted",
+      "zh": "Moss Queen Mounted",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MossQueenMounted"
+    },
+    "data.monster-roster.93086.name": {
+      "en": "Scarab Mounted",
+      "zh": "Scarab Mounted",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/ScarabMounted"
+    },
+    "data.monster-roster.93087.name": {
+      "en": "Wolf Mounfed",
+      "zh": "Wolf Mounfed",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WolfMounfed"
+    },
+    "data.monster-roster.93088.name": {
+      "en": "Fancy Parasite",
+      "zh": "Fancy Parasite",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/FancyParasite"
+    },
+    "data.monster-roster.93089.name": {
+      "en": "Green Parasite",
+      "zh": "Green Parasite",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/GreenParasite"
+    },
+    "data.monster-roster.93090.name": {
+      "en": "Ice Parasite",
+      "zh": "Ice Parasite",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/IceParasite"
+    },
+    "data.monster-roster.93091.name": {
+      "en": "Mechanical Parasite Type A",
+      "zh": "Mechanical Parasite Type A",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MechanicalParasiteTypeA"
+    },
+    "data.monster-roster.93092.name": {
+      "en": "Mechanical Parasite Type B",
+      "zh": "Mechanical Parasite Type B",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MechanicalParasiteTypeB"
+    },
+    "data.monster-roster.93093.name": {
+      "en": "Mosquito Parasite",
+      "zh": "Mosquito Parasite",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MosquitoParasite"
+    },
+    "data.monster-roster.93094.name": {
+      "en": "Volcano Parasite",
+      "zh": "Volcano Parasite",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/VolcanoParasite"
+    },
+    "data.monster-roster.93095.name": {
+      "en": "Black Boar",
+      "zh": "Black Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BlackBoar"
+    },
+    "data.monster-roster.93096.name": {
+      "en": "Boar",
+      "zh": "Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Boar"
+    },
+    "data.monster-roster.93097.name": {
+      "en": "Hog",
+      "zh": "Hog",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Hog"
+    },
+    "data.monster-roster.93098.name": {
+      "en": "Miner Boar",
+      "zh": "Miner Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/MinerBoar"
+    },
+    "data.monster-roster.93099.name": {
+      "en": "Pig",
+      "zh": "Pig",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Pig"
+    },
+    "data.monster-roster.93100.name": {
+      "en": "Piggy",
+      "zh": "Piggy",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Piggy"
+    },
+    "data.monster-roster.93101.name": {
+      "en": "Pirate Boar",
+      "zh": "Pirate Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PirateBoar"
+    },
+    "data.monster-roster.93102.name": {
+      "en": "Porky",
+      "zh": "Porky",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Porky"
+    },
+    "data.monster-roster.93103.name": {
+      "en": "Possessed Black Boar",
+      "zh": "Possessed Black Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PossessedBlackBoar"
+    },
+    "data.monster-roster.93104.name": {
+      "en": "Royal Boar",
+      "zh": "Royal Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/RoyalBoar"
+    },
+    "data.monster-roster.93105.name": {
+      "en": "Swine",
+      "zh": "Swine",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Swine"
+    },
+    "data.monster-roster.93106.name": {
+      "en": "Winter Boar",
+      "zh": "Winter Boar",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/WinterBoar"
+    },
+    "data.monster-roster.93107.name": {
+      "en": "Cave Rat",
+      "zh": "Cave Rat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/CaveRat"
+    },
+    "data.monster-roster.93108.name": {
+      "en": "Crystal Lizard",
+      "zh": "Crystal Lizard",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/CrystalLizard"
+    },
+    "data.monster-roster.93109.name": {
+      "en": "Flying Demon",
+      "zh": "Flying Demon",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/FlyingDemon"
+    },
+    "data.monster-roster.93110.name": {
+      "en": "Ghost",
+      "zh": "Ghost",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Ghost"
+    },
+    "data.monster-roster.93111.name": {
+      "en": "Infected Rat",
+      "zh": "Infected Rat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/InfectedRat"
+    },
+    "data.monster-roster.93112.name": {
+      "en": "Porcupine",
+      "zh": "Porcupine",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Porcupine"
+    },
+    "data.monster-roster.93113.name": {
+      "en": "Possessed Rat",
+      "zh": "Possessed Rat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/PossessedRat"
+    },
+    "data.monster-roster.93114.name": {
+      "en": "Rat",
+      "zh": "Rat",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/Rat"
+    },
+    "data.monster-roster.93115.name": {
+      "en": "Rat King",
+      "zh": "Rat King",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/RatKing"
+    },
+    "data.monster-roster.93116.name": {
+      "en": "Shard Lizard",
+      "zh": "Shard Lizard",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/ShardLizard"
+    },
+    "data.monster-roster.93117.name": {
+      "en": "Blue Scorpion",
+      "zh": "Blue Scorpion",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/BlueScorpion"
+    },
+    "data.monster-roster.93118.name": {
+      "en": "Green Scorpion",
+      "zh": "Green Scorpion",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/GreenScorpion"
+    },
+    "data.monster-roster.93119.name": {
+      "en": "Red Scorpion",
+      "zh": "Red Scorpion",
+      "context": "Imported fantasy-monsters monster · fantasy-monsters/RedScorpion"
     }
   },
   "images": {

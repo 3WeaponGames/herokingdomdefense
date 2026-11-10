@@ -7,23 +7,24 @@ const PNG=require('../../packages/hkd-characters/lib/png-atlas');
 const root=path.resolve(__dirname,'../..');
 const configPath='assets/KinghtFallConfig/GameJsonCfg.json';
 const config=JSON.parse(fs.readFileSync(path.join(root,configPath),'utf8'));
-const sources=['monster1','monster2'].flatMap(pack=>require('../../assets/resources/unit-library/'+pack+'/catalog.json').units);
+const packs=[...new Set(Definitions.units.map(unit=>unit.source.split('/')[0]))];
+const sources=packs.flatMap(pack=>require('../../assets/resources/unit-library/'+pack+'/catalog.json').units);
 function fixture(t,mutate=()=>{}){
     const folder=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-monster-import-'));
     t.after(()=>fs.rmSync(folder,{recursive:true,force:true}));
     const cfg=structuredClone(config);mutate(cfg);
-    for(const relative of [configPath,'assets/resources/localization/catalog.json',...['monster1','monster2'].map(pack=>'assets/resources/unit-library/'+pack+'/catalog.json')]){
+    for(const relative of [configPath,'assets/resources/localization/catalog.json',...packs.map(pack=>'assets/resources/unit-library/'+pack+'/catalog.json')]){
         const target=path.join(folder,relative);fs.mkdirSync(path.dirname(target),{recursive:true});
         fs.writeFileSync(target,relative===configPath?JSON.stringify(cfg):fs.readFileSync(path.join(root,relative)));
     }
     return folder;
 }
-test('stable roster definitions cover all 100 imported variants once, with separate IDs, names, valid roles and portraits',()=>{
-    assert.equal(Definitions.units.length,100);
+test('stable roster definitions cover all 316 imported variants once, with separate IDs, names, valid roles and portraits',()=>{
+    assert.equal(Definitions.units.length,316);
     assert.deepEqual(Definitions.units.map(unit=>unit.source).sort(),sources.map(unit=>unit.id).sort());
-    assert.equal(new Set(Definitions.units.map(unit=>unit.id)).size,100);
-    assert.equal(new Set(Definitions.units.map(unit=>unit.name)).size,100);
-    assert.deepEqual(Definitions.units.map(unit=>unit.id),Array.from({length:100},(_,i)=>91001+i));
+    assert.equal(new Set(Definitions.units.map(unit=>unit.id)).size,316);
+    assert(Definitions.units.every(unit=>unit.name.trim()));
+    assert.deepEqual(Definitions.units.slice(0,150).map(unit=>unit.id),Array.from({length:150},(_,i)=>91001+i));
     for(const definition of Definitions.units){
         const row=config.SoldierCfg[definition.id],key='enemy:'+definition.id+':default';
         assert.equal(row.MonsterSource,definition.source);

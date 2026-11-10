@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "81dc9f97-d95e-56eb-ab6e-5e3d174afd2e",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "orcsword-rookie": {
+      "ver": "1.0.6",
+      "uuid": "2480db39-53ac-5690-a1b3-66bd69e41e41",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "81dc9f97-d95e-56eb-ab6e-5e3d174afd2e",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 128,
+      "height": 128,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

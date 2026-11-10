@@ -5,6 +5,7 @@ const JSONDocument=require('../../game-data-editor/lib/json-document');
 const UnitLibrary=require('./unit-library');
 const Levels=require('./character-levels');
 const Catalog=require('./character-catalog');
+const Packs=require('./unit-packs'),Boss=require('./boss-model');
 const clone=value=>JSON.parse(JSON.stringify(value)),hash=text=>crypto.createHash('sha256').update(text).digest('hex');
 function read(file){return JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));}
 class Service{
@@ -16,13 +17,13 @@ class Service{
   units(){
     const cfg=read(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json')),entries=read(path.join(this.root,'assets/resources/localization/catalog.json')).entries;
     const text=value=>String(value||'').replace(/\[\[loc:([^\]]+)\]\]/g,(m,key)=>entries[key]&&entries[key].en||m);
-    const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero'}];
+    const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero',sourcePack:'character-maker'}];
     for(const type of ['ally','enemy'])for(const row of Object.values(type==='ally'&&cfg.AllyCfg||cfg.SoldierCfg)){
       if(type==='ally'&&(!row.prefab||!fs.existsSync(path.join(this.root,'assets/KinghtFallEnemy/Play'+row.prefab+'.prefab'))))continue;
       const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
       const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
       const key=type+':'+row.ID+':'+form,p=this.original.profiles[this.original.assignments[key]],source=type==='enemy'&&(row.MonsterSource||row.AppearanceSourceUnit&&cfg.SoldierCfg[row.AppearanceSourceUnit]&&cfg.SoldierCfg[row.AppearanceSourceUnit].MonsterSource||p&&(p.base.appearance||p.base.source||p.baked&&p.baked.source));
-      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{})});
+      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{})});
     }
     return result;
   }
@@ -41,6 +42,18 @@ class Service{
       if(profile.faceless!==undefined&&typeof profile.faceless!=='boolean')throw Error('Faceless must be enabled or disabled.');
       if(profile.skinTint!==undefined&&!/^#[a-f0-9]{6}$/i.test(profile.skinTint))throw Error(profile.name+': choose a valid skin tint.');
       const rig=this.describe(profile.base,true),layers=new Map(rig.layers.map(l=>[l.uuid,l])),ids=new Set(),targets=new Set();
+      const unit=units.find(unit=>unit.type===profile.base.type&&unit.id===String(profile.base.id)),mode=this.relativeFile==='assets/resources/characters/catalog.json'?Packs.forUnit(unit).mode:'maker';
+      Boss.validate(rig.layers[0].json,profile.boss);
+      if(mode==='fixed'){
+        const previous=this.original.profiles[id];
+        for(const key of ['parts','models','skins','faceless','skinTint','mount','boss','scale']){
+          const fallback=key==='parts'?[]:key==='scale'?1:undefined;
+          if(!JSONDocument.equal(profile[key]===undefined?fallback:profile[key],previous&&previous[key]!==undefined?previous[key]:fallback))throw Error(profile.name+': this pack supplies finished models without appearance customization.');
+        }
+        if(profile.base.mount||profile.base.source&&(!previous||profile.base.source!==previous.base.source))throw Error('Choose a finished model from this monster pack.');
+      }
+      if(mode==='modular'&&profile.parts.length)throw Error(profile.name+': choose the compatible body parts supplied with this Fantasy model.');
+      if(mode==='modular'&&profile.base.source){const meta=Boss.metadata(UnitLibrary.describe(this.root,unit.appearance,true).layers[0].json);if(!meta.presets.some(preset=>preset.id===profile.base.source))throw Error('Choose an outfit supplied for this unit.');}
       if(profile.scale!==undefined&&(typeof profile.scale!=='number'||!Number.isFinite(profile.scale)||profile.scale<.1||profile.scale>4))throw Error(profile.name+': character size must be between 0.1 and 4.');
       for(const [layer,skin]of Object.entries(profile.skins||{}))if(!layers.has(layer)||!layers.get(layer).skins.includes(skin))throw Error(profile.name+': missing model skin.');
       for(const [layer,model]of Object.entries(profile.models||{})){

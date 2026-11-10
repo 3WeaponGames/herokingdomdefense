@@ -110,7 +110,7 @@ def compact(frames):
     return result
 
 
-def convert_prefab(item, entries, images, height=120, character=False):
+def convert_prefab(item, entries, images, height=120, character=False, clips_override=None):
     docs = documents(item["asset"])
     transforms = {key: value for key, (kind, value) in docs.items() if kind == 4}
     roots = [key for key, value in transforms.items() if not value["m_Father"]["fileID"]]
@@ -137,7 +137,7 @@ def convert_prefab(item, entries, images, height=120, character=False):
     animator_node, animator = next((node,value) for node in nodes for kind, value in node["components"] if kind == 95)
     controller = by_guid[animator["m_Controller"]["guid"]]
     clips = {}
-    for kind, state in documents(controller["asset"]).values():
+    for kind, state in ([] if clips_override is not None else documents(controller["asset"]).values()):
         if kind != 1102 or not state.get("m_Motion", {}).get("guid"):
             continue
         clip = next(iter(documents(by_guid[state["m_Motion"]["guid"]]["asset"]).values()))[1]
@@ -146,6 +146,8 @@ def convert_prefab(item, entries, images, height=120, character=False):
         if action in clips and not character:
             raise ValueError("Duplicate animation action: " + action)
         clips[action] = clip
+    if clips_override is not None:
+        clips = copy.deepcopy(clips_override)
     if character:
         clips = {}
         for name, entry in entries.items():
@@ -235,13 +237,33 @@ def convert_prefab(item, entries, images, height=120, character=False):
                     frames.append(frame)
                 animation["bones"].setdefault(node["name"], {})[target] = compact(frames)
         floats = {(curve["path"], curve["attribute"]): curve["curve"]["m_Curve"] for curve in clip.get("m_FloatCurves", [])}
-        unsupported = set(key[1] for key in floats) - {"m_IsActive", "m_Color.a"}
+        unsupported = set(key[1] for key in floats) - {"m_IsActive", "m_Enabled", "m_Color.a", "m_Color.r", "m_Color.g", "m_Color.b", "m_LocalPosition.x", "m_LocalPosition.y"}
         # Character Maker's optional MonoBehaviour 'sag' drives its Unity-only
         # gradient helper. Render alpha and all transform animation are baked;
         # Unity script state is deliberately never executed in Cocos.
         if character: unsupported -= {"sag"}
         if unsupported:
             raise ValueError("Unsupported animated properties: " + str(unsupported))
+        for node in nodes:
+            if not any((node["path"], "m_LocalPosition."+axis) in floats for axis in ("x", "y")):
+                continue
+            frames=[]
+            for index, time in enumerate(times):
+                existing=animation["bones"].get(node["name"], {}).get("translate")
+                frame=dict(time=time)
+                for axis in ("x", "y"):
+                    keys=floats.get((node["path"], "m_LocalPosition."+axis))
+                    if keys:
+                        frame[axis]=round(sample(keys,time)*100-node[axis],5)
+                    elif existing:
+                        left=next((f for f in reversed(existing) if f['time']<=time),existing[0])
+                        right=next((f for f in existing if f['time']>=time),existing[-1])
+                        mix=(time-left['time'])/(right['time']-left['time']) if right['time']!=left['time'] else 0
+                        frame[axis]=round(left.get(axis,0)+(right.get(axis,0)-left.get(axis,0))*mix,5)
+                    else:
+                        frame[axis]=0
+                frames.append(frame)
+            animation["bones"].setdefault(node["name"], {})["translate"]=compact(frames)
         for node, renderer in renderers:
             frames = []
             for time in times:
@@ -251,8 +273,9 @@ def convert_prefab(item, entries, images, height=120, character=False):
                     active = sample(floats[(current["path"], "m_IsActive")], time) >= .5 if (current["path"], "m_IsActive") in floats else current["active"]
                     if not active: alpha = 0
                     current = paths.get(current["parent"]) if current["parent"] else None
-                if not renderer["m_Enabled"]: alpha = 0
-                color = "".join(format(round(max(0, min(1, renderer["m_Color"][k] if k != 'a' else alpha))*255), "02x") for k in ("r", "g", "b", "a"))
+                enabled=sample(floats[(node["path"], "m_Enabled")],time)>=.5 if (node["path"], "m_Enabled") in floats else renderer["m_Enabled"]
+                if not enabled: alpha = 0
+                color = "".join(format(round(max(0, min(1, (sample(floats[(node['path'],'m_Color.'+k)],time) if (node['path'],'m_Color.'+k) in floats else renderer["m_Color"][k]) if k != 'a' else alpha))*255), "02x") for k in ("r", "g", "b", "a"))
                 frames.append(dict(time=time, color=color))
             animation["slots"].setdefault(node["name"], {})["color"] = compact(frames)
         for curve in clip.get("m_PPtrCurves", []):
