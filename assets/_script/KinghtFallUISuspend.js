@@ -200,6 +200,9 @@ var def_KinghtFallUISuspend = function (t) {
     if (root) root.on(cc.Node.EventType.TOUCH_END, this.dismissPerkTip, this, true);
   };
   _ctor.prototype.lateUpdate = function () {
+    // Pop close keeps this node active after its battle owner is destroyed.
+    // Retire frame work immediately instead of reading released owner data.
+    if (this.isclose || this._pauseReleased) return;
     require("SettingsPanelLayout").pause(this);
     this.layoutPauseTitle();
     if (!this.ndTips || !this.ndTips.active) return;
