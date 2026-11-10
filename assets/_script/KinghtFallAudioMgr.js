@@ -11,6 +11,13 @@ var exp_KinghtFallAudioMgr = function () {
   _ctor.prototype.playEffectName = function (id, key, volume) {
     $z1AudioMgr.AudioMgr.getInstance().playNamedEffect(id, key, volume);
   };
+  _ctor.prototype.playEffectFree = function (id, owner, volume) {
+    // Actor/building effects belong to the current battle and actor lifetime.
+    // UI rewards keep using AudioMgr directly so their closing cues can finish.
+    var view = require("KinghtFallUIGame").default;
+    var ui = view && view.instance;
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree(id, volume, undefined, { owner: owner, game: ui && ui.ctrGame });
+  };
   _ctor.prototype.playEffectNameFree = function (id, key, volume) {
     if (!$z1CacheUtils.CacheUtils.canPlayEffect()) return;
     var manager = $z1AudioMgr.AudioMgr.getInstance();

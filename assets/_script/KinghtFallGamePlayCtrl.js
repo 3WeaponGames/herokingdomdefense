@@ -151,7 +151,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this.time[C.RecoverCd] = 0;
       this.initBuffData();
     }
-    $z1AudioMgr.AudioMgr.getInstance().getAudioSource($z1KinghtFallConfig.KinghtFallParameter.BGMusic).volume = $z1AudioMgr.AudioMgr.getInstance().getMusicVolume();
+    $z1AudioMgr.AudioMgr.getInstance().setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, 1);
     this.ctrPlayAni.onRestart();
     this.state = r.Alive;
     this.time[C.Reborn] = this.time[C.RebornTime];
@@ -264,7 +264,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       t = RelicCombat.heroIncoming(this, t, attacker, ranged);
       var received = Math.max(0, Math.min(this.hp, t));
       if (BattleSounds.hit) BattleSounds.hit(this, attacker, received);
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.player_hurt);
+      $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.player_hurt, this);
       this.time[C.NoDie] = this.time[C.NoDieTime];
       if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield] && Math.random() < $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield][0]) {
         $z1LogMgr.LogMgr.getInstance().info("***守护之盾");
@@ -297,8 +297,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     var t = this;
     this.tagEnemy = null;
     $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().stopEffectName($z1KinghtFallConfig.KinghtFallParameter.RunMusic);
-    $z1AudioMgr.AudioMgr.getInstance().getAudioSource($z1KinghtFallConfig.KinghtFallParameter.BGMusic).volume = .5 * $z1AudioMgr.AudioMgr.getInstance().getMusicVolume();
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.death);
+    $z1AudioMgr.AudioMgr.getInstance().setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, .5);
+    $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.death, this);
     this.state = r.Reborn;
     $z1KinghtFallUIGame.default.instance.ctrGame.gameTag[$z1KinghtFallEnum.KinghtFallEnumLevelChalType.NoDie] = 1;
     this.ctrPlayAni.setDie(function () {
@@ -313,7 +313,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     var generation = this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = this;
     this.tagEnemy = null;
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.rebirth);
+    $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.rebirth, this);
     this.state = r.Reborn;
     this.rigidBody.active = true;
     this.ctrPlayAni.setRevive(function () {
@@ -324,7 +324,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       t.hp = t.hpMax;
       t.ctrHp.setHp(t.hp, t.hpMax);
       var audio = $z1AudioMgr.AudioMgr.getInstance();
-      audio.getAudioSource($z1KinghtFallConfig.KinghtFallParameter.BGMusic).volume = audio.getMusicVolume();
+      audio.setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, 1);
     });
     var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff13);
     if (e && !this.time[C.RebornBuff1]) {
@@ -366,7 +366,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     // The damage event completes the windup even if its target has left range.
     this.time[C.Attack] = 0;
     if (BattleSounds.attack) BattleSounds.attack(this, "hero");
-    else $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack);
+    else $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.palyer_attack, this);
     this.node.getPosition(this.vec2_1);
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
     var e = [];

@@ -219,7 +219,7 @@ var def_GAD_Cards = function (t) {
   _ctor.prototype.playAttack = function () {
     this._isAttacking = true;
     var t = $z1GAD_PlayerMgr.default.getInstance().getGroupID();
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.bullet);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.bullet, undefined, undefined, { owner: this });
     var e = Math.min(1, 1 / this.getCDParam());
     var n = this._cards.length + this._extraProjectiles;
     var i = $z1GAD_DataMgr.default.getInstance().getParam($z1GADGameEnumData.enumGADBasicCfg.BulletSpace, 10);
@@ -264,7 +264,7 @@ var def_GAD_Cards = function (t) {
       if (this._cards[n].getCardCfg().id == t) {
         var accepted = this._cards[n].addLev(e);
         if (!accepted) return false;
-        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.Cards);
+        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.Cards, undefined, undefined, { owner: this });
         this.atkDamage += this._cards[n].getCardCfg().cardATK * accepted;
         return true;
       }
@@ -334,7 +334,7 @@ var def_GAD_Cards = function (t) {
         n = false;
     }
     if (n) {
-      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.Cards);
+      $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.Cards, undefined, undefined, { owner: this });
       this.showPropTips(t);
     }
   };

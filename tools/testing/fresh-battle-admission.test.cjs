@@ -30,7 +30,7 @@ function fixture(saved) {
     KinghtFallEnum: enums, KinghtFallConfig: gameConfig, Config: { UIID: { UINONE: 'none', UITouch: 'touch' } }, Appcfg: { BaseEventName: { ShowTransition: 'transition', blocktouch: 'input', OpenUI: 'open' } },
     EventMgr: { EventMgr: singleton({ emit: (...args) => events.push(args) }) }, KinghtFallModle: { default: singleton({ randomArray: (list, count) => list.slice(0, count) }), KinghtFallGameStage: {} },
     TestMode: { TestMode: singleton({ setGameplayTarget() {}, removeGameplayTarget() {}, readGameplayInput: () => ({ pause: true, x: 1 }) }) },
-    AudioMgr: { AudioMgr: singleton({ playMusic() {}, playEffectFree() {} }) }, GameToolsOverrides: { clear() {} },
+    AudioMgr: { AudioMgr: singleton({ playMusic() {}, playEffectFree() {}, setChannelGain() {} }) }, GameToolsOverrides: { clear() {} },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) }, GameTrackDataEvent: { TrackId: {} },
     LogMgr: { LogMgr: singleton({ error() {} }) }, TimeUtils: { TimeUtils: { GetTimeBySecond: () => 0 } },
     ResCacheMgr: { ResCacheMgr: singleton({ getAssets: () => null, addAssets() {} }) } });

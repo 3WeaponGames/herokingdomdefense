@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const {setup,hero,Node,Vec2}=require('./backend-gameplay-harness.cjs');
 const near=(actual,expected)=>assert(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
 function fixture(){
- const h=setup({KinghtFallMissionData:{KinghtFallTaskCountName:{Kill:'Kill'}}}),p=hero(h);
+ const h=setup({KinghtFallMissionData:{KinghtFallTaskCountName:{Kill:'Kill'}},KinghtFallAudioMgr:{KinghtFallAudioMgr:{getInstance:()=>({playEffectFree(){},stopEffectName(){}})}}}),p=hero(h);
  p._relicHero=true;p.critDam=2;p.attack=100;p.moveSpeed=100;p.node.setPosition(0,0);
  Object.assign(h.e.stubs.AudioMgr.AudioMgr.getInstance(),{playEffectFree(){}});
  const missions={getTaskInfo:()=>({type:'none'}),addTaskNum(){}};

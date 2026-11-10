@@ -486,7 +486,7 @@ var def_KinghtFallBuildBase = function (t) {
           i.scheduleOnce(function () {
             if ($z1KinghtFallUIGame.default.instance === ui && !ui.isclose && game.gameData === data && game._combatEpoch === epoch && !i._upgradeOperation) ui.canStart = true;
           }, .5);
-          $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding);
+          $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding, undefined, undefined, { owner: i, game: game });
           var missions = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData();
           if (missions.recordQuestEvent) missions.recordQuestEvent($z1KinghtFallEnum.KinghtFallEnumTaskEnum.BuildLevel, i.buildInfo.cfg.level, true);
           else {
@@ -594,7 +594,7 @@ var def_KinghtFallBuildBase = function (t) {
           }
         } else {
           this.buildInfo.standTime = 0;
-          $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.cuo);
+          $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.cuo, undefined, undefined, { owner: i, game: game });
           $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1KinghtFallTextConfig.KinghtFallTextConfig.Game03);
           $z1KinghtFallUIGame.default.instance.aniBtnAddCoin();
         }
@@ -651,7 +651,7 @@ var def_KinghtFallBuildBase = function (t) {
     $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.BuildingLevelUp);
     this.doUpgreadAni();
     if (this.onUpgradeCommitted) this.onUpgradeCommitted();
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.buliding, undefined, undefined, { owner: this, game: $z1KinghtFallUIGame.default.instance.ctrGame });
     return true;
   };
   _ctor.prototype.getSell = function () {
@@ -709,7 +709,7 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.onDead = function () {
     this.cancelUpgrade();
     this._stopColliderTweens();
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory, undefined, undefined, { owner: this, game: $z1KinghtFallUIGame.default.instance.ctrGame });
     this.delAllBuff();
     this.isDestroyed = true;
     require("BuildingAppearance").onDead(this);

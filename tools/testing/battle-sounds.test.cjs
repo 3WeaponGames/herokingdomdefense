@@ -33,7 +33,7 @@ function fixture(surface = 'forest') {
   function actor(id, extra = {}) { return { node: node(), cfg: { ID: id, AttackType: 1 }, hp: 100, hpMax: 100, isDead: () => false, ...extra }; }
   function finishAll() { while (pending.length) { const p = pending.shift(); const entry = Object.values(catalog.effects).find(v => v.path === p.file); p.done({ path: p.file, duration: entry && entry.duration || 1 }); } }
   function emit(event) { listeners.slice().filter(x => x.event === event).forEach(x => x.fn.call(x.target)); }
-  return { sounds, game, ui, hero, data, soldiers, enemies, manager, pending, played, writes, preferences, actor, finishAll, emit,
+  return { sounds, game, ui, hero, data, soldiers, enemies, manager, pending, played, writes, listeners, preferences, actor, finishAll, emit,
     advance(ms) { now += ms; }, start() { assert.equal(sounds.start(game), true); finishAll(); },
     tick() { sounds.tick(game); finishAll(); } };
 }
@@ -166,6 +166,41 @@ test('a closing selection plays its confirmation once after teardown, and a reus
   f.finishAll(); assert.equal(f.played[1].path, 'sfx/ui-panel-close');
   const g = fixture(), reused = { node: { activeInHierarchy: true }, uid: 'KinghtFallUIBuildSel', _resourceGeneration: 1, isclose: false };
   g.sounds.ui('ui-selection-confirm', reused); reused._resourceGeneration += 2; g.finishAll(); assert.equal(g.played.length, 0);
+});
+
+test('UI and signal preload callbacks are canceled by a hide/show cycle and cannot play on return', () => {
+  for (const kind of ['menu', 'signal']) {
+    const f = fixture(), owner = f.actor(90001, { uid: 'KinghtFallUIBuff', _resourceGeneration: 1, isclose: false });
+    if (kind === 'menu') f.sounds.ui('ui-panel-open', owner);
+    else { f.start(); f.sounds.effect('castle-low-health', owner); }
+    f.emit('hide'); f.emit('show'); f.finishAll();
+    assert.equal(f.played.length, 0, kind + ' restarted its pre-hide cue');
+  }
+});
+
+test('muting and restoring effects cancels one-shot preload callbacks even without source allocation', () => {
+  const f = fixture(); f.start(); f.sounds.effect('sword-heavy-swing', f.actor(90001));
+  f.manager.effectVolume = 0; f.sounds.tick(f.game); f.manager.effectVolume = .5; f.finishAll();
+  assert.equal(f.played.length, 0);
+});
+
+test('a mute/restore with no gameplay tick cancels preload cues and movement loops recover on the next tick', () => {
+  const f = fixture(); f.start(); f.sounds.effect('sword-heavy-swing', f.actor(90001)); f.sounds.tick(f.game);
+  f.manager.setEffectVolume(0); f.manager.setEffectVolume(.5); f.finishAll();
+  assert.equal(f.played.length, 0); f.tick(); assert(f.played.some(play => play.path === 'sfx/ambience-forest-loop'));
+});
+
+test('global menu audio never retains a battle UI through its application lifecycle listeners', () => {
+  const f = fixture(); f.start(); f.sounds.ui('ui-panel-open', f.actor(90001, { uid: 'KinghtFallUIBuff', _resourceGeneration: 1 }));
+  const menu = f.listeners.find(listener => listener.target && listener.target.game === null);
+  assert(menu); assert.equal(menu.target.ui, null);
+});
+
+test('a detached hero during battle teardown stops loops without crashing on surviving actor positions', () => {
+  const f = fixture(); f.start(); const soldier = f.actor(90001, { navigationTeam: 'friendly' }); f.soldiers.push(soldier);
+  f.tick(); soldier.node.x += 5; f.hero.node = null;
+  assert.doesNotThrow(() => f.tick()); assert(f.played.every(play => play.source.state === 3));
+  assert.equal(f.sounds.effect('sword-light-swing', { node: null }), false);
 });
 
 test('all 87 generated assets are present with unique metadata and all eight biome pairs', () => {

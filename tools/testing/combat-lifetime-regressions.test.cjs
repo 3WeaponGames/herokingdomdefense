@@ -64,8 +64,8 @@ test('Shaman transformation completes before its health bar is available',()=>{
   actor.upData(90001); assert.equal(actor.hp,100); assert.equal(actor.time.SpellMax,5);
 });
 function playableHero() {
-  const h=setup({KinghtFallAudioMgr:{KinghtFallAudioMgr:{getInstance:()=>({stopEffectName(){}})}}});
-  h.e.stubs.AudioMgr.AudioMgr.getInstance=()=>({playEffectFree(){},getAudioSource:()=>({}),getMusicVolume:()=>.5});
+  const h=setup({KinghtFallAudioMgr:{KinghtFallAudioMgr:{getInstance:()=>({stopEffectName(){},playEffectFree(){}})}}});
+  h.e.stubs.AudioMgr.AudioMgr.getInstance=()=>({playEffectFree(){},getAudioSource:()=>({}),getMusicVolume:()=>.5,setChannelGain(){}});
   const p=hero(h); p.sendEvent=()=>{}; h.g.gameTag={};
   return {h,p};
 }

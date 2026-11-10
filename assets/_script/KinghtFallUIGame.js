@@ -399,6 +399,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.onClose = function () {
     if (this.ctrGame && BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
     if (this.ctrGame && this.ctrGame._unitVoices) require("UnitVoices").dispose(this.ctrGame);
+    $z1AudioMgr.AudioMgr.getInstance().setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, 1);
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
     if (this._battleHud) require("BattleHud").dispose(this);
     this.cancelBattleDialog();
@@ -583,6 +584,7 @@ var def_KinghtFallUIGame = function (t) {
     var e = this, dialog = this.beginBattleDialog('end');
     if (!dialog) return;
     if (BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
+    if (this.ctrGame._unitVoices) require("UnitVoices").dispose(this.ctrGame);
     this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.End;
     this.ctrGame.moveFun(null);
     this.ctrGame.onPauseGame();

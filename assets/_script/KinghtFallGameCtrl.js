@@ -122,6 +122,7 @@ var def_KinghtFallGameCtrl = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
+    if (this._unitVoices) require("UnitVoices").dispose(this);
     if (this._projectileLooks) this._projectileLooks.dispose();
     this._projectileLooks = null;
     GameToolsOverrides.clear();
@@ -852,7 +853,9 @@ var def_KinghtFallGameCtrl = function (t) {
     this.pathList = [{ index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) }];
   };
   _ctor.prototype.onPauseGame = function () {
+    this._audioPauseEpoch = (this._audioPauseEpoch || 0) + 1;
     if (BattleSounds.suspend) BattleSounds.suspend(this, true);
+    if (this._unitVoices && require("UnitVoices").suspend) require("UnitVoices").suspend(this, true);
     this.ctrPlay.setPause(true);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -865,6 +868,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onResumeGame = function () {
     if (BattleSounds.suspend) BattleSounds.suspend(this, false);
+    if (this._unitVoices && require("UnitVoices").suspend) require("UnitVoices").suspend(this, false);
     this.ctrPlay.setPause(false);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
