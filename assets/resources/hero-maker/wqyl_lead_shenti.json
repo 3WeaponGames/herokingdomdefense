@@ -496,9 +496,9 @@
     {
       "name": "Rider/Body/Cape",
       "parent": "Rider/Body",
-      "x": -26,
-      "y": 10,
-      "rotation": -15
+      "x": -48,
+      "y": -26,
+      "rotation": 0
     },
     {
       "name": "Rider/Body/Boots",
@@ -769,8 +769,7 @@
     {
       "name": "Rider/Body/Boots",
       "bone": "Rider/Body/Boots",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Body_Boots"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Gloves/skirmisher",
@@ -875,19 +874,6 @@
             "y": 0,
             "scaleX": 1,
             "scaleY": 1
-          }
-        },
-        "Rider/Body/Boots": {
-          "hero_Rider_Body_Boots": {
-            "path": "part_Rider_Body_Boots_default",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.38000000000000006,
-            "scaleY": 0.38000000000000006,
-            "width": 35,
-            "height": 45,
-            "color": "ffffffff"
           }
         },
         "Rider/Body/Head/Eye": {},
@@ -18663,18 +18649,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -24061,18 +24035,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
         }
       }
     },
@@ -29039,22 +29001,6 @@
             {
               "time": 1.3333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -34273,62 +34219,6 @@
           "color": [
             {
               "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
               "color": "ffffff00"
             },
             {
@@ -39716,18 +39606,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
         }
       }
     },
@@ -42738,18 +42616,6 @@
             {
               "time": 0.5,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
             }
           ]
         }
@@ -60517,18 +60383,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -78304,18 +78158,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -96087,18 +95929,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -113874,18 +113704,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -131659,18 +131477,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Boots": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -131687,7 +131493,7 @@
   "_unitSource": "character-maker/Character",
   "_unitLook": "hero-maker",
   "_heroMaker": {
-    "version": 2,
+    "version": 3,
     "role": 0,
     "source": "character-maker/Character",
     "riderScale": 0.78,

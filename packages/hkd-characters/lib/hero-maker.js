@@ -16,7 +16,7 @@ function source(root,name,read){
 }
 function expand(rig){
   const extras=[
-    {name:'Rider/Body/Cape',parent:'Rider/Body',x:-26,y:10,rotation:-15},
+    {name:'Rider/Body/Cape',parent:'Rider/Body',x:-48,y:-26,rotation:0},
     {name:'Rider/Body/Boots',parent:'Rider/Body',x:-11,y:-24},
     ...Object.entries(family).map(([style,type])=>({name:'Rider/Gloves/'+style,parent:'Rider/HandRight/'+type,x:10,y:0}))
   ];
@@ -69,7 +69,7 @@ function customEquipment(root,files,read){
       const pair=Object.entries(skin.attachments).find(([slot])=>category!=='Boots'||slot==='humanr_foot');if(!pair)continue;
       const [slot,variants]=pair,[key,value]=Object.entries(variants)[0],image=cut(value.path||value.name||key),file=equipmentFolder+'/'+category.toLowerCase()+'-'+skin.name+'.png';
       files.set(file,PNG.encode(image));files.set(file+'.meta',JSON.stringify(Bake.textureMeta(file,image.width,image.height),null,2)+'\n');
-      const scale=category==='Cape'?.24:category==='Gloves'?.22:.38;
+      const scale=category==='Cape'?1:category==='Gloves'?.22:.38;
       entries.push({id:'Hero/'+category+'/'+skin.name,name:'Hero '+category+' '+skin.name,category,image:file,thumbnail:file,resource:file.slice('assets/resources/'.length,-4),width:image.width,height:image.height,pixelsPerUnit:100/scale});
     }
   }
@@ -90,8 +90,11 @@ function horse(root,maker,files,read){
   // All six skins share these tracks; their original meshes and legs remain.
   require('./mounts').alignAnimations(aligned,maker);
   animations(aligned.json,original.json);
+  const cavalry={json:JSON.parse(read(path.join(root,'assets/KinghtFallEnemyAni/wqyl_qb/wqyl_qb.json')))};
+  require('./mounts').alignAnimations(cavalry,maker);
+  require('./hero-mount-motion').synchronize(aligned.json,cavalry.json,.78/.6);
   for(const [name,clip]of Object.entries(original.json.animations))if(!['idle','move','attack'].includes(name))aligned.json.animations[name]=clone(clip);
-  aligned.json._heroMakerMount={version:1,source:original.uuid};
+  aligned.json._heroMakerMount={version:2,source:original.uuid,thrustReference:'legacy-cavalry'};
   const base=folder+'/wqyl_lead_ma',texture=read(url.fileURLToPath(original.pages['wqyl_lead_ma.png']));
   files.set(base+'.json',JSON.stringify(aligned.json,null,2)+'\n');files.set(base+'.atlas',original.atlas);files.set(base+'.png',texture);
   files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures:[Bake.uuid(base+'.png')],scale:1,subMetas:{}},null,2)+'\n');
@@ -118,12 +121,13 @@ function plan(root){
     for(const skin of skins){
       const match=/^(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_(.+)$/.exec(skin),style=match?match[1]:'skirmisher',tierName=match?match[2]:skin,tier=/^vip/.test(tierName)?4:Math.min(4,Number(tierName.replace(/\D/g,''))||1),parts=[];
       function add(asset,slot,overrides){if(!asset)throw Error('Missing hero equipment for '+slot);parts.push({...attachment(asset,slot,slot.replace(/[^a-z0-9]/gi,'_')+'_'+skin),layer:base.uuid,...overrides});}
-      if(role===0)add(assets.get('Hero/Boots/default'),'Rider/Body/Boots');
-      if(role===1){add(tier===1?assets.get('Chest/FA_Chest_032_Blue'):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape');}
+      if(role===1){add(tier===1?assets.get('Chest/FA_Chest_032_Blue'):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape',{scaleX:.95});}
       if(role===2)add(tier===1?assets.get('Helmet/FA_Helmet_047_White'):choose('Helmet',tier),slotFor('Helmet'));
       if(role===3&&style==='skirmisher')add(choose('HandRight/Arrow',tier),slotFor('Arrow'),{forceVisible:false});
       if(role===4){const type=family[style];add(weapon(style,tier),slotFor(type));if(style==='guardian')add(assets.get('HandLeft/Shield/FA_WP_Sub_Shield_012_Blue')||choose('HandLeft/Shield',tier),slotFor('Shield'));}
-      if(role===5)add(assets.get('Hero/Gloves/lv'+tier),'Rider/Gloves/'+style);
+      // Gloves retain their independent upgrade skins and Gear icons, while
+      // the rider uses the Maker silhouette without added gloves or boots.
+      if(role===5){const asset=assets.get('Hero/Gloves/lv'+tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       if(parts.length&&role){const asset=assets.get(parts[0].sprite);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       if(role===3&&style!=='skirmisher'){const asset=weapon(style,tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       const variant=clone(base);if(role===4)for(const skin of variant.json.skins)for(const slot of Object.keys(skin.attachments))if(/Bow_Line|Crossbow_Line/.test(slot)&&!(style==='skirmisher'&&/\/Bow\//.test(slot)))delete skin.attachments[slot];
@@ -145,7 +149,7 @@ function plan(root){
         else if(target.color)target.color=target.color.map(frame=>({...frame,color:frame.color.slice(0,6)+'ff'}));
       }
     }
-    rig._heroMaker={version:2,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
+    rig._heroMaker={version:3,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
     const written=writeRig(root,files,read,name,rig,pictures);replacements.set(originalUuid,written.uuid);
   }
   const mount=horse(root,maker,files,read);replacements.set(mount.from,mount.to);

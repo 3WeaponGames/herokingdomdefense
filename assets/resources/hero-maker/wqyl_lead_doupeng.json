@@ -496,9 +496,9 @@
     {
       "name": "Rider/Body/Cape",
       "parent": "Rider/Body",
-      "x": -26,
-      "y": 10,
-      "rotation": -15
+      "x": -48,
+      "y": -26,
+      "rotation": 0
     },
     {
       "name": "Rider/Body/Boots",
@@ -820,8 +820,8 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 0.24,
-            "scaleY": 0.24,
+            "scaleX": 0.95,
+            "scaleY": 1,
             "width": 84,
             "height": 89,
             "color": "ffffffff"
@@ -856,8 +856,8 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 0.24,
-            "scaleY": 0.24,
+            "scaleX": 0.95,
+            "scaleY": 1,
             "width": 85,
             "height": 89,
             "color": "ffffffff"
@@ -892,8 +892,8 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 0.24,
-            "scaleY": 0.24,
+            "scaleX": 0.95,
+            "scaleY": 1,
             "width": 85,
             "height": 89,
             "color": "ffffffff"
@@ -928,8 +928,8 @@
             "x": 0,
             "y": 0,
             "rotation": 0,
-            "scaleX": 0.24,
-            "scaleY": 0.24,
+            "scaleX": 0.95,
+            "scaleY": 1,
             "width": 86,
             "height": 91,
             "color": "ffffffff"
@@ -131732,7 +131732,7 @@
   "_unitSource": "character-maker/Character",
   "_unitLook": "hero-maker",
   "_heroMaker": {
-    "version": 2,
+    "version": 3,
     "role": 1,
     "source": "character-maker/Character",
     "riderScale": 0.78,

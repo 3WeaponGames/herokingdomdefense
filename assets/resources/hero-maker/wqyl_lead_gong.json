@@ -496,9 +496,9 @@
     {
       "name": "Rider/Body/Cape",
       "parent": "Rider/Body",
-      "x": -26,
-      "y": 10,
-      "rotation": -15
+      "x": -48,
+      "y": -26,
+      "rotation": 0
     },
     {
       "name": "Rider/Body/Boots",
@@ -138621,7 +138621,7 @@
   "_unitSource": "character-maker/Character",
   "_unitLook": "hero-maker",
   "_heroMaker": {
-    "version": 2,
+    "version": 3,
     "role": 4,
     "source": "character-maker/Character",
     "riderScale": 0.78,

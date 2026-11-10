@@ -496,9 +496,9 @@
     {
       "name": "Rider/Body/Cape",
       "parent": "Rider/Body",
-      "x": -26,
-      "y": 10,
-      "rotation": -15
+      "x": -48,
+      "y": -26,
+      "rotation": 0
     },
     {
       "name": "Rider/Body/Boots",
@@ -767,57 +767,38 @@
     {
       "name": "Rider/Gloves/skirmisher",
       "bone": "Rider/Gloves/skirmisher",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Gloves_skirmisher"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Gloves/fighter",
       "bone": "Rider/Gloves/fighter",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Gloves_fighter"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Gloves/vanguard",
       "bone": "Rider/Gloves/vanguard",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Gloves_vanguard"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Gloves/mystic",
       "bone": "Rider/Gloves/mystic",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Gloves_mystic"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Gloves/bruiser",
       "bone": "Rider/Gloves/bruiser",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Gloves_bruiser"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Gloves/guardian",
       "bone": "Rider/Gloves/guardian",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Gloves_guardian"
+      "color": "ffffffff"
     }
   ],
   "skins": [
     {
       "name": "lv1",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -828,19 +809,6 @@
     {
       "name": "lv2",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -851,19 +819,6 @@
     {
       "name": "lv3",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -874,19 +829,6 @@
     {
       "name": "lv4",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -897,19 +839,6 @@
     {
       "name": "vip1",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -920,19 +849,6 @@
     {
       "name": "vip2",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -943,19 +859,6 @@
     {
       "name": "skirmisher_lv1",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_skirmisher_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -966,19 +869,6 @@
     {
       "name": "skirmisher_lv2",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_skirmisher_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -989,19 +879,6 @@
     {
       "name": "skirmisher_lv3",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_skirmisher_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1012,19 +889,6 @@
     {
       "name": "skirmisher_lv4",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_skirmisher_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1035,19 +899,6 @@
     {
       "name": "skirmisher_vip1",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_skirmisher_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1058,19 +909,6 @@
     {
       "name": "skirmisher_vip2",
       "attachments": {
-        "Rider/Gloves/skirmisher": {
-          "hero_Rider_Gloves_skirmisher": {
-            "path": "part_Rider_Gloves_skirmisher_skirmisher_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1081,19 +919,6 @@
     {
       "name": "fighter_lv1",
       "attachments": {
-        "Rider/Gloves/fighter": {
-          "hero_Rider_Gloves_fighter": {
-            "path": "part_Rider_Gloves_fighter_fighter_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1104,19 +929,6 @@
     {
       "name": "fighter_lv2",
       "attachments": {
-        "Rider/Gloves/fighter": {
-          "hero_Rider_Gloves_fighter": {
-            "path": "part_Rider_Gloves_fighter_fighter_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1127,19 +939,6 @@
     {
       "name": "fighter_lv3",
       "attachments": {
-        "Rider/Gloves/fighter": {
-          "hero_Rider_Gloves_fighter": {
-            "path": "part_Rider_Gloves_fighter_fighter_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1150,19 +949,6 @@
     {
       "name": "fighter_lv4",
       "attachments": {
-        "Rider/Gloves/fighter": {
-          "hero_Rider_Gloves_fighter": {
-            "path": "part_Rider_Gloves_fighter_fighter_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1173,19 +959,6 @@
     {
       "name": "fighter_vip1",
       "attachments": {
-        "Rider/Gloves/fighter": {
-          "hero_Rider_Gloves_fighter": {
-            "path": "part_Rider_Gloves_fighter_fighter_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1196,19 +969,6 @@
     {
       "name": "fighter_vip2",
       "attachments": {
-        "Rider/Gloves/fighter": {
-          "hero_Rider_Gloves_fighter": {
-            "path": "part_Rider_Gloves_fighter_fighter_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1219,19 +979,6 @@
     {
       "name": "vanguard_lv1",
       "attachments": {
-        "Rider/Gloves/vanguard": {
-          "hero_Rider_Gloves_vanguard": {
-            "path": "part_Rider_Gloves_vanguard_vanguard_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1242,19 +989,6 @@
     {
       "name": "vanguard_lv2",
       "attachments": {
-        "Rider/Gloves/vanguard": {
-          "hero_Rider_Gloves_vanguard": {
-            "path": "part_Rider_Gloves_vanguard_vanguard_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1265,19 +999,6 @@
     {
       "name": "vanguard_lv3",
       "attachments": {
-        "Rider/Gloves/vanguard": {
-          "hero_Rider_Gloves_vanguard": {
-            "path": "part_Rider_Gloves_vanguard_vanguard_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1288,19 +1009,6 @@
     {
       "name": "vanguard_lv4",
       "attachments": {
-        "Rider/Gloves/vanguard": {
-          "hero_Rider_Gloves_vanguard": {
-            "path": "part_Rider_Gloves_vanguard_vanguard_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1311,19 +1019,6 @@
     {
       "name": "vanguard_vip1",
       "attachments": {
-        "Rider/Gloves/vanguard": {
-          "hero_Rider_Gloves_vanguard": {
-            "path": "part_Rider_Gloves_vanguard_vanguard_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1334,19 +1029,6 @@
     {
       "name": "vanguard_vip2",
       "attachments": {
-        "Rider/Gloves/vanguard": {
-          "hero_Rider_Gloves_vanguard": {
-            "path": "part_Rider_Gloves_vanguard_vanguard_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1357,19 +1039,6 @@
     {
       "name": "mystic_lv1",
       "attachments": {
-        "Rider/Gloves/mystic": {
-          "hero_Rider_Gloves_mystic": {
-            "path": "part_Rider_Gloves_mystic_mystic_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1380,19 +1049,6 @@
     {
       "name": "mystic_lv2",
       "attachments": {
-        "Rider/Gloves/mystic": {
-          "hero_Rider_Gloves_mystic": {
-            "path": "part_Rider_Gloves_mystic_mystic_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1403,19 +1059,6 @@
     {
       "name": "mystic_lv3",
       "attachments": {
-        "Rider/Gloves/mystic": {
-          "hero_Rider_Gloves_mystic": {
-            "path": "part_Rider_Gloves_mystic_mystic_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1426,19 +1069,6 @@
     {
       "name": "mystic_lv4",
       "attachments": {
-        "Rider/Gloves/mystic": {
-          "hero_Rider_Gloves_mystic": {
-            "path": "part_Rider_Gloves_mystic_mystic_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1449,19 +1079,6 @@
     {
       "name": "mystic_vip1",
       "attachments": {
-        "Rider/Gloves/mystic": {
-          "hero_Rider_Gloves_mystic": {
-            "path": "part_Rider_Gloves_mystic_mystic_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1472,19 +1089,6 @@
     {
       "name": "mystic_vip2",
       "attachments": {
-        "Rider/Gloves/mystic": {
-          "hero_Rider_Gloves_mystic": {
-            "path": "part_Rider_Gloves_mystic_mystic_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1495,19 +1099,6 @@
     {
       "name": "bruiser_lv1",
       "attachments": {
-        "Rider/Gloves/bruiser": {
-          "hero_Rider_Gloves_bruiser": {
-            "path": "part_Rider_Gloves_bruiser_bruiser_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1518,19 +1109,6 @@
     {
       "name": "bruiser_lv2",
       "attachments": {
-        "Rider/Gloves/bruiser": {
-          "hero_Rider_Gloves_bruiser": {
-            "path": "part_Rider_Gloves_bruiser_bruiser_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1541,19 +1119,6 @@
     {
       "name": "bruiser_lv3",
       "attachments": {
-        "Rider/Gloves/bruiser": {
-          "hero_Rider_Gloves_bruiser": {
-            "path": "part_Rider_Gloves_bruiser_bruiser_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1564,19 +1129,6 @@
     {
       "name": "bruiser_lv4",
       "attachments": {
-        "Rider/Gloves/bruiser": {
-          "hero_Rider_Gloves_bruiser": {
-            "path": "part_Rider_Gloves_bruiser_bruiser_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1587,19 +1139,6 @@
     {
       "name": "bruiser_vip1",
       "attachments": {
-        "Rider/Gloves/bruiser": {
-          "hero_Rider_Gloves_bruiser": {
-            "path": "part_Rider_Gloves_bruiser_bruiser_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1610,19 +1149,6 @@
     {
       "name": "bruiser_vip2",
       "attachments": {
-        "Rider/Gloves/bruiser": {
-          "hero_Rider_Gloves_bruiser": {
-            "path": "part_Rider_Gloves_bruiser_bruiser_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1633,19 +1159,6 @@
     {
       "name": "guardian_lv1",
       "attachments": {
-        "Rider/Gloves/guardian": {
-          "hero_Rider_Gloves_guardian": {
-            "path": "part_Rider_Gloves_guardian_guardian_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 49,
-            "height": 45,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1656,19 +1169,6 @@
     {
       "name": "guardian_lv2",
       "attachments": {
-        "Rider/Gloves/guardian": {
-          "hero_Rider_Gloves_guardian": {
-            "path": "part_Rider_Gloves_guardian_guardian_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 50,
-            "height": 48,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1679,19 +1179,6 @@
     {
       "name": "guardian_lv3",
       "attachments": {
-        "Rider/Gloves/guardian": {
-          "hero_Rider_Gloves_guardian": {
-            "path": "part_Rider_Gloves_guardian_guardian_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 53,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1702,19 +1189,6 @@
     {
       "name": "guardian_lv4",
       "attachments": {
-        "Rider/Gloves/guardian": {
-          "hero_Rider_Gloves_guardian": {
-            "path": "part_Rider_Gloves_guardian_guardian_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1725,19 +1199,6 @@
     {
       "name": "guardian_vip1",
       "attachments": {
-        "Rider/Gloves/guardian": {
-          "hero_Rider_Gloves_guardian": {
-            "path": "part_Rider_Gloves_guardian_guardian_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -1748,19 +1209,6 @@
     {
       "name": "guardian_vip2",
       "attachments": {
-        "Rider/Gloves/guardian": {
-          "hero_Rider_Gloves_guardian": {
-            "path": "part_Rider_Gloves_guardian_guardian_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 0.22,
-            "scaleY": 0.22,
-            "width": 52,
-            "height": 49,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -19534,78 +18982,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -24992,78 +24368,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
         }
       }
     },
@@ -30030,102 +29334,6 @@
             {
               "time": 1.3333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -35344,342 +34552,6 @@
           "color": [
             {
               "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
               "color": "ffffff00"
             },
             {
@@ -41067,78 +39939,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
         }
       }
     },
@@ -44149,78 +42949,6 @@
             {
               "time": 0.5,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
             }
           ]
         }
@@ -61988,78 +60716,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -79835,78 +78491,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -97678,78 +96262,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -115525,78 +114037,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -133370,78 +131810,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Gloves/skirmisher": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/fighter": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/vanguard": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/mystic": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/bruiser": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
-        },
-        "Rider/Gloves/guardian": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -133458,7 +131826,7 @@
   "_unitSource": "character-maker/Character",
   "_unitLook": "hero-maker",
   "_heroMaker": {
-    "version": 2,
+    "version": 3,
     "role": 5,
     "source": "character-maker/Character",
     "riderScale": 0.78,

@@ -1,6 +1,6 @@
 
 wqyl_lead_shenti.png
-size: 512,128
+size: 256,128
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -25,16 +25,9 @@ u_0a7e6d409c450e145bcb203db6e508b8
   orig: 44, 48
   offset: 0, 0
   index: -1
-part_Rider_Body_Boots_default
-  rotate: false
-  xy: 178, 2
-  size: 35, 45
-  orig: 35, 45
-  offset: 0, 0
-  index: -1
 u_694052ddfa2103940ad31009cdf01698
   rotate: false
-  xy: 217, 2
+  xy: 178, 2
   size: 49, 30
   orig: 49, 30
   offset: 0, 0

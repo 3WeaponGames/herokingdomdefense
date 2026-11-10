@@ -42,7 +42,11 @@ function alignAnimations(horse,rider){
   const original=horse.json.animations,animations={};horse.animationSync={};
   for(const [name,target]of Object.entries(rider.json.animations)){
     const move=/^(move|walk|run)$/.test(name),attack=/attack|skill/.test(name),death=/^(die|dead)/.test(name);
-    const source=original[name]||original[move?'move':attack?'attack':death?'wqyl_lead_die':'idle']||original.idle;
+    // A library mount follows the shared Maker attack. The hero's default
+    // bow clip has its own draw/release phase; its melee clip restores the
+    // shared mount clock without stretching that bow phase into the lunge.
+    const canonical=name==='attack'&&horse.json._heroMakerMount&&horse.json._heroMakerMount.thrustReference==='legacy-cavalry'&&original.attack_fighter;
+    const source=canonical||original[name]||original[move?'move':attack?'attack':death?'wqyl_lead_die':'idle']||original.idle;
     if(!source)continue;const from=move?strideDuration(source):duration(source),clip=move?gaitCycle(source,from):clone(source),to=duration(target),factor=from>0&&to>0?to/from:1;
     function retime(value){if(!value||typeof value!=='object')return;if(typeof value.time==='number')value.time=Number((value.time*factor).toFixed(7));Object.values(value).forEach(retime);}retime(clip);delete clip.events;animations[name]=clip;
     horse.animationSync[name]={sourceCycle:from,targetCycle:to};
