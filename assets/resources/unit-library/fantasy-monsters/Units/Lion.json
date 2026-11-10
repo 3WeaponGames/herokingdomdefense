@@ -123,6 +123,54 @@
       "scaleX": 4,
       "scaleY": 1,
       "parent": "__root"
+    },
+    {
+      "name": "__fx/emitter",
+      "parent": "Body/AnchorWeapon",
+      "x": 0,
+      "y": 0,
+      "scaleX": 4.35,
+      "scaleY": 4.35
+    },
+    {
+      "name": "__fx/attack-0",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-1",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-2",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-3",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-4",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-5",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-6",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-7",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-8",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-9",
+      "parent": "__fx/emitter"
     }
   ],
   "slots": [
@@ -173,6 +221,66 @@
       "bone": "Body/Head",
       "attachment": "sprite_HeadNormal",
       "color": "ffffffff"
+    },
+    {
+      "name": "__fx/attack-0",
+      "bone": "__fx/attack-0",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-1",
+      "bone": "__fx/attack-1",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-2",
+      "bone": "__fx/attack-2",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-3",
+      "bone": "__fx/attack-3",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-4",
+      "bone": "__fx/attack-4",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-5",
+      "bone": "__fx/attack-5",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-6",
+      "bone": "__fx/attack-6",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-7",
+      "bone": "__fx/attack-7",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-8",
+      "bone": "__fx/attack-8",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-9",
+      "bone": "__fx/attack-9",
+      "attachment": "particle",
+      "color": "ffffff00"
     }
   ],
   "skins": [
@@ -257,15 +365,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_40775167191810cf1b42295317363047"
-          },
           "sprite_HeadDead": {
             "width": 512.0,
             "height": 512.0,
@@ -275,6 +374,15 @@
             "scaleY": 1,
             "path": "u_087de70f796f53d76a0ed42a1c6978c0"
           },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_40775167191810cf1b42295317363047"
+          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -283,6 +391,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_cab9acf56175784624908a53e4b2c997"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -368,15 +566,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_a803ed2f6535e8244a0c2439c6d111aa"
-          },
           "sprite_HeadDead": {
             "width": 512.0,
             "height": 512.0,
@@ -386,6 +575,15 @@
             "scaleY": 1,
             "path": "u_857b0f91013c655d6922e02d8e56f906"
           },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_a803ed2f6535e8244a0c2439c6d111aa"
+          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -394,6 +592,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_7f5f5bb0379728975fc6ce3fd9ae531b"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -479,15 +767,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_40775167191810cf1b42295317363047"
-          },
           "sprite_HeadDead": {
             "width": 512.0,
             "height": 512.0,
@@ -497,6 +776,15 @@
             "scaleY": 1,
             "path": "u_087de70f796f53d76a0ed42a1c6978c0"
           },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_40775167191810cf1b42295317363047"
+          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -505,6 +793,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_cab9acf56175784624908a53e4b2c997"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -590,15 +968,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_78cfe4e3d50f21d8c8bf98a26d520702"
-          },
           "sprite_HeadDead": {
             "width": 512.0,
             "height": 512.0,
@@ -608,6 +977,15 @@
             "scaleY": 1,
             "path": "u_e769a87b7b617bc3f2e26c9319aea1aa"
           },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_78cfe4e3d50f21d8c8bf98a26d520702"
+          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -616,6 +994,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_dce518c0182f612777877a67b0fa0f69"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -701,15 +1169,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_8b650ccef838c64740149ebc124abe71"
-          },
           "sprite_HeadDead": {
             "width": 512.0,
             "height": 512.0,
@@ -719,6 +1178,15 @@
             "scaleY": 1,
             "path": "u_0cfe28c2839b0101d8fad47adc4f0ef0"
           },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_8b650ccef838c64740149ebc124abe71"
+          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -727,6 +1195,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_bced564d9894444dc0bb796fa3e992fa"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -812,15 +1370,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_198223ba41beaeb8523358e962ca3453"
-          },
           "sprite_HeadDead": {
             "width": 512.0,
             "height": 512.0,
@@ -830,6 +1379,15 @@
             "scaleY": 1,
             "path": "u_0e7b0e3734736f978e6b5dfcf5949f59"
           },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_198223ba41beaeb8523358e962ca3453"
+          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -838,6 +1396,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_96e376bf5d976a340135bd1e6f27c5e6"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -2000,6 +2648,86 @@
               "name": "sprite_HeadNormal"
             }
           ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
         }
       }
     },
@@ -3159,6 +3887,86 @@
             {
               "time": 0,
               "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
             }
           ]
         }
@@ -4810,6 +5618,566 @@
               "angle": 0.0
             }
           ]
+        },
+        "__fx/attack-0": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -6.00716,
+              "y": -0.02713
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -22.02624,
+              "y": -2.73948
+            },
+            {
+              "time": 0.49999,
+              "x": -40.04771,
+              "y": -10.38087
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 241.2064760865258
+            },
+            {
+              "time": 0.49999,
+              "angle": 310.16892757099515
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.08930948641565142,
+              "y": 0.08930948641565142
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.2551699611875755,
+              "y": 0.2551699611875755
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -2.64405,
+              "y": 3.41013
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -9.69485,
+              "y": 9.86381
+            },
+            {
+              "time": 0.49999,
+              "x": -17.627,
+              "y": 12.53421
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 93.14857549426432
+            },
+            {
+              "time": 0.49999,
+              "angle": 120.96026236605904
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.07778727232410251,
+              "y": 0.07778727232410251
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.22224934949743577,
+              "y": 0.22224934949743577
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -3.85116,
+              "y": 0.23464
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -14.12092,
+              "y": -1.77966
+            },
+            {
+              "time": 0.49999,
+              "x": -25.6744,
+              "y": -8.63574
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 28.4081871508667
+            },
+            {
+              "time": 0.49999,
+              "angle": -40.654385938563266
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.05066247953495961,
+              "y": 0.05066247953495961
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.14474994152845602,
+              "y": 0.14474994152845602
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": -0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -4.51495,
+              "y": -1.28281
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -16.55483,
+              "y": -7.34363
+            },
+            {
+              "time": 0.49999,
+              "x": -30.09969,
+              "y": -18.75206
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 102.71582632093073
+            },
+            {
+              "time": 0.49999,
+              "angle": 28.9676555512158
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.049350512184479806,
+              "y": 0.049350512184479806
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.14100146338422803,
+              "y": 0.14100146338422803
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -2.32199,
+              "y": 4.14412
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -8.51395,
+              "y": 12.55511
+            },
+            {
+              "time": 0.49999,
+              "x": -15.47992,
+              "y": 17.42747
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 138.75933469462421
+            },
+            {
+              "time": 0.49999,
+              "angle": 46.50374754610203
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.04416843559841378,
+              "y": 0.04416843559841378
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.12619553028118224,
+              "y": 0.12619553028118224
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": -0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -2.33292,
+              "y": -3.64781
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -8.55406,
+              "y": -16.0153
+            },
+            {
+              "time": 0.49999,
+              "x": -15.55283,
+              "y": -34.51873
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 50.5135243010281
+            },
+            {
+              "time": 0.49999,
+              "angle": -34.49495012360782
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.046197627161101935,
+              "y": 0.046197627161101935
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.13199322046029124,
+              "y": 0.13199322046029124
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -6.45023,
+              "y": -0.04884
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -23.65084,
+              "y": -2.8191
+            },
+            {
+              "time": 0.49999,
+              "x": -43.00152,
+              "y": -10.52563
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 285.4018710797993
+            },
+            {
+              "time": 0.49999,
+              "angle": 328.2232049557106
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.08198997348525516,
+              "y": 0.08198997348525516
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.23425706710072905,
+              "y": 0.23425706710072905
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": -0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -4.95774,
+              "y": -3.27967
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -18.17836,
+              "y": -14.66546
+            },
+            {
+              "time": 0.49999,
+              "x": -33.05157,
+              "y": -32.06448
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 219.9764081962187
+            },
+            {
+              "time": 0.49999,
+              "angle": 238.07247017752675
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.07506689735476624,
+              "y": 0.07506689735476624
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.21447684958504643,
+              "y": 0.21447684958504643
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -6.81216,
+              "y": 0.10554
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -24.97791,
+              "y": -2.253
+            },
+            {
+              "time": 0.49999,
+              "x": -45.41439,
+              "y": -9.49637
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 322.25016749726285
+            },
+            {
+              "time": 0.49999,
+              "angle": 394.9823764501335
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.09036501850680376,
+              "y": 0.09036501850680376
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.25818576716229646,
+              "y": 0.25818576716229646
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "translate": [
+            {
+              "time": 0.33333334,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.358331839,
+              "x": -6.83557,
+              "y": 1.92521
+            },
+            {
+              "time": 0.42499450299999997,
+              "x": -25.06375,
+              "y": 4.41912
+            },
+            {
+              "time": 0.49999,
+              "x": -45.57045,
+              "y": 2.63476
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.33333334,
+              "angle": 357.94114183065494
+            },
+            {
+              "time": 0.49999,
+              "angle": 385.7898904635489
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.33333334,
+              "x": 0.0777976496172103,
+              "y": 0.0777976496172103
+            },
+            {
+              "time": 0.358331839,
+              "x": 0.22227899890631514,
+              "y": 0.22227899890631514
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
         }
       },
       "slots": {
@@ -4920,6 +6288,246 @@
             {
               "time": 0.3,
               "name": "sprite_HeadNormal"
+            }
+          ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.33333334,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.358331839,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.42499450299999997,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
             }
           ]
         }
@@ -5892,6 +7500,86 @@
               "name": "sprite_HeadDead"
             }
           ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
         }
       }
     },
@@ -6110,6 +7798,19 @@
         ]
       }
     ],
-    "animationAliases": []
+    "animationAliases": [],
+    "effects": {
+      "version": 1,
+      "style": "earth",
+      "attacks": [
+        {
+          "animation": "attack",
+          "at": 0.33333334,
+          "anchor": "Body/AnchorWeapon",
+          "count": 10,
+          "reference": "authored attack event"
+        }
+      ]
+    }
   }
 }

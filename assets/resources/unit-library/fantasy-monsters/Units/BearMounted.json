@@ -123,6 +123,54 @@
       "scaleX": 4,
       "scaleY": 1,
       "parent": "__root"
+    },
+    {
+      "name": "__fx/emitter",
+      "parent": "Body/AnchorWeapon",
+      "x": 0,
+      "y": 0,
+      "scaleX": 4.636666666666667,
+      "scaleY": 4.636666666666667
+    },
+    {
+      "name": "__fx/attack-0",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-1",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-2",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-3",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-4",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-5",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-6",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-7",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-8",
+      "parent": "__fx/emitter"
+    },
+    {
+      "name": "__fx/attack-9",
+      "parent": "__fx/emitter"
     }
   ],
   "slots": [
@@ -173,6 +221,66 @@
       "bone": "Body/LegBackL",
       "attachment": "sprite_LefBack",
       "color": "ffffffff"
+    },
+    {
+      "name": "__fx/attack-0",
+      "bone": "__fx/attack-0",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-1",
+      "bone": "__fx/attack-1",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-2",
+      "bone": "__fx/attack-2",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-3",
+      "bone": "__fx/attack-3",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-4",
+      "bone": "__fx/attack-4",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-5",
+      "bone": "__fx/attack-5",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-6",
+      "bone": "__fx/attack-6",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-7",
+      "bone": "__fx/attack-7",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-8",
+      "bone": "__fx/attack-8",
+      "attachment": "particle",
+      "color": "ffffff00"
+    },
+    {
+      "name": "__fx/attack-9",
+      "bone": "__fx/attack-9",
+      "attachment": "particle",
+      "color": "ffffff00"
     }
   ],
   "skins": [
@@ -235,15 +343,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_b0cb771577f915d6635cb8df1334b5a4"
-          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -252,6 +351,15 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_d931a28c98f2eec8042514c185621eee"
+          },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b0cb771577f915d6635cb8df1334b5a4"
           }
         },
         "Body/LegFrontL": {
@@ -274,6 +382,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_d586d4db08fcfb519b030c921cb4e53a"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -337,15 +535,6 @@
           }
         },
         "Body/Head": {
-          "sprite_HeadAngry": {
-            "width": 512.0,
-            "height": 512.0,
-            "x": 0.0,
-            "y": 0.0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "u_b0cb771577f915d6635cb8df1334b5a4"
-          },
           "sprite_HeadNormal": {
             "width": 512.0,
             "height": 512.0,
@@ -354,6 +543,15 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_d931a28c98f2eec8042514c185621eee"
+          },
+          "sprite_HeadAngry": {
+            "width": 512.0,
+            "height": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "path": "u_b0cb771577f915d6635cb8df1334b5a4"
           }
         },
         "Body/LegFrontL": {
@@ -376,6 +574,96 @@
             "scaleX": 1,
             "scaleY": 1,
             "path": "u_d586d4db08fcfb519b030c921cb4e53a"
+          }
+        },
+        "__fx/attack-0": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-1": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-2": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-3": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-4": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-5": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-6": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-7": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-8": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "__fx/attack-9": {
+          "particle": {
+            "path": "u_3be41ecfa6b2545f76c2c532be9ddb4e",
+            "width": 32,
+            "height": 32,
+            "scaleX": 1,
+            "scaleY": 1
           }
         }
       }
@@ -1536,6 +1824,86 @@
             {
               "time": 0.5,
               "color": "ffffffff"
+            }
+          ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
             }
           ]
         }
@@ -3232,6 +3600,86 @@
               "color": "ffffffff"
             }
           ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
         }
       }
     },
@@ -4914,6 +5362,566 @@
               "angle": -0.0
             }
           ]
+        },
+        "__fx/attack-0": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -3.98323,
+              "y": 0.86193
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -14.60517,
+              "y": 0.52041
+            },
+            {
+              "time": 0.49999,
+              "x": -26.55485,
+              "y": -4.45381
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 54.093701421655496
+            },
+            {
+              "time": 0.49999,
+              "angle": 3.2303771566334945
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.05575826920579384,
+              "y": 0.05575826920579384
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.1593093405879824,
+              "y": 0.1593093405879824
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -5.37761,
+              "y": 3.0825
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -19.7179,
+              "y": 8.66251
+            },
+            {
+              "time": 0.49999,
+              "x": -35.85073,
+              "y": 10.35002
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 273.70308651540654
+            },
+            {
+              "time": 0.49999,
+              "angle": 236.40820316985025
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.05955743266324424,
+              "y": 0.05955743266324424
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.17016409332355498,
+              "y": 0.17016409332355498
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -3.02158,
+              "y": 5.57603
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -11.07914,
+              "y": 17.80544
+            },
+            {
+              "time": 0.49999,
+              "x": -20.1439,
+              "y": 26.97352
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 298.0731443564942
+            },
+            {
+              "time": 0.49999,
+              "angle": 261.57242249460774
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.05977979787867178,
+              "y": 0.05977979787867178
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.1707994225104908,
+              "y": 0.1707994225104908
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -4.67391,
+              "y": 1.9014
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -17.13767,
+              "y": 4.33179
+            },
+            {
+              "time": 0.49999,
+              "x": -31.1594,
+              "y": 2.47597
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 155.3677280812274
+            },
+            {
+              "time": 0.49999,
+              "angle": 91.40742135367766
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.05209111411628607,
+              "y": 0.05209111411628607
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.14883175461796022,
+              "y": 0.14883175461796022
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -2.48225,
+              "y": 4.36721
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -9.10157,
+              "y": 13.37311
+            },
+            {
+              "time": 0.49999,
+              "x": -16.5483,
+              "y": 18.91475
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 165.97796320484218
+            },
+            {
+              "time": 0.49999,
+              "angle": 265.2677758232373
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.09780114753315061,
+              "y": 0.09780114753315061
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.27943185009471605,
+              "y": 0.27943185009471605
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -4.35952,
+              "y": 3.49365
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -15.98489,
+              "y": 10.17006
+            },
+            {
+              "time": 0.49999,
+              "x": -29.06344,
+              "y": 13.09101
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 215.9379472203642
+            },
+            {
+              "time": 0.49999,
+              "angle": 162.44404429601545
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.05502170718118234,
+              "y": 0.05502170718118234
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.157204877660521,
+              "y": 0.157204877660521
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -6.14714,
+              "y": 3.32909
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -22.53952,
+              "y": 9.56665
+            },
+            {
+              "time": 0.49999,
+              "x": -40.98095,
+              "y": 11.9939
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 352.32565856400726
+            },
+            {
+              "time": 0.49999,
+              "angle": 270.54214329626495
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.04710061572503215,
+              "y": 0.04710061572503215
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.13457318778580615,
+              "y": 0.13457318778580615
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -4.66152,
+              "y": 4.27776
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -17.09224,
+              "y": 13.04512
+            },
+            {
+              "time": 0.49999,
+              "x": -31.0768,
+              "y": 18.3184
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 291.2440892442309
+            },
+            {
+              "time": 0.49999,
+              "angle": 191.57542847540645
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.042092774984729145,
+              "y": 0.042092774984729145
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.12026507138494043,
+              "y": 0.12026507138494043
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": 0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -4.55652,
+              "y": 0.94972
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -16.70723,
+              "y": 0.84231
+            },
+            {
+              "time": 0.49999,
+              "x": -30.37679,
+              "y": -3.86852
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 111.69462448643704
+            },
+            {
+              "time": 0.49999,
+              "angle": 22.00539991052311
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.04488701711874409,
+              "y": 0.04488701711874409
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.12824862033926884,
+              "y": 0.12824862033926884
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "translate": [
+            {
+              "time": 0.25,
+              "x": -0.0,
+              "y": -0.0
+            },
+            {
+              "time": 0.2874985,
+              "x": -5.46034,
+              "y": -1.76724
+            },
+            {
+              "time": 0.38749449999999996,
+              "x": -20.02125,
+              "y": -9.11989
+            },
+            {
+              "time": 0.49999,
+              "x": -36.40228,
+              "y": -21.98162
+            }
+          ],
+          "rotate": [
+            {
+              "time": 0.25,
+              "angle": 206.18963834550289
+            },
+            {
+              "time": 0.49999,
+              "angle": 187.3693954108025
+            }
+          ],
+          "scale": [
+            {
+              "time": 0,
+              "x": 0.001,
+              "y": 0.001
+            },
+            {
+              "time": 0.25,
+              "x": 0.06473033197828389,
+              "y": 0.06473033197828389
+            },
+            {
+              "time": 0.2874985,
+              "x": 0.18494380565223967,
+              "y": 0.18494380565223967
+            },
+            {
+              "time": 0.49999,
+              "x": 0.001,
+              "y": 0.001
+            }
+          ]
         }
       },
       "slots": {
@@ -5024,6 +6032,246 @@
             {
               "time": 0.5,
               "color": "ffffffff"
+            }
+          ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.25,
+              "color": "d6b39300"
+            },
+            {
+              "time": 0.2874985,
+              "color": "d6b393f0"
+            },
+            {
+              "time": 0.38749449999999996,
+              "color": "d6b393b0"
+            },
+            {
+              "time": 0.49999,
+              "color": "d6b39300"
             }
           ]
         }
@@ -6442,6 +7690,86 @@
               "color": "ffffffff"
             }
           ]
+        },
+        "__fx/attack-0": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-1": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-2": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-3": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-4": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-5": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-6": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-7": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-8": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
+        },
+        "__fx/attack-9": {
+          "color": [
+            {
+              "time": 0,
+              "color": "d6b39300"
+            }
+          ]
         }
       }
     },
@@ -6616,6 +7944,19 @@
         ]
       }
     ],
-    "animationAliases": []
+    "animationAliases": [],
+    "effects": {
+      "version": 1,
+      "style": "earth",
+      "attacks": [
+        {
+          "animation": "attack",
+          "at": 0.25,
+          "anchor": "Body/AnchorWeapon",
+          "count": 10,
+          "reference": "authored attack event"
+        }
+      ]
+    }
   }
 }

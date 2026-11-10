@@ -33,7 +33,7 @@ function describe(root,id,noRuntime){
   const atlas=fs.readFileSync(file.replace(/\.json$/,'.atlas'),'utf8'),pages={};
   const lines=atlas.split(/\r?\n/);
   lines.forEach((line,index)=>{if(line.trim()&&(!index||!lines[index-1].trim())&&/\.png$/i.test(line.trim()))pages[line.trim()]=url.pathToFileURL(path.resolve(path.dirname(file),line.trim())).href;});
-  const layer={name:unit.name,uuid:unit.uuid,json,atlas,pages,skins:json.skins.map(s=>s.name),animations:Object.keys(json.animations),skin:'default',x:0,y:0,scaleX:1,scaleY:1,angle:0};
+  const layer={name:unit.name,uuid:unit.uuid,json,atlas,pages,skins:json.skins.map(s=>s.name),animations:Object.keys(json.animations).filter(name=>name!=='__fx_ambient'),skin:'default',x:0,y:0,scaleX:1,scaleY:1,angle:0};
   return {source:unit.skeleton,sourceUnit:unit.id,sourcePack:unit.pack,layers:[layer],runtimePath:noRuntime?null:Units.enginePath()};
 }
 module.exports={load,describe};

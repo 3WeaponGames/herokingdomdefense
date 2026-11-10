@@ -130,8 +130,9 @@ View.prototype.release = function () {
   if (valid(this.spineNode)) this.spineNode.destroy();
   this.spriteNode = this.spineNode = null; this.bank.views.delete(this);
 };
-View.prototype.begin = function (key) {
+View.prototype.begin = function (key, sourceActor) {
   this.reset(); var view = this, serial = this.serial, shot = this.shot, bank = this.bank;
+  var defaults = sourceActor ? require("FantasyEffects").projectile(sourceActor) : {};
   var parent = shot.node.parent, position = shot.node.getPosition(), angle = shot.node.angle, applied = false;
   function current() { return !bank.dead && serial === view.serial && valid(shot.node) && !!shot._shot; }
   function apply(data) {
@@ -145,7 +146,7 @@ View.prototype.begin = function (key) {
         if (view.cancelItem) return;
       }
     }
-    var options = select(data, key, level, item), descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
+    var options = Object.assign({}, defaults, select(data, key, level, item)), descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     if (key === "hero" && !options.flight && bank.owner.ctrPlay && bank.owner.ctrPlay.heroStyle === "mystic") {
       options.flight = "original:fireball"; descriptor = data.assets.find(function (asset) { return asset.id === options.flight; });
     }
@@ -189,13 +190,13 @@ View.prototype.impact = function () {
   var shot = this.shot, bank = this.bank, epoch = bank.owner._combatEpoch;
   bank.effect(this.impactDescriptor, shot.node.parent, shot.node.getPosition(), shot.node.angle, this.options || { size: 48 }, function () { return !bank.dead && bank.owner._combatEpoch === epoch; });
 };
-function prepare(shot, owner, key) {
+function prepare(shot, owner, key, sourceActor) {
   if (!owner._projectileLooks) owner._projectileLooks = new Bank(owner);
   if (!shot._projectileVisual || shot._projectileVisual.bank !== owner._projectileLooks) {
     if (shot._projectileVisual) shot._projectileVisual.release();
     shot._projectileVisual = new View(shot, owner._projectileLooks);
   }
-  shot._launchProjectileLook = function () { try { shot._projectileVisual.begin(key); } catch (error) { visualError(shot._projectileVisual, error); } };
+  shot._launchProjectileLook = function () { try { shot._projectileVisual.begin(key, sourceActor); } catch (error) { visualError(shot._projectileVisual, error); } };
 }
 exports.prepare = prepare;
 exports.select = select;

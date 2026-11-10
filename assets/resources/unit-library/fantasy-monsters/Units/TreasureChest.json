@@ -630,6 +630,11 @@
     "animationAliases": [
       "move",
       "attack"
-    ]
+    ],
+    "effects": {
+      "version": 1,
+      "style": "earth",
+      "attacks": []
+    }
   }
 }

@@ -11,6 +11,7 @@ test('library includes all imported arrows, wall variants and 45 complete Toon c
   const Assets=require('../../packages/game-data-editor/lib/asset-validation');
   for(const asset of catalog.assets){const file=path.join(root,'assets',asset.bundle||'resources',asset.resource+(asset.kind==='spine'?'.json':'.png'));assert(fs.existsSync(file),asset.id);assert(fs.existsSync(file+'.meta'),asset.id);if(asset.kind==='sprite')Assets.imported(root,asset.bundle||'resources',asset.resource,'sprite');if(asset.kind==='flipbook'){const png=fs.readFileSync(file);assert.equal(png.readUInt32BE(16),asset.cell*asset.columns);assert.equal(png.readUInt32BE(20),asset.cell*Math.ceil(asset.frames/asset.columns));}}
 });
+
 test('opening and previewing are read-only; no-change Save has no writes',t=>{const f=fixture(t),before=fs.readFileSync(f.file),stamp=fs.statSync(f.file).mtimeMs;f.service.load();f.service.units();f.service.describe({id:catalog.assets.find(a=>a.sourcePart).id});assert.equal(f.service.save({version:f.service.version}).result.saved,false);assert.deepEqual(fs.readFileSync(f.file),before);assert.equal(fs.statSync(f.file).mtimeMs,stamp);assert(!fs.existsSync(path.join(f.dir,'local')));});
 test('explicit assignment save preserves unknown fields and all balance/timing data',t=>{
   const f=fixture(t),data=JSON.parse(fs.readFileSync(f.file,'utf8'));data.future={retain:true};fs.writeFileSync(f.file,JSON.stringify(data,null,2));f.service.reload();
@@ -43,12 +44,18 @@ function visualFixture(data,item){
   class Node{constructor(name){this.name=name;this.children=[];this.components=[];this.x=13;this.y=17;this.width=7;this.height=9;this.angle=0;this.active=true;}setParent(p){this.parent=p;p.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(x,y){this.x=typeof x==='object'?x.x:x;this.y=typeof x==='object'?x.y:y;}setScale(x){this.scaleX=this.scaleY=x;}setContentSize(w,h){this.width=w;this.height=h;}getComponent(C){return this.components.find(c=>c instanceof C);}addComponent(C){const c=new C();c.node=this;this.components.push(c);return c;}getComponentsInChildren(C){return this.components.filter(c=>c instanceof C).concat(...this.children.filter(n=>!n.destroyed).map(n=>n.getComponentsInChildren(C)));}destroy(){this.destroyed=true;}}
   class Frame{constructor(asset,rect){this.width=rect?rect.width:80;this.height=rect?rect.height:30;}getOriginalSize(){return{width:this.width,height:this.height};}destroy(){this.destroyed=true;}addRef(){}decRef(){}}
   const pending=[],cc={Node,Sprite,RenderComponent:Renderer,SpriteFrame:Frame,Texture2D:function(){},JsonAsset:function(){},color:c=>c,rect:(x,y,width,height)=>({x,y,width,height}),isValid:o=>!!o&&!o.destroyed,resources:{load(resource,type,cb){pending.push(()=>cb(null,resource==='projectiles/catalog'?{json:data}:type===Frame?new Frame():{addRef(){},decRef(){}}));}}};
-  const ex={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:ex,cc,console,require(name){if(name==='HeroItemLooks')return {item:()=>item,whenReady(){}};if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getPersonLevel:()=>3})})}};throw Error(name);}});
+  const ex={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:ex,cc,console,require(name){if(name==='FantasyEffects')return require('../../assets/_script/FantasyEffects');if(name==='HeroItemLooks')return {item:()=>item,whenReady(){}};if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getPersonLevel:()=>3})})}};throw Error(name);}});
   const owner={_combatEpoch:1},node=new Node('shot'),parent=new Node('world');node.setParent(parent);const bullet=new Node('original');bullet.setParent(node);const original=bullet.addComponent(Sprite);
   const shot={node,bullet,_shot:{},speed:500,angle:30,state:0};
   return {api:ex,shot,owner,original,cc,pending,flush(){while(pending.length)pending.shift()();}};
 }
 const visualData=()=>({assets:[{id:'arrow',kind:'sprite',resource:'arrow',sourcePart:'item-arrow',size:44},{id:'fx',kind:'flipbook',resource:'fx',frames:4,columns:2,cell:16,fps:24}],assignments:{'ally:90003':{flight:'arrow',launch:'fx',impact:'fx',size:64}}});
+
+test('Fantasy projectile defaults follow the launched model, snapshot its appearance, and retain explicit overrides',()=>{
+ const data=visualData(),f=visualFixture(data),source={spAni:{skeletonData:{skeletonJson:{_fantasy:{effects:{projectile:{flight:'arrow',impact:'fx',size:80}}}}}}};
+ f.api.prepare(f.shot,f.owner,'enemy:94009',source);f.shot._launchProjectileLook();source.spAni.skeletonData.skeletonJson._fantasy.effects.projectile.size=20;f.flush();assert.equal(f.shot._projectileVisual.options.size,80);assert.equal(f.original.enabled,false);assert.equal(f.shot.speed,500);f.owner._projectileLooks.dispose();
+ data.assignments['enemy:94009']={flight:'fx',size:32};const g=visualFixture(data);g.api.prepare(g.shot,g.owner,'enemy:94009',source);g.shot._launchProjectileLook();g.flush();assert.equal(g.shot._projectileVisual.clip.descriptor.id,'fx');assert.equal(g.shot._projectileVisual.options.size,32);g.owner._projectileLooks.dispose();
+});
 test('tower overrides hide fallback artwork, preserve motion trails and blast renderers, then restore cleanly',()=>{
  const data=visualData();data.assignments['tower:2:4']={flight:'arrow'};const f=visualFixture(data),shot=f.shot;
  class Trail extends f.cc.RenderComponent{reset(){}}f.cc.MotionStreak=Trail;

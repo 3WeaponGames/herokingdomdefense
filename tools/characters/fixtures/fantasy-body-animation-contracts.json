@@ -1,0 +1,832 @@
+{
+  "fantasy-bosses/BlackDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/EmeraldDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/GoldenDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/GreenDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/GreyDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/IceDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/MechanicalDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/PurpleDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/RedDragon": {
+    "bones": "d8896abbab0789c3024498fdebb90adbd99131662ac859b9d801c202be0a2255",
+    "animations": "c70b8158bed0fcbc063b25afe18ad04d83970899c04b4ac1b4a41ff4f019daac",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType1": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType10": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType2": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType3": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType4": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType5": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType6": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType7": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType8": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/WyvernType9": {
+    "bones": "c8d36d936834774c71499ecabd01de5c478a8d9c9ed0502415730dfb4c0dbe38",
+    "animations": "683026fb6b3e417f4ba40aefcd0ce199ddf79b29f8e31491c6b9bc56e7b69515",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/FancyWorm": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/GreenWorm": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/IceWorm": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/MechanicalWormTypeA": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/MechanicalWormTypeB": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/MosquitoWorm": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/VolcanoWorm": {
+    "bones": "e86428d2424644e322c8779f1d78199d178a5585e5242e8024c532f154df45ae",
+    "animations": "60e3b7d59d12939c898a6a9c775cb3dd79df588edfbe2428315b816db9c21b77",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-bosses/IceGolem": {
+    "bones": "e424823491881400c2d798717634949f340dcb68fc1359c44f74c2dea54442dc",
+    "animations": "96a48e5e82c4625cf17ba784efef30e156dd90e3776ddd2985e1d3366dd39877",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/MechanicalGolem": {
+    "bones": "36d15f22fb9da17e274551320f6ac29a238d2ec499c8aa087902aef51b5dd413",
+    "animations": "9e57e53dfa57264da8972b490db7925ae659130f0ab7b23009484e85d5a23bc2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/RockGolem": {
+    "bones": "4e19f7afb76fb1ba7210de331f4a4f42a04c529cdae0ae5e16c4dc59170b4644",
+    "animations": "43b556e9c61f616bb5fc42dca49efcbbf1abf1d31b8ed17dc71871d9e414eac5",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/SandGolem": {
+    "bones": "4e19f7afb76fb1ba7210de331f4a4f42a04c529cdae0ae5e16c4dc59170b4644",
+    "animations": "43b556e9c61f616bb5fc42dca49efcbbf1abf1d31b8ed17dc71871d9e414eac5",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/StoneGolem": {
+    "bones": "e424823491881400c2d798717634949f340dcb68fc1359c44f74c2dea54442dc",
+    "animations": "96a48e5e82c4625cf17ba784efef30e156dd90e3776ddd2985e1d3366dd39877",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/VolcanoGolem": {
+    "bones": "e424823491881400c2d798717634949f340dcb68fc1359c44f74c2dea54442dc",
+    "animations": "96a48e5e82c4625cf17ba784efef30e156dd90e3776ddd2985e1d3366dd39877",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Croc01": {
+    "bones": "54f143b7b04ef1530a01854ba212864623a3a7e20e7c97f43ed0a31eb8fa764e",
+    "animations": "e9ba66a52ab055f206b6ff6ee8151ff1b71595e7b61bddbced0a74910c43d4fe",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Croc02": {
+    "bones": "54f143b7b04ef1530a01854ba212864623a3a7e20e7c97f43ed0a31eb8fa764e",
+    "animations": "e9ba66a52ab055f206b6ff6ee8151ff1b71595e7b61bddbced0a74910c43d4fe",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Croc03": {
+    "bones": "54f143b7b04ef1530a01854ba212864623a3a7e20e7c97f43ed0a31eb8fa764e",
+    "animations": "e9ba66a52ab055f206b6ff6ee8151ff1b71595e7b61bddbced0a74910c43d4fe",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Demon01": {
+    "bones": "beec9ab99af97ece0f483eed747a32c32981ecb511227e201a9226c158e0f617",
+    "animations": "bb25120f51b5ca964ff282c133cc5e1566536c0847af0d6791138cffb1e8ec84",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Demon02": {
+    "bones": "beec9ab99af97ece0f483eed747a32c32981ecb511227e201a9226c158e0f617",
+    "animations": "bb25120f51b5ca964ff282c133cc5e1566536c0847af0d6791138cffb1e8ec84",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Demon03": {
+    "bones": "5c61e84cce5db7831a023cb0b8c4f7e960231565af0abbccf34ca42ef4359bc4",
+    "animations": "f48ccd9dc53d636364a2673e05df96708acc974e6bbc8e197c797ce526767746",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Lizard01": {
+    "bones": "54f143b7b04ef1530a01854ba212864623a3a7e20e7c97f43ed0a31eb8fa764e",
+    "animations": "e9ba66a52ab055f206b6ff6ee8151ff1b71595e7b61bddbced0a74910c43d4fe",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Lizard02": {
+    "bones": "ac9b63111aa2f94873977d2977b292e72489865ce2ec7e832cbb64ac54caebc5",
+    "animations": "e9ba66a52ab055f206b6ff6ee8151ff1b71595e7b61bddbced0a74910c43d4fe",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Lizard03": {
+    "bones": "140869c9b4cc9849bb0993b87123ec41f130a840003b79e9b1897a84c72401b7",
+    "animations": "a38cfde9efd7d15510f8b3fe7d7f6aff2dbc76f6e911bd2f5a32d16a106e1e40",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Megabear01": {
+    "bones": "06ba816088f00797114546d72b814344753f5cfc9e0ba39db0348680c556f2f4",
+    "animations": "570afc1be5e0714b9cf4665f6cba68f976c7f20759615d5506f7a7052535ce03",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Megabear02": {
+    "bones": "cdfed08e334f0fd92771986a96f1cf1645d75ee4c6d621c5af150ee158662ac3",
+    "animations": "570afc1be5e0714b9cf4665f6cba68f976c7f20759615d5506f7a7052535ce03",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Megabear03": {
+    "bones": "06ba816088f00797114546d72b814344753f5cfc9e0ba39db0348680c556f2f4",
+    "animations": "570afc1be5e0714b9cf4665f6cba68f976c7f20759615d5506f7a7052535ce03",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Minotaur01": {
+    "bones": "7464ce7e2901e0bec3c80ea6299a72aba7e2a8b45f071b393605ed69ae179edb",
+    "animations": "570afc1be5e0714b9cf4665f6cba68f976c7f20759615d5506f7a7052535ce03",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Minotaur02": {
+    "bones": "ac9b63111aa2f94873977d2977b292e72489865ce2ec7e832cbb64ac54caebc5",
+    "animations": "e9ba66a52ab055f206b6ff6ee8151ff1b71595e7b61bddbced0a74910c43d4fe",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-bosses/Minotaur03": {
+    "bones": "140869c9b4cc9849bb0993b87123ec41f130a840003b79e9b1897a84c72401b7",
+    "animations": "a38cfde9efd7d15510f8b3fe7d7f6aff2dbc76f6e911bd2f5a32d16a106e1e40",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Monkey": {
+    "bones": "01154406d65cc4494a355b63714f3ef7c703bedef667113360a9823ffc2ebc14",
+    "animations": "4a1ed10ae1172389bafe593d13c18a2571c0759d540d1f8cab1619e90ab60b39",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Bat": {
+    "bones": "adda9f20d7b2c331bc8c00d699afdd2ea3b4132c1838608d0bdf153a389f68fa",
+    "animations": "177d0fbb55a042b7cfab8f70049e6c582748dc054fa3a3a56f6c684811027e88",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/DreadEye": {
+    "bones": "ff128bd10043238455fcf4483c2b1679228cc1d90b295fb8e5f323a77cbb3066",
+    "animations": "547153865a48b70e064d09a9c8145f5296151d2be4f8f6d730897b3e6e33a87f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/EvilEye": {
+    "bones": "ff128bd10043238455fcf4483c2b1679228cc1d90b295fb8e5f323a77cbb3066",
+    "animations": "547153865a48b70e064d09a9c8145f5296151d2be4f8f6d730897b3e6e33a87f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MohawkBat": {
+    "bones": "a74319f55e228d709fc6c3d7fab5e0dd8e0a787b4b777e5501faeb2bce77210b",
+    "animations": "177d0fbb55a042b7cfab8f70049e6c582748dc054fa3a3a56f6c684811027e88",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/AdvancedHen": {
+    "bones": "8e6800c6b443b7c9c24c7791975929a125bb66c83f8afdbed48b68e4cf478b3d",
+    "animations": "a8930f0521b389bcf22f42ea374fee2badcf99a1f25e2a077033283a530fd999",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BullyRooster": {
+    "bones": "789c3e55ee2e1a0feb738bd91122ec5501b1f2baba927894381c45735ed1bb61",
+    "animations": "e1852500b50d990c83c82a80bddbfea74b7f19ce0f77c4731bbc4f98ba0efc17",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Chick": {
+    "bones": "2a009765a14b611389c53d26a096a568698cdd111762d9888c7756d097a70c42",
+    "animations": "5b214286e2ef6251abb2619835e1150d72c8a8dd9d7b578d70bf673a768b0979",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Chicken": {
+    "bones": "2a009765a14b611389c53d26a096a568698cdd111762d9888c7756d097a70c42",
+    "animations": "5b214286e2ef6251abb2619835e1150d72c8a8dd9d7b578d70bf673a768b0979",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Drake": {
+    "bones": "85c82b8bcaf9a5964d8f67f2c7b5dc0158ac8340b639601626f8846ab3e68490",
+    "animations": "7c0aea597a550325bc2bb6580304bed34f610936df85747c56f5b2ea1ff01ad6",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Duck": {
+    "bones": "2696c9003d89a54f09bbe9991a37998c26e9b506fa16367aa690641546e1d7a1",
+    "animations": "b002995d3fc5b9657a538de1d1e8bc1c22df71433d198a057e0695a15b172ae8",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/ForestTurkey": {
+    "bones": "ebee911b8162863ccec0fa9537fc4eb0f346ec31be07d0bccb36b3aa950227bb",
+    "animations": "b6212865cd6a95e4c1f6590f97ce0fc73381f022d9b9214849b75dab5e276df7",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Gobbler": {
+    "bones": "e8d0a65ace108d46fdee735dd93a8b1b255d75b238abf2fc819d56b6a751b879",
+    "animations": "b6212865cd6a95e4c1f6590f97ce0fc73381f022d9b9214849b75dab5e276df7",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Goose": {
+    "bones": "2696c9003d89a54f09bbe9991a37998c26e9b506fa16367aa690641546e1d7a1",
+    "animations": "b002995d3fc5b9657a538de1d1e8bc1c22df71433d198a057e0695a15b172ae8",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Hen": {
+    "bones": "8e6800c6b443b7c9c24c7791975929a125bb66c83f8afdbed48b68e4cf478b3d",
+    "animations": "a8930f0521b389bcf22f42ea374fee2badcf99a1f25e2a077033283a530fd999",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Rooster": {
+    "bones": "8e6800c6b443b7c9c24c7791975929a125bb66c83f8afdbed48b68e4cf478b3d",
+    "animations": "a8930f0521b389bcf22f42ea374fee2badcf99a1f25e2a077033283a530fd999",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Turkey": {
+    "bones": "ebee911b8162863ccec0fa9537fc4eb0f346ec31be07d0bccb36b3aa950227bb",
+    "animations": "b6212865cd6a95e4c1f6590f97ce0fc73381f022d9b9214849b75dab5e276df7",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/WildRooster": {
+    "bones": "789c3e55ee2e1a0feb738bd91122ec5501b1f2baba927894381c45735ed1bb61",
+    "animations": "e1852500b50d990c83c82a80bddbfea74b7f19ce0f77c4731bbc4f98ba0efc17",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Bunny": {
+    "bones": "01154406d65cc4494a355b63714f3ef7c703bedef667113360a9823ffc2ebc14",
+    "animations": "4a1ed10ae1172389bafe593d13c18a2571c0759d540d1f8cab1619e90ab60b39",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/DarkBunny": {
+    "bones": "01154406d65cc4494a355b63714f3ef7c703bedef667113360a9823ffc2ebc14",
+    "animations": "4a1ed10ae1172389bafe593d13c18a2571c0759d540d1f8cab1619e90ab60b39",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/LittleBunny": {
+    "bones": "01154406d65cc4494a355b63714f3ef7c703bedef667113360a9823ffc2ebc14",
+    "animations": "4a1ed10ae1172389bafe593d13c18a2571c0759d540d1f8cab1619e90ab60b39",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Bull": {
+    "bones": "02e16c81e394b54557632b1fd25cd9d61cd06beb7e79ba0e6dc7d977df02b27e",
+    "animations": "7e85ec8c8f66ec7a032497481da27c5d4101a0c989f540e9a5c7b46ce5f8e3ff",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Burro": {
+    "bones": "00fcd2609e5263c1eaf0479cc52983c2595c01f55a62886a6066def74d99d32e",
+    "animations": "6bf3653f9060c47e5a56b7ed88e27012b94f44c771d7c99b9ed1eb76d33428fe",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Cow": {
+    "bones": "365512da7b55b4bc20435e55e7651188f6a17775a7e47d4c23408e515bde99b3",
+    "animations": "0bf5317b5ee320498b1cda57c5d203db04a272255bd613aab58167853e61746b",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Donkey": {
+    "bones": "00fcd2609e5263c1eaf0479cc52983c2595c01f55a62886a6066def74d99d32e",
+    "animations": "6bf3653f9060c47e5a56b7ed88e27012b94f44c771d7c99b9ed1eb76d33428fe",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Goat": {
+    "bones": "5d9046a0f0090d3c834b4e6f53b5700751397fd2a7bbfea8981bd1167098d1cd",
+    "animations": "6bf3653f9060c47e5a56b7ed88e27012b94f44c771d7c99b9ed1eb76d33428fe",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Ox": {
+    "bones": "c02e5e5d48134060a7305fe586c7af6ae44802efd8ba66ed6744c88a69f16743",
+    "animations": "f2f5167f815d11709f37c636ee9cb89705042729bd367c7ac5f12d0973bd9033",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Ram": {
+    "bones": "56150465ce90cd8a2be3bfccc709da48d3bf52b17e865a9eb3027c81618818ba",
+    "animations": "c393c4fe54573c274fd25812fe6dc9e3b923e569ad46cd33836014cdc110ea13",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Sheep": {
+    "bones": "e30724fe74195fa96e833ffb2f72364418864f26c469f9b8e919e141af08a5ce",
+    "animations": "e8b9aba8f434c772ce83d4bc133005e9085d5bf92451f8cd740bd3001a560475",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/WildGoat": {
+    "bones": "56150465ce90cd8a2be3bfccc709da48d3bf52b17e865a9eb3027c81618818ba",
+    "animations": "6bf3653f9060c47e5a56b7ed88e27012b94f44c771d7c99b9ed1eb76d33428fe",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Bear": {
+    "bones": "6b373eb2093f75e70702a947fd9a219c7e1a4de278549b9660e8b716fa719d84",
+    "animations": "35cdbe1b4f47d10ca9018bf5852ca38f688ccfa8ea399ea18d4364adc52790eb",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BlackBear": {
+    "bones": "6b373eb2093f75e70702a947fd9a219c7e1a4de278549b9660e8b716fa719d84",
+    "animations": "35cdbe1b4f47d10ca9018bf5852ca38f688ccfa8ea399ea18d4364adc52790eb",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BlackWolf": {
+    "bones": "9539809ec489ef7dacb8243c0b4db5f332f64137117f29618b75d323ea065d68",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Cerberus": {
+    "bones": "852c8dafd9e64c26cb4103e8e635485758e8f1a7e8bc0d896331972d6512f286",
+    "animations": "23748d82e253c45f7e49b134e9af6d0d2ceac7c63891adc258d965b1d22651c5",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Husky": {
+    "bones": "e5ae6ebb8c0032a6c6458ea7e1a188142d2f227d424f3040094956a04d31aa34",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Nightmare": {
+    "bones": "852c8dafd9e64c26cb4103e8e635485758e8f1a7e8bc0d896331972d6512f286",
+    "animations": "23748d82e253c45f7e49b134e9af6d0d2ceac7c63891adc258d965b1d22651c5",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PossessedBlackBear": {
+    "bones": "6b373eb2093f75e70702a947fd9a219c7e1a4de278549b9660e8b716fa719d84",
+    "animations": "35cdbe1b4f47d10ca9018bf5852ca38f688ccfa8ea399ea18d4364adc52790eb",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PossessedWarg": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PossessedWatchdog": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PossessedWolf": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Pug": {
+    "bones": "b660a856f1a3c16e637e8a2f76823357235dcc43416c15f2cd39b2e9046c9cb7",
+    "animations": "cb022c1ac6a49dec50cda864cd02271076dbd2b632b044b2c6c029b209e6d0ba",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Warg": {
+    "bones": "9539809ec489ef7dacb8243c0b4db5f332f64137117f29618b75d323ea065d68",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Watchdog": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WhiteWolf": {
+    "bones": "9539809ec489ef7dacb8243c0b4db5f332f64137117f29618b75d323ea065d68",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WinterBear": {
+    "bones": "6b373eb2093f75e70702a947fd9a219c7e1a4de278549b9660e8b716fa719d84",
+    "animations": "35cdbe1b4f47d10ca9018bf5852ca38f688ccfa8ea399ea18d4364adc52790eb",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WinterWarg": {
+    "bones": "9539809ec489ef7dacb8243c0b4db5f332f64137117f29618b75d323ea065d68",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WinterWolfTypeA": {
+    "bones": "9539809ec489ef7dacb8243c0b4db5f332f64137117f29618b75d323ea065d68",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WinterWolfTypeB": {
+    "bones": "9539809ec489ef7dacb8243c0b4db5f332f64137117f29618b75d323ea065d68",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Wolf": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WolfHound": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BattlePanther": {
+    "bones": "d8b235c5da47cc77e76f2b398421e301b537db9fe6f2123a7a003e6334b15e90",
+    "animations": "b5232ed9540e007c3945480f14d2e4104564ccf570fdba12f01ed7fd1299d69f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Lion": {
+    "bones": "d8b235c5da47cc77e76f2b398421e301b537db9fe6f2123a7a003e6334b15e90",
+    "animations": "b5232ed9540e007c3945480f14d2e4104564ccf570fdba12f01ed7fd1299d69f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Panther": {
+    "bones": "d8b235c5da47cc77e76f2b398421e301b537db9fe6f2123a7a003e6334b15e90",
+    "animations": "b5232ed9540e007c3945480f14d2e4104564ccf570fdba12f01ed7fd1299d69f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/SabretoothTiger": {
+    "bones": "d8b235c5da47cc77e76f2b398421e301b537db9fe6f2123a7a003e6334b15e90",
+    "animations": "b5232ed9540e007c3945480f14d2e4104564ccf570fdba12f01ed7fd1299d69f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Tiger": {
+    "bones": "d8b235c5da47cc77e76f2b398421e301b537db9fe6f2123a7a003e6334b15e90",
+    "animations": "b5232ed9540e007c3945480f14d2e4104564ccf570fdba12f01ed7fd1299d69f",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Butcher": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Cannibal": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Dreadnought": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Juggernaut": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Maneater": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Ogre": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Punisher": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Troll": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WinterOgre": {
+    "bones": "6b3d57ffaed8a3597f61551bf6660be4316ea617cd22b14ded8daba494ef1caa",
+    "animations": "96a48e5e82c4625cf17ba784efef30e156dd90e3776ddd2985e1d3366dd39877",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Zombie": {
+    "bones": "1d37a55a3154458c0336e2236f91b2a6aa9cf09d04557148a80ce34683080973",
+    "animations": "5206789255950294f0cbadc7fcad6d032a65046f81e16a1d13a58e0870379597",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Horse": {
+    "bones": "357c28d06f62bc074564d00bcd960af6ceba28183f06b35adfb9badac0134778",
+    "animations": "39a426446659868c5eafc6956c99c3fc1cf836ac53a08d364698e109966094b3",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Pony": {
+    "bones": "cb3f18c61f20e0659e9cb69afa8be628f218890dda498037faf6e15a3730ee3b",
+    "animations": "6dcafc7d575560b89edc6f80c6e1758a132e954aab791965242a69732bc3fb09",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/Mimic": {
+    "bones": "fccfa9bf8ef4e9c4d4848f393792239b261c615c67b9b7056d22d2fa8662dc4b",
+    "animations": "d108c515ee2950b0803cfc2aa056bd17dc85561cb1c35d0438d7ce8725b8ae88",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MimicChest": {
+    "bones": "6f11c22c74abc8cb59d1b264b647e3d47df045211c5aa926ba72df909072dcd5",
+    "animations": "7d9d055f58f964348e9f440ad9dcbdeccf595940af03374a41b42a41574f521c",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/TreasureChest": {
+    "bones": "6f11c22c74abc8cb59d1b264b647e3d47df045211c5aa926ba72df909072dcd5",
+    "animations": "7d9d055f58f964348e9f440ad9dcbdeccf595940af03374a41b42a41574f521c",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/BugQueen": {
+    "bones": "d184fc6b205dd0e4b190117110a57f0f98d1a29fb1e70acd255eb3a422768404",
+    "animations": "ca191a6cd5ad002a8c62af2a8b537400c84710c0fd01e1f39e8d6e68a20d5969",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Caterpillar": {
+    "bones": "63a44ffe7486d696064ed9fb381ef9746f2620db3bab811a0c85f7192c2dba92",
+    "animations": "591cd2925cf779bcd4daccda589d1f2dd2d3324fd28de85dd43fcc5e6f24e08a",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/CaveCaterpillar": {
+    "bones": "63a44ffe7486d696064ed9fb381ef9746f2620db3bab811a0c85f7192c2dba92",
+    "animations": "591cd2925cf779bcd4daccda589d1f2dd2d3324fd28de85dd43fcc5e6f24e08a",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Crawler": {
+    "bones": "d9c45043b36b183b2ff6d7733d0658d177b4cf9d9b5d1561360984a2dc0c7f9e",
+    "animations": "1a6a90031234806143678ea29b19b9c4b833a1905e3208af2ed553df156c83be",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Larva": {
+    "bones": "a031beaa68ff419e49f3bbc9b88c50a4a961307a48c46eeb7029cbfea0fbf34d",
+    "animations": "1a6a90031234806143678ea29b19b9c4b833a1905e3208af2ed553df156c83be",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MeatBug": {
+    "bones": "0dd7ce2c0f52e92fe441f6a19c16ec211af8824855798f07bd9f57afedb61175",
+    "animations": "596ac6f79027628fa204812599265217699849028acac36766a27e9fb8eefb4e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MossQueen": {
+    "bones": "d184fc6b205dd0e4b190117110a57f0f98d1a29fb1e70acd255eb3a422768404",
+    "animations": "c522234e92f2b7b7f30bd1f8dd7af8a54de5d40b83d43988acdda5051c3568b4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PurpleScarab": {
+    "bones": "e1316dbbdd88a9186cafdd21c9d99dd853dc349f3a97f7c4af86d83a43923d3c",
+    "animations": "287500e977a7cace32e4def18b987abaa402620370067b5ffeb25215241eb2fd",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Scarab": {
+    "bones": "e1316dbbdd88a9186cafdd21c9d99dd853dc349f3a97f7c4af86d83a43923d3c",
+    "animations": "287500e977a7cace32e4def18b987abaa402620370067b5ffeb25215241eb2fd",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/SlugQueen": {
+    "bones": "b5bda3a607653455e4f9c530c0d47b1ad45f4ac254d69d601ce717ed13f6f026",
+    "animations": "1a6a90031234806143678ea29b19b9c4b833a1905e3208af2ed553df156c83be",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Wasp": {
+    "bones": "2c604b4915c3fffa6890e43f2f49d177984cb24f1966ee2537a9747bc10dcf25",
+    "animations": "0022d2b972501aefa1b71b3b7470942cc85949b384d29c124c3e3a85ea77cb08",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BearMounted": {
+    "bones": "6b373eb2093f75e70702a947fd9a219c7e1a4de278549b9660e8b716fa719d84",
+    "animations": "99aaa9cf1bd3dd3d7a27f45b371f5479fac670582552fcc3ce89ea68d68fbb29",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BoarMounted": {
+    "bones": "5a6fba4f73afc06191fd9229617d390162578ba43ca8371bc78bae24ca663deb",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BullMounted": {
+    "bones": "02e16c81e394b54557632b1fd25cd9d61cd06beb7e79ba0e6dc7d977df02b27e",
+    "animations": "7e85ec8c8f66ec7a032497481da27c5d4101a0c989f540e9a5c7b46ce5f8e3ff",
+    "events": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "fantasy-monsters/MossQueenMounted": {
+    "bones": "d184fc6b205dd0e4b190117110a57f0f98d1a29fb1e70acd255eb3a422768404",
+    "animations": "c522234e92f2b7b7f30bd1f8dd7af8a54de5d40b83d43988acdda5051c3568b4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/ScarabMounted": {
+    "bones": "e1316dbbdd88a9186cafdd21c9d99dd853dc349f3a97f7c4af86d83a43923d3c",
+    "animations": "287500e977a7cace32e4def18b987abaa402620370067b5ffeb25215241eb2fd",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WolfMounfed": {
+    "bones": "f4bfa7810c398aa3b21f7329266436710da4a79a3c63d05af657e7a5533f86dd",
+    "animations": "b920c0be0f33f877cb6d086c3b305193eb23d30ae6272ea5606e28f4527a53a2",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/FancyParasite": {
+    "bones": "3aee2b57b3596bf7face1d6981c5812e6be61c6876ded7ffa68c2a69275019cd",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/GreenParasite": {
+    "bones": "3aee2b57b3596bf7face1d6981c5812e6be61c6876ded7ffa68c2a69275019cd",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/IceParasite": {
+    "bones": "3aee2b57b3596bf7face1d6981c5812e6be61c6876ded7ffa68c2a69275019cd",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MechanicalParasiteTypeA": {
+    "bones": "3aee2b57b3596bf7face1d6981c5812e6be61c6876ded7ffa68c2a69275019cd",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MechanicalParasiteTypeB": {
+    "bones": "3aee2b57b3596bf7face1d6981c5812e6be61c6876ded7ffa68c2a69275019cd",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MosquitoParasite": {
+    "bones": "996d1c638e709b673445bb5ce71d2fae15003ba96ad227fcd3fc3b93dc399f8d",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/VolcanoParasite": {
+    "bones": "3aee2b57b3596bf7face1d6981c5812e6be61c6876ded7ffa68c2a69275019cd",
+    "animations": "a4cb1ab9629830a2e716e08221101ab010177f2eb6132c84a6631e1f35138037",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BlackBoar": {
+    "bones": "5a6fba4f73afc06191fd9229617d390162578ba43ca8371bc78bae24ca663deb",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Boar": {
+    "bones": "5a6fba4f73afc06191fd9229617d390162578ba43ca8371bc78bae24ca663deb",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Hog": {
+    "bones": "5a6fba4f73afc06191fd9229617d390162578ba43ca8371bc78bae24ca663deb",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/MinerBoar": {
+    "bones": "cfd95c5fa34344558360f2de3a49215bec47a6faf9ab3b39c47b1c2bdda734b1",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Pig": {
+    "bones": "a3b7427b39476f3d758866c1f6024dc6b48d8bf8df3cfb1ad22d2bb74361dadc",
+    "animations": "52b6f61448abe4dfc3de19824a5ffd75b61ac033ddd4e55a6c030e4929f9b180",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Piggy": {
+    "bones": "a3b7427b39476f3d758866c1f6024dc6b48d8bf8df3cfb1ad22d2bb74361dadc",
+    "animations": "52b6f61448abe4dfc3de19824a5ffd75b61ac033ddd4e55a6c030e4929f9b180",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PirateBoar": {
+    "bones": "931f6f485b744072f80cf4940b7b5350094c99951c9b00ceb275aaa4e61bb487",
+    "animations": "5287437f428d1b1ddc150aea8d1d4b8177f86e79a638215bca8e63e1b902f746",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Porky": {
+    "bones": "a3b7427b39476f3d758866c1f6024dc6b48d8bf8df3cfb1ad22d2bb74361dadc",
+    "animations": "52b6f61448abe4dfc3de19824a5ffd75b61ac033ddd4e55a6c030e4929f9b180",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PossessedBlackBoar": {
+    "bones": "9c5b3a1f363f6a8b71f92b683d5cfb03de56941e41e654e05d573319d00b48e6",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/RoyalBoar": {
+    "bones": "38bdf18f6de47e7342a0fae3217b455057a11341ec6229340cbdc210a53fa283",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Swine": {
+    "bones": "5a6fba4f73afc06191fd9229617d390162578ba43ca8371bc78bae24ca663deb",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/WinterBoar": {
+    "bones": "9c5b3a1f363f6a8b71f92b683d5cfb03de56941e41e654e05d573319d00b48e6",
+    "animations": "f1e1715040353b3800226e62d31f26805141edff8d66bb1b1fd39659814b950e",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/CaveRat": {
+    "bones": "2b746e8a63d503fc5ab75cefa3f5eb95668b113b05821697b29db64f95bd8f26",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/CrystalLizard": {
+    "bones": "2b746e8a63d503fc5ab75cefa3f5eb95668b113b05821697b29db64f95bd8f26",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/FlyingDemon": {
+    "bones": "ecd436e0dc51a1aa6c41274c84880657dbf0caa53f5746561fd72fb8f5b9c51b",
+    "animations": "2d164b26471cfba2fe53a3a320884f85b19f7b51a464d87a846c5a6ba5da1876",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Ghost": {
+    "bones": "ecd436e0dc51a1aa6c41274c84880657dbf0caa53f5746561fd72fb8f5b9c51b",
+    "animations": "2d164b26471cfba2fe53a3a320884f85b19f7b51a464d87a846c5a6ba5da1876",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/InfectedRat": {
+    "bones": "2c0525c8cc9b07357ce4f87ba5846a21cf4bc53ebb0cf737390b479750a37e7d",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Porcupine": {
+    "bones": "dd7891447b8baed1ca08c45f28485dc8a17dcb0985a4177cbd867a8b05b04cdd",
+    "animations": "8ab48e6160b0da309b6d15d8ab1d762f43191807b069b87a887824b2a67a4f63",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/PossessedRat": {
+    "bones": "24c769566ea80734b792874f0094a76dfac38e24e0be97faf1df0198afb61e6b",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/Rat": {
+    "bones": "2b746e8a63d503fc5ab75cefa3f5eb95668b113b05821697b29db64f95bd8f26",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/RatKing": {
+    "bones": "a89a14ebdb26ad07dd047a2830a5759d826b63af39723b3f50770454a749db5b",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/ShardLizard": {
+    "bones": "2b746e8a63d503fc5ab75cefa3f5eb95668b113b05821697b29db64f95bd8f26",
+    "animations": "64f72747d9542112a373b289c365fa6a20979959a3ced22365d9e55c03e228c4",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/BlueScorpion": {
+    "bones": "78ce1f886c94c5528dee97a2fa3de97b4afe324f2209f694a9fc8374cfcd5f78",
+    "animations": "bee3e1ab2fcf9c0a74de16232c0a10d4cad2b8194bb68f38b42da110c2c63d7d",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/GreenScorpion": {
+    "bones": "78ce1f886c94c5528dee97a2fa3de97b4afe324f2209f694a9fc8374cfcd5f78",
+    "animations": "bee3e1ab2fcf9c0a74de16232c0a10d4cad2b8194bb68f38b42da110c2c63d7d",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  },
+  "fantasy-monsters/RedScorpion": {
+    "bones": "78ce1f886c94c5528dee97a2fa3de97b4afe324f2209f694a9fc8374cfcd5f78",
+    "animations": "bee3e1ab2fcf9c0a74de16232c0a10d4cad2b8194bb68f38b42da110c2c63d7d",
+    "events": "c1af133b328edd91fb63edbb211f843aa048848420f4be0af73b9ce8ef2ec0a5"
+  }
+}

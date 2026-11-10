@@ -30,6 +30,8 @@ var exp_KinghtFallInterface = function (t) {
     var actor = this, token = this._deathAnimation = {}, generation = this.node._combatGeneration;
     if (BattleSounds.death) BattleSounds.death(this);
     require("GameToolsOverrides").cancel(this);
+    var fxRenderer=this.getSpAni?this.getSpAni():this.spAni,fxJson=fxRenderer&&fxRenderer.skeletonData&&fxRenderer.skeletonData.skeletonJson;
+    if(fxJson&&fxJson._fantasy&&fxJson._fantasy.effects&&fxJson._fantasy.effects.ambientAnimation)require("FantasyEffects").reset(this);
     if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.rigidBody) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; this.rigidBody.active = false; }
     if (this.hpctrl && this.hpctrl.node) this.hpctrl.node.active = false;

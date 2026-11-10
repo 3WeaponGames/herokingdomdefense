@@ -17,7 +17,10 @@ function apply(rig,settings){
   validate(rig,settings);if(!settings)return rig;
   const skin=rig.skins.find(skin=>skin.name==='default')||rig.skins[0];
   for(const [name,part]of Object.entries(settings.slots||{})){
+    const emitter=rig.bones.find(bone=>bone.name==='__fx/emitter'),slot=rig.slots.find(slot=>slot.name===name),original=slot&&skin.attachments[name]&&skin.attachments[name][slot.attachment];
+    const origin=emitter&&slot&&emitter.parent===slot.bone&&original?{x:emitter.x||0,y:emitter.y||0,attachment:clone(original)}:null;
     if(part.variant){const source=rig.skins.find(skin=>skin.name===part.variant);if(source&&source.attachments[name])skin.attachments[name]=clone(source.attachments[name]);}
+    if(origin){const next=skin.attachments[name][slot.attachment]||Object.values(skin.attachments[name])[0],sx=part.scaleX===undefined?1:part.scaleX,sy=part.scaleY===undefined?1:part.scaleY,angle=(part.rotation||0)*Math.PI/180,dx=(origin.x-(original.x||0))*next.width/original.width*sx,dy=(origin.y-(original.y||0))*next.height/original.height*sy;emitter.x=(next.x||0)*sx+(part.x||0)+dx*Math.cos(angle)-dy*Math.sin(angle);emitter.y=(next.y||0)*sy+(part.y||0)+dx*Math.sin(angle)+dy*Math.cos(angle);emitter.scaleX*=sx;emitter.scaleY*=sy;emitter.rotation=(emitter.rotation||0)+(part.rotation||0);if(part.visible===false)for(const animation of Object.values(rig.animations))for(const [target,track]of Object.entries(animation.slots||{}))if(target.startsWith('__fx/attack-'))for(const frame of track.color||[])frame.color=frame.color.slice(0,6)+'00';}
     for(const attachment of Object.values(skin.attachments[name]||{})){
       const sx=part.scaleX===undefined?1:part.scaleX,sy=part.scaleY===undefined?1:part.scaleY;
       attachment.x=(attachment.x||0)*sx+(part.x||0);attachment.y=(attachment.y||0)*sy+(part.y||0);attachment.scaleX=(attachment.scaleX===undefined?1:attachment.scaleX)*sx;attachment.scaleY=(attachment.scaleY===undefined?1:attachment.scaleY)*sy;attachment.rotation=(attachment.rotation||0)+(part.rotation||0);

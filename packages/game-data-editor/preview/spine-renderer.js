@@ -26,6 +26,9 @@ function seek(spine, layers, animation, time, loop) {
         const name = layer.description.name === 'wqyl_lead_ma' && !(layer.description.json && layer.description.json._heroMakerMount) && /^attack(?:_|$)/.test(animation) ? 'idle' : animation;
         const clip = layer.data.findAnimation(name) || layer.data.findAnimation('idle');
         if (clip) clip.apply(skeleton, 0, Math.max(0, time), !!loop, null, 1, spine.MixBlend.replace, spine.MixDirection.mixIn);
+        const effect = layer.description.json._fantasy && layer.description.json._fantasy.effects;
+        const ambient = effect && effect.ambientAnimation && !/^(die|death|dead)/.test(animation) && layer.data.findAnimation(effect.ambientAnimation);
+        if (ambient) ambient.apply(skeleton, 0, Math.max(0,time), true, null, 1, spine.MixBlend.replace, spine.MixDirection.mixIn);
         skeleton.updateWorldTransform();
     });
     layers.forEach(layer=>{
@@ -95,7 +98,7 @@ function hitTest(spine,layers,point){
         const {layer,pieces}=passes[l];if(layer.description.opacity===0)continue;
         const local=inversePoint(layer.description,point.x,point.y);
         for(let p=pieces.length-1;p>=0;p--){
-            const g=pieces[p];if(g.color.a<=0)continue;
+            const g=pieces[p];if(g.color.a<=0||/^__fx\//.test(g.slot))continue;
             for(let i=g.triangles.length-3;i>=0;i-=3){
                 const a=g.triangles[i]*2,b=g.triangles[i+1]*2,c=g.triangles[i+2]*2,ax=g.vertices[a],ay=g.vertices[a+1],bx=g.vertices[b],by=g.vertices[b+1],cx=g.vertices[c],cy=g.vertices[c+1];
                 const det=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy);if(Math.abs(det)<1e-8)continue;

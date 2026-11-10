@@ -1109,7 +1109,7 @@ var def_KinghtFallGameCtrl = function (t) {
     e.setPosition(i);
     var a = e.getComponent($z1KinghtFallBulletEnemy.default);
     a.combatContext = this;
-    ProjectileLooks.prepare(a, this, "enemy:" + t.cfg.ID);
+    ProjectileLooks.prepare(a, this, "enemy:" + t.cfg.ID, t);
     this.ndEnemyArr.push(a);
     return {
       ctr: a,

@@ -10,7 +10,7 @@ function describe(root,base,noRuntime,read){
   read=read||((file)=>fs.readFileSync(file));const model=base.model;if(!model||!Array.isArray(model.layers)||!model.layers.length)throw Error('Missing finished character model.');
   const layers=model.layers.map(saved=>{const file=modelFile(root,saved.file),json=JSON.parse(read(file).toString('utf8')),atlas=read(file.replace(/\.json$/,'.atlas')).toString('utf8'),pages={};
     atlas.split(/\r?\n/).forEach((line,i,lines)=>{if(line.trim()&&(!i||!lines[i-1].trim())&&lines[i+1]&&/^(size|format):/.test(lines[i+1].trim())){if(path.basename(line.trim())!==line.trim())throw Error('Invalid finished model texture.');pages[line.trim()]=url.pathToFileURL(path.join(path.dirname(file),line.trim())).href;}});
-    return {...saved,json,atlas,pages,skins:json.skins.map(skin=>skin.name),animations:Object.keys(json.animations)};
+    return {...saved,json,atlas,pages,skins:json.skins.map(skin=>skin.name),animations:Object.keys(json.animations).filter(name=>name!=='__fx_ambient')};
   });return {layers,defaultLayer:model.defaultLayer,runtimePath:noRuntime?null:Units.enginePath()};
 }
 function capture(root,base,files,read){

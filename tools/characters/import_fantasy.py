@@ -15,6 +15,7 @@ import yaml
 from PIL import Image
 from import_units import Transaction, asset_uuid, digest, encoded, texture_meta, stage_page_copy
 from unity_monsters import unpack, documents, asset_meta, convert_prefab
+import fantasy_effects
 
 
 def key(guid, file_id):
@@ -151,7 +152,7 @@ def import_pack(project,package,kind,artifacts,dependency=None):
     prefabs=[entry for name,entry in sorted(entries.items()) if name.endswith('.prefab') and ('/Bosses/' if kind=='fantasy-bosses' else '/Monsters/') in name]
     raw=prefabs+[entry for name,entry in entries.items() if name.endswith('.anim')]
     needed={entry['guid'] for name,entry in entries.items() if name.lower().endswith('.png') and any(entry['guid'].encode() in asset['asset'] for asset in raw)}
-    images,references,sheets=slices(entries,needed); tx=Transaction(project,artifacts)
+    images,references,sheets=slices(entries,needed); effect_textures=fantasy_effects.texture_images(images,sheets);tx=Transaction(project,artifacts)
     target='assets/resources/unit-library/'+kind; manifest_file=target+'/catalog.json'; before=tx.read(manifest_file)
     old=json.loads(before.decode('utf-8-sig')) if before else {};tx.managed=old.get('importedFiles',{})
     tx.folder('assets/resources/unit-library');tx.folder(target)
@@ -222,13 +223,14 @@ def import_pack(project,package,kind,artifacts,dependency=None):
             label=re.sub(r'(?<=[a-z])(?=[A-Z0-9])',' ',slot['name'].split('/')[-1])
             slot_info[slot['name']]=dict(label=label,variants=options)
         model['rig']['_fantasy']=dict(version=1,pack=kind,family=model['family'],preset=model['id'],presets=[dict(id=m['id'],name=m['name']) for m in members],slots=slot_info,expressions=model['expressions'],animationAliases=model['animationAliases'])
+        fantasy_effects.augment(model,entries[model['source']],images,sheets,effect_textures)
         for skin in skins:
             for variants in skin['attachments'].values():
                 used.update(a['path'][2:] for a in variants.values())
     for sprite_key in sorted(used):
         info=images[sprite_key];relative=target+'/Parts/'+info['sheet']+'/'+re.sub(r'[^a-zA-Z0-9_-]','_',info['spriteName'])+'_'+sprite_key[:8]+'.png'
         tx.folder(str(Path(relative).parent).replace('\\','/'));buffer=io.BytesIO();info['image'].save(buffer,format='PNG');raw=buffer.getvalue();tx.stage(relative,raw);tx.json(relative+'.meta',texture_meta(relative,info['width'],info['height']),True)
-        parts.append(dict(id=kind+'/'+sprite_key,name=info['spriteName'],image=relative,resource=relative[len('assets/resources/'):-4],guid=sprite_key,width=info['width'],height=info['height'],pivot=info['pivot'],pixelsPerUnit=info['ppu'],sha256=digest(raw),sheet=info['sheet'],spriteName=info['spriteName'],unityFileId=info['fileId'],rect=info['rect']))
+        parts.append(dict(id=kind+'/'+sprite_key,name=info['spriteName'],image=relative,resource=relative[len('assets/resources/'):-4],guid=sprite_key,width=info['width'],height=info['height'],pivot=info['pivot'],pixelsPerUnit=info['ppu'],sha256=digest(raw),sheet=info['sheet'],spriteName=info['spriteName'],unityFileId=info['fileId'],rect=info['rect'],**({'generated':True} if info.get('generated') else {})))
     units=[]
     for model in models:
         family_keys={a['path'][2:] for skin in model['rig']['skins'] for variants in skin['attachments'].values() for a in variants.values()}
@@ -245,12 +247,18 @@ def import_pack(project,package,kind,artifacts,dependency=None):
         model['uuid']=metadata['uuid']
         tx.json(relative[:-5]+'.atlas.meta',dict(ver='1.0.3',uuid=asset_uuid(relative[:-5]+'.atlas'),importer='asset',subMetas={}),True)
         units.append({k:v for k,v in model.items() if k not in ['rig','usable']}|dict(animations=list(model['rig']['animations']),bones=len(model['rig']['bones']),slots=len(model['rig']['slots'])))
+    effect_assets=[]
+    if kind=='fantasy-bosses':
+        tx.folder(target+'/Effects')
+        for palette,action,png,settings in fantasy_effects.projectile_sheets():
+            relative=target+'/Effects/'+palette+'-'+action+'.png';tx.stage(relative,png);tx.json(relative+'.meta',texture_meta(relative,settings['cell']*settings['columns'],settings['cell']*4),True)
+            effect_assets.append(dict(id='fantasy:'+palette+'-'+action,name='Fantasy '+palette+' '+action,category='Fantasy effects / '+action,role=action,kind='flipbook',resource=relative[len('assets/resources/'):-4],bundle='resources',sourcePack=kind,**settings))
     managed=dict(tx.managed)
     for relative,before in tx.reads.items():
         if relative.startswith(target+'/') and not relative.endswith('.meta') and relative!=manifest_file:
             raw=tx.plan[relative][1] if relative in tx.plan else before
             if raw is not None:managed[relative]=digest(raw)
-    manifest=dict(old,version=1,source=dict(package=package.name,sha256=digest(package.read_bytes())),units=units,parts=parts,importedFiles=managed,conversion=dict(runtime='Spine 3.8',sampleRate=60,unityScriptsImported=False,unityMaterialsImported=False,slicedSprites=True,expressionEvents=True))
+    manifest=dict(old,version=1,source=dict(package=package.name,sha256=digest(package.read_bytes())),units=units,parts=parts,effectAssets=effect_assets,importedFiles=managed,conversion=dict(runtime='Spine 3.8',sampleRate=60,unityScriptsImported=False,unityMaterialsImported=False,slicedSprites=True,expressionEvents=True,particleEffectsVersion=fantasy_effects.VERSION))
     if dependency:manifest['source']['dependencies']=[dict(package=dependency.name,sha256=digest(dependency.read_bytes()))]
     tx.json(manifest_file,manifest);tx.json(manifest_file+'.meta',dict(ver='1.2.7',uuid=asset_uuid(manifest_file),importer='json',subMetas={}),True)
     return dict(kind=kind,units=len(units),parts=len(parts),files=len(tx.plan),backup=tx.commit())

@@ -40,8 +40,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/EmeraldDragon",
@@ -72,8 +72,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/GoldenDragon",
@@ -104,8 +104,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/GreenDragon",
@@ -136,8 +136,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/GreyDragon",
@@ -168,8 +168,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/IceDragon",
@@ -200,8 +200,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/MechanicalDragon",
@@ -232,8 +232,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/PurpleDragon",
@@ -264,8 +264,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/RedDragon",
@@ -296,8 +296,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType1",
@@ -328,8 +328,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType10",
@@ -360,8 +360,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType2",
@@ -392,8 +392,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType3",
@@ -424,8 +424,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType4",
@@ -456,8 +456,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType5",
@@ -488,8 +488,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType6",
@@ -520,8 +520,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType7",
@@ -552,8 +552,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType8",
@@ -584,8 +584,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/WyvernType9",
@@ -616,8 +616,8 @@
         "die",
         "hit"
       ],
-      "bones": 15,
-      "slots": 10
+      "bones": 32,
+      "slots": 26
     },
     {
       "id": "fantasy-bosses/FancyWorm",
@@ -648,8 +648,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/GreenWorm",
@@ -680,8 +680,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/IceWorm",
@@ -712,8 +712,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/MechanicalWormTypeA",
@@ -744,8 +744,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/MechanicalWormTypeB",
@@ -776,8 +776,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/MosquitoWorm",
@@ -808,8 +808,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/VolcanoWorm",
@@ -840,8 +840,8 @@
         "die",
         "hit"
       ],
-      "bones": 11,
-      "slots": 6
+      "bones": 28,
+      "slots": 22
     },
     {
       "id": "fantasy-bosses/IceGolem",
@@ -872,8 +872,8 @@
         "die",
         "hit"
       ],
-      "bones": 14,
-      "slots": 9
+      "bones": 31,
+      "slots": 25
     },
     {
       "id": "fantasy-bosses/MechanicalGolem",
@@ -904,8 +904,8 @@
         "die",
         "hit"
       ],
-      "bones": 14,
-      "slots": 9
+      "bones": 31,
+      "slots": 25
     },
     {
       "id": "fantasy-bosses/RockGolem",
@@ -936,8 +936,8 @@
         "die",
         "hit"
       ],
-      "bones": 14,
-      "slots": 9
+      "bones": 31,
+      "slots": 25
     },
     {
       "id": "fantasy-bosses/SandGolem",
@@ -968,8 +968,8 @@
         "die",
         "hit"
       ],
-      "bones": 14,
-      "slots": 9
+      "bones": 31,
+      "slots": 25
     },
     {
       "id": "fantasy-bosses/StoneGolem",
@@ -1000,8 +1000,8 @@
         "die",
         "hit"
       ],
-      "bones": 14,
-      "slots": 9
+      "bones": 31,
+      "slots": 25
     },
     {
       "id": "fantasy-bosses/VolcanoGolem",
@@ -1032,8 +1032,8 @@
         "die",
         "hit"
       ],
-      "bones": 14,
-      "slots": 9
+      "bones": 31,
+      "slots": 25
     },
     {
       "id": "fantasy-bosses/Croc01",
@@ -1072,8 +1072,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Croc02",
@@ -1112,8 +1112,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Croc03",
@@ -1152,8 +1152,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Demon01",
@@ -1192,8 +1192,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Demon02",
@@ -1232,8 +1232,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Demon03",
@@ -1272,8 +1272,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Lizard01",
@@ -1312,8 +1312,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Lizard02",
@@ -1352,8 +1352,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Lizard03",
@@ -1392,8 +1392,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Megabear01",
@@ -1432,8 +1432,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 22,
-      "slots": 17
+      "bones": 39,
+      "slots": 33
     },
     {
       "id": "fantasy-bosses/Megabear02",
@@ -1472,8 +1472,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 22,
-      "slots": 17
+      "bones": 39,
+      "slots": 33
     },
     {
       "id": "fantasy-bosses/Megabear03",
@@ -1512,8 +1512,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 22,
-      "slots": 17
+      "bones": 39,
+      "slots": 33
     },
     {
       "id": "fantasy-bosses/Minotaur01",
@@ -1552,8 +1552,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 22,
-      "slots": 17
+      "bones": 39,
+      "slots": 33
     },
     {
       "id": "fantasy-bosses/Minotaur02",
@@ -1592,8 +1592,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     },
     {
       "id": "fantasy-bosses/Minotaur03",
@@ -1632,8 +1632,8 @@
         "attack_alt",
         "hit"
       ],
-      "bones": 23,
-      "slots": 18
+      "bones": 40,
+      "slots": 34
     }
   ],
   "parts": [
@@ -4278,6 +4278,31 @@
       }
     },
     {
+      "id": "fantasy-bosses/3be41ecfa6b2545f76c2c532be9ddb4e",
+      "name": "FX_chip",
+      "image": "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_chip_3be41ecf.png",
+      "resource": "unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_chip_3be41ecf",
+      "guid": "3be41ecfa6b2545f76c2c532be9ddb4e",
+      "width": 32,
+      "height": 32,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "pixelsPerUnit": 100,
+      "sha256": "f68ef1e5692aec96068fd166ebeb9d904163ae9a43b33635f89b7f71849dfc59",
+      "sheet": "b3e66812f71e866bb51dfb56febf7796",
+      "spriteName": "FX_chip",
+      "unityFileId": "generated:chip",
+      "rect": {
+        "x": 32,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      },
+      "generated": true
+    },
+    {
       "id": "fantasy-bosses/3c2591261a3e8d6349e5d3ddbc4ce478",
       "name": "Tail",
       "image": "assets/resources/unit-library/fantasy-bosses/Parts/f0e1d12695da13d4c83d0722f7065a92/Tail_3c259126.png",
@@ -4492,6 +4517,31 @@
         "width": 1000,
         "height": 666
       }
+    },
+    {
+      "id": "fantasy-bosses/41e72f620f93ebcab4a19b1893951e17",
+      "name": "FX_flame",
+      "image": "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_flame_41e72f62.png",
+      "resource": "unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_flame_41e72f62",
+      "guid": "41e72f620f93ebcab4a19b1893951e17",
+      "width": 32,
+      "height": 32,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "pixelsPerUnit": 100,
+      "sha256": "eba1d594ec9ec6b758f83b90c5619725d45adf8eddfc2728a6028f4225126c56",
+      "sheet": "b3e66812f71e866bb51dfb56febf7796",
+      "spriteName": "FX_flame",
+      "unityFileId": "generated:flame",
+      "rect": {
+        "x": 96,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      },
+      "generated": true
     },
     {
       "id": "fantasy-bosses/42e2c36ab0a9fb266dfbd1f4fc6614cb",
@@ -6052,6 +6102,31 @@
         "width": 512,
         "height": 512
       }
+    },
+    {
+      "id": "fantasy-bosses/653a95adb2991d5721b03a98b337b705",
+      "name": "FX_spark",
+      "image": "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_spark_653a95ad.png",
+      "resource": "unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_spark_653a95ad",
+      "guid": "653a95adb2991d5721b03a98b337b705",
+      "width": 32,
+      "height": 32,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "pixelsPerUnit": 100,
+      "sha256": "bda71a30c53ba2afefa6c681975c93b8a6aec610852abbf58199506ea1581487",
+      "sheet": "b3e66812f71e866bb51dfb56febf7796",
+      "spriteName": "FX_spark",
+      "unityFileId": "generated:spark",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      },
+      "generated": true
     },
     {
       "id": "fantasy-bosses/65de231ae2402f1425f89c673cc58c27",
@@ -8548,6 +8623,31 @@
         "width": 256,
         "height": 384
       }
+    },
+    {
+      "id": "fantasy-bosses/9edb4504a0e2b902ae7bf26dc3a07541",
+      "name": "FX_drop",
+      "image": "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_drop_9edb4504.png",
+      "resource": "unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_drop_9edb4504",
+      "guid": "9edb4504a0e2b902ae7bf26dc3a07541",
+      "width": 32,
+      "height": 32,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "pixelsPerUnit": 100,
+      "sha256": "a51142fb76ed98db4eb7759c30457d3c8d72140c36440f126541255f8db2b02a",
+      "sheet": "b3e66812f71e866bb51dfb56febf7796",
+      "spriteName": "FX_drop",
+      "unityFileId": "generated:drop",
+      "rect": {
+        "x": 64,
+        "y": 0,
+        "width": 32,
+        "height": 32
+      },
+      "generated": true
     },
     {
       "id": "fantasy-bosses/9f24edd7c87e5ba3f76ad056cdcbf1ab",
@@ -13084,24 +13184,24 @@
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_fc99923f2b6c26d47810f36a3f39bb6c.png": "9412db8819c04e62225be17d10afd318685105110704a0e3abe7c23720a88b70",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_fefe1d76b13a7e14abf83510d6d1eeb6.png": "88574644908e5bb37acdcfe4fa075663e4106b801c3e915021c664a8735643b5",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_fefe1d76b13a7e14abf83510d6d1eeb6.png": "88574644908e5bb37acdcfe4fa075663e4106b801c3e915021c664a8735643b5",
-    "assets/resources/unit-library/fantasy-bosses/Units/BlackDragon.json": "c0cef82e376de5587555fd2fec5a1e4df8ecbb04cabf62bb7cefec9bc69d0e4a",
-    "assets/resources/unit-library/fantasy-bosses/Units/BlackDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/EmeraldDragon.json": "68f6a84e036b91e17e9730a35f4ee1e13e0fb0ef93ff1cc9d784afc1c6705108",
-    "assets/resources/unit-library/fantasy-bosses/Units/EmeraldDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/GoldenDragon.json": "1418acfdae1736f958c4a4dd0ffcb5b9c5b69a3cb377250099074b1dfc446029",
-    "assets/resources/unit-library/fantasy-bosses/Units/GoldenDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/GreenDragon.json": "473c505b3daadaf20148fc484ce5de7e039d44aa0fe6939d95780385db029157",
-    "assets/resources/unit-library/fantasy-bosses/Units/GreenDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/GreyDragon.json": "62fb8ca5b93e5651d4808fe5a2058c18844711ae291b7deaa7f83908ab96241d",
-    "assets/resources/unit-library/fantasy-bosses/Units/GreyDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/IceDragon.json": "0e6f7ed2d6900a02535aaa860a6be4efb61dc43add719cfa09c176a8f2a1cf2e",
-    "assets/resources/unit-library/fantasy-bosses/Units/IceDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalDragon.json": "d779fbad9b81b712f297edba1826245fc1bd7028c1c69b22c93d998c0d7caeb8",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/PurpleDragon.json": "877684a41bdb8a9ac82df635c7c3457e5306e61f72d5929f0845583eb97c628f",
-    "assets/resources/unit-library/fantasy-bosses/Units/PurpleDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/RedDragon.json": "7ec06882aef4e19b753ffcbcafd76ff47ec9870649dac577d557841d18d0fc23",
-    "assets/resources/unit-library/fantasy-bosses/Units/RedDragon.atlas": "1cf5b68a62a7cb5cb9f81143552ff5041967f48799fc74ca1648b738f34510e6",
+    "assets/resources/unit-library/fantasy-bosses/Units/BlackDragon.json": "82d911e16781714319fb6861473b3473a7c2cde662a44097ceb2b97191bab0ae",
+    "assets/resources/unit-library/fantasy-bosses/Units/BlackDragon.atlas": "4c78281dca2f3e458c15d6e4adbf702ef837560991d6352f6ac675b3fb5e3a8b",
+    "assets/resources/unit-library/fantasy-bosses/Units/EmeraldDragon.json": "ce9252c23690c84a1c1248ebcf0a5ec47c790a4a975433e9357109ca91fd9a48",
+    "assets/resources/unit-library/fantasy-bosses/Units/EmeraldDragon.atlas": "9eac63725e5e7dd210b54fbb198fe04b48507085f24e97219ab9b55922087628",
+    "assets/resources/unit-library/fantasy-bosses/Units/GoldenDragon.json": "23171391cb18379b8ff6d1c1c74bca7aee5c1e32111c06a600519e6856196cdf",
+    "assets/resources/unit-library/fantasy-bosses/Units/GoldenDragon.atlas": "4c78281dca2f3e458c15d6e4adbf702ef837560991d6352f6ac675b3fb5e3a8b",
+    "assets/resources/unit-library/fantasy-bosses/Units/GreenDragon.json": "25252523c30d7e1cdc465269fd4b7d7f9379ccbcc06ff6e4a06e388f6f798616",
+    "assets/resources/unit-library/fantasy-bosses/Units/GreenDragon.atlas": "9eac63725e5e7dd210b54fbb198fe04b48507085f24e97219ab9b55922087628",
+    "assets/resources/unit-library/fantasy-bosses/Units/GreyDragon.json": "74143bd4580e7b720f5840430a79516a63dabb5f9b1a72e7897f6b55a9afb89e",
+    "assets/resources/unit-library/fantasy-bosses/Units/GreyDragon.atlas": "4c78281dca2f3e458c15d6e4adbf702ef837560991d6352f6ac675b3fb5e3a8b",
+    "assets/resources/unit-library/fantasy-bosses/Units/IceDragon.json": "4120b231ae6499690cbf6a78f993305e44bde4cb4ab46c1316792cb958648a04",
+    "assets/resources/unit-library/fantasy-bosses/Units/IceDragon.atlas": "4773a0d812dc9ddc88f63a25cceb3cf06f4094ccc063bc70f0842737b3c93838",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalDragon.json": "42c9293b5542b32e57042d7211dca3b37f8b40b30fe8baf4556236696f2993d5",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalDragon.atlas": "4c78281dca2f3e458c15d6e4adbf702ef837560991d6352f6ac675b3fb5e3a8b",
+    "assets/resources/unit-library/fantasy-bosses/Units/PurpleDragon.json": "5a7ff39a6aca2ec9f67c4c746f6028d4d6569c80774eabe3e02cebf8df2bf1fb",
+    "assets/resources/unit-library/fantasy-bosses/Units/PurpleDragon.atlas": "4c78281dca2f3e458c15d6e4adbf702ef837560991d6352f6ac675b3fb5e3a8b",
+    "assets/resources/unit-library/fantasy-bosses/Units/RedDragon.json": "1ae076f87d27bad084dcdd830d2dad379c016c3d6a19a99fed27d2ce164a2f20",
+    "assets/resources/unit-library/fantasy-bosses/Units/RedDragon.atlas": "926e79ce37ae8198816c1b5044485d0cff34cd23506d0514a725877b5ff63a10",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_00e6974831bc45047b86c52c7a7e8cb5.png": "8a36df6b4df7b02ba48c2a9777b4ec2462339200185a1eeef969eaf9dd28027b",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_00e6974831bc45047b86c52c7a7e8cb5.png": "8a36df6b4df7b02ba48c2a9777b4ec2462339200185a1eeef969eaf9dd28027b",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_4d7144c9b9121a740b20a1bb3e00f0c4.png": "0c5dbd77434c74ac60c4c19541e862e3e412a37797d366dec11bb83826365773",
@@ -13122,26 +13222,26 @@
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_e55e7ac8a742bc64e85230c66ab43b26.png": "82b70a38ebaecc0f7806197fbc7694d1ab6e9a0bc198c07c9314b4804e853e0f",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_e6daed765e7a4824d8db9be83e5d10a1.png": "8d6002ca16faef112c1cb03208b263d05aa90e746127e66cc4b712f88339b83d",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_e6daed765e7a4824d8db9be83e5d10a1.png": "8d6002ca16faef112c1cb03208b263d05aa90e746127e66cc4b712f88339b83d",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType1.json": "0a5a3af9d623c4b491c3d05eb3927240c87994e437f0eea043bed1b62b6c6f18",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType1.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType10.json": "35b4f05f62f2e555e50f7cad75c3b4f310de739d15f3c450ed72ec07d3c7e525",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType10.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType2.json": "8c6ac4396e56f8eef82f71ecea6368b36aa71f97d336e54f833f6467d188a5f4",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType2.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType3.json": "a03517dae48877a851a01e8bfc5d1c83b3a2222d71b0448a3d441dea106953b4",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType3.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType4.json": "2c3f21db3dc403c6f506a96caa962f29a6dda451947a8ed0e818f6ed33778013",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType4.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType5.json": "8d3780d82f378181fc72463367a46d4468bae91da54bfc866209ad8cb1a73442",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType5.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType6.json": "8d59a2b95b7b71f1a377e922c7640db2c5e8dd1f5ca62f48b501ae7cb444ca55",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType6.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType7.json": "35c2d0f2550d25e5021763eea057b5f79625b47df393cfbc027cb2c11de0041b",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType7.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType8.json": "1998268fcd7220c7091d4714bbfb45c1e5933d6e2fabe15c6ebaaccf6b660f11",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType8.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType9.json": "986412192d5f7eee572a76fde65219d7b05ed94e173a0c3e928f4b17f40bc595",
-    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType9.atlas": "f6ed188054c4954a22100f581cc5e505c90844a2fd17e4bab7e790247eb1c261",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType1.json": "ba6db39ceb2f05cb3921d6d3dddcaff5b1ebaabb65db78aba1a64b7ed7b16b06",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType1.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType10.json": "a86717c958020f063d4a9b2720cdee7a941e07c61e4fb138d9f2f57f5b68984e",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType10.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType2.json": "744a162ac87421a8b6235e9ebc21035a888dd714c4346eda103c61cc38d44aec",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType2.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType3.json": "dbc14f0aaaac5533667cbe58f30ad39406aaf9b9476219bf06960995235d0d23",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType3.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType4.json": "26081a8e0e272315b600b24bfb719d28c3037636dc3cb1c0a336d4c0103d4ecc",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType4.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType5.json": "888a83dcdeb6e4e52dce9c9929a6769d662f78491b4042b96bdab7934926c64c",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType5.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType6.json": "6468808099c55713ff050f429d1f6e9f2cc14aa44dada14e6adbdc0303c159b9",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType6.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType7.json": "8d3f1cebe4888f8b87fd8815b929e2ab85710a4a02a9a1fb0e45f19c1c719100",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType7.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType8.json": "b37c7eddb61fba3c2befd9e0751f77253e79dfe4041fde125a30b2f2191cade3",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType8.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType9.json": "b2f40f473cfbcbdcabaa20a1efb9a5b283c88ebbeab6d1de4ddc529a5d384e93",
+    "assets/resources/unit-library/fantasy-bosses/Units/WyvernType9.atlas": "623a69fe7b5c31972168238c7255bbb61649d0dd650f665cd4e44fd648431852",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_3d9a471a8ed35194498066c61c5afc9b.png": "a614e1eac5f520d0774bb8f68447a8f5da24732c3734c2d3bbcf20e28eef3abc",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_3d9a471a8ed35194498066c61c5afc9b.png": "a614e1eac5f520d0774bb8f68447a8f5da24732c3734c2d3bbcf20e28eef3abc",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_4a299546d9afbf74daff11576ed9c9c8.png": "45f66de7d4a19f6cac2fe49aee135aa8c1826578e1bc8db75c3f96d4fcefb955",
@@ -13156,20 +13256,20 @@
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_cda079f11e5e8864fb3ab173a481dce6.png": "74ab92a8630a9586764f6c42ae7791efb87966f1c659761733bd8a1d7aea8e17",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_eaeb4958836c80644b9a114dd59ef6ba.png": "f5b5a08d57c025ac3deb4ca914d2a20a2230ba7e190571ece2e31b235271bae8",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_eaeb4958836c80644b9a114dd59ef6ba.png": "f5b5a08d57c025ac3deb4ca914d2a20a2230ba7e190571ece2e31b235271bae8",
-    "assets/resources/unit-library/fantasy-bosses/Units/FancyWorm.json": "b32f3f090251f57b422e06bd306fc5f11800a9dd1677bba75fbd2bf921083314",
-    "assets/resources/unit-library/fantasy-bosses/Units/FancyWorm.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
-    "assets/resources/unit-library/fantasy-bosses/Units/GreenWorm.json": "9c76cf398a948fc7c32739246649917a596175993bf2e7ae910f92cbb0024e03",
-    "assets/resources/unit-library/fantasy-bosses/Units/GreenWorm.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
-    "assets/resources/unit-library/fantasy-bosses/Units/IceWorm.json": "244d5fb73994f9374214e421cb9d374226a1c894ebac2162538026637dfe8a3e",
-    "assets/resources/unit-library/fantasy-bosses/Units/IceWorm.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeA.json": "4c5599a2dcf6a55ce959fbb409dfcee73a87f2ab6ec05fe10dc4d0155bc0a04a",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeA.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeB.json": "52d86a48aa47f804763b69383636f57c1bdc35a791be7532f4cb025d5d3dbc43",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeB.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
-    "assets/resources/unit-library/fantasy-bosses/Units/MosquitoWorm.json": "88c10a6495e8e4e3d8743852fee3c87a620c36f5d6677d2e76c5730f7075f47d",
-    "assets/resources/unit-library/fantasy-bosses/Units/MosquitoWorm.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
-    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoWorm.json": "a1feca74f5e37176c43c78af4e61abfe5ca0a830ee927d724774ea1df24c1fb3",
-    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoWorm.atlas": "df417d729d339db7d17698a4d2e284d68ff45e56442fa18c7789df4e34ab3404",
+    "assets/resources/unit-library/fantasy-bosses/Units/FancyWorm.json": "e5490d9a3109287f65118cb03d55afb0632d89ebd8b04dd770a3b0de23cf9e62",
+    "assets/resources/unit-library/fantasy-bosses/Units/FancyWorm.atlas": "29e09a89287a273692099cd84a882aa67e7850a873cd9fbc5a50a2a4c90f638c",
+    "assets/resources/unit-library/fantasy-bosses/Units/GreenWorm.json": "25403194ba3b6599ab01e033ae6ea257d6be8c15da43d87e2d1534bff35ee271",
+    "assets/resources/unit-library/fantasy-bosses/Units/GreenWorm.atlas": "29e09a89287a273692099cd84a882aa67e7850a873cd9fbc5a50a2a4c90f638c",
+    "assets/resources/unit-library/fantasy-bosses/Units/IceWorm.json": "d599bb04da4901f8a6f6bafe9bfe6512452cc71102e11ba5e0e87f6f05cc96ae",
+    "assets/resources/unit-library/fantasy-bosses/Units/IceWorm.atlas": "29e09a89287a273692099cd84a882aa67e7850a873cd9fbc5a50a2a4c90f638c",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeA.json": "77c6311ddd7cde29a2327e81ae3564769fe87e0e2748a713056bea4d7c7a3e78",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeA.atlas": "4a3149fdb1c14df51b1dffd1dee97267436dfdff4fa1d0441a900cc7a103c081",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeB.json": "d5c431d4d55fd7d974d7ea1d33c4e436cfdc108f83e3b0bb03d1011c1c7816ad",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalWormTypeB.atlas": "4a3149fdb1c14df51b1dffd1dee97267436dfdff4fa1d0441a900cc7a103c081",
+    "assets/resources/unit-library/fantasy-bosses/Units/MosquitoWorm.json": "1ce62c9924fc343de157659e26e492132b158f2069bf52a102aaa3bc695a4dfa",
+    "assets/resources/unit-library/fantasy-bosses/Units/MosquitoWorm.atlas": "29e09a89287a273692099cd84a882aa67e7850a873cd9fbc5a50a2a4c90f638c",
+    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoWorm.json": "7380386d6af5da08dd78cb8e52cd4514a1478ec9cf7386a0de8f451320b980ae",
+    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoWorm.atlas": "7006984a2ac6ae04ea305388af8916faa4dcf5b5afd8bd4c45c879923f2c3833",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_0b9452205c0dee2488b0de3b412f8f96.png": "b514685a6a1908927f0170d41dff73000c082a9d724c65588f91d7eb08a3b47e",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_0b9452205c0dee2488b0de3b412f8f96.png": "b514685a6a1908927f0170d41dff73000c082a9d724c65588f91d7eb08a3b47e",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_2644c3b0d51aaec41be12024450d72e6.png": "f0a91fa5d613bc15d5b0b292fc7c5834b0d8191d17b3a65b5298086ef7f35d6f",
@@ -13184,18 +13284,18 @@
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_ce78639f27c969240a40a10f9fe11bd1.png": "a415df1f0fdb2878ee6f905df55bc56bb3053b5e15c6621a10f16fc4e77fe365",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_f63d679cd4fafbc4397dbe21c6810eaf.png": "39d65c909854db8d6c0f60c024dc841503b95ac2d46cc82eff8179dbdadc117a",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_f63d679cd4fafbc4397dbe21c6810eaf.png": "39d65c909854db8d6c0f60c024dc841503b95ac2d46cc82eff8179dbdadc117a",
-    "assets/resources/unit-library/fantasy-bosses/Units/IceGolem.json": "77d224af59c72f425078a8364ed182bd88f58a573a184599b8dd2cf83b1eb510",
-    "assets/resources/unit-library/fantasy-bosses/Units/IceGolem.atlas": "72087b8831d890302a2046810e4d90d52bae2485580bdb85b380c245b33784d3",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalGolem.json": "7881cdc2cf05bba5c004f3b5e82ea6bb23e50d9750b90dfbd6c56413709734e6",
-    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalGolem.atlas": "72087b8831d890302a2046810e4d90d52bae2485580bdb85b380c245b33784d3",
-    "assets/resources/unit-library/fantasy-bosses/Units/RockGolem.json": "fe31b73a8cb7c28139e3e2dabf0ffecc3ed97566ed0ea57cb047b2e67ec8efbf",
-    "assets/resources/unit-library/fantasy-bosses/Units/RockGolem.atlas": "72087b8831d890302a2046810e4d90d52bae2485580bdb85b380c245b33784d3",
-    "assets/resources/unit-library/fantasy-bosses/Units/SandGolem.json": "ff6a2884f832975ba2f4c1a2e4f562c2884f938f6f5620227f3555a09d2344da",
-    "assets/resources/unit-library/fantasy-bosses/Units/SandGolem.atlas": "72087b8831d890302a2046810e4d90d52bae2485580bdb85b380c245b33784d3",
-    "assets/resources/unit-library/fantasy-bosses/Units/StoneGolem.json": "142613b22ee743f7966de4b915e7e4fdebb7d97b1df8fcafb4739eb3d18b310d",
-    "assets/resources/unit-library/fantasy-bosses/Units/StoneGolem.atlas": "72087b8831d890302a2046810e4d90d52bae2485580bdb85b380c245b33784d3",
-    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoGolem.json": "f84e2e71deae00ac684d3982b72c5d9cd03853f44e08ebbc8b494af705be555b",
-    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoGolem.atlas": "72087b8831d890302a2046810e4d90d52bae2485580bdb85b380c245b33784d3",
+    "assets/resources/unit-library/fantasy-bosses/Units/IceGolem.json": "591cf7e30b38e37d0958d8f698804a86c7af5caaf36720745163c69bc02a67a0",
+    "assets/resources/unit-library/fantasy-bosses/Units/IceGolem.atlas": "5ada5e26d19a12960978f637d05e9c99409f12fdb05b592b8054388774eb7492",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalGolem.json": "343fe3fefd6b941a929ef51c4090f42285cdd16c52d1117bf6d48f67eff10016",
+    "assets/resources/unit-library/fantasy-bosses/Units/MechanicalGolem.atlas": "99615cbe9ceb66d1cdc35388ed400d6e996a200c5f915085b28955d7aab52ba4",
+    "assets/resources/unit-library/fantasy-bosses/Units/RockGolem.json": "99b170c8bb20b1b2a4496c117b5ae4521bb16700b78cc1bc90f6f31c189dbd4e",
+    "assets/resources/unit-library/fantasy-bosses/Units/RockGolem.atlas": "5ada5e26d19a12960978f637d05e9c99409f12fdb05b592b8054388774eb7492",
+    "assets/resources/unit-library/fantasy-bosses/Units/SandGolem.json": "84f376150c5921edd43ee3912c979a520055dd2a79f4527a87ca6e60e1e2f34b",
+    "assets/resources/unit-library/fantasy-bosses/Units/SandGolem.atlas": "5ada5e26d19a12960978f637d05e9c99409f12fdb05b592b8054388774eb7492",
+    "assets/resources/unit-library/fantasy-bosses/Units/StoneGolem.json": "f40a213ba2b9609627eadd950f96cbef47f3dbd5333b49622cc001ff1945917e",
+    "assets/resources/unit-library/fantasy-bosses/Units/StoneGolem.atlas": "5ada5e26d19a12960978f637d05e9c99409f12fdb05b592b8054388774eb7492",
+    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoGolem.json": "b97a07edfa5eb736161ad24861c869b0ae6da1d881758a5a68a605b913adad1e",
+    "assets/resources/unit-library/fantasy-bosses/Units/VolcanoGolem.atlas": "ea35805a8940d1d83cf9379011c7ec1b224d079ea024c24ded795034f799d700",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_134e6cdcec2215f4f971d0d0f354d7e8.png": "58b5dbf4b9c02b495fba99ddaeff90887417b85670196cc3d437a6df5813e54f",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_134e6cdcec2215f4f971d0d0f354d7e8.png": "58b5dbf4b9c02b495fba99ddaeff90887417b85670196cc3d437a6df5813e54f",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_288217e4af382b7439a78567547a5185.png": "efaa93b0a36c0d52631eef5b3a9ad4b506090433ddfd48f4467d52891222250c",
@@ -13232,36 +13332,56 @@
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_f2510064f8427ea458747f7a16158e55.png": "1fbf52a636d65d73c2a18ddb8e7e42a773ed4983d79902f9eca69060725a6779",
     "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_fffb8bcdfbc058b4096c8e957677630c.png": "b6ae6036680c6e1b99d80bf25ae13027739f40fc2283eb7c41d16a5ba1d1349f",
     "assets/resources/unit-library/fantasy-bosses/Units/sheet_fffb8bcdfbc058b4096c8e957677630c.png": "b6ae6036680c6e1b99d80bf25ae13027739f40fc2283eb7c41d16a5ba1d1349f",
-    "assets/resources/unit-library/fantasy-bosses/Units/Croc01.json": "11178cb8954c459978c2a3e47b94a6bdf897f9ba2e812c18ba9493dfa0da8c99",
-    "assets/resources/unit-library/fantasy-bosses/Units/Croc01.atlas": "57c97b2ea49c3196a720f5e4e4b65f579e7ebad57caaa6f11389f88ceb18fd10",
-    "assets/resources/unit-library/fantasy-bosses/Units/Croc02.json": "7e25c4595c1a0a2561e3fa53c0f6eba8392cdeb225481624785606e6346ca297",
-    "assets/resources/unit-library/fantasy-bosses/Units/Croc02.atlas": "57c97b2ea49c3196a720f5e4e4b65f579e7ebad57caaa6f11389f88ceb18fd10",
-    "assets/resources/unit-library/fantasy-bosses/Units/Croc03.json": "9932db7fb193eea35f51c5ef6035036500003954c0ddd8a8cb8624199d3796c3",
-    "assets/resources/unit-library/fantasy-bosses/Units/Croc03.atlas": "57c97b2ea49c3196a720f5e4e4b65f579e7ebad57caaa6f11389f88ceb18fd10",
-    "assets/resources/unit-library/fantasy-bosses/Units/Demon01.json": "8b0522061b7a63ac945c8ef5017bdca9c75a691e4eff96b951940faf28ff7932",
-    "assets/resources/unit-library/fantasy-bosses/Units/Demon01.atlas": "a1dc20a7406f5e24b3bac14c7c0849813d079737a91d55b8581fe8ebd98754a9",
-    "assets/resources/unit-library/fantasy-bosses/Units/Demon02.json": "170a29e449266c05d76eaad8e4edf134110e488d77643782f4b2995c4c725012",
-    "assets/resources/unit-library/fantasy-bosses/Units/Demon02.atlas": "76c629582a2bc55fc62460579495fc2cf92ae2f6d3b3b9ab659086b5eae0b436",
-    "assets/resources/unit-library/fantasy-bosses/Units/Demon03.json": "a35b65dbe3eec60c0c1c978a11196262b327932aaeb7b7ca3cf0027bbacc1a17",
-    "assets/resources/unit-library/fantasy-bosses/Units/Demon03.atlas": "a1dc20a7406f5e24b3bac14c7c0849813d079737a91d55b8581fe8ebd98754a9",
-    "assets/resources/unit-library/fantasy-bosses/Units/Lizard01.json": "6cd528fc7c1f75c824021bc2e6486ba77770a6913b8d7279f7592fd78ea6edbc",
-    "assets/resources/unit-library/fantasy-bosses/Units/Lizard01.atlas": "1c31166261f0dd12d0144cb9171005882c74c0125c91c4b3fbae305e2f5e69ca",
-    "assets/resources/unit-library/fantasy-bosses/Units/Lizard02.json": "51bc4ef14231db356be6da75b1677e1c3b4bf2e10a4dadd7484a162b2d65f2d6",
-    "assets/resources/unit-library/fantasy-bosses/Units/Lizard02.atlas": "1c31166261f0dd12d0144cb9171005882c74c0125c91c4b3fbae305e2f5e69ca",
-    "assets/resources/unit-library/fantasy-bosses/Units/Lizard03.json": "b626e996477afed534e8cf9c9ae8f302cd819f94ee4cdea384e56631e9033189",
-    "assets/resources/unit-library/fantasy-bosses/Units/Lizard03.atlas": "1c31166261f0dd12d0144cb9171005882c74c0125c91c4b3fbae305e2f5e69ca",
-    "assets/resources/unit-library/fantasy-bosses/Units/Megabear01.json": "7d1941e8aa7be3d47e5f5a31d6e5601b65cf90c0841bb601b082dde1d8759233",
-    "assets/resources/unit-library/fantasy-bosses/Units/Megabear01.atlas": "5e3e3ac68bd476de4d492d0b5f96a028f48e926870ec7ea900606b6423e24953",
-    "assets/resources/unit-library/fantasy-bosses/Units/Megabear02.json": "41ddc6f7805c0a10870c7a9dea13f39c207f2aceb3f142d9f4fe33e6bea2c9d5",
-    "assets/resources/unit-library/fantasy-bosses/Units/Megabear02.atlas": "714cb22e39bf7325ef5ab42d3575f177a5a7143b6e8fa771b221721096d6b9c2",
-    "assets/resources/unit-library/fantasy-bosses/Units/Megabear03.json": "1325184c0e18b72ad155c5082b3aa6c30edfa20637e7961b7e6cd035e9283c21",
-    "assets/resources/unit-library/fantasy-bosses/Units/Megabear03.atlas": "5e3e3ac68bd476de4d492d0b5f96a028f48e926870ec7ea900606b6423e24953",
-    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur01.json": "e843f10a0d29263c62601601981c4122819cfd4dbca1a7749a87b55de59c5750",
-    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur01.atlas": "70e09ab535e12bb0e4cdb635d6c240be12767aa8c70f0b679a51f2a2aa53b634",
-    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur02.json": "6faddf6c3a121996707c6601850bba58939797076af2436d73a95cc8e4ebd416",
-    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur02.atlas": "86ce666f3fbe706912c4cb02748fe892c5003492f4026afbb5c1a3261424f8c7",
-    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur03.json": "d85516cb9bb6440027fa05fded3086872ba417d79871a465da0c83c005f14018",
-    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur03.atlas": "86ce666f3fbe706912c4cb02748fe892c5003492f4026afbb5c1a3261424f8c7"
+    "assets/resources/unit-library/fantasy-bosses/Units/Croc01.json": "d102ac25cb28b0dc66a2f81e06b0d547a9e53d554c01339bfdd8b6570646e5dc",
+    "assets/resources/unit-library/fantasy-bosses/Units/Croc01.atlas": "8b2c4f07a92e38042f9ef54c7716acbb1c6bd4a3768147c3d17f1c8b617f4179",
+    "assets/resources/unit-library/fantasy-bosses/Units/Croc02.json": "3a3fe75ea7d983cf73e70ff0138c3c93d86f81e06f37b9940e0e774e08b2a7cb",
+    "assets/resources/unit-library/fantasy-bosses/Units/Croc02.atlas": "8b2c4f07a92e38042f9ef54c7716acbb1c6bd4a3768147c3d17f1c8b617f4179",
+    "assets/resources/unit-library/fantasy-bosses/Units/Croc03.json": "26655a50f935c986e16895a3c199e8a5817f07be6a87d6e0d7b9f7eea1b2726a",
+    "assets/resources/unit-library/fantasy-bosses/Units/Croc03.atlas": "8b2c4f07a92e38042f9ef54c7716acbb1c6bd4a3768147c3d17f1c8b617f4179",
+    "assets/resources/unit-library/fantasy-bosses/Units/Demon01.json": "8ccc8d2c0e9bdbd174e9a7e4b8d83db732216620a436ca1f6eb0debe0e184409",
+    "assets/resources/unit-library/fantasy-bosses/Units/Demon01.atlas": "66cc46762934f005b571c106e5ee9516086d33242f8afed0caac12e9cf12afba",
+    "assets/resources/unit-library/fantasy-bosses/Units/Demon02.json": "6f108dd941da6413afb5b5c074b263f7a42e6db9e394c6e7c9225cc4509af678",
+    "assets/resources/unit-library/fantasy-bosses/Units/Demon02.atlas": "9e21c3f9a3183dc355c09cad869af46270a0622d10f0c857d515356f798d4827",
+    "assets/resources/unit-library/fantasy-bosses/Units/Demon03.json": "1c77b398750de5a93cfba2086d932218b3e179760dd8d5861533684d45f4af30",
+    "assets/resources/unit-library/fantasy-bosses/Units/Demon03.atlas": "66cc46762934f005b571c106e5ee9516086d33242f8afed0caac12e9cf12afba",
+    "assets/resources/unit-library/fantasy-bosses/Units/Lizard01.json": "1f913ef9d78381c967712837bd91ac7aa86c40d90e1332ce9066d867bfc9c48f",
+    "assets/resources/unit-library/fantasy-bosses/Units/Lizard01.atlas": "eeaab0dd5c63aeba6c3975e13d011d0a7607d4a91248b24b0d8178db5b318b96",
+    "assets/resources/unit-library/fantasy-bosses/Units/Lizard02.json": "9edd1240a55178e075a32254c51d926623df76194e92667b1d63870929ab65a7",
+    "assets/resources/unit-library/fantasy-bosses/Units/Lizard02.atlas": "eeaab0dd5c63aeba6c3975e13d011d0a7607d4a91248b24b0d8178db5b318b96",
+    "assets/resources/unit-library/fantasy-bosses/Units/Lizard03.json": "b9a304b6319abe8a02f4f26296e0bbf4c181005e2f32d349e16be48995a7c338",
+    "assets/resources/unit-library/fantasy-bosses/Units/Lizard03.atlas": "eeaab0dd5c63aeba6c3975e13d011d0a7607d4a91248b24b0d8178db5b318b96",
+    "assets/resources/unit-library/fantasy-bosses/Units/Megabear01.json": "ea2fa09c3ae18826470ef7dc01929f1ff38ce672728944d4e43330b89d5873b5",
+    "assets/resources/unit-library/fantasy-bosses/Units/Megabear01.atlas": "50a72cf1bee822fe6152feff449deac446f9c3839f2cec25f1fac0d8c48d4466",
+    "assets/resources/unit-library/fantasy-bosses/Units/Megabear02.json": "811683a6cef49f6a35b9ffc9173fd1a9e124dd32cda79aa6e2623edb3b281052",
+    "assets/resources/unit-library/fantasy-bosses/Units/Megabear02.atlas": "91b70093134fc9f1bbc16db7940999f2aaad36abdcfd42e0bd573526224517fa",
+    "assets/resources/unit-library/fantasy-bosses/Units/Megabear03.json": "ab27cb78c7573a40d7d104252c6abf059fc30f800880860e0a7383bfe71d77ee",
+    "assets/resources/unit-library/fantasy-bosses/Units/Megabear03.atlas": "50a72cf1bee822fe6152feff449deac446f9c3839f2cec25f1fac0d8c48d4466",
+    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur01.json": "1b024605983515467a4c6fb9f886461cead029c2e8d219869b04a231c6f796e1",
+    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur01.atlas": "fa5f01a92aed326e589080a2b6a06c0afacbe06ffacd4654a44a765a9f4b68ab",
+    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur02.json": "768c1d5a1fa47b72ac6bddae1fd478af4c8f5388847d04c5748fae63119fe646",
+    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur02.atlas": "7594e68dcb7b1cc1a53dc4dcc7b85e52db7423d405c573aed15544b22647d824",
+    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur03.json": "16b637025a6738540aa40d6a78c845224f30cb439253341185ec0a32e55c2af1",
+    "assets/resources/unit-library/fantasy-bosses/Units/Minotaur03.atlas": "7594e68dcb7b1cc1a53dc4dcc7b85e52db7423d405c573aed15544b22647d824",
+    "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_chip_3be41ecf.png": "f68ef1e5692aec96068fd166ebeb9d904163ae9a43b33635f89b7f71849dfc59",
+    "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_flame_41e72f62.png": "eba1d594ec9ec6b758f83b90c5619725d45adf8eddfc2728a6028f4225126c56",
+    "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_spark_653a95ad.png": "bda71a30c53ba2afefa6c681975c93b8a6aec610852abbf58199506ea1581487",
+    "assets/resources/unit-library/fantasy-bosses/Parts/b3e66812f71e866bb51dfb56febf7796/FX_drop_9edb4504.png": "a51142fb76ed98db4eb7759c30457d3c8d72140c36440f126541255f8db2b02a",
+    "assets/resources/unit-library/fantasy-bosses/Atlases/sheet_b3e66812f71e866bb51dfb56febf7796.png": "2e89227a59246a7d1e6bb885895d873d58aa996b11713d90542df5bb570ee934",
+    "assets/resources/unit-library/fantasy-bosses/Units/sheet_b3e66812f71e866bb51dfb56febf7796.png": "2e89227a59246a7d1e6bb885895d873d58aa996b11713d90542df5bb570ee934",
+    "assets/resources/unit-library/fantasy-bosses/Effects/fire-flight.png": "ed1f2c22d8d04a488e2aa695f85fd4faeb34b371264e88e82150a65423bd976d",
+    "assets/resources/unit-library/fantasy-bosses/Effects/fire-impact.png": "da1341d65a0ba16c45bb64e2d2d3b640f0afbba039cba1e32047c956cdd86769",
+    "assets/resources/unit-library/fantasy-bosses/Effects/frost-flight.png": "27cf93692e1063b538ed7850705787013dc74d9331f047c2110b6d0f20c72321",
+    "assets/resources/unit-library/fantasy-bosses/Effects/frost-impact.png": "4a126e3f11a8b1637ff661cbac7b64e5f860aab28fba850b2063cdd7287366a8",
+    "assets/resources/unit-library/fantasy-bosses/Effects/venom-flight.png": "dce2f48b8ec4e2ed3d74d31ba163ff311d1e0f8c4d2a5f07c78603d589b2a480",
+    "assets/resources/unit-library/fantasy-bosses/Effects/venom-impact.png": "006a34aff528e8d71292f73bed76f40224e879ab490d3d3688a28fb8702ecd76",
+    "assets/resources/unit-library/fantasy-bosses/Effects/arcane-flight.png": "658c63f179dac0d58118a425123c34ae7abdafcc7c9179513e2137fd3a44d9df",
+    "assets/resources/unit-library/fantasy-bosses/Effects/arcane-impact.png": "8f7b9dca44a2f0557022ad4d425b2691815c79ce1cf3de273a100b8e8085a4f5",
+    "assets/resources/unit-library/fantasy-bosses/Effects/holy-flight.png": "0e463bd677a83cd1c94258ae17a53d505bdf471938dda82ffcefa67dbcbb8f2d",
+    "assets/resources/unit-library/fantasy-bosses/Effects/holy-impact.png": "8be145e2724238f3c57f0642ec0bf41b19dc5aa217f3a728e3b9f8cbbbda9596",
+    "assets/resources/unit-library/fantasy-bosses/Effects/metal-flight.png": "4ee3ae798e53c06f18ec3ec282ca583c763f99ad2fc7bb88cb88510151d29a54",
+    "assets/resources/unit-library/fantasy-bosses/Effects/metal-impact.png": "fc784c4c07c5dd19aefb2e9ab604aa416e39ae61b295aa24c733e44cb6848e2e",
+    "assets/resources/unit-library/fantasy-bosses/Effects/earth-flight.png": "0cf5c0ab9f87a85c363100b487d1810b616cfa33458d3904838dcf74ba4608ac",
+    "assets/resources/unit-library/fantasy-bosses/Effects/earth-impact.png": "e4743ebc5e3909133ff443715edda9da541af7dc10b9159801382e90cc7e2804"
   },
   "conversion": {
     "runtime": "Spine 3.8",
@@ -13269,6 +13389,219 @@
     "unityScriptsImported": false,
     "unityMaterialsImported": false,
     "slicedSprites": true,
-    "expressionEvents": true
-  }
+    "expressionEvents": true,
+    "particleEffectsVersion": 1
+  },
+  "effectAssets": [
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:fire-flight",
+      "name": "Fantasy fire flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/fire-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:fire-impact",
+      "name": "Fantasy fire impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/fire-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:frost-flight",
+      "name": "Fantasy frost flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/frost-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:frost-impact",
+      "name": "Fantasy frost impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/frost-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:venom-flight",
+      "name": "Fantasy venom flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/venom-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:venom-impact",
+      "name": "Fantasy venom impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/venom-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:arcane-flight",
+      "name": "Fantasy arcane flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/arcane-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:arcane-impact",
+      "name": "Fantasy arcane impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/arcane-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:holy-flight",
+      "name": "Fantasy holy flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/holy-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:holy-impact",
+      "name": "Fantasy holy impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/holy-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:metal-flight",
+      "name": "Fantasy metal flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/metal-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:metal-impact",
+      "name": "Fantasy metal impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/metal-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / flight",
+      "role": "flight",
+      "id": "fantasy:earth-flight",
+      "name": "Fantasy earth flight",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/earth-flight",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    },
+    {
+      "category": "Fantasy effects / impact",
+      "role": "impact",
+      "id": "fantasy:earth-impact",
+      "name": "Fantasy earth impact",
+      "kind": "flipbook",
+      "resource": "unit-library/fantasy-bosses/Effects/earth-impact",
+      "bundle": "resources",
+      "sourcePack": "fantasy-bosses",
+      "cell": 96,
+      "columns": 4,
+      "frames": 16,
+      "fps": 32,
+      "size": 64
+    }
+  ]
 }

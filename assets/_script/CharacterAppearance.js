@@ -163,6 +163,9 @@ var Appearance = cc.Class({
   lateUpdate: function () {
     var actor = this.owner;
     if (!actor || !actor.node.activeInHierarchy) return;
+    var effectData = this.team === "enemy" && actor.spAni && actor.spAni.skeletonData && actor.spAni.skeletonData.skeletonJson;
+    var hasAmbient = effectData && effectData._fantasy && effectData._fantasy.effects && effectData._fantasy.effects.ambientAnimation;
+    if (hasAmbient || this.fantasyAmbient) { require("FantasyEffects").ambient(actor); this.fantasyAmbient = !!hasAmbient; }
     var maker=makerRider(this);if(maker)maker.removeFollow(actor.ctrPlayAni);
     try {
     if (!looks || !library) load();
@@ -225,8 +228,8 @@ var Appearance = cc.Class({
     this.states.forEach(Core.apply);
     } finally { if(maker)maker.follow(actor.ctrPlayAni); }
   },
-  onDisable: function () { this.clear(); restoreAllyRigs(this); },
-  onDestroy: function () { this.clear(); restoreAllyRigs(this); this.owner = null; }
+  onDisable: function () { if(this.fantasyAmbient)require("FantasyEffects").reset(this.owner);this.fantasyAmbient=false;this.clear(); restoreAllyRigs(this); },
+  onDestroy: function () { if(this.fantasyAmbient)require("FantasyEffects").reset(this.owner);this.fantasyAmbient=false;this.clear(); restoreAllyRigs(this); this.owner = null; }
 });
 exports.bind = function (actor, type) {
   if (!actor || !actor.node || !actor.node.addComponent || !cc.resources) return;
