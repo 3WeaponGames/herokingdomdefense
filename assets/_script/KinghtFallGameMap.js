@@ -142,13 +142,13 @@ var def_KinghtFallGameMap = function (t) {
           var u = a.get(l) + 1;
           if (!a.has(g) || u < a.get(g)) {
             a.set(g, u);
-            var d = u + this.heuristic(g, e);
+            var d = u + this.heuristic(g, e, 1);
             n.put(g, d);
             i.set(g, l);
           }
         }
       }
-      var remaining = this.heuristic(l, e);
+      var remaining = this.heuristic(l, e, 1);
       if (remaining < s || remaining === s && r && a.get(l) < a.get(r)) {
         s = remaining;
         r = l;
@@ -188,13 +188,13 @@ var def_KinghtFallGameMap = function (t) {
           var m = o.get(h) + 1;
           if (!o.has(d) || m < o.get(d)) {
             o.set(d, m);
-            var y = m + this.heuristic(d, e);
+            var y = m + this.heuristic(d, e, 1);
             i.put(d, y);
             a.set(d, h);
           }
         }
       }
-      var remaining = this.heuristic(h, e);
+      var remaining = this.heuristic(h, e, 1);
       if (remaining < l || remaining === l && s && o.get(h) < o.get(s)) {
         l = remaining;
         s = h;
@@ -213,14 +213,19 @@ var def_KinghtFallGameMap = function (t) {
     } else {
       e.push(new exp_AStarNode(t.x - 1, t.y - 1), new exp_AStarNode(t.x - 1, t.y + 1), new exp_AStarNode(t.x + 1, t.y - 1), new exp_AStarNode(t.x + 1, t.y + 1), new exp_AStarNode(t.x - 1, t.y), new exp_AStarNode(t.x + 1, t.y), new exp_AStarNode(t.x, t.y - 1), new exp_AStarNode(t.x, t.y + 1));
     }
+    if (this.mType === r.EIGHT) {
+      var map = this;
+      e = e.filter(function (next) { return next.x === t.x || next.y === t.y || map.isWalkable({ x: next.x, y: t.y }) && map.isWalkable({ x: t.x, y: next.y }); });
+    }
     return e;
   };
   _ctor.prototype.isWalkable = function (t) {
     var e = this.mapData["" + t.x + this.sep + t.y];
     return e && e.type === u.EMPTY;
   };
-  _ctor.prototype.heuristic = function (t, e) {
-    return Math.abs(t.x - e.row) + Math.abs(t.y - e.col);
+  _ctor.prototype.heuristic = function (t, e, diagonalCost) {
+    var dx = Math.abs(t.x - e.row), dy = Math.abs(t.y - e.col);
+    return this.mType === r.EIGHT ? dx + dy + ((diagonalCost === undefined ? 1.5 : diagonalCost) - 2) * Math.min(dx, dy) : dx + dy;
   };
   _ctor.prototype.reconstructPath = function (t, e) {
     for (var n = []; e;) {

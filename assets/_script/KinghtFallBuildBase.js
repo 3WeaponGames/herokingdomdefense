@@ -731,7 +731,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (this.getIsWork()) {
       for (var e = 0; e < this.debuffInfo.length; e++) {
         var n = this.debuffInfo[e];
-        if (-1 != n.time) {
+        if (-1 != n.timeMax) {
           n.time += t;
           if (n.time >= n.timeMax) {
             this.delBuffIdx(e), e--;

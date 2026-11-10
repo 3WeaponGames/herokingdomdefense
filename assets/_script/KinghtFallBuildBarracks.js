@@ -44,6 +44,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     e._rosterRequests = {};
     e._rosterSignature = null;
     e._soldierRallyPosts = [];
+    e._spawnRetryTime = 0;
     e.keepTime = 0;
     e.standTimeMax = 1.5;
     return e;
@@ -85,36 +86,64 @@ var def_KinghtFallBuildBarracks = function (t) {
     var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
     var preferred = cc.v2(anchor.x + a.x, anchor.y + a.y);
     if (!unit) return preferred;
-    unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit));
+    unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit, true));
     if (!this._spawnPosts) this._spawnPosts = [];
     var position = Navigation.findStandingPoint(unit, game, anchor, this._spawnPosts[t] || preferred);
-    if (!position) return preferred;
+    if (!position) return null;
     this._spawnPosts[t] = { x: position.x, y: position.y };
     return cc.v2(position.x, position.y);
   };
+  _ctor.prototype._placeSoldier = function (unit, index) {
+    var position = this.getPos(index);
+    if (!position) {
+      // Keep the owned roster slot without putting a body inside terrain or
+      // reporting a combat death. A later retry can use newly cleared ground.
+      unit._spawnPending = true;
+      Navigation.reset(unit);
+      unit.node.active = false;
+      if (unit.rigidBody) unit.rigidBody.active = false;
+      unit.hp = 0;
+      unit.state = $z1KinghtFallSoldierBase.KinghtFallSoldierStatus.Dead;
+      return false;
+    }
+    unit.node.setPosition(position);
+    unit.setNew();
+    unit._spawnPending = false;
+    this.waitEnemy = this.waitEnemy.filter(function (waiting) { return waiting !== unit; });
+    return true;
+  };
   _ctor.prototype.addDie = function (t) {
     this.time[r.Reborn] >= this.time[r.RebornMax] && (this.time[r.Reborn] = 0);
-    this.waitEnemy.push(t);
+    if (this.waitEnemy.indexOf(t) < 0) this.waitEnemy.push(t);
     this.ndPro.active = this.getIsWork();
   };
   _ctor.prototype.doTime = function (t) {
     var e = this;
+    this._spawnRetryTime = Math.max(0, (this._spawnRetryTime || 0) - t);
+    var retryReady = this._spawnRetryTime === 0;
+    if (retryReady) {
+      for (var pendingIndex = 0; pendingIndex < this.enemyList.length; pendingIndex++) {
+        var pending = this.enemyList[pendingIndex];
+        if (pending && pending._spawnPending && this.waitEnemy.indexOf(pending) < 0 && !this._placeSoldier(pending, pendingIndex)) this._spawnRetryTime = .25;
+      }
+    }
     var bypassAdLimits = TestMode.getInstance().shouldBypassAdLimits();
     if (this._testAdLimitBypass !== bypassAdLimits) {
       this._testAdLimitBypass = bypassAdLimits;
       this.ndVideoSoldier.active = this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare;
     }
-    if (this.waitEnemy.length > 0 && (this.ndPro.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.time[r.Reborn] / this.time[r.RebornMax], this.time[r.Reborn] += t, this.time[r.Reborn] >= this.time[r.RebornMax])) {
-      this.time[r.Reborn] = 0;
-      var n = this.waitEnemy.shift();
+    if (this.waitEnemy.length > 0 && (this.ndPro.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.time[r.Reborn] / this.time[r.RebornMax], this.time[r.Reborn] += t, this.time[r.Reborn] >= this.time[r.RebornMax]) && retryReady) {
+      var n = this.waitEnemy[0], found = false;
       for (var i = 0; i < this.enemyList.length; i++) {
         var a = this.enemyList[i];
         if (a && a.uuid == n.uuid) {
-          n.node.setPosition(this.getPos(i));
-          n.setNew();
+          found = true;
+          if (this._placeSoldier(n, i)) this.time[r.Reborn] = 0;
+          else { this.time[r.Reborn] = this.time[r.RebornMax]; this._spawnRetryTime = .25; }
           break;
         }
       }
+      if (!found) this.waitEnemy.shift();
       0 == this.waitEnemy.length && (this.ndPro.active = false);
     }
     if (this.canAddVideoSoldier() && $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare) {
@@ -164,6 +193,7 @@ var def_KinghtFallBuildBarracks = function (t) {
     if (e) { this._soldierRallyPosts = []; this._spawnPosts = []; }
     this._rosterSignature = null;
     this._rosterRequests = {};
+    this._spawnRetryTime = 0;
     t.prototype.reset.call(this, e);
     if (e) {
       for (var n = 0; n < this.enemyList.length; n++) {
@@ -198,19 +228,20 @@ var def_KinghtFallBuildBarracks = function (t) {
   };
   _ctor.prototype.endRoundGame = function () {
     t.prototype.endRoundGame.call(this);
-    for (var e = 0; e < this.waitEnemy.length; e++) {
-      var n = this.waitEnemy[e];
+    var waiting = this.waitEnemy.slice();
+    for (var e = 0; e < waiting.length; e++) {
+      var n = waiting[e];
       for (var i = 0; i < this.enemyList.length; i++) {
         var a = this.enemyList[i];
         if (a && a.uuid == n.uuid) {
-          n.node.setPosition(this.getPos(i));
-          n.setNew();
+          if (!this._placeSoldier(n, i)) this._spawnRetryTime = .25;
           break;
         }
       }
     }
     this.ndPro.active = false;
-    this.waitEnemy = [];
+    this.waitEnemy = this.waitEnemy.filter(function (unit) { return unit._spawnPending; });
+    if (this.waitEnemy.length) this.time[r.Reborn] = this.time[r.RebornMax];
     this.ndVideoSoldier.active = this.canAddVideoSoldier();
   };
   _ctor.prototype.init = function () {
@@ -250,8 +281,8 @@ var def_KinghtFallBuildBarracks = function (t) {
       }
       if (n < e) {
         if (o.enemyList[n]) {
-          i.isDead() && i.node.setPosition(o.getPos(n));
-          i.setNew();
+          if (i.isDead() || i._spawnPending) o._placeSoldier(i, n);
+          else i.setNew();
         } else {
           if (o._rosterRequests[n]) return;
           var request = { id: o.buildInfo.cfg.Data[1] };
@@ -265,9 +296,8 @@ var def_KinghtFallBuildBarracks = function (t) {
             } else {
               t.enemyList[n] = e;
               e.setParent(t);
-              e.node.setPosition(t.getPos(n));
-              e.setNew();
               e.initBuffData();
+              t._placeSoldier(e, n);
             }
           });
         }

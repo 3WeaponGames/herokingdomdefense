@@ -39,10 +39,17 @@ test('real Box2D shield contacts release the captured opposing gate pair and bot
     // Negative control reproduces the old nearest-exit policy against the
     // same real collision solver and original coarse gate grid. The refined
     // gate portals can independently release this old two-unit deadlock.
-    if (nearestExitControl) { grid._passages = []; grid._escape = function(start, cache) {
-      const candidates = this._nearby(start, cache, this.cellSize * 3 + cache.radius * 2);
-      return candidates.slice(0, 128).find(c => this._escapeClear(start, c.point, cache.radius))?.point || null;
-    }; }
+    if (nearestExitControl) {
+      grid._passages=[];const search=grid.createSearch;
+      grid.createSearch=function(start,goal,radius,partial){
+        let escape=null;if(!this.isWalkable(start,radius)){const cache=this._cache(radius);escape=this._nearby(start,cache,this.cellSize*3+cache.radius*2).slice(0,128).find(c=>this._escapeClear(start,c.point,cache.radius))?.point||null;}
+        const job=search.call(this,escape||start,goal,radius,partial);
+        // Keep the negative control's original synchronous timing too: yielding
+        // can itself break the captured perfectly opposing contact symmetry.
+        while(!job.done)job.step(Infinity);
+        if(job.result&&escape)job.result.escape={from:{x:start.x,y:start.y},to:escape,distance:distance(start,escape)};return job;
+      };
+    }
     const world = new b.b2World(new b.b2Vec2(0, 0));
     const units = starts.map(p => {
       const unit = e.unit(p.x, p.y);

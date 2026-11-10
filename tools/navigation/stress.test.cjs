@@ -19,20 +19,20 @@ function workload(name, targetAt, frames = 300) {
     scenery.add(owner.node);
     for (const part of owner.ndAniOther || []) scenery.add(part.node || part);
   }
-  const counts = { centers: 0, queries: 0, expanded: 0, staticTransforms: 0, staticScans: 0, maxSearchesPerFrame: 0 };
+  const counts = { centers: 0, queries: 0, expanded: 0, staticTransforms: 0, staticScans: 0, maxSearchesPerFrame: 0, maxWorkPerFrame:0, maxSliceWork:0, jobsCreated:0, jobsCompleted:0 };
   const originals = {
     center: NavigationGrid.prototype._center,
     query: NavigationGrid.prototype._query,
     path: NavigationGrid.prototype.findPath,
+    search: NavigationGrid.prototype.createSearch,
     world: Node.prototype.convertToWorldSpaceAR,
     components: Node.prototype.getComponentsInChildren
   };
   NavigationGrid.prototype._center = function (...args) { counts.centers++; return originals.center.apply(this, args); };
   NavigationGrid.prototype._query = function (...args) { counts.queries++; return originals.query.apply(this, args); };
-  NavigationGrid.prototype.findPath = function (...args) {
-    const result = originals.path.apply(this, args);
-    counts.expanded += this.lastSearch?.expanded || 0;
-    return result;
+  NavigationGrid.prototype.createSearch=function(...args){
+    const job=originals.search.apply(this,args),step=job.step;let recorded=false;counts.jobsCreated++;
+    job.step=function(...slice){const result=step.apply(job,slice);counts.maxSliceWork=Math.max(counts.maxSliceWork,job.lastWork);if(job.done&&!recorded){recorded=true;counts.jobsCompleted++;counts.expanded+=job.stats.expanded||0;}return result;};return job;
   };
   Node.prototype.convertToWorldSpaceAR = function (...args) {
     if (scenery.has(this)) counts.staticTransforms++;
@@ -55,11 +55,13 @@ function workload(name, targetAt, frames = 300) {
         assert.equal(unit.rigidBody.linearVelocity.len(), 0);
       }
       counts.maxSearchesPerFrame = Math.max(counts.maxSearchesPerFrame, nav.stats.searches - before);
+      counts.maxWorkPerFrame=Math.max(counts.maxWorkPerFrame,nav._frameSearchWork);assert(nav._frameSearchWork<=4096);assert(nav._activeSearches.size<=2);
     }
   } finally {
     NavigationGrid.prototype._center = originals.center;
     NavigationGrid.prototype._query = originals.query;
     NavigationGrid.prototype.findPath = originals.path;
+    NavigationGrid.prototype.createSearch=originals.search;
     Node.prototype.convertToWorldSpaceAR = originals.world;
     Node.prototype.getComponentsInChildren = originals.components;
   }

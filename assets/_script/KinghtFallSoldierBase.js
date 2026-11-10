@@ -35,11 +35,6 @@ var def_KinghtFallSoldierBase = function (t) {
     e.time = {};
     e.vec2_1 = new cc.Vec2();
     e.vec2_2 = new cc.Vec2();
-    e.findInx = 0;
-    e.findMin = .2;
-    e.findLen = 10;
-    e.obsObj = [];
-    e.nextFind = false;
     e.finIndex = 0;
     e.lastFind = false;
     e.isAgg = false;
@@ -76,6 +71,7 @@ var def_KinghtFallSoldierBase = function (t) {
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     this.node._combatActor = this;
     this._isPooled = false;
+    this._spawnPending = false;
     this._deathAnimation = null;
     Navigation.reset(this);
     this.rallyPoint = null;
@@ -301,51 +297,6 @@ var def_KinghtFallSoldierBase = function (t) {
       }
     }
   };
-  _ctor.prototype.findObg = function (t) {
-    if (!this.lastPos) {
-      this.lastPos = this.node.getPosition();
-      this.findInx = 0;
-    }
-    this.node.getPosition(this.vec2_1);
-    if (!(cc.Vec2.distance(this.vec2_1, this.lastPos) <= this.findLen)) {
-      this.lastPos = this.node.getPosition();
-      return void (this.findInx = 0);
-    }
-    this.findInx += t;
-    if (this.findInx >= this.findMin) {
-      this.lastPos = null;
-      this.findObg2();
-    }
-  };
-  _ctor.prototype.findObg2 = function () {
-    var t = {
-      position: this.getWpos(),
-      radius: 30
-    };
-    var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBulidList();
-    for (var n = 0; n < e.length; n++) {
-      if ((l = e[n]).getIsWork()) {
-        var i = l.getWposPhyCol();
-        for (var a = 0; a < i.length; a++) {
-          var o = i[a];
-          if (cc.Intersection.polygonCircle(o, t)) {
-            return void ((g = l.getMoveToPos(this.getWpos(), this.obsObj)) && (this.obsPos = g.pos, this.obsObj.push(g.node), this.nextFind = false));
-          }
-        }
-      }
-    }
-    var r = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.obstacles;
-    for (var s = 0; s < r.length; s++) {
-      var l;
-      var c = (l = r[s]).getWposPhyCol();
-      for (var h = 0; h < c.length; h++) {
-        var g;
-        if (cc.Intersection.polygonCircle(c[h], t)) {
-          return void ((g = l.getMoveToPos(this.getWpos(), this.obsObj)) && (this.obsPos = g.pos, this.obsObj.push(g.node), this.nextFind = true));
-        }
-      }
-    }
-  };
   _ctor.prototype.setLeft = function (t) {
     this._visualLeft = !!t;
     GameToolsOverrides.applyModel(this, "ally", this.spAni.node, t);
@@ -499,6 +450,7 @@ var def_KinghtFallSoldierBase = function (t) {
       if (BattleSounds.hit) BattleSounds.hit(this, attacker, t * e);
       if (t * e > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
+        Navigation.reset(this);
         this.state = s.Dead;
         this._followSelected = false;
         this.isAgg = false;
@@ -524,6 +476,17 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    this._spawnPending = false;
+    Navigation.reset(this);
+    this.pathList = null;
+    this.rallyPoint = null;
+    this._rallyOrder = null;
+    this._standingGoal = null;
+    this._settledPoint = null;
+    this._orderTarget = null;
+    this._retaliationTarget = null;
+    this._retaliationPosition = null;
+    this.outBuild = null;
     this._deathAnimation = null;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     this._followSelected = false;
@@ -606,6 +569,7 @@ var def_KinghtFallSoldierBase = function (t) {
     }
   };
   _ctor.prototype.setNew = function () {
+    this._spawnPending = false;
     this._deathAnimation = null;
     if (cc.resources) require("UnitHitFeedback").reset(this);
     if (this.rigidBody) this.rigidBody.active = true;
@@ -715,9 +679,6 @@ var def_KinghtFallSoldierBase = function (t) {
       pathIndex: t.index,
       pathInfoList: [{ index: t.index, pos: cc.v2(t.pos.x, t.pos.y) }]
     };
-    this.obsPos = null;
-    this.obsObj = [];
-    this.lastPos = null;
     this.doMove();
     return true;
   };

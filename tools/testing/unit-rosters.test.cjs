@@ -3,21 +3,21 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'../..'),cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),catalog=require('../../assets/resources/localization/catalog.json');
 test('the six selected roles cover every independent ally and enemy with individual names and portraits',()=>{
  assert.deepEqual(Object.values(cfg.GameTools.unitTypes).map(t=>t.name).sort(),['Fighter','Skirmisher','Vanguard','Mystic','Bruiser','Guardian'].sort());
- const aliases=Object.values(cfg.SoldierCfg).filter(unit=>unit.CampaignBaseUnit);
- assert.equal(Object.keys(cfg.AllyCfg).length,4);assert.equal(aliases.length,127);assert.equal(Object.keys(cfg.SoldierCfg).length,112+aliases.length);
+ const aliases=Object.values(cfg.SoldierCfg).filter(unit=>unit.CampaignBaseUnit),packs=['monster1','monster2','monster3','fantasy-monsters','fantasy-bosses'],sources=packs.flatMap(pack=>require('../../assets/resources/unit-library/'+pack+'/catalog.json').units.map(unit=>unit.id));
+ assert.equal(Object.keys(cfg.AllyCfg).length,4);assert.equal(aliases.length,127);assert.equal(Object.keys(cfg.SoldierCfg).length,12+sources.length+aliases.length);
  for(const [id,ally]of Object.entries(cfg.AllyCfg)){assert.notEqual(ally,cfg.SoldierCfg[id]);assert.notEqual(ally.Name,cfg.SoldierCfg[id].Name);assert(!ally.loadIcon.startsWith('@icon/icons/enemy-heads/'));}
  const legacy=Object.values(cfg.SoldierCfg).filter(unit=>!unit.MonsterSource&&!unit.CampaignBaseUnit), imported=Object.values(cfg.SoldierCfg).filter(unit=>unit.MonsterSource);
  assert.deepEqual(legacy.map(unit=>unit.ID).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>90001+i));
- assert.deepEqual(imported.map(unit=>unit.ID).sort((a,b)=>a-b),Array.from({length:100},(_,i)=>91001+i));
+ assert.equal(new Set(imported.map(unit=>unit.ID)).size,sources.length);assert(imported.every(unit=>Number.isSafeInteger(unit.ID)&&unit.ID>=91001));
+ assert.deepEqual(imported.filter(unit=>['monster1','monster2'].includes(unit.MonsterPack)).map(unit=>unit.ID).sort((a,b)=>a-b),Array.from({length:100},(_,i)=>91001+i),'Original pack identifiers stay stable as later packs are added');
  const name=unit=>catalog.entries[/\[\[loc:(.+)\]\]/.exec(unit.Name)[1]].en;
  assert.deepEqual(legacy.map(name),['Wolf','Bear','Plant Shooter','Buffalo','Alligator Turtle','Wizard','Iron Golem','Pirate Ghost','Vampire','Stone Scorpion','Tree Golem','Skeleton Warlord']);
  assert.equal(new Set(legacy.map(name)).size,12);
- assert.equal(new Set(imported.map(name)).size,100,'Every imported variant has its own display name');
- const sources=['monster1','monster2'].flatMap(pack=>require('../../assets/resources/unit-library/'+pack+'/catalog.json').units.map(unit=>unit.id));
- assert.deepEqual(imported.map(unit=>unit.MonsterSource).sort(),sources.sort(),'Both complete packs are independently selectable');
+ assert.equal(new Set(imported.map(name)).size,sources.length,'Every imported variant has its own display name');
+ assert.deepEqual(imported.map(unit=>unit.MonsterSource).sort(),sources.sort(),'All complete packs are independently selectable');
  for(const [id,enemy]of Object.entries(cfg.SoldierCfg)){
   assert(name(enemy));
-  assert.match(enemy.loadIcon,enemy.MonsterSource||enemy.CampaignBaseUnit?/^@icon\/icons\/monster-roster\/(monster1|monster2)\//:/^@icon\/icons\/enemy-heads\//);
+  assert.match(enemy.loadIcon,enemy.MonsterSource||enemy.CampaignBaseUnit?/^@icon\/icons\/monster-roster\/(monster1|monster2|monster3|fantasy-monsters|fantasy-bosses)\//:/^@icon\/icons\/enemy-heads\//);
   assert(fs.existsSync(path.join(root,'assets/resources',enemy.loadIcon.slice(6)+'.png')));
   if(enemy.MonsterSource){assert.equal(cfg.AllyCfg[id],undefined);assert.equal(enemy.MonsterPack,enemy.MonsterSource.split('/')[0]);}
   const form=Number(id)>=90010&&Number(id)<=90012?Number(id)-90009:'default';

@@ -52,14 +52,21 @@ function removeSpawn(stage,id){const next=clone(stage);next.spawns=next.spawns.f
 function legacyTimeline(encoded,interval){const entries=[],effective=new Map();for(const row of encoded||[])effective.set(Number(row.split('#')[0]),row);for(const value of Array.from(effective.entries()).sort((a,b)=>a[0]-b[0]).map(pair=>pair[1])){const parts=value.split('#'),spawnId=Number(parts[0]);let tick=1;for(const [i,group]of parts[1].split(';').entries()){const pair=group.split(',').map(Number);if(pair[0]!==-1)entries.push({id:'legacy-'+spawnId+'-'+i,spawnId,unitId:pair[0],count:pair[1],startSeconds:tick*interval,intervalSeconds:interval});tick+=pair[1];}}return entries;}
 function graphIdentifierIssues(graph){
  const issues=[],valid=id=>typeof id==='string'&&id.trim().length>0;
+ if(!graph||typeof graph!=='object'||Array.isArray(graph))return ['Path must be an object.'];
+ if(!Array.isArray(graph.nodes))issues.push('Path points must be an array.');
+ if(!Array.isArray(graph.edges))issues.push('Path connections must be an array.');
+ if(!Array.isArray(graph.spawnIds))issues.push('Path spawn associations must be an array.');
  if(!graph||!valid(graph.id))issues.push('Path IDs must be non-empty strings.');
  for(const node of graph&&Array.isArray(graph.nodes)?graph.nodes:[])if(!node||!valid(node.id))issues.push('Path point IDs must be non-empty strings.');
  for(const edge of graph&&Array.isArray(graph.edges)?graph.edges:[])if(!edge||!valid(edge.id))issues.push('Path connection IDs must be non-empty strings.');
  return Array.from(new Set(issues));
 }
 function graphIssues(graph,spawnIds,buildingIds){
- const issues=graphIdentifierIssues(graph),nodes=new Map(),edges=graph.edges||[],outgoing=new Map(),edgeIds=new Set();
+ const issues=graphIdentifierIssues(graph),nodes=new Map(),outgoing=new Map(),edgeIds=new Set();
+ if(!graph||!Array.isArray(graph.nodes)||!Array.isArray(graph.edges)||!Array.isArray(graph.spawnIds)||graph.nodes.some(n=>!n||typeof n!=='object'||Array.isArray(n))||graph.edges.some(e=>!e||typeof e!=='object'||Array.isArray(e)))return issues;
+ const edges=graph.edges;
  if(graph.weight!==undefined&&(!finite(graph.weight)||graph.weight<0))issues.push('Path weight must be zero or greater.');
+ if(graph.spread!==undefined&&(!finite(graph.spread)||graph.spread<0||graph.spread>1500))issues.push('Path spread must be between 0 and 1500.');
  for(const n of graph.nodes||[]){
   if(nodes.has(n.id))issues.push('Duplicate path node '+n.id);nodes.set(n.id,n);
   if(!finite(n.x)||!finite(n.y))issues.push('Invalid path node position');
@@ -110,21 +117,25 @@ function validateMap(map,assets){
  for(const tile of map.ground.foundation.tiles||[])object(tile,map.ground.foundation.transform&&map.ground.foundation.transform.scale||1);for(const layer of map.layers||[]){claim(layer.id);transform(layer.transform);strokes(layer.blockers);if(layer.blockerMask!==undefined)issues.push(...Blockers.issues(layer.blockerMask));polygons(layer.polygons);for(const o of layer.objects||[])object(o,layer.transform&&layer.transform.scale||1);}return Array.from(new Set(issues));
 }
 function validateStage(stage,map,units){
- const issues=[],allBuildings=stage.buildings||[],allSpawns=stage.spawns||[],buildings=allBuildings.filter(b=>b.enabled!==false),ids=new Set(allBuildings.map(b=>b.id)),spawns=allSpawns.filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),allSpawnIds=new Set(allSpawns.map(s=>s.id)),graphs=stage.graphs||[],graphIds=new Set(),buildingIds=new Set(allBuildings.map(b=>b.id));
+ const issues=[],allBuildings=stage.buildings||[],allSpawns=Array.isArray(stage.spawns)?stage.spawns.filter(s=>s&&typeof s==='object'&&!Array.isArray(s)):[],buildings=allBuildings.filter(b=>b.enabled!==false),ids=new Set(allBuildings.map(b=>b.id)),spawns=allSpawns.filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),allSpawnIds=new Set(allSpawns.map(s=>s.id)),graphs=Array.isArray(stage.graphs)?stage.graphs.filter(g=>g&&typeof g==='object'&&!Array.isArray(g)):[],graphIds=new Set(),buildingIds=new Set(allBuildings.map(b=>b.id));
+ if(!Array.isArray(stage.spawns)||allSpawns.length!==stage.spawns.length)issues.push('Spawn points must be an array of objects.');
+ if(!Array.isArray(stage.graphs)||graphs.length!==stage.graphs.length)issues.push('Paths must be an array of objects.');
  if(buildings.filter(b=>b.kind===1).length!==1||!buildings.some(b=>b.kind===1&&b.id===1))issues.push('Place exactly one main hall.');
  if(ids.size!==allBuildings.length)issues.push('Duplicate building ID.');
  for(const b of allBuildings)if(!Number.isSafeInteger(b.id)||b.id<1)issues.push('Building IDs must be positive safe whole numbers.');
  for(const b of buildings){if(![1,2,3,4,5,6].includes(b.kind))issues.push('Choose a valid building type.');if(b.kind!==1&&![1,2,3].includes(b.unlock))issues.push('Choose main hall level 1, 2 or 3 for '+b.name);}
  for(const building of stage.buildings||[]){if(building.renderAfter!==undefined&&(typeof building.renderAfter!=='string'||!building.renderAfter))issues.push('Choose an object layer for building placement.');if(building.wallRotation!==undefined&&(building.kind!==6||typeof building.wallRotation!=='number'||!Number.isFinite(building.wallRotation)))issues.push('Wall rotation requires a finite angle on a wall / gate.');if(building.purchaseSide!==undefined&&!['default','flip','southwest','southeast'].includes(building.purchaseSide))issues.push('Choose Default or Flip for the purchase field.');if(building.purchaseOffset!==undefined&&(!building.purchaseOffset||typeof building.purchaseOffset.x!=='number'||typeof building.purchaseOffset.y!=='number'||!Number.isFinite(building.purchaseOffset.x)||!Number.isFinite(building.purchaseOffset.y)))issues.push('Purchase field offset needs finite X and Y.');}
  if(allSpawnIds.size!==allSpawns.length)issues.push('Duplicate spawn ID.');
+ for(const spawn of allSpawns)if(spawn.radius!==undefined&&(!finite(spawn.radius)||spawn.radius<0||spawn.radius>1500))issues.push('Spawn radius must be between 0 and 1500.');
  for(const s of allSpawns)if(!Number.isSafeInteger(s.id)||s.id<1)issues.push('Spawn IDs must be positive safe whole numbers.');
  // Disabled lanes retain their authored paths for later re-enabling. Only wave
  // groups and active-lane fallbacks need an enabled spawn.
  for(const graph of graphs){if(graphIds.has(graph.id))issues.push('Duplicate path ID.');graphIds.add(graph.id);issues.push(...graphIssues(graph,allSpawnIds,buildingIds));}
  for(const s of spawns){
-  if(!Number.isFinite(graphs.filter(g=>g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)).reduce((total,g)=>total+(g.weight===undefined?1:g.weight),0)))issues.push(s.name+' needs a finite total path weight.');
-  if(!graphs.some(g=>g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)))issues.push(s.name+' needs a route.');
-  else if(!graphs.some(g=>g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)&&!(g.requiresAnyBuilding||[]).length))issues.push(s.name+' needs an unconditional fallback route.');
+  const associated=graphs.filter(g=>Array.isArray(g.spawnIds)&&g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0));
+  if(!Number.isFinite(associated.reduce((total,g)=>total+(g.weight===undefined?1:g.weight),0)))issues.push(s.name+' needs a finite total path weight.');
+  if(!associated.length)issues.push(s.name+' needs a route.');
+  else if(!associated.some(g=>!(g.requiresAnyBuilding||[]).length))issues.push(s.name+' needs an unconditional fallback route.');
  }
  const waves=stage.config&&stage.config.WaveCfg;
  if(!Array.isArray(waves)||!waves.length)issues.push('A stage requires a non-empty wave array.');
@@ -139,7 +150,7 @@ function validateStage(stage,map,units){
    if(!Number.isSafeInteger(e.unitId)||e.unitId<1)issues.push('Choose a spawnable unit.');
    if(units&&(!units[e.unitId]||!units[e.unitId].prefab||[90011,90012].includes(Number(e.unitId))))issues.push('Choose a spawnable unit.');
    if(!Number.isSafeInteger(e.count)||e.count<1||!finite(e.startSeconds)||e.startSeconds<0||!finite(e.intervalSeconds)||e.intervalSeconds<0||e.count>1&&e.intervalSeconds<=0||!finite(e.startSeconds+(e.count-1)*e.intervalSeconds))issues.push('Invalid spawn time, count or interval.');
-   if(e.routeGraphId&&!graphs.some(g=>g.id===e.routeGraphId&&g.spawnIds.includes(e.spawnId)))issues.push('Spawn entry uses an unrelated route.');
+   if(e.routeGraphId&&!graphs.some(g=>g.id===e.routeGraphId&&Array.isArray(g.spawnIds)&&g.spawnIds.includes(e.spawnId)))issues.push('Spawn entry uses an unrelated route.');
    count+=e.count;
   }
   if(!count)issues.push('Wave '+wave.Wave+' needs at least one enemy.');

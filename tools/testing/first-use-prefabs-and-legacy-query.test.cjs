@@ -60,6 +60,10 @@ function fixture() {
     KinghtFallPrefabName: { ItemGood: 'ItemGood' }
   };
   modules.KinghtFallDataMgr = { KinghtFallDataMgr: single({ getSoldierCfgById: id => authored.SoldierCfg[id] }) };
+  // Allocation ownership is isolated here; real coordinate/spread behavior has
+  // its own runtime harness with actual scene transforms and collision grids.
+  modules.KinghtFallNavigation = { positionOf: node => node.position, reset: noop };
+  modules.SpawnArea = { prepare: noop, apply: () => true };
   const actors = [];
   const ctrl = Object.assign(Object.create(load('KinghtFallGameCtrl', cc, modules).default.prototype), {
     node: new Node(), ndMain: new Node(), ndPath: { getChildByName: () => ({ position: { x: 0, y: 0 } }) },

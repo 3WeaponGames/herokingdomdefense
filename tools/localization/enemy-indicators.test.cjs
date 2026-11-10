@@ -154,9 +154,9 @@ test('every monster and boss form uses its own head through the guarded Resource
  manager.getInstance=()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]});cc.resources={};
  try{f.state.loadSpriteFrame=(bundle,key,done)=>pending.push({bundle,key,done});const record={id:90001,ndItem:f.indicator()};
   const units=Object.values(config.SoldierCfg),legacy=units.filter(unit=>!unit.MonsterSource&&!unit.CampaignBaseUnit),imported=units.filter(unit=>unit.MonsterSource),campaign=units.filter(unit=>unit.CampaignBaseUnit);
-  assert.deepEqual(legacy.map(unit=>unit.ID),Array.from({length:12},(_,i)=>90001+i));assert.equal(imported.length,100);
+  assert.deepEqual(legacy.map(unit=>unit.ID),Array.from({length:12},(_,i)=>90001+i));const importedCount=['monster1','monster2','monster3','fantasy-monsters','fantasy-bosses'].reduce((n,pack)=>n+require('../../assets/resources/unit-library/'+pack+'/catalog.json').units.length,0);assert.equal(imported.length,importedCount);
   for(const unit of units){record.id=unit.ID;loadPictogram.call(f.state,record,unit.ID);const request=pending.at(-1);assert.equal(request.bundle,'resources');assert.equal(request.key,unit.loadIcon.slice(6));assert(request.key.startsWith(unit.MonsterSource||unit.CampaignBaseUnit?'icons/monster-roster/':'icons/enemy-heads/'));if(unit.CampaignBaseUnit)assert.equal(unit.loadIcon,config.SoldierCfg[unit.AppearanceSourceUnit].loadIcon);}
-  assert.equal(campaign.length,127);assert.equal(pending.length,112+campaign.length);assert.equal(new Set(pending.map(p=>p.key)).size,112);
+  assert.equal(campaign.length,127);assert.equal(pending.length,12+importedCount+campaign.length);assert.equal(new Set(pending.map(p=>p.key)).size,12+importedCount);
   assert.equal(new Set(pending.slice(0,12).map(p=>p.key)).size,12,'The original twelve monster and boss portraits remain independent');
   const sprite=record.ndItem.getChildByName('sprIcon').getComponent(Sprite);
   for(const request of pending.slice(0,-1)){request.done({getOriginalSize:()=>({width:128,height:128})});assert.equal(sprite.spriteFrame,undefined);}
