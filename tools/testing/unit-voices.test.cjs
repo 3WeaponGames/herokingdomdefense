@@ -8,8 +8,8 @@ function fixture(options = {}) {
   let now = 1000;
   const pending = [], played = [], listeners = [], preferences = { enabled: true }, cache = new Map();
   const node = () => ({ activeInHierarchy: true });
-  const game = { node: node(), gameData: {}, _combatEpoch: 1, gameStatus: 0 };
-  const ui = { ctrGame: game, node: node(), isclose: false };
+  const game = options.game || { node: node(), gameData: {}, _combatEpoch: 1, gameStatus: 0 };
+  const ui = options.ui || { ctrGame: game, node: node(), isclose: false };
   const manager = { appHidden: false, volume: .5, effectEpoch: 0, audioSourceMap: new Map(), channelStates: new Map(),
     getEffectVolume() { return this.volume; },
     setEffectVolume(value) { if (!value && this.volume) this.effectEpoch++; this.volume = value; },
@@ -90,6 +90,15 @@ test('loading the module, invalid unit families, and disabled effects create no 
 test('an audio load that never completes expires without blocking later announcements', () => {
   const f = fixture(); f.voices.announce(f.building()); f.voices.tick(f.game);
   f.advance(11000); f.voices.tick(f.game); assert.equal(f.game._unitVoices.active, null);
+  f.voices.announce(f.building(90003)); f.voices.tick(f.game); f.finishAll();
+  assert.equal(f.played.length, 1); assert(f.played[0].file.includes('crossbowman-level-1'));
+});
+
+test('an announcement completing after its deadline stays silent before the next gameplay tick', () => {
+  const f = fixture(); f.voices.announce(f.building()); f.voices.tick(f.game);
+  f.advance(10000); f.finishAll();
+  assert.equal(f.played.length, 0, 'the late preload started an expired announcement');
+  assert.equal(f.game._unitVoices.active, null);
   f.voices.announce(f.building(90003)); f.voices.tick(f.game); f.finishAll();
   assert.equal(f.played.length, 1); assert(f.played[0].file.includes('crossbowman-level-1'));
 });
@@ -213,22 +222,36 @@ test('the installed voice pack contains two variants per tier and one death per 
   assert.equal(count, 28); assert(total < 2 * 1024 * 1024);
 });
 
-test('paid upgrades and perk upgrades announce on commit, while restoring a saved tier stays silent', () => {
+test('paid and perk barracks upgrades queue their real voices after pause release, while restoring stays silent', () => {
   const { setup, Node } = require('./backend-gameplay-harness.cjs');
   function plain(name, modules) { const context = { exports: {}, require: id => modules[id] }; vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8'), context); return context.exports; }
-  const enums = plain('KinghtFallEnum', {}), info = {}, singleton = value => ({ getInstance: () => value });
-  const h = setup({ KinghtFallEnum: enums, KinghtFallBuildInfo: info, AudioMgr: { AudioMgr: singleton({ playEffectFree() {} }) },
+  const enums = plain('KinghtFallEnum', {}), info = {}, singleton = value => ({ getInstance: () => value }), buildingEffects = [];
+  const h = setup({ KinghtFallEnum: enums, KinghtFallBuildInfo: info, AudioMgr: { AudioMgr: singleton({ playEffectFree(id, volume, count, options) { buildingEffects.push({ id, options, paused: h.ui.isPauset }); } }) },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getMissionData: () => ({ recordQuestEvent() {} }) }) } });
   const Info = plain('KinghtFallBuildInfo', { ...h.e.stubs, RelicRuntime: h.load('RelicRuntime') }).KinghtFallBuildInfo; info.KinghtFallBuildInfo = Info;
-  Object.assign(h.d, { coin: 1000, treasureAddTime: {}, getBaseLevel: () => 3 }); Object.assign(h.ui, { canStart: true, isclose: false, onPauseGame() {}, addTask() {} });
-  const Base = h.load('KinghtFallBuildBase').default, b = new Base(), cfg = authored.BuildEnum[3]; let announcements = 0;
+  const f = fixture({ game: h.g, ui: h.ui }); h.e.stubs.UnitVoices = f.voices; h.e.cc.resources = {};
+  h.e.stubs.KinghtFallConfig.KinghtFallAudioId.buliding = 'construction';
+  Object.assign(h.d, { coin: 1000, treasureAddTime: {}, getBaseLevel: () => 3 });
+  Object.assign(h.ui, { canStart: true, isclose: false, isPauset: false, onPauseGame(paused) { this.isPauset = paused; f.voices.suspend(h.g, paused); }, addTask() {} });
+  const Base = h.load('KinghtFallBuildBase').default, b = new Base(), cfg = authored.BuildEnum[3];
   Object.assign(b, { ID: 9, node: new Node(), index: 17, buildCfg: cfg, canLock: true,
-    buildInfo: new Info(3, cfg.levelList.find(x => x.index === 17)), doUpgreadAni() {}, scheduleOnce(fn) { fn(); }, onUpgradeCommitted() { announcements++; } });
-  b.doUpgrade(2, true); assert.equal(b.index, 18); assert.equal(announcements, 1);
-  b.onBuffUpgrade(); assert.equal(b.index, 19); assert.equal(announcements, 2);
-  b.setLevel = level => { b.index = level; }; b.setSave({ level: 17 }); assert.equal(announcements, 2);
-  h.e.cc.resources = {}; h.e.stubs.UnitVoices = { announce: owner => { assert.equal(owner, b); announcements++; } };
-  h.load('KinghtFallBuildBarracks').default.prototype.onUpgradeCommitted.call(b); assert.equal(announcements, 3);
+    buildInfo: new Info(3, cfg.levelList.find(x => x.index === 17)), doUpgreadAni() {}, scheduleOnce(fn) { fn(); },
+    onUpgradeCommitted: h.load('KinghtFallBuildBarracks').default.prototype.onUpgradeCommitted });
+  b.doUpgrade(2, true); assert.equal(b.index, 18); assert.equal(h.ui.isPauset, false);
+  f.voices.tick(h.g); f.finishAll(); assert.equal(f.played.length, 1); assert(f.played[0].file.includes('crossbowman-level-2'));
+  assert.equal(buildingEffects.length, 1); assert.equal(buildingEffects[0].paused, false);
+  assert.equal(buildingEffects[0].id, 'construction'); assert.equal(buildingEffects[0].options.owner, b); assert.equal(buildingEffects[0].options.game, h.g);
+  const queue = h.g._upgradeAudioQueue = new Set();
+  b.onBuffUpgrade(); assert.equal(b.index, 19);
+  assert.equal(buildingEffects.length, 1, 'perk construction feedback played before cleanup');
+  b._playUpgradeAudio(); assert.equal(queue.size, 1); assert(queue.has(b));
+  f.voices.dispose(h.g); h.g._combatEpoch++; delete h.g._upgradeAudioQueue;
+  queue.forEach(owner => owner._playUpgradeAudio());
+  f.voices.tick(h.g); f.finishAll(); assert.equal(f.played.length, 2); assert(f.played[1].file.includes('crossbowman-level-3'));
+  assert.equal(buildingEffects.length, 2);
+  b.setLevel = level => { b.index = level; }; b.setSave({ level: 17 });
+  f.voices.tick(h.g); f.finishAll(); assert.equal(f.played.length, 2);
+  assert.equal(buildingEffects.length, 2);
 });
 
 test('the real allied lethal-hit hook requests one matching death vocal before its authored animation', () => {

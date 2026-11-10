@@ -45,7 +45,7 @@ var def_GAD_App = function () {
         t && t();
         if (n._entryGeneration !== generation) return;
         $z1AudioMgr.AudioMgr.getInstance().playMusic($z1GAD_Configs.GAD_AudioId.bgm, $z1GAD_Configs.GADConfig.BgMusic);
-        $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.mission);
+        $z1AudioMgr.AudioMgr.getInstance().playEffect($z1GAD_Configs.GAD_AudioId.mission, undefined, { game: $z1GAD_PlayerMgr.default.getInstance()._audioGame });
       } }, entry ? { cost: entry.cost, unlockStage: entry.unlockStage, isCurrent: function () { return n._entryGeneration === generation; } } : null);
     };
     if (this._isInited) {

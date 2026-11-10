@@ -7,7 +7,7 @@ const test = require('node:test');
 const scripts = path.resolve(__dirname, '../../assets/_script');
 
 // Silent model of the native adapter: resume cannot revive a stopped/error ID.
-function fixture() {
+function fixture(options = {}) {
   const states = { ERROR: -1, INITIALIZING: 0, PLAYING: 1, PAUSED: 2, STOPPED: 3 };
   class Source {
     constructor() { this.state = states.STOPPED; this.plays = 0; this.volume = 1; this.loop = false; this.mute = false; this.audio = { getState: () => this.state }; }
@@ -26,7 +26,7 @@ function fixture() {
   const modules = { BaseMgr: { default: function () {} }, CacheUtils: { CacheUtils: cache }, ResourceMgr: { ResourceMgr: { getInstance: () => resource } }, LogMgr: { LogMgr: { getInstance: () => ({ error(...args) { errors.push(args); } }) } } };
   const cc = { assetManager: { postLoadNative(clip, done) { native.push({clip,done}); } }, AudioSource: Source, AudioClip: function () {}, _Audio: { State: states }, game, isValid: value => !!value && !value.destroyed };
   function load(name) {
-    const context = { setTimeout(fn,ms){const id=++timerId;timers.set(id,{fn,ms});return id;}, clearTimeout(id){timers.delete(id);}, exports: {}, require: dep => modules[dep] || { default: function () {} }, cc,
+    const context = { document: options.document, setTimeout(fn,ms){const id=++timerId;timers.set(id,{fn,ms});return id;}, clearTimeout(id){timers.delete(id);}, exports: {}, require: dep => modules[dep] || { default: function () {} }, cc,
       __extends(ctor, base) { ctor.prototype = Object.create(base.prototype); ctor.prototype.constructor = ctor; },
       __decorate: (_decorators, target) => target };
     vm.runInNewContext(fs.readFileSync(path.join(scripts, name + '.js'), 'utf8'), context, { filename: name + '.js' });
@@ -363,4 +363,109 @@ test('a retired actor replacement leaves the previously playing valid sound inta
   m.playNamedEffect('hit','fx');f.finish(0);const source=m.getAudioSource('fx');
   m.playNamedEffect('fight','fx',1,{owner});owner.node.activeInHierarchy=false;f.finish(1);
   assert.equal(source.clip.name,'hit');assert.equal(source.isPlaying,true);assert.equal(source.plays,1);
+});
+
+
+test('browser gesture queues are retired by pause/hide and resume restores the music cursor', () => {
+  for(const pause of ['direct','global','hide']){
+    const f=fixture(),m=f.manager;m.playMusic('ready','bg');f.finish(0);const source=m.getAudioSource('bg');let queued=true,cursor=12.75;
+    source.audio._touchToPlay=function(){};source.audio._state=f.states.PLAYING;
+    source.getCurrentTime=()=>cursor;source.setCurrentTime=value=>{cursor=value;};const stop=source.stop,play=source.play;
+    source.stop=function(){queued=false;stop.call(this);this.audio._state=f.states.STOPPED;};
+    source.play=function(){cursor=0;play.call(this);this.audio._state=f.states.PLAYING;};
+    // DOM autoplay can report STOPPED while an engine gesture retry is queued.
+    source.state=f.states.STOPPED;
+    if(pause==='direct')m.pauseMusic('bg');else if(pause==='global')m.pauseAllMusic();else f.emit('hide');
+    if(queued)source.play();assert.equal(source.isPlaying,false,pause+' allowed a stale gesture retry');
+    if(pause==='direct')m.resumeMusic('bg');else if(pause==='global')m.resumeAllMusic();else f.emit('show');
+    assert.equal(source.isPlaying,true);assert.equal(cursor,12.75);assert.equal(source.plays,2);
+  }
+});
+
+test('browser pauses do not restart completed jingles or seek a replacement to the old music cursor', () => {
+  const f=fixture(),m=f.manager;m.playMusic('ready','jingle',false);f.finish(0);const ended=m.getAudioSource('jingle');ended.audio._touchToPlay=function(){};ended.audio._state=f.states.STOPPED;ended.state=f.states.STOPPED;
+  m.pauseAllMusic();m.resumeAllMusic();assert.equal(ended.plays,1);
+  m.playMusic('ready','bg');const source=m.getAudioSource('bg');let cursor=9;
+  source.audio._touchToPlay=function(){};source.audio._state=f.states.PLAYING;source.getCurrentTime=()=>cursor;source.setCurrentTime=value=>{cursor=value;};const play=source.play;source.play=function(){cursor=0;play.call(this);};
+  m.pauseMusic('bg');m.playMusic('fight','bg');f.finish(1);m.resumeMusic('bg');assert.equal(cursor,0,'new track inherited old pause cursor');
+});
+
+test('pending effects cannot replace music after mute or hide, and pending music survives retiring the old effect', () => {
+  for(const retire of ['mute','hide'])for(const incoming of ['effect','music']){
+    const f=fixture(),m=f.manager;if(incoming==='effect')m.playMusic('ready','shared');else m.playNamedEffect('hit','shared');f.finish(0);const source=m.getAudioSource('shared');
+    if(incoming==='effect')m.playNamedEffect('fight','shared');else m.playMusic('fight','shared');
+    if(retire==='mute'){m.setEffectVolume(0);m.setEffectVolume(1);}else{f.emit('hide');f.emit('show');}
+    f.finish(1);assert.equal(source.clip.name,incoming==='effect'?'ready':'fight',retire+' '+incoming);assert.equal(source.isPlaying,true);
+  }
+});
+
+test('owned effect retirement cancels pending native starts without cutting unowned audio', () => {
+  const f=fixture(),m=f.manager,game={node:{activeInHierarchy:true},gameData:{},_combatEpoch:1},other={node:{activeInHierarchy:true},gameData:{},_combatEpoch:1};
+  m.playNamedEffect('hit','owned',1,{game});m.playNamedEffect('hit','other',1,{game:other});m.playEffect('hit');f.finish(0);const owned=m.getAudioSource('owned');owned.state=f.states.INITIALIZING;
+  assert.equal(m.stopOwnedEffects(game),1);assert.equal(owned.state,f.states.STOPPED);assert.equal(m.getAudioSource('other').isPlaying,true);assert.equal(m.getAudioSource('effect').isPlaying,true);assert.equal(m.stopOwnedEffects(game),0);
+});
+
+test('scoped cancellation preserves previous valid playback and replacements owned by a different scope', () => {
+  for(const previousScope of ['ui','other','music']){
+    const f=fixture(),m=f.manager,game={node:{activeInHierarchy:true},gameData:{}},other={node:{activeInHierarchy:true},gameData:{}};
+    if(previousScope==='music')m.playMusic('ready','shared');else m.playNamedEffect('ready','shared',1,previousScope==='other'?{game:other}:undefined);f.finish(0);const source=m.getAudioSource('shared');
+    m.playNamedEffect('fight','shared',1,{game});assert.equal(m.stopOwnedEffects(game),1);f.finish(1);assert.equal(source.isPlaying,true,previousScope);assert.equal(source.clip.name,'ready');
+  }
+  for(const replacementScope of ['ui','other']){
+    const f=fixture(),m=f.manager,game={node:{activeInHierarchy:true},gameData:{}},other={node:{activeInHierarchy:true},gameData:{}};
+    m.playNamedEffect('ready','shared',1,{game});f.finish(0);const source=m.getAudioSource('shared');m.playNamedEffect('fight','shared',1,replacementScope==='other'?{game:other}:undefined);
+    m.stopOwnedEffects(game);assert.equal(source.isPlaying,false);f.finish(1);assert.equal(source.clip.name,'fight');assert.equal(source.isPlaying,true,replacementScope);assert.equal(m.stopOwnedEffects(game),0);
+  }
+});
+
+test('initializing audio after browser hide does not miss the first background state', () => {
+  const f=fixture({document:{hidden:true}}),m=f.manager;
+  m.playMusic('ready','bg');m.playEffect('hit');assert.equal(f.pending.length,1);f.finish(0);assert.equal(m.getAudioSource('bg').plays,0);
+  f.emit('show');assert.equal(m.getAudioSource('bg').plays,1);assert.deepEqual(f.writes,[]);
+});
+
+
+function queuedBrowserFixture() {
+  const f=fixture(),Base=f.cc.AudioSource,queue=[],permission={allowed:true};
+  class BrowserSource extends Base {
+    constructor(){super();this.elements=[];this.audio._touchToPlay=function(){};this.audio._state=f.states.STOPPED;this.audio.getState=()=>{if(this.audio._state===f.states.PLAYING&&this.audio._element&&this.audio._element.paused)this.audio._state=f.states.STOPPED;return this.audio._state;};this.audio.destroy=()=>{this.audio._element=null;};}
+    set clip(value){this._clip=value;const element={ended:false,paused:true,playing:false,calls:0,cursor:0,play(){this.calls++;if(permission.allowed){this.paused=false;this.playing=true;}},_context:{state:'suspended',currentTime:0}};this.audio._element=element;this.elements.push(element);}
+    get clip(){return this._clip;}
+    get isPlaying(){return this.audio.getState()===f.states.PLAYING;}
+    play(){this.plays++;this.audio._state=f.states.PLAYING;this.audio._element.cursor=0;this.audio._element.play();}
+    stop(){this.audio._state=f.states.STOPPED;const element=this.audio._element;if(element){element.paused=true;element.playing=false;const i=queue.indexOf(element);if(i>=0)queue.splice(i,1);}}
+    getCurrentTime(){return this.audio._element.cursor;}
+    setCurrentTime(value){this.audio._element.cursor=value;}
+  }
+  f.cc.AudioSource=BrowserSource;
+  return {...f,permission,enqueue(source,count=2){for(let i=0;i<count;i++)queue.push(source.audio._element);},gesture(){for(const element of queue.splice(0))element.play(0);}};
+}
+
+test('duplicate iOS browser gesture entries cannot bypass pause, hide, stop or release', () => {
+  for(const retirement of ['direct','global','hide','stop','release']){
+    const f=queuedBrowserFixture(),m=f.manager;m.playMusic('ready','bg');f.finish(0);const source=m.getAudioSource('bg'),element=source.audio._element;f.enqueue(source);
+    if(retirement==='direct')m.pauseMusic('bg');else if(retirement==='global')m.pauseAllMusic();else if(retirement==='hide')f.emit('hide');else if(retirement==='stop')m.stopMusic('bg');else m.releaseAudioSource('bg',source);
+    f.gesture();assert.equal(element.playing,false,retirement);assert.equal(element.calls,1,retirement);
+    if(retirement==='direct')m.resumeMusic('bg');else if(retirement==='global')m.resumeAllMusic();else if(retirement==='hide')f.emit('show');
+    if(['direct','global','hide'].includes(retirement))assert.equal(element.playing,true);
+  }
+});
+
+test('DOM autoplay still starts after querying stopped state, while completed jingles cannot replay', () => {
+  const f=queuedBrowserFixture(),m=f.manager;f.permission.allowed=false;m.playMusic('ready','bg');f.finish(0);const source=m.getAudioSource('bg'),element=source.audio._element;delete element._context;f.enqueue(source,1);
+  assert.equal(source.isPlaying,false);f.permission.allowed=true;f.gesture();assert.equal(element.playing,true);assert.equal(source.isPlaying,true);
+  m.playMusic('ready','jingle',false);const jingle=m.getAudioSource('jingle'),finished=jingle.audio._element;finished.ended=true;finished.paused=true;finished.playing=false;jingle.audio._state=f.states.STOPPED;f.enqueue(jingle,1);f.gesture();assert.equal(finished.playing,false);
+});
+
+test('stale queued elements cannot replay an old clip or restart already resumed music', () => {
+  const f=queuedBrowserFixture(),m=f.manager;m.playMusic('ready','bg');f.finish(0);const source=m.getAudioSource('bg'),old=source.audio._element;f.enqueue(source);
+  m.playMusic('fight','bg');f.finish(1);f.gesture();assert.equal(old.playing,false);assert.equal(old.calls,1);const current=source.audio._element;
+  current.cursor=1.25;f.enqueue(source);m.pauseAllMusic();m.resumeAllMusic();current._context.state='running';current._context.currentTime=2;const calls=current.calls;f.gesture();assert.equal(current.calls,calls);assert.equal(current.cursor,1.25);
+});
+
+test('unchanged master volume and channel gain do not restart iOS audio buffers', () => {
+  const f=fixture(),m=f.manager;m.playMusic('ready','bg');f.finish(0);const source=m.getAudioSource('bg');let volume=source.volume,writes=0;Object.defineProperty(source,'volume',{get:()=>volume,set:value=>{volume=value;writes++;}});
+  for(let i=0;i<100;i++){m.setMusicVolume(1);m.setChannelGain('bg',1);}assert.equal(writes,0);
+  m.setMusicVolume(.5);assert.equal(writes,1);for(let i=0;i<100;i++)m.setMusicVolume(.5);assert.equal(writes,1);
+  m.setChannelGain('bg',.5);assert.equal(writes,2);m.setChannelGain('bg',.5);assert.equal(writes,2);m.setMusicVolume(.4);assert.equal(writes,3);assert.equal(volume,.2);
 });

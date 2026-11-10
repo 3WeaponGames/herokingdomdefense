@@ -115,7 +115,7 @@ for (const id of ['lottery', 'result']) test('legacy ' + id + ' keeps its requir
       emGADEventName: { GAD_Bubble_Buf: 'bubble' }, emGADGameState: { Game: 1, Pause: 2, Over: 3 } };
     Object.assign(h.modules, { GAD_Configs: config, GAD_PlayerMgr: { default: singleton({ setState: value => state = value, getState: () => state, finishRun: noop }) },
       GAD_DataMgr: {}, GAD_Bullet: {}, GAD_Cards: {}, GAD_Door: {}, GAD_Enermy: {}, GADGameEnumData: {}, PlatformSetting: {},
-      AudioMgr: { AudioMgr: singleton({ playEffect: noop }) }, SdkMgr: {}, Utils: {} });
+      AudioMgr: { AudioMgr: singleton({ playEffect: noop, stopOwnedEffects: noop }) }, SdkMgr: {}, Utils: {} });
     const Game = h.load('GAD_UIGame').default, ui = new Game(); ui.node = new h.cc.Node('Legacy'); ui.uid = 'legacy';
     h.ui.setConf({ [id]: { bundleName: 'ui', prefab: id, name: id, zIndex: 10 } });
     h.cc.instantiate = () => { const Base = h.load('BaseUI').default, panel = new Base(), node = new h.cc.Node(id); node.ui = panel; panel.node = node; return node; };

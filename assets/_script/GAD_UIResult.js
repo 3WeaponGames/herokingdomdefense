@@ -39,7 +39,7 @@ var def_GAD_UIResult = function (t) {
       if (!t.isclose && cc.isValid(t.resultSp, true)) t.resultSp.setAnimation(0, "victory_idle", false);
     });
     $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1GAD_Configs.GADConfig.BgMusic);
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1GAD_Configs.GAD_AudioId.victory);
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree(this.isWin ? $z1GAD_Configs.GAD_AudioId.victory : $z1GAD_Configs.GAD_AudioId.fail, undefined, undefined, { owner: this, game: this });
     this.addEvent("SaveRecovered", this.refreshResult);
     this.refreshResult();
     this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (prefab) {
@@ -112,6 +112,7 @@ var def_GAD_UIResult = function (t) {
     }, relic, true);
   };
   _ctor.prototype.onClose = function () {
+    $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this);
     var node = this._relicDetailNode;
     this._relicDetailNode = null;
     if (node && cc.isValid(node, true)) $z1UIMgr.UIMgr.getInstance().closeUI(node);

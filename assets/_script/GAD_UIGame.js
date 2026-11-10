@@ -74,6 +74,7 @@ var def_GAD_UIGame = function (t) {
   _ctor.prototype.onLoad = function () {
     this._waveLevelCfgs = $z1GAD_DataMgr.default.getInstance().getWaveCfgs($z1GAD_PlayerMgr.default.getInstance().getLevel());
     n.script = this;
+    $z1GAD_PlayerMgr.default.getInstance()._audioGame = this;
     "1" == $z1GAD_DataMgr.default.getInstance().getUrlParam("isEditor") && (this._isEditor = true);
   };
   _ctor.prototype.setGmNode = function () {
@@ -339,6 +340,10 @@ var def_GAD_UIGame = function (t) {
     this.openRequiredUI(id, function (node) { game._decisionNode = node; }, value);
   };
   _ctor.prototype.onClose = function () {
+    var player = $z1GAD_PlayerMgr.default.getInstance();
+    this._audioPauseEpoch = (this._audioPauseEpoch || 0) + 1;
+    $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this);
+    if (player._audioGame === this) player._audioGame = null;
     if (this._projectileLooks) this._projectileLooks.dispose();
     this._projectileLooks = null;
     if (n.script === this && $z1GAD_PlayerMgr.default.getInstance()._run === this._rewardRun) $z1GAD_PlayerMgr.default.getInstance().finishRun("quit");

@@ -10,6 +10,7 @@ function manager() { return require("AudioMgr").AudioMgr.getInstance(); }
 function supported() { return typeof cc !== "undefined" && cc.resources && !(typeof CC_EDITOR !== "undefined" && CC_EDITOR); }
 function available(audio) { return audio && audio.loadClip && audio.playSource && audio.getAudioSource && audio.getEffectVolume; }
 function audible(state) { return !state.hidden && !state.manager.appHidden && state.manager.getEffectVolume() > 0 && require("CacheUtils").CacheUtils.canPlayEffect(); }
+function paused(state) { return state.paused || state.ui && state.ui.isPauset; }
 function validNode(owner) { return !owner || cc.isValid(owner, true) && !!owner.node && cc.isValid(owner.node, true) && owner.node.activeInHierarchy !== false; }
 function current(state) {
   if (!state || state.disposed) return false;
@@ -80,7 +81,7 @@ function effect(id, owner, options) {
   options = options || {};
   var entry = entries && entries[id], state = context(owner, options);
   var closingMenu = options.menu && options.closing;
-  if (!entry || entry.loop || !current(state) || !audible(state) || state.paused && entry.group !== "signal" && entry.group !== "ui" || !closingMenu && !validNode(owner)) return false;
+  if (!entry || entry.loop || !current(state) || !audible(state) || paused(state) && entry.group !== "signal" && entry.group !== "ui" || !closingMenu && !validNode(owner)) return false;
   if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return false;
   var now = Date.now(), cooldown = options.cooldown === undefined ? entry.cooldown : options.cooldown;
   if (state.last[id] !== undefined && now - state.last[id] < cooldown) return false;
@@ -91,7 +92,7 @@ function effect(id, owner, options) {
   state.last[id] = now;
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function (clip) {
     if (!clip || !current(state) || !audible(state) || state.cancelEpoch !== cancelEpoch || state.manager.effectEpoch !== managerEpoch || Date.now() - now > 500 || !closingMenu && !validNode(owner)) return;
-    if (entry.group !== "signal" && entry.group !== "ui" && (state.paused || state.effectsEpoch !== version)) return;
+    if (entry.group !== "signal" && entry.group !== "ui" && (paused(state) || state.effectsEpoch !== version)) return;
     if (owner && owner.node && owner.node._combatGeneration !== generation) return;
     if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return;
     if (options.menu && owner && (closing ? owner._resourceGeneration !== resourceGeneration && owner._resourceGeneration !== resourceGeneration + 1 : owner._resourceGeneration !== resourceGeneration || owner.isclose)) return;
@@ -189,7 +190,11 @@ function loop(state, key, id, level) {
   if (active && active.managerEpoch !== state.manager.effectEpoch) { stopLoop(state, key); active = null; }
   if (active && active.id === id) {
     active.level = level;
-    if (active.source) active.source.volume = gain(state, level);
+    if (active.source) {
+      var volume = gain(state, level);
+      // Creator's iOS WebAudio volume setter restarts playback on every write.
+      if (active.source.volume !== volume) active.source.volume = volume;
+    }
     var nativeAudio = active.source && active.source.audio, status = nativeAudio && nativeAudio.getState && nativeAudio.getState(), states = cc._Audio && cc._Audio.State;
     var ended = states && (status === states.STOPPED || status === states.ERROR);
     if (!(active.failedAt && Date.now() - active.failedAt >= 1500) && !(ended && Date.now() - active.startedAt >= 1000)) return;
@@ -199,7 +204,8 @@ function loop(state, key, id, level) {
   var request = state.loops[key] = { id: id, level: level, managerEpoch: state.manager.effectEpoch }, entry = entries[id];
   if (!entry) { stopLoop(state, key); return; }
   try { state.manager.loadClip("KinghtFallAudio", entry.path, entry.path, function (clip) {
-    if (state.loops[key] !== request || !current(state) || !audible(state) || state.paused) return;
+    if (state.loops[key] !== request) return;
+    if (!current(state) || !audible(state) || paused(state)) { stopLoop(state, key); return; }
     if (state.manager.effectEpoch !== request.managerEpoch) { stopLoop(state, key); return; }
     if (!clip) { request.failedAt = Date.now(); return; }
     var channel = getSource(state, "loop-" + key); request.source = channel.source;
@@ -227,7 +233,7 @@ function tick(game) {
   var state = game && game._battleSounds;
   if (!state) return;
   if (!current(state)) { dispose(game); return; }
-  if (!audible(state) || state.paused) { stopAll(state); state.positions = new WeakMap(); return; }
+  if (!audible(state) || paused(state)) { stopAll(state); state.positions = new WeakMap(); return; }
   var surface = biome(game), horse = false, foot = null, flying = false;
   var hero = game.ctrPlay, center = point(hero), data = game.gameData;
   if (!center) { stopAll(state); state.positions = new WeakMap(); return; }

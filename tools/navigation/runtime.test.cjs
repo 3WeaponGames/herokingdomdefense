@@ -488,6 +488,7 @@ const engineBodyFile = path.join(engineDir, 'cocos2d/core/physics/CCRigidBody.js
 if (fs.existsSync(engineBodyFile)) {
   test('Installed Cocos physics reproduces the 166.667px drift; ancestor synchronization preserves all local map coordinates', () => {
     const e = environment(), physics = e.physics, scene = new Node('scene'), canvas = new Node('canvas', scene, 375, 667), map = new Node('map', canvas);
+    e.stubs.AudioMgr = { AudioMgr: { getInstance: () => ({ stopOwnedEffects() {} }) } };
     const gate = e.unit(-453.39, 703.474, map), terrain = e.unit(-172.986, 1495.705, map), wallParent = new Node('wall parent', map, -400, 700), wall = e.unit(7.055, -42.225, wallParent);
     const bodySource = fs.readFileSync(engineBodyFile, 'utf8'), managerSource = fs.readFileSync(path.join(engineDir, 'cocos2d/core/physics/CCPhysicsManager.js'), 'utf8');
     const globals = { cc: e.cc, VEC2_ZERO: Vec2.ZERO, PTM_RATIO: 32, BodyType: { Animated: 3 }, PHYSICS_ANGLE_TO_ANGLE: 180 / Math.PI,
@@ -522,6 +523,7 @@ if (fs.existsSync(engineBodyFile)) {
 
 test('Ancestor scaling reapplies live collider shapes without resurrecting disabled, inactive or pending fixtures', () => {
   const e = environment(), map = e.game.ndMain, unit = e.unit(20, 30);
+  e.stubs.AudioMgr = { AudioMgr: { getInstance: () => ({ stopOwnedEffects() {} }) } };
   const ctrl = new (e.load('KinghtFallGameCtrl').default)();
   const calls = [];
   for (const [name, enabled, active, initialized] of [

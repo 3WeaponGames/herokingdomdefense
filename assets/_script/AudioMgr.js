@@ -12,6 +12,11 @@ function audioVolume(value) {
   var number = Number(value);
   return isFinite(number) ? Math.max(0, Math.min(1, number)) : null;
 }
+function updateVolume(source, value) {
+  var volume = audioVolume(value);
+  // Creator's iOS WebAudio volume setter restarts its buffer source.
+  if (volume !== null && source.volume !== volume) source.volume = volume;
+}
 function initializingAudio(source) {
   var states = cc._Audio && cc._Audio.State;
   var initializing = states && (states.INITIALIZING === undefined ? states.INITIALZING : states.INITIALIZING);
@@ -20,10 +25,49 @@ function initializingAudio(source) {
 function pauseAudio(source, state) {
   // The native and browser pause APIs ignore INITIALIZING. Stop that pending
   // start and keep the loaded clip ready for an explicitly permitted resume.
-  if (state && state.started && initializingAudio(source)) {
+  var audio = source.audio, states = cc._Audio && cc._Audio.State;
+  // Browser gesture queues play the raw element even after pause(). Only stop()
+  // retires that queue; retain the cursor so an allowed resume keeps its place.
+  if (state && state.started && audio && typeof audio._touchToPlay === "function") {
+    var resume = !!state.loop || initializingAudio(source) || states && (audio._state === states.PLAYING || audio._state === states.PAUSED);
+    var position = Number(source.getCurrentTime && source.getCurrentTime());
+    source.stop();
+    if (resume) { state.resumeTime = isFinite(position) && position > 0 ? position : 0; state.started = false; }
+  } else if (state && state.started && initializingAudio(source)) {
     source.stop();
     state.started = false;
   } else source.pause();
+}
+function guardBrowserElement(manager, source) {
+  var audio = source.audio, element = audio && audio._element;
+  if (!audio || typeof audio._touchToPlay !== "function" || !element || typeof element.play !== "function") return;
+  var previous = element._hkdAudioPlayback;
+  if (previous && previous.manager === manager && previous.source === source) return;
+  var play = element.play;
+  element._hkdAudioPlayback = { manager: manager, source: source };
+  element.play = function () {
+    var state = manager.channelStates.get(source), states = cc._Audio && cc._Audio.State;
+    if (source.audio !== audio || audio._element !== element || manager.releasedSources.has(source) ||
+        !state || !state.active || !state.ready || state.paused || manager.appHidden || state.music && manager.allMusicPaused ||
+        state.ownerCurrent && !state.ownerCurrent() ||
+        !(state.music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect())) return;
+    // Creator's iOS volume changes can enqueue the same element repeatedly.
+    // Late engine gesture retries must obey channel intent, including completion.
+    if (state.started && states && (audio._state === states.ERROR || audio._state === states.STOPPED && element.ended !== false)) return;
+    var context = element._context;
+    if (state.started && element.paused === false && (!context || context.currentTime > 0 && context.state !== "suspended" && context.state !== "interrupted")) return;
+    if (states) audio._state = states.PLAYING;
+    return play.apply(this, arguments);
+  };
+}
+function retireEffect(manager, source, state, preservePending) {
+  var request = state.pending;
+  if (state.loading && request && (request.music || preservePending)) {
+    // Retire the old effect without cancelling a newly requested music track.
+    source.stop(); state.ready = false; state.started = false; state.resumeTime = 0; state.game = null; state.ownerCurrent = null;
+    state.music = request.music; state.loop = request.loop; state.volume = request.volume;
+    request.music && request.loop ? manager.addMusicKey(state.key) : manager.removeMusicKey(state.key);
+  } else manager.stopSource(source);
 }
 function audioOwner(options) {
   if (!options || !options.owner && !options.game) return null;
@@ -65,6 +109,7 @@ var exp_AudioMgr = function (t) {
   };
   _ctor.prototype.init = function (t) {
     this.ADConf = t;
+    if (typeof document !== "undefined" && document.hidden === true) this.appHidden = true;
     var e = $z1CacheUtils.CacheUtils.getData("EFFECTVOLUME");
     e !== null && e !== undefined && e !== "" && audioVolume(e) !== null && (this.effectVolume = audioVolume(e));
     var n = $z1CacheUtils.CacheUtils.getData("MUSICVOLUME");
@@ -156,8 +201,8 @@ var exp_AudioMgr = function (t) {
     this.effectVolume = volume;
     var manager = this;
     this.channelStates.forEach(function (state, source) {
-      if (!state.music && state.volume) source.volume = state.volume() * state.gain;
-      if (!state.music && volume === 0) manager.stopSource(source);
+      if (!state.music && state.volume) updateVolume(source, state.volume() * state.gain);
+      if (!state.music && volume === 0) retireEffect(manager, source, state);
     });
     $z1CacheUtils.CacheUtils.saveData("EFFECTVOLUME", this.effectVolume + "");
   };
@@ -167,7 +212,7 @@ var exp_AudioMgr = function (t) {
     if (volume === null) return;
     this.musicVolume = volume;
     this.channelStates.forEach(function (state, source) {
-      if (state.music && state.volume) source.volume = state.volume() * state.gain;
+      if (state.music && state.volume) updateVolume(source, state.volume() * state.gain);
     });
     $z1CacheUtils.CacheUtils.saveData("MUSICVOLUME", this.musicVolume + "");
   };
@@ -182,7 +227,7 @@ var exp_AudioMgr = function (t) {
     if (!source || gain === null) return false;
     var state = this.channelState(source);
     state.gain = gain;
-    if (state.volume) source.volume = state.volume() * gain;
+    if (state.volume) updateVolume(source, state.volume() * gain);
     return true;
   };
   _ctor.prototype.getAudioSource = function (t) {
@@ -195,7 +240,7 @@ var exp_AudioMgr = function (t) {
   _ctor.prototype.channelState = function (source) {
     var state = this.channelStates.get(source);
     if (!state) {
-      state = { version: 0, active: false, loading: false, ready: false, started: false, paused: false, gain: 1 };
+      state = { version: 0, active: false, loading: false, ready: false, started: false, paused: false, gain: 1, resumeTime: 0, game: null, pending: null, ownerCurrent: null };
       this.channelStates.set(source, state);
     }
     return state;
@@ -268,6 +313,8 @@ var exp_AudioMgr = function (t) {
     var manager = this;
     var state = this.channelState(source);
     var version = ++state.version;
+    var effectEpoch = this.effectEpoch;
+    var request = state.pending = { music: music, loop: loop, volume: volume, game: options && options.game };
     state.active = true;
     state.loading = true;
     state.key = key;
@@ -282,8 +329,9 @@ var exp_AudioMgr = function (t) {
     this.loadClip(config.bundle, config.path, cacheKey || config.path, function (clip) {
       if (state.version !== version || !state.active) return;
       state.loading = false;
+      state.pending = null;
       // An obsolete replacement must not cut off the previous valid sound.
-      if (isCurrent && !isCurrent()) clip = null;
+      if (isCurrent && !isCurrent() || !music && manager.effectEpoch !== effectEpoch) clip = null;
       var enabled = music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect();
       if (!enabled) { manager.stopSource(source); manager.removeMusicKey(key); return; }
       if (!clip) {
@@ -294,14 +342,20 @@ var exp_AudioMgr = function (t) {
       }
       source.stop();
       source.clip = clip;
-      source.loop = loop;
-      source.volume = volume() * state.gain;
       state.music = music;
       state.loop = loop;
       state.volume = volume;
+      state.game = request.game || null;
+      state.ownerCurrent = isCurrent;
+      state.resumeTime = 0;
       music && loop ? manager.addMusicKey(key) : manager.removeMusicKey(key);
       state.ready = true;
       state.started = false;
+      // stop() removes only one private gesture entry. Guard the actual element
+      // too, so duplicate or stale backend retries can never bypass retirement.
+      guardBrowserElement(manager, source);
+      source.loop = loop;
+      updateVolume(source, volume() * state.gain);
       if (!manager.appHidden && !state.paused) manager.resumeSource(source, state, false);
       complete && complete(source);
     });
@@ -309,7 +363,11 @@ var exp_AudioMgr = function (t) {
   _ctor.prototype.resumeSource = function (source, state, recover) {
     if (!state.active || !state.ready || state.paused || this.appHidden || state.music && this.allMusicPaused) return;
     if (!(state.music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect())) return;
-    if (!state.started) { source.play(); state.started = true; return; }
+    if (!state.started) {
+      source.play();
+      if (state.resumeTime > 0 && source.setCurrentTime) source.setCurrentTime(state.resumeTime);
+      state.resumeTime = 0; state.started = true; return;
+    }
     if (source.isPlaying) return;
     source.resume();
     // JSB resume only handles a PAUSED ID. App/device interruption can instead
@@ -323,7 +381,25 @@ var exp_AudioMgr = function (t) {
     var state = this.channelState(source);
     state.version++;
     state.active = state.loading = state.ready = state.started = state.paused = false;
+    state.resumeTime = 0; state.game = null; state.pending = null; state.ownerCurrent = null;
     source.stop();
+  };
+  _ctor.prototype.stopOwnedEffects = function (game) {
+    if (!game) return 0;
+    var manager = this, count = 0;
+    this.channelStates.forEach(function (state, source) {
+      var pending = state.pending;
+      if (!state.music && state.game === game) {
+        retireEffect(manager, source, state, pending && pending.game !== game); count++;
+      } else if (pending && !pending.music && pending.game === game) {
+        if (state.ready) {
+          // Preserve any previous valid sound while discarding this replacement.
+          state.version++; state.loading = false; state.pending = null;
+        } else manager.stopSource(source);
+        count++;
+      }
+    });
+    return count;
   };
   _ctor.prototype.sourceBusy = function (source) {
     var state = this.channelStates.get(source);
@@ -335,7 +411,7 @@ var exp_AudioMgr = function (t) {
     var manager = this;
     this.channelStates.forEach(function (state, source) {
       if (state.music && state.active) pauseAudio(source, state);
-      else if (!state.music) manager.stopSource(source);
+      else if (!state.music) retireEffect(manager, source, state);
     });
   };
   _ctor.prototype.onAudioShow = function () {

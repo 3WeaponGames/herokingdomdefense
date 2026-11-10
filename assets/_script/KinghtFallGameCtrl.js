@@ -121,6 +121,7 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
     if (this._projectileLooks) this._projectileLooks.dispose();
@@ -206,6 +207,7 @@ var def_KinghtFallGameCtrl = function (t) {
     });
   };
   _ctor.prototype.onDestroy = function () {
+    require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
     GameToolsOverrides.clear();
@@ -852,10 +854,20 @@ var def_KinghtFallGameCtrl = function (t) {
     // live hero position and never accumulate or replay movement history.
     this.pathList = [{ index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) }];
   };
+  _ctor.prototype.setAudioPaused = function (paused) {
+    // UI pauses precede the scheduled physics step. Repeating that step must
+    // preserve new construction feedback requested while already paused.
+    if (this._audioPaused === paused) return;
+    this._audioPaused = paused;
+    if (paused) {
+      this._audioPauseEpoch = (this._audioPauseEpoch || 0) + 1;
+      require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
+    }
+    if (BattleSounds.suspend) BattleSounds.suspend(this, paused);
+    if (this._unitVoices && require("UnitVoices").suspend) require("UnitVoices").suspend(this, paused);
+  };
   _ctor.prototype.onPauseGame = function () {
-    this._audioPauseEpoch = (this._audioPauseEpoch || 0) + 1;
-    if (BattleSounds.suspend) BattleSounds.suspend(this, true);
-    if (this._unitVoices && require("UnitVoices").suspend) require("UnitVoices").suspend(this, true);
+    this.setAudioPaused(true);
     this.ctrPlay.setPause(true);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -867,8 +879,7 @@ var def_KinghtFallGameCtrl = function (t) {
     }
   };
   _ctor.prototype.onResumeGame = function () {
-    if (BattleSounds.suspend) BattleSounds.suspend(this, false);
-    if (this._unitVoices && require("UnitVoices").suspend) require("UnitVoices").suspend(this, false);
+    this.setAudioPaused(false);
     this.ctrPlay.setPause(false);
     var t = this.gameData.getEnemyList();
     for (var e = 0; e < t.length; e++) {
@@ -936,6 +947,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if (BattleSounds.start) BattleSounds.start(this);
   };
   _ctor.prototype.cleanMap = function () {
+    require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
     if (this.upBulid && this.upBulid.cancelUpgrade) this.upBulid.cancelUpgrade();

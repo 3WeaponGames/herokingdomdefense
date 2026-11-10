@@ -21,7 +21,7 @@ function setup(overrides={}){
  e.stubs.KinghtFallPlayerMgr={KinghtFallPlayerMgr:singleton({getUserData:()=>({passOrder:noop}),getMissionData:()=>({addAchNum:noop})})};
  e.stubs.GameTrackDataEvent={TrackId:{}};
  e.stubs.PoolMgr={PoolMgr:singleton({getNode:()=>null,getNodeFromPrefab:(_key,prefab)=>e.cc.instantiate(prefab),freeNode:noop})};
- e.stubs.AudioMgr={AudioMgr:singleton({getAudioSource:()=>({}),getMusicVolume:()=>.5,setChannelGain(){}})};
+ e.stubs.AudioMgr={AudioMgr:singleton({getAudioSource:()=>({}),getMusicVolume:()=>.5,setChannelGain(){},stopOwnedEffects(){}})};
  e.stubs.TestMode={TestMode:singleton({shouldBypassAdLimits:()=>false})};
  Object.assign(e.stubs,overrides);
  function load(name){if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;

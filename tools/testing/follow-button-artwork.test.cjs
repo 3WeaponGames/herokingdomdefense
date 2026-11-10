@@ -67,7 +67,7 @@ test('fresh and restored battle initialization both disable gameplay Follow and 
  assert.notEqual(tags.find(n=>n._name==='ndTag1')._active,false);assert.equal(tags.find(n=>n._name==='ndTag2')._active,false);
  for(const restoring of [false,true]){
   const init=method('KinghtFallGameCtrl.js','initData',{GameToolsOverrides:{clear(){}},
-   require:name=>{assert.equal(name,'RelicRuntime');return RelicRuntime;},
+   require:name=>{if(name==='AudioMgr')return{AudioMgr:{getInstance:()=>({stopOwnedEffects(){}})}};assert.equal(name,'RelicRuntime');return RelicRuntime;},
    $z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getGameData:()=>({hasSave:()=>restoring})})}},
    $z1KinghtFallGameCtrlData:{default:function(){}}});
   const game={isAgg:true,_combatEpoch:0,ctrPlay:{initData(){},ndAgg:{active:true}},buildBullet:{node:{}},ndAggFlag:{active:true}};
