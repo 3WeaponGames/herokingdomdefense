@@ -526,6 +526,7 @@ var def_KinghtFallEnemyBase = function (t) {
       if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary });
       if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
       if (this.hp <= 0) {
+        Navigation.reset(this);
         this.state = r.Dead;
         RelicCombat.releaseControl(this);
         RelicRuntime.clearControl(this);
@@ -556,6 +557,9 @@ var def_KinghtFallEnemyBase = function (t) {
   };
   _ctor.prototype.freeNode = function () {
     if (this._isPooled) return;
+    Navigation.reset(this);
+    this.bornInfo = null;
+    this._routeInterrupted = false;
     RelicCombat.releaseControl(this);
     RelicRuntime.clearControl(this);
     this._deathAnimation = null;

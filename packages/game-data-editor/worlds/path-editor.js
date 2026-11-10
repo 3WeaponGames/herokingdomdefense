@@ -43,7 +43,7 @@ function stitch(incoming,outgoing){
  result.to=outgoing.to;return result;
 }
 function removePlan(stage,graphId,nodeId){
- const plan=locate(stage,graphId,nodeId),graph=plan.graph,node=graph.nodes.find(node=>node.id===nodeId),incoming=graph.edges.filter(edge=>edge.to===nodeId),outgoing=graph.edges.filter(edge=>edge.from===nodeId);let selected;
+ const plan=locate(stage,graphId,nodeId),graph=plan.graph,node=graph.nodes.find(node=>node.id===nodeId),incoming=graph.edges.filter(edge=>edge.weight>0&&edge.to===nodeId),outgoing=graph.edges.filter(edge=>edge.weight>0&&edge.from===nodeId);let selected;
  if(graph.nodes.length===1)throw Error('Keep at least one point as the path entry and goal.');
  if(nodeId===graph.entry){
   if(node.goal||incoming.length||outgoing.length!==1||outgoing[0].weight<=0||condition(outgoing[0]).length)throw Error('The entry can only be removed when it leads directly to one unconditional next point.');

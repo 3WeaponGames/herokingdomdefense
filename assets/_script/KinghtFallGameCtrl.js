@@ -156,7 +156,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndMain = t.getChildByName("ndMain");
     this.ndUI = t.getChildByName("ndUI");
     this.ctrPlay.node.setParent(this.ndMain);
-    this.ctrPlay.node.setPosition(this.ndPath.getChildByName("ndStar").position);
+    this.ctrPlay.node.setPosition(Navigation.positionOf(this.ndPath.getChildByName("ndStar"), this));
     this.ctrPlay.ndRange.setParent(this.ndUI);
     this.ndAggFlag.setParent(this.ndMain);
     this.gameData.initMap();
@@ -226,7 +226,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.gameData.onRestart(t);
     this.moveDir = cc.v2(0, 0);
     this.ctrPlay.onRestart(t);
-    this.ctrPlay.node.setPosition(this.ndPath.getChildByName("ndStar").position);
+    this.ctrPlay.node.setPosition(Navigation.positionOf(this.ndPath.getChildByName("ndStar"), this));
     this.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Prepare;
     this.isAgg = false;
     this.ctrPlay.ndAgg.active = this.isAgg;
@@ -961,15 +961,26 @@ var def_KinghtFallGameCtrl = function (t) {
     if (-1 != t) {
       var i = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
       var a = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + i.ID;
+      var areaCollides = !!i.BuildingCross;
       var o = function (i) {
         i.setParent(n.ndMain);
         i.active = true;
-        var a = n.ndPath.getChildByName("ndEnemy" + e);
-        if (!a) { i.active = false; cc.warn('Missing authored spawn ' + e); return; }
-        i.setPosition(a.position);
+        var spawnNode = n.ndPath.getChildByName("ndEnemy" + e);
+        if (!spawnNode) { $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i); cc.warn('Missing authored spawn ' + e); return; }
         var o = i.getComponent($z1KinghtFallEnemyBase.default);
-        n._authoredRouteOverride = authoredRoute || null;
-        try { o.initData(t, e); } finally { n._authoredRouteOverride = null; }
+        var previousRoute = n._authoredRouteOverride;
+        try {
+          i.setPosition(Navigation.positionOf(spawnNode, n));
+          var spawnArea = require('SpawnArea').prepare(o, n, e, areaCollides);
+          if (spawnArea === null) { cc.warn('Spawn circle '+e+' has no walkable position for enemy '+t);$z1PoolMgr.PoolMgr.getInstance().freeNode(a,i);return; }
+          n._authoredRouteOverride = authoredRoute || null;
+          o.initData(t, e);
+          if (!require('SpawnArea').apply(o, n, e, spawnArea)) { o._isPooled = true; o.bornInfo = null; Navigation.reset(o); $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i); return; }
+        } catch (error) {
+          o._isPooled = true; o.bornInfo = null; Navigation.reset(o);
+          $z1PoolMgr.PoolMgr.getInstance().freeNode(a, i);
+          throw error;
+        } finally { n._authoredRouteOverride = previousRoute; }
         n.gameData.addEnemy(o);
         if (BattleSounds.spawnEnemy) BattleSounds.spawnEnemy(o, announceSound);
       };
@@ -981,9 +992,10 @@ var def_KinghtFallGameCtrl = function (t) {
         pendingData.pendingEnemySpawns = (pendingData.pendingEnemySpawns || 0) + 1;
         this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Enemy, i.prefab, function (t) {
           if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch) return;
-          r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 10);
-          o(r);
-          pendingData.pendingEnemySpawns--;
+          try {
+            r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 10);
+            o(r);
+          } finally { pendingData.pendingEnemySpawns--; }
         });
       }
     }
@@ -1047,7 +1059,7 @@ var def_KinghtFallGameCtrl = function (t) {
         }
       }
     }
-    (e = n.pathList).push.apply(e, s[$z1Utils.Utils.randomRang(0, s.length)].children);
+    if (s.length) (e = n.pathList).push.apply(e, s[$z1Utils.Utils.randomRang(0, s.length)].children);
     return n;
   };
   _ctor.prototype.onPlayAttack = function (t) {

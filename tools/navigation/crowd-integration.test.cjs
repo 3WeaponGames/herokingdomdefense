@@ -49,9 +49,17 @@ function order(e,mode,goal){
 function tick(e,update){
   e.clock+=DT*1000;e.frames++;e.setTime(e.clock);e.nav.beginFrame(e.game);
   const nav=e.nav.get(e.game),before=nav.stats.searches;
-  e.timing.tick(DT,true);update();
+  e.timing.tick(DT,true);
+  // Advance the actual planner on this test's simulated frame clock as well.
+  // Competing test workers must not consume a simulated actor's 2ms slice while
+  // this process is descheduled. Scheduling still obeys the real 4096-operation
+  // and eight-slice limits; incremental-grid and stress cover deadline yielding.
+  const realNow=Date.now;
+  try{Date.now=()=>e.clock;update();}finally{Date.now=realNow;}
   const count=nav.stats.searches-before;e.maxSearches=Math.max(e.maxSearches,count);
   assert(count<=8,'mixed teams exceeded the shared per-frame search budget');
+  assert(nav._frameSearchWork<=4096,'mixed teams exceeded the shared primitive work budget');
+  assert(nav._frameSearches<=8,'mixed teams exceeded the shared slice budget');
 }
 function complete(e,army,goal){return army.every(unit=>!unit.isDead()&&unit.state===0&&outside(unit.node)===outside(goal)&&e.nav.canStopFollowing(unit,e.game,e.game.getArmyOrderGoal(unit,goal)?.pos||goal));}
 
@@ -79,7 +87,7 @@ test('60 allies complete all four Map01 orders amid 100 queued enemy routes; int
     assert(complete(e,allies,goal),mode+' failed to settle all 60 allies '+(outside(goal)?'outside':'inside'));
     phases.push({mode,direction:outside(goal)?'outward':'inward',frames:e.frames-frameStart,settled:allies.filter(unit=>unit.state===0).length});
   }
-  assert.equal(firstMoves.size,60);assert(Math.max(...firstMoves.values())<=120,'last allies starved behind enemy requests');
+  assert.equal(firstMoves.size,60);assert(Math.max(...firstMoves.values())<=120,'last allies starved behind enemy requests: '+Math.max(...firstMoves.values())+' frames; '+JSON.stringify(phases));
   assert.equal(nav.stats.snapshotBuilds,1,'unchanged Map01 geometry was rebuilt during the mixed crowd');
   const revision=nav.revision,before=enemies.map(unit=>unit.node.position);
   e.game.gameData.buildings.splice(2,1);

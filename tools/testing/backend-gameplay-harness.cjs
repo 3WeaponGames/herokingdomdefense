@@ -25,7 +25,7 @@ function setup(overrides={}){
  e.stubs.TestMode={TestMode:singleton({shouldBypassAdLimits:()=>false})};
  Object.assign(e.stubs,overrides);
  function load(name){if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;
-  const allowed=/^(HeroWeapons|HeroStyleTalents|HeroWeaponCombat|RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
+  const allowed=/^(SpawnArea|HeroWeapons|HeroStyleTalents|HeroWeaponCombat|RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
   if(!allowed.test(name))return e.load(name);
   const module={exports:{}};mods[name]=module;
   vm.runInNewContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{exports:module.exports,module,require:load,cc:e.cc,sp:{Skeleton:function(){}},console,
@@ -34,7 +34,11 @@ function setup(overrides={}){
  }
  const DM=load('KinghtFallGameCtrlData');e.stubs.KinghtFallGameCtrlData=DM;const D=DM.default,d=Object.create(D.prototype);
  Object.assign(d,{buffList:[],addTime:{},talentAdd:{},treasureAdd:{},treasureAddTime:{},businessAdd:{},businessPoints:[],weaponBusinessPoints:{node:{}},horseBusinessPoints:{node:{}},coin:20,time:{MonsterGenerate:0},enemyQueue:{},enemyList:[],soldierList:[],bulidPointMap:{},levelCfg:{Level:1,WaveCfg:[{},{}]},round:1});
- const G=load('KinghtFallGameCtrl').default,g=new G();Object.assign(g,{node:new Node(),ndMain:e.game.ndMain,ndAggFlag:new Node(),gameData:d,ctrPlay:e.game.ctrPlay,ndPath:{getChildByName:()=>({position:new Vec2()})}});d.ctrPar=g;ui.ctrGame=g;ui.initView=noop;
+ const G=load('KinghtFallGameCtrl').default,g=new G();Object.assign(g,{node:new Node(),ndMain:e.game.ndMain,ndAggFlag:new Node(),gameData:d,ctrPlay:e.game.ctrPlay,ndPath:new Node('ndPath')});
+ // Queue/prefab tests accept arbitrary valid lane IDs. Give their inert marker
+ // nodes real transforms, while dedicated scene tests cover missing markers.
+ g.ndPath.getChildByName=function(name){return Node.prototype.getChildByName.call(this,name)||(/^ndEnemy[1-9]\d*$/.test(name)?new Node(name,this):undefined);};
+ new Node('ndStar',g.ndPath);d.ctrPar=g;ui.ctrGame=g;ui.initView=noop;
  g.ctrPlay.onRestart=noop;g.loadPrefab=(bundle,prefab,cb)=>pending.push(cb);g.clearArmyOrder=noop;
  e.cc.instantiate=p=>p();
  return {e,load,d,g,ui,events,pending,noop};

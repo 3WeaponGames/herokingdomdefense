@@ -29,7 +29,7 @@ function buildingColliderData(service,stage,building,hall,gate,config,sourceMode
  const colliders=info.colliders.filter(c=>{
   if(!ids.has(c.node)||c.sensor)return false;
   // Opening the leaf does not remove the fixed wings beside its passage.
-  if(building.kind===6&&gate==='open'&&c.node===owner.id&&c.type==='cc.PhysicsPolygonCollider')return false;
+  if(building.kind===6&&gate==='open'&&(!component||component.value.wallHasGate!==false)&&c.node===owner.id&&c.type==='cc.PhysicsPolygonCollider')return false;
   // BuildBase changes polygon fixtures only; boxes/circles keep their static
   // enabled state even when attached directly to a level-controlled node.
   return controlled.has(c.node)&&c.type==='cc.PhysicsPolygonCollider'?Number(c.source.tag)===tag:c.active;
@@ -37,10 +37,13 @@ function buildingColliderData(service,stage,building,hall,gate,config,sourceMode
 }
 function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels);return data.colliders.map(c=>c.points.map(p=>M.toWorld(building,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
 function preview(service,request){
- const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=stage.spawns.find(s=>s.id===request.spawnId&&s.enabled!==false);
+ const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=Array.isArray(stage.spawns)&&stage.spawns.find(s=>s&&s.id===request.spawnId&&s.enabled!==false);
  if(!spawn)throw Error('Select an enabled spawn');
- for(const graph of stage.graphs.filter(graph=>graph.spawnIds.includes(spawn.id))){const issues=M.graphIdentifierIssues(graph);if(issues.length)throw Error(issues.join('\n'));}
- if(request.graphId){const selected=stage.graphs.find(graph=>graph.id===request.graphId);if(!selected||!selected.spawnIds.includes(spawn.id))throw Error('Choose a path assigned to the selected spawn.');}
+ if(!Array.isArray(stage.graphs))throw Error('Paths must be an array of objects.');
+ const routeIds=new Set();
+ for(const graph of stage.graphs.filter(graph=>graph&&Array.isArray(graph.spawnIds)&&graph.spawnIds.includes(spawn.id))){const issues=M.graphIssues(graph);if(routeIds.has(graph.id))issues.push('Duplicate path ID.');routeIds.add(graph.id);if(issues.length)throw Error(issues.join('\n'));}
+ if(spawn.radius!==undefined&&(!Number.isFinite(spawn.radius)||spawn.radius<0||spawn.radius>1500))throw Error('Spawn radius must be between 0 and 1500.');
+ if(request.graphId){const selected=stage.graphs.find(graph=>graph&&graph.id===request.graphId);if(!selected||!Array.isArray(selected.spawnIds)||!selected.spawnIds.includes(spawn.id))throw Error('Choose a path assigned to the selected spawn.');}
  const hall=request.hall===undefined?3:request.hall,radius=request.radius===undefined?18:request.radius,gate=request.gate||'closed';
  if(!Number.isInteger(hall)||hall<1||hall>3)throw Error('Choose main hall level 1, 2 or 3.');
  if(!Number.isFinite(radius)||radius<0)throw Error('Unit radius must be finite and non-negative.');
@@ -63,6 +66,17 @@ function preview(service,request){
   start=segment[segment.length-1];
  }
  const fallback=!!(request.graphId&&route[0]&&route[0].graphId!==request.graphId),message=(fallback?'The selected conditional path is unavailable; showing its fallback. ':'')+(frontier?'Approach reaches an obstacle frontier. Closed gates may be attacked here.':'Approach reaches the authored goal.');
- return {points,message,frontier,polygons:polygons.length,fallback};
+ const response={points,message,frontier,polygons:polygons.length,fallback},area=require(path.join(service.root,'assets/_script/SpawnArea')),width=route[0]&&route[0].spread===undefined?spawn.radius||0:route[0]&&route[0].spread||0;
+ if((spawn.radius||0)>0||width>0){
+  let seed=42871;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;},walkable=p=>grid.isWalkable(p,radius);response.traces=[];
+  for(let i=0;i<8;i++){
+   const start=area.sample(spawn,spawn.radius||0,random,walkable);if(!start)continue;
+   const lane=area.spread(route,start,spawn,width,random,walkable,(a,b)=>grid.segmentClear(a,b,radius)),trace=[start];let current=start;
+   for(const goal of lane){const result=grid.findPath(current,goal,radius,true),segment=!result?[]:Array.isArray(result)?result:result.points||result.path||[];for(const p of segment){const last=trace[trace.length-1];if(last.x!==p.x||last.y!==p.y)trace.push(p);}if(!segment.length||result.partial)break;current=segment[segment.length-1];}
+   response.traces.push(trace);
+  }
+  if((spawn.radius||0)>0&&!response.traces.length){response.spawnBlocked=true;response.frontier=true;response.message='The spawn circle has no walkable position for this unit radius. Move or enlarge it before using this entrance.';}
+ }
+ return response;
 }
 module.exports={preview,buildingPolygons,buildingColliderData,colliderIndex};

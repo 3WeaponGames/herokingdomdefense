@@ -18,18 +18,7 @@ var def_KinghtFallEnemyAuxiliary = function (t) {
   cc__extends(_ctor, t);
   _ctor.prototype.onUpdate = function (t) {
     if (this.isDead()) return;
-    this.node.getPosition(this.vec2_1);
-    this.node.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.vec2_1.y);
-    for (var e = 0; e < this.debuffInfo.length; e++) {
-      var n = this.debuffInfo[e];
-      if (-1 != n.time) {
-        n.time += t;
-        if (n.time >= n.timeMax) {
-          this.delBuffIdx(e), e--;
-        }
-      }
-    }
-    -1 != this.time[r.Attack] && (this.time[r.Attack] += t * this.getAttSpeed());
+    this.updateCombatTimers(t);
     if (this._hitReactionPlaying) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; return; }
     this.time[r.Attack] >= 1 && this.doAttackStart();
     switch (this.state) {

@@ -8,8 +8,12 @@ var MAX_CELLS = 65536;
 var DIRECTIONS = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]];
 var OPPOSITE = [1,0,3,2,7,6,5,4];
 function finite(value) { return typeof value === "number" && isFinite(value); }
-function point(value) {
+function readPoint(value) {
   if (!value || !finite(value.x) || !finite(value.y)) throw new TypeError("Navigation points must have finite x/y coordinates.");
+  return value;
+}
+function point(value) {
+  value=readPoint(value);
   return { x:value.x, y:value.y };
 }
 function radiusValue(radius) {
@@ -52,16 +56,18 @@ function clearance(p,vertices) {
   for(var i=0;i<vertices.length;i++) minimum=Math.min(minimum,pointSegmentDistance2(p,vertices[i],vertices[(i+1)%vertices.length]));
   return (inside(p,vertices)?-1:1)*Math.sqrt(minimum);
 }
-function Heap() { this.items=[]; }
+function byScore(a,b) { return a.f<b.f; }
+function byDistance(a,b) { return a.f<b.f||a.f===b.f&&a.id<b.id; }
+function Heap(before) { this.items=[];this.before=before||byScore; }
 Heap.prototype.push=function(item) {
   var items=this.items,index=items.length;items.push(item);
-  while(index>0) { var parent=(index-1)>>1;if(items[parent].f<=item.f)break;items[index]=items[parent];index=parent; }
+  while(index>0) { var parent=(index-1)>>1;if(!this.before(item,items[parent]))break;items[index]=items[parent];index=parent; }
   items[index]=item;
 };
 Heap.prototype.pop=function() {
   var items=this.items,first=items[0],last=items.pop();if(!items.length)return first;
   var index=0;
-  while(true) { var left=index*2+1,right=left+1;if(left>=items.length)break;var child=right<items.length&&items[right].f<items[left].f?right:left;if(items[child].f>=last.f)break;items[index]=items[child];index=child; }
+  while(true) { var left=index*2+1,right=left+1;if(left>=items.length)break;var child=right<items.length&&this.before(items[right],items[left])?right:left;if(!this.before(items[child],last))break;items[index]=items[child];index=child; }
   items[index]=last;return first;
 };
 
@@ -70,35 +76,41 @@ function NavigationGrid(polygons,bounds,cellSize,passages) {
   this.bounds={minX:bounds.minX,minY:bounds.minY,maxX:bounds.maxX,maxY:bounds.maxY};
   this.cellSize=cellSize===undefined?20:cellSize;
   if(!finite(this.cellSize)||this.cellSize<=0)throw new RangeError("Navigation cell size must be positive.");
-  this.columns=Math.ceil((bounds.maxX-bounds.minX)/this.cellSize);
-  this.rows=Math.ceil((bounds.maxY-bounds.minY)/this.cellSize);
+  this.columns=Math.max(1,Math.ceil((bounds.maxX-bounds.minX)/this.cellSize));
+  this.rows=Math.max(1,Math.ceil((bounds.maxY-bounds.minY)/this.cellSize));
   this.count=this.columns*this.rows;
   if(this.count>MAX_CELLS)throw new RangeError("Navigation grid exceeds 65536 cells; use tighter bounds or a larger cell size.");
   this.polygons=[];this._index=new Map();this._indexSize=Math.max(80,this.cellSize*6);this._caches=new Map();
   this.lastSearch=null;this._centers=[];this._projections=new Map();
-  this._passages=passages||[];
+  if(passages!==undefined&&passages!==null&&!Array.isArray(passages))throw new TypeError("Navigation passages must be an array of polygons.");
+  this._passages=(passages||[]).map(function(vertices){if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation passages need at least three vertices.");return vertices.map(point);});
   var self=this;
   (polygons||[]).forEach(function(vertices) {
     if(!Array.isArray(vertices)||vertices.length<3)throw new TypeError("Navigation polygons need at least three vertices.");
     var copy=vertices.map(point),box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity};
     copy.forEach(function(p){box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);});
     var id=self.polygons.length;self.polygons.push({vertices:copy,box:box});
-    for(var y=Math.floor(Math.max(box.minY,bounds.minY)/self._indexSize);y<=Math.floor(Math.min(box.maxY,bounds.maxY)/self._indexSize);y++)for(var x=Math.floor(Math.max(box.minX,bounds.minX)/self._indexSize);x<=Math.floor(Math.min(box.maxX,bounds.maxX)/self._indexSize);x++) {
+    // Relative bucket coordinates stay bounded by the map extent, even when
+    // the whole map is translated beyond precise integer world coordinates.
+    for(var y=Math.floor((Math.max(box.minY,bounds.minY)-bounds.minY)/self._indexSize);y<=Math.floor((Math.min(box.maxY,bounds.maxY)-bounds.minY)/self._indexSize);y++)for(var x=Math.floor((Math.max(box.minX,bounds.minX)-bounds.minX)/self._indexSize);x<=Math.floor((Math.min(box.maxX,bounds.maxX)-bounds.minX)/self._indexSize);x++) {
       var key=x+","+y,list=self._index.get(key);if(!list){list=[];self._index.set(key,list);}list.push(id);
     }
   });
+  this._queryMarks=new Uint32Array(this.polygons.length);this._querySerial=0;
 }
 
 NavigationGrid.prototype._query=function(minX,minY,maxX,maxY) {
-  var found=new Set(),result=[];
+  var result=[];
   // Off-map escape checks are rare. Avoid indexing unbounded authored polygons
   // while still testing their original, unclipped geometry for those queries.
   if(minX<this.bounds.minX||minY<this.bounds.minY||maxX>this.bounds.maxX||maxY>this.bounds.maxY) {
     for(var p=0;p<this.polygons.length;p++){var box=this.polygons[p].box;if(box.maxX>=minX&&box.minX<=maxX&&box.maxY>=minY&&box.minY<=maxY)result.push(p);}return result;
   }
-  for(var y=Math.floor(minY/this._indexSize);y<=Math.floor(maxY/this._indexSize);y++)for(var x=Math.floor(minX/this._indexSize);x<=Math.floor(maxX/this._indexSize);x++) {
-    var list=this._index.get(x+","+y)||[];
-    for(var j=0;j<list.length;j++)if(!found.has(list[j])){found.add(list[j]);result.push(list[j]);}
+  var serial=++this._querySerial,marks=this._queryMarks,b=this.bounds;
+  if(serial>=4294967295){marks.fill(0);this._querySerial=serial=1;}
+  for(var y=Math.floor((minY-b.minY)/this._indexSize);y<=Math.floor((maxY-b.minY)/this._indexSize);y++)for(var x=Math.floor((minX-b.minX)/this._indexSize);x<=Math.floor((maxX-b.minX)/this._indexSize);x++) {
+    var list=this._index.get(x+","+y);if(!list)continue;
+    for(var j=0;j<list.length;j++)if(marks[list[j]]!==serial){marks[list[j]]=serial;result.push(list[j]);}
   }
   return result;
 };
@@ -107,7 +119,7 @@ NavigationGrid.prototype._inBounds=function(p,radius) {
   return p.x>=b.minX+radius-EPS&&p.x<=b.maxX-radius+EPS&&p.y>=b.minY+radius-EPS&&p.y<=b.maxY-radius+EPS;
 };
 NavigationGrid.prototype.isWalkable=function(value,radius) {
-  var p=point(value),r=radiusValue(radius);
+  var p=readPoint(value),r=radiusValue(radius);
   if(!this._inBounds(p,r))return false;
   var candidates=this._query(p.x-r,p.y-r,p.x+r,p.y+r),threshold=(r+EPS)*(r+EPS);
   for(var j=0;j<candidates.length;j++) {
@@ -124,7 +136,7 @@ NavigationGrid.prototype._hitsPolygon=function(a,b,r,vertices) {
   return false;
 };
 NavigationGrid.prototype.segmentClear=function(start,end,radius) {
-  var a=point(start),b=point(end),r=radiusValue(radius);
+  var a=readPoint(start),b=readPoint(end),r=radiusValue(radius);
   if(!this._inBounds(a,r)||!this._inBounds(b,r))return false;
   var ids=this._query(Math.min(a.x,b.x)-r,Math.min(a.y,b.y)-r,Math.max(a.x,b.x)+r,Math.max(a.y,b.y)+r);
   for(var i=0;i<ids.length;i++)if(this._hitsPolygon(a,b,r,this.polygons[ids[i]].vertices))return false;
@@ -133,49 +145,15 @@ NavigationGrid.prototype.segmentClear=function(start,end,radius) {
 NavigationGrid.prototype._center=function(id) {
   if(this._centers[id])return this._centers[id];
   var x=id%this.columns,y=Math.floor(id/this.columns),b=this.bounds,s=this.cellSize;
-  return this._centers[id]={x:(b.minX+x*s+Math.min(b.minX+(x+1)*s,b.maxX))/2,y:(b.minY+y*s+Math.min(b.minY+(y+1)*s,b.maxY))/2};
+  var left=b.minX+x*s,bottom=b.minY+y*s;
+  return this._centers[id]={x:left+Math.min(s,b.maxX-left)/2,y:bottom+Math.min(s,b.maxY-bottom)/2};
 };
 NavigationGrid.prototype._cache=function(radius) {
   var key=String(radius),cache=this._caches.get(key);
   if(cache){this._caches.delete(key);this._caches.set(key,cache);return cache;}
-  cache={radius:radius,walk:new Uint8Array(this.count),walkKnown:new Uint8Array(this.count),checked:new Uint8Array(this.count),edges:new Uint8Array(this.count),seen:new Uint32Array(this.count),closed:new Uint32Array(this.count),g:new Float64Array(this.count),parent:new Int32Array(this.count),serial:0};
+  cache={radius:radius,walk:new Uint8Array(this.count),walkKnown:new Uint8Array(this.count),checked:new Uint8Array(this.count),edges:new Uint8Array(this.count)};
   if(this._caches.size>=8)this._caches.delete(this._caches.keys().next().value);
   this._caches.set(key,cache);return cache;
-};
-NavigationGrid.prototype._passageBridges=function(cache) {
-  if(cache.bridges)return cache.bridges;
-  var bridges=cache.bridges=new Map(),self=this,r=cache.radius;
-  cache.parentBridges=new Map();
-  this._passages.forEach(function(vertices){
-    var center={x:0,y:0},box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity},edge={length:0};
-    vertices.forEach(function(p,i){center.x+=p.x/vertices.length;center.y+=p.y/vertices.length;box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);var q=vertices[(i+1)%vertices.length],dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy);if(length>edge.length)edge={length:length,dx:dx,dy:dy};});
-    if(!edge.length)return;
-    var normal={x:-edge.dy/edge.length,y:edge.dx/edge.length},half=0;
-    vertices.forEach(function(p){half=Math.max(half,Math.abs((p.x-center.x)*normal.x+(p.y-center.y)*normal.y));});
-    var margin=r*2+self.cellSize*4,b=self.bounds;
-    var localBounds={minX:Math.max(b.minX,box.minX-margin),minY:Math.max(b.minY,box.minY-margin),maxX:Math.min(b.maxX,box.maxX+margin),maxY:Math.min(b.maxY,box.maxY+margin)};
-    if(localBounds.minX>=localBounds.maxX||localBounds.minY>=localBounds.maxY)return;
-    var fineCell=4;
-    while(Math.ceil((localBounds.maxX-localBounds.minX)/fineCell)*Math.ceil((localBounds.maxY-localBounds.minY)/fineCell)>MAX_CELLS)fineCell++;
-    var fine=new NavigationGrid(self.polygons.map(function(p){return p.vertices;}),localBounds,fineCell);
-    var reach=half+r+self.cellSize*2;
-    function anchors(sign){var p={x:center.x+normal.x*reach*sign,y:center.y+normal.y*reach*sign};return self._nearby(p,cache,self.cellSize*3).filter(function(a){return ((a.point.x-center.x)*normal.x+(a.point.y-center.y)*normal.y)*sign>half+r&&fine._inBounds(a.point,r);}).slice(0,2);}
-    function add(a,b,points){var list=bridges.get(a.id)||[],cost=0;for(var i=1;i<points.length;i++)cost+=distance(points[i-1],points[i]);list.push({id:b.id,points:points,cost:cost});bridges.set(a.id,list);}
-    var entrances=anchors(-1),exits=anchors(1);
-    // A gate portal may lie in a small sampled pocket beside a tower. Join its
-    // nearby clear cells using the same continuous body-clearance checks as
-    // start/goal anchors, rather than requiring a corner-cutting lattice edge.
-    entrances.concat(exits).forEach(function(a){self._anchors(a.point,cache).forEach(function(b){
-      if(a.id!==b.id){add(a,b,[a.point,b.point]);add(b,a,[b.point,a.point]);}
-    });});
-    entrances.forEach(function(a){exits.forEach(function(b){
-      var plan=fine.findPath(a.point,b.point,r);
-      if(!plan||!plan.reached||plan.escape)return;
-      if(!plan.points.every(function(p,i){return !i||self.segmentClear(plan.points[i-1],p,r);}))return;
-      add(a,b,plan.points);add(b,a,plan.points.slice().reverse());
-    });});
-  });
-  return bridges;
 };
 NavigationGrid.prototype._walkableCell=function(cache,id) {
   if(!cache.walkKnown[id]){cache.walk[id]=this.isWalkable(this._center(id),cache.radius)?1:0;cache.walkKnown[id]=1;}
@@ -194,173 +172,152 @@ NavigationGrid.prototype._edge=function(cache,id,direction) {
   if(allowed){cache.edges[id]|=mask;cache.edges[next]|=1<<OPPOSITE[direction];}
   return allowed;
 };
-NavigationGrid.prototype._nearby=function(p,cache,limit) {
-  var result=[],s=this.cellSize,b=this.bounds;
-  var x0=Math.max(0,Math.floor((p.x-limit-b.minX)/s)),x1=Math.min(this.columns-1,Math.floor((p.x+limit-b.minX)/s));
-  var y0=Math.max(0,Math.floor((p.y-limit-b.minY)/s)),y1=Math.min(this.rows-1,Math.floor((p.y+limit-b.minY)/s));
-  for(var y=y0;y<=y1;y++)for(var x=x0;x<=x1;x++){var id=y*this.columns+x,p2=this._center(id),d2=distance2(p,p2);if(d2<=limit*limit+EPS&&this._walkableCell(cache,id))result.push({id:id,point:p2,d2:d2});}
-  result.sort(function(a,b){return a.d2-b.d2||a.id-b.id;});return result;
-};
-NavigationGrid.prototype._anchors=function(p,cache) {
-  var self=this;
-  return this._nearby(p,cache,this.cellSize*2.5).filter(function(candidate){return self.segmentClear(p,candidate.point,cache.radius);}).slice(0,12);
-};
-
 // Only an already-overlapping start may use this exception. Every initially
 // clear polygon is checked exactly, and overlapping polygons must have a single
 // outward exit with nondecreasing signed clearance. The escape is never a teleport.
-NavigationGrid.prototype._escapeClear=function(start,end,radius,goalProjection) {
-  if(!this.isWalkable(end,radius))return false;
-  var length=distance(start,end),ids=this._query(Math.min(start.x,end.x)-radius,Math.min(start.y,end.y)-radius,Math.max(start.x,end.x)+radius,Math.max(start.y,end.y)+radius);
-  for(var n=0;n<ids.length;n++) {
-    var vertices=this.polygons[ids[n]].vertices,initial=clearance(start,vertices);
-    if(initial>radius+EPS){if(this._hitsPolygon(start,end,radius,vertices))return false;continue;}
-    var times=[0,1],dx=end.x-start.x,dy=end.y-start.y;
-    for(var e=0;e<vertices.length;e++) {
-      var a=vertices[e],b=vertices[(e+1)%vertices.length],ex=b.x-a.x,ey=b.y-a.y,den=dx*ey-dy*ex;
-      if(Math.abs(den)<=EPS)continue;
-      var ax=a.x-start.x,ay=a.y-start.y,t=(ax*ey-ay*ex)/den,u=(ax*dy-ay*dx)/den;
-      if(t>EPS&&t<1-EPS&&u>=-EPS&&u<=1+EPS)times.push(t);
-    }
-    times.sort(function(a,b){return a-b;});
-    var exited=!inside(start,vertices);
-    for(var ti=1;ti<times.length;ti++) {
-      if(times[ti]-times[ti-1]<EPS)continue;
-      var middle=(times[ti]+times[ti-1])/2,contained=inside({x:start.x+dx*middle,y:start.y+dy*middle},vertices);
-      if(contained&&exited)return false;
-      if(!contained)exited=true;
-    }
-    if(goalProjection)continue;
-    var steps=Math.max(1,Math.ceil(length/Math.min(2,this.cellSize/10))),previous=initial;
-    for(var step=1;step<=steps;step++) {
-      var f=step/steps,current=clearance({x:start.x+dx*f,y:start.y+dy*f},vertices);
-      if(current+1e-5<previous)return false;
-      previous=current;
-    }
-  }
-  return true;
+NavigationGrid.prototype._escapeClear=function(start,end,radius,goalProjection) { return complete(clearanceTask(this,start,end,radius,goalProjection)); };
+
+// Explicit cursor tasks keep Creator 2.4 mobile compatibility without generator
+// runtimes. A work unit is one cell, edge, candidate, portal step or waypoint.
+function Task(advance,release) { this.done=false;this.cancelled=false;this.result=null;this.lastWork=0;this.work=0;this._advance=advance;this._release=release; }
+Task.prototype._finish=function(value){this.result=value;this.done=true;this._advance=null;var release=this._release;this._release=null;if(release)release();};
+Task.prototype.cancel=function(){if(!this.done)this._finish(null);this.cancelled=true;this.result=null;};
+Task.prototype.step=function(workBudget,timeBudgetMs){
+  if(workBudget===undefined)workBudget=256;
+  if(workBudget!==Infinity&&(!finite(workBudget)||workBudget<0||Math.floor(workBudget)!==workBudget))throw new RangeError("Navigation work budget must be a non-negative whole number.");
+  if(timeBudgetMs!==undefined&&timeBudgetMs!==Infinity&&(!finite(timeBudgetMs)||timeBudgetMs<0))throw new RangeError("Navigation time budget must be non-negative.");
+  this.lastWork=0;if(this.done)return this.result;
+  if(!workBudget||timeBudgetMs===0)return null;
+  var deadline=timeBudgetMs===undefined||timeBudgetMs===Infinity?Infinity:Date.now()+timeBudgetMs;
+  try{while(!this.done&&this.lastWork<workBudget&&(this.lastWork===0||deadline===Infinity||Date.now()<deadline)){this.lastWork++;this.work++;this._advance(this);}}
+  catch(error){this.cancel();throw error;}
+  finally{if(this.stats)this.stats.work=this.work;}
+  return this.done?this.result:null;
 };
-NavigationGrid.prototype._escape=function(start,cache,goal) {
-  var candidates=this._nearby(start,cache,this.cellSize*3+cache.radius*2).slice(0,128);
-  // A crowd can push a body into the clearance margin beside a corner. The
-  // nearest exit may point backward into the following unit, pinning both
-  // bodies while their routes request opposite movement. Prefer an outward
-  // exit on the way to the goal, still using the same bounded candidates and
-  // monotonic-clearance checks (never crossing a previously clear obstacle).
-  candidates.forEach(function(candidate){candidate.cost=Math.sqrt(candidate.d2)+distance(candidate.point,goal);});
-  candidates.sort(function(a,b){return a.cost-b.cost||a.d2-b.d2||a.id-b.id;});
-  for(var i=0;i<candidates.length&&i<128;i++)if(this._escapeClear(start,candidates[i].point,cache.radius))return candidates[i].point;
-  return null;
+function complete(task){while(!task.done)task.step(Infinity);return task.result;}
+// Sharing is optional. Bound both entry count and retained waypoint references
+// so a set of pathological maze routes cannot become a mobile-memory cache.
+function rememberPath(grid,name,key,value){
+  if(value.points.length>4096)return;
+  var cache=grid[name];if(!cache)cache=grid[name]=new Map();cache.delete(key);var points=value.points.length;cache.forEach(function(entry){points+=entry.points.length;});
+  while(cache.size&&(cache.size>=32||points>4096)){var oldest=cache.keys().next().value;points-=cache.get(oldest).points.length;cache.delete(oldest);}cache.set(key,value);
+}
+function clearanceTask(grid,start,end,radius,goalProjection){
+  var phase='end',length=0,ids=null,polygon=0,vertices=null,initial=0,times=null,edge=0,dx=end.x-start.x,dy=end.y-start.y,exited=false,interval=1,steps=0,sample=1,previous=0;
+  return new Task(function(job){
+    if(phase==='end'){if(!grid.isWalkable(end,radius)){job._finish(false);return;}length=distance(start,end);if(!finite(length)){job._finish(false);return;}phase='query';return;}
+    if(phase==='query'){ids=grid._query(Math.min(start.x,end.x)-radius,Math.min(start.y,end.y)-radius,Math.max(start.x,end.x)+radius,Math.max(start.y,end.y)+radius);phase='polygon';return;}
+    if(phase==='polygon'){if(polygon>=ids.length){job._finish(true);return;}vertices=grid.polygons[ids[polygon++]].vertices;initial=clearance(start,vertices);if(initial>radius+EPS){if(grid._hitsPolygon(start,end,radius,vertices))job._finish(false);return;}times=[0,1];edge=0;phase='intersections';return;}
+    if(phase==='intersections'){if(edge>=vertices.length){times.sort(function(a,b){return a-b;});exited=!inside(start,vertices);interval=1;phase='intervals';return;}var a=vertices[edge],b=vertices[(edge+1)%vertices.length],ex=b.x-a.x,ey=b.y-a.y,den=dx*ey-dy*ex;edge++;if(Math.abs(den)<=EPS)return;var ax=a.x-start.x,ay=a.y-start.y,t=(ax*ey-ay*ex)/den,u=(ax*dy-ay*dx)/den;if(t>EPS&&t<1-EPS&&u>=-EPS&&u<=1+EPS)times.push(t);return;}
+    if(phase==='intervals'){if(interval>=times.length){if(goalProjection){phase='polygon';return;}steps=Math.max(1,Math.ceil(length/Math.min(2,grid.cellSize/10)));if(!finite(steps)){job._finish(false);return;}previous=initial;sample=1;phase='samples';return;}var hi=times[interval],lo=times[interval-1];interval++;if(hi-lo<EPS)return;var middle=(hi+lo)/2,contained=inside({x:start.x+dx*middle,y:start.y+dy*middle},vertices);if(contained&&exited){job._finish(false);return;}if(!contained)exited=true;return;}
+    if(sample>steps){phase='polygon';return;}var f=sample++/steps,current=clearance({x:start.x+dx*f,y:start.y+dy*f},vertices);if(current+1e-5<previous){job._finish(false);return;}previous=current;
+  },function(){ids=null;vertices=null;times=null;});
+}
+function nearestTask(grid,p,cache,limit){
+  var s=grid.cellSize,b=grid.bounds,x0=Math.max(0,Math.floor((p.x-limit-b.minX)/s)),x1=Math.min(grid.columns-1,Math.floor((p.x+limit-b.minX)/s));
+  var y=Math.max(0,Math.floor((p.y-limit-b.minY)/s)),y1=Math.min(grid.rows-1,Math.floor((p.y+limit-b.minY)/s)),x=x0,heap=new Heap(byDistance);
+  return new Task(function(job){if(x0>x1||y>y1){job._finish(heap);return;}var id=y*grid.columns+x,p2=grid._center(id),d2=distance2(p,p2);if(d2<=limit*limit+EPS&&grid._walkableCell(cache,id))heap.push({id:id,point:p2,d2:d2,f:d2});if(++x>x1){x=x0;y++;}});
+}
+function anchorTask(grid,p,cache){
+  var child=nearestTask(grid,p,cache,grid.cellSize*2.5),heap=null,result=[];
+  return new Task(function(job){if(!heap){child.step(1);if(child.done){heap=child.result;child=null;}return;}if(!heap.items.length||result.length===12){job._finish(result);return;}var candidate=heap.pop();if(grid.segmentClear(p,candidate.point,cache.radius))result.push(candidate);},function(){if(child)child.cancel();heap=null;result=null;});
+}
+function escapeTask(grid,start,cache,goal){
+  var child=nearestTask(grid,start,cache,grid.cellSize*3+cache.radius*2),near=null,chosen=new Heap(function(a,b){return a.f<b.f||a.f===b.f&&(a.d2<b.d2||a.d2===b.d2&&a.id<b.id);}),count=0,phase=0,candidate=null;
+  return new Task(function(job){if(phase===0){child.step(1);if(child.done){near=child.result;child=null;phase=1;}return;}if(phase===1){if(!near.items.length||count===128){near=null;phase=2;return;}var item=near.pop();item.f=Math.sqrt(item.d2)+distance(item.point,goal);chosen.push(item);count++;return;}if(!child){if(!chosen.items.length){job._finish(null);return;}candidate=chosen.pop();child=clearanceTask(grid,start,candidate.point,cache.radius);}child.step(1);if(child.done){var clear=child.result;child=null;if(clear)job._finish(candidate.point);}},function(){if(child)child.cancel();near=null;chosen=null;candidate=null;});
+}
+function projectionTask(grid,goal,cache,start){
+  var key=cache.radius+":"+goal.x+","+goal.y,ties=grid._projections.get(key),b=grid.bounds;
+  var maximum=Math.sqrt(Math.max(distance2(goal,{x:b.minX,y:b.minY}),distance2(goal,{x:b.maxX,y:b.minY}),distance2(goal,{x:b.minX,y:b.maxY}),distance2(goal,{x:b.maxX,y:b.maxY})))+grid.cellSize;
+  var limit=Math.min(maximum,grid.cellSize*3+cache.radius*2),child=null,heap=null,best=Infinity,selected=-1,bestStart=Infinity,index=0,phase=ties?2:0,pending=null;
+  if(!ties)ties=[];
+  function publish(){if(grid._projections.size>=128)grid._projections.delete(grid._projections.keys().next().value);grid._projections.set(key,ties);phase=2;}
+  return new Task(function(job){
+    if(phase===0){if(!child)child=nearestTask(grid,goal,cache,limit);child.step(1);if(child.done){heap=child.result;child=null;phase=1;}return;}
+    if(phase===1){if(!heap.items.length){heap=null;if(ties.length||limit>=maximum){publish();return;}limit=Math.min(maximum,limit*2);phase=0;return;}pending=heap.pop();if(pending.d2>best+EPS){publish();return;}child=clearanceTask(grid,goal,pending.point,cache.radius,true);phase=3;return;}
+    if(phase===3){child.step(1);if(child.done){if(child.result){best=pending.d2;ties.push(pending.id);}child=null;pending=null;phase=1;}return;}
+    if(index>=ties.length){job._finish(selected);return;}var id=ties[index++],d=distance2(grid._center(id),start);if(d<bestStart-EPS){bestStart=d;selected=id;}
+  },function(){if(child)child.cancel();heap=null;ties=null;pending=null;});
+}
+function smoothTask(grid,points,radius){
+  var result=[points[0]],index=0,far=1,next=2;
+  return new Task(function(job){if(points.length<3){job._finish(points);return;}if(index>=points.length-1){job._finish(result);return;}if(next<points.length&&grid.segmentClear(points[index],points[next],radius)){far=next++;return;}result.push(points[far]);index=far;far=index+1;next=index+2;},function(){points=null;result=null;});
+}
+function detachTask(plan){
+  var result={points:[],goal:point(plan.goal),reached:plan.reached,escape:plan.escape?{from:point(plan.escape.from),to:point(plan.escape.to),distance:plan.escape.distance}:null},index=0;
+  if(plan.partial!==undefined)result.partial=plan.partial;
+  return new Task(function(job){if(index<plan.points.length)result.points.push(point(plan.points[index++]));else job._finish(result);},function(){plan=null;result=null;});
+}
+function bridgeTask(grid,cache){
+  var result=new Map(),passage=0,phase='next',vertices=null,vi=0,center,box,edge,normal,half,margin,localBounds,fine,reach,sign=-1,child=null,heap=null,entrances=[],exits=[],links=null,linkIndex=0,linkCandidates=null,linkAt=0,pair=0,plan=null,check=0,cost=0,reverse=null;
+  function add(a,b,points,length){var list=result.get(a.id);if(!list){list=[];result.set(a.id,list);}list.push({id:b.id,points:points,cost:length});}
+  function next(){passage++;phase='next';fine=null;vertices=null;entrances=[];exits=[];links=null;linkCandidates=null;plan=null;reverse=null;}
+  return new Task(function(job){
+    // Another synchronous caller may finish the same immutable portal cache
+    // between our slices. Never publish an incomplete cache to either caller.
+    if(cache.bridges){job._finish(cache.bridges);return;}
+    if(phase==='next'){if(passage>=grid._passages.length){cache.bridges=result;job._finish(result);return;}vertices=grid._passages[passage];center={x:0,y:0};box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity};edge={length:0};vi=0;phase='vertices';return;}
+    if(phase==='vertices'){if(vi>=vertices.length){if(!edge.length){next();return;}normal={x:-edge.dy/edge.length,y:edge.dx/edge.length};half=0;vi=0;phase='width';return;}var p=vertices[vi],q=vertices[(vi+1)%vertices.length],dx=q.x-p.x,dy=q.y-p.y,length=Math.hypot(dx,dy);center.x+=p.x/vertices.length;center.y+=p.y/vertices.length;box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);if(length>edge.length)edge={length:length,dx:dx,dy:dy};vi++;return;}
+    if(phase==='width'){if(vi<vertices.length){var v=vertices[vi++];half=Math.max(half,Math.abs((v.x-center.x)*normal.x+(v.y-center.y)*normal.y));return;}margin=cache.radius*2+grid.cellSize*4;var b=grid.bounds;localBounds={minX:Math.max(b.minX,box.minX-margin),minY:Math.max(b.minY,box.minY-margin),maxX:Math.min(b.maxX,box.maxX+margin),maxY:Math.min(b.maxY,box.maxY+margin)};if(localBounds.minX>=localBounds.maxX||localBounds.minY>=localBounds.maxY){next();return;}
+      var w=localBounds.maxX-localBounds.minX,h=localBounds.maxY-localBounds.minY,cell=Math.max(4,Math.ceil(w/MAX_CELLS),Math.ceil(h/MAX_CELLS),Math.ceil(Math.sqrt(w)*Math.sqrt(h/MAX_CELLS)));while(Math.ceil(w/cell)*Math.ceil(h/cell)>MAX_CELLS)cell=Math.max(cell+1,cell*1.01);
+      fine=new NavigationGrid([],localBounds,cell);fine.polygons=grid.polygons;fine._query=function(a,b,c,d){return grid._query(a,b,c,d);};reach=half+cache.radius+grid.cellSize*2;sign=-1;phase='anchors';return;}
+    if(phase==='anchors'){if(!child){var a={x:center.x+normal.x*reach*sign,y:center.y+normal.y*reach*sign};child=nearestTask(grid,a,cache,grid.cellSize*3);}child.step(1);if(child.done){heap=child.result;child=null;phase='take';}return;}
+    if(phase==='take'){var selected=sign<0?entrances:exits;if(heap.items.length&&selected.length<2){var candidate=heap.pop();if(((candidate.point.x-center.x)*normal.x+(candidate.point.y-center.y)*normal.y)*sign>half+cache.radius&&fine._inBounds(candidate.point,cache.radius))selected.push(candidate);return;}heap=null;if(sign<0){sign=1;phase='anchors';return;}links=entrances.concat(exits);linkIndex=0;phase='links';return;}
+    if(phase==='links'){if(linkIndex>=links.length){pair=0;phase='pairs';return;}if(!child)child=anchorTask(grid,links[linkIndex].point,cache);child.step(1);if(child.done){linkCandidates=child.result;child=null;linkAt=0;phase='link-points';}return;}
+    if(phase==='link-points'){if(linkAt>=linkCandidates.length){linkIndex++;phase='links';return;}var from=links[linkIndex],to=linkCandidates[linkAt++];if(from.id!==to.id){var d=distance(from.point,to.point);add(from,to,[from.point,to.point],d);add(to,from,[to.point,from.point],d);}return;}
+    if(phase==='pairs'){if(pair>=entrances.length*exits.length){next();return;}if(!child)child=fine.createSearch(entrances[Math.floor(pair/exits.length)].point,exits[pair%exits.length].point,cache.radius);child.step(1);if(child.done){plan=child.result;child=null;if(!plan||!plan.reached||plan.escape){pair++;return;}check=0;cost=0;reverse=[];phase='verify';}return;}
+    if(check<plan.points.length){var p2=plan.points[check];reverse[plan.points.length-check-1]=p2;if(check){if(!grid.segmentClear(plan.points[check-1],p2,cache.radius)){pair++;phase='pairs';plan=null;return;}cost+=distance(plan.points[check-1],p2);}check++;return;}
+    var a2=entrances[Math.floor(pair/exits.length)],b2=exits[pair%exits.length];add(a2,b2,plan.points,cost);add(b2,a2,reverse,cost);plan=null;reverse=null;pair++;phase='pairs';
+  },function(){if(child)child.cancel();result=null;fine=null;vertices=null;heap=null;links=null;linkCandidates=null;entrances=null;exits=null;plan=null;reverse=null;});
+}
+
+NavigationGrid.prototype._passageBridges=function(cache){return complete(bridgeTask(this,cache));};
+NavigationGrid.prototype._nearby=function(p,cache,limit){var heap=complete(nearestTask(this,p,cache,limit)),result=[];while(heap.items.length)result.push(heap.pop());return result;};
+NavigationGrid.prototype._anchors=function(p,cache){return complete(anchorTask(this,p,cache));};
+NavigationGrid.prototype._escape=function(start,cache,goal){return complete(escapeTask(this,start,cache,goal));};
+NavigationGrid.prototype._smooth=function(points,radius){return complete(smoothTask(this,points,radius));};
+NavigationGrid.prototype._projectGoal=function(goal,cache,start){return complete(projectionTask(this,goal,cache,start));};
+
+NavigationGrid.prototype.createSearch=function(startValue,goalValue,radius,allowPartial){
+  var grid=this,start=point(startValue),requestedGoal=point(goalValue),r=radiusValue(radius),phase='start',startFree=false,goalFree=false,escape=null,sharedKey=null,shared=null,join=0,cache=null,bridges=null,child=null,starts=null,goalAnchors=null,goalIds=null,target=requestedGoal;
+  var seen=null,closed=null,g=null,parent=null,parentBridges=null,heap=null,seed=0,item=null,currentId=-1,current=null,goalDistance=0,direction=0,bridgeIndex=0,extraBridges=null,found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity,frontier=-1,frontierDistance=Infinity,partial=false;
+  var reversed=null,cursor=-1,guard=0,parentCursor=-1,reconstructBridge=null,bridgePoint=0,points=null,reverseAt=0,goal=null,plan=null;
+  var cachedRoutes=null,routeIndex=0,cachedRoute=null,tailIndex=0,joinIndex=0;
+  var stats={expanded:0,cells:grid.count,direct:false,work:0};
+  function finish(job,value){stats.work=job.work;grid.lastSearch=stats;job._finish(value);}
+  function detach(value){plan=value;child=detachTask(value);phase='detach';}
+  function routeEnd(){if(found<0&&!goalFree)found=bestReachable;partial=found<0&&!!allowPartial;if(partial)found=frontier;if(found<0)return false;reversed=[];cursor=found;guard=0;phase='reconstruct';return true;}
+  var job=new Task(function(job){
+    job.phase=phase;
+    if(phase==='start'){if(r>(grid.bounds.maxX-grid.bounds.minX)/2+EPS||r>(grid.bounds.maxY-grid.bounds.minY)/2+EPS){finish(job,null);return;}startFree=grid.isWalkable(start,r);phase='goal';return;}
+    if(phase==='goal'){goalFree=grid.isWalkable(requestedGoal,r);phase='direct';return;}
+    if(phase==='direct'){if(startFree&&goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null});return;}cachedRoutes=startFree&&goalFree&&grid._routes?Array.from(grid._routes.values()).reverse():[];routeIndex=0;phase='route-cache';return;}
+    if(phase==='route-cache'){if(routeIndex>=cachedRoutes.length){cachedRoutes=null;sharedKey=allowPartial&&startFree?r+":"+requestedGoal.x+":"+requestedGoal.y:null;shared=sharedKey&&grid._partialRoutes&&grid._partialRoutes.get(sharedKey);join=shared?shared.points.length-1:-1;phase='shared';return;}cachedRoute=cachedRoutes[routeIndex++];var nearStart=Math.max(grid.cellSize*3,r*2+grid.cellSize*2),nearGoal=Math.max(grid.cellSize*6,r*4+grid.cellSize*2);if(cachedRoute.radius!==r||distance2(start,cachedRoute.start)>nearStart*nearStart||distance2(requestedGoal,cachedRoute.goal)>nearGoal*nearGoal)return;tailIndex=0;phase='route-tail';return;}
+    if(phase==='route-tail'){if(tailIndex>=cachedRoute.points.length){phase='route-cache';return;}if(grid.segmentClear(cachedRoute.points[tailIndex],requestedGoal,r)){joinIndex=tailIndex;phase='route-join';}else tailIndex++;return;}
+    if(phase==='route-join'){if(joinIndex<0){phase='route-cache';return;}if(!grid.segmentClear(start,cachedRoute.points[joinIndex],r)){joinIndex--;return;}var reused=[start].concat(cachedRoute.points.slice(joinIndex,tailIndex+1));if(reused[reused.length-1].x!==requestedGoal.x||reused[reused.length-1].y!==requestedGoal.y)reused.push(requestedGoal);stats.reused=true;detach({points:reused,goal:requestedGoal,reached:true,partial:false,escape:null});return;}
+    if(phase==='shared'){if(shared&&distance2(start,shared.start)<=grid.cellSize*grid.cellSize*9&&join>=0){if(grid.segmentClear(start,shared.points[join],r)){stats.shared=true;detach({points:[start].concat(shared.points.slice(join)),goal:shared.goal,reached:false,partial:true,escape:null});return;}join--;return;}phase='cache';return;}
+    if(phase==='cache'){cache=grid._cache(r);child=bridgeTask(grid,cache);phase='bridges';return;}
+    if(phase==='bridges'){child.step(1);if(child.done){bridges=child.result;child=null;phase=startFree?'starts':'escape';}return;}
+    if(phase==='escape'){if(!child)child=escapeTask(grid,start,cache,requestedGoal);child.step(1);if(child.done){var escaped=child.result;child=null;if(!escaped){finish(job,null);return;}escape={from:start,to:escaped,distance:distance(start,escaped)};start=escaped;phase='escaped-direct';}return;}
+    if(phase==='escaped-direct'){if(goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:escape});return;}phase='starts';return;}
+    if(phase==='starts'){if(!child)child=anchorTask(grid,start,cache);child.step(1);if(child.done){starts=child.result;child=null;if(!starts.length){finish(job,null);return;}phase=goalFree?'goals':'projection';goalIds=new Set();}return;}
+    if(phase==='goals'){if(!child)child=anchorTask(grid,requestedGoal,cache);child.step(1);if(child.done){goalAnchors=child.result;child=null;if(!goalAnchors.length&&!allowPartial){finish(job,null);return;}for(var a=0;a<goalAnchors.length;a++)goalIds.add(goalAnchors[a].id);phase='workspace';}return;}
+    if(phase==='projection'){if(!child)child=projectionTask(grid,requestedGoal,cache,start);child.step(1);if(child.done){var id=child.result;child=null;if(id<0&&!allowPartial){finish(job,null);return;}if(id>=0){target=grid._center(id);goalIds.add(id);}phase='workspace';}return;}
+    if(phase==='workspace'){seen=new Uint8Array(grid.count);closed=new Uint8Array(grid.count);g=new Float64Array(grid.count);parent=new Int32Array(grid.count);parentBridges=new Map();heap=new Heap();seed=0;phase='seed';return;}
+    if(phase==='seed'){if(seed>=starts.length){starts=null;phase='pop';return;}var candidate=starts[seed++],cost=Math.sqrt(candidate.d2);seen[candidate.id]=1;g[candidate.id]=cost;parent[candidate.id]=-1;heap.push({id:candidate.id,g:cost,f:cost+distance(candidate.point,target)});return;}
+    if(phase==='pop'){if(!heap.items.length){if(!routeEnd())finish(job,null);return;}item=heap.pop();currentId=item.id;if(item.f>=bestCost-EPS){if(!routeEnd())finish(job,null);return;}if(closed[currentId]||!seen[currentId]||item.g!==g[currentId])return;closed[currentId]=1;stats.expanded++;current=grid._center(currentId);goalDistance=distance2(current,requestedGoal);if(goalDistance<frontierDistance-EPS){frontierDistance=goalDistance;frontier=currentId;}phase='evaluate';return;}
+    if(phase==='evaluate'){if(goalDistance<bestDistance-EPS){if(goalFree){bestDistance=goalDistance;bestReachable=currentId;}else{if(!child)child=clearanceTask(grid,requestedGoal,current,r,true);child.step(1);if(!child.done)return;if(child.result){bestDistance=goalDistance;bestReachable=currentId;}child=null;}}phase='evaluated';return;}
+    if(phase==='evaluated'){if(goalIds.has(currentId)){var completeCost=item.g+(goalFree?Math.sqrt(goalDistance):0);if(completeCost<bestCost){bestCost=completeCost;found=currentId;}phase='pop';return;}direction=0;phase='edges';return;}
+    if(phase==='edges'){if(direction>=8){extraBridges=bridges.get(currentId);bridgeIndex=0;phase='portal-edges';return;}var d=direction++;if(!grid._edge(cache,currentId,d))return;var delta=DIRECTIONS[d],nextId=currentId+delta[1]*grid.columns+delta[0];if(closed[nextId])return;var next=grid._center(nextId),nextG=item.g+distance(current,next);if(!seen[nextId]||nextG<g[nextId]-EPS){seen[nextId]=1;g[nextId]=nextG;parent[nextId]=currentId;parentBridges.delete(nextId);heap.push({id:nextId,g:nextG,f:nextG+distance(next,target)});}return;}
+    if(phase==='portal-edges'){if(!extraBridges||bridgeIndex>=extraBridges.length){phase='pop';return;}var bridge=extraBridges[bridgeIndex++],next2=bridge.id;if(closed[next2])return;var nextG2=item.g+bridge.cost;if(!seen[next2]||nextG2<g[next2]-EPS){seen[next2]=1;g[next2]=nextG2;parent[next2]=currentId;parentBridges.set(next2,bridge.points);heap.push({id:next2,g:nextG2,f:nextG2+distance(grid._center(next2),target)});}return;}
+    if(phase==='reconstruct'){if(cursor<0){points=[start];reverseAt=reversed.length-1;phase='reverse';return;}if(++guard>grid.count){finish(job,null);return;}reversed.push(grid._center(cursor));reconstructBridge=parentBridges.get(cursor);parentCursor=parent[cursor];if(reconstructBridge){bridgePoint=reconstructBridge.length-2;phase='reconstruct-bridge';}else cursor=parentCursor;return;}
+    if(phase==='reconstruct-bridge'){if(bridgePoint>0){reversed.push(reconstructBridge[bridgePoint--]);return;}cursor=parentCursor;reconstructBridge=null;phase='reconstruct';return;}
+    if(phase==='reverse'){if(reverseAt>=0){var p=reversed[reverseAt--];if(distance2(points[points.length-1],p)>EPS)points.push(p);return;}reversed=null;goal=goalFree&&!partial?requestedGoal:grid._center(found);if(points[points.length-1].x!==goal.x||points[points.length-1].y!==goal.y)points.push(goal);child=smoothTask(grid,points,r);phase='smooth';return;}
+    if(phase==='smooth'){child.step(1);if(child.done){plan={points:child.result,goal:goal,reached:goalFree&&!partial,partial:partial,escape:escape};child=null;if(plan.reached&&!escape){var routeKey=r+":"+start.x+","+start.y+":"+goal.x+","+goal.y;rememberPath(grid,'_routes',routeKey,{radius:r,start:start,goal:goal,points:plan.points});}if(partial&&sharedKey&&!escape)rememberPath(grid,'_partialRoutes',sharedKey,{start:start,points:plan.points,goal:goal});detach(plan);}return;}
+    if(phase==='detach'){child.step(1);if(child.done){var result=child.result;child=null;finish(job,result);}return;}
+  },function(){if(child)child.cancel();seen=null;closed=null;g=null;parent=null;parentBridges=null;heap=null;cache=null;bridges=null;starts=null;goalAnchors=null;goalIds=null;extraBridges=null;reversed=null;reconstructBridge=null;points=null;plan=null;shared=null;cachedRoutes=null;cachedRoute=null;});
+  job.stats=stats;return job;
 };
-NavigationGrid.prototype._smooth=function(points,radius) {
-  if(points.length<3)return points;
-  var result=[points[0]],index=0;
-  while(index<points.length-1) {
-    var far=index+1;
-    for(var next=index+2;next<points.length;next++){if(!this.segmentClear(points[index],points[next],radius))break;far=next;}
-    result.push(points[far]);index=far;
-  }
-  return result;
-};
-NavigationGrid.prototype._projectGoal=function(goal,cache,start) {
-  var key=cache.radius+":"+goal.x+","+goal.y,ties=this._projections.get(key),self=this;
-  if(!ties){
-    ties=[];
-    var b=this.bounds,maximum=Math.sqrt(Math.max(distance2(goal,{x:b.minX,y:b.minY}),distance2(goal,{x:b.maxX,y:b.minY}),distance2(goal,{x:b.minX,y:b.maxY}),distance2(goal,{x:b.maxX,y:b.maxY})))+this.cellSize;
-    var limit=Math.min(maximum,this.cellSize*3+cache.radius*2);
-    while(true){
-      var nearby=this._nearby(goal,cache,limit),best=Infinity;
-      for(var i=0;i<nearby.length;i++){
-        var candidate=nearby[i];if(candidate.d2>best+EPS)break;
-        if(this._escapeClear(goal,candidate.point,cache.radius,true)){best=candidate.d2;ties.push(candidate.id);}
-      }
-      if(ties.length||limit>=maximum)break;
-      limit=Math.min(maximum,limit*2);
-    }
-    if(this._projections.size>=128)this._projections.delete(this._projections.keys().next().value);
-    this._projections.set(key,ties);
-  }
-  var selected=-1,bestStart=Infinity;
-  ties.forEach(function(id){var d=distance2(self._center(id),start);if(d<bestStart-EPS){bestStart=d;selected=id;}});
-  return selected;
-};
-NavigationGrid.prototype.findPath=function(startValue,goalValue,radius,allowPartial) {
-  var start=point(startValue),requestedGoal=point(goalValue),r=radiusValue(radius),self=this;
-  this.lastSearch={expanded:0,cells:this.count,direct:false};
-  var startFree=this.isWalkable(start,r),goalFree=this.isWalkable(requestedGoal,r),escape=null;
-  if(startFree&&goalFree&&this.segmentClear(start,requestedGoal,r)){this.lastSearch.direct=true;return {points:distance2(start,requestedGoal)<EPS?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null};}
-  // Nearby enemies approaching the same sealed objective can share a safe
-  // frontier route instead of each flooding the same unreachable component.
-  // The grid is immutable; changing colliders creates a fresh grid/cache.
-  var sharedKey=allowPartial&&startFree?r+":"+requestedGoal.x+":"+requestedGoal.y:null;
-  var shared=sharedKey&&this._partialRoutes&&this._partialRoutes.get(sharedKey);
-  if(shared&&distance2(start,shared.start)<=this.cellSize*this.cellSize*9){
-    for(var join=shared.points.length-1;join>=0;join--)if(this.segmentClear(start,shared.points[join],r)){
-      this.lastSearch.shared=true;
-      return {points:[start].concat(shared.points.slice(join)),goal:shared.goal,reached:false,partial:true,escape:null};
-    }
-  }
-  var cache=this._cache(r);
-  var bridges=this._passageBridges(cache);
-  if(!startFree) {
-    var escaped=this._escape(start,cache,requestedGoal);if(!escaped)return null;
-    escape={from:start,to:escaped,distance:distance(start,escaped)};start=escaped;
-    if(goalFree&&this.segmentClear(start,requestedGoal,r)){this.lastSearch.direct=true;return {points:distance2(start,requestedGoal)<EPS?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:escape};}
-  }
-  var starts=this._anchors(start,cache);if(!starts.length)return null;
-  var goalAnchors=goalFree?this._anchors(requestedGoal,cache):[],goalIds=new Set(),target=requestedGoal;
-  if(goalFree&&!goalAnchors.length&&!allowPartial)return null;
-  goalAnchors.forEach(function(candidate){goalIds.add(candidate.id);});
-  var projectedId=goalFree?-1:this._projectGoal(requestedGoal,cache,start);
-  if(!goalFree){if(projectedId<0&&!allowPartial)return null;if(projectedId>=0){target=this._center(projectedId);goalIds.add(projectedId);}}
-  var serial=++cache.serial;if(serial>=4294967295){cache.seen.fill(0);cache.closed.fill(0);cache.serial=serial=1;}
-  var heap=new Heap(),found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity,frontier=-1,frontierDistance=Infinity;
-  starts.forEach(function(candidate){var g=Math.sqrt(candidate.d2);cache.seen[candidate.id]=serial;cache.g[candidate.id]=g;cache.parent[candidate.id]=-1;cache.parentBridges.delete(candidate.id);heap.push({id:candidate.id,g:g,f:g+distance(candidate.point,target)});});
-  while(heap.items.length) {
-    var item=heap.pop(),currentId=item.id;
-    if(item.f>=bestCost-EPS)break;
-    if(cache.closed[currentId]===serial||cache.seen[currentId]!==serial||item.g!==cache.g[currentId])continue;
-    cache.closed[currentId]=serial;this.lastSearch.expanded++;
-    var current=this._center(currentId),goalDistance=distance2(current,requestedGoal);
-    if(goalDistance<frontierDistance-EPS){frontierDistance=goalDistance;frontier=currentId;}
-    if(goalDistance<bestDistance-EPS&&(goalFree||this._escapeClear(requestedGoal,current,r,true))){bestDistance=goalDistance;bestReachable=currentId;}
-    if(goalIds.has(currentId)) {
-      var completeCost=item.g+(goalFree?Math.sqrt(goalDistance):0);
-      if(completeCost<bestCost){bestCost=completeCost;found=currentId;}
-      continue;
-    }
-    for(var direction=0;direction<8;direction++)if(this._edge(cache,currentId,direction)) {
-      var delta=DIRECTIONS[direction],nextId=currentId+delta[1]*this.columns+delta[0];
-      if(cache.closed[nextId]===serial)continue;
-      var next=this._center(nextId),nextG=item.g+distance(current,next);
-      if(cache.seen[nextId]!==serial||nextG<cache.g[nextId]-EPS){cache.seen[nextId]=serial;cache.g[nextId]=nextG;cache.parent[nextId]=currentId;cache.parentBridges.delete(nextId);heap.push({id:nextId,g:nextG,f:nextG+distance(next,target)});}
-    }
-    (bridges.get(currentId)||[]).forEach(function(bridge){
-      var nextId=bridge.id;if(cache.closed[nextId]===serial)return;
-      var nextG=item.g+bridge.cost;
-      if(cache.seen[nextId]!==serial||nextG<cache.g[nextId]-EPS){cache.seen[nextId]=serial;cache.g[nextId]=nextG;cache.parent[nextId]=currentId;cache.parentBridges.set(nextId,{serial:serial,points:bridge.points});heap.push({id:nextId,g:nextG,f:nextG+distance(self._center(nextId),target)});}
-    });
-  }
-  // For a blocked target, select its closest cell in the start's reachable
-  // component if the globally closest boundary cell lies across another wall.
-  if(found<0&&!goalFree)found=bestReachable;
-  var partial=found<0&&!!allowPartial;
-  if(partial)found=frontier;
-  if(found<0)return null;
-  var reversed=[],cursor=found,guard=0;
-  while(cursor>=0&&guard++<=this.count){reversed.push(this._center(cursor));var bridge=cache.parentBridges.get(cursor);if(bridge&&bridge.serial===serial)for(var p=bridge.points.length-2;p>0;p--)reversed.push(bridge.points[p]);cursor=cache.parent[cursor];}
-  if(guard>this.count)return null;
-  reversed.reverse();var points=[start];
-  reversed.forEach(function(p){if(distance2(points[points.length-1],p)>EPS)points.push(p);});
-  var goal=goalFree&&!partial?requestedGoal:this._center(found);
-  if(distance2(points[points.length-1],goal)>EPS)points.push(goal);
-  var result={points:this._smooth(points,r),goal:goal,reached:goalFree&&!partial,partial:partial,escape:escape};
-  if(partial&&sharedKey&&!escape){
-    if(!this._partialRoutes)this._partialRoutes=new Map();
-    if(this._partialRoutes.size>=32)this._partialRoutes.delete(this._partialRoutes.keys().next().value);
-    this._partialRoutes.set(sharedKey,{start:start,points:result.points,goal:goal});
-  }
-  return result;
-};
+NavigationGrid.prototype.findPath=function(start,goal,radius,allowPartial){return complete(this.createSearch(start,goal,radius,allowPartial));};
 
 exports.NavigationGrid=NavigationGrid;
