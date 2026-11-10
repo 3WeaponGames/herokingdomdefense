@@ -106,6 +106,7 @@ var def_KinghtFallBuildWall = function (t) {
     return false;
   };
   _ctor.prototype.setLevel = function (e) {
+    if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._wallRunRuntime || this.ndAniMain && this.ndAniMain.skeletonData && this.ndAniMain.skeletonData.skeletonJson && this.ndAniMain.skeletonData.skeletonJson.wallKit) require("WallRunRuntime").apply(this);
     if (this.wallFacing || this._gateFacingRuntime) require("GateFacingRuntime").apply(this);
     t.prototype.setLevel.call(this, e);

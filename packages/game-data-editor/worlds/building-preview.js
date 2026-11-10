@@ -12,6 +12,7 @@ function reference(data,ref){const value=ref&&data[ref.__id__];return value&&val
 function multiply(a,b){return [a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];}
 function rowFor(config,building,hall){
  const definition=config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
+ if(Number.isInteger(building.previewBranch))return {row:rows.find(row=>row.index===building.previewBranch)};
  let row=rows[0];
  if(building.kind===1)row=rows.find(row=>row.level===hall);
  else if(definition&&Array.isArray(definition.InitialChoices))row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
@@ -38,7 +39,7 @@ function describe(service,stage){
  // rows. Referenced artwork is checked with cheap file stamps before reuse,
  // so live texture/model replacement does not require editing or saving a draft.
  for(const building of stage.buildings||[]){const id=building.template.prefab;if(!sources.has(id)){try{const data=stage.templates&&stage.templates[id]||service.source(id);sources.set(id,{data,revision:L.hash(JSON.stringify(data))});}catch(error){sources.set(id,{data:null,revision:'missing'});errors.push(error.message);}}}
- const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseSide||b.purchaseOffset?b.angle:undefined,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum]),previous=descriptions.get(service);
+ const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseSide||b.purchaseOffset?b.angle:undefined,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum]),previous=descriptions.get(service);
  if(previous&&previous.index===index&&previous.signature===signature&&unchanged(previous.dependencies))return previous.value;
  for(const building of stage.buildings||[]){
   const result=buildings[building.id]={name:NAMES[building.kind]||'Building',levels:{}},rawSource=sources.get(building.template.prefab).data;if(!rawSource)continue;let source;try{source=GateSource.project(rawSource,building,service.root);try{source=Purchase.project(source,building);}catch(error){errors.push(error.message);}}catch(error){errors.push(error.message);continue;}let info=sourceModels.get(source);if(!info){try{info=Maps.model(source);sourceModels.set(source,info);}catch(error){errors.push(error.message);continue;}}

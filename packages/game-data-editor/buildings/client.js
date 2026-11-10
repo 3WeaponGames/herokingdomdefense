@@ -6,6 +6,7 @@ const Model = require('./model');
 const Settings = require('./settings');
 const Schema = require('../lib/schema');
 const UnitLevelStats = require('../../../assets/_script/UnitLevelStats');
+const BuildingCost = require('../../../assets/_script/BuildingCost');
 const own = (record, key) => Object.prototype.hasOwnProperty.call(record || {}, key);
 function node(tag, text, className) {
     const element = document.createElement(tag);
@@ -118,14 +119,6 @@ function mechanics(panel, row, level, at, context) {
         } else panel._note('The assigned unit is missing. Choose an implemented allied unit above before saving.', true, section);
     }
 }
-function construction(panel) {
-    const section = panel._section('Construction timing · shared by all buildings', undefined, true);
-    const parameters = panel._data('overrides').parameters || {}, custom = own(parameters, 'buildStandTime');
-    panel._field(section, 'Standing time (seconds)', custom ? parameters.buildStandTime : 1.5,
-        value => panel._set('overrides', ['parameters', 'buildStandTime'], value),
-        {min:0.001, help:'How long the hero stands at a building to purchase or upgrade it. Original behavior: 1.5 seconds.'});
-    if (custom) section.appendChild(button('Reset to original timing', () => panel._change([{doc:'overrides', path:['parameters','buildStandTime'], remove:true}]).catch(() => {}), 'gt-mini'));
-}
 function initialChoices(panel, row, branches) {
     const building=row.record, choices=building.InitialChoices, at=row.path.concat('InitialChoices');
     const section=panel._section('Construction menu · advanced',undefined,true);
@@ -154,35 +147,6 @@ function towerSettings(panel, row, level, at) {
     panel._note('Attack type, targeting and projectile settings apply to this tower level. Editing a field changes only this level’s draft.',false,section);
     Settings.towerFields(level.Tower).forEach(field=>panel._field(section,field.label,field.value,next=>level.Tower&&typeof level.Tower==='object'&&!Array.isArray(level.Tower)?panel._set('A',at.concat('Tower',field.key),next):panel._set('A',at.concat('Tower'),{[field.key]:next}),field));
 }
-function appearanceSettings(panel, row, level, at) {
-    const section=panel._section('Map artwork & footprint',undefined,!level.Appearance);
-    panel._field(section,'Collision footprint branch',own(level,'ColliderIndex')?level.ColliderIndex:level.index,next=>panel._set('A',at.concat('ColliderIndex'),next),{integer:true,min:1,help:'Reuses an existing map collider tag. The saved branch index stays fixed.'});
-    const value=level.Appearance;
-    if(!value||typeof value!=='object'||Array.isArray(value)) {
-        panel._note('This branch uses its original animated building model.',false,section);
-        section.appendChild(button('Use Resources sprite artwork',()=>panel._set('A',at.concat('Appearance'),{sprite:'',width:160,height:200,offsetX:0,offsetY:0}),'gt-mini'));
-        return;
-    }
-    panel._field(section,'Map sprite resource path',value.sprite||'',next=>panel._set('A',at.concat('Appearance','sprite'),next),{wide:true,help:'Extension-free path inside assets/resources, for example buildings/towers/cannon-1.'});
-    const images=(panel._assets.images||[]).filter(asset=>asset.resource&&asset.reference&&asset.resource.startsWith('buildings/'));
-    if(images.length)panel._field(section,'Choose Resources artwork',value.sprite||'',next=>panel._set('A',at.concat('Appearance','sprite'),next),{options:[{value:value.sprite||'',label:value.sprite||'Choose imported artwork'}].concat(images.filter(asset=>asset.resource!==value.sprite).map(asset=>({value:asset.resource,label:asset.resource}))),wide:true,help:'Imported resources/buildings artwork. Other Resources paths can be entered above.'});
-    Settings.APPEARANCE_FIELDS.filter(field=>!/^muzzle/.test(field.key)||Number(typeID(row))===2&&!value.weapon).forEach(field=>panel._field(section,field.label,own(value,field.key)?value[field.key]:field.value,next=>panel._set('A',at.concat('Appearance',field.key),next),field));
-    panel._note('The image is anchored at its bottom center. Width and height include transparent margins. Offsets and muzzle position use building-local world units.',false,section);
-    if(Number(typeID(row))===2||own(value,'weapon'))weaponSettings(panel,section,value,at.concat('Appearance'),images);
-}
-function weaponSettings(panel,parent,appearance,at,images){
-    const section=panel._section('Aiming weapon layer',parent,!appearance.weapon),value=appearance.weapon;
-    if(!value||typeof value!=='object'||Array.isArray(value)){
-        panel._note('This artwork is static. Add a separate transparent weapon sprite to aim without rotating the building base.',false,section);
-        section.appendChild(button('Add aiming weapon layer',()=>panel._set('A',at.concat('weapon'),{sprite:'',width:120,height:80,pivotX:.5,pivotY:.5,offsetX:0,offsetY:150,muzzleX:90,muzzleY:0}),'gt-mini'));
-        return;
-    }
-    panel._field(section,'Weapon sprite resource path',value.sprite||'',next=>panel._set('A',at.concat('weapon','sprite'),next),{wide:true,help:'Transparent weapon cutout inside assets/resources. The base artwork remains fixed.'});
-    if(images.length)panel._field(section,'Choose weapon artwork',value.sprite||'',next=>panel._set('A',at.concat('weapon','sprite'),next),{wide:true,options:[{value:value.sprite||'',label:value.sprite||'Choose imported weapon artwork'}].concat(images.filter(asset=>asset.resource!==value.sprite).map(asset=>({value:asset.resource,label:asset.resource})))});
-    Settings.WEAPON_FIELDS.forEach(field=>panel._field(section,field.label,own(value,field.key)?value[field.key]:field.value,next=>panel._set('A',at.concat('weapon',field.key),next),field));
-    panel._note('Pivot position is in building-local world units, independently of the base image offset. Muzzle offsets start at that pivot in the unrotated weapon pose. The preview aim control is temporary and never changes the saved draft.',false,section);
-    section.appendChild(button('Remove aiming weapon layer',()=>panel._change([{doc:'A',path:at.concat('weapon'),remove:true}]).catch(()=>{}),'gt-mini'));
-}
 function render(panel, row) {
     if (row.overview) { overview(panel); return; }
     const building = row.record, at = row.path, id = typeID(row);
@@ -193,8 +157,7 @@ function render(panel, row) {
         familyCards(panel,list);
         if(!list.length)panel._note('No valid construction choices are configured. Review the construction menu below.',true);
         initialChoices(panel,row,allBranches);
-        panel._properties(panel._section('Shared building category',undefined,true),'A',at,building,{table:'BuildEnum',id},['levelList','InitialChoices']);
-        construction(panel); return;
+        return;
     }
     const branches=row.branches||allBranches, branch=selectedBranch(panel,row);
     if (!branch) { panel._note('No building levels are configured for this family.', true); return; }
@@ -228,13 +191,13 @@ function render(panel, row) {
     mechanics(panel, row, level, keys, context);
     towerSettings(panel,row,level,keys);
     const costs = panel._section('Health, level & costs');
-    ['Hp','level','BuildSliverCost','VedioCount'].filter(key => own(level, key)).forEach(key => panel._value(costs, 'A', keys.concat(key), level[key], key, context, level));
-    if (!own(level, 'BuildSliverCost')) costs.appendChild(button('Add next purchase cost (silver)', () => panel._set('A', keys.concat('BuildSliverCost'), 1), 'gt-mini'));
-    panel._note('Unlock cost constructs the selected starting branch. The current branch’s silver cost controls the next purchase; upgrade choice dialogs also read the destination branch’s cost to choose silver or reward-ad presentation.', false, costs);
+    ['Hp','level'].filter(key => own(level, key)).forEach(key => panel._value(costs, 'A', keys.concat(key), level[key], key, context, level));
+    const price=BuildingCost.preview(building,level);
+    panel._field(costs,'Build / upgrade cost (silver)',price.value===undefined?'':price.value,next=>panel._set('A',keys.concat('BuildCost'),next),{integer:true,min:0,help:price.varied?'Existing paths have different prices. Set one price for this building level.':'Price to build this level or upgrade into it.'});
+    if(own(level,'VedioCount'))panel._value(costs,'A',keys.concat('VedioCount'),level.VedioCount,'VedioCount',context,level);
     const appearance = panel._section('Name, description & appearance');
     const visualKeys = ['Name','Describe','LevelUpDescribe','Icon','Skin','Zoom','Excursion'];
     visualKeys.filter(key => own(level, key)).forEach(key => panel._value(appearance, 'A', keys.concat(key), level[key], key, context, level));
-    appearanceSettings(panel,row,level,keys);
     const connections = panel._section('Next upgrade branches · advanced',undefined,true);
     if (own(level, 'BranchBuild')) panel._value(connections, 'A', keys.concat('BranchBuild'), level.BranchBuild, 'BranchBuild', context, level);
     else {
@@ -244,12 +207,7 @@ function render(panel, row) {
             if (next) panel._set('A', keys.concat('BranchBuild'), [next.index]);
         }, 'gt-mini'));
     }
-    const other = panel._section('Identifiers & additional authored properties', undefined, true);
-    panel._properties(other, 'A', keys, level, context, visualKeys.concat(['Data','Hp','level','BuildSliverCost','VedioCount','BranchBuild','Tower','Appearance','ColliderIndex']));
-    panel._properties(panel._section('Shared building category',undefined,true),'A',at,building,{table:'BuildEnum',id},['levelList','InitialChoices']);
     if(Number(id)===2||Number(id)===3)panel.$detail.appendChild(button('Manage '+(Number(id)===3?'Barracks':'Tower')+' construction choices',()=>select(panel,id),'gt-mini'));
-    construction(panel);
-    panel._note('Branch IDs stay fixed so map unlocks and saved progress keep their references. All changes remain drafts until Save changes.');
 }
 function preview(panel, row, api) {
     if (row.overview || row.category || !selectedBranch(panel,row)) {

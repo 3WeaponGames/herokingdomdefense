@@ -30,7 +30,7 @@ test('explicit opening settings survive prefab export and recovery without autho
 
 test('opening controls require actual supported gate artwork and preserve unsupported legacy metadata in mixed selections',()=>{
  const Editor=require('../worlds/wall-layout-editor'),vm=require('node:vm'),client=fs.readFileSync(path.join(__dirname,'../worlds/client.js'),'utf8'),inspector=client.slice(client.indexOf(' function wallRunControls('),client.indexOf(' function renderBuildingInspector('));
- const cases=[{record:null,supported:false},{record:{skeletons:[{json:{animations:{open:{}}}}]},supported:false},{record:{skeletons:[{json:{wallDoor:{version:2}}}]},supported:true},{record:{skeletons:[{json:{animations:{open_inward:{}}}}]},supported:true}];
+ const cases=[{record:null,supported:false},{record:{skeletons:[{json:{animations:{open:{}}}}]},supported:false},{record:{skeletons:[{json:{wallDoor:{version:2}}}]},supported:true},{record:{skeletons:[{json:{animations:{open_inward:{}}}}]},supported:true},{record:{skeletons:[{json:{wallDoor:{version:2,closedOnly:true},animations:{open_inward:{}}},_wallSourceJson:{animations:{open_inward:{}}}},{json:{animations:{open_inward:{}}}}]},supported:false}];
  for(const {record,supported}of cases)for(const saved of [undefined,'inward']){
   const building={id:1,kind:6,FutureField:{keep:1}};if(saved)building.wallOpening=saved;const stage={buildings:[building]},before=JSON.stringify(stage),controls=new Map();let edits=0;
   const context={state:{snap:{buildingPreview:{buildings:{1:{levels:{1:record}}}}},previewHall:1},WallLayoutEditor:Editor,right:{},section(){},button(){},note(){},field(_host,label,value,change){controls.set(label,{value,change});return{};},edit(change){edits++;change(stage);}};

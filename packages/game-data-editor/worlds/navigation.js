@@ -1,15 +1,19 @@
 'use strict';
-const path=require('path'),M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),GateSource=require('./gate-facing');
+const path=require('path'),M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),GateSource=require('./gate-facing'),Blocker=require('../../../assets/_script/BuildingBlocker');
 
-function colliderIndex(building,hall,config){
+function buildingRow(building,hall,config){
  const definition=config&&config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
+ if(Number.isInteger(building.previewBranch))return rows.find(row=>row.index===building.previewBranch);
  let row=rows[0];
  if(building.kind===1){
   row=rows.find(row=>row.level===hall);
  }else if(definition&&Array.isArray(definition.InitialChoices)){
   row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
  }
- const index=row?row.index:building.kind===1?hall:1,override=row&&row.ColliderIndex;
+ return row;
+}
+function colliderIndex(building,hall,config){
+ const row=buildingRow(building,hall,config),index=row?row.index:building.kind===1?hall:1,override=row&&row.ColliderIndex;
  // Navigation previews assume eligible buildings are built, using the first
  // offered branch. The serialized prefab may have every level disabled (or
  // enabled); runtime setLevel selects the matching collider tag explicitly.
@@ -33,7 +37,20 @@ function buildingColliderData(service,stage,building,hall,gate,config,sourceMode
   // BuildBase changes polygon fixtures only; boxes/circles keep their static
   // enabled state even when attached directly to a level-controlled node.
   return controlled.has(c.node)&&c.type==='cc.PhysicsPolygonCollider'?Number(c.source.tag)===tag:c.active;
- });return {colliders,origin,owner:owner.id};
+ });
+ const row=buildingRow(building,hall,config),blocker=row&&row.Blocker;
+ if(blocker){
+  const extra=[],ref=component&&component.value.ndAniMain,main=ref&&info.byId[source[ref.__id__].node.__id__],wing=Array.from(controlled).find(id=>id!==owner.id);
+  const add=(polygons,matrix,node)=>{for(const points of Blocker.transform(polygons,matrix))extra.push({node,type:'cc.PhysicsPolygonCollider',sensor:false,active:true,source:{tag},points});};
+  if(blocker.body)add(blocker.body.polygons||[],owner.world,owner.id);
+  else if(main){
+   const raw=require('./wall-run').readRun(component.value,building),layout=require('../../../assets/_script/WallKit').layout(raw,require('./wall-run').anchors(service.root,source,building)),shapes=Blocker.wall(blocker,layout);
+   if(gate!=='open')add(shapes.gate,main.world,owner.id);
+   add(shapes.fixed,main.world,wing===undefined?owner.id:wing);
+  }
+  return {colliders:colliders.filter(c=>!controlled.has(c.node)||c.type!=='cc.PhysicsPolygonCollider').concat(extra),origin,owner:owner.id};
+ }
+ return {colliders,origin,owner:owner.id};
 }
 function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels);return data.colliders.map(c=>c.points.map(p=>M.toWorld(building,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
 function preview(service,request){
@@ -50,7 +67,7 @@ function preview(service,request){
  if(!['closed','open'].includes(gate))throw Error('Choose an open or closed gate.');
  const Grid=require(path.join(service.root,'assets/_script/NavigationGrid')).NavigationGrid,polygons=M.blockerPolygons(map).map(p=>p.points);
  if(!M.hasGlobalBlockers(map))for(const layer of map.layers)if(!layer.hidden)for(const object of layer.objects)for(const shape of object.polygons||[])polygons.push(shape.map(p=>M.toWorld(layer.transform,M.toWorld(object,{x:object.flipX?-p.x:p.x,y:p.y}))));
- const documents=typeof service.index==='function'?service.index().documents:null,variant=documents&&documents[stage.variant||'A'],config=variant&&variant.BuildEnum?variant:documents&&documents.A,buildings=stage.buildings.filter(b=>b.enabled!==false&&(b.kind===1||(b.unlock||1)<=hall));
+ const documents=typeof service.index==='function'?service.index().documents:null,variant=documents&&documents[stage.variant||'A'],config=service.previewConfig?service.previewConfig(stage.variant||'A'):variant&&variant.BuildEnum?variant:documents&&documents.A,buildings=stage.buildings.filter(b=>b.enabled!==false&&(b.kind===1||(b.unlock||1)<=hall));
  const sourceModels=new Map();
  for(const building of buildings)polygons.push(...buildingPolygons(service,stage,building,hall,gate,config,sourceModels));
  const route=require(path.join(service.root,'assets/_script/AuthoredSpawnPlan')).route(stage.graphs,spawn.id,buildings.map(b=>b.id),request.graphId||null,()=>.25);
@@ -79,4 +96,4 @@ function preview(service,request){
  }
  return response;
 }
-module.exports={preview,buildingPolygons,buildingColliderData,colliderIndex};
+module.exports={preview,buildingPolygons,buildingColliderData,colliderIndex,buildingRow};

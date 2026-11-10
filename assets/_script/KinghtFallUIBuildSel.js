@@ -94,8 +94,8 @@ var def_KinghtFallUIBuildSel = function (t) {
         backgrounds: r.children.filter(function (node) { return (node.name === "ndNormal" || node.name === "ndVideo") && node.y < -20; }) });
       for (var d = 0; d < r.children.length; d++) {
         var p = r.children[d];
-        "ndNormal" == p.name && (p.active = i.initialChoice || !!o.BuildSliverCost);
-        "ndVideo" == p.name && (p.active = !i.initialChoice && !o.BuildSliverCost);
+        "ndNormal" == p.name && (p.active = !require("BuildingCost").video(o, i.initialChoice));
+        "ndVideo" == p.name && (p.active = require("BuildingCost").video(o, i.initialChoice));
       }
       var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
       rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(i.initialChoice ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
@@ -109,13 +109,14 @@ var def_KinghtFallUIBuildSel = function (t) {
         });
       }
       if (grid) i.layoutChoiceCard(r, n, e.length);
-      if (i.initialChoice || o.BuildSliverCost) {
+      if (!require("BuildingCost").video(o, i.initialChoice)) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
           if (!t._decisionPending) t.finishDecision(t.callBack, a);
         }, i);
       } else {
         r.on(cc.Node.EventType.TOUCH_END, function () {
           if (t.isclose || t._decisionCompleted || t._decisionPending) return;
+          if (!t.canAffordSelection(a)) return;
           t._decisionPending = true;
           var generation = t._resourceGeneration;
           $z1SdkMgr.SdkMgr.getInstance().playVideo($z1SdkMgr.AdType.AdFreeTime, function () {
@@ -153,6 +154,16 @@ var def_KinghtFallUIBuildSel = function (t) {
     for (var a = 0; a < e.length; a++) {
       n(a);
     }
+  };
+  _ctor.prototype.canAffordSelection = function (index) {
+    if (!this.build.canAffordChoice || this.build.canAffordChoice(index)) return true;
+    if (this.build.showBuildCostError) this.build.showBuildCostError();
+    this._decisionPending = false;
+    return false;
+  };
+  _ctor.prototype.finishDecision = function (callback, value, generation) {
+    if (!this.canAffordSelection(value)) return false;
+    return t.prototype.finishDecision.call(this, callback, value, generation);
   };
   _ctor.prototype.layoutChoiceCard = function (row, index, count) {
     row.setContentSize(300, 280);

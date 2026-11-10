@@ -131,7 +131,7 @@ function describe(root, request) {
         if(horse&&layers.some(l=>l.json._heroMaker))for(const l of layers.filter(l=>l.json._heroMaker))l.followMount={layer:horse.uuid,bone:'bone2',translationOnly:true};
     }
     const sourceSet = new Set(layers.map(l => l.uuid)), shared = [];
-    files.files.filter(f => /(?:ItemEnemy\d+|ndPlay)\.prefab$/.test(f)).forEach(f => {
+    if(!request.noShared) files.files.filter(f => /(?:ItemEnemy\d+|ndPlay)\.prefab$/.test(f)).forEach(f => {
         if (f === file) return;
         try { if (json(f).some(c => c.__type__ === 'sp.Skeleton' && c._N$skeletonData && sourceSet.has(c._N$skeletonData.__uuid__))) shared.push(relative(root, f)); } catch (_) {}
     });

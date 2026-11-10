@@ -182,6 +182,7 @@ var def_KinghtFallBuildBase = function (t) {
     this.index = cfg ? cfg.index : 0;
     if (this.index > 0) this._freeInitialBuild = false;
     this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, cfg);
+    if (cfg && cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (0 == this.index) {
       this.hide();
     } else {
@@ -307,6 +308,7 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.onDestroy = function () {
     this.cancelUpgrade();
     this._stopColliderTweens();
+    if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     require("BuildingAppearance").dispose(this);
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
@@ -474,6 +476,11 @@ var def_KinghtFallBuildBase = function (t) {
           if (!operation || operation.done) return;
           if (!operation.isCurrent()) { operation.cancel(); return; }
           if (choices.indexOf(t) < 0 || !i.getBranchCfg(t)) { operation.cancel(); return; }
+          var chosenCost = i.getSell(t);
+          if (chosenCost < 0 || !isFinite(chosenCost) || data.coin + cost < chosenCost) { i.showBuildCostError(); return false; }
+          data.coin += cost - chosenCost;
+          cost = chosenCost;
+          operation.reservedCost = cost;
           operation.done = true;
           i._upgradeOperation = null;
           i._freeInitialBuild = false;
@@ -562,7 +569,7 @@ var def_KinghtFallBuildBase = function (t) {
         };
         if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.coin >= this.getSell()) {
           var info = this.buildInfo, cost = this.getSell(), canStart = ui.canStart;
-          operation = { done: false, request: null, node: null };
+          operation = { done: false, request: null, node: null, reservedCost: cost };
           this._upgradeOperation = operation;
           operation.isCurrent = function () {
             return i._upgradeOperation === operation && !operation.done && cc.isValid(i, true) && cc.isValid(i.node, true) && !i.isDestroyed &&
@@ -593,9 +600,7 @@ var def_KinghtFallBuildBase = function (t) {
           }
         } else {
           this.buildInfo.standTime = 0;
-          $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.cuo, undefined, undefined, { owner: i, game: game });
-          $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1KinghtFallTextConfig.KinghtFallTextConfig.Game03);
-          $z1KinghtFallUIGame.default.instance.aniBtnAddCoin();
+          this.showBuildCostError();
         }
       }
     } else {
@@ -659,7 +664,18 @@ var def_KinghtFallBuildBase = function (t) {
     this._playUpgradeAudio();
     return true;
   };
-  _ctor.prototype.getSell = function () {
+  _ctor.prototype.canAffordChoice = function (index) {
+    var cost = this.getSell(index), operation = this._upgradeOperation;
+    var reserved = operation && !operation.done ? operation.reservedCost || 0 : 0;
+    return cost >= 0 && isFinite(cost) && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.coin + reserved >= cost;
+  };
+  _ctor.prototype.showBuildCostError = function () {
+    var ui = $z1KinghtFallUIGame.default.instance;
+    $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.cuo, undefined, undefined, { owner: this, game: ui.ctrGame });
+    $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1KinghtFallTextConfig.KinghtFallTextConfig.Game03);
+    ui.aniBtnAddCoin();
+  };
+  _ctor.prototype.getSell = function (targetIndex) {
     if (this.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None || !this.canLock) {
       return -1;
     }
@@ -667,7 +683,10 @@ var def_KinghtFallBuildBase = function (t) {
       return -1;
     }
     if (this.hasFreeInitialChoice()) return 0;
-    var t = this.buildInfo.cfg ? this.buildInfo.cfg.BuildSliverCost : this.buildCfg.lockCose;
+    var costModel = require("BuildingCost"), owner = this, choices = this.getUpgradeChoices();
+    if (targetIndex !== undefined && choices.indexOf(targetIndex) < 0 || !choices.length) return -1;
+    var selected = targetIndex !== undefined ? [targetIndex] : choices;
+    var t = Math.min.apply(Math, selected.map(function (index) { return costModel.value(owner.buildCfg, owner.buildInfo.cfg, owner.getBranchCfg(index)); }));
     var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff09);
     e && (t -= e.Pamer[0]);
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff47);
