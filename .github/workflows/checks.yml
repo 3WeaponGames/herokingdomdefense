@@ -12,7 +12,31 @@ jobs:
         run: |
           node tools/testing/prepare-creator-spine.cjs "$RUNNER_TEMP/cocos-spine-2.4.13"
           echo "COCOS_SPINE_ROOT=$RUNNER_TEMP/cocos-spine-2.4.13" >> "$GITHUB_ENV"
-      - run: npm test
+      - name: Run game checks
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee "$RUNNER_TEMP/game-checks.log"
+      - name: Report game check failures
+        if: failure()
+        run: |
+          node - "$RUNNER_TEMP/game-checks.log" <<'NODE'
+          const fs = require('node:fs');
+          const file = process.argv[2];
+          if (!fs.existsSync(file)) process.exit(0);
+          const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
+          const failures = [];
+          for (let i = 0; i < lines.length; i++) {
+            if (/^(?:not ok\b|✖(?! failing tests)|(?:Assertion)?Error:)/.test(lines[i])) {
+              failures.push(lines.slice(i, i + 45).join('\n'));
+              if (failures.length === 10) break;
+            }
+          }
+          if (!failures.length) failures.push(lines.slice(-60).join('\n'));
+          for (const failure of failures) {
+            const escaped = failure.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+            console.log('::error title=Game checks::' + escaped);
+          }
+          NODE
       - uses: actions/upload-artifact@v4
         if: always()
         with:
