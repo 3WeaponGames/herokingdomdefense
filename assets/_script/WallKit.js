@@ -1,8 +1,8 @@
 "use strict";
 
 // Native PNG modules are rigid regions on the pack's measured diagonal grid.
-// The original animated gateway remains a separate, paired Spine assembly.
-var Assembly = require("./WallAssembly"), K = Assembly.axis.slope, UNIT = Assembly.step.x;
+// Registered door sprites share the wall frame; legacy gateways remain usable.
+var Assembly = require("./WallAssembly"), Door = require("./WallDoor"), K = Assembly.axis.slope, UNIT = Assembly.step.x;
 var SKINS = ["cq-rts-1", "cq-rts-2", "cq-rts-3"];
 var ORIGINAL_SKINS = ["cq-1", "cq-2-1", "cq-2-2"];
 var ORIGINAL_POSTS = [
@@ -32,11 +32,12 @@ function source(json) {
   result.slots=result.slots.filter(function(s){return !isAdded(s.name);});
   result.skins=result.skins.filter(function(s){return SKINS.indexOf(s.name)<0;});
   Object.keys(result.animations).forEach(function(name){
+    if(Door.generatedAnimations.indexOf(name)>=0){delete result.animations[name];return;}
     var a=result.animations[name];
     if(a.slots){Object.keys(a.slots).forEach(function(s){if(isAdded(s))delete a.slots[s];});if(!Object.keys(a.slots).length)delete a.slots;}
     if(a.deform){SKINS.forEach(function(s){delete a.deform[s];});if(!Object.keys(a.deform).length)delete a.deform;}
   });
-  delete result.wallKit;delete result.wallGate;return result;
+  delete result.wallKit;delete result.wallGate;delete result.wallDoor;return result;
 }
 // Restore the complete authored gateway: CQ1 owns its left half, CQ2 its right.
 // Both retain the original slot switches and deformation curves (including the
@@ -75,6 +76,16 @@ function fitOriginalGate(json,r,options) {
   });
   updateBounds(result);return result;
 }
+// Matched doors live completely in CQ1. Keep CQ2's original source and effects
+// recoverable, but expose empty RTS skins so neither old leaf nor old post can
+// fall back into the active matched assembly.
+function fitGatePart(json,r,options) {
+  if(!json.wallGate||json.wallGate.style!=="matched")return fitOriginalGate(json,r,options);
+  var marker=clone(json.wallGate),result=source(json);
+  if(!marker.originalHeader)marker.originalHeader=clone(result.skeleton);
+  SKINS.forEach(function(name){result.skins.push({name:name,attachments:{}});});
+  result.wallGate=marker;return result;
+}
 function updateBounds(result) {
   var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,bones={};
   result.slots.forEach(function(s){bones[s.name]=s.bone;});
@@ -94,6 +105,7 @@ function updateBounds(result) {
 }
 function install(json, r, metadata, options) {
   metadata=metadata||json.wallKit;if(!metadata||!metadata.sizes)throw Error("Missing native wall kit textures.");
+  var matched=metadata.gateStyle==="matched"||metadata.doors&&metadata.doors.version===2;
   var result=source(json),parts=posts(r),bone="rts_wall_frame";
   // Cancel the authored bone3 setup offset, while inheriting its entire spawn motion.
   result.bones.push({name:bone,parent:"bone3",x:5.2,y:-156.53});
@@ -104,7 +116,7 @@ function install(json, r, metadata, options) {
     parts.forEach(function(p,i){var name=bodySlots[i],a=Assembly.attachment(p,level,metadata.sizes,options);attachments[name]={};attachments[name][name]=a;});
     result.skins.push({name:skin,attachments:attachments});
   }
-  result=fitOriginalGate(result,r);
+  if(!matched)result=fitOriginalGate(result,r);
   Object.keys(result.animations).forEach(function(name){
     var a=result.animations[name],slots=a.slots||(a.slots={}),night=name.indexOf("night")>=0;
     bodySlots.forEach(function(slot){
@@ -114,12 +126,14 @@ function install(json, r, metadata, options) {
       slots[slot]=track;
     });
   });
-  // Complete PNG modules are painter-sorted from rear to foreground. Keep
-  // the original authored gateway in front of the connecting wall artwork.
+  // Complete PNG modules are painter-sorted from rear to foreground. Legacy
+  // gateways keep their prior order; matched door sprites insert behind the
+  // regular wall posts after native lighting/build tracks are established.
   var added=result.slots.filter(function(s){return bodySlots.indexOf(s.name)>=0;}),nativeSlots=result.slots.filter(function(s){return bodySlots.indexOf(s.name)<0;});
   result.slots=added.concat(nativeSlots);
+  if(matched)Door.install(result,r,metadata,options);
   updateBounds(result);
-  result.wallKit=clone(metadata);result.wallKit.layout=clone(r);result.wallKit.gateStyle="original";result.wallKit.nativeAssembly=2;result.wallKit.volume=false;result.wallKit.reversed=false;return result;
+  result.wallKit=clone(metadata);result.wallKit.layout=clone(r);result.wallKit.gateStyle=matched?"matched":"original";result.wallKit.nativeAssembly=2;result.wallKit.volume=false;result.wallKit.reversed=false;return result;
 }
 
 function footprint(a,b,depth) {
@@ -139,4 +153,4 @@ function fixtures(r) {
   var end=r.end==="corner"?footprint(r.rightEnd,{x:r.rightEnd.x+UNIT*.7,y:r.rightEnd.y+UNIT*K*.7},28):[];
   return {root:root,wings:[left[0]||[],right[0]||[],start,end],wingSegments:[left,right,[],end.length?[end]:[]],proximity:r.gate?footprint(along(r.left,-20),along(r.right,20),90):[]};
 }
-exports.chain=chain;exports.updateBounds=updateBounds;exports.fitOriginalGate=fitOriginalGate;exports.validRun=validRun;exports.layout=layout;exports.posts=posts;exports.install=install;exports.source=source;exports.footprint=footprint;exports.fixtures=fixtures;exports.unit=UNIT;exports.axis=Assembly.axis;exports.nativeRun=Assembly.canonical;exports.maxPerSide=Assembly.maxPerSide;exports.skins=SKINS;
+exports.chain=chain;exports.updateBounds=updateBounds;exports.fitOriginalGate=fitOriginalGate;exports.fitGatePart=fitGatePart;exports.validRun=validRun;exports.layout=layout;exports.posts=posts;exports.install=install;exports.source=source;exports.footprint=footprint;exports.fixtures=fixtures;exports.unit=UNIT;exports.axis=Assembly.axis;exports.nativeRun=Assembly.canonical;exports.maxPerSide=Assembly.maxPerSide;exports.skins=SKINS;

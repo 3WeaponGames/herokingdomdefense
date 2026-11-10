@@ -25,21 +25,25 @@ function spread(points,start,center,width,random,walkable,clear) {
     return {x:p.x,y:p.y};
   });
 }
+function spawnRadius(game,spawnId) {
+  var holder=game.ndPath.getChildByName('Authored routes'),paths=holder&&holder.getComponent('AuthoredStagePaths'),spec=paths&&paths.spawnSpec(spawnId);
+  if(spec&&spec.radius!==undefined)return spec.radius;
+  var node=game.ndPath.getChildByName('ndEnemy'+spawnId),area=node&&node.getComponent&&node.getComponent('SpawnPointArea');return area?area.radius:0;
+}
 function prepare(unit,game,spawnId,collides) {
-  var holder=game.ndPath.getChildByName('Authored routes'),paths=holder&&holder.getComponent('AuthoredStagePaths'),spec=paths&&paths.spawnSpec(spawnId),radius=spec&&spec.radius||0;if(!(radius>0))return;
+  var radius=spawnRadius(game,spawnId);if(!(radius>0))return;
   var Navigation=require('KinghtFallNavigation'),center=Navigation.positionOf(game.ndPath.getChildByName('ndEnemy'+spawnId),game);
-  if(collides===undefined)collides=!unit.rigidBody||unit.rigidBody.active!==false;
-  var navigation,body=0;if(collides){navigation=Navigation.get(game);navigation.refresh();body=navigation.radius(unit,true);}
-  var start=sample(center,radius,Math.random,function(p){return !collides||navigation.grid.isWalkable(p,body);});
+  // Terrain forbids entry, not exit. A spawn inside a blocker is a valid actor;
+  // shared navigation moves it out just like knockback or skill displacement.
+  var start=sample(center,radius,Math.random);
   return start?{center:center,start:start}:null;
 }
 function apply(unit,game,spawnId,prepared) {
-  var holder=game.ndPath.getChildByName('Authored routes'),paths=holder&&holder.getComponent('AuthoredStagePaths');if(!paths)return true;
-  var spec=paths.spawnSpec(spawnId),radius=spec&&spec.radius||0,route=unit.bornInfo&&unit.bornInfo.pathList,override=route&&route.routeSpread;
+  var radius=spawnRadius(game,spawnId),route=unit.bornInfo&&unit.bornInfo.pathList,override=route&&route.routeSpread;
   if(!(radius>0)&&!(override>0))return true;
   var Navigation=require('KinghtFallNavigation'),node=game.ndPath.getChildByName('ndEnemy'+spawnId),center=prepared?prepared.center:Navigation.positionOf(node,game),collides=!unit.rigidBody||unit.rigidBody.active!==false,navigation,body=0;
   if(collides){navigation=Navigation.get(game);navigation.refresh();body=navigation.radius(unit);}
-  var walkable=function(p){return !collides||navigation.grid.isWalkable(p,body);},start=prepared?prepared.start:sample(center,radius,Math.random,walkable);
+  var walkable=function(p){return !collides||navigation.grid.isWalkable(p,body);},start=prepared?prepared.start:sample(center,radius,Math.random);
   if(!start)return false;
   unit.node.setPosition(start.x,start.y);
   var width=override===undefined?radius:override;
@@ -47,6 +51,6 @@ function apply(unit,game,spawnId,prepared) {
     var points=route.map(function(n){return Navigation.positionOf(n,game);}),shifted=spread(points,start,center,width,Math.random,walkable,function(a,b){return !collides||navigation.grid.segmentClear(a,b,body);});
     unit.bornInfo.pathList=shifted.map(function(p){return {position:p,_authoredSpread:true,convertToWorldSpaceAR:function(offset){return game.ndMain.convertToWorldSpaceAR(cc.v2(p.x+(offset&&offset.x||0),p.y+(offset&&offset.y||0)));}};});
   }
-  Navigation.reset(unit);return true;
+  Navigation.reset(unit);if(collides)Navigation.prepareTerrainExit(unit,game);return true;
 }
-exports.prepare=prepare;exports.sample=sample;exports.spread=spread;exports.apply=apply;
+exports.prepare=prepare;exports.sample=sample;exports.spread=spread;exports.apply=apply;exports.radius=spawnRadius;

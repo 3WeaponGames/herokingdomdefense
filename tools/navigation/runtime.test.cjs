@@ -612,16 +612,16 @@ test('A nearby hero behind a closed gate cannot keep shield enemies targeting an
   assert.equal(u.bornInfo.nodeIndex, 0);
 });
 
-test('A small physics nudge invalidates a failed overlap escape instead of leaving the unit blocked forever', () => {
+test('A deep overlap and later physics nudge both allow a gradual exit without getting stuck', () => {
   const e = environment(); e.box(0, 0, 240, 400);
   const u = e.unit(65, 0), goal = { x: 180, y: 0 }, nav = e.nav.get(e.game);
-  assert.equal(e.nav.moveTo(u, e.game, goal, 0).blocked, true);
+  assert.equal(e.nav.moveTo(u, e.game, goal, 0).blocked, false);
   assert.equal(nav.stats.searches, 1);
-  // This two-pixel nudge puts a valid exit within the planner's escape radius.
+  // Physics displacement remains eligible for the same safe exit.
   u.node.x = 67;
   const result = e.nav.moveTo(u, e.game, goal, 0.1);
   assert.equal(result.blocked, false);
-  assert.equal(nav.stats.searches, 2);
+  assert.equal(nav.stats.searches, 1);
   assert(u.node.x > 67, 'The valid gradual escape did not begin');
   assert(distance(u.node, { x: 67, y: 0 }) <= 6.000001, 'Retrying the escape teleported the unit');
 });

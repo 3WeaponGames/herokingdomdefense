@@ -50,6 +50,7 @@ var def_KinghtFallSoldierBase = function (t) {
   _ctor.prototype.onLoad = function () {
     var t = this;
     this.rigidBody = this.node.getComponent(cc.RigidBody);
+    Navigation.enableTerrainContacts(this);
     this.spAni.setCompleteListener(function (e) {
       switch (e.animation.name) {
         case $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack:
@@ -59,6 +60,9 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.start = function () {
     this.setBody(this.spAni.node);
+  };
+  _ctor.prototype.onPreSolve = function (contact, self, other) {
+    Navigation.allowBlockedExit(this, contact, other);
   };
   _ctor.prototype.setParent = function (t) {
     this.outBuild = t;

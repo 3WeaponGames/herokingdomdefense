@@ -35,10 +35,13 @@ class Vec2 {
   clone() { return new Vec2(this.x, this.y); }
   len() { return Math.hypot(this.x, this.y); }
   mag() { return this.len(); }
+  equals(other) { return this.x === other.x && this.y === other.y; }
   static subtract(out, a, b) { out.x = a.x - b.x; out.y = a.y - b.y; return out; }
   static add(out, a, b) { out.x = a.x + b.x; out.y = a.y + b.y; return out; }
   static random(out, r) { out.x = r; out.y = 0; return out; }
   static distance(a, b) { return distance(a, b); }
+  static normalize(out, value) { const length = Math.hypot(value.x, value.y) || 1; out.x = value.x / length; out.y = value.y / length; return out; }
+  static scaleAndAdd(out, a, b, scale) { out.x = a.x + b.x * scale; out.y = a.y + b.y * scale; return out; }
 }
 Vec2.ZERO = new Vec2();
 class Node {
@@ -125,7 +128,7 @@ function environment() {
   function load(name) {
     if (stubs[name]) return stubs[name];
     if (modules[name]) return modules[name].exports;
-    if (!/^(UnitLevelStats|RelicRuntime|RelicCombat|RelicBattle|TowerCombat|ProjectileLooks|GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallBuild(Base|Wall|Barracks|Bartizan)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
+    if (!/^(GateFacing|UnitLevelStats|RelicRuntime|RelicCombat|RelicBattle|TowerCombat|ProjectileLooks|GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallGamePlayCtrl|KinghtFallBuild(Base|Wall|Barracks|Bartizan)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
     const module = { exports: {} }; modules[name] = module;
     const context = { module, exports: module.exports, require: load, cc, sp: { Skeleton: function () {} }, console, Set, Date: { now: () => now },
       __extends(Child, Parent) { Object.setPrototypeOf(Child, Parent); Child.prototype = Object.create(Parent.prototype); Child.prototype.constructor = Child; },

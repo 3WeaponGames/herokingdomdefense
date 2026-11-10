@@ -1,4 +1,5 @@
 var BattleSounds = require("BattleSounds");
+var Navigation = require("KinghtFallNavigation");
 var GameToolsOverrides = require("GameToolsOverrides");
 var RelicCombat = require("RelicCombat");
 var RelicRuntime = require("RelicRuntime");
@@ -49,6 +50,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     e.attackRange = 100;
     e.attackSpeed = 10;
     e.moveSpeed = 10;
+    e.navigationTeam = "friendly";
     e.state = r.Alive;
     e.time = {};
     e.critDam = 20;
@@ -59,6 +61,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.onLoad = function () {
+    this.rigidBody = this.node.getComponent(cc.RigidBody);
+    Navigation.enableTerrainContacts(this);
+  };
   _ctor.prototype.start = function () {
     this.rigidBody = this.node.getComponent(cc.RigidBody);
     this.setLeft(1);
@@ -139,6 +145,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onRestart = function (t) {
     GameToolsOverrides.cancel(this);
+    Navigation.reset(this);
     this._relicMoving = false;
     this.node._combatActor = this;
     this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
@@ -175,7 +182,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this.node.getPosition(this.vec2_1);
       cc.Vec2.normalize(this.vec2_2, t);
       cc.Vec2.scaleAndAdd(this.vec2_1, this.vec2_1, this.vec2_2, this.getSpeed() * e);
-      this.node.setPosition(this.vec2_1);
+      Navigation.moveManual(this, $z1KinghtFallUIGame.default.instance.ctrGame, this.vec2_1);
       this.ctrPlayAni.setMove();
       if (!(0 != this.time[C.RenSoundTime] || this.isDead())) {
         this.time[C.RenSoundTime] = 1;
@@ -183,6 +190,9 @@ var def_KinghtFallGamePlayCtrl = function (t) {
         if (!BattleSounds.tick) $z1AudioMgr.AudioMgr.getInstance().playMusic($z1KinghtFallConfig.KinghtFallAudioId.run, $z1KinghtFallConfig.KinghtFallParameter.RunMusic);
       }
     }
+  };
+  _ctor.prototype.onPreSolve = function (contact, self, other) {
+    Navigation.allowBlockedExit(this, contact, other);
   };
   _ctor.prototype.setLeft = function (t) {
     this.ctrPlayAni.setMaLeft(t);

@@ -58,3 +58,21 @@ test('actual Spine state changes are instant, retain open sprites through night 
   state.setAnimation(0,'shut_outward_night',false);state.apply(skeleton);assert.equal(slot.getAttachment().name,'rts_door_closed');assert(!slot.deform.length);
  }
 });
+
+function production(name){return JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../assets/KinghtFallIconMap/com/Ani/cq',name,name+'.json'),'utf8'));}
+test('WallKit installs matched states after native lighting tracks and recovers every original authored source',()=>{
+ const Kit=require('../../assets/_script/WallKit'),main=production('cq1'),before=clone(main),r=layout(),meta=clone(main.wallKit);meta.gateStyle='matched';meta.doors=metadata().doors;
+ const result=Kit.install(main,r,meta),original=Kit.source(main);assert.deepEqual(main,before);assert.equal(result.wallKit.gateStyle,'matched');assert.equal(result.wallKit.nativeAssembly,2);assert.equal(result.wallKit.volume,false);
+ assert(result.slots.findIndex(s=>s.name===Door.slot)<result.slots.findIndex(s=>s.name.startsWith('rts_wall_part_')),'the door remains behind the existing wall pillars');
+ for(const skinName of Door.skins){const skin=result.skins.find(s=>s.name===skinName);assert(!Object.keys(skin.attachments).some(slot=>slot.startsWith('men')),'old gateway leaves and pillars never enter matched aliases');assert.equal(Object.keys(skin.attachments[Door.slot]).length,3);for(const attachment of Object.values(skin.attachments[Door.slot])){assert(!attachment.type||attachment.type==='region');close(attachment.width/1536,attachment.height/1024);}}
+ for(const direction of ['inward','outward'])for(const clipName of ['open_'+direction,'open_'+direction+'_night','Fade_in_open_'+direction]){const tracks=result.animations[clipName].slots;assert(tracks[Door.slot]);for(const slot of result.slots.filter(s=>s.name.startsWith('rts_wall_part_'))){assert(tracks[slot.name],'explicit clips inherit every existing wall color track');if(clipName.includes('night'))assert.equal(tracks[slot.name].color[0].color,'a7a7a7ff');if(clipName.startsWith('Fade_in'))assert.equal(tracks[slot.name].color.at(-1).time,.5);}}
+ assert.deepEqual(Kit.source(result),original);assert(!Kit.source(result).wallDoor);for(const key of Door.generatedAnimations)assert(!Kit.source(result).animations[key]);
+ const solid=Kit.layout({nativeVersion:2,left:1,right:1,gate:false,start:'post',end:'post'}),withoutGate=Kit.install(main,solid,meta);assert(!withoutGate.slots.some(s=>s.name===Door.slot));assert.equal(withoutGate.wallDoor.gate,false);assert.deepEqual(Kit.source(withoutGate),original);
+ const legacy=clone(meta);delete legacy.doors;legacy.gateStyle='original';const oldStyle=Kit.install(main,r,legacy);assert.equal(oldStyle.wallKit.gateStyle,'original');assert(!oldStyle.wallDoor);assert(oldStyle.skins.find(s=>s.name==='cq-rts-1').attachments.men1_4);assert.deepEqual(Kit.source(oldStyle),original);
+});
+test('matched companion suppresses old leaves and posts while retaining original CQ2 skins, effects and headers',()=>{
+ const Kit=require('../../assets/_script/WallKit'),raw=production('cq2'),source=Kit.source(raw),matched=clone(raw);matched.wallGate=Object.assign({},raw.wallGate,{style:'matched',FutureField:{keep:true}});const before=clone(matched),result=Kit.fitGatePart(matched,layout(),{frameToLocal:[1,0,0,1,20,-4]});
+ assert.deepEqual(matched,before);assert.equal(result.wallGate.style,'matched');assert.deepEqual(result.wallGate.FutureField,{keep:true});for(const name of Door.skins)assert.deepEqual(result.skins.find(s=>s.name===name).attachments,{});
+ for(const animation of Object.values(result.animations))for(const name of Door.skins)assert(!animation.deform||!animation.deform[name]);assert.deepEqual(Kit.source(result),source);assert.deepEqual(Kit.fitGatePart(result,layout()),result,'refitting never accumulates aliases or changes metadata');
+ const old=clone(raw);old.wallGate=Object.assign({},raw.wallGate,{style:'original'});const originalFit=Kit.fitGatePart(old,layout());assert(originalFit.skins.find(s=>s.name==='cq-rts-1').attachments.men1_1,'legacy original companion remains available');assert.deepEqual(Kit.source(originalFit),source);
+});
