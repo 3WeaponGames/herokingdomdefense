@@ -50,6 +50,7 @@ class Store {
             if(Array.isArray(edit.path)&&!edit.path.length&&edit.doc.indexOf('map:')===0){if(!Array.isArray(edit.value)||edit.remove)throw Error('A complete serialized map is required');next[edit.doc]=clone(edit.value);}
             else setAt(next[edit.doc],edit.path,edit.value,edit.remove);
         });
+        require('./unit-profiles').reconcile(this.draftState(),next);
         if(JSONDocument.equal(next,this.draftState()))return this.snapshot();
         this.undoStack.push(this.draftState());if(this.undoStack.length>100)this.undoStack.shift();this.redoStack=[];this.restore(next);return this.snapshot();
     }
@@ -109,6 +110,7 @@ class Store {
         this.checkVersion(request);if(!this.changes().length)return Object.assign(this.snapshot(),{result:{saved:false,noChanges:true}});
         if(this.recoveries().length)throw Error('Recover the interrupted save before saving further edits');
         const candidate=this.saveCandidate();
+        const checkProfileReferences=require('./unit-profiles').checkRemovals(this.root,candidate.documents.A.original,candidate.draftState(),this.options.profileDrafts&&this.options.profileDrafts());
         // Keep the old baseline for advisory classification: broken references
         // introduced externally must not become "existing" warnings by refresh.
         const issues=candidate.validate(this.documents),errors=issues.filter(i=>i.severity==='error');if(errors.length)throw Error('Fix validation errors before saving: '+errors.slice(0,5).map(i=>i.message).join('; '));
@@ -136,7 +138,7 @@ class Store {
         try {
             prepared.forEach(p=>{const backup=path.join(backupDir,p.path);fs.mkdirSync(path.dirname(backup),{recursive:true});fs.writeFileSync(backup,p.before,'utf8');p.temp=p.file+'.game-tools-'+stamp+'.tmp';fs.writeFileSync(p.temp,p.after,'utf8');});
             fs.writeFileSync(journalFile,JSON.stringify(journal,null,2));
-            prepared.forEach((p,index)=>{if(this.options.beforeCommit)this.options.beforeCommit(index,p);if(hash(fs.readFileSync(p.file,'utf8'))!==hash(p.before))throw Error('File changed during save: '+p.path);fs.renameSync(p.temp,p.file);committed.push(p);});
+            prepared.forEach((p,index)=>{if(this.options.beforeCommit)this.options.beforeCommit(index,p);checkProfileReferences();if(hash(fs.readFileSync(p.file,'utf8'))!==hash(p.before))throw Error('File changed during save: '+p.path);fs.renameSync(p.temp,p.file);committed.push(p);});
             prepared.forEach(p=>{if(hash(fs.readFileSync(p.file,'utf8'))!==hash(p.after))throw Error('Saved file verification failed: '+p.path);});
             journal.status='complete';fs.writeFileSync(journalFile,JSON.stringify(journal,null,2));
         } catch(error) {

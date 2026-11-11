@@ -28,9 +28,9 @@ async function test(name,run){await run();checks++;console.log('PASS '+name);}
         assert.equal(JSON.parse(f.read('A')).value,2);assert.equal(JSON.parse(f.read('B')).value,3);
         assert.equal(f.imports.length,2);assert.equal(f.timers.size,1,'One deadline covers the whole import batch');assert.equal(call.replies.length,0);
         f.expire();const reply=await call.result;
-        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.result.warning.includes('within 10 seconds'));assert(reply.value.result.warning.includes(files.A));assert(reply.value.result.warning.includes(files.B));assert.equal(reply.value.dirty,false);assert.equal(f.timers.size,0);assert.equal(f.broadcasts.length,1);
+        assert.ifError(reply.error);assert(reply.value.result.saved);assert(reply.value.result.warning.includes('within 10 seconds'));assert(reply.value.result.warning.includes(files.A));assert(reply.value.result.warning.includes(files.B));assert.equal(reply.value.dirty,false);assert.equal(f.timers.size,0);assert.equal(f.broadcasts.filter(([name])=>name==='game-data-editor:changed').length,1);
         f.imports.forEach(item=>{item.callback();item.callback(Error('late import failure'));});await Promise.resolve();
-        assert.equal(call.replies.length,1);assert.equal(f.broadcasts.length,1);assert.equal(f.timers.size,0);assert.equal(JSON.parse(f.read('A')).value,2);
+        assert.equal(call.replies.length,1);assert.equal(f.broadcasts.filter(([name])=>name==='game-data-editor:changed').length,1);assert.equal(f.timers.size,0);assert.equal(JSON.parse(f.read('A')).value,2);
     });
     await test('successful imports finish immediately and clear their deadline',async()=>{
         const f=fixture();f.edit('A',2);const call=f.invoke('save',{version:f.store.version});f.imports[0].callback();const reply=await call.result;

@@ -450,6 +450,7 @@ function validate(documents, changes) {
       issue('overrides',['perks'],'Availability changes alter perk pools. Acquired perks and Claim All can exhaust a rarity later in a battle.','warning');
     }
   }
+  for(const problem of require('./unit-profiles').validate({A:base,overrides:docs.overrides||base.GameTools||{}}))issue('overrides',problem.path,problem.message);
   return issues;
 }
 function SchemaRarity(quality){return RARITIES[quality-1];}
