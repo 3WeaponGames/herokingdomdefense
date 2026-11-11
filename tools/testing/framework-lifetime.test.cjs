@@ -270,12 +270,17 @@ test('battle retry and building branch handlers resolve exactly one choice', () 
     const row = f.button(); row.children = [];
     row.getChildByName = () => ({ getComponent: () => ({}) }); rows.push(row); return row;
   };
+  h.load('BuildingCost');
   const Branch = h.load('KinghtFallUIBuildSel').default, branch = new Branch(), chosen = [];
   h.modules.KinghtFallConfig.KinghtFallBundelName = { IconBuild: 'build' };
   branch.onOpened(); branch.ndItem = {}; branch.ndParent = {}; branch.loadSpriteFrame = () => {}; branch.T = value => value;
   h.modules.LanguageMgr.LanguageMgr = { getInstance: () => ({ format: value => value }) };
   branch.init({ buildInfo: { cfg: { BranchBuild: [1, 2] } }, buildCfg: { levelList: [{ index: 1, BuildSliverCost: 1 }, { index: 2, BuildSliverCost: 1 }] } }, value => chosen.push(value));
-  branch.initView(); rows[0].press(); rows[1].press(); assert.deepEqual(chosen, [1]);
+  const adRequests = f.ads.length, pendingCloses = h.scheduled.length;
+  branch.initView(); assert.equal(rows.length, 2);
+  rows[0].press(); rows[0].press(); rows[1].press(); assert.deepEqual(chosen, [1]);
+  assert.equal(branch.isclose, true); assert.equal(f.ads.length, adRequests, 'paid branch choices do not request an ad');
+  assert.equal(h.scheduled.length, pendingCloses + 1, 'repeated choices schedule only one close');
 });
 
 test('onOpen exceptions still finish the owned input callback and decision callback failures close once', () => {
