@@ -5,3 +5,5 @@
 .gt-unit-level-fields{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.gt-unit-level-actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
 .gt-unit-profiles{display:flex;flex-wrap:wrap;gap:7px;align-items:flex-end;margin:0 0 16px}.gt-unit-profiles label{display:flex;flex-direction:column;gap:4px;flex:1;min-width:180px}.gt-unit-profiles select{min-height:31px;background:#29384a;padding:6px;border:1px solid #566b82;border-radius:4px}
+
+.gt-grid-table{color:inherit}

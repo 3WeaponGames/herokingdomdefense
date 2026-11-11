@@ -42,7 +42,7 @@ function open(owner) {
     label(body,weapon.name+" upgrades",0,-87,23);
     [3,4].forEach(function(slot,index){
       var level=user.getHeroWeaponLevel(chosen,slot),gear=owner.cfgEquip.filter(function(row){return row.id===slot;})[0],max=level>=gear.levelInfo.length,locked=level>=owner.levelLimit,cost=max?0:Math.floor(gear.levelInfo[level-1].GoldCost*owner.subNum);
-      button(body,(slot===3?"Power":"Reach")+" · Lv "+level+(max?" · Max":locked?" · Stage cap":" → "+(level+1)+"  ·  "+cost+" gold"),0,-141-index*59,590,49,function(){upgrade(slot);},false,max||locked||user.getGoldNum()<cost);
+      button(body,Weapons.gear(chosen,slot,'upgrade').name+" · Lv "+level+(max?" · Max":locked?" · Stage cap":" → "+(level+1)+"  ·  "+cost+" gold"),0,-141-index*59,590,49,function(){upgrade(slot);},false,max||locked||user.getGoldNum()<cost);
     });
     label(body,"Upgrades stay with this weapon.\nBonuses apply while its style is equipped.",0,-253,18);
     button(body,equipped?"Equipped":"Equip "+weapon.name,0,-317,372,48,function(){user.setHeroWeapon(chosen);owner.initView();render();},true,equipped);
@@ -50,4 +50,14 @@ function open(owner) {
   render();root.on(cc.Node.EventType.TOUCH_END,function(event){if(event.target===root)close();});
 }
 function close(owner) { if (owner._weaponPicker) { owner._weaponPicker.destroy(); owner._weaponPicker=null; } }
-exports.open=open;exports.close=close;
+function installSwitch(owner) {
+  if (owner._weaponSwitch || !owner.ndItemTop[0]) return;
+  var parent=owner.ndItemTop[0].parent,node=new cc.Node('Switch fighting style');node.setParent(parent);node.setContentSize(56,56);
+  var left=Math.min.apply(null,owner.ndItemTop.map(function(item){return item.x-item.width/2;})),middle=(owner.ndItemTop[0].y+owner.ndItemTop[3].y)/2;
+  node.setPosition(left-39,middle);node.zIndex=20;
+  var graphics=node.addComponent(cc.Graphics);graphics.fillColor=cc.color('#315b98');graphics.strokeColor=cc.color('#fff0b5');graphics.lineWidth=3;graphics.circle(0,0,27);graphics.fill();graphics.stroke();
+  var icon=new cc.Node('Switch icon');icon.setParent(node);icon.setContentSize(36,36);var sprite=icon.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
+  cc.resources.load('icons/Pictograms/Pictoicon_Switch',cc.SpriteFrame,function(error,frame){if(!error&&cc.isValid(node)){require('EquipmentIconFit').apply(sprite,frame);}});
+  node.on(cc.Node.EventType.TOUCH_END,function(event){event.stopPropagation();open(owner);});owner._weaponSwitch=node;
+}
+exports.open=open;exports.close=close;exports.installSwitch=installSwitch;

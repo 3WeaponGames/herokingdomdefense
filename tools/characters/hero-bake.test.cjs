@@ -18,3 +18,9 @@ test('native gear waits for attacks to finish, preserves idle phase and restores
   track={animation:{name:'idle'},trackTime:.42,loop:true};api.apply([renderer],profile);assert.equal(renderer.skeletonData,custom);assert.equal(track.trackTime,.42);assert.equal(api.originalId(renderer),'head');assert(api.baked(renderer));
   api.apply([renderer],null);assert.equal(renderer.skeletonData,original);assert.equal(track.trackTime,.42);assert(!api.baked(renderer));
 });
+
+test('a whole-tier item compiles to native Spine without interpreting the tier key as an upgrade number',()=>{
+ const {ItemsService}=require('../../packages/hkd-items/service'),service=new ItemsService(root),base={type:'item',id:'2:tier:lv3'},description=service.describe(base,true),profile={name:'Tier three helmet',base,parts:description.currentItem.parts};
+ profile.parts[0].sprite='Helmet/FA_Helmet_047_White';const source=JSON.stringify(profile),data={version:1,profiles:{tier:profile},assignments:{'2:tier:lv3':'tier'}},result=Baker.plan(root,data,service.assets().parts,{profiles:{}},{}),compiled=result.data.profiles.tier;
+ assert(compiled.bakedLayers[description.defaultLayer]);assert.equal(compiled.icon.id,'Helmet/FA_Helmet_047_White');assert.equal(compiled.base.id,'2:tier:lv3');assert.equal(JSON.stringify(profile),source);assert(result.files.size>0);assert([...result.reads.keys()].includes(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')),'The tier definition participates in the save revision checks');
+});

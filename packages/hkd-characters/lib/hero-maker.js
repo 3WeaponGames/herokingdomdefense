@@ -40,8 +40,8 @@ function belongs(name,role){
   if(role===0)return name==='Rider/Body'||/\/Boots$|^Rider\/Dead\//.test(name);
   if(role===1)return /\/Chest$|\/Cape$/.test(name);
   if(role===2)return /^Rider\/Body\/Head(?:\/|$)/.test(name);
-  if(role===3)return /\/Arrow$|\/Bolt$/.test(name);
-  if(role===4)return /^Rider\/HandRight\//.test(name)&&!(/\/Arrow$|\/Bolt$/.test(name))||/^Rider\/HandLeft\//.test(name);
+  if(role===3)return /\/Arrow$|\/Bolt$|\/Shield$/.test(name);
+  if(role===4)return /^Rider\/HandRight\//.test(name)&&!(/\/Arrow$|\/Bolt$/.test(name))||/^Rider\/HandLeft\//.test(name)&&!(/\/Shield$/.test(name));
   return /^Rider\/Gloves\//.test(name);
 }
 function mapTime(clip,target,peak){
@@ -129,12 +129,13 @@ function plan(root){
       if(role===1){add(tier===1?assets.get(starter.chest):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape',capeFit);}
       if(role===2)add(tier===1?assets.get(starter.helmet):choose('Helmet',tier),slotFor('Helmet'));
       if(role===3&&style==='skirmisher')add(tier===1?assets.get(starter.arrow):choose('HandRight/Arrow',tier),slotFor('Arrow'),{forceVisible:false});
-      if(role===4){const type=family[style];add(weapon(style,tier),slotFor(type));if(style==='guardian')add(assets.get('HandLeft/Shield/FA_WP_Sub_Shield_012_Blue')||choose('HandLeft/Shield',tier),slotFor('Shield'));}
+      if(role===3&&style==='guardian')add(assets.get('HandLeft/Shield/FA_WP_Sub_Shield_012_Blue')||choose('HandLeft/Shield',tier),slotFor('Shield'));
+      if(role===4){const type=family[style];add(weapon(style,tier),slotFor(type));}
       // Gloves retain their independent upgrade skins and Gear icons, while
       // the rider uses the Maker silhouette without added gloves or boots.
       if(role===5){const asset=assets.get('Hero/Gloves/lv'+tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       if(parts.length&&role){const asset=assets.get(parts[0].sprite);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
-      if(role===3&&style!=='skirmisher'){const asset=weapon(style,tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
+      if(role===3&&style!=='skirmisher'&&style!=='guardian'){const asset=weapon(style,tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       const variant=clone(base);if(role===4)for(const skin of variant.json.skins)for(const slot of Object.keys(skin.attachments))if(/Bow_Line|Crossbow_Line/.test(slot)&&!(style==='skirmisher'&&/\/Bow\//.test(slot)))delete skin.attachments[slot];
       const compiled=Bake.bake(root,{base:{type:'hero',id:'hero',currentModel:true,source:'character-maker/Character'},parts,faceless:true,skinTint:'#ffbdab'},'hero-maker',{height:120,animations:{}},assets,read,{raw:true,decode,description:{layers:[variant],fitHeight:120}});
       const current=compiled.rig.skins[0];current.name=skin;
@@ -149,7 +150,7 @@ function plan(root){
     // A skin chooses which item is present; it must not inherit the first
     // (bow) skin's hidden shield or alternate-weapon visibility tracks.
     // The arrow alone retains its authored draw/release fade.
-    if(role!==3)for(const slot of rig.slots.filter(slot=>(slot.attachment||'').startsWith('hero_'))){
+    for(const slot of rig.slots.filter(slot=>(slot.attachment||'').startsWith('hero_')&&(role!==3||/\/Shield$/.test(slot.name)))){
       slot.color=(slot.color||'ffffffff').slice(0,6)+'ff';
       for(const clip of Object.values(rig.animations)){
         const body=clip.slots&&clip.slots['Rider/Body'],target=(clip.slots||(clip.slots={}))[slot.name]||((clip.slots)[slot.name]={});

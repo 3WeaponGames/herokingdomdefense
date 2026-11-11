@@ -1,6 +1,6 @@
 
 wqyl_lead_gong.png
-size: 4096,256
+size: 2048,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -139,217 +139,175 @@ part_Rider_HandRight_Bow_Bow_lv1
   index: -1
 part_Rider_HandRight_Bow_Bow_lv2
   rotate: false
-  xy: 1942, 2
+  xy: 2, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_lv3
   rotate: false
-  xy: 2076, 2
+  xy: 136, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_lv4
   rotate: false
-  xy: 2210, 2
+  xy: 270, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_skirmisher_lv1
   rotate: false
-  xy: 2344, 2
+  xy: 404, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_skirmisher_lv2
   rotate: false
-  xy: 2478, 2
+  xy: 538, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_skirmisher_lv3
   rotate: false
-  xy: 2612, 2
+  xy: 672, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_skirmisher_lv4
   rotate: false
-  xy: 2746, 2
+  xy: 806, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_skirmisher_vip1
   rotate: false
-  xy: 2880, 2
+  xy: 940, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_skirmisher_vip2
   rotate: false
-  xy: 3014, 2
+  xy: 1074, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_vip1
   rotate: false
-  xy: 3148, 2
+  xy: 1208, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Bow_Bow_vip2
   rotate: false
-  xy: 3282, 2
+  xy: 1342, 141
   size: 130, 71
   orig: 130, 71
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Sword_fighter_lv1
   rotate: false
-  xy: 3416, 2
+  xy: 1476, 141
   size: 118, 59
   orig: 118, 59
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Sword_fighter_lv2
   rotate: false
-  xy: 3538, 2
+  xy: 1598, 141
   size: 118, 59
   orig: 118, 59
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Sword_fighter_lv3
   rotate: false
-  xy: 3660, 2
+  xy: 1720, 141
   size: 118, 59
   orig: 118, 59
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Sword_fighter_lv4
   rotate: false
-  xy: 3782, 2
+  xy: 1842, 141
   size: 118, 59
   orig: 118, 59
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Sword_fighter_vip1
   rotate: false
-  xy: 3904, 2
+  xy: 2, 216
   size: 118, 59
   orig: 118, 59
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Sword_fighter_vip2
   rotate: false
-  xy: 2, 141
+  xy: 124, 216
   size: 118, 59
   orig: 118, 59
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Spear_vanguard_lv1
   rotate: false
-  xy: 124, 141
+  xy: 246, 216
   size: 155, 57
   orig: 155, 57
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Spear_vanguard_lv2
   rotate: false
-  xy: 283, 141
+  xy: 405, 216
   size: 155, 57
   orig: 155, 57
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Spear_vanguard_lv3
   rotate: false
-  xy: 442, 141
+  xy: 564, 216
   size: 155, 57
   orig: 155, 57
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Spear_vanguard_lv4
   rotate: false
-  xy: 601, 141
+  xy: 723, 216
   size: 155, 57
   orig: 155, 57
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Spear_vanguard_vip1
   rotate: false
-  xy: 760, 141
+  xy: 882, 216
   size: 155, 57
   orig: 155, 57
   offset: 0, 0
   index: -1
 part_Rider_HandRight_Spear_vanguard_vip2
   rotate: false
-  xy: 919, 141
+  xy: 1041, 216
   size: 155, 57
   orig: 155, 57
   offset: 0, 0
   index: -1
-part_Rider_HandLeft_Shield_guardian_lv1
-  rotate: false
-  xy: 1078, 141
-  size: 50, 56
-  orig: 50, 56
-  offset: 0, 0
-  index: -1
-part_Rider_HandLeft_Shield_guardian_lv2
-  rotate: false
-  xy: 1132, 141
-  size: 50, 56
-  orig: 50, 56
-  offset: 0, 0
-  index: -1
-part_Rider_HandLeft_Shield_guardian_lv3
-  rotate: false
-  xy: 1186, 141
-  size: 50, 56
-  orig: 50, 56
-  offset: 0, 0
-  index: -1
-part_Rider_HandLeft_Shield_guardian_lv4
-  rotate: false
-  xy: 1240, 141
-  size: 50, 56
-  orig: 50, 56
-  offset: 0, 0
-  index: -1
-part_Rider_HandLeft_Shield_guardian_vip1
-  rotate: false
-  xy: 1294, 141
-  size: 50, 56
-  orig: 50, 56
-  offset: 0, 0
-  index: -1
-part_Rider_HandLeft_Shield_guardian_vip2
-  rotate: false
-  xy: 1348, 141
-  size: 50, 56
-  orig: 50, 56
-  offset: 0, 0
-  index: -1
 u_7ad202bb0eb0ce744817aff865490aba
   rotate: false
-  xy: 1402, 141
+  xy: 1200, 216
   size: 36, 6
   orig: 36, 6
   offset: 0, 0
   index: -1
 u_9f90fbde522357542aa2b7022f2b6fbb
   rotate: false
-  xy: 1442, 141
+  xy: 1240, 216
   size: 37, 6
   orig: 37, 6
   offset: 0, 0

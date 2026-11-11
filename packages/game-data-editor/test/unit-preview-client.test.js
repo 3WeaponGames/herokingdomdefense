@@ -5,6 +5,7 @@ class Element {
     appendChild(child){this.children.push(child);child.parentNode=this;return child;}
     removeChild(child){this.children.splice(this.children.indexOf(child),1);child.parentNode=null;return child;}
     remove(){if(this.parentNode)this.parentNode.removeChild(this);}
+    setAttribute(name,value){this[name]=String(value);}
     set innerHTML(value){assert.equal(value,'');this.children=[];}
     querySelector(tag){return all(this,n=>n!==this&&n.tagName===tag)[0]||null;}
 }
@@ -183,6 +184,15 @@ async function main(){
         const root=new Element('div'),edits=[],client=Client.mount(root,{ipc:async()=>({type:'building',id:'2',layers:[],image:'file:///base.png',runtimePath:null}),onChange:value=>edits.push(value)});
         assert.equal(client.togglePlayback(),false);client.setBuilding({id:'2',record:{}});await flush();
         assert.equal(client.getState().loaded,true);assert.equal(client.togglePlayback(),false);assert.equal(client.getState().playing,false);assert.deepStrictEqual(edits,[]);client.destroy();
+    });
+    await test('Equipment selected levels and weapon styles reload the real preview request without progress or timing edits',async()=>{
+        const f=fixture({type:'hero',id:'hero'});await flush();
+        f.description.equipment=[{id:2,label:'Helmet',level:25,max:50,levels:[{value:25,label:'Tier 3 · Level 5 · Upgrade 25'}]}];
+        f.request.heroLevels={2:25};f.request.heroStyle='guardian';f.client.setUnit(f.request);await flush();
+        assert.equal(f.requests.at(-1).heroLevels[2],25);assert.equal(f.requests.at(-1).heroStyle,'guardian');assert.equal(field(f.root,'Helmet').disabled,true);
+        f.request.heroLevels={2:45};f.client.setUnit(f.request);await flush();assert.equal(f.requests.at(-1).heroLevels[2],45);
+        f.request.heroStyle='fighter';f.client.setUnit(f.request);await flush();assert.equal(f.requests.at(-1).heroStyle,'fighter');assert.equal(f.requests.at(-1).heroLevels[2],45);
+        f.client.refreshAppearance();await flush();assert.equal(f.requests.at(-1).heroLevels[2],45);assert.equal(f.requests.at(-1).heroStyle,'fighter');assert.deepStrictEqual(f.edits,[]);f.client.destroy();
     });
     await test('building weapon aiming previews live composition without drafts or base movement',async()=>{
         const root=new Element('div'),edits=[],description={type:'building',id:'2',layers:[],image:'file:///base.png',weaponImage:'file:///weapon.png',appearance:{sprite:'base',width:180,height:220,offsetX:-8,offsetY:3,weapon:{sprite:'weapon',width:120,height:70,pivotX:.2,pivotY:.7,offsetX:10,offsetY:175,muzzleX:85,muzzleY:20}},runtimePath:null};

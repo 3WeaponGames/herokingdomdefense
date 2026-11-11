@@ -669,7 +669,8 @@
     {
       "name": "Rider/HandLeft/Shield",
       "bone": "Rider/HandLeft/Shield",
-      "color": "ffffffff"
+      "color": "ffffffff",
+      "attachment": "hero_Rider_HandLeft_Shield"
     },
     {
       "name": "Rider/HandLeft/Sub_Item",
@@ -812,6 +813,7 @@
     {
       "name": "lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_lv1",
@@ -836,6 +838,7 @@
     {
       "name": "lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_lv2",
@@ -860,6 +863,7 @@
     {
       "name": "lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_lv3",
@@ -884,6 +888,7 @@
     {
       "name": "lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_lv4",
@@ -908,6 +913,7 @@
     {
       "name": "vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_vip1",
@@ -932,6 +938,7 @@
     {
       "name": "vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_vip2",
@@ -956,6 +963,7 @@
     {
       "name": "skirmisher_lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_skirmisher_lv1",
@@ -980,6 +988,7 @@
     {
       "name": "skirmisher_lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_skirmisher_lv2",
@@ -1004,6 +1013,7 @@
     {
       "name": "skirmisher_lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_skirmisher_lv3",
@@ -1028,6 +1038,7 @@
     {
       "name": "skirmisher_lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_skirmisher_lv4",
@@ -1052,6 +1063,7 @@
     {
       "name": "skirmisher_vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_skirmisher_vip1",
@@ -1076,6 +1088,7 @@
     {
       "name": "skirmisher_vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {
           "hero_Rider_HandRight_Bow_Arrow": {
             "path": "part_Rider_HandRight_Bow_Arrow_skirmisher_vip2",
@@ -1100,6 +1113,7 @@
     {
       "name": "fighter_lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1112,6 +1126,7 @@
     {
       "name": "fighter_lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1124,6 +1139,7 @@
     {
       "name": "fighter_lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1136,6 +1152,7 @@
     {
       "name": "fighter_lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1148,6 +1165,7 @@
     {
       "name": "fighter_vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1160,6 +1178,7 @@
     {
       "name": "fighter_vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1172,6 +1191,7 @@
     {
       "name": "vanguard_lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1184,6 +1204,7 @@
     {
       "name": "vanguard_lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1196,6 +1217,7 @@
     {
       "name": "vanguard_lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1208,6 +1230,7 @@
     {
       "name": "vanguard_lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1220,6 +1243,7 @@
     {
       "name": "vanguard_vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1232,6 +1256,7 @@
     {
       "name": "vanguard_vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1244,6 +1269,7 @@
     {
       "name": "mystic_lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1256,6 +1282,7 @@
     {
       "name": "mystic_lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1268,6 +1295,7 @@
     {
       "name": "mystic_lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1280,6 +1308,7 @@
     {
       "name": "mystic_lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1292,6 +1321,7 @@
     {
       "name": "mystic_vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1304,6 +1334,7 @@
     {
       "name": "mystic_vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1316,6 +1347,7 @@
     {
       "name": "bruiser_lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1328,6 +1360,7 @@
     {
       "name": "bruiser_lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1340,6 +1373,7 @@
     {
       "name": "bruiser_lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1352,6 +1386,7 @@
     {
       "name": "bruiser_lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1364,6 +1399,7 @@
     {
       "name": "bruiser_vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1376,6 +1412,7 @@
     {
       "name": "bruiser_vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {},
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1388,6 +1425,19 @@
     {
       "name": "guardian_lv1",
       "attachments": {
+        "Rider/HandLeft/Shield": {
+          "hero_Rider_HandLeft_Shield": {
+            "path": "part_Rider_HandLeft_Shield_guardian_lv1",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 50,
+            "height": 56,
+            "color": "ffffffff"
+          }
+        },
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1400,6 +1450,19 @@
     {
       "name": "guardian_lv2",
       "attachments": {
+        "Rider/HandLeft/Shield": {
+          "hero_Rider_HandLeft_Shield": {
+            "path": "part_Rider_HandLeft_Shield_guardian_lv2",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 50,
+            "height": 56,
+            "color": "ffffffff"
+          }
+        },
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1412,6 +1475,19 @@
     {
       "name": "guardian_lv3",
       "attachments": {
+        "Rider/HandLeft/Shield": {
+          "hero_Rider_HandLeft_Shield": {
+            "path": "part_Rider_HandLeft_Shield_guardian_lv3",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 50,
+            "height": 56,
+            "color": "ffffffff"
+          }
+        },
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1424,6 +1500,19 @@
     {
       "name": "guardian_lv4",
       "attachments": {
+        "Rider/HandLeft/Shield": {
+          "hero_Rider_HandLeft_Shield": {
+            "path": "part_Rider_HandLeft_Shield_guardian_lv4",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 50,
+            "height": 56,
+            "color": "ffffffff"
+          }
+        },
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1436,6 +1525,19 @@
     {
       "name": "guardian_vip1",
       "attachments": {
+        "Rider/HandLeft/Shield": {
+          "hero_Rider_HandLeft_Shield": {
+            "path": "part_Rider_HandLeft_Shield_guardian_vip1",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 50,
+            "height": 56,
+            "color": "ffffffff"
+          }
+        },
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},
@@ -1448,6 +1550,19 @@
     {
       "name": "guardian_vip2",
       "attachments": {
+        "Rider/HandLeft/Shield": {
+          "hero_Rider_HandLeft_Shield": {
+            "path": "part_Rider_HandLeft_Shield_guardian_vip2",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 50,
+            "height": 56,
+            "color": "ffffffff"
+          }
+        },
         "Rider/HandRight/Bow/Arrow": {},
         "Rider/HandRight/Crossbow/Bolt": {},
         "Rider/Body/Head/Eye": {},

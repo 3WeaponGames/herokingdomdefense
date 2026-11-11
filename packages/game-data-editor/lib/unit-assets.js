@@ -104,7 +104,7 @@ function describe(root, request) {
         if(fs.existsSync(characters)){const catalog=json(characters);profiles.push(catalog.profiles[catalog.assignments['hero:hero:default']]);}
         if(fs.existsSync(items)){
             const catalog=json(items),Weapons=require('../../../assets/_script/HeroWeapons'),style=(Weapons.find(request.heroStyle)||Weapons.styles[0]).id;
-            for(const gear of cfg.EquipCfg){const level=Math.max(1,Math.min(gear.levelInfo.length,Number((request.heroLevels||{})[gear.id])||1));profiles.push(catalog.profiles[catalog.assignments[Weapons.itemKey(gear.id,level,style)]]);}
+            for(const gear of cfg.EquipCfg){const level=Math.max(1,Math.min(gear.levelInfo.length,Number((request.heroLevels||{})[gear.id])||1));profiles.push(catalog.profiles[require('../../../assets/_script/EquipmentTiers').profileId(catalog,cfg.EquipCfg,gear.id,level,style)]);}
         }
         const replacements=Object.assign({},...profiles.filter(Boolean).map(profile=>profile.bakedLayers||{}));
         layers=layers.map((original,index)=>{
@@ -112,6 +112,8 @@ function describe(root, request) {
             const published=layer(root,Object.assign({},chosen[index],{_N$skeletonData:{__uuid__:saved.uuid}}),prefab,files);
             return Object.assign(published,{uuid:original.uuid,publishedUuid:saved.uuid,name:original.name});
         });
+        const appearance=require('../../../assets/_script/HeroItemLooks').merge(profiles[0],profiles.slice(1));
+        for(const original of layers){if(appearance.skins[original.uuid])original.itemSkin=appearance.skins[original.uuid];const model=appearance.models[original.uuid]||{};original.x+=(model.x||0);original.y+=(model.y||0);original.scaleX*=appearance.scale*(model.scaleX===undefined?1:model.scaleX);original.scaleY*=appearance.scale*(model.scaleY===undefined?1:model.scaleY);original.rotation=(original.rotation||0)+(model.rotation||0);original.opacity=model.opacity===undefined?1:model.opacity;if(model.tint)original.tint=model.tint;}
     }
     const equipment = [];
     if (type === 'hero') {
@@ -123,10 +125,12 @@ function describe(root, request) {
             if (!equip) return;
             const level = Math.max(0, Math.min(equip.levelInfo.length - 1, Number((request.heroLevels || {})[equip.id] || 1) - 1));
             l.skin = equip.levelInfo[level].EquipSkin;
-            equipment.push({ id: equip.id, label: {1:'Cape',2:'Head',3:'Arrow',4:'Bow',5:'Gloves',6:'Mount'}[equip.id], level: level + 1, max: equip.levelInfo.length });
+            const view=require('../../../assets/_script/HeroWeapons').gear(request.heroStyle,equip.id,'upgrade');
+            equipment.push({ id: equip.id, label: view?view.name:{1:'Armor & cape',2:'Helmet',5:'Gloves',6:'Mount'}[equip.id], level: level + 1, max: equip.levelInfo.length, levels:equip.levelInfo.map(row=>({value:row.Level,label:require('../../../assets/_script/EquipmentTiers').label(equip,row.Level)+' · Upgrade '+row.Level})) });
         });
         const style=require('../../../assets/_script/HeroWeapons').find(request.heroStyle)||require('../../../assets/_script/HeroWeapons').styles[0];
         for(const l of layers)if(l.json._heroMaker&&[3,4,5].includes(l.json._heroMaker.role))l.skin=style.id+'_'+l.skin;
+        for(const l of layers)if(l.itemSkin)l.skin=l.itemSkin;
         const horse=layers.find(l=>l.name==='wqyl_lead_ma');
         if(horse&&layers.some(l=>l.json._heroMaker))for(const l of layers.filter(l=>l.json._heroMaker))l.followMount={layer:horse.uuid,bone:'bone2',translationOnly:true};
     }

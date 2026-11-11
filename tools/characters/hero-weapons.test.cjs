@@ -45,9 +45,9 @@ test('every style changes the native weapon skin and real animation, including a
   });
   assert(description.layers.filter(l=>l.json._heroMaker&&[3,4,5].includes(l.json._heroMaker.role)).every(l=>l.skin.startsWith(style.id+'_')));
   const weapon=layers.find(l=>l.description.name==='wqyl_lead_gong'),family=require('../../packages/hkd-characters/lib/hero-maker').family[style.id],slot=require('../../packages/hkd-characters/lib/hero-maker').slotFor(family);
-  assert(weapon.skeleton.findSlot(slot).getAttachment(),style.id+' has its weapon');assert.equal(!!weapon.skeleton.findSlot('Rider/HandLeft/Shield').getAttachment(),style.id==='guardian');
+  const offhand=layers.find(layer=>layer.description.name==='wqyl_lead_jian');assert(weapon.skeleton.findSlot(slot).getAttachment(),style.id+' has its weapon');assert.equal(!!offhand.skeleton.findSlot('Rider/HandLeft/Shield').getAttachment(),style.id==='guardian');assert.equal(weapon.skeleton.findSlot('Rider/HandLeft/Shield').getAttachment(),null,'Shield has its own independently upgradeable layer');
   Renderer.seek(spine,layers,'idle',0,true);const visible=Renderer.geometry(spine,weapon);assert(visible.some(piece=>piece.slot===slot&&piece.color.a>.5),style.id+' weapon is actually visible');
-  if(style.id==='guardian')assert(visible.some(piece=>piece.slot==='Rider/HandLeft/Shield'&&piece.color.a>.5),'Guardian shield is visible as well as attached');
+  if(style.id==='guardian')assert(Renderer.geometry(spine,offhand).some(piece=>piece.slot==='Rider/HandLeft/Shield'&&piece.color.a>.5),'Guardian shield is visible as well as attached');
   for(const action of ['idle','move',style.id==='skirmisher'?'attack':'attack_'+style.id,'wqyl_lead_die','wqyl_lead_rise'])for(const time of [0,.1667,.5,1.3333]){
    Renderer.seek(spine,layers,action,time,true);const bounds=Renderer.bounds(spine,layers);assert(Number.isFinite(bounds.width)&&bounds.width>50&&bounds.height>40,style.id+' '+action+' '+time);
   }
@@ -74,7 +74,7 @@ test('Gear weapon picker browsing does not equip a weapon, its upgrade action ca
  const modules={HeroWeapons:Weapons,KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>h.player}},KinghtFallMissionData:h.load('KinghtFallMissionData')};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroWeaponPicker.js'),'utf8'),{exports,cc,require:name=>modules[name]});
  let refreshes=0;const owner={node:canvas,cfgEquip:config.EquipCfg,subNum:1,levelLimit:10,refreshEquipmentLimits(){},initView(){refreshes++;}};exports.open(owner);const all=node=>[node,...node.children.flatMap(all)],find=prefix=>all(canvas).find(node=>node.handlers.tap&&node.name.startsWith(prefix)),tap=node=>node.handlers.tap({target:node,stopPropagation(){}});
- tap(find('Mystic · Staff'));assert.equal(h.player.udata.getHeroWeapon().id,'fighter');assert.equal(h.player.udata.getGoldNum(),100000);tap(find('Power · Lv 1'));
+ tap(find('Mystic · Staff'));assert.equal(h.player.udata.getHeroWeapon().id,'fighter');assert.equal(h.player.udata.getGoldNum(),100000);tap(find('Arcane focus · Lv 1'));
  assert.equal(h.player.udata.getHeroWeapon().id,'fighter');assert.equal(h.player.udata.getHeroWeaponLevel('mystic',3),2);assert.equal(h.player.udata.getPersonLevel(3),1);assert.equal(h.player.udata.getGoldNum(),100000-config.EquipCfg.find(row=>row.id===3).levelInfo[0].GoldCost);assert.equal(refreshes,1);
  tap(find('Equip Mystic'));assert.equal(h.player.udata.getHeroWeapon().id,'mystic');assert.equal(h.player.udata.getPersonLevel(3),2);exports.close(owner);assert.equal(owner._weaponPicker,null);assert(!canvas.children.length);
 });
