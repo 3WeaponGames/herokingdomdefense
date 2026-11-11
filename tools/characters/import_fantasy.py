@@ -13,9 +13,10 @@ import re
 
 import yaml
 from PIL import Image
-from import_units import Transaction, asset_uuid, digest, encoded, texture_meta, stage_page_copy
+from import_units import Transaction, asset_uuid, digest, texture_meta, _planned_read
 from unity_monsters import unpack, documents, asset_meta, convert_prefab
 import fantasy_effects
+import fantasy_atlas
 
 
 def key(guid, file_id):
@@ -143,7 +144,45 @@ def prepare(prefab,entries,references):
     return item,clips,controller['name'],expressions,aliases
 
 
+def plan_repack_atlases(tx, kinds):
+    result = dict(packs=0, units=0, sheets=0, repacked=0, retained=0)
+    for kind in kinds:
+        if kind not in ('fantasy-monsters', 'fantasy-bosses'):
+            raise ValueError('Unsupported Fantasy unit pack: ' + kind)
+        target = 'assets/resources/unit-library/' + kind
+        manifest_file = target + '/catalog.json'
+        manifest = json.loads(tx.read(manifest_file).decode('utf-8-sig'))
+        tx.managed.update(manifest.get('importedFiles', {}))
+        units = fantasy_atlas.existing_units(tx, target, manifest)
+        if not units:
+            raise ValueError('Fantasy unit pack has no existing skeletons')
+        packed = fantasy_atlas.stage_sheets(tx, kind, manifest, manifest['parts'])
+        for relative, rig in units:
+            atlas, textures = fantasy_atlas.unit_atlas(tx, relative, rig, packed)
+            tx.stage(relative[:-5] + '.atlas', atlas)
+            meta_file = relative + '.meta'
+            meta = json.loads(tx.read(meta_file).decode('utf-8-sig'))
+            if meta.get('textures') != textures:
+                tx.json(meta_file, dict(meta, textures=textures))
+        tx.json(manifest_file, fantasy_atlas.finish_manifest(tx, target, manifest, packed))
+        result['packs'] += 1; result['units'] += len(units); result['sheets'] += len(packed['records'])
+        result['repacked'] += sum(record['layout'] == 'repacked' for record in packed['records'])
+        result['retained'] += sum(record['layout'] == 'retained' for record in packed['records'])
+    result['files'] = len(tx.plan)
+    return result
+
+
+def repack_atlases(project, artifacts, kinds=None, dry_run=False):
+    tx = Transaction(project, artifacts)
+    result = plan_repack_atlases(tx, kinds or ['fantasy-monsters', 'fantasy-bosses'])
+    result['backup'] = None if dry_run else tx.commit()
+    result['dryRun'] = dry_run
+    return result
+
+
 def import_pack(project,package,kind,artifacts,dependency=None):
+    package_hash=digest(package.read_bytes())
+    dependency_hash=digest(dependency.read_bytes()) if dependency else None
     entries=unpack(package)
     if dependency:
         known={entry['guid'] for entry in entries.values()}
@@ -155,6 +194,13 @@ def import_pack(project,package,kind,artifacts,dependency=None):
     images,references,sheets=slices(entries,needed); effect_textures=fantasy_effects.texture_images(images,sheets);tx=Transaction(project,artifacts)
     target='assets/resources/unit-library/'+kind; manifest_file=target+'/catalog.json'; before=tx.read(manifest_file)
     old=json.loads(before.decode('utf-8-sig')) if before else {};tx.managed=old.get('importedFiles',{})
+    existing=fantasy_atlas.existing_units(tx,target,old) if before else []
+    previous_source=old.get('source',{})
+    previous_dependencies=previous_source.get('dependencies') or []
+    same_source=(bool(previous_source.get('sha256')) and previous_source['sha256']==package_hash and
+                 all(record.get('sha256') for record in previous_dependencies) and
+                 {record['sha256'] for record in previous_dependencies}==({dependency_hash} if dependency else set()))
+    retained_rigs=dict(existing) if same_source else {}
     tx.folder('assets/resources/unit-library');tx.folder(target)
     for directory in ['Units','Atlases','Parts']:tx.folder(target+'/'+directory)
     models=[]
@@ -227,43 +273,86 @@ def import_pack(project,package,kind,artifacts,dependency=None):
         for skin in skins:
             for variants in skin['attachments'].values():
                 used.update(a['path'][2:] for a in variants.values())
+    if retained_rigs:
+        # Reimporting identical licensed sources must not reset approved rig
+        # fixes, expressions or FX ordering applied after their first import.
+        for model in models:
+            if model['skeleton'] in retained_rigs:model['rig']=retained_rigs[model['skeleton']]
+        used={region[2:] for model in models for region in fantasy_atlas.attachment_regions(model['rig'])}
+    prior_parts_by_guid={part['guid']:part for part in old.get('parts',[])}
     for sprite_key in sorted(used):
+        if same_source and sprite_key in prior_parts_by_guid:
+            parts.append(prior_parts_by_guid[sprite_key]);continue
+        if sprite_key not in images:
+            if sprite_key in prior_parts_by_guid:continue
+            raise ValueError('Preserved Fantasy rig references a missing source sprite: '+sprite_key)
         info=images[sprite_key];relative=target+'/Parts/'+info['sheet']+'/'+re.sub(r'[^a-zA-Z0-9_-]','_',info['spriteName'])+'_'+sprite_key[:8]+'.png'
         tx.folder(str(Path(relative).parent).replace('\\','/'));buffer=io.BytesIO();info['image'].save(buffer,format='PNG');raw=buffer.getvalue();tx.stage(relative,raw);tx.json(relative+'.meta',texture_meta(relative,info['width'],info['height']),True)
         parts.append(dict(id=kind+'/'+sprite_key,name=info['spriteName'],image=relative,resource=relative[len('assets/resources/'):-4],guid=sprite_key,width=info['width'],height=info['height'],pivot=info['pivot'],pixelsPerUnit=info['ppu'],sha256=digest(raw),sheet=info['sheet'],spriteName=info['spriteName'],unityFileId=info['fileId'],rect=info['rect'],**({'generated':True} if info.get('generated') else {})))
-    units=[]
+    prior_parts={part['id']:part for part in old.get('parts',[])}
+    updated_parts={part['id']:dict(prior_parts.get(part['id'],{}),**part) for part in parts}
+    if same_source:
+        parts=[updated_parts.pop(ident,part) for ident,part in prior_parts.items()]+list(updated_parts.values())
+    else:
+        parts=list(updated_parts.values())
+        parts.extend(part for ident,part in prior_parts.items() if ident not in updated_parts)
+    packed=fantasy_atlas.stage_sheets(tx,kind,old,parts,sheets)
+    prior_units={unit['id']:unit for unit in old.get('units',[])}
+    units=[];generated={model['skeleton'] for model in models}
     for model in models:
-        family_keys={a['path'][2:] for skin in model['rig']['skins'] for variants in skin['attachments'].values() for a in variants.values()}
-        page_ids=sorted({images[k]['sheet'] for k in family_keys});lines=[];textures=[]
-        for sheet_id in page_ids:
-            sheet=sheets[sheet_id];filename='sheet_'+sheet_id+'.png';canonical=target+'/Atlases/'+filename;tx.stage(canonical,sheet['asset']);tx.json(canonical+'.meta',texture_meta(canonical,sheet['width'],sheet['height']),True)
-            copied=stage_page_copy(tx,canonical,target+'/Units/'+filename);textures.append(copied['uuid'])
-            lines.extend(['',filename,f"size: {sheet['width']},{sheet['height']}",'format: RGBA8888','filter: Linear,Linear','repeat: none'])
-            for sprite_key in sorted(k for k in family_keys if images[k]['sheet']==sheet_id):
-                i=images[sprite_key];r=i['rect'];lines.extend([i['region'],'  rotate: false',f"  xy: {r['x']}, {sheet['height']-r['y']-r['height']}",f"  size: {i['width']}, {i['height']}",f"  orig: {i['width']}, {i['height']}",'  offset: 0, 0','  index: -1'])
-        relative=model['skeleton'];tx.json(relative,model['rig']);tx.stage(relative[:-5]+'.atlas',('\n'.join(lines)+'\n').encode())
+        relative=model['skeleton']
+        if relative not in retained_rigs:tx.json(relative,model['rig'])
+        atlas,textures=fantasy_atlas.unit_atlas(tx,relative,model['rig'],packed)
+        tx.stage(relative[:-5]+'.atlas',atlas)
         metadata=tx.json(relative+'.meta',dict(ver='1.2.5',uuid=model['uuid'],importer='spine',textures=textures,scale=1,subMetas={}),True)
         if metadata.get('textures')!=textures:tx.json(relative+'.meta',dict(metadata,textures=textures))
         model['uuid']=metadata['uuid']
         tx.json(relative[:-5]+'.atlas.meta',dict(ver='1.0.3',uuid=asset_uuid(relative[:-5]+'.atlas'),importer='asset',subMetas={}),True)
-        units.append({k:v for k,v in model.items() if k not in ['rig','usable']}|dict(animations=list(model['rig']['animations']),bones=len(model['rig']['bones']),slots=len(model['rig']['slots'])))
-    effect_assets=[]
-    if kind=='fantasy-bosses':
+        if relative in retained_rigs and model['id'] in prior_units:
+            units.append(prior_units[model['id']])
+        else:
+            units.append(dict(prior_units.get(model['id'],{}),**({k:v for k,v in model.items() if k not in ['rig','usable']}|dict(animations=list(model['rig']['animations']),bones=len(model['rig']['bones']),slots=len(model['rig']['slots'])))))
+    for relative,rig in existing:
+        if relative in generated:continue
+        atlas,textures=fantasy_atlas.unit_atlas(tx,relative,rig,packed)
+        tx.stage(relative[:-5]+'.atlas',atlas)
+        meta_file=relative+'.meta';meta=json.loads(tx.read(meta_file).decode('utf-8-sig'))
+        if meta.get('textures')!=textures:tx.json(meta_file,dict(meta,textures=textures))
+    units.extend(unit for ident,unit in prior_units.items() if ident not in {item['id'] for item in units})
+    effect_assets=copy.deepcopy(old.get('effectAssets',[])) if same_source else []
+    if kind=='fantasy-bosses' and not effect_assets:
         tx.folder(target+'/Effects')
         for palette,action,png,settings in fantasy_effects.projectile_sheets():
             relative=target+'/Effects/'+palette+'-'+action+'.png';tx.stage(relative,png);tx.json(relative+'.meta',texture_meta(relative,settings['cell']*settings['columns'],settings['cell']*4),True)
             effect_assets.append(dict(id='fantasy:'+palette+'-'+action,name='Fantasy '+palette+' '+action,category='Fantasy effects / '+action,role=action,kind='flipbook',resource=relative[len('assets/resources/'):-4],bundle='resources',sourcePack=kind,**settings))
-    managed=dict(tx.managed)
-    for relative,before in tx.reads.items():
-        if relative.startswith(target+'/') and not relative.endswith('.meta') and relative!=manifest_file:
-            raw=tx.plan[relative][1] if relative in tx.plan else before
-            if raw is not None:managed[relative]=digest(raw)
-    manifest=dict(old,version=1,source=dict(package=package.name,sha256=digest(package.read_bytes())),units=units,parts=parts,effectAssets=effect_assets,importedFiles=managed,conversion=dict(runtime='Spine 3.8',sampleRate=60,unityScriptsImported=False,unityMaterialsImported=False,slicedSprites=True,expressionEvents=True,particleEffectsVersion=fantasy_effects.VERSION))
-    if dependency:manifest['source']['dependencies']=[dict(package=dependency.name,sha256=digest(dependency.read_bytes()))]
+    previous_effects={effect['id']:effect for effect in old.get('effectAssets',[])}
+    effect_assets=[dict(previous_effects.get(effect['id'],{}),**effect) for effect in effect_assets]
+    effect_assets.extend(effect for ident,effect in previous_effects.items() if ident not in {item['id'] for item in effect_assets})
+    manifest=dict(old,version=1,source=dict(old.get('source',{}),package=package.name,sha256=package_hash),units=units,parts=parts,effectAssets=effect_assets,conversion=dict(old.get('conversion',{}),runtime='Spine 3.8',sampleRate=60,unityScriptsImported=False,unityMaterialsImported=False,slicedSprites=True,expressionEvents=True,particleEffectsVersion=fantasy_effects.VERSION))
+    if dependency:
+        prior_dependencies={record['package']:record for record in previous_dependencies}
+        by_hash={record.get('sha256'):record for record in previous_dependencies if record.get('sha256')}
+        manifest['source']['dependencies']=[dict(prior_dependencies.get(dependency.name,by_hash.get(dependency_hash,{})),package=dependency.name,sha256=dependency_hash)]
+    manifest=fantasy_atlas.finish_manifest(tx,target,manifest,packed)
+    for relative,_ in existing:
+        if relative in retained_rigs or relative not in generated:
+            manifest['importedFiles'][relative]=digest(tx.read(relative))
+            manifest['importedFiles'][relative[:-5]+'.atlas']=digest(_planned_read(tx,relative[:-5]+'.atlas'))
+    if digest(package.read_bytes())!=package_hash or dependency and digest(dependency.read_bytes())!=dependency_hash:
+        raise ValueError('Licensed Fantasy source archive changed during import')
     tx.json(manifest_file,manifest);tx.json(manifest_file+'.meta',dict(ver='1.2.7',uuid=asset_uuid(manifest_file),importer='json',subMetas={}),True)
     return dict(kind=kind,units=len(units),parts=len(parts),files=len(tx.plan),backup=tx.commit())
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('package',type=Path);parser.add_argument('--kind',required=True,choices=['fantasy-bosses','fantasy-monsters']);parser.add_argument('--dependency',type=Path);parser.add_argument('--project',type=Path,default=Path(__file__).resolve().parents[2]);parser.add_argument('--artifacts',type=Path,required=True)
-    args=parser.parse_args();print(json.dumps(import_pack(args.project,args.package,args.kind,args.artifacts,args.dependency),indent=2))
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('package',type=Path,nargs='?');parser.add_argument('--kind',choices=['fantasy-bosses','fantasy-monsters']);parser.add_argument('--dependency',type=Path);parser.add_argument('--project',type=Path,default=Path(__file__).resolve().parents[2]);parser.add_argument('--artifacts',type=Path,required=True)
+    parser.add_argument('--repack-atlases',action='store_true',help='Losslessly repack existing Fantasy sheets at 2048px; preserve all rigs and original source sheets')
+    parser.add_argument('--dry-run',action='store_true',help='Validate a repack without publishing any changes')
+    args=parser.parse_args()
+    if args.repack_atlases:
+        if args.package or args.dependency:parser.error('Atlas repacking does not take Unity archives')
+        result=repack_atlases(args.project,args.artifacts,[args.kind] if args.kind else None,args.dry_run)
+    else:
+        if not args.package or not args.kind or args.dry_run:parser.error('Import requires a package and --kind; --dry-run is for repacking')
+        result=import_pack(args.project,args.package,args.kind,args.artifacts,args.dependency)
+    print(json.dumps(result,indent=2))

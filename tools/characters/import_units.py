@@ -299,6 +299,13 @@ class Transaction:
             for relative, (_,after) in self.plan.items():
                 if (self.project/relative).read_bytes()!=after: raise ValueError("Concurrent change after publication: "+relative)
             self._check_directories(published=True)
+            # An unchanged input can be edited while other files publish.
+            # Recheck the complete read set before accepting the new atlas.
+            for relative, before in self.reads.items():
+                expected = self.plan[relative][1] if relative in self.plan else before
+                target = self.project / relative
+                if (target.read_bytes() if target.exists() else None) != expected:
+                    raise ValueError("Concurrent change after publication: " + relative)
             journal["status"]="complete"
         except Exception as error:
             conflicts=[]
