@@ -260,7 +260,8 @@ function build(manifest, readSource) {
     }
     descriptors.push(descriptor);
   }
-  const packed = PNG.pack(images), bytes = PNG.encode(packed);
+  // Preserve this existing single-page wall format; character imports use the 2048px multipage packer.
+  const packed = PNG.pack(images, 4096), bytes = PNG.encode(packed);
   let atlas = '\n' + page + '\nsize: ' + packed.width + ',' + packed.height + '\nformat: RGBA8888\nfilter: Linear,Linear\nrepeat: none\n';
   for (const name of Object.keys(images).sort()) {
     const p = packed.positions[name];

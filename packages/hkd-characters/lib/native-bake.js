@@ -115,14 +115,22 @@ function bake(root,profile,id,contract,assets,read,options){
   if(options&&options.raw)return{rig,pictures};
   return outputFiles(root,profile,id,rig,pictures,read);
 }
+function atlasFiles(files,base,pictures){
+  const lines=[],textures=[];
+  PNG.packPages(pictures).forEach((image,index)=>{
+    // Keep page zero's filename and UUID stable when a saved rig gains pages.
+    const file=base+(index?'_'+index:'')+'.png';textures.push(uuid(file));
+    lines.push('',path.basename(file),'size: '+image.width+','+image.height,'format: RGBA8888','filter: Linear,Linear','repeat: none');
+    for(const [name,p]of Object.entries(image.positions))lines.push(name,'  rotate: false','  xy: '+p.x+', '+p.y,'  size: '+p.width+', '+p.height,'  orig: '+p.width+', '+p.height,'  offset: 0, 0','  index: -1');
+    files.set(file,PNG.encode(image));files.set(file+'.meta',JSON.stringify(textureMeta(file,image.width,image.height),null,2)+'\n');
+  });
+  files.set(base+'.atlas',lines.join('\n')+'\n');
+  files.set(base+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:uuid(base+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n');
+  return textures;
+}
 function outputFiles(root,profile,id,rig,pictures,read){
-  const image=PNG.pack(pictures),output='assets/resources/unit-library/runtime/'+id.replace(/[^a-zA-Z0-9_-]/g,'_'),atlasName=path.basename(output)+'.png';
-  const lines=['',atlasName,'size: '+image.width+','+image.height,'format: RGBA8888','filter: Linear,Linear','repeat: none'];
-  for(const [name,p]of Object.entries(image.positions))lines.push(name,'  rotate: false','  xy: '+p.x+', '+p.y,'  size: '+p.width+', '+p.height,'  orig: '+p.width+', '+p.height,'  offset: 0, 0','  index: -1');
-  const files=new Map([[output+'.json',JSON.stringify(rig,null,2)+'\n'],[output+'.atlas',lines.join('\n')+'\n'],[output+'.png',PNG.encode(image)],
-    [output+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:uuid(output+'.json'),importer:'spine',textures:[uuid(output+'.png')],scale:1,subMetas:{}},null,2)+'\n'],
-    [output+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:uuid(output+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n'],
-    [output+'.png.meta',JSON.stringify(textureMeta(output+'.png',image.width,image.height),null,2)+'\n']]);
+  const output='assets/resources/unit-library/runtime/'+id.replace(/[^a-zA-Z0-9_-]/g,'_'),files=new Map([[output+'.json',JSON.stringify(rig,null,2)+'\n']]),textures=atlasFiles(files,output,pictures);
+  files.set(output+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:uuid(output+'.json'),importer:'spine',textures,scale:1,subMetas:{}},null,2)+'\n');
   preserveMetadata(root,files,read);
   return{uuid:JSON.parse(files.get(output+'.json.meta')).uuid,resource:output.slice('assets/resources/'.length),files,source:profile.base.source||null};
 }
@@ -185,4 +193,4 @@ function plan(root,data,assets,original){
   if(!Document.equal(originalContracts,contracts))files.set(path.relative(root,contractFile),JSON.stringify(contracts,null,2)+'\n');
   return{data:updated,files,reads};
 }
-module.exports={bake,plan,retime,duration,uuid,textureMeta,readAtlas,preserveMetadata,selectSkin};
+module.exports={bake,plan,retime,duration,uuid,textureMeta,readAtlas,preserveMetadata,selectSkin,atlasFiles};

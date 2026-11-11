@@ -40,11 +40,46 @@ function crop(image,x,y,width,height,rotate){
     image.rgba.copy(result.rgba,to,from,from+4);
   }return result;
 }
-function pack(images){
-  const entries=Object.entries(images).sort((a,b)=>b[1].height-a[1].height||a[0].localeCompare(b[0])),maximum=4096,positions={};let x=2,y=2,row=0,right=0;
-  for(const [name,image]of entries){if(image.width+4>maximum||image.height+4>maximum)throw Error('Character texture is too large');if(x+image.width+2>maximum){x=2;y+=row+4;row=0;}if(y+image.height+2>maximum)throw Error('Character atlas exceeds 4096 pixels');positions[name]={x,y,width:image.width,height:image.height};x+=image.width+4;row=Math.max(row,image.height);right=Math.max(right,x);}
+function pack(images,maximum){
+  // Character imports use packPages. The explicit 4096 allowance preserves the
+  // existing single-page wall exporter until its separate atlas migration.
+  maximum=maximum===undefined?2048:maximum;
+  if(maximum!==2048&&maximum!==4096)throw Error('Unsupported atlas limit');
+  const entries=Object.entries(images).sort((a,b)=>b[1].height-a[1].height||a[0].localeCompare(b[0])),positions={};let x=2,y=2,row=0,right=0;
+  for(const [name,image]of entries){if(image.width+4>maximum||image.height+4>maximum)throw Error('Character texture is too large');if(x+image.width+2>maximum){x=2;y+=row+4;row=0;}if(y+image.height+2>maximum)throw Error('Character atlas exceeds '+maximum+' pixels');positions[name]={x,y,width:image.width,height:image.height};x+=image.width+4;row=Math.max(row,image.height);right=Math.max(right,x);}
   const power=n=>Math.pow(2,Math.ceil(Math.log2(Math.max(2,n)))),width=Math.min(maximum,power(right)),height=power(y+row+2),rgba=Buffer.alloc(width*height*4);
   for(const [name,image]of entries){const p=positions[name];for(let dy=-2;dy<image.height+2;dy++)for(let dx=-2;dx<image.width+2;dx++){const sx=Math.max(0,Math.min(image.width-1,dx)),sy=Math.max(0,Math.min(image.height-1,dy)),from=(sy*image.width+sx)*4,to=((p.y+dy)*width+p.x+dx)*4;image.rgba.copy(rgba,to,from,from+4);}}
   return{width,height,rgba,positions};
 }
-module.exports={decode,encode,crop,pack};
+function packPages(images){
+  const maximum=2048,entries=Object.entries(images).sort((a,b)=>b[1].height-a[1].height||a[0].localeCompare(b[0])),layouts=[{positions:{},right:2,bottom:4}];
+  let layout=layouts[0],x=2,y=2,row=0;
+  for(const [name,image]of entries){
+    if(!Number.isSafeInteger(image.width)||!Number.isSafeInteger(image.height)||image.width<1||image.height<1||!Buffer.isBuffer(image.rgba)||image.rgba.length!==image.width*image.height*4)throw Error('Invalid character texture: '+name);
+    if(image.width+4>maximum||image.height+4>maximum)throw Error('Character texture exceeds 2048 pixels including its sampling border: '+name);
+    if(x+image.width+2>maximum){x=2;y+=row+4;row=0;}
+    if(y+image.height+2>maximum){layout={positions:{},right:2,bottom:4};layouts.push(layout);x=y=2;row=0;}
+    layout.positions[name]={x,y,width:image.width,height:image.height};
+    layout.right=Math.max(layout.right,x+image.width+2);layout.bottom=Math.max(layout.bottom,y+image.height+2);
+    x+=image.width+4;row=Math.max(row,image.height);
+  }
+  const power=n=>Math.pow(2,Math.ceil(Math.log2(Math.max(2,n))));
+  return layouts.map(layout=>{
+    const width=power(layout.right),height=power(layout.bottom),rgba=Buffer.alloc(width*height*4);
+    for(const [name,p]of Object.entries(layout.positions)){
+      const image=images[name],stride=image.width*4;
+      // Copy complete source rows and their clamped two-pixel extrusion. This
+      // retains even transparent RGB values without resampling any artwork.
+      for(let dy=-2;dy<image.height+2;dy++){
+        const sy=Math.max(0,Math.min(image.height-1,dy)),from=sy*stride,to=((p.y+dy)*width+p.x)*4;
+        image.rgba.copy(rgba,to,from,from+stride);
+        for(let border=1;border<=2;border++){
+          image.rgba.copy(rgba,to-border*4,from,from+4);
+          image.rgba.copy(rgba,to+stride+(border-1)*4,from+stride-4,from+stride);
+        }
+      }
+    }
+    return{width,height,rgba,positions:layout.positions};
+  });
+}
+module.exports={decode,encode,crop,pack,packPages};
