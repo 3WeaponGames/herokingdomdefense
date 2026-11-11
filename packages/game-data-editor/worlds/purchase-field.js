@@ -4,6 +4,15 @@
 const Maps=require('../lib/map-assets');
 const cache=new WeakMap(),projected=new WeakMap(),clone=value=>JSON.parse(JSON.stringify(value));
 const SIDES=['default','flip','southwest','southeast'];
+function withDefaults(building,config,hall,source){
+ if(!building||building.purchaseOverride===true)return building;
+ const category=config&&config.BuildEnum&&config.BuildEnum[building.kind];if(!category)return building;
+ const row=require('./navigation').buildingRow(building,hall||1,config);
+ let variant=building.wallFacing||building.placementVariant||'default';
+ if(building.kind===6&&!building.wallFacing&&source)variant=require('./gate-facing').facing(source,building);
+ const value=require('../../../assets/_script/BuildingPurchaseField').resolve(category,row,variant);
+ return value?Object.assign({},building,{purchaseSide:value.southwest?'flip':'default',purchaseOffset:{x:value.x,y:value.y},purchaseOverride:false}):building;
+}
 function valid(value){return SIDES.includes(value);}
 function side(value){return value==='flip'||value==='southwest'?'flip':'default';}
 function offset(building){const p=building&&building.purchaseOffset||{x:0,y:0};if(typeof p.x!=='number'||typeof p.y!=='number'||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw Error('Purchase field offset needs finite X and Y.');return p;}
@@ -54,6 +63,7 @@ function project(source,building){
  }
  result[entry.component.id].purchaseSide=selected;
  result[entry.component.id].purchaseOffset={__type__:'cc.Vec2',x:shift.x,y:shift.y};
+ if(building.purchaseOverride!==undefined)result[entry.component.id].purchaseOverride=building.purchaseOverride===true;
  projected.set(result,{source,key});saved.values.set(key,result);while(saved.values.size>16)saved.values.delete(saved.values.keys().next().value);return result;
 }
 function finishExport(source,building,target,mapping){
@@ -63,6 +73,6 @@ function finishExport(source,building,target,mapping){
   const inverse=Maps.inverse(node.world),trs=node.source._trs.array,component=target[mapping[original.component]],points=component.points||[];
   component.points=original.points.map((p,i)=>{const x=p.x-entry.owner.position.x,y=p.y-entry.owner.position.y,local=Maps.point(inverse,{x:building.x+(c*x-s*y)*scale,y:building.y+(s*x+c*y)*scale});return Object.assign({},points[i],{x:local.x*trs[7],y:local.y*trs[8]});});
  }
- const nextOwner=next.byId[mapping[entry.owner.id]],nextController=nextOwner&&nextOwner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(nextController){target[nextController.id].purchaseSide=side(building.purchaseSide);const p=offset(building);target[nextController.id].purchaseOffset={__type__:'cc.Vec2',x:p.x*scale,y:p.y*scale};}
+ const nextOwner=next.byId[mapping[entry.owner.id]],nextController=nextOwner&&nextOwner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(nextController){target[nextController.id].purchaseSide=side(building.purchaseSide);const p=offset(building);target[nextController.id].purchaseOffset={__type__:'cc.Vec2',x:p.x*scale,y:p.y*scale};if(building.purchaseOverride!==undefined)target[nextController.id].purchaseOverride=building.purchaseOverride===true;if(building.placementVariant)target[nextController.id].placementVariant=building.placementVariant;}
 }
-module.exports={valid,side,angle,offset,project,finishExport};
+module.exports={valid,side,angle,offset,project,finishExport,withDefaults};

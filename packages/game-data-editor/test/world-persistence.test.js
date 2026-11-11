@@ -76,6 +76,44 @@ function timedSaveFixture(){
  return Object.assign(f,{stage});
 }
 function moveHero(s){const key='stage:A-1',value=clone(s.snapshot(key).value);value.hero.x+=15;return s.change({key,version:s.version,value});}
+
+function changeWave(s){const key='stage:A-1',value=clone(s.snapshot(key).value);Object.assign(value.config.WaveCfg[0].SpawnTimeline[0],{count:7,intervalSeconds:.5,future:{keep:['wave metadata']}});return s.change({key,version:s.version,value});}
+test('world persistence: stage Save succeeds with a dirty shared map and preserves that map draft, history and recovery',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',mapKey='map:map-test',mapFile=path.join(f.root,'authoring/worlds/maps/map-test.json'),mapBytes=fs.readFileSync(mapFile),manifest=path.join(f.root,'authoring/worlds/library/manifest.json'),manifestBytes=fs.readFileSync(manifest);
+ rename(s,mapKey,'Unsaved artwork draft');changeWave(s);const data=clone(s.doc(mapKey).data),original=clone(s.doc(mapKey).original),history=structuredClone(s.undo.filter(item=>item.key===mapKey));let bakedName;
+ s.options.render=async spec=>{bakedName=spec.map.name;return {files:[],ground:[],assets:{}};};const saved=await s.save({key,version:s.version});
+ assert(saved.result.saved);assert.equal(saved.result.sharedMapDraftRetained,mapKey);assert(!saved.result.files.includes('authoring/worlds/maps/map-test.json'));assert(fs.readFileSync(mapFile).equals(mapBytes));assert(fs.readFileSync(manifest).equals(manifestBytes));assert.equal(bakedName,original.name);
+ assert.deepEqual(s.doc(mapKey).data,data);assert.deepEqual(s.doc(mapKey).original,original);assert.deepEqual(s.undo.filter(item=>item.key===mapKey),history);assert(s.snapshot(mapKey).dirty);assert(!s.snapshot(key).dirty);
+ const persisted=L.read(f.root,'authoring/worlds/stages/A-1.json').config.WaveCfg[0].SpawnTimeline[0];assert.equal(persisted.count,7);assert.deepEqual(persisted.future,{keep:['wave metadata']});
+ const recovery=JSON.parse(fs.readFileSync(s.recovery));assert(recovery.docs.some(doc=>doc.key===mapKey&&doc.data.name==='Unsaved artwork draft'));assert(!recovery.docs.some(doc=>doc.key===key));
+ const undo=s.history({key:mapKey,version:s.version},false);assert.equal(undo.value.name,original.name,'saving a stage must not break Undo in Maps');
+});
+test('world persistence: stage-only Save uses saved map bounds even if the pending map is invalid for that stage',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1';resizeMap(s,160,160);changeWave(s);const review=s.snapshot(key);
+ assert(review.issues.length);assert.deepEqual(review.sharedMapDraft.stageOnlyIssues,[]);assert(review.sharedMapDraft.combinedIssues.length);
+ const result=await s.save({key,version:s.version});assert(result.result.saved);assert.equal(s.doc('map:map-test').data.size.width,160);assert.equal(L.read(f.root,'authoring/worlds/maps/map-test.json').size.width,f.map.size.width);assert.equal(s.snapshot(key).value.config.WaveCfg[0].SpawnTimeline[0].count,7);
+});
+test('world persistence: explicit stage-and-map Save commits both in one backed-up transaction without the dirty-stage deadlock',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',mapKey='map:map-test';rename(s,mapKey,'Published map changes');changeWave(s);const originalCommit=s.commit;let commits=0;
+ s.commit=function(writes,revisions){commits++;assert(writes.some(write=>write.file==='authoring/worlds/stages/A-1.json'));assert(writes.some(write=>write.file==='authoring/worlds/maps/map-test.json'));return originalCommit.call(this,writes,revisions);};
+ const saved=await s.save({key,version:s.version,includeMap:true});assert(saved.result.saved);assert.equal(commits,1);assert.equal(saved.result.sharedMapDraftRetained,null);assert.equal(L.read(f.root,'authoring/worlds/maps/map-test.json').name,'Published map changes');assert.equal(L.read(f.root,'authoring/worlds/stages/A-1.json').config.WaveCfg[0].SpawnTimeline[0].count,7);assert(!s.snapshot(key).dirty);assert(!s.snapshot(mapKey).dirty);assert(!s.undo.some(item=>[key,mapKey].includes(item.key)));
+ const journal=JSON.parse(fs.readFileSync(path.join(saved.result.backup,'journal.json')));assert.equal(journal.status,'committed');for(const file of ['authoring/worlds/maps/map-test.json','authoring/worlds/stages/A-1.json'])assert(fs.existsSync(path.join(saved.result.backup,file)));
+});
+test('world persistence: combined Save protects another linked stage draft while stage-only Save remains available',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',other=clone(s.doc(key).data);other.id='A-2';other.level=2;other.config.Level=2;const original=clone(other);other.hero.x=22;s.docs['stage:A-2']={key:'stage:A-2',file:'authoring/worlds/stages/A-2.json',original,data:other,revision:null};
+ rename(s,'map:map-test','Shared draft');changeWave(s);const snapshot=s.snapshot(key),beforeStage=fingerprint(path.join(f.root,'authoring/worlds/stages/A-1.json')),beforeMap=fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json'));assert(snapshot.sharedMapDraft.combinedIssues.some(issue=>issue.includes('A-2')));
+ await assert.rejects(s.save({key,version:s.version,includeMap:true}),/Stage A-2 has an unsaved draft/);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/stages/A-1.json')),beforeStage);assert.equal(fingerprint(path.join(f.root,'authoring/worlds/maps/map-test.json')),beforeMap);assert.deepEqual(s.docs['stage:A-2'].data,other);
+ const saved=await s.save({key,version:s.version});assert(saved.result.saved);assert.deepEqual(s.docs['stage:A-2'].data,other);assert(s.snapshot('map:map-test').dirty);
+});
+test('world persistence: a new unsaved map requires explicit combined saving, which then creates both sources',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',created=s.create({name:'New map',biome:'forest',version:s.version}),value=clone(s.snapshot(key).value);value.mapId=created.value.id;s.change({key,version:s.version,value});const review=s.snapshot(key);assert.equal(review.sharedMapDraft.savedMapAvailable,false);
+ await assert.rejects(s.save({key,version:s.version}),/new unsaved map/);assert(!fs.existsSync(path.join(f.root,'authoring/worlds/maps/'+created.value.id+'.json')));const saved=await s.save({key,version:s.version,includeMap:true});assert(saved.result.saved);assert.equal(L.read(f.root,'authoring/worlds/stages/A-1.json').mapId,created.value.id);assert(fs.existsSync(path.join(f.root,'authoring/worlds/maps/'+created.value.id+'.json')));assert(!s.snapshot(created.key).dirty);
+});
+test('world persistence: stage-only Save retains revision guards on the saved map without overwriting an external change',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',stageFile=path.join(f.root,'authoring/worlds/stages/A-1.json'),before=fingerprint(stageFile);rename(s,'map:map-test','Retained map draft');changeWave(s);
+ s.options.render=async()=>{const map=L.read(f.root,'authoring/worlds/maps/map-test.json');map.FutureExternal={keep:true};f.write('authoring/worlds/maps/map-test.json',map);return {files:[],ground:[],assets:{}};};
+ await assert.rejects(s.save({key,version:s.version}),/Concurrent change in authoring\/worlds\/maps\/map-test.json/);assert.equal(fingerprint(stageFile),before);assert.deepEqual(L.read(f.root,'authoring/worlds/maps/map-test.json').FutureExternal,{keep:true});assert(s.snapshot(key).dirty);assert(s.snapshot('map:map-test').dirty);
+});
 test('world persistence: stage save validates the current shared roster after another tool removes a timed unit',async()=>{
  const f=timedSaveFixture(),s=f.service,key='stage:A-1',stageFile=path.join(f.root,'authoring/worlds/stages/A-1.json'),before=fingerprint(stageFile);
  assert(s.index().documents.A.SoldierCfg[90001]);moveHero(s);const config=L.read(f.root,L.configFile('A'));delete config.SoldierCfg[90001];const configFile=f.write(L.configFile('A'),config),external=fingerprint(configFile);

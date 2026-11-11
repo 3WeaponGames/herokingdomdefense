@@ -13,6 +13,8 @@ const Schema = require('../lib/schema');
 const Assets = require('../lib/asset-validation');
 const Units = require('../lib/unit-assets');
 const Records = require('../lib/unit-records');
+const Profiles = require('../lib/unit-profiles');
+const Catalog = require('../worlds/unit-catalog');
 const root = path.resolve(__dirname, '../../..');
 const read = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
 const catalogs = require('../../../tools/characters/monster-roster-definitions.json').units.map(unit=>unit.source.split('/')[0]).filter((pack,index,all)=>all.indexOf(pack)===index).flatMap(pack => read('assets/resources/unit-library/' + pack + '/catalog.json').units);
@@ -68,10 +70,35 @@ test('pack filters, search, wave choices and browsing every new unit leave draft
     const rows = f.panel._rows(), monsters = rows.filter(row => row.record.MonsterSource);
     assert.equal(monsters.length, catalogs.length);
     for (const row of monsters) f.render(row.key);
-    for (const pack of ['monster1','monster2','monster3','fantasy-bosses','fantasy-monsters','campaign','allies']) {
+    const modelKeys = new Map(Catalog.rows({ ...before.A, GameTools: before.overrides }, before.catalog, null, Profiles.characters(root)).map(unit => [String(unit.id), unit.modelKey]));
+    const modelKey = row => row.unitType === 'enemy' && modelKeys.has(String(row.unitID)) ? modelKeys.get(String(row.unitID)) : row.key;
+    const caption = row => row.label.replace(/<[^>]*>/g, '') + '\n' + row.subtitle;
+    const listedRows = expected => {
+        const byCaption = new Map(expected.map(row => [caption(row), row]));
+        return Array.from(f.panel.$list.children, button => {
+            const text = button.children[1], value = text.children[0].textContent + '\n' + text.children[1].textContent;
+            assert(byCaption.has(value), 'listed unit belongs to the selected pack: ' + value);
+            return byCaption.get(value);
+        });
+    };
+    for (const pack of ['all','monster1','monster2','monster3','fantasy-bosses','fantasy-monsters','campaign','allies']) {
         f.panel._unitPack = pack; f.panel._selected = null; f.panel.$search.value = ''; f.panel._render();
-        const expected = pack === 'allies' ? 5 : pack === 'campaign' ? Object.values(before.A.SoldierCfg).filter(unit => !unit.MonsterPack).length : catalogs.filter(unit => unit.pack === pack).length;
-        assert.equal(f.panel.$list.children.length, expected, pack);
+        const expected = rows.filter(row => pack === 'all' || (pack === 'allies' ? row.unitType !== 'enemy' : row.unitType === 'enemy' && (pack === 'campaign' ? !row.record.MonsterPack : row.record.MonsterPack === pack)));
+        const expectedModels = [...new Set(expected.map(modelKey))].sort(), shown = listedRows(expected);
+        // The sidebar shows one model per appearance family; its profile
+        // count still includes every scoped record, including boss forms.
+        assert.equal(shown.length, expectedModels.length, pack + ' models');
+        assert.deepEqual(shown.map(modelKey).sort(), expectedModels, pack + ' model coverage');
+        assert.equal(f.panel.$count.textContent, expectedModels.length + ' models · ' + expected.length + ' profiles', pack + ' count');
+        if (pack === 'campaign') {
+            assert.equal(expected.length, Object.values(before.A.SoldierCfg).filter(unit => !unit.MonsterPack).length);
+            const sibling = expected.find(row => expected.some(other => other.key !== row.key && modelKey(other) === modelKey(row)));
+            assert(sibling, 'campaign fixtures include profiles sharing a model');
+            for (const row of expected.filter(row => modelKey(row) === modelKey(sibling)).slice(0, 2)) {
+                f.render(row.key);
+                assert(listedRows(expected).some(shown => shown.key === row.key), row.key + ' remains reachable as the selected profile');
+            }
+        }
     }
     f.panel._unitPack = 'monster1'; f.panel.$search.value = catalogs[0].id; f.panel._renderList();
     assert.equal(f.panel.$list.children.length, 1, 'source identifiers are searchable');

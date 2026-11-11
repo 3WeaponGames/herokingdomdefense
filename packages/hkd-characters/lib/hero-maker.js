@@ -83,11 +83,9 @@ function customEquipment(root,files,read){
   return entries;
 }
 function writeRig(root,files,read,name,rig,pictures){
-  const base=folder+'/wqyl_lead_'+name,image=PNG.pack(pictures),lines=['',path.basename(base)+'.png','size: '+image.width+','+image.height,'format: RGBA8888','filter: Linear,Linear','repeat: none'];
-  for(const [key,p]of Object.entries(image.positions))lines.push(key,'  rotate: false','  xy: '+p.x+', '+p.y,'  size: '+p.width+', '+p.height,'  orig: '+p.width+', '+p.height,'  offset: 0, 0','  index: -1');
-  files.set(base+'.json',JSON.stringify(rig,null,2)+'\n');files.set(base+'.atlas',lines.join('\n')+'\n');files.set(base+'.png',PNG.encode(image));
-  files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures:[Bake.uuid(base+'.png')],scale:1,subMetas:{}},null,2)+'\n');
-  files.set(base+'.atlas.meta',JSON.stringify({ver:'1.0.3',uuid:Bake.uuid(base+'.atlas'),importer:'asset',subMetas:{}},null,2)+'\n');files.set(base+'.png.meta',JSON.stringify(Bake.textureMeta(base+'.png',image.width,image.height),null,2)+'\n');
+  const base=folder+'/wqyl_lead_'+name,textures=Bake.atlasFiles(files,base,pictures);
+  files.set(base+'.json',JSON.stringify(rig,null,2)+'\n');
+  files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures,scale:1,subMetas:{}},null,2)+'\n');
   return {base,uuid:Bake.uuid(base+'.json')};
 }
 function horse(root,maker,files,read){

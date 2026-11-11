@@ -711,14 +711,40 @@ LanguageMgr.prototype._fitReadableText = function (label) {
   var sizing = label._readableSizing, node = sizing && sizing.node;
   if (!node || !cc.isValid(node)) { this._readableLabels.delete(label); return; }
   if (!node.activeInHierarchy || !label.node.active) return;
-  var scale = 1;
+  var options = sizing.options, scale = 1;
+  var upright = label.node._localizationGenerated && /^localization\/neutral\/tile_/.test(options.neutral || "");
+  var a = 1, b = 0, c = 0, d = 1;
   // Sample local scales directly: native world matrices can still be stale
   // during prefab creation or a map-opening animation.
-  for (var parent = node; parent && !(cc.Scene && parent instanceof cc.Scene); parent = parent.parent) scale *= Math.abs(parent.scaleY === undefined ? 1 : parent.scaleY);
+  for (var parent = node; parent && !(cc.Scene && parent instanceof cc.Scene); parent = parent.parent) {
+    var sy = parent.scaleY === undefined ? 1 : parent.scaleY;
+    scale *= Math.abs(sy);
+    if (upright) {
+      var sx = parent.scaleX === undefined ? 1 : parent.scaleX, angle = parent.angle === undefined ? 0 : parent.angle;
+      if (!isFinite(sx) || !isFinite(sy) || !isFinite(angle)) return;
+      var radians = angle * Math.PI / 180, cosine = Math.cos(radians), sine = Math.sin(radians);
+      var nextA = cosine * sx * a - sine * sy * b, nextB = sine * sx * a + cosine * sy * b;
+      var nextC = cosine * sx * c - sine * sy * d, nextD = sine * sx * c + cosine * sy * d;
+      a = nextA; b = nextB; c = nextC; d = nextD;
+    }
+  }
+  if (upright) {
+    var xScale = Math.hypot(a, b), yScale = Math.hypot(c, d);
+    if (!isFinite(xScale) || !isFinite(yScale) || xScale < 1e-8 || yScale < 1e-8) return;
+    a /= xScale; b /= xScale; c /= yScale; d /= yScale;
+    var determinant = a * d - b * c;
+    if (Math.abs(determinant) < 1e-8) return;
+    // Pad direction and legacy local counter-mirrors both affect the name.
+    // Cancel their inherited orientation on generated text only; retain its
+    // scale, the source artwork, and the existing readable-size calculation.
+    label.node.angle = Math.atan2(-b / determinant, d / determinant) * 180 / Math.PI;
+    label.node.scaleX = 1;
+    label.node.scaleY = determinant < 0 ? -1 : 1;
+  }
   if (!isFinite(scale) || scale < 0.05) return;
   var camera = cc.Camera && cc.Camera.findCamera && cc.Camera.findCamera(node);
   if (camera && camera.zoomRatio > 0) scale *= camera.zoomRatio;
-  var options = sizing.options, ratio = (options.referenceWidth || 360) / cc.winSize.width;
+  var ratio = (options.referenceWidth || 360) / cc.winSize.width;
   var size = Math.max(12, Math.min(options.maxFontSize || 96, Math.ceil((options.minimumCssPixels || 14) / (scale * ratio))));
   if (label.fontSize !== size) {
     label.fontSize = size; label.lineHeight = Math.ceil(size * 1.15);

@@ -18,7 +18,7 @@ const skin = (json, name) => json.skins.find(s => s.name === name);
 // Rebuild supported original artwork explicitly; active production remains matched.
 const originalMetadata = clone(sources.cq1.wallKit);
 originalMetadata.gateStyle = 'original'; delete originalMetadata.doors;
-const originalSources = {cq1: Kit.install(Kit.source(sources.cq1), originalMetadata.layout, originalMetadata)};
+const originalSources = {cq1: Kit.install(Kit.source(sources.cq1), originalMetadata.layout, originalMetadata, {adjustmentsData:{version:1,poses:{}}})};
 originalSources.cq2 = Kit.fitOriginalGate(Kit.source(sources.cq2), originalMetadata.layout);
 originalSources.cq2.wallGate = {...clone(sources.cq2.wallGate), style: 'original'};
 
@@ -134,7 +134,7 @@ test('production uses the approved closed pair and separately registered open le
  }else assert(main.slots.filter(value=>slots.includes(value.name)).every(value=>main.slots.indexOf(value)<main.slots.findIndex(value=>value.name.startsWith('rts_wall_part_'))),'Legacy native wall posts paint in front of every door part');
  const page=decode(bytes(dir+'cq1/wall-doors.png')),meta=read(dir+'cq1/cq1.json.meta'),texture=read(dir+'cq1/wall-doors.png.meta');assert.equal(meta.textures.length,3);assert.equal(meta.textures[2],texture.uuid);assert.equal(texture.premultiplyAlpha,false);assert.equal(texture.packable,false);assert(page.width<=4096&&page.height<=4096,'The mobile atlas stays within its texture budget');
  function check(image,registration,spec){
-  const region=atlas[image.path];assert(region);assert.equal(region.page,'wall-doors.png');assert.deepEqual(region.size,[registration.width,registration.height]);assert(!image.type||image.type==='region');assert.equal(image.vertices,undefined);assert.equal(image.uvs,undefined);assert.equal(image.triangles,undefined);close(image.width/registration.width,2*spec.scale);close(image.height/registration.height,2*spec.scale);paths.add(image.path);
+  const region=atlas[image.path];assert(region);assert.equal(region.page,'wall-doors.png');assert.deepEqual(region.size,[registration.width,registration.height]);if(registration.mirrorX){assert.equal(image.type,'mesh');assert.equal(image.vertices.length,8);assert.deepEqual(image.uvs,[0,1,0,0,1,0,1,1]);assert.deepEqual(image.triangles,[0,1,2,2,3,0]);assert(image.vertices.every(Number.isFinite));}else{assert(!image.type||image.type==='region');assert.equal(image.vertices,undefined);assert.equal(image.uvs,undefined);assert.equal(image.triangles,undefined);}close(image.width/registration.width,2*spec.scale);close(image.height/registration.height,2*spec.scale);paths.add(image.path);
   const [x,y]=region.xy,[width,height]=region.size;assert(x>=0&&y>=0&&x+width<=page.width&&y+height<=page.height);let visible=0,transparent=0;for(let py=y;py<y+height;py++)for(let px=x;px<x+width;px++){const alpha=page.rgba[(py*page.width+px)*4+3];if(alpha>=8)visible++;if(!alpha)transparent++;}assert(visible>100&&transparent>0,'Every region contains actual artwork with a transparent edge');
  }
  for(let index=0;index<3;index++){
@@ -142,7 +142,7 @@ test('production uses the approved closed pair and separately registered open le
   for(const state of ['inward','outward']){const parts=spec.states[state].parts;assert.deepEqual(parts.map(part=>part.id).sort(),['far','near']);assert.equal(spec.states[state].path,undefined,'Open artwork is assembled from its lossless leaf crops');for(const part of parts){const slot=Door.partSlots[part.id],name=main.animations['open_'+state].slots[slot].attachment[0].name;assert(name);check(alias.attachments[slot][name],part,spec);for(const key of ['anchorX','anchorY','targetX','targetY'])assert(Number.isFinite(part[key]));assert(part.anchorX>=0&&part.anchorX<=part.width&&part.anchorY>=0&&part.anchorY<=part.height);assert(part.targetX>=0&&part.targetX<=spec.states.closed.width&&part.targetY>=0&&part.targetY<=spec.states.closed.height);}}
   for(const id of ['near','far'])assert.equal(Object.keys(alias.attachments[Door.partSlots[id]]).length,2,'Only the two approved open variants occupy each leaf slot');
  }
- assert.equal(paths.size,15,'Three closed pairs and twelve open leaves resolve distinct real atlas regions');
+ assert.equal(paths.size,9,'Three closed pairs and one shared leaf for each open direction and tier');
  for(const reverse of [false,true]){const json=reverse?Facing.mirrorJson(main):main;
   for(const name of ['idle','idle_night','shut','shut_night','create','upgrade']){assert.equal(json.animations[name].slots[Door.slot].attachment[0].name,'rts_door_closed');for(const slot of Object.values(Door.partSlots))assert.equal(json.animations[name].slots[slot].attachment[0].name,null);}
   for(const name of ['open','open_night',...Door.generatedAnimations]){const state=!/^(open|Fade_in_open_)/.test(name)?'closed':(name.includes('inward')!==reverse?'inward':'outward'),clip=json.animations[name];assert.deepEqual(clip.slots[Door.slot].attachment,[{time:0,name:state==='closed'?'rts_door_closed':null}]);for(const id of ['near','far']){const track=clip.slots[Door.partSlots[id]].attachment;assert.equal(track.length,1);assert.equal(track[0].time,0);if(state==='closed')assert.equal(track[0].name,null);else{assert(track[0].name);for(let index=0;index<3;index++)assert.equal(skin(json,fixture.aliases[index]).attachments[Door.partSlots[id]][track[0].name].path,json.wallDoor.tiers[index].states[state].parts.find(part=>part.id===id).path);}}}
@@ -152,7 +152,7 @@ test('production uses the approved closed pair and separately registered open le
 });
 
 test('detached closed-only metadata still clears a passage without requiring unapproved open images',()=>{
- const metadata=clone(sources.cq1.wallKit);metadata.doors.closedOnly=true;for(const tier of metadata.doors.tiers)tier.states={closed:tier.states.closed};const before=JSON.stringify(sources.cq1),json=Kit.install(Kit.source(sources.cq1),metadata.layout,metadata);
+ const metadata=clone(sources.cq1.wallKit);metadata.doors.closedOnly=true;for(const tier of metadata.doors.tiers)tier.states={closed:tier.states.closed};const before=JSON.stringify(sources.cq1),json=Kit.install(Kit.source(sources.cq1),metadata.layout,metadata,{adjustmentsData:{version:1,poses:{}}});
  assert.equal(JSON.stringify(sources.cq1),before);assert.equal(json.wallDoor.closedOnly,true);for(const alias of Kit.skins)assert.deepEqual(Object.keys(skin(json,alias).attachments[Door.slot]),['rts_door_closed']);
  for(const mirrored of [json,Facing.mirrorJson(json)]){for(const name of ['open','open_night','Fade_in_open_inward','Fade_in_open_outward'])assert.deepEqual(mirrored.animations[name].slots[Door.slot].attachment,[{time:0,name:null}]);for(const name of ['idle','shut','shut_night'])assert.equal(mirrored.animations[name].slots[Door.slot].attachment[0].name,'rts_door_closed');}
 });
@@ -243,7 +243,7 @@ test('native wall lengths and mirrored variants stay rigid and source skeletons 
     }},
     {nativeVersion: 2, left: 256, right: 256, gate: true, start: 'post', end: 'post'}];
   for (const run of runs) for (const mirrorX of [false, true]) {
-    const snapshot = JSON.stringify(run), plan = Kit.layout(run), installed = Kit.install(original, plan, undefined, {mirrorX});
+    const snapshot = JSON.stringify(run), plan = Kit.layout(run), installed = Kit.install(original, plan, undefined, {mirrorX, adjustmentsData: {version: 1, poses: {}}});
     const parts = Kit.posts(plan);
     assert.equal(JSON.stringify(run), snapshot); assert.equal(JSON.stringify(original), before);
     assert.deepEqual(Kit.source(installed), source, 'Authored skeleton, effects, original gate skins and animations stay recoverable');
@@ -285,7 +285,7 @@ test('matched closed regions and original gateway fixtures remain inside their c
     checkBounds(source);
     checkBounds(Facing.mirrorJson(source));
   }
-  const gateOnly = Kit.install(sources.cq1, Kit.layout({nativeVersion: 2, left: 0, right: 0, gate: true, start: 'post', end: 'post'}));
+  const gateOnly = Kit.install(sources.cq1, Kit.layout({nativeVersion: 2, left: 0, right: 0, gate: true, start: 'post', end: 'post'}), undefined, {adjustmentsData:{version:1,poses:{}}});
   checkBounds(gateOnly);
   checkBounds(Facing.mirrorJson(gateOnly));
 });

@@ -99,6 +99,7 @@ const messages={
     'map-route'(event,request){reply(event,()=>{const maps=require('./lib/map-assets'),s=getStore();s.addMap(request.id);return maps.routeTest(project(),s.snapshot().documents['map:'+request.id].data,request.start,request.goal,request.radius,request.includeBuildings);});},
     'unit-preview'(event,request){reply(event,()=>require('./lib/unit-assets').describe(project(),Object.assign({},request,{documents:getStore().snapshot().documents})));},
     'building-blocker-preview'(event,request){reply(event,()=>require('./buildings/blocker-data').describe(getWorlds(),request));},
+    'building-purchase-preview'(event,request){reply(event,()=>require('./buildings/purchase-data').describe(getWorlds(),request));},
     testing(event,request){reply(event,()=>require('./testing/session').handle(Editor,project(),request));},
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
     'open-characters'(event,request){reply(event,()=>{if(!request){Editor.Panel.open('hkd-characters');return true;}return new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result)));});},

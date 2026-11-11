@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "0d18b0b3-5e14-5191-9e9b-d0f31a17a9f1",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 590,
+  "height": 567,
+  "platformSettings": {},
+  "subMetas": {
+    "royal-garrison-1": {
+      "ver": "1.0.6",
+      "uuid": "7b27fbbf-a9ba-5c79-8610-d2e7ceb51705",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0d18b0b3-5e14-5191-9e9b-d0f31a17a9f1",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -28.5,
+      "trimX": 93,
+      "trimY": 71,
+      "width": 404,
+      "height": 482,
+      "rawWidth": 590,
+      "rawHeight": 567,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

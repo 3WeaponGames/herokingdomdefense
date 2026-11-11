@@ -32,12 +32,10 @@ function bake(root,profile,id,description,assets,read){
       if(attachment.type==='clipping'||attachment.type==='boundingbox'||attachment.type==='path'||attachment.type==='point')continue;
       const region=attachment.path||attachment.name||name;if(!pictures[region])pictures[region]=cut(region);
     }
-    const image=PNG.pack(pictures),base='assets/resources/'+(profile.base.type==='hero'?'characters':'hero-items')+'/baked/'+id+'_'+layer.name,texture=path.basename(base)+'.png',lines=['',texture,'size: '+image.width+','+image.height,'format: RGBA8888','filter: Linear,Linear','repeat: none'];
-    for(const [name,p]of Object.entries(image.positions))lines.push(name,'  rotate: false','  xy: '+p.x+', '+p.y,'  size: '+p.width+', '+p.height,'  orig: '+p.width+', '+p.height,'  offset: 0, 0','  index: -1');
+    const base='assets/resources/'+(profile.base.type==='hero'?'characters':'hero-items')+'/baked/'+id+'_'+layer.name,textures=Bake.atlasFiles(files,base,pictures);
     rig._heroItem=id;rig._originalLayer=layer.uuid;
-    files.set(base+'.json',JSON.stringify(rig,null,2)+'\n');files.set(base+'.atlas',lines.join('\n')+'\n');files.set(base+'.png',PNG.encode(image));
-    const metadata={'.json':{ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures:[Bake.uuid(base+'.png')],scale:1,subMetas:{}},'.atlas':{ver:'1.0.3',uuid:Bake.uuid(base+'.atlas'),importer:'asset',subMetas:{}},'.png':Bake.textureMeta(base+'.png',image.width,image.height)};
-    for(const [suffix,value]of Object.entries(metadata))files.set(base+suffix+'.meta',JSON.stringify(value,null,2)+'\n');
+    files.set(base+'.json',JSON.stringify(rig,null,2)+'\n');
+    files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures,scale:1,subMetas:{}},null,2)+'\n');
     Bake.preserveMetadata(root,files,read);
     bakedLayers[layer.uuid]={resource:base.slice('assets/resources/'.length),uuid:JSON.parse(files.get(base+'.json.meta')).uuid};
   }

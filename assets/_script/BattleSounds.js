@@ -4,7 +4,7 @@
 var Catalog = require("BattleSoundCatalog"), entries = Catalog.effects, serial = 0, menuState = null;
 var BIOMES = ["forest", "deep-forest", "autumn", "desert", "snow", "ice", "fire", "lava"];
 var LEGACY = { Map01: "forest", Map02: "deep-forest", Map03: "desert", Map04: "snow", Map07: "fire" };
-var SLOTS = { combat: 4, death: 2, magic: 2, signal: 1, ui: 1 };
+var SLOTS = { combat: 4, hit: 1, death: 2, magic: 2, signal: 1, ui: 1 };
 function view() { return require("KinghtFallUIGame").default.instance; }
 function manager() { return require("AudioMgr").AudioMgr.getInstance(); }
 function supported() { return typeof cc !== "undefined" && cc.resources && !(typeof CC_EDITOR !== "undefined" && CC_EDITOR); }
@@ -85,6 +85,8 @@ function effect(id, owner, options) {
   if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return false;
   var now = Date.now(), cooldown = options.cooldown === undefined ? entry.cooldown : options.cooldown;
   if (state.last[id] !== undefined && now - state.last[id] < cooldown) return false;
+  var hit = /^(?:impact-|arrow-impact-|hurt-)|^(?:magic-impact|cannon-impact-explosion|critical-hit)$/.test(id);
+  if (hit && state.lastHitStartedAt !== undefined && now - state.lastHitStartedAt < 500) return false;
   var location = options.point || point(owner), distanceGain = attenuation(state, location);
   if (!distanceGain) return false;
   var generation = owner && owner.node && owner.node._combatGeneration, version = state.effectsEpoch, cancelEpoch = state.cancelEpoch, managerEpoch = state.manager.effectEpoch;
@@ -96,13 +98,19 @@ function effect(id, owner, options) {
     if (owner && owner.node && owner.node._combatGeneration !== generation) return;
     if (owner && !options.allowDead && (owner._isPooled || owner.isDead && owner.isDead())) return;
     if (options.menu && owner && (closing ? owner._resourceGeneration !== resourceGeneration && owner._resourceGeneration !== resourceGeneration + 1 : owner._resourceGeneration !== resourceGeneration || owner.isclose)) return;
-    var count = SLOTS[entry.group] || 2, selected = null, oldest = Infinity;
+    // All weapons share one impact budget, including delayed asset callbacks.
+    // Let an accepted hit finish; swings must not keep cutting it into stutters.
+    var startedAt = Date.now();
+    if (hit && state.lastHitStartedAt !== undefined && startedAt - state.lastHitStartedAt < 500) return;
+    var group = hit ? "hit" : entry.group, count = SLOTS[group] || 2, selected = null, oldest = Infinity;
     for (var i = 0; i < count; i++) {
-      var slot = getSource(state, entry.group + "-" + i);
+      var slot = getSource(state, group + "-" + i);
       if (!busy(state, slot.source)) { selected = slot; break; }
+      if (hit) return;
       if ((slot.source._sfxStartedAt || 0) < oldest) { oldest = slot.source._sfxStartedAt || 0; selected = slot; }
     }
-    selected.source._sfxStartedAt = Date.now();
+    selected.source._sfxStartedAt = startedAt;
+    if (hit) state.lastHitStartedAt = startedAt;
     var level = entry.gain * distanceGain * (options.gain === undefined ? 1 : options.gain);
     state.manager.playSource(selected.source, { bundle: "KinghtFallAudio", path: entry.path }, selected.key, false, false,
       function () { return gain(state, level); });

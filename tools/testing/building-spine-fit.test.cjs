@@ -61,6 +61,26 @@ function sourceSkeleton(asset){
       if(animation.slots&&!Object.keys(animation.slots).length)delete animation.slots;
     }
   }
+  if(asset==='by'&&fixture.stables){
+    if(fixture.stables.originalHeader)json.skeleton=clone(fixture.stables.originalHeader);
+    const bones=new Set(fixture.stables.bones),slots=new Set(fixture.stables.slots);
+    json.bones=json.bones.filter(b=>!bones.has(b.name));json.slots=json.slots.filter(s=>!slots.has(s.name));
+    for(const animation of Object.values(json.animations)){
+      for(const name of bones)if(animation.bones)delete animation.bones[name];
+      for(const name of slots)if(animation.slots)delete animation.slots[name];
+      for(const key of ['bones','slots'])if(animation[key]&&!Object.keys(animation[key]).length)delete animation[key];
+    }
+  }
+  if(asset==='by'&&fixture.garrison){
+    if(fixture.garrison.originalHeader)json.skeleton=clone(fixture.garrison.originalHeader);
+    const bones=new Set(fixture.garrison.bones),slots=new Set(fixture.garrison.slots);
+    json.bones=json.bones.filter(b=>!bones.has(b.name));json.slots=json.slots.filter(s=>!slots.has(s.name));
+    for(const animation of Object.values(json.animations)){
+      for(const name of bones)if(animation.bones)delete animation.bones[name];
+      for(const name of slots)if(animation.slots)delete animation.slots[name];
+      for(const key of ['bones','slots'])if(animation[key]&&!Object.keys(animation[key]).length)delete animation[key];
+    }
+  }
   if(asset==='by'&&fixture.royalMilitary){
     const bones=new Set(fixture.royalMilitary.bones),slots=new Set(fixture.royalMilitary.slots);
     json.bones=json.bones.filter(b=>!bones.has(b.name));json.slots=json.slots.filter(s=>!slots.has(s.name));
@@ -80,7 +100,7 @@ function sourceSkeleton(asset){
   for(const fit of fixture.lightFits.filter(f=>f.asset===asset&&!fixture.aliases.some(a=>a.alias===f.skin))){
     const skin=json.skins.find(s=>s.name===fit.skin);translated(skin.attachments[fit.slot][fit.attachment],fit.logicalOffset,-1);
   }
-  const aliases=new Set([...fixture.aliases,...(fixture.cavalry?.aliases||[]),...(fixture.castleRts?.aliases||[])].map(a=>a.alias));json.skins=json.skins.filter(s=>!aliases.has(s.name));
+  const aliases=new Set([...fixture.aliases,...(fixture.cavalry?.aliases||[]),...(fixture.castleRts?.aliases||[]),...(fixture.garrison?.aliases||[]),...(fixture.stables?.aliases||[])].map(a=>a.alias));json.skins=json.skins.filter(s=>!aliases.has(s.name));
   for(const animation of Object.values(json.animations))for(const alias of aliases)if(animation.deform)delete animation.deform[alias];
   return json;
 }
@@ -119,13 +139,13 @@ test('Royal Knight tiers have proportional independent bodies, aligned aperture 
     assert.deepEqual(Object.keys(actual.attachments).sort(),[alias.region,'royal_windows',flag.flagSlot,flag.poleSlot].sort());
     for(const animation of Object.values(json.animations))assert.equal(animation.deform?.[alias.alias],undefined,'Narrow window cores use fixed masks, so no source deformation can slide them onto a wall');
   }
-  const meta=read(filename('by','json.meta')),page=read(directory('by')+'/by-royal.png.meta');assert.equal(meta.textures.length,3);assert.equal(meta.textures[1],page.uuid);
+  const meta=read(filename('by','json.meta')),page=read(directory('by')+'/by-royal.png.meta');assert.equal(meta.textures.length,3+(fixture.garrison?1:0)+(fixture.stables?1:0));assert.equal(meta.textures[1],page.uuid);
   const image=decode(fs.readFileSync(path.join(root,directory('by')+'/by-royal.png')));assert.deepEqual([image.width,image.height],[page.width,page.height]);
 });
 
 test('original Cocos UUIDs, sampling, icon geometry and asset metadata stay stable',()=>{
   for(const[file,expected]of Object.entries(fixture.metadata)){
-    const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,3);meta.textures=meta.textures.slice(0,1);}
+    const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,3+(fixture.garrison?1:0)+(fixture.stables?1:0));meta.textures=meta.textures.slice(0,1);}
     if(file===filename('cb','json.meta')&&fixture.castleRts){assert.equal(meta.textures.length,2);meta.textures=meta.textures.slice(0,1);}
     if(file===filename('cq/cq1','json.meta')&&fixture.wallKit){assert.equal(meta.textures.length,3,'Original, modular walls and matched door atlas pages');assert.equal(new Set(meta.textures).size,3);meta.textures=meta.textures.slice(0,1);}
     const image=fixture.metadataTrims?.[file]?decode(fs.readFileSync(path.join(root,file.slice(0,-5)))):null;
@@ -161,6 +181,16 @@ test('all fitted icons are transparent, proportional exports within their preser
 
 test('building fitting preserves barracks IDs, progression, colliders, stats, timing, routes and unknown data',()=>{
   const barracks=clone(read('assets/KinghtFallConfig/GameJsonCfg.json').BuildEnum['3']);
+  for(const alias of fixture.stables?.aliases||[]){
+    if(alias.reserved)continue;
+    const row=barracks.levelList.find(row=>row.index===alias.index);assert.equal(row.Skin,alias.alias);assert.equal(row.Icon,alias.icon);
+    row.Skin=alias.previousSkin;row.Icon=alias.previousIcon;
+  }
+  for(const alias of fixture.garrison?.aliases||[]){
+    if(alias.reserved)continue;
+    const row=barracks.levelList.find(row=>row.index===alias.index);assert.equal(row.Skin,alias.alias);assert.equal(row.Icon,alias.icon);
+    row.Skin=alias.previousSkin;row.Icon=alias.previousIcon;
+  }
   for(const[level,sourceSkin,sourceIcon]of [[1,'by-1','by_1'],[2,'dxby-2-1','dxby_2_1'],[3,'dxby-3-1','dxby_3_1']]){
     const row=barracks.levelList.find(row=>row.index===10+level);assert.equal(row.index,10+level);assert.equal(row.Skin,'by-royal-'+level);assert.equal(row.Icon,'royal-guard-'+level);
     row.Skin=sourceSkin;row.Icon=sourceIcon;
@@ -227,7 +257,11 @@ test('Royal Knight flag reuses the castle wave keys and all added layers follow 
   assert.deepEqual(json.animations.Fade_in.slots.royal_windows,json.animations.Fade_in.slots.by_1_g_1,'Retain the half-second night fade');
   const pulse=json.animations.idle_night.slots.royal_windows.color;assert.deepEqual(pulse.map(k=>k.time||0),[0,1,2]);assert.notEqual(pulse[0].color,pulse[1].color);
   assert.deepEqual(json.animations.destroy.slots.royal_windows.attachment,[{time:.1667,name:null}],'No glowing doorway or windows remain after destruction');
-  for(const s of json.skins.filter(s=>!s.name.startsWith('by-royal-')))for(const name of fixture.royalMilitary.slots)assert.equal(s.attachments[name],undefined,'Other families must not acquire Royal layers');
+  const garrisonAliases=new Set((fixture.garrison?.aliases||[]).map(a=>a.alias));
+  for(const s of json.skins.filter(s=>!s.name.startsWith('by-royal-')))for(const name of fixture.royalMilitary.slots){
+    if(name==='royal_windows'&&garrisonAliases.has(s.name))continue; // Explicitly shared night-mask slot, never an old flag rig.
+    assert.equal(s.attachments[name],undefined,'Other families must not acquire Royal layers');
+  }
 });
 
 test('Royal Knight light maps illuminate the open door and three windows while keeping frames, props and roof dark',()=>{

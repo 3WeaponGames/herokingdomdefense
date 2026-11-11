@@ -44,7 +44,20 @@ var exp_KinghtFallInterface = function (t) {
     var name = renderer && renderer.findAnimation && ["die", "dead1", "death"].filter(function (name) { return !!renderer.findAnimation(name); })[0];
     if (name && renderer.setTrackCompleteListener) {
       var entry = renderer.setAnimation(0, name, false);
-      if (entry) { renderer.setTrackCompleteListener(entry, finish); return; }
+      if (entry) {
+        var completionQueued = false;
+        renderer.setTrackCompleteListener(entry, function () {
+          if (completionQueued) return;
+          // Deactivating an ally restores its prefab rig. JSB destroys the old
+          // AnimationState immediately, so its completion dispatch must return
+          // before that restoration can replace the skeleton underneath it.
+          if (typeof CC_JSB !== "undefined" && CC_JSB || cc.sys && cc.sys.isNative) {
+            completionQueued = true;
+            actor.scheduleOnce(finish, 0);
+          } else finish();
+        });
+        return;
+      }
     }
     finish();
   };

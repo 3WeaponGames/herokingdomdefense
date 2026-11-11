@@ -45,7 +45,7 @@ test('future imports create sibling page headers and texture references without 
   'u.unpack=lambda file:{"Assets/X/EnemyMonster 1/ResourcesData/Sprites/Test.png":{"guid":"a","asset":png},"Assets/X/EnemyMonster 1/Prefabs/Test.prefab":{"name":"Assets/X/EnemyMonster 1/Prefabs/Test.prefab"}}\n'+
   'u.image_info=lambda item:{"width":2,"height":3,"pivot":{"x":0.5,"y":0.5},"ppu":100,"region":"sprite_a"}\n'+
   'u.convert_prefab=lambda *args,**kwargs:{"bones":[{"name":"root"}],"slots":[],"skins":[{"name":"default","attachments":{}}],"animations":{"idle":{}}}\n'+
-  'm.atlas_pages=lambda images:([(png,2,3)],{"a":(0,0,0)})\n'+
+  'm.atlas_pages=lambda images,*args,**kwargs:([(png,2,3)],{"a":(0,0,0)})\n'+
   'print(json.dumps(m.import_pack(project,Path('+JSON.stringify(packageFile)+'),"monster1",artifacts)))';
   const r=run(f,code);assert.equal(r.status,0,r.stderr);const file=path.join(f.project,f.base+'/Units/Test');assert.equal(fs.readFileSync(file+'.atlas','utf8').split('\n')[1],'monster1-0.png');const meta=json(fs.readFileSync(file+'.json.meta')),copy=json(fs.readFileSync(path.join(f.project,f.base+'/Units/monster1-0.png.meta')));assert.deepEqual(meta.textures,[copy.uuid]);assert.notEqual(copy.uuid,'original-page');
 });

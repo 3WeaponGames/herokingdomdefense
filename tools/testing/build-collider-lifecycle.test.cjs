@@ -105,7 +105,8 @@ function fixture(actualEngine = false, actualPolygon = false) {
   Parent.prototype.onDestroy = function () { this.parentDestroyed = true; };
   Parent.prototype.delAllBuff = Parent.prototype.sendEvent = function () {};
   Parent.prototype.T = value => value;
-  const modules = { BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {} }, KinghtFallInterface: { KinghtFallInterface: Parent },
+  const modules = { BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {} },
+    GateFacing: require('../../assets/_script/GateFacing'), KinghtFallInterface: { KinghtFallInterface: Parent },
     KinghtFallBuildInfo: { KinghtFallBuildInfo: function (type, cfg) { this.cfg = cfg; this.canUpgrade = false; } },
     KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} },
     KinghtFallEnum: { KinghtFallEnumBuffCfg: {} }, KinghtFallTextConfig: { KinghtFallTextConfig: {} },

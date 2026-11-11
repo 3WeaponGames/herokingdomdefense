@@ -31,7 +31,8 @@ function button(root, name, icon, caption, red) {
 }
 exports.stat = function (text, value) { require("SettingsPanelStyle").body(text, 29, !!value, value ? "#ffdf77" : "#f7f6ee"); };
 exports.layout = function (owner) {
-  var root = owner.node.getChildByName("root");
+  var root = owner.node.getChildByName("root"), meta = owner.menuMetadata || {};
+  var exitCaption = meta.mode === "wallDefense" || !meta.mode && owner._stats ? "pause.endBattle" : "pause.saveAndExit";
   if (!owner._hexPauseReady) {
     owner._hexPauseReady = true;
     owner.btnClose.active = owner.btnNewGame.active = false;
@@ -42,7 +43,7 @@ exports.layout = function (owner) {
     owner.btnSettings = button(root, "PauseSettings", "settings", "pause.settings", false);
     owner.btnClose = button(root, "PauseContinue", "continue", "pause.continue", false);
     owner.btnRestart = button(root, "PauseRestart", "restart", "pause.restart", false);
-    owner.btnNewGame = button(root, "PauseReturnHome", "exit", "pause.returnHome", true);
+    owner.btnNewGame = button(root, "PauseReturnHome", "exit", exitCaption, true);
     owner._pauseHeading = label(root, "PauseHeading", 82, "#ffffff");
     owner._pauseStage = label(root, "PauseStage", 35, "#ffd000");
     Language.getInstance().bindLabel(owner._pauseHeading, "pause.menuTitle");
@@ -52,7 +53,7 @@ exports.layout = function (owner) {
   if (owner.effectSlider) owner.effectSlider.node.parent.active = false;
   ["LanguageOptions", "IdleControlOptions", "IdleControlHelp", "AudioDivider"].forEach(function (name) { var node = root.getChildByName(name); if (node) node.active = false; });
   var width = Math.min(700, owner.node.width - 48), height = 900;
-  var meta = owner.menuMetadata || {}, stage = typeof meta.stageTitle === "function" ? meta.stageTitle() : meta.stageTitle;
+  var stage = typeof meta.stageTitle === "function" ? meta.stageTitle() : meta.stageTitle;
   stage = stage || Language.getInstance().t(owner._stats ? "pause.wallDefense" : "pause.campaign");
   var signature = [width, owner.node.height, stage, Language.getInstance().getCurrentLanguage()].join(":");
   if (owner._pauseMenuSignature === signature) return;

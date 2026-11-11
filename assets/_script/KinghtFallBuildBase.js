@@ -37,6 +37,8 @@ var def_KinghtFallBuildBase = function (t) {
     e.ndLockList = [null];
     e.purchaseSide = "";
     e.purchaseOffset = null;
+    e.purchaseOverride = false;
+    e.placementVariant = "";
     e.renderAfter = "top";
     e.renderLayerOrder = -1;
     e.ndAniMain = null;
@@ -182,6 +184,7 @@ var def_KinghtFallBuildBase = function (t) {
     this.index = cfg ? cfg.index : 0;
     if (this.index > 0) this._freeInitialBuild = false;
     this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, cfg);
+    if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);
     if (cfg && cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (0 == this.index) {
       this.hide();
@@ -317,6 +320,7 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.doUpgreadAni = function () {
     var t = this;
+    if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);
     if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (1 == this.getLevel()) {
       this.ndAniMain.setAnimation(0, r.create, false);
@@ -878,6 +882,8 @@ var def_KinghtFallBuildBase = function (t) {
   cc__decorate([ccp_property({tooltip: "Object layer behind the whole building"})], _ctor.prototype, "renderAfter", undefined);
   cc__decorate([ccp_property({tooltip: "Generated building layer order"})], _ctor.prototype, "renderLayerOrder", undefined);
   cc__decorate([ccp_property({ type: cc.Vec2, tooltip: "Manual purchase field offset" })], _ctor.prototype, "purchaseOffset", undefined);
+  cc__decorate([ccp_property({visible:false})], _ctor.prototype, "purchaseOverride", undefined);
+  cc__decorate([ccp_property({visible:false})], _ctor.prototype, "placementVariant", undefined);
   cc__decorate([ccp_property({
     type: sp.Skeleton,
     tooltip: "建筑主体"

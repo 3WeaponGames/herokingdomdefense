@@ -1,7 +1,8 @@
 "use strict";
 
-// Registered 2D door images. Opening changes the displayed sprite at time zero;
-// no mesh deformation, projection, tween or scale animation is generated here.
+// Registered 2D door images. Opening changes the displayed sprite at time zero.
+// Shared leaves use a fixed quad reflection in the isometric door plane;
+// no animated deformation, tween or scale animation is generated here.
 var PREFIX="rts_wall_leaf_", SLOT=PREFIX+"pair", PARTS=["near","far"], PART_SLOTS={near:PREFIX+"near",far:PREFIX+"far"}, SKINS=["cq-rts-1","cq-rts-2","cq-rts-3"], STATES=["closed","inward","outward"], K=2/3;
 var GENERATED=[];
 ["inward","outward"].forEach(function(direction){["open","shut"].forEach(function(action){GENERATED.push(action+"_"+direction,action+"_"+direction+"_night");});});
@@ -13,14 +14,18 @@ function option(value,fallback){return value===undefined?fallback:value;}
 function named(state,part){return "rts_door_"+state+(part?"_"+part:"");}
 function mapped(tier,image,point){
   var anchor=image.targetX===undefined?tier.anchor:mapped(tier,tier.states.closed,{x:image.targetX,y:image.targetY});
-  var result={x:anchor.x+(tier.flipX?-1:1)*(point.x-image.anchorX)*tier.scale,y:anchor.y+(image.anchorY-point.y)*tier.scale};
+  var dx=point.x-image.anchorX,dy=image.anchorY-point.y;
+  // Reflect the material's horizontal axis while retaining upright edges. A
+  // screen-space flip would turn the open leaf back along the closed wall.
+  if(image.mirrorX){dy+=2*image.mirrorSlope*dx;dx=-dx;}
+  var result={x:anchor.x+(tier.flipX?-1:1)*dx*tier.scale,y:anchor.y+dy*tier.scale};
   // This is an explicit visual pose adjustment in wall-frame model units.
   // Keep the source hinge/closed target intact and report the shifted position.
   if(image.poseOffset){result.x+=image.poseOffset.x;result.y+=image.poseOffset.y;}
   return result;
 }
 function validPoseOffset(value){return value&&typeof value==="object"&&!Array.isArray(value)&&finite(value.x)&&finite(value.y);}
-function validImage(image){return image&&typeof image.path==="string"&&image.path&&[image.width,image.height,image.anchorX,image.anchorY].every(finite)&&image.width>0&&image.height>0&&image.anchorX>=0&&image.anchorX<=image.width&&image.anchorY>=0&&image.anchorY<=image.height;}
+function validImage(image){return image&&typeof image.path==="string"&&image.path&&[image.width,image.height,image.anchorX,image.anchorY].every(finite)&&image.width>0&&image.height>0&&image.anchorX>=0&&image.anchorX<=image.width&&image.anchorY>=0&&image.anchorY<=image.height&&(image.mirrorX===undefined||typeof image.mirrorX==="boolean")&&(!image.mirrorX||finite(image.mirrorSlope));}
 function owns(object,key){return Object.prototype.hasOwnProperty.call(object,key);}
 function restoreDrawOrder(json){
   var saved=json.wallDoor&&json.wallDoor.depthOrderSource;if(!saved)return json;
@@ -105,7 +110,12 @@ function region(tier,key,id){
   var state=tier.states[key],image=id&&state.parts?state.parts.find(function(part){return part.id===id;}):state;
   if(!validImage(image))throw Error("Choose a registered door image or leaf part.");
   var center=mapped(tier,image,{x:image.width/2,y:image.height/2});
-  return {path:image.path,x:2*center.x,y:2*center.y,width:image.width*tier.scale*2,height:image.height*tier.scale*2,scaleX:tier.flipX?-1:1};
+  var result={path:image.path,x:2*center.x,y:2*center.y,width:image.width*tier.scale*2,height:image.height*tier.scale*2,scaleX:tier.flipX?-1:1};
+  if(image.mirrorX){
+    result.type="mesh";result.uvs=[0,1,0,0,1,0,1,1];result.triangles=[0,1,2,2,3,0];result.hull=4;
+    result.vertices=[];[[0,image.height],[0,0],[image.width,0],[image.width,image.height]].forEach(function(p){var v=mapped(tier,image,{x:p[0],y:p[1]});result.vertices.push(v.x*2,v.y*2);});
+  }
+  return result;
 }
 function clear(json){
   restoreDrawOrder(json);

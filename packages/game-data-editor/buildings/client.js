@@ -203,8 +203,18 @@ function render(panel, row, api) {
     panel._field(costs,'Build / upgrade cost (silver)',price.value===undefined?'':price.value,next=>panel._set('A',keys.concat('BuildCost'),next),{integer:true,min:0,help:price.varied?'Existing paths have different prices. Set one price for this building level.':'Price to build this level or upgrade into it.'});
     if(own(level,'VedioCount'))panel._value(costs,'A',keys.concat('VedioCount'),level.VedioCount,'VedioCount',context,level);
     const appearance = panel._section('Name, description & appearance');
-    const visualKeys = ['Name','Describe','LevelUpDescribe','Icon','Skin','Zoom','Excursion'];
+    const visualKeys = ['Name','Describe','LevelUpDescribe','Icon','Skin'];
     visualKeys.filter(key => own(level, key)).forEach(key => panel._value(appearance, 'A', keys.concat(key), level[key], key, context, level));
+    const pad=node('div',undefined,'gt-field wide');pad.appendChild(node('span','Build / upgrade ground pad'));appearance.appendChild(pad);
+    const padKey=id+':'+row.rootIndex;if(panel._padStateKey!==padKey){panel._padStateKey=padKey;panel._padState={};}
+    panel._purchaseClient=require('./purchase-client').mount(pad,{ipc:api.ipc,request:{id,levelIndex:branch.position},category:building,row:level,state:panel._padState,onCommit:(value,variant)=>panel._change(()=>{
+        const current=panel._data('A').BuildEnum[id].levelList[branch.position];if(!current||current.index!==level.index)throw Error('This building level changed. Reload before editing its ground pad.');
+        const previous=current.PurchaseField||{},variants=require('../../../assets/_script/BuildingPurchaseField').variants(building);
+        const next=variants.length?Object.assign({},previous,{variants:Object.assign({},previous.variants,{[variant]:Object.assign({},previous.variants&&previous.variants[variant],value)})}):Object.assign({},previous,value);
+        return [{doc:'A',path:keys.concat('PurchaseField'),value:next}];
+    })});
+    const popup=panel._section('Upgrade popup icon · advanced',appearance,true);
+    ['Zoom','Excursion'].filter(key=>own(level,key)).forEach(key=>panel._value(popup,'A',keys.concat(key),level[key],key,context,level));
     const connections = panel._section('Next upgrade branches · advanced',undefined,true);
     if (own(level, 'BranchBuild')) panel._value(connections, 'A', keys.concat('BranchBuild'), level.BranchBuild, 'BranchBuild', context, level);
     else {

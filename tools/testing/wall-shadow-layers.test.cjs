@@ -48,7 +48,7 @@ test('opt-in native layers retain original rigid geometry, lifecycle tracks, sou
   const meta = metadata(), before = JSON.stringify({source, meta});
   for (const gate of [false, true]) for (const mirrorX of [false, true]) {
     const plan = Kit.layout(run(gate)), planBefore = clone(plan), fixtures = Kit.fixtures(plan), pieces = Assembly.pieces(plan);
-    const complete = Kit.install(source, plan, metadata(false), {mirrorX}), split = Kit.install(source, plan, meta, {mirrorX});
+    const complete = Kit.install(source, plan, metadata(false), {mirrorX, adjustmentsData: {version: 1, poses: {}}}), split = Kit.install(source, plan, meta, {mirrorX, adjustmentsData: {version: 1, poses: {}}});
     checkOrder(split.slots.map(slot => slot.name), gate);
     assert.deepEqual(split.skeleton, complete.skeleton, 'Partitioning cannot change culling bounds');
     assert.deepEqual(split.bones, complete.bones, 'Both layers inherit the same authored spawn/build frame');
@@ -70,7 +70,7 @@ test('opt-in native layers retain original rigid geometry, lifecycle tracks, sou
       }
     }
     const refitPlan = Kit.layout({nativeVersion: 2, left: 1, right: 2, gate, start: 'post', end: 'post'});
-    assert.deepEqual(Kit.install(split, refitPlan), Kit.install(source, refitPlan, meta), 'Refitting recovers the original rather than accumulating generated layers');
+    assert.deepEqual(Kit.install(split, refitPlan, undefined, {adjustmentsData:{version:1,poses:{}}}), Kit.install(source, refitPlan, meta, {adjustmentsData:{version:1,poses:{}}}), 'Refitting recovers the original rather than accumulating generated layers');
     assert(!complete.slots.some(slot => slot.name.startsWith('rts_wall_shadow_')), 'Legacy unsplit metadata retains complete-region output');
   }
   assert.equal(JSON.stringify({source, meta}), before);
@@ -83,7 +83,7 @@ test('invalid native layer metadata rejects before changing source or metadata',
     value => {delete value.sizes.rts_wall_post_2_shadow;}, value => {value.layers.regions = [];}];
   for (const change of cases) {
     const value = metadata(); change(value); const before = JSON.stringify({source, value});
-    assert.throws(() => Kit.install(source, Kit.layout(run(true)), value), /Native wall|native wall/);
+    assert.throws(() => Kit.install(source, Kit.layout(run(true)), value, {adjustmentsData:{version:1,poses:{}}}), /Native wall|native wall/);
     assert.equal(JSON.stringify({source, value}), before);
   }
 });
@@ -113,7 +113,7 @@ function vertices(spine, slot) {
 test('actual Creator Spine preserves layered draw order and coincident rigid transforms through all native animations and facings', engineOptions, () => {
   const spine = require(runtime), meta = metadata();
   for (const gate of [false, true]) for (const face of ['NW', 'SW', 'NE', 'SE']) {
-    const plan = Kit.layout(run(gate)), options = {mirrorX: Facing.mirrorX(face)};
+    const plan = Kit.layout(run(gate)), options = {mirrorX: Facing.mirrorX(face), adjustmentsData: {version: 1, poses: {}}};
     let split = Kit.install(source, plan, meta, options), complete = Kit.install(source, plan, metadata(false), options);
     if (Facing.reverse(face)) {split = Facing.mirrorJson(split); complete = Facing.mirrorJson(complete);}
     const data = load(spine, split, meta), oldData = load(spine, complete, meta);
