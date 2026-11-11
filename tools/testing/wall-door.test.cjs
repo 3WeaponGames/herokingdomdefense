@@ -11,6 +11,10 @@ function fixture(){
 function installed(){return Door.install(fixture(),layout(),metadata());}
 function closedMetadata(){const result=metadata();result.doors.closedOnly=true;for(const tier of result.doors.tiers)tier.states={closed:tier.states.closed};return result;}
 function partsMetadata(){const result=metadata();for(const [level,tier]of result.doors.tiers.entries())for(const key of ['inward','outward'])tier.states[key]={parts:[{id:'near',path:`door_${key}_near_${level+1}`,width:190,height:350,anchorX:24,anchorY:330,targetX:360,targetY:800},{id:'far',path:`door_${key}_far_${level+1}`,width:340,height:510,anchorX:320,anchorY:485,targetX:1080,targetY:320}]};return result;}
+
+test('invalid shared-leaf mirroring rejects the input before changing a skeleton',()=>{
+ for(const value of [{mirrorX:true},{mirrorX:'yes',mirrorSlope:2/3},{mirrorX:true,mirrorSlope:NaN}]){const m=partsMetadata(),json=fixture(),before=clone(json);Object.assign(m.doors.tiers[0].states.inward.parts[1],value);assert.throws(()=>Door.install(json,layout(),m));assert.deepEqual(json,before);}
+});
 function shown(json,key){return json.animations[key].slots[Door.slot].attachment;}
 
 test('matched gate states are registered 2D regions with uniform scale and no posts or deformation',()=>{

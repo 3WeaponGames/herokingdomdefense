@@ -159,7 +159,7 @@ test('Creator Spine 3.8 parses actual paired wall previews and samples every pro
 function sourcePixel(points,image,pixel){const u=pixel.x/image.width,v=pixel.y/image.height;return {x:points[2]+(points[4]-points[2])*u+(points[0]-points[2])*v,y:points[3]+(points[5]-points[3])*u+(points[1]-points[3])*v};}
 function doorParts(spine,skeleton,spec,state){
  const pair=skeleton.findSlot(Door.slot);assert.equal(pair.getAttachment(),null,'An open gate cannot display its closed pair behind the separate leaves');const result={};
- for(const part of spec.states[state].parts){const slot=skeleton.findSlot(Door.partSlots[part.id]),attachment=slot.getAttachment();assert(attachment instanceof spine.RegionAttachment);assert.equal(attachment.path,part.path);assert.equal(attachment.region.width,part.width);assert.equal(attachment.region.height,part.height);assert.equal(attachment.region.offsetX,0);assert.equal(attachment.region.offsetY,0);assert(!attachment.region.rotate);result[part.id]={slot,attachment,points:vertices(spine,slot)};}
+ for(const part of spec.states[state].parts){const slot=skeleton.findSlot(Door.partSlots[part.id]),attachment=slot.getAttachment();assert(attachment instanceof (part.mirrorX?spine.MeshAttachment:spine.RegionAttachment));assert.equal(attachment.path,part.path);assert.equal(attachment.region.width,part.width);assert.equal(attachment.region.height,part.height);assert.equal(attachment.region.offsetX,0);assert.equal(attachment.region.offsetY,0);assert(!attachment.region.rotate);result[part.id]={slot,attachment,points:vertices(spine,slot)};}
  return result;
 }
 

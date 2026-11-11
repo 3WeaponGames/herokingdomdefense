@@ -206,7 +206,7 @@ test('same Spine skeleton transitions foreground to backward, fade, shut and idl
 
 test('real Spine keeps the deliberate foreground near-leaf inset rigid and absent from closed/backward art', engine, () => {
   const spine = require(runtime), source = Kit.source(installed), plan = Kit.layout(runs[0].value);
-  const vertices = slot => {const result = new Float32Array(8); slot.getAttachment().computeWorldVertices(slot.bone, result, 0, 2); return result;};
+  const vertices = slot => {const result = new Float32Array(8),a=slot.getAttachment(); if(a.worldVerticesLength)a.computeWorldVertices(slot,0,8,result,0,2);else a.computeWorldVertices(slot.bone,result,0,2);return result;};
   for (const face of ['NE', 'NW', 'SE', 'SW']) {
     const plainJson = fitted(source, plan, metadata(true), face), insetJson = fitted(source, plan, metadata(true, true), face), plainData = reader(spine, plainJson), insetData = reader(spine, insetJson);
     for (const level of [1, 2, 3]) for (const clip of ['idle', 'open_inward', 'open_outward', 'open_inward_night', 'open_outward_night']) {

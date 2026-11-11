@@ -31,7 +31,7 @@ function player(spine, json, tier) {
   skeleton.setSkinByName(Kit.skins[tier - 1]); skeleton.setToSetupPose();
   return {skeleton, state, pose(name, time = 0) {state.setAnimation(0, name, false); state.update(time); state.apply(skeleton); skeleton.updateWorldTransform(); return skeleton;}};
 }
-function vertices(slot) {const a = slot.getAttachment(); if (!a) return []; const out = []; a.computeWorldVertices(slot.bone, out, 0, 2); return out;}
+function vertices(slot) {const a = slot.getAttachment(); if (!a) return []; const out = []; if (a.worldVerticesLength) a.computeWorldVertices(slot, 0, a.worldVerticesLength, out, 0, 2); else a.computeWorldVertices(slot.bone, out, 0, 2); return out;}
 function center(slot) {const v = vertices(slot); return {x: (v[0] + v[2] + v[4] + v[6]) / 4, y: (v[1] + v[3] + v[5] + v[7]) / 4};}
 function solidOrder(skeleton, layout) {const bySlot = Object.fromEntries(A.catalog(layout).map(p => [p.slot, p.id])); return skeleton.drawOrder.filter(slot => bySlot[slot.data.name] && slot.getAttachment()).map(slot => bySlot[slot.data.name]);}
 
@@ -145,7 +145,7 @@ test('wall IDs follow gateway distance through bends, larger wings, missing wing
 
 test('six closed-half aliases are lossless contiguous crops of the existing PNG, with no new pixels', engine, () => {
   const spine = require(runtime), a = atlas(spine), bytes = fs.readFileSync(path.join(folder, 'wall-doors.png'));
-  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), '841e6f80e67b100899347442075b9ab8419e2edf87855b68ca1b244528773a24');
+  assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), require('../art/wall-door-reviewed-geometry.fixture.json').pageSha256);
   for (const tier of [1, 2, 3]) {
     const pair = a.findRegion('rts_door_closed_' + tier), near = a.findRegion('rts_door_closed_near_' + tier), far = a.findRegion('rts_door_closed_far_' + tier);
     assert(pair && near && far); assert.equal(near.page, pair.page); assert.equal(far.page, pair.page);
