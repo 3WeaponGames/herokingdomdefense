@@ -15,6 +15,25 @@ function partsMetadata(){const result=metadata();for(const [level,tier]of result
 test('invalid shared-leaf mirroring rejects the input before changing a skeleton',()=>{
  for(const value of [{mirrorX:true},{mirrorX:'yes',mirrorSlope:2/3},{mirrorX:true,mirrorSlope:NaN}]){const m=partsMetadata(),json=fixture(),before=clone(json);Object.assign(m.doors.tiers[0].states.inward.parts[1],value);assert.throws(()=>Door.install(json,layout(),m));assert.deepEqual(json,before);}
 });
+
+test('legacy shared far leaves keep rigid pixels and the near hinge registration without changing authored targets or offsets',()=>{
+ const meta=partsMetadata();
+ for(const tier of meta.doors.tiers)for(const direction of ['inward','outward']){
+  const near=tier.states[direction].parts[0],far=tier.states[direction].parts[1];
+  Object.assign(far,{path:near.path,width:near.width,height:near.height,anchorX:near.width-near.anchorX,anchorY:near.height-20,mirrorX:true,mirrorSlope:2/3,poseOffset:{x:2,y:-1},FutureField:{keep:true}});
+ }
+ const before=clone(meta),tiers=Door.resolve(layout(),meta),json=Door.install(fixture(),layout(),meta);assert.deepEqual(meta,before);
+ for(const [index,tier]of tiers.entries())for(const direction of ['inward','outward']){
+  const near=tier.states[direction].parts[0],far=tier.states[direction].parts[1],old=before.doors.tiers[index].states[direction].parts[1];
+  assert.equal(far.anchorX,near.anchorX);assert.equal(far.anchorY,near.anchorY);assert(!Object.hasOwn(far,'mirrorX'));assert(!Object.hasOwn(far,'mirrorSlope'));
+  for(const key of ['id','path','width','height','targetX','targetY','poseOffset','FutureField'])assert.deepEqual(far[key],old[key]);
+  const a=Door.region(tier,direction,'near'),b=Door.region(tier,direction,'far');assert(!b.type&&!b.vertices&&!b.uvs);for(const key of ['path','width','height','scaleX'])assert.equal(a[key],b[key]);
+  for(const point of [{x:0,y:0},{x:near.width,y:0},{x:0,y:near.height},{x:near.width,y:near.height}]){
+   const n=Door.mapPoint(tier,near,point),f=Door.mapPoint(tier,far,point),nh=Door.mapPoint(tier,near,{x:near.anchorX,y:near.anchorY}),fh=Door.mapPoint(tier,far,{x:far.anchorX,y:far.anchorY});close(n.x-nh.x,f.x-fh.x);close(n.y-nh.y,f.y-fh.y);
+  }
+ }
+ assert.deepEqual(Door.reverse(Door.reverse(json)),json);
+});
 function shown(json,key){return json.animations[key].slots[Door.slot].attachment;}
 
 test('matched gate states are registered 2D regions with uniform scale and no posts or deformation',()=>{

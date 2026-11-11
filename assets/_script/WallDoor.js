@@ -1,8 +1,8 @@
 "use strict";
 
 // Registered 2D door images. Opening changes the displayed sprite at time zero.
-// Shared leaves use a fixed quad reflection in the isometric door plane;
-// no animated deformation, tween or scale animation is generated here.
+// Shared leaves retain the complete painted pose at each hinge. Mirroring the
+// wall frame selects its facing; the leaves never shear their painted thickness.
 var PREFIX="rts_wall_leaf_", SLOT=PREFIX+"pair", PARTS=["near","far"], PART_SLOTS={near:PREFIX+"near",far:PREFIX+"far"}, SKINS=["cq-rts-1","cq-rts-2","cq-rts-3"], STATES=["closed","inward","outward"], K=2/3;
 var GENERATED=[];
 ["inward","outward"].forEach(function(direction){["open","shut"].forEach(function(action){GENERATED.push(action+"_"+direction,action+"_"+direction+"_night");});});
@@ -15,8 +15,8 @@ function named(state,part){return "rts_door_"+state+(part?"_"+part:"");}
 function mapped(tier,image,point){
   var anchor=image.targetX===undefined?tier.anchor:mapped(tier,tier.states.closed,{x:image.targetX,y:image.targetY});
   var dx=point.x-image.anchorX,dy=image.anchorY-point.y;
-  // Reflect the material's horizontal axis while retaining upright edges. A
-  // screen-space flip would turn the open leaf back along the closed wall.
+  // Retain explicit plane mirrors for independently authored images. Shared
+  // near/far drawings are registered rigidly by resolve before reaching here.
   if(image.mirrorX){dy+=2*image.mirrorSlope*dx;dx=-dx;}
   var result={x:anchor.x+(tier.flipX?-1:1)*dx*tier.scale,y:anchor.y+dy*tier.scale};
   // This is an explicit visual pose adjustment in wall-frame model units.
@@ -27,6 +27,17 @@ function mapped(tier,image,point){
 function validPoseOffset(value){return value&&typeof value==="object"&&!Array.isArray(value)&&finite(value.x)&&finite(value.y);}
 function validImage(image){return image&&typeof image.path==="string"&&image.path&&[image.width,image.height,image.anchorX,image.anchorY].every(finite)&&image.width>0&&image.height>0&&image.anchorX>=0&&image.anchorX<=image.width&&image.anchorY>=0&&image.anchorY<=image.height&&(image.mirrorX===undefined||typeof image.mirrorX==="boolean")&&(!image.mirrorX||finite(image.mirrorSlope));}
 function owns(object,key){return Object.prototype.hasOwnProperty.call(object,key);}
+function rigidSharedLeaves(image){
+  if(!image.parts)return;
+  var near=image.parts.find(function(part){return part.id==="near";}),far=image.parts.find(function(part){return part.id==="far";});
+  // Older exported kits reflected the far leaf in the isometric material plane.
+  // That sheared its painted top/thickness and pinned its handle to the pillar.
+  // Read those shared sprites with the same rigid hinge registration as near;
+  // retain the far pillar target, authored offsets and all unrelated metadata.
+  if(near&&!near.mirrorX&&far&&far.mirrorX&&far.mirrorSlope===K&&near.path===far.path&&near.width===far.width&&near.height===far.height){
+    far.anchorX=near.anchorX;far.anchorY=near.anchorY;delete far.mirrorX;delete far.mirrorSlope;
+  }
+}
 function restoreDrawOrder(json){
   var saved=json.wallDoor&&json.wallDoor.depthOrderSource;if(!saved)return json;
   Object.keys(saved).forEach(function(key){var clip=json.animations&&json.animations[key];if(!clip)return;delete clip.drawOrder;delete clip.draworder;["drawOrder","draworder"].forEach(function(field){if(owns(saved[key],field))clip[field]=clone(saved[key][field]);});});
@@ -89,6 +100,7 @@ function resolve(layout,metadata){
     });
     var reference=states.closed;
     required.forEach(function(key){var image=states[key];if(image.parts){image.parts.forEach(function(part){if(part.targetX<0||part.targetX>reference.width||part.targetY<0||part.targetY>reference.height)throw Error("A cropped leaf must target a hinge inside its approved closed sprite.");});}else if(["width","height","anchorX","anchorY"].some(function(field){return image[field]!==reference[field];}))throw Error("All door states must retain one common crop and registration; do not trim or recenter states independently.");});
+    required.forEach(function(key){rigidSharedLeaves(states[key]);});
     var scale=spec.scale,plane=option(spec.planeOffset,10),offsetX=option(spec.offsetX,0),offsetY=option(spec.offsetY,0),inset=option(spec.postInset,6);
     if(![scale,plane,offsetX,offsetY,inset].every(finite)||scale<=0||inset<0)throw Error("A door tier needs one positive uniform sprite scale and valid hinge offsets.");
     var flipX=option(spec.flipX,true);if(typeof flipX!=="boolean")throw Error("Door sprite mirroring must be explicit.");
