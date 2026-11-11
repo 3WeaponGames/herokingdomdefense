@@ -9,6 +9,7 @@ const Schema=require('../lib/schema');
 const Buildings=require('../buildings/client');
 const IconPicker=require('./icon-picker');
 const UnitProfiles=require('../units/panel-profiles');
+const EnemyClasses=require('../lib/enemy-classes');
 const EquipmentTiers=require('../../../assets/_script/EquipmentTiers'),HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const ItemAppearance=require('../../hkd-items/appearance');
 const TITLES={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units & Attack Timing','unit-types':'Unit Types & Pictograms',maps:'Maps',settings:'Battle Settings',testing:'Testing · Managed Test Player'};
@@ -358,6 +359,7 @@ function create(kind){
       this._unitGuide(row);
       if(!row.record.prefab)this._note('This is a boss transformation form. It is reached through the boss’s behavior and is not a directly spawnable unit.');
       const typeKey=row.unitType+':'+row.unitID+':'+UnitRecords.form(row.unitType,id),types=this._data('overrides').unitTypes||{},assignments=this._data('overrides').unitTypeAssignments||{},typeFields=this._section('Unit type & map pictogram');
+      if(row.unitType==='enemy')this._field(typeFields,'Enemy class',EnemyClasses.resolve(this._data('overrides'),id),value=>this._change(()=>{if(!EnemyClasses.CHOICES.some(choice=>choice.value===value))throw Error('Choose Normal, Elite or Boss.');const settings=this._data('overrides');if(EnemyClasses.resolve(settings,id)===value)return [];return [{doc:'overrides',path:['enemyClasses'],value:Object.assign({},settings.enemyClasses||{},{[typeKey]:value})}];}),{options:EnemyClasses.CHOICES,help:'Normal, Elite or Boss classification for this enemy profile. Stats, abilities and combat-role counters are edited separately.'});
       this._field(typeFields,'Unit type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
       this._field(typeFields,'Countered unit type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
       typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));

@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "4e571770-fb51-48f6-a7c7-4bede70a2a03",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "5940ea96-fa5d-47bc-a535-ecd79698cb7d",
+  "size": {
+    "width": 1305,
+    "height": 1213
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map02-southeast-rocks-0-0": {
+      "ver": "1.0.6",
+      "uuid": "6c7770e6-4759-4d10-afd6-bca0478c4c42",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "5940ea96-fa5d-47bc-a535-ecd79698cb7d",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1301,
+      "height": 1209,
+      "rawWidth": 1301,
+      "rawHeight": 1209,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

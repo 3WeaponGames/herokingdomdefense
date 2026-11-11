@@ -1,7 +1,7 @@
 'use strict';
 // Profile metadata is authoring data. Resolved records use the existing unit
 // format and stable IDs, so spawning, pooling and legacy waves need no rewrite.
-const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-catalog'),Records=require('./unit-records');
+const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-catalog'),Records=require('./unit-records'),EnemyClasses=require('./enemy-classes');
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -26,7 +26,7 @@ function adopt(state,id,baseId){
  for(const field of Object.keys(STATS))if(own(row,field))stats[field]=clone(row[field]);else if(own(base,field))omitted.push(field);
  for(const field of Object.keys(VISUAL))if(own(current,field))visual[field]=current[field];else omittedVisual.push(field);
  const role=(tools.unitTypeAssignments||{})[key(id)]||'',label=row.CampaignBaseUnit?'Campaign '+((tools.unitTypes||{})[role]&&tools.unitTypes[role].name||role||'profile'):'Original',name=Object.values(table.entries).some(entry=>entry.baseId===baseId&&entry.name===label)?label+' · '+id:label;
- const entry={baseId,name,stats,omitted,visual,omittedVisual,role,timing:timing(tools,id),speed:own(tools.animationSpeeds,key(id))?tools.animationSpeeds[key(id)]:null};
+ const entry={baseId,name,stats,omitted,visual,omittedVisual,role,enemyClass:EnemyClasses.resolve(tools,id),timing:timing(tools,id),speed:own(tools.animationSpeeds,key(id))?tools.animationSpeeds[key(id)]:null};
  table.entries[id]=entry;return entry;
 }
 function assign(settings,table,id,value){
@@ -46,6 +46,10 @@ function materialize(state){
   for(const field of Object.keys(VISUAL)){if((profile.omittedVisual||[]).includes(field))delete current[field];else if(own(profile.visual,field))current[field]=profile.visual[field];else if(own(source,field))current[field]=source[field];else delete current[field];}
   assign(tools,'visuals',id,Object.keys(current).length?current:null);
   assign(tools,'unitTypeAssignments',id,own(profile,'role')?profile.role||null:(tools.unitTypeAssignments||{})[key(profile.baseId)]);
+  // Missing assignments remain virtual defaults; unrelated edits never seed them.
+  if(own(profile,'enemyClass'))assign(tools,'enemyClasses',id,profile.enemyClass);
+  else if(own(tools.enemyClasses,key(profile.baseId)))assign(tools,'enemyClasses',id,tools.enemyClasses[key(profile.baseId)]);
+  else assign(tools,'enemyClasses',id,null);
   assign(tools,'animationSpeeds',id,own(profile,'speed')?profile.speed:(tools.animationSpeeds||{})[key(profile.baseId)]);
   const hit=own(profile,'timing')?profile.timing:timing(tools,profile.baseId);
   assign(tools,'timingDefaults',id,hit.saved);assign(tools,'timings',id,hit.custom);
@@ -62,7 +66,7 @@ function reconcile(before,next){
   for(const field of Object.keys(STATS))if(!equal(old[field],row[field])){entry.stats=entry.stats||{};entry.omitted=(entry.omitted||[]).filter(value=>value!==field);if(own(row,field))entry.stats[field]=clone(row[field]);else entry.omitted.push(field);}
   const previous=(before.overrides.visuals||{})[key(id)]||{},current=(next.overrides.visuals||{})[key(id)]||{};
   for(const field of Object.keys(VISUAL))if(!equal(previous[field],current[field])){entry.visual=entry.visual||{};entry.omittedVisual=(entry.omittedVisual||[]).filter(item=>item!==field);if(own(current,field))entry.visual[field]=current[field];else delete entry.visual[field];}
-  for(const [field,table]of [['role','unitTypeAssignments'],['speed','animationSpeeds']])if(!equal((before.overrides[table]||{})[key(id)],(next.overrides[table]||{})[key(id)])){if(own(next.overrides[table],key(id)))entry[field]=next.overrides[table][key(id)];else delete entry[field];}
+  for(const [field,table]of [['role','unitTypeAssignments'],['speed','animationSpeeds'],['enemyClass','enemyClasses']])if(!equal((before.overrides[table]||{})[key(id)],(next.overrides[table]||{})[key(id)])){if(own(next.overrides[table],key(id)))entry[field]=next.overrides[table][key(id)];else delete entry[field];}
   if(!equal(timing(before.overrides,id),timing(next.overrides,id)))entry.timing=timing(next.overrides,id);
  }
  return materialize(next);
@@ -82,7 +86,7 @@ function usages(root,state,id,drafts){
 }
 function describe(root,state,id,drafts){
  const looks=characters(root),{group,baseId}=family(state,id,looks),entries=metadata(state).entries||{},tools=state.overrides;
- return {model:group.units.find(unit=>unit.id===baseId).name,baseId,profiles:group.units.map(unit=>({id:unit.id,name:unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit),archived:!!(entries[unit.id]&&entries[unit.id].archived),managed:!!entries[unit.id],default:unit.id===baseId,record:clone(state.A.SoldierCfg[unit.id]),visual:clone((tools.visuals||{})[key(unit.id)]||{}),role:(tools.unitTypeAssignments||{})[key(unit.id)]||'',timing:timing(tools,unit.id),speed:(tools.animationSpeeds||{})[key(unit.id)],overrides:clone(entries[unit.id]||null),uses:usages(root,state,unit.id,drafts)})),types:clone(tools.unitTypes||{})};
+ return {model:group.units.find(unit=>unit.id===baseId).name,baseId,profiles:group.units.map(unit=>({id:unit.id,name:unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit),archived:!!(entries[unit.id]&&entries[unit.id].archived),managed:!!entries[unit.id],default:unit.id===baseId,record:clone(state.A.SoldierCfg[unit.id]),visual:clone((tools.visuals||{})[key(unit.id)]||{}),role:(tools.unitTypeAssignments||{})[key(unit.id)]||'',enemyClass:EnemyClasses.resolve(tools,unit.id),timing:timing(tools,unit.id),speed:(tools.animationSpeeds||{})[key(unit.id)],overrides:clone(entries[unit.id]||null),uses:usages(root,state,unit.id,drafts)})),types:clone(tools.unitTypes||{})};
 }
 function operation(root,state,request,drafts){
  const next=clone(state),id=Number(request.id),{baseId}=family(next,id,characters(root)),units=next.A.SoldierCfg,action=request.action;
@@ -104,7 +108,7 @@ function operation(root,state,request,drafts){
   if(action==='rename')entry.name=validName(request.name);
   else if(action==='archive'||action==='remove'){
    const used=usages(root,state,id,drafts);if(action==='remove'&&used.length)throw Error('This profile is used by '+used.length+' wave(s). Replace those selections or archive the profile.');
-   if(action==='remove'&&entry.created){delete units[id];delete next.overrides.unitProfiles.entries[id];for(const table of ['visuals','unitTypeAssignments','timings','timingDefaults','animationSpeeds'])if(next.overrides[table])delete next.overrides[table][key(id)];}
+   if(action==='remove'&&entry.created){delete units[id];delete next.overrides.unitProfiles.entries[id];for(const table of ['visuals','unitTypeAssignments','enemyClasses','timings','timingDefaults','animationSpeeds'])if(next.overrides[table])delete next.overrides[table][key(id)];}
    else entry.archived=true;selectedId=baseId;
   }else if(action==='restore')delete entry.archived;
   else if(action==='set'||action==='reset'){
@@ -119,6 +123,10 @@ function operation(root,state,request,drafts){
    }else if(field==='role'){
     if(!reset&&value&&!own(next.overrides.unitTypes,value))throw Error('Choose an existing unit type.');
     if(entry){if(reset)delete entry.role;else entry.role=value;}else assign(next.overrides,'unitTypeAssignments',id,value||null);
+   }else if(field==='enemyClass'){
+    if(!reset&&!EnemyClasses.valid(value))throw Error('Choose Normal, Elite or Boss.');
+    if(entry){if(reset){delete entry.enemyClass;assign(next.overrides,'enemyClasses',id,null);}else entry.enemyClass=value;}
+    else assign(next.overrides,'enemyClasses',id,value);
    }else if(field==='hitTime'){
     if(entry){if(reset)delete entry.timing;else entry.timing=Object.assign(timing(next.overrides,id),{custom:{attack:validValue(field,value)}});}
     else assign(next.overrides,'timings',id,{attack:validValue(field,value)});
@@ -158,6 +166,7 @@ function validate(state){
   if(entry.created!==undefined&&typeof entry.created!=='boolean')issue(at.concat('created'),'Invalid created setting.');
   if(entry.modelPrefab!==undefined&&(typeof entry.modelPrefab!=='string'||!/^[A-Za-z0-9_-]+$/.test(entry.modelPrefab)))issue(at.concat('modelPrefab'),'Invalid shared model reference.');
   if(own(entry,'role')&&(typeof entry.role!=='string'||entry.role&&!own(state.overrides.unitTypes,entry.role)))issue(at.concat('role'),'Choose an existing unit type.');
+  if(own(entry,'enemyClass')&&!EnemyClasses.valid(entry.enemyClass))issue(at.concat('enemyClass'),'Choose Normal, Elite or Boss.');
   if(own(entry,'speed')&&entry.speed!==null)try{validValue('speed',entry.speed);}catch(error){issue(at.concat('speed'),error.message);}
   if(own(entry,'timing')){if(!entry.timing||typeof entry.timing!=='object')issue(at.concat('timing'),'Invalid profile timing.');else for(const field of ['saved','custom'])if(entry.timing[field]!==null)try{validValue('hitTime',entry.timing[field].attack);}catch(error){issue(at.concat('timing',field),'Choose a valid profile hit time.');}}
  }

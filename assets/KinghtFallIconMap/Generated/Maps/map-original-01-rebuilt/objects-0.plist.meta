@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "b81a23e0-f3a9-4553-ac95-94298832c5e0",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "05fab435-c541-46d5-a591-519fbee1967b",
+  "size": {
+    "width": 1730,
+    "height": 915
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map01-northwest-rocks-0-0": {
+      "ver": "1.0.6",
+      "uuid": "23401821-5066-400b-a451-8d558fde4b47",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "05fab435-c541-46d5-a591-519fbee1967b",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1726,
+      "height": 911,
+      "rawWidth": 1726,
+      "rawHeight": 911,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

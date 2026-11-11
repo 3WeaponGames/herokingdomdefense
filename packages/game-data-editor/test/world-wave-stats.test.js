@@ -75,3 +75,31 @@ test('unit chooser shows scaled stats on every model and refreshes them for prof
   assert.match(entries()[1].querySelector('.world-unit-profile-stats').title,/Damage: round\(40 × 0\.7\) = 28/);
  }finally{if(dispose)dispose();if(oldRequest===undefined)delete global.requestAnimationFrame;else global.requestAnimationFrame=oldRequest;if(oldCancel===undefined)delete global.cancelAnimationFrame;else global.cancelAnimationFrame=oldCancel;}
 });
+
+test('enemy class filtering switches displayed profiles while preserving selections, model groups and source data',t=>{
+ t.mock.method(Gallery,'create',()=>({watch(){},setUnit(){},destroy(){}}));
+ const oldRequest=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ const el=(tag,text,cls)=>new Element(tag,text,cls),dialog=el('section'),units=[
+  {id:1,name:'Slime',modelKey:'slime',enemyClass:'normal',enemyClassName:'Normal',unitType:'fighter',health:40,damage:10},
+  {id:2,name:'Slime',modelKey:'slime',enemyClass:'elite',enemyClassName:'Elite',unitType:'fighter',health:60,damage:15},
+  {id:3,name:'Slime',modelKey:'slime',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:200,damage:30},
+  {id:4,name:'Solo',health:20,damage:5},
+  {id:5,name:'Dragon',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:500,damage:50}
+ ],selected=new Set([1]),wave={HealthCoefficient:2,AttackCoefficient:1.5},before=JSON.stringify({units,wave});
+ const button=(parent,text,handler)=>{const input=el('button',text);input.onclick=handler;parent.appendChild(input);return input;},field=(parent,name,value,change,choices)=>{const label=el('label'),input=el('select');input.value=value;input.change=change;input.fieldName=name;input.choices=choices;label.appendChild(input);parent.appendChild(label);return input;};
+ let dispose;
+ try{
+  dispose=Picker.mount(dialog,{el,button,field,units,wave,selected,controls:el('div'),ipc(){throw Error('Class filtering cannot request gameplay operations');}});
+  const entries=()=>dialog.descendants().filter(item=>item.classList.contains('world-unit-entry')),visible=()=>entries().filter(entry=>!entry.hidden),filter=name=>dialog.descendants().find(item=>item.fieldName===name),card=entry=>entry.querySelector('.world-unit-choice');
+  assert.equal(entries().length,3,'three profiles retain a single Slime model card');assert.equal(visible().length,3);
+  assert.deepEqual(filter('Enemy class').choices.map(choice=>choice.label),['All enemy classes','Normal','Elite','Boss']);
+  assert.equal(entries()[1].querySelector('.world-unit-enemy-class').textContent,'Normal','single-profile legacy models also show a class');
+  filter('Enemy class').change('elite');assert.equal(visible().length,1);const slime=visible()[0];assert.equal(card(slime).dataset.unitId,2);assert.equal(card(slime).dataset.enemyClass,'elite');assert.equal(slime.querySelector('.world-unit-enemy-class').textContent,'Elite');assert.equal(slime.querySelector('.world-unit-profile-stats').textContent,'120 HP · 23 damage / hit');assert.deepEqual([...selected],[1]);
+  card(slime).onclick();assert.deepEqual([...selected],[1,2]);
+  filter('Enemy class').change('boss');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[3,5]);assert(visible().every(entry=>entry.querySelector('.world-unit-enemy-class').textContent==='Boss'));assert.deepEqual([...selected],[1,2]);
+  filter('Unit type').change('fighter');assert.equal(visible().length,0);assert.equal(dialog.querySelector('.world-unit-picker-empty').hidden,false);assert.deepEqual([...selected],[1,2]);
+  filter('Unit type').change('all');filter('Enemy class').change('all');const search=dialog.querySelector('.world-unit-picker-search');search.value='slime elite';search.oninput();assert.equal(visible().length,1);assert.equal(card(visible()[0]).dataset.unitId,2);
+  assert.equal(JSON.stringify({units,wave}),before,'browsing class filters only changes chooser state');
+  dispose.reload(units.map(unit=>unit.id===4?Object.assign({},unit,{enemyClass:'elite',enemyClassName:'Elite'}):unit));assert.equal(entries()[1].querySelector('.world-unit-enemy-class').textContent,'Elite','a fresh saved catalog updates class badges');
+ }finally{if(dispose)dispose();if(oldRequest===undefined)delete global.requestAnimationFrame;else global.requestAnimationFrame=oldRequest;if(oldCancel===undefined)delete global.cancelAnimationFrame;else global.cancelAnimationFrame=oldCancel;}
+});

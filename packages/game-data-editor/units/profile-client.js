@@ -1,5 +1,5 @@
 'use strict';
-const Profiles=require('../lib/unit-profiles');
+const Profiles=require('../lib/unit-profiles'),EnemyClasses=require('../lib/enemy-classes');
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 function open(host,api){
  const el=(tag,text,parent)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(parent)parent.appendChild(node);return node;};
@@ -42,6 +42,7 @@ function open(host,api){
   const used=el('p',profile.uses.length?'Used in '+profile.uses.length+' wave(s). Saving changes updates those uses.':'Not currently used in any saved or open wave.',form);used.className='profile-note';
   if(profile.archived)button(form,'Restore profile',()=>command('restore',{}));
   const fields=el('div',undefined,form);fields.className='profile-fields';const record=profile.record;
+  field(fields,'Enemy class','enemyClass',profile.enemyClass||'normal',{choices:EnemyClasses.CHOICES});
   for(const name of ['Health','AttackDamage','Speed','AttackRange','SearchRange'])field(fields,Profiles.STATS[name],name,record[name]===undefined?0:record[name],{min:name==='Health'?.000001:0});
   field(fields,'Attack cooldown (seconds)','AttackInterval',1/record.AttackInterval,{min:.000001,convert:value=>1/value});
   field(fields,'Building obstruction','BuildingCross',record.BuildingCross||0,{choices:[{value:1,label:'Respect building obstruction'},{value:0,label:'Ignore building obstruction'}],convert:Number});field(fields,'Death animation (seconds)','DeathAni',record.DeathAni||0,{min:0});

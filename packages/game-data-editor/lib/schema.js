@@ -1,5 +1,6 @@
 'use strict';
 const UnitRecords=require('./unit-records');
+const EnemyClasses=require('./enemy-classes');
 const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
@@ -54,12 +55,12 @@ const PERK_LABELS = {
   50054:['Castle attack bonus'],50055:['Tower HP bonus'],50056:['Ranged enemy attack reduction'],50057:['Soldier HP bonus','Soldier attack bonus']
 };
 const UNIT_DATA = {
-  90006:['Movement speed bonus','Effect duration (seconds)','Effect radius','Maximum targets'],
+  90006:['Attack speed bonus','Effect duration (seconds)','Effect radius','Maximum targets'],
   90007:['Splash damage','Splash radius','Maximum splash targets'],
   90009:['HP restored (%)','Healing radius','Maximum healing targets'],
   90010:['Spell behavior','Spell interval (seconds)','Next form unit'],
   90011:['Spell behavior','Spell interval (seconds)','Next form unit'],
-  90012:['Spell behavior','Spell interval (seconds)','Movement reduction (%)','Effect radius','Maximum targets','Effect duration (seconds)']
+  90012:['Spell behavior','Spell interval (seconds)','Damage reduction','Effect radius','Maximum targets','Effect duration (seconds)']
 };
 function human(key) { return LABELS[key] || String(key).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/_/g,' '); }
 function token(text) { const m = /^\[\[loc:([^\]]+)\]\]$/.exec(String(text || '')); return m ? m[1] : null; }
@@ -404,6 +405,7 @@ function validate(documents, changes) {
   }
   const overrides=docs.overrides||base.GameTools;
   if(overrides){
+    EnemyClasses.validate(overrides,base).forEach(problem=>issue('overrides',problem.path,problem.message));
     if(overrides.version!==1)issue('overrides',['version'],'Unsupported override format.');
     if(overrides.unitLevels!==undefined){
       const table=overrides.unitLevels,fields=['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed'];

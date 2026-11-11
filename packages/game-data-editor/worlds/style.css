@@ -142,8 +142,8 @@
 .world-stages .world-unit-dialog>h3{flex-shrink:0}
 .world-unit-picker-toolbar{display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap}
 .world-stages .world-unit-picker-toolbar>.world-unit-picker-search{flex:1 1 230px;width:auto;min-width:150px;min-height:35px}
-.world-unit-picker-filters{display:flex;gap:10px;flex:1 1 330px;min-width:0}
-.world-stages .world-unit-picker-filters>label{flex:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;font-size:11px}
+.world-unit-picker-filters{display:flex;gap:10px;flex:1 1 470px;min-width:0;flex-wrap:wrap}
+.world-stages .world-unit-picker-filters>label{flex:1 1 110px;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;font-size:11px}
 .world-stages .world-unit-picker-filters>label>span,.world-stages .world-unit-picker-fields>label>span{flex:0 0 auto}
 .world-stages .world-unit-picker-filters>label>select{width:100%;min-width:0;min-height:31px}
 .world-stages .world-unit-picker-fields{display:grid;grid-template-columns:minmax(80px,.7fr) minmax(120px,1.3fr) minmax(90px,1fr);gap:12px;flex-shrink:0}
@@ -169,6 +169,9 @@
 .world-stages .world-unit-entry>label>select{width:100%;min-width:0;font-size:10px;padding:4px 2px}
 .world-unit-profile-stats,.world-unit-other-selected{font-size:10px;line-height:1.4;color:#b6c6d1;overflow-wrap:anywhere}
 .world-unit-other-selected{color:#a6e3ff}
+.world-stages .world-unit-choice>.world-unit-enemy-class{display:inline-block;align-self:center;padding:2px 7px;border:1px solid #7a97aa;border-radius:9px;font-size:10px;line-height:1.3;color:#d4e4ef;background:#283d4b}
+.world-stages .world-unit-choice>.world-unit-enemy-class[data-enemy-class="elite"]{color:#f8df9a;border-color:#ac8e41;background:#4a3c23}
+.world-stages .world-unit-choice>.world-unit-enemy-class[data-enemy-class="boss"]{color:#ffc6c1;border-color:#b36b64;background:#4d2e32}
 .world-stages .world-modal>.world-unit-dialog>.world-actions:last-child{position:static;margin:0;padding:9px 0 0;box-shadow:none;background:transparent;flex-shrink:0;border-top:1px solid #4a5965;border-bottom:0;justify-content:flex-end}
 .world-stages .world-unit-dialog>.world-warn{flex-shrink:0}
 .world-wave-unit-select{display:flex;align-items:flex-end;gap:8px;min-width:0}

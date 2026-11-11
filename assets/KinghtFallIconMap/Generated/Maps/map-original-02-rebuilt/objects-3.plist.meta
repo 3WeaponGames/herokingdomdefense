@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "528c3163-385e-4e44-ab5f-7920e93911a4",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "ad351a73-7b6f-4d17-a829-c79dab480bef",
+  "size": {
+    "width": 1161,
+    "height": 1363
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map02-southwest-rocks-0-0": {
+      "ver": "1.0.6",
+      "uuid": "0df15c4b-5fd5-4664-a519-7149bec1523e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "ad351a73-7b6f-4d17-a829-c79dab480bef",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1157,
+      "height": 1359,
+      "rawWidth": 1157,
+      "rawHeight": 1359,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
