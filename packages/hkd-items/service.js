@@ -15,7 +15,7 @@ class ItemsService extends Service{
       return {type:'item',id:key,key,group:style?style.name+' · '+Weapons.gear(style.id,gear.id,'upgrade').name:ROLES[gear.id],name:'Tier '+tier.number,slot:gear.id,level:level.Level,skin:tier.skin,tier:tier.number,value:level.Parameters,cost:level.GoldCost,legacyKeys:tier.levels.map(level=>Weapons.itemKey(gear.id,level,style&&style.id)),...(style?{style:style.id}:{})};
     })));
   }
-  validationUnits(){return this.units().flatMap(unit=>[unit,...unit.legacyKeys.map(key=>({...unit,id:key,key}))]);}
+  validationUnits(){return this.units().flatMap(unit=>[unit,...(unit.legacyKeys||[]).map(key=>({...unit,id:key,key}))]);}
   describe(base,noRuntime){
     const target=Tiers.target(this.equipment(),base.id),unit=this.units().find(u=>u.slot===target?.slot&&u.skin===target.skin&&u.style===target.style),item=unit&&{...unit,level:target.level};if(!item||base.type!=='item')throw Error('Choose an existing hero equipment tier.');
     const result=Units.describe(this.root,{type:'hero',id:'hero',heroLevels:{[item.slot]:item.level},heroStyle:item.style,noRuntime:!!noRuntime,noAppearance:true});

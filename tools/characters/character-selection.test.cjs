@@ -25,13 +25,13 @@ class Element{
 }
 async function fixture(t,{missingLevel=false,itemMode=false,initialFocus,deferLoad=false}={}){
   const root=new Element('div'),calls=[],units=itemMode?
-    [{type:'item',id:'2:1',key:'2:1',name:'Helmet 1',group:'Helmet'},{type:'item',id:'2:2',key:'2:2',name:'Helmet 2',group:'Helmet'}]:
+    [{type:'item',id:'2:tier:lv1',key:'2:tier:lv1',name:'Tier 1',group:'Helmet',slot:2,skin:'lv1',legacyKeys:['2:1']},{type:'item',id:'2:tier:lv2',key:'2:tier:lv2',name:'Tier 2',group:'Helmet',slot:2,skin:'lv2',legacyKeys:['2:11']}]:
     [{type:'ally',id:'90001',key:'ally:90001:default',name:'Royal Guard',group:'Allies',levels:[1,2,3]},
      {type:'ally',id:'90002',key:'ally:90002:default',name:'Heavy Infantry',group:'Allies',levels:[1,2,3]},
      {type:'ally',id:'90003',key:'ally:90003:default',name:'Single Level',group:'Allies',levels:[1]},
      {type:'enemy',id:'90001',key:'enemy:90001:default',name:'Enemy',group:'Enemies'}];
   const make=(name,id,level)=>({name,base:{type:itemMode?'item':'ally',id,...(level?{level}:{})},parts:[{id:'helmet',sprite:'helmet',layer:'model',slot:'head',bone:'root',x:7,y:3,scaleX:1,scaleY:1,rotation:0,opacity:1,order:0,hideSlots:[]}],models:{model:{x:4}},future:{keep:true}});
-  const data=itemMode?{version:1,profiles:{helmet:make('Fitted helmet','2:1')},assignments:{'2:1':'helmet'}}:
+  const data=itemMode?{version:1,profiles:{helmet:make('Fitted helmet','2:tier:lv1')},assignments:{'2:tier:lv1':'helmet'}}:
     {version:1,profiles:{guard3:make('Royal Guard · Level 3','90001',3),guard:make('Royal Guard','90001'),heavy:make('Heavy Infantry','90002'),heavy3:make('Heavy Infantry · Level 3','90002',3)},assignments:{'ally:90001:default':'guard','ally:90001:level:3':'guard3','ally:90002:default':'heavy',...(!missingLevel?{'ally:90002:level:3':'heavy3'}:{})}};
   const initial=clone(data),snapshot={version:1,data:clone(data),savedData:clone(data),parts:[{id:'helmet',name:'Helmet',category:'Helmet',image:'helmet.png',thumbnail:'helmet.png'}],units,sources:[]};
   if(initialFocus)snapshot.focus=clone(initialFocus);let finishLoad;const pendingLoad=deferLoad?new Promise(resolve=>{finishLoad=()=>resolve(clone(snapshot));}):null;
@@ -92,10 +92,14 @@ test('creation adds independent named Maker and finished-model characters to the
   await f.button('Delete character').onclick();await f.flush();assert.equal(f.button('Created · Finished Knight'),undefined);assert(f.button('Created · Silver Knight'));
 });
 test('shared item editor retains its explicit equipment-tier editing behavior',async t=>{
-  const f=await fixture(t,{itemMode:true});await f.choose('2:2');
-  assert.equal(f.client.getState().selected,'helmet');assert.equal(f.snapshot.data.profiles.helmet.base.id,'2:2');
-  assert.equal(f.snapshot.data.assignments['2:2'],'helmet');assert.equal(f.snapshot.data.assignments['2:1'],undefined);
+  const f=await fixture(t,{itemMode:true});await f.choose('2:tier:lv2');
+  assert.equal(f.client.getState().selected,'');assert.deepEqual(f.snapshot.data,f.initial);assert(!f.calls.some(call=>call.name==='change'));
+  await f.choose('2:tier:lv1');assert.equal(f.client.getState().selected,'helmet');
+  const name=f.field('Item name');name.value='My tier helmet';name.onchange();await f.flush();
+  assert.equal(f.snapshot.data.profiles.helmet.name,'My tier helmet');assert.equal(f.snapshot.data.profiles.helmet.base.id,'2:tier:lv1');
+  assert.equal(f.snapshot.data.assignments['2:tier:lv1'],'helmet');assert.equal(f.snapshot.data.assignments['2:tier:lv2'],undefined);
   assert.deepEqual(f.snapshot.data.profiles.helmet.parts,f.initial.profiles.helmet.parts);assert(f.client.getState().dirty);
+  assert.equal(f.calls.filter(call=>call.name==='change').length,1);assert(!f.calls.some(call=>call.name==='save'));
 });
 
 test('a Units deep link browses the exact level while retaining every unsaved appearance edit',async t=>{

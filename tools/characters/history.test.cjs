@@ -96,6 +96,17 @@ test('item history reverses the automatic tier assignment together with the edit
  assert.deepEqual(undo(s).data,f.original,'undo must not autoassign an unchanged original item again');assert.deepEqual(redo(s).data,edited.data);unchanged(f);
 });
 
+test('item validation accepts legacy units without alias metadata and only explicitly listed tier aliases',t=>{
+ const f=fixture(t,true),s=f.store;
+ assert.deepEqual(s.validationUnits(),s.units());
+ s.units=()=>[{type:'item',id:'2:tier:lv1',key:'2:tier:lv1',legacyKeys:['2:1','2:2']}];
+ assert.deepEqual(s.validationUnits().map(unit=>unit.id),['2:tier:lv1','2:1','2:2']);
+ const edited=change(s,d=>d.profiles.guard.parts[0].x=2);assert.equal(edited.data.assignments['2:1'],'guard');
+ const invalid=clone(s.data);invalid.assignments['2:999']='guard';
+ assert.throws(()=>s.change({version:s.version,data:invalid}),/matching base and level/);
+ assert.deepEqual(s.snapshot().data,edited.data);unchanged(f);
+});
+
 for(const name of ['hkd-characters','hkd-items'])test(name+' exposes revision-checked history commands through its panel IPC',async()=>{
  const calls=[],replies=[];
  class Store{constructor(project){this.root=project;}undo(request){calls.push(['undo',request.version]);return{canUndo:false,canRedo:true};}redo(request){calls.push(['redo',request.version]);return{canUndo:true,canRedo:false};}}
