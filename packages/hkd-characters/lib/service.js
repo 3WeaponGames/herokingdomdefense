@@ -32,7 +32,7 @@ class Service{
   load(){return {...this.snapshot(),parts:this.assets().parts,units:this.units(),sources:UnitLibrary.load(this.root).sources};}
   validate(data){
     if(!data||data.version!==1||!data.profiles||typeof data.profiles!=='object'||Array.isArray(data.profiles)||!data.assignments||typeof data.assignments!=='object'||Array.isArray(data.assignments))throw Error('Invalid character document.');
-    const assets=new Map(this.assets().parts.map(p=>[p.id,p])),units=this.units();
+    const assets=new Map(this.assets().parts.map(p=>[p.id,p])),units=this.validationUnits?this.validationUnits():this.units();
     for(const [id,profile]of Object.entries(data.profiles)){
       if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!profile||typeof profile.name!=='string'||!profile.name.trim()||profile.name.length>100)throw Error('Choose a valid character name and identifier.');
       if(!profile.base||!Array.isArray(profile.parts)||profile.parts.length>40)throw Error('Invalid character base or part list.');

@@ -85,9 +85,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
         ndInfo: s.ndItemDown[t]
       };
       s.ndItemTop[t].getChildByName("spAni").active = false;
-      if (n.id === 4) {
+      if (n.id === 3 || n.id === 4) {
         s.ndItemTop[t].on(cc.Node.EventType.TOUCH_END, function () { require("HeroWeaponPicker").open(e); }, s);
-        s.ndItemDown[t].getChildByName("ndItem").on(cc.Node.EventType.TOUCH_END, function () { require("HeroWeaponPicker").open(e); }, s);
       }
       s.ndItemDown[t].getChildByName("btnUpgeade").on(cc.Node.EventType.TOUCH_END, function () {
         e.onUpgeade(n.id);
@@ -101,6 +100,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     for (var l = 0; l < this.cfgEquip.length; l++) {
       r(l);
     }
+    require("HeroWeaponPicker").installSwitch(this);
     this.bindScrollFooter();
     this.layoutScrollToFooter();
     this.initView();
@@ -188,24 +188,27 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       var l = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(r.type);
       var c = true;
       r.cfg.Unlock && (c = r.cfg.Unlock[0] < n || !(r.cfg.Unlock[0] > n) && r.cfg.Unlock[1] < i);
-      var customImage = cc.resources && !/@(?:icon|sprite)\//.test(r.cfg.levelInfo[l - 1].Image) && HeroItemLooks.image(r.type, l), iconRequest = r._itemIconRequest = (r._itemIconRequest || 0) + 1;
-      var setItemIcon = function (t) {
+      var customImage = cc.resources && HeroItemLooks.gearImage(r.type, l, 'equipment'), upgradeImage = cc.resources && HeroItemLooks.gearImage(r.type, l, 'upgrade'), iconRequest = r._itemIconRequest = (r._itemIconRequest || 0) + 1;
+      var setItemIcon = function (t, area, image) {
         if (!cc.isValid(o.node) || r._itemIconRequest !== iconRequest) return;
-        r.ndItem.getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
-        r.ndInfo.getChildByName("ndItem").getChildByName("sprIcon").getComponent(cc.Sprite).spriteFrame = t;
+        var target = (area === 'equipment' ? r.ndItem : r.ndInfo.getChildByName('ndItem')).getChildByName('sprIcon'), sprite = target.getComponent(cc.Sprite);
+        require("EquipmentIconFit").apply(sprite, t, image);
+        sprite.setState(image && image.gray ? cc.Sprite.State.GRAY : cc.Sprite.State.NORMAL);
+        target.opacity = image && image.opacity || 255;
         if (cc.color) {
-          var tint = cc.color(customImage && customImage.tint || '#ffffff');
-          r.ndItem.getChildByName("sprIcon").color = tint;
-          r.ndInfo.getChildByName("ndItem").getChildByName("sprIcon").color = tint;
+          target.color = cc.color(image && image.tint || '#ffffff');
         }
       };
-      if (customImage) cc.resources.load(customImage.resource, cc.SpriteFrame, function (error, frame) { if (!error) setItemIcon(frame); });
-      else o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconCharacter, r.cfg.levelInfo[l - 1].Image, setItemIcon);
+      [['equipment',customImage],['upgrade',upgradeImage]].forEach(function (entry) {
+        if (entry[1]) cc.resources.load(entry[1].resource, cc.SpriteFrame, function (error, frame) { if (!error) setItemIcon(frame, entry[0], entry[1]); });
+        else o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconCharacter, r.cfg.levelInfo[l - 1].Image, function (frame) { setItemIcon(frame, entry[0], null); });
+      });
       o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, r.cfg.levelInfo[l - 1].EquipBottom, function (t) {
         r.ndItem.getComponent(cc.Sprite).spriteFrame = t;
         r.ndInfo.getChildByName("ndItem").getComponent(cc.Sprite).spriteFrame = t;
       });
-      r.ndItem.getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), l);
+      var equippedStyle = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon(), slotView = require('HeroWeapons').gear(equippedStyle.id, r.type, 'equipment'), shownLevel = slotView && slotView.occupiedBy ? $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(slotView.occupiedBy) : l;
+      r.ndItem.getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), shownLevel);
       r.ndInfo.getChildByName("ndItem").getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), l);
       var g = r.ndInfo.getChildByName("ndLay");
       // Captions have their own localized labels; values never flow into them.
@@ -219,11 +222,10 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       if (hasNextLevel) g.getChildByName("labNum2").getComponent(cc.Label).string = "" + r.cfg.levelInfo[l].Parameters;
       var customItem = cc.resources && HeroItemLooks.item(r.type, l);
       r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = customItem ? customItem.name : o.T(r.cfg.levelInfo[l - 1].EquipName);
-      if (r.type === 4) {
+      if (r.type === 3 || r.type === 4) {
         var style = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon();
-        r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = style.name + " · " + style.weapon + "\nTap to switch";
+        r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = style.name + " · " + require("HeroWeapons").gear(style.id, r.type, 'upgrade').name;
       }
-      if (r.type === 3) r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon().name + " · Power";
       r.ndInfo.getChildByName("labName").active = c;
       if (c) {
         g.active = true;

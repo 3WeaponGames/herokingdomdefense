@@ -669,8 +669,7 @@
     {
       "name": "Rider/HandLeft/Shield",
       "bone": "Rider/HandLeft/Shield",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_HandLeft_Shield"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/HandLeft/Sub_Item",
@@ -822,7 +821,6 @@
     {
       "name": "lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -878,7 +876,6 @@
     {
       "name": "lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -934,7 +931,6 @@
     {
       "name": "lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -990,7 +986,6 @@
     {
       "name": "lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1046,7 +1041,6 @@
     {
       "name": "vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1102,7 +1096,6 @@
     {
       "name": "vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1158,7 +1151,6 @@
     {
       "name": "skirmisher_lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1214,7 +1206,6 @@
     {
       "name": "skirmisher_lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1270,7 +1261,6 @@
     {
       "name": "skirmisher_lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1326,7 +1316,6 @@
     {
       "name": "skirmisher_lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1382,7 +1371,6 @@
     {
       "name": "skirmisher_vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1438,7 +1426,6 @@
     {
       "name": "skirmisher_vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1494,7 +1481,6 @@
     {
       "name": "fighter_lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1530,7 +1516,6 @@
     {
       "name": "fighter_lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1566,7 +1551,6 @@
     {
       "name": "fighter_lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1602,7 +1586,6 @@
     {
       "name": "fighter_lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1638,7 +1621,6 @@
     {
       "name": "fighter_vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1674,7 +1656,6 @@
     {
       "name": "fighter_vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1710,7 +1691,6 @@
     {
       "name": "vanguard_lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1746,7 +1726,6 @@
     {
       "name": "vanguard_lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1782,7 +1761,6 @@
     {
       "name": "vanguard_lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1818,7 +1796,6 @@
     {
       "name": "vanguard_lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1854,7 +1831,6 @@
     {
       "name": "vanguard_vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1890,7 +1866,6 @@
     {
       "name": "vanguard_vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1926,7 +1901,6 @@
     {
       "name": "mystic_lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1962,7 +1936,6 @@
     {
       "name": "mystic_lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -1998,7 +1971,6 @@
     {
       "name": "mystic_lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2034,7 +2006,6 @@
     {
       "name": "mystic_lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2070,7 +2041,6 @@
     {
       "name": "mystic_vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2106,7 +2076,6 @@
     {
       "name": "mystic_vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2142,7 +2111,6 @@
     {
       "name": "bruiser_lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {
           "hero_Rider_HandRight_Axe": {
@@ -2178,7 +2146,6 @@
     {
       "name": "bruiser_lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {
           "hero_Rider_HandRight_Axe": {
@@ -2214,7 +2181,6 @@
     {
       "name": "bruiser_lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {
           "hero_Rider_HandRight_Axe": {
@@ -2250,7 +2216,6 @@
     {
       "name": "bruiser_lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {
           "hero_Rider_HandRight_Axe": {
@@ -2286,7 +2251,6 @@
     {
       "name": "bruiser_vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {
           "hero_Rider_HandRight_Axe": {
@@ -2322,7 +2286,6 @@
     {
       "name": "bruiser_vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {},
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {
           "hero_Rider_HandRight_Axe": {
@@ -2358,19 +2321,6 @@
     {
       "name": "guardian_lv1",
       "attachments": {
-        "Rider/HandLeft/Shield": {
-          "hero_Rider_HandLeft_Shield": {
-            "path": "part_Rider_HandLeft_Shield_guardian_lv1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 50,
-            "height": 56,
-            "color": "ffffffff"
-          }
-        },
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2406,19 +2356,6 @@
     {
       "name": "guardian_lv2",
       "attachments": {
-        "Rider/HandLeft/Shield": {
-          "hero_Rider_HandLeft_Shield": {
-            "path": "part_Rider_HandLeft_Shield_guardian_lv2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 50,
-            "height": 56,
-            "color": "ffffffff"
-          }
-        },
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2454,19 +2391,6 @@
     {
       "name": "guardian_lv3",
       "attachments": {
-        "Rider/HandLeft/Shield": {
-          "hero_Rider_HandLeft_Shield": {
-            "path": "part_Rider_HandLeft_Shield_guardian_lv3",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 50,
-            "height": 56,
-            "color": "ffffffff"
-          }
-        },
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2502,19 +2426,6 @@
     {
       "name": "guardian_lv4",
       "attachments": {
-        "Rider/HandLeft/Shield": {
-          "hero_Rider_HandLeft_Shield": {
-            "path": "part_Rider_HandLeft_Shield_guardian_lv4",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 50,
-            "height": 56,
-            "color": "ffffffff"
-          }
-        },
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2550,19 +2461,6 @@
     {
       "name": "guardian_vip1",
       "attachments": {
-        "Rider/HandLeft/Shield": {
-          "hero_Rider_HandLeft_Shield": {
-            "path": "part_Rider_HandLeft_Shield_guardian_vip1",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 50,
-            "height": 56,
-            "color": "ffffffff"
-          }
-        },
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},
@@ -2598,19 +2496,6 @@
     {
       "name": "guardian_vip2",
       "attachments": {
-        "Rider/HandLeft/Shield": {
-          "hero_Rider_HandLeft_Shield": {
-            "path": "part_Rider_HandLeft_Shield_guardian_vip2",
-            "x": 0,
-            "y": 0,
-            "rotation": 0,
-            "scaleX": 1,
-            "scaleY": 1,
-            "width": 50,
-            "height": 56,
-            "color": "ffffffff"
-          }
-        },
         "Rider/HandLeft/Sub_Item": {},
         "Rider/HandRight/Axe": {},
         "Rider/HandRight/Crossbow/Crossbow_Down": {},

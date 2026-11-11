@@ -12,10 +12,10 @@ function mount(host,api){
   const el=(tag,text,parent,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;if(parent)parent.appendChild(n);return n;};
   const root=el('section',undefined,host,'character-editor');
   root.tabIndex=-1;
-  const header=el('header',undefined,root),heading=el('div',undefined,header);el('h1',itemMode?'Items':'Characters',heading);el('p',itemMode?'Fit hero gear. Keep current upgrades. Add new items when ready.':'Build a look. Fit the parts. Bring it into battle.',heading,'muted');
+  const header=el('header',undefined,root),heading=el('div',undefined,header);el('h1',itemMode?'Items':'Characters',heading);el('p',itemMode?'Choose a tier. Fit its parts. Save to apply.':'Build a look. Fit the parts. Bring it into battle.',heading,'muted');
   const tools=el('div',undefined,header,'toolbar');
   const button=(parent,text,fn,cls)=>{const b=el('button',text,parent,cls);b.type='button';b.onclick=()=>{if(busy)return;return Promise.resolve().then(fn).catch(error=>message(error.message,true));};return b;};
-  const newButton=button(tools,itemMode?'New item':'New character',()=>itemMode?createProfile():openCreator());if(itemMode)button(tools,'Duplicate',duplicateProfile);const discardButton=button(tools,'Discard changes',discard),saveButton=button(tools,itemMode?'Save items':'Save characters',save,'primary');
+  if(!itemMode)button(tools,'New character',openCreator);const discardButton=button(tools,'Discard changes',discard),saveButton=button(tools,itemMode?'Save items':'Save characters',save,'primary');
   saveButton.title=(itemMode?'Save items':'Save characters')+' (Ctrl+S)';saveButton.setAttribute('aria-keyshortcuts','Control+S');
   const undoButton=button(tools,'Undo',()=>travel('undo')),redoButton=button(tools,'Redo',()=>travel('redo'));
   tools.insertBefore(undoButton,discardButton);tools.insertBefore(redoButton,discardButton);
@@ -27,7 +27,6 @@ function mount(host,api){
   const packageFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');unitSort.setAttribute('aria-label','Sort characters');
   for(const option of [{id:'',label:'All packages'},...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
   for(const [value,label]of [['name','Sort by name'],['package','Sort by package']]){const entry=el('option',label,unitSort);entry.value=value;}
-  let looks=null;if(itemMode){const savedLooks=el('details',undefined,library);el('summary','Saved looks',savedLooks);looks=el('div',undefined,savedLooks,'look-list');}
   const librarySplit=el('div',undefined,library,itemMode?'divider':'library-splitter'),partLibrary=el('section',undefined,library,'part-library');el('h2','PART LIBRARY',partLibrary);
   const search=el('input',undefined,partLibrary);search.type='search';search.placeholder='Search 678 parts…';search.setAttribute('aria-label','Search character parts');search.className='wide';
   const category=el('select',undefined,partLibrary);category.setAttribute('aria-label','Part category');category.className='wide';category.style.marginTop='7px';
@@ -91,7 +90,7 @@ function mount(host,api){
   const part=()=>profile()&&profile().parts.find(p=>p.id===selectedPart);
   const mountSelection='@mount';
   function equippedMount(){const p=profile();if(!p||!p.base.mount)return null;if(assets[p.mount])return assets[p.mount];const horse=rig&&rig.layers.find(layer=>layer.mount),skin=horse&&p.skins&&p.skins[horse.uuid]||(p.base.mount==='legacy-cavalry'?'lan':'lv1');return Object.values(assets).find(asset=>asset.mount===p.base.mount&&asset.skin===skin)||Object.values(assets).find(asset=>asset.mount===p.base.mount);}
-  const unitFor=p=>p===virtual&&virtualUnit||Catalog.created(data,units).find(u=>u.character===Catalog.owner(data,selected))||units.find(u=>u.type===p.base.type&&u.id===String(p.base.id));
+  const unitFor=p=>p===virtual&&virtualUnit||Catalog.created(data,units).find(u=>u.character===Catalog.owner(data,selected))||units.find(u=>u.type===p.base.type&&(u.id===String(p.base.id)||itemMode&&(u.legacyKeys||[]).includes(String(p.base.id))));
   const assignmentKey=p=>Levels.key(unitFor(p),p.base.level);
   const appearanceMode=()=>itemMode?'maker':UnitPacks.forProfile(profile(),profile()&&unitFor(profile())).mode;
   const bossMetadata=()=>rig&&rig.layers.map(layer=>BossModel.metadata(layer.json)).find(Boolean);
@@ -143,16 +142,15 @@ function mount(host,api){
   }
   function activateItem(){const p=profile();if(!itemMode||!p||virtual)return;const key=(unitFor(p)||{}).key;if(key)data.assignments[key]=selected;}
   function ensureDraft(){
-    if(!virtual||itemMode)return profile();const p=virtual,unit=unitFor(p),level=p.base.level;
+    if(!virtual)return profile();const p=virtual,unit=unitFor(p),level=p.base.level;
+    if(itemMode){const id=unique('item-'+unit.key.replace(/[^a-z0-9_-]/gi,'-'),data.profiles);p.base={type:'item',id:unit.key};for(const name of ['baked','bakedLayers','bakedVersion','bakedWithHero'])delete p[name];data.profiles[id]=p;data.assignments[unit.key]=id;selected=id;virtual=null;virtualUnit=null;renderLooks();return p;}
     const id=unique(unit.character?unit.character+'-level-'+level:unit.type+'-'+unit.id+(level?'-level-'+level:''),data.profiles);
     for(const name of ['baked','bakedLayers','bakedVersion','bakedWithHero'])delete p[name];
     data.profiles[id]=p;Catalog.assign(data,unit,level,id);selected=id;virtual=null;virtualUnit=null;renderLooks();return p;
   }
   function changed(refresh){ensureDraft();activateItem();fittingKey='';dirty();if(refresh)renderInspector();draw();stage();}
   function unique(prefix,collection){let id=prefix,index=2;while(Object.prototype.hasOwnProperty.call(collection,id))id=prefix+'-'+index++;return id;}
-  function createProfile(){if(!data)return;const id=unique(itemMode?'new-item':'new-character',data.profiles);const base=profile()?clone(profile().base):(itemMode?{type:'item',id:units[0].id}:{type:'ally',id:'90001'});data.profiles[id]={name:itemMode?'New item':'New character',base,scale:1,parts:[]};selectProfile(id);changed();}
-  function duplicateProfile(){if(!profile())return;const id=unique((selected||'character')+'-copy',data.profiles);data.profiles[id]=clone(profile());data.profiles[id].name+=' copy';selectProfile(id);changed();}
-  function removeProfile(){if(!profile())return;const unit=unitFor(profile()),level=profile().base.level,id=selected,owner=Catalog.owner(data,id);if(owner){for(const value of [owner,...Object.values(data.characters[owner].levels||{})])delete data.profiles[value];delete data.characters[owner];}else{Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===id)delete data.assignments[k];});delete data.profiles[id];}if(itemMode)selectProfile(Object.keys(data.profiles)[0]||'');else if(owner)selectUnit(units[0]);else selectUnit(unit,level);dirty();stage();}
+  function removeProfile(){if(!profile())return;const unit=unitFor(profile()),level=profile().base.level,id=selected,owner=Catalog.owner(data,id);if(owner){for(const value of [owner,...Object.values(data.characters[owner].levels||{})])delete data.profiles[value];delete data.characters[owner];}else{Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===id)delete data.assignments[k];});delete data.profiles[id];}if(itemMode)selectUnit(unit);else if(owner)selectUnit(units[0]);else selectUnit(unit,level);dirty();stage();}
   function openCreator(){
     if(!data||creator)return;creator=el('div',undefined,root,'creator-backdrop');const dialog=el('div',undefined,creator,'creator-dialog');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-label','New character');el('h2','New character',dialog);
     const name=field(dialog,'Character name','New character',()=>{}),kind=field(dialog,'Starting model','maker',()=>{model.parentElement.hidden=kind.value!=='finished';},[{value:'maker',label:'Create a Character Maker character'},{value:'finished',label:'Use a finished unit model'}]);
@@ -233,15 +231,14 @@ function mount(host,api){
   root.addEventListener('keydown',editorKey,true);
   function renderLooks(){
     const listed=itemMode?units:Catalog.listed(data,units),filter=unitFilter.value;unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(listed.map(unit=>unit.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}unitFilter.value=filter;
-    const active=profile()&&unitFor(profile());unitList.innerHTML='';for(const unit of UnitPacks.list(listed,{group:unitFilter.value,pack:itemMode?'':packageFilter.value,sort:unitSort.value})){const b=button(unitList,unit.group+' · '+unit.name,()=>selectUnit(unit));b.title=UnitPacks.forUnit(unit).label;b.classList.toggle('selected',!!active&&active.key===unit.key);if(itemMode&&data.assignments[unit.key])el('span',' · Custom',b,'assigned');}
-    if(!looks)return;looks.innerHTML='';if(!Object.keys(data.profiles).length)el('p','Create your first item.',looks,'empty');for(const [id,p]of Object.entries(data.profiles)){const b=button(looks,p.name,()=>selectProfile(id));b.classList.toggle('selected',id===selected);if(Object.values(data.assignments).includes(id))el('span',' · In game',b,'assigned');}
+    const active=profile()&&unitFor(profile());unitList.innerHTML='';for(const unit of itemMode?listed.filter(unit=>!unitFilter.value||unit.group===unitFilter.value):UnitPacks.list(listed,{group:unitFilter.value,pack:packageFilter.value,sort:unitSort.value})){const b=button(unitList,unit.group+' · '+unit.name,()=>selectUnit(unit));b.title=itemMode?'Appearance applies to this entire tier.':UnitPacks.forUnit(unit).label;b.classList.toggle('selected',!!active&&active.key===unit.key);if(itemMode&&data.assignments[unit.key])el('span',' · Custom',b,'assigned');}
   }
   unitFilter.onchange=renderLooks;
   packageFilter.onchange=unitSort.onchange=renderLooks;
   async function selectUnit(unit,level){
     finishGestures();const exact=Catalog.profileId(data,unit,level);if(exact)return selectProfile(exact);
-    const inherited=level&&data.profiles[Catalog.profileId(data,unit)];
-    selected='';virtualUnit=unit;virtual=inherited?clone(inherited):{name:unit.name,base:itemMode?{type:unit.type,id:unit.id}:Catalog.defaults(unit),scale:1,parts:[]};
+    const inherited=itemMode?data.profiles[(unit.legacyKeys||[]).map(key=>data.assignments[key]).find(Boolean)]:level&&data.profiles[Catalog.profileId(data,unit)];
+    selected='';virtualUnit=unit;virtual=inherited?clone(inherited):{name:itemMode?unit.group+' · '+unit.name:unit.name,base:itemMode?{type:unit.type,id:unit.id}:Catalog.defaults(unit),scale:1,parts:[]};
     if(level){virtual.base.level=level;virtual.name=unit.name+' · Level '+level;}
     selectEquippedPart(virtual.parts[0]&&virtual.parts[0].id||'');renderLooks();renderInspector();renderAssets();await loadRig();
   }
@@ -285,7 +282,7 @@ function mount(host,api){
     }catch(error){if(!disposed&&serial===token&&p===profile()){message(error.message,true);renderInspector();}return false;}
   }
   function modelInspector(p){
-    if(!rig)return;const section=el('details',undefined,inspector,'model-settings');section.open=itemMode||!!p.base.mount;el('summary',p.base.mount?'Adjust rider & horse':'Adjust original model',section);
+    if(!rig)return;const section=el('details',undefined,inspector,'model-settings');section.open=!!p.base.mount;el('summary',p.base.mount?'Adjust rider & horse':'Adjust original model',section);
     if(!rig.layers.some(l=>l.uuid===selectedModel))selectedModel=rig.defaultLayer||rig.layers[0].uuid;
     field(section,'Original model layer',selectedModel,v=>{selectedModel=v;renderInspector();},rig.layers.map(l=>({value:l.uuid,label:CharacterOptions.layerLabel(l)})));
     const layer=rig.layers.find(l=>l.uuid===selectedModel),isCurrent=()=>profile()===p&&rig&&rig.layers.some(l=>l.uuid===layer.uuid);
@@ -301,14 +298,10 @@ function mount(host,api){
   function renderInspector(){
     const previous=scrubs;scrubs=[];for(const cancel of previous)cancel();
     inspector.innerHTML='';const p=profile();if(!p){el('p','Create a character to start fitting parts.',inspector,'empty');return;}
-    if(virtual&&itemMode){
-      el('h2',p.name,inspector);el('p',p.base.level?'Uses the default appearance':itemMode?'Current equipment appearance':'Original appearance',inspector,'muted');
-      button(inspector,p.base.level?'Customize level '+p.base.level:itemMode?'Edit this item':'Edit this character',editOriginal,'primary wide');el('p',p.base.level?'Create an independent draft from the default look, then fit this level’s equipment. Save characters publishes your changes.':itemMode?'Browse freely. Create a draft to adjust this item or fit new parts.':'Browse freely. Create an appearance draft to adjust this character or fit new parts.',inspector,'help');return;
-    }
     el('h2',itemMode?'ITEM':'CHARACTER',inspector);const nameInput=field(inspector,itemMode?'Item name':'Character name',p.name,v=>{p.name=v.trim()||p.name;renderLooks();previewName.textContent=p.name;changed();});nameInput.oninput=()=>{if(!nameInput.value.trim()||nameInput.value.length>100)return;ensureDraft();p.name=nameInput.value;renderLooks();previewName.textContent=p.name;dirty();};
     if(appearanceMode()==='fixed'){el('p','This package supplies a finished monster. Its appearance and animations stay as authored.',inspector,'help');if(Catalog.owner(data,selected))button(inspector,'Delete character',removeProfile,'danger');return;}
     if(appearanceMode()==='modular'){renderBossInspector(p);return;}
-    if(itemMode)field(inspector,'Equipment tier',(unitFor(p)||{}).key,v=>{const unit=units.find(u=>u.key===v);p.base={type:unit.type,id:unit.id};Object.keys(data.assignments).forEach(k=>{if(data.assignments[k]===selected)delete data.assignments[k];});changed();renderLooks();renderInspector();loadRig();},units.map(u=>({value:u.key,label:u.group+' · '+u.name})));
+    if(itemMode){const picker=field(inspector,'Equipment tier',(unitFor(p)||{}).key,v=>selectUnit(units.find(u=>u.key===v)),units.map(u=>({value:u.key,label:u.group+' · '+u.name})));picker.onchange=()=>{if(!busy)selectUnit(units.find(u=>u.key===picker.value));};}
     levelInspector(p);
     if(!itemMode&&rig&&!rig.layers.some(layer=>layer.json._heroMaker)&&rig.layers.some(layer=>layer.json.slots.some(slot=>api.core.isFacialSlot(slot.name)))){
       check(inspector,'Faceless (hide eyes)',!!p.faceless,value=>{p.faceless=value;changed();});
@@ -327,12 +320,12 @@ function mount(host,api){
     const add=el('div',undefined,inspector,'row'),addButton=button(add,'Add selected part',addPart);addButton.disabled=busy||!layers.length;addButton.setAttribute('data-action','add-part');addButton.setAttribute('aria-keyshortcuts','Control+A');addButton.title='Add selected part (Ctrl+A)';
     const removeButton=button(add,'Remove part',async()=>{if(!part()&&selectedPart!==mountSelection)return;ensureDraft();if(selectedPart===mountSelection){await chooseHorse('');renderInspector();renderAssets();return;}p.parts.splice(p.parts.indexOf(part()),1);selectedPart=(p.parts[0]&&p.parts[0].id)||'';changed(true);});removeButton.setAttribute('data-action','remove-part');removeButton.setAttribute('aria-keyshortcuts','Control+D');removeButton.title='Remove selected part (Ctrl+D)';
     if(selectedPart===mountSelection&&mounted){const box=el('div',undefined,inspector,'selected-asset'),image=el('img',undefined,box);image.src=api.image(mounted.thumbnail);el('span',mounted.name,box);el('p','Choose another mount in the library to replace it. Adjust rider and mount position above.',inspector,'help');return;}
-    const removeLabel=itemMode?'Delete item':Catalog.owner(data,selected)?'Delete character':null;const currentPart=part();if(!currentPart){el('p','Choose a part in the library, then Add selected part.',inspector,'help');if(removeLabel)button(inspector,removeLabel,removeProfile,'danger');return;}
+    const removeLabel=itemMode&&!virtual?'Reset tier appearance':!itemMode&&Catalog.owner(data,selected)?'Delete character':null;const currentPart=part();if(!currentPart){if(itemMode&&rig&&rig.itemModel){const model=rig.itemModel,asset=assets[model.asset]||model.preview;el('h2','FIT SELECTED PART',inspector);if(asset){const box=el('div',undefined,inspector,'selected-asset'),image=el('img',undefined,box);image.src=api.image(asset.thumbnail);el('span',asset.name,box);}el('p',unitFor(p).slot===6?'This mount keeps its animated body and legs. Choose a mount in the library, then Add selected part or Ctrl+A.':'This upgrade currently has no visible fitted part. Choose a library part, then Add selected part or Ctrl+A to add one.',inspector,'help');}else el('p','Choose a part in the library, then Add selected part.',inspector,'help');if(removeLabel)button(inspector,removeLabel,removeProfile,'danger');return;}
     el('div',undefined,inspector,'divider');el('h2','FIT SELECTED PART',inspector);
     const a=assets[currentPart.sprite],assetBox=el('div',undefined,inspector,'selected-asset'),img=el('img',undefined,assetBox);img.src=api.image(a.thumbnail);el('span',a.name,assetBox);
     tintField(inspector,'Part tint',currentPart.tint,value=>{currentPart.tint=value;});
     el('p','Tint multiplies the existing colors and keeps black outlines dark. White resets the tint.',inspector,'help');
-    const replaceButton=button(inspector,'Use library selection',()=>{const asset=assets[selectedAsset];if(!asset||!layers.length)return;if(asset.mount||['Mount','Mount_Down'].includes(Placement.role(asset)))return addPart();currentPart.sprite=selectedAsset;fitPart(false);changed(true);});replaceButton.disabled=busy||!layers.length;replaceButton.setAttribute('data-action','replace-part');
+    const replaceButton=button(inspector,'Use library selection',()=>{const asset=assets[selectedAsset];if(!asset||!layers.length)return;ensureDraft();if(asset.heroMount||asset.mount||['Mount','Mount_Down'].includes(Placement.role(asset)))return addPart();currentPart.sprite=selectedAsset;fitPart(false);changed(true);});replaceButton.disabled=busy||!layers.length;replaceButton.setAttribute('data-action','replace-part');
     if(!rig)return;
     field(inspector,'Model layer',currentPart.layer,v=>{const l=rig.layers.find(l=>l.uuid===v),socket=!itemMode&&Placement.socket(l,assets[currentPart.sprite],p.skins&&p.skins[l.uuid])||l.json.slots[0];currentPart.layer=v;currentPart.slot=socket.name;currentPart.bone=itemMode?l.json.bones[0].name:socket.bone||l.json.bones[0].name;currentPart.hideSlots=[];if(!itemMode)fitPart(false);changed(true);},rig.layers.filter(l=>itemMode||!l.mount).map(l=>({value:l.uuid,label:CharacterOptions.layerLabel(l)})));
     const layer=rig.layers.find(l=>l.uuid===currentPart.layer);if(!layer)return;
@@ -393,7 +386,8 @@ function mount(host,api){
     const id=Object.keys(scores).sort((a,b)=>scores[b]-scores[a])[0];return id===undefined?slot.bone.data.name:slot.bone.skeleton.bones[Number(id)].data.name;
   }
   async function addPart(){
-    const p=profile(),asset=assets[selectedAsset];if(virtual&&itemMode){message('Click Edit this item to start a draft.');return;}if(!layers.length)return;if(!p||!asset||!rig){message('Select a library part first.');return;}ensureDraft();
+    const p=profile(),asset=assets[selectedAsset];if(!layers.length)return;if(!p||!asset||!rig){message('Select a library part first.');return;}ensureDraft();
+    if(itemMode&&asset.heroMount){const layer=rig.layers.find(layer=>layer.name==='wqyl_lead_ma');p.skins=p.skins||{};p.skins[layer.uuid]=asset.skin;p.icon={id:asset.id,resource:asset.resource,width:asset.width,height:asset.height};rig.itemModel={layer:layer.uuid,asset:asset.id,skin:asset.skin};selectedModel=layer.uuid;selectedPart='';changed(true);return;}
     if(asset.mount){if(p.base.source!==Catalog.maker)throw Error('Add animated mounts to a Character Maker character.');await chooseHorse(asset.mount,asset);renderInspector();renderAssets();return;}
     if(['Mount','Mount_Down'].includes(Placement.role(asset))&&p.base.mount&&!await chooseHorse(''))return;
     const layer=Placement.layerFor(rig,asset),used=new Set(p.parts.filter(v=>v.layer===layer.uuid).map(v=>v.slot));
@@ -409,6 +403,7 @@ function mount(host,api){
     const p=profile(),serial=++token;states.forEach(api.core.restore);states=[];layers=baseLayers=[];rig=null;selectedModel='';fittingRetryAfter=0;viewFitKey='';current.canvas.style.opacity=current.handles.style.opacity='0';current.box.setAttribute('aria-busy','true');inspector.querySelectorAll('[data-action="add-part"],[data-action="replace-part"]').forEach(control=>{control.disabled=true;});if(!p)return;message('Loading '+p.name+'…');previewName.textContent=p.name;
     renderInspector();renderAssets();const nextViewKey=JSON.stringify(p.base);if(viewKey!==nextViewKey){viewPan={x:0,y:0};viewKey=nextViewKey;}
     try{const description=await api.ipc('describe',p.base);if(serial!==token||disposed)return;if(p.base.mount){const rider=description.layers.find(layer=>layer.json.bones.some(bone=>bone.name==='Rider/Mount/Mount')),horse=description.layers.find(layer=>layer.mount)||rider&&description.layers.find(layer=>layer!==rider);if(horse&&rider){horse.mount=true;MountAttack.synchronize(horse.json.animations.attack,rider.json.animations.attack);}}rig=description;spine=api.runtime(description);for(const layer of description.layers)if(BossModel.metadata(layer.json))BossModel.apply(layer.json,p.boss);
+      if(itemMode&&virtual&&!(unitFor(p).legacyKeys||[]).some(key=>data.assignments[key])){p.parts=clone(description.currentItem&&description.currentItem.parts||[]);if(description.currentItem&&description.currentItem.models)p.models=clone(description.currentItem.models);selectEquippedPart(p.parts[0]&&p.parts[0].id||'');}
       const result=await Promise.all([api.renderer.createLayers(spine,description.layers),api.renderer.createLayers(spine,description.layers),Promise.all([...new Set(p.parts.map(part=>part.sprite))].map(async id=>[id,await imageFor(assets[id])]))]);if(serial!==token||disposed)return;
       const speedKey=p.base.type+':'+p.base.id;if(previewSpeedKey!==speedKey){const fantasy=description.layers.map(layer=>layer.json._fantasy).find(Boolean);speed.value=fantasy&&fantasy.pack==='fantasy-bosses'?.65:fantasy&&fantasy.pack==='fantasy-monsters'?.75:1;previewSpeedKey=speedKey;}
       layers=result[0];baseLayers=result[1];const textures=Object.fromEntries(result[2].map(([id,img])=>[id,new spine.FakeTexture(img)]));states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless,skinTint:api.core.skinTint(p)}));fittingKey=fittingSignature(p);animation.innerHTML='';const names=[...new Set([].concat.apply([],description.layers.map(l=>api.renderer.animationNames?api.renderer.animationNames(l.json):l.animations)))];for(const name of names){const option=el('option',name,animation);option.value=name;}animation.value=previousPose&&names.includes(previousPose.animation)?previousPose.animation:names.includes('idle')?'idle':names[0];time=previousPose?previousPose.time:0;last=0;updateDuration();fitBounds();syncPartLibrary();renderInspector();renderAssets();draw();fitBounds(true);draw();current.canvas.style.opacity=current.handles.style.opacity='';current.box.setAttribute('aria-busy','false');message('Ready · Changes remain drafts until Save.');
@@ -483,7 +478,7 @@ function mount(host,api){
   current.handles.onpointerup=finishPointer;current.handles.onpointercancel=finishPointer;current.handles.onlostpointercapture=finishPointer;
   current.handles.oncontextmenu=event=>event.preventDefault();current.handles.onauxclick=event=>{if(event.button===1)event.preventDefault();};
   function fitPart(commit){
-    const p=part();if(!p||!layers.length)return;const asset=assets[p.sprite],target=Placement.layerFor(rig,asset),socket=Placement.socket(target,asset,profile().skins&&profile().skins[target.uuid]);
+    const p=part();if(!p||!layers.length)return;ensureDraft();const asset=assets[p.sprite],target=Placement.layerFor(rig,asset),socket=Placement.socket(target,asset,profile().skins&&profile().skins[target.uuid]);
     if(socket){p.layer=target.uuid;p.slot=socket.name;p.bone=socket.bone;p.hideSlots=p.hideSlots.filter(name=>target.json.slots.some(slot=>slot.name===name)&&name!==p.slot);if(Placement.role(asset)==='Helmet'&&target.name==='wqyl_lead_tou')p.hideSlots=[...new Set(p.hideSlots.concat(target.json.slots.filter(slot=>/headgear/i.test(slot.name)&&slot.name!==p.slot).map(slot=>slot.name)))];}
     const layer=baseLayers.find(l=>l.description.uuid===p.layer),slot=layer.skeleton.findSlot(p.slot),attachment=slot.getAttachment(),bone=layer.skeleton.findBone(p.bone);
     const intended=Placement.socket(layer.description,asset);if(intended&&intended.name===p.slot&&Placement.compatible(intended)){p.bone=intended.bone;Object.assign(p,Placement.intended(asset));p.forceVisible=true;if(commit!==false)changed(true);return;}
@@ -497,7 +492,7 @@ function mount(host,api){
   function step(amount){playing=false;play.textContent='Play';time=Math.max(0,Math.min(duration,displayTime()+amount/30));last=0;draw();}
   animation.onchange=()=>{time=0;updateDuration();draw();};scrub.oninput=()=>{playing=false;play.textContent='Play';time=Number(scrub.value);draw();};
   function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time+=(now-last)/1000*Number(speed.value);if(!loopToggle.checked&&time>=duration){time=duration;playing=false;play.textContent='Play';}draw();}last=now;raf=requestAnimationFrame(frame);}
-  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);refreshLibrary(result);lastSent=JSON.stringify(data);unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(result.focus)focusUnit(result.focus);if(pendingFocus)applyFocus();else if(Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
+  api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);refreshLibrary(result);lastSent=JSON.stringify(data);unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(result.focus)focusUnit(result.focus);if(pendingFocus)applyFocus();else if(!itemMode&&Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
   return {focusUnit,destroy(){disposed=true;pendingFocus=null;token++;disposeLibrarySplit();root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
 }
 module.exports={mount};

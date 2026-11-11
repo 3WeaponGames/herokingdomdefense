@@ -9,7 +9,7 @@ function moduleVM(relative,globals={},overrides={}){const file=path.join(root,re
 function timers(){let id=0;const jobs=new Map();return{jobs,setTimeout(fn,ms){const key=++id;jobs.set(key,{fn,ms});return key;},clearTimeout:key=>jobs.delete(key)};}
 
 test('item-look catalogs retry only failed dependencies, throttle repeated failures and notify waiters once',()=>{
-  let now=0;const requests=[],calls=[],c=moduleVM('assets/_script/HeroItemLooks.js',{Date:{now:()=>now},cc:{JsonAsset:function(){},resources:{load(file,type,done){requests.push({file,done});}}}},{HeroWeapons:require('../../assets/_script/HeroWeapons'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({})})}}}),api=c.exports;
+  let now=0;const requests=[],calls=[],c=moduleVM('assets/_script/HeroItemLooks.js',{Date:{now:()=>now},cc:{JsonAsset:function(){},resources:{load(file,type,done){requests.push({file,done});}}}},{HeroWeapons:require('../../assets/_script/HeroWeapons'),EquipmentTiers:require('../../assets/_script/EquipmentTiers'),KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getEquipCfgList:()=>require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg})}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({})})}}}),api=c.exports;
   const data={assignments:{'2:1':'hat'},profiles:{hat:{parts:[{sprite:'hat'}]}}};
   api.whenReady(()=>calls.push('ready'));requests[0].done(Error('catalog failed'));for(let i=0;i<20;i++)api.image(2,1);assert.equal(requests.length,1);
   now=1000;api.image(2,1);requests[1].done(null,{json:data});assert.equal(requests[2].file,'hero-maker/catalog');requests[2].done(null,{json:{icons:{}}});requests[3].done(Error('parts failed'));assert.deepEqual(calls,[]);

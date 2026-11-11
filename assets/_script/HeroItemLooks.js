@@ -43,9 +43,9 @@ function merge(base, items) {
   Object.keys(bySlot).forEach(function (key) { result.parts.push(bySlot[key]); });
   return result;
 }
-function resolve(data, levels, style) {
+function resolve(data, levels, style, equipment) {
   if (!data) return [];
-  return Object.keys(levels).map(function (slot) { var key = slot + ":" + levels[slot] + ((slot === "3" || slot === "4") && style && style !== "skirmisher" ? ":" + style : ""), id = data.assignments[key]; return id && data.profiles[id]; }).filter(Boolean);
+  return Object.keys(levels).map(function (slot) { var key = slot + ":" + levels[slot] + ((slot === "3" || slot === "4") && style && style !== "skirmisher" ? ":" + style : ""), id = equipment ? require("EquipmentTiers").profileId(data, equipment, slot, levels[slot], style) : data.assignments[key]; return id && data.profiles[id]; }).filter(Boolean);
 }
 function current(base) {
   load();
@@ -55,11 +55,11 @@ function current(base) {
   var style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher";
   var key = style + ":" + Object.keys(levels).map(function (slot) { return levels[slot]; }).join(":");
   if (cachedBase === base && cachedLevels === key) return cachedLook;
-  var items = resolve(catalog, levels, style);
+  var items = resolve(catalog, levels, style, require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList());
   cachedBase = base; cachedLevels = key; cachedLook = items.length ? merge(base, items) : base;
   return cachedLook;
 }
-function item(slot, level) { load(); var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher", id = catalog && catalog.assignments[require("HeroWeapons").itemKey(slot, level, style)]; return id && catalog.profiles[id] || null; }
+function item(slot, level) { load(); var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher", equipment = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList(), id = require("EquipmentTiers").profileId(catalog, equipment, slot, level, style); return id && catalog.profiles[id] || null; }
 function image(slot, level) {
   var profile = item(slot, level), part = profile && profile.parts[0], asset = part && library && library[part.sprite] || profile && profile.icon;
   if (!asset && defaults && defaults.icons && defaults.icons[slot]) {
@@ -67,7 +67,19 @@ function image(slot, level) {
     var cfg = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (row) { return row.id === slot; })[0], tier = cfg && cfg.levelInfo[level - 1].EquipSkin;
     asset = defaults.icons[slot][[3,4,5].indexOf(slot) >= 0 ? style + "_" + tier : tier];
   }
+  if (!asset && Number(slot) === 6) {
+    var gear = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (row) { return row.id === 6; })[0], selected = gear && gear.levelInfo[level - 1], skin = profile && Object.values(profile.skins || {})[0] || selected && selected.EquipSkin;
+    if (skin) asset = {resource:"unit-library/mount-icons/hero-horse-" + skin, width:128, height:128};
+  }
   return asset ? Object.assign({}, asset, { tint: part && part.tint || asset.tint || '#ffffff' }) : null;
+}
+function gearImage(slot, level, area) {
+  var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher", view = require("HeroWeapons").gear(style, slot, area), source;
+  if (view && view.kind === "linked") source = image(view.occupiedBy, user.getPersonLevel(view.occupiedBy));
+  else if (view && view.kind === "bonus") source = view.icon;
+  else source = image(slot, level);
+  if (view && view.kind === "offhand" && view.icon && !item(slot, level)) source = view.icon;
+  return source && Object.assign({}, source, {gray:!!(view && view.gray),opacity:view && view.opacity || 255});
 }
 function whenReady(callback) {
   if (ready()) return;
@@ -79,4 +91,4 @@ function whenReady(callback) {
   load();
   return listeners.get(callback);
 }
-exports.current = current; exports.item = item; exports.image = image; exports.whenReady = whenReady; exports.merge = merge; exports.resolve = resolve;
+exports.current = current; exports.item = item; exports.image = image; exports.gearImage = gearImage; exports.whenReady = whenReady; exports.merge = merge; exports.resolve = resolve;

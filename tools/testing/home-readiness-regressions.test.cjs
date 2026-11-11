@@ -37,7 +37,7 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
   };
   cc.Node.EventType = { TOUCH_END: 'touch', SIZE_CHANGED: 'size', POSITION_CHANGED: 'position' };
   const modules = {
-    BaseUI: { default: Component }, HeroWeapons: require('../../assets/_script/HeroWeapons'), HeroWeaponPicker: { close() {} }, KinghtFallEnum: { KinghtFallEnumTreasureEnum: { ForgeAmulet: 1 } },
+    BaseUI: { default: Component }, HeroWeapons: require('../../assets/_script/HeroWeapons'), HeroWeaponPicker: { close() {}, installSwitch: noop }, KinghtFallEnum: { KinghtFallEnumTreasureEnum: { ForgeAmulet: 1 } },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: once({ getUserData: () => ({ getTreasureLevel: () => null, getMaxStage: () => 2 }) }) },
     KinghtFallDataMgr: { KinghtFallDataMgr: once({ getEquipCfgList: () => equipment, getLevelCfgById2: () => ({ EquipLevelCap: 10 }) }) },
     Utils: { Utils: { StringFormat: () => '' } }, KinghtFallTextConfig: { KinghtFallTextConfig: {} },

@@ -2,7 +2,7 @@
 const path=require('path');
 const Store=require('./lib/store').Store;
 const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
-let store=null,assets=null,restoreMetadataSave=null,worlds=null;
+let store=null,assets=null,restoreMetadataSave=null,restoreSpineLibrarySave=null,worlds=null;
 function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;return selected&&selected.BuildEnum?selected:docs.A.data;}});return worlds;}
 function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
 function project(){const root=Editor.Project&&Editor.Project.path||Editor.projectPath;if(!root)throw Error('Open HeroKingdomDefense first');return root;}
@@ -114,7 +114,11 @@ const messages={
 Object.keys(panels).forEach(kind=>{messages['open-'+kind]=()=>open(kind);});
 module.exports={load(){
     if(restoreMetadataSave)restoreMetadataSave();
+    if(restoreSpineLibrarySave){restoreSpineLibrarySave();restoreSpineLibrarySave=null;}
+    if(Editor.versions&&/^2\.4\./.test(Editor.versions.CocosCreator)&&Editor.assetdb&&typeof Editor.assetdb.saveAssetToLibrary==='function'){
+        restoreSpineLibrarySave=require('./lib/spine-library-save').install(Editor.assetdb,()=>typeof cc!=='undefined'&&cc.js&&cc.js.getClassByName('sp.SkeletonData'));
+    }
     if(process.platform==='win32'&&Editor.require&&Editor.versions&&/^2\.4\./.test(Editor.versions.CocosCreator)){
         restoreMetadataSave=require('./lib/metadata-save').install(Editor.require('app://asset-db/lib/meta'),path.join(project(),'assets'));
     }
-},unload(){if(restoreMetadataSave){restoreMetadataSave();restoreMetadataSave=null;}if(store&&store.changes().length)Editor.warn('[Game Tools] Unsaved drafts were not applied to the game. Keep the panels open until Save or Discard.');try{require('./worlds/preview').shutdown();require('./testing/session').shutdown();}catch(e){if(e.code!=='MODULE_NOT_FOUND')Editor.warn('[Game Tools] '+e.message);}store=null;assets=null;worlds=null;},messages,_getStore:getStore,_getWorlds:getWorlds};
+},unload(){if(restoreMetadataSave){restoreMetadataSave();restoreMetadataSave=null;}if(restoreSpineLibrarySave){restoreSpineLibrarySave();restoreSpineLibrarySave=null;}if(store&&store.changes().length)Editor.warn('[Game Tools] Unsaved drafts were not applied to the game. Keep the panels open until Save or Discard.');try{require('./worlds/preview').shutdown();require('./testing/session').shutdown();}catch(e){if(e.code!=='MODULE_NOT_FOUND')Editor.warn('[Game Tools] '+e.message);}store=null;assets=null;worlds=null;},messages,_getStore:getStore,_getWorlds:getWorlds};

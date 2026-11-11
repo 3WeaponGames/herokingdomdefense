@@ -12,7 +12,7 @@ function role(asset){
 }
 function layerFor(rig,asset){const value=role(asset),roles={Helmet:'wqyl_lead_tou',Hair:'wqyl_lead_tou',Hair_Helmet:'wqyl_lead_tou',Beard:'wqyl_lead_tou',Eye:'wqyl_lead_tou',Chest:'wqyl_lead_shenti',Bow:'wqyl_lead_gong',Mount:'wqyl_lead_ma',Mount_Down:'wqyl_lead_ma'};
   if(rig.layers.some(layer=>layer.json&&layer.json._heroMaker)){
-    const group={Chest:'doupeng',Cape:'doupeng',Boots:'shenti',Gloves:'shou',Arrow:'jian',Shield:'gong',Sword:'gong',Axe:'gong',Blunt:'gong',Spear:'gong',Staff:'gong',Wand:'gong',Gun:'gong',Crossbow:'gong'}[value];
+    const group={Chest:'doupeng',Cape:'doupeng',Boots:'shenti',Gloves:'shou',Arrow:'jian',Shield:'jian',Sword:'gong',Axe:'gong',Blunt:'gong',Spear:'gong',Staff:'gong',Wand:'gong',Gun:'gong',Crossbow:'gong'}[value];
     if(group){const found=rig.layers.find(layer=>layer.name==='wqyl_lead_'+group);if(found)return found;}
   }
   if(roles[value]){const found=rig.layers.find(layer=>layer.name===roles[value]);if(found)return found;}

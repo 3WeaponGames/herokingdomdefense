@@ -7,6 +7,7 @@ function fixture(t){
  const item=structuredClone(require('../../assets/resources/hero-items/catalog.json').profiles['new-item']),assets=require('../../assets/resources/character-parts/catalog.json').parts,part={...item.parts[0],id:'charm',sprite:assets.find(a=>a.category==='Chest').id,slot:'Rider/Body/Head/Hair',bone:'Rider/Body/Head',tint:'#80c0ff'};
  write('assets/resources/characters/catalog.json',{version:1,profiles:{hero:{name:'Hero',base:{type:'hero',id:'hero'},parts:[part]}},assignments:{'hero:hero:default':'hero'},unknown:{preserve:7}});
  write('assets/resources/hero-items/catalog.json',{version:1,profiles:{helmet:item},assignments:{'2:10':'helmet'},unknown:true});write('assets/KinghtFallEnemyAni/ndPlay.prefab',[]);
+ write('assets/KinghtFallConfig/GameJsonCfg.json',{EquipCfg:require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg});
  for(const id of [part.sprite,item.parts[0].sprite]){const asset=assets.find(a=>a.id===id),file=path.join(dir,asset.image);fs.mkdirSync(path.dirname(file),{recursive:true});fs.copyFileSync(path.join(root,asset.image),file);}
  const describe=Units.describe;Units.describe=(_root,request)=>describe(root,request);t.after(()=>{Units.describe=describe;Units.invalidate();});
  const service=new Service(dir);service.assets=()=>({parts:assets});service.units=()=>[{type:'hero',id:'hero',key:'hero:hero:default'}];return{dir,service,itemFile:path.join(dir,'assets/resources/hero-items/catalog.json')};
