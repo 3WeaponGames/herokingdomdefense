@@ -142,12 +142,10 @@
                 "path": "rts_door_inward_1",
                 "width": 265,
                 "height": 365,
-                "anchorX": 5,
-                "anchorY": 209.00497512437812,
+                "anchorX": 232.51219512195124,
+                "anchorY": 360.67977187234555,
                 "targetX": 487.0243902439025,
-                "targetY": 212.55284552845532,
-                "mirrorX": true,
-                "mirrorSlope": 0.6666666666666666
+                "targetY": 212.55284552845532
               }
             ]
           },
@@ -168,12 +166,10 @@
                 "path": "rts_door_outward_1",
                 "width": 260,
                 "height": 365,
-                "anchorX": 230.51219512195124,
-                "anchorY": 359.7043533982138,
+                "anchorX": 3,
+                "anchorY": 208.0295566502463,
                 "targetX": 487.0243902439025,
-                "targetY": 212.55284552845532,
-                "mirrorX": true,
-                "mirrorSlope": 0.6666666666666666
+                "targetY": 212.55284552845532
               }
             ]
           }
@@ -224,12 +220,10 @@
                 "path": "rts_door_inward_2",
                 "width": 259,
                 "height": 365,
-                "anchorX": 5,
-                "anchorY": 208.31343283582092,
+                "anchorX": 232.51219512195124,
+                "anchorY": 359.9882295837884,
                 "targetX": 487.0243902439025,
-                "targetY": 212.55284552845532,
-                "mirrorX": true,
-                "mirrorSlope": 0.6666666666666666
+                "targetY": 212.55284552845532
               }
             ]
           },
@@ -250,12 +244,10 @@
                 "path": "rts_door_outward_2",
                 "width": 264,
                 "height": 365,
-                "anchorX": 235.51219512195124,
-                "anchorY": 359.3563887877684,
+                "anchorX": 8,
+                "anchorY": 207.68159203980096,
                 "targetX": 487.0243902439025,
-                "targetY": 212.55284552845532,
-                "mirrorX": true,
-                "mirrorSlope": 0.6666666666666666
+                "targetY": 212.55284552845532
               }
             ]
           }
@@ -306,12 +298,10 @@
                 "path": "rts_door_inward_3",
                 "width": 265,
                 "height": 364,
-                "anchorX": 4,
-                "anchorY": 207.02487562189057,
+                "anchorX": 231.51219512195124,
+                "anchorY": 358.69967236985804,
                 "targetX": 487.0243902439025,
-                "targetY": 212.55284552845532,
-                "mirrorX": true,
-                "mirrorSlope": 0.6666666666666666
+                "targetY": 212.55284552845532
               }
             ]
           },
@@ -332,12 +322,10 @@
                 "path": "rts_door_outward_3",
                 "width": 263,
                 "height": 367,
-                "anchorX": 231.51219512195124,
-                "anchorY": 359.8659732185557,
+                "anchorX": 4,
+                "anchorY": 208.19117647058823,
                 "targetX": 487.0243902439025,
-                "targetY": 212.55284552845532,
-                "mirrorX": true,
-                "mirrorSlope": 0.6666666666666666
+                "targetY": 212.55284552845532
               }
             ]
           }

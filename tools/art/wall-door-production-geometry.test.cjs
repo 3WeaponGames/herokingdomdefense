@@ -22,7 +22,7 @@ test('the supplied sheet contains nine reviewed images, empty deleted regions an
  for(const r of records){const im=pixels(r);assert.equal(hash(im.rgba),r.rgbaSha256,'A changed supplied image requires an explicit pixel review');assert.deepEqual([im.width,im.height],r.size);assert(rgbaCount(im)>1000);}
  for(const r of [[1817,2,260,366],[2081,2,267,366],[2884,2,266,365],[3418,2,266,365],[2,537,260,364],[535,537,260,363]])assert.equal(rgbaCount(PNG.crop(image,...r,false)),0,'Deleted duplicate stays empty');
  for(const tier of json.wallKit.doors.tiers)for(const direction of ['inward','outward']){
-  const [near,far]=['near','far'].map(id=>tier.states[direction].parts.find(p=>p.id===id));assert.equal(near.path,far.path);assert.equal(near.mirrorX,undefined);assert.equal(far.mirrorX,true);assert.equal(far.mirrorSlope,2/3);assert(!near.poseOffset&&!far.poseOffset);
+  const [near,far]=['near','far'].map(id=>tier.states[direction].parts.find(p=>p.id===id));assert.equal(near.path,far.path);assert.equal(near.mirrorX,undefined);assert.equal(far.mirrorX,undefined);assert.equal(far.mirrorSlope,undefined);assert.equal(far.anchorX,near.anchorX);assert.equal(far.anchorY,near.anchorY);assert(!near.poseOffset&&!far.poseOffset);
  }
  assert(!/rts_door_(?:inward|outward)_(?:near|far)_[123]/.test(atlasText),'Separate near/far open textures are removed');
 });
@@ -33,12 +33,13 @@ test('reviewed single leaves retain their painted floor, upright edges and physi
   const record=r.poses[direction],source=pixels(record),profile=G.alphaProfile(source),columns=profile.columns.filter(p=>p[0]>=40&&p[0]<=200),floor=G.fitLine(columns.map(p=>[p[0],p[2]]));
   assert(Math.abs(floor.slope-2/3)<.02,'The actual painted rail follows the open isometric axis');
   const spec=review.doors.tiers[r.level-1],parts=spec.states[direction].parts;
-  close(Math.abs(parts[0].anchorX-parts[1].anchorX),(spec.hinges.right.x-spec.hinges.left.x)/2);
+  close(record.physicalWidth,(spec.hinges.right.x-spec.hinges.left.x)/2);
+  close(parts[0].anchorX,parts[1].anchorX);close(parts[0].anchorY,parts[1].anchorY);
   for(const part of parts){const actualY=floor.slope*part.anchorX+floor.intercept;assert(Math.abs(actualY-part.anchorY)*spec.scale<.4,'The registered floor tracks real painted pixels');}
  }
 });
 
-test('actual Spine mirrors shared leaves to the same opening side at every tier, facing and day/night',engine,t=>{
+test('actual Spine retains rigid shared artwork, correct hinge edges and opening side at every tier, facing and day/night',engine,t=>{
  const spine=require(runtime),before=JSON.stringify(json);let poses=0,pins=0;
  for(const face of ['NE','NW','SE','SW']){
   let fitted=Kit.install(json,json.wallKit.layout,undefined,{mirrorX:Facing.mirrorX(face),adjustmentsData:{version:1,poses:{}}});if(Facing.reverse(face))fitted=Facing.mirrorJson(fitted);
@@ -47,14 +48,19 @@ test('actual Spine mirrors shared leaves to the same opening side at every tier,
    const near=pixel(quad,spec.states.closed,feet.left),far=pixel(quad,spec.states.closed,feet.right),wall={x:far.x-near.x,y:far.y-near.y},signs={};
    for(const direction of ['inward','outward'])for(const night of [false,true]){
     const selected=(direction==='inward')!==Facing.reverse(face)?'inward':'outward',record=r.poses[selected],opened=play.pose('open_'+direction+(night?'_night':''));poses++;assert.equal(opened.findSlot(Door.slot).getAttachment(),null);const crosses=[];
-    for(const part of spec.states[selected].parts){const slot=opened.findSlot(Door.partSlots[part.id]),attachment=slot.getAttachment(),v=vertices(slot);assert(attachment instanceof (part.mirrorX?spine.MeshAttachment:spine.RegionAttachment));assert.equal(attachment.path,record.path);assert(!slot.deform.length);if(night)close(slot.color.r,167/255);
+    const shapes=[];
+    for(const part of spec.states[selected].parts){const slot=opened.findSlot(Door.partSlots[part.id]),attachment=slot.getAttachment(),v=vertices(slot);assert(attachment instanceof spine.RegionAttachment,'Painted thickness and hardware must use a rigid image, including the far leaf');assert.equal(attachment.path,record.path);assert(!slot.deform.length);if(night)close(slot.color.r,167/255);
+     const origin=pixel(v,part,{x:0,y:0}),right=pixel(v,part,{x:part.width,y:0}),bottom=pixel(v,part,{x:0,y:part.height}),rx=right.x-origin.x,ry=right.y-origin.y,bx=bottom.x-origin.x,by=bottom.y-origin.y;
+     close((rx*bx+ry*by)/(Math.hypot(rx,ry)*Math.hypot(bx,by)),0);close(Math.hypot(rx,ry),part.width*spec.scale);close(Math.hypot(bx,by),part.height*spec.scale);
+     shapes.push({quad:v.map((n,i)=>n-v[i%2]),uvs:Array.from(attachment.uvs),anchor:[part.anchorX,part.anchorY]});
      const hinge=pixel(v,part,{x:part.anchorX,y:part.anchorY}),target=pixel(quad,spec.states.closed,{x:part.targetX,y:part.targetY});close(hinge.x,target.x);close(hinge.y,target.y);pins++;
      const top=pixel(v,part,{x:part.anchorX,y:part.anchorY-180});close(top.x,hinge.x);close(Math.hypot(top.x-hinge.x,top.y-hinge.y),180*spec.scale);
-     const delta=(selected==='inward'?-1:1)*(part.id==='near'?1:-1)*record.physicalWidth,x=part.anchorX+delta,free=pixel(v,part,{x,y:record.baseline.slope*x+record.baseline.intercept}),vector={x:free.x-hinge.x,y:free.y-hinge.y};crosses.push(wall.x*vector.y-wall.y*vector.x);
+     const delta=(selected==='inward'?-1:1)*record.physicalWidth,x=part.anchorX+delta,free=pixel(v,part,{x,y:record.baseline.slope*x+record.baseline.intercept}),vector={x:free.x-hinge.x,y:free.y-hinge.y};crosses.push(wall.x*vector.y-wall.y*vector.x);
      // A ground-plane quarter turn has the other isometric slope and retains
      // half the gate's horizontal span; this also detects a screen-only flip.
      close(Math.abs(vector.y/vector.x),2/3);close(Math.abs(vector.x),Math.abs(wall.x)/2);
     }
+    assert.deepEqual(shapes[0].anchor,shapes[1].anchor,'Both images put the painted hinge, rather than the handle, at their respective pillars');assert.deepEqual(shapes[0].uvs,shapes[1].uvs);shapes[0].quad.forEach((n,i)=>close(n,shapes[1].quad[i]));
     assert(crosses[0]*crosses[1]>0,'Both leaves open to the same side');if(!night)signs[direction]=Math.sign(crosses[0]);else assert.equal(Math.sign(crosses[0]),signs[direction]);
    }
    assert.equal(signs.inward,-signs.outward);const shut=play.pose('shut_night');assert.equal(shut.findSlot(Door.slot).getAttachment().path,spec.states.closed.path);for(const slot of Object.values(Door.partSlots))assert.equal(shut.findSlot(slot).getAttachment(),null);
