@@ -74,11 +74,38 @@ test('changed metadata retains the original UNKNOWN write failure', () => {
     assert.deepEqual(f.db._uuid2meta, {});
 });
 
-test('BOM, line endings and trailing newline differences still use Creator save', () => {
+test('BOM, line endings, trailing newline and key order retain identical metadata without reopening it', () => {
     const document = JSON.stringify(fixture().document, null, 2);
-    for (const existing of ['\ufeff' + document, document.replace(/\n/g, '\r\n'), document + '\n']) {
+    const reordered = JSON.stringify({ unknown: { retained: true }, importer: 'spine', uuid: 'asset-id' });
+    for (const existing of ['\ufeff' + document, document.replace(/\n/g, '\r\n'), document + '\n', reordered]) {
         const f = fixture(existing);
         f.module.save(f.db, f.file, f.meta);
-        assert.equal(f.calls.length, 1);
+        assert.equal(f.calls.length, 0);
+        assert.equal(f.db._uuid2meta['asset-id'], f.meta);
+        assert.equal(f.db._uuid2meta['child-id'], f.child);
     }
+});
+
+test('format-independent comparisons preserve real value, array order and unknown-field changes', () => {
+    for (const existing of [
+        '{"uuid":"asset-id","importer":"spine","unknown":{"retained":false}}',
+        '{"uuid":"asset-id","importer":"spine","unknown":{"retained":"true"}}',
+        '{"uuid":"asset-id","importer":"spine","unknown":{"retained":true},"extra":7}',
+        '{"uuid":"asset-id","importer":"spine","unknown":{"retained":true},"textures":["second","first"]}',
+        '{invalid JSON'
+    ]) {
+        const f = fixture(existing);
+        if (existing.includes('textures')) f.document.textures = ['first', 'second'];
+        assert.equal(f.module.save(f.db, f.file, f.meta), 'creator-result');
+        assert.equal(f.calls.length, 1);
+        assert.deepEqual(f.db._uuid2meta, {});
+    }
+});
+
+test('unchanged newline metadata cannot enter the UNKNOWN truncate that stranded the import callback', () => {
+    const f = fixture(); f.restore();
+    f.module.save = () => { throw Object.assign(Error('metadata write rejected'), { code: 'UNKNOWN' }); };
+    install(f.module, f.assets, { readFileSync: () => JSON.stringify(f.document, null, 2) + '\n' });
+    assert.doesNotThrow(() => f.module.save(f.db, f.file, f.meta));
+    assert.equal(f.db._uuid2meta['asset-id'], f.meta);
 });
