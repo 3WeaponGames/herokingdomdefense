@@ -35,9 +35,10 @@ function vertices(slot) {const a = slot.getAttachment(); if (!a) return []; cons
 function center(slot) {const v = vertices(slot); return {x: (v[0] + v[2] + v[4] + v[6]) / 4, y: (v[1] + v[3] + v[5] + v[7]) / 4};}
 function solidOrder(skeleton, layout) {const bySlot = Object.fromEntries(A.catalog(layout).map(p => [p.slot, p.id])); return skeleton.drawOrder.filter(slot => bySlot[slot.data.name] && slot.getAttachment()).map(slot => bySlot[slot.data.name]);}
 
-test('the saved module starts empty; default fitting, source recovery and reads remain unchanged', () => {
+test('saved data validates and stays detached; explicitly empty fitting preserves the original baseline', () => {
   const dataPath = path.resolve(__dirname, '../../assets/_script/WallAdjustmentData.js'), before = fs.readFileSync(dataPath);
-  assert.deepEqual(A.getData(), empty()); assert.equal(A.hasData(), false);
+  const saved = A.getData(), revision = A.revision();
+  assert(A.validate(saved)); assert.equal(A.hasData(empty()), false);
   for (const face of ['NW', 'NE', 'SW', 'SE']) {
     const json = fit(face); assert(!json.wallAdjustments);
     assert.strictEqual(A.apply(json, plan(), {data: empty()}), json);
@@ -45,8 +46,46 @@ test('the saved module starts empty; default fitting, source recovery and reads 
     assert.deepEqual(Door.reverse(Door.reverse(json)), json);
   }
   const detached = A.getData(); detached.poses['1/NW/closed'] = {pieces: {'door/near': {x: 2, y: 3}}};
-  assert.equal(A.hasData(), false, 'readers cannot modify the held runtime default');
+  assert.deepEqual(A.getData(), saved, 'readers cannot modify the held saved placements');
+  assert.equal(A.revision(), revision);
   assert.deepEqual(fs.readFileSync(dataPath), before, 'inspection never writes the saved module');
+});
+
+test('actual saved placements move real Spine vertices and layers for their selected tier, face and pose', engine, t => {
+  const spine = require(runtime), data = A.getData(), before = A.revision(), layout = plan({nativeVersion: 2, left: 3, right: 3, gate: true, start: 'post', end: 'post'});
+  const items = A.catalog(layout), ids = items.map(item => item.id);
+  let poses = 0, checkedVertices = 0;
+  assert(A.validate(data));
+  for (const tier of [1, 2, 3]) for (const face of ['NW', 'NE', 'SW', 'SE']) {
+    const authored = fit(face, data, tier, false, layout);
+    const active = ['closed', 'inward', 'outward'].some(state => A.hasData({version: 1, poses: {[`${tier}/${face}/${state}`]: data.poses[`${tier}/${face}/${state}`] || {}}}));
+    assert.equal(!!authored.wallAdjustments, active, 'Runtime fitting applies exactly the selected saved placements');
+    const actual = player(spine, fit(face, data, tier, true, layout), tier), baseline = player(spine, fit(face, empty(), tier, true, layout), tier), sign = Facing.mirrorX(face) ? -1 : 1;
+    for (const state of ['closed', 'inward', 'outward']) {
+      const saved = data.poses[`${tier}/${face}/${state}`]; if (!saved) continue;
+      for (const clip of state === 'closed' ? ['idle', 'idle_night', 'shut', 'shut_night'] : ['open_' + state, 'open_' + state + '_night']) {
+        const target = actual.pose(clip), source = baseline.pose(clip);
+        for (const item of items) for (const name of item.slots) {
+          const a = target.findSlot(name), b = source.findSlot(name), av = vertices(a), bv = vertices(b), offset = saved.pieces?.[item.id] || {};
+          assert(av.length && av.length === bv.length, `${tier}/${face}/${clip}/${item.id} remains a drawable`);
+          assert.equal(a.getAttachment().path, b.getAttachment().path, 'Saved placement changes no source artwork');
+          for (let index = 0; index < av.length; index += 2) {
+            close((av[index] - bv[index]) * sign, offset.x || 0, `${tier}/${face}/${clip}/${item.id} x`);
+            close(av[index + 1] - bv[index + 1], offset.y || 0, `${tier}/${face}/${clip}/${item.id} y`); checkedVertices++;
+          }
+        }
+        if (saved.order?.length) {
+          const order = saved.order.filter(id => ids.includes(id));
+          for (const id of solidOrder(source, layout)) if (!order.includes(id)) order.push(id);
+          assert.deepEqual(solidOrder(target, layout), order, 'Saved stable IDs determine actual back-to-front order');
+        }
+        poses++;
+      }
+    }
+    assert.deepEqual(Kit.source(authored), Kit.source(installed), 'Saved visuals preserve every original source timeline');
+  }
+  assert.equal(A.revision(), before, 'Reading and posing authored data never changes held data');
+  t.diagnostic(JSON.stringify({savedPoses: Object.keys(data.poses).length, actualSpinePoses: poses, checkedVertices, projectWrites: 0}));
 });
 
 test('pure edits reset only known fields, preserving unknown content and ignoring future schema identifiers', () => {

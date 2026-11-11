@@ -80,7 +80,7 @@ function leaves(spine, skeleton, matrix) {
   }
   return result;
 }
-function records() {
+function records(neutral = false) {
   const source = L.inspect(root, 'Map01'), config = L.read(root, L.configFile('A'));
   const stage = L.adaptStage(root, 'A', 1, {...config.LevelCfg[0], prefab: 'Map01'}), building = stage.buildings.find(value => value.kind === 6);
   assert(building, 'Map01 supplies an actual paired wall template');
@@ -96,6 +96,13 @@ function records() {
     assert.equal(JSON.stringify(detached), before, 'Preparing actual preview descriptors cannot edit the stage');
     const pair = result.buildings[building.id].levels[1].skeletons.filter(part => part.json.wallKit || part.json.wallGate);
     assert.equal(pair.length, 2, 'Keep CQ2 effects while CQ1 supplies the matched door');
+    // Calibration fixtures exclude saved authoring offsets; production preview
+    // parsing above and wall-adjustments.test.cjs cover the saved placements.
+    if (neutral) for (const part of pair) if (part.json.wallKit) {
+      let json = Kit.install(Kit.source(part.json), part.json.wallKit.layout, part.json.wallKit, {mirrorX: Facing.mirrorX(face), adjustmentsData: {version: 1, poses: {}}});
+      if (Facing.reverse(face)) json = Facing.mirrorJson(json);
+      part.json = json;
+    }
     all.push({face, pair});
   }
   assert.equal(JSON.stringify(source.data), sourceBefore, 'The actual prefab remains unchanged');
@@ -158,7 +165,7 @@ function doorParts(spine,skeleton,spec,state){
 
 test('real production Spine honors calibrated closed targets plus declared rigid visual insets in every tier, direction and compass face',options,()=>{
  const spine=require(runtime);
- for(const {face,pair}of records()){
+ for(const {face,pair}of records(true)){
   const descriptor=pair.find(part=>part.json.wallDoor),companion=pair.find(part=>part.json.wallGate);assert(descriptor&&companion);assert.equal(descriptor.json.wallDoor.closedOnly,false);assert.equal(descriptor.json.wallDoor.reverse,Facing.reverse(face));const {data}=load(spine,descriptor),side=load(spine,companion).data;
   for(let tier=1;tier<=3;tier++){
    const name='cq-rts-'+tier,spec=descriptor.json.wallDoor.tiers[tier-1],closed=pose(spine,data,name,'idle',0),closedSlot=closed.findSlot(Door.slot);assert(closedSlot.getAttachment() instanceof spine.RegionAttachment);assert.equal(closedSlot.getAttachment().path,spec.states.closed.path);const closedPoints=vertices(spine,closedSlot);
@@ -174,7 +181,7 @@ test('real production Spine honors calibrated closed targets plus declared rigid
  }
 });
 
-function closedOnlyDescriptor(descriptor,face){const metadata=clone(descriptor.json.wallKit);metadata.doors.closedOnly=true;for(const tier of metadata.doors.tiers)tier.states={closed:tier.states.closed};let json=Kit.install(Kit.source(descriptor.json),metadata.layout,metadata,{mirrorX:Facing.mirrorX(face)});if(Facing.reverse(face))json=Facing.mirrorJson(json);return {...descriptor,json};}
+function closedOnlyDescriptor(descriptor,face){const metadata=clone(descriptor.json.wallKit);metadata.doors.closedOnly=true;for(const tier of metadata.doors.tiers)tier.states={closed:tier.states.closed};let json=Kit.install(Kit.source(descriptor.json),metadata.layout,metadata,{mirrorX:Facing.mirrorX(face),adjustmentsData:{version:1,poses:{}}});if(Facing.reverse(face))json=Facing.mirrorJson(json);return {...descriptor,json};}
 
 test('detached closed-only Spine still opens a clear passage and restores its registered image in all tiers and faces', options, () => {
  const spine=require(runtime);
@@ -201,7 +208,7 @@ test('detached closed-only Spine still opens a clear passage and restores its re
 // Recover and refit the original gateway explicitly, independent of production style.
 function originalPair(pair,face){
  const main=pair.find(part=>part.json.wallKit),metadata=clone(main.json.wallKit),plan=metadata.layout;metadata.gateStyle='original';delete metadata.doors;
- return pair.map(part=>{let json;if(part===main)json=Kit.install(Kit.source(part.json),plan,metadata,{mirrorX:Facing.mirrorX(face)});else{json=Kit.fitOriginalGate(Kit.source(part.json),plan,{frameToLocal:Maps.multiply(Maps.inverse(part.matrix),main.matrix)});json.wallGate={...clone(part.json.wallGate),style:'original'};}if(Facing.reverse(face))json=Facing.mirrorJson(json);return {...part,json};});
+ return pair.map(part=>{let json;if(part===main)json=Kit.install(Kit.source(part.json),plan,metadata,{mirrorX:Facing.mirrorX(face),adjustmentsData:{version:1,poses:{}}});else{json=Kit.fitOriginalGate(Kit.source(part.json),plan,{frameToLocal:Maps.multiply(Maps.inverse(part.matrix),main.matrix)});json.wallGate={...clone(part.json.wallGate),style:'original'};}if(Facing.reverse(face))json=Facing.mirrorJson(json);return {...part,json};});
 }
 
 test('real Spine slot switches open both original gateway halves outward and return them to the same closed pose in day and night', options, () => {

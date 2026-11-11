@@ -135,7 +135,7 @@ test('actual Spine binds reviewed cap and floor pixels to native posts for all f
   const spine = require(runtime), before = JSON.stringify(json), limits = reviewed.limits;
   let poses = 0, pins = 0, floors = 0;
   for (const face of ['NE', 'NW', 'SE', 'SW']) {
-    let fitted = Kit.install(json, json.wallKit.layout, undefined, {mirrorX: Facing.mirrorX(face)});
+    let fitted = Kit.install(json, json.wallKit.layout, undefined, {mirrorX: Facing.mirrorX(face), adjustmentsData: {version: 1, poses: {}}});
     if (Facing.reverse(face)) fitted = Facing.mirrorJson(fitted);
     const data = spineData(spine, fitted), mirror = p => ({x: (Facing.mirrorX(face) ? -1 : 1) * p.x, y: p.y});
     for (const r of reviewed.tiers) {

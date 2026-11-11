@@ -57,7 +57,7 @@ const runs = [
 ];
 
 function fitted(source, plan, meta, face) {
-  let json = Kit.install(source, plan, meta, {mirrorX: Facing.mirrorX(face)});
+  let json = Kit.install(source, plan, meta, {mirrorX: Facing.mirrorX(face), adjustmentsData: {version: 1, poses: {}}});
   if (Facing.reverse(face)) json = Facing.mirrorJson(json);
   return json;
 }
@@ -121,7 +121,7 @@ test('state-aware door depth is opt-in and recovering generated draw order resto
   for (const run of runs) {
     assert(Assembly.valid(run.value), run.name);
     const plan = Kit.layout(run.value), planSaved = clone(plan);
-    const old = Kit.install(source, plan, metadata(false));
+    const old = Kit.install(source, plan, metadata(false), {adjustmentsData:{version:1,poses:{}}});
     assert(!Object.hasOwn(old.wallDoor, 'depthOrder'), 'Absent capability retains the legacy marker representation');
     const bodyIndices = old.slots.map((slot, i) => slot.name.startsWith('rts_wall_part_') ? i : -1).filter(i => i >= 0);
     for (const slot of leafSlots) assert(old.slots.findIndex(value => value.name === slot) < Math.min(...bodyIndices), 'Legacy leaf ordering remains unchanged');
@@ -133,7 +133,7 @@ test('state-aware door depth is opt-in and recovering generated draw order resto
       const again = fitted(json, plan, meta, face);
       assert.deepEqual(Kit.source(again), source, 'Repeated refits cannot accumulate or lose authored draw order');
       assert.deepEqual(Kit.source(Door.reverse(Door.reverse(json))), source);
-      const optOut = Kit.install(json, plan, metadata(false));
+      const optOut = Kit.install(json, plan, metadata(false), {adjustmentsData:{version:1,poses:{}}});
       assert(!Object.hasOwn(optOut.wallDoor, 'depthOrder'));
       for (const [name, original] of Object.entries(source.animations)) for (const key of ['drawOrder', 'draworder']) assert.deepEqual(optOut.animations[name][key], original[key], 'Disabling depth restores authored aliases instead of leaking generated offsets');
       assert.deepEqual(Kit.source(optOut), source);
@@ -142,7 +142,7 @@ test('state-aware door depth is opt-in and recovering generated draw order resto
   }
   assert.deepEqual(source, saved); assert.deepEqual(meta, savedMeta);
   const noGate = Kit.layout({nativeVersion: 2, left: 2, right: 2, gate: false, start: 'post', end: 'post'});
-  const solid = Kit.install(source, noGate, meta);
+  const solid = Kit.install(source, noGate, meta, {adjustmentsData:{version:1,poses:{}}});
   assert(!solid.slots.some(slot => leafSlots.includes(slot.name)));
   assert.deepEqual(Kit.source(solid), source, 'A solid wall cannot introduce door depth or damage source timelines');
 });

@@ -1,6 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('path'),fs=require('fs'),temporary=require('./owned-temp');
 const GateSource=require('../worlds/gate-facing'),Facing=require('../../../assets/_script/GateFacing'),Preview=require('../worlds/building-preview'),Navigation=require('../worlds/navigation'),P=require('../worlds/prefab'),L=require('../worlds/legacy'),M=require('../worlds/model'),Maps=require('../lib/map-assets');
+const Adjustments=require('../../../assets/_script/WallAdjustments');
 const root=path.resolve(__dirname,'../../..'),faces=['NE','NW','SE','SW'];
 function fixture(slot){const source=L.inspect(root,'Map01'),config=L.read(root,L.configFile('A')),stage=L.adaptStage(root,'A',1),building=stage.buildings.find(b=>b.id===(slot||19));building.enabled=true;building.unlock=1;stage.buildings=[building];stage.specials=[];return {source,config,stage,building,service:{root,source:()=>source.data,index:()=>({documents:{A:config}})}};}
 function near(a,b,label){if(Array.isArray(a)){assert.equal(a.length,b.length,label);a.forEach((v,i)=>near(v,b[i],label));return;}if(a&&typeof a==='object'){near(a.x,b.x,label);near(a.y,b.y,label);return;}assert(Math.abs(a-b)<1e-7,(label||'coordinates')+': '+a+' vs '+b);}
@@ -40,11 +41,11 @@ test('generated and projected rotations keep Euler metadata aligned with quatern
  const source=P.skeleton('Rotated test',map);P.addEnvironment(root,source,map,{ground:[],assets:{prop:{frames:[{name:'prop',frameUuid:'00000000-0000-4000-a000-000000000000',x:0,y:0,width:10,height:20}]}}});const before=Maps.model(source),after=Maps.model(cocosInit(source)),owner=before.owners.find(n=>n.name==='Rotated prop');near(after.byId[owner.id].world,owner.world,'rotated scenery survives Creator initialization');assert.equal(source[owner.id]._eulerAngles.z,54);
 });
 
-test('explicit compass faces invalidate preview composition and reverse only the gate main and ground mesh assets',()=>{
+test('explicit compass faces invalidate preview composition and retain each face saved placements',()=>{
  const f=fixture(),index=f.service.index();f.service.index=()=>index;
  f.building.wallFacing='SW';const sw=Preview.describe(f.service,f.stage),base=sw.buildings[f.building.id].levels[1];f.building.wallFacing='NE';const ne=Preview.describe(f.service,f.stage),reversed=ne.buildings[f.building.id].levels[1];
  assert.notEqual(ne,sw);assert.deepEqual(base.blockers,reversed.blockers);
- for(let i=0;i<base.skeletons.length;i++){assert.equal(base.skeletons[i].source,reversed.skeletons[i].source);if(i<2){assert.notEqual(base.skeletons[i].revision,reversed.skeletons[i].revision);assert.deepEqual(reversed.skeletons[i].json,Facing.mirrorJson(base.skeletons[i].json));}else{assert.equal(base.skeletons[i].revision,reversed.skeletons[i].revision);assert.deepEqual(base.skeletons[i].json,reversed.skeletons[i].json);}}
+ for(let i=0;i<base.skeletons.length;i++){assert.equal(base.skeletons[i].source,reversed.skeletons[i].source);if(i<2){assert.notEqual(base.skeletons[i].revision,reversed.skeletons[i].revision);const raw=Facing.mirrorJson(Adjustments.restore(base.skeletons[i].json)),expected=raw.wallKit?Adjustments.apply(raw,raw.wallKit.layout,{tier:1,face:'NE',data:reversed.wallAdjustmentData}):raw;assert.deepEqual(reversed.skeletons[i].json,expected);}else{assert.equal(base.skeletons[i].revision,reversed.skeletons[i].revision);assert.deepEqual(base.skeletons[i].json,reversed.skeletons[i].json);}}
 });
 
 test('wall-facing metadata validates explicit compass choices without adding a default to legacy records',()=>{
