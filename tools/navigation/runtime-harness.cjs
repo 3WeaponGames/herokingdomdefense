@@ -128,7 +128,7 @@ function environment() {
   function load(name) {
     if (stubs[name]) return stubs[name];
     if (modules[name]) return modules[name].exports;
-    if (!/^(BuildingCost|GateFacing|UnitLevelStats|RelicRuntime|RelicCombat|RelicBattle|TowerCombat|ProjectileLooks|GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallGamePlayCtrl|KinghtFallBuild(Base|Wall|Barracks|Bartizan)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
+    if (!/^(BuildingPurchaseField|BuildingPurchaseFieldRuntime|BuildingCost|GateFacing|UnitLevelStats|RelicRuntime|RelicCombat|RelicBattle|TowerCombat|ProjectileLooks|GameToolsOverrides|KinghtFallNavigation|KinghtFallInterface|KinghtFallGameCtrl|KinghtFallGamePlayCtrl|KinghtFallBuild(Base|Wall|Barracks|Bartizan)|KinghtFallEnemy(Base|Melee|Long|Auxiliary|Item\d+)|KinghtFallSoldier(Base|Item\d+))$/.test(name)) return { default: function () {} };
     const module = { exports: {} }; modules[name] = module;
     const context = { module, exports: module.exports, require: load, cc, sp: { Skeleton: function () {} }, console, Set, Date: { now: () => now },
       __extends(Child, Parent) { Object.setPrototypeOf(Child, Parent); Child.prototype = Object.create(Parent.prototype); Child.prototype.constructor = Child; },

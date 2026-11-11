@@ -27,14 +27,14 @@ test('building placement cards keep six simple names with four compass gate faci
  assert.deepEqual(cards[5].variants.map(v=>v.placement.id),[19,19,19,19]);
  for(let i=0;i<cards.length;i++)for(const variant of cards[i].variants){
   assert(!/level|Map\d|\d/.test(cards[i].name+variant.label));
-  const original=i===5?source.buildings.find(b=>b.id===variant.placement.id):catalog[i],expected=M.clone(original);delete expected.catalogId;expected.name=cards[i].name;if(i===5){expected.wallFacing=variant.id;expected.wallRotation=0;expected.wallRun=Kit.nativeRun({nativeVersion:2,left:1,right:1,gate:true,start:'post',end:'post'});expected.purchaseSide=variant.placement.purchaseSide;expected.purchaseOffset=M.clone(variant.placement.purchaseOffset);}
+  const original=i===5?source.buildings.find(b=>b.id===variant.placement.id):catalog[i],expected=M.clone(original);delete expected.catalogId;expected.name=cards[i].name;expected.purchaseSide='default';expected.purchaseOffset={x:0,y:0};if(i===5){expected.wallFacing=variant.id;expected.wallRotation=0;expected.wallRun=Kit.nativeRun({nativeVersion:2,left:1,right:1,gate:true,start:'post',end:'post'});expected.purchaseSide=variant.placement.purchaseSide;expected.purchaseOffset=M.clone(variant.placement.purchaseOffset);}
   assert.deepEqual(variant.placement,expected,'template, sprite records, identifiers and upgrade roots remain the complete authored family');
   assert(!('preview' in variant.placement)&&!('variants' in variant.placement)&&!('catalogId' in variant.placement));
   assert.deepEqual(Object.keys(variant.preview).sort(),['errors','images','levels','runtimePath']);
   assert.deepEqual(variant.preview.errors,[]);assert.deepEqual(Object.keys(variant.preview.levels),['1','2','3']);
   assert(variant.preview.levels[1].sprites.length&&variant.preview.levels[1].blockers.length&&variant.preview.levels[1].step.length);
  }
- for(const variant of cards[5].variants){const level=variant.preview.levels[1],mirrored=['NW','SE'].includes(variant.id);assert(level.skeletons.every(s=>mirrored?s.matrix[0]<0:s.matrix[0]>0));assert.equal(level.skeletons.length,6);const center=level.purchaseField.center,normal=require('../../../assets/_script/GateFacing').normal(variant.id),k=Math.abs(normal.y);assert(center.x*normal.x+center.y*normal.y/(k*k)<0,'every new facing starts with its purchase field safely inside');}
+ for(const variant of cards[5].variants){const level=variant.preview.levels[1],mirrored=['NW','SE'].includes(variant.id);assert(level.skeletons.every(s=>mirrored?s.matrix[0]<0:s.matrix[0]>0));assert.equal(level.skeletons.length,6);const center=level.purchaseField.center;assert(center.x>0&&center.y<0,'Every new facing starts Southeast unless its authored variant default changes it');}
 });
 
 test('browsing building variants leaves sources, config, catalog placements and drafts unchanged',()=>{

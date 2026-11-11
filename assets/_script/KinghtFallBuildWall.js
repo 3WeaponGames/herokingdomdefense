@@ -179,6 +179,7 @@ var def_KinghtFallBuildWall = function (t) {
   };
   _ctor.prototype.doUpgreadAni = function () {
     var t = this;
+    if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);
     if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (1 == this.index) {
       this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.create, false);

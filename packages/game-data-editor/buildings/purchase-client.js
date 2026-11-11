@@ -1,0 +1,56 @@
+'use strict';
+const Renderer=require('../worlds/building-renderer'),Paint=require('../worlds/paint'),Maps=require('../lib/map-assets'),Settings=require('../../../assets/_script/BuildingPurchaseField');
+const clone=v=>JSON.parse(JSON.stringify(v)),same=(a,b)=>a.southwest===b.southwest&&a.x===b.x&&a.y===b.y;
+function mount(host,api){
+ const state=api.state||{},make=(tag,text,parent)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;};
+ const root=make('div',undefined,host);root.className='bld-pad-row';const left=make('div',undefined,root),right=make('div',undefined,root);left.className='bld-pad-preview';right.className='bld-pad-controls';
+ const canvas=make('canvas',undefined,left);canvas.width=800;canvas.height=400;canvas.className='bld-pad-canvas';canvas.tabIndex=0;canvas.setAttribute('aria-label','Ground build and upgrade pad preview');
+ const help=make('p','Drag the ground pad or drag an X/Y label. Shift moves faster; Alt gives finer control.',left),status=make('p','',left);help.className=status.className='bld-pad-help';
+ const variants=Settings.variants(api.category);let variant=variants.some(p=>p.id===state.variant)?state.variant:variants[0]&&variants[0].id||'default';
+ let value=Settings.resolve(api.category,api.row,variant)||{southwest:false,x:0,y:0},original=clone(value),data,record,images={},drag=null,frame=null,closed=false,busy=false,loading=false,serial=0;
+ let scale=1,cx=0,cy=0,zoom=state.zoom||1;const inputs={},labels={},building={x:0,y:0,scale:1,angle:0};
+ if(variants.length){const label=make('label','Placement variant',right),select=make('select',undefined,label);select.setAttribute('aria-label','Ground pad placement variant');variants.forEach(v=>{const o=make('option',v.label,select);o.value=v.id;});select.value=variant;select.onchange=()=>{cancel();variant=select.value;state.variant=variant;load();};}
+ const supported=!!canvas.getContext,g=supported&&canvas.getContext('2d'),renderer=supported&&Renderer.create({onLoad:draw,onError:e=>message(e.message,true)});
+ function resize(){if(!supported||closed)return;const b=canvas.getBoundingClientRect(),w=Math.round(b.width),h=Math.round(b.height);if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;if(data)fitView();}}
+ const observer=supported&&typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);
+ function message(text,error){status.textContent=text;status.className='bld-pad-help'+(error?' error':'');}
+ function sync(){for(const axis of ['x','y'])inputs[axis].value=String(value[axis]);inputs.southwest.checked=value.southwest;}
+ function update(next){if(!Settings.valid(next))return;value=next;sync();draw();}
+ function commit(){if(busy||same(value,original))return;busy=true;const next=clone(value);Promise.resolve(api.onCommit(next,variant)).then(()=>{if(!closed){original=clone(next);message('Ground pad draft updated. Save changes to apply it to gameplay.');}}).catch(error=>{if(!closed){value=clone(original);sync();draw();message(error.message,true);}}).finally(()=>{busy=false;});}
+ function cancel(){if(!drag)return;value=drag.before;drag=null;sync();draw();}
+ for(const axis of ['x','y']){
+  const label=make('label',undefined,right),title=make('span',axis.toUpperCase()+' offset',label),input=make('input',undefined,label);label.className='gt-field';title.className='bld-pad-scrub';title.title='Drag horizontally to adjust '+axis.toUpperCase();input.type='number';input.step='any';input.min='-10000';input.max='10000';input.setAttribute('aria-label','Ground pad '+axis.toUpperCase()+' offset');inputs[axis]=input;labels[axis]=title;
+  input.oninput=()=>{if(input.value.trim()&&Number.isFinite(Number(input.value))){const n=Number(input.value);if(Math.abs(n)<=10000){value=Object.assign({},value,{[axis]:n});draw();}}};
+  input.onchange=()=>{if(!input.value.trim()||!Number.isFinite(Number(input.value))||Math.abs(Number(input.value))>10000){value=clone(original);sync();message('Enter an offset between −10,000 and 10,000.',true);draw();return;}value=Object.assign({},value,{[axis]:Number(input.value)});commit();};
+  title.tabIndex=0;title.onpointerdown=e=>{if(e.button!==0||busy||loading||supported&&!data)return;e.preventDefault();if(title.focus)title.focus();drag={axis,screen:e.clientX,before:clone(value),target:title,pointerId:e.pointerId};if(title.setPointerCapture)title.setPointerCapture(e.pointerId);};
+  title.onpointermove=e=>{if(!drag||drag.target!==title)return;const step=e.altKey ? 0.1 : e.shiftKey ? 10 : 1,n=Math.max(-10000,Math.min(10000,drag.before[axis]+(e.clientX-drag.screen)*step));update(Object.assign({},value,{[axis]:Math.round(n*100)/100}));};
+  title.onpointerup=()=>{if(drag&&drag.target===title){drag=null;commit();}};title.onpointercancel=cancel;
+ }
+ const southwest=make('label',undefined,right);southwest.className='bld-pad-check';inputs.southwest=make('input',undefined,southwest);inputs.southwest.type='checkbox';inputs.southwest.setAttribute('aria-label','Default Southwest ground pad');make('span','Default Southwest',southwest);inputs.southwest.onchange=()=>{update(Object.assign({},value,{southwest:inputs.southwest.checked}));commit();};
+ make('small','Unchecked: Southeast. This applies to the selected building and placement variant.',right);
+ const fit=make('button','Fit preview',right);fit.type='button';fit.onclick=()=>{zoom=1;fitView();};sync();
+ function movedRecord(){
+  if(!data)return null;const source=data.records[value.southwest?'southwest':'southeast'];
+  return Object.assign({},source,{sprites:source.sprites.map((sprite,i)=>{if(!source.purchaseField.sprites[i])return sprite;const matrix=sprite.matrix.slice();matrix[4]+=value.x;matrix[5]+=value.y;return Object.assign({},sprite,{matrix});}),step:(source.step||[]).map(p=>({x:p.x+value.x,y:p.y+value.y}))});
+ }
+ function fitView(){
+  if(!data)return;const points=[];for(const r of Object.values(data.records)){const origin=r.origin;for(const p of r.step||[])points.push({x:p.x+value.x,y:p.y+value.y});for(const s of r.skeletons){const b=s.json.skeleton,x0=b.x||0,y0=b.y||0;if(!Number.isFinite(b.width)||!Number.isFinite(b.height)||b.width<=0||b.height<=0)continue;for(const x of [x0,x0+b.width])for(const y of [y0,y0+b.height]){const p=Maps.point(s.matrix,{x,y});points.push({x:p.x-origin.x,y:p.y-origin.y});}}for(const s of r.sprites){const a=s.anchor||{x:.5,y:0};for(const x of [-a.x*s.width,(1-a.x)*s.width])for(const y of [-a.y*s.height,(1-a.y)*s.height]){const p=Maps.point(s.matrix,{x,y});points.push({x:p.x-origin.x,y:p.y-origin.y});}}}
+  const finite=points.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));if(!finite.length)return;
+  const left=Math.min(...finite.map(p=>p.x)),right=Math.max(...finite.map(p=>p.x)),bottom=Math.min(...finite.map(p=>p.y)),top=Math.max(...finite.map(p=>p.y));cx=(left+right)/2;cy=(bottom+top)/2;scale=Math.min((canvas.width-60)/Math.max(1,right-left),(canvas.height-45)/Math.max(1,top-bottom));draw();
+ }
+ function point(e){const b=canvas.getBoundingClientRect();return {x:((e.clientX-b.left)*canvas.width/b.width-canvas.width/2)/(scale*zoom)+cx,y:-((e.clientY-b.top)*canvas.height/b.height-canvas.height/2)/(scale*zoom)+cy};}
+ function onPad(p){if(!record)return false;const pad=Object.assign({},record,{skeletons:[],sprites:record.sprites.filter((_s,i)=>record.purchaseField.sprites[i])});return renderer.hit(building,pad,p,images,data.runtimePath);}
+ canvas.onpointerdown=e=>{if(e.button!==0||!supported||busy||loading||!data||!onPad(point(e)))return;e.preventDefault();canvas.focus();drag={before:clone(value),start:point(e),target:canvas,pointerId:e.pointerId};canvas.setPointerCapture(e.pointerId);};
+ canvas.onpointermove=e=>{if(!supported||loading)return;if(drag&&drag.target===canvas){const p=point(e),factor=e.altKey ? 0.1 : e.shiftKey ? 10 : 1;update(Object.assign({},value,{x:Math.round((drag.before.x+(p.x-drag.start.x)*factor)*100)/100,y:Math.round((drag.before.y+(p.y-drag.start.y)*factor)*100)/100}));}else canvas.style.cursor=data&&onPad(point(e))?'grab':'default';};
+ canvas.onpointerup=()=>{if(drag&&drag.target===canvas){drag=null;commit();}};canvas.onpointercancel=cancel;canvas.onkeydown=e=>{if(e.key==='Escape'){cancel();e.preventDefault();}};canvas.onwheel=e=>{e.preventDefault();zoom=Math.max(.3,Math.min(6,zoom*Math.exp(-e.deltaY*.001)));draw();};
+ function draw(){if(!supported||closed||frame!==null)return;frame=requestAnimationFrame(()=>{frame=null;if(closed)return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;record=movedRecord();g.setTransform(scale*zoom,0,0,-scale*zoom,canvas.width/2-cx*scale*zoom,canvas.height/2+cy*scale*zoom);for(const p of renderer.parts(building,record))renderer.draw(g,p,images,data.runtimePath);const step=record.step||[];if(step.length){g.beginPath();step.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));g.closePath();g.fillStyle='#62dbff24';g.fill();g.strokeStyle='#99eeff';g.lineWidth=1.5/(scale*zoom);g.stroke();}});}
+ async function load(){
+  if(!supported)return;loading=true;const current=++serial;message('Loading building and ground pad…');Object.values(inputs).forEach(i=>i.disabled=true);
+  try{const result=await api.ipc('building-purchase-preview',Object.assign({},api.request,{variant}));if(closed||current!==serial)return;data=result;value=clone(result.settings);original=clone(value);sync();renderer.prepare(Object.values(data.records),data.runtimePath);const ids=new Set(Object.values(data.records).flatMap(r=>r.sprites.map(s=>s.frame)));images=await Paint.loadImages({images:Object.fromEntries(Object.entries(data.images).filter(([id])=>ids.has(id)))});if(closed||current!==serial)return;resize();const view=state.views&&state.views[variant];if(view&&[view.scale,view.cx,view.cy].every(Number.isFinite)&&view.scale>0&&view.width===canvas.width&&view.height===canvas.height){({scale,cx,cy}=view);draw();}else fitView();message('The cyan area is where the hero stands. Changes stay in the draft until Save.');}
+  catch(error){if(!closed&&current===serial)message(error.message,true);}finally{if(!closed&&current===serial){loading=false;Object.values(inputs).forEach(i=>i.disabled=false);}}
+ }
+ const ready=load();
+ root.onkeydown=e=>{if(e.key==='Escape'&&drag){cancel();e.preventDefault();}};
+ return {ready,stats:()=>renderer?renderer.stats():{poses:0,ready:0},destroy(){if(closed)return;closed=true;serial++;state.variant=variant;state.zoom=zoom;if(data&&data.variant===variant){if(!state.views)state.views={};state.views[variant]={scale,cx,cy,width:canvas.width,height:canvas.height};}if(observer)observer.disconnect();if(renderer)renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);root.onkeydown=null;canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onkeydown=canvas.onwheel=null;for(const title of Object.values(labels))title.onpointerdown=title.onpointermove=title.onpointerup=title.onpointercancel=null;canvas.width=canvas.height=1;}};
+}
+module.exports={mount};

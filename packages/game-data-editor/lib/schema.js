@@ -235,6 +235,7 @@ function validate(documents, changes) {
   });
   Object.keys(base.BuildEnum||{}).filter(id=>id!=='0').forEach(id=>{
     const building=base.BuildEnum[id],p=['BuildEnum',id],levels=building.levelList;
+    if(own(building,'PlacementVariants')&&!require('../../../assets/_script/BuildingPurchaseField').validVariants(building.PlacementVariants))issue('A',p.concat('PlacementVariants'),'Placement variants need unique IDs and display names.');
     number('A',p.concat('lockCose'),building.lockCose,0,true);
     if(!Array.isArray(levels)||!levels.length){issue('A',p.concat('levelList'),'A building requires at least one authored branch.');return;}
     const byIndex=new Map(levels.map(level=>[level.index,level])),indices=new Set();
@@ -247,6 +248,7 @@ function validate(documents, changes) {
       const q=p.concat('levelList',i);if(!Number.isInteger(level.index)||level.index<1||indices.has(level.index)||level.ID!==Number(id))issue('A',q,'Building branches need unique positive indices and their category owner ID.');
       indices.add(level.index);
       number('A',q.concat('level'),level.level,1,true);
+      if(own(level,'PurchaseField')&&!require('../../../assets/_script/BuildingPurchaseField').valid(level.PurchaseField))issue('A',q.concat('PurchaseField'),'Ground pad settings need finite X/Y offsets and a Southwest checkbox.');
       const cap=buildingLevelCap(id,level);
       if(own(BUILDING_LEVEL_CAP,id)&&level.level>cap)issue('A',q.concat('level'),'This building has authored map interaction nodes only through level '+cap+'.');
       if(own(level,'ColliderIndex')){
