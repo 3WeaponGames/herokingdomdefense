@@ -6,9 +6,10 @@ function transform(polygons, matrix) {
     return {x:matrix[0]*p.x+matrix[2]*p.y+matrix[4],y:matrix[1]*p.x+matrix[3]*p.y+matrix[5]};
   }); });
 }
-function instances(layout) {
+function instances(layout,referenceSpan) {
   var center={x:(layout.left.x+layout.right.x)/2,y:(layout.left.y+layout.right.y)/2};
-  var result={gate:layout.gate?[[1,0,0,1,center.x,center.y]]:[],pillar:[],span:[]};
+  var stretch=referenceSpan>0?layout.nativeGateSpan/referenceSpan:1,k=Kit.axis.slope,denominator=1+k*k;
+  var result={gate:layout.gate?[[(stretch+k*k)/denominator,k*(1-stretch)/denominator,k*(1-stretch)/denominator,(1+stretch*k*k)/denominator,center.x,center.y]]:[],pillar:[],span:[]};
   Kit.posts(layout).forEach(function (p) {result.pillar.push([1,0,0,1,p.x,p.y]);});
   [layout.leftPoints,layout.rightPoints].forEach(function (points) {
     for(var i=1;i<points.length;i++) {
@@ -16,7 +17,7 @@ function instances(layout) {
       result.span.push([back.x<front.x?1:-1,0,0,1,front.x,front.y]);
     }
   });
-  if(layout.end==="corner")result.span.push([-1,0,0,1,layout.rightEnd.x+45,layout.rightEnd.y+30]);
+  if(layout.end==="corner")result.span.push([-1,0,0,1,layout.rightEnd.x,layout.rightEnd.y]);
   return result;
 }
 function wallDefaults(layout) {
@@ -29,7 +30,7 @@ function wallDefaults(layout) {
   };
 }
 function wall(blocker,layout) {
-  var copies=instances(layout),result={gate:[],fixed:[]};
+  var copies=instances(layout,blocker.gateSpan),result={gate:[],fixed:[]};
   Object.keys(copies).forEach(function (key) {
     var shape=blocker[key]&&blocker[key].polygons||[];
     copies[key].forEach(function (matrix) {result[key==="gate"?"gate":"fixed"].push.apply(result[key==="gate"?"gate":"fixed"],transform(shape,matrix));});

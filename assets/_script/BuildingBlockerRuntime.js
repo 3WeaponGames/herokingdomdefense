@@ -2,6 +2,9 @@
 // Instance-owned fixtures: imported prefabs and shared model assets stay intact.
 var Geometry=require("BuildingBlocker");
 function nodes(owner) {return [owner.node].concat((owner.ndAniOther||[]).map(function (s) {return s.node;}));}
+function enable(owner,colliders) {
+  colliders.forEach(function (c) {c.enabled=owner.index>0&&!owner.isDestroyed&&c.tag===owner.getColliderIndex();});
+}
 function dispose(owner) {
   var state=owner._buildingBlockerRuntime;if(!state)return;
   state.extra.forEach(function (c) {
@@ -13,10 +16,13 @@ function dispose(owner) {
 }
 function apply(owner) {
   var cfg=owner.buildInfo&&owner.buildInfo.cfg,blocker=cfg&&cfg.Blocker,prior=owner._buildingBlockerRuntime;
-  if(!blocker) {if(prior)dispose(owner);return;}
+  if(!blocker) {
+    if(prior){dispose(owner);nodes(owner).forEach(function (node) {enable(owner,node.getComponents(cc.PhysicsPolygonCollider));});}
+    return;
+  }
   var main=owner.ndAniMain,layout=main&&main.skeletonData&&main.skeletonData.skeletonJson.wallKit&&main.skeletonData.skeletonJson.wallKit.layout;
   var signature=JSON.stringify([owner.index,blocker,layout]);
-  if(prior&&prior.signature===signature)return;
+  if(prior&&prior.signature===signature){enable(owner,prior.extra);return;}
   if(prior)dispose(owner);
   var state=owner._buildingBlockerRuntime={signature:signature,original:[],extra:[]},tag=owner.getColliderIndex(),parts=nodes(owner),prototype;
   parts.forEach(function (node) {node.getComponents(cc.PhysicsPolygonCollider).forEach(function (c) {
@@ -41,6 +47,7 @@ function apply(owner) {
     // Fixed connections must use a wing body: only leaf contacts admit allies.
     if(parts[1])install(parts[1],shapes.fixed,main.node);
   }
+  enable(owner,state.extra);
   owner._combatFootprints=null;
 }
 exports.apply=apply;exports.dispose=dispose;

@@ -13,7 +13,7 @@ function describe(service,request){
  let defaults,parts;
  if(building.kind===6){
   const main=record.skeletons.find(s=>s.json.wallKit);if(!main)throw Error('The wall kit model is missing.');
-  const layout=main.json.wallKit.layout,copies=Geometry.instances(layout);defaults=Object.fromEntries(Object.entries(Geometry.wallDefaults(layout)).map(([key,p])=>[key,shape(p)]));
+  const layout=main.json.wallKit.layout,copies=Geometry.instances(layout,row.Blocker&&row.Blocker.gateSpan);defaults=Object.assign({gateSpan:layout.nativeGateSpan},Object.fromEntries(Object.entries(Geometry.wallDefaults(layout)).map(([key,p])=>[key,shape(p)])));
   parts=[['gate','Gate passage'],['pillar','Pillar connection'],['span','Connecting wall']].map(([key,label])=>({key,label,instances:copies[key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));
  }else{
   const data=Navigation.buildingColliderData(service,stage,building,1,'closed',Object.assign({},config,{BuildEnum:Object.assign({},config.BuildEnum,{[request.id]:Object.assign({},definition,{levelList:definition.levelList.map(level=>{const value=Object.assign({},level);delete value.Blocker;return value;})})})}),new Map());
@@ -26,6 +26,7 @@ function describe(service,request){
 function issues(value,wall){
  const result=[];
  if(!value||value.version!==1||typeof value!=='object'||Array.isArray(value))return ['Invalid building blocker.'];
+ if(wall&&value.gateSpan!==undefined&&(!Number.isFinite(value.gateSpan)||value.gateSpan<=0||value.gateSpan>20000))result.push('Invalid gate reference width.');
  for(const key of wall?['gate','pillar','span']:['body']){
   const part=value[key];if(!part||!Array.isArray(part.polygons)){result.push('Missing '+key+' blocker.');continue;}
   const errors=Clip.issues(part.mask);if(errors.length){result.push(...errors);continue;}

@@ -147,7 +147,7 @@ function towerSettings(panel, row, level, at) {
     panel._note('Attack type, targeting and projectile settings apply to this tower level. Editing a field changes only this level’s draft.',false,section);
     Settings.towerFields(level.Tower).forEach(field=>panel._field(section,field.label,field.value,next=>level.Tower&&typeof level.Tower==='object'&&!Array.isArray(level.Tower)?panel._set('A',at.concat('Tower',field.key),next):panel._set('A',at.concat('Tower'),{[field.key]:next}),field));
 }
-function render(panel, row) {
+function render(panel, row, api) {
     if (row.overview) { overview(panel); return; }
     const building = row.record, at = row.path, id = typeID(row);
     const allBranches = Model.branches(building, id, panel._data('A'), panel._data('catalog'), panel._language);
@@ -173,7 +173,7 @@ function render(panel, row) {
         }
     }
     const selected = node('div', undefined, 'bld-selected'); artwork(panel, selected, level.Icon, 'bld-selected-art');
-    const text = node('div'); text.appendChild(node('h3', 'Level '+level.level+' · '+panel._text(level.Name))); text.appendChild(node('span', branch.summary)); selected.appendChild(text); panel.$detail.appendChild(selected);
+    const text = node('div'); text.appendChild(node('h3', 'Level '+branch.level+' · '+panel._text(level.Name))); text.appendChild(node('span', branch.summary)); selected.appendChild(text); panel.$detail.appendChild(selected);
     const section = panel._section('All levels in this family', undefined, true); section.className = 'bld-table-wrap';
     const table = node('table', undefined, 'gt-grid-table'); const head = node('tr');
     ['Branch / name','Level','Gameplay','Next'].forEach(text => head.appendChild(node('th', text))); table.appendChild(head);
@@ -190,8 +190,15 @@ function render(panel, row) {
     }
     mechanics(panel, row, level, keys, context);
     towerSettings(panel,row,level,keys);
+    const blocker=panel._section('Blocker');
+    const blockerKey=id+':'+level.index;
+    if(panel._blockerStateKey!==blockerKey){panel._blockerStateKey=blockerKey;panel._blockerState={};}
+    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:{id,levelIndex:branch.position},state:panel._blockerState,onChange:value=>panel._change([{doc:'A',path:keys.concat('Blocker'),value}])});
     const costs = panel._section('Health, level & costs');
-    ['Hp','level'].filter(key => own(level, key)).forEach(key => panel._value(costs, 'A', keys.concat(key), level[key], key, context, level));
+    ['Hp','level'].filter(key => own(level, key)).forEach(key => {
+        if(id==='6'&&key==='level')panel._field(costs,'Unlock level',level.level,next=>panel._set('A',keys.concat('level'),next),{integer:true,min:1,help:'Wall tabs show artwork tiers. This level controls castle unlocks; existing upgrade paths are preserved.'});
+        else panel._value(costs, 'A', keys.concat(key), level[key], key, context, level);
+    });
     const price=BuildingCost.preview(building,level);
     panel._field(costs,'Build / upgrade cost (silver)',price.value===undefined?'':price.value,next=>panel._set('A',keys.concat('BuildCost'),next),{integer:true,min:0,help:price.varied?'Existing paths have different prices. Set one price for this building level.':'Price to build this level or upgrade into it.'});
     if(own(level,'VedioCount'))panel._value(costs,'A',keys.concat('VedioCount'),level.VedioCount,'VedioCount',context,level);

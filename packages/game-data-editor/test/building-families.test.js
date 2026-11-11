@@ -57,9 +57,10 @@ test('logical level groups retain every reachable authored alternative',()=>{
   const rows=Model.families(base,translations,'en');
   const arrow=rows.find(r=>r.key==='2:1');
   assert.deepEqual(arrow.levels.map(group=>[group.level,group.branches.map(b=>b.index)]),[[1,[1]],[2,[2,3]]]);
-  for(const typeID of ['4','5','6']){
+  for(const typeID of ['4','5']){
     assert.deepEqual(rows.find(r=>r.typeID===typeID).levels.map(group=>group.branches.map(b=>b.index)),[[1],[2,3]]);
   }
+  assert.deepEqual(rows.find(r=>r.typeID==='6').levels.map(group=>group.branches.map(b=>b.index)),[[1],[2],[3]],'Wall artwork tiers each have a tab');
 });
 
 test('construction order, noncontiguous identifiers and original positions remain independent',()=>{

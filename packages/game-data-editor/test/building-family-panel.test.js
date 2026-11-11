@@ -93,14 +93,14 @@ test('Arrow Tower preserves both level two variants and never invents a third le
 
 test('editing a family level keeps roster and upgrade cost drafts on their exact original branch paths',async()=>{
     const f=fixture(),position=f.position('3',12),third=f.position('3',13);f.render('3:11',position);const before=f.store.draftState(),row=before.A.BuildEnum[3].levelList[position];
-    const capacity=f.field('Soldier capacity'),cost=f.field('Next purchase cost (silver)');assert(capacity&&cost);
+    const capacity=f.field('Soldier capacity'),cost=f.field('Build / upgrade cost (silver)');assert(capacity&&cost);
     capacity.value=String(row.Data[0]+2);capacity.onchange();await f.panel._queue;
-    f.field('Next purchase cost (silver)').value=String(row.BuildSliverCost+7);f.field('Next purchase cost (silver)').onchange();await f.panel._queue;
+    f.field('Build / upgrade cost (silver)').value='23';f.field('Build / upgrade cost (silver)').onchange();await f.panel._queue;
     assert.deepEqual(clone(f.messages.filter(message=>message.message==='game-data-editor:change').map(message=>message.request.edits)),[
         [{doc:'A',path:['BuildEnum','3','levelList',position,'Data',0],value:row.Data[0]+2}],
-        [{doc:'A',path:['BuildEnum','3','levelList',position,'BuildSliverCost'],value:row.BuildSliverCost+7}]
+        [{doc:'A',path:['BuildEnum','3','levelList',position,'BuildCost'],value:23}]
     ]);
-    const expected=clone(before);expected.A.BuildEnum[3].levelList[position].Data[0]+=2;expected.A.BuildEnum[3].levelList[position].BuildSliverCost+=7;
+    const expected=clone(before);expected.A.BuildEnum[3].levelList[position].Data[0]+=2;expected.A.BuildEnum[3].levelList[position].BuildCost=23;
     assert.deepEqual(f.store.draftState(),expected);assert.equal(f.panel._level,position);
     f.tab(3).onclick();assert.equal(f.panel._level,third);assert.equal(Number(f.field('Soldier capacity').value),before.A.BuildEnum[3].levelList[third].Data[0]);
     assert(!f.messages.some(message=>message.message==='game-data-editor:save'));
@@ -162,10 +162,10 @@ test('current buildings expose editable authored settings without reset actions 
         const typeID=key.split(':')[0];f.render(key,f.position(typeID,index));
         const actions=f.all(f.panel.$detail,element=>element.tagName==='button').map(element=>element.textContent);
         for(const label of obsolete)assert(!actions.includes(label),key+' must not offer '+label);
-        assert(f.field('Collision footprint branch'),'The authored footprint remains editable');
+        assert.equal(f.field('Collision footprint branch'),undefined,'The removed footprint fitting panel stays hidden');
         if(typeID==='2'){
             assert(f.field('Tower attack type'),'The authored attack type remains editable');
-            assert(f.field('Artwork width'),'The authored artwork remains editable');
+            assert.equal(f.field('Artwork width'),undefined,'The removed artwork fitting panel stays hidden');
         }else assert(f.field('Soldier capacity'),'The authored roster remains editable');
     }
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);

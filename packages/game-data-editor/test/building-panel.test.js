@@ -247,32 +247,34 @@ test('tower targeting edits retain its attack type, unknown properties and every
     assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
 });
 
-test('sprite dimensions, offsets and muzzle positions are editable without altering artwork or timing defaults',async()=>{
-    const f=fixture(),position=branchPosition(f,'2',1),row=f.store.documents.A.data.BuildEnum['2'].levelList[position];
-    row.Appearance={sprite:'buildings/towers/cannon-1',width:160,height:200,offsetX:0,offsetY:0,muzzleX:0,muzzleY:100,customFuture:'retain'};
-    f.panel._snapshot=f.store.snapshot();f.render('2:1');
-    const defaults=clone(f.store.documents.overrides.data.timingDefaults),sprite=row.Appearance.sprite;
-    assert.equal(f.messages.length,0);
-    const width=fields(f.panel.$detail,'Artwork width')[0],muzzle=fields(f.panel.$detail,'Muzzle offset Y')[0];assert(width&&muzzle);
-    width.value='180';width.onchange();await f.panel._queue;
-    const nextMuzzle=fields(f.panel.$detail,'Muzzle offset Y')[0];nextMuzzle.value='140';nextMuzzle.onchange();await f.panel._queue;
-    const after=f.store.documents.A.data.BuildEnum['2'].levelList[position].Appearance;
-    assert.equal(after.width,180);assert.equal(after.muzzleY,140);assert.equal(after.sprite,sprite);assert.equal(after.customFuture,'retain');
-    assert.deepEqual(f.store.documents.overrides.data.timingDefaults,defaults);
-    assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
+test('removed Buildings sections and notices stay hidden while every stored property is retained',()=>{
+    const f=fixture(),before=f.store.draftState();
+    for(const key of ['1','2:4','3:11','4','5','6']){
+        f.render(key);
+        for(const title of ['Map artwork & footprint','Aiming weapon layer','Identifiers & additional authored properties','Construction timing · shared by all buildings','Shared building category','Branch IDs stay fixed'])assert(!f.panel.$detail.textContent.includes(title),title);
+        assert(f.panel.$detail.textContent.includes('Blocker'));
+    }
+    assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
 });
 
-test('weapon fitting edits only the selected layer and removal preserves the fixed base and gameplay stats',async()=>{
-    const f=fixture(),position=branchPosition(f,'2',1),row=f.store.documents.A.data.BuildEnum['2'].levelList[position];
-    row.Appearance={sprite:'buildings/towers/base',width:180,height:220,offsetX:-3,offsetY:4,weapon:{sprite:'buildings/towers/weapon',width:120,height:70,pivotX:.3,pivotY:.5,offsetX:0,offsetY:160,muzzleX:90,muzzleY:12,unknown:{retain:true}}};
-    const initial=clone(row),defaults=clone(f.store.documents.overrides.data.timingDefaults);f.panel._snapshot=f.store.snapshot();f.render('2:1');
-    assert.equal(f.messages.length,0,'opening a weapon layer writes no defaults');
-    assert.equal(fields(f.panel.$detail,'Muzzle offset X').length,0,'static muzzle controls are hidden when a weapon supplies the muzzle');
-    const pivot=fields(f.panel.$detail,'Weapon pivot X')[0];assert(pivot);pivot.value='.4';pivot.onchange();await f.panel._queue;
-    assert.deepEqual(clone(f.messages[0].request.edits),[{doc:'A',path:['BuildEnum','2','levelList',position,'Appearance','weapon','pivotX'],value:.4}]);
-    assert.deepEqual(f.store.documents.A.data.BuildEnum['2'].levelList[position].Appearance.weapon.unknown,{retain:true});
-    const remove=all(f.panel.$detail,element=>element.tagName==='button'&&element.textContent==='Remove aiming weapon layer')[0];assert(remove);remove.onclick();await f.panel._queue;
-    const after=f.store.documents.A.data.BuildEnum['2'].levelList[position];delete initial.Appearance.weapon;
-    assert.deepEqual(after,initial);assert.deepEqual(f.store.documents.overrides.data.timingDefaults,defaults);
-    assert.equal(f.messages.some(item=>item.message==='game-data-editor:save'),false);
+test('each building level displays its incoming price, including terminal levels, and edits only its destination cost',async()=>{
+    const f=fixture(),before=f.store.draftState();
+    for(const [key,index,expected] of [['1',1,3],['1',3,10],['2:4',4,3],['2:4',5,8],['2:4',6,16],['3:11',13,16],['6',3,7]]){
+        const id=key.split(':')[0],position=branchPosition(f,id,index);f.render(key,position);
+        const field=fields(f.panel.$detail,'Build / upgrade cost (silver)')[0];assert(field);assert.equal(Number(field.value),expected);
+        assert(!f.panel.$detail.textContent.includes('Add next purchase cost'));
+        field.onchange();await f.panel._queue;
+    }
+    assert.deepEqual(f.store.draftState(),before,'Unchanged inferred prices must not create overrides');assert.equal(f.messages.length,0);
+    const position=branchPosition(f,'2',6);f.render('2:4',position);const cost=fields(f.panel.$detail,'Build / upgrade cost (silver)')[0];cost.value='21';cost.onchange();await f.panel._queue;
+    const expected=clone(before);expected.A.BuildEnum[2].levelList[position].BuildCost=21;
+    assert.deepEqual(f.store.draftState(),expected);assert.equal(f.messages.length,1);assert.equal(f.messages[0].message,'game-data-editor:change');
+});
+
+test('wall artwork tiers have three tabs without rewriting legacy progression or branch references',()=>{
+    const f=fixture(),before=f.store.draftState();f.render('6');
+    const tabs=all(f.panel.$detail,e=>e.getAttribute('role')==='tab');assert.deepEqual(tabs.map(tab=>tab.textContent),['Lvl 1','Lvl 2','Lvl 3']);
+    tabs[2].onclick();assert.equal(f.panel._level,branchPosition(f,'6',3));assert(f.panel.$detail.textContent.includes('Level 3 ·'));
+    assert.equal(f.previews.at(-1).request.record.levelList[f.panel._level].Skin,'cq-rts-3');assert.equal(fields(f.panel.$detail,'Level 2 variant').length,0);
+    assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
 });

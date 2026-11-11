@@ -20,7 +20,7 @@ function branchSummary(id,level,base,catalog,language){
 }
 function branches(building,id,base,catalog,language){
   return (Array.isArray(building.levelList)?building.levelList:[]).map((record,position)=>({
-    index:record.index,position,level:record.level,
+    index:record.index,position,level:Number(id)===6?({'cq-rts-1':1,'cq-rts-2':2,'cq-rts-3':3,'cq-1':1,'cq-2-1':2,'cq-2-2':3}[record.Skin]||record.level):record.level,
     label:name(record.Name,catalog,language,'Branch #'+record.index),
     summary:branchSummary(id,record,base,catalog,language),record,
     next:Array.isArray(record.BranchBuild)?record.BranchBuild.slice():[],

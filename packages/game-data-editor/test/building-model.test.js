@@ -62,13 +62,16 @@ test('unrelated existing building problems remain advisory and valid roster edit
   assert(issues.length&&issues.every(i=>i.severity==='warning'));
   assert.deepEqual(d.A.data.BuildEnum['3'].levelList[0].futureAuthored,{untouched:[1,'unknown']});
 });
-test('a new connection on a formerly final branch needs its own next purchase cost',()=>{
+test('a new connection needs a priced destination or a retained legacy source price',()=>{
   const d=docs(),building=d.A.data.BuildEnum['3'],position=building.levelList.findIndex(level=>level.index===13);
   const level=building.levelList[position],at=['BuildEnum','3','levelList',position,'BranchBuild'];
   assert(!Object.prototype.hasOwnProperty.call(level,'BuildSliverCost'));
   level.BranchBuild=[16];
-  assert(buildingIssues(d,[{doc:'A',path:at}]).some(i=>i.severity==='error'&&/next purchase cost/.test(i.message)));
+  assert(buildingIssues(d,[{doc:'A',path:at}]).some(i=>i.severity==='error'&&/destination building level/.test(i.message)));
   assert.equal(Object.prototype.hasOwnProperty.call(level,'BuildSliverCost'),false,'validation never inserts a default cost');
+  building.levelList.find(row=>row.index===16).BuildCost=0;
+  assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0,'An explicit destination cost works without a legacy next-purchase field');
+  delete building.levelList.find(row=>row.index===16).BuildCost;
   level.BuildSliverCost=0;
   assert.equal(buildingIssues(d,[{doc:'A',path:at},{doc:'A',path:at.slice(0,-1).concat('BuildSliverCost')}]).length,0,'an explicit zero cost is supported');
 });
