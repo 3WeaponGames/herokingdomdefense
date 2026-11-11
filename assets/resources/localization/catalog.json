@@ -5162,6 +5162,8 @@
     "pause.continue": {"en":"Continue","zh":"继续","context":"GUI Pro four-button pause menu"},
     "pause.restart": {"en":"Restart","zh":"重新开始","context":"GUI Pro four-button pause menu"},
     "pause.returnHome": {"en":"Return Home","zh":"返回大厅","context":"GUI Pro four-button pause menu"},
+    "pause.saveAndExit": {"en":"Save and exit","zh":"保存并退出","context":"Campaign pause menu exit action"},
+    "pause.endBattle": {"en":"End battle","zh":"结束战斗","context":"Wall Defense pause menu end action"},
     "pause.wallDefense": {"en":"Wall Defense","zh":"城墙防守","context":"GUI Pro four-button pause menu"},
     "pause.campaign": {"en":"Campaign","zh":"战役","context":"GUI Pro four-button pause menu"},
     "settings.language": {

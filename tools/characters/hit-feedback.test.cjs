@@ -17,26 +17,54 @@ test('all deployed units retain authored hit art or equipped-part white flashes 
   assert(r.skeleton.slots.every(slot=>!slot.darkColor||slot.darkColor.r===0),key+' has no stuck white flash');
  }
 });
-test('hit runtime restarts only its visual track and clears safely on death, pooling and respawn',()=>{
- const tracks=[],calls=[],actor={node:{},isDead:()=>false},renderer={skeletonData:{},findAnimation:name=>name==='hit',setAnimation(track,name,loop){calls.push([track,name,loop]);const e={animationEnd:.24};tracks[track]=e;return e;},clearTrack(track){calls.push(['clear',track]);tracks[track]=null;},setSlotsToSetupPose(){calls.push(['setup']);}};actor.spAni=renderer;
- const baseTrack=tracks[0]={animation:{name:'attack'},trackTime:.31},context={exports:{},cc:{Component:class{},isValid:()=>true,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/UnitHitFeedback.js'),'utf8'),context);
- let component;actor.node.getComponent=()=>component;actor.node.addComponent=C=>(component=new C());
- context.exports.play(actor);const first=tracks[1];context.exports.play(actor);assert.notEqual(tracks[1],first);assert.equal(tracks[0],baseTrack);assert.equal(tracks[1].trackEnd,.24);assert.equal(renderer.useTint,true);
- component.onDisable();assert.equal(tracks[1],null);assert.equal(tracks[0],baseTrack);actor._isPooled=true;context.exports.play(actor);assert.equal(tracks[1],null);actor._isPooled=false;context.exports.play(actor);assert(tracks[1]);assert(calls.filter(c=>c[0]==='setup').length===1);
-});
-
-test('hit movement lock lasts for the faster reaction and an old completion cannot release a newer hit',()=>{
- const listeners=new Map(),tracks=[],actor={node:{},rigidBody:{linearVelocity:{x:20,y:0}},isDead:()=>false};
- const renderer=actor.spAni={skeletonData:{},findAnimation:()=>true,setAnimation(){const e={animationEnd:.24};tracks[1]=e;return e;},setTrackCompleteListener:(e,done)=>listeners.set(e,done),getCurrent:()=>tracks[1],clearTrack(){tracks[1]=null;},setSlotsToSetupPose(){}};
- const context={exports:{},cc:{Vec2:{ZERO:{x:0,y:0}},Component:class{},isValid:()=>true,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};
+function feedbackFixture(native){
+ const tracks=[],plays=[],entries=new WeakMap(),actor={node:{_combatGeneration:1},rigidBody:{linearVelocity:{x:20,y:0}},isDead:()=>false};
+ const baseTrack=tracks[0]={animation:{name:'attack'},trackTime:.31};
+ function wrap(entry){
+  if(!entry||!native)return entry;
+  function live(){assert.equal(entry.disposed,false,'a disposed native TrackEntry was dereferenced');}
+  const value={getAnimation(){live();return{getName:()=>entry.animation.name};},getTrackTime(){live();return entry.trackTime;},getAnimationEnd(){live();return entry.animationEnd;},
+   setMixDuration(value){live();entry.mixDuration=value;},setTrackEnd(value){live();entry.trackEnd=value;},setTimeScale(value){live();entry.timeScale=value;}};
+  entries.set(value,entry);return value;
+ }
+ function original(value){return native?entries.get(value):value;}
+ const renderer=actor.spAni={skeletonData:{},findAnimation:name=>name==='hit',
+  setAnimation(index,name,loop){assert.equal(index,1);assert.equal(name,'hit');assert.equal(loop,false);const entry={animation:{name},trackTime:0,animationEnd:.24,disposed:false};tracks[1]=entry;plays.push(entry);return wrap(entry);},
+  getCurrent:index=>wrap(tracks[index]),setTrackCompleteListener(entry,done){original(entry).complete=done;},setTrackDisposeListener(entry,done){original(entry).dispose=done;},
+  clearTrack(index){const old=tracks[index];tracks[index]=null;if(old){old.disposed=true;if(old.dispose)old.dispose();}},setSlotsToSetupPose(){}};
+ const context={exports:{},cc:{Vec2:{ZERO:{x:0,y:0}},Component:class{},isValid:value=>!!value&&!value.destroyed,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/UnitHitFeedback.js'),'utf8'),context);
  let feedback;actor.node.getComponent=()=>feedback;actor.node.addComponent=C=>(feedback=new C());
- context.exports.play(actor);const first=tracks[1];assert.equal(actor._hitReactionPlaying,true);assert.equal(first.timeScale,1.5);assert.equal(actor.rigidBody.linearVelocity.x,0);
- context.exports.play(actor);const current=tracks[1];listeners.get(first)();assert.equal(actor._hitReactionPlaying,true);
- renderer.paused=true;feedback.update();assert.equal(actor._hitReactionPlaying,true);renderer.paused=false;
- listeners.get(current)();assert.equal(actor._hitReactionPlaying,false);
- context.exports.play(actor);tracks[1].trackTime=.24;feedback.update();assert.equal(actor._hitReactionPlaying,false);
- context.exports.play(actor);context.exports.reset(actor);assert.equal(actor._hitReactionPlaying,false);
+ return{actor,renderer,tracks,plays,baseTrack,hit:()=>context.exports.play(actor),reset:()=>context.exports.reset(actor),feedback:()=>feedback,
+  complete(){const entry=tracks[1];entry.trackTime=entry.animationEnd;entry.complete();},dispose(){renderer.clearTrack(1);}};
+}
+
+for(const native of [false,true])test((native?'native':'browser')+' hit bursts finish once before another hit can start, without changing attack timing',()=>{
+ const f=feedbackFixture(native);f.hit();const first=f.tracks[1];
+ assert.equal(first.timeScale,1.5);assert.equal(first.trackEnd,.24);assert.equal(f.renderer.useTint,true);assert.equal(f.actor._hitReactionPlaying,true);assert.equal(f.actor.rigidBody.linearVelocity.x,0);
+ first.trackTime=.1;
+ for(let i=0;i<100;i++)f.hit();
+ assert.equal(f.plays.length,1);assert.equal(f.tracks[1],first);assert.equal(first.trackTime,.1,'damage restarted the hit clock');
+ f.renderer.paused=true;for(let i=0;i<10;i++)f.hit();f.feedback().update();assert.equal(f.plays.length,1);assert.equal(f.actor._hitReactionPlaying,true);f.renderer.paused=false;
+ f.complete();assert.equal(f.actor._hitReactionPlaying,false);
+ for(let i=0;i<10;i++)f.feedback().update();assert.equal(f.plays.length,1,'intervening hits were queued for later replay');
+ f.hit();const second=f.tracks[1];assert.notEqual(second,first);assert.equal(f.plays.length,2);assert.equal(f.actor._hitReactionPlaying,true);
+ first.complete();first.dispose();assert.equal(f.actor._hitReactionPlaying,true,'an obsolete callback released the new hit');
+ assert.equal(f.tracks[0],f.baseTrack);assert.equal(f.baseTrack.trackTime,.31);
+ f.dispose();assert.equal(f.actor._hitReactionPlaying,false);f.feedback().update();assert.equal(f.plays.length,2);
+ f.hit();assert.equal(f.plays.length,3);assert.equal(f.tracks[0],f.baseTrack);
+});
+
+for(const native of [false,true])test((native?'native':'browser')+' hit polling and pool reuse release only the owned reaction',()=>{
+ const f=feedbackFixture(native);f.hit();const first=f.tracks[1];
+ first.trackTime=.24;f.feedback().update();assert.equal(f.actor._hitReactionPlaying,false);
+ f.hit();const second=f.tracks[1];assert.equal(f.plays.length,2);
+ f.actor.node._combatGeneration++;f.hit();const reused=f.tracks[1];assert.notEqual(reused,second);assert.equal(f.plays.length,3);
+ first.complete();second.complete();second.dispose();assert.equal(f.actor._hitReactionPlaying,true);
+ f.feedback().onDisable();assert.equal(f.tracks[1],null);assert.equal(f.actor._hitReactionPlaying,false);
+ f.actor._isPooled=true;f.hit();assert.equal(f.plays.length,3);f.actor._isPooled=false;f.actor.node._combatGeneration++;f.hit();
+ assert.equal(f.plays.length,4);reused.complete();reused.dispose();assert.equal(f.actor._hitReactionPlaying,true);
+ f.reset();assert.equal(f.tracks[1],null);assert.equal(f.actor._hitReactionPlaying,false);assert.equal(f.tracks[0],f.baseTrack);assert.equal(f.baseTrack.trackTime,.31);
 });
 
 test('native slot reset clears interrupted white flashes at the planning boundary and preserves setup tints',()=>{

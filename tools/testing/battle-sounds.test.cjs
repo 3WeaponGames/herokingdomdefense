@@ -12,7 +12,7 @@ function fixture(surface = 'forest') {
     get volume() { return this._volume; }
     set volume(value) { this._volume = value; this.volumeWrites++; }
     get isPlaying() { return this.state === 1; }
-    play() { this.state = 1; played.push({ path: this.clip.path, loop: this.loop, volume: this.volume, source: this }); }
+    play() { this.state = 1; played.push({ path: this.clip.path, loop: this.loop, volume: this.volume, source: this, startedAt: now }); }
     stop() { this.state = 3; } pause() { this.state = 2; } resume() { if (this.state === 2) this.state = 1; }
     destroy() { this.destroyed = true; this.stop(); }
   }
@@ -159,7 +159,8 @@ test('releases select the unit weapon, and confirmed impacts distinguish arrows,
   }
   const f = fixture(); f.start(); const target = f.actor(90007);
   f.sounds.hit(target, f.hero, 10); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/arrow-impact-armour'));
-  f.advance(200); f.sounds.hit(target, f.hero, 10, { magic: true }); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/magic-impact'));
+  f.advance(1000); f.played.forEach(p => { if (!p.loop) p.source.stop(); });
+  f.sounds.hit(target, f.hero, 10, { magic: true }); f.finishAll(); assert(f.played.some(p => p.path === 'sfx/magic-impact'));
   const before = f.played.length; f.sounds.hit(target, { getTowerSettings: () => ({ attackType: 'cannon' }) }, 10); f.finishAll(); assert.equal(f.played.length, before);
   assert.equal(f.sounds.hit(target, f.hero, 0), false);
 });
@@ -181,6 +182,51 @@ test('hit bursts are throttled, source pools are bounded, and late pooled/reused
   for (let i = 0; i < 30; i++) { f.advance(70); f.sounds.effect('impact-flesh-light', actor); f.finishAll(); }
   assert(f.manager.audioSourceMap.size <= 4);
   f.advance(100); const before = f.played.length; f.sounds.effect('sword-heavy-swing', actor); actor.node._combatGeneration++; f.finishAll(); assert.equal(f.played.length, before);
+});
+
+test('mixed hit sounds share a half-second budget and swings cannot interrupt a playing impact', () => {
+  const f = fixture(); f.start();
+  const hits = Object.keys(catalog.effects).filter(id => /impact|critical-hit|hurt-/.test(id));
+  hits.forEach((id, i) => f.sounds.effect(id, f.actor(1000 + i), { cooldown: 0 }));
+  f.finishAll();
+  const impacts = () => f.played.filter(p => hits.some(id => catalog.effects[id].path === p.path));
+  assert.equal(impacts().length, 1, 'concurrent mixed materials stacked their impacts');
+  const impact = impacts()[0], path = impact.source.clip.path;
+  for (let i = 0; i < 100; i++) f.sounds.effect('sword-light-swing', f.actor(90001), { cooldown: 0 });
+  f.finishAll();
+  assert.equal(impact.source.clip.path, path, 'weapon swings cut the impact off');
+  assert.equal(impact.source.isPlaying, true);
+  f.advance(499);
+  hits.forEach(id => assert.equal(f.sounds.effect(id, f.actor(90001), { cooldown: 0 }), false));
+  f.advance(1); f.sounds.effect('magic-impact', f.actor(90001), { cooldown: 0 }); f.finishAll();
+  assert.equal(impacts().length, 1, 'an unfinished impact was restarted at the cooldown boundary');
+  assert.equal(impact.source.clip.path, path);
+});
+
+test('a completed hit permits the next material exactly after 500ms without queuing skipped hits', () => {
+  const f = fixture(); f.start();
+  f.sounds.effect('hurt-slime', f.actor(90001)); f.finishAll();
+  const first = f.played.find(p => p.path === 'sfx/hurt-slime');
+  f.advance(422); first.source.stop(); // The shipped short clip has naturally ended.
+  f.advance(77);
+  assert.equal(f.sounds.effect('impact-armour', f.actor(90002), { cooldown: 0 }), false);
+  f.advance(1); f.sounds.effect('impact-armour', f.actor(90002)); f.finishAll();
+  const next = f.played.find(p => p.path === 'sfx/impact-armour');
+  assert(next); assert.equal(next.startedAt - first.startedAt, 500);
+  assert.equal(f.played.filter(p => /hurt-|impact/.test(p.path)).length, 2);
+});
+
+test('delayed hit loads share the playback-time budget and expired loads do not consume it', () => {
+  const f = fixture(); f.start();
+  f.sounds.effect('impact-armour', f.actor(90001));
+  f.advance(400); f.sounds.effect('magic-impact', f.actor(90002)); f.finishAll();
+  assert.deepEqual(f.played.filter(p => /impact/.test(p.path)).map(p => [p.path, p.startedAt]), [['sfx/impact-armour', 1400]]);
+  f.advance(100);
+  assert.equal(f.sounds.effect('impact-shield', f.actor(90003)), false, 'request time shortened the actual playback cooldown');
+  const expired = fixture(); expired.start();
+  expired.sounds.effect('impact-armour', expired.actor(90001)); expired.advance(501); expired.finishAll();
+  expired.sounds.effect('magic-impact', expired.actor(90002)); expired.finishAll();
+  assert.deepEqual(expired.played.filter(p => /impact/.test(p.path)).map(p => p.path), ['sfx/magic-impact']);
 });
 
 test('wave and boss signals deduplicate and restored enemy requests stay silent', () => {
@@ -264,7 +310,7 @@ test('the mounted hero never uses creature hurt sounds, and enemy spells and spi
   f.sounds.hit(f.hero, f.actor(90001), 10); f.finishAll();
   assert(f.played.some(p => p.path === 'sfx/impact-flesh-light'));
   assert(!f.played.some(p => p.path.startsWith('sfx/hurt-')));
-  f.advance(1000);
+  f.advance(1000); f.played.forEach(p => { if (!p.loop) p.source.stop(); });
   const caster = f.actor(90008, { cfg: { ID: 90008, AttackType: 2 } });
   f.sounds.attack(caster, 'enemy'); f.sounds.hit(f.hero, caster, 10); f.finishAll();
   assert(f.played.some(p => p.path === 'sfx/enemy-magic-projectile'));
