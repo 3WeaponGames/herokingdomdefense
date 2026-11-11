@@ -179,3 +179,5 @@
 .world-stages .world-wall-layout-dialog .world-actions>label>input[type=checkbox]{flex:0 0 16px;min-width:16px;width:16px;height:16px;min-height:16px;margin:0;padding:0}
 .world-stages .world-wall-layout-dialog>.world-wall-layout-canvas{display:block;flex:0 0 auto;height:auto!important;aspect-ratio:820/430}
 .world-stages .world-wall-layout-dialog>.world-note{flex:0 0 auto}
+
+.world-stages .world-unit-entry>.world-unit-manage-profiles{font-size:10px;padding:4px}.world-wave-unit-select{flex-wrap:wrap}

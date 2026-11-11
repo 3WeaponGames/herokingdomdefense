@@ -11,7 +11,7 @@ function getStore(){
         const validators=[(docs,changes)=>require('./lib/schema').validate(docs,changes),(docs,changes)=>require('./lib/map-assets').validate(docs,changes,root),(docs,changes)=>require('./lib/asset-validation').validate(root,docs,changes)];
         const projectKey=require('crypto').createHash('sha256').update(path.resolve(root).toLowerCase()).digest('hex').slice(0,16);
         const backupRoot=path.join(require('os').homedir(),'Documents','Codex Artifacts','HeroKingdomDefense','game-data-saves',projectKey);
-        store=new Store(root,{validators,backupRoot});assets=null;
+        store=new Store(root,{validators,backupRoot,profileDrafts:()=>worlds&&worlds.docs});assets=null;
     }return store;
 }
 function broadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:changed',{version:snapshot.version});Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:worlds&&worlds.version});return snapshot;}
@@ -31,6 +31,8 @@ function refreshImports(files){
     });
 }
 const messages={
+    'unit-profiles'(event,request){reply(event,()=>require('./lib/unit-profile-service').read(getStore(),request,worlds&&worlds.docs));},
+    'unit-profile-change'(event,request){reply(event,()=>{const result=require('./lib/unit-profile-service').change(getStore(),request,worlds&&worlds.docs);broadcast(getStore().snapshot());return result;});},
     'world-catalog'(event){reply(event,()=>getWorlds().catalog());},
     'world-unit-preview'(event,request){reply(event,()=>getWorlds().unitPreview(request));},
     'world-load'(event,request){reply(event,()=>getWorlds().snapshot(request.key));},
@@ -75,6 +77,7 @@ const messages={
     validate(event){reply(event,()=>getStore().snapshot());},
     save(event,request){reply(event,async()=>{
         const snapshot=getStore().save(request),warnings=snapshot.result&&snapshot.result.saved?await refreshImports(snapshot.result.files):[];
+        if(snapshot.result&&snapshot.result.saved&&worlds){worlds.indexData=null;worlds.unitCatalogRevision=(worlds.unitCatalogRevision||0)+1;require('./lib/unit-assets').invalidate();}
         if(warnings.length)snapshot.result.warning='Saved; Creator import needs attention: '+warnings.join('; ');
         return broadcast(Object.assign(getStore().snapshot(),{result:snapshot.result}));
     });},

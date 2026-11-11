@@ -19,6 +19,7 @@ class Service{
     const text=value=>String(value||'').replace(/\[\[loc:([^\]]+)\]\]/g,(m,key)=>entries[key]&&entries[key].en||m);
     const result=[{type:'hero',id:'hero',key:'hero:hero:default',name:'Hero',group:'Hero',sourcePack:'character-maker'}];
     for(const type of ['ally','enemy'])for(const row of Object.values(type==='ally'&&cfg.AllyCfg||cfg.SoldierCfg)){
+      if(type==='enemy'&&cfg.GameTools&&cfg.GameTools.unitProfiles&&cfg.GameTools.unitProfiles.entries&&cfg.GameTools.unitProfiles.entries[row.ID]&&cfg.GameTools.unitProfiles.entries[row.ID].created)continue;
       if(type==='ally'&&(!row.prefab||!fs.existsSync(path.join(this.root,'assets/KinghtFallEnemy/Play'+row.prefab+'.prefab'))))continue;
       const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
       const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
