@@ -102,6 +102,20 @@
 .world-stages .world-wave-counts>label{display:flex;flex-direction:column;align-items:stretch;gap:4px;font-size:11px}
 .world-stages .world-wave-counts>label>input,.world-stages .world-wave-counts>label>select{min-height:31px;width:100%}
 .world-stages .world-wave-unit-card>.world-stage-details{padding:8px;background:#22292f}
+.world-stages .world-stage-wave-overview{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+.world-stages .world-stage-wave-overview th,.world-stages .world-stage-wave-overview td{padding:7px 4px;text-align:right;border-bottom:1px solid #45515b;overflow-wrap:anywhere}
+.world-stages .world-stage-wave-overview th:first-child,.world-stages .world-stage-wave-overview td:first-child{text-align:left}
+.world-stages .world-stage-wave-overview th{color:#b7c9d6;font-weight:normal}
+.world-stages .world-stage-wave-overview button{min-width:32px;color:#d5eaff;border-color:#56778f;background:#304657}
+.world-stages .world-wave-list .world-wave-multipliers{color:#c7e1f3;font-variant-numeric:tabular-nums}
+.world-stages .world-wave-scaling{display:flex;flex-direction:column;gap:9px;padding:11px;border:1px solid #6888a0;border-radius:5px;background:#2b3c49}
+.world-stages .world-wave-scaling>.world-note{margin:0;font-size:11px;color:#c0ced9}
+.world-stages .world-wave-unit-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-variant-numeric:tabular-nums}
+.world-stages .world-unit-stat{display:flex;flex-direction:column;gap:5px;padding:9px;background:#1e2932;border:1px solid #43596a;border-radius:4px;min-width:0;overflow-wrap:anywhere}
+.world-stages .world-unit-stat>span{font-size:10px;color:#bbcedb}
+.world-stages .world-unit-stat>strong{font-size:20px;color:#e1f2ff}
+.world-stages .world-unit-stat>small{font-size:10px;line-height:1.4;color:#a9bdcb}
+.world-unit-picker-scaling{flex-shrink:0;padding:8px 10px;border:1px solid #6888a0;border-radius:4px;background:#2b3c49;color:#d5eaff;font-size:11px;line-height:1.45}
 .world-stages .world-modal>div{width:680px;max-width:calc(100% - 36px);max-height:calc(100% - 36px);gap:12px;border-radius:5px}
 .world-stages .world-modal>div>h3{margin:0 0 4px;color:#e1eaf1}
 .world-stages .world-modal label>span{flex:0 0 80px}

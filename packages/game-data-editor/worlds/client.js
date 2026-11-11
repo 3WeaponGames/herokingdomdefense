@@ -402,12 +402,19 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   }
   await state.pending;if(!isCurrent(context)||!state.active||state.loading||state.drag||activeDialog||failure!==(state.editFailures||0))return;
   if(!state.snap.dirty){message('No changes; no files written.');return;}
-  const key=currentKey(),reviewVersion=state.snap.version;
+  const key=currentKey(),reviewVersion=state.snap.version,shared=stageMode&&state.snap.sharedMapDraft;let includeMap=!!(shared&&!shared.savedMapAvailable);
+  const saveIssues=()=>shared?(includeMap?shared.combinedIssues:shared.stageOnlyIssues):state.snap.issues;
   modal('Save '+(stageMode?'stage layout':'shared map'),dialog=>{
-   note(dialog,'Changes remain in the draft until you press Save.');if(state.snap.affected.length)note(dialog,'Updates the environment for linked stages: '+state.snap.affected.join(', '));if(!stageMode)budgetDetails(dialog);if(state.snap.issues.length)note(dialog,state.snap.issues.join('\n'),true);else note(dialog,'Validation passed. Baking and a revision-checked save will run now.');
+   note(dialog,'Changes remain in the draft until you press Save.');if(state.snap.affected.length)note(dialog,'Updates the environment for linked stages: '+state.snap.affected.join(', '));if(!stageMode)budgetDetails(dialog);
+   if(shared){
+    note(dialog,'Shared map “'+shared.name+'” also has unsaved changes.');
+    const scope=field(dialog,'Save shared map changes',includeMap,value=>{includeMap=value;update();});scope.disabled=!shared.savedMapAvailable;scope.style.flex='0 0 auto';scope.style.width='16px';scope.parentNode.querySelector('span').style.flex='1';
+    const explanation=el('p',undefined,'world-note'),validation=el('p',undefined,'world-note');dialog.appendChild(explanation);dialog.appendChild(validation);
+    function update(){explanation.textContent=includeMap?'Saves this stage and its shared map together in one backed-up transaction. Updates linked stages: '+shared.affected.join(', ')+'.':'Saves this stage using the last saved map. Shared map changes stay in the Maps draft.';const issues=saveIssues();validation.textContent=issues.length?issues.join('\n'):'Validation passed. A revision-checked save will run now.';validation.className='world-note'+(issues.length?' world-warn':'');}update();
+   }else if(state.snap.issues.length)note(dialog,state.snap.issues.join('\n'),true);else note(dialog,'Validation passed. Baking and a revision-checked save will run now.');
   },async()=>{
-   if(!isCurrent(context))throw Error('The document changed. Review it before saving.');if(state.snap.issues.length)throw Error('Resolve validation issues first.');
-   return enqueue(async()=>{if(!isCurrent(context))throw Error('The document changed before Save.');if(state.snap.version!==reviewVersion)throw Error('The shared draft changed after this review opened. Close this dialog and review Save again.');message('Baking and saving…');const snap=await options.ipc('world-save',{key,version:reviewVersion});if(!isCurrent(context))return;syncCatalog(await options.ipc('world-catalog'),true);apply(snap);return snap;},true);
+   if(!isCurrent(context))throw Error('The document changed. Review it before saving.');if(saveIssues().length)throw Error('Resolve the validation issues for the selected save scope first.');const saveMap=includeMap;
+   return enqueue(async()=>{if(!isCurrent(context))throw Error('The document changed before Save.');if(state.snap.version!==reviewVersion)throw Error('The shared draft changed after this review opened. Close this dialog and review Save again.');message('Baking and saving…');const snap=await options.ipc('world-save',Object.assign({key,version:reviewVersion},saveMap?{includeMap:true}:{}));if(!isCurrent(context))return;syncCatalog(await options.ipc('world-catalog'),true);apply(snap);if(snap.result&&snap.result.saved&&snap.result.sharedMapDraftRetained&&!snap.result.warning)message('Stage saved. Shared map changes remain in Maps as an unsaved draft. Backup: '+snap.result.backup);return snap;},true);
   },'Save');
  }catch(error){message(error.message,true);}finally{state.saveReviewBusy=false;refreshSaveButtonState();}
 }

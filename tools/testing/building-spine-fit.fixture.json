@@ -2157,5 +2157,1038 @@
         "pixels": "f5b7b3590daa1e145fe19e23c9d423f762e49dfd976373850ecc9d04bee8caeb"
       }
     ]
+  },
+  "garrison": {
+    "version": 1,
+    "source": "Native Garrison SET1 PNG tiers 2/3/5 plus tier9 reserved for future4. Dedicated aliases only; original Royal/Heavy/Crossbow/Vanguard skins and rig preserved.",
+    "page": "by-garrison.png",
+    "pixelScale": 2,
+    "aliases": [
+      {
+        "alias": "by-garrison-1",
+        "index": 11,
+        "previousSkin": "by-royal-1",
+        "previousIcon": "royal-guard-1",
+        "level": 1,
+        "packTier": 2,
+        "icon": "royal-garrison-1",
+        "slot": "by_1",
+        "region": "garrison_body_1",
+        "lightRegion": "garrison_lights_1",
+        "sourceSize": [
+          225,
+          269
+        ],
+        "sourcePixels": "6ccab0f1e0c3b344db04dcc2e95201fc9e293d6da1a1f3fc9b1dac672a1952cd",
+        "sourceFileSha256": "9278db9e6585ff616e510d7afd47fab7704570406c073eb5655cf4aab55f20b4",
+        "pixelScale": 2,
+        "groundAnchor": -233.53,
+        "body": {
+          "path": "garrison_body_1",
+          "x": -3.3,
+          "y": 35.47,
+          "width": 450,
+          "height": 538
+        },
+        "aperturePolygon": [
+          [
+            150,
+            175
+          ],
+          [
+            165,
+            168
+          ],
+          [
+            165,
+            181
+          ],
+          [
+            150,
+            190
+          ]
+        ],
+        "lightPixels": 209,
+        "reserved": false,
+        "iconSha256": "83880ca8089a2f9d681cf0a7089832ff03d90bfe5b11ab9a5860a0eda2b35069"
+      },
+      {
+        "alias": "by-garrison-2",
+        "index": 12,
+        "previousSkin": "by-royal-2",
+        "previousIcon": "royal-guard-2",
+        "level": 2,
+        "packTier": 3,
+        "icon": "royal-garrison-2",
+        "slot": "dxby_2_1",
+        "region": "garrison_body_2",
+        "lightRegion": "garrison_lights_2",
+        "sourceSize": [
+          226,
+          275
+        ],
+        "sourcePixels": "68597d7be76b755ae921b5c1208dd8f226607e8443234aa5a8ad9bb953dcb393",
+        "sourceFileSha256": "8bd3bca95ce500ee188bc6ee83aa8e85516e704c354da0341e86ac404501b212",
+        "pixelScale": 2,
+        "groundAnchor": -288.52999900000003,
+        "body": {
+          "path": "garrison_body_2",
+          "x": 0.7,
+          "y": -13.529999000000032,
+          "width": 452,
+          "height": 550
+        },
+        "aperturePolygon": [
+          [
+            149,
+            180
+          ],
+          [
+            165,
+            172
+          ],
+          [
+            165,
+            188
+          ],
+          [
+            149,
+            197
+          ]
+        ],
+        "lightPixels": 264,
+        "reserved": false,
+        "iconSha256": "de5f05c58c9e55c05252f8f2229540ee6c53b3c818c9a7bf76bd59fbc8c806ba"
+      },
+      {
+        "alias": "by-garrison-3",
+        "index": 13,
+        "previousSkin": "by-royal-3",
+        "previousIcon": "royal-guard-3",
+        "level": 3,
+        "packTier": 5,
+        "icon": "royal-garrison-3",
+        "slot": "dxby_3_1",
+        "region": "garrison_body_3",
+        "lightRegion": "garrison_lights_3",
+        "sourceSize": [
+          237,
+          284
+        ],
+        "sourcePixels": "d877a741a9fa07bdd280a31114f03bfb67110c282cf4a78cce8d5e982956d18a",
+        "sourceFileSha256": "bb1beb0c9b88ef63eaa8aec6a28946afa615463622e03e47d4d8b624ef11ae71",
+        "pixelScale": 2,
+        "groundAnchor": -290.53,
+        "body": {
+          "path": "garrison_body_3",
+          "x": 8.7,
+          "y": -6.529999999999973,
+          "width": 474,
+          "height": 568
+        },
+        "aperturePolygon": [
+          [
+            163,
+            191
+          ],
+          [
+            176,
+            185
+          ],
+          [
+            176,
+            200
+          ],
+          [
+            163,
+            209
+          ]
+        ],
+        "lightPixels": 214,
+        "reserved": false,
+        "iconSha256": "dbcd70bd91c8722533804cbc1ce10f74c9ac45f1dced8503d22af36147d245c6"
+      },
+      {
+        "alias": "by-garrison-4",
+        "level": 4,
+        "packTier": 9,
+        "icon": "royal-garrison-4",
+        "slot": "dxby_3_1",
+        "region": "garrison_body_4",
+        "lightRegion": "garrison_lights_4",
+        "sourceSize": [
+          237,
+          300
+        ],
+        "sourcePixels": "4177ccbdfdebe759d7b6128439b6fefc68424e2bafd9d14adaa17fd45359f02c",
+        "sourceFileSha256": "31e5a316f43e63e9e57efc57e96cc816cc168537d10ad10024dd83e2cf2fa458",
+        "pixelScale": 2,
+        "groundAnchor": -290.53,
+        "body": {
+          "path": "garrison_body_4",
+          "x": 8.7,
+          "y": 9.470000000000027,
+          "width": 474,
+          "height": 600
+        },
+        "aperturePolygon": [
+          [
+            164,
+            202
+          ],
+          [
+            176,
+            196
+          ],
+          [
+            176,
+            211
+          ],
+          [
+            164,
+            219
+          ]
+        ],
+        "lightPixels": 189,
+        "reserved": true,
+        "iconSha256": "a94221c8be9ba30a4bb6b1c05e0487be654f67b75ff3ac3e7ce9bf9939c6288e"
+      }
+    ],
+    "bones": [
+      "garrison_roof_1",
+      "garrison_flag_1_mount",
+      "garrison_flag_1_wave_0",
+      "garrison_flag_1_wave_1",
+      "garrison_flag_1_wave_2",
+      "garrison_flag_1_wave_3",
+      "garrison_roof_2",
+      "garrison_flag_2_mount",
+      "garrison_flag_2_wave_0",
+      "garrison_flag_2_wave_1",
+      "garrison_flag_2_wave_2",
+      "garrison_flag_2_wave_3",
+      "garrison_roof_3",
+      "garrison_flag_3_mount",
+      "garrison_flag_3_wave_0",
+      "garrison_flag_3_wave_1",
+      "garrison_flag_3_wave_2",
+      "garrison_flag_3_wave_3",
+      "garrison_roof_4",
+      "garrison_flag_4_mount",
+      "garrison_flag_4_wave_0",
+      "garrison_flag_4_wave_1",
+      "garrison_flag_4_wave_2",
+      "garrison_flag_4_wave_3"
+    ],
+    "slots": [
+      "garrison_flag_pole_1",
+      "garrison_flag_1",
+      "garrison_flag_pole_2",
+      "garrison_flag_2",
+      "garrison_flag_pole_3",
+      "garrison_flag_3",
+      "garrison_flag_pole_4",
+      "garrison_flag_4"
+    ],
+    "rigs": [
+      {
+        "level": 1,
+        "scale": 0.55,
+        "roofSource": [
+          111,
+          145
+        ],
+        "roof": {
+          "name": "garrison_roof_1",
+          "parent": "bone3",
+          "x": -6.300000000000011,
+          "y": 14.469999999999999
+        },
+        "poleSlot": "garrison_flag_pole_1",
+        "flagSlot": "garrison_flag_1",
+        "bones": [
+          "garrison_roof_1",
+          "garrison_flag_1_mount",
+          "garrison_flag_1_wave_0",
+          "garrison_flag_1_wave_1",
+          "garrison_flag_1_wave_2",
+          "garrison_flag_1_wave_3"
+        ],
+        "poleRegion": "by_royal_flag_pole",
+        "clothRegion": "by_royal_flag"
+      },
+      {
+        "level": 2,
+        "scale": 0.55,
+        "roofSource": [
+          112,
+          145
+        ],
+        "roof": {
+          "name": "garrison_roof_2",
+          "parent": "bone3",
+          "x": -1.3000000000000114,
+          "y": -28.529999000000032
+        },
+        "poleSlot": "garrison_flag_pole_2",
+        "flagSlot": "garrison_flag_2",
+        "bones": [
+          "garrison_roof_2",
+          "garrison_flag_2_mount",
+          "garrison_flag_2_wave_0",
+          "garrison_flag_2_wave_1",
+          "garrison_flag_2_wave_2",
+          "garrison_flag_2_wave_3"
+        ],
+        "poleRegion": "by_royal_flag_pole",
+        "clothRegion": "by_royal_flag"
+      },
+      {
+        "level": 3,
+        "scale": 0.55,
+        "roofSource": [
+          117,
+          158
+        ],
+        "roof": {
+          "name": "garrison_roof_3",
+          "parent": "bone3",
+          "x": 5.699999999999989,
+          "y": -38.52999999999997
+        },
+        "poleSlot": "garrison_flag_pole_3",
+        "flagSlot": "garrison_flag_3",
+        "bones": [
+          "garrison_roof_3",
+          "garrison_flag_3_mount",
+          "garrison_flag_3_wave_0",
+          "garrison_flag_3_wave_1",
+          "garrison_flag_3_wave_2",
+          "garrison_flag_3_wave_3"
+        ],
+        "poleRegion": "by_royal_flag_pole",
+        "clothRegion": "by_royal_flag"
+      },
+      {
+        "level": 4,
+        "scale": 0.55,
+        "roofSource": [
+          116,
+          158
+        ],
+        "roof": {
+          "name": "garrison_roof_4",
+          "parent": "bone3",
+          "x": 3.6999999999999886,
+          "y": -6.529999999999973
+        },
+        "poleSlot": "garrison_flag_pole_4",
+        "flagSlot": "garrison_flag_4",
+        "bones": [
+          "garrison_roof_4",
+          "garrison_flag_4_mount",
+          "garrison_flag_4_wave_0",
+          "garrison_flag_4_wave_1",
+          "garrison_flag_4_wave_2",
+          "garrison_flag_4_wave_3"
+        ],
+        "poleRegion": "by_royal_flag_pole",
+        "clothRegion": "by_royal_flag"
+      }
+    ],
+    "originalHeader": {
+      "hash": "jyg63RQCDI7LQ2zjIeKOh2nh7QA=",
+      "spine": "3.8.75",
+      "x": -140.5,
+      "y": -67.5,
+      "width": 275,
+      "height": 283.5
+    },
+    "finalHeader": {
+      "hash": "jyg63RQCDI7LQ2zjIeKOh2nh7QA=",
+      "spine": "3.8.75",
+      "x": -140.5,
+      "y": -68,
+      "width": 275,
+      "height": 302
+    },
+    "flags": {
+      "poleRegion": "by_royal_flag_pole",
+      "clothRegion": "by_royal_flag",
+      "sourceRegions": [
+        {
+          "name": "by_royal_flag_pole",
+          "page": "by-royal.png",
+          "size": [
+            10,
+            41
+          ],
+          "orig": [
+            10,
+            41
+          ],
+          "xy": [
+            1280,
+            40
+          ],
+          "sourcePixels": "6c9d59d376b168fb49cca398066622249280ccac808f253613e23f0c87c51656"
+        },
+        {
+          "name": "by_royal_flag",
+          "page": "by-royal.png",
+          "size": [
+            33,
+            25
+          ],
+          "orig": [
+            33,
+            25
+          ],
+          "xy": [
+            1280,
+            2
+          ],
+          "sourcePixels": "bac87a3690555877eaccb325262e66f8cd83e58da6f4066a1f3db080babfba13"
+        }
+      ]
+    },
+    "baseline": {
+      "version": 1,
+      "skins": {
+        "default": "be18226cb47831e13b00a7ba2d85acab87e9f622d2a81cb736b53161d4f81012",
+        "by-1": "856c84c38f82f821d865c87bf8c1dfb8b695e4605dc4526643478e41ba55c667",
+        "dxby-2-1": "dc1d11fc070726448da54001e6e3973c262330cd262f7bf3a3ec353fa6ed1635",
+        "dxby-3-1": "4a2588a0f1f14dba99eeeddd717b6957aafcbc64d9e231af910a6da2e6e7f81f",
+        "dxby-3-2": "94d0c75f4a9635c85308c7e8ea6f2d94c157c05a364b7a3b8cfd6b9963b67f29",
+        "gby-2-1": "ded01268604ac2e94b3a29bf237dc8fd8a01eb65da8eb66037a3a9c5514c099d",
+        "gby-3-1": "05aedf2706c978386997681df8c3a37da54393bf437df60b5835c99c94a69511",
+        "gby-3-2": "919c30cf2aa4092d62ea48e1db3ea3571d7192005edc5c1748a747223cc85fca",
+        "qby-2-1": "302a373c422fbaac402151f2c25896da1ec65314d2b13bad6fd0f9e71a2a11d1",
+        "qby-3-1": "d2eb9c0751150dac999a911bd4e6f0fa4472c8ad515f85652c5bcf524e981847",
+        "qby-3-2": "f957005d72c2ba4e5f03b7df0df760a72e490fafac3b3886d558e5d66c1be1e2",
+        "by-royal-1": "e5fbe92b5dff16ca96fb1c62c9292601c45f0a07eacbf1b370511db84c432fc4",
+        "by-royal-2": "2bd78de5ba09041e4a14ab9c9051ae43b32c543412d3ff5423c82275985eca9b",
+        "by-royal-3": "2ad82a93e04d8d2f8089dd146d814b4ba95e85d0e8d6308efae4772f20e8002e",
+        "qby-revised-1": "88c0f8181528be7051433972389d0bf2904ae964e8d519124d45c46bea02fffb",
+        "qby-revised-2": "dcd95faea611efc26d666a966e9da37c097a9576b678eb9ee421462d21e00853"
+      },
+      "bones": "860cc486d899cbcf9dd90992f74b93d67bfa442a7b9bf1ee54cc7e85e23c3edb",
+      "slots": "5c72e646f1b92c48808528c4134fd07d1eeec38df797d310117ca6ba43bb231f",
+      "animations": {
+        "Fade_in": "eaf2f9cef3c8f0cd8cd87af05b6a60c7a08ccadb35d77c4401964f2b48933d11",
+        "create": "49283c9a2ec9cb89b0dbdbbd197e844e5961a1fa03f93f6c3b0bd54707318fe3",
+        "destroy": "c74862cc7aad1dcfeb29debb39b75d573d8d5addf13236f0760358877b540ebf",
+        "idle": "b816118ecad939bdb1363e0b403e4ff2ac36bdbecfece263380a7976b490423d",
+        "idle_night": "c50048ae8b645c6686f6b31e6bfb90400cf74039d98a9bf7006892a41a6beaae",
+        "upgrade": "ed1cca19b10e55d47a723691269be976db88f11f0d137d424d2beb48c4e9dcf8"
+      },
+      "skeleton": {
+        "hash": "jyg63RQCDI7LQ2zjIeKOh2nh7QA=",
+        "spine": "3.8.75",
+        "x": -140.5,
+        "y": -67.5,
+        "width": 275,
+        "height": 283.5
+      },
+      "files": {
+        "assets/KinghtFallIconMap/com/Ani/by/by.png": "acf3fad3b4fa92a17d356f03fc65c30b3d7b45eb2e987ffb631c047be1a66e4c",
+        "assets/KinghtFallIconMap/com/Ani/by/by-royal.png": "5517d99c5b07bdb5fa51b6ab4534f7780be21bb34310c7356faf4d17f9c60d66",
+        "assets/KinghtFallIconMap/com/Ani/by/by-cavalry.png": "0fab1124aaf60e38c1f7ff5a2919c1cc537d4f59953278b1373993c3dad92995",
+        "assets/KinghtFallIconMap/com/Ani/by/by.png.meta": "d11552bb522a62d6366f9aeb7fcabc9bc830a5c0f8ba86671bec13c05d7aa8b8",
+        "assets/KinghtFallIconMap/com/Ani/by/by-royal.png.meta": "4cf1718f3333e3328f559e975379f9acb4381406f5e3008aa7e28ce936d902a4",
+        "assets/KinghtFallIconMap/com/Ani/by/by-cavalry.png.meta": "ad8fb8a64605f1b0158e2ef2f075d0c51dc8fadc659ea08e7abf39307291e35c",
+        "assets/KinghtFallIconMap/com/Ani/by/by.atlas.meta": "57bb380c5f8b17c30ecca41e0333588ca2916dbce1000c17cc7e4da221c5b323"
+      },
+      "configs": {
+        "assets/KinghtFallConfig/GameJsonCfg.json": "ae09d54864fc9499cdd4ee84024f4e774e5956f312fea75a98f211e41df550be",
+        "assets/configs/GameJsonCfg.json": "7525749bf3447c7387ca2e41d43766b308e111075fcef52fbc2853e1516252e4"
+      },
+      "bodies": [
+        {
+          "skin": "by-royal-1",
+          "slot": "by_1",
+          "body": {
+            "x": -3.3,
+            "y": 20.595,
+            "width": 535,
+            "height": 508.25,
+            "path": "by_royal_1"
+          }
+        },
+        {
+          "skin": "by-royal-2",
+          "slot": "dxby_2_1",
+          "body": {
+            "x": 0.7,
+            "y": -31.554999,
+            "width": 541,
+            "height": 513.95,
+            "path": "by_royal_2"
+          }
+        },
+        {
+          "skin": "by-royal-3",
+          "slot": "dxby_3_1",
+          "body": {
+            "x": 8.7,
+            "y": -13.062143,
+            "width": 551,
+            "height": 554.935714,
+            "path": "by_royal_3"
+          }
+        }
+      ],
+      "sceneBindings": {
+        "assets/KinghtFallIconMap/Map01.prefab": {
+          "count": 2,
+          "sha256": "da96e3e437a244d588f0eb98772f7fa2b642c1597770e406ac41d0b5855b8ccf"
+        },
+        "assets/KinghtFallIconMap/Map02.prefab": {
+          "count": 3,
+          "sha256": "652c9dea600f07457ac7147b7f3dde6ac9396c547e8a18303ff6acd9fdc0993f"
+        },
+        "assets/KinghtFallIconMap/Map03.prefab": {
+          "count": 3,
+          "sha256": "378e8aafbbdd860e46d7c936a9a80f44572569cd97fa5e302f48a9ff836f6e0a"
+        },
+        "assets/KinghtFallIconMap/Map04.prefab": {
+          "count": 3,
+          "sha256": "77c1ab612beca8effc0cefc7a0904c0f76e64d5b5581bb590fecec12e04daf74"
+        },
+        "assets/KinghtFallIconMap/Map07.prefab": {
+          "count": 3,
+          "sha256": "652c9dea600f07457ac7147b7f3dde6ac9396c547e8a18303ff6acd9fdc0993f"
+        }
+      }
+    }
+  },
+  "stables": {
+    "version": 1,
+    "source": "Approved four-level stable cutouts; three Vanguard-only activevisualbindings and one reservedunreachable futuretier. Additive body/light/truecastleflag layers; original/revisedcavalry and RoyalGarrison retained.",
+    "page": "by-stables.png",
+    "pixelScale": 1.45,
+    "flagTint": "a680ffff",
+    "aliases": [
+      {
+        "alias": "qby-stable-1",
+        "level": 1,
+        "index": 20,
+        "previousSkin": "qby-revised-1",
+        "previousIcon": "qby_2_1",
+        "reserved": false,
+        "slot": "qby_2_1",
+        "region": "stable_body_1",
+        "lightRegion": "stable_lights_1",
+        "icon": "cavalry-stables-1",
+        "sourceFileSha256": "8e3f22ef0d9e7c77fc70c9feaf4bd89df89e679dfdf1c4d32a0ecd3f9eefc129",
+        "sourceSize": [
+          494,
+          470
+        ],
+        "sourcePixels": "94207bd4d0608fb11892f2f337846aff48f5a45ebb02e4ea2b811897f347eaba",
+        "pixelScale": 1.45,
+        "groundAnchor": -242.5300005,
+        "groundSourceY": 465.20000000000005,
+        "processing": {
+          "rawFileSha256": "ddce60d4f412ddc1e3e5d850237560013fd176baa631e77fe146284f8a4ea092",
+          "rawSize": [
+            1254,
+            1254
+          ],
+          "exactAlphaCrop": [
+            0,
+            51,
+            1234,
+            1171
+          ],
+          "paddedCropSize": [
+            1235,
+            1175
+          ],
+          "samplingFactor": 0.4,
+          "sampling": "Pillow Lanczos, premultiplied alpha",
+          "rawPixelScale": 0.58,
+          "rawGroundPoint": [
+            574,
+            1214
+          ],
+          "coreAlphaThreshold": 128,
+          "sourcePixelsEdited": false
+        },
+        "iconSha256": "0e14375361f1b5194618d63b7dfe43f29c79c6a7e3128439b83258e1cb3972d5"
+      },
+      {
+        "alias": "qby-stable-2",
+        "level": 2,
+        "index": 21,
+        "previousSkin": "qby-revised-2",
+        "previousIcon": "qby_3_1",
+        "reserved": false,
+        "slot": "qby_3_1",
+        "region": "stable_body_2",
+        "lightRegion": "stable_lights_2",
+        "icon": "cavalry-stables-2",
+        "sourceFileSha256": "e5be624fc50eebb753f550ad4282c0f16e0bb93c1c3be0bf82980f641aaa5c90",
+        "sourceSize": [
+          496,
+          490
+        ],
+        "sourcePixels": "22453ad8bb523eeaf311f54561349dfe96b4a947a0bdd9805cbc6f4341c148e7",
+        "pixelScale": 1.45,
+        "groundAnchor": -256.5299995,
+        "groundSourceY": 488,
+        "processing": {
+          "rawFileSha256": "6d40f15fc91746ec7c006a2efb8ebc185d8ef2a6083c7ea44d8fd1caa97a7a99",
+          "rawSize": [
+            1254,
+            1254
+          ],
+          "exactAlphaCrop": [
+            0,
+            20,
+            1240,
+            1223
+          ],
+          "paddedCropSize": [
+            1240,
+            1225
+          ],
+          "samplingFactor": 0.4,
+          "sampling": "Pillow Lanczos, premultiplied alpha",
+          "rawPixelScale": 0.58,
+          "rawGroundPoint": [
+            591.5,
+            1240
+          ],
+          "coreAlphaThreshold": 128,
+          "sourcePixelsEdited": false
+        },
+        "iconSha256": "9cbe6509a2b2466f5fa9bd82d913a3fa5b28361fd83151f3addfc548eec9986d"
+      },
+      {
+        "alias": "qby-stable-3",
+        "level": 3,
+        "index": 22,
+        "previousSkin": "qby-3-2",
+        "previousIcon": "qby_3_2",
+        "reserved": false,
+        "slot": "qby_3_2",
+        "region": "stable_body_3",
+        "lightRegion": "stable_lights_3",
+        "icon": "cavalry-stables-3",
+        "sourceFileSha256": "d74bd54b0e5c82f613c27836b13dfd00a6f6e37dacf9e5964ee6f6316f135bfc",
+        "sourceSize": [
+          458,
+          476
+        ],
+        "sourcePixels": "363320ea82bdf21d7fcbf777d4bffee327833cb8b2dc0b2c86284a2d1bc2bcd0",
+        "pixelScale": 1.45,
+        "groundAnchor": -286.53,
+        "groundSourceY": 473.20000000000005,
+        "processing": {
+          "rawFileSha256": "f2d19fa02437ddb9a3a57c3b775c89dcc56a378cc92286c055b15a5ef2a5efa3",
+          "rawSize": [
+            1254,
+            1254
+          ],
+          "exactAlphaCrop": [
+            81,
+            59,
+            1143,
+            1186
+          ],
+          "paddedCropSize": [
+            1145,
+            1190
+          ],
+          "samplingFactor": 0.4,
+          "sampling": "Pillow Lanczos, premultiplied alpha",
+          "rawPixelScale": 0.58,
+          "rawGroundPoint": [
+            563.5,
+            1242
+          ],
+          "coreAlphaThreshold": 128,
+          "sourcePixelsEdited": false
+        },
+        "iconSha256": "41da3c97b7a5d76f35200af43f773367dde2d261f5572881b4b2c892a2b8d700"
+      },
+      {
+        "alias": "qby-stable-4",
+        "level": 4,
+        "previousSkin": "qby-3-2",
+        "previousIcon": "qby_3_2",
+        "reserved": true,
+        "slot": "qby_3_2",
+        "region": "stable_body_4",
+        "lightRegion": "stable_lights_4",
+        "icon": "cavalry-stables-4",
+        "sourceFileSha256": "9e05b737f0fe7f7890b287a56fdc2168374dc96baf85d86b59577265f4256f67",
+        "sourceSize": [
+          494,
+          486
+        ],
+        "sourcePixels": "4032326dc4969b92680f53656da2f8569406ff1cc0c4201b3bba1824e301701e",
+        "pixelScale": 1.45,
+        "groundAnchor": -286.53,
+        "groundSourceY": 482.8,
+        "processing": {
+          "rawFileSha256": "8194265ef3666f37b96c0a86366b90e62e001b1f222c5fb16f683812cfcc84e3",
+          "rawSize": [
+            1254,
+            1254
+          ],
+          "exactAlphaCrop": [
+            0,
+            40,
+            1232,
+            1214
+          ],
+          "paddedCropSize": [
+            1235,
+            1215
+          ],
+          "samplingFactor": 0.4,
+          "sampling": "Pillow Lanczos, premultiplied alpha",
+          "rawPixelScale": 0.58,
+          "rawGroundPoint": [
+            558.5,
+            1247
+          ],
+          "coreAlphaThreshold": 128,
+          "sourcePixelsEdited": false
+        },
+        "iconSha256": "b5bf7ca35e6488da94237c561712b73280d03b96c48f31a5d52c4c6beb1ccb7e"
+      }
+    ],
+    "bones": [
+      "stable_roof_1",
+      "stable_flag_1_mount",
+      "stable_flag_1_wave_0",
+      "stable_flag_1_wave_1",
+      "stable_flag_1_wave_2",
+      "stable_flag_1_wave_3",
+      "stable_roof_2",
+      "stable_flag_2_mount",
+      "stable_flag_2_wave_0",
+      "stable_flag_2_wave_1",
+      "stable_flag_2_wave_2",
+      "stable_flag_2_wave_3",
+      "stable_roof_3",
+      "stable_flag_3_mount",
+      "stable_flag_3_wave_0",
+      "stable_flag_3_wave_1",
+      "stable_flag_3_wave_2",
+      "stable_flag_3_wave_3",
+      "stable_roof_4",
+      "stable_flag_4_mount",
+      "stable_flag_4_wave_0",
+      "stable_flag_4_wave_1",
+      "stable_flag_4_wave_2",
+      "stable_flag_4_wave_3"
+    ],
+    "slots": [
+      "stable_windows",
+      "stable_flag_pole_1",
+      "stable_flag_1",
+      "stable_flag_pole_2",
+      "stable_flag_2",
+      "stable_flag_pole_3",
+      "stable_flag_3",
+      "stable_flag_pole_4",
+      "stable_flag_4"
+    ],
+    "rigs": [
+      {
+        "level": 1,
+        "scale": 0.55,
+        "roofSource": [
+          340,
+          75.60000000000001
+        ],
+        "roof": {
+          "name": "stable_roof_1",
+          "parent": "bone3",
+          "x": 148.55,
+          "y": 322.38999949999993
+        },
+        "bones": [
+          "stable_roof_1",
+          "stable_flag_1_mount",
+          "stable_flag_1_wave_0",
+          "stable_flag_1_wave_1",
+          "stable_flag_1_wave_2",
+          "stable_flag_1_wave_3"
+        ],
+        "poleSlot": "stable_flag_pole_1",
+        "flagSlot": "stable_flag_1",
+        "poleRegion": "stable_castle_pole",
+        "clothRegion": "stable_castle_flag",
+        "sourcePoleFoot": {
+          "x": -5.300000000000001,
+          "y": 137.47
+        },
+        "sourceBones": [
+          "bone4",
+          "bone5",
+          "bone6",
+          "bone7",
+          "bone8"
+        ]
+      },
+      {
+        "level": 2,
+        "scale": 0.55,
+        "roofSource": [
+          350.40000000000003,
+          88
+        ],
+        "roof": {
+          "name": "stable_roof_2",
+          "parent": "bone3",
+          "x": 166.18000000000006,
+          "y": 323.4700005
+        },
+        "bones": [
+          "stable_roof_2",
+          "stable_flag_2_mount",
+          "stable_flag_2_wave_0",
+          "stable_flag_2_wave_1",
+          "stable_flag_2_wave_2",
+          "stable_flag_2_wave_3"
+        ],
+        "poleSlot": "stable_flag_pole_2",
+        "flagSlot": "stable_flag_2",
+        "poleRegion": "stable_castle_pole",
+        "clothRegion": "stable_castle_flag",
+        "sourcePoleFoot": {
+          "x": -5.300000000000001,
+          "y": 137.47
+        },
+        "sourceBones": [
+          "bone4",
+          "bone5",
+          "bone6",
+          "bone7",
+          "bone8"
+        ]
+      },
+      {
+        "level": 3,
+        "scale": 0.55,
+        "roofSource": [
+          310.8,
+          72.8
+        ],
+        "roof": {
+          "name": "stable_roof_3",
+          "parent": "bone3",
+          "x": 145.31,
+          "y": 294.05000000000007
+        },
+        "bones": [
+          "stable_roof_3",
+          "stable_flag_3_mount",
+          "stable_flag_3_wave_0",
+          "stable_flag_3_wave_1",
+          "stable_flag_3_wave_2",
+          "stable_flag_3_wave_3"
+        ],
+        "poleSlot": "stable_flag_pole_3",
+        "flagSlot": "stable_flag_3",
+        "poleRegion": "stable_castle_pole",
+        "clothRegion": "stable_castle_flag",
+        "sourcePoleFoot": {
+          "x": -5.300000000000001,
+          "y": 137.47
+        },
+        "sourceBones": [
+          "bone4",
+          "bone5",
+          "bone6",
+          "bone7",
+          "bone8"
+        ]
+      },
+      {
+        "level": 4,
+        "scale": 0.55,
+        "roofSource": [
+          367.6,
+          90.4
+        ],
+        "roof": {
+          "name": "stable_roof_4",
+          "parent": "bone3",
+          "x": 201.57,
+          "y": 282.44999999999993
+        },
+        "bones": [
+          "stable_roof_4",
+          "stable_flag_4_mount",
+          "stable_flag_4_wave_0",
+          "stable_flag_4_wave_1",
+          "stable_flag_4_wave_2",
+          "stable_flag_4_wave_3"
+        ],
+        "poleSlot": "stable_flag_pole_4",
+        "flagSlot": "stable_flag_4",
+        "poleRegion": "stable_castle_pole",
+        "clothRegion": "stable_castle_flag",
+        "sourcePoleFoot": {
+          "x": -5.300000000000001,
+          "y": 137.47
+        },
+        "sourceBones": [
+          "bone4",
+          "bone5",
+          "bone6",
+          "bone7",
+          "bone8"
+        ]
+      }
+    ],
+    "originalHeader": {
+      "hash": "jyg63RQCDI7LQ2zjIeKOh2nh7QA=",
+      "spine": "3.8.75",
+      "x": -140.5,
+      "y": -68,
+      "width": 275,
+      "height": 302
+    },
+    "finalHeader": {
+      "hash": "jyg63RQCDI7LQ2zjIeKOh2nh7QA=",
+      "spine": "3.8.75",
+      "x": -177,
+      "y": -69.5,
+      "width": 369,
+      "height": 375.5
+    },
+    "castleSource": "cb-1/cc_qizi_1+cc_qizi_2",
+    "castleClothPixels": "930abf0fd9b08cb12cf68efa030c6a5d023f45f3e949d8ba9b74246369b9f6a7",
+    "castlePolePixels": "fc63bf4d849aa17ce595e27ac8940d52658bbac60e4d423fabfcacca349b0f85",
+    "castleWaveClips": {
+      "idle": {
+        "bone5": "c4b7bcca90700da4f75a70b7e00bb4c4704c8b0c54094b60ae7e008dd712b12f",
+        "bone6": "fc0adda5ac1a6fb5bf778a633adb99c70f45de6b4e762f089330f9dd04c447e7",
+        "bone7": "f5a1456b254a4e62f1d75f3586f2b19ae6488cd3772b146b3d07c5670c209094",
+        "bone8": "8f59ee3fe09fe0f3d8e883be63c33e7c8eeeec4c453efbd333dc9a6d251c914c"
+      },
+      "idle_night": {
+        "bone5": "c4b7bcca90700da4f75a70b7e00bb4c4704c8b0c54094b60ae7e008dd712b12f",
+        "bone6": "fc0adda5ac1a6fb5bf778a633adb99c70f45de6b4e762f089330f9dd04c447e7",
+        "bone7": "f5a1456b254a4e62f1d75f3586f2b19ae6488cd3772b146b3d07c5670c209094",
+        "bone8": "8f59ee3fe09fe0f3d8e883be63c33e7c8eeeec4c453efbd333dc9a6d251c914c"
+      },
+      "Fade_in": {
+        "bone5": "652065cba5b01c95494d221a3df9680b495e9e7afbc91a3615e2aaafff13e49f",
+        "bone6": "5408d3ae4722071db6a2ddac18082d628b607fc00c6be1d9406f31d5ae103e6e",
+        "bone7": "d176125c43bc98d807e3543452d2528003a68d958e262ad237108bcf8aad0b35",
+        "bone8": "b4453583dcc4c1bf72a2fb2f3f33b6207d06e54e0cc177ffcb3368635abf2f92"
+      },
+      "upgrade": {
+        "bone5": "86655c46ad0a58c2d09b5192fbfff94c8c919bebd6134bd82da390355d07b210",
+        "bone6": "fcd132dc436defb24ab04a0a5f5c60707c063646417ca5cf775fa5cf24283a7a",
+        "bone7": "16e8d47d494c4287cfba26a2068fe5927de037a39e9a63485dc377069bb1dfc4",
+        "bone8": "e81156b1b510e42709bceac80de37a69dddb5f72647fe942cbbe056b4522a358"
+      }
+    },
+    "baseline": {
+      "version": 1,
+      "skeleton": {
+        "hash": "jyg63RQCDI7LQ2zjIeKOh2nh7QA=",
+        "spine": "3.8.75",
+        "x": -140.5,
+        "y": -68,
+        "width": 275,
+        "height": 302
+      },
+      "skins": {
+        "default": "be18226cb47831e13b00a7ba2d85acab87e9f622d2a81cb736b53161d4f81012",
+        "by-1": "856c84c38f82f821d865c87bf8c1dfb8b695e4605dc4526643478e41ba55c667",
+        "dxby-2-1": "dc1d11fc070726448da54001e6e3973c262330cd262f7bf3a3ec353fa6ed1635",
+        "dxby-3-1": "4a2588a0f1f14dba99eeeddd717b6957aafcbc64d9e231af910a6da2e6e7f81f",
+        "dxby-3-2": "94d0c75f4a9635c85308c7e8ea6f2d94c157c05a364b7a3b8cfd6b9963b67f29",
+        "gby-2-1": "ded01268604ac2e94b3a29bf237dc8fd8a01eb65da8eb66037a3a9c5514c099d",
+        "gby-3-1": "05aedf2706c978386997681df8c3a37da54393bf437df60b5835c99c94a69511",
+        "gby-3-2": "919c30cf2aa4092d62ea48e1db3ea3571d7192005edc5c1748a747223cc85fca",
+        "qby-2-1": "302a373c422fbaac402151f2c25896da1ec65314d2b13bad6fd0f9e71a2a11d1",
+        "qby-3-1": "d2eb9c0751150dac999a911bd4e6f0fa4472c8ad515f85652c5bcf524e981847",
+        "qby-3-2": "f957005d72c2ba4e5f03b7df0df760a72e490fafac3b3886d558e5d66c1be1e2",
+        "by-royal-1": "e5fbe92b5dff16ca96fb1c62c9292601c45f0a07eacbf1b370511db84c432fc4",
+        "by-royal-2": "2bd78de5ba09041e4a14ab9c9051ae43b32c543412d3ff5423c82275985eca9b",
+        "by-royal-3": "2ad82a93e04d8d2f8089dd146d814b4ba95e85d0e8d6308efae4772f20e8002e",
+        "qby-revised-1": "88c0f8181528be7051433972389d0bf2904ae964e8d519124d45c46bea02fffb",
+        "qby-revised-2": "dcd95faea611efc26d666a966e9da37c097a9576b678eb9ee421462d21e00853",
+        "by-garrison-1": "7f5e71bdb19637919571bdf70d764c627a7dfb05bb146dec80831f03d08daf41",
+        "by-garrison-2": "2f35e3dc39c89cfdb22b2194505498bcc08da0cbf66571e262eafec70222622e",
+        "by-garrison-3": "3f38c4c94db4154f0560f8589c576a10271bbfc3fa618a1009fdb0cffade859b",
+        "by-garrison-4": "98b3126b9cdec33299829e8eee75c5784e7d66a2c3441c84bcd6e80fda307c34"
+      },
+      "bones": "69ff9ccdf9eebe562deaf0c3f43eb8da3b192eb91dd4e54c6e1380062d6ecf04",
+      "slots": "1d0da8b68f8d4f7662881b6e7b9a5657b6e43aecd05d9bb6d99cf935d7d2ff48",
+      "animations": {
+        "Fade_in": "81a94b65741a0690516f92fcd2a0510e4c0307a788934c3a77ea9dae4946da64",
+        "create": "43025ec0925a1dd0a6dd7d67c5b65ddf7e06c9ff785f53ce9aca8f5f48d0cda0",
+        "destroy": "efe5999a4e7296fa385f7e7c2ebd6d1d3a2b15dbc5c227fde5011ed7a74dcad4",
+        "idle": "e65921a0187b4f98f18f5b616706697234a73f9c927f03e72ba0a13f01dafd99",
+        "idle_night": "a8865cc5697331ceba87da9cdef2fad2422a6225e5a3a1899a053664720fa732",
+        "upgrade": "3357c289dc8394063962650979c40c60bce4eed970debca4b8c7f8f66a2ab025"
+      },
+      "files": {
+        "assets/KinghtFallIconMap/com/Ani/by/by.png": "acf3fad3b4fa92a17d356f03fc65c30b3d7b45eb2e987ffb631c047be1a66e4c",
+        "assets/KinghtFallIconMap/com/Ani/by/by.png.meta": "d11552bb522a62d6366f9aeb7fcabc9bc830a5c0f8ba86671bec13c05d7aa8b8",
+        "assets/KinghtFallIconMap/com/Ani/by/by-royal.png": "5517d99c5b07bdb5fa51b6ab4534f7780be21bb34310c7356faf4d17f9c60d66",
+        "assets/KinghtFallIconMap/com/Ani/by/by-royal.png.meta": "4cf1718f3333e3328f559e975379f9acb4381406f5e3008aa7e28ce936d902a4",
+        "assets/KinghtFallIconMap/com/Ani/by/by-cavalry.png": "0fab1124aaf60e38c1f7ff5a2919c1cc537d4f59953278b1373993c3dad92995",
+        "assets/KinghtFallIconMap/com/Ani/by/by-cavalry.png.meta": "ad8fb8a64605f1b0158e2ef2f075d0c51dc8fadc659ea08e7abf39307291e35c",
+        "assets/KinghtFallIconMap/com/Ani/by/by-garrison.png": "d5d01ae6a7778bcccde7f51f273b0ceb83d7cfcac668b24f9e9f9ce2d21bc429",
+        "assets/KinghtFallIconMap/com/Ani/by/by-garrison.png.meta": "f7542a40adab595b707fc19ac9d306e500ac62a427cf34302de46df0e500b37d",
+        "assets/KinghtFallIconBuild/qby_2_1.png": "dbd157cf65a9086545c86dda6191d95bdd0b19ec7b3ec4a7200c6b3d7248e67b",
+        "assets/KinghtFallIconBuild/qby_2_1.png.meta": "8b6c0aadc607ab4d18cd048553e8be22922abc256a489fd781a890e898d045a3",
+        "assets/KinghtFallIconBuild/qby_3_1.png": "0e8a22c465a4da9385e02b2eb773d1c3f5dcca25b3bcb816b18a772e33a13561",
+        "assets/KinghtFallIconBuild/qby_3_1.png.meta": "dce0bdad0fcc0813277731c6a9cbc4e7053f3b4bd13ff190664c39fac05f51e3",
+        "assets/KinghtFallIconBuild/qby_3_2.png": "6a525a22bbb62a34a7af47ed3c8cab1e8b9a77796a177f1530b9d51be2444eae",
+        "assets/KinghtFallIconBuild/qby_3_2.png.meta": "1d13658817d2a849e2f8547fa43303804b1c33acd99b723de46db3683951da1d"
+      },
+      "configs": {
+        "assets/KinghtFallConfig/GameJsonCfg.json": "0d872b2dc00b37f83383d4eeb08a034bc62d5bb9945db35aa12767d5e453391e",
+        "assets/configs/GameJsonCfg.json": "fbf2757accddb22be6dd93ae3a4b79d018c7979a132a6b32ab86dd49bd40e3b1"
+      },
+      "bodies": [
+        {
+          "skin": "qby-revised-1",
+          "slot": "qby_2_1",
+          "body": {
+            "x": 13.7,
+            "y": -67.838099,
+            "width": 567,
+            "height": 349.383803,
+            "path": "qby_revised_1"
+          }
+        },
+        {
+          "skin": "qby-revised-2",
+          "slot": "qby_3_1",
+          "body": {
+            "x": 17.7,
+            "y": -26.940714,
+            "width": 559,
+            "height": 459.178571,
+            "path": "qby_revised_2"
+          }
+        },
+        {
+          "skin": "qby-3-2",
+          "slot": "qby_3_2",
+          "body": {
+            "x": 26.7,
+            "y": -3.53,
+            "width": 583,
+            "height": 566
+          }
+        }
+      ]
+    }
   }
 }

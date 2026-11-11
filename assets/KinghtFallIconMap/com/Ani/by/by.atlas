@@ -653,3 +653,142 @@ qby_revised_2_lights
   orig: 280, 230
   offset: 183, 55
   index: -1
+
+by-garrison.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+garrison_body_4
+  rotate: false
+  xy: 2, 2
+  size: 237, 300
+  orig: 237, 300
+  offset: 0, 0
+  index: -1
+garrison_lights_4
+  rotate: false
+  xy: 243, 2
+  size: 237, 300
+  orig: 237, 300
+  offset: 0, 0
+  index: -1
+garrison_body_3
+  rotate: false
+  xy: 484, 2
+  size: 237, 284
+  orig: 237, 284
+  offset: 0, 0
+  index: -1
+garrison_lights_3
+  rotate: false
+  xy: 725, 2
+  size: 237, 284
+  orig: 237, 284
+  offset: 0, 0
+  index: -1
+garrison_body_2
+  rotate: false
+  xy: 966, 2
+  size: 226, 275
+  orig: 226, 275
+  offset: 0, 0
+  index: -1
+garrison_lights_2
+  rotate: false
+  xy: 1196, 2
+  size: 226, 275
+  orig: 226, 275
+  offset: 0, 0
+  index: -1
+garrison_body_1
+  rotate: false
+  xy: 1426, 2
+  size: 225, 269
+  orig: 225, 269
+  offset: 0, 0
+  index: -1
+garrison_lights_1
+  rotate: false
+  xy: 1655, 2
+  size: 225, 269
+  orig: 225, 269
+  offset: 0, 0
+  index: -1
+
+
+by-stables.png
+size: 4096,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+stable_body_2
+  rotate: false
+  xy: 2, 2
+  size: 496, 490
+  orig: 496, 490
+  offset: 0, 0
+  index: -1
+stable_lights_2
+  rotate: false
+  xy: 502, 2
+  size: 496, 490
+  orig: 496, 490
+  offset: 0, 0
+  index: -1
+stable_body_4
+  rotate: false
+  xy: 1002, 2
+  size: 494, 486
+  orig: 494, 486
+  offset: 0, 0
+  index: -1
+stable_lights_4
+  rotate: false
+  xy: 1500, 2
+  size: 494, 486
+  orig: 494, 486
+  offset: 0, 0
+  index: -1
+stable_body_3
+  rotate: false
+  xy: 1998, 2
+  size: 458, 476
+  orig: 458, 476
+  offset: 0, 0
+  index: -1
+stable_lights_3
+  rotate: false
+  xy: 2460, 2
+  size: 458, 476
+  orig: 458, 476
+  offset: 0, 0
+  index: -1
+stable_body_1
+  rotate: false
+  xy: 2922, 2
+  size: 494, 470
+  orig: 494, 470
+  offset: 0, 0
+  index: -1
+stable_lights_1
+  rotate: false
+  xy: 3420, 2
+  size: 494, 470
+  orig: 494, 470
+  offset: 0, 0
+  index: -1
+stable_castle_pole
+  rotate: false
+  xy: 3918, 2
+  size: 13, 92
+  orig: 13, 92
+  offset: 0, 0
+  index: -1
+stable_castle_flag
+  rotate: false
+  xy: 3935, 2
+  size: 63, 34
+  orig: 63, 34
+  offset: 0, 0
+  index: -1

@@ -213,3 +213,40 @@ test('Replace stage is unavailable without another source and exposes the five e
  const f=fixture();f.panels.top();assert.equal(descendants(f.context.top).find(element=>element.tagName==='button'&&element.textContent==='Replace stage').disabled,true);
  assert.deepEqual(Panels.STAGE_SECTIONS.map(item=>item.value),['buildings','spawns','paths','waves','settings']);assert.equal(Panels.STAGE_SECTIONS.find(item=>item.value==='settings').label,'Map and stage settings');
 });
+
+test('stage overview and wave list expose each wave’s scaling without converting legacy schedules or creating edits',()=>{
+ const f=fixture(),waves=f.state.snap.value.config.WaveCfg;
+ Object.assign(waves[0],{HealthCoefficient:.9,AttackCoefficient:.7});Object.assign(waves[1],{HealthCoefficient:2.3,AttackCoefficient:2.1});
+ const before=JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog});f.state.tab='Stage';f.panels.right();
+ const overview=descendants(f.context.right).find(element=>element.className==='world-stage-wave-overview');assert(overview,'Stage has an overview of its waves');
+ const rows=descendants(overview).filter(element=>element.dataset.waveIndex!==undefined);assert.equal(rows.length,2);
+ for(const [index,hp,damage]of [[0,'0.9','0.7'],[1,'2.3','2.1']]){const row=rows.find(element=>String(element.dataset.waveIndex)===String(index));assert(row);assert(row.textContent.includes(hp));assert(row.textContent.includes(damage));}
+ assert.equal(JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog}),before);assert.equal(f.edits(),0);
+ f.state.tab='Waves';f.panels.left();for(const [index,hp,damage]of [[0,'0.9','0.7'],[1,'2.3','2.1']]){const row=descendants(f.context.left).find(element=>String(element.dataset.waveIndex)===String(index));assert(row.textContent.includes('HP ×'+hp));assert(row.textContent.includes('Damage ×'+damage));}
+ assert.equal(JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog}),before);assert.equal(f.edits(),0);assert(!Object.hasOwn(waves[1],'SpawnTimeline'));
+});
+
+test('wave cards recalculate per-unit HP and rounded damage after unit or multiplier changes while counts stay separate',()=>{
+ const f=fixture();f.state.tab='Waves';f.state.catalog.units=[{id:3,name:'Slime',health:40,damage:10},{id:4,name:'Guardian',health:60,damage:15}];
+ Object.assign(f.state.snap.value.config.WaveCfg[0],{HealthCoefficient:.9,AttackCoefficient:.75});
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();},card=()=>descendants(f.context.right).find(element=>element.dataset.entryId==='a'),effective=()=>descendants(card()).filter(element=>element.className==='world-unit-stat').map(element=>descendants(element).find(child=>child.tagName==='strong').textContent);
+ const pristine=JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog});redraw();assert.deepEqual(effective(),['36','8']);assert(card().textContent.includes('HP per unit'));assert(card().textContent.includes('Damage per hit'));assert(card().textContent.includes('Base 40'));assert(card().textContent.includes('Base 10'));assert.equal(JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog}),pristine);assert.equal(f.edits(),0);
+ descendants(card()).find(element=>element.fieldName==='Count').change(7);redraw();assert.deepEqual(effective(),['36','8'],'quantity never multiplies a single unit’s stats');
+ descendants(card()).find(element=>element.fieldName==='Unit').change(4);redraw();assert.deepEqual(effective(),['54','11'],'switching units uses that profile’s base stats');
+ const scaling=descendants(f.context.right).find(element=>element.className==='world-wave-scaling');assert(scaling,'multipliers are visible above the groups');assert(scaling.textContent.toLowerCase().includes('before battle buffs'));
+ descendants(scaling).find(element=>element.fieldName==='Enemy health ×').change(2.5);redraw();assert.deepEqual(effective(),['150','11']);
+ const damage=descendants(f.context.right).find(element=>element.fieldName==='Enemy attack ×');damage.change(1.5);redraw();assert.deepEqual(effective(),['150','23']);
+ assert.equal(f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].count,7);assert.deepEqual(f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].future,{keep:1});assert.equal(f.state.catalog.units[0].health,40);assert.equal(f.edits(),4);
+});
+
+test('Add units previews the selected wave’s scaling and opening or cancelling the chooser does not change content',()=>{
+ const f=fixture();f.state.tab='Waves';f.state.wave=1;Object.assign(f.state.snap.value.config.WaveCfg[1],{HealthCoefficient:2.3,AttackCoefficient:2.1});let chooser;
+ f.context.modal=(title,body)=>body(f.context.el('div'));f.context.unitPicker=(dialog,spec)=>{chooser=spec;};const before=JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog});f.panels.right();descendants(f.context.right).find(element=>element.tagName==='button'&&element.textContent==='Add units').onclick();
+ assert(chooser);assert.equal(chooser.wave.HealthCoefficient,2.3);assert.equal(chooser.wave.AttackCoefficient,2.1);assert.equal(JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog}),before);assert.equal(f.edits(),0);
+});
+
+test('missing units or invalid scaling remain visibly unavailable without inventing zero combat stats',()=>{
+ for(const missing of ['unit','multiplier']){const f=fixture();f.state.tab='Waves';f.state.catalog.units=[{id:3,name:'Support',health:40}];Object.assign(f.state.snap.value.config.WaveCfg[0],{HealthCoefficient:1,AttackCoefficient:1});if(missing==='unit')f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0].unitId=99;else delete f.state.snap.value.config.WaveCfg[0].HealthCoefficient;
+  const before=JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog});f.panels.right();const card=descendants(f.context.right).find(element=>element.dataset.entryId==='a'),stats=descendants(card).find(element=>element.className==='world-wave-unit-stats');assert(stats);const values=descendants(stats).filter(element=>element.tagName==='strong').map(element=>element.textContent);assert.deepEqual(values,['—','—']);assert(!stats.textContent.includes('NaN'));assert(!stats.textContent.includes('undefined'));assert.equal(JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog}),before);assert.equal(f.edits(),0);
+ }
+});
