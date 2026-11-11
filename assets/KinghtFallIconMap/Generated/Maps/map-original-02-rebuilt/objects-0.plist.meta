@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "fd862913-9917-4de0-a843-d092e4380a55",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "8fb89c91-97f5-45a2-a29a-831f32d73e55",
+  "size": {
+    "width": 1944,
+    "height": 814
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map02-north-cliff-0-0": {
+      "ver": "1.0.6",
+      "uuid": "e50bff3c-541f-4db1-acdc-143cd5582a59",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "8fb89c91-97f5-45a2-a29a-831f32d73e55",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1940,
+      "height": 810,
+      "rawWidth": 1940,
+      "rawHeight": 810,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

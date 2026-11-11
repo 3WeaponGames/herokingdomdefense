@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "5b7cc064-b5f3-4c09-aedd-ced3d67552d0",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "a6c9f8aa-d42e-46ff-ae0e-d6c138d93d70",
+  "size": {
+    "width": 841,
+    "height": 1884
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map01-west-cliff-0-0": {
+      "ver": "1.0.6",
+      "uuid": "5cb4c0a7-4791-4dd2-a0c8-4ee91149199f",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "a6c9f8aa-d42e-46ff-ae0e-d6c138d93d70",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 837,
+      "height": 1880,
+      "rawWidth": 837,
+      "rawHeight": 1880,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "ver": "1.2.6",
+  "uuid": "fcbbf367-5ae4-4130-abc5-7992a9183410",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "290121ea-c423-416b-ac68-f3530febccaa",
+  "size": {
+    "width": 1026,
+    "height": 1542
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map03-rounded-sandstone-hill-0-0": {
+      "ver": "1.0.6",
+      "uuid": "36c07d86-a7c1-43b5-a091-b80c66ca4123",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "290121ea-c423-416b-ac68-f3530febccaa",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1022,
+      "height": 1538,
+      "rawWidth": 1022,
+      "rawHeight": 1538,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

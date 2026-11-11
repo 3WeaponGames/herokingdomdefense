@@ -24,6 +24,15 @@ test('catalog resolves descriptions and filters, including the source asset pack
  assert.equal(rows.length,2);assert.equal(rows[0].description,'Heals nearby allies with radiant spells.');assert.equal(rows[0].unitType,'mystic');assert.equal(rows[1].assetPack,'monster2');assert(Catalog.matches(rows[0],'radiant heals'));assert(!Catalog.matches(rows[0],'radiant archer'));assert.deepEqual(config,before);
 });
 
+test('enemy classes distinguish profiles of one model without changing combat roles, stats or saved records',()=>{
+ const config={SoldierCfg:{1:{ID:1,Name:'Slime',prefab:'slime',MonsterSource:'monster1/Slime',Health:40,AttackDamage:10},2:{ID:2,Name:'Slime',prefab:'slime-elite',AppearanceSourceUnit:1,Health:60,AttackDamage:15},3:{ID:3,Name:'Slime',prefab:'slime-boss',AppearanceSourceUnit:1,Health:200,AttackDamage:30},90010:{ID:90010,Name:'Legacy boss',prefab:'boss'},91001:{ID:91001,Name:'Boss model',prefab:'dragon',MonsterPack:'fantasy-bosses'}},GameTools:{unitTypes:{fighter:{name:'Fighter'}},unitTypeAssignments:{'enemy:2:default':'fighter'},enemyClasses:{'enemy:2:default':'elite','enemy:3:default':'boss'}}},before=clone(config),rows=Catalog.rows(config,{entries:{}}),byId=id=>rows.find(unit=>unit.id===id);
+ assert.deepEqual(rows.map(unit=>[unit.id,unit.enemyClass,unit.enemyClassName]),[[1,'normal','Normal'],[2,'elite','Elite'],[3,'boss','Boss'],[90010,'boss','Boss'],[91001,'normal','Normal']]);
+ assert.deepEqual(Catalog.groups(rows).find(group=>group.units.some(unit=>unit.id===1)).units.map(unit=>unit.id),[1,2,3]);
+ assert.equal(byId(2).unitType,'fighter');assert.equal(byId(2).health,60);assert.equal(byId(2).damage,15);assert(Catalog.matches(byId(2),'slime elite'));assert(!Catalog.matches(byId(1),'slime elite'));
+ const labels=Catalog.optionLabels(rows);assert(labels.get(1).includes('Normal'));assert(labels.get(2).includes('Elite'));assert(labels.get(3).includes('Boss'));assert.equal(new Set(labels.values()).size,rows.length);
+ assert.deepEqual(config,before);assert(!Object.hasOwn(config.GameTools.enemyClasses,'enemy:1:default'));
+});
+
 test('model groups collapse campaign appearances without removing IDs, merging equal names, or changing combat data',()=>{
  const root=path.resolve(__dirname,'../../..'),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),before=clone(config),localization=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'))),characters=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/characters/catalog.json'))),charactersBefore=clone(characters),rows=Catalog.rows(config,localization,null,characters),models=Catalog.groups(rows);
  assert(models.length<rows.length);assert.deepEqual(models.flatMap(group=>group.units.map(unit=>unit.id)).sort((a,b)=>a-b),rows.map(unit=>unit.id).sort((a,b)=>a-b));

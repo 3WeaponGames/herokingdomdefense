@@ -1,0 +1,57 @@
+{
+  "ver": "1.2.6",
+  "uuid": "7b6194fb-0f72-45a7-a817-86e09478192a",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "0cf6f910-7f70-4570-affc-927f39045c87",
+  "size": {
+    "width": 1975,
+    "height": 1732
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map03-eastern-side-pillar-0-0": {
+      "ver": "1.0.6",
+      "uuid": "60a8fca9-f54d-4ae9-ab6f-de93348119ff",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0cf6f910-7f70-4570-affc-927f39045c87",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 1057,
+      "height": 1488,
+      "rawWidth": 1057,
+      "rawHeight": 1488,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "original-map03-western-side-pillar-0-0": {
+      "ver": "1.0.6",
+      "uuid": "11cf0d3c-7ab7-42ba-a0d2-2e98d4a7204e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "0cf6f910-7f70-4570-affc-927f39045c87",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 1063,
+      "trimY": 2,
+      "width": 910,
+      "height": 1728,
+      "rawWidth": 910,
+      "rawHeight": 1728,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

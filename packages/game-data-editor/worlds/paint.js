@@ -11,7 +11,7 @@ function canvas(w,h){var c=document.createElement('canvas');c.width=w;c.height=h
 function prepareImage(img,record){
  if(!record.colorShift)return img;
  var c=canvas(img.naturalWidth||img.width,img.naturalHeight||img.height),g=c.getContext('2d');g.drawImage(img,0,0);
- var pixels=g.getImageData(0,0,c.width,c.height),p=pixels.data,shift=record.colorShift,offset=shift.rgb||[0,0,0],palette=shift.palette||[];
+ var pixels=g.getImageData(0,0,c.width,c.height),p=pixels.data,shift=record.colorShift,offset=shift.rgb||[0,0,0],palette=shift.palette||[],nearest=shift.nearestPalette||[],nearestCache=nearest.length?new Map():null;
  for(var i=0;i<p.length;i+=4){
   if(!p[i+3])continue;
   if(shift.alphaCutoff!==undefined&&p[i+3]<shift.alphaCutoff){p[i+3]=0;continue;}
@@ -20,6 +20,13 @@ function prepareImage(img,record){
   for(var entry of palette){
    if(entry.greenOnly&&!(p[i+1]>p[i]+4&&p[i+1]>p[i+2]+4))continue;
    if(p[i]>=entry.min[0]&&p[i]<=entry.max[0]&&p[i+1]>=entry.min[1]&&p[i+1]<=entry.max[1]&&p[i+2]>=entry.min[2]&&p[i+2]<=entry.max[2]){for(var k=0;k<3;k++)p[i+k]=entry.to[k];if(entry.opaque)p[i+3]=255;matched=true;break;}
+  }
+  // Flatten sampled generated materials to authored native fills once on load.
+  // Retain alpha coverage and explicit Field palette matches, including soft edges.
+  if(!matched&&nearest.length){
+   var key=(p[i]<<16)|(p[i+1]<<8)|p[i+2],chosen=nearestCache.get(key);
+   if(!chosen){var best=Infinity;for(var sample of nearest){var dr=p[i]-sample.from[0],dg=p[i+1]-sample.from[1],db=p[i+2]-sample.from[2],distance=dr*dr+dg*dg+db*db;if(distance<best){best=distance;chosen=sample.to;}}if(nearestCache.size<65536)nearestCache.set(key,chosen);}
+   for(var k=0;k<3;k++)p[i+k]=chosen[k];matched=true;
   }
   if(!matched&&(!shift.greenOnly||p[i+1]>p[i]+4&&p[i+1]>p[i+2]+4))for(var k=0;k<3;k++)p[i+k]=Math.max(0,Math.min(255,p[i+k]+offset[k]));
  }

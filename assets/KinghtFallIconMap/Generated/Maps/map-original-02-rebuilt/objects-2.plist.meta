@@ -1,0 +1,57 @@
+{
+  "ver": "1.2.6",
+  "uuid": "55dd02e3-2e53-4de1-aa80-6398eb8e6753",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "27a2c651-0406-4b57-aa11-19dea8be22af",
+  "size": {
+    "width": 2048,
+    "height": 1458
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map02-low-east-hill-0-0": {
+      "ver": "1.0.6",
+      "uuid": "b3a2ec12-ccec-41ae-a61f-96a74a4890ca",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "27a2c651-0406-4b57-aa11-19dea8be22af",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 2044,
+      "height": 725,
+      "rawWidth": 2044,
+      "rawHeight": 725,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "original-map02-low-east-hill-2044-0": {
+      "ver": "1.0.6",
+      "uuid": "a9b38f8a-b21b-4a10-ab28-8e44f3b468cf",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "27a2c651-0406-4b57-aa11-19dea8be22af",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 731,
+      "width": 125,
+      "height": 725,
+      "rawWidth": 125,
+      "rawHeight": 725,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

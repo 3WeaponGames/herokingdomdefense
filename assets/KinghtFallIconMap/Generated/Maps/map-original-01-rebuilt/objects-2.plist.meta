@@ -1,0 +1,57 @@
+{
+  "ver": "1.2.6",
+  "uuid": "69bc6291-98c9-439f-a1db-f946940ef3f5",
+  "importer": "sprite-atlas",
+  "rawTextureUuid": "641b4b26-8114-4871-a29a-971d75570802",
+  "size": {
+    "width": 2048,
+    "height": 1458
+  },
+  "type": "Texture Packer",
+  "subMetas": {
+    "original-map01-east-hillpath-0-0": {
+      "ver": "1.0.6",
+      "uuid": "e705445c-3230-43c1-a375-b0c470cd4935",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "641b4b26-8114-4871-a29a-971d75570802",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 2,
+      "width": 2044,
+      "height": 725,
+      "rawWidth": 2044,
+      "rawHeight": 725,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    },
+    "original-map01-east-hillpath-2044-0": {
+      "ver": "1.0.6",
+      "uuid": "4c7c1c93-d95a-4bfa-a45b-b6f4c6d16025",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "641b4b26-8114-4871-a29a-971d75570802",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 2,
+      "trimY": 731,
+      "width": 126,
+      "height": 725,
+      "rawWidth": 126,
+      "rawHeight": 725,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
