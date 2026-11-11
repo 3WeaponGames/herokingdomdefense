@@ -107,7 +107,7 @@ var def_KinghtFallBuildWall = function (t) {
   };
   _ctor.prototype.setLevel = function (e) {
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
-    if (this._wallRunRuntime || this.ndAniMain && this.ndAniMain.skeletonData && this.ndAniMain.skeletonData.skeletonJson && this.ndAniMain.skeletonData.skeletonJson.wallKit) require("WallRunRuntime").apply(this);
+    if (this._wallRunRuntime || this.ndAniMain && this.ndAniMain.skeletonData && this.ndAniMain.skeletonData.skeletonJson && this.ndAniMain.skeletonData.skeletonJson.wallKit) require("WallRunRuntime").apply(this, e);
     if (this.wallFacing || this._gateFacingRuntime) require("GateFacingRuntime").apply(this);
     t.prototype.setLevel.call(this, e);
     this.ndAniEffect.node.active = false;
@@ -179,6 +179,7 @@ var def_KinghtFallBuildWall = function (t) {
   };
   _ctor.prototype.doUpgreadAni = function () {
     var t = this;
+    if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (1 == this.index) {
       this.ndAniMain.setAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.create, false);
       this.ndAniMain.addAnimation(0, $z1KinghtFallBuildBase.KinghtFallBuildAniName.idle, false);
@@ -246,6 +247,7 @@ var def_KinghtFallBuildWall = function (t) {
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game01), this.T(this.buildCfg.name)));
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._gateFacingRuntime) require("GateFacingRuntime").dispose(this);
     if (this._wallRunRuntime) require("WallRunRuntime").dispose(this);
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);

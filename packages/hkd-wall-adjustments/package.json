@@ -1,0 +1,15 @@
+{
+  "name": "hkd-wall-adjustments",
+  "version": "1.0.0",
+  "description": "Hero Kingdom Defense shared wall artwork adjustments",
+  "main": "main.js",
+  "panel": {
+    "main": "panel.js",
+    "type": "dockable",
+    "title": "Wall adjustments",
+    "width": 1320,
+    "height": 850,
+    "min-width": 850,
+    "min-height": 540
+  }
+}

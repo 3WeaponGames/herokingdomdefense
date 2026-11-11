@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
-const Kit = require('../../assets/_script/WallKit'), Facing = require('../../assets/_script/GateFacing');
+const Kit = require('../../assets/_script/WallKit'), Facing = require('../../assets/_script/GateFacing'), Door = require('../../assets/_script/WallDoor');
 const fixture = require('./building-spine-fit.fixture.json').wallKit;
 const {decode} = require('../../packages/hkd-characters/lib/png-atlas');
 const root = path.resolve(__dirname, '../..'), dir = 'assets/KinghtFallIconMap/com/Ani/cq/';
@@ -12,8 +12,16 @@ const clone = value => JSON.parse(JSON.stringify(value));
 const close = (a, b, tolerance = 1e-6) => assert(Math.abs(a - b) < tolerance, a + ' vs ' + b);
 const sources = Object.fromEntries(['cq1', 'cq2'].map(name => [name, read(dir + name + '/' + name + '.json')]));
 const originals = ['cq-1', 'cq-2-1', 'cq-2-2'], K = 2 / 3;
+const isNativeWallSlot = name => /^rts_wall_(?:part|shadow)_/.test(name);
 const isLeaf = name => /^(men1_[23]|men3_[23]|men2_mu_[12])$/.test(name);
 const skin = (json, name) => json.skins.find(s => s.name === name);
+// Rebuild supported original artwork explicitly; active production remains matched.
+const originalMetadata = clone(sources.cq1.wallKit);
+originalMetadata.gateStyle = 'original'; delete originalMetadata.doors;
+const originalSources = {cq1: Kit.install(Kit.source(sources.cq1), originalMetadata.layout, originalMetadata)};
+originalSources.cq2 = Kit.fitOriginalGate(Kit.source(sources.cq2), originalMetadata.layout);
+originalSources.cq2.wallGate = {...clone(sources.cq2.wallGate), style: 'original'};
+
 function sorted(value) {
   if (typeof value === 'number') return Math.round(value * 1e6) / 1e6;
   if (Array.isArray(value)) return value.map(sorted);
@@ -21,10 +29,10 @@ function sorted(value) {
   return value;
 }
 function regions() {
-  const all = {}; let name;
+  const all = {}; let name, page;
   for (const line of bytes(dir + 'cq1/cq1.atlas').toString('utf8').split(/\r?\n/)) {
     if (!line.trim()) continue;
-    if (!/^\s/.test(line) && !line.includes(':')) {name = line.endsWith('.png') ? null : line.trim(); if (name) all[name] = {};}
+    if (!/^\s/.test(line) && !line.includes(':')) {if (line.endsWith('.png')) {page=line.trim();name=null;} else {name=line.trim();all[name]={page};}}
     else if (name && line.includes(':')) {
       const at = line.indexOf(':'), key = line.slice(0, at).trim();
       if (['xy', 'size'].includes(key)) all[name][key] = line.slice(at + 1).split(',').map(Number);
@@ -116,14 +124,47 @@ test('wall tiers retain exact pack 2/4/7 pixels, asset bindings and gameplay dat
   }
 });
 
-test('production installs the paired original gateway and preserves its native slots, textures and easing', () => {
-  assert.equal(sources.cq1.wallKit.gateStyle, 'original'); assert.equal(sources.cq1.wallKit.nativeAssembly, 2); assert.equal(sources.cq1.wallKit.volume, false);
-  assert.equal(sources.cq2.wallGate.style, 'original');
-  for (const [name, json] of Object.entries(sources)) {
+test('production uses the approved closed pair and separately registered open leaves without old posts or distortion', () => {
+ const main=sources.cq1,side=sources.cq2,atlas=regions(),slots=[Door.slot,...Object.values(Door.partSlots)],paths=new Set();
+ assert.equal(main.wallKit.gateStyle,'matched');assert.equal(main.wallKit.nativeAssembly,2);assert.equal(main.wallKit.volume,false);assert.equal(main.wallKit.doors.version,2);assert.notEqual(main.wallKit.doors.closedOnly,true);assert.equal(main.wallDoor.version,2);assert.equal(main.wallDoor.closedOnly,false);assert.equal(side.wallGate.style,'matched');
+ for(const slot of slots)assert.equal(main.slots.filter(value=>value.name===slot).length,1);
+ if(main.wallKit.doors.depthOrder==='state-aware'){
+  const gateways=Kit.posts(main.wallKit.layout).map((part,i)=>({...part,slot:'rts_wall_part_'+i})).filter(part=>part.gateway).sort((a,b)=>b.y-a.y),index=name=>main.slots.findIndex(slot=>slot.name===name),shadows=main.slots.map((slot,i)=>slot.name.startsWith('rts_wall_shadow_')?i:-1).filter(i=>i>=0);
+  assert.equal(gateways.length,2);for(const slot of slots){assert(index(gateways[0].slot)<index(slot)&&index(slot)<index(gateways[1].slot),'The closed/foreground gate group sits between its own far and near gateway bodies');if(shadows.length)assert(Math.max(...shadows)<index(slot),'Ground shadows stay below every gate state');}
+ }else assert(main.slots.filter(value=>slots.includes(value.name)).every(value=>main.slots.indexOf(value)<main.slots.findIndex(value=>value.name.startsWith('rts_wall_part_'))),'Legacy native wall posts paint in front of every door part');
+ const page=decode(bytes(dir+'cq1/wall-doors.png')),meta=read(dir+'cq1/cq1.json.meta'),texture=read(dir+'cq1/wall-doors.png.meta');assert.equal(meta.textures.length,3);assert.equal(meta.textures[2],texture.uuid);assert.equal(texture.premultiplyAlpha,false);assert.equal(texture.packable,false);assert(page.width<=4096&&page.height<=4096,'The mobile atlas stays within its texture budget');
+ function check(image,registration,spec){
+  const region=atlas[image.path];assert(region);assert.equal(region.page,'wall-doors.png');assert.deepEqual(region.size,[registration.width,registration.height]);assert(!image.type||image.type==='region');assert.equal(image.vertices,undefined);assert.equal(image.uvs,undefined);assert.equal(image.triangles,undefined);close(image.width/registration.width,2*spec.scale);close(image.height/registration.height,2*spec.scale);paths.add(image.path);
+  const [x,y]=region.xy,[width,height]=region.size;assert(x>=0&&y>=0&&x+width<=page.width&&y+height<=page.height);let visible=0,transparent=0;for(let py=y;py<y+height;py++)for(let px=x;px<x+width;px++){const alpha=page.rgba[(py*page.width+px)*4+3];if(alpha>=8)visible++;if(!alpha)transparent++;}assert(visible>100&&transparent>0,'Every region contains actual artwork with a transparent edge');
+ }
+ for(let index=0;index<3;index++){
+  const alias=skin(main,fixture.aliases[index]),companion=skin(side,fixture.aliases[index]),spec=main.wallDoor.tiers[index];assert.deepEqual(Object.keys(alias.attachments).filter(name=>!isNativeWallSlot(name)).sort(),slots.slice().sort());assert.deepEqual(companion.attachments,{},'The effects companion renders neither the old gate nor old posts');assert.deepEqual(Object.keys(alias.attachments[Door.slot]),['rts_door_closed']);check(alias.attachments[Door.slot].rts_door_closed,spec.states.closed,spec);
+  for(const state of ['inward','outward']){const parts=spec.states[state].parts;assert.deepEqual(parts.map(part=>part.id).sort(),['far','near']);assert.equal(spec.states[state].path,undefined,'Open artwork is assembled from its lossless leaf crops');for(const part of parts){const slot=Door.partSlots[part.id],name=main.animations['open_'+state].slots[slot].attachment[0].name;assert(name);check(alias.attachments[slot][name],part,spec);for(const key of ['anchorX','anchorY','targetX','targetY'])assert(Number.isFinite(part[key]));assert(part.anchorX>=0&&part.anchorX<=part.width&&part.anchorY>=0&&part.anchorY<=part.height);assert(part.targetX>=0&&part.targetX<=spec.states.closed.width&&part.targetY>=0&&part.targetY<=spec.states.closed.height);}}
+  for(const id of ['near','far'])assert.equal(Object.keys(alias.attachments[Door.partSlots[id]]).length,2,'Only the two approved open variants occupy each leaf slot');
+ }
+ assert.equal(paths.size,15,'Three closed pairs and twelve open leaves resolve distinct real atlas regions');
+ for(const reverse of [false,true]){const json=reverse?Facing.mirrorJson(main):main;
+  for(const name of ['idle','idle_night','shut','shut_night','create','upgrade']){assert.equal(json.animations[name].slots[Door.slot].attachment[0].name,'rts_door_closed');for(const slot of Object.values(Door.partSlots))assert.equal(json.animations[name].slots[slot].attachment[0].name,null);}
+  for(const name of ['open','open_night',...Door.generatedAnimations]){const state=!/^(open|Fade_in_open_)/.test(name)?'closed':(name.includes('inward')!==reverse?'inward':'outward'),clip=json.animations[name];assert.deepEqual(clip.slots[Door.slot].attachment,[{time:0,name:state==='closed'?'rts_door_closed':null}]);for(const id of ['near','far']){const track=clip.slots[Door.partSlots[id]].attachment;assert.equal(track.length,1);assert.equal(track[0].time,0);if(state==='closed')assert.equal(track[0].name,null);else{assert(track[0].name);for(let index=0;index<3;index++)assert.equal(skin(json,fixture.aliases[index]).attachments[Door.partSlots[id]][track[0].name].path,json.wallDoor.tiers[index].states[state].parts.find(part=>part.id===id).path);}}}
+  for(const clip of Object.values(json.animations))assert(!Kit.skins.some(name=>Object.keys(clip.deform?.[name]||{}).some(slot=>slot.startsWith('rts_wall_leaf_'))),'Bitmap gates have no deformation timelines');
+ }
+ const recovered=Kit.source(main);assert(!recovered.wallDoor&&!recovered.wallKit);assert(!recovered.slots.some(slot=>slot.name.startsWith('rts_wall_')));for(const generated of Door.generatedAnimations)assert.equal(recovered.animations[generated],undefined);
+});
+
+test('detached closed-only metadata still clears a passage without requiring unapproved open images',()=>{
+ const metadata=clone(sources.cq1.wallKit);metadata.doors.closedOnly=true;for(const tier of metadata.doors.tiers)tier.states={closed:tier.states.closed};const before=JSON.stringify(sources.cq1),json=Kit.install(Kit.source(sources.cq1),metadata.layout,metadata);
+ assert.equal(JSON.stringify(sources.cq1),before);assert.equal(json.wallDoor.closedOnly,true);for(const alias of Kit.skins)assert.deepEqual(Object.keys(skin(json,alias).attachments[Door.slot]),['rts_door_closed']);
+ for(const mirrored of [json,Facing.mirrorJson(json)]){for(const name of ['open','open_night','Fade_in_open_inward','Fade_in_open_outward'])assert.deepEqual(mirrored.animations[name].slots[Door.slot].attachment,[{time:0,name:null}]);for(const name of ['idle','shut','shut_night'])assert.equal(mirrored.animations[name].slots[Door.slot].attachment[0].name,'rts_door_closed');}
+});
+
+test('recoverable original gateway fixtures preserve native slots, textures and easing', () => {
+  assert.equal(originalSources.cq1.wallKit.gateStyle, 'original'); assert.equal(originalSources.cq1.wallKit.nativeAssembly, 2); assert.equal(originalSources.cq1.wallKit.volume, false);
+  assert.equal(originalSources.cq2.wallGate.style, 'original');
+  for (const [name, json] of Object.entries(originalSources)) {
     assert(!json.slots.some(slot => slot.name.startsWith('rts_wall_leaf_')), name + ' must use the original animated leaves');
     for (let tier = 0; tier < 3; tier++) {
       const original = skin(json, originals[tier]), alias = skin(json, fixture.aliases[tier]); assert(alias);
-      const nativeSlots = Object.keys(alias.attachments).filter(slot => !slot.startsWith('rts_wall_part_'));
+      const nativeSlots = Object.keys(alias.attachments).filter(slot => !isNativeWallSlot(slot));
       assert.deepEqual(nativeSlots.sort(), Object.keys(original.attachments).sort(), name + ' retains the complete authored gateway half');
       for (const slot of Object.keys(original.attachments)) for (const [attachmentName, attachment] of Object.entries(original.attachments[slot])) {
         const fitted = alias.attachments[slot][attachmentName]; assert(fitted);
@@ -159,7 +200,7 @@ test('production installs the paired original gateway and preserves its native s
 });
 
 test('original tier 1/3 leaves swing and tier 2 panels slide reversibly for every compass face', () => {
-  for (const [name, source] of Object.entries(sources)) {
+  for (const [name, source] of Object.entries(originalSources)) {
     const before = JSON.stringify(source), reverse = Facing.mirrorJson(source);
     assert.equal(JSON.stringify(source), before);
     assert.deepEqual(reverse.bones, source.bones); assert.deepEqual(reverse.slots, source.slots);
@@ -212,8 +253,8 @@ test('native wall lengths and mirrored variants stay rigid and source skeletons 
     }
     for (let tier = 0; tier < 3; tier++) {
       const alias = skin(installed, fixture.aliases[tier]);
-      const gateSlots = Object.keys(alias.attachments).filter(slot => !slot.startsWith('rts_wall_part_'));
-      assert.equal(gateSlots.length, plan.gate ? Object.keys(skin(original, originals[tier]).attachments).length : 0);
+      const gateSlots = Object.keys(alias.attachments).filter(slot => !isNativeWallSlot(slot));
+      assert.deepEqual(gateSlots.slice().sort(),plan.gate?[Door.slot,...Object.values(Door.partSlots)].sort():[],'Only the approved door slots accompany regular native modules');
       for (const [slot, attachments] of Object.entries(alias.attachments).filter(([slot]) => slot.startsWith('rts_wall_part_'))) for (const attachment of Object.values(attachments)) {
         assert(!attachment.type || attachment.type === 'region', 'Never shear or stretch native wall meshes');
         assert.equal(attachment.vertices, undefined); assert.equal(attachment.uvs, undefined);
@@ -222,7 +263,8 @@ test('native wall lengths and mirrored variants stay rigid and source skeletons 
         assert.equal(attachment.scaleX, mirrorX ? -1 : 1);
         const piece = parts[Number(slot.slice('rts_wall_part_'.length))];
         const part = mirrorX ? ({top: 'right', right: 'top'}[piece.part] || piece.part) : piece.part;
-        assert.equal(attachment.path, `rts_wall_${part}_${tier + 1}`, 'Select the correctly lit native orientation');
+        const nativePath = `rts_wall_${part}_${tier + 1}`;
+        assert.equal(attachment.path, original.wallKit.layers ? original.wallKit.layers.regions[nativePath].body : nativePath, 'Select the correctly lit native orientation');
         for (const animation of ['idle', 'idle_night', 'Fade_in', 'destroy']) {
           const track = installed.animations[animation].slots[slot]; assert(track);
           if (animation === 'idle_night') assert.equal(track.color[0].color, 'a7a7a7ff');
@@ -238,8 +280,8 @@ test('native wall lengths and mirrored variants stay rigid and source skeletons 
   }
 });
 
-test('both original gateway halves keep every reversed opening pose inside their culling bounds', () => {
-  for (const source of Object.values(sources)) {
+test('matched closed regions and original gateway fixtures remain inside their culling bounds', () => {
+  for (const source of [...Object.values(sources),...Object.values(originalSources)]) {
     checkBounds(source);
     checkBounds(Facing.mirrorJson(source));
   }

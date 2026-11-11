@@ -3,12 +3,13 @@
 // gameplay components, player state, editor session or project writes.
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path');
+const {decode}=require('../../packages/hkd-characters/lib/png-atlas');
 const root = path.resolve(__dirname, '../..');
 const engine = process.env.COCOS_ENGINE_ROOT || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine';
 const runtime = path.join(engine, 'extensions/spine/lib/spine.js');
 const options = {skip: !fs.existsSync(runtime) && !process.env.COCOS_ENGINE_ROOT ? 'Install Creator 2.4.13 for Spine 3.8 integration' : false};
-const Kit = require('../../assets/_script/WallKit'), Facing = require('../../assets/_script/GateFacing');
-const L = require('../../packages/game-data-editor/worlds/legacy'), Preview = require('../../packages/game-data-editor/worlds/building-preview');
+const Kit = require('../../assets/_script/WallKit'), Facing = require('../../assets/_script/GateFacing'), Door = require('../../assets/_script/WallDoor');
+const L = require('../../packages/game-data-editor/worlds/legacy'), Preview = require('../../packages/game-data-editor/worlds/building-preview'), Maps = require('../../packages/game-data-editor/lib/map-assets');
 const clone = value => JSON.parse(JSON.stringify(value));
 const close = (a, b, tolerance = 1e-4) => assert(Math.abs(a - b) <= tolerance, `${a} != ${b}`);
 const nativeAnchors = {post: [[61, 77], [60.5, 91], [60.5, 93]], right: [[61, 77], [60.5, 91], [60.5, 93]],
@@ -94,7 +95,7 @@ function records() {
     assert.deepEqual(result.errors, []);
     assert.equal(JSON.stringify(detached), before, 'Preparing actual preview descriptors cannot edit the stage');
     const pair = result.buildings[building.id].levels[1].skeletons.filter(part => part.json.wallKit || part.json.wallGate);
-    assert.equal(pair.length, 2, 'The original gateway must still use both CQ1 and CQ2');
+    assert.equal(pair.length, 2, 'Keep CQ2 effects while CQ1 supplies the matched door');
     all.push({face, pair});
   }
   assert.equal(JSON.stringify(source.data), sourceBefore, 'The actual prefab remains unchanged');
@@ -116,30 +117,30 @@ test('Creator Spine 3.8 parses actual paired wall previews and samples every pro
         for (const slot of skeleton.drawOrder) {
           const points = vertices(spine, slot), attachment = slot.getAttachment();
           if (points.length) rendered++;
-          if (/^(idle|idle_night|open|open_night|shut|shut_night)$/.test(animation.name) && /^(rts_wall_part_|men)/.test(slot.data.name)) {
+          if (/^(idle|open|shut|Fade_in_open)/.test(animation.name) && /^(rts_wall_part_|rts_wall_shadow_|rts_wall_leaf_)/.test(slot.data.name)) {
             const bounds = descriptor.json.skeleton;
             for (let i = 0; i < points.length; i += 2) {
               assert(points[i] >= bounds.x - 1e-4 && points[i] <= bounds.x + bounds.width + 1e-4, 'Actual posed gate/wall X must remain inside its culling bounds');
               assert(points[i + 1] >= bounds.y - 1e-4 && points[i + 1] <= bounds.y + bounds.height + 1e-4, 'Actual posed gate/wall Y must remain inside its culling bounds');
             }
           }
-          if (!points.length || !slot.data.name.startsWith('rts_wall_part_')) continue;
+          if (!points.length || !/^rts_wall_(?:part|shadow)_/.test(slot.data.name)) continue;
           assert(attachment instanceof spine.RegionAttachment, 'Native modules must remain actual region attachments');
-          const match = /^rts_wall_(post|top|right|corner)_([123])$/.exec(attachment.path); assert(match);
+          const match = /^rts_wall_(post|top|right|corner)_([123])(?:_(?:body|shadow))?$/.exec(attachment.path); assert(match);
           const [ax, ay] = nativeAnchors[match[1]][tier - 1], width = attachment.region.originalWidth, height = attachment.region.originalHeight;
           assert.equal(attachment.region.width, width); assert.equal(attachment.region.height, height);
           assert.equal(attachment.region.offsetX, 0); assert.equal(attachment.region.offsetY, 0);
           const point = {x: points[2] + (points[4] - points[2]) * ax / width + (points[0] - points[2]) * ay / height,
             y: points[3] + (points[5] - points[3]) * ax / width + (points[1] - points[3]) * ay / height};
-          const piece = pieces[Number(slot.data.name.slice('rts_wall_part_'.length))];
+          const piece = pieces[Number(slot.data.name.replace(/^rts_wall_(?:part|shadow)_/, ''))];
           const expected = skeleton.findBone('rts_wall_frame').localToWorld(new spine.Vector2(piece.x * 2, piece.y * 2));
           close(point.x, expected.x); close(point.y, expected.y); nativeAnchorsChecked++;
           if (animation.name === 'idle_night') close(slot.color.r, 167 / 255);
         }
         if (animation.name === 'destroy' && time > .49) assert(!skeleton.drawOrder.some(slot => {
           const attachment = slot.getAttachment();
-          return attachment && /^(rts_wall_part_|men)/.test(slot.data.name) && slot.color.a * attachment.color.a * skeleton.color.a > 1e-6;
-        }), 'Destroyed walls and original gates must disappear');
+          return attachment && /^(rts_wall_part_|rts_wall_shadow_|rts_wall_leaf_)/.test(slot.data.name) && slot.color.a * attachment.color.a * skeleton.color.a > 1e-6;
+        }), 'Destroyed walls and matched gates must disappear');
       }
     }
     assert.equal(JSON.stringify(descriptor.json), jsonBefore, 'Actual runtime parsing and posing cannot mutate the preview source');
@@ -148,9 +149,64 @@ test('Creator Spine 3.8 parses actual paired wall previews and samples every pro
   t.diagnostic(JSON.stringify({runtime: 'Creator 2.4.13 Spine 3.8', faces: 4, tiers: 3, pairedSkeletons: 8, poses, sampledAttachments: rendered, atlasRegions, nativeAnchorsChecked, gameLoaded: false, audioStarted: false, projectWrites: 0}));
 });
 
+function sourcePixel(points,image,pixel){const u=pixel.x/image.width,v=pixel.y/image.height;return {x:points[2]+(points[4]-points[2])*u+(points[0]-points[2])*v,y:points[3]+(points[5]-points[3])*u+(points[1]-points[3])*v};}
+function doorParts(spine,skeleton,spec,state){
+ const pair=skeleton.findSlot(Door.slot);assert.equal(pair.getAttachment(),null,'An open gate cannot display its closed pair behind the separate leaves');const result={};
+ for(const part of spec.states[state].parts){const slot=skeleton.findSlot(Door.partSlots[part.id]),attachment=slot.getAttachment();assert(attachment instanceof spine.RegionAttachment);assert.equal(attachment.path,part.path);assert.equal(attachment.region.width,part.width);assert.equal(attachment.region.height,part.height);assert.equal(attachment.region.offsetX,0);assert.equal(attachment.region.offsetY,0);assert(!attachment.region.rotate);result[part.id]={slot,attachment,points:vertices(spine,slot)};}
+ return result;
+}
+
+test('real production Spine honors calibrated closed targets plus declared rigid visual insets in every tier, direction and compass face',options,()=>{
+ const spine=require(runtime);
+ for(const {face,pair}of records()){
+  const descriptor=pair.find(part=>part.json.wallDoor),companion=pair.find(part=>part.json.wallGate);assert(descriptor&&companion);assert.equal(descriptor.json.wallDoor.closedOnly,false);assert.equal(descriptor.json.wallDoor.reverse,Facing.reverse(face));const {data}=load(spine,descriptor),side=load(spine,companion).data;
+  for(let tier=1;tier<=3;tier++){
+   const name='cq-rts-'+tier,spec=descriptor.json.wallDoor.tiers[tier-1],closed=pose(spine,data,name,'idle',0),closedSlot=closed.findSlot(Door.slot);assert(closedSlot.getAttachment() instanceof spine.RegionAttachment);assert.equal(closedSlot.getAttachment().path,spec.states.closed.path);const closedPoints=vertices(spine,closedSlot);
+   for(const slot of Object.values(Door.partSlots))assert.equal(closed.findSlot(slot).getAttachment(),null);for(const model of [closed,pose(spine,side,name,'idle',0)])assert(!model.drawOrder.some(part=>part.getAttachment()&&/^men/.test(part.data.name)),'No old gate leaf or old pillar remains visible');
+   for(const opening of ['outward','inward']){
+    const clip=Facing.animation(descriptor.json,'open',opening),night=Facing.animation(descriptor.json,'open_night',opening),shut=Facing.animation(descriptor.json,'shut',opening),fade=Facing.animation(descriptor.json,'Fade_in',opening,true),stateName=(opening==='inward')!==Facing.reverse(face)?'inward':'outward';assert.equal(clip,'open_'+opening);let reference;
+    for(const time of [0,.0001,.05,.15,.3333,1]){const opened=doorParts(spine,pose(spine,data,name,clip,time),spec,stateName);for(const part of spec.states[stateName].parts){const points=opened[part.id].points,actual=sourcePixel(points,part,{x:part.anchorX,y:part.anchorY}),target=sourcePixel(closedPoints,spec.states.closed,{x:part.targetX,y:part.targetY}),offset=part.poseOffset||{x:0,y:0},frame=opened[part.id].slot.bone;target.x+=2*(frame.a*offset.x+frame.b*offset.y);target.y+=2*(frame.c*offset.x+frame.d*offset.y);close(actual.x,target.x);close(actual.y,target.y);if(reference)assert.deepEqual(points,reference[part.id].points,'A calibrated leaf plus its explicit visual offset stays rigid without interpolation, stretching or drift');}reference=opened;}
+    const nightParts=doorParts(spine,pose(spine,data,name,night,0),spec,stateName);for(const id of ['near','far']){assert.deepEqual(nightParts[id].points,reference[id].points);close(nightParts[id].slot.color.r,167/255);}
+    for(const suffix of ['', '_night'])for(const time of [0,.0001,.15,.3333,1]){const skeleton=pose(spine,data,name,shut+suffix,time),slot=skeleton.findSlot(Door.slot);assert.equal(slot.getAttachment().path,spec.states.closed.path);assert.deepEqual(vertices(spine,slot),closedPoints);for(const partSlot of Object.values(Door.partSlots))assert.equal(skeleton.findSlot(partSlot).getAttachment(),null);}
+    const skeleton=new spine.Skeleton(data);skeleton.setSkinByName(name);skeleton.setSlotsToSetupPose();const animation=new spine.AnimationState(new spine.AnimationStateData(data));animation.setAnimation(0,clip,false);animation.update(.2);animation.apply(skeleton);animation.setAnimation(0,fade,false);animation.addAnimation(0,night,false,0);for(const delta of [0,.1,.2,.3]){animation.update(delta);animation.apply(skeleton);skeleton.updateWorldTransform();doorParts(spine,skeleton,spec,stateName);}animation.setAnimation(0,shut,false);animation.apply(skeleton);skeleton.updateWorldTransform();assert.equal(skeleton.findSlot(Door.slot).getAttachment().path,spec.states.closed.path);for(const slot of Object.values(Door.partSlots))assert.equal(skeleton.findSlot(slot).getAttachment(),null);
+   }
+  }
+ }
+});
+
+function closedOnlyDescriptor(descriptor,face){const metadata=clone(descriptor.json.wallKit);metadata.doors.closedOnly=true;for(const tier of metadata.doors.tiers)tier.states={closed:tier.states.closed};let json=Kit.install(Kit.source(descriptor.json),metadata.layout,metadata,{mirrorX:Facing.mirrorX(face)});if(Facing.reverse(face))json=Facing.mirrorJson(json);return {...descriptor,json};}
+
+test('detached closed-only Spine still opens a clear passage and restores its registered image in all tiers and faces', options, () => {
+ const spine=require(runtime);
+ for(const {face,pair}of records()){
+  const descriptor=closedOnlyDescriptor(pair.find(part=>part.json.wallDoor),face),companion=pair.find(part=>part.json.wallGate);assert(descriptor&&companion);assert.equal(descriptor.json.wallDoor.closedOnly,true);assert.equal(descriptor.json.wallDoor.reverse,Facing.reverse(face));
+  const {data}=load(spine,descriptor),side=load(spine,companion).data;
+  for(let tier=1;tier<=3;tier++){
+   const name='cq-rts-'+tier,expected=descriptor.json.wallDoor.tiers[tier-1].states.closed.path,closed=pose(spine,data,name,'idle',0),slot=closed.findSlot(Door.slot);assert(slot.getAttachment() instanceof spine.RegionAttachment);assert.equal(slot.getAttachment().path,expected);const closedPoints=vertices(spine,slot);
+   for(const model of [closed,pose(spine,side,name,'idle',0)])assert(!model.drawOrder.some(part=>part.getAttachment()&&/^men/.test(part.data.name)),'No old gate leaf or old pillar remains visible');
+   for(const opening of ['outward','inward']){
+    const open=Facing.animation(descriptor.json,'open',opening),openNight=Facing.animation(descriptor.json,'open_night',opening),shut=Facing.animation(descriptor.json,'shut',opening),fade=Facing.animation(descriptor.json,'Fade_in',opening,true);assert.equal(open,'open');assert.equal(shut,'shut');
+    for(const time of [0,.0001,.05,.15,.3333,1]){
+     for(const clip of [open,openNight])assert.equal(pose(spine,data,name,clip,time).findSlot(Door.slot).getAttachment(),null,'Opening clears the closed bitmap at time zero');
+     for(const clip of [shut,shut+'_night']){const p=pose(spine,data,name,clip,time).findSlot(Door.slot);assert.equal(p.getAttachment().path,expected);assert.deepEqual(vertices(spine,p),closedPoints,'Closing preserves the registered 2D angle and scale');if(clip.endsWith('_night'))close(p.color.r,167/255);}
+    }
+    const skeleton=new spine.Skeleton(data);skeleton.setSkinByName(name);skeleton.setSlotsToSetupPose();const state=new spine.AnimationState(new spine.AnimationStateData(data));state.setAnimation(0,open,false);state.update(.2);state.apply(skeleton);assert.equal(skeleton.findSlot(Door.slot).getAttachment(),null);state.setAnimation(0,fade,false);state.addAnimation(0,openNight,false,0);
+    for(const delta of [0,.1,.2,.3]){state.update(delta);state.apply(skeleton);skeleton.updateWorldTransform();assert.equal(skeleton.findSlot(Door.slot).getAttachment(),null,'Night fading cannot reset an open doorway to its setup image');}
+    state.setAnimation(0,shut,false);state.apply(skeleton);skeleton.updateWorldTransform();assert.equal(skeleton.findSlot(Door.slot).getAttachment().path,expected);
+   }
+  }
+ }
+});
+
+// Recover and refit the original gateway explicitly, independent of production style.
+function originalPair(pair,face){
+ const main=pair.find(part=>part.json.wallKit),metadata=clone(main.json.wallKit),plan=metadata.layout;metadata.gateStyle='original';delete metadata.doors;
+ return pair.map(part=>{let json;if(part===main)json=Kit.install(Kit.source(part.json),plan,metadata,{mirrorX:Facing.mirrorX(face)});else{json=Kit.fitOriginalGate(Kit.source(part.json),plan,{frameToLocal:Maps.multiply(Maps.inverse(part.matrix),main.matrix)});json.wallGate={...clone(part.json.wallGate),style:'original'};}if(Facing.reverse(face))json=Facing.mirrorJson(json);return {...part,json};});
+}
+
 test('real Spine slot switches open both original gateway halves outward and return them to the same closed pose in day and night', options, () => {
   const spine = require(runtime);
-  for (const {face, pair} of records()) for (const descriptor of pair) {
+  for (const {face, pair} of records()) for (const descriptor of originalPair(pair,face)) {
     const {data} = load(spine, descriptor), normal = Facing.normal(face);
     for (let tier = 1; tier <= 3; tier++) {
       const name = 'cq-rts-' + tier, closed = leaves(spine, pose(spine, data, name, 'idle', 0), descriptor.matrix);

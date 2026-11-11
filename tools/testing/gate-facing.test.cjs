@@ -2,7 +2,9 @@
 // Actual authored gate meshes and sparse animation tracks, sampled without a
 // scene, rendering, audio, player data, or any writes to the source assets.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const Facing=require('../../assets/_script/GateFacing'),root=path.resolve(__dirname,'../..'),K=Math.tan(Math.PI/6),names=['cq1','cq2'],sources=Object.fromEntries(names.map(name=>[name,JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallIconMap/com/Ani/cq',name,name+'.json'),'utf8'))]));
+const Facing=require('../../assets/_script/GateFacing'),Kit=require('../../assets/_script/WallKit'),root=path.resolve(__dirname,'../..'),K=Math.tan(Math.PI/6),names=['cq1','cq2'],sources=Object.fromEntries(names.map(name=>[name,Kit.source(JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallIconMap/com/Ani/cq',name,name+'.json'),'utf8')))]));
+// Legacy mesh coverage remains independent of the installed PNG door kit.
+// Native matched doors are exercised by wall-door and gate-opening tests.
 const clone=value=>JSON.parse(JSON.stringify(value)),isLeaf=name=>/^(men1_[23]|men3_[23]|men2_mu_[12])$/.test(name),close=(a,b,tolerance=1e-7)=>assert(Math.abs(a-b)<=tolerance,a+' differs from '+b);
 function end(animation){let value=0;function visit(o){if(!o||typeof o!=='object')return;if(typeof o.time==='number')value=Math.max(value,o.time);Object.values(o).forEach(visit);}visit(animation);return value;}
 function ease(frame,t){if(frame.curve==='stepped')return 0;if(typeof frame.curve!=='number')return t;const controls=[[0,0],[frame.curve,frame.c2===undefined?0:frame.c2],[frame.c3===undefined?1:frame.c3,frame.c4===undefined?1:frame.c4],[1,1]];function at(t){let p=controls.map(p=>p.slice());while(p.length>1)p=p.slice(1).map((_,i)=>[p[i][0]*(1-t)+p[i+1][0]*t,p[i][1]*(1-t)+p[i+1][1]*t]);return p[0];}let lo=0,hi=1;for(let i=0;i<45;i++){const m=(lo+hi)/2;if(at(m)[0]<t)lo=m;else hi=m;}return at((lo+hi)/2)[1];}

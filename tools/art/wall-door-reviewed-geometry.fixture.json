@@ -1,0 +1,2799 @@
+{
+  "version": 2,
+  "complete": true,
+  "review": "Actual named front/back faces, width scans, reviewed cap-body coordinates and physical guide support strokes; source PNG/crop hashes and actual packed RGBA hashes. No source paths are required by maintained verification.",
+  "limits": {
+    "maxWorldError": 0.25,
+    "minLuminanceContrast": 20,
+    "minCoverage": 0.98,
+    "widthTolerance": 0.05,
+    "heightTolerance": 0.03,
+    "angleTolerance": 3
+  },
+  "tiers": [
+    {
+      "level": 1,
+      "scale": 0.20987885934819897,
+      "postInset": 9,
+      "planeOffset": 0,
+      "offsetX": -7,
+      "offsetY": 7.333333333333333,
+      "flipX": true,
+      "closed": {
+        "path": "rts_door_closed_1",
+        "size": [
+          512,
+          531
+        ],
+        "rgbaSha256": "2471a08ea858eaed155c9ffecaa19fda92104dc3134f0d9ba518d5287b63ef6d",
+        "source": {
+          "pngSha256": "b1016242d26dd47f034d0e8180a27acbca17ed431c7661d8c009dd30288baef5",
+          "cropRgbaSha256": "0661c37827a2f9990a46f86814413a9bd3c88ea9945884791ee5a8b43bd5e24c",
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            304,
+            320,
+            656,
+            680
+          ],
+          "samplingFactor": 0.7804878048780488
+        },
+        "anchor": {
+          "x": 259.5121951219512,
+          "y": 364.2276422764227
+        },
+        "feet": {
+          "near": {
+            "x": 32,
+            "y": 515.9024390243902
+          },
+          "far": {
+            "x": 487.0243902439025,
+            "y": 212.55284552845532
+          }
+        },
+        "caps": {
+          "near": {
+            "upper": {
+              "x": 32,
+              "y": 365.6585365853659
+            },
+            "lower": {
+              "x": 32,
+              "y": 476.8780487804878
+            },
+            "anchor": {
+              "x": 32,
+              "y": 421.26829268292687
+            }
+          },
+          "far": {
+            "upper": {
+              "x": 487.0243902439025,
+              "y": 61.65853658536586
+            },
+            "lower": {
+              "x": 487.0243902439025,
+              "y": 173.26829268292684
+            },
+            "anchor": {
+              "x": 487.0243902439025,
+              "y": 117.46341463414635
+            }
+          }
+        },
+        "measurements": {
+          "near": {
+            "faceSpec": {
+              "id": "near",
+              "xRange": [
+                75,
+                223
+              ],
+              "expectedSlope": -0.6666666666666666,
+              "features": [
+                {
+                  "role": "frontTopBoundary",
+                  "interceptHint": 349.9186991869919,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "topRailLower",
+                  "interceptHint": 374.89430894308947,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailUpper",
+                  "interceptHint": 433.43089430894315,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailLower",
+                  "interceptHint": 453.7235772357724,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "bottomRailUpper",
+                  "interceptHint": 512.260162601626,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "frontFloorToOutline",
+                  "interceptHint": 537.2357723577236,
+                  "radius": 10,
+                  "polarity": "falling"
+                }
+              ],
+              "visiblePlane": "front",
+              "heightFrom": [
+                "frontTopBoundary",
+                "frontFloorToOutline"
+              ]
+            },
+            "widthSpec": {
+              "expectedSlope": -0.6666666666666666,
+              "probes": [
+                {
+                  "intercept": 362.7747216414229,
+                  "left": {
+                    "xRange": [
+                      21,
+                      43
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "falling"
+                  }
+                },
+                {
+                  "intercept": 522.849406916269,
+                  "left": {
+                    "xRange": [
+                      21,
+                      43
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "falling"
+                  }
+                }
+              ]
+            },
+            "hingeSide": "left",
+            "supportPoint": {
+              "x": 152.97560975609755,
+              "y": 435.25203252032526
+            },
+            "supportTarget": {
+              "x": 152.97560975609755,
+              "y": 435.25203252032526
+            },
+            "visiblePlane": "front"
+          },
+          "far": {
+            "faceSpec": {
+              "id": "far",
+              "xRange": [
+                294,
+                449
+              ],
+              "expectedSlope": -0.6666666666666666,
+              "features": [
+                {
+                  "role": "frontTopBoundary",
+                  "interceptHint": 349.9186991869919,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "topRailLower",
+                  "interceptHint": 374.89430894308947,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailUpper",
+                  "interceptHint": 433.43089430894315,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailLower",
+                  "interceptHint": 453.7235772357724,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "bottomRailUpper",
+                  "interceptHint": 512.260162601626,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "frontFloorToOutline",
+                  "interceptHint": 537.2357723577236,
+                  "radius": 10,
+                  "polarity": "falling"
+                }
+              ],
+              "visiblePlane": "front",
+              "heightFrom": [
+                "frontTopBoundary",
+                "frontFloorToOutline"
+              ]
+            },
+            "widthSpec": {
+              "expectedSlope": -0.6666666666666666,
+              "probes": [
+                {
+                  "intercept": 362.66546783148664,
+                  "left": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      476,
+                      498
+                    ],
+                    "polarity": "falling"
+                  }
+                },
+                {
+                  "intercept": 522.802337844537,
+                  "left": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      476,
+                      498
+                    ],
+                    "polarity": "falling"
+                  }
+                }
+              ]
+            },
+            "hingeSide": "right",
+            "supportPoint": {
+              "x": 387.1219512195122,
+              "y": 279.1544715447154
+            },
+            "supportTarget": {
+              "x": 387.1219512195122,
+              "y": 279.1544715447154
+            },
+            "visiblePlane": "front"
+          }
+        }
+      },
+      "poses": {
+        "inward": {
+          "near": {
+            "path": "rts_door_inward_near_1",
+            "size": [
+              265,
+              365
+            ],
+            "rgbaSha256": "0bb07bd9cf9da47f5f3a5aa138ba142e1e0f8ee037e495a5905a003c90ed4bc3",
+            "source": {
+              "pngSha256": "1e48ff810568932a4bbbfecb31a95ad8aae6feb53cc3d97b82be2f06b032fcfe",
+              "cropRgbaSha256": "dd4d7b2f2007d26b8154026b2d4ac6a9b5d3354ee88e2b6e75b683ae351ee4af",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                21,
+                539,
+                339,
+                467
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 252.8780487804878,
+              "y": 250.7317073170732
+            },
+            "target": {
+              "x": 32,
+              "y": 421.26829268292687
+            },
+            "caps": {
+              "upper": {
+                "x": 252.8780487804878,
+                "y": 195.1219512195122
+              },
+              "lower": {
+                "x": 252.8780487804878,
+                "y": 306.3414634146342
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "near-back",
+                "xRange": [
+                  39,
+                  202
+                ],
+                "expectedSlope": 0.6666666666666666,
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 14.048780487804878,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 39.02439024390244,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 97.5609756097561,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 117.85365853658537,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 176.39024390243904,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 201.3658536585366,
+                    "radius": 10,
+                    "polarity": "falling"
+                  }
+                ],
+                "visiblePlane": "back",
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 26.256173744702057,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 188.51378756063122,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "right",
+              "supportPoint": {
+                "x": 100.6829268292683,
+                "y": 268.8780487804878
+              },
+              "supportTarget": {
+                "x": -120.19512195121952,
+                "y": 439.4146341463415
+              },
+              "visiblePlane": "back"
+            }
+          },
+          "far": {
+            "path": "rts_door_inward_far_1",
+            "size": [
+              260,
+              364
+            ],
+            "rgbaSha256": "47d2932b72c6b5b52e28acf9c934d976fc4064934ada4b4537068a67d3e6c2b4",
+            "source": {
+              "pngSha256": "1e48ff810568932a4bbbfecb31a95ad8aae6feb53cc3d97b82be2f06b032fcfe",
+              "cropRgbaSha256": "9161708033e5e052aa7f034f5ee53e21e249cee589a5e0e17ebca8f329be7158",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                627,
+                134,
+                333,
+                466
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 234.9268292682927,
+              "y": 262.6341463414634
+            },
+            "target": {
+              "x": 487.0243902439025,
+              "y": 117.46341463414635
+            },
+            "caps": {
+              "upper": {
+                "x": 234.9268292682927,
+                "y": 207.21951219512195
+              },
+              "lower": {
+                "x": 234.9268292682927,
+                "y": 318.0487804878049
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "far-front",
+                "xRange": [
+                  42,
+                  197
+                ],
+                "expectedSlope": 0.6666666666666666,
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 13.788617886439036,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 38.764227642536596,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 97.30081300839026,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 117.59349593521952,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 176.13008130107318,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 201.10569105717076,
+                    "radius": 10,
+                    "polarity": "falling"
+                  }
+                ],
+                "visiblePlane": "front",
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 25.827236533548565,
+                    "left": {
+                      "xRange": [
+                        0,
+                        19
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        224,
+                        246
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 187.4633401946534,
+                    "left": {
+                      "xRange": [
+                        0,
+                        19
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        224,
+                        246
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "right",
+              "supportPoint": {
+                "x": 96,
+                "y": 265.1056910569106
+              },
+              "supportTarget": {
+                "x": 348.0975609756098,
+                "y": 119.93495934959351
+              },
+              "visiblePlane": "front"
+            }
+          }
+        },
+        "outward": {
+          "near": {
+            "path": "rts_door_outward_near_1",
+            "size": [
+              266,
+              365
+            ],
+            "rgbaSha256": "c08cfa842da3d1c9a22f8194eaa6c8a2b7229aab488a9ae722824ac0dee06787",
+            "source": {
+              "pngSha256": "2221e116d17c6d13b79ed562cf4fd79c2560b34f20746c9f2bb00038954ba2b2",
+              "cropRgbaSha256": "c53da1958032259a2224a1b8afd4504bde0e4d8d3613d648370cccb7a25f5e4c",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                330,
+                717,
+                340,
+                467
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 11.707317073170731,
+              "y": 111.8048780487805
+            },
+            "target": {
+              "x": 32,
+              "y": 421.26829268292687
+            },
+            "caps": {
+              "upper": {
+                "x": 11.707317073170731,
+                "y": 56.58536585365854
+              },
+              "lower": {
+                "x": 11.707317073170731,
+                "y": 167.02439024390245
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "near-front",
+                "xRange": [
+                  55,
+                  202
+                ],
+                "expectedSlope": 0.6666666666666666,
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 10.926829268292684,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 35.90243902439025,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 94.4390243902439,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 114.73170731707317,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 173.26829268292684,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 198.2439024390244,
+                    "radius": 10,
+                    "polarity": "falling"
+                  }
+                ],
+                "visiblePlane": "front",
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 21.051469693079813,
+                    "left": {
+                      "xRange": [
+                        1,
+                        23
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        228,
+                        251
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 185.38320192845083,
+                    "left": {
+                      "xRange": [
+                        1,
+                        23
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        228,
+                        251
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "left",
+              "supportPoint": {
+                "x": 132.6829268292683,
+                "y": 287.0894308943089
+              },
+              "supportTarget": {
+                "x": 152.97560975609755,
+                "y": 596.5528455284552
+              },
+              "visiblePlane": "front"
+            }
+          },
+          "far": {
+            "path": "rts_door_outward_far_1",
+            "size": [
+              260,
+              365
+            ],
+            "rgbaSha256": "46a450f3d18e4bf265b16744957166c4707653658be9d92329e06c85d9f54962",
+            "source": {
+              "pngSha256": "2221e116d17c6d13b79ed562cf4fd79c2560b34f20746c9f2bb00038954ba2b2",
+              "cropRgbaSha256": "be2ce1ef50ac6ae502c049c487e6b189b31b0b697674d210ad737acea6d5d717",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                895,
+                344,
+                333,
+                467
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 25.75609756097561,
+              "y": 99.51219512195122
+            },
+            "target": {
+              "x": 487.0243902439025,
+              "y": 117.46341463414635
+            },
+            "caps": {
+              "upper": {
+                "x": 25.75609756097561,
+                "y": 44.09756097560976
+              },
+              "lower": {
+                "x": 25.75609756097561,
+                "y": 154.9268292682927
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "far-back",
+                "xRange": [
+                  51,
+                  199
+                ],
+                "expectedSlope": 0.6666666666666666,
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 14.308943089690995,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 39.28455284578856,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 97.82113821164222,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 118.1138211384715,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 176.65040650432516,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 201.62601626042272,
+                    "radius": 10,
+                    "polarity": "falling"
+                  }
+                ],
+                "visiblePlane": "back",
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 23.944078079420983,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        246
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 188.07342272462137,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        246
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "left",
+              "supportPoint": {
+                "x": 120.97560975609757,
+                "y": 283.0569105691057
+              },
+              "supportTarget": {
+                "x": 582.2439024390244,
+                "y": 301.0081300813008
+              },
+              "visiblePlane": "back"
+            }
+          }
+        }
+      }
+    },
+    {
+      "level": 2,
+      "scale": 0.20740646440823327,
+      "postInset": 9.5625,
+      "planeOffset": 0,
+      "offsetX": -7.5625,
+      "offsetY": 7.708333333333333,
+      "flipX": true,
+      "closed": {
+        "path": "rts_door_closed_2",
+        "size": [
+          512,
+          531
+        ],
+        "rgbaSha256": "59f26dcc0230fb662b543db72279e69e2a0866b8514c78c47e2ce0dae6f07aa4",
+        "source": {
+          "pngSha256": "f801dc9569d71a191e232bb2a76ac539ab4bde6f66dfc63ef5e65c9a5bb9fe53",
+          "cropRgbaSha256": "d1733abdc5adcaadad7478a7678f4de419ae9d5bcbc5bebfd4dfaeb387625b05",
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            304,
+            320,
+            656,
+            680
+          ],
+          "samplingFactor": 0.7804878048780488
+        },
+        "anchor": {
+          "x": 259.5121951219512,
+          "y": 364.2276422764227
+        },
+        "feet": {
+          "near": {
+            "x": 32,
+            "y": 515.9024390243902
+          },
+          "far": {
+            "x": 487.0243902439025,
+            "y": 212.55284552845532
+          }
+        },
+        "caps": {
+          "near": {
+            "upper": {
+              "x": 35.90243902439025,
+              "y": 366.0487804878049
+            },
+            "lower": {
+              "x": 35.90243902439025,
+              "y": 476.8780487804878
+            },
+            "anchor": {
+              "x": 35.90243902439025,
+              "y": 421.4634146341464
+            }
+          },
+          "far": {
+            "upper": {
+              "x": 489.3658536585366,
+              "y": 63.21951219512195
+            },
+            "lower": {
+              "x": 489.3658536585366,
+              "y": 175.21951219512195
+            },
+            "anchor": {
+              "x": 489.3658536585366,
+              "y": 119.21951219512195
+            }
+          }
+        },
+        "measurements": {
+          "near": {
+            "faceSpec": {
+              "id": "near",
+              "xRange": [
+                465,
+                515
+              ],
+              "expectedSlope": -0.6666666666666666,
+              "features": [
+                {
+                  "role": "frontTopBoundary",
+                  "interceptHint": 349.9186991869919,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "topRailLower",
+                  "interceptHint": 374.89430894308947,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailUpper",
+                  "interceptHint": 438.89430894308947,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailLower",
+                  "interceptHint": 454.50406504065046,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "bottomRailUpper",
+                  "interceptHint": 519.2845528455285,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "frontFloorToOutline",
+                  "interceptHint": 538.0162601626017,
+                  "radius": 4,
+                  "polarity": "falling"
+                }
+              ],
+              "xRanges": [
+                [
+                  75,
+                  100
+                ],
+                [
+                  120,
+                  175
+                ],
+                [
+                  195,
+                  223
+                ]
+              ],
+              "reviewedOccluders": [
+                {
+                  "xRange": [
+                    434,
+                    456
+                  ],
+                  "role": "visible iron rivet circle"
+                },
+                {
+                  "xRange": [
+                    530,
+                    552
+                  ],
+                  "role": "visible iron rivet circle"
+                }
+              ],
+              "heightFrom": [
+                "frontTopBoundary",
+                "frontFloorToOutline"
+              ]
+            },
+            "widthSpec": {
+              "expectedSlope": -0.6666666666666666,
+              "probes": [
+                {
+                  "intercept": 362.3904701432032,
+                  "left": {
+                    "xRange": [
+                      21,
+                      43
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "falling"
+                  }
+                },
+                {
+                  "intercept": 525.0892557598818,
+                  "left": {
+                    "xRange": [
+                      21,
+                      43
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "falling"
+                  }
+                }
+              ]
+            },
+            "hingeSide": "left",
+            "supportPoint": {
+              "x": 152.97560975609755,
+              "y": 435.25203252032526
+            },
+            "supportTarget": {
+              "x": 152.97560975609755,
+              "y": 435.25203252032526
+            },
+            "visiblePlane": "front"
+          },
+          "far": {
+            "faceSpec": {
+              "id": "far",
+              "xRange": [
+                750,
+                795
+              ],
+              "expectedSlope": -0.6666666666666666,
+              "features": [
+                {
+                  "role": "frontTopBoundary",
+                  "interceptHint": 349.9186991869919,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "topRailLower",
+                  "interceptHint": 374.89430894308947,
+                  "radius": 10,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailUpper",
+                  "interceptHint": 438.89430894308947,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailLower",
+                  "interceptHint": 454.50406504065046,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "bottomRailUpper",
+                  "interceptHint": 519.2845528455285,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "frontFloorToOutline",
+                  "interceptHint": 538.0162601626017,
+                  "radius": 4,
+                  "polarity": "falling"
+                }
+              ],
+              "xRanges": [
+                [
+                  294,
+                  327
+                ],
+                [
+                  346,
+                  401
+                ],
+                [
+                  421,
+                  449
+                ]
+              ],
+              "reviewedOccluders": [
+                {
+                  "xRange": [
+                    724,
+                    746
+                  ],
+                  "role": "visible iron rivet circle"
+                },
+                {
+                  "xRange": [
+                    820,
+                    842
+                  ],
+                  "role": "visible iron rivet circle"
+                }
+              ],
+              "heightFrom": [
+                "frontTopBoundary",
+                "frontFloorToOutline"
+              ]
+            },
+            "widthSpec": {
+              "expectedSlope": -0.6666666666666666,
+              "probes": [
+                {
+                  "intercept": 362.32465911371776,
+                  "left": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      476,
+                      498
+                    ],
+                    "polarity": "falling"
+                  }
+                },
+                {
+                  "intercept": 525.3689588222767,
+                  "left": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      476,
+                      498
+                    ],
+                    "polarity": "falling"
+                  }
+                }
+              ]
+            },
+            "hingeSide": "right",
+            "supportPoint": {
+              "x": 387.1219512195122,
+              "y": 279.15447154471553
+            },
+            "supportTarget": {
+              "x": 387.1219512195122,
+              "y": 279.15447154471553
+            },
+            "visiblePlane": "front"
+          }
+        }
+      },
+      "poses": {
+        "inward": {
+          "near": {
+            "path": "rts_door_inward_near_2",
+            "size": [
+              266,
+              365
+            ],
+            "rgbaSha256": "143d808a9649bd83fe035a2c12d9b7a655b80369efd4a7b0608c12d21335244c",
+            "source": {
+              "pngSha256": "9845515d9beb1af04f1851c9c9d47ef027e15a3bdd5186e08fa4c669c7fea0cd",
+              "cropRgbaSha256": "da90d15bbbf18ad6284c24cf8ac83d2a8b2268c32a5d50f9cd4e769ba22e796e",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                22,
+                539,
+                340,
+                467
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 252.8780487804878,
+              "y": 250.14634146341464
+            },
+            "target": {
+              "x": 35.90243902439025,
+              "y": 421.4634146341464
+            },
+            "caps": {
+              "upper": {
+                "x": 252.8780487804878,
+                "y": 194.34146341463415
+              },
+              "lower": {
+                "x": 252.8780487804878,
+                "y": 305.9512195121951
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "near",
+                "visiblePlane": "back",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    38,
+                    67
+                  ],
+                  [
+                    92,
+                    145
+                  ],
+                  [
+                    170,
+                    201
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 14.569105691056881,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 39.544715447154445,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 119.93495934959347,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 201.8861788617886,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailOuterTop",
+                    "interceptHint": 96.13008130081298,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailOuterTop",
+                    "interceptHint": 176.520325203252,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 26.115488087905096,
+                    "left": {
+                      "xRange": [
+                        0,
+                        17
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        222,
+                        244
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 189.30318989273079,
+                    "left": {
+                      "xRange": [
+                        0,
+                        17
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        222,
+                        244
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "right",
+              "supportPoint": {
+                "x": 99.90243902439025,
+                "y": 270.1788617886179
+              },
+              "supportTarget": {
+                "x": -117.07317073170732,
+                "y": 441.4959349593496
+              },
+              "visiblePlane": "back"
+            }
+          },
+          "far": {
+            "path": "rts_door_inward_far_2",
+            "size": [
+              259,
+              365
+            ],
+            "rgbaSha256": "10b789960171aabc65084474ce73e941d71424aee0c74b887f5d045556811733",
+            "source": {
+              "pngSha256": "9845515d9beb1af04f1851c9c9d47ef027e15a3bdd5186e08fa4c669c7fea0cd",
+              "cropRgbaSha256": "74e1d939147e8a1ba0d6a260103a8c978fa8dd7c9f02fa8b13ad674531b51ea5",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                628,
+                134,
+                331,
+                467
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 234.9268292682927,
+              "y": 262.0487804878049
+            },
+            "target": {
+              "x": 489.3658536585366,
+              "y": 119.21951219512195
+            },
+            "caps": {
+              "upper": {
+                "x": 234.9268292682927,
+                "y": 206.4390243902439
+              },
+              "lower": {
+                "x": 234.9268292682927,
+                "y": 317.2682926829268
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "far",
+                "visiblePlane": "front",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    41,
+                    69
+                  ],
+                  [
+                    93,
+                    147
+                  ],
+                  [
+                    171,
+                    196
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 14.30894308969104,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 39.2845528457886,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 119.15447154471542,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 201.8861788617886,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailOuterTop",
+                    "interceptHint": 96.13008130081298,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailOuterTop",
+                    "interceptHint": 175.73983739837396,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 25.677252479599613,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 188.78547228383562,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "right",
+              "supportPoint": {
+                "x": 95.21951219512195,
+                "y": 263.8048780487805
+              },
+              "supportTarget": {
+                "x": 349.6585365853659,
+                "y": 120.97560975609757
+              },
+              "visiblePlane": "front"
+            }
+          }
+        },
+        "outward": {
+          "near": {
+            "path": "rts_door_outward_near_2",
+            "size": [
+              264,
+              365
+            ],
+            "rgbaSha256": "96bee9a82e04f2b16fdcc8927c1b0ae20b0adcfc32de88e63fe24b05284c4d35",
+            "source": {
+              "pngSha256": "60a1a91b7c7150c29fa80da11d2aca89d885dfc8de56574102718fd916645d32",
+              "cropRgbaSha256": "6e6afac004403d4a00aeadd2e58d20f204ef18bf45f99255b35898b31fdbfe6d",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                331,
+                717,
+                338,
+                467
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 10.926829268292684,
+              "y": 112
+            },
+            "target": {
+              "x": 35.90243902439025,
+              "y": 421.4634146341464
+            },
+            "caps": {
+              "upper": {
+                "x": 10.926829268292684,
+                "y": 56.58536585365854
+              },
+              "lower": {
+                "x": 10.926829268292684,
+                "y": 167.41463414634146
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "near",
+                "visiblePlane": "front",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    54,
+                    73
+                  ],
+                  [
+                    97,
+                    151
+                  ],
+                  [
+                    175,
+                    202
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 11.447154471544687,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 36.42276422764225,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 98.0813008130081,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 114.47154471544712,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 178.47154471544712,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 197.98373983739836,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 21.966960865371576,
+                    "left": {
+                      "xRange": [
+                        0,
+                        22
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        227,
+                        250
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 185.6600649299392,
+                    "left": {
+                      "xRange": [
+                        0,
+                        22
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        227,
+                        250
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "left",
+              "supportPoint": {
+                "x": 131.90243902439025,
+                "y": 289.691056910569
+              },
+              "supportTarget": {
+                "x": 156.8780487804878,
+                "y": 599.1544715447153
+              },
+              "visiblePlane": "front"
+            },
+            "poseOffset": {
+              "x": 2,
+              "y": 0
+            }
+          },
+          "far": {
+            "path": "rts_door_outward_far_2",
+            "size": [
+              260,
+              366
+            ],
+            "rgbaSha256": "7b0a9d16a0feb4b64a67acdd913701b742a8ed55516c6ef39fcd5a81a94b09bb",
+            "source": {
+              "pngSha256": "60a1a91b7c7150c29fa80da11d2aca89d885dfc8de56574102718fd916645d32",
+              "cropRgbaSha256": "21d495bc585c1ceb816a8a1ea2b1ab78e7e66dd781884f6daaf77d04d82feda0",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                896,
+                344,
+                332,
+                468
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 24.975609756097562,
+              "y": 100.09756097560975
+            },
+            "target": {
+              "x": 489.3658536585366,
+              "y": 119.21951219512195
+            },
+            "caps": {
+              "upper": {
+                "x": 24.975609756097562,
+                "y": 44.87804878048781
+              },
+              "lower": {
+                "x": 24.975609756097562,
+                "y": 155.3170731707317
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "far",
+                "visiblePlane": "back",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    50,
+                    72
+                  ],
+                  [
+                    96,
+                    149
+                  ],
+                  [
+                    173,
+                    198
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 14.829268292942999,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 39.80487804904056,
+                    "radius": 10,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 101.7235772357723,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 118.11382113821132,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 181.3333333333333,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 202.4065040650406,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 25.683889750314048,
+                    "left": {
+                      "xRange": [
+                        0,
+                        17
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        222,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 189.29784028547618,
+                    "left": {
+                      "xRange": [
+                        0,
+                        17
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        222,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "left",
+              "supportPoint": {
+                "x": 120.19512195121952,
+                "y": 283.4471544715447
+              },
+              "supportTarget": {
+                "x": 584.5853658536586,
+                "y": 302.5691056910569
+              },
+              "visiblePlane": "back"
+            }
+          }
+        }
+      }
+    },
+    {
+      "level": 3,
+      "scale": 0.2049340694682676,
+      "postInset": 10.125,
+      "planeOffset": 0,
+      "offsetX": -8.125,
+      "offsetY": 8.083333333333332,
+      "flipX": true,
+      "closed": {
+        "path": "rts_door_closed_3",
+        "size": [
+          512,
+          531
+        ],
+        "rgbaSha256": "3d5af23e2cfb49b9e9df30e1c651c57d1a00ebae458376090c48549bb547ec14",
+        "source": {
+          "pngSha256": "b1adc32972fed5fe640515967cc6b503a58c0aa13440d8322aeb8e898f80fe1c",
+          "cropRgbaSha256": "e2f317ed1692ba4016e8ff051678cde3a9bbda6b80bb8f53e98c953a80a96b54",
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            304,
+            320,
+            656,
+            680
+          ],
+          "samplingFactor": 0.7804878048780488
+        },
+        "anchor": {
+          "x": 259.5121951219512,
+          "y": 364.2276422764227
+        },
+        "feet": {
+          "near": {
+            "x": 32,
+            "y": 515.9024390243902
+          },
+          "far": {
+            "x": 487.0243902439025,
+            "y": 212.55284552845532
+          }
+        },
+        "caps": {
+          "near": {
+            "upper": {
+              "x": 31.609756097560975,
+              "y": 366.0487804878049
+            },
+            "lower": {
+              "x": 31.609756097560975,
+              "y": 476.8780487804878
+            },
+            "anchor": {
+              "x": 31.609756097560975,
+              "y": 421.4634146341464
+            }
+          },
+          "far": {
+            "upper": {
+              "x": 487.4146341463415,
+              "y": 61.268292682926834
+            },
+            "lower": {
+              "x": 487.8048780487805,
+              "y": 172.09756097560975
+            },
+            "anchor": {
+              "x": 487.609756097561,
+              "y": 116.6829268292683
+            }
+          }
+        },
+        "measurements": {
+          "near": {
+            "faceSpec": {
+              "id": "near",
+              "xRange": [
+                465,
+                515
+              ],
+              "expectedSlope": -0.6666666666666666,
+              "features": [
+                {
+                  "role": "frontTopBoundary",
+                  "interceptHint": 348.3577235772358,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "topRailLower",
+                  "interceptHint": 372.55284552845535,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailUpper",
+                  "interceptHint": 431.089430894309,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailLower",
+                  "interceptHint": 452.1626016260163,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "bottomRailUpper",
+                  "interceptHint": 511.47967479674804,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "frontFloorToOutline",
+                  "interceptHint": 536.4552845528456,
+                  "radius": 4,
+                  "polarity": "falling"
+                }
+              ],
+              "xRanges": [
+                [
+                  75,
+                  100
+                ],
+                [
+                  120,
+                  175
+                ],
+                [
+                  195,
+                  223
+                ]
+              ],
+              "reviewedOccluders": [
+                {
+                  "xRange": [
+                    434,
+                    456
+                  ],
+                  "role": "visible iron rivet circle"
+                },
+                {
+                  "xRange": [
+                    530,
+                    552
+                  ],
+                  "role": "visible iron rivet circle"
+                }
+              ],
+              "heightFrom": [
+                "frontTopBoundary",
+                "frontFloorToOutline"
+              ]
+            },
+            "widthSpec": {
+              "expectedSlope": -0.6666666666666666,
+              "probes": [
+                {
+                  "intercept": 360.47293514861724,
+                  "left": {
+                    "xRange": [
+                      21,
+                      43
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "falling"
+                  }
+                },
+                {
+                  "intercept": 523.6701258766738,
+                  "left": {
+                    "xRange": [
+                      21,
+                      43
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "falling"
+                  }
+                }
+              ]
+            },
+            "hingeSide": "left",
+            "supportPoint": {
+              "x": 152.97560975609755,
+              "y": 435.25203252032526
+            },
+            "supportTarget": {
+              "x": 152.97560975609755,
+              "y": 435.25203252032526
+            },
+            "visiblePlane": "front"
+          },
+          "far": {
+            "faceSpec": {
+              "id": "far",
+              "xRange": [
+                750,
+                795
+              ],
+              "expectedSlope": -0.6666666666666666,
+              "features": [
+                {
+                  "role": "frontTopBoundary",
+                  "interceptHint": 348.3577235772358,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "topRailLower",
+                  "interceptHint": 372.55284552845535,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailUpper",
+                  "interceptHint": 431.089430894309,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "middleRailLower",
+                  "interceptHint": 452.1626016260163,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "bottomRailUpper",
+                  "interceptHint": 511.47967479674804,
+                  "radius": 4,
+                  "polarity": "falling"
+                },
+                {
+                  "role": "frontFloorToOutline",
+                  "interceptHint": 536.4552845528456,
+                  "radius": 4,
+                  "polarity": "falling"
+                }
+              ],
+              "xRanges": [
+                [
+                  294,
+                  327
+                ],
+                [
+                  346,
+                  401
+                ],
+                [
+                  421,
+                  449
+                ]
+              ],
+              "reviewedOccluders": [
+                {
+                  "xRange": [
+                    724,
+                    746
+                  ],
+                  "role": "visible iron rivet circle"
+                },
+                {
+                  "xRange": [
+                    820,
+                    842
+                  ],
+                  "role": "visible iron rivet circle"
+                }
+              ],
+              "heightFrom": [
+                "frontTopBoundary",
+                "frontFloorToOutline"
+              ]
+            },
+            "widthSpec": {
+              "expectedSlope": -0.6666666666666666,
+              "probes": [
+                {
+                  "intercept": 360.14247610271144,
+                  "left": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      476,
+                      498
+                    ],
+                    "polarity": "falling"
+                  }
+                },
+                {
+                  "intercept": 523.3458602287407,
+                  "left": {
+                    "xRange": [
+                      248,
+                      271
+                    ],
+                    "polarity": "rising"
+                  },
+                  "right": {
+                    "xRange": [
+                      476,
+                      498
+                    ],
+                    "polarity": "falling"
+                  }
+                }
+              ]
+            },
+            "hingeSide": "right",
+            "supportPoint": {
+              "x": 387.1219512195122,
+              "y": 279.15447154471553
+            },
+            "supportTarget": {
+              "x": 387.1219512195122,
+              "y": 279.15447154471553
+            },
+            "visiblePlane": "front"
+          }
+        }
+      },
+      "poses": {
+        "inward": {
+          "near": {
+            "path": "rts_door_inward_near_3",
+            "size": [
+              265,
+              364
+            ],
+            "rgbaSha256": "c2db2dd11ff9255c283dd25b54369b84cad9309617957c8247ba3d92cbdfdf47",
+            "source": {
+              "pngSha256": "4fbad069f5f14ac041495177cca15f3bf067245aad5beb6a9c417f824fe56eca",
+              "cropRgbaSha256": "67e83fe259a44b06fa074f2c5ebf552803ec1f409b2d3a2cd5128584331937fa",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                22,
+                539,
+                339,
+                466
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 251.3170731707317,
+              "y": 249.95121951219514
+            },
+            "target": {
+              "x": 31.609756097560975,
+              "y": 421.4634146341464
+            },
+            "caps": {
+              "upper": {
+                "x": 251.3170731707317,
+                "y": 194.34146341463415
+              },
+              "lower": {
+                "x": 251.3170731707317,
+                "y": 305.5609756097561
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "near",
+                "visiblePlane": "back",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    38,
+                    67
+                  ],
+                  [
+                    92,
+                    145
+                  ],
+                  [
+                    170,
+                    201
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 13.788617886178832,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 37.2032520325203,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 96.520325203252,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 116.81300813008127,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 176.91056910569102,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 200.3252032520325,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 26.40944310297319,
+                    "left": {
+                      "xRange": [
+                        0,
+                        17
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        222,
+                        244
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 188.41942683076533,
+                    "left": {
+                      "xRange": [
+                        0,
+                        17
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        222,
+                        244
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "right",
+              "supportPoint": {
+                "x": 99.90243902439025,
+                "y": 268.1626016260163
+              },
+              "supportTarget": {
+                "x": -119.8048780487805,
+                "y": 439.67479674796755
+              },
+              "visiblePlane": "back"
+            }
+          },
+          "far": {
+            "path": "rts_door_inward_far_3",
+            "size": [
+              260,
+              363
+            ],
+            "rgbaSha256": "4a5467565eb88d84ef6555fc1ee1e16a3c577a5c13fa26c75141203cd77d171a",
+            "source": {
+              "pngSha256": "4fbad069f5f14ac041495177cca15f3bf067245aad5beb6a9c417f824fe56eca",
+              "cropRgbaSha256": "c86b80002f734171738417ec717d308768ea823275d80eb38ce6c57deda85a15",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                628,
+                135,
+                333,
+                465
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 235.3170731707317,
+              "y": 261.2682926829268
+            },
+            "target": {
+              "x": 487.609756097561,
+              "y": 116.6829268292683
+            },
+            "caps": {
+              "upper": {
+                "x": 235.3170731707317,
+                "y": 206.0487804878049
+              },
+              "lower": {
+                "x": 235.3170731707317,
+                "y": 316.4878048780488
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "far",
+                "visiblePlane": "front",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    41,
+                    69
+                  ],
+                  [
+                    93,
+                    147
+                  ],
+                  [
+                    171,
+                    196
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 13.008130081300784,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 37.983739837398346,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 95.73983739837396,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 116.03252032520322,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 176.13008130081298,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 200.3252032520325,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 25.36131517363307,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 187.30989906946272,
+                    "left": {
+                      "xRange": [
+                        0,
+                        18
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        223,
+                        245
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "right",
+              "supportPoint": {
+                "x": 95.21951219512195,
+                "y": 264.13008130081306
+              },
+              "supportTarget": {
+                "x": 347.5121951219512,
+                "y": 119.54471544715449
+              },
+              "visiblePlane": "front"
+            }
+          }
+        },
+        "outward": {
+          "near": {
+            "path": "rts_door_outward_near_3",
+            "size": [
+              267,
+              366
+            ],
+            "rgbaSha256": "373f7e0960898a57cf92062b3f05ab0e8cabeb85a2a559b10d7f0681e690c8ae",
+            "source": {
+              "pngSha256": "90f11a9f3588e125a6dbc94a8d4bc7662cf13c661815ac8e5ef5967ace84b5db",
+              "cropRgbaSha256": "ccf2f3e99acc63b24bba7a58198df7204529c522eb457187752d7bbb3f938770",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                328,
+                716,
+                342,
+                468
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 12.292682926829269,
+              "y": 112.19512195121952
+            },
+            "target": {
+              "x": 31.609756097560975,
+              "y": 421.4634146341464
+            },
+            "caps": {
+              "upper": {
+                "x": 12.487804878048781,
+                "y": 56.58536585365854
+              },
+              "lower": {
+                "x": 12.097560975609756,
+                "y": 167.8048780487805
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "near",
+                "visiblePlane": "front",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    57,
+                    75
+                  ],
+                  [
+                    100,
+                    153
+                  ],
+                  [
+                    178,
+                    204
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 7.544715447154442,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 33.300813008130056,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 91.83739837398372,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 112.13008130081299,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 173.00813008130078,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 197.98373983739836,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 20.26555077013011,
+                    "left": {
+                      "xRange": [
+                        2,
+                        24
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        229,
+                        252
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 185.32599552289082,
+                    "left": {
+                      "xRange": [
+                        2,
+                        24
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        229,
+                        252
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "left",
+              "supportPoint": {
+                "x": 134.2439024390244,
+                "y": 287.67479674796743
+              },
+              "supportTarget": {
+                "x": 153.5609756097561,
+                "y": 596.9430894308942
+              },
+              "visiblePlane": "front"
+            },
+            "poseOffset": {
+              "x": 2,
+              "y": 0
+            }
+          },
+          "far": {
+            "path": "rts_door_outward_far_3",
+            "size": [
+              263,
+              367
+            ],
+            "rgbaSha256": "0f7f2e5a2926883249054a5dbcdf46218ab3daaa79a93bd8fe9d31b152f1ea09",
+            "source": {
+              "pngSha256": "90f11a9f3588e125a6dbc94a8d4bc7662cf13c661815ac8e5ef5967ace84b5db",
+              "cropRgbaSha256": "77a8dd2c6fd28d1ab1e78c09ddd11da700d17b4b1164f13f3260db5ad8069675",
+              "size": [
+                1254,
+                1254
+              ],
+              "bounds": [
+                891,
+                342,
+                336,
+                469
+              ],
+              "samplingFactor": 0.7804878048780488
+            },
+            "anchor": {
+              "x": 28.097560975609756,
+              "y": 100.6829268292683
+            },
+            "target": {
+              "x": 487.609756097561,
+              "y": 116.6829268292683
+            },
+            "caps": {
+              "upper": {
+                "x": 28.097560975609756,
+                "y": 45.268292682926834
+              },
+              "lower": {
+                "x": 28.097560975609756,
+                "y": 156.09756097560975
+              }
+            },
+            "measurement": {
+              "faceSpec": {
+                "id": "far",
+                "visiblePlane": "back",
+                "expectedSlope": 0.6666666666666666,
+                "xRanges": [
+                  [
+                    54,
+                    76
+                  ],
+                  [
+                    100,
+                    152
+                  ],
+                  [
+                    177,
+                    202
+                  ]
+                ],
+                "heightFrom": [
+                  "frontTopBoundary",
+                  "frontFloorToOutline"
+                ],
+                "features": [
+                  {
+                    "role": "frontTopBoundary",
+                    "interceptHint": 11.707317073170731,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "topRailLower",
+                    "interceptHint": 37.463414634146346,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailUpper",
+                    "interceptHint": 96,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "middleRailLower",
+                    "interceptHint": 116.29268292682927,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "bottomRailUpper",
+                    "interceptHint": 176.39024390243904,
+                    "radius": 4,
+                    "polarity": "falling"
+                  },
+                  {
+                    "role": "frontFloorToOutline",
+                    "interceptHint": 201.3658536585366,
+                    "radius": 4,
+                    "polarity": "falling"
+                  }
+                ]
+              },
+              "widthSpec": {
+                "expectedSlope": 0.6666666666666666,
+                "probes": [
+                  {
+                    "intercept": 23.70357979732048,
+                    "left": {
+                      "xRange": [
+                        0,
+                        21
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        226,
+                        249
+                      ],
+                      "polarity": "falling"
+                    }
+                  },
+                  {
+                    "intercept": 188.68547929989407,
+                    "left": {
+                      "xRange": [
+                        0,
+                        21
+                      ],
+                      "polarity": "rising"
+                    },
+                    "right": {
+                      "xRange": [
+                        226,
+                        249
+                      ],
+                      "polarity": "falling"
+                    }
+                  }
+                ]
+              },
+              "hingeSide": "left",
+              "supportPoint": {
+                "x": 124.09756097560977,
+                "y": 285.91869918699183
+              },
+              "supportTarget": {
+                "x": 583.609756097561,
+                "y": 301.91869918699183
+              },
+              "visiblePlane": "back"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

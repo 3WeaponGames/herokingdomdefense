@@ -267,6 +267,9 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype._animateCollider = function (collider, duration) {
     var owner = this;
     this._stopColliderTween(collider);
+    // Independently scaling the pieces of an erased mask closes its holes and
+    // opens seams. Keep authored blockers whole throughout the visual upgrade.
+    if (collider._buildingBlocker) return;
     if (!this._colliderTweens) this._colliderTweens = new Map();
     var operation = { level: this.index, tween: null };
     this._colliderTweens.set(collider, operation);
@@ -314,6 +317,7 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.doUpgreadAni = function () {
     var t = this;
+    if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (1 == this.getLevel()) {
       this.ndAniMain.setAnimation(0, r.create, false);
       this.ndAniMain.addAnimation(0, r.idle, true);

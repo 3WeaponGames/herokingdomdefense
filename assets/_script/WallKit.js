@@ -26,6 +26,8 @@ function posts(r) {
 }
 function source(json) {
   var result=clone(json);
+  result=require("./WallAdjustments").restore(result);
+  Door.restoreDrawOrder(result);
   if(result.wallKit&&result.wallKit.originalHeader)result.skeleton=clone(result.wallKit.originalHeader);
   else if(result.wallGate&&result.wallGate.originalHeader)result.skeleton=clone(result.wallGate.originalHeader);
   result.bones=result.bones.filter(function(b){return !isAdded(b.name);});
@@ -103,37 +105,61 @@ function updateBounds(result) {
   if(!isFinite(minX))return;result.skeleton.x=minX;result.skeleton.y=minY;
   result.skeleton.width=maxX-minX;result.skeleton.height=maxY-minY;
 }
+function validateLayers(metadata) {
+  if(metadata.layers===undefined)return false;
+  var layers=metadata.layers,seen={};
+  if(!layers||layers.version!==1||!layers.regions||typeof layers.regions!=="object"||Array.isArray(layers.regions))throw Error("Native wall layers need a version 1 region map.");
+  ["post","top","right","corner"].forEach(function(kind){for(var level=1;level<=3;level++){
+    var path="rts_wall_"+kind+"_"+level,size=metadata.sizes[path],entry=layers.regions[path];
+    if(!Array.isArray(size)||size.length!==2||!size.every(function(n){return typeof n==="number"&&isFinite(n)&&n>0;})||!entry||typeof entry!=="object"||Array.isArray(entry))throw Error("Missing native wall layer pair "+path);
+    ["body","shadow"].forEach(function(layer){
+      var alias=entry[layer],aliasSize=metadata.sizes[alias];
+      if(typeof alias!=="string"||!alias||/^rts_wall_(?:post|top|right|corner)_[123]$/.test(alias)||seen[alias]||!Array.isArray(aliasSize)||aliasSize.length!==2||aliasSize[0]!==size[0]||aliasSize[1]!==size[1])throw Error("Native wall "+layer+" alias must be unique and retain the complete source dimensions: "+path);
+      seen[alias]=true;
+    });
+  }});
+  return true;
+}
 function install(json, r, metadata, options) {
   metadata=metadata||json.wallKit;if(!metadata||!metadata.sizes)throw Error("Missing native wall kit textures.");
+  // Layer aliases are an explicit asset capability. Old kits retain their exact
+  // complete-region assembly, and invalid new metadata cannot change the input.
+  var layered=validateLayers(metadata);
   var matched=metadata.gateStyle==="matched"||metadata.doors&&metadata.doors.version===2;
   var result=source(json),parts=posts(r),bone="rts_wall_frame";
   // Cancel the authored bone3 setup offset, while inheriting its entire spawn motion.
   result.bones.push({name:bone,parent:"bone3",x:5.2,y:-156.53});
   var bodySlots=parts.map(function(_,i){return "rts_wall_part_"+i;});
-  bodySlots.forEach(function(name){result.slots.push({name:name,bone:bone,attachment:name});});
+  var shadowSlots=layered?parts.map(function(_,i){return "rts_wall_shadow_"+i;}):[],wallSlots=shadowSlots.concat(bodySlots);
+  wallSlots.forEach(function(name){result.slots.push({name:name,bone:bone,attachment:name});});
   for(var level=1;level<=3;level++){
     var attachments={},skin=SKINS[level-1];
-    parts.forEach(function(p,i){var name=bodySlots[i],a=Assembly.attachment(p,level,metadata.sizes,options);attachments[name]={};attachments[name][name]=a;});
+    parts.forEach(function(p,i){
+      var bodyOptions=layered?{mirrorX:!!(options&&options.mirrorX),layer:"body",layers:metadata.layers}:options,name=bodySlots[i];
+      attachments[name]={};attachments[name][name]=Assembly.attachment(p,level,metadata.sizes,bodyOptions);
+      if(layered){name=shadowSlots[i];attachments[name]={};attachments[name][name]=Assembly.attachment(p,level,metadata.sizes,{mirrorX:!!(options&&options.mirrorX),layer:"shadow",layers:metadata.layers});}
+    });
     result.skins.push({name:skin,attachments:attachments});
   }
   if(!matched)result=fitOriginalGate(result,r);
   Object.keys(result.animations).forEach(function(name){
     var a=result.animations[name],slots=a.slots||(a.slots={}),night=name.indexOf("night")>=0;
-    bodySlots.forEach(function(slot){
+    wallSlots.forEach(function(slot){
       var track={color:[{color:night?"a7a7a7ff":"ffffffff"}]};
       if(name==="Fade_in")track.color=[{color:"ffffffff",curve:.25,c3:.75},{time:.5,color:"a7a7a7ff"}];
       if(name==="destroy")track.attachment=[{time:.1667,name:null}];
       slots[slot]=track;
     });
   });
-  // Complete PNG modules are painter-sorted from rear to foreground. Legacy
-  // gateways keep their prior order; matched door sprites insert behind the
-  // regular wall posts after native lighting/build tracks are established.
-  var added=result.slots.filter(function(s){return bodySlots.indexOf(s.name)>=0;}),nativeSlots=result.slots.filter(function(s){return bodySlots.indexOf(s.name)<0;});
+  // Ground-shadow regions precede the doorway; the regular upright bodies mask
+  // its hinges. Each partition keeps the intact source region's rigid transform.
+  // Without layer metadata, preserve the prior complete-module ordering exactly.
+  var added=result.slots.filter(function(s){return wallSlots.indexOf(s.name)>=0;}),nativeSlots=result.slots.filter(function(s){return wallSlots.indexOf(s.name)<0;});
   result.slots=added.concat(nativeSlots);
   if(matched)Door.install(result,r,metadata,options);
   updateBounds(result);
-  result.wallKit=clone(metadata);result.wallKit.layout=clone(r);result.wallKit.gateStyle=matched?"matched":"original";result.wallKit.nativeAssembly=2;result.wallKit.volume=false;result.wallKit.reversed=false;return result;
+  result.wallKit=clone(metadata);result.wallKit.layout=clone(r);result.wallKit.gateStyle=matched?"matched":"original";result.wallKit.nativeAssembly=2;result.wallKit.volume=false;result.wallKit.reversed=false;
+  return require("./WallAdjustments").apply(result,r,{data:options&&options.adjustmentsData,tier:options&&options.tier,face:options&&options.face,forceSplitClosed:options&&options.forceSplitClosed});
 }
 
 function footprint(a,b,depth) {

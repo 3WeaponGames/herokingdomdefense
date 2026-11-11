@@ -147,3 +147,150 @@ test('registered crop checks reject clipped visible art while retaining low-alph
   clipped.rgba[outside] = 7;
   const result = Tool.build(f.manifest, () => PNG.encode(clipped)); assert.equal(Object.keys(result.metadata.regions).length, 9); assert.equal(clipped.rgba[outside], 7);
 });
+
+
+function partsFixture() {
+  const f = registeredFixture(), opened = {width: 64, height: 48, rgba: Buffer.alloc(64 * 48 * 4)};
+  for (const [left, top, width, height, color] of [[2, 25, 14, 20, [190, 103, 48]], [40, 1, 20, 20, [84, 90, 99]]]) {
+    for (let y = top; y < top + height; y++) for (let x = left; x < left + width; x++) {
+      const at = (y * opened.width + x) * 4; opened.rgba.set([...color, 254], at);
+    }
+  }
+  const bytes = PNG.encode(opened), near = {id: 'near', source: 'open.png', bounds: [0, 23, 17, 24], anchor: {x: 5.5, y: 34.25}, target: {x: 10, y: 38}}, far = {id: 'far', source: 'open.png', bounds: [38, 0, 24, 24], anchor: [55, 12], target: [46, 10]};
+  for (const tier of f.manifest.tiers) {
+    tier.planeOffset = 0;
+    tier.states.inward = {parts: [JSON.parse(JSON.stringify(near)), JSON.parse(JSON.stringify(far))]};
+    tier.states.outward = {parts: [JSON.parse(JSON.stringify(far)), JSON.parse(JSON.stringify(near))]};
+  }
+  return {manifest: f.manifest, opened, bytes, closed: f, build: () => Tool.build(f.manifest, file => file === 'open.png' ? bytes : f.bytes)};
+}
+
+test('registered open leaves retain closed pixels and map measured source hinges to fixed closed targets', () => {
+  const f = partsFixture(), before = JSON.stringify(f.manifest), result = f.build(), page = PNG.decode(result.png);
+  const closedFixture = registeredFixture(), original = closedFixture.build(), originalPage = PNG.decode(original.png);
+  assert.equal(JSON.stringify(f.manifest), before); assert.equal(Object.keys(result.metadata.regions).length, 15);
+  for (const [index, tier] of result.metadata.doors.tiers.entries()) {
+    assert.equal(tier.planeOffset, 0); assert.equal(tier.scale, .4);
+    assert.deepEqual(tier.states.closed, original.metadata.doors.tiers[index].states.closed);
+    const region = result.metadata.regions[tier.states.closed.path], old = original.metadata.regions[tier.states.closed.path];
+    assert.deepEqual(PNG.crop(page, region.x, region.y, region.width, region.height, false), PNG.crop(originalPage, old.x, old.y, old.width, old.height, false));
+    for (const state of ['inward', 'outward']) {
+      const parts = tier.states[state].parts;
+      assert.deepEqual(parts.map(p => p.id), ['far', 'near']);
+      assert.deepEqual(parts[0], {id: 'far', path: 'rts_door_' + state + '_far_' + (index + 1), width: 12, height: 12, anchorX: 8.5, anchorY: 6, targetX: 21, targetY: 2});
+      assert.deepEqual(parts[1], {id: 'near', path: 'rts_door_' + state + '_near_' + (index + 1), width: 9, height: 12, anchorX: 2.75, anchorY: 5.625, targetX: 3, targetY: 16});
+      // Moving the source hinge changes its leaf offset, never the fixed target.
+      assert.equal((parts[0].targetX - tier.states.closed.anchorX) * tier.scale, (46 - 28) * .2);
+      assert.equal((parts[1].targetY - tier.states.closed.anchorY) * tier.scale, (38 - 24) * .2);
+    }
+  }
+  const partsEvidence = result.metadata.sources.filter(s => s.part);
+  assert.equal(partsEvidence.length, 12); assert(partsEvidence.every(s => s.samplingFactor === .5 && s.sourceSha256 === hash(f.bytes)));
+});
+
+test('fixed-pitch part downsampling pads fractional edge coverage instead of stretching it', () => {
+  const source = {width: 3, height: 2, rgba: Buffer.from([240, 30, 10, 254, 240, 30, 10, 254, 240, 30, 10, 254, 240, 30, 10, 254, 240, 30, 10, 254, 240, 30, 10, 254])};
+  const before = Buffer.from(source.rgba), actual = Tool.resampleAtScale(source, .5);
+  assert.equal(actual.width, 2); assert.equal(actual.height, 1); assert.deepEqual([...actual.rgba], [240, 30, 10, 254, 240, 30, 10, 127]);
+  assert.deepEqual(source.rgba, before); assert.strictEqual(Tool.resampleAtScale(source, 1), source);
+  for (const factor of [0, -1, NaN, Infinity, 1.01]) assert.throws(() => Tool.resampleAtScale(source, factor), /sampling scale/);
+});
+
+test('registered parts support independent approved leaf files and lossless no-resample crops', () => {
+  const f = partsFixture(), near = {width: 64, height: 48, rgba: Buffer.from(f.opened.rgba)}, far = {width: 64, height: 48, rgba: Buffer.from(f.opened.rgba)};
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 64; x++) {
+    if (x >= 30) near.rgba[(y * 64 + x) * 4 + 3] = 0;
+    else far.rgba[(y * 64 + x) * 4 + 3] = 0;
+  }
+  const sources = {'near.png': PNG.encode(near), 'far.png': PNG.encode(far)};
+  for (const tier of f.manifest.tiers) {
+    delete tier.targetWidth;
+    for (const state of ['inward', 'outward']) for (const part of tier.states[state].parts) part.source = part.id + '.png';
+  }
+  const result = Tool.build(f.manifest, file => sources[file] || f.closed.bytes), page = PNG.decode(result.png);
+  for (const tier of result.metadata.doors.tiers) {
+    assert.equal(tier.scale, .2);
+    for (const state of ['inward', 'outward']) for (const part of tier.states[state].parts) {
+      const region = result.metadata.regions[part.path], sourcePart = f.manifest.tiers[0].states[state].parts.find(p => p.id === part.id);
+      assert.deepEqual(PNG.crop(page, region.x, region.y, region.width, region.height, false), PNG.crop(part.id === 'near' ? near : far, ...sourcePart.bounds, false));
+    }
+  }
+  assert(result.metadata.sources.filter(s => s.part).every(s => s.filter === 'copy'));
+});
+
+test('registered open parts reject ambiguous IDs, invalid hinges, omitted or duplicated visible pixels', () => {
+  const f = partsFixture(), attempt = change => {const m = JSON.parse(JSON.stringify(f.manifest)); change(m); return () => Tool.build(m, file => file === 'open.png' ? f.bytes : f.closed.bytes);};
+  for (const change of [
+    m => m.tiers[0].states.inward.parts.pop(),
+    m => m.tiers[0].states.inward.parts[1].id = 'near',
+    m => m.tiers[0].states.inward.parts[0].id = 'left',
+    m => m.tiers[0].states.closed = m.tiers[0].states.inward,
+    m => m.tiers[0].states.inward.source = 'open.png',
+    m => m.tiers[0].states.inward.anchor = [0, 0],
+    m => m.tiers[0].states.inward.parts[0].anchor.x = 100,
+    m => m.tiers[0].states.inward.parts[0].target.x = 1,
+    m => m.tiers[0].states.inward.parts[0].bounds = [0, 23, 14, 24],
+    m => m.tiers[0].states.inward.parts[0].bounds = [0, 0, 64, 48],
+    m => m.tiers[0].states.inward = {source: 'inward.png'},
+    m => {m.tiers[0].states.inward.parts[0].bounds = [0, 0, 1, 1]; m.tiers[0].states.inward.parts[0].anchor = [0, 0];}
+  ]) assert.throws(attempt(change));
+  const lowAlpha = {width: f.opened.width, height: f.opened.height, rgba: Buffer.from(f.opened.rgba)};
+  lowAlpha.rgba[(47 * lowAlpha.width + 63) * 4 + 3] = 7;
+  assert.equal(Object.keys(Tool.build(f.manifest, file => file === 'open.png' ? PNG.encode(lowAlpha) : f.closed.bytes).metadata.regions).length, 15);
+  lowAlpha.rgba[(47 * lowAlpha.width + 63) * 4 + 3] = 8;
+  assert.throws(() => Tool.build(f.manifest, file => file === 'open.png' ? PNG.encode(lowAlpha) : f.closed.bytes), /omit visible artwork/);
+});
+
+
+test('authored signed mount offsets reach runtime metadata without changing pixels or seeding absent fields', () => {
+  const f = registeredFixture(), original = f.build();
+  assert(original.metadata.doors.tiers.every(tier => !Object.prototype.hasOwnProperty.call(tier, 'offsetX') && !Object.prototype.hasOwnProperty.call(tier, 'offsetY')));
+  for (const [q, tier] of f.manifest.tiers.entries()) {
+    tier.postInset = 9; tier.planeOffset = 0; tier.offsetX = q - 9; tier.offsetY = (q + 9) * 2 / 3;
+    // These synthetic crop hinges intentionally use a non-native slope; omit
+    // that unrelated calibration while exercising the actual runtime reader.
+    delete tier.hinges;
+  }
+  const before = JSON.stringify(f.manifest), result = f.build(), Door = require('../../assets/_script/WallDoor');
+  assert.equal(JSON.stringify(f.manifest), before); assert.deepEqual(result.png, original.png); assert.equal(result.atlas, original.atlas);
+  const resolved = Door.resolve({left: {x: -56.75, y: 113.5 / 3}, right: {x: 56.75, y: -113.5 / 3}}, result.metadata);
+  for (const [q, tier] of result.metadata.doors.tiers.entries()) {
+    assert.equal(tier.offsetX, q - 9); assert.equal(tier.offsetY, (q + 9) * 2 / 3);
+    assert.equal(resolved[q].anchor.x, tier.offsetX); assert.equal(resolved[q].anchor.y, tier.offsetY);
+  }
+  f.manifest.tiers[0].offsetX = 0; f.manifest.tiers[0].offsetY = 0;
+  const zero = f.build().metadata.doors.tiers[0]; assert.equal(zero.offsetX, 0); assert.equal(zero.offsetY, 0);
+});
+
+test('mount offsets reject nonfinite and nonnumeric settings instead of silently losing their calibration', () => {
+  for (const key of ['offsetX', 'offsetY']) for (const invalid of [NaN, Infinity, -Infinity, null, '6']) {
+    const f = registeredFixture(); f.manifest.tiers[0][key] = invalid;
+    assert.throws(() => f.build(), new RegExp('Invalid door ' + key));
+  }
+});
+
+test('open-part pose offsets survive atlas preparation in model units without altering pixels or original registration', () => {
+  const f = partsFixture();for(const tier of f.manifest.tiers)delete tier.hinges;
+  const original = f.build();for(const tier of f.manifest.tiers.slice(1))tier.states.outward.parts.find(p=>p.id==='near').poseOffset={x:2,y:0,FutureField:{keep:9}};
+  const before=JSON.stringify(f.manifest),result=f.build(),Door=require('../../assets/_script/WallDoor');assert.equal(JSON.stringify(f.manifest),before);assert.deepEqual(result.png,original.png);assert.equal(result.atlas,original.atlas);
+  const base=Door.resolve({left:{x:-56.75,y:113.5/3},right:{x:56.75,y:-113.5/3}},original.metadata),resolved=Door.resolve({left:{x:-56.75,y:113.5/3},right:{x:56.75,y:-113.5/3}},result.metadata);
+  for(let i=0;i<3;i++)for(const state of['inward','outward'])for(const part of result.metadata.doors.tiers[i].states[state].parts){const shifted=i>0&&state==='outward'&&part.id==='near',old=original.metadata.doors.tiers[i].states[state].parts.find(p=>p.id===part.id),clean={...part};delete clean.poseOffset;assert.deepEqual(clean,old);if(shifted)assert.deepEqual(part.poseOffset,{x:2,y:0,FutureField:{keep:9}});else assert(!Object.hasOwn(part,'poseOffset'));
+    const image=resolved[i].states[state].parts.find(p=>p.id===part.id),previous=base[i].states[state].parts.find(p=>p.id===part.id),a=Door.mapPoint(resolved[i],image,{x:image.anchorX,y:image.anchorY}),b=Door.mapPoint(base[i],previous,{x:previous.anchorX,y:previous.anchorY});assert(Math.abs(a.x-b.x-(shifted?2:0))<1e-9);assert(Math.abs(a.y-b.y)<1e-9);
+  }
+  const clean=JSON.parse(JSON.stringify(result.metadata));for(const tier of clean.doors.tiers)for(const state of['inward','outward'])for(const part of tier.states[state].parts)delete part.poseOffset;for(const evidence of clean.sources)delete evidence.poseOffset;assert.deepEqual(clean,original.metadata,'Only explicitly authored pose metadata changes');
+  const zero=partsFixture();zero.manifest.tiers[1].states.outward.parts[0].poseOffset={x:0,y:0};assert.deepEqual(zero.build().metadata.doors.tiers[1].states.outward.parts.find(p=>p.id==='far').poseOffset,{x:0,y:0});
+});
+
+test('atlas preparation rejects nonfinite, malformed and whole-state pose offsets', () => {
+  for(const invalid of[null,[],2,'2',{x:2},{x:NaN,y:0},{x:Infinity,y:0},{x:0,y:-Infinity},{x:'2',y:0},{x:0,y:false}]){const f=partsFixture();f.manifest.tiers[1].states.outward.parts[0].poseOffset=invalid;assert.throws(()=>f.build(),/poseOffset/);}
+  for(const state of['closed','inward','outward']){const f=registeredFixture();f.manifest.tiers[1].states[state].poseOffset={x:2,y:0};assert.throws(()=>f.build(),/Only open leaf parts/);}
+  const f=partsFixture();f.manifest.tiers[1].states.outward.poseOffset={x:2,y:0};assert.throws(()=>f.build(),/Only open leaf parts/);
+});
+
+test('explicit state-aware depth capability survives repacking without changing legacy bytes or source registration', () => {
+  const f=partsFixture(),legacy=f.build();assert(!Object.hasOwn(legacy.metadata.doors,'depthOrder'));
+  f.manifest.doors={depthOrder:'state-aware',FutureField:{keep:1}};const before=JSON.stringify(f.manifest),result=f.build();assert.equal(JSON.stringify(f.manifest),before);assert.deepEqual(result.png,legacy.png);assert.equal(result.atlas,legacy.atlas);assert.equal(result.metadata.doors.depthOrder,'state-aware');
+  const without=JSON.parse(JSON.stringify(result.metadata));delete without.doors.depthOrder;assert.deepEqual(without,legacy.metadata);
+  for(const invalid of[null,false,0,1,'','between-posts',{},[]]){const source=partsFixture();source.manifest.doors={depthOrder:invalid};let reads=0;assert.throws(()=>Tool.build(source.manifest,()=>{reads++;return source.bytes;}),/depthOrder/);assert.equal(reads,0,'Invalid capability rejects before reading sources or producing output');}
+  for(const source of[fixture(),registeredFixture()]){source.manifest.doors={depthOrder:'state-aware'};assert.throws(()=>source.build(),/registered open leaf parts/);}
+});

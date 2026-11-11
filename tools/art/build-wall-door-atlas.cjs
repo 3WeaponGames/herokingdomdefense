@@ -1,6 +1,6 @@
 'use strict';
 
-// Preparation of approved, front-facing door textures. Declared crops are
+// Preparation of approved door textures and registered sprite states. Crops are
 // lossless by default; optional mobile downsampling uses alpha-weighted area
 // coverage. This never paints artwork, changes color, guesses a crop, or edits
 // an existing wall/skeleton/atlas.
@@ -25,7 +25,14 @@ function settings(tier) {
   const result = {};
   for (const [key, fallback] of Object.entries({postInset: 6, planeOffset: 10, thickness: 2.5, heightMax: 45})) {
     const value = tier[key] === undefined ? fallback : tier[key];
-    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) throw Error('Invalid door ' + key + '.');
+    if (typeof value !== 'number' || !Number.isFinite(value) || (key === 'planeOffset' ? false : key === 'postInset' ? value < 0 : value <= 0)) throw Error('Invalid door ' + key + '.');
+    result[key] = value;
+  }
+  // Offsets are authored model units, not source pixels. Keep absent fields
+  // absent so older manifests retain their exact default representation.
+  for (const key of ['offsetX', 'offsetY']) if (tier[key] !== undefined) {
+    const value = tier[key];
+    if (typeof value !== 'number' || !Number.isFinite(value)) throw Error('Invalid door ' + key + '.');
     result[key] = value;
   }
   return result;
@@ -37,7 +44,10 @@ function resample(image, targetWidth) {
     throw Error('targetWidth must be a positive whole-pixel downsample width.');
   }
   const width = targetWidth, height = Math.max(1, Math.round(image.height * width / image.width));
-  const rgba = Buffer.alloc(width * height * 4), sx = image.width / width, sy = image.height / height;
+  return sampleArea(image, width, height, image.width / width, image.height / height);
+}
+function sampleArea(image, width, height, sx, sy, padded) {
+  const rgba = Buffer.alloc(width * height * 4);
   // Each target pixel averages its exact source rectangle. Weight RGB by alpha
   // first so invisible matte RGB cannot bleed into the visible sprite edge.
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
@@ -51,10 +61,17 @@ function resample(image, targetWidth) {
       alpha += a; red += image.rgba[at] * a; green += image.rgba[at + 1] * a; blue += image.rgba[at + 2] * a; area += weight;
     }
     const to = (y * width + x) * 4;
-    rgba[to + 3] = Math.round(alpha / area);
+    rgba[to + 3] = Math.round(alpha / (padded ? sx * sy : area));
     if (alpha > 0) {rgba[to] = Math.round(red / alpha); rgba[to + 1] = Math.round(green / alpha); rgba[to + 2] = Math.round(blue / alpha);}
   }
   return {width, height, rgba};
+}
+function resampleAtScale(image, factor) {
+  if (!Number.isFinite(factor) || factor <= 0 || factor > 1) throw Error('Part sampling scale must be a positive downsample factor.');
+  if (factor === 1) return image;
+  // All leaves retain the closed pair's exact pixel pitch. Rounding the canvas
+  // upward adds only transparent coverage at its edge, never a fitted stretch.
+  return sampleArea(image, Math.ceil(image.width * factor), Math.ceil(image.height * factor), 1 / factor, 1 / factor, true);
 }
 function point(value, label) {
   const result = Array.isArray(value) && value.length === 2 ? {x: value[0], y: value[1]} : value;
@@ -62,12 +79,48 @@ function point(value, label) {
   return {x: result.x, y: result.y};
 }
 function samePoint(a, b) {return a.x === b.x && a.y === b.y;}
+function poseOffset(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || !Number.isFinite(value.x) || !Number.isFinite(value.y)) throw Error('An open part poseOffset needs finite signed x and y model coordinates.');
+  return clone(value);
+}
 function containsArtwork(image, bounds, label) {
   const [left, top, width, height] = bounds;
   for (let y = 0; y < image.height; y++) for (let x = 0; x < image.width; x++) {
     if (x >= left && x < left + width && y >= top && y < top + height) continue;
     if (image.rgba[(y * image.width + x) * 4 + 3] >= 8) throw Error(label + ' has visible artwork outside the common crop at ' + x + ',' + y + '.');
   }
+}
+function containsPoint(p, bounds, label) {
+  if (p.x < bounds[0] || p.x > bounds[0] + bounds[2] || p.y < bounds[1] || p.y > bounds[1] + bounds[3]) throw Error(label + ' registration must be inside its crop.');
+}
+function registeredParts(input, tier, name, readSource, images, evidence, closedBounds, factor) {
+  if (name === 'closed' || !Array.isArray(input.parts) || input.parts.length !== 2 || input.source !== undefined || input.bounds !== undefined || input.anchor !== undefined || input.hinges !== undefined) {
+    throw Error('Only open states may declare exactly near/far parts without a whole-state source.');
+  }
+  const parts = input.parts.slice().sort((a, b) => String(a && a.id).localeCompare(String(b && b.id)));
+  if (parts.some((part, i) => !part || typeof part !== 'object' || Array.isArray(part) || part.id !== ['far', 'near'][i])) throw Error('Open parts must contain unique near and far IDs.');
+  const cropsBySource = new Map(), descriptors = [];
+  for (const part of parts) {
+    const original = readSource(part.source), bounds = rectangle(part.bounds, original.image, 'Tier ' + tier.tier + ' ' + name + ' ' + part.id + ' bounds');
+    const anchor = point(part.anchor, name + ' ' + part.id + ' source hinge'), target = point(part.target, name + ' ' + part.id + ' closed hinge');
+    containsPoint(anchor, bounds, name + ' ' + part.id + ' source hinge'); containsPoint(target, closedBounds, name + ' ' + part.id + ' target hinge');
+    if (!cropsBySource.has(part.source)) cropsBySource.set(part.source, {image: original.image, bounds: []});
+    cropsBySource.get(part.source).bounds.push(bounds);
+    const cropped = PNG.crop(original.image, ...bounds, false), image = resampleAtScale(cropped, factor), regionName = 'rts_door_' + name + '_' + part.id + '_' + tier.tier;
+    if (!cropped.rgba.some((value, index) => index % 4 === 3 && value >= 8)) throw Error(name + ' ' + part.id + ' crop contains no visible artwork.');
+    images[regionName] = image;
+    const visual = part.poseOffset === undefined ? {} : {poseOffset: poseOffset(part.poseOffset)};
+    descriptors.push(Object.assign({id: part.id, path: regionName, width: image.width, height: image.height, anchorX: (anchor.x - bounds[0]) * factor, anchorY: (anchor.y - bounds[1]) * factor, targetX: (target.x - closedBounds[0]) * factor, targetY: (target.y - closedBounds[1]) * factor}, clone(visual)));
+    evidence.push(Object.assign({tier: tier.tier, state: name, part: part.id, source: part.source, sourceSha256: original.sha256, bounds, anchor, target, samplingFactor: factor, sourcePixelsSha256: hash(cropped.rgba), targetSize: [image.width, image.height], filter: image === cropped ? 'copy' : 'premultiplied-alpha-area', pixelsSha256: hash(image.rgba)}, clone(visual)));
+  }
+  for (const [source, entry] of cropsBySource) {
+    for (let y = 0; y < entry.image.height; y++) for (let x = 0; x < entry.image.width; x++) {
+      if (entry.image.rgba[(y * entry.image.width + x) * 4 + 3] < 8) continue;
+      const coverage = entry.bounds.filter(([left, top, width, height]) => x >= left && x < left + width && y >= top && y < top + height).length;
+      if (coverage !== 1) throw Error('Tier ' + tier.tier + ' ' + name + ' parts ' + (coverage ? 'duplicate' : 'omit') + ' visible artwork from ' + source + ' at ' + x + ',' + y + '.');
+    }
+  }
+  return {parts: descriptors};
 }
 function registeredTier(tier, readSource, images, evidence) {
   const names = ['closed', 'inward', 'outward'];
@@ -84,6 +137,11 @@ function registeredTier(tier, readSource, images, evidence) {
   for (const name of names) {
     const input = typeof tier.states[name] === 'string' ? {source: tier.states[name]} : tier.states[name];
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw Error('Invalid registered ' + name + ' state.');
+    if (input.poseOffset !== undefined) throw Error('Only open leaf parts may declare a poseOffset.');
+    if (input.parts !== undefined) {
+      descriptor.states[name] = registeredParts(input, tier, name, readSource, images, evidence, bounds, factor);
+      continue;
+    }
     const original = readSource(input.source), current = rectangle(tier.bounds, original.image, 'Tier ' + tier.tier + ' common bounds');
     if (input.bounds !== undefined && JSON.stringify(input.bounds) !== JSON.stringify(current)) throw Error('State bounds must equal the shared tier crop; do not trim states independently.');
     if (!canvas) {canvas = [original.image.width, original.image.height]; bounds = current;}
@@ -124,6 +182,15 @@ function registeredTier(tier, readSource, images, evidence) {
  * a source PNG. All use tier.bounds, raw-pixel tier.anchor/hinges, sourceScale
  * (model units/raw pixel) and the same optional targetWidth. Registration is
  * transformed once; no state is trimmed, centered or scaled independently.
+ * An open state may instead declare parts:[{id:'near'|'far',source,bounds,
+ * anchor:{x,y},target:{x,y},poseOffset?:{x,y}}]. Optional poseOffset is a signed
+ * wall-frame model-unit visual adjustment, never resampled source pixels.
+ * Source hinge anchors use that raw open PNG;
+ * targets use raw closed PNG coordinates. Parts retain the closed crop's exact
+ * sampling factor and are translated independently to their closed hinges.
+ * Their crops must cover every visible source pixel exactly once.
+ * Version 2 open-part manifests may opt into depth ordering through
+ * doors:{depthOrder:'state-aware'}. Absent capability fields stay absent.
  * Equal leaf dimensions are required. Source paths are resolved by the reader;
  * build() itself has no output side effects and never changes the manifest.
  */
@@ -138,6 +205,13 @@ function build(manifest, readSource) {
   if (tiers.some((tier, i) => !tier || tier.tier !== i + 1)) throw Error('Provide each tier 1, 2 and 3 exactly once.');
   const registered = tiers.some(tier => tier.states !== undefined);
   if (registered && !tiers.every(tier => tier.states !== undefined) || manifest.version === 2 && !registered) throw Error('A registered state manifest must use state sprites for every tier.');
+  if (registered) for (const name of ['inward', 'outward']) {
+    const usesParts = tier => Boolean(tier.states && tier.states[name] && tier.states[name].parts !== undefined);
+    if (tiers.some(usesParts) && !tiers.every(usesParts)) throw Error('Each open state must use the same whole-image or parts representation across all tiers.');
+  }
+  const depth = manifest.doors?.depthOrder;
+  if (depth !== undefined && depth !== 'state-aware') throw Error('Invalid door depthOrder; use state-aware or omit the setting.');
+  if (depth !== undefined && (!registered || tiers.some(tier => ['inward', 'outward'].some(name => !tier.states[name]?.parts)))) throw Error('State-aware door depth requires registered open leaf parts.');
   const sources = new Map(), images = {}, evidence = [], descriptors = [];
   function source(name) {
     if (typeof name !== 'string' || !name || !/\.png$/i.test(name)) throw Error('Door sources must name approved PNG files.');
@@ -192,7 +266,9 @@ function build(manifest, readSource) {
     const p = packed.positions[name];
     atlas += name + '\n  rotate: false\n  xy: ' + p.x + ', ' + p.y + '\n  size: ' + p.width + ', ' + p.height + '\n  orig: ' + p.width + ', ' + p.height + '\n  offset: 0, 0\n  index: -1\n';
   }
-  const metadata = {version: registered ? 2 : 1, page, pageSize: [packed.width, packed.height], pageSha256: hash(bytes), regions: clone(packed.positions), doors: {version: registered ? 2 : 1, tiers: descriptors}, sources: evidence};
+  const doors = {version: registered ? 2 : 1, tiers: descriptors};
+  if (depth !== undefined) doors.depthOrder = depth;
+  const metadata = {version: registered ? 2 : 1, page, pageSize: [packed.width, packed.height], pageSha256: hash(bytes), regions: clone(packed.positions), doors, sources: evidence};
   return {page, png: bytes, atlas, metadata};
 }
 
@@ -231,4 +307,4 @@ if (require.main === module) {
   try { console.log(JSON.stringify(main(process.argv.slice(2)), null, 2)); }
   catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = {build, readManifest, writePack, main, resample};
+module.exports = {build, readManifest, writePack, main, resample, resampleAtScale};

@@ -162,6 +162,7 @@ var def_KinghtFallUIBuildSel = function (t) {
     return false;
   };
   _ctor.prototype.finishDecision = function (callback, value, generation) {
+    if (this.isclose || this._decisionCompleted || !cc.isValid(this) || generation !== undefined && generation !== this._resourceGeneration) return false;
     if (!this.canAffordSelection(value)) return false;
     return t.prototype.finishDecision.call(this, callback, value, generation);
   };

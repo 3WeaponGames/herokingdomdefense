@@ -15,16 +15,18 @@ function fixture(family, index) {
   const state = { paused: false, scheduled: [], effects: 0, upgrades: 0, markerReads: [], buildingFrames: 0, movementFrames: 0 }, infoModule = {};
   const singleton = value => ({ getInstance: () => value });
   const h = setup({ KinghtFallEnum: enums, KinghtFallBuildInfo: infoModule,
+    UIMgr: { UIMgr: singleton({ openUIWithOwner(_id,_layer,owner,build,select,cancel,choices) {state.picker={owner,build,select,cancel,choices};return {cancel:noop};},closeUI:noop,openUI:noop }) },
     AudioMgr: { AudioMgr: singleton({ playEffectFree() { state.effects++; } }) },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getMissionData: () => ({ recordQuestEvent: noop }) }) } });
   const Info = plainModule('KinghtFallBuildInfo', { ...h.e.stubs, RelicRuntime: h.load('RelicRuntime') }).KinghtFallBuildInfo;
   infoModule.KinghtFallBuildInfo = Info;
+  h.e.stubs.KinghtFallConfig.KinghtFallUIID={UIBuildSel:'building-choice',UIGame:'game'};
   Object.assign(h.d, { coin: 1000, treasureAddTime: {}, getBaseLevel: () => 3 });
   Object.assign(h.ui, { canStart: true, isclose: false, addTask: noop, onPauseGame(value) { state.paused = value; } });
-  const Type = h.load('KinghtFallBuildBase').default, build = new Type(), cfg = authored.BuildEnum[family];
+  const Type = h.load('KinghtFallBuildBase').default, build = new Type(), cfg = JSON.parse(JSON.stringify(authored.BuildEnum[family]));
   Object.assign(build, { ID: 9, uuid: 'building-9', node: new Node('building'), index, buildCfg: cfg,
     buildInfo: new Info(cfg.enumValue, cfg.levelList.find(row => row.index === index)), canLock: true,
-    doUpgreadAni() { state.upgrades++; }, scheduleOnce(fn) { state.scheduled.push(fn); }, onUpdate() { state.buildingFrames++; } });
+    doUpgreadAni() { state.upgrades++; }, sendEvent:noop, scheduleOnce(fn) { state.scheduled.push(fn); }, onUpdate() { state.buildingFrames++; } });
   build.ndLockList = [0, 1, 2].map(level => ({ getChildByName() { state.markerReads.push(level); return null; } }));
   h.d.bulidPointMap = { 9: build }; h.g.gameStatus = h.e.stubs.KinghtFallModle.KinghtFallGameStage.Prepare;
   h.g.onCommerce = h.g.collectFollowers = noop; h.g.moveDir = new Vec2();
@@ -92,4 +94,33 @@ test('an absent optional progress marker does not interrupt passive planning upd
   const h = fixture(2, 8); h.build.ndLockList.length = 2; h.build.buildInfo.standTime = .3;
   assert.doesNotThrow(() => h.build.doUpgrade(.05, false));
   assert.equal(h.build.index, 8); assert.equal(h.d.coin, 1000);
+});
+
+test('a terminal destination price is charged exactly and does not rewrite its predecessor cost',()=>{
+  const h=fixture(2,8),target=h.build.getBranchCfg(9),source=h.build.getBranchCfg(8),legacy=source.BuildSliverCost;
+  target.BuildCost=23;assert.equal(h.build.getSell(),23);h.build.doUpgrade(5,true);
+  assert.equal(h.d.coin,977);assert.equal(h.build.index,9);assert.equal(source.BuildSliverCost,legacy);assert.equal(h.build.getSell(),-1);
+});
+
+test('the selected starting building pays its own explicit price',()=>{
+  const h=fixture(1,0),target=h.build.getBranchCfg(1);target.BuildCost=11;
+  assert.equal(h.build.getSell(),11);h.build.doUpgrade(5,true);assert.equal(h.d.coin,989);assert.equal(h.build.index,1);
+});
+
+test('branch choices reserve the minimum then charge the chosen destination, once',()=>{
+  const h=fixture(2,1);h.build.getBranchCfg(2).BuildCost=12;h.build.getBranchCfg(3).BuildCost=25;h.d.coin=30;
+  assert.equal(h.build.getSell(),12);assert.equal(h.build.getSell(3),25);h.build.doUpgrade(5,true);
+  assert.equal(h.d.coin,18);assert(h.build.canAffordChoice(3));h.state.picker.select(3);
+  assert.equal(h.d.coin,5);assert.equal(h.build.index,3);h.state.picker.select(2);h.state.picker.cancel();assert.equal(h.d.coin,5);
+});
+
+test('unaffordable branch choices leave the reservation intact and cancellation refunds it once',()=>{
+  const h=fixture(2,1);h.build.getBranchCfg(2).BuildCost=12;h.build.getBranchCfg(3).BuildCost=25;h.d.coin=20;let errors=0;h.build.showBuildCostError=()=>errors++;
+  h.build.doUpgrade(5,true);assert.equal(h.d.coin,8);assert(!h.build.canAffordChoice(3));assert.equal(h.state.picker.select(3),false);
+  assert.equal(h.build.index,1);assert.equal(h.d.coin,8);assert.equal(errors,1);h.state.picker.cancel();h.state.picker.cancel();assert.equal(h.d.coin,20);
+});
+
+test('free initial construction retains its approved perk behavior despite explicit destination prices',()=>{
+  const h=fixture(2,0);h.build.buildCfg.InitialChoices=[4,7];h.build.getBranchCfg(4).BuildCost=50;h.build.getBranchCfg(7).BuildCost=100;h.build.hasFreeInitialChoice=()=>true;
+  assert.equal(h.build.getSell(7),0);h.build.doUpgrade(5,true);h.state.picker.select(7);assert.equal(h.d.coin,1000);assert.equal(h.build.index,7);
 });

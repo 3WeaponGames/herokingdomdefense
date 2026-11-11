@@ -65,6 +65,7 @@ function pieces(plan){
 function attachment(piece,level,sizes,options){
   var mirrored=!!(options&&options.mirrorX),kind=mirrored?(piece.part==="top"?"right":piece.part==="right"?"top":piece.part):piece.part,path="rts_wall_"+kind+"_"+level,size=sizes[path],anchor=(kind==="top"?TOP:kind==="corner"?CORNER:POST)[level-1],sign=mirrored?-1:1;
   if(!size)throw Error("Missing native wall module "+path);
+  if(options&&options.layer){var regions=options.layers&&options.layers.regions,entry=regions&&regions[path];if(!entry||["body","shadow"].indexOf(options.layer)<0||typeof entry[options.layer]!=="string")throw Error("Missing native wall layer "+path);path=entry[options.layer];}
   return {path:path,x:piece.x*2+sign*(size[0]/2-anchor[0])*1.5,y:piece.y*2+(anchor[1]-size[1]/2)*1.5,width:size[0]*1.5,height:size[1]*1.5,scaleX:sign};
 }
 exports.step=STEP;exports.axis={x:STEP.x,y:STEP.y,slope:SLOPE};exports.maxPerSide=MAX_SIDE;exports.maxTotal=MAX_TOTAL;exports.valid=valid;exports.layout=layout;exports.chain=chain;exports.canonical=canonical;exports.pieces=pieces;exports.attachment=attachment;
