@@ -5,6 +5,7 @@ const fs=require('fs'),path=require('path'),url=require('url');
 const M=require('./model'),L=require('./legacy'),Maps=require('../lib/map-assets'),Units=require('../lib/unit-assets'),Assets=require('../lib/asset-validation'),Navigation=require('./navigation'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose'),GateSource=require('./gate-facing'),GateFacing=require('../../../assets/_script/GateFacing'),Purchase=require('./purchase-field'),WallRun=require('./wall-run');
 const NAMES={1:'Main Hall',2:'Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall / Gate'},files=new Map(),descriptions=new WeakMap();
 const clone=M.clone,number=(v,f)=>typeof v==='number'&&Number.isFinite(v)?v:f,positive=(v,f)=>Math.max(1,number(v,f));
+const WallData=require('../walls/service');
 function revision(file,dependencies){const stat=fs.statSync(file),value=stat.mtimeMs+':'+stat.ctimeMs+':'+stat.size;if(dependencies)dependencies.set(file,value);return value;}
 function unchanged(dependencies){if(!dependencies)return false;try{for(const [file,value]of dependencies)if(revision(file)!==value)return false;return true;}catch(_){return false;}}
 function read(file,json,dependencies){const version=revision(file,dependencies),old=files.get(file);if(old&&old.revision===version)return old.value;const text=fs.readFileSync(file,'utf8'),value=json?JSON.parse(text.replace(/^\uFEFF/,'')):text;files.set(file,{revision:version,value});return value;}
@@ -34,12 +35,14 @@ function appearanceSprites(root,appearance,owner,images,dependencies){
 }
 function describe(service,stage){
  const index=service.index(),config=service.previewConfig?service.previewConfig(stage.variant||'A'):index.documents[stage.variant||'A']&&index.documents[stage.variant||'A'].BuildEnum?index.documents[stage.variant||'A']:index.documents.A,buildings={},images={},errors=[],sourceModels=new Map(),assetCache=new Map(),sources=new Map(),dependencies=new Map();let assetIndex=null,needsRuntime=false;
+ let wallAdjustments=null;
+ if((stage.buildings||[]).some(building=>building.kind===6))try{wallAdjustments=WallData.readSource(service.root);revision(wallAdjustments.file,dependencies);}catch(error){if(error.code!=='ENOENT')errors.push(error.message);wallAdjustments={data:{version:1,poses:{}},revision:error.code==='ENOENT'?'missing':'unavailable'};}
  // Placement moves and wave edits do not change the source composition. Keep
  // one result per service while checking embedded template contents and config
  // rows. Referenced artwork is checked with cheap file stamps before reuse,
  // so live texture/model replacement does not require editing or saving a draft.
  for(const building of stage.buildings||[]){const id=building.template.prefab;if(!sources.has(id)){try{const data=stage.templates&&stage.templates[id]||service.source(id);sources.set(id,{data,revision:L.hash(JSON.stringify(data))});}catch(error){sources.set(id,{data:null,revision:'missing'});errors.push(error.message);}}}
- const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseSide||b.purchaseOffset?b.angle:undefined,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum]),previous=descriptions.get(service);
+ const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseSide||b.purchaseOffset?b.angle:undefined,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
  if(previous&&previous.index===index&&previous.signature===signature&&unchanged(previous.dependencies))return previous.value;
  for(const building of stage.buildings||[]){
   const result=buildings[building.id]={name:NAMES[building.kind]||'Building',levels:{}},rawSource=sources.get(building.template.prefab).data;if(!rawSource)continue;let source;try{source=GateSource.project(rawSource,building,service.root);try{source=Purchase.project(source,building);}catch(error){errors.push(error.message);}}catch(error){errors.push(error.message);continue;}let info=sourceModels.get(source);if(!info){try{info=Maps.model(source);sourceModels.set(source,info);}catch(error){errors.push(error.message);continue;}}
@@ -63,7 +66,7 @@ function describe(service,stage){
     const refs=[{ref:component.ndAniDown,ground:true},{ref:component.ndAniMain,ground:false}].concat((component.ndAniOther||[]).map(ref=>({ref,ground:false})));
     for(const part of refs){const value=part.ref&&source[part.ref.__id__];if(!value||value.__type__!=='sp.Skeleton')continue;try{if(!assetIndex)assetIndex=Units.index(service.root);let description=skeleton(service.root,value,info,assetIndex,row&&row.Skin,part.ground,assetCache,dependencies);if(building.kind===6&&!description.json.wallKit&&!description.json.wallGate&&GateFacing.valid(effectiveFace)&&GateFacing.reverse(effectiveFace)&&(part.ref===component.ndAniDown||part.ref===component.ndAniMain)){description=Object.assign({},description,{json:GateFacing.mirrorJson(description.json),revision:description.revision+':reverse-gate'});}level.skeletons.push(description);if(level.rotationPreview)level.rotationPreview.skeletons.push(moving.has(reference(source,part.ref)));needsRuntime=true;}catch(error){errors.push(error.message);}}
    }
-   if(building.kind===6)try{WallRun.fitRecord(level,component,effectiveFace);}catch(error){errors.push(error.message);}
+   if(building.kind===6)try{WallRun.fitRecord(level,component,effectiveFace,{adjustmentsData:wallAdjustments&&wallAdjustments.data,adjustmentRevision:wallAdjustments&&wallAdjustments.revision});}catch(error){errors.push(error.message);}
    result.levels[hall]=level;
   }
  }

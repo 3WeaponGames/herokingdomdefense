@@ -71,7 +71,7 @@ function mount(host,options){
  }
  function refreshControls(){const layout=Kit.layout(run);for(const side of ['left','right'])if(inputs[side]){if(!invalid.has(inputs[side]))inputs[side].value=String(layout[side+'Count']);inputs[side].disabled=bent(run,side);inputs[side].title=inputs[side].disabled?'Use Extend / turn or drag the end to change a bent route.':'';}if(inputs.open){inputs.open.disabled=!layout.gate;inputs.open.checked=open&&layout.gate;}if(inputs.gate)inputs.gate.checked=layout.gate;}
  function rebuild(refit){
-  if(closed)return;record=Object.assign({},options.record,{sprites:[],skeletons:options.record.skeletons.map(part=>Object.assign({},part,{json:part._wallSourceJson||part.json}))});Run.fitRecord(record,{wallRun:JSON.stringify(run),wallOpening:opening},options.face);
+  if(closed)return;record=Object.assign({},options.record,{sprites:[],skeletons:options.record.skeletons.map(part=>Object.assign({},part,{json:part._wallSourceJson||part.json}))});Run.fitRecord(record,{wallRun:JSON.stringify(run),wallOpening:opening},options.face,{tier:level});
   for(const part of record.skeletons){if(!part.json.wallKit&&!part.json.wallGate)continue;part.skin=Kit.skins[level-1];part.animation=open&&run.gate?Facing.animation(part.json,'open',opening):'idle';part.poseTime=open&&run.gate?'end':0;part.revision=String(part.revision||'')+':layout:'+JSON.stringify([run,level,open,opening]);}
   renderer.prepare([record],options.runtime);refreshControls();const r=Kit.layout(run);status.textContent=r.leftCount+r.rightCount+' complete wall pieces · '+(invalid.size?'Correct the section counts before applying':JSON.stringify(run)===initial?'No changes':'Unsaved layout edits');if(refit)fit();else draw();
  }

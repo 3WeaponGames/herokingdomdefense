@@ -1,7 +1,7 @@
 'use strict';
 // Detached source projection shared by previews, navigation and prefab export.
 const crypto=require('crypto'),fs=require('fs'),path=require('path'),Maps=require('../lib/map-assets'),Units=require('../lib/unit-assets');
-const Kit=require('../../../assets/_script/WallKit'),Facing=require('../../../assets/_script/GateFacing');
+const Kit=require('../../../assets/_script/WallKit'),Facing=require('../../../assets/_script/GateFacing'),Adjustments=require('../../../assets/_script/WallAdjustments');
 const projected=new WeakMap(),poses=new WeakMap(),assets=new Map(),clone=v=>JSON.parse(JSON.stringify(v));
 function controller(source,building){const info=Maps.model(source),owner=info.byId[building.template.node];if(!owner)throw Error('The wall template is missing.');const c=owner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(!c)throw Error('The wall controller is missing.');return{info,owner,c};}
 function readRun(component,building){
@@ -55,16 +55,19 @@ function project(source,building,root){
  if(geometry.proximity&&geometry.proximity.length)for(const item of owner.components.filter(c=>c.value.__type__==='cc.PolygonCollider'))result[item.id].points=pointsFor(owner,geometry.proximity,result[item.id]);
  projected.set(source,{signature,key,value:result});return result;
 }
-function fitRecord(record,component,face){
+function fitRecord(record,component,face,options){
+ options=options||{};
  const index=record.skeletons.findIndex(s=>(s._wallSourceJson||s.json).wallKit);if(index<0)return;
  const main=record.skeletons[index],inverse=Maps.inverse(main.matrix),points=[];
  for(const s of record.skeletons)for(const p of (s._wallSourceJson||s.json).wallAnchors||[])points.push(Maps.point(inverse,Maps.point(s.matrix,p)));
  const run=readRun(component),layout=Kit.layout(run,points),reverse=Facing.valid(face)&&Facing.reverse(face),mirrorX=main.matrix[0]*main.matrix[3]-main.matrix[1]*main.matrix[2]<0;
+ const tier=options.tier||Number(/^cq-rts-([123])$/.exec(main.skin||'')?.[1])||1,adjustments=options.adjustmentsData===undefined?(record.wallAdjustmentData||Adjustments.getData()):options.adjustmentsData,adjustmentRevision=options.adjustmentRevision||crypto.createHash('sha256').update(Adjustments.revision(adjustments)).digest('hex');
+ record.wallAdjustmentData=clone(adjustments);record.wallAdjustmentRevision=adjustmentRevision;
  for(let at=0;at<record.skeletons.length;at++){
   const part=record.skeletons[at],raw=part._wallSourceJson||part.json;if(at!==index&&!raw.wallGate)continue;
-  const transform=at===index?null:Maps.multiply(Maps.inverse(part.matrix),main.matrix),key=JSON.stringify([layout,reverse,transform,mirrorX]);
+  const transform=at===index?null:Maps.multiply(Maps.inverse(part.matrix),main.matrix),key=JSON.stringify([layout,reverse,transform,mirrorX,tier,face,adjustmentRevision]);
   let entries=poses.get(raw);if(!entries){entries=new Map();poses.set(raw,entries);}
-  let json=entries.get(key);if(!json){json=at===index?Kit.install(raw,layout,undefined,{mirrorX}):(Kit.fitGatePart||Kit.fitOriginalGate)(raw,layout,{frameToLocal:transform});if(reverse)json=Facing.mirrorJson(json);entries.set(key,json);if(entries.size>32)entries.delete(entries.keys().next().value);}
+  let json=entries.get(key);if(!json){json=at===index?Kit.install(raw,layout,undefined,{mirrorX,tier,face,adjustmentsData:adjustments}):(Kit.fitGatePart||Kit.fitOriginalGate)(raw,layout,{frameToLocal:transform});if(reverse)json=Facing.mirrorJson(json);if(at===index)json=Adjustments.apply(json,layout,{data:adjustments,tier,face});entries.set(key,json);if(entries.size>32)entries.delete(entries.keys().next().value);}
   const stamp=crypto.createHash('sha256').update(key).digest('hex').slice(0,16),revision=part._wallSourceRevision||part.revision;
   record.skeletons[at]=Object.assign({},part,{json,_wallSourceJson:raw,_wallSourceRevision:revision,revision:revision+':wall-run:'+stamp+(reverse?':reverse-gate':'')});
  }

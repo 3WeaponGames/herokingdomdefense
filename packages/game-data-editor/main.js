@@ -1,7 +1,7 @@
 'use strict';
 const path=require('path');
 const Store=require('./lib/store').Store;
-const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
+const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
 let store=null,assets=null,restoreMetadataSave=null,worlds=null;
 function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;return selected&&selected.BuildEnum?selected:docs.A.data;}});return worlds;}
 function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
@@ -31,6 +31,18 @@ function refreshImports(files){
     });
 }
 const messages={
+    'wall-adjustments-load'(event,request){reply(event,()=>require('./walls/service').load(project(),request));},
+    'wall-adjustments-preview'(event,request){reply(event,()=>require('./walls/service').preview(project(),request));},
+    'wall-adjustments-save'(event,request){reply(event,async()=>{
+        const snapshot=await require('./walls/service').save(project(),request);
+        if(snapshot.result&&snapshot.result.saved){
+            const warnings=await refreshImports(snapshot.result.files||[]);
+            if(warnings.length)snapshot.result.warning=[snapshot.result.warning,warnings.join('; ')].filter(Boolean).join('; ');
+            Editor.Ipc.sendToAll('game-data-editor:wall-adjustments-changed',{revision:snapshot.revision});
+            Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:worlds&&worlds.version});
+        }
+        return snapshot;
+    });},
     'unit-profiles'(event,request){reply(event,()=>require('./lib/unit-profile-service').read(getStore(),request,worlds&&worlds.docs));},
     'unit-profile-change'(event,request){reply(event,()=>{const result=require('./lib/unit-profile-service').change(getStore(),request,worlds&&worlds.docs);broadcast(getStore().snapshot());return result;});},
     'world-catalog'(event){reply(event,()=>getWorlds().catalog());},

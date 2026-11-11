@@ -127,7 +127,7 @@ test('original Cocos UUIDs, sampling, icon geometry and asset metadata stay stab
   for(const[file,expected]of Object.entries(fixture.metadata)){
     const meta=read(file);if(file===filename('by','json.meta')){assert.equal(meta.textures.length,3);meta.textures=meta.textures.slice(0,1);}
     if(file===filename('cb','json.meta')&&fixture.castleRts){assert.equal(meta.textures.length,2);meta.textures=meta.textures.slice(0,1);}
-    if(file===filename('cq/cq1','json.meta')&&fixture.wallKit){assert.equal(meta.textures.length,2);meta.textures=meta.textures.slice(0,1);}
+    if(file===filename('cq/cq1','json.meta')&&fixture.wallKit){assert.equal(meta.textures.length,3,'Original, modular walls and matched door atlas pages');assert.equal(new Set(meta.textures).size,3);meta.textures=meta.textures.slice(0,1);}
     const image=fixture.metadataTrims?.[file]?decode(fs.readFileSync(path.join(root,file.slice(0,-5)))):null;
     assert.equal(hash(metadataForHash(file,meta,image)),expected,file);
   }

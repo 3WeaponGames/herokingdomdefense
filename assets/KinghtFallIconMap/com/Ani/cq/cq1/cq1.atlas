@@ -174,7 +174,7 @@ men3_4
   index: -1
 
 wall-rts.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -302,5 +302,326 @@ rts_wall_corner_1
   xy: 2, 334
   size: 122, 80
   orig: 122, 80
+  offset: 0, 0
+  index: -1
+rts_wall_top_3_body
+  rotate: false
+  xy: 2, 514
+  size: 95, 96
+  orig: 95, 96
+  offset: 0, 0
+  index: -1
+rts_wall_top_3_shadow
+  rotate: false
+  xy: 101, 514
+  size: 95, 96
+  orig: 95, 96
+  offset: 0, 0
+  index: -1
+rts_wall_corner_3_body
+  rotate: false
+  xy: 200, 514
+  size: 125, 96
+  orig: 125, 96
+  offset: 0, 0
+  index: -1
+rts_wall_corner_3_shadow
+  rotate: false
+  xy: 329, 514
+  size: 125, 96
+  orig: 125, 96
+  offset: 0, 0
+  index: -1
+rts_wall_post_3_body
+  rotate: false
+  xy: 458, 514
+  size: 89, 95
+  orig: 89, 95
+  offset: 0, 0
+  index: -1
+rts_wall_post_3_shadow
+  rotate: false
+  xy: 551, 514
+  size: 89, 95
+  orig: 89, 95
+  offset: 0, 0
+  index: -1
+rts_wall_right_3_body
+  rotate: false
+  xy: 644, 514
+  size: 118, 95
+  orig: 118, 95
+  offset: 0, 0
+  index: -1
+rts_wall_right_3_shadow
+  rotate: false
+  xy: 766, 514
+  size: 118, 95
+  orig: 118, 95
+  offset: 0, 0
+  index: -1
+rts_wall_post_2_body
+  rotate: false
+  xy: 888, 514
+  size: 89, 94
+  orig: 89, 94
+  offset: 0, 0
+  index: -1
+rts_wall_post_2_shadow
+  rotate: false
+  xy: 2, 614
+  size: 89, 94
+  orig: 89, 94
+  offset: 0, 0
+  index: -1
+rts_wall_top_2_body
+  rotate: false
+  xy: 95, 614
+  size: 93, 94
+  orig: 93, 94
+  offset: 0, 0
+  index: -1
+rts_wall_top_2_shadow
+  rotate: false
+  xy: 192, 614
+  size: 93, 94
+  orig: 93, 94
+  offset: 0, 0
+  index: -1
+rts_wall_right_2_body
+  rotate: false
+  xy: 289, 614
+  size: 114, 94
+  orig: 114, 94
+  offset: 0, 0
+  index: -1
+rts_wall_right_2_shadow
+  rotate: false
+  xy: 407, 614
+  size: 114, 94
+  orig: 114, 94
+  offset: 0, 0
+  index: -1
+rts_wall_corner_2_body
+  rotate: false
+  xy: 525, 614
+  size: 118, 94
+  orig: 118, 94
+  offset: 0, 0
+  index: -1
+rts_wall_corner_2_shadow
+  rotate: false
+  xy: 647, 614
+  size: 118, 94
+  orig: 118, 94
+  offset: 0, 0
+  index: -1
+rts_wall_post_1_body
+  rotate: false
+  xy: 769, 614
+  size: 90, 80
+  orig: 90, 80
+  offset: 0, 0
+  index: -1
+rts_wall_post_1_shadow
+  rotate: false
+  xy: 863, 614
+  size: 90, 80
+  orig: 90, 80
+  offset: 0, 0
+  index: -1
+rts_wall_top_1_body
+  rotate: false
+  xy: 2, 712
+  size: 97, 80
+  orig: 97, 80
+  offset: 0, 0
+  index: -1
+rts_wall_top_1_shadow
+  rotate: false
+  xy: 103, 712
+  size: 97, 80
+  orig: 97, 80
+  offset: 0, 0
+  index: -1
+rts_wall_right_1_body
+  rotate: false
+  xy: 204, 712
+  size: 115, 80
+  orig: 115, 80
+  offset: 0, 0
+  index: -1
+rts_wall_right_1_shadow
+  rotate: false
+  xy: 323, 712
+  size: 115, 80
+  orig: 115, 80
+  offset: 0, 0
+  index: -1
+rts_wall_corner_1_body
+  rotate: false
+  xy: 442, 712
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+rts_wall_corner_1_shadow
+  rotate: false
+  xy: 568, 712
+  size: 122, 80
+  orig: 122, 80
+  offset: 0, 0
+  index: -1
+
+wall-doors.png
+size: 4096,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+rts_door_closed_1
+  rotate: false
+  xy: 2, 2
+  size: 512, 531
+  orig: 512, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_2
+  rotate: false
+  xy: 518, 2
+  size: 512, 531
+  orig: 512, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_3
+  rotate: false
+  xy: 1034, 2
+  size: 512, 531
+  orig: 512, 531
+  offset: 0, 0
+  index: -1
+rts_door_inward_far_1
+  rotate: false
+  xy: 2, 537
+  size: 260, 364
+  orig: 260, 364
+  offset: 0, 0
+  index: -1
+rts_door_inward_far_2
+  rotate: false
+  xy: 2352, 2
+  size: 259, 365
+  orig: 259, 365
+  offset: 0, 0
+  index: -1
+rts_door_inward_far_3
+  rotate: false
+  xy: 535, 537
+  size: 260, 363
+  orig: 260, 363
+  offset: 0, 0
+  index: -1
+rts_door_inward_near_1
+  rotate: false
+  xy: 2615, 2
+  size: 265, 365
+  orig: 265, 365
+  offset: 0, 0
+  index: -1
+rts_door_inward_near_2
+  rotate: false
+  xy: 2884, 2
+  size: 266, 365
+  orig: 266, 365
+  offset: 0, 0
+  index: -1
+rts_door_inward_near_3
+  rotate: false
+  xy: 266, 537
+  size: 265, 364
+  orig: 265, 364
+  offset: 0, 0
+  index: -1
+rts_door_outward_far_1
+  rotate: false
+  xy: 3154, 2
+  size: 260, 365
+  orig: 260, 365
+  offset: 0, 0
+  index: -1
+rts_door_outward_far_2
+  rotate: false
+  xy: 1817, 2
+  size: 260, 366
+  orig: 260, 366
+  offset: 0, 0
+  index: -1
+rts_door_outward_far_3
+  rotate: false
+  xy: 1550, 2
+  size: 263, 367
+  orig: 263, 367
+  offset: 0, 0
+  index: -1
+rts_door_outward_near_1
+  rotate: false
+  xy: 3418, 2
+  size: 266, 365
+  orig: 266, 365
+  offset: 0, 0
+  index: -1
+rts_door_outward_near_2
+  rotate: false
+  xy: 3688, 2
+  size: 264, 365
+  orig: 264, 365
+  offset: 0, 0
+  index: -1
+rts_door_outward_near_3
+  rotate: false
+  xy: 2081, 2
+  size: 267, 366
+  orig: 267, 366
+  offset: 0, 0
+  index: -1
+rts_door_closed_near_1
+  rotate: false
+  xy: 2, 2
+  size: 260, 531
+  orig: 260, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_far_1
+  rotate: false
+  xy: 262, 2
+  size: 252, 531
+  orig: 252, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_near_2
+  rotate: false
+  xy: 518, 2
+  size: 260, 531
+  orig: 260, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_far_2
+  rotate: false
+  xy: 778, 2
+  size: 252, 531
+  orig: 252, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_near_3
+  rotate: false
+  xy: 1034, 2
+  size: 260, 531
+  orig: 260, 531
+  offset: 0, 0
+  index: -1
+rts_door_closed_far_3
+  rotate: false
+  xy: 1294, 2
+  size: 252, 531
+  orig: 252, 531
   offset: 0, 0
   index: -1

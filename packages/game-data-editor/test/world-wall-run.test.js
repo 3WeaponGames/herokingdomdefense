@@ -71,13 +71,14 @@ test('bent wall projections clone convex colliders by tier, preserve unknown fie
  const stage={...f.stage,buildings:[wall]},closed=Nav.buildingPolygons({...f.service,source:()=>raw},stage,wall,1,'closed',f.config,new Map()),open=Nav.buildingPolygons({...f.service,source:()=>raw},stage,wall,1,'open',f.config,new Map());assert.equal(closed.length,4);assert.equal(open.length,3,'Opening keeps every bent wall stretch solid');
 });
 
-test('paired preview fitting keeps raw CQ1 CQ2 sources, native sliding panels and stable revisions across repeated edits',()=>{
+test('paired preview fitting keeps raw sources, matched gate parts and stable revisions across repeated edits',()=>{
  const f=fixture(),c=owner(f.source.data,f.wall).controller.value,rawMain=skeletonJson(f.source.data,c.ndAniMain),rawDown=skeletonJson(f.source.data,c.ndAniDown),bytes=JSON.stringify([rawMain,rawDown]),run=bentRun();
  for(const face of ['NW','NE','SW','SE']){
   const sx=Facing.mirrorX(face)?-1:1,mainMatrix=[sx,0,0,1,50,100],downMatrix=[sx,0,0,1,50.477,100],record={skeletons:[{json:rawDown,matrix:downMatrix,revision:'right'},{json:rawMain,matrix:mainMatrix,revision:'main'}]},component={wallRun:JSON.stringify(run)};
-  Run.fitRecord(record,component,face);const main=record.skeletons[1],down=record.skeletons[0],plan=Kit.layout(run),transform=Maps.multiply(Maps.inverse(downMatrix),mainMatrix);let expectedMain=Kit.install(rawMain,plan,undefined,{mirrorX:sx<0}),expectedDown=Kit.fitOriginalGate(rawDown,plan,{frameToLocal:transform});if(Facing.reverse(face)){expectedMain=Facing.mirrorJson(expectedMain);expectedDown=Facing.mirrorJson(expectedDown);}
+  Run.fitRecord(record,component,face);const main=record.skeletons[1],down=record.skeletons[0],plan=Kit.layout(run),transform=Maps.multiply(Maps.inverse(downMatrix),mainMatrix);let expectedMain=Kit.install(rawMain,plan,undefined,{mirrorX:sx<0}),expectedDown=Kit.fitGatePart(rawDown,plan,{frameToLocal:transform});if(Facing.reverse(face)){expectedMain=Facing.mirrorJson(expectedMain);expectedDown=Facing.mirrorJson(expectedDown);}
   assert.deepEqual(main.json,expectedMain);assert.deepEqual(down.json,expectedDown);assert.strictEqual(main._wallSourceJson,rawMain);assert.strictEqual(down._wallSourceJson,rawDown);
-  for(const part of [main,down]){const skin=part.json.skins.find(s=>s.name===Kit.skins[1]);assert.equal(Object.keys(skin.attachments).filter(n=>/^men2_mu/.test(n)).length,2);}
+  assert.equal(main.json.wallDoor.version,2,'Main model owns the matched PNG gate');
+  assert.deepEqual(down.json.skins.find(s=>s.name===Kit.skins[1]).attachments,{},'Paired model cannot render duplicate old gate leaves');
   const stable=JSON.stringify(record);Run.fitRecord(record,component,face);assert.equal(JSON.stringify(record),stable,'Fitting an already-fitted descriptor never compounds mirroring or geometry');
   component.wallRun=JSON.stringify({...run,right:3,routes:{...run.routes,right:[{u:0,v:0},{u:3,v:0}]}});Run.fitRecord(record,component,face);for(const part of record.skeletons)assert.equal(part.revision.split(':wall-run:').length,2,'Revisions stay bounded during popup drags');
  }

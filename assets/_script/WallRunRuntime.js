@@ -1,6 +1,12 @@
 "use strict";
 // Owned instance data only. No imported asset, scene file or player state changes.
-var Kit=require("WallKit"),serial=0;
+var Kit=require("WallKit"),Adjustments=require("./WallAdjustments"),serial=0;
+function adjustmentTier(owner,index) {
+  var row=typeof owner.getBranchCfg==="function"?owner.getBranchCfg(index):null;
+  if(!row&&owner.buildCfg&&Array.isArray(owner.buildCfg.levelList))row=owner.buildCfg.levelList.find(function(value){return value.index===index;});
+  if(!row&&index===undefined)row=owner.buildInfo&&owner.buildInfo.cfg;
+  var tier=row&&row.level;return Number.isInteger(tier)&&tier>=1&&tier<=3?tier:1;
+}
 function endpoints(owner) {
   var main=owner.ndAniMain.node,points=[];
   (owner.ndAniOther||[]).forEach(function(s){
@@ -75,16 +81,22 @@ function makePart(component,source,json) {
   catch(error){if(clone.destroy)clone.destroy();throw error;}
   return {component:component,source:source,clone:clone};
 }
-function apply(owner) {
+function apply(owner,index) {
   if(!owner||!owner.ndAniMain||!owner.ndAniMain.skeletonData)return;
   var prior=owner._wallRunRuntime,source=prior?prior.source:owner.ndAniMain.skeletonData,json=source.skeletonJson;
   if(!json||!json.wallKit)return;
   var run=owner.wallRun?JSON.parse(owner.wallRun):null,layout=Kit.layout(run,endpoints(owner)),down=owner.ndAniDown,downSource=down&&down.skeletonData&&originalSource(prior,down);
-  var paired=downSource&&downSource.skeletonJson&&downSource.skeletonJson.wallGate,transform=paired?frameToLocal(owner.ndAniMain.node,down.node):null,mirrorX=mirrored(owner.ndAniMain.node),key=JSON.stringify([layout,transform,mirrorX]);
+  var paired=downSource&&downSource.skeletonJson&&downSource.skeletonJson.wallGate,transform=paired?frameToLocal(owner.ndAniMain.node,down.node):null,mirrorX=mirrored(owner.ndAniMain.node);
+  var adjustmentData=Adjustments.getData(),tier=adjustmentTier(owner,index),keyParts=[layout,transform,mirrorX];
+  // With no saved visual adjustments, retain the exact legacy instance key.
+  // A tuned tier must own its draw-order clips because Spine shares timelines
+  // across skins. Refitting that instance never edits the imported source.
+  if(Adjustments.hasData(adjustmentData))keyParts.push(tier,owner.wallFacing||null,Adjustments.revision(adjustmentData));
+  var key=JSON.stringify(keyParts);
   if(prior&&prior.key===key)return;
   var parts=[];
   try{
-    parts.push(makePart(owner.ndAniMain,source,Kit.install(json,layout,undefined,{mirrorX:mirrorX})));
+    parts.push(makePart(owner.ndAniMain,source,Kit.install(json,layout,undefined,{mirrorX:mirrorX,tier:tier,face:owner.wallFacing,adjustmentsData:adjustmentData})));
     if(paired)parts.push(makePart(down,downSource,(Kit.fitGatePart||Kit.fitOriginalGate)(downSource.skeletonJson,layout,{frameToLocal:transform})));
   }catch(error){parts.forEach(function(part){if(part.clone.destroy)part.clone.destroy();});throw error;}
   if(prior)dispose(owner);

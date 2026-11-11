@@ -47,21 +47,22 @@ function geometry(spine, layer) {
         const attachment = slot.getAttachment();
         if (!attachment || !slot.bone.active) { clipper.clipEndWithSlot(slot); return; }
         if (attachment instanceof spine.ClippingAttachment) { clipper.clipStart(slot, attachment); return; }
-        let vertices, triangles;
+        let vertices, triangles, rigidRegion=false;
         if (attachment instanceof spine.RegionAttachment) {
-            vertices = new Float32Array(8); attachment.computeWorldVertices(slot.bone, vertices, 0, 2); triangles = [0,1,2,2,3,0];
+            vertices = new Float32Array(8); attachment.computeWorldVertices(slot.bone, vertices, 0, 2); triangles = [0,1,2,2,3,0];rigidRegion=true;
         } else if (attachment instanceof spine.MeshAttachment) {
             vertices = new Float32Array(attachment.worldVerticesLength); attachment.computeWorldVertices(slot, 0, vertices.length, vertices, 0, 2); triangles = attachment.triangles;
         } else { clipper.clipEndWithSlot(slot); return; }
         let uvs = attachment.uvs;
         const color = { r: slot.color.r * attachment.color.r * layer.skeleton.color.r, g: slot.color.g * attachment.color.g * layer.skeleton.color.g, b: slot.color.b * attachment.color.b * layer.skeleton.color.b, a: slot.color.a * attachment.color.a * layer.skeleton.color.a };
         if (clipper.isClipping()) {
+            rigidRegion=false;
             clipper.clipTriangles(vertices, vertices.length, triangles, triangles.length, uvs, color, {r:0,g:0,b:0,a:0}, false, 2);
             const clipped = clipper.clippedVertices, outVertices = [], outUvs = [];
             for (let i = 0; i < clipped.length; i += 8) { outVertices.push(clipped[i], clipped[i+1]); outUvs.push(clipped[i+6], clipped[i+7]); }
             vertices = outVertices; uvs = outUvs; triangles = clipper.clippedTriangles.slice();
         }
-        result.push({ vertices, uvs, triangles, image: attachment.region.texture.getImage(), color, blend: slot.data.blendMode, slot: slot.data.name });
+        result.push({ vertices, uvs, triangles, image: attachment.region.texture.getImage(), color, blend: slot.data.blendMode, slot: slot.data.name, rigidRegion });
         clipper.clipEndWithSlot(slot);
     });
     clipper.clipEnd(); return result;
@@ -110,14 +111,19 @@ function hitTest(spine,layers,point){
     }
     return null;
 }
-function triangle(ctx, image, positions, texture) {
+function textureTransform(positions,texture) {
     const x0=positions[0],y0=positions[1],x1=positions[2],y1=positions[3],x2=positions[4],y2=positions[5];
     const u0=texture[0],v0=texture[1],u1=texture[2],v1=texture[3],u2=texture[4],v2=texture[5];
-    const det=u0*(v1-v2)+u1*(v2-v0)+u2*(v0-v1); if (Math.abs(det)<1e-8) return;
+    const det=u0*(v1-v2)+u1*(v2-v0)+u2*(v0-v1); if (Math.abs(det)<1e-8) return null;
     const a=(x0*(v1-v2)+x1*(v2-v0)+x2*(v0-v1))/det, b=(y0*(v1-v2)+y1*(v2-v0)+y2*(v0-v1))/det;
     const c=(x0*(u2-u1)+x1*(u0-u2)+x2*(u1-u0))/det, d=(y0*(u2-u1)+y1*(u0-u2)+y2*(u1-u0))/det;
     const e=(x0*(u1*v2-u2*v1)+x1*(u2*v0-u0*v2)+x2*(u0*v1-u1*v0))/det;
     const f=(y0*(u1*v2-u2*v1)+y1*(u2*v0-u0*v2)+y2*(u0*v1-u1*v0))/det;
+    return[a,b,c,d,e,f];
+}
+function triangle(ctx, image, positions, texture) {
+    const matrix=textureTransform(positions,texture);if(!matrix)return;
+    const x0=positions[0],y0=positions[1],x1=positions[2],y1=positions[3],x2=positions[4],y2=positions[5];
     // Adjacent Canvas clips otherwise leave hairline antialiasing seams along
     // mesh edges. Expand only the clip by a fraction of a display pixel; the
     // texture's affine mapping remains exact.
@@ -125,7 +131,15 @@ function triangle(ctx, image, positions, texture) {
     const cx=(x0+x1+x2)/3,cy=(y0+y1+y2)/3;
     const edge=(x,y)=>{const length=Math.max(.001,Math.hypot(x-cx,y-cy));return[x+(x-cx)*padding/length,y+(y-cy)*padding/length];};
     const p0=edge(x0,y0),p1=edge(x1,y1),p2=edge(x2,y2);
-    ctx.save();ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.closePath();ctx.clip();ctx.transform(a,b,c,d,e,f);ctx.drawImage(image,0,0);ctx.restore();
+    ctx.save();ctx.beginPath();ctx.moveTo(p0[0],p0[1]);ctx.lineTo(p1[0],p1[1]);ctx.lineTo(p2[0],p2[1]);ctx.closePath();ctx.clip();ctx.transform(...matrix);ctx.drawImage(image,0,0);ctx.restore();
+}
+function region(ctx,image,positions,texture) {
+    const matrix=textureTransform(positions,texture);if(!matrix)return;
+    // A rigid region is one affine rectangle, including rotated atlas frames
+    // and mirrored bones. One outer clip avoids an antialiased internal seam.
+    ctx.save();ctx.beginPath();ctx.moveTo(positions[0],positions[1]);
+    for(let i=2;i<8;i+=2)ctx.lineTo(positions[i],positions[i+1]);
+    ctx.closePath();ctx.clip();ctx.transform(...matrix);ctx.drawImage(image,0,0);ctx.restore();
 }
 function bounds(spine, layers) {
     let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
@@ -143,12 +157,19 @@ function inversePoint(d,x,y) {
     if(d.rotation){const a=-d.rotation*Math.PI/180,c=Math.cos(a),s=Math.sin(a),px=x;x=px*c-y*s;y=px*s+y*c;}
     return{x:x/d.scaleX,y:y/d.scaleY};
 }
-const tintCache=new WeakMap();
+const tintCache=new WeakMap(),tintPixels=new WeakMap();
 function tintedImage(image,color) {
     const r=Math.round(color.r*255),g=Math.round(color.g*255),b=Math.round(color.b*255);
     if(r===255&&g===255&&b===255)return image;
     const key=r+','+g+','+b;let cache=tintCache.get(image);if(!cache){cache=new Map();tintCache.set(image,cache);}if(cache.has(key))return cache.get(key);
-    const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);ctx.globalCompositeOperation='multiply';ctx.fillStyle='rgb('+key+')';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='destination-in';ctx.drawImage(image,0,0);
+    const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const ctx=canvas.getContext('2d');
+    let source=tintPixels.get(image);if(!source){ctx.drawImage(image,0,0);source=ctx.getImageData(0,0,image.width,image.height).data;tintPixels.set(image,source);}
+    const pixels=ctx.createImageData(image.width,image.height),data=pixels.data;
+    // Canvas multiply composites the tint into uncovered source alpha. That
+    // turns translucent black shadows gray; multiply straight RGB instead.
+    // Read source pixels only once and leave slot/layer opacity to drawWorld.
+    for(let i=0;i<data.length;i+=4){data[i]=source[i]*r/255;data[i+1]=source[i+1]*g/255;data[i+2]=source[i+2]*b/255;data[i+3]=source[i+3];}
+    ctx.putImageData(pixels,0,0);
     if(cache.size>=24)cache.delete(cache.keys().next().value);cache.set(key,canvas);return canvas;
 }
 function drawWorld(spine, ctx, layers) {
@@ -158,6 +179,7 @@ function drawWorld(spine, ctx, layers) {
             ctx.globalAlpha=g.color.a*(layer.description.opacity===undefined?1:layer.description.opacity);
             ctx.globalCompositeOperation=['source-over','lighter','multiply','screen'][g.blend]||'source-over';
             const image=tintedImage(g.image,g.color);
+            if(g.rigidRegion){const texture=Array.from(g.uvs,(value,index)=>value*(index%2?g.image.height:g.image.width));region(ctx,image,g.vertices,texture);return;}
             for(let i=0;i<g.triangles.length;i+=3){const positions=[],texture=[];for(let j=0;j<3;j++){const index=g.triangles[i+j]*2;positions.push(g.vertices[index],g.vertices[index+1]);texture.push(g.uvs[index]*g.image.width,g.uvs[index+1]*g.image.height);}triangle(ctx,image,positions,texture);}
         });
         ctx.restore();

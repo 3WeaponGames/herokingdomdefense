@@ -1,0 +1,45 @@
+.wall-adjustments { display:flex;flex-direction:column;flex:1;min-width:0;min-height:0;height:100%;background:#24292d;color:#e0e3e5;font:13px Arial,sans-serif;outline:none; }
+.wall-adjustments * { box-sizing:border-box; }
+.wall-adjustments button,.wall-adjustments select,.wall-adjustments input { font:inherit;color:#e0e3e5;background:#30363b;border:1px solid #11181b;border-radius:3px;min-height:29px;padding:4px 8px; }
+.wall-adjustments button { cursor:pointer;white-space:nowrap; }
+.wall-adjustments button:hover:not(:disabled) { background:#42525e; }
+.wall-adjustments button:focus-visible,.wall-adjustments input:focus-visible,.wall-adjustments select:focus-visible { outline:2px solid #78b8e3;outline-offset:1px; }
+.wall-adjustments button:disabled,.wall-adjustments input:disabled { opacity:.45;cursor:default; }
+.wall-adjustments button.wall-primary { background:#426c89;border-color:#648ba5; }
+.wall-adjustments .wall-header { display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:10px 12px;border-bottom:1px solid #434b51; }
+.wall-adjustments h2 { font-size:18px;margin:0 8px 0 0; }
+.wall-adjustments .wall-actions { display:flex;gap:5px;align-items:center;flex-wrap:wrap; }
+.wall-adjustments .wall-header .wall-actions { margin-left:auto; }
+.wall-adjustments .wall-scope { padding:0 12px 9px;color:#b9c8d3;line-height:1.5;border-bottom:1px solid #434b51; }
+.wall-adjustments .wall-view-controls { display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 12px;background:#2a3035;border-bottom:1px solid #434b51; }
+.wall-adjustments .wall-view-controls input[type=checkbox] { min-height:0;padding:0;width:15px;height:15px; }
+.wall-adjustments label { display:flex;align-items:center;gap:6px; }
+.wall-adjustments .wall-workspace { flex:1;display:flex;min-height:0;min-width:0; }
+.wall-adjustments .wall-hierarchy { flex:0 0 225px;min-width:170px;display:flex;flex-direction:column;border-right:1px solid #434b51; }
+.wall-adjustments .wall-section-title { padding:10px 10px 5px;font-weight:bold; }
+.wall-adjustments .wall-note { font-size:12px;color:#afbec8;line-height:1.5;margin:4px 10px 9px; }
+.wall-adjustments .wall-piece-list { min-height:0;overflow:auto;flex:1;padding:0 6px 8px; }
+.wall-adjustments .wall-piece-row { display:flex;width:100%;align-items:center;gap:8px;text-align:left;margin:3px 0;min-height:34px; }
+.wall-adjustments .wall-piece-row.selected { background:#34546b;border-color:#83b1cc; }
+.wall-adjustments .wall-piece-row.dragging { opacity:.45; }
+.wall-adjustments .wall-piece-row.drop-target { border-top:2px solid #ffd16b; }
+.wall-adjustments .wall-piece-index { color:#91a2af;font-size:11px;min-width:17px; }
+.wall-adjustments .wall-piece-name { flex:1;white-space:normal; }
+.wall-adjustments .wall-piece-edited { color:#ffd16b; }
+.wall-adjustments .wall-canvas-wrap { flex:1;min-width:160px;min-height:150px;position:relative;overflow:hidden;background:#899c59; }
+.wall-adjustments canvas { display:block;width:100%;height:100%;touch-action:none;outline:none; }
+.wall-adjustments .wall-canvas-hint { position:absolute;left:8px;bottom:8px;max-width:calc(100% - 16px);pointer-events:none;font-size:11px;background:#1b2527bb;border-radius:3px;padding:4px 6px;color:#edf0e5; }
+.wall-adjustments .wall-canvas-loading { position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;padding:10px 14px;background:#222b31dd;border-radius:5px;color:#fff; }
+.wall-adjustments .wall-inspector { flex:0 0 220px;min-width:200px;overflow:auto;padding:10px;border-left:1px solid #434b51; }
+.wall-adjustments .wall-inspector h3 { margin:1px 0 12px;font-size:14px;overflow-wrap:anywhere; }
+.wall-adjustments .wall-inspector label { justify-content:space-between;margin:8px 0; }
+.wall-adjustments .wall-inspector input { width:105px;min-width:0; }
+.wall-adjustments .wall-inspector .wall-actions { margin:10px 0; }
+.wall-adjustments .wall-inspector .wall-note { margin:7px 0; }
+.wall-adjustments .wall-inspector button { white-space:normal; }
+.wall-adjustments .wall-status { min-height:34px;padding:8px 12px;border-top:1px solid #434b51;display:flex;gap:12px;align-items:center; }
+.wall-adjustments .wall-status-message { flex:1; }
+.wall-adjustments .wall-status.error { color:#ffb8a6; }
+.wall-adjustments .wall-draft-badge { font-weight:bold;color:#a9d3a2; }
+.wall-adjustments .wall-draft-badge.dirty { color:#ffd16b; }
+@media(max-width:1000px) { .wall-adjustments .wall-hierarchy { flex-basis:185px; }.wall-adjustments .wall-inspector { flex-basis:200px; }.wall-adjustments .wall-header { padding:8px; } }
