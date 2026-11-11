@@ -66,17 +66,18 @@ test('unequipped weapon upgrades use the existing durable purchase transaction a
  const purchase=h.player.purchase([{id:2001,num:100}],()=>h.player.udata.setHeroWeaponLevel('mystic',4,2),()=>h.player.udata.getHeroWeaponLevel('mystic',4)===1);assert(purchase);
  const loaded=harness(h.persist());assert.equal(loaded.player.udata.getHeroWeapon().id,'fighter');assert.equal(loaded.player.udata.getHeroWeaponLevel('mystic',4),2);assert.equal(loaded.player.udata.getPersonLevel(4),1);assert.equal(loaded.player.udata.getGoldNum(),9900);
 });
-test('Gear weapon picker browsing does not equip a weapon, its upgrade action can improve Mystic while Fighter stays equipped, and Equip is explicit',()=>{
+test('Gear style picker shows names and Equipped markers, read-only main/sub levels, and equips only on explicit action',()=>{
  const {harness}=require('../testing/persistence-harness.cjs'),h=harness();h.player.udata.data.goldNum=100000;h.player.udata.setHeroWeapon('fighter');
  class Node{constructor(name){this.name=name;this.children=[];this.handlers={};}setParent(parent){this.parent=parent;parent.children.push(this);}setPosition(x,y){this.x=x;this.y=y;}setContentSize(width,height){this.width=width;this.height=height;}addComponent(Type){const c=new Type();c.node=this;return c;}on(type,fn){this.handlers[type]=fn;}removeAllChildren(){this.children=[];}destroy(){this.destroyed=true;if(this.parent)this.parent.children=this.parent.children.filter(c=>c!==this);}}
  Node.EventType={TOUCH_END:'tap'};class Graphics{rect(){}roundRect(){}fill(){}}class Label{}Label.HorizontalAlign={CENTER:1};
  const canvas=new Node('Canvas');canvas.width=750;canvas.height=1334;const cc={Node,Graphics,Label,BlockInputEvents:class{},find:()=>canvas,color:value=>value},exports={};
  const modules={HeroWeapons:Weapons,KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>h.player}},KinghtFallMissionData:h.load('KinghtFallMissionData')};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroWeaponPicker.js'),'utf8'),{exports,cc,require:name=>modules[name]});
- let refreshes=0;const owner={node:canvas,cfgEquip:config.EquipCfg,subNum:1,levelLimit:10,refreshEquipmentLimits(){},initView(){refreshes++;}};exports.open(owner);const all=node=>[node,...node.children.flatMap(all)],find=prefix=>all(canvas).find(node=>node.handlers.tap&&node.name.startsWith(prefix)),tap=node=>node.handlers.tap({target:node,stopPropagation(){}});
- tap(find('Mystic · Staff'));assert.equal(h.player.udata.getHeroWeapon().id,'fighter');assert.equal(h.player.udata.getGoldNum(),100000);tap(find('Arcane focus · Lv 1'));
- assert.equal(h.player.udata.getHeroWeapon().id,'fighter');assert.equal(h.player.udata.getHeroWeaponLevel('mystic',3),2);assert.equal(h.player.udata.getPersonLevel(3),1);assert.equal(h.player.udata.getGoldNum(),100000-config.EquipCfg.find(row=>row.id===3).levelInfo[0].GoldCost);assert.equal(refreshes,1);
- tap(find('Equip Mystic'));assert.equal(h.player.udata.getHeroWeapon().id,'mystic');assert.equal(h.player.udata.getPersonLevel(3),2);exports.close(owner);assert.equal(owner._weaponPicker,null);assert(!canvas.children.length);
+ h.player.udata.setHeroWeaponLevel('mystic',3,4);h.player.udata.setHeroWeaponLevel('mystic',4,2);const before=JSON.stringify(h.player.udata.data);
+ let refreshes=0;const owner={node:canvas,initView(){refreshes++;}};exports.open(owner);const all=node=>[node,...node.children.flatMap(all)],find=prefix=>all(canvas).find(node=>node.handlers.tap&&node.name.startsWith(prefix)),tap=node=>node.handlers.tap({target:node,stopPropagation(){}});
+ for(const style of Weapons.styles){const tile=find(style.name);assert(tile);assert.equal(tile.name,style.name+(style.id==='fighter'?'\nEquipped':''));}
+ tap(find('Mystic'));assert.equal(JSON.stringify(h.player.udata.data),before);assert.equal(refreshes,0);const main=all(canvas).find(node=>node.name==='Staff · Lv 2'),sub=all(canvas).find(node=>node.name==='Arcane focus · Lv 4');assert(main&&sub);assert(main.y>sub.y);assert.equal(main.handlers.tap,undefined);assert.equal(sub.handlers.tap,undefined);assert(all(canvas).every(node=>!/upgrades|gold|stage cap|→/i.test(node.name)));
+ tap(find('Equip Mystic'));assert.equal(h.player.udata.getHeroWeapon().id,'mystic');assert.equal(h.player.udata.getPersonLevel(3),4);assert.equal(h.player.udata.getGoldNum(),100000);assert.equal(refreshes,1);exports.close(owner);assert.equal(owner._weaponPicker,null);assert(!canvas.children.length);
 });
 test('malformed style levels cannot index outside equipment tiers, and validating a legacy save never creates style progress',()=>{
  const legacy={personLevel:[1,1,5,6]};const before=JSON.stringify(legacy);Weapons.validate(legacy,config.EquipCfg);assert.equal(JSON.stringify(legacy),before);

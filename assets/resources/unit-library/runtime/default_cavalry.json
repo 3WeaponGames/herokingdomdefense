@@ -900,6 +900,19 @@
   ],
   "slots": [
     {
+      "name": "layer1/Rider/HandLeft/Shield",
+      "bone": "layer1/Rider/HandLeft/Shield",
+      "color": "ffffffff",
+      "attachment": "layer1/part_shield",
+      "dark": "000000"
+    },
+    {
+      "name": "layer1/Rider/HandLeft/Sub_Item",
+      "bone": "layer1/Rider/HandLeft/Sub_Item",
+      "color": "ffffffff",
+      "dark": "000000"
+    },
+    {
       "name": "layer0/qb_hong_38",
       "bone": "layer0/3",
       "attachment": "layer0/qb_hong_19",
@@ -1129,19 +1142,6 @@
       "bone": "layer1/Rider/Body/Head/Helmet",
       "color": "ffffffff",
       "attachment": "layer1/part_helmet",
-      "dark": "000000"
-    },
-    {
-      "name": "layer1/Rider/HandLeft/Shield",
-      "bone": "layer1/Rider/HandLeft/Shield",
-      "color": "ffffffff",
-      "attachment": "layer1/part_shield",
-      "dark": "000000"
-    },
-    {
-      "name": "layer1/Rider/HandLeft/Sub_Item",
-      "bone": "layer1/Rider/HandLeft/Sub_Item",
-      "color": "ffffffff",
       "dark": "000000"
     },
     {

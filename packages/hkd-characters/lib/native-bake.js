@@ -112,6 +112,7 @@ function bake(root,profile,id,contract,assets,read,options){
   if(model.opacity!==undefined){const fade=color=>color.slice(0,6)+Math.round(parseInt(color.slice(6,8),16)*model.opacity).toString(16).padStart(2,'0');for(const slot of rig.slots)slot.color=fade(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const key of slot.color||[])key.color=fade(key.color);}
   if(model.tint){const tint=color=>[0,2,4].map(at=>Math.round(parseInt(color.slice(at,at+2),16)*parseInt(model.tint.slice(at+1,at+3),16)/255).toString(16).padStart(2,'0')).join('')+color.slice(6,8);for(const slot of rig.slots)slot.color=tint(slot.color||'ffffffff');for(const anim of Object.values(rig.animations))for(const slot of Object.values(anim.slots||{}))for(const frame of slot.color||[])frame.color=tint(frame.color);}
   rig._unitSource=profile.base.source;rig._unitLook=id;rig.skeleton.height=contract.height;rig.skeleton.width*=factor;
+  require('./mounts').orderMounted(rig,{layers:[]});
   if(options&&options.raw)return{rig,pictures};
   return outputFiles(root,profile,id,rig,pictures,read);
 }

@@ -33,11 +33,18 @@ test('Canvas preview pan is a screen translation and defaults preserve the exist
   Renderer.draw(spine,ctx,[],options);assert.deepEqual(translations[0],[250,388]);
   translations.length=0;Renderer.draw(spine,ctx,[],{...options,panX:24,panY:-18});assert.deepEqual(translations[0],[274,370]);
 });
-test('mounted preview and picking interleave rider, left equipment, horse head and right equipment',t=>{
+test('mounted preview and picking put left equipment behind the horse, rider and right equipment',t=>{
   pixels(t);const horse=layer([slot('body'),slot('mane'),slot('head')],{uuid:'horse',foregroundSlots:['head','mane']}),rider=layer([slot('Rider/Body'),slot('Rider/HandLeft/Shield'),slot('Rider/HandRight/Sword')],{uuid:'rider',followMount:{layer:'horse',bone:'saddle'}});
   const pieces=Renderer.renderPasses(spine,[horse,rider]).flatMap(pass=>pass.pieces.map(g=>g.slot));
-  assert.deepEqual(pieces,['body','Rider/Body','Rider/HandLeft/Shield','head','mane','Rider/HandRight/Sword']);
+  assert.deepEqual(pieces,['Rider/HandLeft/Shield','body','Rider/Body','head','mane','Rider/HandRight/Sword']);
   assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'Rider/HandRight/Sword');
   rider.skeleton.drawOrder[2].color.a=0;assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'mane');
-  horse.skeleton.drawOrder[1].color.a=0;horse.skeleton.drawOrder[2].color.a=0;assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'Rider/HandLeft/Shield');
+  horse.skeleton.drawOrder[1].color.a=0;horse.skeleton.drawOrder[2].color.a=0;assert.equal(Renderer.hitTest(spine,[horse,rider],{x:5,y:5}).slot,'Rider/Body');
+});
+
+test('hero preview orders shields and sub-items behind every layer and puts the cape between chest and helmet',()=>{
+  const horse=layer([slot('horse')],{uuid:'horse'}),make=(role,names)=>layer(names.map(name=>slot(name)),{uuid:'hero'+role,json:{_heroMaker:{role}}});
+  const body=make(0,['Rider/Body']),chest=make(1,['Rider/Body/Chest']),head=make(2,['Rider/Body/Head/Helmet']),weapon=make(4,['Rider/HandRight/Blunt']),offhand=make(3,['Rider/HandLeft/Shield','Rider/HandLeft/Sub_Item']),cape=make(5,['Rider/Body/Cape']);
+  const order=Renderer.renderPasses(spine,[horse,body,chest,head,weapon,offhand,cape]).flatMap(pass=>pass.pieces.map(piece=>piece.slot));
+  assert.deepEqual(order,['Rider/HandLeft/Shield','Rider/HandLeft/Sub_Item','horse','Rider/Body','Rider/Body/Chest','Rider/Body/Cape','Rider/Body/Head/Helmet','Rider/HandRight/Blunt']);
 });

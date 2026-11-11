@@ -17,10 +17,10 @@ test('the published Maker rider has no glove or boot geometry in any style or up
  }
  const gloves=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/hero-maker/wqyl_lead_shou.json'))),icons=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/hero-maker/catalog.json'))).icons;
  for(const style of Weapons.styles)for(const tier of ['lv1','lv2','lv3','lv4','vip1','vip2']){assert(gloves.skins.some(s=>s.name===style.id+'_'+tier));assert(icons[5][style.id+'_'+tier]);}
- assert(gloves.skins.every(skin=>Object.values(skin.attachments).every(variants=>!Object.keys(variants).length)));
+ assert(gloves.skins.every(skin=>Object.entries(skin.attachments).every(([slot,variants])=>!Object.keys(variants).length||slot==='Rider/Body/Cape')));
 });
 test('all cape tiers use the requested 0.68 fit and swing from a fixed shoulder while the hem moves',()=>{
- const current=layer('assets/resources/hero-maker/wqyl_lead_doupeng.json','lv1'),Hero=require('../../packages/hkd-characters/lib/hero-maker');
+ const current=layer('assets/resources/hero-maker/wqyl_lead_shou.json','lv1'),Hero=require('../../packages/hkd-characters/lib/hero-maker');
  for(const skin of ['lv1','lv2','lv3','lv4']){current.skeleton.setSkinByName(skin);Renderer.seek(spine,[current],'idle',0,false);const a=current.skeleton.findSlot('Rider/Body/Cape').getAttachment();assert.equal(a.x,9.5);assert.equal(a.y,6);assert.equal(a.scaleX,.68);assert.equal(a.scaleY,.68);}
  for(const action of ['idle','move','attack','attack_fighter']){const end=current.data.findAnimation(action).duration;let firstHem,hemMoved=false;
   for(let frame=0;frame<=80;frame++){Renderer.seek(spine,[current],action,end*frame/80,false);const shoulder=current.skeleton.findBone('Rider/Body/CapeShoulder'),cloth=current.skeleton.findBone('Rider/Body/Cape'),pin=cloth.localToWorld(new spine.Vector2(Hero.capePivot.x,Hero.capePivot.y));assert(Math.hypot(pin.x-shoulder.worldX,pin.y-shoulder.worldY)<1e-6,action+' stays pinned continuously');const hem=cloth.localToWorld(new spine.Vector2(-28,-24));current.skeleton.findBone('Rider/Body/CapeAnchor').worldToLocal(hem);if(!firstHem)firstHem={x:hem.x,y:hem.y};else if(Math.hypot(hem.x-firstHem.x,hem.y-firstHem.y)>.1)hemMoved=true;}

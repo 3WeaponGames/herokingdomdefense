@@ -1,5 +1,5 @@
 "use strict";
-var Weapons = require("HeroWeapons"), states = new WeakMap();
+var Weapons = require("HeroWeapons"), states = new WeakMap(), layerOrders = new WeakMap();
 var keys = ["spAniBody", "spAniDrap", "spAniHead", "spAniBow", "spAniArrow", "spAniHand"];
 function metadata(controller) { var data = controller.spAniBody && controller.spAniBody.skeletonData; return data && data.skeletonJson && data.skeletonJson._heroMaker; }
 function user() { return require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(); }
@@ -15,6 +15,21 @@ function skins(controller) {
     if (pair[1] !== 5 && controller._weaponTierBattle) tier = controller._weaponTierBattle;
     renderer.setSkin(Weapons.skin(current.id, tier)); renderer.setSlotsToSetupPose();
   });
+  orderLeftHand(controller);
+}
+function orderLeftHand(controller) {
+  if (!metadata(controller)) return;
+  var renderer=controller.spAniArrow,node=renderer&&renderer.node;if(!node||!node.parent)return;
+  var json=renderer.skeletonData&&renderer.skeletonData.skeletonJson,left=(json&&json.slots||[]).filter(function(slot){return /^Rider\/HandLeft\//.test(slot.name);}),visible=false,inspected=false;
+  if(renderer.findSlot)left.forEach(function(slot){var current=renderer.findSlot(slot.name);if(current&&typeof current.getAttachment==='function'){inspected=true;visible=visible||!!current.getAttachment();}else if(current&&current.attachment!==undefined){inspected=true;visible=visible||!!current.attachment;}});
+  if(!inspected){var active=style().id;visible=(json&&json.skins||[]).some(function(skin){return skin.name.indexOf(active+'_')===0&&left.some(function(slot){return Object.keys(skin.attachments&&skin.attachments[slot.name]||{}).length>0;});});}
+  var saved=layerOrders.get(node);if(!saved){saved={parent:node.parent,z:node.zIndex||0,back:false};layerOrders.set(node,saved);}
+  if(saved.parent!==node.parent){layerOrders.delete(node);return orderLeftHand(controller);}
+  if(visible){var siblings=node.parent.children||[],z=Math.min.apply(null,[saved.z].concat(siblings.filter(function(child){return child!==node;}).map(function(child){return child.zIndex||0;})))-1;if(node.zIndex!==z)node.zIndex=z;saved.back=true;}
+  else if(saved.back){node.zIndex=saved.z;saved.back=false;}
+  // Cape overlays the chest and remains behind the helmet and main weapon.
+  var order=['spAniMa','spAniBody','spAniDrap','spAniHand','spAniHead','spAniBow','spAniArrow'];if(visible){order.pop();order.unshift('spAniArrow');}
+  order.map(function(key){return controller[key]&&controller[key].node;}).filter(function(layer){return layer&&layer.parent===node.parent;}).forEach(function(layer,index){if(layer.setSiblingIndex&&(!layer.getSiblingIndex||layer.getSiblingIndex()!==index))layer.setSiblingIndex(index);});
 }
 function name(track) { var animation = track && (track.animation || track.getAnimation && track.getAnimation()); return animation && (animation.name || animation.getName && animation.getName()); }
 function mountMetadata(controller) { var data=controller.spAniMa&&controller.spAniMa.skeletonData;return data&&data.skeletonJson&&data.skeletonJson._heroMakerMount; }
@@ -78,6 +93,7 @@ function update(controller) {
   follow(controller);
 }
 function follow(controller) {
+  orderLeftHand(controller);
   var info = metadata(controller), horse = controller.spAniMa;
   if (!info || !info.saddle || !horse || !horse.findBone) return;
   var saddle = horse.findBone("bone2"); if (!saddle) return;
@@ -107,3 +123,4 @@ exports.projectileOrigin = projectileOrigin;
 exports.attack = attack; exports.attacking = attacking;
 exports.prepareAttack = prepareAttack; exports.queue = queue;
 exports.setLocomotion = setLocomotion;
+exports.orderLeftHand = orderLeftHand;

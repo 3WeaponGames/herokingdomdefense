@@ -125,9 +125,9 @@ function create(kind){
       if(kind==='perks')(data.BuffCfg||[]).forEach((r,i)=>add(r.ID,this._text(r.Name),r.ID+' · '+Schema.RARITIES[r.Quality-1],r,['BuffCfg',i],{icon:r.Image}));
       if(kind==='buildings')rows.push(...Buildings.rows(this));
       if(kind==='equipment'){
-        const equipment=data.EquipCfg||[],shared={1:'Armor & cape · HP',2:'Helmet · HP regeneration',5:'Gloves · Attack rate',6:'Mount · Movement speed'};
+        const equipment=data.EquipCfg||[],shared={1:'Chest · HP',2:'Helmet · HP regeneration',5:'Cape · Attack speed',6:'Mount · Movement speed'};
         for(const id of [1,2,5,6]){const index=equipment.findIndex(row=>row.id===id),r=equipment[index];if(r)add(id,shared[id],EquipmentTiers.tiers(r).length+' tiers · '+r.levelInfo.length+' upgrades',r,['EquipCfg',index]);}
-        for(const style of HeroWeapons.styles)for(const id of [3,4]){const index=equipment.findIndex(row=>row.id===id),r=equipment[index];if(r)add(id+':'+style.id,style.name+' · '+HeroWeapons.gear(style.id,id,'upgrade').name,EquipmentTiers.tiers(r).length+' tiers · '+r.levelInfo.length+' upgrades',r,['EquipCfg',index],{heroStyle:style.id});}
+        for(const style of HeroWeapons.styles)for(const id of [4,3]){const index=equipment.findIndex(row=>row.id===id),r=equipment[index];if(r)add(id+':'+style.id,style.name+' · '+HeroWeapons.gear(style.id,id,'upgrade').name,EquipmentTiers.tiers(r).length+' tiers · '+r.levelInfo.length+' upgrades',r,['EquipCfg',index],{heroStyle:style.id});}
       }
       if(kind==='relics')(data.TreasureCfg||[]).forEach((r,i)=>{const good=(data.GoodsCfg||{})[r.goodID]||{};add(r.ID,this._text(good.name)||String(r.ID),r.ID+' · '+Schema.RARITIES[r.Quality-1]+' · '+r.levelInfo.length+' levels',r,['TreasureCfg',i],{icon:good.icon});});
       if(kind==='talents')Object.keys(data.TalentCfg||{}).forEach(id=>{const r=data.TalentCfg[id],count=(data.TalentLevelCfg||[]).filter(l=>l.kindID===Number(id)).length;add(id,this._text(r.Name),id+' · '+count+' progression records',r,['TalentCfg',id],{icon:r.Image});});

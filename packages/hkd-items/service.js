@@ -2,14 +2,14 @@
 const fs=require('fs'),path=require('path'),{Service}=require('../hkd-characters/lib/service'),Units=require('../game-data-editor/lib/unit-assets');
 const Weapons=require('../../assets/_script/HeroWeapons');
 const Tiers=require('../../assets/_script/EquipmentTiers'),Appearance=require('./appearance');
-const ROLES={1:'Armor & cape',2:'Helmet',3:'Weapon power',4:'Weapons',5:'Gloves',6:'Mount'},LAYERS={1:'wqyl_lead_doupeng',2:'wqyl_lead_tou',3:'wqyl_lead_jian',4:'wqyl_lead_gong',5:'wqyl_lead_shou',6:'wqyl_lead_ma'};
+const ROLES={1:'Chest',2:'Helmet',3:'Weapon power',4:'Weapons',5:'Cape',6:'Mount'},LAYERS={1:'wqyl_lead_doupeng',2:'wqyl_lead_tou',3:'wqyl_lead_jian',4:'wqyl_lead_gong',5:'wqyl_lead_shou',6:'wqyl_lead_ma'};
 const Document=require('../game-data-editor/lib/json-document');
 class ItemsService extends Service{
   constructor(root){super(root,{file:'assets/resources/hero-items/catalog.json'});}
   equipment(){return JSON.parse(fs.readFileSync(path.join(this.root,'assets/KinghtFallConfig/GameJsonCfg.json'),'utf8')).EquipCfg;}
   assets(){const library=super.assets();return {...library,parts:library.parts.concat(Appearance.mounts())};}
   units(){
-    const equipment=this.equipment(),ordered=[1,2,5,6,3,4].map(id=>equipment.find(gear=>gear.id===id)).filter(Boolean);
+    const equipment=this.equipment(),ordered=[1,2,5,6,4,3].map(id=>equipment.find(gear=>gear.id===id)).filter(Boolean);
     return ordered.flatMap(gear=>(gear.id===3||gear.id===4?Weapons.styles:[null]).flatMap(style=>Tiers.tiers(gear).map(tier=>{
       const level=gear.levelInfo.find(level=>level.Level===tier.levels[0]),key=Tiers.key(gear.id,tier.skin,style&&style.id);
       return {type:'item',id:key,key,group:style?style.name+' · '+Weapons.gear(style.id,gear.id,'upgrade').name:ROLES[gear.id],name:'Tier '+tier.number,slot:gear.id,level:level.Level,skin:tier.skin,tier:tier.number,value:level.Parameters,cost:level.GoldCost,legacyKeys:tier.levels.map(level=>Weapons.itemKey(gear.id,level,style&&style.id)),...(style?{style:style.id}:{})};

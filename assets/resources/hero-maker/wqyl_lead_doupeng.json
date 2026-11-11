@@ -557,6 +557,16 @@
   ],
   "slots": [
     {
+      "name": "Rider/HandLeft/Shield",
+      "bone": "Rider/HandLeft/Shield",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandLeft/Sub_Item",
+      "bone": "Rider/HandLeft/Sub_Item",
+      "color": "ffffffff"
+    },
+    {
       "name": "Rider/Dead/Bone",
       "bone": "Rider/Dead/Bone",
       "color": "ffffff00"
@@ -610,8 +620,7 @@
     {
       "name": "Rider/Body/Cape",
       "bone": "Rider/Body/Cape",
-      "color": "ffffffff",
-      "attachment": "hero_Rider_Body_Cape"
+      "color": "ffffffff"
     },
     {
       "name": "Rider/Mount/Mount_Down2",
@@ -666,16 +675,6 @@
     {
       "name": "Rider/Body/Head/Helmet",
       "bone": "Rider/Body/Head/Helmet",
-      "color": "ffffffff"
-    },
-    {
-      "name": "Rider/HandLeft/Shield",
-      "bone": "Rider/HandLeft/Shield",
-      "color": "ffffffff"
-    },
-    {
-      "name": "Rider/HandLeft/Sub_Item",
-      "bone": "Rider/HandLeft/Sub_Item",
       "color": "ffffffff"
     },
     {
@@ -826,19 +825,6 @@
             "color": "ffffffff"
           }
         },
-        "Rider/Body/Cape": {
-          "hero_Rider_Body_Cape": {
-            "path": "part_Rider_Body_Cape_lv1",
-            "x": 9.5,
-            "y": 6,
-            "rotation": 0,
-            "scaleX": 0.68,
-            "scaleY": 0.68,
-            "width": 84,
-            "height": 89,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -859,19 +845,6 @@
             "scaleY": 1,
             "width": 76,
             "height": 68,
-            "color": "ffffffff"
-          }
-        },
-        "Rider/Body/Cape": {
-          "hero_Rider_Body_Cape": {
-            "path": "part_Rider_Body_Cape_lv2",
-            "x": 9.5,
-            "y": 6,
-            "rotation": 0,
-            "scaleX": 0.68,
-            "scaleY": 0.68,
-            "width": 85,
-            "height": 89,
             "color": "ffffffff"
           }
         },
@@ -898,19 +871,6 @@
             "color": "ffffffff"
           }
         },
-        "Rider/Body/Cape": {
-          "hero_Rider_Body_Cape": {
-            "path": "part_Rider_Body_Cape_lv3",
-            "x": 9.5,
-            "y": 6,
-            "rotation": 0,
-            "scaleX": 0.68,
-            "scaleY": 0.68,
-            "width": 85,
-            "height": 89,
-            "color": "ffffffff"
-          }
-        },
         "Rider/Body/Head/Eye": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
         "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
@@ -931,19 +891,6 @@
             "scaleY": 1,
             "width": 76,
             "height": 68,
-            "color": "ffffffff"
-          }
-        },
-        "Rider/Body/Cape": {
-          "hero_Rider_Body_Cape": {
-            "path": "part_Rider_Body_Cape_lv4",
-            "x": 9.5,
-            "y": 6,
-            "rotation": 0,
-            "scaleX": 0.68,
-            "scaleY": 0.68,
-            "width": 86,
-            "height": 91,
             "color": "ffffffff"
           }
         },
@@ -18720,18 +18667,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -24118,18 +24053,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
         }
       }
     },
@@ -29096,22 +29019,6 @@
             {
               "time": 1.3333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.66665,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -34330,62 +34237,6 @@
           "color": [
             {
               "time": 0,
-              "color": "ffffff00"
-            },
-            {
-              "time": 1.8333,
-              "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.09998,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.1305351,
-              "color": "fffffff8"
-            },
-            {
-              "time": 1.1610899,
-              "color": "ffffffe4"
-            },
-            {
-              "time": 1.191645,
-              "color": "ffffffc8"
-            },
-            {
-              "time": 1.2222001,
-              "color": "ffffffa5"
-            },
-            {
-              "time": 1.2527549,
-              "color": "ffffff80"
-            },
-            {
-              "time": 1.28331,
-              "color": "ffffff5a"
-            },
-            {
-              "time": 1.3138651,
-              "color": "ffffff37"
-            },
-            {
-              "time": 1.3444199,
-              "color": "ffffff1b"
-            },
-            {
-              "time": 1.374975,
-              "color": "ffffff07"
-            },
-            {
-              "time": 1.4055301,
               "color": "ffffff00"
             },
             {
@@ -39773,18 +39624,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 1.3333,
-              "color": "ffffffff"
-            }
-          ]
         }
       }
     },
@@ -42795,18 +42634,6 @@
             {
               "time": 0.5,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.5,
-              "color": "ffffffff"
             }
           ]
         }
@@ -60574,18 +60401,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -78361,18 +78176,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -96144,18 +95947,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }
@@ -113931,18 +113722,6 @@
               "color": "ffffff00"
             }
           ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
-            }
-          ]
         }
       },
       "events": [
@@ -131714,18 +131493,6 @@
             {
               "time": 0.8333,
               "color": "ffffff00"
-            }
-          ]
-        },
-        "Rider/Body/Cape": {
-          "color": [
-            {
-              "time": 0,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.8333,
-              "color": "ffffffff"
             }
           ]
         }

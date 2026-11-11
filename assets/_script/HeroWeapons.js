@@ -40,6 +40,8 @@ function skin(style, tier) { return (style || "skirmisher") + "_" + tier; }
 // its slot; the existing power track can later gain a style-specific bonus.
 function gear(style, slot, area) {
   var selected = find(style) || styles[0], main = selected.id === "guardian" ? "Hammer" : selected.weapon;
+  if (Number(slot) === 1) return { name: "Chest", kind: "armor", slot: 1 };
+  if (Number(slot) === 5) return { name: "Cape", kind: "cape", slot: 5 };
   if (Number(slot) === 4) return { name: main, kind: "weapon", slot: 4 };
   if (Number(slot) !== 3) return null;
   if (selected.id === "skirmisher") return { name: "Arrow", kind: "offhand", slot: 3 };
@@ -62,4 +64,5 @@ function validate(data, equipment) {
 exports.styles = styles; exports.find = find; exports.selected = selected; exports.level = level;
 exports.select = select; exports.upgrade = upgrade; exports.itemKey = itemKey; exports.skin = skin;
 exports.gear = gear;
+exports.gearOrder = [1, 2, 5, 4, 3, 6];
 exports.validate = validate;

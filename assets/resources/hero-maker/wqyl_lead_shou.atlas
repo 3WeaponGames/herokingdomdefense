@@ -1,6 +1,300 @@
 
 wqyl_lead_shou.png
-size: 2,4
+size: 2048,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+part_Rider_Body_Cape_bruiser_lv4
+  rotate: false
+  xy: 2, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_bruiser_vip1
+  rotate: false
+  xy: 92, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_bruiser_vip2
+  rotate: false
+  xy: 182, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_fighter_lv4
+  rotate: false
+  xy: 272, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_fighter_vip1
+  rotate: false
+  xy: 362, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_fighter_vip2
+  rotate: false
+  xy: 452, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_guardian_lv4
+  rotate: false
+  xy: 542, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_guardian_vip1
+  rotate: false
+  xy: 632, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_guardian_vip2
+  rotate: false
+  xy: 722, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv4
+  rotate: false
+  xy: 812, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_mystic_lv4
+  rotate: false
+  xy: 902, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_mystic_vip1
+  rotate: false
+  xy: 992, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_mystic_vip2
+  rotate: false
+  xy: 1082, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_skirmisher_lv4
+  rotate: false
+  xy: 1172, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_skirmisher_vip1
+  rotate: false
+  xy: 1262, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_skirmisher_vip2
+  rotate: false
+  xy: 1352, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vanguard_lv4
+  rotate: false
+  xy: 1442, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vanguard_vip1
+  rotate: false
+  xy: 1532, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vanguard_vip2
+  rotate: false
+  xy: 1622, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vip1
+  rotate: false
+  xy: 1712, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vip2
+  rotate: false
+  xy: 1802, 2
+  size: 86, 91
+  orig: 86, 91
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_bruiser_lv1
+  rotate: false
+  xy: 1892, 2
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_bruiser_lv2
+  rotate: false
+  xy: 2, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_bruiser_lv3
+  rotate: false
+  xy: 91, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_fighter_lv1
+  rotate: false
+  xy: 180, 97
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_fighter_lv2
+  rotate: false
+  xy: 268, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_fighter_lv3
+  rotate: false
+  xy: 357, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_guardian_lv1
+  rotate: false
+  xy: 446, 97
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_guardian_lv2
+  rotate: false
+  xy: 534, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_guardian_lv3
+  rotate: false
+  xy: 623, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv1
+  rotate: false
+  xy: 712, 97
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv2
+  rotate: false
+  xy: 800, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_lv3
+  rotate: false
+  xy: 889, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_mystic_lv1
+  rotate: false
+  xy: 978, 97
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_mystic_lv2
+  rotate: false
+  xy: 1066, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_mystic_lv3
+  rotate: false
+  xy: 1155, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_skirmisher_lv1
+  rotate: false
+  xy: 1244, 97
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_skirmisher_lv2
+  rotate: false
+  xy: 1332, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_skirmisher_lv3
+  rotate: false
+  xy: 1421, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vanguard_lv1
+  rotate: false
+  xy: 1510, 97
+  size: 84, 89
+  orig: 84, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vanguard_lv2
+  rotate: false
+  xy: 1598, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1
+part_Rider_Body_Cape_vanguard_lv3
+  rotate: false
+  xy: 1687, 97
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1

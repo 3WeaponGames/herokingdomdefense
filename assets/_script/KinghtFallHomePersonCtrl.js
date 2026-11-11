@@ -222,6 +222,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       if (hasNextLevel) g.getChildByName("labNum2").getComponent(cc.Label).string = "" + r.cfg.levelInfo[l].Parameters;
       var customItem = cc.resources && HeroItemLooks.item(r.type, l);
       r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = customItem ? customItem.name : o.T(r.cfg.levelInfo[l - 1].EquipName);
+      if ((r.type === 1 || r.type === 5) && !customItem) r.ndInfo.getChildByName('labName').getComponent(cc.Label).string = require('HeroWeapons').gear(equippedStyle.id,r.type,'upgrade').name;
       if (r.type === 3 || r.type === 4) {
         var style = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon();
         r.ndInfo.getChildByName("labName").getComponent(cc.Label).string = style.name + " · " + require("HeroWeapons").gear(style.id, r.type, 'upgrade').name;

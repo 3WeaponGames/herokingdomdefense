@@ -6,13 +6,13 @@ function role(asset){
   if(/(?:^|\/)Mount\//i.test(name))return /_Down(?:$|_)/i.test(name)?'Mount_Down':'Mount';
   if(/\/Crossbow\//.test(name))return /_Down$/.test(name)?'Crossbow_Down':'Crossbow';
   if(/Helmet_Hair/.test(name))return'Hair_Helmet';
-  for(const value of ['Helmet','Chest','Shield','Crossbow','Sword','Axe','Blunt','Spear','Staff','Wand','Gun','Bow','Arrow','Cape','Gloves','Boots','Hair','Beard','Eye'])
+  for(const value of ['Helmet','Chest','Shield','Sub_Item','Crossbow','Sword','Axe','Blunt','Spear','Staff','Wand','Gun','Bow','Arrow','Cape','Gloves','Boots','Hair','Beard','Eye'])
     if(new RegExp('(?:^|/)'+value+'(?:/|$)').test(category)||new RegExp('(?:^|/)'+value+'/').test(name))return value;
   return null;
 }
 function layerFor(rig,asset){const value=role(asset),roles={Helmet:'wqyl_lead_tou',Hair:'wqyl_lead_tou',Hair_Helmet:'wqyl_lead_tou',Beard:'wqyl_lead_tou',Eye:'wqyl_lead_tou',Chest:'wqyl_lead_shenti',Bow:'wqyl_lead_gong',Mount:'wqyl_lead_ma',Mount_Down:'wqyl_lead_ma'};
   if(rig.layers.some(layer=>layer.json&&layer.json._heroMaker)){
-    const group={Chest:'doupeng',Cape:'doupeng',Boots:'shenti',Gloves:'shou',Arrow:'jian',Shield:'jian',Sword:'gong',Axe:'gong',Blunt:'gong',Spear:'gong',Staff:'gong',Wand:'gong',Gun:'gong',Crossbow:'gong'}[value];
+    const group={Chest:'doupeng',Cape:'shou',Boots:'shenti',Gloves:'shou',Arrow:'jian',Shield:'jian',Sub_Item:'jian',Sword:'gong',Axe:'gong',Blunt:'gong',Spear:'gong',Staff:'gong',Wand:'gong',Gun:'gong',Crossbow:'gong'}[value];
     if(group){const found=rig.layers.find(layer=>layer.name==='wqyl_lead_'+group);if(found)return found;}
   }
   if(roles[value]){const found=rig.layers.find(layer=>layer.name===roles[value]);if(found)return found;}
@@ -27,7 +27,7 @@ function socket(layer,asset,skin){const value=role(asset);if(!value)return null;
   if(value==='Helmet'&&layer.name==='wqyl_lead_tou'){const active=layer.json.skins.find(s=>s.name===(skin||layer.skin)),names=active&&active.attachments||{};return layer.json.slots.find(slot=>/headgear/i.test(slot.name)&&names[slot.name])||layer.json.slots.find(slot=>/headgear/i.test(slot.name))||null;}
   return null;
 }
-function intended(asset){const scale=100/(asset.pixelsPerUnit||100),pivot=asset.pivot||{x:.5,y:.5};return{x:(.5-pivot.x)*asset.width*scale,y:(.5-pivot.y)*asset.height*scale,rotation:0,scaleX:scale,scaleY:scale};}
+function intended(asset){if(/^Hero\/Cape\//.test(asset.id||''))return{x:9.5,y:6,rotation:0,scaleX:.68,scaleY:.68};const scale=100/(asset.pixelsPerUnit||100),pivot=asset.pivot||{x:.5,y:.5};return{x:(.5-pivot.x)*asset.width*scale,y:(.5-pivot.y)*asset.height*scale,rotation:0,scaleX:scale,scaleY:scale};}
 function compatible(slot){return !!slot&&/^Rider\//.test(slot.name);}
 function fitAspect(width,height,availableWidth,availableHeight){const value=Math.min(availableWidth/width,availableHeight/height);return Math.max(.01,Math.min(20,value));}
 module.exports={role,layerFor,socket,intended,compatible,fitAspect};
