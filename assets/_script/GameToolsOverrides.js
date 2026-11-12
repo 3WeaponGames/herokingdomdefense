@@ -40,12 +40,14 @@ function attack(owner, type, callback) {
   var item = settings && settings.timings && settings.timings[key];
   if (item === undefined) item = settings && settings.timingDefaults && settings.timingDefaults[key];
   var delay = item && item.attack;
+  var speed = attackPlayback(owner, type), sourceClock = unitAnimationSpeed(owner, type) !== undefined;
   // A missing timing must retain call order, RNG order, and the original stack.
-  if (typeof delay !== "number" || !isFinite(delay) || delay <= 0 || delay > 10) return callback.call(owner);
+  var validDelay = typeof delay === "number" && isFinite(delay) && delay > 0 && delay <= 10;
+  if (!validDelay && speed > 0) return callback.call(owner);
   cancel(owner);
   var skeleton = owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody);
   var track = skeleton && skeleton.getCurrent ? skeleton.getCurrent(0) : null;
-  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: delay / attackPlayback(owner, type), callback: callback, skeleton: skeleton, track: track });
+  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? sourceClock ? delay : delay / speed : 0, sourceClock: sourceClock, callback: callback, skeleton: skeleton, track: track });
 }
 function tick(dt, fighting) {
   if (!pending.length) return;
@@ -79,7 +81,9 @@ function tick(dt, fighting) {
       if (control.freeze > 0) effectDelta = Math.max(0, dt - control.freeze);
       else if (control.duration > 0 && control.slow > 0) effectDelta -= Math.min(dt, control.duration) * control.slow;
     }
-    entry.remaining -= effectDelta;
+    var playback = entry.sourceClock ? attackPlayback(owner, entry.type) : 1;
+    if (!(playback > 0)) continue;
+    entry.remaining -= effectDelta * playback;
     if (entry.remaining <= 1e-9) {
       pending.splice(pending.indexOf(entry), 1);
       entry.callback.call(owner);
@@ -107,9 +111,26 @@ function validPlayback(value) { return typeof value === "number" && isFinite(val
 function defaultPlayback(owner, type) {
   var renderer = owner && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = renderer && renderer.skeletonData && renderer.skeletonData.skeletonJson;
   var pack = type === "enemy" && json && json._fantasy && json._fantasy.pack;
-  return pack === "fantasy-bosses" ? .65 : pack === "fantasy-monsters" ? .75 : 1;
+  return pack === "fantasy-bosses" ? .25 : pack === "fantasy-monsters" ? .35 : 1;
+}
+function unitAnimationSpeed(owner, type) {
+  // Character data is preloaded before gameplay; this read never creates settings.
+  if (!cc.resources) return undefined;
+  return require("CharacterAppearance").animationSpeed(owner, type);
+}
+function animationPlayback(owner, type) {
+  var relative = unitAnimationSpeed(owner, type), baseline = defaultPlayback(owner, type);
+  if (relative !== undefined && type === "enemy") {
+    // Native baked assets can omit skeletonJson while the unit record retains
+    // its source package. Explicit saved playback must use that same baseline.
+    var renderer = owner && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = renderer && renderer.skeletonData && renderer.skeletonData.skeletonJson;
+    var pack = json && json._fantasy && json._fantasy.pack || owner.cfg && owner.cfg.MonsterPack;
+    baseline = pack === "fantasy-bosses" ? .25 : pack === "fantasy-monsters" ? .35 : baseline;
+  }
+  return relative === undefined ? baseline : baseline * relative;
 }
 function attackPlayback(owner, type) {
+  if (unitAnimationSpeed(owner, type) !== undefined) return animationPlayback(owner, type);
   var settings = config(), speeds = settings && settings.animationSpeeds;
   if (type === "ally" && speeds) {
     // Match the authored Barracks level used by unit stats and appearances.
@@ -130,26 +151,30 @@ function applyAttackPlayback(owner, type) {
   applyPlayback(owner, type, false);
 }
 function applyPlayback(owner, type, all) {
-  var layers = owner.ctrPlayAni;
-  var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand] : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
+  var layers = owner.ctrPlayAni, custom = unitAnimationSpeed(owner, type) !== undefined;
+  var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand].concat(all ? [layers.spAniMa] : []) : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
-    var track = renderer && renderer.getCurrent && renderer.getCurrent(0);
+    var primary = renderer && renderer.getCurrent && renderer.getCurrent(0), hit = all && renderer && renderer.getCurrent && renderer.getCurrent(1), tracks = [primary];
+    if (hit && hit !== primary && (custom || playbackTracks.has(hit))) tracks.push(hit);
+    tracks.forEach(function (track) {
+    if (!track) return;
     var animation = track && (track.animation || track.getAnimation && track.getAnimation());
     var name = animation && (animation.name || animation.getName && animation.getName());
     var attack = /^attack(?:_|$)/.test(name);
     if (!all && !attack) return;
-    var speed = attack ? attackPlayback(owner, type) : defaultPlayback(owner, type);
+    var speed = custom ? animationPlayback(owner, type) : track === hit && track !== primary ? 1 : attack ? attackPlayback(owner, type) : defaultPlayback(owner, type);
     // An inherited 1x level must clear this helper's previous override on a
     // retained/native track, while untouched authored tracks keep their speed.
-    if (speed === 1 && !playbackTracks.has(track)) return;
+    if (speed === 1 && !custom && !playbackTracks.has(track)) return;
     if (!playbackTracks.has(track)) {
       var original = typeof track.getTimeScale === "function" ? track.getTimeScale() : track.timeScale;
       playbackTracks.set(track, typeof original === "number" && isFinite(original) && original > 0 ? original : 1);
     }
-    var applied = speed === 1 ? playbackTracks.get(track) : speed;
+    var applied = speed === 1 && !custom ? playbackTracks.get(track) : speed;
     // Native TrackEntry exposes setters; the browser Spine runtime exposes fields.
     if (typeof track.setTimeScale === "function") track.setTimeScale(applied); else track.timeScale = applied;
-    if (speed === 1) playbackTracks.delete(track);
+    if (speed === 1 && !custom) playbackTracks.delete(track);
+    });
   });
 }
 var visualNodes = new WeakMap();
@@ -176,5 +201,6 @@ exports.parameter = parameter;
 exports.facing = facing;
 exports.applyModel = applyModel;
 exports.attackPlayback = attackPlayback;
+exports.animationPlayback = animationPlayback;
 exports.applyAttackPlayback = applyAttackPlayback;
 exports.applyAnimationPlayback = function (owner, type) { applyPlayback(owner, type, true); };

@@ -47,7 +47,7 @@ async function fixture(t,{missingLevel=false,itemMode=false,initialFocus,deferLo
   const flush=async()=>{await new Promise(resolve=>setImmediate(resolve));const status=root.querySelector('.status');assert(!status.className.split(' ').includes('error'),status.textContent);};await flush();
   const field=(label,parent=root)=>descendants(parent).find(n=>n.attributes['aria-label']===label);
   const button=text=>descendants(root).find(n=>n.tagName==='button'&&n.textContent===text);
-  const choose=async(key)=>{if(itemMode){const input=field('Equipment tier');input.value=key;input.onchange();}else{const unit=units.find(unit=>unit.key===key);await button(unit.group+' · '+unit.name).onclick();}await flush();};
+  const choose=async(key)=>{if(itemMode){const input=field('Equipment tier');input.value=key;input.onchange();}else{const unit=units.find(unit=>unit.key===key);await button(require('../../packages/hkd-characters/lib/unit-packs').caption(unit)).onclick();}await flush();};
   const level=async(value)=>{const input=field('Level');input.value=String(value);input.onchange();await flush();};
   return{root,calls,initial,snapshot,client,field,choose,level,button,flush,finishLoad};
 }

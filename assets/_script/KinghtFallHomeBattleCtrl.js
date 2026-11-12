@@ -509,7 +509,8 @@ var def_KinghtFallHomeBattleCtrl = function (t) {
             var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalent();
             for (var n = 0; n < e.length; n++) {
               var i = e[n];
-              if (i.isLock && $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTalentLevelCfgById(i.id).kindID == t) {
+              var talent = i && i.isLock && $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTalentLevelCfgById(i.id);
+              if (talent && talent.kindID == t) {
                 return true;
               }
             }

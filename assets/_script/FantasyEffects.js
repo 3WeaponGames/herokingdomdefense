@@ -12,15 +12,19 @@ function stop(renderer) {
   state.slots.forEach(function (name) { var slot = renderer.findSlot && renderer.findSlot(name), color = slot && (slot.getColor ? slot.getColor() : slot.color); if (color) color.a = 0; });
   states.delete(renderer);
 }
-function ambient(actor) {
+function ambient(actor, playback) {
   var renderer = rendererOf(actor), effect = metadata(renderer);
   if (!effect || !effect.ambientAnimation || !actor.node || actor._isPooled || actor.isDead && actor.isDead() || actor.node.activeInHierarchy === false) { stop(renderer); return; }
   var state = states.get(renderer), current = renderer.getCurrent && renderer.getCurrent(TRACK), generation = actor.node._combatGeneration;
-  if (state && state.asset === renderer.skeletonData && state.generation === generation && animation(current) === effect.ambientAnimation) return;
+  if (state && state.asset === renderer.skeletonData && state.generation === generation && animation(current) === effect.ambientAnimation) {
+    if (typeof playback === "number" && isFinite(playback) && playback >= 0) { if (current.setTimeScale) current.setTimeScale(playback); else current.timeScale = playback; }
+    return;
+  }
   stop(renderer);
   if (renderer.findAnimation && !renderer.findAnimation(effect.ambientAnimation)) return;
   var entry = renderer.setAnimation(TRACK, effect.ambientAnimation, true); if (!entry) return;
-  var json = renderer.skeletonData.skeletonJson, pack = json && json._fantasy && json._fantasy.pack, speed = pack === "fantasy-bosses" ? .65 : pack === "fantasy-monsters" ? .75 : 1;
+  var json = renderer.skeletonData.skeletonJson, pack = json && json._fantasy && json._fantasy.pack, speed = pack === "fantasy-bosses" ? .25 : pack === "fantasy-monsters" ? .35 : 1;
+  if (typeof playback === "number" && isFinite(playback) && playback >= 0) speed = playback;
   if (entry.setTimeScale) entry.setTimeScale(speed); else entry.timeScale = speed;
   if (entry.setMixDuration) entry.setMixDuration(0); else entry.mixDuration = 0;
   states.set(renderer, { asset: renderer.skeletonData, generation: generation, name: effect.ambientAnimation, slots: effect.ambientSlots || [] });

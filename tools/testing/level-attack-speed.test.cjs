@@ -67,16 +67,16 @@ test('unconfigured playback preserves immediate dispatch, frame order and approv
   assert.deepEqual(f.settings.timingDefaults,{'ally:90004:default':{attack:.5}});
 });
 
-test('Fantasy Boss defaults slow every primary action to 0.65 and keep attack release synchronized without changing saved timings',()=>{
+test('Fantasy Boss defaults slow every primary action to 0.25 and keep attack release synchronized without changing saved timings',()=>{
  const settings={timingDefaults:{'enemy:94001:default':{attack:.52}}},before=JSON.stringify(settings),f=fixture(settings),actor=ally();delete actor.outBuild;actor.cfg.ID=94001;actor.spAni.skeletonData={skeletonJson:{_fantasy:{pack:'fantasy-bosses'}}};
- for(const name of ['idle','move','attack','attack_alt','die']){actor.track={animation:{name,duration:2},timeScale:1};actor.spAni.getCurrent=()=>actor.track;f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.65,name);}
- actor.track={animation:{name:'attack',duration:2},timeScale:1};let released=false;f.api.attack(actor,'enemy',()=>{released=true;});assert.equal(actor.track.timeScale,.65);f.api.tick(.79999,true);assert(!released);f.api.tick(.00001,true);assert(released);assert.equal(JSON.stringify(settings),before);
+ for(const name of ['idle','move','attack','attack_alt','die']){actor.track={animation:{name,duration:2},timeScale:1};actor.spAni.getCurrent=()=>actor.track;f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.25,name);}
+ actor.track={animation:{name:'attack',duration:2},timeScale:1};let released=false;f.api.attack(actor,'enemy',()=>{released=true;});assert.equal(actor.track.timeScale,.25);f.api.tick(.52/.25-.00001,true);assert(!released);f.api.tick(.00001,true);assert(released);assert.equal(JSON.stringify(settings),before);
  settings.animationSpeeds={'enemy:94001:default':1.2};f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,1.2,'Explicit per-unit attack edits retain precedence');
- actor.track.animation.name='move';f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.65);actor.spAni.skeletonData.skeletonJson._fantasy.pack='fantasy-monsters';f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.75,'A reused track picks up the Monsters default');actor.spAni.skeletonData.skeletonJson._fantasy.pack='monster3';f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,1,'A reused track cannot carry a Fantasy default to another pack');
+ actor.track.animation.name='move';f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.25);actor.spAni.skeletonData.skeletonJson._fantasy.pack='fantasy-monsters';f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.35,'A reused track picks up the Monsters default');actor.spAni.skeletonData.skeletonJson._fantasy.pack='monster3';f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,1,'A reused track cannot carry a Fantasy default to another pack');
 });
 
-test('Fantasy Monsters use 0.75 for every primary action and scale delayed hit release without rewriting timing data',()=>{
+test('Fantasy Monsters use 0.35 for every primary action and scale delayed hit release without rewriting timing data',()=>{
  const settings={timingDefaults:{'enemy:94002:default':{attack:.6}}},before=JSON.stringify(settings),f=fixture(settings),actor=ally();delete actor.outBuild;actor.cfg.ID=94002;actor.spAni.skeletonData={skeletonJson:{_fantasy:{pack:'fantasy-monsters'}}};actor.spAni.getCurrent=()=>actor.track;
- for(const name of ['idle','move','attack','attack_alt','run','die']){actor.track={animation:{name,duration:2},timeScale:1};f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.75,name);}
- actor.track.animation.name='attack';let released=false;f.api.attack(actor,'enemy',()=>{released=true;});f.api.tick(.79999,true);assert(!released);f.api.tick(.00001,true);assert(released);assert.equal(JSON.stringify(settings),before);
+ for(const name of ['idle','move','attack','attack_alt','run','die']){actor.track={animation:{name,duration:2},timeScale:1};f.api.applyAnimationPlayback(actor,'enemy');assert.equal(actor.track.timeScale,.35,name);}
+ actor.track.animation.name='attack';let released=false;f.api.attack(actor,'enemy',()=>{released=true;});f.api.tick(.6/.35-.00001,true);assert(!released);f.api.tick(.00001,true);assert(released);assert.equal(JSON.stringify(settings),before);
 });

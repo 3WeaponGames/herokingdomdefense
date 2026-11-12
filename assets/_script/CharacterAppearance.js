@@ -4,7 +4,32 @@ var UnitLevelStats = require("UnitLevelStats");
 var library = null, looks = null, loading = false, retryAt = 0, failures = {}, textureJobs = {}, profileKeys = new WeakMap();
 var nativePartsNotice = false;
 var bakedJobs = {};
+var looksLoading = false, looksCallbacks = [];
 function allyLevel(actor) { return UnitLevelStats.level(actor); }
+function validAnimationSpeed(value) { return typeof value === "number" && isFinite(value) && value >= 0 && value <= 2; }
+function animationSpeed(actor, team) {
+  var speeds = looks && looks.unitAnimationSpeeds;
+  if (!speeds || !actor || team !== "hero" && !actor.cfg) return undefined;
+  var level = team === "ally" && allyLevel(actor), scoped = level && speeds["ally:" + actor.cfg.ID + ":level:" + level];
+  if (validAnimationSpeed(scoped)) return scoped;
+  var shared = speeds[Core.actorKey(actor, team)];
+  return validAnimationSpeed(shared) ? shared : undefined;
+}
+function preload(done) {
+  if (looks || !cc.resources) { if (done) done(); return; }
+  if (done) looksCallbacks.push(done);
+  if (looksLoading) return;
+  looksLoading = true;
+  function finish(issue, asset) {
+    looksLoading = false;
+    if (!issue && asset) { looks = asset.json; retryAt = 0; }
+    else retryAt = Date.now() + 1000;
+    var callbacks = looksCallbacks; looksCallbacks = [];
+    callbacks.forEach(function (callback) { callback(issue); });
+  }
+  try { cc.resources.load("characters/catalog", cc.JsonAsset, finish); }
+  catch (issue) { finish(issue); }
+}
 function assignedLook(data, actor, team) {
   var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor);
   var exact = level && data.assignments["ally:" + actor.cfg.ID + ":level:" + level];
@@ -98,10 +123,10 @@ function load() {
   if (loading || library && looks || Date.now() < retryAt) return;
   loading = true;
   function loadLooks() {
-    cc.resources.load("characters/catalog", cc.JsonAsset, function (issue, data) {
+    preload(function (issue) {
       loading = false;
       if (issue) { retryAt = Date.now() + 1000; return; }
-      looks = data.json; retryAt = 0;
+      retryAt = 0;
     });
   }
   if (library) { loadLooks(); return; }
@@ -165,9 +190,10 @@ var Appearance = cc.Class({
     if (!actor || !actor.node.activeInHierarchy) return;
     var effectData = this.team === "enemy" && actor.spAni && actor.spAni.skeletonData && actor.spAni.skeletonData.skeletonJson;
     var hasAmbient = effectData && effectData._fantasy && effectData._fantasy.effects && effectData._fantasy.effects.ambientAnimation;
-    if (hasAmbient || this.fantasyAmbient) { require("FantasyEffects").ambient(actor); this.fantasyAmbient = !!hasAmbient; }
+    if (hasAmbient || this.fantasyAmbient) { require("FantasyEffects").ambient(actor, require("GameToolsOverrides").animationPlayback(actor, this.team)); this.fantasyAmbient = !!hasAmbient; }
     var hasFantasyPlayback = effectData && effectData._fantasy && ["fantasy-bosses", "fantasy-monsters"].indexOf(effectData._fantasy.pack) >= 0;
-    if (hasFantasyPlayback || this.fantasyPlayback) { require("GameToolsOverrides").applyAnimationPlayback(actor, this.team); this.fantasyPlayback = !!hasFantasyPlayback; }
+    var customPlayback = animationSpeed(actor, this.team) !== undefined;
+    if (hasFantasyPlayback || this.fantasyPlayback || customPlayback || this.customPlayback) { require("GameToolsOverrides").applyAnimationPlayback(actor, this.team); this.fantasyPlayback = !!hasFantasyPlayback; this.customPlayback = customPlayback; }
     var maker=makerRider(this);if(maker)maker.removeFollow(actor.ctrPlayAni);
     try {
     if (!looks || !library) load();
@@ -244,3 +270,4 @@ exports.reset = function (actor) {
 };
 exports.component = Appearance;
 exports.allyLevel = allyLevel; exports.assignedLook = assignedLook;
+exports.animationSpeed = animationSpeed; exports.preload = preload;

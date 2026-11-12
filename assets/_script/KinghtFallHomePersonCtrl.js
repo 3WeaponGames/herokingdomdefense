@@ -179,7 +179,6 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     this.addEvent($z1KinghtFallConfig.KinghtFallEventName.RefreshGold, this.initBtnView);
   };
   _ctor.prototype.initView = function () {
-    var t = 0;
     var e = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();
     var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxStage();
     var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getMaxOrder();
@@ -252,23 +251,6 @@ var def_KinghtFallHomePersonCtrl = function (t) {
             r.ndInfo.getChildByName("btnUpgeade").getComponent($z1BaseButton.BaseButton).interactable = e >= u;
           }
         }
-        switch (r.type) {
-          case $z1KinghtFallEnum.KinghtFallEnumEquipEnum.Body:
-            t += r.cfg.levelInfo[l - 1].Parameters;
-            break;
-          case $z1KinghtFallEnum.KinghtFallEnumEquipEnum.Head:
-          case $z1KinghtFallEnum.KinghtFallEnumEquipEnum.Arrow:
-            t += 5 * r.cfg.levelInfo[l - 1].Parameters;
-            break;
-          case $z1KinghtFallEnum.KinghtFallEnumEquipEnum.Bow:
-            t += r.cfg.levelInfo[l - 1].Parameters;
-            break;
-          case $z1KinghtFallEnum.KinghtFallEnumEquipEnum.Gloves:
-            t += 400 * r.cfg.levelInfo[l - 1].Parameters;
-            break;
-          case $z1KinghtFallEnum.KinghtFallEnumEquipEnum.horse:
-            t += 2 * r.cfg.levelInfo[l - 1].Parameters;
-        }
       } else {
         g.active = false;
         r.ndInfo.getChildByName("ndLock").active = true;
@@ -281,10 +263,17 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     for (var r = 0; r < this.nodeInfo.length; r++) {
       a(r);
     }
-    this.labPower.string = $z1KinghtFallModle.default.getInstance().numberFomat(Math.floor(t));
+    this.refreshCombatPower();
     if (cc.resources) require("CharacterAppearance").reset(this);
     this.ctrPlayAni.initView();
     if (cc.resources) require("CharacterAppearance").bind(this, "hero");
+  };
+  _ctor.prototype.refreshCombatPower = function () {
+    if (!this.labPower) return;
+    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance(), powerConfig = manager.data || { EquipCfg: this.nodeInfo.map(function (row) { return row.cfg; }), TalentLevelCfg: manager.getTalentLevelCfg ? manager.getTalentLevelCfg() : [] };
+    var power = require("HeroLoadout").calculate(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData());
+    this._combatPower = power;
+    this.labPower.string = power.reason ? "—" : $z1KinghtFallModle.default.getInstance().numberFomat(Math.round(power.cp * 100) / 100);
   };
   _ctor.prototype.initBtnView = function () {
     var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();
@@ -298,6 +287,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
         n.ndInfo.getChildByName("btnUpgeade").getComponent($z1BaseButton.BaseButton).interactable = t >= a;
       }
     }
+    this.refreshCombatPower();
   };
   _ctor.prototype.onUpgeade = function (t) {
     var e = this;

@@ -46,8 +46,9 @@ function describe(description,settings,request){
   const key=type==='hero'?'hero:hero:default':prefix+form;
   const speedKey=level?'ally:'+id+':level:'+level:key;
   const speeds=settings.animationSpeeds||{},scoped=speeds[speedKey],shared=speeds[key];
-  const model=(Array.isArray(description.layers)?description.layers:[]).map(layer=>layer&&layer.json&&layer.json._fantasy).find(Boolean),modelSpeed=model&&model.pack==='fantasy-bosses'?.65:model&&model.pack==='fantasy-monsters'?.75:1;
-  const animationSpeed=validSpeed(scoped)?scoped:validSpeed(shared)?shared:modelSpeed;
+  const model=(Array.isArray(description.layers)?description.layers:[]).map(layer=>layer&&layer.json&&layer.json._fantasy).find(Boolean),modelSpeed=validSpeed(description.modelAnimationSpeed)?description.modelAnimationSpeed:model&&model.pack==='fantasy-bosses'?.25:model&&model.pack==='fantasy-monsters'?.35:1;
+  const relative=description.unitAnimationSpeed,wholeUnit=finite(relative)&&relative>=0&&relative<=2;
+  const animationSpeed=wholeUnit?modelSpeed*relative:validSpeed(scoped)?scoped:validSpeed(shared)?shared:modelSpeed;
   let timing=settings.timings&&settings.timings[key];
   if(timing===undefined)timing=settings.timingDefaults&&settings.timingDefaults[key];
   const marker=timing&&timing.attack;
@@ -61,7 +62,7 @@ function describe(description,settings,request){
     }
   }
   const rate=request.record&&request.record.AttackInterval;
-  return {type,id,level,duration:attackDuration,hitTime,animationSpeed,cooldownRate:finite(rate)&&rate>0?rate:0,key,speedKey,cooldownStart:cooldownStart(type,id,request.record,description)};
+  return {type,id,level,duration:attackDuration,hitTime,animationSpeed,modelAnimationSpeed:modelSpeed,...(wholeUnit?{unitAnimationSpeed:relative}:{}),cooldownRate:finite(rate)&&rate>0?rate:0,key,speedKey,cooldownStart:cooldownStart(type,id,request.record,description)};
 }
 
 module.exports={describe,duration};

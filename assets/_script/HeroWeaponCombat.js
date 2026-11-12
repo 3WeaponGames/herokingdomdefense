@@ -1,9 +1,8 @@
 "use strict";
 function configure(hero, user, config) {
-  var style=user.getHeroWeapon ? user.getHeroWeapon() : require("HeroWeapons").styles[0];
-  hero.heroStyle=style.id;hero.heroRanged=style.ranged;hero.attackRange*=style.reach;
-  var bonus=require("HeroStyleTalents").bonuses(config.TalentLevelCfg,user.data&&user.data.talentInfo,style.id);
-  hero.baseHp*=1+bonus.health;hero.hpMax=hero.hp=hero.baseHp;hero.attack*=1+bonus.damage;hero.attackSpeed*=1+bonus.speed;
+  var stats=require("HeroLoadout").applyStyle({health:hero.baseHp,damage:hero.attack,attackRate:hero.attackSpeed,range:hero.attackRange},user,config);
+  hero.heroStyle=stats.style;hero.heroRanged=stats.ranged;hero.attackRange=stats.range;
+  hero.baseHp=stats.health;hero.hpMax=hero.hp=hero.baseHp;hero.attack=stats.damage;hero.attackSpeed=stats.attackRate;
 }
 function melee(game,target) {
   var hero=game.ctrPlay;if(hero.heroRanged!==false)return false;

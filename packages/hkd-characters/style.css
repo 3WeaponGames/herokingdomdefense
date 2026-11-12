@@ -15,6 +15,9 @@
 .character-editor .creator-dialog h2{font-size:19px;margin-bottom:18px;color:#e9eef7}
 .character-editor .creator-dialog .row{justify-content:flex-end;margin-top:18px}
 .character-editor{position:relative}
+.character-editor .playback-speed{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:12px;color:#bdcee6}
+.character-editor .playback-speed input[type=range]{width:140px;min-width:80px;padding:0}
+.character-editor .playback-speed input[type=number]{width:65px;padding:5px}
 
 .character-editor aside.resizable-library{display:flex;flex-direction:column;overflow:hidden}
 .character-editor .resizable-library>h2,.character-editor .resizable-library>select{flex-shrink:0}

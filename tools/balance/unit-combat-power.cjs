@@ -3,14 +3,8 @@
 // A base-stat comparison, not a combat simulator. Recipients are other eligible
 // units already in range; healing utilization accounts for wasted healing.
 // AttackInterval is the game's nominal attacks/casts per second.
-const DEFAULTS = Object.freeze({
-  referenceHp: 40,
-  referenceDps: 10,
-  nearbyAllies: 3,
-  nearbyOpponents: 3,
-  splashTargets: 2,
-  healingUtilization: 1
-});
+const CombatPower = require('../../assets/_script/CombatPower');
+const DEFAULTS = CombatPower.DEFAULTS;
 
 const finite = value => typeof value === 'number' && Number.isFinite(value);
 const nonnegative = value => finite(value) && value >= 0;
@@ -58,9 +52,7 @@ function validateAssumptions(input) {
   for (const key of ['nearbyAllies', 'nearbyOpponents', 'splashTargets']) {
     if (!count(values[key])) return { reason: key + ' must be a nonnegative whole number.' };
   }
-  if (!nonnegative(values.healingUtilization) || values.healingUtilization > 1) {
-    return { reason: 'healingUtilization must be between zero and one.' };
-  }
+  for (const key of ['healingUtilization', 'heroHealingUtilization']) if (!nonnegative(values[key]) || values[key] > 1) return { reason: key + ' must be between zero and one.' };
   return { values };
 }
 
@@ -131,12 +123,10 @@ function calculate(unit, assumptions = DEFAULTS) {
     if (reduction === null) return unavailable('Ability duration divided by interval exceeds the finite number range.');
     output.preventedDps = product([a.referenceDps, reduction, Math.min(p.cap, a.nearbyOpponents)]);
   }
-  const components = [output.directDps, output.healingHps, output.buffDps, output.splashDps, output.preventedDps];
-  if (components.some(value => !nonnegative(value))) return unavailable('Combat output exceeds the finite number range.');
-  output.effectiveOutput = components.reduce((sum, value) => sum + value, 0);
-  const power = unit.Health * output.effectiveOutput;
-  if (!nonnegative(output.effectiveOutput) || !nonnegative(power)) return unavailable('Combat power exceeds the finite number range.');
-  output.cp = Math.sqrt(power);
+  const shared = CombatPower.calculate({ health: unit.Health, ...output });
+  if (shared.reason) return unavailable(shared.reason);
+  output.effectiveOutput = shared.effectiveOutput;
+  output.cp = shared.cp;
   return output;
 }
 

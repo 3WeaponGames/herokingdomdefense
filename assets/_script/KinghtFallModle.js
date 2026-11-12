@@ -48,12 +48,14 @@ var def_KinghtFallModle = function () {
         $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.ResCfg);
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().preload(function () {
           $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.AudioCfg);
-          e.isLoad = true;
-          t && t();
-          $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, function () {
-            $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.OtherCfg);
-            $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconMap, function () {
-              $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.EndLoading);
+          require("CharacterAppearance").preload(function () {
+            e.isLoad = true;
+            t && t();
+            $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, function () {
+              $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.OtherCfg);
+              $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconMap, function () {
+                $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.EndLoading);
+              });
             });
           });
         });

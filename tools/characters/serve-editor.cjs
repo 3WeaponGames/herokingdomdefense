@@ -13,9 +13,11 @@ function createServer(root,options){
     modules['./lib/character-catalog']=fs.readFileSync(path.join(root,'packages/hkd-characters/lib/character-catalog.js'),'utf8');
     modules['./lib/original-mounts']=fs.readFileSync(path.join(root,'packages/hkd-characters/lib/original-mounts.js'),'utf8');
     modules['./lib/mount-attack']=fs.readFileSync(path.join(root,'packages/hkd-characters/lib/mount-attack.js'),'utf8');
-    for(const name of ['unit-packs','boss-model'])modules['./lib/'+name]=fs.readFileSync(path.join(root,'packages/hkd-characters/lib',name+'.js'),'utf8');
+    for(const name of ['unit-packs','boss-model','animation-defaults','unit-animation-speeds','preview-reference'])modules['./lib/'+name]=fs.readFileSync(path.join(root,'packages/hkd-characters/lib',name+'.js'),'utf8');
     modules['./character-levels']=modules['./lib/character-levels'];
     modules['./unit-packs']=modules['./lib/unit-packs'];
+    modules['../../game-data-editor/lib/enemy-classes']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/enemy-classes.js'),'utf8');
+    modules['./unit-records']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/unit-records.js'),'utf8');
     return '(function(){var modules={'+Object.entries(modules).map(([key,value])=>JSON.stringify(key)+':function(module,exports,require){\n'+value+'\n}').join(',')+'};var cache={};function require(id){if(!cache[id]){var m=cache[id]={exports:{}};modules[id](m,m.exports,require);}return cache[id].exports;}var app=require("client").mount(document.getElementById("characters"),{kind:'+JSON.stringify(options.kind||'characters')+',renderer:require("renderer"),core:require("core"),runtime:function(){return window.spine;},image:function(file){return "/asset/"+file.split("/").map(encodeURIComponent).join("/");},ipc:async function(name,request){var r=await fetch("/api/"+name,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(request||{})});var result=await r.json();if(!r.ok)throw Error(result.error);return result;}});window.addEventListener("pagehide",function(){app.destroy();});})();';
   }
   const server=http.createServer(async(req,res)=>{

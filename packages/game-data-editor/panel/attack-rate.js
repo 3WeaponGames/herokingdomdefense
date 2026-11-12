@@ -11,16 +11,17 @@ function record(panel,row,level){
 }
 function identity(row,level,value){return row.unitType+':'+row.unitID+':'+(level||0)+':'+(value&&value.prefab||'');}
 function request(panel,row,level){return {type:row.unitType,id:String(row.unitID),level:level||0,record:record(panel,row,level)};}
-function compact(description,profile){return {type:profile.type,id:profile.id,form:description.form||'default',key:profile.key,attackDuration:profile.duration,cooldownStart:profile.cooldownStart,defaultTiming:description.defaultTiming,layers:[]};}
+function compact(description,profile){return {type:profile.type,id:profile.id,form:description.form||'default',key:profile.key,attackDuration:profile.duration,cooldownStart:profile.cooldownStart,defaultTiming:description.defaultTiming,modelAnimationSpeed:profile.modelAnimationSpeed,...(profile.unitAnimationSpeed===undefined?{}:{unitAnimationSpeed:profile.unitAnimationSpeed}),layers:[]};}
 function profile(panel,row,level){
     const input=request(panel,row,level),description=state(panel).cache.get(identity(row,level,input.record));
     return description?Profile.describe(description,panel._data('overrides'),input):null;
 }
-function measured(panel,row,level){const value=profile(panel,row,level);return value&&Cadence.measure(value.cooldownRate,value.hitTime,value.duration,value.animationSpeed,value.cooldownStart);}
+function measurement(value){return value&&(value.animationSpeed===0?{paused:true,rate:0}:Cadence.measure(value.cooldownRate,value.hitTime,value.duration,value.animationSpeed,value.cooldownStart));}
+function measured(panel,row,level){return measurement(profile(panel,row,level));}
 function refresh(panel){
     if(panel._closed)return;
     for(const binding of state(panel).bindings){
-        const value=profile(panel,binding.row,binding.level),result=value&&Cadence.measure(value.cooldownRate,value.hitTime,value.duration,value.animationSpeed,value.cooldownStart);
+        const value=profile(panel,binding.row,binding.level),result=measurement(value);
         binding.update(result,value);
     }
 }
@@ -47,7 +48,7 @@ function metrics(panel,value){
     if(!base)return;
     const row={unitType:value.type,unitID:String(value.id),record:base,path:[table,String(value.id)]};
     const key=value.type+':'+value.id+':'+Records.form(value.type,value.id);
-    state(panel).cache.set(identity(row,value.level,base),{type:value.type,id:String(value.id),key,attackDuration:value.duration,cooldownStart:value.cooldownStart,layers:[]});
+    state(panel).cache.set(identity(row,value.level,base),{type:value.type,id:String(value.id),key,attackDuration:value.duration,cooldownStart:value.cooldownStart,modelAnimationSpeed:value.modelAnimationSpeed,...(value.unitAnimationSpeed===undefined?{}:{unitAnimationSpeed:value.unitAnimationSpeed}),layers:[]});
     refresh(panel);
 }
 function field(panel,container,row,level,write,options,ipc){
@@ -57,9 +58,9 @@ function field(panel,container,row,level,write,options,ipc){
     const help=input.parentNode.children[input.parentNode.children.length-1];
     let displayed='',latest=null,typing=false;
     const binding={row,level,update(result,value,error){
-        latest=value;displayed=result?Cadence.format(result.rate):'';if(!typing)input.value=displayed;input.disabled=!result;
+        latest=value;displayed=result?Cadence.format(result.rate):'';if(!typing)input.value=displayed;input.disabled=!result||!!result.paused;
         input.placeholder=error?'Unavailable':'Calculating…';
-        const text=result?'Full cycle '+result.cycle.toFixed(2)+'s · windup '+result.windup.toFixed(2)+'s · cooldown '+result.cooldown.toFixed(2)+'s. Animation speed and hit timing update this rate.':error?'Cannot calculate attack rate: '+error:'Calculating the full attack cycle…';
+        const text=result&&result.paused?'Animation is frozen at 0% in Characters. Change its saved speed there to enable attacks.':result?'Full cycle '+result.cycle.toFixed(2)+'s · windup '+result.windup.toFixed(2)+'s · cooldown '+result.cooldown.toFixed(2)+'s. Animation speed and hit timing update this rate.':error?'Cannot calculate attack rate: '+error:'Calculating the full attack cycle…';
         input.title=text;if(help&&String(help.tagName).toLowerCase()==='small')help.textContent=(options.help?options.help+' ':'')+text;
     }};
     input.oninput=()=>{typing=true;};
@@ -83,11 +84,11 @@ function field(panel,container,row,level,write,options,ipc){
         };
         Promise.resolve(write(resolve)).catch(()=>refresh(panel));
     };
-    state(panel).bindings.push(binding);const value=profile(panel,row,level);binding.update(value&&Cadence.measure(value.cooldownRate,value.hitTime,value.duration,value.animationSpeed,value.cooldownStart),value);
+    state(panel).bindings.push(binding);const value=profile(panel,row,level);binding.update(measurement(value),value);
     load(panel,row,level,ipc);return input;
 }
 function cell(panel,element,row,level,ipc){
-    const binding={row,level,update(result){element.textContent=result?Cadence.format(result.rate):'…';element.title=result?'Full cycle '+result.cycle.toFixed(2)+' seconds':'Calculating full attack cycle';}};
+    const binding={row,level,update(result){element.textContent=result?Cadence.format(result.rate):'…';element.title=result&&result.paused?'Animation is frozen at 0% in Characters.':result?'Full cycle '+result.cycle.toFixed(2)+' seconds':'Calculating full attack cycle';}};
     state(panel).bindings.push(binding);binding.update(measured(panel,row,level));load(panel,row,level,ipc);
 }
 module.exports={begin,invalidate,reload,metrics,field,cell,profile,measured};

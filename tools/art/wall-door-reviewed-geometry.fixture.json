@@ -2,7 +2,7 @@
   "version": 3,
   "complete": true,
   "sourceSha256": "a65e4d41f5595bb948b233bf9ec293330fa1c6674f49b5dfb6ad72e4ecb1c72a",
-  "source": "User supplied cleaned wall-door sheet, 2026-11-11; image 1 labels determine inward/outward. White matte removed, artwork is not regenerated.",
+  "source": "Geometry from the user-supplied cleaned wall-door sheet, 2026-11-11; inward/outward labels and all native pixel geometry retained. Surface-only wood/iron texture repaint, 2026-11-12.",
   "primary": [
     "rts_door_closed_1",
     "rts_door_inward_1",
@@ -358,7 +358,7 @@
           512,
           531
         ],
-        "rgbaSha256": "abc487f587a5c8d554821d70893643f0f3206292426d67e1a9d0ec04a0b0ccf1",
+        "rgbaSha256": "4a32aa0a91b0b8e23b95aa8453f2ca81dcf59dc857d895f7f77e126280b4abfc",
         "size": [
           512,
           531
@@ -373,7 +373,7 @@
             265,
             365
           ],
-          "rgbaSha256": "54853f7dcd1eaa3fab17be03451a78b53437060194a5c121355a1551f30d382c",
+          "rgbaSha256": "b22cb1f3e8ee54d770c99dacf686bd20f08be0011eba48a7d53d36f9230718df",
           "size": [
             265,
             365
@@ -398,7 +398,7 @@
             260,
             365
           ],
-          "rgbaSha256": "6caed57bd81563e902c8a665ca6c9d520f274c92579a2383cf6e34430ef2b6fb",
+          "rgbaSha256": "b8023897691e11ff9fabc9e0a2956ad78090e2981aee5c9a537ccab58e6f88a7",
           "size": [
             260,
             365
@@ -427,7 +427,7 @@
           512,
           531
         ],
-        "rgbaSha256": "9476535f4a2f857c95075a496e416d7a2d696bf1553c1830ab0e05ac7307b429",
+        "rgbaSha256": "1f7c37ab850c0cf0f06d2d0ec373e2713afd28740d2e9639b62376c1653a93d6",
         "size": [
           512,
           531
@@ -442,7 +442,7 @@
             259,
             365
           ],
-          "rgbaSha256": "2580078fe80ae24912229de08f71040010110e984e3fff383d59401873a5ee05",
+          "rgbaSha256": "150e82e8298387cb4aa526e88ac90730c18b631a37816ea9ff4f4757c21a092f",
           "size": [
             259,
             365
@@ -467,7 +467,7 @@
             264,
             365
           ],
-          "rgbaSha256": "2aa47afa027bab588ef99666636821d461bec0fb15a229279110972257a3c15d",
+          "rgbaSha256": "10be607c1ec358eb9ae19e240aeb3c16e6cf60b1118053a0c854ed3784758bf5",
           "size": [
             264,
             365
@@ -496,7 +496,7 @@
           512,
           531
         ],
-        "rgbaSha256": "e198a7af57457d7bd59fce839766b6a2133984b3b0b8be29da1592558aa86beb",
+        "rgbaSha256": "dd22ecbcd5d08c122519ffedca8a3ce7a5d8d5dd70276395bc4c216f9e361b48",
         "size": [
           512,
           531
@@ -511,7 +511,7 @@
             265,
             364
           ],
-          "rgbaSha256": "19e05344461b0f4d5ee4591eb571ed7eff9e5dce2b6461b6d275fe4575fd1aca",
+          "rgbaSha256": "34f9e913f3116d9c5f2f952e80b062738eba1e3cf0467a83e8725720910d54dc",
           "size": [
             265,
             364
@@ -536,7 +536,7 @@
             263,
             367
           ],
-          "rgbaSha256": "c0ccb8700f34c04fec6ca2f4efb64a98b24a1bca3825faffe253d45f78b9be12",
+          "rgbaSha256": "4119772784869991426fb9d05578834243921faf52b53562302b50e0c09c899d",
           "size": [
             263,
             367
@@ -556,5 +556,5 @@
       }
     }
   ],
-  "pageSha256": "12d8a1de46ca61212d058870bf383140fdf790c7d5f865a311ee0f3090ee71a3"
+  "pageSha256": "935bfc010402c2abdcb56d751dbd9f8249b995ec1c3d297bd54d5b302b62f7b0"
 }

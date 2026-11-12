@@ -128,8 +128,9 @@ var def_KinghtFallGameCtrlData = function () {
     this.packInterval = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RefreshInterval));
     var _ = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTalent();
     for (a = 0; a < _.length; a++) {
-      if ((o = _[a]).isLock) {
+      if ((o = _[a]) && o.isLock) {
         var I = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTalentLevelCfgById(o.id);
+        if (!I) continue;
         this.talentAdd[I.kindID] || (this.talentAdd[I.kindID] = []);
         this.talentAdd[I.kindID].push(I.EffectNumber);
       }

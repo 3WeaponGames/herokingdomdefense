@@ -7,6 +7,9 @@ const Catalog=require('./lib/character-catalog');
 const OriginalMounts=require('./lib/original-mounts');
 const MountAttack=require('./lib/mount-attack');
 const UnitPacks=require('./lib/unit-packs'),BossModel=require('./lib/boss-model');
+const AnimationDefaults=require('./lib/animation-defaults');
+const UnitAnimationSpeeds=require('./lib/unit-animation-speeds');
+const Reference=require('./lib/preview-reference');
 function mount(host,api){
   const itemMode=api.kind==='items';
   const el=(tag,text,parent,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;if(parent)parent.appendChild(n);return n;};
@@ -24,9 +27,10 @@ function mount(host,api){
   const reloadButton=button(tools,'Reload latest draft',reloadDraft);reloadButton.title='Replace this window’s draft with the latest shared draft. Does not save or discard another window’s work.';
   const body=el('div',undefined,root,'body'),library=el('aside',undefined,body,itemMode?'library':'library resizable-library'),main=el('main',undefined,body),inspector=el('aside',undefined,body,'inspector');
   el('h2',itemMode?'HERO ITEMS':'CHARACTERS',library);const unitFilter=el('select',undefined,library);unitFilter.className='wide';unitFilter.setAttribute('aria-label','Character group');for(const group of ['All characters','Hero','Allies','Enemies']){const option=el('option',group,unitFilter);option.value=group==='All characters'?'':group;}const unitList=el('div',undefined,library,'look-list');unitList.style.marginTop='7px';
-  const packageFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');unitSort.setAttribute('aria-label','Sort characters');
+  const packageFilter=el('select',undefined,library),classFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,classFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');classFilter.setAttribute('aria-label','Enemy class');unitSort.setAttribute('aria-label','Sort characters');
   for(const option of [{id:'',label:'All packages'},...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
-  for(const [value,label]of [['name','Sort by name'],['package','Sort by package']]){const entry=el('option',label,unitSort);entry.value=value;}
+  for(const option of [{value:'',label:'All enemy classes'},...UnitPacks.enemyClasses]){const entry=el('option',option.label,classFilter);entry.value=option.value;}
+  for(const [value,label]of [['name','Sort by name'],['package','Sort by package'],['enemy-class','Sort by class: Normal → Boss'],['enemy-class-desc','Sort by class: Boss → Normal']]){const entry=el('option',label,unitSort);entry.value=value;}
   const librarySplit=el('div',undefined,library,itemMode?'divider':'library-splitter'),partLibrary=el('section',undefined,library,'part-library');el('h2','PART LIBRARY',partLibrary);
   const search=el('input',undefined,partLibrary);search.type='search';search.placeholder='Search 678 parts…';search.setAttribute('aria-label','Search character parts');search.className='wide';
   const category=el('select',undefined,partLibrary);category.setAttribute('aria-label','Part category');category.className='wide';category.style.marginTop='7px';
@@ -48,8 +52,10 @@ function mount(host,api){
   }
   const previewTitle=el('div',undefined,main,'preview-title'),previewName=el('strong','Character preview',previewTitle);el('span','SILENT · PREVIEW ONLY',previewTitle,'badge');
   const previews=el('div',undefined,main,'previews');
-  function canvasCard(label,overlay){const box=el('div',undefined,previews,'preview-card');el('span',label,box,'caption');const canvas=el('canvas',undefined,box);canvas.width=540;canvas.height=650;let handles=null;if(overlay){handles=el('canvas',undefined,box,'overlay');handles.width=540;handles.height=650;handles.setAttribute('aria-label','Drag selected character part');}return{box,canvas,handles};}
+  function canvasCard(label,overlay){const box=el('div',undefined,previews,'preview-card'),caption=el('span',label,box,'caption');const canvas=el('canvas',undefined,box);canvas.width=540;canvas.height=650;let handles=null;if(overlay){handles=el('canvas',undefined,box,'overlay');handles.width=540;handles.height=650;handles.setAttribute('aria-label','Drag selected character part');}return{box,canvas,handles,caption};}
   const current=canvasCard('Current look',true);
+  const referenceCanvas=el('canvas');current.box.insertBefore(referenceCanvas,current.canvas);referenceCanvas.hidden=true;referenceCanvas.setAttribute('aria-label','Hero size reference');
+  const referenceCaption=el('span','Hero reference · same world scale',current.box,'caption reference-caption');referenceCaption.hidden=true;
   current.handles.tabIndex=0;
   current.handles.setAttribute('aria-keyshortcuts','Space');current.handles.title='Left drag: move part · Middle drag: pan · Right-click: select · Space: pause/play · Ctrl+wheel: zoom';
   const playback=el('div',undefined,main,'playback'),transport=el('div',undefined,playback,'row wrap');
@@ -57,7 +63,12 @@ function mount(host,api){
   play.title='Pause/play (Space when the preview is focused)';play.setAttribute('aria-keyshortcuts','Space');
   button(transport,'◀ Frame',()=>step(-1));button(transport,'Frame ▶',()=>step(1));
   const animation=el('select',undefined,transport);animation.setAttribute('aria-label','Preview animation');
-  const speed=el('select',undefined,transport);for(const n of [.25,.5,.65,.75,1,2]){const o=el('option',n+'×',speed);o.value=n;}speed.value=1;speed.setAttribute('aria-label','Animation speed');
+  const speedControl=el('div',undefined,transport,'playback-speed');el('span','Playback',speedControl);
+  const speed=el('input',undefined,speedControl);speed.type='range';speed.min=0;speed.max=200;speed.step=1;speed.value=100;speed.setAttribute('aria-label','Animation speed');speed.title='Playback relative to the model’s default animation speed';
+  const speedValue=el('input',undefined,speedControl);speedValue.type='number';speedValue.min=0;speedValue.max=200;speedValue.step=1;speedValue.value=100;speedValue.setAttribute('aria-label','Animation speed percentage');el('span','%',speedControl);
+  function setPlaybackSpeed(value){const number=String(value).trim()===''?Number(speed.value):Number(value),percent=Number.isFinite(number)?Math.max(0,Math.min(200,Math.round(number))):Number(speed.value);speed.value=speedValue.value=percent;speed.setAttribute('aria-valuetext',percent+'%');}
+  speed.oninput=()=>editPlaybackSpeed(speed.value,false,true);speed.onchange=()=>editPlaybackSpeed(speed.value,true);speedValue.oninput=()=>{if(String(speedValue.value).trim()!=='')editPlaybackSpeed(speedValue.value,false,true);};speedValue.onchange=speedValue.onblur=()=>editPlaybackSpeed(speedValue.value,true);setPlaybackSpeed(100);
+  const speedReset=button(speedControl,'Reset speed',resetPlaybackSpeed);speedReset.setAttribute('aria-label','Reset unit animation speed');speedReset.title='Use the inherited unit speed or package default.';speedReset.hidden=itemMode;
   const facing=button(transport,'Face left',()=>{direction*=-1;facing.textContent=direction===1?'Face left':'Face right';draw();});
   const zoom=el('select',undefined,transport);for(const n of [.25,.5,.75,1,1.5,2,3,4]){const o=el('option',Math.round(n*100)+'%',zoom);o.value=n;}zoom.value=1;zoom.setAttribute('aria-label','Preview zoom');zoom.title='Ctrl+mouse wheel over the preview to zoom';zoom.onchange=draw;
   function previewWheel(event){
@@ -71,8 +82,10 @@ function mount(host,api){
   }
   current.box.addEventListener('wheel',previewWheel,{passive:false});
   const options=el('div',undefined,playback,'row wrap');
+  const speedNote=el('span',itemMode?'Speed is preview only.':'Speed applies to this unit in game after Save.',options,'help');
   function check(parent,text,value,fn){const label=el('label',undefined,parent,'check-row'),input=el('input',undefined,label);input.type='checkbox';input.checked=value;el('span',text,label);input.onchange=()=>{if(inspector.contains(input))ensureDraft();fn(input.checked);};return input;}
   const bonesToggle=check(options,'Show anchor bones',false,draw);
+  const heroToggle=check(options,'Show hero reference',false,showHeroReference);heroToggle.setAttribute('aria-label','Show hero reference');heroToggle.title='Compare with the saved hero and starter equipment at the same world scale. Preview only.';heroToggle.parentElement.hidden=itemMode;
   const loopToggle=check(options,'Loop',true,()=>{time=displayTime();last=0;draw();});loopToggle.setAttribute('aria-label','Loop preview animation');
   button(options,'Fit preview',()=>{viewPan={x:0,y:0};zoom.value=1;fitBounds(true);draw();});
   const position=el('span','0.000 s',options,'time'),scrub=el('input',undefined,playback,'timeline');scrub.type='range';scrub.min=0;scrub.max=1;scrub.step='any';scrub.value=0;scrub.setAttribute('aria-label','Animation position');
@@ -83,8 +96,10 @@ function mount(host,api){
   let pendingFocus=null,focusTask=null,focusSequence=0;
   let selectedBossSlot='',selectedBossVariant='',libraryKey='';
   let previewSpeedKey='';
+  let speedSelection=null;
   let viewPan={x:0,y:0},renderPan={x:0,y:0},panDrag=null,viewKey='';
   const images=new Map();let fittingRetryAfter=0,viewFitKey='';
+  let reference=null,referenceRequest=0,referenceFitKey='',referenceOffset=0;
   const clone=v=>JSON.parse(JSON.stringify(v));
   const profile=()=>data&&(data.profiles[selected]||virtual);
   const part=()=>profile()&&profile().parts.find(p=>p.id===selectedPart);
@@ -92,6 +107,10 @@ function mount(host,api){
   function equippedMount(){const p=profile();if(!p||!p.base.mount)return null;if(assets[p.mount])return assets[p.mount];const horse=rig&&rig.layers.find(layer=>layer.mount),skin=horse&&p.skins&&p.skins[horse.uuid]||(p.base.mount==='legacy-cavalry'?'lan':'lv1');return Object.values(assets).find(asset=>asset.mount===p.base.mount&&asset.skin===skin)||Object.values(assets).find(asset=>asset.mount===p.base.mount);}
   const unitFor=p=>p===virtual&&virtualUnit||Catalog.created(data,units).find(u=>u.character===Catalog.owner(data,selected))||units.find(u=>u.type===p.base.type&&(u.id===String(p.base.id)||itemMode&&(u.legacyKeys||[]).includes(String(p.base.id))));
   const assignmentKey=p=>Levels.key(unitFor(p),p.base.level);
+  function speedTarget(){const p=profile(),unit=p&&(speedSelection?speedSelection.unit:unitFor(p)),level=speedSelection?speedSelection.level:p&&p.base.level;return{unit,level,key:!itemMode&&UnitAnimationSpeeds.key(unit,level)};}
+  function updateSpeedControls(){const target=speedTarget(),own=target.key&&data&&data.unitAnimationSpeeds&&Object.prototype.hasOwnProperty.call(data.unitAnimationSpeeds,target.key);speedReset.hidden=itemMode||!target.key;speedReset.disabled=busy||!own;speedNote.textContent=itemMode?'Speed is preview only.':target.unit&&target.unit.character?'Speed is preview only until this character has a gameplay unit.':'Speed applies to this unit in game after Save.';}
+  function editPlaybackSpeed(value,commit,explicit){setPlaybackSpeed(value);if(!data||!profile()||busy)return;const target=speedTarget(),factor=Number(speed.value)/100;if(!target.key)return;const own=data.unitAnimationSpeeds&&Object.prototype.hasOwnProperty.call(data.unitAnimationSpeeds,target.key);if(factor!==UnitAnimationSpeeds.resolve(data,target.unit,target.level)||explicit&&!own){(data.unitAnimationSpeeds||(data.unitAnimationSpeeds={}))[target.key]=factor;updateSpeedControls();dirty();}if(commit)stage();}
+  function resetPlaybackSpeed(){if(!data||busy)return;const target=speedTarget();if(!target.key||!data.unitAnimationSpeeds||!Object.prototype.hasOwnProperty.call(data.unitAnimationSpeeds,target.key))return;delete data.unitAnimationSpeeds[target.key];if(!Object.keys(data.unitAnimationSpeeds).length&&!Object.prototype.hasOwnProperty.call(saved,'unitAnimationSpeeds'))delete data.unitAnimationSpeeds;setPlaybackSpeed(UnitAnimationSpeeds.resolve(data,target.unit,target.level)*100);updateSpeedControls();dirty();stage();}
   const appearanceMode=()=>itemMode?'maker':UnitPacks.forProfile(profile(),profile()&&unitFor(profile())).mode;
   const bossMetadata=()=>rig&&rig.layers.map(layer=>BossModel.metadata(layer.json)).find(Boolean);
   function bossChoices(name){const meta=bossMetadata();if(!meta||!meta.slots[name])return[];const layer=rig.layers.find(layer=>layer.json._fantasy),slot=layer.json.slots.find(slot=>slot.name===name);return meta.slots[name].variants.map(value=>{const skin=layer.json.skins.find(skin=>skin.name===value),variants=skin&&skin.attachments[name]||{},attachment=variants[slot.attachment]||Object.values(variants)[0],asset=attachment&&Object.values(assets).find(asset=>asset.sourcePack===meta.pack&&asset.guid===attachment.path.slice(2)),preset=meta.presets.find(preset=>preset.id===meta.pack+'/'+value);return{value,label:preset?preset.name:value,asset};});}
@@ -105,6 +124,7 @@ function mount(host,api){
   function changeBoss(apply){const p=profile();ensureDraft();p.boss=p.boss||{};apply(p.boss);dirty();stage();loadRig(true);}
   function changeBossPart(apply){changeBoss(settings=>{settings.slots=settings.slots||{};const part=settings.slots[selectedBossSlot]||(settings.slots[selectedBossSlot]={});apply(part);});selectedBossVariant='';}
   function message(text,error){status.textContent=text;status.classList.toggle('error',!!error);}
+  function appearanceChanged(){const current={...data},original={...saved};delete current.unitAnimationSpeeds;delete original.unitAnimationSpeeds;return JSON.stringify(current)!==JSON.stringify(original);}
   function dirty(){const current=JSON.stringify(data),changed=current!==JSON.stringify(saved),pending=!!data&&current!==lastSent;saveState.textContent=changed?'● Unsaved draft':'All changes saved';saveButton.disabled=busy||!changed;discardButton.disabled=busy||!changed;undoButton.disabled=busy||!canUndo&&!pending;redoButton.disabled=busy||!canRedo||pending;return changed;}
   function historyState(result){canUndo=!!result.canUndo;canRedo=!!result.canRedo;dirty();}
   function refreshLibrary(result){
@@ -113,7 +133,7 @@ function mount(host,api){
     parts=itemMode?CharacterOptions.libraryParts(entries):CharacterOptions.characterParts(entries);assets=Object.fromEntries(entries.map(part=>[part.id,part]));search.placeholder='Search '+parts.length+' parts…';
     category.innerHTML='';const all=el('option','All categories',category);all.value='';for(const name of [...new Set(parts.map(CharacterOptions.partCategory))].sort()){const option=el('option',name,category);option.value=name;}category.value=Array.from(category.options).some(option=>option.value===selectedCategory)?selectedCategory:'';
   }
-  function setBusy(value){busy=value;root.querySelectorAll('input,select,button').forEach(control=>{control.disabled=value||control.hasAttribute('data-readonly');});dirty();if(!value)applyFocus();}
+  function setBusy(value){busy=value;root.querySelectorAll('input,select,button').forEach(control=>{control.disabled=value||control.hasAttribute('data-readonly');});dirty();updateSpeedControls();if(!value)applyFocus();}
   function focusUnit(request){
     if(disposed||itemMode||!request)return Promise.resolve(false);
     if(Number.isSafeInteger(request.sequence)){if(request.sequence<focusSequence)return Promise.resolve(false);focusSequence=request.sequence;}
@@ -128,7 +148,7 @@ function mount(host,api){
         const target=pendingFocus;pendingFocus=null;const unit=units.find(unit=>unit.type===target.type&&unit.id===target.id);
         if(!unit)throw Error('Choose an existing character unit.');
         if(target.level!==undefined&&(!Number.isInteger(target.level)||!Levels.levels(unit).includes(target.level)))throw Error('Choose an existing character level.');
-        unitFilter.value=packageFilter.value='';await selectUnit(unit,target.level);applied=true;
+        unitFilter.value=packageFilter.value=classFilter.value='';await selectUnit(unit,target.level);applied=true;
       }
       return applied;
     }).catch(error=>{if(!disposed)message(error.message,true);return false;}).finally(()=>{focusTask=null;if(pendingFocus&&!busy&&!creator&&!disposed)applyFocus();});
@@ -158,21 +178,21 @@ function mount(host,api){
     const actions=el('div',undefined,dialog,'row'),close=()=>{creator.remove();creator=null;Promise.resolve().then(applyFocus);};button(actions,'Cancel',close);button(actions,'Create character',()=>{
       if(!name.value.trim())throw Error('Enter a character name.');if(Catalog.listed(data,units).some(unit=>unit.name.toLowerCase()===name.value.trim().toLowerCase()))throw Error('A character with this name already exists.');const baseUnit=kind.value==='maker'?units.find(unit=>unit.type==='ally'):units.find(unit=>unit.key===model.value);if(!baseUnit)throw Error('Choose a unit model.');
       const id=unique('character-'+name.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40),data.profiles),base=kind.value==='maker'?{...Catalog.defaults(baseUnit),source:Catalog.maker}:UnitPacks.forUnit(baseUnit).mode==='modular'?Catalog.defaults(baseUnit):{type:baseUnit.type,id:baseUnit.id,currentModel:true};
-      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitFilter.value=packageFilter.value='';selectProfile(id);changed();
+      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitFilter.value=packageFilter.value=classFilter.value='';selectProfile(id);changed();
     },'primary');name.focus();
   }
   async function save(){
-    if(!data||busy)return;finishGestures();if(!itemMode&&JSON.stringify(data)!==JSON.stringify(saved))Catalog.prune(data);setBusy(true);try{await stage();await stages;if(stageError)throw stageError;const result=await api.ipc('save',{version});version=result.version;data=clone(result.data);saved=clone(result.savedData);lastSent=JSON.stringify(data);historyState(result);renderInspector();renderLooks();message(result.result.warning||(result.result.saved?(itemMode?'Items saved and applied to the selected equipment tier.':'Characters saved. New and reloaded game sessions use these looks.'):'No changes to save.'));}finally{setBusy(false);}
+    if(!data||busy)return;finishGestures();if(!itemMode&&appearanceChanged())Catalog.prune(data);setBusy(true);try{await stage();await stages;if(stageError)throw stageError;const result=await api.ipc('save',{version});version=result.version;data=clone(result.data);saved=clone(result.savedData);lastSent=JSON.stringify(data);historyState(result);renderInspector();renderLooks();if(heroToggle.checked&&result.result.saved)showHeroReference(true);message(result.result.warning||(result.result.saved?(itemMode?'Items saved and applied to the selected equipment tier.':'Characters saved. New and reloaded game sessions use these looks and unit speeds.'):'No changes to save.'));}finally{setBusy(false);}
   }
   async function acceptDraft(result,history){
-    const before=data,base=profile()&&clone(profile().base),previousPart=selectedPart;
+    const before=data,previousSaved=JSON.stringify(saved),base=profile()&&clone(profile().base),previousPart=selectedPart;
     refreshLibrary(result);
     version=result.version;data=clone(result.data);saved=clone(result.savedData);stageError=null;lastSent=JSON.stringify(data);historyState(result);
     const touched=history&&Object.keys(data.profiles).filter(id=>JSON.stringify(before.profiles[id])!==JSON.stringify(data.profiles[id]));
     const id=touched&&touched.includes(selected)?selected:touched&&touched[0]|| (data.profiles[selected]?selected:'');
     if(id){const restored=data.profiles[id].parts.find(p=>!(before.profiles[id]&&before.profiles[id].parts.some(old=>old.id===p.id)));await selectProfile(id,restored?restored.id:previousPart);}
     else{const unit=base&&units.find(u=>u.type===base.type&&u.id===String(base.id));if(unit)await selectUnit(unit,base.level);else await selectProfile(Object.keys(data.profiles)[0]||'');}
-    dirty();if(result.focus)focusUnit(result.focus);
+    dirty();if(heroToggle.checked&&previousSaved!==JSON.stringify(saved))showHeroReference(true);if(result.focus)focusUnit(result.focus);
   }
   async function travel(action){
     if(!data||busy||disposed)return;finishGestures();setBusy(true);
@@ -230,13 +250,14 @@ function mount(host,api){
   }
   root.addEventListener('keydown',editorKey,true);
   function renderLooks(){
-    const listed=itemMode?units:Catalog.listed(data,units),filter=unitFilter.value;unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(listed.map(unit=>unit.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}unitFilter.value=filter;
-    const active=profile()&&unitFor(profile());unitList.innerHTML='';for(const unit of itemMode?listed.filter(unit=>!unitFilter.value||unit.group===unitFilter.value):UnitPacks.list(listed,{group:unitFilter.value,pack:packageFilter.value,sort:unitSort.value})){const b=button(unitList,unit.group+' · '+unit.name,()=>selectUnit(unit));b.title=itemMode?'Appearance applies to this entire tier.':UnitPacks.forUnit(unit).label;b.classList.toggle('selected',!!active&&active.key===unit.key);if(itemMode&&data.assignments[unit.key])el('span',' · Custom',b,'assigned');}
+    const allListed=itemMode?units:Catalog.listed(data,units),listed=itemMode?units:Catalog.listed(data,units,{enemyClass:classFilter.value}),filter=unitFilter.value;unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(allListed.map(unit=>unit.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}unitFilter.value=filter;
+    const active=profile()&&(speedSelection?speedSelection.unit:unitFor(profile()));unitList.innerHTML='';for(const unit of itemMode?listed.filter(unit=>!unitFilter.value||unit.group===unitFilter.value):UnitPacks.list(listed,{group:unitFilter.value,pack:packageFilter.value,enemyClass:classFilter.value,sort:unitSort.value})){const b=button(unitList,itemMode?unit.group+' · '+unit.name:UnitPacks.caption(unit),()=>selectUnit(unit));b.title=itemMode?'Appearance applies to this entire tier.':UnitPacks.forUnit(unit).label;b.classList.toggle('selected',!!active&&active.key===unit.key);if(itemMode&&data.assignments[unit.key])el('span',' · Custom',b,'assigned');}
+    if(!unitList.children.length)el('div','No characters match these filters.',unitList,'empty');
   }
   unitFilter.onchange=renderLooks;
-  packageFilter.onchange=unitSort.onchange=renderLooks;
+  packageFilter.onchange=classFilter.onchange=unitSort.onchange=renderLooks;
   async function selectUnit(unit,level){
-    finishGestures();const exact=Catalog.profileId(data,unit,level);if(exact)return selectProfile(exact);
+    finishGestures();const exact=Catalog.profileId(data,unit,level);if(exact)return selectProfile(exact,undefined,{unit,level});speedSelection={unit,level};
     const inherited=itemMode?data.profiles[(unit.legacyKeys||[]).map(key=>data.assignments[key]).find(Boolean)]:level&&data.profiles[Catalog.profileId(data,unit)];
     selected='';virtualUnit=unit;virtual=inherited?clone(inherited):{name:itemMode?unit.group+' · '+unit.name:unit.name,base:itemMode?{type:unit.type,id:unit.id}:Catalog.defaults(unit),scale:1,parts:[]};
     if(level){virtual.base.level=level;virtual.name=unit.name+' · Level '+level;}
@@ -254,7 +275,7 @@ function mount(host,api){
     if(index<0)return;
     category.value=group;search.value='';limit=Math.max(60,Math.ceil((index+1)/60)*60);
   }
-  async function selectProfile(id,preferredPart){finishGestures();virtual=null;virtualUnit=null;selected=id;const p=profile();selectEquippedPart(p&&p.parts.some(part=>part.id===preferredPart)?preferredPart:p&&p.parts[0]?p.parts[0].id:'');renderLooks();renderInspector();renderAssets();await loadRig();}
+  async function selectProfile(id,preferredPart,target){finishGestures();virtual=null;virtualUnit=null;selected=id;const p=profile();if(target)speedSelection=target;else if(!speedSelection||Catalog.profileId(data,speedSelection.unit,speedSelection.level)!==id)speedSelection=p?{unit:unitFor(p),level:p.base.level}:null;selectEquippedPart(p&&p.parts.some(part=>part.id===preferredPart)?preferredPart:p&&p.parts[0]?p.parts[0].id:'');renderLooks();renderInspector();renderAssets();await loadRig();}
   function installScrub(label,input,options){const cancel=LabelScrub.install(label,input,options);scrubs.push(cancel);return cancel;}
   function finishGestures(){for(const cancel of scrubs.slice())cancel.commit();finishPreviewDrag();finishPan();}
   function cancelGestures(){for(const cancel of scrubs.slice())cancel();finishPan();if(drag){const previous=drag;drag=null;if(previous.bossSlot){if(previous.previousBoss===undefined)delete previous.profile.boss;else previous.profile.boss=previous.previousBoss;for(const item of previous.attachments){item.attachment.x=item.x;item.attachment.y=item.y;item.attachment.updateOffset();}}else if(previous.modelLayer){if(previous.previousModels===undefined)delete previous.profile.models;else previous.profile.models=previous.previousModels;}else{previous.part.x=previous.x;previous.part.y=previous.y;}releaseDrag(previous);}}
@@ -406,16 +427,29 @@ function mount(host,api){
     const previousPose=keepPose?{animation:animation.value,time}:null;
     const p=profile(),serial=++token;states.forEach(api.core.restore);states=[];layers=baseLayers=[];rig=null;selectedModel='';fittingRetryAfter=0;viewFitKey='';current.canvas.style.opacity=current.handles.style.opacity='0';current.box.setAttribute('aria-busy','true');inspector.querySelectorAll('[data-action="add-part"],[data-action="replace-part"]').forEach(control=>{control.disabled=true;});if(!p)return;message('Loading '+p.name+'…');previewName.textContent=p.name;
     renderInspector();renderAssets();const nextViewKey=JSON.stringify(p.base);if(viewKey!==nextViewKey){viewPan={x:0,y:0};viewKey=nextViewKey;}
-    try{const description=await api.ipc('describe',p.base);if(serial!==token||disposed)return;if(p.base.mount){const rider=description.layers.find(layer=>layer.json.bones.some(bone=>bone.name==='Rider/Mount/Mount')),horse=description.layers.find(layer=>layer.mount)||rider&&description.layers.find(layer=>layer!==rider);if(horse&&rider){horse.mount=true;MountAttack.synchronize(horse.json.animations.attack,rider.json.animations.attack);}}rig=description;spine=api.runtime(description);for(const layer of description.layers)if(BossModel.metadata(layer.json))BossModel.apply(layer.json,p.boss);
+    try{const description=AnimationDefaults.prepare(await api.ipc('describe',p.base));if(serial!==token||disposed)return;if(p.base.mount){const rider=description.layers.find(layer=>layer.json.bones.some(bone=>bone.name==='Rider/Mount/Mount')),horse=description.layers.find(layer=>layer.mount)||rider&&description.layers.find(layer=>layer!==rider);if(horse&&rider){horse.mount=true;MountAttack.synchronize(horse.json.animations.attack,rider.json.animations.attack);}}rig=description;spine=api.runtime(description);for(const layer of description.layers)if(BossModel.metadata(layer.json))BossModel.apply(layer.json,p.boss);
       if(itemMode&&virtual&&!(unitFor(p).legacyKeys||[]).some(key=>data.assignments[key])){p.parts=clone(description.currentItem&&description.currentItem.parts||[]);if(description.currentItem&&description.currentItem.models)p.models=clone(description.currentItem.models);selectEquippedPart(p.parts[0]&&p.parts[0].id||'');}
       const result=await Promise.all([api.renderer.createLayers(spine,description.layers),api.renderer.createLayers(spine,description.layers),Promise.all([...new Set(p.parts.map(part=>part.sprite))].map(async id=>[id,await imageFor(assets[id])]))]);if(serial!==token||disposed)return;
-      const speedKey=p.base.type+':'+p.base.id;if(previewSpeedKey!==speedKey){const fantasy=description.layers.map(layer=>layer.json._fantasy).find(Boolean);speed.value=fantasy&&fantasy.pack==='fantasy-bosses'?.65:fantasy&&fantasy.pack==='fantasy-monsters'?.75:1;previewSpeedKey=speedKey;}
+      const target=speedTarget(),speedKey=target.key||target.unit&&target.unit.character||p.base.type+':'+p.base.id;if(target.key||previewSpeedKey!==speedKey){setPlaybackSpeed(target.key?UnitAnimationSpeeds.resolve(data,target.unit,target.level)*100:100);previewSpeedKey=speedKey;}updateSpeedControls();
       layers=result[0];baseLayers=result[1];const textures=Object.fromEntries(result[2].map(([id,img])=>[id,new spine.FakeTexture(img)]));states=layers.map(l=>api.core.prepare(spine,l.skeleton,p.parts.filter(v=>v.layer===l.description.uuid),assets,textures,{faceless:!!p.faceless,skinTint:api.core.skinTint(p)}));fittingKey=fittingSignature(p);animation.innerHTML='';const names=[...new Set([].concat.apply([],description.layers.map(l=>api.renderer.animationNames?api.renderer.animationNames(l.json):l.animations)))];for(const name of names){const option=el('option',name,animation);option.value=name;}animation.value=previousPose&&names.includes(previousPose.animation)?previousPose.animation:names.includes('idle')?'idle':names[0];time=previousPose?previousPose.time:0;last=0;updateDuration();fitBounds();syncPartLibrary();renderInspector();renderAssets();draw();fitBounds(true);draw();current.canvas.style.opacity=current.handles.style.opacity='';current.box.setAttribute('aria-busy','false');message('Ready · Changes remain drafts until Save.');
     }catch(error){if(serial===token)message(error.message,true);}
   }
   function updateDuration(){duration=Math.max(1/30,...layers.map(l=>(l.data.findAnimation(animation.value)||{}).duration||0));scrub.max=duration;time=Math.min(time,duration);}
   function scaleLayers(list,multiplier,models){for(const layer of list){const source=rig.layers.find(l=>l.uuid===layer.description.uuid),m=models&&models[source.uuid]||{};layer.description={...source,x:source.x*multiplier+(m.x||0),y:source.y*multiplier+(m.y||0),rotation:m.rotation||0,opacity:m.opacity===undefined?1:m.opacity,scaleX:source.scaleX*multiplier*(m.scaleX===undefined?1:m.scaleX),scaleY:source.scaleY*multiplier*(m.scaleY===undefined?1:m.scaleY)};}}
-  function fitBounds(includeCurrent){if(!spine||!layers.length)return;api.renderer.seek(spine,baseLayers,'idle',0,false);let b=api.renderer.bounds(spine,baseLayers);if(includeCurrent){const c=api.renderer.bounds(spine,layers);b={minX:Math.min(b.minX,c.minX),minY:Math.min(b.minY,c.minY),maxX:Math.max(b.maxX,c.maxX),maxY:Math.max(b.maxY,c.maxY)};b.width=b.maxX-b.minX;b.height=b.maxY-b.minY;}poseBounds={...b,minX:b.minX-12,minY:b.minY-3,maxX:b.maxX+12,maxY:b.maxY+18,width:b.width+24,height:b.height+21};}
+  function comparing(){return heroToggle.checked&&!!reference;}
+  function worldLayers(list,matrix){if(matrix)for(const layer of list)layer.description._mountMotion=Reference.compose(matrix,layer.description._mountMotion);}
+  async function showHeroReference(enabled){
+    const serial=++referenceRequest;reference=null;referenceCanvas.hidden=true;referenceCaption.hidden=!enabled;referenceCaption.textContent='Loading hero reference…';draw();
+    if(!enabled||itemMode)return;
+    try{
+      const description=await api.ipc('describe',{type:'hero',id:'hero'});if(disposed||serial!==referenceRequest||!heroToggle.checked)return;
+      const runtime=api.runtime(description),list=await api.renderer.createLayers(runtime,description.layers);if(disposed||serial!==referenceRequest||!heroToggle.checked)return;
+      for(const layer of list){const tint=layer.description.tint||'#ffffff';layer.skeleton.color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}
+      api.renderer.seek(runtime,list,'idle',0,true);worldLayers(list,description.previewWorld);reference={spine:runtime,layers:list,bounds:api.renderer.bounds(runtime,list)};
+      referenceCanvas.hidden=false;referenceCaption.textContent='Hero reference · same world scale';draw();
+    }catch(error){if(!disposed&&serial===referenceRequest){referenceCaption.textContent='Hero reference unavailable';referenceCaption.title=error.message;}}
+  }
+  function fitBounds(includeCurrent){if(!spine||!layers.length)return;scaleLayers(baseLayers,1);api.renderer.seek(spine,baseLayers,'idle',0,false);if(comparing())worldLayers(baseLayers,rig.previewWorld);let b=api.renderer.bounds(spine,baseLayers);if(includeCurrent){const c=api.renderer.bounds(spine,layers);b={minX:Math.min(b.minX,c.minX),minY:Math.min(b.minY,c.minY),maxX:Math.max(b.maxX,c.maxX),maxY:Math.max(b.maxY,c.maxY)};b.width=b.maxX-b.minX;b.height=b.maxY-b.minY;}if(comparing()){const hero=reference.bounds;referenceOffset=b.maxX+Math.max(18,hero.width*.12)-hero.minX;b={minX:b.minX,minY:Math.min(0,b.minY,hero.minY),maxX:hero.maxX+referenceOffset,maxY:Math.max(b.maxY,hero.maxY)};b.width=b.maxX-b.minX;b.height=b.maxY-b.minY;}poseBounds={...b,minX:b.minX-12,minY:b.minY-3,maxX:b.maxX+12,maxY:b.maxY+18,width:b.width+24,height:b.height+21};}
   function fittingSignature(p){return JSON.stringify([p.parts,p.skins||{},!!p.faceless,api.core.skinTint(p)]);}
   function prepareFitting(){
     const p=profile();if(!p||!layers.length||Date.now()<fittingRetryAfter)return;
@@ -434,17 +468,23 @@ function mount(host,api){
       for(const layer of layers){const tint=(p.models&&p.models[layer.description.uuid]||{}).tint||'#ffffff';layer.skeleton.color.set(parseInt(tint.slice(1,3),16)/255,parseInt(tint.slice(3,5),16)/255,parseInt(tint.slice(5,7),16)/255,1);}
       for(const layer of layers){const skin=p.skins&&p.skins[layer.description.uuid]||rig.layers.find(l=>l.uuid===layer.description.uuid).skin;if(layer.data.findSkin(skin)&&(layer.skeleton.skin||{}).name!==skin)layer.skeleton.setSkinByName(skin);}
       const loop=loopToggle.checked&&(playing||time!==duration);states.forEach(api.core.restore);api.renderer.seek(spine,layers,animation.value,time,loop);api.renderer.seek(spine,baseLayers,animation.value,time,loop);prepareFitting();states.forEach(api.core.apply);
+      if(comparing())worldLayers(layers,rig.previewWorld);
+      const fitKey=comparing()?JSON.stringify([token,p.scale,Object.entries(p.models||{}).map(([id,model])=>[id,model.scaleX,model.scaleY,model.rotation]),p.parts.map(part=>[part.id,part.sprite,part.layer]),referenceRequest]):'';if(referenceFitKey!==fitKey){referenceFitKey=fitKey;fitBounds(true);}
       resizeCanvases();
       const options={width:current.canvas.width,height:current.canvas.height,bounds:poseBounds,zoom:Number(zoom.value),facing:direction,panX:renderPan.x,panY:renderPan.y};
+      current.caption.style.left=comparing()&&direction===-1?'auto':'10px';current.caption.style.right=comparing()&&direction===-1?'10px':'auto';
+      if(comparing()){const scale=Math.min((options.width-32)/poseBounds.width,(options.height-24)/poseBounds.height)*options.zoom;api.renderer.drawCanvas(reference.spine,referenceCanvas,reference.layers,{...options,panX:renderPan.x+referenceOffset*scale*direction});referenceCaption.style.left=direction===1?'auto':'10px';referenceCaption.style.right=direction===1?'10px':'auto';}
       api.renderer.drawCanvas(spine,current.canvas,layers,options);drawHandles();position.textContent=displayTime().toFixed(3)+' s';scrub.value=displayTime();
     }catch(error){message(error.message,true);}
   }
-  function resizeCanvases(){const ratio=Math.min(2,typeof devicePixelRatio==='number'?devicePixelRatio:1),rect=current.box.getBoundingClientRect(),width=Math.max(2,Math.round((rect.width-2)*ratio)),height=Math.max(2,Math.round((rect.height-2)*ratio));for(const canvas of [current.canvas,current.handles])if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}const screen=current.handles.getBoundingClientRect();renderPan={x:viewPan.x*width/Math.max(1,screen.width),y:viewPan.y*height/Math.max(1,screen.height)};}
+  function resizeCanvases(){const ratio=Math.min(2,typeof devicePixelRatio==='number'?devicePixelRatio:1),rect=current.box.getBoundingClientRect(),width=Math.max(2,Math.round((rect.width-2)*ratio)),height=Math.max(2,Math.round((rect.height-2)*ratio));for(const canvas of [current.canvas,current.handles,referenceCanvas])if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}const screen=current.handles.getBoundingClientRect();renderPan={x:viewPan.x*width/Math.max(1,screen.width),y:viewPan.y*height/Math.max(1,screen.height)};}
   function projectPoint(layer,point){const box=poseBounds,w=current.canvas.width,h=current.canvas.height,scale=Math.min((w-32)/box.width,(h-24)/box.height)*Number(zoom.value),p=api.renderer.transformPoint(layer.description,point.x,point.y);return {x:(p.x-(box.minX+box.maxX)/2)*scale*direction+w/2+renderPan.x,y:h-12+box.minY*scale-p.y*scale+renderPan.y};}
   function worldPoint(screen){const box=poseBounds,w=current.canvas.width,h=current.canvas.height,s=Math.min((w-32)/box.width,(h-24)/box.height)*Number(zoom.value);return{x:(screen.x-w/2-renderPan.x)/(s*direction)+(box.minX+box.maxX)/2,y:(h-12+box.minY*s+renderPan.y-screen.y)/s};}
+  function modelPoint(screen){const point=worldPoint(screen);return comparing()&&rig.previewWorld?Reference.inverse(rig.previewWorld,point):point;}
   function localPoint(layer,bone,screen){const point=worldPoint(screen),at=api.renderer.inversePoint(layer.description,point.x,point.y),p=new spine.Vector2(at.x,at.y);bone.worldToLocal(p);return p;}
   function drawHandles(){
     const ctx=current.handles.getContext('2d');ctx.clearRect(0,0,current.handles.width,current.handles.height);const selectedPartObject=part();
+    if(comparing()){const box=poseBounds,scale=Math.min((current.canvas.width-32)/box.width,(current.canvas.height-24)/box.height)*Number(zoom.value),floor=current.canvas.height-12+box.minY*scale+renderPan.y;ctx.strokeStyle='#8aabc777';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,floor);ctx.lineTo(current.canvas.width,floor);ctx.stroke();}
     if(bossMetadata()&&selectedBossSlot){for(const layer of layers)for(const piece of api.renderer.geometry(spine,layer).filter(piece=>piece.slot===selectedBossSlot)){ctx.strokeStyle='#ffcf74';ctx.setLineDash([6,4]);ctx.beginPath();for(let i=0;i<piece.vertices.length;i+=2){const at=projectPoint(layer,{x:piece.vertices[i],y:piece.vertices[i+1]});i?ctx.lineTo(at.x,at.y):ctx.moveTo(at.x,at.y);}ctx.closePath();ctx.stroke();ctx.setLineDash([]);}return;}
     if(bonesToggle.checked)for(const layer of layers)for(const bone of layer.skeleton.bones){const p=projectPoint(layer,{x:bone.worldX,y:bone.worldY});ctx.fillStyle=selectedPartObject&&bone.data.name===selectedPartObject.bone?'#ffcf74':'#8cadd5';ctx.beginPath();ctx.arc(p.x,p.y,selectedPartObject&&bone.data.name===selectedPartObject.bone?4:2.5,0,Math.PI*2);ctx.fill();if(selectedPartObject&&bone.data.name===selectedPartObject.bone){ctx.font='13px Arial';ctx.fillText(bone.data.name,p.x+7,p.y-5);}}
     if(!selectedPartObject){if(selectedPart===mountSelection){const horse=layers.find(layer=>layer.description.mount),points=horse&&api.renderer.geometry(spine,horse).flatMap(piece=>Array.from({length:piece.vertices.length/2},(_,i)=>projectPoint(horse,{x:piece.vertices[i*2],y:piece.vertices[i*2+1]})));if(points&&points.length){const xs=points.map(point=>point.x),ys=points.map(point=>point.y);ctx.strokeStyle='#ffcf74';ctx.setLineDash([6,4]);ctx.strokeRect(Math.min(...xs),Math.min(...ys),Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys));ctx.setLineDash([]);}}return;}const layer=layers.find(l=>l.description.uuid===selectedPartObject.layer),slot=layer&&layer.skeleton.findSlot(selectedPartObject.slot),attachment=slot&&slot.getAttachment();if(!(attachment instanceof spine.RegionAttachment)||!attachment._characterBone)return;
@@ -467,7 +507,7 @@ function mount(host,api){
     if(event.button===2){event.preventDefault();pickPreview(event);return;}
     if(event.button===1){event.preventDefault();if(drag||panDrag)return;panDrag={pointer:event.pointerId,start:{x:event.clientX,y:event.clientY},x:viewPan.x,y:viewPan.y};current.handles.style.cursor='grabbing';current.handles.setPointerCapture(event.pointerId);return;}
     if(event.button===0&&!drag&&!panDrag&&bossMetadata()&&selectedBossSlot){const layer=layers.find(layer=>layer.description.json._fantasy),slot=layer&&layer.skeleton.findSlot(selectedBossSlot);if(!slot)return;const entries=[];layer.data.defaultSkin.getAttachmentsForSlot(slot.data.index,entries);const attachments=entries.map(entry=>entry.attachment).filter(attachment=>attachment instanceof spine.RegionAttachment).map(attachment=>({attachment,x:attachment.x,y:attachment.y}));const p=profile(),settings=p.boss&&p.boss.slots&&p.boss.slots[selectedBossSlot]||{};event.preventDefault();drag={pointer:event.pointerId,bossSlot:selectedBossSlot,profile:p,previousBoss:p.boss===undefined?undefined:clone(p.boss),attachments,layer,bone:slot.bone,start:localPoint(layer,slot.bone,screenPoint(event)),x:settings.x||0,y:settings.y||0};current.handles.setPointerCapture(event.pointerId);return;}
-    if(event.button===0&&!drag&&!panDrag&&selectedPart===mountSelection&&layers.length){const p=profile(),layer=layers.find(layer=>layer.description.mount);if(!layer)return;const model=p.models&&p.models[layer.description.uuid]||{};event.preventDefault();drag={pointer:event.pointerId,profile:p,modelLayer:layer.description.uuid,previousModels:p.models===undefined?undefined:clone(p.models),start:worldPoint(screenPoint(event)),x:model.x||0,y:model.y||0};current.handles.setPointerCapture(event.pointerId);return;}
+    if(event.button===0&&!drag&&!panDrag&&selectedPart===mountSelection&&layers.length){const p=profile(),layer=layers.find(layer=>layer.description.mount);if(!layer)return;const model=p.models&&p.models[layer.description.uuid]||{};event.preventDefault();drag={pointer:event.pointerId,profile:p,modelLayer:layer.description.uuid,previousModels:p.models===undefined?undefined:clone(p.models),start:modelPoint(screenPoint(event)),x:model.x||0,y:model.y||0};current.handles.setPointerCapture(event.pointerId);return;}
     if(event.button!==0||panDrag||drag||!part()||!layers.length)return;
     event.preventDefault();const p=part(),layer=layers.find(l=>l.description.uuid===p.layer),bone=layer.skeleton.findBone(p.bone);drag={pointer:event.pointerId,part:p,layer,bone,start:localPoint(layer,bone,screenPoint(event)),x:p.x,y:p.y};current.handles.setPointerCapture(event.pointerId);
   };
@@ -475,7 +515,7 @@ function mount(host,api){
     if(panDrag&&event.pointerId===panDrag.pointer){if(!(event.buttons&4)){finishPan();return;}viewPan={x:panDrag.x+event.clientX-panDrag.start.x,y:panDrag.y+event.clientY-panDrag.start.y};draw();return;}
     if(!drag||event.pointerId!==drag.pointer||!drag.modelLayer&&!drag.bossSlot&&!part())return;if(!(event.buttons&1)||event.buttons&4){finishPreviewDrag();return;}
     if(drag.bossSlot){const at=localPoint(drag.layer,drag.bone,screenPoint(event)),x=Math.max(-4096,Math.min(4096,Math.round((drag.x+at.x-drag.start.x)*10)/10)),y=Math.max(-4096,Math.min(4096,Math.round((drag.y+at.y-drag.start.y)*10)/10));ensureDraft();const p=drag.profile;p.boss=p.boss||{};p.boss.slots=p.boss.slots||{};const settings=p.boss.slots[drag.bossSlot]||(p.boss.slots[drag.bossSlot]={});settings.x=x;settings.y=y;for(const item of drag.attachments){item.attachment.x=item.x+x-drag.x;item.attachment.y=item.y+y-drag.y;item.attachment.updateOffset();}draw();dirty();return;}
-    if(drag.modelLayer){ensureDraft();const p=drag.profile,at=worldPoint(screenPoint(event));p.models=p.models||{};const model=p.models[drag.modelLayer]||(p.models[drag.modelLayer]={});model.x=Math.max(-4096,Math.min(4096,Math.round((drag.x+at.x-drag.start.x)*10)/10));model.y=Math.max(-4096,Math.min(4096,Math.round((drag.y+at.y-drag.start.y)*10)/10));draw();dirty();return;}
+    if(drag.modelLayer){ensureDraft();const p=drag.profile,at=modelPoint(screenPoint(event));p.models=p.models||{};const model=p.models[drag.modelLayer]||(p.models[drag.modelLayer]={});model.x=Math.max(-4096,Math.min(4096,Math.round((drag.x+at.x-drag.start.x)*10)/10));model.y=Math.max(-4096,Math.min(4096,Math.round((drag.y+at.y-drag.start.y)*10)/10));draw();dirty();return;}
     const at=localPoint(drag.layer,drag.bone,screenPoint(event));ensureDraft();drag.part.x=Math.max(-4096,Math.min(4096,Math.round((drag.x+at.x-drag.start.x)*10)/10));drag.part.y=Math.max(-4096,Math.min(4096,Math.round((drag.y+at.y-drag.start.y)*10)/10));fittingKey='';draw();dirty();
   };
   function finishPointer(event){if(panDrag&&event.pointerId===panDrag.pointer&&(event.type!=='pointerup'||event.button===1))finishPan();if(drag&&event.pointerId===drag.pointer&&(event.type!=='pointerup'||event.button===0))finishPreviewDrag();}
@@ -495,8 +535,8 @@ function mount(host,api){
   function displayTime(){return time>duration?time%duration:time;}
   function step(amount){playing=false;play.textContent='Play';time=Math.max(0,Math.min(duration,displayTime()+amount/30));last=0;draw();}
   animation.onchange=()=>{time=0;updateDuration();draw();};scrub.oninput=()=>{playing=false;play.textContent='Play';time=Number(scrub.value);draw();};
-  function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time+=(now-last)/1000*Number(speed.value);if(!loopToggle.checked&&time>=duration){time=duration;playing=false;play.textContent='Play';}draw();}last=now;raf=requestAnimationFrame(frame);}
+  function frame(now){if(disposed)return;if(playing&&layers.length){if(last)time+=(now-last)/1000*Number(speed.value)/100;if(!loopToggle.checked&&time>=duration){time=duration;playing=false;play.textContent='Play';}draw();}last=now;raf=requestAnimationFrame(frame);}
   api.ipc('load').then(result=>{if(disposed)return;data=clone(result.data);saved=clone(result.savedData);version=result.version;historyState(result);refreshLibrary(result);lastSent=JSON.stringify(data);unitFilter.innerHTML='';for(const group of [itemMode?'All equipment':'All characters',...new Set(units.map(u=>u.group))]){const option=el('option',group,unitFilter);option.value=group.startsWith('All ')?'':group;}if(result.focus)focusUnit(result.focus);if(pendingFocus)applyFocus();else if(!itemMode&&Object.keys(data.profiles).length)selectProfile(Object.keys(data.profiles)[0]);else if(units.length)selectUnit(units[0]);dirty();raf=requestAnimationFrame(frame);}).catch(error=>message(error.message,true));
-  return {focusUnit,destroy(){disposed=true;pendingFocus=null;token++;disposeLibrarySplit();root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,silent:true};}};
+  return {focusUnit,destroy(){disposed=true;pendingFocus=null;token++;referenceRequest++;reference=null;disposeLibrarySplit();root.removeEventListener('keydown',editorKey,true);current.box.removeEventListener('wheel',previewWheel);cancelGestures();if(raf!==null)cancelAnimationFrame(raf);states.forEach(api.core.restore);api.renderer.destroyCanvas(current.canvas);api.renderer.destroyCanvas(referenceCanvas);root.remove();},getState(){return{selected,selectedPart,dirty:data?dirty():false,canUndo,canRedo,busy,loaded:!!layers.length,heroReference:comparing(),silent:true};}};
 }
 module.exports={mount};

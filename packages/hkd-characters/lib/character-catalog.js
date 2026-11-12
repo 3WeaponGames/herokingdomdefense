@@ -6,10 +6,11 @@ function created(data,units){return Object.keys(data.characters||{}).filter(id=>
   const p=data.profiles[id],unit=units.find(u=>u.type===p.base.type&&u.id===String(p.base.id));
   return {...unit,key:'character:'+id,character:id,name:p.name,group:'Created'};
 });}
-function listed(data,units){
-  const groups=new Map();for(const unit of units){const key=unit.type==='enemy'&&unit.appearance?'enemy:'+unit.appearance:unit.key;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(unit);}
+function listed(data,units,options){
+  const matches=unit=>require('./unit-packs').matchesClass(unit,options&&options.enemyClass);
+  const groups=new Map();for(const unit of units.filter(matches)){const key=unit.type==='enemy'&&unit.appearance?'enemy:'+unit.appearance:unit.key;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(unit);}
   const result=[...groups.values()].map(members=>{const unit=members.find(u=>data.assignments[u.key])||members[0];return {...unit,members};});
-  return result.concat(created(data,units));
+  return result.concat(created(data,units).filter(matches));
 }
 function profileId(data,unit,level){if(unit.character)return level?(data.characters[unit.character].levels||{})[level]:unit.character;return data.assignments[Levels.key(unit,level)];}
 function assign(data,unit,level,id){if(unit.character){const record=data.characters[unit.character];record.levels=record.levels||{};record.levels[level]=id;}else data.assignments[Levels.key(unit,level)]=id;}

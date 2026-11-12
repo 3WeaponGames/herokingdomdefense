@@ -144,7 +144,17 @@ function describe(root, request) {
     let shotPrefab = prefab;
     if (type === 'hero') shotPrefab = json(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'));
     const timing = AttackTimings.fromLayers(layers);
+    // Saved whole-unit playback is independent of the model/appearance and of
+    // the Units panel's legacy attack-only override. Reading a preview never
+    // changes or retimes the authored Spine data.
+    let unitAnimationSpeed;
+    const characterFile=path.join(root,'assets/resources/characters/catalog.json');
+    if(fs.existsSync(characterFile)){
+        const speeds=json(characterFile).unitAnimationSpeeds||{},keys=type==='ally'&&request.level?['ally:'+id+':level:'+request.level,type+':'+id+':'+form]:[type+':'+id+':'+form];
+        for(const key of keys){const value=speeds[key];if(Object.prototype.hasOwnProperty.call(speeds,key)&&typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=2){unitAnimationSpeed=value;break;}}
+    }
     return { type, id, form, key: type + ':' + id + ':' + form, source: relative(root, file), layers, shared, equipment,
+        ...(unitAnimationSpeed===undefined?{}:{unitAnimationSpeed}),
         defaultTiming: timing.defaultTiming, timingDefaultSource: timing.timingDefaultSource, timingEvents: timing.timingEvents,
         effect, projectile: /Projectile/.test(effect) ? projectile(shotPrefab, type, behavior) : null,
         forms: boss ? [{id:90010,label:'Form 1'},{id:90011,label:'Form 2'},{id:90012,label:'Form 3'}] : [],

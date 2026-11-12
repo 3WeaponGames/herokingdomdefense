@@ -100,7 +100,7 @@ var exp_KinghtFallMissionData = function (t) {
     if (config.getEquipCfgList) config.getEquipCfgList().forEach(function (equipment) { context.equipmentLevel = Math.max(context.equipmentLevel, user.getPersonLevel(equipment.id)); });
     if (config.getBuffCfgList && user.getTalent) {
       var talents = user.getTalent();
-      config.getBuffCfgList().forEach(function (buff) { if (buff.Unlock && talents.some(function (talent) { return talent.isLock && config.getTalentLevelCfgById(talent.id).kindID === buff.Unlock; })) context.unlockedBuffs++; });
+      config.getBuffCfgList().forEach(function (buff) { if (buff.Unlock && talents.some(function (talent) { var row = talent && talent.isLock && config.getTalentLevelCfgById(talent.id); return row && row.kindID === buff.Unlock; })) context.unlockedBuffs++; });
     }
     return context;
   };

@@ -5,6 +5,8 @@ const JSONDocument=require('../../game-data-editor/lib/json-document');
 const UnitLibrary=require('./unit-library');
 const Levels=require('./character-levels');
 const Catalog=require('./character-catalog');
+const UnitAnimationSpeeds=require('./unit-animation-speeds');
+const EnemyClasses=require('../../game-data-editor/lib/enemy-classes');
 const Packs=require('./unit-packs'),Boss=require('./boss-model');
 const clone=value=>JSON.parse(JSON.stringify(value)),hash=text=>crypto.createHash('sha256').update(text).digest('hex');
 function read(file){return JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));}
@@ -24,15 +26,16 @@ class Service{
       const boss=type==='enemy'&&[90010,90011,90012].includes(row.ID),form=boss?String(row.ID-90009):'default';
       const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
       const key=type+':'+row.ID+':'+form,p=this.original.profiles[this.original.assignments[key]],source=type==='enemy'&&(row.MonsterSource||row.AppearanceSourceUnit&&cfg.SoldierCfg[row.AppearanceSourceUnit]&&cfg.SoldierCfg[row.AppearanceSourceUnit].MonsterSource||p&&(p.base.appearance||p.base.source||p.baked&&p.baked.source));
-      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{})});
+      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{})});
     }
     return result;
   }
-  describe(base,noRuntime){if(!this.units().some(u=>u.type===base.type&&u.id===String(base.id)))throw Error('Choose an existing character base.');if(base.model)return require('./current-model').describe(this.root,base,noRuntime);if(base.source)return require('./mounts').describe(this.root,base,noRuntime);return Units.describe(this.root,{type:base.type,id:base.id,noRuntime:!!noRuntime});}
+  describe(base,noRuntime){if(!this.units().some(u=>u.type===base.type&&u.id===String(base.id)))throw Error('Choose an existing character base.');const description=base.model?require('./current-model').describe(this.root,base,noRuntime):base.source?require('./mounts').describe(this.root,base,noRuntime):Units.describe(this.root,{type:base.type,id:base.id,noRuntime:!!noRuntime});if(!noRuntime)description.previewWorld=require('./preview-reference').world(this.root,base,description);return description;}
   load(){return {...this.snapshot(),parts:this.assets().parts,units:this.units(),sources:UnitLibrary.load(this.root).sources};}
   validate(data){
     if(!data||data.version!==1||!data.profiles||typeof data.profiles!=='object'||Array.isArray(data.profiles)||!data.assignments||typeof data.assignments!=='object'||Array.isArray(data.assignments))throw Error('Invalid character document.');
     const assets=new Map(this.assets().parts.map(p=>[p.id,p])),units=this.validationUnits?this.validationUnits():this.units();
+    UnitAnimationSpeeds.validate(data,units);
     for(const [id,profile]of Object.entries(data.profiles)){
       if(!/^[a-z][a-z0-9_-]{0,63}$/.test(id)||!profile||typeof profile.name!=='string'||!profile.name.trim()||profile.name.length>100)throw Error('Choose a valid character name and identifier.');
       if(!profile.base||!Array.isArray(profile.parts)||profile.parts.length>40)throw Error('Invalid character base or part list.');
@@ -127,7 +130,11 @@ class Service{
     this.check(request);if(JSONDocument.equal(this.original,this.data))return {...this.snapshot(),result:{saved:false,files:[]}};
     this.validate(this.data);
     const before=fs.readFileSync(this.file,'utf8');if(hash(before)!==this.revision)throw Error('The saved character file changed outside this draft. Your draft is intact; reload or copy it before saving.');
-    const baked=require('./appearance-build').plan(this.root,this.publication(),this.assets().parts,this.original,this.relativeFile==='assets/resources/characters/catalog.json'?'characters':'items');
+    const appearanceBefore={...this.original},appearanceAfter={...this.data};delete appearanceBefore.unitAnimationSpeeds;delete appearanceAfter.unitAnimationSpeeds;
+    const speedOnly=this.relativeFile==='assets/resources/characters/catalog.json'&&JSONDocument.equal(appearanceBefore,appearanceAfter);
+    // Playback-only edits publish the catalog directly. They must not rebuild
+    // fitted models, prefabs, item layers or animation contracts.
+    const baked=speedOnly?{data:clone(this.data),files:new Map(),reads:new Map()}:require('./appearance-build').plan(this.root,this.publication(),this.assets().parts,this.original,this.relativeFile==='assets/resources/characters/catalog.json'?'characters':'items');
     const output=JSONDocument.patch(before,this.original,baked.data),files=baked.files;
     files.set(this.relativeFile,output);baked.reads.set(this.file,Buffer.from(before));
     const result=require('./asset-transaction').commit(this.root,files,baked.reads,this.relativeFile);

@@ -25,6 +25,7 @@ function fixture(options){
     const description={type,id,form:'default',key:type+':'+id+':default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
     if(type==='ally')description.levels=[1,2,3];
     if(options.pack)description.layers[0].json._fantasy={pack:options.pack};
+    if(options.unitAnimationSpeed!==undefined)description.unitAnimationSpeed=options.unitAnimationSpeed;
     if(options.events!==undefined){description.layers[0].json.animations.attack.events=options.events;description.defaultTiming=null;description.timingDefaultSource='No authored attack event.';}
     const request={type,id,record:Object.assign({ID:Number(id),AttackInterval:options.rate===undefined?1:options.rate},options.record),documents:{overrides:{data:{timings:{},timingDefaults:{}}}}};
     if(options.duration!==undefined)description.layers[0].attackDuration=options.duration;
@@ -37,11 +38,25 @@ function fixture(options){
 }
 async function main(){
     let checks=0;async function test(name,body){await body();console.log('PASS '+name);checks++;}
-    await test('Fantasy Boss previews inherit 0.65 attack speed and metrics without writing an override',async()=>{
-        const f=fixture({pack:'fantasy-bosses',default:.52});await flush();assert.equal(f.client.getState().attackSpeed,.65);assert.equal(f.client.getState().attackMetrics.animationSpeed,.65);assert.equal(f.edits.length,0);assert.equal(field(f.root,'Attack animation speed (saved)').value,.65);f.client.destroy();
+    await test('Fantasy Boss previews inherit 0.25 attack speed and metrics without writing an override',async()=>{
+        const f=fixture({pack:'fantasy-bosses',default:.52});await flush();assert.equal(f.client.getState().attackSpeed,.25);assert.equal(f.client.getState().attackMetrics.animationSpeed,.25);assert.equal(f.edits.length,0);assert.equal(field(f.root,'Attack animation speed (saved)').value,.25);f.client.destroy();
     });
-    await test('Fantasy Monsters previews inherit 0.75 attack speed and metrics without writing an override',async()=>{
-        const f=fixture({pack:'fantasy-monsters',default:.6});await flush();assert.equal(f.client.getState().attackSpeed,.75);assert.equal(f.client.getState().attackMetrics.animationSpeed,.75);assert.equal(f.edits.length,0);f.client.destroy();
+    await test('Fantasy Monsters previews inherit 0.35 attack speed and metrics without writing an override',async()=>{
+        const f=fixture({pack:'fantasy-monsters',default:.6});await flush();assert.equal(f.client.getState().attackSpeed,.35);assert.equal(f.client.getState().attackMetrics.animationSpeed,.35);assert.equal(f.edits.length,0);f.client.destroy();
+    });
+    await test('saved Characters playback controls the preview and metrics while legacy attack edits remain inactive',async()=>{
+        const f=fixture({pack:'fantasy-bosses',unitAnimationSpeed:.5,default:.5,speeds:{'enemy:90001:default':2}});await flush();
+        assert.equal(f.client.getState().attackSpeed,.125);assert.equal(f.client.getState().attackMetrics.animationSpeed,.125);assert.equal(f.client.getState().attackMetrics.unitAnimationSpeed,.5);const saved=field(f.root,'Attack animation speed (saved)');assert(saved.disabled);assert(button(f.root,'Reset attack speed').disabled);saved.value=3;saved.onchange();assert.equal(saved.value,.125);assert.equal(f.edits.length,0);assert(all(f.root,n=>n.tagName==='p'&&n.textContent.includes('Characters sets this unit to 50%')).length);f.client.destroy();
+    });
+    await test('saved zero playback reports a finite frozen rate without invalid release calculations or writes',async()=>{
+        const f=fixture({pack:'fantasy-monsters',unitAnimationSpeed:0,default:.5});await flush();const state=f.client.getState();assert.equal(state.attackSpeed,0);assert.equal(state.attackMetrics.rate,0);assert.equal(state.attackMetrics.paused,true);assert(!all(f.root,n=>typeof n.textContent==='string'&&/Infinity|NaN/.test(n.textContent)).length);assert.equal(f.edits.length,0);assert(all(f.root,n=>n.tagName==='p'&&n.textContent.includes('animation is frozen in Characters')).length);f.client.destroy();
+    });
+    await test('saved whole-unit playback scales both attack and idle clocks, including a frozen zero',async()=>{
+        const originalFrame=runtime.requestAnimationFrame,originalCancel=runtime.cancelAnimationFrame,scheduled=new Map();let id=0;
+        runtime.requestAnimationFrame=callback=>{scheduled.set(++id,callback);return id;};runtime.cancelAnimationFrame=key=>scheduled.delete(key);
+        const tick=stamp=>{const callbacks=[...scheduled.values()];scheduled.clear();callbacks.forEach(callback=>callback(stamp));};
+        try{for(const relative of [.5,0]){const f=fixture({pack:'fantasy-bosses',unitAnimationSpeed:relative});try{await flush();f.client.togglePlayback();tick(1000);tick(2000);assert.equal(f.client.getState().time,.25*relative);const animation=field(f.root,'Animation');animation.value='idle';animation.onchange();f.client.togglePlayback();tick(3000);tick(4000);assert.equal(f.client.getState().time,.25*relative);assert.equal(f.edits.length,0);}finally{f.client.destroy();}}}
+        finally{runtime.requestAnimationFrame=originalFrame;runtime.cancelAnimationFrame=originalCancel;}
     });
     await test('opening uses the saved default for gold and leaves animation reference green without edits',async()=>{
         const f=fixture({default:.5});await flush();assert.equal(f.client.getState().effect,.5);assert.equal(f.edits.length,0);

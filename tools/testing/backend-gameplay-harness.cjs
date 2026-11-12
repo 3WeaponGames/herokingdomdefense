@@ -24,8 +24,8 @@ function setup(overrides={}){
  e.stubs.AudioMgr={AudioMgr:singleton({getAudioSource:()=>({}),getMusicVolume:()=>.5,setChannelGain(){},stopOwnedEffects(){}})};
  e.stubs.TestMode={TestMode:singleton({shouldBypassAdLimits:()=>false})};
  Object.assign(e.stubs,overrides);
- function load(name){if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;
-  const allowed=/^(SpawnArea|HeroWeapons|HeroStyleTalents|HeroWeaponCombat|RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
+ function load(name){name=name.replace(/^\.\//,'');if(e.stubs[name])return e.stubs[name];if(mods[name])return mods[name].exports;
+  const allowed=/^(SpawnArea|HeroWeapons|HeroStyleTalents|HeroLoadout|HeroUpgradeEffects|CombatPower|HeroWeaponCombat|RelicRuntime|RelicCombat|RelicBattle|GameToolsOverrides|KinghtFall(GameCtrlData|GameCtrl|GamePlayCtrl|BuildBarracks|Bullet.*|PlayGameAniCtrl))$/;
   if(!allowed.test(name))return e.load(name);
   const module={exports:{}};mods[name]=module;
   vm.runInNewContext(fs.readFileSync(path.join(dir,name+'.js'),'utf8'),{exports:module.exports,module,require:load,cc:e.cc,sp:{Skeleton:function(){}},console,

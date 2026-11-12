@@ -127,7 +127,9 @@ var exp_KinghtFallDataMgr = function () {
     return this.data.TalentLevelCfg;
   };
   _ctor.prototype.getTalentLevelCfgById = function (t) {
-    return this.data.TalentLevelCfg[t - 1];
+    var rows = this.data && this.data.TalentLevelCfg || [], id = Number(t);
+    for (var index = 0; index < rows.length; index++) if (rows[index] && Number(rows[index].ID) === id) return rows[index];
+    return undefined;
   };
   _ctor.prototype.getTalentCfg = function (t) {
     return this.data.TalentCfg[t];

@@ -43,6 +43,15 @@ function seed(f,{side='ally',id=90001,cooldownRate=.2,hit=.5,durations=[1,1,1]}=
 }
 const near=(actual,expected)=>assert(Math.abs(actual-expected)<1e-12,actual+' should equal '+expected);
 
+test('Units compact metrics preserve Characters speed and package baseline, including a frozen zero rate',async()=>{
+ const f=fixture();seed(f,{side:'enemy',cooldownRate:1,hit:.5,durations:[2]});
+ const metrics={type:'enemy',id:'90001',level:0,duration:2,modelAnimationSpeed:.25,unitAnimationSpeed:.5};
+ AttackRates.metrics(f.panel,metrics);f.render('enemy:90001');assert.equal(f.aps(0).value,'0.06');const before=f.store.draftState();
+ await f.panel._set('overrides',['animationSpeeds','enemy:90001:default'],3);assert.equal(f.aps(0).value,'0.06','whole-unit playback precedes an old attack-only override');
+ AttackRates.metrics(f.panel,{...metrics,unitAnimationSpeed:0});assert.equal(f.aps(0).value,'0.00');assert.equal(f.aps(0).disabled,true);assert(f.aps(0).title.includes('frozen at 0%'));assert(!/Infinity|NaN/.test(f.aps(0).title));
+ const expected=clone(before);expected.overrides.animationSpeeds['enemy:90001:default']=3;assert.deepEqual(f.store.draftState(),expected);assert(!f.messages.some(message=>message.message==='game-data-editor:save'));
+});
+
 test('the Units rate includes windup, shows two decimals and updates only the selected level when its animation speed changes',async()=>{
     const f=fixture();seed(f);f.ally(90001,2);const before=f.store.draftState();
     assert.equal(f.aps(2).value,'0.18');assert.deepEqual(f.rates(),['0.18','0.18','0.18']);
