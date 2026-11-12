@@ -1,0 +1,963 @@
+{
+  "purpose": "Reviewed immutable native tower assets and accepted base-source hashes. These required test fixtures intentionally protect weapon sprites, pivots, native FX/ruins and exact approved image bytes.",
+  "nativeSources": [
+    {
+      "path": "assets/resources/buildings/towers/cannon-1.png",
+      "bytes": 39918,
+      "sha256": "d2f2f6dbd9d3ea68230f7c6244179696cdee7de52725265ffd90305edced04ea"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1.png.meta",
+      "bytes": 872,
+      "sha256": "7366a717153b4163ad9ffd1c1c1e1b121ad1849ccab40d75ffa15450e3ae47bf"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2.png",
+      "bytes": 44656,
+      "sha256": "5aee71a4e3156f77e45e07c960047e5f5b190df7c47db5b363f3e125d867cbd5"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2.png.meta",
+      "bytes": 872,
+      "sha256": "55ecf0bccc6a65f6334732794179fe2c55ca9d71a4c3fa9f1bc01c084751938d"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3.png",
+      "bytes": 52936,
+      "sha256": "8e15b7944e537aff4ce97c6694fb90701cf4a6542a93b08d2a0dd47f567d422d"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3.png.meta",
+      "bytes": 872,
+      "sha256": "0e44178ea1e529427c902437ffbaefdc46c12b8bea24ff410015ecacda4ffa75"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-destroyed.png",
+      "bytes": 534326,
+      "sha256": "d0a6145bc0d6a61f00b9eb7f23d0417ecd0f17f4130354e78d7943c4e432ba4d"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-destroyed.png.meta",
+      "bytes": 888,
+      "sha256": "3d7f6d0b7e6c530092bad0f3793e01636a4634e51fc497145820b60d7dcdda35"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-north.png",
+      "bytes": 5182,
+      "sha256": "d0758cb308b1397b3aa42cb7cd7379cba399f45642d02b4b4af9282c77c8b38c"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-north.png.meta",
+      "bytes": 879,
+      "sha256": "b7e511e688319c21129155c207f81e243cf50c87d9137e90a881a9367e2db1df"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-northeast.png",
+      "bytes": 6113,
+      "sha256": "bc0bee6c3086c4acc9cec2f4bbbf72afbbce1c15592607e0fd59622ce054d405"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-northeast.png.meta",
+      "bytes": 883,
+      "sha256": "44a06f7ba95cdab3f92c4b369e0dba3732a10d71e337a19ceadff925e465b33a"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-south.png",
+      "bytes": 5470,
+      "sha256": "b56c37e326d98861e84466fd45a7b03620f8464942f9cdda3842585def44f381"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-south.png.meta",
+      "bytes": 879,
+      "sha256": "c9c96ea7f514f7af900c9837010b55954a17de5847f53e0f8d1eaeb6b03dc3af"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-southeast.png",
+      "bytes": 6774,
+      "sha256": "61e8704c6288fa616fbfc20c14908f820f3e3c85ebf1a2d26ef1ed705b6c45f9"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon-southeast.png.meta",
+      "bytes": 883,
+      "sha256": "951c3d5db9cb8dd43d501487e481caede9be4ab62a1d5a17fc477089697fa5db"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon.png",
+      "bytes": 6224,
+      "sha256": "6f82dba0812dd86f5271435d1748272135d5ef1c6b92bebe29bc38d9900c03f0"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-1-weapon.png.meta",
+      "bytes": 873,
+      "sha256": "b9aabc38b176fa7964727ff01cbbf19e1b163d6bb213902dba0c39c727fb3d4e"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-destroyed.png",
+      "bytes": 559268,
+      "sha256": "29fe0a0128bb2e5af5f4370604651513ab50ee2c4988dcedc6fbdae377c9e91a"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-destroyed.png.meta",
+      "bytes": 888,
+      "sha256": "77735f94cedb4696e71d25c5045d9b29911783426eef62f632b600a8384aab38"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-north.png",
+      "bytes": 6217,
+      "sha256": "16861fbcd4853a06605200e06a8e84ed7df8891e2f1abcd13d6b4d7dc42dbc56"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-north.png.meta",
+      "bytes": 879,
+      "sha256": "e8c41ed2caca323aea8d111c4aaa0d416c530c9c28d337d21914cd5d71074653"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-northeast.png",
+      "bytes": 8294,
+      "sha256": "59ff92b571b43e53ded1e9fa3bf4c19a698d2a67a0d29e91e9bcee72982e4db3"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-northeast.png.meta",
+      "bytes": 883,
+      "sha256": "50dd9a3b643e197a07540c0e1d38e8927ed715dff57a2b7f9fac466975e5bb1b"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-south.png",
+      "bytes": 7184,
+      "sha256": "fa8e48c1bccdb6f5a77fc71428b1b9a58e90c24331c68210228bd7e4e4175f80"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-south.png.meta",
+      "bytes": 879,
+      "sha256": "75165851c7cf499820dcb0c455786b4f7bdcbe5176ddd0f533666164b8186cd0"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-southeast.png",
+      "bytes": 8992,
+      "sha256": "5ba806050f059b20de1119ff4c769bf1c77c639d6832ba70e70b56406eab3710"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon-southeast.png.meta",
+      "bytes": 883,
+      "sha256": "2913fbcc55954843e48021f61324329d7e19bb14481064073e841ebe05696989"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon.png",
+      "bytes": 8275,
+      "sha256": "e97c1f345cd862ba62552030b3bb1f8a8d2c2fab0721031ac86ea8e9bca8b46b"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-2-weapon.png.meta",
+      "bytes": 873,
+      "sha256": "4edf6c99da1d94e844149f1bd3c4bd6a04dd5208d77cbf96cb1605108bbbb597"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-destroyed.png",
+      "bytes": 599274,
+      "sha256": "e435dbfb9fdeadb38bcf85c226864facd23bf667cfcfe980ab567ecae7e02c5d"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-destroyed.png.meta",
+      "bytes": 888,
+      "sha256": "aa9e74fbb8c1047607f0069f7a17b79cfc2d7588dae99a471e3c5a48763235c9"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-north.png",
+      "bytes": 7100,
+      "sha256": "a41973febf259848146f43f1e6fd97238cb6c0ebf8a5fc5f4aaa344ea4eee810"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-north.png.meta",
+      "bytes": 879,
+      "sha256": "0b6769879980327f144111fae8e89fa80b473f2ff047fd35a4f836f8f46d548a"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-northeast.png",
+      "bytes": 7972,
+      "sha256": "061ca96f8b9c5e40e0111a2c1b2112aacd53887fdb8e28a6a7638d5a70a77600"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-northeast.png.meta",
+      "bytes": 883,
+      "sha256": "1c6f11ff1d7baa2530f33f8696641ff512256ffd2c44a6edf469e93825f97ad4"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-south.png",
+      "bytes": 6768,
+      "sha256": "a998c804dc4a0cef3568544b7d077f153ac19e34b1e495bf1443cdcdfd403629"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-south.png.meta",
+      "bytes": 879,
+      "sha256": "af0a89e9705d6b21aeafdac938064185362b84092df763206e2eb8daeb90f559"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-southeast.png",
+      "bytes": 8142,
+      "sha256": "8399d230a77ebe79cd08f82dd2599d4aaf390af494f9476d979d5f843a863ed3"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon-southeast.png.meta",
+      "bytes": 883,
+      "sha256": "2de83379954c97837ddd54f122ec32f90c0aa2d5af04446d4739da7d5bffc585"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon.png",
+      "bytes": 7937,
+      "sha256": "21dbdabc8f1a6195ea7a7f905abf404c0867c5817c36ba7bef40aa909e1f61a3"
+    },
+    {
+      "path": "assets/resources/buildings/towers/cannon-3-weapon.png.meta",
+      "bytes": 873,
+      "sha256": "3d5d23c520c02b1ab37b90f0a8e91c8405e95aee8917770a7e34ad815bb633f2"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1.png",
+      "bytes": 37991,
+      "sha256": "f6a242120c741a715e271954541a47643d35e09e23178661f396e0bb9324dd1b"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1.png.meta",
+      "bytes": 872,
+      "sha256": "f748f1aaab5e1008efe810163978ca4ee471117c3a08b6c19df628dd73531a2c"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2.png",
+      "bytes": 40569,
+      "sha256": "b5116996d179cccab6cf2fd17fb1d7e621e357ac5ab16839555523c1d53ae190"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2.png.meta",
+      "bytes": 872,
+      "sha256": "62a493bc0371d93f2f4ff2e05853550849c5f5fc8016e8e20077eb331d3c3919"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3.png",
+      "bytes": 42202,
+      "sha256": "42cdd88fbbbb257f002968d2754bbf70470a8c0877b03a27f0e94af650204404"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3.png.meta",
+      "bytes": 872,
+      "sha256": "858ba32b2b931ed8b54b5863d12b4c814899a2917d27b52d3817f5c16447128f"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-destroyed.png",
+      "bytes": 553544,
+      "sha256": "38d87ef7096164fa0437044c3b3696909f8414b6e350a6efe3c3420c87bc8ec8"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-destroyed.png.meta",
+      "bytes": 888,
+      "sha256": "ddb487bcac8e6f10e4c60f9b261c9dc77090982b853609035ecd53c707166547"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-empty.png",
+      "bytes": 7087,
+      "sha256": "f888289a1bb4be6d6c8627b0e569edbed0e912217bcea23e196ae59fea426972"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-empty.png.meta",
+      "bytes": 882,
+      "sha256": "1d563a6bdc7f694c32cb62ddfc56a6c8b04a0a22373c0d552554585841ca6d04"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-north-empty.png",
+      "bytes": 7851,
+      "sha256": "19402e53c20268df9646bd684ef4946c7029f7453e5a80f002528fda218cd9e9"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-north-empty.png.meta",
+      "bytes": 888,
+      "sha256": "98bc1af5d86c554fa55024be43f08f0a699bfa15ead279e1cf064bb37a94d4f4"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-north.png",
+      "bytes": 10148,
+      "sha256": "db63a7db424b8db4810ea65d7dabf0b0a51833dd7b12aa5ecb6718984e3e5d92"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-north.png.meta",
+      "bytes": 882,
+      "sha256": "a41bf93c57e00edf8bfc222223a998f9be8ff2d9e593fa46ef8f67e24c16faa0"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-northeast-empty.png",
+      "bytes": 9916,
+      "sha256": "1bdf7e1d35eb9435fdbddaadd61c7fc4ec9d1ed0caedea1d49b78e058091118a"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-northeast-empty.png.meta",
+      "bytes": 889,
+      "sha256": "5f84357b94207c366b7ad7d6f26a5a3b9512e0f7e3e6bd89ae3c03924b466f07"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-northeast.png",
+      "bytes": 11333,
+      "sha256": "5e900de84ad5f1b4ce711a51c5b86d2f7ae093a7d3400d91d389fec36265c7fe"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-northeast.png.meta",
+      "bytes": 883,
+      "sha256": "a398d761fd6a24b13e9820506fdaea47d8693c4d1fe918026191fbb09252c554"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-south-empty.png",
+      "bytes": 8555,
+      "sha256": "6eec0c5ed8776e0be82a9737df8e8942888893e8fbe3d7175345b7efea62c660"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-south-empty.png.meta",
+      "bytes": 888,
+      "sha256": "772c01d81d8c657754486c0d9af6a6086fc50966314c0009e947e341fc6418dd"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-south.png",
+      "bytes": 10405,
+      "sha256": "f4a35f318bb63650ed63cc762427bd625a8ac76d8bc5ec97bb7239345295f4a6"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-south.png.meta",
+      "bytes": 882,
+      "sha256": "0c9727aa4ea6ca46957c97b6eff407e0deffce55ed43b5523f7b77573b911f3e"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-southeast-empty.png",
+      "bytes": 10076,
+      "sha256": "22c1ad8b799ec38110336ae18c0fe6d67399c32d56528c277c8c8204280ce5b0"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-southeast-empty.png.meta",
+      "bytes": 889,
+      "sha256": "b4699191f77616472a4ce08376dd8facc40afeaf20d4bb1567d6b573a69d630b"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-southeast.png",
+      "bytes": 10907,
+      "sha256": "7379ac3cd1c49ae0a404ec0c70058d25670f5868e582f347abd79e1554442502"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon-southeast.png.meta",
+      "bytes": 883,
+      "sha256": "a80a19f00579279f27ac655c36fb61a76b051e16195937c115988ef0ce291065"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon.png",
+      "bytes": 9105,
+      "sha256": "404bb72c35254c6acd1f4de138256d925c889ffc2495499f68acbd3d8c49e11e"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-1-weapon.png.meta",
+      "bytes": 876,
+      "sha256": "77f0e3636feea6fdcfcaba6c39e4f28766e67955f64c4a18e924239aa5156cf2"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-destroyed.png",
+      "bytes": 566883,
+      "sha256": "9d4057530589689012f1b0c86810b096a84d96ee3ce9eb462bf51430a7d91e0d"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-destroyed.png.meta",
+      "bytes": 888,
+      "sha256": "4c3c9b0b497080bda8eb4dec584b4768e15a35220254cf5c29263d3adf10fe95"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-empty.png",
+      "bytes": 8097,
+      "sha256": "2afb31d97e459930ddcf4697b90d648bdc2f733b5e51d208591cbe659dde2d9b"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-empty.png.meta",
+      "bytes": 882,
+      "sha256": "b559ebcaaf4d5b01f476aabb4c43129489fdad60dfad46a47e3b28786796d13c"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-north-empty.png",
+      "bytes": 9830,
+      "sha256": "40ce5e58e2bbd89a17422088a64483b83d0ecb9d824cba909ab6d45ab5ce54d5"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-north-empty.png.meta",
+      "bytes": 888,
+      "sha256": "a609488f3c0ae5590406e8622a1a37a2b5ac7f0f12b0b78b081b29b54d7e656f"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-north.png",
+      "bytes": 12018,
+      "sha256": "0961879e87df6c83557a1171ddf7e488b442eaf191bccc750694f699e02ede66"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-north.png.meta",
+      "bytes": 882,
+      "sha256": "bbb3449bb50f86e4417cadffb493e7b4d04075ab5e4ed9fa3ca73c626d127e7a"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-northeast-empty.png",
+      "bytes": 11265,
+      "sha256": "60cc72a21fb0eca5ea3bd4fbb6dc59ea8940e2ea7583e23e1ef63d5b8f82f355"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-northeast-empty.png.meta",
+      "bytes": 892,
+      "sha256": "f4922f05987ccb3dc836777b1f2cc26037fe4c821efade38099283b015342eb6"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-northeast.png",
+      "bytes": 12743,
+      "sha256": "91f45b9b4b2229e9b15f57c821aa3c0fccce817a72ec02ba1677d75e279637a6"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-northeast.png.meta",
+      "bytes": 886,
+      "sha256": "6e90b94a257156af29ccc3fc708c90b288d0a0bb1cd93d9046518de6ad81a40f"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-south-empty.png",
+      "bytes": 9725,
+      "sha256": "1abd96af9831c8d7a332dd455504f63a1a8f3acf87c964d5139c5c313c607a86"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-south-empty.png.meta",
+      "bytes": 888,
+      "sha256": "223b537611324a560051f150b5c8878009da2fdd4356dc72f474ec7eb0372d35"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-south.png",
+      "bytes": 11851,
+      "sha256": "def7b8057b25410ef5eedcacdc90ce4f52598ba7aa7b7ce7f35a946610575fcd"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-south.png.meta",
+      "bytes": 882,
+      "sha256": "ffd17ab540b1f0e0e8c55080598921bcdc4720934e098b6cc401e1024b31fe09"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-southeast-empty.png",
+      "bytes": 11166,
+      "sha256": "bd524e6ed14e27424fa01a8e62021b3acd52fa3d37ed9bf049bd0d3272d75930"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-southeast-empty.png.meta",
+      "bytes": 892,
+      "sha256": "2b7dd6abfd093534ec2c007d104cd3e1c3217008322422ca5b3b6b58f0721b84"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-southeast.png",
+      "bytes": 12343,
+      "sha256": "fa132c092a35ae80fce04411816ca3a0cc4c8ced96474275710f4d4ba608bf60"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon-southeast.png.meta",
+      "bytes": 886,
+      "sha256": "9870149fb772758c77d023b467c1b8389918a738ab9702850a2fc21598d2681d"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon.png",
+      "bytes": 10433,
+      "sha256": "d3447a1cb58810cf88962702a39c8f2494217da240d6a57598a555e31d98adb9"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-2-weapon.png.meta",
+      "bytes": 876,
+      "sha256": "80289c54715217811705e2adc1887499b75f6a97fbb3376e772605a1e3bbdecc"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-destroyed.png",
+      "bytes": 544752,
+      "sha256": "eb5f87aeb0a03db3fa8caee57e8ffae3a5b3083eb66323d4efb04a38f2c2d2b0"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-destroyed.png.meta",
+      "bytes": 888,
+      "sha256": "acf723e211837d9ff93099be940bdd9196f2b7868e22fcd075025d3b1c8c6df5"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-empty.png",
+      "bytes": 9261,
+      "sha256": "0e1329c2309d43c5416deb88385faf4684855614da071467a4d3fd286527f6c8"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-empty.png.meta",
+      "bytes": 882,
+      "sha256": "ea2a775073fda74be421f5cd4cdf295f8f42170abace3d4204885f50d066d2ca"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-north-empty.png",
+      "bytes": 9546,
+      "sha256": "529a623592f5702332699992b6c9a2161b09091d60ed91ade46d0476e07ac816"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-north-empty.png.meta",
+      "bytes": 888,
+      "sha256": "98dd49eb10f34b8fd15e7bbbfc4d75ab6782c17ca14970a8345ad530251552d0"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-north.png",
+      "bytes": 11732,
+      "sha256": "fcf5804d72f2c69f0b9ae65bceeb5b460c6cca892119d76b1479532213979d35"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-north.png.meta",
+      "bytes": 882,
+      "sha256": "738bba3265a3c06fe6198870093517b4c256d8e115870f6a70c13affdbf27fe8"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-northeast-empty.png",
+      "bytes": 11190,
+      "sha256": "7d14fd18d776453473fc6ae6b6f906b44d91c0d079b8125d998abc87835ab158"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-northeast-empty.png.meta",
+      "bytes": 892,
+      "sha256": "016c8440fa768b1fc43c9ba8ecf99d9eedbfefd1c2c22e6677a2cb51e1649bba"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-northeast.png",
+      "bytes": 12808,
+      "sha256": "647921947f2732246c897849a415a8d078f4f4d941b3ec9bb4cd043233b6eb80"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-northeast.png.meta",
+      "bytes": 886,
+      "sha256": "467c6f064342fa97210bd451c6369945e37e1719f53c7bc7a8f6a73617f8fe57"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-south-empty.png",
+      "bytes": 10716,
+      "sha256": "d08c4047cd52495012d3220a2d1dc2cf82d55f9c0b23297b4e5a0f8d27028064"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-south-empty.png.meta",
+      "bytes": 888,
+      "sha256": "b1fbdbe4a3254f9384179e0d3d63719ffbac01202492b96dcbab68d716502282"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-south.png",
+      "bytes": 12360,
+      "sha256": "27be198ba4f168fcf2e62f1b46c55248ff6bec2e25756c0b6498e80beee47915"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-south.png.meta",
+      "bytes": 882,
+      "sha256": "0ca41fe903fc9fc83be4fcf829030ea3666ff42c15cc3e0fcb225feae83856a3"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-southeast-empty.png",
+      "bytes": 11989,
+      "sha256": "f41e7f1caabcfbeb14a2fbabd92caea3e106f49eb446b3ddc25d8c0481c1ea04"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-southeast-empty.png.meta",
+      "bytes": 892,
+      "sha256": "418c7f9d1604b2a7a20ba72d8dd39a3df0d00a580c0bf240c26dee9d4532667f"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-southeast.png",
+      "bytes": 13198,
+      "sha256": "acaa15515286dbff4f57334edabe7c015171210c3fbb53f1a80b704dd11888b3"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon-southeast.png.meta",
+      "bytes": 886,
+      "sha256": "78669cfcb63bb5e14dd2a6e87a6b0f45aee88e4d42124217aa065e828e9db81c"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon.png",
+      "bytes": 11540,
+      "sha256": "f0e6ba56705fe6f4943a740e18c889987e688dc8d192cdc12b2be75be077d238"
+    },
+    {
+      "path": "assets/resources/buildings/towers/sniper-3-weapon.png.meta",
+      "bytes": 876,
+      "sha256": "739ecf7c87277f92fe8392e772e65650749b4a7d45da9157cfee2c8cf02ef23d"
+    },
+    {
+      "path": "assets/KinghtFallIconMap/com/Ani/jt/jt.atlas",
+      "bytes": 6834,
+      "sha256": "b4d3fb534ee1a5116def005aa58260ed7a8abf2021034e60b00bd366749c6a9d"
+    },
+    {
+      "path": "assets/KinghtFallIconMap/com/Ani/jt/jt.atlas.meta",
+      "bytes": 111,
+      "sha256": "e7a4a0e07abd9714e4d2b5272fd182550537c093a6a0cf53708d89e8a46aa94c"
+    },
+    {
+      "path": "assets/KinghtFallIconMap/com/Ani/jt/jt.json",
+      "bytes": 34903,
+      "sha256": "1dc75b35407bdaf4606f7f11febc407c1347e90f60364be414dc7a05494630e0"
+    },
+    {
+      "path": "assets/KinghtFallIconMap/com/Ani/jt/jt.json.meta",
+      "bytes": 189,
+      "sha256": "b7428cfabc6252261b4c6b7b54d0414049cab9acba14563e09b679bbf6ab482c"
+    },
+    {
+      "path": "assets/KinghtFallIconMap/com/Ani/jt/jt.png",
+      "bytes": 317854,
+      "sha256": "36413c481298f556ee925ff6c2d00787eca383424642f62baba6666de69171a1"
+    },
+    {
+      "path": "assets/KinghtFallIconMap/com/Ani/jt/jt.png.meta",
+      "bytes": 871,
+      "sha256": "4528b7daa2e61885fec0798e77174006cfd040d6d175b653a8517a2e9793daea"
+    }
+  ],
+  "paintedBases": [
+    {
+      "family": "archer",
+      "tier": 1,
+      "path": "assets/resources/buildings/redesign/towers/archer-1.png",
+      "sha256": "bca889b9fc4718f6f07b8170d690c0a4ae34569055746d8ab4cf4a570766ef84",
+      "maskPath": "assets/resources/buildings/redesign/towers/archer-1-window-light.png",
+      "maskSha256": "dd07a2966da652a8a671746f27fb611dff04d0ac689226b898ab658e62923f84",
+      "apertures": 2,
+      "windowSourceBounds": [
+        [
+          681,
+          550,
+          884,
+          738
+        ],
+        [
+          371,
+          554,
+          574,
+          737
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        724,
+        876,
+        803,
+        1061
+      ]
+    },
+    {
+      "family": "archer",
+      "tier": 2,
+      "path": "assets/resources/buildings/redesign/towers/archer-2.png",
+      "sha256": "ba881ecc1c783480947ea31b2a394edb34e1a33102810e5fc77a76bd9ffff7e8",
+      "maskPath": "assets/resources/buildings/redesign/towers/archer-2-window-light.png",
+      "maskSha256": "2456bf6627c84f3765f8a54b1c6644b636d4f0ea5b2174c45a7b9adf05ebe066",
+      "apertures": 2,
+      "windowSourceBounds": [
+        [
+          358,
+          549,
+          585,
+          736
+        ],
+        [
+          682,
+          550,
+          889,
+          736
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        724,
+        876,
+        806,
+        1083
+      ]
+    },
+    {
+      "family": "archer",
+      "tier": 3,
+      "path": "assets/resources/buildings/redesign/towers/archer-3.png",
+      "sha256": "5cde320ce5d05b78b19e4334aff8b92073508de043879e067eb0e5eef8e34ef9",
+      "maskPath": "assets/resources/buildings/redesign/towers/archer-3-window-light.png",
+      "maskSha256": "215180ed9083f1cf2faa9bb6318910be839d8098262886597e3da7c790377876",
+      "apertures": 2,
+      "windowSourceBounds": [
+        [
+          350,
+          539,
+          587,
+          732
+        ],
+        [
+          669,
+          549,
+          882,
+          732
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        721,
+        871,
+        806,
+        1061
+      ]
+    },
+    {
+      "family": "archer",
+      "tier": 4,
+      "path": "assets/resources/buildings/redesign/towers/archer-4.png",
+      "sha256": "1cecfd418eb390efefc8dacc29730e080405848169f67e671d5693ae089f5a2b",
+      "maskPath": "assets/resources/buildings/redesign/towers/archer-4-window-light.png",
+      "maskSha256": "fb7fefac45cb6c43389ad222da69731b5647df26357670a837ce384458dbef19",
+      "apertures": 2,
+      "windowSourceBounds": [
+        [
+          339,
+          579,
+          562,
+          769
+        ],
+        [
+          645,
+          603,
+          834,
+          769
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        702,
+        906,
+        771,
+        1073
+      ]
+    },
+    {
+      "family": "sniper",
+      "tier": 1,
+      "path": "assets/resources/buildings/redesign/towers/sniper-1.png",
+      "sha256": "4c916bbff24a9cd861d5ecf96011b9b794aed2539a1f9fd46a6868ddbc33fcdc",
+      "maskPath": "assets/resources/buildings/redesign/towers/sniper-1-window-light.png",
+      "maskSha256": "6bc1207bda3f6c1bcca94635e6e669e395a1c35ce7a8fb5a923c282fedd6a4bc",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          414,
+          731,
+          525,
+          871
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        713,
+        684,
+        826,
+        961
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/sniper-1-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "sniper",
+      "tier": 2,
+      "path": "assets/resources/buildings/redesign/towers/sniper-2.png",
+      "sha256": "c6bb117a64e4bcad53d0fdcf30a4d18f9ec30dff413dd3c48462f82f6acfb11b",
+      "maskPath": "assets/resources/buildings/redesign/towers/sniper-2-window-light.png",
+      "maskSha256": "e7a2e43af2a2621c53716ec19d16cb265decd5d636f76439308e1759a4547623",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          412,
+          732,
+          524,
+          872
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        714,
+        684,
+        826,
+        962
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/sniper-2-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "sniper",
+      "tier": 3,
+      "path": "assets/resources/buildings/redesign/towers/sniper-3.png",
+      "sha256": "efeaaac71014410d972ec6f04123ae9fe1183430a2099d47e4990c4a43f14733",
+      "maskPath": "assets/resources/buildings/redesign/towers/sniper-3-window-light.png",
+      "maskSha256": "d2fc577b8ed5271495cac499b660e51a70cc38acc62211c4208df47908977675",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          413,
+          732,
+          522,
+          869
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        715,
+        685,
+        826,
+        963
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/sniper-3-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "sniper",
+      "tier": 4,
+      "path": "assets/resources/buildings/redesign/towers/sniper-4.png",
+      "sha256": "2d5bbc2994ff7162c8f2f158f4ac7d3333ddcc2df26ced38cd739f97506968af",
+      "maskPath": "assets/resources/buildings/redesign/towers/sniper-4-window-light.png",
+      "maskSha256": "495ce40ff66942dbb79ff4a26ae962481a8b4a6b88c252802bdb5395e1012e0c",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          415,
+          731,
+          524,
+          872
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        715,
+        686,
+        823,
+        965
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/sniper-3-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "cannon",
+      "tier": 1,
+      "path": "assets/resources/buildings/redesign/towers/cannon-1.png",
+      "sha256": "ba42f2dfee8fc2c0e9cce797ec1a3d4fe40d8bb4597206c50512a85448eee257",
+      "maskPath": "assets/resources/buildings/redesign/towers/cannon-1-window-light.png",
+      "maskSha256": "545f15e1743299d085a94802d03b8aac1aa57ba2a81f0450afed49317a060a73",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          389,
+          957,
+          520,
+          1041
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        737,
+        909,
+        845,
+        1083
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/cannon-1-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "cannon",
+      "tier": 2,
+      "path": "assets/resources/buildings/redesign/towers/cannon-2.png",
+      "sha256": "b7aafe76841a50efecc677b50b0a18a50e500d05cbc7fa6afe7e8f43d47f171f",
+      "maskPath": "assets/resources/buildings/redesign/towers/cannon-2-window-light.png",
+      "maskSha256": "046e0d214ff76c0809578bb6e74191d410e40838cd0ad8b705d201e8784e6c2c",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          392,
+          958,
+          520,
+          1041
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        737,
+        913,
+        844,
+        1092
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/cannon-2-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "cannon",
+      "tier": 3,
+      "path": "assets/resources/buildings/redesign/towers/cannon-3.png",
+      "sha256": "e906fa676153d74239d8138d3d47d704aca1d8beee80f7dd652dcbddc3ef6d6b",
+      "maskPath": "assets/resources/buildings/redesign/towers/cannon-3-window-light.png",
+      "maskSha256": "4bd3b4c5264c873dc34f7cb282f7520d5d00288fc9cd60f579b0ee3536b4bd28",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          392,
+          960,
+          518,
+          1040
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        735,
+        912,
+        843,
+        1085
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/cannon-3-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    },
+    {
+      "family": "cannon",
+      "tier": 4,
+      "path": "assets/resources/buildings/redesign/towers/cannon-4.png",
+      "sha256": "4099b92d9cb1cc1ff150a9aa51db4d88ef373f8ebb904fd17b71cdb2066f6235",
+      "maskPath": "assets/resources/buildings/redesign/towers/cannon-4-window-light.png",
+      "maskSha256": "37e9185ae8d7f5e9d7dcbb7c443ff41432a55105754d959e49cd7822f54dea55",
+      "apertures": 1,
+      "windowSourceBounds": [
+        [
+          393,
+          960,
+          520,
+          1040
+        ]
+      ],
+      "excludedDoorSourceBounds": [
+        735,
+        912,
+        842,
+        1091
+      ],
+      "originalDestroyed": {
+        "sprite": "buildings/towers/cannon-3-destroyed",
+        "width": 187,
+        "height": 187,
+        "offsetX": 0,
+        "offsetY": -38
+      }
+    }
+  ]
+}

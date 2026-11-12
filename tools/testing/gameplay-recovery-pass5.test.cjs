@@ -39,9 +39,9 @@ for(const [unit,index] of [[90001,11],[90002,14],[90003,17],[90004,20]])test(`ne
 
 test('current barracks checkpoints retain every sparse authored ID and discard removed branches',()=>{
  const h=branch(true);h.b.setLevel=value=>{h.b.index=value;};
- assert.equal(h.b.buildCfg.levelList.length,12);assert.deepEqual(h.b.buildCfg.levelList.map(row=>row.index),Array.from({length:12},(_,i)=>i+11));
- for(let index=11;index<=22;index++){h.b.setSave({level:index});assert.equal(h.b.index,index);assert.equal(h.b.getSave().level,index);}
- for(const index of [1,2,3,4,5,6,7,8,9,10,23,999]){h.b.setSave({level:index});assert.equal(h.b.index,0);}
+ assert.equal(h.b.buildCfg.levelList.length,16);assert.deepEqual(h.b.buildCfg.levelList.map(row=>row.index),Array.from({length:16},(_,i)=>i+11));
+ for(let index=11;index<=26;index++){h.b.setSave({level:index});assert.equal(h.b.index,index);assert.equal(h.b.getSave().level,index);}
+ for(const index of [1,2,3,4,5,6,7,8,9,10,27,999]){h.b.setSave({level:index});assert.equal(h.b.index,0);}
 });
 
 test('new tower uses the same initial chooser; closing it refunds once and cannot build from a late click',()=>{
@@ -87,7 +87,9 @@ test('free upgrades follow the chosen linear family and safely ignore a complete
  const h=branch(true);h.b.buildInfo.cfg=h.b.getBranchCfg(17);h.b.index=17;
  assert.equal(h.b.onBuffUpgrade(),true);assert.equal(h.b.index,18);
  h.b.buildInfo.cfg=h.b.getBranchCfg(19);h.b.index=19;
- assert.equal(h.b.onBuffUpgrade(),false);assert.equal(h.b.index,19);
+ assert.equal(h.b.onBuffUpgrade(),true);assert.equal(h.b.index,25);
+ h.b.buildInfo.cfg=h.b.getBranchCfg(25); // The real level-up event refreshes this row.
+ assert.equal(h.b.onBuffUpgrade(),false);assert.equal(h.b.index,25);
 });
 
 test('level-three tower can update its price view without an unused upgrade-plot node',()=>{

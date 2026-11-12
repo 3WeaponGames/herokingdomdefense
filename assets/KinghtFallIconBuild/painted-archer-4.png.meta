@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "333e75c9-c79a-5f5a-b55b-d2ff22a59f44",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 371,
+  "height": 457,
+  "platformSettings": {},
+  "subMetas": {
+    "painted-archer-4": {
+      "ver": "1.0.6",
+      "uuid": "6cd6e7b0-a680-5af4-a230-b68068f0c794",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "333e75c9-c79a-5f5a-b55b-d2ff22a59f44",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 371,
+      "height": 457,
+      "rawWidth": 371,
+      "rawHeight": 457,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -48,7 +48,7 @@ test('current construction exposes eleven families, four separate barracks and t
 test('both configuration copies and translation sources contain only the current building system',()=>{
   const fallback=JSON.parse(fs.readFileSync(path.join(project,'assets/configs/GameJsonCfg.json'),'utf8'));
   assert.deepEqual(fallback.BuildEnum,base.BuildEnum,'Packaged configuration must offer the same current buildings');
-  assert.deepEqual(base.BuildEnum[3].levelList.map(row=>row.index),Array.from({length:12},(_,i)=>i+11));
+  assert.deepEqual(base.BuildEnum[3].levelList.map(row=>row.index),Array.from({length:16},(_,i)=>i+11));
   const seed=JSON.parse(fs.readFileSync(path.join(project,'tools/localization/text-entries.json'),'utf8'));
   for(const source of [translations,seed])assert(!Object.keys(source.entries).some(key=>/^data\.buildenum\.3\.levellist\.(?:[1-9]|10)\./.test(key)),'Removed branch translations cannot return when rebuilding the catalog');
 });
@@ -56,9 +56,9 @@ test('both configuration copies and translation sources contain only the current
 test('logical level groups retain every reachable authored alternative',()=>{
   const rows=Model.families(base,translations,'en');
   const arrow=rows.find(r=>r.key==='2:1');
-  assert.deepEqual(arrow.levels.map(group=>[group.level,group.branches.map(b=>b.index)]),[[1,[1]],[2,[2,3]]]);
+  assert.deepEqual(arrow.levels.map(group=>[group.level,group.branches.map(b=>b.index)]),[[1,[1]],[2,[2]],[3,[3]],[4,[10]]]);
   for(const typeID of ['4','5']){
-    assert.deepEqual(rows.find(r=>r.typeID===typeID).levels.map(group=>group.branches.map(b=>b.index)),[[1],[2,3]]);
+    assert.deepEqual(rows.find(r=>r.typeID===typeID).levels.map(group=>group.branches.map(b=>b.index)),[[1],[2],[3],[4]]);
   }
   assert.deepEqual(rows.find(r=>r.typeID==='6').levels.map(group=>group.branches.map(b=>b.index)),[[1],[2],[3]],'Wall artwork tiers each have a tab');
 });

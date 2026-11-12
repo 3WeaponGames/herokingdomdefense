@@ -25,7 +25,7 @@ function fixture(){
   const owner=new context.exports.default();
   owner.levelLimit=10;owner.T=value=>value;owner.loadSpriteFrame=noop;owner.ctrPlayAni={initView:noop};owner.labPower={string:''};owner.node={};
   owner.nodeInfo=data.EquipCfg.map((cfg,index)=>({type:cfg.id,cfg,labNum:{string:'stale'},ndItem:node([50,64,78,92,106,120][index]),ndInfo:node([168,237,306,375,444,513][index])}));
-  return {owner,levels,data,Label,deps,user};
+  return {owner,levels,data,Label,deps,user,context};
 }
 test('equipment refresh shows numeric totals and the true next level at a campaign cap, without changing data',()=>{
   const f=fixture(),before=JSON.stringify(f.data),levels=f.levels.slice();
@@ -60,25 +60,39 @@ test('both upper weapon slots open the picker, lower upgrade icons have no misle
   owner.start();assert.equal(installed,1);for(const slot of [3,4]){owner.ndItemTop[slot-1].handlers.tap();assert.equal(owner.ndItemDown[slot-1].getChildByName('ndItem').handlers.tap,undefined);owner.ndItemDown[slot-1].getChildByName('btnUpgeade').handlers.tap();}assert.equal(opened,2);assert.equal(upgraded,2);assert.equal(owner.ndItemTop[0].handlers.tap,undefined);
 });
 
-test('Gear CP follows only the equipped weapon and its owned style talents through repeated refreshes',()=>{
+test('Gear account CP follows only the equipped weapon and retains owned style contributions through repeated refreshes',()=>{
   const f=fixture(),Weapons=f.deps.HeroWeapons,Loadout=f.deps.HeroLoadout;f.levels.fill(1);Weapons.upgrade(f.user.data,3,10,'skirmisher');Weapons.upgrade(f.user.data,4,10,'skirmisher');
   f.user.data.talentInfo=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}));
   f.owner.initView();const bow=f.owner._combatPower;assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*100)/100));assert.equal(bow.levels[3],10);assert.equal(bow.levels[4],10);
-  Weapons.select(f.user.data,'fighter');const before=JSON.stringify(f.user.data),config=JSON.stringify(f.data);f.owner.initView();const sword=f.owner._combatPower;assert.equal(sword.style,'fighter');assert.equal(sword.levels[3],1);assert.equal(sword.levels[4],1);assert.equal(sword.damage,20);assert.equal(sword.attackRate,1);assert.equal(f.owner.labPower.string,'44.72');assert(sword.cp<bow.cp);
+  Weapons.select(f.user.data,'fighter');const before=JSON.stringify(f.user.data),config=JSON.stringify(f.data);f.owner.initView();const sword=f.owner._combatPower;assert.equal(sword.style,'fighter');assert.equal(sword.levels[3],1);assert.equal(sword.levels[4],1);assert.equal(sword.raw.damage,20);assert.equal(sword.damage,20.2);assert.equal(sword.attackRate,1.01);assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*100)/100));assert(sword.cp<bow.cp);
   for(let i=0;i<5;i++){f.owner.initView();assert.equal(f.owner._combatPower.cp,sword.cp);}assert.equal(JSON.stringify(f.user.data),before);assert.equal(JSON.stringify(f.data),config);
   Weapons.upgrade(f.user.data,3,50,'skirmisher');Weapons.upgrade(f.user.data,4,25,'skirmisher');f.owner.initView();assert.equal(f.owner._combatPower.cp,sword.cp,'unequipped bow upgrades do not affect sword power');
 });
 
 test('Gear CP uses the same six combat stats at locked and unlocked stages and handles invalid stats without showing NaN',()=>{
-  const f=fixture();f.levels.fill(1);f.user.getMaxStage=()=>1;f.user.getMaxOrder=()=>1;f.owner.initView();const cp=f.owner.labPower.string;assert.equal(cp,'44.72');
+  const f=fixture();f.levels.fill(1);f.user.getMaxStage=()=>1;f.user.getMaxOrder=()=>1;f.owner.initView();const cp=f.owner.labPower.string;assert.equal(cp,String(Math.round(f.deps.HeroLoadout.calculate(f.data,f.user).cp*100)/100));
   f.user.getMaxStage=()=>100;f.owner.initView();assert.equal(f.owner.labPower.string,cp,'unlocking an existing stat slot cannot add a second copy to power');
   f.data.EquipCfg.find(row=>row.id===3).levelInfo[0].Parameters=NaN;f.owner.initView();assert.equal(f.owner.labPower.string,'—');assert.match(f.owner._combatPower.reason,/invalid/);
 });
 
-test('cached Gear refreshes owned upgrades and excludes other styles after purchases and tab return',()=>{
+test('cached Gear refreshes account-wide upgrade contributions after purchases and tab return',()=>{
   const f=fixture(),owner=f.owner,Weapons=f.deps.HeroWeapons;f.levels.fill(1);Weapons.select(f.user.data,'vanguard');owner.initView();const baseline=owner._combatPower.cp;
-  f.user.data.talentInfo=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='fighter').map(row=>({id:row.ID,isLock:true}));owner.initBtnView();assert.equal(owner._combatPower.cp,baseline,'inactive Fighter talents do not improve Vanguard');
-  f.user.data.talentInfo.push(...f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='vanguard').map(row=>({id:row.ID,isLock:true})));owner.initBtnView();const trained=owner._combatPower.cp;assert(trained>baseline);
+  f.user.data.talentInfo=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='fighter').map(row=>({id:row.ID,isLock:true}));owner.initBtnView();const crossType=owner._combatPower.cp;assert(crossType>baseline,'owned Fighter talents contribute their discounted value to account CP');
+  const fighterDamage=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='fighter'&&row.HeroStat==='damage').reduce((sum,row)=>sum+row.EffectNumber[0],0);
+  assert.equal(owner._combatPower.mode,'account-wide');assert(Math.abs(owner._combatPower.bonuses.damage-fighterDamage*.2)<1e-12);
+  assert.equal(f.deps.HeroLoadout.snapshot(f.data,f.user).bonuses.damage,0,'account credit must not grant Fighter damage to actual Vanguard gameplay');
+  f.user.data.talentInfo.push(...f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='vanguard').map(row=>({id:row.ID,isLock:true})));owner.initBtnView();const trained=owner._combatPower.cp;assert(trained>crossType);
   f.user.data.treasureInfo=[{id:120031,level:1},{id:120036,level:1}];owner._homeTabReady=true;owner.layoutScrollToFooter=owner.refreshEquipmentLimits=owner.scheduleHomeGuide=()=>{};const before=JSON.stringify(f.user.data);owner.onEnable();const relicPower=owner._combatPower.cp;assert(relicPower>trained);owner.onEnable();assert.equal(owner._combatPower.cp,relicPower);assert.equal(JSON.stringify(f.user.data),before);
   f.user.data.treasureInfo[0].level=3;owner.initBtnView();assert(owner._combatPower.cp>relicPower,'relic upgrade uses its new level immediately');
+});
+
+test('Gear CP includes the saved hero animation speed and refreshes paused attacks without writing progress',()=>{
+  const f=fixture();f.levels.fill(1);let relative=.5;
+  f.context.cc.resources={};f.deps.CharacterAppearance={animationSpeed(actor,team){assert.equal(actor,f.owner);assert.equal(team,'hero');return relative;}};
+  const before=JSON.stringify(f.user.data),config=JSON.stringify(f.data),hit=f.data.GameTools.timingDefaults['hero:hero:default'].attack;
+  f.owner.refreshCombatPower();const slow=f.owner._combatPower;
+  assert.equal(slow.effectiveAttackRate,1/(1+hit/.5));assert.equal(slow.directDps,20*slow.effectiveAttackRate);
+  relative=1;f.owner.refreshCombatPower();assert(f.owner._combatPower.cp>slow.cp);
+  relative=0;f.owner.refreshCombatPower();assert.equal(f.owner._combatPower.effectiveAttackRate,0);assert.equal(f.owner._combatPower.directDps,0);assert.equal(f.owner.labPower.string,'0');
+  assert.equal(JSON.stringify(f.user.data),before);assert.equal(JSON.stringify(f.data),config);
 });

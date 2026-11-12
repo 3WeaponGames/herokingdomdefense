@@ -23,10 +23,10 @@ function partCategory(part){
     category=category.replace(/\/\.$/,'');
   }
   category=category.replace(/^Hand(?:Left|Right)\//,'');
-  return category==='Sub_Item'?'Sub Items':category;
+  return category==='Sub_Item'?'Sub Items':category==='Cape'?'Cloak':category;
 }
 function characterSources(sources,current){return sources.filter(source=>source.pack==='character-maker'||source.id===current);}
-function layerLabel(layer){return {wqyl_lead_ma:'Mount',wqyl_lead_shenti:'Body',wqyl_lead_doupeng:'Chest',wqyl_lead_tou:'Head',wqyl_lead_gong:'Main weapon',wqyl_lead_jian:'Sub-weapon / bonus',wqyl_lead_shou:'Cape'}[layer.name]||layer.name;}
+function layerLabel(layer){return {wqyl_lead_ma:'Mount',wqyl_lead_shenti:'Body',wqyl_lead_doupeng:'Chest',wqyl_lead_tou:'Head',wqyl_lead_gong:'Main weapon',wqyl_lead_jian:'Sub-weapon / bonus',wqyl_lead_shou:'Cloak'}[layer.name]||layer.name;}
 function skinValue(layer,value){return /^(?:(?:lv|vip)\d+|lv_blue)$/.test(value)&&(layer.skins||[]).includes('skirmisher_'+value)?'skirmisher_'+value:value;}
 function skinLabel(value,layer){
   const tiers=layer&&layer.json&&layer.json._equipmentTiers,match=/^(?:(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_)?(lv_blue|lv\d+)$/.exec(value);

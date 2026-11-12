@@ -57,8 +57,8 @@ test('Buildings catalog includes every authored starting type with separate name
  const p=atlas();assert.equal(p.ui.entries.length,11);
  for(const name of ['Cannon Tower','Sniper Tower','Royal Guard','Heavy Infantry','Crossbowmen','Vanguard'])assert(p.names().includes(name),name);
  assert(p.ui.entries.every(e=>e.level.string==='Lv 1'&&e.info.string.length>0));
- for(const file of ['cannon-1','sniper-1'])assert(p.loads.some(x=>x.bundle==='KinghtFallIconBuild'&&x.file===file));
- assert.equal(p.loads.filter(x=>x.bundle==='resources').length,0);p.ui.entries.forEach(inside);assert.equal(JSON.stringify(p.config),p.before);
+ for(const file of ['painted-cannon-1','painted-sniper-1'])assert(p.loads.some(x=>x.bundle==='KinghtFallIconBuild'&&x.file===file));
+ assert.deepEqual(p.loads.filter(x=>x.bundle==='resources').map(x=>x.file),['buildings/redesign/towers/archer-1']);p.ui.entries.forEach(inside);assert.equal(JSON.stringify(p.config),p.before);
 });
 test('category tabs show only their rows and reset scrolling without rebuilding portraits or changing data',()=>{
  const p=atlas(),loads=p.loads.length;p.ui._atlasScroll.offset=300;
@@ -84,18 +84,19 @@ test('close retires late portrait callbacks and language subscriptions without t
  const p=atlas({defer:true});assert.equal(p.listeners.length,1);p.ui.btnClose.handlers.end();assert.equal(p.ui.isclose,true);for(const request of p.loads)request.done({getRect:()=>({width:100,height:100})});assert(p.ui.entries.every(e=>!e.frame));p.ui.onDestroy();assert.equal(p.listeners.length,0);assert.equal(JSON.stringify(p.config),p.before);
 });
 test('direct construction uses each category’s first authored branch without assuming branch one exists',()=>{
- const p=atlas({direct:true});assert.equal(p.ui.entries.length,6);assert.equal(p.loads.filter(x=>x.bundle==='resources').length,0);p.ui.selectCategory('towers');assert.equal(p.visible().length,1);p.ui.selectCategory('barracks');assert.equal(p.visible().length,1);assert.equal(p.visible()[0].index,11);
+ const p=atlas({direct:true});assert.equal(p.ui.entries.length,6);assert.deepEqual(p.loads.filter(x=>x.bundle==='resources').map(x=>x.file),['buildings/redesign/towers/archer-1']);p.ui.selectCategory('towers');assert.equal(p.visible().length,1);p.ui.selectCategory('barracks');assert.equal(p.visible().length,1);assert.equal(p.visible()[0].index,11);
 });
 test('custom complete artwork uses Resources and malformed duplicate or missing initial choices are ignored',()=>{
- const p=atlas({edit(c){delete c.BuildEnum[2].levelList[3].Appearance.weapon;c.BuildEnum[3].InitialChoices=[11,11,-1,999,14];}});assert(p.loads.some(x=>x.bundle==='resources'&&x.file==='buildings/towers/cannon-1'));p.ui.selectCategory('barracks');assert.equal(p.visible().length,2);assert.equal(JSON.stringify(p.config),p.before);
+ const p=atlas({edit(c){delete c.BuildEnum[2].levelList[3].Appearance.weapon;c.BuildEnum[3].InitialChoices=[11,11,-1,999,14];}});assert(p.loads.some(x=>x.bundle==='resources'&&x.file==='buildings/redesign/towers/cannon-1'));p.ui.selectCategory('barracks');assert.equal(p.visible().length,2);assert.equal(JSON.stringify(p.config),p.before);
 });
 test('live localization tokens resolve before level suffixes are removed, and badge previews wrap without writes',()=>{
- const p=atlas({tokens:true}),entry=p.ui.entries.find(e=>e.cfg.Icon==='cannon-1'),height=entry.node.height;
+ const p=atlas({tokens:true}),entry=p.ui.entries.find(e=>e.kind===2&&e.index===4),height=entry.node.height;
  assert.equal(entry.name.string,'Cannon Tower');assert(!p.names().some(name=>/Lv\s*\d/.test(name)));
  const click=()=>entry.badge.handlers.end({stopPropagation(){}});
- click();assert.equal(entry.cfg.level,2);assert.equal(entry.level.string,'Lv 2');assert.equal(p.loads.at(-1).file,'cannon-2');assert.match(entry.info.string,/larger blasts/i);assert.equal(entry.node.height,height);inside(entry);
- click();assert.equal(entry.cfg.level,3);assert.match(entry.info.string,/final upgrade/i);assert.equal(p.loads.at(-1).file,'cannon-3');assert.equal(entry.node.height,height);
- p.lang.setCurrentLanguage('zh');assert.equal(entry.name.string,'加农炮塔');assert.equal(entry.level.string,'3级');assert.match(entry.info.string,/最终升级/);
+ click();assert.equal(entry.cfg.level,2);assert.equal(entry.level.string,'Lv 2');assert.equal(p.loads.at(-1).file,'painted-cannon-2');assert.match(entry.info.string,/larger blasts/i);assert.equal(entry.node.height,height);inside(entry);
+ click();assert.equal(entry.cfg.level,3);assert.match(entry.info.string,/upgrade/i);assert(!/final/i.test(entry.info.string));assert.equal(p.loads.at(-1).file,'painted-cannon-3');assert.equal(entry.node.height,height);
+ click();assert.equal(entry.cfg.level,4);assert.equal(entry.name.string,'Cannon Tower');assert.match(entry.info.string,/final upgrade/i);assert.equal(p.loads.at(-1).file,'painted-cannon-4');assert.equal(entry.node.height,height);
+ p.lang.setCurrentLanguage('zh');assert.equal(entry.name.string,'加农炮塔');assert.equal(entry.level.string,'4级');assert.match(entry.info.string,/最终升级/);
  p.lang.setCurrentLanguage('en');click();assert.equal(entry.cfg.level,1);assert.equal(entry.level.string,'Lv 1');assert.equal(entry.name.string,'Cannon Tower');assert.equal(entry.node.height,height);
  assert.equal(JSON.stringify(p.config),p.before);
 });
@@ -105,10 +106,10 @@ test('every authored preview branch has a portrait and level-specific notes, wit
   if(entry.cfg.BranchBuild?.length)assert.match(entry.info.string,/upgrade/i);else assert.match(entry.info.string,/final upgrade/i);
   entry.badge.handlers.end({stopPropagation(){}});
  }assert.equal(entry.cfg,initial);assert.equal(new Set(seen).size,entry.levels.length);}
- const arrow=p.ui.entries.find(e=>e.kind===2&&e.index===1);assert.deepEqual(Array.from(arrow.levels,l=>l.level),[1,2,2],'alternate final branches must not invent a third level');assert.equal(JSON.stringify(p.config),p.before);
+ const arrow=p.ui.entries.find(e=>e.kind===2&&e.index===1);assert.deepEqual(Array.from(arrow.levels,l=>l.level),[1,2,3,4],'the approved progression contains four distinct authored tiers');assert.equal(JSON.stringify(p.config),p.before);
 });
 test('quick level changes reject old portrait loads while keeping scroll position and preview labels',()=>{
- const p=atlas({defer:true}),entry=p.ui.entries.find(e=>e.cfg.Icon==='sniper-1'),old=p.loads.find(x=>x.file==='sniper-1');p.ui._atlasScroll.offset=160;
+ const p=atlas({defer:true}),entry=p.ui.entries.find(e=>e.kind===2&&e.index===7),old=p.loads.find(x=>x.file==='painted-sniper-1');p.ui._atlasScroll.offset=160;
  entry.badge.handlers.end({stopPropagation(){}});const middle=p.loads.at(-1);entry.badge.handlers.end({stopPropagation(){}});const current=p.loads.at(-1);
  old.done({getRect:()=>({width:10,height:10})});middle.done({getRect:()=>({width:10,height:10})});assert.equal(entry.frame,null);
  const frame={getRect:()=>({width:110,height:200})};current.done(frame);assert.equal(entry.frame,frame);assert.equal(entry.level.string,'Lv 3');assert.equal(p.ui._atlasScroll.offset,160);

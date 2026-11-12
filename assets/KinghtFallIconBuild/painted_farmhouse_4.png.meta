@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "fc1539a6-e1a5-4c08-a623-bee0398949e6",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 292,
+  "height": 286,
+  "platformSettings": {},
+  "subMetas": {
+    "painted_farmhouse_4": {
+      "ver": "1.0.6",
+      "uuid": "caa9ade0-2f65-4be4-b51a-e3e7a0f3b8d7",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "fc1539a6-e1a5-4c08-a623-bee0398949e6",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -3.0,
+      "offsetY": 2.0,
+      "trimX": 17,
+      "trimY": 7,
+      "width": 252,
+      "height": 268,
+      "rawWidth": 292,
+      "rawHeight": 286,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

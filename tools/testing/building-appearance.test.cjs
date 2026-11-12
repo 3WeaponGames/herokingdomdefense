@@ -334,12 +334,12 @@ test('eight-direction towers mirror the southeast layer and return northeast aft
   assert.equal(legacy.owner._buildingAppearance.weaponPivot.scaleX,-1,'existing appearances without southeast retain their previous idle behavior');
 });
 
-test('production tower families each contain three imported levels with independent tuning', () => {
+test('production cannon and sniper families contain four fitted levels with unchanged directional weapons', () => {
   const cfg = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json')));
   const levels = cfg.BuildEnum['2'].levelList;
   for (const type of ['cannon', 'sniper']) {
     const rows = levels.filter(row => row.Tower?.attackType === type);
-    assert.deepEqual(rows.map(row => row.level), [1, 2, 3]);
+    assert.deepEqual(rows.map(row => row.level), [1, 2, 3, 4]);
     for (const row of rows) {
       const file = path.join(root, 'assets/resources', row.Appearance.sprite + '.png');
       assert.equal(fs.readFileSync(file).subarray(1, 4).toString(), 'PNG');
@@ -354,15 +354,21 @@ test('production tower families each contain three imported levels with independ
         assert.equal(Object.values(viewMeta.subMetas)[0].trimType,'none');
       }
       const ruins = row.Appearance.destroyed;
-      assert.equal(ruins.sprite, row.Appearance.sprite + '-destroyed');
+      assert.equal(ruins.sprite, 'buildings/towers/' + type + '-' + Math.min(row.level,3) + '-destroyed');
       const ruinFile = path.join(root, 'assets/resources', ruins.sprite + '.png');
       assert.equal(fs.readFileSync(ruinFile).subarray(1, 4).toString(), 'PNG');
       const ruinMeta = JSON.parse(fs.readFileSync(ruinFile + '.meta'));
       assert.equal(ruinMeta.type, 'sprite'); assert.equal(ruinMeta.packable, false); assert.equal(ruinMeta.genMipmaps, false);
       assert.equal(Object.values(ruinMeta.subMetas)[0].trimType, 'none');
-      assert(ruins.width>0&&ruins.height>0); assert.equal(ruins.offsetY, row.Appearance.offsetY);
+      assert(ruins.width>0&&ruins.height>0); assert.equal(ruins.offsetY, -38);
+      assert.equal(row.Appearance.lifecycle,'native-tower');
       assert.equal(row.Appearance.nightTint,'#A7A7A7');assert(row.Appearance.lighting.length>0);
-      for(const light of row.Appearance.lighting){assert(light.points.length>=3);assert(light.points.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)&&Math.abs(p.x)<=row.Appearance.width/2&&p.y>=0&&p.y<=row.Appearance.height));}
+      for(const light of row.Appearance.lighting){
+        assert.equal(light.sprite,row.Appearance.sprite+'-window-light');
+        assert.equal(light.width,row.Appearance.width);assert.equal(light.height,row.Appearance.height);
+        const maskFile=path.join(root,'assets/resources',light.sprite+'.png');assert(fs.existsSync(maskFile));assert(fs.existsSync(maskFile+'.meta'));
+        assert.equal(light.offsetX,0);assert.equal(light.offsetY,0);
+      }
       assert.equal(row.ColliderIndex >= 1 && row.ColliderIndex <= 3, true);
       assert.ok(row.Data[0] > 0 && row.Data[1] > 0 && row.Data[2] > 0);
     }

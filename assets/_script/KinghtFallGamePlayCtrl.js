@@ -123,7 +123,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       }
     }
     require("HeroWeaponCombat").configure(this, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data);
-    this.hpMax = this.baseHp * (1 + RelicRuntime.value(RelicRuntime.current(), 120036));
+    this.hpMax = this.baseHp;
     this.hp = this.hpMax;
     this._baseAttackRange = this.attackRange;
     this.attackRange *= 1 + RelicRuntime.value(RelicRuntime.current(), 120044);
@@ -276,7 +276,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       if (BattleSounds.hit) BattleSounds.hit(this, attacker, received);
       $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.player_hurt, this);
       this.time[C.NoDie] = this.time[C.NoDieTime];
-      if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield] && Math.random() < $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.GuardianShield][0]) {
+      var shieldChance = RelicRuntime.value(RelicRuntime.current(), 120011);
+      if (shieldChance > 0 && Math.random() < shieldChance) {
         $z1LogMgr.LogMgr.getInstance().info("***守护之盾");
         this.time[C.NoDie] += 3;
         if (BattleSounds.effect) BattleSounds.effect("shield-activate", this);
@@ -308,7 +309,6 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.tagEnemy = null;
     $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().stopEffectName($z1KinghtFallConfig.KinghtFallParameter.RunMusic);
     $z1AudioMgr.AudioMgr.getInstance().setChannelGain($z1KinghtFallConfig.KinghtFallParameter.BGMusic, .5);
-    $z1KinghtFallAudioMgr.KinghtFallAudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.death, this);
     this.state = r.Reborn;
     $z1KinghtFallUIGame.default.instance.ctrGame.gameTag[$z1KinghtFallEnum.KinghtFallEnumLevelChalType.NoDie] = 1;
     this.ctrPlayAni.setDie(function () {
@@ -396,10 +396,10 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       e.sort(function (t, e) {
         return t.len - e.len;
       });
-      RelicCombat.heroAttack(this, e[0].tag, this.getAttack(e[0].tag));
+      var release = RelicCombat.heroAttack(this, e[0].tag, this.getAttack(e[0].tag));
       for (var o = 0; o < this.attNum; o++) {
         var r = e[o];
-        r && $z1KinghtFallUIGame.default.instance.ctrGame.onPlayAttack(r.tag);
+        r && $z1KinghtFallUIGame.default.instance.ctrGame.onPlayAttack(r.tag, o === 0 ? release : undefined);
       }
     }
   };
@@ -417,17 +417,18 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.time[C.RebornBuff1] && (n += this.time[C.RebornBuff1]);
     this.time[C.AttackBuff1] && (n += this.time[C.AttackBuff1]);
     this.time[C.AttackBuff2] && (n -= this.time[C.AttackBuff2]);
-    if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CloseCut]) {
+    var closeDamage = RelicRuntime.value(RelicRuntime.current(), 120018);
+    if (closeDamage > 0) {
       var o = this.node.getPosition();
       var r = t.node.getPosition();
-      cc.Vec2.distance(o, r) <= 100 && (n += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CloseCut][0]);
+      cc.Vec2.distance(o, r) <= 100 && (n += closeDamage);
     }
     n += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.PlayerDamage] || 0;
     (n += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.businessAdd[$z1KinghtFallGameCtrlData.KinghtFallCommerceKeyType.Attack] || 0) < 0 && (n = 0);
     return e * n;
   };
   _ctor.prototype.getCriticalDamage = function () {
-    return this.critDam * (1 + RelicRuntime.value(RelicRuntime.current(), 120035));
+    return this.critDam;
   };
   _ctor.prototype.getAttSpeed = function () {
     var t = this.attackSpeed;
@@ -438,6 +439,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     }
     this.time[C.RebornBuff2] && (e += this.time[C.RebornBuff2]);
     this.time[C.AttackSpeed2] && (e += this.time[C.AttackSpeed2]);
+    e += RelicCombat.heroHaste(this);
     if (this.hp < .5 * this.hpMax) {
       var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff18);
       a && (e += a.Pamer[0]);
@@ -477,7 +479,6 @@ var def_KinghtFallGamePlayCtrl = function (t) {
       this._regenerationDisabled = true;
       this.hpMax = (1 + s.Pamer[0]) * this.baseHp;
     }
-    this.hpMax += this.baseHp * RelicRuntime.value(RelicRuntime.current(), 120036);
     // Recomputing an owned perk must not repeatedly heal existing damage.
     this.hp = Math.max(0, Math.min(this.hpMax, this.hp + this.hpMax - previousHpMax));
     this.ctrHp.setHp(this.hp, this.hpMax);

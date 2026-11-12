@@ -11,6 +11,7 @@ function fixture(){
     get activeInHierarchy(){return !this.destroyed&&this.active&&(!this.parent||this.parent.activeInHierarchy);}
     setPosition(x,y){this.x=x;this.y=y;}
     setContentSize(width,height){this.width=width;this.height=height;}
+    setAnchorPoint(x,y){this.anchorX=x;this.anchorY=y;}
     setScale(x,y=x){this.scaleX=x;this.scaleY=y;}
     addComponent(Type){const c=new Type();c.node=this;this.components.push(c);return c;}
     convertToWorldSpaceAR(p){const a=this.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a),v={x:this.x+c*p.x*this.scaleX-s*p.y*this.scaleY,y:this.y+s*p.x*this.scaleX+c*p.y*this.scaleY};return this.parent?this.parent.convertToWorldSpaceAR(v):v;}
@@ -31,6 +32,40 @@ function fixture(){
 }
 function record(h){return h.state._buildingLighting;}
 function step(h,dt){h.api.update(h.owner,h.state,dt);}
+
+test('exact sprite apertures share one mask without double filling and keep two lookout glows independently placed',()=>{
+  const h=fixture(),mask='buildings/redesign/towers/archer-4-window-light';
+  const light={sprite:mask,width:240,height:240,offsetX:0,offsetY:0,color:'#FFE89A',opacity:240,
+    glows:[{x:-24,y:121,width:38,height:29,opacity:80},{x:22,y:123,width:40,height:30,opacity:70}]};
+  h.owner.buildInfo.cfg.Appearance.lighting=[light];const before=JSON.stringify(light);
+  h.api.apply(h.owner,h.state);const r=record(h),entry=r.entries[0];
+  assert.equal(r.entries.length,1);assert.equal(entry.glows.length,2);
+  assert.equal(entry.window.parent,r.node);assert.equal(entry.window.anchorX,.5);assert.equal(entry.window.anchorY,0);
+  assert.deepEqual([entry.window.x,entry.window.y,entry.window.width,entry.window.height],[0,0,240,240]);
+  assert.equal(entry.maskSprite.trim,false);assert.equal(entry.maskSprite.sizeMode,h.cc.Sprite.SizeMode.CUSTOM);
+  assert.equal(h.requests.length,2,'one exact aperture resource plus one shared soft glow resource');
+  const paneFrame=h.frame('apertures'),glowFrame=h.frame('two glows');
+  for(const request of h.requests)request.done(request.file===mask?paneFrame:glowFrame);
+  assert.equal(entry.maskSprite.spriteFrame,paneFrame);assert.equal(paneFrame.adds,1);
+  entry.glows.forEach(p=>assert.equal(p.sprite.spriteFrame,glowFrame));assert.equal(glowFrame.adds,1);
+  assert.equal(r.node.active,false,'async frame completion never lights daytime windows');
+  h.api.setNight(h.owner,true);step(h,.5);assert.equal(r.node.active,true);
+  assert.equal(entry.window.opacity,240);assert.deepEqual(Array.from(entry.glows,p=>[p.node.x,p.node.y]),[[-24,121],[22,123]]);
+  h.api.hide(h.owner,h.state);h.api.apply(h.owner,h.state);step(h,.5);assert.equal(h.requests.length,2);
+  assert.equal(JSON.stringify(light),before);h.api.dispose(h.owner,h.state);
+  assert.equal(paneFrame.releases,1);assert.equal(glowFrame.releases,1);
+});
+
+test('a late exact mask from before death cannot replace repaired apertures and a failed mask retries without restarting the fade',()=>{
+  const h=fixture();h.owner.buildInfo.cfg.Appearance.lighting=[{sprite:'buildings/redesign/towers/cannon-4-window-light',width:230,height:230}];
+  h.api.setNight(h.owner,true);step(h,.2);const r=record(h),stale=h.requests[0],opacity=r.node.opacity;
+  h.resolve(0,null);h.api.apply(h.owner,h.state);assert.equal(record(h),r);assert.equal(r.node.opacity,opacity);
+  const old=h.requests[1];h.owner.isDestroyed=true;h.api.hide(h.owner,h.state);
+  h.owner.isDestroyed=false;h.api.apply(h.owner,h.state);step(h,.5);
+  const bad=h.frame('pre-death');stale.done(bad);old.done(bad);assert.equal(bad.adds,0);
+  const good=h.resolve(2,h.frame('repair'));assert.equal(record(h).entries[0].maskSprite.spriteFrame,good);
+  assert.equal(good.adds,1);assert.equal(record(h).node.active,true);
+});
 
 test('daytime creates exact warm aperture polygons under the base and caches one shared existing glow resource',()=>{
   const h=fixture(),before=JSON.stringify(h.owner.buildInfo.cfg);h.api.apply(h.owner,h.state);const r=record(h);assert.equal(r.node.parent,h.base);assert.equal(r.node.active,false);assert.equal(r.node.opacity,0);assert.equal(r.entries.length,2);assert.equal(h.requests.length,1);assert.equal(h.requests[0].bundle,'resources');assert.equal(h.requests[0].file,'ui/stage-stars/glow');

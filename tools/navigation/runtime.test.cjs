@@ -705,7 +705,7 @@ test('Delayed attack effects cannot survive pooling and reuse of the same enemy 
 
 test('A delayed hit reads current-frame building geometry after navigation begins its new frame', () => {
   const e = environment(), ctrl = new (e.load('KinghtFallGameCtrl').default)();
-  Object.assign(ctrl, e.game, { gameStatus: 1, ctrPlay: { doMove() {}, onUpdata() {} },
+  Object.assign(ctrl, e.game, { gameStatus: 1, ctrPlay: Object.assign({}, e.game.ctrPlay, { doMove() {}, onUpdata() {} }),
     ndPlayArr2: [], ndEnemyArr: [], ndSoldArr: [], ndBuildArr2: [] });
   ctrl.gameData.onUpdata = () => {};
   e.load('KinghtFallUIGame').default.instance.ctrGame = ctrl;

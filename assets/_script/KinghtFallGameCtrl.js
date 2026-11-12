@@ -283,7 +283,12 @@ var def_KinghtFallGameCtrl = function (t) {
     Navigation.beginFrame(this);
     if (this._projectileLooks) this._projectileLooks.update(t);
     if (this.gameData && this.gameData._relicSavePending && require("RelicRuntime").retry(this.gameData, t) && this.gameData._relicRoundCommitPending) this.gameData.tryEndGame();
-    if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.gameData) this.gameData._relicCombatTime = (this.gameData._relicCombatTime || 0) + t;
+    if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.gameData) {
+      this.gameData._relicCombatTime = (this.gameData._relicCombatTime || 0) + t;
+      this.ctrPlay._relicMoving = !this.ctrPlay.isDead() && !!(this.moveDir && (this.moveDir.x || this.moveDir.y));
+      require("RelicCombat").updateHero(this.ctrPlay, t);
+      require("RelicBattle").updateHeroAura(this.gameData, this.ctrPlay, t, this.ctrPlay._relicMoving);
+    }
     GameToolsOverrides.tick(t, this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight);
     switch (this.gameStatus) {
       case $z1KinghtFallModle.KinghtFallGameStage.Prepare:
@@ -547,6 +552,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ctrPlay.ndAgg.active = this.isAgg;
     this.applyArmyOrder();
     this.collectFollowers();
+    if (cc.resources && this.isAgg && !this._usesSelectiveFollow()) require("UnitVoices").follow(this, this.gameData.getSoldierList());
   };
   _ctor.prototype.rallyCommand = function () {
     this.rallyPoint = { index: this.pathIndex++, pos: Navigation.positionOf(this.ctrPlay.node, this) };
@@ -557,20 +563,22 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndAggFlag.zIndex = Math.floor(cc.winSize.height) - Math.floor(this.rallyPoint.pos.y);
     var animation = this.ndAggFlag.getComponent(sp.Skeleton);
     if (animation) { animation.setAnimation(0, "click", false); animation.addAnimation(0, "idle", true); }
-    var game = this;
+    var game = this, responders = [];
     this.gameData.getSoldierList().forEach(function (unit) {
       if (unit.isDead() || unit._isPooled || !unit.node.activeInHierarchy) return;
       if (unit._followSelected && game.isAgg) return;
       unit._followPickupBlocked = false;
       unit.setPersonalRallyPoint(game.rallyPoint.pos, true);
       unit._rallyOrder = game.rallyPoint;
+      responders.push(unit);
     });
     this.applyArmyOrder();
     if (this.gameData.levelCfg) this.saveGame();
+    if (cc.resources) require("UnitVoices").rally(this, responders);
   };
   _ctor.prototype.collectFollowers = function () {
     if (!this._usesSelectiveFollow() || !this.isAgg || this.ctrPlay.isDead()) return;
-    var units = this.gameData.getSoldierList(), added = false;
+    var units = this.gameData.getSoldierList(), added = [];
     for (var i = 0; i < units.length; i++) {
       var unit = units[i];
       if (unit._followPickupBlocked) {
@@ -583,9 +591,12 @@ var def_KinghtFallGameCtrl = function (t) {
       unit._rallyOrder = null;
       unit.rallyPoint = null; unit.pathList = null; unit._orderTarget = null; unit._targetRefresh = 0;
       unit.applyArmyOrder(this);
-      added = true;
+      added.push(unit);
     }
-    if (added) this._armyFormation = null;
+    if (added.length) {
+      this._armyFormation = null;
+      if (cc.resources) require("UnitVoices").follow(this, added);
+    }
   };
   _ctor.prototype.isUnitInFollowRing = function (unit) {
     if (!this._usesSelectiveFollow() || !this.isAgg || !unit || unit._isPooled ||
@@ -630,6 +641,7 @@ var def_KinghtFallGameCtrl = function (t) {
     unit.applyArmyOrder(this);
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
+    if (cc.resources) require("UnitVoices").follow(this, [unit]);
     return true;
   };
   _ctor.prototype.holdSelectedFollowers = function () {
@@ -1081,8 +1093,8 @@ var def_KinghtFallGameCtrl = function (t) {
     if (s.length) (e = n.pathList).push.apply(e, s[$z1Utils.Utils.randomRang(0, s.length)].children);
     return n;
   };
-  _ctor.prototype.onPlayAttack = function (t) {
-    if (require("HeroWeaponCombat").melee(this, t)) return;
+  _ctor.prototype.onPlayAttack = function (t, release) {
+    if (require("HeroWeaponCombat").melee(this, t, release)) return;
     var e = this;
     var n = this.ndPlayArr1.shift();
     n || (n = cc.instantiate(this.ctrPlay.ctrArr.node)).setParent(this.ndUI);
@@ -1096,19 +1108,22 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndPlayArr2.push(o);
     var r = this.ctrPlay.getAttack(t);
     var s = this.ctrPlay.crit >= Math.random();
+    var hero = this.ctrPlay, context = require("RelicCombat").primaryContext(hero, t, r, s, release);
     s && (r *= this.ctrPlay.getCriticalDamage ? this.ctrPlay.getCriticalDamage() : this.ctrPlay.critDam);
     o.combatContext = this;
     ProjectileLooks.prepare(o, this, "hero");
     o.setTag(a, t.node, function () {
-      if (cc.isValid(t) && cc.isValid(t.node)) {
+      if (cc.isValid(t) && cc.isValid(t.node) && require("RelicCombat").primaryCurrent(context, t, hero) && !context.used) {
         if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(2)) {
           $z1KinghtFallUIGame.default.instance.ctrUI.setGuide(null);
           $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().setGuideTips(2);
         }
-        $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(t.node.getPosition(), r, s);
-        $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(t.node.getPosition(), "jian_" + e.ctrPlay.ctrPlayAni.arrName);
+        var impactPosition = t.node.getPosition();
+        $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(impactPosition, "jian_" + hero.ctrPlayAni.arrName);
         n.active = false;
-        var soundDamage = t.onAttacked(r, e.ctrPlay);
+        var soundDamage = t.onAttacked(r, hero, false, context);
+        if (soundDamage > 0) $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(impactPosition, soundDamage, s);
+        if (!require("RelicCombat").primaryCurrent(context, t, hero)) return;
         if (s && soundDamage > 0 && BattleSounds.effect) BattleSounds.effect("critical-hit", t, { allowDead: true });
         var i = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff08);
         i && t.isDead() && e.ctrPlay.addHpPro(i.Pamer[0]);

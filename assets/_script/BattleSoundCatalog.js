@@ -7,7 +7,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.64
+    "duration": 0.6390702947845806
   },
   "sword-heavy-swing": {
     "path": "sfx/sword-heavy-swing",
@@ -15,7 +15,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.84
+    "duration": 0.5917913832199546
   },
   "cavalry-lance-thrust": {
     "path": "sfx/cavalry-lance-thrust",
@@ -23,7 +23,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.4043
+    "duration": 0.6759637188208617
   },
   "monster-claw-swipe": {
     "path": "sfx/monster-claw-swipe",
@@ -31,7 +31,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.64
+    "duration": 0.6802494331065759
   },
   "monster-bite": {
     "path": "sfx/monster-bite",
@@ -39,7 +39,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.6454
+    "duration": 0.6269160997732426
   },
   "golem-ground-slam": {
     "path": "sfx/golem-ground-slam",
@@ -47,7 +47,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.8416
+    "duration": 0.8108616780045351
   },
   "bow-arrow-release": {
     "path": "sfx/bow-arrow-release",
@@ -55,7 +55,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.5188
+    "duration": 0.5433106575963719
   },
   "crossbow-fire": {
     "path": "sfx/crossbow-fire",
@@ -63,7 +63,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.64
+    "duration": 0.6731065759637188
   },
   "enemy-spit-launch": {
     "path": "sfx/enemy-spit-launch",
@@ -71,7 +71,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.7119
+    "duration": 0.7479365079365079
   },
   "enemy-magic-projectile": {
     "path": "sfx/enemy-magic-projectile",
@@ -79,7 +79,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 1
+    "duration": 0.9129024943310657
   },
   "sniper-tower-fire": {
     "path": "sfx/sniper-tower-fire",
@@ -87,7 +87,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.84
+    "duration": 0.4284353741496599
   },
   "cannon-tower-fire": {
     "path": "sfx/cannon-tower-fire",
@@ -95,7 +95,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 65,
     "loop": false,
-    "duration": 1.28
+    "duration": 1.2814512471655328
   },
   "impact-flesh-light": {
     "path": "sfx/impact-flesh-light",
@@ -103,7 +103,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.52
+    "duration": 0.4940589569160998
   },
   "impact-flesh-heavy": {
     "path": "sfx/impact-flesh-heavy",
@@ -111,7 +111,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.5211
+    "duration": 0.5601814058956917
   },
   "impact-armour": {
     "path": "sfx/impact-armour",
@@ -119,7 +119,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.64
+    "duration": 0.5426757369614512
   },
   "impact-shield": {
     "path": "sfx/impact-shield",
@@ -127,7 +127,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.5796
+    "duration": 0.447437641723356
   },
   "impact-building-wood": {
     "path": "sfx/impact-building-wood",
@@ -135,7 +135,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.6679
+    "duration": 0.5762585034013605
   },
   "impact-building-stone": {
     "path": "sfx/impact-building-stone",
@@ -143,7 +143,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.8
+    "duration": 0.84
   },
   "arrow-impact-flesh": {
     "path": "sfx/arrow-impact-flesh",
@@ -167,7 +167,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.7596
+    "duration": 1
   },
   "cannon-impact-explosion": {
     "path": "sfx/cannon-impact-explosion",
@@ -175,7 +175,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.8521
+    "duration": 1.4462358276643992
   },
   "critical-hit": {
     "path": "sfx/critical-hit",
@@ -183,103 +183,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 65,
     "loop": false,
-    "duration": 0.8
-  },
-  "death-human-armour": {
-    "path": "sfx/death-human-armour",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 1.48
-  },
-  "death-mounted-cavalry": {
-    "path": "sfx/death-mounted-cavalry",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 1.1484
-  },
-  "death-beast": {
-    "path": "sfx/death-beast",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 1.075
-  },
-  "death-bird-flying": {
-    "path": "sfx/death-bird-flying",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 0.7439
-  },
-  "death-reptile-shell": {
-    "path": "sfx/death-reptile-shell",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 1.48
-  },
-  "death-insect": {
-    "path": "sfx/death-insect",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 0.7063
-  },
-  "death-slime": {
-    "path": "sfx/death-slime",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 0.7305
-  },
-  "death-plant-wood": {
-    "path": "sfx/death-plant-wood",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 0.944
-  },
-  "death-golem-stone": {
-    "path": "sfx/death-golem-stone",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 0.6078
-  },
-  "death-golem-metal": {
-    "path": "sfx/death-golem-metal",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 1.6
-  },
-  "death-skeleton": {
-    "path": "sfx/death-skeleton",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 0.6539
-  },
-  "death-ghost-magic": {
-    "path": "sfx/death-ghost-magic",
-    "group": "death",
-    "gain": 0.5,
-    "cooldown": 120,
-    "loop": false,
-    "duration": 1.48
+    "duration": 0.72
   },
   "hurt-beast": {
     "path": "sfx/hurt-beast",
@@ -287,7 +191,7 @@ exports.effects = {
     "gain": 0.25,
     "cooldown": 160,
     "loop": false,
-    "duration": 0.5639
+    "duration": 0.6
   },
   "hurt-slime": {
     "path": "sfx/hurt-slime",
@@ -295,7 +199,7 @@ exports.effects = {
     "gain": 0.25,
     "cooldown": 160,
     "loop": false,
-    "duration": 0.4217
+    "duration": 0.6
   },
   "hurt-skeleton": {
     "path": "sfx/hurt-skeleton",
@@ -303,7 +207,7 @@ exports.effects = {
     "gain": 0.25,
     "cooldown": 160,
     "loop": false,
-    "duration": 0.478
+    "duration": 0.6
   },
   "hurt-ghost": {
     "path": "sfx/hurt-ghost",
@@ -319,7 +223,7 @@ exports.effects = {
     "gain": 0.25,
     "cooldown": 160,
     "loop": false,
-    "duration": 0.6
+    "duration": 0.4977324263038549
   },
   "healing-cast": {
     "path": "sfx/healing-cast",
@@ -327,7 +231,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.28
+    "duration": 1.143673469387755
   },
   "healing-receive": {
     "path": "sfx/healing-receive",
@@ -343,7 +247,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 0.7174
+    "duration": 1
   },
   "slow-apply": {
     "path": "sfx/slow-apply",
@@ -351,7 +255,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 0.5941
+    "duration": 0.6824263038548752
   },
   "chain-lightning": {
     "path": "sfx/chain-lightning",
@@ -359,7 +263,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.32
+    "duration": 1.28
   },
   "shield-activate": {
     "path": "sfx/shield-activate",
@@ -367,7 +271,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.2
+    "duration": 1.0152154195011338
   },
   "mirror-reflect": {
     "path": "sfx/mirror-reflect",
@@ -375,7 +279,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 0.6072
+    "duration": 0.6879138321995465
   },
   "gravity-proc": {
     "path": "sfx/gravity-proc",
@@ -383,7 +287,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.36
+    "duration": 1.1188888888888888
   },
   "life-steal": {
     "path": "sfx/life-steal",
@@ -391,7 +295,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.04
+    "duration": 1.063424036281179
   },
   "phoenix-castle-repair": {
     "path": "sfx/phoenix-castle-repair",
@@ -399,7 +303,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.76
+    "duration": 1.3595011337868481
   },
   "hourglass-activate": {
     "path": "sfx/hourglass-activate",
@@ -407,7 +311,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.1036
+    "duration": 1.24
   },
   "debuff-apply": {
     "path": "sfx/debuff-apply",
@@ -415,7 +319,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 0.6749
+    "duration": 0.7682312925170068
   },
   "boss-transformation": {
     "path": "sfx/boss-transformation",
@@ -423,7 +327,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.7338
+    "duration": 1.5833786848072562
   },
   "boss-special-cast": {
     "path": "sfx/boss-special-cast",
@@ -431,7 +335,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.1792
+    "duration": 1.2291156462585033
   },
   "barracks-squad-spawn": {
     "path": "sfx/barracks-squad-spawn",
@@ -463,7 +367,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 0.9928
+    "duration": 1.3238548752834467
   },
   "wave-clear": {
     "path": "sfx/wave-clear",
@@ -471,7 +375,7 @@ exports.effects = {
     "gain": 0.5,
     "cooldown": 180,
     "loop": false,
-    "duration": 1.0443
+    "duration": 1.0791609977324264
   },
   "boss-arrival": {
     "path": "sfx/boss-arrival",
@@ -479,7 +383,7 @@ exports.effects = {
     "gain": 0.65,
     "cooldown": 5000,
     "loop": false,
-    "duration": 1.144
+    "duration": 1.48
   },
   "castle-low-health": {
     "path": "sfx/castle-low-health",
@@ -487,7 +391,7 @@ exports.effects = {
     "gain": 0.65,
     "cooldown": 5000,
     "loop": false,
-    "duration": 0.7611
+    "duration": 1.0282539682539682
   },
   "unit-select": {
     "path": "sfx/unit-select",
@@ -495,7 +399,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 80,
     "loop": false,
-    "duration": 0.4342
+    "duration": 0.52
   },
   "order-follow": {
     "path": "sfx/order-follow",
@@ -503,7 +407,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 80,
     "loop": false,
-    "duration": 0.4627
+    "duration": 0.29895691609977326
   },
   "order-hold": {
     "path": "sfx/order-hold",
@@ -511,7 +415,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 80,
     "loop": false,
-    "duration": 0.3088
+    "duration": 0.594421768707483
   },
   "battle-silver-reward": {
     "path": "sfx/battle-silver-reward",
@@ -527,7 +431,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 80,
     "loop": false,
-    "duration": 0.5101
+    "duration": 0.35272108843537414
   },
   "ui-panel-close": {
     "path": "sfx/ui-panel-close",
@@ -535,7 +439,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 80,
     "loop": false,
-    "duration": 0.52
+    "duration": 0.5182766439909297
   },
   "ui-selection-confirm": {
     "path": "sfx/ui-selection-confirm",
@@ -543,7 +447,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 80,
     "loop": false,
-    "duration": 0.6268
+    "duration": 0.5176643990929706
   },
   "hooves-forest-loop": {
     "path": "sfx/hooves-forest-loop",
@@ -559,7 +463,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "hooves-autumn-loop": {
     "path": "sfx/hooves-autumn-loop",
@@ -575,7 +479,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "hooves-snow-loop": {
     "path": "sfx/hooves-snow-loop",
@@ -583,7 +487,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "hooves-ice-loop": {
     "path": "sfx/hooves-ice-loop",
@@ -599,7 +503,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "hooves-lava-loop": {
     "path": "sfx/hooves-lava-loop",
@@ -607,7 +511,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "footsteps-infantry-loop": {
     "path": "sfx/footsteps-infantry-loop",
@@ -615,7 +519,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "footsteps-heavy-infantry-loop": {
     "path": "sfx/footsteps-heavy-infantry-loop",
@@ -623,7 +527,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
+    "duration": 4.72
   },
   "movement-flying-loop": {
     "path": "sfx/movement-flying-loop",
@@ -631,63 +535,7 @@ exports.effects = {
     "gain": 0.4,
     "cooldown": 0,
     "loop": true,
-    "duration": 5.94
-  },
-  "ambience-forest-loop": {
-    "path": "sfx/ambience-forest-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
-  },
-  "ambience-deep-forest-loop": {
-    "path": "sfx/ambience-deep-forest-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
-  },
-  "ambience-autumn-loop": {
-    "path": "sfx/ambience-autumn-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
-  },
-  "ambience-desert-loop": {
-    "path": "sfx/ambience-desert-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
-  },
-  "ambience-snow-loop": {
-    "path": "sfx/ambience-snow-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
-  },
-  "ambience-ice-loop": {
-    "path": "sfx/ambience-ice-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
-  },
-  "ambience-fire-loop": {
-    "path": "sfx/ambience-fire-loop",
-    "group": "loop",
-    "gain": 0.4,
-    "cooldown": 0,
-    "loop": true,
-    "duration": 9.88
+    "duration": 4.72
   },
   "ambience-lava-loop": {
     "path": "sfx/ambience-lava-loop",

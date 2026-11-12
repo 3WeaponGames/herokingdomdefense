@@ -15,7 +15,7 @@ function rowFor(config,building,hall){
  const definition=config.BuildEnum&&config.BuildEnum[building.kind],rows=definition&&definition.levelList||[];
  if(Number.isInteger(building.previewBranch))return {row:rows.find(row=>row.index===building.previewBranch)};
  let row=rows[0];
- if(building.kind===1)row=rows.find(row=>row.level===hall);
+ if(building.kind===1)row=rows.find(row=>row.level===hall)||rows.reduce((best,row)=>row.level<=hall&&(!best||row.level>best.level)?row:best,null);
  else if(definition&&Array.isArray(definition.InitialChoices))row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
  return {index:row&&row.index,row};
 }
@@ -57,7 +57,7 @@ function describe(service,stage){
   const plateSprites=plate?info.sprites.filter(s=>s.node===plateId&&s.enabled).map(s=>sprite(info,s,true)):[];
   const trigger=plate&&plate.components.find(c=>c.value.__type__==='cc.PolygonCollider');
   const trs=plate&&plate.source._trs&&plate.source._trs.array,step=trigger?(trigger.value.points||[]).map(p=>{const x=p.x/(trs?trs[7]:1),y=p.y/(trs?trs[8]:1),m=plate.world;return {x:m[0]*x+m[2]*y+m[4]-origin.x,y:m[1]*x+m[3]*y+m[5]-origin.y};}):null;
-  for(const hall of [1,2,3]){
+  for(const hall of [1,2,3,4]){
    const chosen=rowFor(config,building,hall),row=chosen.row,look=row&&row.Appearance,level={origin:clone(origin),sprites:plateSprites.concat(native),skeletons:[],blockers:Navigation.buildingPolygons(service,stage,Object.assign({},building,{x:0,y:0,scale:1,angle:0}),hall,'closed',config,sourceModels),step:step&&clone(step)};
    if(building.kind===6)level.wallOpening=GateFacing.validOpening(component.wallOpening)?component.wallOpening:'outward';
    if(plate)level.purchaseField={angle:Purchase.angle(building.purchaseSide||component.purchaseSide),center:{x:plate.position.x-origin.x,y:plate.position.y-origin.y},offset:clone(Purchase.offset(building.purchaseOffset?building:component)),sprites:plateSprites.map(()=>true).concat(nativeSpecs.map(()=>false))};

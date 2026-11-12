@@ -12,6 +12,30 @@
     }
   ],
   "entries": {
+    "data.building.castle-4.name": {"en":"Castle · Lv 4","zh":"主城 · 4级","context":"Approved four-tier building progression"},
+    "data.building.castle-4.description": {"en":"Final upgrade: a stronger royal castle with improved defenses and firepower.","zh":"最终升级：强化皇家城堡，拥有更强的防御与火力。","context":"Approved four-tier building progression"},
+    "data.building.archer-4.name": {"en":"Arrow Tower · Lv 4","zh":"箭塔 · 4级","context":"Approved four-tier building progression"},
+    "data.building.archer-4.description": {"en":"Final upgrade: an upgraded watchtower with greater range and firepower.","zh":"最终升级：强化瞭望塔，拥有更远的射程与更强的火力。","context":"Approved four-tier building progression"},
+    "data.building.cannon-4.name": {"en":"Cannon Tower · Lv 4","zh":"加农炮塔 · 4级","context":"Approved four-tier building progression"},
+    "data.building.cannon-4.description": {"en":"Final upgrade: a reinforced artillery tower with stronger attacks and longer range.","zh":"最终升级：加固炮塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
+    "data.building.sniper-4.name": {"en":"Sniper Tower · Lv 4","zh":"狙击塔 · 4级","context":"Approved four-tier building progression"},
+    "data.building.sniper-4.description": {"en":"Final upgrade: a reinforced crossbow tower with stronger attacks and longer range.","zh":"最终升级：加固弩塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
+    "data.building.royal-infantry-4.name": {"en":"Royal Guard · Lv 4","zh":"皇家卫兵 · 4级","context":"Approved four-tier building progression"},
+    "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十名皇家步兵。","context":"Approved four-tier building progression"},
+    "data.building.heavy-infantry-4.name": {"en":"Heavy Infantry · Lv 4","zh":"重装步兵 · 4级","context":"Approved four-tier building progression"},
+    "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎十名重装步兵。","context":"Approved four-tier building progression"},
+    "data.building.crossbow-4.name": {"en":"Crossbowmen · Lv 4","zh":"弩手 · 4级","context":"Approved four-tier building progression"},
+    "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Crossbowmen.","zh":"最终升级：加固兵营，可驻扎十名弩手。","context":"Approved four-tier building progression"},
+    "data.building.stables-4.name": {"en":"Vanguard · Lv 4","zh":"先锋骑兵 · 4级","context":"Approved four-tier building progression"},
+    "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for ten cavalry units.","zh":"最终升级：加固马厩，可驻扎十名骑兵。","context":"Approved four-tier building progression"},
+    "data.building.farmhouse-4.name": {"en":"House · Lv 4","zh":"房屋 · 4级","context":"Approved four-tier building progression"},
+    "data.building.farmhouse-4.description": {"en":"Final upgrade: improved housing that supplies six silver each wave.","zh":"最终升级：改良农舍，每波提供六枚银币。","context":"Approved four-tier building progression"},
+    "data.building.mill-4.name": {"en":"Mill · Lv 4","zh":"磨坊 · 4级","context":"Approved four-tier building progression"},
+    "data.building.mill-4.description": {"en":"Final upgrade: an upgraded mill with four farm plots that supplies nine silver each wave.","zh":"最终升级：拥有四块农田的强化磨坊，每波提供九枚银币。","context":"Approved four-tier building progression"},
+    "relic.style.requirement": {"en":"Requires: {0}","zh":"适用流派：{0}","context":"Relic tooltip fighting style requirement"},
+    "relic.style.active": {"en":"Active: equipped style is {0}","zh":"已生效：当前装备流派为{0}","context":"Owned relic is active for equipped style"},
+    "relic.style.inactive": {"en":"Inactive: equipped style is {0}","zh":"未生效：当前装备流派为{0}","context":"Owned relic is inactive for equipped style"},
+    "relic.style.all": {"en":"All fighting styles","zh":"所有战斗流派","context":"Universal relic fighting style applicability"},
     "data.goodscfg.2033.name": {"en":"Energy Drink","zh":"体力药水","context":"Banked consumable · use one to gain20Energy"},
     "ui.energy.items.title": {"en":"Energy Items","zh":"体力道具","context":"Energy+popup · consumable inventory"},
     "ui.energy.items.owned": {"en":"Owned: {0}","zh":"持有：{0}","context":"Energy+popup · stored item count"},
@@ -722,11 +746,7 @@
       "zh": "石制箭塔",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name"
     },
-    "data.buildenum.2.levellist.3.levelupdescribe": {
-      "en": "Final upgrade: faster arrows with the highest damage and longest range.",
-      "zh": "最终升级：箭矢射速更快，伤害最高，射程最远。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.buildenum.2.levellist.3.levelupdescribe": {"en":"Upgrade: faster arrows with high damage and long range.","zh":"升级：箭矢更快、伤害更高、射程更远。","context":"Buildings · level capabilities and upgrade notes"},
     "data.buildenum.3.name": {
       "en": "Barracks",
       "zh": "兵营",
@@ -762,11 +782,7 @@
       "zh": "石制房屋",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.2.Name"
     },
-    "data.buildenum.4.levellist.3.levelupdescribe": {
-      "en": "Final upgrade: earns 4 silver per wave while the house survives.",
-      "zh": "最终升级：房屋存活时，每波结束获得4白银。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.buildenum.4.levellist.3.levelupdescribe": {"en":"Upgrade: earns 4 silver per wave while the house survives.","zh":"升级：农舍存活时，每波获得4枚银币。","context":"Buildings · level capabilities and upgrade notes"},
     "data.buildenum.5.name": {
       "en": "Mill",
       "zh": "磨坊",
@@ -787,11 +803,7 @@
       "zh": "石制磨坊",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.5.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.5.levelList.2.Name"
     },
-    "data.buildenum.5.levellist.3.levelupdescribe": {
-      "en": "Final upgrade: earns 7 silver per wave while the mill survives.",
-      "zh": "最终升级：磨坊存活时，每波结束获得7白银。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.buildenum.5.levellist.3.levelupdescribe": {"en":"Upgrade: earns 7 silver per wave while the mill survives.","zh":"升级：磨坊存活时，每波获得7枚银币。","context":"Buildings · level capabilities and upgrade notes"},
     "data.buildenum.6.name": {
       "en": "Wall",
       "zh": "城墙",
@@ -2363,8 +2375,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.2.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.2.Describe"
     },
     "data.treasurecfg.4.describe": {
-      "en": "Gain {0} bonus silver for every 10 silver your houses produce",
-      "zh": "民宅每生产10银币，额外+{0}",
+      "en": "On wave clear, gain {0} silver per 10 unspent silver (up to 3 payments per wave).",
+      "zh": "清除波次时，每保留10银币获得{0}银币，每波最多结算3次。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.3.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.3.Describe"
     },
     "data.treasurecfg.5.describe": {
@@ -2388,18 +2400,18 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.7.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.7.Describe"
     },
     "data.treasurecfg.9.describe": {
-      "en": "Construction and upgrade costs -1 silver before wave {0}",
-      "zh": "第{0}波前，建筑的建造及升级消耗-1",
+      "en": "Construction and upgrades cost 1 less silver during the first {0} combat waves.",
+      "zh": "前{0}个战斗波次的建造和升级费用减少1银币。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.8.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.8.Describe"
     },
     "data.treasurecfg.10.describe": {
-      "en": "Soldier damage +{0} every 10 seconds during battle",
-      "zh": "战斗开始后，每隔10秒士兵伤害+{0}",
+      "en": "Every 10 combat seconds, soldiers gain {0} damage. Stacks up to 3 times; resets each wave.",
+      "zh": "每战斗10秒，士兵伤害提高{0}，最多叠加3层，每波重置。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.9.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.9.Describe"
     },
     "data.treasurecfg.11.describe": {
-      "en": "Hero has a {0} chance to become invincible for 3 seconds",
-      "zh": "主角{0}概率触发无敌，持续3秒；",
+      "en": "Guardian: {0} chance when hit to extend hit invulnerability by 3 seconds.",
+      "zh": "守护者：受到攻击时有{0}概率将受击无敌时间延长3秒。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.10.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.10.Describe"
     },
     "data.treasurecfg.12.describe": {
@@ -2413,8 +2425,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.12.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.12.Describe"
     },
     "data.treasurecfg.14.describe": {
-      "en": "Melee soldier attack speed +{0}",
-      "zh": "近战士兵攻击速度+{0}",
+      "en": "Fighter: critical hits grant {0} attack speed for 2 seconds. Further critical hits refresh the duration.",
+      "zh": "斗士：暴击后攻击速度提高{0}，持续2秒，再次暴击刷新持续时间。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.13.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.13.Describe"
     },
     "data.treasurecfg.15.describe": {
@@ -2433,8 +2445,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.16.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.16.Describe"
     },
     "data.treasurecfg.18.describe": {
-      "en": "Hero attack +{0} against nearby enemies",
-      "zh": "主角攻击近身敌人时，攻击+{0}",
+      "en": "Melee styles: deal {0} more damage to enemies within 100 units.",
+      "zh": "近战流派：对100距离内的敌人伤害提高{0}。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.17.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.17.Describe"
     },
     "data.treasurecfg.19.describe": {
@@ -2458,28 +2470,28 @@
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.21.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.21.Describe"
     },
     "data.treasurecfg.23.describe": {
-      "en": "Houses have a {0} chance to produce 1 extra silver",
-      "zh": "民宅{0}概率产出银币+1",
+      "en": "Each productive house grants {0} bonus silver once per castle tier. Rebuilding does not reset this bonus.",
+      "zh": "每座可生产的民宅在每个城堡等级额外提供{0}银币一次，重建不重置。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.22.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.22.Describe"
     },
     "data.treasurecfg.24.describe": {
-      "en": "Cavalry attack +{0}, HP +{0}",
-      "zh": "骑兵攻击+{0}，血量+{0}",
+      "en": "Vanguard: spear hits pierce one enemy directly behind the target for {0} of normal hit damage.",
+      "zh": "先锋：长矛命中时穿透目标后方的一名敌人，造成普通命中伤害的{0}。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.23.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.23.Describe"
     },
     "data.treasurecfg.25.describe": {
-      "en": "Archer attack +{0}, HP +{0}",
-      "zh": "弓兵攻击+{0}，血量+{0}",
+      "en": "Skirmisher: deal {0} more primary damage to enemies at full HP.",
+      "zh": "游击者：对满生命敌人的直接攻击伤害提高{0}。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.24.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.24.Describe"
     },
     "data.treasurecfg.26.describe": {
-      "en": "Heavy Infantry attack +{0}, HP +{0}",
-      "zh": "重步兵攻击+{0}，血量+{0}",
+      "en": "Guardian: take {0} less damage while standing still.",
+      "zh": "守护者：静止时受到的伤害降低{0}。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.25.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.25.Describe"
     },
     "data.treasurecfg.27.describe": {
-      "en": "Infantry attack +{0}, HP +{0}",
-      "zh": "步兵攻击+{0}，血量+{0}",
+      "en": "Fighter: consecutive hits on the same enemy gain {0} damage per stack, up to 3 stacks. Changing targets resets the combo.",
+      "zh": "斗士：连续命中同一敌人时，每层伤害提高{0}，最多3层，切换目标重置。",
       "context": "assets\\configs\\GameJsonCfg.json:TreasureCfg.26.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:TreasureCfg.26.Describe"
     },
     "data.bufftypecfg.1.buffword": {
@@ -6169,11 +6181,7 @@
       "zh": "加农炮塔 · 3级",
       "context": "Buildings · Cannon Tower · Lv 3"
     },
-    "data.building.cannon-3.description": {
-      "en": "Final upgrade: powerful, faster shells with the widest blast and longest range.",
-      "zh": "最终升级：炮弹更强、射速更快，拥有最大爆炸范围和最远射程。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.cannon-3.description": {"en":"Upgrade: powerful, faster shells with a wide blast and long range.","zh":"升级：炮弹威力更强、速度更快，爆炸范围更广、射程更远。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.sniper-1.name": {
       "en": "Sniper Tower · Lv 1",
       "zh": "狙击塔 · 1级",
@@ -6199,11 +6207,7 @@
       "zh": "狙击塔 · 3级",
       "context": "Buildings · Sniper Tower · Lv 3"
     },
-    "data.building.sniper-3.description": {
-      "en": "Final upgrade: strongest, fastest long-range shots at the highest-HP monster.",
-      "zh": "最终升级：以最强、最快的远程射击打击生命最高的怪物。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.sniper-3.description": {"en":"Upgrade: strong, fast long-range shots at the highest-HP monster.","zh":"升级：对生命值最高的怪物发射强力、快速的远程弩箭。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.barracks.royal-guard.1.name": {
       "en": "Royal Guard · Lv 1",
       "zh": "皇家卫兵 · 1级",
@@ -10149,11 +10153,7 @@
       "zh": "解锁更多建筑并守护军队。升级可提升生命、伤害和射程。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.1.3.description": {
-      "en": "Final upgrade: the strongest castle, with maximum HP, damage and attack range.",
-      "zh": "最终升级：最强大的城堡，拥有最高生命、伤害和攻击射程。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.guide.1.3.description": {"en":"Upgrade: a stronger castle with increased HP, damage and attack range.","zh":"升级：更坚固的城堡，拥有更高的生命值、伤害与更远的射程。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.5.1.description": {
       "en": "Earns 3 silver after each wave if it survives. Upgrade for more silver income.",
       "zh": "磨坊存活时，每波结束获得3白银。升级可增加白银收入。",
@@ -10164,41 +10164,25 @@
       "zh": "提供6名均衡的前线战士。升级可招募8名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.13.description": {
-      "en": "Final upgrade: 8 balanced frontline fighters.",
-      "zh": "最终升级：提供8名均衡的前线战士。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.guide.3.13.description": {"en":"Upgrade: 8 balanced frontline fighters.","zh":"升级：8名攻守兼备的前线战士。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.15.description": {
       "en": "6 tough defenders that hold the line. Upgrade to recruit 8.",
       "zh": "提供6名坚守战线的重装步兵。升级可招募8名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.16.description": {
-      "en": "Final upgrade: 8 tough defenders that hold the line.",
-      "zh": "最终升级：提供8名坚守战线的重装步兵。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.guide.3.16.description": {"en":"Upgrade: 8 tough defenders that hold the line.","zh":"升级：8名坚韧的守卫，稳固前线。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.18.description": {
       "en": "6 ranged troops that fight behind the frontline. Upgrade to recruit 8.",
       "zh": "提供6名在前线后方作战的弩手。升级可招募8名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.19.description": {
-      "en": "Final upgrade: 8 ranged troops that fight behind the frontline.",
-      "zh": "最终升级：提供8名在前线后方作战的弩手。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.guide.3.19.description": {"en":"Upgrade: 8 ranged troops that fight behind the frontline.","zh":"升级：8名在前线后方作战的远程士兵。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.guide.3.21.description": {
       "en": "6 mounted troops for rapid repositioning. Upgrade to recruit 8.",
       "zh": "提供6名可快速转移的骑兵。升级可招募8名。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
-    "data.building.guide.3.22.description": {
-      "en": "Final upgrade: 8 mounted troops for rapid repositioning.",
-      "zh": "最终升级：提供8名可快速转移的骑兵。",
-      "context": "Buildings · level capabilities and upgrade notes"
-    },
+    "data.building.guide.3.22.description": {"en":"Upgrade: 8 mounted troops for rapid repositioning.","zh":"升级：8名能够快速转移位置的骑兵。","context":"Buildings · level capabilities and upgrade notes"},
     "data.goodscfg.2034.name": {
       "en": "Phoenix Feather",
       "zh": "凤凰之羽",
@@ -10215,8 +10199,8 @@
       "context": "Relic 120029 name; GoodsCfg.2035.name"
     },
     "data.treasurecfg.29.describe": {
-      "en": "Friendly units deal {0} more damage to slowed enemies.",
-      "zh": "友方单位对减速敌人造成的伤害+{0}。",
+      "en": "Mystic: deal {0} more primary damage to enemies under temporary slow or freeze. Slowing Charm alone does not activate this.",
+      "zh": "秘法师：对暂时减速或冻结的敌人，直接伤害提高{0}。仅有迟缓符咒不会触发。",
       "context": "Relic 120029 effect; TreasureCfg.28.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2036.name": {
@@ -10225,8 +10209,8 @@
       "context": "Relic 120030 name; GoodsCfg.2036.name"
     },
     "data.treasurecfg.30.describe": {
-      "en": "Every 8th hero attack chains to up to 2 nearby enemies for {0} of its damage. Chain hits cannot trigger other relic effects.",
-      "zh": "主角每第8次攻击向附近最多2名敌人传导闪电，造成原伤害的{0}。闪电不会触发其他遗物效果。",
+      "en": "Mystic: every 8 primary attacks, chain lightning strikes up to 2 nearby enemies for {0} of normal hit damage.",
+      "zh": "秘法师：每8次直接攻击释放连锁闪电，对附近最多2名敌人造成普通命中伤害的{0}。",
       "context": "Relic 120030 effect; TreasureCfg.29.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2037.name": {
@@ -10255,8 +10239,8 @@
       "context": "Relic 120033 name; GoodsCfg.2039.name"
     },
     "data.treasurecfg.33.describe": {
-      "en": "Ranged damage received by the hero -{0}.",
-      "zh": "主角受到的远程伤害-{0}。",
+      "en": "Mystic: take {0} less damage from ranged attacks.",
+      "zh": "秘法师：受到的远程伤害降低{0}。",
       "context": "Relic 120033 effect; TreasureCfg.32.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2040.name": {
@@ -10265,8 +10249,8 @@
       "context": "Relic 120034 name; GoodsCfg.2040.name"
     },
     "data.treasurecfg.34.describe": {
-      "en": "Hero damage against bosses +{0}.",
-      "zh": "主角对首领造成的伤害+{0}。",
+      "en": "Bruiser: deal {0} more primary damage to bosses.",
+      "zh": "猛士：对首领的直接伤害提高{0}。",
       "context": "Relic 120034 effect; TreasureCfg.33.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2041.name": {
@@ -10275,8 +10259,8 @@
       "context": "Relic 120035 name; GoodsCfg.2041.name"
     },
     "data.treasurecfg.35.describe": {
-      "en": "Hero critical damage +{0}.",
-      "zh": "主角暴击伤害+{0}。",
+      "en": "Bruiser: primary hits cleave one nearby enemy for {0} of normal hit damage.",
+      "zh": "猛士：直接命中时横扫附近另一名敌人，造成普通命中伤害的{0}。",
       "context": "Relic 120035 effect; TreasureCfg.34.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2042.name": {
@@ -10285,8 +10269,8 @@
       "context": "Relic 120036 name; GoodsCfg.2042.name"
     },
     "data.treasurecfg.36.describe": {
-      "en": "Hero maximum HP +{0}.",
-      "zh": "主角最大生命值+{0}。",
+      "en": "Mystic: each wave grants a barrier absorbing damage equal to {0} of maximum HP.",
+      "zh": "秘法师：每波获得可吸收相当于最大生命值{0}伤害的护盾。",
       "context": "Relic 120036 effect; TreasureCfg.35.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2043.name": {
@@ -10315,8 +10299,8 @@
       "context": "Relic 120039 name; GoodsCfg.2045.name"
     },
     "data.treasurecfg.39.describe": {
-      "en": "Hero movement speed +{0}.",
-      "zh": "主角移动速度+{0}。",
+      "en": "Vanguard: movement speed +{0}.",
+      "zh": "先锋：移动速度提高{0}。",
       "context": "Relic 120039 effect; TreasureCfg.38.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2046.name": {
@@ -10325,8 +10309,8 @@
       "context": "Relic 120040 name; GoodsCfg.2046.name"
     },
     "data.treasurecfg.40.describe": {
-      "en": "Reflect {0} of ranged damage received by the hero back to its attacker. Reflected damage cannot trigger other relic effects.",
-      "zh": "将主角受到的远程伤害的{0}反弹给攻击者。反弹伤害不会触发其他遗物效果。",
+      "en": "Guardian: reflect {0} of received ranged damage to the attacker. Reflections cannot trigger relic effects.",
+      "zh": "守护者：将受到的远程伤害的{0}反弹给攻击者，反弹不触发至宝效果。",
       "context": "Relic 120040 effect; TreasureCfg.39.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2047.name": {
@@ -10335,8 +10319,8 @@
       "context": "Relic 120041 name; GoodsCfg.2047.name"
     },
     "data.treasurecfg.41.describe": {
-      "en": "Damage received by the hero while moving -{0}.",
-      "zh": "主角移动时受到的伤害-{0}。",
+      "en": "Vanguard: take {0} less damage while moving.",
+      "zh": "先锋：移动时受到的伤害降低{0}。",
       "context": "Relic 120041 effect; TreasureCfg.40.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2048.name": {
@@ -10345,8 +10329,8 @@
       "context": "Relic 120042 name; GoodsCfg.2048.name"
     },
     "data.treasurecfg.42.describe": {
-      "en": "Hero kills restore {0} of maximum HP, up to 10% of maximum HP per combat wave.",
-      "zh": "主角击杀敌人时恢复最大生命值的{0}，每个战斗波次最多恢复最大生命值的10%。",
+      "en": "Bruiser: primary kills restore {0} of maximum HP, up to 10% of maximum HP per wave.",
+      "zh": "猛士：直接击杀恢复最大生命值的{0}，每波最多恢复最大生命值的10%。",
       "context": "Relic 120042 effect; TreasureCfg.41.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2049.name": {
@@ -10355,8 +10339,8 @@
       "context": "Relic 120043 name; GoodsCfg.2049.name"
     },
     "data.treasurecfg.43.describe": {
-      "en": "After clearing a combat wave, restore {0} of the hero's maximum HP.",
-      "zh": "清除一个战斗波次后，恢复主角最大生命值的{0}。",
+      "en": "Once per wave, surviving a hit below 30% HP restores {0} of maximum HP. Cannot revive the hero.",
+      "zh": "每波一次，受到攻击后存活且生命低于30%时，恢复最大生命值的{0}，不能复活。",
       "context": "Relic 120043 effect; TreasureCfg.42.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2050.name": {
@@ -10365,8 +10349,8 @@
       "context": "Relic 120044 name; GoodsCfg.2050.name"
     },
     "data.treasurecfg.44.describe": {
-      "en": "Hero ranged attack range +{0}.",
-      "zh": "主角远程攻击范围+{0}。",
+      "en": "Skirmisher: bow attack range +{0}.",
+      "zh": "游击者：弓箭攻击距离提高{0}。",
       "context": "Relic 120044 effect; TreasureCfg.43.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2051.name": {
@@ -10385,8 +10369,8 @@
       "context": "Relic 120046 name; GoodsCfg.2052.name"
     },
     "data.treasurecfg.46.describe": {
-      "en": "Castle damage received -{0} while below 35% HP.",
-      "zh": "城堡生命值低于35%时，受到的伤害-{0}。",
+      "en": "While at least one built wall is alive, the castle takes {0} less damage. Multiple walls do not stack.",
+      "zh": "至少有一段已建造城墙存活时，城堡受到的伤害降低{0}，多段城墙不叠加。",
       "context": "Relic 120046 effect; TreasureCfg.45.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2053.name": {
@@ -10395,8 +10379,8 @@
       "context": "Relic 120047 name; GoodsCfg.2053.name"
     },
     "data.treasurecfg.47.describe": {
-      "en": "House and mill production +{0}.",
-      "zh": "民居和磨坊的产量+{0}。",
+      "en": "Surviving houses and mills gain {0} of base maximum HP after each cleared wave, up to 3 growth stacks.",
+      "zh": "每清除一波，存活的民宅和磨坊获得基础最大生命值{0}的成长，最多3层。",
       "context": "Relic 120047 effect; TreasureCfg.46.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2054.name": {
@@ -10405,8 +10389,8 @@
       "context": "Relic 120048 name; GoodsCfg.2054.name"
     },
     "data.treasurecfg.48.describe": {
-      "en": "Gain {0} silver after every third cleared combat wave.",
-      "zh": "每清除3个战斗波次，获得{0}银币。",
+      "en": "Skirmisher: every 6th primary bow attack echoes on the same target for {0} of normal hit damage. Echoes cannot trigger relic effects.",
+      "zh": "游击者：每第6次直接弓箭攻击对同一目标追加普通命中伤害{0}的回响，回响不触发至宝效果。",
       "context": "Relic 120048 effect; TreasureCfg.47.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2055.name": {
@@ -10415,8 +10399,8 @@
       "context": "Relic 120049 name; GoodsCfg.2055.name"
     },
     "data.treasurecfg.49.describe": {
-      "en": "After clearing a combat wave, surviving soldiers recover {0} of maximum HP.",
-      "zh": "清除一个战斗波次后，存活士兵恢复最大生命值的{0}。",
+      "en": "Guardian: every 8 continuous combat seconds standing still, heal living soldiers within 220 units for {0} of their maximum HP. Moving resets the timer.",
+      "zh": "守护者：战斗中每连续静止8秒，为220距离内存活士兵恢复其最大生命值的{0}，移动重置计时。",
       "context": "Relic 120049 effect; TreasureCfg.48.Describe; {0} uses the current level magnitude"
     },
     "data.goodscfg.2056.name": {
@@ -11710,7 +11694,7 @@
       "context": "Placeholder equipment for the new blue tier."
     },
     "data.equipment.blue.5": {
-      "en": "Blue Cape",
+      "en": "Blue Cloak",
       "zh": "蓝色披风",
       "context": "Placeholder equipment for the new blue tier."
     },

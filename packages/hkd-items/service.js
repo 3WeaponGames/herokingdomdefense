@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path'),{Service}=require('../hkd-characters/lib/service'),Units=require('../game-data-editor/lib/unit-assets');
 const Weapons=require('../../assets/_script/HeroWeapons');
 const Tiers=require('../../assets/_script/EquipmentTiers'),Appearance=require('./appearance');
-const ROLES={1:'Chest',2:'Helmet',3:'Weapon power',4:'Weapons',5:'Cape',6:'Mount'},LAYERS={1:'wqyl_lead_doupeng',2:'wqyl_lead_tou',3:'wqyl_lead_jian',4:'wqyl_lead_gong',5:'wqyl_lead_shou',6:'wqyl_lead_ma'};
+const ROLES={1:'Chest',2:'Helmet',3:'Weapon power',4:'Weapons',5:'Cloak',6:'Mount'},LAYERS={1:'wqyl_lead_doupeng',2:'wqyl_lead_tou',3:'wqyl_lead_jian',4:'wqyl_lead_gong',5:'wqyl_lead_shou',6:'wqyl_lead_ma'};
 const Document=require('../game-data-editor/lib/json-document');
 class ItemsService extends Service{
   constructor(root){super(root,{file:'assets/resources/hero-items/catalog.json'});}

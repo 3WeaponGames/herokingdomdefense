@@ -3,7 +3,7 @@
 // preview engine, source write or Save is invoked by these authoring checks.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {test}=require('node:test'),{createRequire}=require('node:module');
-const AttackRates=require('../panel/attack-rate');
+const AttackRates=require('../panel/attack-rate'),UnitRecords=require('../lib/unit-records');
 const clone=value=>JSON.parse(JSON.stringify(value));
 function fixture(kind='units',providedStore){
     const filename=path.join(__dirname,'building-panel.test.js');
@@ -21,24 +21,24 @@ function fixture(kind='units',providedStore){
     f.barracks=(branch=12)=>f.render('3:11',f.panel._data('A').BuildEnum[3].levelList.findIndex(row=>row.index===branch));
     return f;
 }
-function seed(f,{side='ally',id=90001,cooldownRate=.2,hit=.5,durations=[1,1,1]}={}){
-    const table=side==='ally'?'AllyCfg':'SoldierCfg',key=side+':'+id+':default';
+function seed(f,{side='ally',id=90001,cooldownRate=.2,hit=.5,durations=[1,1,1,1]}={}){
+    const table=side==='ally'?'AllyCfg':'SoldierCfg',key=side+':'+id+':default',levels=UnitRecords.levels(f.store.documents.A.data,side,String(id));
     for(const version of ['original','data']){
         const A=f.store.documents.A[version],settings=f.store.documents.overrides[version];
         A[table][id].AttackInterval=cooldownRate;
         settings.timingDefaults={...(settings.timingDefaults||{}),[key]:{attack:hit}};
         settings.timings={...(settings.timings||{})};delete settings.timings[key];
         settings.animationSpeeds={...(settings.animationSpeeds||{})};
-        for(const name of [key,...[1,2,3].map(level=>'ally:'+id+':level:'+level)])delete settings.animationSpeeds[name];
+        for(const name of [key,...levels.map(level=>'ally:'+id+':level:'+level)])delete settings.animationSpeeds[name];
         settings.unitLevels=clone(settings.unitLevels||{});
-        for(const level of [1,2,3]){
+        for(const level of levels){
             const name='ally:'+id+':level:'+level,item=settings.unitLevels[name];
             if(item){delete item.AttackInterval;if(!Object.keys(item).length)delete settings.unitLevels[name];}
         }
         if(A.GameTools)A.GameTools=clone(settings);
     }
     f.panel._snapshot=f.store.snapshot();
-    if(side==='ally')durations.forEach((duration,index)=>f.metrics(side,id,index+1,duration));
+    if(side==='ally')levels.forEach((level,index)=>f.metrics(side,id,level,durations[index]===undefined?durations[0]:durations[index]));
     else f.metrics(side,id,0,durations[0]);
 }
 const near=(actual,expected)=>assert(Math.abs(actual-expected)<1e-12,actual+' should equal '+expected);
@@ -54,10 +54,10 @@ test('Units compact metrics preserve Characters speed and package baseline, incl
 
 test('the Units rate includes windup, shows two decimals and updates only the selected level when its animation speed changes',async()=>{
     const f=fixture();seed(f);f.ally(90001,2);const before=f.store.draftState();
-    assert.equal(f.aps(2).value,'0.18');assert.deepEqual(f.rates(),['0.18','0.18','0.18']);
+    assert.equal(f.aps(2).value,'0.18');assert.deepEqual(f.rates(),['0.18','0.18','0.18','0.18']);
     assert.equal(f.messages.length,0,'Read-only model metrics never create IPC edits');
     await f.panel._set('overrides',['animationSpeeds','ally:90001:level:2'],2);
-    assert.equal(f.aps(2).value,'0.19');assert.deepEqual(f.rates(),['0.18','0.19','0.18']);
+    assert.equal(f.aps(2).value,'0.19');assert.deepEqual(f.rates(),['0.18','0.19','0.18','0.18']);
     f.ally(90001,1);assert.equal(f.aps(1).value,'0.18');f.ally(90001,2);assert.equal(f.aps(2).value,'0.19');
     const expected=clone(before);expected.overrides.animationSpeeds['ally:90001:level:2']=2;assert.deepEqual(f.store.draftState(),expected);
     assert.deepEqual(f.store.documents.overrides.data.timings,before.overrides.timings);assert.deepEqual(f.store.documents.overrides.data.timingDefaults,before.overrides.timingDefaults);
@@ -65,11 +65,12 @@ test('the Units rate includes windup, shows two decimals and updates only the se
 });
 
 test('each level calculates its frequency using its own appearance animation duration',async()=>{
-    const f=fixture();seed(f,{durations:[1,6,10]});f.ally();
-    assert.deepEqual(f.rates(),['0.18','0.17','0.10']);
-    for(const [level,expected]of [[1,'0.18'],[2,'0.17'],[3,'0.10']]){f.ally(90001,level);assert.equal(f.aps(level).value,expected);}
+    const f=fixture();seed(f,{durations:[1,6,10,12]});f.ally();
+    assert.deepEqual(f.rates(),['0.18','0.17','0.10','0.08']);
+    for(const [level,expected]of [[1,'0.18'],[2,'0.17'],[3,'0.10'],[4,'0.08']]){f.ally(90001,level);assert.equal(f.aps(level).value,expected);}
+    f.ally(90001,3);
     await f.panel._set('overrides',['animationSpeeds','ally:90001:level:3'],3);
-    assert.equal(f.aps(3).value,'0.19');assert.deepEqual(f.rates(),['0.18','0.17','0.19']);
+    assert.equal(f.aps(3).value,'0.19');assert.deepEqual(f.rates(),['0.18','0.17','0.19','0.08']);
 });
 
 test('editing actual frequency stores an inverse cooldown at full precision and leaves other levels and shared stats unchanged',async()=>{
@@ -77,7 +78,7 @@ test('editing actual frequency stores an inverse cooldown at full precision and 
     input.value='0.83';input.onchange();await f.panel._queue;
     const expected=1/(1/.83-.5),stored=f.store.documents.overrides.data.unitLevels['ally:90001:level:2'].AttackInterval;
     near(stored,expected);assert.notEqual(stored,.83);assert.notEqual(stored,Number(stored.toFixed(2)));
-    assert.equal(f.aps(2).value,'0.83');assert.deepEqual(f.rates(),['0.18','0.83','0.18']);
+    assert.equal(f.aps(2).value,'0.83');assert.deepEqual(f.rates(),['0.18','0.83','0.18','0.18']);
     assert.deepEqual(f.store.documents.A.data.AllyCfg,before.A.AllyCfg);assert.deepEqual(f.store.documents.A.data.SoldierCfg,before.A.SoldierCfg);
     assert.deepEqual(f.store.documents.overrides.data.timingDefaults,before.overrides.timingDefaults);
     assert(f.store.changes().every(change=>change.doc==='overrides'&&change.path[0]==='unitLevels'));
@@ -85,7 +86,7 @@ test('editing actual frequency stores an inverse cooldown at full precision and 
 
 test('rounding an existing actual rate from 0.829 to 0.83 never silently rewrites the stored precision',()=>{
     const f=fixture(),stored=1/(1/.829-.5);seed(f,{cooldownRate:stored});f.ally(90001,1);
-    const before=f.store.draftState(),version=f.store.version;assert.equal(f.aps(1).value,'0.83');assert.deepEqual(f.rates(),['0.83','0.83','0.83']);
+    const before=f.store.draftState(),version=f.store.version;assert.equal(f.aps(1).value,'0.83');assert.deepEqual(f.rates(),['0.83','0.83','0.83','0.83']);
     f.aps(1).onchange();f.aps(1).value='0.830';f.aps(1).onchange();
     assert.equal(f.messages.length,0);assert.equal(f.store.version,version);assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.changes().length,0);
     assert.equal(f.store.documents.A.data.AllyCfg[90001].AttackInterval,stored);
@@ -111,7 +112,7 @@ test('a rate edit queued immediately after an animation speed edit uses the newl
     f.panel._set('overrides',['animationSpeeds','ally:90001:level:2'],2);
     input.value='0.5';input.onchange();await f.panel._queue;
     const stored=f.store.documents.overrides.data.unitLevels['ally:90001:level:2'].AttackInterval;
-    near(stored,1/(1/.5-.25));assert.equal(f.aps(2).value,'0.50');assert.deepEqual(f.rates(),['0.18','0.50','0.18']);
+    near(stored,1/(1/.5-.25));assert.equal(f.aps(2).value,'0.50');assert.deepEqual(f.rates(),['0.18','0.50','0.18','0.18']);
     assert.equal(f.store.documents.overrides.data.animationSpeeds['ally:90001:level:2'],2);
     assert.deepEqual(f.store.documents.overrides.data.timingDefaults,before.overrides.timingDefaults);
     assert.deepEqual(f.store.documents.A.data.AllyCfg,before.A.AllyCfg);
@@ -123,10 +124,10 @@ test('metadata arriving for another level preserves an in-progress numeric edit 
     input.value='0.8';input.oninput();
     f.panel._attackRateMetrics({type:'ally',id:'90001',level:3,duration:6});
     assert.equal(input.value,'0.8','A late profile must not replace the number being typed');
-    assert.deepEqual(f.rates(),['0.18','0.18','0.17']);assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
+    assert.deepEqual(f.rates(),['0.18','0.18','0.17','0.18']);assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
     input.onchange();await f.panel._queue;
     near(f.store.documents.overrides.data.unitLevels['ally:90001:level:2'].AttackInterval,1/(1/.8-.5));
-    assert.equal(f.aps(2).value,'0.80');assert.deepEqual(f.rates(),['0.18','0.80','0.17']);
+    assert.equal(f.aps(2).value,'0.80');assert.deepEqual(f.rates(),['0.18','0.80','0.17','0.18']);
 });
 
 test('invalidating cached model metadata lets a fresh preview duration replace the old rate without editing the draft',()=>{
@@ -161,7 +162,7 @@ test('Units and Buildings use the same per-level rate, speed and editable cooldo
     await units.panel._set('overrides',['animationSpeeds','ally:90001:level:2'],2);buildings.panel._apply(units.store.snapshot());
     assert.equal(units.aps(2).value,'0.19');assert.equal(buildings.aps(2).value,'0.19');
     buildings.aps(2).value='0.83';buildings.aps(2).onchange();await buildings.panel._queue;units.panel._apply(units.store.snapshot());
-    assert.equal(units.aps(2).value,'0.83');assert.equal(buildings.aps(2).value,'0.83');assert.deepEqual(units.rates(),['0.18','0.83','0.18']);
+    assert.equal(units.aps(2).value,'0.83');assert.equal(buildings.aps(2).value,'0.83');assert.deepEqual(units.rates(),['0.18','0.83','0.18','0.18']);
     near(units.store.documents.overrides.data.unitLevels['ally:90001:level:2'].AttackInterval,1/(1/.83-.25));
     assert(![...units.messages,...buildings.messages].some(message=>message.message==='game-data-editor:save'));
 });

@@ -9,11 +9,11 @@ function ratio(data, id) { return Math.min(.9, Runtime.value(data, id)); }
 function castleHpMultiplier(data) { return 1 + ratio(data, 120032); }
 function castleIncomingDamage(data, castle, damage) {
   var info = castle && castle.buildInfo;
-  if (!(damage > 0) || !info || !(info.hp > 0) || !(info.hpMax > 0) || info.hp / info.hpMax >= .35) return damage;
+  if (!(damage > 0) || !info || !(info.hp > 0) || !builtBuildings(data).some(function (build) { return build.buildInfo.BuildID === 6; })) return damage;
   return damage * (1 - ratio(data, 120046));
 }
 function living(actor) {
-  return !!actor && !actor.isDestroyed && (!actor.isDead || !actor.isDead()) &&
+  return !!actor && !actor._isPooled && !actor.isDestroyed && (!actor.isDead || !actor.isDead()) &&
     (!actor.node || actor.node.activeInHierarchy !== false) && !(typeof actor.hp === "number" && actor.hp <= 0);
 }
 function afterCastleDamage(data, castle) {
@@ -44,14 +44,78 @@ function replacementInterval(data, interval) {
   var reduction = ratio(data, 120038);
   return reduction > 0 && interval > 0 ? interval * (1 - reduction) : interval;
 }
-function productionBonus(data, baseAmount) {
-  var extra = ratio(data, 120047);
-  if (!(extra > 0) || !(baseAmount > 0) || !isFinite(baseAmount)) return 0;
-  var state = Runtime.state(data), remainder = state.productionRemainder;
-  remainder = typeof remainder === "number" && isFinite(remainder) && remainder >= 0 ? remainder : 0;
-  var accrued = remainder + baseAmount * extra, bonus = Math.floor(accrued + 1e-9);
-  state.productionRemainder = Math.max(0, accrued - bonus);
-  return bonus;
+function builtBuildings(data) {
+  var map = data && data.bulidPointMap || {}, result = [], seen = [];
+  Object.keys(map).forEach(function (key) {
+    var build = map[key], info = build && build.buildInfo;
+    if (!build || seen.indexOf(build) >= 0 || !info || !info.cfg || !(info.hp > 0) || !living(build) ||
+        typeof build.getIsWork === "function" && !build.getIsWork()) return;
+    seen.push(build); result.push(build);
+  });
+  return result;
+}
+function pointKey(build) {
+  var id = build && (build.ID === undefined ? build.pointId : build.ID);
+  return Number.isInteger(Number(id)) && Number(id) > 0 ? String(id) : null;
+}
+function economicGrowth(data, pointId) {
+  var ledger = data && data.relicState && data.relicState.economicGrowthByPoint;
+  var count = ledger && ledger[String(pointId)];
+  return ratio(data, 120047) * Math.min(3, typeof count === "number" && isFinite(count) ? Math.max(0, Math.floor(count)) : 0);
+}
+function applyEconomicGrowth(data, info, pointId, preserveDamage) {
+  if (!info || !info.cfg || [4, 5].indexOf(info.BuildID) < 0) return 0;
+  var bonus = info.cfg.Hp * economicGrowth(data, pointId), previous = info._relicGrowthHp || 0;
+  if (!(bonus >= 0) || !isFinite(bonus)) return 0;
+  var delta = bonus - previous;
+  info.hpMax += delta;
+  if (preserveDamage && info.hp > 0) info.hp = Math.min(info.hpMax, info.hp + delta);
+  info._relicGrowthHp = bonus;
+  return delta;
+}
+function armyBannerBonus(data) {
+  var timer = data && data._relicArmyBanner;
+  return timer && timer.round === data.round && timer.generation === data._relicGeneration ? ratio(data, 120010) * timer.stacks : 0;
+}
+function updateArmyBanner(data, dt) {
+  var amount = ratio(data, 120010);
+  if (!(amount > 0) || !(dt > 0) || !isFinite(dt)) return 0;
+  var timer = data._relicArmyBanner;
+  if (!timer || timer.round !== data.round || timer.generation !== data._relicGeneration) {
+    timer = data._relicArmyBanner = { round: data.round, generation: data._relicGeneration, elapsed: 0, stacks: 0 };
+  }
+  if (timer.stacks >= 3) return 0;
+  timer.elapsed += dt;
+  var gained = Math.min(3 - timer.stacks, Math.floor((timer.elapsed + 1e-9) / 10));
+  if (!gained) return 0;
+  timer.elapsed -= gained * 10; timer.stacks += gained;
+  return gained;
+}
+function updateHeroAura(data, hero, dt, moving) {
+  var amount = ratio(data, 120049);
+  if (!data || !hero) return 0;
+  var timer = hero._relicArmyAura, generation = hero.node && hero.node._combatGeneration;
+  if (!timer || timer.data !== data || timer.generation !== generation || timer.battleGeneration !== data._relicGeneration || timer.round !== data.round) {
+    timer = hero._relicArmyAura = { data: data, generation: generation, battleGeneration: data._relicGeneration, round: data.round, elapsed: 0 };
+  }
+  if (!(amount > 0) || !living(hero) || !hero.node || moving) { timer.elapsed = 0; return 0; }
+  if (!(dt > 0) || !isFinite(dt)) return 0;
+  timer.elapsed += dt;
+  var pulses = Math.floor((timer.elapsed + 1e-9) / 8);
+  if (!pulses) return 0;
+  timer.elapsed -= pulses * 8;
+  var parent = hero.node.parent, center = TowerCombat.point(hero.node, parent), soldiers = (data.soldierList || []).slice(), entries = [], seen = [];
+  soldiers.forEach(function (soldier) {
+    if (!living(soldier) || !soldier.node || seen.indexOf(soldier) >= 0) return;
+    seen.push(soldier);
+    var pos = TowerCombat.point(soldier.node, parent), dx = pos.x - center.x, dy = pos.y - center.y;
+    if (isFinite(dx) && isFinite(dy) && dx * dx + dy * dy <= 220 * 220) entries.push({ actor: soldier, node: soldier.node, generation: soldier.node._combatGeneration });
+  });
+  var healed = 0;
+  entries.forEach(function (entry) {
+    if (entry.actor.node === entry.node && entry.node._combatGeneration === entry.generation && living(entry.actor)) healed += Runtime.heal(entry.actor, amount * pulses);
+  });
+  return healed;
 }
 function towerImpact(data, tower, target, center, parent) {
   var duration = Runtime.value(data, 120037);
@@ -78,24 +142,32 @@ function towerImpact(data, tower, target, center, parent) {
 }
 function waveCleared(data, hero, round) {
   if (!data || !Number.isInteger(round) || round < 1) return false;
-  var flask = ratio(data, 120043), chalice = ratio(data, 120049), silver = Math.floor(Runtime.value(data, 120048));
-  if (!(flask > 0) && !(chalice > 0) && !(silver > 0)) return false;
+  var interest = Math.floor(Runtime.value(data, 120004)), house = Math.floor(Runtime.value(data, 120023)), growth = ratio(data, 120047);
+  if (!(interest > 0) && !(house > 0) && !(growth > 0)) return false;
   var state = Runtime.state(data);
   if (!state.completedWaves || typeof state.completedWaves !== "object" || Array.isArray(state.completedWaves)) state.completedWaves = {};
   if (state.completedWaves[round]) return false;
   // Mark before callbacks so a reentrant wave-end notification cannot pay twice.
   state.completedWaves[round] = true;
-  if (flask > 0 && living(hero)) Runtime.heal(hero, flask);
-  if (chalice > 0) {
-    var soldiers = typeof data.getSoldierList === "function" ? data.getSoldierList().slice() : (data.soldierList || []).slice(), seen = [];
-    soldiers.forEach(function (soldier) {
-      if (seen.indexOf(soldier) >= 0 || !living(soldier)) return;
-      seen.push(soldier); Runtime.heal(soldier, chalice);
-    });
-  }
-  if (silver > 0 && round % 3 === 0) {
-    if (typeof data.addCoin === "function") data.addCoin(silver);
-    else data.coin += silver;
+  // Bank interest uses the balance before this clear's rewards and production.
+  var silver = interest * Math.min(3, Math.max(0, Math.floor((data.coin || 0) / 10)));
+  var tier = typeof data.getBaseLevel === "function" ? data.getBaseLevel() : data.baseBuild && data.baseBuild.getLevel ? data.baseBuild.getLevel() : 1;
+  builtBuildings(data).forEach(function (build) {
+    var key = pointKey(build), info = build.buildInfo, kind = info.BuildID;
+    if (!key || [4, 5].indexOf(kind) < 0) return;
+    if (house > 0 && kind === 4) {
+      var receipts = state.houseTierReceipts || (state.houseTierReceipts = {}), tiers = receipts[key] || (receipts[key] = {});
+      if (!tiers[String(tier)]) { tiers[String(tier)] = true; silver += house; }
+    }
+    if (growth > 0) {
+      var ledger = state.economicGrowthByPoint || (state.economicGrowthByPoint = {});
+      ledger[key] = Math.min(3, (typeof ledger[key] === "number" && isFinite(ledger[key]) ? Math.max(0, Math.floor(ledger[key])) : 0) + 1);
+      applyEconomicGrowth(data, info, key, true);
+      if (build.upHpView) build.upHpView();
+    }
+  });
+  if (silver > 0) {
+    if (typeof data.addCoin === "function") data.addCoin(silver); else data.coin += silver;
   }
   return true;
 }
@@ -104,7 +176,11 @@ exports.castleHpMultiplier = castleHpMultiplier;
 exports.castleIncomingDamage = castleIncomingDamage;
 exports.afterCastleDamage = afterCastleDamage;
 exports.replacementInterval = replacementInterval;
-exports.productionBonus = productionBonus;
+exports.economicGrowth = economicGrowth;
+exports.applyEconomicGrowth = applyEconomicGrowth;
+exports.armyBannerBonus = armyBannerBonus;
+exports.updateArmyBanner = updateArmyBanner;
+exports.updateHeroAura = updateHeroAura;
 exports.towerImpact = towerImpact;
 exports.waveCleared = waveCleared;
 

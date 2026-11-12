@@ -138,7 +138,8 @@ function mount(host, api) {
       ['Collection', item.collection], ['Duration', seconds(item.duration)], ['Format', item.format + ' · ' + (item.bytes / 1024).toFixed(1) + ' KiB'],
       ['Review', color ? title(color) + ' dot' : 'Unmarked']];
     if (item.biome) values.push(['Biome', title(item.biome)]);
-    if (item.unit) values.push(['Unit', title(item.unit)], ['Tier', item.tier ? String(item.tier) : 'Death vocal']);
+    if (item.unit) values.push(['Unit', title(item.unit)], ['Tier', item.tier ? String(item.tier) : 'All tiers']);
+    if (item.voiceAction) values.push(['Action', item.voiceAction === 'follow' ? 'Follow hero' : item.voiceAction === 'build' ? 'Building' : title(item.voiceAction)]);
     const dl = el('dl', '', undefined, detail); values.forEach(pair => { el('dt', '', pair[0], dl); el('dd', '', pair[1], dl); });
     el('small', 'sound-path sound-muted', item.file, detail);
     button(detail, 'Reveal in Assets', () => run('reveal', { id: item.id }));

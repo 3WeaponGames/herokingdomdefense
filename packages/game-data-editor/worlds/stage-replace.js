@@ -48,14 +48,14 @@ function replace(target,source,selection){
  if(selected.includes('settings')){
   const retained=new Set(['id','variant','level','name','sourceRevision','config','buildings','specials','templates','nextBuilding','nextSpecial','spawns','hero','nextSpawn','graphs']);
   for(const key of Object.keys(source))if(!retained.has(key))Object.defineProperty(next,key,{value:merge(own(next,key)?next[key]:undefined,source[key]),writable:true,enumerable:true,configurable:true});
-  for(const key of Object.keys(source.config))if(!['Level','Name','WaveCfg','HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock'].includes(key))Object.defineProperty(next.config,key,{value:merge(own(next.config,key)?next.config[key]:undefined,source.config[key]),writable:true,enumerable:true,configurable:true});
+  for(const key of Object.keys(source.config))if(!['Level','Name','WaveCfg','HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock','HomeLevel4Unlock'].includes(key))Object.defineProperty(next.config,key,{value:merge(own(next.config,key)?next.config[key]:undefined,source.config[key]),writable:true,enumerable:true,configurable:true});
  }
  if(selected.includes('buildings')){
   if(!Array.isArray(source.buildings)||!Array.isArray(source.specials))throw Error('The source stage has an invalid building list.');
   for(const key of ['buildings','specials'])copyField(next,source,key);
   next.nextBuilding=counter([target.nextBuilding,source.nextBuilding],next.buildings.map(building=>building.id));
   next.nextSpecial=counter([target.nextSpecial,source.nextSpecial],next.specials.map(offer=>/^offer-([1-9]\d*)$/.exec(offer.id||'')).filter(Boolean).map(match=>Number(match[1])));
-  for(let level=1;level<=3;level++)copyField(next.config,source.config,'HomeLevel'+level+'Unlock');
+  for(let level=1;level<=4;level++)copyField(next.config,source.config,'HomeLevel'+level+'Unlock');
   // Every building and offer is replaced, so only their new source bindings may
   // override old bindings. Keep unrelated embedded data available for later use.
   const required=new Set(next.buildings.concat(next.specials).filter(item=>item.template).map(item=>item.template.prefab));

@@ -17,7 +17,7 @@ test('saved building skin changes refresh previews without replacing cached auth
 const client=fs.readFileSync(path.join(__dirname,'../worlds/client.js'),'utf8'),sharedChange=client.slice(client.indexOf(' function changed(){'),client.indexOf(' async function save(){'));
 for(const changed of [true,false])test('shared stage refresh '+(changed?'accepts changed artwork':'reuses unchanged artwork')+' at the same authoring version without edit or save requests',async()=>{
  const value={id:'A-1',mapId:'Map01',hero:{x:12,y:34},future:{keep:true}},before=JSON.stringify(value),snapshot={version:7,key:'stage:A-1',value,dirty:true,buildingPreview:{revision:'old-art'}},next={...snapshot,buildingPreview:{revision:changed?'new-art':'old-art'}},calls=[];
- const context={state:{closed:false,active:true,snap:snapshot},stageMode:true,sharedScheduled:false,pendingShared:false,currentKey:()=>snapshot.key,currentContext:()=>({key:snapshot.key}),isCurrent:()=>true,
+ const context={layerTreeDrag:null,state:{closed:false,active:true,snap:snapshot},stageMode:true,sharedScheduled:false,pendingShared:false,currentKey:()=>snapshot.key,currentContext:()=>({key:snapshot.key}),isCurrent:()=>true,
   options:{async ipc(name,request){calls.push(name);if(name==='world-load')return request.key.startsWith('stage:')?next:{value:{id:'Map01'}};if(name==='world-catalog')return {};throw Error('Unexpected write/operation: '+name);}},
   enqueue(fn){context.pending=fn();return context.pending;},readPlacementUpdate:async()=>null,applyPlacementUpdate(){},syncCatalog(){},setMap(){},apply(result){context.applied=result;context.state.snap=result;}};
  vm.createContext(context);vm.runInContext(sharedChange,context);context.changed();await context.pending;

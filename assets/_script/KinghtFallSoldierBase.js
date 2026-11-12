@@ -119,31 +119,6 @@ var def_KinghtFallSoldierBase = function (t) {
     this.attSpeed = this.cfg.AttackInterval * i;
     var r = 1;
     var s = 1;
-    switch (this.cfg.ID) {
-      case 90001:
-        if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.PerseveranceSymbol]) {
-          s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.PerseveranceSymbol][0];
-          r += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.PerseveranceSymbol][1];
-        }
-        break;
-      case 90002:
-        if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TurtlePower]) {
-          s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TurtlePower][0];
-          r += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TurtlePower][1];
-        }
-        break;
-      case 90003:
-        if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.BowmanStrike]) {
-          s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.BowmanStrike][0];
-          r += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.BowmanStrike][1];
-        }
-        break;
-      case 90004:
-        if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.knightHood]) {
-          s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.knightHood][0];
-          r += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.knightHood][1];
-        }
-    }
     this.hpMax = this.cfg.Health * r;
     this.hp = this.hpMax;
     if (this.hpctrl) {
@@ -526,6 +501,8 @@ var def_KinghtFallSoldierBase = function (t) {
     for (i = 0; i < a.length; i++) {
       e += a[i].data.addNum;
     }
+    // The wave's army bonus also applies to replacements born after a pulse.
+    e += require("RelicBattle").armyBannerBonus($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
     e < 0 && (e = 0);
     return t * e;
   };
@@ -539,9 +516,6 @@ var def_KinghtFallSoldierBase = function (t) {
     var a = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff44);
     a && (e += a.Pamer[0]);
     switch (this.cfg.AttackType) {
-      case 1:
-        $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.StrikeSword] && (e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.StrikeSword][0]);
-        break;
       case 2:
         $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.DartingTalisman] && (e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.DartingTalisman][0]);
     }
@@ -709,10 +683,6 @@ var def_KinghtFallSoldierBase = function (t) {
     var t = 1;
     this.hpMax = this.cfg.Health;
     var e = 1;
-    var treasureNames = { 90001: "PerseveranceSymbol", 90002: "TurtlePower", 90003: "BowmanStrike", 90004: "knightHood" };
-    var treasureId = $z1KinghtFallEnum.KinghtFallEnumTreasureEnum[treasureNames[this.cfg.ID]];
-    var treasure = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[treasureId];
-    if (treasure) e += treasure[1];
     e += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierMaxHp] || 0;
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff32);
     n && (e += n.Pamer[0]);
@@ -736,7 +706,6 @@ var def_KinghtFallSoldierBase = function (t) {
     this.hpctrl && this.hpctrl.setHp(this.hp, this.hpMax);
     this.attack = this.cfg.AttackDamage;
     var s = 1;
-    if (treasure) s += treasure[0];
     s += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.addTime[$z1KinghtFallGameCtrlData.KinghtFallTimeType.SoldierDamage] || 0;
     var l = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff43);
     l && (s += l.Pamer[0]);

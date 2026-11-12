@@ -38,7 +38,7 @@ function plan(root){
     config.EquipCfg=config.EquipCfg.map(gear=>{const expanded=expandGear(gear);if(file.includes('KinghtFallConfig'))report.tracks.push({id:gear.id,from:gear.levelInfo.length,to:expanded.levelInfo.length,costBefore:gear.levelInfo.reduce((sum,row)=>sum+row.GoldCost,0),costAfter:expanded.levelInfo.reduce((sum,row)=>sum+row.GoldCost,0),start:expanded.levelInfo[0].Parameters,end:expanded.levelInfo.at(-1).Parameters});return expanded;});
     config.EquipmentProgression=clone(migration);
   });
-  const labels={1:['Blue Armor','蓝色护甲'],2:['Blue Helmet','蓝色头盔'],3:['Blue Off-hand','蓝色副手'],4:['Blue Weapon','蓝色武器'],5:['Blue Cape','蓝色披风'],6:['Blue Mount','蓝色坐骑']};
+  const labels={1:['Blue Armor','蓝色护甲'],2:['Blue Helmet','蓝色头盔'],3:['Blue Off-hand','蓝色副手'],4:['Blue Weapon','蓝色武器'],5:['Blue Cloak','蓝色披风'],6:['Blue Mount','蓝色坐骑']};
   change('assets/resources/localization/catalog.json',catalog=>{for(const[id,[en,zh]]of Object.entries(labels)){const key='data.equipment.blue.'+id;if(!catalog.entries[key])catalog.entries[key]={en,zh,context:'Placeholder equipment for the new blue tier.'};}});
   for(const name of ['ma','shenti','doupeng','tou','gong','jian','shou']){
     const file='assets/resources/hero-maker/wqyl_lead_'+name+'.json';change(file,rig=>Skins.ensure(rig));if(files.has(file))report.skins.push(file);

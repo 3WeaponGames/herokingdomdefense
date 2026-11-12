@@ -4,9 +4,10 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
 const PNG = require('../../packages/hkd-characters/lib/png-atlas'), {decode} = PNG;
+const painted = require('./painted-building-contract.cjs');
 const fits = require('./building-spine-fit.fixture.json'), fit = fits.stables;
 const root = path.resolve(__dirname, '../..'), folder = path.join(root, 'assets/KinghtFallIconMap/com/Ani/by');
-const read = file => JSON.parse(fs.readFileSync(path.resolve(root, file), 'utf8').replace(/^\uFEFF/, ''));
+const read = file => painted.legacyRead(file, JSON.parse(fs.readFileSync(path.resolve(root, file), 'utf8').replace(/^\uFEFF/, '')));
 const bytes = file => fs.readFileSync(path.resolve(root, file)), sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const hash = value => sha(JSON.stringify(value)), clone = value => JSON.parse(JSON.stringify(value));
 const close = (a, b, label, epsilon = 1e-5) => assert(Math.abs(a - b) < epsilon, `${label || ''}: ${a} != ${b}`);
@@ -49,21 +50,19 @@ function vertices(spine, slot) {
   assert(v.length && v.every(Number.isFinite)); assert([...a.uvs].every(Number.isFinite)); assert(a.region && a.region.page); return v;
 }
 
-test('only Vanguard20/21/22 select stable artwork, preserving troop stats/progression and reserving an unreachable fourth skin', () => {
+test('stable original troop values stay fixed and its approved fourth tier is reachable', () => {
   assert(fit, 'reviewed stable art fixture is required');
   assert.deepEqual(fit.aliases.map(a => a.alias), [1, 2, 3, 4].map(n => 'qby-stable-' + n));
-  assert.deepEqual(fit.aliases.filter(a => !a.reserved).map(a => a.index), [20, 21, 22]); assert.equal(fit.aliases.filter(a => a.reserved).length, 1);
-  for (const file of Object.keys(fit.baseline.configs)) {
-    const config = read(file), rows = config.BuildEnum['3'].levelList;
-    assert.equal(rows.length, 12); assert.deepEqual(config.BuildEnum['3'].InitialChoices, [11, 14, 17, 20]);
-    for (const a of fit.aliases.filter(a => !a.reserved)) {
-      const row = rows.find(r => r.index === a.index); assert.equal(row.level, a.level); assert.equal(row.Skin, a.alias); assert.equal(row.Icon, a.icon);
-      assert.deepEqual(row.Data, [a.level * 2 + 2, 90004, 8]); assert.equal(row.ColliderIndex, a.level + 7);
-      assert.deepEqual(row.BranchBuild, a.level < 3 ? [a.index + 1] : undefined); row.Skin = '__STABLE_SKIN__'; row.Icon = '__STABLE_ICON__';
+  for (const file of Object.keys(painted.fixture.config)) {
+    const config = read(file); painted.assertConfig(file, config);
+    const rows = config.BuildEnum['3'].levelList;
+    assert.deepEqual(config.BuildEnum['3'].InitialChoices, [11, 14, 17, 20]);
+    for (const [index, level] of [[20, 1], [21, 2], [22, 3]]) {
+      const row = rows.find(r => r.index === index);
+      assert.equal(row.level, level); assert.deepEqual(row.Data, [level * 2 + 2, 90004, 8]); assert.equal(row.ColliderIndex, level + 7);
     }
-    assert.equal(hash(config), fit.baseline.configs[file], 'every field except the three documented visual bindings is unchanged, including Royal Garrison/Heavy/Crossbow families');
-    assert(!JSON.stringify(config).includes('qby-stable-4')); assert(rows.every(r => r.level <= 3));
-    assert.deepEqual(rows.filter(r => [11, 12, 13].includes(r.index)).map(r => r.Skin), ['by-garrison-1', 'by-garrison-2', 'by-garrison-3']);
+    const last = rows.find(r => r.index === 22), fourth = rows.find(r => r.index === last.BranchBuild[0]);
+    assert.equal(fourth.level, 4); assert.deepEqual(fourth.Data, [10, 90004, 8]);
   }
 });
 

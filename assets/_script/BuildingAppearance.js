@@ -141,13 +141,16 @@ function presentation(owner, state) {
   state.presentation.angle = number(owner.wallRotation, 0) * (owner.node.scaleX * owner.node.scaleY < 0 ? -1 : 1);
   return state.presentation;
 }
-function cancelPlacement(owner) {
+function cancelPlacement(owner, retiring) {
   var state = owner && owner._buildingAppearance;
   if (!state) return;
+  if (!retiring && state.destruction && owner.isDestroyed &&
+      (owner.enabled === false || owner.node && owner.node.activeInHierarchy === false)) pauseDestruction(state);
+  else cancelDestruction(owner, state);
   state.placementRequest = null;
   var operation = state.placement; state.placement = null;
   if (operation) { operation.cancelled = true; if (operation.tween) operation.tween.stop(); }
-  if (valid(state.presentation)) { state.presentation.setPosition(0, 0); state.presentation.setScale(1); }
+  if (valid(state.presentation) && !(state.destruction && state.destruction.paused)) { state.presentation.setPosition(0, 0); state.presentation.setScale(1); }
   if (valid(state.placementFx)) {
     state.placementFx.active = false;
     if (state.placementSpine && state.placementSpine.clearTracks) state.placementSpine.clearTracks();
@@ -169,16 +172,16 @@ function placementPose(owner, state, operation) {
   if (valid(state.target) && state.target._combatGeneration === state.targetGeneration) aim(owner, state.target);
   synchronizeMuzzle(owner, state); healthAboveArtwork(owner, state);
 }
-function placementEffects(owner, state, kind) {
+function nativeEffects(owner, state, nodeKey, spineKey, kind, firstSlot, lastSlot, order) {
   var source = owner.ndAniMain;
   if (typeof sp === "undefined" || !sp.Skeleton || !source || !source.node || !source.skeletonData) return;
-  if (!valid(state.placementFx)) {
-    state.placementFx = new cc.Node("BuildingPlacementEffects"); state.placementFx.parent = owner.node;
-    state.placementFx.group = owner.node.group;
-    state.placementSpine = state.placementFx.addComponent(sp.Skeleton);
+  if (!valid(state[nodeKey])) {
+    state[nodeKey] = new cc.Node(nodeKey); state[nodeKey].parent = owner.node;
+    state[nodeKey].group = owner.node.group;
+    state[spineKey] = state[nodeKey].addComponent(sp.Skeleton);
   }
-  var node = state.placementFx, renderer = state.placementSpine;
-  node.zIndex = kind === "create" ? -1 : 1;
+  var node = state[nodeKey], renderer = state[spineKey];
+  node.zIndex = order;
   if (source.node === owner.node) { node.setPosition(0, 0); node.setScale(1); node.angle = 0; }
   else {
     var origin = owner.node.convertToNodeSpaceAR(source.node.convertToWorldSpaceAR(cc.v2(0, 0)));
@@ -193,17 +196,21 @@ function placementEffects(owner, state, kind) {
   renderer.skeletonData = source.skeletonData;
   renderer.premultipliedAlpha = source.premultipliedAlpha;
   renderer.enableBatch = source.enableBatch;
-  // The existing Archer default skin contains its dust/light/star artwork.
-  // Limit the render range as well: never display a second tower model, and
-  // avoid editing attachments or shared skeleton data on native backends.
+  // Use the original effects, excluding every old tower-body slot. Destruction
+  // has two separate ranges so smoke cannot expose a second intact building.
   renderer.setSkin("default");
-  if (renderer.setSlotsRange) renderer.setSlotsRange(kind === "create" ? 2 : 12, kind === "create" ? 2 : 35);
+  if (renderer.setSlotsRange) renderer.setSlotsRange(firstSlot, lastSlot);
   if (renderer.setToSetupPose) renderer.setToSetupPose();
   renderer.timeScale = number(source.timeScale, 1);
   node.active = true; renderer.setAnimation(0, kind, false);
 }
+function placementEffects(owner, state, kind) {
+  nativeEffects(owner, state, "placementFx", "placementSpine", kind, kind === "create" ? 2 : 12, kind === "create" ? 2 : 35, kind === "create" ? -1 : 1);
+}
 function placementSpeed(owner) {
-  var state = owner && owner._buildingAppearance, operation = state && state.placement;
+  var state = owner && owner._buildingAppearance;
+  if (state && state.destruction) { destructionSpeed(owner, state); return; }
+  var operation = state && state.placement;
   if (!operation || !placementCurrent(owner, state, operation)) return;
   if (operation.tween) operation.tween.stop();
   var speed = Math.max(0, number(owner.ndAniMain && owner.ndAniMain.timeScale, 1));
@@ -232,7 +239,8 @@ function beginPlacement(owner, state) {
 }
 function place(owner, kind) {
   var cfg = owner && owner.buildInfo && owner.buildInfo.cfg, appearance = cfg && cfg.Appearance;
-  if (!appearance || !weaponConfig(appearance) || !cfg.Tower || owner.isDestroyed) return false;
+  if (!appearance || !appearance.sprite || owner.isDestroyed ||
+      (!weaponConfig(appearance) || !cfg.Tower) && appearance.lifecycle !== "native-tower") return false;
   apply(owner);
   var state = owner._buildingAppearance;
   if (!state) return false;
@@ -241,6 +249,87 @@ function place(owner, kind) {
   // Await both new layers without exposing the legacy Archer underneath.
   quietSkeletons(owner, state); beginPlacement(owner, state);
   return true;
+}
+function cancelDestruction(owner, state) {
+  var operation = state.destruction;
+  state.destruction = null; state.destructionRevealed = false;
+  if (operation) { operation.cancelled = true; if (operation.tween) operation.tween.stop(); }
+  ["deathSmokeFx", "deathRubbleFx"].forEach(function (name) {
+    if (valid(state[name])) state[name].active = false;
+    var renderer = state[name === "deathSmokeFx" ? "deathSmokeSpine" : "deathRubbleSpine"];
+    if (renderer && renderer.clearTracks) renderer.clearTracks();
+  });
+}
+function pauseDestruction(state) {
+  var operation = state.destruction;
+  if (!operation) return;
+  if (operation.tween) operation.tween.stop();
+  operation.tween = null; operation.run = (operation.run || 0) + 1; operation.paused = true;
+  if (valid(state.node)) state.node.active = false;
+  ["deathSmokeFx", "deathRubbleFx"].forEach(function (name) { if (valid(state[name])) state[name].active = false; });
+}
+function destructionCurrent(owner, state, operation) {
+  var appearance = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
+  return valid(owner) && valid(owner.node) && owner.enabled !== false && owner.node.activeInHierarchy !== false &&
+    owner._buildingAppearance === state && owner.isDestroyed && state.destruction === operation &&
+    !operation.cancelled && !operation.paused && state.generation === operation.generation && appearance && key(appearance) === operation.key;
+}
+function destructionPose(owner, state, operation) {
+  if (!destructionCurrent(owner, state, operation)) return;
+  var pose = Placement.sample("destroy", operation.elapsed), appearance = owner.buildInfo.cfg.Appearance;
+  state.presentation.setPosition(pose.x, pose.y); state.presentation.setScale(pose.scaleX, pose.scaleY);
+  if (valid(state.node)) state.node.active = !!pose.visible && !!state.sprite && !!state.sprite.spriteFrame;
+  if (!pose.visible) {
+    state.destructionRevealed = true;
+    if (showDestroyed(owner, state, appearance) && valid(state.deathRubbleFx)) state.deathRubbleFx.active = false;
+  }
+}
+function destructionSpeed(owner, state) {
+  var operation = state.destruction;
+  if (!operation || !destructionCurrent(owner, state, operation)) return;
+  if (operation.tween) operation.tween.stop();
+  var speed = Math.max(0, number(owner.ndAniMain && owner.ndAniMain.timeScale, 1));
+  [state.deathSmokeSpine, state.deathRubbleSpine].forEach(function (renderer) { if (renderer) renderer.timeScale = speed; });
+  var run = operation.run = (operation.run || 0) + 1, start = operation.elapsed;
+  if (!speed || start >= operation.duration) return;
+  operation.tween = cc.tween(operation).to(Math.max(.00001, (operation.duration - start) / speed), {}, {
+    onUpdate: function (_target, progress) {
+      if (!destructionCurrent(owner, state, operation) || operation.run !== run) return;
+      operation.elapsed = start + (operation.duration - start) * progress;
+      destructionPose(owner, state, operation);
+    }
+  }).call(function () {
+    if (!destructionCurrent(owner, state, operation) || operation.run !== run) return;
+    operation.elapsed = operation.duration; operation.tween = null; destructionPose(owner, state, operation);
+  }).start();
+}
+function nativeDestruction(owner, state, appearance) {
+  if (state.destruction && state.destruction.key === key(appearance)) {
+    if (state.destruction.paused && owner.enabled !== false && owner.node.activeInHierarchy !== false) {
+      state.destruction.paused = false;
+      if (valid(state.deathSmokeFx)) state.deathSmokeFx.active = true;
+      if (valid(state.deathRubbleFx)) state.deathRubbleFx.active = true;
+      destructionPose(owner, state, state.destruction); destructionSpeed(owner, state);
+    }
+    return;
+  }
+  Lighting.hide(owner, state); cancelPlacement(owner);
+  state.generation++; state.loading = null; state.target = null;
+  stop(state);
+  if (valid(state.weaponPivot)) state.weaponPivot.active = false;
+  if (valid(state.destroyedNode)) state.destroyedNode.active = false;
+  presentation(owner, state);
+  state.presentation.setPosition(0, 0); state.presentation.setScale(1);
+  if (valid(state.node)) {
+    state.node.setPosition(state.x, state.y); state.node.setScale(1);
+    state.node.color = cc.Color.WHITE; state.node.opacity = 255;
+  }
+  quietSkeletons(owner, state);
+  nativeEffects(owner, state, "deathRubbleFx", "deathRubbleSpine", "destroy", 0, 1, -1);
+  nativeEffects(owner, state, "deathSmokeFx", "deathSmokeSpine", "destroy", 36, 36, 1);
+  var operation = state.destruction = { key: key(appearance), generation: state.generation, elapsed: 0, duration: Placement.duration("destroy") };
+  preloadDestroyed(owner, state, appearance);
+  destructionPose(owner, state, operation); destructionSpeed(owner, state);
 }
 function showDestroyed(owner, state, appearance) {
   var destroyed = destroyedConfig(appearance);
@@ -282,7 +371,9 @@ function preloadDestroyed(owner, state, appearance) {
     state.destroyedLoading = null;
     if (!frame) return;
     state.destroyedPath = path; state.destroyedFrame = frame;
-    if (owner.isDestroyed) showDestroyed(owner, state, latest);
+    if (owner.isDestroyed && (latest.lifecycle !== "native-tower" || state.destructionRevealed)) {
+      if (showDestroyed(owner, state, latest) && valid(state.deathRubbleFx)) state.deathRubbleFx.active = false;
+    }
   });
 }
 function position(owner, state, appearance) {
@@ -310,7 +401,7 @@ function hide(owner) {
   var state = owner && owner._buildingAppearance;
   if (!state) return;
   Lighting.hide(owner, state);
-  cancelPlacement(owner);
+  cancelPlacement(owner, true);
   state.generation++; state.loading = null; state.path = null; state.key = null; state.target = null;
   state.destroyedGeneration = (state.destroyedGeneration || 0) + 1; state.destroyedLoading = null;
   stop(state);
@@ -328,6 +419,7 @@ function apply(owner) {
   var state = owner._buildingAppearance;
   if (!state) state = owner._buildingAppearance = { generation: 0, originals: [], path: null, key: null, node: null, loading: null };
   if (owner.isDestroyed) { onDead(owner); return; }
+  if (state.destruction) { cancelDestruction(owner, state); if (valid(state.presentation)) { state.presentation.setPosition(0, 0); state.presentation.setScale(1); } }
   if (valid(state.destroyedNode)) state.destroyedNode.active = false;
   preloadDestroyed(owner, state, appearance);
   var currentKey = key(appearance), weapon = weaponConfig(appearance);
@@ -466,12 +558,13 @@ function fire(owner) {
 function onDead(owner) {
   var state = owner && owner._buildingAppearance;
   if (!state) return;
+  var appearance = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
+  if (appearance && appearance.lifecycle === "native-tower") { nativeDestruction(owner, state, appearance); return; }
   Lighting.hide(owner, state);
   cancelPlacement(owner);
   state.generation++; state.loading = null; state.target = null;
   stop(state);
   if (valid(state.weaponPivot)) state.weaponPivot.active = false;
-  var appearance = owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
   if (valid(state.destroyedNode)) state.destroyedNode.active = false;
   if (destroyedConfig(appearance)) {
     if (valid(state.node)) state.node.active = false;
@@ -498,6 +591,8 @@ function dispose(owner) {
   if (valid(state.flash)) state.flash.destroy();
   if (valid(state.presentation)) state.presentation.destroy();
   if (valid(state.placementFx)) state.placementFx.destroy();
+  if (valid(state.deathSmokeFx)) state.deathSmokeFx.destroy();
+  if (valid(state.deathRubbleFx)) state.deathRubbleFx.destroy();
   owner._buildingAppearance = null;
 }
 exports.apply = apply;

@@ -37,12 +37,12 @@ test('every relic requires three then five fragments and has no fourth-level upg
 test('the new rarity assignments and promoted Epic magnitudes match the approved expansion',()=>{
   const assigned={1:[28,50],2:[32,33,37,41,48],3:[29,30,40,42,46,49],4:[31,34,35,36,38,39,43,44,45,47]};
   for(const [quality,numbers] of Object.entries(assigned))assert.deepEqual(primary.TreasureCfg.filter(row=>row.ID>=120028&&row.Quality===Number(quality)).map(row=>row.ID-120000),numbers);
-  const epicValues={32:[.1,.15,.2],33:[.06,.09,.12],37:[.4,.6,.8],41:[.06,.09,.12],48:[2,3,4]};
+  const epicValues={32:[.1,.15,.2],33:[.06,.09,.12],37:[.4,.6,.8],41:[.06,.09,.12],48:[.4,.55,.7]};
   for(const [number,values] of Object.entries(epicValues))assert.deepEqual(primary.TreasureCfg[Number(number)-1].levelInfo.map(row=>row.param[0]),values);
   assert.deepEqual(primary.TreasureCfg[41].levelInfo.map(row=>row.param[0]),[.005,.0075,.01],'fractional Vampire Fang healing remains authored precisely');
   for(const relic of primary.TreasureCfg.slice(27)){
     assert.deepEqual(relic.levelInfo.slice(0,2).map(row=>row.GoldCost),[1000,6000]);
-    const percentage=[120037,120048,120050].includes(relic.ID)?0:1;
+    const percentage=[120037,120050].includes(relic.ID)?0:1;
     for(const level of relic.levelInfo){assert.equal(level.param.length,1);assert.deepEqual(level.vaulePercentage,[percentage]);}
   }
 });
@@ -73,8 +73,8 @@ test('new relic names and effect descriptions resolve in English and Chinese wit
       assert(!description[language].includes('[[loc:'));
     }
   }
-  assert.match(resolve(primary.TreasureCfg[46].Describe).en,/production \+\{0\}/,'Acorn uses existing wave production, not a new production timer');
-  assert.match(resolve(primary.TreasureCfg[47].Describe).en,/every third cleared combat wave/);
+  assert.match(resolve(primary.TreasureCfg[46].Describe).en,/base maximum HP.*cleared wave.*3 growth stacks/,'Acorn grows economic buildings instead of adding another income modifier');
+  assert.match(resolve(primary.TreasureCfg[47].Describe).en,/every 6th primary bow attack.*same target/,'Crystal Key provides a bow echo instead of wave silver');
 });
 
 test('normal and guaranteed legacy chest pools include every eligible relic while retaining their original rarity odds',()=>{

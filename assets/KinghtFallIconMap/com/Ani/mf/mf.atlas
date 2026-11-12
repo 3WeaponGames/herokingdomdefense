@@ -424,3 +424,38 @@ td_4
   orig: 79, 70
   offset: 0, 0
   index: -1
+
+
+mf-painted.png
+size: 1176,1416
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+painted-mill-1
+  rotate: false
+  xy: 2, 2
+  size: 584, 704
+  orig: 584, 704
+  offset: 0, 0
+  index: -1
+painted-mill-2
+  rotate: false
+  xy: 590, 2
+  size: 584, 704
+  orig: 584, 704
+  offset: 0, 0
+  index: -1
+painted-mill-3
+  rotate: false
+  xy: 2, 710
+  size: 584, 704
+  orig: 584, 704
+  offset: 0, 0
+  index: -1
+painted-mill-4
+  rotate: false
+  xy: 590, 710
+  size: 584, 704
+  orig: 584, 704
+  offset: 0, 0
+  index: -1

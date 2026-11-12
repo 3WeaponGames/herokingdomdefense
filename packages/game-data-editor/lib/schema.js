@@ -15,14 +15,14 @@ const LABELS = {
   InGameCoefficient:'Battle coefficient',GoldSupplyCoefficient:'Gold supply coefficient',ConversionCoefficient:'Silver conversion coefficient',
   EquipLevelCap:'Equipment level cap', HealthCoefficient:'Enemy HP multiplier',AttackCoefficient:'Enemy attack multiplier',
   StartSliver:'Starting silver',CommerceSliver:'Silver from reward ad',WaveReward:'Wave rewards',Challenge:'Challenges',ChallengeReward:'Challenge rewards',
-  HomeLevel1Unlock:'Castle level 1 — building unlocks',HomeLevel2Unlock:'Castle level 2 — building unlocks',HomeLevel3Unlock:'Castle level 3 — building unlocks',
+  HomeLevel1Unlock:'Castle level 1 — building unlocks',HomeLevel2Unlock:'Castle level 2 — building unlocks',HomeLevel3Unlock:'Castle level 3 — building unlocks',HomeLevel4Unlock:'Castle level 4 — building unlocks',
   Quality:'Rarity',Weight:'Selection weight',Image:'Icon',Icon:'Icon',icon:'Icon',sprBg:'Icon background',goodID:'Goods reference',Talent:'Effect implementation',param:'Effect values',PieceCost:'Fragments required',Conversion:'Conversion reward',Unlock:'Unlock requirement',Pamer:'Effect values',isPerecentage:'Display as percentage',
   lockCose:'Unlock cost (silver)',index:'Branch index',level:'Building level',BuildSliverCost:'Upgrade cost (silver)',VedioCount:'Reward ads required',vedioCount:'Reward ads required',
   Zoom:'Preview scale',Skin:'Model skin',Hp:'HP',BranchBuild:'Next upgrade branches',Excursion:'Icon offset',Data:'Special properties',
   EffectType:'Effect type',EquipName:'Equipment name',Parameters:'Stat value',GoldCost:'Gold cost',EquipBottom:'Icon background',EquipSkin:'Hero skin',
   AttackType:'Attack behavior',Health:'HP',AttackDamage:'Attack damage',AttackInterval:'Attacks per second',AttackRange:'Attack range',
   SearchRange:'Additional search range',Speed:'Movement speed',BuildingCross:'Building collision rule',Suppressed:'Countered unit',DeathAni:'Death duration (seconds)',AttackPriority:'Target priority',loadIcon:'Battle icon',
-  kindID:'Talent effect',EffectNumber:'Effect values',vaulePercentage:'Display as percentage',Value:'Value',
+  kindID:'Talent effect',EffectNumber:'Effect values',vaulePercentage:'Display as percentage',Value:'Value',EffectKey:'Relic mechanic',RequiredHeroStyles:'Required fighting styles',
   MissionNumber:'Missions per battle',MissionType:'Mission selection mode',MissionID:'Mission pool / sequence',Award:'Mission rewards',
   enumValue:'Runtime ID',enumKey:'Behavior identifier',ID:'Record ID',id:'Category ID',
   StaminaLimit:'Maximum stamina',StaminaRecover:'Stamina recovery interval (seconds)',GoldSupply:'Gold reward amount',DiamondSupply:'Diamond reward amount',
@@ -31,14 +31,14 @@ const LABELS = {
   InvincibleTime:'Revival invulnerability (seconds)',RestrainedArms:'Counter damage multiplier',RefreshInterval:'Spawn interval (seconds)',
   BackToReady:'Return delay (seconds)',unlockDefense:'Defense mode unlock stage',cdTimeDefense:'Defense mode cooldown (seconds)'
 };
-const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Sub-weapon / bonus • Damage','Main weapon • Attack range','Cape • Attack speed','Mount • Movement speed'];
+const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Sub-weapon / bonus • Damage','Main weapon • Attack range','Cloak • Attack speed','Mount • Movement speed'];
 const RARITIES = ['Common','Rare','Epic','Legendary'];
 const BUILDINGS = {1:'Castle Keep',2:'Arrow Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall'};
-// Map01–Map04 have lock/interaction nodes only for these authored levels.
-const BUILDING_LEVEL_CAP = {1:3,2:2,3:3,4:2,5:2,6:2};
+// Progression can reuse an explicit native collider tag at later visual tiers.
+const BUILDING_LEVEL_CAP = {1:4,2:4,3:4,4:4,5:4,6:2};
 // Collider tags identify map geometry independently of building branch IDs.
 const BUILDING_COLLIDER_CAP = {1:3,2:3,3:10,4:3,5:3,6:3};
-function buildingLevelCap(id,level){return Number(id)===2&&level&&own(level,'ColliderIndex')?3:BUILDING_LEVEL_CAP[id];}
+function buildingLevelCap(id,level){return BUILDING_LEVEL_CAP[id];}
 const PERK_LABELS = {
   50001:['Targets per attack'],50002:['Soldier HP bonus','Soldier attack bonus'],50003:['Kills required','Silver reward'],50004:['Silver each day'],
   50005:['Invincibility duration (seconds)'],50006:['Enemy attack reduction'],50007:['House silver bonus'],50008:['Hero HP recovered'],50009:['Silver cost reduction'],
@@ -97,7 +97,7 @@ function descriptor(key, context) {
   if (['Health','Hp','Zoom'].indexOf(key)>=0) result.min=0.000001;
   if (['Weight','AttackDamage','AttackRange','SearchRange','Speed','DeathAni','GoldCost','lockCose','BuildSliverCost','VedioCount','vedioCount','StartSliver','CommerceSliver','EquipLevelCap','MissionNumber','MissionType'].indexOf(key)>=0) result.min=0;
   if(context.table==='BuildEnum'){
-    if(key==='level'){result.min=1;result.integer=true;const level=context.building&&context.building.levelList&&context.building.levelList[context.levelIndex];if(own(BUILDING_LEVEL_CAP,context.id))result.max=buildingLevelCap(context.id,level);result.help='Progression level used by castle unlocks. Explicit collision footprints allow new towers through level 3; branch index remains the stable reference.';}
+    if(key==='level'){result.min=1;result.integer=true;const level=context.building&&context.building.levelList&&context.building.levelList[context.levelIndex];if(own(BUILDING_LEVEL_CAP,context.id))result.max=buildingLevelCap(context.id,level);result.help='Progression level used by castle unlocks. Four progression levels retain stable branch indices and reuse explicit authored collision footprints.';}
     if(['lockCose','BuildSliverCost','VedioCount'].indexOf(key)>=0)result.integer=true;
     if(key==='BuildSliverCost'){result.label='Next purchase cost (silver)';result.help='Charged while upgrading from this branch. The destination also uses this value to choose silver or reward-ad presentation.';}
     if(key==='VedioCount'){result.label='Legacy reward-ad count';result.readOnly=true;result.help='Preserved authored metadata. The current upgrade dialog does not read this count.';}
@@ -111,7 +111,12 @@ function descriptor(key, context) {
     result.asset='images';
     result.bundle=key==='Map'?'KinghtFallIconMap':key==='loadIcon'?'KinghtFallEnemy':key==='EquipBottom'||key==='icon'||key==='sprBg'?'KinghtFallIconGood':context.table==='BuffCfg'?'KinghtFallIconBuff':context.table==='BuildEnum'?'KinghtFallIconBuild':context.table==='EquipCfg'?'KinghtFallIconCharacter':context.table==='TalentCfg'?'KinghtFallIconTalent':null;
   }
-  if(['goodID','Talent','itemID','type'].indexOf(key)>=0&&context.table==='TreasureCfg')result.readOnly=true;
+  if(['goodID','Talent','EffectKey','itemID','type'].indexOf(key)>=0&&context.table==='TreasureCfg')result.readOnly=true;
+  if(key==='EffectKey'&&context.table==='TreasureCfg')result.help='Stable implementation identity; changing this text does not create a new combat mechanic.';
+  if(key==='RequiredHeroStyles'&&context.table==='TreasureCfg'){
+    result.options=HeroWeapons.styles.map(style=>({value:style.id,label:style.name}));
+    result.help='Only these equipped fighting styles activate this relic. Values must be implemented style IDs; omit the field for all styles.';
+  }
   if(key==='Level'&&context.table==='TreasureCfg')result.readOnly=true;
   if (key==='prefab') result.asset='prefabs';
   if (key==='EnemyAni') result.asset='animations';
@@ -194,9 +199,10 @@ function validate(documents, changes) {
         if(total<=0)issue(doc,w.concat(Array.isArray(wave.SpawnTimeline)?'SpawnTimeline':'RefreshSoldierKind'),'A wave requires at least one spawning unit.');
         if(!Array.isArray(wave.WaveReward))issue(doc,w.concat('WaveReward'),'Wave rewards must be an array.');else rewards(wave.WaveReward,doc,w.concat('WaveReward'));
       });
-      ['HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock'].forEach(key=>(stage[key]||[]).forEach((row,i)=>{
-        if(!Array.isArray(row)||row.length!==2||!BUILDINGS[row[0]]||!Number.isInteger(row[1])||row[1]<1)issue(doc,p.concat(key,i),'Choose a valid building type and positive map slot ID.');
-      }));
+      ['HomeLevel1Unlock','HomeLevel2Unlock','HomeLevel3Unlock','HomeLevel4Unlock'].forEach(key=>{
+        if(stage[key]!==undefined&&!Array.isArray(stage[key])){issue(doc,p.concat(key),'Building unlocks must be an array.');return;}
+        (stage[key]||[]).forEach((row,i)=>{if(!Array.isArray(row)||row.length!==2||!BUILDINGS[row[0]]||!Number.isInteger(row[1])||row[1]<1)issue(doc,p.concat(key,i),'Choose a valid building type and positive map slot ID.');});
+      });
       if((stage.Challenge||[]).length!==(stage.ChallengeReward||[]).length)issue(doc,p.concat('ChallengeReward'),'Each challenge needs its matching reward list.');
       (stage.Challenge||[]).forEach((v,i)=>{if([1,2,3].indexOf(v)<0)issue(doc,p.concat('Challenge',i),'Choose an existing challenge (1: clear, 2: hero survives, 3: castle unharmed).');});
       if(stage.ChallengeReward!==undefined&&!Array.isArray(stage.ChallengeReward))issue(doc,p.concat('ChallengeReward'),'Challenge rewards must be an array of reward lists.');else (stage.ChallengeReward||[]).forEach((r,i)=>rewards(r,doc,p.concat('ChallengeReward',i)));
@@ -252,6 +258,7 @@ function validate(documents, changes) {
       if(own(level,'PurchaseField')&&!require('../../../assets/_script/BuildingPurchaseField').valid(level.PurchaseField))issue('A',q.concat('PurchaseField'),'Ground pad settings need finite X/Y offsets and a Southwest checkbox.');
       const cap=buildingLevelCap(id,level);
       if(own(BUILDING_LEVEL_CAP,id)&&level.level>cap)issue('A',q.concat('level'),'This building has authored map interaction nodes only through level '+cap+'.');
+      if(own(BUILDING_COLLIDER_CAP,id)&&level.index>BUILDING_COLLIDER_CAP[id]&&!own(level,'ColliderIndex'))issue('A',q.concat('ColliderIndex'),'New branch indices must reuse an explicit authored map collider tag.');
       if(own(level,'ColliderIndex')){
         number('A',q.concat('ColliderIndex'),level.ColliderIndex,1,true);
         if(own(BUILDING_COLLIDER_CAP,id)&&level.ColliderIndex>BUILDING_COLLIDER_CAP[id])issue('A',q.concat('ColliderIndex'),'Collision footprint must reference an authored map collider tag (1–'+BUILDING_COLLIDER_CAP[id]+').');
@@ -276,6 +283,38 @@ function validate(documents, changes) {
           if(typeof appearance.sprite!=='string'||!appearance.sprite.trim()||!require('./asset-validation').resourcePath(appearance.sprite)||/\.(png|jpe?g|webp)$/i.test(appearance.sprite))issue('A',at.concat('sprite'),'Choose an extension-free sprite resource path inside assets/resources.');
           ['width','height'].forEach(key=>{if(own(appearance,key))number('A',at.concat(key),appearance[key],Number.MIN_VALUE,false);});
           ['offsetX','offsetY','muzzleX','muzzleY'].forEach(key=>{if(own(appearance,key)&&(typeof appearance[key]!=='number'||!Number.isFinite(appearance[key])))issue('A',at.concat(key),'Artwork offsets must be finite numbers.');});
+          if(own(appearance,'nightTint')&&(typeof appearance.nightTint!=='string'||!/^#?[0-9a-f]{6}$/i.test(appearance.nightTint)))issue('A',at.concat('nightTint'),'Night tint must be a six-digit hexadecimal color.');
+          if(own(appearance,'lighting')){
+            const lights=appearance.lighting,where=at.concat('lighting'),validRecord=value=>value&&typeof value==='object'&&!Array.isArray(value);
+            const finite=(value,path)=>{if(typeof value!=='number'||!Number.isFinite(value))issue('A',path,'Light offsets must be finite numbers.');};
+            const color=(value,path)=>{if(typeof value!=='string'||!/^#?[0-9a-f]{6}$/i.test(value))issue('A',path,'Light color must be a six-digit hexadecimal color.');};
+            const sprite=(value,path)=>{if(typeof value!=='string'||!require('./asset-validation').resourcePath(value)||/\.(png|jpe?g|webp)$/i.test(value))issue('A',path,'Choose an extension-free lighting sprite path inside assets/resources.');};
+            const glow=(value,path)=>{
+              if(!validRecord(value)){issue('A',path,'A glow must retain its object format.');return;}
+              ['x','y'].forEach(key=>{if(own(value,key))finite(value[key],path.concat(key));});
+              ['width','height'].forEach(key=>{if(own(value,key))number('A',path.concat(key),value[key],Number.MIN_VALUE,false);});
+              if(own(value,'color'))color(value.color,path.concat('color'));
+              if(own(value,'sprite'))sprite(value.sprite,path.concat('sprite'));
+              if(own(value,'opacity')){number('A',path.concat('opacity'),value.opacity,0,false);if(value.opacity>255)issue('A',path.concat('opacity'),'Light opacity must not exceed 255.');}
+              if(own(value,'pulse')){number('A',path.concat('pulse'),value.pulse,0,false);if(value.pulse>1)issue('A',path.concat('pulse'),'Glow pulse must be between 0 and 1.');}
+            };
+            if(!Array.isArray(lights))issue('A',where,'Building lights must be an array.');
+            else lights.forEach((light,index)=>{
+              const lightAt=where.concat(index);
+              if(!validRecord(light)){issue('A',lightAt,'A building light must retain its object format.');return;}
+              if(own(light,'sprite'))sprite(light.sprite,lightAt.concat('sprite'));
+              if(!own(light,'sprite')||own(light,'points')){
+                if(!Array.isArray(light.points)||light.points.length<3)issue('A',lightAt.concat('points'),'A polygon light needs at least three points.');
+                else light.points.forEach((point,pi)=>{if(!validRecord(point))issue('A',lightAt.concat('points',pi),'A light point needs finite X and Y.');else {finite(point.x,lightAt.concat('points',pi,'x'));finite(point.y,lightAt.concat('points',pi,'y'));}});
+              }
+              ['width','height'].forEach(key=>{if(own(light,key))number('A',lightAt.concat(key),light[key],Number.MIN_VALUE,false);});
+              ['offsetX','offsetY'].forEach(key=>{if(own(light,key))finite(light[key],lightAt.concat(key));});
+              if(own(light,'color'))color(light.color,lightAt.concat('color'));
+              if(own(light,'opacity')){number('A',lightAt.concat('opacity'),light.opacity,0,false);if(light.opacity>255)issue('A',lightAt.concat('opacity'),'Light opacity must not exceed 255.');}
+              if(own(light,'glow')&&light.glow!==true&&light.glow!==false)glow(light.glow,lightAt.concat('glow'));
+              if(own(light,'glows')){if(!Array.isArray(light.glows))issue('A',lightAt.concat('glows'),'Per-aperture glows must be an array.');else light.glows.forEach((item,gi)=>glow(item,lightAt.concat('glows',gi)));}
+            });
+          }
           if(own(appearance,'destroyed')){
             const destroyed=appearance.destroyed,where=at.concat('destroyed');
             if(!destroyed||typeof destroyed!=='object'||Array.isArray(destroyed))issue('A',where,'Destroyed artwork must retain its object format, or remove it for the legacy destruction effect.');
@@ -342,6 +381,12 @@ function validate(documents, changes) {
     if(!good||good.itemID!==relic.ID)issue('A',p.concat('goodID'),'Relic must retain its matching goods reference.');
     if(!['1','2','3','4','5','7','8','9','10','11'].includes(relic.Talent))issue('A',p.concat('Talent'),'Choose an implemented relic effect.');
     if(!Number.isInteger(relic.Quality)||relic.Quality<1||relic.Quality>4)issue('A',p.concat('Quality'),'Choose an authored rarity.');
+    if(own(relic,'RequiredHeroStyles')){
+      if(!Array.isArray(relic.RequiredHeroStyles)||!relic.RequiredHeroStyles.length)issue('A',p.concat('RequiredHeroStyles'),'Required fighting styles must be a nonempty array of implemented style IDs.');
+      else{
+        const seen=new Set();relic.RequiredHeroStyles.forEach((style,index)=>{if(!HeroWeapons.find(style))issue('A',p.concat('RequiredHeroStyles',index),'Choose an implemented hero weapon style.');if(seen.has(style))issue('A',p.concat('RequiredHeroStyles',index),'Required fighting styles must not repeat.');seen.add(style);});
+      }
+    }
     if(!Array.isArray(relic.Conversion)||relic.Conversion.length!==2||!base.GoodsCfg[relic.Conversion[0]])issue('A',p.concat('Conversion'),'Conversion needs an existing goods ID and amount.');else number('A',p.concat('Conversion',1),relic.Conversion[1],0,true);
     (relic.levelInfo||[]).forEach((level,li)=>{const q=p.concat('levelInfo',li);if(level.id!==relic.ID||level.Level!==li+1)issue('A',q,'Relic level and owner ID must match their position.');for(const field of ['GoldCost','PieceCost'])if(own(level,field))number('A',q.concat(field),level[field],0,true);if(!Array.isArray(level.param))issue('A',q.concat('param'),'Relic effect values must retain their array format.');(level.param||[]).forEach((v,j)=>number('A',q.concat('param',j),v,0,false));});
   });

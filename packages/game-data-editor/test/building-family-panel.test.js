@@ -70,24 +70,23 @@ test('family level tabs browse every original storage position without producing
             const hp=f.field('HP');assert(hp);hp.onchange();
         }
     }
-    assert.equal(visited.size,33,'The current families contain all 33 active authored branch positions');
+    assert.equal(visited.size,43,'The current families contain 40 four-tier designs and 3 unchanged wall variants');
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert.equal(f.store.changes().length,0);
     assert(!f.messages.some(message=>/:(?:change|save)$/.test(message.message)));
 });
 
-test('Arrow Tower preserves both level two variants and never invents a third level',()=>{
-    const f=fixture(),before=f.store.draftState(),first=f.position('2',1),wood=f.position('2',2),stone=f.position('2',3);f.render('2:1',stone);
-    assert.deepEqual(Array.from(f.tabs(),tab=>tab.textContent),['Lvl 1','Lvl 2']);
-    assert.equal(f.panel._level,stone);assert.equal(f.tab(2).getAttribute('aria-selected'),'true');
-    let variants=f.field('Level 2 variant');assert(variants);
-    assert.deepEqual(Array.from(variants.children,option=>Number(option.value)),[wood,stone]);
-    assert.equal(Number(variants.value),stone,'Selecting the stone variant retains its exact original position');
-    f.panel._render();assert.equal(f.panel._level,stone);
-    f.tab(2).onclick();assert.equal(f.panel._level,stone,'Clicking the selected level does not replace its variant');
-    f.tab(1).onclick();assert.equal(f.panel._level,first);
-    f.tab(2).onclick();assert([wood,stone].includes(f.panel._level));
-    variants=f.field('Level 2 variant');variants.value=String(wood);variants.onchange();assert.equal(f.panel._level,wood);
-    variants=f.field('Level 2 variant');variants.value=String(stone);variants.onchange();assert.equal(f.panel._level,stone);
+test('Arrow Tower browses all four linear levels without changing sparse branch identifiers or storage positions',()=>{
+    const f=fixture(),before=f.store.draftState(),indices=[1,2,3,10],positions=indices.map(index=>f.position('2',index));f.render('2:1',positions[3]);
+    assert.deepEqual(Array.from(f.tabs(),tab=>tab.textContent),['Lvl 1','Lvl 2','Lvl 3','Lvl 4']);
+    assert.equal(f.panel._level,positions[3]);assert.equal(f.tab(4).getAttribute('aria-selected'),'true');
+    assert.equal(f.field('Level 2 variant'),undefined,'The approved linear progression has one branch per level');
+    f.panel._render();assert.equal(f.panel._level,positions[3]);
+    for(const level of [4,1,2,3,4,3,2,1]){
+        f.tab(level).onclick();assert.equal(f.panel._level,positions[level-1]);
+        assert.equal(f.tab(level).getAttribute('aria-selected'),'true');
+        const preview=f.previews.filter(p=>p.kind==='building').at(-1).request;
+        assert.equal(preview.levelIndex,positions[level-1]);assert.equal(preview.record.levelList[preview.levelIndex].index,indices[level-1]);
+    }
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
 });
 
@@ -130,7 +129,7 @@ test('barracks level stats share Units overrides and matching Characters preview
 test('the building editor contains only the current construction families and no obsolete branch view',()=>{
     const f=fixture(),before=f.store.draftState(),rows=f.panel._rows();
     assert(!rows.some(row=>String(row.key).includes('legacy')));
-    assert.deepEqual(Array.from(before.A.BuildEnum[3].levelList,branch=>branch.index),Array.from({length:12},(_value,index)=>index+11));
+    assert.deepEqual(Array.from(before.A.BuildEnum[3].levelList,branch=>branch.index),Array.from({length:16},(_value,index)=>index+11));
     for(const key of ['__all__','3','3:11','3:14','3:17','3:20']){
         f.render(key);
         const navigation=f.all(f.panel.$detail,element=>['summary','button'].includes(element.tagName));

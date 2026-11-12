@@ -298,3 +298,16 @@ part_Rider_Body_Cape_vanguard_lv3
   orig: 85, 89
   offset: 0, 0
   index: -1
+
+cloak-royal-blue.png
+size: 85,89
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+part_cloak_royal_blue
+  rotate: false
+  xy: 0, 0
+  size: 85, 89
+  orig: 85, 89
+  offset: 0, 0
+  index: -1

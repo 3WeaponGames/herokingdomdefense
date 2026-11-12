@@ -14,7 +14,13 @@ var UPGRADE = {
   sx: [[0, 0, SMOOTH], [.1667, .893, SMOOTH], [.3333, 1.091, SMOOTH], [.5, 1]],
   sy: [[0, 0, SMOOTH], [.1667, 1.167, SMOOTH], [.3333, .893, SMOOTH], [.5, 1]]
 };
-function duration(kind) { return kind === "create" ? 1.2 : kind === "upgrade" ? .6667 : 0; }
+var DESTROY = {
+  x: [[0, 0, SMOOTH], [.3333, 2.29]],
+  y: [[0, 0, SMOOTH], [.3333, -52.58]],
+  sx: [[0, 1], [.3333, 1]],
+  sy: [[0, 1, SMOOTH], [.3333, .76]]
+};
+function duration(kind) { return kind === "create" ? 1.2 : kind === "upgrade" ? .6667 : kind === "destroy" ? 1.1667 : 0; }
 function identity() { return { x: 0, y: 0, scaleX: 1, scaleY: 1 }; }
 function cubic(t, a, b) {
   var inverse = 1 - t;
@@ -49,14 +55,17 @@ function sample(kind, seconds) {
   var length = duration(kind);
   if (!length) return identity();
   seconds = typeof seconds === "number" && isFinite(seconds) ? Math.max(0, Math.min(length, seconds)) : 0;
-  if (seconds >= length) return identity();
-  var track = kind === "create" ? CREATE : UPGRADE;
+  if (seconds >= length && kind !== "destroy") return identity();
+  var track = kind === "create" ? CREATE : kind === "destroy" ? DESTROY : UPGRADE;
   var sx = value(track.sx, seconds), sy = value(track.sy, seconds), translation = value(track.y, seconds);
   // bone3 bind (-5.2,156.53) inherits jianzhu's .5 scale on create. Preserve
   // that pivot while converting its relative movement into owner-local space.
-  var px = kind === "create" ? -2.6 : 0, py = kind === "create" ? 78.265 : 0;
-  return { x: px * (1 - sx) || 0, y: py * (1 - sy) + translation * (kind === "create" ? .5 : 1) || 0,
-    scaleX: sx, scaleY: sy };
+  var bonePose = kind === "create" || kind === "destroy";
+  var px = bonePose ? -2.6 : 0, py = bonePose ? 78.265 : 0;
+  var pose = { x: px * (1 - sx) + (track.x ? value(track.x, seconds) * .5 : 0) || 0,
+    y: py * (1 - sy) + translation * (bonePose ? .5 : 1) || 0, scaleX: sx, scaleY: sy };
+  if (kind === "destroy") pose.visible = seconds < .2667;
+  return pose;
 }
 exports.duration = duration;
 exports.sample = sample;

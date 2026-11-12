@@ -7,7 +7,7 @@ function method(name,key,scope){const text=read(name),start=text.indexOf('  _cto
 function fixture(){
  const config=manager(),data={personLevel:[1,1,1,1,1,1],heroWeapon:{selected:'fighter'},talentInfo:[10003,10009,10015,999999].map(id=>({id,isLock:true,future:'keep'}))},user={data,getTalent:()=>data.talentInfo,getTreasureLevel:()=>null,getMaxStage:()=>1,getMaxOrder:()=>0,getPersonLevel:()=>1};
  const mission={getTaskInfo:()=>({id:1,stage:0}),getTaskNum:()=>0},player={getUserData:()=>user,getMissionData:()=>mission},singleton=value=>({getInstance:()=>value});
- const scope={$z1KinghtFallDataMgr:{KinghtFallDataMgr:singleton(config)},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:singleton(player)},$z1KinghtFallEnum:Enums,$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:{buffList:[]}}}}},require:name=>{if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:singleton(player)};assert.equal(name,'GameToolsOverrides');return{perkEnabled:()=>true};}};
+ const scope={$z1KinghtFallDataMgr:{KinghtFallDataMgr:singleton(config)},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:singleton(player)},$z1KinghtFallEnum:Enums,$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:{buffList:[]}}}}},require:name=>{if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:singleton(player)};if(name==='RelicEligibility')return require('../../assets/_script/RelicEligibility');assert.equal(name,'GameToolsOverrides');return{perkEnabled:()=>true};}};
  return{config,data,user,mission,scope};
 }
 
@@ -21,7 +21,7 @@ test('battle data initializes owned sparse talents and skips unknown ownership I
  const f=fixture(),before=JSON.stringify(f.data),scope={...f.scope,$z1KinghtFallModle:{default:{getInstance:()=>({randomArray:(rows,count)=>rows.slice(0,count)})}},$z1KinghtFallConfig:{KinghtFallParameter:{InitGold:0}},i:{MonsterGenerate:'monster'}};
  const init=method('KinghtFallGameCtrlData','initData',scope),owner={levelCfg:{Level:1,HomeLevel1Unlock:[],HomeLevel2Unlock:[],HomeLevel3Unlock:[]},talentAdd:{},treasureAdd:{},treasureAddTime:{},loadMonster(){this.loaded=true;}};
  init.call(owner);assert(owner.loaded);for(const kind of [101003,101009,101015])assert.equal(owner.talentAdd[kind][0][0],.05);assert.equal(owner.talentAdd.undefined,undefined);assert.equal(JSON.stringify(f.data),before);
- assert.equal(Hero.calculate(Config,f.data).cp,Math.sqrt(2000));f.data.heroWeapon.selected='vanguard';const selected=Hero.calculate(Config,f.data);assert.equal(selected.damage,21);assert.equal(selected.health,105);assert.equal(selected.attackRate,1.05);
+ const account=Hero.calculate(Config,f.data);assert.equal(account.damage,20.2);assert.equal(account.health,101);assert.equal(account.attackRate,1.01);assert.equal(Hero.snapshot(Config,f.data).damage,20);f.data.heroWeapon.selected='vanguard';assert.equal(Hero.calculate(Config,f.data).cp,account.cp);const selected=Hero.snapshot(Config,f.data);assert.equal(selected.damage,21);assert.equal(selected.health,105);assert.equal(selected.attackRate,1.05);
 });
 
 test('perk-pool and mission queries ignore sparse hero talents and unknown records while preserving real legacy perk unlocks',()=>{

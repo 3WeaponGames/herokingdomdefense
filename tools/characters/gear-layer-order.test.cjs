@@ -6,7 +6,7 @@ test('both Gear sections use chest, helmet, cape, main, secondary and mount whil
  const prefab=read('assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab'),controller=prefab.find(row=>row.ndItemTop&&row.ndItemDown),tops=controller.ndItemTop.map((ref,index)=>({id:index+1,node:prefab[ref.__id__]}));
  const visual=tops.slice().sort((a,b)=>b.node._trs.array[1]-a.node._trs.array[1]||a.node._trs.array[0]-b.node._trs.array[0]).map(row=>row.id);assert.deepEqual(visual,Weapons.gearOrder);assert.deepEqual(visual,[1,2,5,4,3,6]);
  const rows=controller.ndItemDown.map(ref=>ref.__id__),parent=prefab[prefab[rows[0]]._parent.__id__],bottom=parent._children.filter(ref=>rows.includes(ref.__id__)).map(ref=>rows.indexOf(ref.__id__)+1);assert.deepEqual(bottom,visual);
- assert.equal(Weapons.gear('fighter',1,'upgrade').name,'Chest');assert.equal(Weapons.gear('fighter',5,'upgrade').name,'Cape');assert.equal(read('assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg[4].id,5);
+ assert.equal(Weapons.gear('fighter',1,'upgrade').name,'Chest');assert.equal(Weapons.gear('fighter',5,'upgrade').name,'Cloak');assert.equal(read('assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg[4].id,5);
 });
 test('chest and cape use independent visible layers, fitting sockets and icons at every tier',()=>{
  const chest=read('assets/resources/hero-maker/wqyl_lead_doupeng.json'),cape=read('assets/resources/hero-maker/wqyl_lead_shou.json'),icons=read('assets/resources/hero-maker/catalog.json').icons;
@@ -14,6 +14,17 @@ test('chest and cape use independent visible layers, fitting sockets and icons a
  for(const skin of cape.skins){assert(Object.keys(skin.attachments['Rider/Body/Cape']).length);assert(!Object.keys(skin.attachments['Rider/Body/Chest']||{}).length);const attachment=Object.values(skin.attachments['Rider/Body/Cape'])[0];assert.equal(attachment.scaleX,.68);assert.equal(attachment.x,9.5);assert.equal(attachment.y,6);assert(icons[5][skin.name].id.startsWith('Hero/Cape/'));}
  const rig={layers:[{name:'wqyl_lead_doupeng',uuid:'chest',json:chest},{name:'wqyl_lead_shou',uuid:'cape',json:cape},{name:'wqyl_lead_jian',uuid:'left',json:read('assets/resources/hero-maker/wqyl_lead_jian.json')}]};assert.equal(Placement.layerFor(rig,{category:'Cape'}).uuid,'cape');assert.equal(Placement.layerFor(rig,{category:'Chest'}).uuid,'chest');assert.equal(Placement.layerFor(rig,{category:'HandLeft/Sub_Item'}).uuid,'left');
  assert.deepEqual(Placement.intended({id:'Hero/Cape/lv2'}),{x:9.5,y:6,rotation:0,scaleX:.68,scaleY:.68},'Replacing a cape retains its authored shoulder fit');
+});
+
+test('blue-tier cloaks share the editable sprite in the atlas without changing their fit or other tiers',()=>{
+ const Bake=require('../../packages/hkd-characters/lib/native-bake'),PNG=require('../../packages/hkd-characters/lib/png-atlas'),Cloak=require('../../packages/hkd-characters/lib/cloak'),url=require('url');
+ const base='assets/resources/hero-maker/wqyl_lead_shou',atlas=fs.readFileSync(path.join(root,base+'.atlas'),'utf8'),pages={};
+ atlas.split(/\r?\n/).forEach((line,index,lines)=>{if(/\.png$/.test(line)&&(!index||!lines[index-1].trim()))pages[line]=url.pathToFileURL(path.join(root,path.dirname(base),line)).href;});
+ const rig=read(base+'.json'),asset=read('assets/resources/character-parts/catalog.json').parts.find(part=>part.id===Cloak.id),icons=read('assets/resources/hero-maker/catalog.json').icons[5];
+ const texture=JSON.parse(fs.readFileSync(path.join(root,asset.image+'.meta'))).uuid;assert(read(base+'.json.meta').textures.includes(texture));
+ const picture=Bake.readAtlas({atlas,pages},file=>fs.readFileSync(file))('part_cloak_royal_blue');assert.deepEqual(picture,PNG.decode(fs.readFileSync(path.join(root,asset.image))));
+ for(const skin of rig.skins){const blue=/(?:^|_)lv_blue$/.test(skin.name),attachment=Object.values(skin.attachments['Rider/Body/Cape'])[0];if(blue){assert.equal(icons[skin.name].id,asset.id);assert.equal(attachment.path,'part_cloak_royal_blue');}else assert.notEqual(attachment.path,'part_cloak_royal_blue');}
+ const files=new Map([[base+'.atlas',atlas],[base+'.json.meta',fs.readFileSync(path.join(root,base+'.json.meta'))]]);Cloak.page(files,base,asset,texture);assert.equal(files.get(base+'.atlas'),atlas,'Repeated exports do not duplicate the texture page');
 });
 test('changing chest tier leaves cape tier independent and changing cape tier leaves chest tier independent',()=>{
  const Units=require('../../packages/game-data-editor/lib/unit-assets'),get=(levels,name)=>Units.describe(root,{type:'hero',id:'hero',heroLevels:levels,noRuntime:true,noAppearance:true}).layers.find(layer=>layer.name===name).skin;

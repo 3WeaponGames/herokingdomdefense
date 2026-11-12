@@ -911,46 +911,46 @@
         "id": "Hero/Cape/lv4"
       },
       "lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       },
       "skirmisher_lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       },
       "fighter_lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       },
       "vanguard_lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       },
       "mystic_lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       },
       "bruiser_lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       },
       "guardian_lv_blue": {
-        "resource": "hero-maker/equipment/cape-lv2",
+        "id": "Hero/Cape/lv_blue",
+        "resource": "hero-maker/cloak-royal-blue",
         "width": 85,
-        "height": 89,
-        "id": "Hero/Cape/lv2"
+        "height": 89
       }
     }
   }

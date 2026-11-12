@@ -16,9 +16,10 @@ test('retry accepts its own cold ally roster while rejecting the previous reques
  const h=setup();let old=0,current=0;h.g.addSoldier(90001,()=>old++);h.d.onRestart=()=>h.g.addSoldier(90001,()=>current++);
  h.g.onRestart(false);h.pending[0](prefab(1));h.pending[1](prefab(2));assert.equal(old,0);assert.equal(current,1);assert.equal(h.d.soldierList.length,1);
 });
-for(const [id,key] of [[90001,'PerseveranceSymbol'],[90002,'TurtlePower'],[90003,'BowmanStrike'],[90004,'knightHood']])test(`army treasure survives stat refresh for ${id}`,()=>{
+for(const [id,key] of [[90001,'PerseveranceSymbol'],[90002,'TurtlePower'],[90003,'BowmanStrike'],[90004,'knightHood']])test(`repurposed hero relic leaves soldier ${id} unchanged at spawn and stat refresh`,()=>{
  const h=setup(),s=h.e.actor('KinghtFallSoldierBase');h.e.cfg.ID=id;h.d.treasureAdd[key]=[.2,.3];s.doMove=h.noop;s.initData(id);
- for(let i=0;i<3;i++){s.initBuffData();assert.equal(s.hpMax,130);assert.equal(s.attack,6);}
+ assert.equal(s.hpMax,100);assert.equal(s.attack,5);
+ for(let i=0;i<3;i++){s.initBuffData();assert.equal(s.hpMax,100);assert.equal(s.attack,5);}
 });
 test('Buff40 disables regeneration during idle and after attacks without repeated healing',()=>{
  const h=setup(),p=hero(h);h.d.addGameBuff('Buff40');p.hp=100;p.initBuffData();assert.equal(p.hp,100);

@@ -619,3 +619,113 @@ rts_flag_14
   orig: 59, 38
   offset: 0, 0
   index: -1
+
+cb-painted.png
+size: 2048, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+castle_painted_4_body
+  rotate: false
+  xy: 2, 2
+  size: 450, 413
+  orig: 450, 413
+  offset: 0, 0
+  index: -1
+castle_painted_4_night
+  rotate: false
+  xy: 456, 2
+  size: 450, 413
+  orig: 450, 413
+  offset: 0, 0
+  index: -1
+castle_painted_1_body
+  rotate: false
+  xy: 910, 2
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1
+castle_painted_1_night
+  rotate: false
+  xy: 1324, 2
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1
+castle_painted_2_body
+  rotate: false
+  xy: 2, 419
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1
+castle_painted_2_night
+  rotate: false
+  xy: 416, 419
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1
+castle_painted_3_body
+  rotate: false
+  xy: 830, 419
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1
+castle_painted_3_night
+  rotate: false
+  xy: 1244, 419
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1
+castle_painted_3_flag
+  rotate: false
+  xy: 1658, 419
+  size: 54, 34
+  orig: 54, 34
+  offset: 0, 0
+  index: -1
+castle_painted_2_flag
+  rotate: false
+  xy: 1716, 419
+  size: 50, 34
+  orig: 50, 34
+  offset: 0, 0
+  index: -1
+castle_painted_4_flag
+  rotate: false
+  xy: 1770, 419
+  size: 57, 33
+  orig: 57, 33
+  offset: 0, 0
+  index: -1
+
+cb-painted-fixtures.png
+size: 512, 512
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+painted_native_lantern_day
+  rotate: false
+  xy: 2, 2
+  size: 68, 64
+  orig: 68, 64
+  offset: 0, 0
+  index: -1
+painted_native_lantern_light
+  rotate: false
+  xy: 74, 2
+  size: 68, 64
+  orig: 68, 64
+  offset: 0, 0
+  index: -1
+castle_painted_2_arch_night
+  rotate: false
+  xy: 2, 72
+  size: 410, 375
+  orig: 410, 375
+  offset: 0, 0
+  index: -1

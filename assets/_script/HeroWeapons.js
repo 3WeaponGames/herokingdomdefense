@@ -41,14 +41,14 @@ function skin(style, tier) { return (style || "skirmisher") + "_" + tier; }
 function gear(style, slot, area) {
   var selected = find(style) || styles[0], main = selected.id === "guardian" ? "Hammer" : selected.weapon;
   if (Number(slot) === 1) return { name: "Chest", kind: "armor", slot: 1 };
-  if (Number(slot) === 5) return { name: "Cape", kind: "cape", slot: 5 };
+  if (Number(slot) === 5) return { name: "Cloak", kind: "cape", slot: 5 };
   if (Number(slot) === 4) return { name: main, kind: "weapon", slot: 4 };
   if (Number(slot) !== 3) return null;
   if (selected.id === "skirmisher") return { name: "Arrow", kind: "offhand", slot: 3 };
   if (selected.id === "guardian") return { name: "Shield", kind: "offhand", slot: 3, icon: { id:"HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",resource:"character-parts/Parts/HandLeft/Shield/FA_WP_Sub_Shield_012_Blue",width:50,height:56 } };
   if (area === "equipment") return { name: main, kind: "linked", slot: 3, occupiedBy: 4, gray: true, opacity: 110 };
   var arcane = selected.id === "mystic";
-  return { name: arcane ? "Arcane focus" : "Combat training", kind: "bonus", slot: 3, bonus: { key: arcane ? "arcane-focus" : "combat-training", parameter: "damage" }, icon: {resource:arcane?"icons/GUI-Pro/Icons/Icon_Mana":"icons/2d-minimal/Misc/Misc_Fist_01_Gold"} };
+  return { name: {fighter:"Potion",vanguard:"Mount buff",mystic:"Crystal Orb",bruiser:"Trinket"}[selected.id], kind: "bonus", slot: 3, bonus: { key: arcane ? "arcane-focus" : "combat-training", parameter: "damage" }, icon: {resource:arcane?"icons/GUI-Pro/Icons/Icon_Mana":"icons/2d-minimal/Misc/Misc_Fist_01_Gold"} };
 }
 function validate(data, equipment) {
   var state = data.heroWeapon; if (state === undefined) return;

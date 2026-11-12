@@ -33,9 +33,11 @@ function fire(panel,key,options){
 test('every allied unit exposes its authored levels immediately below the title and browsing stays read-only',()=>{
     const f=fixture(),before=f.store.draftState(),version=f.store.version;
     for(const id of ['90001','90002','90003','90004']){
-        f.render('ally:'+id);const tabs=f.tabs();assert.deepEqual(Array.from(tabs,tab=>tab.textContent),['Lvl 1','Lvl 2','Lvl 3']);
+        // The newly authored fourth level needs its own read-only model profile.
+        AttackRates.metrics(f.panel,{type:'ally',id,level:4,duration:1});
+        f.render('ally:'+id);const tabs=f.tabs();assert.deepEqual(Array.from(tabs,tab=>tab.textContent),['Lvl 1','Lvl 2','Lvl 3','Lvl 4']);
         assert.equal(f.panel.$detail.children[0].tagName,'h2');assert.equal(f.panel.$detail.children[1].getAttribute('role'),'tablist');
-        for(const level of [1,2,3]){
+        for(const level of [1,2,3,4]){
             f.tabs().find(tab=>Number(tab.getAttribute('data-unit-level'))===level).onclick();
             assert.equal(f.panel._selectedUnitLevel(f.row('ally:'+id)),level);assert.equal(f.preview().level,level);
             assert.equal(f.tabs().find(tab=>tab.getAttribute('aria-selected')==='true').textContent,'Lvl '+level);
@@ -86,7 +88,7 @@ test('inherited-value edits and empty resets create no override, while invalid l
     const f=fixture();f.render('ally:90001');const row=f.row('ally:90001'),before=f.store.draftState(),version=f.store.version;
     await f.panel._unitLevelEdit(row,1,'Health',row.record.Health);await f.panel._unitLevelEdit(row,1,null);
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert.equal(f.store.undoStack.length,0);
-    for(const [level,field,value]of [[4,'Health',50],[1,'Health',0],[2,'AttackRange',-1],[3,'Armor',2]])await assert.rejects(f.panel._unitLevelEdit(row,level,field,value));
+    for(const [level,field,value]of [[5,'Health',50],[1,'Health',0],[2,'AttackRange',-1],[3,'Armor',2]])await assert.rejects(f.panel._unitLevelEdit(row,level,field,value));
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);
     seedLevels(f,[]);const malformed=f.store.draftState();await assert.rejects(f.panel._unitLevelEdit(row,2,'Health',80),/invalid format/);assert.deepEqual(f.store.draftState(),malformed);
 });
@@ -112,8 +114,9 @@ test('Shift+number selects authored level tabs without editing data or intercept
     for(const target of [{tagName:'INPUT',type:'text'},{tagName:'INPUT',type:'number'},{tagName:'TEXTAREA'},{tagName:'SELECT'},{tagName:'DIV',isContentEditable:true}]){
         const event=fire(f.panel,'3',{code:'Digit3',shiftKey:true,target});assert(!event.defaultPrevented);assert.equal(f.preview().level,2);
     }
-    fire(f.panel,'4',{code:'Digit4',shiftKey:true});assert.equal(f.preview().level,2);
-    f.panel.$modal.hidden=false;fire(f.panel,'1',{code:'Digit1',shiftKey:true});assert.equal(f.preview().level,2);
+    const fourth=fire(f.panel,'4',{code:'Digit4',shiftKey:true});assert(fourth.defaultPrevented&&fourth.stopped);assert.equal(f.preview().level,4);
+    fire(f.panel,'5',{code:'Digit5',shiftKey:true});assert.equal(f.preview().level,4,'unauthored levels remain ignored');
+    f.panel.$modal.hidden=false;fire(f.panel,'1',{code:'Digit1',shiftKey:true});assert.equal(f.preview().level,4);
     f.panel.$modal.hidden=true;f.render('enemy:90001');const enemy=fire(f.panel,'2',{code:'Digit2',shiftKey:true});assert(!enemy.defaultPrevented);assert.equal(f.preview().level,undefined);
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert(!f.messages.some(message=>/:(change|save)$/.test(message.message)));
 });

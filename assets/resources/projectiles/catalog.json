@@ -1553,23 +1553,5 @@
       "role": "impact"
     }
   ],
-  "assignments": { "tower:2:4": {
-      "flight": "tiny-kingdom:cannonball",
-      "size": 20
-    }, "tower:2:5": {
-      "flight": "tiny-kingdom:cannonball",
-      "size": 20
-    }, "tower:2:6": {
-      "flight": "tiny-kingdom:cannonball",
-      "size": 20
-    }, "tower:2:7": {
-      "flight": "tiny-kingdom:ballista-bolt",
-      "size": 44
-    }, "tower:2:8": {
-      "flight": "tiny-kingdom:ballista-bolt",
-      "size": 44
-    }, "tower:2:9": {
-      "flight": "tiny-kingdom:ballista-bolt",
-      "size": 44
-    } }
+  "assignments": {"tower:2:4":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:5":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:6":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:7":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:8":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:9":{"flight":"tiny-kingdom:ballista-bolt","size":44},"tower:2:11":{"flight":"tiny-kingdom:cannonball","size":20},"tower:2:12":{"flight":"tiny-kingdom:ballista-bolt","size":44}}
 }

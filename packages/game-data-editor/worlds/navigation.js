@@ -6,7 +6,7 @@ function buildingRow(building,hall,config){
  if(Number.isInteger(building.previewBranch))return rows.find(row=>row.index===building.previewBranch);
  let row=rows[0];
  if(building.kind===1){
-  row=rows.find(row=>row.level===hall);
+  row=rows.find(row=>row.level===hall)||rows.reduce((best,row)=>row.level<=hall&&(!best||row.level>best.level)?row:best,null);
  }else if(definition&&Array.isArray(definition.InitialChoices)){
   row=definition.InitialChoices.map(index=>rows.find(row=>row.index===index&&row.level===1)).find(Boolean);
  }
@@ -62,7 +62,7 @@ function preview(service,request){
  if(spawn.radius!==undefined&&(!Number.isFinite(spawn.radius)||spawn.radius<0||spawn.radius>1500))throw Error('Spawn radius must be between 0 and 1500.');
  if(request.graphId){const selected=stage.graphs.find(graph=>graph&&graph.id===request.graphId);if(!selected||!Array.isArray(selected.spawnIds)||!selected.spawnIds.includes(spawn.id))throw Error('Choose a path assigned to the selected spawn.');}
  const hall=request.hall===undefined?3:request.hall,radius=request.radius===undefined?18:request.radius,gate=request.gate||'closed';
- if(!Number.isInteger(hall)||hall<1||hall>3)throw Error('Choose main hall level 1, 2 or 3.');
+ if(!Number.isInteger(hall)||hall<1||hall>4)throw Error('Choose main hall level 1, 2, 3 or 4.');
  if(!Number.isFinite(radius)||radius<0)throw Error('Unit radius must be finite and non-negative.');
  if(!['closed','open'].includes(gate))throw Error('Choose an open or closed gate.');
  const Grid=require(path.join(service.root,'assets/_script/NavigationGrid')).NavigationGrid,polygons=M.blockerPolygons(map).map(p=>p.points);

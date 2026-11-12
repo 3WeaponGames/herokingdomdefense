@@ -3,7 +3,7 @@ const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), vm = require('node:vm');
 const root = path.resolve(__dirname, '../..'), scripts = path.join(root, 'assets/_script');
 const catalog = require('../../assets/_script/BattleSoundCatalog');
-function fixture(surface = 'forest') {
+function fixture(surface = 'lava') {
   let now = 1000;
   const pending = [], played = [], writes = [], listeners = [];
   const preferences = { effects: true, music: true }, states = { ERROR: -1, INITIALIZING: 0, PLAYING: 1, PAUSED: 2, STOPPED: 3 };
@@ -45,7 +45,7 @@ for (const biome of ['forest', 'deep-forest', 'autumn', 'desert', 'snow', 'ice',
     const f = fixture(biome); f.start(); f.tick(); f.hero.node.x += 10; f.tick();
     const horse = f.played.find(p => p.path === 'sfx/hooves-' + biome + '-loop');
     assert(horse); assert.equal(horse.loop, true); assert.equal(horse.volume, .225);
-    assert(f.played.some(p => p.path === 'sfx/ambience-' + biome + '-loop'));
+    assert.equal(f.played.some(p => p.path === 'sfx/ambience-' + biome + '-loop'), biome === 'lava');
     assert.equal(f.manager.musicKeys.length, 0); assert(f.played.every(p => p.source.mute));
     f.tick(); assert.equal(horse.source.state, 3, 'idle horse kept running');
     assert.deepEqual(f.writes, []);
@@ -95,7 +95,7 @@ test('nearby cavalry shares one biome horse loop; infantry and flying movement r
 test('hero death, hit-stop, distance, pause, hide, mute and battle exit stop movement without stale restarts', () => {
   for (const mode of ['death', 'hit-stop', 'pause', 'hide', 'mute', 'exit']) {
     const f = fixture(); f.start(); f.tick(); f.hero.node.x += 4; f.tick();
-    const horse = f.played.find(p => p.path === 'sfx/hooves-forest-loop'); assert(horse);
+    const horse = f.played.find(p => p.path === 'sfx/hooves-lava-loop'); assert(horse);
     if (mode === 'death') f.hero.isDead = () => true;
     if (mode === 'hit-stop') f.hero._hitReactionPlaying = true;
     if (mode === 'pause') f.sounds.suspend(f.game, true);
@@ -129,7 +129,7 @@ test('the immediate UI pause blocks pending combat cues and loops before the def
   assert.equal(f.sounds.effect('castle-low-health', f.hero), true, 'pause still permits signal feedback');
   f.finishAll(); assert.equal(f.played.length, 1);
   f.ui.isPauset = false; f.tick();
-  assert(f.played.some(p => p.path === 'sfx/ambience-forest-loop'));
+  assert(f.played.some(p => p.path === 'sfx/ambience-lava-loop'));
 });
 
 test('a loop preload declined during a temporary pause or mute can retry after it is allowed again', () => {
@@ -139,15 +139,15 @@ test('a loop preload declined during a temporary pause or mute can retry after i
     else f.preferences.effects = false;
     f.finishAll(); assert.equal(f.played.length, 0);
     f.ui.isPauset = false; f.preferences.effects = true;
-    f.tick(); assert(f.played.some(p => p.path === 'sfx/ambience-forest-loop'), mode + ' left a dead loop request');
+    f.tick(); assert(f.played.some(p => p.path === 'sfx/ambience-lava-loop'), mode + ' left a dead loop request');
   }
 });
 
 test('failed loops retry after a bounded delay and interrupted native loops recover', () => {
   const f = fixture(); f.start(); f.sounds.tick(f.game);
-  const at = f.pending.findIndex(p => p.file === 'sfx/ambience-forest-loop'), request = f.pending.splice(at, 1)[0];
+  const at = f.pending.findIndex(p => p.file === 'sfx/ambience-lava-loop'), request = f.pending.splice(at, 1)[0];
   request.done(null); f.sounds.tick(f.game); assert.equal(f.pending.length, 0);
-  f.advance(1600); f.tick(); const amb = f.played.find(p => p.path === 'sfx/ambience-forest-loop'); assert(amb);
+  f.advance(1600); f.tick(); const amb = f.played.find(p => p.path === 'sfx/ambience-lava-loop'); assert(amb);
   amb.source.state = -1; f.advance(1100); f.tick(); assert.equal(amb.source.state, 1);
 });
 
@@ -165,14 +165,15 @@ test('releases select the unit weapon, and confirmed impacts distinguish arrows,
   assert.equal(f.sounds.hit(target, f.hero, 0), false);
 });
 
-test('creature material families choose one death effect per life and never add a visual ghost', () => {
-  const cases = [[90001, 'death-beast'], [90003, 'death-plant-wood'], [90005, 'death-reptile-shell'], [90007, 'death-golem-metal'], [90008, 'death-ghost-magic'], [90010, 'death-golem-stone'], [90012, 'death-skeleton']];
-  for (const [id, clip] of cases) {
-    const f = fixture(); f.start(); const actor = f.actor(id, { hp: 0, isDead: () => true });
-    assert.equal(f.sounds.death(actor), true); assert.equal(f.sounds.death(actor), false); f.finishAll();
-    assert.equal(f.played.filter(p => p.path === 'sfx/' + clip).length, 1);
+test('all creature and allied death hooks remain silent without changing their authored visual state', () => {
+  const f = fixture(); f.start();
+  for (const id of [90001, 90003, 90005, 90007, 90008, 90010, 90012]) {
+    const actor = f.actor(id, { hp: 0, isDead: () => true });
+    assert.equal(f.sounds.death(actor), false); assert.equal(f.sounds.death(actor), false);
     assert.equal(actor.node.activeInHierarchy, true);
   }
+  f.finishAll(); assert.equal(f.played.length, 0); assert.equal(f.pending.length, 0);
+  assert.equal(f.sounds.effect('death-beast', f.actor(90001), { allowDead: true }), false);
 });
 
 test('hit bursts are throttled, source pools are bounded, and late pooled/reused hits stay silent', () => {
@@ -279,7 +280,7 @@ test('muting and restoring effects cancels one-shot preload callbacks even witho
 test('a mute/restore with no gameplay tick cancels preload cues and movement loops recover on the next tick', () => {
   const f = fixture(); f.start(); f.sounds.effect('sword-heavy-swing', f.actor(90001)); f.sounds.tick(f.game);
   f.manager.setEffectVolume(0); f.manager.setEffectVolume(.5); f.finishAll();
-  assert.equal(f.played.length, 0); f.tick(); assert(f.played.some(play => play.path === 'sfx/ambience-forest-loop'));
+  assert.equal(f.played.length, 0); f.tick(); assert(f.played.some(play => play.path === 'sfx/ambience-lava-loop'));
 });
 
 test('global menu audio never retains a battle UI through its application lifecycle listeners', () => {
@@ -295,14 +296,16 @@ test('a detached hero during battle teardown stops loops without crashing on sur
   assert.equal(f.sounds.effect('sword-light-swing', { node: null }), false);
 });
 
-test('all 87 generated assets are present with unique metadata and all eight biome pairs', () => {
-  const names = Object.keys(catalog.effects); assert.equal(names.length, 87); const uuids = new Set(); let bytes = 0;
+test('the active effect library contains no death assets, keeps eight horse surfaces and only the approved lava ambience', () => {
+  const names = Object.keys(catalog.effects); assert.equal(names.length, 68); const uuids = new Set(); let bytes = 0;
   for (const [id, item] of Object.entries(catalog.effects)) {
     const file = path.join(root, 'assets/KinghtFallAudio', item.path + (item.loop ? '.wav' : '.mp3'));
     const meta = JSON.parse(fs.readFileSync(file + '.meta')); assert.equal(meta.importer, 'audio-clip'); assert(!uuids.has(meta.uuid)); uuids.add(meta.uuid); bytes += fs.statSync(file).size;
-    if (id.startsWith('hooves-')) assert.equal(meta.duration, 5.94);
+    assert(meta.duration > .1); assert(Math.abs(meta.duration - item.duration) < .1);
   }
-  assert(bytes < 8 * 1024 * 1024); assert.equal(names.filter(n => n.startsWith('hooves-')).length, 8); assert.equal(names.filter(n => n.startsWith('ambience-')).length, 8);
+  assert(bytes < 8 * 1024 * 1024); assert.equal(names.filter(n => n.startsWith('hooves-')).length, 8);
+  assert.deepEqual(names.filter(n => n.startsWith('ambience-')), ['ambience-lava-loop']);
+  assert(!names.some(n => n.startsWith('death-')));
 });
 
 test('the mounted hero never uses creature hurt sounds, and enemy spells and spit have matching impacts', () => {
@@ -361,4 +364,11 @@ test('a real cannon flight emits one explosion for multiple victims and no stale
   assert.deepEqual(calls, [['tower', 'cannon'], ['cannon-impact-explosion']]);
   bullet.freeNode(); h.g.onShotBuild(tower, enemies[0]); const stale = bullet.callAttack; h.g._combatEpoch++; stale();
   assert.equal(calls.filter(call => call[0] === 'cannon-impact-explosion').length, 1);
+});
+
+test('switching from approved lava ambience to a removed biome background stops it without requesting missing clips', () => {
+  const f = fixture('lava'); f.start(); f.tick(); const ambience = f.played.find(p => p.path === 'sfx/ambience-lava-loop'); assert(ambience);
+  f.data.levelCfg.EnvironmentBiome = 'forest'; f.sounds.tick(f.game);
+  assert.equal(ambience.source.state, 3); assert(!f.pending.some(p => p.file.startsWith('sfx/ambience-')));
+  f.finishAll(); assert(!f.game._battleSounds.loops.ambience);
 });

@@ -438,3 +438,38 @@ mz_3_3
   orig: 148, 145
   offset: 0, 0
   index: -1
+
+
+mz-painted.png
+size: 1192,1200
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+painted-farmhouse-1
+  rotate: false
+  xy: 2, 2
+  size: 576, 596
+  orig: 576, 596
+  offset: 0, 0
+  index: -1
+painted-farmhouse-2
+  rotate: false
+  xy: 598, 2
+  size: 592, 596
+  orig: 592, 596
+  offset: 0, 0
+  index: -1
+painted-farmhouse-3
+  rotate: false
+  xy: 2, 602
+  size: 592, 596
+  orig: 592, 596
+  offset: 0, 0
+  index: -1
+painted-farmhouse-4
+  rotate: false
+  xy: 598, 602
+  size: 592, 596
+  orig: 592, 596
+  offset: 0, 0
+  index: -1

@@ -33,6 +33,20 @@ test('placement durations include the Archer create dust and upgrade lights unti
   assert.equal(source.bones.find(b=>b.name==='bone3').y*source.bones.find(b=>b.name==='jianzhu').scaleY,78.265);
 });
 
+test('destruction matches the shipped collapse tracks and exact body-to-rubble visibility transition',()=>{
+  assert.equal(Placement.duration('destroy'),sourceDuration('destroy'));
+  const tracks=source.animations.destroy.bones.bone3,bone=source.bones.find(b=>b.name==='bone3'),parent=source.bones.find(b=>b.name==='jianzhu');
+  const hideAt=source.animations.destroy.slots.jt_1_3.attachment.find(k=>k.name===null).time;
+  for(let time=0;time<=Placement.duration('destroy');time+=.007){
+    const sx=authoredValue(tracks.scale,'x',time,1),sy=authoredValue(tracks.scale,'y',time,1);
+    const x=authoredValue(tracks.translate,'x',time,0),y=authoredValue(tracks.translate,'y',time,0);
+    const expected={x:bone.x*parent.scaleX*(1-sx)+x*parent.scaleX,y:bone.y*parent.scaleY*(1-sy)+y*parent.scaleY,scaleX:sx,scaleY:sy};
+    const pose=Placement.sample('destroy',time);poseClose(pose,expected,'destroy at '+time);assert.equal(pose.visible,time<hideAt);
+  }
+  assert.equal(Placement.sample('destroy',hideAt-.00001).visible,true);
+  assert.equal(Placement.sample('destroy',hideAt).visible,false);
+});
+
 for(const kind of ['create','upgrade'])test(kind+' matches every authored translation and scale key including its exact rest pose',()=>{
   const tracks=source.animations[kind].bones[kind==='create'?'bone3':'jianzhu'],times=new Set([0,Placement.duration(kind)]);
   for(const track of [tracks.translate,tracks.scale])for(const frame of track)times.add(frame.time||0);

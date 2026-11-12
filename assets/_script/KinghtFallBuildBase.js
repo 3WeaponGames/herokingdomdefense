@@ -150,6 +150,17 @@ var def_KinghtFallBuildBase = function (t) {
       return 0;
     }
   };
+  _ctor.prototype.getPurchaseField = function () {
+    var level = this.getLevel(), fields = this.ndLockList || [];
+    if (fields[level]) return fields[level];
+    // Older maps have pads only for levels 0–2. A newly eligible higher tier
+    // reuses the last authored pad, including its saved placement and trigger.
+    // Do not add nodes or rewrite the scene's selector list.
+    if (level >= fields.length && this.buildInfo && this.buildInfo.canUpgrade) {
+      for (var index = fields.length - 1; index >= 0; index--) if (fields[index]) return fields[index];
+    }
+    return null;
+  };
   _ctor.prototype.getColliderIndex = function () {
     var value = this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.ColliderIndex;
     return typeof value === "number" && isFinite(value) && value > 0 && Math.floor(value) === value ? value : this.index;
@@ -184,7 +195,7 @@ var def_KinghtFallBuildBase = function (t) {
     var cfg = this.getBranchCfg(t);
     this.index = cfg ? cfg.index : 0;
     if (this.index > 0) this._freeInitialBuild = false;
-    this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, cfg);
+    this.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(this.buildCfg.enumValue, cfg, this.ID);
     if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);
     if (cfg && cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
     if (0 == this.index) {
@@ -215,10 +226,9 @@ var def_KinghtFallBuildBase = function (t) {
     }
     this.ndCoin.active = false;
     this.ndCoin.getChildByName("labNum").getComponent(cc.Label).string = "" + this.getSell();
-    this.ndLockList.forEach(function (t, e) {
-      var i;
+    this.ndLockList.forEach(function (t) {
       t.getChildByName("sprPro") && (t.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0);
-      if (e == ((null === (i = n.buildInfo) || undefined === i ? undefined : i.cfg) ? n.buildInfo.cfg.level : 0) && n.buildInfo.canUpgrade) {
+      if (t === n.getPurchaseField() && n.buildInfo.canUpgrade) {
         t.active = true;
         if (!(t.show || n.buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter)) {
           t.show = true, cc.tween(t).set({
@@ -296,6 +306,13 @@ var def_KinghtFallBuildBase = function (t) {
         if (progress >= 1 && owner._colliderTweens.get(collider) === operation) owner._colliderTweens.delete(collider);
       }
     }).start();
+  };
+  _ctor.prototype.onEnable = function () {
+    if (t.prototype.onEnable) t.prototype.onEnable.call(this);
+    // Destroyed buildings do not run their normal work update. Resume a paused
+    // visual collapse here without replaying the native destruction effects.
+    var artwork = this._buildingAppearance;
+    if (artwork && artwork.destruction && artwork.destruction.paused) require("BuildingAppearance").apply(this);
   };
   _ctor.prototype.onDisable = function () {
     this.cancelUpgrade();
@@ -418,9 +435,8 @@ var def_KinghtFallBuildBase = function (t) {
     require("BuildingLighting").setNight(this, t);
     var e = this;
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None) {
-      this.ndLockList.forEach(function (n, i) {
-        var a;
-        n.active = !t && i == ((null === (a = e.buildInfo) || undefined === a ? undefined : a.cfg) ? e.buildInfo.cfg.level : 0) && e.canLock && e.buildInfo.canUpgrade;
+      this.ndLockList.forEach(function (n) {
+        n.active = !t && n === e.getPurchaseField() && e.canLock && e.buildInfo.canUpgrade;
         n.getChildByName("sprPro") && (n.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0);
       });
       if (this.canLock && 0 != this.index) {
@@ -445,9 +461,10 @@ var def_KinghtFallBuildBase = function (t) {
       return null;
     }
     if (!this.isDestroyed && this.canLock && this.buildInfo.canUpgrade) {
-      var t = this.ndLockList[this.getLevel()];
+      var t = this.getPurchaseField();
+      if (!t) return null;
       var e = t.getComponent(cc.PolygonCollider);
-      e || console.error("### 未找到锁定点", this.ID, this.ndLockList, this.index);
+      if (!e) { console.error("### 未找到锁定点", this.ID, this.ndLockList, this.index); return null; }
       var n = [];
       for (var i = 0; i < e.points.length; i++) {
         n.push(t.convertToWorldSpaceAR(cc.v2(e.points[i].x / t.scaleX, e.points[i].y / t.scaleY)));
@@ -497,7 +514,7 @@ var def_KinghtFallBuildBase = function (t) {
           i._freeInitialBuild = false;
           $z1KinghtFallUIGame.default.instance.initView();
           i.index = t;
-          i.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(i.buildCfg.enumValue, i.getBranchCfg(i.index));
+          i.buildInfo = new $z1KinghtFallBuildInfo.KinghtFallBuildInfo(i.buildCfg.enumValue, i.getBranchCfg(i.index), i.ID);
           $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.BuildingLevelUp);
           i.doUpgreadAni();
           i.scheduleOnce(function () {
@@ -624,7 +641,7 @@ var def_KinghtFallBuildBase = function (t) {
     // A one-choice upgrade commits synchronously and replaces BuildInfo. The
     // completed frame belongs to the old tier; terminal tiers have no marker.
     if (this.buildInfo !== upgradeInfo) return false;
-    var o = this.ndLockList[this.getLevel()];
+    var o = this.getPurchaseField();
     if (!o) return false;
     o.getChildByName("sprPro") && (o.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = this.buildInfo.standTime / this.standTimeMax);
     var r = null === (n = o.getChildByName("spAni")) || undefined === n ? undefined : n.getComponent(sp.Skeleton);
@@ -643,7 +660,7 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.upSellView = function () {
     if (this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None && this.buildInfo) {
-      var t = this.ndLockList[this.getLevel()];
+      var t = this.getPurchaseField();
       if (!t) return;
       if ($z1KinghtFallUIGame.default.instance.ctrGame.gameData.coin < this.getSell()) {
         t.color = new cc.Color().fromHEX("#db0000");
@@ -710,7 +727,7 @@ var def_KinghtFallBuildBase = function (t) {
           t += n.Pamer[1];
       }
     }
-    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SaveToken] && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.round < $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SaveToken][0] && t--;
+    $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SaveToken] && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.round <= $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SaveToken][0] && t--;
     return Math.max(t, 0);
   };
   _ctor.prototype.upHpView = function () {
