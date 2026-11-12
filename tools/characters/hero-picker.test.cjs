@@ -4,10 +4,11 @@ const Weapons=require('../../assets/_script/HeroWeapons'),equipment=require('../
 const {fixture}=require('./hero-picker-harness.cjs');
 const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:()=>1});
 
-test('six square cards use equally padded square pose areas and selection changes only the inner edge color',()=>{
+test('six square cards center large padded weapon poses, keep the Equipped badge above the title, and change only the selected edge color',()=>{
  const f=fixture(user()),owner={node:f.canvas};f.api.open(owner);
  const tiles=Weapons.styles.map(style=>f.find('Style '+style.id));assert.equal(new Set(tiles.map(tile=>tile.x)).size,3);assert.equal(new Set(tiles.map(tile=>tile.y)).size,2);
- for(const tile of tiles){assert.equal(tile.width,tile.height);const area=tile.getChildByName('Weapon pose');assert.equal(area.width,area.height);assert(area.width<tile.width-40);}
+ for(const tile of tiles){assert.equal(tile.width,tile.height);const area=tile.getChildByName('Weapon pose');assert.equal(area.width,area.height);assert(area.width<=tile.width-16);assert(area.width>tile.width*.8);assert.equal(area.x,0);assert.equal(area.y,0);}
+ const equipped=f.find('Style guardian'),badge=equipped.getChildByName('Equipped marker'),title=equipped.getChildByName('Style name');assert(badge.y>equipped.height/3);assert(badge.y-badge.height/2>title.y+title.height/2);
  assert.equal(f.poseIcons.length,6);assert.deepEqual(f.poseIcons.map(icon=>icon.style),Weapons.styles.map(style=>style.id));
  const before=f.find('Style guardian').getChildByName('Tier card').getComponent(f.cc.Sprite).spriteFrame.key;
  f.tap(f.find('Style fighter'));assert.equal(f.find('Style fighter').getChildByName('Card edge').getComponent(f.cc.Graphics).strokeColor,'#ffdf62');assert.notEqual(f.find('Style guardian').getChildByName('Card edge').getComponent(f.cc.Graphics).strokeColor,'#ffdf62');assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(f.find('Style guardian').getChildByName('Tier card').getComponent(f.cc.Sprite).spriteFrame.key,before);

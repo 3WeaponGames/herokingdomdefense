@@ -133,14 +133,14 @@ function open(owner) {
       var edge = node(tile, "Card edge", 0, 0, 178, 178), border = edge.addComponent(cc.Graphics);
       border.strokeColor = selected ? cc.color("#ffdf62") : cc.color(255, 255, 255, 55); border.lineWidth = 4;
       border.roundRect(-86, -86, 172, 172, 24); border.stroke();
-      var pose = node(tile, "Weapon pose", 0, 19, 132, 132);
+      var pose = node(tile, "Weapon pose", 0, 0, 172, 172);
       cardIcons.push(require("HeroWeaponIcon").create(pose, user, style.id, function (error) { if (cc.warn) cc.warn("Fighting style icon: " + error.message); }));
       cardViews.push({ rim: rim, edge: edge });
       label(tile, "Style name", style.name, 0, -66, 176, 40, 29);
       if (equipped) {
-        box(tile, "Equipped badge outline", 0, -92, 131, 36, 14, "#111409");
-        box(tile, "Equipped badge", 0, -90, 123, 29, 11, "#8ce928");
-        label(tile, "Equipped marker", "Equipped", 0, -90, 119, 29, 23, "#173b05", 0);
+        box(tile, "Equipped badge outline", 0, 80, 131, 36, 14, "#111409");
+        box(tile, "Equipped badge", 0, 82, 123, 29, 11, "#8ce928");
+        label(tile, "Equipped marker", "Equipped", 0, 82, 119, 29, 23, "#173b05", 0);
       }
       tile.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); if (chosen !== style.id) { chosen = style.id; render(); } });
     });

@@ -104,7 +104,7 @@ function create(parent, user, onError) {
           var height = bounds.top - bounds.bottom, feet = bounds.bottom;
           bounds.top += height * .08; bounds.bottom -= height * .02;
           root.scale = Math.min((parent.width || 300) / (bounds.right - bounds.left), (parent.height || 212) / (bounds.top - bounds.bottom));
-          root.setPosition(-(bounds.left + bounds.right) / 2 * root.scale, -(parent.height || 212) / 2 - feet * root.scale + 2);
+          root.setPosition(-(bounds.left + bounds.right) / 2 * root.scale, -(parent.height || 212) / 2 - feet * root.scale - 5);
           root.opacity = 255;
         };
         clock.controller = controller;
