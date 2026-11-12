@@ -19,7 +19,9 @@ class ItemsService extends Service{
   describe(base,noRuntime){
     const target=Tiers.target(this.equipment(),base.id),unit=this.units().find(u=>u.slot===target?.slot&&u.skin===target.skin&&u.style===target.style),item=unit&&{...unit,level:target.level};if(!item||base.type!=='item')throw Error('Choose an existing hero equipment tier.');
     const result=Units.describe(this.root,{type:'hero',id:'hero',heroLevels:{[item.slot]:item.level},heroStyle:item.style,noRuntime:!!noRuntime,noAppearance:true});
-    result.defaultLayer=result.layers.find(l=>l.name===LAYERS[item.slot]).uuid;result.item=item;
+    const mounted=item.slot===3&&require('../hkd-characters/lib/hero-sub-items').target(item);
+    result.defaultLayer=result.layers.find(l=>l.name===(mounted?'wqyl_lead_ma':LAYERS[item.slot])).uuid;result.item=item;
+    for(const layer of result.layers)layer.heroStyle=item.style;
     result.currentItem=Appearance.current(this.root,result,item,this.assets().parts);
     if(!result.currentItem.parts.length){const asset=Appearance.icon(this.root,this.equipment(),item.slot,item.level,item.style,this.assets().parts);result.itemModel={layer:result.defaultLayer,asset:asset&&asset.id,preview:asset,skin:result.layers.find(layer=>layer.uuid===result.defaultLayer).skin};}
     return result;

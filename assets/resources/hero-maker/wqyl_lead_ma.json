@@ -485,6 +485,24 @@
       "rotation": -32.69,
       "x": 44.47,
       "transform": "noScale"
+    },
+    {
+      "name": "Mount/Equipment/Sub_Item/Body",
+      "parent": "horse_s_3",
+      "x": 16,
+      "y": -50,
+      "rotation": 0,
+      "scaleX": 1.56,
+      "scaleY": 1.56
+    },
+    {
+      "name": "Mount/Equipment/Sub_Item/Head",
+      "parent": "horse_s_7",
+      "x": 36,
+      "y": 0,
+      "rotation": 52,
+      "scaleX": 1.56,
+      "scaleY": 1.56
     }
   ],
   "slots": [
@@ -727,6 +745,16 @@
       "name": "horse_m_6_1",
       "bone": "horse_an_1",
       "attachment": "horse_m_6_1"
+    },
+    {
+      "name": "Mount/Equipment/Sub_Item/Body",
+      "bone": "Mount/Equipment/Sub_Item/Body",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Mount/Equipment/Sub_Item/Head",
+      "bone": "Mount/Equipment/Sub_Item/Head",
+      "color": "ffffffff"
     }
   ],
   "ik": [

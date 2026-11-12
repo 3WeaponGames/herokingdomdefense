@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-da
 function fixture(t){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-hero-native-save-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  const write=(file,value)=>{fs.mkdirSync(path.dirname(path.join(dir,file)),{recursive:true});fs.writeFileSync(path.join(dir,file),JSON.stringify(value));};
- const item=structuredClone(require('../../assets/resources/hero-items/catalog.json').profiles['new-item']),assets=require('../../assets/resources/character-parts/catalog.json').parts,part={...item.parts[0],id:'charm',sprite:assets.find(a=>a.category==='Chest').id,slot:'Rider/Body/Head/Hair',bone:'Rider/Body/Head',tint:'#80c0ff'};
+ const item=structuredClone(require('./fixtures/hero-item.json')),assets=require('../../assets/resources/character-parts/catalog.json').parts,part={...item.parts[0],id:'charm',sprite:assets.find(a=>a.category==='Chest').id,slot:'Rider/Body/Head/Hair',bone:'Rider/Body/Head',tint:'#80c0ff'};
  write('assets/resources/characters/catalog.json',{version:1,profiles:{hero:{name:'Hero',base:{type:'hero',id:'hero'},parts:[part]}},assignments:{'hero:hero:default':'hero'},unknown:{preserve:7}});
  write('assets/resources/hero-items/catalog.json',{version:1,profiles:{helmet:item},assignments:{'2:10':'helmet'},unknown:true});write('assets/KinghtFallEnemyAni/ndPlay.prefab',[]);
  write('assets/KinghtFallConfig/GameJsonCfg.json',{EquipCfg:require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg});

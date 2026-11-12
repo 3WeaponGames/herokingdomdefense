@@ -75,11 +75,13 @@ function image(slot, level, previewStyle) {
 }
 function gearImage(slot, level, area, previewStyle) {
   var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = previewStyle || (user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher"), view = require("HeroWeapons").gear(style, slot, area), source;
-  if (view && view.kind === "linked") source = image(view.occupiedBy, previewStyle ? user.getHeroWeaponLevel(style, view.occupiedBy) : user.getPersonLevel(view.occupiedBy), previewStyle);
+  var custom = Number(slot) === 3 && item(slot, level, previewStyle);
+  if (custom) source = image(slot, level, previewStyle);
+  else if (view && view.kind === "linked") source = image(view.occupiedBy, previewStyle ? user.getHeroWeaponLevel(style, view.occupiedBy) : user.getPersonLevel(view.occupiedBy), previewStyle);
   else if (view && view.kind === "bonus") source = view.icon;
   else source = image(slot, level, previewStyle);
   if (view && view.kind === "offhand" && view.icon && !item(slot, level, previewStyle)) source = view.icon;
-  return source && Object.assign({}, source, {gray:!!(view && view.gray),opacity:view && view.opacity || 255});
+  return source && Object.assign({}, source, {gray:!!(view && view.gray && !custom),opacity:custom?255:view && view.opacity || 255,linked:!!(view && view.kind === "linked" && !custom)});
 }
 function whenReady(callback) {
   if (ready()) return;

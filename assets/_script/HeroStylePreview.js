@@ -50,7 +50,7 @@ function create(parent, user, onError) {
       if (!alive(request)) return;
       var originals = loaded[0], profile = Looks.current(loaded[1], style), baked = profile && profile.bakedLayers || {};
       return Promise.all(originals.map(function (asset) {
-        var replacement = baked[asset.uuid];
+        var replacement = baked[asset._uuid || asset.uuid];
         return replacement ? load(replacement.resource, sp.SkeletonData) : asset;
       })).then(function (data) {
         if (!alive(request)) return;
@@ -64,7 +64,7 @@ function create(parent, user, onError) {
           var renderer = node.addComponent(sp.Skeleton), slot = layer[2], level = slot === 3 || slot === 4 ? user.getHeroWeaponLevel(style, slot) : slot ? user.getPersonLevel(slot) : 1;
           var row = cfg.filter(function (entry) { return entry.id === slot; })[0], tier = row && row.levelInfo[Math.min(row.levelInfo.length, level) - 1].EquipSkin;
           var skin = slot ? ([3,4,5].indexOf(slot) >= 0 ? style + "_" : "") + tier : "default";
-          var id = originals[index].uuid, transform = profile && profile.models && profile.models[id] || {}, scale = profile && profile.scale || 1;
+          var id = originals[index]._uuid || originals[index].uuid, transform = profile && profile.models && profile.models[id] || {}, scale = profile && profile.scale || 1;
           renderer.premultipliedAlpha = false; renderer.skeletonData = data[index];
           skin = profile && profile.skins && profile.skins[id] || skin;
           renderer.setSkin(skin); renderer.setSlotsToSetupPose(); renderer.setAnimation(0, "idle", true);

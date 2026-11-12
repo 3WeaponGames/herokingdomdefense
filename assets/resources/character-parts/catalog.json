@@ -7562,6 +7562,72 @@
       "width": 35,
       "height": 45,
       "pixelsPerUnit": 263.1578947368421
+    },
+    {
+      "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange",
+      "name": "WP Sub Jewel GoldOrange",
+      "category": "HandLeft/Sub_Item",
+      "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange",
+      "image": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange.png",
+      "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GoldOrange.png",
+      "width": 68,
+      "height": 64,
+      "sha256": "57c76b0707d90901852ad9002c4cd2c1c4abcd25c9750deddf4cf0cb6074e1f0"
+    },
+    {
+      "id": "HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed",
+      "name": "WP Sub Jewel GrayRed",
+      "category": "HandLeft/Sub_Item",
+      "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed",
+      "image": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed.png",
+      "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Jewel_GrayRed.png",
+      "width": 68,
+      "height": 64,
+      "sha256": "6350bc6262f59a7f5695a9a6702912c122bccef646635a736470d30f8ddea394"
+    },
+    {
+      "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark",
+      "name": "WP Sub SkullHorn BlueDark",
+      "category": "HandLeft/Sub_Item",
+      "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark",
+      "image": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark.png",
+      "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark.png",
+      "width": 68,
+      "height": 64,
+      "sha256": "d1c61620c7bed66a53b88e33ef9b65bf0f12fdcea429b2b15cf50be05cb1c492"
+    },
+    {
+      "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack",
+      "name": "WP Sub SkullHorn GoldBlack",
+      "category": "HandLeft/Sub_Item",
+      "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack",
+      "image": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack.png",
+      "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack.png",
+      "width": 68,
+      "height": 64,
+      "sha256": "e905f29423499b39183a0b6c90ceab7ec75cdc41856d6d459d8ccae0144bd7e6"
+    },
+    {
+      "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2",
+      "name": "WP Sub SkullHorn PurpleDark2",
+      "category": "HandLeft/Sub_Item",
+      "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2",
+      "image": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2.png",
+      "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_PurpleDark2.png",
+      "width": 68,
+      "height": 64,
+      "sha256": "80f0c2bd7f95d4fbb9ded92abd8b050c379d09e72f679749fa98bee74f6ec972"
+    },
+    {
+      "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple",
+      "name": "WP Sub Thunder Purple",
+      "category": "HandLeft/Sub_Item",
+      "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple",
+      "image": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple.png",
+      "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Purple.png",
+      "width": 68,
+      "height": 64,
+      "sha256": "adc2665dde2175a38b3aef915761a87e9ff048799bb8fe461e90300f48d540ff"
     }
   ]
 }

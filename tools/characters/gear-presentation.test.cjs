@@ -17,6 +17,10 @@ test('a fitted tier supplies the exact chosen icon, while linked equipment follo
  const f=looks();f.catalog.profiles.weapon={parts:[{sprite:'custom'}],icon:{resource:'test/chosen-sword',width:40,height:80}};f.catalog.assignments['4:tier:lv2:fighter']='weapon';f.setStyle('fighter');assert.equal(f.api.gearImage(4,7,'equipment').resource,'test/chosen-sword');assert.equal(f.api.gearImage(3,1,'equipment').resource,'test/chosen-sword');assert(f.api.gearImage(3,1,'upgrade').resource.includes('Fist'));
 });
 
+test('a fitted secondary sub-item replaces the linked weapon ghost and bonus placeholder with its own icon',()=>{
+ const f=looks();for(const style of ['fighter','vanguard','bruiser']){f.catalog.profiles['mounted-'+style]={parts:[{sprite:'potion',layer:'horse',slot:'Mount/Equipment/Sub_Item/Body'}],icon:{resource:'test/'+style+'-potion',width:68,height:64}};f.catalog.assignments['3:tier:lv1:'+style]='mounted-'+style;f.setStyle(style);for(const area of ['equipment','upgrade']){const icon=f.api.gearImage(3,1,area);assert.equal(icon.resource,'test/'+style+'-potion');assert.equal(icon.gray,false);assert.equal(icon.opacity,255);assert.equal(icon.linked,false);}}
+});
+
 test('the visible switch icon sits between the hero and equipment grid and opens the same picker',()=>{
  const user={getHeroWeapon:()=>Weapons.find('fighter'),getHeroWeaponLevel:()=>1},f=require('./hero-picker-harness.cjs').fixture(user),parent=new f.Node('Equipment grid');
  const top=[[0,50],[110,50],[220,50],[0,-60]].map(([x,y])=>Object.assign(new f.Node('Slot'),{x,y,width:104,height:104,parent})),owner={ndItemTop:top,node:f.canvas};

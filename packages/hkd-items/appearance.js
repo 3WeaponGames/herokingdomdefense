@@ -5,7 +5,7 @@ const read=(root,file,fallback)=>{const absolute=path.join(root,file);return fs.
 function mounts(){return Mounts.assets().filter(asset=>asset.mount==='hero-horse').map(asset=>{const result={...asset,heroMount:true,resource:asset.image.slice('assets/resources/'.length,-4)};delete result.mount;return result;});}
 function icon(root,equipment,slot,level,style,parts){
   const data=read(root,'assets/resources/hero-items/catalog.json',{profiles:{},assignments:{}}),defaults=read(root,'assets/resources/hero-maker/catalog.json',{});
-  const view=require('../../assets/_script/HeroWeapons').gear(style,slot,'upgrade'),custom=Tiers.profileId(data,equipment,slot,level,style),value=view&&(view.kind==='bonus'||view.icon&&!custom)?view.icon:Tiers.icon(data,defaults,equipment,slot,level,style);
+  const view=require('../../assets/_script/HeroWeapons').gear(style,slot,'upgrade'),custom=Tiers.profileId(data,equipment,slot,level,style),value=view&&view.icon&&!custom?view.icon:Tiers.icon(data,defaults,equipment,slot,level,style);
   if(value){const asset=(parts||[]).find(asset=>asset.id===value.id);return asset?{...asset,...value}:value.resource?{image:'assets/resources/'+value.resource+'.png',thumbnail:'assets/resources/'+value.resource+'.png',name:view&&view.name,...value}:value;}
   if(Number(slot)===6){const gear=equipment.find(row=>row.id===6),tier=Tiers.at(gear,level),profile=data.profiles[Tiers.profileId(data,equipment,slot,level,style)];return mounts().find(asset=>asset.skin===(profile&&Object.values(profile.skins||{})[0]||tier&&tier.skin));}
   return null;

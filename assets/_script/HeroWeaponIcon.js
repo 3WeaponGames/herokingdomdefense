@@ -102,14 +102,14 @@ function create(parent, user, style, onError) {
     var catalog = loaded[2].json, base = catalog.profiles[catalog.assignments["hero:hero:default"]], profile = Looks.current(base, style);
     var baked = profile && profile.bakedLayers || {};
     return Promise.all(entries.map(function (entry, index) {
-      var replacement = baked[loaded[index].uuid];
+      var replacement = baked[loaded[index]._uuid || loaded[index].uuid];
       return replacement ? load(replacement.resource, sp.SkeletonData) : loaded[index];
     })).then(function (data) {
       if (disposed || !cc.isValid(root, true)) return;
       var cfg = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList();
       pose.renderers = entries.map(function (entry, index) {
         var node = new cc.Node(entry.name); node.setParent(root);
-        var renderer = node.addComponent(sp.Skeleton), id = loaded[index].uuid;
+        var renderer = node.addComponent(sp.Skeleton), id = loaded[index]._uuid || loaded[index].uuid;
         var gear = cfg.filter(function (row) { return row.id === entry.role; })[0], level = user.getHeroWeaponLevel(style, entry.role);
         var skin = style + "_" + gear.levelInfo[Math.min(gear.levelInfo.length, level) - 1].EquipSkin;
         var transform = profile && profile.models && profile.models[id] || {}, scale = profile && profile.scale || 1;

@@ -1,0 +1,26 @@
+{
+  "name": "Native helmet test fixture",
+  "base": {
+    "type": "item",
+    "id": "2:1"
+  },
+  "scale": 1,
+  "parts": [
+    {
+      "id": "helmet",
+      "sprite": "Helmet/FA_Helmet_047_White",
+      "layer": "1c2dbff6-1a89-5230-a319-42ea48cde904",
+      "slot": "Rider/Body/Head/Helmet",
+      "bone": "Rider/Body/Head/Helmet",
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scaleX": 1,
+      "scaleY": 1,
+      "opacity": 1,
+      "order": 0,
+      "hideSlots": []
+    }
+  ],
+  "models": {}
+}

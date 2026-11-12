@@ -392,6 +392,10 @@ function mount(host,api){
     if(['Mount','Mount_Down'].includes(Placement.role(asset))&&p.base.mount&&!await chooseHorse(''))return;
     const layer=Placement.layerFor(rig,asset),used=new Set(p.parts.filter(v=>v.layer===layer.uuid).map(v=>v.slot));
     const shown=baseLayers.find(l=>l.description.uuid===layer.uuid),intended=Placement.socket(layer,asset);
+    if(Placement.mountedSubItem(intended)){
+      const existing=p.parts.find(part=>Placement.role(assets[part.sprite]||{})==='Sub_Item');
+      if(existing){Object.assign(existing,{sprite:asset.id,layer:layer.uuid,slot:intended.name,bone:intended.bone,hideSlots:[],forceVisible:true,order:0},Placement.intended(asset));selectedPart=existing.id;fitPart(false);changed(true);return;}
+    }
     if(intended&&used.has(intended.name)){const existing=p.parts.find(v=>v.layer===layer.uuid&&v.slot===intended.name);existing.sprite=asset.id;if(Placement.compatible(intended))Object.assign(existing,Placement.intended(asset));selectedPart=existing.id;fitPart(false);changed(true);return;}
     let candidates=layer.json.slots.filter(s=>!used.has(s.name));if(shown)candidates=candidates.sort((a,b)=>slotScore(shown.skeleton.findSlot(b.name),asset.category)-slotScore(shown.skeleton.findSlot(a.name),asset.category));const available=intended||candidates[0];if(!available)throw Error('Every slot on this model is already used.');
     const id=unique(asset.category.split('/').pop().toLowerCase(),Object.fromEntries(p.parts.map(v=>[v.id,true])));

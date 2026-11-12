@@ -2,7 +2,7 @@
 // Normal Spine assets work in both JSB and the browser. Switch only during a
 // looping locomotion pose so an attack/death callback is never replayed.
 var renderers = new WeakMap(), jobs = {};
-function originalId(renderer) { var record = renderers.get(renderer); return record ? record.original.uuid : renderer.skeletonData && renderer.skeletonData.uuid; }
+function originalId(renderer) { var record = renderers.get(renderer), asset = record ? record.original : renderer.skeletonData; return asset && (asset._uuid || asset.uuid); }
 function baked(renderer) { var record = renderers.get(renderer); return !!record && renderer.skeletonData !== record.original; }
 function apply(list, profile) {
   list.forEach(function (renderer) {

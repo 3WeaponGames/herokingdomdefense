@@ -78,7 +78,7 @@ test('saved hero items equip on the real seven-layer hero, follow every animatio
     const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(layer.json),skeleton=new spine.Skeleton(data);skeleton.setSkinByName(layer.skin);skeleton.setToSetupPose();skeleton.updateWorldTransform();
     ctrPlayAni[role[layer.name]]={_skeleton:skeleton,skeletonData:{uuid:layer.uuid},uuid:layer.name,node:{activeInHierarchy:true,x:layer.x,y:layer.y,scaleX:layer.scaleX,scaleY:layer.scaleY,angle:0,opacity:255},setSkin(name){this._skeleton.setSkinByName(name);this._skeleton.setSlotsToSetupPose();},setSlotsToSetupPose(){this._skeleton.setSlotsToSetupPose();}};
   }
-  const helmet=JSON.parse(JSON.stringify(require('../../assets/resources/hero-items/catalog.json').profiles['new-item']));assert(helmet,'The saved item example must exist');
+  const helmet=JSON.parse(JSON.stringify(require('./fixtures/hero-item.json')));
   helmet.models={[ctrPlayAni.spAniHead.skeletonData.uuid]:{x:8,y:-3,scaleX:1.1,scaleY:.9,rotation:4,opacity:.8}};
   const items={version:1,profiles:{helmet},assignments:{'2:1':'helmet'}},components=[],node={activeInHierarchy:true,getComponent(Type){return components.find(c=>c instanceof Type);},addComponent(Type){const component=new Type();components.push(component);return component;}};
   let headLevel=1;const user=Object.freeze({getPersonLevel:slot=>slot===2?headLevel:1});

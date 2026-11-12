@@ -100,6 +100,7 @@ function horse(root,maker,files,read){
   require('./hero-mount-motion').synchronize(aligned.json,cavalry.json,.78/.6);
   for(const [name,clip]of Object.entries(original.json.animations))if(!['idle','move','attack'].includes(name))aligned.json.animations[name]=clone(clip);
   aligned.json._heroMakerMount={version:2,source:original.uuid,thrustReference:'legacy-cavalry'};
+  require('./hero-sub-items').ensure(aligned.json);
   const base=folder+'/wqyl_lead_ma',texture=read(url.fileURLToPath(original.pages['wqyl_lead_ma.png']));
   files.set(base+'.json',JSON.stringify(aligned.json,null,2)+'\n');files.set(base+'.atlas',original.atlas);files.set(base+'.png',texture);
   files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures:[Bake.uuid(base+'.png')],scale:1,subMetas:{}},null,2)+'\n');

@@ -47,8 +47,23 @@ test('a pending hero preview ignores obsolete style assets and cannot add render
  const context={exports:{},cc,sp:{SkeletonData:class{},Skeleton},Promise,require:name=>({HeroItemLooks:{current(_base,style){seen.push(style);return style==='skirmisher'?{bakedLayers:{gong:{resource:'slow-bow'}}}:null;}},HeroMakerRider:{update(){}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getEquipCfgList:()=>equipment})}}})[name]};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroStylePreview.js'),'utf8'),context);
  const previewUser={getPersonLevel:()=>1,getHeroWeaponLevel:()=>1},preview=context.exports.create(f.canvas,previewUser);const first=preview.setStyle('skirmisher');
- for(const layer of layers)pending.find(request=>request.resource.endsWith('_'+layer)).callback(null,{uuid:layer,skeletonJson:{skeleton:{x:-60,y:0,width:120,height:180}}});pending.find(request=>request.resource==='characters/catalog').callback(null,{json:{assignments:{},profiles:{}}});
+ for(const layer of layers)pending.find(request=>request.resource.endsWith('_'+layer)).callback(null,{_uuid:layer,skeletonJson:{skeleton:{x:-60,y:0,width:120,height:180}}});pending.find(request=>request.resource==='characters/catalog').callback(null,{json:{assignments:{},profiles:{}}});
  await new Promise(setImmediate);const second=preview.setStyle('guardian');await second;const main=preview.node.getChildByName('spAniBow').getComponent(Skeleton);assert.equal(main.skin,'guardian_lv1');assert.equal(main.premultipliedAlpha,false);
  pending.find(request=>request.resource==='slow-bow').callback(null,{});await first;assert.equal(preview.node.getChildByName('spAniBow').getComponent(Skeleton),main,'Older loaded styles cannot replace the current preview');
  preview.destroy();await preview.setStyle('fighter');assert(preview.node.destroyed);assert.equal(preview.node.children.length,0);assert.deepEqual(seen,['skirmisher','guardian']);
+});
+
+test('Cocos asset UUIDs resolve fitted horse and weapon assets, saved skins and model transforms in both popup previews',async()=>{
+ const f=fixture(user()),requests=[],originals={},baked={};
+ for(const name of ['ma','shenti','doupeng','tou','gong','jian','shou'])originals[name]={_uuid:name,skeletonJson:{skeleton:{x:-60,y:0,width:120,height:180}}};
+ for(const name of ['ma','gong','jian'])baked['fitted-'+name]={_uuid:'baked-'+name};
+ const profile={parts:[],bakedLayers:Object.fromEntries(['ma','gong','jian'].map(name=>[name,{resource:'fitted-'+name}])),skins:{ma:'lv2',gong:'fighter_lv3',jian:'fighter_lv4'},models:{ma:{x:7},gong:{x:11},jian:{x:13}}};
+ class Skeleton{setSkin(value){this.skin=value;}setSlotsToSetupPose(){}setAnimation(){return{};}update(){}updateWorldTransform(){}}
+ const cc={...f.cc,Component:class{},JsonAsset:class{},Class(def){class Component{}Object.assign(Component.prototype,def);return Component;},resources:{load(resource,_type,callback){requests.push(resource);callback(null,resource==='characters/catalog'?{json:{assignments:{},profiles:{}}}:baked[resource]||originals[resource.split('_').pop()]);}}};
+ const modules={HeroItemLooks:{current:()=>profile},HeroMakerRider:{update(){}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getEquipCfgList:()=>equipment})}}},load=name=>{const context={exports:{},cc,sp:{SkeletonData:class{},Skeleton},Promise,require:name=>modules[name]};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/'+name+'.js'),'utf8'),context);return context.exports;};
+ const previewUser={getPersonLevel:()=>1,getHeroWeaponLevel:()=>1},preview=load('HeroStylePreview').create(f.canvas,previewUser);await preview.setStyle('fighter');
+ for(const [node,name,x,skin]of [['spAniMa','ma',7,'lv2'],['spAniBow','gong',11,'fighter_lv3'],['spAniArrow','jian',13,'fighter_lv4']]){const renderer=preview.node.getChildByName(node).getComponent(Skeleton);assert.equal(renderer.skeletonData,baked['fitted-'+name]);assert.equal(renderer.node.x,x);assert.equal(renderer.skin,skin);}
+ const icon=load('HeroWeaponIcon').create(f.canvas,previewUser,'fighter');await icon.ready;
+ for(const [node,name,x]of [['Weapon icon','gong',11],['Shield icon','jian',13]]){const renderer=icon.node.getChildByName(node).getComponent(Skeleton);assert.equal(renderer.skeletonData,baked['fitted-'+name]);assert.equal(renderer.node.x,x);assert.equal(renderer.skin,profile.skins[name]);}
+ assert.equal(requests.filter(resource=>resource==='fitted-ma').length,1);assert.equal(requests.filter(resource=>resource==='fitted-gong').length,2);preview.destroy();icon.destroy();
 });
