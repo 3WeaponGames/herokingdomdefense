@@ -59,3 +59,16 @@ test('map movement and scale do not alter authored pad offsets, and a missing sa
  const actual=parent.convertToNodeSpaceAR(r.build.ndLockList[0].convertToWorldSpaceAR(new Vec2()));close(actual.x,expected.x);close(actual.y,expected.y);
  delete row.PurchaseField;r.module.apply(r.build);assert(!r.build._purchaseFieldRuntime);const restored=r.build.ndLockList[0].convertToWorldSpaceAR(new Vec2()),originalInParent=Maps.point(Maps.inverse(r.info.byId[parentId].world),before[0]),restoredLocal=parent.convertToNodeSpaceAR(restored);close(restoredLocal.x,originalInParent.x);close(restoredLocal.y,originalInParent.y);
 });
+
+test('pad preview offsets and standing triggers match saved defaults after world resizing in every facing',()=>{
+ const f=fixture(),WorldScale=fs.readFileSync(path.join(root,'assets/_script/BuildingWorldScale.js'),'utf8'),{RigidBody,PhysicsPolygonCollider}=require('../../../tools/navigation/runtime-harness.cjs');let count=0;
+ for(const kind of [1,2,3,4,5,6])for(const variant of kind===6?['NE','NW','SE','SW']:['default'])for(const factor of [.6,1.35])for(const southwest of [false,true]){
+  const template=f.service.buildingCatalog().find(b=>b.kind===kind),category=f.config.BuildEnum[kind],row=category.levelList[0];row.WorldScale=factor;row.PurchaseField={variants:{[variant]:{southwest,x:17.25,y:-9.5}}};
+  const b=Object.assign(clone(template),{previewBranch:row.index,purchaseOverride:false});delete b.purchaseSide;delete b.purchaseOffset;if(kind===6)b.wallFacing=variant;
+  const data=Data.describe(f.service,{id:String(kind),levelIndex:0,variant}),delta=Maps.point(data.offsetMatrix,{x:17.25,y:-9.5}),preview=data.records[southwest?'southwest':'southeast'],saved=Preview.describe(f.service,{variant:'A',buildings:[b]}).buildings[b.id].levels[1];
+  preview.step.forEach((p,i)=>{close(p.x+delta.x,saved.step[i].x);close(p.y+delta.y,saved.step[i].y);});const moved=Maps.point(Maps.inverse(data.offsetMatrix),delta);close(moved.x,17.25);close(moved.y,-9.5);
+  const raw=Gate.project(f.service.source(b.template.prefab),b,root),r=runtime(raw,b,category,row),scale={exports:{}};r.module.apply(r.build);vm.runInNewContext(WorldScale,{exports:scale.exports,cc:{v2:(x,y)=>new Vec2(x,y),RigidBody,PhysicsCollider:PhysicsPolygonCollider,isValid:()=>true}});scale.exports.apply(r.build);
+  const field=r.build.ndLockList[0],actual=field.convertToWorldSpaceAR(new Vec2()),expected=saved.purchaseField.center;close(actual.x-r.info.byId[b.template.node].position.x,expected.x);close(actual.y-r.info.byId[b.template.node].position.y,expected.y);count++;
+ }
+ assert.equal(count,36);
+});
