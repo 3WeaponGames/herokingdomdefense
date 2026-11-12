@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "6235d8f6-434c-570d-ac2e-bed52445e3be",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "item-3-tier-lv4-vanguard_wqyl_lead_jian": {
+      "ver": "1.0.6",
+      "uuid": "305f2dfc-b942-5bf1-a70b-93c1e61ec75e",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "6235d8f6-434c-570d-ac2e-bed52445e3be",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 128,
+      "rawWidth": 2048,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

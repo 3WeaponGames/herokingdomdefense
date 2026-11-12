@@ -1,16 +1,17 @@
 {
   "version": 1,
-  "profiles": { "new-item": {
+  "profiles": {
+    "new-item": {
       "name": "Royal Helmet · parts example",
       "base": {
         "type": "item",
-        "id": "2:1"
+        "id": "2:11"
       },
       "scale": 1,
       "parts": [
         {
           "id": "helmet",
-          "sprite": "Helmet/FA_Helmet_047_White",
+          "sprite": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_035_SilverBlue",
           "layer": "1c2dbff6-1a89-5230-a319-42ea48cde904",
           "slot": "Rider/Body/Head/Helmet",
           "bone": "Rider/Body/Head/Helmet",
@@ -21,10 +22,191 @@
           "scaleY": 1,
           "opacity": 1,
           "order": 0,
-          "hideSlots": []
+          "hideSlots": [],
+          "forceVisible": true
         }
       ],
-      "models": {}
-    } },
-  "assignments": {}
+      "models": {},
+      "bakedLayers": {
+        "1c2dbff6-1a89-5230-a319-42ea48cde904": {
+          "resource": "hero-items/baked/new-item_wqyl_lead_tou",
+          "uuid": "b9147b91-9fc5-5528-abcf-c59b408618f5"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_035_SilverBlue",
+        "resource": "unit-library/character-maker/Sprites/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_035_SilverBlue",
+        "width": 120,
+        "height": 108,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv1-vanguard": {
+      "name": "Vanguard · Combat training · Tier 1",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv1:vanguard"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 10,
+          "y": 25,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv1-vanguard_wqyl_lead_jian",
+          "uuid": "8d319246-38e3-5a09-a606-983cd72afc6f"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv2-vanguard": {
+      "name": "Vanguard · Combat training · Tier 2",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv2:vanguard"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 10,
+          "y": 25,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv2-vanguard_wqyl_lead_jian",
+          "uuid": "f5f7d8dd-cf94-5ab5-a844-0ee0f9988233"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv3-vanguard": {
+      "name": "Vanguard · Combat training · Tier 3",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv3:vanguard"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 10,
+          "y": 25,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv3-vanguard_wqyl_lead_jian",
+          "uuid": "b4e0276b-9d22-50b9-ab2b-1c139d4be270"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    },
+    "item-3-tier-lv4-vanguard": {
+      "name": "Vanguard · Combat training · Tier 4",
+      "base": {
+        "type": "item",
+        "id": "3:tier:lv4:vanguard"
+      },
+      "scale": 1,
+      "parts": [
+        {
+          "id": "sub_item",
+          "sprite": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+          "layer": "b587ac3b-3cbc-5f01-ad11-851df95e740e",
+          "slot": "Rider/HandLeft/Sub_Item",
+          "bone": "Rider/HandLeft/Sub_Item",
+          "x": 10,
+          "y": 25,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "opacity": 1,
+          "order": 0,
+          "hideSlots": [],
+          "forceVisible": true
+        }
+      ],
+      "bakedLayers": {
+        "b587ac3b-3cbc-5f01-ad11-851df95e740e": {
+          "resource": "hero-items/baked/item-3-tier-lv4-vanguard_wqyl_lead_jian",
+          "uuid": "be20e5b3-50a0-5f58-a263-290c8917f60a"
+        }
+      },
+      "bakedVersion": 2,
+      "bakedWithHero": "",
+      "icon": {
+        "id": "HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "resource": "character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_Thunder_Green",
+        "width": 68,
+        "height": 64,
+        "tint": "#ffffff"
+      }
+    }
+  },
+  "assignments": { "2:11": "new-item", "3:tier:lv1:vanguard": "item-3-tier-lv1-vanguard", "3:tier:lv2:vanguard": "item-3-tier-lv2-vanguard", "3:tier:lv3:vanguard": "item-3-tier-lv3-vanguard", "3:tier:lv4:vanguard": "item-3-tier-lv4-vanguard" }
 }
