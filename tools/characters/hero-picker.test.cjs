@@ -4,22 +4,21 @@ const Weapons=require('../../assets/_script/HeroWeapons'),equipment=require('../
 const {fixture}=require('./hero-picker-harness.cjs');
 const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:()=>1});
 
-test('the showcase has six distinct icon cards in three columns, a separate equipped badge, and never equips while browsing',()=>{
+test('six square cards use equally padded square pose areas and selection changes only the inner edge color',()=>{
  const f=fixture(user()),owner={node:f.canvas};f.api.open(owner);
  const tiles=Weapons.styles.map(style=>f.find('Style '+style.id));assert.equal(new Set(tiles.map(tile=>tile.x)).size,3);assert.equal(new Set(tiles.map(tile=>tile.y)).size,2);
- for(const style of Weapons.styles){const tile=f.find('Style '+style.id);assert(tile.getChildByName('Weapon icon'));assert.equal(!!tile.getChildByName('Shield icon'),style.id==='guardian');assert.equal(!!tile.getChildByName('Arrow icon'),style.id==='skirmisher');}
- f.tap(f.find('Style fighter'));assert(f.find('Style fighter').getChildByName('Gold selection'));assert(!f.find('Style guardian').getChildByName('Gold selection'));assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(f.previews[0].styles.at(-1),'fighter');
- assert(f.icons.some(icon=>icon.style==='fighter'&&icon.slot===4));assert(f.icons.some(icon=>icon.style==='guardian'&&icon.slot===3));f.api.close(owner);
+ for(const tile of tiles){assert.equal(tile.width,tile.height);const area=tile.getChildByName('Weapon pose');assert.equal(area.width,area.height);assert(area.width<tile.width-40);}
+ assert.equal(f.poseIcons.length,6);assert.deepEqual(f.poseIcons.map(icon=>icon.style),Weapons.styles.map(style=>style.id));
+ const before=f.find('Style guardian').getChildByName('Tier card').getComponent(f.cc.Sprite).spriteFrame.key;
+ f.tap(f.find('Style fighter'));assert.equal(f.find('Style fighter').getChildByName('Card edge').getComponent(f.cc.Graphics).strokeColor,'#ffdf62');assert.notEqual(f.find('Style guardian').getChildByName('Card edge').getComponent(f.cc.Graphics).strokeColor,'#ffdf62');assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(f.find('Style guardian').getChildByName('Tier card').getComponent(f.cc.Sprite).spriteFrame.key,before);
+ assert(f.all().every(node=>!['Selection glow','Gold selection'].includes(node.name)));assert.equal(f.poseIcons.length,6,'Changing the selection reuses artwork and frozen poses');assert(f.poseIcons.every(icon=>!icon.destroyed));f.api.close(owner);assert(f.poseIcons.every(icon=>icon.destroyed));
 });
 
-test('paired cards keep the arrow centered over the bow and the shield beside but behind the hammer, regardless of asset load order',()=>{
- const f=fixture(user(),{delayed:true}),owner={node:f.canvas};f.api.open(owner);
- const bow=f.find('Style skirmisher'),arrow=bow.getChildByName('Arrow icon'),main=bow.getChildByName('Weapon icon'),guardian=f.find('Style guardian'),hammer=guardian.getChildByName('Weapon icon'),shield=guardian.getChildByName('Shield icon');
- assert.equal(arrow.y,main.y);assert(arrow.x>main.x);assert(bow.children.indexOf(arrow)>bow.children.indexOf(main));
- assert(shield.x>hammer.x);assert(shield.y>hammer.y);assert(guardian.children.indexOf(shield)<guardian.children.indexOf(hammer));
- for(const request of [...f.pending].reverse())request.callback(null,{getOriginalSize:()=>({width:120,height:60})});
- assert(bow.children.indexOf(arrow)>bow.children.indexOf(main));assert(guardian.children.indexOf(shield)<guardian.children.indexOf(hammer));
- assert(f.icons.some(icon=>icon.style==='skirmisher'&&icon.slot===3&&icon.area==='equipment'));assert(f.icons.some(icon=>icon.style==='guardian'&&icon.slot===3&&icon.area==='equipment'));f.api.close(owner);
+test('the Equip button straddles the panel bottom and each card loads its own main-weapon tier frame',()=>{
+ const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:1,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:1}),owner={node:f.canvas};f.api.open(owner);
+ const panel=f.find('Panel outline'),action=f.find('Equipped action');assert.equal(action.y,panel.y-panel.height/2);assert(action.height>0);
+ assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd','wg_rw_zbd']);
+ f.tap(f.find('Style fighter'));assert.deepEqual(f.tierFrames.slice(-6),f.tierFrames.slice(0,6));f.api.close(owner);
 });
 
 test('the portrait popup fits short/narrow viewports and removes its resize and asset subscriptions on dismissal',()=>{

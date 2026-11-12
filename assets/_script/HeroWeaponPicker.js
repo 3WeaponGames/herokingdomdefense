@@ -1,21 +1,7 @@
 "use strict";
 // Browsing is visual-only. Only the explicit Equip action changes the loadout.
 var Weapons = require("HeroWeapons");
-var WIDTH = 684, HEIGHT = 900;
-var BLUE_CARD = "icons/GUI-Pro/ShopCards/Frame_ListFrame14_n_Blue";
-// Card compositions are shared across tiers. Order is back to front, so
-// asynchronous artwork loads cannot change the overlap of either hand item.
-// The idle rig points its arrow downward; the card keeps it across the bow.
-var CARD_PAIRS = {
-  skirmisher: [
-    { slot: 4, name: "Weapon icon", x: 0, y: 23, width: 148, height: 70 },
-    { slot: 3, name: "Arrow icon", x: 10, y: 23, width: 78, height: 28 }
-  ],
-  guardian: [
-    { slot: 3, name: "Shield icon", x: 34, y: 27, width: 61, height: 65 },
-    { slot: 4, name: "Weapon icon", x: -14, y: 20, width: 112, height: 74 }
-  ]
-};
+var WIDTH = 684, HEIGHT = 990;
 function node(parent, name, x, y, width, height) {
   var value = new cc.Node(name); value.setParent(parent); value.setPosition(x || 0, y || 0);
   if (width) value.setContentSize(width, height); return value;
@@ -25,10 +11,10 @@ function box(parent, name, x, y, width, height, radius, color) {
   g.fillColor = cc.color(color); g.roundRect(-width / 2, -height / 2, width, height, radius); g.fill(); return value;
 }
 function live(value) { return cc.isValid(value, true); }
-function art(parent, name, resource, x, y, width, height, sliced, tint) {
+function art(parent, name, resource, x, y, width, height, sliced, tint, loadFrame) {
   var value = node(parent, name, x, y, width, height), sprite = value.addComponent(cc.Sprite);
   sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
-  cc.resources.load(resource, cc.SpriteFrame, function (error, frame) {
+  function loaded(error, frame) {
     if (error || !live(value)) return;
     if (sliced) { sprite.spriteFrame = frame; sprite.type = cc.Sprite.Type.SLICED; }
     else {
@@ -40,7 +26,9 @@ function art(parent, name, resource, x, y, width, height, sliced, tint) {
       }
     }
     if (tint) value.color = cc.color(tint);
-  }); return value;
+  }
+  if (loadFrame) loadFrame(loaded); else cc.resources.load(resource, cc.SpriteFrame, loaded);
+  return value;
 }
 function scenery(parent) {
   var value = node(parent, "Preview scenery"), g = value.addComponent(cc.Graphics);
@@ -68,7 +56,8 @@ function open(owner) {
   box(content, "Inner outline", 0, -3, 648, 803, 29, "#24152c");
   box(content, "Cream panel", 0, -1, 638, 791, 26, "#f7ebd2");
   scenery(content);
-  var font = null, labels = [], cancelled = false, readyCancel;
+  var font = null, labels = [], cancelled = false, readyCancel, cardIcons = [];
+  function clearIcons() { cardIcons.forEach(function (icon) { icon.destroy(); }); cardIcons = []; }
   function label(parent, name, text, x, y, width, height, size, color, outline) {
     var value = node(parent, name, x, y, width, height), textLabel = value.addComponent(cc.Label);
     textLabel.string = text; textLabel.fontSize = size; textLabel.lineHeight = size + 4;
@@ -95,66 +84,84 @@ function open(owner) {
   function closePicker() {
     if (cancelled) return; cancelled = true;
     canvas.off(cc.Node.EventType.SIZE_CHANGED, resize);
+    clearIcons();
     if (readyCancel) readyCancel(); preview.destroy();
     if (owner._weaponPicker === root) owner._weaponPicker = null;
     root.destroy();
   }
   root._closePicker = closePicker;
   closeButton.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); closePicker(); });
-  var stage = node(content, "Hero showcase", 0, 246, 300, 212);
+  var stage = node(content, "Hero showcase", 0, 250, 300, 224);
   var preview = require("HeroStylePreview").create(stage, user, function (error) {
     if (live(stage) && !stage.getChildByName("Preview unavailable")) label(stage, "Preview unavailable", "Preview unavailable", 0, 0, 280, 35, 22, "#ffffff", 2);
     if (cc.warn) cc.warn("Fighting style preview: " + error.message);
   });
   var chosen = user.getHeroWeapon().id, body = node(content, "Choices");
+  var grid = node(body, "Style grid"), details = node(body, "Style details"), cardViews = [];
   function icon(parent, name, image, x, y, width, height) {
     if (image) return art(parent, name, image.resource, x, y, width, height, false, image.tint);
   }
-  function render() {
+  function render(rebuildCards) {
     if (cancelled || !live(root)) return;
-    body.destroyAllChildren(); body.removeAllChildren(); labels = labels.filter(function (entry) { return live(entry.node); });
+    var build = rebuildCards || !cardViews.length;
+    if (build) { clearIcons(); grid.destroyAllChildren(); grid.removeAllChildren(); cardViews = []; }
+    details.destroyAllChildren(); details.removeAllChildren(); labels = labels.filter(function (entry) { return live(entry.node); });
     var Looks = require("HeroItemLooks");
+    var mainGear = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (gear) { return gear.id === 4; })[0];
     Weapons.styles.forEach(function (style, index) {
       var selected = chosen === style.id, equipped = user.getHeroWeapon().id === style.id;
-      var tile = node(body, "Style " + style.id, (index % 3 - 1) * 204, 50 - Math.floor(index / 3) * 165, 190, 146);
-      if (selected) {
-        box(tile, "Selection glow", 0, 0, 202, 158, 32, "#ffdb46");
-        box(tile, "Gold selection", 0, 0, 195, 151, 29, "#fff9bf");
+      if (!build) {
+        var view = cardViews[index], glow = view.rim.getComponent(cc.Graphics), stroke = view.edge.getComponent(cc.Graphics);
+        view.rim.opacity = selected ? 255 : 60; glow.clear(); glow.fillColor = cc.color(selected ? "#ffdf62" : "#ffffff");
+        glow.roundRect(-89.5, -89.5, 179, 179, 24); glow.fill();
+        stroke.clear(); stroke.strokeColor = selected ? cc.color("#ffdf62") : cc.color(255, 255, 255, 55);
+        stroke.roundRect(-86, -86, 172, 172, 24); stroke.stroke(); return;
       }
-      box(tile, "Card outline", 0, -1, 187, 144, 28, "#100e15");
-      box(tile, "Card highlight", 0, 3, 179, 133, 24, "#8bd4ff");
-      art(tile, "GUI PRO card", BLUE_CARD, 0, -1, 174, 129, true);
-      var pair = CARD_PAIRS[style.id] || [{ slot: 4, name: "Weapon icon", x: 0, y: 21, width: 156, height: 72 }];
-      pair.forEach(function (part) {
-        var image = Looks.gearImage(part.slot, user.getHeroWeaponLevel(style.id, part.slot), "equipment", style.id);
-        icon(tile, part.name, image, part.x, part.y, part.width, part.height);
+      var tile = node(grid, "Style " + style.id, (index % 3 - 1) * 204, 38 - Math.floor(index / 3) * 216, 190, 190);
+      box(tile, "Card outline", 0, -1, 187, 187, 28, "#100e15");
+      var rim = box(tile, "Card highlight", 0, 1, 179, 179, 24, selected ? "#ffdf62" : "#ffffff");
+      if (!selected) rim.opacity = 60;
+      var tier = mainGear.levelInfo[Math.min(mainGear.levelInfo.length, user.getHeroWeaponLevel(style.id, 4)) - 1];
+      art(tile, "Tier card", tier.EquipBottom, 0, -1, 174, 174, true, null, function (done) {
+        if (owner.loadSpriteFrame) owner.loadSpriteFrame("KinghtFallIconGood", tier.EquipBottom, function (frame) { done(null, frame); });
+        else {
+          var bundle = cc.assetManager.getBundle("KinghtFallIconGood");
+          if (bundle) bundle.load(tier.EquipBottom, cc.SpriteFrame, done);
+          else cc.assetManager.loadBundle("KinghtFallIconGood", function (error, loaded) { if (!error) loaded.load(tier.EquipBottom, cc.SpriteFrame, done); });
+        }
       });
-      label(tile, "Style name", style.name, 0, -39, 176, 43, 29);
+      var edge = node(tile, "Card edge", 0, 0, 178, 178), border = edge.addComponent(cc.Graphics);
+      border.strokeColor = selected ? cc.color("#ffdf62") : cc.color(255, 255, 255, 55); border.lineWidth = 4;
+      border.roundRect(-86, -86, 172, 172, 24); border.stroke();
+      var pose = node(tile, "Weapon pose", 0, 19, 132, 132);
+      cardIcons.push(require("HeroWeaponIcon").create(pose, user, style.id, function (error) { if (cc.warn) cc.warn("Fighting style icon: " + error.message); }));
+      cardViews.push({ rim: rim, edge: edge });
+      label(tile, "Style name", style.name, 0, -66, 176, 40, 29);
       if (equipped) {
-        box(tile, "Equipped badge outline", 0, -69, 131, 36, 14, "#111409");
-        box(tile, "Equipped badge", 0, -67, 123, 29, 11, "#8ce928");
-        label(tile, "Equipped marker", "Equipped", 0, -67, 119, 29, 23, "#173b05", 0);
+        box(tile, "Equipped badge outline", 0, -92, 131, 36, 14, "#111409");
+        box(tile, "Equipped badge", 0, -90, 123, 29, 11, "#8ce928");
+        label(tile, "Equipped marker", "Equipped", 0, -90, 119, 29, 23, "#173b05", 0);
       }
       tile.on(cc.Node.EventType.TOUCH_END, function (event) { event.stopPropagation(); if (chosen !== style.id) { chosen = style.id; render(); } });
     });
     var weapon = Weapons.find(chosen), equipped = user.getHeroWeapon().id === chosen;
-    box(body, "Current levels outline", 0, -255, 612, 80, 24, "#28436c");
-    box(body, "Current levels rim", 0, -252, 602, 70, 20, "#638abd");
-    box(body, "Current levels", 0, -255, 588, 58, 16, "#294970");
-    box(body, "Level divider", 0, -255, 2, 42, 1, "#b3ccec");
+    box(details, "Current levels outline", 0, -335, 612, 80, 24, "#28436c");
+    box(details, "Current levels rim", 0, -332, 602, 70, 20, "#638abd");
+    box(details, "Current levels", 0, -335, 588, 58, 16, "#294970");
+    box(details, "Level divider", 0, -335, 2, 42, 1, "#b3ccec");
     [4,3].forEach(function (slot, index) {
       var level = user.getHeroWeaponLevel(chosen, slot), view = Weapons.gear(chosen, slot, "upgrade");
-      icon(body, "Level icon " + slot, Looks.gearImage(slot, level, "upgrade", chosen), index ? 49 : -246, -255, index ? 64 : 80, 52);
-      label(body, "Level reference " + slot, view.name + " · Lv " + level, index ? 181 : -118, -255, index ? 191 : 168, 47, 26);
+      icon(details, "Level icon " + slot, Looks.gearImage(slot, level, "upgrade", chosen), index ? 49 : -246, -335, index ? 64 : 80, 52);
+      label(details, "Level reference " + slot, view.name + " · Lv " + level, index ? 181 : -118, -335, index ? 191 : 168, 47, 26);
     });
-    var action = box(body, equipped ? "Equipped action" : "Equip " + weapon.name, 0, -359, 492, 96, 31, "#1b120a");
+    var action = box(details, equipped ? "Equipped action" : "Equip " + weapon.name, 0, -433, 492, 96, 31, "#1b120a");
     box(action, "Action shadow", 0, -1, 480, 84, 26, equipped ? "#62717d" : "#ce8500");
     box(action, "Action highlight", 0, 6, 474, 72, 24, equipped ? "#c6d0d6" : "#fff9bb");
     box(action, "Action face", 0, 1, 464, 67, 21, equipped ? "#8c9ca7" : "#ffce20");
     label(action, "Equip action label", equipped ? "Equipped" : "Equip " + weapon.name, 0, 2, 450, 65, 40, null, 3);
     action.on(cc.Node.EventType.TOUCH_END, function (event) {
       event.stopPropagation();
-      if (!equipped && !cancelled && live(action)) { user.setHeroWeapon(chosen); owner.initView(); render(); }
+      if (!equipped && !cancelled && live(action)) { user.setHeroWeapon(chosen); owner.initView(); render(true); }
     });
     preview.setStyle(chosen);
   }
@@ -164,7 +171,7 @@ function open(owner) {
     content.scale = Math.min(1, (canvas.width - 28) / WIDTH, (canvas.height - 48) / HEIGHT);
   }
   canvas.on(cc.Node.EventType.SIZE_CHANGED, resize);
-  render(); readyCancel = require("HeroItemLooks").whenReady(render);
+  render(); readyCancel = require("HeroItemLooks").whenReady(function () { render(true); });
   root.on(cc.Node.EventType.TOUCH_END, function (event) { if (event.target === root) closePicker(); });
 }
 function close(owner) {

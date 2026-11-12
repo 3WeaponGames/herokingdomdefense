@@ -2,6 +2,12 @@
 // A visual-only hero, using the same published rigs, tiers and fitted item
 // assets as Gear. It never binds an actor or touches the player's loadout.
 var Looks = require("HeroItemLooks"), Maker = require("HeroMakerRider");
+function hideShadow(renderer) {
+  if (!renderer || !renderer.findSlot) return;
+  (renderer.skeletonData.skeletonJson.slots || []).filter(function (slot) { return slot.name === "ty" || /shadow/i.test(slot.name); }).forEach(function (entry) {
+    var slot = renderer.findSlot(entry.name); if (slot && slot.setAttachment) slot.setAttachment(null);
+  });
+}
 var layers = [
   ["spAniMa", "ma", 6], ["spAniBody", "shenti", 0],
   ["spAniDrap", "doupeng", 1], ["spAniHead", "tou", 2],
@@ -18,6 +24,7 @@ var Clock = cc.Class({
       renderer.updateWorldTransform();
     }, this);
     Maker.update(controller);
+    hideShadow(controller.spAniMa);
     if (this.fit && --this.fitFrames <= 0) { this.fit(); this.fit = null; }
   }
 });
@@ -61,6 +68,7 @@ function create(parent, user, onError) {
           renderer.premultipliedAlpha = false; renderer.skeletonData = data[index];
           skin = profile && profile.skins && profile.skins[id] || skin;
           renderer.setSkin(skin); renderer.setSlotsToSetupPose(); renderer.setAnimation(0, "idle", true);
+          if (slot === 6) hideShadow(renderer);
           renderer.update(0); renderer.updateWorldTransform();
           node.setPosition(transform.x || 0, transform.y || 0);
           node.scaleX = scale * (transform.scaleX === undefined ? 1 : transform.scaleX);
@@ -93,10 +101,10 @@ function create(parent, user, onError) {
             });
           });
           // Leave room for the authored idle bounce after the measured pose.
-          var height = bounds.top - bounds.bottom;
+          var height = bounds.top - bounds.bottom, feet = bounds.bottom;
           bounds.top += height * .08; bounds.bottom -= height * .02;
-          root.scale = Math.min(300 / (bounds.right - bounds.left), 212 / (bounds.top - bounds.bottom));
-          root.setPosition(-(bounds.left + bounds.right) / 2 * root.scale, -(bounds.bottom + bounds.top) / 2 * root.scale);
+          root.scale = Math.min((parent.width || 300) / (bounds.right - bounds.left), (parent.height || 212) / (bounds.top - bounds.bottom));
+          root.setPosition(-(bounds.left + bounds.right) / 2 * root.scale, -(parent.height || 212) / 2 - feet * root.scale + 2);
           root.opacity = 255;
         };
         clock.controller = controller;
