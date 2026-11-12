@@ -38,11 +38,11 @@ function expand(rig){
 }
 function belongs(name,role){
   if(role===0)return name==='Rider/Body'||/\/Boots$|^Rider\/Dead\//.test(name);
-  if(role===1)return /\/Chest$|\/Cape$/.test(name);
+  if(role===1)return /\/Chest$/.test(name);
   if(role===2)return /^Rider\/Body\/Head(?:\/|$)/.test(name);
-  if(role===3)return /\/Arrow$|\/Bolt$|\/Shield$/.test(name);
-  if(role===4)return /^Rider\/HandRight\//.test(name)&&!(/\/Arrow$|\/Bolt$/.test(name))||/^Rider\/HandLeft\//.test(name)&&!(/\/Shield$/.test(name));
-  return /^Rider\/Gloves\//.test(name);
+  if(role===3)return /\/Arrow$|\/Bolt$/.test(name)||/^Rider\/HandLeft\//.test(name);
+  if(role===4)return /^Rider\/HandRight\//.test(name)&&!(/\/Arrow$|\/Bolt$/.test(name));
+  return /\/Cape$/.test(name);
 }
 function mapTime(clip,target,peak){
   const from=Bake.duration(clip),result=clone(clip),release=.1667;
@@ -126,14 +126,14 @@ function plan(root){
     for(const skin of skins){
       const match=/^(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_(.+)$/.exec(skin),style=match?match[1]:'skirmisher',tierName=match?match[2]:skin,tier=/^vip/.test(tierName)?4:Math.min(4,Number(tierName.replace(/\D/g,''))||1),parts=[];
       function add(asset,slot,overrides){if(!asset)throw Error('Missing hero equipment for '+slot);parts.push({...attachment(asset,slot,slot.replace(/[^a-z0-9]/gi,'_')+'_'+skin),layer:base.uuid,...overrides});}
-      if(role===1){add(tier===1?assets.get(starter.chest):choose('Chest',tier),slotFor('Chest'));add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape',capeFit);}
+      if(role===1)add(tier===1?assets.get(starter.chest):choose('Chest',tier),slotFor('Chest'));
       if(role===2)add(tier===1?assets.get(starter.helmet):choose('Helmet',tier),slotFor('Helmet'));
       if(role===3&&style==='skirmisher')add(tier===1?assets.get(starter.arrow):choose('HandRight/Arrow',tier),slotFor('Arrow'),{forceVisible:false});
       if(role===3&&style==='guardian')add(assets.get('HandLeft/Shield/FA_WP_Sub_Shield_012_Blue')||choose('HandLeft/Shield',tier),slotFor('Shield'));
       if(role===4){const type=family[style];add(weapon(style,tier),slotFor(type));}
-      // Gloves retain their independent upgrade skins and Gear icons, while
-      // the rider uses the Maker silhouette without added gloves or boots.
-      if(role===5){const asset=assets.get('Hero/Gloves/lv'+tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
+      // The original attack-rate upgrade track now owns the cape. Chest HP
+      // and cape attack speed keep independent progression and appearances.
+      if(role===5)add(assets.get('Hero/Cape/lv'+tier),'Rider/Body/Cape',capeFit);
       if(parts.length&&role){const asset=assets.get(parts[0].sprite);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       if(role===3&&style!=='skirmisher'&&style!=='guardian'){const asset=weapon(style,tier);(icons[role]||(icons[role]={}))[skin]={resource:asset.resource,width:asset.width,height:asset.height,id:asset.id};}
       const variant=clone(base);if(role===4)for(const skin of variant.json.skins)for(const slot of Object.keys(skin.attachments))if(/Bow_Line|Crossbow_Line/.test(slot)&&!(style==='skirmisher'&&/\/Bow\//.test(slot)))delete skin.attachments[slot];

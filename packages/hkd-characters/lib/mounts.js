@@ -170,12 +170,12 @@ function bindRider(root,merged,description){
 // and animation times intact. Re-express any animated draw order against the
 // new setup order, rather than keeping offsets tied to the old slot indices.
 function orderMounted(rig,description){
-  const ranks=new Map(),headOrder=new Map();let active=false;
+  const ranks=new Map(rig.slots.map(slot=>[slot.name,/(?:^|\/)Rider\/HandLeft\//.test(slot.name)?-1:0])),headOrder=new Map();let active=rig.slots.some(slot=>ranks.get(slot.name)===-1);
   description.layers.forEach((rider,index)=>{
     if(!rider.followMount)return;const mountIndex=description.layers.findIndex(l=>l.uuid===rider.followMount.layer),horse=description.layers[mountIndex];if(!horse||!horse.foregroundSlots||!horse.foregroundSlots.length)return;
     active=true;const front=new Set(horse.foregroundSlots);horse.foregroundSlots.forEach((slot,i)=>headOrder.set('layer'+mountIndex+'/'+slot,i));
     horse.json.slots.forEach(slot=>ranks.set('layer'+mountIndex+'/'+slot.name,front.has(slot.name)?3:0));
-    rider.json.slots.forEach(slot=>ranks.set('layer'+index+'/'+slot.name,/^Rider\/HandRight\//.test(slot.name)?4:/^Rider\/HandLeft\//.test(slot.name)?2:1));
+    rider.json.slots.forEach(slot=>ranks.set('layer'+index+'/'+slot.name,/^Rider\/HandRight\//.test(slot.name)?4:/^Rider\/HandLeft\//.test(slot.name)?-1:1));
   });
   if(!active)return;
   const setup=rig.slots.slice(),sorted=list=>list.slice().sort((a,b)=>(ranks.get(a.name)||0)-(ranks.get(b.name)||0)||(ranks.get(a.name)===3?headOrder.get(a.name)-headOrder.get(b.name):0));

@@ -32,6 +32,7 @@ function bake(root,profile,id,description,assets,read){
       if(attachment.type==='clipping'||attachment.type==='boundingbox'||attachment.type==='path'||attachment.type==='point')continue;
       const region=attachment.path||attachment.name||name;if(!pictures[region])pictures[region]=cut(region);
     }
+    require('./mounts').orderMounted(rig,{layers:[]});
     const base='assets/resources/'+(profile.base.type==='hero'?'characters':'hero-items')+'/baked/'+id+'_'+layer.name,textures=Bake.atlasFiles(files,base,pictures);
     rig._heroItem=id;rig._originalLayer=layer.uuid;
     files.set(base+'.json',JSON.stringify(rig,null,2)+'\n');

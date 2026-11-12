@@ -80,15 +80,22 @@ function opaqueAt(image,u,v){
 // Pick the topmost visible texel in the same clipped, animated geometry used
 // to draw the preview. Transparent padding must not hide a part behind it.
 function renderPasses(spine,layers){
+    const ranks={0:0,1:1,5:2,2:3,4:4,3:5},maker=layer=>layer.description.json&&layer.description.json._heroMaker;
+    const ordered=layers.filter(maker).sort((a,b)=>ranks[maker(a).role]-ranks[maker(b).role]);layers=layers.map(layer=>maker(layer)?ordered.shift():layer);
     const pieces=new Map(),passes=[];
-    const geometryFor=layer=>{if(!pieces.has(layer))pieces.set(layer,geometry(spine,layer).filter(g=>{const source=layer.description.json&&layer.description.json._mountHeadSources&&layer.description.json._mountHeadSources[g.slot];if(!source)return true;const own=layer.skeleton.findSlot(g.slot).getAttachment(),body=layer.skeleton.findSlot(source).getAttachment();return own&&own.name.startsWith('character:')||body&&!body.name.startsWith('character:');}));return pieces.get(layer);};
+    const left=g=>/(?:^|\/)Rider\/HandLeft\//.test(g.slot);
+    const allFor=layer=>{if(!pieces.has(layer))pieces.set(layer,geometry(spine,layer).filter(g=>{const source=layer.description.json&&layer.description.json._mountHeadSources&&layer.description.json._mountHeadSources[g.slot];if(!source)return true;const own=layer.skeleton.findSlot(g.slot).getAttachment(),body=layer.skeleton.findSlot(source).getAttachment();return own&&own.name.startsWith('character:')||body&&!body.name.startsWith('character:');}));return pieces.get(layer);};
+    // Left-hand items precede every layer, including the mount. Use the same
+    // passes for drawing and hit testing so a hidden shield cannot steal clicks.
+    layers.forEach(layer=>{const back=allFor(layer).filter(left);if(back.length)passes.push({layer,pieces:back});});
+    const geometryFor=layer=>allFor(layer).filter(g=>!left(g));
     for(const layer of layers){
         const rider=layers.find(l=>l.description.followMount&&l.description.followMount.layer===layer.description.uuid);
         if(rider&&layer.description.foregroundSlots&&layer.description.foregroundSlots.length){const front=new Set(layer.description.foregroundSlots);passes.push({layer,pieces:geometryFor(layer).filter(g=>!front.has(g.slot))});continue;}
         const horse=layer.description.followMount&&layers.find(l=>l.description.uuid===layer.description.followMount.layer);
         if(horse&&horse.description.foregroundSlots&&horse.description.foregroundSlots.length){
-            const front=new Map(horse.description.foregroundSlots.map((slot,i)=>[slot,i])),all=geometryFor(layer),right=g=>/^Rider\/HandRight\//.test(g.slot),left=g=>/^Rider\/HandLeft\//.test(g.slot);
-            passes.push({layer,pieces:all.filter(g=>!right(g)&&!left(g))},{layer,pieces:all.filter(left)},{layer:horse,pieces:geometryFor(horse).filter(g=>front.has(g.slot)).sort((a,b)=>front.get(a.slot)-front.get(b.slot))},{layer,pieces:all.filter(right)});
+            const front=new Map(horse.description.foregroundSlots.map((slot,i)=>[slot,i])),all=geometryFor(layer),right=g=>/^Rider\/HandRight\//.test(g.slot);
+            passes.push({layer,pieces:all.filter(g=>!right(g))},{layer:horse,pieces:geometryFor(horse).filter(g=>front.has(g.slot)).sort((a,b)=>front.get(a.slot)-front.get(b.slot))},{layer,pieces:all.filter(right)});
         }else passes.push({layer,pieces:geometryFor(layer)});
     }
     return passes;

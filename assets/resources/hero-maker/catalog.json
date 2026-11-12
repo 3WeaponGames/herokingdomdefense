@@ -563,256 +563,256 @@
     },
     "5": {
       "lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "skirmisher_lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "skirmisher_lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "skirmisher_lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "skirmisher_lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "skirmisher_vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "skirmisher_vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "fighter_lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "fighter_lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "fighter_lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "fighter_lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "fighter_vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "fighter_vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "vanguard_lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "vanguard_lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "vanguard_lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "vanguard_lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "vanguard_vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "vanguard_vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "mystic_lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "mystic_lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "mystic_lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "mystic_lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "mystic_vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "mystic_vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "bruiser_lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "bruiser_lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "bruiser_lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "bruiser_lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "bruiser_vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "bruiser_vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "guardian_lv1": {
-        "resource": "hero-maker/equipment/gloves-lv1",
-        "width": 49,
-        "height": 45,
-        "id": "Hero/Gloves/lv1"
+        "resource": "hero-maker/equipment/cape-lv1",
+        "width": 84,
+        "height": 89,
+        "id": "Hero/Cape/lv1"
       },
       "guardian_lv2": {
-        "resource": "hero-maker/equipment/gloves-lv2",
-        "width": 50,
-        "height": 48,
-        "id": "Hero/Gloves/lv2"
+        "resource": "hero-maker/equipment/cape-lv2",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv2"
       },
       "guardian_lv3": {
-        "resource": "hero-maker/equipment/gloves-lv3",
-        "width": 53,
-        "height": 49,
-        "id": "Hero/Gloves/lv3"
+        "resource": "hero-maker/equipment/cape-lv3",
+        "width": 85,
+        "height": 89,
+        "id": "Hero/Cape/lv3"
       },
       "guardian_lv4": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "guardian_vip1": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       },
       "guardian_vip2": {
-        "resource": "hero-maker/equipment/gloves-lv4",
-        "width": 52,
-        "height": 49,
-        "id": "Hero/Gloves/lv4"
+        "resource": "hero-maker/equipment/cape-lv4",
+        "width": 86,
+        "height": 91,
+        "id": "Hero/Cape/lv4"
       }
     }
   }

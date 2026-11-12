@@ -4,7 +4,7 @@ const {ItemsService}=require('../../packages/hkd-items/service'),root=path.resol
 const Tiers=require('../../assets/_script/EquipmentTiers');
 test('Items groups upgrade levels into visual tiers and includes every weapon style below shared items',()=>{
   const service=new ItemsService(root),units=service.units(),source=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
-  const Tiers=require('../../assets/_script/EquipmentTiers'),total=source.EquipCfg.reduce((sum,equip)=>sum+Tiers.tiers(equip).length*([3,4].includes(equip.id)?6:1),0);assert.equal(units.length,total);assert.deepEqual([...new Set(units.map(u=>u.slot))],[1,2,5,6,3,4]);assert(units.every(unit=>/^Tier \d+$/.test(unit.name)));
+  const Tiers=require('../../assets/_script/EquipmentTiers'),total=source.EquipCfg.reduce((sum,equip)=>sum+Tiers.tiers(equip).length*([3,4].includes(equip.id)?6:1),0);assert.equal(units.length,total);assert.deepEqual([...new Set(units.map(u=>u.slot))],[1,2,5,6,4,3]);assert(units.every(unit=>/^Tier \d+$/.test(unit.name)));
   for(const style of require('../../assets/_script/HeroWeapons').styles)for(const slot of [3,4])assert(units.some(unit=>unit.slot===slot&&unit.style===style.id));
   for(const equip of source.EquipCfg)for(const row of equip.levelInfo){const item=units.find(u=>u.slot===equip.id&&u.skin===row.EquipSkin);assert(item);assert(item.legacyKeys.includes(equip.id+':'+row.Level));}
   for(const equip of source.EquipCfg)for(const row of [equip.levelInfo[0],equip.levelInfo[equip.levelInfo.length-1]]){const description=service.describe({type:'item',id:equip.id+':'+row.Level},true);assert(description.layers.some(l=>l.uuid===description.defaultLayer));assert.equal(description.item.level,row.Level);}
@@ -63,7 +63,7 @@ test('explicit tier edits save once without rewriting legacy looks, gameplay lev
 
 test('current fitted parts match the actual hero tier, including cape fit and Guardian hammer and shield',()=>{
   const service=new ItemsService(root),before=JSON.stringify(service.snapshot()),armor=service.describe({type:'item',id:'1:tier:lv1'},true),helmet=service.describe({type:'item',id:'2:tier:lv1'},true),guardian=service.describe({type:'item',id:'4:tier:lv1:guardian'},true),mount=service.describe({type:'item',id:'6:tier:lv1'},true);
-  assert.deepEqual(armor.currentItem.parts.map(part=>part.id),['chest','cape']);assert.equal(armor.currentItem.parts[1].scaleX,.68);assert.equal(armor.currentItem.parts[1].x,9.5);
+  const cape=service.describe({type:'item',id:'5:tier:lv1'},true);assert.deepEqual(armor.currentItem.parts.map(part=>part.id),['chest']);assert.deepEqual(cape.currentItem.parts.map(part=>part.id),['cape']);assert.equal(cape.currentItem.parts[0].scaleX,.68);assert.equal(cape.currentItem.parts[0].x,9.5);
   assert.equal(helmet.currentItem.parts[0].sprite,'character-maker/Extenstions/Parts Pack Base/Parts/Helmet/FA_Helmet_003_Wood');assert.deepEqual(guardian.currentItem.parts.map(part=>part.id),['blunt']);assert.deepEqual(service.describe({type:'item',id:'3:tier:lv1:guardian'},true).currentItem.parts.map(part=>part.id),['shield']);assert.equal(mount.itemModel.asset,'original-mount/hero-horse/lv1');
   assert.equal(JSON.stringify(service.snapshot()),before,'Browsing current gear does not stage or save a design');
 });

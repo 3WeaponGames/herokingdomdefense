@@ -47,17 +47,22 @@ test('authored building roots, detached wings, offers and ordinary decoration re
   const soldier = new Node('Pooled ally', main); soldier._combatActor = {};
   const mapOnly = new Node('Already classified scenery', main); mapOnly._depthScenery = true;
   const game = { ctrPlay: { node: hero }, gameData: { bulidPointMap: { tower: { node: tower, ndAniMain: model, ndAniDown: shadow, ndAniOther: [detached] } }, obstacles: [{ node: rock }], weaponBusinessPoints: { _offers: [{ node: shop, spAni: shopArt }] } } };
-  const positions = [tower, wing, ground, rock, decoration, shop, soldier, hero].map(node => [node.x, node.y, node.parent]);
+  const nodes = [tower, wing, ground, rock, decoration, shop, soldier, hero];
+  const positions = nodes.map(node => [node.x, node.y, node.parent]);
+  const world = nodes.map(node => node.convertToWorldSpaceAR(new Vec2(0, 0)));
   const view = { main, game, objects: [], nativeActors: new Map() };
   DepthView.prototype.prepareObjects.call(view);
   assert.equal(tower._depthBuilding, true); assert.equal(wing._depthBuilding, true); assert.equal(shop._depthBuilding, true);
-  assert.equal(ground._depthBuilding, undefined, 'ground/shadow layers keep their existing background layer');
+  assert.equal(ground._depthGroundVisual, true, 'ground artwork has its own background classification');
+  assert.equal(ground.parent, main, 'ground artwork can sort independently of a building wrapper');
   assert.equal(rock._depthScenery, true); assert.equal(decoration._depthScenery, true);
   assert.equal(hero._depthScenery, undefined); assert.equal(soldier._depthScenery, undefined);
-  assert.deepEqual([tower, wing, ground, rock, decoration, shop, soldier, hero].map(node => [node.x, node.y, node.parent]), positions, 'sorting metadata changes no transforms or gameplay references');
+  assert.deepEqual(nodes.map(node => node.convertToWorldSpaceAR(new Vec2(0, 0))), world, 'render layering preserves world placement');
+  assert.equal(game.gameData.bulidPointMap.tower.ndAniDown, shadow, 'gameplay keeps its original renderer reference');
   DepthView.prototype.destroy.call(view);
   assert.equal(tower._depthBuilding, undefined); assert.equal(wing._depthBuilding, undefined); assert.equal(shop._depthBuilding, undefined);
   assert.equal(decoration._depthScenery, undefined); assert.equal(mapOnly._depthScenery, true, 'destroy restores classification that existed before this view');
+  assert.deepEqual(nodes.map(node => [node.x, node.y, node.parent]), positions, 'leaving the view restores the ground artwork hierarchy');
 });
 
 test('new terrain objects keep scenery priority through movement and leave no component-owned flag after removal', () => {
@@ -100,11 +105,11 @@ test('occlusion captures follow actual render order after building priority, wit
 });
 
 
-test('every building model, door, wing and purchase field shares one Z order, with selectable object-layer slots',()=>{
+test('building models and wings share authored object-layer slots while ground art stays below units',()=>{
  const {DepthView,Skeleton}=load(),main=new Node('ndMain'),down=new Node('ndDown'),hero=new Node('Hero',main,0,1000),owner=new Node('Building',main,0,50),wing=new Node('Door wing',main,10,-90),shadow=new Node('Shadow',down,0,50),fieldParent=new Node('Purchase fields',down,0,-50),field=new Node('Level 0',fieldParent),tree=new Node('Trees',main,0,-500),cliff=new Node('Cliffs',main,0,500);
  tree._depthLayerOrder=3;cliff._depthLayerOrder=1;const model=owner.addComponent(Skeleton),side=wing.addComponent(Skeleton),ground=shadow.addComponent(Skeleton),build={node:owner,ndAniMain:model,ndAniDown:ground,ndAniOther:[side],ndLockList:[field],renderLayerOrder:-1},game={ndDown:down,ctrPlay:{node:hero},gameData:{bulidPointMap:{one:build}}},view={main,game,objects:[]};
  const originals=[owner,wing,shadow,fieldParent].map(node=>node.convertToWorldSpaceAR(new Vec2(0,0)));DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);
- for(const node of [wing,shadow,fieldParent])assert.equal(node.zIndex,owner.zIndex,'all visible building roots share exactly one Z index');assert(owner.zIndex>tree.zIndex&&owner.zIndex>cliff.zIndex,'Default is in front of the last object layer');[owner,wing,shadow,fieldParent].forEach((node,i)=>assert.deepEqual(node.convertToWorldSpaceAR(new Vec2(0,0)),originals[i],'grouping retains world placement'));
- build.renderLayerOrder=2;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(cliff.zIndex<owner.zIndex&&owner.zIndex<tree.zIndex,'assigning after Cliffs puts the entire building before Trees');for(const node of [wing,shadow,fieldParent])assert.equal(node.zIndex,owner.zIndex);
+ assert.equal(wing.zIndex,owner.zIndex,'solid building parts retain one authored Z index');for(const node of [shadow,fieldParent])assert(node.zIndex<hero.zIndex,'ground artwork stays beneath units');assert(owner.zIndex>tree.zIndex&&owner.zIndex>cliff.zIndex,'Default is in front of the last object layer');[owner,wing,shadow,fieldParent].forEach((node,i)=>assert.deepEqual(node.convertToWorldSpaceAR(new Vec2(0,0)),originals[i],'grouping retains world placement'));
+ build.renderLayerOrder=2;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(cliff.zIndex<owner.zIndex&&owner.zIndex<tree.zIndex,'assigning after Cliffs puts the solid building before Trees');assert.equal(wing.zIndex,owner.zIndex);for(const node of [shadow,fieldParent])assert(node.zIndex<hero.zIndex);
  build.renderLayerOrder=0;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(owner.zIndex<cliff.zIndex&&owner.zIndex<tree.zIndex,'ground-only slot places the whole building behind all objects');
 });

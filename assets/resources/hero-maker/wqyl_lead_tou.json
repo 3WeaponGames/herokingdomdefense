@@ -557,6 +557,16 @@
   ],
   "slots": [
     {
+      "name": "Rider/HandLeft/Shield",
+      "bone": "Rider/HandLeft/Shield",
+      "color": "ffffffff"
+    },
+    {
+      "name": "Rider/HandLeft/Sub_Item",
+      "bone": "Rider/HandLeft/Sub_Item",
+      "color": "ffffffff"
+    },
+    {
       "name": "Rider/Dead/Bone",
       "bone": "Rider/Dead/Bone",
       "color": "ffffff00"
@@ -667,16 +677,6 @@
       "bone": "Rider/Body/Head/Helmet",
       "color": "ffffffff",
       "attachment": "hero_Rider_Body_Head_Helmet"
-    },
-    {
-      "name": "Rider/HandLeft/Shield",
-      "bone": "Rider/HandLeft/Shield",
-      "color": "ffffffff"
-    },
-    {
-      "name": "Rider/HandLeft/Sub_Item",
-      "bone": "Rider/HandLeft/Sub_Item",
-      "color": "ffffffff"
     },
     {
       "name": "Rider/Mount/Mount",

@@ -280,6 +280,170 @@ function refreshBuildingSources(object) {
   if (object.capture) { object.capture.active = false; object.capture.destroy(); object.capture = null; object.visuals = null; }
 }
 
+function surfaceGeometry(source, main, slot, cache) {
+  var attachment=slot.getAttachment(),vertices=[];
+  if (!attachment || slot.color.a<=0 || slot.bone.active===false) return null;
+  if (attachment.worldVerticesLength===8) attachment.computeWorldVertices(slot,0,8,vertices,0,2);
+  else if (!attachment.worldVerticesLength && attachment.computeWorldVertices) attachment.computeWorldVertices(slot.bone,vertices,0,2);
+  if (vertices.length!==8) return null;
+  var box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity},pose=nodeTransform(source.node,main,cache);
+  for(var i=0;i<8;i+=2){var x=vertices[i],y=vertices[i+1],p={x:pose.x+pose.a*x+pose.c*y,y:pose.y+pose.b*x+pose.d*y};vertices[i]=p.x;vertices[i+1]=p.y;box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);}
+  return {vertices:vertices,box:box,pixel:function(p,width,height,crop){var x=(p.x-(crop||0))/width,y=p.y/height;return{x:vertices[2]+(vertices[4]-vertices[2])*x+(vertices[0]-vertices[2])*y,y:vertices[3]+(vertices[5]-vertices[3])*x+(vertices[1]-vertices[3])*y};}};
+}
+function gateLeaves(source, main, cache) {
+  var json = source.skeletonData && source.skeletonData.skeletonJson, skeleton = source._skeleton;
+  if (!source.enabled || !source.node.activeInHierarchy || !json || !json.wallDoor || !json.wallDoor.gate || !skeleton) return [];
+  var level = /^cq-rts-([123])$/.exec(skeleton.skin && skeleton.skin.name), spec = level && json.wallDoor.tiers[Number(level[1]) - 1];
+  if (!spec || !spec.hinges) return [];
+  updatePose(source, cache);
+  return skeleton.drawOrder.reduce(function (all, slot) {
+    var attachment = slot.getAttachment(), name = attachment && attachment.name, state, image, start, end, crop = 0;
+    if (!attachment || slot.color.a <= 0 || !/^rts_wall_leaf_/.test(slot.data.name)) return all;
+    var open = /^rts_door_(inward|outward)_(near|far)$/.exec(name), closed = /^rts_door_closed(?:_(near|far))?$/.exec(name);
+    if (open) {
+      state = spec.states[open[1]];image = state && state.parts && state.parts.find(function (part) { return part.id === open[2]; });
+      if (!image) return all;
+      var span = Math.abs(spec.hinges.right.x - spec.hinges.left.x) / 2, dx = image.anchorX < image.width / 2 ? span : -span;
+      start = { x:image.anchorX, y:image.anchorY };end = { x:start.x + dx, y:start.y + dx * 2 / 3 };
+    } else if (closed) {
+      image = spec.states.closed;
+      var left = spec.hinges.left, right = spec.hinges.right, middle = (left.x + right.x) / 2;
+      start = { x:closed[1] === "far" ? middle : left.x };end = { x:closed[1] === "near" ? middle : right.x };
+      start.y = left.y + (start.x-left.x)*(right.y-left.y)/(right.x-left.x);end.y = left.y + (end.x-left.x)*(right.y-left.y)/(right.x-left.x);
+      if (closed[1]) { crop = closed[1] === "far" ? 260 : 0;image = { width:closed[1] === "far" ? 252 : 260, height:image.height }; }
+    } else return all;
+    var geometry=surfaceGeometry(source,main,slot,cache);if(!geometry)return all;
+    all.push({source:source,slot:slot,attachment:attachment,kind:"door",vertices:geometry.vertices,box:geometry.box,start:geometry.pixel(start,image.width,image.height,crop),end:geometry.pixel(end,image.width,image.height,crop),order:skeleton.drawOrder.indexOf(slot)});return all;
+  }, []);
+}
+var nativeWallAssembly;
+function wallSurfaces(source, main, cache) {
+  var json=source.skeletonData&&source.skeletonData.skeletonJson,skeleton=source._skeleton,kit=json&&json.wallKit;
+  if(!source.enabled||!source.node.activeInHierarchy||!kit||!kit.sizes||!skeleton||!/^cq-rts-[123]$/.test(skeleton.skin&&skeleton.skin.name))return [];
+  nativeWallAssembly=nativeWallAssembly||require("./WallAssembly");
+  var definitions={},regions=kit.layers&&kit.layers.regions;
+  Object.keys(kit.sizes).forEach(function(path){var m=/^rts_wall_(post|top|right|corner)_([123])$/.exec(path);if(m){var alias=regions&&regions[path]?regions[path].body:path;definitions[alias]={kind:m[1],level:Number(m[2]),size:kit.sizes[path]};}});
+  updatePose(source,cache);
+  return skeleton.drawOrder.reduce(function(all,slot,index){
+    if(!/^rts_wall_part_\d+$/.test(slot.data.name))return all;
+    var attachment=slot.getAttachment(),definition=attachment&&definitions[attachment.path],geometry=definition&&surfaceGeometry(source,main,slot,cache);
+    if(!geometry)return all;
+    var floor=nativeWallAssembly.groundProfile(definition.kind,definition.level,definition.size).map(function(p){return geometry.pixel(p,definition.size[0],definition.size[1]);});
+    all.push({source:source,slot:slot,attachment:attachment,kind:"wall",vertices:geometry.vertices,box:geometry.box,floor:floor,start:floor[0],end:floor[floor.length-1],order:index});return all;
+  },[]);
+}
+function behindGate(leaf, feet) {
+  var floor=leaf.floor||[leaf.start,leaf.end],front=Infinity,nearest=Infinity,fallback=0;
+  for(var i=1;i<floor.length;i++){
+    var a=floor[i-1],b=floor[i],dx=b.x-a.x,t=Math.abs(dx)<.0001?.5:(feet.x-a.x)/dx;
+    if(t>=0&&t<=1)front=Math.min(front,a.y+(b.y-a.y)*t);
+  }
+  floor.forEach(function(p){var distance=Math.abs(p.x-feet.x);if(distance<nearest-.0001){nearest=distance;fallback=p.y;}else if(Math.abs(distance-nearest)<.0001)fallback=Math.min(fallback,p.y);});
+  return feet.y>(front===Infinity?fallback:front)+.01;
+}
+function releaseCapture(record) {
+  if (record.frame) record.frame.destroy();
+  if (record.texture) record.texture.destroy();
+  record.frame = record.texture = null;
+}
+// A unit can be in front of an open leaf and behind its adjoining pillar.
+// Resolve the intersecting parts together: restore the unit over rear parts,
+// then paint foreground parts over its body, in the source's painter order.
+// Only render components are captured; gameplay, poses and fixtures stay live.
+function GateOcclusion(view) { this.view=view;this.leaves=new Map();this.actors=new Map();this.draw=0; }
+GateOcclusion.prototype.captureLeaf = function (record, surface) {
+  var source=surface.source,slot=surface.slot,color=source._skeleton.color,node=source.node;
+  var stamp=[source.skeletonData,surface.attachment,node.opacity,node.color.r,node.color.g,node.color.b,slot.color.r,slot.color.g,slot.color.b,slot.color.a,color.r,color.g,color.b,color.a].concat(surface.vertices);
+  if (sameStamp(record.signature,stamp)) return;
+  var box=surface.box,width=Math.ceil(box.maxX-box.minX)+4,height=Math.ceil(box.maxY-box.minY)+4;
+  var center={x:(box.minX+box.maxX)/2,y:(box.minY+box.maxY)/2},resolution=Math.min(4,512/Math.max(width,height));
+  var tw=Math.max(2,Math.ceil(width*resolution)),th=Math.max(2,Math.ceil(height*resolution));
+  if (!record.texture || record.texture.width!==tw || record.texture.height!==th) {
+    releaseCapture(record);
+    record.texture=new cc.RenderTexture();record.texture.initWithSize(tw,th,cc.gfx.RB_FMT_S8);
+    record.frame=new cc.SpriteFrame(record.texture);record.frame.setFlipY(true);
+  }
+  var start=source._startSlotIndex,end=source._endSlotIndex;
+  try {
+    source.setSlotsRange(slot.data.index,slot.data.index);
+    this.view.renderNative([source],center,height,record.texture);
+  } finally {
+    source.setSlotsRange(start,end);
+    if (source.markForRender) source.markForRender(true);
+  }
+  record.center=center;record.size={width:width,height:height};record.signature=stamp;
+};
+GateOcclusion.prototype.overlay = function (record, actor) {
+  var result=record.overlays.get(actor);if (result) return result;
+  var node=new cc.Node("GateUnitOcclusion");node._occlusionMask=true;node.parent=this.view.main;
+  var mask=node.addComponent(cc.Mask);mask.type=cc.Mask.Type.IMAGE_STENCIL;mask.alphaThreshold=.1;
+  var child=new cc.Node("OccludedPixels");child.parent=node;
+  var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
+  result={node:node,mask:mask,child:child,sprite:sprite};record.overlays.set(actor,result);return result;
+};
+GateOcclusion.prototype.update = function (active, cache, visible) {
+  var self=this,view=this.view,draw=++this.draw,surfaces=[],usedActors=new Set(),overlays=[];
+  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.active=false;});});});
+  Object.keys(view.game.gameData.bulidPointMap||{}).forEach(function (id) {
+    var owner=view.game.gameData.bulidPointMap[id],source=owner.ndAniMain;
+    if (!source) return;
+    var root=objectRoot(source.node,view.main);if (!root) return;
+    gateLeaves(source,view.main,cache).concat(wallSurfaces(source,view.main,cache)).forEach(function (surface) {
+      if (!visible || overlaps(surface.box,visible)) { surface.root=root;surfaces.push(surface); }
+    });
+  });
+  active.forEach(function (entry) {
+    var actor=entry.actor,feet=point(actor.node,view.main),hits=[],mismatch=false,base=actor.node.zIndex;
+    // Avoid skinning units unless their feet/body could be near a wall module.
+    if (!surfaces.some(function(surface){return behindGate(surface,feet)===(actor.node.zIndex>=surface.root.zIndex);})) return;
+    if (!entry.sources) {
+      entry.sources=bodyVisuals(actor);
+      entry.bounds=entry.sources.reduce(function(box,source){return union(box,bounds(source,view.main,cache));},null);
+    }
+    if (!entry.bounds || visible&&!overlaps(entry.bounds,visible)) return;
+    surfaces.forEach(function (surface) {
+      if (!overlaps(surface.box,entry.bounds)) return;
+      var behind=behindGate(surface,feet),above=actor.node.zIndex>=surface.root.zIndex;
+      hits.push({surface:surface,behind:behind});
+      if (behind===above) mismatch=true;
+      base=Math.max(base,surface.root.zIndex);
+    });
+    if (!mismatch) return;
+    var body=self.actors.get(actor);
+    if (!body) { body={};self.actors.set(actor,body); }
+    if (body.draw!==draw) { view.snapshotActor(body,entry.sources,entry.bounds,4);body.draw=draw; }
+    usedActors.add(actor);
+    hits.forEach(function (hit) {
+      var surface=hit.surface,records=self.leaves.get(surface.source);
+      if (!records) { records=new Map();self.leaves.set(surface.source,records); }
+      var record=records.get(surface.slot.data.name);
+      if (!record) { record={overlays:new Map()};records.set(surface.slot.data.name,record); }
+      record.draw=draw;self.captureLeaf(record,surface);
+      var overlay=self.overlay(record,actor),stencil=hit.behind?body:record,paint=hit.behind?record:body;
+      overlay.draw=draw;overlay.behind=hit.behind;overlay.node.active=true;
+      overlay.node.setPosition(stencil.center.x,stencil.center.y);overlay.node.setContentSize(stencil.size);overlay.mask.spriteFrame=stencil.frame;
+      overlay.child.setPosition(paint.center.x-stencil.center.x,paint.center.y-stencil.center.y);overlay.child.setContentSize(paint.size);overlay.sprite.spriteFrame=paint.frame;
+      overlay.node.zIndex=base+2;
+      overlays.push({overlay:overlay,base:base,actor:actor.node.zIndex,behind:hit.behind?1:0,root:surface.root.zIndex,order:surface.order});
+    });
+  });
+  // Each actor's foreground pieces follow all of its restored body pixels.
+  // Units in front retain their normal order over units farther back.
+  overlays.sort(function(a,b){return a.base-b.base||a.actor-b.actor||a.behind-b.behind||a.root-b.root||a.order-b.order;}).forEach(function(entry){entry.overlay.node.setSiblingIndex(view.main.childrenCount-1);});
+  this.leaves.forEach(function (records,source) {
+    records.forEach(function (record,key) {
+      record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){overlay.node.destroy();record.overlays.delete(actor);}});
+      if (record.draw!==draw) { releaseCapture(record);records.delete(key); }
+    });
+    if (!records.size) self.leaves.delete(source);
+  });
+  this.actors.forEach(function(record,actor){if(!usedActors.has(actor)){releaseCapture(record);self.actors.delete(actor);}});
+};
+GateOcclusion.prototype.destroy = function () {
+  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.destroy();});releaseCapture(record);});});
+  this.actors.forEach(releaseCapture);this.leaves.clear();this.actors.clear();
+};
+
 function DepthView(game) {
   this.game = game;
   this.main = game.ndMain;
@@ -289,6 +453,7 @@ function DepthView(game) {
   this.nativeCapture = !!(cc.sys && cc.sys.isNative);
   this.captureSupported = !this.nativeCapture;
   this.nativeActors = new Map();
+  this.gateOcclusion = new GateOcclusion(this);
   this.capture = new cc.Node("OcclusionCapture");
   this.capture.active = false;
   this.capture.parent = cc.director.getScene();
@@ -327,6 +492,14 @@ DepthView.prototype.prepareObjects = function () {
     if (building) { root._depthBuildingOwner = owner ? objectRoot(owner.node, main) || owner.node : root;root._depthBuildingOrder = owner && Number.isFinite(owner.renderLayerOrder) && owner.renderLayerOrder >= 0 ? owner.renderLayerOrder : null; }
     else { delete root._depthBuildingOwner;delete root._depthBuildingOrder; }
   }
+  function groundNode(node) {
+    if(node.parent!==main){
+      var pose=nodeTransform(node,main),parents=self._groundParents||(self._groundParents=[]);
+      parents.push({node:node,parent:node.parent,zIndex:node.zIndex});
+      node.setParent(main);node.setPosition(pose.x,pose.y);node.angle=pose.angle;node.scaleX=pose.scaleX;node.scaleY=pose.scaleY;
+    }
+    return node;
+  }
   // Gate side containers group columns at different Y positions. Flatten only
   // their render/physics nodes, preserving transforms and component references.
   main.children.slice().forEach(function (root) {
@@ -358,7 +531,13 @@ DepthView.prototype.prepareObjects = function () {
       buildingOwners.get(ownerRoot).push({ owner: build, base: null, weapon: null, ruins: null });
     }
     [build.ndAniMain, build.ndAniDown].concat(build.ndAniOther || []).filter(Boolean).forEach(function (renderer) {
-      var root = renderer.node;
+      // Exported stages wrap the mill and all plots in one instance container.
+      // Lift only the ground renderer, never the complete building wrapper.
+      // Legacy gateways keep a real door half in ndAniDown; it is not a floor.
+      var isWall = build.wallHasGate !== undefined || build.buildCfg && build.buildCfg.enumValue === 6;
+      var ground = renderer === build.ndAniDown && !isWall;
+      if(ground&&renderer.node.parent&&renderer.node.parent.activeInHierarchy===false)return;
+      var root = ground ? groundNode(renderer.node) : renderer.node;
       while (root.parent && root.parent !== main && root.parent !== self.game.ndDown) root = root.parent;
       if (root.parent === self.game.ndDown && self.game.ndDown) {
         var pose = nodeTransform(root, main);
@@ -366,7 +545,7 @@ DepthView.prototype.prepareObjects = function () {
       }
       if (root.parent !== main) return;
       kind(root, true, build);
-      if (renderer === build.ndAniDown) { root._depthGroundVisual = true;if(root.setSiblingIndex)root.setSiblingIndex(0);return; }
+      if (renderer === build.ndAniDown) { if(ground){root._depthGroundVisual = true;if(root.setSiblingIndex)root.setSiblingIndex(0);}return; }
       if (!byNode.has(root)) byNode.set(root, []);
       byNode.get(root).push(renderer);
     });
@@ -377,7 +556,7 @@ DepthView.prototype.prepareObjects = function () {
       var root = field;
       while (root.parent && root.parent !== main && root.parent !== self.game.ndDown) root = root.parent;
       if (root.parent === self.game.ndDown && self.game.ndDown) { var pose = nodeTransform(root, main);root.setParent(main);root.setPosition(pose.x, pose.y);root.angle = pose.angle;root.scaleX=pose.scaleX;root.scaleY=pose.scaleY; }
-      if (root.parent === main) { kind(root, true, build);root._depthGroundVisual = true;if(root.setSiblingIndex)root.setSiblingIndex(0); }
+      if (root.parent === main && root !== objectRoot(build.node,main)) { kind(root, true, build);root._depthGroundVisual = true;if(root.setSiblingIndex)root.setSiblingIndex(0); }
     });
   });
   (this.game.gameData.obstacles || []).forEach(function (obstacle) {
@@ -399,11 +578,11 @@ DepthView.prototype.sort = function () {
   var hero = this.game.ctrPlay.node, main = this.main, groups = new Map(), maximum = 1;
   main.children.forEach(function (node, index) {
     if (node._occlusionMask) return;
-    var owner = node._depthBuildingOwner || node, group = groups.get(owner);
+    var groundVisual = !!node._depthGroundVisual, owner = groundVisual ? node : node._depthBuildingOwner || node, group = groups.get(owner);
     if (!group) {
-      var building = !!node._depthBuilding, ground = owner._depthGround ? point(owner._depthGround, main).y : owner.y;
+      var building = !groundVisual && !!node._depthBuilding, ground = owner._depthGround ? point(owner._depthGround, main).y : owner.y;
       group = { owner:owner, ground:ground, actor:node._combatActor || node === hero ? 1 : 0, index:index, building:building, priority:node._depthMapForeground?1:0, nodes:[] };
-      group.band = building ? node._depthBuildingOrder : node._depthLayerOrder;
+      group.band = groundVisual ? -1 : building ? node._depthBuildingOrder : node._depthLayerOrder;
       if (!building && !Number.isFinite(group.band) && (node._depthScenery || node._depthMapObject)) group.band = node._depthMapForeground ? 3 : 1;
       if (Number.isFinite(group.band)) maximum = Math.max(maximum, group.band);
       groups.set(owner, group);
@@ -421,7 +600,8 @@ DepthView.prototype.sort = function () {
     else if (!Number.isFinite(g.band)) g.band=0;
   });
   ordered.sort(function(a,b){return a.band-b.band||a.priority-b.priority||b.ground-a.ground||a.actor-b.actor||a.index-b.index;});
-  ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*2;}); });
+  // Reserve one step for silhouettes and another for local gate intersections.
+  ordered.forEach(function (group,index) { group.nodes.forEach(function(node){node.zIndex=index*4;}); });
   if (main.sortAllChildren) main.sortAllChildren();
 };
 DepthView.prototype.makeMask = function (object, actor, sources) {
@@ -531,13 +711,13 @@ DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId) {
   mask.node.color = cc.color(entry.tint.r, entry.tint.g, entry.tint.b);
   mask.node.opacity = 204;
 };
-DepthView.prototype.snapshotActor = function (record, sources, box) {
+DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
   var center = { x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 };
   // Retain capacity across animation frames. Tiny changes in animated bounds
   // must not recreate GPU textures and SpriteFrames for every hidden unit.
   var width = Math.max(record.size ? record.size.width : 0, Math.ceil((box.maxX - box.minX + 4) / 32) * 32);
   var height = Math.max(record.size ? record.size.height : 0, Math.ceil((box.maxY - box.minY + 4) / 32) * 32);
-  var resolution = Math.min(1, 512 / Math.max(width, height));
+  var resolution = Math.min(detail || 1, 512 / Math.max(width, height));
   var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
   if (!record.texture || record.texture.width !== tw || record.texture.height !== th) {
     if (record.frame) record.frame.destroy();
@@ -612,6 +792,7 @@ DepthView.prototype.update = function () {
       object.overlay.node.setContentSize(object.size);
       object.overlay.mask.spriteFrame = object.frame;
     });
+    if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible);
   } finally {
     if (this._nativeRendered) {
       this._nativeRendered = false;
@@ -637,6 +818,7 @@ DepthView.prototype.destroy = function () {
   if (this._destroyed) return;
   this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
+  if(this.gateOcclusion)this.gateOcclusion.destroy();
   this.objects.forEach(function (object) {
     if (object.overlay && cc.isValid(object.overlay.node, true)) object.overlay.node.destroy();
     if (object.frame) object.frame.destroy();
@@ -654,6 +836,11 @@ DepthView.prototype.destroy = function () {
     });
     this._depthKinds.clear();
   }
+  (this._groundParents||[]).forEach(function(record){
+    if(!cc.isValid(record.node,true)||!cc.isValid(record.parent,true))return;
+    var pose=nodeTransform(record.node,record.parent);record.node.setParent(record.parent);record.node.setPosition(pose.x,pose.y);record.node.angle=pose.angle;record.node.scaleX=pose.scaleX;record.node.scaleY=pose.scaleY;record.node.zIndex=record.zIndex;
+  });
+  this._groundParents=null;
   if (cc.isValid(this.capture, true)) this.capture.destroy();
   if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
   if (this.nativeMaterial) this.nativeMaterial.destroy();
@@ -671,3 +858,7 @@ exports.bounds = bounds;
 exports.union = union;
 exports.viewBounds = viewBounds;
 exports.sameStamp = sameStamp;
+exports.gateLeaves = gateLeaves;
+exports.behindGate = behindGate;
+exports.GateOcclusion = GateOcclusion;
+exports.wallSurfaces = wallSurfaces;

@@ -12,11 +12,11 @@ test('original cavalry horse and every hero horse skin keep animated weighted me
   assert(Math.abs(Baker.duration(rig.animations.move)-Baker.duration(description.layers[1].json.animations.move))<1e-6,'mounted locomotion uses the Maker movement cycle');
   assert(rig.slots.some(slot=>slot.name.startsWith('layer0/')));assert(rig.slots.some(slot=>slot.name.includes('Rider/Body/Head/Helmet')));
   const front=new Set(description.layers[0].foregroundSlots.map(name=>'layer0/'+name));assert(front.size>0);
-  const rank=slot=>front.has(slot.data.name)?3:slot.data.name.startsWith('layer0/')?0:/\/Rider\/HandRight\//.test(slot.data.name)?4:/\/Rider\/HandLeft\//.test(slot.data.name)?2:1;
+  const rank=slot=>/\/Rider\/HandLeft\//.test(slot.data.name)?-1:front.has(slot.data.name)?3:slot.data.name.startsWith('layer0/')?0:/\/Rider\/HandRight\//.test(slot.data.name)?4:1;
   for(const [name,original]of Object.entries(contract.animations))assert.deepEqual(rig.animations[name].events||[],original.events);
   for(const animation of data.animations)for(const t of [0,.15,.35,.65,1]){
    s.setToSetupPose();animation.apply(s,0,t,true,null,1,spine.MixBlend.replace,spine.MixDirection.mixIn);s.updateWorldTransform();
-   const order=s.drawOrder.map(rank);assert(order.every((value,i)=>!i||value>=order[i-1]),mount+'/'+skin+'/'+animation.name+' keeps body/rider/left/head/right draw groups');
+   const order=s.drawOrder.map(rank);assert(order.every((value,i)=>!i||value>=order[i-1]),mount+'/'+skin+'/'+animation.name+' keeps left/body/rider/head/right draw groups');
    for(const slot of s.slots){const a=slot.getAttachment();if(Core.isFacialSlot(slot.data.name))assert.equal(a,null);if(!a)continue;const v=[];if(a instanceof spine.RegionAttachment)a.computeWorldVertices(slot.bone,v,0,2);else if(a instanceof spine.MeshAttachment)a.computeWorldVertices(slot,0,a.worldVerticesLength,v,0,2);assert(v.every(Number.isFinite),mount+'/'+skin+'/'+animation.name+'/'+slot.data.name);}
   }
   for(const name of ['idle','attack','move']){

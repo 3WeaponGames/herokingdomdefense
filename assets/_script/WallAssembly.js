@@ -68,4 +68,14 @@ function attachment(piece,level,sizes,options){
   if(options&&options.layer){var regions=options.layers&&options.layers.regions,entry=regions&&regions[path];if(!entry||["body","shadow"].indexOf(options.layer)<0||typeof entry[options.layer]!=="string")throw Error("Missing native wall layer "+path);path=entry[options.layer];}
   return {path:path,x:piece.x*2+sign*(size[0]/2-anchor[0])*1.5,y:piece.y*2+(anchor[1]-size[1]/2)*1.5,width:size[0]*1.5,height:size[1]*1.5,scaleX:sign};
 }
+// The native module anchor is the pillar's front ground vertex. Both adjoining
+// ground edges follow the same 2:3 grid as the wall, including connector pieces.
+// Keep these image-space points tied to the artwork registration above, so a
+// mirrored/offset renderer can project its own footprint without moving physics.
+function groundProfile(kind,level,size){
+  if(["post","top","right","corner"].indexOf(kind)<0||!Number.isInteger(level)||level<1||level>3||!Array.isArray(size)||size.length!==2)throw Error("Choose a native wall module and tier for its ground profile.");
+  var anchor=(kind==="top"?TOP:kind==="corner"?CORNER:POST)[level-1];
+  return [{x:0,y:anchor[1]-SLOPE*anchor[0]},{x:anchor[0],y:anchor[1]},{x:size[0],y:anchor[1]-SLOPE*(size[0]-anchor[0])}];
+}
 exports.step=STEP;exports.axis={x:STEP.x,y:STEP.y,slope:SLOPE};exports.maxPerSide=MAX_SIDE;exports.maxTotal=MAX_TOTAL;exports.valid=valid;exports.layout=layout;exports.chain=chain;exports.canonical=canonical;exports.pieces=pieces;exports.attachment=attachment;
+exports.groundProfile=groundProfile;

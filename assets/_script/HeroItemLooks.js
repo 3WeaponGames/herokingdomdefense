@@ -47,23 +47,23 @@ function resolve(data, levels, style, equipment) {
   if (!data) return [];
   return Object.keys(levels).map(function (slot) { var key = slot + ":" + levels[slot] + ((slot === "3" || slot === "4") && style && style !== "skirmisher" ? ":" + style : ""), id = equipment ? require("EquipmentTiers").profileId(data, equipment, slot, levels[slot], style) : data.assignments[key]; return id && data.profiles[id]; }).filter(Boolean);
 }
-function current(base) {
+function current(base, previewStyle) {
   load();
   if (!catalog || !Object.keys(catalog.assignments).length) return base;
   var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), levels = {};
-  for (var slot = 1; slot <= 6; slot++) levels[slot] = user.getPersonLevel(slot);
-  var style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher";
+  var style = previewStyle || (user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher");
+  for (var slot = 1; slot <= 6; slot++) levels[slot] = previewStyle && (slot === 3 || slot === 4) ? user.getHeroWeaponLevel(style, slot) : user.getPersonLevel(slot);
   var key = style + ":" + Object.keys(levels).map(function (slot) { return levels[slot]; }).join(":");
   if (cachedBase === base && cachedLevels === key) return cachedLook;
   var items = resolve(catalog, levels, style, require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList());
   cachedBase = base; cachedLevels = key; cachedLook = items.length ? merge(base, items) : base;
   return cachedLook;
 }
-function item(slot, level) { load(); var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher", equipment = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList(), id = require("EquipmentTiers").profileId(catalog, equipment, slot, level, style); return id && catalog.profiles[id] || null; }
-function image(slot, level) {
-  var profile = item(slot, level), part = profile && profile.parts[0], asset = part && library && library[part.sprite] || profile && profile.icon;
+function item(slot, level, previewStyle) { load(); var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = previewStyle || (user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher"), equipment = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList(), id = require("EquipmentTiers").profileId(catalog, equipment, slot, level, style); return id && catalog.profiles[id] || null; }
+function image(slot, level, previewStyle) {
+  var profile = item(slot, level, previewStyle), part = profile && profile.parts[0], asset = part && library && library[part.sprite] || profile && profile.icon;
   if (!asset && defaults && defaults.icons && defaults.icons[slot]) {
-    var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher";
+    var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = previewStyle || (user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher");
     var cfg = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getEquipCfgList().filter(function (row) { return row.id === slot; })[0], tier = cfg && cfg.levelInfo[level - 1].EquipSkin;
     asset = defaults.icons[slot][[3,4,5].indexOf(slot) >= 0 ? style + "_" + tier : tier];
   }
@@ -73,12 +73,12 @@ function image(slot, level) {
   }
   return asset ? Object.assign({}, asset, { tint: part && part.tint || asset.tint || '#ffffff' }) : null;
 }
-function gearImage(slot, level, area) {
-  var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher", view = require("HeroWeapons").gear(style, slot, area), source;
-  if (view && view.kind === "linked") source = image(view.occupiedBy, user.getPersonLevel(view.occupiedBy));
+function gearImage(slot, level, area, previewStyle) {
+  var user = require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(), style = previewStyle || (user.getHeroWeapon ? user.getHeroWeapon().id : "skirmisher"), view = require("HeroWeapons").gear(style, slot, area), source;
+  if (view && view.kind === "linked") source = image(view.occupiedBy, previewStyle ? user.getHeroWeaponLevel(style, view.occupiedBy) : user.getPersonLevel(view.occupiedBy), previewStyle);
   else if (view && view.kind === "bonus") source = view.icon;
-  else source = image(slot, level);
-  if (view && view.kind === "offhand" && view.icon && !item(slot, level)) source = view.icon;
+  else source = image(slot, level, previewStyle);
+  if (view && view.kind === "offhand" && view.icon && !item(slot, level, previewStyle)) source = view.icon;
   return source && Object.assign({}, source, {gray:!!(view && view.gray),opacity:view && view.opacity || 255});
 }
 function whenReady(callback) {
