@@ -20,9 +20,11 @@ function fixture(user,options={}){
  class Graphics{clear(){}circle(){}ellipse(){}rect(){}roundRect(){}fill(){}stroke(){}}
  class Label{}Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:1};
  class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SIMPLE:0,SLICED:1};
+ class Mask{}Mask.Type={IMAGE_STENCIL:2};
  const canvas=Object.assign(new Node('Canvas'),{width:options.width||750,height:options.height||1334}),pending=[],icons=[],previews=[],poseIcons=[],tierFrames=[];
- function load(resource,type,callback,bundle){const request={resource,type,callback,bundle};if(bundle)tierFrames.push(resource);if(options.delayed)pending.push(request);else callback(null,{key:resource,getOriginalSize:()=>({width:80,height:40})});}
- const cc={Node,Graphics,Label,LabelOutline:class{},Sprite,Font:class{},BlockInputEvents:class{},find:()=>canvas,color:value=>value,isValid:node=>!node.destroyed,
+ function frame(resource){let size={width:80,height:40},rect={x:0,y:0,...size};return{key:resource,getOriginalSize:()=>size,getRect:()=>rect,clone:()=>frame(resource),setRect:value=>{rect=value;},setOriginalSize:value=>{size=value;},setOffset(){},destroy(){this.destroyed=true;}};}
+ function load(resource,type,callback,bundle){const request={resource,type,callback,bundle};if(bundle)tierFrames.push(resource);if(options.delayed)pending.push(request);else callback(null,frame(resource));}
+ const cc={Node,Graphics,Label,LabelOutline:class{},Sprite,Mask,Font:class{},BlockInputEvents:class{},find:()=>canvas,color:value=>value,isValid:node=>!node.destroyed,rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),v2:(x,y)=>({x,y}),
   resources:{load},assetManager:{getBundle:()=>({load:(resource,type,callback)=>load(resource,type,callback,'KinghtFallIconGood')})}};
  let ready,cancels=0;
  const modules={HeroWeapons:require('../../assets/_script/HeroWeapons'),EquipmentTiers:require('../../assets/_script/EquipmentTiers'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},

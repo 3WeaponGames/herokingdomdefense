@@ -4,22 +4,24 @@ const Weapons=require('../../assets/_script/HeroWeapons'),equipment=require('../
 const {fixture}=require('./hero-picker-harness.cjs');
 const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:()=>1});
 
-test('six square cards center large padded weapon poses, keep the Equipped badge above the title, and change only the selected edge color',()=>{
+test('six square cards center padded weapon poses, keep the Equipped badge above the title, and show a separate frame only behind the selected card',()=>{
  const f=fixture(user()),owner={node:f.canvas};f.api.open(owner);
  const tiles=Weapons.styles.map(style=>f.find('Style '+style.id));assert.equal(new Set(tiles.map(tile=>tile.x)).size,3);assert.equal(new Set(tiles.map(tile=>tile.y)).size,2);
  for(const tile of tiles){assert.equal(tile.width,tile.height);const area=tile.getChildByName('Weapon pose');assert.equal(area.width,area.height);assert(area.width<=tile.width-16);assert(area.width>tile.width*.8);assert.equal(area.x,0);assert.equal(area.y,0);}
  const equipped=f.find('Style guardian'),badge=equipped.getChildByName('Equipped marker'),title=equipped.getChildByName('Style name');assert(badge.y>equipped.height/3);assert(badge.y-badge.height/2>title.y+title.height/2);
  assert.equal(f.poseIcons.length,6);assert.deepEqual(f.poseIcons.map(icon=>icon.style),Weapons.styles.map(style=>style.id));
- const before=f.find('Style guardian').getChildByName('Tier card').getComponent(f.cc.Sprite).spriteFrame.key;
- f.tap(f.find('Style fighter'));assert.equal(f.find('Style fighter').getChildByName('Card edge').getComponent(f.cc.Graphics).strokeColor,'#ffdf62');assert.notEqual(f.find('Style guardian').getChildByName('Card edge').getComponent(f.cc.Graphics).strokeColor,'#ffdf62');assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(f.find('Style guardian').getChildByName('Tier card').getComponent(f.cc.Sprite).spriteFrame.key,before);
- assert(f.all().every(node=>!['Selection glow','Gold selection'].includes(node.name)));assert.equal(f.poseIcons.length,6,'Changing the selection reuses artwork and frozen poses');assert(f.poseIcons.every(icon=>!icon.destroyed));f.api.close(owner);assert(f.poseIcons.every(icon=>icon.destroyed));
+ const face=tile=>tile.getChildByName('Tier clip').getChildByName('Tier card'),before=face(f.find('Style guardian')).getComponent(f.cc.Sprite).spriteFrame.key;
+ assert.equal(tiles.filter(tile=>tile.getChildByName('Selection frame').active).length,1);assert(f.find('Style guardian').getChildByName('Selection frame').active);
+ f.tap(f.find('Style fighter'));assert(f.find('Style fighter').getChildByName('Selection frame').active);assert.equal(f.find('Style guardian').getChildByName('Selection frame').active,false);assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(face(f.find('Style guardian')).getComponent(f.cc.Sprite).spriteFrame.key,before);
+ const copies=tiles.map(tile=>face(tile).getComponent(f.cc.Sprite).spriteFrame);assert(copies.every(frame=>!frame.destroyed));
+ assert(f.all().every(node=>!['Selection glow','Gold selection','Card edge','Card highlight'].includes(node.name)));assert.equal(f.poseIcons.length,6,'Changing the selection reuses artwork and frozen poses');assert(f.poseIcons.every(icon=>!icon.destroyed));f.api.close(owner);assert(f.poseIcons.every(icon=>icon.destroyed));assert(copies.every(frame=>frame.destroyed));
 });
 
 test('the Equip button straddles the panel bottom and each card loads its own main-weapon tier frame',()=>{
  const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:21,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:1}),owner={node:f.canvas};f.api.open(owner);
  const panel=f.find('Panel outline'),action=f.find('Equipped action');assert.equal(action.y,panel.y-panel.height/2);assert(action.height>0);
  assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd']);
- assert.equal(f.find('Style vanguard').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier card').color,'#ffffff');
+ assert.equal(f.find('Style vanguard').getChildByName('Tier clip').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier clip').getChildByName('Tier card').color,'#ffffff');
  f.tap(f.find('Style fighter'));assert.deepEqual(f.tierFrames.slice(-6),f.tierFrames.slice(0,6));f.api.close(owner);
 });
 
@@ -29,6 +31,16 @@ test('the portrait popup fits short/narrow viewports and removes its resize and 
  Object.assign(f.canvas,{width:750,height:850});f.canvas.handlers.resize();fits();const requests=f.pending.length;
  f.tap(f.find('Close'));assert.equal(owner._weaponPicker,null);assert(f.previews[0].destroyed);assert.equal(f.cancels(),1);assert.equal(f.canvas.handlers.resize,undefined);
  for(const request of f.pending)request.callback(null,{getOriginalSize:()=>({width:50,height:100})});f.ready();assert.equal(f.pending.length,requests);assert.equal(f.canvas.children.length,0,'Late artwork/catalog callbacks cannot recreate the popup');
+});
+
+test('native Spine getters orient weapon tips northeast while preserving paired-item spacing and relative rotation',()=>{
+ let definition;const context={exports:{},cc:{Component:class{},Class(value){definition=value;return class{};}},require:()=>({})};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroWeaponIcon.js'),'utf8'),context);
+ for(const style of ['fighter','mystic','skirmisher']){
+  const vertical=style==='mystic',boneAngle=(style==='skirmisher'?-90:-30)*Math.PI/180,bone={getA:()=>Math.cos(boneAngle),getB:()=>-Math.sin(boneAngle),getC:()=>Math.sin(boneAngle),getD:()=>Math.cos(boneAngle)},attachment={getWidth:()=>vertical?68:118,getHeight:()=>vertical?135:59,getRotation:()=>10,getScaleX:()=>1,getScaleY:()=>1};
+  const node=(name,x,y,angle)=>({name,x,y,angle,scaleX:1,scaleY:1,opacity:255,setPosition(x,y){this.x=x;this.y=y;}}),main=node(style==='skirmisher'?'Arrow icon':'Weapon icon',18,24,20),other=node('Paired item',-13,8,-15),renderer=value=>({node:value,_nativeSkeleton:{getBoundingBox:()=>({x:-30,y:-10,width:100,height:35})},updateWorldTransform(){},findSlot:()=>({getBone:()=>bone,getAttachment:()=>attachment})}),root={parent:{width:172,height:172},setPosition(x,y){this.x=x;this.y=y;}},pose={style,node:root,renderers:[renderer(main),renderer(other)],frames:1,signature:style};
+  const separation=Math.hypot(main.x-other.x,main.y-other.y);definition.lateUpdate.call(pose);const heading=((boneAngle*180/Math.PI+10+(vertical?90:0)+main.angle)%360+360)%360;
+  assert(Math.abs(heading-45)<1e-9);assert(Math.abs(Math.hypot(main.x-other.x,main.y-other.y)-separation)<1e-9);assert(Math.abs(main.angle-other.angle-35)<1e-9);assert(pose.settled);const once=JSON.stringify([main,other]);definition.lateUpdate.call(pose);assert.equal(JSON.stringify([main,other]),once);
+ }
 });
 
 test('style-specific fitted item images and profiles resolve without changing the equipped style or either weapon progress',()=>{

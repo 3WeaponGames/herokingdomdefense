@@ -56,8 +56,11 @@ function open(owner) {
   box(content, "Inner outline", 0, -3, 648, 803, 29, "#24152c");
   box(content, "Cream panel", 0, -1, 638, 791, 26, "#f7ebd2");
   scenery(content);
-  var font = null, labels = [], cancelled = false, readyCancel, cardIcons = [];
-  function clearIcons() { cardIcons.forEach(function (icon) { icon.destroy(); }); cardIcons = []; }
+  var font = null, labels = [], cancelled = false, readyCancel, cardIcons = [], cardFrames = [];
+  function clearIcons() {
+    cardIcons.forEach(function (icon) { icon.destroy(); }); cardIcons = [];
+    cardFrames.forEach(function (frame) { frame.destroy(); }); cardFrames = [];
+  }
   function label(parent, name, text, x, y, width, height, size, color, outline) {
     var value = node(parent, name, x, y, width, height), textLabel = value.addComponent(cc.Label);
     textLabel.string = text; textLabel.fontSize = size; textLabel.lineHeight = size + 4;
@@ -111,31 +114,36 @@ function open(owner) {
     Weapons.styles.forEach(function (style, index) {
       var selected = chosen === style.id, equipped = user.getHeroWeapon().id === style.id;
       if (!build) {
-        var view = cardViews[index], glow = view.rim.getComponent(cc.Graphics), stroke = view.edge.getComponent(cc.Graphics);
-        view.rim.opacity = selected ? 255 : 60; glow.clear(); glow.fillColor = cc.color(selected ? "#ffdf62" : "#ffffff");
-        glow.roundRect(-89.5, -89.5, 179, 179, 24); glow.fill();
-        stroke.clear(); stroke.strokeColor = selected ? cc.color("#ffdf62") : cc.color(255, 255, 255, 55);
-        stroke.roundRect(-86, -86, 172, 172, 24); stroke.stroke(); return;
+        cardViews[index].frame.active = selected; return;
       }
       var tile = node(grid, "Style " + style.id, (index % 3 - 1) * 204, 38 - Math.floor(index / 3) * 216, 190, 190);
-      box(tile, "Card outline", 0, -1, 187, 187, 28, "#100e15");
-      var rim = box(tile, "Card highlight", 0, 1, 179, 179, 24, selected ? "#ffdf62" : "#ffffff");
-      if (!selected) rim.opacity = 60;
+      var frame = node(tile, "Selection frame"); frame.active = selected;
+      box(frame, "Selection outline", 0, -1, 187, 187, 28, "#100e15");
+      box(frame, "Selection yellow", 0, 1, 181, 181, 26, "#ffdf62");
       var tier = mainGear.levelInfo[Math.min(mainGear.levelInfo.length, user.getHeroWeaponLevel(style.id, 4)) - 1];
-      art(tile, "Tier card", tier.EquipBottom, 0, -1, 174, 174, true, require("EquipmentTiers").tint(tier), function (done) {
-        if (owner.loadSpriteFrame) owner.loadSpriteFrame("KinghtFallIconGood", tier.EquipBottom, function (frame) { done(null, frame); });
+      var clip = node(tile, "Tier clip", 0, -1, 174, 174), mask = clip.addComponent(cc.Mask); mask.type = cc.Mask.Type.IMAGE_STENCIL;
+      art(clip, "Tier card", tier.EquipBottom, 0, 0, 174, 174, false, require("EquipmentTiers").tint(tier), function (done) {
+        function loaded(error, source) {
+          if (cancelled || !live(clip)) return;
+          if (error) { done(error); return; }
+          // Keep the existing tier artwork and rounded silhouette, showing
+          // only its interior. The original pale rim stays outside the crop.
+          mask.spriteFrame = source;
+          var cropped = source.clone(), rect = source.getRect(), inset = Math.min(rect.width, rect.height) * .12;
+          cropped.setRect(cc.rect(rect.x + inset, rect.y + inset, rect.width - inset * 2, rect.height - inset * 2));
+          cropped.setOriginalSize(cc.size(rect.width - inset * 2, rect.height - inset * 2)); cropped.setOffset(cc.v2(0, 0));
+          cardFrames.push(cropped); done(null, cropped);
+        }
+        if (owner.loadSpriteFrame) owner.loadSpriteFrame("KinghtFallIconGood", tier.EquipBottom, function (source) { loaded(null, source); });
         else {
           var bundle = cc.assetManager.getBundle("KinghtFallIconGood");
-          if (bundle) bundle.load(tier.EquipBottom, cc.SpriteFrame, done);
-          else cc.assetManager.loadBundle("KinghtFallIconGood", function (error, loaded) { if (!error) loaded.load(tier.EquipBottom, cc.SpriteFrame, done); });
+          if (bundle) bundle.load(tier.EquipBottom, cc.SpriteFrame, loaded);
+          else cc.assetManager.loadBundle("KinghtFallIconGood", function (error, bundle) { if (!error) bundle.load(tier.EquipBottom, cc.SpriteFrame, loaded); });
         }
       });
-      var edge = node(tile, "Card edge", 0, 0, 178, 178), border = edge.addComponent(cc.Graphics);
-      border.strokeColor = selected ? cc.color("#ffdf62") : cc.color(255, 255, 255, 55); border.lineWidth = 4;
-      border.roundRect(-86, -86, 172, 172, 24); border.stroke();
       var pose = node(tile, "Weapon pose", 0, 0, 172, 172);
       cardIcons.push(require("HeroWeaponIcon").create(pose, user, style.id, function (error) { if (cc.warn) cc.warn("Fighting style icon: " + error.message); }));
-      cardViews.push({ rim: rim, edge: edge });
+      cardViews.push({ frame: frame });
       label(tile, "Style name", style.name, 0, -66, 176, 40, 29);
       if (equipped) {
         box(tile, "Equipped badge outline", 0, 80, 131, 36, 14, "#111409");

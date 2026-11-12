@@ -19,6 +19,31 @@ function bounds(renderer) {
     return { x: offset.x, y: offset.y, width: size.x, height: size.y };
   }
 }
+function number(object, property, fallback) {
+  var getter = object && object["get" + property[0].toUpperCase() + property.slice(1)];
+  var value = typeof getter === "function" ? getter.call(object) : object && object[property];
+  return typeof value === "number" ? value : fallback;
+}
+function orient(pose) {
+  if (pose.oriented) return true;
+  var arrow = pose.style === "skirmisher", renderer = pose.renderers.filter(function (value) { return value.node.name === (arrow ? "Arrow icon" : "Weapon icon"); })[0];
+  var type = {fighter:"Sword",vanguard:"Spear",mystic:"Staff",bruiser:"Axe",guardian:"Blunt"}[pose.style];
+  var slot = renderer && renderer.findSlot && renderer.findSlot(arrow ? "Rider/HandRight/Bow/Arrow" : "Rider/HandRight/" + type);
+  var bone = slot && (slot.getBone ? slot.getBone() : slot.bone), attachment = slot && (slot.getAttachment ? slot.getAttachment() : slot.attachment);
+  if (!bone || !attachment) { pose.oriented = true; return true; }
+  var vertical = number(attachment, "height", 0) > number(attachment, "width", 0), angle = number(attachment, "rotation", 0) * Math.PI / 180;
+  var x = (vertical ? -Math.sin(angle) : Math.cos(angle)) * number(attachment, vertical ? "scaleY" : "scaleX", 1);
+  var y = (vertical ? Math.cos(angle) : Math.sin(angle)) * number(attachment, vertical ? "scaleY" : "scaleX", 1);
+  var bx = number(bone, "a", 0) * x + number(bone, "b", 0) * y, by = number(bone, "c", 0) * x + number(bone, "d", 0) * y;
+  if (Math.hypot(bx, by) < 1e-6) return false;
+  var model = renderer.node, rotation = model.angle * Math.PI / 180, dx = bx * model.scaleX, dy = by * model.scaleY;
+  var direction = Math.atan2(dx * Math.sin(rotation) + dy * Math.cos(rotation), dx * Math.cos(rotation) - dy * Math.sin(rotation));
+  var turn = Math.PI / 4 - direction, cosine = Math.cos(turn), sine = Math.sin(turn);
+  // Rotate both hand rigs together, retaining the bow/arrow relationship and
+  // the hammer/shield draw order. Only the card's presentation changes.
+  pose.renderers.forEach(function (value) { var node = value.node, x = node.x, y = node.y; node.setPosition(x * cosine - y * sine, x * sine + y * cosine); node.angle += turn * 180 / Math.PI; });
+  pose.signature += ":northeast:" + turn; pose.oriented = true; return true;
+}
 // Imported weapon images contain different amounts of transparent padding.
 // Measure painted pixels once per pose so a staff and sword use the same
 // visible size budget. The attachment-only fit remains a fallback for hosts
@@ -60,6 +85,7 @@ var Pose = cc.Class({
       renderer.updateWorldTransform();
     });
     if (--this.frames > 0) return;
+    if (!orient(this)) return;
     var box = { left: Infinity, right: -Infinity, bottom: Infinity, top: -Infinity };
     this.renderers.forEach(function (renderer) {
       var rect = bounds(renderer), node = renderer.node;
@@ -78,7 +104,7 @@ var Pose = cc.Class({
     });
     var width = box.right - box.left, height = box.top - box.bottom;
     if (!(width > 0 && height > 0 && isFinite(width + height))) return;
-    var side = Math.max(1, Math.min(this.node.parent.width, this.node.parent.height) - 20);
+    var side = Math.max(1, Math.min(this.node.parent.width, this.node.parent.height) - 20) * .9;
     this.node.scale = side / Math.max(width, height);
     this.node.setPosition(-(box.left + box.right) / 2 * this.node.scale, -(box.bottom + box.top) / 2 * this.node.scale);
     this.node.opacity = 255;
@@ -94,7 +120,7 @@ var Pose = cc.Class({
 });
 function create(parent, user, style, onError) {
   var root = new cc.Node("Idle " + style + " weapons"); root.setParent(parent); root.opacity = 1;
-  var pose = root.addComponent(Pose), disposed = false;
+  var pose = root.addComponent(Pose), disposed = false; pose.style = style;
   var entries = [{ role: 4, file: "gong", name: "Weapon icon" }, { role: 3, file: "jian", name: style === "skirmisher" ? "Arrow icon" : "Shield icon" }];
   if (style === "guardian") entries.reverse(); // shield behind the hammer
   var ready = Promise.all(entries.map(function (entry) { return load("hero-maker/wqyl_lead_" + entry.file, sp.SkeletonData); }).concat([load("characters/catalog", cc.JsonAsset)])).then(function (loaded) {
