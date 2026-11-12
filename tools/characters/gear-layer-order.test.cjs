@@ -17,7 +17,7 @@ test('chest and cape use independent visible layers, fitting sockets and icons a
 });
 test('changing chest tier leaves cape tier independent and changing cape tier leaves chest tier independent',()=>{
  const Units=require('../../packages/game-data-editor/lib/unit-assets'),get=(levels,name)=>Units.describe(root,{type:'hero',id:'hero',heroLevels:levels,noRuntime:true,noAppearance:true}).layers.find(layer=>layer.name===name).skin;
- assert.equal(get({1:21,5:1},'wqyl_lead_doupeng'),'lv3');assert.equal(get({1:21,5:1},'wqyl_lead_shou'),'skirmisher_lv1');assert.equal(get({1:1,5:16},'wqyl_lead_doupeng'),'lv1');assert.equal(get({1:1,5:16},'wqyl_lead_shou'),'skirmisher_lv4');
+ assert.equal(get({1:21,5:1},'wqyl_lead_doupeng'),'lv_blue');assert.equal(get({1:21,5:1},'wqyl_lead_shou'),'skirmisher_lv1');assert.equal(get({1:1,5:21},'wqyl_lead_doupeng'),'lv1');assert.equal(get({1:1,5:21},'wqyl_lead_shou'),'skirmisher_lv4');
 });
 test('native hero keeps all left-hand items behind horse/body and cape above chest but below helmet/main weapon when switching styles',()=>{
  let style='guardian',attached=true;const parent={children:[]};function node(name){const value={name,parent,zIndex:0,getSiblingIndex(){return parent.children.indexOf(this);},setSiblingIndex(index){parent.children.splice(this.getSiblingIndex(),1);parent.children.splice(index,0,this);}};parent.children.push(value);return value;}

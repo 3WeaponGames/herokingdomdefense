@@ -856,6 +856,29 @@
       }
     },
     {
+      "name": "lv_blue",
+      "attachments": {
+        "Rider/Body/Chest": {
+          "hero_Rider_Body_Chest": {
+            "path": "part_Rider_Body_Chest_lv2",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 76,
+            "height": 68,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
       "name": "lv3",
       "attachments": {
         "Rider/Body/Chest": {
@@ -131519,5 +131542,12 @@
       "x": -23.13477412559174,
       "y": 63.84370483579855
     }
+  },
+  "_equipmentTiers": {
+    "lv1": 1,
+    "lv2": 2,
+    "lv_blue": 3,
+    "lv3": 4,
+    "lv4": 5
   }
 }

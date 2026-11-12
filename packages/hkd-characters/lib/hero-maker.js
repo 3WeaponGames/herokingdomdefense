@@ -101,6 +101,7 @@ function horse(root,maker,files,read){
   for(const [name,clip]of Object.entries(original.json.animations))if(!['idle','move','attack'].includes(name))aligned.json.animations[name]=clone(clip);
   aligned.json._heroMakerMount={version:2,source:original.uuid,thrustReference:'legacy-cavalry'};
   require('./hero-sub-items').ensure(aligned.json);
+  require('./tier-skins').ensure(aligned.json);
   const base=folder+'/wqyl_lead_ma',texture=read(url.fileURLToPath(original.pages['wqyl_lead_ma.png']));
   files.set(base+'.json',JSON.stringify(aligned.json,null,2)+'\n');files.set(base+'.atlas',original.atlas);files.set(base+'.png',texture);
   files.set(base+'.json.meta',JSON.stringify({ver:'1.2.5',uuid:Bake.uuid(base+'.json'),importer:'spine',textures:[Bake.uuid(base+'.png')],scale:1,subMetas:{}},null,2)+'\n');
@@ -160,10 +161,12 @@ function plan(root){
       }
     }
     rig._heroMaker={version:3,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
+    require('./tier-skins').ensure(rig);
     const written=writeRig(root,files,read,name,rig,pictures);replacements.set(originalUuid,written.uuid);
   }
   const mount=horse(root,maker,files,read);replacements.set(mount.from,mount.to);
   require('./current-model').folderMetadata(root,folder,files,read);require('./current-model').folderMetadata(root,equipmentFolder,files,read);
+  require('./tier-skins').icons(icons);
   const iconFile=folder+'/catalog.json';files.set(iconFile,JSON.stringify({version:1,icons},null,2)+'\n');files.set(iconFile+'.meta',JSON.stringify({ver:'1.3.0',uuid:Bake.uuid(iconFile),importer:'json',subMetas:{}},null,2)+'\n');
   const next=clone(catalog);for(const asset of custom){const at=next.parts.findIndex(p=>p.id===asset.id);if(at<0)next.parts.push(asset);else next.parts[at]={...next.parts[at],...asset};}files.set(catalogFile,Document.patch(text,catalog,next));
   // Update only the hero's render assets. Other prefab fields remain byte stable.

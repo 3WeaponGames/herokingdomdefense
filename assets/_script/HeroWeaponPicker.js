@@ -122,7 +122,7 @@ function open(owner) {
       var rim = box(tile, "Card highlight", 0, 1, 179, 179, 24, selected ? "#ffdf62" : "#ffffff");
       if (!selected) rim.opacity = 60;
       var tier = mainGear.levelInfo[Math.min(mainGear.levelInfo.length, user.getHeroWeaponLevel(style.id, 4)) - 1];
-      art(tile, "Tier card", tier.EquipBottom, 0, -1, 174, 174, true, null, function (done) {
+      art(tile, "Tier card", tier.EquipBottom, 0, -1, 174, 174, true, require("EquipmentTiers").tint(tier), function (done) {
         if (owner.loadSpriteFrame) owner.loadSpriteFrame("KinghtFallIconGood", tier.EquipBottom, function (frame) { done(null, frame); });
         else {
           var bundle = cc.assetManager.getBundle("KinghtFallIconGood");

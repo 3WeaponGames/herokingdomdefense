@@ -856,6 +856,29 @@
       }
     },
     {
+      "name": "lv_blue",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
       "name": "lv3",
       "attachments": {
         "Rider/Body/Cape": {
@@ -972,6 +995,29 @@
     },
     {
       "name": "skirmisher_lv2",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_skirmisher_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
+      "name": "skirmisher_lv_blue",
       "attachments": {
         "Rider/Body/Cape": {
           "hero_Rider_Body_Cape": {
@@ -1132,6 +1178,29 @@
       }
     },
     {
+      "name": "fighter_lv_blue",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_fighter_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
       "name": "fighter_lv3",
       "attachments": {
         "Rider/Body/Cape": {
@@ -1248,6 +1317,29 @@
     },
     {
       "name": "vanguard_lv2",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_vanguard_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
+      "name": "vanguard_lv_blue",
       "attachments": {
         "Rider/Body/Cape": {
           "hero_Rider_Body_Cape": {
@@ -1408,6 +1500,29 @@
       }
     },
     {
+      "name": "mystic_lv_blue",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_mystic_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
       "name": "mystic_lv3",
       "attachments": {
         "Rider/Body/Cape": {
@@ -1546,6 +1661,29 @@
       }
     },
     {
+      "name": "bruiser_lv_blue",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_bruiser_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
       "name": "bruiser_lv3",
       "attachments": {
         "Rider/Body/Cape": {
@@ -1662,6 +1800,29 @@
     },
     {
       "name": "guardian_lv2",
+      "attachments": {
+        "Rider/Body/Cape": {
+          "hero_Rider_Body_Cape": {
+            "path": "part_Rider_Body_Cape_guardian_lv2",
+            "x": 9.5,
+            "y": 6,
+            "rotation": 0,
+            "scaleX": 0.68,
+            "scaleY": 0.68,
+            "width": 85,
+            "height": 89,
+            "color": "ffffffff"
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {}
+      }
+    },
+    {
+      "name": "guardian_lv_blue",
       "attachments": {
         "Rider/Body/Cape": {
           "hero_Rider_Body_Cape": {
@@ -132573,5 +132734,12 @@
       "x": -23.13477412559174,
       "y": 63.84370483579855
     }
+  },
+  "_equipmentTiers": {
+    "lv1": 1,
+    "lv2": 2,
+    "lv_blue": 3,
+    "lv3": 4,
+    "lv4": 5
   }
 }

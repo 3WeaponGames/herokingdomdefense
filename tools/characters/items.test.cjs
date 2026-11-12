@@ -45,12 +45,12 @@ test('runtime item lookup retains original defaults and combines gear without ch
 test('tier appearances cover all upgrades in that skin, isolate weapon styles and retain old per-level looks',()=>{
   const equipment=require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg;
   const data={profiles:{tier:{parts:[{sprite:'new-hat'}]},old:{parts:[]},sword:{parts:[]}},assignments:{'2:tier:lv3':'tier','2:24':'old','4:tier:lv2:fighter':'sword'}};
-  for(let level=21;level<=30;level++)assert.equal(Tiers.profileId(data,equipment,2,level),'tier');
+  for(let level=31;level<=40;level++)assert.equal(Tiers.profileId(data,equipment,2,level),'tier');
   assert.equal(Tiers.profileId(data,equipment,2,20),undefined);assert.equal(Tiers.profileId(data,equipment,4,7,'fighter'),'sword');assert.equal(Tiers.profileId(data,equipment,4,7,'guardian'),undefined);
   const before=JSON.stringify(data);delete data.assignments['2:tier:lv3'];assert.equal(Tiers.profileId(data,equipment,2,24),'old');assert.equal(Tiers.profileId(data,equipment,2,25),undefined);data.assignments['2:tier:lv3']='tier';assert.deepEqual(data,JSON.parse(before));
-  assert.equal(Tiers.label(equipment[1],25),'Tier 3 · Level 5');assert.equal(Tiers.label(equipment[1],45),'Tier 4 · Level 15');
-  assert.equal(Tiers.target(equipment,'2:25').level,25);assert.equal(Tiers.target(equipment,'2:tier:lv3').level,21);
-  assert.equal(Tiers.icon(data,{},equipment,2,25).id,'new-hat');
+  assert.equal(Tiers.label(equipment[1],25),'Tier 3 · Level 5');assert.equal(Tiers.label(equipment[1],45),'Tier 5 · Level 5');
+  assert.equal(Tiers.target(equipment,'2:25').level,25);assert.equal(Tiers.target(equipment,'2:tier:lv3').level,31);
+  assert.equal(Tiers.icon(data,{},equipment,2,35).id,'new-hat');
 });
 
 test('explicit tier edits save once without rewriting legacy looks, gameplay levels, costs or approved timing tables',t=>{

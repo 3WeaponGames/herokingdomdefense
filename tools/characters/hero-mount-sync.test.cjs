@@ -24,10 +24,10 @@ function controller(style,models){
 }
 test('all original hero horse skins use the same Maker preparation, thrust and recovery phases as every equipped weapon',()=>{
  const models=layers(),horse=models[0],body=models[1];assert(horse.description.json._heroMakerMount);assert.equal(horse.description.source,'assets/resources/hero-maker/wqyl_lead_ma.json');
- assert.deepEqual(horse.description.skins,['default','lv1','lv2','lv3','lv4','vip1','vip2']);
+ assert.deepEqual(horse.description.skins,['default','lv1','lv2','lv_blue','lv3','lv4','vip1','vip2']);
  for(const style of Weapons.styles){const name=style.id==='skirmisher'?'attack':'attack_'+style.id;const actual=Attack.landmarks(horse.description.json.animations[name],false),expected=Attack.landmarks(body.description.json.animations[name],true);assert(actual&&expected);for(const phase of ['windup','peak','end'])assert(Math.abs(actual[phase]-expected[phase])<1e-6,style.id+' '+phase);assert(Math.abs(body.data.findAnimation(name).duration-.8333)<1e-6);assert.deepEqual(body.description.json.animations[name].events,[{time:.1667,name:'attack'}]);}
 });
-test('all six horse skins have continuous idle, both walking strides and every attack loop, including weighted mesh deformation',()=>{
+test('all seven horse skins have continuous idle, both walking strides and every attack loop, including weighted mesh deformation',()=>{
  const models=layers(),horse=models[0];let poses=0;
  for(const skin of horse.description.skins.filter(s=>s!=='default')){
   horse.skeleton.setSkinByName(skin);
@@ -37,7 +37,7 @@ test('all six horse skins have continuous idle, both walking strides and every a
    if(action==='move'){const half=pose(end/2);assert(first.every((v,i)=>Math.abs(v-half[i])<.001),skin+' second stride');}
   }
  }
- assert.equal(poses,150);
+ assert.equal(poses,175);
 });
 test('armor stays centered on the animated torso and the rider sits forward over the saddle for all armor tiers',()=>{
  const models=layers(),body=models[1],armor=models[2];

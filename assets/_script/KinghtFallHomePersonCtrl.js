@@ -206,6 +206,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
       o.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconGood, r.cfg.levelInfo[l - 1].EquipBottom, function (t) {
         r.ndItem.getComponent(cc.Sprite).spriteFrame = t;
         r.ndInfo.getChildByName("ndItem").getComponent(cc.Sprite).spriteFrame = t;
+        var tint = cc.color(require("EquipmentTiers").tint(r.cfg.levelInfo[l - 1]));
+        r.ndItem.color = tint; r.ndInfo.getChildByName("ndItem").color = tint;
       });
       var equippedStyle = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getHeroWeapon(), slotView = require('HeroWeapons').gear(equippedStyle.id, r.type, 'equipment'), shownLevel = slotView && slotView.occupiedBy && (!customImage || customImage.linked) ? $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getPersonLevel(slotView.occupiedBy) : l;
       r.ndItem.getChildByName("labPower").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(o.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeTrea02), shownLevel);

@@ -34,6 +34,7 @@ function harness(saved = {}) {
   modules.EventMgr = { EventMgr: singleton({ on() {}, emit: (...args) => state.events.push(args) }) };
   modules.KinghtFallModle = { default: singleton({ compareIsToday: time => new Date(time).toDateString() === new Date().toDateString() }) };
   modules.KinghtFallDataMgr = { KinghtFallDataMgr: singleton({
+    data: config,
     getGoodsCfgById: id => config.GoodsCfg[id],
     getTreasureCfgById: id => config.TreasureCfg.find(row => row.ID === id),
     getEquipCfgList: () => config.EquipCfg,

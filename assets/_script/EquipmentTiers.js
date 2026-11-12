@@ -44,5 +44,26 @@ function icon(data, defaults, equipment, slot, level, style) {
   var gear = (equipment || []).filter(function (item) { return item.id === Number(slot); })[0], tier = at(gear, level), icons = defaults && defaults.icons && defaults.icons[slot];
   return icons && tier && icons[([3, 4, 5].indexOf(Number(slot)) >= 0 ? (style || "skirmisher") + "_" : "") + tier.skin] || null;
 }
+// Existing skin IDs retain their saved appearances. Blue is inserted between
+// the old green and purple skins; tier numbers come from the progression order.
+function tint(level) { return level && level.EquipSkin === "lv_blue" ? "#54c7ff" : "#ffffff"; }
+function expandedLevel(level, from, to) {
+  if (typeof level !== "number" || !isFinite(level) || level < 1 || level > from) return level;
+  return 1 + Math.ceil((Math.floor(level) - 1) * (to - 1) / (from - 1) - 1e-9);
+}
+function migrateProgress(data, equipment, migration) {
+  if (!data || !migration || !(migration.version > (data.equipmentProgressionVersion || 0))) return;
+  Object.keys(migration.levels || {}).forEach(function (slot) {
+    var rule = migration.levels[slot], gear = (equipment || []).filter(function (row) { return row.id === Number(slot); })[0];
+    if (!gear || gear.levelInfo.length !== rule.to || !(rule.from > 1 && rule.to > rule.from)) return;
+    if (Array.isArray(data.personLevel) && data.personLevel[slot - 1] !== undefined) data.personLevel[slot - 1] = expandedLevel(data.personLevel[slot - 1], rule.from, rule.to);
+    var levels = data.heroWeapon && data.heroWeapon.levels;
+    Object.keys(levels || {}).forEach(function (style) {
+      if (levels[style] && typeof levels[style] === "object" && !Array.isArray(levels[style]) && levels[style][slot] !== undefined) levels[style][slot] = expandedLevel(levels[style][slot], rule.from, rule.to);
+    });
+  });
+  data.equipmentProgressionVersion = migration.version;
+}
 exports.tiers = tiers; exports.at = at; exports.key = key; exports.legacyKey = legacyKey;
 exports.target = target; exports.profileId = profileId; exports.label = label; exports.icon = icon;
+exports.tint = tint; exports.expandedLevel = expandedLevel; exports.migrateProgress = migrateProgress;

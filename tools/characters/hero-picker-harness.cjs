@@ -25,7 +25,7 @@ function fixture(user,options={}){
  const cc={Node,Graphics,Label,LabelOutline:class{},Sprite,Font:class{},BlockInputEvents:class{},find:()=>canvas,color:value=>value,isValid:node=>!node.destroyed,
   resources:{load},assetManager:{getBundle:()=>({load:(resource,type,callback)=>load(resource,type,callback,'KinghtFallIconGood')})}};
  let ready,cancels=0;
- const modules={HeroWeapons:require('../../assets/_script/HeroWeapons'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},
+ const modules={HeroWeapons:require('../../assets/_script/HeroWeapons'),EquipmentTiers:require('../../assets/_script/EquipmentTiers'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},
   KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getEquipCfgList:()=>require('../../assets/KinghtFallConfig/GameJsonCfg.json').EquipCfg})}},
   EquipmentIconFit:{apply(sprite,frame){sprite.spriteFrame=frame;}},
   HeroItemLooks:{gearImage(slot,level,area,style){icons.push({slot,level,area,style});return{resource:'items/'+style+'/'+slot+'/'+level};},whenReady(callback){ready=callback;return()=>{ready=null;cancels++;};}},

@@ -883,6 +883,42 @@
       }
     },
     {
+      "name": "lv_blue",
+      "attachments": {
+        "Rider/Body/Head": {
+          "u_ecaa646274c180041a64a55d1ae93f75": {
+            "width": 67,
+            "height": 52,
+            "x": 0,
+            "y": 0,
+            "scaleX": 1,
+            "scaleY": 1
+          }
+        },
+        "Rider/Body/Head/Eye": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Defeat2": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun": {},
+        "Rider/Body/Head/Ani_Eye/Eye_Stun2": {},
+        "Rider/Body/Head/Hair": {},
+        "Rider/Body/Head/Hair_Helmet": {},
+        "Rider/Body/Head/Beard": {},
+        "Rider/Body/Head/Helmet": {
+          "item_helmet": {
+            "path": "item_helmet",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "width": 120,
+            "height": 108,
+            "color": "ffffffff"
+          }
+        }
+      }
+    },
+    {
       "name": "lv3",
       "attachments": {
         "Rider/Body/Head": {
@@ -131574,5 +131610,12 @@
     }
   },
   "_heroItem": "new-item",
-  "_originalLayer": "1c2dbff6-1a89-5230-a319-42ea48cde904"
+  "_originalLayer": "1c2dbff6-1a89-5230-a319-42ea48cde904",
+  "_equipmentTiers": {
+    "lv1": 1,
+    "lv2": 2,
+    "lv_blue": 3,
+    "lv3": 4,
+    "lv4": 5
+  }
 }

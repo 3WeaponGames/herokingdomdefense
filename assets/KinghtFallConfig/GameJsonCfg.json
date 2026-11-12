@@ -4047,90 +4047,110 @@
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 21,
           "Parameters": 265,
           "GoldCost": 87800,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 22,
           "Parameters": 273,
           "GoldCost": 96600,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 23,
           "Parameters": 281,
           "GoldCost": 105700,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 24,
           "Parameters": 289,
           "GoldCost": 115200,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 25,
           "Parameters": 297,
           "GoldCost": 125200,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 26,
           "Parameters": 305,
           "GoldCost": 135600,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 27,
           "Parameters": 314,
           "GoldCost": 146400,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 28,
           "Parameters": 322,
           "GoldCost": 157600,
-          "Image": "wg_rw_pf3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.1]]",
           "Level": 29,
           "Parameters": 330,
           "GoldCost": 169200,
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 1,
+          "EquipName": "[[loc:data.equipment.blue.1]]",
+          "Level": 30,
+          "Parameters": 338,
+          "GoldCost": 181200,
+          "Image": "wg_rw_pf2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 1,
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
+          "Level": 31,
+          "Parameters": 346,
+          "GoldCost": 193700,
           "Image": "wg_rw_pf3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -4138,112 +4158,92 @@
         {
           "ID": 1,
           "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
-          "Level": 30,
-          "Parameters": 338,
-          "GoldCost": 181200,
+          "Level": 32,
+          "Parameters": 354,
+          "GoldCost": 206500,
           "Image": "wg_rw_pf3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
-          "Level": 31,
-          "Parameters": 346,
-          "GoldCost": 193700,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
-        },
-        {
-          "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
-          "Level": 32,
-          "Parameters": 354,
-          "GoldCost": 206500,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
-        },
-        {
-          "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 33,
           "Parameters": 363,
           "GoldCost": 219800,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 34,
           "Parameters": 371,
           "GoldCost": 233500,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 35,
           "Parameters": 379,
           "GoldCost": 247600,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 36,
           "Parameters": 387,
           "GoldCost": 262100,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 37,
           "Parameters": 395,
           "GoldCost": 277100,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 38,
           "Parameters": 403,
           "GoldCost": 292400,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 39,
           "Parameters": 412,
           "GoldCost": 308200,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
-          "EquipName": "[[loc:data.equipcfg.1.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.1.levelinfo.21.equipname]]",
           "Level": 40,
           "Parameters": 420,
           "GoldCost": 324400,
-          "Image": "wg_rw_pf4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_pf3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 1,
@@ -4558,90 +4558,110 @@
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 21,
           "Parameters": 46,
           "GoldCost": 87800,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 22,
           "Parameters": 48,
           "GoldCost": 96600,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 23,
           "Parameters": 50,
           "GoldCost": 105700,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 24,
           "Parameters": 52,
           "GoldCost": 115200,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 25,
           "Parameters": 54,
           "GoldCost": 125200,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 26,
           "Parameters": 55,
           "GoldCost": 135600,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 27,
           "Parameters": 57,
           "GoldCost": 146400,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 28,
           "Parameters": 59,
           "GoldCost": 157600,
-          "Image": "wg_rw_ts3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.2]]",
           "Level": 29,
           "Parameters": 61,
           "GoldCost": 169200,
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 2,
+          "EquipName": "[[loc:data.equipment.blue.2]]",
+          "Level": 30,
+          "Parameters": 63,
+          "GoldCost": 181200,
+          "Image": "wg_rw_ts2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 2,
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
+          "Level": 31,
+          "Parameters": 65,
+          "GoldCost": 193700,
           "Image": "wg_rw_ts3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -4649,112 +4669,92 @@
         {
           "ID": 2,
           "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
-          "Level": 30,
-          "Parameters": 63,
-          "GoldCost": 181200,
+          "Level": 32,
+          "Parameters": 66,
+          "GoldCost": 206500,
           "Image": "wg_rw_ts3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
-          "Level": 31,
-          "Parameters": 65,
-          "GoldCost": 193700,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
-        },
-        {
-          "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
-          "Level": 32,
-          "Parameters": 66,
-          "GoldCost": 206500,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
-        },
-        {
-          "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 33,
           "Parameters": 68,
           "GoldCost": 219800,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 34,
           "Parameters": 70,
           "GoldCost": 233500,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 35,
           "Parameters": 72,
           "GoldCost": 247600,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 36,
           "Parameters": 74,
           "GoldCost": 262100,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 37,
           "Parameters": 76,
           "GoldCost": 277100,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 38,
           "Parameters": 77,
           "GoldCost": 292400,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 39,
           "Parameters": 79,
           "GoldCost": 308200,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
-          "EquipName": "[[loc:data.equipcfg.2.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.2.levelinfo.21.equipname]]",
           "Level": 40,
           "Parameters": 81,
           "GoldCost": 324400,
-          "Image": "wg_rw_ts4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_ts3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 2,
@@ -5069,90 +5069,110 @@
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 21,
           "Parameters": 52,
           "GoldCost": 87800,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 22,
           "Parameters": 54,
           "GoldCost": 96600,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 23,
           "Parameters": 55,
           "GoldCost": 105700,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 24,
           "Parameters": 57,
           "GoldCost": 115200,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 25,
           "Parameters": 59,
           "GoldCost": 125200,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 26,
           "Parameters": 60,
           "GoldCost": 135600,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 27,
           "Parameters": 62,
           "GoldCost": 146400,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 28,
           "Parameters": 64,
           "GoldCost": 157600,
-          "Image": "wg_rw_j3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 29,
           "Parameters": 65,
           "GoldCost": 169200,
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 3,
+          "EquipName": "[[loc:data.equipment.blue.3]]",
+          "Level": 30,
+          "Parameters": 67,
+          "GoldCost": 181200,
+          "Image": "wg_rw_j2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 3,
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
+          "Level": 31,
+          "Parameters": 68,
+          "GoldCost": 193700,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5160,112 +5180,92 @@
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
-          "Level": 30,
-          "Parameters": 67,
-          "GoldCost": 181200,
+          "Level": 32,
+          "Parameters": 70,
+          "GoldCost": 206500,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 31,
-          "Parameters": 68,
-          "GoldCost": 193700,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
-          "Level": 32,
-          "Parameters": 70,
-          "GoldCost": 206500,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
-        },
-        {
-          "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 33,
           "Parameters": 72,
           "GoldCost": 219800,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 34,
           "Parameters": 73,
           "GoldCost": 233500,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 35,
           "Parameters": 75,
           "GoldCost": 247600,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 36,
           "Parameters": 77,
           "GoldCost": 262100,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 37,
           "Parameters": 78,
           "GoldCost": 277100,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 38,
           "Parameters": 80,
           "GoldCost": 292400,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 39,
           "Parameters": 82,
           "GoldCost": 308200,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
-          "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
+          "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 40,
           "Parameters": 83,
           "GoldCost": 324400,
-          "Image": "wg_rw_j4",
-          "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "Image": "wg_rw_j3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
         },
         {
           "ID": 3,
@@ -5383,7 +5383,7 @@
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 1,
           "Parameters": 300,
-          "GoldCost": 20000,
+          "GoldCost": 16000,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5392,8 +5392,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 2,
-          "Parameters": 311,
-          "GoldCost": 26900,
+          "Parameters": 309,
+          "GoldCost": 20000,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5402,8 +5402,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 3,
-          "Parameters": 321,
-          "GoldCost": 40500,
+          "Parameters": 317,
+          "GoldCost": 26500,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5412,8 +5412,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 4,
-          "Parameters": 332,
-          "GoldCost": 61000,
+          "Parameters": 325,
+          "GoldCost": 35500,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5422,8 +5422,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 5,
-          "Parameters": 342,
-          "GoldCost": 88300,
+          "Parameters": 334,
+          "GoldCost": 48500,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5432,8 +5432,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 6,
-          "Parameters": 353,
-          "GoldCost": 122500,
+          "Parameters": 342,
+          "GoldCost": 69000,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5442,8 +5442,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 7,
-          "Parameters": 363,
-          "GoldCost": 163500,
+          "Parameters": 350,
+          "GoldCost": 88500,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5452,8 +5452,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 8,
-          "Parameters": 374,
-          "GoldCost": 211300,
+          "Parameters": 358,
+          "GoldCost": 115000,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5462,8 +5462,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 9,
-          "Parameters": 384,
-          "GoldCost": 265900,
+          "Parameters": 367,
+          "GoldCost": 140000,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5472,48 +5472,68 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 10,
-          "Parameters": 395,
-          "GoldCost": 327400,
+          "Parameters": 375,
+          "GoldCost": 170000,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.4]]",
           "Level": 11,
-          "Parameters": 405,
-          "GoldCost": 395700,
-          "Image": "wg_rw_gj3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 383,
+          "GoldCost": 210000,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.4]]",
           "Level": 12,
-          "Parameters": 416,
-          "GoldCost": 470800,
-          "Image": "wg_rw_gj3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 392,
+          "GoldCost": 245000,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.4]]",
           "Level": 13,
-          "Parameters": 426,
-          "GoldCost": 552800,
-          "Image": "wg_rw_gj3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 400,
+          "GoldCost": 280000,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.4]]",
           "Level": 14,
-          "Parameters": 437,
-          "GoldCost": 641600,
+          "Parameters": 408,
+          "GoldCost": 320000,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 15,
+          "Parameters": 417,
+          "GoldCost": 375000,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 16,
+          "Parameters": 425,
+          "GoldCost": 430000,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5521,9 +5541,39 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
-          "Level": 15,
-          "Parameters": 447,
-          "GoldCost": 737200,
+          "Level": 17,
+          "Parameters": 433,
+          "GoldCost": 480000,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 18,
+          "Parameters": 442,
+          "GoldCost": 535000,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 19,
+          "Parameters": 450,
+          "GoldCost": 590000,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 20,
+          "Parameters": 458,
+          "GoldCost": 665000,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5531,9 +5581,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 16,
-          "Parameters": 458,
-          "GoldCost": 839600,
+          "Level": 21,
+          "Parameters": 466,
+          "GoldCost": 735000,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5541,9 +5591,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 17,
-          "Parameters": 468,
-          "GoldCost": 948900,
+          "Level": 22,
+          "Parameters": 475,
+          "GoldCost": 800000,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5551,9 +5601,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 18,
-          "Parameters": 479,
-          "GoldCost": 1065000,
+          "Level": 23,
+          "Parameters": 483,
+          "GoldCost": 870000,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5561,9 +5611,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 19,
-          "Parameters": 489,
-          "GoldCost": 1188000,
+          "Level": 24,
+          "Parameters": 491,
+          "GoldCost": 945000,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5571,7 +5621,7 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 20,
+          "Level": 25,
           "Parameters": 500,
           "GoldCost": 0,
           "Image": "wg_rw_gj4",
@@ -5594,7 +5644,7 @@
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.1.equipname]]",
           "Level": 1,
           "Parameters": 1,
-          "GoldCost": 20000,
+          "GoldCost": 16000,
           "Image": "wg_rw_st1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5603,8 +5653,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.1.equipname]]",
           "Level": 2,
-          "Parameters": 1.05,
-          "GoldCost": 26900,
+          "Parameters": 1.04,
+          "GoldCost": 20000,
           "Image": "wg_rw_st1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5613,8 +5663,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.1.equipname]]",
           "Level": 3,
-          "Parameters": 1.11,
-          "GoldCost": 40500,
+          "Parameters": 1.09,
+          "GoldCost": 26500,
           "Image": "wg_rw_st1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5623,8 +5673,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.1.equipname]]",
           "Level": 4,
-          "Parameters": 1.16,
-          "GoldCost": 61000,
+          "Parameters": 1.13,
+          "GoldCost": 35500,
           "Image": "wg_rw_st1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5633,8 +5683,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.1.equipname]]",
           "Level": 5,
-          "Parameters": 1.21,
-          "GoldCost": 88300,
+          "Parameters": 1.17,
+          "GoldCost": 48500,
           "Image": "wg_rw_st1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5643,8 +5693,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.6.equipname]]",
           "Level": 6,
-          "Parameters": 1.26,
-          "GoldCost": 122500,
+          "Parameters": 1.21,
+          "GoldCost": 69000,
           "Image": "wg_rw_st2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5653,8 +5703,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.6.equipname]]",
           "Level": 7,
-          "Parameters": 1.32,
-          "GoldCost": 163500,
+          "Parameters": 1.25,
+          "GoldCost": 88500,
           "Image": "wg_rw_st2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5663,8 +5713,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.6.equipname]]",
           "Level": 8,
-          "Parameters": 1.37,
-          "GoldCost": 211300,
+          "Parameters": 1.29,
+          "GoldCost": 115000,
           "Image": "wg_rw_st2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5673,8 +5723,8 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.6.equipname]]",
           "Level": 9,
-          "Parameters": 1.42,
-          "GoldCost": 265900,
+          "Parameters": 1.34,
+          "GoldCost": 140000,
           "Image": "wg_rw_st2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5683,48 +5733,68 @@
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.6.equipname]]",
           "Level": 10,
-          "Parameters": 1.47,
-          "GoldCost": 327400,
+          "Parameters": 1.38,
+          "GoldCost": 170000,
           "Image": "wg_rw_st2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
         },
         {
           "ID": 5,
-          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.5]]",
           "Level": 11,
-          "Parameters": 1.53,
-          "GoldCost": 395700,
-          "Image": "wg_rw_st3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 1.42,
+          "GoldCost": 210000,
+          "Image": "wg_rw_st2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 5,
-          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.5]]",
           "Level": 12,
-          "Parameters": 1.58,
-          "GoldCost": 470800,
-          "Image": "wg_rw_st3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 1.46,
+          "GoldCost": 245000,
+          "Image": "wg_rw_st2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 5,
-          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.5]]",
           "Level": 13,
-          "Parameters": 1.63,
-          "GoldCost": 552800,
-          "Image": "wg_rw_st3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 1.5,
+          "GoldCost": 280000,
+          "Image": "wg_rw_st2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 5,
-          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.5]]",
           "Level": 14,
-          "Parameters": 1.68,
-          "GoldCost": 641600,
+          "Parameters": 1.54,
+          "GoldCost": 320000,
+          "Image": "wg_rw_st2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 5,
+          "EquipName": "[[loc:data.equipment.blue.5]]",
+          "Level": 15,
+          "Parameters": 1.58,
+          "GoldCost": 375000,
+          "Image": "wg_rw_st2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 5,
+          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "Level": 16,
+          "Parameters": 1.62,
+          "GoldCost": 430000,
           "Image": "wg_rw_st3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5732,9 +5802,39 @@
         {
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
-          "Level": 15,
-          "Parameters": 1.74,
-          "GoldCost": 737200,
+          "Level": 17,
+          "Parameters": 1.66,
+          "GoldCost": 480000,
+          "Image": "wg_rw_st3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 5,
+          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "Level": 18,
+          "Parameters": 1.71,
+          "GoldCost": 535000,
+          "Image": "wg_rw_st3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 5,
+          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "Level": 19,
+          "Parameters": 1.75,
+          "GoldCost": 590000,
+          "Image": "wg_rw_st3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 5,
+          "EquipName": "[[loc:data.equipcfg.5.levelinfo.11.equipname]]",
+          "Level": 20,
+          "Parameters": 1.79,
+          "GoldCost": 665000,
           "Image": "wg_rw_st3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5742,9 +5842,9 @@
         {
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.16.equipname]]",
-          "Level": 16,
-          "Parameters": 1.79,
-          "GoldCost": 839600,
+          "Level": 21,
+          "Parameters": 1.83,
+          "GoldCost": 735000,
           "Image": "wg_rw_st4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5752,9 +5852,9 @@
         {
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.16.equipname]]",
-          "Level": 17,
-          "Parameters": 1.84,
-          "GoldCost": 948900,
+          "Level": 22,
+          "Parameters": 1.87,
+          "GoldCost": 800000,
           "Image": "wg_rw_st4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5762,9 +5862,9 @@
         {
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.16.equipname]]",
-          "Level": 18,
-          "Parameters": 1.89,
-          "GoldCost": 1065000,
+          "Level": 23,
+          "Parameters": 1.92,
+          "GoldCost": 870000,
           "Image": "wg_rw_st4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5772,9 +5872,9 @@
         {
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.16.equipname]]",
-          "Level": 19,
-          "Parameters": 1.95,
-          "GoldCost": 1188000,
+          "Level": 24,
+          "Parameters": 1.96,
+          "GoldCost": 945000,
           "Image": "wg_rw_st4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5782,7 +5882,7 @@
         {
           "ID": 5,
           "EquipName": "[[loc:data.equipcfg.5.levelinfo.16.equipname]]",
-          "Level": 20,
+          "Level": 25,
           "Parameters": 2,
           "GoldCost": 0,
           "Image": "wg_rw_st4",
@@ -5805,7 +5905,7 @@
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.1.equipname]]",
           "Level": 1,
           "Parameters": 221,
-          "GoldCost": 20000,
+          "GoldCost": 16000,
           "Image": "wg_rw_m1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5814,8 +5914,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.1.equipname]]",
           "Level": 2,
-          "Parameters": 230,
-          "GoldCost": 26900,
+          "Parameters": 228,
+          "GoldCost": 20000,
           "Image": "wg_rw_m1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5824,8 +5924,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.1.equipname]]",
           "Level": 3,
-          "Parameters": 240,
-          "GoldCost": 40500,
+          "Parameters": 236,
+          "GoldCost": 26500,
           "Image": "wg_rw_m1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5834,8 +5934,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.1.equipname]]",
           "Level": 4,
-          "Parameters": 249,
-          "GoldCost": 61000,
+          "Parameters": 243,
+          "GoldCost": 35500,
           "Image": "wg_rw_m1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5844,8 +5944,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.1.equipname]]",
           "Level": 5,
-          "Parameters": 258,
-          "GoldCost": 88300,
+          "Parameters": 251,
+          "GoldCost": 48500,
           "Image": "wg_rw_m1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5854,8 +5954,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.6.equipname]]",
           "Level": 6,
-          "Parameters": 268,
-          "GoldCost": 122500,
+          "Parameters": 258,
+          "GoldCost": 69000,
           "Image": "wg_rw_m2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5864,8 +5964,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.6.equipname]]",
           "Level": 7,
-          "Parameters": 277,
-          "GoldCost": 163500,
+          "Parameters": 266,
+          "GoldCost": 88500,
           "Image": "wg_rw_m2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5874,8 +5974,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.6.equipname]]",
           "Level": 8,
-          "Parameters": 286,
-          "GoldCost": 211300,
+          "Parameters": 273,
+          "GoldCost": 115000,
           "Image": "wg_rw_m2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5884,8 +5984,8 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.6.equipname]]",
           "Level": 9,
-          "Parameters": 296,
-          "GoldCost": 265900,
+          "Parameters": 280,
+          "GoldCost": 140000,
           "Image": "wg_rw_m2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
@@ -5894,48 +5994,68 @@
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.6.equipname]]",
           "Level": 10,
-          "Parameters": 305,
-          "GoldCost": 327400,
+          "Parameters": 287,
+          "GoldCost": 170000,
           "Image": "wg_rw_m2",
           "EquipBottom": "wg_rw_zbd2",
           "EquipSkin": "lv2"
         },
         {
           "ID": 6,
-          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.6]]",
           "Level": 11,
-          "Parameters": 314,
-          "GoldCost": 395700,
-          "Image": "wg_rw_m3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 295,
+          "GoldCost": 210000,
+          "Image": "wg_rw_m2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 6,
-          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.6]]",
           "Level": 12,
-          "Parameters": 323,
-          "GoldCost": 470800,
-          "Image": "wg_rw_m3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 302,
+          "GoldCost": 245000,
+          "Image": "wg_rw_m2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 6,
-          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.6]]",
           "Level": 13,
-          "Parameters": 333,
-          "GoldCost": 552800,
-          "Image": "wg_rw_m3",
-          "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "Parameters": 310,
+          "GoldCost": 280000,
+          "Image": "wg_rw_m2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
         },
         {
           "ID": 6,
-          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "EquipName": "[[loc:data.equipment.blue.6]]",
           "Level": 14,
-          "Parameters": 342,
-          "GoldCost": 641600,
+          "Parameters": 317,
+          "GoldCost": 320000,
+          "Image": "wg_rw_m2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 6,
+          "EquipName": "[[loc:data.equipment.blue.6]]",
+          "Level": 15,
+          "Parameters": 324,
+          "GoldCost": 375000,
+          "Image": "wg_rw_m2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 6,
+          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "Level": 16,
+          "Parameters": 332,
+          "GoldCost": 430000,
           "Image": "wg_rw_m3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5943,9 +6063,39 @@
         {
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
-          "Level": 15,
-          "Parameters": 351,
-          "GoldCost": 737200,
+          "Level": 17,
+          "Parameters": 339,
+          "GoldCost": 480000,
+          "Image": "wg_rw_m3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 6,
+          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "Level": 18,
+          "Parameters": 346,
+          "GoldCost": 535000,
+          "Image": "wg_rw_m3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 6,
+          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "Level": 19,
+          "Parameters": 354,
+          "GoldCost": 590000,
+          "Image": "wg_rw_m3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 6,
+          "EquipName": "[[loc:data.equipcfg.6.levelinfo.11.equipname]]",
+          "Level": 20,
+          "Parameters": 361,
+          "GoldCost": 665000,
           "Image": "wg_rw_m3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5953,9 +6103,9 @@
         {
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.16.equipname]]",
-          "Level": 16,
-          "Parameters": 361,
-          "GoldCost": 839600,
+          "Level": 21,
+          "Parameters": 369,
+          "GoldCost": 735000,
           "Image": "wg_rw_m4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5963,9 +6113,9 @@
         {
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.16.equipname]]",
-          "Level": 17,
-          "Parameters": 370,
-          "GoldCost": 948900,
+          "Level": 22,
+          "Parameters": 376,
+          "GoldCost": 800000,
           "Image": "wg_rw_m4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5973,9 +6123,9 @@
         {
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.16.equipname]]",
-          "Level": 18,
-          "Parameters": 379,
-          "GoldCost": 1065000,
+          "Level": 23,
+          "Parameters": 383,
+          "GoldCost": 870000,
           "Image": "wg_rw_m4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5983,9 +6133,9 @@
         {
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.16.equipname]]",
-          "Level": 19,
-          "Parameters": 389,
-          "GoldCost": 1188000,
+          "Level": 24,
+          "Parameters": 391,
+          "GoldCost": 945000,
           "Image": "wg_rw_m4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -5993,7 +6143,7 @@
         {
           "ID": 6,
           "EquipName": "[[loc:data.equipcfg.6.levelinfo.16.equipname]]",
-          "Level": 20,
+          "Level": 25,
           "Parameters": 398,
           "GoldCost": 0,
           "Image": "wg_rw_m4",
@@ -47540,6 +47690,23 @@
         3
       ],
       "CounterType": "guardian"
+    }
+  },
+  "EquipmentProgression": {
+    "version": 1,
+    "levels": {
+      "4": {
+        "from": 20,
+        "to": 25
+      },
+      "5": {
+        "from": 20,
+        "to": 25
+      },
+      "6": {
+        "from": 20,
+        "to": 25
+      }
     }
   }
 }

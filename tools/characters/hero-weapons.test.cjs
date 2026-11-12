@@ -27,7 +27,7 @@ test('owned Mystic branch bonuses have no effect while Fighter is equipped and a
 });
 test('native hero uses Maker for every rider layer, retains all original horse skins, and keeps release events and attack durations',()=>{
  const Units=require('../../packages/game-data-editor/lib/unit-assets'),description=Units.describe(root,{type:'hero',id:'hero',noRuntime:true}),Bake=require('../../packages/hkd-characters/lib/native-bake');
- assert.equal(description.layers.length,7);assert.deepEqual(description.layers[0].skins,['default','lv1','lv2','lv3','lv4','vip1','vip2']);
+ assert.equal(description.layers.length,7);assert.deepEqual(description.layers[0].skins,['default','lv1','lv2','lv_blue','lv3','lv4','vip1','vip2']);
  for(const layer of description.layers.slice(1)){
   assert(layer.json._heroMaker);assert.equal(layer.json._heroMaker.riderScale,.78);const source=require(path.join(root,'assets/KinghtFallEnemyAni/wqyl_lead',layer.name,layer.name+'.json'));
   for(const [name,clip]of Object.entries(source.animations)){assert.equal(Bake.duration(layer.json.animations[name]),Bake.duration(clip),layer.name+': '+name);assert.deepEqual(layer.json.animations[name].events,clip.events);}

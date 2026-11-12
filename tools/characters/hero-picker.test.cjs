@@ -15,9 +15,10 @@ test('six square cards use equally padded square pose areas and selection change
 });
 
 test('the Equip button straddles the panel bottom and each card loads its own main-weapon tier frame',()=>{
- const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:1,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:1}),owner={node:f.canvas};f.api.open(owner);
+ const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:21,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:1}),owner={node:f.canvas};f.api.open(owner);
  const panel=f.find('Panel outline'),action=f.find('Equipped action');assert.equal(action.y,panel.y-panel.height/2);assert(action.height>0);
- assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd','wg_rw_zbd']);
+ assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd']);
+ assert.equal(f.find('Style vanguard').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier card').color,'#ffffff');
  f.tap(f.find('Style fighter'));assert.deepEqual(f.tierFrames.slice(-6),f.tierFrames.slice(0,6));f.api.close(owner);
 });
 

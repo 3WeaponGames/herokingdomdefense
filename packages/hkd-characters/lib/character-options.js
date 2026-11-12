@@ -27,11 +27,13 @@ function partCategory(part){
 }
 function characterSources(sources,current){return sources.filter(source=>source.pack==='character-maker'||source.id===current);}
 function layerLabel(layer){return {wqyl_lead_ma:'Mount',wqyl_lead_shenti:'Body',wqyl_lead_doupeng:'Chest',wqyl_lead_tou:'Head',wqyl_lead_gong:'Main weapon',wqyl_lead_jian:'Sub-weapon / bonus',wqyl_lead_shou:'Cape'}[layer.name]||layer.name;}
-function skinValue(layer,value){return /^(?:lv|vip)\d+$/.test(value)&&(layer.skins||[]).includes('skirmisher_'+value)?'skirmisher_'+value:value;}
-function skinLabel(value){
+function skinValue(layer,value){return /^(?:(?:lv|vip)\d+|lv_blue)$/.test(value)&&(layer.skins||[]).includes('skirmisher_'+value)?'skirmisher_'+value:value;}
+function skinLabel(value,layer){
+  const tiers=layer&&layer.json&&layer.json._equipmentTiers,match=/^(?:(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_)?(lv_blue|lv\d+)$/.exec(value);
+  if(tiers&&match&&tiers[match[2]])return (match[1]?match[1][0].toUpperCase()+match[1].slice(1)+' ':'Tier ')+tiers[match[2]];
   const style=/^(skirmisher|fighter|vanguard|mystic|bruiser|guardian)_(lv|vip)(\d+)$/.exec(value);
   if(style)return style[1][0].toUpperCase()+style[1].slice(1)+(style[2]==='vip'?' VIP':'')+' '+style[3];
   const tier=/^(lv|vip)(\d+)$/.exec(value);return tier?(tier[1]==='vip'?'VIP ':'Level ')+tier[2]:value==='default'?'Default':value;
 }
-function skinOptions(layer){return (layer.skins||[]).filter(value=>skinValue(layer,value)===value).map(value=>({value,label:skinLabel(value)}));}
+function skinOptions(layer){return (layer.skins||[]).filter(value=>skinValue(layer,value)===value).map(value=>({value,label:skinLabel(value,layer)}));}
 module.exports={skinTones,libraryParts,characterParts,partCategory,characterSources,layerLabel,skinValue,skinOptions};
