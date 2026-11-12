@@ -7,9 +7,19 @@ const user=()=>({getHeroWeapon:()=>Weapons.find('guardian'),getHeroWeaponLevel:(
 test('the showcase has six distinct icon cards in three columns, a separate equipped badge, and never equips while browsing',()=>{
  const f=fixture(user()),owner={node:f.canvas};f.api.open(owner);
  const tiles=Weapons.styles.map(style=>f.find('Style '+style.id));assert.equal(new Set(tiles.map(tile=>tile.x)).size,3);assert.equal(new Set(tiles.map(tile=>tile.y)).size,2);
- for(const style of Weapons.styles){const tile=f.find('Style '+style.id);assert(tile.getChildByName('Weapon icon'));assert.equal(!!tile.getChildByName('Shield icon'),style.id==='guardian');}
+ for(const style of Weapons.styles){const tile=f.find('Style '+style.id);assert(tile.getChildByName('Weapon icon'));assert.equal(!!tile.getChildByName('Shield icon'),style.id==='guardian');assert.equal(!!tile.getChildByName('Arrow icon'),style.id==='skirmisher');}
  f.tap(f.find('Style fighter'));assert(f.find('Style fighter').getChildByName('Gold selection'));assert(!f.find('Style guardian').getChildByName('Gold selection'));assert(f.find('Style guardian').getChildByName('Equipped marker'));assert.equal(f.previews[0].styles.at(-1),'fighter');
  assert(f.icons.some(icon=>icon.style==='fighter'&&icon.slot===4));assert(f.icons.some(icon=>icon.style==='guardian'&&icon.slot===3));f.api.close(owner);
+});
+
+test('paired cards keep the arrow centered over the bow and the shield beside but behind the hammer, regardless of asset load order',()=>{
+ const f=fixture(user(),{delayed:true}),owner={node:f.canvas};f.api.open(owner);
+ const bow=f.find('Style skirmisher'),arrow=bow.getChildByName('Arrow icon'),main=bow.getChildByName('Weapon icon'),guardian=f.find('Style guardian'),hammer=guardian.getChildByName('Weapon icon'),shield=guardian.getChildByName('Shield icon');
+ assert.equal(arrow.y,main.y);assert(arrow.x>main.x);assert(bow.children.indexOf(arrow)>bow.children.indexOf(main));
+ assert(shield.x>hammer.x);assert(shield.y>hammer.y);assert(guardian.children.indexOf(shield)<guardian.children.indexOf(hammer));
+ for(const request of [...f.pending].reverse())request.callback(null,{getOriginalSize:()=>({width:120,height:60})});
+ assert(bow.children.indexOf(arrow)>bow.children.indexOf(main));assert(guardian.children.indexOf(shield)<guardian.children.indexOf(hammer));
+ assert(f.icons.some(icon=>icon.style==='skirmisher'&&icon.slot===3&&icon.area==='equipment'));assert(f.icons.some(icon=>icon.style==='guardian'&&icon.slot===3&&icon.area==='equipment'));f.api.close(owner);
 });
 
 test('the portrait popup fits short/narrow viewports and removes its resize and asset subscriptions on dismissal',()=>{

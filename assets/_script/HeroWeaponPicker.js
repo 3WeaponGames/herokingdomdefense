@@ -3,6 +3,19 @@
 var Weapons = require("HeroWeapons");
 var WIDTH = 684, HEIGHT = 900;
 var BLUE_CARD = "icons/GUI-Pro/ShopCards/Frame_ListFrame14_n_Blue";
+// Card compositions are shared across tiers. Order is back to front, so
+// asynchronous artwork loads cannot change the overlap of either hand item.
+// The idle rig points its arrow downward; the card keeps it across the bow.
+var CARD_PAIRS = {
+  skirmisher: [
+    { slot: 4, name: "Weapon icon", x: 0, y: 23, width: 148, height: 70 },
+    { slot: 3, name: "Arrow icon", x: 10, y: 23, width: 78, height: 28 }
+  ],
+  guardian: [
+    { slot: 3, name: "Shield icon", x: 34, y: 27, width: 61, height: 65 },
+    { slot: 4, name: "Weapon icon", x: -14, y: 20, width: 112, height: 74 }
+  ]
+};
 function node(parent, name, x, y, width, height) {
   var value = new cc.Node(name); value.setParent(parent); value.setPosition(x || 0, y || 0);
   if (width) value.setContentSize(width, height); return value;
@@ -111,9 +124,11 @@ function open(owner) {
       box(tile, "Card outline", 0, -1, 187, 144, 28, "#100e15");
       box(tile, "Card highlight", 0, 3, 179, 133, 24, "#8bd4ff");
       art(tile, "GUI PRO card", BLUE_CARD, 0, -1, 174, 129, true);
-      var image = Looks.gearImage(4, user.getHeroWeaponLevel(style.id, 4), "equipment", style.id);
-      icon(tile, "Weapon icon", image, style.id === "guardian" ? -20 : 0, 21, style.id === "guardian" ? 115 : 156, 72);
-      if (style.id === "guardian") icon(tile, "Shield icon", Looks.gearImage(3, user.getHeroWeaponLevel(style.id, 3), "equipment", style.id), 52, 12, 51, 51);
+      var pair = CARD_PAIRS[style.id] || [{ slot: 4, name: "Weapon icon", x: 0, y: 21, width: 156, height: 72 }];
+      pair.forEach(function (part) {
+        var image = Looks.gearImage(part.slot, user.getHeroWeaponLevel(style.id, part.slot), "equipment", style.id);
+        icon(tile, part.name, image, part.x, part.y, part.width, part.height);
+      });
       label(tile, "Style name", style.name, 0, -39, 176, 43, 29);
       if (equipped) {
         box(tile, "Equipped badge outline", 0, -69, 131, 36, 14, "#111409");
