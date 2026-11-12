@@ -80,7 +80,7 @@ function open(owner) {
   box(closeButton, "Close shadow", 0, -1, 64, 65, 18, "#006eaa");
   box(closeButton, "Close highlight", 0, 5, 61, 58, 16, "#62ddff");
   box(closeButton, "Close face", 0, 2, 55, 52, 14, "#13b9ee");
-  label(closeButton, "Close icon", "×", 0, 2, 55, 55, 57, null, 3);
+  art(closeButton, "Close icon", "icons/Pictograms/Pictoicon_Close_Outlined", 0, 2, 49, 52, false);
   function closePicker() {
     if (cancelled) return; cancelled = true;
     canvas.off(cc.Node.EventType.SIZE_CHANGED, resize);
