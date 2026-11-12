@@ -280,6 +280,16 @@ function refreshBuildingSources(object) {
   if (object.capture) { object.capture.active = false; object.capture.destroy(); object.capture = null; object.visuals = null; }
 }
 
+function surfaceGeometry(source, main, slot, cache) {
+  var attachment=slot.getAttachment(),vertices=[];
+  if (!attachment || slot.color.a<=0 || slot.bone.active===false) return null;
+  if (attachment.worldVerticesLength===8) attachment.computeWorldVertices(slot,0,8,vertices,0,2);
+  else if (!attachment.worldVerticesLength && attachment.computeWorldVertices) attachment.computeWorldVertices(slot.bone,vertices,0,2);
+  if (vertices.length!==8) return null;
+  var box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity},pose=nodeTransform(source.node,main,cache);
+  for(var i=0;i<8;i+=2){var x=vertices[i],y=vertices[i+1],p={x:pose.x+pose.a*x+pose.c*y,y:pose.y+pose.b*x+pose.d*y};vertices[i]=p.x;vertices[i+1]=p.y;box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);}
+  return {vertices:vertices,box:box,pixel:function(p,width,height,crop){var x=(p.x-(crop||0))/width,y=p.y/height;return{x:vertices[2]+(vertices[4]-vertices[2])*x+(vertices[0]-vertices[2])*y,y:vertices[3]+(vertices[5]-vertices[3])*x+(vertices[1]-vertices[3])*y};}};
+}
 function gateLeaves(source, main, cache) {
   var json = source.skeletonData && source.skeletonData.skeletonJson, skeleton = source._skeleton;
   if (!source.enabled || !source.node.activeInHierarchy || !json || !json.wallDoor || !json.wallDoor.gate || !skeleton) return [];
@@ -302,97 +312,137 @@ function gateLeaves(source, main, cache) {
       start.y = left.y + (start.x-left.x)*(right.y-left.y)/(right.x-left.x);end.y = left.y + (end.x-left.x)*(right.y-left.y)/(right.x-left.x);
       if (closed[1]) { crop = closed[1] === "far" ? 260 : 0;image = { width:closed[1] === "far" ? 252 : 260, height:image.height }; }
     } else return all;
-    var vertices = [];
-    if (attachment.worldVerticesLength === 8) attachment.computeWorldVertices(slot, 0, 8, vertices, 0, 2);
-    else if (!attachment.worldVerticesLength && attachment.computeWorldVertices) attachment.computeWorldVertices(slot.bone, vertices, 0, 2);
-    if (vertices.length !== 8) return all;
-    for (var i=0;i<8;i+=2) { var p=point(source.node,main,vertices[i],vertices[i+1]);vertices[i]=p.x;vertices[i+1]=p.y; }
-    function pixel(p) { var x=(p.x-crop)/image.width,y=p.y/image.height;return { x:vertices[2]+(vertices[4]-vertices[2])*x+(vertices[0]-vertices[2])*y,y:vertices[3]+(vertices[5]-vertices[3])*x+(vertices[1]-vertices[3])*y }; }
-    var box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity};for(i=0;i<8;i+=2){box.minX=Math.min(box.minX,vertices[i]);box.maxX=Math.max(box.maxX,vertices[i]);box.minY=Math.min(box.minY,vertices[i+1]);box.maxY=Math.max(box.maxY,vertices[i+1]);}
-    all.push({source:source,slot:slot,attachment:attachment,vertices:vertices,box:box,start:pixel(start),end:pixel(end),order:all.length});return all;
+    var geometry=surfaceGeometry(source,main,slot,cache);if(!geometry)return all;
+    all.push({source:source,slot:slot,attachment:attachment,kind:"door",vertices:geometry.vertices,box:geometry.box,start:geometry.pixel(start,image.width,image.height,crop),end:geometry.pixel(end,image.width,image.height,crop),order:skeleton.drawOrder.indexOf(slot)});return all;
   }, []);
 }
+var nativeWallAssembly;
+function wallSurfaces(source, main, cache) {
+  var json=source.skeletonData&&source.skeletonData.skeletonJson,skeleton=source._skeleton,kit=json&&json.wallKit;
+  if(!source.enabled||!source.node.activeInHierarchy||!kit||!kit.sizes||!skeleton||!/^cq-rts-[123]$/.test(skeleton.skin&&skeleton.skin.name))return [];
+  nativeWallAssembly=nativeWallAssembly||require("./WallAssembly");
+  var definitions={},regions=kit.layers&&kit.layers.regions;
+  Object.keys(kit.sizes).forEach(function(path){var m=/^rts_wall_(post|top|right|corner)_([123])$/.exec(path);if(m){var alias=regions&&regions[path]?regions[path].body:path;definitions[alias]={kind:m[1],level:Number(m[2]),size:kit.sizes[path]};}});
+  updatePose(source,cache);
+  return skeleton.drawOrder.reduce(function(all,slot,index){
+    if(!/^rts_wall_part_\d+$/.test(slot.data.name))return all;
+    var attachment=slot.getAttachment(),definition=attachment&&definitions[attachment.path],geometry=definition&&surfaceGeometry(source,main,slot,cache);
+    if(!geometry)return all;
+    var floor=nativeWallAssembly.groundProfile(definition.kind,definition.level,definition.size).map(function(p){return geometry.pixel(p,definition.size[0],definition.size[1]);});
+    all.push({source:source,slot:slot,attachment:attachment,kind:"wall",vertices:geometry.vertices,box:geometry.box,floor:floor,start:floor[0],end:floor[floor.length-1],order:index});return all;
+  },[]);
+}
 function behindGate(leaf, feet) {
-  var dx=leaf.end.x-leaf.start.x,t=Math.abs(dx)<.0001?.5:Math.max(0,Math.min(1,(feet.x-leaf.start.x)/dx));
-  return feet.y > leaf.start.y+(leaf.end.y-leaf.start.y)*t+.01;
+  var floor=leaf.floor||[leaf.start,leaf.end],front=Infinity,nearest=Infinity,fallback=0;
+  for(var i=1;i<floor.length;i++){
+    var a=floor[i-1],b=floor[i],dx=b.x-a.x,t=Math.abs(dx)<.0001?.5:(feet.x-a.x)/dx;
+    if(t>=0&&t<=1)front=Math.min(front,a.y+(b.y-a.y)*t);
+  }
+  floor.forEach(function(p){var distance=Math.abs(p.x-feet.x);if(distance<nearest-.0001){nearest=distance;fallback=p.y;}else if(Math.abs(distance-nearest)<.0001)fallback=Math.min(fallback,p.y);});
+  return feet.y>(front===Infinity?fallback:front)+.01;
 }
 function releaseCapture(record) {
-  if(record.frame)record.frame.destroy();if(record.texture)record.texture.destroy();
-  if(record.foreground)releaseCapture(record.foreground);
-  if(record.composite)releaseCapture(record.composite);
-  record.frame=record.texture=record.foreground=record.composite=null;
+  if (record.frame) record.frame.destroy();
+  if (record.texture) record.texture.destroy();
+  record.frame = record.texture = null;
 }
-// A gate's two diagonal leaves cannot share one ground Y with the entire wall.
-// Correct only intersecting unit pixels when that coarse painter order differs
-// from a leaf's floor. Preserve the original foreground pillars with a second,
-// inverted stencil; the live units and their gameplay components are never copied.
+// A unit can be in front of an open leaf and behind its adjoining pillar.
+// Resolve the intersecting parts together: restore the unit over rear parts,
+// then paint foreground parts over its body, in the source's painter order.
+// Only render components are captured; gameplay, poses and fixtures stay live.
 function GateOcclusion(view) { this.view=view;this.leaves=new Map();this.actors=new Map();this.draw=0; }
-GateOcclusion.prototype.captureLeaf=function(record,leaf) {
-  var source=leaf.source,slot=leaf.slot,color=source._skeleton.color,node=source.node;
-  var stamp=[source.skeletonData,leaf.attachment,node.opacity,node.color.r,node.color.g,node.color.b,slot.color.r,slot.color.g,slot.color.b,slot.color.a,color.r,color.g,color.b,color.a].concat(leaf.vertices);
-  var order=source._skeleton.drawOrder||[],at=order.indexOf(slot),next=order[at+1];
-  source._skeleton.bones&&source._skeleton.bones.forEach(function(bone){stamp.push(bone.a,bone.b,bone.c,bone.d,bone.worldX,bone.worldY);});
-  order.forEach(function(part){stamp.push(part.data.index,part.getAttachment(),part.color.a);});
-  if(sameStamp(record.signature,stamp))return;
-  var box=leaf.box,width=Math.ceil(box.maxX-box.minX)+4,height=Math.ceil(box.maxY-box.minY)+4,center={x:(box.minX+box.maxX)/2,y:(box.minY+box.maxY)/2},resolution=Math.min(4,512/Math.max(width,height)),tw=Math.max(2,Math.ceil(width*resolution)),th=Math.max(2,Math.ceil(height*resolution));
-  if(!record.texture||record.texture.width!==tw||record.texture.height!==th){releaseCapture(record);record.texture=new cc.RenderTexture();record.texture.initWithSize(tw,th,cc.gfx.RB_FMT_S8);record.frame=new cc.SpriteFrame(record.texture);record.frame.setFlipY(true);}
-  var start=source._startSlotIndex,end=source._endSlotIndex;
-  // This is a render-only range, restored even if the GPU capture fails. The
-  // original Spine pose, slots, animation events and physics stay untouched.
-  try{
-    source.setSlotsRange(slot.data.index,slot.data.index);this.view.renderNative([source],center,height,record.texture);
-    if(next){
-      var foreground=record.foreground||(record.foreground={});
-      if(!foreground.texture||foreground.texture.width!==tw||foreground.texture.height!==th){releaseCapture(foreground);foreground.texture=new cc.RenderTexture();foreground.texture.initWithSize(tw,th,cc.gfx.RB_FMT_S8);foreground.frame=new cc.SpriteFrame(foreground.texture);foreground.frame.setFlipY(true);}
-      source.setSlotsRange(next.data.index,-1);this.view.renderNative([source],center,height,foreground.texture);foreground.center=center;foreground.size={width:width,height:height};
-      var composite=record.composite||(record.composite={});
-      if(!composite.texture||composite.texture.width!==tw||composite.texture.height!==th){releaseCapture(composite);composite.texture=new cc.RenderTexture();composite.texture.initWithSize(tw,th,cc.gfx.RB_FMT_S8);composite.frame=new cc.SpriteFrame(composite.texture);composite.frame.setFlipY(true);}
-      source.setSlotsRange(slot.data.index,-1);this.view.renderNative([source],center,height,composite.texture);composite.center=center;composite.size={width:width,height:height};
-    }else if(record.foreground){releaseCapture(record.foreground);delete record.foreground;}
+GateOcclusion.prototype.captureLeaf = function (record, surface) {
+  var source=surface.source,slot=surface.slot,color=source._skeleton.color,node=source.node;
+  var stamp=[source.skeletonData,surface.attachment,node.opacity,node.color.r,node.color.g,node.color.b,slot.color.r,slot.color.g,slot.color.b,slot.color.a,color.r,color.g,color.b,color.a].concat(surface.vertices);
+  if (sameStamp(record.signature,stamp)) return;
+  var box=surface.box,width=Math.ceil(box.maxX-box.minX)+4,height=Math.ceil(box.maxY-box.minY)+4;
+  var center={x:(box.minX+box.maxX)/2,y:(box.minY+box.maxY)/2},resolution=Math.min(4,512/Math.max(width,height));
+  var tw=Math.max(2,Math.ceil(width*resolution)),th=Math.max(2,Math.ceil(height*resolution));
+  if (!record.texture || record.texture.width!==tw || record.texture.height!==th) {
+    releaseCapture(record);
+    record.texture=new cc.RenderTexture();record.texture.initWithSize(tw,th,cc.gfx.RB_FMT_S8);
+    record.frame=new cc.SpriteFrame(record.texture);record.frame.setFlipY(true);
   }
-  finally{source.setSlotsRange(start,end);if(source.markForRender)source.markForRender(true);}
+  var start=source._startSlotIndex,end=source._endSlotIndex;
+  try {
+    source.setSlotsRange(slot.data.index,slot.data.index);
+    this.view.renderNative([source],center,height,record.texture);
+  } finally {
+    source.setSlotsRange(start,end);
+    if (source.markForRender) source.markForRender(true);
+  }
   record.center=center;record.size={width:width,height:height};record.signature=stamp;
 };
-GateOcclusion.prototype.overlay=function(record,actor) {
-  var result=record.overlays.get(actor);if(result)return result;
+GateOcclusion.prototype.overlay = function (record, actor) {
+  var result=record.overlays.get(actor);if (result) return result;
   var node=new cc.Node("GateUnitOcclusion");node._occlusionMask=true;node.parent=this.view.main;
   var mask=node.addComponent(cc.Mask);mask.type=cc.Mask.Type.IMAGE_STENCIL;mask.alphaThreshold=.1;
-  var cut=new cc.Node("GateForeground");cut.parent=node;var inverse=cut.addComponent(cc.Mask);inverse.type=cc.Mask.Type.IMAGE_STENCIL;inverse.alphaThreshold=.1;inverse.inverted=true;
-  var child=new cc.Node("OccludedPixels");child.parent=cut;var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
-  result={node:node,mask:mask,cut:cut,inverse:inverse,child:child,sprite:sprite};record.overlays.set(actor,result);return result;
+  var child=new cc.Node("OccludedPixels");child.parent=node;
+  var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
+  result={node:node,mask:mask,child:child,sprite:sprite};record.overlays.set(actor,result);return result;
 };
-GateOcclusion.prototype.update=function(active,cache,visible) {
-  var self=this,view=this.view,draw=++this.draw,leaves=[],usedActors=new Set(),overlays=[];
+GateOcclusion.prototype.update = function (active, cache, visible) {
+  var self=this,view=this.view,draw=++this.draw,surfaces=[],usedActors=new Set(),overlays=[];
   this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.active=false;});});});
-  Object.keys(view.game.gameData.bulidPointMap||{}).forEach(function(id){var owner=view.game.gameData.bulidPointMap[id];if(owner.ndAniMain)Array.prototype.push.apply(leaves,gateLeaves(owner.ndAniMain,view.main,cache));});
-  leaves.forEach(function(leaf){
-    if(visible&&!overlaps(leaf.box,visible))return;
-    var root=objectRoot(leaf.source.node,view.main);if(!root)return;
-    active.forEach(function(entry){
-      var actor=entry.actor,behind=behindGate(leaf,point(actor.node,view.main)),above=actor.node.zIndex>=root.zIndex;
-      if(behind!==above)return; // The ordinary painter order already agrees.
-      if(!entry.sources){entry.sources=bodyVisuals(actor);entry.bounds=entry.sources.reduce(function(box,source){return union(box,bounds(source,view.main,cache));},null);}
-      if(!overlaps(leaf.box,entry.bounds)||visible&&!overlaps(entry.bounds,visible))return;
-      var records=self.leaves.get(leaf.source);if(!records){records=new Map();self.leaves.set(leaf.source,records);}
-      var record=records.get(leaf.slot.data.name);if(!record){record={overlays:new Map()};records.set(leaf.slot.data.name,record);}
-      record.draw=draw;self.captureLeaf(record,leaf);
-      var body=self.actors.get(actor);if(!body){body={};self.actors.set(actor,body);}
-      if(body.draw!==draw){view.snapshotActor(body,entry.sources,entry.bounds,4);body.draw=draw;}usedActors.add(actor);
-      var overlay=self.overlay(record,actor),stencil=behind?body:record,paint=behind?(record.composite||record):body;
-      overlay.draw=draw;overlay.node.active=true;overlay.node.setPosition(stencil.center.x,stencil.center.y);overlay.node.setContentSize(stencil.size);overlay.mask.spriteFrame=stencil.frame;
-      var foreground=!behind&&record.foreground,origin=foreground?foreground.center:stencil.center;
-      overlay.cut.setPosition(origin.x-stencil.center.x,origin.y-stencil.center.y);overlay.cut.setContentSize(foreground?foreground.size:stencil.size);overlay.inverse.enabled=!!foreground;if(foreground)overlay.inverse.spriteFrame=foreground.frame;
-      overlay.child.setPosition(paint.center.x-origin.x,paint.center.y-origin.y);overlay.child.setContentSize(paint.size);overlay.sprite.spriteFrame=paint.frame;
-      overlay.node.zIndex=(behind?actor.node.zIndex:root.zIndex)+2;overlays.push({overlay:overlay,actor:actor.node.zIndex,order:leaf.order});
+  Object.keys(view.game.gameData.bulidPointMap||{}).forEach(function (id) {
+    var owner=view.game.gameData.bulidPointMap[id],source=owner.ndAniMain;
+    if (!source) return;
+    var root=objectRoot(source.node,view.main);if (!root) return;
+    gateLeaves(source,view.main,cache).concat(wallSurfaces(source,view.main,cache)).forEach(function (surface) {
+      if (!visible || overlaps(surface.box,visible)) { surface.root=root;surfaces.push(surface); }
     });
   });
-  // Front actors sharing one leaf keep their normal order relative to each
-  // other; these copies contain only body pixels intersecting that leaf.
-  overlays.sort(function(a,b){return a.actor-b.actor||a.order-b.order;}).forEach(function(entry){entry.overlay.node.setSiblingIndex(view.main.childrenCount-1);});
-  this.leaves.forEach(function(records,source){records.forEach(function(record,key){record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){overlay.node.destroy();record.overlays.delete(actor);}});if(record.draw!==draw){releaseCapture(record);records.delete(key);}});if(!records.size)self.leaves.delete(source);});
+  active.forEach(function (entry) {
+    var actor=entry.actor,feet=point(actor.node,view.main),hits=[],mismatch=false,base=actor.node.zIndex;
+    // Avoid skinning units unless their feet/body could be near a wall module.
+    if (!surfaces.some(function(surface){return behindGate(surface,feet)===(actor.node.zIndex>=surface.root.zIndex);})) return;
+    if (!entry.sources) {
+      entry.sources=bodyVisuals(actor);
+      entry.bounds=entry.sources.reduce(function(box,source){return union(box,bounds(source,view.main,cache));},null);
+    }
+    if (!entry.bounds || visible&&!overlaps(entry.bounds,visible)) return;
+    surfaces.forEach(function (surface) {
+      if (!overlaps(surface.box,entry.bounds)) return;
+      var behind=behindGate(surface,feet),above=actor.node.zIndex>=surface.root.zIndex;
+      hits.push({surface:surface,behind:behind});
+      if (behind===above) mismatch=true;
+      base=Math.max(base,surface.root.zIndex);
+    });
+    if (!mismatch) return;
+    var body=self.actors.get(actor);
+    if (!body) { body={};self.actors.set(actor,body); }
+    if (body.draw!==draw) { view.snapshotActor(body,entry.sources,entry.bounds,4);body.draw=draw; }
+    usedActors.add(actor);
+    hits.forEach(function (hit) {
+      var surface=hit.surface,records=self.leaves.get(surface.source);
+      if (!records) { records=new Map();self.leaves.set(surface.source,records); }
+      var record=records.get(surface.slot.data.name);
+      if (!record) { record={overlays:new Map()};records.set(surface.slot.data.name,record); }
+      record.draw=draw;self.captureLeaf(record,surface);
+      var overlay=self.overlay(record,actor),stencil=hit.behind?body:record,paint=hit.behind?record:body;
+      overlay.draw=draw;overlay.behind=hit.behind;overlay.node.active=true;
+      overlay.node.setPosition(stencil.center.x,stencil.center.y);overlay.node.setContentSize(stencil.size);overlay.mask.spriteFrame=stencil.frame;
+      overlay.child.setPosition(paint.center.x-stencil.center.x,paint.center.y-stencil.center.y);overlay.child.setContentSize(paint.size);overlay.sprite.spriteFrame=paint.frame;
+      overlay.node.zIndex=base+2;
+      overlays.push({overlay:overlay,base:base,actor:actor.node.zIndex,behind:hit.behind?1:0,root:surface.root.zIndex,order:surface.order});
+    });
+  });
+  // Each actor's foreground pieces follow all of its restored body pixels.
+  // Units in front retain their normal order over units farther back.
+  overlays.sort(function(a,b){return a.base-b.base||a.actor-b.actor||a.behind-b.behind||a.root-b.root||a.order-b.order;}).forEach(function(entry){entry.overlay.node.setSiblingIndex(view.main.childrenCount-1);});
+  this.leaves.forEach(function (records,source) {
+    records.forEach(function (record,key) {
+      record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){overlay.node.destroy();record.overlays.delete(actor);}});
+      if (record.draw!==draw) { releaseCapture(record);records.delete(key); }
+    });
+    if (!records.size) self.leaves.delete(source);
+  });
   this.actors.forEach(function(record,actor){if(!usedActors.has(actor)){releaseCapture(record);self.actors.delete(actor);}});
 };
-GateOcclusion.prototype.destroy=function(){this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.destroy();});releaseCapture(record);});});this.actors.forEach(releaseCapture);this.leaves.clear();this.actors.clear();};
+GateOcclusion.prototype.destroy = function () {
+  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.destroy();});releaseCapture(record);});});
+  this.actors.forEach(releaseCapture);this.leaves.clear();this.actors.clear();
+};
 
 function DepthView(game) {
   this.game = game;
@@ -811,3 +861,4 @@ exports.sameStamp = sameStamp;
 exports.gateLeaves = gateLeaves;
 exports.behindGate = behindGate;
 exports.GateOcclusion = GateOcclusion;
+exports.wallSurfaces = wallSurfaces;
