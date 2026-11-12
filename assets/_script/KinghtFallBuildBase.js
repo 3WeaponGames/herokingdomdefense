@@ -188,6 +188,7 @@ var def_KinghtFallBuildBase = function (t) {
     return this._freeInitialBuild || !!data.treasureAddTime && data.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] == this.ID;
   };
   _ctor.prototype.setLevel = function (t) {
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     this.cancelUpgrade();
     var e;
     var n = this;
@@ -250,6 +251,7 @@ var def_KinghtFallBuildBase = function (t) {
       }
     });
     require("BuildingAppearance").apply(this);
+    if (cfg && cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
     if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
   };
   _ctor.prototype._alignPurchaseCost = function (field) {
@@ -331,6 +333,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     this.cancelUpgrade();
     this._stopColliderTweens();
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
@@ -339,6 +342,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
   _ctor.prototype.doUpgreadAni = function () {
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     var t = this;
     if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);
     if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
@@ -377,6 +381,7 @@ var def_KinghtFallBuildBase = function (t) {
     var artwork = require("BuildingAppearance");
     artwork.apply(this);
     if (artwork.place) artwork.place(this, this.getLevel() === 1 ? "create" : "upgrade");
+    if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
   };
   _ctor.prototype.getWposPhyCol = function () {
     return this.getWposPhyCol2().map(function (part) { return part.points; });
