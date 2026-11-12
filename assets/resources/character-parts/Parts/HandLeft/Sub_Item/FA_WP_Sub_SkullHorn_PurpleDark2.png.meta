@@ -1,38 +1,15 @@
 {
   "ver": "2.3.7",
-  "uuid": "c28c6613-bd41-5673-ab27-1a96c47c2780",
+  "uuid": "890d82ca-8a84-49f2-abd6-cc6d2dabe8fa",
   "importer": "texture",
-  "type": "sprite",
+  "type": null,
   "wrapMode": "clamp",
   "filterMode": "bilinear",
   "premultiplyAlpha": false,
   "genMipmaps": false,
   "packable": true,
-  "width": 68,
-  "height": 64,
+  "width": 0,
+  "height": 0,
   "platformSettings": {},
-  "subMetas": {
-    "FA_WP_Sub_SkullHorn_PurpleDark2": {
-      "ver": "1.0.6",
-      "uuid": "4c200c53-eb47-5da0-af01-0c2311b0a5e2",
-      "importer": "sprite-frame",
-      "rawTextureUuid": "c28c6613-bd41-5673-ab27-1a96c47c2780",
-      "trimType": "none",
-      "trimThreshold": 1,
-      "rotated": false,
-      "offsetX": 0,
-      "offsetY": 0,
-      "trimX": 0,
-      "trimY": 0,
-      "width": 68,
-      "height": 64,
-      "rawWidth": 68,
-      "rawHeight": 64,
-      "borderTop": 0,
-      "borderBottom": 0,
-      "borderLeft": 0,
-      "borderRight": 0,
-      "subMetas": {}
-    }
-  }
+  "subMetas": {}
 }
