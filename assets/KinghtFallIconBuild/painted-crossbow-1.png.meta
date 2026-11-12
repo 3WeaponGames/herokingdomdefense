@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "a489e97c-5c2f-53c3-b472-697d85d8ab3d",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 196,
+  "height": 189,
+  "platformSettings": {},
+  "subMetas": {
+    "painted-crossbow-1": {
+      "ver": "1.0.6",
+      "uuid": "04fd5422-0546-5cba-8a1f-d4662f9bfc32",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "a489e97c-5c2f-53c3-b472-697d85d8ab3d",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 3.0,
+      "offsetY": -2.5,
+      "trimX": 11,
+      "trimY": 16,
+      "width": 180,
+      "height": 162,
+      "rawWidth": 196,
+      "rawHeight": 189,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

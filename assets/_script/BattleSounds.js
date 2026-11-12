@@ -23,7 +23,7 @@ function current(state) {
 function makeState(game) {
   var state = { game: game, ui: game ? view() : null, data: game && game.gameData, epoch: game && game._combatEpoch,
     manager: manager(), prefix: "battle-sfx-" + (++serial) + "-", sources: Object.create(null), loops: Object.create(null),
-    last: Object.create(null), ownerLast: new WeakMap(), deaths: new WeakMap(), positions: new WeakMap(), once: Object.create(null), effectsEpoch: 0, cancelEpoch: 0 };
+    last: Object.create(null), ownerLast: new WeakMap(), positions: new WeakMap(), once: Object.create(null), effectsEpoch: 0, cancelEpoch: 0 };
   state.onHide = function () { state.hidden = true; stopAll(state); state.effectsEpoch++; };
   state.onShow = function () { state.hidden = false; state.positions = new WeakMap(); };
   if (cc.game && cc.game.on) {
@@ -167,17 +167,12 @@ function hit(target, source, damage, options) {
   if (hurt && target.hp > 0) effect(hurt, target);
   return true;
 }
-function death(actor) {
-  var state = context(actor), generation = actor && actor.node && actor.node._combatGeneration;
-  if (!current(state) || !actor || state.deaths.has(actor) && state.deaths.get(actor) === generation) return false;
-  state.deaths.set(actor, generation);
-  var kind = family(actor), ids = { human: "death-human-armour", mounted: "death-mounted-cavalry", beast: "death-beast", flying: "death-bird-flying", shell: "death-reptile-shell", insect: "death-insect", slime: "death-slime", plant: "death-plant-wood", stone: "death-golem-stone", metal: "death-golem-metal", skeleton: "death-skeleton", ghost: "death-ghost-magic" };
-  return effect(ids[kind] || "death-beast", actor, { allowDead: true });
+function death() {
+  // Unit death audio is intentionally silent until the next death-sound pass.
+  return false;
 }
 function spawnEnemy(actor, announce) {
   var state = context(actor); if (!current(state)) return;
-  var ids = { beast: "death-beast", flying: "death-bird-flying", shell: "death-reptile-shell", insect: "death-insect", slime: "death-slime", plant: "death-plant-wood", stone: "death-golem-stone", metal: "death-golem-metal", skeleton: "death-skeleton", ghost: "death-ghost-magic" };
-  warm(state, ids[family(actor)] || "death-beast");
   var cfg = actor.cfg || {}, boss = cfg.IsBoss || cfg.Boss || [90010, 90011, 90012].indexOf(Number(cfg.ID)) >= 0 || [90010, 90011, 90012].indexOf(Number(cfg.CampaignBaseUnit)) >= 0;
   var key = "boss:" + (state.data.round || 0);
   if (announce && boss && !state.once[key]) { state.once[key] = true; effect("boss-arrival", actor, { game: state.game }); }
@@ -234,7 +229,7 @@ function start(game) {
   if (game._battleSounds) dispose(game);
   var state = game._battleSounds = makeState(game);
   if (!current(state)) { dispose(game); return false; }
-  ["bow-arrow-release", "impact-flesh-light", "arrow-impact-flesh", "death-human-armour", "death-mounted-cavalry", "wave-start-horn", "wave-clear", "boss-arrival"].forEach(function (id) { warm(state, id); });
+  ["bow-arrow-release", "impact-flesh-light", "arrow-impact-flesh", "wave-start-horn", "wave-clear", "boss-arrival"].forEach(function (id) { warm(state, id); });
   return true;
 }
 function tick(game) {
@@ -258,7 +253,8 @@ function tick(game) {
     else if (friendly) { if (Number(actor.cfg && actor.cfg.ID) === 90002) foot = "footsteps-heavy-infantry-loop"; else if (!foot) foot = "footsteps-infantry-loop"; }
     else if (family(actor) === "flying") flying = true;
   });
-  loop(state, "ambience", "ambience-" + surface + "-loop", .5);
+  var ambient = "ambience-" + surface + "-loop";
+  loop(state, "ambience", entries[ambient] ? ambient : null, .5);
   loop(state, "horse", horse ? "hooves-" + surface + "-loop" : null, .45);
   loop(state, "foot", foot, .16);
   loop(state, "flying", flying ? "movement-flying-loop" : null, .12);

@@ -31,7 +31,7 @@ test('building placement cards keep six simple names with four compass gate faci
   assert.deepEqual(variant.placement,expected,'template, sprite records, identifiers and upgrade roots remain the complete authored family');
   assert(!('preview' in variant.placement)&&!('variants' in variant.placement)&&!('catalogId' in variant.placement));
   assert.deepEqual(Object.keys(variant.preview).sort(),['errors','images','levels','runtimePath']);
-  assert.deepEqual(variant.preview.errors,[]);assert.deepEqual(Object.keys(variant.preview.levels),['1','2','3']);
+  assert.deepEqual(variant.preview.errors,[]);assert.deepEqual(Object.keys(variant.preview.levels),['1','2','3','4'],'Preview keys are hall unlock states; walls still use their three authored skins');
   assert(variant.preview.levels[1].sprites.length&&variant.preview.levels[1].blockers.length&&variant.preview.levels[1].step.length);
  }
  for(const variant of cards[5].variants){const level=variant.preview.levels[1],mirrored=['NW','SE'].includes(variant.id);assert(level.skeletons.every(s=>mirrored?s.matrix[0]<0:s.matrix[0]>0));assert.equal(level.skeletons.length,6);const center=level.purchaseField.center;assert(center.x>0&&center.y<0,'Every new facing starts Southeast unless its authored variant default changes it');}

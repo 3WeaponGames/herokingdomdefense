@@ -1,6 +1,6 @@
 "use strict";
-// Shared nominal combat comparison for hero and units. Callers resolve active
-// equipment, stage stats and ability output; this module never reads game state.
+// Shared combat comparison for hero and units. Callers resolve active equipment,
+// attack cadence, stage stats and ability output; this module never reads game state.
 // Hero encounter fractions are comparison benchmarks, not live battle state.
 // Passive regeneration and triggered healing have separate useful-healing rates.
 var DEFAULTS = Object.freeze({ referenceHp: 40, referenceDps: 10, nearbyAllies: 3,

@@ -3,8 +3,9 @@
 // Royal Knight, cavalry and RTS castle layers, including the Royal flag rig.
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),fixture=require('./building-spine-fit.fixture.json');
+const painted=require('./painted-building-contract.cjs');
 const {decode}=require('../../packages/hkd-characters/lib/png-atlas');
-const read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8').replace(/^\uFEFF/,''));
+const read=file=>painted.legacyRead(file,JSON.parse(fs.readFileSync(path.join(root,file),'utf8').replace(/^\uFEFF/,'')));
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
 function canonical(value){
   if(typeof value==='number')return Math.round(value*1e6)/1e6;
@@ -109,10 +110,10 @@ for(const asset of fixture.assets){
   test(asset.asset+' keeps authored bones, slots, geometry, animation keys, UVs and light deformation',()=>{
     const source=sourceSkeleton(asset.asset);
     assert.equal(hash(source.bones),asset.bones);assert.equal(hash(source.slots),asset.slots);
-    assert.equal(hash(source),asset.sourceSkeleton,'Only the documented pure light translations and Royal Guard clones may change');
+    assert.equal(hash(source),asset.sourceSkeleton,'Only reviewed additive paint layers, attachment restores and documented legacy fits may change');
   });
   test(asset.asset+' changes only its allowed art rectangles and retains every light and effect pixel',()=>{
-    const text=fs.readFileSync(path.join(root,filename(asset.asset,'atlas')),'utf8').replace(/\r\n/g,'\n');
+    const text=painted.withoutPaintedAtlas(asset.asset,fs.readFileSync(path.join(root,filename(asset.asset,'atlas')),'utf8')).replace(/\r\n/g,'\n');
     const original=asset.asset==='by'?text.split(/\n\s*\nby-royal\.png\n/)[0].trim():asset.asset==='cb'?text.split(/\n\s*\ncb-rts\.png\n/)[0].trim():asset.asset==='cq/cq1'?text.split(/\n\s*\nwall-rts\.png\n/)[0].trim():text.trim();
     assert.equal(sha(original),asset.originalAtlas,'Keep all original atlas coordinates, rotations, trim offsets and sampling');
     const regions=atlasRegions(text);for(const region of asset.artRegions)assert.deepEqual(regions[region.name],region);
@@ -179,27 +180,8 @@ test('all fitted icons are transparent, proportional exports within their preser
   }
 });
 
-test('building fitting preserves barracks IDs, progression, colliders, stats, timing, routes and unknown data',()=>{
-  const barracks=clone(read('assets/KinghtFallConfig/GameJsonCfg.json').BuildEnum['3']);
-  for(const alias of fixture.stables?.aliases||[]){
-    if(alias.reserved)continue;
-    const row=barracks.levelList.find(row=>row.index===alias.index);assert.equal(row.Skin,alias.alias);assert.equal(row.Icon,alias.icon);
-    row.Skin=alias.previousSkin;row.Icon=alias.previousIcon;
-  }
-  for(const alias of fixture.garrison?.aliases||[]){
-    if(alias.reserved)continue;
-    const row=barracks.levelList.find(row=>row.index===alias.index);assert.equal(row.Skin,alias.alias);assert.equal(row.Icon,alias.icon);
-    row.Skin=alias.previousSkin;row.Icon=alias.previousIcon;
-  }
-  for(const[level,sourceSkin,sourceIcon]of [[1,'by-1','by_1'],[2,'dxby-2-1','dxby_2_1'],[3,'dxby-3-1','dxby_3_1']]){
-    const row=barracks.levelList.find(row=>row.index===10+level);assert.equal(row.index,10+level);assert.equal(row.Skin,'by-royal-'+level);assert.equal(row.Icon,'royal-guard-'+level);
-    row.Skin=sourceSkin;row.Icon=sourceIcon;
-  }
-  for(const alias of fixture.cavalry.aliases){
-    const row=barracks.levelList.find(row=>row.index===alias.index);assert.equal(row.Skin,alias.alias);assert.equal(row.Icon,alias.slot);row.Skin=alias.skin;
-  }
-  assert.equal(barracks.levelList.find(row=>row.index===22).Skin,'qby-3-2');
-  assert.equal(hash(barracks),fixture.barracks,'The fitting changes only the documented visual bindings');
+test('building fitting preserves original row values and activates only authorized fourth-tier routes',()=>{
+  for(const file of Object.keys(painted.fixture.config))painted.assertConfig(file,read(file));
 });
 
 test('cavalry revised tiers retain proportions, ground anchors, lighting transitions and asset references',()=>{

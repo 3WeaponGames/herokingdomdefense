@@ -256,7 +256,6 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   t.palyer_attack = "KinghtFallpalyer_attack";
   t.player_hurt = "KinghtFallplayer_hurt";
   t.rebirth = "KinghtFallrebirth";
-  t.death = "KinghtFalldeath";
   t.game_success = "KinghtFallgame_success";
   t.game_fail = "KinghtFallgame_fail";
   t.set_of = "KinghtFallset_of";
@@ -303,9 +302,6 @@ exports.KinghtFallAudioCF = ((a = {})[r.menu_bgm] = {
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.rebirth] = {
   path: "rebirth",
-  bundle: exp_KinghtFallBundelName.Audio
-}, a[r.death] = {
-  path: "death",
   bundle: exp_KinghtFallBundelName.Audio
 }, a[r.game_success] = {
   path: "game_success",

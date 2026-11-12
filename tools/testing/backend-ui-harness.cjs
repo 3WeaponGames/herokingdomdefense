@@ -53,14 +53,17 @@ function fixture() {
     BasePlatform: {}, PlatformManager: {}, PoolMgr: {}, TweenMgr: {}
   };
   function load(name) {
+    name = name.replace(/^\.\//, '');
     if (modules[name]) return modules[name];
     const exports = modules[name] = {};
-    const context = { exports, require: load, cc, sp: { Skeleton: function () {} }, console, __spreadArrays: (...arrays) => [].concat(...arrays),
+    const module = { exports };
+    const context = { exports, module, require: load, cc, sp: { Skeleton: function () {} }, console, __spreadArrays: (...arrays) => [].concat(...arrays),
       __extends(child, parent) { Object.setPrototypeOf(child, parent); child.prototype = Object.create(parent.prototype); child.prototype.constructor = child; },
       __decorate(_decorators, target, key) { return key === undefined ? target : undefined; },
       setTimeout(fn) { const id = ++nextTimer; timers.set(id, fn); return id; }, clearTimeout(id) { timers.delete(id); } };
     vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8'), context, { filename: name + '.js' });
-    return exports;
+    modules[name] = module.exports;
+    return module.exports;
   }
   const Guide = load('UIGuide'), Touch = load('UITouch').default;
   touch = new Touch(); touch.node = new Node('Touch'); touch.ndMask = {};

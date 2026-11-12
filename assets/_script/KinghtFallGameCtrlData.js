@@ -85,6 +85,19 @@ var def_KinghtFallGameCtrlData = function () {
       n.bulidPoint.push(o[1]);
     }
     this.buildings.push(n);
+    // Level-four unlocks are optional in existing authored stages.
+    e = this.levelCfg.HomeLevel4Unlock || [];
+    n = {
+      level: 4,
+      bulidPoint: [],
+      bulidId: []
+    };
+    for (a = 0; a < e.length; a++) {
+      o = e[a];
+      n.bulidId.push(o[0]);
+      n.bulidPoint.push(o[1]);
+    }
+    this.buildings.push(n);
     var r;
     var l = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTask(1 == this.levelCfg.Level ? 1 : 2);
     var h = l.MissionID;
@@ -102,11 +115,16 @@ var def_KinghtFallGameCtrlData = function () {
       reward: g,
       stage: 0
     };
+    var eligibility = require("RelicEligibility");
+    var user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    this.heroStyle = eligibility.selected(user).id;
+    this.relicDefinitions = {};
     var y = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfg();
     for (a = 0; a < y.length; a++) {
       o = y[a];
+      this.relicDefinitions[o.ID] = o;
       n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getTreasureLevel(o.ID);
-      if (n) {
+      if (n && eligibility.eligible(o.ID, this.heroStyle, o)) {
         this.treasureAdd[o.ID] = null === (t = o.levelInfo[n.level - 1]) || undefined === t ? undefined : t.param;
       }
     }
@@ -118,8 +136,6 @@ var def_KinghtFallGameCtrlData = function () {
       this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] = h[$z1Utils.Utils.randomRang(0, h.length)];
       $z1LogMgr.LogMgr.getInstance().info("***先祖的契约", h, this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs]);
     }
-    this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] = 0);
-    this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] = 0);
     this.round = 0;
     this.coin = $z1KinghtFallConfig.KinghtFallParameter.InitGold;
     this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SilverCoinBag] && (this.coin += this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SilverCoinBag][0]);
@@ -194,6 +210,7 @@ var def_KinghtFallGameCtrlData = function () {
     if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };
   _ctor.prototype.onRestart = function (t) {
+    delete this._relicArmyBanner;
     var restoring = !t && this._restoringCheckpoint;
     this._restoringCheckpoint = false;
     this.pendingEnemySpawns = 0;
@@ -302,19 +319,12 @@ var def_KinghtFallGameCtrlData = function () {
             if (i.getIsWork()) {
               e += i.getGetCoin();
               t.push(i);
-              if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SilverCoinHouse] && Math.random() < this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.SilverCoinHouse][0]) {
-                e++, $z1LogMgr.LogMgr.getInstance().info("***银币增产屋");
-              }
             }
         }
         i.endRoundGame();
       }
     }
     if (e > 0) {
-      e += require("RelicBattle").productionBonus(this, e);
-      if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract]) {
-        this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] += e, this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] >= 10 && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract] -= 10, e += this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract][0], $z1LogMgr.LogMgr.getInstance().info("***税收契约", this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.TaxContract][0]));
-      }
       this.coin += e;
       if (BattleSounds.effect) BattleSounds.effect("battle-silver-reward", null, { game: this.ctrPar });
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, e);
@@ -322,6 +332,7 @@ var def_KinghtFallGameCtrlData = function () {
     this.soldierList.forEach(function (t) {
       t.delAllBuff();
     });
+    delete this._relicArmyBanner;
     this.canNew = true;
     this.initCom();
     return t;
@@ -470,15 +481,7 @@ var def_KinghtFallGameCtrlData = function () {
     for (var o = 0; o < this.enemyList.length; o++) {
       require("RelicCombat").updateEnemy(this.enemyList[o], t);
     }
-    if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] && (this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] += t, this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] >= 5)) {
-      this.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag] -= 5;
-      for (var r = 0; r < this.soldierList.length; r++) {
-        (a = this.soldierList[r]).addBuff($z1KinghtFallInterface.KinghtFallEnemyBuffType.DamageAdd, {
-          addNum: this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.WavesFlag][0],
-          time: -1
-        });
-      }
-    }
+    require("RelicBattle").updateArmyBanner(this, t);
     // Delay groups do not create an enemy whose death can finish the wave.
     // Recheck after draining them, retaining the pending-spawn/once-only guard.
     if (advancedQueue && this.enemyList.length === 0) this.tryEndGame();

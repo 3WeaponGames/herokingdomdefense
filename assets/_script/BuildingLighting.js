@@ -17,26 +17,37 @@ function setColor(node, color) { if (valid(node)) node.color = cc.color(color.r,
 function restoreColor(record) {
   if (record.tint) { setColor(record.parent, record.dayColor); if (record.weaponDayColor) setColor(record.weapon, record.weaponDayColor); }
 }
+function spriteLight(light) {
+  return light && typeof light.sprite === "string" && light.sprite &&
+    finite(light.width, 0) > 0 && finite(light.height, 0) > 0;
+}
 function config(owner) {
   var appearance = owner && owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.Appearance;
   var lights = appearance && appearance.lighting;
   if (!Array.isArray(lights)) return [];
   return lights.filter(function (light) {
-    return light && Array.isArray(light.points) && light.points.length >= 3 && light.points.every(function (point) {
+    return light && (spriteLight(light) ||
+      Array.isArray(light.points) && light.points.length >= 3 && light.points.every(function (point) {
       return point && typeof point.x === "number" && isFinite(point.x) && typeof point.y === "number" && isFinite(point.y);
-    });
+    }));
   }).map(function (light) {
-    var result = { points: light.points.map(function (point) { return { x: point.x, y: point.y }; }),
-      color: typeof light.color === "string" ? light.color : "#FFE89A", opacity: clamp(finite(light.opacity, 235), 0, 255) };
-    if (light.glow) {
-      var glow = light.glow === true ? {} : light.glow;
-      var xs = result.points.map(function (point) { return point.x; }), ys = result.points.map(function (point) { return point.y; });
+    var result = { color: typeof light.color === "string" ? light.color : "#FFE89A", opacity: clamp(finite(light.opacity, 235), 0, 255) };
+    if (spriteLight(light)) {
+      result.sprite = light.sprite; result.width = light.width; result.height = light.height;
+      result.offsetX = finite(light.offsetX, 0); result.offsetY = finite(light.offsetY, 0);
+    } else result.points = light.points.map(function (point) { return { x: point.x, y: point.y }; });
+    function glowConfig(value) {
+      var glow = value === true ? {} : value;
+      var xs = result.points ? result.points.map(function (point) { return point.x; }) : [result.offsetX - result.width / 2, result.offsetX + result.width / 2];
+      var ys = result.points ? result.points.map(function (point) { return point.y; }) : [result.offsetY, result.offsetY + result.height];
       var left = Math.min.apply(Math, xs), right = Math.max.apply(Math, xs), bottom = Math.min.apply(Math, ys), top = Math.max.apply(Math, ys);
-      result.glow = { x: finite(glow.x, (left + right) / 2), y: finite(glow.y, (bottom + top) / 2),
+      return { x: finite(glow.x, (left + right) / 2), y: finite(glow.y, (bottom + top) / 2),
         width: Math.max(1, finite(glow.width, (right - left) * 3)), height: Math.max(1, finite(glow.height, (top - bottom) * 3)),
         color: typeof glow.color === "string" ? glow.color : "#FFC85B", opacity: clamp(finite(glow.opacity, 100), 0, 255),
         pulse: clamp(finite(glow.pulse, .08), 0, 1), sprite: typeof glow.sprite === "string" && glow.sprite ? glow.sprite : GLOW };
     }
+    if (light.glow) result.glow = glowConfig(light.glow);
+    if (Array.isArray(light.glows)) result.glows = light.glows.filter(function (glow) { return glow && typeof glow === "object"; }).map(glowConfig);
     return result;
   });
 }
@@ -79,9 +90,10 @@ function paint(owner, state, record) {
   }
   record.node.opacity = Math.round(record.blend * 255); record.node.active = record.blend > 0;
   record.entries.forEach(function (entry, index) {
-    if (!entry.glow) return;
-    var glow = entry.config.glow, pulse = 1 - glow.pulse * (1 - Math.cos(record.clock * Math.PI * 2 / PERIOD + index * .7)) / 2;
-    entry.glow.opacity = Math.round(glow.opacity * pulse);
+    (entry.glows || []).forEach(function (part, at) {
+      var glow = part.config, pulse = 1 - glow.pulse * (1 - Math.cos(record.clock * Math.PI * 2 / PERIOD + (index + at) * .7)) / 2;
+      part.node.opacity = Math.round(glow.opacity * pulse);
+    });
   });
 }
 function loadGlows(owner, state, record) {
@@ -100,7 +112,7 @@ function loadGlows(owner, state, record) {
       // releases it when a new light layout replaces this one or it is disposed.
       if (frame.addRef) { frame.addRef(); resource.retained = true; }
       resource.frame = frame;
-      record.entries.forEach(function (entry) { if (entry.config.glow && entry.config.glow.sprite === path) entry.sprite.spriteFrame = frame; });
+      resource.sprites.forEach(function (sprite) { sprite.spriteFrame = frame; });
       // Loading never activates a light. Its phase/fade alone controls visibility.
     });
   });
@@ -113,17 +125,32 @@ function build(owner, state, lights, layoutSignature) {
   var record = state._buildingLighting = { node: node, parent: state.node, signature: layoutSignature, entries: [], resources: {}, tint: nightColor, dayColor: colorValue(state.node.color), weapon: weapon, weaponDayColor: weapon ? colorValue(weapon.color) : null,
     generation: 0, night: null, blend: 0, from: 0, to: 0, fadeElapsed: 0, clock: 0 };
   lights.forEach(function (light, index) {
-    var entry = { config: light };
-    if (light.glow) {
-      var glow = entry.glow = new cc.Node("WindowGlow" + index); glow.parent = node; glow.group = node.group; glow.zIndex = 0;
-      glow.setPosition(light.glow.x, light.glow.y); glow.setContentSize(light.glow.width, light.glow.height); glow.color = cc.color(light.glow.color);
-      var sprite = entry.sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
-      record.resources[light.glow.sprite] = record.resources[light.glow.sprite] || { frame: null, token: null, retained: false };
+    var entry = { config: light, glows: [] };
+    function resource(path, sprite) {
+      var recordResource = record.resources[path] = record.resources[path] || { frame: null, token: null, retained: false, sprites: [] };
+      recordResource.sprites.push(sprite);
     }
+    var glows = (light.glow ? [light.glow] : []).concat(light.glows || []);
+    glows.forEach(function (settings, at) {
+      var glow = new cc.Node("WindowGlow" + index + "_" + at); glow.parent = node; glow.group = node.group; glow.zIndex = 0;
+      glow.setPosition(settings.x, settings.y); glow.setContentSize(settings.width, settings.height); glow.color = cc.color(settings.color);
+      var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
+      entry.glows.push({ node: glow, sprite: sprite, config: settings });
+      if (!at) { entry.glow = glow; entry.sprite = sprite; }
+      resource(settings.sprite, sprite);
+    });
     var window = entry.window = new cc.Node("LitWindow" + index); window.parent = node; window.group = node.group; window.zIndex = 1; window.opacity = light.opacity;
-    var graphics = window.addComponent(cc.Graphics); graphics.fillColor = cc.color(light.color);
-    light.points.forEach(function (point, at) { if (at) graphics.lineTo(point.x, point.y); else graphics.moveTo(point.x, point.y); });
-    graphics.close(); graphics.fill(); record.entries.push(entry);
+    if (light.sprite) {
+      window.setAnchorPoint(.5, 0); window.setPosition(light.offsetX, light.offsetY);
+      window.setContentSize(light.width, light.height); window.color = cc.color(light.color);
+      var mask = entry.maskSprite = window.addComponent(cc.Sprite); mask.sizeMode = cc.Sprite.SizeMode.CUSTOM; mask.trim = false;
+      resource(light.sprite, mask);
+    } else {
+      var graphics = window.addComponent(cc.Graphics); graphics.fillColor = cc.color(light.color);
+      light.points.forEach(function (point, at) { if (at) graphics.lineTo(point.x, point.y); else graphics.moveTo(point.x, point.y); });
+      graphics.close(); graphics.fill();
+    }
+    record.entries.push(entry);
   });
   return record;
 }

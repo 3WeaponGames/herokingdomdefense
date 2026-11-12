@@ -522,10 +522,10 @@ var def_KinghtFallEnemyBase = function (t) {
   _ctor.prototype.doAttackFinish = function () {
     this.doIdel();
   };
-  _ctor.prototype.onAttacked = function (t, source, secondary) {
+  _ctor.prototype.onAttacked = function (t, source, secondary, context) {
     var e;
     if (!this.isDead()) {
-      t = RelicCombat.enemyDamage(this, t, source, secondary);
+      t = RelicCombat.enemyDamage(this, t, source, secondary, context);
       this.hp -= t;
       if (BattleSounds.hit) BattleSounds.hit(this, source, t, { magic: !!secondary });
       if (t > 0 && this.hp > 0 && cc.resources) require("UnitHitFeedback").play(this);
@@ -534,8 +534,9 @@ var def_KinghtFallEnemyBase = function (t) {
         this.state = r.Dead;
         RelicCombat.releaseControl(this);
         RelicRuntime.clearControl(this);
-        RelicCombat.enemyKilled(this, source, secondary);
+        RelicCombat.enemyKilled(this, source, secondary, context);
         this.delAllBuff();
+        if (!secondary) RelicCombat.primaryImpact(this, source, context, t);
         this.playDeath(function () {
           this.freeNode();
         });
@@ -556,6 +557,7 @@ var def_KinghtFallEnemyBase = function (t) {
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addTaskNum($z1KinghtFallMissionData.KinghtFallTaskCountName.Kill, 1);
       }
       null === (e = this.hpctrl) || undefined === e || e.setHp(this.hp, this.hpMax);
+      if (!secondary && this.hp > 0) RelicCombat.primaryImpact(this, source, context, t);
       return t;
     }
   };

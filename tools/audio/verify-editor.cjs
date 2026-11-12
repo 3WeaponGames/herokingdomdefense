@@ -67,7 +67,14 @@ async function verify() {
     const source = page.getByLabel('Source', { exact: true });
     await source.selectOption('original'); assert.equal(await page.locator('.sound-row').count(), assets.items.filter(item => item.origin === 'original').length);
     await source.selectOption('new'); assert.equal(await page.locator('.sound-row').count(), assets.items.filter(item => item.origin === 'new').length);
-    await page.getByRole('button', { name: 'Clear filters', exact: true }).click(); await page.getByLabel('Biome', { exact: true }).selectOption('ice'); assert.equal(await page.locator('.sound-row').count(), 2);
+    await page.getByRole('button', { name: 'Clear filters', exact: true }).click(); await page.getByLabel('Biome', { exact: true }).selectOption('ice'); assert.equal(await page.locator('.sound-row').count(), assets.items.filter(item => item.biome === 'ice').length);
+    await page.getByLabel('Type', { exact: true }).selectOption('voice');
+    assert.equal(await page.locator('.sound-row').count(), 12);
+    await page.getByRole('searchbox', { name: 'Search sounds', exact: true }).fill('heavy infantry rally easter egg');
+    assert.equal(await page.locator('.sound-row').count(), 1); await page.locator('.sound-row').first().click();
+    assert(await page.locator('.sound-detail').getByText('All tiers', { exact: true }).isVisible());
+    assert(await page.locator('.sound-detail').getByText('Rally', { exact: true }).isVisible());
+    checks.push('Biome voice filters find all 12 easter eggs per biome and show the shared tier/action details');
     await page.getByRole('button', { name: 'Clear filters', exact: true }).click(); await page.locator('[data-category="horses"]').click(); assert.equal(await page.locator('.sound-row').count(), 8);
     checks.push('Original/New, biome and category filters show their correct clips');
     await page.locator('.sound-row').first().click(); assert.equal(await page.evaluate(() => audioCreated), 0);

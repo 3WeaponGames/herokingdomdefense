@@ -2,20 +2,21 @@
 const assert=require('node:assert/strict'),test=require('node:test');
 const {fixture}=require('./backend-ui-harness.cjs');
 const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+const catalog=require('../../assets/resources/localization/catalog.json');
 const {harness}=require('./persistence-harness.cjs');
 const single=value=>({getInstance:()=>value}),noop=()=>{};
 
 function setup(){
-  const h=fixture(),relic=config.TreasureCfg.find(item=>item.Quality===4),owned={id:relic.ID,level:1,frame:2};let purchases=0;
+  const h=fixture(),relic=config.TreasureCfg.find(item=>item.Quality===4),owned={id:relic.ID,level:1,frame:2},userData={getTreasureLevel:()=>owned};let purchases=0;
   Object.assign(h.modules,{
     KinghtFallConfig:{KinghtFallUIID:{UITreasureInfo:'details'},KinghtFallBundelName:{IconGood:'goods'},KinghtFallAudioId:{}},
     KinghtFallDataMgr:{KinghtFallDataMgr:single({getGoodsCfgById:id=>config.GoodsCfg[id],getTreasureCfg:()=>config.TreasureCfg})},
-    KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getUserData:()=>({getTreasureLevel:()=>owned}),purchase(){purchases++;throw Error('Description cannot purchase');}})},
+    KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getUserData:()=>userData,purchase(){purchases++;throw Error('Description cannot purchase');}})},
     KinghtFallTextConfig:{KinghtFallTextConfig:{HomeTrea02:'Lv.{0}'}},KinghtFallMissionData:{},KinghtFallEnum:{},
     KinghtFallModle:{default:single({numberFomat:String})},AudioMgr:{AudioMgr:single({stopOwnedEffects:noop})},GAD_Configs:{},GAD_App:{},GAD_PlayerMgr:{default:single({})},KinghtFallItemGood:{},
     Utils:{Utils:{StringFormat:(text,...values)=>text.replace(/\{(\d+)\}/g,(_match,index)=>values[index])}}
   });
-  const language={t:key=>key,token:key=>key,format:(text,values)=>text.replace('{0}',values[0]),bindLabel:(label,_key,values)=>{label.string=values.join(' ');}};
+  const language={t:(key,values=[])=>((catalog.entries[key]||{}).en||key).replace(/\{(\d+)\}/g,(_match,index)=>values[index]),token:key=>key,format:(text,values)=>text.replace('{0}',values[0]),bindLabel:(label,_key,values)=>{label.string=values.join(' ');}};
   h.modules.LanguageMgr.LanguageMgr.getInstance=()=>language;
   h.ui.setConf({details:{bundleName:'ui',prefab:'details',name:'details',zIndex:10},results:{bundleName:'ui',prefab:'results',name:'results',zIndex:1000}});
   function part(name,parent){const n=new h.cc.Node(name);n.ui={onDestroy:noop};if(parent)n.parent=parent;return n;}
@@ -29,7 +30,7 @@ function setup(){
   }
   const Result=h.load('GAD_UIResult').default,result=new Result();result.uid='results';result.node=part('results');result.node.ui=result;result.node.zIndex=1001;
   h.ui.uistatck.set('results',result);h.cc.instantiate=()=>detail().node;
-  return{...h,relic,owned,result,detail,purchases:()=>purchases,asset:{addRef:noop}};
+  return{...h,relic,owned,userData,result,detail,purchases:()=>purchases,asset:{addRef:noop}};
 }
 
 test('reward Relics open the existing description above results with no upgrade action',()=>{
@@ -124,4 +125,20 @@ test('reward-grid taps inspect their own Relic while currency icons do not open 
   assert.equal(h.ui.uistatck.get('details').cfg.ID,h.relic.ID);h.ui.closeById('details');
   icons[2].handlers.end({stopPropagation:noop});h.requests[1].done(null,h.asset);
   assert.equal(h.ui.uistatck.get('details').cfg.ID,second.ID);
+});
+
+test('Relic descriptions show eligible styles and current applicability without changing ownership or loadout',()=>{
+ const h=setup(),panel=h.detail(),spear=config.TreasureCfg.find(row=>row.ID===120024),melee=config.TreasureCfg.find(row=>row.ID===120018);
+ h.userData.heroWeapon={selected:'fighter'};const before=JSON.stringify(h.userData),owned=JSON.stringify(h.owned);
+ panel.init(spear,true);panel.start();assert.match(panel.labInfo.string,/Requires: Vanguard/);assert.match(panel.labInfo.string,/Inactive[^\n]*Fighter/);assert.equal(panel.btnGold.active,false);
+ h.userData.heroWeapon.selected='vanguard';panel.initView();assert.match(panel.labInfo.string,/Active[^\n]*Vanguard/);assert.doesNotMatch(panel.labInfo.string,/Inactive/);
+ panel.init(melee,true);panel.initView();assert.match(panel.labInfo.string,/Fighter, Vanguard, Bruiser, Guardian/);assert.doesNotMatch(panel.labInfo.string,/Requires:[^\n]*(Skirmisher|Mystic)/);
+ panel.init(config.TreasureCfg.find(row=>row.ID===120031),true);panel.initView();assert.doesNotMatch(panel.labInfo.string,/Requires:|Inactive|Active/);
+ h.userData.heroWeapon.selected='fighter';assert.equal(JSON.stringify(h.userData),before);assert.equal(JSON.stringify(h.owned),owned);assert.equal(h.purchases(),0);
+});
+
+test('an unowned Relic shows its style requirement without claiming activation',()=>{
+ const h=setup(),panel=h.detail();h.userData.heroWeapon={selected:'guardian'};h.userData.getTreasureLevel=()=>null;
+ const before=JSON.stringify(h.userData);panel.init(config.TreasureCfg.find(row=>row.ID===120011),true);panel.start();
+ assert.match(panel.labInfo.string,/Requires: Guardian/);assert.doesNotMatch(panel.labInfo.string,/Active|Inactive/);assert.equal(panel.ndLock.active,true);assert.equal(h.purchases(),0);assert.equal(JSON.stringify(h.userData),before);
 });

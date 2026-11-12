@@ -5960,8 +5960,16 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "682a3a4976daa37e18b360a9140696c5699575ab3ee4d159788e7a5c18c0649a",
-      "defaultScale": 0.9552730696798494
+      "sha256": "2a38f4e8e6b3b11a633d3a13893a5dd850adce8e82ad427ee08041eda6844463",
+      "defaultScale": 0.9552730696798494,
+      "source": {
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
+      }
     },
     {
       "id": "custom-753785316aa22501bfb7dab0",
@@ -5979,8 +5987,16 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "283fdccc8d1930c2d43969b1b5214929157d49dd7620ff7ea305be51ee9a2727",
-      "defaultScale": 0.7319189971070396
+      "sha256": "1d0efc9f70c6584f4d958742d88f6e4113373657037f692a2245cdc4a2540bd5",
+      "defaultScale": 0.7319189971070396,
+      "source": {
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
+      }
     },
     {
       "id": "custom-5999d933b4bd927241acc10b",
@@ -5998,8 +6014,16 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "e032deeba1c2e8d51b226e8bdacca0984d9c2ef04915bce67cd256af41d3ae1e",
-      "defaultScale": 0.617678381256656
+      "sha256": "725e54df5d9a0142e216bfd77eab3f6dac9b4a8959788475d7be8bab3d356ea6",
+      "defaultScale": 0.617678381256656,
+      "source": {
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
+      }
     },
     {
       "id": "custom-393e27ae0f008002371c9524",
@@ -6017,8 +6041,16 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "6c70600c17d9ccdde20ba87cee86484e98857679bc72fa19989ed07d1198e5b9",
-      "defaultScale": 0.7936507936507936
+      "sha256": "8283ad67d40e4695a534865aa84bb0527cdca3df59a475ba9e5d90b1dbe52267",
+      "defaultScale": 0.7936507936507936,
+      "source": {
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
+      }
     },
     {
       "id": "custom-bdcfb1ea58b55d08fce58bfd",
@@ -6036,8 +6068,16 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "96ea4aaadab25f4bd14625cd890967dfe108b01bee14df930951c55c79b89981",
-      "defaultScale": 0.7586206896551724
+      "sha256": "1fe4d747e96f53c60d625d1204f0b22ec7fbd3c82dde94adf76c05ab07acaf6f",
+      "defaultScale": 0.7586206896551724,
+      "source": {
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
+      }
     },
     {
       "id": "custom-3652525f5e1732f91b7664a0",
@@ -6055,8 +6095,16 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "815c5a3b3618c5ef94382d3046c23c88061b63c1699e2916b9752f16512addcc",
-      "defaultScale": 0.8505408062930186
+      "sha256": "98d98916d5598bbeded2df8b2afcaed2f2faf2912ef40b520b831d0155a0e147",
+      "defaultScale": 0.8505408062930186,
+      "source": {
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
+      }
     },
     {
       "id": "terrain-forest-river-boundary",
@@ -6096,11 +6144,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "7e2ee3c15adefa4e3f184ab524f9d15003fd33ac24db14da5fd4ace5b7f1c04a",
+      "sha256": "3e43355fb284311b508068718dc9538d98f97bee43895e39a5013ceee8fca8fd",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.6395451105884069
     },
@@ -6119,11 +6173,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "ef377ecb124b7bbf0f60dc9ecc9a14b66d170547c0278186c40c13c941afcd4e",
+      "sha256": "2de7e227e8e3183bfcaaadce6195f29a3691f574469392cbbb9fe5a1502fea14",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "rocky-hill"
+        "piece": "rocky-hill",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5372807017543859
     },
@@ -6142,11 +6202,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "98b66773fd85421e1d99e410fff6ed9b130588ba97e9a5334b03f222915de34b",
+      "sha256": "a94e2d61c78dd08cb9d23e5201c31c50a4dc97bbaaf62429e9b97ae6b2a847f9",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "mountain"
+        "piece": "mountain",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6165,11 +6231,17 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "f5069c3f722cf7b5b36126240279a6e7620b8ea035e4888bd1364196c24eb928",
+      "sha256": "d60917771ff7c93570821f0f42dfc104ac858d864700a037d592dcd3c7ca2ac2",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "lake"
+        "piece": "lake",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6188,11 +6260,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "281db3ee2f72703977de7460d026208e7a4e8dc400d0fdb3b9ee32c61cda2a36",
+      "sha256": "39279d6e62f456e0ddc6ca1ac29cb60674ee60892aa47e98f1755c497a9dafa6",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "ruins"
+        "piece": "ruins",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6234,11 +6312,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "a996fb306dc607128daf612d5be094b56e9af0baf83747955a093ae4d8e10f07",
+      "sha256": "fef5582dd3a2e4b4dc1d5dbcc1a2d059064ad344ccd9d08263b638dcb81fec36",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.2920057443752992
     },
@@ -6257,11 +6341,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "b74c05cac2b7775017351a67d318fba9aa6daef2d0d1d6bbb4f209162cd2f695",
+      "sha256": "5a1f27e80d71ebb897556c207b9da75a0877928cbeb5e400a9f40688bd8519f4",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "rocky-hill"
+        "piece": "rocky-hill",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.4195804195804196
     },
@@ -6280,11 +6370,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "75e9aa217e202ee83a748f94e349f4ab77e4196de5469012a4d4e2e8c9ccf0fa",
+      "sha256": "fc89d4aa2a252b839dcebb7c5a3a384c320a96960c528998000714c203c07c79",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "mountain"
+        "piece": "mountain",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.44573643410852715
     },
@@ -6303,11 +6399,17 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "8916d399f4ee133e8cc7c55efaa46dac7d1ed56010c9b2fe7183d0255f313097",
+      "sha256": "c3837410e0ac95d71b74c5d99d68c8ee9007484cd136098d81763c383bc5e42d",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "lake"
+        "piece": "lake",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6326,11 +6428,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "57409eb6b4866f773314e54764acb7a51f238d9415fda109ea55e571f3be37a2",
+      "sha256": "c4f5e40a636eb2ce31e108e11f932693af424bbc0000d133c08abdc828a214a5",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "ruins"
+        "piece": "ruins",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6372,11 +6480,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "b251b2217d7c71e716d1ca5dd21db090e628fa048462c8e9ed3e7c25a14ffc94",
+      "sha256": "6ebfbc97b68cd145926a5d931282367e8602daa61dffc5ec4ba78326f0965018",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6418,11 +6532,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "846a820616deabe8b2632d5534108cf2b4ddcefec3b605f2840514440412f839",
+      "sha256": "aa80884214df5a923e600e3d0a31b94b60755dcac96294abd121c0494a095cbb",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
-        "piece": "mountain"
+        "piece": "mountain",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.502283105022831
     },
@@ -6441,11 +6561,17 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "3e6ddabbdbedeea0783f5032a80134d1f351412ceef7590749e3be13b73a9ae8",
+      "sha256": "46de0750dbd9651bc887defbfa45e9d339e9a155710d623f3204fb8fd975459f",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
-        "piece": "lake"
+        "piece": "lake",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6464,11 +6590,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "556604ba91a746454b8317c6a4f5eb47312ddbe6ca541819610865c1225157bd",
+      "sha256": "f81afd75b9bb886ec291d70e7c36258867804f0d758491f491788a05404a7d37",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
-        "piece": "ruins"
+        "piece": "ruins",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.4658385093167702
     },
@@ -6510,11 +6642,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "330df6ca3e3a213ae38b1b5beb4851ac1a1c8174b457f7dd3f4bd07dd03c87a8",
+      "sha256": "d746cd37b6a5e30bd05f9390343b87763f0e9153cbe74542c3e9247e4c8724b6",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.6738350016599671
     },
@@ -6533,11 +6671,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "d1969bc9cab978093e5c12e66b06fe657fc9362052e870519222e5cedbcbf014",
+      "sha256": "763125272683057aeb01029a773ef41b79eae0997deb4f0964e6285297152a99",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
-        "piece": "rocky-hill"
+        "piece": "rocky-hill",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.37037037037037035
     },
@@ -6556,11 +6700,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "c15709f819aa292b0bbbb1424c63f52d371ca209770ad9812c554d5b52486b49",
+      "sha256": "b4d72ac94496c339b89b51aad55cb35ba091922c4be8b5c340b6fa52071ad1cf",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
-        "piece": "mountain"
+        "piece": "mountain",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.39095907147220527
     },
@@ -6602,11 +6752,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "f43e02b0b49a6526f57603514d7d9ed900d65b01510a159b5347aaf2a6995342",
+      "sha256": "768b425442de7ca1cb009c30f7c1b9699800c88c574945c02bd16809a5aeaabb",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
-        "piece": "ruins"
+        "piece": "ruins",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.36450079239302696
     },
@@ -6648,11 +6804,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "c8814386fdc81cbbde8b133e2e7e6a393ba4b03786bf680cb0c2609c70418a35",
+      "sha256": "1c10e49acfd5e325c4f6e3760a1836ace5e75d9aa0dadbe8612885e9660dc5a5",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.3448275862068966
     },
@@ -6671,11 +6833,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "599a1b8853132966685e86a1d9ade346c419efdaa58db3cccc72518d157576a8",
+      "sha256": "0988fa431bc2f2cc853f14bd040d7b2c3cd09e1995979560cd378c0c226f1997",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
-        "piece": "rocky-hill"
+        "piece": "rocky-hill",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6717,11 +6885,17 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "0e8e9c895535864435ecc93479de22ab687772bf767235937b92433ee75a0797",
+      "sha256": "6d5cdbd9a37f1edc8b38e0e83fed7a863fe7a28d9840d1bb20eb22166b3f10ce",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
-        "piece": "lake"
+        "piece": "lake",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.3248259860788863
     },
@@ -6740,11 +6914,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "3c0d24f3985b9fc0de06e73edd69f1278bccf7b0cb36b0d1b0e81bd22936d6ca",
+      "sha256": "c7ebd73483001e34b95cd755c10ca3434b1d640f4044be7802ea33079613006a",
       "source": {
         "kind": "openai-imagegen",
         "biome": "snow",
-        "piece": "ruins"
+        "piece": "ruins",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.45819935691318325
     },
@@ -6786,11 +6966,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "a8ef1c2bf3618935eef3985a34175e6a3c33aa614645f898b4206856f347e4a4",
+      "sha256": "7ff93f0364d636b6cc18e355498ad2452dc6fbf816c5bcd7cc8ac0b16b12fad9",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6855,11 +7041,17 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "2d7e6e4eed254f99c59ba1203a23c178929deb3e51e2825ab0d8058597742f6e",
+      "sha256": "60c690a6da69767cee799ad9b915f76c94017c0b5f4d5b6f39830fca9dd72905",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
-        "piece": "lake"
+        "piece": "lake",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6924,11 +7116,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "44a55ff3dcc6ec90c31472a1ed0c14886ad21d2d83ae2948dd6acdddcb5bc341",
+      "sha256": "eaca296722aef9db626a7726e0cee0b38c1dac0cb79958703da4f8f9b8862dc1",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
-        "piece": "cliff"
+        "piece": "cliff",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -6970,11 +7168,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "f27230ac1484c8c8c19563c771bd0209b0093639a0b77ae07112606d6e7debfa",
+      "sha256": "03c9c761ea8b270302d6b91a9242dc4d875e617e54e084a7e8849873ce0e88a0",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
-        "piece": "mountain"
+        "piece": "mountain",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.532043530834341
     },
@@ -6993,11 +7197,17 @@
         "y": 0
       },
       "depth": "ground",
-      "sha256": "6c9ae22b4b7f75ae371f2745e320b8b06b03113ed94dc4bb1a87834a526fe3a8",
+      "sha256": "0b6c167d116b24af6895a06d0837a8b9ade22d00a1e6cf257cac861116f54d7d",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
-        "piece": "lake"
+        "piece": "lake",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7016,11 +7226,17 @@
         "y": 0
       },
       "depth": "world",
-      "sha256": "f3d9134feb9951cdb456cc8de323294adee541a24096286dd78e9c59da68cdad",
+      "sha256": "7409e3d433364780c1be63bab33aa1bfe16dfd080d6735e9d8c3cdf605681428",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
-        "piece": "ruins"
+        "piece": "ruins",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7039,11 +7255,17 @@
         "y": 0.5094228504122498
       },
       "depth": "ground",
-      "sha256": "39c73f180eedd338b2d41891599f795f25884d2cdece455d72afd780c58ced0e",
+      "sha256": "70fb31a3f1ff2c6877cff592edbbee51d91a651189f5c8c689460c71b0ec8925",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "bridge"
+        "piece": "bridge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.3864734299516908
     },
@@ -7062,11 +7284,17 @@
         "y": 0.5103550295857988
       },
       "depth": "ground",
-      "sha256": "31f766ac2c6be9c4e657c0ed8ad3bd225a58fd2a9302f570754758dd34a05892",
+      "sha256": "57c5f59a33f080d664687de24c68a76639bd57af1a9ce6b52c8fad90ab3e4f57",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
-        "piece": "bridge"
+        "piece": "bridge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.4606240713224368
     },
@@ -7085,11 +7313,17 @@
         "y": 0.4964114832535884
       },
       "depth": "ground",
-      "sha256": "58b5ef3c1b952a53de313fb5dfe51d6daf89078969492f63f72059ecd8755499",
+      "sha256": "822ab2cd7d503cd36f48109c6217cff12b3a35e9b521a5cfbd8def3d12c01f51",
       "source": {
         "kind": "openai-imagegen",
         "biome": "ice",
-        "piece": "bridge"
+        "piece": "bridge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5873266441152801
     },
@@ -7108,11 +7342,17 @@
         "y": 0.094715852442672
       },
       "depth": "world",
-      "sha256": "2d5a0ae358624b1f4f5e6ea5fe6152ef5f27143fa059b4227b488bf0f2115e8d",
+      "sha256": "5b4e4844c80b3c8f75c1f4f2ec9d3fbd146b5e0a319febb12323e895df3c92cc",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
-        "piece": "plateau-wide"
+        "piece": "plateau-wide",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7154,11 +7394,17 @@
         "y": 0.15120967741935487
       },
       "depth": "world",
-      "sha256": "ea1ff559f2494454441bbc00e836583a9623b72894e6eec6cab1cb791507f45e",
+      "sha256": "4828a6f7ec1bb0c03f1a82b8bb63f732a49404aa77b0e4de73556ae1bd3dfcbd",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "plateau-wide"
+        "piece": "plateau-wide",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7177,11 +7423,17 @@
         "y": 0.1712707182320442
       },
       "depth": "world",
-      "sha256": "c1b4f1b663981be6f1283715335dc685c24ce160ee6e373f046a203d492cf5cb",
+      "sha256": "416551602177e26a91b301f2384dfe98ba01878a8b983fdcafef3659fab30880",
       "source": {
         "kind": "openai-imagegen",
         "biome": "deep-forest",
-        "piece": "raised-ledge"
+        "piece": "raised-ledge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7246,11 +7498,17 @@
         "y": 0.09072580645161288
       },
       "depth": "world",
-      "sha256": "7ed81cf9619c94e1a97c39191778837ffef87ebca581e9d2146c778efbce4cbc",
+      "sha256": "0f6ebd7cad1b5f871016c863dff5173339d7a422d00ceae1b81b720e72dd4eb8",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
-        "piece": "plateau-wide"
+        "piece": "plateau-wide",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7269,11 +7527,17 @@
         "y": 0.17817679558011046
       },
       "depth": "world",
-      "sha256": "8e8ce6b85599bd4e9d9f0e5533d044a72b8c3a9952195c8a09139698bea256fc",
+      "sha256": "38af3960536bd039538ba8e24dd16270d0afd1fdf9bd7d986e25df4801dbd44f",
       "source": {
         "kind": "openai-imagegen",
         "biome": "desert",
-        "piece": "raised-ledge"
+        "piece": "raised-ledge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7384,11 +7648,17 @@
         "y": 0.1078629032258065
       },
       "depth": "world",
-      "sha256": "6a4c63383a9ec0778c7cd55e099496c26987d9a991945160faf960bc8640ec37",
+      "sha256": "454a519b1321027f55599208db4eb136f0d2fece0fd498437b5aae461cb83255",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
-        "piece": "plateau-wide"
+        "piece": "plateau-wide",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7407,11 +7677,17 @@
         "y": 0.23066298342541436
       },
       "depth": "world",
-      "sha256": "f639c7876c3a363d8fba87fe2f1e84161575a8bd11d6b868c92a4b1de4b1418f",
+      "sha256": "f930fe62e98ae7ce84640ba55e1cd9bb44d45dbb0cfad5a24ed2913a392518a3",
       "source": {
         "kind": "openai-imagegen",
         "biome": "lava",
-        "piece": "raised-ledge"
+        "piece": "raised-ledge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7430,11 +7706,17 @@
         "y": 0.07876370887337991
       },
       "depth": "world",
-      "sha256": "5d75f6bb148c329127a6fd3170fc49bfd186ed22d11252ffee07a5b5112ba25d",
+      "sha256": "de43b96f5ec45f583e27006d6cd9bb030328bc42a8c0ad2fc05eeab8760a4485",
       "source": {
         "kind": "openai-imagegen",
         "biome": "fire",
-        "piece": "plateau-wide"
+        "piece": "plateau-wide",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7453,11 +7735,17 @@
         "y": 0.18508287292817682
       },
       "depth": "world",
-      "sha256": "fa85f3bea827e2afcce50b28d03c19443da5d0103ba3471c7548901cce3d4397",
+      "sha256": "b20b747f5d810451cd981ea6fd1b1b2eff1fe60b8fc48c2b5f2a37460d23c451",
       "source": {
         "kind": "openai-imagegen",
         "biome": "fire",
-        "piece": "raised-ledge"
+        "piece": "raised-ledge",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 0.5
     },
@@ -7476,12 +7764,18 @@
         "y": 0.5
       },
       "depth": "ground",
-      "sha256": "675541ed7f7c453c372bbb9861ab384a9cc066c50f6ddd8ffa26089eada1ecca",
+      "sha256": "778cb142f5bf4b58600287d0ee0ef4e0d22d5d4c94388adb43e42eed889310cd",
       "source": {
         "kind": "openai-imagegen",
         "biome": "forest",
         "piece": "connected-crossing",
-        "kit": "bridge-oblique-v2"
+        "kit": "bridge-oblique-v2",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 2.1
     },
@@ -7500,12 +7794,18 @@
         "y": 0.5
       },
       "depth": "ground",
-      "sha256": "1f331d0c8c4cecb1785a286f60b3652140d9dffc98d456c0808e38ff9c2376c6",
+      "sha256": "9ba6d8a9a47eeb0d1534e5897d610d38dbb45d2ddcc6b62d5c0dbeaf90ce3146",
       "source": {
         "kind": "openai-imagegen",
         "biome": "autumn",
         "piece": "connected-crossing",
-        "kit": "bridge-oblique-v2"
+        "kit": "bridge-oblique-v2",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       },
       "defaultScale": 1.75
     },
@@ -7575,37 +7875,7 @@
       },
       "depth": "world",
       "defaultScale": 0.546875,
-      "sha256": "c5e208a08bce070673970daaab54ad8b7366cd54010c03b3b1502a1adeb0d130",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "acdd711ea7e57f9dd1f464a22b7e9f6358bb209c543d1e798ca595985b556c3b",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -7613,7 +7883,13 @@
         "conceptName": "Switchback Pass",
         "role": "middle-shelf",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -7632,37 +7908,7 @@
       },
       "depth": "world",
       "defaultScale": 0.5755064456721916,
-      "sha256": "3aef163daba2bb72841bad1ec12434cb2990052ed85df03e900f5b3da9504e67",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "49499ba00dd4c48bcac2ffcbbd9da7fabdb03f9172adc0100f41a169847261af",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -7670,7 +7916,13 @@
         "conceptName": "Switchback Pass",
         "role": "north-shelf",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -7689,37 +7941,7 @@
       },
       "depth": "world",
       "defaultScale": 0.5971610376896721,
-      "sha256": "915c27ec7bad37f1942de3a4f6f2afd39e6942440d4e756b4c3e3072d66bd729",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "a0c48ec3c0476650227e56761e88d4006e9187bee01b19501655a61038ecf76c",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -7727,7 +7949,13 @@
         "conceptName": "Switchback Pass",
         "role": "south-shelf",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -7746,37 +7974,7 @@
       },
       "depth": "ground",
       "defaultScale": 0.535077288941736,
-      "sha256": "53ddf419cc9da94f2815c8624ded3105b8eabd233a05f700ea210e01caee74af",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "f0c6d940a837622f912b334bb904a22e6018df72d87cbb1b1556729b77c34eec",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -7784,7 +7982,13 @@
         "conceptName": "Switchback Pass",
         "role": "tapered-ramp",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -7974,17 +8178,7 @@
       },
       "depth": "world",
       "defaultScale": 0.6487,
-      "sha256": "37e6526d27ef4c60c4a50de7a2c3ce274f300d9d502f6ca1d1b805015f92fb97",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
-      },
+      "sha256": "2cc12081de79db2e9d4fa720afcbbe42471949c4a0cde55aea625bab863b1ccf",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -7992,7 +8186,13 @@
         "conceptName": "Broken Crown",
         "role": "eastern-rim",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#fcbc58"
+        "fieldColor": "#fcbc58",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8011,17 +8211,7 @@
       },
       "depth": "world",
       "defaultScale": 0.7011,
-      "sha256": "19ff6fc7d8c21579642ca073eb9e52b05ec1029160fadb42e219dfbb49afa1af",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
-      },
+      "sha256": "b97e67b784f6acc9315c373e62f935326f417201fcdd151ae46b2d0be7092147",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8029,7 +8219,13 @@
         "conceptName": "Broken Crown",
         "role": "northeast-rim",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#fcbc58"
+        "fieldColor": "#fcbc58",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8048,17 +8244,7 @@
       },
       "depth": "world",
       "defaultScale": 0.7528,
-      "sha256": "68816518555512deefb6034a9a61e2a9c758377a1d126ccb11ccb4ff07c61c03",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
-      },
+      "sha256": "e4473c96727aadcf134e08d1e90718c39a74d61b99c3edba5767fe0623d7bbd5",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8066,7 +8252,13 @@
         "conceptName": "Broken Crown",
         "role": "northwest-rim",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#fcbc58"
+        "fieldColor": "#fcbc58",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8085,17 +8277,7 @@
       },
       "depth": "world",
       "defaultScale": 0.602,
-      "sha256": "1150083dcf0b17f4ea5dfe9ee8f3c03470044a146b0a274d9557392757c7d9ea",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
-      },
+      "sha256": "37d612442f294b9cba700ba14af561f54564a2d8d771ba65e28632e7a41882c0",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8103,7 +8285,13 @@
         "conceptName": "Broken Crown",
         "role": "southern-rim",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#fcbc58"
+        "fieldColor": "#fcbc58",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8122,17 +8310,7 @@
       },
       "depth": "world",
       "defaultScale": 0.5915,
-      "sha256": "069ea5fb6c32a25e3aaf86d4711af0ac53b52fb4f798762b0cc97595fecafcb2",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
-      },
+      "sha256": "c06f5ed14aaf4257ba8abe2c14e21f8d2849b47c432052a9ed0df1325d5944eb",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8140,7 +8318,13 @@
         "conceptName": "Broken Crown",
         "role": "western-rim",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#fcbc58"
+        "fieldColor": "#fcbc58",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8159,37 +8343,7 @@
       },
       "depth": "world",
       "defaultScale": 0.55,
-      "sha256": "12547e0c9207dbdb3639525dce71f8278ac25b8b1f6c8e67dd631383d758fcab",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              62,
-              98,
-              60
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "5baf9c7ab42a37541e4d1796fead42ce27cfcf7ed62bbc1f863632dc91c3a316",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8197,7 +8351,13 @@
         "conceptName": "Six-Gate Woodland",
         "role": "middle-hill",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#3e623c"
+        "fieldColor": "#3e623c",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8216,37 +8376,7 @@
       },
       "depth": "world",
       "defaultScale": 0.6,
-      "sha256": "22b3be952b40305aeab4a2f0c46809e59712bdec58fa5a572d920a8dc5a3baa9",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              62,
-              98,
-              60
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "87d099f56d96b50604ae01bd66d34d47ebbc7cca59a496f4628f1b0c022910df",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8254,7 +8384,13 @@
         "conceptName": "Six-Gate Woodland",
         "role": "north-hill",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#3e623c"
+        "fieldColor": "#3e623c",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8273,37 +8409,7 @@
       },
       "depth": "world",
       "defaultScale": 0.62,
-      "sha256": "f99560d024420bfafe7f8e15df1f2ad8a591c52e2544f01331a50fe7f61ddc73",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              62,
-              98,
-              60
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "3974f488d7f4c1c0a09a24868e5446030c79fc25036e6d7ea4e9c5427721c901",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8311,7 +8417,13 @@
         "conceptName": "Six-Gate Woodland",
         "role": "south-hill",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#3e623c"
+        "fieldColor": "#3e623c",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8330,17 +8442,7 @@
       },
       "depth": "world",
       "defaultScale": 1.1827,
-      "sha256": "ca2642cb79d20b85a79f20bd87cfda2bb46437d3d096deb45aed873a8672defd",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
-      },
+      "sha256": "2ecb9f65030466c4ed4f2288feb7dccbea2014b023a802e88070570949581b05",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8348,7 +8450,13 @@
         "conceptName": "Crescent Ridge",
         "role": "crescent-ridge",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#745f61"
+        "fieldColor": "#745f61",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8367,54 +8475,7 @@
       },
       "depth": "ground",
       "defaultScale": 0.5195,
-      "sha256": "45fc5dd7043c517f44e6a8bb283a5b73a177a58a9ebcdab181fa02799ff6315d",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              116,
-              95,
-              97
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              155,
-              85,
-              0
-            ],
-            "max": [
-              255,
-              225,
-              110
-            ],
-            "to": [
-              116,
-              95,
-              97
-            ],
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "b07d1b99df6f2eeeadfd93c69e4ba34f1f110373cac26d1e54f9d27af4cae4fd",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8422,7 +8483,13 @@
         "conceptName": "Crescent Ridge",
         "role": "hillpath",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#745f61"
+        "fieldColor": "#745f61",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8535,37 +8602,7 @@
       },
       "depth": "ground",
       "defaultScale": 1.1,
-      "sha256": "310358958fb531feeebcd9c8122294a4595249e968c95a47ed5c4df4ebdfd4bc",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              255,
-              172,
-              65
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "1b97dab4cfb15c17d0668c21df0e7759a9ffb8484e2c28f1a7185dbd083574da",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8573,7 +8610,13 @@
         "conceptName": "Terrace Citadel",
         "role": "three-ramp-plateau",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#ffac41"
+        "fieldColor": "#ffac41",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8592,37 +8635,7 @@
       },
       "depth": "world",
       "defaultScale": 0.6,
-      "sha256": "48f0c1e9d8c458d86529fe66500d1696332b612024057a60cf83bf7015917038",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              62,
-              98,
-              60
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "18a1e864eac9b5a72b3779563ad5cd8be7503f58425feaa510fd4f16e2cb31c4",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8630,7 +8643,13 @@
         "conceptName": "Twin Courtyards",
         "role": "ruined-hall",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#3e623c"
+        "fieldColor": "#3e623c",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8706,37 +8725,7 @@
       },
       "depth": "world",
       "defaultScale": 0.49808429118773945,
-      "sha256": "fabb377865a75dba08bb6abebdfe84e91754e0a4a492db9a5dbe0e3f6a168bde",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "a452fbfd6e35beaf1726141d7f1311d0ec28ddf5ac6010c88842bb5ecd6fe474",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8744,7 +8733,13 @@
         "conceptName": "Forked Harbor",
         "role": "headland-cliff",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8763,93 +8758,7 @@
       },
       "depth": "world",
       "defaultScale": 0.4468,
-      "sha256": "94238790c4013545cc50f8a9b443840612876a59777f6744badea881af660643",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": false,
-            "opaque": true
-          },
-          {
-            "min": [
-              25,
-              55,
-              8
-            ],
-            "max": [
-              180,
-              215,
-              150
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": true,
-            "opaque": true
-          },
-          {
-            "min": [
-              180,
-              155,
-              75
-            ],
-            "max": [
-              245,
-              230,
-              175
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": false,
-            "opaque": true
-          },
-          {
-            "min": [
-              100,
-              60,
-              0
-            ],
-            "max": [
-              220,
-              150,
-              90
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "afd5966ece57d3060088ff26c152c03c6e2bf4d82c89a9b4dd83fc0a79728bad",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8857,7 +8766,13 @@
         "conceptName": "Stonefield Outpost",
         "role": "middle-mesa",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#d4bd75"
+        "fieldColor": "#d4bd75",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8876,75 +8791,7 @@
       },
       "depth": "world",
       "defaultScale": 0.4961,
-      "sha256": "8b9d85d709ef1877b0060e1db9aee5526514d31529fe39d177e1686d1241cfa2",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": false,
-            "opaque": true
-          },
-          {
-            "min": [
-              25,
-              55,
-              8
-            ],
-            "max": [
-              180,
-              215,
-              150
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": true,
-            "opaque": true
-          },
-          {
-            "min": [
-              180,
-              155,
-              75
-            ],
-            "max": [
-              245,
-              230,
-              175
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "5d1123a86dc2b243030ef0d103af31bb93f0b99eaf872fb83014b9524e913abd",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -8952,7 +8799,13 @@
         "conceptName": "Stonefield Outpost",
         "role": "north-mesa",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#d4bd75"
+        "fieldColor": "#d4bd75",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -8971,93 +8824,7 @@
       },
       "depth": "world",
       "defaultScale": 0.4281,
-      "sha256": "9d1bae883743d430ee5d0d5cab88e9cd62dab79f88b50fa9538ce341659fa848",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              205,
-              120,
-              10
-            ],
-            "max": [
-              255,
-              225,
-              145
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": false,
-            "opaque": true
-          },
-          {
-            "min": [
-              25,
-              55,
-              8
-            ],
-            "max": [
-              180,
-              215,
-              150
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": true,
-            "opaque": true
-          },
-          {
-            "min": [
-              180,
-              155,
-              75
-            ],
-            "max": [
-              245,
-              230,
-              175
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "greenOnly": false,
-            "opaque": true
-          },
-          {
-            "min": [
-              100,
-              60,
-              0
-            ],
-            "max": [
-              220,
-              150,
-              90
-            ],
-            "to": [
-              212,
-              189,
-              117
-            ],
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "f007d74a76a0ac8aef03708d1ff8b5315b5295daf8b5bd11e2849f9560ad9b13",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -9065,7 +8832,13 @@
         "conceptName": "Stonefield Outpost",
         "role": "south-mesa",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#d4bd75"
+        "fieldColor": "#d4bd75",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -9084,37 +8857,7 @@
       },
       "depth": "ground",
       "defaultScale": 1.0047846889952152,
-      "sha256": "1b62fd74701313d02ce1ece16ec287cf854229cae4da5f7869dcc6d8f89e9ebb",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 128,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "e7349d36cbaacce653f30429d3852cd4365e76b6a59b3cd6b2114b09e5aa4e69",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -9122,7 +8865,13 @@
         "conceptName": "Twinwater Saddle",
         "role": "northwest-lake",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -9141,37 +8890,7 @@
       },
       "depth": "ground",
       "defaultScale": 0.9728867623604466,
-      "sha256": "ebe7446f3beba3b99b9da07bdae9e14f338b2f86d9fc3835af3baa7743e2dc9f",
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              200,
-              230,
-              230
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "greenOnly": false,
-            "opaque": true
-          }
-        ]
-      },
+      "sha256": "58d94671afd02169fd80ea9112d1a6186e7df0ce6d934f652b9e1c3e4df03e43",
       "source": {
         "kind": "openai-imagegen",
         "mode": "built-in",
@@ -9179,7 +8898,13 @@
         "conceptName": "Twinwater Saddle",
         "role": "southeast-lake",
         "reference": "https://chatgpt.com/share/6af35cac-8c1c-83ed-bd4e-21ad3c397af7",
-        "fieldColor": "#e5fffe"
+        "fieldColor": "#e5fffe",
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
+        }
       }
     },
     {
@@ -9198,7 +8923,7 @@
       },
       "depth": "world",
       "defaultScale": 0.8611988028663334,
-      "sha256": "db6fd80be918ed5ba5b5ab8cc9dd4b46f6f3df1c92a83867af5fc36a0b19da80",
+      "sha256": "31e89d78180e8b36c4f180d26b11c6339f065e38a540f571087b3380c8afab90",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9213,37 +8938,13 @@
           "scale": 0.8611988028663334,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              70,
-              110,
-              20
-            ],
-            "max": [
-              180,
-              210,
-              150
-            ],
-            "to": [
-              120,
-              151,
-              82
-            ],
-            "greenOnly": true,
-            "opaque": true
-          }
-        ]
       }
     },
     {
@@ -9262,7 +8963,7 @@
       },
       "depth": "world",
       "defaultScale": 0.6250322962366057,
-      "sha256": "67f4ac572162617496e6630b0485a9db00f16aaaf213b948ed74e40e31afb26a",
+      "sha256": "0919784ec81d822ace4a86cf74648649dd6c87c1bed7a885f62eee3c49dc5e37",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9277,37 +8978,13 @@
           "scale": 0.6250322962366057,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              70,
-              110,
-              20
-            ],
-            "max": [
-              180,
-              210,
-              150
-            ],
-            "to": [
-              120,
-              151,
-              82
-            ],
-            "greenOnly": true,
-            "opaque": true
-          }
-        ]
       }
     },
     {
@@ -9326,7 +9003,7 @@
       },
       "depth": "ground",
       "defaultScale": 1,
-      "sha256": "0eb5825aa90c826ec50ac5dd5f7ab44bef82e8d7b01e1ef48a88b610a31c3d15",
+      "sha256": "027d37c1c9677afd48d10dbb660ee3dad45bb07de16d6d43ffab189d00bc4701",
       "source": {
         "kind": "original-map-terrain",
         "mode": "native-composite",
@@ -9341,6 +9018,12 @@
           "scale": 1,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
       }
     },
@@ -9360,7 +9043,7 @@
       },
       "depth": "world",
       "defaultScale": 0.8712906252380549,
-      "sha256": "8a9ad96275d990f050cee1f7e900551684a802b0a69d3b82b42c1834028bf264",
+      "sha256": "7efa60eb9e61f0108a9726b392cd4de4187a44ae8d17c3e0d21c0e165ac618e2",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9375,17 +9058,13 @@
           "scale": 0.8712906252380549,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
       }
     },
     {
@@ -9404,7 +9083,7 @@
       },
       "depth": "world",
       "defaultScale": 0.560802535661286,
-      "sha256": "b6a8a762557350caa98379f3be02bea147917e4ce65221bf76be69c3c7c3d7d5",
+      "sha256": "43d8b573f718341efcd28a35de407de97f656811271329a9ae02df9604138951",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9419,37 +9098,13 @@
           "scale": 0.560802535661286,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              70,
-              110,
-              20
-            ],
-            "max": [
-              180,
-              210,
-              150
-            ],
-            "to": [
-              120,
-              151,
-              82
-            ],
-            "greenOnly": true,
-            "opaque": true
-          }
-        ]
       }
     },
     {
@@ -9468,7 +9123,7 @@
       },
       "depth": "world",
       "defaultScale": 0.656053301788505,
-      "sha256": "30b9aafd014c96519c97ea092130e27dac25d95c2ddcf2972eff28dae72cd3dd",
+      "sha256": "0fa3fa33da82ff623bad57c7ec50dd71e8440a5451353c603dae89d6479c718a",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9483,17 +9138,13 @@
           "scale": 0.656053301788505,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
       }
     },
     {
@@ -9512,7 +9163,7 @@
       },
       "depth": "world",
       "defaultScale": 0.42921335,
-      "sha256": "35a629ee2537d695c8f0be18a4aa6f1ef0285c31f0e301ab2171c8418567dc8e",
+      "sha256": "710064448fb205326076d3ec6f607a4e01a8142b0e13441d1a928730a13332cb",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9527,17 +9178,13 @@
           "scale": 0.42921335,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
       }
     },
     {
@@ -9620,7 +9267,7 @@
       },
       "depth": "world",
       "defaultScale": 0.77104163,
-      "sha256": "f52d57e9fd316644972cba4a0ef51e9ab1cf69dfd4e3818480a88a1e0b558fc2",
+      "sha256": "27f3b9b47c0a0ba3379414fcaddaa4adfc008d445a3882cc1ccd68dd1458cd87",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9635,17 +9282,13 @@
           "scale": 0.77104163,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
       }
     },
     {
@@ -9664,7 +9307,7 @@
       },
       "depth": "world",
       "defaultScale": 0.62673617,
-      "sha256": "0a4773f66c27b9da393f87a01baf01f265d42f12b6d87c8a4abf6b371b010e07",
+      "sha256": "b9533aeb581a318f1e1785fea3017e5f5da049c1a653e2fd3c22ec7bbf3b1741",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9679,17 +9322,13 @@
           "scale": 0.62673617,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
       }
     },
     {
@@ -9708,7 +9347,7 @@
       },
       "depth": "world",
       "defaultScale": 0.67807029,
-      "sha256": "b191f9e05ade8987d0c69e99e2cbbebd8821b938443d1c3f4180f60a1fac1491",
+      "sha256": "1353f9e834dec91fa322f9c32c92994e3fef96d6d2a1c81f58a7e40a42c4511a",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9723,17 +9362,13 @@
           "scale": 0.67807029,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": []
       }
     },
     {
@@ -9880,7 +9515,7 @@
       },
       "depth": "world",
       "defaultScale": 0.214489,
-      "sha256": "6025d4af76bf1cc6b4cc62c33dee4a0d40e8115c351aebaa812280f1f38be0bf",
+      "sha256": "887260ce7c308e297204ce42b9b652944cb025b52471f59c3a873ab1b6faa30e",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -9895,103 +9530,13 @@
           "scale": 0.214489,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [],
-        "nearestPalette": [
-          {
-            "from": [
-              211,
-              139,
-              96
-            ],
-            "to": [
-              216,
-              148,
-              101
-            ]
-          },
-          {
-            "from": [
-              164,
-              97,
-              60
-            ],
-            "to": [
-              168,
-              105,
-              61
-            ]
-          },
-          {
-            "from": [
-              187,
-              118,
-              75
-            ],
-            "to": [
-              191,
-              125,
-              77
-            ]
-          },
-          {
-            "from": [
-              132,
-              59,
-              43
-            ],
-            "to": [
-              136,
-              63,
-              44
-            ]
-          },
-          {
-            "from": [
-              252,
-              174,
-              119
-            ],
-            "to": [
-              249,
-              171,
-              117
-            ]
-          },
-          {
-            "from": [
-              191,
-              125,
-              84
-            ],
-            "to": [
-              203,
-              136,
-              89
-            ]
-          },
-          {
-            "from": [
-              151,
-              84,
-              51
-            ],
-            "to": [
-              151,
-              85,
-              52
-            ]
-          }
-        ]
       }
     },
     {
@@ -10010,7 +9555,7 @@
       },
       "depth": "world",
       "defaultScale": 0.51149,
-      "sha256": "5cf6cb653ffe329f39b2748767714b31beabfea404c230353b4d4dcf04ba21b6",
+      "sha256": "3ce6b068135be9b90ff7da5992b126f575ba09e5df176e6fd4d7bf4aef08b485",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -10025,103 +9570,13 @@
           "scale": 0.51149,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [],
-        "nearestPalette": [
-          {
-            "from": [
-              210,
-              145,
-              102
-            ],
-            "to": [
-              216,
-              148,
-              101
-            ]
-          },
-          {
-            "from": [
-              169,
-              106,
-              66
-            ],
-            "to": [
-              168,
-              105,
-              61
-            ]
-          },
-          {
-            "from": [
-              192,
-              122,
-              79
-            ],
-            "to": [
-              191,
-              125,
-              77
-            ]
-          },
-          {
-            "from": [
-              126,
-              61,
-              43
-            ],
-            "to": [
-              136,
-              63,
-              44
-            ]
-          },
-          {
-            "from": [
-              252,
-              175,
-              120
-            ],
-            "to": [
-              249,
-              171,
-              117
-            ]
-          },
-          {
-            "from": [
-              190,
-              125,
-              83
-            ],
-            "to": [
-              191,
-              125,
-              77
-            ]
-          },
-          {
-            "from": [
-              151,
-              86,
-              53
-            ],
-            "to": [
-              151,
-              85,
-              52
-            ]
-          }
-        ]
       }
     },
     {
@@ -10223,7 +9678,7 @@
       },
       "depth": "world",
       "defaultScale": 0.187032,
-      "sha256": "241f89acb261429a1d5dd1c933c3ec00a4927ae24aea198aa2fc0103b9d1a7d3",
+      "sha256": "a0a007986aa7a034e869ba8a4eee42c1b527cc91f13eb8cc4aa56e721ead4238",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -10238,103 +9693,13 @@
           "scale": 0.187032,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 16,
-        "solidAlpha": 246,
-        "palette": [],
-        "nearestPalette": [
-          {
-            "from": [
-              204,
-              138,
-              95
-            ],
-            "to": [
-              216,
-              148,
-              101
-            ]
-          },
-          {
-            "from": [
-              163,
-              103,
-              62
-            ],
-            "to": [
-              168,
-              105,
-              61
-            ]
-          },
-          {
-            "from": [
-              190,
-              126,
-              78
-            ],
-            "to": [
-              191,
-              125,
-              77
-            ]
-          },
-          {
-            "from": [
-              130,
-              60,
-              43
-            ],
-            "to": [
-              136,
-              63,
-              44
-            ]
-          },
-          {
-            "from": [
-              252,
-              174,
-              119
-            ],
-            "to": [
-              249,
-              171,
-              117
-            ]
-          },
-          {
-            "from": [
-              184,
-              122,
-              82
-            ],
-            "to": [
-              203,
-              136,
-              89
-            ]
-          },
-          {
-            "from": [
-              148,
-              85,
-              52
-            ],
-            "to": [
-              151,
-              85,
-              52
-            ]
-          }
-        ]
       }
     },
     {
@@ -10353,7 +9718,7 @@
       },
       "depth": "world",
       "defaultScale": 0.3274111675126903,
-      "sha256": "6fc855e5fda36d8f3823883f1e29b7483f5f6a86b51376a367cdad5be90bf9d0",
+      "sha256": "31e713100e1d7d1d298abf4d1733320c6f7247661649cd52fd65f69ef7b3543e",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -10368,72 +9733,13 @@
           "scale": 0.3274111675126903,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 96,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              195,
-              225,
-              225
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              132,
-              154,
-              166
-            ],
-            "max": [
-              185,
-              208,
-              220
-            ],
-            "to": [
-              155,
-              176,
-              185
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              65,
-              90,
-              100
-            ],
-            "max": [
-              135,
-              163,
-              179
-            ],
-            "to": [
-              131,
-              156,
-              166
-            ],
-            "opaque": true
-          }
-        ]
       }
     },
     {
@@ -10452,7 +9758,7 @@
       },
       "depth": "world",
       "defaultScale": 0.1972361809045226,
-      "sha256": "23b1551525b3fe087204bd876f02f278df8986f35994131e35f80791330b047a",
+      "sha256": "667c8f3cc8b15d8439737bf53fbd99e8b9de870a647d74e61e1bbe6f92caaefc",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -10467,72 +9773,13 @@
           "scale": 0.1972361809045226,
           "angle": 0,
           "flipX": false
+        },
+        "outlineRefinement": {
+          "kind": "openai-imagegen",
+          "date": "2026-11-12",
+          "reference": "Tree Yellow Green 15",
+          "worldStroke": 1.8
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 96,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              195,
-              225,
-              225
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              132,
-              154,
-              166
-            ],
-            "max": [
-              185,
-              208,
-              220
-            ],
-            "to": [
-              155,
-              176,
-              185
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              65,
-              90,
-              100
-            ],
-            "max": [
-              135,
-              163,
-              179
-            ],
-            "to": [
-              131,
-              156,
-              166
-            ],
-            "opaque": true
-          }
-        ]
       }
     },
     {
@@ -10551,7 +9798,7 @@
       },
       "depth": "ground",
       "defaultScale": 0.6312949640287769,
-      "sha256": "7d85f36ef9a1c6ba81125495d230369ab1b9effbfcc343c207e6d57e0ee45334",
+      "sha256": "d61cad2771dcf5cda23e95735dee94d47ad37cadd02cfece32af26101a38e601",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -10567,89 +9814,6 @@
           "angle": 0,
           "flipX": false
         }
-      },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
-        ],
-        "alphaCutoff": 96,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              195,
-              225,
-              225
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              125,
-              170,
-              210
-            ],
-            "max": [
-              185,
-              225,
-              255
-            ],
-            "to": [
-              147,
-              196,
-              237
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              65,
-              115,
-              165
-            ],
-            "max": [
-              86,
-              145,
-              200
-            ],
-            "to": [
-              87,
-              150,
-              204
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              78,
-              136,
-              188
-            ],
-            "max": [
-              125,
-              180,
-              225
-            ],
-            "to": [
-              93,
-              156,
-              210
-            ],
-            "opaque": true
-          }
-        ]
       }
     },
     {
@@ -10668,7 +9832,7 @@
       },
       "depth": "ground",
       "defaultScale": 1.141049906716418,
-      "sha256": "26cf44f2f26f5f6e763913225334c7a9ef4b54d42b229951339028aed35f6b65",
+      "sha256": "9f79fd5414aac5cbf839ade7556825baa1cf47aa275585c2fde0dee9f22f4a54",
       "source": {
         "kind": "original-map-terrain",
         "mode": "built-in image_gen edit",
@@ -10685,174 +9849,178 @@
           "angle": 0,
           "flipX": false
         }
+      }
+    },
+    {
+      "id": "original-map04-native-northwest-snowbank",
+      "name": "Map04 · Northwest Snowbank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/northwest-snowbank.png",
+      "width": 1645,
+      "height": 956,
+      "anchor": {
+        "x": 0.4993920972644377,
+        "y": 0.5
       },
-      "colorShift": {
-        "rgb": [
-          0,
-          0,
-          0
+      "depth": "ground",
+      "defaultScale": 0.5760626398210291,
+      "sha256": "7293f059f57f1370cc1e279f2aa2c3d085a80902987942b8c3ff03ef27924bd1",
+      "source": {
+        "kind": "original-map-snowbank-restoration",
+        "mapId": "Map04",
+        "fieldColor": "#e5fffe",
+        "referenceBounds": {
+          "minX": -930.425,
+          "maxX": -21.425,
+          "minY": 997.988,
+          "maxY": 1512.988
+        },
+        "sourceOpaque128Bounds": [
+          28,
+          31,
+          1615,
+          925
         ],
-        "alphaCutoff": 96,
-        "solidAlpha": 246,
-        "palette": [
-          {
-            "min": [
-              55,
-              65,
-              75
-            ],
-            "max": [
-              85,
-              105,
-              115
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ]
-          },
-          {
-            "min": [
-              75,
-              90,
-              95
-            ],
-            "max": [
-              110,
-              135,
-              150
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ]
-          },
-          {
-            "min": [
-              100,
-              120,
-              125
-            ],
-            "max": [
-              140,
-              160,
-              180
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ]
-          },
-          {
-            "min": [
-              130,
-              150,
-              155
-            ],
-            "max": [
-              170,
-              195,
-              210
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ]
-          },
-          {
-            "min": [
-              160,
-              185,
-              190
-            ],
-            "max": [
-              215,
-              235,
-              235
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ]
-          },
-          {
-            "min": [
-              195,
-              225,
-              225
-            ],
-            "max": [
-              255,
-              255,
-              255
-            ],
-            "to": [
-              229,
-              255,
-              254
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              125,
-              170,
-              210
-            ],
-            "max": [
-              185,
-              225,
-              255
-            ],
-            "to": [
-              147,
-              196,
-              237
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              65,
-              115,
-              165
-            ],
-            "max": [
-              86,
-              145,
-              200
-            ],
-            "to": [
-              87,
-              150,
-              204
-            ],
-            "opaque": true
-          },
-          {
-            "min": [
-              78,
-              136,
-              188
-            ],
-            "max": [
-              125,
-              180,
-              225
-            ],
-            "to": [
-              93,
-              156,
-              210
-            ],
-            "opaque": true
-          }
-        ]
+        "originalPlacement": {
+          "x": -475.92499999999995,
+          "y": 1255.488,
+          "scale": 0.5760626398210291,
+          "angle": 0,
+          "flipX": false
+        }
+      }
+    },
+    {
+      "id": "original-map04-native-northeast-snowbank",
+      "name": "Map04 · Northeast Snowbank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/northeast-snowbank.png",
+      "width": 1415,
+      "height": 1112,
+      "anchor": {
+        "x": 0.49964664310954066,
+        "y": 0.5089928057553956
+      },
+      "depth": "ground",
+      "defaultScale": 0.5475746268656715,
+      "sha256": "bda1d94111871ba8aa7bb48875917fe4af78d50f2f05b3a0d7dda57111508ffb",
+      "source": {
+        "kind": "original-map-snowbank-restoration",
+        "mapId": "Map04",
+        "fieldColor": "#e5fffe",
+        "referenceBounds": {
+          "minX": 181.758,
+          "maxX": 928.758,
+          "minY": 925.907,
+          "maxY": 1512.907
+        },
+        "sourceOpaque128Bounds": [
+          9,
+          10,
+          1405,
+          1082
+        ],
+        "originalPlacement": {
+          "x": 555.258,
+          "y": 1219.407,
+          "scale": 0.5475746268656715,
+          "angle": 0,
+          "flipX": false
+        }
+      }
+    },
+    {
+      "id": "original-map04-native-west-snowland-strip",
+      "name": "Map04 · Whole Western Snowbank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/west-snowland-strip.png",
+      "width": 962,
+      "height": 1635,
+      "anchor": {
+        "x": 0.3128898128898129,
+        "y": 0.501223241590214
+      },
+      "depth": "ground",
+      "defaultScale": 1.3391196528208307,
+      "sha256": "c70f966dafdae26bae568d20a154167b8e1cb79790b344a99e55b77dee69017d",
+      "source": {
+        "kind": "original-map-snowbank-restoration",
+        "mapId": "Map04",
+        "fieldColor": "#e5fffe",
+        "referenceBounds": {
+          "minX": -930,
+          "maxX": -369,
+          "minY": -1514,
+          "maxY": 524
+        },
+        "sourceOpaque128Bounds": [
+          89,
+          9,
+          513,
+          1622
+        ],
+        "originalPlacement": {
+          "x": -649.5,
+          "y": -535,
+          "scale": 1.3391196528208307,
+          "angle": 0,
+          "flipX": false
+        },
+        "frameBleed": {
+          "bottom": 101,
+          "note": "The strip lower tip is beyond the frame; the visible map edge remains an open snowbank cut. Large native peninsula moved upward to its original height."
+        }
+      }
+    },
+    {
+      "id": "original-map04-native-southcentral-snow-island",
+      "name": "Map04 · South Central Snowbank",
+      "category": "cliffs",
+      "biomes": [
+        "snow"
+      ],
+      "file": "authoring/worlds/library/images/original-map-terrain-v1/map04/southcentral-snow-island.png",
+      "width": 1099,
+      "height": 1431,
+      "anchor": {
+        "x": 0.49954504094631486,
+        "y": 0.4898672257162823
+      },
+      "depth": "ground",
+      "defaultScale": 0.6733238231098431,
+      "sha256": "9e3e059fbd57b1383adcd915465d4ae4a5f0d0c269604b6aacf559c79af8f11e",
+      "source": {
+        "kind": "original-map-snowbank-restoration",
+        "mapId": "Map04",
+        "fieldColor": "#e5fffe",
+        "referenceBounds": {
+          "minX": -444.618,
+          "maxX": 305.382,
+          "minY": -1514,
+          "maxY": -570
+        },
+        "sourceOpaque128Bounds": [
+          0,
+          29,
+          1098,
+          1431
+        ],
+        "originalPlacement": {
+          "x": -69.618,
+          "y": -1042,
+          "scale": 0.6733238231098431,
+          "angle": 0,
+          "flipX": false
+        }
       }
     }
   ],

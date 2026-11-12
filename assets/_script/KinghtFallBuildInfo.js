@@ -5,13 +5,15 @@ exports.KinghtFallBuildInfo = undefined;
 var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var RelicRuntime = require("RelicRuntime");
+var RelicBattle = require("RelicBattle");
 var exp_KinghtFallBuildInfo = function () {
-  function _ctor(t, e) {
+  function _ctor(t, e, pointId) {
     this.canUpgrade = false;
     this.standTime = 0;
     this.hp = 0;
     this.hpMax = 0;
     this.BuildID = t;
+    this.pointId = pointId;
     this.standTime = 0;
     this.cfg = e;
     if (e) {
@@ -60,6 +62,9 @@ var exp_KinghtFallBuildInfo = function () {
       this.BuildID == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Wall && $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.FortDurableStone] && (t += $z1KinghtFallUIGame.default.instance.ctrGame.gameData.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.FortDurableStone][0]);
       if (this.BuildID == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.CastleCenter) t += RelicRuntime.value(RelicRuntime.current(), 120032);
       this.hpMax = this.cfg.Hp * t;
+      // Rebuild from authored HP before adding the point's saved growth.
+      this._relicGrowthHp = 0;
+      RelicBattle.applyEconomicGrowth(RelicRuntime.current(), this, this.pointId, false);
       this.hp = this.hpMax;
     }
   };

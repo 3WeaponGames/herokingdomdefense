@@ -83,7 +83,7 @@ test('a dead soldier upgraded while respawning clears Follow pickup state before
   assert.deepEqual(u._personalRallyPoint,{pos:{x:11,y:12}});
 });
 
-test('tier stats remain the base for the existing talent, perk, treasure and conditional combat modifiers',()=>{
+test('tier stats remain the base for talents, perks, ranged haste and conditional modifiers after the army relic rework',()=>{
   const f=fixture(90003),u=f.actor,data=f.game.gameData;f.cfg.AttackType=2;
   const enums=f.stubs.KinghtFallEnum,talents=enums.KinghtFallEnumTalentCfg,buffs=enums.KinghtFallEnumBuffCfg,treasures=enums.KinghtFallEnumTreasureEnum,time=f.stubs.KinghtFallGameCtrlData.KinghtFallTimeType;
   data.talentAdd[talents.TalenType02]=[[.2],[.3]];data.talentAdd[talents.TalenType03]=[[.2]];data.talentAdd[talents.TalenType01]=[[.05]];data.talentAdd[talents.TalenType05]=[[.2]];
@@ -95,7 +95,7 @@ test('tier stats remain the base for the existing talent, perk, treasure and con
   const active={};for(const [id,p]of[[buffs.Buff32,[.1]],[buffs.Buff53,[.05]],[buffs.Buff45,[.25,.1]],[buffs.Buff43,[.15]],[buffs.Buff44,[.1,.1]],[buffs.Buff31,[.2]],[buffs.Buff52,[.15]]])active[id]={Pamer:p};data.getGameBuff=id=>active[id]||null;
   f.settings.unitLevels={'ally:90003:level:2':{Health:200,AttackDamage:20,AttackInterval:.8,AttackRange:100,SearchRange:30,Speed:80}};
   u.outBuild.buildInfo.cfg.level=2;u.setNew();
-  near(u.hpMax,310);near(u.attack,30);near(u.getAttack(),36);near(u.attackRange,145);near(u.attSpeed,1.2);near(u.getAttSpeed(),1.62);near(u.getSpeed(),104);
+  near(u.hpMax,270);near(u.attack,28);near(u.getAttack(),34);near(u.attackRange,145);near(u.attSpeed,1.2);near(u.getAttSpeed(),1.62);near(u.getSpeed(),104);
   assert.deepEqual(clone(f.settings.timingDefaults),{'ally:90001:default':{attack:.27}});assert.deepEqual(clone(f.settings.timings),{'ally:90001:default':{attack:.31}});
 });
 

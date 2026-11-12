@@ -24,6 +24,22 @@ test('the sound catalog finds every current audio asset, including all eight hor
   assert(indexed.items.some(item => item.kind === 'music')); assert(indexed.items.some(item => item.kind === 'voice' && item.tier === 3));
   assert(indexed.items.filter(item => item.generated).every(item => item.origin === 'new' && item.category !== 'other'));
 });
+test('command voices and biome easter eggs retain action labels and composable biome filters', () => {
+  for (const unit of ['royal-knight', 'heavy-infantry', 'crossbowman', 'cavalry']) {
+    for (const action of ['rally', 'follow']) {
+      const item = Catalog.details('assets/KinghtFallAudio/voices/units/' + unit + '/' + unit + '-' + action + '-variant-3.mp3');
+      assert.equal(item.category, 'voices'); assert.equal(item.tier, null); assert.equal(item.voiceAction, action);
+      assert.equal(item.biome, null); assert(item.name.includes('Line 3')); assert(!item.name.includes('Death'));
+    }
+    for (const biome of Catalog.BIOMES) for (const action of ['build', 'follow', 'rally']) {
+      const item = Catalog.details('assets/KinghtFallAudio/voices/units/' + unit + '/' + unit + '-biome-' + biome + '-' + action + '.mp3');
+      assert.equal(item.category, 'voices'); assert.equal(item.tier, null); assert.equal(item.voiceAction, action);
+      assert.equal(item.biome, biome); assert(item.name.includes('Easter egg')); assert(!item.name.includes('Ambience'));
+      assert.equal(Model.view({ categories: Catalog.CATEGORIES, items: [item] }, { kind: 'voice', biome, search: unit + ' easter egg' }).items.length, 1);
+    }
+  }
+});
+
 test('Original means the actual initial bytes; replaced original paths and later additions are New', t => {
   const f = fixture(t); let entry = f.service.catalog.items[0]; assert.equal(entry.origin, 'original'); assert(baseline.files[entry.file]);
   fs.appendFileSync(f.file, 'modified'); entry = f.service.load().items[0]; assert.equal(entry.origin, 'new'); assert.equal(entry.replacesOriginal, true);

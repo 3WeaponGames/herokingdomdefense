@@ -45,7 +45,7 @@ function fixture(type='cannon',level=1){
   const cc={Node,Sprite,Graphics,PhysicsPolygonCollider:Polygon,Label:function(){},Vec2:function(x=0,y=0){this.x=x;this.y=y;},Color:{WHITE:'white'},color:(...v)=>v,v2:(x,y)=>({x,y}),isValid:value=>!!value&&!value.destroyed,
     _decorator:{ccclass:v=>v,property:()=>()=>{}},Tween:{stopAllByTarget(target){for(const tween of tweens)if(tween.target===target)tween.stop();}},
     tween(target){const tween={target,steps:[],stopped:false,to(duration,props,options){this.steps.push({duration,props,options});return this;},set(props){Object.assign(target,props);return this;},call(callback){this.completeCallback=callback;return this;},start(){tweens.push(this);return this;},stop(){this.stopped=true;},update(progress){const step=this.steps[0];if(step.options&&step.options.onUpdate)step.options.onUpdate(target,progress);},complete(){if(this.completeCallback)this.completeCallback();}};return tween;}};
-  function rowFor(at){const row=JSON.parse(JSON.stringify(config.BuildEnum['2'].levelList.find(r=>r.Tower?.attackType===type&&r.level===at)));delete row.Appearance.destroyed;return row;}
+  function rowFor(at){const row=JSON.parse(JSON.stringify(config.BuildEnum['2'].levelList.find(r=>r.Tower?.attackType===type&&r.level===at)));delete row.Appearance.destroyed;delete row.Appearance.lifecycle;return row;}
   const node=new Node('Tower'),shot=new Node('Shot'),hp=new Node('HP anchor'),sourceNode=new Node('Archer spine'),bar=new Node('HP bar'),ui=new Node('Effects');shot.parent=hp.parent=sourceNode.parent=node;shot.setPosition(-4,91);hp.setPosition(0,163);bar.parent=ui;
   const collider=node.addComponent(Polygon),source=sourceNode.addComponent(Skeleton),sourceData={name:'original Archer data',skeletonJson:JSON.parse(JSON.stringify(archer))};Object.assign(source,{skeletonData:sourceData,premultipliedAlpha:false,enableBatch:true,defaultSkin:'jt-1',eventListener:()=>{throw Error('source event listeners must not be copied');}});
   const loads=[],owner={node,ndShot:shot,ndHp:hp,ctrHp:{node:bar},ndAniMain:source,ndAniOther:[],enabled:true,isDestroyed:false,buildInfo:{cfg:rowFor(level)},index:rowFor(level).index,
@@ -70,10 +70,97 @@ function fixture(type='cannon',level=1){
 function assertRest(state){assert.deepEqual(transform(state.presentation),{x:0,y:0,scaleX:1,scaleY:1,angle:0});assert.equal(state.placement,null);assert.equal(state.placementRequest,null);assert.equal(state.placementFx.active,false);}
 function assertMuzzle(h){const state=h.owner._buildingAppearance,visible=state.weaponNode.convertToWorldSpaceAR({x:state.muzzleX,y:state.muzzleY});pointNear(h.api.muzzle(h.owner,h.game),h.game.ndUI.convertToNodeSpaceAR(visible),'projectile origin at visible muzzle');pointNear(h.owner.ndShot.getPosition(),h.owner.node.convertToNodeSpaceAR(visible),'legacy shot anchor follows visible muzzle');}
 
+test('a redesigned Archer without a separate weapon retains authored construction motion and effects',()=>{
+  const h=fixture();h.owner.buildInfo.cfg.Appearance.lifecycle='native-tower';
+  delete h.owner.buildInfo.cfg.Appearance.weapon;delete h.owner.buildInfo.cfg.Tower;
+  assert.equal(h.api.place(h.owner,'create'),true);h.resolveAll();
+  const state=h.owner._buildingAppearance,tween=h.activeTween();
+  assert.equal(state.placementSpine.skin,'default');assert.deepEqual(state.placementSpine.slots,[2,2]);
+  assert.equal(h.source.enabled,false);tween.update(.55);
+  const expected=Placement.sample('create',.55*Placement.duration('create'));
+  near(state.presentation.y,expected.y);near(state.presentation.scaleY,expected.scaleY);
+  tween.complete();assertRest(state);assert.equal(state.weaponPivot,undefined);
+});
+
+test('redesigned tower destruction keeps native rubble and smoke, hides the body at its authored frame and survives speed changes and repair',()=>{
+  const h=fixture();h.owner.buildInfo.cfg.Appearance.lifecycle='native-tower';
+  h.api.apply(h.owner);h.resolveAll();const state=h.owner._buildingAppearance;
+  h.owner.isDestroyed=true;h.api.onDead(h.owner);
+  const operation=state.destruction,first=operation.tween,hideAt=archer.animations.destroy.slots.jt_1_3.attachment[0].time;
+  assert.deepEqual(state.deathRubbleSpine.slots,[0,1]);assert.deepEqual(state.deathSmokeSpine.slots,[36,36]);
+  assert.equal(state.deathRubbleSpine.skin,'default');assert.equal(h.source.enabled,false);
+  assert.equal(state.weaponPivot.active,false);
+  first.update((hideAt-.00001)/operation.duration);assert.equal(state.node.active,true);
+  first.update((hideAt+.00001)/operation.duration);assert.equal(state.node.active,false);
+  assert.equal(state.deathRubbleFx.active,true,'persistent native rubble stays visible after the body disappears');
+  h.api.onDead(h.owner);assert.equal(state.destruction,operation,'refreshes never replay the death sequence');
+  const pose=transform(state.presentation),time=operation.elapsed;
+  h.source.timeScale=0;h.api.placementSpeed(h.owner);assert.equal(first.stopped,true);
+  first.update(.95);first.complete();assert.deepEqual(transform(state.presentation),pose);near(operation.elapsed,time);
+  h.source.timeScale=2;h.api.placementSpeed(h.owner);const resumed=operation.tween;
+  near(resumed.steps[0].duration,(operation.duration-time)/2);resumed.update(.5);
+  h.owner.isDestroyed=false;h.api.apply(h.owner);
+  assert.equal(state.destruction,null);assert.equal(state.deathSmokeFx.active,false);assert.equal(state.deathRubbleFx.active,false);
+  assert.equal(state.node.active,true);assert.deepEqual(transform(state.presentation),{x:0,y:0,scaleX:1,scaleY:1,angle:0});
+  resumed.update(1);resumed.complete();assert.equal(state.node.active,true,'a stale death callback cannot hide repaired art');
+  h.api.dispose(h.owner);assert.equal(state.deathRubbleFx.destroyed,true);assert.equal(state.deathSmokeFx.destroyed,true);
+});
+
+test('replacement ruins never cover the live collapse and cancelling a disabled death retires all delayed render work',()=>{
+  const h=fixture();h.owner.buildInfo.cfg.Appearance.lifecycle='native-tower';
+  h.owner.buildInfo.cfg.Appearance.destroyed={sprite:'buildings/towers/cannon-3-destroyed',width:187,height:187,offsetY:-38};
+  h.api.apply(h.owner);h.resolveAll();const state=h.owner._buildingAppearance;
+  h.owner.isDestroyed=true;h.api.onDead(h.owner);
+  assert(!state.destroyedNode||!state.destroyedNode.active,'preloaded ruins wait for the authored body-hide key');
+  const operation=state.destruction;operation.tween.update(.3/operation.duration);
+  assert.equal(state.node.active,false);assert.equal(state.destroyedNode.active,true);
+  assert.equal(state.deathRubbleFx.active,false,'replacement rubble does not double draw native rubble');
+  const tween=operation.tween;h.owner.enabled=false;h.api.cancelPlacement(h.owner);
+  assert.equal(tween.stopped,true);assert.equal(state.deathSmokeFx.active,false);assert.equal(state.destruction.paused,true);
+  const pose=transform(state.presentation);tween.update(1);tween.complete();assert.deepEqual(transform(state.presentation),pose);
+  h.api.hide(h.owner);assert.equal(state.destruction,null,'selling or retiring the owner also retires the paused death');
+});
+
+test('disabling before the body-hide key preserves death time and resumes without intact-art ghosts or replay',()=>{
+  const h=fixture();h.owner.buildInfo.cfg.Appearance.lifecycle='native-tower';
+  h.api.apply(h.owner);h.resolveAll();h.owner.isDestroyed=true;h.api.onDead(h.owner);
+  const state=h.owner._buildingAppearance,operation=state.destruction,first=operation.tween;
+  first.update(.1/operation.duration);const pose=transform(state.presentation),elapsed=operation.elapsed;
+  const smokeAnimations=state.deathSmokeSpine.calls.filter(c=>c[0]==='animation').length;
+  h.owner.enabled=false;h.api.cancelPlacement(h.owner);
+  assert.equal(state.destruction,operation);assert.equal(operation.paused,true);assert.equal(state.node.active,false);
+  assert.equal(state.deathRubbleFx.active,false);assert.equal(state.deathSmokeFx.active,false);
+  first.update(.99);first.complete();near(operation.elapsed,elapsed);assert.deepEqual(transform(state.presentation),pose);
+  h.owner.enabled=true;h.api.apply(h.owner);
+  assert.equal(state.destruction,operation);assert.equal(operation.paused,false);near(operation.elapsed,elapsed);
+  assert.equal(state.node.active,true,'the collapse resumes at the retained pre-hide pose');
+  assert.equal(state.deathSmokeSpine.calls.filter(c=>c[0]==='animation').length,smokeAnimations,'native effects do not restart');
+  const resumed=operation.tween;assert.notEqual(resumed,first);near(resumed.steps[0].duration,operation.duration-elapsed);
+  resumed.update((.3-elapsed)/(operation.duration-elapsed));assert.equal(state.node.active,false);
+  resumed.complete();assert.equal(state.node.active,false);assert.equal(state.deathRubbleFx.active,true);
+});
+
 test('the original default skin and restricted effects slots contain dust or upgrade light/stars without a duplicate tower',()=>{
   assert(archer.skins.some(skin=>skin.name==='default'));assert.equal(archer.slots[2].name,'sankai');assert(archer.animations.create.slots.sankai);
   const upgrade=archer.slots.slice(12,36).map(slot=>slot.name);assert.equal(upgrade.length,24);assert(upgrade.every(name=>/^leven_up_light\d+$|^effect_star_\d+$/.test(name)));assert(upgrade.every(name=>Object.prototype.hasOwnProperty.call(archer.animations.upgrade.slots,name)));
   assert(archer.slots.slice(3,12).every(slot=>/^jt_/.test(slot.name)),'the excluded middle range contains all original tower pieces');
+});
+
+test('the actual component disable and enable hooks resume a dead tower without a work update or animation replay',()=>{
+  const h=fixture(),{Base,build}=h.baseClass();
+  build.buildInfo.cfg.Appearance.lifecycle='native-tower';
+  h.api.apply(build);h.resolveAll();build.isDestroyed=true;h.api.onDead(build);
+  const state=build._buildingAppearance,operation=state.destruction,first=operation.tween;
+  first.update(.1/operation.duration);const elapsed=operation.elapsed;
+  const smokeAnimations=state.deathSmokeSpine.calls.filter(c=>c[0]==='animation').length;
+  build.enabled=false;Base.prototype.onDisable.call(build);
+  assert.equal(operation.paused,true);assert.equal(state.node.active,false);
+  build.enabled=true;Base.prototype.onEnable.call(build);
+  assert.equal(state.destruction,operation);assert.equal(operation.paused,false);
+  near(operation.elapsed,elapsed);assert.equal(state.node.active,true);
+  assert.equal(state.deathSmokeSpine.calls.filter(c=>c[0]==='animation').length,smokeAnimations);
+  assert.notEqual(operation.tween,first);operation.tween.complete();
+  assert.equal(state.node.active,false);assert.equal(state.deathRubbleFx.active,true);
 });
 
 for(const kind of ['create','upgrade'])test(kind+' waits for every frame then plays one original effects layer and settles exactly',()=>{

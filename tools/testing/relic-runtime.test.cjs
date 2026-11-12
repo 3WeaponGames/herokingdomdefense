@@ -18,7 +18,7 @@ test('legacy or invalid ownership is a no-op and does not create battle state',(
  assert.equal(Runtime.snapshot(data),undefined);assert.equal(Object.hasOwn(data,'relicState'),false);
 });
 
-test('battle checkpoints preserve spent legendary charges, wave rewards and fractional production per stage',()=>{
+test('battle checkpoints preserve spent charges, reward ledgers and unknown legacy fields per stage',()=>{
  const h=harness(),game=h.player.getGameData();
  const state={phoenixUsed:true,hourglassUsed:true,completedWaves:{3:true},productionRemainder:.8,heroAttackCount:7,vampireHealedByWave:{3:.08},futureField:{retained:true}};
  assert.equal(game.setCheckpoint({levelNum:1,roundNum:3,coin:24,relicState:state}),true);
@@ -72,12 +72,12 @@ test('failed legendary checkpoint writes retry at most once per second and retai
  assert.equal(Runtime.retry(data,10),false);assert.equal(attempts,3);
 });
 
-test('a failed wave-end checkpoint holds progression and retries without duplicating silver, healing or achievement credit',()=>{
+test('a failed wave-end checkpoint holds progression and retries without duplicating bank interest, house income, growth or achievements',()=>{
  const h=harness(),record=h.player.getGameData(),Battle=loadBattle();
  assert.equal(record.setCheckpoint({levelNum:1,roundNum:3,coin:10}),true);
- const hero={hp:50,hpMax:100,isDead(){return this.hp<=0;}},soldier={hp:50,hpMax:100,isDead(){return this.hp<=0;}},events=[],achievements=[],passes=[];
+ const hero={hp:50,hpMax:100,isDead(){return this.hp<=0;}},soldier={hp:50,hpMax:100,isDead(){return this.hp<=0;}},house={ID:2,buildInfo:{BuildID:4,cfg:{Hp:100},hp:50,hpMax:100},getIsWork:()=>true},events=[],achievements=[],passes=[];
  let attempts=0;
- const data={treasureAdd:{120043:[.03],120048:[4],120049:[.05]},round:3,coin:10,enemyList:[],enemyQueue:{},soldierList:[soldier],pendingEnemySpawns:0,levelCfg:{Level:1,WaveCfg:Array(20).fill({})},getSoldierList(){return this.soldierList;},ctrPar:{ctrPlay:hero,saveGame(){attempts++;return record.setCheckpoint({levelNum:1,roundNum:data.round,coin:data.coin,relicState:Runtime.snapshot(data)});}}};
+ const data={treasureAdd:{120004:[2],120023:[3],120047:[.04]},round:3,coin:10,enemyList:[],enemyQueue:{},soldierList:[soldier],bulidPointMap:{2:house},getBaseLevel:()=>1,pendingEnemySpawns:0,levelCfg:{Level:1,WaveCfg:Array(20).fill({})},getSoldierList(){return this.soldierList;},ctrPar:{ctrPlay:hero,saveGame(){attempts++;return record.setCheckpoint({levelNum:1,roundNum:data.round,coin:data.coin,relicState:Runtime.snapshot(data)});}}};
  const finish=runtimeMethod('KinghtFallGameCtrlData','tryEndGame',{
   require:name=>name==='RelicRuntime'?Runtime:Battle,
   $z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getMissionData:()=>({addAchNum:(...args)=>achievements.push(args)}),getUserData:()=>({passOrder:(...args)=>passes.push(args)})})}},
@@ -88,8 +88,8 @@ test('a failed wave-end checkpoint holds progression and retries without duplica
  data.tryEndGame=()=>finish.call(data);
  h.state.failKeys.add(record.gameKey);data.tryEndGame();
  assert.equal(attempts,1);assert.equal(data._relicSavePending,true);assert.equal(data._relicRoundCommitPending,true);
- assert.equal(data.coin,14);assert.equal(hero.hp,53);assert.equal(soldier.hp,55);assert.equal(events.length,0);assert.equal(achievements.length,0);assert.equal(passes.length,0);
- data.tryEndGame();assert.equal(attempts,1);assert.equal(hero.hp,53);assert.equal(data.coin,14);
+ assert.equal(data.coin,15);assert.equal(house.buildInfo.hp,54);assert.equal(house.buildInfo.hpMax,104);assert.equal(hero.hp,50);assert.equal(soldier.hp,50);assert.equal(events.length,0);assert.equal(achievements.length,0);assert.equal(passes.length,0);
+ data.tryEndGame();assert.equal(attempts,1);assert.equal(house.buildInfo.hpMax,104);assert.equal(data.coin,15);
  assert.equal(Runtime.retry(data,1),false);assert.equal(attempts,2);
  h.state.failKeys.clear();
  // Exercise the real game-update retry integration as well as the held end.
@@ -100,10 +100,12 @@ test('a failed wave-end checkpoint holds progression and retries without duplica
  data.getBulidList=()=>[];data.getSoldierList=()=>[];
  update.call({gameData:data,gameStatus:99,ctrPlay:{doMove(){}},collectFollowers(){}},1);
  assert.equal(attempts,3);assert.equal(data._relicRoundCommitPending,undefined);assert.equal(data._relicSavePending,undefined);
- assert.equal(hero.hp,53);assert.equal(soldier.hp,55);assert.equal(data.coin,14);
- assert.deepEqual(achievements,[[11,4]]);assert.deepEqual(passes,[[1,3]]);assert.deepEqual(events,[['round-end']]);
- data.tryEndGame();assert.equal(events.length,1);assert.equal(achievements.length,1);assert.equal(data.coin,14);
- const restored=harness(h.persist()).player.getGameData().getCheckpoint(1);assert.equal(restored.coin,14);assert.equal(restored.relicState.completedWaves[3],true);
+ assert.equal(hero.hp,50);assert.equal(soldier.hp,50);assert.equal(house.buildInfo.hpMax,104);assert.equal(data.coin,15);
+ assert.deepEqual(achievements,[[11,5]]);assert.deepEqual(passes,[[1,3]]);assert.deepEqual(events,[['round-end']]);
+ data.tryEndGame();assert.equal(events.length,1);assert.equal(achievements.length,1);assert.equal(data.coin,15);
+ const restored=harness(h.persist()).player.getGameData().getCheckpoint(1);assert.equal(restored.coin,15);assert.equal(restored.relicState.completedWaves[3],true);
+ assert.deepEqual(clone(restored.relicState.houseTierReceipts),{2:{1:true}});assert.deepEqual(clone(restored.relicState.economicGrowthByPoint),{2:1});
+ const resumed={treasureAdd:data.treasureAdd,coin:restored.coin,bulidPointMap:{2:house},getBaseLevel:()=>1};Runtime.restore(resumed,restored.relicState);assert.equal(Battle.waveCleared(resumed,null,3),false);assert.equal(resumed.coin,15);assert.equal(house.buildInfo.hpMax,104);
 });
 
 test('an earlier failed legendary save also holds a cleared wave, while unowned retries add no fields',()=>{

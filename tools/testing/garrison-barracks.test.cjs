@@ -4,11 +4,12 @@
 const test = require('node:test'), assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
 const {decode} = require('../../packages/hkd-characters/lib/png-atlas');
+const painted = require('./painted-building-contract.cjs');
 const allFits = require('./building-spine-fit.fixture.json'), fixture = allFits.garrison;
 const root = path.resolve(__dirname, '../..'), folder = path.join(root, 'assets/KinghtFallIconMap/com/Ani/by');
 const clone = value => JSON.parse(JSON.stringify(value));
 const bytes = file => fs.readFileSync(path.resolve(root, file));
-const read = file => JSON.parse(bytes(file).toString('utf8').replace(/^\uFEFF/, ''));
+const read = file => painted.legacyRead(file, JSON.parse(bytes(file).toString('utf8').replace(/^\uFEFF/, '')));
 const sha = value => crypto.createHash('sha256').update(value).digest('hex');
 const hash = value => sha(JSON.stringify(value));
 const json = read(path.join(folder, 'by.json')), atlasText = bytes(path.join(folder, 'by.atlas')).toString('utf8');
@@ -61,28 +62,18 @@ function worldVertices(spine, slot) {
   return values;
 }
 
-test('the Garrison substitution documents exactly three Royal Guard tiers and one unreachable future artwork tier', () => {
+test('legacy Garrison skins remain available while approved Royal tiers use the authorized four-tier route', () => {
   assert(fixture, 'the reviewed Garrison binding/pixel fixture is required');
   assert.deepEqual(fixture.aliases.map(a => a.packTier), [2, 3, 5, 9]);
-  assert.deepEqual(fixture.aliases.filter(a => !a.reserved).map(a => a.index), [11, 12, 13]);
-  const future = fixture.aliases.filter(a => a.reserved); assert.equal(future.length, 1); assert.equal(future[0].alias, 'by-garrison-4');
-  for (const file of Object.keys(fixture.baseline.configs)) {
-    const config = read(file), before = clone(config), rows = config.BuildEnum['3'].levelList;
-    for (const a of allFits.stables?.aliases || []) {
-      if (a.reserved) continue;
-      const row = rows.find(r => r.index === a.index); assert.equal(row.Skin, a.alias); assert.equal(row.Icon, a.icon);
-      row.Skin = a.previousSkin; row.Icon = a.previousIcon;
-    }
-    for (const a of fixture.aliases.filter(a => !a.reserved)) {const row = rows.find(r => r.index === a.index); assert(row); assert.equal(row.level, a.index - 10); assert.equal(row.Skin, a.alias); assert.equal(row.Icon, a.icon); row.Skin = '__ROYAL_SKIN__'; row.Icon = '__ROYAL_ICON__';}
-    assert.equal(hash(config), fixture.baseline.configs[file], 'every other config field, family, cost, stat, collider index and upgrade route stays identical');
-    assert.deepEqual(before.BuildEnum['3'].InitialChoices, [11, 14, 17, 20]);
-    assert.equal(rows.length, 12); assert(rows.every(row => row.level <= 3));
-    assert(!JSON.stringify(before).includes('by-garrison-4'), 'future art cannot enter any gameplay/save branch');
-    assert.deepEqual(before.BuildEnum['3'].levelList.filter(r => [11, 12, 13].includes(r.index)).map(r => ({index: r.index, data: r.Data, collider: r.ColliderIndex, branch: r.BranchBuild})), [
-      {index: 11, data: [4, 90001, 8], collider: 1, branch: [12]},
-      {index: 12, data: [6, 90001, 8], collider: 2, branch: [13]},
-      {index: 13, data: [8, 90001, 8], collider: 3, branch: undefined}
-    ]);
+  // reserved is historical design metadata; the user subsequently authorized
+  // all painted T4 skins. Test the current route without rewriting that record.
+  for (const file of Object.keys(painted.fixture.config)) {
+    const config = read(file); painted.assertConfig(file, config);
+    assert.deepEqual(config.BuildEnum['3'].InitialChoices, [11, 14, 17, 20]);
+    const rows = config.BuildEnum['3'].levelList;
+    assert.deepEqual(rows.filter(r => [11, 12, 13].includes(r.index)).map(r => r.Data), [[4, 90001, 8], [6, 90001, 8], [8, 90001, 8]]);
+    assert.equal(rows.find(r => r.index === 13).BranchBuild.length, 1);
+    assert.equal(rows.find(r => r.index === rows.find(r => r.index === 13).BranchBuild[0]).level, 4);
   }
 });
 

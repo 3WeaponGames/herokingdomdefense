@@ -271,7 +271,8 @@ var def_KinghtFallHomePersonCtrl = function (t) {
   _ctor.prototype.refreshCombatPower = function () {
     if (!this.labPower) return;
     var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance(), powerConfig = manager.data || { EquipCfg: this.nodeInfo.map(function (row) { return row.cfg; }), TalentLevelCfg: manager.getTalentLevelCfg ? manager.getTalentLevelCfg() : [] };
-    var power = require("HeroLoadout").calculate(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData());
+    var timing = cc.resources ? { unitAnimationSpeed: require("CharacterAppearance").animationSpeed(this, "hero") } : undefined;
+    var power = require("HeroLoadout").calculate(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), undefined, timing);
     this._combatPower = power;
     this.labPower.string = power.reason ? "—" : $z1KinghtFallModle.default.getInstance().numberFomat(Math.round(power.cp * 100) / 100);
   };

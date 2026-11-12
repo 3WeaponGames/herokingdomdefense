@@ -6,9 +6,13 @@ function current() {
   try { var ui = require("KinghtFallUIGame").default.instance; return ui && ui.ctrGame && ui.ctrGame.gameData || null; }
   catch (_) { return null; }
 }
-function values(data, id) { var row = data && data.treasureAdd && data.treasureAdd[id]; return Array.isArray(row) ? row : []; }
+var Eligibility = require("./RelicEligibility");
+function values(data, id) {
+  var row = data && data.treasureAdd && data.treasureAdd[id];
+  return Array.isArray(row) && Eligibility.eligible(id, data && data.heroStyle, data && data.relicDefinitions && data.relicDefinitions[id]) ? row : [];
+}
 function value(data, id, index) { var result = values(data, id)[index || 0]; return typeof result === "number" && isFinite(result) && result > 0 ? result : 0; }
-function active(data) { for (var id = 120028; id <= 120050; id++) if (value(data, id)) return true; return false; }
+function active(data) { for (var id = 120001; id <= 120050; id++) if (value(data, id)) return true; return false; }
 function copy(input) { return input === undefined ? undefined : JSON.parse(JSON.stringify(input)); }
 function state(data) {
   if (!data) return {};
@@ -51,11 +55,12 @@ function living(actor) {
 function heal(actor, fraction) {
   if (!living(actor) || !(fraction > 0)) return 0;
   var before = actor.hp; actor.hp = Math.min(actor.hpMax, actor.hp + actor.hpMax * fraction);
+  var healed = actor.hp - before;
   var hp = actor.ctrHp || actor.hpctrl;
   if (hp && hp.setHp) hp.setHp(actor.hp, actor.hpMax);
   if (actor.upHpView) actor.upHpView();
-  if (actor.hp > before) relicSound("healing-receive", actor);
-  return actor.hp - before;
+  if (healed > 0) relicSound("healing-receive", actor);
+  return healed;
 }
 function boss(enemy) {
   var cfg = enemy && enemy.cfg || {};
@@ -95,12 +100,15 @@ function controlDelta(enemy, dt) {
 }
 function slowed(enemy, data) {
   if (value(data, 120002)) return true;
+  return controlled(enemy);
+}
+function controlled(enemy) {
   var control = enemy && enemy._relicControl;
-  if (control && (control.freeze > 0 || control.duration > 0 && control.slow > 0)) return true;
+  if (control && control.generation === (enemy.node && enemy.node._combatGeneration) && (control.freeze > 0 || control.duration > 0 && control.slow > 0)) return true;
   return !!(enemy && (enemy.debuffInfo || []).some(function (buff) { return buff && (buff.subNum > 0 || buff.data && buff.data.subNum > 0) && (buff.type === "MoveSpeed" || buff.type === 3); }));
 }
 module.exports = { current: current, values: values, value: value, active: active, state: state, restore: restore, snapshot: snapshot,
-  commit: commit, retry: retry, living: living, heal: heal, boss: boss, applyControl: applyControl, clearControl: clearControl, controlDelta: controlDelta, slowed: slowed };
+  commit: commit, retry: retry, living: living, heal: heal, boss: boss, applyControl: applyControl, clearControl: clearControl, controlDelta: controlDelta, slowed: slowed, controlled: controlled };
 
 function relicSound(id, actor) {
   if (typeof cc === "undefined" || !cc.resources) return;

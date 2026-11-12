@@ -31,7 +31,7 @@ test('safe projected nodes remain valid and subsequent detours use their reached
 test('preview respects an explicit zero radius, disabled spawns, and finite preview inputs',()=>{
  const f=fixture([{x:-100,y:0},{x:100,y:0}]);f.map.size=f.map.playable={width:400,height:10};
  const zero=Nav.preview(f.service,Object.assign({},f.request,{radius:0}));assert(!zero.frontier);assert(Nav.preview(f.service,Object.assign({},f.request,{radius:18})).frontier);
- for(const change of [{hall:0},{hall:4},{hall:NaN},{radius:-1},{radius:NaN},{gate:'missing'}])assert.throws(()=>Nav.preview(f.service,Object.assign({},f.request,change)));
+ for(const change of [{hall:0},{hall:5},{hall:NaN},{radius:-1},{radius:NaN},{gate:'missing'}])assert.throws(()=>Nav.preview(f.service,Object.assign({},f.request,change)));
  f.stage.spawns[0].enabled=false;assert.throws(()=>Nav.preview(f.service,f.request),/enabled spawn/);
 });
 
@@ -82,20 +82,20 @@ test('static boxes and circles retain enabled state when their owner level chang
  assert.equal(closed.length,3);assert.equal(open.length,2);assert.deepEqual(open,closed.slice(1));
 });
 test('real Map01 gate previews retain wings when open and select a single collider level',()=>{
- const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map01'),layout=L.adaptStage(root,'A',1),gate=layout.buildings.find(b=>b.kind===6);gate.enabled=true;gate.unlock=1;f.stage.buildings=[gate];f.stage.templates={Map01:source.data};
+ const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map01'),layout=L.adaptStage(root,'A',1,{...L.read(root,L.configFile('A')).LevelCfg[0],prefab:'Map01'}),gate=layout.buildings.find(b=>b.kind===6);gate.enabled=true;gate.unlock=1;f.stage.buildings=[gate];f.stage.templates={Map01:source.data};
  const closed=capturePreview(f.service,f.request).captured.polygons,open=capturePreview(f.service,Object.assign({},f.request,{gate:'open'})).captured.polygons;
  assert.equal(closed.length,3);assert.equal(open.length,2);
  const native=Maps.model(require('../worlds/gate-facing').project(source.data,gate,root)),ownerPoints=native.colliders.find(c=>c.node===gate.template.node&&c.source.tag===1).points;
  assert(closed.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));assert(!open.some(p=>JSON.stringify(p)===JSON.stringify(ownerPoints)));
 });
 test('real Map03 main hall is present even though all source-level colliders are serialized disabled',()=>{
- const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map03'),layout=L.adaptStage(root,'A',1),hall=layout.buildings.find(b=>b.kind===1);
+ const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map03'),layout=L.adaptStage(root,'A',1,{...L.read(root,L.configFile('A')).LevelCfg[0],prefab:'Map01'}),hall=layout.buildings.find(b=>b.kind===1);
  hall.template={prefab:'Map03',node:source.info.owners.find(n=>n.slot===1).id,roots:[source.info.owners.find(n=>n.slot===1).id]};hall.x=source.info.byId[hall.template.node].position.x;hall.y=source.info.byId[hall.template.node].position.y;
  f.stage.buildings=[hall];f.stage.templates={Map03:source.data};
  for(const level of [1,2,3]){const result=capturePreview(f.service,Object.assign({},f.request,{hall:level})).captured.polygons;assert.equal(result.length,1);assert.deepEqual(result[0],source.info.colliders.find(c=>c.node===hall.template.node&&c.source.tag===level).points);}
 });
 test('one preview models each distinct projected source once, while the next preview sees source edits',()=>{
- const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map01'),layout=L.adaptStage(root,'A',1);
+ const f=fixture([{x:-1000,y:-1000},{x:-900,y:-1000}]),source=L.inspect(root,'Map01'),layout=L.adaptStage(root,'A',1,{...L.read(root,L.configFile('A')).LevelCfg[0],prefab:'Map01'});
  f.stage.buildings=layout.buildings.filter(b=>b.enabled!==false);f.stage.templates={Map01:source.data};
  const expectedModels=()=>new Set(f.stage.buildings.map(b=>require('../worlds/gate-facing').project(source.data,b,root))).size;
  const first=capturePreview(f.service,f.request);assert.equal(first.modelCalls,expectedModels());assert(first.captured.polygons.length>1);

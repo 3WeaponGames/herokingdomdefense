@@ -34,14 +34,14 @@ test('building field metadata uses runtime units and keeps reserved wall data re
   assert(at(3,2).min>0);assert(at(1,1).min>0);assert(at(2,1).min>0);
   assert(at(6,0).readOnly);assert(!/silver/i.test(at(6,0).label));
   const level=Schema.descriptor('level',{table:'BuildEnum'});assert.equal(level.integer,true);assert.equal(level.min,1);
-  for(const [id,max]of [[1,3],[2,2],[3,3],[4,2],[5,2],[6,2]])assert.equal(Schema.descriptor('level',{table:'BuildEnum',id}).max,max);
+  for(const [id,max]of [[1,4],[2,4],[3,4],[4,4],[5,4],[6,2]])assert.equal(Schema.descriptor('level',{table:'BuildEnum',id}).max,max);
   assert.equal(Schema.descriptor('level',{table:'BuildEnum',id:99}).max,undefined,'unknown types retain their own authoring contract');
 });
 test('unsafe roster, rate, level and upgrade connection drafts are rejected without repair',()=>{
   for(const [id,key,value] of [
     ['3',['Data',0],1.5],['3',['Data',2],0],['3',['Data',1],90005],
     ['3',['Data'],null],['2',['Data',1],0],['1',['level'],0],['1',['level'],1.5],
-    ['1',['level'],4],['2',['level'],3],['3',['level'],4],['4',['level'],3],['5',['level'],3],['6',['level'],3],
+    ['1',['level'],5],['2',['level'],5],['3',['level'],5],['4',['level'],5],['5',['level'],5],['6',['level'],3],
     ['2',['BranchBuild'],[2,2]],['2',['BranchBuild'],[]],['2',['BranchBuild'],{}],
     ['2',['BranchBuild'],[999]],['2',['BranchBuild'],[1]]
   ]){
@@ -92,7 +92,7 @@ test('construction choices retain current branch IDs and reject missing, duplica
 
 test('compacted current barracks keep stable IDs and authored map tags without obsolete branch records',()=>{
   const d=docs(),building=d.A.data.BuildEnum['3'],at=['BuildEnum','3'];
-  assert.deepEqual(building.levelList.map(level=>level.index),Array.from({length:12},(_value,i)=>i+11));
+  assert.deepEqual(building.levelList.map(level=>level.index),Array.from({length:16},(_value,i)=>i+11));
   assert.deepEqual(building.InitialChoices,[11,14,17,20]);
   assert(building.levelList.every(level=>!building.levelList.some(other=>other.index===level.ColliderIndex)),
     'map collider tags remain valid independently of removed branch IDs 1–10');
@@ -121,16 +121,16 @@ test('compacted barracks reject obsolete references, missing or duplicate IDs an
   }
 });
 
-test('new level-three towers require authored map footprints without changing the original arrow cap',()=>{
+test('new level-four tower branches reuse native map footprints without renumbering source tags',()=>{
   const d=docs(),building=d.A.data.BuildEnum['2'],position=building.levelList.length;
-  const row=Schema.clone(building.levelList[0]);row.index=position+1;row.level=3;row.ColliderIndex=1;delete row.BranchBuild;
+  const row=Schema.clone(building.levelList[0]);row.index=Math.max(...building.levelList.map(row=>row.index))+1;row.level=4;row.ColliderIndex=1;delete row.BranchBuild;
   building.levelList.push(row);
   const at=['BuildEnum','2','levelList',position];
   assert.equal(buildingIssues(d,[{doc:'A',path:at}]).length,0);
-  assert.equal(Schema.descriptor('level',{table:'BuildEnum',id:'2',building,levelIndex:position}).max,3);
+  assert.equal(Schema.descriptor('level',{table:'BuildEnum',id:'2',building,levelIndex:position}).max,4);
   delete row.ColliderIndex;
-  assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.path.at(-1)==='level'));
-  row.ColliderIndex=position+1;
+  assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.path.at(-1)==='ColliderIndex'));
+  row.ColliderIndex=4;
   assert(buildingIssues(d,[{doc:'A',path:at}]).some(issue=>issue.path.at(-1)==='ColliderIndex'));
 });
 

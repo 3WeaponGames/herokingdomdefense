@@ -2,7 +2,9 @@
 
 // A base-stat comparison, not a combat simulator. Recipients are other eligible
 // units already in range; healing utilization accounts for wasted healing.
-// AttackInterval is the game's nominal attacks/casts per second.
+// AttackInterval is the stored cooldown refill rate. Supply the optional
+// read-only timing context to compare actual releases at the saved playback.
+// Older callers without source animation metadata retain their nominal score.
 const CombatPower = require('../../assets/_script/CombatPower');
 const DEFAULTS = CombatPower.DEFAULTS;
 
@@ -85,7 +87,7 @@ function product(factors) {
   return factors.reduce((value, factor) => value * factor, 1);
 }
 
-function calculate(unit, assumptions = DEFAULTS) {
+function calculate(unit, assumptions = DEFAULTS, context) {
   const metadata = describe(unit);
   const unavailable = reason => ({
     directDps: null, healingHps: null, buffDps: null, splashDps: null,
@@ -103,11 +105,22 @@ function calculate(unit, assumptions = DEFAULTS) {
   const support = kind === 'buffer' || kind === 'healer';
   if (!support && !nonnegative(unit.AttackDamage)) return unavailable('Missing or invalid direct attack damage.');
   if (unit.side !== 'ally' && Number(unit.AttackType) === 3 && !support) return unavailable('Unsupported support behavior.');
-  const a = scenario.values, rate = unit.AttackInterval;
+  let attackTiming = null, rate = unit.AttackInterval;
+  if (context !== undefined) {
+    if (!context || typeof context !== 'object' || Array.isArray(context) || !context.descriptor || typeof context.descriptor !== 'object') return unavailable('Attack timing context must include a descriptor.');
+    attackTiming = require('../../assets/_script/CombatCadence').resolve(context.settings, {
+      ...context.descriptor, record: unit, cooldownRate: unit.AttackInterval
+    });
+    if (!attackTiming || attackTiming.reason || !nonnegative(attackTiming.rate)) return unavailable(attackTiming && attackTiming.reason || 'Missing or invalid attack timing metadata.');
+    rate = attackTiming.rate;
+  }
+  const a = scenario.values;
   const output = {
     directDps: support ? 0 : unit.AttackDamage * rate,
     healingHps: 0, buffDps: 0, splashDps: 0, preventedDps: 0,
-    effectiveOutput: null, cp: null, ...metadata, reason: null
+    effectiveOutput: null, cp: null, ...metadata, reason: null,
+    nominalAttackRate: unit.AttackInterval, effectiveAttackRate: rate,
+    ...(attackTiming ? { attackTiming } : {})
   };
   if (kind === 'buffer') {
     const recipients = p.radius === 0 ? 0 : Math.min(p.cap, a.nearbyAllies);

@@ -182,7 +182,7 @@ function validate(root, documents, changes) {
                 const skins = Array.isArray(asset.data.skins) ? asset.data.skins.map(skin => skin.name) : Object.keys(asset.data.skins || {});
                 if (skins.indexOf('hong') < 0 || !asset.data.animations.idle) throw new Error('Home stage animation needs the hong skin and idle animation.');
             });
-            ['HomeLevel1Unlock', 'HomeLevel2Unlock', 'HomeLevel3Unlock'].forEach(key => {
+            ['HomeLevel1Unlock', 'HomeLevel2Unlock', 'HomeLevel3Unlock', 'HomeLevel4Unlock'].forEach(key => {
                 const changedMap = touched(changes, doc, at.concat('prefab'));
                 if (!changedMap && !touched(changes, doc, at.concat(key))) return;
                 try {
@@ -238,6 +238,13 @@ function validate(root, documents, changes) {
                 const views=level.Appearance.weapon&&level.Appearance.weapon.views;
                 if(views&&typeof views==='object'&&!Array.isArray(views))['north','northeast','southeast','south'].forEach(direction=>{if(views[direction]&&typeof views[direction]==='object'){check('A',at.concat('Appearance','weapon','views',direction,'sprite'),views[direction].sprite,name=>imported(root,'resources',name,'sprite'));if(views[direction].emptySprite)check('A',at.concat('Appearance','weapon','views',direction,'emptySprite'),views[direction].emptySprite,name=>imported(root,'resources',name,'sprite'));}});
                 if(level.Appearance.weapon&&level.Appearance.weapon.emptySprite)check('A',at.concat('Appearance','weapon','emptySprite'),level.Appearance.weapon.emptySprite,name=>imported(root,'resources',name,'sprite'));
+                if(Array.isArray(level.Appearance.lighting))level.Appearance.lighting.forEach((light,li)=>{
+                    if(!light||typeof light!=='object'||Array.isArray(light))return;
+                    const lightAt=at.concat('Appearance','lighting',li);
+                    if(own(light,'sprite'))check('A',lightAt.concat('sprite'),light.sprite,name=>imported(root,'resources',name,'sprite'));
+                    if(light.glow&&typeof light.glow==='object'&&own(light.glow,'sprite'))check('A',lightAt.concat('glow','sprite'),light.glow.sprite,name=>imported(root,'resources',name,'sprite'));
+                    if(Array.isArray(light.glows))light.glows.forEach((glow,gi)=>{if(glow&&typeof glow==='object'&&own(glow,'sprite'))check('A',lightAt.concat('glows',gi,'sprite'),glow.sprite,name=>imported(root,'resources',name,'sprite'));});
+                });
             }
         });
     });

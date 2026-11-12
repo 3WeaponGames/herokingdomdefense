@@ -16,6 +16,7 @@ var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallPlayerMgr = require("KinghtFallPlayerMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
+var RelicEligibility = require("RelicEligibility");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -194,7 +195,22 @@ var def_KinghtFallUITreasureInfo = function (t) {
         n.push("<color=#43a926>" + a + "</c>");
       }
     }
-    this.labInfo.string = require("LanguageMgr").LanguageMgr.getInstance().format("<b>{0}</b>", [$z1Utils.Utils.StringFormat.apply($z1Utils.Utils, cc__spreadArrays([this.T(this.cfg.Describe)], n))]);
+    var language = require("LanguageMgr").LanguageMgr.getInstance();
+    var description = $z1Utils.Utils.StringFormat.apply($z1Utils.Utils, cc__spreadArrays([this.T(this.cfg.Describe)], n));
+    var styles = RelicEligibility.stylesFor(this.cfg.ID, this.cfg);
+    var styleNames = {
+      skirmisher: language.t("enemyGuide.role.skirmisher"), fighter: language.t("enemyGuide.role.fighter"),
+      vanguard: language.t("enemyGuide.role.vanguard"), mystic: language.t("enemyGuide.role.mystic"),
+      bruiser: language.t("enemyGuide.role.bruiser"), guardian: language.t("enemyGuide.role.guardian")
+    };
+    function styleName(id) { return styleNames[id]; }
+    if (styles.length < RelicEligibility.ids.length) {
+      var current = RelicEligibility.selected($z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData());
+      var active = RelicEligibility.eligible(this.cfg.ID, current, this.cfg);
+      description += "\n\n" + language.t("relic.style.requirement", [styles.map(styleName).join(", ")]);
+      if (this.info && Number(this.info.level) >= 1) description += "\n<color=" + (active ? "#43a926" : "#bb704b") + ">" + language.t(active ? "relic.style.active" : "relic.style.inactive", [styleName(current.id)]) + "</c>";
+    }
+    this.labInfo.string = language.format("<b>{0}</b>", [description]);
     if (!this.info || this.info.level >= this.cfg.levelInfo.length) {
       this.ndLock.active = !this.info;
       this.ndPro.active = false;

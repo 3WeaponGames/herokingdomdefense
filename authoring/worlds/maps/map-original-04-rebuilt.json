@@ -29,6 +29,122 @@
   },
   "layers": [
     {
+      "id": "layer-5",
+      "name": "Northwest Snowbank",
+      "depth": "ground",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-5",
+          "assetId": "original-map04-native-northwest-snowbank",
+          "name": "Map04 · Northwest Snowbank",
+          "x": -475.92499999999995,
+          "y": 1255.488,
+          "scale": 0.5760626398210291,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-6",
+      "name": "Northeast Snowbank",
+      "depth": "ground",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-6",
+          "assetId": "original-map04-native-northeast-snowbank",
+          "name": "Map04 · Northeast Snowbank",
+          "x": 555.258,
+          "y": 1219.407,
+          "scale": 0.5475746268656715,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-7",
+      "name": "Whole Western Snowbank",
+      "depth": "ground",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-7",
+          "assetId": "original-map04-native-west-snowland-strip",
+          "name": "Map04 · Whole Western Snowbank",
+          "x": -649.5,
+          "y": -535,
+          "scale": 1.3391196528208307,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "id": "layer-8",
+      "name": "South Central Snowbank",
+      "depth": "ground",
+      "transform": {
+        "x": 0,
+        "y": 0,
+        "scale": 1,
+        "angle": 0
+      },
+      "objects": [
+        {
+          "id": "object-8",
+          "assetId": "original-map04-native-southcentral-snow-island",
+          "name": "Map04 · South Central Snowbank",
+          "x": -69.618,
+          "y": -1042,
+          "scale": 0.6733238231098431,
+          "angle": 0,
+          "flipX": false,
+          "depth": "ground",
+          "ground": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "blockers": []
+    },
+    {
       "id": "layer-1",
       "name": "Left Lake",
       "depth": "ground",
@@ -145,8 +261,8 @@
       "blockers": []
     }
   ],
-  "nextObject": 5,
-  "nextLayer": 5,
+  "nextObject": 9,
+  "nextLayer": 9,
   "blockerMask": [
     [
       [

@@ -22,29 +22,34 @@ const TITLES = {
 const title = value => value.replace(/[-_]+/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
 function details(file) {
   const key = path.basename(file, path.extname(file)), sfx = file.includes('/sfx/'), voice = file.includes('/voices/');
-  let category = 'other', kind = 'effect', biome = null, unit = null, tier = null;
+  let category = 'other', kind = 'effect', biome = null, unit = null, tier = null, voiceAction = null;
   const match = /^(?:hooves|ambience)-(.+)-loop$/.exec(key);
   if (match && BIOMES.includes(match[1])) biome = match[1];
   if (voice) {
     category = 'voices'; kind = 'voice'; unit = file.split('/').slice(-2, -1)[0];
     const level = /-level-(\d+)-/.exec(key); tier = level ? Number(level[1]) : null;
+    const themed = /-biome-(.+)-(build|follow|rally)$/.exec(key), command = /-(follow|rally)-variant-\d+$/.exec(key);
+    if (themed && BIOMES.includes(themed[1])) { biome = themed[1]; voiceAction = themed[2]; }
+    else voiceAction = tier ? 'build' : command ? command[1] : null;
   } else if (/^(hooves-)/.test(key)) category = 'horses';
   else if (/^(footsteps-|movement-)/.test(key) || key === 'run') category = 'movement';
   else if (/^ambience-/.test(key)) { category = 'ambience'; kind = 'ambience'; }
   else if (/(?:bgm|theme)/i.test(key) || ['Sands_of_the_Keep', 'Skybound_Horns', 'Levels'].includes(key)) { category = 'music'; kind = 'music'; }
-  else if (/^death-/.test(key) || ['death', 'rebirth', 'fail', 'game_fail'].includes(key)) category = 'deaths';
+  else if (/^death-/.test(key) || key === 'death') category = 'deaths';
   else if (/^(impact-|arrow-impact-|magic-impact|hurt-)|cannon-impact|critical-hit/.test(key) || ['player_hurt', 'enemyHit', 'strike'].includes(key)) category = 'impacts';
   else if (/^(sword-|cavalry-lance|monster-|golem-ground|bow-|crossbow-|enemy-(?:spit|magic)|sniper-|cannon-tower)/.test(key) || ['palyer_attack', 'attack2', 'bullet'].includes(key)) category = 'weapons';
-  else if (/^(healing-|freeze-|slow-|chain-|shield-|mirror-|gravity-|life-steal|phoenix-|hourglass-|debuff-|boss-(?:transformation|special))/.test(key) || key === 'buff') category = 'abilities';
+  else if (/^(healing-|freeze-|slow-|chain-|shield-|mirror-|gravity-|life-steal|phoenix-|hourglass-|debuff-|boss-(?:transformation|special))/.test(key) || ['buff', 'rebirth'].includes(key)) category = 'abilities';
   else if (/^(gate-|barracks-)/.test(key) || ['buliding', 'destory'].includes(key)) category = 'buildings';
-  else if (/^(wave-|boss-arrival|castle-low)/.test(key) || ['game_success', 'victory', 'set_of', 'mission'].includes(key)) category = 'signals';
+  else if (/^(wave-|boss-arrival|castle-low)/.test(key) || ['game_success', 'victory', 'set_of', 'mission', 'fail', 'game_fail'].includes(key)) category = 'signals';
   else if (/^(order-|unit-select)/.test(key)) category = 'orders';
   else if (/(reward|treasure|level_up|get_idea|unlock)/.test(key)) category = 'rewards';
   else if (/^ui-/.test(key) || ['button_click', 'btnclick', 'cuo', 'Scroll_down', 'Cards', 'open'].includes(key)) category = 'interface';
   let name = TITLES[key] || title(key.replace(/-loop$/, ''));
-  if (voice) { const variant = /-variant-(\d+)/.exec(key); name = title(unit) + (tier ? ' · Tier ' + tier + (variant ? ' · Line ' + variant[1] : '') : /-death$/.test(key) ? ' · Death' : ' · ' + title(key)); }
-  if (biome) name = title(biome) + (category === 'horses' ? ' · Horse steps' : ' · Ambience');
-  return { key, name, category, kind, biome, unit, tier, loop: /-loop$/.test(key) || kind === 'music', generated: sfx || voice };
+  if (voice) {
+    const variant = /-variant-(\d+)/.exec(key), action = voiceAction === 'follow' ? 'Follow hero' : voiceAction === 'build' ? 'Building' : title(voiceAction || key);
+    name = title(unit) + (tier ? ' · Tier ' + tier : ' · ' + action) + (biome ? ' · ' + title(biome) + ' · Easter egg' : variant ? ' · Line ' + variant[1] : '');
+  } else if (biome) name = title(biome) + (category === 'horses' ? ' · Horse steps' : ' · Ambience');
+  return { key, name, category, kind, biome, unit, tier, voiceAction, loop: /-loop$/.test(key) || kind === 'music', generated: sfx || voice };
 }
 function index(root) {
   root = path.resolve(root); const assets = path.join(root, 'assets'), result = [], warnings = [], ids = new Set();

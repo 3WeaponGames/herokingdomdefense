@@ -2,10 +2,11 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {decode}=require('../../packages/hkd-characters/lib/png-atlas');
+const painted=require('./painted-building-contract.cjs');
 const root=path.resolve(__dirname,'../..'),fit=require('./building-spine-fit.fixture.json').castleRts;
 const dir='assets/KinghtFallIconMap/com/Ani/cb/';
 const bytes=file=>fs.readFileSync(path.join(root,file));
-const read=file=>JSON.parse(bytes(file).toString('utf8').replace(/^\uFEFF/,''));
+const read=file=>painted.legacyRead(file,JSON.parse(bytes(file).toString('utf8').replace(/^\uFEFF/,'')));
 const sha=v=>crypto.createHash('sha256').update(v).digest('hex');
 function canonical(v){
   if(typeof v==='number')return Math.round(v*1e6)/1e6;
@@ -81,10 +82,8 @@ test('source flag hoists, night lighting and destruction follow the existing cas
   for(const skin of json.skins.filter(s=>!aliases.has(s.name)))for(const slot of fit.slots)assert.equal(skin.attachments[slot],undefined,'No RTS layers leak into original skins');
 });
 
-test('both castle configurations retain every gameplay field after visual rebinding',()=>{
+test('both castle configurations preserve original gameplay fields and the authorized fourth upgrade',()=>{
   for(const file of ['assets/KinghtFallConfig/GameJsonCfg.json','assets/configs/GameJsonCfg.json']){
-    const castle=read(file).BuildEnum['1'];assert.equal(castle.levelList.length,3);
-    for(const alias of fit.aliases){const row=castle.levelList.find(r=>r.level===Number(alias.alias.slice(-1)));assert.equal(row.Skin,alias.alias);row.Skin=alias.skin;}
-    assert.equal(sha(JSON.stringify(canonical(castle))),fit.gameplay,'Keep stats, Zoom, IDs, costs, progression, timing and unknown fields');
+    painted.assertConfig(file,read(file));
   }
 });

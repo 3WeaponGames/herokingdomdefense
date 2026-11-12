@@ -48,7 +48,7 @@ function create(c){
   if(state.tab==='Buildings')button(tools,'Place building',()=>{state.tool='building';render();},state.tool==='building');
   if(state.tab==='Spawns')button(tools,'Add spawn',()=>{state.tool='spawn';render();},state.tool==='spawn');
   if(state.tab==='Paths'){button(tools,'Add point',()=>{state.tool='node';render();},state.tool==='node');button(tools,'Connect points',()=>{state.tool='connect';state.connect=null;render();},state.tool==='connect');}
-  if(['Stage','Buildings'].includes(state.tab))field(tools,'Hall preview',state.previewHall,value=>{state.previewHall=value;c.prepareImages();draw();},[1,2,3]);
+  if(['Stage','Buildings'].includes(state.tab))field(tools,'Hall preview',state.previewHall,value=>{state.previewHall=value;c.prepareImages();draw();},[1,2,3,4]);
   if(state.tab!=='Waves'){field(tools,'Blockers',state.showBlockers,value=>{state.showBlockers=value;render();});field(tools,'Snap',state.snapGrid,value=>state.snapGrid=Math.max(0,value));}
   if(state.tab!=='Waves'&&state.showBlockers){const legend=el('span',undefined,'world-blocker-legend');legend.appendChild(el('span','Map','world-map-blocker-key'));legend.appendChild(el('span','Buildings','world-building-blocker-key'));tools.appendChild(legend);}
  }
