@@ -190,10 +190,10 @@ function render(panel, row, api) {
     }
     mechanics(panel, row, level, keys, context);
     towerSettings(panel,row,level,keys);
-    const blocker=panel._section('Blocker');
+    const blocker=panel._section('Blocker & shadow');
     const blockerKey=id+':'+level.index;
     if(panel._blockerStateKey!==blockerKey){panel._blockerStateKey=blockerKey;panel._blockerState={};}
-    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:{id,levelIndex:branch.position},state:panel._blockerState,onChange:value=>panel._change([{doc:'A',path:keys.concat('Blocker'),value}])});
+    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:{id,levelIndex:branch.position},state:panel._blockerState,onChange:(value,layer)=>panel._change([{doc:'A',path:keys.concat(layer==='shadow'?'Shadow':'Blocker'),value}])});
     const costs = panel._section('Health, level & costs');
     ['Hp','level'].filter(key => own(level, key)).forEach(key => {
         if(id==='6'&&key==='level')panel._field(costs,'Unlock level',level.level,next=>panel._set('A',keys.concat('level'),next),{integer:true,min:1,help:'Wall tabs show artwork tiers. This level controls castle unlocks; existing upgrade paths are preserved.'});

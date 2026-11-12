@@ -75,6 +75,7 @@ function describe(service,stage){
     for(const part of refs){const value=part.ref&&source[part.ref.__id__];if(!value||value.__type__!=='sp.Skeleton')continue;try{if(!assetIndex)assetIndex=Units.index(service.root);let description=skeleton(service.root,value,info,assetIndex,row&&row.Skin,part.ground,assetCache,dependencies);if(building.kind===6&&!description.json.wallKit&&!description.json.wallGate&&GateFacing.valid(effectiveFace)&&GateFacing.reverse(effectiveFace)&&(part.ref===component.ndAniDown||part.ref===component.ndAniMain)){description=Object.assign({},description,{json:GateFacing.mirrorJson(description.json),revision:description.revision+':reverse-gate'});}level.skeletons.push(description);if(level.rotationPreview)level.rotationPreview.skeletons.push(moving.has(reference(source,part.ref)));needsRuntime=true;}catch(error){errors.push(error.message);}}
    }
    if(building.kind===6)try{WallRun.fitRecord(level,component,effectiveFace,{adjustmentsData:wallAdjustments&&wallAdjustments.data,adjustmentRevision:wallAdjustments&&wallAdjustments.revision});}catch(error){errors.push(error.message);}
+   if(row&&row.Shadow){const Shadow=require('../../../assets/_script/BuildingShadow'),main=level.skeletons.find(s=>s.json.wallKit),layout=main&&main.json.wallKit.layout;level.shadow={regions:clone(Shadow.regions(row.Shadow,layout)),opacity:row.Shadow.opacity,matrix:(row.Shadow.body?owner.world:main&&main.matrix||owner.world).slice()};}
    result.levels[hall]=level;
   }
  }

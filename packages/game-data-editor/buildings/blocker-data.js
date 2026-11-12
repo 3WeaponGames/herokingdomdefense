@@ -21,7 +21,23 @@ function describe(service,request){
   parts=[{key:'body',label:'Building',instances:[relative(owner.world)]}];
  }
  const value=clone(row.Blocker||Object.assign({version:1},defaults));
- return {record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value};
+ const Shadow=require('../../../assets/_script/BuildingShadow'),shadowDefaults={version:1,opacity:Shadow.opacity};
+ for(const p of parts)shadowDefaults[p.key]={mask:[]};
+ let shadowParts=parts;
+ if(building.kind===6){const main=record.skeletons.find(s=>s.json.wallKit),layout=main.json.wallKit.layout;shadowDefaults.gateSpan=layout.nativeGateSpan;const copies=Geometry.instances(layout,row.Shadow&&row.Shadow.gateSpan);shadowParts=parts.map(p=>Object.assign({},p,{instances:copies[p.key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));}
+ return {record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value,shadow:clone(row.Shadow||shadowDefaults),shadowParts};
+}
+function shadowIssues(value,wall){
+ if(!value||value.version!==1||typeof value!=='object'||Array.isArray(value))return ['Invalid building shadow mask.'];
+ const result=[];
+ if(!Number.isFinite(value.opacity)||value.opacity<0||value.opacity>1)result.push('Shadow opacity must be between 0 and 100%.');
+ if(wall&&value.gateSpan!==undefined&&(!Number.isFinite(value.gateSpan)||value.gateSpan<=0||value.gateSpan>20000))result.push('Invalid shadow gate reference width.');
+ for(const key of wall?['gate','pillar','span']:['body']){
+  const part=value[key];if(!part||typeof part!=='object'){result.push('Missing '+key+' shadow mask.');continue;}
+  const errors=Clip.issues(part.mask);if(errors.length){result.push(...errors.map(s=>s.replace(/blocker/gi,'shadow')));continue;}
+  if(JSON.stringify(part).length>500000||part.mask.flat(2).length>4096||part.mask.flat(2).some(p=>p.some(n=>Math.abs(n)>10000)))result.push('Shadow exceeds the point or coordinate limit.');
+ }
+ return result;
 }
 function issues(value,wall){
  const result=[];
@@ -35,4 +51,4 @@ function issues(value,wall){
  }
  return result;
 }
-module.exports={describe,shape,issues};
+module.exports={describe,shape,issues,shadowIssues};

@@ -322,6 +322,7 @@ function validate(documents, changes) {
       ['Hp','Zoom'].forEach(k=>number('A',q.concat(k),level[k],Number.MIN_VALUE,false));
       ['BuildSliverCost','BuildCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
       if(own(level,'Blocker'))require('../buildings/blocker-data').issues(level.Blocker,id==='6').forEach(message=>issue('A',q.concat('Blocker'),message));
+      if(own(level,'Shadow'))require('../buildings/blocker-data').shadowIssues(level.Shadow,id==='6').forEach(message=>issue('A',q.concat('Shadow'),message));
       graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
       if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');
       if(graph[level.index].length&&!own(level,'BuildSliverCost')&&!graph[level.index].every(index=>{const target=building.levelList.find(row=>row.index===index);return target&&typeof target.BuildCost==='number'&&Number.isFinite(target.BuildCost)&&target.BuildCost>=0;}))issue('A',q.concat('BranchBuild'),'Set a cost for each destination building level.');

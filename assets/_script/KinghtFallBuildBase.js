@@ -141,6 +141,7 @@ var def_KinghtFallBuildBase = function (t) {
       });
     });
     require("BuildingAppearance").hide(this);
+    if (this._buildingShadowRuntime) require("BuildingShadowRuntime").hide(this);
   };
   _ctor.prototype.getLevel = function () {
     if (this.buildInfo && this.buildInfo.cfg) {
@@ -239,6 +240,7 @@ var def_KinghtFallBuildBase = function (t) {
       }
     });
     require("BuildingAppearance").apply(this);
+    if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
   };
   _ctor.prototype._alignPurchaseCost = function (field) {
     var origin = field.convertToWorldSpaceAR(cc.v2(0, 0));
@@ -315,6 +317,7 @@ var def_KinghtFallBuildBase = function (t) {
     this.cancelUpgrade();
     this._stopColliderTweens();
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
+    if (this._buildingShadowRuntime) require("BuildingShadowRuntime").dispose(this);
     require("BuildingAppearance").dispose(this);
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };
