@@ -18,7 +18,7 @@ test('six square cards center padded weapon poses, keep the Equipped badge above
 });
 
 test('the Equip button straddles the panel bottom and each card loads its own main-weapon tier frame',()=>{
- const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:21,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:1}),owner={node:f.canvas};f.api.open(owner);
+ const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:21,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:50}),owner={node:f.canvas};f.api.open(owner);
  const panel=f.find('Panel outline'),action=f.find('Equipped action');assert.equal(action.y,panel.y-panel.height/2);assert(action.height>0);
  assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd']);
  assert.equal(f.find('Style vanguard').getChildByName('Tier clip').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier clip').getChildByName('Tier card').color,'#ffffff');
@@ -33,13 +33,13 @@ test('the portrait popup fits short/narrow viewports and removes its resize and 
  for(const request of f.pending)request.callback(null,{getOriginalSize:()=>({width:50,height:100})});f.ready();assert.equal(f.pending.length,requests);assert.equal(f.canvas.children.length,0,'Late artwork/catalog callbacks cannot recreate the popup');
 });
 
-test('native Spine getters orient weapon tips northeast while preserving paired-item spacing and relative rotation',()=>{
+test('native Spine getters orient each main weapon northeast exactly once, including the bow',()=>{
  let definition;const context={exports:{},cc:{Component:class{},Class(value){definition=value;return class{};}},require:()=>({})};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroWeaponIcon.js'),'utf8'),context);
  for(const style of ['fighter','mystic','skirmisher']){
   const vertical=style==='mystic',boneAngle=(style==='skirmisher'?-90:-30)*Math.PI/180,bone={getA:()=>Math.cos(boneAngle),getB:()=>-Math.sin(boneAngle),getC:()=>Math.sin(boneAngle),getD:()=>Math.cos(boneAngle)},attachment={getWidth:()=>vertical?68:118,getHeight:()=>vertical?135:59,getRotation:()=>10,getScaleX:()=>1,getScaleY:()=>1};
-  const node=(name,x,y,angle)=>({name,x,y,angle,scaleX:1,scaleY:1,opacity:255,setPosition(x,y){this.x=x;this.y=y;}}),main=node(style==='skirmisher'?'Arrow icon':'Weapon icon',18,24,20),other=node('Paired item',-13,8,-15),renderer=value=>({node:value,_nativeSkeleton:{getBoundingBox:()=>({x:-30,y:-10,width:100,height:35})},updateWorldTransform(){},findSlot:()=>({getBone:()=>bone,getAttachment:()=>attachment})}),root={parent:{width:172,height:172},setPosition(x,y){this.x=x;this.y=y;}},pose={style,node:root,renderers:[renderer(main),renderer(other)],frames:1,signature:style};
-  const separation=Math.hypot(main.x-other.x,main.y-other.y);definition.lateUpdate.call(pose);const heading=((boneAngle*180/Math.PI+10+(vertical?90:0)+main.angle)%360+360)%360;
-  assert(Math.abs(heading-45)<1e-9);assert(Math.abs(Math.hypot(main.x-other.x,main.y-other.y)-separation)<1e-9);assert(Math.abs(main.angle-other.angle-35)<1e-9);assert(pose.settled);const once=JSON.stringify([main,other]);definition.lateUpdate.call(pose);assert.equal(JSON.stringify([main,other]),once);
+  const main={name:'Weapon icon',x:18,y:24,angle:20,scaleX:1,scaleY:1,opacity:255,setPosition(x,y){this.x=x;this.y=y;}},renderer={node:main,_nativeSkeleton:{getBoundingBox:()=>({x:-30,y:-10,width:100,height:35})},updateWorldTransform(){},findSlot:()=>({getBone:()=>bone,getAttachment:()=>attachment})},root={parent:{width:172,height:172},setPosition(x,y){this.x=x;this.y=y;}},pose={style,node:root,renderers:[renderer],frames:1,signature:style};
+  definition.lateUpdate.call(pose);const heading=((boneAngle*180/Math.PI+10+(vertical?90:0)+main.angle)%360+360)%360;
+  assert(Math.abs(heading-45)<1e-9);assert(pose.settled);const once=JSON.stringify(main);definition.lateUpdate.call(pose);assert.equal(JSON.stringify(main),once);
  }
 });
 
@@ -78,6 +78,6 @@ test('Cocos asset UUIDs resolve fitted horse and weapon assets, saved skins and 
  const previewUser={getPersonLevel:()=>1,getHeroWeaponLevel:()=>1},preview=load('HeroStylePreview').create(f.canvas,previewUser);await preview.setStyle('fighter');
  for(const [node,name,x,skin]of [['spAniMa','ma',7,'lv2'],['spAniBow','gong',11,'fighter_lv3'],['spAniArrow','jian',13,'fighter_lv4']]){const renderer=preview.node.getChildByName(node).getComponent(Skeleton);assert.equal(renderer.skeletonData,baked['fitted-'+name]);assert.equal(renderer.node.x,x);assert.equal(renderer.skin,skin);}
  const icon=load('HeroWeaponIcon').create(f.canvas,previewUser,'fighter');await icon.ready;
- for(const [node,name,x]of [['Weapon icon','gong',11],['Shield icon','jian',13]]){const renderer=icon.node.getChildByName(node).getComponent(Skeleton);assert.equal(renderer.skeletonData,baked['fitted-'+name]);assert.equal(renderer.node.x,x);assert.equal(renderer.skin,profile.skins[name]);}
+ const weapon=icon.node.getChildByName('Weapon icon').getComponent(Skeleton);assert.equal(weapon.skeletonData,baked['fitted-gong']);assert.equal(weapon.node.x,11);assert.equal(weapon.skin,profile.skins.gong);assert.equal(icon.node.getChildByName('Shield icon'),undefined);assert.equal(requests.filter(resource=>resource==='fitted-jian').length,1,'Only the hero preview loads secondary equipment');
  assert.equal(requests.filter(resource=>resource==='fitted-ma').length,1);assert.equal(requests.filter(resource=>resource==='fitted-gong').length,2);preview.destroy();icon.destroy();
 });

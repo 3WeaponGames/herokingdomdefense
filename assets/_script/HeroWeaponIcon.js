@@ -1,5 +1,5 @@
 "use strict";
-// Render the published hand rigs at a fixed idle time. The rig supplies the
+// Render the published main-weapon rig at a fixed idle time. The rig supplies the
 // attachment positions, rotations and relative sizes for every equipment tier.
 var Looks = require("HeroItemLooks"), POSE_TIME = .25;
 var visibleCache = {}, assetIds = new WeakMap(), nextAssetId = 1;
@@ -26,9 +26,9 @@ function number(object, property, fallback) {
 }
 function orient(pose) {
   if (pose.oriented) return true;
-  var arrow = pose.style === "skirmisher", renderer = pose.renderers.filter(function (value) { return value.node.name === (arrow ? "Arrow icon" : "Weapon icon"); })[0];
-  var type = {fighter:"Sword",vanguard:"Spear",mystic:"Staff",bruiser:"Axe",guardian:"Blunt"}[pose.style];
-  var slot = renderer && renderer.findSlot && renderer.findSlot(arrow ? "Rider/HandRight/Bow/Arrow" : "Rider/HandRight/" + type);
+  var renderer = pose.renderers[0];
+  var type = {skirmisher:"Bow/Bow",fighter:"Sword",vanguard:"Spear",mystic:"Staff",bruiser:"Axe",guardian:"Blunt"}[pose.style];
+  var slot = renderer && renderer.findSlot && renderer.findSlot("Rider/HandRight/" + type);
   var bone = slot && (slot.getBone ? slot.getBone() : slot.bone), attachment = slot && (slot.getAttachment ? slot.getAttachment() : slot.attachment);
   if (!bone || !attachment) { pose.oriented = true; return true; }
   var vertical = number(attachment, "height", 0) > number(attachment, "width", 0), angle = number(attachment, "rotation", 0) * Math.PI / 180;
@@ -39,8 +39,7 @@ function orient(pose) {
   var model = renderer.node, rotation = model.angle * Math.PI / 180, dx = bx * model.scaleX, dy = by * model.scaleY;
   var direction = Math.atan2(dx * Math.sin(rotation) + dy * Math.cos(rotation), dx * Math.cos(rotation) - dy * Math.sin(rotation));
   var turn = Math.PI / 4 - direction, cosine = Math.cos(turn), sine = Math.sin(turn);
-  // Rotate both hand rigs together, retaining the bow/arrow relationship and
-  // the hammer/shield draw order. Only the card's presentation changes.
+  // Only the card's presentation changes; the equipped hero keeps its pose.
   pose.renderers.forEach(function (value) { var node = value.node, x = node.x, y = node.y; node.setPosition(x * cosine - y * sine, x * sine + y * cosine); node.angle += turn * 180 / Math.PI; });
   pose.signature += ":northeast:" + turn; pose.oriented = true; return true;
 }
@@ -89,8 +88,6 @@ var Pose = cc.Class({
     var box = { left: Infinity, right: -Infinity, bottom: Infinity, top: -Infinity };
     this.renderers.forEach(function (renderer) {
       var rect = bounds(renderer), node = renderer.node;
-      // Single-weapon styles have an empty secondary rig. It must not enlarge
-      // their icon bounds or make a vertical staff smaller than other weapons.
       if (!rect || !(rect.width > 0 && rect.height > 0) || !isFinite(rect.x + rect.y + rect.width + rect.height) || !node.opacity) return;
       var angle = node.angle * Math.PI / 180, cosine = Math.cos(angle), sine = Math.sin(angle);
       [rect.x, rect.x + rect.width].forEach(function (x) {
@@ -121,11 +118,12 @@ var Pose = cc.Class({
 function create(parent, user, style, onError) {
   var root = new cc.Node("Idle " + style + " weapons"); root.setParent(parent); root.opacity = 1;
   var pose = root.addComponent(Pose), disposed = false; pose.style = style;
-  var entries = [{ role: 4, file: "gong", name: "Weapon icon" }, { role: 3, file: "jian", name: style === "skirmisher" ? "Arrow icon" : "Shield icon" }];
-  if (style === "guardian") entries.reverse(); // shield behind the hammer
+  // Each card's background is the main weapon's tier, so its artwork also
+  // shows only that weapon. Secondary gear keeps its own level reference.
+  var entries = [{ role: 4, file: "gong", name: "Weapon icon" }];
   var ready = Promise.all(entries.map(function (entry) { return load("hero-maker/wqyl_lead_" + entry.file, sp.SkeletonData); }).concat([load("characters/catalog", cc.JsonAsset)])).then(function (loaded) {
     if (disposed || !cc.isValid(root, true)) return;
-    var catalog = loaded[2].json, base = catalog.profiles[catalog.assignments["hero:hero:default"]], profile = Looks.current(base, style);
+    var catalog = loaded[entries.length].json, base = catalog.profiles[catalog.assignments["hero:hero:default"]], profile = Looks.current(base, style);
     var baked = profile && profile.bakedLayers || {};
     return Promise.all(entries.map(function (entry, index) {
       var replacement = baked[loaded[index]._uuid || loaded[index].uuid];
@@ -151,7 +149,7 @@ function create(parent, user, style, onError) {
         if (transform.tint) node.color = cc.color(transform.tint);
         return renderer;
       });
-      pose.signature = style + ":" + user.getHeroWeaponLevel(style, 4) + ":" + user.getHeroWeaponLevel(style, 3) + ":" + JSON.stringify(pose.renderers.map(function (renderer) { var node = renderer.node; return [assetId(renderer.skeletonData), renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name || renderer.defaultSkin, node.x, node.y, node.scaleX, node.scaleY, node.angle, node.opacity, node.color && node.color.toHEX && node.color.toHEX()]; }));
+      pose.signature = style + ":" + user.getHeroWeaponLevel(style, 4) + ":" + JSON.stringify(pose.renderers.map(function (renderer) { var node = renderer.node; return [assetId(renderer.skeletonData), renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name || renderer.defaultSkin, node.x, node.y, node.scaleX, node.scaleY, node.angle, node.opacity, node.color && node.color.toHEX && node.color.toHEX()]; }));
       pose.frames = 3;
     });
   }).catch(function (error) { if (!disposed && cc.isValid(root, true) && onError) onError(error); });

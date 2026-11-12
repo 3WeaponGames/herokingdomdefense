@@ -24,18 +24,17 @@ function harness(options={}){
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script',options.preview?'HeroStylePreview.js':'HeroWeaponIcon.js'),'utf8'),context);
  return{...f,assets,errors,Skeleton,api:context.exports};
 }
-test('every style and tier uses real idle hand poses, equal square padding and a uniform scale; the staff stays upright',async()=>{
+test('every style and tier shows only its main weapon, keeps its real idle pose, and fits a centered square with uniform scale',async()=>{
  const h=harness(),before=JSON.stringify(Object.values(h.assets).map(asset=>asset.skeletonJson));
- for(const level of [1,6,11,16])for(const style of Weapons.styles){
+ for(const level of [1,6,11,16,21])for(const style of Weapons.styles){
   const parent=new h.Node('Icon square');parent.setContentSize(132,132);parent.setParent(h.canvas);
-  const icon=h.api.create(parent,{getHeroWeaponLevel:()=>level},style.id,error=>h.errors.push(error));await icon.ready;assert.equal(h.errors.length,0);
+  const icon=h.api.create(parent,{getHeroWeaponLevel:(_style,slot)=>{assert.equal(slot,4,'Card artwork does not depend on the secondary tier');return level;}},style.id,error=>h.errors.push(error));await icon.ready;assert.equal(h.errors.length,0);
   const pose=icon.node.components[0];for(let frame=0;frame<3;frame++)pose.lateUpdate();assert(pose.settled,style.id+' settles');assert.equal(icon.node.scaleX,icon.node.scaleY);assert.equal(icon.node.opacity,255);
-  const bounds={left:Infinity,right:-Infinity,bottom:Infinity,top:-Infinity};for(const renderer of pose.renderers){assert(renderer.paused);assert.equal(renderer.timeScale,0);assert.equal(renderer._state.getCurrent(0).trackTime,.25);const offset=new spine.Vector2(),size=new spine.Vector2();renderer._skeleton.getBounds(offset,size,[]);if(!Number.isFinite(offset.x+offset.y+size.x+size.y))continue;bounds.left=Math.min(bounds.left,offset.x);bounds.right=Math.max(bounds.right,offset.x+size.x);bounds.bottom=Math.min(bounds.bottom,offset.y);bounds.top=Math.max(bounds.top,offset.y+size.y);}
-  assert(Math.abs(Math.max(bounds.right-bounds.left,bounds.top-bounds.bottom)*icon.node.scaleX-112)<.001,style.id+' has ten pixels of padding');
+  assert.equal(pose.renderers.length,1);assert.deepEqual(icon.node.children.map(node=>node.name),['Weapon icon']);
+  const bounds={left:Infinity,right:-Infinity,bottom:Infinity,top:-Infinity};for(const renderer of pose.renderers){assert(renderer.paused);assert.equal(renderer.timeScale,0);assert.equal(renderer._state.getCurrent(0).trackTime,.25);const offset=new spine.Vector2(),size=new spine.Vector2(),node=renderer.node,angle=node.angle*Math.PI/180;renderer._skeleton.getBounds(offset,size,[]);for(const x of [offset.x,offset.x+size.x])for(const y of [offset.y,offset.y+size.y]){const px=node.x+x*node.scaleX*Math.cos(angle)-y*node.scaleY*Math.sin(angle),py=node.y+x*node.scaleX*Math.sin(angle)+y*node.scaleY*Math.cos(angle);bounds.left=Math.min(bounds.left,px);bounds.right=Math.max(bounds.right,px);bounds.bottom=Math.min(bounds.bottom,py);bounds.top=Math.max(bounds.top,py);}}
+  assert(Math.abs(Math.max(bounds.right-bounds.left,bounds.top-bounds.bottom)*icon.node.scaleX-100.8)<.001,style.id+' retains the approved padded size');assert(Math.abs((bounds.left+bounds.right)/2*icon.node.scaleX+icon.node.x)<.001);assert(Math.abs((bounds.top+bounds.bottom)/2*icon.node.scaleY+icon.node.y)<.001);
   const main=pose.renderers.find(renderer=>renderer.node.name==='Weapon icon'),skin=equipment.find(gear=>gear.id===4).levelInfo[level-1].EquipSkin;assert.equal(main._skeleton.skin.name,style.id+'_'+skin);
-  if(style.id==='skirmisher'){const arrow=pose.renderers.find(renderer=>renderer.node.name==='Arrow icon'),bone=arrow._skeleton.findSlot('Rider/HandRight/Bow/Arrow').bone;assert(Math.abs(Math.atan2(bone.c,bone.a)*180/Math.PI+90)<.01,'Arrow follows its downward idle bone');assert(icon.node.children.indexOf(arrow.node)>icon.node.children.indexOf(main.node));}
-  if(style.id==='guardian'){const shield=pose.renderers.find(renderer=>renderer.node.name==='Shield icon'),hammer=main._skeleton.findSlot('Rider/HandRight/Blunt').bone,left=shield._skeleton.findSlot('Rider/HandLeft/Shield').bone;assert(left.worldX>hammer.worldX);assert(Math.abs(Math.atan2(hammer.c,hammer.a)*180/Math.PI+15)<.01,'Hammer retains its idle angle');assert(icon.node.children.indexOf(shield.node)<icon.node.children.indexOf(main.node));}
-  if(style.id==='mystic'){const offset=new spine.Vector2(),size=new spine.Vector2();main._skeleton.getBounds(offset,size,[]);assert(size.y>size.x,'Staff remains vertical and fills the same square budget');}
+  for(const slot of ['Rider/HandRight/Bow/Arrow','Rider/HandLeft/Shield'])assert.equal(main._skeleton.findSlot(slot).getAttachment(),null,'Secondary equipment stays out of the choice card');
   icon.destroy();parent.destroy();
  }
  assert.equal(JSON.stringify(Object.values(h.assets).map(asset=>asset.skeletonJson)),before,'Previewing poses never modifies authored rigs');
@@ -46,6 +45,6 @@ test('the large showcase hides only its own horse shadow and aligns the feet wit
  const preview=h.api.create(parent,{getHeroWeaponLevel:()=>1,getPersonLevel:()=>1},error=>h.errors.push(error));await preview.setStyle('skirmisher');assert.equal(h.errors.length,0);
  const clock=preview.node.components[0];for(let frame=0;frame<3;frame++)clock.lateUpdate();const horse=clock.controller.spAniMa;
  assert.equal(horse.findSlot('ty').getAttachment(),null);assert(h.assets.ma.runtime.defaultSkin.getAttachment(0,'ty'),'The shared horse asset still contains its shadow');
- const offset=new spine.Vector2(),size=new spine.Vector2();horse._skeleton.getBounds(offset,size,[]);assert(Math.abs(parent.y+preview.node.y+offset.y*preview.node.scaleY-140)<.001);
+ const offset=new spine.Vector2(),size=new spine.Vector2();horse._skeleton.getBounds(offset,size,[]);assert(Math.abs(parent.y+preview.node.y+offset.y*preview.node.scaleY-(parent.y-parent.height/2-5))<.001);
  assert.equal(JSON.stringify(h.assets.ma.skeletonJson),before);preview.destroy();
 });
