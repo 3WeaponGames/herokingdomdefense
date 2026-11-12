@@ -31,7 +31,7 @@ const LABELS = {
   InvincibleTime:'Revival invulnerability (seconds)',RestrainedArms:'Counter damage multiplier',RefreshInterval:'Spawn interval (seconds)',
   BackToReady:'Return delay (seconds)',unlockDefense:'Defense mode unlock stage',cdTimeDefense:'Defense mode cooldown (seconds)'
 };
-const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Sub-weapon / bonus • Damage','Main weapon • Attack range','Cape • Attack speed','Mount • Movement speed'];
+const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Sub-weapon / bonus • Damage','Main weapon • Attack range','Cloak • Attack speed','Mount • Movement speed'];
 const RARITIES = ['Common','Rare','Epic','Legendary'];
 const BUILDINGS = {1:'Castle Keep',2:'Arrow Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall'};
 // Map01–Map04 have lock/interaction nodes only for these authored levels.

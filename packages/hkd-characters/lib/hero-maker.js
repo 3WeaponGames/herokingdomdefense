@@ -77,7 +77,7 @@ function customEquipment(root,files,read){
       const [slot,variants]=pair,[key,value]=Object.entries(variants)[0],image=cut(value.path||value.name||key),file=equipmentFolder+'/'+category.toLowerCase()+'-'+skin.name+'.png';
       files.set(file,PNG.encode(image));files.set(file+'.meta',JSON.stringify(Bake.textureMeta(file,image.width,image.height),null,2)+'\n');
       const scale=category==='Cape'?1:category==='Gloves'?.22:.38;
-      entries.push({id:'Hero/'+category+'/'+skin.name,name:'Hero '+category+' '+skin.name,category,image:file,thumbnail:file,resource:file.slice('assets/resources/'.length,-4),width:image.width,height:image.height,pixelsPerUnit:100/scale});
+      entries.push({id:'Hero/'+category+'/'+skin.name,name:'Hero '+(category==='Cape'?'Cloak':category)+' '+skin.name,category,image:file,thumbnail:file,resource:file.slice('assets/resources/'.length,-4),width:image.width,height:image.height,pixelsPerUnit:100/scale});
     }
   }
   return entries;
@@ -113,7 +113,7 @@ function plan(root){
   const images=new Map(),decode=bytes=>{const key=require('crypto').createHash('sha256').update(bytes).digest('hex');if(!images.has(key))images.set(key,PNG.decode(bytes));return images.get(key);};
   const library=Library.describe(root,'character-maker/Character',true),maker=clone(library.layers[0]);read(path.join(root,library.source));read(path.join(root,library.source.replace('.json','.atlas')));expand(maker.json);
   const catalogFile='assets/resources/character-parts/catalog.json',text=read(path.join(root,catalogFile)).toString('utf8'),catalog=JSON.parse(text),custom=customEquipment(root,files,read),assets=new Map(catalog.parts.concat(Library.load(root).parts.filter(asset=>asset.sourcePack==='character-maker'),custom).map(asset=>[asset.id,asset]));
-  const replacements=new Map(),icons={},gearAssets=type=>[...assets.values()].filter(a=>a.id.startsWith(type+'/'));
+  const replacements=new Map(),icons={},blueCloak=assets.get('Hero/Cape/lv_blue'),gearAssets=type=>[...assets.values()].filter(a=>a.id.startsWith(type+'/'));
   const choose=(type,tier)=>{const list=gearAssets(type);if(!list.length)throw Error('Missing Maker '+type);return list[Math.min(list.length-1,(tier-1)*3)];};
   const weapon=(style,tier)=>style==='guardian'?assets.get('HandRight/Blunt/FA_WP_Main_Blunt_'+['017_DarkGreen','017_Red','017_Sky','024_GoldPurple'][tier-1]):style==='skirmisher'&&tier===1?assets.get(starter.bow):choose('HandRight/'+family[style],tier);
   for(const [name,role]of Object.entries(roles)){
@@ -162,11 +162,14 @@ function plan(root){
     }
     rig._heroMaker={version:3,role,source:'character-maker/Character',riderScale:.78,saddle:{x:-23.13477412559174,y:63.84370483579855}};
     require('./tier-skins').ensure(rig);
+    if(role===5&&blueCloak)require('./cloak').apply(rig,blueCloak);
     const written=writeRig(root,files,read,name,rig,pictures);replacements.set(originalUuid,written.uuid);
+    if(role===5&&blueCloak)require('./cloak').page(files,written.base,blueCloak,JSON.parse(read(path.join(root,blueCloak.image+'.meta'))).uuid);
   }
   const mount=horse(root,maker,files,read);replacements.set(mount.from,mount.to);
   require('./current-model').folderMetadata(root,folder,files,read);require('./current-model').folderMetadata(root,equipmentFolder,files,read);
   require('./tier-skins').icons(icons);
+  if(blueCloak)require('./cloak').icons(icons,blueCloak);
   const iconFile=folder+'/catalog.json';files.set(iconFile,JSON.stringify({version:1,icons},null,2)+'\n');files.set(iconFile+'.meta',JSON.stringify({ver:'1.3.0',uuid:Bake.uuid(iconFile),importer:'json',subMetas:{}},null,2)+'\n');
   const next=clone(catalog);for(const asset of custom){const at=next.parts.findIndex(p=>p.id===asset.id);if(at<0)next.parts.push(asset);else next.parts[at]={...next.parts[at],...asset};}files.set(catalogFile,Document.patch(text,catalog,next));
   // Update only the hero's render assets. Other prefab fields remain byte stable.

@@ -7466,7 +7466,7 @@
     },
     {
       "id": "Hero/Cape/lv1",
-      "name": "Hero Cape lv1",
+      "name": "Hero Cloak lv1",
       "category": "Cape",
       "image": "assets/resources/hero-maker/equipment/cape-lv1.png",
       "thumbnail": "assets/resources/hero-maker/equipment/cape-lv1.png",
@@ -7477,7 +7477,7 @@
     },
     {
       "id": "Hero/Cape/lv2",
-      "name": "Hero Cape lv2",
+      "name": "Hero Cloak lv2",
       "category": "Cape",
       "image": "assets/resources/hero-maker/equipment/cape-lv2.png",
       "thumbnail": "assets/resources/hero-maker/equipment/cape-lv2.png",
@@ -7488,7 +7488,7 @@
     },
     {
       "id": "Hero/Cape/lv3",
-      "name": "Hero Cape lv3",
+      "name": "Hero Cloak lv3",
       "category": "Cape",
       "image": "assets/resources/hero-maker/equipment/cape-lv3.png",
       "thumbnail": "assets/resources/hero-maker/equipment/cape-lv3.png",
@@ -7499,7 +7499,7 @@
     },
     {
       "id": "Hero/Cape/lv4",
-      "name": "Hero Cape lv4",
+      "name": "Hero Cloak lv4",
       "category": "Cape",
       "image": "assets/resources/hero-maker/equipment/cape-lv4.png",
       "thumbnail": "assets/resources/hero-maker/equipment/cape-lv4.png",
@@ -7594,7 +7594,7 @@
       "thumbnail": "assets/resources/character-parts/Parts/HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_BlueDark.png",
       "width": 68,
       "height": 64,
-      "sha256": "d1c61620c7bed66a53b88e33ef9b65bf0f12fdcea429b2b15cf50be05cb1c492"
+      "sha256": "0b01f5dfcd48cc13b5e3c464dfdb6cec5f5879f993e57967bafb2d3985c2654d"
     },
     {
       "id": "HandLeft/Sub_Item/FA_WP_Sub_SkullHorn_GoldBlack",
@@ -7628,6 +7628,18 @@
       "width": 68,
       "height": 64,
       "sha256": "adc2665dde2175a38b3aef915761a87e9ff048799bb8fe461e90300f48d540ff"
+    },
+    {
+      "id": "Hero/Cape/lv_blue",
+      "name": "Hero Cloak Royal Blue",
+      "category": "Cape",
+      "image": "assets/resources/hero-maker/cloak-royal-blue.png",
+      "thumbnail": "assets/resources/hero-maker/cloak-royal-blue.png",
+      "resource": "hero-maker/cloak-royal-blue",
+      "width": 85,
+      "height": 89,
+      "pixelsPerUnit": 100,
+      "sha256": "0b23067dc5a9a97ed92b9f0fc7bf402c5751eeb1f27f36314243919e5fb8a4f6"
     }
   ]
 }

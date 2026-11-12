@@ -8,7 +8,7 @@ function fixture(){
 test('Equipment lists shared items first, includes both upgrade tracks for all six weapons and uses automatic item icons',()=>{
  const f=fixture(),before=f.store.draftState(),rows=f.panel._rows();assert.deepEqual(Array.from(rows.slice(0,4),row=>row.record.id),[1,2,5,6]);assert.equal(rows.length,16);
  for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian'])for(const slot of [3,4]){const row=rows.find(row=>row.key===slot+':'+style);assert(row);assert.equal(row.heroStyle,style);assert.equal(row.icon,undefined);f.render(row.key);assert.equal(f.preview().heroStyle,style);}
- assert(rows.find(row=>row.key==='4:guardian').label.includes('Hammer'));assert(rows.find(row=>row.key==='3:guardian').label.includes('Shield'));assert(rows.find(row=>row.key==='3:mystic').label.includes('Arcane focus'));
+ assert(rows.find(row=>row.key==='4:guardian').label.includes('Hammer'));assert(rows.find(row=>row.key==='3:guardian').label.includes('Shield'));assert(rows.find(row=>row.key==='3:mystic').label.includes('Crystal Orb'));
  f.render('2');assert(f.panel._equipmentIcon(rows.find(row=>row.key==='2')).url.includes('FA_Helmet_003_Wood'));
  assert.equal(f.fields(f.panel.$detail,'Icon').length,0,'Legacy manual icon controls are absent');assert(f.fields(f.panel.$detail,'Icon background').length>0,'Unrelated background settings remain intact');assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.changes().length,0);
 });

@@ -125,7 +125,7 @@ function create(kind){
       if(kind==='perks')(data.BuffCfg||[]).forEach((r,i)=>add(r.ID,this._text(r.Name),r.ID+' · '+Schema.RARITIES[r.Quality-1],r,['BuffCfg',i],{icon:r.Image}));
       if(kind==='buildings')rows.push(...Buildings.rows(this));
       if(kind==='equipment'){
-        const equipment=data.EquipCfg||[],shared={1:'Chest · HP',2:'Helmet · HP regeneration',5:'Cape · Attack speed',6:'Mount · Movement speed'};
+        const equipment=data.EquipCfg||[],shared={1:'Chest · HP',2:'Helmet · HP regeneration',5:'Cloak · Attack speed',6:'Mount · Movement speed'};
         for(const id of [1,2,5,6]){const index=equipment.findIndex(row=>row.id===id),r=equipment[index];if(r)add(id,shared[id],EquipmentTiers.tiers(r).length+' tiers · '+r.levelInfo.length+' upgrades',r,['EquipCfg',index]);}
         for(const style of HeroWeapons.styles)for(const id of [4,3]){const index=equipment.findIndex(row=>row.id===id),r=equipment[index];if(r)add(id+':'+style.id,style.name+' · '+HeroWeapons.gear(style.id,id,'upgrade').name,EquipmentTiers.tiers(r).length+' tiers · '+r.levelInfo.length+' upgrades',r,['EquipCfg',index],{heroStyle:style.id});}
       }

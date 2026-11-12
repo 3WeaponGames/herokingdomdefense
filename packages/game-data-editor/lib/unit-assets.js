@@ -126,7 +126,7 @@ function describe(root, request) {
             const level = Math.max(0, Math.min(equip.levelInfo.length - 1, Number((request.heroLevels || {})[equip.id] || 1) - 1));
             l.skin = equip.levelInfo[level].EquipSkin;
             const view=require('../../../assets/_script/HeroWeapons').gear(request.heroStyle,equip.id,'upgrade');
-            equipment.push({ id: equip.id, label: view?view.name:{1:'Armor & cape',2:'Helmet',5:'Gloves',6:'Mount'}[equip.id], level: level + 1, max: equip.levelInfo.length, levels:equip.levelInfo.map(row=>({value:row.Level,label:require('../../../assets/_script/EquipmentTiers').label(equip,row.Level)+' · Upgrade '+row.Level})) });
+            equipment.push({ id: equip.id, label: view?view.name:{1:'Chest',2:'Helmet',5:'Cloak',6:'Mount'}[equip.id], level: level + 1, max: equip.levelInfo.length, levels:equip.levelInfo.map(row=>({value:row.Level,label:require('../../../assets/_script/EquipmentTiers').label(equip,row.Level)+' · Upgrade '+row.Level})) });
         });
         const style=require('../../../assets/_script/HeroWeapons').find(request.heroStyle)||require('../../../assets/_script/HeroWeapons').styles[0];
         for(const l of layers)if(l.json._heroMaker&&[3,4,5].includes(l.json._heroMaker.role))l.skin=style.id+'_'+l.skin;
