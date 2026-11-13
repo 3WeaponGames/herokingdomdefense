@@ -227,3 +227,50 @@ test('opt-in default sounds play at actual release markers while authored cast c
  try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}}),d={...description,defaultSounds:{release:{clip:'bow-default',volume:.4},basicRelease:{clip:'bow-default',volume:.4},impact:{clip:'arrow-impact',volume:.4}}};await view.set({style:'skirmisher',settings:{windup:.35,visual:{}},description:d});view.cast();for(let i=0;i<5;i++)frame(1000+i*100);assert.equal(sounds.length,0,'default remains silent');view.setAudioEnabled(true);view.cast();frame(2000);frame(2100);frame(2200);assert.equal(sounds.length,0);frame(2300);assert.equal(sounds.length,0);frame(2400);assert.deepEqual(sounds,[{kind:'release',clip:'bow-default'}]);
  await view.set({style:'skirmisher',settings:{windup:.35,visual:{},audio:{cast:{clip:'authored',volume:1,delay:0}}},description:d});sounds.length=0;view.cast();for(let i=0;i<5;i++)frame(3000+i*100);assert.deepEqual(sounds,[{kind:'cast',clip:'authored'}]);view.destroy();}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
+
+test('optional VFX failure cannot retain a previous style or tuning model and reports until recovery',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};const statuses=[];let view,fail=true;
+ const create=h.renderer.createLayers;h.renderer.createLayers=(runtime,layers)=>layers.some(layer=>layer.uuid==='optional-fx')&&fail?Promise.reject(Error('Optional effect unavailable')):create(runtime,layers);
+ const d={...description,effects:[{id:'fx',kind:'spine',description:{layers:[{uuid:'optional-fx',json:{},atlas:'',pages:{}}]}}]},settings={duration:2.5,strikes:7,visual:{resource:'fx'}};
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onStatus:value=>statuses.push(value)});await view.set({style:'fighter',settings:{visual:{}},description});await view.set({style:'vanguard',settings,description:d});view.seek(2.5);assert.equal(view.getState().hits,7);assert.equal(view.getState().stacks,0);assert.equal(statuses.at(-1).error,'Optional effect unavailable');
+  await view.set({style:'vanguard',settings:{...settings,strikes:3},description:d});view.seek(2.5);assert.equal(view.getState().hits,3);assert.equal(statuses.at(-1).error,'Optional effect unavailable');
+  fail=false;await view.set({style:'vanguard',settings:{...settings,strikes:3},description:d});assert.equal(view.getState().customResourceLoaded,true);assert.equal(statuses.at(-1).error,null);
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('a pending optional effect never delays the selected simulation and stale failures cannot replace it',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let view,reject;const statuses=[];
+ const create=h.renderer.createLayers;h.renderer.createLayers=(runtime,layers)=>layers.some(layer=>layer.uuid==='pending-fx')?new Promise((_resolve,fail)=>{reject=fail;}):create(runtime,layers);
+ const d={...description,effects:[{id:'fx',kind:'spine',description:{layers:[{uuid:'pending-fx'}]}}]};
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onStatus:value=>statuses.push(value)});await view.set({style:'fighter',settings:{visual:{}},description});const pending=view.set({style:'vanguard',settings:{duration:2.5,strikes:7,visual:{resource:'fx'}},description:d});for(let i=0;i<5&&!reject;i++)await Promise.resolve();assert(reject);view.seek(2.5);assert.equal(view.getState().hits,7,'the model is committed before artwork arrives');
+  await view.set({style:'bruiser',settings:{visual:{}},description});reject(Error('Obsolete optional effect'));await pending;view.seek(.3);assert.equal(view.getState().stacks,0);assert.equal(statuses.at(-1).error,null);assert(view.getState().hp<100);
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('Vanguard preview recomputes exact-expiry strike scaling and preserves zero damage',()=>{
+ const m=new Model('vanguard',{duration:1,strikes:2,buffDuration:.5,chargeDecay:0},{mode:'active',targets:1,targetDistance:100,attackRate:1});m.advance(1);const hits=m.events.filter(e=>e.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,75);close(hits[1].damage,75);
+ const zero=new Model('vanguard',{duration:.1,strikes:7,strikeDamage:0},{mode:'active',targets:1,targetDistance:100,attackRate:0});zero.advance(.1);assert.equal(zero.hits,0);assert.equal(zero.damage,0);assert.equal(zero.state.buffRemaining,0);assert.equal(zero.targets[0].hp,100000);
+});
+
+test('Mystic preview integrates source playback and freezes the warm-up and damage phase at zero speed',()=>{
+ const m=new Model('mystic',{}, {mode:'basic',targets:1,targetDistance:100,attackRate:2,holdSource:.6,attackPlayback:1});m.advance(.2);close(m.channelSourceTime,.2);assert.equal(m.beam,false);m.scenario.attackPlayback=0;m.advance(1);close(m.channelSourceTime,.2);assert.equal(m.hits,0);assert.equal(m.beam,false);
+ m.scenario.attackPlayback=2;m.advance(.199);close(m.channelSourceTime,.598);assert.equal(m.beam,false);m.advance(.001);close(m.channelSourceTime,.6);assert.equal(m.beam,true);close(m.beamVisibleStarted,1.4);m.advance(.1);assert.equal(m.hits,1);
+});
+
+test('Mystic preview retargets at real tick boundaries and spends only residual time on the next target',()=>{
+ const run=step=>{const m=new Model('mystic',{}, {mode:'basic',targets:3,targetDistance:100,attackRate:2,holdSource:.2,attackPlayback:1});m.targets.forEach((t,i)=>{t.x=100+i*10;t.y=0;t.hp=i===0?50:150;});let remaining=1.4;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.4),b=run(1/120);
+ assert.equal(a.hits,2);assert.equal(a.channelTarget.id,1);close(a.attackClock,.8);close(a.channelSourceTime,1.4);assert.deepEqual(a.targets.map(t=>t.hp),b.targets.map(t=>t.hp));close(a.damage,b.damage);close(a.attackClock,b.attackClock);close(a.channelSourceTime,b.channelSourceTime);assert.equal(a.state.mysticCharges,b.state.mysticCharges);
+});
+
+test('swept arrow contact uses the first circle entry while the closest-point helper remains unchanged',()=>{
+ const {segmentEntry}=require('../../packages/hkd-skills/preview-model'),a={x:0,y:0},b={x:200,y:0};
+ close(segmentEntry({x:100,y:0},a,b,28),.36);close(segmentEntry({x:100,y:20},a,b,28),(100-Math.sqrt(28*28-20*20))/200);close(segmentEntry({x:100,y:28},a,b,28),.5);
+ assert.equal(segmentEntry({x:10,y:0},a,b,28),0);assert.equal(segmentEntry({x:10,y:0},a,a,28),0);assert.equal(segmentEntry({x:100,y:0},a,a,28),null);assert.equal(segmentEntry({x:100,y:29},a,b,28),null);assert.equal(segmentEntry({x:-40,y:0},a,b,28),null);
+ assert.equal(segmentEntry({x:228,y:0},a,b,28),1);assert.equal(segmentEntry({x:229,y:0},a,b,28),null);close(segment({x:100,y:0},a,b).t,.5);
+});
+
+test('arrow preview damage and first-contact ordering are independent of rendered frame size',()=>{
+ const run=step=>{const m=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0,projectileWidth:28},{mode:'active',targets:2,targetDistance:100,attackRate:0});Object.assign(m.targets[0],{x:100,y:27});Object.assign(m.targets[1],{x:110,y:0});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');
+ assert.deepEqual(hits.map(e=>e.target),[1,0]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[1,0]);close(a.damage,b.damage);close(hits[0].time,.082);close(hits[0].damage,108.2);
+ const inside=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0},{mode:'active',targets:3,targetDistance:1,attackRate:0});inside.targets.forEach(t=>Object.assign(t,{x:10,y:0}));inside.advance(.1);assert.deepEqual(inside.events.filter(e=>e.kind==='impact').map(e=>e.target),[0,1,2]);
+});

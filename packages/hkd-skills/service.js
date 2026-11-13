@@ -61,6 +61,7 @@ class SkillService{
     if(!this.options.catalogs)this.catalogs=Catalog.index(this.root);
     const changes=leaves(this.original,this.data),files=new Map(),expected=new Map();
     const resourceStyles=new Set(changes.filter(change=>change.path[1]==='visual'&&change.path[2]!=='resourceAnimation'&&RESOURCE_KEYS.includes(change.path[2])).map(change=>change.path[0]));
+    const audioGroups=new Map(changes.filter(change=>change.path[1]==='audio'&&['cast','impact','channel'].includes(change.path[2])&&['clip','bundle','path'].includes(change.path[3])).map(change=>[change.path[0]+':'+change.path[2],[change.path[0],change.path[2]]]));
     for(const row of disk){if(row.config.HeroSkills!==undefined&&!object(row.config.HeroSkills))throw Error('Invalid HeroSkills section in '+row.relative+'. Nothing was saved.');for(const change of changes)containers(row.config.HeroSkills,change.path,row.relative);}
     for(const style of new Set(changes.map(change=>change.path[0])))if(this.data[style])this.animations(style,this.data[style]);
     for(const change of changes){const [style,...parts]=change.path,field=Settings.descriptors(style).find(row=>row.path===parts.join('.'));if(field&&change.value!==undefined){if(!Settings.valid(field,change.value))throw Error('Invalid '+field.label);if((field.type==='audio'||field.type==='vfx')&&change.value&&!this.asset(field.type==='audio'?'audio':'vfx',change.value))throw Error('A selected skill asset is no longer available.');}}
@@ -70,6 +71,9 @@ class SkillService{
       // copy. A mirror may contain old flipbook fields absent from the primary.
       // Keep unrelated visual extensions while replacing this derived group.
       for(const style of resourceStyles){for(const key of RESOURCE_KEYS)remove(next.HeroSkills,[style,'visual',key]);for(const key of RESOURCE_KEYS){const value=Settings.get(this.data[style],'visual.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.visual.'+key,clone(value));}}
+      // A sound selection owns its whole identity in every copy. Independent
+      // volume, delay and extension fields still belong to their own drafts.
+      for(const [style,phase]of audioGroups.values()){for(const key of ['clip','bundle','path'])remove(next.HeroSkills,[style,'audio',phase,key]);for(const key of ['clip','bundle','path']){const value=Settings.get(this.data[style],'audio.'+phase+'.'+key);if(value!==undefined)Settings.set(next.HeroSkills,style+'.audio.'+phase+'.'+key,clone(value));}}
       if(!Object.keys(next.HeroSkills).length)delete next.HeroSkills;const text=Document.patch(row.text,row.config,next);files.set(row.relative,text);expected.set(row.file,row.bytes);}
     const result=this.commit(this.root,files,expected,FILES[0]);this.read();return this.snapshot(Object.assign({saved:true},result));
   }

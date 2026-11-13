@@ -1,9 +1,9 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const Settings=require('../../assets/_script/HeroSkillSettings');
-function fixture(){
+function fixture(audioManager){
  const calls=[],loads=[],released=[],defaults=[];let effectVolume=.5;
- const manager={getAudioSource:key=>({key}),getEffectVolume:()=>effectVolume,playSource(source,config,key,loop,music,volume,_done,_cache,options){calls.push({source,config,key,loop,music,volume,options});},stopSource(source){source.stopped=true;},releaseAudioSource(key,source){released.push(key);source.stopped=true;},channelState:source=>({active:!source.stopped})};
+ const manager=audioManager||{getAudioSource:key=>({key}),getEffectVolume:()=>effectVolume,playSource(source,config,key,loop,music,volume,_done,_cache,options){calls.push({source,config,key,loop,music,volume,options});},stopSource(source){source.stopped=true;},releaseAudioSource(key,source){released.push(key);source.stopped=true;},channelState:source=>({active:!source.stopped})};
  class Node{constructor(name){this.name=name;this.children=[];this.x=this.y=0;this.scale=1;}setParent(parent){this.parent=parent;parent.children.push(this);}setPosition(p){this.x=p.x;this.y=p.y;}getPosition(){return{x:this.x,y:this.y};}destroy(){this.destroyed=true;}convertToNodeSpaceAR(p){return{x:p.x/2,y:p.y/2};}addComponent(Type){const component=new Type();component.node=this;this.component=component;return component;}}
  const cc={Node,Sprite:class{},SpriteFrame:class{},isValid:n=>!!n&&!n.destroyed,v2:(x,y)=>({x,y}),rect:(x,y,width,height)=>({x,y,width,height}),size:(width,height)=>({width,height}),color:value=>value,assetManager:{
   getBundle:()=>null,
@@ -176,4 +176,42 @@ test('a one-frame authored flipbook crops its single cell and releases only the 
  const f=fixture(),visual=Settings.effective('guardian',{HeroSkills:{guardian:{visual:{resource:uuid,resourceKind:'sprite',resourceFrames:1,resourceColumns:1,resourceCell:16,resourceFps:24,resourceLoop:false}}}}).visual;f.rt.settings.visual=visual;
  let clones=0,destroyed=0,last;const asset={getRect:()=>({x:32,y:48,width:64,height:32}),clone(){clones++;return{setRect(value){last=value;},setOriginalSize(){},setOffset(){},destroy(){destroyed++;}};}};
  f.rt.effects=[{x:0,y:0,duration:1,remaining:.5}];f.P.attachments({visual:{node:f.root}},f.rt);f.loads[0].callback(null,asset);assert.deepEqual(last,{x:32,y:48,width:16,height:16});assert.equal(clones,1);f.rt.effects[0].remaining=0;f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(clones,1);f.P.clear(f.rt);assert.equal(destroyed,1);
+});
+
+// Real AudioMgr state transitions, with an inert resource/audio platform.
+function realAudio(){
+ const pending=[],preferences={effects:true};
+ class Source{constructor(){this.volume=1;this.loop=false;this.plays=0;this.audio={destroy(){}};}play(){this.plays++;this.isPlaying=true;}stop(){this.isPlaying=false;}pause(){this.isPlaying=false;}resume(){this.isPlaying=true;}}
+ const cc={AudioSource:Source,AudioClip:class{},isValid:value=>!!value&&!value.destroyed};
+ const modules={BaseMgr:{default:function(){}},CacheUtils:{CacheUtils:{getData(){return null;},saveData(){},canPlayEffect:()=>preferences.effects,canPlayMusin:()=>true}},ResourceMgr:{ResourceMgr:{getInstance:()=>({loadRes(bundle,path,type,callback,options){pending.push({bundle,path,callback,options});}})}},LogMgr:{LogMgr:{getInstance:()=>({error(){}})}}};
+ const context={exports:{},cc,setTimeout,clearTimeout,require:name=>modules[name],__extends(ctor,base){ctor.prototype=Object.create(base.prototype);ctor.prototype.constructor=ctor;}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/AudioMgr.js'),'utf8'),context);
+ const manager=context.exports.AudioMgr.getInstance();manager.init({});
+ return {manager,pending,preferences,fail(request){request.options.onError(Error('silent failed clip'),null,()=>{});},finish(request){request.callback({loaded:true});}};
+}
+function withRealAudio(){const a=realAudio(),f=fixture(a.manager);f.rt.game.node={};f.rt.beamTarget=f.target;f.rt.settings.audio.channel={clip:uuid,bundle:'audio',path:'beam',volume:1,delay:0};return{...f,a};}
+
+test('failed channel loads back off on the gameplay clock and recover with the real AudioMgr',()=>{
+ const f=withRealAudio();
+ for(let frame=0;frame<600;frame++){f.rt.state.time=frame/60;f.P.update(f.rt);for(const request of f.a.pending)if(!request.done){request.done=true;f.a.fail(request);}}
+ assert(f.a.pending.length<=6,'failed optional audio must not load once per frame');assert.equal(f.a.manager.pendingClips.size,0);assert.equal(f.a.manager.audioSourceMap.size,1);
+ const prior=f.a.pending.length;f.rt.state.time=30;f.P.update(f.rt);assert.equal(f.a.pending.length,prior+1);f.a.finish(f.a.pending.at(-1));f.P.update(f.rt);
+ const source=f.rt._presentation.channel.source;assert.equal(source.plays,1);f.a.manager.stopSource(source);f.P.update(f.rt);assert.equal(source.plays,2,'an observed playing channel resumes immediately after interruption');
+ f.P.clear(f.rt);assert.equal(f.a.manager.audioSourceMap.size,0);
+});
+
+test('channel retry state resets for target, cue and permission changes and cannot survive cleanup or pause',()=>{
+ const f=withRealAudio();f.P.update(f.rt);f.a.fail(f.a.pending[0]);f.rt.state.time=.1;f.P.update(f.rt);assert.equal(f.a.pending.length,1);
+ f.rt.available=()=>false;f.rt.state.time=5;f.P.update(f.rt);assert.equal(f.a.pending.length,1);f.rt.available=()=>true;f.P.update(f.rt);assert.equal(f.a.pending.length,2);f.a.fail(f.a.pending[1]);f.P.update(f.rt);
+ f.target.node._combatGeneration=2;f.P.update(f.rt);assert.equal(f.a.pending.length,3);f.a.fail(f.a.pending[2]);f.P.update(f.rt);
+ f.rt.settings.audio.channel={...f.rt.settings.audio.channel,path:'replacement'};f.P.update(f.rt);assert.equal(f.a.pending.length,4);f.a.fail(f.a.pending[3]);f.P.update(f.rt);
+ f.a.manager.effectEpoch++;f.P.update(f.rt);assert.equal(f.a.pending.length,5);const obsolete=f.a.pending[4];f.P.clear(f.rt);f.a.finish(obsolete);assert.equal(f.a.manager.audioSourceMap.size,0);assert.equal(f.rt._presentation,undefined);
+ f.rt.beamTarget=null;f.P.update(f.rt);assert.equal(f.a.pending.length,5);
+});
+
+test('disabled custom channel sound retries stay bounded and resume after effects become available',()=>{
+ const f=withRealAudio();f.a.preferences.effects=false;f.P.update(f.rt);f.a.finish(f.a.pending[0]);
+ for(let frame=1;frame<=120;frame++){f.rt.state.time=frame/60;f.P.update(f.rt);}
+ assert.equal(f.a.pending.length,1,'the valid cached clip must not issue repeated loads');assert.equal([...f.a.manager.audioSourceMap.values()][0].plays,0);
+ f.a.preferences.effects=true;f.rt.state.time=20;f.P.update(f.rt);assert.equal([...f.a.manager.audioSourceMap.values()][0].plays,1);f.P.clear(f.rt);
 });

@@ -46,12 +46,12 @@ function create(host,options){
   overlay.tabIndex=0;overlay.setAttribute('aria-label','Skill positioning preview. Drag handles to adjust VFX positions; middle drag pans; Control wheel zooms.');
   const ctx=overlay.getContext('2d');
   let disposed=false,serial=0,rigSerial=0,effectSerial=0,spine=null,heroLayers=[],targetLayers=[],effectLayers=[],effectImage=null,effectPixels=null,effectDescriptor=null;
-  let style='skirmisher',settings={},description=null,rigDescription=null,rigKey='',rigPromise=null,effectKey='',effectPromise=null,model=new Model(style,settings,{mode:'active'},core),playing=true,last=0,raf=null;
+  let style='skirmisher',settings={},description=null,rigDescription=null,rigKey='',rigPromise=null,effectKey='',effectPromise=null,effectError=null,model=new Model(style,settings,{mode:'active'},core),playing=true,last=0,raf=null;
   let view={zoom:1,panX:0,panY:0},fitted=null,drag=null,selectedHandle='origin',handles=[],soundEnabled=false,lastSoundTime=-1;
   const tintImages=new Map();
   const request=typeof requestAnimationFrame==='function'?requestAnimationFrame:fn=>setTimeout(()=>fn(Date.now()),16);
   const cancel=typeof cancelAnimationFrame==='function'?cancelAnimationFrame:clearTimeout;
-  function status(error){if(options.onStatus)options.onStatus(Object.assign(model.status(),{playing,loaded:!!heroLayers.length,silent:!soundEnabled,zoom:view.zoom,error:error&&error.message||error||null}));}
+  function status(error){error=error||effectError;if(options.onStatus)options.onStatus(Object.assign(model.status(),{playing,loaded:!!heroLayers.length,silent:!soundEnabled,zoom:view.zoom,error:error&&error.message||error||null}));}
   function sound(cue,event){
     let value=(settings.audio||{})[cue]||{},kind=cue;const defaults=description&&description.defaultSounds||{};
     if(cue==='release'){if(event&&event.skill&&settings.audio&&settings.audio.cast&&settings.audio.cast.clip)return;value=defaults[event&&event.skill?'release':'basicRelease']||{};}
@@ -81,7 +81,7 @@ function create(host,options){
     const mount=heroLayers.filter(layer=>layer.description.json&&layer.description.json._heroMakerMount||layer.description.name==='wqyl_lead_ma'),riders=heroLayers.filter(layer=>!mount.includes(layer));
     const playback=finite(description.skillAttackPlayback,1),locomotion=finite(description.unitAnimationSpeed,1),age=Math.max(0,model.time-model.lastAttack),skirmisherCast=style==='skirmisher'&&model.lastAttackKind==='skill'&&model.lastCast===model.lastAttack,castPlayback=skirmisherCast?(settings.windup>0?clip.hit/settings.windup:1):playback,castOffset=skirmisherCast&&settings.windup===0?clip.hit:0;
     let riderAnimation=model.scenario.moving?'move':'idle',riderTime=model.time*locomotion,loop=true;
-    if(style==='mystic'&&model.channelTarget){riderAnimation=animation;riderTime=Math.min((model.time-(model.channelStarted||0))*playback,visual.holdTime>=0?Math.min(clip.end,visual.holdTime):clip.hit);loop=false;}
+    if(style==='mystic'&&model.channelTarget){riderAnimation=animation;riderTime=Math.min(model.channelSourceTime,visual.holdTime>=0?Math.min(clip.end,visual.holdTime):clip.hit);loop=false;}
     else if(style==='vanguard'&&model.state.active){const active=model.state.active,interval=active.duration/active.count,e=active.elapsed,phase=e%interval;riderAnimation=animation;riderTime=e<=interval?clip.hit*e/interval:(clip.hit+phase*clip.end/interval)%clip.end;loop=false;}
     else if(castOffset+age*castPlayback<=clip.end){riderAnimation=animation;riderTime=castOffset+age*castPlayback;loop=false;}
     renderer.seek(spine,riders,riderAnimation,riderTime,loop);
@@ -89,8 +89,8 @@ function create(host,options){
     if(aiming){const face=aiming.x<0?-1:1,arrow=riders.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3),referenceAngle=style==='skirmisher'&&arrow?SkillPose.arrowAimAngle(arrow.skeleton,arrow.description.json,animation,clip.hit):0;for(const layer of riders){layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*face;SkillPose.applyAim(layer.skeleton,aiming,layer.description.scaleX,{fresh:true,referenceAngle});}}
     let mountAnimation=model.scenario.moving?'move':'idle',mountTime=model.time*locomotion,mountLoop=true;
     if(!model.scenario.moving&&(riderAnimation===animation||riderAnimation===basicAnimation)){
-      const beamAge=model.time-(model.channelStarted||0);
-      if(style!=='mystic'||!model.channelTarget||beamAge*playback<clip.end){mountAnimation=animation;mountTime=style==='mystic'&&model.channelTarget?beamAge*playback:riderTime;mountLoop=false;}
+      const beamSourceTime=model.channelSourceTime;
+      if(style!=='mystic'||!model.channelTarget||beamSourceTime<clip.end){mountAnimation=animation;mountTime=style==='mystic'&&model.channelTarget?beamSourceTime:riderTime;mountLoop=false;}
     }
     renderer.seek(spine,mount,mountAnimation,mountTime,mountLoop);followMount(heroLayers);
     targetLayers.forEach((layers,index)=>{const target=model.targets[index]||model.targets[0];shiftedLayers(layers,target);renderer.seek(spine,layers,'idle',model.time,true);});
@@ -189,19 +189,20 @@ function create(host,options){
       })().catch(error=>{if(token===rigSerial){rigKey='';status(error);}throw error;});
     }
     await rigPromise;if(disposed||requestId!==serial)return;
-    const item=(description.effects||[]).find(effect=>!settings.visual||effect.id===settings.visual.resource)||(description.effects||[])[0],nextEffectKey=JSON.stringify(item||null);
-    if(nextEffectKey!==effectKey){effectKey=nextEffectKey;effectPromise=loadEffect(item,++effectSerial);fitted=null;}
-    try{await effectPromise;}catch(error){if(requestId===serial){effectKey='';status(error);}return;}
-    if(disposed||requestId!==serial)return;
     const source=bodyLayer(heroLayers),selectedAnimation=settings.visual&&settings.visual.animation,animation=selectedAnimation&&SkillSettings.riderAnimations(description).includes(selectedAnimation)?selectedAnimation:attackName(style),clip=clipInfo(source.description,animation),basicClip=clipInfo(source.description,attackName(style)),playback=finite(description.skillAttackPlayback,1);
     const hold=settings.visual&&settings.visual.holdTime>=0?Math.min(clip.end,settings.visual.holdTime):clip.hit;
-    const previousTime=reset?0:model.time,scenario=Object.assign({},model.scenario,{impactDelay:playback>0?clip.hit/playback:0,basicImpactDelay:finite(description.skillBasicImpactDelay,playback>0?basicClip.hit/playback:0),holdDelay:playback>0?hold/playback:0,attackPlayback:playback});
+    const previousTime=reset?0:model.time,scenario=Object.assign({},model.scenario,{impactDelay:playback>0?clip.hit/playback:0,basicImpactDelay:finite(description.skillBasicImpactDelay,playback>0?basicClip.hit/playback:0),holdSource:hold,holdDelay:playback>0?hold/playback:0,attackPlayback:playback});
     const simulation=state=>JSON.stringify({tuning:Object.fromEntries(Object.entries(state).filter(([key])=>key!=='visual'&&key!=='audio')),duration:state.visual&&state.visual.effectDuration});
-    const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdDelay,state.attackPlayback]);
+    const clocks=state=>JSON.stringify([state.impactDelay,state.basicImpactDelay,state.holdSource,state.holdDelay,state.attackPlayback]);
     if(reset||simulation(model.settings)!==simulation(settings)||clocks(model.scenario)!==clocks(scenario)){
       if(!stopped){stopSounds();stopped=true;}model=new Model(style,settings,scenario,core);if(previousTime)model.seek(previousTime);last=0;lastSoundTime=model.time;
     }else {model.settings=clone(settings);model.scenario=scenario;}
-    if(stopped&&soundEnabled&&playing&&model.beam)sound('channel');draw();
+    if(stopped&&soundEnabled&&playing&&model.beam)sound('channel');
+    // Optional artwork must never gate the selected style or its combat clock.
+    const item=(description.effects||[]).find(effect=>!settings.visual||effect.id===settings.visual.resource)||(description.effects||[])[0],nextEffectKey=JSON.stringify(item||null);
+    if(nextEffectKey!==effectKey){effectKey=nextEffectKey;effectError=null;effectPromise=loadEffect(item,++effectSerial);fitted=null;}
+    try{await effectPromise;}catch(error){if(!disposed&&requestId===serial){effectKey='';effectError=error;}}
+    if(disposed||requestId!==serial)return;draw();
   }
   function play(value){const previous=playing;playing=value===undefined?!playing:!!value;last=0;if(!playing)stopSounds();else if(model.time>=model.duration()-1e-9){model.reset();lastSoundTime=-1;}else if(!previous&&soundEnabled&&model.beam)sound('channel');draw();}
   function seek(time){stopSounds();playing=false;model.seek(clamp(finite(time,0),0,model.duration()));last=0;lastSoundTime=model.time;draw();}

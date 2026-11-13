@@ -56,17 +56,29 @@ function play(runtime,item) {
   if(!s.sources.some(function(entry){return entry.source===source;}))s.sources.push({key:key,source:source,manager:manager});
   var config=item.cue.bundle&&item.cue.path?{bundle:item.cue.bundle,path:item.cue.path}:{bundle:"__skill_uuid__",path:item.cue.clip};
   manager.playSource(source,config,key,item.phase==="channel",false,function(){return item.cue.volume*manager.getEffectVolume();},null,null,{owner:runtime.hero,game:runtime.game});
-  if(item.phase==="channel")s.channel={source:source,manager:manager};
+  if(item.phase==="channel"){s.channel={source:source,manager:manager,permission:manager.effectEpoch,loaded:false};s.channelRetryAt=undefined;}
 }
 function stopChannel(s) { if(s.channel){s.channel.manager.stopSource(s.channel.source);s.channel=null;}s.pending=s.pending.filter(function(item){return item.phase!=="channel";}); }
 function update(runtime) {
   var s=runtime._presentation,hasAudio=runtime.settings&&runtime.settings.audio&&Object.keys(runtime.settings.audio).some(function(key){return !!runtime.settings.audio[key].clip;});
-  if(!s&&!hasAudio&&!runtime.beamTarget)return;s=state(runtime);
+  if(!s&&!hasAudio&&!runtime.beamTarget||!runtime.available())return;s=state(runtime);
   var channel=runtime.beamTarget,generation=channel&&channel.node&&channel.node._combatGeneration,onset=beamOnset(runtime);
-  if(s.channelTarget!==channel||channel&&(s.channelGeneration!==generation||onset!==undefined&&s.channelOnset!==onset)){
-    stopChannel(s);s.channelTarget=channel;s.channelGeneration=generation;s.channelOnset=onset;if(channel)queue(runtime,"channel");
+  var cue=runtime.settings&&runtime.settings.audio&&runtime.settings.audio.channel,cueKey=cue&&cue.clip?JSON.stringify([cue.clip,cue.bundle,cue.path,cue.delay,cue.volume]):"";
+  if(s.channelTarget!==channel||s.channelCue!==cueKey||channel&&(s.channelGeneration!==generation||onset!==undefined&&s.channelOnset!==onset)){
+    stopChannel(s);s.channelTarget=channel;s.channelGeneration=generation;s.channelOnset=onset;s.channelCue=cueKey;s.channelRetries=0;s.channelRetryAt=undefined;if(channel)queue(runtime,"channel");
   }
-  else if(channel&&s.channel&&s.channel.manager.channelState&&!s.channel.manager.channelState(s.channel.source).active){stopChannel(s);queue(runtime,"channel");}
+  else if(channel&&s.channel&&s.channel.manager.channelState){
+    var current=s.channel.manager.channelState(s.channel.source);
+    if(current.active){if(!current.loading){s.channel.loaded=true;s.channelRetries=0;s.channelRetryAt=undefined;}}
+    else {
+      // Optional clips can fail or be disabled. Retry transient failures on the
+      // gameplay clock, rather than issuing a new asset request every frame.
+      // A previously loaded loop or a changed audio permission resumes at once.
+      if(s.channel.loaded||s.channel.permission!==s.channel.manager.effectEpoch){s.channelRetryAt=runtime.state.time;s.channelRetries=0;}
+      else if(s.channelRetryAt===undefined){s.channelRetryAt=runtime.state.time+.5*Math.pow(2,s.channelRetries||0);s.channelRetries=Math.min(4,(s.channelRetries||0)+1);}
+      if(runtime.state.time+1e-9>=s.channelRetryAt){stopChannel(s);queue(runtime,"channel");}
+    }
+  }
   var ready=[],pending=[];
   s.pending.forEach(function(item){if(item.scope!==runtime.state||item.epoch!==(runtime.game&&runtime.game._combatEpoch))return;(item.at<=runtime.state.time+1e-9?ready:pending).push(item);});s.pending=pending;
   ready.forEach(function(item){play(runtime,item);});

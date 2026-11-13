@@ -169,3 +169,20 @@ test('preview ordinary windups use the saved gold timing and never rewrite eithe
 test('an event on an otherwise common non-attack clip is not offered as an owned rider attack',()=>{
  const json={_heroMaker:{role:0},animations:{attack:{events:[{name:'attack',time:.2}]},cast_pose:{events:[{name:'attack',time:.2}]}}};assert.deepEqual(Settings.riderAnimations({layers:[{json}]}),['attack']);
 });
+
+test('sound selection synchronizes each whole identity across asymmetric mirrors while retaining independent fields',t=>{
+ for(const phase of ['cast','impact','channel']){
+  const f=fixture(t,{HeroSkills:{mystic:{audio:{[phase]:{clip:'33333333-3333-4333-8333-333333333333',bundle:'KinghtFallAudio',path:'old',volume:.3,extension:'primary'}}}}},{HeroSkills:{mystic:{audio:{[phase]:{clip:'44444444-4444-4444-8444-444444444444',bundle:'resources',path:'sfx/old',volume:.7,delay:2,extension:'mirror'},other:{keep:true}}}}});
+  f.change('mystic','audio.'+phase+'.clip',AUDIO);f.service.save(f.req());
+  for(const [i,doc]of f.bytes().map(JSON.parse).entries()){const value=doc.HeroSkills.mystic.audio[phase];assert.equal(value.clip,AUDIO);assert.equal(value.bundle,'KinghtFallAudio');assert.equal(value.path,'cast');assert.equal(value.volume,i?.7:.3);assert.equal(value.extension,i?'mirror':'primary');if(i){assert.equal(value.delay,2);assert.deepEqual(doc.HeroSkills.mystic.audio.other,{keep:true});}}
+  const before=f.bytes();assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);
+ }
+});
+
+test('sound reset removes its complete identity from mirrors but unrelated edits preserve mirror sound settings',t=>{
+ for(const phase of ['cast','impact','channel']){
+  const f=fixture(t,{HeroSkills:{mystic:{audio:{[phase]:{clip:AUDIO,extension:'primary'}}}}},{HeroSkills:{mystic:{audio:{[phase]:{clip:AUDIO,bundle:'resources',path:'old',volume:.4,delay:1,extension:'mirror'}}}}});
+  f.service.reset(f.req({style:'mystic',path:'audio.'+phase+'.clip'}));f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio[phase],{volume:.4,delay:1,extension:'mirror'});
+ }
+ const mirror={clip:AUDIO,bundle:'resources',path:'different',volume:.4,delay:1,extension:'retain'},f=fixture(t,{}, {HeroSkills:{mystic:{audio:{cast:mirror}}}});f.change('mystic','cooldown',13);f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio.cast,mirror);
+});

@@ -49,6 +49,21 @@ test('0% freezes delayed and eventless hits, resumes from source time, and pooli
  const eventless=actor(94002,'monster3');f.api.attack(eventless,'enemy',()=>hits++);f.api.tick(100,true);assert.equal(hits,1);catalog.unitAnimationSpeeds['enemy:94002:default']=.5;f.api.tick(.001,true);assert.equal(hits,2);
  catalog.unitAnimationSpeeds['enemy:94001:default']=0;f.api.attack(unit,'enemy',()=>hits++);unit.node.active=false;f.api.tick(1,true);assert(!f.api.isPending(unit));assert.equal(unit.time.Attack,0);assert.equal(hits,2);
 });
+test('in-flight Barracks playback changes retain elapsed source time when whole-unit control appears or disappears',()=>{
+ const catalog={unitAnimationSpeeds:{'ally:94001:level:2':2}},settings={timingDefaults:{'ally:94001:default':{attack:.2}}},f=fixture(catalog,settings),unit=actor(94001,'monster3');unit.outBuild={buildInfo:{cfg:{level:1}}};let hits=0;
+ f.api.attack(unit,'ally',()=>hits++);f.api.tick(.05,true);unit.outBuild.buildInfo.cfg.level=2;f.api.tick(.075,true);assert.equal(hits,1,'the remaining .15 source seconds take .075 seconds at2x');assert.equal(unit.tracks[0].timeScale,2);
+ unit.time.Attack=-1;f.api.attack(unit,'ally',()=>hits++);f.api.tick(.05,true);unit.outBuild.buildInfo.cfg.level=3;f.api.tick(.0999,true);assert.equal(hits,1);f.api.tick(.0001,true);assert.equal(hits,2,'removing2x retains the .1 source seconds already elapsed');assert.equal(unit.tracks[0].timeScale,1);
+});
+test('attack-only speed changes use the same cumulative source clock and refresh the visible track',()=>{
+ const settings={timingDefaults:{'enemy:94001:default':{attack:.4}},animationSpeeds:{'enemy:94001:default':1}},f=fixture({},settings),unit=actor(94001,'monster3');let hits=0;
+ f.api.attack(unit,'enemy',()=>hits++);f.api.tick(.1,true);settings.animationSpeeds['enemy:94001:default']=2;f.api.tick(.1499,true);assert.equal(hits,0);f.api.tick(.0001,true);assert.equal(hits,1);assert.equal(unit.tracks[0].timeScale,2);
+});
+test('scheduler counts a partial relic-freeze release before the later actor update and preserves independent pauses',()=>{
+ for(const wasPaused of [false,true]){
+  const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.07}}}),unit=actor(94001,'monster3');unit.node._combatGeneration=1;unit.spAni.paused=true;unit._relicControl={generation:1,freeze:.03,slow:0,duration:0};unit._relicPausedRenderers=[{renderer:unit.spAni,wasPaused}];let hits=0;
+  f.api.attack(unit,'enemy',()=>hits++);f.api.tick(.1,true);assert.equal(hits,wasPaused?0:1);
+ }
+});
 test('catalog preload coalesces callers, exposes speeds before completion callbacks and completes failures for startup retry',()=>{
  const f=appearance(),order=[];f.api.preload(()=>order.push(f.api.animationSpeed(actor(),'enemy')));f.api.preload(()=>order.push('second'));assert.equal(f.jobs.length,1);assert.equal(f.jobs[0].name,'characters/catalog');f.jobs.shift().done(null,{json:{unitAnimationSpeeds:{'enemy:94001:default':.6}}});assert.deepEqual(order,[.6,'second']);f.api.preload(()=>order.push('cached'));assert.equal(f.jobs.length,0);assert.equal(order.at(-1),'cached');
  const failure=appearance();let completed=false;failure.api.preload(()=>{completed=true;});failure.jobs.shift().done(Error('temporary'));assert(completed);failure.api.preload();assert.equal(failure.jobs.length,1);failure.jobs.shift().done(null,{json:{unitAnimationSpeeds:{'enemy:94001:default':0}}});assert.equal(failure.api.animationSpeed(actor(),'enemy'),0);

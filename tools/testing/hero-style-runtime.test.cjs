@@ -107,6 +107,31 @@ test('Skirmisher arrow pierces once per enemy, increases distance damage and rem
  h.rt.updateArrows(1);assert.equal(far.hits.length,1);assert(far.hits[0].damage>near.hits[0].damage);
  assert.equal(offMap.hits.length,0);assert.equal(h.rt.projectiles.length,0);h.rt.updateArrows(10);assert.equal(far.hits.length,1);
 });
+test('Skirmisher swept entry is frame-independent for center, off-axis, tangent and initial overlaps',()=>{
+ const cases=[{x:100,y:0,contact:72},{x:180,y:21,contact:180-Math.sqrt(28*28-21*21)},{x:220,y:28,contact:220},{x:-10,y:0,contact:0},{x:100,y:28.01,contact:null}];
+ for(const aim of [{x:1,y:0},{x:.6,y:.8},{x:-.8,y:.6}]){
+  const run=steps=>{const h=scene('skirmisher'),targets=cases.map(p=>h.enemy(p.x*aim.x-p.y*aim.y,p.x*aim.y+p.y*aim.x));h.rt.arrow({direction:aim,damageMultiplier:1});for(const dt of steps)h.rt.updateArrows(dt);return targets.map(t=>t.hits.map(hit=>hit.damage));};
+  const long=run([.3]),short=run(Array(300).fill(.001)),mixed=run([.017,.043,.109,.131]);
+  cases.forEach((p,i)=>{assert.equal(long[i].length,p.contact===null?0:1);assert.equal(short[i].length,long[i].length);assert.equal(mixed[i].length,long[i].length);if(p.contact!==null){close(long[i][0],100*(1+p.contact/100*.1));close(short[i][0],long[i][0]);close(mixed[i][0],long[i][0]);}});
+ }
+ const h=scene('skirmisher'),geometry=h.load('HeroStyleRuntime'),origin={x:0,y:0},end={x:200,y:0};
+ close(geometry.segmentDistance({x:100,y:0},origin,end).t,.5);close(geometry.segmentEntry({x:100,y:0},origin,end,28),.36);
+ assert.equal(geometry.segmentEntry({x:0,y:28},origin,origin,28),0);assert.equal(geometry.segmentEntry({x:0,y:29},origin,origin,28),null);
+});
+test('Skirmisher cast damage and swept-entry callback order do not depend on the flight frame partition',()=>{
+ const run=steps=>{const h=scene('skirmisher'),order=[],offAxis=h.enemy(100,27),center=h.enemy(105),tieA=h.enemy(200),tieB=h.enemy(200),targets=[offAxis,center,tieA,tieB];targets.forEach((target,i)=>{const base=target.onAttacked;target.onAttacked=function(){order.push(i);return base.apply(this,arguments);};});assert(h.rt.cast({x:1,y:0}));steps.forEach(dt=>h.rt.update(dt));return{damage:targets.map(t=>t.hits[0].damage),counts:targets.map(t=>t.hits.length),order};};
+ const long=run([2.5]),short=run(Array(250).fill(.01));assert.deepEqual(long.counts,[1,1,1,1]);assert.deepEqual(short.counts,long.counts);assert.deepEqual(long.order,[1,0,2,3],'earlier swept contact wins even when its center is farther away');assert.deepEqual(short.order,long.order);long.damage.forEach((damage,i)=>close(short.damage[i],damage));
+});
+test('Skirmisher collision includes entry at the clipped map edge and excludes contact beyond it',()=>{
+ const run=steps=>{const h=scene('skirmisher'),targets=[h.enemy(1015),h.enemy(1028),h.enemy(1028.01),h.enemy(1000,28)];h.rt.arrow({direction:{x:1,y:0},damageMultiplier:1});steps.forEach(dt=>h.rt.updateArrows(dt));assert.equal(h.rt.projectiles.length,0);return targets.map(t=>t.hits.map(hit=>hit.damage));};
+ const long=run([2]),short=run(Array(200).fill(.01));assert.deepEqual(long.map(x=>x.length),[1,1,0,1]);assert.deepEqual(short.map(x=>x.length),[1,1,0,1]);close(long[0][0],198.7);close(long[1][0],200);close(long[3][0],200);long.forEach((hits,i)=>hits.forEach((damage,j)=>close(short[i][j],damage)));
+});
+test('earliest swept contact still fences recycled later targets and retired battles',()=>{
+ for(const retire of [false,true]){
+  const h=scene('skirmisher'),later=h.enemy(100,27),first=h.enemy(105),base=first.onAttacked;first.onAttacked=function(){const result=base.apply(this,arguments);if(retire)h.g._combatEpoch=(h.g._combatEpoch||0)+1;else later.node._combatGeneration++;return result;};
+  h.rt.arrow({direction:{x:1,y:0},damageMultiplier:1});h.rt.updateArrows(.2);assert.equal(first.hits.length,1);assert.equal(later.hits.length,0);
+ }
+});
 test('Skirmisher cast uses the real core wind-up event to launch exactly one arrow',()=>{
  const h=scene('skirmisher'),a=h.enemy(100);h.rt.state.charge=.5;
  assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.1);assert.equal(a.hits.length,0);
@@ -368,4 +393,47 @@ test('Mystic custom channel age begins at the logical hold crossing and resets f
  b.node.x=1000;h.rt.update(.1);assert.equal(h.rt.beamVisibleSince,undefined);
  b.node.x=120;h.rt.update(.2);close(h.rt.beamVisibleSince,.8167);
  h.hero.endRoundGame();assert.equal(h.rt.beamVisibleSince,undefined);
+});
+
+test('a zero Vanguard strike multiplier deals zero damage without changing the seven authored strike events',()=>{
+ const h=scene('vanguard',{config:{HeroSkills:{vanguard:{strikeDamage:0}}}}),e=h.enemy(100);h.rt.cast({x:1,y:0});h.rt.update(2.5);assert.equal(e.hits.length,7);assert(e.hits.every(hit=>hit.damage===0));assert.equal(e.hp,10000);assert.equal(h.rt.state.active,null);assert.equal(h.rt.effects.length,1);
+});
+
+test('Vanguard samples expired Momentum at impact and snapshots one strike before callbacks change damage',()=>{
+ const run=steps=>{const h=scene('vanguard'),e=h.enemy(100);h.rt.state.buffRemaining=.1;h.rt.state.buffStrength=1;h.rt.cast({x:1,y:0});for(const dt of steps)h.rt.update(dt);return e.hits[0].damage;};close(run([.36]),75);close(run(Array.from({length:36},()=>.01)),75);
+ const h=scene('vanguard',{config:{HeroSkills:{vanguard:{duration:1,strikes:1,strikeDamage:1,moveScaling:0,attackScaling:0}}}}),a=h.enemy(100),b=h.enemy(120);let damage=100;h.hero.getAttack=()=>damage;const hit=a.onAttacked;a.onAttacked=function(){const result=hit.apply(this,arguments);damage=1000;return result;};h.rt.cast({x:1,y:0});h.rt.update(1);close(a.hits[0].damage,100);close(b.hits[0].damage,100);
+});
+
+test('Mystic death retargets distinct live targets on remaining actual time independently of frame partition',()=>{
+ const run=steps=>{const h=scene('mystic'),targets=[h.enemy(100,0,100),h.enemy(120,0,100),h.enemy(140,0,100)];for(const dt of steps)h.rt.update(dt);return{hits:targets.map(t=>t.hits.length),hp:targets.map(t=>t.hp),clock:h.rt.beamClock,onset:h.rt.beamVisibleSince,source:h.rt.beamSourceTime};};
+ const a=run([2.5]),b=run(Array.from({length:250},()=>.01));assert.deepEqual(a.hits,[1,1,0]);assert.deepEqual(a.hits,b.hits);assert.deepEqual(a.hp,b.hp);close(a.clock,.5);close(a.clock,b.clock);close(a.onset,b.onset);close(a.source,b.source);
+});
+
+test('beam retargeting quarantines callback-recycled and callback-created identities for the current update',()=>{
+ const h=scene('mystic',{attackRate:10}),a=h.enemy(100),b=h.enemy(130),hit=a.onAttacked;let spawned;
+ a.onAttacked=function(){const result=hit.apply(this,arguments);this.node._combatGeneration++;this.hp=10000;spawned=h.enemy(110);return result;};h.rt.update(1);assert.equal(a.hits.length,1);assert.equal(b.hits.length,8);assert.equal(spawned.hits.length,0);b.node.x=1000;h.rt.update(.1);assert.equal(a.hits.length,2,'a new update may acquire its current lifetime normally');
+ const m=scene('mystic',{attackRate:10}),first=m.enemy(100),later=m.enemy(120),base=first.onAttacked;first.onAttacked=function(){const result=base.apply(this,arguments);m.g._combatEpoch++;return result;};m.rt.update(1);assert.equal(first.hits.length,1);assert.equal(later.hits.length,0,'retiring the scope stops every remaining tick');
+});
+
+function beamPlayback(h,read){h.load('GameToolsOverrides').attackPlayback=()=>read();h.e.stubs.HeroMakerRider.skillTiming=(_controller,animation,playback)=>({animation:animation||'attack_mystic',sourceHit:animation==='attack'?.1:.4,sourceDuration:.8333,playback,frozen:playback===0,hit:playback>0?(animation==='attack'?.1:.4)/playback:Infinity});}
+
+test('a beam acquired at zero whole-unit playback resumes its remaining authored hold without an Infinity trap',()=>{
+ const h=scene('mystic',{attackRate:10});let speed=0;beamPlayback(h,()=>speed);const e=h.enemy(100);h.rt.update(3);assert.equal(e.hits.length,0);close(h.rt.beamSourceTime,0);assert.equal(h.poses.at(-1).playback,0);speed=1;h.rt.update(.399);assert.equal(e.hits.length,0);h.rt.update(.001);assert.equal(e.hits.length,1);close(h.rt.beamSourceTime,.4);close(h.poses.at(-1).beamSourceTime,.4);assert.equal(h.poses.at(-1).animation,'attack_mystic');
+});
+
+test('mid-windup playback freezes and rate changes integrate source seconds instead of rescaling elapsed time',()=>{
+ const h=scene('mystic',{attackRate:10});let speed=1;beamPlayback(h,()=>speed);const e=h.enemy(100);h.rt.update(.1);close(h.rt.beamSourceTime,.1);speed=0;h.rt.update(2);close(h.rt.beamSourceTime,.1);assert.equal(e.hits.length,0);speed=.5;h.rt.update(.2);close(h.rt.beamSourceTime,.2);assert.equal(e.hits.length,0);speed=2;h.rt.update(.099);close(h.rt.beamSourceTime,.398);assert.equal(e.hits.length,0);h.rt.update(.001);close(h.rt.beamSourceTime,.4);assert.equal(e.hits.length,1);close(h.rt.beamVisibleSince,2.4);
+});
+
+test('zero playback after a visible channel freezes its tick phase and changing the source clip restarts only the windup',()=>{
+ const h=scene('mystic',{attackRate:2});let speed=1;beamPlayback(h,()=>speed);const e=h.enemy(100);h.rt.update(.5);assert.equal(e.hits.length,1);const source=h.rt.beamSourceTime;speed=0;h.rt.update(5);assert.equal(e.hits.length,1);close(h.rt.beamSourceTime,source);speed=1;h.rt.update(.499);assert.equal(e.hits.length,1);h.rt.update(.001);assert.equal(e.hits.length,2);
+ h.rt.settings.visual.animation='attack';h.rt.update(.05);assert.equal(h.rt.beamTarget,null);close(h.rt.beamSourceTime,.05);assert.equal(e.hits.length,2);h.rt.update(.45);assert.equal(e.hits.length,3);assert.equal(h.poses.at(-1).animation,'attack');
+});
+
+test('each beam tick samples current APS so landed-hit speed changes preserve the same long-frame schedule',()=>{
+ const run=steps=>{const h=scene('mystic'),e=h.enemy(100);h.hero.getAttSpeed=()=>e.hits.length?4:1;for(const dt of steps)h.rt.update(dt);return{hits:e.hits.length,clock:h.rt.beamClock,charge:h.rt.state.mysticCharges};};const a=run([2]),b=run(Array.from({length:200},()=>.01));assert.equal(a.hits,5);assert.equal(a.hits,b.hits);close(a.clock,b.clock);assert.equal(a.charge,b.charge);
+});
+
+test('the beam tick budget bounds work without stalling cooldown, source pose or the full simulation clock',()=>{
+ const h=scene('mystic',{attackRate:1000}),e=h.enemy(100,0,100000);h.rt.state.cooldown=10;h.rt.update(2);assert.equal(e.hits.length,32);close(h.rt.state.time,2);close(h.rt.state.cooldown,8);close(h.rt.beamSourceTime,2);assert(h.rt.beamClock>1);h.rt.update(.01);assert.equal(e.hits.length,64);close(h.rt.state.time,2.01);
 });

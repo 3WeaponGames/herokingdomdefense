@@ -151,6 +151,9 @@ function primaryImpact(target, hero, context, damage) {
   var data = context.data;
   var gear = hero._heroSecondary || {};
   if(hero._styleRuntime)hero._styleRuntime.onImpact(target,damage,context);
+  // Style callbacks may recycle the hero or retire this battle synchronously.
+  // A dead target with the same generation still grants legitimate kill heals.
+  if (!primaryCurrent(context, target, hero) || !sameBattle(context)) return;
   // Life steal uses damage actually removed, excluding overkill and all
   // reflected/splash hits. It cannot revive a dead or recycled hero.
   var dealt = Math.min(damage, Math.max(0, target.hp + damage));
@@ -244,14 +247,40 @@ function tauntedTarget(enemy){
   if(!record||record.remaining<=0||record.data!==data||record.epoch!==(data&&data.ctrPar&&data.ctrPar._combatEpoch)||record.enemyGeneration!==generation(enemy)||record.generation!==generation(record.hero)||!living(record.hero))return null;
   return record.hero;
 }
-function releaseControl(enemy) {
+var controlClocks = new WeakMap();
+function controlRenderers(enemy) {
+  var result=[];[enemy.spAni,enemy.spAni2,enemy.spAni3,enemy.spAniUp].forEach(function(renderer){if(renderer&&result.indexOf(renderer)<0)result.push(renderer);});return result;
+}
+function controlAnimationClock(enemy,factor) {
+  var clocks=controlClocks.get(enemy);if(!clocks&&factor===1)return;
+  if(!clocks){clocks=[];controlClocks.set(enemy,clocks);}
+  var ui=require('KinghtFallUIGame').default.instance,globalSpeed=ui&&ui.speed;
+  var global=typeof globalSpeed==='number'&&isFinite(globalSpeed)&&globalSpeed>=0?globalSpeed:null;
+  controlRenderers(enemy).forEach(function(renderer){
+    if(typeof cc!=='undefined'&&cc.isValid&&!cc.isValid(renderer,true))return;
+    var clock=clocks.filter(function(record){return record.renderer===renderer;})[0],current=renderer.timeScale;
+    if(!clock){clock={renderer:renderer,base:typeof current==='number'&&isFinite(current)?current:1};clocks.push(clock);}
+    if(global!==null)clock.base=global;
+    else if(clock.applied!==undefined&&typeof current==='number'&&isFinite(current)&&Math.abs(current-clock.applied)>1e-9)clock.base=current;
+    clock.applied=clock.base*factor;renderer.timeScale=clock.applied;
+  });
+  if(factor===1)controlClocks.delete(enemy);
+}
+function releaseFrozenControl(enemy) {
   var paused = enemy && enemy._relicPausedRenderers;
   if (!paused) return;
   for (var i = 0; i < paused.length; i++) paused[i].renderer.paused = paused[i].wasPaused;
   delete enemy._relicPausedRenderers;
 }
+function releaseControl(enemy) {
+  releaseFrozenControl(enemy);controlAnimationClock(enemy,1);
+}
 function updateEnemy(enemy, dt) {
   var control = Runtime.controlDelta(enemy, dt);
+  // Scale the renderer component once; saved/package playback stays on its
+  // tracks. This matches the scheduler's control delta and handles partial
+  // expiry without multiplying either the game speed or saved speed twice.
+  controlAnimationClock(enemy,dt>0?Math.max(0,control.dt/dt):1);
   if (control.frozen) {
     require('GameToolsOverrides').cancel(enemy);
     if (enemy.rigidBody) enemy.rigidBody.linearVelocity = typeof cc !== 'undefined' ? cc.Vec2.ZERO : { x: 0, y: 0 };
@@ -264,7 +293,7 @@ function updateEnemy(enemy, dt) {
     }
     return;
   }
-  releaseControl(enemy);
+  releaseFrozenControl(enemy);
   enemy.onUpdate(control.dt);
 }
 exports.enemyDamage = enemyDamage;

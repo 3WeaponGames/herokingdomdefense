@@ -353,3 +353,25 @@ test('custom attack clips share the body marker without duplicating events on eq
  actor._skillAnimationOverride='attack_custom';assert.equal(rider.attackName(actor),'attack_custom');close(rider.skillTiming(actor,'attack_custom',1).sourceHit,.31);
  delete actor.spAniHead.skeletonData.skeletonJson.animations.attack_custom;assert.equal(rider.attackName(actor),'attack_fighter','every participating equipment layer still needs the chosen clip');
 });
+
+test('cumulative Mystic source samples resume frozen rider and one horse attack without jumping after speed changes',()=>{
+ const h=browserRealtime(setup('mystic')),{actor,rider}=h;
+ rider.setCombatState(actor,{beam:true,beamElapsed:3,beamSourceTime:0,playback:0,moving:false,deferUpdate:true});const body=track(actor),horse=track(actor,'spAniMa');close(body.trackTime,0);close(horse.timeScale,0);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3.1,beamSourceTime:.05,playback:.5,moving:false,deferUpdate:true});assert.equal(track(actor),body);assert.equal(track(actor,'spAniMa'),horse);close(body.trackTime,.05);close(horse.timeScale,.5);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3.15,beamSourceTime:.15,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.15);close(horse.timeScale,2);
+ rider.setCombatState(actor,{beam:true,beamSourceTime:.25,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.1667);close(body.timeScale,0);close(horse.timeScale,2);
+ rider.setCombatState(actor,{beam:true,beamSourceTime:0,playback:1,animation:'attack_fighter',moving:false,deferUpdate:true});assert.equal(name(actor),'attack_fighter');close(track(actor).trackTime,0);assert.equal(name(actor,'spAniMa'),'attack_fighter');close(track(actor,'spAniMa').trackTime,0);
+});
+
+test('real Spine boss-control events and queued damage share saved playback and game speed through partial expiry',()=>{
+ const r=setup('fighter').actor.spAniBody,{setup:gameplay}=require('../testing/backend-gameplay-harness.cjs');
+ for(const globalSpeed of [.5,2])for(const playback of [.5,2])for(const wallStep of [1/60,.05]){
+  const h=gameplay(),tools=h.load('GameToolsOverrides'),combat=h.load('RelicCombat'),control=h.load('RelicRuntime'),enemy=h.e.actor('KinghtFallEnemyBase',0,0),settings={timingDefaults:{'enemy:90010:default':{attack:.1667}},animationSpeeds:{'enemy:90010:default':playback}};
+  h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data.GameTools=settings;h.ui.speed=globalSpeed;enemy.cfg={ID:90010,IsBoss:true};enemy.node._combatGeneration=1;enemy.spAni=r;enemy.time={Attack:-1};enemy.isDead=()=>false;enemy.onUpdate=()=>{};r.timeScale=globalSpeed;r.paused=false;
+  r.state.clearTracks();r.state.listeners=[];r.setAnimation(0,'attack_fighter',false);let time=0,eventAt=null,damageAt=null;r.setEventListener((_track,event)=>{if(event.data.name==='attack'&&eventAt===null)eventAt=time;});
+  const before=JSON.stringify(settings);control.applyControl(enemy,.23,.5);tools.attack(enemy,'enemy',()=>damageAt=time);
+  for(let frame=0;frame<240&&(eventAt===null||damageAt===null);frame++){const dt=wallStep*globalSpeed;time+=dt;tools.tick(dt,true);combat.updateEnemy(enemy,dt);tools.applyAnimationPlayback(enemy,'enemy');r.update(wallStep*r.timeScale);}
+  assert.notEqual(eventAt,null);assert.notEqual(damageAt,null);assert(Math.abs(eventAt-damageAt)<=wallStep*globalSpeed+1e-7,'rendered source event and hit must cross in the same simulation frame');assert.equal(JSON.stringify(settings),before);
+  combat.releaseControl(enemy);close(r.timeScale,globalSpeed);
+ }
+});

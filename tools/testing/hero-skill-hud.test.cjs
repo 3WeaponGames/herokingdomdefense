@@ -120,3 +120,50 @@ test('installed Cocos renders each forward skill arc inside its attack hemispher
   assert(points.every(p=>p.x*direction.x+p.y*direction.y>0),style+' arc must never sweep behind the hero');
  }
 });
+
+test('another finger cannot replace a held skill-button gesture or cancel its release',()=>{
+ const f=fixture(),button=f.hero._skillHUD.button;
+ button.handlers.start(f.event(1,300,-400));button.handlers.move(f.event(1,360,-400));
+ button.handlers.start(f.event(2,300,-400));button.handlers.end(f.event(2,300,-400));
+ assert.equal(f.hero._skillHUD.press.id,1);assert.equal(f.rt.casts.length,0);assert.equal(f.rt.aiming,true);
+ button.handlers.end(f.event(1,360,-400));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.casts[0].x,1);assert.equal(f.rt.casts[0].y,0);
+});
+test('world aiming retains its first finger while an unrelated finger remains available for movement',()=>{
+ const f=fixture();f.rt.aiming=true;
+ assert.equal(f.hud.handleTouch(f.controller,'start',f.event(3,100,100)),true);
+ assert.equal(f.hud.handleTouch(f.controller,'start',f.event(4,-100,100)),false);
+ assert.equal(f.hero._skillHUD.worldTouch.id,3);
+ assert.equal(f.hud.handleTouch(f.controller,'move',f.event(4,-200,100)),false);
+ assert.equal(f.hud.handleTouch(f.controller,'end',f.event(3,100,100)),true);
+ assert.equal(f.rt.casts.length,1);assert(Math.abs(f.rt.casts[0].x-Math.SQRT1_2)<1e-10);
+});
+
+
+test('a skill-button cancellation reserves the old world finger and never fires its later release',()=>{
+ const f=fixture(),button=f.hero._skillHUD.button;f.rt.aiming=true;
+ assert.equal(f.hud.handleTouch(f.controller,'start',f.event(3,100,0)),true);
+ button.handlers.start(f.event(4));button.handlers.end(f.event(4));
+ assert.equal(f.rt.aiming,false);assert.equal(f.hero._skillHUD.worldTouch.id,3);
+ assert.equal(f.hud.handleTouch(f.controller,'move',f.event(3,0,100)),true);
+ assert.equal(f.rt.aiming,false);assert.equal(f.hud.handleTouch(f.controller,'end',f.event(3,0,100)),true);
+ assert.equal(f.rt.casts.length,0);assert.equal(f.hero._skillHUD.worldTouch,null);
+ button.handlers.start(f.event(5));button.handlers.end(f.event(5));assert.equal(f.rt.aiming,true);
+ assert.equal(f.hud.handleTouch(f.controller,'start',f.event(6,100,0)),true);
+ f.hud.handleTouch(f.controller,'end',f.event(6,100,0));assert.equal(f.rt.casts.length,1);
+});
+test('holding the cancel button cannot release a skill owned by a world-aim finger',()=>{
+ const f=fixture(),button=f.hero._skillHUD.button;f.rt.aiming=true;
+ f.hud.handleTouch(f.controller,'start',f.event(3,100,0));button.handlers.start(f.event(4));
+ button.handlers.move(f.event(4,100,0));button.handlers.end(f.event(4,100,0));
+ assert.equal(f.hero._skillHUD.press,undefined);assert.equal(f.rt.casts.length,0);
+ f.hud.handleTouch(f.controller,'end',f.event(3,100,0));assert.equal(f.rt.casts.length,0);
+});
+test('a world finger cannot take direction ownership from a held skill-button gesture',()=>{
+ const f=fixture(),button=f.hero._skillHUD.button;button.handlers.start(f.event(1,300,-400));
+ button.handlers.move(f.event(1,400,-400));
+ assert.equal(f.hud.handleTouch(f.controller,'start',f.event(2,0,100)),false);
+ assert.equal(f.hud.handleTouch(f.controller,'move',f.event(2,0,200)),false);
+ assert.equal(f.hud.handleTouch(f.controller,'end',f.event(2,0,200)),false);
+ button.handlers.end(f.event(1,400,-400));assert.equal(f.rt.casts.length,1);
+ assert.equal(f.rt.casts[0].x,1);assert.equal(f.rt.casts[0].y,0);
+});

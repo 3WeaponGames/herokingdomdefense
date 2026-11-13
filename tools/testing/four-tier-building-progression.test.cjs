@@ -43,7 +43,7 @@ test('actual upgrade eligibility requires castle4 for tier3 defenses and ends at
  }
 });
 const dataSource=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameCtrlData.js'),'utf8');
-function unlockReader(){const start=dataSource.indexOf('_ctor.prototype.initData = function (restoring) {'),body=dataSource.indexOf('{',start)+1,end=dataSource.indexOf('    var r;',body);assert(start>=0&&end>body);return vm.runInNewContext('(function(){'+dataSource.slice(body,end)+'})');}
+function unlockReader(){const match=/_ctor\.prototype\.initData\s*=\s*function\s*\([^)]*\)\s*\{/.exec(dataSource);assert(match);const body=match.index+match[0].length,end=dataSource.indexOf('    var r;',body);assert(end>body);return vm.runInNewContext('(function(){'+dataSource.slice(body,end)+'})');}
 function canLock(){const match=/_ctor\.prototype\.canLock = (function \(t\) \{[\s\S]*?\n  \});/.exec(dataSource);assert(match);return vm.runInNewContext('('+match[1]+')');}
 test('actual runtime unlock initialization keeps legacy stage data untouched and supports optional level4 purchases',()=>{
  const levelCfg={HomeLevel1Unlock:[[2,7]],HomeLevel2Unlock:[[3,9]],HomeLevel3Unlock:[[5,11]]},before=JSON.stringify(levelCfg),owner={levelCfg};unlockReader().call(owner);assert.equal(owner.buildings.length,4);assert.equal(JSON.stringify(owner.buildings.slice(0,3)),JSON.stringify([{level:1,bulidPoint:[7],bulidId:[2]},{level:2,bulidPoint:[9],bulidId:[3]},{level:3,bulidPoint:[11],bulidId:[5]}]));assert.equal(JSON.stringify(levelCfg),before);assert(!Object.hasOwn(levelCfg,'HomeLevel4Unlock'));assert.equal(owner.buildings[3].bulidPoint.length,0);

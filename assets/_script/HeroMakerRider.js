@@ -216,7 +216,7 @@ function updateCombatPose(controller,state){
   if(state.beam){
     if(!master||name(master)!==state.animation||loop(master)){startRiderPose(controller,state);master=current(controller.spAniBody);}
     var hold=typeof state.holdTime==='number'?Math.max(0,Math.min(state.clip.end,state.holdTime)):state.clip.hit;
-    var sampled=typeof state.beamElapsed==='number',time=sampled?Math.max(0,state.beamElapsed)*(typeof state.playback==='number'?state.playback:1):trackValue(master,'trackTime')||0,speed=sampled?0:trackValue(master,'timeScale');
+    var sampled=typeof state.beamSourceTime==='number'||typeof state.beamElapsed==='number',time=typeof state.beamSourceTime==='number'?state.beamSourceTime:sampled?Math.max(0,state.beamElapsed)*(typeof state.playback==='number'?state.playback:1):trackValue(master,'trackTime')||0,speed=sampled?0:trackValue(master,'timeScale');
     if(time>=hold||state.beamHeld){time=hold;speed=0;state.beamHeld=true;}
     seekRider(controller,state,time,typeof speed==='number'?speed:1);
     // The stationary mount finishes one ordinary attack, then idles. It must
@@ -224,6 +224,7 @@ function updateCombatPose(controller,state){
     var mount=current(horse);
     if(controller.isMove)ensureLocomotion(horse,'move');
     else if(!mount||name(mount)==='move')ensureLocomotion(horse,'idle');
+    else if(!loop(mount)&&name(mount)===state.animation&&typeof state.playback==='number')setTrackValue(mount,'timeScale',state.playback);
     return;
   }
   var rapid=typeof state.rapid==='object'?state.rapid:null,duration=rapid&&rapid.duration>0?rapid.duration:2.5,strikes=rapid&&rapid.strikes>0?rapid.strikes:7,interval=duration/strikes;
@@ -253,16 +254,17 @@ function setCombatState(controller,options){
   enableCombatMotion(controller);
   var previous=combatStates.get(controller),mode=options.beam?'beam':options.rapid?'rapid':'ordinary';
   if(previous&&previous.mode!==mode&&(previous.beam||previous.rapid))releaseCombatPose(controller);
-  var state=previous&&previous.mode===mode?previous:{mode:mode,lastPulse:null};
+  var state=previous&&previous.mode===mode?previous:{mode:mode,lastPulse:null},animationChanged=false;
   if(typeof options.moving==='boolean')controller.isMove=options.moving;
   state.beam=!!options.beam;state.rapid=options.rapid||false;state.pulse=options.pulse;
   if(typeof options.playback==='number'&&isFinite(options.playback)&&options.playback>=0)state.playback=options.playback;
-  if(options.animation&&supportedPose(controller,options.animation))state.animation=options.animation;
+  if(options.animation&&supportedPose(controller,options.animation)&&state.animation!==options.animation){animationChanged=!!state.animation;state.animation=options.animation;state.beamHeld=false;state.referenceToken=undefined;state.referenceAnimation=undefined;}
   if(typeof options.holdTime==='number')state.holdTime=options.holdTime;
   if(typeof options.beamElapsed==='number'&&isFinite(options.beamElapsed)&&options.beamElapsed>=0)state.beamElapsed=options.beamElapsed;
+  if(typeof options.beamSourceTime==='number'&&isFinite(options.beamSourceTime)&&options.beamSourceTime>=0)state.beamSourceTime=options.beamSourceTime;
   if(options.aimDirection&&isFinite(options.aimDirection.x)&&isFinite(options.aimDirection.y)&&Math.hypot(options.aimDirection.x,options.aimDirection.y)>0){state.aimDirection={x:options.aimDirection.x,y:options.aimDirection.y};state.aimToken=attackTokens.get(controller)||0;state.aimAnimation=name(current(controller.spAniBody));}
   combatStates.set(controller,state);
-  if((state.beam||state.rapid)&&(!previous||previous.mode!==mode)){
+  if((state.beam||state.rapid)&&(!previous||previous.mode!==mode||animationChanged)){
     startRiderPose(controller,state);
     if(state.beam&&!controller.isMove){
       var horse=controller.spAniMa,track=horse.setAnimation(0,state.animation,false);if(typeof state.playback==='number')setTrackValue(track,'timeScale',state.playback);horse.addAnimation(0,'idle',true,state.clip.end);

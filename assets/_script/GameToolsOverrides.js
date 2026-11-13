@@ -52,7 +52,7 @@ function attack(owner, type, callback) {
   var item = settings && settings.timings && settings.timings[key];
   if (item === undefined) item = settings && settings.timingDefaults && settings.timingDefaults[key];
   var delay = item && item.attack;
-  var speed = attackPlayback(owner, type), sourceClock = unitAnimationSpeed(owner, type) !== undefined;
+  var speed = attackPlayback(owner, type);
   // A missing timing must retain call order, RNG order, and the original stack.
   var validDelay = typeof delay === "number" && isFinite(delay) && delay > 0 && delay <= 10;
   if (!validDelay && speed > 0) return callback.call(owner);
@@ -60,7 +60,9 @@ function attack(owner, type, callback) {
   var skeleton = owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody);
   var track = skeleton && skeleton.getCurrent ? skeleton.getCurrent(0) : null;
   var info = animationInfo(track);
-  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? sourceClock ? delay : delay / speed : 0, sourceClock: sourceClock, callback: callback, skeleton: skeleton,
+  // Keep the outstanding authored time in source seconds. Per-level playback
+  // can change during this windup, including entering/leaving whole-unit mode.
+  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
     animation: info.name, animationEnd: info.end, animationTime: info.time,
     // Browser TrackEntry objects survive disposal. JSB wrappers may point at
     // freed native entries, so native interruption checks use captured values.
@@ -79,18 +81,24 @@ function tick(dt, fighting) {
       owner.node.activeInHierarchy !== false && owner.node.active !== false &&
       (!owner.isDead || !owner.isDead()) && owner.time === entry.time && keyFor(owner, entry.type) === entry.key;
     if (!valid) { cancel(owner); continue; }
-    var skeleton = entry.skeleton;
-    if (skeleton && skeleton.paused) continue;
+    applyAttackPlayback(owner, entry.type);
+    var skeleton = entry.skeleton, control = owner._relicControl;
+    // RelicCombat releases its pause later in this frame, after this scheduler.
+    // Count the unfrozen remainder now; an independently paused renderer stays
+    // stopped. Normal freeze application has already cancelled old attacks.
+    var relicPause = entry.type === "enemy" && control && control.generation === owner.node._combatGeneration &&
+      (owner._relicPausedRenderers || []).some(function (record) { return record.renderer === skeleton && !record.wasPaused; });
+    if (skeleton && skeleton.paused && !relicPause) continue;
     // UIGame supplies dt * game speed; skeleton.timeScale already uses that
     // same speed. Multiplying again would advance hit markers twice as fast.
-    var effectDelta = dt, control = owner._relicControl;
+    var effectDelta = dt;
     if (entry.type === "enemy" && control && control.generation === owner.node._combatGeneration) {
       if (control.freeze > 0) effectDelta = Math.max(0, dt - control.freeze);
       else if (control.duration > 0 && control.slow > 0) effectDelta -= Math.min(dt, control.duration) * control.slow;
     }
-    var playback = entry.sourceClock ? attackPlayback(owner, entry.type) : 1;
+    var playback = attackPlayback(owner, entry.type);
     if (!(playback > 0)) continue;
-    entry.animationTime += effectDelta * attackPlayback(owner, entry.type);
+    entry.animationTime += effectDelta * playback;
     if (entry.animation && skeleton && skeleton.getCurrent) {
       var current = skeleton.getCurrent(0), info = animationInfo(current);
       if (info.name === entry.animation) entry.animationTime = Math.max(entry.animationTime, info.time);

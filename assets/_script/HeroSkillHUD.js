@@ -50,7 +50,11 @@ function aimDefault(rt) {
   }
 }
 function buttonStart(hud,event) {
-  stop(event);var rt=hud.runtime;if(!usable(rt))return;
+  stop(event);if(hud.press)return;var rt=hud.runtime;
+  // A second input surface cancels the owned world gesture. Keep its finger
+  // reserved until release so it cannot cast later or turn into movement.
+  if(hud.worldTouch){hud.worldTouch.cancelled=true;rt.aiming=false;return;}
+  if(!usable(rt))return;
   hud.press={id:touchId(event),start:location(event),time:Date.now(),dragged:false,wasArmed:rt.aiming};
   if(directional(rt.state.style)){rt.aiming=true;aimDefault(rt);}
 }
@@ -148,7 +152,8 @@ function handleTouch(controller,phase,event) {
   var game=controller&&controller._followGame&&controller._followGame(),hero=game&&game.ctrPlay,hud=hero&&hero._skillHUD||controller&&controller._skillAimHUD,rt=hud&&hud.runtime,id=touchId(event);
   if(!rt||!hud)return false;
   var pending=hud.worldTouch;
-  if(pending&&pending.id===id){stop(event);if(!available(rt)){hud.worldTouch=null;rt.aiming=false;return true;}var p=location(event);if(p&&phase!=="cancel")rt.screenAim(p);if(phase==="end"||phase==="cancel"){hud.worldTouch=null;if(phase==="end")rt.cast(rt.aimDirection);else rt.aiming=false;}return true;}
+  if(pending&&pending.id===id){stop(event);if(pending.cancelled||!rt.aiming||!available(rt)){pending.cancelled=true;if(phase==="end"||phase==="cancel")hud.worldTouch=null;rt.aiming=false;return true;}var p=location(event);if(p&&phase!=="cancel")rt.screenAim(p);if(phase==="end"||phase==="cancel"){hud.worldTouch=null;if(phase==="end")rt.cast(rt.aimDirection);else rt.aiming=false;}return true;}
+  if(pending||hud.press)return false;
   if(phase!=="start"||!rt.aiming||!available(rt)||controller.touchID!==false&&controller.touchID===id)return false;
   var at=location(event);if(!at)return false;rt.screenAim(at);hud.worldTouch={id:id};hud.controller=controller;controller._skillAimHUD=hud;stop(event);return true;
 }
