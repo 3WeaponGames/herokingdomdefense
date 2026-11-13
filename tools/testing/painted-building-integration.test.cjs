@@ -123,14 +123,14 @@ test('each painted castle/barracks tier has visible bounded native night pixels,
   assert.equal(lanterns,8);
 });
 
-test('mill farm counts are2/2/4/4 at their authored anchors and use one identical shared tile',engine,()=>{
+test('mill farm counts are2/2/3/4 at their authored anchors and use one identical shared tile',engine,()=>{
   const spine=require(runtime),p=player(spine,'td'),counts=[];
   for(const name of skins.td){const skin=p.json.skins.find(s=>s.name===name),plots=Object.keys(skin.attachments).filter(n=>n.startsWith('td__'));counts.push(plots.length);p.pose(name,'idle',0);
     for(const slot of plots){const a=p.skeleton.findSlot(slot).getAttachment();assert.equal(a.path,'painted-farm');assert.equal(a.width,328);assert.equal(a.height,286);}
   }
-  assert.deepEqual(counts,[2,2,4,4]);
+  assert.deepEqual(counts,[2,2,3,4]);
   p.pose('mf-2-2','idle',0);const third=Object.keys(p.json.skins.find(s=>s.name==='mf-2-2').attachments).filter(n=>n.startsWith('td__')).map(n=>({name:n,v:vertices(spine,p.skeleton.findSlot(n))}));
-  p.pose('mf-3','idle',0);assert.deepEqual(third.map(v=>({name:v.name,v:vertices(spine,p.skeleton.findSlot(v.name))})),third,'T4 retains all four exact native plot anchors/angles');
+  p.pose('mf-3','idle',0);assert.deepEqual(third.map(v=>({name:v.name,v:vertices(spine,p.skeleton.findSlot(v.name))})),third,'T4 retains the three exact tier-3 anchors/angles and adds its fourth plot');
 });
 
 test('mill sails are absent while cloth flags retain their animated geometry',engine,()=>{

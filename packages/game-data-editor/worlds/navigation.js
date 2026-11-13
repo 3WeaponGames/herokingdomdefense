@@ -48,11 +48,11 @@ function buildingColliderData(service,stage,building,hall,gate,config,sourceMode
    if(gate!=='open')add(shapes.gate,main.world,owner.id);
    add(shapes.fixed,main.world,wing===undefined?owner.id:wing);
   }
-  return scaled({colliders:colliders.filter(c=>!controlled.has(c.node)||c.type!=='cc.PhysicsPolygonCollider').concat(extra),origin,owner:owner.id},row);
+  return scaled({colliders:colliders.filter(c=>!controlled.has(c.node)||c.type!=='cc.PhysicsPolygonCollider').concat(extra),origin,owner:owner.id},row,owner.world);
  }
- return scaled({colliders,origin,owner:owner.id},row);
+ return scaled({colliders,origin,owner:owner.id},row,owner.world);
 }
-function scaled(data,row){const Scale=require('../../../assets/_script/BuildingWorldScale'),factor=Scale.value(row);if(factor!==1)data.colliders=data.colliders.map(c=>Object.assign({},c,{points:Scale.polygons([c.points],data.origin,factor)[0]}));return data;}
+function scaled(data,row,matrix){if(row&&row.ModelOffset){const O=require('../../../assets/_script/BuildingModelOffset'),v=O.vector(matrix,O.value(row));data.colliders=data.colliders.map(c=>Object.assign({},c,{points:c.points.map(p=>({x:p.x+v.x,y:p.y+v.y}))}));}const Scale=require('../../../assets/_script/BuildingWorldScale'),factor=Scale.value(row);if(factor!==1)data.colliders=data.colliders.map(c=>Object.assign({},c,{points:Scale.polygons([c.points],data.origin,factor)[0]}));return data;}
 function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels);return data.colliders.map(c=>c.points.map(p=>M.toWorld(building,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
 function preview(service,request){
  const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=Array.isArray(stage.spawns)&&stage.spawns.find(s=>s&&s.id===request.spawnId&&s.enabled!==false);

@@ -23,4 +23,23 @@ function edits(config,request,values){
   seen.add(item.index);return{doc:'A',path:['BuildEnum',String(request.id),'levelList',item.position,'WorldScale'],value:item.value};
  });
 }
-module.exports={family,limits,changes,edits};
+function partEdits(config,request,values){
+ const Parts=require('../../../assets/_script/BuildingPartScale'),current=family(config,request),seen=new Set(),edits=new Map();
+ if(!Array.isArray(values)||!values.length||values.length>current.branches.length*Parts.keys.length)throw Error('Choose building parts to resize.');
+ values.forEach(item=>{
+  const branch=current.branches.find(b=>b.position===item.position&&b.index===item.index),id=item.index+':'+item.key;
+  if(!branch||seen.has(id)||!Parts.available(branch.record).some(p=>p.key===item.key)||!Parts.valid(item.value))throw Error('The selected building part changed. Reload before resizing.');
+  if(Parts.value(branch.record,item.key)!==item.from)throw Error('A building part was resized elsewhere. Reload before resizing.');
+  seen.add(id);if(item.value===item.from)return;
+  if(!edits.has(item.position))edits.set(item.position,{doc:'A',path:['BuildEnum',String(request.id),'levelList',item.position,'PartScale'],value:Object.assign({},branch.record.PartScale)});
+  edits.get(item.position).value[item.key]=item.value;
+ });
+ return Array.from(edits.values());
+}
+function duplicateShape(config,request,layer){
+ if(!['Shadow','Blocker'].includes(layer))throw Error('Choose a shadow or blocker layer.');
+ const group=family(config,request),source=group.branches.find(b=>b.position===request.levelIndex).record[layer];
+ if(!source)throw Error('Draw a '+layer.toLowerCase()+' first.');
+ return group.branches.filter(b=>b.position!==request.levelIndex).map(b=>({doc:'A',path:['BuildEnum',String(request.id),'levelList',b.position,layer],value:Object.assign({},b.record[layer],JSON.parse(JSON.stringify(source)))})).filter(edit=>JSON.stringify(config.BuildEnum[request.id].levelList[edit.path[3]][layer])!==JSON.stringify(edit.value));
+}
+module.exports={family,limits,changes,edits,partEdits,duplicateShape};

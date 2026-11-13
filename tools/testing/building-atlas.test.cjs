@@ -55,7 +55,7 @@ function inside(entry){
 }
 test('Buildings catalog includes every authored starting type with separate names/levels and complete tower portraits',()=>{
  const p=atlas();assert.equal(p.ui.entries.length,11);
- for(const name of ['Cannon Tower','Sniper Tower','Royal Guard','Heavy Infantry','Crossbowmen','Vanguard'])assert(p.names().includes(name),name);
+ for(const name of ['Cannon Tower','Sniper Tower','Guard Barracks','Shield Barracks','Crossbow Barracks','Timber Stables'])assert(p.names().includes(name),name);
  assert(p.ui.entries.every(e=>e.level.string==='Lv 1'&&e.info.string.length>0));
  for(const file of ['painted-cannon-1','painted-sniper-1'])assert(p.loads.some(x=>x.bundle==='KinghtFallIconBuild'&&x.file===file));
  assert.deepEqual(p.loads.filter(x=>x.bundle==='resources').map(x=>x.file),['buildings/redesign/towers/archer-1']);p.ui.entries.forEach(inside);assert.equal(JSON.stringify(p.config),p.before);
@@ -63,8 +63,8 @@ test('Buildings catalog includes every authored starting type with separate name
 test('category tabs show only their rows and reset scrolling without rebuilding portraits or changing data',()=>{
  const p=atlas(),loads=p.loads.length;p.ui._atlasScroll.offset=300;
  p.ui._atlasTabButtons.find(x=>x.id==='towers').node.handlers.end({stopPropagation(){}});
- assert.deepEqual(Array.from(p.visible(),e=>e.name.string),['Arrow Tower','Cannon Tower','Sniper Tower']);assert.equal(p.ui._atlasScroll.offset,0);assert.equal(p.ui._atlasScroll.stopped,true);assert.equal(p.ui._atlasBar.node.active,false);
- p.ui.selectCategory('barracks');assert.deepEqual(Array.from(p.visible(),e=>e.name.string),['Royal Guard','Heavy Infantry','Crossbowmen','Vanguard']);assert(p.ui._atlasGroups.filter(g=>g.node.active).every(g=>g.id==='barracks'));
+ assert.deepEqual(Array.from(p.visible(),e=>e.name.string),['Archer Lookout','Cannon Tower','Sniper Tower']);assert.equal(p.ui._atlasScroll.offset,0);assert.equal(p.ui._atlasScroll.stopped,true);assert.equal(p.ui._atlasBar.node.active,false);
+ p.ui.selectCategory('barracks');assert.deepEqual(Array.from(p.visible(),e=>e.name.string),['Guard Barracks','Shield Barracks','Crossbow Barracks','Timber Stables']);assert(p.ui._atlasGroups.filter(g=>g.node.active).every(g=>g.id==='barracks'));
  p.ui.selectCategory('all');assert.equal(p.visible().length,11);assert.equal(p.loads.length,loads);assert.equal(JSON.stringify(p.config),p.before);
 });
 test('short screens and long authored descriptions grow their own card without name, badge or body collisions',()=>{
@@ -73,8 +73,8 @@ test('short screens and long authored descriptions grow their own card without n
  assert(p.ui._atlasScrollNode.y+p.ui._atlasScrollNode.height/2<p.ui._atlasTabs.y-32);assert(p.ui._atlasScrollNode.y-p.ui._atlasScrollNode.height/2>p.ui._atlasFooter.node.y+21);
 });
 test('language changes refresh filtered labels and badges without reloading assets or changing building configuration',()=>{
- const p=atlas(),loads=p.loads.length;p.ui.selectCategory('barracks');p.lang.setCurrentLanguage('zh');assert(p.names().includes('皇家卫兵'));assert(p.ui.entries.every(e=>e.level.string==='1级'));assert(p.visible().every(e=>!/[·•]/.test(e.name.string)));p.ui.entries.forEach(inside);
- p.lang.setCurrentLanguage('en');assert(p.names().includes('Royal Guard'));assert.equal(p.loads.length,loads);assert.equal(JSON.stringify(p.config),p.before);
+ const p=atlas(),loads=p.loads.length;p.ui.selectCategory('barracks');p.lang.setCurrentLanguage('zh');assert(p.names().includes('卫兵营房'));assert(p.ui.entries.every(e=>e.level.string==='1级'));assert(p.visible().every(e=>!/[·•]/.test(e.name.string)));p.ui.entries.forEach(inside);
+ p.lang.setCurrentLanguage('en');assert(p.names().includes('Guard Barracks'));assert.equal(p.loads.length,loads);assert.equal(JSON.stringify(p.config),p.before);
 });
 test('scroll guidance and thumb visibility follow the selected content and current position',()=>{
  const p=atlas();assert.equal(p.ui._atlasFooter.string,'More buildings below ↓');assert.equal(p.ui._atlasBar.node.active,true);
@@ -95,8 +95,8 @@ test('live localization tokens resolve before level suffixes are removed, and ba
  const click=()=>entry.badge.handlers.end({stopPropagation(){}});
  click();assert.equal(entry.cfg.level,2);assert.equal(entry.level.string,'Lv 2');assert.equal(p.loads.at(-1).file,'painted-cannon-2');assert.match(entry.info.string,/larger blasts/i);assert.equal(entry.node.height,height);inside(entry);
  click();assert.equal(entry.cfg.level,3);assert.match(entry.info.string,/upgrade/i);assert(!/final/i.test(entry.info.string));assert.equal(p.loads.at(-1).file,'painted-cannon-3');assert.equal(entry.node.height,height);
- click();assert.equal(entry.cfg.level,4);assert.equal(entry.name.string,'Cannon Tower');assert.match(entry.info.string,/final upgrade/i);assert.equal(p.loads.at(-1).file,'painted-cannon-4');assert.equal(entry.node.height,height);
- p.lang.setCurrentLanguage('zh');assert.equal(entry.name.string,'加农炮塔');assert.equal(entry.level.string,'4级');assert.match(entry.info.string,/最终升级/);
+ click();assert.equal(entry.cfg.level,4);assert.equal(entry.name.string,'Royal Cannon Tower');assert.match(entry.info.string,/final upgrade/i);assert.equal(p.loads.at(-1).file,'painted-cannon-4');assert.equal(entry.node.height,height);
+ p.lang.setCurrentLanguage('zh');assert.equal(entry.name.string,'皇家加农炮塔');assert.equal(entry.level.string,'4级');assert.match(entry.info.string,/最终升级/);
  p.lang.setCurrentLanguage('en');click();assert.equal(entry.cfg.level,1);assert.equal(entry.level.string,'Lv 1');assert.equal(entry.name.string,'Cannon Tower');assert.equal(entry.node.height,height);
  assert.equal(JSON.stringify(p.config),p.before);
 });

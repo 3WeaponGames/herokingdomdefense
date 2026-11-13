@@ -254,7 +254,7 @@ var def_KinghtFallBuildBase = function (t) {
       }
     });
     require("BuildingAppearance").apply(this);
-    if (cfg && cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
+    if (cfg && (cfg.WorldScale !== undefined || cfg.ModelOffset)) require("BuildingWorldScale").apply(this);
     if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
   };
   _ctor.prototype._alignPurchaseCost = function (field) {
@@ -385,7 +385,7 @@ var def_KinghtFallBuildBase = function (t) {
     var artwork = require("BuildingAppearance");
     artwork.apply(this);
     if (artwork.place) artwork.place(this, this.getLevel() === 1 ? "create" : "upgrade");
-    if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
+    if (this.buildInfo && this.buildInfo.cfg && (this.buildInfo.cfg.WorldScale !== undefined || this.buildInfo.cfg.ModelOffset)) require("BuildingWorldScale").apply(this);
   };
   _ctor.prototype.getWposPhyCol = function () {
     return this.getWposPhyCol2().map(function (part) { return part.points; });

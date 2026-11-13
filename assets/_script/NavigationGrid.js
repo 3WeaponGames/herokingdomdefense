@@ -323,7 +323,7 @@ NavigationGrid.prototype._escape=function(start,cache,goal){return complete(esca
 NavigationGrid.prototype._smooth=function(points,radius){return complete(smoothTask(this,points,radius));};
 NavigationGrid.prototype._projectGoal=function(goal,cache,start){return complete(projectionTask(this,goal,cache,start));};
 
-NavigationGrid.prototype.createSearch=function(startValue,goalValue,radius,allowPartial){
+NavigationGrid.prototype.createSearch=function(startValue,goalValue,radius,allowPartial,escapeOnly){
   var grid=this,start=point(startValue),requestedGoal=point(goalValue),r=radiusValue(radius),phase='start',startFree=false,goalFree=false,escape=null,sharedKey=null,shared=null,join=0,cache=null,bridges=null,child=null,starts=null,goalAnchors=null,goalIds=null,target=requestedGoal;
   var seen=null,closed=null,g=null,parent=null,parentBridges=null,heap=null,seed=0,item=null,currentId=-1,current=null,goalDistance=0,direction=0,bridgeIndex=0,extraBridges=null,found=-1,bestCost=Infinity,bestReachable=-1,bestDistance=Infinity,frontier=-1,frontierDistance=Infinity,partial=false;
   var reversed=null,cursor=-1,guard=0,parentCursor=-1,reconstructBridge=null,bridgePoint=0,points=null,reverseAt=0,goal=null,plan=null;
@@ -336,14 +336,19 @@ NavigationGrid.prototype.createSearch=function(startValue,goalValue,radius,allow
     job.phase=phase;
     if(phase==='start'){if(r>(grid.bounds.maxX-grid.bounds.minX)/2+EPS||r>(grid.bounds.maxY-grid.bounds.minY)/2+EPS){finish(job,null);return;}startFree=grid.isWalkable(start,r);phase='goal';return;}
     if(phase==='goal'){goalFree=grid.isWalkable(requestedGoal,r);phase='direct';return;}
-    if(phase==='direct'){if(!startFree&&!goalFree&&distance2(start,requestedGoal)>EPS*EPS&&grid.canExitBlocked(start,requestedGoal,r)){detach({points:[start,requestedGoal],goal:requestedGoal,reached:true,escape:{from:start,to:requestedGoal,distance:distance(start,requestedGoal)}});return;}if(startFree&&goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null});return;}cachedRoutes=startFree&&goalFree&&grid._routes?Array.from(grid._routes.values()).reverse():[];routeIndex=0;phase='route-cache';return;}
+    if(phase==='direct'){if(escapeOnly&&startFree){detach({points:[start],goal:start,reached:true,escape:null});return;}if(!escapeOnly&&!startFree&&!goalFree&&distance2(start,requestedGoal)>EPS*EPS&&grid.canExitBlocked(start,requestedGoal,r)){detach({points:[start,requestedGoal],goal:requestedGoal,reached:true,escape:{from:start,to:requestedGoal,distance:distance(start,requestedGoal)}});return;}if(startFree&&goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:null});return;}cachedRoutes=startFree&&goalFree&&grid._routes?Array.from(grid._routes.values()).reverse():[];routeIndex=0;phase='route-cache';return;}
     if(phase==='route-cache'){if(routeIndex>=cachedRoutes.length){cachedRoutes=null;sharedKey=allowPartial&&startFree?r+":"+requestedGoal.x+":"+requestedGoal.y:null;shared=sharedKey&&grid._partialRoutes&&grid._partialRoutes.get(sharedKey);join=shared?shared.points.length-1:-1;phase='shared';return;}cachedRoute=cachedRoutes[routeIndex++];var nearStart=Math.max(grid.cellSize*3,r*2+grid.cellSize*2),nearGoal=Math.max(grid.cellSize*6,r*4+grid.cellSize*2);if(cachedRoute.radius!==r||distance2(start,cachedRoute.start)>nearStart*nearStart||distance2(requestedGoal,cachedRoute.goal)>nearGoal*nearGoal)return;tailIndex=0;phase='route-tail';return;}
     if(phase==='route-tail'){if(tailIndex>=cachedRoute.points.length){phase='route-cache';return;}if(grid.segmentClear(cachedRoute.points[tailIndex],requestedGoal,r)){joinIndex=tailIndex;phase='route-join';}else tailIndex++;return;}
     if(phase==='route-join'){if(joinIndex<0){phase='route-cache';return;}if(!grid.segmentClear(start,cachedRoute.points[joinIndex],r)){joinIndex--;return;}var reused=[start].concat(cachedRoute.points.slice(joinIndex,tailIndex+1));if(reused[reused.length-1].x!==requestedGoal.x||reused[reused.length-1].y!==requestedGoal.y)reused.push(requestedGoal);stats.reused=true;detach({points:reused,goal:requestedGoal,reached:true,partial:false,escape:null});return;}
     if(phase==='shared'){if(shared&&distance2(start,shared.start)<=grid.cellSize*grid.cellSize*9&&join>=0){if(grid.segmentClear(start,shared.points[join],r)){stats.shared=true;detach({points:[start].concat(shared.points.slice(join)),goal:shared.goal,reached:false,partial:true,escape:null});return;}join--;return;}phase='cache';return;}
     if(phase==='cache'){cache=grid._cache(r);child=bridgeTask(grid,cache);phase='bridges';return;}
     if(phase==='bridges'){child.step(1);if(child.done){bridges=child.result;child=null;phase=startFree?'starts':'escape';}return;}
-    if(phase==='escape'){if(!child)child=escapeTask(grid,start,cache,requestedGoal);child.step(1);if(child.done){var escaped=child.result;child=null;if(!escaped){finish(job,null);return;}escape={from:start,to:point(escaped),distance:distance(start,escaped)};if(escaped.exitPoints)escape.points=escaped.exitPoints;start=point(escaped);phase='escaped-direct';}return;}
+    if(phase==='escape'){if(!child)child=escapeTask(grid,start,cache,requestedGoal);child.step(1);if(child.done){var escaped=child.result;child=null;if(!escaped){finish(job,null);return;}escape={from:start,to:point(escaped),distance:distance(start,escaped)};if(escaped.exitPoints)escape.points=escaped.exitPoints;start=point(escaped);
+      // Safety recovery must reach free ground. Physics may nudge the unit a
+      // fraction away from its captured, still-blocked origin; returning there
+      // is valid ordinary movement, but cannot count as escaping the obstacle.
+      if(escapeOnly){detach({points:[start],goal:start,reached:true,escape:escape});return;}
+      phase='escaped-direct';}return;}
     if(phase==='escaped-direct'){if(goalFree&&grid.segmentClear(start,requestedGoal,r)){stats.direct=true;detach({points:start.x===requestedGoal.x&&start.y===requestedGoal.y?[start]:[start,requestedGoal],goal:requestedGoal,reached:true,escape:escape});return;}phase='starts';return;}
     if(phase==='starts'){if(!child)child=anchorTask(grid,start,cache);child.step(1);if(child.done){starts=child.result;child=null;if(!starts.length){finish(job,null);return;}phase=goalFree?'goals':'projection';goalIds=new Set();}return;}
     if(phase==='goals'){if(!child)child=anchorTask(grid,requestedGoal,cache);child.step(1);if(child.done){goalAnchors=child.result;child=null;if(!goalAnchors.length&&!allowPartial){finish(job,null);return;}for(var a=0;a<goalAnchors.length;a++)goalIds.add(goalAnchors[a].id);phase='workspace';}return;}
@@ -363,6 +368,6 @@ NavigationGrid.prototype.createSearch=function(startValue,goalValue,radius,allow
   },function(){if(child)child.cancel();seen=null;closed=null;g=null;parent=null;parentBridges=null;heap=null;cache=null;bridges=null;starts=null;goalAnchors=null;goalIds=null;extraBridges=null;reversed=null;reconstructBridge=null;points=null;plan=null;shared=null;cachedRoutes=null;cachedRoute=null;});
   job.stats=stats;return job;
 };
-NavigationGrid.prototype.findPath=function(start,goal,radius,allowPartial){return complete(this.createSearch(start,goal,radius,allowPartial));};
+NavigationGrid.prototype.findPath=function(start,goal,radius,allowPartial,escapeOnly){return complete(this.createSearch(start,goal,radius,allowPartial,escapeOnly));};
 
 exports.NavigationGrid=NavigationGrid;

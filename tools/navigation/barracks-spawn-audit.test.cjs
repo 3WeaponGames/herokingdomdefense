@@ -11,6 +11,12 @@ function setup(){
  game.addSoldier=(id,callback)=>{created++;callback(soldier());};
  const tick=dt=>{clock+=dt*1000;e.setTime(clock);e.nav.beginFrame(game);b.doTime(dt);};return {e,game,b,soldier,tick,created:()=>created};
 }
+test('authored per-unit barracks positions transform with the building and retain safe standing checks',()=>{
+ const f=setup(),{b,game}=f;f.e.stubs.BuildingSpawnPositions=require('../../assets/_script/BuildingSpawnPositions');b.buildInfo.cfg.SpawnPositions={'1':{x:90,y:-45}};b.node.setPosition(140,80);b.node.scaleX=b.node.scaleY=.8;b.node.angle=25;
+ const expected=game.ndMain.convertToNodeSpaceAR(b.node.convertToWorldSpaceAR(new Vec2(90,-45))),p=b.getPos(0);assert(Math.hypot(p.x-expected.x,p.y-expected.y)<1e-6);
+ b._spawnPosts=[{x:-400,y:-400}];b.initSoldier();const placed=b.enemyList[0].node.position;assert(Math.hypot(placed.x-expected.x,placed.y-expected.y)<1e-6,'An old fallback cannot override an authored slot');
+ delete b.buildInfo.cfg.SpawnPositions;const legacy=b.getPos(0);assert(legacy&&Number.isFinite(legacy.x)&&Number.isFinite(legacy.y),'Unconfigured barracks retain the native randomized formation');
+});
 test('a blocked fresh barracks spawn retains one owned dormant slot and retries only when standing space is available',()=>{
  const {e,game,b,tick,created}=setup(),obstacle=e.box(0,-80,1800,1800);let attempts=0;const get=b.getPos;b.getPos=function(index){attempts++;return get.call(this,index);};b.initSoldier();const unit=b.enemyList[0];
  assert.equal(created(),1);assert.equal(game.gameData.soldiers.length,1);assert(unit._spawnPending);assert(unit.isDead());assert.equal(unit.hp,0);assert.equal(unit.node.active,false);assert.equal(unit.rigidBody.active,false);assert.equal(b.getPos(0),null);

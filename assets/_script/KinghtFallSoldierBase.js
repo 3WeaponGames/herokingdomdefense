@@ -163,6 +163,13 @@ var def_KinghtFallSoldierBase = function (t) {
       if (this._hitReactionPlaying) { this.rigidBody.linearVelocity = cc.Vec2.ZERO; return; }
       if (this.state == s.Attack) return;
       var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+      var recovery = Navigation.recoverBlocked(this, game, t);
+      if (recovery) {
+        if (recovery.distance > 0) { if (this.state != s.Move) this.doMove(); }
+        else if (this.state != s.Idle) this.doIdel();
+        if (recovery.directionX) this.setLeft(recovery.directionX < 0);
+        return;
+      }
       var position = Navigation.positionOf(this.node, game);
       var target = this._orderTarget;
       this._retaliationTime = Math.max(0, (this._retaliationTime || 0) - t);
@@ -210,7 +217,9 @@ var def_KinghtFallSoldierBase = function (t) {
         }
       } else if (this.rallyPoint) {
         goal = this.rallyPoint.pos;
-        formation = game.getArmyOrderGoal && game.getArmyOrderGoal(this, goal);
+        var recoveredPost = this._standingGoal && this._standingGoal.terrainRecovery && this._standingGoal.order === this.rallyPoint;
+        if (recoveredPost) goal = this._standingGoal.pos;
+        else formation = game.getArmyOrderGoal && game.getArmyOrderGoal(this, goal);
         if (!formation && this.isHoldingPosition()) {
           if (!this._standingGoal && cc.Vec2.distance(position, goal) <= 64) {
             var standing = Navigation.findStandingPoint(this, game, goal, goal);
@@ -218,7 +227,7 @@ var def_KinghtFallSoldierBase = function (t) {
           }
           if (this._standingGoal) goal = this._standingGoal.pos;
         }
-        if (!formation && this._settledPoint && cc.Vec2.distance(position, this._settledPoint) <= 12 && Navigation.canStopFollowing(this, game, goal)) {
+        if (!formation && (this._settledPoint || recoveredPost) && cc.Vec2.distance(position, this._settledPoint || goal) <= 12 && Navigation.canStopFollowing(this, game, goal)) {
           if (this.state != s.Idle) this.doIdel();
           return;
         }
@@ -265,6 +274,14 @@ var def_KinghtFallSoldierBase = function (t) {
       if (movement.directionX) this.setLeft(movement.directionX < 0);
       // A projected endpoint on the wrong side of a wall is not arrival.
       var nearRally = !target && this.rallyPoint && movement.arrived && cc.Vec2.distance(Navigation.positionOf(this.node, game), goal) <= 48 && Navigation.canStopFollowing(this, game, goal);
+      if (!nearRally && !target && !this.isAgg && this.rallyPoint && movement.arrived && !movement.reached) {
+        var projectedPost = Navigation.projectedStandingPoint(this, game, this.rallyPoint.pos);
+        if (projectedPost) {
+          this._standingGoal = { pos: projectedPost, terrainRecovery: true, order: this.rallyPoint };
+          this.doIdel();
+          return;
+        }
+      }
       if (!target && !this.isAgg && movement.arrived && (movement.reached || nearRally)) {
         if (this.rallyPoint) this._settledPoint = Navigation.positionOf(this.node, game);
         else if (this.pathList) {

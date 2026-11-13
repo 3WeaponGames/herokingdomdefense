@@ -138,7 +138,7 @@ function families(base,translations,language){
       }
       const selected=descriptors.filter(branch=>visited.has(branch.position)),levels=grouped(selected);
       let label=root.label.replace(/\s*(?:[·•:–—-]\s*)?(?:Lv(?:l)?\.?|Level)\s*\.?\s*\d+\s*$/i,'').trim()||root.label;
-      if(typeID==='3'&&!/\bbarracks\b/i.test(label))label+=' Barracks';
+      if(typeID==='3'&&!/\b(?:barracks|stables)\b|营房|兵营|马厩/i.test(label))label+=' Barracks';
       rows.push({key,typeID,rootIndex:root.index,rootPosition:root.position,root,record:building,
         path:path.slice(),doc:'A',categoryLabel,label,constructionOrder,icon:root.record.Icon,
         branches:selected,levels,diagnostics:familyDiagnostics,

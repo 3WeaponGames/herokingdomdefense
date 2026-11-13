@@ -17,7 +17,7 @@ function describe(service,request){
   const layout=main.json.wallKit.layout,copies=Geometry.instances(layout,row.Blocker&&row.Blocker.gateSpan);defaults=Object.assign({gateSpan:layout.nativeGateSpan},Object.fromEntries(Object.entries(Geometry.wallDefaults(layout)).map(([key,p])=>[key,shape(p)])));
   parts=[['gate','Gate passage'],['pillar','Pillar connection'],['span','Connecting wall']].map(([key,label])=>({key,label,instances:copies[key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));
  }else{
-  const data=Navigation.buildingColliderData(service,stage,building,1,'closed',Object.assign({},config,{BuildEnum:Object.assign({},config.BuildEnum,{[request.id]:Object.assign({},definition,{levelList:definition.levelList.map(level=>{const value=Object.assign({},level);delete value.Blocker;delete value.WorldScale;return value;})})})}),new Map());
+  const data=Navigation.buildingColliderData(service,stage,building,1,'closed',Object.assign({},config,{BuildEnum:Object.assign({},config.BuildEnum,{[request.id]:Object.assign({},definition,{levelList:definition.levelList.map(level=>{const value=Object.assign({},level);delete value.Blocker;delete value.WorldScale;delete value.ModelOffset;return value;})})})}),new Map());
   const inverse=Maps.inverse(owner.world);defaults={body:shape(data.colliders.map(c=>c.points.map(p=>Maps.point(inverse,p))))};
   parts=[{key:'body',label:'Building',instances:[relative(Scale.matrix(owner.world,record.origin,worldScale))]}];
  }
@@ -26,6 +26,7 @@ function describe(service,request){
  for(const p of parts)shadowDefaults[p.key]={mask:[]};
  let shadowParts=parts;
  if(building.kind===6){const main=record.skeletons.find(s=>s.json.wallKit),layout=main.json.wallKit.layout;shadowDefaults.gateSpan=layout.nativeGateSpan;const copies=Geometry.instances(layout,row.Shadow&&row.Shadow.gateSpan);shadowParts=parts.map(p=>Object.assign({},p,{instances:copies[p.key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));}
+ if(row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset'),v=Offset.vector(owner.world,Offset.value(row));for(const part of parts.concat(shadowParts===parts?[]:shadowParts))part.instances=part.instances.map(m=>{const n=m.slice();n[4]+=v.x*worldScale;n[5]+=v.y*worldScale;return n;});}
  return {record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value,shadow:clone(row.Shadow||shadowDefaults),shadowParts,worldScale};
 }
 function shadowIssues(value,wall){

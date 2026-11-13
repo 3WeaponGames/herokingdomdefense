@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { fixture } = require('./backend-ui-harness.cjs');
 
-function panel(count, width = 750, height = 1334, layered = false, family = count === 4 ? 'barracks' : 'tower') {
+function panel(count, width = 750, height = 1334, layered = false, family = count === 4 ? 'barracks' : 'tower', upgrade = false) {
   const h = fixture(), choices = [], ads = [], loaded = [];
   class Node {
     constructor(name) { Object.assign(this, { name, children: [], components: new Map(), active: true, x: 0, y: 0, scale: 1, width: 620, height: 156, events: {} }); }
@@ -21,7 +21,7 @@ function panel(count, width = 750, height = 1334, layered = false, family = coun
   }
   Node.EventType = { TOUCH_END: 'end' };
   class Sprite {} Sprite.SizeMode = { CUSTOM: 0 }; Sprite.Type = { SLICED: 1 };
-  class Label {} Label.Overflow = { SHRINK: 2 }; Label.HorizontalAlign = Label.VerticalAlign = { CENTER: 1 };
+  class Label {} Label.Overflow = { SHRINK: 2 }; Label.HorizontalAlign = { LEFT: 0, CENTER: 1 }; Label.VerticalAlign = { TOP: 0, CENTER: 1 };
   class RichText {} class Layout {} class Graphics { roundRect() {} fill() {} stroke() {} }
   Object.assign(h.cc, { Node, Sprite, Label, RichText, Layout, Graphics });
   const single = value => ({ getInstance: () => value });
@@ -49,11 +49,12 @@ function panel(count, width = 750, height = 1334, layered = false, family = coun
   ui.ndParent = child(root, 'ndMain', Layout); ui.ndItem = new Node('Template');
   ui.loadSpriteFrame = (bundle, path, done) => { loaded.push([bundle, path]); done({ getOriginalSize: () => ({ width: 1000, height: 1200 }) }); };
   ui.T = value => value;
-  const rows = Array.from({ length: count }, (_, i) => ({ index: (family === 'barracks' ? 11 : 1) + i * 3, level: 1, Name: 'Unit ' + i, LevelUpDescribe: 'Hold the frontline', Zoom: .35,
-    Icon: 'unit-' + i, Appearance: family === 'tower' ? { sprite: 'buildings/towers/tower-' + i, weapon: layered ? { sprite: 'buildings/towers/weapon-' + i } : undefined } : undefined }));
-  ui.onOpened(); ui.init({ buildInfo: {}, buildCfg: { enumValue: family === 'tower' ? 2 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map(row => row.index));
+  const rows = Array.from({ length: count }, (_, i) => ({ index: (family === 'barracks' ? 11 : 1) + i * 3, level: upgrade ? 2 : 1, Name: 'Unit ' + i, LevelUpDescribe: upgrade ? 'Upgrade: 2 crop fields. Each surviving field earns silver per wave, then fields repair. Choose a field defense.' : 'Hold the frontline', Zoom: .35,
+    Icon: 'unit-' + i, BuildSliverCost: upgrade ? 6 : undefined, MillDefense: family === 'mill' ? {kind: i ? 'bomb' : 'scarecrow'} : undefined, Appearance: family === 'tower' ? { sprite: 'buildings/towers/tower-' + i, weapon: layered ? { sprite: 'buildings/towers/weapon-' + i } : undefined } : undefined }));
+  const before = JSON.stringify(rows);
+  ui.onOpened(); ui.init({ buildInfo: upgrade ? {cfg:{level:1}} : {}, buildCfg: { enumValue: family === 'tower' ? 2 : family === 'mill' ? 5 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map(row => row.index));
   ui.start();
-  return { ui, h, root, choices, ads, loaded };
+  return { ui, h, root, choices, ads, loaded, rows, before };
 }
 
 test('four starting squads render as separate, readable cards and select once without requiring ads', () => {
@@ -137,4 +138,39 @@ test('long localized initial descriptions shrink within their card and reset for
   assert(rich.fontSize < 38); assert(rich.lineHeight < 43);
   rich.string = 'Short description'; rich.node.height = 43; p.ui.lateUpdate();
   assert.equal(rich.fontSize, 38); assert.equal(rich.lineHeight, 43);
+});
+
+test('level2 upgrade rows keep portraits, names and long descriptions in separate bounded card areas', () => {
+  for (const count of [2,3]) for (const [width,height] of [[750,1334],[540,820]]) {
+    const p=panel(count,width,height,false,'mill',true),rows=p.ui._choiceRows;
+    assert.equal(p.ui.ndParent.getComponent(p.h.cc.Layout).enabled,false);
+    for(let i=0;i<rows.length;i++) {
+      const row=rows[i],name=row.getChildByName('labName'),info=row.getChildByName('labInfo'),rich=info.getComponent(p.h.cc.RichText),icon=row.getChildByName('sprIcon');
+      assert.equal(row.width,620);assert.equal(row.height,250);
+      assert.equal(name.anchorX,0);assert.equal(info.anchorX,0);assert.equal(info.anchorY,1);
+      assert(icon.x+1000*icon.scale/2<name.x,'portrait cannot overlap either text column');
+      assert(name.y-name.height>info.y,'description starts below the title');
+      assert(name.x+name.width<row.width/2);assert(info.x+rich.maxWidth<row.width/2);
+      assert.equal(info.scale,1);assert.equal(rich.fontSize,24);assert.doesNotMatch(rich.string,/<outline|<b>/);
+      assert(row.children.filter(n=>(n.name==='ndNormal'||n.name==='ndVideo')&&n.y< -20).every(n=>!n.active),'obsolete name plaques remain hidden');
+      if(i)assert(row.y+row.height/2<rows[i-1].y-rows[i-1].height/2,'upgrade cards cannot overlap');
+      const budget=p.ui._initialChoiceDescriptions.find(r=>r.label===rich);assert(info.y-budget.maxHeight>=-row.height/2+12);
+    }
+    assert(p.root.scale*(p.ui._upgradeChoiceHeight+340)<=height-48+1e-8);
+    assert(p.ui._cancelButton.y+33<rows.at(-1).y-rows.at(-1).height/2);
+    assert.equal(JSON.stringify(p.rows),p.before,'opening the panel never edits authored upgrade data');
+    p.ui._cancelButton.events.end();assert.equal(p.ui.isclose,true);assert.deepEqual(p.choices,[]);
+  }
+});
+
+test('mill level2 choices request the actual scarecrow and bomb symbols and still select the authored row', () => {
+  const p=panel(2,750,1334,false,'mill',true);
+  assert.deepEqual(p.loaded,[['build','mill-choice-scarecrow'],['build','mill-choice-bomb']]);
+  p.ui._choiceRows[1].events.end();assert.deepEqual(p.choices,[4]);assert.deepEqual(p.ads,[]);
+});
+
+test('upgrade descriptions stay in their own card after long translations and restore their normal font size', () => {
+  const p=panel(2,750,1334,false,'mill',true),rich=p.ui._choiceRows[0].getChildByName('labInfo').getComponent(p.h.cc.RichText);
+  rich.node.height=400;p.ui.lateUpdate();assert(rich.fontSize>=18&&rich.fontSize<24);
+  rich.string='Short';rich.node.height=28;p.ui.lateUpdate();assert.equal(rich.fontSize,24);
 });
