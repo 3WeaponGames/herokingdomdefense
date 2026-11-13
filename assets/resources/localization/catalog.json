@@ -12,6 +12,21 @@
     }
   ],
   "entries": {
+    "data.mill.none.1.name": {"en":"Mill · Lv 1","zh":"磨坊 · 1级","context":"Mill crop defense choice"},
+    "data.mill.none.1.description": {"en":"Upgrade: 2 crop fields; choose scarecrows or bombs at level 2. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：2块农田。2级时选择稻草人或炸弹。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.2.name": {"en":"Scarecrow Mill · Lv 2","zh":"稻草人磨坊 · 2级","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.2.description": {"en":"Upgrade: 2 crop fields; scarecrows shoot from their heads. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：2块农田。稻草人从头部发射投射物。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.3.name": {"en":"Scarecrow Mill · Lv 3","zh":"稻草人磨坊 · 3级","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.3.description": {"en":"Upgrade: 3 crop fields; scarecrows shoot from their heads. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：3块农田。稻草人从头部发射投射物。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.4.name": {"en":"Scarecrow Mill · Lv 4","zh":"稻草人磨坊 · 4级","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.4.description": {"en":"Final upgrade: 4 crop fields; scarecrows shoot from their heads. Each surviving field earns 1 silver per wave, then fields repair.","zh":"最终升级：4块农田。稻草人从头部发射投射物。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+    "data.mill.bomb.2.name": {"en":"Bomb Mill · Lv 2","zh":"炸弹磨坊 · 2级","context":"Mill crop defense choice"},
+    "data.mill.bomb.2.description": {"en":"Upgrade: 2 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：2块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+    "data.mill.bomb.3.name": {"en":"Bomb Mill · Lv 3","zh":"炸弹磨坊 · 3级","context":"Mill crop defense choice"},
+    "data.mill.bomb.3.description": {"en":"Upgrade: 3 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：3块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+    "data.mill.bomb.4.name": {"en":"Bomb Mill · Lv 4","zh":"炸弹磨坊 · 4级","context":"Mill crop defense choice"},
+    "data.mill.bomb.4.description": {"en":"Final upgrade: 4 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"最终升级：4块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
+
     "data.building.castle-4.name": {"en":"Castle · Lv 4","zh":"主城 · 4级","context":"Approved four-tier building progression"},
     "data.building.castle-4.description": {"en":"Final upgrade: a stronger royal castle with improved defenses and firepower.","zh":"最终升级：强化皇家城堡，拥有更强的防御与火力。","context":"Approved four-tier building progression"},
     "data.building.archer-4.name": {"en":"Arrow Tower · Lv 4","zh":"箭塔 · 4级","context":"Approved four-tier building progression"},

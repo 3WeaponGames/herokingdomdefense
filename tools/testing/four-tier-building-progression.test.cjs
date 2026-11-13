@@ -8,7 +8,7 @@ test('ten building families retain stable IDs and follow one straight four-tier 
  assert.equal(contract.families.length,10);assert.equal(contract.families.reduce((sum,f)=>sum+f.indices.length,0),40);
  for(const family of contract.families){const seen=new Set(),category=config.BuildEnum[family.category];let next=family.indices[0];
   for(let tier=1;tier<=4;tier++){assert.equal(next,family.indices[tier-1]);assert(!seen.has(next));seen.add(next);const value=row(family.category,next);assert(value,family.family+' tier'+tier);assert.equal(value.ID,family.category);assert.equal(value.level,tier);
-   if(tier<4){assert.deepEqual(value.BranchBuild,[family.indices[tier]]);next=value.BranchBuild[0];}else assert(!value.BranchBuild,'fourth tier is final');
+   if(tier<4){assert.deepEqual(value.BranchBuild,family.category===5&&tier===1?[2,5]:[family.indices[tier]]);next=value.BranchBuild[0];}else assert(!value.BranchBuild,'fourth tier is final');
   }
   assert.equal(category.levelList.filter(value=>family.indices.includes(value.index)).length,4);
  }

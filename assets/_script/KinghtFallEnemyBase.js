@@ -1,3 +1,4 @@
+function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
 var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
@@ -232,7 +233,7 @@ var def_KinghtFallEnemyBase = function (t) {
           position: e.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
           radius: e.cfg.AttackRange + e.cfg.SearchRange
         };
-        var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBulidList();
+        var n = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
         for (var i = 0; i < n.length; i++) {
           var a = n[i];
           if (a.getIsWork()) {
@@ -295,7 +296,7 @@ var def_KinghtFallEnemyBase = function (t) {
         position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
         radius: t.cfg.AttackRange
       };
-      var c = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBulidList();
+      var c = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
       for (var h = 0; h < c.length; h++) {
         var g;
         if ((g = c[h]).getIsWork()) {
@@ -426,7 +427,7 @@ var def_KinghtFallEnemyBase = function (t) {
         position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
         radius: t.cfg.AttackRange
       };
-      var l = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBulidList();
+      var l = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
       for (var c = 0; c < l.length; c++) {
         var h;
         if ((h = l[c]).getIsWork()) {
@@ -492,7 +493,7 @@ var def_KinghtFallEnemyBase = function (t) {
         position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
         radius: t.cfg.AttackRange
       };
-      var s = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBulidList();
+      var s = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
       for (var l = 0; l < s.length; l++) {
         var c;
         if ((c = s[l]).getIsWork()) {

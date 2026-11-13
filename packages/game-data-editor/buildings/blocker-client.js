@@ -7,10 +7,10 @@ function mount(host,api){
  const tools=make('div'),canvas=make('canvas'),status=make('p'),help=make('p');tools.className='bld-blocker-tools';canvas.className='bld-blocker-canvas';canvas.width=900;canvas.height=430;canvas.tabIndex=0;
  help.className=status.className='bld-blocker-help';
  host.appendChild(tools);host.appendChild(canvas);host.appendChild(help);host.appendChild(status);
- let layer=state.layer==='shadow'?'shadow':'blocker';
- const mode=make('select');mode.setAttribute('aria-label','Edit layer');for(const [id,label]of [['blocker','Blocker'],['shadow','Shadow']]){const o=make('option',label);o.value=id;mode.appendChild(o);}mode.value=layer;tools.appendChild(mode);
+ let layer=['shadow','scale'].includes(state.layer)?state.layer:'blocker';
+ const mode=make('select');mode.setAttribute('aria-label','Edit layer');for(const [id,label]of [['blocker','Blocker'],['shadow','Shadow'],['scale','Scale']]){const o=make('option',label);o.value=id;mode.appendChild(o);}mode.value=layer;tools.appendChild(mode);
  if(!canvas.getContext)return {destroy(){}};
- let closed=false,data,images={},value,values,layerParts=[],points=state.points||[],pointer=null,busy=false,frame=null,opacityDraft=null;
+ let closed=false,data,images={},value,values,layerParts=[],points=state.points||[],pointer=null,busy=false,frame=null,opacityDraft=null,scaleClient=null;
  let scale=1,zoom=state.zoom||1,cx=0,cy=0,tool=state.tool||'paint',partKey=state.part||'body',instance=state.instance||0;
  const g=canvas.getContext('2d'),renderer=Renderer.create({onLoad:draw,onError:error=>message(error.message,true)}),building={x:0,y:0,scale:1,angle:0};
  function message(text,error){status.textContent=text;status.className='bld-blocker-help'+(error?' error':'');}
@@ -24,17 +24,22 @@ function mount(host,api){
  opacity.onchange=()=>{if(!value||busy)return;const amount=opacityDraft===null?Number(opacity.value)/100:opacityDraft;opacityDraft=null;if(Math.abs(amount*100-Number((value.opacity*100).toFixed(1)))<.0001){draw();return;}const next=clone(value);next.opacity=amount;commit(next);};
  const parts=make('select');parts.setAttribute('aria-label','Shape part');parts.onchange=()=>{partKey=parts.value;instance=0;points=[];pointer=null;refreshCopies();draw();};tools.appendChild(parts);
  const copies=make('select');copies.setAttribute('aria-label','Edit connection point');copies.onchange=()=>{instance=Number(copies.value);points=[];pointer=null;draw();};tools.appendChild(copies);
+ const scaleHost=make('div');host.appendChild(scaleHost);
  function part(){return layerParts.find(p=>p.key===partKey);}
  function matrix(){const p=part();return p&&p.instances[instance];}
  function refreshCopies(){copies.textContent='';const p=part();instance=Math.min(instance,Math.max(0,(p&&p.instances.length||0)-1));(p&&p.instances||[]).forEach((_m,i)=>{const o=make('option','Connection '+(i+1));o.value=String(i);copies.appendChild(o);});copies.value=String(instance);copies.hidden=!p||p.instances.length<2;}
  function syncMode(){
+  const scaling=layer==='scale';canvas.hidden=help.hidden=status.hidden=scaling;for(const child of tools.children)if(child!==mode)child.hidden=scaling;
+  scaleHost.hidden=!scaling;
+  if(scaling&&!scaleClient){state.scaleView=state.scaleView||{};scaleClient=require('./scale-client').mount(scaleHost,{ipc:api.ipc,request:api.request,state:state.scaleView,onChange:next=>api.onChange(next,'scale')});}
+  if(!scaling&&scaleClient){scaleClient.destroy();scaleClient=null;}
   canvas.setAttribute('aria-label',layer==='shadow'?'Building shadow preview':'Building blocker preview');
   add.textContent=layer==='shadow'?'Polygon shadow':'Polygon blocker';clear.textContent=layer==='shadow'?'Clear shadow':'Clear blocker';
   opacityLabel.hidden=layer!=='shadow';if(value&&layer==='shadow'){opacity.value=String(value.opacity*100);opacityText.textContent=(value.opacity*100).toFixed(1)+'%';}
   help.textContent='Click polygon points, then double-click or click the first point to finish. Enter completes; Escape cancels. '+(layer==='shadow'?'Shadows use a translucent black texture mask; blockers are hidden.':'Yellow is blocked; shadows are hidden.')+' Cyan marks the editable copy. Wheel to zoom.';
-  parts.textContent='';for(const p of layerParts){const o=make('option',p.label);o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=layerParts.length<2;refreshCopies();
+  parts.textContent='';for(const p of layerParts){const o=make('option',p.label);o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=scaling||layerParts.length<2;refreshCopies();if(scaling)copies.hidden=true;
  }
- mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}layer=mode.value;state.layer=layer;value=values[layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
+ mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}layer=mode.value;state.layer=layer;value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
  function choose(next,reset=true){tool=next;if(reset){points=[];pointer=null;}add.className=next==='paint'?'active':'';erase.className=next==='erase'?'active':'';draw();}
  function local(event){const b=canvas.getBoundingClientRect(),world={x:((event.clientX-b.left)*canvas.width/b.width-canvas.width/2)/(scale*zoom)+cx,y:-((event.clientY-b.top)*canvas.height/b.height-canvas.height/2)/(scale*zoom)+cy};return Maps.point(Maps.inverse(matrix()),world);}
  function screenDistance(a,b){const m=matrix(),p=Maps.point(m,a),q=Maps.point(m,b);return Math.hypot(p.x-q.x,p.y-q.y)*scale*zoom;}
@@ -69,7 +74,7 @@ function mount(host,api){
  }
  function maskPath(mask){g.beginPath();for(const region of mask)for(const ring of region){ring.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();}}
  function draw(){if(closed||frame!==null)return;frame=requestAnimationFrame(()=>{
-  frame=null;if(closed)return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
+  frame=null;if(closed||layer==='scale')return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
   g.setTransform(scale*zoom,0,0,-scale*zoom,canvas.width/2-cx*scale*zoom,canvas.height/2+cy*scale*zoom);
   let preview=value[partKey]&&value[partKey].mask;
   if(points.length>=2&&pointer)try{preview=Clip.combineMask(preview,Clip.polygonBrush(points.concat([pointer])),tool);}catch(_){}
@@ -86,10 +91,10 @@ function mount(host,api){
  });}
  syncMode();
  const ready=api.ipc('building-blocker-preview',api.request).then(async result=>{
-  if(closed)return;data=result;values={blocker:clone(result.value),shadow:clone(result.shadow)};value=values[layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;syncMode();choose(tool,false);
+  if(closed)return;data=result;values={blocker:clone(result.value),shadow:clone(result.shadow)};value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;syncMode();choose(tool,false);
   const frames=new Set(result.record.sprites.map(s=>s.frame)),spec={images:Object.fromEntries(Object.entries(result.images).filter(([key])=>frames.has(key)))};
   renderer.prepare([result.record],result.runtimePath);if(state.view){({scale,cx,cy}=state.view);draw();}else fit();images=await Paint.loadImages(spec);if(closed)return;draw();message(data.parts.length>1?'Gate, pillars and connecting walls. Edits repeat at every matching connection point.':'Draw or erase a '+layer+'. Changes stay in the shared draft until Save.');
  }).catch(error=>{if(!closed)message(error.message,true);});
- return {ready,stats:renderer.stats,destroy(){if(closed)return;closed=true;Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy};renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
+ return {get ready(){return scaleClient?scaleClient.ready:ready;},stats:()=>scaleClient?scaleClient.stats():renderer.stats(),destroy(){if(closed)return;closed=true;Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy};if(scaleClient)scaleClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
 }
 module.exports={mount};

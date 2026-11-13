@@ -31,7 +31,7 @@ const LABELS = {
   InvincibleTime:'Revival invulnerability (seconds)',RestrainedArms:'Counter damage multiplier',RefreshInterval:'Spawn interval (seconds)',
   BackToReady:'Return delay (seconds)',unlockDefense:'Defense mode unlock stage',cdTimeDefense:'Defense mode cooldown (seconds)'
 };
-const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Sub-weapon / bonus • Damage','Main weapon • Attack range','Cloak • Attack speed','Mount • Movement speed'];
+const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Secondary item • Special bonuses','Main weapon • Attack damage','Cloak • Attack speed','Mount • Movement speed'];
 const RARITIES = ['Common','Rare','Epic','Legendary'];
 const BUILDINGS = {1:'Castle Keep',2:'Arrow Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall'};
 // Progression can reuse an explicit native collider tag at later visual tiers.
@@ -106,6 +106,9 @@ function descriptor(key, context) {
   }
   if (/Coefficient$/.test(key)) result.min=0;
   if (key==='Parameters' && context.equipment) result.label=EQUIPMENT[context.equipment-1].split(' • ')[1];
+  if(key==='Parameters'&&!context.weaponStats&&context.equipment===3)result.label='Damage';
+  if(key==='Parameters'&&!context.weaponStats&&context.equipment===4)result.label='Attack range';
+  if(key==='Parameters'&&context.baseDamage)result.label='Base damage (Archer curve)';
   if (key==='Level' && context.table==='LevelCfg' || key==='Wave' || key==='Level' && context.table==='EquipCfg') result.readOnly=true;
   if (['Image','Icon','icon','sprBg','Map','loadIcon','EquipBottom'].indexOf(key)>=0) {
     result.asset='images';
@@ -361,6 +364,7 @@ function validate(documents, changes) {
       ['Hp','Zoom'].forEach(k=>number('A',q.concat(k),level[k],Number.MIN_VALUE,false));
       ['BuildSliverCost','BuildCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
       if(own(level,'Blocker'))require('../buildings/blocker-data').issues(level.Blocker,id==='6').forEach(message=>issue('A',q.concat('Blocker'),message));
+      if(own(level,'WorldScale')&&!require('../../../assets/_script/BuildingWorldScale').valid(level.WorldScale))issue('A',q.concat('WorldScale'),'World size must be between 5% and 1,000%.');
       if(own(level,'Shadow'))require('../buildings/blocker-data').shadowIssues(level.Shadow,id==='6').forEach(message=>issue('A',q.concat('Shadow'),message));
       graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
       if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');
@@ -395,6 +399,14 @@ function validate(documents, changes) {
     (equipment.levelInfo||[]).forEach((level,li)=>{const q=p.concat('levelInfo',li);if(level.Level!==li+1||level.ID!==equipment.id)issue('A',q,'Equipment level and owner ID must match their position.');number('A',q.concat('Parameters'),level.Parameters,0,false);number('A',q.concat('GoldCost'),level.GoldCost,0,true);});
     if(equipment.Unlock){['A','B','D'].forEach(variant=>{const stage=docs[variant]&&docs[variant].LevelCfg&&docs[variant].LevelCfg[equipment.Unlock[0]-1];if(!stage||equipment.Unlock[1]<1||equipment.Unlock[1]>stage.WaveCfg.length)issue('A',p.concat('Unlock'),'Equipment unlock must reference an existing stage/wave in variant '+variant+'.');});}
   });
+  if(base.HeroEquipment){
+    const settings=base.HeroEquipment,Stats=require('../../../assets/_script/HeroEquipmentStats');
+    if(settings.version!==1)issue('A',['HeroEquipment','version'],'Unknown hero equipment stat version.');
+    for(const key of ['baseRange','splashRadius'])number('A',['HeroEquipment',key],settings[key],Number.MIN_VALUE,false);
+    if(settings.damageMultipliers)for(const style of require('../../../assets/_script/HeroWeapons').styles)number('A',['HeroEquipment','damageMultipliers',style.id],settings.damageMultipliers[style.id],Number.MIN_VALUE,false);
+    const index=(base.EquipCfg||[]).findIndex(gear=>gear.id===3),gear=base.EquipCfg[index];
+    if(gear)gear.levelInfo.forEach((level,li)=>{for(const [style,fields]of Object.entries(Stats.definitions))for(const field of fields){const value=level.SecondaryStats&&level.SecondaryStats[style]&&level.SecondaryStats[style][field.key],at=['EquipCfg',index,'levelInfo',li,'SecondaryStats',style,field.key];number('A',at,value,0,false);if(field.percent&&field.key!=='criticalDamage'&&value>1)issue('A',at,'Percentage bonuses must not exceed 100%.');}});
+  }
   const talentRows=base.TalentLevelCfg||[],styleBranch=level=>level.OptionalBranch===true||own(level,'HeroStyle')||own(level,'HeroStat'),legacyLevels=new Set(talentRows.filter(level=>!styleBranch(level)).map(level=>level.Level)),talentIds=new Set();
   let lastLevel=0,legacyTalentIndex=0;
   talentRows.forEach((level,i)=>{

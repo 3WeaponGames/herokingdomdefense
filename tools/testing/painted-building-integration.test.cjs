@@ -41,7 +41,7 @@ test('reviewed painted atlas pixels, regions, UUIDs and sampling cannot drift in
 });
 
 test('all40 approved library icons retain their pixels, Cocos identities and unclipped transparent frames',()=>{
-  assert.equal(fixture.icons.length,40);
+  assert.equal(fixture.icons.length,43);
   for(const icon of fixture.icons){
     const image=decode(bytes(icon.file)),meta=read(icon.file+'.meta'),frame=meta.subMetas[icon.name];assert(frame,icon.name);
     assert.equal(sha(bytes(icon.file)),icon.sha256,'approved icon pixels');assert.equal(frame.rawTextureUuid,meta.uuid);
@@ -60,8 +60,8 @@ test('all40 active family tiers retain original row values, authorized routes an
   for(const file of Object.keys(fixture.config)){
     const config=read(file);C.assertConfig(file,config);
     const rows=Object.entries(config.BuildEnum).filter(([id])=>!['0','6'].includes(id)).flatMap(([,f])=>f.levelList);
-    assert.equal(rows.length,40);assert.equal(rows.filter(r=>r.level===4).length,10);
-    for(const family of [config.BuildEnum['1'],config.BuildEnum['4'],config.BuildEnum['5']])assert.deepEqual(family.levelList.map(r=>r.level),[1,2,3,4]);
+    assert.equal(rows.length,43);assert.equal(rows.filter(r=>r.level===4).length,11);
+    for(const family of [config.BuildEnum['1'],config.BuildEnum['4']])assert.deepEqual(family.levelList.map(r=>r.level),[1,2,3,4]);
     for(const row of rows.filter(r=>r.ID!==2))assert.equal(row.Appearance,undefined,'non-tower artwork uses native animated attachments');
     for(const row of rows.filter(r=>r.ID===2&&r.Tower))assert(row.Appearance.weapon?.sprite,'sniper/cannon preserve separate rotating weapon binding');
   }
@@ -123,26 +123,115 @@ test('each painted castle/barracks tier has visible bounded native night pixels,
   assert.equal(lanterns,8);
 });
 
-test('mill farm counts are2/3/4/4 at their authored anchors and use one identical shared tile',engine,()=>{
+test('mill farm counts are2/2/3/4 at their authored anchors and use one identical shared tile',engine,()=>{
   const spine=require(runtime),p=player(spine,'td'),counts=[];
   for(const name of skins.td){const skin=p.json.skins.find(s=>s.name===name),plots=Object.keys(skin.attachments).filter(n=>n.startsWith('td__'));counts.push(plots.length);p.pose(name,'idle',0);
     for(const slot of plots){const a=p.skeleton.findSlot(slot).getAttachment();assert.equal(a.path,'painted-farm');assert.equal(a.width,328);assert.equal(a.height,286);}
   }
-  assert.deepEqual(counts,[2,3,4,4]);
+  assert.deepEqual(counts,[2,2,3,4]);
   p.pose('mf-2-2','idle',0);const third=Object.keys(p.json.skins.find(s=>s.name==='mf-2-2').attachments).filter(n=>n.startsWith('td__')).map(n=>({name:n,v:vertices(spine,p.skeleton.findSlot(n))}));
   p.pose('mf-3','idle',0);assert.deepEqual(third.map(v=>({name:v.name,v:vertices(spine,p.skeleton.findSlot(v.name))})),third,'T4 retains all four exact native plot anchors/angles');
 });
 
-test('mill sails and cloth flags remain separate animated geometry and disappear with destruction',engine,()=>{
+test('mill sails are absent while cloth flags retain their animated geometry',engine,()=>{
   const spine=require(runtime),mill=player(spine,'mf');
   for(const name of ['mf-2-2','mf-3']){
-    mill.pose(name,'idle',0);const first=vertices(spine,mill.skeleton.findSlot('fengshang_3'));
-    mill.pose(name,'idle',.25);assert.notDeepEqual(vertices(spine,mill.skeleton.findSlot('fengshang_3')),first,'native rotor really rotates independently');
-    mill.pose(name,'destroy',.4);assert.equal(mill.skeleton.findSlot('fengshang_3').getAttachment(),null);
+    for(const clip of ['idle','idle_night','create','upgrade','destroy']) {
+      mill.pose(name,clip,.25);assert.equal(mill.skeleton.findSlot('fengshang_3').getAttachment(),null,'sails cannot block the entrance');
+    }
   }
   for(const rig of ['cb','by']){const p=player(spine,rig);for(const name of skins[rig]){
     const skin=p.json.skins.find(s=>s.name===name),flags=Object.keys(skin.attachments).filter(n=>n.endsWith('_flag'));if(!flags.length)continue;
     p.pose(name,'idle',0);const first=flags.map(n=>vertices(spine,p.skeleton.findSlot(n)));
     p.pose(name,'idle',.4);assert.notDeepEqual(flags.map(n=>vertices(spine,p.skeleton.findSlot(n))),first,name+' weighted cloth really waves');
   }}
+});
+
+test('shipped stable bodies keep one scale and ground anchor; supplied side banners have pinned hoists',engine,()=>{
+  const spine=require(runtime),p=player(spine,'by'),spec=fixture.stableRtsRebuild;
+  assert.equal(spec.tiers.length,4);
+  const ground=spec.tiers[0].nativeFootAnchor;
+  for(const ref of spec.tiers){
+    const skin=p.json.skins.find(s=>s.name==='by-painted-stable-'+ref.tier);
+    assert(!skin.attachments['painted_stable_'+ref.tier+'_pole'],'no unapproved roof pole');
+    assert.equal(!!skin.attachments['painted_stable_'+ref.tier+'_flag'],ref.tier>=3,'only supplied banners are animated');
+    assert.deepEqual(ref.nativeFootAnchor,ground,'all tiers share the authored structural ground anchor');
+    for(const[clip,time]of[['idle',0],['idle',.4],['idle_night',.5],['create',.25],['upgrade',.3]]){
+      const skeleton=p.pose(skin.name,clip,time),slot=skeleton.findSlot(ref.bodySlot),body=slot.getAttachment(),[tw,th]=ref.bodyPixelSize;
+      assert(Math.abs(body.width/tw-body.height/th)<1e-9,'bitmap cannot stretch');
+      const fx=body.x+(ref.footPixel[0]-tw/2)*body.width/tw,fy=body.y+(th/2-ref.footPixel[1])*body.height/th;
+      assert(Math.hypot(fx-ground[0],fy-ground[1])<1e-6,'repaint stays at the existing building registration');
+      if(!ref.banner)continue;
+      const v=vertices(spine,skeleton.findSlot('painted_stable_'+ref.tier+'_flag')),m=ref.sourcePixelToTile;
+      ref.banner.pinnedVertices.forEach((index,i)=>{
+        const[x,y]=ref.banner.hoistPixels[i],px=m.offset[0]+(x-m.crop[0])*m.scale,py=m.offset[1]+(y-m.crop[1])*m.scale;
+        const pin=slot.bone.localToWorld({x:body.x+(px-tw/2)*body.width/tw,y:body.y+(th/2-py)*body.height/th});
+        assert(Math.hypot(v[index*2]-pin.x,v[index*2+1]-pin.y)<.001,'banner hoist stays attached through '+clip);
+      });
+    }
+    if(ref.banner){
+      p.pose(skin.name,'idle',0);const a=vertices(spine,p.skeleton.findSlot('painted_stable_'+ref.tier+'_flag'));
+      p.pose(skin.name,'idle',.4);const b=vertices(spine,p.skeleton.findSlot('painted_stable_'+ref.tier+'_flag'));
+      const motion=Math.max(...a.filter((_,i)=>i%2===0).map((_,i)=>Math.hypot(a[i*2]-b[i*2],a[i*2+1]-b[i*2+1])));
+      assert(motion>.02&&motion<10,'banner waves gently without leaving its post');
+    }
+  }
+});
+
+test('shipped stable night masks stay inside the supplied dark openings, clear of hay and frames',()=>{
+  const page=decode(bytes('assets/KinghtFallIconMap/com/Ani/by/by-painted-stable.png'));
+  const atlas=bytes('assets/KinghtFallIconMap/com/Ani/by/by.atlas').toString('utf8');
+  function rect(name){const m=atlas.match(new RegExp('(?:^|\\n)'+name+'\\n  rotate: false\\n  xy: (\\d+), (\\d+)\\n  size: (\\d+), (\\d+)'));assert(m,name);return m.slice(1).map(Number);}
+  for(const ref of fixture.stableRtsRebuild.tiers){
+    const b=rect('stable_painted_'+ref.tier+'_body'),n=rect('stable_painted_'+ref.tier+'_night');let lit=0;
+    assert.deepEqual(b.slice(2),n.slice(2),'night/body frames register exactly');
+    for(let y=0;y<n[3];y++)for(let x=0;x<n[2];x++){
+      const a=((n[1]+y)*page.width+n[0]+x)*4;if(page.rgba[a+3]<=200)continue;
+      const p=((b[1]+y)*page.width+b[0]+x)*4;
+      assert(page.rgba[p+3]>200,'emission stays on the opaque building');
+      assert(Math.max(...page.rgba.subarray(p,p+3))<140,'emission stays on dark openings rather than frame/hay');
+      assert(ref.nightApertureBounds.some(([x0,y0,x1,y1])=>x>=x0-1&&x<x1+1&&y>=y0-1&&y<y1+1),'emission stays in authored opening bounds');
+      lit++;
+    }
+    assert(lit>20&&lit<1200,'restrained visible illumination for each supplied tier');
+  }
+});
+
+test('repainted shipped heavy infantry uses one scale, a fixed structural anchor, and torches only on tiers3/4',engine,()=>{
+  const spine=require(runtime),p=player(spine,'by'),spec=fixture.heavyRtsRepaint;assert.equal(spec.tiers.length,4);
+  for(const ref of spec.tiers)for(const[clip,time]of[['idle',0],['idle',.4],['idle_night',.5],['create',.25],['upgrade',.3]]){
+    const s=p.pose('by-painted-heavy-'+ref.tier,clip,time),body=s.findSlot(ref.bodySlot).getAttachment(),[w,h]=ref.bodyPixelSize;
+    assert(Math.abs(body.width/w-body.height/h)<1e-9,'painted bitmap uses a uniform scale');
+    assert.deepEqual(ref.nativeFootAnchor,spec.tiers[0].nativeFootAnchor);
+    const x=body.x+(ref.footPixel[0]-w/2)*body.width/w,y=body.y+(h/2-ref.footPixel[1])*body.height/h;
+    assert(Math.hypot(x-ref.nativeFootAnchor[0],y-ref.nativeFootAnchor[1])<1e-6,'existing structural ground registration is fixed');
+    const flame=s.findSlot('painted_heavy_'+ref.tier+'_flame')?.getAttachment();assert.equal(!!flame,ref.tier>=3,'tier2 removed torches cannot reappear');
+    if(flame){
+      for(const key of ['x','y','width','height'])assert.equal(flame[key],body[key],'full flame registration matches body');
+      assert.equal(flame.region.originalWidth,w);assert.equal(flame.region.originalHeight,h);
+      vertices(spine,s.findSlot('painted_heavy_'+ref.tier+'_flame'));
+    }
+  }
+  for(const tier of [3,4]){
+    p.pose('by-painted-heavy-'+tier,'idle',0);const a={...p.skeleton.findSlot('painted_heavy_'+tier+'_flame').color};
+    p.pose('by-painted-heavy-'+tier,'idle',.5);const b=p.skeleton.findSlot('painted_heavy_'+tier+'_flame').color;
+    assert(Math.abs(a.g-b.g)+Math.abs(a.b-b.b)>.01,'authored flame tint flickers independently');
+  }
+});
+
+test('heavy infantry night masks illuminate dark supplied openings without painting frames or props',()=>{
+  const page=decode(bytes('assets/KinghtFallIconMap/com/Ani/by/by-painted-heavy.png')),atlas=bytes(dir('by')+'by.atlas').toString('utf8');
+  function rect(name){const m=atlas.match(new RegExp('(?:^|\\n)'+name+'\\n  rotate: false\\n  xy: (\\d+), (\\d+)\\n  size: (\\d+), (\\d+)'));assert(m,name);return m.slice(1).map(Number);}
+  for(const ref of fixture.heavyRtsRepaint.tiers){
+    const b=rect('heavy_painted_'+ref.tier+'_body'),n=rect('heavy_painted_'+ref.tier+'_night');let lit=0;
+    assert.deepEqual(b.slice(2),n.slice(2),'night/body pixel frames register');
+    for(let y=0;y<n[3];y++)for(let x=0;x<n[2];x++){
+      const a=((n[1]+y)*page.width+n[0]+x)*4;if(page.rgba[a+3]<=200)continue;
+      const p=((b[1]+y)*page.width+b[0]+x)*4;
+      assert(page.rgba[p+3]>200,'night pixels stay on opaque apertures');
+      assert(Math.max(...page.rgba.subarray(p,p+3))<130,'night pixels cannot paint masonry, timber or shields');
+      assert(ref.nightApertureBounds.some(([x0,y0,x1,y1])=>x>=x0-1&&x<x1+1&&y>=y0-1&&y<y1+1),'night pixels stay inside authored openings');lit++;
+    }
+    assert(lit>20&&lit<1400,'night illumination stays visible and restrained');
+  }
 });

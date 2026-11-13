@@ -663,6 +663,7 @@ var def_KinghtFallUIGame = function (t) {
     var t = this;
     var dialog = this.beginBattleDialog('perk');
     if (!dialog) return;
+    if (this.ctrGame.gameData.captureMillIncome) this.ctrGame.gameData.captureMillIncome();
     if (BattleSounds.wave) BattleSounds.wave(this.ctrGame, "clear");
     var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = true;

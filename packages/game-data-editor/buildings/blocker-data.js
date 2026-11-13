@@ -9,6 +9,7 @@ function describe(service,request){
  const building=Object.assign(clone(template),{previewBranch:row.index,x:0,y:0,scale:1,angle:0}),stage={variant:'A',buildings:[building]},preview=Preview.describe(service,stage),record=preview.buildings[building.id].levels[1];
  if(preview.errors.length)throw Error(preview.errors.join('\n'));
  const source=require('../worlds/gate-facing').project(service.source(building.template.prefab),building,service.root),info=Maps.model(source),owner=info.byId[building.template.node];
+ const Scale=require('../../../assets/_script/BuildingWorldScale'),worldScale=Scale.value(row);
  const relative=matrix=>{const m=matrix.slice();m[4]-=record.origin.x;m[5]-=record.origin.y;return m;};
  let defaults,parts;
  if(building.kind===6){
@@ -16,16 +17,16 @@ function describe(service,request){
   const layout=main.json.wallKit.layout,copies=Geometry.instances(layout,row.Blocker&&row.Blocker.gateSpan);defaults=Object.assign({gateSpan:layout.nativeGateSpan},Object.fromEntries(Object.entries(Geometry.wallDefaults(layout)).map(([key,p])=>[key,shape(p)])));
   parts=[['gate','Gate passage'],['pillar','Pillar connection'],['span','Connecting wall']].map(([key,label])=>({key,label,instances:copies[key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));
  }else{
-  const data=Navigation.buildingColliderData(service,stage,building,1,'closed',Object.assign({},config,{BuildEnum:Object.assign({},config.BuildEnum,{[request.id]:Object.assign({},definition,{levelList:definition.levelList.map(level=>{const value=Object.assign({},level);delete value.Blocker;return value;})})})}),new Map());
+  const data=Navigation.buildingColliderData(service,stage,building,1,'closed',Object.assign({},config,{BuildEnum:Object.assign({},config.BuildEnum,{[request.id]:Object.assign({},definition,{levelList:definition.levelList.map(level=>{const value=Object.assign({},level);delete value.Blocker;delete value.WorldScale;return value;})})})}),new Map());
   const inverse=Maps.inverse(owner.world);defaults={body:shape(data.colliders.map(c=>c.points.map(p=>Maps.point(inverse,p))))};
-  parts=[{key:'body',label:'Building',instances:[relative(owner.world)]}];
+  parts=[{key:'body',label:'Building',instances:[relative(Scale.matrix(owner.world,record.origin,worldScale))]}];
  }
  const value=clone(row.Blocker||Object.assign({version:1},defaults));
  const Shadow=require('../../../assets/_script/BuildingShadow'),shadowDefaults={version:1,opacity:Shadow.opacity};
  for(const p of parts)shadowDefaults[p.key]={mask:[]};
  let shadowParts=parts;
  if(building.kind===6){const main=record.skeletons.find(s=>s.json.wallKit),layout=main.json.wallKit.layout;shadowDefaults.gateSpan=layout.nativeGateSpan;const copies=Geometry.instances(layout,row.Shadow&&row.Shadow.gateSpan);shadowParts=parts.map(p=>Object.assign({},p,{instances:copies[p.key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));}
- return {record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value,shadow:clone(row.Shadow||shadowDefaults),shadowParts};
+ return {record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value,shadow:clone(row.Shadow||shadowDefaults),shadowParts,worldScale};
 }
 function shadowIssues(value,wall){
  if(!value||value.version!==1||typeof value!=='object'||Array.isArray(value))return ['Invalid building shadow mask.'];

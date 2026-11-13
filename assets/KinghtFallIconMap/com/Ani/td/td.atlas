@@ -412,15 +412,70 @@ td_6
   index: -1
 
 
+
 td-painted.png
-size: 660,576
+size: 168, 148
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 painted-farm
   rotate: false
   xy: 2, 2
-  size: 656, 572
-  orig: 656, 572
+  size: 164, 143
+  orig: 164, 143
+  offset: 0, 0
+  index: -1
+
+td-defenses.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+mill-scarecrow
+  rotate: false
+  xy: 2, 2
+  size: 64, 74
+  orig: 64, 74
+  offset: 0, 0
+  index: -1
+mill-bomb-1
+  rotate: false
+  xy: 70, 2
+  size: 75, 76
+  orig: 75, 76
+  offset: 0, 0
+  index: -1
+mill-bomb-2
+  rotate: false
+  xy: 149, 2
+  size: 79, 75
+  orig: 79, 75
+  offset: 0, 0
+  index: -1
+mill-bomb-3
+  rotate: false
+  xy: 232, 2
+  size: 74, 63
+  orig: 74, 63
+  offset: 0, 0
+  index: -1
+mill-bomb-4
+  rotate: false
+  xy: 310, 2
+  size: 75, 72
+  orig: 75, 72
+  offset: 0, 0
+  index: -1
+
+td-ruins.png
+size: 168,148
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+painted-farm-destroyed
+  rotate: false
+  xy: 2, 2
+  size: 164, 143
+  orig: 164, 143
   offset: 0, 0
   index: -1

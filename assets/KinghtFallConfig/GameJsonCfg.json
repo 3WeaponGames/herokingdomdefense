@@ -2281,35 +2281,35 @@
           ],
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-1",
-            "width": 278.50118764845604,
-            "height": 278.50118764845604,
-            "offsetX": 0.44418052256532065,
-            "offsetY": -52.21377672209026,
+            "width": 181.02577197149643,
+            "height": 181.02577197149643,
+            "offsetX": 0.28871733966745844,
+            "offsetY": -47.238954869358665,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/archer-1-window-light",
-                "width": 278.50118764845604,
-                "height": 278.50118764845604,
-                "offsetX": 0,
-                "offsetY": 0,
+                "width": 181.02577197149643,
+                "height": 181.02577197149643,
+                "offsetX": 0.0,
+                "offsetY": 0.0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": 34.53503562945368,
-                    "y": 135.47505938242278,
-                    "width": 90.1686460807601,
-                    "height": 83.50593824228028,
+                    "x": 22.447773159144894,
+                    "y": 88.05878859857481,
+                    "width": 58.609619952494064,
+                    "height": 54.27885985748218,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
                   },
                   {
-                    "x": -34.31294536817102,
-                    "y": 135.1419239904988,
-                    "width": 90.1686460807601,
-                    "height": 81.28503562945367,
+                    "x": -22.303414489311166,
+                    "y": 87.84225059382423,
+                    "width": 58.609619952494064,
+                    "height": 52.83527315914489,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2317,8 +2317,8 @@
                 ]
               }
             ],
-            "muzzleX": 0,
-            "muzzleY": 83.09471496437054,
+            "muzzleX": 0.0,
+            "muzzleY": 40.71156472684085,
             "lifecycle": "native-tower"
           }
         },
@@ -2347,35 +2347,35 @@
           ],
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-2",
-            "width": 278.1708185053381,
-            "height": 278.1708185053381,
-            "offsetX": 0.9982206405693951,
-            "offsetY": -49.313167259786475,
+            "width": 180.81103202846978,
+            "height": 180.81103202846978,
+            "offsetX": 0.6488434163701068,
+            "offsetY": -45.35355871886121,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/archer-2-window-light",
-                "width": 278.1708185053381,
-                "height": 278.1708185053381,
-                "offsetX": 0,
-                "offsetY": 0,
+                "width": 180.81103202846978,
+                "height": 180.81103202846978,
+                "offsetX": 0.0,
+                "offsetY": 0.0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -34.49406880189798,
-                    "y": 135.64709371293003,
-                    "width": 100.70937129300118,
-                    "height": 82.9632265717675,
+                    "x": -22.421144721233688,
+                    "y": 88.17061091340452,
+                    "width": 65.46109134045078,
+                    "height": 53.92609727164888,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
                   },
                   {
-                    "x": 35.15954922894425,
-                    "y": 135.5361803084223,
-                    "width": 91.83629893238434,
-                    "height": 82.51957295373666,
+                    "x": 22.853706998813763,
+                    "y": 88.0985172004745,
+                    "width": 59.693594306049825,
+                    "height": 53.63772241992883,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2383,8 +2383,8 @@
                 ]
               }
             ],
-            "muzzleX": 0,
-            "muzzleY": 86.27846975088968,
+            "muzzleX": 0.0,
+            "muzzleY": 42.7810053380783,
             "lifecycle": "native-tower"
           }
         },
@@ -2413,35 +2413,35 @@
           ],
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-3",
-            "width": 281.1726618705036,
-            "height": 281.1726618705036,
-            "offsetX": 0.8968824940047961,
-            "offsetY": -46.74460431654676,
+            "width": 182.76223021582734,
+            "height": 182.76223021582734,
+            "offsetX": 0.5829736211031175,
+            "offsetY": -43.683992805755395,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/archer-3-window-light",
-                "width": 281.1726618705036,
-                "height": 281.1726618705036,
-                "offsetX": 0,
-                "offsetY": 0,
+                "width": 182.76223021582734,
+                "height": 182.76223021582734,
+                "offsetX": 0.0,
+                "offsetY": 0.0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -35.53896882494005,
-                    "y": 138.6804556354916,
-                    "width": 106.28057553956835,
-                    "height": 86.54916067146283,
+                    "x": -23.100329736211034,
+                    "y": 90.14229616306955,
+                    "width": 69.08237410071943,
+                    "height": 56.25695443645084,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
                   },
                   {
-                    "x": 33.29676258992806,
-                    "y": 137.55935251798562,
-                    "width": 95.5179856115108,
-                    "height": 82.06474820143885,
+                    "x": 21.64289568345324,
+                    "y": 89.41357913669066,
+                    "width": 62.086690647482015,
+                    "height": 53.34208633093525,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2449,8 +2449,8 @@
                 ]
               }
             ],
-            "muzzleX": 0,
-            "muzzleY": 91.37529976019184,
+            "muzzleX": 0.0,
+            "muzzleY": 46.09394484412469,
             "lifecycle": "native-tower"
           },
           "ColliderIndex": 3
@@ -2483,26 +2483,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-1",
-            "width": 224.18546845124283,
-            "height": 224.18546845124283,
-            "offsetX": 0,
-            "offsetY": -58.20172084130019,
+            "width": 107.19689320184933,
+            "height": 127.61534904982064,
+            "offsetX": 4.519673491568779,
+            "offsetY": -38.8403948642503,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/cannon-1-window-light",
-                "width": 224.18546845124283,
-                "height": 224.18546845124283,
+                "width": 107.19689320184933,
+                "height": 127.61534904982064,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -30.83891013384321,
-                    "y": 45.58795411089866,
-                    "width": 46.83938814531549,
-                    "height": 30.034416826003824,
+                    "x": 22.173166897406336,
+                    "y": 29.351530281458746,
+                    "width": 18.759456310323632,
+                    "height": 20.737494220595853,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2512,60 +2512,60 @@
             ],
             "weapon": {
               "sprite": "buildings/towers/cannon-1-weapon",
-              "width": 72,
-              "height": 60,
+              "width": 64.8,
+              "height": 54.0,
               "pivotX": 0.5625,
               "pivotY": 0.54717,
               "offsetX": 0,
-              "offsetY": 109.73350829445505,
-              "muzzleX": 27.389423,
-              "muzzleY": -1.91582,
+              "offsetY": 85.19770397434976,
+              "muzzleX": 24.650480700000003,
+              "muzzleY": -1.7242380000000002,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-1-weapon-north",
-                  "width": 56,
-                  "height": 66,
+                  "width": 50.4,
+                  "height": 59.4,
                   "pivotX": 0.5,
                   "pivotY": 0.508475,
-                  "muzzleX": 0,
-                  "muzzleY": 30.4431,
+                  "muzzleX": 0.0,
+                  "muzzleY": 27.39879,
                   "referenceAngle": 90
                 },
                 "northeast": {
                   "sprite": "buildings/towers/cannon-1-weapon-northeast",
-                  "width": 60,
-                  "height": 66,
+                  "width": 54.0,
+                  "height": 59.4,
                   "pivotX": 0.490566,
                   "pivotY": 0.517241,
-                  "muzzleX": 21.367925,
-                  "muzzleY": 23.327587,
+                  "muzzleX": 19.2311325,
+                  "muzzleY": 20.9948283,
                   "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-1-weapon-southeast",
-                  "width": 63,
-                  "height": 66,
+                  "width": 56.7,
+                  "height": 59.4,
                   "pivotX": 0.517857,
                   "pivotY": 0.517241,
-                  "muzzleX": 12.9375,
-                  "muzzleY": -1.706897,
+                  "muzzleX": 11.64375,
+                  "muzzleY": -1.5362073,
                   "referenceAngle": -45
                 },
                 "south": {
                   "sprite": "buildings/towers/cannon-1-weapon-south",
-                  "width": 56,
-                  "height": 60,
+                  "width": 50.4,
+                  "height": 54.0,
                   "pivotX": 0.5,
                   "pivotY": 0.433962,
-                  "muzzleX": 0,
-                  "muzzleY": -2.264151,
+                  "muzzleX": 0.0,
+                  "muzzleY": -2.0377359,
                   "referenceAngle": -90
                 }
               },
               "referenceAngle": 0,
               "motion": {
                 "type": "spring",
-                "distance": 17.42236,
+                "distance": 15.680124000000001,
                 "speed": 20,
                 "damping": 5,
                 "reloadTime": 0
@@ -2573,13 +2573,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/cannon-1-destroyed",
-              "width": 187,
-              "height": 187,
-              "offsetX": 0,
-              "offsetY": -38
+              "width": 168.3,
+              "height": 168.3,
+              "offsetX": 0.0,
+              "offsetY": -38.0
             },
-            "muzzleX": 21.367925,
-            "muzzleY": 133.06109529445504,
+            "muzzleX": 19.2311325,
+            "muzzleY": 106.19253227434976,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-1.description]]",
@@ -2616,26 +2616,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-2",
-            "width": 224.83029721955896,
-            "height": 224.83029721955896,
-            "offsetX": 0.08964525407478427,
-            "offsetY": -58.080536912751676,
+            "width": 152.46215466555512,
+            "height": 162.1937815591012,
+            "offsetX": -0.32862236248390386,
+            "offsetY": -38.911819818629645,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/cannon-2-window-light",
-                "width": 224.83029721955896,
-                "height": 224.83029721955896,
+                "width": 152.46215466555512,
+                "height": 162.1937815591012,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -30.65867689357622,
-                    "y": 45.629434324065194,
-                    "width": 45.898370086289546,
-                    "height": 29.762224352828376,
+                    "x": 27.77568509199608,
+                    "y": 40.95392984367305,
+                    "width": 23.842485889187877,
+                    "height": 26.356489503353945,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2645,60 +2645,60 @@
             ],
             "weapon": {
               "sprite": "buildings/towers/cannon-2-weapon",
-              "width": 80,
-              "height": 69,
+              "width": 72.0,
+              "height": 62.1,
               "pivotX": 0.5625,
               "pivotY": 0.507246,
-              "offsetX": 0.08964525407478427,
-              "offsetY": 113.104481232023,
-              "muzzleX": 32.333333,
-              "muzzleY": -2.166667,
+              "offsetX": 0,
+              "offsetY": 115.39840996458412,
+              "muzzleX": 29.099999700000005,
+              "muzzleY": -1.9500003,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-2-weapon-north",
-                  "width": 66,
-                  "height": 76,
+                  "width": 59.4,
+                  "height": 68.4,
                   "pivotX": 0.5,
                   "pivotY": 0.473684,
-                  "muzzleX": 0,
-                  "muzzleY": 37.357143,
+                  "muzzleX": 0.0,
+                  "muzzleY": 33.6214287,
                   "referenceAngle": 90
                 },
                 "northeast": {
                   "sprite": "buildings/towers/cannon-2-weapon-northeast",
-                  "width": 70,
-                  "height": 75,
+                  "width": 63.0,
+                  "height": 67.5,
                   "pivotX": 0.485714,
                   "pivotY": 0.493333,
-                  "muzzleX": 26.5,
-                  "muzzleY": 28.785714,
+                  "muzzleX": 23.85,
+                  "muzzleY": 25.9071426,
                   "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-2-weapon-southeast",
-                  "width": 70,
-                  "height": 78,
+                  "width": 63.0,
+                  "height": 70.2,
                   "pivotX": 0.5,
                   "pivotY": 0.474359,
-                  "muzzleX": 15,
-                  "muzzleY": 1,
+                  "muzzleX": 13.5,
+                  "muzzleY": 0.9,
                   "referenceAngle": -45
                 },
                 "south": {
                   "sprite": "buildings/towers/cannon-2-weapon-south",
-                  "width": 66,
-                  "height": 71,
+                  "width": 59.4,
+                  "height": 63.9,
                   "pivotX": 0.5,
                   "pivotY": 0.408451,
-                  "muzzleX": 0,
-                  "muzzleY": -1,
+                  "muzzleX": 0.0,
+                  "muzzleY": -0.9,
                   "referenceAngle": -90
                 }
               },
               "referenceAngle": 0,
               "motion": {
                 "type": "spring",
-                "distance": 15.486542,
+                "distance": 13.9378878,
                 "speed": 20,
                 "damping": 5,
                 "reloadTime": 0
@@ -2706,13 +2706,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/cannon-2-destroyed",
-              "width": 187,
-              "height": 187,
-              "offsetX": 0,
-              "offsetY": -38
+              "width": 168.3,
+              "height": 168.3,
+              "offsetX": 0.0,
+              "offsetY": -38.0
             },
-            "muzzleX": 26.589645254074785,
-            "muzzleY": 141.89019523202302,
+            "muzzleX": 23.85,
+            "muzzleY": 141.3055525645841,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-2.description]]",
@@ -2749,26 +2749,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-3",
-            "width": 224.18546845124283,
-            "height": 224.18546845124283,
-            "offsetX": 0,
-            "offsetY": -57.844168260038245,
+            "width": 182.0631052905442,
+            "height": 174.78058107892244,
+            "offsetX": 5.159128697473964,
+            "offsetY": -38.6930207891465,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/cannon-3-window-light",
-                "width": 224.18546845124283,
-                "height": 224.18546845124283,
+                "width": 182.0631052905442,
+                "height": 174.78058107892244,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -30.749521988527725,
-                    "y": 45.409177820267686,
-                    "width": 45.05162523900574,
-                    "height": 28.60420650095602,
+                    "x": 28.447360201647534,
+                    "y": 39.14356763746701,
+                    "width": 26.76327647771,
+                    "height": 29.585254609713438,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2778,60 +2778,60 @@
             ],
             "weapon": {
               "sprite": "buildings/towers/cannon-3-weapon",
-              "width": 88,
-              "height": 70,
+              "width": 79.2,
+              "height": 63.0,
               "pivotX": 0.567308,
               "pivotY": 0.54878,
               "offsetX": 0,
-              "offsetY": 113.953154875717,
-              "muzzleX": 35.852748,
-              "muzzleY": -2.926829,
+              "offsetY": 134.22993146413228,
+              "muzzleX": 32.2674732,
+              "muzzleY": -2.6341461,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-3-weapon-north",
-                  "width": 58,
-                  "height": 79,
+                  "width": 52.2,
+                  "height": 71.10000000000001,
                   "pivotX": 0.492754,
                   "pivotY": 0.5,
-                  "muzzleX": 0,
-                  "muzzleY": 37.314894,
+                  "muzzleX": 0.0,
+                  "muzzleY": 33.5834046,
                   "referenceAngle": 90
                 },
                 "northeast": {
                   "sprite": "buildings/towers/cannon-3-weapon-northeast",
-                  "width": 71,
-                  "height": 76,
+                  "width": 63.9,
+                  "height": 68.4,
                   "pivotX": 0.5,
                   "pivotY": 0.5,
-                  "muzzleX": 25.960884,
-                  "muzzleY": 29.314286,
+                  "muzzleX": 23.3647956,
+                  "muzzleY": 26.3828574,
                   "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-3-weapon-southeast",
-                  "width": 75,
-                  "height": 70,
+                  "width": 67.5,
+                  "height": 63.0,
                   "pivotX": 0.516854,
                   "pivotY": 0.542169,
-                  "muzzleX": 18.146067,
-                  "muzzleY": -3.148594,
+                  "muzzleX": 16.3314603,
+                  "muzzleY": -2.8337346,
                   "referenceAngle": -45
                 },
                 "south": {
                   "sprite": "buildings/towers/cannon-3-weapon-south",
-                  "width": 58,
-                  "height": 68,
+                  "width": 52.2,
+                  "height": 61.2,
                   "pivotX": 0.492754,
                   "pivotY": 0.5,
-                  "muzzleX": 0,
-                  "muzzleY": -7.225,
+                  "muzzleX": 0.0,
+                  "muzzleY": -6.5024999999999995,
                   "referenceAngle": -90
                 }
               },
               "referenceAngle": 0,
               "motion": {
                 "type": "spring",
-                "distance": 13.103997,
+                "distance": 11.7935973,
                 "speed": 20,
                 "damping": 5,
                 "reloadTime": 0
@@ -2839,13 +2839,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/cannon-3-destroyed",
-              "width": 187,
-              "height": 187,
-              "offsetX": 0,
-              "offsetY": -38
+              "width": 168.3,
+              "height": 168.3,
+              "offsetX": 0.0,
+              "offsetY": -38.0
             },
-            "muzzleX": 25.960884,
-            "muzzleY": 143.267440875717,
+            "muzzleX": 23.3647956,
+            "muzzleY": 160.61278886413228,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-3.description]]",
@@ -2881,26 +2881,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/sniper-1",
-            "width": 262.59574468085106,
-            "height": 262.59574468085106,
-            "offsetX": -0.10470324748040313,
-            "offsetY": -75.69316909294513,
+            "width": 117.57757155848934,
+            "height": 129.56206232340423,
+            "offsetX": 2.8441934471514263,
+            "offsetY": -39.21070742616089,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/sniper-1-window-light",
-                "width": 262.59574468085106,
-                "height": 262.59574468085106,
+                "width": 117.57757155848934,
+                "height": 129.56206232340423,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -32.981522956326984,
-                    "y": 94.86114221724524,
-                    "width": 46.48824188129899,
-                    "height": 58.63381858902576,
+                    "x": 15.871352634617018,
+                    "y": 23.645076374021272,
+                    "width": 19.04562316154042,
+                    "height": 21.05383512755319,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -2914,8 +2914,8 @@
               "height": 67,
               "pivotX": 0.442149,
               "pivotY": 0.493243,
-              "offsetX": -0.10470324748040313,
-              "offsetY": 128.01497760358342,
+              "offsetX": 0,
+              "offsetY": 78.95405442586392,
               "muzzleX": 58.090909,
               "muzzleY": 7.877027,
               "views": {
@@ -2976,13 +2976,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/sniper-1-destroyed",
-              "width": 187,
-              "height": 187,
+              "width": 89,
+              "height": 89,
               "offsetX": 0,
               "offsetY": -38
             },
-            "muzzleX": 35.4875297525196,
-            "muzzleY": 169.32418860358342,
+            "muzzleX": 35.592233,
+            "muzzleY": 120.26326542586392,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-1.description]]",
@@ -3019,26 +3019,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/sniper-2",
-            "width": 259.9756097560975,
-            "height": 259.9756097560975,
-            "offsetX": 0,
-            "offsetY": -74.48780487804878,
+            "width": 135.22519913838963,
+            "height": 180.30026551785284,
+            "offsetX": 1.619593034630098,
+            "offsetY": -39.240670771321646,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/sniper-2-window-light",
-                "width": 259.9756097560975,
-                "height": 259.9756097560975,
+                "width": 135.22519913838963,
+                "height": 180.30026551785284,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -32.96341463414634,
-                    "y": 93.70731707317073,
-                    "width": 46.4390243902439,
-                    "height": 58.048780487804876,
+                    "x": 26.368913831985978,
+                    "y": 34.70780111218667,
+                    "width": 26.504139031124364,
+                    "height": 29.298793146651082,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -3053,7 +3053,7 @@
               "pivotX": 0.442446,
               "pivotY": 0.532258,
               "offsetX": 0,
-              "offsetY": 132.74072760975608,
+              "offsetY": 130.59341208941623,
               "muzzleX": 61.163926,
               "muzzleY": 7.629032,
               "views": {
@@ -3114,13 +3114,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/sniper-2-destroyed",
-              "width": 187,
-              "height": 187,
+              "width": 101.00000000000001,
+              "height": 101.00000000000001,
               "offsetX": 0,
               "offsetY": -38
             },
             "muzzleX": 37.737121,
-            "muzzleY": 173.23286260975607,
+            "muzzleY": 171.08554708941622,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-2.description]]",
@@ -3157,26 +3157,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/sniper-3",
-            "width": 262.008938547486,
-            "height": 262.008938547486,
-            "offsetX": -0.10446927374301676,
-            "offsetY": -74.77318435754191,
+            "width": 143.44040258590988,
+            "height": 185.68336904324906,
+            "offsetX": 0.40422521515418,
+            "offsetY": -39.357953766367686,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/sniper-3-window-light",
-                "width": 262.008938547486,
-                "height": 262.008938547486,
+                "width": 143.44040258590988,
+                "height": 185.68336904324906,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -33.32569832402235,
-                    "y": 94.7536312849162,
-                    "width": 45.54860335195531,
-                    "height": 57.24916201117318,
+                    "x": 25.531463243446744,
+                    "y": 40.85034118951479,
+                    "width": 27.29545524935761,
+                    "height": 30.17354746952797,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -3190,8 +3190,8 @@
               "height": 82,
               "pivotX": 0.445513,
               "pivotY": 0.542453,
-              "offsetX": -0.10446927374301676,
-              "offsetY": 133.8790851955307,
+              "offsetX": 0,
+              "offsetY": 135.82820713172322,
               "muzzleX": 63.653846,
               "muzzleY": 6.575472,
               "views": {
@@ -3252,13 +3252,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/sniper-3-destroyed",
-              "width": 187,
-              "height": 187,
+              "width": 104,
+              "height": 104,
               "offsetX": 0,
               "offsetY": -38
             },
-            "muzzleX": 39.36695972625699,
-            "muzzleY": 174.8617241955307,
+            "muzzleX": 39.471429,
+            "muzzleY": 176.81084613172322,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-3.description]]",
@@ -3290,35 +3290,35 @@
           "ColliderIndex": 3,
           "Appearance": {
             "sprite": "buildings/redesign/towers/archer-4",
-            "width": 283.45512010113777,
-            "height": 310.1694058154235,
-            "offsetX": 0,
-            "offsetY": -63.29582806573957,
+            "width": 184.3994943109987,
+            "height": 201.61011378002527,
+            "offsetX": 0.07683312262958279,
+            "offsetY": -54.442288242730726,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/archer-4-window-light",
-                "width": 283.45512010113777,
-                "height": 310.1694058154235,
-                "offsetX": 0,
-                "offsetY": 0,
+                "width": 184.3994943109987,
+                "height": 201.61011378002527,
+                "offsetX": 0.0,
+                "offsetY": 0.0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -35.22503160556258,
-                    "y": 150.82932996207333,
-                    "width": 105.43868520859671,
-                    "height": 89.83565107458912,
+                    "x": -22.973103666245258,
+                    "y": 98.03906447534767,
+                    "width": 68.53514538558787,
+                    "height": 58.393173198482934,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
                   },
                   {
-                    "x": 33.097345132743364,
-                    "y": 147.99241466498103,
-                    "width": 89.36283185840708,
-                    "height": 78.48798988621998,
+                    "x": 21.436441213653605,
+                    "y": 96.19506953223767,
+                    "width": 58.0858407079646,
+                    "height": 51.01719342604299,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -3326,8 +3326,8 @@
                 ]
               }
             ],
-            "muzzleX": 0,
-            "muzzleY": 86.11504424778762,
+            "muzzleX": 0.0,
+            "muzzleY": 42.67477876106196,
             "lifecycle": "native-tower"
           }
         },
@@ -3359,26 +3359,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/cannon-4",
-            "width": 226.13114754098362,
-            "height": 226.13114754098362,
-            "offsetX": 0.09016393442622951,
-            "offsetY": -58.196721311475414,
+            "width": 181.94106448253515,
+            "height": 174.2085692420274,
+            "offsetX": 4.858731998721348,
+            "offsetY": -38.933400245694976,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/cannon-4-window-light",
-                "width": 226.13114754098362,
-                "height": 226.13114754098362,
+                "width": 181.94106448253515,
+                "height": 174.2085692420274,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -30.745901639344265,
-                    "y": 45.80327868852459,
-                    "width": 45.80327868852459,
-                    "height": 28.852459016393443,
+                    "x": 27.97343866418978,
+                    "y": 39.11732886374506,
+                    "width": 26.745336478932664,
+                    "height": 29.565422978411963,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -3388,60 +3388,60 @@
             ],
             "weapon": {
               "sprite": "buildings/towers/cannon-3-weapon",
-              "width": 88,
-              "height": 70,
+              "width": 79.2,
+              "height": 63.0,
               "pivotX": 0.567308,
               "pivotY": 0.54878,
-              "offsetX": 0.09016393442622951,
-              "offsetY": 114.7704918032787,
-              "muzzleX": 35.852748,
-              "muzzleY": -2.926829,
+              "offsetX": 0,
+              "offsetY": 133.2786595151511,
+              "muzzleX": 32.2674732,
+              "muzzleY": -2.6341461,
               "views": {
                 "north": {
                   "sprite": "buildings/towers/cannon-3-weapon-north",
-                  "width": 58,
-                  "height": 79,
+                  "width": 52.2,
+                  "height": 71.10000000000001,
                   "pivotX": 0.492754,
                   "pivotY": 0.5,
-                  "muzzleX": 0,
-                  "muzzleY": 37.314894,
+                  "muzzleX": 0.0,
+                  "muzzleY": 33.5834046,
                   "referenceAngle": 90
                 },
                 "northeast": {
                   "sprite": "buildings/towers/cannon-3-weapon-northeast",
-                  "width": 71,
-                  "height": 76,
+                  "width": 63.9,
+                  "height": 68.4,
                   "pivotX": 0.5,
                   "pivotY": 0.5,
-                  "muzzleX": 25.960884,
-                  "muzzleY": 29.314286,
+                  "muzzleX": 23.3647956,
+                  "muzzleY": 26.3828574,
                   "referenceAngle": 45
                 },
                 "southeast": {
                   "sprite": "buildings/towers/cannon-3-weapon-southeast",
-                  "width": 75,
-                  "height": 70,
+                  "width": 67.5,
+                  "height": 63.0,
                   "pivotX": 0.516854,
                   "pivotY": 0.542169,
-                  "muzzleX": 18.146067,
-                  "muzzleY": -3.148594,
+                  "muzzleX": 16.3314603,
+                  "muzzleY": -2.8337346,
                   "referenceAngle": -45
                 },
                 "south": {
                   "sprite": "buildings/towers/cannon-3-weapon-south",
-                  "width": 58,
-                  "height": 68,
+                  "width": 52.2,
+                  "height": 61.2,
                   "pivotX": 0.492754,
                   "pivotY": 0.5,
-                  "muzzleX": 0,
-                  "muzzleY": -7.225,
+                  "muzzleX": 0.0,
+                  "muzzleY": -6.5024999999999995,
                   "referenceAngle": -90
                 }
               },
               "referenceAngle": 0,
               "motion": {
                 "type": "spring",
-                "distance": 13.103997,
+                "distance": 11.7935973,
                 "speed": 20,
                 "damping": 5,
                 "reloadTime": 0
@@ -3449,13 +3449,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/cannon-3-destroyed",
-              "width": 187,
-              "height": 187,
-              "offsetX": 0,
-              "offsetY": -38
+              "width": 168.3,
+              "height": 168.3,
+              "offsetX": 0.0,
+              "offsetY": -38.0
             },
-            "muzzleX": 26.05104793442623,
-            "muzzleY": 144.0847778032787,
+            "muzzleX": 23.3647956,
+            "muzzleY": 159.6615169151511,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-4.description]]",
@@ -3490,26 +3490,26 @@
           },
           "Appearance": {
             "sprite": "buildings/redesign/towers/sniper-4",
-            "width": 262.3020134228188,
-            "height": 262.3020134228188,
-            "offsetX": 0,
-            "offsetY": -75.0234899328859,
+            "width": 142.62547545040917,
+            "height": 185.83123837186864,
+            "offsetX": 0.10714260199203295,
+            "offsetY": -40.025126154312396,
             "nightTint": "#A7A7A7",
             "lighting": [
               {
                 "sprite": "buildings/redesign/towers/sniper-4-window-light",
-                "width": 262.3020134228188,
-                "height": 262.3020134228188,
+                "width": 142.62547545040917,
+                "height": 185.83123837186864,
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
                 "opacity": 240,
                 "glows": [
                   {
-                    "x": -32.94463087248322,
-                    "y": 94.65044742729306,
-                    "width": 45.59955257270693,
-                    "height": 58.986577181208055,
+                    "x": 25.551795276131937,
+                    "y": 40.41829434588143,
+                    "width": 27.317192040664686,
+                    "height": 30.197576235428652,
                     "color": "#FFC85B",
                     "opacity": 80,
                     "pulse": 0.08
@@ -3524,7 +3524,7 @@
               "pivotX": 0.445513,
               "pivotY": 0.542453,
               "offsetX": 0,
-              "offsetY": 133.8283696868009,
+              "offsetY": 135.15489992080305,
               "muzzleX": 63.653846,
               "muzzleY": 6.575472,
               "views": {
@@ -3585,13 +3585,13 @@
             },
             "destroyed": {
               "sprite": "buildings/towers/sniper-3-destroyed",
-              "width": 187,
-              "height": 187,
+              "width": 104,
+              "height": 104,
               "offsetX": 0,
               "offsetY": -38
             },
             "muzzleX": 39.471429,
-            "muzzleY": 174.8110086868009,
+            "muzzleY": 176.13753892080305,
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-4.description]]",
@@ -4116,15 +4116,16 @@
           "ID": 5,
           "index": 1,
           "level": 1,
-          "Name": "[[loc:data.buildenum.5.name]]",
+          "Name": "[[loc:data.mill.none.1.name]]",
           "BuildSliverCost": 6,
-          "LevelUpDescribe": "[[loc:data.building.guide.5.1.description]]",
+          "LevelUpDescribe": "[[loc:data.mill.none.1.description]]",
           "Icon": "painted_mill_1",
           "Zoom": 0.35,
           "Skin": "mf-1",
           "Hp": 200,
           "BranchBuild": [
-            2
+            2,
+            5
           ],
           "Excursion": [
             -202,
@@ -4133,15 +4134,24 @@
           "Data": [
             3,
             0
-          ]
+          ],
+          "MillDefense": {
+            "kind": "none",
+            "fields": 2,
+            "fieldHp": 100,
+            "damage": 0,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110
+          }
         },
         {
           "ID": 5,
           "index": 2,
           "level": 2,
-          "Name": "[[loc:data.buildenum.5.levellist.2.name]]",
+          "Name": "[[loc:data.mill.scarecrow.2.name]]",
           "BuildSliverCost": 6,
-          "LevelUpDescribe": "[[loc:data.buildenum.5.levellist.2.levelupdescribe]]",
+          "LevelUpDescribe": "[[loc:data.mill.scarecrow.2.description]]",
           "Icon": "painted_mill_2",
           "Zoom": 0.35,
           "Skin": "mf-2-1",
@@ -4156,15 +4166,24 @@
           ],
           "BranchBuild": [
             3
-          ]
+          ],
+          "MillDefense": {
+            "kind": "scarecrow",
+            "fields": 2,
+            "fieldHp": 150,
+            "damage": 12,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110
+          }
         },
         {
           "ID": 5,
           "index": 3,
           "level": 3,
-          "Name": "[[loc:data.buildenum.5.levellist.3.name]]",
+          "Name": "[[loc:data.mill.scarecrow.3.name]]",
           "VedioCount": 1,
-          "LevelUpDescribe": "[[loc:data.buildenum.5.levellist.3.levelupdescribe]]",
+          "LevelUpDescribe": "[[loc:data.mill.scarecrow.3.description]]",
           "Icon": "painted_mill_3",
           "Zoom": 0.35,
           "Skin": "mf-2-2",
@@ -4179,15 +4198,24 @@
           ],
           "BranchBuild": [
             4
-          ]
+          ],
+          "MillDefense": {
+            "kind": "scarecrow",
+            "fields": 3,
+            "fieldHp": 180,
+            "damage": 18,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110
+          }
         },
         {
           "ID": 5,
           "index": 4,
           "level": 4,
-          "Name": "[[loc:data.building.mill-4.name]]",
+          "Name": "[[loc:data.mill.scarecrow.4.name]]",
           "VedioCount": 0,
-          "LevelUpDescribe": "[[loc:data.building.mill-4.description]]",
+          "LevelUpDescribe": "[[loc:data.mill.scarecrow.4.description]]",
           "Icon": "painted_mill_4",
           "Zoom": 0.35,
           "Skin": "mf-3",
@@ -4201,7 +4229,116 @@
             0
           ],
           "BuildCost": 6,
+          "ColliderIndex": 3,
+          "MillDefense": {
+            "kind": "scarecrow",
+            "fields": 4,
+            "fieldHp": 220,
+            "damage": 24,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110
+          }
+        },
+        {
+          "ID": 5,
+          "index": 5,
+          "level": 2,
+          "Name": "[[loc:data.mill.bomb.2.name]]",
+          "BuildSliverCost": 6,
+          "LevelUpDescribe": "[[loc:data.mill.bomb.2.description]]",
+          "Icon": "painted_mill_bomb_2",
+          "Zoom": 0.35,
+          "Skin": "mf-bomb-2",
+          "Hp": 300,
+          "Excursion": [
+            -202,
+            31
+          ],
+          "Data": [
+            5,
+            0
+          ],
+          "BranchBuild": [
+            6
+          ],
+          "MillDefense": {
+            "kind": "bomb",
+            "fields": 2,
+            "fieldHp": 150,
+            "damage": 70,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110,
+            "artRank": 1
+          },
+          "ColliderIndex": 2
+        },
+        {
+          "ID": 5,
+          "index": 6,
+          "level": 3,
+          "Name": "[[loc:data.mill.bomb.3.name]]",
+          "VedioCount": 1,
+          "LevelUpDescribe": "[[loc:data.mill.bomb.3.description]]",
+          "Icon": "painted_mill_bomb_3",
+          "Zoom": 0.35,
+          "Skin": "mf-bomb-3",
+          "Hp": 300,
+          "Excursion": [
+            -202,
+            31
+          ],
+          "Data": [
+            7,
+            0
+          ],
+          "BranchBuild": [
+            7
+          ],
+          "MillDefense": {
+            "kind": "bomb",
+            "fields": 3,
+            "fieldHp": 180,
+            "damage": 100,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110,
+            "artRank": 2
+          },
           "ColliderIndex": 3
+        },
+        {
+          "ID": 5,
+          "index": 7,
+          "level": 4,
+          "Name": "[[loc:data.mill.bomb.4.name]]",
+          "VedioCount": 0,
+          "LevelUpDescribe": "[[loc:data.mill.bomb.4.description]]",
+          "Icon": "painted_mill_bomb_4",
+          "Zoom": 0.35,
+          "Skin": "mf-bomb-4",
+          "Hp": 400,
+          "Excursion": [
+            -202,
+            31
+          ],
+          "Data": [
+            9,
+            0
+          ],
+          "BuildCost": 6,
+          "ColliderIndex": 3,
+          "MillDefense": {
+            "kind": "bomb",
+            "fields": 4,
+            "fieldHp": 220,
+            "damage": 140,
+            "range": 260,
+            "interval": 1.5,
+            "splashRadius": 110,
+            "artRank": 3
+          }
         }
       ]
     },
@@ -5299,490 +5436,1617 @@
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 1,
           "Parameters": 20,
-          "GoldCost": 650,
+          "GoldCost": 7850,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.002
+            },
+            "skirmisher": {
+              "range": 4,
+              "criticalChance": 0.002
+            },
+            "vanguard": {
+              "move": 0.004,
+              "attackRate": 0.002
+            },
+            "bruiser": {
+              "attackRate": 0.002,
+              "criticalDamage": 0.01
+            },
+            "guardian": {
+              "damageReduction": 0.004
+            },
+            "mystic": {
+              "splashDamage": 0.01
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 2,
           "Parameters": 21,
-          "GoldCost": 1100,
+          "GoldCost": 7850,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.004
+            },
+            "skirmisher": {
+              "range": 8,
+              "criticalChance": 0.004
+            },
+            "vanguard": {
+              "move": 0.008,
+              "attackRate": 0.004
+            },
+            "bruiser": {
+              "attackRate": 0.004,
+              "criticalDamage": 0.02
+            },
+            "guardian": {
+              "damageReduction": 0.008
+            },
+            "mystic": {
+              "splashDamage": 0.02
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 3,
           "Parameters": 23,
-          "GoldCost": 1900,
+          "GoldCost": 9750,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.006
+            },
+            "skirmisher": {
+              "range": 12,
+              "criticalChance": 0.006
+            },
+            "vanguard": {
+              "move": 0.012,
+              "attackRate": 0.006
+            },
+            "bruiser": {
+              "attackRate": 0.006,
+              "criticalDamage": 0.03
+            },
+            "guardian": {
+              "damageReduction": 0.012
+            },
+            "mystic": {
+              "splashDamage": 0.03
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 4,
           "Parameters": 24,
-          "GoldCost": 3200,
+          "GoldCost": 9800,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.008
+            },
+            "skirmisher": {
+              "range": 16,
+              "criticalChance": 0.008
+            },
+            "vanguard": {
+              "move": 0.016,
+              "attackRate": 0.008
+            },
+            "bruiser": {
+              "attackRate": 0.008,
+              "criticalDamage": 0.04
+            },
+            "guardian": {
+              "damageReduction": 0.016
+            },
+            "mystic": {
+              "splashDamage": 0.04
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 5,
           "Parameters": 26,
-          "GoldCost": 4800,
+          "GoldCost": 13000,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.01
+            },
+            "skirmisher": {
+              "range": 20,
+              "criticalChance": 0.01
+            },
+            "vanguard": {
+              "move": 0.02,
+              "attackRate": 0.01
+            },
+            "bruiser": {
+              "attackRate": 0.01,
+              "criticalDamage": 0.05
+            },
+            "guardian": {
+              "damageReduction": 0.02
+            },
+            "mystic": {
+              "splashDamage": 0.05
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 6,
           "Parameters": 28,
-          "GoldCost": 6900,
+          "GoldCost": 13000,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.012
+            },
+            "skirmisher": {
+              "range": 24,
+              "criticalChance": 0.012
+            },
+            "vanguard": {
+              "move": 0.024,
+              "attackRate": 0.012
+            },
+            "bruiser": {
+              "attackRate": 0.012,
+              "criticalDamage": 0.06
+            },
+            "guardian": {
+              "damageReduction": 0.024
+            },
+            "mystic": {
+              "splashDamage": 0.06
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 7,
           "Parameters": 29,
-          "GoldCost": 9400,
+          "GoldCost": 17000,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.014
+            },
+            "skirmisher": {
+              "range": 28,
+              "criticalChance": 0.014
+            },
+            "vanguard": {
+              "move": 0.028,
+              "attackRate": 0.014
+            },
+            "bruiser": {
+              "attackRate": 0.014,
+              "criticalDamage": 0.07
+            },
+            "guardian": {
+              "damageReduction": 0.028
+            },
+            "mystic": {
+              "splashDamage": 0.07
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 8,
           "Parameters": 31,
-          "GoldCost": 12300,
+          "GoldCost": 17500,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.016
+            },
+            "skirmisher": {
+              "range": 32,
+              "criticalChance": 0.016
+            },
+            "vanguard": {
+              "move": 0.032,
+              "attackRate": 0.016
+            },
+            "bruiser": {
+              "attackRate": 0.016,
+              "criticalDamage": 0.08
+            },
+            "guardian": {
+              "damageReduction": 0.032
+            },
+            "mystic": {
+              "splashDamage": 0.08
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 9,
           "Parameters": 33,
-          "GoldCost": 15600,
+          "GoldCost": 23000,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.018
+            },
+            "skirmisher": {
+              "range": 36,
+              "criticalChance": 0.018
+            },
+            "vanguard": {
+              "move": 0.036,
+              "attackRate": 0.018
+            },
+            "bruiser": {
+              "attackRate": 0.018,
+              "criticalDamage": 0.09
+            },
+            "guardian": {
+              "damageReduction": 0.036
+            },
+            "mystic": {
+              "splashDamage": 0.09
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.1.equipname]]",
           "Level": 10,
           "Parameters": 34,
-          "GoldCost": 19400,
+          "GoldCost": 24000,
           "Image": "wg_rw_j1",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv1"
+          "EquipSkin": "lv1",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.02
+            },
+            "skirmisher": {
+              "range": 40,
+              "criticalChance": 0.02
+            },
+            "vanguard": {
+              "move": 0.04,
+              "attackRate": 0.02
+            },
+            "bruiser": {
+              "attackRate": 0.02,
+              "criticalDamage": 0.1
+            },
+            "guardian": {
+              "damageReduction": 0.04
+            },
+            "mystic": {
+              "splashDamage": 0.1
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 11,
           "Parameters": 36,
-          "GoldCost": 23500,
+          "GoldCost": 32000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.022
+            },
+            "skirmisher": {
+              "range": 44,
+              "criticalChance": 0.022
+            },
+            "vanguard": {
+              "move": 0.044,
+              "attackRate": 0.022
+            },
+            "bruiser": {
+              "attackRate": 0.022,
+              "criticalDamage": 0.11
+            },
+            "guardian": {
+              "damageReduction": 0.044
+            },
+            "mystic": {
+              "splashDamage": 0.11
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 12,
           "Parameters": 37,
-          "GoldCost": 28100,
+          "GoldCost": 34000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.024
+            },
+            "skirmisher": {
+              "range": 48,
+              "criticalChance": 0.024
+            },
+            "vanguard": {
+              "move": 0.048,
+              "attackRate": 0.024
+            },
+            "bruiser": {
+              "attackRate": 0.024,
+              "criticalDamage": 0.12
+            },
+            "guardian": {
+              "damageReduction": 0.048
+            },
+            "mystic": {
+              "splashDamage": 0.12
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 13,
           "Parameters": 39,
-          "GoldCost": 33100,
+          "GoldCost": 41000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.026
+            },
+            "skirmisher": {
+              "range": 52,
+              "criticalChance": 0.026
+            },
+            "vanguard": {
+              "move": 0.052,
+              "attackRate": 0.026
+            },
+            "bruiser": {
+              "attackRate": 0.026,
+              "criticalDamage": 0.13
+            },
+            "guardian": {
+              "damageReduction": 0.052
+            },
+            "mystic": {
+              "splashDamage": 0.13
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 14,
           "Parameters": 41,
-          "GoldCost": 38500,
+          "GoldCost": 43500,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.028
+            },
+            "skirmisher": {
+              "range": 56,
+              "criticalChance": 0.028
+            },
+            "vanguard": {
+              "move": 0.056,
+              "attackRate": 0.028
+            },
+            "bruiser": {
+              "attackRate": 0.028,
+              "criticalDamage": 0.14
+            },
+            "guardian": {
+              "damageReduction": 0.056
+            },
+            "mystic": {
+              "splashDamage": 0.14
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 15,
           "Parameters": 42,
-          "GoldCost": 44300,
+          "GoldCost": 53000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.03
+            },
+            "skirmisher": {
+              "range": 60,
+              "criticalChance": 0.03
+            },
+            "vanguard": {
+              "move": 0.06,
+              "attackRate": 0.03
+            },
+            "bruiser": {
+              "attackRate": 0.03,
+              "criticalDamage": 0.15
+            },
+            "guardian": {
+              "damageReduction": 0.06
+            },
+            "mystic": {
+              "splashDamage": 0.15
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 16,
           "Parameters": 44,
-          "GoldCost": 50500,
+          "GoldCost": 56500,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.032
+            },
+            "skirmisher": {
+              "range": 64,
+              "criticalChance": 0.032
+            },
+            "vanguard": {
+              "move": 0.064,
+              "attackRate": 0.032
+            },
+            "bruiser": {
+              "attackRate": 0.032,
+              "criticalDamage": 0.16
+            },
+            "guardian": {
+              "damageReduction": 0.064
+            },
+            "mystic": {
+              "splashDamage": 0.16
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 17,
           "Parameters": 46,
-          "GoldCost": 57100,
+          "GoldCost": 64500,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.034
+            },
+            "skirmisher": {
+              "range": 68,
+              "criticalChance": 0.034
+            },
+            "vanguard": {
+              "move": 0.068,
+              "attackRate": 0.034
+            },
+            "bruiser": {
+              "attackRate": 0.034,
+              "criticalDamage": 0.17
+            },
+            "guardian": {
+              "damageReduction": 0.068
+            },
+            "mystic": {
+              "splashDamage": 0.17
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 18,
           "Parameters": 47,
-          "GoldCost": 64200,
+          "GoldCost": 69000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.036
+            },
+            "skirmisher": {
+              "range": 72,
+              "criticalChance": 0.036
+            },
+            "vanguard": {
+              "move": 0.072,
+              "attackRate": 0.036
+            },
+            "bruiser": {
+              "attackRate": 0.036,
+              "criticalDamage": 0.18
+            },
+            "guardian": {
+              "damageReduction": 0.072
+            },
+            "mystic": {
+              "splashDamage": 0.18
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 19,
           "Parameters": 49,
-          "GoldCost": 71700,
+          "GoldCost": 78000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.038
+            },
+            "skirmisher": {
+              "range": 76,
+              "criticalChance": 0.038
+            },
+            "vanguard": {
+              "move": 0.076,
+              "attackRate": 0.038
+            },
+            "bruiser": {
+              "attackRate": 0.038,
+              "criticalDamage": 0.19
+            },
+            "guardian": {
+              "damageReduction": 0.076
+            },
+            "mystic": {
+              "splashDamage": 0.19
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.11.equipname]]",
           "Level": 20,
           "Parameters": 51,
-          "GoldCost": 79500,
+          "GoldCost": 83500,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
+          "EquipSkin": "lv2",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.04
+            },
+            "skirmisher": {
+              "range": 80,
+              "criticalChance": 0.04
+            },
+            "vanguard": {
+              "move": 0.08,
+              "attackRate": 0.04
+            },
+            "bruiser": {
+              "attackRate": 0.04,
+              "criticalDamage": 0.2
+            },
+            "guardian": {
+              "damageReduction": 0.08
+            },
+            "mystic": {
+              "splashDamage": 0.2
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 21,
           "Parameters": 52,
-          "GoldCost": 87800,
+          "GoldCost": 95000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.042
+            },
+            "skirmisher": {
+              "range": 84,
+              "criticalChance": 0.042
+            },
+            "vanguard": {
+              "move": 0.084,
+              "attackRate": 0.042
+            },
+            "bruiser": {
+              "attackRate": 0.042,
+              "criticalDamage": 0.21
+            },
+            "guardian": {
+              "damageReduction": 0.084
+            },
+            "mystic": {
+              "splashDamage": 0.21
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 22,
           "Parameters": 54,
-          "GoldCost": 96600,
+          "GoldCost": 105000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.044
+            },
+            "skirmisher": {
+              "range": 88,
+              "criticalChance": 0.044
+            },
+            "vanguard": {
+              "move": 0.088,
+              "attackRate": 0.044
+            },
+            "bruiser": {
+              "attackRate": 0.044,
+              "criticalDamage": 0.22
+            },
+            "guardian": {
+              "damageReduction": 0.088
+            },
+            "mystic": {
+              "splashDamage": 0.22
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 23,
           "Parameters": 55,
-          "GoldCost": 105700,
+          "GoldCost": 115000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.046
+            },
+            "skirmisher": {
+              "range": 92,
+              "criticalChance": 0.046
+            },
+            "vanguard": {
+              "move": 0.092,
+              "attackRate": 0.046
+            },
+            "bruiser": {
+              "attackRate": 0.046,
+              "criticalDamage": 0.23
+            },
+            "guardian": {
+              "damageReduction": 0.092
+            },
+            "mystic": {
+              "splashDamage": 0.23
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 24,
           "Parameters": 57,
-          "GoldCost": 115200,
+          "GoldCost": 120000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.048
+            },
+            "skirmisher": {
+              "range": 96,
+              "criticalChance": 0.048
+            },
+            "vanguard": {
+              "move": 0.096,
+              "attackRate": 0.048
+            },
+            "bruiser": {
+              "attackRate": 0.048,
+              "criticalDamage": 0.24
+            },
+            "guardian": {
+              "damageReduction": 0.096
+            },
+            "mystic": {
+              "splashDamage": 0.24
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 25,
           "Parameters": 59,
-          "GoldCost": 125200,
+          "GoldCost": 130000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.05
+            },
+            "skirmisher": {
+              "range": 100,
+              "criticalChance": 0.05
+            },
+            "vanguard": {
+              "move": 0.1,
+              "attackRate": 0.05
+            },
+            "bruiser": {
+              "attackRate": 0.05,
+              "criticalDamage": 0.25
+            },
+            "guardian": {
+              "damageReduction": 0.1
+            },
+            "mystic": {
+              "splashDamage": 0.25
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 26,
           "Parameters": 60,
-          "GoldCost": 135600,
+          "GoldCost": 140000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.052
+            },
+            "skirmisher": {
+              "range": 104,
+              "criticalChance": 0.052
+            },
+            "vanguard": {
+              "move": 0.104,
+              "attackRate": 0.052
+            },
+            "bruiser": {
+              "attackRate": 0.052,
+              "criticalDamage": 0.26
+            },
+            "guardian": {
+              "damageReduction": 0.104
+            },
+            "mystic": {
+              "splashDamage": 0.26
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 27,
           "Parameters": 62,
-          "GoldCost": 146400,
+          "GoldCost": 150000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.054
+            },
+            "skirmisher": {
+              "range": 108,
+              "criticalChance": 0.054
+            },
+            "vanguard": {
+              "move": 0.108,
+              "attackRate": 0.054
+            },
+            "bruiser": {
+              "attackRate": 0.054,
+              "criticalDamage": 0.27
+            },
+            "guardian": {
+              "damageReduction": 0.108
+            },
+            "mystic": {
+              "splashDamage": 0.27
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 28,
           "Parameters": 64,
-          "GoldCost": 157600,
+          "GoldCost": 160000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.056
+            },
+            "skirmisher": {
+              "range": 112,
+              "criticalChance": 0.056
+            },
+            "vanguard": {
+              "move": 0.112,
+              "attackRate": 0.056
+            },
+            "bruiser": {
+              "attackRate": 0.056,
+              "criticalDamage": 0.28
+            },
+            "guardian": {
+              "damageReduction": 0.112
+            },
+            "mystic": {
+              "splashDamage": 0.28
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 29,
           "Parameters": 65,
-          "GoldCost": 169200,
+          "GoldCost": 170000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.058
+            },
+            "skirmisher": {
+              "range": 116,
+              "criticalChance": 0.058
+            },
+            "vanguard": {
+              "move": 0.116,
+              "attackRate": 0.058
+            },
+            "bruiser": {
+              "attackRate": 0.058,
+              "criticalDamage": 0.29
+            },
+            "guardian": {
+              "damageReduction": 0.116
+            },
+            "mystic": {
+              "splashDamage": 0.29
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipment.blue.3]]",
           "Level": 30,
           "Parameters": 67,
-          "GoldCost": 181200,
+          "GoldCost": 185000,
           "Image": "wg_rw_j2",
           "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipSkin": "lv_blue",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.06
+            },
+            "skirmisher": {
+              "range": 120,
+              "criticalChance": 0.06
+            },
+            "vanguard": {
+              "move": 0.12,
+              "attackRate": 0.06
+            },
+            "bruiser": {
+              "attackRate": 0.06,
+              "criticalDamage": 0.3
+            },
+            "guardian": {
+              "damageReduction": 0.12
+            },
+            "mystic": {
+              "splashDamage": 0.3
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 31,
           "Parameters": 68,
-          "GoldCost": 193700,
+          "GoldCost": 195000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.062
+            },
+            "skirmisher": {
+              "range": 124,
+              "criticalChance": 0.062
+            },
+            "vanguard": {
+              "move": 0.124,
+              "attackRate": 0.062
+            },
+            "bruiser": {
+              "attackRate": 0.062,
+              "criticalDamage": 0.31
+            },
+            "guardian": {
+              "damageReduction": 0.124
+            },
+            "mystic": {
+              "splashDamage": 0.31
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 32,
           "Parameters": 70,
-          "GoldCost": 206500,
+          "GoldCost": 215000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.064
+            },
+            "skirmisher": {
+              "range": 128,
+              "criticalChance": 0.064
+            },
+            "vanguard": {
+              "move": 0.128,
+              "attackRate": 0.064
+            },
+            "bruiser": {
+              "attackRate": 0.064,
+              "criticalDamage": 0.32
+            },
+            "guardian": {
+              "damageReduction": 0.128
+            },
+            "mystic": {
+              "splashDamage": 0.32
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 33,
           "Parameters": 72,
-          "GoldCost": 219800,
+          "GoldCost": 220000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.066
+            },
+            "skirmisher": {
+              "range": 132,
+              "criticalChance": 0.066
+            },
+            "vanguard": {
+              "move": 0.132,
+              "attackRate": 0.066
+            },
+            "bruiser": {
+              "attackRate": 0.066,
+              "criticalDamage": 0.33
+            },
+            "guardian": {
+              "damageReduction": 0.132
+            },
+            "mystic": {
+              "splashDamage": 0.33
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 34,
           "Parameters": 73,
-          "GoldCost": 233500,
+          "GoldCost": 240000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.068
+            },
+            "skirmisher": {
+              "range": 136,
+              "criticalChance": 0.068
+            },
+            "vanguard": {
+              "move": 0.136,
+              "attackRate": 0.068
+            },
+            "bruiser": {
+              "attackRate": 0.068,
+              "criticalDamage": 0.34
+            },
+            "guardian": {
+              "damageReduction": 0.136
+            },
+            "mystic": {
+              "splashDamage": 0.34
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 35,
           "Parameters": 75,
-          "GoldCost": 247600,
+          "GoldCost": 245000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.07
+            },
+            "skirmisher": {
+              "range": 140,
+              "criticalChance": 0.07
+            },
+            "vanguard": {
+              "move": 0.14,
+              "attackRate": 0.07
+            },
+            "bruiser": {
+              "attackRate": 0.07,
+              "criticalDamage": 0.35
+            },
+            "guardian": {
+              "damageReduction": 0.14
+            },
+            "mystic": {
+              "splashDamage": 0.35
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 36,
           "Parameters": 77,
-          "GoldCost": 262100,
+          "GoldCost": 265000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.072
+            },
+            "skirmisher": {
+              "range": 144,
+              "criticalChance": 0.072
+            },
+            "vanguard": {
+              "move": 0.144,
+              "attackRate": 0.072
+            },
+            "bruiser": {
+              "attackRate": 0.072,
+              "criticalDamage": 0.36
+            },
+            "guardian": {
+              "damageReduction": 0.144
+            },
+            "mystic": {
+              "splashDamage": 0.36
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 37,
           "Parameters": 78,
-          "GoldCost": 277100,
+          "GoldCost": 270000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.074
+            },
+            "skirmisher": {
+              "range": 148,
+              "criticalChance": 0.074
+            },
+            "vanguard": {
+              "move": 0.148,
+              "attackRate": 0.074
+            },
+            "bruiser": {
+              "attackRate": 0.074,
+              "criticalDamage": 0.37
+            },
+            "guardian": {
+              "damageReduction": 0.148
+            },
+            "mystic": {
+              "splashDamage": 0.37
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 38,
           "Parameters": 80,
-          "GoldCost": 292400,
+          "GoldCost": 290000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.076
+            },
+            "skirmisher": {
+              "range": 152,
+              "criticalChance": 0.076
+            },
+            "vanguard": {
+              "move": 0.152,
+              "attackRate": 0.076
+            },
+            "bruiser": {
+              "attackRate": 0.076,
+              "criticalDamage": 0.38
+            },
+            "guardian": {
+              "damageReduction": 0.152
+            },
+            "mystic": {
+              "splashDamage": 0.38
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 39,
           "Parameters": 82,
-          "GoldCost": 308200,
+          "GoldCost": 300000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.078
+            },
+            "skirmisher": {
+              "range": 156,
+              "criticalChance": 0.078
+            },
+            "vanguard": {
+              "move": 0.156,
+              "attackRate": 0.078
+            },
+            "bruiser": {
+              "attackRate": 0.078,
+              "criticalDamage": 0.39
+            },
+            "guardian": {
+              "damageReduction": 0.156
+            },
+            "mystic": {
+              "splashDamage": 0.39
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.21.equipname]]",
           "Level": 40,
           "Parameters": 83,
-          "GoldCost": 324400,
+          "GoldCost": 330000,
           "Image": "wg_rw_j3",
           "EquipBottom": "wg_rw_zbd3",
-          "EquipSkin": "lv3"
+          "EquipSkin": "lv3",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.08
+            },
+            "skirmisher": {
+              "range": 160,
+              "criticalChance": 0.08
+            },
+            "vanguard": {
+              "move": 0.16,
+              "attackRate": 0.08
+            },
+            "bruiser": {
+              "attackRate": 0.08,
+              "criticalDamage": 0.4
+            },
+            "guardian": {
+              "damageReduction": 0.16
+            },
+            "mystic": {
+              "splashDamage": 0.4
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 41,
           "Parameters": 85,
-          "GoldCost": 341000,
+          "GoldCost": 335000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.082
+            },
+            "skirmisher": {
+              "range": 164,
+              "criticalChance": 0.082
+            },
+            "vanguard": {
+              "move": 0.164,
+              "attackRate": 0.082
+            },
+            "bruiser": {
+              "attackRate": 0.082,
+              "criticalDamage": 0.41
+            },
+            "guardian": {
+              "damageReduction": 0.164
+            },
+            "mystic": {
+              "splashDamage": 0.41
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 42,
           "Parameters": 86,
-          "GoldCost": 358000,
+          "GoldCost": 360000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.084
+            },
+            "skirmisher": {
+              "range": 168,
+              "criticalChance": 0.084
+            },
+            "vanguard": {
+              "move": 0.168,
+              "attackRate": 0.084
+            },
+            "bruiser": {
+              "attackRate": 0.084,
+              "criticalDamage": 0.42
+            },
+            "guardian": {
+              "damageReduction": 0.168
+            },
+            "mystic": {
+              "splashDamage": 0.42
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 43,
           "Parameters": 88,
-          "GoldCost": 375400,
+          "GoldCost": 365000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.086
+            },
+            "skirmisher": {
+              "range": 172,
+              "criticalChance": 0.086
+            },
+            "vanguard": {
+              "move": 0.172,
+              "attackRate": 0.086
+            },
+            "bruiser": {
+              "attackRate": 0.086,
+              "criticalDamage": 0.43
+            },
+            "guardian": {
+              "damageReduction": 0.172
+            },
+            "mystic": {
+              "splashDamage": 0.43
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 44,
           "Parameters": 90,
-          "GoldCost": 393300,
+          "GoldCost": 395000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.088
+            },
+            "skirmisher": {
+              "range": 176,
+              "criticalChance": 0.088
+            },
+            "vanguard": {
+              "move": 0.176,
+              "attackRate": 0.088
+            },
+            "bruiser": {
+              "attackRate": 0.088,
+              "criticalDamage": 0.44
+            },
+            "guardian": {
+              "damageReduction": 0.176
+            },
+            "mystic": {
+              "splashDamage": 0.44
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 45,
           "Parameters": 91,
-          "GoldCost": 411500,
+          "GoldCost": 395000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.09
+            },
+            "skirmisher": {
+              "range": 180,
+              "criticalChance": 0.09
+            },
+            "vanguard": {
+              "move": 0.18,
+              "attackRate": 0.09
+            },
+            "bruiser": {
+              "attackRate": 0.09,
+              "criticalDamage": 0.45
+            },
+            "guardian": {
+              "damageReduction": 0.18
+            },
+            "mystic": {
+              "splashDamage": 0.45
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 46,
           "Parameters": 93,
-          "GoldCost": 430200,
+          "GoldCost": 430000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.092
+            },
+            "skirmisher": {
+              "range": 184,
+              "criticalChance": 0.092
+            },
+            "vanguard": {
+              "move": 0.184,
+              "attackRate": 0.092
+            },
+            "bruiser": {
+              "attackRate": 0.092,
+              "criticalDamage": 0.46
+            },
+            "guardian": {
+              "damageReduction": 0.184
+            },
+            "mystic": {
+              "splashDamage": 0.46
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 47,
           "Parameters": 95,
-          "GoldCost": 449300,
+          "GoldCost": 430000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.094
+            },
+            "skirmisher": {
+              "range": 188,
+              "criticalChance": 0.094
+            },
+            "vanguard": {
+              "move": 0.188,
+              "attackRate": 0.094
+            },
+            "bruiser": {
+              "attackRate": 0.094,
+              "criticalDamage": 0.47
+            },
+            "guardian": {
+              "damageReduction": 0.188
+            },
+            "mystic": {
+              "splashDamage": 0.47
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 48,
           "Parameters": 96,
-          "GoldCost": 468800,
+          "GoldCost": 465000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.096
+            },
+            "skirmisher": {
+              "range": 192,
+              "criticalChance": 0.096
+            },
+            "vanguard": {
+              "move": 0.192,
+              "attackRate": 0.096
+            },
+            "bruiser": {
+              "attackRate": 0.096,
+              "criticalDamage": 0.48
+            },
+            "guardian": {
+              "damageReduction": 0.192
+            },
+            "mystic": {
+              "splashDamage": 0.48
+            }
+          }
         },
         {
           "ID": 3,
           "EquipName": "[[loc:data.equipcfg.3.levelinfo.31.equipname]]",
           "Level": 49,
           "Parameters": 98,
-          "GoldCost": 488700,
+          "GoldCost": 465000,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.098
+            },
+            "skirmisher": {
+              "range": 196,
+              "criticalChance": 0.098
+            },
+            "vanguard": {
+              "move": 0.196,
+              "attackRate": 0.098
+            },
+            "bruiser": {
+              "attackRate": 0.098,
+              "criticalDamage": 0.49
+            },
+            "guardian": {
+              "damageReduction": 0.196
+            },
+            "mystic": {
+              "splashDamage": 0.49
+            }
+          }
         },
         {
           "ID": 3,
@@ -5792,7 +7056,30 @@
           "GoldCost": 0,
           "Image": "wg_rw_j4",
           "EquipBottom": "wg_rw_zbd4",
-          "EquipSkin": "lv4"
+          "EquipSkin": "lv4",
+          "SecondaryStats": {
+            "fighter": {
+              "lifeSteal": 0.1
+            },
+            "skirmisher": {
+              "range": 200,
+              "criticalChance": 0.1
+            },
+            "vanguard": {
+              "move": 0.2,
+              "attackRate": 0.1
+            },
+            "bruiser": {
+              "attackRate": 0.1,
+              "criticalDamage": 0.5
+            },
+            "guardian": {
+              "damageReduction": 0.2
+            },
+            "mystic": {
+              "splashDamage": 0.5
+            }
+          }
         }
       ]
     },
@@ -5809,8 +7096,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 1,
-          "Parameters": 300,
-          "GoldCost": 16000,
+          "Parameters": 2,
+          "GoldCost": 650,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5819,8 +7106,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 2,
-          "Parameters": 309,
-          "GoldCost": 20000,
+          "Parameters": 4,
+          "GoldCost": 1100,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5829,8 +7116,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 3,
-          "Parameters": 317,
-          "GoldCost": 26500,
+          "Parameters": 6,
+          "GoldCost": 1900,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5839,8 +7126,8 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 4,
-          "Parameters": 325,
-          "GoldCost": 35500,
+          "Parameters": 8,
+          "GoldCost": 3200,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5849,8 +7136,58 @@
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
           "Level": 5,
-          "Parameters": 334,
-          "GoldCost": 48500,
+          "Parameters": 10,
+          "GoldCost": 4800,
+          "Image": "wg_rw_gj1",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv1"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
+          "Level": 6,
+          "Parameters": 12,
+          "GoldCost": 6900,
+          "Image": "wg_rw_gj1",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv1"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
+          "Level": 7,
+          "Parameters": 14,
+          "GoldCost": 9400,
+          "Image": "wg_rw_gj1",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv1"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
+          "Level": 8,
+          "Parameters": 16,
+          "GoldCost": 12300,
+          "Image": "wg_rw_gj1",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv1"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
+          "Level": 9,
+          "Parameters": 18,
+          "GoldCost": 15600,
+          "Image": "wg_rw_gj1",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv1"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.1.equipname]]",
+          "Level": 10,
+          "Parameters": 20,
+          "GoldCost": 19400,
           "Image": "wg_rw_gj1",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv1"
@@ -5858,89 +7195,109 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
-          "Level": 6,
-          "Parameters": 342,
-          "GoldCost": 69000,
-          "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
-        },
-        {
-          "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
-          "Level": 7,
-          "Parameters": 350,
-          "GoldCost": 88500,
-          "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
-        },
-        {
-          "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
-          "Level": 8,
-          "Parameters": 358,
-          "GoldCost": 115000,
-          "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
-        },
-        {
-          "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
-          "Level": 9,
-          "Parameters": 367,
-          "GoldCost": 140000,
-          "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
-        },
-        {
-          "ID": 4,
-          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
-          "Level": 10,
-          "Parameters": 375,
-          "GoldCost": 170000,
-          "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd2",
-          "EquipSkin": "lv2"
-        },
-        {
-          "ID": 4,
-          "EquipName": "[[loc:data.equipment.blue.4]]",
           "Level": 11,
-          "Parameters": 383,
-          "GoldCost": 210000,
+          "Parameters": 22,
+          "GoldCost": 23500,
           "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 12,
-          "Parameters": 392,
-          "GoldCost": 245000,
+          "Parameters": 24,
+          "GoldCost": 28100,
           "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 13,
-          "Parameters": 400,
-          "GoldCost": 280000,
+          "Parameters": 26,
+          "GoldCost": 33100,
           "Image": "wg_rw_gj2",
-          "EquipBottom": "wg_rw_zbd",
-          "EquipSkin": "lv_blue"
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
         },
         {
           "ID": 4,
-          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
           "Level": 14,
-          "Parameters": 408,
-          "GoldCost": 320000,
+          "Parameters": 28,
+          "GoldCost": 38500,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
+          "Level": 15,
+          "Parameters": 30,
+          "GoldCost": 44300,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
+          "Level": 16,
+          "Parameters": 32,
+          "GoldCost": 50500,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
+          "Level": 17,
+          "Parameters": 34,
+          "GoldCost": 57100,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
+          "Level": 18,
+          "Parameters": 36,
+          "GoldCost": 64200,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
+          "Level": 19,
+          "Parameters": 38,
+          "GoldCost": 71700,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.6.equipname]]",
+          "Level": 20,
+          "Parameters": 40,
+          "GoldCost": 79500,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd2",
+          "EquipSkin": "lv2"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 21,
+          "Parameters": 42,
+          "GoldCost": 87800,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue"
@@ -5948,9 +7305,89 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipment.blue.4]]",
-          "Level": 15,
-          "Parameters": 417,
-          "GoldCost": 375000,
+          "Level": 22,
+          "Parameters": 44,
+          "GoldCost": 96600,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 23,
+          "Parameters": 46,
+          "GoldCost": 105700,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 24,
+          "Parameters": 48,
+          "GoldCost": 115200,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 25,
+          "Parameters": 50,
+          "GoldCost": 125200,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 26,
+          "Parameters": 52,
+          "GoldCost": 135600,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 27,
+          "Parameters": 54,
+          "GoldCost": 146400,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 28,
+          "Parameters": 56,
+          "GoldCost": 157600,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 29,
+          "Parameters": 58,
+          "GoldCost": 169200,
+          "Image": "wg_rw_gj2",
+          "EquipBottom": "wg_rw_zbd",
+          "EquipSkin": "lv_blue"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipment.blue.4]]",
+          "Level": 30,
+          "Parameters": 60,
+          "GoldCost": 181200,
           "Image": "wg_rw_gj2",
           "EquipBottom": "wg_rw_zbd",
           "EquipSkin": "lv_blue"
@@ -5958,9 +7395,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
-          "Level": 16,
-          "Parameters": 425,
-          "GoldCost": 430000,
+          "Level": 31,
+          "Parameters": 62,
+          "GoldCost": 193700,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5968,9 +7405,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
-          "Level": 17,
-          "Parameters": 433,
-          "GoldCost": 480000,
+          "Level": 32,
+          "Parameters": 64,
+          "GoldCost": 206500,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5978,9 +7415,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
-          "Level": 18,
-          "Parameters": 442,
-          "GoldCost": 535000,
+          "Level": 33,
+          "Parameters": 66,
+          "GoldCost": 219800,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5988,9 +7425,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
-          "Level": 19,
-          "Parameters": 450,
-          "GoldCost": 590000,
+          "Level": 34,
+          "Parameters": 68,
+          "GoldCost": 233500,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -5998,9 +7435,59 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
-          "Level": 20,
-          "Parameters": 458,
-          "GoldCost": 665000,
+          "Level": 35,
+          "Parameters": 70,
+          "GoldCost": 247600,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 36,
+          "Parameters": 72,
+          "GoldCost": 262100,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 37,
+          "Parameters": 74,
+          "GoldCost": 277100,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 38,
+          "Parameters": 76,
+          "GoldCost": 292400,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 39,
+          "Parameters": 78,
+          "GoldCost": 308200,
+          "Image": "wg_rw_gj3",
+          "EquipBottom": "wg_rw_zbd3",
+          "EquipSkin": "lv3"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.11.equipname]]",
+          "Level": 40,
+          "Parameters": 80,
+          "GoldCost": 324400,
           "Image": "wg_rw_gj3",
           "EquipBottom": "wg_rw_zbd3",
           "EquipSkin": "lv3"
@@ -6008,9 +7495,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 21,
-          "Parameters": 466,
-          "GoldCost": 735000,
+          "Level": 41,
+          "Parameters": 82,
+          "GoldCost": 341000,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -6018,9 +7505,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 22,
-          "Parameters": 475,
-          "GoldCost": 800000,
+          "Level": 42,
+          "Parameters": 84,
+          "GoldCost": 358000,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -6028,9 +7515,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 23,
-          "Parameters": 483,
-          "GoldCost": 870000,
+          "Level": 43,
+          "Parameters": 86,
+          "GoldCost": 375400,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -6038,9 +7525,9 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 24,
-          "Parameters": 491,
-          "GoldCost": 945000,
+          "Level": 44,
+          "Parameters": 88,
+          "GoldCost": 393300,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
           "EquipSkin": "lv4"
@@ -6048,8 +7535,58 @@
         {
           "ID": 4,
           "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
-          "Level": 25,
-          "Parameters": 500,
+          "Level": 45,
+          "Parameters": 90,
+          "GoldCost": 411500,
+          "Image": "wg_rw_gj4",
+          "EquipBottom": "wg_rw_zbd4",
+          "EquipSkin": "lv4"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
+          "Level": 46,
+          "Parameters": 92,
+          "GoldCost": 430200,
+          "Image": "wg_rw_gj4",
+          "EquipBottom": "wg_rw_zbd4",
+          "EquipSkin": "lv4"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
+          "Level": 47,
+          "Parameters": 94,
+          "GoldCost": 449300,
+          "Image": "wg_rw_gj4",
+          "EquipBottom": "wg_rw_zbd4",
+          "EquipSkin": "lv4"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
+          "Level": 48,
+          "Parameters": 96,
+          "GoldCost": 468800,
+          "Image": "wg_rw_gj4",
+          "EquipBottom": "wg_rw_zbd4",
+          "EquipSkin": "lv4"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
+          "Level": 49,
+          "Parameters": 98,
+          "GoldCost": 488700,
+          "Image": "wg_rw_gj4",
+          "EquipBottom": "wg_rw_zbd4",
+          "EquipSkin": "lv4"
+        },
+        {
+          "ID": 4,
+          "EquipName": "[[loc:data.equipcfg.4.levelinfo.16.equipname]]",
+          "Level": 50,
+          "Parameters": 100,
           "GoldCost": 0,
           "Image": "wg_rw_gj4",
           "EquipBottom": "wg_rw_zbd4",
@@ -48236,5 +49773,74 @@
         "to": 25
       }
     }
+  },
+  "HeroEquipment": {
+    "version": 1,
+    "baseRange": 300,
+    "splashRadius": 100,
+    "migration": {
+      "mainLevels": 25,
+      "damage": [
+        20,
+        21,
+        23,
+        24,
+        26,
+        28,
+        29,
+        31,
+        33,
+        34,
+        36,
+        37,
+        39,
+        41,
+        42,
+        44,
+        46,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        57,
+        59,
+        60,
+        62,
+        64,
+        65,
+        67,
+        68,
+        70,
+        72,
+        73,
+        75,
+        77,
+        78,
+        80,
+        82,
+        83,
+        85,
+        86,
+        88,
+        90,
+        91,
+        93,
+        95,
+        96,
+        98,
+        100
+      ]
+    },
+    "damageMultipliers": {
+      "skirmisher": 1,
+      "fighter": 1.3,
+      "vanguard": 1.2,
+      "bruiser": 1.5,
+      "guardian": 1.15,
+      "mystic": 0.85
+    },
+    "upgradePricingVersion": 1
   }
 }

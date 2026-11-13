@@ -263,6 +263,7 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     for (var r = 0; r < this.nodeInfo.length; r++) {
       a(r);
     }
+    this.nodeInfo.forEach(function (row) { o.renderWeaponUpgrade(row); });
     this.refreshCombatPower();
     if (cc.resources) require("CharacterAppearance").reset(this);
     this.ctrPlayAni.initView();
@@ -275,6 +276,19 @@ var def_KinghtFallHomePersonCtrl = function (t) {
     var power = require("HeroLoadout").calculate(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), undefined, timing);
     this._combatPower = power;
     this.labPower.string = power.reason ? "—" : $z1KinghtFallModle.default.getInstance().numberFomat(Math.round(power.cp * 100) / 100);
+    if (require("HeroEquipmentStats").enabled(powerConfig)) {
+      var stats = require("HeroLoadout").snapshot(powerConfig, $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(), timing);
+      [stats.health,stats.regen,stats.damage,stats.range,stats.attackRate,stats.move].forEach(function(value,index){if(this.labNum[index])this.labNum[index].string=String(Number(value.toFixed(2)));},this);
+    }
+  };
+  _ctor.prototype.renderWeaponUpgrade = function (row) {
+    var Stats=require("HeroEquipmentStats"),manager=$z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance(),config=manager.data;
+    if(!Stats.enabled(config)||(row.type!==3&&row.type!==4))return;
+    var user=$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData(),style=user.getHeroWeapon().id,level=user.getPersonLevel(row.type),layout=row.ndInfo.getChildByName("ndLay"),current=Stats.fields(config,row.type,level,style),next=level<row.cfg.levelInfo.length?Stats.fields(config,row.type,level+1,style):null;
+    if(row.type===4){layout.getChildByName("labStat").getComponent(cc.Label).string="Attack Damage";layout.getChildByName("labNum1").getComponent(cc.Label).string=Stats.formatted(current[0]);if(next)layout.getChildByName("labNum2").getComponent(cc.Label).string=Stats.formatted(next[0]);return;}
+    ["labStat","labNum1","labNum2","ndArr"].forEach(function(name){layout.getChildByName(name).active=false;});
+    var holder=layout.getChildByName("Secondary bonuses");if(!holder){holder=new cc.Node("Secondary bonuses");holder.setParent(layout);}holder.destroyAllChildren();holder.removeAllChildren();
+    current.forEach(function(field,index){var node=new cc.Node(field.key);node.setParent(holder);node.anchorX=0;node.setPosition(-198,-24-index*40);node.setContentSize(300,36);var label=node.addComponent(cc.Label);label.fontSize=32;label.lineHeight=36;label.overflow=cc.Label.Overflow.SHRINK;label.horizontalAlign=cc.Label.HorizontalAlign.LEFT;label.verticalAlign=cc.Label.VerticalAlign.CENTER;label.string=field.label+": "+Stats.formatted(field)+(next?" → "+Stats.formatted(next[index]):"");node.color=cc.color("#667b93");});
   };
   _ctor.prototype.initBtnView = function () {
     var t = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().getGoldNum();

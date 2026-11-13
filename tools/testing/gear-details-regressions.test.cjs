@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const {test}=require('node:test');
 const root=path.resolve(__dirname,'../..');
 function fixture(){
-  const data=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json')));
+  const data=require('./fixtures/legacy-hero-config.cjs')();
   const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab')));
   const Weapons=require('../../assets/_script/HeroWeapons'),levels=[10,2,1,1,1,1],user={data:{personLevel:levels},getGoldNum:()=>100000,getMaxStage:()=>2,getMaxOrder:()=>1,getPersonLevel:id=>Weapons.level(user.data,id),getHeroWeapon:()=>Weapons.selected(user.data),getHeroWeaponLevel:(style,id)=>Weapons.level(user.data,id,style)};
   const Label=function(){},Sprite=function(){},Button=function(){},noop=()=>{};
@@ -18,6 +18,7 @@ function fixture(){
   const deps={BaseCtrl:{default:function(){}},BaseButton:{BaseButton:Button},Utils:{Utils:{StringFormat:(text,value)=>text+value}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},KinghtFallEnum:{KinghtFallEnumEquipEnum:{Body:1,Head:2,Arrow:3,Bow:4,Gloves:5,horse:6}},KinghtFallConfig:{KinghtFallBundelName:{IconCharacter:'icons',IconGood:'goods'}},KinghtFallTextConfig:{KinghtFallTextConfig:{HomeTrea02:'level',HomePerson04:'locked'}}};
   deps.KinghtFallModle={default:{getInstance:()=>({numberFomat:String})}};
   deps.HeroWeapons=require('../../assets/_script/HeroWeapons');
+  deps.HeroEquipmentStats=require('../../assets/_script/HeroEquipmentStats');
   deps.HeroLoadout=require('../../assets/_script/HeroLoadout');
   deps.KinghtFallDataMgr={KinghtFallDataMgr:{getInstance:()=>({data,getEquipCfgList:()=>data.EquipCfg})}};
   const context={exports:{},require:id=>deps[id]||{},cc:{_decorator:{ccclass:x=>x,property:()=>noop},Label,Sprite,Node:{EventType:{TOUCH_END:'tap'}},ScrollView:function(){}},sp:{Skeleton:function(){}},__extends(C,B){C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(decorators,value)=>value};

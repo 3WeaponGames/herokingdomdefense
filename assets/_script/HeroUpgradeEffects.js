@@ -163,7 +163,8 @@ function evaluate(loadout, assumptions) {
   var chainDps = loadout.damage * close * attackRate * effect(ledger, "chainDamage") / 8 * Math.min(2, a.splashTargets);
   var pierceDps = noncriticalPrimary * attackRate * effect(ledger, "pierceDamage") * Math.min(1, a.splashTargets);
   var cleaveDps = noncriticalPrimary * attackRate * effect(ledger, "cleaveDamage") * Math.min(1, a.splashTargets);
-  var ranged = effect(ledger, "rangedReduction"), moving = effect(ledger, "movingReduction"), stationary = effect(ledger, "stationaryReduction"), flat = effect(ledger, "armyMeleeReduction");
+  var gear = loadout.secondary || {}, equipmentSplashDps = primaryDps * (gear.splashDamage || 0) * a.splashTargets;
+  var ranged = effect(ledger, "rangedReduction"), moving = effect(ledger, "movingReduction"), stationary = effect(ledger, "stationaryReduction"), flat = effect(ledger, "armyMeleeReduction") + (gear.damageReduction || 0);
   var stillRanged = Math.min(.8, flat + ranged + stationary), movingRanged = Math.min(.8, flat + ranged + moving), movingMelee = Math.min(.8, flat + moving), stillMelee = Math.min(.8, flat + stationary);
   // Clamp each encounter state before averaging. Averaging reductions first
   // would overvalue overlapping defenses near the runtime's 80% cap.
@@ -186,8 +187,9 @@ function evaluate(loadout, assumptions) {
   // Waves without enough incoming damage to cross 30% HP receive no credit.
   var emergencyHealingHps = (afterDefense * (1 - shieldFraction) - barrierPreventedDps) * a.heroWaveSeconds > loadout.health * .7 ? loadout.health * effect(ledger, "emergencyHealing") / a.heroWaveSeconds * a.heroTriggeredHealingUtilization : 0;
   var waveHealingHps = 0;
-  var regenerationHps = loadout.regen * a.heroHealingUtilization, healingHps = regenerationHps + killHealingHps + emergencyHealingHps;
-  return { directDps: directDps, primaryDps: primaryDps, echoDps: echoDps, splashDps: chainDps + pierceDps + cleaveDps, chainDps: chainDps, pierceDps: pierceDps, cleaveDps: cleaveDps,
+  var lifeStealHps = primaryDps * (gear.lifeSteal || 0) * a.heroTriggeredHealingUtilization;
+  var regenerationHps = loadout.regen * a.heroHealingUtilization, healingHps = regenerationHps + killHealingHps + emergencyHealingHps + lifeStealHps;
+  return { directDps: directDps, primaryDps: primaryDps, echoDps: echoDps, splashDps: chainDps + pierceDps + cleaveDps + equipmentSplashDps, equipmentSplashDps: equipmentSplashDps, lifeStealHps: lifeStealHps, chainDps: chainDps, pierceDps: pierceDps, cleaveDps: cleaveDps,
     reflectionDps: reflectionDps, preventedDps: preventedDps, healingHps: healingHps, regenerationHps: regenerationHps,
     killHealingHps: killHealingHps, emergencyHealingHps: emergencyHealingHps, waveHealingHps: waveHealingHps, averageReduction: averageReduction,
     barrierPreventedDps: barrierPreventedDps, hasteUptime: hasteUptime, effectiveRelicAttackRate: attackRate,

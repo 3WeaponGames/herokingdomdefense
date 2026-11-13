@@ -106,6 +106,7 @@ var def_KinghtFallBuildWall = function (t) {
     return false;
   };
   _ctor.prototype.setLevel = function (e) {
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._wallRunRuntime || this.ndAniMain && this.ndAniMain.skeletonData && this.ndAniMain.skeletonData.skeletonJson && this.ndAniMain.skeletonData.skeletonJson.wallKit) require("WallRunRuntime").apply(this, e);
     if (this.wallFacing || this._gateFacingRuntime) require("GateFacingRuntime").apply(this);
@@ -178,6 +179,7 @@ var def_KinghtFallBuildWall = function (t) {
     }
   };
   _ctor.prototype.doUpgreadAni = function () {
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     var t = this;
     if (this.buildCfg.levelList.some(function (row) {return !!row.PurchaseField;}) || this._purchaseFieldRuntime) require("BuildingPurchaseFieldRuntime").apply(this);
     if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.Blocker || this._buildingBlockerRuntime) require("BuildingBlockerRuntime").apply(this);
@@ -215,6 +217,7 @@ var def_KinghtFallBuildWall = function (t) {
         });
       });
     }
+    if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
   };
   _ctor.prototype.onAttacked = function (t) {
     var e = this;
@@ -248,6 +251,7 @@ var def_KinghtFallBuildWall = function (t) {
     $z1UIMgr.UIMgr.getInstance().openUI($z1Config.UIID.UITips, $z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.Game01), this.T(this.buildCfg.name)));
   };
   _ctor.prototype.onDestroy = function () {
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._gateFacingRuntime) require("GateFacingRuntime").dispose(this);
     if (this._wallRunRuntime) require("WallRunRuntime").dispose(this);

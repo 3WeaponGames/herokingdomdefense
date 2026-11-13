@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),{test}=require('node:test');
-const Config={...require('../../assets/KinghtFallConfig/GameJsonCfg.json'),GameTools:{}},Effects=require('../../assets/_script/HeroUpgradeEffects'),Loadout=require('../../assets/_script/HeroLoadout'),Core=require('../../assets/_script/CombatPower');
+const Config={...require('./fixtures/legacy-hero-config.cjs')(),GameTools:{}},Effects=require('../../assets/_script/HeroUpgradeEffects'),Loadout=require('../../assets/_script/HeroLoadout'),Core=require('../../assets/_script/CombatPower');
 const clone=value=>structuredClone(value),close=(a,b)=>assert(Math.abs(a-b)<=Math.max(1,Math.abs(b))*1e-10,`${a} != ${b}`);
 function user(ids=[],style='fighter',level=1){return{personLevel:[1,1,1,1,1,1],heroWeapon:{selected:style,levels:{[style]:{3:1,4:1}}},treasureInfo:ids.map(id=>({id,level}))};}
 function set(config,id,value){config.TreasureCfg.find(row=>row.ID===id).levelInfo[0].param[0]=value;}

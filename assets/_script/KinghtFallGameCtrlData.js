@@ -210,6 +210,7 @@ var def_KinghtFallGameCtrlData = function () {
     if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };
   _ctor.prototype.onRestart = function (t) {
+    delete this._millIncomeSnapshot;
     delete this._relicArmyBanner;
     var restoring = !t && this._restoringCheckpoint;
     this._restoringCheckpoint = false;
@@ -298,7 +299,32 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
   };
+  _ctor.prototype.captureMillIncome = function () {
+    if (this._millIncomeSnapshot && this._millIncomeSnapshot.round === this.round) return;
+    var income = {};
+    for (var point in this.bulidPointMap) {
+      if (!Object.prototype.hasOwnProperty.call(this.bulidPointMap, point)) continue;
+      var building = this.bulidPointMap[point];
+      if (building.buildInfo && building.buildInfo.cfg && building.buildInfo.cfg.MillDefense) income[point] = building.getGetCoin();
+    }
+    this._millIncomeSnapshot = {round:this.round, income:income};
+  };
+  _ctor.prototype.settleFinalMillIncome = function () {
+    this.captureMillIncome();
+    var snapshot = this._millIncomeSnapshot;
+    if (snapshot.paid) return 0;
+    snapshot.paid = true;
+    var silver = Object.keys(snapshot.income).reduce(function (sum, point) { return sum + snapshot.income[point]; }, 0);
+    if (silver > 0) {
+      this.coin += silver;
+      $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, silver);
+    }
+    return silver;
+  };
   _ctor.prototype.endRoundGame = function () {
+    this.captureMillIncome();
+    var millIncome = this._millIncomeSnapshot.income;
+    delete this._millIncomeSnapshot;
     this.loadMonster();
     var t = [this.baseBuild];
     var e = 0;
@@ -307,10 +333,12 @@ var def_KinghtFallGameCtrlData = function () {
         var i = this.bulidPointMap[n];
         switch (i.buildCfg.enumValue) {
           case $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Mill:
-            if (i.getIsWork()) {
-              e += i.getGetCoin();
+            var fieldMill = i.buildInfo && i.buildInfo.cfg && i.buildInfo.cfg.MillDefense;
+            var millReward = fieldMill ? (millIncome[n] || 0) : i.getIsWork() ? i.getGetCoin() : 0;
+            if (millReward > 0) {
+              e += millReward;
               t.push(i);
-              if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.MillOfAbundance] && Math.random() < this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.MillOfAbundance][0]) {
+              if (!fieldMill && this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.MillOfAbundance] && Math.random() < this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.MillOfAbundance][0]) {
                 e++, $z1LogMgr.LogMgr.getInstance().info("***丰饶之磨");
               }
             }
@@ -419,6 +447,13 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     return t;
+  };
+  _ctor.prototype.getAttackableBuildList = function () {
+    var buildings = this.getBulidList(), targets = buildings.slice();
+    buildings.forEach(function (building) {
+      if (building.getFieldTargets) targets = targets.concat(building.getFieldTargets());
+    });
+    return targets;
   };
   _ctor.prototype.getBaseLevel = function () {
     return this.baseBuild.getLevel();
@@ -541,6 +576,7 @@ var def_KinghtFallGameCtrlData = function () {
     }
     if ((relicCommitReady || !this._roundCompleted) && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
       this._roundCompleted = true;
+      if (this.captureMillIncome) this.captureMillIncome();
       if (require("RelicRuntime").active(this)) {
         var coinBefore = this.coin;
         if (require("RelicBattle").waveCleared(this, this.ctrPar && this.ctrPar.ctrPlay, this.round)) {
@@ -563,6 +599,7 @@ var def_KinghtFallGameCtrlData = function () {
       if (this.round < this.levelCfg.WaveCfg.length) {
         $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RoundEnd);
       } else {
+        if (this.settleFinalMillIncome) this.settleFinalMillIncome();
         $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.GameOver, true);
       }
     }

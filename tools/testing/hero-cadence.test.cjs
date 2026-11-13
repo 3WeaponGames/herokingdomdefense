@@ -1,7 +1,7 @@
 'use strict';
 // Shipped cooldown and release callbacks run against inert scene/audio doubles.
 const assert=require('node:assert/strict'),{test}=require('node:test');
-const Config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Loadout=require('../../assets/_script/HeroLoadout'),Cadence=require('../../assets/_script/CombatCadence');
+const Config=require('./fixtures/legacy-hero-config.cjs')(),Loadout=require('../../assets/_script/HeroLoadout'),Cadence=require('../../assets/_script/CombatCadence');
 const {setup,hero,Node}=require('./backend-gameplay-harness.cjs');
 const user={personLevel:[1,1,1,1,1,1]},close=(a,b,epsilon=1e-10)=>assert(Math.abs(a-b)<epsilon,`${a} != ${b}`);
 function config(settings){return {...Config,GameTools:settings};}

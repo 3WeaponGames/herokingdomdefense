@@ -76,7 +76,7 @@ function describe(service,stage){
    }
    if(building.kind===6)try{WallRun.fitRecord(level,component,effectiveFace,{adjustmentsData:wallAdjustments&&wallAdjustments.data,adjustmentRevision:wallAdjustments&&wallAdjustments.revision});}catch(error){errors.push(error.message);}
    if(row&&row.Shadow){const Shadow=require('../../../assets/_script/BuildingShadow'),main=level.skeletons.find(s=>s.json.wallKit),layout=main&&main.json.wallKit.layout;level.shadow={regions:clone(Shadow.regions(row.Shadow,layout)),opacity:row.Shadow.opacity,matrix:(row.Shadow.body?owner.world:main&&main.matrix||owner.world).slice()};}
-   result.levels[hall]=level;
+   result.levels[hall]=require('../../../assets/_script/BuildingWorldScale').record(level,require('../../../assets/_script/BuildingWorldScale').value(row),false);
   }
  }
  let runtimePath=null;if(needsRuntime)try{runtimePath=Units.enginePath();}catch(error){errors.push(error.message);}

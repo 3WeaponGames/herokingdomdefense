@@ -47,7 +47,13 @@ function create(options){
   for(const d of record.skeletons||[]){const e=cache.get(key(d,runtime)),q=local(d.matrix);if(!e||!e.canvas||!q)continue;const a=e.bounds,x=(q.x-a.minX)/a.width*e.canvas.width,y=(a.maxY-q.y)/a.height*e.canvas.height;if(x>=0&&y>=0&&x<e.canvas.width&&y<e.canvas.height){try{if(e.canvas.getContext('2d').getImageData(Math.floor(x),Math.floor(y),1,1).data[3]>10)return true;}catch(_){return true;}}}
   return false;
  }
+ function measure(record,runtime){
+  const points=[],origin=record.origin||{x:0,y:0},add=(m,a,b,c,d)=>{for(const x of [a,c])for(const y of [b,d])points.push({x:m[0]*x+m[2]*y+m[4]-origin.x,y:m[1]*x+m[3]*y+m[5]-origin.y});};
+  for(const [i,s]of (record.sprites||[]).entries()){if(record.purchaseField&&record.purchaseField.sprites[i])continue;const a=s.anchor||{x:.5,y:0};add(s.matrix,-a.x*s.width,-a.y*s.height,(1-a.x)*s.width,(1-a.y)*s.height);}
+  for(const d of record.skeletons||[]){const entry=cache.get(key(d,runtime));if(entry&&entry.canvas){const b=entry.bounds;add(d.matrix,b.minX,b.maxY-b.height,b.minX+b.width,b.maxY);}}
+  if(!points.length)return null;return{minX:Math.min(...points.map(p=>p.x)),minY:Math.min(...points.map(p=>p.y)),maxX:Math.max(...points.map(p=>p.x)),maxY:Math.max(...points.map(p=>p.y))};
+ }
  function clear(){for(const e of cache.values())release(e);cache.clear();for(const e of shadows.values())release(e);shadows.clear();shadowBytes=0;}
- return {prepare,parts,draw,hit,clear,destroy(){closed=true;clear();},stats:()=>({poses:cache.size,ready:Array.from(cache.values()).filter(e=>e.canvas).length,shadowMasks:shadows.size,shadowBytes})};
+ return {prepare,parts,draw,hit,measure,clear,destroy(){closed=true;clear();},stats:()=>({poses:cache.size,ready:Array.from(cache.values()).filter(e=>e.canvas).length,shadowMasks:shadows.size,shadowBytes})};
 }
 module.exports={create};
