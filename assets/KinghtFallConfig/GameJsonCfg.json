@@ -5442,7 +5442,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.002
+              "healthRegen": 0.1
             },
             "skirmisher": {
               "range": 4,
@@ -5453,8 +5453,7 @@
               "attackRate": 0.002
             },
             "bruiser": {
-              "attackRate": 0.002,
-              "criticalDamage": 0.01
+              "lifeSteal": 0.002
             },
             "guardian": {
               "damageReduction": 0.004
@@ -5475,7 +5474,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.004
+              "healthRegen": 0.2
             },
             "skirmisher": {
               "range": 8,
@@ -5486,8 +5485,7 @@
               "attackRate": 0.004
             },
             "bruiser": {
-              "attackRate": 0.004,
-              "criticalDamage": 0.02
+              "lifeSteal": 0.004
             },
             "guardian": {
               "damageReduction": 0.008
@@ -5508,7 +5506,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.006
+              "healthRegen": 0.3
             },
             "skirmisher": {
               "range": 12,
@@ -5519,8 +5517,7 @@
               "attackRate": 0.006
             },
             "bruiser": {
-              "attackRate": 0.006,
-              "criticalDamage": 0.03
+              "lifeSteal": 0.006
             },
             "guardian": {
               "damageReduction": 0.012
@@ -5541,7 +5538,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.008
+              "healthRegen": 0.4
             },
             "skirmisher": {
               "range": 16,
@@ -5552,8 +5549,7 @@
               "attackRate": 0.008
             },
             "bruiser": {
-              "attackRate": 0.008,
-              "criticalDamage": 0.04
+              "lifeSteal": 0.008
             },
             "guardian": {
               "damageReduction": 0.016
@@ -5574,7 +5570,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.01
+              "healthRegen": 0.5
             },
             "skirmisher": {
               "range": 20,
@@ -5585,8 +5581,7 @@
               "attackRate": 0.01
             },
             "bruiser": {
-              "attackRate": 0.01,
-              "criticalDamage": 0.05
+              "lifeSteal": 0.01
             },
             "guardian": {
               "damageReduction": 0.02
@@ -5607,7 +5602,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.012
+              "healthRegen": 0.6
             },
             "skirmisher": {
               "range": 24,
@@ -5618,8 +5613,7 @@
               "attackRate": 0.012
             },
             "bruiser": {
-              "attackRate": 0.012,
-              "criticalDamage": 0.06
+              "lifeSteal": 0.012
             },
             "guardian": {
               "damageReduction": 0.024
@@ -5640,7 +5634,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.014
+              "healthRegen": 0.7
             },
             "skirmisher": {
               "range": 28,
@@ -5651,8 +5645,7 @@
               "attackRate": 0.014
             },
             "bruiser": {
-              "attackRate": 0.014,
-              "criticalDamage": 0.07
+              "lifeSteal": 0.014
             },
             "guardian": {
               "damageReduction": 0.028
@@ -5673,7 +5666,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.016
+              "healthRegen": 0.8
             },
             "skirmisher": {
               "range": 32,
@@ -5684,8 +5677,7 @@
               "attackRate": 0.016
             },
             "bruiser": {
-              "attackRate": 0.016,
-              "criticalDamage": 0.08
+              "lifeSteal": 0.016
             },
             "guardian": {
               "damageReduction": 0.032
@@ -5706,7 +5698,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.018
+              "healthRegen": 0.9
             },
             "skirmisher": {
               "range": 36,
@@ -5717,8 +5709,7 @@
               "attackRate": 0.018
             },
             "bruiser": {
-              "attackRate": 0.018,
-              "criticalDamage": 0.09
+              "lifeSteal": 0.018
             },
             "guardian": {
               "damageReduction": 0.036
@@ -5739,7 +5730,7 @@
           "EquipSkin": "lv1",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.02
+              "healthRegen": 1
             },
             "skirmisher": {
               "range": 40,
@@ -5750,8 +5741,7 @@
               "attackRate": 0.02
             },
             "bruiser": {
-              "attackRate": 0.02,
-              "criticalDamage": 0.1
+              "lifeSteal": 0.02
             },
             "guardian": {
               "damageReduction": 0.04
@@ -5772,7 +5762,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.022
+              "healthRegen": 1.1
             },
             "skirmisher": {
               "range": 44,
@@ -5783,8 +5773,7 @@
               "attackRate": 0.022
             },
             "bruiser": {
-              "attackRate": 0.022,
-              "criticalDamage": 0.11
+              "lifeSteal": 0.022
             },
             "guardian": {
               "damageReduction": 0.044
@@ -5805,7 +5794,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.024
+              "healthRegen": 1.2
             },
             "skirmisher": {
               "range": 48,
@@ -5816,8 +5805,7 @@
               "attackRate": 0.024
             },
             "bruiser": {
-              "attackRate": 0.024,
-              "criticalDamage": 0.12
+              "lifeSteal": 0.024
             },
             "guardian": {
               "damageReduction": 0.048
@@ -5838,7 +5826,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.026
+              "healthRegen": 1.3
             },
             "skirmisher": {
               "range": 52,
@@ -5849,8 +5837,7 @@
               "attackRate": 0.026
             },
             "bruiser": {
-              "attackRate": 0.026,
-              "criticalDamage": 0.13
+              "lifeSteal": 0.026
             },
             "guardian": {
               "damageReduction": 0.052
@@ -5871,7 +5858,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.028
+              "healthRegen": 1.4
             },
             "skirmisher": {
               "range": 56,
@@ -5882,8 +5869,7 @@
               "attackRate": 0.028
             },
             "bruiser": {
-              "attackRate": 0.028,
-              "criticalDamage": 0.14
+              "lifeSteal": 0.028
             },
             "guardian": {
               "damageReduction": 0.056
@@ -5904,7 +5890,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.03
+              "healthRegen": 1.5
             },
             "skirmisher": {
               "range": 60,
@@ -5915,8 +5901,7 @@
               "attackRate": 0.03
             },
             "bruiser": {
-              "attackRate": 0.03,
-              "criticalDamage": 0.15
+              "lifeSteal": 0.03
             },
             "guardian": {
               "damageReduction": 0.06
@@ -5937,7 +5922,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.032
+              "healthRegen": 1.6
             },
             "skirmisher": {
               "range": 64,
@@ -5948,8 +5933,7 @@
               "attackRate": 0.032
             },
             "bruiser": {
-              "attackRate": 0.032,
-              "criticalDamage": 0.16
+              "lifeSteal": 0.032
             },
             "guardian": {
               "damageReduction": 0.064
@@ -5970,7 +5954,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.034
+              "healthRegen": 1.7
             },
             "skirmisher": {
               "range": 68,
@@ -5981,8 +5965,7 @@
               "attackRate": 0.034
             },
             "bruiser": {
-              "attackRate": 0.034,
-              "criticalDamage": 0.17
+              "lifeSteal": 0.034
             },
             "guardian": {
               "damageReduction": 0.068
@@ -6003,7 +5986,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.036
+              "healthRegen": 1.8
             },
             "skirmisher": {
               "range": 72,
@@ -6014,8 +5997,7 @@
               "attackRate": 0.036
             },
             "bruiser": {
-              "attackRate": 0.036,
-              "criticalDamage": 0.18
+              "lifeSteal": 0.036
             },
             "guardian": {
               "damageReduction": 0.072
@@ -6036,7 +6018,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.038
+              "healthRegen": 1.9
             },
             "skirmisher": {
               "range": 76,
@@ -6047,8 +6029,7 @@
               "attackRate": 0.038
             },
             "bruiser": {
-              "attackRate": 0.038,
-              "criticalDamage": 0.19
+              "lifeSteal": 0.038
             },
             "guardian": {
               "damageReduction": 0.076
@@ -6069,7 +6050,7 @@
           "EquipSkin": "lv2",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.04
+              "healthRegen": 2
             },
             "skirmisher": {
               "range": 80,
@@ -6080,8 +6061,7 @@
               "attackRate": 0.04
             },
             "bruiser": {
-              "attackRate": 0.04,
-              "criticalDamage": 0.2
+              "lifeSteal": 0.04
             },
             "guardian": {
               "damageReduction": 0.08
@@ -6102,7 +6082,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.042
+              "healthRegen": 2.1
             },
             "skirmisher": {
               "range": 84,
@@ -6113,8 +6093,7 @@
               "attackRate": 0.042
             },
             "bruiser": {
-              "attackRate": 0.042,
-              "criticalDamage": 0.21
+              "lifeSteal": 0.042
             },
             "guardian": {
               "damageReduction": 0.084
@@ -6135,7 +6114,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.044
+              "healthRegen": 2.2
             },
             "skirmisher": {
               "range": 88,
@@ -6146,8 +6125,7 @@
               "attackRate": 0.044
             },
             "bruiser": {
-              "attackRate": 0.044,
-              "criticalDamage": 0.22
+              "lifeSteal": 0.044
             },
             "guardian": {
               "damageReduction": 0.088
@@ -6168,7 +6146,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.046
+              "healthRegen": 2.3
             },
             "skirmisher": {
               "range": 92,
@@ -6179,8 +6157,7 @@
               "attackRate": 0.046
             },
             "bruiser": {
-              "attackRate": 0.046,
-              "criticalDamage": 0.23
+              "lifeSteal": 0.046
             },
             "guardian": {
               "damageReduction": 0.092
@@ -6201,7 +6178,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.048
+              "healthRegen": 2.4
             },
             "skirmisher": {
               "range": 96,
@@ -6212,8 +6189,7 @@
               "attackRate": 0.048
             },
             "bruiser": {
-              "attackRate": 0.048,
-              "criticalDamage": 0.24
+              "lifeSteal": 0.048
             },
             "guardian": {
               "damageReduction": 0.096
@@ -6234,7 +6210,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.05
+              "healthRegen": 2.5
             },
             "skirmisher": {
               "range": 100,
@@ -6245,8 +6221,7 @@
               "attackRate": 0.05
             },
             "bruiser": {
-              "attackRate": 0.05,
-              "criticalDamage": 0.25
+              "lifeSteal": 0.05
             },
             "guardian": {
               "damageReduction": 0.1
@@ -6267,7 +6242,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.052
+              "healthRegen": 2.6
             },
             "skirmisher": {
               "range": 104,
@@ -6278,8 +6253,7 @@
               "attackRate": 0.052
             },
             "bruiser": {
-              "attackRate": 0.052,
-              "criticalDamage": 0.26
+              "lifeSteal": 0.052
             },
             "guardian": {
               "damageReduction": 0.104
@@ -6300,7 +6274,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.054
+              "healthRegen": 2.7
             },
             "skirmisher": {
               "range": 108,
@@ -6311,8 +6285,7 @@
               "attackRate": 0.054
             },
             "bruiser": {
-              "attackRate": 0.054,
-              "criticalDamage": 0.27
+              "lifeSteal": 0.054
             },
             "guardian": {
               "damageReduction": 0.108
@@ -6333,7 +6306,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.056
+              "healthRegen": 2.8
             },
             "skirmisher": {
               "range": 112,
@@ -6344,8 +6317,7 @@
               "attackRate": 0.056
             },
             "bruiser": {
-              "attackRate": 0.056,
-              "criticalDamage": 0.28
+              "lifeSteal": 0.056
             },
             "guardian": {
               "damageReduction": 0.112
@@ -6366,7 +6338,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.058
+              "healthRegen": 2.9
             },
             "skirmisher": {
               "range": 116,
@@ -6377,8 +6349,7 @@
               "attackRate": 0.058
             },
             "bruiser": {
-              "attackRate": 0.058,
-              "criticalDamage": 0.29
+              "lifeSteal": 0.058
             },
             "guardian": {
               "damageReduction": 0.116
@@ -6399,7 +6370,7 @@
           "EquipSkin": "lv_blue",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.06
+              "healthRegen": 3
             },
             "skirmisher": {
               "range": 120,
@@ -6410,8 +6381,7 @@
               "attackRate": 0.06
             },
             "bruiser": {
-              "attackRate": 0.06,
-              "criticalDamage": 0.3
+              "lifeSteal": 0.06
             },
             "guardian": {
               "damageReduction": 0.12
@@ -6432,7 +6402,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.062
+              "healthRegen": 3.1
             },
             "skirmisher": {
               "range": 124,
@@ -6443,8 +6413,7 @@
               "attackRate": 0.062
             },
             "bruiser": {
-              "attackRate": 0.062,
-              "criticalDamage": 0.31
+              "lifeSteal": 0.062
             },
             "guardian": {
               "damageReduction": 0.124
@@ -6465,7 +6434,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.064
+              "healthRegen": 3.2
             },
             "skirmisher": {
               "range": 128,
@@ -6476,8 +6445,7 @@
               "attackRate": 0.064
             },
             "bruiser": {
-              "attackRate": 0.064,
-              "criticalDamage": 0.32
+              "lifeSteal": 0.064
             },
             "guardian": {
               "damageReduction": 0.128
@@ -6498,7 +6466,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.066
+              "healthRegen": 3.3
             },
             "skirmisher": {
               "range": 132,
@@ -6509,8 +6477,7 @@
               "attackRate": 0.066
             },
             "bruiser": {
-              "attackRate": 0.066,
-              "criticalDamage": 0.33
+              "lifeSteal": 0.066
             },
             "guardian": {
               "damageReduction": 0.132
@@ -6531,7 +6498,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.068
+              "healthRegen": 3.4
             },
             "skirmisher": {
               "range": 136,
@@ -6542,8 +6509,7 @@
               "attackRate": 0.068
             },
             "bruiser": {
-              "attackRate": 0.068,
-              "criticalDamage": 0.34
+              "lifeSteal": 0.068
             },
             "guardian": {
               "damageReduction": 0.136
@@ -6564,7 +6530,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.07
+              "healthRegen": 3.5
             },
             "skirmisher": {
               "range": 140,
@@ -6575,8 +6541,7 @@
               "attackRate": 0.07
             },
             "bruiser": {
-              "attackRate": 0.07,
-              "criticalDamage": 0.35
+              "lifeSteal": 0.07
             },
             "guardian": {
               "damageReduction": 0.14
@@ -6597,7 +6562,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.072
+              "healthRegen": 3.6
             },
             "skirmisher": {
               "range": 144,
@@ -6608,8 +6573,7 @@
               "attackRate": 0.072
             },
             "bruiser": {
-              "attackRate": 0.072,
-              "criticalDamage": 0.36
+              "lifeSteal": 0.072
             },
             "guardian": {
               "damageReduction": 0.144
@@ -6630,7 +6594,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.074
+              "healthRegen": 3.7
             },
             "skirmisher": {
               "range": 148,
@@ -6641,8 +6605,7 @@
               "attackRate": 0.074
             },
             "bruiser": {
-              "attackRate": 0.074,
-              "criticalDamage": 0.37
+              "lifeSteal": 0.074
             },
             "guardian": {
               "damageReduction": 0.148
@@ -6663,7 +6626,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.076
+              "healthRegen": 3.8
             },
             "skirmisher": {
               "range": 152,
@@ -6674,8 +6637,7 @@
               "attackRate": 0.076
             },
             "bruiser": {
-              "attackRate": 0.076,
-              "criticalDamage": 0.38
+              "lifeSteal": 0.076
             },
             "guardian": {
               "damageReduction": 0.152
@@ -6696,7 +6658,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.078
+              "healthRegen": 3.9
             },
             "skirmisher": {
               "range": 156,
@@ -6707,8 +6669,7 @@
               "attackRate": 0.078
             },
             "bruiser": {
-              "attackRate": 0.078,
-              "criticalDamage": 0.39
+              "lifeSteal": 0.078
             },
             "guardian": {
               "damageReduction": 0.156
@@ -6729,7 +6690,7 @@
           "EquipSkin": "lv3",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.08
+              "healthRegen": 4
             },
             "skirmisher": {
               "range": 160,
@@ -6740,8 +6701,7 @@
               "attackRate": 0.08
             },
             "bruiser": {
-              "attackRate": 0.08,
-              "criticalDamage": 0.4
+              "lifeSteal": 0.08
             },
             "guardian": {
               "damageReduction": 0.16
@@ -6762,7 +6722,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.082
+              "healthRegen": 4.1
             },
             "skirmisher": {
               "range": 164,
@@ -6773,8 +6733,7 @@
               "attackRate": 0.082
             },
             "bruiser": {
-              "attackRate": 0.082,
-              "criticalDamage": 0.41
+              "lifeSteal": 0.082
             },
             "guardian": {
               "damageReduction": 0.164
@@ -6795,7 +6754,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.084
+              "healthRegen": 4.2
             },
             "skirmisher": {
               "range": 168,
@@ -6806,8 +6765,7 @@
               "attackRate": 0.084
             },
             "bruiser": {
-              "attackRate": 0.084,
-              "criticalDamage": 0.42
+              "lifeSteal": 0.084
             },
             "guardian": {
               "damageReduction": 0.168
@@ -6828,7 +6786,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.086
+              "healthRegen": 4.3
             },
             "skirmisher": {
               "range": 172,
@@ -6839,8 +6797,7 @@
               "attackRate": 0.086
             },
             "bruiser": {
-              "attackRate": 0.086,
-              "criticalDamage": 0.43
+              "lifeSteal": 0.086
             },
             "guardian": {
               "damageReduction": 0.172
@@ -6861,7 +6818,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.088
+              "healthRegen": 4.4
             },
             "skirmisher": {
               "range": 176,
@@ -6872,8 +6829,7 @@
               "attackRate": 0.088
             },
             "bruiser": {
-              "attackRate": 0.088,
-              "criticalDamage": 0.44
+              "lifeSteal": 0.088
             },
             "guardian": {
               "damageReduction": 0.176
@@ -6894,7 +6850,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.09
+              "healthRegen": 4.5
             },
             "skirmisher": {
               "range": 180,
@@ -6905,8 +6861,7 @@
               "attackRate": 0.09
             },
             "bruiser": {
-              "attackRate": 0.09,
-              "criticalDamage": 0.45
+              "lifeSteal": 0.09
             },
             "guardian": {
               "damageReduction": 0.18
@@ -6927,7 +6882,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.092
+              "healthRegen": 4.6
             },
             "skirmisher": {
               "range": 184,
@@ -6938,8 +6893,7 @@
               "attackRate": 0.092
             },
             "bruiser": {
-              "attackRate": 0.092,
-              "criticalDamage": 0.46
+              "lifeSteal": 0.092
             },
             "guardian": {
               "damageReduction": 0.184
@@ -6960,7 +6914,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.094
+              "healthRegen": 4.7
             },
             "skirmisher": {
               "range": 188,
@@ -6971,8 +6925,7 @@
               "attackRate": 0.094
             },
             "bruiser": {
-              "attackRate": 0.094,
-              "criticalDamage": 0.47
+              "lifeSteal": 0.094
             },
             "guardian": {
               "damageReduction": 0.188
@@ -6993,7 +6946,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.096
+              "healthRegen": 4.8
             },
             "skirmisher": {
               "range": 192,
@@ -7004,8 +6957,7 @@
               "attackRate": 0.096
             },
             "bruiser": {
-              "attackRate": 0.096,
-              "criticalDamage": 0.48
+              "lifeSteal": 0.096
             },
             "guardian": {
               "damageReduction": 0.192
@@ -7026,7 +6978,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.098
+              "healthRegen": 4.9
             },
             "skirmisher": {
               "range": 196,
@@ -7037,8 +6989,7 @@
               "attackRate": 0.098
             },
             "bruiser": {
-              "attackRate": 0.098,
-              "criticalDamage": 0.49
+              "lifeSteal": 0.098
             },
             "guardian": {
               "damageReduction": 0.196
@@ -7059,7 +7010,7 @@
           "EquipSkin": "lv4",
           "SecondaryStats": {
             "fighter": {
-              "lifeSteal": 0.1
+              "healthRegen": 5
             },
             "skirmisher": {
               "range": 200,
@@ -7070,8 +7021,7 @@
               "attackRate": 0.1
             },
             "bruiser": {
-              "attackRate": 0.1,
-              "criticalDamage": 0.5
+              "lifeSteal": 0.1
             },
             "guardian": {
               "damageReduction": 0.2
@@ -49841,6 +49791,7 @@
       "guardian": 1.15,
       "mystic": 0.85
     },
-    "upgradePricingVersion": 1
+    "upgradePricingVersion": 1,
+    "secondaryStatsVersion": 2
   }
 }

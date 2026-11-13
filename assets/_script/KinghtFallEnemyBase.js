@@ -353,6 +353,8 @@ var def_KinghtFallEnemyBase = function (t) {
     Navigation.reset(this);
   };
   _ctor.prototype.getUpdateTarget = function () {
+    var forced=RelicCombat.tauntedTarget(this);
+    if(forced)return {tag:forced.node,actor:forced,canAtt:cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())<=this.cfg.AttackRange};
     var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     var cached = this._targetSearchCache;
     if (cached && cached.game === game && cached.cfg === this.cfg && this._targetSearchElapsed < .2) {
@@ -399,6 +401,8 @@ var def_KinghtFallEnemyBase = function (t) {
     return found;
   };
   _ctor.prototype.onFindList = function () {
+    var forced=RelicCombat.tauntedTarget(this);
+    if(forced){if(cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())>this.cfg.AttackRange)return false;this.doAttackStart();return true;}
     var t = this;
     this.node.getPosition(this.vec2_1);
     return !!function () {
@@ -469,6 +473,8 @@ var def_KinghtFallEnemyBase = function (t) {
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
     var n = function () {
+      var forced=RelicCombat.tauntedTarget(t);
+      if(forced)return cc.Vec2.distance(t.node.getPosition(),forced.node.getPosition())<=t.cfg.AttackRange?forced:null;
       var e = null;
       var n = -1;
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;

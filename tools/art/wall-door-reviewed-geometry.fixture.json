@@ -2,7 +2,7 @@
   "version": 3,
   "complete": true,
   "sourceSha256": "a65e4d41f5595bb948b233bf9ec293330fa1c6674f49b5dfb6ad72e4ecb1c72a",
-  "source": "Geometry from the user-supplied cleaned wall-door sheet, 2026-11-11; inward/outward labels and all native pixel geometry retained. Surface-only wood/iron texture repaint, 2026-11-12.",
+  "source": "Geometry from the user-supplied cleaned wall-door sheet, 2026-11-11; inward/outward labels and all native pixel geometry retained. Surface-only wood/iron texture repaint, 2026-11-12. Closed-pair mobile downsampling and atlas repack, 2026-11-13; all logical registration and open-leaf pixels retained.",
   "primary": [
     "rts_door_closed_1",
     "rts_door_inward_1",
@@ -15,95 +15,95 @@
     "rts_door_outward_3"
   ],
   "regions": {
-    "rts_door_closed_1": [
+    "rts_door_outward_3": [
       2,
       2,
-      512,
-      531
-    ],
-    "rts_door_closed_near_1": [
-      2,
-      2,
-      260,
-      531
-    ],
-    "rts_door_closed_far_1": [
-      262,
-      2,
-      252,
-      531
+      263,
+      367
     ],
     "rts_door_inward_1": [
-      2615,
+      269,
       2,
       265,
       365
     ],
-    "rts_door_outward_1": [
-      3154,
-      2,
-      260,
-      365
-    ],
-    "rts_door_closed_2": [
-      518,
-      2,
-      512,
-      531
-    ],
-    "rts_door_closed_near_2": [
-      518,
-      2,
-      260,
-      531
-    ],
-    "rts_door_closed_far_2": [
-      778,
-      2,
-      252,
-      531
-    ],
     "rts_door_inward_2": [
-      2352,
+      538,
       2,
       259,
       365
     ],
-    "rts_door_outward_2": [
-      3688,
+    "rts_door_outward_1": [
       2,
+      373,
+      260,
+      365
+    ],
+    "rts_door_outward_2": [
+      266,
+      373,
       264,
       365
     ],
-    "rts_door_closed_3": [
-      1034,
-      2,
-      512,
-      531
-    ],
-    "rts_door_closed_near_3": [
-      1034,
-      2,
-      260,
-      531
-    ],
-    "rts_door_closed_far_3": [
-      1294,
-      2,
-      252,
-      531
-    ],
     "rts_door_inward_3": [
-      266,
-      537,
+      534,
+      373,
       265,
       364
     ],
-    "rts_door_outward_3": [
-      1550,
+    "rts_door_closed_1": [
       2,
-      263,
-      367
+      742,
+      256,
+      266
+    ],
+    "rts_door_closed_2": [
+      262,
+      742,
+      256,
+      266
+    ],
+    "rts_door_closed_3": [
+      522,
+      742,
+      256,
+      266
+    ],
+    "rts_door_closed_near_1": [
+      2,
+      742,
+      130,
+      266
+    ],
+    "rts_door_closed_far_1": [
+      132,
+      742,
+      126,
+      266
+    ],
+    "rts_door_closed_near_2": [
+      262,
+      742,
+      130,
+      266
+    ],
+    "rts_door_closed_far_2": [
+      392,
+      742,
+      126,
+      266
+    ],
+    "rts_door_closed_near_3": [
+      522,
+      742,
+      130,
+      266
+    ],
+    "rts_door_closed_far_3": [
+      652,
+      742,
+      126,
+      266
     ]
   },
   "doors": {
@@ -354,21 +354,32 @@
         "path": "rts_door_closed_1",
         "bounds": [
           2,
+          742,
+          256,
+          266
+        ],
+        "rgbaSha256": "1f782dde6b6cd2092158577ee76f1aa9bdcbc880475a13b472c57c6771ee3389",
+        "size": [
+          256,
+          266
+        ],
+        "sourceBounds": [
+          2,
           2,
           512,
           531
         ],
-        "rgbaSha256": "4a32aa0a91b0b8e23b95aa8453f2ca81dcf59dc857d895f7f77e126280b4abfc",
-        "size": [
+        "sourceSize": [
           512,
           531
-        ]
+        ],
+        "sourceRgbaSha256": "4a32aa0a91b0b8e23b95aa8453f2ca81dcf59dc857d895f7f77e126280b4abfc"
       },
       "poses": {
         "inward": {
           "path": "rts_door_inward_1",
           "bounds": [
-            2615,
+            269,
             2,
             265,
             365
@@ -388,13 +399,24 @@
             "top": 4,
             "bottom": 360
           },
-          "physicalWidth": 227.51219512195124
+          "physicalWidth": 227.51219512195124,
+          "sourceBounds": [
+            2615,
+            2,
+            265,
+            365
+          ],
+          "sourceSize": [
+            265,
+            365
+          ],
+          "sourceRgbaSha256": "b22cb1f3e8ee54d770c99dacf686bd20f08be0011eba48a7d53d36f9230718df"
         },
         "outward": {
           "path": "rts_door_outward_1",
           "bounds": [
-            3154,
             2,
+            373,
             260,
             365
           ],
@@ -413,7 +435,18 @@
             "top": 4,
             "bottom": 360
           },
-          "physicalWidth": 227.51219512195124
+          "physicalWidth": 227.51219512195124,
+          "sourceBounds": [
+            3154,
+            2,
+            260,
+            365
+          ],
+          "sourceSize": [
+            260,
+            365
+          ],
+          "sourceRgbaSha256": "b8023897691e11ff9fabc9e0a2956ad78090e2981aee5c9a537ccab58e6f88a7"
         }
       }
     },
@@ -422,22 +455,33 @@
       "closed": {
         "path": "rts_door_closed_2",
         "bounds": [
+          262,
+          742,
+          256,
+          266
+        ],
+        "rgbaSha256": "6e7300450535c249ae36f706f6140e83b49e5244c127847d1ad7bd7eaf4b2fd6",
+        "size": [
+          256,
+          266
+        ],
+        "sourceBounds": [
           518,
           2,
           512,
           531
         ],
-        "rgbaSha256": "1f7c37ab850c0cf0f06d2d0ec373e2713afd28740d2e9639b62376c1653a93d6",
-        "size": [
+        "sourceSize": [
           512,
           531
-        ]
+        ],
+        "sourceRgbaSha256": "1f7c37ab850c0cf0f06d2d0ec373e2713afd28740d2e9639b62376c1653a93d6"
       },
       "poses": {
         "inward": {
           "path": "rts_door_inward_2",
           "bounds": [
-            2352,
+            538,
             2,
             259,
             365
@@ -457,13 +501,24 @@
             "top": 4,
             "bottom": 360
           },
-          "physicalWidth": 227.51219512195124
+          "physicalWidth": 227.51219512195124,
+          "sourceBounds": [
+            2352,
+            2,
+            259,
+            365
+          ],
+          "sourceSize": [
+            259,
+            365
+          ],
+          "sourceRgbaSha256": "150e82e8298387cb4aa526e88ac90730c18b631a37816ea9ff4f4757c21a092f"
         },
         "outward": {
           "path": "rts_door_outward_2",
           "bounds": [
-            3688,
-            2,
+            266,
+            373,
             264,
             365
           ],
@@ -482,7 +537,18 @@
             "top": 4,
             "bottom": 360
           },
-          "physicalWidth": 227.51219512195124
+          "physicalWidth": 227.51219512195124,
+          "sourceBounds": [
+            3688,
+            2,
+            264,
+            365
+          ],
+          "sourceSize": [
+            264,
+            365
+          ],
+          "sourceRgbaSha256": "10be607c1ec358eb9ae19e240aeb3c16e6cf60b1118053a0c854ed3784758bf5"
         }
       }
     },
@@ -491,23 +557,34 @@
       "closed": {
         "path": "rts_door_closed_3",
         "bounds": [
+          522,
+          742,
+          256,
+          266
+        ],
+        "rgbaSha256": "dde6a54b1b5f69bc50278014c3a756d7b20d7ce6a2578408c79061eeead05e0f",
+        "size": [
+          256,
+          266
+        ],
+        "sourceBounds": [
           1034,
           2,
           512,
           531
         ],
-        "rgbaSha256": "dd22ecbcd5d08c122519ffedca8a3ce7a5d8d5dd70276395bc4c216f9e361b48",
-        "size": [
+        "sourceSize": [
           512,
           531
-        ]
+        ],
+        "sourceRgbaSha256": "dd22ecbcd5d08c122519ffedca8a3ce7a5d8d5dd70276395bc4c216f9e361b48"
       },
       "poses": {
         "inward": {
           "path": "rts_door_inward_3",
           "bounds": [
-            266,
-            537,
+            534,
+            373,
             265,
             364
           ],
@@ -526,12 +603,23 @@
             "top": 4,
             "bottom": 359
           },
-          "physicalWidth": 227.51219512195124
+          "physicalWidth": 227.51219512195124,
+          "sourceBounds": [
+            266,
+            537,
+            265,
+            364
+          ],
+          "sourceSize": [
+            265,
+            364
+          ],
+          "sourceRgbaSha256": "34f9e913f3116d9c5f2f952e80b062738eba1e3cf0467a83e8725720910d54dc"
         },
         "outward": {
           "path": "rts_door_outward_3",
           "bounds": [
-            1550,
+            2,
             2,
             263,
             367
@@ -551,10 +639,36 @@
             "top": 4,
             "bottom": 362
           },
-          "physicalWidth": 227.51219512195124
+          "physicalWidth": 227.51219512195124,
+          "sourceBounds": [
+            1550,
+            2,
+            263,
+            367
+          ],
+          "sourceSize": [
+            263,
+            367
+          ],
+          "sourceRgbaSha256": "4119772784869991426fb9d05578834243921faf52b53562302b50e0c09c899d"
         }
       }
     }
   ],
-  "pageSha256": "935bfc010402c2abdcb56d751dbd9f8249b995ec1c3d297bd54d5b302b62f7b0"
+  "pageSha256": "4ce247c26e0555b4db437235a0762d9f6b1c13c6865deeaa9cea6cf65359d046",
+  "productionSampling": {
+    "version": 1,
+    "sourcePageSha256": "935bfc010402c2abdcb56d751dbd9f8249b995ec1c3d297bd54d5b302b62f7b0",
+    "sourcePageSize": [
+      4096,
+      1024
+    ],
+    "pageSize": [
+      1024,
+      1024
+    ],
+    "closedScale": 0.5,
+    "filter": "premultiplied-alpha-area",
+    "registration": "Original logical dimensions, anchors, geometry and saved offsets remain unchanged; atlas pixels are independent of registration coordinates."
+  }
 }

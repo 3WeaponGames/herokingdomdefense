@@ -24,6 +24,12 @@ var def_KinghtFallEnemyItem08 = function (t) {
     this.rigidBody.active = true;
     var e = this.getAttack();
     var n = function () {
+      var forced = require("RelicCombat").tauntedTarget(t);
+      if (forced) {
+        forced.node.getPosition(t.vec2_2);
+        cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
+        return t.vec2_2.len() <= t.cfg.AttackRange ? forced : null;
+      }
       var e = null;
       var n = -1;
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.ctrPlay;

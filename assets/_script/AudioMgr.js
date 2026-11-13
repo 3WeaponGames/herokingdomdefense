@@ -291,6 +291,11 @@ var exp_AudioMgr = function (t) {
       }
     };
     try {
+      if (bundle === "__skill_uuid__") {
+        if (!cc.assetManager || !cc.assetManager.loadAny) return finish(null);
+        cc.assetManager.loadAny({ uuid: path, type: cc.AudioClip }, function (error, clip) { finish(error ? null : clip); });
+        return;
+      }
       $z1ResourceMgr.ResourceMgr.getInstance().loadRes(bundle, path, cc.AudioClip, finish, {
         onError: function (error, retry, cancel) {
           // Audio is optional: keep the previous track instead of blocking gameplay.

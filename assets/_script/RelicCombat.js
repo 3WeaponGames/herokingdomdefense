@@ -67,10 +67,13 @@ function waveBarrier(data, hero) {
 function heroIncoming(hero, damage, source, ranged) {
   if (!(damage > 0)) return damage;
   var data = current(), reduction = hero._heroSecondary && hero._heroSecondary.damageReduction || 0;
+  if(hero._styleRuntime)reduction+=hero._styleRuntime.bonus().damageReduction||0;
   if (ranged || source && source.cfg && Number(source.cfg.AttackType) === 2) reduction += Runtime.value(data, 120033);
   if (hero._relicMoving) reduction += Runtime.value(data, 120041);
   else reduction += Runtime.value(data, 120026);
   damage *= 1 - Math.min(.8, reduction);
+  var skill=hero._styleRuntime&&hero._styleRuntime.state;
+  if(skill&&skill.shieldRemaining>0)damage=require("HeroStyleSkills").absorbDamage(skill,damage).damage;
   var barrier = waveBarrier(data, hero);
   if (barrier) { var absorbed = Math.min(damage, Math.max(0, barrier.remaining)); barrier.remaining -= absorbed; damage -= absorbed; }
   return damage;
@@ -147,12 +150,13 @@ function primaryImpact(target, hero, context, damage) {
   context.used = true;
   var data = context.data;
   var gear = hero._heroSecondary || {};
+  if(hero._styleRuntime)hero._styleRuntime.onImpact(target,damage,context);
   // Life steal uses damage actually removed, excluding overkill and all
   // reflected/splash hits. It cannot revive a dead or recycled hero.
   var dealt = Math.min(damage, Math.max(0, target.hp + damage));
   if (gear.lifeSteal > 0 && hero.hpMax > 0) Runtime.heal(hero, dealt * gear.lifeSteal / hero.hpMax);
   if (!sameBattle(context)) return;
-  if (gear.splashDamage > 0 && gear.splashRadius > 0 && context.point) {
+  if (hero.heroStyle !== "mystic" && gear.splashDamage > 0 && gear.splashRadius > 0 && context.point) {
     var splash = [], targets = data.getEnemyList ? data.getEnemyList() : data.enemyList || [];
     for (var s = 0; s < targets.length; s++) {
       var neighbor = targets[s], location = position(neighbor);
@@ -202,6 +206,17 @@ function heroHaste(hero) {
   var data = current(), haste = hero && hero._relicHaste;
   return haste && haste.remaining > 0 && haste.data === data && haste.epoch === (data && data.ctrPar && data.ctrPar._combatEpoch) && haste.relicGeneration === (data && data._relicGeneration) && haste.heroGeneration === generation(hero) && haste.round === data.round ? Runtime.value(data, 120014) : 0;
 }
+function allyIncoming(actor,damage){
+  var hero=heroOf(current());
+  if(!living(hero)||!hero._styleRuntime||!living(actor))return damage;
+  var bonus=hero._styleRuntime.bonus().allyDamageReduction||0,a=position(actor),b=position(hero);
+  return bonus>0&&a&&b&&Math.hypot(a.x-b.x,a.y-b.y)<=250?damage*(1-Math.min(.8,bonus)):damage;
+}
+function tauntedTarget(enemy){
+  var record=enemy&&enemy._heroTaunt,data=current();
+  if(!record||record.remaining<=0||record.data!==data||record.epoch!==(data&&data.ctrPar&&data.ctrPar._combatEpoch)||record.enemyGeneration!==generation(enemy)||record.generation!==generation(record.hero)||!living(record.hero))return null;
+  return record.hero;
+}
 function releaseControl(enemy) {
   var paused = enemy && enemy._relicPausedRenderers;
   if (!paused) return;
@@ -236,6 +251,8 @@ exports.primaryValid = primaryValid;
 exports.primaryImpact = primaryImpact;
 exports.updateHero = updateHero;
 exports.heroHaste = heroHaste;
+exports.allyIncoming = allyIncoming;
+exports.tauntedTarget = tauntedTarget;
 exports.updateEnemy = updateEnemy;
 exports.releaseControl = releaseControl;
 

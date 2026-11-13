@@ -408,6 +408,7 @@ var def_KinghtFallSoldierBase = function (t) {
   };
   _ctor.prototype.onAttacked = function (t, attacker) {
     if (!this.isDead()) {
+      t=require("RelicCombat").allyIncoming(this,t);
       if (attacker && attacker.node && attacker.isDead && !attacker.isDead()) {
         this._retaliationTarget = attacker;
         this._retaliationGeneration = attacker.node._combatGeneration;
