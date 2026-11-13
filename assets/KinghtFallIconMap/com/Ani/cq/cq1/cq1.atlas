@@ -474,111 +474,111 @@ rts_wall_corner_1_shadow
   index: -1
 
 wall-doors.png
-size: 4096,1024
+size: 1024, 1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 rts_door_closed_1
   rotate: false
-  xy: 2, 2
-  size: 512, 531
-  orig: 512, 531
+  xy: 2, 742
+  size: 256, 266
+  orig: 256, 266
   offset: 0, 0
   index: -1
 rts_door_closed_near_1
   rotate: false
-  xy: 2, 2
-  size: 260, 531
-  orig: 260, 531
+  xy: 2, 742
+  size: 130, 266
+  orig: 130, 266
   offset: 0, 0
   index: -1
 rts_door_closed_far_1
   rotate: false
-  xy: 262, 2
-  size: 252, 531
-  orig: 252, 531
+  xy: 132, 742
+  size: 126, 266
+  orig: 126, 266
   offset: 0, 0
   index: -1
 rts_door_inward_1
   rotate: false
-  xy: 2615, 2
+  xy: 269, 2
   size: 265, 365
   orig: 265, 365
   offset: 0, 0
   index: -1
 rts_door_outward_1
   rotate: false
-  xy: 3154, 2
+  xy: 2, 373
   size: 260, 365
   orig: 260, 365
   offset: 0, 0
   index: -1
 rts_door_closed_2
   rotate: false
-  xy: 518, 2
-  size: 512, 531
-  orig: 512, 531
+  xy: 262, 742
+  size: 256, 266
+  orig: 256, 266
   offset: 0, 0
   index: -1
 rts_door_closed_near_2
   rotate: false
-  xy: 518, 2
-  size: 260, 531
-  orig: 260, 531
+  xy: 262, 742
+  size: 130, 266
+  orig: 130, 266
   offset: 0, 0
   index: -1
 rts_door_closed_far_2
   rotate: false
-  xy: 778, 2
-  size: 252, 531
-  orig: 252, 531
+  xy: 392, 742
+  size: 126, 266
+  orig: 126, 266
   offset: 0, 0
   index: -1
 rts_door_inward_2
   rotate: false
-  xy: 2352, 2
+  xy: 538, 2
   size: 259, 365
   orig: 259, 365
   offset: 0, 0
   index: -1
 rts_door_outward_2
   rotate: false
-  xy: 3688, 2
+  xy: 266, 373
   size: 264, 365
   orig: 264, 365
   offset: 0, 0
   index: -1
 rts_door_closed_3
   rotate: false
-  xy: 1034, 2
-  size: 512, 531
-  orig: 512, 531
+  xy: 522, 742
+  size: 256, 266
+  orig: 256, 266
   offset: 0, 0
   index: -1
 rts_door_closed_near_3
   rotate: false
-  xy: 1034, 2
-  size: 260, 531
-  orig: 260, 531
+  xy: 522, 742
+  size: 130, 266
+  orig: 130, 266
   offset: 0, 0
   index: -1
 rts_door_closed_far_3
   rotate: false
-  xy: 1294, 2
-  size: 252, 531
-  orig: 252, 531
+  xy: 652, 742
+  size: 126, 266
+  orig: 126, 266
   offset: 0, 0
   index: -1
 rts_door_inward_3
   rotate: false
-  xy: 266, 537
+  xy: 534, 373
   size: 265, 364
   orig: 265, 364
   offset: 0, 0
   index: -1
 rts_door_outward_3
   rotate: false
-  xy: 1550, 2
+  xy: 2, 2
   size: 263, 367
   orig: 263, 367
   offset: 0, 0

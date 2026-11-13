@@ -3,10 +3,10 @@
 // Configurations without HeroEquipment retain the original stat mapping.
 var Weapons = require("./HeroWeapons");
 var definitions = {
-  fighter: [{ key: "lifeSteal", label: "Life steal", percent: true }],
+  fighter: [{ key: "healthRegen", label: "Health regeneration" }],
   skirmisher: [{ key: "range", label: "Attack range bonus" }, { key: "criticalChance", label: "Critical chance", percent: true }],
   vanguard: [{ key: "move", label: "Movement speed", percent: true }, { key: "attackRate", label: "Attack speed", percent: true }],
-  bruiser: [{ key: "attackRate", label: "Attack speed", percent: true }, { key: "criticalDamage", label: "Critical damage", percent: true }],
+  bruiser: [{ key: "lifeSteal", label: "Life steal", percent: true }],
   guardian: [{ key: "damageReduction", label: "Damage reduction", percent: true }],
   mystic: [{ key: "splashDamage", label: "Splash damage", percent: true }]
 };
@@ -32,6 +32,7 @@ function raw(config, style, equipment, secondaryLevel) {
   if (!enabled(config)) return result;
   var bonus = secondary(config, style, secondaryLevel);
   result.damage = damage(config,style,equipment[4]);
+  result.regen += bonus.healthRegen || 0;
   result.range = config.HeroEquipment.baseRange + (bonus.range || 0);
   result.attackRate *= 1 + (bonus.attackRate || 0);
   result.move *= 1 + (bonus.move || 0);

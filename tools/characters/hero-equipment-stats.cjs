@@ -13,10 +13,24 @@ function expand(gear){
   })};
 }
 function secondary(level){return {
-  fighter:{lifeSteal:level*.002},skirmisher:{range:level*4,criticalChance:level*.002},
-  vanguard:{move:level*.004,attackRate:level*.002},bruiser:{attackRate:level*.002,criticalDamage:level*.01},
+  fighter:{healthRegen:level*.1},skirmisher:{range:level*4,criticalChance:level*.002},
+  vanguard:{move:level*.004,attackRate:level*.002},bruiser:{lifeSteal:level*.002},
   guardian:{damageReduction:level*.004},mystic:{splashDamage:level*.01}
 };}
+function updateSecondary(config){
+  if(config.HeroEquipment.secondaryStatsVersion>=2)return false;
+  const sub=config.EquipCfg.find(gear=>gear.id===3);
+  sub.levelInfo.forEach(row=>{
+    const values=row.SecondaryStats||(row.SecondaryStats={}),fighter=values.fighter||(values.fighter={}),bruiser=values.bruiser||(values.bruiser={});
+    // Explicitly replace only the superseded bonuses. Preserve other styles,
+    // authored values for the new bonuses, unknown fields, prices and IDs.
+    if(fighter.healthRegen===undefined)fighter.healthRegen=Number((row.Level*.1).toFixed(6));
+    if(bruiser.lifeSteal===undefined)bruiser.lifeSteal=Number((row.Level*.002).toFixed(6));
+    delete fighter.lifeSteal;delete bruiser.attackRate;delete bruiser.criticalDamage;
+  });
+  config.HeroEquipment.secondaryStatsVersion=2;
+  return true;
+}
 function migrateLooks(data){
   const moves=Object.entries(data.assignments).map(([key,id])=>{const match=/^4:(\d+)(:.*)?$/.exec(key);if(!match)return null;return {key,id,next:'4:'+Tiers.expandedLevel(Number(match[1]),25,50)+(match[2]||'')};}).filter(Boolean),moving=new Set(moves.map(move=>move.key));
   for(const move of moves)if(data.assignments[move.next]&&!moving.has(move.next)&&data.assignments[move.next]!==move.id)throw Error('Conflicting legacy weapon appearances: '+move.key);
@@ -30,6 +44,7 @@ function plan(root){
     if(config.HeroEquipment?.version===1){
       if(!config.HeroEquipment.damageMultipliers)config.HeroEquipment.damageMultipliers=clone(damageMultipliers);
       if(!config.HeroEquipment.upgradePricingVersion){const main=config.EquipCfg.find(gear=>gear.id===4),sub=config.EquipCfg.find(gear=>gear.id===3);main.levelInfo.forEach((level,index)=>{const value=level.GoldCost;level.GoldCost=sub.levelInfo[index].GoldCost;sub.levelInfo[index].GoldCost=value;});config.HeroEquipment.upgradePricingVersion=1;}
+      if(updateSecondary(config))report.push({file,secondaryStatsVersion:2});
       return;
     }
     const main=config.EquipCfg.find(gear=>gear.id===4),sub=config.EquipCfg.find(gear=>gear.id===3);
@@ -38,10 +53,11 @@ function plan(root){
     // Damage upgrades retain the old damage prices. Secondary upgrades use
     // the stretched former range prices; the total budget stays unchanged.
     sub.levelInfo.forEach((row,index)=>{const value=next.levelInfo[index].GoldCost;next.levelInfo[index].GoldCost=row.GoldCost;row.GoldCost=value;row.SecondaryStats=secondary(row.Level);for(const values of Object.values(row.SecondaryStats))for(const key of Object.keys(values))values[key]=Number(values[key].toFixed(6));});
+    config.HeroEquipment.secondaryStatsVersion=2;
     report.push({file,mainLevels:next.levelInfo.length,first:next.levelInfo[0].Parameters,last:next.levelInfo.at(-1).Parameters,previousCost:main.levelInfo.reduce((n,row)=>n+row.GoldCost,0),cost:next.levelInfo.reduce((n,row)=>n+row.GoldCost,0)});
   });
-  if(report.length)change('assets/resources/hero-items/catalog.json',migrateLooks);
+  if(report.some(entry=>entry.mainLevels))change('assets/resources/hero-items/catalog.json',migrateLooks);
   return {files,reads,report};
 }
 if(require.main===module){const root=path.resolve(__dirname,'../..'),result=plan(root);console.log(JSON.stringify(result.report));if(process.argv.includes('--apply'))console.log(Tx.commit(root,result.files,result.reads));}
-module.exports={plan,expand,secondary,migrateLooks};
+module.exports={plan,expand,secondary,updateSecondary,migrateLooks};

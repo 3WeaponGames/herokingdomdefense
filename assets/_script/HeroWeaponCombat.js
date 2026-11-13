@@ -11,6 +11,8 @@ function configure(hero, user, config) {
   var stats=require("HeroLoadout").applyStyle(raw,user,config);
   hero.heroStyle=stats.style;hero.heroRanged=stats.ranged;hero.attackRange=stats.range;
   hero.baseHp=stats.health;hero.hpMax=hero.hp=hero.baseHp;hero.attack=stats.damage;hero.attackSpeed=stats.attackRate;
+  if(raw.regen!==undefined)hero.hpRecoverSpeed=raw.regen;
+  require("HeroStyleRuntime").install(hero,config);
 }
 function melee(game,target,release) {
   var hero=game.ctrPlay;if(hero.heroRanged!==false)return false;

@@ -15,12 +15,16 @@ function pixel(v,source,p){const u=p.x/source.width,w=p.y/source.height;return{x
 function parse(spine,value){const atlas=new spine.TextureAtlas(atlasText,name=>{const b=fs.readFileSync(path.join(folder,name));return new spine.FakeTexture({width:b.readUInt32BE(16),height:b.readUInt32BE(20)});});return new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(value);}
 function player(spine,data,tier){const skeleton=new spine.Skeleton(data),state=new spine.AnimationState(new spine.AnimationStateData(data));skeleton.setSkinByName('cq-rts-'+tier);skeleton.setToSetupPose();return{pose(name){state.setAnimation(0,name,false);state.update(.2);state.apply(skeleton);skeleton.updateWorldTransform();return skeleton;}};}
 
-test('the supplied sheet contains nine reviewed images, empty deleted regions and a transparent matte',()=>{
+test('the mobile sheet retains nine reviewed images, original registration and a transparent matte',()=>{
  assert.equal(review.version,3);assert.equal(review.complete,true);assert.equal(hash(bytes),review.pageSha256);assert.equal(review.primary.length,9);assert.deepEqual(json.wallKit.doors,review.doors);
- assert.equal(image.width,4096);assert.equal(image.height,1024);assert.equal(image.rgba[3],0);
+ assert.deepEqual([image.width,image.height],[1024,1024]);assert.equal(image.rgba[3],0);
+ assert.deepEqual(review.productionSampling.sourcePageSize,[4096,1024]);assert.deepEqual(review.productionSampling.pageSize,[1024,1024]);assert.equal(review.productionSampling.closedScale,.5);assert.equal(review.productionSampling.filter,'premultiplied-alpha-area');
  const records=review.tiers.flatMap(t=>[t.closed,t.poses.inward,t.poses.outward]);assert.equal(new Set(records.map(r=>r.rgbaSha256)).size,9);
  for(const r of records){const im=pixels(r);assert.equal(hash(im.rgba),r.rgbaSha256,'A changed supplied image requires an explicit pixel review');assert.deepEqual([im.width,im.height],r.size);assert(rgbaCount(im)>1000);}
- for(const r of [[1817,2,260,366],[2081,2,267,366],[2884,2,266,365],[3418,2,266,365],[2,537,260,364],[535,537,260,363]])assert.equal(rgbaCount(PNG.crop(image,...r,false)),0,'Deleted duplicate stays empty');
+ const coverage=new Uint8Array(image.width*image.height);
+ for(const r of records){const [x,y,w,h]=r.bounds;assert(x>=2&&y>=2&&x+w+2<=image.width&&y+h+2<=image.height);for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)coverage[yy*image.width+xx]++;}
+ for(let p=0;p<coverage.length;p++)if(image.rgba[p*4+3]>=8)assert.equal(coverage[p],1,'Every painted pixel belongs to exactly one primary sprite, with no deleted duplicates');
+ for(const tier of review.tiers){assert.deepEqual(tier.closed.size,[256,266]);assert.deepEqual(tier.closed.sourceSize,[512,531]);assert.equal(review.doors.tiers[tier.level-1].states.closed.width,512,'Logical gate registration stays independent of texture sampling');for(const state of ['inward','outward']){const r=tier.poses[state];assert.equal(r.rgbaSha256,r.sourceRgbaSha256,'Open artwork pixels remain lossless');assert.deepEqual(r.size,r.sourceSize);}}
  for(const tier of json.wallKit.doors.tiers)for(const direction of ['inward','outward']){
   const [near,far]=['near','far'].map(id=>tier.states[direction].parts.find(p=>p.id===id));assert.equal(near.path,far.path);assert.equal(near.mirrorX,undefined);assert.equal(far.mirrorX,undefined);assert.equal(far.mirrorSlope,undefined);assert.equal(far.anchorX,near.anchorX);assert.equal(far.anchorY,near.anchorY);assert(!near.poseOffset&&!far.poseOffset);
  }

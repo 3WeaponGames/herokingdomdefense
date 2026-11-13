@@ -125,7 +125,10 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     if (this.isMove) {
       this.isMove = false;
       if (!this.isDie) {
-        if (!require("HeroMakerRider").attacking(this)) require("HeroMakerRider").setLocomotion(this, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle);
+        var rider = require("HeroMakerRider");
+        if (!rider.setMoving || !rider.setMoving(this, false)) {
+          if (!rider.attacking(this)) rider.setLocomotion(this, $z1KinghtFallModle.KinghtFallPlayAniEnum.Idle);
+        }
         null === (t = this.spAniSmoke) || undefined === t || t.setAnimation(0, "move_3", false);
       }
     }
@@ -134,7 +137,10 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
     if (!this.isMove) {
       this.isMove = true;
       if (!this.isDie) {
-        if (!require("HeroMakerRider").attacking(this)) require("HeroMakerRider").setLocomotion(this, $z1KinghtFallModle.KinghtFallPlayAniEnum.Move);
+        var rider = require("HeroMakerRider");
+        if (!rider.setMoving || !rider.setMoving(this, true)) {
+          if (!rider.attacking(this)) rider.setLocomotion(this, $z1KinghtFallModle.KinghtFallPlayAniEnum.Move);
+        }
         this.spAniSmoke.setAnimation(0, "move_1", false), this.spAniSmoke.addAnimation(0, "move_2", true);
       }
     }
@@ -154,6 +160,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
   };
   _ctor.prototype.setDie = function (t) {
     this.isDie = true;
+    require("HeroMakerRider").clearCombatState(this);
     this.spAniMa.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Die, false);
     this.spAniBody.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Die, false);
     this.spAniDrap.setAnimation(0, $z1KinghtFallModle.KinghtFallPlayAniEnum.Die, false);
@@ -218,6 +225,7 @@ var def_KinghtFallPlayGameAniCtrl = function (t) {
   };
   _ctor.prototype.onRestart = function () {
     var t;
+    require("HeroMakerRider").clearCombatState(this);
     this.isMove = false;
     this.isDie = false;
     this.setPause(false);

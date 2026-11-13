@@ -26,7 +26,9 @@ function fixture(start = true, game = null) {
     __decorate: (_decorators, target) => target };
   const preferenceContext={exports:{},cc:context.cc};
   vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ControlPreferences.js'),'utf8'),preferenceContext);
-  const originalRequire=context.require;context.require=name=>name==='ControlPreferences'?preferenceContext.exports:originalRequire(name);
+  const skillContext={exports:{},cc:context.cc,Date,Math,require:name=>require(path.join(root,'assets/_script',name))};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroSkillHUD.js'),'utf8'),skillContext);
+  const originalRequire=context.require;context.require=name=>name==='ControlPreferences'?preferenceContext.exports:name==='HeroSkillHUD'?skillContext.exports:originalRequire(name);
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallGameUICtrl.js'), 'utf8'), context);
   const control = new context.exports.default(), area = new TouchNode('area');
   const prefab = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'), 'utf8'));
@@ -134,4 +136,12 @@ test('keyboard movement reveals the indicator and touch movement remains visible
 test('footer relayout updates the release position without moving a held joystick or issuing movement commands',()=>{
   const f=fixture();f.area.emit('start',touch(0,40,-300));f.control.setJoystickRest(new Vec2(-180,-540));assert.equal(f.rod.x,40);assert.equal(f.rod.y,-300);assert.deepEqual(f.moves,[]);
   f.rest={x:-180,y:-540};f.area.emit('end',touch(0,40,-300));resting(f);assert.deepEqual(f.moves,[null]);
+});
+
+
+test('armed skill direction selection consumes its touch before follow selection or joystick movement',()=>{
+ const calls=[],rt={aiming:true,state:{style:'skirmisher',cooldown:0},available:()=>true,screenAim(p){this.aimDirection={x:p.x,y:p.y};},cast(direction){calls.push(direction);this.aiming=false;}};
+ const hero={_styleRuntime:rt,_skillHUD:{runtime:rt}},game={ctrPlay:hero,findFollowUnitAtScreen(){throw Error('skill aim must run before follow selection');}};
+ const f=fixture(true,game);f.area.emit('start',touch(7,170,-210));f.area.emit('move',touch(7,230,-130,170,-210));f.area.emit('end',touch(7,230,-130));
+ assert.equal(calls.length,1);assert.equal(calls[0].x,230);assert.equal(calls[0].y,-130);assert.equal(f.control.touchID,false);assert.deepEqual(f.moves,[]);resting(f);
 });

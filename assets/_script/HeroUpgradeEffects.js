@@ -163,7 +163,9 @@ function evaluate(loadout, assumptions) {
   var chainDps = loadout.damage * close * attackRate * effect(ledger, "chainDamage") / 8 * Math.min(2, a.splashTargets);
   var pierceDps = noncriticalPrimary * attackRate * effect(ledger, "pierceDamage") * Math.min(1, a.splashTargets);
   var cleaveDps = noncriticalPrimary * attackRate * effect(ledger, "cleaveDamage") * Math.min(1, a.splashTargets);
-  var gear = loadout.secondary || {}, equipmentSplashDps = primaryDps * (gear.splashDamage || 0) * a.splashTargets;
+  // Crystal Orb strengthens the charged active, not basic attacks. Active-skill
+  // damage is not counted as permanent basic-attack DPS by this benchmark.
+  var gear = loadout.secondary || {}, equipmentSplashDps = 0;
   var ranged = effect(ledger, "rangedReduction"), moving = effect(ledger, "movingReduction"), stationary = effect(ledger, "stationaryReduction"), flat = effect(ledger, "armyMeleeReduction") + (gear.damageReduction || 0);
   var stillRanged = Math.min(.8, flat + ranged + stationary), movingRanged = Math.min(.8, flat + ranged + moving), movingMelee = Math.min(.8, flat + moving), stillMelee = Math.min(.8, flat + stationary);
   // Clamp each encounter state before averaging. Averaging reductions first

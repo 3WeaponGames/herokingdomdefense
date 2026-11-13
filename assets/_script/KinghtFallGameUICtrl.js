@@ -69,6 +69,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     if (this.ndRod) this.ndRod.active = !require("ControlPreferences").getHideIdle() || this.touchID !== false || !!this._keyboardMoving;
   };
   _ctor.prototype.onTouchStart = function (t) {
+    if(require("HeroSkillHUD").handleTouch(this,"start",t))return;
     var game = this._followGame(), unit = game && game.findFollowUnitAtScreen(t.touch.getLocation());
     if (unit) {
       this._followTouches.set(t.touch.getID(), { unit: unit, generation: unit.node._combatGeneration, start: t.touch.getLocation() });
@@ -93,6 +94,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.GamePause, false);
   };
   _ctor.prototype.onTouchMove = function (t) {
+    if(require("HeroSkillHUD").handleTouch(this,"move",t))return;
     var pending = this._followTouches.get(t.touch.getID());
     if (pending) {
       if (cc.Vec2.distance(pending.start, t.touch.getLocation()) <= 16) return;
@@ -119,6 +121,7 @@ var def_KinghtFallGameUICtrl = function (t) {
     this.onTouchEnd(t, true);
   };
   _ctor.prototype.onTouchEnd = function (t, cancelled) {
+    if(t&&require("HeroSkillHUD").handleTouch(this,cancelled?"cancel":"end",t))return;
     var pending = t && this._followTouches.get(t.touch.getID());
     if (pending) {
       this._followTouches.delete(t.touch.getID());

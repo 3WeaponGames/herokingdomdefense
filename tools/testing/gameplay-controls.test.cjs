@@ -31,6 +31,7 @@ function fixture() {
     UIMgr: { UIMgr: singleton(manager) },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getGameData: () => ({ setNewGame: () => state.saveResult }) }) },
     AudioMgr: { AudioMgr: singleton({ playEffectFree() {} }) },
+    HeroSkillHUD: { update(hero, runtime) { state.events.push(['skillHUD', runtime.time]); } },
     EventMgr: { EventMgr: singleton({ emit(...args) { state.events.push(args); } }) },
     BaseUI: { default: Base }, BaseCtrl: { default: Base }
   };
@@ -91,6 +92,18 @@ test('Late update follows the moving hero and still fits the Buildings caption',
   f.ui.isPauset=true;f.ui.lateUpdate(.016);assert.equal(positions.length,3);assert.equal(fits,4);
   const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallUIGame.js'),'utf8');
   assert.equal((source.match(/_ctor\.prototype\.lateUpdate\s*=/g)||[]).length,1,'A second lifecycle callback must not overwrite camera following');
+});
+
+test('the gameplay frame paints the skill HUD once after combat and still hides it on pause', () => {
+  const f=fixture(),rt={time:0};f.game.ctrPlay._styleRuntime=rt;
+  f.ui._updateTestControls=()=>{};f.ui.speed=1;f.ui.ctrUI={upGuide(){}};
+  f.game.onUpdate=dt=>{rt.time+=dt;f.state.events.push(['combat',rt.time]);};
+  Object.assign(f.game.gameData,{enemyQueue:{},baseBuild:{getLevel:()=>0}});
+  Object.assign(f.ui,{enemyIconInfo:{},_enemyIndicatorObstacles:()=>[],_placeUpcomingEnemyIndicators(){},_updateOffscreenEnemies(){}});
+  f.ui.update(.016);
+  assert.deepEqual(f.state.events,[['combat',.016],['skillHUD',.016]]);
+  f.ui.isPauset=true;f.ui.update(.016);
+  assert.deepEqual(f.state.events,[['combat',.016],['skillHUD',.016],['skillHUD',.016]]);
 });
 
 test('Keyboard movement delegates to the shipped movement function and stops when test mode turns off', () => {

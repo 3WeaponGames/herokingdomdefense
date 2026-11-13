@@ -149,8 +149,9 @@ test('six closed-half aliases are lossless contiguous crops of the existing PNG,
   for (const tier of [1, 2, 3]) {
     const pair = a.findRegion('rts_door_closed_' + tier), near = a.findRegion('rts_door_closed_near_' + tier), far = a.findRegion('rts_door_closed_far_' + tier);
     assert(pair && near && far); assert.equal(near.page, pair.page); assert.equal(far.page, pair.page);
-    assert.deepEqual([near.x, near.y, near.width, near.height], [pair.x, pair.y, 260, 531]);
-    assert.deepEqual([far.x, far.y, far.width, far.height], [pair.x + 260, pair.y, 252, 531]);
+    assert.deepEqual([pair.width, pair.height], [256, 266]);
+    assert.deepEqual([near.x, near.y, near.width, near.height], [pair.x, pair.y, 130, 266]);
+    assert.deepEqual([far.x, far.y, far.width, far.height], [pair.x + 130, pair.y, 126, 266]);
     assert.equal(near.width + far.width, pair.width); assert(!near.rotate && !far.rotate);
   }
 });

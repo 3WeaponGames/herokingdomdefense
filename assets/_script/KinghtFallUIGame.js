@@ -1129,6 +1129,9 @@ var def_KinghtFallUIGame = function (t) {
         Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).ndItem.active = o.tag);
       }
     }
+    // Paint once after combat advances so hit effects use this frame's state.
+    // The paused path still runs this to hide input and freeze presentation.
+    if(this.ctrGame&&this.ctrGame.ctrPlay&&this.ctrGame.ctrPlay._styleRuntime)require("HeroSkillHUD").update(this.ctrGame.ctrPlay,this.ctrGame.ctrPlay._styleRuntime);
   };
   _ctor.prototype.onCloseUI = function (t) {
     var e = this;
