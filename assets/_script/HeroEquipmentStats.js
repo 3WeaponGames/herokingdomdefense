@@ -17,6 +17,15 @@ function row(config, slot, level) {
   var gear = (config.EquipCfg || []).filter(function (value) { return value.id === Number(slot); })[0];
   return gear && gear.levelInfo[Math.max(0, Math.min(gear.levelInfo.length - 1, Math.floor(Number(level) || 1) - 1))];
 }
+function positiveRate(value) { return typeof value === "number" && isFinite(value) && value > 0; }
+function hasBaseAttackRate(config, style) {
+  var rates = enabled(config) && config.HeroEquipment.baseAttackRates;
+  return !!(Weapons.find(style) && rates && typeof rates === "object" && !Array.isArray(rates) &&
+    Object.prototype.hasOwnProperty.call(rates, style) && positiveRate(rates[style]));
+}
+function baseAttackRate(config, style) {
+  return hasBaseAttackRate(config, style) ? config.HeroEquipment.baseAttackRates[style] : (row(config || {}, 5, 1) || {}).Parameters;
+}
 function secondary(config, style, level) {
   if (!enabled(config)) return {};
   var current = row(config, 3, level), values = current && current.SecondaryStats && current.SecondaryStats[style] || {}, result = {};
@@ -34,6 +43,15 @@ function raw(config, style, equipment, secondaryLevel) {
   result.damage = damage(config,style,equipment[4]);
   result.regen += bonus.healthRegen || 0;
   result.range = config.HeroEquipment.baseRange + (bonus.range || 0);
+  // A style default changes its starting rate while keeping the shared Cloak
+  // curve proportional. Missing overrides leave legacy arithmetic untouched.
+  if (hasBaseAttackRate(config, style)) {
+    var cloakBase = (row(config, 5, 1) || {}).Parameters;
+    if (positiveRate(cloakBase)) {
+      var scaledRate = baseAttackRate(config, style) * (result.attackRate / cloakBase);
+      if (isFinite(scaledRate) && scaledRate >= 0) result.attackRate = scaledRate;
+    }
+  }
   result.attackRate *= 1 + (bonus.attackRate || 0);
   result.move *= 1 + (bonus.move || 0);
   return result;
@@ -68,3 +86,4 @@ function migrate(data, config) {
 exports.enabled=enabled;exports.definitions=definitions;exports.secondary=secondary;
 exports.raw=raw;exports.fields=fields;exports.formatted=formatted;exports.summary=summary;exports.migrate=migrate;
 exports.multiplier=multiplier;
+exports.baseAttackRate=baseAttackRate;exports.hasBaseAttackRate=hasBaseAttackRate;

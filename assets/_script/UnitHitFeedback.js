@@ -38,7 +38,7 @@ var Feedback = cc.Class({
     if (this.token) { this.update(); if (this.token) return; }
     // Two-color tint supplies the translucent white flash for assembled allies.
     // Monsters retain their own authored Hit / Hit_2 artwork and animation.
-    renderer.useTint = true;
+    if (renderer.useTint !== true) renderer.useTint = true;
     var feedback = this, token = this.token = {};
     this.renderer = renderer; this.generation = generation; this.asset = asset;
     var entry = renderer.setAnimation(TRACK, "hit", false);

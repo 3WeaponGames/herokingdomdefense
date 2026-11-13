@@ -26,7 +26,7 @@ Runtime.prototype.apply = function () {
     node._millFieldTarget = true;
     var field = {
       node: node, slot: slot, attachment: attachment, hp: runtime.cfg.fieldHp, hpMax: runtime.cfg.fieldHp,
-      ruinsAttachment:skin.getAttachment(slot.data.index,"destroyed"), deathKeys:Presentation.deathKeys(owner.ndAniDown,slot),
+      deathKeys:Presentation.deathKeys(owner.ndAniDown,slot),
       addon: skeleton.findSlot("mill_addon_" + name), cooldown: .3 + runtime.fields.length * .15,
       buildInfo: owner.buildInfo, buildCfg: owner.buildCfg,
       getIsWork: function () { return runtime.fighting && cc.isValid(node,true) && node.activeInHierarchy !== false && owner.enabled !== false && (!owner.node || owner.node.activeInHierarchy !== false) && owner.getIsWork() && this.hp > 0; },
@@ -71,8 +71,8 @@ Runtime.prototype.sync = function () {
   if (!source || !cc.isValid(source.node, true)) return;
   this.fields.forEach(function (field) {
     var visible = owner.getIsWork() && field.hp > 0;
-    // The per-instance destroyed attachment persists through native idle/night
-    // updates. Shared skins, texture data and the other crops are untouched.
+    // Reapply dead crop visibility after native idle/night timelines, keeping
+    // the shared debris independent from the live Spine attachment and skin.
     Presentation.sync(this,field);
     field.node.active = visible;
     var bone = field.slot.bone;
@@ -145,7 +145,8 @@ Runtime.prototype.tick = function (dt) {
   });
 };
 Runtime.prototype.clear = function () {
-  this.fields.forEach(function (field) { Presentation.clear(field);if (field.addon) field.addon.color.a=0; field.node._combatGeneration = (field.node._combatGeneration || 0)+1; field.node.active=false; field.node.destroy(); });
+  var owner=this.owner;
+  this.fields.forEach(function (field) { Presentation.clear(field,owner);if (field.addon) field.addon.color.a=0; field.node._combatGeneration = (field.node._combatGeneration || 0)+1; field.node.active=false; field.node.destroy(); });
   this.fields = [];
   (this.effects || []).forEach(function (effect) { effect.node.destroy(); }); this.effects=[];
 };

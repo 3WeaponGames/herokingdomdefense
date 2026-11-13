@@ -353,14 +353,7 @@ test('production cannon and sniper families contain four fitted levels with unch
         const displayScale=require('./tower-native-weapon-assets.fixture.json').weaponDisplayScales?.[type]||1;assert(Math.abs(view.width/viewMeta.width-displayScale)<1e-6);assert(Math.abs(view.height/viewMeta.height-displayScale)<1e-6);assert.equal(viewMeta.filterMode,'bilinear');assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
         assert.equal(Object.values(viewMeta.subMetas)[0].trimType,'none');
       }
-      const ruins = row.Appearance.destroyed;
-      assert.equal(ruins.sprite, 'buildings/towers/' + type + '-' + Math.min(row.level,3) + '-destroyed');
-      const ruinFile = path.join(root, 'assets/resources', ruins.sprite + '.png');
-      assert.equal(fs.readFileSync(ruinFile).subarray(1, 4).toString(), 'PNG');
-      const ruinMeta = JSON.parse(fs.readFileSync(ruinFile + '.meta'));
-      assert.equal(ruinMeta.type, 'sprite'); assert.equal(ruinMeta.packable, false); assert.equal(ruinMeta.genMipmaps, false);
-      assert.equal(Object.values(ruinMeta.subMetas)[0].trimType, 'none');
-      assert(ruins.width>0&&ruins.height>0); assert.equal(ruins.offsetY, -38);
+      assert.equal(row.Appearance.destroyed,undefined,'persistent debris is supplied by the shared building lifecycle');
       assert.equal(row.Appearance.lifecycle,'native-tower');
       assert.equal(row.Appearance.nightTint,'#A7A7A7');assert(row.Appearance.lighting.length>0);
       for(const light of row.Appearance.lighting){

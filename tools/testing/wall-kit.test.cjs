@@ -106,7 +106,7 @@ function checkBounds(json) {
   }
 }
 
-test('wall tiers retain exact pack 2/4/7 pixels, asset bindings and gameplay data', () => {
+test('wall tiers retain approved pack 2/4/7 repaints, asset bindings and gameplay data', () => {
   const atlas = regions(), page = decode(bytes(dir + 'cq1/' + fixture.page));
   assert.deepEqual(fixture.packTiers, [2, 4, 7]);
   for (const expected of fixture.regions) {

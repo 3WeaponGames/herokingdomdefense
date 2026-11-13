@@ -67,6 +67,20 @@ test('equipment skins are checked on the real equipment layer and projectile', (
     assert(check('A', ['EquipCfg', 0, 'levelInfo', 0, 'EquipSkin'], 'hong').some(issue => /Skin.*missing/.test(issue.message)));
     assert(check('A', ['EquipCfg', 0, 'levelInfo', 0, 'EquipBottom'], 'wg_rw_pf1').some(issue => /KinghtFallIconGood/.test(issue.message)));
 });
+
+test('the approved blue equipment skin validates against its Maker layer and safe legacy projectile fallback',()=>{
+    const at=['EquipCfg',2,'levelInfo',0,'EquipSkin'];
+    for(const current of [true,false]){
+        const next=clone(docs);
+        if(!current)delete next.A.data.HeroEquipment;
+        next.A.data.EquipCfg[2].levelInfo[0].EquipSkin='lv_blue';
+        const before=JSON.stringify(next),changes=[{doc:'A',path:at}];
+        assert.deepStrictEqual(Assets.validate(root,next,changes),[],current?'Current equipment':'Legacy configuration without a stat override');
+        assert.strictEqual(JSON.stringify(next),before,'Validation never rewrites the requested skin to its fallback');
+        next.A.data.EquipCfg[2].levelInfo[0].EquipSkin='unapproved_missing_skin';
+        assert(Assets.validate(root,next,changes).some(issue=>/Skin.*missing/.test(issue.message)),'Unknown equipment skins must still be rejected');
+    }
+});
 test('unreferenced null slots in compacted map prefabs do not break building skin validation',()=>{
     const next=clone(docs),map=require('../lib/map-assets').loadMap(root,'Map01').data;map.push(null);next['map:Map01']={data:map};const before=JSON.stringify(next);
     assert.deepStrictEqual(Assets.validate(root,next,[{doc:'A',path:['BuildEnum','1','levelList',0,'Skin']}]),[]);assert.strictEqual(JSON.stringify(next),before);

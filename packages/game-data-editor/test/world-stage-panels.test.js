@@ -250,3 +250,9 @@ test('missing units or invalid scaling remain visibly unavailable without invent
   const before=JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog});f.panels.right();const card=descendants(f.context.right).find(element=>element.dataset.entryId==='a'),stats=descendants(card).find(element=>element.className==='world-wave-unit-stats');assert(stats);const values=descendants(stats).filter(element=>element.tagName==='strong').map(element=>element.textContent);assert.deepEqual(values,['—','—']);assert(!stats.textContent.includes('NaN'));assert(!stats.textContent.includes('undefined'));assert.equal(JSON.stringify({stage:f.state.snap.value,catalog:f.state.catalog}),before);assert.equal(f.edits(),0);
  }
 });
+
+test('an unavailable legacy path is explained without changing its original zero condition',()=>{
+ const f=fixture(),stage=f.state.snap.value,graph=stage.graphs[0];Object.assign(graph,{legacy:true,requiresAnyBuilding:Array(10).fill(0)});const before=JSON.stringify(stage);f.state.tab='Paths';f.panels.left();f.panels.right();
+ assert.equal(Panels.pathSubtitle(stage,graph),'2 points · Unavailable legacy route');assert(f.context.right.textContent.includes('all-zero building condition keeps this legacy route unavailable'));
+ assert.equal(JSON.stringify(stage),before);assert.equal(f.edits(),0);
+});

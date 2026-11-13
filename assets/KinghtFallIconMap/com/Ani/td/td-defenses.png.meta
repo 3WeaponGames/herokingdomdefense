@@ -11,5 +11,28 @@
   "width": 512,
   "height": 128,
   "platformSettings": {},
-  "subMetas": {}
+  "subMetas": {
+    "td-defenses": {
+      "ver": "1.0.6",
+      "uuid": "99985259-2677-4026-bcd5-5498d8fcda15",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "06775057-267f-424c-b78e-6d107f4afaaa",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -57.5,
+      "offsetY": 24,
+      "trimX": 12,
+      "trimY": 2,
+      "width": 373,
+      "height": 76,
+      "rawWidth": 512,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
 }

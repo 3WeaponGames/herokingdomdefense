@@ -10,7 +10,7 @@ function save(t,edits,extra={}){
  t.after(()=>{const target=path.resolve(root);assert.equal(path.dirname(target),path.resolve(os.tmpdir()));assert(path.basename(target).startsWith('hkd-skill-contract-'));fs.rmSync(target,{recursive:true,force:true});});
  const config={GameTools:{timingDefaults:{'hero:hero:default':{attack:.1667}},timings:{'hero:hero:default':{attack:.25}},extension:{keep:true}},EquipCfg:[{id:1,extension:'retain'}],...extra};
  for(const relative of FILES){const file=path.join(root,relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(config,null,2)+'\n');}
- const service=new SkillService(root,{catalogs:{audio:[{id:uuid,uuid,file:'assets/KinghtFallAudio/sfx/skill.ogg',bundle:'KinghtFallAudio',path:'sfx/skill'}],vfx:[]},describe:()=>({layers:[{animations:['attack','attack_fighter','attack_mystic']}]})});
+ const service=new SkillService(root,{catalogs:{audio:[{id:uuid,uuid,file:'assets/KinghtFallAudio/sfx/skill.ogg',bundle:'KinghtFallAudio',path:'sfx/skill'}],vfx:[]},describe:()=>({layers:[{animations:['attack','attack_fighter','attack_mystic'],json:{animations:Object.fromEntries(['attack','attack_fighter','attack_mystic'].map(name=>[name,{events:[{name:'attack',time:.1667}]}]))}}]})});
  for(const [style,field,value]of edits)service.change({style,path:field,value,version:service.version,revision:service.revision});
  const result=service.save({version:service.version,revision:service.revision});
  const published=JSON.parse(fs.readFileSync(path.join(root,FILES[0]),'utf8'));
@@ -77,4 +77,25 @@ test('a late sound load cannot play after owner recycling or explicit runtime cl
 });
 test('legacy UUID-only authored SFX uses loadAny but obeys the same real AudioMgr owner guards',()=>{
  for(const retired of [false,true]){const audio=audioFixture(),h=scene('guardian',{HeroSkills:{guardian:{audio:{cast:{clip:uuid,volume:.6,delay:0}}}}},audio);h.rt.cast();h.rt.update(.01);assert.equal(audio.uuidLoads.length,1);assert.equal(audio.uuidLoads[0].request.uuid,uuid);assert.equal(audio.pending.length,0);const source=[...audio.manager.audioSourceMap.values()][0];if(retired)h.g._combatEpoch++;audio.uuidLoads[0].callback(null,{name:'uuid skill',loaded:true});assert.equal(source.plays,retired?0:1);if(!retired)close(source.volume,.3);assert.equal(source.mute,true);}
+});
+
+test('Vanguard preview and gameplay share post-expiry strike snapshots and zero-damage inheritance',()=>{
+ const {Model}=require('../../packages/hkd-skills/preview-model');
+ for(const strikeDamage of [.5,0]){const tune={duration:1,strikes:2,buffDuration:.5,chargeDecay:0,strikeDamage},h=scene('vanguard',{HeroSkills:{vanguard:tune}}),enemy=h.enemy(),m=new Model('vanguard',tune,{mode:'active',targets:1,targetDistance:100,attackRate:1});h.rt.state.charge=.75;assert(h.rt.cast({x:1,y:0}));h.rt.update(1);m.advance(1);close(100000-enemy.hp,m.damage);close(h.rt.state.buffRemaining,m.state.buffRemaining);close(h.rt.state.charge,m.state.charge);close(h.rt.state.cooldown,m.state.cooldown);assert.equal(m.events.filter(e=>e.kind==='impact').length,enemy.hits.filter(e=>e.damage>0).length);}
+});
+
+test('Mystic preview and gameplay agree on retarget residue and integrated live source playback',()=>{
+ const {Model}=require('../../packages/hkd-skills/preview-model'),h=scene('mystic',{}),a=h.enemy(100),b=h.enemy(110),m=new Model('mystic',{}, {mode:'basic',targets:2,targetDistance:100,attackRate:2,holdSource:.2,attackPlayback:1});a.hp=50;b.hp=150;m.targets[0].hp=50;Object.assign(m.targets[1],{x:110,y:0,hp:150});h.hero.getAttSpeed=()=>2;h.rt.timing=()=>({playback:1,sourceHit:.2,sourceDuration:1,hit:.2,frozen:false});h.rt.update(1.4);m.advance(1.4);close(Math.max(0,a.hp),m.targets[0].hp);close(Math.max(0,b.hp),m.targets[1].hp);close(h.rt.beamClock,m.attackClock);close(h.rt.beamSourceTime,m.channelSourceTime);assert.equal(h.rt.state.mysticCharges,m.state.mysticCharges);
+ const live=scene('mystic',{}),target=live.enemy(),preview=new Model('mystic',{}, {mode:'basic',targets:1,targetDistance:100,attackRate:2,holdSource:.6,attackPlayback:1});let playback=1;live.hero.getAttSpeed=()=>2;live.rt.timing=()=>({playback,sourceHit:.6,sourceDuration:1,hit:playback>0?.6/playback:Infinity,frozen:playback===0});
+ for(const [dt,rate]of [[.2,1],[1,0],[.199,2],[.001,2],[.1,2]]){playback=rate;preview.scenario.attackPlayback=rate;live.rt.update(dt);preview.advance(dt);close(live.rt.beamSourceTime,preview.channelSourceTime);close(live.rt.beamClock,preview.attackClock);close(100000-target.hp,preview.damage);assert.equal(!!live.rt.beamTarget,preview.beam);}
+});
+
+test('actual Skirmisher and preview use identical swept contact damage across frame sizes and map clipping',()=>{
+ const {Model,segmentEntry}=require('../../packages/hkd-skills/preview-model'),tune={windup:0,chargeRate:0,chargedDamage:0,projectileSpeed:1000,projectileWidth:28,distanceDamagePer100:.1};
+ for(const point of [{x:100,y:0,entry:72},{x:100,y:20,entry:100-Math.sqrt(384)},{x:100,y:28,entry:100},{x:10,y:0,entry:0},{x:1010,y:0,entry:982},{x:1030,y:0,entry:null},{x:100,y:29,entry:null}])for(const step of [1.2,.01]){
+  const h=scene('skirmisher',{HeroSkills:{skirmisher:tune}}),enemy=h.enemy(point.x),m=new Model('skirmisher',tune,{mode:'active',targets:1,targetDistance:point.x,attackRate:0});enemy.node.y=point.y;Object.assign(m.targets[0],{x:point.x,y:point.y});assert(h.rt.cast({x:1,y:0}));
+  let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);h.rt.update(dt);m.advance(dt);remaining-=dt;}
+  const damage=enemy.hits.reduce((total,hit)=>total+hit.damage,0),expected=point.entry===null?0:100*(1+point.entry/100*.1);close(damage,expected);close(m.damage,expected);assert.equal(m.hits,enemy.hits.length);const direct=h.load('HeroStyleRuntime').segmentEntry(point,{x:0,y:0},{x:1000,y:0},28);assert.equal(direct,segmentEntry(point,{x:0,y:0},{x:1000,y:0},28));
+  if(point.entry!==null)close(m.events.find(e=>e.kind==='impact').time,point.entry/1000);
+ }
 });

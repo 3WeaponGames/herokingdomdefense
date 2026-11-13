@@ -4,7 +4,17 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {test}=require('node:test');
 const script=path.resolve(__dirname,'../../assets/_script/GameToolsOverrides.js');
 function fixture(settings={}){
-  const data={GameTools:settings},context={exports:{},cc:{isValid:actor=>!!actor&&!actor.destroyed},require(name){assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data})}};}};
+  const data={GameTools:settings},modules={
+    KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data})}},
+    HeroWeapons:require('../../assets/_script/HeroWeapons'),
+    HeroSkillPose:require('../../assets/_script/HeroSkillPose')
+  },context={exports:{},cc:{isValid:actor=>!!actor&&!actor.destroyed},require(name){
+    if(modules[name])return modules[name];
+    assert.equal(name,'HeroMakerRider');
+    const rider={exports:{},cc:context.cc,require:context.require};
+    vm.runInNewContext(fs.readFileSync(path.join(path.dirname(script),'HeroMakerRider.js'),'utf8'),rider,{filename:'HeroMakerRider.js'});
+    return modules[name]=rider.exports;
+  }};
   vm.runInNewContext(fs.readFileSync(script,'utf8'),context,{filename:script});
   return {api:context.exports,settings};
 }

@@ -9,8 +9,8 @@ function appearance(){
 }
 function fixture(catalog={},settings={}){
  const a=appearance();a.api.preload();a.jobs.shift().done(null,{json:catalog});
- const context={exports:{},cc:{resources:{},isValid:value=>!!value&&!value.destroyed},require(name){if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
- vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings};
+ const owned=new WeakSet(),context={exports:{},cc:{resources:{},isValid:value=>!!value&&!value.destroyed},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:(_controller,renderer)=>owned.has(renderer)};if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
+ vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings,owned};
 }
 function actor(id=94001,pack='fantasy-bosses'){
  const tracks={0:{animation:{name:'attack',duration:4},timeScale:1,trackTime:0},1:{animation:{name:'hit',duration:.3},timeScale:.7}};
@@ -36,11 +36,33 @@ test('native baked units without skeleton JSON use their record package for expl
  const f=fixture({unitAnimationSpeeds:{'enemy:94001:default':1}}),unit=actor();unit.spAni.skeletonData={uuid:'native-bake'};unit.cfg.MonsterPack='fantasy-monsters';assert.equal(f.api.animationPlayback(unit,'enemy'),.35);assert.equal(f.api.attackPlayback(unit,'enemy'),.35);f.api.applyAnimationPlayback(unit,'enemy');assert.equal(unit.tracks[0].timeScale,.35);unit.cfg.MonsterPack='fantasy-bosses';assert.equal(f.api.animationPlayback(unit,'enemy'),.25);
  delete f.catalog.unitAnimationSpeeds['enemy:94001:default'];assert.equal(f.api.attackPlayback(unit,'enemy'),1,'absent settings retain the existing runtime fallback');
 });
+
+test('whole-unit playback preserves held and retimed rider clocks until their skill ownership ends',()=>{
+ const f=fixture({unitAnimationSpeeds:{'hero:hero:default':.8}}),unit=actor(),body={track:{animation:{name:'attack'},timeScale:0},getCurrent(){return this.track;}},horse={track:{animation:{name:'move'},timeScale:1},getCurrent(){return this.track;}};
+ unit.ctrPlayAni={spAniBody:body,spAniMa:horse};f.owned.add(body);f.api.applyAnimationPlayback(unit,'hero');assert.equal(body.track.timeScale,0);assert.equal(horse.track.timeScale,.8);
+ body.track.timeScale=.476;f.api.applyAttackPlayback(unit,'hero');assert.equal(body.track.timeScale,.476);
+ f.owned.delete(body);f.api.applyAnimationPlayback(unit,'hero');assert.equal(body.track.timeScale,.8);
+});
 test('0% freezes delayed and eventless hits, resumes from source time, and pooling cancels frozen work',()=>{
  const catalog={unitAnimationSpeeds:{'enemy:94001:default':0,'enemy:94002:default':0}},f=fixture(catalog,{timingDefaults:{'enemy:94001:default':{attack:.52}}}),unit=actor();let hits=0;
  f.api.attack(unit,'enemy',()=>hits++);assert.equal(unit.tracks[0].timeScale,0);f.api.tick(1000,true);assert.equal(hits,0);assert(f.api.isPending(unit));catalog.unitAnimationSpeeds['enemy:94001:default']=1;f.api.tick(.52/.25-.00001,true);assert.equal(hits,0);f.api.tick(.00001,true);assert.equal(hits,1);
  const eventless=actor(94002,'monster3');f.api.attack(eventless,'enemy',()=>hits++);f.api.tick(100,true);assert.equal(hits,1);catalog.unitAnimationSpeeds['enemy:94002:default']=.5;f.api.tick(.001,true);assert.equal(hits,2);
  catalog.unitAnimationSpeeds['enemy:94001:default']=0;f.api.attack(unit,'enemy',()=>hits++);unit.node.active=false;f.api.tick(1,true);assert(!f.api.isPending(unit));assert.equal(unit.time.Attack,0);assert.equal(hits,2);
+});
+test('in-flight Barracks playback changes retain elapsed source time when whole-unit control appears or disappears',()=>{
+ const catalog={unitAnimationSpeeds:{'ally:94001:level:2':2}},settings={timingDefaults:{'ally:94001:default':{attack:.2}}},f=fixture(catalog,settings),unit=actor(94001,'monster3');unit.outBuild={buildInfo:{cfg:{level:1}}};let hits=0;
+ f.api.attack(unit,'ally',()=>hits++);f.api.tick(.05,true);unit.outBuild.buildInfo.cfg.level=2;f.api.tick(.075,true);assert.equal(hits,1,'the remaining .15 source seconds take .075 seconds at2x');assert.equal(unit.tracks[0].timeScale,2);
+ unit.time.Attack=-1;f.api.attack(unit,'ally',()=>hits++);f.api.tick(.05,true);unit.outBuild.buildInfo.cfg.level=3;f.api.tick(.0999,true);assert.equal(hits,1);f.api.tick(.0001,true);assert.equal(hits,2,'removing2x retains the .1 source seconds already elapsed');assert.equal(unit.tracks[0].timeScale,1);
+});
+test('attack-only speed changes use the same cumulative source clock and refresh the visible track',()=>{
+ const settings={timingDefaults:{'enemy:94001:default':{attack:.4}},animationSpeeds:{'enemy:94001:default':1}},f=fixture({},settings),unit=actor(94001,'monster3');let hits=0;
+ f.api.attack(unit,'enemy',()=>hits++);f.api.tick(.1,true);settings.animationSpeeds['enemy:94001:default']=2;f.api.tick(.1499,true);assert.equal(hits,0);f.api.tick(.0001,true);assert.equal(hits,1);assert.equal(unit.tracks[0].timeScale,2);
+});
+test('scheduler counts a partial relic-freeze release before the later actor update and preserves independent pauses',()=>{
+ for(const wasPaused of [false,true]){
+  const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.07}}}),unit=actor(94001,'monster3');unit.node._combatGeneration=1;unit.spAni.paused=true;unit._relicControl={generation:1,freeze:.03,slow:0,duration:0};unit._relicPausedRenderers=[{renderer:unit.spAni,wasPaused}];let hits=0;
+  f.api.attack(unit,'enemy',()=>hits++);f.api.tick(.1,true);assert.equal(hits,wasPaused?0:1);
+ }
 });
 test('catalog preload coalesces callers, exposes speeds before completion callbacks and completes failures for startup retry',()=>{
  const f=appearance(),order=[];f.api.preload(()=>order.push(f.api.animationSpeed(actor(),'enemy')));f.api.preload(()=>order.push('second'));assert.equal(f.jobs.length,1);assert.equal(f.jobs[0].name,'characters/catalog');f.jobs.shift().done(null,{json:{unitAnimationSpeeds:{'enemy:94001:default':.6}}});assert.deepEqual(order,[.6,'second']);f.api.preload(()=>order.push('cached'));assert.equal(f.jobs.length,0);assert.equal(order.at(-1),'cached');

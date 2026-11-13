@@ -607,22 +607,22 @@
       "family": "archer",
       "tier": 1,
       "path": "assets/resources/buildings/redesign/towers/archer-1.png",
-      "sha256": "e896e250173ce702511892882900a813d29158cf9d6506f83da160fa87d8fd80",
+      "sha256": "8f92b64f9d6fc8c884c5a090530e55a03ce6e4f9510d70f52dce412ce9ef0bee",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-1-window-light.png",
-      "maskSha256": "d29cf90805ef63bdedeb545e11034782971ebe71fb20c16f8d722dd4d8de795a",
+      "maskSha256": "32d0192d6deea677ab2a964633e97bf5f83271a8d8dd3d4b34c21d3bc8e63b2c",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          146,
-          118,
-          193,
-          162
+          143,
+          115,
+          196,
+          165
         ],
         [
-          79,
-          119,
-          126,
-          161
+          76,
+          116,
+          129,
+          164
         ]
       ],
       "excludedDoorSourceBounds": [
@@ -630,28 +630,32 @@
         190,
         175,
         231
-      ]
+      ],
+      "maxWindowChannel": 60,
+      "previousPaintSha256": "e896e250173ce702511892882900a813d29158cf9d6506f83da160fa87d8fd80",
+      "previousMaskSha256": "d29cf90805ef63bdedeb545e11034782971ebe71fb20c16f8d722dd4d8de795a",
+      "approvedMinimalMaster": "2026-11-13 archer-1"
     },
     {
       "family": "archer",
       "tier": 2,
       "path": "assets/resources/buildings/redesign/towers/archer-2.png",
-      "sha256": "5ec332684fab5524712ac36270f6f5c7d14c871373a11d5e1834bc50382dd3a0",
+      "sha256": "d00ee38954f800e04a255a5ed1379458979c5410bf85958a0cdf29ee7d9778ea",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-2-window-light.png",
-      "maskSha256": "07c0bbf4f52e3b0ad382a80f9abe51c4d402b6fcdd3569a81cd67acc5900e874",
+      "maskSha256": "4291c3e631e0e89706c81ffaed5596098e5e457a8c43a275ef75d7219726c08c",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          76,
-          117,
-          128,
-          161
+          73,
+          114,
+          131,
+          164
         ],
         [
-          146,
-          117,
-          194,
-          161
+          143,
+          114,
+          197,
+          164
         ]
       ],
       "excludedDoorSourceBounds": [
@@ -659,28 +663,32 @@
         189,
         175,
         235
-      ]
+      ],
+      "maxWindowChannel": 60,
+      "previousPaintSha256": "5ec332684fab5524712ac36270f6f5c7d14c871373a11d5e1834bc50382dd3a0",
+      "previousMaskSha256": "07c0bbf4f52e3b0ad382a80f9abe51c4d402b6fcdd3569a81cd67acc5900e874",
+      "approvedMinimalMaster": "2026-11-13 archer-2"
     },
     {
       "family": "archer",
       "tier": 3,
       "path": "assets/resources/buildings/redesign/towers/archer-3.png",
-      "sha256": "79c388a38547c717f8e739cdffa8f10ee6fb3f3d44d55ebfcfdb66f099b71611",
+      "sha256": "2c19214694689ecb6d26f6036f8ba70795cb183986d8ffdd513c41246554abb3",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-3-window-light.png",
-      "maskSha256": "e2598915c7d3fe7a0852dd14f135249dae71bb61d65ed7c8e9acb62b98c74318",
+      "maskSha256": "8496ab6d978ad2ca5ee4a6293fc6c87e1898c36e9ba36f07cb8316c2b6c3dde5",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          75,
-          116,
-          130,
-          161
+          72,
+          113,
+          133,
+          164
         ],
         [
-          145,
-          118,
-          194,
-          161
+          142,
+          115,
+          197,
+          164
         ]
       ],
       "excludedDoorSourceBounds": [
@@ -688,28 +696,32 @@
         190,
         177,
         232
-      ]
+      ],
+      "maxWindowChannel": 60,
+      "previousPaintSha256": "79c388a38547c717f8e739cdffa8f10ee6fb3f3d44d55ebfcfdb66f099b71611",
+      "previousMaskSha256": "e2598915c7d3fe7a0852dd14f135249dae71bb61d65ed7c8e9acb62b98c74318",
+      "approvedMinimalMaster": "2026-11-13 archer-3"
     },
     {
       "family": "archer",
       "tier": 4,
       "path": "assets/resources/buildings/redesign/towers/archer-4.png",
-      "sha256": "44dca553f884e50f236d1b51fdd4c1491c6042eb2a7a213fd3c941ad9dd09a20",
+      "sha256": "cb3da9122faef4daaa462dc8791b80c10cb9ae86b770388c8fe0b36da70e5a1b",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-4-window-light.png",
-      "maskSha256": "f69e886760126a0b2ba0c1ae38e12ee4b4170c818fe0566d65ab12d01d5aca0b",
+      "maskSha256": "0b914c39f0cf89e50db762605c1e5542a26d6ca1ea3e39d8591aa8c7032ec334",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          83,
-          143,
-          142,
-          194
+          80,
+          140,
+          145,
+          197
         ],
         [
-          160,
-          149,
-          210,
-          194
+          157,
+          146,
+          213,
+          197
         ]
       ],
       "excludedDoorSourceBounds": [
@@ -717,15 +729,19 @@
         226,
         193,
         269
-      ]
+      ],
+      "maxWindowChannel": 60,
+      "previousPaintSha256": "44dca553f884e50f236d1b51fdd4c1491c6042eb2a7a213fd3c941ad9dd09a20",
+      "previousMaskSha256": "f69e886760126a0b2ba0c1ae38e12ee4b4170c818fe0566d65ab12d01d5aca0b",
+      "approvedMinimalMaster": "2026-11-13 archer-4"
     },
     {
       "family": "sniper",
       "tier": 1,
       "path": "assets/resources/buildings/redesign/towers/sniper-1.png",
-      "sha256": "c925c7820d5ed45e1a7276efd051be8d5d7f7ad90a1880793a59c76140b4e5fe",
+      "sha256": "890547509626a586e7c4a154935fe228fa839fe2fa2beb597f4bfffa9a64da8e",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-1-window-light.png",
-      "maskSha256": "6f081769148dde0f07f3ae17ee7ab988c72f32d8748e6040cfe3a7fd4486e24b",
+      "maskSha256": "0b1dd9d8f5d9a3bf36337ee1ad56885d9decc05bd9984f0e8a9c9bf535c054f9",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -754,20 +770,23 @@
         "offsetX": 0,
         "offsetY": -38
       },
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "glowCount": 1,
       "minComponentPixels": 4,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "676d444092327a865801072229f36f8e5c9928a3f3475d1d62126f59f2d69fc6",
-      "sourceFamily": "Tiny Kingdom ScorpionTower"
+      "sourceFamily": "Tiny Kingdom ScorpionTower",
+      "previousPaintSha256": "c925c7820d5ed45e1a7276efd051be8d5d7f7ad90a1880793a59c76140b4e5fe",
+      "previousMaskSha256": "6f081769148dde0f07f3ae17ee7ab988c72f32d8748e6040cfe3a7fd4486e24b",
+      "approvedMinimalMaster": "2026-11-13 sniper-1"
     },
     {
       "family": "sniper",
       "tier": 2,
       "path": "assets/resources/buildings/redesign/towers/sniper-2.png",
-      "sha256": "7c99a8164254b8bb1835d8e59c05159be07075965d9f560cd7907b8d654abbda",
+      "sha256": "8156b7f00b1833e8ae6ddc09b5f27873e166ddb8ad6efbeb3b24fd6ba457b9b9",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-2-window-light.png",
-      "maskSha256": "d0fe333d39a4afd8e2852edcced093b386b8d065cce42a58f24789d393fdf1aa",
+      "maskSha256": "b18b110d42a3a5bac8fbc2ca1f06db972ceec4f589cb86785f7486af802e407c",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -796,20 +815,23 @@
         "offsetX": 0,
         "offsetY": -38
       },
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "glowCount": 1,
       "minComponentPixels": 4,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "831ddb75141df3d88d2a19c5f1b31b85920956a46c963b2da5cb13a17007872f",
-      "sourceFamily": "Tiny Kingdom ScorpionTower"
+      "sourceFamily": "Tiny Kingdom ScorpionTower",
+      "previousPaintSha256": "7c99a8164254b8bb1835d8e59c05159be07075965d9f560cd7907b8d654abbda",
+      "previousMaskSha256": "d0fe333d39a4afd8e2852edcced093b386b8d065cce42a58f24789d393fdf1aa",
+      "approvedMinimalMaster": "2026-11-13 sniper-2"
     },
     {
       "family": "sniper",
       "tier": 3,
       "path": "assets/resources/buildings/redesign/towers/sniper-3.png",
-      "sha256": "7177e50b53e58b279720a3b78c66e9551ad5d1ced84e5ea0a599cec8044343f2",
+      "sha256": "19df30e6010d89eb7c6a8042cb2e484b1195132d19cb846649e14e3a8dcdb16b",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-3-window-light.png",
-      "maskSha256": "3c4f6ef616824d434e4b56f13eaf57dfaf2ca0e092183560f7528e9410a1edb6",
+      "maskSha256": "5a83fc8cdb3e331be2528154caac2a56aa89c6be9ab94135445dc9d065f4afde",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -838,20 +860,23 @@
         "offsetX": 0,
         "offsetY": -38
       },
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "glowCount": 1,
       "minComponentPixels": 4,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "3307c09b8d6473d62a164288cf5d0520a27d933a8c7c540916617ac24f893136",
-      "sourceFamily": "Tiny Kingdom ScorpionTower"
+      "sourceFamily": "Tiny Kingdom ScorpionTower",
+      "previousPaintSha256": "7177e50b53e58b279720a3b78c66e9551ad5d1ced84e5ea0a599cec8044343f2",
+      "previousMaskSha256": "3c4f6ef616824d434e4b56f13eaf57dfaf2ca0e092183560f7528e9410a1edb6",
+      "approvedMinimalMaster": "2026-11-13 sniper-3"
     },
     {
       "family": "sniper",
       "tier": 4,
       "path": "assets/resources/buildings/redesign/towers/sniper-4.png",
-      "sha256": "8111a8dda9e26c84ea8d3d74198987d3c32a526bcd1e42860b4b6a95d5e195cb",
+      "sha256": "8ed445e78d3ad697f01ff21db893b2860e265f1bb4b34b0854703892ddcbd57c",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-4-window-light.png",
-      "maskSha256": "06c5ab322448a8802d0e37a1dfe6d0cce372142d7d931b508b694d101820783c",
+      "maskSha256": "00dadb301c8fa41977084cc90bd23843e76ccdeac6302a26db162d181f604cc8",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -880,20 +905,23 @@
         "offsetX": 0,
         "offsetY": -38
       },
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "glowCount": 1,
       "minComponentPixels": 4,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "470a5d147d5f5dd295d4a953052309653aeacadab6c2fa4d78f41dc9807db9e8",
-      "sourceFamily": "Tiny Kingdom ScorpionTower"
+      "sourceFamily": "Tiny Kingdom ScorpionTower",
+      "previousPaintSha256": "8111a8dda9e26c84ea8d3d74198987d3c32a526bcd1e42860b4b6a95d5e195cb",
+      "previousMaskSha256": "06c5ab322448a8802d0e37a1dfe6d0cce372142d7d931b508b694d101820783c",
+      "approvedMinimalMaster": "2026-11-13 sniper-4"
     },
     {
       "family": "cannon",
       "tier": 1,
       "path": "assets/resources/buildings/redesign/towers/cannon-1.png",
-      "sha256": "d24137ceaec590cf9b3acd1bcb764e3e2be0e93adf55ae1fe95e9edc36995571",
+      "sha256": "19a161afd13a12b9d1974c87436f2828ad92ae855b97508c33729bc83896c55d",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-1-window-light.png",
-      "maskSha256": "18f1c3a1a65ef34a8b289f65bed7991b09006c15933450b272e132fffbdb2f23",
+      "maskSha256": "c289a89306cb4d3cb92f6df547c4e80951dc1410f116fac5e876170ead86de27",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -924,18 +952,21 @@
       },
       "glowCount": 1,
       "minComponentPixels": 4,
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "c024213e06b86dfa4ccd48446702839b3112900d6ab420813f5ad233ae54ddd7",
-      "sourceFamily": "Tiny Kingdom CannonTower"
+      "sourceFamily": "Tiny Kingdom CannonTower",
+      "previousPaintSha256": "d24137ceaec590cf9b3acd1bcb764e3e2be0e93adf55ae1fe95e9edc36995571",
+      "previousMaskSha256": "18f1c3a1a65ef34a8b289f65bed7991b09006c15933450b272e132fffbdb2f23",
+      "approvedMinimalMaster": "2026-11-13 cannon-1"
     },
     {
       "family": "cannon",
       "tier": 2,
       "path": "assets/resources/buildings/redesign/towers/cannon-2.png",
-      "sha256": "a3a59194f7c019b489bd765aa337d0f50d5832b32f73f2b57f85e52b58c8d892",
+      "sha256": "70e1da88c0dcace0fdf8020a8d5721840147aa57d6b780f02d668dca5899e265",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-2-window-light.png",
-      "maskSha256": "cf6a61ce5b1d9360bfa2dbb7a3250cea8179c37a0540991ce95cd5f90fd82eee",
+      "maskSha256": "8d2a434033a4dff68baba0f9ad12d5418cb62ef401a2d0bdc0af0607c5a8f59f",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -966,18 +997,21 @@
       },
       "glowCount": 1,
       "minComponentPixels": 4,
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "a44effe9bfbee938842ca9d35736bef47d8e741205a8e0bd89ee41bb40423edb",
-      "sourceFamily": "Tiny Kingdom CannonTower"
+      "sourceFamily": "Tiny Kingdom CannonTower",
+      "previousPaintSha256": "a3a59194f7c019b489bd765aa337d0f50d5832b32f73f2b57f85e52b58c8d892",
+      "previousMaskSha256": "cf6a61ce5b1d9360bfa2dbb7a3250cea8179c37a0540991ce95cd5f90fd82eee",
+      "approvedMinimalMaster": "2026-11-13 cannon-2"
     },
     {
       "family": "cannon",
       "tier": 3,
       "path": "assets/resources/buildings/redesign/towers/cannon-3.png",
-      "sha256": "212b47aafe840428cb7a3f06ba014f20882bfa08287b66b1821ff3186db0d900",
+      "sha256": "89fba5db0f3a0b9836cafdfa97534e903db40f9292a3622b8cff49ea03bac4ce",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-3-window-light.png",
-      "maskSha256": "bf1858a5b51dde6acbd06c8baf4b14833abff7bf34cdeac93645abba33296956",
+      "maskSha256": "aa24457bf02cab72d40fb16da27bdfe386545704a1086aaf727e9ed591ebe990",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -1008,18 +1042,21 @@
       },
       "glowCount": 1,
       "minComponentPixels": 4,
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "21e0b91960387362e7bc0250dbf79313b4791545ed3f7f64cab105f8f4b1ce05",
-      "sourceFamily": "Tiny Kingdom CannonTower"
+      "sourceFamily": "Tiny Kingdom CannonTower",
+      "previousPaintSha256": "212b47aafe840428cb7a3f06ba014f20882bfa08287b66b1821ff3186db0d900",
+      "previousMaskSha256": "bf1858a5b51dde6acbd06c8baf4b14833abff7bf34cdeac93645abba33296956",
+      "approvedMinimalMaster": "2026-11-13 cannon-3"
     },
     {
       "family": "cannon",
       "tier": 4,
       "path": "assets/resources/buildings/redesign/towers/cannon-4.png",
-      "sha256": "7c39441c67abf3856dc5ded37a56eacc5634aea7caa8c8cd983bb6fd12327b6b",
+      "sha256": "c8c1f3fb3b23cbe3228aac9f885811a788514f02bc0973f1987b28a782bd7654",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-4-window-light.png",
-      "maskSha256": "b358bcbe408a125b8e3d554d0deb0118d5ad527944d32486e04344d5da3a6214",
+      "maskSha256": "0225a7410281ea3b9b15e1e1faa3a3cd02c44a2a6b8270cf2b18136445eb3362",
       "apertures": 2,
       "windowSourceBounds": [
         [
@@ -1050,10 +1087,13 @@
       },
       "glowCount": 1,
       "minComponentPixels": 4,
-      "maxWindowChannel": 60,
+      "maxWindowChannel": 126,
       "lightKind": "existing-lantern",
       "approvedRepaintSourceSha256": "7324165fe4565e60a8f009dc511140042a6e7c387f7f90900d43c6e3371084d1",
-      "sourceFamily": "Tiny Kingdom CannonTower"
+      "sourceFamily": "Tiny Kingdom CannonTower",
+      "previousPaintSha256": "7c39441c67abf3856dc5ded37a56eacc5634aea7caa8c8cd983bb6fd12327b6b",
+      "previousMaskSha256": "b358bcbe408a125b8e3d554d0deb0118d5ad527944d32486e04344d5da3a6214",
+      "approvedMinimalMaster": "2026-11-13 cannon-4"
     }
   ],
   "weaponDisplayScales": {

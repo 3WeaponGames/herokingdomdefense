@@ -11,5 +11,28 @@
   "width": 168,
   "height": 148,
   "platformSettings": {},
-  "subMetas": {}
+  "subMetas": {
+    "td-ruins": {
+      "ver": "1.0.6",
+      "uuid": "d5b0c30f-1466-4ec4-ae41-58700e14a8a5",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "575c9cae-52bc-4065-9c28-7d17d72fd366",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -14.5,
+      "trimX": 2,
+      "trimY": 32,
+      "width": 164,
+      "height": 113,
+      "rawWidth": 168,
+      "rawHeight": 148,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
 }

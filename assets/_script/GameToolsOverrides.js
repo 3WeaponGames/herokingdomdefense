@@ -33,6 +33,18 @@ function isPending(owner) {
   for (var i = 0; i < pending.length; i++) if (pending[i].owner === owner) return true;
   return false;
 }
+function trackValue(track, key) {
+  var getter = "get" + key.charAt(0).toUpperCase() + key.slice(1);
+  return track && (typeof track[getter] === "function" ? track[getter]() : track[key]);
+}
+function animationInfo(track) {
+  var animation = trackValue(track, "animation"), next = trackValue(track, "next");
+  var name = animation && (animation.name || animation.getName && animation.getName());
+  var duration = trackValue(track, "animationEnd");
+  if (typeof duration !== "number") duration = animation && (animation.duration || animation.getDuration && animation.getDuration());
+  var delay = trackValue(next, "delay"), time = trackValue(track, "trackTime");
+  return {name:name,end:typeof delay==="number"&&delay>=0?delay:duration,time:typeof time==="number"?time:0};
+}
 function attack(owner, type, callback) {
   applyAttackPlayback(owner, type);
   var settings = config();
@@ -40,14 +52,21 @@ function attack(owner, type, callback) {
   var item = settings && settings.timings && settings.timings[key];
   if (item === undefined) item = settings && settings.timingDefaults && settings.timingDefaults[key];
   var delay = item && item.attack;
-  var speed = attackPlayback(owner, type), sourceClock = unitAnimationSpeed(owner, type) !== undefined;
+  var speed = attackPlayback(owner, type);
   // A missing timing must retain call order, RNG order, and the original stack.
   var validDelay = typeof delay === "number" && isFinite(delay) && delay > 0 && delay <= 10;
   if (!validDelay && speed > 0) return callback.call(owner);
   cancel(owner);
   var skeleton = owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody);
   var track = skeleton && skeleton.getCurrent ? skeleton.getCurrent(0) : null;
-  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? sourceClock ? delay : delay / speed : 0, sourceClock: sourceClock, callback: callback, skeleton: skeleton, track: track });
+  var info = animationInfo(track);
+  // Keep the outstanding authored time in source seconds. Per-level playback
+  // can change during this windup, including entering/leaving whole-unit mode.
+  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
+    animation: info.name, animationEnd: info.end, animationTime: info.time,
+    // Browser TrackEntry objects survive disposal. JSB wrappers may point at
+    // freed native entries, so native interruption checks use captured values.
+    browserTrack: !(cc.sys && cc.sys.isNative) ? track : null });
 }
 function tick(dt, fighting) {
   if (!pending.length) return;
@@ -62,27 +81,35 @@ function tick(dt, fighting) {
       owner.node.activeInHierarchy !== false && owner.node.active !== false &&
       (!owner.isDead || !owner.isDead()) && owner.time === entry.time && keyFor(owner, entry.type) === entry.key;
     if (!valid) { cancel(owner); continue; }
-    var skeleton = entry.skeleton;
-    if (skeleton && skeleton.paused) continue;
-    if (entry.track && skeleton && skeleton.getCurrent) {
-      var current = skeleton.getCurrent(0), previous = entry.track;
-      var duration = previous.animation && previous.animation.duration;
-      // A replaced animation cancels its pending effect. Natural completion is
-      // allowed to cross the marker on the next simulation step.
-      if (current && current.animation && current.animation.name !== "attack" &&
-          typeof previous.trackTime === "number" && typeof duration === "number" && previous.trackTime + 1e-7 < duration) {
-        cancel(owner); continue;
-      }
-    }
+    applyAttackPlayback(owner, entry.type);
+    var skeleton = entry.skeleton, control = owner._relicControl;
+    // RelicCombat releases its pause later in this frame, after this scheduler.
+    // Count the unfrozen remainder now; an independently paused renderer stays
+    // stopped. Normal freeze application has already cancelled old attacks.
+    var relicPause = entry.type === "enemy" && control && control.generation === owner.node._combatGeneration &&
+      (owner._relicPausedRenderers || []).some(function (record) { return record.renderer === skeleton && !record.wasPaused; });
+    if (skeleton && skeleton.paused && !relicPause) continue;
     // UIGame supplies dt * game speed; skeleton.timeScale already uses that
     // same speed. Multiplying again would advance hit markers twice as fast.
-    var effectDelta = dt, control = owner._relicControl;
+    var effectDelta = dt;
     if (entry.type === "enemy" && control && control.generation === owner.node._combatGeneration) {
       if (control.freeze > 0) effectDelta = Math.max(0, dt - control.freeze);
       else if (control.duration > 0 && control.slow > 0) effectDelta -= Math.min(dt, control.duration) * control.slow;
     }
-    var playback = entry.sourceClock ? attackPlayback(owner, entry.type) : 1;
+    var playback = attackPlayback(owner, entry.type);
     if (!(playback > 0)) continue;
+    entry.animationTime += effectDelta * playback;
+    if (entry.animation && skeleton && skeleton.getCurrent) {
+      var current = skeleton.getCurrent(0), info = animationInfo(current);
+      if (info.name === entry.animation) entry.animationTime = Math.max(entry.animationTime, info.time);
+      else {
+        var observed = entry.browserTrack && trackValue(entry.browserTrack, "trackTime");
+        var time = Math.max(entry.animationTime, typeof observed === "number" ? observed : 0);
+        // Named fighting-style attacks are still attacks. Only replacing that
+        // queued clip before its natural queue point cancels the pending hit.
+        if (typeof entry.animationEnd === "number" && time + 1e-7 < entry.animationEnd) { cancel(owner); continue; }
+      }
+    }
     entry.remaining -= effectDelta * playback;
     if (entry.remaining <= 1e-9) {
       pending.splice(pending.indexOf(entry), 1);
@@ -154,6 +181,10 @@ function applyPlayback(owner, type, all) {
   var layers = owner.ctrPlayAni, custom = unitAnimationSpeed(owner, type) !== undefined;
   var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand].concat(all ? [layers.spAniMa] : []) : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
+    if (layers) {
+      var rider = require("HeroMakerRider");
+      if (rider.ownsAttackClock && rider.ownsAttackClock(layers, renderer)) return;
+    }
     var primary = renderer && renderer.getCurrent && renderer.getCurrent(0), hit = all && renderer && renderer.getCurrent && renderer.getCurrent(1), tracks = [primary];
     if (hit && hit !== primary && (custom || playbackTracks.has(hit))) tracks.push(hit);
     tracks.forEach(function (track) {

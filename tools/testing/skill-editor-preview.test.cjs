@@ -126,6 +126,20 @@ test('Skirmisher cast pose reaches the authored release exactly at the configure
   try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),d={...description,layers:[{...description.layers[0],json:{animations:{attack:{events:[{name:'attack',time:.6}],bones:{root:{rotate:[{time:1}]}}}}}}]};await view.set({style:'skirmisher',settings:{windup:.4,visual:{}},description:d});view.seek(.2);close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.3);view.seek(.4);close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.6);view.destroy();}
   finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
+test('zero-windup Skirmisher starts at its release marker and recovers at ordinary source speed',async()=>{
+  const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+  try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),d={...description,layers:[{...description.layers[0],json:{animations:{attack:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}}}]};await view.set({style:'skirmisher',settings:{windup:0,visual:{}},description:d});view.setScenario({attackRate:0});
+    close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.2);view.seek(.1);close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.3);view.seek(.81);assert.equal(h.seeks.filter(call=>call[1].length).at(-1)[2],'idle','recovery completes after the remaining source clip');view.destroy();}
+  finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+test('Skirmisher shares the equipped arrow marker calibration across bow and every rider layer',async()=>{
+  const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let loaded=[];
+  const layers=[0,4,3].map(role=>({uuid:'role-'+role,x:0,y:0,scaleX:1,scaleY:1,json:{_heroMaker:{role},bones:[{name:'root'},{name:'Rider/HandRight',parent:'root'},{name:'Rider/HandRight/Bow/Arrow',parent:'Rider/HandRight',rotation:15}],animations:{attack:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}}}));
+  h.renderer.createLayers=async(_spine,descriptions)=>loaded=descriptions.map(description=>{const hand={rotation:0};return{description,data:{animations:[{name:'attack'}]},hand,skeleton:{findBone:()=>hand,findSlot:()=>({getAttachment:()=>description.json._heroMaker.role===3?{width:40,height:8,rotation:0}:null}),updateWorldTransform(){}},restBones:{}};});
+  h.renderer.seek=(_spine,values)=>values.forEach(layer=>layer.hand.rotation=0);
+  try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});await view.set({style:'skirmisher',settings:{windup:.4,visual:{}},description:{runtimePath:'unused',layers}});view.seek(.2);assert.equal(loaded.length,3);for(const layer of loaded)close(layer.hand.rotation,-15);view.destroy();}
+  finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
 test('transient Spine effects do not loop or restart from global timeline time',async()=>{
   const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
   try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),fx={uuid:'effect',json:{animations:{burst:{}}},x:0,y:0,scaleX:1,scaleY:1};await view.set({style:'fighter',settings:{visual:{resource:'fx',resourceAnimation:'burst',effectDuration:1}},description:{...description,effects:[{id:'fx',kind:'spine',description:{layers:[fx]}}]}});view.seek(.3);const call=h.seeks.filter(call=>call[2]==='burst').at(-1);close(call[3],.1);assert.equal(call[4],false);assert(h.worldDraws.length>0);view.destroy();}
@@ -152,4 +166,111 @@ test('fit reserves a delayed ring before its first impact so the cached viewport
   const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
   try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});await view.set({style:'bruiser',settings:{visual:{}},description});const bounds=h.draws.at(-1)[3].bounds;assert(bounds.minY<=-170);assert(bounds.minX<=-170);view.destroy();}
   finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('a non-repeating preview stops at its end and Play or Cast starts a fresh playable sequence',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>(frame=fn,1);global.cancelAnimationFrame=()=>{};
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});await view.set({style:'fighter',settings:{visual:{}},description});view.setScenario({repeat:false});for(let i=0;i<100;i++)frame(1000+i*100);close(view.getState().time,view.getState().duration);assert.equal(view.getState().playing,false);view.play(true);close(view.getState().time,0);view.seek(1);view.cast();assert.equal(view.getState().playing,true);close(view.getState().time,0);view.destroy();}
+ finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('position and color edits preserve the simulation and channel without replaying prior combat',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let steps=0;const Core=require('../../assets/_script/HeroStyleSkills'),core={...Core,step(...args){steps++;return Core.step(...args);}},sounds=[];
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),core,onSound:kind=>sounds.push(kind)});await view.set({style:'fighter',settings:{visual:{}},description});view.seek(3);const before=view.getState(),calls=steps,soundCount=sounds.length;await view.set({style:'fighter',settings:{visual:{offsetX:12,color:'#abcdef'}},description});assert.equal(steps,calls);assert.equal(sounds.length,soundCount);assert.equal(view.getState().hits,before.hits);close(view.getState().damage,before.damage);close(view.getState().time,before.time);close(view.getState().handles.find(h=>h.name==='effect').world.x,12);view.destroy();}
+ finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('Fighter preview snapshots an arc before the first hit changes its melee stacks',()=>{
+ const model=new Model('fighter',{}, {mode:'active',targetDistance:0,targets:2,attackRate:0});model.advance(.1667);const hits=model.events.filter(event=>event.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,125);close(hits[1].damage,hits[0].damage);
+});
+
+test('ordinary attacks keep their own animation and Skirmisher projectile art when active presentation is overridden',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),d={...description,layers:[{...description.layers[0],json:{animations:{attack_fighter:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}},attack_guardian:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}}}]};await view.set({style:'fighter',settings:{visual:{animation:'attack_guardian'}},description:d});view.setScenario({mode:'basic',attackRate:2,targetDistance:100});view.seek(.6);assert.equal(h.seeks.filter(call=>call[1].some(layer=>layer.description.uuid==='hero')).at(-1)[2],'attack_fighter');view.cast();assert.equal(view.getState().mode,'active');view.seek(.1);assert.equal(h.seeks.filter(call=>call[1].some(layer=>layer.description.uuid==='hero')).at(-1)[2],'attack_guardian');
+ const fx={uuid:'effect',json:{animations:{burst:{}}},x:0,y:0,scaleX:1,scaleY:1};await view.set({style:'skirmisher',settings:{visual:{resource:'fx',showBuiltin:false,opacity:0}},description:{...description,effects:[{id:'fx',kind:'spine',description:{layers:[fx]}}]}});view.setScenario({mode:'basic',attackRate:2,targetDistance:100});const before=h.worldDraws.length;view.seek(.8);assert.equal(h.worldDraws.length,before);view.destroy();}
+ finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('custom Mystic beam effects begin at zero age after warm-up and restart on a new visible target',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),fx={uuid:'effect',json:{animations:{burst:{}}},x:0,y:0,scaleX:1,scaleY:1},d={...description,layers:[{...description.layers[0],json:{animations:{attack_mystic:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}}}],effects:[{id:'fx',kind:'spine',description:{layers:[fx]}}]};await view.set({style:'mystic',settings:{visual:{resource:'fx',resourceAnimation:'burst'}},description:d});view.setScenario({mode:'basic',targetDistance:100});view.seek(.2);close(h.seeks.filter(call=>call[2]==='burst').at(-1)[3],0);view.destroy();}
+ finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+ const model=new Model('mystic',{}, {mode:'basic',targetDistance:100,targets:2,attackRate:2,holdDelay:.2});model.advance(.27);close(model.beamVisibleStarted,.2);close(model.time-model.beamVisibleStarted,.07);simulate(model,.23);model.targets[0].hp=0;model.advance(.1);close(model.beamVisibleStarted,.5);
+});
+
+test('ordinary preview attacks wait for cooldown then the saved gold windup before each release',()=>{
+ const m=new Model('fighter',{}, {mode:'basic',targets:1,targetDistance:100,attackRate:1,basicImpactDelay:.2});m.advance(1);assert.equal(m.hits,0);close(m.lastAttack,1);m.advance(.199);assert.equal(m.hits,0);m.advance(.001);assert.equal(m.hits,1);close(m.events.find(e=>e.kind==='impact').time,1.2);m.advance(1.2);assert.equal(m.hits,2);close(m.events.filter(e=>e.kind==='impact')[1].time,2.4);
+ const immediate=new Model('fighter',{}, {mode:'basic',targets:1,targetDistance:100,attackRate:1,basicImpactDelay:0});immediate.advance(1);assert.equal(immediate.hits,1);close(immediate.events.find(e=>e.kind==='impact').time,1);
+});
+
+test('Vanguard preview advances bonuses between individual thrusts on long frames and dense authored sequences',()=>{
+ for(const tune of [{duration:2.5,strikes:7},{duration:.1,strikes:100}]){const run=step=>{const m=new Model('vanguard',tune,{mode:'active',targets:1,targetDistance:100,attackRate:0,moving:true});let remaining=3;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(3),b=run(1/120);assert.equal(a.hits,b.hits);close(a.damage,b.damage);close(a.state.charge,b.state.charge);close(a.state.buffStrength,b.state.buffStrength);}
+});
+
+test('Mystic Effect handle fits the active ground burst while Basic fits the beam endpoint',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})});await view.set({style:'mystic',settings:{visual:{offsetY:7,targetY:13}},description});view.seek(.2);close(view.getState().handles.find(h=>h.name==='effect').world.y,7);close(view.getState().handles.find(h=>h.name==='target').world.y,63);view.setScenario({mode:'basic'});close(view.getState().handles.find(h=>h.name==='effect').world.y,70);view.destroy();}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('flipbook frame rectangles use gameplay age and hold or loop exactly as authored',()=>{
+ const m={frames:32,columns:8,cell:128,fps:24,loop:false};assert.deepEqual(Preview.flipbookFrame(m,.5,1024,512),{index:12,x:512,y:128,width:128,height:128});assert.equal(Preview.flipbookFrame(m,100,1024,512).index,31);assert.equal(Preview.flipbookFrame({...m,loop:true},1.5,1024,512).index,4);assert.equal(Preview.flipbookFrame(m,.5,512,512),null);
+});
+
+test('custom sprite previews crop sheets and evict old tint canvases instead of retaining every hue',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame,oldImage=global.Image;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};global.Image=class{constructor(){this.width=64;this.height=32;}set src(_value){this.onload();}};
+ const doc=h.root.ownerDocument,create=doc.createElement;let canvases=0;doc.createElement=tag=>{if(tag==='canvas')canvases++;return create(tag);};const ctx=h.root.ownerDocument.createElement('canvas').getContext('2d'),images=[];ctx.createImageData=(w,h)=>({data:new Uint8ClampedArray(w*h*4)});ctx.getImageData=()=>({data:new Uint8ClampedArray(64*32*4)});ctx.drawImage=(...args)=>images.push(args);
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),d={...description,effects:[{id:'fx',kind:'sprite',url:'silent-fixture.png',flipbook:{frames:32,columns:8,cell:8,fps:20,loop:false}}]};const set=color=>view.set({style:'mystic',settings:{visual:{resource:'fx',color}},description:d});await set('#000000');view.seek(.3);assert(images.some(args=>args.length===9&&args[3]===8&&args[4]===8),'the image is drawn from one cell, never as a whole atlas');for(let i=1;i<40;i++)await set('#'+i.toString(16).padStart(6,'0'));const count=canvases;await set('#000000');assert.equal(canvases,count+1,'a hue older than the bounded cache is regenerated');const current=canvases;await set('#000000');assert.equal(canvases,current,'a retained hue is reused');view.destroy();}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;global.Image=oldImage;}
+});
+
+test('opt-in default sounds play at actual release markers while authored cast cues replace that fallback',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>(frame=fn,1);global.cancelAnimationFrame=()=>{};const sounds=[];
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(value.clip)sounds.push({kind,clip:value.clip});}}),d={...description,defaultSounds:{release:{clip:'bow-default',volume:.4},basicRelease:{clip:'bow-default',volume:.4},impact:{clip:'arrow-impact',volume:.4}}};await view.set({style:'skirmisher',settings:{windup:.35,visual:{}},description:d});view.cast();for(let i=0;i<5;i++)frame(1000+i*100);assert.equal(sounds.length,0,'default remains silent');view.setAudioEnabled(true);view.cast();frame(2000);frame(2100);frame(2200);assert.equal(sounds.length,0);frame(2300);assert.equal(sounds.length,0);frame(2400);assert.deepEqual(sounds,[{kind:'release',clip:'bow-default'}]);
+ await view.set({style:'skirmisher',settings:{windup:.35,visual:{},audio:{cast:{clip:'authored',volume:1,delay:0}}},description:d});sounds.length=0;view.cast();for(let i=0;i<5;i++)frame(3000+i*100);assert.deepEqual(sounds,[{kind:'cast',clip:'authored'}]);view.destroy();}finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('optional VFX failure cannot retain a previous style or tuning model and reports until recovery',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};const statuses=[];let view,fail=true;
+ const create=h.renderer.createLayers;h.renderer.createLayers=(runtime,layers)=>layers.some(layer=>layer.uuid==='optional-fx')&&fail?Promise.reject(Error('Optional effect unavailable')):create(runtime,layers);
+ const d={...description,effects:[{id:'fx',kind:'spine',description:{layers:[{uuid:'optional-fx',json:{},atlas:'',pages:{}}]}}]},settings={duration:2.5,strikes:7,visual:{resource:'fx'}};
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onStatus:value=>statuses.push(value)});await view.set({style:'fighter',settings:{visual:{}},description});await view.set({style:'vanguard',settings,description:d});view.seek(2.5);assert.equal(view.getState().hits,7);assert.equal(view.getState().stacks,0);assert.equal(statuses.at(-1).error,'Optional effect unavailable');
+  await view.set({style:'vanguard',settings:{...settings,strikes:3},description:d});view.seek(2.5);assert.equal(view.getState().hits,3);assert.equal(statuses.at(-1).error,'Optional effect unavailable');
+  fail=false;await view.set({style:'vanguard',settings:{...settings,strikes:3},description:d});assert.equal(view.getState().customResourceLoaded,true);assert.equal(statuses.at(-1).error,null);
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('a pending optional effect never delays the selected simulation and stale failures cannot replace it',async()=>{
+ const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};let view,reject;const statuses=[];
+ const create=h.renderer.createLayers;h.renderer.createLayers=(runtime,layers)=>layers.some(layer=>layer.uuid==='pending-fx')?new Promise((_resolve,fail)=>{reject=fail;}):create(runtime,layers);
+ const d={...description,effects:[{id:'fx',kind:'spine',description:{layers:[{uuid:'pending-fx'}]}}]};
+ try{view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onStatus:value=>statuses.push(value)});await view.set({style:'fighter',settings:{visual:{}},description});const pending=view.set({style:'vanguard',settings:{duration:2.5,strikes:7,visual:{resource:'fx'}},description:d});for(let i=0;i<5&&!reject;i++)await Promise.resolve();assert(reject);view.seek(2.5);assert.equal(view.getState().hits,7,'the model is committed before artwork arrives');
+  await view.set({style:'bruiser',settings:{visual:{}},description});reject(Error('Obsolete optional effect'));await pending;view.seek(.3);assert.equal(view.getState().stacks,0);assert.equal(statuses.at(-1).error,null);assert(view.getState().hp<100);
+ }finally{if(view)view.destroy();global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('Vanguard preview recomputes exact-expiry strike scaling and preserves zero damage',()=>{
+ const m=new Model('vanguard',{duration:1,strikes:2,buffDuration:.5,chargeDecay:0},{mode:'active',targets:1,targetDistance:100,attackRate:1});m.advance(1);const hits=m.events.filter(e=>e.kind==='impact');assert.equal(hits.length,2);close(hits[0].damage,75);close(hits[1].damage,75);
+ const zero=new Model('vanguard',{duration:.1,strikes:7,strikeDamage:0},{mode:'active',targets:1,targetDistance:100,attackRate:0});zero.advance(.1);assert.equal(zero.hits,0);assert.equal(zero.damage,0);assert.equal(zero.state.buffRemaining,0);assert.equal(zero.targets[0].hp,100000);
+});
+
+test('Mystic preview integrates source playback and freezes the warm-up and damage phase at zero speed',()=>{
+ const m=new Model('mystic',{}, {mode:'basic',targets:1,targetDistance:100,attackRate:2,holdSource:.6,attackPlayback:1});m.advance(.2);close(m.channelSourceTime,.2);assert.equal(m.beam,false);m.scenario.attackPlayback=0;m.advance(1);close(m.channelSourceTime,.2);assert.equal(m.hits,0);assert.equal(m.beam,false);
+ m.scenario.attackPlayback=2;m.advance(.199);close(m.channelSourceTime,.598);assert.equal(m.beam,false);m.advance(.001);close(m.channelSourceTime,.6);assert.equal(m.beam,true);close(m.beamVisibleStarted,1.4);m.advance(.1);assert.equal(m.hits,1);
+});
+
+test('Mystic preview retargets at real tick boundaries and spends only residual time on the next target',()=>{
+ const run=step=>{const m=new Model('mystic',{}, {mode:'basic',targets:3,targetDistance:100,attackRate:2,holdSource:.2,attackPlayback:1});m.targets.forEach((t,i)=>{t.x=100+i*10;t.y=0;t.hp=i===0?50:150;});let remaining=1.4;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.4),b=run(1/120);
+ assert.equal(a.hits,2);assert.equal(a.channelTarget.id,1);close(a.attackClock,.8);close(a.channelSourceTime,1.4);assert.deepEqual(a.targets.map(t=>t.hp),b.targets.map(t=>t.hp));close(a.damage,b.damage);close(a.attackClock,b.attackClock);close(a.channelSourceTime,b.channelSourceTime);assert.equal(a.state.mysticCharges,b.state.mysticCharges);
+});
+
+test('swept arrow contact uses the first circle entry while the closest-point helper remains unchanged',()=>{
+ const {segmentEntry}=require('../../packages/hkd-skills/preview-model'),a={x:0,y:0},b={x:200,y:0};
+ close(segmentEntry({x:100,y:0},a,b,28),.36);close(segmentEntry({x:100,y:20},a,b,28),(100-Math.sqrt(28*28-20*20))/200);close(segmentEntry({x:100,y:28},a,b,28),.5);
+ assert.equal(segmentEntry({x:10,y:0},a,b,28),0);assert.equal(segmentEntry({x:10,y:0},a,a,28),0);assert.equal(segmentEntry({x:100,y:0},a,a,28),null);assert.equal(segmentEntry({x:100,y:29},a,b,28),null);assert.equal(segmentEntry({x:-40,y:0},a,b,28),null);
+ assert.equal(segmentEntry({x:228,y:0},a,b,28),1);assert.equal(segmentEntry({x:229,y:0},a,b,28),null);close(segment({x:100,y:0},a,b).t,.5);
+});
+
+test('arrow preview damage and first-contact ordering are independent of rendered frame size',()=>{
+ const run=step=>{const m=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0,projectileWidth:28},{mode:'active',targets:2,targetDistance:100,attackRate:0});Object.assign(m.targets[0],{x:100,y:27});Object.assign(m.targets[1],{x:110,y:0});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');
+ assert.deepEqual(hits.map(e=>e.target),[1,0]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[1,0]);close(a.damage,b.damage);close(hits[0].time,.082);close(hits[0].damage,108.2);
+ const inside=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0},{mode:'active',targets:3,targetDistance:1,attackRate:0});inside.targets.forEach(t=>Object.assign(t,{x:10,y:0}));inside.advance(.1);assert.deepEqual(inside.events.filter(e=>e.kind==='impact').map(e=>e.target),[0,1,2]);
 });

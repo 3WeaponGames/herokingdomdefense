@@ -8,7 +8,7 @@ function fixture(t,primary={},secondary={}){
  t.after(()=>{const resolved=path.resolve(root);assert.equal(path.dirname(resolved),path.resolve(os.tmpdir()));assert(path.basename(resolved).startsWith('hkd-skill-editor-'));fs.rmSync(resolved,{recursive:true,force:true});});
  for(const [i,file]of FILES.entries()){const target=path.join(root,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,JSON.stringify({version:7,GameTools:{timingDefaults:{'hero:hero:default':{attack:.1667}},timings:{'hero:hero:default':{attack:.2}}},EquipCfg:[{id:3,unknown:'keep'}],untouched:{spelling:'Original',number:3.75},...(i?secondary:primary)},null,2)+'\n');}
  let commits=0;
- const service=new SkillService(root,{catalogs,describe:(_root,request)=>({layers:[{animations:['idle','move','attack','attack_mystic']}],runtimePath:'safe-spine-runtime',request}),commit:(...args)=>{commits++;return require('../../packages/hkd-characters/lib/asset-transaction').commit(...args);}});
+ const service=new SkillService(root,{catalogs,describe:(_root,request)=>({layers:[{animations:['idle','move','attack','attack_mystic'],json:{animations:{idle:{},move:{},attack:{events:[{name:'attack',time:.1667}]},attack_mystic:{events:[{name:'attack',time:.1667}]}}}}],runtimePath:'safe-spine-runtime',request}),commit:(...args)=>{commits++;return require('../../packages/hkd-characters/lib/asset-transaction').commit(...args);}});
  const bytes=()=>FILES.map(file=>fs.readFileSync(path.join(root,file),'utf8'));
  const req=extra=>({version:service.version,revision:service.revision,...extra});
  const change=(style,field,value)=>service.change(req({style,path:field,value}));
@@ -83,10 +83,10 @@ test('runtime asset metadata cannot escape bundles or project-relative asset pat
 test('rider animation choices exclude horse-only and partial rider-layer clips',t=>{
  const f=fixture(t);f.service.options.describe=()=>({layers:[
   {name:'wqyl_lead_ma',animations:['idle','attack','wqyl_lead_die_idle'],json:{_heroMakerMount:{version:2}}},
-  {name:'wqyl_lead_shenti',animations:['idle','attack','body_only'],json:{_heroMaker:{role:0}}},
+  {name:'wqyl_lead_shenti',animations:['idle','attack','body_only'],json:{_heroMaker:{role:0},animations:{idle:{},attack:{events:[{name:'attack',time:.1667}]},body_only:{events:[{name:'attack',time:.2}]}}}},
   {name:'wqyl_lead_gong',animations:['idle','attack'],json:{_heroMaker:{role:4}}}
  ]});
- assert.deepEqual(Settings.riderAnimations(f.service.options.describe()),['idle','attack']);
+ assert.deepEqual(Settings.riderAnimations(f.service.options.describe()),['attack']);
  assert.throws(()=>f.change('mystic','visual.animation','wqyl_lead_die_idle'),/every rider layer/);assert.throws(()=>f.change('mystic','visual.animation','body_only'),/every rider layer/);assert.equal(f.service.snapshot().dirty,false);assert.equal(f.service.snapshot().canUndo,false);
  f.change('mystic','visual.animation','attack');assert.equal(f.service.snapshot().effective.mystic.visual.animation,'attack');assert.equal(f.commits(),0);
 });
@@ -105,4 +105,84 @@ test('preview descriptions inherit the saved hero attack playback and whole-unit
  f.service.options.describe=()=>({key:'hero:hero:default',layers:[],unitAnimationSpeed:.6});assert.equal(f.service.describe({style:'fighter'}).skillAttackPlayback,.6);
  f.service.options.describe=()=>({key:'hero:hero:default',layers:[],unitAnimationSpeed:0});assert.equal(f.service.describe({style:'fighter'}).skillAttackPlayback,0);
  assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
+test('malformed mirrored or nested sections are rejected instead of replacing existing data',t=>{
+ const f=fixture(t,{}, {HeroSkills:['keep this content']}),before=f.bytes();f.change('fighter','cooldown',13);assert.throws(()=>f.service.save(f.req()),/Invalid HeroSkills.*assets\/configs\/GameJsonCfg/);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);assert.equal(f.service.snapshot().dirty,true);
+ const nested=fixture(t,{HeroSkills:{fighter:{visual:['keep this too']}}});assert.throws(()=>nested.change('fighter','visual.offsetX',12),/Invalid skill section/);assert.throws(()=>nested.service.reset(nested.req({style:'fighter',path:'visual.offsetX'})),/Invalid skill section/);assert.deepEqual(nested.service.data.fighter.visual,['keep this too']);
+});
+
+test('Save revalidates selected rider and VFX clips against the current assets',t=>{
+ const f=fixture(t),local=structuredClone(catalogs);local.vfx[0].kind='spine';local.vfx[0].animations=['burst'];f.service.options.catalogs=f.service.catalogs=local;
+ f.change('mystic','visual.resource',VFX);f.change('mystic','visual.resourceAnimation','burst');const before=f.bytes();local.vfx[0].animations=['new-burst'];assert.throws(()=>f.service.save(f.req()),/VFX animation.*no longer available/);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+ f.change('mystic','visual.resourceAnimation','new-burst');f.change('mystic','visual.animation','attack_mystic');f.service.options.describe=()=>({layers:[{animations:['idle'],json:{animations:{idle:{}}}}]});assert.throws(()=>f.service.save(f.req()),/authored attack animation.*every rider layer/);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
+test('flipbook selection publishes derived frame metadata atomically and detects a changed sheet layout',t=>{
+ const f=fixture(t,{HeroSkills:{mystic:{visual:{extension:{keep:true}}}}}),local=structuredClone(catalogs);local.vfx[0].flipbook={frames:32,columns:8,cell:128,fps:24,loop:false};f.service.options.catalogs=f.service.catalogs=local;
+ f.change('mystic','visual.resource',VFX);assert.deepEqual(Settings.flipbook(f.service.snapshot().effective.mystic.visual),local.vfx[0].flipbook);const before=f.bytes();local.vfx[0].flipbook.fps=30;
+ assert.throws(()=>f.service.save(f.req()),/layout changed/);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+ f.change('mystic','visual.resource',VFX);f.service.save(f.req());for(const file of f.bytes())assert.equal(JSON.parse(file).HeroSkills.mystic.visual.resourceFps,30);
+ f.service.reset(f.req({style:'mystic',path:'visual.resource'}));assert.deepEqual(f.service.snapshot().data.mystic.visual,{extension:{keep:true}});assert.equal(Settings.flipbook(f.service.snapshot().effective.mystic.visual),null);
+ delete local.vfx[0].flipbook;f.change('mystic','visual.resource',VFX);assert.equal(f.service.snapshot().effective.mystic.visual.resourceFrames,undefined);
+});
+
+test('flipbook metadata is optional, complete and bounded without exposing imported atlas fields as editable settings',()=>{
+ const v={resourceFrames:32,resourceColumns:8,resourceCell:128,resourceFps:24,resourceLoop:false};assert.deepEqual(Settings.flipbook(v),{frames:32,columns:8,cell:128,fps:24,loop:false});
+ for(const invalid of [{resourceFrames:Infinity},{resourceColumns:0},{resourceCell:1.5},{resourceFps:0},{resourceLoop:'false'}])assert.equal(Settings.flipbook({...v,...invalid}),null);
+ assert.equal(Settings.flipbook({resourceFrames:32}),null);assert.equal(Settings.defaults('mystic').visual.resourceFrames,undefined);assert(!Settings.descriptors('mystic').some(field=>/resourceFrames/.test(field.path)));
+ const before=JSON.stringify(v),effective=Settings.effective('mystic',{HeroSkills:{mystic:{visual:v}}});assert.equal(effective.visual.resourceFrames,32);assert.equal(JSON.stringify(v),before);
+});
+
+test('static VFX selection clears asymmetric owned layouts from both config copies and preserves extensions',t=>{
+ const stale={resource:VFX,resourceBundle:'resources',resourcePath:'old/sheet',resourceKind:'sprite',resourceAnimation:'old-burst',resourceFrames:12,resourceColumns:4,resourceCell:64,resourceFps:12,resourceLoop:true};
+ for(const primaryHadSheet of [false,true]){
+  const f=fixture(t,{HeroSkills:{mystic:{visual:{...(primaryHadSheet?stale:{}),extension:{primary:true}}}}},{HeroSkills:{mystic:{visual:{...stale,extension:{mirror:true}},mirrorOnly:'keep'}}});
+  f.change('mystic','visual.resource',VFX);assert.equal(f.service.save(f.req()).result.saved,true);
+  for(const [index,file]of f.bytes().entries()){const config=JSON.parse(file),v=config.HeroSkills.mystic.visual;assert.equal(v.resource,VFX);assert.equal(v.resourcePath,'vfx/burst');assert.equal(v.resourceKind,'sprite');assert.equal(v.resourceAnimation,undefined);assert.equal(Settings.flipbook(v),null);for(const key of ['Frames','Columns','Cell','Fps','Loop'])assert.equal(v['resource'+key],undefined);assert.deepEqual(v.extension,index?{mirror:true}:{primary:true});if(index)assert.equal(config.HeroSkills.mystic.mirrorOnly,'keep');}
+  const before=f.bytes();assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);
+ }
+});
+
+test('VFX reset removes known resource metadata from every copy without touching independent fields',t=>{
+ const f=fixture(t,{HeroSkills:{mystic:{visual:{resource:VFX,extension:{primary:true}}}}},{HeroSkills:{mystic:{visual:{resource:VFX,resourceBundle:'resources',resourcePath:'old/sheet',resourceKind:'spine',resourceAnimation:'old',resourceFrames:12,resourceColumns:4,resourceCell:64,resourceFps:12,resourceLoop:true,extension:{mirror:true},offsetX:27},mirrorOnly:'retain'}}});
+ f.service.reset(f.req({style:'mystic',path:'visual.resource'}));f.service.save(f.req());
+ const [a,b]=f.bytes().map(JSON.parse);assert.deepEqual(a.HeroSkills.mystic.visual,{extension:{primary:true}});assert.deepEqual(b.HeroSkills.mystic.visual,{extension:{mirror:true},offsetX:27});assert.equal(b.HeroSkills.mystic.mirrorOnly,'retain');
+});
+
+test('an unrelated skill edit does not normalize a mirror resource layout',t=>{
+ const mirror={resource:VFX,resourceFrames:12,resourceColumns:4,resourceCell:64,resourceFps:12,resourceLoop:true,extension:'retain'},f=fixture(t,{}, {HeroSkills:{mystic:{visual:mirror}}});
+ f.change('mystic','cooldown',13);f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.visual,mirror);
+});
+
+test('the imported VFX catalog retains Toon and Fantasy flipbook animation metadata',()=>{
+ const root=path.resolve(__dirname,'../..'),catalog=require('../../packages/hkd-skills/catalog').index(root),manifest=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/projectiles/catalog.json'),'utf8'));
+ for(const name of ['projectiles/toon/flash-1','unit-library/fantasy-bosses/Effects/arcane-impact']){const authored=manifest.assets.find(row=>row.resource===name),asset=catalog.vfx.find(row=>row.path===name);assert(asset);assert.equal(asset.kind,'sprite');assert.deepEqual(asset.flipbook,{frames:authored.frames,columns:authored.columns,cell:authored.cell,fps:authored.fps,loop:!!authored.loop});}
+});
+
+test('preview ordinary windups use the saved gold timing and never rewrite either timing table',t=>{
+ const f=fixture(t,{GameTools:{timingDefaults:{'hero:hero:default':{attack:.1667}},timings:{'hero:hero:default':{attack:.25}},animationSpeeds:{'hero:hero:default':.5}}}),before=f.bytes();f.service.options.describe=()=>({key:'hero:hero:default',layers:[]});
+ assert.equal(f.service.describe({style:'fighter'}).skillBasicImpactDelay,.5);delete f.service.saved[0].config.GameTools.timings['hero:hero:default'];assert.equal(f.service.describe({style:'fighter'}).skillBasicImpactDelay,.3334);
+ f.service.saved[0].config.GameTools.timings['hero:hero:default']={attack:0};assert.equal(f.service.describe({style:'fighter'}).skillBasicImpactDelay,0);assert.deepEqual(f.bytes(),before);assert.equal(f.commits(),0);
+});
+
+test('an event on an otherwise common non-attack clip is not offered as an owned rider attack',()=>{
+ const json={_heroMaker:{role:0},animations:{attack:{events:[{name:'attack',time:.2}]},cast_pose:{events:[{name:'attack',time:.2}]}}};assert.deepEqual(Settings.riderAnimations({layers:[{json}]}),['attack']);
+});
+
+test('sound selection synchronizes each whole identity across asymmetric mirrors while retaining independent fields',t=>{
+ for(const phase of ['cast','impact','channel']){
+  const f=fixture(t,{HeroSkills:{mystic:{audio:{[phase]:{clip:'33333333-3333-4333-8333-333333333333',bundle:'KinghtFallAudio',path:'old',volume:.3,extension:'primary'}}}}},{HeroSkills:{mystic:{audio:{[phase]:{clip:'44444444-4444-4444-8444-444444444444',bundle:'resources',path:'sfx/old',volume:.7,delay:2,extension:'mirror'},other:{keep:true}}}}});
+  f.change('mystic','audio.'+phase+'.clip',AUDIO);f.service.save(f.req());
+  for(const [i,doc]of f.bytes().map(JSON.parse).entries()){const value=doc.HeroSkills.mystic.audio[phase];assert.equal(value.clip,AUDIO);assert.equal(value.bundle,'KinghtFallAudio');assert.equal(value.path,'cast');assert.equal(value.volume,i?.7:.3);assert.equal(value.extension,i?'mirror':'primary');if(i){assert.equal(value.delay,2);assert.deepEqual(doc.HeroSkills.mystic.audio.other,{keep:true});}}
+  const before=f.bytes();assert.equal(f.service.save(f.req()).result.saved,false);assert.deepEqual(f.bytes(),before);
+ }
+});
+
+test('sound reset removes its complete identity from mirrors but unrelated edits preserve mirror sound settings',t=>{
+ for(const phase of ['cast','impact','channel']){
+  const f=fixture(t,{HeroSkills:{mystic:{audio:{[phase]:{clip:AUDIO,extension:'primary'}}}}},{HeroSkills:{mystic:{audio:{[phase]:{clip:AUDIO,bundle:'resources',path:'old',volume:.4,delay:1,extension:'mirror'}}}}});
+  f.service.reset(f.req({style:'mystic',path:'audio.'+phase+'.clip'}));f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio[phase],{volume:.4,delay:1,extension:'mirror'});
+ }
+ const mirror={clip:AUDIO,bundle:'resources',path:'different',volume:.4,delay:1,extension:'retain'},f=fixture(t,{}, {HeroSkills:{mystic:{audio:{cast:mirror}}}});f.change('mystic','cooldown',13);f.service.save(f.req());assert.deepEqual(JSON.parse(f.bytes()[1]).HeroSkills.mystic.audio.cast,mirror);
 });

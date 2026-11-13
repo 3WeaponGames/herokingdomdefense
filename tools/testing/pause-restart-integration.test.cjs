@@ -20,29 +20,81 @@ function campaign() {
   const saved = (stage, wave) => ({ levelNum: stage, roundNum: wave, coin: 77, buffList: [50001], buildingLevel: [], businessList: {} });
   record.setCheckpoint(saved(3, 4));
   record.setCheckpoint(saved(5, 6));
-  const state = { resets: 0, saves: 0, current: true };
-  const fresh = { levelNum: 5, roundNum: 1, coin: 6, buffList: [], buildingLevel: [], businessList: {} };
+  const state = { resets: 0, saves: 0, current: true, closed: 0, requests: [], mode: null };
+  const fresh = { levelNum: 5, roundNum: 1, coin: 6, buffList: [], buildingLevel: [], businessList: {}, restartSetup: {treasureAddTime: {60001: 4}} };
+  const wave = { levelNum: 5, roundNum: 6, coin: 55, buffList: [50001], buildingLevel: [{point: 2, level: 3}], businessList: {}, restartSetup: {treasureAddTime: {60001: 9}} };
+  const phases = { Fight: 'fight', Transition: 'transition', Prepare: 'prepare', End: 'end' };
+  const home = {node: {active: true}};
+  const manager = { closeUI() { state.closed++; }, openUIWithOwner(...args) { state.requests.push(args); }, getUIById() { return home; } };
   const ui = {
-    ctrGame: { gameData: { levelCfg: { Level: 5 } }, saveGame() { state.saves++; return record.setCheckpoint(fresh); } },
-    onRestart(full) { assert.equal(full, true); state.resets++; }
+    node: {}, canStart: true, canBreak: true, _stopTestMovement() {},
+    ctrGame: { _combatEpoch: 10, gameStatus: phases.Fight, gameData: { levelCfg: { Level: 5 } },
+      getRestartCheckpoint(mode) { state.mode = mode; return JSON.parse(JSON.stringify(mode === 'wave' ? wave : fresh)); } },
+    isWaveInProgress() { return this.ctrGame.gameStatus === phases.Fight; },
+    onRestart() { throw Error('Never reset live buildings in place'); }
   };
   const restart = method('KinghtFallUIGame', 'restartPausedBattle', {
-    $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: { getInstance: () => h.player } }
+    cc: { isValid: node => !node.destroyed, director: { once(_event, fn) { state.afterDraw = fn; } }, Director: { EVENT_AFTER_DRAW: 'after-draw' } },
+    $z1KinghtFallPlayerMgr: { KinghtFallPlayerMgr: { getInstance: () => h.player } },
+    $z1KinghtFallModle: { KinghtFallGameStage: phases },
+    $z1UIMgr: { UIMgr: { getInstance: () => manager } },
+    $z1KinghtFallConfig: { KinghtFallUIID: { UIGame: 'game', UIHome: 'home' } }
   });
-  return { ...h, persistenceState: h.state, record, state, ui, restart: () => restart.call(ui, { isCurrent: () => state.current }) };
+  const dialog = { paused: true, isCurrent: () => state.current };
+  return { ...h, persistenceState: h.state, record, state, ui, manager, home, dialog, fresh, wave,
+    finishTeardown() { ui.node.destroyed = true; state.afterDraw(); }, restart: mode => restart.call(ui, dialog, mode) };
 }
 
 test('Campaign pause restarts only its current stage checkpoint without changing permanent progress or energy', () => {
   const f = campaign(), user = JSON.stringify(f.player.getUserData().data), other = f.record.getCheckpoint(3);
   assert.equal(f.restart(), true);
-  assert.equal(f.state.resets, 1);
-  assert.equal(f.state.saves, 1);
+  assert.equal(f.state.closed, 1);
+  assert.equal(f.state.mode, 'stage');
+  assert.equal(f.ui.ctrGame._restartRetired, true);
+  assert.equal(f.ui.ctrGame._combatEpoch, 11);
+  assert.equal(f.ui.ctrGame.gameStatus, 'end');
+  assert.equal(f.dialog.paused, false);
+  assert.equal(f.state.requests.length, 0, 'Replacement waits for deferred old onDestroy');
+  f.state.afterDraw(); assert.equal(f.state.requests.length, 0, 'Closing can span multiple frames');
+  f.finishTeardown();
+  assert.deepEqual(f.state.requests[0].slice(0, 2), ['game', 'home']);
+  assert.deepEqual(JSON.parse(JSON.stringify(f.state.requests[0].slice(3))), [5, null, f.fresh.restartSetup], 'Reopening keeps setup and does not purchase a fresh entry');
+  assert.equal(f.state.requests[0][2].isCurrent(), true);
+  assert.equal(f.home.node.active, true, 'Home stays available until replacement loading succeeds');
+  f.state.requests[0][2].onOpened();
+  assert.equal(f.home.node.active, false, 'Replacement hides the Home HUD, matching regular entry');
+  assert.equal(f.restart(), false, 'A double tap cannot discard the replacement');
   assert.equal(f.record.getCheckpoint(5).roundNum, 1);
   assert.deepEqual(f.record.getCheckpoint(3), other);
   assert.equal(JSON.stringify(f.player.getUserData().data), user);
   const reloaded = harness(f.persist());
   assert.equal(reloaded.player.getGameData().getCheckpoint(5).roundNum, 1);
   assert.equal(reloaded.player.getGameData().getCheckpoint(3).roundNum, 4);
+});
+
+test('wave restart restores its immutable wave-start checkpoint and retains the current stage and other saves', () => {
+  const f = campaign(), other = f.record.getCheckpoint(3), user = JSON.stringify(f.player.getUserData().data);
+  assert.equal(f.restart('wave'), true);
+  assert.equal(f.state.mode, 'wave');
+  const restored = f.record.getCheckpoint(5);
+  assert.equal(restored.roundNum, 6); assert.equal(restored.coin, 55);
+  assert.deepEqual(JSON.parse(JSON.stringify(restored.buildingLevel)), f.wave.buildingLevel);
+  assert.deepEqual(JSON.parse(JSON.stringify(restored.buffList)), f.wave.buffList);
+  assert.deepEqual(f.record.getCheckpoint(3), other);
+  assert.equal(JSON.stringify(f.player.getUserData().data), user);
+  f.finishTeardown();
+  assert.deepEqual(JSON.parse(JSON.stringify(f.state.requests[0].slice(3))), [5, null, f.wave.restartSetup]);
+});
+
+test('planning rejects wave restart, and invalid or unavailable restart snapshots do not alter the battle', () => {
+  for (const reason of ['planning', 'invalid mode', 'no snapshot']) {
+    const f = campaign(), before = JSON.stringify(f.record.data);
+    if (reason === 'planning') f.ui.ctrGame.gameStatus = 'prepare';
+    if (reason === 'no snapshot') f.ui.ctrGame.getRestartCheckpoint = () => null;
+    assert.equal(f.restart(reason === 'invalid mode' ? 'unknown' : 'wave'), false);
+    assert.equal(JSON.stringify(f.record.data), before); assert.equal(f.state.closed, 0);
+    assert.equal(f.ui.ctrGame._restartRetired, undefined);
+  }
 });
 
 test('Campaign refuses stale restart actions and storage failures before changing the live run', () => {
@@ -54,6 +106,8 @@ test('Campaign refuses stale restart actions and storage failures before changin
   assert.equal(f.restart(), false);
   assert.equal(f.state.resets, 0);
   assert.equal(f.state.saves, 0);
+  assert.equal(f.state.closed, 0);
+  assert.equal(f.dialog.paused, true);
   assert.equal(JSON.stringify(f.record.data), previous);
 });
 

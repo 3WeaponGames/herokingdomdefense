@@ -5679,13 +5679,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "effect_star_32": {
@@ -5797,13 +5790,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "effect_star_49": {
@@ -9838,13 +9824,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__6": {
@@ -9854,13 +9833,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "leven_up_light51": {
@@ -10545,13 +10517,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__11": {
@@ -10561,13 +10526,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": -1.22,
-            "y": 22,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__12": {
@@ -10577,13 +10535,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "effect_star_155": {
@@ -15732,6 +15683,24 @@
             "width": 96,
             "height": 144
           }
+        },
+        "td__9": {
+          "td_5": {
+            "x": -5.86,
+            "y": 33.14,
+            "width": 328,
+            "height": 286,
+            "path": "painted-farm"
+          }
+        },
+        "mill_addon_td__9": {
+          "defense": {
+            "path": "mill-scarecrow",
+            "x": -5.86,
+            "y": -0.86,
+            "width": 96,
+            "height": 144
+          }
         }
       }
     },
@@ -16081,13 +16050,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__11": {
@@ -16097,13 +16059,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": -1.22,
-            "y": 22,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__12": {
@@ -16113,13 +16068,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "effect_star_155": {
@@ -20889,13 +20837,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": -5.86,
-            "y": 33.14,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "sankai_10": {
@@ -25082,13 +25023,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__6": {
@@ -25098,13 +25032,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "leven_up_light51": {
@@ -25789,13 +25716,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__11": {
@@ -25805,13 +25725,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": -1.22,
-            "y": 22,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__12": {
@@ -25821,13 +25734,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "effect_star_155": {
@@ -30976,6 +30882,24 @@
             "width": 96,
             "height": 80
           }
+        },
+        "td__9": {
+          "td_5": {
+            "x": -5.86,
+            "y": 33.14,
+            "width": 328,
+            "height": 286,
+            "path": "painted-farm"
+          }
+        },
+        "mill_addon_td__9": {
+          "defense": {
+            "path": "mill-bomb-2",
+            "x": -5.86,
+            "y": 18.14,
+            "width": 96,
+            "height": 80
+          }
         }
       }
     },
@@ -31325,13 +31249,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.13,
-            "y": 22.89,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__11": {
@@ -31341,13 +31258,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": -1.22,
-            "y": 22,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "td__12": {
@@ -31357,13 +31267,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": 3.78,
-            "y": 26.33,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "effect_star_155": {
@@ -36133,13 +36036,6 @@
             "width": 328,
             "height": 286,
             "path": "painted-farm"
-          },
-          "destroyed": {
-            "x": -5.86,
-            "y": 33.14,
-            "width": 328,
-            "height": 286,
-            "path": "painted-farm-destroyed"
           }
         },
         "sankai_10": {

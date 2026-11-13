@@ -17,7 +17,7 @@ function campaign() {
     SettingsPictogram: { SettingsPictogram: function () {} },
     TestMode: { TestMode: singleton({ clearGameplayInput: noop, removeGameplayTarget: noop }) },
     KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallParameter: {}, KinghtFallAudioId: {}, KinghtFallUIID: ids },
-    KinghtFallModle: {}, KinghtFallGameCtrl: {}, KinghtFallGameCtrlData: {}, KinghtFallGameEffect: {},
+    KinghtFallModle: { KinghtFallGameStage: { Fight: 1, Transition: 2, Prepare: 0, End: 3 } }, KinghtFallGameCtrl: {}, KinghtFallGameCtrlData: {}, KinghtFallGameEffect: {},
     KinghtFallGameUICtrl: {}, KinghtFallEnum: {}, KinghtFallPlayerMgr: {}, KinghtFallDataMgr: {}, KinghtFallTextConfig: {},
     PlayerMgr: {}, GameTrackDataEvent: {}, PlatformSetting: {}, SdkMgr: {}, Utils: {},
     AudioMgr: { AudioMgr: singleton({ stopOwnedEffects: noop, setChannelGain: noop }) }
@@ -42,7 +42,7 @@ function campaign() {
     for (const name of ['btnSettings', 'btnRestart', 'btnClose', 'btnDismiss', 'btnNewGame']) pause[name] = new h.cc.Node(name);
     // Keep the already-built layout fixed, while running its real metadata
     // resolution on each frame. Geometry and artwork have separate coverage.
-    pause._hexPauseReady = true; pause._pauseMenuSignature = '700:1334:Stage 1:en';
+    pause._hexPauseReady = true; pause._pauseMenuSignature = '700:1334:Stage 1:pause.restartStage:pause.saveAndExit:en';
     pause.bindEvent();
     return node;
   };

@@ -28,9 +28,17 @@ function buildingKind(root,component){const names=['KinghtFallBuildMainFortress'
 function restoreAuthoredPaths(root,info,stage){
  const meta=path.join(root,'assets/_script/AuthoredStagePaths.js.meta');if(!fs.existsSync(meta))return;
  const type=script(root,'AuthoredStagePaths'),holders=info.nodes.filter(node=>node.components.some(c=>c.value.__type__===type));if(!holders.length)return;if(holders.length!==1)throw Error('The stage has multiple authored route controllers. Restore one source before editing.');
- const holder=holders[0],component=holder.components.find(c=>c.value.__type__===type).value;let graphs,spawns;
- try{graphs=JSON.parse(component.graphs||'[]');spawns=component.spawns?JSON.parse(component.spawns):null;}catch(_){throw Error('The stage authored route metadata is invalid JSON. Restore its source before editing.');}
- if(!Array.isArray(graphs)||spawns!==null&&!Array.isArray(spawns))throw Error('The stage authored route metadata must contain path and spawn arrays.');
+ const holder=holders[0],component=holder.components.find(c=>c.value.__type__===type).value;let graphs,spawns,disabledBuildings;
+ try{graphs=JSON.parse(component.graphs||'[]');spawns=component.spawns?JSON.parse(component.spawns):null;disabledBuildings=component.disabledBuildings?JSON.parse(component.disabledBuildings):[];}catch(_){throw Error('The stage authored route metadata is invalid JSON. Restore its source before editing.');}
+ if(!Array.isArray(graphs)||spawns!==null&&!Array.isArray(spawns)||!Array.isArray(disabledBuildings))throw Error('The stage authored route metadata must contain path, spawn and disabled building arrays.');
+ const buildingIds=new Set(stage.buildings.map(building=>building.id)),disabledIds=new Set();
+ for(const building of disabledBuildings){
+  if(!building||typeof building!=='object'||Array.isArray(building)||!Number.isSafeInteger(building.id)||building.id<1||disabledIds.has(building.id)||building.enabled!==false||![1,2,3,4,5,6].includes(building.kind))throw Error('The stage has invalid or duplicate disabled building metadata. Restore its source before editing.');
+  disabledIds.add(building.id);
+  // Explicit native construction wins over an older unavailable authoring row.
+  if(!buildingIds.has(building.id)){stage.buildings.push(clone(building));buildingIds.add(building.id);}
+  stage.nextBuilding=Math.max(stage.nextBuilding,building.id+1);
+ }
  const children=new Map(),plan=require('../../../assets/_script/AuthoredSpawnPlan');for(const id of holder.children){const node=info.byId[id];if(node&&!children.has(node.name))children.set(node.name,node);}
  for(const graph of graphs){const issues=Model.graphIdentifierIssues(graph);if(issues.length)throw Error('Invalid authored route metadata: '+issues.join(' '));}
  // Runtime movement uses the actual point nodes. Retain authored IDs, branches

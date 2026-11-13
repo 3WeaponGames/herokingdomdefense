@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('assert'),fs=require('fs'),path=require('path'),vm=require('vm');
 const root=path.resolve(__dirname,'../../..'), legacy=require('./fixtures/legacy-attack-starts.json').methods;
-let data={};const runtime={exports:{},require(name){assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance(){return{data};}}};},cc:{isValid:value=>!!value&&!value.destroyed},isFinite};
+let data={};const runtime={exports:{},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:()=>false};assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance(){return{data};}}};},cc:{isValid:value=>!!value&&!value.destroyed},isFinite};
 vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/GameToolsOverrides.js'),'utf8'),runtime);const Timing=runtime.exports;
 function method(source,name){const start=source.indexOf('_ctor.prototype.'+name+' = function'),end=source.indexOf('\n  };',start);assert(start>=0&&end>=0,name);return source.slice(source.indexOf('function',start),end+4).trim().replace(/;$/,'');}
 function compile(body,trace){const statuses={Attack:2};return vm.runInNewContext('('+body+')',{GameToolsOverrides:Timing,r:statuses,s:{Attack:'Attack'},l:{Attack:'Attack'},C:{Attack:'Attack'},$z1KinghtFallModle:{KinghtFallSoldierAniEnum:{Attack:'attack'}},$z1KinghtFallEnemyBase:{KinghtFallEnemyStatus:statuses},$z1KinghtFallSoldierBase:{KinghtFallSoldierStatus:statuses},$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:{getEnemyList(){return[{isDead(){return false;},node:{getPosition(out){out.x=10;out.y=0;}}}];}}}}}},cc:{Vec2:{subtract(out,a,b){out.x=a.x-b.x;out.y=a.y-b.y;return out;}}}});}

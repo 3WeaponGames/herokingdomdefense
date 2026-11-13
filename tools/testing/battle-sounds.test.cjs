@@ -372,3 +372,12 @@ test('switching from approved lava ambience to a removed biome background stops 
   assert.equal(ambience.source.state, 3); assert(!f.pending.some(p => p.file.startsWith('sfx/ambience-')));
   f.finishAll(); assert(!f.game._battleSounds.loops.ambience);
 });
+
+test('the six hero styles use their own weapon release and impact families',()=>{
+ const expected={skirmisher:'bow-arrow-release',fighter:'sword-light-swing',vanguard:'cavalry-lance-thrust',mystic:'enemy-magic-projectile',bruiser:'sword-heavy-swing',guardian:'sword-heavy-swing'};
+ for(const [style,clip]of Object.entries(expected)){
+  const f=fixture();f.start();f.hero.heroStyle=style;f.sounds.attack(f.hero,'hero');f.finishAll();assert(f.played.some(p=>p.path==='sfx/'+clip),style);
+  const target=f.actor(90002,{navigationTeam:'friendly'});f.sounds.hit(target,f.hero,10);f.finishAll();
+  assert(f.played.some(p=>p.path==='sfx/'+(style==='mystic'?'magic-impact':style==='skirmisher'?'arrow-impact-armour':'impact-armour')),style);
+ }
+});

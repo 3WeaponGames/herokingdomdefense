@@ -14,7 +14,7 @@ test('bow/arrow and hammer/shield loadouts show two distinct items; switching aw
  assert(f.api.gearImage(3,1,'equipment').resource.includes('/Shield/'));
 });
 test('a fitted tier supplies the exact chosen icon, while linked equipment follows the primary tier rather than bonus progress',()=>{
- const f=looks();f.catalog.profiles.weapon={parts:[{sprite:'custom'}],icon:{resource:'test/chosen-sword',width:40,height:80}};f.catalog.assignments['4:tier:lv2:fighter']='weapon';f.setStyle('fighter');assert.equal(f.api.gearImage(4,7,'equipment').resource,'test/chosen-sword');assert.equal(f.api.gearImage(3,1,'equipment').resource,'test/chosen-sword');assert(f.api.gearImage(3,1,'upgrade').resource.includes('Fist'));
+ const f=looks(),tier=Tiers.at(equipment.find(row=>row.id===4),7);f.catalog.profiles.weapon={parts:[{sprite:'custom'}],icon:{resource:'test/chosen-sword',width:40,height:80}};f.catalog.assignments[Tiers.key(4,tier.skin,'fighter')]='weapon';f.setStyle('fighter');assert.equal(f.api.gearImage(4,7,'equipment').resource,'test/chosen-sword');assert.equal(f.api.gearImage(3,1,'equipment').resource,'test/chosen-sword');assert(f.api.gearImage(3,1,'upgrade').resource.includes('Fist'));
 });
 
 test('a fitted secondary sub-item replaces the linked weapon ghost and bonus placeholder with its own icon',()=>{

@@ -116,6 +116,9 @@ function environment() {
   const dataManager = { data: {}, getSoldierCfgById: () => cfg };
   const stubs = {
     BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {}, fire() {}, muzzle: owner => owner.getAttPos() },
+    // Rubble rendering is covered by its own presentation suite. Geometry,
+    // movement and purchase fixtures still execute the real building methods.
+    BuildingDebris: { prepare() {}, capture() {}, update() {}, field() {}, discard() {}, clear() {}, destroy() {}, hideNative() {} },
     BuildingLighting: { setNight(owner, night) { owner._buildingNight = !!night; } },
     NavigationGrid: { NavigationGrid }, BaseCtrl: { default: BaseCtrl }, KinghtFallUIGame: ui,
     KinghtFallConfig: { KinghtFallParameter: { FollowRange: 40, FollowMode: 1 }, KinghtFallBundelName: {}, KinghtFallPrefabName: {}, KinghtFallPoolName: {} },

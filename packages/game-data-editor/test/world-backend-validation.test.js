@@ -87,3 +87,28 @@ test('validation leaves each original map and representative stage unchanged and
  for(const id of Catalog.IDS){const map=L.adaptMap(root,id),before=JSON.stringify(map);assert.deepEqual(M.validateMap(map),[],id);assert.equal(JSON.stringify(map),before);}
  for(const variant of ['A','B','D']){const s=L.adaptStage(root,variant,1),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],variant);assert.equal(JSON.stringify(s),before);}
 });
+
+test('only the exact unavailable legacy zero condition is retained without becoming a fallback route',()=>{
+ const s=stage(),parked=M.clone(s.graphs[0]);parked.id='parked';parked.legacy=true;parked.requiresAnyBuilding=Array(10).fill(0);s.graphs.push(parked);const before=JSON.stringify(s);
+ assert.equal(M.legacyUnavailable(parked),true);assert.deepEqual(M.validateStage(s),[]);assert.equal(JSON.stringify(s),before);
+ for(const patch of [{legacy:false},{legacy:undefined},{requiresAnyBuilding:[0,1]},{requiresAnyBuilding:[0,999]},{requiresAnyBuilding:['0']},{requiresAnyBuilding:[null]},{requiresAnyBuilding:[999]}]){const invalid=M.clone(s);Object.assign(invalid.graphs[1],patch);assert(M.validateStage(invalid).includes('Path condition references a removed building.'),JSON.stringify(patch));}
+ assert.equal(M.legacyUnavailable(Object.assign({},parked,{requiresAnyBuilding:Array(2)})),false,'Sparse entries are not numeric zero sentinels');
+ const edge=M.clone(s);edge.graphs[0].edges[0].requiresAnyBuilding=[0];assert(M.validateStage(edge).includes('Path condition references a removed building.'));
+ s.graphs=[parked];assert(M.validateStage(s).some(issue=>issue.includes('needs a route.')),'An unavailable legacy path cannot satisfy the active spawn route requirement');
+});
+
+test('the actual legacy controller and authored planner never select all-zero parked routes',()=>{
+ const fs=require('node:fs'),vm=require('node:vm'),Plan=require('../../../assets/_script/AuthoredSpawnPlan'),root=path.resolve(__dirname,'../../..'),source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallGameCtrl.js'),'utf8'),start=source.indexOf('  _ctor.prototype.setPath = function'),end=source.indexOf('  _ctor.prototype.onPlayAttack',start);
+ assert(start>=0&&end>start);const normal=stage().graphs[0],parked=M.clone(normal);parked.id='parked';parked.legacy=true;parked.requiresAnyBuilding=Array(10).fill(0);
+ for(const built of [[],[1],[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]])for(const random of [0,.1,.5,.99]){
+  const native=[{ndLockList:[1],ndBuildList:[],node:{children:[{marker:'normal'}]}},{ndLockList:[1],ndBuildList:parked.requiresAnyBuilding,node:{children:[{marker:'parked'}]}}],context={_ctor:{prototype:{}},$z1KinghtFallPathInfo:{default:function(){}},$z1Utils:{Utils:{randomRang:(_min,max)=>Math.floor(random*max)}}};
+  vm.createContext(context);vm.runInContext(source.slice(start,end),context);const ctrl={gameData:{getBulidList:()=>built.map(ID=>({ID,getIsLock:()=>true}))},ndPath:{getChildByName:()=>null,getComponentsInChildren:()=>native}},result=context._ctor.prototype.setPath.call(ctrl,1);
+  assert.deepEqual(Array.from(result.pathList,p=>p.marker),['normal']);assert(Plan.route([normal,parked],1,built,null,()=>random).every(p=>p.graphId===normal.id));assert.deepEqual(Plan.route([parked],1,built,null,()=>random),[]);
+ }
+});
+
+test('all sixty current campaign configurations recover valid stages without changing their data',()=>{
+ const root=path.resolve(__dirname,'../../..');let count=0;
+ for(const variant of ['A','B','D'])for(const config of L.read(root,L.configFile(variant)).LevelCfg){const s=L.adaptStage(root,variant,config.Level,config),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],s.id);assert.equal(JSON.stringify(s),before);count++;}
+ assert.equal(count,60);
+});

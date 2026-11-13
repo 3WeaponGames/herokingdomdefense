@@ -3,7 +3,7 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Weapons=require('../../assets/_script/HeroWeapons'),spine=require(Units.enginePath());
 const keys=['spAniMa','spAniBody','spAniDrap','spAniHead','spAniBow','spAniArrow','spAniHand'];
 function setup(style='fighter'){
- const exports={},modules={HeroWeapons:Weapons,KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}};
+ const exports={},modules={HeroWeapons:Weapons,HeroSkillPose:require('../../assets/_script/HeroSkillPose'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,cc:{v2:(x,y)=>({x,y})},require:name=>modules[name]});
  const rider=exports,controlExports={};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallPlayGameAniCtrl.js'),'utf8'),{exports:controlExports,require:name=>name==='HeroMakerRider'?rider:name==='KinghtFallModle'?{KinghtFallPlayAniEnum:{Idle:'idle',Move:'move',Die:'wqyl_lead_die'}}:{},cc:{Component:function(){},_decorator:{ccclass:T=>T,property:()=>()=>{}}},sp:{Skeleton:function(){}},__extends(C,P){C.prototype=Object.create(P.prototype);},__decorate:(_decorators,T,key)=>key===undefined?T:undefined});
@@ -12,7 +12,7 @@ function setup(style='fighter'){
   const atlas=new spine.TextureAtlas(description.atlas,name=>{const b=fs.readFileSync(require('node:url').fileURLToPath(description.pages[name]));return new spine.FakeTexture({width:b.readUInt32BE(16),height:b.readUInt32BE(20)});});
   const data=new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas)).readSkeletonData(description.json),skeleton=new spine.Skeleton(data),mix=new spine.AnimationStateData(data),state=new spine.AnimationState(mix);
   skeleton.setSkinByName(description.skin);skeleton.setToSetupPose();skeleton.updateWorldTransform();
-  const renderer={node:{x:0,y:0,scaleX:1,scaleY:1},skeletonData:{skeletonJson:description.json},state,skeleton,setMix:(a,b,t)=>mix.setMix(a,b,t),setAnimation:(...args)=>state.setAnimation(...args),addAnimation:(...args)=>state.addAnimation(...args),getCurrent:i=>state.getCurrent(i),findBone:n=>skeleton.findBone(n),setEventListener:fn=>state.addListener({event:(track,event)=>fn(track,event)}),setCompleteListener:fn=>state.addListener({complete:fn}),setTrackCompleteListener:(track,fn)=>track.listener={complete:fn}};
+  const renderer={node:{x:0,y:0,scaleX:1,scaleY:1},skeletonData:{skeletonJson:description.json},state,skeleton,setMix:(a,b,t)=>mix.setMix(a,b,t),setAnimation:(...args)=>state.setAnimation(...args),addAnimation:(...args)=>state.addAnimation(...args),getCurrent:i=>state.getCurrent(i),findBone:n=>skeleton.findBone(n),findSlot:n=>skeleton.findSlot(n),update(dt){state.update(dt);state.apply(skeleton);skeleton.updateWorldTransform();},updateWorldTransform(){skeleton.updateWorldTransform();},setEventListener:fn=>state.addListener({event:(track,event)=>fn(track,event)}),setCompleteListener:fn=>state.addListener({complete:fn}),setTrackCompleteListener:(track,fn)=>track.listener={complete:fn}};
   actor[keys[index]]=renderer;renderer.setAnimation(0,'idle',true);return renderer;
  });
  actor.spAniSmoke={node:{},setAnimation(){},addAnimation(){}};
@@ -94,7 +94,7 @@ test('death and restart clear a held combat pose without overriding death or fre
 });
 
 test('native TrackEntry setter-only APIs receive the held pose without freezing the mount track',()=>{
- const exports={},events=[];vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,require:name=>name==='HeroWeapons'?Weapons:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find('mystic')})})}}});
+ const exports={},events=[];vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,require:name=>name==='HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='HeroWeapons'?Weapons:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find('mystic')})})}}});
  function renderer(mount){let entry;return {node:{scaleX:1,scaleY:1},skeletonData:{skeletonJson:mount?{_heroMakerMount:{}}:{_heroMaker:{},animations:{attack_mystic:{events:[{time:.2,name:'attack'}],bones:{body:{rotate:[{time:.8}]}}}}}},getCurrent:()=>entry,setMix(){},setAnimation(_i,animation,loop){entry={animation:{name:animation},loop,getTrackTime:()=>.4,getTimeScale:()=>1,setTrackTime:v=>events.push([mount?'mount':'rider','time',v]),setTimeScale:v=>events.push([mount?'mount':'rider','speed',v])};return entry;},addAnimation(){}};}
  const actor={spAniBody:renderer(false),spAniMa:renderer(true),isMove:false};exports.setCombatState(actor,{beam:true,moving:false});
  assert(events.some(e=>e[0]==='rider'&&e[1]==='time'&&e[2]===.2));assert(events.some(e=>e[0]==='rider'&&e[1]==='speed'&&e[2]===0));assert(!events.some(e=>e[0]==='mount'&&e[1]==='speed'&&e[2]===0));
@@ -139,14 +139,16 @@ test('zero-windup arrow samples its source release pose without an infinite anim
  assert.equal(rider.retimeAttack(actor,Infinity),false);assert.equal(rider.retimeAttack(actor,-1),false);
 });
 
-test('gameplay can defer pose synchronization to the one animation lateUpdate pass',()=>{
+test('gameplay commits sampled geometry before depth capture and lateUpdate keeps the same impact pose',()=>{
  const h=setup('vanguard'),{actor,rider}=h,interval=2.5/7;let follows=0;
  const original=actor.spAniMa.findBone;actor.spAniMa.findBone=function(bone){follows++;return original.call(this,bone);};
  rider.setCombatState(actor,{moving:true,rapid:{elapsed:interval,duration:2.5,strikes:7},deferUpdate:true});
- assert.equal(follows,0,'simulation must not repeat its seven-layer render traversal');close(track(actor).trackTime,0);
- actor.lateUpdate();assert.equal(follows,1);close(track(actor).trackTime,rider.attackPoseTime(actor));assert.equal(name(actor,'spAniMa'),'move');
+ assert.equal(follows,1,'the saddle position is committed before a scene depth copy can run');close(track(actor).trackTime,rider.attackPoseTime(actor));
+ const renderer=actor.spAniBow,bone=renderer.skeleton.findBone('Rider/HandRight/Spear'),before={x:bone.worldX,y:bone.worldY};
+ renderer.state.apply(renderer.skeleton);renderer.skeleton.updateWorldTransform();close(bone.worldX,before.x);close(bone.worldY,before.y);
+ actor.lateUpdate();assert.equal(follows,2);close(track(actor).trackTime,rider.attackPoseTime(actor));assert.equal(name(actor,'spAniMa'),'move');
  rider.setCombatState(actor,{moving:false,rapid:{elapsed:interval*2,duration:2.5,strikes:7},deferUpdate:true});
- assert.equal(follows,1);actor.lateUpdate();assert.equal(follows,2);assert.equal(name(actor,'spAniMa'),'attack_vanguard');close(track(actor,'spAniMa').trackTime,track(actor).trackTime);
+ assert.equal(follows,3);actor.lateUpdate();assert.equal(follows,4);assert.equal(name(actor,'spAniMa'),'attack_vanguard');close(track(actor,'spAniMa').trackTime,track(actor).trackTime);
  rider.setCombatState(actor,{moving:false,deferUpdate:true});actor.lateUpdate();assert.equal(name(actor),'idle');assert.equal(track(actor).timeScale,1);
 });
 
@@ -212,5 +214,164 @@ test('Mystic movement blends out its one horse attack and stopping never replays
   h.step(.1);actor.setIdle();assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor),body);
   for(let frame=0;frame<90;frame++){h.step(1/60);rider.setCombatState(actor,{moving:false,beam:true});}
   assert.equal(horseAttacks,startsMoving?0:1);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(track(actor),body);close(body.trackTime,.1667);
+ }
+});
+
+function slotVertices(renderer,name){
+ const slot=renderer.skeleton.findSlot(name),attachment=slot.getAttachment(),out=new Float32Array(attachment.worldVerticesLength||8);
+ if(attachment.worldVerticesLength)attachment.computeWorldVertices(slot,0,attachment.worldVerticesLength,out,0,2);else attachment.computeWorldVertices(slot.bone,out,0,2);
+ return [...out];
+}
+
+test('Vanguard visible spear and horse geometry use the current impact sample at low and high frame rates',()=>{
+ for(const dt of [1/120,1/60,.05,.1]){
+  const h=setup('vanguard'),{actor,rider}=h,interval=2.5/7;
+  rider.setCombatState(actor,{moving:false,rapid:{elapsed:interval*2-dt,duration:2.5,strikes:7}});h.step(0);
+  rider.setCombatState(actor,{moving:false,rapid:{elapsed:interval*2,duration:2.5,strikes:7},deferUpdate:true});
+  h.step(dt);const rendered=slotVertices(actor.spAniBow,'Rider/HandRight/Spear');
+  actor.spAniBow.state.apply(actor.spAniBow.skeleton);actor.spAniBow.skeleton.updateWorldTransform();
+  const actual=slotVertices(actor.spAniBow,'Rider/HandRight/Spear');assert(rendered.every((v,i)=>Math.abs(v-actual[i])<1e-5),'track assignment must be applied before drawing, not one frame later');
+  const horse=actor.spAniMa.skeleton.findBone('bone2'),before={x:horse.worldX,y:horse.worldY};actor.spAniMa.state.apply(actor.spAniMa.skeleton);actor.spAniMa.skeleton.updateWorldTransform();close(horse.worldX,before.x);close(horse.worldY,before.y);
+ }
+});
+
+test('logical Mystic elapsed time commits its clamped visible hold pose before scene capture',()=>{
+ const {actor,rider}=setup('mystic');rider.setCombatState(actor,{beam:true,beamElapsed:.7,playback:2,moving:false,deferUpdate:true});
+ const rendered=slotVertices(actor.spAniBow,'Rider/HandRight/Staff');close(track(actor).trackTime,.1667);assert.equal(track(actor).timeScale,0);
+ actor.spAniBow.state.apply(actor.spAniBow.skeleton);actor.spAniBow.skeleton.updateWorldTransform();const actual=slotVertices(actor.spAniBow,'Rider/HandRight/Staff');assert(rendered.every((v,i)=>Math.abs(v-actual[i])<1e-5));
+});
+
+test('weapon-only aiming preserves upright rider and mount and rotates each active weapon through all eight directions',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic']){
+  const h=setup(style),{actor,rider}=h;rider.setCombatState(actor,{moving:false,beam:style==='mystic',beamElapsed:.2});
+  if(style!=='mystic')actor.setAttack();h.step(.2);
+  const renderer=actor.spAniBow,hand=renderer.skeleton.findBone('Rider/HandRight'),weapon=renderer.skeleton.findBone(style==='skirmisher'?'Rider/HandRight/Bow/Arrow':style==='vanguard'?'Rider/HandRight/Spear':style==='fighter'?'Rider/HandRight/Sword':'Rider/HandRight/Staff');
+  const body=renderer.skeleton.findBone('Rider/Body'),horse=actor.spAniMa.skeleton.findBone('bone2'),bodyBefore={x:body.worldX,y:body.worldY},horseBefore={x:horse.worldX,y:horse.worldY};
+  for(const angle of [-135,-90,-45,0,45,90,135,180]){
+   const direction={x:Math.cos(angle*Math.PI/180),y:Math.sin(angle*Math.PI/180)},face=direction.x<-.0001?-1:1;renderer.node.scaleX=face;
+   require('../../assets/_script/HeroSkillPose').removeAim(renderer);renderer.update(0);const baseHand={x:hand.worldX,y:hand.worldY},baseVector={x:weapon.worldX-hand.worldX,y:weapon.worldY-hand.worldY};
+   require('../../assets/_script/HeroSkillPose').applyAim(renderer,direction,face,{fresh:true});
+   const radians=Math.atan2(direction.y,direction.x*face),x=baseVector.x*Math.cos(radians)-baseVector.y*Math.sin(radians),y=baseVector.x*Math.sin(radians)+baseVector.y*Math.cos(radians);
+   assert(Math.abs(weapon.worldX-baseHand.x-x)<1e-4);assert(Math.abs(weapon.worldY-baseHand.y-y)<1e-4);
+   close(body.worldX,bodyBefore.x);close(body.worldY,bodyBefore.y);close(horse.worldX,horseBefore.x);close(horse.worldY,horseBefore.y);
+  }
+ }
+});
+
+test('marker-sampled arrow tip matches actual equipped geometry without advancing tracks or replaying attack callbacks',()=>{
+ const {actor,rider}=setup('skirmisher'),Pose=require('../../assets/_script/HeroSkillPose'),renderer=actor.spAniArrow;let events=0;actor.setAttackEvent(()=>events++);
+ actor.setAttack();const body=track(actor);const originalTime=body.trackTime;
+ renderer.node.convertToWorldSpaceAR=p=>({x:renderer.node.x+p.x*renderer.node.scaleX,y:renderer.node.y+p.y*renderer.node.scaleY});
+ for(const direction of [{x:1,y:0},{x:0,y:1},{x:-1,y:0},{x:-Math.SQRT1_2,y:-Math.SQRT1_2}]){
+  renderer.node.scaleX=direction.x<0?-1:1;const snapshot=rider.skillOrigin(actor,direction);assert(snapshot);assert.equal(events,0);close(body.trackTime,originalTime);
+  Pose.removeAim(renderer);renderer.getCurrent(0).trackTime=.1667;renderer.update(0);Pose.applyAim(renderer,direction,renderer.node.scaleX,{fresh:true,referenceAngle:Pose.arrowAimAngle(renderer,renderer.skeletonData.skeletonJson,'attack',.1667)});const point=Pose.arrowTip(renderer,direction,renderer.node.scaleX),expected=renderer.node.convertToWorldSpaceAR(point);
+  assert(Math.abs(snapshot.x-expected.x)<1e-4);assert(Math.abs(snapshot.y-expected.y)<1e-4);
+ }
+ assert.equal(events,0);close(body.trackTime,originalTime);
+});
+
+test('custom Skirmisher aim predictions match all five authored release clips before and after casting',()=>{
+ const Pose=require('../../assets/_script/HeroSkillPose');
+ for(const animation of ['attack_fighter','attack_vanguard','attack_mystic','attack_bruiser','attack_guardian']){
+  const {actor,rider}=setup('skirmisher'),renderer=actor.spAniArrow;renderer.node.convertToWorldSpaceAR=p=>({x:renderer.node.x+p.x*renderer.node.scaleX,y:renderer.node.y+p.y*renderer.node.scaleY});let hits=0;actor.setAttackEvent(()=>hits++);
+  const ordinary=rider.skillOrigin(actor,{x:1,y:0}),predicted=rider.skillOrigin(actor,{x:1,y:0},animation);assert(predicted);assert(Math.hypot(ordinary.x-predicted.x,ordinary.y-predicted.y)>30,'this clip must exercise its own source geometry');
+  assert.equal(name(actor),'idle');close(track(actor).trackTime,0);assert.equal(hits,0);assert.deepEqual(rider.skillOrigin(actor,{x:1,y:0},'move'),ordinary,'unprovided attack clips use the ordinary fallback');
+  actor._skillAnimationOverride=animation;actor.setAttack();delete actor._skillAnimationOverride;const release=rider.skillOrigin(actor,{x:1,y:0},animation);close(predicted.x,release.x);close(predicted.y,release.y);
+  renderer.state.clearTracks();const source=renderer.setAnimation(0,animation,false);source.trackTime=.1667;renderer.update(0);Pose.applyAim(renderer,{x:1,y:0},1,{fresh:true,referenceAngle:Pose.arrowAimAngle(renderer,renderer.skeletonData.skeletonJson,animation,.1667)});const actual=renderer.node.convertToWorldSpaceAR(Pose.arrowTip(renderer,{x:1,y:0},1));
+  assert(Math.hypot(predicted.x-actual.x,predicted.y-actual.y)<1e-4,'prediction must match equipped region vertices');assert.equal(hits,0,'prediction never advances gameplay callbacks');
+ }
+});
+
+test('fast successive basic attacks blend recovery without early or duplicate rider attack events',()=>{
+ const h=setup('bruiser'),{actor,rider}=h;let hits=0;actor.setAttackEvent(()=>hits++);rider.setCombatState(actor,{moving:false});actor.setAttack();h.step(.5);
+ const renderer=actor.spAniBow,previous=slotVertices(renderer,'Rider/HandRight/Axe');actor.setAttack();assert.equal(track(actor).mixDuration,.06);assert.equal(track(actor,'spAniMa').mixDuration,.06);
+ h.step(1/120);const mixed=slotVertices(renderer,'Rider/HandRight/Axe');assert(Math.max(...mixed.map((v,i)=>Math.abs(v-previous[i])))<30);assert.equal(hits,1);
+ for(let i=0;i<24;i++)h.step(1/120);assert.equal(hits,2);
+});
+
+test('non-attack saved animation names fall back to a real authored style attack',()=>{
+ const {actor,rider}=setup('fighter');for(const invalid of ['idle','move','wqyl_lead_die','not-real']){actor._skillAnimationOverride=invalid;assert.equal(rider.attackName(actor),'attack_fighter');assert.equal(rider.skillTiming(actor,invalid,1).animation,'attack_fighter');}
+});
+
+function browserRealtime(h){
+ for(const renderer of h.renderers){
+  renderer._skeleton=renderer.skeleton;
+  // Installed Creator's real-time update applies local animation, while its
+  // public world-transform helper only serves the cached rendering path.
+  renderer.update=function(dt){this.state.update(dt);this.state.apply(this.skeleton);};
+  renderer.updateWorldTransform=function(){};
+ }
+ return h;
+}
+
+test('Creator browser wrappers commit sampled and aimed geometry before scene capture',()=>{
+ const {actor,rider}=browserRealtime(setup('mystic')),Pose=require('../../assets/_script/HeroSkillPose');
+ rider.setCombatState(actor,{beam:true,beamElapsed:.2,moving:false,aimDirection:{x:0,y:1},deferUpdate:true});
+ const renderer=actor.spAniBow,before=slotVertices(renderer,'Rider/HandRight/Staff');
+ renderer.skeleton.updateWorldTransform();const after=slotVertices(renderer,'Rider/HandRight/Staff');
+ assert(before.every((v,i)=>Math.abs(v-after[i])<1e-5),'world vertices must already match the aimed sample before the renderer runs');
+ const horse=actor.spAniMa;horse.getCurrent(0).trackTime=.1667;horse.update(0);rider.follow(actor);
+ const saddle=horse.skeleton.findBone('bone2'),info=actor.spAniBody.skeletonData.skeletonJson._heroMaker.saddle;
+ close(actor.spAniBody.node.x,saddle.worldX-info.x);close(actor.spAniBody.node.y,saddle.worldY-info.y);
+ Pose.removeAim(renderer);
+});
+
+test('Skirmisher aimed release aligns the equipped arrow axis with each ray while ordinary attacks retain authored poses',()=>{
+ const Pose=require('../../assets/_script/HeroSkillPose');
+ for(const angle of [-135,-90,-45,0,45,90,135,180]){
+  const h=browserRealtime(setup('skirmisher')),{actor,rider}=h,direction={x:Math.cos(angle*Math.PI/180),y:Math.sin(angle*Math.PI/180)},face=direction.x<-.0001?-1:1;
+  for(const renderer of h.renderers)renderer.node.scaleX=face;
+  actor.setAttack();for(const key of keys){track(actor,key).trackTime=.1667;actor[key].update(0);}
+  rider.setCombatState(actor,{moving:false,aimDirection:direction,deferUpdate:true});
+  const renderer=actor.spAniArrow,slot=renderer.skeleton.findSlot('Rider/HandRight/Bow/Arrow'),attachment=slot.getAttachment(),bone=slot.bone,rotation=attachment.rotation*Math.PI/180,x=Math.cos(rotation),y=Math.sin(rotation);
+  const axis={x:(bone.a*x+bone.b*y)*face,y:bone.c*x+bone.d*y},length=Math.hypot(axis.x,axis.y);
+  assert(Math.abs(axis.x/length-direction.x)<1e-4,angle+' arrow x must follow its gameplay ray');assert(Math.abs(axis.y/length-direction.y)<1e-4,angle+' arrow y must follow its gameplay ray');
+  const before=slotVertices(renderer,'Rider/HandRight/Bow/Arrow');renderer.skeleton.updateWorldTransform();assert(before.every((v,i)=>Math.abs(v-slotVertices(renderer,'Rider/HandRight/Bow/Arrow')[i])<1e-5));
+ }
+ const {actor,rider}=setup('skirmisher');actor.setAttack();const renderer=actor.spAniArrow;track(actor,'spAniArrow').trackTime=.1667;renderer.update(0);const before=slotVertices(renderer,'Rider/HandRight/Bow/Arrow');
+ track(actor).trackTime=.1667;rider.setCombatState(actor,{moving:false,deferUpdate:true});rider.update(actor);const after=slotVertices(renderer,'Rider/HandRight/Bow/Arrow');assert(before.every((v,i)=>Math.abs(v-after[i])<1e-5),'unscoped basic attacks keep the authored weapon angle');
+ assert(Pose.arrowAimAngle(renderer,renderer.skeletonData.skeletonJson,'attack',.1667)>10);
+});
+
+test('saddle following rotates a mirrored and scaled horse delta without accumulating fitted offsets',()=>{
+ const {actor,rider}=browserRealtime(setup('vanguard')),horse=actor.spAniMa,info=actor.spAniBody.skeletonData.skeletonJson._heroMaker.saddle;
+ horse.node.angle=65;horse.node.scaleX=-1.25;horse.node.scaleY=.8;
+ actor.spAniBody.node.x=13;actor.spAniBody.node.y=-4;
+ rider.setCombatState(actor,{moving:false,rapid:{elapsed:2.5/7,duration:2.5,strikes:7},deferUpdate:true});
+ const saddle=horse.skeleton.findBone('bone2'),x=(saddle.worldX-info.x)*horse.node.scaleX,y=(saddle.worldY-info.y)*horse.node.scaleY,r=65*Math.PI/180;
+ const expected={x:13+x*Math.cos(r)-y*Math.sin(r),y:-4+x*Math.sin(r)+y*Math.cos(r)};
+ close(actor.spAniBody.node.x,expected.x);close(actor.spAniBody.node.y,expected.y);for(let frame=0;frame<20;frame++)rider.follow(actor);close(actor.spAniBody.node.x,expected.x);close(actor.spAniBody.node.y,expected.y);
+ rider.removeFollow(actor);close(actor.spAniBody.node.x,13);close(actor.spAniBody.node.y,-4);
+});
+
+test('custom attack clips share the body marker without duplicating events on equipment layers',()=>{
+ const {actor,rider}=setup('fighter');
+ for(const key of keys.slice(1)){
+  const json=actor[key].skeletonData.skeletonJson;json.animations.attack_custom=JSON.parse(JSON.stringify(json.animations.attack_fighter));delete json.animations.attack_custom.events;
+ }
+ actor.spAniBody.skeletonData.skeletonJson.animations.attack_custom.events=[{name:'attack',time:.31}];
+ actor._skillAnimationOverride='attack_custom';assert.equal(rider.attackName(actor),'attack_custom');close(rider.skillTiming(actor,'attack_custom',1).sourceHit,.31);
+ delete actor.spAniHead.skeletonData.skeletonJson.animations.attack_custom;assert.equal(rider.attackName(actor),'attack_fighter','every participating equipment layer still needs the chosen clip');
+});
+
+test('cumulative Mystic source samples resume frozen rider and one horse attack without jumping after speed changes',()=>{
+ const h=browserRealtime(setup('mystic')),{actor,rider}=h;
+ rider.setCombatState(actor,{beam:true,beamElapsed:3,beamSourceTime:0,playback:0,moving:false,deferUpdate:true});const body=track(actor),horse=track(actor,'spAniMa');close(body.trackTime,0);close(horse.timeScale,0);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3.1,beamSourceTime:.05,playback:.5,moving:false,deferUpdate:true});assert.equal(track(actor),body);assert.equal(track(actor,'spAniMa'),horse);close(body.trackTime,.05);close(horse.timeScale,.5);
+ rider.setCombatState(actor,{beam:true,beamElapsed:3.15,beamSourceTime:.15,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.15);close(horse.timeScale,2);
+ rider.setCombatState(actor,{beam:true,beamSourceTime:.25,playback:2,moving:false,deferUpdate:true});close(body.trackTime,.1667);close(body.timeScale,0);close(horse.timeScale,2);
+ rider.setCombatState(actor,{beam:true,beamSourceTime:0,playback:1,animation:'attack_fighter',moving:false,deferUpdate:true});assert.equal(name(actor),'attack_fighter');close(track(actor).trackTime,0);assert.equal(name(actor,'spAniMa'),'attack_fighter');close(track(actor,'spAniMa').trackTime,0);
+});
+
+test('real Spine boss-control events and queued damage share saved playback and game speed through partial expiry',()=>{
+ const r=setup('fighter').actor.spAniBody,{setup:gameplay}=require('../testing/backend-gameplay-harness.cjs');
+ for(const globalSpeed of [.5,2])for(const playback of [.5,2])for(const wallStep of [1/60,.05]){
+  const h=gameplay(),tools=h.load('GameToolsOverrides'),combat=h.load('RelicCombat'),control=h.load('RelicRuntime'),enemy=h.e.actor('KinghtFallEnemyBase',0,0),settings={timingDefaults:{'enemy:90010:default':{attack:.1667}},animationSpeeds:{'enemy:90010:default':playback}};
+  h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data.GameTools=settings;h.ui.speed=globalSpeed;enemy.cfg={ID:90010,IsBoss:true};enemy.node._combatGeneration=1;enemy.spAni=r;enemy.time={Attack:-1};enemy.isDead=()=>false;enemy.onUpdate=()=>{};r.timeScale=globalSpeed;r.paused=false;
+  r.state.clearTracks();r.state.listeners=[];r.setAnimation(0,'attack_fighter',false);let time=0,eventAt=null,damageAt=null;r.setEventListener((_track,event)=>{if(event.data.name==='attack'&&eventAt===null)eventAt=time;});
+  const before=JSON.stringify(settings);control.applyControl(enemy,.23,.5);tools.attack(enemy,'enemy',()=>damageAt=time);
+  for(let frame=0;frame<240&&(eventAt===null||damageAt===null);frame++){const dt=wallStep*globalSpeed;time+=dt;tools.tick(dt,true);combat.updateEnemy(enemy,dt);tools.applyAnimationPlayback(enemy,'enemy');r.update(wallStep*r.timeScale);}
+  assert.notEqual(eventAt,null);assert.notEqual(damageAt,null);assert(Math.abs(eventAt-damageAt)<=wallStep*globalSpeed+1e-7,'rendered source event and hit must cross in the same simulation frame');assert.equal(JSON.stringify(settings),before);
+  combat.releaseControl(enemy);close(r.timeScale,globalSpeed);
  }
 });

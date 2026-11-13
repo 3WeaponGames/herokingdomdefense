@@ -19,6 +19,7 @@ test('all deployed units retain authored hit art or equipped-part white flashes 
 });
 function feedbackFixture(native){
  const tracks=[],plays=[],entries=new WeakMap(),actor={node:{_combatGeneration:1},rigidBody:{linearVelocity:{x:20,y:0}},isDead:()=>false};
+ let useTint=false,tintWrites=0;
  const baseTrack=tracks[0]={animation:{name:'attack'},trackTime:.31};
  function wrap(entry){
   if(!entry||!native)return entry;
@@ -32,10 +33,11 @@ function feedbackFixture(native){
   setAnimation(index,name,loop){assert.equal(index,1);assert.equal(name,'hit');assert.equal(loop,false);const entry={animation:{name},trackTime:0,animationEnd:.24,disposed:false};tracks[1]=entry;plays.push(entry);return wrap(entry);},
   getCurrent:index=>wrap(tracks[index]),setTrackCompleteListener(entry,done){original(entry).complete=done;},setTrackDisposeListener(entry,done){original(entry).dispose=done;},
   clearTrack(index){const old=tracks[index];tracks[index]=null;if(old){old.disposed=true;if(old.dispose)old.dispose();}},setSlotsToSetupPose(){}};
+ Object.defineProperty(renderer,'useTint',{get(){return useTint;},set(value){useTint=value;tintWrites++;}});
  const context={exports:{},cc:{Vec2:{ZERO:{x:0,y:0}},Component:class{},isValid:value=>!!value&&!value.destroyed,Class:d=>{function C(){}Object.assign(C.prototype,d);return C;}}};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/UnitHitFeedback.js'),'utf8'),context);
  let feedback;actor.node.getComponent=()=>feedback;actor.node.addComponent=C=>(feedback=new C());
- return{actor,renderer,tracks,plays,baseTrack,hit:()=>context.exports.play(actor),reset:()=>context.exports.reset(actor),feedback:()=>feedback,
+ return{actor,renderer,tracks,plays,baseTrack,tintWrites:()=>tintWrites,hit:()=>context.exports.play(actor),reset:()=>context.exports.reset(actor),feedback:()=>feedback,
   complete(){const entry=tracks[1];entry.trackTime=entry.animationEnd;entry.complete();},dispose(){renderer.clearTrack(1);}};
 }
 
@@ -53,6 +55,14 @@ for(const native of [false,true])test((native?'native':'browser')+' hit bursts f
  assert.equal(f.tracks[0],f.baseTrack);assert.equal(f.baseTrack.trackTime,.31);
  f.dispose();assert.equal(f.actor._hitReactionPlaying,false);f.feedback().update();assert.equal(f.plays.length,2);
  f.hit();assert.equal(f.plays.length,3);assert.equal(f.tracks[0],f.baseTrack);
+});
+
+for(const native of [false,true])test((native?'native':'browser')+' sequential hit reactions preserve warm tint materials through pooling and asset rebinds',()=>{
+ const f=feedbackFixture(native);f.hit();assert.equal(f.tintWrites(),1);f.complete();f.hit();assert.equal(f.plays.length,2);assert.equal(f.tintWrites(),1,'an equal true assignment would invalidate Creator material caches');
+ f.complete();f.reset();assert.equal(f.renderer.useTint,true);f.actor.node._combatGeneration++;f.hit();assert.equal(f.plays.length,3);assert.equal(f.tintWrites(),1,'pooling retains the already enabled shader');
+ f.renderer.skeletonData={rebound:true};f.hit();assert.equal(f.plays.length,4);assert.equal(f.tintWrites(),1,'Creator reapplies the retained property when rebuilding the native skeleton');
+ assert.equal(f.actor._hitReactionPlaying,true);assert.equal(f.tracks[0],f.baseTrack);assert.equal(f.baseTrack.trackTime,.31,'reaction optimization never advances or replaces the attack track');
+ f.complete();f.renderer.useTint=false;assert.equal(f.tintWrites(),2);f.hit();assert.equal(f.renderer.useTint,true);assert.equal(f.tintWrites(),3,'a genuinely changed property is enabled again');f.reset();assert.equal(f.tracks[0],f.baseTrack);assert.equal(f.baseTrack.trackTime,.31);
 });
 
 for(const native of [false,true])test((native?'native':'browser')+' hit polling and pool reuse release only the owned reaction',()=>{

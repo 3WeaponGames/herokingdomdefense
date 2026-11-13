@@ -106,6 +106,9 @@ function fixture(actualEngine = false, actualPolygon = false) {
   Parent.prototype.delAllBuff = Parent.prototype.sendEvent = function () {};
   Parent.prototype.T = value => value;
   const modules = { BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {} },
+    // This renderer-free fixture measures real collider/Box2D lifetimes, while
+    // the dedicated debris suite exercises rubble loading and visuals.
+    BuildingDebris: { prepare() {}, capture() {}, update() {}, clear() {}, destroy() {}, hideNative() {} },
     GateFacing: require('../../assets/_script/GateFacing'), KinghtFallInterface: { KinghtFallInterface: Parent },
     KinghtFallBuildInfo: { KinghtFallBuildInfo: function (type, cfg) { this.cfg = cfg; this.canUpgrade = false; } },
     KinghtFallConfig: { KinghtFallEventName: {}, KinghtFallAudioId: {}, KinghtFallUIID: {} },

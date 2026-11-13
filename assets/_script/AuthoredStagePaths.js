@@ -1,7 +1,7 @@
 "use strict";
 cc.Class({
   extends: cc.Component,
-  properties: { graphs: '', spawns: '' },
+  properties: { graphs: '', spawns: '', disabledBuildings: '' },
   onLoad: function () { this._graphs = JSON.parse(this.graphs || '[]'); this._graphSource = this.graphs; },
   spawnSpec: function (id) {
     if (this._spawnSource !== this.spawns || !this._spawnById) {

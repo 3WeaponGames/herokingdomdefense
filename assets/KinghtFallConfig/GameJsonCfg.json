@@ -2571,13 +2571,6 @@
                 "reloadTime": 0
               }
             },
-            "destroyed": {
-              "sprite": "buildings/towers/cannon-1-destroyed",
-              "width": 168.3,
-              "height": 168.3,
-              "offsetX": 0.0,
-              "offsetY": -38.0
-            },
             "muzzleX": 19.2311325,
             "muzzleY": 106.19253227434976,
             "lifecycle": "native-tower"
@@ -2704,13 +2697,6 @@
                 "reloadTime": 0
               }
             },
-            "destroyed": {
-              "sprite": "buildings/towers/cannon-2-destroyed",
-              "width": 168.3,
-              "height": 168.3,
-              "offsetX": 0.0,
-              "offsetY": -38.0
-            },
             "muzzleX": 23.85,
             "muzzleY": 141.3055525645841,
             "lifecycle": "native-tower"
@@ -2836,13 +2822,6 @@
                 "damping": 5,
                 "reloadTime": 0
               }
-            },
-            "destroyed": {
-              "sprite": "buildings/towers/cannon-3-destroyed",
-              "width": 168.3,
-              "height": 168.3,
-              "offsetX": 0.0,
-              "offsetY": -38.0
             },
             "muzzleX": 23.3647956,
             "muzzleY": 160.61278886413228,
@@ -2973,13 +2952,6 @@
                 "damping": 5,
                 "reloadTime": 1
               }
-            },
-            "destroyed": {
-              "sprite": "buildings/towers/sniper-1-destroyed",
-              "width": 89,
-              "height": 89,
-              "offsetX": 0,
-              "offsetY": -38
             },
             "muzzleX": 35.592233,
             "muzzleY": 120.26326542586392,
@@ -3112,13 +3084,6 @@
                 "reloadTime": 1
               }
             },
-            "destroyed": {
-              "sprite": "buildings/towers/sniper-2-destroyed",
-              "width": 101.00000000000001,
-              "height": 101.00000000000001,
-              "offsetX": 0,
-              "offsetY": -38
-            },
             "muzzleX": 37.737121,
             "muzzleY": 171.08554708941622,
             "lifecycle": "native-tower"
@@ -3249,13 +3214,6 @@
                 "damping": 5,
                 "reloadTime": 1
               }
-            },
-            "destroyed": {
-              "sprite": "buildings/towers/sniper-3-destroyed",
-              "width": 104,
-              "height": 104,
-              "offsetX": 0,
-              "offsetY": -38
             },
             "muzzleX": 39.471429,
             "muzzleY": 176.81084613172322,
@@ -3447,13 +3405,6 @@
                 "reloadTime": 0
               }
             },
-            "destroyed": {
-              "sprite": "buildings/towers/cannon-3-destroyed",
-              "width": 168.3,
-              "height": 168.3,
-              "offsetX": 0.0,
-              "offsetY": -38.0
-            },
             "muzzleX": 23.3647956,
             "muzzleY": 159.6615169151511,
             "lifecycle": "native-tower"
@@ -3582,13 +3533,6 @@
                 "damping": 5,
                 "reloadTime": 1
               }
-            },
-            "destroyed": {
-              "sprite": "buildings/towers/sniper-3-destroyed",
-              "width": 104,
-              "height": 104,
-              "offsetX": 0,
-              "offsetY": -38
             },
             "muzzleX": 39.471429,
             "muzzleY": 176.13753892080305,
@@ -4201,7 +4145,7 @@
           ],
           "MillDefense": {
             "kind": "scarecrow",
-            "fields": 3,
+            "fields": 4,
             "fieldHp": 180,
             "damage": 18,
             "range": 260,
@@ -4298,7 +4242,7 @@
           ],
           "MillDefense": {
             "kind": "bomb",
-            "fields": 3,
+            "fields": 4,
             "fieldHp": 180,
             "damage": 100,
             "range": 260,

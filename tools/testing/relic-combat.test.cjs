@@ -242,6 +242,19 @@ test('boss control scales simulation once and pooled enemies lose their control 
  regular.freeNode();assert.equal(regular._relicControl,undefined);assert.equal(regular._isPooled,true);
  assert.equal(h.Runtime.applyControl(regular,1,.5),false);
 });
+test('boss slow shares AI and Spine component clocks through partial expiry and global-speed changes',()=>{
+ const h=fixture(),boss=h.enemy(10,1000,90010),track={timeScale:.25};boss.spAni.timeScale=2;boss.spAni.getCurrent=()=>track;boss.spAni2={timeScale:2};boss.spAni3=boss.spAni2;h.ui.speed=2;let elapsed=0;boss.onUpdate=dt=>elapsed+=dt;
+ h.Runtime.applyControl(boss,.15,.5);h.Combat.updateEnemy(boss,.1);near(elapsed,.05);near(boss.spAni.timeScale,1);near(boss.spAni2.timeScale,1);near(track.timeScale,.25,'package/saved track playback is not multiplied twice');
+ h.ui.speed=.5;h.Combat.updateEnemy(boss,.1);near(elapsed,.125);near(boss.spAni.timeScale,.375);near(boss.spAni2.timeScale,.375);near(track.timeScale,.25);
+ h.Combat.updateEnemy(boss,.1);near(elapsed,.225);near(boss.spAni.timeScale,.5);near(boss.spAni2.timeScale,.5);
+ h.Runtime.applyControl(boss,2,.5);h.Combat.updateEnemy(boss,.1);near(boss.spAni.timeScale,.25);h.Combat.releaseControl(boss);near(boss.spAni.timeScale,.5);near(track.timeScale,.25);
+});
+test('freeze release uses only the unfrozen fraction and restores current global speed on death or pooling',()=>{
+ const h=fixture(),enemy=h.enemy();h.ui.speed=3;enemy.spAni.timeScale=3;let elapsed=0;enemy.onUpdate=dt=>elapsed+=dt;
+ h.Runtime.applyControl(enemy,.15);h.Combat.updateEnemy(enemy,.1);assert.equal(enemy.spAni.paused,true);near(enemy.spAni.timeScale,0);near(elapsed,0);
+ h.Combat.updateEnemy(enemy,.1);assert.equal(enemy.spAni.paused,false);near(enemy.spAni.timeScale,1.5);near(elapsed,.05);
+ h.ui.speed=2;h.Combat.releaseControl(enemy);near(enemy.spAni.timeScale,2);assert.equal(enemy.spAni.paused,false);
+});
 
 test('each restricted hero mechanic produces its real effect only for the intended fighting styles',()=>{
  const styles=['skirmisher','fighter','vanguard','mystic','bruiser','guardian'];

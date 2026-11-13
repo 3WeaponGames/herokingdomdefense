@@ -15,6 +15,8 @@ function panel(root, width, height) {
   g.fillColor = cc.color("#fcf6e6"); g.rect(-width / 2 + 5, height / 2 - 102, width - 10, 22); g.fill();
   g.strokeColor = cc.color("#aab3bf"); g.lineWidth = 1; g.roundRect(-width / 2 + 4, -height / 2 + 4, width - 8, height - 8, 22); g.stroke();
 }
+// Confirmation dialogs share the Settings frame instead of maintaining a copy.
+exports.frame = panel;
 function fit(root, owner, height, margin) {
   root.setScale(Math.min(1, Math.max(1, owner.node.height - margin) / height)); root.setPosition(0, 0);
 }

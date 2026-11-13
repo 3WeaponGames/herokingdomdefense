@@ -14,6 +14,7 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
   const equipment = Object.values(config.EquipCfg);
   const catalog = require('../../assets/resources/hero-items/catalog.json');
   let now = 0, requests = 0, retry, retiredChecks = 0, pendingDestroyChecks = 0, liveChecks = 0;
+  const requestedCatalogs = [];
   const noop = () => {}, once = value => ({ getInstance: () => value });
   function Component() {}
   const cc = {
@@ -29,6 +30,7 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
     },
     resources: { load(id, type, done) {
       requests++;
+      requestedCatalogs.push(id);
       if (id === 'hero-items/catalog') { if (requests === 1) done(Error('temporary catalog failure')); else retry = done; }
       else if (id === 'hero-maker/catalog') done(null, { json: require('../../assets/resources/hero-maker/catalog.json') });
       else if (id === 'character-parts/catalog') done(null, { json: require('../../assets/resources/character-parts/catalog.json') });
@@ -83,13 +85,16 @@ test('equipment catalog subscriptions stay bounded across cached tab visits and 
   const before = refreshes;
   retiredChecks = pendingDestroyChecks = liveChecks = 0;
   retry(null, { json: catalog });
-  assert.equal(requests, 3); assert.equal(refreshes - before, 1);
+  const expectedCatalogs = ['hero-items/catalog', 'hero-items/catalog', 'hero-maker/catalog'];
+  if (Object.keys(catalog.assignments).length) expectedCatalogs.push('character-parts/catalog');
+  assert.deepEqual(requestedCatalogs, expectedCatalogs, 'the successful retry loads each dependent catalog once');
+  assert.equal(refreshes - before, 1);
   assert.equal(retiredChecks, 0); assert.equal(pendingDestroyChecks, 1); assert.equal(liveChecks, 1);
   finishDestroy();
   assert.equal(baseTeardowns, 1);
   open('Toggle3'); open('Toggle1');
   assert.equal(refreshes - before, 2, 'an already-ready catalog needs only the normal initial view refresh');
-  assert.equal(requests, 3);
+  assert.deepEqual(requestedCatalogs, expectedCatalogs, 'cached tab visits do not reload any catalog');
 });
 
 test('item catalog cancellation is idempotent and cannot remove a later subscription', () => {

@@ -70,7 +70,7 @@ test('family level tabs browse every original storage position without producing
             const hp=f.field('HP');assert(hp);hp.onchange();
         }
     }
-    assert.equal(visited.size,43,'The current families contain 40 four-tier designs and 3 unchanged wall variants');
+    assert.equal(visited.size,46,'Every authored building row is visited, including both mill branches and all three wall variants');
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert.equal(f.store.changes().length,0);
     assert(!f.messages.some(message=>/:(?:change|save)$/.test(message.message)));
 });

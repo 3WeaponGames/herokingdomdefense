@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "pack": "HeroKingdomDefense original active-skill artwork",
+  "size": 128,
+  "icons": [
+    {
+      "id": "skirmisher",
+      "skill": "Piercing Arrow",
+      "image": "assets/resources/skills/icons/skirmisher.png",
+      "reference": "@icon/skills/icons/skirmisher",
+      "width": 128,
+      "height": 128,
+      "sha256": "3bb735b43ba89f3486159abdf8b87765409a7568d4d20dfa9d7c4eff937368a3"
+    },
+    {
+      "id": "fighter",
+      "skill": "Battle Cry",
+      "image": "assets/resources/skills/icons/fighter.png",
+      "reference": "@icon/skills/icons/fighter",
+      "width": 128,
+      "height": 128,
+      "sha256": "0c55b2569db0e7a1fcf0d07e1f48800e9f80b0cc87926ad14d6887eb4c4297ea"
+    },
+    {
+      "id": "vanguard",
+      "skill": "Spear Barrage",
+      "image": "assets/resources/skills/icons/vanguard.png",
+      "reference": "@icon/skills/icons/vanguard",
+      "width": 128,
+      "height": 128,
+      "sha256": "2a0cfbe6dc6c531acaa810cb1cbed3a900a5aaba7d57a54626d874c6a58a076f"
+    },
+    {
+      "id": "mystic",
+      "skill": "Arcane Burst",
+      "image": "assets/resources/skills/icons/mystic.png",
+      "reference": "@icon/skills/icons/mystic",
+      "width": 128,
+      "height": 128,
+      "sha256": "d70b379e48fb0ca944ad803e3c2c80ff03444579150dba5d9cb8712a53503481"
+    },
+    {
+      "id": "bruiser",
+      "skill": "Blood Cleave",
+      "image": "assets/resources/skills/icons/bruiser.png",
+      "reference": "@icon/skills/icons/bruiser",
+      "width": 128,
+      "height": 128,
+      "sha256": "d5e29325572b15ec784572a1b4e08d47c41fa9bab4cf3c99070918eb6e34d6ab"
+    },
+    {
+      "id": "guardian",
+      "skill": "Iron Bulwark",
+      "image": "assets/resources/skills/icons/guardian.png",
+      "reference": "@icon/skills/icons/guardian",
+      "width": 128,
+      "height": 128,
+      "sha256": "83fc1abe44fb4e2ef242465f9194de0fa950aa09168c3a417c69f62ea00803c2"
+    }
+  ]
+}

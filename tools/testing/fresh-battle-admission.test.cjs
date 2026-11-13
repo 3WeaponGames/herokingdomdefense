@@ -11,7 +11,7 @@ const cost = Number(config.ParameterCfg[60010].Value), stage = 2;
 function fixture(saved) {
   const disk = harness(saved), player = disk.player, user = player.udata;
   if (!saved) { user.data.powerNum = 100; user.data.powerUpdateTime = 10000; user.data.maxStage = 2; user.saveData(); }
-  const requests = [], errors = [], scheduled = [], transitions = [], input = [], events = [], modules = {};
+  const requests = [], errors = [], scheduled = [], transitions = [], input = [], events = [], modules = {}, mapSetups = [];
   let mounted, game, manager, partialMapFailure = false;
   const singleton = value => ({ getInstance: () => value });
   function node() { return { active: true, activeInHierarchy: true, getChildByName() { return node(); }, getComponent() { return null; },
@@ -55,7 +55,7 @@ function fixture(saved) {
   function openBattleView(viewNode) {
     game = Object.assign(Object.create(load('KinghtFallGameCtrl').default.prototype), { _combatEpoch: 0, ctrPlay: { initData() {}, ndAgg: {} },
       buildBullet: { node: {} }, ndAggFlag: {}, ndPath: node(), ndUI: node(),
-      initMap() { this.gameData.bulidPointMap[1] = { getSave: () => ({ point: 1, level: 0 }) }; this.gameData.upMap = () => {};
+      initMap() { mapSetups.push(JSON.parse(JSON.stringify(this.gameData.treasureAddTime))); this.gameData.bulidPointMap[1] = { getSave: () => ({ point: 1, level: 0 }) }; this.gameData.upMap = () => {};
         this.gameData.initCom = () => { if (partialMapFailure) throw Error('map setup interrupted'); }; }, onLateUpdate() {},
       loadGame() { if (!player.gameData.hasSave(stage)) return false; this.gameData.setRound(); return true; } });
     const ui = Object.assign(Object.create(UI.prototype), { node: viewNode, isPauset: true, ctrGame: null, btnAgg: node(), btnBuildInfo: null,
@@ -72,7 +72,7 @@ function fixture(saved) {
   function mapReady() { success(requests.length - 1, true); }
   function earnedSilver(p = player) { const info = p.missionData.getAchInfoByType(enums.KinghtFallEnumAchiEnum.GetSliver); return info ? info.num : 0; }
   return { disk, player, user, home, homeView, requests, errors, scheduled, transitions, input, manager, begin, prefabReady, mapReady, earnedSilver,
-    view: () => mounted, breakMap: () => { partialMapFailure = true; }, success };
+    view: () => mounted, mapSetups, breakMap: () => { partialMapFailure = true; }, success };
 }
 
 test('fresh entry waits through transition, prefab and map loads, then journals one debit, checkpoint and initial silver credit', () => {
@@ -116,6 +116,20 @@ test('asset retries deliver one admission and a continued checkpoint never purch
   f.requests.at(-1).done(Error('first map attempt')); f.errors.shift().retry(); f.mapReady();
   const saved = f.disk.persist(), resumed = fixture(saved); resumed.manager.openUIOfCallback('UIGame','none',()=>{},stage); resumed.prefabReady(); resumed.mapReady();
   assert.equal(resumed.user.getPowerNum(), 100 - cost); assert.equal(resumed.earnedSilver(), f.earnedSilver());
+});
+
+test('restart replacement applies the captured relic setup before creating buildings without charging admission', () => {
+  const h = harness(); h.player.udata.data.powerNum = 100; h.player.udata.data.maxStage = stage; h.player.udata.saveData();
+  h.player.gameData.setCheckpoint({ levelNum: stage, roundNum: 3, coin: 77, buildingLevel: [], buffList: [], businessList: {} });
+  const f = fixture(h.persist()), setup = {treasureAddTime: {60001: 9}}, before = JSON.stringify(f.user.data);
+  f.manager.openUIOfCallback('UIGame', 'none', () => {}, stage, null, setup);
+  f.prefabReady();
+  setup.treasureAddTime[60001] = 42;
+  f.mapReady();
+  assert.deepEqual(f.mapSetups, [{60001: 9}], 'Building initialization uses a private captured setup');
+  assert.equal(f.view()._restartSetup, null, 'A later init cannot inherit the consumed setup');
+  assert.equal(f.view().ctrGame.gameData.round, 3); assert.equal(f.view().ctrGame.gameData.coin, 77);
+  assert.equal(JSON.stringify(f.user.data), before); assert.equal(f.earnedSilver(), 0);
 });
 
 test('starting an unsaved earlier stage opens directly and preserves a different stage checkpoint', () => {

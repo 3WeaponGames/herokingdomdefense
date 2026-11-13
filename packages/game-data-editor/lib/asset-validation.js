@@ -2,6 +2,7 @@
 const UnitRecords=require('./unit-records');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 const MapCatalog=require('./map-catalog');
+const EquipmentTiers=require('../../../assets/_script/EquipmentTiers');
 
 // Validate the resource paths used by the actual runtime readers, rather than
 // accepting a matching filename from an unrelated bundle. Read-only throughout.
@@ -60,7 +61,7 @@ function imported(root, bundle, key, kind) {
     throw new Error('No imported ' + (kind === 'sprite' ? 'SpriteFrame' : kind) + ' at ' + bundle + '/' + key + '. Select an asset from that bundle.');
 }
 function createContext(root, documents) {
-    let uuidFiles = null, buildingAssets = null, equipmentAssets = null, buildingPrefixes = null;
+    let uuidFiles = null, buildingAssets = null, equipmentAssets = null, buildingPrefixes = null, projectileAssets = null;
     function metaFiles() {
         if (uuidFiles) return uuidFiles;
         uuidFiles = {};
@@ -113,6 +114,7 @@ function createContext(root, documents) {
     function equipment() {
         if (equipmentAssets) return equipmentAssets;
         equipmentAssets = {};
+        projectileAssets = new Map();
         ['assets/KinghtFallEnemyAni/ndPlay.prefab', 'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'].forEach(file => {
             const prefab = read(path.join(root, file));
             prefab.filter(component => component.spAniDrap && component.spAniBody).forEach(controller => Object.keys(EQUIP_FIELDS).forEach(id => {
@@ -127,12 +129,20 @@ function createContext(root, documents) {
                 (node && node._components || []).forEach(ref => {
                     const component = prefab[ref.__id__];
                     if (component.__type__ === 'sp.Skeleton') {
-                        const asset = skeleton(component), assets = equipmentAssets[3] || (equipmentAssets[3] = new Map()); assets.set(asset.file, asset);
+                        const asset = skeleton(component); projectileAssets.set(asset.file, asset);
                     }
                 });
             });
         });
         return equipmentAssets;
+    }
+    function equipmentSkin(id, name) {
+        skin(name, equipment()[id]);
+        if (Number(id) !== 3) return;
+        projectileAssets.forEach(asset => {
+            const resolved = EquipmentTiers.legacySkin(name, value => asset.skins.includes(value));
+            if (!resolved) skin(name, new Map([[asset.file, asset]]));
+        });
     }
     function skin(value, assets) {
         if (typeof value !== 'string' || !value.length) throw new Error('Choose a named skin from this model.');
@@ -153,7 +163,7 @@ function createContext(root, documents) {
             }
         });
     }
-    return { map, buildingType, buildings, equipment, skin, skeleton, unitModel };
+    return { map, buildingType, buildings, equipment, equipmentSkin, skin, skeleton, unitModel };
 }
 function validate(root, documents, changes) {
     if (!changes || !changes.length) return [];
@@ -252,7 +262,7 @@ function validate(root, documents, changes) {
         const at = ['EquipCfg', index, 'levelInfo', li];
         sprite('A', at.concat('Image'), level.Image, 'KinghtFallIconCharacter');
         sprite('A', at.concat('EquipBottom'), level.EquipBottom, 'KinghtFallIconGood');
-        check('A', at.concat('EquipSkin'), level.EquipSkin, name => context.skin(name, context.equipment()[equipment.id]));
+        check('A', at.concat('EquipSkin'), level.EquipSkin, name => context.equipmentSkin(equipment.id, name));
     }));
     Object.keys(base.TalentCfg || {}).forEach(id => sprite('A', ['TalentCfg', id, 'Image'], base.TalentCfg[id].Image, 'KinghtFallIconTalent'));
     Object.keys(base.GoodsCfg || {}).forEach(id => ['icon','sprBg'].forEach(key => sprite('A', ['GoodsCfg',id,key], base.GoodsCfg[id][key], 'KinghtFallIconGood', true)));

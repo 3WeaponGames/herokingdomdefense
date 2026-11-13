@@ -8,6 +8,7 @@ var $z1BaseCtrl = require("BaseCtrl");
 var $z1PoolMgr = require("PoolMgr");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
+var EquipmentTiers = require("EquipmentTiers"), warnedAttackClip = false;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -37,8 +38,21 @@ var def_KinghtFallGameEffect = function (t) {
       i.setPosition(t);
       i.active = true;
       var a = i.getComponentInChildren(sp.Skeleton);
-      a.setAnimation(0, e, false);
-      a.node.name = e;
+      var clip = typeof e === "string" && a && a.findAnimation && a.findAnimation(e) ? e : null;
+      if (!clip && typeof e === "string" && e.indexOf("jian_") === 0) {
+        var skin = EquipmentTiers.legacySkin(e.slice(5), function (name) { return !!(a && a.findAnimation && a.findAnimation("jian_" + name)); });
+        clip = skin && "jian_" + skin;
+      }
+      if (!clip) {
+        if (a) a.setCompleteListener(null);
+        i.active = false;
+        $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.EnemyAttack, i);
+        if (!warnedAttackClip && cc.warn) cc.warn("Attack impact animation unavailable; skipping the missing visual.", e);
+        warnedAttackClip = true;
+        return;
+      }
+      a.setAnimation(0, clip, false);
+      a.node.name = clip;
       a.setCompleteListener(function () {
         $z1PoolMgr.PoolMgr.getInstance().freeNode($z1KinghtFallConfig.KinghtFallPoolName.EnemyAttack, i);
         a.setCompleteListener(null);

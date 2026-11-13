@@ -226,7 +226,7 @@
         {
           "field": "skins",
           "name": "mf-2-1",
-          "current": "9d769466632aefaa19b73b53fbb1f5fce0d0e36da5d2928f5e5fb09b3e8fbbc9",
+          "current": "8da2d31b0eb16f8921693a9cddcd793e86f7380980779d25fc9af6d1d509fb24",
           "original": {
             "name": "mf-2-1",
             "attachments": {
@@ -4355,7 +4355,7 @@
         {
           "field": "skins",
           "name": "mf-2-2",
-          "current": "c568bff76de9ad2a760a5345fc874647e3e7792fd23c87dc65811e2188a926eb",
+          "current": "81a28d4051f0a61caff93ee8a7ab702895d50f0b5a43f693efffa5ac7c894b1c",
           "original": {
             "name": "mf-2-2",
             "attachments": {
@@ -9857,7 +9857,7 @@
         {
           "field": "skins",
           "name": "mf-3",
-          "current": "8929ef575b9068cc3b09cb4faf1fee429be91a127ea31124e104b6645b19dd7e",
+          "current": "52f368a4449cd1318cf84efe61fdfa4866fc8601d76e78ebc0e2e25f7c43a293",
           "original": {
             "name": "mf-3",
             "attachments": {
@@ -15359,19 +15359,19 @@
         {
           "field": "skins",
           "name": "mf-bomb-2",
-          "current": "55060cdb99e9cd83be438c48f967aa26d7bbc8b7bb6bc3e234db7736566d4d65",
+          "current": "7da2adfd07066022db7e566bcfefc4513e964f19bb68f9185832052cb7a71ff9",
           "original": null
         },
         {
           "field": "skins",
           "name": "mf-bomb-3",
-          "current": "70ad05470742b5fceb79af8a0731b942576b65b8aea1623285a73fe72d041321",
+          "current": "36876bdf1710e1381966cb93c3abd5a580891c974dc3f1f92953ec9362c11db6",
           "original": null
         },
         {
           "field": "skins",
           "name": "mf-bomb-4",
-          "current": "5da37a0742779cd08661737429418d03d8d2cbf04cc827863efe82dd82b0d4a3",
+          "current": "dceadbb779a8ec22d6a14acd3d21dfccd629afbc8e5713f69edd1f194c4c63a2",
           "original": null
         },
         {
@@ -15431,7 +15431,7 @@
         {
           "field": "skins",
           "name": "mf-1",
-          "current": "50266ade89b26c9b011170405e04a6cdf1eb94fc6b250f44fc1a88d9e650c4ab",
+          "current": "5feb34166b24772f432e9ff029de241a0f21443c64a8838f8cb10b047f8f7c1b",
           "original": {
             "name": "mf-1",
             "attachments": {
@@ -18185,18 +18185,17 @@
           }
         }
       ],
-      "atlasAppend": "8d552ca4bb60dac4190fd4e5be7120eb06da8bd1d7facdd329bcf584fdcf398f",
+      "atlasAppend": "ed8ddccc5417b63d6f8fe363978714c3351060964737d7d89eb084d514cef1d1",
       "extraTexture": "06775057-267f-424c-b78e-6d107f4afaaa",
       "beforeHash": "cd73672b97de46461d56551b4ae2d9989089c632aeb24e3dfb619bbcf065047c",
       "extraTextures": [
-        "06775057-267f-424c-b78e-6d107f4afaaa",
-        "575c9cae-52bc-4065-9c28-7d17d72fd366"
+        "06775057-267f-424c-b78e-6d107f4afaaa"
       ]
     }
   },
   "art": {
     "pageSha": "f29b772031c40f7d200206446842c97dcb27aef1a095a7e3cb5e1496bbc76095",
-    "metadata": "8fbad0d44f976f5d7c624078b97c6763b056eb1dbf7f16d8d717e3e6ead185c4",
+    "metadata": "9d31e3c6f66c3e52ad5d514c0de839ae7c857fde39951402e5ffeb588851f7f9",
     "bombs": [
       {
         "name": "mill-bomb-1",
@@ -18227,10 +18226,16 @@
         "rgbaSha": "be6664305f302a962afc3024c1b7c8e37efdbf2b01cff6267db0e08cee8cbbfc"
       }
     ],
-    "ruins": {
-      "file": "assets/KinghtFallIconMap/com/Ani/td/td-ruins.png",
-      "sha256": "34c2ee5d9c7591e8f967b452f4a282c6a11bfa20953cc1c7f919b32a90f4aab2",
-      "metadata": "40f7783c3252938d5621b82fc0300cc576176390064474bd28cab22d3c7c9fd0"
+    "sharedDebris": {
+      "file": "assets/resources/buildings/shared/debris.png",
+      "sha256": "7c875f6e901ac104f8fa430e7cb1c54c5a2a558ec125cf146a52462fa23452ff",
+      "sourceRegion": "mf/fx",
+      "sourceSize": [
+        115,
+        66
+      ],
+      "metadata": "721612ecd06a0c1ba7724ab28df5e0aa6d5a44a6034610efb52ad798b59aefbe"
     }
-  }
+  },
+  "approvedPlotLayout": "User approved four farm plots on mill tiers3 and4. Tier3 adds the existing td__9 plot and its matching existing defense attachment; no bones, animation keys, HP, damage or costs change."
 }

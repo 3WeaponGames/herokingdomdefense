@@ -108,6 +108,9 @@ test('removing an obstacle is an inactive draft with stable serialized indices',
 });
 test('validation catches broken references, geometry, spawn lanes, and stage slots', () => {
     const source = Maps.loadMap(root, 'Map01').data, info = Maps.model(source), collider = info.colliders[0], docs = clone(documents);
+    // Bind the private stage fixture to the map being checked; the live stage
+    // may now use an independently generated prefab.
+    docs.A.data.LevelCfg[0].prefab = 'Map01';
     source[collider.id].points = [{ x: 0, y: 0 }, { x: 1, y: 1 }];
     source[info.owners[0].id]._children.push({ __id__: source.length + 30 });
     delete docs.A.data.LevelCfg[0].WaveCfg[0].SpawnTimeline;
@@ -119,6 +122,7 @@ test('validation catches broken references, geometry, spawn lanes, and stage slo
 });
 test('map lane validation follows active timed schedules and ignores retained legacy queues', () => {
     const source = Maps.loadMap(root, 'Map01').data, docs = clone(documents), wave = docs.A.data.LevelCfg[0].WaveCfg[0];
+    docs.A.data.LevelCfg[0].prefab = 'Map01';
     wave.RefreshSoldierKind = ['999#90001,5'];
     assert(!Maps.issuesFor(source, 'Map01', docs).some(i => /spawn lane 999/.test(i.message)));
     wave.SpawnTimeline[0].spawnId = 999;

@@ -13,7 +13,7 @@ test('all40 building tiers share a mobile texture budget below24MiB without chan
   }
  }
  files.add("assets/KinghtFallIconMap/com/Ani/td/td-defenses.png");
- files.add("assets/KinghtFallIconMap/com/Ani/td/td-ruins.png");
+ files.add("assets/resources/buildings/shared/debris.png");
  assert.equal(files.size,36,'all active painted atlas pages and tower body/light pairs');
  const bytes=[...files].reduce((sum,f)=>{const [w,h]=png(f);return sum+w*h*4;},0);
  assert(bytes<=24*1024*1024,'decoded RGBA textures exceed the24MiB building budget: '+bytes);

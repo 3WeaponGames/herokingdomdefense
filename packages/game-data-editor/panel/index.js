@@ -68,9 +68,9 @@ function create(kind){
     async _load(explicit){try{const snapshot=await ipc(explicit?'refresh':'load');if(this._closed)return;if(explicit){if(kind==='units'||kind==='buildings'){AttackRate.invalidate(this);if(this._previewClient){this._previewClient.destroy();this._previewClient=null;}}const assets=await ipc('asset-index',{refresh:true});if(this._closed)return;this._assets=assets||this._assets;if(this._iconPicker)this._iconPicker.setImages(this._assets.images||[]);}if(!this._snapshot||snapshot.version!==this._snapshot.version||explicit)this._apply(snapshot);else this._toolbar();}catch(error){this._status(error.message,true);}},
     _apply(snapshot){if(!snapshot||this._closed)return;if(snapshot.result)this._lastResult=snapshot.result;else if(this._snapshot&&snapshot.version!==this._snapshot.version)this._lastResult=null;this._snapshot=snapshot;this._render();},
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
-    _change(edits){
+    _change(edits,options){
       this._queue=this._queue.catch(()=>{}).then(async()=>{
-        try{const snapshot=await ipc('change',{version:this._snapshot.version,edits:typeof edits==='function'?edits():edits});this._apply(snapshot);return snapshot;}
+        try{const changes=typeof edits==='function'?edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});this._apply(snapshot);return snapshot;}
         catch(error){this._status(error.message,true);throw error;}
       });return this._queue;
     },
@@ -174,7 +174,7 @@ function create(kind){
         let next=options.boolean?input.checked:input.value;
         if(typeof value==='number'||options.numeric){if(String(next).trim()===''||!Number.isFinite(Number(next))){input.value=options.percent?value*100:value;this._status('Enter a valid number for '+label+'.',true);return;}next=Number(next);if(options.percent)next/=100;if(options.integer&&!Number.isInteger(next)){this._status(label+' must be a whole number.',true);return;}if(options.min!==undefined&&next<options.min){this._status(label+' must be at least '+options.min+'.',true);return;}if(typeof value==='string')next=String(next);}
         if(options.options&&typeof value==='number')next=Number(next);
-        if(next!==value)onchange(next);
+        if(next!==value||options.commitUnchanged)onchange(next);
       };
       input.onchange=commit;
       if(options.asset){const line=node('div',undefined,'gt-asset-row'),list=node('datalist');list.id='asset-'+Math.random().toString(36).slice(2);(this._assets[options.asset]||[]).filter(a=>options.asset!=='images'||a.reference).slice(0,300).forEach(a=>{const o=node('option');o.value=a.reference||a.name;o.label=a.name;list.appendChild(o);});input.setAttribute('list',list.id);line.appendChild(input);const icon=this._image(value);if(icon){const image=node('img');image.src=icon.url;image.alt='';image.className='gt-thumb';line.appendChild(image);}if(options.asset==='images'&&!options.readOnly)line.appendChild(button('Choose icon…',event=>{if(event&&event.preventDefault)event.preventDefault();this._pickIcon(value,onchange,options);},'gt-mini'));wrap.appendChild(line);wrap.appendChild(list);}else wrap.appendChild(input);
@@ -316,7 +316,7 @@ function create(kind){
       this._properties(this._section('Equipment category'),'A',p,r,context,['levelInfo',...(context.weaponStats&&(r.id===3||r.id===4)?['Describe']:[])]);
       if(row.heroStyle)this._note(secondary?'These bonuses apply only while '+HeroWeapons.find(row.heroStyle).name+' is equipped. Each style has its own secondary values and upgrade progress.':'Main weapons provide attack damage. Each style keeps its own upgrade progress.');
       if(secondary&&row.heroStyle==='bruiser')this._note('Critical damage improves critical hits. Critical chance comes from your perks and relics.');
-      if(HeroEquipmentStats.enabled(config)&&(r.id===3||r.id===4)){const defaults=this._section('Weapon combat defaults');this._field(defaults,'Base attack range',config.HeroEquipment.baseRange,v=>this._set('A',['HeroEquipment','baseRange'],v),{min:1});if(row.heroStyle==='mystic'&&secondary)this._field(defaults,'Splash radius',config.HeroEquipment.splashRadius,v=>this._set('A',['HeroEquipment','splashRadius'],v),{min:1});}
+      if(HeroEquipmentStats.enabled(config)&&(r.id===3||r.id===4)){const defaults=this._section('Weapon combat defaults');this._heroAttackRateField(defaults,row.heroStyle);this._field(defaults,'Base attack range',config.HeroEquipment.baseRange,v=>this._set('A',['HeroEquipment','baseRange'],v),{min:1});if(row.heroStyle==='mystic'&&secondary)this._field(defaults,'Splash radius',config.HeroEquipment.splashRadius,v=>this._set('A',['HeroEquipment','splashRadius'],v),{min:1});}
       if(context.baseDamage&&row.heroStyle){this._field(this._section('Style damage'),'Damage multiplier (%)',HeroEquipmentStats.multiplier(config,row.heroStyle),v=>this._set('A',['HeroEquipment','damageMultipliers',row.heroStyle],v),{percent:true,min:.01});this._note('The shared Archer damage curve is 2–100. This multiplier sets this style’s damage; effective damage rounds up to a whole number.');}
       const stat=l=>HeroEquipmentStats.enabled(config)&&(r.id===3||r.id===4)?HeroEquipmentStats.summary(config,r.id,l.Level,row.heroStyle):String(l.Parameters);
       const levels=this._section('Level progression');levels.className='';
@@ -468,12 +468,33 @@ function create(kind){
       }
     },
     _newUnitType(){const types=clone(this._data('overrides').unitTypes||{});let id='new-type',index=2;while(own(types,id))id='new-type-'+index++;types[id]={name:'New type',icon:'',tint:'#ffffff'};this._selected=id;return this._set('overrides',['unitTypes'],types);},
+    _heroAttackRateField(container,style){
+      if(!HeroWeapons.find(style))return;
+      const config=this._data('A'),settings=config.HeroEquipment,rates=settings&&settings.baseAttackRates,malformed=rates!==undefined&&(!rates||typeof rates!=='object'||Array.isArray(rates));
+      this._field(container,'Base attack speed (attacks/sec)',HeroEquipmentStats.baseAttackRate(config,style),value=>this._setHeroAttackRate(style,value),{numeric:true,min:Number.MIN_VALUE,commitUnchanged:true,readOnly:malformed||!HeroEquipmentStats.enabled(config),help:'Hero only. Cloak upgrades, perks and other attack speed bonuses still apply. This sets combat attacks per second, not Spine animation playback.'});
+      if(malformed)container.appendChild(node('p','The hero base attack speed settings have an invalid format. Refresh or correct that configuration before editing.','gt-note'));
+      else if(!HeroEquipmentStats.enabled(config))container.appendChild(node('p','This legacy configuration uses its existing equipment attack speed. Hero fighting-style defaults require the current hero equipment system.','gt-note'));
+      else if(own(rates,style))container.appendChild(button('Reset base attack speed',()=>this._setHeroAttackRate(style,undefined),'gt-mini'));
+    },
+    _setHeroAttackRate(style,value){
+      return this._change(()=>{
+        const config=this._data('A'),settings=config.HeroEquipment;
+        if(!HeroWeapons.find(style)||!HeroEquipmentStats.enabled(config))throw Error('Choose an implemented hero fighting style with current hero equipment.');
+        const rates=settings.baseAttackRates,path=['HeroEquipment','baseAttackRates'];
+        if(rates!==undefined&&(!rates||typeof rates!=='object'||Array.isArray(rates)))throw Error('The hero base attack speed settings have an invalid format. Refresh before editing.');
+        if(value===undefined)return own(rates,style)?[{doc:'A',path:path.concat(style),remove:true}]:[];
+        if(typeof value!=='number'||!Number.isFinite(value)||value<=0)throw Error('Base attack speed must be a finite number greater than zero.');
+        if(HeroEquipmentStats.baseAttackRate(config,style)===value)return [];
+        return [{doc:'A',path:rates===undefined?path:path.concat(style),value:rates===undefined?{[style]:value}:value}];
+      },{skipEmpty:true}).catch(()=>{});
+    },
     _unitType(row){
       const fields=this._section('Type & pictogram'),p=['unitTypes',row.key];
       this._field(fields,'Name',row.record.name,value=>this._set('overrides',p.concat('name'),value));
       this._field(fields,'Pictogram',row.record.icon,value=>this._set('overrides',p.concat('icon'),value),{asset:'images',bundle:'KinghtFallEnemy',wide:true,help:'Choose an imported monster part, an existing battle icon, or another Resources image.'});
       this._field(fields,'Pictogram tint',row.record.tint||'#ffffff',value=>this._set('overrides',p.concat('tint'),value),{color:true});
       this._note('Select this type in Units. Types group units for counter bonuses and supply a fallback pictogram. Changing a role does not change attack behavior, stats, wave IDs, or player progress.');
+      if(HeroWeapons.find(row.key))this._heroAttackRateField(this._section('Hero fighting-style defaults'),row.key);
       const assigned=Object.entries(this._data('overrides').unitTypeAssignments||{}).filter(([key,value])=>value===row.key);this._note(assigned.length?'Assigned to: '+assigned.map(([key])=>key).join(', '):'No units use this type yet.');
       const remove=button('Delete type',()=>{if(assigned.length||['SoldierCfg','AllyCfg'].some(table=>Object.values(this._data('A')[table]||{}).some(unit=>unit.CounterType===row.key)))return this._status('Remove unit assignments and counter references before deleting this type.',true);const types=clone(this._data('overrides').unitTypes);delete types[row.key];return this._set('overrides',['unitTypes'],types);},'gt-danger');remove.disabled=assigned.length>0;fields.appendChild(remove);
     },
