@@ -36,19 +36,20 @@ test('tap arms the piercing skill, world aiming consumes its own touch and fires
  const f=fixture(),b=f.hero._skillHUD.button,e=f.event(1,200,-400);b.handlers.start(e);b.handlers.end(e);assert.equal(f.rt.aiming,true);assert.equal(f.rt.casts.length,0);assert(e.stopped);
  assert.equal(f.hud.handleTouch(f.controller,'start',f.event(2,100,200)),true);assert.equal(f.hud.handleTouch(f.controller,'move',f.event(2,200,100)),true);assert.equal(f.rt.casts.length,0);assert.equal(f.hud.handleTouch(f.controller,'end',f.event(2,200,100)),true);assert.equal(f.rt.casts.length,1);assert.equal(f.rt.aiming,false);assert(Math.abs(f.rt.casts[0].x-2/Math.sqrt(5))<1e-10);
 });
-test('skill labels retain a nonzero content box after Creator initially autosizes the empty Label',()=>{
- const f=fixture(),hud=f.hero._skillHUD;assert(hud.title.node.width>=132);assert.equal(hud.title.node.height,28);assert(hud.status.node.width>=132);assert.equal(hud.status.node.height,22);assert(hud.cooldownCount.node.width>0);assert(hud.cooldownCount.node.height>0);
+test('the icon-only skill HUD retains a nonzero countdown box after Creator initially autosizes the empty Label',()=>{
+ const f=fixture(),hud=f.hero._skillHUD;assert.equal(hud.title,undefined);assert.equal(hud.status,undefined);assert.equal(hud.button.getChildByName('Skill name'),null);assert.equal(hud.button.getChildByName('Skill readiness'),null);assert(hud.cooldownCount.node.width>0);assert(hud.cooldownCount.node.height>0);
 });
 
-test('new skill titles and live readiness labels follow the game language',()=>{
- const f=fixture('vanguard');assert.equal(f.hero._skillHUD.title.string,'Spear Barrage');
- f.setLanguage('zh');assert.equal(f.hero._skillHUD.title.string,'长矛连刺');assert.equal(f.hero._skillHUD.status.string,'就绪');
- f.rt.state.cooldown=3;f.hud.update(f.hero,f.rt);assert.equal(f.hero._skillHUD.status.string,'3秒');
+test('all six styles remain icon-only across ready, aiming, casting, unavailable and localized states',()=>{
+ for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
+  const f=fixture(style),hud=f.hero._skillHUD;
+  for(const state of [{cooldown:0,active:null},{cooldown:0,active:{elapsed:0}},{cooldown:3,active:null}]){Object.assign(f.rt.state,state);f.rt.aiming=!f.rt.aiming;f.rt.canCast=()=>false;f.hud.update(f.hero,f.rt);f.setLanguage('zh');assert.equal(hud.title,undefined);assert.equal(hud.status,undefined);assert.deepEqual(hud.button.children.map(n=>n.name),['Skill cooldown']);assert.equal(hud.cooldownCount.node.active,state.cooldown>0);if(state.cooldown)assert.equal(hud.cooldownCount.string,'3');}
+ }
 });
 
 test('cooldown labels, cache signatures and input share the rules engine readiness tolerance',()=>{
- const f=fixture('guardian'),hud=f.hero._skillHUD,button=hud.button;f.rt.state.cooldown=1e-8;f.hud.update(f.hero,f.rt);assert.equal(hud.status.string,'1s');button.handlers.start(f.event(1));button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);
- f.rt.state.cooldown=1e-12;f.hud.update(f.hero,f.rt);assert.equal(hud.status.string,'Ready');const signature=hud.buttonSignature;f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.buttonSignature,signature,'a residual and zero use the same painted state');button.handlers.start(f.event(2));button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);
+ const f=fixture('guardian'),hud=f.hero._skillHUD,button=hud.button;f.rt.state.cooldown=1e-8;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.string,'1');assert.equal(hud.cooldownCount.node.active,true);button.handlers.start(f.event(1));button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);
+ f.rt.state.cooldown=1e-12;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,false);const signature=hud.buttonSignature;f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.buttonSignature,signature,'a residual and zero use the same painted state');button.handlers.start(f.event(2));button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);
 });
 
 test('arming a directional skill follows the current target or rider facing',()=>{
@@ -76,9 +77,9 @@ test('momentum is independent of hidden HP and uses its exact width and half hei
 test('immediate skills require a marked target for Mystic and do not arm directional mode',()=>{
  const f=fixture('mystic'),b=f.hero._skillHUD.button;b.handlers.start(f.event(1));b.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);f.rt.state.marked=true;f.rt.state.target={hp:100};b.handlers.start(f.event(2));b.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);assert.equal(f.rt.aiming,false);
 });
-test('the button follows runtime target validity and range checks instead of claiming an unusable Mystic cast is ready',()=>{
- const f=fixture('mystic'),b=f.hero._skillHUD.button;f.rt.state.marked=true;f.rt.state.target={hp:100};f.rt.canCast=()=>false;f.hud.update(f.hero,f.rt);assert.equal(f.hero._skillHUD.status.string,'Out of range');b.handlers.start(f.event(1));b.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);
- f.rt.canCast=()=>true;f.hud.update(f.hero,f.rt);assert.equal(f.hero._skillHUD.status.string,'Ready');b.handlers.start(f.event(2));b.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);
+test('the icon-only button still obeys runtime target validity and range checks for Mystic',()=>{
+ const f=fixture('mystic'),b=f.hero._skillHUD.button;f.rt.state.marked=true;f.rt.state.target={hp:100};f.rt.canCast=()=>false;f.hud.update(f.hero,f.rt);assert.equal(f.hero._skillHUD.status,undefined);assert.equal(f.hero._skillHUD.cooldownCount.node.active,false);b.handlers.start(f.event(1));b.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);
+ f.rt.canCast=()=>true;f.hud.update(f.hero,f.rt);assert.equal(f.hero._skillHUD.cooldownCount.node.active,false);b.handlers.start(f.event(2));b.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);
 });
 test('trajectory indicator ends at the map edge for every direction and excludes off-map continuation',()=>{
  const {hud}=fixture(),bounds={minX:-100,maxX:100,minY:-50,maxY:50};assert.deepEqual({...hud.rayEnd({x:0,y:0},{x:1,y:0},bounds)},{x:100,y:0});assert.deepEqual({...hud.rayEnd({x:0,y:0},{x:0,y:-1},bounds)},{x:0,y:-50});const p=hud.rayEnd({x:10,y:10},{x:1,y:1},bounds);assert.equal(p.y,50);assert.equal(p.x,50);
@@ -169,11 +170,11 @@ test('a world finger cannot take direction ownership from a held skill-button ge
  assert.equal(f.rt.casts[0].x,1);assert.equal(f.rt.casts[0].y,0);
 });
 
-test('the artwork button and both localized captions stay inside the HUD safe bounds with a numeric seconds-only cooldown',()=>{
- const f=fixture('guardian'),hud=f.hero._skillHUD;assert(hud.button.width>=132);assert(hud.button.height>150);
- for(const value of [hud.button,hud.title.node,hud.status.node])for(const x of [-value.width*value.anchorX,value.width*(1-value.anchorX)])for(const y of [-value.height*value.anchorY,value.height*(1-value.anchorY)]){const world=value.convertToWorldSpaceAR({x,y});assert(world.x>=-375&&world.x<=375);assert(world.y>=-667&&world.y<=667);}
- f.rt.state.cooldown=3;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,true);assert.equal(hud.status.node.active,false);assert.equal(hud.cooldownCount.string,'3');
- f.setLanguage('zh');assert.equal(hud.cooldownCount.string,'3');f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,false);assert.equal(hud.status.node.active,true);
+test('the icon-only hit box hugs the frame and remains in safe bounds with a numeric seconds-only cooldown',()=>{
+ const f=fixture('guardian'),hud=f.hero._skillHUD,frame=require('../../assets/_script/HeroSkillButton').bounds(hud.diameter);assert.equal(hud.button.width,Math.max(132,frame.right-frame.left+16));assert.equal(hud.button.height,frame.top-frame.bottom+16);assert(Math.abs(-hud.button.anchorY*hud.button.height-(frame.bottom-8))<1e-9);
+ for(const value of [hud.button,hud.cooldownCount.node])for(const x of [-value.width*value.anchorX,value.width*(1-value.anchorX)])for(const y of [-value.height*value.anchorY,value.height*(1-value.anchorY)]){const world=value.convertToWorldSpaceAR({x,y});assert(world.x>=-375&&world.x<=375);assert(world.y>=-667&&world.y<=667);}
+ f.rt.state.cooldown=3;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,true);assert.equal(hud.cooldownCount.string,'3');
+ f.setLanguage('zh');assert.equal(hud.cooldownCount.string,'3');f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,false);assert.equal(hud.title,undefined);assert.equal(hud.status,undefined);
 });
 
 function command(f,name,x,y,parent=f.root){
@@ -203,11 +204,11 @@ test('relative skill sizing includes nested command transforms and mirrored or s
  controls.scaleX=1.1;controls.scaleY=.8;controls.angle=-18;f.hud.update(f.hero,f.rt);const changed=circleDiameter(f.hero._skillHUD.button,f.hero._skillHUD.diameter),next=circleDiameter(f.ui.btnAgg.getChildByName('ndTag1'),104)*1.15;assert(Math.abs(changed-next)/next<1e-5);
 });
 
-test('skill hit box and captions avoid both commands and remain in a narrow safe area',()=>{
+test('the icon-only skill hit box avoids both commands and their captions in a narrow safe area',()=>{
  const f=fixture('guardian');f.cc.view={getVisibleSize:()=>({width:400,height:500}),getVisibleOrigin:()=>({x:-200,y:-250})};f.cc.sys={getSafeAreaRect:()=>({x:-190,y:-240,width:380,height:480})};f.ui.btnAgg=command(f,'Rally',145,-150);f.ui.btnFollow=command(f,'Follow',145,20);f.hud.update(f.hero,f.rt);
  const hud=f.hero._skillHUD,b=rect(hud.button);assert(b.left>=-170-1e-9&&b.right<=170+1e-9);assert(b.bottom>=-220-1e-9&&b.top<=220+1e-9);
  for(const other of [f.ui.btnAgg,f.ui.btnFollow])for(const n of [other,other.getChildByName('labNum')]){const o=rect(n);assert(b.right<=o.left-12+1e-9||b.left>=o.right+12-1e-9||b.top<=o.bottom-12+1e-9||b.bottom>=o.top+12-1e-9,'Skill and command rectangles must not overlap');}
- for(const n of [hud.title.node,hud.status.node,hud.cooldownCount.node]){const p=rect(n);assert(p.left>=b.left-1e-9&&p.right<=b.right+1e-9);assert(p.bottom>=b.bottom-1e-9&&p.top<=b.top+1e-9);}
+ const p=rect(hud.cooldownCount.node);assert(p.left>=b.left-1e-9&&p.right<=b.right+1e-9);assert(p.bottom>=b.bottom-1e-9&&p.top<=b.top+1e-9);
 });
 
 test('cooldown uses centered white Lilita One digits for every style and locale, with balanced asset ownership',()=>{

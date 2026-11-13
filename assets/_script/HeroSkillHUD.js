@@ -1,10 +1,8 @@
 "use strict";
 // Battle-owned presentation and input only. Damage, targeting and cooldowns
 // remain in HeroStyleRuntime; no editor or progression data is written here.
-var TITLES = { skirmisher: "hero.skills.skirmisher", fighter: "hero.skills.fighter", vanguard: "hero.skills.vanguard", mystic: "hero.skills.mystic", bruiser: "hero.skills.bruiser", guardian: "hero.skills.guardian" };
 var Presentation=require("./HeroSkillPresentation");
 var ButtonArt=require("./HeroSkillButton");
-var LanguageMgr=require("LanguageMgr").LanguageMgr;
 var COOLDOWN_EPSILON=1e-9;
 var COUNT_FONT="localization/fonts/Lilita One",COMMAND_SIZE_RATIO=1.15;
 function live(node) { return !!node && (typeof cc === "undefined" || !cc.isValid || cc.isValid(node, true)); }
@@ -80,10 +78,8 @@ function buttonEnd(hud,event,cancelled) {
 function install(hero,rt) {
   if(!ready()||!rt.ui||!rt.ui.ctrUI||!live(rt.ui.ctrUI.node)||!rt.game||!rt.game.ndUI||!rt.game.ndMain)return null;
   var parent=rt.ui.ctrUI.node,hud={runtime:rt};
-  hud.button=node(parent,"Hero active skill",132,184);hud.button.zIndex=80;
+  hud.button=node(parent,"Hero active skill",132,144);hud.button.zIndex=80;
   if(cc.BlockInputEvents)hud.button.addComponent(cc.BlockInputEvents);
-  hud.title=text(hud.button,"Skill name",18,-50);hud.title.node.setContentSize(132,28);hud.title._localizedFontRole="display";
-  hud.status=text(hud.button,"Skill readiness",14,-73);hud.status.node.setContentSize(132,22);
   hud.cooldownCount=text(hud.button,"Skill cooldown",40,28);hud.cooldownCount.node.setContentSize(96,64);hud.cooldownCount.node.active=false;hud.cooldownCount.enableWrapText=false;
   hud.visual=graphics(rt.game.ndUI,"Hero skill effects");hud.visual.node.zIndex=80;
   var types=cc.Node.EventType;
@@ -126,10 +122,8 @@ function resize(hud,rt) {
   var scale=worldScale(hud.button),reference=Math.max(commandDiameter(rt.ui.btnAgg),commandDiameter(rt.ui.btnFollow)),diameter=reference>0&&scale>0?reference*COMMAND_SIZE_RATIO/scale:ButtonArt.defaultDiameter;
   if(!(diameter>0&&isFinite(diameter))||Math.abs((hud.diameter||0)-diameter)<1e-6)return;
   hud.diameter=diameter;if(hud.art&&hud.art.resize)hud.art.resize(diameter);
-  var b=ButtonArt.bounds(diameter),width=Math.max(132,b.right-b.left+16),bottom=b.bottom-62,top=b.top+8,height=top-bottom;
+  var b=ButtonArt.bounds(diameter),width=Math.max(132,b.right-b.left+16),bottom=b.bottom-8,top=b.top+8,height=top-bottom;
   hud.button.setContentSize(width,height);hud.button.anchorX=.5;hud.button.anchorY=-bottom/height;
-  hud.title.node.setPosition(0,b.bottom-20);hud.title.node.setContentSize(width,28);
-  hud.status.node.setPosition(0,b.bottom-43);hud.status.node.setContentSize(width,22);
   hud.cooldownCount.node.setPosition(0,ButtonArt.faceCenterY(diameter));hud.cooldownCount.node.setContentSize(diameter*.8,diameter*.65);hud.cooldownCount.fontSize=Math.round(diameter*.34);hud.cooldownCount.lineHeight=hud.cooldownCount.fontSize+2;
 }
 function layout(hud,rt) {
@@ -144,14 +138,10 @@ function layout(hud,rt) {
   hud.button.setPosition(parent.convertToNodeSpaceAR(vec(best.x,best.y)));
 }
 function paintButton(hud,rt) {
-  var s=rt.state,can=usable(rt),remaining=s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0,signature=[s.style,can,rt.aiming,cooldown,!!s.active,!!s.marked].join(":");
+  var s=rt.state,can=usable(rt),remaining=s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0;
   if(hud.art)hud.art.set({style:s.style,usable:can,aiming:!!rt.aiming,cooldown:remaining,totalCooldown:s.tuning&&s.tuning.cooldown||rt.settings&&rt.settings.cooldown||12});
-  if(hud.buttonSignature===signature)return;hud.buttonSignature=signature;
-  var language=LanguageMgr.getInstance();
-  language.bindLabel(hud.title,TITLES[s.style]||"hero.skills.name");
-  var status=cooldown?"cooldown":s.active?"casting":s.style==="mystic"&&!can?s.marked?"outOfRange":"markTarget":rt.aiming?"chooseAim":can?"ready":"unavailable";
-  language.bindLabel(hud.status,"hero.skills."+status,status==="cooldown"?{0:cooldown}:undefined);
-  hud.status.node.active=!cooldown;hud.cooldownCount.node.active=!!cooldown;
+  if(hud.buttonSignature===cooldown)return;hud.buttonSignature=cooldown;
+  hud.cooldownCount.node.active=!!cooldown;
   if(cooldown)hud.cooldownCount.string=String(cooldown);
 }
 function drawCharge(hud,hero,rt) {
