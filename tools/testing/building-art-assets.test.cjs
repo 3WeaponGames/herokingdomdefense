@@ -5,6 +5,14 @@ const root=path.resolve(__dirname,'../..'),config=require('../../assets/KinghtFa
 const fixture=require('./tower-native-weapon-assets.fixture.json');
 const rows=config.BuildEnum[2].levelList.filter(row=>/^buildings\/redesign\/towers\/(archer|sniper|cannon)-[1-4]$/.test(row.Appearance?.sprite));
 function file(resource){return path.join(root,'assets/resources',resource+'.png');}
+function assertOriginalSource(ref,bytes){
+ // The retained atlas snapshot used CRLF, while Git checks it out with LF.
+ // Reconstruct only that text convention; every content byte and binary asset
+ // still has to match the original size and SHA, not a refreshed baseline.
+ const source=ref.path.endsWith('.atlas')?Buffer.from(bytes.toString('utf8').replace(/\r?\n/g,'\r\n')):bytes;
+ assert.equal(source.length,ref.bytes,ref.path);
+ assert.equal(crypto.createHash('sha256').update(source).digest('hex'),ref.sha256,ref.path);
+}
 function inspect(resource,width,height){
  const name=file(resource),bytes=fs.readFileSync(name),meta=JSON.parse(fs.readFileSync(name+'.meta','utf8'));
  assert.equal(bytes.toString('hex',0,8),'89504e470d0a1a0a');assert.equal(bytes[25],6,resource+' requires an RGBA cutout');
@@ -37,9 +45,19 @@ test('six retained native bases and all forty-five weapon frames keep their nati
  const frames=new Map();for(const row of rows)if(row.Appearance.weapon)for(const layer of Object.values(views(row.Appearance.weapon))){frames.set(layer.sprite,layer);if(layer.emptySprite)frames.set(layer.emptySprite,{...layer,sprite:layer.emptySprite});}
  assert.equal(frames.size,45);for(const layer of frames.values()){const im=inspect(layer.sprite),family=/\/(cannon|sniper)-/.exec(layer.sprite)[1],scale=fixture.weaponDisplayScales?.[family]||1;assert(Math.abs(layer.width/im.width-scale)<1e-6&&Math.abs(layer.height/im.height-scale)<1e-6,layer.sprite+' retains native aspect ratio at its reviewed display scale');checked++;}assert.equal(checked,51);
 });
-test('original base, destroyed, weapon, metadata and Archer Spine sources remain byte-identical',()=>{
+test('original binary assets and Archer Spine text remain identical apart from Git atlas line endings',()=>{
  assert.equal(fixture.nativeSources.filter(x=>/-weapon[^/]*\.png$/.test(x.path)).length,45);assert.equal(fixture.nativeSources.length,120);
- for(const ref of fixture.nativeSources){const bytes=fs.readFileSync(path.join(root,ref.path));assert.equal(bytes.length,ref.bytes,ref.path);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),ref.sha256,ref.path);}
+ for(const ref of fixture.nativeSources)assertOriginalSource(ref,fs.readFileSync(path.join(root,ref.path)));
+});
+
+test('source fidelity accepts only atlas newline substitutions and rejects changed regions or binary newlines',()=>{
+ const atlas=fixture.nativeSources.find(ref=>ref.path.endsWith('.atlas')),original=fs.readFileSync(path.join(root,atlas.path)).toString('utf8'),lf=original.replace(/\r\n/g,'\n');
+ for(const text of [lf,lf.replace(/\n/g,'\r\n')])assertOriginalSource(atlas,Buffer.from(text));
+ const changed=lf.replace(/(xy:\s*)(\d+)/,(_,prefix,value)=>prefix+(Number(value)+1));
+ assert.notEqual(changed,lf,'Actual atlas region coordinates must be covered');assert.throws(()=>assertOriginalSource(atlas,Buffer.from(changed)),assert.AssertionError);
+ const png=fixture.nativeSources.find(ref=>ref.path.endsWith('.png')),bytes=fs.readFileSync(path.join(root,png.path));
+ assert.equal(bytes[4],13);assert.equal(bytes[5],10);
+ assert.throws(()=>assertOriginalSource(png,Buffer.concat([bytes.subarray(0,4),bytes.subarray(5)])),assert.AssertionError);
 });
 test('night masks fit the new lantern glass and retained archer windows while doors remain dark',()=>{
  let apertures=0;
