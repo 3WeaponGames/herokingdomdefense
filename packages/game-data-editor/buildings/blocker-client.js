@@ -1,4 +1,5 @@
 'use strict';
+const Guides=require('./connection-guides');
 const Renderer=require('../worlds/building-renderer'),Paint=require('../worlds/paint'),Maps=require('../lib/map-assets'),Clip=require('../worlds/blockers'),Shadow=require('../../../assets/_script/BuildingShadow');
 const clone=value=>JSON.parse(JSON.stringify(value));
 function mount(host,api){
@@ -6,7 +7,7 @@ function mount(host,api){
  host=host.appendChild(make('div'));host.className='bld-blocker';
  const tools=make('div'),canvas=make('canvas'),status=make('p'),help=make('p');tools.className='bld-blocker-tools';canvas.className='bld-blocker-canvas';canvas.width=900;canvas.height=430;canvas.tabIndex=0;
  help.className=status.className='bld-blocker-help';
- host.appendChild(tools);host.appendChild(canvas);host.appendChild(help);host.appendChild(status);
+ host.appendChild(tools);const guideNote=make('p');guideNote.className='bld-blocker-help';guideNote.hidden=true;host.appendChild(guideNote);host.appendChild(canvas);host.appendChild(help);host.appendChild(status);
  let layer=['shadow','scale'].includes(state.layer)?state.layer:'blocker';
  const mode=make('select');mode.setAttribute('aria-label','Edit layer');for(const [id,label]of [['blocker','Blocker'],['shadow','Shadow'],['scale','Scale']]){const o=make('option',label);o.value=id;mode.appendChild(o);}mode.value=layer;tools.appendChild(mode);
  if(!canvas.getContext)return {destroy(){}};
@@ -27,17 +28,19 @@ function mount(host,api){
  const scaleHost=make('div');host.appendChild(scaleHost);
  function part(){return layerParts.find(p=>p.key===partKey);}
  function matrix(){const p=part();return p&&p.instances[instance];}
- function refreshCopies(){copies.textContent='';const p=part();instance=Math.min(instance,Math.max(0,(p&&p.instances.length||0)-1));(p&&p.instances||[]).forEach((_m,i)=>{const o=make('option','Connection '+(i+1));o.value=String(i);copies.appendChild(o);});copies.value=String(instance);copies.hidden=!p||p.instances.length<2;}
+ function refreshCopies(){copies.textContent='';const p=part();instance=Math.min(instance,Math.max(0,(p&&p.instances.length||0)-1));const labels=Guides.entries(p,layerParts);(labels.length?labels:(p&&p.instances||[]).map((_m,index)=>({index,label:'Copy '+(index+1)}))).forEach(item=>{const o=make('option',item.label);o.value=String(item.index);copies.appendChild(o);});copies.value=String(instance);copies.hidden=!p||p.instances.length<2;}
+ function guideView(){return{width:canvas.width,height:canvas.height,scale:scale*zoom,cx,cy};}
+ function pickConnection(event){if(event.button!==0||busy||points.length||layer==='scale'||layerParts.length<2)return false;const b=canvas.getBoundingClientRect(),point={x:(event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth,y:(event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight},index=Guides.hit(part(),layerParts,guideView(),point);if(index===null)return false;event.preventDefault();copies.value=String(index);copies.onchange();canvas.focus();return true;}
  function syncMode(){
-  const scaling=layer==='scale';canvas.hidden=help.hidden=status.hidden=scaling;for(const child of tools.children)if(child!==mode)child.hidden=scaling;
+  const scaling=layer==='scale';guideNote.hidden=scaling||layerParts.length<2;canvas.hidden=help.hidden=status.hidden=scaling;for(const child of tools.children)if(child!==mode)child.hidden=scaling;
   scaleHost.hidden=!scaling;
   if(scaling&&!scaleClient){state.scaleView=state.scaleView||{};scaleClient=require('./scale-client').mount(scaleHost,{ipc:api.ipc,request:api.request,state:state.scaleView,onChange:next=>api.onChange(next,'scale')});}
   if(!scaling&&scaleClient){scaleClient.destroy();scaleClient=null;}
   canvas.setAttribute('aria-label',layer==='shadow'?'Building shadow preview':'Building blocker preview');
   add.textContent=layer==='shadow'?'Polygon shadow':'Polygon blocker';clear.textContent=layer==='shadow'?'Clear shadow':'Clear blocker';
   opacityLabel.hidden=layer!=='shadow';if(value&&layer==='shadow'){opacity.value=String(value.opacity*100);opacityText.textContent=(value.opacity*100).toFixed(1)+'%';}
-  help.textContent='Click polygon points, then double-click or click the first point to finish. Enter completes; Escape cancels. '+(layer==='shadow'?'Shadows use a translucent black texture mask; blockers are hidden.':'Yellow is blocked; shadows are hidden.')+' Cyan marks the editable copy. Wheel to zoom.';
-  parts.textContent='';for(const p of layerParts){const o=make('option',p.label);o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=scaling||layerParts.length<2;refreshCopies();if(scaling)copies.hidden=true;
+  help.textContent='Click polygon points, then double-click or click the first point to finish. Enter completes; Escape cancels. '+(layer==='shadow'?'Shadows use a translucent black texture mask; blockers are hidden.':'Yellow is blocked; shadows are hidden.')+' Cyan marks the selected copy. Matching numbered markers identify each piece. Wheel to zoom.';
+  parts.textContent='';for(const p of layerParts){const o=make('option',Guides.title(p));o.value=p.key;parts.appendChild(o);}if(layerParts.length&&!part())partKey=layerParts[0].key;parts.value=partKey;parts.hidden=scaling||layerParts.length<2;refreshCopies();if(scaling)copies.hidden=true;
  }
  mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}layer=mode.value;state.layer=layer;value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
  function choose(next,reset=true){tool=next;if(reset){points=[];pointer=null;}add.className=next==='paint'?'active':'';erase.className=next==='erase'?'active':'';draw();}
@@ -52,6 +55,7 @@ function mount(host,api){
  }
  function finish(){if(busy||!value)return;try{const shape=Clip.polygonBrush(points),next=clone(value),mask=Clip.combineMask(value[partKey].mask,shape,tool);next[partKey]=Object.assign({},next[partKey],layer==='shadow'?{mask}:{mask,polygons:Clip.collisionPolygons(mask)});points=[];pointer=null;commit(next);}catch(error){message(error.message,true);draw();}}
  canvas.onpointerdown=event=>{
+  if(pickConnection(event))return;
   if(event.button!==0||busy||!matrix())return;canvas.focus();event.preventDefault();
   const p=local(event);
   if(points.length>=3&&screenDistance(points[0],p)<10){finish();return;}
@@ -61,7 +65,7 @@ function mount(host,api){
   pointer=p;draw();
  };
  canvas.onpointermove=event=>{if(!matrix()||busy)return;pointer=local(event);draw();};
- canvas.onpointerleave=()=>{pointer=null;draw();};canvas.ondblclick=event=>{event.preventDefault();finish();};
+ canvas.onpointerleave=()=>{pointer=null;draw();};canvas.ondblclick=event=>{if(pickConnection(event))return;event.preventDefault();finish();};
  canvas.onkeydown=event=>{if(event.key==='Escape'){points=[];pointer=null;draw();event.preventDefault();}else if(event.key==='Enter'){finish();event.preventDefault();}else if(event.key==='Backspace'&&points.length){points.pop();draw();event.preventDefault();}};
  canvas.onwheel=event=>{event.preventDefault();zoom=Math.max(.3,Math.min(8,zoom*Math.exp(-event.deltaY*.001)));draw();};
  function fit(){
@@ -76,6 +80,7 @@ function mount(host,api){
  function maskPath(mask){g.beginPath();for(const region of mask)for(const ring of region){ring.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();}}
  function draw(){if(closed||frame!==null)return;frame=requestAnimationFrame(()=>{
   frame=null;if(closed||layer==='scale')return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
+  guideNote.textContent=Guides.explain(part(),layerParts,instance,layer);
   g.setTransform(scale*zoom,0,0,-scale*zoom,canvas.width/2-cx*scale*zoom,canvas.height/2+cy*scale*zoom);
   let preview=value[partKey]&&value[partKey].mask;
   if(points.length>=2&&pointer)try{preview=Clip.combineMask(preview,Clip.polygonBrush(points.concat([pointer])),tool);}catch(_){}
@@ -89,6 +94,7 @@ function mount(host,api){
    const m=p.instances[i];g.save();Paint.apply(g,m);maskPath(p.key===partKey?preview:value[p.key].mask);if(layer==='blocker'){g.fillStyle='#ffe25a60';g.fill('evenodd');}g.strokeStyle=p.key===partKey&&i===instance?'#74edff':layer==='shadow'?'#b3c0cf88':'#ffe25a';g.lineWidth=1.5/(scale*zoom*Math.max(.01,Math.hypot(m[0],m[1])));g.stroke();g.restore();
   }
   if(matrix()&&points.length){g.save();Paint.apply(g,matrix());g.strokeStyle=tool==='erase'?'#ff8b80':'#fff6ab';g.lineWidth=2/(scale*zoom);g.beginPath();points.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));if(pointer)g.lineTo(pointer.x,pointer.y);g.stroke();for(const p of points){g.beginPath();g.arc(p.x,p.y,4/(scale*zoom),0,Math.PI*2);g.fillStyle='#fff6ab';g.fill();}g.restore();}
+  if(layerParts.length>1)Guides.draw(g,part(),layerParts,instance,guideView());
  });}
  syncMode();
  // CSS fixes the height while the panel width changes. Match the drawing
