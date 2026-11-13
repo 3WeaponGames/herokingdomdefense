@@ -4355,7 +4355,7 @@
         {
           "field": "skins",
           "name": "mf-2-2",
-          "current": "fb56f523e8560ef55c0ef1541b7f35f0599d660f1b8af876b53a8c27788f119b",
+          "current": "81a28d4051f0a61caff93ee8a7ab702895d50f0b5a43f693efffa5ac7c894b1c",
           "original": {
             "name": "mf-2-2",
             "attachments": {
@@ -15365,7 +15365,7 @@
         {
           "field": "skins",
           "name": "mf-bomb-3",
-          "current": "e84b72324426b557b050ed347fe6e9408f06d1036fc8aa0a6941ad196bfd1a1a",
+          "current": "36876bdf1710e1381966cb93c3abd5a580891c974dc3f1f92953ec9362c11db6",
           "original": null
         },
         {
@@ -18236,5 +18236,6 @@
       ],
       "metadata": "721612ecd06a0c1ba7724ab28df5e0aa6d5a44a6034610efb52ad798b59aefbe"
     }
-  }
+  },
+  "approvedPlotLayout": "User approved four farm plots on mill tiers3 and4. Tier3 adds the existing td__9 plot and its matching existing defense attachment; no bones, animation keys, HP, damage or costs change."
 }

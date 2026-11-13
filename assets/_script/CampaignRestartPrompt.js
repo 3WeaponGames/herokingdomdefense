@@ -61,7 +61,7 @@ exports.open = function (owner, canRestartWave, onChoose, onClosed) {
   var overlay = new cc.Node("CampaignRestartPrompt"); overlay.parent = owner.node;
   overlay.zIndex = cc.macro.MAX_ZINDEX - 1;
   overlay.addComponent(cc.BlockInputEvents);
-  var shade = new cc.Node("Backdrop"); shade.parent = overlay; shade.opacity = 160;
+  var shade = new cc.Node("Backdrop"); shade.parent = overlay; shade.opacity = 255;
   var background = shade.addComponent(cc.Graphics);
   var panel = new cc.Node("RestartPanel"); panel.parent = overlay; panel.addComponent(cc.BlockInputEvents);
   var heading = text(panel, "Title", canRestartWave ? "pause.restartChoiceTitle" : "pause.restartStageTitle", 40, true);
@@ -105,7 +105,9 @@ exports.open = function (owner, canRestartWave, onChoose, onClosed) {
     signature = next;
     overlay.setContentSize(owner.node.width, owner.node.height);
     shade.setContentSize(owner.node.width, owner.node.height);
-    background.clear(); background.fillColor = cc.color("#000000");
+    // Creator 2.4 Graphics writes its own draw color; node opacity does not
+    // make this fill translucent on either renderer.
+    background.clear(); background.fillColor = cc.color(0, 0, 0, 160);
     background.rect(-shade.width / 2, -shade.height / 2, shade.width, shade.height); background.fill();
     Frame.frame(panel, width, height);
     panel.setScale(Math.min(1, Math.max(1, availableWidth) / width, Math.max(1, availableHeight) / height));

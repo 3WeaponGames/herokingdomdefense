@@ -30,10 +30,10 @@ function setup(index){
  const runtime=new module.exports.Runtime(owner,game);runtime.apply();return {runtime,owner,game,enemies,shots,skeleton,listeners};
 }
 function enemy(env,x,y,hp=500){const node=new Node('enemy');node.setPosition({x,y});const actor={node,hp,onAttacked(n){this.hp-=n;},isDead(){return this.hp<=0;}};env.enemies.push(actor);return actor;}
-test('one mill-wide choice branches once and both paths retain 2/2/3/4 plots and economy',()=>{
+test('one mill-wide choice branches once and both paths use the approved 2/2/4/4 plot progression',()=>{
  const rows=config.BuildEnum[5].levelList;assert.deepEqual(rows[0].BranchBuild,[2,5]);
  for(const indices of [[1,2,3,4],[1,5,6,7]])for(let i=0;i<4;i++){
-  const row=rows.find(r=>r.index===indices[i]);assert.equal(row.MillDefense.fields,[2,2,3,4][i]);assert.equal(row.level,i+1);assert.deepEqual(row.Data,rows[i].Data);assert.equal(row.Hp,rows[i].Hp);
+  const row=rows.find(r=>r.index===indices[i]);assert.equal(row.MillDefense.fields,[2,2,4,4][i]);assert.equal(row.level,i+1);assert.deepEqual(row.Data,rows[i].Data);assert.equal(row.Hp,rows[i].Hp);
   if(i>0&&i<3)assert.deepEqual(row.BranchBuild,[indices[i+1]]);
   if(i===3)assert.equal(row.BranchBuild,undefined);
  }

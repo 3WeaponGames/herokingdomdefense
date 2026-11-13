@@ -1,6 +1,8 @@
 "use strict";
 // Owned instance data only. No imported asset, scene file or player state changes.
 var Kit=require("WallKit"),Adjustments=require("./WallAdjustments"),serial=0;
+function live(value) {return !!value&&(!cc.isValid||cc.isValid(value,true));}
+function liveComponent(component) {return live(component)&&live(component.node);}
 function adjustmentTier(owner,index) {
   var row=typeof owner.getBranchCfg==="function"?owner.getBranchCfg(index):null;
   if(!row&&owner.buildCfg&&Array.isArray(owner.buildCfg.levelList))row=owner.buildCfg.levelList.find(function(value){return value.index===index;});
@@ -15,9 +17,19 @@ function endpoints(owner) {
   });return points;
 }
 function restoreFixtures(state) {
-  (state.extraFixtures||[]).forEach(function(f){if(f.owner._stopColliderTween)f.owner._stopColliderTween(f.component);f.component.tag=0;f.component.enabled=false;if(f.owner.colPoint)delete f.owner.colPoint[f.component.uuid];if(f.component.destroy)f.component.destroy();});state.extraFixtures=[];
-  (state.fixtures||[]).forEach(function(f){f.component.tag=f.tag;f.component.points=f.points.map(function(p){return cc.v2(p.x,p.y);});f.component.enabled=f.enabled;if(f.owner.colPoint){if(f.cached)f.owner.colPoint[f.component.uuid]=f.cached;else delete f.owner.colPoint[f.component.uuid];}if(f.component.enabled&&f.component.node.activeInHierarchy!==false&&f.component.apply)f.component.apply();});state.fixtures=[];
-  (state.triggers||[]).forEach(function(f){f.component.points=f.points.map(function(p){return cc.v2(p.x,p.y);});});state.triggers=[];
+  (state.extraFixtures||[]).forEach(function(f){
+    if(f.owner.colPoint&&f.uuid)delete f.owner.colPoint[f.uuid];
+    if(!liveComponent(f.component))return;
+    if(f.owner._stopColliderTween)f.owner._stopColliderTween(f.component);
+    f.component.tag=0;f.component.enabled=false;if(f.component.destroy)f.component.destroy();
+  });state.extraFixtures=[];
+  (state.fixtures||[]).forEach(function(f){
+    if(!liveComponent(f.component))return;
+    f.component.tag=f.tag;f.component.points=f.points.map(function(p){return cc.v2(p.x,p.y);});f.component.enabled=f.enabled;
+    if(f.owner.colPoint){if(f.cached)f.owner.colPoint[f.uuid]=f.cached;else delete f.owner.colPoint[f.uuid];}
+    if(f.component.enabled&&f.component.node.activeInHierarchy!==false&&f.component.apply)f.component.apply();
+  });state.fixtures=[];
+  (state.triggers||[]).forEach(function(f){if(liveComponent(f.component))f.component.points=f.points.map(function(p){return cc.v2(p.x,p.y);});});state.triggers=[];
 }
 function savedTags(value) {
   if(!value)return [];var tags=JSON.parse(value);if(!Array.isArray(tags)||tags.some(function(row){return !Array.isArray(row)||row.some(function(tag){return !Number.isInteger(tag);});}))throw Error("Invalid saved wall collider tags.");return tags;
@@ -28,13 +40,13 @@ function updateFixtures(owner,state,layout) {
   function pointsFor(node,points,c){var offset=c.offset||{x:0,y:0};return points.map(function(p){var q=node.convertToNodeSpaceAR(main.convertToWorldSpaceAR(cc.v2(p.x,p.y)));return cc.v2(q.x-offset.x,q.y-offset.y);});}
   function update(node,polygons,group) {
     var originals=node.getComponents(cc.PhysicsPolygonCollider).filter(function(c){return !c._wallRunExtra;}),levels=new Map();
-    originals.forEach(function(c,at){state.fixtures.push({component:c,owner:owner,cached:owner.colPoint&&owner.colPoint[c.uuid],tag:c.tag,points:c.points.map(function(p){return{x:p.x,y:p.y};}),enabled:c.enabled});var tag=tags[group]&&Number.isInteger(tags[group][at])?tags[group][at]:c.tag;if(!levels.has(tag))levels.set(tag,[]);levels.get(tag).push(c);});
+    originals.forEach(function(c,at){state.fixtures.push({component:c,owner:owner,uuid:c.uuid,cached:owner.colPoint&&owner.colPoint[c.uuid],tag:c.tag,points:c.points.map(function(p){return{x:p.x,y:p.y};}),enabled:c.enabled});var tag=tags[group]&&Number.isInteger(tags[group][at])?tags[group][at]:c.tag;if(!levels.has(tag))levels.set(tag,[]);levels.get(tag).push(c);});
     levels.forEach(function(list,tag){
       if(!(tag>0)||!polygons.length){list.forEach(function(c){c.enabled=false;c.tag=0;});return;}
       var prototype=list[0],enabled=prototype.enabled;
       for(var at=0;at<Math.max(list.length,polygons.length);at++){
         var c=list[at];
-        if(!c){c=node.addComponent(cc.PhysicsPolygonCollider);c._wallRunExtra=true;c.enabled=false;state.extraFixtures.push({component:c,owner:owner});['density','sensor','friction','restitution'].forEach(function(key){if(prototype[key]!==undefined)c[key]=prototype[key];});var offset=prototype.offset||{x:0,y:0};c.offset=cc.v2(offset.x,offset.y);}
+        if(!c){c=node.addComponent(cc.PhysicsPolygonCollider);c._wallRunExtra=true;c.enabled=false;state.extraFixtures.push({component:c,owner:owner,uuid:c.uuid});['density','sensor','friction','restitution'].forEach(function(key){if(prototype[key]!==undefined)c[key]=prototype[key];});var offset=prototype.offset||{x:0,y:0};c.offset=cc.v2(offset.x,offset.y);}
         if(at>=polygons.length){c.enabled=false;c.tag=0;continue;}
         c.tag=tag;c.points=pointsFor(node,polygons[at],c);if(owner.colPoint)owner.colPoint[c.uuid]=c.points.map(function(p){return cc.v2(p.x,p.y);});
         if(c._wallRunExtra)c.enabled=enabled;
@@ -53,7 +65,7 @@ function dispose(owner) {
   if(owner._gateFacingRuntime)require("GateFacingRuntime").dispose(owner);
   restoreFixtures(state);
   (state.parts||[state]).forEach(function(part){
-    if(part.component.skeletonData===part.clone)part.component.skeletonData=part.source;
+    if(liveComponent(part.component)&&part.component.skeletonData===part.clone)part.component.skeletonData=part.source;
     if(part.clone.decRef)part.clone.decRef();else if(part.clone.destroy)part.clone.destroy();
     if(part.source.decRef)part.source.decRef();
   });

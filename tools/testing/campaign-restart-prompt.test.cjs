@@ -19,14 +19,14 @@ function fixture({battle=false,accept=true,deferImages=false}={}){
  }
  Node.EventType={TOUCH_END:'touch-end'};
  class Label{}Label.Overflow={SHRINK:2};Label.HorizontalAlign=Label.VerticalAlign={CENTER:1};
- class Graphics{clear(){}roundRect(){}rect(){}fill(){}stroke(){}}
+ class Graphics{constructor(){this.fills=[];}clear(){this.fills=[];}roundRect(){}rect(x,y,width,height){this.rectBounds={x,y,width,height};}fill(){this.fills.push({color:this.fillColor,bounds:this.rectBounds});}stroke(){}}
  class Sprite{}Sprite.Type={SLICED:1};Sprite.SizeMode={CUSTOM:1};
  class Button{}Button.Transition={SCALE:1};class Outline{}class Shadow{}class BlockInputEvents{}class Widget{}
  const manager={getCurrentLanguage:()=>language,t:key=>catalog.entries[key][language],
   bindLabel(label,key){assert(catalog.entries[key],key+' is localized');labels.set(label,key);label.string=this.t(key);},
   onChange(fn,target){listeners.add({fn,target});},offChange(fn,target){for(const entry of listeners)if(entry.fn===fn&&entry.target===target)listeners.delete(entry);}};
  const cc={Node,Component,Label,Graphics,Sprite,Button,Widget,LabelOutline:Outline,LabelShadow:Shadow,BlockInputEvents,macro:{MAX_ZINDEX:32767},
-  isValid:value=>!!value&&value.isValid!==false&&(!value.node||value.node.isValid!==false),color:value=>value,v2:(x,y)=>({x,y}),
+  isValid:value=>!!value&&value.isValid!==false&&(!value.node||value.node.isValid!==false),color:(r,g,b,a)=>g===undefined?r:{r,g,b,a},v2:(x,y)=>({x,y}),
   Class(def){function C(){}C.prototype=Object.assign(Object.create((def.extends||Component).prototype),def);return C;},
   resources:{load(resource,Type,done){const frame={refs:0,addRef(){this.refs++;},decRef(){this.refs--;}};frames.push(frame);requests.push({resource,done:()=>done(null,frame)});if(!deferImages)requests.at(-1).done();}},SpriteFrame:class{}};
  modules.LanguageMgr={LanguageMgr:{getInstance:()=>manager}};
@@ -59,6 +59,15 @@ test('rejected restart leaves the confirmation open and paused, while cancel and
 test('backdrop cancellation and delayed button artwork release every owned resource',()=>{
  const f=fixture({deferImages:true});f.handle.node.handlers['touch-end']({stopPropagation(){}});f.requests.forEach(request=>request.done());
  assert.deepEqual(f.calls,[]);assert.equal(f.closed(),1);assert(f.frames.every(frame=>frame.refs===0));f.handle.close();assert.equal(f.closed(),1);
+});
+
+test('the drawn backdrop dims the existing game pixels instead of painting an opaque black screen',()=>{
+ const f=fixture(),shade=f.find('Backdrop'),draw=shade.getComponent(f.cc.Graphics).fills.at(-1),gamePixel=[106,161,86];
+ // Graphics uses fillColor alpha directly, independently of Node.opacity.
+ const output=gamePixel.map((channel,index)=>Math.round([draw.color.r,draw.color.g,draw.color.b][index]*draw.color.a/255+channel*(1-draw.color.a/255)));
+ assert(output.every((value,index)=>value>0&&value<gamePixel[index]),'The game remains dimly visible through the rendered fill');
+ assert.equal(shade.opacity,255);assert.equal(draw.bounds.width,f.owner.node.width);assert.equal(draw.bounds.height,f.owner.node.height);
+ f.tap('Cancel');assert.equal(f.find('Backdrop'),undefined);assert.deepEqual(f.calls,[]);assert.equal(f.owner.isclose,false);
 });
 test('portrait, narrow and landscape layouts keep content and actions separate and the complete panel onscreen',()=>{
  for(const battle of [false,true])for(const [width,height]of [[750,1334],[540,820],[900,540],[320,568]]){

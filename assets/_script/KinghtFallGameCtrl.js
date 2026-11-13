@@ -138,10 +138,10 @@ var def_KinghtFallGameCtrl = function (t) {
     this._armyFormation = null;
     this._followFormation = this._rallyFormation = null;
     this._separateArmyCommands = true;
-    var restoring = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().hasSave(t);
-    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring);
     var saved = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
+    var restoring = saved.hasSave(t);
     var checkpoint = restoring && saved.getCheckpoint ? saved.getCheckpoint(t) : null;
+    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring, checkpoint && checkpoint.restartSetup);
     require("RelicRuntime").restore(this.gameData, checkpoint && checkpoint.relicState);
     this.ctrPlay.initData();
     this.ctrPlay.ndAgg.active = false;
@@ -1317,7 +1317,8 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.captureWaveStart = function () {
     var data = this.gameData;
-    if (this._restartRetired || !data || !data.levelCfg || !Number.isInteger(data.round) || data.round < 1) return false;
+    if (this._restartRetired || !data || !data.levelCfg || !Number.isInteger(data.round) || data.round < 1 ||
+        !Array.isArray(data.levelCfg.WaveCfg) || data.round > data.levelCfg.WaveCfg.length) return false;
     var checkpoint = JSON.parse(JSON.stringify(this.getCheckpoint()));
     // Missing legacy state must clear any relic charges saved later in combat.
     if (checkpoint.relicState === undefined) checkpoint.relicState = null;
@@ -1329,10 +1330,30 @@ var def_KinghtFallGameCtrl = function (t) {
     var data = this.gameData;
     if (this._restartRetired || !data || !data.levelCfg) return null;
     var stage = data.levelCfg.Level;
+    function preservePermanentTaskClaims(checkpoint) {
+      var task = data.taskInfo;
+      var committed = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getTaskInfo(stage);
+      if (!task || !committed || !Array.isArray(task.list) || !Array.isArray(committed.list) ||
+          JSON.stringify(task.list) !== JSON.stringify(committed.list) || !Array.isArray(task.reward)) return checkpoint;
+      var claimed = Math.min(task.list.length, task.reward.length, Math.max(task.index, committed.index));
+      var floor = 0;
+      for (var index = 0; index < claimed; index++) {
+        var reward = task.reward[index];
+        if (reward && Number.isInteger(reward.id) && reward.id > 0 && reward.id !== $z1KinghtFallEnum.KinghtFallEnumGoodsCfg.SilverCoin &&
+            typeof reward.num === "number" && isFinite(reward.num) && reward.num > 0) floor = index + 1;
+      }
+      if (checkpoint.taskList && floor > checkpoint.taskList.index) {
+        // Gold and other permanent rewards remain owned after a retry. Preserve
+        // their claimed index so the same paid attempt cannot award them twice.
+        checkpoint.taskList = { index: floor, list: task.list.slice(), stage: 0 };
+      }
+      return checkpoint;
+    }
     if (mode === "wave") {
+      if (!Number.isInteger(data.round) || data.round < 1 || !Array.isArray(data.levelCfg.WaveCfg) || data.round > data.levelCfg.WaveCfg.length) return null;
       var saved = this._waveStartCheckpoint;
       if (!saved || saved.data !== data || saved.stage !== stage || saved.round !== data.round) return null;
-      return JSON.parse(JSON.stringify(saved.checkpoint));
+      return preservePermanentTaskClaims(JSON.parse(JSON.stringify(saved.checkpoint)));
     }
     if (mode !== "stage") return null;
     // Construct fresh battle data without granting the first wave's permanent
@@ -1345,7 +1366,7 @@ var def_KinghtFallGameCtrl = function (t) {
       businessList: {}, taskList: { index: fresh.taskInfo.index, list: fresh.taskInfo.list, stage: fresh.taskInfo.stage },
       relicState: null, restartSetup: { treasureAddTime: fresh.treasureAddTime }
     };
-    return JSON.parse(JSON.stringify(checkpoint));
+    return preservePermanentTaskClaims(JSON.parse(JSON.stringify(checkpoint)));
   };
   _ctor.prototype.getCheckpoint = function () {
     var t = [];
@@ -1363,7 +1384,8 @@ var def_KinghtFallGameCtrl = function (t) {
     };
     var checkpoint = { levelNum: this.gameData.levelCfg.Level, roundNum: this.gameData.round,
       coin: this.gameData.coin, buffList: t, buildingLevel: e,
-      businessList: this.gameData.businessAdd, taskList: n };
+      businessList: this.gameData.businessAdd, taskList: n,
+      restartSetup: { treasureAddTime: JSON.parse(JSON.stringify(this.gameData.treasureAddTime || {})) } };
     var relicState = require("RelicRuntime").snapshot(this.gameData);
     if (relicState !== undefined) checkpoint.relicState = relicState;
     return checkpoint;

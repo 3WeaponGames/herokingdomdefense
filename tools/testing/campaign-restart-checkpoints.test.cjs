@@ -47,7 +47,7 @@ test('wave retry explicitly clears relic charges acquired after a legacy start w
   assert.equal(record.getCheckpoint(3).relicState.heroAttackCount, 100);
   assert.equal(record.setCheckpoint(h.g.getRestartCheckpoint('wave')), true);
   assert.equal(record.getCheckpoint(3).relicState, null);
-  assert.equal(Object.hasOwn(record.getCheckpoint(3), 'restartSetup'), false, 'Private retry setup is not persisted');
+  assert.deepEqual(clone(record.getCheckpoint(3).restartSetup), {treasureAddTime: {}}, 'Retry setup survives an interrupted replacement load');
 });
 
 test('wave restart rejects an uncaptured, stale data, stage, round, or retired controller lifetime', () => {

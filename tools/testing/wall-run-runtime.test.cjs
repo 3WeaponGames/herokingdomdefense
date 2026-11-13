@@ -9,7 +9,7 @@ function close(a,b,message){assert.equal(a.length,b.length,message);a.forEach((p
 function fixture(options={}){
  const made=[],stopped=[],all=[],triggers=[],nodes=new Map();let next=0;
  class Data{constructor(){this.refs=0;this.destroyed=false;made.push(this);}addRef(){this.refs++;}decRef(){assert(this.refs>0,'No duplicate asset release');this.refs--;if(!this.refs)this.destroyed=true;}destroy(){this.destroyed=true;}getRuntimeData(){if(options.failParse&&options.failParse(this))return null;return{};}}
- const cc={v2:(x,y)=>({x,y}),PhysicsPolygonCollider:'physics',PolygonCollider:'trigger',isValid:v=>!v.destroyed},modules={WallKit:Kit,GateFacing:Facing,__Data:Data,__cc:cc};
+ const cc={v2:(x,y)=>({x,y}),PhysicsPolygonCollider:'physics',PolygonCollider:'trigger',isValid:(v,strict)=>!!v&&!v.destroyed&&!(strict&&v.toDestroy)},modules={WallKit:Kit,GateFacing:Facing,__Data:Data,__cc:cc};
  // Baseline asset tests opt into neutral data without changing held user data.
  if(options.adjustmentsData)modules['./WallAdjustments']={...require('../../assets/_script/WallAdjustments'),getData:()=>copy(options.adjustmentsData)};
  function load(name){const filename=path.join(root,'assets/_script/'+name+'.js'),unit=new Module(filename,module);unit.filename=filename;unit.paths=Module._nodeModulePaths(path.dirname(filename));unit.require=name=>modules[name]||Module.prototype.require.call(unit,name);unit._compile('var sp={SkeletonData:require("__Data")};var cc=require("__cc");\n'+fs.readFileSync(filename,'utf8'),filename);modules[name]=unit.exports;return unit.exports;}
@@ -20,7 +20,7 @@ function fixture(options={}){
  const owner={node:node(wall.template.node),ndAniMain:skeleton(controller.ndAniMain),ndAniDown:skeleton(controller.ndAniDown),ndAniOther:controller.ndAniOther.map(skeleton),wallRun:'',colPoint:{},_stopColliderTween(c){stopped.push(c);}};all.forEach(c=>owner.colPoint[c.uuid]=copy(c.points));
  function worldPoints(c){return c.points.map(p=>c.node.convertToWorldSpaceAR({x:p.x+c.offset.x,y:p.y+c.offset.y}));}
  function plan(){const points=[];for(const s of owner.ndAniOther)for(const p of s.skeletonData.skeletonJson.wallAnchors||[])points.push(owner.ndAniMain.node.convertToNodeSpaceAR(s.node.convertToWorldSpaceAR(p)));return Kit.layout(owner.wallRun?JSON.parse(owner.wallRun):null,points);}
- return{Runtime,FacingRuntime,owner,source,assets,all,triggers,made,stopped,worldPoints,plan};
+ return{Runtime,FacingRuntime,owner,source,assets,all,triggers,made,stopped,worldPoints,plan,cc};
 }
 function state(f){return f.all.filter(c=>!c.isCreated).map(c=>({tag:c.tag,points:copy(c.points),enabled:c.enabled}));}
 function assertGeometry(f){const g=Kit.fixtures(f.plan()),model=f.owner.ndAniMain.node;for(const [node,polygons] of [[f.owner.node,[g.root]],...f.owner.ndAniOther.map((s,i)=>[s.node,g.wingSegments[i]])])for(const tier of [1,2,3]){const parts=node.getComponents('physics').filter(c=>c.tag===tier);assert.equal(parts.length,polygons.length,'Each level has one convex collider per coalesced stretch');parts.forEach((c,i)=>{close(f.worldPoints(c),polygons[i].map(p=>model.convertToWorldSpaceAR(p)),'Fixture matches the final native artwork plan');assert.deepEqual(f.owner.colPoint[c.uuid],c.points);});}if(g.proximity.length)close(f.worldPoints(f.triggers[0]),g.proximity.map(p=>model.convertToWorldSpaceAR(p)),'The friendly trigger surrounds the final portal');}
@@ -113,4 +113,25 @@ test('exported runs reuse existing per-tier stretch colliders without quadratic 
 
 test('baked default collider metadata restores unused tier tags before a new corner is fitted',()=>{
  const f=fixture(),nodes=[f.owner.node,...f.owner.ndAniOther.map(s=>s.node)];f.owner.wallFixtureTags=JSON.stringify(nodes.map(n=>n.physics.map(c=>c.tag)));for(const node of nodes.slice(3))for(const c of node.physics){c.tag=0;c.enabled=false;}const before=state(f),cache=copy(f.owner.colPoint);f.owner.wallRun=JSON.stringify({...bentRun(),end:'corner'});f.Runtime.apply(f.owner);assertGeometry(f);for(const tier of [1,2,3])assert(f.owner.ndAniOther[3].node.physics.some(c=>c.tag===tier));f.Runtime.dispose(f.owner);assert.deepEqual(state(f),before);assert.deepEqual(f.owner.colPoint,cache);
+});
+
+test('scene teardown retires child colliders and Spine components before the wall controller without unsafe restores or reference leaks',()=>{
+ const f=fixture(),original=f.owner.ndAniMain.skeletonData,sourceRefs=Object.values(f.assets).map(data=>[data,data.refs]);f.owner.wallRun=JSON.stringify(bentRun());f.Runtime.apply(f.owner);
+ const state=f.owner._wallRunRuntime,clones=state.parts.map(part=>part.clone),{enabledProperty,protect}=require('./component-lifetime-harness.cjs');
+ f.cc.director={_compScheduler:{enableComp(){},disableComp(){}}};const enabled=enabledProperty(f.cc);
+ const retired=f.all.filter(c=>c.node===f.owner.ndAniOther[0].node);
+ for(const c of retired){c._enabled=false;Object.defineProperty(c,'enabled',enabled);c.destroyed=true;c.node=null;}
+ for(const trigger of f.triggers){protect(trigger,'points');trigger.destroyed=true;trigger.node=null;}
+ for(const part of state.parts){protect(part.component,'skeletonData');part.component.destroyed=true;part.component.node=null;}
+ assert.doesNotThrow(()=>f.Runtime.dispose(f.owner));assert(!f.owner._wallRunRuntime);assert(clones.every(data=>data.destroyed));for(const [data,refs]of sourceRefs)assert.equal(data.refs,refs,'Each owned source reference is released even when its renderer was destroyed first');
+ assert.doesNotThrow(()=>f.Runtime.dispose(f.owner),'Repeated controller cleanup cannot release assets twice');assert.equal(original.refs,1);
+});
+
+test('pending-destroy wall fixtures, trigger nodes and renderers are untouched while surviving fixtures restore their authored geometry',()=>{
+ const f=fixture(),before=state(f),refs=Object.values(f.assets).map(data=>[data,data.refs]);f.owner.wallRun=JSON.stringify(bentRun());f.Runtime.apply(f.owner);const runtime=f.owner._wallRunRuntime,{protect}=require('./component-lifetime-harness.cjs');
+ const retiredNode=f.owner.ndAniOther[0].node;retiredNode.toDestroy=true;for(const c of f.all.filter(c=>c.node===retiredNode)){protect(c,'enabled');protect(c,'points');}
+ for(const t of f.triggers){protect(t,'points');t.toDestroy=true;}
+ for(const part of runtime.parts){protect(part.component,'skeletonData');part.component.toDestroy=true;}
+ assert.doesNotThrow(()=>f.Runtime.dispose(f.owner));const live=f.all.filter(c=>!c.isCreated&&c.node!==retiredNode);for(const c of live){const expected=before[f.all.indexOf(c)];assert.equal(c.tag,expected.tag);assert.equal(c.enabled,expected.enabled);assert.deepEqual(c.points,expected.points);}
+ for(const [data,count]of refs)assert.equal(data.refs,count);assert(runtime.parts.every(part=>part.clone.destroyed));
 });

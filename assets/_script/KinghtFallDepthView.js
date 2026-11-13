@@ -6,6 +6,96 @@ var ALLY = { r: 140, g: 215, b: 255 }, ENEMY = { r: 255, g: 115, b: 115 };
 var BONE_FIELDS = ["a", "b", "c", "d", "worldX", "worldY", "x", "y", "rotation", "scaleX", "scaleY", "shearX", "shearY", "active"];
 var vertexFrame = 0;
 
+// Native camera.render() updates and skins EVERY scheduled Spine before it
+// visits the selected subtree. Keep the first pass unchanged to settle poses,
+// then avoid repeating unrelated rigs during this synchronous capture batch.
+function NativeCaptureScope(view) {
+  this.view=view;this.first=false;this.quiet=false;this.finished=false;this.drawing=false;
+  this.entries=[];this.byRenderer=new Map();this.selected=new Set();
+  this.enabled=!!(view.nativeCapture&&cc.sys&&cc.sys.isNative&&!view._nativeCaptureDisabled&&sp.Skeleton&&cc.director&&cc.director.getScene);
+  this.refs=this.enabled?(view._nativeCaptureRefs||(view._nativeCaptureRefs=new WeakMap())):null;
+}
+NativeCaptureScope.prototype.same=function(entry) {
+  var renderer=entry.renderer;
+  return !!renderer&&(!cc.isValid||cc.isValid(renderer,true))&&!!renderer.node&&(!cc.isValid||cc.isValid(renderer.node,true))&&renderer._nativeSkeleton===entry.native&&renderer._skeleton===entry.skeleton;
+};
+NativeCaptureScope.prototype.resolve=function(renderer) {
+  if(!renderer||cc.isValid&&!cc.isValid(renderer,true)||!renderer.node||cc.isValid&&!cc.isValid(renderer.node,true)||renderer.enabled===false||renderer.node.activeInHierarchy===false)return null;
+  // Cache mode can change without waiting for another capture. Cached rigs may
+  // share native data and must never receive these temporary native writes.
+  if(typeof renderer.isAnimationCached!=="function"||renderer.isAnimationCached())return null;
+  var native=renderer._nativeSkeleton,skeleton=renderer._skeleton,entry=this.refs.get(renderer);
+  if(entry&&entry.native===native&&entry.skeleton===skeleton)return entry;
+  if(!native||!skeleton||typeof native.paused!=="function"||typeof native.getSkeleton!=="function"||native.getSkeleton()!==skeleton||typeof skeleton.getColor!=="function")return null;
+  var color=skeleton.getColor();
+  if(!color||typeof color.a!=="number"||!isFinite(color.a))return null;
+  entry={renderer:renderer,native:native,skeleton:skeleton,color:color,alpha:0,muted:false};this.refs.set(renderer,entry);return entry;
+};
+NativeCaptureScope.prototype.mute=function(entry) {
+  if(!this.same(entry))return;
+  entry.alpha=entry.color.a;entry.muted=true;
+  entry.native.paused(true);entry.color.a=0;
+};
+NativeCaptureScope.prototype.unmute=function(entry) {
+  if(!this.same(entry))return;
+  entry.color.a=entry.alpha;entry.native.paused(!!entry.renderer.paused);entry.muted=false;
+};
+NativeCaptureScope.prototype.start=function() {
+  this.quiet=true;
+  var scene=cc.director.getScene(),renderers=scene&&scene.getComponentsInChildren?scene.getComponentsInChildren(sp.Skeleton):[];
+  for(var i=0;i<renderers.length;i++) {
+    var entry=this.resolve(renderers[i]);if(!entry)continue;
+    this.entries.push(entry);this.byRenderer.set(entry.renderer,entry);this.mute(entry);
+  }
+};
+NativeCaptureScope.prototype.choose=function(root) {
+  root=root||cc.director.getScene();var wanted=new Set(),self=this,next=new Set();
+  if(root) {
+    if(root._renderComponent instanceof sp.Skeleton)wanted.add(root._renderComponent);
+    if(root.childrenCount!==0&&root.getComponentsInChildren)root.getComponentsInChildren(sp.Skeleton).forEach(function(renderer){wanted.add(renderer);});
+  }
+  this.selected.forEach(function(entry){if(!wanted.has(entry.renderer))self.mute(entry);});
+  wanted.forEach(function(renderer){
+    var entry=self.byRenderer.get(renderer);
+    if(!entry||!self.same(entry)) {
+      entry=self.resolve(renderer);if(!entry)return;self.byRenderer.set(renderer,entry);
+      if(self.entries.indexOf(entry)<0){entry.alpha=entry.color.a;entry.muted=false;self.entries.push(entry);}
+    }
+    if(!self.selected.has(entry)||entry.muted)self.unmute(entry);next.add(entry);
+  });
+  this.selected=next;
+};
+NativeCaptureScope.prototype.originalAlpha=function(renderer,color) {
+  var entry=this.byRenderer.get(renderer);
+  return entry&&entry.muted&&this.same(entry)?entry.alpha:color.a;
+};
+NativeCaptureScope.prototype.finish=function() {
+  if(this.finished)return;this.finished=true;
+  for(var i=this.entries.length-1;i>=0;i--) {
+    var entry=this.entries[i];if(!this.same(entry))continue;
+    // Selected callbacks may legitimately change alpha. Only muted entries use
+    // the value captured before suppression; public pause always stays current.
+    try{if(!entry.muted)entry.alpha=entry.color.a;entry.color.a=entry.alpha;}catch(error){this.view._nativeCaptureDisabled=true;}
+    try{entry.native.paused(!!entry.renderer.paused);}catch(error){this.view._nativeCaptureDisabled=true;}
+    entry.muted=false;
+  }
+  this.entries.length=0;this.byRenderer.clear();this.selected.clear();
+};
+NativeCaptureScope.prototype.disable=function() {
+  this.view._nativeCaptureDisabled=true;this.enabled=false;this.finish();
+};
+NativeCaptureScope.prototype.capture=function(root,draw) {
+  if(!this.enabled||this.finished)return draw();
+  // A reentrant camera callback falls back to the original fully restored path.
+  if(this.drawing){this.disable();return draw();}
+  if(!this.first)this.first=true;
+  else {
+    try{if(!this.quiet)this.start();this.choose(root);}catch(error){this.disable();return draw();}
+  }
+  this.drawing=true;try{return draw();}finally{this.drawing=false;}
+};
+
+
 function point(node, main, x, y) {
   return main.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(x || 0, y || 0)));
 }
@@ -353,7 +443,8 @@ function releaseCapture(record) {
 function GateOcclusion(view) { this.view=view;this.leaves=new Map();this.actors=new Map();this.draw=0; }
 GateOcclusion.prototype.captureLeaf = function (record, surface) {
   var source=surface.source,slot=surface.slot,color=source._skeleton.color,node=source.node;
-  var stamp=[source.skeletonData,surface.attachment,node.opacity,node.color.r,node.color.g,node.color.b,slot.color.r,slot.color.g,slot.color.b,slot.color.a,color.r,color.g,color.b,color.a].concat(surface.vertices);
+  var scope=this.view._nativeCaptureScope,alpha=scope?scope.originalAlpha(source,color):color.a;
+  var stamp=[source.skeletonData,surface.attachment,node.opacity,node.color.r,node.color.g,node.color.b,slot.color.r,slot.color.g,slot.color.b,slot.color.a,color.r,color.g,color.b,alpha].concat(surface.vertices);
   if (sameStamp(record.signature,stamp)) return;
   var box=surface.box,width=Math.ceil(box.maxX-box.minX)+4,height=Math.ceil(box.maxY-box.minY)+4;
   var center={x:(box.minX+box.maxX)/2,y:(box.minY+box.maxY)/2},resolution=Math.min(4,512/Math.max(width,height));
@@ -678,7 +769,8 @@ DepthView.prototype.renderNative = function (sources, center, height, texture) {
   this.cameraNode.setPosition(position.x, position.y, 0);
   this.camera.orthoSize = height * Math.hypot(up.x - origin.x, up.y - origin.y) / 2;
   this.camera.targetTexture = texture;
-  var camera = this.camera, first = true;
+  var camera = this.camera, first = true, scope=this._nativeCaptureScope, owned=!scope&&this.nativeCapture&&cc.sys&&cc.sys.isNative;
+  if(owned){scope=new NativeCaptureScope(this);this._nativeCaptureScope=scope;}
   // Render only the selected visual nodes, preserving their native animation,
   // skins, clipping and deform data. No actor/script/physics copies are created.
   try {
@@ -690,10 +782,11 @@ DepthView.prototype.renderNative = function (sources, center, height, texture) {
       if (cc.RenderFlow) source.node._renderFlag |= cc.RenderFlow.FLAG_WORLD_TRANSFORM | cc.RenderFlow.FLAG_OPACITY;
       camera.clearFlags = cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL | (first ? cc.Camera.ClearFlags.COLOR : 0);
       this._nativeRendered = true;
-      camera.render(source.node);
+      if(scope)scope.capture(source.node,function(){camera.render(source.node);});else camera.render(source.node);
       first = false;
     }, this);
   } finally {
+    if(owned){scope.finish();if(this._nativeCaptureScope===scope)this._nativeCaptureScope=null;}
     camera.targetTexture = null;
   }
 };
@@ -734,6 +827,9 @@ DepthView.prototype.update = function () {
   if (!this.main.activeInHierarchy) return;
   this.sort();
   if (this.captureSupported === false) return;
+  var captureScope=this.nativeCapture?new NativeCaptureScope(this):null;
+  if(captureScope)this._nativeCaptureScope=captureScope;
+  try {
   var self = this, game = this.game, visible = viewBounds(game, this.main), draw = [];
   var cache = { transforms: new Map(), bounds: new Map(), poses: new Set() };
   // Per-actor GPU captures only retain a draw identity. Pose buffers are web-only.
@@ -794,6 +890,7 @@ DepthView.prototype.update = function () {
     });
     if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible);
   } finally {
+    if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
     if (this._nativeRendered) {
       this._nativeRendered = false;
       // Native RenderFlow clears WORLD_TRANSFORM_CHANGED/OPACITY_CHANGED for
@@ -813,9 +910,14 @@ DepthView.prototype.update = function () {
   });
   // New/relocated stencil nodes must follow their object in this same draw.
   if (this.main.sortAllChildren) this.main.sortAllChildren();
+  } finally {
+    if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
+  }
 };
 DepthView.prototype.destroy = function () {
   if (this._destroyed) return;
+  if(this._nativeCaptureScope)this._nativeCaptureScope.finish();
+  this._nativeCaptureScope=null;this._nativeCaptureRefs=null;
   this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
   if(this.gateOcclusion)this.gateOcclusion.destroy();

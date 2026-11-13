@@ -415,6 +415,10 @@ exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit,
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };
 exports.findStandingPoint = function (unit, game, anchor, preferred) {
   var navigation = get(game); navigation.refresh();
+  // Every candidate below requires a clear segment from this exact anchor.
+  // A blocked origin cannot produce one; avoid repeating the full crowd/ring
+  // scan on each waiting soldier update. Keep zero-radius passage semantics.
+  if (!navigation.grid.isWalkable(anchor, 0)) return null;
   var radius = Math.max(unit._spawnBodyRadius || 0, navigation.radius(unit));
   var grid = navigation.gridFor(unit), reserved = [];
   game.gameData.getSoldierList().concat(game.gameData.getEnemyList(), [game.ctrPlay]).forEach(function (other) {

@@ -2,7 +2,7 @@
   "version": 3,
   "complete": true,
   "sourceSha256": "a65e4d41f5595bb948b233bf9ec293330fa1c6674f49b5dfb6ad72e4ecb1c72a",
-  "source": "Geometry from the user-supplied cleaned wall-door sheet, 2026-11-11; inward/outward labels and all native pixel geometry retained. Surface-only wood/iron texture repaint, 2026-11-12. Closed-pair mobile downsampling and atlas repack, 2026-11-13; all logical registration and open-leaf pixels retained.",
+  "source": "Geometry from the user-supplied cleaned wall-door sheet, 2026-11-11; inward/outward labels and all native pixel geometry retained. Surface-only wood/iron texture repaint, 2026-11-12. Closed-pair mobile downsampling and atlas repack, 2026-11-13; all logical registration and open-leaf pixels retained. Approved minimal cartoon surface repaint, 2026-11-13; original alpha silhouettes, atlas rectangles, hinges and physical door dimensions retained byte-for-byte.",
   "primary": [
     "rts_door_closed_1",
     "rts_door_inward_1",
@@ -358,7 +358,7 @@
           256,
           266
         ],
-        "rgbaSha256": "1f782dde6b6cd2092158577ee76f1aa9bdcbc880475a13b472c57c6771ee3389",
+        "rgbaSha256": "b46ed6bb9f6e45d22b3dcfaa73f17bdde405799ee916322d141c24588b9886bb",
         "size": [
           256,
           266
@@ -384,7 +384,7 @@
             265,
             365
           ],
-          "rgbaSha256": "b22cb1f3e8ee54d770c99dacf686bd20f08be0011eba48a7d53d36f9230718df",
+          "rgbaSha256": "3620414adefb02906f979025801c06b1a5c4383c3e6cd58bd2ae32c2bde9f62f",
           "size": [
             265,
             365
@@ -410,7 +410,8 @@
             265,
             365
           ],
-          "sourceRgbaSha256": "b22cb1f3e8ee54d770c99dacf686bd20f08be0011eba48a7d53d36f9230718df"
+          "sourceRgbaSha256": "3620414adefb02906f979025801c06b1a5c4383c3e6cd58bd2ae32c2bde9f62f",
+          "previousPaintRgbaSha256": "b22cb1f3e8ee54d770c99dacf686bd20f08be0011eba48a7d53d36f9230718df"
         },
         "outward": {
           "path": "rts_door_outward_1",
@@ -420,7 +421,7 @@
             260,
             365
           ],
-          "rgbaSha256": "b8023897691e11ff9fabc9e0a2956ad78090e2981aee5c9a537ccab58e6f88a7",
+          "rgbaSha256": "050363f9b008f39020850574fb5c6028c08926771b69fab8dc83ed94d92d4b81",
           "size": [
             260,
             365
@@ -446,7 +447,8 @@
             260,
             365
           ],
-          "sourceRgbaSha256": "b8023897691e11ff9fabc9e0a2956ad78090e2981aee5c9a537ccab58e6f88a7"
+          "sourceRgbaSha256": "050363f9b008f39020850574fb5c6028c08926771b69fab8dc83ed94d92d4b81",
+          "previousPaintRgbaSha256": "b8023897691e11ff9fabc9e0a2956ad78090e2981aee5c9a537ccab58e6f88a7"
         }
       }
     },
@@ -460,7 +462,7 @@
           256,
           266
         ],
-        "rgbaSha256": "6e7300450535c249ae36f706f6140e83b49e5244c127847d1ad7bd7eaf4b2fd6",
+        "rgbaSha256": "9b295db20bfd108ee2c69203f5caf3c33c7447a94c0ad787d8c1001ddc34b178",
         "size": [
           256,
           266
@@ -486,7 +488,7 @@
             259,
             365
           ],
-          "rgbaSha256": "150e82e8298387cb4aa526e88ac90730c18b631a37816ea9ff4f4757c21a092f",
+          "rgbaSha256": "9a1dd11dfd2d5dbb1f98786ad312931515039e69d88060d8c02ef7951f50d6af",
           "size": [
             259,
             365
@@ -512,7 +514,8 @@
             259,
             365
           ],
-          "sourceRgbaSha256": "150e82e8298387cb4aa526e88ac90730c18b631a37816ea9ff4f4757c21a092f"
+          "sourceRgbaSha256": "9a1dd11dfd2d5dbb1f98786ad312931515039e69d88060d8c02ef7951f50d6af",
+          "previousPaintRgbaSha256": "150e82e8298387cb4aa526e88ac90730c18b631a37816ea9ff4f4757c21a092f"
         },
         "outward": {
           "path": "rts_door_outward_2",
@@ -522,7 +525,7 @@
             264,
             365
           ],
-          "rgbaSha256": "10be607c1ec358eb9ae19e240aeb3c16e6cf60b1118053a0c854ed3784758bf5",
+          "rgbaSha256": "db1859433accc4bd7597c72381a8452e82c14df0b938d5f6849be5b66a53b460",
           "size": [
             264,
             365
@@ -548,7 +551,8 @@
             264,
             365
           ],
-          "sourceRgbaSha256": "10be607c1ec358eb9ae19e240aeb3c16e6cf60b1118053a0c854ed3784758bf5"
+          "sourceRgbaSha256": "db1859433accc4bd7597c72381a8452e82c14df0b938d5f6849be5b66a53b460",
+          "previousPaintRgbaSha256": "10be607c1ec358eb9ae19e240aeb3c16e6cf60b1118053a0c854ed3784758bf5"
         }
       }
     },
@@ -562,7 +566,7 @@
           256,
           266
         ],
-        "rgbaSha256": "dde6a54b1b5f69bc50278014c3a756d7b20d7ce6a2578408c79061eeead05e0f",
+        "rgbaSha256": "a0ca00cc1cb33b6be83ff3de8bd059485ae62e2061553e929bbe138b9508966b",
         "size": [
           256,
           266
@@ -588,7 +592,7 @@
             265,
             364
           ],
-          "rgbaSha256": "34f9e913f3116d9c5f2f952e80b062738eba1e3cf0467a83e8725720910d54dc",
+          "rgbaSha256": "0ff4824370df78da09f604f9a86bdf7a5c79e0dd510a37f2d12eae9f584d0471",
           "size": [
             265,
             364
@@ -614,7 +618,8 @@
             265,
             364
           ],
-          "sourceRgbaSha256": "34f9e913f3116d9c5f2f952e80b062738eba1e3cf0467a83e8725720910d54dc"
+          "sourceRgbaSha256": "0ff4824370df78da09f604f9a86bdf7a5c79e0dd510a37f2d12eae9f584d0471",
+          "previousPaintRgbaSha256": "34f9e913f3116d9c5f2f952e80b062738eba1e3cf0467a83e8725720910d54dc"
         },
         "outward": {
           "path": "rts_door_outward_3",
@@ -624,7 +629,7 @@
             263,
             367
           ],
-          "rgbaSha256": "4119772784869991426fb9d05578834243921faf52b53562302b50e0c09c899d",
+          "rgbaSha256": "6371e88e1b5b39a130b8688a676e15b5a5d940fcdaed430f50fb0590ccfd85dc",
           "size": [
             263,
             367
@@ -650,12 +655,13 @@
             263,
             367
           ],
-          "sourceRgbaSha256": "4119772784869991426fb9d05578834243921faf52b53562302b50e0c09c899d"
+          "sourceRgbaSha256": "6371e88e1b5b39a130b8688a676e15b5a5d940fcdaed430f50fb0590ccfd85dc",
+          "previousPaintRgbaSha256": "4119772784869991426fb9d05578834243921faf52b53562302b50e0c09c899d"
         }
       }
     }
   ],
-  "pageSha256": "4ce247c26e0555b4db437235a0762d9f6b1c13c6865deeaa9cea6cf65359d046",
+  "pageSha256": "d8f23dc91bb00560a9912c37d255512f6f7100bcbccafa7005cd8ae4b20d38d0",
   "productionSampling": {
     "version": 1,
     "sourcePageSha256": "935bfc010402c2abdcb56d751dbd9f8249b995ec1c3d297bd54d5b302b62f7b0",
@@ -670,5 +676,6 @@
     "closedScale": 0.5,
     "filter": "premultiplied-alpha-area",
     "registration": "Original logical dimensions, anchors, geometry and saved offsets remain unchanged; atlas pixels are independent of registration coordinates."
-  }
+  },
+  "previousPaintPageSha256": "4ce247c26e0555b4db437235a0762d9f6b1c13c6865deeaa9cea6cf65359d046"
 }

@@ -13,7 +13,7 @@ var l = function () {
   this.buffList = [];
   this.businessList = {};
 };
-var checkpointFields = ["levelNum", "roundNum", "coin", "buffList", "buildingLevel", "businessList", "taskList", "relicState"];
+var checkpointFields = ["levelNum", "roundNum", "coin", "buffList", "buildingLevel", "businessList", "taskList", "relicState", "restartSetup"];
 function clone(value) { return value === undefined ? undefined : JSON.parse(JSON.stringify(value)); }
 function validCheckpoint(value) {
   return value && Number.isInteger(value.levelNum) && value.levelNum > 0 && Number.isInteger(value.roundNum) && value.roundNum > 0 &&
@@ -35,6 +35,15 @@ function sanitizeCheckpoint(data) {
   if (!data.businessList || typeof data.businessList !== "object" || Array.isArray(data.businessList)) data.businessList = {};
   Object.keys(data.businessList).forEach(function (key) { if (typeof data.businessList[key] !== "number" || !isFinite(data.businessList[key]) || data.businessList[key] < 0) delete data.businessList[key]; });
   if (data.taskList && (!Number.isInteger(data.taskList.index) || data.taskList.index < 0 || !Array.isArray(data.taskList.list) || !data.taskList.list.every(function (id) { return Number.isInteger(id) && id > 0; }) || [0, 1, 2].indexOf(data.taskList.stage) < 0)) delete data.taskList;
+  sanitizeRestartSetup(data);
+}
+function sanitizeRestartSetup(data) {
+  if (data.restartSetup === undefined) return true;
+  var setup = data.restartSetup;
+  if (!setup || typeof setup !== "object" || Array.isArray(setup) || !setup.treasureAddTime ||
+      typeof setup.treasureAddTime !== "object" || Array.isArray(setup.treasureAddTime) ||
+      !Object.keys(setup.treasureAddTime).every(function (key) { return /^[1-9]\d*$/.test(key) && Number.isSafeInteger(setup.treasureAddTime[key]) && setup.treasureAddTime[key] > 0; })) { delete data.restartSetup; return false; }
+  return true;
 }
 var exp_KinghtFallGameData = function (t) {
   function _ctor() {
@@ -190,6 +199,7 @@ var exp_KinghtFallGameData = function (t) {
     var saves = this.copyStageCheckpoints(), saved = saves[stage] || new l();
     var checkpoint = Object.assign({}, saved);
     checkpointFields.forEach(function (key) { if (Object.prototype.hasOwnProperty.call(snapshot, key)) checkpoint[key] = clone(snapshot[key]); });
+    if (!sanitizeRestartSetup(checkpoint)) return false;
     if (!validCheckpoint(checkpoint)) return false;
     saves[stage] = checkpoint;
     var previous = this.data;

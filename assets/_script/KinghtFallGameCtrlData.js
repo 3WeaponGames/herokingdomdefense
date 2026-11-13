@@ -23,7 +23,7 @@ var $z1KinghtFallBuildObstacle = require("KinghtFallBuildObstacle");
 var $z1KinghtFallCommerce = require("KinghtFallCommerce");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
 var def_KinghtFallGameCtrlData = function () {
-  function _ctor(t, e, restoring) {
+  function _ctor(t, e, restoring, restartSetup) {
     this.bulidPointMap = {};
     this.obstacles = [];
     this.talentAdd = {};
@@ -44,9 +44,9 @@ var def_KinghtFallGameCtrlData = function () {
     this._restoringCheckpoint = !!restoring;
     this.ctrPar = t;
     this.levelCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(e);
-    this.initData(restoring);
+    this.initData(restoring, restartSetup);
   }
-  _ctor.prototype.initData = function (restoring) {
+  _ctor.prototype.initData = function (restoring, restartSetup) {
     var t;
     this.buildings = [];
     var e = this.levelCfg.HomeLevel1Unlock;
@@ -128,7 +128,14 @@ var def_KinghtFallGameCtrlData = function () {
         this.treasureAdd[o.ID] = null === (t = o.levelInfo[n.level - 1]) || undefined === t ? undefined : t.param;
       }
     }
-    if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] && Math.random() < this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs][0]) {
+    var savedSetup = restartSetup && typeof restartSetup === "object" && !Array.isArray(restartSetup) &&
+      restartSetup.treasureAddTime && typeof restartSetup.treasureAddTime === "object" && !Array.isArray(restartSetup.treasureAddTime) &&
+      Object.keys(restartSetup.treasureAddTime).every(function (key) { return /^[1-9]\d*$/.test(key) && Number.isSafeInteger(restartSetup.treasureAddTime[key]) && restartSetup.treasureAddTime[key] > 0; });
+    if (savedSetup) {
+      // The lottery belongs to the admitted run, including after a process exit
+      // between writing a retry checkpoint and loading its replacement map.
+      this.treasureAddTime = JSON.parse(JSON.stringify(restartSetup.treasureAddTime));
+    } else if (this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] && Math.random() < this.treasureAdd[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs][0]) {
       h = [];
       for (var v = 0; v < this.buildings[0].bulidId.length; v++) {
         this.buildings[0].bulidId[v] == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.PrivateHouse && h.push(this.buildings[0].bulidPoint[v]);
