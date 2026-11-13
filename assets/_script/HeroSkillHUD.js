@@ -3,6 +3,7 @@
 // remain in HeroStyleRuntime; no editor or progression data is written here.
 var TITLES = { skirmisher: "hero.skills.skirmisher", fighter: "hero.skills.fighter", vanguard: "hero.skills.vanguard", mystic: "hero.skills.mystic", bruiser: "hero.skills.bruiser", guardian: "hero.skills.guardian" };
 var Presentation=require("./HeroSkillPresentation");
+var ButtonArt=require("./HeroSkillButton");
 var LanguageMgr=require("LanguageMgr").LanguageMgr;
 var COOLDOWN_EPSILON=1e-9;
 function live(node) { return !!node && (typeof cc === "undefined" || !cc.isValid || cc.isValid(node, true)); }
@@ -78,31 +79,37 @@ function buttonEnd(hud,event,cancelled) {
 function install(hero,rt) {
   if(!ready()||!rt.ui||!rt.ui.ctrUI||!live(rt.ui.ctrUI.node)||!rt.game||!rt.game.ndUI||!rt.game.ndMain)return null;
   var parent=rt.ui.ctrUI.node,hud={runtime:rt};
-  hud.button=node(parent,"Hero active skill",132,118);hud.button.zIndex=80;hud.buttonGraphics=hud.button.addComponent(cc.Graphics);
+  hud.button=node(parent,"Hero active skill",132,184);hud.button.zIndex=80;
   if(cc.BlockInputEvents)hud.button.addComponent(cc.BlockInputEvents);
-  hud.title=text(hud.button,"Skill name",21,17);hud.status=text(hud.button,"Skill readiness",19,-29);hud.status.node.height=28;
+  hud.title=text(hud.button,"Skill name",18,-50);hud.title.node.setContentSize(132,28);hud.title._localizedFontRole="display";
+  hud.status=text(hud.button,"Skill readiness",14,-73);hud.status.node.setContentSize(132,22);
+  hud.cooldownCount=text(hud.button,"Skill cooldown",34,28+7.2*ButtonArt.frameScale);hud.cooldownCount.node.setContentSize(92,58);hud.cooldownCount.node.active=false;hud.cooldownCount._localizedFontRole="display";
   hud.visual=graphics(rt.game.ndUI,"Hero skill effects");hud.visual.node.zIndex=80;
   var types=cc.Node.EventType;
   hud.button.on(types.TOUCH_START,function(e){buttonStart(hud,e);});hud.button.on(types.TOUCH_MOVE,function(e){buttonMove(hud,e);});
   hud.button.on(types.TOUCH_END,function(e){buttonEnd(hud,e,false);});hud.button.on(types.TOUCH_CANCEL,function(e){buttonEnd(hud,e,true);});
-  hero._skillHUD=hud;return hud;
+  hero._skillHUD=hud;var generation=hero.node._combatGeneration;
+  hud.art=ButtonArt.create(hud.button,function(){return hero._skillHUD===hud&&hero._styleRuntime===rt&&live(hero.node)&&hero.node._combatGeneration===generation;},cc);return hud;
 }
 function safeBounds(root) {
   if(cc.view&&cc.view.getVisibleSize){var size=cc.view.getVisibleSize(),origin=cc.view.getVisibleOrigin?cc.view.getVisibleOrigin():vec(0,0),safe=cc.sys&&cc.sys.getSafeAreaRect?cc.sys.getSafeAreaRect():{x:origin.x,y:origin.y,width:size.width,height:size.height};var a=root.convertToNodeSpaceAR(vec(Math.max(origin.x,safe.x),Math.max(origin.y,safe.y))),b=root.convertToNodeSpaceAR(vec(Math.min(origin.x+size.width,safe.x+safe.width),Math.min(origin.y+size.height,safe.y+safe.height)));return {left:a.x,right:b.x,bottom:a.y,top:b.y};}
   return {left:-root.width/2,right:root.width/2,bottom:-root.height/2,top:root.height/2};
 }
 function layout(hud,rt) {
-  var parent=hud.button.parent,b=safeBounds(parent),x=b.right-86,y=b.bottom+86;
-  [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(!live(other)||!other.activeInHierarchy)return;var p=parent.convertToNodeSpaceAR(other.convertToWorldSpaceAR(vec(0,0))),w=Math.abs(other.width*other.scaleX)/2,h=Math.abs(other.height*other.scaleY)/2;if(Math.abs(p.x-x)<w+76&&Math.abs(p.y-y)<h+70)y=p.y+h+80;});
-  hud.button.setPosition(x,Math.min(b.top-88,y));
+  var parent=hud.button.parent,b=safeBounds(parent),halfWidth=hud.button.width/2,halfHeight=hud.button.height/2,x=b.right-halfWidth-20,y=b.bottom+halfHeight+20;
+  [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(!live(other)||!other.activeInHierarchy)return;var p=parent.convertToNodeSpaceAR(other.convertToWorldSpaceAR(vec(0,0))),w=Math.abs(other.width*other.scaleX)/2,h=Math.abs(other.height*other.scaleY)/2;if(Math.abs(p.x-x)<w+halfWidth+12&&Math.abs(p.y-y)<h+halfHeight+12)y=p.y+h+halfHeight+12;});
+  hud.button.setPosition(x,Math.min(b.top-halfHeight-20,y));
 }
 function paintButton(hud,rt) {
-  var s=rt.state,can=usable(rt),cooldown=s.cooldown>COOLDOWN_EPSILON?Math.ceil(s.cooldown):0,signature=[s.style,can,rt.aiming,cooldown,!!s.active,!!s.marked].join(":");if(hud.buttonSignature===signature)return;hud.buttonSignature=signature;
-  var g=hud.buttonGraphics;g.clear();g.fillColor=color("#17101f");g.roundRect(-66,-59,132,118,24);g.fill();g.fillColor=color(can?rt.aiming?"#ffdc53":"#9a60d5":"#646277");g.roundRect(-61,-54,122,108,20);g.fill();g.fillColor=color(can?"#2765a3":"#343b51");g.roundRect(-55,-48,110,96,16);g.fill();
+  var s=rt.state,can=usable(rt),remaining=s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0,signature=[s.style,can,rt.aiming,cooldown,!!s.active,!!s.marked].join(":");
+  if(hud.art)hud.art.set({style:s.style,usable:can,aiming:!!rt.aiming,cooldown:remaining,totalCooldown:s.tuning&&s.tuning.cooldown||rt.settings&&rt.settings.cooldown||12});
+  if(hud.buttonSignature===signature)return;hud.buttonSignature=signature;
   var language=LanguageMgr.getInstance();
   language.bindLabel(hud.title,TITLES[s.style]||"hero.skills.name");
   var status=cooldown?"cooldown":s.active?"casting":s.style==="mystic"&&!can?s.marked?"outOfRange":"markTarget":rt.aiming?"chooseAim":can?"ready":"unavailable";
   language.bindLabel(hud.status,"hero.skills."+status,status==="cooldown"?{0:cooldown}:undefined);
+  hud.status.node.active=!cooldown;hud.cooldownCount.node.active=!!cooldown;
+  if(cooldown)language.bindLabel(hud.cooldownCount,"hero.skills.cooldown",{0:cooldown});
 }
 function drawCharge(hud,hero,rt) {
   var s=rt.state,hp=hero.ctrHp&&hero.ctrHp.node,show=(s.style==="vanguard"||s.style==="skirmisher")&&hp&&hp.parent;
@@ -146,6 +153,7 @@ function clear(hero) {
   if(hud.runtime)Presentation.clear(hud.runtime);
   if(hud.runtime)hud.runtime.aiming=false;
   if(hud.controller&&hud.controller._skillAimHUD===hud)delete hud.controller._skillAimHUD;
+  if(hud.art)hud.art.destroy();
   [hud.button,hud.visual&&hud.visual.node,hud.charge&&hud.charge.node].forEach(function(n){if(live(n))n.destroy();});delete hero._skillHUD;
 }
 function handleTouch(controller,phase,event) {

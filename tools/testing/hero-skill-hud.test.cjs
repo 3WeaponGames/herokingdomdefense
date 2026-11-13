@@ -36,7 +36,7 @@ test('tap arms the piercing skill, world aiming consumes its own touch and fires
  assert.equal(f.hud.handleTouch(f.controller,'start',f.event(2,100,200)),true);assert.equal(f.hud.handleTouch(f.controller,'move',f.event(2,200,100)),true);assert.equal(f.rt.casts.length,0);assert.equal(f.hud.handleTouch(f.controller,'end',f.event(2,200,100)),true);assert.equal(f.rt.casts.length,1);assert.equal(f.rt.aiming,false);assert(Math.abs(f.rt.casts[0].x-2/Math.sqrt(5))<1e-10);
 });
 test('skill labels retain a nonzero content box after Creator initially autosizes the empty Label',()=>{
- const f=fixture(),hud=f.hero._skillHUD;assert.equal(hud.title.node.width,116);assert.equal(hud.title.node.height,50);assert.equal(hud.status.node.width,116);assert.equal(hud.status.node.height,28);
+ const f=fixture(),hud=f.hero._skillHUD;assert.equal(hud.title.node.width,132);assert.equal(hud.title.node.height,28);assert.equal(hud.status.node.width,132);assert.equal(hud.status.node.height,22);assert.equal(hud.cooldownCount.node.width,92);assert.equal(hud.cooldownCount.node.height,58);
 });
 
 test('new skill titles and live readiness labels follow the game language',()=>{
@@ -47,7 +47,7 @@ test('new skill titles and live readiness labels follow the game language',()=>{
 
 test('cooldown labels, cache signatures and input share the rules engine readiness tolerance',()=>{
  const f=fixture('guardian'),hud=f.hero._skillHUD,button=hud.button;f.rt.state.cooldown=1e-8;f.hud.update(f.hero,f.rt);assert.equal(hud.status.string,'1s');button.handlers.start(f.event(1));button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);
- f.rt.state.cooldown=1e-12;f.hud.update(f.hero,f.rt);assert.equal(hud.status.string,'Ready');const count=hud.buttonGraphics.clearCalls;f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.buttonGraphics.clearCalls,count,'a residual and zero use the same painted state');button.handlers.start(f.event(2));button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);
+ f.rt.state.cooldown=1e-12;f.hud.update(f.hero,f.rt);assert.equal(hud.status.string,'Ready');const signature=hud.buttonSignature;f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.buttonSignature,signature,'a residual and zero use the same painted state');button.handlers.start(f.event(2));button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);
 });
 
 test('arming a directional skill follows the current target or rider facing',()=>{
@@ -166,4 +166,11 @@ test('a world finger cannot take direction ownership from a held skill-button ge
  assert.equal(f.hud.handleTouch(f.controller,'end',f.event(2,0,200)),false);
  button.handlers.end(f.event(1,400,-400));assert.equal(f.rt.casts.length,1);
  assert.equal(f.rt.casts[0].x,1);assert.equal(f.rt.casts[0].y,0);
+});
+
+test('the taller artwork button and both localized captions stay inside the HUD safe bounds',()=>{
+ const f=fixture('guardian'),hud=f.hero._skillHUD;assert.equal(hud.button.width,132);assert.equal(hud.button.height,184);
+ for(const value of [hud.button,hud.title.node,hud.status.node])for(const sign of [-1,1]){const world=value.convertToWorldSpaceAR({x:sign*value.width/2,y:sign*value.height/2});assert(world.x>=-375&&world.x<=375);assert(world.y>=-667&&world.y<=667);}
+ f.rt.state.cooldown=3;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,true);assert.equal(hud.status.node.active,false);assert.equal(hud.cooldownCount.string,'3s');
+ f.setLanguage('zh');assert.equal(hud.cooldownCount.string,'3秒');f.rt.state.cooldown=0;f.hud.update(f.hero,f.rt);assert.equal(hud.cooldownCount.node.active,false);assert.equal(hud.status.node.active,true);
 });
