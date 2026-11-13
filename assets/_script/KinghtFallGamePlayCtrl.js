@@ -428,7 +428,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     return e * n;
   };
   _ctor.prototype.getCriticalDamage = function () {
-    return this.critDam;
+    return this.critDam * (1 + (this._heroSecondary && this._heroSecondary.criticalDamage || 0));
   };
   _ctor.prototype.getAttSpeed = function () {
     var t = this.attackSpeed;
@@ -458,7 +458,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this._regenerationDisabled = false;
     var t = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff01);
     this.attNum = t ? t.Pamer[0] : 1;
-    this.crit = 0;
+    this.crit = this._heroSecondary && this._heroSecondary.criticalChance || 0;
     var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff14);
     e && (this.crit += e.Pamer[0]);
     var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff37);

@@ -440,36 +440,37 @@ mz_3_3
   index: -1
 
 
+
 mz-painted.png
-size: 1192,1200
+size: 304, 308
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 painted-farmhouse-1
   rotate: false
   xy: 2, 2
-  size: 576, 596
-  orig: 576, 596
+  size: 144, 149
+  orig: 144, 149
   offset: 0, 0
   index: -1
 painted-farmhouse-2
   rotate: false
-  xy: 598, 2
-  size: 592, 596
-  orig: 592, 596
+  xy: 150, 2
+  size: 148, 149
+  orig: 148, 149
   offset: 0, 0
   index: -1
 painted-farmhouse-3
   rotate: false
-  xy: 2, 602
-  size: 592, 596
-  orig: 592, 596
+  xy: 2, 155
+  size: 148, 149
+  orig: 148, 149
   offset: 0, 0
   index: -1
 painted-farmhouse-4
   rotate: false
-  xy: 598, 602
-  size: 592, 596
-  orig: 592, 596
+  xy: 154, 155
+  size: 148, 149
+  orig: 148, 149
   offset: 0, 0
   index: -1

@@ -6,6 +6,7 @@ const AttackRate=require('./attack-rate');
 const MapCatalog=require('../lib/map-catalog');
 const fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
+const HeroEquipmentStats=require('../../../assets/_script/HeroEquipmentStats');
 const Buildings=require('../buildings/client');
 const IconPicker=require('./icon-picker');
 const UnitProfiles=require('../units/panel-profiles');
@@ -311,14 +312,21 @@ function create(kind){
       Buildings.render(this,row,{ipc});
     },
     _equipment(row){
-      const r=row.record,p=row.path;this._properties(this._section('Equipment category'),'A',p,r,{table:'EquipCfg',equipment:r.id},['levelInfo']);
-      if(row.heroStyle)this._note('Each weapon style keeps its own upgrade progress. Weapon power and reach use the shared upgrade values below.');
+      const r=row.record,p=row.path,config=this._data('A'),secondary=r.id===3&&HeroEquipmentStats.enabled(config),context={table:'EquipCfg',equipment:r.id,weaponStats:HeroEquipmentStats.enabled(config),baseDamage:r.id===4&&HeroEquipmentStats.enabled(config)};
+      this._properties(this._section('Equipment category'),'A',p,r,context,['levelInfo',...(context.weaponStats&&(r.id===3||r.id===4)?['Describe']:[])]);
+      if(row.heroStyle)this._note(secondary?'These bonuses apply only while '+HeroWeapons.find(row.heroStyle).name+' is equipped. Each style has its own secondary values and upgrade progress.':'Main weapons provide attack damage. Each style keeps its own upgrade progress.');
+      if(secondary&&row.heroStyle==='bruiser')this._note('Critical damage improves critical hits. Critical chance comes from your perks and relics.');
+      if(HeroEquipmentStats.enabled(config)&&(r.id===3||r.id===4)){const defaults=this._section('Weapon combat defaults');this._field(defaults,'Base attack range',config.HeroEquipment.baseRange,v=>this._set('A',['HeroEquipment','baseRange'],v),{min:1});if(row.heroStyle==='mystic'&&secondary)this._field(defaults,'Splash radius',config.HeroEquipment.splashRadius,v=>this._set('A',['HeroEquipment','splashRadius'],v),{min:1});}
+      if(context.baseDamage&&row.heroStyle){this._field(this._section('Style damage'),'Damage multiplier (%)',HeroEquipmentStats.multiplier(config,row.heroStyle),v=>this._set('A',['HeroEquipment','damageMultipliers',row.heroStyle],v),{percent:true,min:.01});this._note('The shared Archer damage curve is 2–100. This multiplier sets this style’s damage; effective damage rounds up to a whole number.');}
+      const stat=l=>HeroEquipmentStats.enabled(config)&&(r.id===3||r.id===4)?HeroEquipmentStats.summary(config,r.id,l.Level,row.heroStyle):String(l.Parameters);
       const levels=this._section('Level progression');levels.className='';
-      this._level=Math.min(this._level,r.levelInfo.length-1);const select=this._field(levels,'Edit level',this._level,v=>{this._level=v;this._render();},{options:r.levelInfo.map((l,i)=>({value:i,label:EquipmentTiers.label(r,l.Level)+' · Upgrade '+l.Level+' · '+l.Parameters+' · '+l.GoldCost+' gold'}))});
+      this._level=Math.min(this._level,r.levelInfo.length-1);const select=this._field(levels,'Edit level',this._level,v=>{this._level=v;this._render();},{options:r.levelInfo.map((l,i)=>({value:i,label:EquipmentTiers.label(r,l.Level)+' · Upgrade '+l.Level+' · '+stat(l)+' · '+l.GoldCost+' gold'}))});
       select.title='Tier and level within that tier. Upgrade is the existing overall progression level.';
       const table=node('table',undefined,'gt-grid-table'),head=node('tr');['Tier / Level','Upgrade','Stat','Gold cost'].forEach(t=>head.appendChild(node('th',t)));table.appendChild(head);
-      r.levelInfo.forEach((level,i)=>{const tr=node('tr',undefined,i===this._level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>{this._level=i;this._render();};[EquipmentTiers.label(r,level.Level),level.Level,level.Parameters,level.GoldCost].forEach(v=>tr.appendChild(node('td',v)));table.appendChild(tr);});const scroll=node('div');scroll.style.maxHeight='220px';scroll.style.overflow='auto';scroll.appendChild(table);levels.appendChild(scroll);
-      const level=r.levelInfo[this._level];this._note(EquipmentTiers.label(r,level.Level)+' · '+stripRich(this._text(r.Describe).replace(/\{0\}/g,String(level.Parameters))));this._properties(this._section(EquipmentTiers.label(r,level.Level)+' settings'),'A',p.concat('levelInfo',this._level),level,{table:'EquipCfg',equipment:r.id},['Level','EquipSkin']);
+      r.levelInfo.forEach((level,i)=>{const tr=node('tr',undefined,i===this._level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>{this._level=i;this._render();};[EquipmentTiers.label(r,level.Level),level.Level,stat(level),level.GoldCost].forEach(v=>tr.appendChild(node('td',v)));table.appendChild(tr);});const scroll=node('div');scroll.style.maxHeight='220px';scroll.style.overflow='auto';scroll.appendChild(table);levels.appendChild(scroll);
+      const level=r.levelInfo[this._level],settings=this._section(EquipmentTiers.label(r,level.Level)+' settings');this._note(EquipmentTiers.label(r,level.Level)+' · '+stat(level));this._properties(settings,'A',p.concat('levelInfo',this._level),level,context,['Level','EquipSkin','SecondaryStats',...(secondary?['Parameters']:[])]);
+      if(context.baseDamage)this._field(settings,'Attack damage',HeroEquipmentStats.fields(config,4,level.Level,row.heroStyle)[0].value,()=>{},{readOnly:true});
+      if(secondary)for(const field of HeroEquipmentStats.fields(config,3,level.Level,row.heroStyle))this._field(settings,field.label+(field.percent?' (%)':''),field.value,v=>this._set('A',p.concat('levelInfo',this._level,'SecondaryStats',row.heroStyle,field.key),v),{min:0,percent:field.percent,max:field.percent&&field.key!=='criticalDamage'?100:undefined});
       this._note('The item supplies its icon automatically. Edit a tier’s fitted appearance in Items; every upgrade in that tier uses it.');
       this.$detail.appendChild(button('Edit tier appearance in Items',()=>Editor.Panel.open('hkd-items')));
       this._note('These values also supply the hero’s base stats. The Units panel reads the same equipment data; it does not create a separate copy.');
@@ -349,7 +357,7 @@ function create(kind){
       if(row.unitType==='hero'){
         this._note('The hero combines equipment stats and layered animated equipment. Choose levels in the silent preview; those choices never change player progression.');
         const fields=this._section('Base stats from equipment');
-        (this._data('A').EquipCfg||[]).forEach((equipment,i)=>{const r=equipment.levelInfo[0];this._field(fields,Schema.EQUIPMENT[i]+' · level 1',r.Parameters,value=>this._set('A',['EquipCfg',i,'levelInfo',0,'Parameters'],value),{min:0,help:'Shared source: Equipment. Open Equipment for every upgrade level.'});});
+        (this._data('A').EquipCfg||[]).forEach((equipment,i)=>{if(equipment.id===3&&HeroEquipmentStats.enabled(this._data('A')))return;const r=equipment.levelInfo[0];this._field(fields,Schema.EQUIPMENT[i]+' · level 1',r.Parameters,value=>this._set('A',['EquipCfg',i,'levelInfo',0,'Parameters'],value),{min:0,help:'Shared source: Equipment. Open Equipment for every upgrade level and style-specific secondary bonus.'});});
         fields.appendChild(button('Open Equipment panel',()=>openPanel('equipment').catch(e=>this._status(e.message,true))));return;
       }
       const id=Number(row.unitID);this._note(row.unitType==='ally'?'Allied unit: Barracks uses the selected level’s stats and the matching appearance from Characters. Changes apply after Save.':'Enemy unit: its name, model, stats and timing are independent of allies.');

@@ -26,7 +26,7 @@ function harness(options={}){
 }
 test('every style and tier shows only its main weapon, keeps its real idle pose, and fits a centered square with uniform scale',async()=>{
  const h=harness(),before=JSON.stringify(Object.values(h.assets).map(asset=>asset.skeletonJson));
- for(const level of [1,6,11,16,21])for(const style of Weapons.styles){
+ for(const level of [1,11,21,31,41])for(const style of Weapons.styles){
   const parent=new h.Node('Icon square');parent.setContentSize(132,132);parent.setParent(h.canvas);
   const icon=h.api.create(parent,{getHeroWeaponLevel:(_style,slot)=>{assert.equal(slot,4,'Card artwork does not depend on the secondary tier');return level;}},style.id,error=>h.errors.push(error));await icon.ready;assert.equal(h.errors.length,0);
   const pose=icon.node.components[0];for(let frame=0;frame<3;frame++)pose.lateUpdate();assert(pose.settled,style.id+' settles');assert.equal(icon.node.scaleX,icon.node.scaleY);assert.equal(icon.node.opacity,255);

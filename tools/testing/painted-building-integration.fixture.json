@@ -780,15 +780,15 @@
           "name": "cb-painted.png",
           "file": "assets/KinghtFallIconMap/com/Ani/cb/cb-painted.png",
           "uuid": "7fd80b9c-1a4d-589d-9c3a-88dc0e469640",
-          "sha256": "fb848393a944ff65919d53ccfa57ec7d593885b03e383ec260f4c39627368f33",
-          "metadata": "143a3f14b88329527d17e173f5d1e3718e5ca18c78b801e509562844e0659eae"
+          "sha256": "f7ad2305f984e3c8c63705697173c237cdab368dd2a8d30214298709fd222c5c",
+          "metadata": "aa9aeddf512bc47c06754ac98f9f4fdc17917e21cf6025d962aaaa2251badd41"
         },
         {
           "name": "cb-painted-fixtures.png",
           "file": "assets/KinghtFallIconMap/com/Ani/cb/cb-painted-fixtures.png",
           "uuid": "e18f4721-f11f-50da-a1dc-07d7d92b8904",
-          "sha256": "81ec35bebb53b87d74cf4b67be2428cb39958f15ee246c3b4f4327ab57f15f75",
-          "metadata": "f63766bdfa79503379dcf3cd3e9a88fbf7db9f9d3f1a7c3197563b7db15ca987"
+          "sha256": "4eb9c805830bdd36ca363af8a987a716ac6d70810024acfea82b35d79155de8c",
+          "metadata": "75a25a75338143f59688178e7afb41254a8eb0f7b7e81861fa4b8354847f6088"
         }
       ],
       "originalTextures": [
@@ -797,7 +797,7 @@
       ],
       "originalJsonMetadata": "0d253a20e31697692740804d7a6c2f9ab5eb48ce955222f79f5149e5305e9083",
       "beforeAtlas": "34e09c9cbd4ce9dbeeb56ea0de41c6dc7c91642e75adebe95a67a45bee461a8f",
-      "appendedAtlas": "b64b11dfe1c96b602be9b35f4008aa493776cdcfb4cd578d73b1e56ab8118efa"
+      "appendedAtlas": "12dd1d5304285c3a645689303df94efc37e7a702e8c2069e57c8f8453075a15e"
     },
     "by": {
       "beforeSkeleton": "db8ec4f4e8b43b26e4f933b4c7f98f6615481119f530af9218c9acf6577b40a3",
@@ -809,7 +809,7 @@
         "width": 369,
         "height": 375.5
       },
-      "currentHeader": "803b54fe5064c543a2bc1966e1b6b24a4f82794546fbfab09dedc454f7505d15",
+      "currentHeader": "09dd4465e770a00878d74b7eacfe9b814508974340c90855e0be41edebb19cdc",
       "newBones": [
         {
           "name": "painted_royal_1_flag_mount",
@@ -893,7 +893,7 @@
         },
         {
           "name": "painted_stable_1_flag_mount",
-          "hash": "c55d7065aba3623ec7c1f71e3b3f5ca3feb639c31b84b9d133ce00b89e76c6e3"
+          "hash": "78e4c4f95fd6ba8681e78153215f55d57b5f76e8d5460f7596aba8d55d903512"
         },
         {
           "name": "painted_stable_1_flag_wave_0",
@@ -913,7 +913,7 @@
         },
         {
           "name": "painted_stable_2_flag_mount",
-          "hash": "3a7daa906b405c4dd4ca8fcc6de1535633e3185606545760991477efe3277bba"
+          "hash": "bd92e9be0a7d3cfe41760a13c44ab26b100464cf7c956f69e2d7b9f7db6b6ef1"
         },
         {
           "name": "painted_stable_2_flag_wave_0",
@@ -933,7 +933,7 @@
         },
         {
           "name": "painted_stable_3_flag_mount",
-          "hash": "6445cda37e9aa93674d5d0c186123d31acbeba1d87332a6ce9396d80b1a834d4"
+          "hash": "ba428e2d3df13b5c1fdd4c4cb6636c24006f607f42bf1962591ddd37c0b67cbe"
         },
         {
           "name": "painted_stable_3_flag_wave_0",
@@ -953,7 +953,7 @@
         },
         {
           "name": "painted_stable_4_flag_mount",
-          "hash": "a8a3a807e3709d9d8a9338b1f556a7abeb931a5de92ec659b1a973eb6857889e"
+          "hash": "4e8c6170e1eca9baac71930b35628f6c8170aa636c93180954d7e6706744ae1d"
         },
         {
           "name": "painted_stable_4_flag_wave_0",
@@ -1152,6 +1152,22 @@
         {
           "name": "painted_royal_1_flag",
           "hash": "748025bfca1a66f3839a9651b66128e8dfe6f1e69a8f00e6c8fa8f0b1cc428aa"
+        },
+        {
+          "name": "painted_stable_1_pole",
+          "hash": "1fa04cb728bee72296bc6d7b8baca0551ff81caf358387fee01498ff56780807"
+        },
+        {
+          "name": "painted_stable_2_pole",
+          "hash": "9be4c97bee4c6ac49982b3c174992f089607ec04e94df307cf1511b618886b10"
+        },
+        {
+          "name": "painted_stable_3_pole",
+          "hash": "33721c40db91cde467b0064099bedffa0731afed969c5032f51ddbab5c609f00"
+        },
+        {
+          "name": "painted_stable_4_pole",
+          "hash": "f48d486106cc4a02a38c88ee73f050903cf74178d3be07258e6a537402ba4756"
         }
       ],
       "newSkins": [
@@ -1173,51 +1189,51 @@
         },
         {
           "name": "by-painted-heavy-1",
-          "hash": "31f548a5a9aa90489cb3bdf8cc9556031a17f9a43999e67f0f326e0da2913e55"
+          "hash": "265484c0ec770021498fc98a567d53cbd48e663cde92e19f54338e528aadeea7"
         },
         {
           "name": "by-painted-heavy-2",
-          "hash": "7c353cfcef22462b2e403111bb9b7da354c8d8c87b395fa340f79d39ea9ca25c"
+          "hash": "d7d41574f7405abfea9ab8d50ab9aca2209475788813727e3336b98b53764511"
         },
         {
           "name": "by-painted-heavy-3",
-          "hash": "2e680a50882b0517742d6ab6c41d23ba34cfb102e94a4584f59fc36d51608ee9"
+          "hash": "4b39ca0ddfbaf426683d993857e2523da8365ccc8970747107acdf3fb1efdca3"
         },
         {
           "name": "by-painted-heavy-4",
-          "hash": "3d995e5076b0d86f51870d2e10830a6045ff06fcc670963cf7054dec9da7964a"
+          "hash": "6488af8f8a325fd1d2d17b198b75a233044f2036c6f140f0edf42fb13c35fe68"
         },
         {
           "name": "by-painted-crossbow-1",
-          "hash": "910a58da540a8d0c45d9c333c2576e574b9e6ac20f0a4e02dfbd441a2f5408be"
+          "hash": "2e926f94441b44cab0e36fb83ad84e6002687c717d7972c8bcd4c688c1341e02"
         },
         {
           "name": "by-painted-crossbow-2",
-          "hash": "a804b251f86a26c564a274e53346b7b9ed96aa37a4f29ff5450907d046c770dd"
+          "hash": "88ac8e75a4b9dffc4e3dd9cdfe8f49c0ab224f1477bb57a859be19af6671bf27"
         },
         {
           "name": "by-painted-crossbow-3",
-          "hash": "7697889815edad76cb5d488ef9fe1d3b3ad817ede3a62ebe0d3b7b7819e47a3e"
+          "hash": "d9cd96aecc4e853417ad7b759f3e9ac858daebec8cf24566d272339919d487dd"
         },
         {
           "name": "by-painted-crossbow-4",
-          "hash": "205651cf1c59965571dfa2aae5bd9686946d90aebaf2a258f9a5afa2e75b5f51"
+          "hash": "efa37453185f7db4bf6ac4685724c83322671ad6b80029d90bc0aaeabbc370c3"
         },
         {
           "name": "by-painted-stable-1",
-          "hash": "50482d556487d97cf2debe35231601f62426fd1ac1ca294d0b8034bcbbc9874c"
+          "hash": "21008e11df99435c4ff9f41ae0a5ce1060185e7b17b6ca50d6976ad33584ff1c"
         },
         {
           "name": "by-painted-stable-2",
-          "hash": "c4fc87ad5546485afa580c5b8bdedecdee0a0d747918a28b9f58a0fd08309e8e"
+          "hash": "66e4ecf7b27ca274fde4b4851da1ce0e32ce54a1d8c53e7d81e2019d0b81c503"
         },
         {
           "name": "by-painted-stable-3",
-          "hash": "09818e47b83760efabcbf13d7a645c6c4d7bae4303267575e2512ee85eddd96f"
+          "hash": "1b406f1bb16edbd259f519d9093f5b484bd6a100fc60ba2cd7d301cbb391dade"
         },
         {
           "name": "by-painted-stable-4",
-          "hash": "de35934a812f8cc45011d9479b67771144e1ee7beaff97994e0882ccd37064e5"
+          "hash": "a01b7573c0a618bdbbd9887fa610b783e98e082641bf97bd7f0120be29e68856"
         }
       ],
       "attachmentRestores": [],
@@ -3609,6 +3625,150 @@
           "channel": "bones",
           "name": "painted_stable_4_flag_wave_3",
           "hash": "e81156b1b510e42709bceac80de37a69dddb5f72647fe942cbbe056b4522a358"
+        },
+        {
+          "clip": "Fade_in",
+          "channel": "slots",
+          "name": "painted_stable_1_pole",
+          "hash": "baecb109b57b871410ab1ee119f96ceb44b574872bc4322d0207650a920be3c1"
+        },
+        {
+          "clip": "Fade_in",
+          "channel": "slots",
+          "name": "painted_stable_2_pole",
+          "hash": "e51cd9632221e6517bf1ec2e0fcc21837f381a0668f335fe4763de33559c31c7"
+        },
+        {
+          "clip": "Fade_in",
+          "channel": "slots",
+          "name": "painted_stable_3_pole",
+          "hash": "e8f6c223ac155e7f68e264fca65f580130975571738fc756dd58f1772f44418a"
+        },
+        {
+          "clip": "Fade_in",
+          "channel": "slots",
+          "name": "painted_stable_4_pole",
+          "hash": "9e4e4faec5d9592da07ae74c25c4a544bbef36f7a5ccf8f5997322d7c40fbcd7"
+        },
+        {
+          "clip": "create",
+          "channel": "slots",
+          "name": "painted_stable_1_pole",
+          "hash": "23267aca252fc983a0ba29f018091790a422bf22927b0d5d9d77ecb60f112495"
+        },
+        {
+          "clip": "create",
+          "channel": "slots",
+          "name": "painted_stable_2_pole",
+          "hash": "6854e125711e65c2af0b4069cec9a455b9408957792ef20b1fd64560f6a4fc00"
+        },
+        {
+          "clip": "create",
+          "channel": "slots",
+          "name": "painted_stable_3_pole",
+          "hash": "3578ba54f71368bbc39b2d1928d44ae6f87ac0af59421f9e9676809121934259"
+        },
+        {
+          "clip": "create",
+          "channel": "slots",
+          "name": "painted_stable_4_pole",
+          "hash": "7c2bbbf192bd1dd4a5ec2313d42ffec17f37a13ebd9dc697824088230df49549"
+        },
+        {
+          "clip": "destroy",
+          "channel": "slots",
+          "name": "painted_stable_1_pole",
+          "hash": "bea4bc68dfa59231662764bfc73486ca2cf46ecd1cd5d98fe56a2ad157a290d2"
+        },
+        {
+          "clip": "destroy",
+          "channel": "slots",
+          "name": "painted_stable_2_pole",
+          "hash": "bea4bc68dfa59231662764bfc73486ca2cf46ecd1cd5d98fe56a2ad157a290d2"
+        },
+        {
+          "clip": "destroy",
+          "channel": "slots",
+          "name": "painted_stable_3_pole",
+          "hash": "bea4bc68dfa59231662764bfc73486ca2cf46ecd1cd5d98fe56a2ad157a290d2"
+        },
+        {
+          "clip": "destroy",
+          "channel": "slots",
+          "name": "painted_stable_4_pole",
+          "hash": "bea4bc68dfa59231662764bfc73486ca2cf46ecd1cd5d98fe56a2ad157a290d2"
+        },
+        {
+          "clip": "idle",
+          "channel": "slots",
+          "name": "painted_stable_1_pole",
+          "hash": "23267aca252fc983a0ba29f018091790a422bf22927b0d5d9d77ecb60f112495"
+        },
+        {
+          "clip": "idle",
+          "channel": "slots",
+          "name": "painted_stable_2_pole",
+          "hash": "6854e125711e65c2af0b4069cec9a455b9408957792ef20b1fd64560f6a4fc00"
+        },
+        {
+          "clip": "idle",
+          "channel": "slots",
+          "name": "painted_stable_3_pole",
+          "hash": "3578ba54f71368bbc39b2d1928d44ae6f87ac0af59421f9e9676809121934259"
+        },
+        {
+          "clip": "idle",
+          "channel": "slots",
+          "name": "painted_stable_4_pole",
+          "hash": "7c2bbbf192bd1dd4a5ec2313d42ffec17f37a13ebd9dc697824088230df49549"
+        },
+        {
+          "clip": "idle_night",
+          "channel": "slots",
+          "name": "painted_stable_1_pole",
+          "hash": "dac2ee2ce8b994015110761ebb5b361cc7a7a5381495e33e2734359c09765bb7"
+        },
+        {
+          "clip": "idle_night",
+          "channel": "slots",
+          "name": "painted_stable_2_pole",
+          "hash": "4284ff383cda8af2638094d8c757afb5837adf2b498eb45c682f914503cc8660"
+        },
+        {
+          "clip": "idle_night",
+          "channel": "slots",
+          "name": "painted_stable_3_pole",
+          "hash": "bed5b8f37627eec50ea1d92f9a28b6415e9bb8f25c317409fe2d284028da13ee"
+        },
+        {
+          "clip": "idle_night",
+          "channel": "slots",
+          "name": "painted_stable_4_pole",
+          "hash": "3af86132eb210fa8ba6f58dea957b15fe1692db7ff275b8afcb29859f1a60711"
+        },
+        {
+          "clip": "upgrade",
+          "channel": "slots",
+          "name": "painted_stable_1_pole",
+          "hash": "23267aca252fc983a0ba29f018091790a422bf22927b0d5d9d77ecb60f112495"
+        },
+        {
+          "clip": "upgrade",
+          "channel": "slots",
+          "name": "painted_stable_2_pole",
+          "hash": "6854e125711e65c2af0b4069cec9a455b9408957792ef20b1fd64560f6a4fc00"
+        },
+        {
+          "clip": "upgrade",
+          "channel": "slots",
+          "name": "painted_stable_3_pole",
+          "hash": "3578ba54f71368bbc39b2d1928d44ae6f87ac0af59421f9e9676809121934259"
+        },
+        {
+          "clip": "upgrade",
+          "channel": "slots",
+          "name": "painted_stable_4_pole",
+          "hash": "7c2bbbf192bd1dd4a5ec2313d42ffec17f37a13ebd9dc697824088230df49549"
         }
       ],
       "originalAnimationChannels": {
@@ -3645,36 +3805,36 @@
           "name": "by-painted-royal.png",
           "file": "assets/KinghtFallIconMap/com/Ani/by/by-painted-royal.png",
           "uuid": "d720e2a2-208a-51fe-8610-3a8ee5e59908",
-          "sha256": "1e5dbb9fdf09709f220ecc0b8bb01eff18b44ffe9fd7ec398f8550c2d7901901",
-          "metadata": "1cef40fc2888423a54a79f4b7617806a90ef370af8a97f6e1272b438f2768c04"
+          "sha256": "c3bbd7cfeac1aa10da8965f938d7c62fb696cd87957daaeb8e6ae28b57d26cd6",
+          "metadata": "49ef38e3c4fb401c4e352223cf7804935ff4bb5768a7a297686963f32e3c97fa"
         },
         {
           "name": "by-painted-heavy.png",
           "file": "assets/KinghtFallIconMap/com/Ani/by/by-painted-heavy.png",
           "uuid": "a30c6c38-8a3e-5057-9699-9293e2364f3d",
-          "sha256": "bc8f3e789fc7a2d73c2b2b4cb50c1b9d7adc5d38c8b9b566e7ada3f71506f9a9",
-          "metadata": "1a7cd3b52dc9b9025dc2f5b9a12ff2e0a0023a22feb408c030c371954dbcc53c"
+          "sha256": "4f769fb280439a746a46218c1497e3260614c32c27da3139e9ba73c5d6499b94",
+          "metadata": "b3735da17d693975115c3b687431a61a4d1bc405edbd275e82b11becc944e4d9"
         },
         {
           "name": "by-painted-crossbow.png",
           "file": "assets/KinghtFallIconMap/com/Ani/by/by-painted-crossbow.png",
           "uuid": "c683e633-5979-5841-b110-46104d1007c8",
-          "sha256": "3f086e1e0f39435d6e44020dc5beb2a0f05dffff4fb59dae3cc58402860867a2",
-          "metadata": "7f554bbb23198f99d744240d040f07cfc499d46750245f1e0b28d5534c9db3bb"
+          "sha256": "f2f1ce22d5ef5f6c15dca6ac042577d6568c3905f609f800faab76375cf62d33",
+          "metadata": "de54b19eb585a24fe715953c034875e3260583b6200d00e4cae4be4e361b39ff"
         },
         {
           "name": "by-painted-stable.png",
           "file": "assets/KinghtFallIconMap/com/Ani/by/by-painted-stable.png",
           "uuid": "d6ba356d-2cb1-52cf-880f-29961c7c9e5e",
-          "sha256": "69b73c533ef64df858ee89009f73a0a50cfaa3071180b9715a1de668b8da70c6",
-          "metadata": "7d70900cda2442762a32acbf9a713ff75d813d0cb3a0fb2c0110b0f3d69c08af"
+          "sha256": "e013767d5ed78fba33569918511cc16c6d271205aeae89a6baa0fac1bc374cf6",
+          "metadata": "73e8648ca261ec6bb9c42e50783257a745b4425230a888d144be967f9a2a39c5"
         },
         {
           "name": "by-painted-fixtures.png",
           "file": "assets/KinghtFallIconMap/com/Ani/by/by-painted-fixtures.png",
           "uuid": "0b0d94dc-c66a-58c7-8e06-cee379e3880f",
-          "sha256": "0a28caab93895ad89dffbc072529e9c8b464b2db7d77fbea1a93e9b99311640f",
-          "metadata": "5efe24abb5bbf4541d8e8bf563072cfc34201dee773ebe0e946278bd29d598f1"
+          "sha256": "885c0f7ef3fd82d119b88b9ce2dc4223915b3c2454b1b34e53a9dbd8547a8b80",
+          "metadata": "8f6d58a4e2025632bd1ddf5e560b68fc1507a6f13f5f97381b56c6868619d0fd"
         }
       ],
       "originalTextures": [
@@ -3686,7 +3846,7 @@
       ],
       "originalJsonMetadata": "5da74a57176bb9c33f2815ca7ce6ca07f1136a82b7b86514f23d305757255da2",
       "beforeAtlas": "840af948b8efbfa286d3ad579a6728d8287786020eb1848f345696aad000eb26",
-      "appendedAtlas": "cbb53a57dc2a5249c601f91e5e498ec5507f20d4873d60817f0906e386d20b80"
+      "appendedAtlas": "6f61741220031673e8bfce79ced9b8749f39c6551ca0826265c5f863fdcd9979"
     },
     "mf": {
       "beforeSkeleton": "51160914aba964b814d69d7054d4d6cbd9e8eb18072bb69609307b4d31800678",
@@ -3792,8 +3952,8 @@
           "name": "mf-painted.png",
           "file": "assets/KinghtFallIconMap/com/Ani/mf/mf-painted.png",
           "uuid": "fc81791a-f352-491f-a3ee-6bcf4dc55d17",
-          "sha256": "d356b57e023c9c6d4f624cae72961ec273f7480ddee56e402d8e4a39842a5f52",
-          "metadata": "f73e5c59c72679cdb24b5b6561dace2ddd6ef3abe8bdbe11cd29b2b20d2b32ed"
+          "sha256": "72a1d77534a8b86107a5683fa9b1e537a8fd5e9fb4cb8ce622a32e907115d606",
+          "metadata": "7b216b6e6081d044d96fbd4fbb7a34422e8c8291be084139bb21a1fa7c03bfbd"
         }
       ],
       "originalTextures": [
@@ -3801,7 +3961,7 @@
       ],
       "originalJsonMetadata": "a18941375fa9b1ebc45466d559532ab5f8044ee906c62e872d3755504e1dd5a1",
       "beforeAtlas": "35e45ce9a585e46a22bf5356b8bc4e5a863bc3065ac98491475229302c6ab9ae",
-      "appendedAtlas": "6f254a2551993699f3d68e653e51212763c8a3b30bfad0abb5960558ef54886b"
+      "appendedAtlas": "ea401134e0959d1e160f7b958d111fb4a6611683ed71c75bd507421022d0b736"
     },
     "td": {
       "beforeSkeleton": "26851107cda074951148a5e34fd6c2670f779f309874dffe5d673d8426508838",
@@ -3958,8 +4118,8 @@
           "name": "td-painted.png",
           "file": "assets/KinghtFallIconMap/com/Ani/td/td-painted.png",
           "uuid": "cdf1ce98-7b43-4ed3-b9f6-97f278595538",
-          "sha256": "cd9e601f4e22219155aaf85265546163e36fc659366f512839a841b48b1c90fe",
-          "metadata": "bc1820710bda7a84b0ffc5e44a44ff8f771b30dbb39af1cf7def71e145b45405"
+          "sha256": "5590881465438bce39938fde2d984a0059090869f21cc4b5cd5e9d24423ddc86",
+          "metadata": "6b5319f3afd324e21c327b4a00ba1f94631f57afcd8a70bf25e80a333446edcb"
         }
       ],
       "originalTextures": [
@@ -3967,7 +4127,7 @@
       ],
       "originalJsonMetadata": "5ecebed7f8d1dc017a62d0ead4dcacb2fbe098d53fca16ba22c152bea5ee9470",
       "beforeAtlas": "d237b9cfe05629c8c776302ae5604af53d58d5a55172be92f5af13cb02f91380",
-      "appendedAtlas": "91f9f8c87493dbf9d5c61616ac10c21ca9715231238811fa469eeb0b37e4e6ce"
+      "appendedAtlas": "6c5621bd78dcc07371de646f1910aa003ee56eba1e90727ce0999ac0e9209577"
     },
     "mz": {
       "beforeSkeleton": "622ebe692622cd0faa0c0f2e736146fea7c8f47b96182318911ba07f3042fd66",
@@ -4147,8 +4307,8 @@
           "name": "mz-painted.png",
           "file": "assets/KinghtFallIconMap/com/Ani/mz/mz-painted.png",
           "uuid": "bcf678cd-90d2-4316-b908-ff90ceb911d2",
-          "sha256": "cd64d300bf9183f14c74676f16915c219f96cabd95383f6a351e7401c329b5a4",
-          "metadata": "891be2d20dd69ed84e6a73f3b9371b7d8ec00db8ddc821bf8600e6c7a8d7c3c1"
+          "sha256": "112c2c2988f246a3455d27004684426d668335587c11c04e47edc64462209b39",
+          "metadata": "475abb313818db04d816cc43f2884d109259660f7704a762c88bb457d1fef284"
         }
       ],
       "originalTextures": [
@@ -4156,7 +4316,7 @@
       ],
       "originalJsonMetadata": "513dfa26ed3d2b831293757c6153baf1c2de26395adef4b4cb404c81de3b8b77",
       "beforeAtlas": "ea95f963cd5a07629cc25476702468fbb4b70ff2aa0e0df9fdd37847eedf590d",
-      "appendedAtlas": "b668150fbbd8f18b255b84dd4cc9b63079faf9f939d2f316b0c47c9c9f0cd3a5"
+      "appendedAtlas": "6fa9383e3d40c50660e3d17c69cc5ce8068e2cb010e87b885aef57ca645ef40e"
     }
   },
   "config": {
@@ -4347,7 +4507,7 @@
               "visual": {
                 "Icon": "painted-archer-1",
                 "Skin": "jt-1",
-                "Appearance": "75cf4f86667efa3946fd0199bfcde9e741adb143483beba6f16141c70817d517"
+                "Appearance": "7c97e4514c3510a1303850353bc135e2d70dda77d97d21ce3b8955c1d36d8527"
               }
             },
             {
@@ -4377,7 +4537,7 @@
               "visual": {
                 "Icon": "painted-archer-2",
                 "Skin": "jt-2-1",
-                "Appearance": "d0ccf4e5dbf53cbcb0d8d3a5d4c8d9e3a16c0d44103ed4bf26d64abb5acbac83"
+                "Appearance": "0095c759c99ee6caccfae9332255e7421eaae3b897464c8b6bb8221e8d85294f"
               }
             },
             {
@@ -4408,7 +4568,7 @@
               "visual": {
                 "Icon": "painted-archer-3",
                 "Skin": "jt-2-2",
-                "Appearance": "57a8b14d99eeca3d2b2a9be1e0a32c164e161c3ef5e05501647d88cd5d6a393b"
+                "Appearance": "e0b95c98bf3f1de2d62f1d7235f2af096bc0dcdc166ac2b8be48dabbc44730ff"
               }
             },
             {
@@ -4446,7 +4606,7 @@
               "visual": {
                 "Icon": "painted-cannon-1",
                 "Skin": "jt-1",
-                "Appearance": "e02636d5840fc4ca4f766a5a56c432d64b19bf7f9d3e7103cc9975b9aaf55dd0"
+                "Appearance": "6c4d0315f39ff5208b0feb926a3ce7fe5029963c297cf77caf0d6b76edb9f29c"
               }
             },
             {
@@ -4484,7 +4644,7 @@
               "visual": {
                 "Icon": "painted-cannon-2",
                 "Skin": "jt-2-1",
-                "Appearance": "ca88af6ff8c31cd5124f49b3049b03116b1469e9a5068d5464d2aabaa3ca91d3"
+                "Appearance": "3512fc8f8260f8d1c9f8a2da79f61e2a5c43b1f0e1d87b99c32d77654562a762"
               }
             },
             {
@@ -4521,7 +4681,7 @@
               "visual": {
                 "Icon": "painted-cannon-3",
                 "Skin": "jt-2-2",
-                "Appearance": "62185f9d10857531ad6c7ecd679f5309a3c07f50f2f1f0e686e4cb373aedc44e"
+                "Appearance": "fb5d73cf0b5078694805b01914c1cc1a3340c0572a7dfd255eb798774b16a432"
               }
             },
             {
@@ -4559,7 +4719,7 @@
               "visual": {
                 "Icon": "painted-sniper-1",
                 "Skin": "jt-1",
-                "Appearance": "3ed6fc9b3460051122ba67c87cb11eec5edc286868310e3b2de6340b17e24e4b"
+                "Appearance": "361405a3050979a680175a05af8d59af97cb2e918850b81b6001ed9e81478e68"
               }
             },
             {
@@ -4597,7 +4757,7 @@
               "visual": {
                 "Icon": "painted-sniper-2",
                 "Skin": "jt-2-1",
-                "Appearance": "815b4746bf37ce805c43aeceb821ed7d7bed5f7b1775f83d0daaf21bbec2d3f5"
+                "Appearance": "10b1e1d59519d2501c13f27742d7b344e8bf30682bef1beb2f3b8dc27590d203"
               }
             },
             {
@@ -4634,7 +4794,7 @@
               "visual": {
                 "Icon": "painted-sniper-3",
                 "Skin": "jt-2-2",
-                "Appearance": "99aac756ac2a59511d05366942c941bb89fc079a2c48f1f0734763a09b3d7b2a"
+                "Appearance": "67757d3f6f5596a97fd39652a46ec37af5299604b15c37febd5e54e2fa79a3b3"
               }
             }
           ],
@@ -4663,35 +4823,35 @@
               "ColliderIndex": 3,
               "Appearance": {
                 "sprite": "buildings/redesign/towers/archer-4",
-                "width": 283.45512010113777,
-                "height": 310.1694058154235,
-                "offsetX": 0,
-                "offsetY": -63.29582806573957,
+                "width": 184.3994943109987,
+                "height": 201.61011378002527,
+                "offsetX": 0.07683312262958279,
+                "offsetY": -54.442288242730726,
                 "nightTint": "#A7A7A7",
                 "lighting": [
                   {
                     "sprite": "buildings/redesign/towers/archer-4-window-light",
-                    "width": 283.45512010113777,
-                    "height": 310.1694058154235,
+                    "width": 184.3994943109987,
+                    "height": 201.61011378002527,
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
                     "opacity": 240,
                     "glows": [
                       {
-                        "x": -35.22503160556258,
-                        "y": 150.82932996207333,
-                        "width": 105.43868520859671,
-                        "height": 89.83565107458912,
+                        "x": -22.973103666245258,
+                        "y": 98.03906447534767,
+                        "width": 68.53514538558787,
+                        "height": 58.393173198482934,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
                       },
                       {
-                        "x": 33.097345132743364,
-                        "y": 147.99241466498103,
-                        "width": 89.36283185840708,
-                        "height": 78.48798988621998,
+                        "x": 21.436441213653605,
+                        "y": 96.19506953223767,
+                        "width": 58.0858407079646,
+                        "height": 51.01719342604299,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
@@ -4700,7 +4860,7 @@
                   }
                 ],
                 "muzzleX": 0,
-                "muzzleY": 86.11504424778762,
+                "muzzleY": 42.67477876106196,
                 "lifecycle": "native-tower"
               }
             },
@@ -4732,26 +4892,26 @@
               },
               "Appearance": {
                 "sprite": "buildings/redesign/towers/cannon-4",
-                "width": 226.13114754098362,
-                "height": 226.13114754098362,
-                "offsetX": 0.09016393442622951,
-                "offsetY": -58.196721311475414,
+                "width": 181.94106448253515,
+                "height": 174.2085692420274,
+                "offsetX": 4.858731998721348,
+                "offsetY": -38.933400245694976,
                 "nightTint": "#A7A7A7",
                 "lighting": [
                   {
                     "sprite": "buildings/redesign/towers/cannon-4-window-light",
-                    "width": 226.13114754098362,
-                    "height": 226.13114754098362,
+                    "width": 181.94106448253515,
+                    "height": 174.2085692420274,
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
                     "opacity": 240,
                     "glows": [
                       {
-                        "x": -30.745901639344265,
-                        "y": 45.80327868852459,
-                        "width": 45.80327868852459,
-                        "height": 28.852459016393443,
+                        "x": 27.97343866418978,
+                        "y": 39.11732886374506,
+                        "width": 26.745336478932664,
+                        "height": 29.565422978411963,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
@@ -4761,60 +4921,60 @@
                 ],
                 "weapon": {
                   "sprite": "buildings/towers/cannon-3-weapon",
-                  "width": 88,
-                  "height": 70,
+                  "width": 79.2,
+                  "height": 63,
                   "pivotX": 0.567308,
                   "pivotY": 0.54878,
-                  "offsetX": 0.09016393442622951,
-                  "offsetY": 114.7704918032787,
-                  "muzzleX": 35.852748,
-                  "muzzleY": -2.926829,
+                  "offsetX": 0,
+                  "offsetY": 133.2786595151511,
+                  "muzzleX": 32.2674732,
+                  "muzzleY": -2.6341461,
                   "views": {
                     "north": {
                       "sprite": "buildings/towers/cannon-3-weapon-north",
-                      "width": 58,
-                      "height": 79,
+                      "width": 52.2,
+                      "height": 71.10000000000001,
                       "pivotX": 0.492754,
                       "pivotY": 0.5,
                       "muzzleX": 0,
-                      "muzzleY": 37.314894,
+                      "muzzleY": 33.5834046,
                       "referenceAngle": 90
                     },
                     "northeast": {
                       "sprite": "buildings/towers/cannon-3-weapon-northeast",
-                      "width": 71,
-                      "height": 76,
+                      "width": 63.9,
+                      "height": 68.4,
                       "pivotX": 0.5,
                       "pivotY": 0.5,
-                      "muzzleX": 25.960884,
-                      "muzzleY": 29.314286,
+                      "muzzleX": 23.3647956,
+                      "muzzleY": 26.3828574,
                       "referenceAngle": 45
                     },
                     "southeast": {
                       "sprite": "buildings/towers/cannon-3-weapon-southeast",
-                      "width": 75,
-                      "height": 70,
+                      "width": 67.5,
+                      "height": 63,
                       "pivotX": 0.516854,
                       "pivotY": 0.542169,
-                      "muzzleX": 18.146067,
-                      "muzzleY": -3.148594,
+                      "muzzleX": 16.3314603,
+                      "muzzleY": -2.8337346,
                       "referenceAngle": -45
                     },
                     "south": {
                       "sprite": "buildings/towers/cannon-3-weapon-south",
-                      "width": 58,
-                      "height": 68,
+                      "width": 52.2,
+                      "height": 61.2,
                       "pivotX": 0.492754,
                       "pivotY": 0.5,
                       "muzzleX": 0,
-                      "muzzleY": -7.225,
+                      "muzzleY": -6.5024999999999995,
                       "referenceAngle": -90
                     }
                   },
                   "referenceAngle": 0,
                   "motion": {
                     "type": "spring",
-                    "distance": 13.103997,
+                    "distance": 11.7935973,
                     "speed": 20,
                     "damping": 5,
                     "reloadTime": 0
@@ -4822,13 +4982,13 @@
                 },
                 "destroyed": {
                   "sprite": "buildings/towers/cannon-3-destroyed",
-                  "width": 187,
-                  "height": 187,
+                  "width": 168.3,
+                  "height": 168.3,
                   "offsetX": 0,
                   "offsetY": -38
                 },
-                "muzzleX": 26.05104793442623,
-                "muzzleY": 144.0847778032787,
+                "muzzleX": 23.3647956,
+                "muzzleY": 159.6615169151511,
                 "lifecycle": "native-tower"
               },
               "LevelUpDescribe": "[[loc:data.building.cannon-4.description]]",
@@ -4863,26 +5023,26 @@
               },
               "Appearance": {
                 "sprite": "buildings/redesign/towers/sniper-4",
-                "width": 262.3020134228188,
-                "height": 262.3020134228188,
-                "offsetX": 0,
-                "offsetY": -75.0234899328859,
+                "width": 142.62547545040917,
+                "height": 185.83123837186864,
+                "offsetX": 0.10714260199203295,
+                "offsetY": -40.025126154312396,
                 "nightTint": "#A7A7A7",
                 "lighting": [
                   {
                     "sprite": "buildings/redesign/towers/sniper-4-window-light",
-                    "width": 262.3020134228188,
-                    "height": 262.3020134228188,
+                    "width": 142.62547545040917,
+                    "height": 185.83123837186864,
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
                     "opacity": 240,
                     "glows": [
                       {
-                        "x": -32.94463087248322,
-                        "y": 94.65044742729306,
-                        "width": 45.59955257270693,
-                        "height": 58.986577181208055,
+                        "x": 25.551795276131937,
+                        "y": 40.41829434588143,
+                        "width": 27.317192040664686,
+                        "height": 30.197576235428652,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
@@ -4897,7 +5057,7 @@
                   "pivotX": 0.445513,
                   "pivotY": 0.542453,
                   "offsetX": 0,
-                  "offsetY": 133.8283696868009,
+                  "offsetY": 135.15489992080305,
                   "muzzleX": 63.653846,
                   "muzzleY": 6.575472,
                   "views": {
@@ -4958,13 +5118,13 @@
                 },
                 "destroyed": {
                   "sprite": "buildings/towers/sniper-3-destroyed",
-                  "width": 187,
-                  "height": 187,
+                  "width": 104,
+                  "height": 104,
                   "offsetX": 0,
                   "offsetY": -38
                 },
                 "muzzleX": 39.471429,
-                "muzzleY": 174.8110086868009,
+                "muzzleY": 176.13753892080305,
                 "lifecycle": "native-tower"
               },
               "LevelUpDescribe": "[[loc:data.building.sniper-4.description]]",
@@ -5547,9 +5707,9 @@
                 "ID": 5,
                 "index": 1,
                 "level": 1,
-                "Name": "[[loc:data.buildenum.5.name]]",
+                "Name": "[[loc:data.mill.none.1.name]]",
                 "BuildSliverCost": 6,
-                "LevelUpDescribe": "[[loc:data.building.guide.5.1.description]]",
+                "LevelUpDescribe": "[[loc:data.mill.none.1.description]]",
                 "Zoom": 0.35,
                 "Hp": 200,
                 "Excursion": [
@@ -5559,10 +5719,20 @@
                 "Data": [
                   3,
                   0
-                ]
+                ],
+                "MillDefense": {
+                  "kind": "none",
+                  "fields": 2,
+                  "fieldHp": 100,
+                  "damage": 0,
+                  "range": 260,
+                  "interval": 1.5,
+                  "splashRadius": 110
+                }
               },
               "branch": [
-                2
+                2,
+                5
               ],
               "visual": {
                 "Icon": "painted_mill_1",
@@ -5575,9 +5745,9 @@
                 "ID": 5,
                 "index": 2,
                 "level": 2,
-                "Name": "[[loc:data.buildenum.5.levellist.2.name]]",
+                "Name": "[[loc:data.mill.scarecrow.2.name]]",
                 "BuildSliverCost": 6,
-                "LevelUpDescribe": "[[loc:data.buildenum.5.levellist.2.levelupdescribe]]",
+                "LevelUpDescribe": "[[loc:data.mill.scarecrow.2.description]]",
                 "Zoom": 0.35,
                 "Hp": 300,
                 "Excursion": [
@@ -5587,7 +5757,16 @@
                 "Data": [
                   5,
                   0
-                ]
+                ],
+                "MillDefense": {
+                  "kind": "scarecrow",
+                  "fields": 2,
+                  "fieldHp": 150,
+                  "damage": 12,
+                  "range": 260,
+                  "interval": 1.5,
+                  "splashRadius": 110
+                }
               },
               "branch": [
                 3
@@ -5603,9 +5782,9 @@
                 "ID": 5,
                 "index": 3,
                 "level": 3,
-                "Name": "[[loc:data.buildenum.5.levellist.3.name]]",
+                "Name": "[[loc:data.mill.scarecrow.3.name]]",
                 "VedioCount": 1,
-                "LevelUpDescribe": "[[loc:data.buildenum.5.levellist.3.levelupdescribe]]",
+                "LevelUpDescribe": "[[loc:data.mill.scarecrow.3.description]]",
                 "Zoom": 0.35,
                 "Hp": 300,
                 "Excursion": [
@@ -5615,7 +5794,16 @@
                 "Data": [
                   7,
                   0
-                ]
+                ],
+                "MillDefense": {
+                  "kind": "scarecrow",
+                  "fields": 3,
+                  "fieldHp": 180,
+                  "damage": 18,
+                  "range": 260,
+                  "interval": 1.5,
+                  "splashRadius": 110
+                }
               },
               "branch": [
                 4
@@ -5631,9 +5819,9 @@
               "ID": 5,
               "index": 4,
               "level": 4,
-              "Name": "[[loc:data.building.mill-4.name]]",
+              "Name": "[[loc:data.mill.scarecrow.4.name]]",
               "VedioCount": 0,
-              "LevelUpDescribe": "[[loc:data.building.mill-4.description]]",
+              "LevelUpDescribe": "[[loc:data.mill.scarecrow.4.description]]",
               "Icon": "painted_mill_4",
               "Zoom": 0.35,
               "Skin": "mf-3",
@@ -5647,7 +5835,116 @@
                 0
               ],
               "BuildCost": 6,
+              "ColliderIndex": 3,
+              "MillDefense": {
+                "kind": "scarecrow",
+                "fields": 4,
+                "fieldHp": 220,
+                "damage": 24,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110
+              }
+            },
+            {
+              "ID": 5,
+              "index": 5,
+              "level": 2,
+              "Name": "[[loc:data.mill.bomb.2.name]]",
+              "BuildSliverCost": 6,
+              "LevelUpDescribe": "[[loc:data.mill.bomb.2.description]]",
+              "Icon": "painted_mill_bomb_2",
+              "Zoom": 0.35,
+              "Skin": "mf-bomb-2",
+              "Hp": 300,
+              "Excursion": [
+                -202,
+                31
+              ],
+              "Data": [
+                5,
+                0
+              ],
+              "BranchBuild": [
+                6
+              ],
+              "MillDefense": {
+                "kind": "bomb",
+                "fields": 2,
+                "fieldHp": 150,
+                "damage": 70,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110,
+                "artRank": 1
+              },
+              "ColliderIndex": 2
+            },
+            {
+              "ID": 5,
+              "index": 6,
+              "level": 3,
+              "Name": "[[loc:data.mill.bomb.3.name]]",
+              "VedioCount": 1,
+              "LevelUpDescribe": "[[loc:data.mill.bomb.3.description]]",
+              "Icon": "painted_mill_bomb_3",
+              "Zoom": 0.35,
+              "Skin": "mf-bomb-3",
+              "Hp": 300,
+              "Excursion": [
+                -202,
+                31
+              ],
+              "Data": [
+                7,
+                0
+              ],
+              "BranchBuild": [
+                7
+              ],
+              "MillDefense": {
+                "kind": "bomb",
+                "fields": 3,
+                "fieldHp": 180,
+                "damage": 100,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110,
+                "artRank": 2
+              },
               "ColliderIndex": 3
+            },
+            {
+              "ID": 5,
+              "index": 7,
+              "level": 4,
+              "Name": "[[loc:data.mill.bomb.4.name]]",
+              "VedioCount": 0,
+              "LevelUpDescribe": "[[loc:data.mill.bomb.4.description]]",
+              "Icon": "painted_mill_bomb_4",
+              "Zoom": 0.35,
+              "Skin": "mf-bomb-4",
+              "Hp": 400,
+              "Excursion": [
+                -202,
+                31
+              ],
+              "Data": [
+                9,
+                0
+              ],
+              "BuildCost": 6,
+              "ColliderIndex": 3,
+              "MillDefense": {
+                "kind": "bomb",
+                "fields": 4,
+                "fieldHp": 220,
+                "damage": 140,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110,
+                "artRank": 3
+              }
             }
           ]
         },
@@ -5914,7 +6211,7 @@
               "visual": {
                 "Icon": "painted-archer-1",
                 "Skin": "jt-1",
-                "Appearance": "75cf4f86667efa3946fd0199bfcde9e741adb143483beba6f16141c70817d517"
+                "Appearance": "7c97e4514c3510a1303850353bc135e2d70dda77d97d21ce3b8955c1d36d8527"
               }
             },
             {
@@ -5944,7 +6241,7 @@
               "visual": {
                 "Icon": "painted-archer-2",
                 "Skin": "jt-2-1",
-                "Appearance": "d0ccf4e5dbf53cbcb0d8d3a5d4c8d9e3a16c0d44103ed4bf26d64abb5acbac83"
+                "Appearance": "0095c759c99ee6caccfae9332255e7421eaae3b897464c8b6bb8221e8d85294f"
               }
             },
             {
@@ -5975,7 +6272,7 @@
               "visual": {
                 "Icon": "painted-archer-3",
                 "Skin": "jt-2-2",
-                "Appearance": "57a8b14d99eeca3d2b2a9be1e0a32c164e161c3ef5e05501647d88cd5d6a393b"
+                "Appearance": "e0b95c98bf3f1de2d62f1d7235f2af096bc0dcdc166ac2b8be48dabbc44730ff"
               }
             },
             {
@@ -6013,7 +6310,7 @@
               "visual": {
                 "Icon": "painted-cannon-1",
                 "Skin": "jt-1",
-                "Appearance": "e02636d5840fc4ca4f766a5a56c432d64b19bf7f9d3e7103cc9975b9aaf55dd0"
+                "Appearance": "6c4d0315f39ff5208b0feb926a3ce7fe5029963c297cf77caf0d6b76edb9f29c"
               }
             },
             {
@@ -6051,7 +6348,7 @@
               "visual": {
                 "Icon": "painted-cannon-2",
                 "Skin": "jt-2-1",
-                "Appearance": "ca88af6ff8c31cd5124f49b3049b03116b1469e9a5068d5464d2aabaa3ca91d3"
+                "Appearance": "3512fc8f8260f8d1c9f8a2da79f61e2a5c43b1f0e1d87b99c32d77654562a762"
               }
             },
             {
@@ -6088,7 +6385,7 @@
               "visual": {
                 "Icon": "painted-cannon-3",
                 "Skin": "jt-2-2",
-                "Appearance": "62185f9d10857531ad6c7ecd679f5309a3c07f50f2f1f0e686e4cb373aedc44e"
+                "Appearance": "fb5d73cf0b5078694805b01914c1cc1a3340c0572a7dfd255eb798774b16a432"
               }
             },
             {
@@ -6126,7 +6423,7 @@
               "visual": {
                 "Icon": "painted-sniper-1",
                 "Skin": "jt-1",
-                "Appearance": "3ed6fc9b3460051122ba67c87cb11eec5edc286868310e3b2de6340b17e24e4b"
+                "Appearance": "361405a3050979a680175a05af8d59af97cb2e918850b81b6001ed9e81478e68"
               }
             },
             {
@@ -6164,7 +6461,7 @@
               "visual": {
                 "Icon": "painted-sniper-2",
                 "Skin": "jt-2-1",
-                "Appearance": "815b4746bf37ce805c43aeceb821ed7d7bed5f7b1775f83d0daaf21bbec2d3f5"
+                "Appearance": "10b1e1d59519d2501c13f27742d7b344e8bf30682bef1beb2f3b8dc27590d203"
               }
             },
             {
@@ -6201,7 +6498,7 @@
               "visual": {
                 "Icon": "painted-sniper-3",
                 "Skin": "jt-2-2",
-                "Appearance": "99aac756ac2a59511d05366942c941bb89fc079a2c48f1f0734763a09b3d7b2a"
+                "Appearance": "67757d3f6f5596a97fd39652a46ec37af5299604b15c37febd5e54e2fa79a3b3"
               }
             }
           ],
@@ -6230,35 +6527,35 @@
               "ColliderIndex": 3,
               "Appearance": {
                 "sprite": "buildings/redesign/towers/archer-4",
-                "width": 283.45512010113777,
-                "height": 310.1694058154235,
-                "offsetX": 0,
-                "offsetY": -63.29582806573957,
+                "width": 184.3994943109987,
+                "height": 201.61011378002527,
+                "offsetX": 0.07683312262958279,
+                "offsetY": -54.442288242730726,
                 "nightTint": "#A7A7A7",
                 "lighting": [
                   {
                     "sprite": "buildings/redesign/towers/archer-4-window-light",
-                    "width": 283.45512010113777,
-                    "height": 310.1694058154235,
+                    "width": 184.3994943109987,
+                    "height": 201.61011378002527,
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
                     "opacity": 240,
                     "glows": [
                       {
-                        "x": -35.22503160556258,
-                        "y": 150.82932996207333,
-                        "width": 105.43868520859671,
-                        "height": 89.83565107458912,
+                        "x": -22.973103666245258,
+                        "y": 98.03906447534767,
+                        "width": 68.53514538558787,
+                        "height": 58.393173198482934,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
                       },
                       {
-                        "x": 33.097345132743364,
-                        "y": 147.99241466498103,
-                        "width": 89.36283185840708,
-                        "height": 78.48798988621998,
+                        "x": 21.436441213653605,
+                        "y": 96.19506953223767,
+                        "width": 58.0858407079646,
+                        "height": 51.01719342604299,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
@@ -6267,7 +6564,7 @@
                   }
                 ],
                 "muzzleX": 0,
-                "muzzleY": 86.11504424778762,
+                "muzzleY": 42.67477876106196,
                 "lifecycle": "native-tower"
               }
             },
@@ -6299,26 +6596,26 @@
               },
               "Appearance": {
                 "sprite": "buildings/redesign/towers/cannon-4",
-                "width": 226.13114754098362,
-                "height": 226.13114754098362,
-                "offsetX": 0.09016393442622951,
-                "offsetY": -58.196721311475414,
+                "width": 181.94106448253515,
+                "height": 174.2085692420274,
+                "offsetX": 4.858731998721348,
+                "offsetY": -38.933400245694976,
                 "nightTint": "#A7A7A7",
                 "lighting": [
                   {
                     "sprite": "buildings/redesign/towers/cannon-4-window-light",
-                    "width": 226.13114754098362,
-                    "height": 226.13114754098362,
+                    "width": 181.94106448253515,
+                    "height": 174.2085692420274,
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
                     "opacity": 240,
                     "glows": [
                       {
-                        "x": -30.745901639344265,
-                        "y": 45.80327868852459,
-                        "width": 45.80327868852459,
-                        "height": 28.852459016393443,
+                        "x": 27.97343866418978,
+                        "y": 39.11732886374506,
+                        "width": 26.745336478932664,
+                        "height": 29.565422978411963,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
@@ -6328,60 +6625,60 @@
                 ],
                 "weapon": {
                   "sprite": "buildings/towers/cannon-3-weapon",
-                  "width": 88,
-                  "height": 70,
+                  "width": 79.2,
+                  "height": 63,
                   "pivotX": 0.567308,
                   "pivotY": 0.54878,
-                  "offsetX": 0.09016393442622951,
-                  "offsetY": 114.7704918032787,
-                  "muzzleX": 35.852748,
-                  "muzzleY": -2.926829,
+                  "offsetX": 0,
+                  "offsetY": 133.2786595151511,
+                  "muzzleX": 32.2674732,
+                  "muzzleY": -2.6341461,
                   "views": {
                     "north": {
                       "sprite": "buildings/towers/cannon-3-weapon-north",
-                      "width": 58,
-                      "height": 79,
+                      "width": 52.2,
+                      "height": 71.10000000000001,
                       "pivotX": 0.492754,
                       "pivotY": 0.5,
                       "muzzleX": 0,
-                      "muzzleY": 37.314894,
+                      "muzzleY": 33.5834046,
                       "referenceAngle": 90
                     },
                     "northeast": {
                       "sprite": "buildings/towers/cannon-3-weapon-northeast",
-                      "width": 71,
-                      "height": 76,
+                      "width": 63.9,
+                      "height": 68.4,
                       "pivotX": 0.5,
                       "pivotY": 0.5,
-                      "muzzleX": 25.960884,
-                      "muzzleY": 29.314286,
+                      "muzzleX": 23.3647956,
+                      "muzzleY": 26.3828574,
                       "referenceAngle": 45
                     },
                     "southeast": {
                       "sprite": "buildings/towers/cannon-3-weapon-southeast",
-                      "width": 75,
-                      "height": 70,
+                      "width": 67.5,
+                      "height": 63,
                       "pivotX": 0.516854,
                       "pivotY": 0.542169,
-                      "muzzleX": 18.146067,
-                      "muzzleY": -3.148594,
+                      "muzzleX": 16.3314603,
+                      "muzzleY": -2.8337346,
                       "referenceAngle": -45
                     },
                     "south": {
                       "sprite": "buildings/towers/cannon-3-weapon-south",
-                      "width": 58,
-                      "height": 68,
+                      "width": 52.2,
+                      "height": 61.2,
                       "pivotX": 0.492754,
                       "pivotY": 0.5,
                       "muzzleX": 0,
-                      "muzzleY": -7.225,
+                      "muzzleY": -6.5024999999999995,
                       "referenceAngle": -90
                     }
                   },
                   "referenceAngle": 0,
                   "motion": {
                     "type": "spring",
-                    "distance": 13.103997,
+                    "distance": 11.7935973,
                     "speed": 20,
                     "damping": 5,
                     "reloadTime": 0
@@ -6389,13 +6686,13 @@
                 },
                 "destroyed": {
                   "sprite": "buildings/towers/cannon-3-destroyed",
-                  "width": 187,
-                  "height": 187,
+                  "width": 168.3,
+                  "height": 168.3,
                   "offsetX": 0,
                   "offsetY": -38
                 },
-                "muzzleX": 26.05104793442623,
-                "muzzleY": 144.0847778032787,
+                "muzzleX": 23.3647956,
+                "muzzleY": 159.6615169151511,
                 "lifecycle": "native-tower"
               },
               "LevelUpDescribe": "[[loc:data.building.cannon-4.description]]",
@@ -6430,26 +6727,26 @@
               },
               "Appearance": {
                 "sprite": "buildings/redesign/towers/sniper-4",
-                "width": 262.3020134228188,
-                "height": 262.3020134228188,
-                "offsetX": 0,
-                "offsetY": -75.0234899328859,
+                "width": 142.62547545040917,
+                "height": 185.83123837186864,
+                "offsetX": 0.10714260199203295,
+                "offsetY": -40.025126154312396,
                 "nightTint": "#A7A7A7",
                 "lighting": [
                   {
                     "sprite": "buildings/redesign/towers/sniper-4-window-light",
-                    "width": 262.3020134228188,
-                    "height": 262.3020134228188,
+                    "width": 142.62547545040917,
+                    "height": 185.83123837186864,
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
                     "opacity": 240,
                     "glows": [
                       {
-                        "x": -32.94463087248322,
-                        "y": 94.65044742729306,
-                        "width": 45.59955257270693,
-                        "height": 58.986577181208055,
+                        "x": 25.551795276131937,
+                        "y": 40.41829434588143,
+                        "width": 27.317192040664686,
+                        "height": 30.197576235428652,
                         "color": "#FFC85B",
                         "opacity": 80,
                         "pulse": 0.08
@@ -6464,7 +6761,7 @@
                   "pivotX": 0.445513,
                   "pivotY": 0.542453,
                   "offsetX": 0,
-                  "offsetY": 133.8283696868009,
+                  "offsetY": 135.15489992080305,
                   "muzzleX": 63.653846,
                   "muzzleY": 6.575472,
                   "views": {
@@ -6525,13 +6822,13 @@
                 },
                 "destroyed": {
                   "sprite": "buildings/towers/sniper-3-destroyed",
-                  "width": 187,
-                  "height": 187,
+                  "width": 104,
+                  "height": 104,
                   "offsetX": 0,
                   "offsetY": -38
                 },
                 "muzzleX": 39.471429,
-                "muzzleY": 174.8110086868009,
+                "muzzleY": 176.13753892080305,
                 "lifecycle": "native-tower"
               },
               "LevelUpDescribe": "[[loc:data.building.sniper-4.description]]",
@@ -7114,9 +7411,9 @@
                 "ID": 5,
                 "index": 1,
                 "level": 1,
-                "Name": "[[loc:data.buildenum.5.name]]",
+                "Name": "[[loc:data.mill.none.1.name]]",
                 "BuildSliverCost": 6,
-                "LevelUpDescribe": "[[loc:data.building.guide.5.1.description]]",
+                "LevelUpDescribe": "[[loc:data.mill.none.1.description]]",
                 "Zoom": 0.35,
                 "Hp": 200,
                 "Excursion": [
@@ -7126,10 +7423,20 @@
                 "Data": [
                   3,
                   0
-                ]
+                ],
+                "MillDefense": {
+                  "kind": "none",
+                  "fields": 2,
+                  "fieldHp": 100,
+                  "damage": 0,
+                  "range": 260,
+                  "interval": 1.5,
+                  "splashRadius": 110
+                }
               },
               "branch": [
-                2
+                2,
+                5
               ],
               "visual": {
                 "Icon": "painted_mill_1",
@@ -7142,9 +7449,9 @@
                 "ID": 5,
                 "index": 2,
                 "level": 2,
-                "Name": "[[loc:data.buildenum.5.levellist.2.name]]",
+                "Name": "[[loc:data.mill.scarecrow.2.name]]",
                 "BuildSliverCost": 6,
-                "LevelUpDescribe": "[[loc:data.buildenum.5.levellist.2.levelupdescribe]]",
+                "LevelUpDescribe": "[[loc:data.mill.scarecrow.2.description]]",
                 "Zoom": 0.35,
                 "Hp": 300,
                 "Excursion": [
@@ -7154,7 +7461,16 @@
                 "Data": [
                   5,
                   0
-                ]
+                ],
+                "MillDefense": {
+                  "kind": "scarecrow",
+                  "fields": 2,
+                  "fieldHp": 150,
+                  "damage": 12,
+                  "range": 260,
+                  "interval": 1.5,
+                  "splashRadius": 110
+                }
               },
               "branch": [
                 3
@@ -7170,9 +7486,9 @@
                 "ID": 5,
                 "index": 3,
                 "level": 3,
-                "Name": "[[loc:data.buildenum.5.levellist.3.name]]",
+                "Name": "[[loc:data.mill.scarecrow.3.name]]",
                 "VedioCount": 1,
-                "LevelUpDescribe": "[[loc:data.buildenum.5.levellist.3.levelupdescribe]]",
+                "LevelUpDescribe": "[[loc:data.mill.scarecrow.3.description]]",
                 "Zoom": 0.35,
                 "Hp": 300,
                 "Excursion": [
@@ -7182,7 +7498,16 @@
                 "Data": [
                   7,
                   0
-                ]
+                ],
+                "MillDefense": {
+                  "kind": "scarecrow",
+                  "fields": 3,
+                  "fieldHp": 180,
+                  "damage": 18,
+                  "range": 260,
+                  "interval": 1.5,
+                  "splashRadius": 110
+                }
               },
               "branch": [
                 4
@@ -7198,9 +7523,9 @@
               "ID": 5,
               "index": 4,
               "level": 4,
-              "Name": "[[loc:data.building.mill-4.name]]",
+              "Name": "[[loc:data.mill.scarecrow.4.name]]",
               "VedioCount": 0,
-              "LevelUpDescribe": "[[loc:data.building.mill-4.description]]",
+              "LevelUpDescribe": "[[loc:data.mill.scarecrow.4.description]]",
               "Icon": "painted_mill_4",
               "Zoom": 0.35,
               "Skin": "mf-3",
@@ -7214,7 +7539,116 @@
                 0
               ],
               "BuildCost": 6,
+              "ColliderIndex": 3,
+              "MillDefense": {
+                "kind": "scarecrow",
+                "fields": 4,
+                "fieldHp": 220,
+                "damage": 24,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110
+              }
+            },
+            {
+              "ID": 5,
+              "index": 5,
+              "level": 2,
+              "Name": "[[loc:data.mill.bomb.2.name]]",
+              "BuildSliverCost": 6,
+              "LevelUpDescribe": "[[loc:data.mill.bomb.2.description]]",
+              "Icon": "painted_mill_bomb_2",
+              "Zoom": 0.35,
+              "Skin": "mf-bomb-2",
+              "Hp": 300,
+              "Excursion": [
+                -202,
+                31
+              ],
+              "Data": [
+                5,
+                0
+              ],
+              "BranchBuild": [
+                6
+              ],
+              "MillDefense": {
+                "kind": "bomb",
+                "fields": 2,
+                "fieldHp": 150,
+                "damage": 70,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110,
+                "artRank": 1
+              },
+              "ColliderIndex": 2
+            },
+            {
+              "ID": 5,
+              "index": 6,
+              "level": 3,
+              "Name": "[[loc:data.mill.bomb.3.name]]",
+              "VedioCount": 1,
+              "LevelUpDescribe": "[[loc:data.mill.bomb.3.description]]",
+              "Icon": "painted_mill_bomb_3",
+              "Zoom": 0.35,
+              "Skin": "mf-bomb-3",
+              "Hp": 300,
+              "Excursion": [
+                -202,
+                31
+              ],
+              "Data": [
+                7,
+                0
+              ],
+              "BranchBuild": [
+                7
+              ],
+              "MillDefense": {
+                "kind": "bomb",
+                "fields": 3,
+                "fieldHp": 180,
+                "damage": 100,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110,
+                "artRank": 2
+              },
               "ColliderIndex": 3
+            },
+            {
+              "ID": 5,
+              "index": 7,
+              "level": 4,
+              "Name": "[[loc:data.mill.bomb.4.name]]",
+              "VedioCount": 0,
+              "LevelUpDescribe": "[[loc:data.mill.bomb.4.description]]",
+              "Icon": "painted_mill_bomb_4",
+              "Zoom": 0.35,
+              "Skin": "mf-bomb-4",
+              "Hp": 400,
+              "Excursion": [
+                -202,
+                31
+              ],
+              "Data": [
+                9,
+                0
+              ],
+              "BuildCost": 6,
+              "ColliderIndex": 3,
+              "MillDefense": {
+                "kind": "bomb",
+                "fields": 4,
+                "fieldHp": 220,
+                "damage": 140,
+                "range": 260,
+                "interval": 1.5,
+                "splashRadius": 110,
+                "artRank": 3
+              }
             }
           ]
         },
@@ -7341,37 +7775,37 @@
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-1.png",
       "name": "painted-cannon-1",
-      "sha256": "f4dbefc10cc862ea47336614a40881c228f12452e811c1db374710d6ccee29ab",
+      "sha256": "0a42f3bfef7bf3a6dcd45ac4c5e366e64815d10a63385c62e2aa0f5b457ae367",
       "metadata": "8e6c1e7eb28fdc4b1791c3f425c68cca4ec85e8484787cab00b8a70d41bc8528"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-2.png",
       "name": "painted-cannon-2",
-      "sha256": "f2d2d834b30d4460d40db3753752abec645173d4efdf89c8a80e17fce9b3a677",
+      "sha256": "31cba5267cec2f283a225c29f73289069ffe73001623f3114e039c0a379430b2",
       "metadata": "4ec96e476d21091e162a5b721e35292118cdb97016adfbc400ca11c97d5299c7"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-3.png",
       "name": "painted-cannon-3",
-      "sha256": "3d35f16b019be31816c48c280f7f59fa7bb77dfd82acbb077442f21220c056a0",
+      "sha256": "a103b414adff5174975fc5817efff052f3f11ce4978ceec8ab021d8583db9a9c",
       "metadata": "b7222de4fa049a69232ccc792ef3a23ef4530f16e6b3c3d9b1f9c0b3b5f86c2e"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-1.png",
       "name": "painted-sniper-1",
-      "sha256": "4ff98bdb98a3a93c6fe9440bbe67f0258520d6f44c2e4157ce0a8f1a670d4849",
+      "sha256": "3c55aba28cc8d8d3cc07e0c8c1d06915f3d7471478aa802092fb7cf1467353ec",
       "metadata": "9587f626a04c1980c3a2a217ca3f74679e69805da1094a355698bee65ac93c04"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-2.png",
       "name": "painted-sniper-2",
-      "sha256": "6b04cfab8d0882b5e33b13697402c17faf13c307c295defa6e3d236b34a8dff1",
+      "sha256": "bb36b895323c8d06a21331b10e719e735a5a9996c8f701dc8a9015dce9b3e695",
       "metadata": "2ac3dfcb2de428b6732dff8b3263054c55152a8bf132164f5ab9d9054097fae0"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-3.png",
       "name": "painted-sniper-3",
-      "sha256": "8e5d017cb6091ba433e93f9efb705937ee2b053e60b735c1c8717af5c90015c8",
+      "sha256": "864ae64e1a5f0c0f6976c57984ef3156a8454ecb32e722c333e75e703fea081e",
       "metadata": "8395caa643e133a6c2bbfd9581d3f4a92e92ce54e91865346125403be602e4d8"
     },
     {
@@ -7383,13 +7817,13 @@
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-4.png",
       "name": "painted-cannon-4",
-      "sha256": "b968fcbcb80f76fb2df2450f78f553b5f7aa8cd0c87b04970eaefe118489fa77",
+      "sha256": "c8971ce024916d2635e677744c41f65e89951a7738472c3c97db0b781b2cb92e",
       "metadata": "eef4b39404b8e87987a031c3a5552a8adbd85451e2967517e7e9cc8fec94cc20"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-4.png",
       "name": "painted-sniper-4",
-      "sha256": "d23e81eb07508a31ff2450fa1c33b9b46b0c76531c5ba63dd790d59c7ebe255e",
+      "sha256": "205d7b8341bb8e3bce64bbb13b588351e8819f5f57d7156cb86338b32d08f466",
       "metadata": "7d2b40f989ba2e62b3a3fe3d4d3d5ddd8a9bb7fabed9696a754cb622c2c77c21"
     },
     {
@@ -7413,55 +7847,55 @@
     {
       "file": "assets/KinghtFallIconBuild/painted-heavy-1.png",
       "name": "painted-heavy-1",
-      "sha256": "ed239524f4f55b4c5cfe059ca5565ec7907d8196d12a6487cb66bf99530110a7",
+      "sha256": "6be37019f6a1195812e2af592b62760e556de74d1f29c40088c2d6c53e54ac1a",
       "metadata": "12cfc68476a9a32168be258ef425d0215a07d2b7de99a6966ec8964dae194bc8"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-heavy-2.png",
       "name": "painted-heavy-2",
-      "sha256": "64fcfc84705e35bc8f58e45440e5adc3e672d351c6b344c36abf44ecaaa30e90",
+      "sha256": "984f0cf0d17676b61d35fb8ff7081fba2627d6ee8ecbee4adb46ca05731a86c9",
       "metadata": "dea154e66cfe6afc1b3e52adf1c08a2a5d3ab79a0275020ca1935f0ceffb145b"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-heavy-3.png",
       "name": "painted-heavy-3",
-      "sha256": "a4c2917917b0f90d754b4314ee41826c66351994597808ffde5d15306dc9d6ed",
+      "sha256": "6fa731f41a4ebee13f49102339d16a8fa05222256db100ab3a888af9716317b4",
       "metadata": "63e7a28cc0924dda5b15ad23f38136be748d0efb2aa22d9d9e5f6b72f39455fb"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-crossbow-1.png",
       "name": "painted-crossbow-1",
-      "sha256": "b5274d7379d544db0a8208f9dfbc26a7d65d0d98014a43c90ce427487de69441",
+      "sha256": "7f9d428ecf31679e489d15bdf513eacba6fb2131f98aad2c06b0ba42ff4e67c4",
       "metadata": "7b684af07948828b4a6cdfb235b0bdc2612249f15e5bbad3b97ca3938b12c0ec"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-crossbow-2.png",
       "name": "painted-crossbow-2",
-      "sha256": "5224623562a423483062f2ee0d53bdd690098655a3e3eeb7a8c3bb1cfdbe08f5",
+      "sha256": "6d2e23c5bddf28bd6f54fe592d5401a137762eedb729243c59fa55d86457db80",
       "metadata": "6ea04a05c903f97361b40317a589f89581d79ab767cdc1fbc73b87f7979b8a6b"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-crossbow-3.png",
       "name": "painted-crossbow-3",
-      "sha256": "de082597ad5ce684893590ddb2aa93cac2844419c2d689434a278f7b89b3df9e",
+      "sha256": "abeb0ddb3b35bf2c18cd7a60f3ff920dbd7e057c27e4671e0575322fd0e63602",
       "metadata": "9b9e7a45fcafa59b172c161c8698ecff68cbab1125d6b59feceea32f1a9cae8b"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-stable-1.png",
       "name": "painted-stable-1",
-      "sha256": "79e38fa45ceb5f96fe05f7d067ab2d79dd1e830b458065ff08c5fb1069fc67e2",
+      "sha256": "f3701e7c589c830b6ca84c8f21759eb93b47fac1aaefa6a01eff5a888d7cdaaf",
       "metadata": "71731717411c0069cf6f123a256537c02777905aefc0f7cddc2c0013c22527cc"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-stable-2.png",
       "name": "painted-stable-2",
-      "sha256": "609bb641f1217436bd0648978b98e05fed752b0735ea54a23e69929143788592",
+      "sha256": "6c41fea88be7420094a63d7aebe38de183230491425d428587929c243519a3d1",
       "metadata": "5444329068a925c95f911832acaedc7715ccf582488156f4988bf14b38a75fe9"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-stable-3.png",
       "name": "painted-stable-3",
-      "sha256": "26b99aef763ba7813b0b375a812734df281b9c6875f73c085f6dfc89ad6237d6",
+      "sha256": "dc7449bedf1c2a9c9ad7fe30b830298c5883855cc96a2ebbdb419181396520e7",
       "metadata": "ae3e29b671356326fe1b303bf7a59dd1a2bf8da1e8c71952f54295238e2b6bd5"
     },
     {
@@ -7473,19 +7907,19 @@
     {
       "file": "assets/KinghtFallIconBuild/painted-heavy-4.png",
       "name": "painted-heavy-4",
-      "sha256": "67c781957906e2fc83fbaade96d9a29d4432f4d74035866c3238f155ac960ef1",
+      "sha256": "f50020aafe0f88315c769aa797bcd7b6fff537a9081e34657ef02852c4c49841",
       "metadata": "460c3c52d3e10f05dbef855652a227f878b9199990d31c8001809f8058f0f48c"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-crossbow-4.png",
       "name": "painted-crossbow-4",
-      "sha256": "f9e28e819097c1e33b2d6f20f566842e226dcd27f6cdb49d5a318392d6700cca",
+      "sha256": "ca50a9bca0a518de8263db8f5319a436f8e31e6e733aded2e63a22ebea7af10c",
       "metadata": "8f1b57c2c83a8cc6859c7ee99ce6a1cb74b6a72706950f677c02ce9dd92e3b5d"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-stable-4.png",
       "name": "painted-stable-4",
-      "sha256": "72e569d37168a0663b517231b1853280ae4d1127190f24ed251505f355726a0c",
+      "sha256": "b7d0be917efb5fa9661808edc9c6ccdb265ffabcfcfd83fd651067a841132790",
       "metadata": "e92c1fd101918d920f148d8ea4e96d7fbd82c9e0bee211fc8df81b8734e068a1"
     },
     {
@@ -7515,26 +7949,44 @@
     {
       "file": "assets/KinghtFallIconBuild/painted_mill_1.png",
       "name": "painted_mill_1",
-      "sha256": "3994cc1233449b5b1bf486c229f6206d70e08e59a1c04d042a2591fdef64763a",
-      "metadata": "99403ce8823bfb5211767f793c2df1779e988b643d11935b73e3d8acf4fb6c7b"
+      "sha256": "9b256b27ae36ccf4a93faac901ffc0ff3217cce09e5401e5341922569a9df4b8",
+      "metadata": "00aafa74f22dc95f5596b01c2ae1c96583ec9f85971f4b1ebc6db0c64a5f9aa6"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted_mill_2.png",
       "name": "painted_mill_2",
-      "sha256": "c154f6b3e92122035d6e38f7f66fcdb0b14261bbfa44749ab0ee029a8778596c",
-      "metadata": "3042407f55aa11b321b30af4f2408c4ec769343957aaff17578604835a99c5c8"
+      "sha256": "43fb80fb05ba03a4290a784f8085ac08d51da4f75fd375ba6d174f8ef466b8fc",
+      "metadata": "d492c39a67bc7153e58aca2bb9d58dfa4e16ae1dd0d70c9d01e4bdbe3b9fe9d7"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted_mill_3.png",
       "name": "painted_mill_3",
-      "sha256": "0f396dd82414a69b37bba5d56b4c382afd0fa15a170332499293ee382189704e",
-      "metadata": "6fee0853b7fdaa4bb992e38deca377e130e5f0adf711a023c4ff5f1af0b65bed"
+      "sha256": "fa72f776dcd9374078be24cddc57c29b563c287dc22db462c9ae77b1cb9e72f0",
+      "metadata": "6843d2341a0aa2a56dbac21b80482788fec83ef98a7d3e2ad93c6531e93ea105"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted_mill_4.png",
       "name": "painted_mill_4",
-      "sha256": "ba17b1ff9ef16c9526959ffe4cf5645508c54f43f5cc3118efe4fcf4a8b5b530",
-      "metadata": "8612c6a6ca27666b697898f286852ffc544f65a6ee5254b6afe68f31daa61946"
+      "sha256": "e19054e807812fd8dacba92417caa0c4079e8bfef6da7ae563186cad5454a0c9",
+      "metadata": "782e39cfd06db0e7fd1aef72764436ad5cb3adb572e792e8747faba2b3bcb900"
+    },
+    {
+      "file": "assets/KinghtFallIconBuild/painted_mill_bomb_2.png",
+      "name": "painted_mill_bomb_2",
+      "sha256": "9b5d075abab26bd5004d58ef871dd609d53a32d64687259daff980307f3acaaf",
+      "metadata": "a77d6307f2733fbd13f0f1441bfe1f36aed024012889228d7962bf9dc2b967e1"
+    },
+    {
+      "file": "assets/KinghtFallIconBuild/painted_mill_bomb_3.png",
+      "name": "painted_mill_bomb_3",
+      "sha256": "ab50db13f8a69041b44e0c53b294b9fc583572da82ed3ee0cbc6fddc9ff8ab1a",
+      "metadata": "596d5ae1a9a8b9c8720bc9b0d4f1542c35cef681eebb79df3bd483127118c054"
+    },
+    {
+      "file": "assets/KinghtFallIconBuild/painted_mill_bomb_4.png",
+      "name": "painted_mill_bomb_4",
+      "sha256": "40b4c689e98ba09b8bb88414bf08b222180ab5dd12a58abd0724f31ac7d8415e",
+      "metadata": "c1c391d15abe665106b4539365c656a89fcf6fa8ff4887946d5557c228fda217"
     }
   ],
   "optionalNightFixtures": {
@@ -7543,5 +7995,642 @@
     "sourceSha256": "25bccc634b18fbc6ee20cc9f795da40a09bb829e392239f65bd3dc57a65c4332",
     "count": 8,
     "castle2": "Only existing arch night-mask path changes; underlying body region stays exact."
+  },
+  "stableRtsRebuild": {
+    "source": "2026-11-13 user-selected attachments 1/2/3/4, in the requested order",
+    "nativeFlag": "Original castle wave keys retained; supplied side banners are weighted, top-pinned cloth on tiers3/4",
+    "layers": "Uniform body, fitted dark-opening light masks, original banner cloth separated from static post/crossbar",
+    "tiers": [
+      {
+        "tier": 1,
+        "bodySlot": "qby_2_1",
+        "sourceBodySha256": "40daf14b7117c4f94acb7f68f106349709ca240931f308954afd060a7e1b96b7",
+        "bodyPixelSize": [
+          256,
+          244
+        ],
+        "body": {
+          "x": 46.62935088487731,
+          "y": 138.07053298411705,
+          "width": 836.8452180904522,
+          "height": 797.6180984924623,
+          "path": "stable_painted_1_body"
+        },
+        "footPixel": [
+          62.746166950596255,
+          199.3390119250426
+        ],
+        "nativeFootAnchor": [
+          -166.68064188647514,
+          -114.74502288038437
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            72,
+            338,
+            1246,
+            1081
+          ],
+          "scale": 0.21465076660988075,
+          "offset": [
+            2,
+            42
+          ]
+        },
+        "nightApertureBounds": [
+          [
+            15.093696763202725,
+            137.9488926746167,
+            52.01362862010222,
+            156.40885860306645
+          ]
+        ]
+      },
+      {
+        "tier": 2,
+        "bodySlot": "qby_3_1",
+        "sourceBodySha256": "1120108c5f144b897d6fcf78588a918285b6039a170739724bd8d63f59857e0a",
+        "bodyPixelSize": [
+          256,
+          244
+        ],
+        "body": {
+          "x": 82.56244109767638,
+          "y": 150.39007265885036,
+          "width": 836.8452180904522,
+          "height": 797.6180984924623,
+          "path": "stable_painted_2_body"
+        },
+        "footPixel": [
+          51.753846153846155,
+          203.10769230769233
+        ],
+        "nativeFootAnchor": [
+          -166.68064188647514,
+          -114.74502288038437
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            60,
+            137,
+            1230,
+            1135
+          ],
+          "scale": 0.2153846153846154,
+          "offset": [
+            2,
+            14
+          ]
+        },
+        "nightApertureBounds": [
+          [
+            13.200000000000001,
+            152.4923076923077,
+            24.83076923076923,
+            164.33846153846156
+          ],
+          [
+            34.52307692307693,
+            159.81538461538463,
+            48.73846153846154,
+            172.95384615384617
+          ]
+        ]
+      },
+      {
+        "tier": 3,
+        "bodySlot": "qby_3_2",
+        "sourceBodySha256": "237c1925543d4e5f817499908a02773b3a5892efd7c42a353dd31599bc384be1",
+        "bodyPixelSize": [
+          256,
+          244
+        ],
+        "body": {
+          "x": 30.840385604746274,
+          "y": 172.41672829229165,
+          "width": 836.8452180904522,
+          "height": 797.6180984924623,
+          "path": "stable_painted_3_body"
+        },
+        "footPixel": [
+          67.57618213660245,
+          209.84588441331
+        ],
+        "nativeFootAnchor": [
+          -166.68064188647514,
+          -114.74502288038437
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            73,
+            56,
+            1236,
+            1198
+          ],
+          "scale": 0.21015761821366025,
+          "offset": [
+            6,
+            2
+          ]
+        },
+        "nightApertureBounds": [
+          [
+            9.782837127845884,
+            157.72679509632223,
+            29.53765323992995,
+            179.37302977232926
+          ],
+          [
+            37.10332749562171,
+            165.50262697022768,
+            51.60420315236427,
+            184.83712784588442
+          ],
+          [
+            67.3660245183888,
+            86.27320490367777,
+            75.56217162872154,
+            95.52014010507881
+          ],
+          [
+            81.23642732049036,
+            95.52014010507881,
+            98.88966725043782,
+            107.91943957968476
+          ],
+          [
+            98.04903677758318,
+            104.97723292469352,
+            116.75306479859896,
+            122.21015761821366
+          ]
+        ],
+        "banner": {
+          "hoistPixels": [
+            [
+              1028,
+              750
+            ],
+            [
+              1078,
+              722.5
+            ],
+            [
+              1128,
+              695
+            ]
+          ],
+          "windInfluence": 0.25,
+          "pinnedVertices": [
+            7,
+            15,
+            23
+          ],
+          "vertexCount": 24
+        }
+      },
+      {
+        "tier": 4,
+        "bodySlot": "qby_3_2",
+        "sourceBodySha256": "1010139c2faed59eb1a34ce93aad17cea65c7213c62d46e873e387948ef7d6b3",
+        "bodyPixelSize": [
+          256,
+          244
+        ],
+        "body": {
+          "x": 24.051771585845103,
+          "y": 167.9495910819895,
+          "width": 836.8452180904522,
+          "height": 797.6180984924623,
+          "path": "stable_painted_4_body"
+        },
+        "footPixel": [
+          69.65289256198348,
+          208.4793388429752
+        ],
+        "nativeFootAnchor": [
+          -166.68064188647514,
+          -114.74502288038437
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            22,
+            3,
+            1267,
+            1213
+          ],
+          "scale": 0.19834710743801653,
+          "offset": [
+            4,
+            2
+          ]
+        },
+        "nightApertureBounds": [
+          [
+            20.66115702479339,
+            159.0909090909091,
+            29.388429752066116,
+            169.00826446280993
+          ],
+          [
+            41.88429752066116,
+            168.01652892561984,
+            52,
+            177.93388429752068
+          ],
+          [
+            67.07438016528926,
+            85.10743801652893,
+            75.20661157024793,
+            96.80991735537191
+          ],
+          [
+            80.95867768595042,
+            92.64462809917356,
+            89.88429752066116,
+            104.54545454545455
+          ],
+          [
+            95.83471074380165,
+            100.77685950413223,
+            105.15702479338843,
+            112.2809917355372
+          ]
+        ],
+        "banner": {
+          "hoistPixels": [
+            [
+              1046,
+              734
+            ],
+            [
+              1098,
+              705.5
+            ],
+            [
+              1150,
+              677
+            ]
+          ],
+          "windInfluence": 0.25,
+          "pinnedVertices": [
+            7,
+            15,
+            23
+          ],
+          "vertexCount": 24
+        }
+      }
+    ]
+  },
+  "crossbowSelectedArtwork": {
+    "authorization": "2026-11-13: user requested replacing the four crossbowmen barracks tiers with the four attached images, in attachment order.",
+    "layers": "Supplied RGBA artwork uniformly fitted into existing atlas regions; native lanterns relocated for T1/T2, fitted separate doorway/window night masks for T3/T4. No new animation keys, slots, bones or gameplay values.",
+    "tiers": [
+      {
+        "tier": 1,
+        "bodySlot": "gby_2_1",
+        "sourceSha256": "6e783a1c18ba0f1af01c9943dc278ea3f647631bea0970d8d1a7914ed4240f7f",
+        "sourceCanvas": [
+          1280,
+          1229
+        ],
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 6.2,
+          "y": -21.892126643688925,
+          "width": 607.0548523206751,
+          "height": 583.2487796806486,
+          "path": "crossbow_painted_1_body"
+        },
+        "footPixel": [
+          127.5,
+          224.42268041237114
+        ],
+        "nativeFootAnchor": [
+          6.2,
+          -264.53
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            58,
+            121,
+            1222,
+            1072
+          ],
+          "scale": 0.21563573883161513,
+          "offset": [
+            2,
+            20
+          ]
+        },
+        "nightKind": "existing entry lantern",
+        "nightApertureBounds": [],
+        "lanternPixel": [
+          183.56529209621993,
+          154.34106529209623
+        ]
+      },
+      {
+        "tier": 2,
+        "bodySlot": "gby_3_1",
+        "sourceSha256": "d95d29dfa8e2bbc585078bad0f9ba81349ab276dd812d55104974f4147ff8188",
+        "sourceCanvas": [
+          1280,
+          1229
+        ],
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 7.2,
+          "y": -40.49240113534995,
+          "width": 607.0548523206751,
+          "height": 583.2487796806486,
+          "path": "crossbow_painted_2_body"
+        },
+        "footPixel": [
+          127.5,
+          226.6908939014202
+        ],
+        "nativeFootAnchor": [
+          7.2,
+          -288.53
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            58,
+            112,
+            1255,
+            1115
+          ],
+          "scale": 0.2096908939014202,
+          "offset": [
+            2,
+            17
+          ]
+        },
+        "nightKind": "existing entry lantern",
+        "nightApertureBounds": [],
+        "lanternPixel": [
+          161.7844611528822,
+          149.52464494569756
+        ]
+      },
+      {
+        "tier": 3,
+        "bodySlot": "gby_3_2",
+        "sourceSha256": "dbaed323bbcb6921b1388aee954c5f2af766022be000e3c0a6f5bb146adff8ae",
+        "sourceCanvas": [
+          1280,
+          1229
+        ],
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 14.2,
+          "y": -44.861206611369596,
+          "width": 607.0548523206751,
+          "height": 583.2487796806486,
+          "path": "crossbow_painted_3_body"
+        },
+        "footPixel": [
+          127.5,
+          224.85572959604286
+        ],
+        "nativeFootAnchor": [
+          14.2,
+          -288.53
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            35,
+            105,
+            1248,
+            1098
+          ],
+          "scale": 0.20692497938994228,
+          "offset": [
+            2,
+            20
+          ]
+        },
+        "nightKind": "restrained doorway interior",
+        "nightApertureBounds": [
+          [
+            132.98351195383347,
+            128.01483924154985,
+            150.7790601813685,
+            166.70981038746908
+          ]
+        ]
+      },
+      {
+        "tier": 4,
+        "bodySlot": "gby_3_2",
+        "sourceSha256": "faf6a90389421eacbcfad13cc2ebfaacb89116ec030fe23a2567c9ca6be7bff2",
+        "sourceCanvas": [
+          1280,
+          1229
+        ],
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 14.2,
+          "y": -19.53978093255688,
+          "width": 607.0548523206751,
+          "height": 583.2487796806486,
+          "path": "crossbow_painted_4_body"
+        },
+        "footPixel": [
+          127.5,
+          235.49227013832382
+        ],
+        "nativeFootAnchor": [
+          14.2,
+          -288.53
+        ],
+        "sourcePixelToTile": {
+          "crop": [
+            37,
+            3,
+            1266,
+            1115
+          ],
+          "scale": 0.20423108218063465,
+          "offset": [
+            2,
+            9
+          ]
+        },
+        "nightKind": "round window panes",
+        "nightApertureBounds": [
+          [
+            30.388120423108216,
+            108.25630593978845,
+            51.83238405207486,
+            136.440195280716
+          ]
+        ]
+      }
+    ]
+  },
+  "heavyRtsRepaint": {
+    "source": "Original shipped heavy infantry model repaints, with user-revised tier2 timber house, removed torches and right canopy",
+    "layers": "Uniform bodies, fitted dark-opening night masks, original small lantern, separately flickering supplied torch flames on tiers3/4",
+    "tiers": [
+      {
+        "tier": 1,
+        "bodySlot": "dxby_2_1",
+        "sourceBodySha256": "c7a92564181a2ce0d966c7fcc4c77c6a2005e12b23efa8192a0ada0dea868e7d",
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 3.7058884300746513,
+          "y": -10.253576294007502,
+          "width": 594.6711635750422,
+          "height": 571.3507257877857,
+          "path": "heavy_painted_1_body"
+        },
+        "footPixel": [
+          175.11840968020744,
+          202.87467588591184
+        ],
+        "nativeFootAnchor": [
+          114.75410447761193,
+          -197.69083916083918
+        ],
+        "nightApertureBounds": [
+          [
+            144.31287813310286,
+            151.89369057908385,
+            154.72601555747625,
+            168.8150388936906
+          ]
+        ],
+        "flameCount": 0
+      },
+      {
+        "tier": 2,
+        "bodySlot": "dxby_3_1",
+        "sourceBodySha256": "77562f79ffa864d03cbea38e1c96c23ef3eb8ed8006e40a4d403b46b257af83b",
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 1.762272225418144,
+          "y": -22.521867191770866,
+          "width": 594.6711635750422,
+          "height": 571.3507257877857,
+          "path": "heavy_painted_2_body"
+        },
+        "footPixel": [
+          175.95184866723991,
+          197.6139294926913
+        ],
+        "nativeFootAnchor": [
+          114.75410447761193,
+          -197.69083916083918
+        ],
+        "nightApertureBounds": [
+          [
+            145.73688736027515,
+            148.1908856405847,
+            156.52794496990543,
+            162.86672398968187
+          ]
+        ],
+        "flameCount": 0
+      },
+      {
+        "tier": 3,
+        "bodySlot": "dxby_3_2",
+        "sourceBodySha256": "4eca18d3a9782fbe9396799930c7cd459f97ac013377d8bfa416d76d15fda43e",
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 18.99749143253878,
+          "y": 5.603903402030198,
+          "width": 594.6711635750422,
+          "height": 571.3507257877857,
+          "path": "heavy_painted_3_body"
+        },
+        "footPixel": [
+          168.56124161073825,
+          209.6744966442953
+        ],
+        "nativeFootAnchor": [
+          114.75410447761193,
+          -197.69083916083918
+        ],
+        "nightApertureBounds": [
+          [
+            138.23909395973155,
+            91.75503355704697,
+            156.13758389261744,
+            127.9731543624161
+          ],
+          [
+            150.24161073825502,
+            180.8263422818792,
+            158.66442953020135,
+            190.93372483221475
+          ]
+        ],
+        "flameCount": 2
+      },
+      {
+        "tier": 4,
+        "bodySlot": "dxby_3_2",
+        "sourceBodySha256": "c822b50e1fb97dd2ebd2b689bfa997be5de6d217fac84fe259ee4e803a29e9b8",
+        "bodyPixelSize": [
+          255,
+          245
+        ],
+        "body": {
+          "x": 22.549203136633963,
+          "y": 7.0783066516787585,
+          "width": 594.6711635750422,
+          "height": 571.3507257877857,
+          "path": "heavy_painted_4_body"
+        },
+        "footPixel": [
+          167.03823773898588,
+          210.30673316708229
+        ],
+        "nativeFootAnchor": [
+          114.75410447761193,
+          -197.69083916083918
+        ],
+        "nightApertureBounds": [
+          [
+            137.619285120532,
+            94.30008312551954,
+            154.5195344970906,
+            126.01413133832087
+          ],
+          [
+            148.26018287614298,
+            180.26184538653368,
+            156.81463009143806,
+            190.90274314214463
+          ]
+        ],
+        "flameCount": 2
+      }
+    ]
   }
 }

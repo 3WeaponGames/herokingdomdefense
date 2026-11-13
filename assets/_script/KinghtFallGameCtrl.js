@@ -1186,8 +1186,8 @@ var def_KinghtFallGameCtrl = function (t) {
     var behavior = t.getTowerSettings ? t.getTowerSettings() : null;
     if (BattleSounds.attack) BattleSounds.attack(t, "tower", behavior);
     if (layered && !behavior) behavior = require("TowerCombat").settings({ Tower: {} });
-    var modern = behavior && (behavior.attackType !== "arrow" || layered);
-    var i = modern ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
+    var modern = behavior && (behavior.attackType !== "arrow" || layered || behavior.fieldProjectile);
+    var i = modern && !behavior.fieldProjectile ? require("BuildingAppearance").muzzle(t, this) : t.getAttPos();
     n.setPosition(i);
     var a = n.getComponent($z1KinghtFallBulletBuild.default);
     this.ndBuildArr2.push(a);

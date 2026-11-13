@@ -607,357 +607,457 @@
       "family": "archer",
       "tier": 1,
       "path": "assets/resources/buildings/redesign/towers/archer-1.png",
-      "sha256": "bca889b9fc4718f6f07b8170d690c0a4ae34569055746d8ab4cf4a570766ef84",
+      "sha256": "e896e250173ce702511892882900a813d29158cf9d6506f83da160fa87d8fd80",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-1-window-light.png",
-      "maskSha256": "dd07a2966da652a8a671746f27fb611dff04d0ac689226b898ab658e62923f84",
+      "maskSha256": "d29cf90805ef63bdedeb545e11034782971ebe71fb20c16f8d722dd4d8de795a",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          681,
-          550,
-          884,
-          738
+          146,
+          118,
+          193,
+          162
         ],
         [
-          371,
-          554,
-          574,
-          737
+          79,
+          119,
+          126,
+          161
         ]
       ],
       "excludedDoorSourceBounds": [
-        724,
-        876,
-        803,
-        1061
+        157,
+        190,
+        175,
+        231
       ]
     },
     {
       "family": "archer",
       "tier": 2,
       "path": "assets/resources/buildings/redesign/towers/archer-2.png",
-      "sha256": "ba881ecc1c783480947ea31b2a394edb34e1a33102810e5fc77a76bd9ffff7e8",
+      "sha256": "5ec332684fab5524712ac36270f6f5c7d14c871373a11d5e1834bc50382dd3a0",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-2-window-light.png",
-      "maskSha256": "2456bf6627c84f3765f8a54b1c6644b636d4f0ea5b2174c45a7b9adf05ebe066",
+      "maskSha256": "07c0bbf4f52e3b0ad382a80f9abe51c4d402b6fcdd3569a81cd67acc5900e874",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          358,
-          549,
-          585,
-          736
+          76,
+          117,
+          128,
+          161
         ],
         [
-          682,
-          550,
-          889,
-          736
+          146,
+          117,
+          194,
+          161
         ]
       ],
       "excludedDoorSourceBounds": [
-        724,
-        876,
-        806,
-        1083
+        156,
+        189,
+        175,
+        235
       ]
     },
     {
       "family": "archer",
       "tier": 3,
       "path": "assets/resources/buildings/redesign/towers/archer-3.png",
-      "sha256": "5cde320ce5d05b78b19e4334aff8b92073508de043879e067eb0e5eef8e34ef9",
+      "sha256": "79c388a38547c717f8e739cdffa8f10ee6fb3f3d44d55ebfcfdb66f099b71611",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-3-window-light.png",
-      "maskSha256": "215180ed9083f1cf2faa9bb6318910be839d8098262886597e3da7c790377876",
+      "maskSha256": "e2598915c7d3fe7a0852dd14f135249dae71bb61d65ed7c8e9acb62b98c74318",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          350,
-          539,
-          587,
-          732
+          75,
+          116,
+          130,
+          161
         ],
         [
-          669,
-          549,
-          882,
-          732
+          145,
+          118,
+          194,
+          161
         ]
       ],
       "excludedDoorSourceBounds": [
-        721,
-        871,
-        806,
-        1061
+        157,
+        190,
+        177,
+        232
       ]
     },
     {
       "family": "archer",
       "tier": 4,
       "path": "assets/resources/buildings/redesign/towers/archer-4.png",
-      "sha256": "1cecfd418eb390efefc8dacc29730e080405848169f67e671d5693ae089f5a2b",
+      "sha256": "44dca553f884e50f236d1b51fdd4c1491c6042eb2a7a213fd3c941ad9dd09a20",
       "maskPath": "assets/resources/buildings/redesign/towers/archer-4-window-light.png",
-      "maskSha256": "fb7fefac45cb6c43389ad222da69731b5647df26357670a837ce384458dbef19",
+      "maskSha256": "f69e886760126a0b2ba0c1ae38e12ee4b4170c818fe0566d65ab12d01d5aca0b",
       "apertures": 2,
       "windowSourceBounds": [
         [
-          339,
-          579,
-          562,
-          769
+          83,
+          143,
+          142,
+          194
         ],
         [
-          645,
-          603,
-          834,
-          769
+          160,
+          149,
+          210,
+          194
         ]
       ],
       "excludedDoorSourceBounds": [
-        702,
-        906,
-        771,
-        1073
+        175,
+        226,
+        193,
+        269
       ]
     },
     {
       "family": "sniper",
       "tier": 1,
       "path": "assets/resources/buildings/redesign/towers/sniper-1.png",
-      "sha256": "4c916bbff24a9cd861d5ecf96011b9b794aed2539a1f9fd46a6868ddbc33fcdc",
+      "sha256": "c925c7820d5ed45e1a7276efd051be8d5d7f7ad90a1880793a59c76140b4e5fe",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-1-window-light.png",
-      "maskSha256": "6bc1207bda3f6c1bcca94635e6e669e395a1c35ce7a8fb5a923c282fedd6a4bc",
-      "apertures": 1,
+      "maskSha256": "6f081769148dde0f07f3ae17ee7ab988c72f32d8748e6040cfe3a7fd4486e24b",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          414,
-          731,
-          525,
-          871
+          226,
+          323,
+          229,
+          331
+        ],
+        [
+          231,
+          323,
+          235,
+          331
         ]
       ],
       "excludedDoorSourceBounds": [
-        713,
-        684,
-        826,
-        961
+        111,
+        290,
+        225,
+        426
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/sniper-1-destroyed",
-        "width": 187,
-        "height": 187,
+        "width": 89,
+        "height": 89,
         "offsetX": 0,
         "offsetY": -38
-      }
+      },
+      "maxWindowChannel": 60,
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "676d444092327a865801072229f36f8e5c9928a3f3475d1d62126f59f2d69fc6",
+      "sourceFamily": "Tiny Kingdom ScorpionTower"
     },
     {
       "family": "sniper",
       "tier": 2,
       "path": "assets/resources/buildings/redesign/towers/sniper-2.png",
-      "sha256": "c6bb117a64e4bcad53d0fdcf30a4d18f9ec30dff413dd3c48462f82f6acfb11b",
+      "sha256": "7c99a8164254b8bb1835d8e59c05159be07075965d9f560cd7907b8d654abbda",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-2-window-light.png",
-      "maskSha256": "e7a2e43af2a2621c53716ec19d16cb265decd5d636f76439308e1759a4547623",
-      "apertures": 1,
+      "maskSha256": "d0fe333d39a4afd8e2852edcced093b386b8d065cce42a58f24789d393fdf1aa",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          412,
-          732,
-          524,
-          872
+          204,
+          319,
+          207,
+          327
+        ],
+        [
+          209,
+          319,
+          213,
+          327
         ]
       ],
       "excludedDoorSourceBounds": [
-        714,
-        684,
-        826,
-        962
+        99,
+        294,
+        192,
+        426
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/sniper-2-destroyed",
-        "width": 187,
-        "height": 187,
+        "width": 101.00000000000001,
+        "height": 101.00000000000001,
         "offsetX": 0,
         "offsetY": -38
-      }
+      },
+      "maxWindowChannel": 60,
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "831ddb75141df3d88d2a19c5f1b31b85920956a46c963b2da5cb13a17007872f",
+      "sourceFamily": "Tiny Kingdom ScorpionTower"
     },
     {
       "family": "sniper",
       "tier": 3,
       "path": "assets/resources/buildings/redesign/towers/sniper-3.png",
-      "sha256": "efeaaac71014410d972ec6f04123ae9fe1183430a2099d47e4990c4a43f14733",
+      "sha256": "7177e50b53e58b279720a3b78c66e9551ad5d1ced84e5ea0a599cec8044343f2",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-3-window-light.png",
-      "maskSha256": "d2fc577b8ed5271495cac499b660e51a70cc38acc62211c4208df47908977675",
-      "apertures": 1,
+      "maskSha256": "3c4f6ef616824d434e4b56f13eaf57dfaf2ca0e092183560f7528e9410a1edb6",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          413,
-          732,
-          522,
-          869
+          205,
+          308,
+          208,
+          316
+        ],
+        [
+          210,
+          308,
+          214,
+          316
         ]
       ],
       "excludedDoorSourceBounds": [
-        715,
-        685,
-        826,
-        963
+        103,
+        292,
+        197,
+        421
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/sniper-3-destroyed",
-        "width": 187,
-        "height": 187,
+        "width": 104,
+        "height": 104,
         "offsetX": 0,
         "offsetY": -38
-      }
+      },
+      "maxWindowChannel": 60,
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "3307c09b8d6473d62a164288cf5d0520a27d933a8c7c540916617ac24f893136",
+      "sourceFamily": "Tiny Kingdom ScorpionTower"
     },
     {
       "family": "sniper",
       "tier": 4,
       "path": "assets/resources/buildings/redesign/towers/sniper-4.png",
-      "sha256": "2d5bbc2994ff7162c8f2f158f4ac7d3333ddcc2df26ced38cd739f97506968af",
+      "sha256": "8111a8dda9e26c84ea8d3d74198987d3c32a526bcd1e42860b4b6a95d5e195cb",
       "maskPath": "assets/resources/buildings/redesign/towers/sniper-4-window-light.png",
-      "maskSha256": "495ce40ff66942dbb79ff4a26ae962481a8b4a6b88c252802bdb5395e1012e0c",
-      "apertures": 1,
+      "maskSha256": "06c5ab322448a8802d0e37a1dfe6d0cce372142d7d931b508b694d101820783c",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          415,
-          731,
-          524,
-          872
+          204,
+          309,
+          207,
+          317
+        ],
+        [
+          209,
+          309,
+          213,
+          317
         ]
       ],
       "excludedDoorSourceBounds": [
-        715,
-        686,
-        823,
-        965
+        102,
+        293,
+        196,
+        421
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/sniper-3-destroyed",
-        "width": 187,
-        "height": 187,
+        "width": 104,
+        "height": 104,
         "offsetX": 0,
         "offsetY": -38
-      }
+      },
+      "maxWindowChannel": 60,
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "470a5d147d5f5dd295d4a953052309653aeacadab6c2fa4d78f41dc9807db9e8",
+      "sourceFamily": "Tiny Kingdom ScorpionTower"
     },
     {
       "family": "cannon",
       "tier": 1,
       "path": "assets/resources/buildings/redesign/towers/cannon-1.png",
-      "sha256": "ba42f2dfee8fc2c0e9cce797ec1a3d4fe40d8bb4597206c50512a85448eee257",
+      "sha256": "d24137ceaec590cf9b3acd1bcb764e3e2be0e93adf55ae1fe95e9edc36995571",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-1-window-light.png",
-      "maskSha256": "545f15e1743299d085a94802d03b8aac1aa57ba2a81f0450afed49317a060a73",
-      "apertures": 1,
+      "maskSha256": "18f1c3a1a65ef34a8b289f65bed7991b09006c15933450b272e132fffbdb2f23",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          389,
-          957,
-          520,
-          1041
+          233,
+          304,
+          236,
+          312
+        ],
+        [
+          238,
+          304,
+          242,
+          312
         ]
       ],
       "excludedDoorSourceBounds": [
-        737,
-        909,
-        845,
-        1083
+        102,
+        296,
+        209,
+        432
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/cannon-1-destroyed",
-        "width": 187,
-        "height": 187,
-        "offsetX": 0,
-        "offsetY": -38
-      }
+        "width": 168.3,
+        "height": 168.3,
+        "offsetX": 0.0,
+        "offsetY": -38.0
+      },
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "maxWindowChannel": 60,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "c024213e06b86dfa4ccd48446702839b3112900d6ab420813f5ad233ae54ddd7",
+      "sourceFamily": "Tiny Kingdom CannonTower"
     },
     {
       "family": "cannon",
       "tier": 2,
       "path": "assets/resources/buildings/redesign/towers/cannon-2.png",
-      "sha256": "b7aafe76841a50efecc677b50b0a18a50e500d05cbc7fa6afe7e8f43d47f171f",
+      "sha256": "a3a59194f7c019b489bd765aa337d0f50d5832b32f73f2b57f85e52b58c8d892",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-2-window-light.png",
-      "maskSha256": "046e0d214ff76c0809578bb6e74191d410e40838cd0ad8b705d201e8784e6c2c",
-      "apertures": 1,
+      "maskSha256": "cf6a61ce5b1d9360bfa2dbb7a3250cea8179c37a0540991ce95cd5f90fd82eee",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          392,
-          958,
-          520,
-          1041
+          252,
+          295,
+          255,
+          303
+        ],
+        [
+          257,
+          295,
+          261,
+          303
         ]
       ],
       "excludedDoorSourceBounds": [
-        737,
-        913,
-        844,
-        1092
+        123,
+        289,
+        236,
+        419
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/cannon-2-destroyed",
-        "width": 187,
-        "height": 187,
-        "offsetX": 0,
-        "offsetY": -38
-      }
+        "width": 168.3,
+        "height": 168.3,
+        "offsetX": 0.0,
+        "offsetY": -38.0
+      },
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "maxWindowChannel": 60,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "a44effe9bfbee938842ca9d35736bef47d8e741205a8e0bd89ee41bb40423edb",
+      "sourceFamily": "Tiny Kingdom CannonTower"
     },
     {
       "family": "cannon",
       "tier": 3,
       "path": "assets/resources/buildings/redesign/towers/cannon-3.png",
-      "sha256": "e906fa676153d74239d8138d3d47d704aca1d8beee80f7dd652dcbddc3ef6d6b",
+      "sha256": "212b47aafe840428cb7a3f06ba014f20882bfa08287b66b1821ff3186db0d900",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-3-window-light.png",
-      "maskSha256": "4bd3b4c5264c873dc34f7cb282f7520d5d00288fc9cd60f579b0ee3536b4bd28",
-      "apertures": 1,
+      "maskSha256": "bf1858a5b51dde6acbd06c8baf4b14833abff7bf34cdeac93645abba33296956",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          392,
-          960,
-          518,
-          1040
+          258,
+          294,
+          261,
+          302
+        ],
+        [
+          263,
+          294,
+          267,
+          302
         ]
       ],
       "excludedDoorSourceBounds": [
-        735,
-        912,
-        843,
-        1085
+        131,
+        275,
+        246,
+        397
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/cannon-3-destroyed",
-        "width": 187,
-        "height": 187,
-        "offsetX": 0,
-        "offsetY": -38
-      }
+        "width": 168.3,
+        "height": 168.3,
+        "offsetX": 0.0,
+        "offsetY": -38.0
+      },
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "maxWindowChannel": 60,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "21e0b91960387362e7bc0250dbf79313b4791545ed3f7f64cab105f8f4b1ce05",
+      "sourceFamily": "Tiny Kingdom CannonTower"
     },
     {
       "family": "cannon",
       "tier": 4,
       "path": "assets/resources/buildings/redesign/towers/cannon-4.png",
-      "sha256": "4099b92d9cb1cc1ff150a9aa51db4d88ef373f8ebb904fd17b71cdb2066f6235",
+      "sha256": "7c39441c67abf3856dc5ded37a56eacc5634aea7caa8c8cd983bb6fd12327b6b",
       "maskPath": "assets/resources/buildings/redesign/towers/cannon-4-window-light.png",
-      "maskSha256": "37e9185ae8d7f5e9d7dcbb7c443ff41432a55105754d959e49cd7822f54dea55",
-      "apertures": 1,
+      "maskSha256": "b358bcbe408a125b8e3d554d0deb0118d5ad527944d32486e04344d5da3a6214",
+      "apertures": 2,
       "windowSourceBounds": [
         [
-          393,
-          960,
-          520,
-          1040
+          257,
+          293,
+          260,
+          301
+        ],
+        [
+          262,
+          293,
+          266,
+          301
         ]
       ],
       "excludedDoorSourceBounds": [
-        735,
-        912,
-        842,
-        1091
+        131,
+        275,
+        245,
+        396
       ],
       "originalDestroyed": {
         "sprite": "buildings/towers/cannon-3-destroyed",
-        "width": 187,
-        "height": 187,
-        "offsetX": 0,
-        "offsetY": -38
-      }
+        "width": 168.3,
+        "height": 168.3,
+        "offsetX": 0.0,
+        "offsetY": -38.0
+      },
+      "glowCount": 1,
+      "minComponentPixels": 4,
+      "maxWindowChannel": 60,
+      "lightKind": "existing-lantern",
+      "approvedRepaintSourceSha256": "7324165fe4565e60a8f009dc511140042a6e7c387f7f90900d43c6e3371084d1",
+      "sourceFamily": "Tiny Kingdom CannonTower"
     }
-  ]
+  ],
+  "weaponDisplayScales": {
+    "cannon": 0.9,
+    "sniper": 1
+  }
 }

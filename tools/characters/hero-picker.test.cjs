@@ -18,7 +18,7 @@ test('six square cards center padded weapon poses, keep the Equipped badge above
 });
 
 test('the Equip button straddles the panel bottom and each card loads its own main-weapon tier frame',()=>{
- const levels={skirmisher:1,fighter:6,vanguard:11,mystic:16,bruiser:21,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:50}),owner={node:f.canvas};f.api.open(owner);
+ const levels={skirmisher:1,fighter:11,vanguard:21,mystic:31,bruiser:41,guardian:1},f=fixture({...user(),getHeroWeaponLevel:(style,slot)=>slot===4?levels[style]:50}),owner={node:f.canvas};f.api.open(owner);
  const panel=f.find('Panel outline'),action=f.find('Equipped action');assert.equal(action.y,panel.y-panel.height/2);assert(action.height>0);
  assert.deepEqual(f.tierFrames.slice(0,6),['wg_rw_zbd','wg_rw_zbd2','wg_rw_zbd','wg_rw_zbd3','wg_rw_zbd4','wg_rw_zbd']);
  assert.equal(f.find('Style vanguard').getChildByName('Tier clip').getChildByName('Tier card').color,'#54c7ff');assert.equal(f.find('Style fighter').getChildByName('Tier clip').getChildByName('Tier card').color,'#ffffff');
@@ -44,13 +44,13 @@ test('native Spine getters orient each main weapon northeast exactly once, inclu
 });
 
 test('style-specific fitted item images and profiles resolve without changing the equipped style or either weapon progress',()=>{
- const defaults=require('../../assets/resources/hero-maker/catalog.json'),state={personLevel:[12,20,2,1,7,11],heroWeapon:{selected:'guardian',levels:{skirmisher:{3:11,4:6},guardian:{3:2,4:1}}}},before=JSON.stringify(state);
+ const defaults=require('../../assets/resources/hero-maker/catalog.json'),state={personLevel:[12,20,2,1,7,11],heroWeapon:{selected:'guardian',levels:{skirmisher:{3:11,4:11},guardian:{3:2,4:1}}}},before=JSON.stringify(state);
  const profile={parts:[],skins:{main:'skirmisher_lv2'},models:{},bakedLayers:{main:{resource:'chosen-bow'}},icon:{resource:'chosen-bow-icon',width:50,height:100}},catalog={profiles:{bow:profile},assignments:{'4:tier:lv2':'bow'}};
  const user={getHeroWeapon:()=>Weapons.selected(state),getPersonLevel:slot=>Weapons.level(state,slot),getHeroWeaponLevel:(style,slot)=>Weapons.level(state,slot,style)};
  const modules={HeroWeapons:Weapons,EquipmentTiers:require('../../assets/_script/EquipmentTiers'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getEquipCfgList:()=>equipment})}}};
  const context={exports:{},require:name=>modules[name],cc:{JsonAsset:class{},resources:{load(resource,_type,callback){callback(null,{json:resource==='hero-items/catalog'?catalog:resource==='character-parts/catalog'?{parts:[]}:defaults});}}}};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroItemLooks.js'),'utf8'),context);const Looks=context.exports;
- assert.equal(Looks.gearImage(4,6,'equipment','skirmisher').resource,'chosen-bow-icon');assert.equal(Looks.gearImage(4,1,'equipment','guardian').resource,defaults.icons[4].guardian_lv1.resource);
+ assert.equal(Looks.gearImage(4,11,'equipment','skirmisher').resource,'chosen-bow-icon');assert.equal(Looks.gearImage(4,1,'equipment','guardian').resource,defaults.icons[4].guardian_lv1.resource);
  assert.equal(Looks.current(null,'skirmisher').bakedLayers.main.resource,'chosen-bow');assert.equal(Looks.current(null,'guardian'),null);assert.equal(JSON.stringify(state),before);
 });
 

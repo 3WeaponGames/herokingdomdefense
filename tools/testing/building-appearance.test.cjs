@@ -350,7 +350,7 @@ test('production cannon and sniper families contain four fitted levels with unch
         assert.equal(view.sprite,row.Appearance.weapon.sprite+'-'+direction);
         assert.equal(view.referenceAngle,{north:90,northeast:45,southeast:-45,south:-90}[direction]);assert(Number.isFinite(view.muzzleX)&&Number.isFinite(view.muzzleY));
         const viewMeta=JSON.parse(fs.readFileSync(path.join(root,'assets/resources',view.sprite+'.png.meta')));
-        assert.equal(viewMeta.width,Math.round(view.width));assert.equal(viewMeta.height,Math.round(view.height));assert.equal(viewMeta.filterMode,'bilinear');assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
+        const displayScale=require('./tower-native-weapon-assets.fixture.json').weaponDisplayScales?.[type]||1;assert(Math.abs(view.width/viewMeta.width-displayScale)<1e-6);assert(Math.abs(view.height/viewMeta.height-displayScale)<1e-6);assert.equal(viewMeta.filterMode,'bilinear');assert.equal(viewMeta.packable,false);assert.equal(viewMeta.genMipmaps,false);
         assert.equal(Object.values(viewMeta.subMetas)[0].trimType,'none');
       }
       const ruins = row.Appearance.destroyed;

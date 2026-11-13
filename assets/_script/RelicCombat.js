@@ -66,7 +66,7 @@ function waveBarrier(data, hero) {
 }
 function heroIncoming(hero, damage, source, ranged) {
   if (!(damage > 0)) return damage;
-  var data = current(), reduction = 0;
+  var data = current(), reduction = hero._heroSecondary && hero._heroSecondary.damageReduction || 0;
   if (ranged || source && source.cfg && Number(source.cfg.AttackType) === 2) reduction += Runtime.value(data, 120033);
   if (hero._relicMoving) reduction += Runtime.value(data, 120041);
   else reduction += Runtime.value(data, 120026);
@@ -146,6 +146,23 @@ function primaryImpact(target, hero, context, damage) {
   if (!(damage > 0) || !primaryValid(context, target, hero)) return;
   context.used = true;
   var data = context.data;
+  var gear = hero._heroSecondary || {};
+  // Life steal uses damage actually removed, excluding overkill and all
+  // reflected/splash hits. It cannot revive a dead or recycled hero.
+  var dealt = Math.min(damage, Math.max(0, target.hp + damage));
+  if (gear.lifeSteal > 0 && hero.hpMax > 0) Runtime.heal(hero, dealt * gear.lifeSteal / hero.hpMax);
+  if (!sameBattle(context)) return;
+  if (gear.splashDamage > 0 && gear.splashRadius > 0 && context.point) {
+    var splash = [], targets = data.getEnemyList ? data.getEnemyList() : data.enemyList || [];
+    for (var s = 0; s < targets.length; s++) {
+      var neighbor = targets[s], location = position(neighbor);
+      if (neighbor === target || !living(neighbor) || !location) continue;
+      var sx = location.x - context.point.x, sy = location.y - context.point.y;
+      if (sx * sx + sy * sy <= gear.splashRadius * gear.splashRadius) splash.push({ enemy:neighbor,generation:generation(neighbor) });
+    }
+    for (var s = 0; s < splash.length; s++) secondaryHit(splash[s].enemy, damage * gear.splashDamage, context, splash[s].generation);
+  }
+  if (!sameBattle(context)) return;
   if (context.critical && Runtime.value(data, 120014) > 0) {
     hero._relicHaste = { data: data, epoch: context.epoch, relicGeneration: context.relicGeneration, heroGeneration: context.heroGeneration, remaining: 2, round: data.round };
   }

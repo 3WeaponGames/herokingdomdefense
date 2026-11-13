@@ -14,7 +14,7 @@ function canonical(value){
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex'),hash=value=>sha(JSON.stringify(canonical(value)));
 function withoutPainted(asset,value){
   const contract=fixture.rigs[asset];if(!contract)return clone(value);
-  const json=clone(value);
+  const json=require("./mill-field-contract.cjs").withoutDefense(asset,clone(value));
   assert.equal(hash(json.skeleton),contract.currentHeader,asset+' reviewed culling header');
   json.skeleton=clone(contract.originalHeader);
   for(const [field,added]of [['bones',contract.newBones],['slots',contract.newSlots],['skins',contract.newSkins]]){
@@ -35,12 +35,13 @@ function withoutPainted(asset,value){
 }
 function withoutPaintedMetadata(asset,value){
   const contract=fixture.rigs[asset];if(!contract)return clone(value);const result=clone(value);
+  require("./mill-field-contract.cjs").metadata(asset,result);
   assert.deepEqual(result.textures,[...contract.originalTextures,...contract.pages.map(v=>v.uuid)],asset+' binds exactly its original and approved appended atlas pages');
   result.textures=result.textures.slice(0,contract.originalTextures.length);
   assert.equal(hash(result),contract.originalJsonMetadata,asset+' retains original UUID and all non-texture metadata');return result;
 }
 function withoutPaintedAtlas(asset,text){
-  const contract=fixture.rigs[asset];if(!contract)return text;const normalized=text.replace(/\r\n/g,'\n');
+  const contract=fixture.rigs[asset];if(!contract)return text;const normalized=require('./mill-field-contract.cjs').atlas(asset,text.replace(/\r\n/g,'\n'));
   const marker='\n'+contract.pages[0].name+'\n',index=normalized.indexOf(marker);assert(index>=0,asset+' missing approved appended page');
   const prefix=normalized.slice(0,index).trim(),append=normalized.slice(index).trim();
   assert.deepEqual(append.split('\n').filter(v=>/^[^\s]+\.png$/.test(v)),contract.pages.map(v=>v.name),asset+' no unknown appended pages');

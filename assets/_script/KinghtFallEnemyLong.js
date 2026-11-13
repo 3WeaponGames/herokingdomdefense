@@ -1,3 +1,4 @@
+function millAttackTargets(data) { return data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList(); }
 var BattleSounds = require("BattleSounds");
 var i;
 var GameToolsOverrides = require("GameToolsOverrides");
@@ -68,7 +69,7 @@ var def_KinghtFallEnemyLong = function (t) {
         position: t.node.convertToWorldSpaceAR(cc.Vec2.ZERO),
         radius: t.cfg.AttackRange
       };
-      var s = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getBulidList();
+      var s = millAttackTargets($z1KinghtFallUIGame.default.instance.ctrGame.gameData);
       for (var l = 0; l < s.length; l++) {
         var c;
         if ((c = s[l]).getIsWork()) {

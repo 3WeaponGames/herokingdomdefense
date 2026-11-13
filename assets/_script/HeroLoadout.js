@@ -1,7 +1,7 @@
 "use strict";
 // Read-only equipped stats and a separate account CP benchmark. Tracks 3/4 belong to
 // exactly one style; armor, regeneration, attack rate and mount remain shared.
-var Weapons = require("./HeroWeapons"), Upgrades = require("./HeroUpgradeEffects"), Cadence = require("./CombatCadence");
+var Weapons = require("./HeroWeapons"), Upgrades = require("./HeroUpgradeEffects"), Cadence = require("./CombatCadence"), Equipment = require("./HeroEquipmentStats");
 function finite(value) { return typeof value === "number" && isFinite(value); }
 function rawData(user) { return user && user.data || user || {}; }
 function selected(user) {
@@ -29,18 +29,18 @@ function readLoadout(config, user, timingContext, accountPower) {
     levels[slot] = current || 1; equipment[slot] = value;
     if (!finite(value) || value < 0 || slot === 1 && value === 0) reason = reason || "Missing or invalid hero equipment stat in slot " + slot + ".";
   }
-  var raw = { health: equipment[1], regen: equipment[2], damage: equipment[3], range: equipment[4], attackRate: equipment[5], move: equipment[6] };
+  var secondary = Equipment.secondary(config, style.id, levels[3]), raw = Equipment.raw(config, style.id, equipment, levels[3]);
   var upgrades = accountPower ? Upgrades.resolvePower(config, user, style.id) : Upgrades.resolve(config, user, style.id), modified = applyStyle(raw, user, config, upgrades), baseHealth = modified.health;
-  var criticalChance = Math.max(0, Math.min(1, Upgrades.effect(upgrades, "criticalChance")));
+  var criticalChance = Math.max(0, Math.min(1, Upgrades.effect(upgrades, "criticalChance") + (secondary.criticalChance || 0)));
   var parameter = config.ParameterCfg && config.ParameterCfg[60015], criticalMultiplier = parameter ? Number(parameter.Value) : criticalChance > 0 ? NaN : 1;
-  criticalMultiplier *= 1 + Upgrades.effect(upgrades, "criticalDamage");
+  criticalMultiplier *= (1 + Upgrades.effect(upgrades, "criticalDamage")) * (1 + (secondary.criticalDamage || 0));
   // Hero releases reset the cooldown at the hit callback. Their animation end
   // only clears the target; it does not block the following attack.
   var attackTiming = Cadence.resolve(config.GameTools, Object.assign({}, timingContext || {}, {
     type: "hero", id: "hero", key: "hero:hero:default", cooldownRate: modified.attackRate, cooldownStart: "hit-unblocked"
   }));
   var result = { mode: accountPower ? "account-wide" : "equipped", style: style.id, ranged: style.ranged, levels: levels, raw: raw, bonuses: modified.bonuses,
-    baseHealth: baseHealth, health: baseHealth * (1 + Upgrades.effect(upgrades, "health")), damage: modified.damage, attackRate: modified.attackRate,
+    baseHealth: baseHealth, health: baseHealth * (1 + Upgrades.effect(upgrades, "health")), damage: modified.damage, attackRate: modified.attackRate, secondary: secondary,
     regen: raw.regen, range: modified.range * (1 + (upgrades.stats.range || 0)) * (1 + Upgrades.effect(upgrades, "range")), move: raw.move * (1 + Upgrades.effect(upgrades, "move")), upgrades: upgrades,
     criticalChance: criticalChance, criticalMultiplier: criticalMultiplier,
     expectedDamage: modified.damage * (1 + criticalChance * (criticalMultiplier - 1)),

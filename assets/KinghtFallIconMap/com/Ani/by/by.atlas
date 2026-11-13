@@ -793,305 +793,306 @@ stable_castle_flag
   offset: 0, 0
   index: -1
 
+
 by-painted-royal.png
-size: 2048, 1024
+size: 1056, 500
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
 royal_painted_2_body
   rotate: false
   xy: 2, 2
-  size: 392, 392
-  orig: 392, 392
+  size: 250, 250
+  orig: 250, 250
   offset: 0, 0
   index: -1
 royal_painted_2_night
   rotate: false
-  xy: 398, 2
-  size: 392, 392
-  orig: 392, 392
+  xy: 256, 2
+  size: 250, 250
+  orig: 250, 250
   offset: 0, 0
   index: -1
 royal_painted_3_body
   rotate: false
-  xy: 794, 2
-  size: 404, 381
-  orig: 404, 381
+  xy: 510, 2
+  size: 257, 243
+  orig: 257, 243
   offset: 0, 0
   index: -1
 royal_painted_3_night
   rotate: false
-  xy: 1202, 2
-  size: 404, 381
-  orig: 404, 381
+  xy: 771, 2
+  size: 257, 243
+  orig: 257, 243
   offset: 0, 0
   index: -1
 royal_painted_1_body
   rotate: false
-  xy: 1610, 2
-  size: 408, 378
-  orig: 408, 378
+  xy: 2, 256
+  size: 260, 241
+  orig: 260, 241
   offset: 0, 0
   index: -1
 royal_painted_1_night
   rotate: false
-  xy: 2, 398
-  size: 408, 378
-  orig: 408, 378
+  xy: 266, 256
+  size: 260, 241
+  orig: 260, 241
   offset: 0, 0
   index: -1
 royal_painted_4_body
   rotate: false
-  xy: 414, 398
-  size: 408, 378
-  orig: 408, 378
+  xy: 530, 256
+  size: 260, 241
+  orig: 260, 241
   offset: 0, 0
   index: -1
 royal_painted_4_night
   rotate: false
-  xy: 826, 398
-  size: 408, 378
-  orig: 408, 378
+  xy: 794, 256
+  size: 260, 241
+  orig: 260, 241
   offset: 0, 0
   index: -1
 
 by-painted-heavy.png
-size: 2048, 1024
+size: 1036, 584
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
 heavy_painted_1_body
   rotate: false
   xy: 2, 2
-  size: 400, 385
-  orig: 400, 385
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_1_night
   rotate: false
-  xy: 406, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 261, 2
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_2_body
   rotate: false
-  xy: 810, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 520, 2
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_2_night
   rotate: false
-  xy: 1214, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 779, 2
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_3_body
   rotate: false
-  xy: 1618, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 2, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_3_night
   rotate: false
-  xy: 2, 391
-  size: 400, 385
-  orig: 400, 385
+  xy: 261, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_4_body
   rotate: false
-  xy: 406, 391
-  size: 400, 385
-  orig: 400, 385
+  xy: 520, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_4_night
   rotate: false
-  xy: 810, 391
-  size: 400, 385
-  orig: 400, 385
+  xy: 779, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 heavy_painted_2_flame
   rotate: false
-  xy: 1214, 391
+  xy: 2, 500
   size: 105, 82
   orig: 400, 385
   offset: 265, 133
   index: -1
 heavy_painted_3_flame
   rotate: false
-  xy: 1323, 391
-  size: 97, 80
-  orig: 400, 385
-  offset: 259, 118
+  xy: 111, 500
+  size: 75, 56
+  orig: 255, 245
+  offset: 173, 49
   index: -1
 heavy_painted_4_flame
   rotate: false
-  xy: 1424, 391
-  size: 96, 77
-  orig: 400, 385
-  offset: 257, 124
+  xy: 212, 500
+  size: 76, 57
+  orig: 255, 245
+  offset: 171, 49
   index: -1
 
 by-painted-crossbow.png
-size: 2048, 1024
+size: 1036, 500
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
 crossbow_painted_1_body
   rotate: false
   xy: 2, 2
-  size: 400, 385
-  orig: 400, 385
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_1_night
   rotate: false
-  xy: 406, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 261, 2
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_2_body
   rotate: false
-  xy: 810, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 520, 2
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_2_night
   rotate: false
-  xy: 1214, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 779, 2
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_3_body
   rotate: false
-  xy: 1618, 2
-  size: 400, 385
-  orig: 400, 385
+  xy: 2, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_3_night
   rotate: false
-  xy: 2, 391
-  size: 400, 385
-  orig: 400, 385
+  xy: 261, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_4_body
   rotate: false
-  xy: 406, 391
-  size: 400, 385
-  orig: 400, 385
+  xy: 520, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 crossbow_painted_4_night
   rotate: false
-  xy: 810, 391
-  size: 400, 385
-  orig: 400, 385
+  xy: 779, 251
+  size: 255, 245
+  orig: 255, 245
   offset: 0, 0
   index: -1
 
 by-painted-stable.png
-size: 2048, 1024
+size: 1040, 532
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
 stable_painted_1_body
   rotate: false
   xy: 2, 2
-  size: 402, 383
-  orig: 402, 383
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_1_night
   rotate: false
-  xy: 408, 2
-  size: 402, 383
-  orig: 402, 383
+  xy: 262, 2
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_2_body
   rotate: false
-  xy: 814, 2
-  size: 402, 383
-  orig: 402, 383
+  xy: 522, 2
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_2_night
   rotate: false
-  xy: 1220, 2
-  size: 402, 383
-  orig: 402, 383
+  xy: 782, 2
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_3_body
   rotate: false
-  xy: 1626, 2
-  size: 402, 383
-  orig: 402, 383
+  xy: 2, 250
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_3_night
   rotate: false
-  xy: 2, 389
-  size: 402, 383
-  orig: 402, 383
+  xy: 262, 250
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_4_body
   rotate: false
-  xy: 408, 389
-  size: 402, 383
-  orig: 402, 383
+  xy: 522, 250
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_4_night
   rotate: false
-  xy: 814, 389
-  size: 402, 383
-  orig: 402, 383
+  xy: 782, 250
+  size: 256, 244
+  orig: 256, 244
   offset: 0, 0
   index: -1
 stable_painted_3_flag
   rotate: false
-  xy: 1220, 389
+  xy: 2, 498
   size: 49, 30
   orig: 49, 30
   offset: 0, 0
   index: -1
 stable_painted_4_flag
   rotate: false
-  xy: 1273, 389
+  xy: 55, 498
   size: 49, 29
   orig: 49, 29
   offset: 0, 0
   index: -1
 stable_painted_2_flag
   rotate: false
-  xy: 1326, 389
+  xy: 108, 498
   size: 48, 29
   orig: 48, 29
   offset: 0, 0
   index: -1
 stable_painted_1_flag
   rotate: false
-  xy: 1378, 389
+  xy: 160, 498
   size: 48, 28
   orig: 48, 28
   offset: 0, 0
   index: -1
 
 by-painted-fixtures.png
-size: 256, 128
+size: 144, 68
 format: RGBA8888
 filter: Linear, Linear
 repeat: none

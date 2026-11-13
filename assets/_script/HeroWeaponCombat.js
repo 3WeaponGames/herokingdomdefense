@@ -1,6 +1,14 @@
 "use strict";
 function configure(hero, user, config) {
-  var stats=require("HeroLoadout").applyStyle({health:hero.baseHp,damage:hero.attack,attackRate:hero.attackSpeed,range:hero.attackRange},user,config);
+  var Equipment=require("HeroEquipmentStats"), raw={health:hero.baseHp,damage:hero.attack,attackRate:hero.attackSpeed,range:hero.attackRange};
+  hero._heroSecondary = {};
+  if(Equipment.enabled(config)){
+    var Weapons=require("HeroWeapons"), style=user.getHeroWeapon?user.getHeroWeapon():Weapons.selected(user.data||user), values={}, levels={};
+    (config.EquipCfg||[]).forEach(function(gear){var value=user.getPersonLevel?user.getPersonLevel(gear.id):Weapons.level(user.data||user,gear.id);levels[gear.id]=value;values[gear.id]=gear.levelInfo[Math.max(0,Math.min(gear.levelInfo.length-1,value-1))].Parameters;});
+    raw=Equipment.raw(config,style.id,values,levels[3]);hero.moveSpeed=raw.move;
+    hero._heroSecondary=Equipment.secondary(config,style.id,levels[3]);
+  }
+  var stats=require("HeroLoadout").applyStyle(raw,user,config);
   hero.heroStyle=stats.style;hero.heroRanged=stats.ranged;hero.attackRange=stats.range;
   hero.baseHp=stats.health;hero.hpMax=hero.hp=hero.baseHp;hero.attack=stats.damage;hero.attackSpeed=stats.attackRate;
 }
