@@ -198,13 +198,13 @@ for (const type of ['cannon', 'sniper']) for (const level of [1, 2, 3]) test(`${
 
 test('layer pair becomes visible atomically and recoil moves only the weapon, not the building', () => {
   const h = fixture(); h.api.apply(h.owner);
-  assert.equal(h.loads.length, 3 + Object.keys(h.weapon.views || {}).length, 'intact layers and the independent destroyed sprite preload');
+  assert.equal(h.loads.length, 2 + Object.keys(h.weapon.views || {}).length, 'intact body and independent directional weapon layers only');
   h.loads.find(load => load.file === h.row.Appearance.sprite).done({ name: 'base' }); assert.equal(h.owner.ndAniMain.enabled, true, 'fallback remains while weapon is outstanding');
   assert(!h.owner._buildingAppearance.node || !h.owner._buildingAppearance.node.active);
-  h.loads.filter(load => load.file !== h.row.Appearance.sprite && load.file !== h.row.Appearance.destroyed.sprite).forEach(load => load.done({ name: load.file }));
+  h.loads.filter(load => load.file !== h.row.Appearance.sprite).forEach(load => load.done({ name: load.file }));
   const state = h.owner._buildingAppearance;
   assert.equal(h.api.ready(h.owner), true, 'ruins loading never delays a healthy tower firing');
-  assert.equal(state.destroyedFrame, null);
+  assert.equal(state.destroyedFrame, undefined,'healthy towers do not preload custom ruins');
   h.api.aim(h.owner, h.target(-300, 200));
   const base = { x: state.node.x, y: state.node.y, scaleX: state.node.scaleX, scaleY: state.node.scaleY };
   h.api.fire(h.owner); assert(state.recoilRemaining > 0); assert(Math.hypot(state.weaponNode.x, state.weaponNode.y) > 0);

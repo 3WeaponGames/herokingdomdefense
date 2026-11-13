@@ -74,7 +74,12 @@ function createAudioPlayer(api, report) {
     const start = () => {
       if (closed) return;
       if (kind === 'channel') stopOne(channel);
+      // Match the in-game presentation budget instead of accumulating an
+      // Audio element for every impact in a long or rapid-thrust preview.
+      const limit = kind === 'impact' ? 3 : 1, voices = [...active].filter(media => media._skillCue === kind);
+      while (voices.length >= limit) stopOne(voices.shift());
       const media = api.createAudio ? api.createAudio() : document.createElement('audio');
+      media._skillCue = kind;
       media.preload = 'none'; media.volume = Math.max(0, Math.min(1, Number(value.volume === undefined ? 1 : value.volume)));
       media.playbackRate = Math.max(.25, Math.min(4, Number(value.pitch || 1))); media.loop = kind === 'channel';
       media.src = api.audioURL ? api.audioURL(value.clip) : value.clip;
@@ -84,7 +89,7 @@ function createAudioPlayer(api, report) {
       Promise.resolve(result).catch(error => { if (!active.has(media)) return; stopOne(media); if (report) report(error.message || 'Press Test sound to allow playback.', true); });
     };
     const delay = Math.max(0, Number(value.delay) || 0);
-    if (delay) { const timer = setTimeout(() => { delays.delete(timer); channelDelays.delete(timer); start(); }, delay * 1000); delays.add(timer); if (kind === 'channel') channelDelays.add(timer); } else start();
+    if (delay) { if(delays.size>=512)return;const timer = setTimeout(() => { delays.delete(timer); channelDelays.delete(timer); start(); }, delay * 1000); delays.add(timer); if (kind === 'channel') channelDelays.add(timer); } else start();
   }
   return { cue, stop, destroy() { stop(); closed = true; } };
 }
@@ -122,7 +127,7 @@ function mount(host, api) {
   const play = button(row, 'Pause', () => { playback.playing = !playback.playing; if (preview) preview.play(playback.playing); if (!playback.playing) audio.stop(); updatePlayback(); });
   button(row, '◀ Frame', () => { stopAudio(); if (preview) preview.step(-1 / 60); });
   button(row, 'Frame ▶', () => { stopAudio(); if (preview) preview.step(1 / 60); });
-  const cast = button(row, 'Cast skill', () => { if (preview) preview.cast(); }, 'primary');
+  const cast = button(row, 'Cast skill', () => { scenario.mode='active';mode.value='active';if(preview)preview.cast();return updatePreview(); }, 'primary');
   button(row, 'Fit preview', () => { if (preview) preview.fit(); });
   const mode = makeSelect(row, 'Preview', [['active', 'Active skill'], ['basic', 'Basic attack + passive']], 'active', value => { scenario.mode = value; stopAudio(); if (preview) preview.setScenario({ mode: value }); updatePreview(); });
   const speed = makeSelect(row, 'Speed', [['.25', '0.25×'], ['.5', '0.5×'], ['1', '1×'], ['1.5', '1.5×'], ['2', '2×']], '1', value => setScenario('speed', Number(value)));
@@ -194,7 +199,7 @@ function mount(host, api) {
     } finally { actionBusy = false; updateButtons(session.state()); }
   }
   function updateButtons(state) {
-    const dirty = !!(snapshot && snapshot.dirty || localChanges.size || state.pending || state.rejected);
+    const dirty = !!(snapshot && snapshot.dirty || localChanges.size || state.pending || state.rejected || invalidInputs.size);
     save.disabled = actionBusy || !dirty || !!state.rejected || !!invalidInputs.size; discard.disabled = actionBusy || !dirty;
     undo.disabled = actionBusy || !snapshot || !snapshot.canUndo && !state.pending && !localChanges.size;
     redo.disabled = actionBusy || !snapshot || !snapshot.canRedo || !!state.pending || !!localChanges.size;
@@ -233,7 +238,7 @@ function mount(host, api) {
     all.forEach(field => {
       const path = fieldPath(field), value = fieldValue(path), type = field.type || (typeof value === 'boolean' ? 'boolean' : typeof value === 'number' ? 'number' : 'text');
       const wrap = el('div', undefined, fieldsHost, 'setting-field'), heading = el('div', undefined, wrap, 'field-title');
-      const label = el('label', field.label || path, heading), reset = button(heading, 'Reset', async () => { flushFields(); await session.reset(selected, path); }, 'reset'); reset.title = 'Remove this override and use the built-in default';
+      const label = el('label', field.label || path, heading), reset = button(heading, 'Reset', async () => { const key=selected+':'+path;invalidInputs.delete(key);localChanges.delete(key);flushFields();await session.reset(selected,path); }, 'reset'); reset.title = 'Remove this override and use the built-in default';
       let input;
       const isAudio = /\.clip$/.test(path), isResource = /resource$/.test(path) || type === 'resource' || type === 'vfx';
       if (isAudio || isResource) {
@@ -247,12 +252,13 @@ function mount(host, api) {
         if (type === 'animation' || /animation$/.test(path)) choices = [['', 'Automatic'], ...animations().map(name => [name, name])];
         if (type === 'effect-animation') { const resource = fieldValue('visual.resource'), item = (snapshot.catalogs && snapshot.catalogs.vfx || []).find(item => catalogValue(item) === resource); choices = [['', 'Default animation'], ...(item && item.animations || []).map(name => [name, name])]; }
         choices.forEach(choice => { const id = Array.isArray(choice) ? choice[0] : typeof choice === 'object' ? choice.value : choice, title = Array.isArray(choice) ? choice[1] : typeof choice === 'object' ? choice.label : choice; const option = el('option', title, input); option.value = id; });
+        if(value&&!Array.from(input.options).some(option=>option.value===String(value))){const option=el('option',value+' · unavailable; choose another or Reset',input);option.value=value;}
       } else { input = el('input', undefined, wrap); input.type = type === 'boolean' ? 'checkbox' : type === 'number' ? 'number' : 'text'; }
       input.id = 'skill-' + path.replace(/[^a-z0-9]+/gi, '-'); label.htmlFor = input.id; input.setAttribute('aria-label', field.label || path);
       if (field.min !== undefined) input.min = field.min; if (field.max !== undefined) input.max = field.max; if (field.step !== undefined) input.step = field.step; else if (input.type === 'number') input.step = 'any';
       const commit = () => { const n = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value) : input.value, key = selected + ':' + path; if (input.type === 'number' && (input.value.trim() === '' || !Number.isFinite(n) || field.min !== undefined && n < field.min || field.max !== undefined && n > field.max) || type === 'color' && n !== '' && !/^#[0-9a-f]{6}$/i.test(n)) { invalidInputs.set(key, input.value); input.classList.add('invalid'); updateButtons(session.state()); return; } invalidInputs.delete(key); input.classList.remove('invalid'); queueField(path, n); };
       input.oninput = commit; input.onchange = () => { commit(); flushFields(); };
-      if (type === 'color') { input.placeholder = 'Style default or #RRGGBB'; const swatch = el('input', undefined, wrap); swatch.type = 'color'; swatch.setAttribute('aria-label', (field.label || path) + ' picker'); input._colorPicker = swatch; input._defaultColor = {mystic:'#d69fff',skirmisher:'#fdf1a4',fighter:'#fff5b0',vanguard:'#fff5b0',bruiser:'#ff5b65',guardian:'#ff5b65'}[selected]; swatch.value = value || input._defaultColor; swatch.oninput = () => { input.value = swatch.value; commit(); }; swatch.onchange = flushFields; }
+      if (type === 'color') { input.placeholder = 'Style default or #RRGGBB'; const swatch = el('input', undefined, wrap); swatch.type = 'color'; swatch.setAttribute('aria-label', (field.label || path) + ' picker'); input._colorPicker = swatch; input._defaultColor = {mystic:'#d69fff',skirmisher:'#fdf1a4',fighter:'#fff5b0',vanguard:'#fff5b0',bruiser:'#ff5b65',guardian:'#70c8ff'}[selected]; swatch.value = value || input._defaultColor; swatch.oninput = () => { input.value = swatch.value; commit(); }; swatch.onchange = flushFields; }
       if (field.help || field.description || field.unit) el('p', field.help || field.description || 'Unit: ' + field.unit, wrap, 'help');
       controlRefs.set(path, input);
     });

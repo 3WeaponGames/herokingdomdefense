@@ -136,7 +136,7 @@ function family(actor, side) {
 function attack(actor, side, tower) {
   var cfg = actor && actor.cfg || {}, kind = family(actor, side), id;
   if (side === "tower") id = tower && tower.attackType === "cannon" ? "cannon-tower-fire" : tower && tower.attackType === "sniper" ? "sniper-tower-fire" : "bow-arrow-release";
-  else if (side === "hero") id = "bow-arrow-release";
+  else if (side === "hero") id = {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
   else if (side === "ally") id = Number(cfg.ID) === 90003 ? "crossbow-fire" : Number(cfg.ID) === 90004 ? "cavalry-lance-thrust" : Number(cfg.ID) === 90002 ? "sword-heavy-swing" : "sword-light-swing";
   else if (Number(cfg.AttackType) === 3) id = Number(cfg.ID) === 90009 || Number(cfg.CampaignBaseUnit) === 90009 ? "healing-cast" : "enemy-magic-projectile";
   else if (Number(cfg.AttackType) === 2) id = kind === "ghost" ? "enemy-magic-projectile" : "enemy-spit-launch";
@@ -157,11 +157,14 @@ function hit(target, source, damage, options) {
   }
   var armored = type === "metal" || type === "stone" || type === "shell" || target.navigationTeam === "friendly" && Number(cfg.ID) === 90002;
   var tower = source && source.getTowerSettings && source.getTowerSettings(), sourceType = Number(source && source.cfg && source.cfg.AttackType);
-  var arrow = source && (source._relicHero || source.navigationTeam === "friendly" && sourceType === 2 || source.buildInfo) || !!tower;
+  var heroStyle = source && source._relicHero && source.heroStyle;
+  var arrow = source && source._relicHero ? !heroStyle || heroStyle === "skirmisher" : source && (source.navigationTeam === "friendly" && sourceType === 2 || source.buildInfo) || !!tower;
   if (tower && tower.attackType === "cannon") id = null; // One explosion is emitted per shell, outside the splash-victim loop.
-  else if (options.magic || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
+  else if (options.magic || heroStyle === "mystic" || sourceType === 3 || sourceType === 2 && family(source) === "ghost") id = "magic-impact";
   else if (arrow) id = armored ? "arrow-impact-armour" : "arrow-impact-flesh";
   else id = armored ? "impact-armour" : damage >= (target.hpMax || Infinity) * .2 ? "impact-flesh-heavy" : "impact-flesh-light";
+  var customImpact=source&&source._styleRuntime&&source._styleRuntime.settings&&source._styleRuntime.settings.audio&&source._styleRuntime.settings.audio.impact;
+  if(customImpact&&customImpact.clip&&!options.magic)id=null;
   if (id) effect(id, target, { allowDead: true });
   var hurt = { beast: "hurt-beast", slime: "hurt-slime", skeleton: "hurt-skeleton", ghost: "hurt-ghost", insect: "hurt-insect" }[type];
   if (hurt && target.hp > 0) effect(hurt, target);

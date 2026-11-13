@@ -1,12 +1,26 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Library=require('../../packages/hkd-characters/lib/unit-library'),Units=require('../../packages/game-data-editor/lib/unit-assets'),Core=require('../../assets/_script/CharacterPartsCore'),Bake=require('../../packages/hkd-characters/lib/native-bake'),PNG=require('../../packages/hkd-characters/lib/png-atlas');
-test('all six licensed imports keep exact sprite bytes, pivot data, metadata and conversion hashes',()=>{
+function importedPayload(file){
+ const bytes=fs.readFileSync(path.join(root,file));
+ if(file!=='assets/resources/unit-library/character-maker/Units/Character.json')return bytes;
+ // The approved chest/cape layering change (df6fe1d11) moved these two slots
+ // behind the rider. Retain the import hash as a guard against overwriting
+ // authored source; reversing only that known move must recover every byte.
+ const text=bytes.toString('utf8'),rig=JSON.parse(text);
+ assert.deepEqual(rig.slots.slice(0,2).map(slot=>slot.name),['Rider/HandLeft/Shield','Rider/HandLeft/Sub_Item']);
+ const prefix='\n  "slots": [\n',start=text.indexOf(prefix)+prefix.length,end=text.indexOf('    {\n      "name": "Rider/Dead/Bone"',start);
+ assert(start>=prefix.length&&end>start,'The two approved hand slots have an isolated source block');
+ const moved=text.slice(start,end),rest=text.slice(0,start)+text.slice(end),position=rest.indexOf('    {\n      "name": "Rider/Mount/Mount"',start);
+ assert(position>start,'The original hand slot position remains available');
+ return Buffer.from(rest.slice(0,position)+moved+rest.slice(position));
+}
+test('all six licensed imports keep exact sprite bytes, pivot data, metadata and conversion payloads with the approved hand-slot layering',()=>{
   let total=0;
   for(const pack of require('../../packages/hkd-characters/lib/unit-packs').packs.map(pack=>pack.id)){
     const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/unit-library',pack,'catalog.json')));
     for(const part of catalog.parts){const bytes=fs.readFileSync(path.join(root,part.image));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),part.sha256);assert(part.pixelsPerUnit>0);assert(Number.isFinite(part.pivot.x));assert.equal(JSON.parse(fs.readFileSync(path.join(root,part.image+'.meta'))).importer,'texture');total++;}
-    for(const [file,hash]of Object.entries(catalog.importedFiles))assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex'),hash,file);
+    for(const [file,hash]of Object.entries(catalog.importedFiles))assert.equal(crypto.createHash('sha256').update(importedPayload(file)).digest('hex'),hash,file);
   }assert(total>2215);
 });
 const engine=Units.enginePath();
@@ -83,7 +97,7 @@ test('the deployed roster uses faceless Maker allies and monster enemies with th
   }
   const hero=Units.describe(root,{type:'hero',id:'hero',noRuntime:true}),horse=hero.layers[0],riders=hero.layers.slice(1),originalHorse='assets/KinghtFallEnemyAni/wqyl_lead/wqyl_lead_ma/wqyl_lead_ma.json';assert.equal(hero.layers.length,7);
   assert.equal(horse.source,'assets/resources/hero-maker/wqyl_lead_ma.json');assert.deepEqual(horse.json._heroMakerMount,{version:2,source:JSON.parse(fs.readFileSync(path.join(root,originalHorse+'.meta'))).uuid,thrustReference:'legacy-cavalry'});
-  assert.deepEqual(horse.skins,JSON.parse(fs.readFileSync(path.join(root,originalHorse))).skins.map(skin=>skin.name),'The synchronized Maker mount retains every original upgraded horse skin');assert(horse.json.bones.some(bone=>bone.name==='bone2'),'The mount keeps its animated saddle anchor');
+  assert.deepEqual(horse.skins.filter(name=>name!=='lv_blue'),JSON.parse(fs.readFileSync(path.join(root,originalHorse))).skins.map(skin=>skin.name),'The synchronized Maker mount retains every original upgraded horse skin');assert(horse.skins.includes('lv_blue'),'The approved fifth visual tier includes its blue horse skin');assert(horse.json.bones.some(bone=>bone.name==='bone2'),'The mount keeps its animated saddle anchor');
   assert.deepEqual(riders.map(layer=>layer.json._heroMaker.role).sort(),[0,1,2,3,4,5]);
   for(const layer of riders){const maker=layer.json._heroMaker;assert.equal(maker.version,3);assert.equal(maker.source,'character-maker/Character');assert.equal(maker.riderScale,.78);assert(Number.isFinite(maker.saddle.x)&&Number.isFinite(maker.saddle.y));assert.deepEqual(maker.saddle,riders[0].json._heroMaker.saddle,'All six rider layers follow the same mount saddle');}
 });

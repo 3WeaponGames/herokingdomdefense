@@ -57,9 +57,8 @@ test('logical level groups retain every reachable authored alternative',()=>{
   const rows=Model.families(base,translations,'en');
   const arrow=rows.find(r=>r.key==='2:1');
   assert.deepEqual(arrow.levels.map(group=>[group.level,group.branches.map(b=>b.index)]),[[1,[1]],[2,[2]],[3,[3]],[4,[10]]]);
-  for(const typeID of ['4','5']){
-    assert.deepEqual(rows.find(r=>r.typeID===typeID).levels.map(group=>group.branches.map(b=>b.index)),[[1],[2],[3],[4]]);
-  }
+  assert.deepEqual(rows.find(r=>r.typeID==='4').levels.map(group=>group.branches.map(b=>b.index)),[[1],[2],[3],[4]]);
+  assert.deepEqual(rows.find(r=>r.typeID==='5').levels.map(group=>group.branches.map(b=>b.index)),[[1],[2,5],[3,6],[4,7]],'Scarecrow and bomb mill branches remain selectable at each upgrade level');
   assert.deepEqual(rows.find(r=>r.typeID==='6').levels.map(group=>group.branches.map(b=>b.index)),[[1],[2],[3]],'Wall artwork tiers each have a tab');
 });
 

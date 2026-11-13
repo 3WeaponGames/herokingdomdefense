@@ -28,3 +28,36 @@ test('spawn circles and optional path widths survive prefab round trips without 
  assert.deepEqual(loaded.spawns,f.stage.spawns);assert.deepEqual(loaded.graphs,f.stage.graphs);assert.deepEqual(tree(f.root),before);
  const node=Maps.model(data).nodes.find(n=>n.kind==='spawn');assert.deepEqual(node.position,{x:10,y:20});
 });
+
+test('disabled building records and their path conditions survive export and recovery without runtime nodes',()=>{
+ const f=fixture(),building={id:13,name:'Parked house',kind:4,x:50,y:70,scale:1,angle:0,unlock:1,enabled:false,template:{prefab:'Map01',node:42,roots:[42]},future:{keep:[1,2]}},before=M.clone(building);
+ f.stage.buildings=[building];f.stage.config=M.clone(f.config);f.stage.config.HomeLevel1Unlock=[[4,13]];f.stage.graphs[0].requiresAnyBuilding=[13];
+ const exported=P.compact(P.compose(f.root,f.map,f.stage,{ground:[],assets:{}},{}));f.write(f.file,exported);const bytes=tree(f.root),loaded=L.adaptStage(f.root,'A',1,f.config);
+ assert.deepEqual(loaded.buildings,[before]);assert.deepEqual(loaded.graphs,f.stage.graphs);assert.equal(loaded.nextBuilding,14);assert.equal(loaded.buildings[0].enabled,false);
+ assert.equal(Maps.model(exported).owners.filter(n=>n.kind==='building').length,0);assert(!Object.values(P.unlocks(f.stage)).some(rows=>rows.some(pair=>pair[1]===13)));
+ assert.deepEqual(tree(f.root),bytes,'Inspecting/recovering performs no writes');
+ const roundtrip=P.compact(P.compose(f.root,f.map,loaded,{ground:[],assets:{}},{}));f.write(f.file,roundtrip);assert.deepEqual(L.adaptStage(f.root,'A',1,f.config).buildings,[before]);assert.deepEqual(building,before);
+});
+
+test('an actual native building wins over stale disabled metadata with the same ID',()=>{
+ const f=fixture(),names=['KinghtFallBuildMainFortress','KinghtFallBuildBartizan','KinghtFallBuildBarracks','KinghtFallBuildHome','KinghtFallBuildMill','KinghtFallBuildWall'];
+ for(const name of names){const file='assets/_script/'+name+'.js.meta';f.write(file,JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../..',file),'utf8')));}
+ f.stage.buildings=[{id:13,name:'Old disabled house',kind:4,x:0,y:0,enabled:false,future:{keep:1}}];
+ const data=P.compact(P.compose(f.root,f.map,f.stage,{ground:[],assets:{}},{})),main=Maps.model(data).roots.ndMain,id=P.append(data,'Native house',main,77,88);
+ P.component(data,id,{__type__:L.script(f.root,'KinghtFallBuildHome'),ID:13,ndAniMain:{__id__:id}});f.write(f.file,data);f.config.HomeLevel1Unlock=[[4,13]];
+ const before=tree(f.root),loaded=L.adaptStage(f.root,'A',1,f.config);assert.equal(loaded.buildings.length,1);assert.equal(loaded.buildings[0].enabled,true);assert.equal(loaded.buildings[0].x,77);assert.equal(loaded.buildings[0].y,88);assert.equal(loaded.buildings[0].future,undefined);assert.deepEqual(tree(f.root),before);
+});
+
+test('invalid disabled building metadata fails explicitly without normalizing or writing its source',()=>{
+ for(const value of ['{broken','null','{}','[{"id":13,"kind":4,"enabled":true}]','[{"id":0,"kind":4,"enabled":false}]','[{"id":13,"kind":4,"enabled":false},{"id":13,"kind":4,"enabled":false}]']){
+  const f=fixture(),holder=Maps.model(f.data).nodes.find(n=>n.name==='Authored routes'),component=holder.components.find(c=>c.value.__type__===L.script(f.root,'AuthoredStagePaths')).value;component.disabledBuildings=value;f.write(f.file,f.data);const before=tree(f.root);
+  assert.throws(()=>L.adaptStage(f.root,'A',1,f.config),/authored route metadata|disabled building metadata/);assert.deepEqual(tree(f.root),before);
+ }
+});
+
+test('parked all-zero legacy route conditions survive prefab round trips byte-for-byte',()=>{
+ const f=fixture(),parked=M.clone(f.stage.graphs[0]);Object.assign(parked,{id:'parked',legacy:true,requiresAnyBuilding:Array(10).fill(0),future:{keep:[1,2]}});f.stage.graphs.push(parked);
+ const data=P.compact(P.compose(f.root,f.map,f.stage,{ground:[],assets:{}},{}));f.write(f.file,data);const before=tree(f.root),loaded=L.adaptStage(f.root,'A',1,f.config);
+ assert.deepEqual(loaded.graphs,f.stage.graphs);assert.equal(M.legacyUnavailable(loaded.graphs[1]),true);assert.deepEqual(tree(f.root),before);
+ const again=P.compact(P.compose(f.root,f.map,loaded,{ground:[],assets:{}},{}));assert.deepEqual(again,data);
+});

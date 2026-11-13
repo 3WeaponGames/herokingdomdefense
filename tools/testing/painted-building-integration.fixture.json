@@ -4606,7 +4606,7 @@
               "visual": {
                 "Icon": "painted-cannon-1",
                 "Skin": "jt-1",
-                "Appearance": "6c4d0315f39ff5208b0feb926a3ce7fe5029963c297cf77caf0d6b76edb9f29c"
+                "Appearance": "3dbbb0a5c43d0d8ccd834fb7d3daf9ca1139aaade3e65ab3636a521107da6997"
               }
             },
             {
@@ -4644,7 +4644,7 @@
               "visual": {
                 "Icon": "painted-cannon-2",
                 "Skin": "jt-2-1",
-                "Appearance": "3512fc8f8260f8d1c9f8a2da79f61e2a5c43b1f0e1d87b99c32d77654562a762"
+                "Appearance": "783c10bcaa40a72d82afc9c7d300aa4504f7ae7bdd7a9363eebc35de09495cb0"
               }
             },
             {
@@ -4681,7 +4681,7 @@
               "visual": {
                 "Icon": "painted-cannon-3",
                 "Skin": "jt-2-2",
-                "Appearance": "fb5d73cf0b5078694805b01914c1cc1a3340c0572a7dfd255eb798774b16a432"
+                "Appearance": "b7c97194a4c23f64688d40f0f2488d0f508646dd3b1868b256224aada8fb4f2b"
               }
             },
             {
@@ -4719,7 +4719,7 @@
               "visual": {
                 "Icon": "painted-sniper-1",
                 "Skin": "jt-1",
-                "Appearance": "361405a3050979a680175a05af8d59af97cb2e918850b81b6001ed9e81478e68"
+                "Appearance": "16a9e47a657d721c8867691d38b4e729babc53223340c0483790b76ed07dbdbb"
               }
             },
             {
@@ -4757,7 +4757,7 @@
               "visual": {
                 "Icon": "painted-sniper-2",
                 "Skin": "jt-2-1",
-                "Appearance": "10b1e1d59519d2501c13f27742d7b344e8bf30682bef1beb2f3b8dc27590d203"
+                "Appearance": "7a2f23169f4cbebe8ba27a5fc033dea0b27a6ff542b7248bafe2747561911e60"
               }
             },
             {
@@ -4794,7 +4794,7 @@
               "visual": {
                 "Icon": "painted-sniper-3",
                 "Skin": "jt-2-2",
-                "Appearance": "67757d3f6f5596a97fd39652a46ec37af5299604b15c37febd5e54e2fa79a3b3"
+                "Appearance": "6bbca18caaa59b7554e1abc58fffc1fc5ea4f67d0b1b1cd5cc7a9d925b8942da"
               }
             }
           ],
@@ -4980,13 +4980,6 @@
                     "reloadTime": 0
                   }
                 },
-                "destroyed": {
-                  "sprite": "buildings/towers/cannon-3-destroyed",
-                  "width": 168.3,
-                  "height": 168.3,
-                  "offsetX": 0,
-                  "offsetY": -38
-                },
                 "muzzleX": 23.3647956,
                 "muzzleY": 159.6615169151511,
                 "lifecycle": "native-tower"
@@ -5115,13 +5108,6 @@
                     "damping": 5,
                     "reloadTime": 1
                   }
-                },
-                "destroyed": {
-                  "sprite": "buildings/towers/sniper-3-destroyed",
-                  "width": 104,
-                  "height": 104,
-                  "offsetX": 0,
-                  "offsetY": -38
                 },
                 "muzzleX": 39.471429,
                 "muzzleY": 176.13753892080305,
@@ -6310,7 +6296,7 @@
               "visual": {
                 "Icon": "painted-cannon-1",
                 "Skin": "jt-1",
-                "Appearance": "6c4d0315f39ff5208b0feb926a3ce7fe5029963c297cf77caf0d6b76edb9f29c"
+                "Appearance": "3dbbb0a5c43d0d8ccd834fb7d3daf9ca1139aaade3e65ab3636a521107da6997"
               }
             },
             {
@@ -6348,7 +6334,7 @@
               "visual": {
                 "Icon": "painted-cannon-2",
                 "Skin": "jt-2-1",
-                "Appearance": "3512fc8f8260f8d1c9f8a2da79f61e2a5c43b1f0e1d87b99c32d77654562a762"
+                "Appearance": "783c10bcaa40a72d82afc9c7d300aa4504f7ae7bdd7a9363eebc35de09495cb0"
               }
             },
             {
@@ -6385,7 +6371,7 @@
               "visual": {
                 "Icon": "painted-cannon-3",
                 "Skin": "jt-2-2",
-                "Appearance": "fb5d73cf0b5078694805b01914c1cc1a3340c0572a7dfd255eb798774b16a432"
+                "Appearance": "b7c97194a4c23f64688d40f0f2488d0f508646dd3b1868b256224aada8fb4f2b"
               }
             },
             {
@@ -6423,7 +6409,7 @@
               "visual": {
                 "Icon": "painted-sniper-1",
                 "Skin": "jt-1",
-                "Appearance": "361405a3050979a680175a05af8d59af97cb2e918850b81b6001ed9e81478e68"
+                "Appearance": "16a9e47a657d721c8867691d38b4e729babc53223340c0483790b76ed07dbdbb"
               }
             },
             {
@@ -6461,7 +6447,7 @@
               "visual": {
                 "Icon": "painted-sniper-2",
                 "Skin": "jt-2-1",
-                "Appearance": "10b1e1d59519d2501c13f27742d7b344e8bf30682bef1beb2f3b8dc27590d203"
+                "Appearance": "7a2f23169f4cbebe8ba27a5fc033dea0b27a6ff542b7248bafe2747561911e60"
               }
             },
             {
@@ -6498,7 +6484,7 @@
               "visual": {
                 "Icon": "painted-sniper-3",
                 "Skin": "jt-2-2",
-                "Appearance": "67757d3f6f5596a97fd39652a46ec37af5299604b15c37febd5e54e2fa79a3b3"
+                "Appearance": "6bbca18caaa59b7554e1abc58fffc1fc5ea4f67d0b1b1cd5cc7a9d925b8942da"
               }
             }
           ],
@@ -6684,13 +6670,6 @@
                     "reloadTime": 0
                   }
                 },
-                "destroyed": {
-                  "sprite": "buildings/towers/cannon-3-destroyed",
-                  "width": 168.3,
-                  "height": 168.3,
-                  "offsetX": 0,
-                  "offsetY": -38
-                },
                 "muzzleX": 23.3647956,
                 "muzzleY": 159.6615169151511,
                 "lifecycle": "native-tower"
@@ -6819,13 +6798,6 @@
                     "damping": 5,
                     "reloadTime": 1
                   }
-                },
-                "destroyed": {
-                  "sprite": "buildings/towers/sniper-3-destroyed",
-                  "width": 104,
-                  "height": 104,
-                  "offsetX": 0,
-                  "offsetY": -38
                 },
                 "muzzleX": 39.471429,
                 "muzzleY": 176.13753892080305,

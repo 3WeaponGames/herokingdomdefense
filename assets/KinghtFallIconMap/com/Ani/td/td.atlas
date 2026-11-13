@@ -466,16 +466,3 @@ mill-bomb-4
   orig: 75, 72
   offset: 0, 0
   index: -1
-
-td-ruins.png
-size: 168,148
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
-painted-farm-destroyed
-  rotate: false
-  xy: 2, 2
-  size: 164, 143
-  orig: 164, 143
-  offset: 0, 0
-  index: -1

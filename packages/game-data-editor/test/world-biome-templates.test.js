@@ -21,7 +21,13 @@ test('biome terrain sources are portable, unique and restricted to the Objects p
   assert.equal(asset.file,'authoring/worlds/library/images/biome-terrain/'+biome+'/'+piece+'.png');
   assert(!path.isAbsolute(asset.file));assert(!asset.file.split('/').includes('..'));
   assert(!asset.url&&!asset.stagedFile);assert(!/[A-Za-z]:[\\/]|file:\/\/|Codex Artifacts/.test(JSON.stringify(asset)));
-  assert.deepEqual(asset.source,{kind:'openai-imagegen',biome,piece});
+  const {outlineRefinement,...origin}=asset.source;
+  assert.deepEqual(origin,{kind:'openai-imagegen',biome,piece});
+  if(outlineRefinement){
+   assert.deepEqual(Object.keys(outlineRefinement).sort(),['date','kind','reference','worldStroke']);
+   assert.equal(outlineRefinement.kind,'openai-imagegen');assert.match(outlineRefinement.date,/^\d{4}-\d{2}-\d{2}$/);
+   assert.equal(outlineRefinement.reference,'Tree Yellow Green 15');assert.equal(outlineRefinement.worldStroke,1.8);
+  }
   const png=fs.readFileSync(path.join(root,asset.file));assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
   assert.equal(hash(png),asset.sha256,id);assert.equal(png.readUInt32BE(16),asset.width);assert.equal(png.readUInt32BE(20),asset.height);
   assert(asset.width>0&&asset.height>0&&asset.width*asset.height<=16*1024*1024);

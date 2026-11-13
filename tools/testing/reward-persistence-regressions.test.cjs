@@ -24,6 +24,7 @@ function harness(saved = {}) {
   Base.prototype.init = function () {};
   modules.QuestBoardCore = require('../../assets/_script/QuestBoardCore');
   modules.HeroWeapons = require('../../assets/_script/HeroWeapons');
+  modules.HeroEquipmentStats = require('../../assets/_script/HeroEquipmentStats');
   function load(name) {
     if (modules[name]) return modules[name];
     const ctx = { exports: {}, require: name => modules[name] || {}, console: { log() {}, error() {} },

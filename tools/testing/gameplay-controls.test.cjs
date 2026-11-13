@@ -31,6 +31,8 @@ function fixture() {
     UIMgr: { UIMgr: singleton(manager) },
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton({ getGameData: () => ({ setNewGame: () => state.saveResult }) }) },
     AudioMgr: { AudioMgr: singleton({ playEffectFree() {} }) },
+    RelicCombat: { updateHero() {} }, RelicBattle: { updateHeroAura() {} },
+    GameToolsOverrides: { tick() {} }, KinghtFallNavigation: { beginFrame() {} },
     HeroSkillHUD: { update(hero, runtime) { state.events.push(['skillHUD', runtime.time]); } },
     EventMgr: { EventMgr: singleton({ emit(...args) { state.events.push(args); } }) },
     BaseUI: { default: Base }, BaseCtrl: { default: Base }
@@ -106,6 +108,14 @@ test('the gameplay frame paints the skill HUD once after combat and still hides 
   assert.deepEqual(f.state.events,[['combat',.016],['skillHUD',.016],['skillHUD',.016]]);
 });
 
+test('the battle advances skills once after movement so hit geometry matches the rendered position',()=>{
+ const f=fixture(),order=[],hero=f.game.ctrPlay;hero.node={x:0,y:0};hero._styleRuntime={update(dt){order.push(['skill',hero.node.x,dt]);}};
+ Object.assign(f.game,{gameStatus:f.stages.Fight,ndPlayArr2:[],ndEnemyArr:[],ndSoldArr:[],ndBuildArr2:[],collectFollowers(){}});
+ hero.doMove=()=>{hero.node.x+=30;order.push(['move',hero.node.x]);};
+ Object.assign(f.game.gameData,{onUpdata(){},getSoldierList:()=>[]});hero.onUpdata=()=>order.push(['actor']);
+ f.game.onUpdate(.1);assert.deepEqual(order,[['actor'],['move',30],['skill',30,.1]]);
+});
+
 test('Keyboard movement delegates to the shipped movement function and stops when test mode turns off', () => {
   const f = fixture(); f.state.input = { x: 1, y: 1 };
   f.ui._updateTestControls(); assert.ok(Math.abs(f.game.moveDir.x - Math.SQRT1_2) < 1e-12);
@@ -174,4 +184,11 @@ test('Space retains insufficient-funds, range, unlock, phase and test-mode check
     if (kind === 'dead') f.state.dead = true;
     assert.equal(f.game.testInstantBuild(), false); assert.equal(f.game.gameData.coin, 20); assert.equal(f.state.opens.length, 0);
   }
+});
+
+test('a zero movement vector stops an existing direction with the real engine normalize contract',()=>{
+ const f=fixture();f.cc.Vec2.normalize=(out,p)=>{const n=Math.hypot(p.x,p.y);if(n){out.x=p.x/n;out.y=p.y/n;}return out;};
+ f.game.moveFun({x:1,y:0});assert.equal(f.game.moveDir.x,1);
+ f.game.moveFun({x:0,y:0});assert.equal(f.game.moveDir.x,0);assert.equal(f.game.moveDir.y,0);
+ f.game.moveFun({x:0,y:1});f.game.moveFun(null);assert.equal(f.game.moveDir.y,0);
 });

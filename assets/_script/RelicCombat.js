@@ -186,6 +186,33 @@ function primaryImpact(target, hero, context, damage) {
     if (nearby.length) secondaryHit(nearby[0].enemy, context.nonCritical * (pierce || cleave), context, nearby[0].generation);
   }
   if (context.echo > 0 && living(target)) secondaryHit(target, context.nonCritical * context.echo, context, context.targetGeneration);
+  primaryHeroPerks(target, hero, context);
+}
+// Shared primary-hit benefits apply equally to projectiles, melee, beams and
+// active skills. Keeping them here prevents missing benefits and duplicate
+// wrappers, while secondary relic hits remain excluded.
+function primaryHeroPerks(target, hero, context) {
+  if (!sameBattle(context) || generation(target) !== context.targetGeneration) return;
+  var data = context.data;
+  if (!data || !data.getGameBuff) return;
+  var kill = data.getGameBuff(50008), dead = target.isDead ? target.isDead() : target.hp <= 0;
+  if (kill && dead && kill.Pamer && kill.Pamer[0] > 0) {
+    if (hero.addHpPro) hero.addHpPro(kill.Pamer[0]);
+    else Runtime.heal(hero, kill.Pamer[0]);
+  }
+  if (!sameBattle(context) || generation(target) !== context.targetGeneration || !living(target)) return;
+  var slow = data.getGameBuff(50015), amount = slow && slow.Pamer && slow.Pamer[0];
+  if (!(amount > 0) || !target.addBuff) return;
+  var buffs = target.debuffInfo || [], previous = null;
+  for (var i = 0; i < buffs.length; i++) {
+    if (buffs[i]._heroCrippling && buffs[i]._heroCrippling.hero === hero && buffs[i]._heroCrippling.generation === context.heroGeneration) { previous = buffs[i]; break; }
+  }
+  if (previous) { previous.time = 0; previous.timeMax = 1; previous.data.subNum = amount; }
+  else {
+    target.addBuff(require("KinghtFallInterface").KinghtFallEnemyBuffType.MoveSpeed, { subNum: amount, time: 1 });
+    buffs = target.debuffInfo || [];
+    if (buffs.length) buffs[buffs.length - 1]._heroCrippling = { hero: hero, generation: context.heroGeneration };
+  }
 }
 function secondaryHit(target, damage, context, targetGeneration) {
   if (!sameBattle(context) || !living(target) || generation(target) !== targetGeneration) return;

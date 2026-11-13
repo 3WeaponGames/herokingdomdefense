@@ -124,6 +124,7 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.hide = function () {
+    require("BuildingDebris").clear(this);
     this._stopColliderTweens();
     this.ndLockList.forEach(function (t) {
       t.active = false;
@@ -188,6 +189,8 @@ var def_KinghtFallBuildBase = function (t) {
     return this._freeInitialBuild || !!data.treasureAddTime && data.treasureAddTime[$z1KinghtFallEnum.KinghtFallEnumTreasureEnum.CovenantOfPatriarchs] == this.ID;
   };
   _ctor.prototype.setLevel = function (t) {
+    require("BuildingDebris").clear(this);
+    require("BuildingDebris").prepare(this);
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     this.cancelUpgrade();
     var e;
@@ -333,6 +336,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (t.prototype.onDisable) t.prototype.onDisable.call(this);
   };
   _ctor.prototype.onDestroy = function () {
+    require("BuildingDebris").destroy(this);
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
     this.cancelUpgrade();
     this._stopColliderTweens();
@@ -764,6 +768,7 @@ var def_KinghtFallBuildBase = function (t) {
     }
   };
   _ctor.prototype.onDead = function () {
+    require("BuildingDebris").capture(this);
     this.cancelUpgrade();
     this._stopColliderTweens();
     $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.destory, undefined, undefined, { owner: this, game: $z1KinghtFallUIGame.default.instance.ctrGame });
@@ -785,6 +790,7 @@ var def_KinghtFallBuildBase = function (t) {
     this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.MapUpdate);
   };
   _ctor.prototype.onUpdate = function (t) {
+    require("BuildingDebris").update(this, t);
     if (this.getIsWork()) {
       for (var e = 0; e < this.debuffInfo.length; e++) {
         var n = this.debuffInfo[e];
@@ -806,6 +812,7 @@ var def_KinghtFallBuildBase = function (t) {
     return 0;
   };
   _ctor.prototype.reset = function (t) {
+    require("BuildingDebris").clear(this);
     this.cancelUpgrade();
     if (t) {
       this._freeInitialBuild = false;
@@ -829,6 +836,7 @@ var def_KinghtFallBuildBase = function (t) {
     if (artwork.placementSpeed) artwork.placementSpeed(this);
   };
   _ctor.prototype.endRoundGame = function () {
+    require("BuildingDebris").clear(this);
     this.isDestroyed = false;
     require("BuildingAppearance").apply(this);
   };

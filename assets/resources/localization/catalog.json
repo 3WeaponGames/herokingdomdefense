@@ -26,7 +26,6 @@
     "data.mill.bomb.3.description": {"en":"Upgrade: 3 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：3块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
     "data.mill.bomb.4.name": {"en":"Bomb Mill · Lv 4","zh":"炸弹磨坊 · 4级","context":"Mill crop defense choice"},
     "data.mill.bomb.4.description": {"en":"Final upgrade: 4 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"最终升级：4块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-
     "data.building.castle-4.name": {"en":"Castle · Lv 4","zh":"主城 · 4级","context":"Approved four-tier building progression"},
     "data.building.castle-4.description": {"en":"Final upgrade: a stronger royal castle with improved defenses and firepower.","zh":"最终升级：强化皇家城堡，拥有更强的防御与火力。","context":"Approved four-tier building progression"},
     "data.building.archer-4.name": {"en":"Arrow Tower · Lv 4","zh":"箭塔 · 4级","context":"Approved four-tier building progression"},
@@ -5188,6 +5187,18 @@
     "pause.settings": {"en":"Settings","zh":"设置","context":"GUI Pro four-button pause menu"},
     "pause.continue": {"en":"Continue","zh":"继续","context":"GUI Pro four-button pause menu"},
     "pause.restart": {"en":"Restart","zh":"重新开始","context":"GUI Pro four-button pause menu"},
+    "pause.restartStage": {"en":"Restart stage","zh":"重开关卡","context":"Campaign pause action during planning"},
+    "pause.restartStageWave": {"en":"Restart stage / wave","zh":"重开关卡 / 波次","context":"Campaign pause action while a wave is in progress"},
+    "pause.restartStageTitle": {"en":"Restart this stage?","zh":"重新开始此关卡？","context":"Campaign full-stage restart confirmation heading"},
+    "pause.restartChoiceTitle": {"en":"Restart stage or wave?","zh":"重开关卡还是波次？","context":"Campaign restart choice heading during combat"},
+    "pause.restartStageWarning": {"en":"Restart from Wave 1 with nothing built?\nAll progress in this stage will be lost and cannot be recovered.\nPermanent upgrades and other stage saves are kept.","zh":"从第1波重新开始，清空已建建筑？\n此关卡内的所有进度将丢失，且无法撤销。\n永久升级和其他关卡的存档将保留。","context":"Campaign full-stage restart warning; account progress is retained"},
+    "pause.restartChoiceWarning": {"en":"Choose what to restart. Discarded progress cannot be recovered.\nPermanent upgrades and other stage saves are kept.","zh":"请选择重开的范围。被放弃的进度无法恢复。\n永久升级和其他关卡的存档将保留。","context":"Campaign restart choice warning; account progress is retained"},
+    "pause.restartWholeStage": {"en":"Restart whole stage","zh":"重新开始整个关卡","context":"Campaign full-stage restart confirmation button"},
+    "pause.restartThisWave": {"en":"Restart this wave","zh":"重新开始当前波次","context":"Campaign wave restart confirmation button"},
+    "pause.restartStageHelp": {"en":"Start over at Wave 1 with a fresh build and no battle perks.","zh":"回到第1波，清空已建建筑和本局战斗增益。","context":"Explains full-stage restart choice"},
+    "pause.restartWaveHelp": {"en":"Restore this wave's starting buildings, silver and perks.","zh":"恢复到本波开始时的建筑、银币和增益。","context":"Explains wave-only restart choice"},
+    "pause.restartCancel": {"en":"Cancel","zh":"取消","context":"Dismiss restart confirmation and remain paused"},
+    "pause.restartFailed": {"en":"Restart could not be saved. Please try again.","zh":"无法保存重开状态，请重试。","context":"Restart confirmation persistence failure; no restart was accepted"},
     "pause.returnHome": {"en":"Return Home","zh":"返回大厅","context":"GUI Pro four-button pause menu"},
     "pause.saveAndExit": {"en":"Save and exit","zh":"保存并退出","context":"Campaign pause menu exit action"},
     "pause.endBattle": {"en":"End battle","zh":"结束战斗","context":"Wall Defense pause menu end action"},
@@ -11717,6 +11728,76 @@
       "en": "Blue Mount",
       "zh": "蓝色坐骑",
       "context": "Placeholder equipment for the new blue tier."
+    },
+    "hero.skills.name": {
+      "en": "Skill",
+      "zh": "技能",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.skirmisher": {
+      "en": "Piercing Arrow",
+      "zh": "贯穿箭",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.fighter": {
+      "en": "Battle Cry",
+      "zh": "战吼",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.vanguard": {
+      "en": "Spear Barrage",
+      "zh": "长矛连刺",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.mystic": {
+      "en": "Arcane Burst",
+      "zh": "奥术爆发",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.bruiser": {
+      "en": "Blood Cleave",
+      "zh": "鲜血旋斩",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.guardian": {
+      "en": "Iron Bulwark",
+      "zh": "钢铁壁垒",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.cooldown": {
+      "en": "{0}s",
+      "zh": "{0}秒",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.casting": {
+      "en": "Casting",
+      "zh": "施放中",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.outOfRange": {
+      "en": "Out of range",
+      "zh": "超出范围",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.markTarget": {
+      "en": "Mark a target",
+      "zh": "标记目标",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.chooseAim": {
+      "en": "Choose aim",
+      "zh": "选择方向",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.ready": {
+      "en": "Ready",
+      "zh": "就绪",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
+    },
+    "hero.skills.unavailable": {
+      "en": "Unavailable",
+      "zh": "无法使用",
+      "context": "Hero active skill button; includes cooldown and targeting feedback"
     }
   },
   "images": {

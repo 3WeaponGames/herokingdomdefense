@@ -24,10 +24,6 @@ function melee(game,target,release) {
   ui.ctrEffect.onMonsterAttack(position,"xb_gj");
   var received=target.onAttacked(damage,hero,false,context);
   if(received>0)ui.ctrEffect.showDamageNum(position,received,critical);
-  if(!combat.primaryCurrent(context,target,hero))return true;
-  var kill=game.gameData.getGameBuff(50008),slow=game.gameData.getGameBuff(50015);
-  if(kill&&target.isDead())hero.addHpPro(kill.Pamer[0]);
-  if(slow&&!target.isDead())target.addBuff(require("KinghtFallInterface").KinghtFallEnemyBuffType.MoveSpeed,{subNum:slow.Pamer[0],time:1});
   return true;
 }
 exports.configure=configure;exports.melee=melee;

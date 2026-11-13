@@ -64,6 +64,9 @@ function graphIdentifierIssues(graph){
  for(const edge of graph&&Array.isArray(graph.edges)?graph.edges:[])if(!edge||!valid(edge.id))issues.push('Path connection IDs must be non-empty strings.');
  return Array.from(new Set(issues));
 }
+// Original native paths used a non-empty all-zero building list to park an
+// alternate route. Zero is never a buildable ID, so keep that route unavailable.
+function legacyUnavailable(graph){return !!graph&&graph.legacy===true&&Array.isArray(graph.requiresAnyBuilding)&&graph.requiresAnyBuilding.length>0&&Array.from(graph.requiresAnyBuilding).every(id=>id===0);}
 function graphIssues(graph,spawnIds,buildingIds){
  const issues=graphIdentifierIssues(graph),nodes=new Map(),outgoing=new Map(),edgeIds=new Set();
  if(!graph||!Array.isArray(graph.nodes)||!Array.isArray(graph.edges)||!Array.isArray(graph.spawnIds)||graph.nodes.some(n=>!n||typeof n!=='object'||Array.isArray(n))||graph.edges.some(e=>!e||typeof e!=='object'||Array.isArray(e)))return issues;
@@ -91,7 +94,7 @@ function graphIssues(graph,spawnIds,buildingIds){
   }
  }
  if(graph.requiresAnyBuilding!==undefined&&graph.requiresAnyBuilding!==null&&!Array.isArray(graph.requiresAnyBuilding))issues.push('Path building conditions must be an array.');
- for(const b of Array.isArray(graph.requiresAnyBuilding)?graph.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
+ if(!legacyUnavailable(graph))for(const b of Array.isArray(graph.requiresAnyBuilding)?graph.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
  for(const e of edges){
   if(!nodes.has(e.from)||!nodes.has(e.to))issues.push('Path has a disconnected edge.');
   if(!finite(e.weight)||e.weight<0)issues.push('Branch chance cannot be negative.');
@@ -135,7 +138,7 @@ function validateStage(stage,map,units){
  // groups and active-lane fallbacks need an enabled spawn.
  for(const graph of graphs){if(graphIds.has(graph.id))issues.push('Duplicate path ID.');graphIds.add(graph.id);issues.push(...graphIssues(graph,allSpawnIds,buildingIds));}
  for(const s of spawns){
-  const associated=graphs.filter(g=>Array.isArray(g.spawnIds)&&g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0));
+  const associated=graphs.filter(g=>Array.isArray(g.spawnIds)&&g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)&&!legacyUnavailable(g));
   if(!Number.isFinite(associated.reduce((total,g)=>total+(g.weight===undefined?1:g.weight),0)))issues.push(s.name+' needs a finite total path weight.');
   if(!associated.length)issues.push(s.name+' needs a route.');
   else if(!associated.some(g=>!(g.requiresAnyBuilding||[]).length))issues.push(s.name+' needs an unconditional fallback route.');
@@ -170,4 +173,4 @@ function validateStage(stage,map,units){
  if(map){const bounds={x:map.size.width/2,y:map.size.height/2};for(const p of placements)if(p&&(Math.abs(p.x)>bounds.x||Math.abs(p.y)>bounds.y))issues.push('A placement is outside the map.');}
  return Array.from(new Set(issues));
 }
-module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,graphIssues,validateMap,validateStage};
+module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,validateStage};

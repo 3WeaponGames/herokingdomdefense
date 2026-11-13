@@ -33,6 +33,18 @@ function isPending(owner) {
   for (var i = 0; i < pending.length; i++) if (pending[i].owner === owner) return true;
   return false;
 }
+function trackValue(track, key) {
+  var getter = "get" + key.charAt(0).toUpperCase() + key.slice(1);
+  return track && (typeof track[getter] === "function" ? track[getter]() : track[key]);
+}
+function animationInfo(track) {
+  var animation = trackValue(track, "animation"), next = trackValue(track, "next");
+  var name = animation && (animation.name || animation.getName && animation.getName());
+  var duration = trackValue(track, "animationEnd");
+  if (typeof duration !== "number") duration = animation && (animation.duration || animation.getDuration && animation.getDuration());
+  var delay = trackValue(next, "delay"), time = trackValue(track, "trackTime");
+  return {name:name,end:typeof delay==="number"&&delay>=0?delay:duration,time:typeof time==="number"?time:0};
+}
 function attack(owner, type, callback) {
   applyAttackPlayback(owner, type);
   var settings = config();
@@ -47,7 +59,12 @@ function attack(owner, type, callback) {
   cancel(owner);
   var skeleton = owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody);
   var track = skeleton && skeleton.getCurrent ? skeleton.getCurrent(0) : null;
-  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? sourceClock ? delay : delay / speed : 0, sourceClock: sourceClock, callback: callback, skeleton: skeleton, track: track });
+  var info = animationInfo(track);
+  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? sourceClock ? delay : delay / speed : 0, sourceClock: sourceClock, callback: callback, skeleton: skeleton,
+    animation: info.name, animationEnd: info.end, animationTime: info.time,
+    // Browser TrackEntry objects survive disposal. JSB wrappers may point at
+    // freed native entries, so native interruption checks use captured values.
+    browserTrack: !(cc.sys && cc.sys.isNative) ? track : null });
 }
 function tick(dt, fighting) {
   if (!pending.length) return;
@@ -64,16 +81,6 @@ function tick(dt, fighting) {
     if (!valid) { cancel(owner); continue; }
     var skeleton = entry.skeleton;
     if (skeleton && skeleton.paused) continue;
-    if (entry.track && skeleton && skeleton.getCurrent) {
-      var current = skeleton.getCurrent(0), previous = entry.track;
-      var duration = previous.animation && previous.animation.duration;
-      // A replaced animation cancels its pending effect. Natural completion is
-      // allowed to cross the marker on the next simulation step.
-      if (current && current.animation && current.animation.name !== "attack" &&
-          typeof previous.trackTime === "number" && typeof duration === "number" && previous.trackTime + 1e-7 < duration) {
-        cancel(owner); continue;
-      }
-    }
     // UIGame supplies dt * game speed; skeleton.timeScale already uses that
     // same speed. Multiplying again would advance hit markers twice as fast.
     var effectDelta = dt, control = owner._relicControl;
@@ -83,6 +90,18 @@ function tick(dt, fighting) {
     }
     var playback = entry.sourceClock ? attackPlayback(owner, entry.type) : 1;
     if (!(playback > 0)) continue;
+    entry.animationTime += effectDelta * attackPlayback(owner, entry.type);
+    if (entry.animation && skeleton && skeleton.getCurrent) {
+      var current = skeleton.getCurrent(0), info = animationInfo(current);
+      if (info.name === entry.animation) entry.animationTime = Math.max(entry.animationTime, info.time);
+      else {
+        var observed = entry.browserTrack && trackValue(entry.browserTrack, "trackTime");
+        var time = Math.max(entry.animationTime, typeof observed === "number" ? observed : 0);
+        // Named fighting-style attacks are still attacks. Only replacing that
+        // queued clip before its natural queue point cancels the pending hit.
+        if (typeof entry.animationEnd === "number" && time + 1e-7 < entry.animationEnd) { cancel(owner); continue; }
+      }
+    }
     entry.remaining -= effectDelta * playback;
     if (entry.remaining <= 1e-9) {
       pending.splice(pending.indexOf(entry), 1);
@@ -154,6 +173,10 @@ function applyPlayback(owner, type, all) {
   var layers = owner.ctrPlayAni, custom = unitAnimationSpeed(owner, type) !== undefined;
   var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand].concat(all ? [layers.spAniMa] : []) : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
+    if (layers) {
+      var rider = require("HeroMakerRider");
+      if (rider.ownsAttackClock && rider.ownsAttackClock(layers, renderer)) return;
+    }
     var primary = renderer && renderer.getCurrent && renderer.getCurrent(0), hit = all && renderer && renderer.getCurrent && renderer.getCurrent(1), tracks = [primary];
     if (hit && hit !== primary && (custom || playbackTracks.has(hit))) tracks.push(hit);
     tracks.forEach(function (track) {

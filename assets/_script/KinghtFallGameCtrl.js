@@ -121,6 +121,8 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    this._restartRetired = false;
+    this._waveStartCheckpoint = null;
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);
     if (this._battleSounds && BattleSounds.dispose) BattleSounds.dispose(this);
     if (this._unitVoices) require("UnitVoices").dispose(this);
@@ -236,7 +238,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ndAggFlag.active = false;
   };
   _ctor.prototype.moveFun = function (t) {
-    if (t) {
+    if (t && isFinite(t.x) && isFinite(t.y) && (t.x || t.y)) {
       cc.Vec2.normalize(this.moveDir, t);
     } else {
       this.moveDir = cc.v2(0, 0);
@@ -326,6 +328,10 @@ var def_KinghtFallGameCtrl = function (t) {
         updateProjectiles(this.ndBuildArr2, t);
     }
     this.ctrPlay.doMove(this.moveDir, t);
+    // Skill geometry and world effects share the hero's final movement position
+    // for this simulation step. Advancing them in the actor's stat update made
+    // moving thrusts sample the previous position while the horse rendered ahead.
+    if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.ctrPlay._styleRuntime) this.ctrPlay._styleRuntime.update(t);
     this.collectFollowers();
     var o = this.gameData.getBulidList();
     for (n = 0; n < o.length; n++) {
@@ -1095,7 +1101,6 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onPlayAttack = function (t, release) {
     if (require("HeroWeaponCombat").melee(this, t, release)) return;
-    var e = this;
     var n = this.ndPlayArr1.shift();
     n || (n = cc.instantiate(this.ctrPlay.ctrArr.node)).setParent(this.ndUI);
     n.setSiblingIndex(0);
@@ -1125,13 +1130,6 @@ var def_KinghtFallGameCtrl = function (t) {
         if (soundDamage > 0) $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(impactPosition, soundDamage, s);
         if (!require("RelicCombat").primaryCurrent(context, t, hero)) return;
         if (s && soundDamage > 0 && BattleSounds.effect) BattleSounds.effect("critical-hit", t, { allowDead: true });
-        var i = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff08);
-        i && t.isDead() && e.ctrPlay.addHpPro(i.Pamer[0]);
-        var a = e.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff15);
-        a && !t.isDead() && t.addBuff($z1KinghtFallInterface.KinghtFallEnemyBuffType.MoveSpeed, {
-          subNum: a.Pamer[0],
-          time: 1
-        });
       }
     });
   };
@@ -1317,6 +1315,38 @@ var def_KinghtFallGameCtrl = function (t) {
     }
     return false;
   };
+  _ctor.prototype.captureWaveStart = function () {
+    var data = this.gameData;
+    if (this._restartRetired || !data || !data.levelCfg || !Number.isInteger(data.round) || data.round < 1) return false;
+    var checkpoint = JSON.parse(JSON.stringify(this.getCheckpoint()));
+    // Missing legacy state must clear any relic charges saved later in combat.
+    if (checkpoint.relicState === undefined) checkpoint.relicState = null;
+    checkpoint.restartSetup = { treasureAddTime: JSON.parse(JSON.stringify(data.treasureAddTime || {})) };
+    this._waveStartCheckpoint = { data: data, stage: data.levelCfg.Level, round: data.round, checkpoint: checkpoint };
+    return true;
+  };
+  _ctor.prototype.getRestartCheckpoint = function (mode) {
+    var data = this.gameData;
+    if (this._restartRetired || !data || !data.levelCfg) return null;
+    var stage = data.levelCfg.Level;
+    if (mode === "wave") {
+      var saved = this._waveStartCheckpoint;
+      if (!saved || saved.data !== data || saved.stage !== stage || saved.round !== data.round) return null;
+      return JSON.parse(JSON.stringify(saved.checkpoint));
+    }
+    if (mode !== "stage") return null;
+    // Construct fresh battle data without granting the first wave's permanent
+    // silver achievement again. Restarts reuse an already-paid stage entry.
+    var fresh = new $z1KinghtFallGameCtrlData.default(this, stage, true);
+    fresh.coin += fresh.levelCfg.WaveCfg[0].StartSliver;
+    var checkpoint = {
+      levelNum: stage, roundNum: 1, coin: fresh.coin, buffList: [],
+      buildingLevel: data.getBulidList().map(function (building) { return { point: building.ID, level: 0 }; }),
+      businessList: {}, taskList: { index: fresh.taskInfo.index, list: fresh.taskInfo.list, stage: fresh.taskInfo.stage },
+      relicState: null, restartSetup: { treasureAddTime: fresh.treasureAddTime }
+    };
+    return JSON.parse(JSON.stringify(checkpoint));
+  };
   _ctor.prototype.getCheckpoint = function () {
     var t = [];
     this.gameData.buffList.forEach(function (e) {
@@ -1339,6 +1369,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return checkpoint;
   };
   _ctor.prototype.saveGame = function () {
+    if (this._restartRetired) return false;
     return $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setCheckpoint(this.getCheckpoint());
   };
   cc__decorate([ccp_property({

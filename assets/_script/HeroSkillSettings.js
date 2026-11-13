@@ -116,11 +116,20 @@ function defaults(style){
   return Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}});
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
+// Imported flipbooks remain sprites; these derived fields describe one frame
+// without changing the saved asset ID or exposing raw atlas settings in the UI.
+function flipbook(value){
+  value=value||{};var frames=value.resourceFrames,columns=value.resourceColumns,cell=value.resourceCell,fps=value.resourceFps;
+  function integer(n,max){return typeof n==="number"&&isFinite(n)&&n>=1&&n<=max&&Math.floor(n)===n;}
+  if(!integer(frames,4096)||!integer(columns,256)||!integer(cell,4096)||typeof fps!=="number"||!isFinite(fps)||fps<=0||fps>240||value.resourceLoop!==undefined&&typeof value.resourceLoop!=="boolean")return null;
+  return {frames:frames,columns:columns,cell:cell,fps:fps,loop:value.resourceLoop===true};
+}
 function effective(style,config){
   var result=defaults(style),saved=config&&config.HeroSkills&&config.HeroSkills[style];
   if(!saved||typeof saved!=="object"||Array.isArray(saved))return result;
   descriptors(style).forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
   ["visual.resourceBundle","visual.resourcePath","visual.resourceKind"].concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
+  var frames=flipbook(saved.visual);if(frames)Object.keys(frames).forEach(function(key){result.visual['resource'+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});
   return result;
 }
 function validateStyle(style,value){
@@ -136,7 +145,9 @@ function riderAnimations(description){
   var tagged=layers.filter(function(layer){return !!(layer.json&&layer.json._heroMaker);});if(tagged.length)layers=tagged;
   if(!layers.length)return [];
   var lists=layers.map(function(layer){return layer.animations||Object.keys(layer.json&&layer.json.animations||{});});
-  return lists[0].filter(function(name){return lists.every(function(list){return list.indexOf(name)>=0;});});
+  var source=layers.filter(function(layer){return layer.json&&layer.json._heroMaker&&layer.json._heroMaker.role===0;})[0]||layers[0];
+  return lists[0].filter(function(name){var clip=source.json&&source.json.animations&&source.json.animations[name];return /^attack(?:_|$)/.test(name)&&lists.every(function(list){return list.indexOf(name)>=0;})&&!!(clip&&Array.isArray(clip.events)&&clip.events.some(function(event){return event.name==='attack'&&typeof event.time==='number'&&isFinite(event.time)&&event.time>=0;}));});
 }
 exports.styles=styles;exports.tuningFields=tuningFields;exports.visualFields=visualFields;exports.audioFields=audioFields;exports.fields=fields;exports.descriptors=descriptors;exports.defaults=defaults;exports.effective=effective;exports.validateStyle=validateStyle;exports.valid=valid;exports.get=get;exports.set=set;
 exports.riderAnimations=riderAnimations;
+exports.flipbook=flipbook;

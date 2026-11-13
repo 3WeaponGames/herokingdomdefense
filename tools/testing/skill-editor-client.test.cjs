@@ -126,12 +126,12 @@ test('changing VFX reloads the selected asset immediately and a late old descrip
 test('rider animation dropdown excludes horse-only clips and requires every rider equipment layer to support the choice', async () => {
   const f = await fixture({ describe(request) { return Promise.resolve({ layers: [
     { name: 'wqyl_lead_ma', json: { _heroMakerMount: {}, animations: { idle: {}, move: {}, horse_only: {} } } },
-    { name: 'body', json: { _heroMaker: { role: 0 }, animations: { idle: {}, ['attack_' + request.style]: {}, body_only: {} } } },
+    { name: 'body', json: { _heroMaker: { role: 0 }, animations: { idle: {}, ['attack_' + request.style]: {events:[{name:'attack',time:.1667}]}, body_only: {events:[{name:'attack',time:.1667}]} } } },
     { name: 'equipment', json: { _heroMaker: { role: 4 }, animations: { idle: {}, ['attack_' + request.style]: {} } } }
   ] }); } });
   f.button('Position & VFX').click(); await flush();
-  assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_skirmisher', 'idle']);
-  await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_mystic', 'idle']);
+  assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_skirmisher']);
+  await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(f.field('Rider animation').options.map(option => option.value), ['', 'attack_mystic']);
   assert.equal(f.backend.calls.some(call => call.name === 'change'), false); f.close();
 });
 test('ending a beam cancels delayed channel audio before it can start', async () => {
@@ -155,4 +155,28 @@ test('preview sound delays follow preview speed while explicit sound tests retai
 test('reloading the latest draft refreshes the hero rig instead of retaining an old appearance description',async()=>{
   let generation=0;const f=await fixture({describe:()=>Promise.resolve({generation:++generation,layers:[{json:{animations:{attack:{}}}}]})});assert.equal(f.calls.preview.at(-1).description.generation,1);
   f.button('Reload latest draft').click();await flush();await flush();await f.settle();assert.equal(f.calls.preview.at(-1).description.generation,2);assert.equal(f.backend.calls.some(call=>call.name==='save'),false);f.close();
+});
+
+test('Reset and Discard recover an invalid-only local edit without publishing it',async()=>{
+ const f=await fixture();f.field('Cooldown').value=-5;f.field('Cooldown').oninput();assert.equal(f.button('Discard changes').disabled,false);
+ f.button('Reset').click();await f.settle();assert.equal(f.field('Cooldown').value,'12');assert.equal(f.backend.calls.some(call=>call.name==='save'),false);
+ f.field('Cooldown').value='';f.field('Cooldown').oninput();assert.equal(f.button('Discard changes').disabled,false);f.button('Discard changes').click();await f.settle();assert.equal(f.field('Cooldown').value,'12');assert.equal(f.button('Discard changes').disabled,true);f.close();
+});
+
+test('impact audition has the same three-voice budget as in-game skill sounds',()=>{
+ const media=[],audio=Client.createAudioPlayer({createAudio(){const item={paused:false,pause(){this.paused=true;},removeAttribute(){},load(){},play(){return Promise.resolve();}};media.push(item);return item;}});
+ for(let i=0;i<20;i++)audio.cue('impact',{clip:'silent-test-adapter',volume:1});assert.equal(media.filter(item=>!item.paused).length,3);audio.destroy();assert(media.every(item=>item.paused));
+});
+
+test('Cast changes a Basic preview back to Active without staging or saving settings',async()=>{
+ const f=await fixture();f.field('Preview').value='basic';f.field('Preview').onchange();await f.settle();f.button('Cast skill').click();await f.settle();assert.equal(f.field('Preview').value,'active');assert.equal(f.backend.calls.some(call=>call.name==='change'||call.name==='save'),false);f.close();
+});
+
+test('delayed skill auditions share the runtime pending budget and cleanup returns that capacity',()=>{
+ const oldSet=global.setTimeout,oldClear=global.clearTimeout,timers=new Set();let scheduled=0;global.setTimeout=()=>{const token={};timers.add(token);scheduled++;return token;};global.clearTimeout=token=>timers.delete(token);
+ try{const audio=Client.createAudioPlayer({createAudio(){throw Error('No delayed cue should have started');}});for(let i=0;i<2000;i++)audio.cue('impact',{clip:'silent-adapter',delay:30});assert.equal(scheduled,512);assert.equal(timers.size,512);audio.stop();assert.equal(timers.size,0);audio.cue('impact',{clip:'silent-adapter',delay:30});assert.equal(timers.size,1);audio.destroy();assert.equal(timers.size,0);}finally{global.setTimeout=oldSet;global.clearTimeout=oldClear;}
+});
+
+test('Guardian inherited effect color uses the same blue swatch as its in-game shield',async()=>{
+ const f=await fixture();await f.client.selectStyle('guardian');f.button('Position & VFX').click();await f.settle();assert.equal(f.field('Effect color')._colorPicker.value,'#70c8ff');assert.equal(f.backend.calls.some(call=>call.name==='change'||call.name==='save'),false);f.close();
 });

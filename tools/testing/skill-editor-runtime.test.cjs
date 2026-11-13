@@ -10,7 +10,7 @@ function save(t,edits,extra={}){
  t.after(()=>{const target=path.resolve(root);assert.equal(path.dirname(target),path.resolve(os.tmpdir()));assert(path.basename(target).startsWith('hkd-skill-contract-'));fs.rmSync(target,{recursive:true,force:true});});
  const config={GameTools:{timingDefaults:{'hero:hero:default':{attack:.1667}},timings:{'hero:hero:default':{attack:.25}},extension:{keep:true}},EquipCfg:[{id:1,extension:'retain'}],...extra};
  for(const relative of FILES){const file=path.join(root,relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(config,null,2)+'\n');}
- const service=new SkillService(root,{catalogs:{audio:[{id:uuid,uuid,file:'assets/KinghtFallAudio/sfx/skill.ogg',bundle:'KinghtFallAudio',path:'sfx/skill'}],vfx:[]},describe:()=>({layers:[{animations:['attack','attack_fighter','attack_mystic']}]})});
+ const service=new SkillService(root,{catalogs:{audio:[{id:uuid,uuid,file:'assets/KinghtFallAudio/sfx/skill.ogg',bundle:'KinghtFallAudio',path:'sfx/skill'}],vfx:[]},describe:()=>({layers:[{animations:['attack','attack_fighter','attack_mystic'],json:{animations:Object.fromEntries(['attack','attack_fighter','attack_mystic'].map(name=>[name,{events:[{name:'attack',time:.1667}]}]))}}]})});
  for(const [style,field,value]of edits)service.change({style,path:field,value,version:service.version,revision:service.revision});
  const result=service.save({version:service.version,revision:service.revision});
  const published=JSON.parse(fs.readFileSync(path.join(root,FILES[0]),'utf8'));

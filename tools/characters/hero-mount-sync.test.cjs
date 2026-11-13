@@ -8,7 +8,7 @@ function layers(style='fighter'){
   return {description,data,skeleton,atlas,restBones:Object.fromEntries(skeleton.bones.map(b=>[b.data.name,{a:b.a,b:b.b,c:b.c,d:b.d,x:b.worldX,y:b.worldY}]))};
  });
 }
-function helper(style){const exports={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,require:name=>name==='HeroWeapons'?Weapons:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}});return exports;}
+function helper(style){const exports={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,require:name=>name==='HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='HeroWeapons'?Weapons:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}});return exports;}
 function controller(style,models){
  const rider=helper(style),exports={},enums={Idle:'idle',Move:'move'};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallPlayGameAniCtrl.js'),'utf8'),{exports,require:name=>name==='HeroMakerRider'?rider:name==='KinghtFallModle'?{KinghtFallPlayAniEnum:enums}:{},cc:{Component:function(){},_decorator:{ccclass:T=>T,property:()=>()=>{}}},sp:{Skeleton:function(){}},__extends(C,P){C.prototype=Object.create(P.prototype);},__decorate:(_decorators,T,key)=>key===undefined?T:undefined});

@@ -33,6 +33,9 @@ exports.stat = function (text, value) { require("SettingsPanelStyle").body(text,
 exports.layout = function (owner) {
   var root = owner.node.getChildByName("root"), meta = owner.menuMetadata || {};
   var exitCaption = meta.mode === "wallDefense" || !meta.mode && owner._stats ? "pause.endBattle" : "pause.saveAndExit";
+  var campaign = meta.mode === "campaign" || !meta.mode && !owner._stats;
+  var canRestartWave = campaign && (typeof meta.canRestartWave === "function" ? meta.canRestartWave() : meta.canRestartWave);
+  var restartCaption = campaign ? canRestartWave ? "pause.restartStageWave" : "pause.restartStage" : "pause.restart";
   if (!owner._hexPauseReady) {
     owner._hexPauseReady = true;
     owner.btnClose.active = owner.btnNewGame.active = false;
@@ -42,7 +45,7 @@ exports.layout = function (owner) {
     var oldFrame = root.getChildByName("SettingsFrame"); if (oldFrame) oldFrame.active = false;
     owner.btnSettings = button(root, "PauseSettings", "settings", "pause.settings", false);
     owner.btnClose = button(root, "PauseContinue", "continue", "pause.continue", false);
-    owner.btnRestart = button(root, "PauseRestart", "restart", "pause.restart", false);
+    owner.btnRestart = button(root, "PauseRestart", "restart", restartCaption, false);
     owner.btnNewGame = button(root, "PauseReturnHome", "exit", exitCaption, true);
     owner._pauseHeading = label(root, "PauseHeading", 82, "#ffffff");
     owner._pauseStage = label(root, "PauseStage", 35, "#ffd000");
@@ -55,9 +58,11 @@ exports.layout = function (owner) {
   var width = Math.min(700, owner.node.width - 48), height = 900;
   var stage = typeof meta.stageTitle === "function" ? meta.stageTitle() : meta.stageTitle;
   stage = stage || Language.getInstance().t(owner._stats ? "pause.wallDefense" : "pause.campaign");
-  var signature = [width, owner.node.height, stage, Language.getInstance().getCurrentLanguage()].join(":");
+  var signature = [width, owner.node.height, stage, restartCaption, exitCaption, Language.getInstance().getCurrentLanguage()].join(":");
   if (owner._pauseMenuSignature === signature) return;
   owner._pauseMenuSignature = signature;
+  Language.getInstance().bindLabel(owner.btnRestart.getChildByName("Caption").getComponent(cc.Label), restartCaption);
+  Language.getInstance().bindLabel(owner.btnNewGame.getChildByName("Caption").getComponent(cc.Label), exitCaption);
   root.setContentSize(width, height); root.setScale(Math.min(1, Math.max(1, owner.node.height - 80) / height)); root.setPosition(0, 0);
   owner._pauseHeading.node.setPosition(0, 370); owner._pauseHeading.node.setContentSize(width - 24, 112);
   owner._pauseStage.string = stage; owner._pauseStage.node.setPosition(0, 280); owner._pauseStage.node.setContentSize(width - 40, 60);

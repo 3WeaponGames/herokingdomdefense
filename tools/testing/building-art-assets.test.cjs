@@ -28,7 +28,7 @@ test('all twelve accepted tower bodies ship exact approved pixels with uniform d
  assert.equal(rows.length,12);assert.equal(fixture.paintedBases.length,12);
  for(const row of rows){const art=row.Appearance,ref=fixture.paintedBases.find(x=>'assets/resources/'+art.sprite+'.png'===x.path);assert(ref,art.sprite);
   const image=inspect(art.sprite);assert(Math.abs(art.width/image.width-art.height/image.height)<1e-6,art.sprite+' must not stretch');
-  assert.equal(crypto.createHash('sha256').update(image.bytes).digest('hex'),ref.sha256);assert.equal(art.lifecycle,'native-tower','retain the authored collapse, dust and persistent rubble');if(ref.originalDestroyed)assert.deepEqual(art.destroyed,ref.originalDestroyed,'retain each original per-tier ruin; only fourth tier reuses third');
+  assert.equal(crypto.createHash('sha256').update(image.bytes).digest('hex'),ref.sha256);assert.equal(art.lifecycle,'native-tower','retain the authored collapse and dust');assert.equal(art.destroyed,undefined,'all towers use shared native debris');
  }
 });
 test('six retained native bases and all forty-five weapon frames keep their native metadata geometry',()=>{

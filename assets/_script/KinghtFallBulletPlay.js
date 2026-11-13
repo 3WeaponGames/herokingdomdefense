@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallBulletBase = require("KinghtFallBulletBase");
+var EquipmentTiers = require("EquipmentTiers"), warnedSkin = false;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 cc__decorator.property;
@@ -35,7 +36,21 @@ var def_KinghtFallBulletPlay = function (t) {
     this.state = 0;
   };
   _ctor.prototype.setSkin = function (t) {
-    this.bullet.getComponent(sp.Skeleton).setSkin(t);
+    var renderer = this.bullet && this.bullet.getComponent(sp.Skeleton), data = renderer && renderer.skeletonData, runtime, name;
+    try {
+      runtime = data && data.getRuntimeData && data.getRuntimeData();
+      name = EquipmentTiers.legacySkin(t, function (value) {
+        if (runtime && typeof runtime.findSkin === "function") return !!runtime.findSkin(value);
+        var skins = data && data.skeletonJson && data.skeletonJson.skins;
+        return Array.isArray(skins) ? skins.some(function (skin) { return skin.name === value; }) : !!(skins && Object.prototype.hasOwnProperty.call(skins, value));
+      });
+    } catch (error) { name = null; }
+    if (!name) {
+      if (!warnedSkin && cc.warn) cc.warn("Hero projectile skin unavailable; retaining the current authored skin.", t);
+      warnedSkin = true;
+      return;
+    }
+    renderer.setSkin(name);
   };
   _ctor.prototype.freeNode = function () {
     if (this.state === 2) return;

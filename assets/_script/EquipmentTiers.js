@@ -47,6 +47,13 @@ function icon(data, defaults, equipment, slot, level, style) {
 // Existing skin IDs retain their saved appearances. Blue is inserted between
 // the old green and purple skins; tier numbers come from the progression order.
 function tint(level) { return level && level.EquipSkin === "lv_blue" ? "#54c7ff" : "#ffffff"; }
+// Blue equipment begins with the green art, while older projectile/effect rigs
+// retain their original skin names. Never pass an unverified name into JSB.
+function legacySkin(name, supported) {
+  if (typeof name !== "string" || !name || typeof supported !== "function") return null;
+  if (supported(name)) return name;
+  return name === "lv_blue" && supported("lv2") ? "lv2" : null;
+}
 function expandedLevel(level, from, to) {
   if (typeof level !== "number" || !isFinite(level) || level < 1 || level > from) return level;
   return 1 + Math.ceil((Math.floor(level) - 1) * (to - 1) / (from - 1) - 1e-9);
@@ -67,3 +74,4 @@ function migrateProgress(data, equipment, migration) {
 exports.tiers = tiers; exports.at = at; exports.key = key; exports.legacyKey = legacyKey;
 exports.target = target; exports.profileId = profileId; exports.label = label; exports.icon = icon;
 exports.tint = tint; exports.expandedLevel = expandedLevel; exports.migrateProgress = migrateProgress;
+exports.legacySkin = legacySkin;

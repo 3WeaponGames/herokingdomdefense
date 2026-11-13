@@ -192,8 +192,10 @@ var exp_KinghtFallGameData = function (t) {
     checkpointFields.forEach(function (key) { if (Object.prototype.hasOwnProperty.call(snapshot, key)) checkpoint[key] = clone(snapshot[key]); });
     if (!validCheckpoint(checkpoint)) return false;
     saves[stage] = checkpoint;
+    var previous = this.data;
     this.data = Object.assign(activateCheckpoint(this.data, checkpoint), { stageCheckpoints: saves });
-    return this.saveData() !== false;
+    if (this.saveData() === false) { this.data = previous; return false; }
+    return true;
   };
   _ctor.prototype.getBuffList = function (stage) {
     var saved = this.checkpointForStage(stage); return saved ? saved.buffList : [];

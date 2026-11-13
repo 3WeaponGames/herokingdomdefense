@@ -1,4 +1,5 @@
 "use strict";
+var Debris = require("BuildingDebris");
 
 function worldPoint(source, bone, x, y) {
   return source.node.convertToWorldSpaceAR(cc.v2(bone.worldX + bone.a*x + bone.b*y, bone.worldY + bone.c*x + bone.d*y));
@@ -49,11 +50,15 @@ function sync(runtime,field) {
   if(field.hp<=0) {
     var age=field.deathTime===undefined?deathDuration(field):field.deathTime;
     var ruined=age>=deathDuration(field);
-    field.slot.setAttachment(ruined?field.ruinsAttachment:field.attachment);
+    field.slot.setAttachment(ruined?null:field.attachment);
+    Debris.field(runtime.owner,runtime.owner.ndAniDown,field,ruined);
     var c=ruined?[1,1,1,1]:deathColor(field,age);
     field.slot.color.set(c[0],c[1],c[2],c[3]);
     if(field.addon)field.addon.color.a=0;
-  } else if(field.addon) field.addon.color.a=field.slot.getAttachment()?field.slot.color.a:0;
+  } else {
+    Debris.field(runtime.owner,runtime.owner.ndAniDown,field,false);
+    if(field.addon)field.addon.color.a=field.slot.getAttachment()?field.slot.color.a:0;
+  }
   health(runtime,field);
 }
 function destroy(runtime,field) {
@@ -63,12 +68,17 @@ function destroy(runtime,field) {
   var source=runtime.owner.ndAniMain;
   if(typeof sp==="undefined" || !source || !source.skeletonData || !source._skeleton)return;
   var original=source._skeleton.findSlot("Smoke_04_00034");if(!original)return;
-  var node=new cc.Node("Crop destruction smoke");node.setParent(source.node.parent);
+  var node=new cc.Node("Crop destruction smoke");
+  try {
+  node.setParent(source.node.parent);
   node.setPosition(source.node.position);node.setScale(source.node.scaleX,source.node.scaleY);node.angle=source.node.angle;
   node.group=source.node.group;node._depthGroundVisual=true;
   var visual=node.addComponent(sp.Skeleton);visual.skeletonData=source.skeletonData;
-  visual.premultipliedAlpha=source.premultipliedAlpha;visual.setSkin(source._skeleton.skin.name);visual.setToSetupPose();
+  visual.premultipliedAlpha=source.premultipliedAlpha;visual.enableBatch=source.enableBatch;
+  if(visual.setAnimationCacheMode)visual.setAnimationCacheMode(sp.Skeleton.AnimationCacheMode?sp.Skeleton.AnimationCacheMode.REALTIME:0);
+  visual.setSkin("default");visual.setToSetupPose();
   var slot=visual.findSlot("Smoke_04_00034");visual._skeleton.updateWorldTransform();
+  if(!slot){node.destroy();return;}
   var desired=worldPoint(runtime.owner.ndAniDown,field.slot.bone,field.attachment.x,field.attachment.y-45);
   var actual=node.convertToWorldSpaceAR(cc.v2(slot.bone.worldX,slot.bone.worldY));
   desired=node.parent.convertToNodeSpaceAR(desired);actual=node.parent.convertToNodeSpaceAR(actual);
@@ -76,8 +86,15 @@ function destroy(runtime,field) {
   visual.setSlotsRange(slot.data.index,slot.data.index);visual.timeScale=source.timeScale;
   visual.setAnimation(0,"destroy",false);
   runtime.effects.push({node:node,age:0,duration:1.3,native:true});
+  } catch(error) {
+    // A missing/late-loaded optional visual must never abort the lethal hit,
+    // income update or combat frame. Retire any half-created effect as well.
+    if(cc.isValid(node,true))node.destroy();
+    if(!runtime._smokeWarning&&cc.warn){runtime._smokeWarning=true;cc.warn("Crop destruction smoke was unavailable: "+(error.message||error));}
+  }
 }
-function clear(field) {
+function clear(field,owner) {
+  if(field.debris){Debris.discard(owner,field.debris);field.debris=null;}
   if(field.health){field.health.node.active=false;field.health.node.destroy();field.health=null;}
 }
 exports.worldPoint=worldPoint;

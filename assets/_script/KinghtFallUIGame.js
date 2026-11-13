@@ -120,9 +120,11 @@ var def_KinghtFallUIGame = function (t) {
   var n;
   cc__extends(_ctor, t);
   n = _ctor;
-  _ctor.prototype.init = function (levelId, freshEntry) {
+  _ctor.prototype.init = function (levelId, freshEntry, restartSetup) {
     this.levelId = levelId;
     this._freshEntry = freshEntry || null;
+    this._restartPending = false;
+    this._restartSetup = restartSetup ? JSON.parse(JSON.stringify(restartSetup)) : null;
   };
   _ctor.prototype.onLoad = function () {
     n.instance = this;
@@ -148,7 +150,17 @@ var def_KinghtFallUIGame = function (t) {
     var game = this.ndCtrGame.getComponent($z1KinghtFallGameCtrl.default);
     var config = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(levelId);
     // Existing checkpoint and diagnostic entries do not purchase a new battle.
-    if (!entry) { this.ctrGame = game; game.initData(levelId); this.initView(); }
+    if (!entry) {
+      this.ctrGame = game;
+      game.initData(levelId);
+      // Reuse the original wave's one-time relic setup rather than rerolling it
+      // when a replacement controller is constructed for a retry.
+      if (this._restartSetup && this._restartSetup.treasureAddTime) {
+        game.gameData.treasureAddTime = JSON.parse(JSON.stringify(this._restartSetup.treasureAddTime));
+      }
+      this._restartSetup = null;
+      this.initView();
+    }
     this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconMap, config.prefab, function (prefab) {
       if (started || t.isclose || t._freshEntry !== entry) return;
       started = true;
@@ -375,27 +387,67 @@ var def_KinghtFallUIGame = function (t) {
     if (!dialog) return;
     dialog.paused = true;
     this.onPauseGame(true, dialog);
-    this.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UISuspend, null, function () {
-      return self.restartPausedBattle(dialog);
+    this.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UISuspend, null, function (mode) {
+      return self.restartPausedBattle(dialog, mode);
     }, function () {
       if (!dialog.isCurrent() || self.ctrGame.saveGame() === false) return false;
       self.closeUI();
     }, function () { self.finishBattleDialog(dialog); }, null, {
-      mode: "campaign", stageTitle: function () {
+      mode: "campaign", canRestartWave: function () { return self.isWaveInProgress(); }, stageTitle: function () {
         var title = self.ndLevelInfo && self.ndLevelInfo.getChildByName("labName");
         return title ? title.getComponent(cc.Label).string : self.T(self.ctrGame.gameData.levelCfg.Name);
       }
     });
   };
-  _ctor.prototype.restartPausedBattle = function (dialog) {
-    if (!dialog || !dialog.isCurrent()) return false;
+  _ctor.prototype.isWaveInProgress = function () {
+    return !!this.ctrGame && (this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight ||
+      this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Transition);
+  };
+  _ctor.prototype.restartPausedBattle = function (dialog, mode) {
+    if (!dialog || !dialog.isCurrent() || this._restartPending) return false;
+    mode = mode || "stage";
+    if (mode !== "stage" && mode !== "wave" || mode === "wave" && !this.isWaveInProgress()) return false;
     var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
-    var stage = this.ctrGame.gameData.levelCfg.Level;
-    // Retire only this stage's old checkpoint before changing the live map.
-    // The paid battle stays mounted, so restarting never purchases another entry.
-    if (!record.readyForNewBattle() || record.setNewGame(stage) === false) return false;
-    if (this.onRestart(true) === false) return false;
-    return this.ctrGame.saveGame() !== false;
+    var game = this.ctrGame, stage = game.gameData.levelCfg.Level;
+    if (!record.readyForNewBattle()) return false;
+    var snapshot = game.getRestartCheckpoint(mode);
+    // One durable checkpoint write precedes any teardown. A failed save leaves
+    // the original paused battle intact, including its previous stage save.
+    if (!snapshot || record.setCheckpoint(snapshot) === false) return false;
+    this._restartPending = true;
+    game._restartRetired = true;
+    game._combatEpoch++;
+    game.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.End;
+    this.canStart = this.canBreak = false;
+    dialog.paused = false; // Closing the old Pause must never resume this run.
+    this._stopTestMovement();
+    var manager = $z1UIMgr.UIMgr.getInstance();
+    var generation = manager._campaignRestartGeneration = (manager._campaignRestartGeneration || 0) + 1;
+    // Recreate the entire game prefab. Typed barracks, actors, queues, timers,
+    // projectiles and callbacks belong to the discarded controller, not the new run.
+    // No freshEntry argument: the original paid admission is reused.
+    this.cache = false;
+    var previousNode = this.node;
+    if (manager.uichace && manager.uichace.get(this.uid) === this) manager.uichace.delete(this.uid);
+    manager.closeUI(previousNode);
+    function reopen() {
+      if (manager._campaignRestartGeneration !== generation) return;
+      // Node destruction is deferred. The old controller clears global visual
+      // overrides in onDestroy, so wait until teardown really finishes before
+      // a cached replacement prefab starts requesting its appearances.
+      if (cc.isValid(previousNode)) { cc.director.once(cc.Director.EVENT_AFTER_DRAW, reopen); return; }
+      manager.openUIWithOwner($z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1KinghtFallConfig.KinghtFallUIID.UIHome, {
+        isCurrent: function () { return manager._campaignRestartGeneration === generation; },
+        onOpened: function () {
+          // The old game's onClose reveals Home. Match regular campaign entry
+          // once the replacement opens so its HUD cannot show through the map.
+          var home = manager.getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome);
+          if (home && home.node) home.node.active = false;
+        }
+      }, stage, null, snapshot.restartSetup);
+    }
+    cc.director.once(cc.Director.EVENT_AFTER_DRAW, reopen);
+    return true;
   };
   _ctor.prototype.onClose = function () {
     if (this.ctrGame) $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this.ctrGame);
@@ -622,6 +674,7 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrGame.moveFun(t);
   };
   _ctor.prototype.startRoundGame = function () {
+    if (this.ctrGame.captureWaveStart) this.ctrGame.captureWaveStart();
     if (BattleSounds.wave) BattleSounds.wave(this.ctrGame, "start");
     var t = this;
     if (this._enemyGuide) require("EnemyGuide").close(this);

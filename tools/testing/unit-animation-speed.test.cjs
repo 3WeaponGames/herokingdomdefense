@@ -9,8 +9,8 @@ function appearance(){
 }
 function fixture(catalog={},settings={}){
  const a=appearance();a.api.preload();a.jobs.shift().done(null,{json:catalog});
- const context={exports:{},cc:{resources:{},isValid:value=>!!value&&!value.destroyed},require(name){if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
- vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings};
+ const owned=new WeakSet(),context={exports:{},cc:{resources:{},isValid:value=>!!value&&!value.destroyed},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:(_controller,renderer)=>owned.has(renderer)};if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
+ vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings,owned};
 }
 function actor(id=94001,pack='fantasy-bosses'){
  const tracks={0:{animation:{name:'attack',duration:4},timeScale:1,trackTime:0},1:{animation:{name:'hit',duration:.3},timeScale:.7}};
@@ -35,6 +35,13 @@ test('hero rider, horse and native hit tracks share explicit playback and restor
 test('native baked units without skeleton JSON use their record package for explicit saved playback',()=>{
  const f=fixture({unitAnimationSpeeds:{'enemy:94001:default':1}}),unit=actor();unit.spAni.skeletonData={uuid:'native-bake'};unit.cfg.MonsterPack='fantasy-monsters';assert.equal(f.api.animationPlayback(unit,'enemy'),.35);assert.equal(f.api.attackPlayback(unit,'enemy'),.35);f.api.applyAnimationPlayback(unit,'enemy');assert.equal(unit.tracks[0].timeScale,.35);unit.cfg.MonsterPack='fantasy-bosses';assert.equal(f.api.animationPlayback(unit,'enemy'),.25);
  delete f.catalog.unitAnimationSpeeds['enemy:94001:default'];assert.equal(f.api.attackPlayback(unit,'enemy'),1,'absent settings retain the existing runtime fallback');
+});
+
+test('whole-unit playback preserves held and retimed rider clocks until their skill ownership ends',()=>{
+ const f=fixture({unitAnimationSpeeds:{'hero:hero:default':.8}}),unit=actor(),body={track:{animation:{name:'attack'},timeScale:0},getCurrent(){return this.track;}},horse={track:{animation:{name:'move'},timeScale:1},getCurrent(){return this.track;}};
+ unit.ctrPlayAni={spAniBody:body,spAniMa:horse};f.owned.add(body);f.api.applyAnimationPlayback(unit,'hero');assert.equal(body.track.timeScale,0);assert.equal(horse.track.timeScale,.8);
+ body.track.timeScale=.476;f.api.applyAttackPlayback(unit,'hero');assert.equal(body.track.timeScale,.476);
+ f.owned.delete(body);f.api.applyAnimationPlayback(unit,'hero');assert.equal(body.track.timeScale,.8);
 });
 test('0% freezes delayed and eventless hits, resumes from source time, and pooling cancels frozen work',()=>{
  const catalog={unitAnimationSpeeds:{'enemy:94001:default':0,'enemy:94002:default':0}},f=fixture(catalog,{timingDefaults:{'enemy:94001:default':{attack:.52}}}),unit=actor();let hits=0;

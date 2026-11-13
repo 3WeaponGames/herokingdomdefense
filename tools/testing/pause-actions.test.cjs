@@ -11,6 +11,12 @@ function panels(options = {}) {
     KinghtFallUIGame: {}, Utils: {}, AudioMgr: {}, PlatformConfig: {}, PlatformSetting: {},
     SdkMgr: {}, ServerDataMgr: {}, PlayerMgr: {}
   });
+  h.modules.CampaignRestartPrompt = { open(owner, wave, choose, closed) {
+    state.promptCount = (state.promptCount || 0) + 1;
+    const prompt = { wave, close() { if (!this.closed) { this.closed = true; closed(); } },
+      choose(mode) { const result = choose(mode); if (result !== false) this.close(); return result; } };
+    state.prompt = prompt; return prompt;
+  } };
   const Base = h.load('BaseUI').default;
   const Pause = h.load('KinghtFallUISuspend').default;
   const Settings = h.load('KinghtFallUISetting').default;
@@ -30,11 +36,12 @@ function panels(options = {}) {
     return node;
   };
   const complete = (request, kind) => request.done(null, { kind, addRef() {} });
-  h.ui.openUI('pause', 'game', () => {
+  h.ui.openUI('pause', 'game', mode => {
     state.restarts++;
+    state.mode = mode;
     if (options.restartClosesPause) pause.closeUI();
     return state.allowRestart;
-  }, () => { state.exits++; }, () => state.releases++, null, { mode: 'wallDefense' });
+  }, () => { state.exits++; }, () => state.releases++, null, { mode: options.mode || 'wallDefense', canRestartWave: () => !!options.wave });
   complete(h.requests.at(-1), 'pause');
   const pause = h.ui.getUIById('pause');
   function openSettings() {
@@ -173,6 +180,35 @@ test('lobby Settings has no pause parent or automatic battle z-order promotion',
   assert.equal(settings._pauseParent, null);
   assert(settings.node.zIndex < f.pause.node.zIndex);
   assert.equal(f.state.releases, 0);
+});
+
+test('campaign restart confirms first and cancel keeps the battle paused', () => {
+  const f = panels({mode:'campaign'});
+  f.pause.restartGame(); f.pause.restartGame();
+  assert.equal(f.state.promptCount, 1); assert.equal(f.state.prompt.wave, false);
+  f.pause.openSettings(); f.pause.resumeGame(); f.pause.btnNewGame.handlers.end();
+  assert.equal(f.state.restarts, 0); assert.equal(f.state.releases, 0); assert.equal(f.state.exits, 0);
+  f.state.prompt.close(); assert.equal(f.pause._restartPrompt, null);
+  f.pause.restartGame(); f.state.prompt.choose('stage'); f.flush();
+  assert.equal(f.state.restarts, 1); assert.equal(f.state.mode, 'stage'); assert.equal(f.state.releases, 1);
+});
+
+test('combat wave choice keeps its prompt paused on save failure and supports a retry', () => {
+  const f = panels({mode:'campaign',wave:true}); f.pause.restartGame();
+  assert.equal(f.state.prompt.wave, true); f.state.allowRestart = false;
+  assert.equal(f.state.prompt.choose('wave'), false); assert(!f.state.prompt.closed);
+  assert.equal(f.state.releases, 0); assert.equal(f.pause._restarting, false);
+  f.state.allowRestart = true; assert.equal(f.state.prompt.choose('wave'), true); f.flush();
+  assert.equal(f.state.mode, 'wave'); assert.equal(f.state.releases, 1);
+});
+
+test('reused Pause resets its restart latch and disposes an orphaned prompt', () => {
+  const f = panels({mode:'campaign'}); f.pause.restartGame();
+  const previous = f.state.prompt; f.pause._restarting = true;
+  f.pause.init(()=>true,()=>{},()=>{},null,{mode:'campaign'});
+  assert.equal(previous.closed, true); assert.equal(f.pause._restartPrompt, null);
+  assert.equal(f.pause._restarting, false); assert.equal(f.pause._pauseReleased, false);
+  f.pause.restartGame(); assert.equal(f.state.promptCount, 2);
 });
 
 test('Pause opening animation preserves its translucent overlay instead of restoring the generic dark backdrop', () => {

@@ -21,7 +21,14 @@ test('battle data initializes owned sparse talents and skips unknown ownership I
  const f=fixture(),before=JSON.stringify(f.data),scope={...f.scope,$z1KinghtFallModle:{default:{getInstance:()=>({randomArray:(rows,count)=>rows.slice(0,count)})}},$z1KinghtFallConfig:{KinghtFallParameter:{InitGold:0}},i:{MonsterGenerate:'monster'}};
  const init=method('KinghtFallGameCtrlData','initData',scope),owner={levelCfg:{Level:1,HomeLevel1Unlock:[],HomeLevel2Unlock:[],HomeLevel3Unlock:[]},talentAdd:{},treasureAdd:{},treasureAddTime:{},loadMonster(){this.loaded=true;}};
  init.call(owner);assert(owner.loaded);for(const kind of [101003,101009,101015])assert.equal(owner.talentAdd[kind][0][0],.05);assert.equal(owner.talentAdd.undefined,undefined);assert.equal(JSON.stringify(f.data),before);
- const account=Hero.calculate(Config,f.data);assert.equal(account.damage,20.2);assert.equal(account.health,101);assert.equal(account.attackRate,1.01);assert.equal(Hero.snapshot(Config,f.data).damage,20);f.data.heroWeapon.selected='vanguard';assert.equal(Hero.calculate(Config,f.data).cp,account.cp);const selected=Hero.snapshot(Config,f.data);assert.equal(selected.damage,21);assert.equal(selected.health,105);assert.equal(selected.attackRate,1.05);
+ // The legacy stat mapping remains supported when a configuration has no
+ // HeroEquipment override. Its original damage assertions are still meaningful.
+ const legacy={...Config};delete legacy.HeroEquipment;
+ const account=Hero.calculate(legacy,f.data);assert.equal(account.damage,20.2);assert.equal(account.health,101);assert.equal(account.attackRate,1.01);assert.equal(Hero.snapshot(legacy,f.data).damage,20);f.data.heroWeapon.selected='vanguard';assert.equal(Hero.calculate(legacy,f.data).cp,account.cp);const selected=Hero.snapshot(legacy,f.data);assert.equal(selected.damage,21);assert.equal(selected.health,105);assert.equal(selected.attackRate,1.05);
+ // The current authored main-weapon stat replaces legacy slot-3 damage. Sparse
+ // Vanguard talents still apply only after selecting Vanguard, without writes.
+ f.data.heroWeapon.selected='fighter';assert.equal(Hero.snapshot(Config,f.data).damage,3);assert(Math.abs(Hero.calculate(Config,f.data).damage-3.03)<1e-9);
+ f.data.heroWeapon.selected='vanguard';assert(Math.abs(Hero.snapshot(Config,f.data).damage-3.15)<1e-9);assert.equal(Hero.snapshot(Config,f.data).health,105);
 });
 
 test('perk-pool and mission queries ignore sparse hero talents and unknown records while preserving real legacy perk unlocks',()=>{

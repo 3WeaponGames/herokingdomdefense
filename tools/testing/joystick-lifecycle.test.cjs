@@ -26,7 +26,7 @@ function fixture(start = true, game = null) {
     __decorate: (_decorators, target) => target };
   const preferenceContext={exports:{},cc:context.cc};
   vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ControlPreferences.js'),'utf8'),preferenceContext);
-  const skillContext={exports:{},cc:context.cc,Date,Math,require:name=>require(path.join(root,'assets/_script',name))};
+  const skillContext={exports:{},cc:context.cc,Date,Math,require:name=>name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>({bindLabel(){}})}}:require(path.join(root,'assets/_script',name))};
   vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroSkillHUD.js'),'utf8'),skillContext);
   const originalRequire=context.require;context.require=name=>name==='ControlPreferences'?preferenceContext.exports:name==='HeroSkillHUD'?skillContext.exports:originalRequire(name);
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/KinghtFallGameUICtrl.js'), 'utf8'), context);
