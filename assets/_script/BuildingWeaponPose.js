@@ -12,7 +12,8 @@ function views(weapon) {
   });
   return result;
 }
-function pose(weapon, targetAngle) {
+function pose(weapon, targetAngle, size) {
+  size = typeof size === "number" && isFinite(size) && size >= .05 && size <= 10 ? size : 1;
   var available = views(weapon), name = "side", flip = 1, targeted = typeof targetAngle === "number" && isFinite(targetAngle);
   var radians = targeted ? targetAngle * Math.PI / 180 : 0;
   var eight = available.north && available.northeast && available.southeast && available.south;
@@ -47,9 +48,9 @@ function pose(weapon, targetAngle) {
   var facing = name === "side" ? flip < 0 ? "west" : "east" : name;
   if (available.southeast) facing = targeted ? ["east", "northeast", "north", "northwest", "west", "southwest", "south", "southeast"][(Math.round(normalize(targetAngle) / 45) + 8) % 8] : "northeast";
   return { view: name, facing: facing,
-    sprite: view.sprite, width: positive(value("width", 120), 120), height: positive(value("height", 80), 80),
+    sprite: view.sprite, width: positive(value("width", 120), 120)*size, height: positive(value("height", 80), 80)*size,
     pivotX: value("pivotX", .5), pivotY: value("pivotY", .5), x: finite(weapon.offsetX, 0), y: finite(weapon.offsetY, 150),
-    muzzleX: mx, muzzleY: my, flipX: flip, angle: targeted && !eight ? normalize(targetAngle - reference) : 0, reference: reference,
+    muzzleX: mx*size, muzzleY: my*size, flipX: flip, angle: targeted && !eight ? normalize(targetAngle - reference) : 0, reference: reference,
     aimX: aimX, aimY: aimY,
     emptySprite: typeof view.emptySprite === "string" && view.emptySprite ? view.emptySprite : null };
 }

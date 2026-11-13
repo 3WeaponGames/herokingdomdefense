@@ -84,7 +84,7 @@ function synchronizeMuzzle(owner, state) {
 }
 function targetNode(target) { return target && (target.node || target); }
 function weaponPose(owner, state, targetAngle) {
-  var weapon = weaponConfig(owner.buildInfo.cfg.Appearance), pose = WeaponPose.pose(weapon, targetAngle);
+  var weapon = weaponConfig(owner.buildInfo.cfg.Appearance), pose = WeaponPose.pose(weapon, targetAngle, owner.buildInfo.cfg.PartScale ? require("BuildingPartScale").value(owner.buildInfo.cfg,"weapon") : 1);
   state.weaponNode.setContentSize(pose.width, pose.height); state.weaponNode.setAnchorPoint(pose.pivotX, pose.pivotY);
   state.weaponPivot.setPosition(pose.x, pose.y);
   state.weaponPivot.scaleX = pose.flipX; state.weaponPivot.scaleY = 1; state.weaponPivot.angle = pose.angle;

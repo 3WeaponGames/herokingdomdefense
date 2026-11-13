@@ -4145,7 +4145,7 @@
           ],
           "MillDefense": {
             "kind": "scarecrow",
-            "fields": 4,
+            "fields": 3,
             "fieldHp": 180,
             "damage": 18,
             "range": 260,
@@ -4242,7 +4242,7 @@
           ],
           "MillDefense": {
             "kind": "bomb",
-            "fields": 4,
+            "fields": 3,
             "fieldHp": 180,
             "damage": 100,
             "range": 260,

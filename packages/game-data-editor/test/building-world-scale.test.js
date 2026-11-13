@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const Scale=require('../../../assets/_script/BuildingWorldScale'),Data=require('../buildings/blocker-data'),ScaleData=require('../buildings/scale-data'),Preview=require('../worlds/building-preview'),Navigation=require('../worlds/navigation'),Maps=require('../lib/map-assets'),Gate=require('../worlds/gate-facing'),{Store}=require('../lib/store'),{Service}=require('../worlds/service');
 const {Node,RigidBody,PhysicsPolygonCollider}=require('../../../tools/navigation/runtime-harness.cjs'),root=path.resolve(__dirname,'../../..'),clone=x=>JSON.parse(JSON.stringify(x)),near=(a,b)=>assert(Math.abs(a-b)<1e-6,`${a} != ${b}`),round=p=>p.map(r=>r.map(q=>[+q.x.toFixed(5),+q.y.toFixed(5)]));
 function fixture(){const store=new Store(root),service=new Service(root,{previewConfig:()=>store.documents.A.data});return{store,service};}
-function runtime(){const context={exports:{},cc:{v2:(x,y)=>({x,y}),isValid:()=>true,RigidBody,PhysicsCollider:PhysicsPolygonCollider}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingWorldScale.js'),'utf8'),context);return context.exports;}
+function runtime(){const context={exports:{},require:name=>require('../../../assets/_script/'+name),cc:{v2:(x,y)=>({x,y}),isValid:()=>true,RigidBody,PhysicsCollider:PhysicsPolygonCollider}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/BuildingWorldScale.js'),'utf8'),context);return context.exports;}
 function fromMatrix(m,name){const n=new Node(name);n.x=m[4];n.y=m[5];n.angle=Math.atan2(m[1],m[0])*180/Math.PI;n.scaleX=Math.hypot(m[0],m[1]);n.scaleY=(m[0]*m[3]-m[1]*m[2])/n.scaleX;return n;}
 
 test('world size changes complete model geometry independently of icon zoom, and keeps the hero pad size fixed',()=>{
@@ -36,15 +36,15 @@ test('runtime scaling includes separate plots and wing roots, preserves pad widt
 
 test('native controller roots and stage collider previews agree for every building type and all wall facings',()=>{
  const f=fixture(),api=runtime();let cases=0;
- for(const kind of [1,2,3,4,5,6])for(const face of kind===6?['NE','NW','SE','SW']:['NE'])for(const factor of [.6,1.35]){
-  const template=f.service.buildingCatalog().find(b=>b.kind===kind),building=Object.assign(clone(template),{wallFacing:face,x:0,y:0,scale:1,angle:0}),stage={variant:'A',buildings:[building]},row=f.store.documents.A.data.BuildEnum[kind].levelList[0];row.WorldScale=factor;
+ for(const kind of [1,2,3,4,5,6])for(const face of kind===6?['NE','NW','SE','SW']:['NE'])for(const factor of [.6,1.35])for(const offset of [{x:0,y:0},{x:35,y:-20}]){
+  const template=f.service.buildingCatalog().find(b=>b.kind===kind),building=Object.assign(clone(template),{wallFacing:face,x:0,y:0,scale:1,angle:0}),stage={variant:'A',buildings:[building]},row=f.store.documents.A.data.BuildEnum[kind].levelList[0];row.WorldScale=factor;row.ModelOffset=offset;
   const source=Gate.project(f.service.source(building.template.prefab),building,root),info=Maps.model(source),nodes={};for(const n of info.nodes)nodes[n.id]=fromMatrix(Maps.transform(n.source),n.name);for(const n of info.nodes)if(nodes[n.parent])nodes[n.id].setParent(nodes[n.parent]);
   const o=info.byId[building.template.node],c=o.components.find(c=>c.value.ndAniMain).value,renderer=ref=>ref&&{node:nodes[source[ref.__id__].node.__id__]},owner={node:nodes[o.id],ndAniMain:renderer(c.ndAniMain),ndAniDown:renderer(c.ndAniDown),ndAniOther:(c.ndAniOther||[]).map(renderer),ndLockList:(c.ndLockList||[]).map(r=>nodes[r.__id__]),buildInfo:{cfg:row}};
-  const baselineConfig=clone(f.store.documents.A.data);delete baselineConfig.BuildEnum[kind].levelList[0].WorldScale;const base=Navigation.buildingColliderData(f.service,stage,building,1,'closed',baselineConfig,new Map()),actual=Navigation.buildingColliderData(f.service,stage,building,1,'closed',f.store.documents.A.data,new Map());api.apply(owner);
+  const baselineConfig=clone(f.store.documents.A.data);delete baselineConfig.BuildEnum[kind].levelList[0].WorldScale;delete baselineConfig.BuildEnum[kind].levelList[0].ModelOffset;const base=Navigation.buildingColliderData(f.service,stage,building,1,'closed',baselineConfig,new Map()),actual=Navigation.buildingColliderData(f.service,stage,building,1,'closed',f.store.documents.A.data,new Map());api.apply(owner);
   for(let i=0;i<base.colliders.length;i++)for(let j=0;j<base.colliders[i].points.length;j++){
    const old=base.colliders[i],p=Maps.point(Maps.inverse(info.byId[old.node].world),old.points[j]),world=nodes[old.node].convertToWorldSpaceAR(p),expected=actual.colliders[i].points[j];near(world.x,expected.x);near(world.y,expected.y);
   }
   api.restore(owner);cases++;
  }
- assert.equal(cases,18);
+ assert.equal(cases,36);
 });

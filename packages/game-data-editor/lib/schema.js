@@ -365,6 +365,9 @@ function validate(documents, changes) {
       ['BuildSliverCost','BuildCost','VedioCount'].forEach(k=>{if(own(level,k))number('A',q.concat(k),level[k],0,true);});
       if(own(level,'Blocker'))require('../buildings/blocker-data').issues(level.Blocker,id==='6').forEach(message=>issue('A',q.concat('Blocker'),message));
       if(own(level,'WorldScale')&&!require('../../../assets/_script/BuildingWorldScale').valid(level.WorldScale))issue('A',q.concat('WorldScale'),'World size must be between 5% and 1,000%.');
+      if(own(level,'SpawnPositions')&&!require('../../../assets/_script/BuildingSpawnPositions').valid(level.SpawnPositions))issue('A',q.concat('SpawnPositions'),'Unit spawn positions must be finite X/Y offsets between -10,000 and 10,000.');
+      if(own(level,'ModelOffset')&&!require('../../../assets/_script/BuildingModelOffset').valid(level.ModelOffset))issue('A',q.concat('ModelOffset'),'Building position needs X/Y offsets between -10,000 and 10,000.');
+      if(own(level,'PartScale')){const Parts=require('../../../assets/_script/BuildingPartScale');if(!level.PartScale||typeof level.PartScale!=='object'||Array.isArray(level.PartScale))issue('A',q.concat('PartScale'),'Invalid building part sizes.');else Parts.keys.forEach(key=>{if(own(level.PartScale,key)&&!Parts.valid(level.PartScale[key]))issue('A',q.concat('PartScale',key),'Part size must be between 5% and 1,000%.');});}
       if(own(level,'Shadow'))require('../buildings/blocker-data').shadowIssues(level.Shadow,id==='6').forEach(message=>issue('A',q.concat('Shadow'),message));
       graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
       if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');

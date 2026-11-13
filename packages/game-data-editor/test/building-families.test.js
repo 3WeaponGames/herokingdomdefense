@@ -25,11 +25,11 @@ test('current construction exposes eleven families, four separate barracks and t
   const rows=Model.families(base,translations,'en');
   assert.equal(rows.length,11);
   assert.deepEqual(rows.filter(r=>r.typeID==='3').map(r=>[r.key,r.label,r.constructionOrder]),[
-    ['3:11','Royal Guard Barracks',0],['3:14','Heavy Infantry Barracks',1],
-    ['3:17','Crossbowmen Barracks',2],['3:20','Vanguard Barracks',3]
+    ['3:11','Guard Barracks',0],['3:14','Shield Barracks',1],
+    ['3:17','Crossbow Barracks',2],['3:20','Timber Stables',3]
   ]);
   assert.deepEqual(rows.filter(r=>r.typeID==='2').map(r=>[r.key,r.label]),[
-    ['2:1','Arrow Tower'],['2:4','Cannon Tower'],['2:7','Sniper Tower']
+    ['2:1','Archer Lookout'],['2:4','Cannon Tower'],['2:7','Sniper Tower']
   ]);
   assert.deepEqual(rows.diagnostics,[]);
   for(const row of rows){

@@ -115,7 +115,8 @@ function create(kind){
       this._renderList();const scroll=this.$detail.scrollTop;clear(this.$detail);AttackRate.begin(this);
       const row=this._rows().find(r=>r.key===this._selected);
       if(!row){this.$detail.appendChild(node('div','Choose an item to inspect its settings.','gt-empty'));return;}
-      this.$detail.appendChild(node('h2',row.label));if(kind==='units'&&row.unitType==='ally')this._unitLevelTabs(row);if(kind==='buildings')Buildings.levelTabs(this,row);this.$detail.appendChild(node('p',row.subtitle||'Changes are drafts until saved.','gt-subtitle'));
+      const heading=kind==='buildings'&&row.family?this.$detail.appendChild(node('div',undefined,'bld-sticky-heading')):this.$detail;
+      heading.appendChild(node('h2',row.label));if(kind==='units'&&row.unitType==='ally')this._unitLevelTabs(row);if(kind==='buildings')Buildings.levelTabs(this,row,heading);heading.appendChild(node('p',row.subtitle||'Changes are drafts until saved.','gt-subtitle'));
       if(kind==='stages')this._stage(row);else if(kind==='perks')this._perk(row);else if(kind==='buildings')this._building(row);else if(kind==='equipment')this._equipment(row);else if(kind==='talents')this._talent(row);else if(kind==='relics')this._relic(row);else if(kind==='units')this._unit(row);else if(kind==='unit-types')this._unitType(row);else if(kind==='settings')this._setting(row);
       this.$detail.scrollTop=scroll;this._renderPreview(row);
     },

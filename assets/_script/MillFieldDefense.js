@@ -14,6 +14,7 @@ Runtime.prototype.apply = function () {
   var owner = this.owner, cfg = owner.buildInfo && owner.buildInfo.cfg;
   this.cfg = cfg && cfg.MillDefense;
   var skeleton = owner.ndAniDown && owner.ndAniDown._skeleton;
+  if (cfg && cfg.PartScale || owner.ndAniDown && owner.ndAniDown._buildingPartScale) require("BuildingPartScale").apply(owner.ndAniDown,cfg);
   if (!this.cfg || !skeleton || !owner.getIsWork()) return;
   var skin = skeleton.skin, runtime = this;
   skeleton.slots.forEach(function (slot) {
@@ -42,7 +43,7 @@ Runtime.prototype.apply = function () {
         if (runtime.cfg.kind !== "scarecrow") return Combat.point(node, runtime.game.ndUI);
         var bone = slot.bone, source = owner.ndAniDown.node;
         var attachment = this.addon && this.addon.getAttachment();
-        var x = attachment ? attachment.x : 0, y = attachment ? attachment.y + attachment.height * .36 : 0;
+        var x = attachment ? attachment.x : 0, y = attachment ? attachment.y + attachment.height * (attachment.scaleY || 1) * .36 : 0;
         var world = source.convertToWorldSpaceAR(cc.v2(bone.worldX + bone.a * x + bone.b * y, bone.worldY + bone.c * x + bone.d * y));
         return runtime.game.ndUI.convertToNodeSpaceAR(world);
       },
@@ -79,6 +80,7 @@ Runtime.prototype.sync = function () {
     var world = source.node.convertToWorldSpaceAR(cc.v2(bone.worldX, bone.worldY - 20));
     field.node.setPosition(field.node.parent.convertToNodeSpaceAR(world));
   },this);
+  if (owner.buildInfo && owner.buildInfo.cfg && owner.buildInfo.cfg.PartScale || source._buildingPartScale) require("BuildingPartScale").apply(source,owner.buildInfo && owner.buildInfo.cfg);
 };
 Runtime.prototype.income = function () {
   if(!this.owner.getIsWork())return 0;

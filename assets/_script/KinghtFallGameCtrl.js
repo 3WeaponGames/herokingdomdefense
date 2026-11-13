@@ -121,6 +121,7 @@ var def_KinghtFallGameCtrl = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.initData = function (t) {
+    if (typeof cc !== "undefined" && cc.PhysicsContact) require("PhysicsContactCompat").install();
     this._restartRetired = false;
     this._waveStartCheckpoint = null;
     require("AudioMgr").AudioMgr.getInstance().stopOwnedEffects(this);

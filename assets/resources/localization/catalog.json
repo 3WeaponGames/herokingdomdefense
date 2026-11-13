@@ -12,37 +12,37 @@
     }
   ],
   "entries": {
-    "data.mill.none.1.name": {"en":"Mill · Lv 1","zh":"磨坊 · 1级","context":"Mill crop defense choice"},
+    "data.mill.none.1.name": {"en":"Harvest Mill","zh":"丰收磨坊","context":"Mill crop defense choice"},
     "data.mill.none.1.description": {"en":"Upgrade: 2 crop fields; choose scarecrows or bombs at level 2. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：2块农田。2级时选择稻草人或炸弹。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.mill.scarecrow.2.name": {"en":"Scarecrow Mill · Lv 2","zh":"稻草人磨坊 · 2级","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.2.name": {"en":"Scarecrow Mill","zh":"稻草人磨坊","context":"Mill crop defense choice"},
     "data.mill.scarecrow.2.description": {"en":"Upgrade: 2 crop fields; scarecrows shoot from their heads. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：2块农田。稻草人从头部发射投射物。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.mill.scarecrow.3.name": {"en":"Scarecrow Mill · Lv 3","zh":"稻草人磨坊 · 3级","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.3.name": {"en":"Fortified Scarecrow Mill","zh":"坚固稻草人磨坊","context":"Mill crop defense choice"},
     "data.mill.scarecrow.3.description": {"en":"Upgrade: 3 crop fields; scarecrows shoot from their heads. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：3块农田。稻草人从头部发射投射物。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.mill.scarecrow.4.name": {"en":"Scarecrow Mill · Lv 4","zh":"稻草人磨坊 · 4级","context":"Mill crop defense choice"},
+    "data.mill.scarecrow.4.name": {"en":"Royal Scarecrow Mill","zh":"皇家稻草人磨坊","context":"Mill crop defense choice"},
     "data.mill.scarecrow.4.description": {"en":"Final upgrade: 4 crop fields; scarecrows shoot from their heads. Each surviving field earns 1 silver per wave, then fields repair.","zh":"最终升级：4块农田。稻草人从头部发射投射物。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.mill.bomb.2.name": {"en":"Bomb Mill · Lv 2","zh":"炸弹磨坊 · 2级","context":"Mill crop defense choice"},
+    "data.mill.bomb.2.name": {"en":"Bomb Mill","zh":"炸弹磨坊","context":"Mill crop defense choice"},
     "data.mill.bomb.2.description": {"en":"Upgrade: 2 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：2块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.mill.bomb.3.name": {"en":"Bomb Mill · Lv 3","zh":"炸弹磨坊 · 3级","context":"Mill crop defense choice"},
+    "data.mill.bomb.3.name": {"en":"Fortified Bomb Mill","zh":"坚固炸弹磨坊","context":"Mill crop defense choice"},
     "data.mill.bomb.3.description": {"en":"Upgrade: 3 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"升级：3块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.mill.bomb.4.name": {"en":"Bomb Mill · Lv 4","zh":"炸弹磨坊 · 4级","context":"Mill crop defense choice"},
+    "data.mill.bomb.4.name": {"en":"Royal Bomb Mill","zh":"皇家炸弹磨坊","context":"Mill crop defense choice"},
     "data.mill.bomb.4.description": {"en":"Final upgrade: 4 crop fields; bombs detonate only when their field is destroyed. Each surviving field earns 1 silver per wave, then fields repair.","zh":"最终升级：4块农田。炸弹仅在其农田被摧毁时爆炸。每波每块存活农田产出1银币，结算后修复。","context":"Mill crop defense choice"},
-    "data.building.castle-4.name": {"en":"Castle · Lv 4","zh":"主城 · 4级","context":"Approved four-tier building progression"},
+    "data.building.castle-4.name": {"en":"Crown Citadel","zh":"王冠城塞","context":"Approved four-tier building progression"},
     "data.building.castle-4.description": {"en":"Final upgrade: a stronger royal castle with improved defenses and firepower.","zh":"最终升级：强化皇家城堡，拥有更强的防御与火力。","context":"Approved four-tier building progression"},
-    "data.building.archer-4.name": {"en":"Arrow Tower · Lv 4","zh":"箭塔 · 4级","context":"Approved four-tier building progression"},
+    "data.building.archer-4.name": {"en":"Royal Archer Tower","zh":"皇家弓箭塔","context":"Approved four-tier building progression"},
     "data.building.archer-4.description": {"en":"Final upgrade: an upgraded watchtower with greater range and firepower.","zh":"最终升级：强化瞭望塔，拥有更远的射程与更强的火力。","context":"Approved four-tier building progression"},
-    "data.building.cannon-4.name": {"en":"Cannon Tower · Lv 4","zh":"加农炮塔 · 4级","context":"Approved four-tier building progression"},
+    "data.building.cannon-4.name": {"en":"Royal Cannon Tower","zh":"皇家加农炮塔","context":"Approved four-tier building progression"},
     "data.building.cannon-4.description": {"en":"Final upgrade: a reinforced artillery tower with stronger attacks and longer range.","zh":"最终升级：加固炮塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
-    "data.building.sniper-4.name": {"en":"Sniper Tower · Lv 4","zh":"狙击塔 · 4级","context":"Approved four-tier building progression"},
+    "data.building.sniper-4.name": {"en":"Royal Sniper Tower","zh":"皇家狙击塔","context":"Approved four-tier building progression"},
     "data.building.sniper-4.description": {"en":"Final upgrade: a reinforced crossbow tower with stronger attacks and longer range.","zh":"最终升级：加固弩塔，拥有更强的攻击与更远的射程。","context":"Approved four-tier building progression"},
-    "data.building.royal-infantry-4.name": {"en":"Royal Guard · Lv 4","zh":"皇家卫兵 · 4级","context":"Approved four-tier building progression"},
+    "data.building.royal-infantry-4.name": {"en":"Crown Garrison","zh":"王冠驻军营","context":"Approved four-tier building progression"},
     "data.building.royal-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Royal Infantry.","zh":"最终升级：加固兵营，可驻扎十名皇家步兵。","context":"Approved four-tier building progression"},
-    "data.building.heavy-infantry-4.name": {"en":"Heavy Infantry · Lv 4","zh":"重装步兵 · 4级","context":"Approved four-tier building progression"},
+    "data.building.heavy-infantry-4.name": {"en":"Ironwall Bastion","zh":"铁壁堡垒","context":"Approved four-tier building progression"},
     "data.building.heavy-infantry-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Heavy Infantry.","zh":"最终升级：加固兵营，可驻扎十名重装步兵。","context":"Approved four-tier building progression"},
-    "data.building.crossbow-4.name": {"en":"Crossbowmen · Lv 4","zh":"弩手 · 4级","context":"Approved four-tier building progression"},
+    "data.building.crossbow-4.name": {"en":"Crossbow Stronghold","zh":"弩兵要塞","context":"Approved four-tier building progression"},
     "data.building.crossbow-4.description": {"en":"Final upgrade: a fortified barracks with room for ten Crossbowmen.","zh":"最终升级：加固兵营，可驻扎十名弩手。","context":"Approved four-tier building progression"},
-    "data.building.stables-4.name": {"en":"Vanguard · Lv 4","zh":"先锋骑兵 · 4级","context":"Approved four-tier building progression"},
+    "data.building.stables-4.name": {"en":"Crown Stables","zh":"王冠马厩","context":"Approved four-tier building progression"},
     "data.building.stables-4.description": {"en":"Final upgrade: reinforced stables with room for ten cavalry units.","zh":"最终升级：加固马厩，可驻扎十名骑兵。","context":"Approved four-tier building progression"},
-    "data.building.farmhouse-4.name": {"en":"House · Lv 4","zh":"房屋 · 4级","context":"Approved four-tier building progression"},
+    "data.building.farmhouse-4.name": {"en":"Stone Farmhouse","zh":"石砌农舍","context":"Approved four-tier building progression"},
     "data.building.farmhouse-4.description": {"en":"Final upgrade: improved housing that supplies six silver each wave.","zh":"最终升级：改良农舍，每波提供六枚银币。","context":"Approved four-tier building progression"},
     "data.building.mill-4.name": {"en":"Mill · Lv 4","zh":"磨坊 · 4级","context":"Approved four-tier building progression"},
     "data.building.mill-4.description": {"en":"Final upgrade: an upgraded mill with four farm plots that supplies nine silver each wave.","zh":"最终升级：拥有四块农田的强化磨坊，每波提供九枚银币。","context":"Approved four-tier building progression"},
@@ -716,8 +716,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.1.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.1.name"
     },
     "data.buildenum.1.levellist.1.name": {
-      "en": "Castle",
-      "zh": "主城",
+      "en": "Timber Keep",
+      "zh": "木制要塞",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.1.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.1.levelList.0.Name"
     },
     "data.buildenum.1.levellist.1.levelupdescribe": {
@@ -726,18 +726,18 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.1.levellist.2.name": {
-      "en": "Town Center",
-      "zh": "乡镇中心",
+      "en": "Reinforced Keep",
+      "zh": "加固要塞",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.1.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.1.levelList.1.Name"
     },
     "data.buildenum.1.levellist.3.name": {
-      "en": "City Center",
-      "zh": "城镇中心",
+      "en": "Royal Castle",
+      "zh": "皇家城堡",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.1.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.1.levelList.2.Name"
     },
     "data.buildenum.2.name": {
-      "en": "Arrow Tower",
-      "zh": "箭塔",
+      "en": "Archer Lookout",
+      "zh": "弓箭瞭望塔",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.name; assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.0.Name"
     },
     "data.buildenum.2.levellist.1.levelupdescribe": {
@@ -746,8 +746,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.2.levellist.2.name": {
-      "en": "Wooden Arrow Tower",
-      "zh": "木制箭塔",
+      "en": "Archer Watchtower",
+      "zh": "弓箭警戒塔",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.1.Name"
     },
     "data.buildenum.2.levellist.2.levelupdescribe": {
@@ -756,8 +756,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.2.levellist.3.name": {
-      "en": "Stone Arrow Tower",
-      "zh": "石制箭塔",
+      "en": "Fortified Archer Tower",
+      "zh": "坚固弓箭塔",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.2.levelList.2.Name"
     },
     "data.buildenum.2.levellist.3.levelupdescribe": {"en":"Upgrade: faster arrows with high damage and long range.","zh":"升级：箭矢更快、伤害更高、射程更远。","context":"Buildings · level capabilities and upgrade notes"},
@@ -772,8 +772,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.name"
     },
     "data.buildenum.4.levellist.1.name": {
-      "en": "House",
-      "zh": "房屋",
+      "en": "Thatched Cottage",
+      "zh": "茅顶农舍",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.0.Name"
     },
     "data.buildenum.4.levellist.1.levelupdescribe": {
@@ -782,8 +782,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.4.levellist.2.name": {
-      "en": "Wooden House",
-      "zh": "木制房屋",
+      "en": "Timber Farmhouse",
+      "zh": "木制农舍",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.1.Name"
     },
     "data.buildenum.4.levellist.2.levelupdescribe": {
@@ -792,8 +792,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.4.levellist.3.name": {
-      "en": "Stone House",
-      "zh": "石制房屋",
+      "en": "Tiled Farmhouse",
+      "zh": "瓦顶农舍",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.4.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.4.levelList.2.Name"
     },
     "data.buildenum.4.levellist.3.levelupdescribe": {"en":"Upgrade: earns 4 silver per wave while the house survives.","zh":"升级：农舍存活时，每波获得4枚银币。","context":"Buildings · level capabilities and upgrade notes"},
@@ -819,8 +819,8 @@
     },
     "data.buildenum.5.levellist.3.levelupdescribe": {"en":"Upgrade: earns 7 silver per wave while the mill survives.","zh":"升级：磨坊存活时，每波获得7枚银币。","context":"Buildings · level capabilities and upgrade notes"},
     "data.buildenum.6.name": {
-      "en": "Wall",
-      "zh": "城墙",
+      "en": "Timber Rampart",
+      "zh": "木制城墙",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.name; assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.0.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.0.Name"
     },
     "data.buildenum.6.levellist.1.levelupdescribe": {
@@ -829,8 +829,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.6.levellist.2.name": {
-      "en": "Wooden Wall",
-      "zh": "木制城墙",
+      "en": "Reinforced Rampart",
+      "zh": "加固城墙",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.1.Name"
     },
     "data.buildenum.6.levellist.2.levelupdescribe": {
@@ -839,8 +839,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.6.levellist.3.name": {
-      "en": "Stone Wall",
-      "zh": "石制城墙",
+      "en": "Armored Rampart",
+      "zh": "装甲城墙",
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.2.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.2.Name"
     },
     "data.buildenum.6.levellist.3.levelupdescribe": {
@@ -6183,8 +6183,8 @@
       "context": "Battle HUD task drawer toggle"
     },
     "data.building.cannon-1.name": {
-      "en": "Cannon Tower · Lv 1",
-      "zh": "加农炮塔 · 1级",
+      "en": "Cannon Tower",
+      "zh": "加农炮塔",
       "context": "Buildings · Cannon Tower · Lv 1"
     },
     "data.building.cannon-1.description": {
@@ -6193,8 +6193,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.cannon-2.name": {
-      "en": "Cannon Tower · Lv 2",
-      "zh": "加农炮塔 · 2级",
+      "en": "Fortified Cannon Tower",
+      "zh": "坚固加农炮塔",
       "context": "Buildings · Cannon Tower · Lv 2"
     },
     "data.building.cannon-2.description": {
@@ -6203,14 +6203,14 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.cannon-3.name": {
-      "en": "Cannon Tower · Lv 3",
-      "zh": "加农炮塔 · 3级",
+      "en": "Armored Cannon Tower",
+      "zh": "装甲加农炮塔",
       "context": "Buildings · Cannon Tower · Lv 3"
     },
     "data.building.cannon-3.description": {"en":"Upgrade: powerful, faster shells with a wide blast and long range.","zh":"升级：炮弹威力更强、速度更快，爆炸范围更广、射程更远。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.sniper-1.name": {
-      "en": "Sniper Tower · Lv 1",
-      "zh": "狙击塔 · 1级",
+      "en": "Sniper Tower",
+      "zh": "狙击塔",
       "context": "Buildings · Sniper Tower · Lv 1"
     },
     "data.building.sniper-1.description": {
@@ -6219,8 +6219,8 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-2.name": {
-      "en": "Sniper Tower · Lv 2",
-      "zh": "狙击塔 · 2级",
+      "en": "Fortified Sniper Tower",
+      "zh": "坚固狙击塔",
       "context": "Buildings · Sniper Tower · Lv 2"
     },
     "data.building.sniper-2.description": {
@@ -6229,14 +6229,14 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.sniper-3.name": {
-      "en": "Sniper Tower · Lv 3",
-      "zh": "狙击塔 · 3级",
+      "en": "Armored Sniper Tower",
+      "zh": "装甲狙击塔",
       "context": "Buildings · Sniper Tower · Lv 3"
     },
     "data.building.sniper-3.description": {"en":"Upgrade: strong, fast long-range shots at the highest-HP monster.","zh":"升级：对生命值最高的怪物发射强力、快速的远程弩箭。","context":"Buildings · level capabilities and upgrade notes"},
     "data.building.barracks.royal-guard.1.name": {
-      "en": "Royal Guard · Lv 1",
-      "zh": "皇家卫兵 · 1级",
+      "en": "Guard Barracks",
+      "zh": "卫兵营房",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.royal-guard.description": {
@@ -6245,18 +6245,18 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.royal-guard.2.name": {
-      "en": "Royal Guard · Lv 2",
-      "zh": "皇家卫兵 · 2级",
+      "en": "Fortified Guard Barracks",
+      "zh": "坚固卫兵营房",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.royal-guard.3.name": {
-      "en": "Royal Guard · Lv 3",
-      "zh": "皇家卫兵 · 3级",
+      "en": "Royal Garrison",
+      "zh": "皇家驻军营",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.heavy-infantry.1.name": {
-      "en": "Heavy Infantry · Lv 1",
-      "zh": "重装步兵 · 1级",
+      "en": "Shield Barracks",
+      "zh": "重盾营房",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.heavy-infantry.description": {
@@ -6265,18 +6265,18 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.heavy-infantry.2.name": {
-      "en": "Heavy Infantry · Lv 2",
-      "zh": "重装步兵 · 2级",
+      "en": "Fortified Shield Barracks",
+      "zh": "坚固重盾营房",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.heavy-infantry.3.name": {
-      "en": "Heavy Infantry · Lv 3",
-      "zh": "重装步兵 · 3级",
+      "en": "Shield Bastion",
+      "zh": "重盾堡垒",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.crossbowmen.1.name": {
-      "en": "Crossbowmen · Lv 1",
-      "zh": "弩手 · 1级",
+      "en": "Crossbow Barracks",
+      "zh": "弩兵营房",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.crossbowmen.description": {
@@ -6285,18 +6285,18 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.crossbowmen.2.name": {
-      "en": "Crossbowmen · Lv 2",
-      "zh": "弩手 · 2级",
+      "en": "Fortified Crossbow Barracks",
+      "zh": "坚固弩兵营房",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.crossbowmen.3.name": {
-      "en": "Crossbowmen · Lv 3",
-      "zh": "弩手 · 3级",
+      "en": "Crossbow Garrison",
+      "zh": "弩兵驻军营",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.vanguard.1.name": {
-      "en": "Vanguard · Lv 1",
-      "zh": "先锋骑兵 · 1级",
+      "en": "Timber Stables",
+      "zh": "木制马厩",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.vanguard.description": {
@@ -6305,13 +6305,13 @@
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.building.barracks.vanguard.2.name": {
-      "en": "Vanguard · Lv 2",
-      "zh": "先锋骑兵 · 2级",
+      "en": "Fortified Stables",
+      "zh": "坚固马厩",
       "context": "Buildings · barracks squad"
     },
     "data.building.barracks.vanguard.3.name": {
-      "en": "Vanguard · Lv 3",
-      "zh": "先锋骑兵 · 3级",
+      "en": "Royal Stables",
+      "zh": "皇家马厩",
       "context": "Buildings · barracks squad"
     },
     "ui.building.choose_squad": {

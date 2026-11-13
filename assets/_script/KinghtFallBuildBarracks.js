@@ -85,10 +85,12 @@ var def_KinghtFallBuildBarracks = function (t) {
     var game = $z1KinghtFallUIGame.default.instance.ctrGame, unit = this.enemyList[t];
     var anchor = Navigation.positionOf(this.ndBotnNodeList, game);
     var preferred = cc.v2(anchor.x + a.x, anchor.y + a.y);
+    var custom = this.buildInfo.cfg.SpawnPositions && require("BuildingSpawnPositions").get(this.buildInfo.cfg,t);
+    if(custom){var world=this.node.convertToWorldSpaceAR(cc.v2(custom.x,custom.y));preferred=game.ndMain.convertToNodeSpaceAR(world);anchor=preferred;}
     if (!unit) return preferred;
     unit._spawnBodyRadius = Math.max(unit._spawnBodyRadius || 0, Navigation.get(game).radius(unit, true));
     if (!this._spawnPosts) this._spawnPosts = [];
-    var position = Navigation.findStandingPoint(unit, game, anchor, this._spawnPosts[t] || preferred);
+    var position = Navigation.findStandingPoint(unit, game, anchor, custom ? preferred : this._spawnPosts[t] || preferred);
     if (!position) return null;
     this._spawnPosts[t] = { x: position.x, y: position.y };
     return cc.v2(position.x, position.y);

@@ -101,6 +101,7 @@ const messages={
     'building-blocker-preview'(event,request){reply(event,()=>require('./buildings/blocker-data').describe(getWorlds(),request));},
     'building-scale-preview'(event,request){reply(event,()=>require('./buildings/scale-data').describe(getWorlds(),request));},
     'building-purchase-preview'(event,request){reply(event,()=>require('./buildings/purchase-data').describe(getWorlds(),request));},
+    'building-purchase-align-tier-one'(event,request){reply(event,()=>require('./buildings/purchase-data').alignTierOne(getWorlds(),request));},
     testing(event,request){reply(event,()=>require('./testing/session').handle(Editor,project(),request));},
     'testing-catalog'(event){reply(event,()=>require('./testing/session').catalog(project()));},
     'open-characters'(event,request){reply(event,()=>{if(!request){Editor.Panel.open('hkd-characters');return true;}return new Promise((resolve,reject)=>Editor.Ipc.sendToMain('hkd-characters:focus',request,(error,result)=>error?reject(Error(String(error))):resolve(result)));});},

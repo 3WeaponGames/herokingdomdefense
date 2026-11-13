@@ -9,7 +9,8 @@ test('approved catalog covers every four-tier building family without replacing 
  assert.equal(spec.sourceMasters.length,62);assert.equal(new Set(spec.sourceMasters.map(m=>m.id)).size,62);
  for(const[file,hash]of Object.entries(spec.unchangedRigSha256))assert.equal(sha(bytes(file)),hash,'retexture must retain native bones, meshes, flags and animation keys: '+file);
  const plots=spec.approvedMillPlotLayout;assert.equal(sha(bytes(plots.file)),plots.sha256);
- const td=JSON.parse(bytes(plots.file));for(const name of plots.skins){const skin=td.skins.find(s=>s.name===name);assert.equal(Object.keys(skin.attachments).filter(n=>n.startsWith('td__')).length,4,'approved tier3 layout retains four native farm plots');}
+ const td=JSON.parse(bytes(plots.file));for(const name of plots.skins){const skin=td.skins.find(s=>s.name===name);assert.equal(Object.keys(skin.attachments).filter(n=>n.startsWith('td__')).length,3,'approved tier3 layout retains three native farm plots');}
+ for(const name of ['mf-3','mf-bomb-4'])assert.equal(Object.keys(td.skins.find(s=>s.name===name).attachments).filter(n=>n.startsWith('td__')).length,4,'tier4 retains four native farm plots');
  assert.equal(sha(bytes(spec.approvedFlagDirection.file)),spec.approvedFlagDirection.sha256);
  for(const p of spec.unchangedPages)assert.equal(sha(bytes(p.file)),p.sha256,'separate farm defense textures stay intact');
 });

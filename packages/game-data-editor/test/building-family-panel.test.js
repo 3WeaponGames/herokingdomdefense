@@ -44,7 +44,7 @@ test('the current building catalog exposes eleven gameplay families and separate
         }
         assert.deepEqual(destinations,roots.map(index=>f.position(key,index)),'Cards open the authored construction roots');
     }
-    f.render('3:11');assert.match(f.panel.$detail.children[0].textContent,/Royal/);
+    f.render('3:11');assert.match(f.panel.$detail.children[0].textContent,/Guard Barracks/);
     assert.equal(f.panel._level,f.position('3',11),'Royal Guard starts at its construction root');
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.messages.length,0);
 });
@@ -55,8 +55,9 @@ test('family level tabs browse every original storage position without producing
     for(const family of families){
         f.render(family.key,999);
         assert.equal(f.panel._level,family.branches[0].position,'An unrelated old selection resets only to this family root');
-        assert.equal(f.panel.$detail.children[0].tagName,'h2');
-        assert.equal(f.panel.$detail.children[1].getAttribute('role'),'tablist','Level tabs appear immediately below the family name');
+        const heading=f.panel.$detail.children[0];assert.equal(heading.className,'bld-sticky-heading');
+        assert.equal(heading.children[0].tagName,'h2');
+        assert.equal(heading.children[1].getAttribute('role'),'tablist','Pinned level tabs appear immediately below the family name');
         const levels=[...new Set(Array.from(family.branches,branch=>branch.level))].sort((a,b)=>a-b);
         assert.deepEqual(Array.from(f.tabs(),tab=>tab.textContent),levels.map(level=>'Lvl '+level));
         for(const branch of family.branches){

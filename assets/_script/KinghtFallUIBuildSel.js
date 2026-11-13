@@ -50,17 +50,19 @@ var def_KinghtFallUIBuildSel = function (t) {
     // Every starting building family uses the same cards, including families
     // with only three choices. New choices fill the next grid slot.
     var grid = this.initialChoice || e.length > 3;
+    var upgradeCards = !this.initialChoice && e.length <= 3;
     this._choiceGridExtra = Math.max(0, Math.ceil(e.length / 2) - 2) * 304;
+    this._upgradeChoiceHeight = upgradeCards ? Math.max(1, e.length) * 250 + Math.max(0, e.length - 1) * 22 : 0;
     this._nameBadgeRows = [];
     this._choiceRows = [];
     this._initialChoiceDescriptions = [];
-    if (grid) {
+    if (grid || upgradeCards) {
       var layout = this.ndParent.getComponent(cc.Layout);
       if (layout) layout.enabled = false;
-      this.ndParent.setContentSize(620, 600 + this._choiceGridExtra);
+      this.ndParent.setContentSize(620, upgradeCards ? this._upgradeChoiceHeight : 600 + this._choiceGridExtra);
       this.ndParent.setPosition(0, -5);
     }
-    if (this.initialChoice) this.initInitialChoiceView();
+    if (grid || upgradeCards) this.initInitialChoiceView();
     var n = function (n) {
       var a = e[n];
       var o = i.build.buildCfg.levelList.find(function (row) { return row.index === a; });
@@ -71,13 +73,14 @@ var def_KinghtFallUIBuildSel = function (t) {
       t._choiceRows.push(r);
       // Layered defenses expose a bare base sprite at runtime. Their Icon is
       // the assembled tower artwork intended for selection/atlas previews.
-      var artwork = o.Appearance && !o.Appearance.weapon && o.Appearance.sprite;
-      i.loadSpriteFrame(artwork ? "resources" : $z1KinghtFallConfig.KinghtFallBundelName.IconBuild, artwork || o.Icon, function (t) {
+      var millIcon = upgradeCards && o.level === 2 && o.MillDefense && { scarecrow: "mill-choice-scarecrow", bomb: "mill-choice-bomb" }[o.MillDefense.kind];
+      var artwork = !millIcon && o.Appearance && !o.Appearance.weapon && o.Appearance.sprite;
+      i.loadSpriteFrame(artwork ? "resources" : $z1KinghtFallConfig.KinghtFallBundelName.IconBuild, millIcon || artwork || o.Icon, function (t) {
         var e = r.getChildByName("sprIcon");
         e.getComponent(cc.Sprite).spriteFrame = t;
         e.scale = o.Zoom;
         e.setPosition(o.Excursion ? cc.v2(o.Excursion[0] || 0, o.Excursion[1] || 0) : cc.v2(0, 0));
-        if (artwork && !grid) {
+        if (artwork && !grid && !upgradeCards) {
           var artworkSize = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
           e.scale = Math.min(174 / Math.max(1, artworkSize.width), 128 / Math.max(1, artworkSize.height));
           e.setPosition(-202, 36);
@@ -87,10 +90,15 @@ var def_KinghtFallUIBuildSel = function (t) {
           e.scale = Math.min((i.initialChoice ? 224 : 186) / Math.max(1, size.width), (i.initialChoice ? 156 : 126) / Math.max(1, size.height));
           e.setPosition(0, 65);
         }
+        if (upgradeCards) {
+          var portraitSize = t.getOriginalSize ? t.getOriginalSize() : e.getContentSize();
+          e.scale = Math.min(142 / Math.max(1, portraitSize.width), 174 / Math.max(1, portraitSize.height));
+          e.setPosition(-218, 0);
+        }
       });
       r.getChildByName("labName").getComponent(cc.Label).string = i.T(o.Name);
       if (!i._nameBadgeRows) i._nameBadgeRows = [];
-      if (!grid && !i.initialChoice) i._nameBadgeRows.push({ label: r.getChildByName("labName").getComponent(cc.Label),
+      if (!grid && !upgradeCards && !i.initialChoice) i._nameBadgeRows.push({ label: r.getChildByName("labName").getComponent(cc.Label),
         backgrounds: r.children.filter(function (node) { return (node.name === "ndNormal" || node.name === "ndVideo") && node.y < -20; }) });
       for (var d = 0; d < r.children.length; d++) {
         var p = r.children[d];
@@ -98,8 +106,8 @@ var def_KinghtFallUIBuildSel = function (t) {
         "ndVideo" == p.name && (p.active = require("BuildingCost").video(o, i.initialChoice));
       }
       var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
-      rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(i.initialChoice ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
-      if (i.initialChoice) {
+      rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(i.initialChoice || upgradeCards ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
+      if (i.initialChoice || upgradeCards) {
         rich.font = null;
         rich.fontFamily = "Arial";
         info.color = new cc.Color(61, 57, 53, 255);
@@ -109,6 +117,7 @@ var def_KinghtFallUIBuildSel = function (t) {
         });
       }
       if (grid) i.layoutChoiceCard(r, n, e.length);
+      if (upgradeCards) i.layoutUpgradeCard(r, n, e.length);
       if (!require("BuildingCost").video(o, i.initialChoice)) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
           if (!t._decisionPending) t.finishDecision(t.callBack, a);
@@ -191,20 +200,47 @@ var def_KinghtFallUIBuildSel = function (t) {
     rich.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
     this._initialChoiceDescriptions.push({ label: rich, maxHeight: 76, baseFontSize: 38, baseLineHeight: 43 });
   };
+  _ctor.prototype.layoutUpgradeCard = function (row, index, count) {
+    row.setContentSize(620, 250);
+    row.setPosition(0, (count - 1) * 136 - index * 272);
+    [row].concat(row.children.filter(function (node) { return node.name === "ndNormal" || node.name === "ndVideo"; })).forEach(function (node) {
+      if (node !== row && node.y < -20) { node.active = false; return; }
+      var sprite = node.getComponent(cc.Sprite);
+      if (sprite) { sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.type = cc.Sprite.Type.SLICED; }
+      node.setContentSize(620, 250);
+      if (node !== row) node.setPosition(0, 0);
+    });
+    var name = row.getChildByName("labName"), label = name.getComponent(cc.Label);
+    name.anchorX = 0; name.anchorY = 1; name.setPosition(-126, 97); name.setScale(1);
+    name.color = new cc.Color(38, 60, 46, 255);
+    label.font = null; label.fontFamily = "Arial"; label.useSystemFont = true;
+    label.fontSize = 32; label.lineHeight = 36; label.enableBold = true;
+    label.enableWrapText = true; label.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    label.verticalAlign = cc.Label.VerticalAlign.TOP; label.overflow = cc.Label.Overflow.SHRINK;
+    name.setContentSize(418, 56);
+    [cc.LabelOutline, cc.LabelShadow].forEach(function (Type) { var effect = Type && name.getComponent(Type); if (effect) effect.enabled = false; });
+    var info = row.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
+    info.anchorX = 0; info.anchorY = 1; info.setPosition(-126, 37); info.setScale(1);
+    rich.fontSize = 24; rich.lineHeight = 28; rich.maxWidth = 418;
+    rich.horizontalAlign = cc.Label.HorizontalAlign.LEFT;
+    this._initialChoiceDescriptions.push({ label: rich, maxHeight: 146, baseFontSize: 24, baseLineHeight: 28 });
+  };
   _ctor.prototype.initInitialChoiceView = function () {
     var root = this.node.getChildByName("root"), banner = root && root.getChildByName("wg_jzfz_bt");
     var extra = this._choiceGridExtra || 0;
-    if (root) root.setScale(Math.min(1, Math.max(.1, (this.node.width - 40) / 680), Math.max(.1, (this.node.height - 48) / (904 + extra))));
+    var upgradeHeight = this._upgradeChoiceHeight || 0, panelHeight = upgradeHeight ? upgradeHeight + 340 : 904 + extra;
+    if (root) root.setScale(Math.min(1, Math.max(.1, (this.node.width - 40) / 680), Math.max(.1, (this.node.height - 48) / panelHeight)));
     var title = banner && banner.getChildByName("labTitle"), hint = root && root.getChildByName("labTitle");
     if (!this._choiceHeaderY) this._choiceHeaderY = { banner: banner && banner.y, hint: hint && hint.y };
-    if (banner) banner.y = this._choiceHeaderY.banner + extra / 2;
-    if (hint) hint.y = this._choiceHeaderY.hint + extra / 2;
+    if (banner) banner.y = upgradeHeight ? upgradeHeight / 2 + 112 : this._choiceHeaderY.banner + extra / 2;
+    if (hint) hint.y = upgradeHeight ? upgradeHeight / 2 + 54 : this._choiceHeaderY.hint + extra / 2;
     var squadChoice = this.build.buildCfg.enumValue === $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks;
-    if (title) title.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.barracks_title]]" : "[[loc:ui.building.towers_title]]");
-    if (hint) hint.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.choose_tower]]");
-    if (this._cancelButton) this._cancelButton.y = -386 - extra / 2;
+    if (this.initialChoice && title) title.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.barracks_title]]" : "[[loc:ui.building.towers_title]]");
+    if (this.initialChoice && hint) hint.getComponent(cc.Label).string = this.T(squadChoice ? "[[loc:ui.building.choose_squad]]" : "[[loc:ui.building.choose_tower]]");
+    var cancelY = upgradeHeight ? -upgradeHeight / 2 - 68 : -386 - extra / 2;
+    if (this._cancelButton) this._cancelButton.y = cancelY;
     if (!root || this._cancelButton) return;
-    var button = new cc.Node("CancelInitialBuild"); button.parent = root; button.setPosition(0, -386 - extra / 2); button.setContentSize(252, 66);
+    var button = new cc.Node("CancelInitialBuild"); button.parent = root; button.setPosition(0, cancelY); button.setContentSize(252, 66);
     var background = button.addComponent(cc.Graphics);
     background.fillColor = new cc.Color(72, 73, 94, 255); background.strokeColor = new cc.Color(0, 0, 0, 255); background.lineWidth = 3;
     background.roundRect(-126, -33, 252, 66, 15); background.fill(); background.stroke();

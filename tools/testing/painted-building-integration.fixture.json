@@ -5783,7 +5783,7 @@
                 ],
                 "MillDefense": {
                   "kind": "scarecrow",
-                  "fields": 4,
+                  "fields": 3,
                   "fieldHp": 180,
                   "damage": 18,
                   "range": 260,
@@ -5890,7 +5890,7 @@
               ],
               "MillDefense": {
                 "kind": "bomb",
-                "fields": 4,
+                "fields": 3,
                 "fieldHp": 180,
                 "damage": 100,
                 "range": 260,
@@ -7473,7 +7473,7 @@
                 ],
                 "MillDefense": {
                   "kind": "scarecrow",
-                  "fields": 4,
+                  "fields": 3,
                   "fieldHp": 180,
                   "damage": 18,
                   "range": 260,
@@ -7580,7 +7580,7 @@
               ],
               "MillDefense": {
                 "kind": "bomb",
-                "fields": 4,
+                "fields": 3,
                 "fieldHp": 180,
                 "damage": 100,
                 "range": 260,
@@ -7747,37 +7747,37 @@
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-1.png",
       "name": "painted-cannon-1",
-      "sha256": "ccc99f679be606bb12fb8ef083da1eed15e87900bdbc672ed113090c417283e8",
+      "sha256": "20cc88a999c255f3e7c413174225b5d86063fe92c3d9e743994d63d99a756fe4",
       "metadata": "8e6c1e7eb28fdc4b1791c3f425c68cca4ec85e8484787cab00b8a70d41bc8528"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-2.png",
       "name": "painted-cannon-2",
-      "sha256": "619aa03479d778f0120002ce89e289ea54b8c2622e07067c800b19e38dc14e96",
+      "sha256": "92a2070acfb81b9e66592573a801f872ba1d54165d315dd81d10d4817b1da9b7",
       "metadata": "4ec96e476d21091e162a5b721e35292118cdb97016adfbc400ca11c97d5299c7"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-3.png",
       "name": "painted-cannon-3",
-      "sha256": "c365dbd3bf686a13110afd0d46dcb98a308df2209ca92a8fe7cf7808b9d64e3e",
+      "sha256": "ccc8058858b438fa8315a4c8de6888a86d274f526261523c1412a036b3b21291",
       "metadata": "b7222de4fa049a69232ccc792ef3a23ef4530f16e6b3c3d9b1f9c0b3b5f86c2e"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-1.png",
       "name": "painted-sniper-1",
-      "sha256": "3c0eabcf27a00ad4c10b5a1782013a6a8025b99e2fb7f69bbe5369fad42e3e07",
+      "sha256": "3789c0fd738d245a0c99c9effa322ef3667635ae1bdbaef39f371c49375ec019",
       "metadata": "9587f626a04c1980c3a2a217ca3f74679e69805da1094a355698bee65ac93c04"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-2.png",
       "name": "painted-sniper-2",
-      "sha256": "99ed3a959f13f7e2c8e099b7b9b56796ceb19a587e3abea78d4f7b0cbc203b0c",
+      "sha256": "96664cf2ec70ae9ab5bc0a564e723ffaa265fed666dd0040c284374350710a1a",
       "metadata": "2ac3dfcb2de428b6732dff8b3263054c55152a8bf132164f5ab9d9054097fae0"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-3.png",
       "name": "painted-sniper-3",
-      "sha256": "69d144c154a3a64942312df9ec113722de925c64fb21d350fd0d7a8ba56d44a5",
+      "sha256": "90e63f11392aa058898dfb7fc03ffeb08121e931ae37019c98572f0558b87edd",
       "metadata": "8395caa643e133a6c2bbfd9581d3f4a92e92ce54e91865346125403be602e4d8"
     },
     {
@@ -7789,13 +7789,13 @@
     {
       "file": "assets/KinghtFallIconBuild/painted-cannon-4.png",
       "name": "painted-cannon-4",
-      "sha256": "b857debfd93ebd04e304d6e510cb3eae6e34d8680bc5844b0239d1b1aad3d820",
+      "sha256": "d88e697544d0870a7f481e9fce99abff34b3716828a47847e7a346ef71fbd197",
       "metadata": "eef4b39404b8e87987a031c3a5552a8adbd85451e2967517e7e9cc8fec94cc20"
     },
     {
       "file": "assets/KinghtFallIconBuild/painted-sniper-4.png",
       "name": "painted-sniper-4",
-      "sha256": "0d32928b12e8fd0cee27a7324bf7a099525d9c3f824077eedaba7b6ecf8f87c5",
+      "sha256": "92da066734dd3b2cb12b769b5cf557776a76aac44c3556b46e64db3d96c80a6e",
       "metadata": "7d2b40f989ba2e62b3a3fe3d4d3d5ddd8a9bb7fabed9696a754cb622c2c77c21"
     },
     {
@@ -7933,7 +7933,7 @@
     {
       "file": "assets/KinghtFallIconBuild/painted_mill_3.png",
       "name": "painted_mill_3",
-      "sha256": "c383ca4adef2875ec421e985a4929c70fe934a2a8673541f63d7258aa1d44d22",
+      "sha256": "7c4a1725d8bc64684dfce4496ae0a23b90a217bb63d723809715369b937debaa",
       "metadata": "6843d2341a0aa2a56dbac21b80482788fec83ef98a7d3e2ad93c6531e93ea105"
     },
     {
@@ -7951,7 +7951,7 @@
     {
       "file": "assets/KinghtFallIconBuild/painted_mill_bomb_3.png",
       "name": "painted_mill_bomb_3",
-      "sha256": "92873acbc9e4c0d55e57d5c3d89a906211bf54afda3d6fbbd57dd15ff0a16423",
+      "sha256": "15a06b59a555c2047585db23ef680dfdec4bbe2a626721dc2182261404cddb98",
       "metadata": "596d5ae1a9a8b9c8720bc9b0d4f1542c35cef681eebb79df3bd483127118c054"
     },
     {
@@ -9238,7 +9238,7 @@
     "approvedMillPlotLayout": {
       "file": "assets/KinghtFallIconMap/com/Ani/td/td.json",
       "beforeSha256": "fc7946095ee2c8ecedb78c902d5d29b08308faade3b320173a400cfde93d7a46",
-      "sha256": "1b481d06298048cce00b5fe4381868cf3a8c1621b7815ae4b5388366dc9043d0",
+      "sha256": "fc7946095ee2c8ecedb78c902d5d29b08308faade3b320173a400cfde93d7a46",
       "skins": [
         "mf-2-2",
         "mf-bomb-3"
@@ -9247,7 +9247,14 @@
         "td__9",
         "mill_addon_td__9"
       ],
-      "reason": "User-approved tier3 and4 four-plot composition"
+      "reason": "User-approved tier3 and4 four-plot composition",
+      "progression": [
+        2,
+        2,
+        3,
+        4
+      ],
+      "approved": "2026-11-13: tier 3 has three plots; tier 4 has four"
     },
     "approvedFlagDirection": {
       "file": "assets/KinghtFallIconMap/com/Ani/by/by.json",
@@ -9262,5 +9269,334 @@
       ],
       "preserved": "Pole positions, weighted hoists and all original wave animation keys"
     }
+  },
+  "completeTowerIcons": {
+    "version": 1,
+    "towers": [
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-cannon-1.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/cannon-1.png",
+        "bodySha256": "19a161afd13a12b9d1974c87436f2828ad92ae855b97508c33729bc83896c55d",
+        "weapon": "assets/resources/buildings/towers/cannon-1-weapon-northeast.png",
+        "weaponSha256": "bc0bee6c3086c4acc9cec2f4bbbf72afbbce1c15592607e0fd59622ce054d405",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/cannon-1-weapon-northeast",
+          "width": 54,
+          "height": 59.4,
+          "pivotX": 0.490566,
+          "pivotY": 0.517241,
+          "x": 0,
+          "y": 85.19770397434976,
+          "muzzleX": 19.2311325,
+          "muzzleY": 20.9948283,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": null
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          43
+        ],
+        "sha256": "20cc88a999c255f3e7c413174225b5d86063fe92c3d9e743994d63d99a756fe4"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-cannon-2.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/cannon-2.png",
+        "bodySha256": "70e1da88c0dcace0fdf8020a8d5721840147aa57d6b780f02d668dca5899e265",
+        "weapon": "assets/resources/buildings/towers/cannon-2-weapon-northeast.png",
+        "weaponSha256": "59ff92b571b43e53ded1e9fa3bf4c19a698d2a67a0d29e91e9bcee72982e4db3",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/cannon-2-weapon-northeast",
+          "width": 63,
+          "height": 67.5,
+          "pivotX": 0.485714,
+          "pivotY": 0.493333,
+          "x": 0,
+          "y": 115.39840996458412,
+          "muzzleX": 23.85,
+          "muzzleY": 25.9071426,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": null
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          39
+        ],
+        "sha256": "92a2070acfb81b9e66592573a801f872ba1d54165d315dd81d10d4817b1da9b7"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-cannon-3.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/cannon-3.png",
+        "bodySha256": "89fba5db0f3a0b9836cafdfa97534e903db40f9292a3622b8cff49ea03bac4ce",
+        "weapon": "assets/resources/buildings/towers/cannon-3-weapon-northeast.png",
+        "weaponSha256": "061ca96f8b9c5e40e0111a2c1b2112aacd53887fdb8e28a6a7638d5a70a77600",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/cannon-3-weapon-northeast",
+          "width": 63.9,
+          "height": 68.4,
+          "pivotX": 0.5,
+          "pivotY": 0.5,
+          "x": 0,
+          "y": 134.22993146413228,
+          "muzzleX": 23.3647956,
+          "muzzleY": 26.3828574,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": null
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          43
+        ],
+        "sha256": "ccc8058858b438fa8315a4c8de6888a86d274f526261523c1412a036b3b21291"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-sniper-1.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/sniper-1.png",
+        "bodySha256": "890547509626a586e7c4a154935fe228fa839fe2fa2beb597f4bfffa9a64da8e",
+        "weapon": "assets/resources/buildings/towers/sniper-1-weapon-northeast.png",
+        "weaponSha256": "5e900de84ad5f1b4ce711a51c5b86d2f7ae093a7d3400d91d389fec36265c7fe",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/sniper-1-weapon-northeast",
+          "width": 94,
+          "height": 69,
+          "pivotX": 0.480583,
+          "pivotY": 0.375,
+          "x": 0,
+          "y": 78.95405442586392,
+          "muzzleX": 35.592233,
+          "muzzleY": 41.309211,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": "buildings/towers/sniper-1-weapon-northeast-empty"
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          53
+        ],
+        "sha256": "3789c0fd738d245a0c99c9effa322ef3667635ae1bdbaef39f371c49375ec019"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-sniper-2.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/sniper-2.png",
+        "bodySha256": "8156b7f00b1833e8ae6ddc09b5f27873e166ddb8ad6efbeb3b24fd6ba457b9b9",
+        "weapon": "assets/resources/buildings/towers/sniper-2-weapon-northeast.png",
+        "weaponSha256": "91f45b9b4b2229e9b15f57c821aa3c0fccce817a72ec02ba1677d75e279637a6",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/sniper-2-weapon-northeast",
+          "width": 109,
+          "height": 74,
+          "pivotX": 0.473485,
+          "pivotY": 0.421348,
+          "x": 0,
+          "y": 130.59341208941623,
+          "muzzleX": 37.737121,
+          "muzzleY": 40.492135,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": "buildings/towers/sniper-2-weapon-northeast-empty"
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          42
+        ],
+        "sha256": "96664cf2ec70ae9ab5bc0a564e723ffaa265fed666dd0040c284374350710a1a"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-sniper-3.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/sniper-3.png",
+        "bodySha256": "19df30e6010d89eb7c6a8042cb2e484b1195132d19cb846649e14e3a8dcdb16b",
+        "weapon": "assets/resources/buildings/towers/sniper-3-weapon-northeast.png",
+        "weaponSha256": "647921947f2732246c897849a415a8d078f4f4d941b3ec9bb4cd043233b6eb80",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/sniper-3-weapon-northeast",
+          "width": 108,
+          "height": 74,
+          "pivotX": 0.496429,
+          "pivotY": 0.421875,
+          "x": 0,
+          "y": 135.82820713172322,
+          "muzzleX": 39.471429,
+          "muzzleY": 40.982639,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": "buildings/towers/sniper-3-weapon-northeast-empty"
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          41
+        ],
+        "sha256": "90e63f11392aa058898dfb7fc03ffeb08121e931ae37019c98572f0558b87edd"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-cannon-4.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/cannon-4.png",
+        "bodySha256": "c8c1f3fb3b23cbe3228aac9f885811a788514f02bc0973f1987b28a782bd7654",
+        "weapon": "assets/resources/buildings/towers/cannon-3-weapon-northeast.png",
+        "weaponSha256": "061ca96f8b9c5e40e0111a2c1b2112aacd53887fdb8e28a6a7638d5a70a77600",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/cannon-3-weapon-northeast",
+          "width": 63.9,
+          "height": 68.4,
+          "pivotX": 0.5,
+          "pivotY": 0.5,
+          "x": 0,
+          "y": 133.2786595151511,
+          "muzzleX": 23.3647956,
+          "muzzleY": 26.3828574,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": null
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          43
+        ],
+        "sha256": "d88e697544d0870a7f481e9fce99abff34b3716828a47847e7a346ef71fbd197"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/painted-sniper-4.png",
+        "size": [
+          256,
+          256
+        ],
+        "body": "assets/resources/buildings/redesign/towers/sniper-4.png",
+        "bodySha256": "8ed445e78d3ad697f01ff21db893b2860e265f1bb4b34b0854703892ddcbd57c",
+        "weapon": "assets/resources/buildings/towers/sniper-3-weapon-northeast.png",
+        "weaponSha256": "647921947f2732246c897849a415a8d078f4f4d941b3ec9bb4cd043233b6eb80",
+        "pose": {
+          "view": "northeast",
+          "facing": "northeast",
+          "sprite": "buildings/towers/sniper-3-weapon-northeast",
+          "width": 108,
+          "height": 74,
+          "pivotX": 0.496429,
+          "pivotY": 0.421875,
+          "x": 0,
+          "y": 135.15489992080305,
+          "muzzleX": 39.471429,
+          "muzzleY": 40.982639,
+          "flipX": 1,
+          "angle": 0,
+          "reference": 45,
+          "aimX": 0.7071067811865476,
+          "aimY": 0.7071067811865475,
+          "emptySprite": "buildings/towers/sniper-3-weapon-northeast-empty"
+        },
+        "aboveBody": [
+          0,
+          0,
+          256,
+          41
+        ],
+        "sha256": "92da066734dd3b2cb12b769b5cf557776a76aac44c3556b46e64db3d96c80a6e"
+      }
+    ],
+    "millChoices": [
+      {
+        "icon": "assets/KinghtFallIconBuild/mill-choice-scarecrow.png",
+        "region": "mill-scarecrow",
+        "sourcePage": "assets/KinghtFallIconMap/com/Ani/td/td-defenses.png",
+        "sourceRect": [
+          2,
+          2,
+          64,
+          74
+        ],
+        "sourceRgbaSha256": "6bd4ec92850bbd9185e9b6fb20126969ffad0de5e6537bea58bf420c55fbd67b",
+        "sha256": "6bd233b97aa79f9710b708f7c5ad06c5e7599195788b4dbf0ba42a5cabbc25f7"
+      },
+      {
+        "icon": "assets/KinghtFallIconBuild/mill-choice-bomb.png",
+        "region": "mill-bomb-1",
+        "sourcePage": "assets/KinghtFallIconMap/com/Ani/td/td-defenses.png",
+        "sourceRect": [
+          70,
+          2,
+          75,
+          76
+        ],
+        "sourceRgbaSha256": "230b819103197c80c9d584eea4dbcd9646d92511075e0ed5140a1e5a32a28b0b",
+        "sha256": "d6a31f6b643a294a11357bf6efd8ed90d7a89bb03b86c34f2fb93baffb3a366f"
+      }
+    ]
   }
 }

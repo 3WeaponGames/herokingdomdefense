@@ -74,7 +74,7 @@ function selectedBranch(panel, row) {
     if (!branches.some(branch => branch.position === panel._level)) panel._level = row.rootPosition == null ? branches[0] && branches[0].position : row.rootPosition;
     return branches.find(branch => branch.position === panel._level);
 }
-function levelTabs(panel, row) {
+function levelTabs(panel, row, parent) {
     if (!row.family) return;
     const selected = selectedBranch(panel, row), tabs = node('div', undefined, 'bld-level-tabs');
     tabs.setAttribute('role','tablist'); tabs.setAttribute('aria-label','Building levels');
@@ -84,7 +84,7 @@ function levelTabs(panel, row) {
         tab.setAttribute('role','tab'); tab.setAttribute('data-building-level',group.level); tab.setAttribute('aria-selected',String(!!active));
         tabs.appendChild(tab);
     });
-    panel.$detail.appendChild(tabs);
+    (parent || panel.$detail).appendChild(tabs);
 }
 function mechanics(panel, row, level, at, context) {
     const type = Number(typeID(row)), values = level.Data;
@@ -194,7 +194,7 @@ function render(panel, row, api) {
     const blockerKey=id+':'+level.index;
     if(panel._blockerStateKey!==blockerKey){panel._blockerStateKey=blockerKey;panel._blockerState={};}
     const scaleRequest={id,levelIndex:branch.position,familyRoot:row.rootIndex};
-    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:scaleRequest,state:panel._blockerState,onChange:(value,layer)=>layer==='scale'&&value&&Array.isArray(value.tiers)?panel._change(()=>require('./scale-group').edits(panel._data('A'),scaleRequest,value.tiers)):panel._change([{doc:'A',path:keys.concat(layer==='scale'?'WorldScale':layer==='shadow'?'Shadow':'Blocker'),value}])});
+    panel._blockerClient=require('./blocker-client').mount(blocker,{ipc:api.ipc,request:scaleRequest,state:panel._blockerState,onDuplicate:layer=>panel._change(()=>require('./scale-group').duplicateShape(panel._data('A'),scaleRequest,layer==='shadow'?'Shadow':'Blocker'),{skipEmpty:true}),onChange:(value,layer)=>layer==='scale'&&value&&Array.isArray(value.parts)?panel._change(()=>require('./scale-group').partEdits(panel._data('A'),scaleRequest,value.parts)):layer==='scale'&&value&&Array.isArray(value.tiers)?panel._change(()=>require('./scale-group').edits(panel._data('A'),scaleRequest,value.tiers)):panel._change([{doc:'A',path:keys.concat(layer==='scale'?'WorldScale':layer==='shadow'?'Shadow':'Blocker'),value}])});
     const costs = panel._section('Health, level & costs');
     ['Hp','level'].filter(key => own(level, key)).forEach(key => {
         if(id==='6'&&key==='level')panel._field(costs,'Unlock level',level.level,next=>panel._set('A',keys.concat('level'),next),{integer:true,min:1,help:'Wall tabs show artwork tiers. This level controls castle unlocks; existing upgrade paths are preserved.'});
@@ -208,9 +208,10 @@ function render(panel, row, api) {
     visualKeys.filter(key => own(level, key)).forEach(key => panel._value(appearance, 'A', keys.concat(key), level[key], key, context, level));
     const pad=node('div',undefined,'gt-field wide');pad.appendChild(node('span','Build / upgrade ground pad'));appearance.appendChild(pad);
     const padKey=id+':'+row.rootIndex;if(panel._padStateKey!==padKey){panel._padStateKey=padKey;panel._padState={};}
-    panel._purchaseClient=require('./purchase-client').mount(pad,{ipc:api.ipc,request:{id,levelIndex:branch.position},category:building,row:level,state:panel._padState,onCommit:(value,variant)=>panel._change(()=>{
+    panel._purchaseClient=require('./purchase-client').mount(pad,{ipc:api.ipc,request:scaleRequest,category:building,row:level,state:panel._padState,onModelCommit:value=>panel._change(()=>{const current=panel._data('A').BuildEnum[id].levelList[branch.position];if(!current||current.index!==level.index)throw Error('This building tier changed. Reload before moving it.');return [{doc:'A',path:keys.concat('ModelOffset'),value:Object.assign({},current.ModelOffset,value)}];}),onSpawnsCommit:value=>panel._change(()=>{const current=panel._data('A').BuildEnum[id].levelList[branch.position];if(!current||current.index!==level.index)throw Error('This building tier changed. Reload before editing spawns.');return [{doc:'A',path:keys.concat('SpawnPositions'),value:Object.assign({},current.SpawnPositions,value)}];}),onAlign:result=>panel._change(()=>require('./purchase-data').alignmentEdits(panel._data('A'),scaleRequest,result),{skipEmpty:true}),onCommit:(value,variant)=>panel._change(()=>{
         const current=panel._data('A').BuildEnum[id].levelList[branch.position];if(!current||current.index!==level.index)throw Error('This building level changed. Reload before editing its ground pad.');
-        const previous=current.PurchaseField||{},variants=require('../../../assets/_script/BuildingPurchaseField').variants(building);
+        const previous=JSON.parse(JSON.stringify(current.PurchaseField||{})),variants=require('../../../assets/_script/BuildingPurchaseField').variants(building);
+        if(variants.length){if(previous.variants&&previous.variants[variant])delete previous.variants[variant].TierOneLink;}else delete previous.TierOneLink;
         const next=variants.length?Object.assign({},previous,{variants:Object.assign({},previous.variants,{[variant]:Object.assign({},previous.variants&&previous.variants[variant],value)})}):Object.assign({},previous,value);
         return [{doc:'A',path:keys.concat('PurchaseField'),value:next}];
     })});

@@ -267,7 +267,7 @@ Navigation.prototype.crowdDetour = function (unit, start, target, radius, grid) 
   }
   return null;
 };
-Navigation.prototype.move = function (unit, target, dt) {
+Navigation.prototype.move = function (unit, target, dt, escapeOnly) {
   if (unit._hitReactionPlaying) {
     if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
     return { arrived: false, reached: false, partial: false, blocked: false, directionX: 0, distance: 0 };
@@ -286,7 +286,7 @@ Navigation.prototype.move = function (unit, target, dt) {
     state = unit._navigationState;
     // Let a bounded in-flight query finish when its moving target advances.
     // Restarting it on every target update can starve pursuit indefinitely.
-    var changed = !state || state.owner !== this || state.grid !== grid || state.revision !== this.revision || state.radius !== radius || (state.job ? distance(state.start, start) > 20 : distance(state.target, target) > 20);
+    var changed = !state || state.owner !== this || state.grid !== grid || state.revision !== this.revision || state.radius !== radius || state.escapeOnly !== !!escapeOnly || (state.job ? distance(state.start, start) > 20 : distance(state.target, target) > 20);
     if (!changed && !state.points && !state.job) changed = distance(state.start, start) > ARRIVAL_EPSILON || distance(state.target, target) > ARRIVAL_EPSILON;
     if (!changed && state.points) {
       if (state.index >= state.points.length) {
@@ -312,14 +312,14 @@ Navigation.prototype.move = function (unit, target, dt) {
       // enter their normal acquisition range. Exact-goal callers still fail
       // cleanly; a frontier never counts as completing an authored waypoint.
       var incremental = this._frameManaged && typeof grid.createSearch === "function";
-      var path = incremental ? null : grid.findPath(start, target, radius, unit.navigationTeam === "enemy");
+      var path = incremental ? null : grid.findPath(start, target, radius, unit.navigationTeam === "enemy", !!escapeOnly);
       this.stats.searches++;
       if (!incremental && !path) this.stats.noPath++;
       // An immutable scene cannot yield a different answer for an unchanged
       // failed request. Retry when geometry, target or unit position changes.
-      state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), partial: !!(path && path.partial), escape: path && path.escape, index: 0 };
+      state = unit._navigationState = { owner: this, grid: grid, start: start, revision: this.revision, radius: radius, escapeOnly: !!escapeOnly, target: { x: target.x, y: target.y }, points: path && path.points, goal: path && path.goal, exact: !!(path && path.reached), partial: !!(path && path.partial), escape: path && path.escape, index: 0 };
       if (incremental) {
-        state.job = grid.createSearch(start, target, radius, unit.navigationTeam === "enemy");
+        state.job = grid.createSearch(start, target, radius, unit.navigationTeam === "enemy", !!escapeOnly);
         this._activeSearches.set(grid, { unit: unit, job: state.job, frame: -1, countedFrame: this._frameId });
         unit._navigationRequestOwner = this; unit._navigationRequestGrid = grid;
       }
@@ -412,6 +412,53 @@ function get(game) {
   return game._navigation;
 }
 exports.moveTo = function (unit, game, target, dt) { return get(game).move(unit, target, dt); };
+// A new building footprint can cover a resting unit without giving it a move
+// order. Temporarily walk out at ordinary speed, then resume the original order.
+exports.recoverBlocked = function (unit, game, dt) {
+  if (unit.rigidBody && unit.rigidBody.active === false) { unit._automaticEgress = null; return null; }
+  var navigation = get(game), grid = navigation.gridFor(unit), radius = navigation.radius(unit);
+  var start = point(unit.node, game.ndMain), recovery = unit._automaticEgress;
+  if (unit._standingNavigationOwner !== navigation || unit._standingNavigationRevision !== navigation.revision) {
+    var recoveredPost = unit._standingGoal && unit._standingGoal.terrainRecovery && unit._standingGoal.order === unit.rallyPoint;
+    if (unit._standingNavigationOwner) { unit._standingGoal = null; unit._settledPoint = null; }
+    unit._standingNavigationOwner = navigation; unit._standingNavigationRevision = navigation.revision;
+    // A later growth frame or unrelated building invalidates the old geometry,
+    // but must not send a safe recovered unit back toward its obstructed post.
+    if (recoveredPost && !unit.isAgg && unit.rallyPoint && grid.isWalkable(start, radius) && !grid.isWalkable(unit.rallyPoint.pos, radius)) {
+      unit._standingGoal = { pos: { x: start.x, y: start.y }, terrainRecovery: true, order: unit.rallyPoint };
+      unit._settledPoint = { x: start.x, y: start.y };
+    }
+  }
+  if (grid.isWalkable(start, radius)) {
+    if (recovery) {
+      exports.reset(unit);
+      // Keep an obstructed authored post intact. This temporary nearby post is
+      // discarded by a new command or geometry revision; it is never saved.
+      if (!unit.isAgg && unit.rallyPoint && !grid.isWalkable(unit.rallyPoint.pos, radius)) {
+        unit._standingGoal = { pos: { x: start.x, y: start.y }, terrainRecovery: true, order: unit.rallyPoint };
+        unit._settledPoint = { x: start.x, y: start.y };
+      }
+    }
+    return null;
+  }
+  if (!recovery || recovery.owner !== navigation) {
+    exports.reset(unit);
+    recovery = unit._automaticEgress = { owner: navigation, goal: { x: start.x, y: start.y } };
+  }
+  return navigation.move(unit, recovery.goal, dt, true);
+};
+// A revived/reloaded soldier can start outside a building while its saved post
+// remains inside it. Only the completed, non-frontier projected path may rest.
+exports.projectedStandingPoint = function (unit, game, target) {
+  if (unit.navigationTeam !== "friendly") return null;
+  var navigation = get(game), grid = navigation.gridFor(unit), state = unit._navigationState;
+  if (!state || state.owner !== navigation || state.grid !== grid || state.revision !== navigation.revision || state.job || state.escapeOnly ||
+      !state.points || !state.points.length || state.index < state.points.length || state.exact || state.partial ||
+      !state.target || distance(state.target, target) > ARRIVAL_EPSILON || !state.goal) return null;
+  var start = point(unit.node, game.ndMain), radius = navigation.radius(unit);
+  if (distance(start, state.goal) > ARRIVAL_EPSILON || grid.isWalkable(target, radius) || !grid.isWalkable(start, radius)) return null;
+  return start;
+};
 exports.positionOf = function (node, game) { return point(node, game.ndMain); };
 exports.findStandingPoint = function (unit, game, anchor, preferred) {
   var navigation = get(game); navigation.refresh();
@@ -466,6 +513,9 @@ exports.reset = function (unit) {
   unit._navigationState = null;
   unit._navigationProgress = null;
   unit._terrainExit = null;
+  unit._automaticEgress = null;
+  unit._standingNavigationOwner = null;
+  unit._standingNavigationRevision = null;
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
 };
 exports.resumeEnemyRoute = function (unit, game) {
