@@ -14,15 +14,6 @@
     "_active": true,
     "_children": [
       {
-        "__id__": 3
-      },
-      {
-        "__id__": 6
-      },
-      {
-        "__id__": 12
-      },
-      {
         "__id__": 15
       },
       {
@@ -30,13 +21,16 @@
       },
       {
         "__id__": 21
+      },
+      {
+        "__id__": 6
       }
     ],
     "_components": [],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 222,
-      "height": 239
+      "width": 192,
+      "height": 206
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -93,8 +87,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 200
+      "width": 166,
+      "height": 166
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -106,7 +100,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        7.2,
+        0,
         0,
         0,
         0,
@@ -118,7 +112,7 @@
       ]
     },
     "_parent": {
-      "__id__": 1
+      "__id__": 6
     },
     "_prefab": {
       "__id__": 4
@@ -158,7 +152,13 @@
     "_active": true,
     "_children": [
       {
+        "__id__": 3
+      },
+      {
         "__id__": 9
+      },
+      {
+        "__id__": 12
       }
     ],
     "_components": [
@@ -168,8 +168,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 200
+      "width": 166,
+      "height": 166
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -181,7 +181,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        7.2,
+        7,
         0,
         0,
         0,
@@ -213,7 +213,7 @@
   {
     "__type__": "cc.Mask",
     "_type": 1,
-    "_segments": 64,
+    "_segments": 96,
     "_inverted": false,
     "node": {
       "__id__": 6
@@ -231,8 +231,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 168.41379310344828,
-      "height": 168.41379310344828
+      "width": 166,
+      "height": 166
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -300,8 +300,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 200
+      "width": 166,
+      "height": 166
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -313,7 +313,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        7.2,
+        0,
         0,
         0,
         0,
@@ -325,12 +325,12 @@
       ]
     },
     "_parent": {
-      "__id__": 1
+      "__id__": 6
     },
     "_prefab": {
       "__id__": 13
     },
-    "_opacity": 255,
+    "_opacity": 185,
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
@@ -361,7 +361,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "b56d7078-625a-4d47-b523-03c9faf02bdf"
+      "__uuid__": "f4f9f3d5-9bec-4bc8-982d-88f08534f983"
     },
     "_fillType": 2,
     "_fillCenter": {
@@ -370,7 +370,7 @@
       "y": 0.5
     },
     "_fillStart": 0.25,
-    "_fillRange": -1,
+    "_fillRange": 1,
     "node": {
       "__id__": 12
     }
@@ -387,8 +387,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 222,
-      "height": 238
+      "width": 192,
+      "height": 206
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -458,8 +458,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 222,
-      "height": 238
+      "width": 192,
+      "height": 206
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -511,7 +511,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "b7a31139-0891-47d6-963e-ee0b4400d224"
+      "__uuid__": "6e265102-9156-47da-ab78-d919da7fd10a"
     },
     "node": {
       "__id__": 18
@@ -529,8 +529,8 @@
     ],
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 222,
-      "height": 239
+      "width": 192,
+      "height": 206
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -582,7 +582,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "14371c2c-1180-479f-b800-a3a7f15bceee"
+      "__uuid__": "6e265102-9156-47da-ab78-d919da7fd10a"
     },
     "node": {
       "__id__": 21

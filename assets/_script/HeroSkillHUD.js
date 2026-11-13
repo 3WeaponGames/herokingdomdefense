@@ -6,6 +6,7 @@ var Presentation=require("./HeroSkillPresentation");
 var ButtonArt=require("./HeroSkillButton");
 var LanguageMgr=require("LanguageMgr").LanguageMgr;
 var COOLDOWN_EPSILON=1e-9;
+var COUNT_FONT="localization/fonts/Lilita One",COMMAND_SIZE_RATIO=1.15;
 function live(node) { return !!node && (typeof cc === "undefined" || !cc.isValid || cc.isValid(node, true)); }
 function ready() { return typeof cc !== "undefined" && cc.Node && cc.Graphics && cc.Label; }
 function vec(x,y) { return cc.v2 ? cc.v2(x,y) : new cc.Vec2(x,y); }
@@ -83,22 +84,64 @@ function install(hero,rt) {
   if(cc.BlockInputEvents)hud.button.addComponent(cc.BlockInputEvents);
   hud.title=text(hud.button,"Skill name",18,-50);hud.title.node.setContentSize(132,28);hud.title._localizedFontRole="display";
   hud.status=text(hud.button,"Skill readiness",14,-73);hud.status.node.setContentSize(132,22);
-  hud.cooldownCount=text(hud.button,"Skill cooldown",34,28+7.2*ButtonArt.frameScale);hud.cooldownCount.node.setContentSize(92,58);hud.cooldownCount.node.active=false;hud.cooldownCount._localizedFontRole="display";
+  hud.cooldownCount=text(hud.button,"Skill cooldown",40,28);hud.cooldownCount.node.setContentSize(96,64);hud.cooldownCount.node.active=false;hud.cooldownCount.enableWrapText=false;
   hud.visual=graphics(rt.game.ndUI,"Hero skill effects");hud.visual.node.zIndex=80;
   var types=cc.Node.EventType;
   hud.button.on(types.TOUCH_START,function(e){buttonStart(hud,e);});hud.button.on(types.TOUCH_MOVE,function(e){buttonMove(hud,e);});
   hud.button.on(types.TOUCH_END,function(e){buttonEnd(hud,e,false);});hud.button.on(types.TOUCH_CANCEL,function(e){buttonEnd(hud,e,true);});
   hero._skillHUD=hud;var generation=hero.node._combatGeneration;
-  hud.art=ButtonArt.create(hud.button,function(){return hero._skillHUD===hud&&hero._styleRuntime===rt&&live(hero.node)&&hero.node._combatGeneration===generation;},cc);return hud;
+  function owned(){return hero._skillHUD===hud&&hero._styleRuntime===rt&&live(hero.node)&&live(hud.button)&&hero.node._combatGeneration===generation;}
+  hud.art=ButtonArt.create(hud.button,owned,cc);
+  if(cc.resources&&cc.resources.load&&cc.Font)cc.resources.load(COUNT_FONT,cc.Font,function(error,font){if(error||!font||!owned())return;hud.countFont=font.addRef?font.addRef():font;hud.cooldownCount.font=font;hud.cooldownCount.useSystemFont=false;});
+  return hud;
+}
+function worldRect(value) {
+  var left=-value.width*value.anchorX,right=value.width*(1-value.anchorX),bottom=-value.height*value.anchorY,top=value.height*(1-value.anchorY),points=[value.convertToWorldSpaceAR(vec(left,bottom)),value.convertToWorldSpaceAR(vec(right,bottom)),value.convertToWorldSpaceAR(vec(left,top)),value.convertToWorldSpaceAR(vec(right,top))];
+  return {left:Math.min.apply(Math,points.map(function(p){return p.x;})),right:Math.max.apply(Math,points.map(function(p){return p.x;})),bottom:Math.min.apply(Math,points.map(function(p){return p.y;})),top:Math.max.apply(Math,points.map(function(p){return p.y;}))};
 }
 function safeBounds(root) {
-  if(cc.view&&cc.view.getVisibleSize){var size=cc.view.getVisibleSize(),origin=cc.view.getVisibleOrigin?cc.view.getVisibleOrigin():vec(0,0),safe=cc.sys&&cc.sys.getSafeAreaRect?cc.sys.getSafeAreaRect():{x:origin.x,y:origin.y,width:size.width,height:size.height};var a=root.convertToNodeSpaceAR(vec(Math.max(origin.x,safe.x),Math.max(origin.y,safe.y))),b=root.convertToNodeSpaceAR(vec(Math.min(origin.x+size.width,safe.x+safe.width),Math.min(origin.y+size.height,safe.y+safe.height)));return {left:a.x,right:b.x,bottom:a.y,top:b.y};}
-  return {left:-root.width/2,right:root.width/2,bottom:-root.height/2,top:root.height/2};
+  if(cc.view&&cc.view.getVisibleSize){var size=cc.view.getVisibleSize(),origin=cc.view.getVisibleOrigin?cc.view.getVisibleOrigin():vec(0,0),safe=cc.sys&&cc.sys.getSafeAreaRect?cc.sys.getSafeAreaRect():{x:origin.x,y:origin.y,width:size.width,height:size.height};return {left:Math.max(origin.x,safe.x),right:Math.min(origin.x+size.width,safe.x+safe.width),bottom:Math.max(origin.y,safe.y),top:Math.min(origin.y+size.height,safe.y+safe.height)};}
+  return worldRect(root);
+}
+// The largest singular value measures the rendered circle, including nested
+// scaling, rotation and mirroring, rather than the larger command touch box.
+function worldScale(value) {
+  var o=value.convertToWorldSpaceAR(vec(0,0)),x=value.convertToWorldSpaceAR(vec(1,0)),y=value.convertToWorldSpaceAR(vec(0,1)),ax=x.x-o.x,ay=x.y-o.y,bx=y.x-o.x,by=y.y-o.y,a=ax*ax+ay*ay,b=bx*bx+by*by,d=ax*bx+ay*by;
+  return Math.sqrt(Math.max(0,(a+b+Math.sqrt((a-b)*(a-b)+4*d*d))/2));
+}
+function commandDiameter(other) {
+  if(!live(other))return 0;
+  var face=other.getChildByName&&(other.getChildByName("ndTag1")||other.getChildByName("ndTag2"))||other,w=Number(face.width),h=Number(face.height);
+  if(!(w>0&&h>0))return 0;
+  // Both command faces are authored as circles. Their inactive face remains a
+  // stable reference when Follow/Rally swaps its active overlay or visibility.
+  return Math.max(w,h)*worldScale(face);
+}
+function commandBounds(other) {
+  var result=worldRect(other),label=other.getChildByName&&other.getChildByName("labNum");
+  if(live(label)&&label.activeInHierarchy){var b=worldRect(label);result.left=Math.min(result.left,b.left);result.right=Math.max(result.right,b.right);result.bottom=Math.min(result.bottom,b.bottom);result.top=Math.max(result.top,b.top);}
+  return result;
+}
+function resize(hud,rt) {
+  var scale=worldScale(hud.button),reference=Math.max(commandDiameter(rt.ui.btnAgg),commandDiameter(rt.ui.btnFollow)),diameter=reference>0&&scale>0?reference*COMMAND_SIZE_RATIO/scale:ButtonArt.defaultDiameter;
+  if(!(diameter>0&&isFinite(diameter))||Math.abs((hud.diameter||0)-diameter)<1e-6)return;
+  hud.diameter=diameter;if(hud.art&&hud.art.resize)hud.art.resize(diameter);
+  var b=ButtonArt.bounds(diameter),width=Math.max(132,b.right-b.left+16),bottom=b.bottom-62,top=b.top+8,height=top-bottom;
+  hud.button.setContentSize(width,height);hud.button.anchorX=.5;hud.button.anchorY=-bottom/height;
+  hud.title.node.setPosition(0,b.bottom-20);hud.title.node.setContentSize(width,28);
+  hud.status.node.setPosition(0,b.bottom-43);hud.status.node.setContentSize(width,22);
+  hud.cooldownCount.node.setPosition(0,ButtonArt.faceCenterY(diameter));hud.cooldownCount.node.setContentSize(diameter*.8,diameter*.65);hud.cooldownCount.fontSize=Math.round(diameter*.34);hud.cooldownCount.lineHeight=hud.cooldownCount.fontSize+2;
 }
 function layout(hud,rt) {
-  var parent=hud.button.parent,b=safeBounds(parent),halfWidth=hud.button.width/2,halfHeight=hud.button.height/2,x=b.right-halfWidth-20,y=b.bottom+halfHeight+20;
-  [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(!live(other)||!other.activeInHierarchy)return;var p=parent.convertToNodeSpaceAR(other.convertToWorldSpaceAR(vec(0,0))),w=Math.abs(other.width*other.scaleX)/2,h=Math.abs(other.height*other.scaleY)/2;if(Math.abs(p.x-x)<w+halfWidth+12&&Math.abs(p.y-y)<h+halfHeight+12)y=p.y+h+halfHeight+12;});
-  hud.button.setPosition(x,Math.min(b.top-halfHeight-20,y));
+  resize(hud,rt);
+  var parent=hud.button.parent,b=safeBounds(parent),origin=hud.button.convertToWorldSpaceAR(vec(0,0)),r=worldRect(hud.button),obstacles=[];
+  r={left:r.left-origin.x,right:r.right-origin.x,bottom:r.bottom-origin.y,top:r.top-origin.y};
+  [rt.ui.btnAgg,rt.ui.btnFollow].forEach(function(other){if(live(other)&&other.activeInHierarchy)obstacles.push(commandBounds(other));});
+  var minX=b.left+20-r.left,maxX=b.right-20-r.right,minY=b.bottom+20-r.bottom,maxY=b.top-20-r.top,xs=[maxX,minX],ys=[minY,maxY],best=null;
+  obstacles.forEach(function(o){xs.push(o.left-12-r.right,o.right+12-r.left);ys.push(o.top+12-r.bottom,o.bottom-12-r.top);});
+  xs.forEach(function(x){x=Math.max(minX,Math.min(maxX,x));ys.forEach(function(y){y=Math.max(minY,Math.min(maxY,y));if(obstacles.some(function(o){return x+r.left<o.right+12&&x+r.right>o.left-12&&y+r.bottom<o.top+12&&y+r.top>o.bottom-12;}))return;var cost=Math.abs(x-maxX)*2+Math.abs(y-minY);if(!best||cost<best.cost)best={x:x,y:y,cost:cost};});});
+  if(!best)best={x:Math.max(minX,maxX),y:Math.max(minY,Math.min(maxY,minY))};
+  hud.button.setPosition(parent.convertToNodeSpaceAR(vec(best.x,best.y)));
 }
 function paintButton(hud,rt) {
   var s=rt.state,can=usable(rt),remaining=s.cooldown>COOLDOWN_EPSILON?s.cooldown:0,cooldown=remaining?Math.ceil(remaining):0,signature=[s.style,can,rt.aiming,cooldown,!!s.active,!!s.marked].join(":");
@@ -109,7 +152,7 @@ function paintButton(hud,rt) {
   var status=cooldown?"cooldown":s.active?"casting":s.style==="mystic"&&!can?s.marked?"outOfRange":"markTarget":rt.aiming?"chooseAim":can?"ready":"unavailable";
   language.bindLabel(hud.status,"hero.skills."+status,status==="cooldown"?{0:cooldown}:undefined);
   hud.status.node.active=!cooldown;hud.cooldownCount.node.active=!!cooldown;
-  if(cooldown)language.bindLabel(hud.cooldownCount,"hero.skills.cooldown",{0:cooldown});
+  if(cooldown)hud.cooldownCount.string=String(cooldown);
 }
 function drawCharge(hud,hero,rt) {
   var s=rt.state,hp=hero.ctrHp&&hero.ctrHp.node,show=(s.style==="vanguard"||s.style==="skirmisher")&&hp&&hp.parent;
@@ -154,6 +197,7 @@ function clear(hero) {
   if(hud.runtime)hud.runtime.aiming=false;
   if(hud.controller&&hud.controller._skillAimHUD===hud)delete hud.controller._skillAimHUD;
   if(hud.art)hud.art.destroy();
+  if(hud.countFont){hud.cooldownCount.font=null;if(hud.countFont.decRef)hud.countFont.decRef();hud.countFont=null;}
   [hud.button,hud.visual&&hud.visual.node,hud.charge&&hud.charge.node].forEach(function(n){if(live(n))n.destroy();});delete hero._skillHUD;
 }
 function handleTouch(controller,phase,event) {
