@@ -404,6 +404,19 @@ function validate(documents, changes) {
     if(settings.version!==1)issue('A',['HeroEquipment','version'],'Unknown hero equipment stat version.');
     for(const key of ['baseRange','splashRadius'])number('A',['HeroEquipment',key],settings[key],Number.MIN_VALUE,false);
     if(settings.damageMultipliers)for(const style of require('../../../assets/_script/HeroWeapons').styles)number('A',['HeroEquipment','damageMultipliers',style.id],settings.damageMultipliers[style.id],Number.MIN_VALUE,false);
+    if(own(settings,'baseAttackRates')){
+      const rates=settings.baseAttackRates,p=['HeroEquipment','baseAttackRates'];
+      if(!rates||typeof rates!=='object'||Array.isArray(rates))issue('A',p,'Hero base attack speeds must retain their object format.');
+      else{
+        const present=HeroWeapons.styles.filter(style=>own(rates,style.id));
+        for(const style of present){const value=rates[style.id];if(typeof value!=='number'||!Number.isFinite(value)||value<=0)issue('A',p.concat(style.id),'Base attack speed must be a finite number greater than zero.');}
+        if(present.length){
+          const cloak=(base.EquipCfg||[]).find(gear=>gear.id===5),baseline=cloak&&cloak.levelInfo&&cloak.levelInfo[0]&&cloak.levelInfo[0].Parameters;
+          if(typeof baseline!=='number'||!Number.isFinite(baseline)||baseline<=0)issue('A',p,'Hero fighting-style attack speeds require a finite, positive level 1 Cloak attack speed in Equipment.');
+          else for(const style of present){const value=rates[style.id];if(typeof value==='number'&&Number.isFinite(value)&&value>0&&(cloak.levelInfo||[]).some(level=>typeof level.Parameters==='number'&&Number.isFinite(level.Parameters)&&level.Parameters>0&&!Number.isFinite(value*(level.Parameters/baseline))))issue('A',p.concat(style.id),'Base attack speed must remain finite across the existing Cloak upgrade curve.');}
+        }
+      }
+    }
     const index=(base.EquipCfg||[]).findIndex(gear=>gear.id===3),gear=base.EquipCfg[index];
     if(gear)gear.levelInfo.forEach((level,li)=>{for(const [style,fields]of Object.entries(Stats.definitions))for(const field of fields){const value=level.SecondaryStats&&level.SecondaryStats[style]&&level.SecondaryStats[style][field.key],at=['EquipCfg',index,'levelInfo',li,'SecondaryStats',style,field.key];number('A',at,value,0,false);if(field.percent&&field.key!=='criticalDamage'&&value>1)issue('A',at,'Percentage bonuses must not exceed 100%.');}});
   }

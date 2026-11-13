@@ -2,6 +2,11 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const Art=require('../../assets/_script/HeroSkillButton'),base=path.resolve(__dirname,'../../assets/resources/gui-pro/skills'),document=JSON.parse(fs.readFileSync(path.join(base,'active-skill.prefab'),'utf8'));
 const near=(a,b)=>assert(Math.abs(a-b)<1e-8,`${a} != ${b}`);
+test('all six production skill scenes are opaque and at most 128px with matching import metadata',()=>{
+ const root=path.resolve(__dirname,'../..'),PNG=require('../../packages/hkd-characters/lib/png-atlas'),crypto=require('node:crypto'),catalog=require('../icons/hero-skill-icons.catalog.json');
+ assert.deepEqual(catalog.icons.map(icon=>icon.id),['skirmisher','fighter','vanguard','mystic','bruiser','guardian']);
+ const ids=new Set();for(const icon of catalog.icons){const bytes=fs.readFileSync(path.join(root,icon.image)),image=PNG.decode(bytes),meta=JSON.parse(fs.readFileSync(path.join(root,icon.image+'.meta'),'utf8')),frames=Object.values(meta.subMetas);assert(image.width>0&&image.width<=128);assert.equal(image.height,image.width);assert.equal(image.width,icon.width);assert.equal(image.height,icon.height);assert.equal(meta.width,image.width);assert.equal(meta.height,image.height);assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),icon.sha256);for(let i=3;i<image.rgba.length;i+=4)assert.equal(image.rgba[i],255,icon.id+' must fill its background');assert.equal(frames.length,1);const frame=frames[0];assert.equal(frame.trimType,'none');assert.equal(frame.rawTextureUuid,meta.uuid);assert.equal(frame.width,image.width);assert.equal(frame.rawWidth,image.width);assert.equal(frame.height,image.height);assert.equal(frame.rawHeight,image.height);assert.equal(frame.trimX,0);assert.equal(frame.trimY,0);for(const id of [meta.uuid,frame.uuid]){assert(!ids.has(id));ids.add(id);}}
+});
 function asset(rect={width:100,height:200}){return{refs:0,addRef(){this.refs++;},decRef(){this.refs--;},getRect:()=>rect};}
 function fixture(){
  class Node{constructor(name){this.name=name;this.children=[];this.components=[];this.active=true;this.width=this.height=0;this.scale=1;}setParent(p){this.parent=p;p.children.push(this);}setPosition(x,y){this.x=x;this.y=y;}setContentSize(w,h){this.width=w;this.height=h;}getChildByName(name){return this.children.find(n=>n.name===name);}getComponent(type){return this.components.find(c=>c instanceof type);}setSiblingIndex(index){const a=this.parent.children;a.splice(a.indexOf(this),1);a.splice(index,0,this);}destroy(){this.destroyed=true;this.children.forEach(n=>n.destroy());}}
@@ -20,13 +25,17 @@ test('GUI PRO prefab uses the native frame, face offset and clockwise top cooldo
  const cool=find('Cooltime'),fill=document[cool._components[0].__id__];assert.equal(cool._opacity,255);assert.equal(fill._type,3);assert.equal(fill._fillType,2);assert.equal(fill._fillStart,.25);assert.equal(fill._fillRange,-1);near(222*Art.frameScale,116);near(200*Art.frameScale,104.50450450450451);
 });
 
-test('six style illustrations fit trimmed alpha bounds uniformly and frames reflect readiness and aim',()=>{
+test('skill scenes fill the face without stretching and frames reflect readiness and aim',()=>{
  const f=fixture();f.set({});f.loadPrefab();assert.equal(f.button.children[0],f.handle.visual,'art remains behind captions and cooldown text');near(f.handle.visual.scale,116/222);assert.equal(f.handle.visual.y,28);
- const icons=[];for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){f.set({style});const request=f.pending.at(-1);assert.equal(request.resource,'skills/icons/'+style);const icon=asset({width:120,height:240});icons.push(icon);request.done(null,icon);assert.equal(f.handle.icon.spriteFrame,icon);assert.equal(f.handle.icon.trim,true);near(f.handle.icon.node.width*f.handle.visual.scale,40);near(f.handle.icon.node.height*f.handle.visual.scale,80);}
+ const icons=[];for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){f.set({style});const request=f.pending.at(-1);assert.equal(request.resource,'skills/icons/'+style);const icon=asset({width:128,height:128});icons.push(icon);request.done(null,icon);assert.equal(f.handle.icon.spriteFrame,icon);assert.equal(f.handle.icon.trim,true);near(f.handle.icon.node.width*f.handle.visual.scale,200*Art.frameScale);near(f.handle.icon.node.height*f.handle.visual.scale,200*Art.frameScale);}
  assert(icons.slice(0,-1).every(a=>a.refs===0));assert.equal(icons.at(-1).refs,1);
  f.set({style:'guardian',aiming:true});assert.equal(f.handle.visual.getChildByName('Frame armed').active,true);assert.equal(f.handle.visual.getChildByName('Frame').active,false);
  f.set({style:'guardian',usable:false,cooldown:3,totalCooldown:12});assert.equal(f.handle.visual.getChildByName('Frame disabled').active,true);assert.equal(f.handle.visual.getChildByName('Cooltime').active,true);near(f.handle.cooldown.fillRange,-.25);assert.equal(f.handle.cooldown.fillStart,.25);assert.equal(f.handle.cooldown.fillType,2);
  const count=f.pending.length;f.set({style:'guardian',usable:false,cooldown:2.5,totalCooldown:12});near(f.handle.cooldown.fillRange,-2.5/12);assert.equal(f.pending.length,count);f.handle.destroy();assert.equal(icons.at(-1).refs,0);assert.equal(f.prefab.refs,0);
+});
+
+test('legacy rectangular artwork keeps its proportions within the circular face',()=>{
+ const f=fixture();f.set({});f.loadPrefab();f.pending.at(-1).done(null,asset({width:120,height:240}));near(f.handle.icon.node.width*f.handle.visual.scale,100*Art.frameScale);near(f.handle.icon.node.height*f.handle.visual.scale,200*Art.frameScale);f.handle.destroy();
 });
 
 test('late prefab or icon completions cannot attach to retired, destroyed or replaced HUD owners',()=>{

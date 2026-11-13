@@ -1,7 +1,7 @@
 "use strict";
 // Visual ownership only. The battle HUD retains all touch and skill logic.
 var PREFAB="gui-pro/skills/active-skill",ICON_ROOT="skills/icons/";
-var FRAME_SCALE=116/222,ICON_SIZE=80/FRAME_SCALE;
+var FRAME_SCALE=116/222,ICON_SIZE=200;
 function create(button,current,cc){
   var disposed=false,version=0,prefab=null,root=null,icon=null,iconFrame=null,iconResource="",desired=null,parts=null,appearance="";
   function live(value){return !!value&&(!cc.isValid||cc.isValid(value,true));}
@@ -14,8 +14,8 @@ function create(button,current,cc){
     cc.resources.load(resource,cc.SpriteFrame,function(error,frame){
       if(error||!frame||!owned()||token!==version||!live(icon&&icon.node))return;
       iconFrame=retain(frame);icon.trim=true;icon.sizeMode=cc.Sprite.SizeMode.CUSTOM;icon.spriteFrame=frame;
-      // Generated canvases contain transparent padding. Fit their imported
-      // alpha bounds, preserving the illustration's own aspect ratio.
+      // Square skill scenes fill the circular face. Preserve aspect ratio for
+      // any older rectangular illustration rather than stretching its artwork.
       var size=frame.getRect?frame.getRect():frame.getOriginalSize(),scale=Math.min(ICON_SIZE/size.width,ICON_SIZE/size.height);
       if(isFinite(scale)&&scale>0)icon.node.setContentSize(size.width*scale,size.height*scale);
     });
@@ -49,4 +49,4 @@ function create(button,current,cc){
     destroy:function(){if(disposed)return;disposed=true;version++;if(icon)icon.spriteFrame=null;release(iconFrame);iconFrame=null;if(live(root))root.destroy();root=null;parts=null;release(prefab);prefab=null;}
   };
 }
-exports.create=create;exports.prefab=PREFAB;exports.iconRoot=ICON_ROOT;exports.frameScale=FRAME_SCALE;exports.iconSize=80;
+exports.create=create;exports.prefab=PREFAB;exports.iconRoot=ICON_ROOT;exports.frameScale=FRAME_SCALE;exports.iconSize=ICON_SIZE*FRAME_SCALE;
