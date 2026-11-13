@@ -105,7 +105,7 @@ function fixture(actualEngine = false, actualPolygon = false) {
   Parent.prototype.onDestroy = function () { this.parentDestroyed = true; };
   Parent.prototype.delAllBuff = Parent.prototype.sendEvent = function () {};
   Parent.prototype.T = value => value;
-  const modules = { BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {} },
+  const modules = { KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({data:{}})}}, BuildingDropShadow:require('../../assets/_script/BuildingDropShadow'), BuildingDropShadowRuntime:{apply(){},hide(){},dispose(){}}, BuildingWorldScale:{apply(){},restore(){},dispose(){}}, BuildingBlockerRuntime:{apply(){},dispose(){}}, BuildingShadowRuntime:{apply(){},hide(){},dispose(){}}, BuildingPurchaseFieldRuntime:{apply(){}}, BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {} },
     // This renderer-free fixture measures real collider/Box2D lifetimes, while
     // the dedicated debris suite exercises rubble loading and visuals.
     BuildingDebris: { prepare() {}, capture() {}, update() {}, clear() {}, destroy() {}, hideNative() {} },

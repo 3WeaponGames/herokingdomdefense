@@ -141,6 +141,88 @@ function meshVertices(slot, start, count, output, offset, stride) {
     output[offset] = points[i]; output[offset + 1] = points[i + 1];
   }
 }
+// Authored aperture rays are presentation, not solid building geometry. Their
+// appended ray/core slots stay on the live rig, outside every occlusion copy.
+function apertureSlot(slot) {
+  return !!slot && !!slot.data && (slot.data.name === "building_aperture_rays" || slot.data.name === "building_aperture_cores");
+}
+function trailingApertures(renderer) {
+  var slots = renderer._skeleton && renderer._skeleton.slots;
+  if (!slots || !apertureSlot(slots[slots.length - 1])) return null;
+  var first = slots.length - 1;
+  while (first > 0 && apertureSlot(slots[first - 1])) first--;
+  return slots.slice(first);
+}
+function nativePhysicalBounds(renderer) {
+  var slots = trailingApertures(renderer);
+  if (!slots) return renderer._nativeSkeleton.getBoundingBox();
+  var entries = [];
+  // JSB getBoundingBox includes transparent attachments and ignores slot ranges.
+  // The authored lights have no deform channels. Never detach an unexpected
+  // deformed/unknown attachment: JSB cannot restore its copied deform vector.
+  for (var i = 0; slots && i < slots.length; i++) {
+    var slot = slots[i], attachment = slot.getAttachment();
+    if (!attachment) continue;
+    var deform = slot.getDeform ? slot.getDeform() : slot.deform;
+    if (!deform || deform.length) return renderer._nativeSkeleton.getBoundingBox();
+    entries.push({ slot: slot, attachment: attachment, time: slot.getAttachmentTime && slot.getAttachmentTime() });
+  }
+  if (!entries.length) return renderer._nativeSkeleton.getBoundingBox();
+  try {
+    entries.forEach(function (entry) { entry.slot.setAttachment(null); });
+    return renderer._nativeSkeleton.getBoundingBox();
+  } finally {
+    for (i = entries.length - 1; i >= 0; i--) {
+      var entry = entries[i];
+      entry.slot.setAttachment(entry.attachment);
+      if (entry.time !== undefined && entry.slot.setAttachmentTime) entry.slot.setAttachmentTime(entry.time);
+    }
+  }
+}
+function capturePhysical(source, draw) {
+  var lights = source.node.getChildByName && source.node.getChildByName("BuildingNightLights");
+  var opacity = lights && lights.opacity;
+  try {
+    // Static artwork owns its light sprites as children. Native cameras visit
+    // that subtree, so suppress only their inherited alpha for this capture.
+    // Opacity preserves their component lifecycle and flags the native update.
+    if (lights) lights.opacity = 0;
+    return capturePhysicalSlots(source, draw);
+  } finally {
+    if (lights) lights.opacity = opacity;
+  }
+}
+function capturePhysicalSlots(source, draw) {
+  var lights = trailingApertures(source), skeleton = source._skeleton;
+  if (!lights || !source.setSlotsRange) return draw();
+  var order = skeleton.drawOrder, tail = order.length;
+  while (tail > 0 && apertureSlot(order[tail - 1])) tail--;
+  // Authored light slots form one suffix even when their two entries swap.
+  // An unexpected interleaving must not clip unrelated physical geometry.
+  if (tail === order.length || order.slice(0, tail).some(apertureSlot)) return draw();
+  var start = Number.isInteger(source._startSlotIndex) ? source._startSlotIndex : -1;
+  var end = Number.isInteger(source._endSlotIndex) ? source._endSlotIndex : -1;
+  var inRange = start === -1 && end === -1, first = null, last = null;
+  // Native checks bone activity before either range boundary. Find boundaries
+  // it will actually visit, preserving the caller's existing physical range.
+  order.slice(0, tail).forEach(function (slot) {
+    if (slot.bone.active === false) return;
+    if (slot.data.index === start) inRange = true;
+    if (!inRange) return;
+    if (!first) first = slot;
+    last = slot;
+    if (slot.data.index === end) inRange = false;
+  });
+  // An unmatched positive start renders no slots, but still clears the target.
+  var from = first ? first.data.index : skeleton.slots.length;
+  var to = last ? last.data.index : from;
+  try {
+    source.setSlotsRange(from, to);
+    return draw();
+  } finally {
+    source.setSlotsRange(start, end);
+  }
+}
 function retainBoundsGeometry(renderer, cache) {
   // Only the web Spine runtime exposes these attachments. Other backends keep
   // their existing bounds/render path. Buffers belong to one source renderer,
@@ -159,7 +241,7 @@ function retainBoundsGeometry(renderer, cache) {
   var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (var i = 0; i < skeleton.drawOrder.length; i++) {
     var slot = skeleton.drawOrder[i], attachment = slot.getAttachment();
-    if (!slot.bone.active) continue;
+    if (!slot.bone.active || apertureSlot(slot)) continue;
     var region = attachment instanceof runtime.RegionAttachment;
     if (!region && !(attachment instanceof runtime.MeshAttachment)) continue;
     var index = slot.data.index, count = region ? 8 : attachment.worldVerticesLength;
@@ -193,7 +275,7 @@ function ordinaryBounds(renderer, cache) {
   var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (var i = 0; i < order.length; i++) {
     var slot = order[i], attachment = slot.getAttachment();
-    if (!slot.bone.active) continue;
+    if (!slot.bone.active || apertureSlot(slot)) continue;
     var region = attachment instanceof runtime.RegionAttachment;
     if (!region && !(attachment instanceof runtime.MeshAttachment)) continue;
     var count = region ? 8 : attachment.worldVerticesLength;
@@ -228,7 +310,7 @@ function bounds(renderer, main, cache) {
     updatePose(renderer,cache);
     if (renderer._nativeSkeleton) {
       // JSB exposes animated skeleton-local bounds on the native renderer.
-      var nativeBounds = renderer._nativeSkeleton.getBoundingBox();
+      var nativeBounds = nativePhysicalBounds(renderer);
       x = nativeBounds.x; y = nativeBounds.y; w = nativeBounds.width; h = nativeBounds.height;
     } else {
       var retained = retainBoundsGeometry(renderer, cache);
@@ -304,7 +386,7 @@ function copyPose(source, target, tint, cache) {
   }
   for (i = 0; i < from.slots.length; i++) {
     var slot = from.slots[i], output = to.slots[i];
-    var attachment = slot.getAttachment(), record = geometry && geometry.slots[i];
+    var attachment = apertureSlot(slot) ? null : slot.getAttachment(), record = geometry && geometry.slots[i];
     output.setAttachment(record && record.frame === cache.vertexFrame && record.attachment === attachment ? silhouetteAttachment(record) : attachment);
     output.deform.length = slot.deform.length;
     for (var j = 0; j < slot.deform.length; j++) output.deform[j] = slot.deform[j];
@@ -373,8 +455,19 @@ function refreshBuildingSources(object) {
 function surfaceGeometry(source, main, slot, cache) {
   var attachment=slot.getAttachment(),vertices=[];
   if (!attachment || slot.color.a<=0 || slot.bone.active===false) return null;
-  if (attachment.worldVerticesLength===8) attachment.computeWorldVertices(slot,0,8,vertices,0,2);
+  if (attachment.worldVerticesLength===8 && attachment.computeWorldVertices) attachment.computeWorldVertices(slot,0,8,vertices,0,2);
   else if (!attachment.worldVerticesLength && attachment.computeWorldVertices) attachment.computeWorldVertices(slot.bone,vertices,0,2);
+  else {
+    // JSB exposes native region offsets and unweighted mesh vertices, but does
+    // not bind computeWorldVertices. All wall modules/door leaves are quads.
+    var region=attachment.getOffset?attachment.getOffset():attachment.offset,
+      local=region||(attachment.getVertices?attachment.getVertices():attachment.vertices),
+      bones=attachment.getBones?attachment.getBones():attachment.bones, deform=slot.deform||[],bone=slot.bone;
+    if(local&&local.length===8&&(!bones||!bones.length))for(var at=0;at<8;at+=2){
+      var x=local[at]+(region?0:deform[at]||0),y=local[at+1]+(region?0:deform[at+1]||0);
+      vertices.push(x*bone.a+y*bone.b+bone.worldX,x*bone.c+y*bone.d+bone.worldY);
+    }
+  }
   if (vertices.length!==8) return null;
   var box={minX:Infinity,minY:Infinity,maxX:-Infinity,maxY:-Infinity},pose=nodeTransform(source.node,main,cache);
   for(var i=0;i<8;i+=2){var x=vertices[i],y=vertices[i+1],p={x:pose.x+pose.a*x+pose.c*y,y:pose.y+pose.b*x+pose.d*y};vertices[i]=p.x;vertices[i+1]=p.y;box.minX=Math.min(box.minX,p.x);box.maxX=Math.max(box.maxX,p.x);box.minY=Math.min(box.minY,p.y);box.maxY=Math.max(box.maxY,p.y);}
@@ -431,7 +524,38 @@ function behindGate(leaf, feet) {
   floor.forEach(function(p){var distance=Math.abs(p.x-feet.x);if(distance<nearest-.0001){nearest=distance;fallback=p.y;}else if(Math.abs(distance-nearest)<.0001)fallback=Math.min(fallback,p.y);});
   return feet.y>(front===Infinity?fallback:front)+.01;
 }
+var captureOwners = new WeakMap();
+function bindCapture(renderer, record) {
+  if (!renderer) return;
+  var previous = captureOwners.get(renderer);
+  if (previous === record && record && renderer.spriteFrame === record.frame) return;
+  // Sprite/Mask setters unsubscribe from the old frame. It must remain alive
+  // until every live, inactive and deferred-destroy consumer has detached.
+  renderer.spriteFrame = record ? record.frame : null;
+  if (previous && previous.consumers) previous.consumers.delete(renderer);
+  if (record) {
+    (record.consumers || (record.consumers = new Set())).add(renderer);
+    captureOwners.set(renderer, record);
+  } else captureOwners.delete(renderer);
+}
+function releaseOverlay(overlay) {
+  bindCapture(overlay.mask, null);
+  bindCapture(overlay.sprite, null);
+  if (overlay.tint) {
+    bindCapture(overlay.tint.mask, null);
+    bindCapture(overlay.tint.sprite, null);
+    overlay.tint.node.destroy();
+  }
+  overlay.node.destroy();
+}
 function releaseCapture(record) {
+  if (record.consumers) {
+    record.consumers.forEach(function (renderer) {
+      if (renderer.spriteFrame === record.frame) renderer.spriteFrame = null;
+      if (captureOwners.get(renderer) === record) captureOwners.delete(renderer);
+    });
+    record.consumers.clear();
+  }
   if (record.frame) record.frame.destroy();
   if (record.texture) record.texture.destroy();
   record.frame = record.texture = null;
@@ -470,11 +594,14 @@ GateOcclusion.prototype.overlay = function (record, actor) {
   var mask=node.addComponent(cc.Mask);mask.type=cc.Mask.Type.IMAGE_STENCIL;mask.alphaThreshold=.1;
   var child=new cc.Node("OccludedPixels");child.parent=node;
   var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
-  result={node:node,mask:mask,child:child,sprite:sprite};record.overlays.set(actor,result);return result;
+  var tintNode=new cc.Node("GateBehindUnitTint");tintNode._occlusionMask=true;tintNode.parent=this.view.main;
+  var tintMask=tintNode.addComponent(cc.Mask);tintMask.type=cc.Mask.Type.IMAGE_STENCIL;tintMask.alphaThreshold=.1;
+  var tintChild=new cc.Node("HiddenUnitPixels");tintChild.parent=tintNode;var tintSprite=tintChild.addComponent(cc.Sprite);tintSprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;
+  result={node:node,mask:mask,child:child,sprite:sprite,tint:{node:tintNode,mask:tintMask,child:tintChild,sprite:tintSprite}};record.overlays.set(actor,result);return result;
 };
 GateOcclusion.prototype.update = function (active, cache, visible) {
   var self=this,view=this.view,draw=++this.draw,surfaces=[],usedActors=new Set(),overlays=[];
-  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.active=false;});});});
+  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.active=false;if(overlay.tint)overlay.tint.node.active=false;});});});
   Object.keys(view.game.gameData.bulidPointMap||{}).forEach(function (id) {
     var owner=view.game.gameData.bulidPointMap[id],source=owner.ndAniMain;
     if (!source) return;
@@ -486,7 +613,7 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
   active.forEach(function (entry) {
     var actor=entry.actor,feet=point(actor.node,view.main),hits=[],mismatch=false,base=actor.node.zIndex;
     // Avoid skinning units unless their feet/body could be near a wall module.
-    if (!surfaces.some(function(surface){return behindGate(surface,feet)===(actor.node.zIndex>=surface.root.zIndex);})) return;
+    if (!surfaces.some(function(surface){return behindGate(surface,feet)||actor.node.zIndex<surface.root.zIndex;})) return;
     if (!entry.sources) {
       entry.sources=bodyVisuals(actor);
       entry.bounds=entry.sources.reduce(function(box,source){return union(box,bounds(source,view.main,cache));},null);
@@ -499,7 +626,7 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
       if (behind===above) mismatch=true;
       base=Math.max(base,surface.root.zIndex);
     });
-    if (!mismatch) return;
+    if (!mismatch&&!hits.some(function(hit){return hit.behind;})) return;
     var body=self.actors.get(actor);
     if (!body) { body={};self.actors.set(actor,body); }
     if (body.draw!==draw) { view.snapshotActor(body,entry.sources,entry.bounds,4);body.draw=draw; }
@@ -511,11 +638,17 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
       if (!record) { record={overlays:new Map()};records.set(surface.slot.data.name,record); }
       record.draw=draw;self.captureLeaf(record,surface);
       var overlay=self.overlay(record,actor),stencil=hit.behind?body:record,paint=hit.behind?record:body;
-      overlay.draw=draw;overlay.behind=hit.behind;overlay.node.active=true;
-      overlay.node.setPosition(stencil.center.x,stencil.center.y);overlay.node.setContentSize(stencil.size);overlay.mask.spriteFrame=stencil.frame;
-      overlay.child.setPosition(paint.center.x-stencil.center.x,paint.center.y-stencil.center.y);overlay.child.setContentSize(paint.size);overlay.sprite.spriteFrame=paint.frame;
+      overlay.draw=draw;overlay.behind=hit.behind;
+      overlay.node.setPosition(stencil.center.x,stencil.center.y);overlay.node.setContentSize(stencil.size);bindCapture(overlay.mask,stencil);
+      overlay.child.setPosition(paint.center.x-stencil.center.x,paint.center.y-stencil.center.y);overlay.child.setContentSize(paint.size);bindCapture(overlay.sprite,paint);
+      overlay.node.active=true;
       overlay.node.zIndex=base+2;
       overlays.push({overlay:overlay,base:base,actor:actor.node.zIndex,behind:hit.behind?1:0,root:surface.root.zIndex,order:surface.order});
+      // The aggregate wall root cannot decide whether a unit is behind each
+      // open leaf. Clip the tint to only the surfaces in front of its feet.
+      var tint=overlay.tint;
+      if(hit.behind){tint.node.setPosition(record.center.x,record.center.y);tint.node.setContentSize(record.size);bindCapture(tint.mask,record);tint.child.setPosition(body.center.x-record.center.x,body.center.y-record.center.y);tint.child.setContentSize(body.size);bindCapture(tint.sprite,body);tint.child.color=cc.color(entry.tint.r,entry.tint.g,entry.tint.b);tint.child.opacity=204;tint.node.zIndex=base+2;overlays.push({overlay:tint,base:base,actor:actor.node.zIndex,behind:2,root:surface.root.zIndex,order:surface.order});}
+      tint.node.active=hit.behind;
     });
   });
   // Each actor's foreground pieces follow all of its restored body pixels.
@@ -523,7 +656,7 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
   overlays.sort(function(a,b){return a.base-b.base||a.actor-b.actor||a.behind-b.behind||a.root-b.root||a.order-b.order;}).forEach(function(entry){entry.overlay.node.setSiblingIndex(view.main.childrenCount-1);});
   this.leaves.forEach(function (records,source) {
     records.forEach(function (record,key) {
-      record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){overlay.node.destroy();record.overlays.delete(actor);}});
+      record.overlays.forEach(function(overlay,actor){if(overlay.draw!==draw){releaseOverlay(overlay);record.overlays.delete(actor);}});
       if (record.draw!==draw) { releaseCapture(record);records.delete(key); }
     });
     if (!records.size) self.leaves.delete(source);
@@ -531,7 +664,7 @@ GateOcclusion.prototype.update = function (active, cache, visible) {
   this.actors.forEach(function(record,actor){if(!usedActors.has(actor)){releaseCapture(record);self.actors.delete(actor);}});
 };
 GateOcclusion.prototype.destroy = function () {
-  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(function(overlay){overlay.node.destroy();});releaseCapture(record);});});
+  this.leaves.forEach(function(records){records.forEach(function(record){record.overlays.forEach(releaseOverlay);releaseCapture(record);});});
   this.actors.forEach(releaseCapture);this.leaves.clear();this.actors.clear();
 };
 
@@ -727,7 +860,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
     if (source instanceof sp.Skeleton && source._skeleton) {
       values.push(source._skeleton.skin && source._skeleton.skin.name);
       source._skeleton.bones.forEach(function (bone) { values.push(bone.a, bone.b, bone.c, bone.d, bone.worldX, bone.worldY); });
-      source._skeleton.slots.forEach(function (slot) { var attachment = slot.getAttachment(); values.push(attachment && attachment.name, attachment && attachment.region && attachment.region.name, slot.color.a); Array.prototype.push.apply(values, slot.deform); });
+      source._skeleton.slots.forEach(function (slot) { if(apertureSlot(slot))return;var attachment = slot.getAttachment(); values.push(attachment && attachment.name, attachment && attachment.region && attachment.region.name, slot.color.a); Array.prototype.push.apply(values, slot.deform); });
     } else values.push(source.spriteFrame);
   });
   if (sameStamp(object.signature,signature)) return;
@@ -742,8 +875,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
   var resolution = Math.min(1, 512 / Math.max(width, height));
   var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
   if (!object.texture || object.texture.width !== tw || object.texture.height !== th) {
-    if (object.frame) object.frame.destroy();
-    if (object.texture) object.texture.destroy();
+    releaseCapture(object);
     object.texture = new cc.RenderTexture();
     object.texture.initWithSize(tw, th);
     object.frame = new cc.SpriteFrame(object.texture);
@@ -782,7 +914,8 @@ DepthView.prototype.renderNative = function (sources, center, height, texture) {
       if (cc.RenderFlow) source.node._renderFlag |= cc.RenderFlow.FLAG_WORLD_TRANSFORM | cc.RenderFlow.FLAG_OPACITY;
       camera.clearFlags = cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL | (first ? cc.Camera.ClearFlags.COLOR : 0);
       this._nativeRendered = true;
-      if(scope)scope.capture(source.node,function(){camera.render(source.node);});else camera.render(source.node);
+      var draw=function(){return capturePhysical(source,function(){camera.render(source.node);});};
+      if(scope)scope.capture(source.node,draw);else draw();
       first = false;
     }, this);
   } finally {
@@ -798,7 +931,7 @@ DepthView.prototype.syncNativeMask = function (mask, entry, object, drawId) {
     this.snapshotActor(record, entry.sources, box);
     record.draw = drawId;
   }
-  mask.sprite.spriteFrame = record.frame;
+  bindCapture(mask.sprite, record);
   mask.node.setPosition(record.center.x - object.center.x, record.center.y - object.center.y);
   mask.node.setContentSize(record.size);
   mask.node.color = cc.color(entry.tint.r, entry.tint.g, entry.tint.b);
@@ -813,8 +946,7 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
   var resolution = Math.min(detail || 1, 512 / Math.max(width, height));
   var tw = Math.max(2, Math.ceil(width * resolution)), th = Math.max(2, Math.ceil(height * resolution));
   if (!record.texture || record.texture.width !== tw || record.texture.height !== th) {
-    if (record.frame) record.frame.destroy();
-    if (record.texture) record.texture.destroy();
+    releaseCapture(record);
     record.texture = new cc.RenderTexture();
     record.texture.initWithSize(tw, th, cc.gfx.RB_FMT_S8);
     record.frame = new cc.SpriteFrame(record.texture);
@@ -847,7 +979,9 @@ DepthView.prototype.update = function () {
     var box = object.node.activeInHierarchy ? object.sources.reduce(function (value, source) { return union(value, bounds(source, self.main,cache)); }, null) : null;
     var ground = point(object.node._depthGround || object.node, self.main).y;
     var hidden=[];
-    if(box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
+    // Modular doors and wall posts use per-surface depth and tint below.
+    var modular=self.gateOcclusion&&object.sources.some(function(source){return source.skeletonData&&source.skeletonData.skeletonJson&&source.skeletonData.skeletonJson.wallKit;});
+    if(!modular&&box&&(!visible||overlaps(box,visible)))active.forEach(function(entry){
       // Priority layers can put the full actor above an object even when its
       // ground point is behind it. Such actors need no hidden-unit capture.
       if(Number.isFinite(entry.actor.node.zIndex)&&Number.isFinite(object.node.zIndex)){
@@ -861,7 +995,7 @@ DepthView.prototype.update = function () {
       // Avoid disabling/re-enabling every visible skeleton and its scheduler
       // each draw. Only a visibility transition changes component lifecycle.
       mask.node.active = hiddenActors.has(actor);
-      if (!cc.isValid(actor.node) || !activeActors.has(actor)) { mask.node.destroy(); object.masks.delete(actor); }
+      if (!cc.isValid(actor.node) || !activeActors.has(actor)) { releaseOverlay(mask); object.masks.delete(actor); }
     });
     if (object.overlay) object.overlay.node.active = !!hidden.length;
     if (!hidden.length) return;
@@ -882,11 +1016,11 @@ DepthView.prototype.update = function () {
         if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw);
         else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache); });
       });
-      object.overlay.node.active = true;
       object.overlay.node.zIndex = object.node.zIndex + 1;
       object.overlay.node.setPosition(object.center.x, object.center.y);
       object.overlay.node.setContentSize(object.size);
-      object.overlay.mask.spriteFrame = object.frame;
+      bindCapture(object.overlay.mask, object);
+      object.overlay.node.active = true;
     });
     if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible);
   } finally {
@@ -904,8 +1038,7 @@ DepthView.prototype.update = function () {
   }
   if (this.nativeCapture) this.nativeActors.forEach(function (record, actor) {
     if (cc.isValid(actor.node) && activeActors.has(actor)) return;
-    if (record.frame) record.frame.destroy();
-    if (record.texture) record.texture.destroy();
+    releaseCapture(record);
     self.nativeActors.delete(actor);
   });
   // New/relocated stencil nodes must follow their object in this same draw.
@@ -922,9 +1055,9 @@ DepthView.prototype.destroy = function () {
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
   if(this.gateOcclusion)this.gateOcclusion.destroy();
   this.objects.forEach(function (object) {
-    if (object.overlay && cc.isValid(object.overlay.node, true)) object.overlay.node.destroy();
-    if (object.frame) object.frame.destroy();
-    if (object.texture) object.texture.destroy();
+    if (object.masks) object.masks.forEach(releaseOverlay);
+    if (object.overlay && cc.isValid(object.overlay.node, true)) releaseOverlay(object.overlay);
+    releaseCapture(object);
   });
   this._vertexStore = null;
   this._vertexConsumers = null;
@@ -946,10 +1079,7 @@ DepthView.prototype.destroy = function () {
   if (cc.isValid(this.capture, true)) this.capture.destroy();
   if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
   if (this.nativeMaterial) this.nativeMaterial.destroy();
-  this.nativeActors.forEach(function (record) {
-    if (record.frame) record.frame.destroy();
-    if (record.texture) record.texture.destroy();
-  });
+  this.nativeActors.forEach(releaseCapture);
   this.nativeActors.clear();
 };
 exports.DepthView = DepthView;

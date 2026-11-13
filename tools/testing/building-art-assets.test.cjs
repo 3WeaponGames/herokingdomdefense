@@ -59,14 +59,36 @@ test('source fidelity accepts only atlas newline substitutions and rejects chang
  assert.equal(bytes[4],13);assert.equal(bytes[5],10);
  assert.throws(()=>assertOriginalSource(png,Buffer.concat([bytes.subarray(0,4),bytes.subarray(5)])),assert.AssertionError);
 });
-test('night masks fit the new lantern glass and retained archer windows while doors remain dark',()=>{
+test('retained core masks fit lantern glass and lookout openings beneath native projected fans',()=>{
  let apertures=0;
- for(const row of rows){const art=row.Appearance,ref=fixture.paintedBases.find(x=>'assets/resources/'+art.sprite+'.png'===x.path);assert.equal(art.nightTint,'#A7A7A7');assert.equal(art.lighting.length,1);
+ for(const row of rows){const art=row.Appearance,ref=fixture.paintedBases.find(x=>'assets/resources/'+art.sprite+'.png'===x.path);assert.equal(art.nightTint,'#A7A7A7');assert.equal(art.lighting.length,ref.family==='archer'?2:1);
   const light=art.lighting[0];assert.equal('assets/resources/'+light.sprite+'.png',ref.maskPath);assert.deepEqual([light.width,light.height,light.offsetX,light.offsetY],[art.width,art.height,0,0]);
-  assert.equal(light.color,'#FFE89A');assert.equal(light.opacity,240);assert.equal(light.glows.length,ref.glowCount||ref.apertures);
+  assert.equal(light.color,'#FFE89A');assert.equal(light.opacity,ref.family==='archer'?72:180);assert.equal(light.glows.length,ref.glowCount||ref.apertures);
+  for(const glow of light.glows){assert.equal(glow.sprite,'buildings/lighting/native-window-ray');assert.equal(glow.color,'#FFFFFF','retain original baked warm yellow rather than double-tinting');assert.equal(glow.pulse,.08);assert(glow.opacity>=140&&glow.opacity<=180);assert.equal(glow.angle,ref.family==='archer'&&glow.x<0?-90:0);}
   const base=PNG.decode(fs.readFileSync(file(art.sprite))),maskFile=inspect(light.sprite,base.width,base.height),mask=PNG.decode(maskFile.bytes);assert.equal(crypto.createHash('sha256').update(maskFile.bytes).digest('hex'),ref.maskSha256);
   let lit=0;for(let i=0;i<mask.rgba.length;i+=4)if(mask.rgba[i+3]){lit++;assert(base.rgba[i+3]>=240&&Math.max(...base.rgba.subarray(i,i+3))<=(ref.maxWindowChannel||35),'mask must stay inside an opaque dark source aperture');const x=(i/4)%base.width,y=Math.floor(i/4/base.width);assert(ref.windowSourceBounds.some(b=>x>=b[0]&&x<b[2]&&y>=b[1]&&y<b[3]),'mask leaves its approved window');const d=ref.excludedDoorSourceBounds;assert(!d||x<d[0]||x>=d[2]||y<d[1]||y>=d[3],'door must stay dark');}
   assert(lit>0);assert.equal(components(mask.rgba,mask.width,mask.height,ref.minComponentPixels||100),ref.apertures);apertures+=ref.apertures;
  }
  assert.equal(apertures,24,'eight archer windows and sixteen lantern glass panes');
+});
+
+test('the shared soft fan is a lossless original archer atlas region with unchanged pixel falloff',()=>{
+ const ref=fixture.projectedLighting,original=PNG.decode(fs.readFileSync(path.join(root,ref.source))),crop=PNG.crop(original,...ref.sourceRect,false),asset=inspect(ref.resource,crop.width,crop.height),actual=PNG.decode(asset.bytes);
+ assert.deepEqual(actual.rgba,crop.rgba,'no repainting, resampling or alpha normalization of native light');
+ assert.equal(crypto.createHash('sha256').update(asset.bytes).digest('hex'),ref.sha256);
+ const alphas=new Set();for(let i=3;i<actual.rgba.length;i+=4)alphas.add(actual.rgba[i]);assert([...alphas].some(a=>a>0&&a<64)&&[...alphas].some(a=>a>=64&&a<192),'original transparent falloff must survive the resource copy');
+});
+
+test('only the four open archer entries acquire bounded warm cores and a projected native ray',()=>{
+ let count=0;
+ for(const row of rows){const art=row.Appearance,ref=fixture.paintedBases.find(x=>'assets/resources/'+art.sprite+'.png'===x.path);
+  if(ref.family!=='archer'){assert.equal(art.lighting.length,1,'closed cannon/sniper wood gets no entry light');continue;}
+  const door=art.lighting[1],base=PNG.decode(fs.readFileSync(file(art.sprite))),toPixel=p=>[(p.x/art.width+.5)*base.width,base.height-p.y/art.height*base.height],points=door.points.map(toPixel);
+  assert.equal(door.opacity,120);assert.equal(door.glows.length,1);assert.equal(door.glows[0].sprite,fixture.projectedLighting.resource);
+  for(let at=0;at<points.length;at++)for(let axis=0;axis<2;axis++)assert(Math.abs(points[at][axis]-ref.openDoorSourcePolygon[at][axis])<.00001,'registered entry vertices');
+  const inside=(x,y)=>{let hit=false;for(let i=0,j=points.length-1;i<points.length;j=i++){const[a,b]=points[i],[c,d]=points[j];if((b>y)!==(d>y)&&x<(c-a)*(y-b)/(d-b)+a)hit=!hit;}return hit;};
+  let lit=0;for(let y=0;y<base.height;y++)for(let x=0;x<base.width;x++)if(inside(x+.5,y+.5)){const p=(y*base.width+x)*4;assert(base.rgba[p+3]>=240&&Math.max(...base.rgba.subarray(p,p+3))<60,'entry core stays off its timber or masonry frame');lit++;}
+  assert(lit>200,'the open entry needs a visible luminous interior');count++;
+ }
+ assert.equal(count,4);
 });

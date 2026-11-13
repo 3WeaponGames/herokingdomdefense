@@ -18,10 +18,11 @@ function panel(count, width = 750, height = 1334, layered = false, family = coun
     getComponent(Type) { return this.components.get(Type); }
     addComponent(Type) { const value = new Type(); value.node = this; this.components.set(Type, value); if (Type === Label) this.setContentSize(0, 0); return value; }
     on(type, fn, owner) { this.events[type] = fn.bind(owner); }
+    destroy() { this.destroyed=true; if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this); }
   }
   Node.EventType = { TOUCH_END: 'end' };
   class Sprite {} Sprite.SizeMode = { CUSTOM: 0 }; Sprite.Type = { SLICED: 1 };
-  class Label {} Label.Overflow = { SHRINK: 2 }; Label.HorizontalAlign = { LEFT: 0, CENTER: 1 }; Label.VerticalAlign = { TOP: 0, CENTER: 1 };
+  class Label {} Label.Overflow = { SHRINK: 2, RESIZE_HEIGHT: 3 }; Label.HorizontalAlign = { LEFT: 0, CENTER: 1 }; Label.VerticalAlign = { TOP: 0, CENTER: 1 };
   class RichText {} class Layout {} class Graphics { roundRect() {} fill() {} stroke() {} }
   Object.assign(h.cc, { Node, Sprite, Label, RichText, Layout, Graphics });
   const single = value => ({ getInstance: () => value });
@@ -52,7 +53,7 @@ function panel(count, width = 750, height = 1334, layered = false, family = coun
   const rows = Array.from({ length: count }, (_, i) => ({ index: (family === 'barracks' ? 11 : 1) + i * 3, level: upgrade ? 2 : 1, Name: 'Unit ' + i, LevelUpDescribe: upgrade ? 'Upgrade: 2 crop fields. Each surviving field earns silver per wave, then fields repair. Choose a field defense.' : 'Hold the frontline', Zoom: .35,
     Icon: 'unit-' + i, BuildSliverCost: upgrade ? 6 : undefined, MillDefense: family === 'mill' ? {kind: i ? 'bomb' : 'scarecrow'} : undefined, Appearance: family === 'tower' ? { sprite: 'buildings/towers/tower-' + i, weapon: layered ? { sprite: 'buildings/towers/weapon-' + i } : undefined } : undefined }));
   const before = JSON.stringify(rows);
-  ui.onOpened(); ui.init({ buildInfo: upgrade ? {cfg:{level:1}} : {}, buildCfg: { enumValue: family === 'tower' ? 2 : family === 'mill' ? 5 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map(row => row.index));
+  ui.onLoad(); ui.onOpened(); ui.init({ buildInfo: upgrade ? {cfg:{level:1}} : {}, buildCfg: { enumValue: family === 'tower' ? 2 : family === 'mill' ? 5 : 3, levelList: rows } }, value => choices.push(value), () => {}, rows.map(row => row.index));
   ui.start();
   return { ui, h, root, choices, ads, loaded, rows, before };
 }
@@ -68,7 +69,7 @@ test('four starting squads render as separate, readable cards and select once wi
     const name = row.getChildByName('labName');
     assert(name.width * name.scale < row.width);
     assert.equal(name.getComponent(p.h.cc.Label).enableWrapText, true);
-    assert.equal(row.getChildByName('labInfo').getComponent(p.h.cc.RichText).horizontalAlign, 1);
+    assert.equal(row.getChildByName('labInfo').getComponent(p.h.cc.Label).horizontalAlign, 1);
     assert.equal(row.children.filter(n => n.name === 'ndVideo' && n.active).length, 0);
   }
   rows[2].events.end(); rows[0].events.end();
@@ -84,8 +85,8 @@ test('tower starting choices use generated artwork through the resources bundle'
     const name = row.getChildByName('labName'), info = row.getChildByName('labInfo');
     assert(name.width * name.scale < row.width);
     assert.equal(name.getComponent(p.h.cc.Label).overflow, p.h.cc.Label.Overflow.SHRINK);
-    const rich = info.getComponent(p.h.cc.RichText);
-    assert(info.x + rich.maxWidth * info.scale / 2 < row.width / 2);
+    const rich = info.getComponent(p.h.cc.Label);
+    assert(info.x + info.width * info.scale / 2 < row.width / 2);
     assert.equal(info.x, 0); assert.equal(rich.fontFamily, 'Arial'); assert.doesNotMatch(rich.string, /<outline|<b>/);
     assert.equal(rich.fontSize, 38); assert.equal(row.height, 280);
   }
@@ -99,7 +100,7 @@ test('adding a fourth tower uses the exact same cards, artwork bounds and spacin
   function geometry(p) { return Array.from(p.ui._choiceRows, row => ({
     card: [row.x, row.y, row.width, row.height],
     children: ['sprIcon', 'labName', 'labInfo'].map(name => { const n = row.getChildByName(name); return [n.x, n.y, n.width, n.height, n.scale]; }),
-    description: row.getChildByName('labInfo').getComponent(p.h.cc.RichText).fontSize
+    description: row.getChildByName('labInfo').getComponent(p.h.cc.Label).fontSize
   })); }
   assert.deepEqual(geometry(tower), geometry(squad));
   assert.equal(squad.root.getChildByName('labTitle').getComponent(squad.h.cc.Label).string, '[[loc:ui.building.choose_squad]]');
@@ -133,7 +134,7 @@ test('initial chooser fits short screens and provides a reachable cancellation c
 });
 
 test('long localized initial descriptions shrink within their card and reset for a shorter translation', () => {
-  const p = panel(3), rich = p.ui._choiceRows[0].getChildByName('labInfo').getComponent(p.h.cc.RichText);
+  const p = panel(3), rich = p.ui._choiceRows[0].getChildByName('labInfo').getComponent(p.h.cc.Label);
   rich.node.height = 500; p.ui.lateUpdate();
   assert(rich.fontSize < 38); assert(rich.lineHeight < 43);
   rich.string = 'Short description'; rich.node.height = 43; p.ui.lateUpdate();
@@ -145,12 +146,12 @@ test('level2 upgrade rows keep portraits, names and long descriptions in separat
     const p=panel(count,width,height,false,'mill',true),rows=p.ui._choiceRows;
     assert.equal(p.ui.ndParent.getComponent(p.h.cc.Layout).enabled,false);
     for(let i=0;i<rows.length;i++) {
-      const row=rows[i],name=row.getChildByName('labName'),info=row.getChildByName('labInfo'),rich=info.getComponent(p.h.cc.RichText),icon=row.getChildByName('sprIcon');
+      const row=rows[i],name=row.getChildByName('labName'),info=row.getChildByName('labInfo'),rich=info.getComponent(p.h.cc.Label),icon=row.getChildByName('sprIcon');
       assert.equal(row.width,620);assert.equal(row.height,250);
       assert.equal(name.anchorX,0);assert.equal(info.anchorX,0);assert.equal(info.anchorY,1);
       assert(icon.x+1000*icon.scale/2<name.x,'portrait cannot overlap either text column');
       assert(name.y-name.height>info.y,'description starts below the title');
-      assert(name.x+name.width<row.width/2);assert(info.x+rich.maxWidth<row.width/2);
+      assert(name.x+name.width<row.width/2);assert(info.x+info.width<row.width/2);
       assert.equal(info.scale,1);assert.equal(rich.fontSize,24);assert.doesNotMatch(rich.string,/<outline|<b>/);
       assert(row.children.filter(n=>(n.name==='ndNormal'||n.name==='ndVideo')&&n.y< -20).every(n=>!n.active),'obsolete name plaques remain hidden');
       if(i)assert(row.y+row.height/2<rows[i-1].y-rows[i-1].height/2,'upgrade cards cannot overlap');
@@ -170,7 +171,24 @@ test('mill level2 choices request the actual scarecrow and bomb symbols and stil
 });
 
 test('upgrade descriptions stay in their own card after long translations and restore their normal font size', () => {
-  const p=panel(2,750,1334,false,'mill',true),rich=p.ui._choiceRows[0].getChildByName('labInfo').getComponent(p.h.cc.RichText);
+  const p=panel(2,750,1334,false,'mill',true),rich=p.ui._choiceRows[0].getChildByName('labInfo').getComponent(p.h.cc.Label);
   rich.node.height=400;p.ui.lateUpdate();assert(rich.fontSize>=18&&rich.fontSize<24);
   rich.string='Short';rich.node.height=28;p.ui.lateUpdate();assert.equal(rich.fontSize,24);
 });
+
+
+test('plain choice copy never enables RichText and retains one stable localized Label per card',()=>{
+ for(const upgrade of [false,true]){const p=panel(3,750,1334,false,upgrade?'mill':'tower',upgrade);for(const row of p.ui._choiceRows){const node=row.getChildByName('labInfo'),rich=node.getComponent(p.h.cc.RichText),label=node.getComponent(p.h.cc.Label);assert.equal(rich.enabled,false);assert.equal(rich.string,undefined,'do not trigger RichText word rasterization');assert.equal(label.string,p.rows[p.ui._choiceRows.indexOf(row)].LevelUpDescribe);assert.equal(label.enableWrapText,true);assert.equal(label.overflow,p.h.cc.Label.Overflow.RESIZE_HEIGHT);assert.equal(label._uiTypography.fontFamily,'Arial');}const labels=p.ui._initialChoiceDescriptions.map(e=>e.label);for(let i=0;i<10;i++)p.ui.lateUpdate();assert.deepEqual(p.ui._initialChoiceDescriptions.map(e=>e.label),labels);assert.equal(JSON.stringify(p.rows),p.before);}
+});
+
+
+test('the template stays hidden and repeated start never duplicates aligned choice rows',()=>{const p=panel(3);assert.equal(p.ui.ndItem.active,false);assert.equal(p.ui._choicePrepared,true);assert.equal(p.ui._choiceRows.length,3);const rows=p.ui._choiceRows.slice();p.ui.start();assert.deepEqual(p.ui._choiceRows,rows);assert.equal(p.ui.ndParent.children.length,3);});
+
+
+test('reinitializing an open choice panel retires its previous rows without retaining stale actions',()=>{const p=panel(3),old=p.ui._choiceRows.slice(),selected=[];p.ui.init({buildInfo:{},buildCfg:{enumValue:2,levelList:p.rows}},value=>selected.push(value),()=>{},p.rows.map(r=>r.index));assert(old.every(r=>r.destroyed&&!r.active));assert.equal(p.ui.ndParent.children.length,3);p.ui._choiceRows[1].events.end();assert.deepEqual(selected,[4]);assert.deepEqual(p.choices,[]);});
+
+
+test('a late icon load cannot touch a retired row after choices are refreshed',()=>{const p=panel(3),pending=[];p.ui.loadSpriteFrame=(_bundle,_path,done)=>pending.push(done);const build={buildInfo:{},buildCfg:{enumValue:2,levelList:p.rows}};p.ui.init(build,()=>{},()=>{},p.rows.map(r=>r.index));const retired=p.ui._choiceRows.slice();p.ui.init(build,()=>{},()=>{},p.rows.map(r=>r.index));retired.forEach(row=>{row.getChildByName=()=>{throw Error('released native row');};});assert.doesNotThrow(()=>pending.slice(0,3).forEach(done=>done({})));assert.equal(p.ui._choiceRows.length,3);});
+
+
+test('popup activation cannot restore legacy typography over the new card layout',()=>{for(const upgrade of [false,true]){const p=panel(3,750,1334,false,upgrade?'mill':'tower',upgrade);for(const row of p.ui._choiceRows){const label=row.getChildByName('labName').getComponent(p.h.cc.Label);assert.equal(label._settingsLayout,true);assert.equal(label._uiTypography.fontRole,upgrade?'body':'display');assert.equal(label._uiTypography.outlineWidth,upgrade?0:2);}const cancel=p.ui._cancelButton.getChildByName('Label').getComponent(p.h.cc.Label);assert.equal(cancel._localizedFontRole,'display');assert.equal(cancel._uiTypography.outlineWidth,2);}});

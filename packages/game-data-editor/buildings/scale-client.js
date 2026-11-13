@@ -10,9 +10,10 @@ function mount(host,api){
  const fitButton=make('button','Fit preview',controls);fitButton.type='button';
  const tierControls=make('div',undefined,root);tierControls.className='bld-scale-tiers';
  const partControls=make('div',undefined,root);partControls.className='bld-part-scales';
- const canvas=make('canvas',undefined,root);canvas.className='bld-blocker-canvas bld-scale-canvas';canvas.width=900;canvas.height=430;canvas.tabIndex=0;canvas.setAttribute('aria-label','Building scale preview with hero');
+ const canvas=make('canvas',undefined,root);canvas.className='bld-blocker-canvas bld-scale-canvas';canvas.width=900;canvas.height=430;canvas.tabIndex=0;if(state.previewHeight)canvas.style.height=state.previewHeight+'px';canvas.setAttribute('aria-label','Building scale preview with hero');
  const help=make('p','Drag the corner handle or adjust World size. The hero stays at gameplay size. Hold middle mouse to pan; wheel zooms the view; Fit preview fits all visible models.',root),status=make('p','Loading building and hero…',root);help.className=status.className='bld-blocker-help';
  if(!canvas.getContext)return{ready:Promise.resolve(),destroy(){},stats:()=>({poses:0,ready:0})};
+ const resizer=require('./preview-resize').mount(canvas,state);
  const g=canvas.getContext('2d');let closed=false,frame=null,data,entries=[],images={},heroImage,heroBounds,value=1,original=1,drag=null,pan=null,busy=false,loading=false,serial=0,pending,fitted=!!state.fitted,unit=state.unit||1,zoom=state.zoom||1,cx=state.cx||0,cy=state.cy||0;
  let allTiers=!!state.allTiers,selected=new Set(state.selection||[]),selectionInitialized=Array.isArray(state.selection);const tierInputs=new Map();allInput.checked=allTiers;
  const renderer=Renderer.create({onLoad:loaded,onError:e=>message(e.message,true)});
@@ -35,7 +36,7 @@ function mount(host,api){
  function union(items){if(!items.length)return null;return{minX:Math.min(...items.map(p=>p.box.minX)),maxX:Math.max(...items.map(p=>p.box.maxX)),minY:Math.min(...items.map(p=>p.box.minY)),maxY:Math.max(...items.map(p=>p.box.maxY))};}
  function heroPosition(b){return{x:Math.max(0,b.maxX)+35-heroBounds.minX,y:0};}
  function fit(){const b=union(layout());if(!b||!heroBounds)return;const p=heroPosition(b),minX=Math.min(b.minX,p.x+heroBounds.minX),maxX=Math.max(b.maxX,p.x+heroBounds.maxX),minY=Math.min(b.minY,heroBounds.minY)-25,maxY=Math.max(b.maxY,heroBounds.maxY);cx=(minX+maxX)/2;cy=(minY+maxY)/2;unit=Math.min((canvas.width-100)/Math.max(1,maxX-minX),(canvas.height-80)/Math.max(1,maxY-minY));fitted=true;draw();}
- function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;if(data||state.width!==w||state.height!==h)fitted=false;if(enabled()&&!fitted)fit();else draw();}}
+ function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;state.previewHeight=h;if(enabled()&&!fitted)fit();else draw();}}
  function loaded(){if(closed)return;sync();if(enabled()&&!fitted)fit();draw();}
  function update(amount){const limits=range();if(!limits||!Number.isFinite(amount)||amount<limits.min-.000001||amount>limits.max+.000001)return;value=Math.max(limits.min,Math.min(limits.max,amount));sync();draw();}
  function commit(){
@@ -101,6 +102,6 @@ function mount(host,api){
  // distort both the building and its hero reference in wide or narrow panels.
  const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);resize();
  sync();pending=load();
- return{get ready(){return pending;},stats,destroy(){if(closed)return;endPan(false);cancel();closed=true;serial++;Object.assign(state,{unit,zoom,cx,cy,fitted,allTiers,selection:Array.from(selected),width:canvas.width,height:canvas.height});if(observer)observer.disconnect();renderer.destroy();if(heroImage)heroImage.width=heroImage.height=1;if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onkeydown=canvas.onwheel=null;canvas.width=canvas.height=1;root.remove();}};
+ return{get ready(){return pending;},stats,destroy(){if(closed)return;endPan(false);cancel();closed=true;resizer.destroy();serial++;Object.assign(state,{unit,zoom,cx,cy,fitted,allTiers,selection:Array.from(selected),width:canvas.width,height:canvas.height});if(observer)observer.disconnect();renderer.destroy();if(heroImage)heroImage.width=heroImage.height=1;if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=canvas.onauxclick=canvas.onkeydown=canvas.onwheel=null;canvas.width=canvas.height=1;root.remove();}};
 }
 module.exports={mount};

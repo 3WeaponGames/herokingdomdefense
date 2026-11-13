@@ -6,6 +6,7 @@ const A = require('../../assets/_script/WallAdjustments'), Kit = require('../../
 const Assembly = require('../../assets/_script/WallAssembly'), Door = require('../../assets/_script/WallDoor'), Facing = require('../../assets/_script/GateFacing');
 const folder = path.resolve(__dirname, '../../assets/KinghtFallIconMap/com/Ani/cq/cq1');
 const installed = JSON.parse(fs.readFileSync(path.join(folder, 'cq1.json'), 'utf8'));
+installed.wallKit.layers.castShadows=true; // Legacy shadow capability remains independently supported.
 const atlasText = fs.readFileSync(path.join(folder, 'cq1.atlas'), 'utf8');
 const runtime = path.join(process.env.COCOS_ENGINE_ROOT || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine', 'extensions/spine/lib/spine.js');
 const engine = {skip: !fs.existsSync(runtime) && !process.env.COCOS_ENGINE_ROOT ? 'Creator 2.4.13 supplies actual Spine 3.8 parsing' : false};
@@ -204,4 +205,13 @@ test('malformed source order rejects a destination collision rather than returni
   const json = fit('SW'), data = {version: 1, poses: {'1/SW/closed': {order: ['door/far', 'door/near']}}}, names = json.slots.map(s => s.name), slots = names.slice(0, 2);
   json.animations.idle.drawOrder = [{offsets: [{slot: slots[0], offset: 1}, {slot: slots[1], offset: 0}]}];
   assert.throws(() => A.apply(json, plan(), {data}), /draw order/);
+});
+
+test('extending a wall keeps newly added pillars in native depth order instead of appending them in front',engine,()=>{
+ const spine=require(runtime),short=plan({nativeVersion:2,left:1,right:1,gate:true,start:'post',end:'post'}),long=plan({nativeVersion:2,left:5,right:5,gate:true,start:'post',end:'post'});
+ for(const face of ['NE','NW','SE','SW'])for(const tier of [1,2,3])for(const state of ['inward','outward']){
+  const preview=fit(face,empty(),tier,false,short),description=A.describe(preview,short,{tier,face,state}),data=empty();data.poses[tier+'/'+face+'/'+state]={order:description.order};
+  const base=player(spine,fit(face,empty(),tier,false,long),tier).pose('open_'+state),actual=player(spine,fit(face,data,tier,false,long),tier).pose('open_'+state),bodies=s=>s.drawOrder.filter(p=>p.data.name.startsWith('rts_wall_part_')).map(p=>p.data.name);
+  assert.deepEqual(bodies(actual),bodies(base),'All existing and new static pillars retain their straight-run painter order');
+ }
 });

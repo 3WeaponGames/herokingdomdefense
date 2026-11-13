@@ -275,11 +275,11 @@ test('battle retry and building branch handlers resolve exactly one choice', () 
   h.modules.KinghtFallConfig.KinghtFallBundelName = { IconBuild: 'build' };
   branch.onOpened(); branch.ndItem = {}; branch.ndParent = {getComponent:()=>null,setContentSize(){},setPosition(){}}; branch.loadSpriteFrame = () => {}; branch.T = value => value;
   // Layout is covered by building-choice-layout; keep this test focused on decision ownership.
-  h.cc.Color=function(){};branch.initInitialChoiceView=()=>{};branch.layoutUpgradeCard=()=>{};
+  h.cc.Color=function(){};branch.initInitialChoiceView=()=>{};branch.layoutUpgradeCard=()=>{};branch.initChoiceDescription=()=>{};
   h.modules.LanguageMgr.LanguageMgr = { getInstance: () => ({ format: value => value }) };
   branch.init({ buildInfo: { cfg: { BranchBuild: [1, 2] } }, buildCfg: { levelList: [{ index: 1, BuildSliverCost: 1 }, { index: 2, BuildSliverCost: 1 }] } }, value => chosen.push(value));
   const adRequests = f.ads.length, pendingCloses = h.scheduled.length;
-  branch.initView(); assert.equal(rows.length, 2);
+  branch.start(); assert.equal(rows.length, 2);
   rows[0].press(); rows[0].press(); rows[1].press(); assert.deepEqual(chosen, [1]);
   assert.equal(branch.isclose, true); assert.equal(f.ads.length, adRequests, 'paid branch choices do not request an ad');
   assert.equal(h.scheduled.length, pendingCloses + 1, 'repeated choices schedule only one close');

@@ -10,8 +10,17 @@ function withDefaults(building,config,hall,source){
  const row=require('./navigation').buildingRow(building,hall||1,config);
  let variant=building.wallFacing||building.placementVariant||'default';
  if(building.kind===6&&!building.wallFacing&&source)variant=require('./gate-facing').facing(source,building);
- const value=require('../../../assets/_script/BuildingPurchaseField').resolve(category,row,variant);
- return value?Object.assign({},building,{purchaseSide:value.southwest?'flip':'default',purchaseOffset:{x:value.x,y:value.y},purchaseOverride:false}):building;
+ const Settings=require('../../../assets/_script/BuildingPurchaseField'),reference=Settings.reference(category,row,variant),basis=geometry(source,Object.assign({},building,{purchaseReference:reference}));
+ if(!basis)return building;
+ const value=Settings.resolve(category,row,variant,basis);
+ return value?Object.assign({},building,{purchaseSide:value.southwest?'flip':'default',purchaseOffset:{x:value.x,y:value.y},purchaseOverride:false,purchaseReference:reference}):building;
+}
+function geometry(source,building){
+ if(!source||!building)return null;
+ const info=Maps.model(source),node=info.byId[building.template.node];if(!node||!node.components.some(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID)))return null;const entry=controller(info,building),ref=entry.component.value.ndLockList&&entry.component.value.ndLockList[0],field=info.byId[reference(source,ref)];if(!field)return null;
+ const parent=info.byId[entry.owner.parent],inverse=parent?Maps.inverse(parent.world):[1,0,0,1,0,0],owner=Maps.point(inverse,entry.owner.position),point=Maps.point(inverse,field.position),baked=offset(entry.component.value),m=Maps.multiply(inverse,entry.owner.world),factor=Math.hypot(m[0],m[1]),distance=building.purchaseReference?building.purchaseReference.distance*factor:Math.hypot(point.x-owner.x-baked.x,point.y-owner.y-baked.y)||80,basis=parent?parent.world:[1,0,0,1,0,0];
+ const center=side=>({x:basis[0]*side*Math.SQRT1_2*distance+basis[2]*-Math.SQRT1_2*distance,y:basis[1]*side*Math.SQRT1_2*distance+basis[3]*-Math.SQRT1_2*distance});
+ return{matrix:[basis[0]*factor,basis[1]*factor,basis[2]*factor,basis[3]*factor],centers:{southeast:center(1),southwest:center(-1)}};
 }
 function valid(value){return SIDES.includes(value);}
 function side(value){return value==='flip'||value==='southwest'?'flip':'default';}
@@ -36,7 +45,7 @@ function project(source,building){
  const selected=side(building.purchaseSide),shift=offset(building);
  const previous=projected.get(source);if(previous)source=previous.source;
  const angle=building.angle===undefined?0:building.angle;if(typeof angle!=='number'||!Number.isFinite(angle))throw Error('A purchase field needs a finite placement angle.');
- const signature=JSON.stringify(source),key=JSON.stringify([building.template.node,selected,shift,angle]);let saved=cache.get(source);
+ const signature=JSON.stringify(source),key=JSON.stringify([building.template.node,selected,shift,angle,building.purchaseReference]);let saved=cache.get(source);
  if(!saved||saved.signature!==signature){saved={signature,values:new Map()};cache.set(source,saved);}if(saved.values.has(key)){const value=saved.values.get(key);saved.values.delete(key);saved.values.set(key,value);return value;}
  const info=Maps.model(source),entry=controller(info,building),component=entry.component.value;
  // A generated source already contains its selected layout. Adapting that
@@ -53,7 +62,7 @@ function project(source,building){
  }
  const result=clone(source),radians=-angle*Math.PI/180,c=Math.cos(radians),s=Math.sin(radians),direction=selected==='flip'?-1:1;
  for(const [parentId,group] of groups){
-  const parent=info.byId[parentId],first=info.byId[group[0]],base={x:first.position.x-entry.owner.position.x-baked.x,y:first.position.y-entry.owner.position.y-baked.y},distance=Math.hypot(base.x,base.y)||Math.max(80,Math.hypot(first.width,first.height)/2),point={x:direction*Math.SQRT1_2*distance+shift.x,y:-Math.SQRT1_2*distance+shift.y};
+  const parent=info.byId[parentId],first=info.byId[group[0]],base={x:first.position.x-entry.owner.position.x-baked.x,y:first.position.y-entry.owner.position.y-baked.y},distance=building.purchaseReference?building.purchaseReference.distance*Math.hypot(entry.owner.world[0],entry.owner.world[1]):Math.hypot(base.x,base.y)||Math.max(80,Math.hypot(first.width,first.height)/2),point={x:direction*Math.SQRT1_2*distance+shift.x,y:-Math.SQRT1_2*distance+shift.y};
   const sx=Math.hypot(first.world[0],first.world[1]),sy=Math.abs((first.world[0]*first.world[3]-first.world[1]*first.world[2])/sx),desired=[c*sx*direction,s*sx*direction,-s*sy,c*sy,entry.owner.position.x+c*point.x-s*point.y,entry.owner.position.y+s*point.x+c*point.y],parentParent=info.byId[parent.parent];
   matrix(result[parentId],parentParent?Maps.multiply(Maps.inverse(parentParent.world),desired):desired);
   // Some old barracks tiers differ by a fraction of a pixel. An explicit side
@@ -75,4 +84,4 @@ function finishExport(source,building,target,mapping){
  }
  const nextOwner=next.byId[mapping[entry.owner.id]],nextController=nextOwner&&nextOwner.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));if(nextController){target[nextController.id].purchaseSide=side(building.purchaseSide);const p=offset(building);target[nextController.id].purchaseOffset={__type__:'cc.Vec2',x:p.x*scale,y:p.y*scale};if(building.purchaseOverride!==undefined)target[nextController.id].purchaseOverride=building.purchaseOverride===true;if(building.placementVariant)target[nextController.id].placementVariant=building.placementVariant;}
 }
-module.exports={valid,side,angle,offset,project,finishExport,withDefaults};
+module.exports={geometry,valid,side,angle,offset,project,finishExport,withDefaults};

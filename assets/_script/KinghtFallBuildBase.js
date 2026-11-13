@@ -143,6 +143,7 @@ var def_KinghtFallBuildBase = function (t) {
     });
     require("BuildingAppearance").hide(this);
     if (this._buildingShadowRuntime) require("BuildingShadowRuntime").hide(this);
+    if (this._buildingDropShadowRuntime) require("BuildingDropShadowRuntime").hide(this);
   };
   _ctor.prototype.getLevel = function () {
     if (this.buildInfo && this.buildInfo.cfg) {
@@ -255,7 +256,9 @@ var def_KinghtFallBuildBase = function (t) {
     });
     require("BuildingAppearance").apply(this);
     if (cfg && (cfg.WorldScale !== undefined || cfg.ModelOffset)) require("BuildingWorldScale").apply(this);
-    if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
+    var shadowData=$z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data;
+    if(cfg&&cfg.DropShadow||shadowData&&shadowData.GameTools&&shadowData.GameTools.buildingShadows||this._buildingDropShadowRuntime) require("BuildingDropShadowRuntime").apply(this,$z1KinghtFallUIGame.default.instance.ctrGame,shadowData);
+    else if (cfg && cfg.Shadow || this._buildingShadowRuntime) require("BuildingShadowRuntime").apply(this, $z1KinghtFallUIGame.default.instance.ctrGame);
   };
   _ctor.prototype._alignPurchaseCost = function (field) {
     var origin = field.convertToWorldSpaceAR(cc.v2(0, 0));
@@ -337,11 +340,14 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.onDestroy = function () {
     require("BuildingDebris").destroy(this);
-    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
+    // Children and native physics proxies can already be gone during the
+    // parent's destruction walk. There is no surviving pose to restore here.
+    if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").dispose(this);
     this.cancelUpgrade();
     this._stopColliderTweens();
     if (this._buildingBlockerRuntime) require("BuildingBlockerRuntime").dispose(this);
     if (this._buildingShadowRuntime) require("BuildingShadowRuntime").dispose(this);
+    if (this._buildingDropShadowRuntime) require("BuildingDropShadowRuntime").dispose(this);
     require("BuildingAppearance").dispose(this);
     if (t.prototype.onDestroy) t.prototype.onDestroy.call(this);
   };

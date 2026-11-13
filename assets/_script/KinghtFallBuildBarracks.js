@@ -58,6 +58,7 @@ var def_KinghtFallBuildBarracks = function (t) {
   };
   _ctor.prototype.setLevel = function (e) {
     t.prototype.setLevel.call(this, e);
+    if(this.buildInfo.cfg&&this.buildInfo.cfg.AdUnitPosition||this._adUnitPosition)require("BuildingSpawnPositions").applyAd(this);
     this.time = {};
     this.ndPro.active = false;
     if (this.buildInfo.cfg) {
@@ -256,6 +257,7 @@ var def_KinghtFallBuildBarracks = function (t) {
   };
   _ctor.prototype.getInClick = function (t, e) {
     var n = cc.v2(this.node.x + this.ndVideoSoldier.position.x, this.node.y + this.ndVideoSoldier.position.y);
+    if(this.ndVideoSoldier.convertToNodeSpaceAR){var main=$z1KinghtFallUIGame.default.instance.ctrGame.ndMain;t=this.ndVideoSoldier.convertToNodeSpaceAR(main.convertToWorldSpaceAR(t));n=cc.v2(0,0);}
     if (t.x >= n.x - this.ndVideoSoldier.width * this.ndVideoSoldier.anchorX && t.x <= n.x + this.ndVideoSoldier.width * (1 - this.ndVideoSoldier.anchorX) && t.y >= n.y - this.ndVideoSoldier.height * this.ndVideoSoldier.anchorY && t.y <= n.y + this.ndVideoSoldier.height * (1 - this.ndVideoSoldier.anchorY)) {
       return !this.isIn && (this.keepTime += e, this.keepTime >= this.standTimeMax && (this.isIn = true, this.keepTime = 0, this.ndVideoSoldier.getChildByName("sprPro").getComponent(cc.Sprite).fillRange = 0, true));
     } else {

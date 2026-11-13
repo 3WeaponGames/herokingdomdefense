@@ -200,6 +200,11 @@
       "zh": "测试模式 · F8",
       "context": "Compact development-only badge; F8 toggles test mode"
     },
+    "testing.fps": {
+      "en": "· {0} FPS",
+      "zh": "· {0} FPS",
+      "context": "Rendered frames per second after F8 in the development-only badge; {0} is the measured count or -- before sampling"
+    },
     "testing.adUnavailable": {
       "en": "No ad is available right now. Please try again.",
       "zh": "暂时没有可用的广告，请稍后重试。",

@@ -339,6 +339,10 @@ var def_KinghtFallUIBuff = function (t) {
   };
   _ctor.prototype.showItem = function (t) {
     var e = this.ndItemList[t];
+    // A reroll keeps the panel alive, so BaseUI's panel-generation guard alone
+    // cannot stop an older icon load from replacing the newly offered perk.
+    var request = e._perkIconRequest = (e._perkIconRequest || 0) + 1;
+    var selected = this.selInfo[t], itemIndex = t, generation = this._resourceGeneration;
     if (this.selInfo[t]) {
       var n = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuffCfgById(this.selInfo[t]);
       var i = e.getChildByName("spAniBg").getComponent(sp.Skeleton);
@@ -364,6 +368,10 @@ var def_KinghtFallUIBuff = function (t) {
           a.active = true;
       }
       this.loadSpriteFrame($z1KinghtFallConfig.KinghtFallBundelName.IconBuff, n.Image, function (t) {
+        if (this.isclose || generation !== this._resourceGeneration || this.ndItemList[itemIndex] !== e ||
+            e._perkIconRequest !== request || this.selInfo[itemIndex] !== selected ||
+            cc.isValid && (!cc.isValid(this, true) || !cc.isValid(e, true) || !cc.isValid(o, true) ||
+              o.node && !cc.isValid(o.node, true))) return;
         o.spriteFrame = this._nativeFrame(t);
       }.bind(this));
       var l = [];

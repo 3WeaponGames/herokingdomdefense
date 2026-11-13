@@ -146,12 +146,18 @@ Runtime.prototype.tick = function (dt) {
     if (effect.age >= (effect.duration||.3)) { effect.node.destroy(); return false; } return true;
   });
 };
-Runtime.prototype.clear = function () {
-  var owner=this.owner;
-  this.fields.forEach(function (field) { Presentation.clear(field,owner);if (field.addon) field.addon.color.a=0; field.node._combatGeneration = (field.node._combatGeneration || 0)+1; field.node.active=false; field.node.destroy(); });
-  this.fields = [];
-  (this.effects || []).forEach(function (effect) { effect.node.destroy(); }); this.effects=[];
+Runtime.prototype.clear = function (retiring) {
+  var owner=this.owner,renderer=owner&&owner.ndAniDown,canUseRig=!retiring&&renderer&&cc.isValid(renderer,true)&&renderer.node&&cc.isValid(renderer.node,true),fields=this.fields;
+  this.fields=[];
+  fields.forEach(function(field){
+    Presentation.clear(field,owner);
+    // JSB slot/color proxies have already been released when child renderers
+    // are destroyed before the parent mill. Teardown must not dereference them.
+    if(canUseRig&&field.addon&&field.addon.color)field.addon.color.a=0;
+    if(cc.isValid(field.node,true)){field.node._combatGeneration=(field.node._combatGeneration||0)+1;field.node.active=false;field.node.destroy();}
+  });
+  (this.effects || []).forEach(function(effect){if(cc.isValid(effect.node,true))effect.node.destroy();});this.effects=[];
 };
 Runtime.prototype.stop = function () { this.fighting=false; this.clear(); };
-Runtime.prototype.destroy = function () { this.stop(); cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.beforeDraw); };
+Runtime.prototype.destroy = function () { this.fighting=false;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,this.beforeDraw);this.clear(true); };
 exports.Runtime = Runtime;

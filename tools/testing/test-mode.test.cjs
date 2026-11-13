@@ -10,14 +10,18 @@ function emitter() {
   return {
     listeners,
     on(type, fn, target) { const list = listeners.get(type) || []; list.push({ fn, target }); listeners.set(type, list); },
-    off(type) { listeners.delete(type); },
+    off(type, fn, target) {
+      if (!fn) { listeners.delete(type); return; }
+      const remaining = (listeners.get(type) || []).filter(item => item.fn !== fn || item.target !== target);
+      if (remaining.length) listeners.set(type, remaining); else listeners.delete(type);
+    },
     emit(type, event) { (listeners.get(type) || []).slice().forEach(item => item.fn.call(item.target, event)); }
   };
 }
 function environment(options = {}) {
   const stored = options.storage || new Map(), calls = { reads: 0, writes: 0, bindings: 0 };
   const dom = emitter(), system = emitter(), director = emitter(), game = emitter(), nativeListeners = [];
-  let nativeFocused = false;
+  let nativeFocused = false, now = 0;
   const scene = { getComponentsInChildren: () => nativeFocused ? [{ isFocused: () => true }] : [] };
   director.getScene = () => scene;
   class Node {
@@ -35,7 +39,7 @@ function environment(options = {}) {
   if (canvas) canvas.node.setContentSize(750, 1334);
   const cc = {
     sys: { localStorage: { getItem(key) { calls.reads++; if (options.storageFails) throw new Error('disabled'); return stored.get(key); }, setItem(key, value) { calls.writes++; if (options.storageFails) throw new Error('disabled'); stored.set(key, value); } } },
-    director, Director: { EVENT_AFTER_SCENE_LAUNCH: 'scene' }, game, systemEvent: system,
+    director, Director: { EVENT_AFTER_SCENE_LAUNCH: 'scene', EVENT_AFTER_DRAW: 'draw' }, game, systemEvent: system,
     SystemEvent: { EventType: { KEY_DOWN: 'down', KEY_UP: 'up' } },
     EventListener: { KEYBOARD: 6, create: value => value }, eventManager: { addListener: listener => nativeListeners.push(listener) },
     isValid: value => !!value && !value.destroyed, EditBox: class {}, Canvas: { instance: canvas },
@@ -44,8 +48,11 @@ function environment(options = {}) {
   game.EVENT_HIDE = 'hide';
   const document = { activeElement: null };
   const context = {
-    cc, exports: {}, CC_PREVIEW: !!options.preview, CC_DEBUG: !!options.debug, CC_EDITOR: !!options.editor,
-    require(id) { assert.equal(id, 'LanguageMgr'); return { LanguageMgr: { getInstance: () => ({ bindLabel(label, key) { calls.bindings++; label.key = key; label.string = 'localized badge'; } }) } }; }
+    cc, exports: {}, performance: { now: () => now }, CC_PREVIEW: !!options.preview, CC_DEBUG: !!options.debug, CC_EDITOR: !!options.editor,
+    require(id) { assert.equal(id, 'LanguageMgr'); return { LanguageMgr: { getInstance: () => ({
+      bindLabel(label, key) { calls.bindings++; label.key = key; label.string = 'localized badge'; },
+      t(key, values) { assert.equal(key, 'testing.fps'); return '\u00b7 ' + values[0] + ' FPS'; }
+    }) } }; }
   };
   if (options.web !== false) {
     context.document = document;
@@ -53,7 +60,8 @@ function environment(options = {}) {
   }
   vm.runInNewContext(source, context, { filename: 'TestMode.js' });
   return { service: context.exports.TestMode.getInstance(), cc, stored, calls, dom, system, director, game, nativeListeners, document,
-    setNativeFocus(value) { nativeFocused = value; } };
+    setNativeFocus(value) { nativeFocused = value; },
+    draw(milliseconds) { now += milliseconds; director.emit('draw'); } };
 }
 let passed = 0;
 function test(name, fn) { fn(); passed++; console.log('PASS ' + name); }
@@ -117,13 +125,46 @@ test('Badge is localized, restores label width, stays inside spare top margin, a
   assert.equal(env.cc.Canvas.instance.node.children.length, 0);
   env.service.setEnabled(true);
   const badge = env.service._badge, text = badge.children[0], label = text.components[0];
-  assert.equal(badge.name, 'DevelopmentTestModeBadge'); assert.equal(badge.width, 360); assert.equal(badge.height, 44);
-  assert.equal(text.width, 340); assert.equal(text.height, 44); assert.equal(label.key, 'testing.modeBadge');
+  assert.equal(badge.name, 'DevelopmentTestModeBadge'); assert.equal(badge.width, 440); assert.equal(badge.height, 44);
+  assert.equal(text.width, 280); assert.equal(text.height, 44); assert.equal(label.key, 'testing.modeBadge');
   assert.equal(badge.y, 642); assert.equal(badge.components.length, 2); assert.equal(badge.on, undefined);
   env.service.setEnabled(false); assert.equal(badge.active, false);
   env.service.setEnabled(true); assert.equal(env.cc.Canvas.instance.node.children.length, 1);
   badge.destroyed = true; env.director.emit('scene'); assert.notEqual(env.service._badge, badge);
   assert.equal(env.calls.bindings, 2);
+});
+
+test('FPS samples completed render frames and updates every half second in Browser and native', () => {
+  for (const web of [true, false]) {
+    const env = environment({ debug: true, web, canvas: true }); env.service.setEnabled(true);
+    const label = env.service._fpsLabel, badge = env.service._badge;
+    assert.equal(label.string, '\u00b7 -- FPS');
+    assert.equal(badge.children[1].name, 'Fps');
+    assert(badge.children[0].x + badge.children[0].width / 2 <= badge.children[1].x - badge.children[1].width / 2);
+    env.draw(0);
+    for (let i = 0; i < 49; i++) env.draw(10);
+    assert.equal(label.string, '\u00b7 -- FPS', 'caption must not be rebuilt on every frame');
+    env.draw(10); assert.equal(label.string, '\u00b7 100 FPS');
+    for (let i = 0; i < 10; i++) env.draw(50);
+    assert.equal(label.string, '\u00b7 20 FPS', 'uses render timing instead of game speed or simulation delta');
+    assert.equal(env.calls.bindings, 1, 'FPS sampling does not rebind localization or rebuild the badge');
+  }
+});
+
+test('FPS detaches while disabled or destroyed, resets after suspended rendering, and never adds duplicate listeners', () => {
+  const env = environment({ preview: true, canvas: true }); env.service.init();
+  assert.equal(env.director.listeners.has('draw'), false);
+  env.service.setEnabled(true); env.service._refreshBadge(); env.service.setEnabled(true);
+  assert.equal(env.director.listeners.get('draw').length, 1);
+  env.draw(0); env.draw(500); assert.equal(env.service._fpsLabel.string, '\u00b7 2 FPS');
+  env.draw(30000); env.draw(500); assert.equal(env.service._fpsLabel.string, '\u00b7 2 FPS', 'background gaps are not counted as gameplay lag');
+  env.service.setEnabled(false); assert.equal(env.director.listeners.has('draw'), false);
+  env.service.setEnabled(true); assert.equal(env.service._fpsLabel.string, '\u00b7 -- FPS');
+  const old = env.service._badge; old.destroyed = true; env.draw(10);
+  assert.equal(env.director.listeners.has('draw'), false);
+  env.director.emit('scene'); assert.notEqual(env.service._badge, old);
+  assert.equal(env.director.listeners.get('draw').length, 1);
+  assert.equal(env.service._fpsLabel.string, '\u00b7 -- FPS');
 });
 function gameplay(env) {
   const target = { node: { active: true, activeInHierarchy: true } };

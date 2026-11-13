@@ -21,7 +21,7 @@ function vertices(spine,slot){
   else if(a instanceof spine.MeshAttachment)a.computeWorldVertices(slot,0,a.worldVerticesLength,v,0,2);
   assert(v.length&&v.every(Number.isFinite),'finite actual posed vertices');assert([...a.uvs].every(Number.isFinite),'finite original sampling');assert(a.region?.page,'all drawable attachments resolve an imported atlas page');return v;
 }
-function artSlots(rig,skin){return Object.keys(skin.attachments).filter(slot=>rig==='td'?slot.startsWith('td__'):true);}
+function artSlots(rig,skin){return Object.keys(skin.attachments).filter(slot=>Object.keys(skin.attachments[slot]).length&&(rig==='td'?slot.startsWith('td__'):true));}
 
 test('painted contract reverses only reviewed deltas before the unchanged native-source contracts',()=>{
   assert.equal(require('./building-spine-fit.fixture.json').paintedIntegration.contract,'painted-building-integration.fixture.json');
@@ -93,34 +93,34 @@ for(const rig of Object.keys(skins))test(rig+' actual approved tiers build, upgr
         const bodies=slots.filter(name=>Object.values(skin.attachments[name]).some(a=>(a.path||'').includes('painted')&&!/(night|light|flag|flame|pole|emissive)/.test(a.path)));
         assert(bodies.length,skinName+' has approved daytime art');
         for(const name of bodies){const slot=skeleton.findSlot(name);assert(slot.getAttachment());assert(slot.color.a>.9,skinName+'/'+clip+'/'+name+' body remains opaque');if(clip==='idle_night')assert(slot.color.r<.8,skinName+' receives original native night shading');}
-        for(const name of slots.filter(n=>n.endsWith('_night')||n.endsWith('_lantern_emissive'))){const light=skeleton.findSlot(name);assert(light.getAttachment());assert(clip==='idle'?light.color.a<.000001:light.color.a>.7,'native night transition controls aperture opacity');}
+        for(const name of slots.filter(n=>n.endsWith('_night')||n.endsWith('_lantern_emissive'))){const light=skeleton.findSlot(name);assert(light.getAttachment());if(name.endsWith('_night'))assert.equal(light.color.a,0,'new continuous aperture cores replace the old pixel-textured mask without double-filling');else assert(clip==='idle'?light.color.a<.000001:light.color.a>.7,'native night transition controls lantern glass');}
       }
       poses++;
     }
     p.pose(skinName,'destroy',1.2);const restored=p.pose(skinName,'idle',0);
-    for(const name of slots)assert(restored.findSlot(name).getAttachment(),skinName+' restores original attachment setup on rebuild');
+    for(const name of slots){const attachment=restored.findSlot(name).getAttachment();if(name==='building_aperture_rays'||name==='building_aperture_cores')assert.equal(attachment,null,'daytime rebuild excludes night-only light projection bounds');else assert(attachment,skinName+' restores original attachment setup on rebuild');}
   }
   t.diagnostic(poses+' actual native lifecycle poses, '+drawables+' resolved drawable attachments');
 });
 
-test('each painted castle/barracks tier has visible bounded native night pixels, with reversible fixtures kept separate',engine,()=>{
+test('painted open entries have bounded native night pixels while removed fixtures and closed doors stay dark',engine,()=>{
   const spine=require(runtime),pages=new Map();let lanterns=0;
   const optional=fixture.optionalNightFixtures;assert.equal(optional.count,8);assert.equal(sha(bytes(optional.source)),optional.sourceSha256,'original existing lantern source remains unchanged');
   for(const rig of ['cb','by']){
     const p=player(spine,rig);
     for(const name of skins[rig]){
       const skin=p.json.skins.find(s=>s.name===name);p.pose(name,'idle_night',.5);let lit=0;
-      for(const slotName of Object.keys(skin.attachments).filter(n=>n.endsWith('_night')||n.endsWith('_lantern_emissive')||n.endsWith('_flame'))){
-        const slot=p.skeleton.findSlot(slotName),a=slot.getAttachment();assert(a&&slot.color.a>.7);const r=a.region,key=rig+'/'+r.page.name;
+      for(const slotName of Object.keys(skin.attachments).filter(n=>Object.keys(skin.attachments[n]).length&&(n==='building_aperture_rays'||n==='building_aperture_cores'||n.endsWith('_lantern_emissive')||n.endsWith('_flame')))){
+        const slot=p.skeleton.findSlot(slotName),a=slot.getAttachment();assert(a&&slot.color.a>(slotName==='building_aperture_rays'?.2:.7));const r=a.region,key=rig+'/'+r.page.name;
         if(!pages.has(key))pages.set(key,decode(bytes(dir(rig)+r.page.name)));const image=pages.get(key);
         assert(!r.rotate,'new transparent light masks use unrotated atlas rectangles');
         for(let y=r.y;y<r.y+r.height;y++)for(let x=r.x;x<r.x+r.width;x++)if(image.rgba[(y*image.width+x)*4+3]>16)lit++;
         if(slotName.endsWith('_lantern_emissive')){lanterns++;const fixtureName=slotName.replace(/_emissive$/,'_fixture');assert(skin.attachments[fixtureName],'day fixture and native night pane are separate attachments');}
       }
-      assert(lit>0,name+' needs actual emissive artwork, not an empty opacity timeline');
+      if(name==='cb-painted-1')assert.equal(lit,0,'closed plank doorway and removed lantern stay dark');else assert(lit>0,name+' needs actual emissive artwork, not an empty opacity timeline');
     }
   }
-  assert.equal(lanterns,8);
+  assert.equal(lanterns,0,'historical fixture identities may remain reversible, but no physical lamp or emissive pane is drawn');
 });
 
 test('mill farm counts are2/2/3/4 at their authored anchors and use one identical shared tile',engine,()=>{

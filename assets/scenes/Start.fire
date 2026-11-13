@@ -553,7 +553,7 @@
       "__id__": 11
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 13
@@ -905,7 +905,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 720,
-      "height": 480
+      "height": 427.68
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -969,7 +969,7 @@
     },
     "_fillStart": 0,
     "_fillRange": 0,
-    "_isTrimmedMode": true,
+    "_isTrimmedMode": false,
     "_atlas": null,
     "_id": "start-logo-sprite"
   },

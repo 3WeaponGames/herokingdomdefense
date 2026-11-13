@@ -102,7 +102,11 @@ test('Every soldier archetype attacks a nearby enemy while rallying, then resume
     unit.time.Attack = 1;
     rally(e, { x: 100, y: 0 });
     advance(e, unit);
-    assert(unit.node.y > 0, 'ordered soldier ignored an enemy inside search range: ' + n);
+    assert.equal(unit._orderTarget, target, 'ordered soldier must acquire the nearby enemy immediately: ' + n);
+    // The navigation frame budget may defer route work under concurrent CI
+    // load. Require bounded progress, rather than a particular first frame.
+    for (let frame=0;frame<20&&unit.node.y<=0&&!attacks;frame++) advance(e,unit);
+    assert(unit.node.y > 0, 'ordered soldier made no progress toward its acquired enemy: ' + n);
     near(unit.node.x, -100);
     advance(e, unit, 100);
     assert.equal(attacks, 1, 'soldier did not enter its regular attack: ' + n);

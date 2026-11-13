@@ -11,6 +11,11 @@ function TestMode() {
   this._enabled = false;
   this._f8Down = false;
   this._badge = null;
+  this._fpsLabel = null;
+  this._fpsListening = false;
+  this._fpsSince = null;
+  this._fpsLastFrame = null;
+  this._fpsFrames = 0;
   this._gameplayTarget = null;
   this._held = {};
   this._movement = {};
@@ -173,17 +178,58 @@ TestMode.prototype._installHotkey = function () {
   }
 };
 
+TestMode.prototype._resetFps = function () {
+  this._fpsSince = null;
+  this._fpsLastFrame = null;
+  this._fpsFrames = 0;
+  if (this._fpsLabel && cc.isValid(this._fpsLabel, true)) this._fpsLabel.string = LanguageMgr.getInstance().t("testing.fps", ["--"]);
+};
+
+TestMode.prototype._trackFps = function (enabled) {
+  var event = cc.Director && cc.Director.EVENT_AFTER_DRAW;
+  if (!event || !cc.director) return;
+  if (this._fpsListening === enabled) return;
+  this._fpsListening = enabled;
+  this._resetFps();
+  if (enabled) cc.director.on(event, this._sampleFps, this);
+  else cc.director.off(event, this._sampleFps, this);
+};
+
+TestMode.prototype._sampleFps = function () {
+  if (!this._enabled || !this._badge || !cc.isValid(this._badge, true) || !this._badge.active ||
+      !this._fpsLabel || !cc.isValid(this._fpsLabel, true)) {
+    this._trackFps(false);
+    return;
+  }
+  // Measure completed render frames using real time, independent of combat
+  // speed or paused simulation. Update text at most twice a second.
+  var now = typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
+  if (this._fpsSince === null || now < this._fpsLastFrame || now - this._fpsLastFrame > 2000) {
+    this._fpsSince = now; this._fpsLastFrame = now; this._fpsFrames = 0;
+    return;
+  }
+  this._fpsLastFrame = now;
+  ++this._fpsFrames;
+  var elapsed = now - this._fpsSince;
+  if (elapsed < 500) return;
+  var caption = LanguageMgr.getInstance().t("testing.fps", [Math.round(this._fpsFrames * 1000 / elapsed)]);
+  if (this._fpsLabel.string !== caption) this._fpsLabel.string = caption;
+  this._fpsFrames = 0; this._fpsSince = now;
+};
+
 TestMode.prototype._refreshBadge = function () {
   var shown = this.isAvailable() && this._enabled;
   if (!shown) {
     if (this._badge && cc.isValid(this._badge)) this._badge.active = false;
+    this._trackFps(false);
     return;
   }
-  if (this._badge && cc.isValid(this._badge)) { this._badge.active = true; return; }
+  if (this._badge && cc.isValid(this._badge, true)) { this._badge.active = true; this._trackFps(true); return; }
+  this._trackFps(false);
   var canvas = cc.Canvas && cc.Canvas.instance;
   if (!canvas || !canvas.node || !cc.isValid(canvas.node)) return;
   var badge = new cc.Node("DevelopmentTestModeBadge");
-  badge.setContentSize(360, 44);
+  badge.setContentSize(440, 44);
   badge.group = canvas.node.group;
   badge.zIndex = cc.macro.MAX_ZINDEX;
   canvas.node.addChild(badge);
@@ -191,12 +237,12 @@ TestMode.prototype._refreshBadge = function () {
   graphics.fillColor = cc.color(32, 26, 11, 235);
   graphics.strokeColor = cc.color("#f2c357");
   graphics.lineWidth = 1;
-  graphics.roundRect(-180, -22, 360, 44, 5);
+  graphics.roundRect(-220, -22, 440, 44, 5);
   graphics.fill(); graphics.stroke();
   var text = new cc.Node("Caption");
   badge.addChild(text);
   var label = text.addComponent(cc.Label);
-  label.fontSize = 30;
+  label.fontSize = 26;
   label.lineHeight = 34;
   label.isBold = true;
   label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
@@ -205,8 +251,22 @@ TestMode.prototype._refreshBadge = function () {
   label.enableWrapText = false;
   text.color = cc.color("#ffe19a");
   // Label's default NONE overflow can clear size during creation; restore last.
-  text.setContentSize(340, 44);
+  text.setContentSize(280, 44);
+  text.x = -70;
   LanguageMgr.getInstance().bindLabel(label, BADGE_KEY);
+  var fpsText = new cc.Node("Fps");
+  badge.addChild(fpsText);
+  var fpsLabel = fpsText.addComponent(cc.Label);
+  fpsLabel.fontSize = label.fontSize;
+  fpsLabel.lineHeight = label.lineHeight;
+  fpsLabel.isBold = label.isBold;
+  fpsLabel.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+  fpsLabel.verticalAlign = cc.Label.VerticalAlign.CENTER;
+  fpsLabel.overflow = cc.Label.Overflow.SHRINK;
+  fpsLabel.enableWrapText = false;
+  fpsText.color = text.color;
+  fpsText.setContentSize(140, 44);
+  fpsText.x = 140;
   var widget = badge.addComponent(cc.Widget);
   widget.isAlignTop = true;
   widget.top = 3;
@@ -216,6 +276,8 @@ TestMode.prototype._refreshBadge = function () {
   widget.updateAlignment();
   // No button, touch listener, or BlockInputEvents: this badge never eats input.
   this._badge = badge;
+  this._fpsLabel = fpsLabel;
+  this._trackFps(true);
 };
 
 exports.TestMode = TestMode;

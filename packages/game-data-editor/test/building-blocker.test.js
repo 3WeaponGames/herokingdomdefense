@@ -37,7 +37,7 @@ test('blocker sections describe the actual selected building tier and full wall 
 });
 
 test('polygon union, hole erasing and clear update the shared stage draft without changing map blockers or saved files',()=>{
- const f=fixture(),building=f.service.buildingCatalog().find(b=>b.kind===2),row=f.config.BuildEnum[2].levelList[0],stage={variant:'A',buildings:[Object.assign({},building,{x:0,y:0,scale:1,angle:0})]},file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),before=fs.readFileSync(file),original=f.service.snapshot('map:Map01').value;
+ const f=fixture();for(const r of f.config.BuildEnum[2].levelList)delete r.WorldScale;const building=f.service.buildingCatalog().find(b=>b.kind===2),row=f.config.BuildEnum[2].levelList[0],stage={variant:'A',buildings:[Object.assign({},building,{x:0,y:0,scale:1,angle:0})]},file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),before=fs.readFileSync(file),original=f.service.snapshot('map:Map01').value;
  const first=Preview.describe(f.service,stage),mask=Clip.combineMask(Clip.polygonBrush(rect(-70,-40,140,80)),Clip.polygonBrush(rect(-10,-10,20,20)),'erase'),blocker={version:1,body:{mask,polygons:Clip.collisionPolygons(mask)}};
  f.store.change({version:f.store.version,edits:[{doc:'A',path:['BuildEnum','2','levelList',0,'Blocker'],value:blocker}]});
  const next=Preview.describe(f.service,stage);assert.notEqual(next.revision,first.revision);assert.equal(f.service.version,1,'World version need not change for a shared building draft');assert.deepEqual(Data.issues(blocker,false),[]);assert.deepEqual(next.buildings[building.id].levels[1].blockers,blocker.body.polygons);
@@ -49,7 +49,7 @@ test('polygon union, hole erasing and clear update the shared stage draft withou
 });
 
 test('every gate facing and artwork tier repeats the pillar blocker on new joins and matches native fixed/leaf fixtures',()=>{
- const f=fixture(),template=f.service.buildingCatalog().find(b=>b.kind===6),base=Data.describe(f.service,{id:'6',levelIndex:0}).value;
+ const f=fixture();for(const r of f.config.BuildEnum[6].levelList)delete r.WorldScale;const template=f.service.buildingCatalog().find(b=>b.kind===6),base=Data.describe(f.service,{id:'6',levelIndex:0}).value;
  base.pillar=Data.shape([rect(-24,-17,48,34)]);
  for(const face of ['NE','NW','SE','SW'])for(const level of [1,2,3]){
   const row=f.config.BuildEnum[6].levelList[level-1];row.Blocker=clone(base);

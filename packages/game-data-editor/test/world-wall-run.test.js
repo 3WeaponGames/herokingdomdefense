@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),path=requir
 const M=require('../worlds/model'),L=require('../worlds/legacy'),Maps=require('../lib/map-assets'),Gate=require('../worlds/gate-facing'),Run=require('../worlds/wall-run'),Preview=require('../worlds/building-preview'),Nav=require('../worlds/navigation'),P=require('../worlds/prefab');
 const root=path.resolve(__dirname,'../../..');
 const Kit=require('../../../assets/_script/WallKit'),Facing=require('../../../assets/_script/GateFacing'),Units=require('../lib/unit-assets');
-function fixture(){const config=M.clone(L.read(root,L.configFile('A'))),source=L.inspect(root,'Map01'),stage=L.adaptStage(root,'A',1,{...config.LevelCfg[0],prefab:'Map01'});const wall=stage.buildings.find(b=>b.kind===6);stage.buildings=[wall];stage.specials=[];const index={documents:{A:config,B:{},D:{}}},service={root,index:()=>index,source:()=>source.data};return{config,source,stage,wall,service};}
+function fixture(){const config=require('./building-geometry-fixture')(L.read(root,L.configFile('A'))),source=L.inspect(root,'Map01'),stage=L.adaptStage(root,'A',1,{...config.LevelCfg[0],prefab:'Map01'});const wall=stage.buildings.find(b=>b.kind===6);wall.purchaseOverride=true;stage.buildings=[wall];stage.specials=[];const index={documents:{A:config,B:{},D:{}}},service={root,index:()=>index,source:()=>source.data};return{config,source,stage,wall,service};}
 function owner(source,wall){const info=Maps.model(source),node=info.byId[wall.template.node],controller=node.components.find(c=>c.value.ndAniMain&&Number.isInteger(c.value.ID));return{info,node,controller};}
 
 test('opening wall tools keeps legacy sources unchanged; custom runs project only detached fixtures',()=>{

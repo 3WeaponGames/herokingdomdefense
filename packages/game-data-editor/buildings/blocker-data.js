@@ -27,7 +27,8 @@ function describe(service,request){
  let shadowParts=parts;
  if(building.kind===6){const main=record.skeletons.find(s=>s.json.wallKit),layout=main.json.wallKit.layout;shadowDefaults.gateSpan=layout.nativeGateSpan;const copies=Geometry.instances(layout,row.Shadow&&row.Shadow.gateSpan);shadowParts=parts.map(p=>Object.assign({},p,{instances:copies[p.key].map(matrix=>relative(Maps.multiply(main.matrix,matrix)))}));}
  if(row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset'),v=Offset.vector(owner.world,Offset.value(row));for(const part of parts.concat(shadowParts===parts?[]:shadowParts))part.instances=part.instances.map(m=>{const n=m.slice();n[4]+=v.x*worldScale;n[5]+=v.y*worldScale;return n;});}
- return {record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value,shadow:clone(row.Shadow||shadowDefaults),shadowParts,worldScale};
+ const dropStyle=require('./drop-shadow-data').describe(config,config.GameTools||{},request);
+ return {dropStyle,record,runtimePath:preview.runtimePath,images:Object.assign({},service.index().images,preview.images),parts,value,shadow:clone(row.Shadow||shadowDefaults),shadowParts,worldScale};
 }
 function shadowIssues(value,wall){
  if(!value||value.version!==1||typeof value!=='object'||Array.isArray(value))return ['Invalid building shadow mask.'];

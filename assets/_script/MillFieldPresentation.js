@@ -95,7 +95,7 @@ function destroy(runtime,field) {
 }
 function clear(field,owner) {
   if(field.debris){Debris.discard(owner,field.debris);field.debris=null;}
-  if(field.health){field.health.node.active=false;field.health.node.destroy();field.health=null;}
+  if(field.health){if(cc.isValid(field.health.node,true)){field.health.node.active=false;field.health.node.destroy();}field.health=null;}
 }
 exports.worldPoint=worldPoint;
 exports.deathKeys=deathKeys;

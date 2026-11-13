@@ -14,7 +14,7 @@ function canonical(value){
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex'),hash=value=>sha(JSON.stringify(canonical(value)));
 function withoutPainted(asset,value){
   const contract=fixture.rigs[asset];if(!contract)return clone(value);
-  const json=require("./mill-field-contract.cjs").withoutDefense(asset,clone(value));
+  const json=require("./mill-field-contract.cjs").withoutDefense(asset,require('./building-night-light-contract.cjs').skeleton(asset,value));
   assert.equal(hash(json.skeleton),contract.currentHeader,asset+' reviewed culling header');
   json.skeleton=clone(contract.originalHeader);
   for(const [field,added]of [['bones',contract.newBones],['slots',contract.newSlots],['skins',contract.newSkins]]){
@@ -34,14 +34,14 @@ function withoutPainted(asset,value){
   return json;
 }
 function withoutPaintedMetadata(asset,value){
-  const contract=fixture.rigs[asset];if(!contract)return clone(value);const result=clone(value);
+  const contract=fixture.rigs[asset];if(!contract)return clone(value);const result=require('./building-night-light-contract.cjs').metadata(asset,value);
   require("./mill-field-contract.cjs").metadata(asset,result);
   assert.deepEqual(result.textures,[...contract.originalTextures,...contract.pages.map(v=>v.uuid)],asset+' binds exactly its original and approved appended atlas pages');
   result.textures=result.textures.slice(0,contract.originalTextures.length);
   assert.equal(hash(result),contract.originalJsonMetadata,asset+' retains original UUID and all non-texture metadata');return result;
 }
 function withoutPaintedAtlas(asset,text){
-  const contract=fixture.rigs[asset];if(!contract)return text;const normalized=require('./mill-field-contract.cjs').atlas(asset,text.replace(/\r\n/g,'\n'));
+  const contract=fixture.rigs[asset];if(!contract)return text;const normalized=require('./mill-field-contract.cjs').atlas(asset,require('./building-night-light-contract.cjs').atlas(asset,text));
   const marker='\n'+contract.pages[0].name+'\n',index=normalized.indexOf(marker);assert(index>=0,asset+' missing approved appended page');
   const prefix=normalized.slice(0,index).trim(),append=normalized.slice(index).trim();
   assert.deepEqual(append.split('\n').filter(v=>/^[^\s]+\.png$/.test(v)),contract.pages.map(v=>v.name),asset+' no unknown appended pages');
@@ -51,23 +51,27 @@ function legacyRead(file,value){
   const normalized=String(file).replace(/\\/g,'/'),match=normalized.match(/(?:^|\/)assets\/KinghtFallIconMap\/com\/Ani\/(cb|by|mf|td|mz)\/\1\.json(\.meta)?$/);
   return match?(match[2]?withoutPaintedMetadata(match[1],value):withoutPainted(match[1],value)):value;
 }
+function withoutAuthoring(value){
+ const result=clone(value);for(const family of Object.values(result.BuildEnum||{}))for(const row of family.levelList||[])for(const key of ['WorldScale','ModelOffset','PartScale','Blocker','Shadow','PurchaseField','SpawnPositions','AdUnitPosition','DropShadow'])delete row[key];return result;
+}
 function assertConfig(file,config){
+ config=withoutAuthoring(config);
   const contract=fixture.config[file];assert(contract,'documented config '+file);
   assert.deepEqual(Object.keys(config.BuildEnum),Object.keys(contract.originalFamilies),'original building enum identities');
   for(const[id,header]of Object.entries(contract.originalFamilies)){
     const family=config.BuildEnum[id],{levelList,...actualHeader}=family;assert.deepEqual(actualHeader,header,'family '+id+' original unknown/header fields');
-    const expected=contract.families[id];if(!expected)continue;
-    assert.equal(levelList.length,expected.originalRows.length+expected.addedRows.length,'exact authorized tier count');
+    const familyContract=contract.families[id];if(!familyContract)continue;
+    assert.equal(levelList.length,familyContract.originalRows.length+familyContract.addedRows.length,'exact authorized tier count');
     assert.equal(new Set(levelList.map(v=>v.index)).size,levelList.length,'unique original and appended indices');
-    for(const row of expected.originalRows){
+    for(const row of familyContract.originalRows){
       const actual=levelList.find(v=>v.index===row.index);assert(actual,'original row '+id+'/'+row.index);
       const values=clone(actual);for(const key of ['Skin','Icon','Appearance','BranchBuild'])delete values[key];
-      assert.deepEqual(values,row.values,'original stats, costs, colliders, routes, timing and unknown row fields '+id+'/'+row.index);
+      assert.deepEqual(values,withoutAuthoring({BuildEnum:{current:{levelList:[row.values]}}}).BuildEnum.current.levelList[0],'original stats, costs, colliders, routes, timing and unknown row fields '+id+'/'+row.index);
       assert.deepEqual(actual.BranchBuild||null,row.branch,'explicit authorized tier route');
       assert.equal(actual.Skin,row.visual.Skin);assert.equal(actual.Icon,row.visual.Icon);
       if(row.visual.Appearance)assert.equal(hash(actual.Appearance),row.visual.Appearance,'approved tower appearance/immutable weapon mapping');else assert.equal(actual.Appearance,undefined,'native animated families cannot acquire a static replacement');
     }
-    for(const row of expected.addedRows)assert.deepEqual(levelList.find(v=>v.index===row.index),row,'authorized fourth-tier progression and visual bindings');
+    for(const row of familyContract.addedRows)assert.deepEqual(levelList.find(v=>v.index===row.index),withoutAuthoring({BuildEnum:{current:{levelList:[row]}}}).BuildEnum.current.levelList[0],'authorized fourth-tier progression and visual bindings');
   }
 }
-module.exports={fixture,canonical,hash,sha,clone,withoutPainted,withoutPaintedMetadata,withoutPaintedAtlas,legacyRead,assertConfig};
+module.exports={withoutAuthoring,fixture,canonical,hash,sha,clone,withoutPainted,withoutPaintedMetadata,withoutPaintedAtlas,legacyRead,assertConfig};

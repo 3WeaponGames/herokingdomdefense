@@ -21,7 +21,12 @@ function record(source, factor, scaleBlockers) {
   }
   return result;
 }
-function live(node) { return !!node && (!cc.isValid || cc.isValid(node,true)); }
+function live(node) {
+  if(!node||cc.isValid&&!cc.isValid(node,true))return false;
+  var flags=cc.Object&&cc.Object.Flags,retired=flags&&((flags.Destroying||0)|(flags.Destroyed||0)|(flags.ToDestroy||0));
+  for(var parent=node;parent;parent=parent.parent)if(retired&&(parent._objFlags&retired)||parent._children===null||parent._components===null)return false;
+  return true;
+}
 function liveComponent(component) { return live(component)&&live(component.node); }
 function childOf(node,parent) { for(var p=node;p;p=p.parent)if(p===parent)return true;return false; }
 function relative(node,frame) {
@@ -30,7 +35,7 @@ function relative(node,frame) {
 }
 function place(entry,owner,factor,offset) {
   if(!live(owner.node)||!live(entry.node)||!live(entry.node.parent))return;
-  var m=entry.matrix,divisor=entry.pad?factor:1,dx=entry.pad?offset.x:0,dy=entry.pad?offset.y:0;
+  var m=entry.matrix,divisor=entry.pad||entry.fixedSize?factor:1,dx=entry.pad?offset.x:0,dy=entry.pad?offset.y:0;
   function p(x,y){return entry.node.parent.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(x,y)));}
   var o=p(m[4]-dx,m[5]-dy),x=p(m[4]-dx+m[0]/divisor,m[5]-dy+m[1]/divisor),y=p(m[4]-dx+m[2]/divisor,m[5]-dy+m[3]/divisor),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
   entry.node.setPosition(o);entry.node.angle=Math.atan2(b,a)*180/Math.PI;entry.node.scaleX=sx;entry.node.scaleY=sx?(a*d-b*c)/sx:0;
@@ -59,6 +64,7 @@ function resize(owner,state,factor,offset) {
   if(live(hp)&&hp.parent&&live(owner.ndHp))hp.setPosition(hp.parent.convertToNodeSpaceAR(owner.ndHp.convertToWorldSpaceAR(cc.v2(0,0))));
   owner._combatFootprints=null;
 }
+function dispose(owner) { delete owner._buildingWorldScaleRuntime; }
 function restore(owner) {
   var state=owner._buildingWorldScaleRuntime;if(!state)return;
   if(live(owner.node))resize(owner,state,1);
@@ -73,7 +79,8 @@ function apply(owner) {
   nodes.forEach(function(node){parts.push({node:node,matrix:relative(node,owner.node)});});
   var pads=[],fields=(owner.ndLockList||[]).filter(Boolean);fields.forEach(function(field){var parent=field.parent,dedicated=parent&&parent!==owner.node&&parent.children.every(function(n){return fields.indexOf(n)>=0;}),node=dedicated?parent:field;if(node!==owner.node&&pads.indexOf(node)<0)pads.push(node);});
   pads.forEach(function(node){parts.push({node:node,matrix:relative(node,owner.node),pad:true});});
+  var ad=owner.ndVideoSoldier;if(ad&&ad!==owner.node&&pads.indexOf(ad)<0)parts.push({node:ad,matrix:relative(ad,owner.node),fixedSize:true});
   var state=owner._buildingWorldScaleRuntime={x:owner.node.x||0,y:owner.node.y||0,scaleX:owner.node.scaleX,scaleY:owner.node.scaleY,parts:parts,factor:factor};
   resize(owner,state,factor,offset);
 }
-exports.valid=valid;exports.value=value;exports.matrix=matrix;exports.polygons=polygons;exports.record=record;exports.apply=apply;exports.restore=restore;
+exports.dispose=dispose;exports.valid=valid;exports.value=value;exports.matrix=matrix;exports.polygons=polygons;exports.record=record;exports.apply=apply;exports.restore=restore;

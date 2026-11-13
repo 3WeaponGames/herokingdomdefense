@@ -6,6 +6,7 @@ const Kit = require('../../assets/_script/WallKit'), Assembly = require('../../a
 const Door = require('../../assets/_script/WallDoor'), Facing = require('../../assets/_script/GateFacing');
 const root = path.resolve(__dirname, '../..'), folder = path.join(root, 'assets/KinghtFallIconMap/com/Ani/cq/cq1');
 const installed = JSON.parse(fs.readFileSync(path.join(folder, 'cq1.json'), 'utf8'));
+installed.wallKit.layers.castShadows=true;
 const atlasText = fs.readFileSync(path.join(folder, 'cq1.atlas'), 'utf8');
 const clone = value => JSON.parse(JSON.stringify(value));
 const runtime = path.join(process.env.COCOS_ENGINE_ROOT || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine', 'extensions/spine/lib/spine.js');

@@ -49,6 +49,7 @@ var def_KinghtFallModle = function () {
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().preload(function () {
           $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.AudioCfg);
           require("CharacterAppearance").preload(function () {
+            require("BuildingAssetWarmup").preload(function () {
             e.isLoad = true;
             t && t();
             $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, function () {
@@ -56,6 +57,7 @@ var def_KinghtFallModle = function () {
               $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconMap, function () {
                 $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.EndLoading);
               });
+            });
             });
           });
         });

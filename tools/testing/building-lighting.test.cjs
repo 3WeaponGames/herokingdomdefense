@@ -33,6 +33,29 @@ function fixture(){
 function record(h){return h.state._buildingLighting;}
 function step(h,dt){h.api.update(h.owner,h.state,dt);}
 
+test('native projected fans share one retained frame, keep authored transforms and use the existing phase lifecycle',()=>{
+  const h=fixture(),appearance=JSON.parse(JSON.stringify(require('../../assets/KinghtFallConfig/GameJsonCfg.json').BuildEnum[2].levelList.find(row=>row.index===10).Appearance));
+  appearance.lighting[0].glows[0].shearX=12;appearance.lighting[0].glows[0].shearY=-4;
+  h.owner.buildInfo.cfg.Appearance=appearance;const before=JSON.stringify(appearance);
+  h.api.apply(h.owner,h.state);const r=record(h),fans=r.entries.flatMap(entry=>entry.glows);
+  assert.equal(r.entries.length,2,'upper lookout apertures and the open entry stay separately registered');assert.equal(fans.length,3);
+  assert.equal(h.requests.length,2,'the exact core mask and one shared original fan are the only frames');
+  const shared=h.frame('native fan');for(const request of h.requests)request.done(request.file==='buildings/lighting/native-window-ray'?shared:h.frame('core'));
+  assert.equal(shared.adds,1);assert(fans.every(part=>part.sprite.spriteFrame===shared));
+  assert.deepEqual([fans[0].node.angle,fans[0].node.skewX,fans[0].node.skewY],[-90,12,-4]);
+  const transforms=fans.map(part=>[part.node.x,part.node.y,part.node.width,part.node.height,part.node.angle,part.node.skewX,part.node.skewY]);
+  assert.equal(r.node.active,false);h.api.setNight(h.owner,true);step(h,.25);near(r.blend,.5);step(h,.25);
+  const opacity=fans.map(part=>part.node.opacity);step(h,.6);assert(fans.some((part,index)=>part.node.opacity!==opacity[index]));
+  assert.deepEqual(fans.map(part=>[part.node.x,part.node.y,part.node.width,part.node.height,part.node.angle,part.node.skewX,part.node.skewY]),transforms,'breathing allocates no new ray geometry or transform work');
+  h.api.setNight(h.owner,false);assert.equal(r.node.active,false);h.api.setNight(h.owner,true);step(h,.5);h.api.hide(h.owner,h.state);h.api.apply(h.owner,h.state);step(h,.5);
+  assert.equal(h.requests.length,2);assert.equal(JSON.stringify(appearance),before);h.api.dispose(h.owner,h.state);assert.equal(shared.releases,1);
+});
+
+test('invalid optional fan transforms fall back without repairing saved values',()=>{
+  const h=fixture();h.lighting[0].glow={angle:NaN,shearX:Infinity,shearY:'2'};h.api.apply(h.owner,h.state);
+  const fan=record(h).entries[0].glow;assert.deepEqual([fan.angle,fan.skewX,fan.skewY],[0,0,0]);assert(Number.isNaN(h.lighting[0].glow.angle));assert.equal(h.lighting[0].glow.shearX,Infinity);
+});
+
 test('exact sprite apertures share one mask without double filling and keep two lookout glows independently placed',()=>{
   const h=fixture(),mask='buildings/redesign/towers/archer-4-window-light';
   const light={sprite:mask,width:240,height:240,offsetX:0,offsetY:0,color:'#FFE89A',opacity:240,

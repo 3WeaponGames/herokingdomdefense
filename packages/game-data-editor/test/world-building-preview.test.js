@@ -3,7 +3,8 @@ const test=require('node:test'),assert=require('node:assert/strict'),path=requir
 const Preview=require('../worlds/building-preview'),L=require('../worlds/legacy'),M=require('../worlds/model'),Maps=require('../lib/map-assets'),WeaponPose=require('../../../assets/_script/BuildingWeaponPose'),GateSource=require('../worlds/gate-facing');
 const root=path.resolve(__dirname,'../../..');
 function fixture(map){
- const config=M.clone(L.read(root,L.configFile('A'))),source=L.inspect(root,map||'Map01'),stage=L.adaptStage(root,'A',1,Object.assign({},config.LevelCfg[0],{prefab:map||'Map01'}));
+ const config=require('./building-geometry-fixture')(L.read(root,L.configFile('A'))),source=L.inspect(root,map||'Map01'),stage=L.adaptStage(root,'A',1,Object.assign({},config.LevelCfg[0],{prefab:map||'Map01'}));
+ stage.buildings.forEach(b=>b.purchaseOverride=true);
  const service={root,index:()=>({documents:{A:config,B:{},D:{}}}),source:()=>source.data};
  return {config,source,stage,service};
 }

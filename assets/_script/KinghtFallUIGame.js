@@ -459,7 +459,12 @@ var def_KinghtFallUIGame = function (t) {
     this.cancelBattleDialog();
     this._stopTestMovement();
     TestMode.getInstance().removeGameplayTarget(this);
-    $z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome).node.active = true;
+    // Restart replaces the battle directly; revealing Home starts lobby music
+    // and exposes its HUD during the deferred teardown.
+    if (!this._restartPending) {
+      var home=$z1UIMgr.UIMgr.getInstance().getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome);
+      if(home&&home.node)home.node.active=true;
+    }
   };
   _ctor.prototype.onDestroy = function () {
     if (this._enemyGuide) require("EnemyGuide").close(this, true);

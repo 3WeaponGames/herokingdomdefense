@@ -4507,7 +4507,7 @@
               "visual": {
                 "Icon": "painted-archer-1",
                 "Skin": "jt-1",
-                "Appearance": "7c97e4514c3510a1303850353bc135e2d70dda77d97d21ce3b8955c1d36d8527"
+                "Appearance": "476d74f9394a37460bdb3b75371585383f1412b38fe7cfae8723e0550a8a915c"
               }
             },
             {
@@ -4537,7 +4537,7 @@
               "visual": {
                 "Icon": "painted-archer-2",
                 "Skin": "jt-2-1",
-                "Appearance": "0095c759c99ee6caccfae9332255e7421eaae3b897464c8b6bb8221e8d85294f"
+                "Appearance": "7db0e4a7bfc79d000210921d829eb7e6b271b20285d95b2b62ad0def8c77290d"
               }
             },
             {
@@ -4568,7 +4568,7 @@
               "visual": {
                 "Icon": "painted-archer-3",
                 "Skin": "jt-2-2",
-                "Appearance": "e0b95c98bf3f1de2d62f1d7235f2af096bc0dcdc166ac2b8be48dabbc44730ff"
+                "Appearance": "b7e0df0c713e316f443f60907e052ac7e66ea4b0ce63ab7bc7307dca9f987a0c"
               }
             },
             {
@@ -4606,7 +4606,7 @@
               "visual": {
                 "Icon": "painted-cannon-1",
                 "Skin": "jt-1",
-                "Appearance": "3dbbb0a5c43d0d8ccd834fb7d3daf9ca1139aaade3e65ab3636a521107da6997"
+                "Appearance": "9abee2519f0c4af342599646614c1c55785463945e3720378b5dff47d74d5847"
               }
             },
             {
@@ -4644,7 +4644,7 @@
               "visual": {
                 "Icon": "painted-cannon-2",
                 "Skin": "jt-2-1",
-                "Appearance": "783c10bcaa40a72d82afc9c7d300aa4504f7ae7bdd7a9363eebc35de09495cb0"
+                "Appearance": "08a0f9443544a559f0e299028fde6e4ece6afab0bae2da754bd78d9b02509ee8"
               }
             },
             {
@@ -4681,7 +4681,7 @@
               "visual": {
                 "Icon": "painted-cannon-3",
                 "Skin": "jt-2-2",
-                "Appearance": "b7c97194a4c23f64688d40f0f2488d0f508646dd3b1868b256224aada8fb4f2b"
+                "Appearance": "1417380cd07f9945137b684f47a0d5f145cb544e8fcdf1d738ab55d1747b4a7f"
               }
             },
             {
@@ -4719,7 +4719,7 @@
               "visual": {
                 "Icon": "painted-sniper-1",
                 "Skin": "jt-1",
-                "Appearance": "16a9e47a657d721c8867691d38b4e729babc53223340c0483790b76ed07dbdbb"
+                "Appearance": "2380b760a5770879c2b648f57d6f26ccc97f9c5caa5054a6b80bae699fd72a8a"
               }
             },
             {
@@ -4757,7 +4757,7 @@
               "visual": {
                 "Icon": "painted-sniper-2",
                 "Skin": "jt-2-1",
-                "Appearance": "7a2f23169f4cbebe8ba27a5fc033dea0b27a6ff542b7248bafe2747561911e60"
+                "Appearance": "1fa2b5323ba023e206f9c171cbcb63486bf6a196856e179e9b1cc438d2e7cc61"
               }
             },
             {
@@ -4794,7 +4794,7 @@
               "visual": {
                 "Icon": "painted-sniper-3",
                 "Skin": "jt-2-2",
-                "Appearance": "6bbca18caaa59b7554e1abc58fffc1fc5ea4f67d0b1b1cd5cc7a9d925b8942da"
+                "Appearance": "d06b8bfab947d9ff5069c5c3a5e1ed6f2034ac26bc6ff78486133afe462d0978"
               }
             }
           ],
@@ -4836,25 +4836,74 @@
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
-                    "opacity": 240,
+                    "opacity": 72,
                     "glows": [
                       {
-                        "x": -22.973103666245258,
-                        "y": 98.03906447534767,
-                        "width": 68.53514538558787,
-                        "height": 58.393173198482934,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": -58.954055,
+                        "y": 98.0390645,
+                        "width": 32.1162453,
+                        "height": 71.9619027,
+                        "angle": -90,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 175,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       },
                       {
-                        "x": 21.436441213653605,
-                        "y": 96.19506953223767,
-                        "width": 58.0858407079646,
-                        "height": 51.01719342604299,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": 21.4364412,
+                        "y": 69.411043,
+                        "width": 31.9472124,
+                        "height": 53.5680531,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 175,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
+                      }
+                    ]
+                  },
+                  {
+                    "points": [
+                      {
+                        "x": 16.5959545,
+                        "y": 54.7051833
+                      },
+                      {
+                        "x": 20.8986094,
+                        "y": 58.3931732
+                      },
+                      {
+                        "x": 24.5865992,
+                        "y": 60.2371681
+                      },
+                      {
+                        "x": 24.5865992,
+                        "y": 43.0265487
+                      },
+                      {
+                        "x": 16.5959545,
+                        "y": 38.7238938
+                      }
+                    ],
+                    "color": "#FFE89A",
+                    "opacity": 120,
+                    "glows": [
+                      {
+                        "x": 20.5912768,
+                        "y": 31.1942478,
+                        "width": 9.9883059,
+                        "height": 36.5725663,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 180,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       }
                     ]
                   }
@@ -4905,16 +4954,20 @@
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
-                    "opacity": 240,
+                    "opacity": 180,
                     "glows": [
                       {
-                        "x": 27.97343866418978,
-                        "y": 39.11732886374506,
-                        "width": 26.745336478932664,
-                        "height": 29.565422978411963,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": 27.9734387,
+                        "y": 22.1172107,
+                        "width": 17.3844687,
+                        "height": 34.0002364,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 140,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       }
                     ]
                   }
@@ -5029,16 +5082,20 @@
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
-                    "opacity": 240,
+                    "opacity": 180,
                     "glows": [
                       {
-                        "x": 25.551795276131937,
-                        "y": 40.41829434588143,
-                        "width": 27.317192040664686,
-                        "height": 30.197576235428652,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": 25.5517953,
+                        "y": 23.054688,
+                        "width": 17.7561748,
+                        "height": 34.7272127,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 140,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       }
                     ]
                   }
@@ -6197,7 +6254,7 @@
               "visual": {
                 "Icon": "painted-archer-1",
                 "Skin": "jt-1",
-                "Appearance": "7c97e4514c3510a1303850353bc135e2d70dda77d97d21ce3b8955c1d36d8527"
+                "Appearance": "476d74f9394a37460bdb3b75371585383f1412b38fe7cfae8723e0550a8a915c"
               }
             },
             {
@@ -6227,7 +6284,7 @@
               "visual": {
                 "Icon": "painted-archer-2",
                 "Skin": "jt-2-1",
-                "Appearance": "0095c759c99ee6caccfae9332255e7421eaae3b897464c8b6bb8221e8d85294f"
+                "Appearance": "7db0e4a7bfc79d000210921d829eb7e6b271b20285d95b2b62ad0def8c77290d"
               }
             },
             {
@@ -6258,7 +6315,7 @@
               "visual": {
                 "Icon": "painted-archer-3",
                 "Skin": "jt-2-2",
-                "Appearance": "e0b95c98bf3f1de2d62f1d7235f2af096bc0dcdc166ac2b8be48dabbc44730ff"
+                "Appearance": "b7e0df0c713e316f443f60907e052ac7e66ea4b0ce63ab7bc7307dca9f987a0c"
               }
             },
             {
@@ -6296,7 +6353,7 @@
               "visual": {
                 "Icon": "painted-cannon-1",
                 "Skin": "jt-1",
-                "Appearance": "3dbbb0a5c43d0d8ccd834fb7d3daf9ca1139aaade3e65ab3636a521107da6997"
+                "Appearance": "9abee2519f0c4af342599646614c1c55785463945e3720378b5dff47d74d5847"
               }
             },
             {
@@ -6334,7 +6391,7 @@
               "visual": {
                 "Icon": "painted-cannon-2",
                 "Skin": "jt-2-1",
-                "Appearance": "783c10bcaa40a72d82afc9c7d300aa4504f7ae7bdd7a9363eebc35de09495cb0"
+                "Appearance": "08a0f9443544a559f0e299028fde6e4ece6afab0bae2da754bd78d9b02509ee8"
               }
             },
             {
@@ -6371,7 +6428,7 @@
               "visual": {
                 "Icon": "painted-cannon-3",
                 "Skin": "jt-2-2",
-                "Appearance": "b7c97194a4c23f64688d40f0f2488d0f508646dd3b1868b256224aada8fb4f2b"
+                "Appearance": "1417380cd07f9945137b684f47a0d5f145cb544e8fcdf1d738ab55d1747b4a7f"
               }
             },
             {
@@ -6409,7 +6466,7 @@
               "visual": {
                 "Icon": "painted-sniper-1",
                 "Skin": "jt-1",
-                "Appearance": "16a9e47a657d721c8867691d38b4e729babc53223340c0483790b76ed07dbdbb"
+                "Appearance": "2380b760a5770879c2b648f57d6f26ccc97f9c5caa5054a6b80bae699fd72a8a"
               }
             },
             {
@@ -6447,7 +6504,7 @@
               "visual": {
                 "Icon": "painted-sniper-2",
                 "Skin": "jt-2-1",
-                "Appearance": "7a2f23169f4cbebe8ba27a5fc033dea0b27a6ff542b7248bafe2747561911e60"
+                "Appearance": "1fa2b5323ba023e206f9c171cbcb63486bf6a196856e179e9b1cc438d2e7cc61"
               }
             },
             {
@@ -6484,7 +6541,7 @@
               "visual": {
                 "Icon": "painted-sniper-3",
                 "Skin": "jt-2-2",
-                "Appearance": "6bbca18caaa59b7554e1abc58fffc1fc5ea4f67d0b1b1cd5cc7a9d925b8942da"
+                "Appearance": "d06b8bfab947d9ff5069c5c3a5e1ed6f2034ac26bc6ff78486133afe462d0978"
               }
             }
           ],
@@ -6526,25 +6583,74 @@
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
-                    "opacity": 240,
+                    "opacity": 72,
                     "glows": [
                       {
-                        "x": -22.973103666245258,
-                        "y": 98.03906447534767,
-                        "width": 68.53514538558787,
-                        "height": 58.393173198482934,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": -58.954055,
+                        "y": 98.0390645,
+                        "width": 32.1162453,
+                        "height": 71.9619027,
+                        "angle": -90,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 175,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       },
                       {
-                        "x": 21.436441213653605,
-                        "y": 96.19506953223767,
-                        "width": 58.0858407079646,
-                        "height": 51.01719342604299,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": 21.4364412,
+                        "y": 69.411043,
+                        "width": 31.9472124,
+                        "height": 53.5680531,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 175,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
+                      }
+                    ]
+                  },
+                  {
+                    "points": [
+                      {
+                        "x": 16.5959545,
+                        "y": 54.7051833
+                      },
+                      {
+                        "x": 20.8986094,
+                        "y": 58.3931732
+                      },
+                      {
+                        "x": 24.5865992,
+                        "y": 60.2371681
+                      },
+                      {
+                        "x": 24.5865992,
+                        "y": 43.0265487
+                      },
+                      {
+                        "x": 16.5959545,
+                        "y": 38.7238938
+                      }
+                    ],
+                    "color": "#FFE89A",
+                    "opacity": 120,
+                    "glows": [
+                      {
+                        "x": 20.5912768,
+                        "y": 31.1942478,
+                        "width": 9.9883059,
+                        "height": 36.5725663,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 180,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       }
                     ]
                   }
@@ -6595,16 +6701,20 @@
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
-                    "opacity": 240,
+                    "opacity": 180,
                     "glows": [
                       {
-                        "x": 27.97343866418978,
-                        "y": 39.11732886374506,
-                        "width": 26.745336478932664,
-                        "height": 29.565422978411963,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": 27.9734387,
+                        "y": 22.1172107,
+                        "width": 17.3844687,
+                        "height": 34.0002364,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 140,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       }
                     ]
                   }
@@ -6719,16 +6829,20 @@
                     "offsetX": 0,
                     "offsetY": 0,
                     "color": "#FFE89A",
-                    "opacity": 240,
+                    "opacity": 180,
                     "glows": [
                       {
-                        "x": 25.551795276131937,
-                        "y": 40.41829434588143,
-                        "width": 27.317192040664686,
-                        "height": 30.197576235428652,
-                        "color": "#FFC85B",
-                        "opacity": 80,
-                        "pulse": 0.08
+                        "x": 25.5517953,
+                        "y": 23.054688,
+                        "width": 17.7561748,
+                        "height": 34.7272127,
+                        "angle": 0,
+                        "shearX": 0,
+                        "shearY": 0,
+                        "color": "#FFFFFF",
+                        "opacity": 140,
+                        "pulse": 0.08,
+                        "sprite": "buildings/lighting/native-window-ray"
                       }
                     ]
                   }

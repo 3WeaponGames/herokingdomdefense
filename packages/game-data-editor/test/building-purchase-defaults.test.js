@@ -24,7 +24,7 @@ test('Southeast is the authoring default, wall facings are independent, and futu
 
 test('browsing every wall pad variant and tier uses the real model and creates no drafts or scene writes',()=>{
  const f=fixture(),before=f.store.draftState(),source=JSON.stringify(f.service.source('Map01'));
- for(const variant of ['NE','NW','SE','SW'])for(const levelIndex of [0,1,2]){const data=Data.describe(f.service,{id:'6',levelIndex,variant});assert.deepEqual(data.settings,{southwest:false,x:0,y:0});assert.equal(data.variants.length,4);assert(data.records.southeast.skeletons.length);assert(data.records.southeast.step.length>=3);assert(data.records.southwest.purchaseField.center.x<0);assert(data.records.southeast.purchaseField.center.x>0);}
+ for(const variant of ['NE','NW','SE','SW'])for(const levelIndex of [0,1,2]){const data=Data.describe(f.service,{id:'6',levelIndex,variant});const expected=Settings.resolve(f.config.BuildEnum[6],f.config.BuildEnum[6].levelList[levelIndex],variant);assert.equal(data.settings.southwest,expected.southwest);close(data.settings.x,expected.x);close(data.settings.y,expected.y);assert.equal(data.variants.length,4);assert(data.records.southeast.skeletons.length);assert(data.records.southeast.step.length>=3);assert(data.records.southwest.purchaseField.center.x<0);assert(data.records.southeast.purchaseField.center.x>0);}
  assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.changes().length,0);assert.equal(JSON.stringify(f.service.source('Map01')),source);
 });
 
@@ -52,7 +52,7 @@ test('saved pad defaults update the stage preview while explicit stage overrides
 });
 
 test('map movement and scale do not alter authored pad offsets, and a missing saved setting preserves legacy poses',()=>{
- const f=fixture(),b=clone(f.service.buildingCatalog().find(b=>b.kind===2)),category=clone(f.config.BuildEnum[2]),row=category.levelList[0],raw=f.service.source(b.template.prefab),r=runtime(raw,b,category,row),before=r.build.ndLockList.map(n=>n.convertToWorldSpaceAR(new Vec2()));
+ const f=fixture(),b=clone(f.service.buildingCatalog().find(b=>b.kind===2)),category=clone(f.config.BuildEnum[2]),row=category.levelList[0],raw=f.service.source(b.template.prefab),r=(category.levelList.forEach(row=>delete row.PurchaseField),runtime(raw,b,category,row)),before=r.build.ndLockList.map(n=>n.convertToWorldSpaceAR(new Vec2()));
  r.module.apply(r.build);r.build.ndLockList.forEach((n,i)=>{const p=n.convertToWorldSpaceAR(new Vec2());close(p.x,before[i].x);close(p.y,before[i].y);});assert(!r.build._purchaseFieldRuntime);
  row.PurchaseField={southwest:true,x:24,y:-8};const projected=Maps.model(Purchase.project(raw,Purchase.withDefaults(b,{BuildEnum:{2:category}},1,raw))),fieldId=Array.from(r.nodes).find(([_id,n])=>n===r.build.ndLockList[0])[0],parentId=r.info.byId[r.info.byId[b.template.node].parent].id,expected=Maps.point(Maps.inverse(r.info.byId[parentId].world),projected.byId[fieldId].position),parent=r.build.node.parent;
  let mapRoot=parent;const ancestors=[];for(let n=r.build.ndLockList[0];n;n=n.parent)ancestors.push(n);while(mapRoot&&!ancestors.includes(mapRoot))mapRoot=mapRoot.parent;mapRoot.x+=123;mapRoot.y-=87;mapRoot.scaleX*=.7;mapRoot.scaleY*=.7;mapRoot.angle+=23;r.module.apply(r.build);
@@ -71,4 +71,22 @@ test('pad preview offsets and standing triggers match saved defaults after world
   const field=r.build.ndLockList[0],actual=field.convertToWorldSpaceAR(new Vec2()),expected=saved.purchaseField.center;close(actual.x-r.info.byId[b.template.node].position.x,expected.x);close(actual.y-r.info.byId[b.template.node].position.y,expected.y);count++;
  }
  assert.equal(count,36);
+});
+
+test('a saved purchase reference makes every original map template match the catalog preview across scaled tiers',()=>{
+ const f=fixture(),WorldScale=fs.readFileSync(path.join(root,'assets/_script/BuildingWorldScale.js'),'utf8'),{RigidBody,PhysicsPolygonCollider}=require('../../../tools/navigation/runtime-harness.cjs');let checked=0;
+ for(const template of f.service.buildingCatalog()){
+  const category=f.config.BuildEnum[template.kind];for(const row of category.levelList)delete row.PurchaseField;
+  const rootRow=category.levelList[0];rootRow.WorldScale=.73;const data=Data.describe(f.service,{id:String(template.kind),levelIndex:0,variant:template.kind===6?'NE':'default'});rootRow.PurchaseField={southwest:false,x:28,y:-13,Reference:data.reference};
+  const expected=data.records.southeast.purchaseField.center,delta=Maps.point(data.offsetMatrix,{x:28,y:-13}),target={x:expected.x+delta.x,y:expected.y+delta.y};
+  for(const map of ['Map01','Map02','Map03','Map04','Map07']){
+   const source=L.inspect(root,map),stage=L.adaptStage(root,'A',1,{...f.config.LevelCfg[0],prefab:map});
+   for(const original of stage.buildings.filter(b=>b.kind===template.kind))for(const row of category.levelList.slice(0,3)){
+    row.WorldScale=row===rootRow?.73:1.19;const b={...clone(original),previewBranch:row.index,purchaseOverride:false};delete b.purchaseSide;delete b.purchaseOffset;if(template.kind===6)b.wallFacing='NE';
+    const raw=Gate.project(source.data,b,root),r=runtime(raw,b,category,row);r.module.apply(r.build);const scale={exports:{}};vm.runInNewContext(WorldScale,{exports:scale.exports,cc:{v2:(x,y)=>new Vec2(x,y),RigidBody,PhysicsCollider:PhysicsPolygonCollider,isValid:()=>true}});scale.exports.apply(r.build);
+    const actual=r.build.ndLockList[0].convertToWorldSpaceAR(new Vec2()),origin=r.info.byId[b.template.node].position;close(actual.x-origin.x,target.x);close(actual.y-origin.y,target.y);checked++;
+   }
+  }
+ }
+ assert(checked>100);
 });

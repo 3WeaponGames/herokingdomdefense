@@ -70,7 +70,7 @@ function create(kind){
     _action(action){this._queue=this._queue.catch(()=>{}).then(async()=>{try{const snap=await ipc(action,{version:this._snapshot.version});this._apply(snap);return snap;}catch(error){this._status(error.message,true);throw error;}});return this._queue.catch(()=>null);},
     _change(edits,options){
       this._queue=this._queue.catch(()=>{}).then(async()=>{
-        try{const changes=typeof edits==='function'?edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});this._apply(snapshot);return snapshot;}
+        try{const changes=typeof edits==='function'?edits():edits;if(options&&options.skipEmpty&&!changes.length)return this._snapshot;const snapshot=await ipc('change',{version:this._snapshot.version,edits:changes});if(options&&options.keepDetail===this._selected+':'+this._level){this._snapshot=snapshot;this._lastResult=null;this._toolbar();const row=this._rows().find(r=>r.key===this._selected);if(row)this._renderPreview(row);}else this._apply(snapshot);return snapshot;}
         catch(error){this._status(error.message,true);throw error;}
       });return this._queue;
     },

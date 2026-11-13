@@ -119,14 +119,14 @@ test('wall tiers retain approved pack 2/4/7 repaints, asset bindings and gamepla
   const meta = read(dir + 'cq1/cq1.json.meta'), texture = read(dir + 'cq1/' + fixture.page + '.meta');
   assert.equal(meta.textures[1], texture.uuid); assert.equal(texture.premultiplyAlpha, false); assert.equal(texture.packable, false);
   for (const file of ['assets/KinghtFallConfig/GameJsonCfg.json', 'assets/configs/GameJsonCfg.json']) {
-    const wall = read(file).BuildEnum['6'];
+    const wall = require('./painted-building-contract.cjs').withoutAuthoring(read(file)).BuildEnum['6'];
     for (const row of wall.levelList) {assert.equal(row.Skin, 'cq-rts-' + row.index); row.Skin = originals[row.index - 1];}
     assert.equal(sha(JSON.stringify(sorted(wall))), fixture.gameplay, 'Only visual bindings may change');
   }
 });
 
 test('production uses the approved closed pair and separately registered open leaves without old posts or distortion', () => {
- const main=sources.cq1,side=sources.cq2,atlas=regions(),slots=[Door.slot,...Object.values(Door.partSlots)],paths=new Set();
+ const main=require('../../assets/_script/WallAdjustments').restore(sources.cq1),side=sources.cq2,atlas=regions(),slots=[Door.slot,...Object.values(Door.partSlots)],paths=new Set();
  assert.equal(main.wallKit.gateStyle,'matched');assert.equal(main.wallKit.nativeAssembly,2);assert.equal(main.wallKit.volume,false);assert.equal(main.wallKit.doors.version,2);assert.notEqual(main.wallKit.doors.closedOnly,true);assert.equal(main.wallDoor.version,2);assert.equal(main.wallDoor.closedOnly,false);assert.equal(side.wallGate.style,'matched');
  for(const slot of slots)assert.equal(main.slots.filter(value=>value.name===slot).length,1);
  if(main.wallKit.doors.depthOrder==='state-aware'){

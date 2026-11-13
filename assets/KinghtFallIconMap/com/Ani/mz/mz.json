@@ -424,6 +424,16 @@
       "bone": "effect_star_13",
       "color": "ffffffa0",
       "blend": "additive"
+    },
+    {
+      "name": "building_aperture_rays",
+      "bone": "bone3",
+      "color": "ffffff00"
+    },
+    {
+      "name": "building_aperture_cores",
+      "bone": "bone3",
+      "color": "ffffff00"
     }
   ],
   "skins": [
@@ -1639,7 +1649,7 @@
               1,
               0,
               1,
-              1e-05,
+              0.00001,
               0.39307,
               0.25246,
               0.27826
@@ -1726,15 +1736,15 @@
               0.26261,
               0.26406,
               0.42819,
-              1e-05,
+              0.00001,
               0.51439,
-              1e-05,
+              0.00001,
               0.63867,
               0.31712,
               0.76603,
-              1e-05,
+              0.00001,
               0.84766,
-              1e-05,
+              0.00001,
               0.6177,
               0.35356,
               0.73326,
@@ -2189,6 +2199,122 @@
             ],
             "path": "painted-farmhouse-1"
           }
+        },
+        "building_aperture_rays": {
+          "building_aperture_rays": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              1,
+              1,
+              0,
+              1,
+              0,
+              0.39877,
+              0,
+              0,
+              0.37871,
+              0,
+              1,
+              0,
+              0.37871,
+              0.1874
+            ],
+            "triangles": [
+              3,
+              4,
+              6,
+              2,
+              3,
+              6,
+              1,
+              2,
+              6,
+              1,
+              6,
+              0
+            ],
+            "vertices": [
+              56.2,
+              -195.37,
+              52.300000000000004,
+              -213.05,
+              121.2,
+              -213.05,
+              121.2,
+              -158.25,
+              82.2,
+              -121.13,
+              56.2,
+              -127.37,
+              82.2,
+              -189.13
+            ]
+          }
+        },
+        "building_aperture_cores": {
+          "building_aperture_cores": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2
+            ],
+            "triangles": [
+              0,
+              1,
+              2,
+              0,
+              2,
+              3,
+              0,
+              3,
+              4,
+              0,
+              4,
+              5,
+              0,
+              5,
+              6,
+              0,
+              6,
+              7
+            ],
+            "vertices": [
+              56.2,
+              -138.25,
+              60.2,
+              -134.25,
+              70.2,
+              -128.25,
+              78.2,
+              -124.25,
+              82.2,
+              -124.25,
+              82.2,
+              -180.25,
+              62.2,
+              -192.25,
+              56.2,
+              -192.25
+            ]
+          }
         }
       }
     },
@@ -2286,6 +2412,122 @@
               44.75
             ],
             "path": "painted-farmhouse-2"
+          }
+        },
+        "building_aperture_rays": {
+          "building_aperture_rays": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              1,
+              1,
+              0,
+              1,
+              0,
+              0.39877,
+              0,
+              0,
+              0.37871,
+              0,
+              1,
+              0,
+              0.37871,
+              0.1874
+            ],
+            "triangles": [
+              3,
+              4,
+              6,
+              2,
+              3,
+              6,
+              1,
+              2,
+              6,
+              1,
+              6,
+              0
+            ],
+            "vertices": [
+              56.2,
+              -181.13,
+              52.6,
+              -197.45,
+              116.2,
+              -197.45,
+              116.2,
+              -148.25,
+              80.2,
+              -115.37,
+              56.2,
+              -121.13,
+              80.2,
+              -175.37
+            ]
+          }
+        },
+        "building_aperture_cores": {
+          "building_aperture_cores": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2
+            ],
+            "triangles": [
+              0,
+              1,
+              2,
+              0,
+              2,
+              3,
+              0,
+              3,
+              4,
+              0,
+              4,
+              5,
+              0,
+              5,
+              6,
+              0,
+              6,
+              7
+            ],
+            "vertices": [
+              56.2,
+              -130.25,
+              58.2,
+              -128.25,
+              76.2,
+              -118.25,
+              80.2,
+              -118.25,
+              80.2,
+              -168.25,
+              70.2,
+              -174.25,
+              62.2,
+              -178.25,
+              56.2,
+              -178.25
+            ]
           }
         }
       }
@@ -2443,6 +2685,122 @@
             ],
             "path": "painted-farmhouse-3"
           }
+        },
+        "building_aperture_rays": {
+          "building_aperture_rays": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              1,
+              1,
+              0,
+              1,
+              0,
+              0.39877,
+              0,
+              0,
+              0.37871,
+              0,
+              1,
+              0,
+              0.37871,
+              0.1874
+            ],
+            "triangles": [
+              3,
+              4,
+              6,
+              2,
+              3,
+              6,
+              1,
+              2,
+              6,
+              1,
+              6,
+              0
+            ],
+            "vertices": [
+              32.2,
+              -204.65,
+              29.200000000000003,
+              -218.25,
+              82.2,
+              -218.25,
+              82.2,
+              -179.25,
+              52.2,
+              -153.85,
+              32.2,
+              -158.65,
+              52.2,
+              -199.85
+            ]
+          }
+        },
+        "building_aperture_cores": {
+          "building_aperture_cores": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2
+            ],
+            "triangles": [
+              0,
+              1,
+              2,
+              0,
+              2,
+              3,
+              0,
+              3,
+              4,
+              0,
+              4,
+              5,
+              0,
+              5,
+              6,
+              0,
+              6,
+              7
+            ],
+            "vertices": [
+              32.2,
+              -164.25,
+              34.2,
+              -162.25,
+              46.2,
+              -156.25,
+              52.2,
+              -156.25,
+              52.2,
+              -194.25,
+              50.2,
+              -196.25,
+              38.2,
+              -202.25,
+              32.2,
+              -202.25
+            ]
+          }
         }
       }
     },
@@ -2599,6 +2957,122 @@
             ],
             "path": "painted-farmhouse-4"
           }
+        },
+        "building_aperture_rays": {
+          "building_aperture_rays": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              1,
+              1,
+              0,
+              1,
+              0,
+              0.39877,
+              0,
+              0,
+              0.37871,
+              0,
+              1,
+              0,
+              0.37871,
+              0.1874
+            ],
+            "triangles": [
+              3,
+              4,
+              6,
+              2,
+              3,
+              6,
+              1,
+              2,
+              6,
+              1,
+              6,
+              0
+            ],
+            "vertices": [
+              32.2,
+              -204.41,
+              29.500000000000004,
+              -216.65,
+              77.2,
+              -216.65,
+              77.2,
+              -178.25,
+              50.2,
+              -152.09,
+              32.2,
+              -156.41,
+              50.2,
+              -200.09
+            ]
+          }
+        },
+        "building_aperture_cores": {
+          "building_aperture_cores": {
+            "type": "mesh",
+            "path": "building_aperture_rays",
+            "hull": 0,
+            "uvs": [
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2,
+              0.4,
+              0.2
+            ],
+            "triangles": [
+              0,
+              1,
+              2,
+              0,
+              2,
+              3,
+              0,
+              3,
+              4,
+              0,
+              4,
+              5,
+              0,
+              5,
+              6,
+              0,
+              6,
+              7
+            ],
+            "vertices": [
+              32.2,
+              -162.25,
+              34.2,
+              -160.25,
+              46.2,
+              -154.25,
+              50.2,
+              -154.25,
+              50.2,
+              -194.25,
+              48.2,
+              -196.25,
+              36.2,
+              -202.25,
+              32.2,
+              -202.25
+            ]
+          }
         }
       }
     }
@@ -2694,6 +3168,42 @@
             {
               "time": 0.5,
               "color": "ffffffff"
+            }
+          ]
+        },
+        "building_aperture_rays": {
+          "color": [
+            {
+              "color": "ffffff00",
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 0.5,
+              "color": "ffffff40"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "building_aperture_rays"
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "color": [
+            {
+              "color": "ffffff00",
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 0.5,
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "building_aperture_cores"
             }
           ]
         }
@@ -2898,6 +3408,30 @@
             {
               "time": 1.2,
               "name": null
+            }
+          ]
+        },
+        "building_aperture_rays": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
             }
           ]
         }
@@ -3257,6 +3791,32 @@
               "name": null
             }
           ]
+        },
+        "building_aperture_rays": {
+          "color": [
+            {
+              "color": "ffffff40"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0.1667,
+              "name": null
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "color": [
+            {
+              "color": "ffffffff"
+            }
+          ],
+          "attachment": [
+            {
+              "time": 0.1667,
+              "name": null
+            }
+          ]
         }
       },
       "bones": {
@@ -3413,7 +3973,34 @@
         }
       }
     },
-    "idle": {},
+    "idle": {
+      "slots": {
+        "building_aperture_rays": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
+            }
+          ]
+        }
+      }
+    },
     "idle_night": {
       "slots": {
         "mz_3_2": {
@@ -3462,6 +4049,54 @@
           "color": [
             {
               "color": "ffffffff"
+            }
+          ]
+        },
+        "building_aperture_rays": {
+          "color": [
+            {
+              "color": "ffffff36",
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 1,
+              "color": "ffffff40",
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 2,
+              "color": "ffffff36"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "building_aperture_rays"
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "color": [
+            {
+              "color": "ffffffd9",
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 1,
+              "color": "ffffffff",
+              "curve": 0.25,
+              "c3": 0.75
+            },
+            {
+              "time": 2,
+              "color": "ffffffd9"
+            }
+          ],
+          "attachment": [
+            {
+              "name": "building_aperture_cores"
             }
           ]
         }
@@ -4022,6 +4657,30 @@
           "attachment": [
             {
               "name": "effect_star_2"
+            }
+          ]
+        },
+        "building_aperture_rays": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
+            }
+          ]
+        },
+        "building_aperture_cores": {
+          "attachment": [
+            {
+              "name": null
+            }
+          ],
+          "color": [
+            {
+              "color": "ffffff00"
             }
           ]
         }

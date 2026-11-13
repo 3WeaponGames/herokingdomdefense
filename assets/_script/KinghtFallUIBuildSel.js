@@ -30,6 +30,17 @@ var def_KinghtFallUIBuildSel = function (t) {
     this.cancelCall = cancel;
     this.initialChoice = !!t && !(t.buildInfo && t.buildInfo.cfg);
     this.choiceIndexes = Array.isArray(choices) ? choices.slice() : null;
+    // First layout waits for start(), after fullscreen Widgets have aligned.
+    if(this._choicePrepared){
+      (this._choiceRows||[]).forEach(function(row){row.active=false;row.destroy();});
+      this.initView();
+    }
+  };
+  _ctor.prototype.onLoad = function () {
+    t.prototype.onLoad.call(this);
+    // onLoad runs before descendant activation, so the unused legacy template
+    // cannot trigger a large first-frame RichText raster.
+    this.ndItem.active=false;
   };
   _ctor.prototype.onClose = function () {
     var cancel = this.cancelCall;
@@ -42,7 +53,7 @@ var def_KinghtFallUIBuildSel = function (t) {
   };
   _ctor.prototype.start = function () {
     this.ndItem.active = false;
-    this.initView();
+    if (!this._choicePrepared) { this.initView(); this._choicePrepared=true; }
   };
   _ctor.prototype.initView = function () {
     var t = this;
@@ -68,7 +79,7 @@ var def_KinghtFallUIBuildSel = function (t) {
       var o = i.build.buildCfg.levelList.find(function (row) { return row.index === a; });
       var r = cc.instantiate(i.ndItem);
       r.parent = i.ndParent;
-      r.active = true;
+      r.active = false;
       r.x = 0;
       t._choiceRows.push(r);
       // Layered defenses expose a bare base sprite at runtime. Their Icon is
@@ -76,6 +87,7 @@ var def_KinghtFallUIBuildSel = function (t) {
       var millIcon = upgradeCards && o.level === 2 && o.MillDefense && { scarecrow: "mill-choice-scarecrow", bomb: "mill-choice-bomb" }[o.MillDefense.kind];
       var artwork = !millIcon && o.Appearance && !o.Appearance.weapon && o.Appearance.sprite;
       i.loadSpriteFrame(artwork ? "resources" : $z1KinghtFallConfig.KinghtFallBundelName.IconBuild, millIcon || artwork || o.Icon, function (t) {
+        if (!cc.isValid(r,true)) return;
         var e = r.getChildByName("sprIcon");
         e.getComponent(cc.Sprite).spriteFrame = t;
         e.scale = o.Zoom;
@@ -106,7 +118,10 @@ var def_KinghtFallUIBuildSel = function (t) {
         "ndVideo" == p.name && (p.active = require("BuildingCost").video(o, i.initialChoice));
       }
       var info = r.getChildByName("labInfo"), rich = info.getComponent(cc.RichText);
-      rich.string = require("LanguageMgr").LanguageMgr.getInstance().format(i.initialChoice || upgradeCards ? "<color=#3d3935>{0}</color>" : "<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
+      // These cards contain plain body copy. RichText measures/rasterizes every
+      // word synchronously on Win32; keep it disabled before setting any text.
+      if (grid || upgradeCards) rich.enabled = false;
+      else rich.string = require("LanguageMgr").LanguageMgr.getInstance().format("<b><outline color=#000000 width=4>{0}</outline></b>", [i.T(o.LevelUpDescribe)]);
       if (i.initialChoice || upgradeCards) {
         rich.font = null;
         rich.fontFamily = "Arial";
@@ -118,6 +133,8 @@ var def_KinghtFallUIBuildSel = function (t) {
       }
       if (grid) i.layoutChoiceCard(r, n, e.length);
       if (upgradeCards) i.layoutUpgradeCard(r, n, e.length);
+      if (grid || upgradeCards) i.initChoiceDescription(r, i.T(o.LevelUpDescribe));
+      r.active = true;
       if (!require("BuildingCost").video(o, i.initialChoice)) {
         r.on(cc.Node.EventType.TOUCH_END, function () {
           if (!t._decisionPending) t.finishDecision(t.callBack, a);
@@ -175,6 +192,20 @@ var def_KinghtFallUIBuildSel = function (t) {
     if (!this.canAffordSelection(value)) return false;
     return t.prototype.finishDecision.call(this, callback, value, generation);
   };
+  _ctor.prototype.initChoiceDescription = function (row, text) {
+    var info=row.getChildByName("labInfo"),rich=info.getComponent(cc.RichText);
+    rich.enabled=false;
+    var label=info.getComponent(cc.Label)||info.addComponent(cc.Label);
+    label._settingsLayout=true;label._localizedFontRole="body";
+    label._uiTypography={fontRole:"body",fontFamily:"Arial",outlineWidth:0,shadowDepth:0};
+    label.useSystemFont=true;label.fontFamily="Arial";label.font=null;
+    label.fontSize=rich.fontSize;label.lineHeight=rich.lineHeight;label.enableWrapText=true;
+    label.horizontalAlign=rich.horizontalAlign;label.verticalAlign=cc.Label.VerticalAlign.TOP;
+    label.overflow=cc.Label.Overflow.RESIZE_HEIGHT;
+    info.setContentSize(rich.maxWidth,info.height);info.color=new cc.Color(61,57,53,255);
+    label.string=text;
+    (this._initialChoiceDescriptions||[]).forEach(function(entry){if(entry.label===rich)entry.label=label;});
+  };
   _ctor.prototype.layoutChoiceCard = function (row, index, count) {
     row.setContentSize(300, 280);
     var extra = Math.max(0, Math.ceil(count / 2) - 2) * 304;
@@ -191,6 +222,8 @@ var def_KinghtFallUIBuildSel = function (t) {
       node.setPosition(0, 0);
     });
     var name = row.getChildByName("labName"), label = name.getComponent(cc.Label);
+    label._settingsLayout=true;label._localizedFontRole="display";
+    label._uiTypography={fontRole:"display",outlineWidth:2,shadowDepth:2};
     name.setPosition(0, -29); name.setScale(.5);
     label.fontSize = 46; label.lineHeight = 52; label.enableWrapText = true; label.overflow = cc.Label.Overflow.SHRINK;
     name.setContentSize(548, 114);
@@ -211,6 +244,8 @@ var def_KinghtFallUIBuildSel = function (t) {
       if (node !== row) node.setPosition(0, 0);
     });
     var name = row.getChildByName("labName"), label = name.getComponent(cc.Label);
+    label._settingsLayout=true;label._localizedFontRole="body";
+    label._uiTypography={fontRole:"body",fontFamily:"Arial",isBold:true,outlineWidth:0,shadowDepth:0};
     name.anchorX = 0; name.anchorY = 1; name.setPosition(-126, 97); name.setScale(1);
     name.color = new cc.Color(38, 60, 46, 255);
     label.font = null; label.fontFamily = "Arial"; label.useSystemFont = true;
@@ -245,7 +280,10 @@ var def_KinghtFallUIBuildSel = function (t) {
     background.fillColor = new cc.Color(72, 73, 94, 255); background.strokeColor = new cc.Color(0, 0, 0, 255); background.lineWidth = 3;
     background.roundRect(-126, -33, 252, 66, 15); background.fill(); background.stroke();
     var textNode = new cc.Node("Label"); textNode.parent = button;
-    var label = textNode.addComponent(cc.Label); label.string = this.T("[[loc:ui.building.cancel]]");
+    var label = textNode.addComponent(cc.Label);
+    label._settingsLayout=true;label._localizedFontRole="display";
+    label._uiTypography={fontRole:"display",outlineWidth:2,shadowDepth:2};
+    label.string = this.T("[[loc:ui.building.cancel]]");
     label.fontSize = 32; label.lineHeight = 40; label.isBold = true;
     label.horizontalAlign = cc.Label.HorizontalAlign.CENTER; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
     label.overflow = cc.Label.Overflow.SHRINK;

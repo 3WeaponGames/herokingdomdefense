@@ -42,7 +42,7 @@ function describe(service,stage){
  // rows. Referenced artwork is checked with cheap file stamps before reuse,
  // so live texture/model replacement does not require editing or saving a draft.
  for(const building of stage.buildings||[]){const id=building.template.prefab;if(!sources.has(id)){try{const data=stage.templates&&stage.templates[id]||service.source(id);sources.set(id,{data,revision:L.hash(JSON.stringify(data))});}catch(error){sources.set(id,{data:null,revision:'missing'});errors.push(error.message);}}}
- const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseOverride,b.placementVariant,b.angle,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
+ const signature=JSON.stringify([(stage.buildings||[]).map(b=>[b.id,b.kind,b.previewBranch,b.wallFacing,b.wallRotation,b.wallOpening,b.wallRun,b.purchaseSide,b.purchaseOffset,b.purchaseOverride,b.placementVariant,b.angle,b.template,sources.get(b.template.prefab).revision]),config.BuildEnum,config.GameTools&&config.GameTools.buildingShadows,wallAdjustments&&wallAdjustments.revision]),previous=descriptions.get(service);
  if(previous&&previous.index===index&&previous.signature===signature&&unchanged(previous.dependencies))return previous.value;
  for(const authoredBuilding of stage.buildings||[]){
   const building=Purchase.withDefaults(authoredBuilding,config,1,sources.get(authoredBuilding.template.prefab).data);
@@ -76,6 +76,7 @@ function describe(service,stage){
    }
    if(building.kind===6)try{WallRun.fitRecord(level,component,effectiveFace,{adjustmentsData:wallAdjustments&&wallAdjustments.data,adjustmentRevision:wallAdjustments&&wallAdjustments.revision});}catch(error){errors.push(error.message);}
    if(row&&row.Shadow){const Shadow=require('../../../assets/_script/BuildingShadow'),main=level.skeletons.find(s=>s.json.wallKit),layout=main&&main.json.wallKit.layout;level.shadow={regions:clone(Shadow.regions(row.Shadow,layout)),opacity:row.Shadow.opacity,matrix:(row.Shadow.body?owner.world:main&&main.matrix||owner.world).slice()};}
+   if(row){const FX=require('../../../assets/_script/BuildingDropShadow'),style=FX.resolve(config.BuildEnum[building.kind],row,config.GameTools);if(style.active){delete level.shadow;level.dropShadow=style.settings;}else if(style.mode==='none')delete level.shadow;}
    if(building.kind===5&&row&&row.PartScale)level.skeletons=level.skeletons.map(d=>{if(!d.ground)return d;const json=require('../../../assets/_script/BuildingPartScale').json(d.json,row);return json===d.json?d:Object.assign({},d,{json,revision:d.revision+':parts:'+JSON.stringify(row.PartScale)});});
    if(row&&row.ModelOffset){const Offset=require('../../../assets/_script/BuildingModelOffset');Object.assign(level,Offset.record(level,Offset.vector(owner.world,Offset.value(row))));}
    result.levels[hall]=require('../../../assets/_script/BuildingWorldScale').record(level,require('../../../assets/_script/BuildingWorldScale').value(row),false);

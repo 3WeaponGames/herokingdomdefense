@@ -38,11 +38,11 @@ test('crossbow night masks stay on the new dark apertures and obsolete hall wind
    assert(ref.nightApertureBounds.some(([x0,y0,x1,y1])=>x>=Math.floor(x0)-1&&x<Math.ceil(x1)+1&&y>=Math.floor(y0)-1&&y<Math.ceil(y1)+1),'light stays in authored source aperture');lit++;
   }
   if(n<3){
-   assert.equal(lit,0,'solid-entry tier keeps only its existing separate native lantern');
-   const skin=json.skins.find(s=>s.name==='by-painted-crossbow-'+n),body=skin.attachments[ref.bodySlot][ref.bodySlot],lamp=skin.attachments['painted_crossbow_'+n+'_lantern_fixture']['painted_crossbow_'+n+'_lantern_fixture'];
-   assert.equal(lamp.path,'painted_native_lantern_day');
-   const x=(lamp.x-body.x)/body.width*b[2]+b[2]/2,y=b[3]/2-(lamp.y-body.y)/body.height*b[3];
-   assert(Math.hypot(x-ref.lanternPixel[0],y-ref.lanternPixel[1])<1e-6,'existing lamp moves with the new entry');
+   assert.equal(lit,0,'the old empty full-body mask remains unchanged; fitted open-door geometry supplies the light');
+   const skin=json.skins.find(s=>s.name==='by-painted-crossbow-'+n);
+   for(const kind of ['fixture','emissive'])assert.deepEqual(skin.attachments['painted_crossbow_'+n+'_lantern_'+kind],{},'standalone lantern artwork was deliberately removed');
+   assert(skin.attachments.building_aperture_cores?.building_aperture_cores,'the actual open doorway keeps its fitted warm core');
+   assert(skin.attachments.building_aperture_rays?.building_aperture_rays,'the actual doorway keeps its outward spill');
   }else assert(lit>40&&lit<1200,'restrained visible fitted night illumination');
  }
 });

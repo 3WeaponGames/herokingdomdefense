@@ -17,7 +17,7 @@ test('ten building families retain stable IDs and follow one straight four-tier 
 });
 test('every existing tier1-3 HP, special value, numeric cost and ad field retains its approved value and presence',()=>{
  let checked=0;for(const family of contract.families)for(const original of family.originalStatRows){const current=row(family.category,original.index);for(const key of statKeys){assert.equal(Object.hasOwn(current,key),Object.hasOwn(original,key),family.family+' '+original.index+' '+key+' presence');if(Object.hasOwn(original,key))assert.deepEqual(current[key],original[key],family.family+' '+original.index+' '+key);}checked++;}assert.equal(checked,30);
- assert.deepEqual(config.BuildEnum[6],contract.originalWallDefinition,'three wall visuals and their original logical levels, prices, skins and blockers stay unchanged');
+ assert.deepEqual(require('./painted-building-contract.cjs').withoutAuthoring(config).BuildEnum[6],require('./painted-building-contract.cjs').withoutAuthoring({BuildEnum:{6:contract.originalWallDefinition}}).BuildEnum[6],'three wall visuals and their original logical levels, prices, skins and blockers stay unchanged');
 });
 test('fourth-tier stats and destination prices extend the approved progression without reward-ad fallbacks',()=>{
  for(const family of contract.families){const category=config.BuildEnum[family.category],third=row(family.category,family.indices[2]),fourth=row(family.category,family.indices[3]);

@@ -2251,7 +2251,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -25.35,
-            "y": 81.68
+            "y": 81.68,
+            "Reference": {
+              "version": 1,
+              "distance": 184.66691582414003
+            }
           }
         },
         {
@@ -2328,7 +2332,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -24.72,
-            "y": 77.94
+            "y": 77.94,
+            "Reference": {
+              "version": 1,
+              "distance": 184.66691582414003
+            }
           }
         },
         {
@@ -2404,7 +2412,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -14.08,
-            "y": 76.05
+            "y": 76.05,
+            "Reference": {
+              "version": 1,
+              "distance": 184.66691582414003
+            }
           }
         },
         {
@@ -2480,7 +2492,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -14.08,
-            "y": 83.09
+            "y": 83.09,
+            "Reference": {
+              "version": 1,
+              "distance": 184.66691582414003
+            }
           }
         }
       ]
@@ -2526,28 +2542,77 @@
                 "sprite": "buildings/redesign/towers/archer-1-window-light",
                 "width": 181.02577197149643,
                 "height": 181.02577197149643,
-                "offsetX": 0.0,
-                "offsetY": 0.0,
+                "offsetX": 0,
+                "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 72,
                 "glows": [
                   {
-                    "x": 22.447773159144894,
-                    "y": 88.05878859857481,
-                    "width": 58.609619952494064,
-                    "height": 54.27885985748218,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 22.4477732,
+                    "y": 59.5623872,
+                    "width": 32.235291,
+                    "height": 56.9928029,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   },
                   {
-                    "x": -22.303414489311166,
-                    "y": 87.84225059382423,
-                    "width": 58.609619952494064,
-                    "height": 52.83527315914489,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": -53.073465,
+                    "y": 87.8422506,
+                    "width": 29.0594002,
+                    "height": 61.540101,
+                    "angle": -90,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
+                  }
+                ]
+              },
+              {
+                "points": [
+                  {
+                    "x": 15.3073263,
+                    "y": 47.2530508
+                  },
+                  {
+                    "x": 19.9660778,
+                    "y": 50.5807304
+                  },
+                  {
+                    "x": 23.2937574,
+                    "y": 51.9118023
+                  },
+                  {
+                    "x": 23.2937574,
+                    "y": 35.93894
+                  },
+                  {
+                    "x": 15.3073263,
+                    "y": 31.2801885
+                  }
+                ],
+                "color": "#FFE89A",
+                "opacity": 120,
+                "glows": [
+                  {
+                    "x": 19.3005419,
+                    "y": 24.0591237,
+                    "width": 9.9830389,
+                    "height": 35.0737435,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 180,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -2611,7 +2676,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -5.43,
-            "y": 16.28
+            "y": 16.28,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           }
         },
         {
@@ -2649,28 +2718,77 @@
                 "sprite": "buildings/redesign/towers/archer-2-window-light",
                 "width": 180.81103202846978,
                 "height": 180.81103202846978,
-                "offsetX": 0.0,
-                "offsetY": 0.0,
+                "offsetX": 0,
+                "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 72,
                 "glows": [
                   {
-                    "x": -22.421144721233688,
-                    "y": 88.17061091340452,
-                    "width": 65.46109134045078,
-                    "height": 53.92609727164888,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": -56.7882177,
+                    "y": 88.1706109,
+                    "width": 29.6593535,
+                    "height": 68.7341459,
+                    "angle": -90,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   },
                   {
-                    "x": 22.853706998813763,
-                    "y": 88.0985172004745,
-                    "width": 59.693594306049825,
-                    "height": 53.63772241992883,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 22.853707,
+                    "y": 59.9387129,
+                    "width": 32.8314769,
+                    "height": 56.3196085,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
+                  }
+                ]
+              },
+              {
+                "points": [
+                  {
+                    "x": 15.6791854,
+                    "y": 46.7039566
+                  },
+                  {
+                    "x": 20.3495811,
+                    "y": 50.0399535
+                  },
+                  {
+                    "x": 23.685578,
+                    "y": 51.3743523
+                  },
+                  {
+                    "x": 23.685578,
+                    "y": 35.3615671
+                  },
+                  {
+                    "x": 15.6791854,
+                    "y": 30.6911715
+                  }
+                ],
+                "color": "#FFE89A",
+                "opacity": 120,
+                "glows": [
+                  {
+                    "x": 19.6823817,
+                    "y": 23.4520582,
+                    "width": 10.0079907,
+                    "height": 35.1614074,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 180,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -2767,28 +2885,77 @@
                 "sprite": "buildings/redesign/towers/archer-3-window-light",
                 "width": 182.76223021582734,
                 "height": 182.76223021582734,
-                "offsetX": 0.0,
-                "offsetY": 0.0,
+                "offsetX": 0,
+                "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 72,
                 "glows": [
                   {
-                    "x": -23.100329736211034,
-                    "y": 90.14229616306955,
-                    "width": 69.08237410071943,
-                    "height": 56.25695443645084,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": -59.3685761,
+                    "y": 90.1422962,
+                    "width": 30.9413249,
+                    "height": 72.5364928,
+                    "angle": -90,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   },
                   {
-                    "x": 21.64289568345324,
-                    "y": 89.41357913669066,
-                    "width": 62.086690647482015,
-                    "height": 53.34208633093525,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 21.6428957,
+                    "y": 61.4089838,
+                    "width": 34.1476799,
+                    "height": 56.0091906,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
+                  }
+                ]
+              },
+              {
+                "points": [
+                  {
+                    "x": 14.6743397,
+                    "y": 48.692127
+                  },
+                  {
+                    "x": 20.0104632,
+                    "y": 52.0272042
+                  },
+                  {
+                    "x": 23.3455404,
+                    "y": 53.3612351
+                  },
+                  {
+                    "x": 23.3455404,
+                    "y": 36.6858491
+                  },
+                  {
+                    "x": 14.6743397,
+                    "y": 31.3497256
+                  }
+                ],
+                "color": "#FFE89A",
+                "opacity": 120,
+                "glows": [
+                  {
+                    "x": 19.0099401,
+                    "y": 23.6456973,
+                    "width": 10.8390009,
+                    "height": 37.4195662,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 180,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -2892,16 +3059,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 22.173166897406336,
-                    "y": 29.351530281458746,
-                    "width": 18.759456310323632,
-                    "height": 20.737494220595853,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 22.1731669,
+                    "y": 17.4274711,
+                    "width": 12.1936466,
+                    "height": 23.8481184,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -3059,6 +3230,12 @@
                 ]
               ]
             }
+          },
+          "PurchaseField": {
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           }
         },
         {
@@ -3102,16 +3279,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 27.77568509199608,
-                    "y": 40.95392984367305,
-                    "width": 23.842485889187877,
-                    "height": 26.356489503353945,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 27.7756851,
+                    "y": 25.7989484,
+                    "width": 15.4976158,
+                    "height": 30.3099629,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -3190,7 +3371,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": 22.59,
-            "y": 14.73
+            "y": 14.73,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           },
           "Blocker": {
             "version": 1,
@@ -3317,16 +3502,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 28.447360201647534,
-                    "y": 39.14356763746701,
-                    "width": 26.76327647771,
-                    "height": 29.585254609713438,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 28.4473602,
+                    "y": 22.1320462,
+                    "width": 17.3961297,
+                    "height": 34.0230428,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -3404,7 +3593,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": 25.53,
-            "y": 16.69
+            "y": 16.69,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           },
           "Blocker": {
             "version": 1,
@@ -3531,16 +3724,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 15.871352634617018,
-                    "y": 23.645076374021272,
-                    "width": 19.04562316154042,
-                    "height": 21.05383512755319,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 15.8713526,
+                    "y": 11.5391212,
+                    "width": 12.3796551,
+                    "height": 24.2119104,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -3703,7 +3900,13 @@
               ]
             }
           },
-          "WorldScale": 0.9256467777006422
+          "WorldScale": 0.9256467777006422,
+          "PurchaseField": {
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
+          }
         },
         {
           "ID": 2,
@@ -3746,16 +3949,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 26.368913831985978,
-                    "y": 34.70780111218667,
-                    "width": 26.504139031124364,
-                    "height": 29.298793146651082,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 26.3689138,
+                    "y": 17.8609951,
+                    "width": 17.2276904,
+                    "height": 33.6936121,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -3961,16 +4168,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 25.531463243446744,
-                    "y": 40.85034118951479,
-                    "width": 27.29545524935761,
-                    "height": 30.17354746952797,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 25.5314632,
+                    "y": 23.5005514,
+                    "width": 17.7420459,
+                    "height": 34.6995796,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -4176,28 +4387,77 @@
                 "sprite": "buildings/redesign/towers/archer-4-window-light",
                 "width": 184.3994943109987,
                 "height": 201.61011378002527,
-                "offsetX": 0.0,
-                "offsetY": 0.0,
+                "offsetX": 0,
+                "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 72,
                 "glows": [
                   {
-                    "x": -22.973103666245258,
-                    "y": 98.03906447534767,
-                    "width": 68.53514538558787,
-                    "height": 58.393173198482934,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": -58.954055,
+                    "y": 98.0390645,
+                    "width": 32.1162453,
+                    "height": 71.9619027,
+                    "angle": -90,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   },
                   {
-                    "x": 21.436441213653605,
-                    "y": 96.19506953223767,
-                    "width": 58.0858407079646,
-                    "height": 51.01719342604299,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 21.4364412,
+                    "y": 69.411043,
+                    "width": 31.9472124,
+                    "height": 53.5680531,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 175,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
+                  }
+                ]
+              },
+              {
+                "points": [
+                  {
+                    "x": 16.5959545,
+                    "y": 54.7051833
+                  },
+                  {
+                    "x": 20.8986094,
+                    "y": 58.3931732
+                  },
+                  {
+                    "x": 24.5865992,
+                    "y": 60.2371681
+                  },
+                  {
+                    "x": 24.5865992,
+                    "y": 43.0265487
+                  },
+                  {
+                    "x": 16.5959545,
+                    "y": 38.7238938
+                  }
+                ],
+                "color": "#FFE89A",
+                "opacity": 120,
+                "glows": [
+                  {
+                    "x": 20.5912768,
+                    "y": 31.1942478,
+                    "width": 9.9883059,
+                    "height": 36.5725663,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 180,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -4300,16 +4560,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 27.97343866418978,
-                    "y": 39.11732886374506,
-                    "width": 26.745336478932664,
-                    "height": 29.565422978411963,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 27.9734387,
+                    "y": 22.1172107,
+                    "width": 17.3844687,
+                    "height": 34.0002364,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -4500,16 +4764,20 @@
                 "offsetX": 0,
                 "offsetY": 0,
                 "color": "#FFE89A",
-                "opacity": 240,
+                "opacity": 180,
                 "glows": [
                   {
-                    "x": 25.551795276131937,
-                    "y": 40.41829434588143,
-                    "width": 27.317192040664686,
-                    "height": 30.197576235428652,
-                    "color": "#FFC85B",
-                    "opacity": 80,
-                    "pulse": 0.08
+                    "x": 25.5517953,
+                    "y": 23.054688,
+                    "width": 17.7561748,
+                    "height": 34.7272127,
+                    "angle": 0,
+                    "shearX": 0,
+                    "shearY": 0,
+                    "color": "#FFFFFF",
+                    "opacity": 140,
+                    "pulse": 0.08,
+                    "sprite": "buildings/lighting/native-window-ray"
                   }
                 ]
               }
@@ -4681,7 +4949,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": 12.57,
-            "y": 17.05
+            "y": 17.05,
+            "Reference": {
+              "version": 1,
+              "distance": 103.59113979486855
+            }
           },
           "WorldScale": 0.78940877015086
         }
@@ -4725,7 +4997,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -13.59,
-            "y": 64.53
+            "y": 64.53,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "Blocker": {
             "version": 1,
@@ -4858,7 +5134,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -16.99,
-            "y": 42.45
+            "y": 42.45,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "WorldScale": 0.967311632142044
         },
@@ -4939,7 +5219,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -10.19,
-            "y": 44.15
+            "y": 44.15,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "WorldScale": 0.967311632142044
         },
@@ -5093,7 +5377,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -114.91,
-            "y": 40.33
+            "y": 40.33,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "WorldScale": 0.8552987190364839
         },
@@ -5371,7 +5659,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -82.64,
-            "y": 22.69
+            "y": 22.69,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "WorldScale": 0.8552987190364839
         },
@@ -5402,7 +5694,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -62.11,
-            "y": 29.97
+            "y": 29.97,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "Blocker": {
             "version": 1,
@@ -5584,7 +5880,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -69.94,
-            "y": 22.14
+            "y": 22.14,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         },
         {
@@ -5681,7 +5981,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -66.03,
-            "y": 20.18
+            "y": 20.18,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         },
         {
@@ -5711,7 +6015,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": 99.57,
-            "y": 95.41
+            "y": 95.41,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "Blocker": {
             "version": 1,
@@ -6008,7 +6316,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -6.8,
-            "y": 42.45
+            "y": 42.45,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "Blocker": {
             "version": 1,
@@ -6171,7 +6483,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -85.5,
-            "y": 24.59
+            "y": 24.59,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           },
           "WorldScale": 0.8552987190364839
         },
@@ -6268,7 +6584,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -64.07,
-            "y": 12.35
+            "y": 12.35,
+            "Reference": {
+              "version": 1,
+              "distance": 141.245830016323
+            }
           }
         },
         {
@@ -6417,7 +6737,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -5.11,
-            "y": 35.74
+            "y": 35.74,
+            "Reference": {
+              "version": 1,
+              "distance": 121.45361482063846
+            }
           },
           "Blocker": {
             "version": 1,
@@ -6818,7 +7142,11 @@
           "PurchaseField": {
             "southwest": false,
             "x": -89.92,
-            "y": -27.98
+            "y": -27.98,
+            "Reference": {
+              "version": 1,
+              "distance": 109.3610585400489
+            }
           }
         },
         {
@@ -7498,22 +7826,38 @@
               "NE": {
                 "southwest": true,
                 "x": 22.37,
-                "y": 41.53
+                "y": 41.53,
+                "Reference": {
+                  "version": 1,
+                  "distance": 104.39067763933711
+                }
               },
               "NW": {
                 "southwest": false,
                 "x": -23.16,
-                "y": 44.73
+                "y": 44.73,
+                "Reference": {
+                  "version": 1,
+                  "distance": 104.39067763933714
+                }
               },
               "SE": {
                 "southwest": false,
                 "x": -151.42,
-                "y": 148.15
+                "y": 148.15,
+                "Reference": {
+                  "version": 1,
+                  "distance": 134.76778533215315
+                }
               },
               "SW": {
                 "southwest": true,
                 "x": 160.38,
-                "y": 146.53
+                "y": 146.53,
+                "Reference": {
+                  "version": 1,
+                  "distance": 134.7677853321533
+                }
               }
             }
           },

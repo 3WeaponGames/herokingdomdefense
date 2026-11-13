@@ -8,6 +8,7 @@ function text(parent, name, key, size, display) {
   var label = node.addComponent(cc.Label);
   if (display) {
     label._settingsLayout = true; label._localizedFontRole = "display";
+    label._uiTypography = {fontRole:"display",outlineWidth:2,shadowDepth:2,outlineColor:"#151a22",shadowColor:"#151a22"};
     label.fontSize = size; label.lineHeight = size + 8;
     node.color = cc.color("#fff8ed");
     var outline = node.addComponent(cc.LabelOutline); outline.width = 2; outline.color = cc.color("#151a22");

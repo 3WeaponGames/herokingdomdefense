@@ -173,16 +173,27 @@ LanguageMgr.prototype.preloadArtwork = function (done) {
   if (resource) this._loadTypeface(resource, artwork); else artwork();
 };
 LanguageMgr.prototype._loadTypeface = function (resource, done) {
-  if (Object.prototype.hasOwnProperty.call(this._fontCache, resource)) { done(this._fontCache[resource]); return; }
+  var cached = this._fontCache[resource];
+  if (cached && (!cc.isValid || cc.isValid(cached, true))) { done(cached); return; }
+  // A stale cache entry must not leave live labels retrying postLoadNative
+  // and rebuilding their text every draw. Failed loads can be retried too.
+  delete this._fontCache[resource];
   if (this._fontRequests[resource]) { this._fontRequests[resource].push(done); return; }
   this._fontRequests[resource] = [done];
   var self = this;
   cc.resources.load(resource, cc.TTFFont, function (error, font) {
-    self._fontCache[resource] = error ? null : font;
+    var loaded = !error && font && (!cc.isValid || cc.isValid(font, true)) ? font : null;
+    // This application-wide cache is an asset owner, independent of any
+    // prefab/modal that also references the same display font. Retain once,
+    // before delivering it to labels, so closing a perk panel cannot free it.
+    if (loaded) {
+      if (loaded.addRef) loaded.addRef();
+      self._fontCache[resource] = loaded;
+    }
     var callbacks = self._fontRequests[resource];
     delete self._fontRequests[resource];
     if (error) cc.warn("UI font could not be loaded", resource, error);
-    callbacks.forEach(function (callback) { callback(self._fontCache[resource]); });
+    callbacks.forEach(function (callback) { callback(loaded); });
   });
 };
 LanguageMgr.prototype._typefaceResource = function (text, label) {
@@ -228,20 +239,22 @@ LanguageMgr.prototype._applyLabelTypeface = function (label, text) {
     }
     return;
   }
-  if (label._localizedTypeface === resource && label.font === this._fontCache[resource] && !label.useSystemFont || label._localizedFontRequest === resource) return;
+  if (label._localizedTypeface === resource && label.font === this._fontCache[resource] &&
+      label.font && (!cc.isValid || cc.isValid(label.font, true)) && !label.useSystemFont || label._localizedFontRequest === resource) return;
   if (!original) label._localizedBaseFont = {
     font: label.font, fontFamily: label.fontFamily, useSystemFont: label.useSystemFont, isBold: label.isBold
   };
   label._localizedFontRequest = resource;
   var self = this;
   this._loadTypeface(resource, function (font) {
-    if (!font || !cc.isValid(label) || !label.node || !cc.isValid(label.node) || label._localizedFontRequest !== resource) return;
+    if (!cc.isValid(label, true) || !label.node || !cc.isValid(label.node, true) || label._localizedFontRequest !== resource) return;
+    label._localizedFontRequest = null;
+    if (!font) return;
     label.font = font;
     label.useSystemFont = false;
     // The display font supplies its own weight; avoid a synthetic bold stroke.
     if (typeof label.isBold === "boolean") label.isBold = false;
     label._localizedTypeface = resource;
-    label._localizedFontRequest = null;
   });
 };
 LanguageMgr.prototype._applyDisplayEffects = function (label, resource) {

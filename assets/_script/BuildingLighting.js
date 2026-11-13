@@ -43,6 +43,7 @@ function config(owner) {
       var left = Math.min.apply(Math, xs), right = Math.max.apply(Math, xs), bottom = Math.min.apply(Math, ys), top = Math.max.apply(Math, ys);
       return { x: finite(glow.x, (left + right) / 2), y: finite(glow.y, (bottom + top) / 2),
         width: Math.max(1, finite(glow.width, (right - left) * 3)), height: Math.max(1, finite(glow.height, (top - bottom) * 3)),
+        angle: finite(glow.angle, 0), shearX: finite(glow.shearX, 0), shearY: finite(glow.shearY, 0),
         color: typeof glow.color === "string" ? glow.color : "#FFC85B", opacity: clamp(finite(glow.opacity, 100), 0, 255),
         pulse: clamp(finite(glow.pulse, .08), 0, 1), sprite: typeof glow.sprite === "string" && glow.sprite ? glow.sprite : GLOW };
     }
@@ -134,6 +135,9 @@ function build(owner, state, lights, layoutSignature) {
     glows.forEach(function (settings, at) {
       var glow = new cc.Node("WindowGlow" + index + "_" + at); glow.parent = node; glow.group = node.group; glow.zIndex = 0;
       glow.setPosition(settings.x, settings.y); glow.setContentSize(settings.width, settings.height); glow.color = cc.color(settings.color);
+      // Authored transforms project the retained native window fan outward.
+      // They are constant; the existing night loop changes only its opacity.
+      glow.angle = settings.angle; glow.skewX = settings.shearX; glow.skewY = settings.shearY;
       var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
       entry.glows.push({ node: glow, sprite: sprite, config: settings });
       if (!at) { entry.glow = glow; entry.sprite = sprite; }

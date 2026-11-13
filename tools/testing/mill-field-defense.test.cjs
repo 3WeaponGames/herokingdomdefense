@@ -41,6 +41,11 @@ test('one mill-wide choice branches once and both paths use the approved 2/2/3/4
 test('bomb art uses exact RTS tier2/4/7 pixels and a separate small image from the crop',native,()=>{
  const contract=require('./mill-field-defense.fixture.json').art,C=require('./painted-building-contract.cjs'),{decode}=require('../../packages/hkd-characters/lib/png-atlas'),dir=path.join(root,'assets/KinghtFallIconMap/com/Ani/td');
  const png=fs.readFileSync(dir+'/td-defenses.png'),image=decode(png),meta=JSON.parse(fs.readFileSync(dir+'/td-defenses.png.meta'));
+ // Creator reimport in 2c1c7f4c regenerated only this frame identity. Keep the
+ // existing metadata baseline and verify every other importer field exactly.
+ const frame=meta.subMetas['td-defenses'];
+ assert.equal(frame.uuid,'606721b3-a1ab-4306-8715-11f5956dbcd0','retain the committed imported frame identity');
+ frame.uuid='99985259-2677-4026-bcd5-5498d8fcda15';
  assert.equal(C.sha(png),contract.pageSha);assert.equal(C.hash(meta),contract.metadata);assert(image.width<=512&&image.height<=128);
  const atlas=new spine.TextureAtlas(fs.readFileSync(dir+'/td.atlas','utf8'),()=>({setFilters(){},setWraps(){},getImage:()=>({width:512,height:128})}));
  for(const source of contract.bombs){const region=atlas.findRegion(source.name);assert(region);assert.deepEqual([region.width,region.height],[source.width,source.height]);const pixels=Buffer.alloc(source.width*source.height*4);for(let y=0;y<source.height;y++)Buffer.from(image.rgba).copy(pixels,y*source.width*4,((region.y+y)*image.width+region.x)*4,((region.y+y)*image.width+region.x+source.width)*4);assert.equal(C.sha(pixels),source.rgbaSha,'exact native RTS artwork');}
@@ -155,4 +160,9 @@ test('the final cleared wave also pays surviving crop silver exactly once withou
  let awarded=0;const methods=dataMethods({$z1KinghtFallEnum:{KinghtFallEnumAchiEnum:{GetSliver:1}},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getMissionData:()=>({addAchNum:(_,n)=>awarded+=n})})}}});
  const data={round:9,coin:10,bulidPointMap:{2:{buildInfo:{cfg:{MillDefense:{}}},getGetCoin:()=>3},3:{buildInfo:{cfg:{MillDefense:{}}},getGetCoin:()=>0}}};data.captureMillIncome=methods('captureMillIncome');
  assert.equal(methods('settleFinalMillIncome').call(data),3);assert.equal(data.coin,13);assert.equal(awarded,3);assert.equal(data.round,9);assert.equal(methods('settleFinalMillIncome').call(data),0);assert.equal(data.coin,13);assert.equal(awarded,3);
+});
+
+test('native mill teardown never reads released addon slot colors or destroyed crop health nodes',native,()=>{
+ const e=setup(3),r=e.runtime,fields=r.fields.slice();for(const field of fields){field.addon={};Object.defineProperty(field.addon,'color',{get(){throw Error('Native slot proxy has been released');}});field.health={node:{destroyed:true}};}
+ assert.doesNotThrow(()=>r.destroy());assert.equal(r.fields.length,0);assert.equal(e.listeners.size,0);assert(fields.every(f=>f.node.destroyed));assert.doesNotThrow(()=>r.destroy());
 });

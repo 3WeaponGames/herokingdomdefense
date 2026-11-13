@@ -634,7 +634,29 @@
       "maxWindowChannel": 60,
       "previousPaintSha256": "e896e250173ce702511892882900a813d29158cf9d6506f83da160fa87d8fd80",
       "previousMaskSha256": "d29cf90805ef63bdedeb545e11034782971ebe71fb20c16f8d722dd4d8de795a",
-      "approvedMinimalMaster": "2026-11-13 archer-1"
+      "approvedMinimalMaster": "2026-11-13 archer-1",
+      "openDoorSourcePolygon": [
+        [
+          159,
+          201
+        ],
+        [
+          166,
+          196
+        ],
+        [
+          171,
+          194
+        ],
+        [
+          171,
+          218
+        ],
+        [
+          159,
+          225
+        ]
+      ]
     },
     {
       "family": "archer",
@@ -667,7 +689,29 @@
       "maxWindowChannel": 60,
       "previousPaintSha256": "5ec332684fab5524712ac36270f6f5c7d14c871373a11d5e1834bc50382dd3a0",
       "previousMaskSha256": "07c0bbf4f52e3b0ad382a80f9abe51c4d402b6fcdd3569a81cd67acc5900e874",
-      "approvedMinimalMaster": "2026-11-13 archer-2"
+      "approvedMinimalMaster": "2026-11-13 archer-2",
+      "openDoorSourcePolygon": [
+        [
+          159,
+          201
+        ],
+        [
+          166,
+          196
+        ],
+        [
+          171,
+          194
+        ],
+        [
+          171,
+          218
+        ],
+        [
+          159,
+          225
+        ]
+      ]
     },
     {
       "family": "archer",
@@ -700,7 +744,29 @@
       "maxWindowChannel": 60,
       "previousPaintSha256": "79c388a38547c717f8e739cdffa8f10ee6fb3f3d44d55ebfcfdb66f099b71611",
       "previousMaskSha256": "e2598915c7d3fe7a0852dd14f135249dae71bb61d65ed7c8e9acb62b98c74318",
-      "approvedMinimalMaster": "2026-11-13 archer-3"
+      "approvedMinimalMaster": "2026-11-13 archer-3",
+      "openDoorSourcePolygon": [
+        [
+          159,
+          201
+        ],
+        [
+          167,
+          196
+        ],
+        [
+          172,
+          194
+        ],
+        [
+          172,
+          219
+        ],
+        [
+          159,
+          227
+        ]
+      ]
     },
     {
       "family": "archer",
@@ -733,7 +799,29 @@
       "maxWindowChannel": 60,
       "previousPaintSha256": "44dca553f884e50f236d1b51fdd4c1491c6042eb2a7a213fd3c941ad9dd09a20",
       "previousMaskSha256": "f69e886760126a0b2ba0c1ae38e12ee4b4170c818fe0566d65ab12d01d5aca0b",
-      "approvedMinimalMaster": "2026-11-13 archer-4"
+      "approvedMinimalMaster": "2026-11-13 archer-4",
+      "openDoorSourcePolygon": [
+        [
+          177,
+          239
+        ],
+        [
+          184,
+          233
+        ],
+        [
+          190,
+          230
+        ],
+        [
+          190,
+          258
+        ],
+        [
+          177,
+          265
+        ]
+      ]
     },
     {
       "family": "sniper",
@@ -947,8 +1035,8 @@
         "sprite": "buildings/towers/cannon-1-destroyed",
         "width": 168.3,
         "height": 168.3,
-        "offsetX": 0.0,
-        "offsetY": -38.0
+        "offsetX": 0,
+        "offsetY": -38
       },
       "glowCount": 1,
       "minComponentPixels": 4,
@@ -992,8 +1080,8 @@
         "sprite": "buildings/towers/cannon-2-destroyed",
         "width": 168.3,
         "height": 168.3,
-        "offsetX": 0.0,
-        "offsetY": -38.0
+        "offsetX": 0,
+        "offsetY": -38
       },
       "glowCount": 1,
       "minComponentPixels": 4,
@@ -1037,8 +1125,8 @@
         "sprite": "buildings/towers/cannon-3-destroyed",
         "width": 168.3,
         "height": 168.3,
-        "offsetX": 0.0,
-        "offsetY": -38.0
+        "offsetX": 0,
+        "offsetY": -38
       },
       "glowCount": 1,
       "minComponentPixels": 4,
@@ -1082,8 +1170,8 @@
         "sprite": "buildings/towers/cannon-3-destroyed",
         "width": 168.3,
         "height": 168.3,
-        "offsetX": 0.0,
-        "offsetY": -38.0
+        "offsetX": 0,
+        "offsetY": -38
       },
       "glowCount": 1,
       "minComponentPixels": 4,
@@ -1099,5 +1187,18 @@
   "weaponDisplayScales": {
     "cannon": 0.9,
     "sniper": 1
+  },
+  "projectedLighting": {
+    "authorization": "2026-11-13 original arrowtower fan effect and open-entry illumination",
+    "source": "assets/KinghtFallIconMap/com/Ani/jt/jt.png",
+    "region": "jt_3_1",
+    "sourceRect": [
+      587,
+      74,
+      70,
+      70
+    ],
+    "resource": "buildings/lighting/native-window-ray",
+    "sha256": "c91f001488a1d37ee7daeb400741e94302c54d7c7a7fb03632191af9402062d5"
   }
 }

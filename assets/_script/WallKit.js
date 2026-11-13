@@ -124,20 +124,20 @@ function install(json, r, metadata, options) {
   metadata=metadata||json.wallKit;if(!metadata||!metadata.sizes)throw Error("Missing native wall kit textures.");
   // Layer aliases are an explicit asset capability. Old kits retain their exact
   // complete-region assembly, and invalid new metadata cannot change the input.
-  var layered=validateLayers(metadata);
+  var layered=validateLayers(metadata),castShadows=layered&&metadata.layers.castShadows!==false;
   var matched=metadata.gateStyle==="matched"||metadata.doors&&metadata.doors.version===2;
   var result=source(json),parts=posts(r),bone="rts_wall_frame";
   // Cancel the authored bone3 setup offset, while inheriting its entire spawn motion.
   result.bones.push({name:bone,parent:"bone3",x:5.2,y:-156.53});
   var bodySlots=parts.map(function(_,i){return "rts_wall_part_"+i;});
-  var shadowSlots=layered?parts.map(function(_,i){return "rts_wall_shadow_"+i;}):[],wallSlots=shadowSlots.concat(bodySlots);
+  var shadowSlots=castShadows?parts.map(function(_,i){return "rts_wall_shadow_"+i;}):[],wallSlots=shadowSlots.concat(bodySlots);
   wallSlots.forEach(function(name){result.slots.push({name:name,bone:bone,attachment:name});});
   for(var level=1;level<=3;level++){
     var attachments={},skin=SKINS[level-1];
     parts.forEach(function(p,i){
       var bodyOptions=layered?{mirrorX:!!(options&&options.mirrorX),layer:"body",layers:metadata.layers}:options,name=bodySlots[i];
       attachments[name]={};attachments[name][name]=Assembly.attachment(p,level,metadata.sizes,bodyOptions);
-      if(layered){name=shadowSlots[i];attachments[name]={};attachments[name][name]=Assembly.attachment(p,level,metadata.sizes,{mirrorX:!!(options&&options.mirrorX),layer:"shadow",layers:metadata.layers});}
+      if(castShadows){name=shadowSlots[i];attachments[name]={};attachments[name][name]=Assembly.attachment(p,level,metadata.sizes,{mirrorX:!!(options&&options.mirrorX),layer:"shadow",layers:metadata.layers});}
     });
     result.skins.push({name:skin,attachments:attachments});
   }

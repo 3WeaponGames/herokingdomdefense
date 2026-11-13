@@ -1,0 +1,678 @@
+{
+  "file": "assets/KinghtFallIconMap/com/Ani/cq/cq1/cq1.json",
+  "originalByteSha256": "d4d886da8af16ceeb158fe469d8590959dc29c4add5b83eb3e2a81ec8f88b132",
+  "shadowSlots": [
+    {
+      "index": 0,
+      "value": {
+        "name": "rts_wall_shadow_0",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_0"
+      }
+    },
+    {
+      "index": 1,
+      "value": {
+        "name": "rts_wall_shadow_1",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_1"
+      }
+    },
+    {
+      "index": 2,
+      "value": {
+        "name": "rts_wall_shadow_2",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_2"
+      }
+    },
+    {
+      "index": 3,
+      "value": {
+        "name": "rts_wall_shadow_3",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_3"
+      }
+    },
+    {
+      "index": 4,
+      "value": {
+        "name": "rts_wall_shadow_4",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_4"
+      }
+    },
+    {
+      "index": 5,
+      "value": {
+        "name": "rts_wall_shadow_5",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_5"
+      }
+    },
+    {
+      "index": 6,
+      "value": {
+        "name": "rts_wall_shadow_6",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_6"
+      }
+    },
+    {
+      "index": 7,
+      "value": {
+        "name": "rts_wall_shadow_7",
+        "bone": "rts_wall_frame",
+        "attachment": "rts_wall_shadow_7"
+      }
+    }
+  ],
+  "shadowAttachments": [
+    {
+      "skin": "cq-rts-1",
+      "index": 1,
+      "slot": "rts_wall_shadow_0",
+      "attachments": {
+        "rts_wall_shadow_0": {
+          "path": "rts_wall_post_1_shadow",
+          "x": -392,
+          "y": 292.63741111364413,
+          "width": 135,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 3,
+      "slot": "rts_wall_shadow_1",
+      "attachments": {
+        "rts_wall_shadow_1": {
+          "path": "rts_wall_top_1_shadow",
+          "x": -307.25,
+          "y": 232.63741111364413,
+          "width": 145.5,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 5,
+      "slot": "rts_wall_shadow_2",
+      "attachments": {
+        "rts_wall_shadow_2": {
+          "path": "rts_wall_top_1_shadow",
+          "x": -217.25,
+          "y": 172.63741111364413,
+          "width": 145.5,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 7,
+      "slot": "rts_wall_shadow_3",
+      "attachments": {
+        "rts_wall_shadow_3": {
+          "path": "rts_wall_top_1_shadow",
+          "x": -127.25,
+          "y": 112.63741111364413,
+          "width": 145.5,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 9,
+      "slot": "rts_wall_shadow_4",
+      "attachments": {
+        "rts_wall_shadow_4": {
+          "path": "rts_wall_post_1_shadow",
+          "x": 105,
+          "y": -38.69592221968918,
+          "width": 135,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 11,
+      "slot": "rts_wall_shadow_5",
+      "attachments": {
+        "rts_wall_shadow_5": {
+          "path": "rts_wall_top_1_shadow",
+          "x": 189.75,
+          "y": -98.69592221968918,
+          "width": 145.5,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 13,
+      "slot": "rts_wall_shadow_6",
+      "attachments": {
+        "rts_wall_shadow_6": {
+          "path": "rts_wall_top_1_shadow",
+          "x": 279.75,
+          "y": -158.69592221968918,
+          "width": 145.5,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-1",
+      "index": 15,
+      "slot": "rts_wall_shadow_7",
+      "attachments": {
+        "rts_wall_shadow_7": {
+          "path": "rts_wall_top_1_shadow",
+          "x": 369.75,
+          "y": -218.69592221968918,
+          "width": 145.5,
+          "height": 120,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 1,
+      "slot": "rts_wall_shadow_0",
+      "attachments": {
+        "rts_wall_shadow_0": {
+          "path": "rts_wall_post_2_shadow",
+          "x": -392,
+          "y": 303.13741111364413,
+          "width": 133.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 3,
+      "slot": "rts_wall_shadow_1",
+      "attachments": {
+        "rts_wall_shadow_1": {
+          "path": "rts_wall_top_2_shadow",
+          "x": -305,
+          "y": 243.13741111364413,
+          "width": 139.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 5,
+      "slot": "rts_wall_shadow_2",
+      "attachments": {
+        "rts_wall_shadow_2": {
+          "path": "rts_wall_top_2_shadow",
+          "x": -215,
+          "y": 183.13741111364413,
+          "width": 139.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 7,
+      "slot": "rts_wall_shadow_3",
+      "attachments": {
+        "rts_wall_shadow_3": {
+          "path": "rts_wall_top_2_shadow",
+          "x": -125,
+          "y": 123.13741111364413,
+          "width": 139.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 9,
+      "slot": "rts_wall_shadow_4",
+      "attachments": {
+        "rts_wall_shadow_4": {
+          "path": "rts_wall_post_2_shadow",
+          "x": 105,
+          "y": -28.19592221968918,
+          "width": 133.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 11,
+      "slot": "rts_wall_shadow_5",
+      "attachments": {
+        "rts_wall_shadow_5": {
+          "path": "rts_wall_top_2_shadow",
+          "x": 192,
+          "y": -88.19592221968918,
+          "width": 139.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 13,
+      "slot": "rts_wall_shadow_6",
+      "attachments": {
+        "rts_wall_shadow_6": {
+          "path": "rts_wall_top_2_shadow",
+          "x": 282,
+          "y": -148.19592221968918,
+          "width": 139.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-2",
+      "index": 15,
+      "slot": "rts_wall_shadow_7",
+      "attachments": {
+        "rts_wall_shadow_7": {
+          "path": "rts_wall_top_2_shadow",
+          "x": 372,
+          "y": -208.19592221968918,
+          "width": 139.5,
+          "height": 141,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 1,
+      "slot": "rts_wall_shadow_0",
+      "attachments": {
+        "rts_wall_shadow_0": {
+          "path": "rts_wall_post_3_shadow",
+          "x": -392,
+          "y": 305.38741111364413,
+          "width": 133.5,
+          "height": 142.5,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 3,
+      "slot": "rts_wall_shadow_1",
+      "attachments": {
+        "rts_wall_shadow_1": {
+          "path": "rts_wall_top_3_shadow",
+          "x": -306.5,
+          "y": 244.63741111364413,
+          "width": 142.5,
+          "height": 144,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 5,
+      "slot": "rts_wall_shadow_2",
+      "attachments": {
+        "rts_wall_shadow_2": {
+          "path": "rts_wall_top_3_shadow",
+          "x": -216.5,
+          "y": 184.63741111364413,
+          "width": 142.5,
+          "height": 144,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 7,
+      "slot": "rts_wall_shadow_3",
+      "attachments": {
+        "rts_wall_shadow_3": {
+          "path": "rts_wall_top_3_shadow",
+          "x": -126.5,
+          "y": 124.63741111364413,
+          "width": 142.5,
+          "height": 144,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 9,
+      "slot": "rts_wall_shadow_4",
+      "attachments": {
+        "rts_wall_shadow_4": {
+          "path": "rts_wall_post_3_shadow",
+          "x": 105,
+          "y": -25.94592221968918,
+          "width": 133.5,
+          "height": 142.5,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 11,
+      "slot": "rts_wall_shadow_5",
+      "attachments": {
+        "rts_wall_shadow_5": {
+          "path": "rts_wall_top_3_shadow",
+          "x": 190.5,
+          "y": -86.69592221968918,
+          "width": 142.5,
+          "height": 144,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 13,
+      "slot": "rts_wall_shadow_6",
+      "attachments": {
+        "rts_wall_shadow_6": {
+          "path": "rts_wall_top_3_shadow",
+          "x": 280.5,
+          "y": -146.69592221968918,
+          "width": 142.5,
+          "height": 144,
+          "scaleX": 1
+        }
+      }
+    },
+    {
+      "skin": "cq-rts-3",
+      "index": 15,
+      "slot": "rts_wall_shadow_7",
+      "attachments": {
+        "rts_wall_shadow_7": {
+          "path": "rts_wall_top_3_shadow",
+          "x": 370.5,
+          "y": -206.69592221968918,
+          "width": 142.5,
+          "height": 144,
+          "scaleX": 1
+        }
+      }
+    }
+  ],
+  "shadowTimelines": {
+    "Fade_in": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff",
+            "curve": 0.25,
+            "c3": 0.75
+          },
+          {
+            "time": 0.5,
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    },
+    "create": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 1,
+      "slotFieldIndex": 0
+    },
+    "destroy": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ],
+        "attachment": [
+          {
+            "time": 0.1667,
+            "name": null
+          }
+        ]
+      },
+      "startIndex": 11,
+      "slotFieldIndex": 0
+    },
+    "idle": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 0,
+      "slotFieldIndex": 0
+    },
+    "idle_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    },
+    "open": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 4,
+      "slotFieldIndex": 0
+    },
+    "open_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 8,
+      "slotFieldIndex": 0
+    },
+    "shut": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 4,
+      "slotFieldIndex": 0
+    },
+    "shut_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    },
+    "upgrade": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 0,
+      "slotFieldIndex": 1
+    },
+    "open_inward": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 4,
+      "slotFieldIndex": 0
+    },
+    "open_inward_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 8,
+      "slotFieldIndex": 0
+    },
+    "shut_inward": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 4,
+      "slotFieldIndex": 0
+    },
+    "shut_inward_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    },
+    "open_outward": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 4,
+      "slotFieldIndex": 0
+    },
+    "open_outward_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 8,
+      "slotFieldIndex": 0
+    },
+    "shut_outward": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff"
+          }
+        ]
+      },
+      "startIndex": 4,
+      "slotFieldIndex": 0
+    },
+    "shut_outward_night": {
+      "track": {
+        "color": [
+          {
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    },
+    "Fade_in_open_inward": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff",
+            "curve": 0.25,
+            "c3": 0.75
+          },
+          {
+            "time": 0.5,
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    },
+    "Fade_in_open_outward": {
+      "track": {
+        "color": [
+          {
+            "color": "ffffffff",
+            "curve": 0.25,
+            "c3": 0.75
+          },
+          {
+            "time": 0.5,
+            "color": "a7a7a7ff"
+          }
+        ]
+      },
+      "startIndex": 9,
+      "slotFieldIndex": 0
+    }
+  }
+}

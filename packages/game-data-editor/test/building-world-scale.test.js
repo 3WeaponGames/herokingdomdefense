@@ -19,7 +19,7 @@ test('opening Scale uses authored hero transforms and current size without creat
 });
 
 test('a selected tier scale updates stage models, shadows and blockers without rewriting masks, other tiers or icon sizing',()=>{
- const f=fixture(),building=f.service.buildingCatalog().find(b=>b.kind===2),stage={variant:'A',buildings:[Object.assign({},building,{x:0,y:0,scale:1,angle:0})]},pathTo=['BuildEnum','2','levelList',0],before=f.store.draftState(),first=Preview.describe(f.service,stage),base=Data.describe(f.service,{id:'2',levelIndex:0}),original=first.buildings[building.id].levels[1];
+ const f=fixture();for(const r of f.store.documents.A.data.BuildEnum[2].levelList)delete r.WorldScale;const building=f.service.buildingCatalog().find(b=>b.kind===2),stage={variant:'A',buildings:[Object.assign({},building,{x:0,y:0,scale:1,angle:0})]},pathTo=['BuildEnum','2','levelList',0],before=f.store.draftState(),first=Preview.describe(f.service,stage),base=Data.describe(f.service,{id:'2',levelIndex:0}),original=first.buildings[building.id].levels[1];
  f.store.change({version:f.store.version,edits:[{doc:'A',path:pathTo.concat('WorldScale'),value:.7}]});
  const next=Preview.describe(f.service,stage),record=next.buildings[building.id].levels[1],expected=Scale.record(original,.7);assert.notEqual(first.revision,next.revision);assert.deepEqual(record.skeletons,expected.skeletons);assert.deepEqual(round(record.blockers),round(expected.blockers));assert.deepEqual(record.step,expected.step);
  const after=Data.describe(f.service,{id:'2',levelIndex:0});assert.deepEqual(after.value,base.value,'Original model-space blocker mask stays unchanged');assert.deepEqual(after.parts[0].instances[0].slice(0,4),base.parts[0].instances[0].slice(0,4).map(n=>n*.7));const all=clone(before);all.A.BuildEnum[2].levelList[0].WorldScale=.7;assert.deepEqual(f.store.draftState(),all);f.store.undo({version:f.store.version});assert.deepEqual(f.store.draftState(),before);
@@ -47,4 +47,13 @@ test('native controller roots and stage collider previews agree for every buildi
   api.restore(owner);cases++;
  }
  assert.equal(cases,36);
+});
+
+test('permanent destruction releases scale bookkeeping without touching children or native physics proxies',()=>{
+ const api=runtime(),owner={_buildingWorldScaleRuntime:{parts:[]},node:{getComponentsInChildren(){throw Error('native children already destroyed');},set scaleX(_v){throw Error('native proxy already destroyed');}}};
+ api.dispose(owner);assert(!owner._buildingWorldScaleRuntime);api.dispose(owner);
+});
+test('ad offer and its trigger keep native size while the barracks body scales, with no drift on repeated upgrades',()=>{
+ const api=runtime(),map=new Node('map'),node=new Node('barracks',map),offer=new Node('AdOffer',node,50,-60),pad=new Node('pad',new Node('padgroup',node,70,-80)),owner={node,ndAniMain:{node},ndVideoSoldier:offer,ndLockList:[pad],buildInfo:{cfg:{WorldScale:.7}}};offer.scaleX=offer.scaleY=.8;
+ for(const factor of [.7,1.3,.7,1]){owner.buildInfo.cfg.WorldScale=factor;api.apply(owner);const a=offer.convertToWorldSpaceAR({x:0,y:0}),b=offer.convertToWorldSpaceAR({x:1,y:0});near(Math.hypot(b.x-a.x,b.y-a.y),.8);near(a.x,50*factor);near(a.y,-60*factor);}api.restore(owner);near(offer.scaleX,.8);
 });

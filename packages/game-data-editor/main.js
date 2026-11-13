@@ -3,7 +3,7 @@ const path=require('path');
 const Store=require('./lib/store').Store;
 const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Unit Types',maps:'Maps',settings:'Battle Settings',testing:'Testing'};
 let store=null,assets=null,restoreMetadataSave=null,restoreSpineLibrarySave=null,restoreSpineAtlasRefresh=null,worlds=null;
-function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;return selected&&selected.BuildEnum?selected:docs.A.data;}});return worlds;}
+function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:variant=>{const docs=getStore().snapshot().documents,selected=docs[variant]&&docs[variant].data;const config=selected&&selected.BuildEnum?selected:docs.A.data;return Object.assign({},config,{GameTools:variant==='A'&&docs.overrides?docs.overrides.data:config.GameTools});}});return worlds;}
 function worldBroadcast(snapshot){Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});return snapshot;}
 function project(){const root=Editor.Project&&Editor.Project.path||Editor.projectPath;if(!root)throw Error('Open HeroKingdomDefense first');return root;}
 function getStore(){

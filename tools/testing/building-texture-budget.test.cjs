@@ -7,14 +7,14 @@ const png=resource=>{const b=fs.readFileSync(path.join(root,resource));return [b
 test('all40 building tiers share a mobile texture budget below24MiB without changing native geometry',()=>{
  const files=new Set(Object.values(painted.rigs).flatMap(r=>r.pages.map(p=>p.file)));
  for(const row of config.BuildEnum[2].levelList){
-  for(const resource of [row.Appearance.sprite,...row.Appearance.lighting.map(l=>l.sprite)]){
+  for(const resource of [row.Appearance.sprite,...row.Appearance.lighting.flatMap(l=>[l.sprite,...(l.glows||[]).map(g=>g.sprite)]).filter(Boolean)]){
    const file='assets/resources/'+resource+'.png',size=png(file);files.add(file);
    assert(size.every(n=>n>=64&&n<=512),resource+' should use a small practical texture');
   }
  }
  files.add("assets/KinghtFallIconMap/com/Ani/td/td-defenses.png");
  files.add("assets/resources/buildings/shared/debris.png");
- assert.equal(files.size,36,'all active painted atlas pages and tower body/light pairs');
+ assert.equal(files.size,37,'active painted atlas pages, tower core masks and one shared native fan');
  const bytes=[...files].reduce((sum,f)=>{const [w,h]=png(f);return sum+w*h*4;},0);
  assert(bytes<=24*1024*1024,'decoded RGBA textures exceed the24MiB building budget: '+bytes);
 });

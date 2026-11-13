@@ -115,6 +115,7 @@ function environment() {
   const enumModule = new Proxy({}, { get: () => enums() });
   const dataManager = { data: {}, getSoldierCfgById: () => cfg };
   const stubs = {
+    BuildingWorldScale: {apply(){},restore(){},dispose(){}}, BuildingBlockerRuntime: {apply(){},dispose(){}}, BuildingShadowRuntime: {apply(){},hide(){},dispose(){}}, BuildingDropShadowRuntime: {apply(){},hide(){},dispose(){}},
     BuildingAppearance: { apply() {}, hide() {}, onDead() {}, dispose() {}, fire() {}, muzzle: owner => owner.getAttPos() },
     // Rubble rendering is covered by its own presentation suite. Geometry,
     // movement and purchase fixtures still execute the real building methods.
