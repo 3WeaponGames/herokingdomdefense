@@ -33,6 +33,7 @@ function mount(host,api){
  function union(items){if(!items.length)return null;return{minX:Math.min(...items.map(p=>p.box.minX)),maxX:Math.max(...items.map(p=>p.box.maxX)),minY:Math.min(...items.map(p=>p.box.minY)),maxY:Math.max(...items.map(p=>p.box.maxY))};}
  function heroPosition(b){return{x:Math.max(0,b.maxX)+35-heroBounds.minX,y:0};}
  function fit(){const b=union(layout());if(!b||!heroBounds)return;const p=heroPosition(b),minX=Math.min(b.minX,p.x+heroBounds.minX),maxX=Math.max(b.maxX,p.x+heroBounds.maxX),minY=Math.min(b.minY,heroBounds.minY)-25,maxY=Math.max(b.maxY,heroBounds.maxY);cx=(minX+maxX)/2;cy=(minY+maxY)/2;unit=Math.min((canvas.width-100)/Math.max(1,maxX-minX),(canvas.height-80)/Math.max(1,maxY-minY));fitted=true;draw();}
+ function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;if(data||state.width!==w||state.height!==h)fitted=false;if(enabled()&&!fitted)fit();else draw();}}
  function loaded(){if(closed)return;sync();if(enabled()&&!fitted)fit();draw();}
  function update(amount){const limits=range();if(!limits||!Number.isFinite(amount)||amount<limits.min-.000001||amount>limits.max+.000001)return;value=Math.max(limits.min,Math.min(limits.max,amount));sync();draw();}
  function commit(){
@@ -49,7 +50,7 @@ function mount(host,api){
   for(const tier of data.tiers){const label=make('label',undefined,tierControls),input=make('input',undefined,label);input.type='checkbox';const duplicate=data.tiers.filter(t=>t.level===tier.level).length>1,name='Tier '+tier.level+(duplicate?' · Variant '+(data.tiers.filter(t=>t.level===tier.level).indexOf(tier)+1):''),text=make('span',name,label);input.setAttribute('aria-label','Resize '+name);tierInputs.set(tier.index,{input,text,label:name});input.onchange=()=>{if(busy||loading)return;value=original=1;drag=null;if(input.checked)selected.add(tier.index);else selected.delete(tier.index);sync();draw();};}
   for(const [name,all]of [['Select all',true],['Select none',false]]){const button=make('button',name,tierControls);button.type='button';button.onclick=()=>{if(busy||loading)return;value=original=1;selected=new Set(all?data.tiers.map(t=>t.index):[]);sync();draw();};}
  }
- function local(e){const b=canvas.getBoundingClientRect();return{x:((e.clientX-b.left)*canvas.width/b.width-canvas.width/2)/(unit*zoom)+cx,y:-((e.clientY-b.top)*canvas.height/b.height-canvas.height/2)/(unit*zoom)+cy};}
+ function local(e){const b=canvas.getBoundingClientRect();return{x:((e.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth-canvas.width/2)/(unit*zoom)+cx,y:-((e.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight-canvas.height/2)/(unit*zoom)+cy};}
  canvas.onpointerdown=e=>{if(e.button!==0||busy||!enabled())return;const items=layout().filter(item=>chosen(item.entry)),b=union(items),p=local(e);if(!b||Math.hypot(p.x-b.maxX,p.y-b.maxY)*unit*zoom>15)return;e.preventDefault();canvas.focus();const width=items.reduce((sum,item)=>sum+item.box.maxX-item.box.minX,0);drag={before:value,anchorX:allTiers?b.minX:0,fixedX:allTiers?b.maxX-b.minX-width:0,x:allTiers?width:b.maxX,y:b.maxY,pointer:e.pointerId};canvas.setPointerCapture(e.pointerId);};
  canvas.onpointermove=e=>{if(!drag)return;const p=local(e),den=drag.x*drag.x+drag.y*drag.y,ratio=den?((p.x-drag.anchorX-drag.fixedX)*drag.x+p.y*drag.y)/den:1,limits=range();if(limits)update(Math.max(limits.min,Math.min(limits.max,drag.before*ratio)));};
  canvas.onpointerup=e=>{if(!drag)return;drag=null;if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);commit();};
@@ -75,7 +76,10 @@ function mount(host,api){
    const loadedImages=await Paint.loadImages(spec);if(closed||current!==serial)return;images=loadedImages;message(allTiers?'Selected tiers resize together. Save changes applies every selected size.':'The hero keeps its gameplay size. Changes stay in the draft until Save changes.');
   }catch(error){if(!closed&&current===serial)message(error.message,true);}finally{if(!closed&&current===serial){loading=false;loaded();}}
  }
+ // Resize the buffer as well as the CSS box; stretching a fixed buffer would
+ // distort both the building and its hero reference in wide or narrow panels.
+ const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);resize();
  sync();pending=load();
- return{get ready(){return pending;},stats,destroy(){if(closed)return;closed=true;serial++;Object.assign(state,{unit,zoom,cx,cy,fitted,allTiers,selection:Array.from(selected)});renderer.destroy();if(heroImage)heroImage.width=heroImage.height=1;if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onkeydown=canvas.onwheel=null;canvas.width=canvas.height=1;root.remove();}};
+ return{get ready(){return pending;},stats,destroy(){if(closed)return;closed=true;serial++;Object.assign(state,{unit,zoom,cx,cy,fitted,allTiers,selection:Array.from(selected),width:canvas.width,height:canvas.height});if(observer)observer.disconnect();renderer.destroy();if(heroImage)heroImage.width=heroImage.height=1;if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerup=canvas.onpointercancel=canvas.onkeydown=canvas.onwheel=null;canvas.width=canvas.height=1;root.remove();}};
 }
 module.exports={mount};

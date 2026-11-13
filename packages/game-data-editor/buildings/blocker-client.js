@@ -41,7 +41,7 @@ function mount(host,api){
  }
  mode.onchange=()=>{if(busy||!values){mode.value=layer;return;}layer=mode.value;state.layer=layer;value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;points=[];pointer=null;opacityDraft=null;instance=0;syncMode();draw();message('Editing '+layer+'. Changes stay in the shared draft until Save.');};
  function choose(next,reset=true){tool=next;if(reset){points=[];pointer=null;}add.className=next==='paint'?'active':'';erase.className=next==='erase'?'active':'';draw();}
- function local(event){const b=canvas.getBoundingClientRect(),world={x:((event.clientX-b.left)*canvas.width/b.width-canvas.width/2)/(scale*zoom)+cx,y:-((event.clientY-b.top)*canvas.height/b.height-canvas.height/2)/(scale*zoom)+cy};return Maps.point(Maps.inverse(matrix()),world);}
+ function local(event){const b=canvas.getBoundingClientRect(),world={x:((event.clientX-b.left-canvas.clientLeft)*canvas.width/canvas.clientWidth-canvas.width/2)/(scale*zoom)+cx,y:-((event.clientY-b.top-canvas.clientTop)*canvas.height/canvas.clientHeight-canvas.height/2)/(scale*zoom)+cy};return Maps.point(Maps.inverse(matrix()),world);}
  function screenDistance(a,b){const m=matrix(),p=Maps.point(m,a),q=Maps.point(m,b);return Math.hypot(p.x-q.x,p.y-q.y)*scale*zoom;}
  async function commit(next){
   if(JSON.stringify(next)===JSON.stringify(value)){draw();return;}
@@ -72,6 +72,7 @@ function mount(host,api){
   const finite=p.filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y));if(!finite.length)return;
   const minX=Math.min(...finite.map(p=>p.x)),maxX=Math.max(...finite.map(p=>p.x)),minY=Math.min(...finite.map(p=>p.y)),maxY=Math.max(...finite.map(p=>p.y));cx=(minX+maxX)/2;cy=(minY+maxY)/2;scale=Math.min((canvas.width-70)/Math.max(1,maxX-minX),(canvas.height-60)/Math.max(1,maxY-minY));draw();
  }
+ function resize(){if(closed)return;const w=canvas.clientWidth,h=canvas.clientHeight;if(w>0&&h>0&&(canvas.width!==w||canvas.height!==h)){canvas.width=w;canvas.height=h;if(data)fit();}}
  function maskPath(mask){g.beginPath();for(const region of mask)for(const ring of region){ring.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();}}
  function draw(){if(closed||frame!==null)return;frame=requestAnimationFrame(()=>{
   frame=null;if(closed||layer==='scale')return;g.setTransform(1,0,0,1,0,0);g.fillStyle='#899c59';g.fillRect(0,0,canvas.width,canvas.height);if(!data)return;
@@ -90,11 +91,14 @@ function mount(host,api){
   if(matrix()&&points.length){g.save();Paint.apply(g,matrix());g.strokeStyle=tool==='erase'?'#ff8b80':'#fff6ab';g.lineWidth=2/(scale*zoom);g.beginPath();points.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));if(pointer)g.lineTo(pointer.x,pointer.y);g.stroke();for(const p of points){g.beginPath();g.arc(p.x,p.y,4/(scale*zoom),0,Math.PI*2);g.fillStyle='#fff6ab';g.fill();}g.restore();}
  });}
  syncMode();
+ // CSS fixes the height while the panel width changes. Match the drawing
+ // buffer to the content box so world X and Y keep the same screen scale.
+ const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);resize();
  const ready=api.ipc('building-blocker-preview',api.request).then(async result=>{
   if(closed)return;data=result;values={blocker:clone(result.value),shadow:clone(result.shadow)};value=values[layer==='scale'?'blocker':layer];layerParts=layer==='shadow'?data.shadowParts:data.parts;syncMode();choose(tool,false);
   const frames=new Set(result.record.sprites.map(s=>s.frame)),spec={images:Object.fromEntries(Object.entries(result.images).filter(([key])=>frames.has(key)))};
-  renderer.prepare([result.record],result.runtimePath);if(state.view){({scale,cx,cy}=state.view);draw();}else fit();images=await Paint.loadImages(spec);if(closed)return;draw();message(data.parts.length>1?'Gate, pillars and connecting walls. Edits repeat at every matching connection point.':'Draw or erase a '+layer+'. Changes stay in the shared draft until Save.');
+  renderer.prepare([result.record],result.runtimePath);resize();if(state.view&&state.view.width===canvas.width&&state.view.height===canvas.height){({scale,cx,cy}=state.view);draw();}else fit();images=await Paint.loadImages(spec);if(closed)return;draw();message(data.parts.length>1?'Gate, pillars and connecting walls. Edits repeat at every matching connection point.':'Draw or erase a '+layer+'. Changes stay in the shared draft until Save.');
  }).catch(error=>{if(!closed)message(error.message,true);});
- return {get ready(){return scaleClient?scaleClient.ready:ready;},stats:()=>scaleClient?scaleClient.stats():renderer.stats(),destroy(){if(closed)return;closed=true;Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy};if(scaleClient)scaleClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
+ return {get ready(){return scaleClient?scaleClient.ready:ready;},stats:()=>scaleClient?scaleClient.stats():renderer.stats(),destroy(){if(closed)return;closed=true;Object.assign(state,{layer,tool,part:partKey,instance,zoom,points:clone(points)});if(data)state.view={scale,cx,cy,width:canvas.width,height:canvas.height};if(observer)observer.disconnect();if(scaleClient)scaleClient.destroy();renderer.destroy();if(frame!==null)cancelAnimationFrame(frame);canvas.onpointerdown=canvas.onpointermove=canvas.onpointerleave=canvas.ondblclick=canvas.onkeydown=canvas.onwheel=null;mode.onchange=opacity.oninput=opacity.onchange=null;canvas.width=canvas.height=1;}};
 }
 module.exports={mount};
