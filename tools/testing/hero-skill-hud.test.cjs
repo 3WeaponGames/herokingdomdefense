@@ -250,6 +250,18 @@ test('late or failed font callbacks cannot retain assets or change a recycled he
  const f=fixture('guardian'),first=f.hero._skillHUD,old=f.fontLoads[0];let refs=0;const font={addRef(){refs++;return this;},decRef(){refs--;}};f.hud.clear(f.hero);f.hero.node._combatGeneration=2;f.hud.update(f.hero,f.rt);const second=f.hero._skillHUD;old.callback(null,font);assert.equal(refs,0);assert.notEqual(second.cooldownCount.font,font);f.fontLoads[1].callback(Error('missing'));f.rt.state.cooldown=4;f.hud.update(f.hero,f.rt);assert.equal(second.cooldownCount.string,'4');assert.equal(first.button.destroyed,true);f.hud.clear(f.hero);assert.equal(refs,0);
 });
 
+test('a dead combat hero does not recreate an invisible HUD or repeat its asset loads after cleanup',()=>{
+ const f=fixture(),loads=f.fontLoads.length;f.hud.clear(f.hero);f.hero.hp=0;
+ for(let i=0;i<100;i++)f.hud.update(f.hero,f.rt);
+ assert.equal(f.hero._skillHUD,undefined);assert.equal(f.fontLoads.length,loads);
+});
+
+test('HUD cleanup releases its font without touching a disposed native label, and a destroyed effects layer is rebuilt',()=>{
+ const f=fixture(),first=f.hero._skillHUD;let refs=0;const font={addRef(){refs++;return this;},decRef(){refs--;}};f.fontLoads[0].callback(null,font);assert.equal(refs,1);
+ Object.defineProperty(first.cooldownCount,'font',{set(){if(first.cooldownCount.node.destroyed)throw Error('disposed native label');}});first.button.destroy();assert.doesNotThrow(()=>f.hud.update(f.hero,f.rt));assert.equal(refs,0);
+ const second=f.hero._skillHUD;second.visual.node.destroy();assert.doesNotThrow(()=>f.hud.update(f.hero,f.rt));assert.notEqual(f.hero._skillHUD,second);assert(second.button.destroyed);
+});
+
 test('every class installs its planning icon before the first combat update and after a restarted generation',()=>{
  for(const style of ['skirmisher','fighter','vanguard','mystic','bruiser','guardian']){
   const f=fixture(style);f.hud.clear(f.hero);f.game.gameStatus=0;
@@ -305,4 +317,16 @@ test('real runtime keeps every planning icon visible through dead and reborn gen
 
 test('a cold Prepare runtime refreshes context before weather and HUD installation without enabling casts',()=>{
  const f=fixture('guardian',{},undefined,true),hud=f.hero._skillHUD;assert(hud);assert.equal(f.setupEvents[0].kind,'refresh');assert.equal(f.setupEvents[1].kind,'weather');assert.equal(f.setupEvents[1].game,f.game);assert.equal(f.setupEvents[1].ui,f.ui);assert.equal(hud.button.active,true);assert.equal(hud.visual.node.active,false);hud.button.handlers.start(f.event(1));hud.button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);f.game.gameStatus=2;f.hud.update(f.hero,f.rt);assert.equal(hud.visual.node.active,true);hud.button.handlers.start(f.event(2));hud.button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);f.hud.clear(f.hero);
+});
+
+test('losing skill readiness cancels an owned aim gesture without casting or rearming from its later move',()=>{
+ const world=fixture();world.rt.aiming=true;world.hud.handleTouch(world.controller,'start',world.event(1,100,0));world.rt.state.cooldown=2;world.rt.cast=()=>false;
+ assert.equal(world.hud.handleTouch(world.controller,'end',world.event(1,100,0)),true);assert.equal(world.rt.aiming,false);assert.equal(world.hero._skillHUD.worldTouch,null);
+ const button=fixture(),node=button.hero._skillHUD.button;node.handlers.start(button.event(1));button.rt.state.cooldown=2;button.rt.aiming=false;node.handlers.move(button.event(1,100,0));assert.equal(button.rt.aiming,false);node.handlers.end(button.event(1,100,0));assert.equal(button.rt.casts.length,0);
+});
+
+test('late HUD font loads and procedural target art reject same-generation replacement nodes',()=>{
+ const f=fixture('mystic'),first=f.hero._skillHUD,request=f.fontLoads[0];let refs=0;const font={addRef(){refs++;return this;},decRef(){refs--;}};f.hero.node=new f.Node('replacement hero');request.callback(null,font);assert.equal(refs,0);assert.notEqual(first.cooldownCount.font,font);
+ const active=fixture('mystic'),old=new active.Node('original target');old.setParent(active.game.ndMain);old._combatGeneration=1;const target={node:old,hp:100};active.rt.beamTarget=active.rt.state.target=target;active.rt.state.marked=true;active.rt.beamVisibleGeneration=active.rt.markGeneration=1;active.rt.beamVisibleNode=active.rt.markNode=old;active.rt.settings=require('../../assets/_script/HeroSkillSettings').defaults('mystic');active.rt.settings.visual.beamResource=active.rt.settings.visual.markResource='';active.hud.update(active.hero,active.rt);assert(active.hero._skillHUD.visual.g.ops.length>0);
+ target.node=new active.Node('replacement target');target.node.setParent(active.game.ndMain);target.node._combatGeneration=1;active.hud.update(active.hero,active.rt);assert.equal(active.hero._skillHUD.visual.g.ops.length,0);active.hud.clear(active.hero);f.hud.clear(f.hero);
 });

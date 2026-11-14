@@ -4,7 +4,7 @@
 function finite(value,fallback){return typeof value==="number"&&isFinite(value)?value:fallback;}
 function clamp(value,low,high){return Math.max(low,Math.min(high,value));}
 function point(value){return value?{x:finite(value.x,0),y:finite(value.y,0)}:null;}
-function same(a,b){return !!a&&!!b&&a.id===b.id&&a.generation===b.generation;}
+function same(a,b){return !!a&&!!b&&a.id===b.id&&a.node===b.node&&a.generation===b.generation;}
 function create(){return{scope:null,time:0,passive:null,beam:null,mark:null,buff:null,shieldTail:null,tails:[],frame:{entities:[],active:{}}};}
 function reset(cache,state){cache.scope=state;cache.time=finite(state.time,0);cache.passive=cache.beam=cache.mark=cache.buff=null;cache.shieldTail=null;cache.tails=[];}
 function setting(visual,prefix,key,fallback){return finite(visual[prefix+key],fallback);}
@@ -48,7 +48,7 @@ function update(cache,state,context,visual){
   }else cache.passive=null;
   var beam=context.channelTarget||context.beamTarget,visible=context.beamTarget;
   active.beam=!!beam;
-  if(cache.beam&&!same(cache.beam.target,beam)){
+  if(cache.beam&&(!same(cache.beam.target,beam)||cache.beam.onset!==context.beamOnset)){
     if(cache.beam.visible){
       cache.tails.push({age:0,duration:Math.max(.01,finite(context.beamEndDuration,.25)),from:point(cache.beam.from),to:point(cache.beam.to),target:cache.beam.target});
       if(cache.tails.length>2)cache.tails.shift();
@@ -56,7 +56,7 @@ function update(cache,state,context,visual){
     cache.beam=null;
   }
   if(beam){
-    if(!cache.beam){cache.beam=clock(1);cache.beam.target=beam;cache.beam.phase="start";}
+    if(!cache.beam){cache.beam=clock(1);cache.beam.target=beam;cache.beam.onset=context.beamOnset;cache.beam.phase="start";}
     var phase=visible&&same(visible,beam)?"loop":"start";
     if(phase!==cache.beam.phase){cache.beam.phase=phase;cache.beam.age=0;}
     cache.beam.visible=phase==="loop";cache.beam.from=point(context.origin);cache.beam.to=point(beam);

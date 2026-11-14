@@ -7,6 +7,7 @@ var ButtonArt=require("./HeroSkillButton");
 var COOLDOWN_EPSILON=1e-9;
 var COUNT_FONT="localization/fonts/Lilita One",COMMAND_SIZE_RATIO=1.15;
 function live(node) { return !!node && (typeof cc === "undefined" || !cc.isValid || cc.isValid(node, true)); }
+function targetLive(actor,generation,node){return !!actor&&live(actor.node)&&actor.node.activeInHierarchy!==false&&!actor._isPooled&&actor.hp>0&&(!actor.isDead||!actor.isDead())&&(generation===undefined||actor.node._combatGeneration===generation)&&(!node||actor.node===node);}
 function ready() { return typeof cc !== "undefined" && cc.Node && cc.Graphics && cc.Label; }
 function vec(x,y) { return cc.v2 ? cc.v2(x,y) : new cc.Vec2(x,y); }
 function node(parent,name,width,height) { var n=new cc.Node(name); n.setParent(parent); if(width)n.setContentSize(width,height);return n; }
@@ -42,7 +43,7 @@ function pointIn(rt,layer,p) { return layer.convertToNodeSpaceAR(rt.game.ndMain.
 function worldIn(layer,p) { return layer.convertToNodeSpaceAR(p); }
 function actorPoint(layer,actor,overhead) {
   var ground=actor.node.convertToWorldSpaceAR(vec(0,0)),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node;
-  if(bar){var top=bar.convertToWorldSpaceAR(vec(0,overhead?18:0));if(overhead)return worldIn(layer,top);ground=vec(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}
+  if(live(bar)){var top=bar.convertToWorldSpaceAR(vec(0,overhead?18:0));if(overhead)return worldIn(layer,top);ground=vec(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}
   else if(overhead)ground.y+=80;
   return worldIn(layer,ground);
 }
@@ -73,6 +74,7 @@ function buttonStart(hud,event) {
 }
 function buttonMove(hud,event) {
   stop(event);var p=hud.press,rt=hud.runtime,at=location(event);if(!p||p.id!==touchId(event)||!at||!p.start)return;
+  if(!usable(rt)){rt.aiming=false;return;}
   if(Math.hypot(at.x-p.start.x,at.y-p.start.y)>12)p.dragged=true;
   if(p.dragged&&directional(rt.state.style)&&available(rt)){rt.aiming=true;var aim=localDirection(rt,p.start,at);if(rt.setFreeAim)rt.setFreeAim(aim);else rt.aimDirection=aim;}
 }
@@ -98,8 +100,8 @@ function install(hero,rt) {
   var types=cc.Node.EventType;
   hud.button.on(types.TOUCH_START,function(e){buttonStart(hud,e);});hud.button.on(types.TOUCH_MOVE,function(e){buttonMove(hud,e);});
   hud.button.on(types.TOUCH_END,function(e){buttonEnd(hud,e,false);});hud.button.on(types.TOUCH_CANCEL,function(e){buttonEnd(hud,e,true);});
-  hero._skillHUD=hud;var generation=hero.node._combatGeneration;
-  function owned(){return hero._skillHUD===hud&&hero._styleRuntime===rt&&live(hero.node)&&live(hud.button)&&hero.node._combatGeneration===generation;}
+  hero._skillHUD=hud;var heroNode=hero.node,generation=heroNode._combatGeneration;
+  function owned(){return hero._skillHUD===hud&&hero._styleRuntime===rt&&hero.node===heroNode&&live(heroNode)&&live(hud.button)&&live(hud.cooldownCount)&&live(hud.cooldownCount.node)&&heroNode._combatGeneration===generation;}
   hud.art=ButtonArt.create(hud.button,owned,cc);
   if(cc.resources&&cc.resources.load&&cc.Font)cc.resources.load(COUNT_FONT,cc.Font,function(error,font){if(error||!font||!owned())return;hud.countFont=font.addRef?font.addRef():font;hud.cooldownCount.font=font;hud.cooldownCount.useSystemFont=false;});
   if(Presentation.preload)Presentation.preload(rt);
@@ -164,7 +166,7 @@ function paintButton(hud,rt) {
   if(cooldown)hud.cooldownCount.string=String(cooldown);
 }
 function drawCharge(hud,hero,rt) {
-  var s=rt.state,hp=hero.ctrHp&&hero.ctrHp.node,show=(s.style==="vanguard"||s.style==="skirmisher")&&hp&&hp.parent;
+  var s=rt.state,hp=hero.ctrHp&&hero.ctrHp.node,show=(s.style==="vanguard"||s.style==="skirmisher")&&live(hp)&&live(hp.parent);
   if(!show){if(hud.charge)hud.charge.node.active=false;return;}
   if(!hud.charge||!live(hud.charge.node)||hud.charge.node.parent!==hp.parent){if(hud.charge&&live(hud.charge.node))hud.charge.node.destroy();hud.charge=graphics(hp.parent,"Hero charge meter");}
   var meter=hud.charge.node,w=hp.width||64,h=(hp.height||10)*.5;
@@ -183,14 +185,14 @@ function aimOrigin(rt,v) {
 }
 function draw(hud,hero,rt) {
   var view=hud.visual,g=view.g,layer=view.node,v=Presentation.visual(rt),builtin=v.showBuiltin!==false;
-  var targetAlive=rt.beamTarget&&live(rt.beamTarget.node)&&rt.beamTarget.hp>0,marked=rt.state.style==="mystic"&&rt.state.marked&&rt.state.target&&live(rt.state.target.node)&&rt.state.target.hp>0;
+  var targetAlive=targetLive(rt.beamTarget,rt.beamVisibleGeneration,rt.beamVisibleNode),marked=rt.state.style==="mystic"&&rt.state.marked&&targetLive(rt.state.target,rt.markGeneration,rt.markNode);
   var empty=!rt.aiming&&!targetAlive&&!marked&&(!builtin||!(rt.projectiles||[]).length&&!(rt.effects||[]).length)&&!Presentation.hasImpactVisual(rt);
   hud.beamVfxPosition=null;
   if(empty&&hud.visualEmpty){Presentation.attachments(hud,rt);return;}
   g.clear();hud.visualEmpty=empty;
   if(rt.aiming){var o=hero.node.getPosition(),d=normalize(rt.aimDirection),size=rt.game.mapSize||{width:2000,height:2000};if(rt.state.style==='skirmisher'){var shot=rt.projectileAim?rt.projectileAim():{origin:aimOrigin(rt,v),direction:d},launch=shot.origin,end=rayEnd(launch,shot.direction,{minX:-size.width/2,maxX:size.width/2,minY:-size.height/2,maxY:size.height/2});line(g,pointIn(rt,layer,launch),pointIn(rt,layer,end),7,'#26322a');line(g,pointIn(rt,layer,launch),pointIn(rt,layer,end),3,'#f7ed8c');}else{var shape=rt.skillArea?rt.skillArea(d,hero.attackRange||155):{origin:o,direction:d,radius:hero.attackRange||155},tip={x:shape.origin.x+shape.direction.x*shape.radius,y:shape.origin.y+shape.direction.y*shape.radius};line(g,pointIn(rt,layer,shape.origin),pointIn(rt,layer,tip),4,'#ffdf76');}}
-  var target=rt.beamTarget;if(target&&live(target.node)&&target.hp>0){var from=hero.getAttWpos?hero.getAttWpos():hero.node.convertToWorldSpaceAR(vec(0,0)),a=offsetIn(rt,layer,worldIn(layer,from),v.originX,v.originY),b=offsetIn(rt,layer,actorPoint(layer,target,false),v.targetX,v.targetY);hud.beamVfxPosition=rt.game.ndMain.convertToNodeSpaceAR(layer.convertToWorldSpaceAR(b));if(builtin&&!v.beamResource){line(g,a,b,Presentation.width(rt,10),Presentation.color(rt,"#7134a4"),v.opacity);line(g,a,b,Presentation.width(rt,4),Presentation.color(rt,"#d9a4ff"),v.opacity);circle(g,b,6*v.scale,Presentation.color(rt,"#f5d3ff"),true,v.opacity);}}
-  if(!v.markResource&&rt.state.style==="mystic"&&rt.state.marked&&rt.state.target&&live(rt.state.target.node)&&rt.state.target.hp>0){var m=actorPoint(layer,rt.state.target,true);g.fillColor=color("#d790ff");g.strokeColor=color("#231330");g.lineWidth=2;g.moveTo(m.x,m.y+10);g.lineTo(m.x+7,m.y);g.lineTo(m.x,m.y-10);g.lineTo(m.x-7,m.y);g.close();g.fill();g.stroke();}
+  var target=rt.beamTarget;if(targetAlive){var from=hero.getAttWpos?hero.getAttWpos():hero.node.convertToWorldSpaceAR(vec(0,0)),a=offsetIn(rt,layer,worldIn(layer,from),v.originX,v.originY),b=offsetIn(rt,layer,actorPoint(layer,target,false),v.targetX,v.targetY);hud.beamVfxPosition=rt.game.ndMain.convertToNodeSpaceAR(layer.convertToWorldSpaceAR(b));if(builtin&&!v.beamResource){line(g,a,b,Presentation.width(rt,10),Presentation.color(rt,"#7134a4"),v.opacity);line(g,a,b,Presentation.width(rt,4),Presentation.color(rt,"#d9a4ff"),v.opacity);circle(g,b,6*v.scale,Presentation.color(rt,"#f5d3ff"),true,v.opacity);}}
+  if(!v.markResource&&marked){var m=actorPoint(layer,rt.state.target,true);g.fillColor=color("#d790ff");g.strokeColor=color("#231330");g.lineWidth=2;g.moveTo(m.x,m.y+10);g.lineTo(m.x+7,m.y);g.lineTo(m.x,m.y-10);g.lineTo(m.x-7,m.y);g.close();g.fill();g.stroke();}
   if(builtin)(rt.projectiles||[]).forEach(function(p){var center=Presentation.projectilePoint(p,v),d=p.direction,arrow=Projectile.arrow(p.width),at=function(along,across){return pointIn(rt,layer,{x:center.x+d.x*along-d.y*across,y:center.y+d.y*along+d.x*across});},a=at(arrow.tail,0),b=at(arrow.base,0),tip=at(arrow.tip,0),left=at(arrow.base,arrow.halfHeight),right=at(arrow.base,-arrow.halfHeight);line(g,a,b,arrow.stroke,Presentation.color(rt,'#fdf1a4'),v.opacity);g.fillColor=tint(Presentation.color(rt,'#ffffff'),v.opacity);g.moveTo(tip.x,tip.y);g.lineTo(left.x,left.y);g.lineTo(right.x,right.y);g.close();g.fill();});
   if(builtin)(rt.effects||[]).forEach(function(e){var center=e.resolved?e:Presentation.offset(e,v.offsetX,v.offsetY),p=pointIn(rt,layer,center),edge=pointIn(rt,layer,{x:center.x+e.radius*(e.resolved?1:v.scale),y:center.y}),r=Math.hypot(edge.x-p.x,edge.y-p.y),progress=1-Math.max(0,e.remaining/e.duration);g.strokeColor=tint(Presentation.color(rt,e.kind==="burst"?"#d69fff":e.kind==="arc"?"#fff5b0":rt.state.style==="guardian"?"#70c8ff":"#ff5b65"),v.opacity);g.lineWidth=Presentation.width(rt,Math.max(2,7*(1-progress)));if(e.kind==="arc"&&e.direction){var direction=e.resolved?e.direction:Presentation.rotated(e.direction,v.rotation),tip=pointIn(rt,layer,{x:center.x+direction.x,y:center.y+direction.y}),angle=Math.atan2(tip.y-p.y,tip.x-p.x);g.arc(p.x,p.y,r*(e.resolved?1:.65+progress*.35),angle-(e.halfAngle===undefined?Math.PI/3:e.halfAngle),angle+(e.halfAngle===undefined?Math.PI/3:e.halfAngle),true);}else g.circle(p.x,p.y,r*(e.resolved?1:.65+progress*.35));g.stroke();});
   Presentation.draw(hud,rt);Presentation.attachments(hud,rt);
@@ -201,11 +203,12 @@ function update(hero,rt) {
   // Resolve ownership before installation; available() can retire an old HUD
   // when the hero generation or battle epoch changed.
   if(rt&&typeof rt.refresh==="function")rt.refresh();
-  var active=available(rt);
+  var active=available(rt),planning=!active&&waiting(rt);
   if(typeof cc.Class==="function")require("./ForestRain").ensure(rt);
-  var hud=hero._skillHUD;if(hud&&(!live(hud.button)||hud.runtime!==rt)){clear(hero);hud=null;}
+  var hud=hero._skillHUD;if(hud&&(!live(hud.button)||!live(hud.visual&&hud.visual.node)||!live(hud.visual&&hud.visual.g)||!live(hud.cooldownCount)||!live(hud.cooldownCount.node)||hud.runtime!==rt)){clear(hero);hud=null;}
+  if(!hud&&!active&&!planning)return;
   if(!hud)hud=install(hero,rt);if(!hud)return;hud.runtime=rt;
-  hud.button.active=active||waiting(rt);hud.visual.node.active=active;
+  hud.button.active=active||planning;hud.visual.node.active=active;
   if(!active){if(Presentation.suspend)Presentation.suspend(rt);rt.aiming=false;hud.press=null;hud.worldTouch=null;if(hud.charge)hud.charge.node.active=false;hud.visual.g.clear();hud.visualEmpty=true;if(hud.button.active){layout(hud,rt);paintButton(hud,rt);}return;}
   layout(hud,rt);paintButton(hud,rt);drawCharge(hud,hero,rt);draw(hud,hero,rt);
 }
@@ -215,14 +218,14 @@ function clear(hero) {
   if(hud.runtime)hud.runtime.aiming=false;
   if(hud.controller&&hud.controller._skillAimHUD===hud)delete hud.controller._skillAimHUD;
   if(hud.art)hud.art.destroy();
-  if(hud.countFont){hud.cooldownCount.font=null;if(hud.countFont.decRef)hud.countFont.decRef();hud.countFont=null;}
+  if(hud.countFont){if(live(hud.cooldownCount)&&live(hud.cooldownCount.node))hud.cooldownCount.font=null;if(hud.countFont.decRef)hud.countFont.decRef();hud.countFont=null;}
   [hud.button,hud.visual&&hud.visual.node,hud.charge&&hud.charge.node].forEach(function(n){if(live(n))n.destroy();});delete hero._skillHUD;
 }
 function handleTouch(controller,phase,event) {
   var game=controller&&controller._followGame&&controller._followGame(),hero=game&&game.ctrPlay,hud=hero&&hero._skillHUD||controller&&controller._skillAimHUD,rt=hud&&hud.runtime,id=touchId(event);
   if(!rt||!hud)return false;
   var pending=hud.worldTouch;
-  if(pending&&pending.id===id){stop(event);if(pending.cancelled||!rt.aiming||!available(rt)){pending.cancelled=true;if(phase==="end"||phase==="cancel")hud.worldTouch=null;rt.aiming=false;return true;}var p=location(event);if(p&&phase!=="cancel")rt.screenAim(p);if(phase==="end"||phase==="cancel"){hud.worldTouch=null;if(phase==="end")rt.cast(rt.aimDirection);else rt.aiming=false;}return true;}
+  if(pending&&pending.id===id){stop(event);if(pending.cancelled||!rt.aiming||!usable(rt)){pending.cancelled=true;if(phase==="end"||phase==="cancel")hud.worldTouch=null;rt.aiming=false;return true;}var p=location(event);if(p&&phase!=="cancel")rt.screenAim(p);if(phase==="end"||phase==="cancel"){hud.worldTouch=null;if(phase==="end")rt.cast(rt.aimDirection);else rt.aiming=false;}return true;}
   if(pending||hud.press)return false;
   if(phase!=="start"||!rt.aiming||!available(rt)||controller.touchID!==false&&controller.touchID===id)return false;
   var at=location(event);if(!at)return false;rt.screenAim(at);hud.worldTouch={id:id};hud.controller=controller;controller._skillAimHUD=hud;stop(event);return true;

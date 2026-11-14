@@ -2,7 +2,12 @@
 
 // Saved animation defaults and per-unit authoring overrides. No configuration
 // is created or loaded here. Without either, retain the synchronous legacy path.
-var pending = [];
+var pending = new Map();
+function valid(value) { return !!value && (!cc.isValid || cc.isValid(value, true)); }
+function sameOwner(entry) {
+  return !!entry && valid(entry.owner) && entry.owner.node === entry.node && valid(entry.node) &&
+    entry.node._combatGeneration === entry.generation && entry.owner.time === entry.time;
+}
 function config() {
   var data = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data;
   return data && data.GameTools;
@@ -23,15 +28,15 @@ function counters(owner, target) {
   return assignments[keyFor(target, side)] === owner.cfg.CounterType;
 }
 function cancel(owner) {
-  var removed = false;
-  for (var i = pending.length - 1; i >= 0; i--) if (pending[i].owner === owner) { pending.splice(i, 1); removed = true; }
+  var entry = pending.get(owner);
+  if (!entry) return;
+  pending.delete(owner);
   // Only a delayed attack can be pending. Cancelling one must not
   // strand the original melee cooldown at its "waiting for effect" sentinel.
-  if (removed && owner && owner.time && owner.time.Attack === -1) owner.time.Attack = 0;
+  if (sameOwner(entry) && entry.time && entry.time.Attack === -1) entry.time.Attack = 0;
 }
 function isPending(owner) {
-  for (var i = 0; i < pending.length; i++) if (pending[i].owner === owner) return true;
-  return false;
+  return pending.has(owner);
 }
 function trackValue(track, key) {
   var getter = "get" + key.charAt(0).toUpperCase() + key.slice(1);
@@ -57,32 +62,36 @@ function attack(owner, type, callback) {
   var validDelay = typeof delay === "number" && isFinite(delay) && delay > 0 && delay <= 10;
   if (!validDelay && speed > 0) return callback.call(owner);
   cancel(owner);
+  if (!valid(owner) || !valid(owner.node)) return;
   var skeleton = owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody);
+  if (!valid(skeleton)) skeleton = null;
   var track = skeleton && skeleton.getCurrent ? skeleton.getCurrent(0) : null;
   var info = animationInfo(track);
   // Keep the outstanding authored time in source seconds. Per-level playback
   // can change during this windup, including entering/leaving whole-unit mode.
-  pending.push({ owner: owner, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
+  pending.set(owner, { owner: owner, node: owner.node, generation: owner.node._combatGeneration, type: type, key: key, time: owner.time, remaining: validDelay ? delay : 0, callback: callback, skeleton: skeleton,
     animation: info.name, animationEnd: info.end, animationTime: info.time,
     // Browser TrackEntry objects survive disposal. JSB wrappers may point at
     // freed native entries, so native interruption checks use captured values.
     browserTrack: !(cc.sys && cc.sys.isNative) ? track : null });
 }
 function tick(dt, fighting) {
-  if (!pending.length) return;
+  if (!pending.size) return;
   if (!fighting) { clear(); return; }
   if (!(dt > 0) || !isFinite(dt)) return;
   // Iterate a snapshot: callbacks may start/cancel other attacks.
-  var work = pending.slice();
+  var work = Array.from(pending.values());
   for (var i = 0; i < work.length; i++) {
     var entry = work[i], owner = entry.owner;
-    if (pending.indexOf(entry) < 0) continue;
-    var valid = owner && owner.node && cc.isValid(owner) && cc.isValid(owner.node) &&
-      owner.node.activeInHierarchy !== false && owner.node.active !== false &&
-      (!owner.isDead || !owner.isDead()) && owner.time === entry.time && keyFor(owner, entry.type) === entry.key;
-    if (!valid) { cancel(owner); continue; }
+    if (pending.get(owner) !== entry) continue;
+    var live = sameOwner(entry) && entry.node.activeInHierarchy !== false && entry.node.active !== false && !owner._isPooled &&
+      (!owner.isDead || !owner.isDead()) && (entry.type === "hero" || owner.cfg) && keyFor(owner, entry.type) === entry.key;
+    if (!live) { cancel(owner); continue; }
+    var skeleton = entry.skeleton;
+    if (skeleton && (!valid(skeleton) || skeleton !== (owner.getSpAni ? owner.getSpAni() : owner.spAni || (owner.ctrPlayAni && owner.ctrPlayAni.spAniBody)))) { cancel(owner); continue; }
     applyAttackPlayback(owner, entry.type);
-    var skeleton = entry.skeleton, control = owner._relicControl;
+    var control = owner._relicControl;
+    if (control && control.node && control.node !== owner.node) control = null;
     // RelicCombat releases its pause later in this frame, after this scheduler.
     // Count the unfrozen remainder now; an independently paused renderer stays
     // stopped. Normal freeze application has already cancelled old attacks.
@@ -112,16 +121,16 @@ function tick(dt, fighting) {
     }
     entry.remaining -= effectDelta * playback;
     if (entry.remaining <= 1e-9) {
-      pending.splice(pending.indexOf(entry), 1);
+      pending.delete(owner);
       entry.callback.call(owner);
       // The hero's original hit callback leaves Attack at -1 when every target
       // has left range. A delayed release must still finish that attack so the
       // hero can acquire another target rather than remaining stuck forever.
-      if (owner.time === entry.time && owner.time.Attack === -1 && !isPending(owner)) owner.time.Attack = 0;
+      if (sameOwner(entry) && entry.time && entry.time.Attack === -1 && !isPending(owner)) entry.time.Attack = 0;
     }
   }
 }
-function clear() { while (pending.length) cancel(pending[0].owner); }
+function clear() { while (pending.size) cancel(pending.keys().next().value); }
 function perkEnabled(id) {
   var settings = config(), value = settings && settings.perks && settings.perks[id];
   return value !== false && !(value && value.enabled === false);
@@ -136,7 +145,7 @@ function facing(owner, type, left) {
 }
 function validPlayback(value) { return typeof value === "number" && isFinite(value) && value >= .1 && value <= 4; }
 function defaultPlayback(owner, type) {
-  var renderer = owner && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = renderer && renderer.skeletonData && renderer.skeletonData.skeletonJson;
+  var renderer = valid(owner) && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = valid(renderer) && renderer.skeletonData && renderer.skeletonData.skeletonJson;
   var pack = type === "enemy" && json && json._fantasy && json._fantasy.pack;
   return pack === "fantasy-bosses" ? .25 : pack === "fantasy-monsters" ? .35 : 1;
 }
@@ -150,7 +159,7 @@ function animationPlayback(owner, type) {
   if (relative !== undefined && type === "enemy") {
     // Native baked assets can omit skeletonJson while the unit record retains
     // its source package. Explicit saved playback must use that same baseline.
-    var renderer = owner && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = renderer && renderer.skeletonData && renderer.skeletonData.skeletonJson;
+    var renderer = valid(owner) && (owner.getSpAni ? owner.getSpAni() : owner.spAni), json = valid(renderer) && renderer.skeletonData && renderer.skeletonData.skeletonJson;
     var pack = json && json._fantasy && json._fantasy.pack || owner.cfg && owner.cfg.MonsterPack;
     baseline = pack === "fantasy-bosses" ? .25 : pack === "fantasy-monsters" ? .35 : baseline;
   }
@@ -178,9 +187,12 @@ function applyAttackPlayback(owner, type) {
   applyPlayback(owner, type, false);
 }
 function applyPlayback(owner, type, all) {
+  if (!valid(owner)) return;
   var layers = owner.ctrPlayAni, custom = unitAnimationSpeed(owner, type) !== undefined;
+  if (layers && layers.spAniBody && !valid(layers.spAniBody)) return;
   var renderers = layers ? [layers.spAniBody, layers.spAniDrap, layers.spAniHead, layers.spAniBow, layers.spAniArrow, layers.spAniHand].concat(all ? [layers.spAniMa] : []) : [owner.getSpAni ? owner.getSpAni() : owner.spAni];
   renderers.forEach(function (renderer) {
+    if (!valid(renderer)) return;
     if (layers) {
       var rider = require("HeroMakerRider");
       if (rider.ownsAttackClock && rider.ownsAttackClock(layers, renderer)) return;

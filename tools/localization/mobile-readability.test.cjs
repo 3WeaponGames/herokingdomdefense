@@ -58,10 +58,13 @@ test('Every authored Label and RichText has readable mobile typography in both l
       for(const language of ['en','zh']){
         const style=catalog.labelStyles[key][language];
         const font=style?.fontSize||label._fontSize||label._N$fontSize||40;
-        assert.ok(font*scale(node)*360/750>=11.99,nodePath(node)+' '+language+' fell below the compact-text minimum');
+        // The requested edge-list captions are deliberately smaller secondary
+        // text. Keep their explicit floor separate from ordinary HUD labels.
+        const nextWave=key==='ui.layout.kinghtfalluigame.133';
+        assert.ok(font*scale(node)*360/750>=(nextWave?9:11.99),nodePath(node)+' '+language+' fell below the compact-text minimum');
         if(label.__type__==='cc.Label'){
           const footerTab=/^KinghtFallUIHome\/ndBottom\/Toggle[1-5]\/checkmark\/labName$/.test(nodePath(node));
-          if(footerTab){assert.equal(style.wrap,false);assert.equal(style.overflow,'SHRINK');}
+          if(footerTab||nextWave){assert.equal(style.wrap,false);assert.equal(style.overflow,'SHRINK');}
           else assert.notEqual(style.overflow,'SHRINK',nodePath(node)+' must wrap or grow instead of shrinking');
         }
       }

@@ -4,34 +4,46 @@
 var Runtime = require('RelicRuntime');
 function current() { return Runtime.current(); }
 function living(actor) {
-  return !!actor && !actor._isPooled && (!actor.isDead || !actor.isDead()) &&
+  return !!actor && (typeof cc === 'undefined' || !cc.isValid || cc.isValid(actor, true) && (!actor.node || cc.isValid(actor.node, true))) && !actor._isPooled && (!actor.isDead || !actor.isDead()) &&
     (!actor.node || actor.node.activeInHierarchy !== false) && actor.hp > 0;
 }
 function heroOf(data) { return data && data.ctrPar && data.ctrPar.ctrPlay; }
 function heroSource(actor, data) { return !!actor && (!!actor._relicHero || actor === heroOf(data)); }
 function position(actor) {
+  if (!actor || typeof cc !== 'undefined' && cc.isValid && !cc.isValid(actor, true)) return null;
   var node = actor && actor.node;
+  if (node && typeof cc !== 'undefined' && cc.isValid && !cc.isValid(node, true)) return null;
   return node && node.getPosition ? node.getPosition() : node && node.position;
 }
 function feedback(target, damage) {
+  if (!target || target._isPooled) return;
   var ui = require('KinghtFallUIGame').default.instance;
-  if (ui && ui.ctrEffect && ui.ctrEffect.showDamageNum && target.node) ui.ctrEffect.showDamageNum(position(target), damage, false);
+  var effect = ui && ui.ctrEffect;
+  if (!effect || typeof cc !== 'undefined' && cc.isValid && (!cc.isValid(effect, true) || effect.node && !cc.isValid(effect.node, true))) return;
+  var point = position(target);
+  if (effect.showDamageNum && point) effect.showDamageNum(point, damage, false);
 }
 function generation(actor) { return actor && actor.node && actor.node._combatGeneration; }
+function sameHeroLife(record) {
+  var hero = record && record.hero;
+  return !!hero && !hero._isPooled && hero.node === record.heroNode && generation(hero) === record.heroGeneration &&
+    (typeof cc === 'undefined' || !cc.isValid || cc.isValid(hero, true) && (!hero.node || cc.isValid(hero.node, true)));
+}
 function sameBattle(record, releasedDamage) {
   return !!record && current() === record.data &&
     record.relicGeneration === (record.data && record.data._relicGeneration) &&
-    (!record.game || record.game._combatEpoch === record.epoch && (!record.game.ctrPlay || record.game.ctrPlay === record.hero)) &&
-    (releasedDamage || living(record.hero) && generation(record.hero) === record.heroGeneration);
+    (!record.game || record.data.ctrPar === record.game && record.game._combatEpoch === record.epoch && (!record.game.gameData || record.game.gameData === record.data) && (!record.game.ctrPlay || record.game.ctrPlay === record.hero)) &&
+    (releasedDamage || living(record.hero) && record.hero.node === record.heroNode && generation(record.hero) === record.heroGeneration);
 }
 function primaryContext(hero, target, damage, critical, release) {
   var data = current();
   return { data: data, relicGeneration: data && data._relicGeneration, game: data && data.ctrPar, epoch: data && data.ctrPar && data.ctrPar._combatEpoch,
-    hero: hero, heroGeneration: generation(hero), target: target, targetGeneration: generation(target),
-    nonCritical: damage, critical: !!critical, echo: release && release.target === target && release.targetGeneration === generation(target) && sameBattle(release) ? release.echo : 0 };
+    hero: hero, heroNode: hero && hero.node, heroGeneration: generation(hero), target: target, targetNode: target && target.node, targetGeneration: generation(target),
+    nonCritical: damage, critical: !!critical, echo: release && release.target === target && release.targetNode === (target && target.node) && release.targetGeneration === generation(target) && sameBattle(release) ? release.echo : 0 };
 }
 function primaryCurrent(record, target, hero) {
   return sameBattle(record, true) && record.hero === hero && record.target === target &&
+    (!target || target.node === record.targetNode && (typeof cc === 'undefined' || !cc.isValid || cc.isValid(target, true) && (!target.node || cc.isValid(target.node, true)))) &&
     generation(target) === record.targetGeneration;
 }
 function primaryValid(record, target, hero) { return primaryCurrent(record, target, hero) && sameBattle(record) && !record.used; }
@@ -45,8 +57,8 @@ function enemyDamage(target, damage, source, secondary, context) {
     var focus = Runtime.value(data, 120027);
     if (focus > 0) {
       var previous = source._relicFocus, stacks = previous && previous.data === data && previous.round === data.round &&
-        previous.epoch === context.epoch && previous.relicGeneration === context.relicGeneration && previous.heroGeneration === generation(source) && previous.target === target && previous.targetGeneration === generation(target) ? Math.min(3, previous.stacks + 1) : 0;
-      source._relicFocus = { data: data, round: data.round, epoch: context.epoch, relicGeneration: context.relicGeneration, heroGeneration: generation(source), target: target, targetGeneration: generation(target), stacks: stacks };
+        previous.epoch === context.epoch && previous.relicGeneration === context.relicGeneration && previous.heroNode === source.node && previous.heroGeneration === generation(source) && previous.target === target && previous.targetNode === target.node && previous.targetGeneration === generation(target) ? Math.min(3, previous.stacks + 1) : 0;
+      source._relicFocus = { data: data, round: data.round, epoch: context.epoch, relicGeneration: context.relicGeneration, heroNode: source.node, heroGeneration: generation(source), target: target, targetNode: target.node, targetGeneration: generation(target), stacks: stacks };
       bonus += focus * stacks;
     }
     var point = position(target), origin = position(source);
@@ -88,9 +100,10 @@ function afterHeroHit(hero, damage, source) {
       if (!(Runtime.heal(hero, emergency) > 0)) delete used[key];
     }
   }
-  if (damage > 0 && ratio > 0 && source && source.cfg && Number(source.cfg.AttackType) === 2 && living(source) && primaryCurrent(reflectedContext, source, hero)) {
+  if (damage > 0 && ratio > 0 && source && source.cfg && Number(source.cfg.AttackType) === 2 && living(source) && primaryCurrent(reflectedContext, source, hero) && sameHeroLife(reflectedContext)) {
     var reflected = damage * ratio;
     relicSound("mirror-reflect", hero);
+    if (!primaryCurrent(reflectedContext, source, hero) || !sameHeroLife(reflectedContext) || !living(source)) return;
     source.onAttacked(reflected, hero, true);
     if (primaryCurrent(reflectedContext, source, hero)) feedback(source, reflected);
   }
@@ -102,13 +115,13 @@ function enemyKilled(target, source, secondary, context) {
   var used = state.vampireHealedByWave || (state.vampireHealedByWave = {});
   var remaining = Math.max(0, .1 - (Number(used[key]) || 0));
   if (!(remaining > 1e-9)) return;
-  var planned = Math.min(fraction, remaining), previous = used[key];
+  var planned = Math.min(fraction, remaining), previous = used[key], maximum = source.hpMax;
   used[key] = Math.min(.1, (Number(previous) || 0) + planned);
-  var actual = Math.min(planned, Math.max(0, Runtime.heal(source, planned)) / source.hpMax);
+  var actual = Math.min(planned, Math.max(0, Runtime.heal(source, planned)) / maximum);
   used[key] = Math.max(0, used[key] - planned + actual);
   if (.1 - used[key] < 1e-9) used[key] = .1;
   if (!used[key] && previous === undefined) delete used[key];
-  if (actual > 0) {
+  if (actual > 0 && sameBattle(context)) {
     relicSound("life-steal", source);
   }
 }
@@ -134,7 +147,7 @@ function heroAttack(hero, primary, damage) {
     var dx = point.x - center.x, dy = point.y - center.y, distance = dx * dx + dy * dy;
     if (distance <= 200 * 200) {
       if (nearby.length === 2 && distance >= nearby[1].distance) continue;
-      var candidate = { enemy: enemy, distance: distance, generation: generation(enemy) };
+      var candidate = { enemy: enemy, node: enemy.node, distance: distance, generation: generation(enemy) };
       if (nearby.length < 2) nearby.push(candidate); else nearby[1] = candidate;
       if (nearby.length === 2 && nearby[1].distance < nearby[0].distance) { var first = nearby[0]; nearby[0] = nearby[1]; nearby[1] = first; }
     }
@@ -143,9 +156,9 @@ function heroAttack(hero, primary, damage) {
   for (var i = 0; i < Math.min(2, nearby.length); i++) {
     if (!sameBattle(lifetime)) break;
     var record = nearby[i], target = record.enemy, amount = damage * ratio;
-    if (!living(target) || !target.node || target.node._combatGeneration !== record.generation) continue;
+    if (!living(target) || target.node !== record.node || !target.node || target.node._combatGeneration !== record.generation) continue;
     target.onAttacked(amount, hero, true);
-    if (sameBattle(lifetime) && generation(target) === record.generation && !target._isPooled) feedback(target, amount);
+    if (sameBattle(lifetime) && target.node === record.node && generation(target) === record.generation && !target._isPooled) feedback(target, amount);
   }
   return release;
 }
@@ -170,13 +183,13 @@ function primaryImpact(target, hero, context, damage) {
       var neighbor = targets[s], location = position(neighbor);
       if (neighbor === target || !living(neighbor) || !location) continue;
       var sx = location.x - context.point.x, sy = location.y - context.point.y;
-      if (sx * sx + sy * sy <= gear.splashRadius * gear.splashRadius) splash.push({ enemy:neighbor,generation:generation(neighbor) });
+      if (sx * sx + sy * sy <= gear.splashRadius * gear.splashRadius) splash.push({ enemy:neighbor,node:neighbor.node,generation:generation(neighbor) });
     }
-    for (var s = 0; s < splash.length; s++) secondaryHit(splash[s].enemy, damage * gear.splashDamage, context, splash[s].generation);
+    for (var s = 0; s < splash.length; s++) secondaryHit(splash[s].enemy, damage * gear.splashDamage, context, splash[s].generation, splash[s].node);
   }
   if (!sameBattle(context)) return;
   if (context.critical && Runtime.value(data, 120014) > 0) {
-    hero._relicHaste = { data: data, epoch: context.epoch, relicGeneration: context.relicGeneration, heroGeneration: context.heroGeneration, remaining: 2, round: data.round };
+    hero._relicHaste = { data: data, epoch: context.epoch, relicGeneration: context.relicGeneration, heroNode: hero.node, heroGeneration: context.heroGeneration, remaining: 2, round: data.round };
   }
   var pierce = Runtime.value(data, 120024), cleave = Runtime.value(data, 120035), center = context.point, origin = context.origin;
   if ((pierce > 0 || cleave > 0) && center && origin) {
@@ -188,20 +201,20 @@ function primaryImpact(target, hero, context, damage) {
       var x = point.x - center.x, y = point.y - center.y, distance = x * x + y * y;
       var along = length > 0 ? (x * dx + y * dy) / length : -1;
       var across = length > 0 ? Math.abs(x * dy - y * dx) / length : Infinity;
-      if (pierce > 0 && along > 0 && along <= 70 && across <= 12 && (!pierced || along < pierced.distance)) pierced = { enemy: enemy, generation: generation(enemy), distance: along };
-      if (cleave > 0 && distance <= 100 * 100 && (!cleaved || distance < cleaved.distance)) cleaved = { enemy: enemy, generation: generation(enemy), distance: distance };
+      if (pierce > 0 && along > 0 && along <= 70 && across <= 12 && (!pierced || along < pierced.distance)) pierced = { enemy: enemy, node: enemy.node, generation: generation(enemy), distance: along };
+      if (cleave > 0 && distance <= 100 * 100 && (!cleaved || distance < cleaved.distance)) cleaved = { enemy: enemy, node: enemy.node, generation: generation(enemy), distance: distance };
     }
-    if (pierced) secondaryHit(pierced.enemy, context.nonCritical * pierce, context, pierced.generation);
-    if (cleaved) secondaryHit(cleaved.enemy, context.nonCritical * cleave, context, cleaved.generation);
+    if (pierced) secondaryHit(pierced.enemy, context.nonCritical * pierce, context, pierced.generation, pierced.node);
+    if (cleaved) secondaryHit(cleaved.enemy, context.nonCritical * cleave, context, cleaved.generation, cleaved.node);
   }
-  if (context.echo > 0 && living(target)) secondaryHit(target, context.nonCritical * context.echo, context, context.targetGeneration);
+  if (context.echo > 0 && living(target)) secondaryHit(target, context.nonCritical * context.echo, context, context.targetGeneration, context.targetNode);
   primaryHeroPerks(target, hero, context);
 }
 // Shared primary-hit benefits apply equally to projectiles, melee, beams and
 // active skills. Keeping them here prevents missing benefits and duplicate
 // wrappers, while secondary relic hits remain excluded.
 function primaryHeroPerks(target, hero, context) {
-  if (!sameBattle(context) || generation(target) !== context.targetGeneration) return;
+  if (!sameBattle(context) || !primaryCurrent(context, target, hero)) return;
   var data = context.data;
   if (!data || !data.getGameBuff) return;
   var kill = data.getGameBuff(50008), dead = target.isDead ? target.isDead() : target.hp <= 0;
@@ -209,7 +222,7 @@ function primaryHeroPerks(target, hero, context) {
     if (hero.addHpPro) hero.addHpPro(kill.Pamer[0]);
     else Runtime.heal(hero, kill.Pamer[0]);
   }
-  if (!sameBattle(context) || generation(target) !== context.targetGeneration || !living(target)) return;
+  if (!sameBattle(context) || !primaryCurrent(context, target, hero) || !living(target)) return;
   var slow = data.getGameBuff(50015), amount = slow && slow.Pamer && slow.Pamer[0];
   if (!(amount > 0) || !target.addBuff) return;
   var buffs = target.debuffInfo || [], previous = null;
@@ -220,17 +233,17 @@ function primaryHeroPerks(target, hero, context) {
   else {
     var status = { subNum: amount, time: 1 };
     target.addBuff(require("KinghtFallInterface").KinghtFallEnemyBuffType.MoveSpeed, status);
-    if (!sameBattle(context) || generation(target) !== context.targetGeneration || !living(target)) return;
+    if (!sameBattle(context) || !primaryCurrent(context, target, hero) || !living(target)) return;
     buffs = target.debuffInfo || [];
     for (var index = 0; index < buffs.length; index++) if (buffs[index].data === status) {
       buffs[index]._heroCrippling = { hero: hero, generation: context.heroGeneration }; break;
     }
   }
 }
-function secondaryHit(target, damage, context, targetGeneration) {
-  if (!sameBattle(context) || !living(target) || generation(target) !== targetGeneration) return;
+function secondaryHit(target, damage, context, targetGeneration, targetNode) {
+  if (!sameBattle(context) || !living(target) || target.node !== targetNode || generation(target) !== targetGeneration) return;
   target.onAttacked(damage, context.hero, true);
-  if (sameBattle(context) && generation(target) === targetGeneration) feedback(target, damage);
+  if (sameBattle(context) && target.node === targetNode && generation(target) === targetGeneration) feedback(target, damage);
 }
 function updateHero(hero, dt) {
   var data = current();
@@ -238,13 +251,13 @@ function updateHero(hero, dt) {
   waveBarrier(data, hero);
   var haste = hero._relicHaste;
   if (haste) {
-    if (haste.data !== data || haste.epoch !== (data && data.ctrPar && data.ctrPar._combatEpoch) || haste.relicGeneration !== (data && data._relicGeneration) || haste.heroGeneration !== generation(hero) || haste.round !== data.round) delete hero._relicHaste;
+    if (haste.data !== data || haste.epoch !== (data && data.ctrPar && data.ctrPar._combatEpoch) || haste.relicGeneration !== (data && data._relicGeneration) || haste.heroNode && haste.heroNode !== hero.node || haste.heroGeneration !== generation(hero) || haste.round !== data.round) delete hero._relicHaste;
     else { haste.remaining = Math.max(0, haste.remaining - Math.max(0, dt)); if (haste.remaining < 1e-9) haste.remaining = 0; }
   }
 }
 function heroHaste(hero) {
   var data = current(), haste = hero && hero._relicHaste;
-  return haste && haste.remaining > 0 && haste.data === data && haste.epoch === (data && data.ctrPar && data.ctrPar._combatEpoch) && haste.relicGeneration === (data && data._relicGeneration) && haste.heroGeneration === generation(hero) && haste.round === data.round ? Runtime.value(data, 120014) : 0;
+  return haste && haste.remaining > 0 && haste.data === data && haste.epoch === (data && data.ctrPar && data.ctrPar._combatEpoch) && haste.relicGeneration === (data && data._relicGeneration) && (!haste.heroNode || haste.heroNode === hero.node) && haste.heroGeneration === generation(hero) && haste.round === data.round ? Runtime.value(data, 120014) : 0;
 }
 function allyIncoming(actor,damage){
   var hero=heroOf(current());
@@ -254,7 +267,7 @@ function allyIncoming(actor,damage){
 }
 function tauntedTarget(enemy){
   var record=enemy&&enemy._heroTaunt,data=current();
-  if(!record||record.remaining<=0||record.data!==data||record.epoch!==(data&&data.ctrPar&&data.ctrPar._combatEpoch)||record.enemyGeneration!==generation(enemy)||record.generation!==generation(record.hero)||!living(record.hero))return null;
+  if(!record||record.remaining<=0||record.data!==data||record.epoch!==(data&&data.ctrPar&&data.ctrPar._combatEpoch)||record.enemyNode&&record.enemyNode!==enemy.node||record.heroNode&&(!record.hero||record.heroNode!==record.hero.node)||record.enemyGeneration!==generation(enemy)||record.generation!==generation(record.hero)||!living(record.hero))return null;
   return record.hero;
 }
 var controlClocks = new WeakMap();
@@ -300,7 +313,7 @@ function updateEnemy(enemy, dt) {
     if (!enemy._relicPausedRenderers) {
       var paused = enemy._relicPausedRenderers = [];
       [enemy.spAni, enemy.spAni2, enemy.spAni3, enemy.spAniUp].forEach(function (renderer) {
-        if (!renderer || paused.some(function (entry) { return entry.renderer === renderer; })) return;
+        if (!renderer || typeof cc !== 'undefined' && cc.isValid && !cc.isValid(renderer, true) || paused.some(function (entry) { return entry.renderer === renderer; })) return;
         paused.push({ renderer: renderer, wasPaused: !!renderer.paused }); renderer.paused = true;
       });
     }

@@ -18,8 +18,18 @@ var def_KinghtFallEnemyItem08 = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.doAttack = function () {
+    var t = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+    if (!game) return;
+    var data = game.gameData, epoch = game._combatEpoch, stage = game.gameStatus, effects = ui.ctrEffect;
+    var sourceNode = this.node, sourceGeneration = sourceNode && sourceNode._combatGeneration, targetNode = null, targetGeneration;
+    function currentShot() {
+      return $z1KinghtFallUIGame.default.instance === ui && cc.isValid(ui, true) && !ui.isclose &&
+        (!ui.node || cc.isValid(ui.node, true) && ui.node.activeInHierarchy !== false) && ui.ctrGame === game && cc.isValid(game, true) &&
+        (!game.node || cc.isValid(game.node, true) && game.node.activeInHierarchy !== false) && game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage &&
+        (!targetNode || cc.isValid(n, true) && n.node === targetNode && cc.isValid(targetNode, true) && targetNode._combatGeneration === targetGeneration && targetNode.activeInHierarchy !== false && !n._isPooled && !n.isDestroyed);
+    }
     if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
-    var t = this;
+    if (!currentShot() || !cc.isValid(this, true) || this.node !== sourceNode || !cc.isValid(sourceNode, true) || sourceNode._combatGeneration !== sourceGeneration || this._isPooled || this.isDead && this.isDead()) return;
     this.node.getPosition(this.vec2_1);
     this.rigidBody.active = true;
     var e = this.getAttack();
@@ -74,16 +84,17 @@ var def_KinghtFallEnemyItem08 = function (t) {
       return e;
     }();
     if (n) {
+      targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       n.node.getPosition(this.vec2_2);
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.onShotEnemy(this);
       i.ctr.setParent(this);
-      var shooterGeneration = this.node._combatGeneration;
       return void i.ctr.setTag(i.pos, n.node, function () {
-        $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), e);
-        var shooter = cc.isValid(t.node) && t.node._combatGeneration === shooterGeneration ? t : null;
+        if (!currentShot() || n.isDead && n.isDead()) return;
+        var shooter = cc.isValid(t, true) && t.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration && !t._isPooled ? t : null;
         n.onAttacked(e, shooter, true);
+        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(targetNode.getPosition(), e);
       });
     }
   };

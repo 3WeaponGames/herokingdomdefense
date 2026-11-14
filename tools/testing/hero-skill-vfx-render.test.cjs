@@ -61,3 +61,22 @@ test('Guardian body shield draws in front of the hero and preloads its complete 
 test('Guardian body shield follows the actual scaled actor body anchor instead of a fixed world height',()=>{
  const f=fixture('guardian'),bar=new f.hero.node.constructor('HP');bar.y=150;f.hero.ctrHp={node:bar};f.rt.state.shield=100;f.rt.state.shieldRemaining=5;f.rt.settings.visual.targetY=500;f.paint();f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes('guardian-body-shield-start')),node=[...art.nodes.values()][0].node;assert.equal(node.y,82.5);bar.y=50;f.paint();assert.equal(node.y,27.5);f.rt.settings.visual.shieldOffsetY=8;f.paint();assert.equal(node.y,35.5);f.P.clear(f.rt);
 });
+
+test('a fresh beam onset restarts the three-part VFX even for the same target and generation',()=>{
+ const f=fixture('mystic'),target=f.target();f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=1;f.rt.beamVisibleSince=0;f.paint();f.finish();f.paint();
+ f.rt.state.time=.4;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='beam'&&e.phase==='loop').age,.4);
+ f.rt.beamVisibleSince=.4;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='beam'&&e.phase==='loop').age,0);
+ f.rt.state.time=.45;f.paint();assert(Math.abs(f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='beam'&&e.phase==='loop').age-.05)<1e-9);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});
+
+test('a shared Guardian atlas retains one owner while its aura stays behind and body shield stays in front',()=>{
+ const f=fixture('guardian'),clip=Catalog.clips.find(c=>c.slot==='buff');Settings.applyClip(f.rt.settings.visual,'shieldResource',clip);f.rt.state.shield=200;f.rt.state.shieldRemaining=5;f.paint();f.finish();f.paint();
+ const art=[...f.rt._presentation.styleArts.values()].find(a=>a.resourceKey.includes(clip.uuid)),aura=[...art.nodes.values()].find(r=>r.entity.slot==='buff'),shield=[...art.nodes.values()].find(r=>r.entity.slot==='shield');
+ assert(aura&&shield);assert.equal(aura.node.parent,f.main);assert.equal(shield.node.parent,f.hud.visual.node);assert.equal(art.asset.refs,1);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});
+
+test('same-generation replacement target nodes retire old beams and marks rather than transplanting their artwork',()=>{
+ const f=fixture('mystic'),target=f.target(),original=target.node;f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;f.rt.beamNode=f.rt.beamVisibleNode=f.rt.markNode=original;f.paint();f.finish();f.paint();
+ target.node=f.target(300).node;f.rt.state.time=.1;f.paint();assert.equal(f.rt._presentation.vfxFrame.active.mark,false);assert.equal(f.rt._presentation.vfxFrame.active.beam,false);
+ f.rt.markNode=target.node;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.find(e=>e.slot==='mark').age,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});

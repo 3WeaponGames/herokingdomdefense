@@ -331,7 +331,7 @@ function releaseCombatPose(controller){
   keys.forEach(function(key){Pose.removeAim(controller[key]);});
   if(controller.isDie)return;
   var desired=controller.isMove?'move':'idle';
-  keys.concat(['spAniMa']).forEach(function(key){ensureLocomotion(controller[key],desired);});
+  keys.concat(['spAniMa']).forEach(function(key){var renderer=controller[key];if(renderer&&(!cc.isValid||cc.isValid(renderer,true)&&(!renderer.node||cc.isValid(renderer.node,true))))ensureLocomotion(renderer,desired);});
 }
 function clearCombatState(controller){var held=heldShots.has(controller);heldShots.delete(controller);retimedAttacks.delete(controller);keys.forEach(function(key){if(controller)Pose.removeAim(controller[key]);});var state=combatStates.get(controller);if(!state){if(held)releaseCombatPose(controller);return;}combatStates.delete(controller);if(state.beam||state.rapid||state.charge||held)releaseCombatPose(controller);}
 function ownsAttackClock(controller,renderer){

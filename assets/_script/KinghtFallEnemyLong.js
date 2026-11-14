@@ -7,10 +7,8 @@ var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var r;
 var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
-var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallBulletEnemy = require("KinghtFallBulletEnemy");
 var $z1KinghtFallEnemyBase = require("KinghtFallEnemyBase");
@@ -33,15 +31,23 @@ var def_KinghtFallEnemyLong = function (t) {
     this.ndBulletPat.active = false;
   };
   _ctor.prototype.doAttackStart = function () {
-    if (GameToolsOverrides.isPending(this)) return;
-    this.state = $z1KinghtFallEnemyBase.KinghtFallEnemyStatus.Attack;
-    this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
-    this.time[r.Attack] = 0;
-    GameToolsOverrides.attack(this, "enemy", this.doAttack);
+    // Ranged cooldown starts at windup; the base owns clip completion and its
+    // actor/renderer lifetime record for both ranged and melee attacks.
+    t.prototype.doAttackStart.call(this, 0);
   };
   _ctor.prototype.doAttack = function () {
+    var t = this, ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
+    if (!game) return;
+    var data = game.gameData, epoch = game._combatEpoch, stage = game.gameStatus, effects = ui.ctrEffect;
+    var sourceNode = this.node, sourceGeneration = sourceNode && sourceNode._combatGeneration, targetNode = null, targetGeneration;
+    function currentShot() {
+      return $z1KinghtFallUIGame.default.instance === ui && cc.isValid(ui, true) && !ui.isclose &&
+        (!ui.node || cc.isValid(ui.node, true) && ui.node.activeInHierarchy !== false) && ui.ctrGame === game && cc.isValid(game, true) &&
+        (!game.node || cc.isValid(game.node, true) && game.node.activeInHierarchy !== false) && game.gameData === data && game._combatEpoch === epoch && game.gameStatus === stage &&
+        (!targetNode || cc.isValid(n, true) && n.node === targetNode && cc.isValid(targetNode, true) && targetNode._combatGeneration === targetGeneration && targetNode.activeInHierarchy !== false && !n._isPooled && !n.isDestroyed);
+    }
     if (BattleSounds.attack) BattleSounds.attack(this, "enemy");
-    var t = this;
+    if (!currentShot() || !cc.isValid(this, true) || this.node !== sourceNode || !cc.isValid(sourceNode, true) || sourceNode._combatGeneration !== sourceGeneration || this._isPooled || this.isDead && this.isDead()) return;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
     var n = function () {
@@ -95,22 +101,20 @@ var def_KinghtFallEnemyLong = function (t) {
       return e;
     }();
     if (n) {
+      targetNode = n.node; targetGeneration = targetNode._combatGeneration;
+      // Counter bonuses belong to the released shot, not a later pooled life.
+      if (GameToolsOverrides.counters(this, n)) e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
       n.node.getPosition(this.vec2_2);
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);
       this.setLeft(this.vec2_2.x < 0);
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.onShotEnemy(this);
       i.ctr.setParent(this);
-      var shooterGeneration = this.node._combatGeneration;
       return void i.ctr.setTag(i.pos, n.node, function () {
-        if (cc.isValid(n) && cc.isValid(n.node)) {
-          if (GameToolsOverrides.counters(t, n)) {
-            var i = Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
-            e *= i;
-          }
-          var shooter = cc.isValid(t.node) && t.node._combatGeneration === shooterGeneration ? t : null;
-          $z1KinghtFallUIGame.default.instance.ctrEffect.showDamageNum(n.node.getPosition(), n.onAttacked(e, shooter, true));
-          $z1KinghtFallUIGame.default.instance.ctrEffect.onMonsterAttack(n.node.getPosition(), "jian_lv1");
-        }
+        if (!currentShot() || n.isDead && n.isDead()) return;
+        var shooter = cc.isValid(t, true) && t.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration && !t._isPooled ? t : null;
+        var position = targetNode.getPosition(), received = n.onAttacked(e, shooter, true);
+        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(position, received);
+        if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.onMonsterAttack) effects.onMonsterAttack(targetNode.getPosition(), "jian_lv1");
       });
     }
   };
@@ -136,6 +140,3 @@ var def_KinghtFallEnemyLong = function (t) {
   return cc__decorate([ccp_ccclass], _ctor);
 }($z1KinghtFallEnemyBase.default);
 exports.default = def_KinghtFallEnemyLong;
-(function (t) {
-  t.Attack = "Attack";
-})(r || (r = {}));

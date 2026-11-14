@@ -48,13 +48,14 @@ test('missing saved speeds retain scripted defaults without normalization and ma
 function visualFixture(data,item,defaultIcon){
   class Renderer{constructor(){this.enabled=true;}destroy(){this.destroyed=true;}}
   class Sprite extends Renderer{}Sprite.SizeMode={CUSTOM:1};
+  class Skeleton extends Renderer{setAnimation(){}setSkin(){}}
   class Node{constructor(name){this.name=name;this.children=[];this.components=[];this.x=13;this.y=17;this.width=7;this.height=9;this.angle=0;this.active=true;}setParent(p){this.parent=p;p.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(x,y){this.x=typeof x==='object'?x.x:x;this.y=typeof x==='object'?x.y:y;}setScale(x){this.scaleX=this.scaleY=x;}setContentSize(w,h){this.width=w;this.height=h;}getComponent(C){return this.components.find(c=>c instanceof C);}addComponent(C){const c=new C();c.node=this;this.components.push(c);return c;}getComponentsInChildren(C){return this.components.filter(c=>c instanceof C).concat(...this.children.filter(n=>!n.destroyed).map(n=>n.getComponentsInChildren(C)));}destroy(){this.destroyed=true;}}
   class Frame{constructor(asset,rect){this.width=rect?rect.width:80;this.height=rect?rect.height:30;}getOriginalSize(){return{width:this.width,height:this.height};}destroy(){this.destroyed=true;}addRef(){}decRef(){}}
   const pending=[],cc={Node,Sprite,RenderComponent:Renderer,SpriteFrame:Frame,Texture2D:function(){},JsonAsset:function(){},color:c=>c,rect:(x,y,width,height)=>({x,y,width,height}),isValid:o=>!!o&&!o.destroyed,resources:{load(resource,type,cb){pending.push(()=>cb(null,resource==='projectiles/catalog'?{json:data}:type===Frame?new Frame():{addRef(){},decRef(){}}));}}};
-  const ex={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8'),{exports:ex,cc,console,require(name){if(name==='FantasyEffects')return require('../../assets/_script/FantasyEffects');if(name==='HeroItemLooks')return {item:()=>item,image:()=>defaultIcon,whenReady(){}};if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getPersonLevel:()=>3})})}};throw Error(name);}});
+  const ex={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/ProjectileLooks.js'),'utf8')+'\nexports.catalogWaiters=function(){return waiting.length;};',{exports:ex,cc,sp:{Skeleton},console,require(name){if(name==='FantasyEffects')return require('../../assets/_script/FantasyEffects');if(name==='HeroItemLooks')return {item:()=>item,image:()=>defaultIcon,whenReady(){}};if(name==='KinghtFallPlayerMgr')return{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getPersonLevel:()=>3})})}};throw Error(name);}});
   const owner={_combatEpoch:1},node=new Node('shot'),parent=new Node('world');node.setParent(parent);const bullet=new Node('original');bullet.setParent(node);const original=bullet.addComponent(Sprite);
   const shot={node,bullet,_shot:{},speed:500,angle:30,state:0};
-  return {api:ex,shot,owner,original,cc,pending,flush(){while(pending.length)pending.shift()();}};
+  return {api:ex,shot,owner,original,cc,Skeleton,pending,flush(){while(pending.length)pending.shift()();}};
 }
 const visualData=()=>({assets:[{id:'arrow',kind:'sprite',resource:'arrow',sourcePart:'item-arrow',size:44},{id:'fx',kind:'flipbook',resource:'fx',frames:4,columns:2,cell:16,fps:24}],assignments:{'ally:90003':{flight:'arrow',launch:'fx',impact:'fx',size:64}}});
 
@@ -81,4 +82,38 @@ test('delayed texture loads cannot apply to a retired/reused shot',()=>{const f=
 test('missing overrides retain original rendering and scene disposal cancels pending artwork',()=>{const data=visualData();data.assignments={};const f=visualFixture(data);f.api.prepare(f.shot,f.owner,'enemy:90003');f.shot._launchProjectileLook();f.flush();assert.equal(f.original.enabled,true);assert.equal(f.shot._projectileVisual.node,null);f.owner._projectileLooks.dispose();});
 test('bounded launch/impact effects expire in game time and cannot cross a battle epoch',()=>{const f=visualFixture(visualData());f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();const bank=f.owner._projectileLooks;assert.equal(bank.effects.length,1);f.shot._projectileVisual.impact();assert.equal(bank.effects.length,2);bank.update(.01);assert.equal(bank.effects.length,2);f.owner._combatEpoch++;bank.update(.01);assert.equal(bank.effects.length,0);bank.dispose();});
 test('pooled shots reuse their visual node and releasing a shot drops its owner reference',()=>{const f=visualFixture(visualData());f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();f.flush();const view=f.shot._projectileVisual,node=view.node;for(let i=0;i<100;i++){view.reset();f.shot._shot={};f.shot._launchProjectileLook();f.flush();assert.equal(view.node,node);}assert.equal(f.owner._projectileLooks.views.size,1);f.api.release(f.shot);assert.equal(f.owner._projectileLooks.views.size,0);assert(node.destroyed);f.owner._projectileLooks.dispose();});
+
+test('mixed projectile effects reuse exactly one enabled renderer and replace disposed pooled nodes',()=>{
+ const f=visualFixture(visualData()),bank=new f.api.Bank(f.owner),parent=f.shot.node.parent,position={x:0,y:0},spine={id:'spine-fx',kind:'spine',resource:'spine-fx',animation:'hit'},sprite={id:'sprite-fx',kind:'sprite',resource:'arrow'};
+ const effect=descriptor=>{bank.effect(descriptor,parent,position,0,{size:64},()=>true);f.flush();return bank.effects.at(-1).node;};
+ const node=effect(spine),skeleton=node.getComponent(f.Skeleton);bank.update(1);assert.equal(effect(sprite),node);assert.equal(skeleton.enabled,false);assert.equal(node.getComponent(f.cc.Sprite).enabled,true);
+ bank.update(1);assert.equal(effect(spine),node);assert.equal(skeleton.enabled,true);assert.equal(node.getComponent(f.cc.Sprite).enabled,false);
+ bank.update(1);node.destroy();const replacement=effect(sprite);assert.notEqual(replacement,node);assert(!replacement.destroyed);bank.dispose();
+});
+
+test('retired projectile views cancel global catalog waiters while one shared catalog request remains in flight',()=>{
+ const f=visualFixture(visualData());f.api.prepare(f.shot,f.owner,'ally:90003');
+ for(let i=0;i<200;i++){f.shot._shot={};f.shot._launchProjectileLook();f.shot._projectileVisual.reset();}
+ assert.equal(f.pending.length,1);assert.equal(f.api.catalogWaiters(),0);f.owner._projectileLooks.dispose();f.flush();assert.equal(f.original.enabled,true);
+});
+
+test('retired pooled views unsubscribe pending flight and launch asset callbacks without duplicating shared loads',()=>{
+ const data=visualData(),f=visualFixture(data);f.api.prime(data);f.api.prepare(f.shot,f.owner,'ally:90003');
+ for(let i=0;i<200;i++){f.shot._shot={};f.shot._launchProjectileLook();f.shot._projectileVisual.reset();}
+ const bank=f.owner._projectileLooks;assert.equal(f.pending.length,2);assert.equal(bank.cache.arrow.callbacks.length,0);assert.equal(bank.cache.fx.callbacks.length,0);
+ bank.dispose();f.flush();assert.equal(f.original.enabled,true);assert.equal(bank.effects.length,0);
+});
+
+test('impact effects retain their independent load after a pooled view cancels obsolete launch and flight artwork',()=>{
+ const data=visualData(),f=visualFixture(data);f.api.prime(data);f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();
+ const bank=f.owner._projectileLooks,view=f.shot._projectileVisual;view.impact();view.reset();f.shot._shot=null;
+ assert.equal(f.pending.length,2);assert.equal(bank.cache.arrow.callbacks.length,0);assert.equal(bank.cache.fx.callbacks.length,1);
+ f.flush();assert.equal(bank.effects.length,1);assert.equal(bank.effects[0].clip.descriptor.id,'fx');assert.equal(view.node,null);assert.equal(f.original.enabled,true);bank.dispose();
+});
+
+test('disposing a projectile bank drops direct pending subscribers and ignores their late asset completion',()=>{
+ const data=visualData(),f=visualFixture(data),bank=new f.api.Bank(f.owner);let calls=0;bank.get(data.assets[0],()=>calls++);
+ const cached=bank.cache.arrow;assert.equal(cached.callbacks.length,1);bank.dispose();assert.equal(cached.callbacks.length,0);f.flush();assert.equal(calls,0);
+ bank.get(data.assets[0],clip=>{assert.equal(clip,null);calls++;});assert.equal(calls,1);assert.equal(f.pending.length,0);
+});
 test('a renderer binding failure retains source art and does not retry the same broken asset every shot',()=>{const data=visualData();data.assignments['ally:90003']={flight:'arrow'};const f=visualFixture(data),add=f.cc.Node.prototype.addComponent;let failures=0;f.cc.Node.prototype.addComponent=function(Type){if(this.name==='Projectile artwork'){failures++;throw Error('simulated renderer failure');}return add.call(this,Type);};f.api.prepare(f.shot,f.owner,'ally:90003');f.shot._launchProjectileLook();assert.doesNotThrow(()=>f.flush());assert.equal(f.original.enabled,true);f.shot._launchProjectileLook();f.flush();assert.equal(failures,1);assert.equal(f.shot.speed,500);f.owner._projectileLooks.dispose();});

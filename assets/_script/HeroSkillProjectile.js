@@ -19,6 +19,7 @@ function shot(hero,target,direction,sample) {
 }
 function actorPoint(actor,main) {
   var ground=actor.node.getPosition(),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node;
+  if(bar&&typeof cc!=="undefined"&&cc.isValid&&!cc.isValid(bar,true))bar=null;
   if(!bar||!bar.convertToWorldSpaceAR||!actor.node.convertToWorldSpaceAR||!main||!main.convertToNodeSpaceAR)return point(ground);
   var a=actor.node.convertToWorldSpaceAR({x:0,y:0}),b=bar.convertToWorldSpaceAR({x:0,y:0});return main.convertToNodeSpaceAR({x:a.x+(b.x-a.x)*.55,y:a.y+(b.y-a.y)*.55});
 }

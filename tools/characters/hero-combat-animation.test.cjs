@@ -4,7 +4,7 @@ const root=path.resolve(__dirname,'../..'),Units=require('../../packages/game-da
 const keys=['spAniMa','spAniBody','spAniDrap','spAniHead','spAniBow','spAniArrow','spAniHand'];
 function setup(style='fighter'){
  const exports={},modules={HeroWeapons:Weapons,HeroSkillPose:require('../../assets/_script/HeroSkillPose'),HeroSkillAnimation:require('../../assets/_script/HeroSkillAnimation'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find(style)})})}}};
- vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,cc:{v2:(x,y)=>({x,y})},require:name=>modules[name]});
+ vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/HeroMakerRider.js'),'utf8'),{exports,cc:{v2:(x,y)=>({x,y}),isValid:value=>!!value&&!value.destroyed},require:name=>modules[name]});
  const rider=exports,controlExports={};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallPlayGameAniCtrl.js'),'utf8'),{exports:controlExports,require:name=>name==='HeroMakerRider'?rider:name==='KinghtFallModle'?{KinghtFallPlayAniEnum:{Idle:'idle',Move:'move',Die:'wqyl_lead_die'}}:{},cc:{Component:function(){},_decorator:{ccclass:T=>T,property:()=>()=>{}}},sp:{Skeleton:function(){}},__extends(C,P){C.prototype=Object.create(P.prototype);},__decorate:(_decorators,T,key)=>key===undefined?T:undefined});
  const actor=new controlExports.default(),descriptions=Units.describe(root,{type:'hero',id:'hero',heroStyle:style,noRuntime:true}).layers;
@@ -22,6 +22,12 @@ function setup(style='fighter'){
 }
 const track=(actor,key='spAniBody')=>actor[key].getCurrent(0),name=(actor,key)=>track(actor,key).animation.name;
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
+
+test('held-pose cleanup does not restart locomotion on disposed native renderers',()=>{
+ const h=setup('skirmisher');h.rider.setCombatState(h.actor,{moving:false,charge:.5});
+ for(const renderer of h.renderers){renderer.destroyed=true;renderer.node.destroyed=true;renderer.getCurrent=()=>{throw Error('disposed native track');};renderer.setAnimation=()=>{throw Error('disposed native animation');};}
+ assert.doesNotThrow(()=>h.rider.clearCombatState(h.actor));
+});
 
 test('Skirmisher slowly samples its authored bow draw with Momentum and holds full draw without attack events',()=>{
  const h=setup('skirmisher'),{actor,rider}=h;let hits=0,completed=0;actor.setAttackEvent(()=>hits++);actor.setAttackEnd(()=>completed++);

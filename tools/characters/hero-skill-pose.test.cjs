@@ -9,6 +9,13 @@ test('aim cleanup never dereferences a bone wrapper after its native skeleton as
  Pose.applyAim(renderer,{x:0,y:1},1,{fresh:true});near(rotation,90);disposed=true;renderer.skeletonData={};assert.doesNotThrow(()=>Pose.removeAim(renderer));
 });
 
+test('aim cleanup rejects disposed native renderers before reading their skeleton or bone wrappers',()=>{
+ const exports={},bone={rotation:0},renderer={node:{},skeletonData:{},findBone:()=>bone,_nativeSkeleton:{updateWorldTransform(){}}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPose.js'),'utf8'),{exports,cc:{isValid:value=>!!value&&!value.destroyed}});
+ exports.applyAim(renderer,{x:0,y:1},1);renderer.destroyed=true;Object.defineProperty(renderer,'skeletonData',{get(){throw Error('disposed native skeleton data');}});renderer.findBone=()=>{throw Error('disposed native bone lookup');};
+ assert.doesNotThrow(()=>exports.removeAim(renderer));assert.equal(exports.applyAim(renderer,{x:0,y:1},1),false);assert.doesNotThrow(()=>exports.commitWorld(renderer));
+});
+
 test('native-style fresh TrackEntry wrappers retain skill-owned retiming and aim until a new attack begins',()=>{
  const exports={},json={_heroMaker:{},animations:{attack:{events:[{time:.1667,name:'attack'}],bones:{body:{rotate:[{time:.8333,angle:0}]}}}}};
  const player={KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>({getHeroWeapon:()=>Weapons.find('skirmisher')})})}};

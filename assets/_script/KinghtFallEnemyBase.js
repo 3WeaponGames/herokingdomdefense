@@ -479,7 +479,7 @@ var def_KinghtFallEnemyBase = function (t) {
       }
     }() && (this.doAttackStart(), true);
   };
-  _ctor.prototype.doAttackStart = function () {
+  _ctor.prototype.doAttackStart = function (cooldown) {
     if (GameToolsOverrides.isPending(this)) return;
     var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame, node = this.node;
     var renderer = this.getSpAni ? this.getSpAni() : this.spAni;
@@ -491,7 +491,7 @@ var def_KinghtFallEnemyBase = function (t) {
     this.state = r.Attack;
     record.entry = renderer.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     if (this._attackAnimation !== record || !attackCurrent(this, record)) return;
-    this.time[s.Attack] = -1;
+    this.time[s.Attack] = cooldown === 0 ? 0 : -1;
     GameToolsOverrides.attack(this, "enemy", this.doAttack);
   };
   _ctor.prototype._completeAttackAnimation = function (renderer, entry) {

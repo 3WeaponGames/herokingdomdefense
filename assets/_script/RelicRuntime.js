@@ -32,7 +32,12 @@ function restore(data, saved) {
 function snapshot(data) { return data && data.relicState ? copy(data.relicState) : undefined; }
 function commit(data) {
   if (!data || !data.ctrPar || !data.ctrPar.saveGame) return true;
-  if (data.ctrPar.saveGame() === false) {
+  var owner = data.ctrPar, ownerData = owner.gameData, epoch = owner._combatEpoch, generation = data._relicGeneration, receipt = data.relicState;
+  var saved = owner.saveGame();
+  // Saving can synchronously restore/restart a battle. Only the lifetime that
+  // requested this checkpoint may update its pending-save bookkeeping.
+  if (data.ctrPar !== owner || owner.gameData !== ownerData || owner._combatEpoch !== epoch || data._relicGeneration !== generation || data.relicState !== receipt) return false;
+  if (saved === false) {
     // The effect is already applied in memory. Retain its receipt and retry
     // the same snapshot instead of applying the reward or charge again.
     data._relicSavePending = true;
@@ -59,14 +64,22 @@ function healingLife(actor, node, generation) {
 function heal(actor, fraction) {
   if (!actor || !(fraction > 0)) return 0;
   var node = actor.node, generation = node && node._combatGeneration;
-  if (!healingLife(actor, node, generation)) return 0;
+  var data = current(), game = data && data.ctrPar, ownedData = game && game.gameData, gameNode = game && game.node;
+  var epoch = game && game._combatEpoch, battleGeneration = data && data._relicGeneration, round = data && data.round;
+  function currentHealing() {
+    return healingLife(actor, node, generation) && current() === data &&
+      (!data || data.ctrPar === game && data._relicGeneration === battleGeneration && data.round === round) &&
+      (!game || game.gameData === ownedData && game.node === gameNode && game._combatEpoch === epoch &&
+        (typeof cc === "undefined" || !cc.isValid || cc.isValid(game, true) && (!gameNode || cc.isValid(gameNode, true))));
+  }
+  if (!currentHealing()) return 0;
   var before = actor.hp; actor.hp = Math.min(actor.hpMax, actor.hp + actor.hpMax * fraction);
   var healed = actor.hp - before;
   var hp = actor.ctrHp || actor.hpctrl;
-  if (hp && hp.setHp) hp.setHp(actor.hp, actor.hpMax);
-  if (!healingLife(actor, node, generation)) return healed;
+  if (hp && (typeof cc === "undefined" || !cc.isValid || cc.isValid(hp, true) && (!hp.node || cc.isValid(hp.node, true))) && hp.setHp) hp.setHp(actor.hp, actor.hpMax);
+  if (!currentHealing()) return healed;
   if (actor.upHpView) actor.upHpView();
-  if (healed > 0 && healingLife(actor, node, generation)) relicSound("healing-receive", actor);
+  if (healed > 0 && currentHealing()) relicSound("healing-receive", actor);
   return healed;
 }
 function boss(enemy) {
@@ -74,17 +87,25 @@ function boss(enemy) {
   return cfg.IsBoss === true || cfg.IsBoss === 1 || cfg.Boss === true || cfg.Boss === 1 || cfg.Role === "boss" || cfg.role === "boss" || [90010, 90011, 90012].indexOf(Number(cfg.ID)) >= 0 || [90010, 90011, 90012].indexOf(Number(cfg.CampaignBaseUnit)) >= 0;
 }
 function clearControl(enemy) { if (enemy) delete enemy._relicControl; }
+function controlLife(enemy, node, generation) {
+  return !!enemy && !enemy._isPooled && (!enemy.isDead || !enemy.isDead()) && !(typeof enemy.hp === "number" && enemy.hp <= 0) &&
+    enemy.node === node && (!node || node._combatGeneration === generation) &&
+    (typeof cc === "undefined" || !cc.isValid || cc.isValid(enemy, true) && (!node || cc.isValid(node, true)));
+}
 function applyControl(enemy, seconds, bossSlow) {
-  if (!enemy || enemy._isPooled || enemy.isDead && enemy.isDead() || !(seconds > 0)) return false;
-  var generation = enemy.node && enemy.node._combatGeneration;
+  var node = enemy && enemy.node, generation = node && node._combatGeneration;
+  if (!controlLife(enemy, node, generation) || !(seconds > 0) || !isFinite(seconds)) return false;
+  var data = current(), game = data && data.ctrPar, epoch = game && game._combatEpoch, battleGeneration = data && data._relicGeneration;
   var control = enemy._relicControl;
-  if (!control || control.generation !== generation) control = enemy._relicControl = { generation: generation, freeze: 0, slow: 0, duration: 0 };
-  if (boss(enemy)) {
-    relicSound("slow-apply", enemy);
+  if (!control || control.generation !== generation || control.node && control.node !== node) control = enemy._relicControl = { node: node, generation: generation, freeze: 0, slow: 0, duration: 0 };
+  var isBoss = boss(enemy);
+  relicSound(isBoss ? "slow-apply" : "freeze-apply", enemy);
+  if (!controlLife(enemy, node, generation) || enemy._relicControl !== control || current() !== data ||
+      data && (data._relicGeneration !== battleGeneration || data.ctrPar !== game) || game && game._combatEpoch !== epoch) return false;
+  if (isBoss) {
     control.slow = Math.max(control.slow, Math.min(.9, Math.max(0, bossSlow === undefined ? .5 : bossSlow)));
     control.duration = Math.max(control.duration, seconds);
   } else {
-    relicSound("freeze-apply", enemy);
     control.freeze = Math.max(control.freeze, seconds);
     // Cancel a queued authored hit before the next scheduler tick. The authored
     // default and custom attack timings remain untouched.
@@ -95,7 +116,7 @@ function applyControl(enemy, seconds, bossSlow) {
 function controlDelta(enemy, dt) {
   var control = enemy && enemy._relicControl;
   var result = { dt: dt, frozen: false, moveScale: 1, attackScale: 1 };
-  if (!control || control.generation !== (enemy.node && enemy.node._combatGeneration) || !(dt > 0)) return result;
+  if (!control || control.generation !== (enemy.node && enemy.node._combatGeneration) || control.node && control.node !== enemy.node || !(dt > 0)) return result;
   if (control.freeze > 0) {
     var frozen = Math.min(dt, control.freeze); control.freeze = Math.max(0, control.freeze - dt);
     result.dt = Math.max(0, dt - frozen); result.frozen = result.dt <= 1e-9;
@@ -111,7 +132,7 @@ function slowed(enemy, data) {
 }
 function controlled(enemy) {
   var control = enemy && enemy._relicControl;
-  if (control && control.generation === (enemy.node && enemy.node._combatGeneration) && (control.freeze > 0 || control.duration > 0 && control.slow > 0)) return true;
+  if (control && (!control.node || control.node === enemy.node) && control.generation === (enemy.node && enemy.node._combatGeneration) && (control.freeze > 0 || control.duration > 0 && control.slow > 0)) return true;
   return !!(enemy && (enemy.debuffInfo || []).some(function (buff) { return buff && (buff.subNum > 0 || buff.data && buff.data.subNum > 0) && (buff.type === "MoveSpeed" || buff.type === 3); }));
 }
 module.exports = { current: current, values: values, value: value, active: active, state: state, restore: restore, snapshot: snapshot,

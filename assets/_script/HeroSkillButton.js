@@ -13,11 +13,12 @@ function create(button,current,cc){
   function owned(){return !disposed&&live(button)&&current();}
   function release(asset){if(asset&&asset.decRef)asset.decRef();}
   function retain(asset){if(asset&&asset.addRef)asset.addRef();return asset;}
+  function clearIcon(){if(live(icon)&&live(icon.node))icon.spriteFrame=null;release(iconFrame);iconFrame=null;}
   function setIcon(style){
     var resource=ICON_ROOT+style;if(resource===iconResource)return;iconResource=resource;var token=++version;
-    if(icon)icon.spriteFrame=null;release(iconFrame);iconFrame=null;
+    clearIcon();
     cc.resources.load(resource,cc.SpriteFrame,function(error,frame){
-      if(error||!frame||!owned()||token!==version||!live(icon&&icon.node))return;
+      if(error||!frame||!owned()||token!==version||!live(icon)||!live(icon.node))return;
       iconFrame=retain(frame);icon.trim=true;icon.sizeMode=cc.Sprite.SizeMode.CUSTOM;icon.spriteFrame=frame;
       // Square skill scenes fill the circular face. Preserve aspect ratio for
       // any older rectangular illustration rather than stretching its artwork.
@@ -26,7 +27,7 @@ function create(button,current,cc){
     });
   }
   function paint(){
-    if(!parts||!desired||!owned())return;
+    if(!parts||!desired||!owned()||!live(root)||!live(icon)||!live(icon.node)||!live(parts.normal)||!live(parts.armed)||!live(parts.disabled)||!live(parts.cooldown)||!live(parts.fill))return;
     var planning=!!desired.planning,cooling=!planning&&desired.cooldown>0,signature=[desired.style,desired.usable,desired.aiming,cooling,planning].join(":");
     if(signature!==appearance){appearance=signature;parts.normal.active=!planning&&desired.usable&&!desired.aiming;parts.armed.active=!planning&&desired.usable&&desired.aiming;parts.disabled.active=planning||!desired.usable;icon.node.color=cc.color(planning||desired.usable||cooling?"#ffffff":"#aaa6b4");parts.cooldown.color=planning?cc.color("#686b73"):cooldownColor;parts.cooldown.opacity=planning?165:cooldownOpacity;setIcon(desired.style);}
     var ratio=planning?1:Math.max(0,Math.min(1,desired.cooldown/Math.max(1e-9,desired.totalCooldown)));
@@ -51,14 +52,14 @@ function create(button,current,cc){
         // Resetting them while the HUD is inactive runs native Mask graphics
         // before its assembler has been created by component preload.
         paint();
-      }catch(error){if(live(root))root.destroy();root=null;parts=null;release(prefab);prefab=null;if(cc.warn)cc.warn("Skill button artwork: "+error.message);}
+      }catch(error){if(live(root))root.destroy();clearIcon();root=null;parts=null;release(prefab);prefab=null;if(cc.warn)cc.warn("Skill button artwork: "+error.message);}
     });
   }
   return {
     set:function(state){desired=state;paint();},
     resize:function(value){if(!validDiameter(value)||diameter===value)return;diameter=value;if(live(root))root.scale=frameScale(diameter);},
     get visual(){return root;},get icon(){return icon;},get cooldown(){return parts&&parts.fill;},
-    destroy:function(){if(disposed)return;disposed=true;version++;if(icon)icon.spriteFrame=null;release(iconFrame);iconFrame=null;if(live(root))root.destroy();root=null;parts=null;release(prefab);prefab=null;}
+    destroy:function(){if(disposed)return;disposed=true;version++;clearIcon();if(live(root))root.destroy();root=null;parts=null;release(prefab);prefab=null;}
   };
 }
 exports.create=create;exports.prefab=PREFAB;exports.iconRoot=ICON_ROOT;exports.frameScale=FRAME_SCALE;exports.iconSize=ICON_SIZE*FRAME_SCALE;

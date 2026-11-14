@@ -2,13 +2,14 @@
 // Pure presentation geometry shared by gameplay and the Skills preview.
 // Aim rotates the weapon branch around its hand; rider and mount stay upright.
 var aimed = new WeakMap();
+function live(target){return !!target&&(typeof cc==='undefined'||!cc.isValid||cc.isValid(target,true)&&(!target.node||cc.isValid(target.node,true)));}
 function value(object,key,fallback){
   if(!object)return fallback;var getter="get"+key.charAt(0).toUpperCase()+key.slice(1),result=typeof object[getter]==="function"?object[getter]():object[key];
   return typeof result==="number"&&isFinite(result)?result:fallback;
 }
 function write(object,key,next){var setter="set"+key.charAt(0).toUpperCase()+key.slice(1);if(typeof object[setter]==="function")object[setter](next);else object[key]=next;}
 function commitWorld(target){
-  if(!target)return;
+  if(!live(target))return;
   // Creator's real-time browser Skeleton.updateWorldTransform() is a cache-only
   // API. The underlying Spine skeleton must commit its newly applied bones.
   var native=target._nativeSkeleton,skeleton=target._skeleton;
@@ -18,6 +19,7 @@ function commitWorld(target){
 }
 function removeAim(target){
   var record=target&&aimed.get(target);if(!record)return;
+  if(!live(target)){aimed.delete(target);return;}
   // A skin may replace the whole native rig. Never touch a retained Bone
   // wrapper after that skeleton asset has been disposed/replaced.
   var bone=record.identity===(target.skeletonData||target.data)&&target.findBone&&target.findBone("Rider/HandRight");
@@ -25,7 +27,7 @@ function removeAim(target){
   aimed.delete(target);
 }
 function applyAim(target,direction,mirrorX,options){
-  if(!target||!target.findBone)return false;
+  if(!live(target)||!target.findBone)return false;
   if(options&&options.fresh)aimed.delete(target);else removeAim(target);
   var x=direction&&direction.x,y=direction&&direction.y;
   if(typeof x!=="number"||typeof y!=="number"||!isFinite(x)||!isFinite(y)||Math.hypot(x,y)<1e-8)return false;
@@ -48,7 +50,7 @@ function localVertices(attachment){
   [[-1,-1],[-1,1],[1,1],[1,-1]].forEach(function(corner){var px=corner[0]*width*sx/2,py=corner[1]*height*sy/2;out.push(x+px*c-py*s,y+px*s+py*c);});return out;
 }
 function arrowTip(target,direction,mirrorX){
-  if(!target||!target.findBone)return null;
+  if(!live(target)||!target.findBone)return null;
   var name="Rider/HandRight/Bow/Arrow",bone=target.findBone(name);if(!bone)return null;
   var slot=target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==="function"?slot.getAttachment():slot.attachment),vertices=localVertices(attachment),x=value(bone,"worldX",0),y=value(bone,"worldY",0);
   if(!vertices)return{x:x,y:y};
@@ -61,6 +63,7 @@ function arrowTip(target,direction,mirrorX){
 // RegionAttachment's upper edge follows the fitted artwork's own +Y, including
 // its authored rotation. It is independent of the current beam target.
 function attachmentTip(target,name,resolvedBone){
+  if(!live(target))return null;
   var bone=resolvedBone||target&&target.findBone&&target.findBone(name),slot=target&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);
   if(!bone||!vertices)return null;
   var x=(vertices[2]+vertices[4])/2,y=(vertices[3]+vertices[5])/2,a=value(bone,'a',NaN),b=value(bone,'b',NaN),c=value(bone,'c',NaN),d=value(bone,'d',NaN);
@@ -94,7 +97,7 @@ function boneMatrixAt(json,animation,time,boneName,handRotation){
   }
   return matrix(boneName);
 }
-function arrowAttachment(target){var slot=target&&target.findSlot&&target.findSlot("Rider/HandRight/Bow/Arrow");return slot&&(typeof slot.getAttachment==="function"?slot.getAttachment():slot.attachment);}
+function arrowAttachment(target){var slot=live(target)&&target.findSlot&&target.findSlot("Rider/HandRight/Bow/Arrow");return slot&&(typeof slot.getAttachment==="function"?slot.getAttachment():slot.attachment);}
 function arrowAimAngle(target,json,animation,time){
   var matrix=boneMatrixAt(json,animation,time,"Rider/HandRight/Bow/Arrow",0),attachment=arrowAttachment(target);if(!matrix||!attachment)return 0;
   // The arrow's source art points along attachment +X. Include its fitted
@@ -115,6 +118,7 @@ exports.attachmentTip=attachmentTip;
 exports.boneMatrixAt=boneMatrixAt;
 
 exports.weaponTipAt=function(target,json,animation,time,name,direction,mirrorX,aim){
+  if(!live(target))return null;
   var rotation=aim&&direction?Math.atan2(direction.y,direction.x*(mirrorX<0?-1:1))*180/Math.PI:0,m=boneMatrixAt(json,animation,time,name,rotation);
   if(!m)return attachmentTip(target,name)||(target&&target.findBone&&target.findBone(name)?{x:value(target.findBone(name),'worldX',0),y:value(target.findBone(name),'worldY',0)}:null);
   var slot=target&&target.findSlot&&target.findSlot(name),attachment=slot&&(typeof slot.getAttachment==='function'?slot.getAttachment():slot.attachment),vertices=localVertices(attachment);

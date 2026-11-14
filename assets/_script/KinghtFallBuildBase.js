@@ -755,11 +755,12 @@ var def_KinghtFallBuildBase = function (t) {
     return Math.max(t, 0);
   };
   _ctor.prototype.upHpView = function () {
-    if (this.ctrHp) {
+    var hp = this.ctrHp, valid = typeof cc !== "undefined" && cc.isValid;
+    if (hp && (!valid || valid(hp, true) && (!hp.node || valid(hp.node, true)))) {
       if (this.canLock && this.buildInfo.cfg) {
-        this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
+        hp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
       } else {
-        this.ctrHp.setHp(0, 1);
+        hp.setHp(0, 1);
       }
     }
   };
@@ -771,14 +772,27 @@ var def_KinghtFallBuildBase = function (t) {
   };
   _ctor.prototype.onAttacked = function (t) {
     if (!this.isDestroyed) {
-      var castle = this.buildInfo.BuildID === 1 || this.buildCfg && this.buildCfg.enumValue === 1;
-      var data = castle ? RelicRuntime.current() : null;
+      var building=this,info=this.buildInfo,node=this.node,generation=node&&node._combatGeneration,hp=this.ctrHp;
+      if(!info)return 0;
+      var castle = info.BuildID === 1 || this.buildCfg && this.buildCfg.enumValue === 1;
+      var ui=typeof $z1KinghtFallUIGame!=="undefined"?$z1KinghtFallUIGame.default.instance:null,game=ui&&ui.ctrGame,uiNode=ui&&ui.node,uiGeneration=ui&&ui._resourceGeneration;
+      var data=castle?RelicRuntime.current():game&&game.gameData,owner=game||data&&data.ctrPar,ownedData=owner&&owner.gameData,ownerNode=owner&&owner.node,epoch=owner&&owner._combatEpoch;
+      var dataOwner=data&&data.ctrPar,round=data&&data.round,relicGeneration=data&&data._relicGeneration,valid=typeof cc!=="undefined"&&cc.isValid;
+      function current(){return building.node===node&&(!node||node._combatGeneration===generation&&node.activeInHierarchy!==false)&&building.buildInfo===info&&building.ctrHp===hp&&!building._isPooled&&
+        (!valid||valid(building,true)&&(!node||valid(node,true)))&&(!data||data.ctrPar===dataOwner&&data.round===round&&data._relicGeneration===relicGeneration)&&
+        (!owner||owner.node===ownerNode&&owner.gameData===ownedData&&(ownedData===undefined||ownedData===data)&&owner._combatEpoch===epoch&&(!valid||valid(owner,true)&&(!ownerNode||valid(ownerNode,true))))&&
+        (!ui||$z1KinghtFallUIGame.default.instance===ui&&!ui.isclose&&ui.node===uiNode&&ui._resourceGeneration===uiGeneration&&ui.ctrGame===game&&(!valid||valid(ui,true)&&(!uiNode||valid(uiNode,true))));}
+      if(!current())return 0;
       var damage = castle ? RelicBattle.castleIncomingDamage(data, this, t) : t;
-      this.buildInfo.hp -= damage;
+      if(!current())return 0;
+      info.hp -= damage;
       if (BattleSounds.hit) BattleSounds.hit(this, null, damage);
+      if(!current())return damage;
       if (castle) RelicBattle.afterCastleDamage(data, this);
-      this.buildInfo.hp <= 0 && this.onDead();
-      this.ctrHp && this.ctrHp.setHp(this.buildInfo.hp, this.buildInfo.hpMax);
+      if(!current())return damage;
+      info.hp <= 0 && !this.isDestroyed && this.onDead();
+      if(!current())return damage;
+      if(hp&&(!valid||valid(hp,true))&&(!hp.node||!valid||valid(hp.node,true)))hp.setHp(info.hp,info.hpMax);
       return damage;
     }
   };

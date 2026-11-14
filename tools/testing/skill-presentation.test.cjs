@@ -290,3 +290,20 @@ test('disabled main and impact artwork release retained assets and invalidate pe
   f.rt.settings.visual[key]=uuid;paint();assert.equal(f.loads.length,2,'Re-enabling must create a new owned request');f.loads[1].callback(null,asset);assert.equal(asset.refs,1);f.P.clear(f.rt);assert.equal(asset.refs,0);
  }
 });
+
+test('a destroyed native VFX sprite is retired without setters and can be repainted for a still-live effect',()=>{
+ const f=fixture();f.rt.settings.visual.resource='native-effect';f.rt.settings.visual.resourceKind='sprite';f.rt.effects=[{x:0,y:0,duration:2,remaining:2}];f.P.attachments({visual:{node:f.root}},f.rt);f.loads[0].callback(null,{name:'native-effect'});
+ const first=f.root.children[0],sprite=first.component;Object.defineProperty(sprite,'spriteFrame',{set(){if(first.destroyed)throw Error('disposed native sprite');}});first.destroy();
+ assert.doesNotThrow(()=>f.P.attachments({visual:{node:f.root}},f.rt));assert.equal(f.root.children.filter(n=>!n.destroyed).length,1);
+ assert.doesNotThrow(()=>f.P.clear(f.rt));assert(f.root.children.every(n=>n.destroyed));
+});
+
+test('pending VFX loads cannot retain assets across a replaced node, state, battle epoch or game data',()=>{
+ for(const retire of [f=>{f.rt.hero.node={};},f=>{f.rt.hero.node._combatGeneration=9;},f=>{f.rt.state={...f.rt.state};},f=>{f.rt.game._combatEpoch++;},f=>{f.rt.game.gameData={};}]){
+  const f=fixture();f.rt.settings.visual.resource='owned-effect';f.rt.settings.visual.resourceKind='sprite';f.rt.effects=[{x:0,y:0,duration:2,remaining:2}];f.P.attachments({visual:{node:f.root}},f.rt);let refs=0;const asset={addRef(){refs++;return this;},decRef(){refs--;}};retire(f);f.loads[0].callback(null,asset);assert.equal(refs,0);assert(f.root.children.every(n=>!n.component));f.P.clear(f.rt);
+ }
+});
+
+test('delayed reactions and impacts fence node identity even when the replacement uses the same generation',()=>{
+ const f=fixture();f.rt.settings.visual.impactDelay=.5;f.P.deferHitReaction(f.rt,f.target);f.P.impact(f.rt,f.target,{});f.target.node={...f.target.node};f.rt.state.time=.6;f.P.update(f.rt);assert.equal(f.hitReactions.length,0);assert.equal(f.P.hasImpactVisual(f.rt),false);f.P.clear(f.rt);
+});

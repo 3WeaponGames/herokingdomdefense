@@ -52,6 +52,7 @@ function create(host,options){
   let disposed=false,serial=0,rigSerial=0,effectSerial=0,spine=null,heroLayers=[],targetLayers=[],effectLayers=[],effectImage=null,effectDescriptor=null;
   let style='skirmisher',settings={},description=null,rigDescription=null,rigKey='',rigPromise=null,effectKey='',effectPromise=null,effectError=null,model=new Model(style,settings,{mode:'active'},core),playing=true,last=0,raf=null;
   let view={zoom:1,panX:0,panY:0},fitted=null,drag=null,selectedHandle='origin',handles=[],enemyRegions=[],soundEnabled=false,lastSoundTime=-1;
+  const impactSoundKeys=new Set();let soundTimeline=null;
   let impactSerial=0,impactKey='',impactResource=null,impactPromise=null,impactError=null;
   const tintImages=new Map();
   const request=typeof requestAnimationFrame==='function'?requestAnimationFrame:fn=>setTimeout(()=>fn(Date.now()),16);
@@ -76,8 +77,9 @@ function create(host,options){
   function stopSounds(){sound('stop');}
   function forwardSounds(){
     if(!soundEnabled)return;
+    if(soundTimeline!==model.events){soundTimeline=model.events;impactSoundKeys.clear();}
     const events=model.events.filter(event=>event.time>lastSoundTime+1e-8);
-    const impacts=new Set();for(const event of events)if(['cast','release','impact','channel','stopChannel'].includes(event.kind)){if(event.kind==='impact'){if(impacts.has(event.strike))continue;impacts.add(event.strike);}sound(event.kind,event);}
+    for(const event of events)if(['cast','release','impact','channel','stopChannel'].includes(event.kind)){if(event.kind==='impact'){if(impactSoundKeys.has(event.strike))continue;impactSoundKeys.add(event.strike);if(impactSoundKeys.size>512)impactSoundKeys.delete(impactSoundKeys.values().next().value);}sound(event.kind,event);}
     lastSoundTime=model.time;
   }
   function resize(){
@@ -312,8 +314,9 @@ function create(host,options){
     if(drag.kind==='pan'){view.panX=drag.panX+p.x-drag.start.x;view.panY=drag.panY+p.y-drag.start.y;draw();return;}
     if(drag.kind==='enemy'){const at=world(p,viewport());model.moveTarget(drag.target,{x:drag.at.x+at.x-drag.start.x,y:drag.at.y+at.y-drag.start.y});draw();return;}
     const at=world(p,viewport()),prefix=['passive','mark','buff','taunt','shield'].includes(drag.name)?drag.name+'Offset':drag.name==='effect'?'offset':drag.name,visual=settings.visual||(settings.visual={});
-    for(const [axis,delta]of [['X',at.x-drag.start.x],['Y',at.y-drag.start.y]]){const key=prefix+axis,value=Math.round((finite(drag.visual[key],0)+delta)*100)/100;visual[key]=value;if(options.onChange)options.onChange(['visual',key],value);}
-    model.settings=clone(settings);if(style!=='mystic')model.seek(model.time);
+    let changed=false;
+    for(const [axis,delta]of [['X',at.x-drag.start.x],['Y',at.y-drag.start.y]]){const key=prefix+axis,field=SkillSettings.visualFields.find(field=>field.key===key),value=clamp(Math.round((finite(drag.visual[key],0)+delta)*100)/100,field.min,field.max);if(visual[key]===value)continue;visual[key]=value;changed=true;if(options.onChange)options.onChange(['visual',key],value);}
+    if(changed){model.settings=clone(settings);if(style!=='mystic')model.seek(model.time);}
     draw();
   }
   function wheel(event){if(!(event.ctrlKey||event.metaKey))return;event.preventDefault();const p=position(event),before=world(p,viewport());view.zoom=clamp(view.zoom*Math.exp(-event.deltaY*.001),.2,6);const after=screen(before,viewport());view.panX+=p.x-after.x;view.panY+=p.y-after.y;draw();}

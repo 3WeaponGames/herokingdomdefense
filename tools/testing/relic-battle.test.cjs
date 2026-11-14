@@ -38,6 +38,14 @@ test('castle rescues are once-only and Golem protection requires a living built 
   assert.equal(dead.deaths,1);assert.equal(dead.buildInfo.hp,-10);assert.equal(lethal.data.relicState,undefined);
 });
 
+test('unowned Golem protection does not scan buildings during repeated castle damage',()=>{
+  const f=fixture(),c=castle();let scans=0;
+  Object.defineProperty(f.data,'bulidPointMap',{get(){scans++;return{2:building(2,6)};}});
+  for(let hit=0;hit<1000;hit++)assert.equal(f.Battle.castleIncomingDamage(f.data,c,10),10);
+  assert.equal(scans,0);
+  f.data.treasureAdd[120046]=[.12];assert.equal(f.Battle.castleIncomingDamage(f.data,c,10),8.8);assert.equal(scans,1);
+});
+
 test('saved rescue charges stay spent after a new battle runtime restores the checkpoint',()=>{
   const f=fixture({120028:[.15],120050:[2]}),c=castle(20);f.Battle.afterCastleDamage(f.data,c);
   const saved=f.Runtime.snapshot(f.data),restored=fixture({120028:[.15],120050:[2]});restored.Runtime.restore(restored.data,saved);
@@ -94,6 +102,16 @@ test('Fairy Acorn grows surviving economic buildings from authored HP with three
   const next=fixture({120047:[.04]});next.Runtime.restore(next.data,f.Runtime.snapshot(f.data));const Info=next.load('KinghtFallBuildInfo').KinghtFallBuildInfo;
   const rebuilt=new Info(4,{Hp:100},2);assert.equal(rebuilt.hpMax,112);rebuilt.initBuffData();assert.equal(rebuilt.hpMax,112);
   const upgraded=new Info(4,{Hp:200},2);assert.equal(upgraded.hpMax,224);assert.equal(new Info(4,{Hp:100},9).hpMax,100);
+});
+
+test('wave growth and income complete when an optional building HP widget is disposed',()=>{
+  const view=method('KinghtFallBuildBase','upHpView',{cc:{isValid:value=>!!value&&!value.destroyed}}),setHp=method('KinghtFallItemHp','setHp',{});
+  for(const part of ['component','node']){
+    const f=fixture({120004:[2],120047:[.08]}),house=building(2,4,50),native={get active(){throw Error('Disposed HP node read');},set active(_){throw Error('Disposed HP node write');}};
+    house.canLock=true;house.ctrHp={node:native,sprPro:{},setHp};if(part==='component')house.ctrHp.destroyed=true;else native.destroyed=true;
+    house.upHpView=function(){return view.call(this);};f.data.bulidPointMap={2:house};f.data.coin=10;
+    assert.doesNotThrow(()=>assert.equal(f.Battle.waveCleared(f.data,null,1),true),part);assert.equal(house.buildInfo.hp,58);assert.equal(house.buildInfo.hpMax,108);assert.equal(f.data.coin,12);
+  }
 });
 
 test('Wavebreaker grants its first stack at ten combat seconds, caps at three and applies to replacement soldiers without compounding',()=>{

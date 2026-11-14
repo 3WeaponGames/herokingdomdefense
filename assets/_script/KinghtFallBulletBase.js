@@ -35,12 +35,13 @@ var def_KinghtFallBulletBase = function (t) {
     var actor = target._combatActor;
     var game = this.combatContext;
     var epoch = game && game._combatEpoch;
+    var data = game && game.gameData;
     this.tagNode = target;
     this.targetIsLive = function () {
       return cc.isValid(target, true) && target.activeInHierarchy !== false &&
         target._combatGeneration === generation &&
-        (!actor || cc.isValid(actor, true) && !actor.isDead()) &&
-        (!game || cc.isValid(game, true) && cc.isValid(game.node, true) && game._combatEpoch === epoch);
+        (!actor || cc.isValid(actor, true) && actor.node === target && !actor._isPooled && !actor.isDead()) &&
+        (!game || cc.isValid(game, true) && cc.isValid(game.node, true) && game._combatEpoch === epoch && game.gameData === data);
     };
     var isLive = this.targetIsLive;
     // Keep an immutable shot identity even if the projectile itself is reused.
@@ -128,15 +129,18 @@ var def_KinghtFallBulletBase = function (t) {
   };
   _ctor.prototype.onDie = function () {
     if (this.state !== 0) return;
+    var shot=this._shot,attack=this.callAttack;
     this.state = 1;
-    if (this._projectileVisual) this._projectileVisual.impact();
     this.bullet.active = false;
     this.time = 2;
-    var attack = this.callAttack;
     this.callAttack = null;
-    if (attack) attack();
     this.tagNode = null;
     this.targetIsLive = null;
+    // Impact artwork and damage may immediately return/rebind this pooled
+    // projectile. Retire old references before either callback can reuse it.
+    // Optional artwork errors must not discard an otherwise valid launch.
+    try{if (this._projectileVisual) this._projectileVisual.impact();}
+    finally{if(this._shot===shot&&this.state===1&&attack)attack();}
   };
   _ctor.prototype.freeNode = function () {
     this.cancel();

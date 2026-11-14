@@ -55,6 +55,30 @@ function host(){
   return{root,renderer,arcs,draws,seeks,worldDraws,box:()=>root.children[0],overlay:()=>root.children[0].children[1]};
 }
 const description={runtimePath:'unused',layers:[{uuid:'hero',x:0,y:0,scaleX:1,scaleY:1,json:{animations:{idle:{},attack_fighter:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}},atlas:'',pages:{}}]};
+
+test('piercing impact preview audio remains deduplicated across rendered frames and resets with a replay',async()=>{
+ const h=host(),sounds=[],old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;let frame;global.requestAnimationFrame=fn=>{frame=fn;return 1;};global.cancelAnimationFrame=()=>{};
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),onSound:(kind,value)=>{if(kind==='impact'&&value.clip)sounds.push(value.clip);}});
+  await view.set({style:'skirmisher',settings:{windup:.35,visual:{},audio:{impact:{clip:'piercing-hit',delay:0,volume:1}}},description});
+  view.setScenario({attackRate:0,targetPositions:[{x:100,y:0},{x:400,y:0},{x:700,y:0}]});view.setAudioEnabled(true);view.cast();
+  for(let i=0;i<12;i++)frame(1000+i*100);
+  assert.equal(view.getState().hits,3);assert.deepEqual(sounds,['piercing-hit']);
+  view.cast();for(let i=0;i<12;i++)frame(3000+i*100);assert.deepEqual(sounds,['piercing-hit','piercing-hit']);view.destroy();
+ }finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
+
+test('bounded area-handle drags update actual preview geometry once and repeated clamped moves stay unchanged',async()=>{
+ const h=host(),changes=[],old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
+ const Core=require('../../assets/_script/HeroStyleSkills');let steps=0;const core={...Core,step(...args){steps++;return Core.step(...args);}};
+ try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({}),core,onChange:(path,value)=>changes.push({path,value})});await view.set({style:'fighter',settings:{visual:{}},description});view.seek(.3);const before=view.getState(),initialSteps=steps;assert(before.hits>0);
+  const handle=view.getState().handles.find(h=>h.name==='effect'),events=h.overlay().listeners,base={pointerId:8,clientX:handle.x,clientY:handle.y,preventDefault(){}};
+  events.get('pointerdown')({...base,button:0});events.get('pointermove')({...base,clientX:handle.x+1000000,clientY:handle.y+1000000});
+  const fields=require('../../assets/_script/HeroSkillSettings').visualFields;
+  for(const change of changes){const field=fields.find(f=>f.path===change.path.join('.'));assert(field);assert(change.value>=field.min&&change.value<=field.max,field.path+' exceeded editable bounds');}
+  const after=view.getState();assert.equal(changes.length,2);assert(steps>initialSteps);close(after.time,before.time);assert.equal(after.hits,0);close(after.effects[0].x,changes.find(c=>c.path[1]==='offsetX').value);close(after.effects[0].y,changes.find(c=>c.path[1]==='offsetY').value);
+  const updatedSteps=steps;events.get('pointermove')({...base,clientX:handle.x+2000000,clientY:handle.y+2000000});assert.equal(changes.length,2);assert.equal(steps,updatedSteps);events.get('pointerup')(base);view.destroy();
+ }finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
+});
 test('preview loading, playback, seek, pan and zoom emit no drafts or audio by default',async()=>{
   const h=host(),changes=[],sounds=[],old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
   try{
@@ -260,6 +284,12 @@ test('Mystic preview integrates source playback and freezes the warm-up and dama
 test('Mystic preview retargets at real tick boundaries and spends only residual time on the next target',()=>{
  const run=step=>{const m=new Model('mystic',{}, {mode:'basic',targets:3,targetDistance:100,attackRate:2,holdSource:.2,attackPlayback:1});m.targets.forEach((t,i)=>{t.x=100+i*10;t.y=0;t.hp=i===0?50:150;});let remaining=1.4;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.4),b=run(1/120);
  assert.equal(a.hits,2);assert.equal(a.channelTarget.id,1);close(a.attackClock,.8);close(a.channelSourceTime,1.4);assert.deepEqual(a.targets.map(t=>t.hp),b.targets.map(t=>t.hp));close(a.damage,b.damage);close(a.attackClock,b.attackClock);close(a.channelSourceTime,b.channelSourceTime);assert.equal(a.state.mysticCharges,b.state.mysticCharges);
+});
+
+test('Mystic preview forwards a fresh visible beam onset so the shared VFX clock restarts on the same target',()=>{
+ const m=new Model('mystic',{}, {mode:'basic',targets:1,targetDistance:100,attackRate:1,holdSource:.2,attackPlayback:1});m.advance(.4);m.advance(.2);
+ assert(m.vfxFrame.entities.find(e=>e.slot==='beam'&&e.phase==='loop').age>0);
+ m.beamVisibleStarted=m.time;m.updateVFX();close(m.vfxFrame.entities.find(e=>e.slot==='beam'&&e.phase==='loop').age,0);assert(m.vfxFrame.entities.some(e=>e.slot==='beam'&&e.phase==='end'));
 });
 
 test('swept arrow contact uses the first circle entry while the closest-point helper remains unchanged',()=>{

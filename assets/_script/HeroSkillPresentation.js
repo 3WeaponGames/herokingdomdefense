@@ -28,11 +28,11 @@ function state(runtime) {
   return runtime._presentation || (runtime._presentation={id:++nextOwner,pending:[],sources:[],channel:null,impactKeys:new Map(),nodes:new Map(),frames:new Map(),feedback:[],impacts:[]});
 }
 function hitRecord(runtime,target) {
-  return {scope:runtime.state,heroGeneration:runtime.heroGeneration,ownerGeneration:runtime.hero&&runtime.hero.node&&runtime.hero.node._combatGeneration,game:runtime.game,data:runtime.game&&runtime.game.gameData,epoch:runtime.game&&runtime.game._combatEpoch,target:target,targetGeneration:target&&target.node&&target.node._combatGeneration};
+  return {scope:runtime.state,heroGeneration:runtime.heroGeneration,ownerNode:runtime.hero&&runtime.hero.node,ownerGeneration:runtime.hero&&runtime.hero.node&&runtime.hero.node._combatGeneration,game:runtime.game,data:runtime.game&&runtime.game.gameData,epoch:runtime.game&&runtime.game._combatEpoch,target:target,targetNode:target&&target.node,targetGeneration:target&&target.node&&target.node._combatGeneration};
 }
 function hitCurrent(runtime,item,reaction) {
   var target=item.target,node=target&&target.node;
-  return runtime.available()&&runtime.state===item.scope&&runtime.heroGeneration===item.heroGeneration&&runtime.hero&&runtime.hero.node&&runtime.hero.node._combatGeneration===item.ownerGeneration&&runtime.game===item.game&&runtime.game.gameData===item.data&&runtime.game._combatEpoch===item.epoch&&target&&alive(node)&&!target._isPooled&&node._combatGeneration===item.targetGeneration&&(!reaction||target.hp>0&&(!target.isDead||!target.isDead()));
+  return runtime.available()&&runtime.state===item.scope&&runtime.heroGeneration===item.heroGeneration&&runtime.hero&&runtime.hero.node===item.ownerNode&&alive(item.ownerNode)&&item.ownerNode._combatGeneration===item.ownerGeneration&&runtime.game===item.game&&runtime.game.gameData===item.data&&runtime.game._combatEpoch===item.epoch&&target&&node===item.targetNode&&alive(node)&&!target._isPooled&&node._combatGeneration===item.targetGeneration&&(!reaction||target.hp>0&&(!target.isDead||!target.isDead()));
 }
 function deferHitReaction(runtime,target) {
   var delay=visual(runtime).impactDelay;
@@ -185,7 +185,7 @@ function seekSprite(record) {
   record.sprite.spriteFrame=frame;
 }
 function dispose(record) {
-  if(record.sprite)record.sprite.spriteFrame=null;
+  if(alive(record.node)&&alive(record.sprite))record.sprite.spriteFrame=null;
   if(alive(record.node))record.node.destroy();
 }
 function initialize(record,asset,v,s) {
@@ -211,8 +211,10 @@ function prepare(runtime,s,v,owner) {
   if(s.resourceKey!==key){clearArt(s);s.resourceKey=key;}
   if(s.asset||s.loading||s.loadError)return;s.loading=true;
   var request=s.loadVersion=(s.loadVersion||0)+1;
+  var scope=runtime.state,game=runtime.game,data=game&&game.gameData,epoch=game&&game._combatEpoch,hero=runtime.hero,heroNode=hero&&hero.node,generation=heroNode&&heroNode._combatGeneration;
   try{loadResource(v,function(error,asset){
     if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
+    if(runtime.state!==scope||runtime.game!==game||game&&game.gameData!==data||game&&game._combatEpoch!==epoch||runtime.hero!==hero||hero&&hero.node!==heroNode||!alive(heroNode)||heroNode._combatGeneration!==generation){s.loading=false;return;}
     s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset.addRef?asset.addRef():asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
   });}catch(error){s.loading=false;s.loadError=error;}
@@ -224,7 +226,7 @@ function attachments(hud,runtime) {
   if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
   s=state(runtime);var entities=[];
   if(v.resource)prepare(runtime,s,v);else clearArt(s);
-  if(runtime.beamTarget&&runtime.beamTarget.node&&runtime.beamTarget.hp>0){
+  if(runtime.beamTarget&&alive(runtime.beamTarget.node)&&runtime.beamTarget.hp>0&&(!runtime.beamVisibleNode||runtime.beamTarget.node===runtime.beamVisibleNode)&&(runtime.beamVisibleGeneration===undefined||runtime.beamTarget.node._combatGeneration===runtime.beamVisibleGeneration)){
     var beamGeneration=runtime.beamTarget.node._combatGeneration;
     var onset=beamOnset(runtime);
     if(s.beamEntity!==runtime.beamTarget||s.beamGeneration!==beamGeneration||onset!==undefined&&s.beamOnset!==onset){s.beamEntity=runtime.beamTarget;s.beamGeneration=beamGeneration;s.beamOnset=onset;s.beamKey={};s.beamStarted=onset===undefined?runtime.state.time:onset;}
@@ -249,14 +251,17 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     // Instances may share an atlas and immutable frames while keeping each
     // slot's authored tint, opacity and scale independent.
     var view=entity.visual||v;
+    var destination=entity.behind?runtime.hero.node.parent:parent;
     keep.add(entity.key);var record=s.nodes.get(entity.key);
+    if(record&&(!alive(record.node)||record.sprite&&!alive(record.sprite)||record.skeleton&&!alive(record.skeleton))){dispose(record);s.nodes.delete(entity.key);record=null;}
     if(!record){
-      var node=new cc.Node("Custom skill VFX");node.setParent(parent);record={node:node,resource:v.resource};s.nodes.set(entity.key,record);
+      var node=new cc.Node("Custom skill VFX");node.setParent(destination);record={node:node,resource:v.resource};s.nodes.set(entity.key,record);
     }
+    else if(record.node.parent!==destination)record.node.setParent(destination);
     record.entity=entity;if(s.asset)initialize(record,s.asset,view,s);
     if(!alive(record.node))return;
-    var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(parent.convertToNodeSpaceAR(world));
-    var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local=parent.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
+    var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(destination.convertToNodeSpaceAR(world));
+    var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local=destination.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
     var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*(entity.radius?1:view.scale)*(entity.scale===undefined?1:entity.scale);
     if(entity.radius){
       var frame=record.sprite&&record.sprite.spriteFrame,rect=frame&&frame.getRect&&frame.getRect(),json=record.skeleton&&record.skeleton.skeletonData&&record.skeleton.skeletonData.skeletonJson,box=json&&json.skeleton;
@@ -274,20 +279,20 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
 function hasStyleArt(v){return !!(v.passiveResource||v.beamResource||v.markResource||v.buffResource||v.tauntResource||v.shieldResource);}
 function vfxContext(runtime){
   var hero=runtime.hero,main=runtime.game.ndMain,v=visual(runtime);
-  function target(actor,overhead,expected){
-    if(!actor||!alive(actor.node)||actor.node.activeInHierarchy===false||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected)return null;
+  function target(actor,overhead,expected,expectedNode){
+    if(!actor||!alive(actor.node)||actor.node.activeInHierarchy===false||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected||expectedNode&&actor.node!==expectedNode)return null;
     var ground=actor.node.convertToWorldSpaceAR(cc.v2(0,0)),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node,at;
-    if(bar){var top=bar.convertToWorldSpaceAR(cc.v2(0,overhead?18:0));at=overhead?top:cc.v2(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}else at=cc.v2(ground.x,ground.y+(overhead?100:50));
-    var point=main.convertToNodeSpaceAR(at);return{id:actor,generation:actor.node._combatGeneration,x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
+    if(alive(bar)){var top=bar.convertToWorldSpaceAR(cc.v2(0,overhead?18:0));at=overhead?top:cc.v2(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}else at=cc.v2(ground.x,ground.y+(overhead?100:50));
+    var point=main.convertToNodeSpaceAR(at);return{id:actor,node:actor.node,generation:actor.node._combatGeneration,x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
   }
   var origin=hero.getAttWpos?main.convertToNodeSpaceAR(hero.getAttWpos()):offset(hero.node.getPosition(),0,70);
   var tauntClip=VFXLayout.clipFor(v.tauntResource),tauntDuration=tauntClip?tauntClip.frames/tauntClip.fps:1.875,taunts=[];
   (v.tauntResource?runtime.taunted||[]:[]).forEach(function(record){var t=record.taunt,enemy=record.enemy;
     if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
-    var at=target(enemy,true,t.enemyGeneration);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
+    var at=target(enemy,true,t.enemyGeneration,t.enemyNode);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
   });
   var body=target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
-  return{heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+  return{heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration,runtime.beamNode),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration,runtime.beamVisibleNode),beamOnset:beamOnset(runtime),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration,runtime.markNode):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
@@ -308,8 +313,8 @@ function preload(runtime){
 function styleAttachments(hud,runtime){
   var s=state(runtime),v=visual(runtime),frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}return;}
   var arts=s.styleArts||(s.styleArts=new Map()),groups=new Map(),entities=VFXLayout.entities(frame,v,s.vfxContext);
-  entities.forEach(function(entity){var key=resourceKey(entity.visual),group=groups.get(key);if(!group){group={visual:entity.visual,entities:[],behind:entity.behind};groups.set(key,group);}group.entities.push(entity);});
-  groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities,group.behind?runtime.hero.node.parent:undefined);});
+  entities.forEach(function(entity){var key=resourceKey(entity.visual),group=groups.get(key);if(!group){group={visual:entity.visual,entities:[]};groups.set(key,group);}group.entities.push(entity);});
+  groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities);});
   arts.forEach(function(art,key){if(!groups.has(key)){art.nodes.forEach(dispose);art.nodes.clear();}});
   // A style owns a small fixed phase set. Drop obsolete authored selections
   // rather than retaining every atlas visited during a long play session.

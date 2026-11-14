@@ -90,6 +90,32 @@ test('retiring a target before the crossing step discards the shot and never gra
   assert.equal(h.g.ndBuildArr2.length, 0);
 });
 
+test('old projectiles reject replaced actor nodes, pooled recipients and replaced battle data',()=>{
+ for(const change of [f=>{f.actor.node=new Node('replacement');f.actor.node._combatGeneration=1;},f=>{f.actor._isPooled=true;},f=>{f.h.g.gameData={};}]){
+  const h=setup(),shot=projectile(h,'Play','identity'),target=new Node('victim',null,200,0),actor={node:target,isDead:()=>false};target._combatGeneration=1;target._combatActor=actor;shot.combatContext=h.g;
+  let hits=0;shot.setTag(new Vec2(),target,()=>hits++);assert.equal(shot.targetIsLive(),true);change({h,shot,target,actor});assert.equal(shot.targetIsLive(),false);shot.callAttack();assert.equal(hits,0);
+ }
+});
+
+test('impact damage can reuse the same projectile without old cleanup clearing its new target',()=>{
+ const h=setup(),shot=projectile(h,'Build','reentrant'),first=new Node('first',null,10,0),next=new Node('next',null,300,0);let firstHits=0,nextHits=0;
+ shot.setTag(new Vec2(),first,()=>{firstHits++;shot.setTag(shot.node.getPosition(),next,()=>nextHits++);});shot.onDie();
+ assert.equal(firstHits,1);assert.equal(nextHits,0);assert.equal(shot.state,0);assert.equal(shot.tagNode,next);assert.equal(shot.targetIsLive(),true);assert.equal(shot.bullet.active,true);
+ shot.node.setPosition(290,0);shot.onUpdate(.01);assert.equal(nextHits,1);assert.equal(firstHits,1);
+});
+
+test('impact artwork cannot hide or immediately fire a projectile rebound by its callback',()=>{
+ const h=setup(),shot=projectile(h,'Build','visual-reentrant'),first=new Node('first',null,10,0),next=new Node('next',null,300,0);let firstHits=0,nextHits=0;
+ shot.setTag(new Vec2(),first,()=>firstHits++);shot._projectileVisual={impact(){shot.setTag(shot.node.getPosition(),next,()=>nextHits++);}};shot.onDie();
+ assert.equal(firstHits,0);assert.equal(nextHits,0);assert.equal(shot.state,0);assert.equal(shot.tagNode,next);assert.equal(shot.targetIsLive(),true);assert.equal(shot.bullet.active,true);assert.equal(typeof shot.callAttack,'function');
+});
+
+test('an impact-artwork exception still commits the launched damage once and retires its old target references',()=>{
+ const h=setup(),shot=projectile(h,'Build','visual-error'),target=new Node('victim',null,10,0);let hits=0;
+ shot.setTag(new Vec2(),target,()=>hits++);h.g.ndBuildArr2.push(shot);shot._projectileVisual={step(){},reset(){},impact(){throw Error('impact artwork failed');}};
+ assert.throws(()=>shot.onDie(),/impact artwork failed/);assert.equal(hits,1);assert.equal(shot.state,1);assert.equal(shot.tagNode,null);assert.equal(shot.targetIsLive,null);shot.onDie();assert.equal(hits,1);shot.onUpdate(2.1);assert.equal(shot.state,2);assert.equal(h.g.ndBuildArr2.length,0);assert(h.g.ndBuildArr1.includes(shot.node));
+});
+
 for (const [type, key] of Object.entries({
   Play: 'ndPlayArr2', Enemy: 'ndEnemyArr', Soldier: 'ndSoldArr', Build: 'ndBuildArr2'
 })) test(type + ' projectile removals retain forward hit order and leave appended shots for the next tick', () => {

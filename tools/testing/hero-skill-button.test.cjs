@@ -104,3 +104,10 @@ test('late prefab or icon completions cannot attach to retired, destroyed or rep
 test('optional artwork load failure preserves the owner and creates no retry storm or asset references',()=>{
  const f=fixture();f.set({});f.pending[0].done(Error('missing prefab'));for(let i=0;i<100;i++)f.set({cooldown:i/100});assert.equal(f.pending.length,1);assert.equal(f.handle.visual,null);assert.equal(f.prefab.refs,0);f.handle.destroy();
 });
+
+test('destroyed native artwork cannot receive icon setters during late completion, painting or cleanup',()=>{
+ const f=fixture();f.set({});f.loadPrefab();const icon=f.handle.icon,frame=asset();f.pending.at(-1).done(null,frame);assert.equal(frame.refs,1);
+ Object.defineProperty(icon,'spriteFrame',{get(){return frame;},set(){if(icon.node.destroyed)throw Error('disposed native sprite');}});
+ f.handle.visual.destroy();assert.doesNotThrow(()=>f.set({style:'fighter',cooldown:2}));assert.doesNotThrow(()=>f.handle.destroy());assert.equal(frame.refs,0);assert.equal(f.prefab.refs,0);
+ const late=fixture();late.set({});late.loadPrefab();const pending=late.pending.at(-1),deadIcon=late.handle.icon;late.handle.visual.destroy();Object.defineProperty(deadIcon,'spriteFrame',{set(){throw Error('late native setter');}});assert.doesNotThrow(()=>pending.done(null,asset()));assert.doesNotThrow(()=>late.handle.destroy());
+});

@@ -3,16 +3,19 @@
 var catalog = null, loading = false, waiting = [], retryAfter = 0;
 function load(callback) {
   if (catalog) { callback(catalog); return; }
+  if (Date.now() < retryAfter || !cc.resources) return;
   waiting.push(callback);
-  if (loading || Date.now() < retryAfter || !cc.resources) return;
-  loading = true;
-  cc.resources.load("projectiles/catalog", cc.JsonAsset, function (error, asset) {
+  if (!loading) {
+    loading = true;
+    cc.resources.load("projectiles/catalog", cc.JsonAsset, function (error, asset) {
     loading = false;
     if (error || !asset || !asset.json) { retryAfter = Date.now() + 1000; waiting.length = 0; return; }
     catalog = asset.json;
     var callbacks = waiting; waiting = [];
     callbacks.forEach(function (ready) { ready(catalog); });
-  });
+    });
+  }
+  return function () { var index = waiting.indexOf(callback); if (index >= 0) waiting.splice(index, 1); };
 }
 function valid(node) { return node && cc.isValid(node, true); }
 function visualError(view, error, descriptor) {
@@ -41,11 +44,13 @@ function select(data, key, level, item) {
 function Bank(owner) { this.owner = owner; this.cache = Object.create(null); this.effects = []; this.pool = []; this.views = new Set(); this.dead = false; }
 Bank.prototype.get = function (descriptor, callback) {
   var bank = this, cached = this.cache[descriptor.id];
+  if (bank.dead) { callback(null); return; }
+  function cancel() { var index = cached.callbacks.indexOf(callback); if (index >= 0) cached.callbacks.splice(index, 1); }
   if (cached && cached.failedUntil) {
     if (Date.now() < cached.failedUntil) { callback(null); return; }
     delete this.cache[descriptor.id]; cached = null;
   }
-  if (cached) { if (cached.frames) callback(cached); else cached.callbacks.push(callback); return; }
+  if (cached) { if (cached.frames) callback(cached); else { cached.callbacks.push(callback); return cancel; } return; }
   cached = this.cache[descriptor.id] = { callbacks: [callback] };
   function done(error, asset) {
     if (bank.dead) return;
@@ -66,9 +71,15 @@ Bank.prototype.get = function (descriptor, callback) {
     if (loaded) loaded.load(descriptor.resource, type, done);
     else cc.assetManager.loadBundle(bundle, function (error, result) { if (bank.dead) return; if (error) done(error); else result.load(descriptor.resource, type, done); });
   }
+  return cancel;
 };
 function draw(node, clip, options) {
   var descriptor = clip.descriptor, renderer;
+  // One shared pool serves both sprite/flipbook and Spine effects. Retire the
+  // other renderer before rebinding this checkout so old artwork cannot linger.
+  var sprite = node.getComponent(cc.Sprite), skeleton = typeof sp !== "undefined" && node.getComponent(sp.Skeleton);
+  if (valid(sprite)) sprite.enabled = descriptor.kind !== "spine";
+  if (valid(skeleton)) skeleton.enabled = descriptor.kind === "spine";
   if (descriptor.kind === "spine") {
     renderer = node.getComponent(sp.Skeleton) || node.addComponent(sp.Skeleton); renderer.skeletonData = clip.asset;
     if (descriptor.skin) renderer.setSkin(descriptor.skin);
@@ -85,11 +96,13 @@ function draw(node, clip, options) {
   return renderer;
 }
 Bank.prototype.effect = function (descriptor, parent, position, angle, options, guard) {
-  if (!descriptor || this.effects.length >= 128 || !valid(parent)) return;
+  if (this.dead || !descriptor || this.effects.length >= 128 || !valid(parent)) return;
   var bank = this;
-  this.get(descriptor, function (clip) {
+  return this.get(descriptor, function (clip) {
     if (!clip || bank.dead || !valid(parent) || !guard() || bank.effects.length >= 128) return;
-    var node = bank.pool.pop() || new cc.Node("Projectile effect"); node.active = true; node.setParent(parent); node.group = parent.group; node.setPosition(position); node.angle = 0; node.setScale(1);
+    var node = bank.pool.pop();
+    while (node && !valid(node)) node = bank.pool.pop();
+    node = node || new cc.Node("Projectile effect"); node.active = true; node.setParent(parent); node.group = parent.group; node.setPosition(position); node.angle = 0; node.setScale(1);
     try {
       var renderer = draw(node, clip, options); node.angle += angle;
       bank.effects.push({ node: node, renderer: renderer, clip: clip, age: 0, epoch: bank.owner._combatEpoch });
@@ -112,12 +125,15 @@ Bank.prototype.dispose = function () {
   this.views.forEach(function (view) { view.release(); }); this.views.clear();
   this.effects.forEach(function (effect) { if (valid(effect.node)) effect.node.destroy(); }); this.effects = [];
   this.pool.forEach(function (node) { if (valid(node)) node.destroy(); }); this.pool = [];
-  Object.keys(this.cache).forEach(function (key) { var clip = this.cache[key]; if (clip.descriptor && clip.descriptor.kind === "flipbook") clip.frames.forEach(function (frame) { frame.destroy(); }); if (clip.asset && clip.asset.decRef) clip.asset.decRef(); }, this);
+  Object.keys(this.cache).forEach(function (key) { var clip = this.cache[key]; clip.callbacks = []; if (clip.descriptor && clip.descriptor.kind === "flipbook") clip.frames.forEach(function (frame) { frame.destroy(); }); if (clip.asset && clip.asset.decRef) clip.asset.decRef(); }, this);
   this.cache = Object.create(null); this.owner = null;
 };
 function View(shot, bank) { this.shot = shot; this.bank = bank; this.serial = 0; this.original = []; this.node = null; this.age = 0; bank.views.add(this); }
 View.prototype.reset = function () {
   this.serial++; this.age = 0;
+  if (this.cancelCatalog) this.cancelCatalog(); this.cancelCatalog = null;
+  if (this.cancelFlight) this.cancelFlight(); this.cancelFlight = null;
+  if (this.cancelLaunch) this.cancelLaunch(); this.cancelLaunch = null;
   this.original.forEach(function (entry) { if (valid(entry.renderer)) entry.renderer.enabled = entry.enabled; }); this.original = [];
   if (valid(this.spriteNode)) this.spriteNode.active = false;
   if (valid(this.spineNode)) this.spineNode.active = false;
@@ -162,9 +178,10 @@ View.prototype.begin = function (key, sourceActor) {
     view.options = options;
     view.impactDescriptor = data.assets.find(function (asset) { return asset.id === options.impact; });
     var launch = data.assets.find(function (asset) { return asset.id === options.launch; });
-    bank.effect(launch, parent, position, angle, options, current);
+    view.cancelLaunch = bank.effect(launch, parent, position, angle, options, current);
     if (!descriptor) return;
-    bank.get(descriptor, function (clip) {
+    view.cancelFlight = bank.get(descriptor, function (clip) {
+      view.cancelFlight = null;
       if (!clip || !current()) return;
       try {
         var field = descriptor.kind === "spine" ? "spineNode" : "spriteNode", node = view[field];
@@ -181,7 +198,7 @@ View.prototype.begin = function (key, sourceActor) {
       } catch (error) { visualError(view, error, descriptor); }
     });
   }
-  load(function (data) { try { apply(data); } catch (error) { visualError(view, error); } });
+  this.cancelCatalog = load(function (data) { view.cancelCatalog = null; try { apply(data); } catch (error) { visualError(view, error); } });
 };
 View.prototype.step = function (dt) {
   this.age += dt;

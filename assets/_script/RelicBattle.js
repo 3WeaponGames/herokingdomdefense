@@ -9,8 +9,10 @@ function ratio(data, id) { return Math.min(.9, Runtime.value(data, id)); }
 function castleHpMultiplier(data) { return 1 + ratio(data, 120032); }
 function castleIncomingDamage(data, castle, damage) {
   var info = castle && castle.buildInfo;
-  if (!(damage > 0) || !info || !(info.hp > 0) || !builtBuildings(data).some(function (build) { return build.buildInfo.BuildID === 6; })) return damage;
-  return damage * (1 - ratio(data, 120046));
+  if (!(damage > 0) || !info || !(info.hp > 0)) return damage;
+  var protection = ratio(data, 120046);
+  if (!(protection > 0) || !builtBuildings(data).some(function (build) { return build.buildInfo.BuildID === 6; })) return damage;
+  return damage * (1 - protection);
 }
 function living(actor) {
   return !!actor && !actor._isPooled && !actor.isDestroyed && (!actor.isDead || !actor.isDead()) &&
@@ -22,19 +24,37 @@ function afterCastleDamage(data, castle) {
   var hpRatio = info.hp / info.hpMax, phoenix = ratio(data, 120028), duration = Runtime.value(data, 120050);
   if (!(phoenix > 0 && hpRatio < .25) && !(duration > 0 && hpRatio < .5)) return false;
   var state = Runtime.state(data), triggered = false;
+  var owner = data.ctrPar, ownerData = owner && owner.gameData, epoch = owner && owner._combatEpoch, generation = data._relicGeneration, round = data.round;
+  var node = castle.node, nodeGeneration = node && node._combatGeneration;
+  function current() {
+    return data.relicState === state && data.ctrPar === owner && data._relicGeneration === generation && data.round === round &&
+      (!owner || owner.gameData === ownerData && owner._combatEpoch === epoch) && castle.buildInfo === info && castle.node === node &&
+      (!node || node._combatGeneration === nodeGeneration) && !castle.isDestroyed && info.hp > 0 &&
+      (typeof cc === "undefined" || !cc.isValid || cc.isValid(castle, true) && (!node || cc.isValid(node, true)));
+  }
   // Evaluate both thresholds against the hit before Phoenix repairs the castle.
   if (duration > 0 && hpRatio < .5 && !state.hourglassUsed) {
     state.hourglassUsed = true;
     relicSound("hourglass-activate", castle);
+    if (!current()) return false;
     var enemies = typeof data.getEnemyList === "function" ? data.getEnemyList().slice() : (data.enemyList || []).slice();
-    enemies.forEach(function (enemy) { if (living(enemy)) Runtime.applyControl(enemy, duration, .5); });
+    var targets = enemies.filter(living).map(function (enemy) { return { actor: enemy, node: enemy.node, generation: enemy.node && enemy.node._combatGeneration }; });
+    for (var index = 0; index < targets.length; index++) {
+      if (!current()) return false;
+      var target = targets[index];
+      if (target.actor.node === target.node && (!target.node || target.node._combatGeneration === target.generation) && living(target.actor)) Runtime.applyControl(target.actor, duration, .5);
+    }
     triggered = true;
   }
+  if (!current()) return false;
   if (phoenix > 0 && hpRatio < .25 && !state.phoenixUsed) {
     state.phoenixUsed = true;
     relicSound("phoenix-castle-repair", castle);
+    if (!current()) return false;
     info.hp = Math.min(info.hpMax, info.hp + info.hpMax * phoenix);
-    if (castle.ctrHp) castle.ctrHp.setHp(info.hp, info.hpMax);
+    var hp = castle.ctrHp;
+    if (hp && (typeof cc === "undefined" || !cc.isValid || cc.isValid(hp, true) && (!hp.node || cc.isValid(hp.node, true))) && hp.setHp) hp.setHp(info.hp, info.hpMax);
+    if (!current()) return false;
     triggered = true;
   }
   if (triggered) Runtime.commit(data);
@@ -95,8 +115,8 @@ function updateHeroAura(data, hero, dt, moving) {
   var amount = ratio(data, 120049);
   if (!data || !hero) return 0;
   var timer = hero._relicArmyAura, generation = hero.node && hero.node._combatGeneration;
-  if (!timer || timer.data !== data || timer.generation !== generation || timer.battleGeneration !== data._relicGeneration || timer.round !== data.round) {
-    timer = hero._relicArmyAura = { data: data, generation: generation, battleGeneration: data._relicGeneration, round: data.round, elapsed: 0 };
+  if (!timer || timer.data !== data || timer.node !== hero.node || timer.generation !== generation || timer.battleGeneration !== data._relicGeneration || timer.round !== data.round || timer.owner !== data.ctrPar || timer.epoch !== (data.ctrPar && data.ctrPar._combatEpoch)) {
+    timer = hero._relicArmyAura = { data: data, node: hero.node, generation: generation, battleGeneration: data._relicGeneration, round: data.round, owner: data.ctrPar, epoch: data.ctrPar && data.ctrPar._combatEpoch, elapsed: 0 };
   }
   if (!(amount > 0) || !living(hero) || !TowerCombat.live(hero) || moving) { timer.elapsed = 0; return 0; }
   if (!(dt > 0) || !isFinite(dt)) return 0;
@@ -130,28 +150,49 @@ function towerImpact(data, tower, target, center, parent) {
   var kind = tower.buildCfg && tower.buildCfg.enumValue || tower.buildInfo && tower.buildInfo.BuildID;
   if (kind !== 2) return false;
   var now = typeof data._relicCombatTime === "number" && isFinite(data._relicCombatTime) ? data._relicCombatTime : 0;
-  if (tower._relicGravityData === data && tower._relicGravityGeneration === data._relicGeneration && now - tower._relicGravityAt < 8) return false;
+  var owner = data.ctrPar, ownerData = owner && owner.gameData, epoch = owner && owner._combatEpoch, stage = owner && owner.gameStatus;
+  var generation = data._relicGeneration, round = data.round, towerNode = tower.node, towerGeneration = towerNode && towerNode._combatGeneration, targetNode = target.node, targetGeneration = targetNode._combatGeneration;
+  function current() {
+    return data.ctrPar === owner && data._relicGeneration === generation && data.round === round &&
+      (!owner || owner.gameData === ownerData && owner._combatEpoch === epoch && owner.gameStatus === stage) &&
+      tower.node === towerNode && (!towerNode || towerNode._combatGeneration === towerGeneration) &&
+      target.node === targetNode && targetNode._combatGeneration === targetGeneration;
+  }
+  if (tower._relicGravityData === data && tower._relicGravityGeneration === generation && tower._relicGravityNode === towerNode && tower._relicGravityEpoch === epoch && now - tower._relicGravityAt < 8) return false;
   center = center || TowerCombat.point(target.node, parent);
   if (!center || !isFinite(center.x) || !isFinite(center.y)) return false;
-  var enemies = typeof data.getEnemyList === "function" ? data.getEnemyList().slice() : (data.enemyList || []).slice(), affected = [];
+  var enemies = typeof data.getEnemyList === "function" ? data.getEnemyList().slice() : (data.enemyList || []).slice(), affected = [], seen = new Set();
   enemies.forEach(function (enemy) {
-    if (!TowerCombat.live(enemy)) return;
+    if (!TowerCombat.live(enemy) || seen.has(enemy)) return;
+    seen.add(enemy);
     var point = TowerCombat.point(enemy.node, parent), dx = point.x - center.x, dy = point.y - center.y;
-    if (isFinite(dx) && isFinite(dy) && dx * dx + dy * dy <= 120 * 120) affected.push(enemy);
+    if (isFinite(dx) && isFinite(dy) && dx * dx + dy * dy <= 120 * 120) affected.push({ actor: enemy, node: enemy.node, generation: enemy.node._combatGeneration });
   });
   if (!affected.length) return false;
   tower._relicGravityData = data;
   tower._relicGravityGeneration = data._relicGeneration;
+  tower._relicGravityNode = towerNode;
+  tower._relicGravityEpoch = epoch;
   tower._relicGravityAt = now;
   relicSound("gravity-proc", target);
-  affected.forEach(function (enemy) { Runtime.applyControl(enemy, duration, .15); });
-  return true;
+  var applied = false;
+  for (var index = 0; index < affected.length; index++) {
+    if (!current()) return applied;
+    var entry = affected[index];
+    if (entry.actor.node === entry.node && entry.node._combatGeneration === entry.generation && TowerCombat.live(entry.actor)) applied = Runtime.applyControl(entry.actor, duration, .15) || applied;
+  }
+  return applied;
 }
 function waveCleared(data, hero, round) {
   if (!data || !Number.isInteger(round) || round < 1) return false;
   var interest = Math.floor(Runtime.value(data, 120004)), house = Math.floor(Runtime.value(data, 120023)), growth = ratio(data, 120047);
   if (!(interest > 0) && !(house > 0) && !(growth > 0)) return false;
   var state = Runtime.state(data);
+  var owner = data.ctrPar, ownerData = owner && owner.gameData, epoch = owner && owner._combatEpoch, generation = data._relicGeneration, activeRound = data.round;
+  function current() {
+    return data.relicState === state && data.ctrPar === owner && data._relicGeneration === generation && data.round === activeRound &&
+      (!owner || owner.gameData === ownerData && owner._combatEpoch === epoch);
+  }
   if (!state.completedWaves || typeof state.completedWaves !== "object" || Array.isArray(state.completedWaves)) state.completedWaves = {};
   if (state.completedWaves[round]) return false;
   // Mark before callbacks so a reentrant wave-end notification cannot pay twice.
@@ -159,9 +200,11 @@ function waveCleared(data, hero, round) {
   // Bank interest uses the balance before this clear's rewards and production.
   var silver = interest * Math.min(3, Math.max(0, Math.floor((data.coin || 0) / 10)));
   var tier = typeof data.getBaseLevel === "function" ? data.getBaseLevel() : data.baseBuild && data.baseBuild.getLevel ? data.baseBuild.getLevel() : 1;
-  builtBuildings(data).forEach(function (build) {
-    var key = pointKey(build), info = build.buildInfo, kind = info.BuildID;
-    if (!key || [4, 5].indexOf(kind) < 0) return;
+  var buildings = builtBuildings(data).map(function (build) { return { actor: build, node: build.node, generation: build.node && build.node._combatGeneration, info: build.buildInfo }; });
+  for (var index = 0; index < buildings.length; index++) {
+    if (!current()) return false;
+    var entry = buildings[index], build = entry.actor, key = pointKey(build), info = entry.info, kind = info.BuildID;
+    if (!key || [4, 5].indexOf(kind) < 0 || build.buildInfo !== info || build.node !== entry.node || entry.node && entry.node._combatGeneration !== entry.generation || !living(build)) continue;
     if (house > 0 && kind === 4) {
       var receipts = state.houseTierReceipts || (state.houseTierReceipts = {}), tiers = receipts[key] || (receipts[key] = {});
       if (!tiers[String(tier)]) { tiers[String(tier)] = true; silver += house; }
@@ -172,11 +215,12 @@ function waveCleared(data, hero, round) {
       applyEconomicGrowth(data, info, key, true);
       if (build.upHpView) build.upHpView();
     }
-  });
+  }
+  if (!current()) return false;
   if (silver > 0) {
     if (typeof data.addCoin === "function") data.addCoin(silver); else data.coin += silver;
   }
-  return true;
+  return current();
 }
 
 exports.castleHpMultiplier = castleHpMultiplier;

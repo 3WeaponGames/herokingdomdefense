@@ -567,6 +567,16 @@ var def_KinghtFallGameCtrlData = function () {
     }
   };
   _ctor.prototype.tryEndGame = function () {
+    var data=this,owner=this.ctrPar,ownerNode=owner&&owner.node,ownedData=owner&&owner.gameData,epoch=owner&&owner._combatEpoch;
+    var ui=typeof $z1KinghtFallUIGame!=="undefined"?$z1KinghtFallUIGame.default.instance:null,uiNode=ui&&ui.node,uiGeneration=ui&&ui._resourceGeneration;
+    var hero=owner&&owner.ctrPlay,heroNode=hero&&hero.node,heroGeneration=heroNode&&heroNode._combatGeneration;
+    var round=this.round,level=this.levelCfg,relicGeneration=this._relicGeneration,valid=typeof cc!=="undefined"&&cc.isValid;
+    function current(){return data.ctrPar===owner&&data.round===round&&data.levelCfg===level&&data._relicGeneration===relicGeneration&&
+      (!owner||owner.node===ownerNode&&owner.gameData===ownedData&&(ownedData===undefined||ownedData===data)&&owner._combatEpoch===epoch&&owner.ctrPlay===hero&&
+        (!valid||valid(owner,true)&&(!ownerNode||valid(ownerNode,true)))&&(!ownerNode||ownerNode.activeInHierarchy!==false))&&
+      (!hero||hero.node===heroNode&&(!heroNode||heroNode._combatGeneration===heroGeneration)&&(!valid||valid(hero,true)&&(!heroNode||valid(heroNode,true))))&&
+      (!ui||$z1KinghtFallUIGame.default.instance===ui&&!ui.isclose&&ui.node===uiNode&&ui._resourceGeneration===uiGeneration&&(!owner||ui.ctrGame===owner)&&(!uiNode||uiNode.activeInHierarchy!==false)&&(!valid||valid(ui,true)&&(!uiNode||valid(uiNode,true))));}
+    if(!current())return;
     var relicCommitReady = false;
     if (this._relicRoundCommitPending) {
       if (this._relicSavePending) return;
@@ -575,8 +585,10 @@ var def_KinghtFallGameCtrlData = function () {
       delete this._relicRoundCoinPending;
       relicCommitReady = true;
       if (pendingSilver > 0) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, pendingSilver);
+      if(!current())return;
     }
     if (this.authoredTimeline && this.authoredTimeline.pending()) return;
+    if(!current())return;
     var t = 0;
     for (var e in this.enemyQueue) {
       !this.authoredTimeline && Object.prototype.hasOwnProperty.call(this.enemyQueue, e) && (t += this.enemyQueue[e].length);
@@ -584,16 +596,22 @@ var def_KinghtFallGameCtrlData = function () {
     if ((relicCommitReady || !this._roundCompleted) && this.enemyList.length <= 0 && t <= 0 && !(this.pendingEnemySpawns > 0)) {
       this._roundCompleted = true;
       if (this.captureMillIncome) this.captureMillIncome();
+      if(!current())return;
       if (require("RelicRuntime").active(this)) {
         var coinBefore = this.coin;
-        if (require("RelicBattle").waveCleared(this, this.ctrPar && this.ctrPar.ctrPlay, this.round)) {
+        var rewarded=require("RelicBattle").waveCleared(this, hero, round);
+        if(!current())return;
+        if (rewarded) {
           var silver = this.coin - coinBefore;
-          if (!require("RelicRuntime").commit(this)) {
+          var committed=require("RelicRuntime").commit(this);
+          if(!current())return;
+          if (!committed) {
             this._relicRoundCommitPending = true;
             this._relicRoundCoinPending = silver;
             return;
           }
           if (silver > 0) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, silver);
+          if(!current())return;
         } else if (this._relicSavePending) {
           // A failed earlier legendary-charge save must also become durable
           // before this battle advances past its cleared wave.
@@ -602,11 +620,14 @@ var def_KinghtFallGameCtrlData = function () {
         }
       }
       $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.start_X_Y, this.levelCfg.Level + "_" + this.round);
+      if(!current())return;
       $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData().passOrder(this.levelCfg.Level, this.round);
+      if(!current())return;
       if (this.round < this.levelCfg.WaveCfg.length) {
         $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RoundEnd);
       } else {
         if (this.settleFinalMillIncome) this.settleFinalMillIncome();
+        if(!current())return;
         $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.GameOver, true);
       }
     }

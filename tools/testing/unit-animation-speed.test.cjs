@@ -9,8 +9,8 @@ function appearance(){
 }
 function fixture(catalog={},settings={}){
  const a=appearance();a.api.preload();a.jobs.shift().done(null,{json:catalog});
- const owned=new WeakSet(),context={exports:{},cc:{resources:{},isValid:value=>!!value&&!value.destroyed},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:(_controller,renderer)=>owned.has(renderer)};if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
- vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings,owned};
+ const owned=new WeakSet(),context={exports:{},cc:{resources:{},isValid:(value,strict)=>!!value&&!value.destroyed&&(!strict||!value.pendingDestroy)},require(name){if(name==='HeroMakerRider')return{ownsAttackClock:(_controller,renderer)=>owned.has(renderer)};if(name==='CharacterAppearance')return a.api;assert.equal(name,'KinghtFallDataMgr');return{KinghtFallDataMgr:{getInstance:()=>({data:{GameTools:settings}})}};}};
+ vm.runInNewContext(source('GameToolsOverrides'),context);return{api:context.exports,appearance:a.api,catalog,settings,owned,cc:context.cc};
 }
 function actor(id=94001,pack='fantasy-bosses'){
  const tracks={0:{animation:{name:'attack',duration:4},timeScale:1,trackTime:0},1:{animation:{name:'hit',duration:.3},timeScale:.7}};
@@ -63,6 +63,50 @@ test('scheduler counts a partial relic-freeze release before the later actor upd
   const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.07}}}),unit=actor(94001,'monster3');unit.node._combatGeneration=1;unit.spAni.paused=true;unit._relicControl={generation:1,freeze:.03,slow:0,duration:0};unit._relicPausedRenderers=[{renderer:unit.spAni,wasPaused}];let hits=0;
   f.api.attack(unit,'enemy',()=>hits++);f.api.tick(.1,true);assert.equal(hits,wasPaused?0:1);
  }
+});
+
+test('pending authored hits belong to their exact node and generation without changing replacement cooldowns',()=>{
+ for(const change of [unit=>{unit.node={...unit.node};},unit=>{unit.node._combatGeneration++;}]){
+  const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.2}}}),unit=actor(94001,'monster3');unit.node._combatGeneration=1;let hits=0;f.api.attack(unit,'enemy',()=>hits++);change(unit);f.api.tick(.5,true);
+  assert.equal(hits,0);assert.equal(f.api.isPending(unit),false);assert.equal(unit.time.Attack,-1,'An old entry must not release a replacement life cooldown');
+ }
+ const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.2}}}),unit=actor(94001,'monster3');f.api.attack(unit,'enemy',()=>{});unit.time={Attack:-1};f.api.cancel(unit);assert.equal(unit.time.Attack,-1);
+});
+
+test('a legitimate delayed callback cannot release a new node lifetime cooldown after it returns',()=>{
+ const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.2}}}),unit=actor(94001,'monster3');unit.node._combatGeneration=1;let hits=0;
+ f.api.attack(unit,'enemy',()=>{hits++;unit.node={...unit.node};});f.api.tick(.2,true);assert.equal(hits,1);assert.equal(unit.time.Attack,-1);assert.equal(f.api.isPending(unit),false);
+});
+
+test('scheduler snapshots keep callback replacement attacks for the next tick in release order',()=>{
+ const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.2}}}),first=actor(94001,'monster3'),second=actor(94001,'monster3'),third=actor(94001,'monster3'),hits=[];
+ f.api.attack(first,'enemy',()=>{hits.push('first');f.api.attack(second,'enemy',()=>hits.push('replacement'));});
+ f.api.attack(second,'enemy',()=>hits.push('obsolete'));f.api.attack(third,'enemy',()=>hits.push('third'));
+ f.api.tick(.2,true);assert.deepEqual(hits,['first','third']);assert(f.api.isPending(second));f.api.tick(.2,true);assert.deepEqual(hits,['first','third','replacement']);assert.equal(f.api.isPending(second),false);
+ first.time.Attack=-1;second.time.Attack=-1;f.api.attack(first,'enemy',()=>{hits.push('clear');f.api.clear();});f.api.attack(second,'enemy',()=>hits.push('cleared'));
+ f.api.tick(.2,true);assert.equal(hits.at(-1),'clear');assert.equal(f.api.isPending(second),false);assert.equal(second.time.Attack,0);
+});
+
+test('retired native renderer windups cancel before any disposed component access',()=>{
+ for(const replace of ['destroy','destroy-and-replace','replace']){
+  const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.2}}}),unit=actor(94001,'monster3'),renderer=unit.spAni,track=unit.tracks[0];f.cc.sys={isNative:true};let hits=0;
+  renderer.getCurrent=()=>{if(renderer.destroyed)throw Error('Disposed native getCurrent');return track;};Object.defineProperty(renderer,'paused',{get(){if(renderer.destroyed)throw Error('Disposed native paused');return false;}});
+  f.api.attack(unit,'enemy',()=>hits++);renderer.destroyed=replace!=='replace';if(replace!=='destroy')unit.spAni={getCurrent:()=>({animation:{name:'attack'},trackTime:0,timeScale:1})};
+  assert.doesNotThrow(()=>f.api.tick(.5,true));assert.equal(hits,0);assert.equal(f.api.isPending(unit),false);assert.equal(unit.time.Attack,0);
+ }
+});
+
+test('pending-destroy owners, pooled owners and missing configs cancel without issuing delayed hits',()=>{
+ for(const change of [unit=>{unit.pendingDestroy=true;},unit=>{unit.node.pendingDestroy=true;},unit=>{unit._isPooled=true;},unit=>{unit.cfg=undefined;}]){
+  const f=fixture({}, {timingDefaults:{'enemy:94001:default':{attack:.2}}}),unit=actor(94001,'monster3');let hits=0;f.api.attack(unit,'enemy',()=>hits++);change(unit);
+  assert.doesNotThrow(()=>f.api.tick(.5,true));assert.equal(hits,0);assert.equal(f.api.isPending(unit),false);
+ }
+});
+
+test('playback updates ignore disposed native renderer layers without reading their tracks or metadata',()=>{
+ const f=fixture({unitAnimationSpeeds:{'enemy:94001:default':.5}}),unit=actor(),renderer=unit.spAni;unit.cfg.MonsterPack='fantasy-bosses';renderer.destroyed=true;
+ renderer.getCurrent=()=>{throw Error('Disposed native track');};Object.defineProperty(renderer,'skeletonData',{get(){throw Error('Disposed native metadata');}});
+ assert.doesNotThrow(()=>f.api.applyAttackPlayback(unit,'enemy'));assert.doesNotThrow(()=>f.api.applyAnimationPlayback(unit,'enemy'));assert.equal(f.api.attackPlayback(unit,'enemy'),.125);
 });
 test('catalog preload coalesces callers, exposes speeds before completion callbacks and completes failures for startup retry',()=>{
  const f=appearance(),order=[];f.api.preload(()=>order.push(f.api.animationSpeed(actor(),'enemy')));f.api.preload(()=>order.push('second'));assert.equal(f.jobs.length,1);assert.equal(f.jobs[0].name,'characters/catalog');f.jobs.shift().done(null,{json:{unitAnimationSpeeds:{'enemy:94001:default':.6}}});assert.deepEqual(order,[.6,'second']);f.api.preload(()=>order.push('cached'));assert.equal(f.jobs.length,0);assert.equal(order.at(-1),'cached');
