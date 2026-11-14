@@ -30,6 +30,7 @@ var def_KinghtFallUIBuildSel = function (t) {
     this.cancelCall = cancel;
     this.initialChoice = !!t && !(t.buildInfo && t.buildInfo.cfg);
     this.choiceIndexes = Array.isArray(choices) ? choices.slice() : null;
+    if (this._preparedUIProvider && this._preparedUIProvider.matches(this, t, this.choiceIndexes)) return;
     // First layout waits for start(), after fullscreen Widgets have aligned.
     if(this._choicePrepared){
       (this._choiceRows||[]).forEach(function(row){row.active=false;row.destroy();});
@@ -46,6 +47,9 @@ var def_KinghtFallUIBuildSel = function (t) {
     var cancel = this.cancelCall;
     this.cancelCall = null;
     if (cancel) cancel();
+    if (this._preparedUIProvider) {
+      this.build = this.callBack = this.cancelCall = this.choiceIndexes = null;
+    }
   };
   _ctor.prototype.onDestroy = function () {
     this.onClose();
@@ -295,6 +299,7 @@ var def_KinghtFallUIBuildSel = function (t) {
     this._cancelButton = button;
   };
   _ctor.prototype.lateUpdate = function () {
+    if (this._preparedUIParked) return;
     (this._initialChoiceDescriptions || []).forEach(function (row) {
       var rich = row.label, key = rich.string + "|" + (rich.font && rich.font.uuid);
       if (row.key !== key) {

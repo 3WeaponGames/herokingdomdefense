@@ -14,12 +14,21 @@ function plan(config,names){
 function preload(done){
  if(complete){if(done)done();return;}if(callbacks){if(done)callbacks.push(done);return;}callbacks=done?[done]:[];
  var Config=require("KinghtFallConfig"),manager=require("ResourceMgr").ResourceMgr.getInstance(),config=require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().data,queue=plan(config,Config.KinghtFallBundelName),position=0;
- function finish(){complete=true;var list=callbacks;callbacks=null;list.forEach(function(fn){fn();});}
- function next(){if(position>=queue.length){require("UIMgr").UIMgr.getInstance().preLoadUI(Config.KinghtFallUIID.UIBuildSel,finish);return;}
+ function finish(){complete=true;var list=callbacks;callbacks=null;var firstError=null;list.forEach(function(fn){try{fn();}catch(error){if(!firstError)firstError=error;}});if(firstError)throw firstError;}
+ function next(){if(position>=queue.length){
+  manager.loadWithRecovery("Construction menu preparation",function(resolve){
+   var ui=require("UIMgr").UIMgr.getInstance();
+   ui.preLoadUI(Config.KinghtFallUIID.UIBuildSel,function(){require("PreparedBuildingMenus").prepare(config,ui,resolve);});
+  },finish);return;}
   var item=queue[position++],type=item.type==="frame"?cc.SpriteFrame:cc.Prefab,finished=false;
   function end(){if(finished)return;finished=true;setTimeout(next,0);}
   manager.loadRes(item.bundle,item.path,type,function(asset){held.push(asset);if(item.type==="prefab"&&asset.compileCreateFunction)asset.compileCreateFunction();end();},false,60,"BuildingAssetWarmup",{onError:function(error){if(cc.warn)cc.warn("Construction warmup: "+item.path,error);end();}});
  }
- next();
+ // Built prefabs redirect shared Spine/scene assets through these bundles.
+ // Register them before loading actors or painting menus; native preview can
+ // otherwise hide a dependency-order failure that blocks browser startup.
+ manager.loadBundle(Config.KinghtFallBundelName.EnemyAni,function(){
+  manager.loadBundle(Config.KinghtFallBundelName.IconMap,next);
+ });
 }
 exports.plan=plan;exports.preload=preload;

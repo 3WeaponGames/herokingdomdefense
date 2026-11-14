@@ -40,17 +40,41 @@ NativeCaptureScope.prototype.unmute=function(entry) {
   if(!this.same(entry))return;
   entry.color.a=entry.alpha;entry.native.paused(!!entry.renderer.paused);entry.muted=false;
 };
+function activeNativeRenderers(scene) {
+  var pending=scene?[scene]:[],seen=new Set(),renderers=[];
+  try {
+    while(pending.length) {
+      var node=pending.pop();
+      // Disabled prefab/UI branches may contain most of the scene's rigs.
+      // Their descendants cannot be active either; do not inspect them at all.
+      // Scene is the traversal root, not a normal Node: Creator's native
+      // Scene.activeInHierarchy getter logs an error instead of reporting it.
+      if(node&&node!==scene&&node.activeInHierarchy===false)continue;
+      if(!node||seen.has(node)||typeof node.getComponents!=="function")return null;
+      seen.add(node);
+      var children=node.children,components=node.getComponents(sp.Skeleton);
+      if(!Array.isArray(children)||!Array.isArray(components))return null;
+      for(var i=0;i<components.length;i++)renderers.push(components[i]);
+      for(i=children.length-1;i>=0;i--)pending.push(children[i]);
+    }
+  } catch(error) { return null; }
+  return renderers;
+}
 NativeCaptureScope.prototype.start=function() {
   this.quiet=true;
-  var scene=cc.director.getScene(),renderers=scene&&scene.getComponentsInChildren?scene.getComponentsInChildren(sp.Skeleton):[];
+  var scene=cc.director.getScene(),renderers=activeNativeRenderers(scene);
+  // Older/limited hosts retain the original collection API. No native state
+  // has been changed while probing the public active-tree traversal.
+  if(!renderers)renderers=scene&&scene.getComponentsInChildren?scene.getComponentsInChildren(sp.Skeleton):[];
   for(var i=0;i<renderers.length;i++) {
     var entry=this.resolve(renderers[i]);if(!entry)continue;
     this.entries.push(entry);this.byRenderer.set(entry.renderer,entry);this.mute(entry);
   }
 };
-NativeCaptureScope.prototype.choose=function(root) {
+NativeCaptureScope.prototype.choose=function(root,renderers) {
   root=root||cc.director.getScene();var wanted=new Set(),self=this,next=new Set();
-  if(root) {
+  if(renderers)renderers.forEach(function(renderer){wanted.add(renderer);});
+  else if(root) {
     if(root._renderComponent instanceof sp.Skeleton)wanted.add(root._renderComponent);
     if(root.childrenCount!==0&&root.getComponentsInChildren)root.getComponentsInChildren(sp.Skeleton).forEach(function(renderer){wanted.add(renderer);});
   }
@@ -84,16 +108,68 @@ NativeCaptureScope.prototype.finish=function() {
 NativeCaptureScope.prototype.disable=function() {
   this.view._nativeCaptureDisabled=true;this.enabled=false;this.finish();
 };
-NativeCaptureScope.prototype.capture=function(root,draw) {
+NativeCaptureScope.prototype.capture=function(root,draw,renderers) {
   if(!this.enabled||this.finished)return draw();
   // A reentrant camera callback falls back to the original fully restored path.
   if(this.drawing){this.disable();return draw();}
   if(!this.first)this.first=true;
   else {
-    try{if(!this.quiet)this.start();this.choose(root);}catch(error){this.disable();return draw();}
+    try{if(!this.quiet)this.start();this.choose(root,renderers);}catch(error){this.disable();return draw();}
   }
   this.drawing=true;try{return draw();}finally{this.drawing=false;}
 };
+
+// A compound hero uses several leaf Spine nodes plus walking dust. One native
+// camera still visits the whole scene, so combine consecutive source-order
+// runs only when the common subtree contains no other kind of renderer. Native
+// non-PMA alpha blending is order dependent: do not reorder the hand/body rigs.
+function nativeActorGroups(sources,scope) {
+  if(!scope||!scope.enabled||scope.finished||sources.length<2)return null;
+  var root=sources[0].node.parent,children=root&&root.children;
+  if(!root||!children||root._renderComponent||root._reorderChildDirty)return null;
+  var indices=[],seen=new Set();
+  for(var i=0;i<children.length;i++) {
+    var child=children[i],renderer=child._renderComponent;
+    if(child.childrenCount||child.children&&child.children.length)return null;
+    if(!child.activeInHierarchy)continue;
+    if(renderer&&(!(renderer instanceof sp.Skeleton)||!scope.resolve(renderer)))return null;
+  }
+  for(i=0;i<sources.length;i++) {
+    var source=sources[i],node=source.node,index=children.indexOf(node);
+    if(node.parent!==root||index<0||node._renderComponent!==source||seen.has(source)||!scope.resolve(source))return null;
+    seen.add(source);indices.push(index);
+  }
+  var groups=[],group=[];
+  sources.forEach(function(source,index){
+    // The first manual camera must settle every live rig once, unchanged.
+    if(group.length&&(indices[index]<indices[index-1]||!scope.first&&index===1)){groups.push(group);group=[];}
+    group.push(source);
+  });
+  if(group.length)groups.push(group);
+  return groups.length<sources.length?{root:root,groups:groups}:null;
+}
+function nativeGroupReady(root,group,scope) {
+  if(!scope.enabled||!scope.quiet||root._renderComponent||root._reorderChildDirty)return false;
+  var children=root.children,wanted=new Set(group),previous=-1;
+  for(var i=0;i<children.length;i++) {
+    var node=children[i],renderer=node._renderComponent;
+    if(node.childrenCount||node.children&&node.children.length)return false;
+    if(!node.activeInHierarchy||!renderer)continue;
+    var entry=scope.byRenderer.get(renderer);
+    if(!(renderer instanceof sp.Skeleton)||!entry||!scope.same(entry))return false;
+    if(wanted.has(renderer)){if(entry.muted||!scope.selected.has(entry))return false;}
+    else if(!entry.muted)return false;
+  }
+  for(i=0;i<group.length;i++) {
+    var source=group[i],index=children.indexOf(source.node);
+    if(index<=previous||source.node.parent!==root||source.node._renderComponent!==source)return false;
+    previous=index;
+  }
+  return true;
+}
+function capturePhysicalGroup(sources,index,draw) {
+  return index<sources.length?capturePhysical(sources[index],function(){return capturePhysicalGroup(sources,index+1,draw);}):draw();
+}
 
 
 function point(node, main, x, y) {
@@ -346,6 +422,132 @@ function viewBounds(game,main) {
 function sameStamp(a,b) {
   if(!a||a.length!==b.length)return false;
   for(var i=0;i<b.length;i++)if(a[i]!==b[i]&&!(typeof a[i]==="number"&&typeof b[i]==="number"&&Math.abs(a[i]-b[i])<.0001))return false;
+  return true;
+}
+
+// Native properties cross the JSB boundary. Walking every bone of a building
+// (including all its other tiers and invisible effects) costs more than the
+// actual capture. Retain only immutable slot/bone handles, and compare the
+// geometry that can contribute pixels. No animation clock or pose is changed.
+var nativeAlphaPlans = new WeakMap();
+function authoredMeshBones(plan, entry, attachment, vertices, uvs, triangles) {
+  var json=plan.json;
+  if(!json||!json.bones||!json.skins||typeof attachment.getName!=="function")return null;
+  var record=plan.meshes.get(attachment);
+  if(!record||record.slot!==entry.name) {
+    var name=attachment.getName(),skin=plan.skeleton.skin,skinName=skin&&skin.name,definition;
+    function find(skinName) {
+      var skins=json.skins,selected=Array.isArray(skins)?skins.find(function(value){return value.name===skinName;}):skins[skinName];
+      var slots=selected&&(selected.attachments||selected),values=slots&&slots[entry.name];
+      return values&&values[name];
+    }
+    definition=find(skinName)||find("default");
+    if(!definition||definition.type!=="mesh"||!definition.vertices||!definition.uvs||!definition.triangles||definition.uvs.length!==uvs.length)return null;
+    var packed=definition.vertices,weights=[],expected=[],indices=new Set(),at=0;
+    for(var vertex=0;vertex<uvs.length/2;vertex++) {
+      var count=packed[at++];
+      if(!Number.isInteger(count)||count<=0||at+count*4>packed.length)return null;
+      weights.push(count);
+      for(var n=0;n<count;n++) {
+        var index=packed[at++];
+        if(!Number.isInteger(index)||!json.bones[index])return null;
+        weights.push(index);indices.add(index);
+        for(var field=0;field<3;field++) {
+          var value=packed[at++];if(!Number.isFinite(value))return null;
+          expected.push(Math.fround(value));
+        }
+      }
+    }
+    if(at!==packed.length||expected.length!==vertices.length)return null;
+    if(!plan.bones)plan.bones=plan.skeleton.bones;
+    if(!plan.bones)return null;
+    var valid=true;
+    indices.forEach(function(index){var bone=plan.bones[index],data=bone&&bone.data;if(!data||data.name!==json.bones[index].name)valid=false;});
+    if(!valid)return null;
+    record={slot:entry.name,weights:weights,vertices:expected,triangles:definition.triangles.slice()};
+    plan.meshes.set(attachment,record);
+  }
+  // JSB does not expose VertexAttachment.getBones. Accept authored indices
+  // only when native mesh coordinates/topology prove this exact definition.
+  // Float32 conversion matches Spine's native JSON reader without relaxing
+  // geometry comparisons or guessing dependencies for unknown attachments.
+  if(record.vertices.length!==vertices.length||record.triangles.length!==triangles.length)return null;
+  for(var i=0;i<vertices.length;i++)if(vertices[i]!==record.vertices[i])return null;
+  for(i=0;i<triangles.length;i++)if(triangles[i]!==record.triangles[i])return null;
+  return record.weights;
+}
+function nativeAlphaSignature(source, output, scope) {
+  var skeleton=source._skeleton,native=source._nativeSkeleton;
+  if(!native||!skeleton)return false;
+  var json=source.skeletonData&&source.skeletonData.skeletonJson,plan=nativeAlphaPlans.get(source);
+  if(!plan||plan.skeleton!==skeleton||plan.native!==native||plan.data!==source.skeletonData||plan.json!==json) {
+    plan={skeleton:skeleton,native:native,data:source.skeletonData,json:json,slots:new WeakMap(),meshes:new WeakMap(),bones:null};
+    nativeAlphaPlans.set(source,plan);
+  }
+  var order=skeleton.drawOrder;
+  if(!order)return false;
+  var values=[],used=new Set(),color=skeleton.color;
+  if(!color)return false;
+  var alpha=scope?scope.originalAlpha(source,color):color.a;
+  values.push(skeleton,color.r,color.g,color.b,alpha,source._startSlotIndex,source._endSlotIndex);
+  // Camera captures use inherited opacity too, including a building's grow,
+  // fade and destruction parents. Retain those changes without native reads.
+  for(var parent=source.node;parent;parent=parent.parent)values.push(parent,parent.opacity);
+  if(alpha!==0)for(var i=0;i<order.length;i++) {
+    var slot=order[i],entry=plan.slots.get(slot);
+    if(!entry) {
+      var data=slot.data;
+      entry={index:data&&data.index,name:data&&data.name,bone:slot.bone,color:slot.color};
+      plan.slots.set(slot,entry);
+    }
+    if(entry.name==="building_aperture_rays"||entry.name==="building_aperture_cores")continue;
+    var attachment=slot.getAttachment();
+    if(!attachment)continue;
+    var tint=entry.color,bone=entry.bone;
+    if(!tint||!bone)return false;
+    if(tint.a===0||bone.active===false)continue;
+    // Clipping/path/unknown native attachments retain the conservative full
+    // signature. Weighted meshes are supported only with complete JSB arrays.
+    var region=typeof attachment.getOffset==="function",mesh=typeof attachment.getTriangles==="function";
+    if((!region&&!mesh)||typeof attachment.getUVs!=="function")return false;
+    var vertices=region?attachment.getOffset():attachment.getVertices&&attachment.getVertices(),uvs=attachment.getUVs();
+    if(!vertices||!uvs||!vertices.length||!uvs.length)return false;
+    var attachmentColor=attachment.getColor&&attachment.getColor();
+    values.push(entry.index,attachment,tint.r,tint.g,tint.b,tint.a,attachmentColor&&attachmentColor.a);
+    Array.prototype.push.apply(values,vertices);values.push("uv");Array.prototype.push.apply(values,uvs);
+    if(region)used.add(bone);
+    else {
+      var deform=slot.getDeform?slot.getDeform():slot.deform,triangles=attachment.getTriangles();
+      if(!deform||!triangles)return false;
+      var weights;
+      if(typeof attachment.getBones==="function")weights=attachment.getBones();
+      else {
+        if(typeof attachment.getWorldVerticesLength!=="function"||attachment.getWorldVerticesLength()!==uvs.length)return false;
+        weights=vertices.length===uvs.length?[]:authoredMeshBones(plan,entry,attachment,vertices,uvs,triangles);
+      }
+      if(!weights)return false;
+      values.push("weights");Array.prototype.push.apply(values,weights);
+      values.push("deform");Array.prototype.push.apply(values,deform);
+      values.push("triangles");Array.prototype.push.apply(values,triangles);
+      if(!weights.length)used.add(bone);
+      else {
+        if(!plan.bones)plan.bones=skeleton.bones;
+        if(!plan.bones)return false;
+        for(var at=0;at<weights.length;) {
+          var count=weights[at++];
+          if(!Number.isInteger(count)||count<=0||at+count>weights.length)return false;
+          for(var k=0;k<count;k++) {
+            var index=weights[at++],dependency=Number.isInteger(index)&&plan.bones[index];
+            if(!dependency)return false;
+            used.add(dependency);
+          }
+        }
+      }
+    }
+  }
+  values.push("bones");
+  used.forEach(function(bone){values.push(bone,bone.a,bone.b,bone.c,bone.d,bone.worldX,bone.worldY);});
+  Array.prototype.push.apply(output,values);
   return true;
 }
 
@@ -858,6 +1060,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
     var m=nodeTransform(source.node,self.main,cache),values=signature;
     values.push(m.x,m.y,m.a,m.b,m.c,m.d,source.node.opacity,source.skeletonData);
     if (source instanceof sp.Skeleton && source._skeleton) {
+      if(self.nativeCapture&&nativeAlphaSignature(source,values,self._nativeCaptureScope))return;
       values.push(source._skeleton.skin && source._skeleton.skin.name);
       source._skeleton.bones.forEach(function (bone) { values.push(bone.a, bone.b, bone.c, bone.d, bone.worldX, bone.worldY); });
       source._skeleton.slots.forEach(function (slot) { if(apertureSlot(slot))return;var attachment = slot.getAttachment(); values.push(attachment && attachment.name, attachment && attachment.region && attachment.region.name, slot.color.a); Array.prototype.push.apply(values, slot.deform); });
@@ -894,7 +1097,7 @@ DepthView.prototype.snapshot = function (object, box, cache) {
   }
   object.center = center; object.size = { width: width, height: height }; object.signature = signature;
 };
-DepthView.prototype.renderNative = function (sources, center, height, texture) {
+DepthView.prototype.renderNative = function (sources, center, height, texture, actorMask) {
   var origin = this.main.convertToWorldSpaceAR(cc.v2(0, 0));
   var up = this.main.convertToWorldSpaceAR(cc.v2(0, 1));
   var position = this.main.convertToWorldSpaceAR(cc.v2(center.x, center.y));
@@ -903,21 +1106,39 @@ DepthView.prototype.renderNative = function (sources, center, height, texture) {
   this.camera.targetTexture = texture;
   var camera = this.camera, first = true, scope=this._nativeCaptureScope, owned=!scope&&this.nativeCapture&&cc.sys&&cc.sys.isNative;
   if(owned){scope=new NativeCaptureScope(this);this._nativeCaptureScope=scope;}
+  var active=sources.filter(function(source){return source.enabled&&source.node.activeInHierarchy;}),batch=null,self=this;
+  function drawOne(source) {
+    // JSB refreshes matrices globally but consumes Sprite flags only in the
+    // selected subtree. Restore the selected node's flags before every pass.
+    if(cc.RenderFlow)source.node._renderFlag|=cc.RenderFlow.FLAG_WORLD_TRANSFORM|cc.RenderFlow.FLAG_OPACITY;
+    camera.clearFlags=cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL|(first?cc.Camera.ClearFlags.COLOR:0);
+    self._nativeRendered=true;
+    capturePhysical(source,function(){camera.render(source.node);});first=false;
+  }
+  function drawGroup(group) {
+    // A native write failure restores the entire scope. In that case keep the
+    // original subtree cameras; drawing the common root could include dust.
+    if(!nativeGroupReady(batch.root,group,scope)) {
+      group.forEach(drawOne);return;
+    }
+    if(cc.RenderFlow) {
+      var flags=cc.RenderFlow.FLAG_WORLD_TRANSFORM|cc.RenderFlow.FLAG_OPACITY;
+      batch.root._renderFlag|=flags;group.forEach(function(source){source.node._renderFlag|=flags;});
+    }
+    camera.clearFlags=cc.Camera.ClearFlags.DEPTH|cc.Camera.ClearFlags.STENCIL|(first?cc.Camera.ClearFlags.COLOR:0);
+    self._nativeRendered=true;
+    capturePhysicalGroup(group,0,function(){camera.render(batch.root);});first=false;
+  }
   // Render only the selected visual nodes, preserving their native animation,
   // skins, clipping and deform data. No actor/script/physics copies are created.
   try {
-    sources.forEach(function (source) {
-      if (!source.enabled || !source.node.activeInHierarchy) return;
-      // JSB recalculates scene-wide matrices on every manual camera render,
-      // but only refreshes Sprite vertices in the selected subtree. A previous
-      // capture may already have consumed this source's transform/opacity flags.
-      if (cc.RenderFlow) source.node._renderFlag |= cc.RenderFlow.FLAG_WORLD_TRANSFORM | cc.RenderFlow.FLAG_OPACITY;
-      camera.clearFlags = cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL | (first ? cc.Camera.ClearFlags.COLOR : 0);
-      this._nativeRendered = true;
-      var draw=function(){return capturePhysical(source,function(){camera.render(source.node);});};
-      if(scope)scope.capture(source.node,draw);else draw();
-      first = false;
-    }, this);
+    // Unknown native/component APIs retain the original per-source cameras.
+    if(actorMask)try{batch=nativeActorGroups(active,scope);}catch(error){batch=null;}
+    (batch?batch.groups:active.map(function(source){return [source];})).forEach(function(group){
+      var combined=group.length>1,root=combined?batch.root:group[0].node;
+      var draw=function(){if(combined)drawGroup(group);else drawOne(group[0]);};
+      if(scope)scope.capture(root,draw,combined?group:null);else draw();
+    });
   } finally {
     if(owned){scope.finish();if(this._nativeCaptureScope===scope)this._nativeCaptureScope=null;}
     camera.targetTexture = null;
@@ -952,7 +1173,7 @@ DepthView.prototype.snapshotActor = function (record, sources, box, detail) {
     record.frame = new cc.SpriteFrame(record.texture);
     record.frame.setFlipY(true);
   }
-  this.renderNative(sources, center, height, record.texture);
+  this.renderNative(sources, center, height, record.texture, detail===undefined);
   record.center = center; record.size = { width: width, height: height };
 };
 DepthView.prototype.update = function () {

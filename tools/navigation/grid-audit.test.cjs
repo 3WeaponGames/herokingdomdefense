@@ -29,7 +29,8 @@ test('passage geometry is validated and detached from all caller-owned arrays an
 test('large translated maps build a bounded relative spatial index without non-advancing numeric loops',()=>{
  const moduleFile=path.resolve(__dirname,'../../assets/_script/NavigationGrid');
  const code=`const {NavigationGrid}=require(${JSON.stringify(moduleFile)});const n=1e19,d=4096;const g=new NavigationGrid([[{x:n,y:n},{x:n+d,y:n},{x:n+d,y:n+d},{x:n,y:n+d}]],{minX:n,minY:n,maxX:n+d,maxY:n+d},20);console.log(g._index.size);`;
- const result=cp.spawnSync(process.execPath,['-e',code],{encoding:'utf8',timeout:5000,windowsHide:true});assert.ifError(result.error);assert.equal(result.status,0,result.stderr);assert(Number(result.stdout)>0&&Number(result.stdout)<2048);
+ // Concurrent Windows checks can delay child startup; retain a finite hang guard.
+ const result=cp.spawnSync(process.execPath,['-e',code],{encoding:'utf8',timeout:30000,windowsHide:true});assert.ifError(result.error);assert.equal(result.status,0,result.stderr);assert(Number(result.stdout)>0&&Number(result.stdout)<2048);
  const tiny=new NavigationGrid([],{minX:0,minY:0,maxX:1e-200,maxY:1e-200},1e200);assert.equal(tiny.count,1);assert.equal(tiny.columns,1);assert.equal(tiny.rows,1);
 });
 

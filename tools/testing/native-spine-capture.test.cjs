@@ -6,10 +6,10 @@ const source=fs.readFileSync(path.join(__dirname,'../../assets/_script/KinghtFal
 // camera pass updates and skins all scheduled Spines, then draws its subtree.
 // Public component pause and native pause are deliberately separate, as in JSB.
 function fixture(count=4){
- class Node{constructor(name,parent){Object.assign(this,{name,children:[],activeInHierarchy:true,_renderFlag:0,x:0,y:0,zIndex:0});if(parent){this.parent=parent;parent.children.push(this);}}get childrenCount(){return this.children.length;}getComponentsInChildren(Type){const out=[];function visit(n){if(n._renderComponent instanceof Type)out.push(n._renderComponent);n.children.forEach(visit);}visit(this);return out;}convertToWorldSpaceAR(p){return p;}convertToNodeSpaceAR(p){return p;}setPosition(){}setContentSize(){}destroy(){this.destroyed=true;}}
+ class Node{constructor(name,parent){Object.assign(this,{name,children:[],activeInHierarchy:true,_renderFlag:0,x:0,y:0,zIndex:0});if(parent){this.parent=parent;parent.children.push(this);}}get childrenCount(){return this.children.length;}getComponents(Type){return(this.components||[this._renderComponent]).filter(component=>component instanceof Type);}getComponentsInChildren(Type){const out=[];function visit(n){out.push(...(n.components||[n._renderComponent]).filter(component=>component instanceof Type));n.children.forEach(visit);}visit(this);return out;}convertToWorldSpaceAR(p){return p;}convertToNodeSpaceAR(p){return p;}setPosition(){}setContentSize(){}destroy(){this.destroyed=true;}}
  class Skeleton{}
  const scene=new Node('scene'),renderers=[],writes=[],passes=[];let collected=0;
- const sceneComponents=scene.getComponentsInChildren;scene.getComponentsInChildren=function(Type){collected++;return sceneComponents.call(this,Type);};
+ const sceneComponents=scene.getComponents;scene.getComponents=function(Type){collected++;return sceneComponents.call(this,Type);};
  function attach(renderer,options={}){
   const state={alpha:options.alpha===undefined?1:options.alpha,nativePaused:!!renderer.paused,apply:0,meshes:0,time:.25,mix:.05,events:0,pose:42,pendingPose:42,range:[-1,-1],retired:false,failMute:false};
   function alive(){assert(!state.retired,'Accessed retired native data');}
@@ -136,4 +136,105 @@ test('a selected-source partial pause failure restores every entry before fallin
 test('a source changing to a different cached native rig during capture leaves the new shared state untouched',()=>{
  const f=fixture(3),scope=new f.Scope(f.owner),r=f.renderers[2],old=r.state;
  scope.capture(f.renderers[0].node,()=>f.pass(f.renderers[0].node));scope.capture(f.renderers[1].node,()=>{old.retired=true;r.cached=true;f.attach(r,{alpha:.625});});assert.doesNotThrow(()=>scope.finish());assert.equal(r.state.alpha,.625);assert.equal(r.state.nativePaused,false);
+});
+
+function compound(order=['horse','body','cape','hand','head','bow','arrow']) {
+ const f=fixture(1),parent=new (f.scene.constructor)('hero visuals',f.scene),byName={};
+ for(const name of order)byName[name]=f.add(name,{parent,alpha:name==='cape'?.625:1});
+ const smoke=f.add('walking dust',{parent,alpha:.75}),sources=['horse','body','cape','head','bow','arrow','hand'].map(name=>byName[name]);
+ const draws=[];Object.assign(f.owner,{cameraNode:new (f.scene.constructor)('camera'),camera:{render(root){draws.push({root,clear:this.clearFlags,parts:f.pass(root)});}}});
+ return Object.assign(f,{parent,smoke,sources,draws,render(batch){f.DepthView.prototype.renderNative.call(f.owner,sources,{x:0,y:0},100,{},batch);}});
+}
+function painted(draws) {
+ // Independent non-PMA blend model. A reordering of fractional edge pixels
+ // changes alpha as well as RGB under native SRC_ALPHA blend factors.
+ const pixel=[0,0,0,0],names=['horse','body','cape','head','bow','arrow','hand'];
+ for(const draw of draws){if(draw.clear&1)pixel.fill(0);for(const part of draw.parts){const index=names.indexOf(part.id),alpha=(.13+index*.09)*part.alpha;assert(index>=0,'walking dust leaked into the physical mask');for(let c=0;c<4;c++)pixel[c]=(c===3?alpha:(index+c+1)/12)*alpha+pixel[c]*(1-alpha);}}
+ return pixel;
+}
+for(const settled of [false,true])for(const order of [['horse','body','cape','hand','head','bow','arrow'],['arrow','horse','body','cape','hand','head','bow']])test('compound native mask preserves exact source-order edge pixels and animation cadence, settled='+settled+' order='+order[0],()=>{
+ const old=compound(order),f=compound(order),before=f.snapshot();
+ if(settled)for(const value of [old,f]){const scope=new value.Scope(value.owner);value.owner._nativeCaptureScope=scope;scope.capture(value.renderers[0].node,()=>value.pass(value.renderers[0].node));}
+ old.render(false);f.render(true);
+ assert.deepEqual(f.draws.flatMap(draw=>draw.parts.map(part=>part.id)),old.draws.flatMap(draw=>draw.parts.map(part=>part.id)));
+ assert.deepEqual(painted(f.draws),painted(old.draws));
+ assert(f.draws.length<=4&&f.draws.length<7,'must reduce scene-wide native camera traversals');
+ assert.deepEqual(f.renderers.map(r=>r.state.apply),old.renderers.map(r=>r.state.apply),'zero-delta settlement/update counts changed');
+ if(settled){old.owner._nativeCaptureScope.finish();f.owner._nativeCaptureScope.finish();}
+ assert.deepEqual(f.snapshot(),before);assert.equal(f.owner.camera.targetTexture,null);
+ assert.equal(f.draws.filter(draw=>draw.clear&1).length,1);
+});
+
+test('a common-root batch restores alpha, pause and capture target after a camera exception',()=>{
+ const f=compound(),before=f.snapshot(),render=f.owner.camera.render;f.owner.camera.render=function(root){render.call(this,root);if(root===f.parent)throw Error('group camera failed');};
+ assert.throws(()=>f.render(true),/group camera failed/);assert.deepEqual(f.snapshot(),before);assert.equal(f.owner.camera.targetTexture,null);assert.equal(f.owner._nativeCaptureScope,null);
+});
+
+test('a failed scope suppression falls back to individual cameras without capturing dust',()=>{
+ const f=compound(),before=f.snapshot();f.smoke.state.failMute=true;f.render(true);
+ assert.equal(f.draws.length,7);assert(f.draws.every(draw=>draw.root!==f.parent));assert.equal(f.owner._nativeCaptureDisabled,true);assert.deepEqual(f.snapshot(),before);painted(f.draws);
+});
+
+test('a dust rig becoming cached during the first settlement cannot leak into a later common-root capture',()=>{
+ const f=compound(),render=f.owner.camera.render;f.owner.camera.render=function(root){render.call(this,root);if(f.draws.length===1)f.smoke.cached=true;};
+ f.render(true);assert.equal(f.draws.length,7);assert(f.draws.every(draw=>draw.root!==f.parent));painted(f.draws);
+});
+
+for(const unsupported of ['sprite','nested','cached dust','pending order','disabled scope'])test('compound mask retains individual source cameras for '+unsupported,()=>{
+ const f=compound();
+ if(unsupported==='sprite'){const node=new (f.scene.constructor)('unrelated sprite',f.parent);node._renderComponent={enabled:true};}
+ if(unsupported==='nested')new (f.scene.constructor)('unknown descendant',f.sources[2].node);
+ if(unsupported==='cached dust')f.smoke.cached=true;
+ if(unsupported==='pending order')f.parent._reorderChildDirty=true;
+ if(unsupported==='disabled scope')f.owner._nativeCaptureDisabled=true;
+ f.render(true);assert.equal(f.draws.length,7);assert(f.draws.every(draw=>draw.root!==f.parent));painted(f.draws);
+});
+
+test('Gate and other full-color captures retain their original seven-source camera order',()=>{
+ const f=compound();f.render(false);assert.equal(f.draws.length,7);assert(f.draws.every(draw=>draw.root!==f.parent));painted(f.draws);
+});
+
+test('active-tree collection matches the original filtered renderer set without visiting inactive prefab branches',()=>{
+ const f=fixture(4),inactive=new (f.scene.constructor)('inactive prefab library',f.scene),hidden=f.add('inactive rig',{parent:inactive});
+ inactive.activeInHierarchy=false;hidden.node.activeInHierarchy=false;hidden.state.retired=true;
+ const transparent=f.add('zero-opacity rig');transparent.node.opacity=0;
+ const second=f.add('second Spine on one node'),previousNode=second.node;
+ previousNode.parent.children.splice(previousNode.parent.children.indexOf(previousNode),1);second.node=f.renderers[2].node;second.node.components=[f.renderers[2],second];
+ const scope=new f.Scope(f.owner),expected=f.scene.getComponentsInChildren(f.renderers[0].constructor).filter(renderer=>scope.resolve(renderer)).map(renderer=>renderer.id),before=f.snapshot();
+ inactive.getComponents=()=>{throw Error('Visited an inactive prefab component list');};
+ Object.defineProperty(inactive,'children',{get(){throw Error('Traversed an inactive prefab subtree');}});
+ f.scene.getComponentsInChildren=()=>{throw Error('Active-tree collection unexpectedly fell back');};
+ scope.capture(f.renderers[0].node,()=>f.pass(f.renderers[0].node));
+ scope.capture(f.renderers[1].node,()=>{assert.deepEqual(Array.from(scope.entries,entry=>entry.renderer.id),expected);assert(scope.byRenderer.has(transparent),'Opacity-zero native clocks must remain included');assert(scope.byRenderer.has(second),'Every Spine component on the node must be collected');f.pass(f.renderers[1].node);});
+ scope.finish();assert.deepEqual(f.snapshot(),before);assert(f.writes.every(write=>expected.includes(write[1])));assert.equal(f.collected(),1);
+});
+
+for(const unsupported of ['missing getComponents','missing children','throwing getComponents'])test('active-tree collection safely falls back before native writes for '+unsupported,()=>{
+ const f=fixture(3),scope=new f.Scope(f.owner),before=f.snapshot();let fallbacks=0;const all=f.scene.getComponentsInChildren(f.renderers[0].constructor);
+ f.scene.getComponentsInChildren=()=>{fallbacks++;assert.equal(f.writes.length,0);return all;};
+ if(unsupported==='missing getComponents')f.renderers[1].node.getComponents=null;
+ if(unsupported==='missing children')Object.defineProperty(f.renderers[1].node,'children',{value:undefined});
+ if(unsupported==='throwing getComponents')f.renderers[1].node.getComponents=()=>{throw Error('Unsupported public API');};
+ scope.capture(f.renderers[0].node,()=>{});scope.capture(f.renderers[0].node,()=>{});scope.finish();
+ assert.equal(fallbacks,1);assert.deepEqual(f.snapshot(),before);assert(f.writes.length>0);
+});
+
+test('active-tree collection preserves native settlement, pause, positive-step events and partial-write recovery',()=>{
+ const old=fixture(5),f=fixture(5);old.scene.getComponents=undefined;
+ for(const value of [old,f]){const inactive=new (value.scene.constructor)('closed panel',value.scene),r=value.add('closed panel rig',{parent:inactive});inactive.activeInHierarchy=false;r.node.activeInHierarchy=false;value.renderers[2].paused=true;value.renderers[3].state.alpha=.375;value.renderers[4].node.opacity=0;}
+ runBatch(old,new old.Scope(old.owner),old.renderers.slice(0,5).map(renderer=>renderer.node));runBatch(f,new f.Scope(f.owner),f.renderers.slice(0,5).map(renderer=>renderer.node));
+ assert.deepEqual(f.snapshot(),old.snapshot());assert.deepEqual(f.renderers.map(renderer=>renderer.state.apply),old.renderers.map(renderer=>renderer.state.apply));
+ old.pass(old.renderers[0].node,.125);f.pass(f.renderers[0].node,.125);assert.deepEqual(f.snapshot(),old.snapshot());
+ const scope=new f.Scope(f.owner),before=f.snapshot();scope.capture(f.renderers[0].node,()=>{});f.renderers[3].state.failMute=true;
+ scope.capture(f.renderers[1].node,()=>{assert.deepEqual(f.snapshot(),before);});scope.finish();assert.equal(f.owner._nativeCaptureDisabled,true);assert.deepEqual(f.snapshot(),before);
+});
+
+for(const behavior of ['throws','logs'])test('native Scene root activeInHierarchy is never read when its getter '+behavior,()=>{
+ const f=fixture(3),inactive=new (f.scene.constructor)('inactive prefab',f.scene),hidden=f.add('hidden',{parent:inactive});inactive.activeInHierarchy=false;hidden.node.activeInHierarchy=false;
+ const scope=new f.Scope(f.owner),expected=f.scene.getComponentsInChildren(f.renderers[0].constructor).filter(renderer=>scope.resolve(renderer)).map(renderer=>renderer.id);let reads=0,errors=0;
+ f.cc.error=()=>{errors++;};Object.defineProperty(f.scene,'activeInHierarchy',{get(){reads++;if(behavior==='throws')throw Error('Scene activeInHierarchy is only defined in normal nodes');f.cc.error('Scene activeInHierarchy is only defined in normal nodes');return undefined;}});
+ inactive.getComponents=()=>{throw Error('Inactive Node subtree was not pruned');};
+ f.scene.getComponentsInChildren=()=>{throw Error('Valid Scene-root traversal must not fall back');};
+ scope.capture(f.renderers[0].node,()=>f.pass(f.renderers[0].node));scope.capture(f.renderers[1].node,()=>{assert.deepEqual(Array.from(scope.entries,entry=>entry.renderer.id),expected);f.pass(f.renderers[1].node);});scope.finish();
+ assert.equal(reads,0);assert.equal(errors,0);assert.equal(f.collected(),1);assert.equal(f.owner._nativeCaptureDisabled,undefined);
 });

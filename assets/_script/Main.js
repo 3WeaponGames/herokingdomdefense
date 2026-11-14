@@ -48,7 +48,17 @@ var def_Main = function (t) {
   };
   _ctor.prototype.hideLoading = function () {
     var loading = $z1UIMgr.UIMgr.getInstance().getChildByName("UILoading");
-    if (cc.isValid(loading, true)) loading.destroy();
+    if (!cc.isValid(loading, true)) return;
+    if (cc.sys && cc.sys.isNative) { loading.destroy(); return; }
+    var owner = this, generation = this._startupGeneration, scene = cc.director.getScene(), retired = false;
+    var current = function () { return !retired && cc.isValid(owner, true) && owner._startupGeneration === generation &&
+      cc.director.getScene() === scene && cc.isValid(loading, true); };
+    require("ResourceMgr").ResourceMgr.getInstance().loadWithRecovery("Construction menu scene readiness", function (resolve) {
+      require("PreparedBuildingMenus").repaintScene(function (error, sceneRetired) {
+        if (sceneRetired) retired = true;
+        resolve(error, true);
+      }, current);
+    }, function () { if (current()) loading.destroy(); }, null, current);
   };
   _ctor.prototype.start = function () {
     var t = this;

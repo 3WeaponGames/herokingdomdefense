@@ -67,10 +67,17 @@ function fixture(type = 'cannon', level = 1) {
     buildInfo: { cfg: row }, loadSpriteFrame(bundle, file, done) { loads.push({ bundle, file, done }); } };
   const game = { ndUI: new Node('Effects') };
   const mod = { exports: {} };
-  const lighting = { exports: {} };
-  vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingLighting.js'), 'utf8'), { cc, module: lighting, exports: lighting.exports });
+  const lightingModules = new Map();
+  function loadLighting(name) {
+    if (lightingModules.has(name)) return lightingModules.get(name).exports;
+    const value = { exports: {} }; lightingModules.set(name, value);
+    vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script', name + '.js'), 'utf8'),
+      { cc, module: value, exports: value.exports, require: loadLighting }, { filename: name + '.js' });
+    return value.exports;
+  }
+  const lighting = loadLighting('BuildingLighting');
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/BuildingAppearance.js'), 'utf8'), {
-    cc, module: mod, exports: mod.exports, require: name => name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: game } } } : name === 'BuildingLighting' ? lighting.exports : require(path.join(root, 'assets/_script', name))
+    cc, module: mod, exports: mod.exports, require: name => name === 'KinghtFallUIGame' ? { default: { instance: { ctrGame: game } } } : name === 'BuildingLighting' ? lighting : require(path.join(root, 'assets/_script', name))
   }, { filename: 'BuildingAppearance.js' });
   let resolved = 0;
   function resolve() { let limit = 50; while (resolved < loads.length && limit--) { const load = loads[resolved++]; load.done({ name: load.file }); } assert(limit > 0); }
@@ -255,7 +262,8 @@ test('paused battle update preserves the weapon pose and cooldown while enemies 
   const source = fs.readFileSync(path.join(root, 'assets/_script/KinghtFallUIGame.js'), 'utf8');
   const begin = source.indexOf('  _ctor.prototype.update = function'), end = source.indexOf('\n  };', begin) + 5;
   const update = vm.runInNewContext('(' + source.slice(begin, end).split(' = ').slice(1).join(' = ').replace(/;$/, '') + ')');
-  update.call({ isPauset: true, _updateTestControls() {}, ctrGame: { onUpdate: dt => h.owner.doTime(dt) } }, .1);
+  // This controller-only fixture has no HUD/joystick nodes to arrange.
+  update.call({ isPauset: true, _updateTestControls() {}, _layoutBattleFooter() {}, ctrGame: { onUpdate: dt => h.owner.doTime(dt) } }, .1);
   assert.equal(h.owner._buildingAppearance.weaponPivot.angle, before); assert.equal(h.owner.time.AttackTime, cooldown); assert.equal(h.shots.length, 0);
 });
 
