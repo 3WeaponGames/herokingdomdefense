@@ -25,6 +25,7 @@ var exp_UIMgr = function () {
   function _ctor() {
     this.uistatck = new Map();
     this.uichace = new Map();
+    this.preparedUI = new Map();
     this.orderMap = new Map();
     this.popStatck = [];
     this.logStatck = [];
@@ -49,6 +50,8 @@ var exp_UIMgr = function () {
     var n = this;
     var i = this.getUICnf(t);
     if (i) {
+      var prepared = this.preparedUI.get(t);
+      if (prepared && prepared.ready && prepared.current()) { e && e(); return; }
       if (this.uichace.has(t) || this.uistatck.has(t)) { e && e(); return; }
       this._preloadCallbacks = this._preloadCallbacks || new Map();
       if (this._preloadCallbacks.has(t)) { if (e) this._preloadCallbacks.get(t).push(e); return; }
@@ -69,6 +72,13 @@ var exp_UIMgr = function () {
     } else {
       $z1LogMgr.LogMgr.getInstance().error("ui没有配置：", t);
     }
+  };
+  // Only explicitly prepared, presentation-only popups opt into active parking.
+  // Ordinary UI keeps its existing activation, ownership and cache lifecycle.
+  _ctor.prototype.registerPreparedUI = function (uid, provider) {
+    this.preparedUI.set(uid, provider);
+    var manager = this;
+    return function () { if (manager.preparedUI.get(uid) === provider) manager.preparedUI.delete(uid); };
   };
   _ctor.prototype.addLayerShowOne = function (t) {
     this.onlyShowOne.push(t);
@@ -327,11 +337,14 @@ var exp_UIMgr = function () {
             return;
           }
           node = cached ? cached.node : cc.instantiate(prefab);
-          node.active = false;
+          var prepared = cached && cached._preparedUIProvider;
+          var keepActive = prepared && prepared.canReuse(cached);
+          if (!keepActive) node.active = false;
           node.name = config.name;
-          if (node.parent !== n) n.addChild(node);
+          if (node.parent !== n) { if (keepActive) node.setParent(n); else n.addChild(node); }
           component = cached || node.getComponent($z1BaseUI.default);
           if (!component) throw new Error('UI prefab has no BaseUI component: ' + t);
+          if (keepActive) prepared.willOpen(component);
           manager.uichace.delete(t);
           manager.uistatck.set(t, component);
           if (component.onOpened) component.onOpened();
@@ -363,7 +376,10 @@ var exp_UIMgr = function () {
           finish();
         } catch (error) { fail(error); }
       }
-      var cached = this.uichace.get(t);
+      var provider = this.preparedUI.get(t);
+      var cached = provider && provider.take([h, g, u, d, p]);
+      var ordinary = this.uichace.get(t);
+      if (!cached && (!ordinary || !ordinary._preparedUIProvider)) cached = ordinary;
       if (cached) show(null, cached);
       else $z1ResourceMgr.ResourceMgr.getInstance().loadRes(config.bundleName, config.prefab, cc.Prefab, function (prefab) {
         show(prefab, null);
@@ -420,9 +436,20 @@ var exp_UIMgr = function () {
       catch (error) { closeError = error; }
       finally {
         if (component.release) component.release(!component.cache);
+        var provider = component._preparedUIProvider, parked = false;
+        try { parked = provider && provider.park(component); }
+        catch (error) {
+          // Parking is an optimization, never a reason to strand a decision,
+          // input ownership or the popup queue when its presentation retires.
+          if (!closeError) closeError = error;
+          component.cache = false;
+          component._preparedUIProvider = null;
+          component._preparedUIParked = false;
+          try { if (provider.dispose) provider.dispose(); }
+          catch (disposeError) { if (!closeError) closeError = disposeError; }
+        }
         if (component.cache) {
-          t.active = false;
-          t.removeFromParent();
+          if (!parked) { t.active = false; t.removeFromParent(); }
           manager.uichace.set(uid, component);
         } else t.destroy();
         if (manager.uistatck.get(uid) === component) manager.uistatck.delete(uid);

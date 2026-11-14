@@ -29,7 +29,7 @@ var def_KinghtFallModle = function () {
     return this.instance;
   };
   _ctor.prototype.preload = function (t) {
-    var e = this;
+    var e = this, loadingScene = cc.director.getScene && cc.director.getScene();
     if (this.isLoad) {
       t && t();
     } else {
@@ -50,14 +50,17 @@ var def_KinghtFallModle = function () {
           $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.AudioCfg);
           require("CharacterAppearance").preload(function () {
             require("BuildingAssetWarmup").preload(function () {
-            e.isLoad = true;
-            t && t();
-            $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, function () {
-              $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.OtherCfg);
-              $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconMap, function () {
-                $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.EndLoading);
-              });
-            });
+              require("HeroSkillAssetWarmup").preload(function (error) {
+                if (error) { cc.error("Hero VFX warmup failed", error); return; }
+                e.isLoad = true;
+                t && t();
+                $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.EnemyAni, function () {
+                  $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.OtherCfg);
+                  $z1ResourceMgr.ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconMap, function () {
+                    $z1EventMgr.EventMgr.getInstance().emit($z1Appcfg.BaseEventName.Loading, $z1Appcfg.LoadingProcess.EndLoading);
+                  });
+                });
+              }, function () { return !loadingScene || cc.isValid(loadingScene, true); });
             });
           });
         });

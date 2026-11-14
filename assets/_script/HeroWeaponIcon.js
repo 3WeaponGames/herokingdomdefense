@@ -50,7 +50,7 @@ function orient(pose) {
 function visibleShape(pose) {
   if (visibleCache[pose.signature]) return visibleCache[pose.signature];
   if (!cc.RenderTexture || !cc.Camera || !cc.director) return null;
-  var texture, cameraNode, root = pose.node, parent = root.parent;
+  var texture, cameraNode, rendered = false, root = pose.node, parent = root.parent;
   try {
     var center = parent.convertToWorldSpaceAR(cc.v2(0, 0)), unit = parent.convertToWorldSpaceAR(cc.v2(1, 0));
     var worldScale = Math.hypot(unit.x - center.x, unit.y - center.y), span = Math.min(parent.width, parent.height), resolution = 256;
@@ -59,6 +59,7 @@ function visibleShape(pose) {
     var camera = cameraNode.addComponent(cc.Camera); camera.enabled = false; camera.alignWithScreen = false;
     camera.ortho = true; camera.orthoSize = span * worldScale / 2; camera.targetTexture = texture;
     camera.clearFlags = cc.Camera.ClearFlags.COLOR | cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL; camera.backgroundColor = cc.color(0, 0, 0, 0);
+    rendered = true;
     camera.render(root);
     var pixels = texture.readPixels(), left = resolution, right = -1, bottom = resolution, top = -1;
     if (!pixels) return null;
@@ -73,7 +74,16 @@ function visibleShape(pose) {
     if (Object.keys(visibleCache).length >= 128) delete visibleCache[Object.keys(visibleCache)[0]];
     visibleCache[pose.signature] = result; return result;
   } catch (_) { return null; }
-  finally { if (cameraNode) { var component = cameraNode.getComponent(cc.Camera); if (component) component.targetTexture = null; cameraNode.destroy(); } if (texture) texture.destroy(); }
+  finally {
+    if (cameraNode) { var component = cameraNode.getComponent(cc.Camera); if (component) component.targetTexture = null; cameraNode.destroy(); }
+    if (texture) texture.destroy();
+    // A native subtree render consumes scene-wide transform/opacity flags.
+    // Re-inherit them for the main draw, including unrelated HUD siblings.
+    if (rendered && cc.sys && cc.sys.isNative && cc.RenderFlow) {
+      var scene = cc.director.getScene();
+      if (scene) scene._renderFlag |= cc.RenderFlow.FLAG_WORLD_TRANSFORM | cc.RenderFlow.FLAG_OPACITY;
+    }
+  }
 }
 var Pose = cc.Class({
   extends: cc.Component,

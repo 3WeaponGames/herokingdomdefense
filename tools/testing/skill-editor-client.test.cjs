@@ -99,7 +99,7 @@ test('position handles expose only useful anchors for the selected style and res
   await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(options(), ['origin', 'target', 'effect', 'mark']);
   f.field('Handle').value = 'target'; f.field('Handle').onchange();
   await f.client.selectStyle('fighter'); await f.settle(); assert.deepEqual(options(), ['effect', 'passive']); assert.equal(f.field('Handle').value, 'effect');
-  await f.client.selectStyle('guardian'); await f.settle(); assert.deepEqual(options(), ['effect', 'buff']);
+  await f.client.selectStyle('guardian'); await f.settle(); assert.deepEqual(options(), ['effect', 'buff', 'taunt', 'shield']);
   assert.equal(f.backend.calls.some(call => call.name === 'change' || call.name === 'save'), false); f.close();
 });
 test('invalid numeric fields block Ctrl+S and remain visible until corrected or discarded', async () => {

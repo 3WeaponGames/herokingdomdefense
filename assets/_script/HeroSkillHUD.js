@@ -197,7 +197,7 @@ function update(hero,rt) {
   // A newly loaded/restarted stage has not simulated a combat frame yet.
   // Resolve ownership before installation; available() can retire an old HUD
   // when the hero generation or battle epoch changed.
-  if(rt.refresh)rt.refresh();
+  if(rt&&typeof rt.refresh==="function")rt.refresh();
   var active=available(rt);
   if(typeof cc.Class==="function")require("./ForestRain").ensure(rt);
   var hud=hero._skillHUD;if(hud&&(!live(hud.button)||hud.runtime!==rt)){clear(hero);hud=null;}
