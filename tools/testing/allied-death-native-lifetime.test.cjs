@@ -8,6 +8,13 @@ const {environment, Node} = require('../navigation/runtime-harness.cjs');
 const root = path.resolve(__dirname, '../..');
 const configuration = require('../../assets/configs/GameJsonCfg.json');
 const catalog = require('../../assets/resources/characters/catalog.json');
+  class FakeSpineData {
+    constructor(uuid, look) { this.uuid=uuid; this.skeletonJson={_unitLook:look}; this.refCount=0; this.parses=0; this._skeletonCache=null; }
+    getRuntimeData() { if(!this._skeletonCache) { this.parses++; this._skeletonCache={uuid:this.uuid}; } return this._skeletonCache; }
+    addRef() { this.refCount++; return this; }
+    decRef() { this.refCount--; return this; }
+  }
+
 
 // Creator's JSB skeletonData setter immediately destroys the old native
 // SkeletonAnimation and AnimationState. Its completion dispatcher must return
@@ -20,8 +27,9 @@ for (const branch of [11, 20]) test('paid barracks ' + branch + ' finishes a bak
   const originalId = prefab.find(value => value.__type__ === 'sp.Skeleton')['_N$skeletonData'].__uuid__;
   const look = catalog.profiles[catalog.assignments['ally:' + id + ':level:' + row.level]];
   assert(look && look.baked && look.baked.uuid !== originalId, 'The paid branch actually replaces its prefab rig');
-  const original = {uuid: originalId, skeletonJson: {_unitLook: catalog.assignments['ally:' + id + ':default']}};
-  const baked = {uuid: look.baked.uuid, skeletonJson: {_unitLook: catalog.assignments['ally:' + id + ':level:' + row.level]}};
+  const original = new FakeSpineData(originalId, catalog.assignments['ally:' + id + ':default']);
+  original.getRuntimeData(); // The initial live native renderer is already parsed.
+  const baked = new FakeSpineData(look.baked.uuid, catalog.assignments['ally:' + id + ':level:' + row.level]);
   let data = original, track = {animation: {name: 'idle'}, loop: true, trackTime: .1, timeScale: 1}, completion, inNativeCallback = false;
   const actor = e.actor('KinghtFallSoldierBase');
   delete actor.isDead;
@@ -38,6 +46,7 @@ for (const branch of [11, 20]) test('paid barracks ' + branch + ' finishes a bak
     get skeletonData() { return data; },
     set skeletonData(value) {
       assert.equal(inNativeCallback, false, 'Replacing skeletonData destroys the native state while its completion dispatcher is still using it');
+      assert(value._skeletonCache, 'The baked native data must be prepared before replacing a live renderer');
       changes.push('rig:' + value.uuid); data = value; track = null;
       this.defaultSkin = ''; this.defaultAnimation = '';
     },
@@ -55,13 +64,21 @@ for (const branch of [11, 20]) test('paid barracks ' + branch + ' finishes a bak
   }};
   e.stubs.UnitHitFeedback = {reset() {}};
   e.stubs.UnitVoices = {death() {}};
+  const frames=[],timers=new Map();let timerId=0;
+  const setTimer=(callback,delay)=>{const id=++timerId;timers.set(id,{callback,delay:delay||0});return id;};
+  e.cc.Director=Object.assign(e.cc.Director||{},{EVENT_AFTER_DRAW:'after-draw'});
+  const previousOnce=e.cc.director&&e.cc.director.once;
+  e.cc.director=Object.assign(e.cc.director||{},{once(event,callback){if(event===e.cc.Director.EVENT_AFTER_DRAW)frames.push(callback);else if(previousOnce)previousOnce.call(this,event,callback);},off(event,callback){const at=frames.indexOf(callback);if(at>=0)frames.splice(at,1);}});
+  function afterDraw(){frames.splice(0).forEach(callback=>callback());for(const [id,timer]of[...timers])if(!timer.delay){timers.delete(id);timer.callback();}}
   const module = {exports: {}};
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/CharacterAppearance.js'), 'utf8'), {
-    module, exports: module.exports, cc: e.cc, sp: {SkeletonData: function () {}},
+    module, exports: module.exports, cc: e.cc, sp: {SkeletonData: FakeSpineData},setTimeout:setTimer,clearTimeout:id=>timers.delete(id),
     require: name => name === 'UnitLevelStats' ? require('../../assets/_script/UnitLevelStats') : require('../../assets/_script/CharacterPartsCore')
   }, {filename: 'CharacterAppearance.js'});
   const appearance = module.exports.bind(actor, 'ally');
-  appearance.lateUpdate(); appearance.lateUpdate();
+  appearance.lateUpdate();
+  assert.equal(renderer.skeletonData, original, 'Loaded data stays separate from native runtime readiness');
+  afterDraw(); appearance.lateUpdate();
   assert.equal(renderer.skeletonData, baked);
   assert.equal(appearance.bakedModels.length, 1);
   let active = true;

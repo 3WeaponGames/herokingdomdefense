@@ -4,7 +4,8 @@ var UnitLevelStats = require("UnitLevelStats");
 var library = null, looks = null, loading = false, retryAt = 0, failures = {}, textureJobs = {}, profileKeys = new WeakMap();
 var nativePartsNotice = false;
 var bakedJobs = {};
-var looksLoading = false, looksCallbacks = [];
+var looksLoading = false, looksCallbacks = [], looksFinish = null;
+function skeletonDataId(asset) { return asset && (asset._uuid || asset.uuid); }
 function allyLevel(actor) { return UnitLevelStats.level(actor); }
 function validAnimationSpeed(value) { return typeof value === "number" && isFinite(value) && value >= 0 && value <= 2; }
 function animationSpeed(actor, team) {
@@ -20,35 +21,271 @@ function preload(done) {
   if (done) looksCallbacks.push(done);
   if (looksLoading) return;
   looksLoading = true;
+  var settled = false, timer = typeof setTimeout === "function" ? setTimeout(function () { finish(new Error("Character catalog request timed out.")); }, 20000) : null;
   function finish(issue, asset) {
-    looksLoading = false;
-    if (!issue && asset) { looks = asset.json; retryAt = 0; }
+    if (settled) return; settled = true; if (typeof clearTimeout === "function") clearTimeout(timer);
+    looksLoading = false; looksFinish = null;
+    if (!issue && (!asset || !asset.json || typeof asset.json !== "object" || Array.isArray(asset.json))) issue = new Error("Character catalog returned no usable table.");
+    if (!issue) { looks = asset.json; retryAt = 0; }
     else retryAt = Date.now() + 1000;
     var callbacks = looksCallbacks; looksCallbacks = [];
-    callbacks.forEach(function (callback) { callback(issue); });
+    drainCallbacks(callbacks, issue);
   }
+  looksFinish = finish;
   try { cc.resources.load("characters/catalog", cc.JsonAsset, finish); }
-  catch (issue) { finish(issue); }
+  catch (issue) { if (settled) throw issue; finish(issue); }
 }
 function assignedLook(data, actor, team) {
-  var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor);
+  if (!validAppearanceMaps(data)) return { id: undefined, profile: undefined };
+  var key = Core.actorKey(actor, team), level = team === "ally" && allyLevel(actor), own = Object.prototype.hasOwnProperty;
   var exact = level && data.assignments["ally:" + actor.cfg.ID + ":level:" + level];
-  var id = exact && data.profiles[exact] ? exact : data.assignments[key];
-  return { id: id, profile: id && data.profiles[id] };
+  var id = exact && own.call(data.profiles, exact) && plainAppearanceMap(data.profiles[exact]) ? exact : data.assignments[key];
+  return { id: id, profile: id && own.call(data.profiles, id) && plainAppearanceMap(data.profiles[id]) ? data.profiles[id] : undefined };
+}
+function plainAppearanceMap(value) {
+  if (!value || Object.prototype.toString.call(value) !== "[object Object]") return false;
+  var prototype = Object.getPrototypeOf(value);
+  return prototype === null || Object.getPrototypeOf(prototype) === null;
+}
+function validAppearanceMaps(data) { return !!data && plainAppearanceMap(data.assignments) && plainAppearanceMap(data.profiles); }
+function drainCallbacks(list, error, value) {
+  var first = null;
+  list.forEach(function (callback) { try { callback(error, value); } catch (issue) { if (!first) first = issue; } });
+  if (first) throw first;
+}
+function requestBakedAsset(resource, callback, retry) {
+  var cancelled = false, waiter = callback && function (error, asset) { if (!cancelled) callback(error, asset); };
+  var handle = { cancel: function () { cancelled = true; if (job && job.waiters && waiter) { var index = job.waiters.indexOf(waiter); if (index >= 0) job.waiters.splice(index, 1); } } }, job = bakedJobs[resource];
+  if (job && job.asset && (!cc.isValid || cc.isValid(job.asset, true))) {
+    // Stage priming lends its already decoded assets. Retain a baked rig only
+    // when this shared appearance cache actually consumes it after priming.
+    if (!job.retained && job.asset.addRef) { job.asset.addRef(); job.retained = true; }
+    if (waiter) waiter(null, job.asset); return handle;
+  }
+  if (job && job.asset && job.retained) { job.retained = false; if (job.asset.decRef) job.asset.decRef(); }
+  if (job && job.loading) { if (waiter) job.waiters.push(waiter); return handle; }
+  if (job && job.retryAt && Date.now() < job.retryAt && !retry) { if (waiter) waiter(job.error); return handle; }
+  job = bakedJobs[resource] = { loading: true, waiters: waiter ? [waiter] : [], failedAsset: job && job.failedAsset, failedRevision: job && job.failedRevision, error: job && job.error };
+  var settled = false;
+  function finish(error, asset) {
+    if (settled) return; settled = true; if (typeof clearTimeout === "function") clearTimeout(job.timer); job.loading = false;
+    job.finish = null;
+    if (!error && asset === job.failedAsset && sameBakedRevision(job.failedRevision, asset)) error = job.error || new Error("Baked Spine runtime is not ready: " + resource);
+    if (!error && asset) { try { if (asset.addRef) { asset.addRef(); job.retained = true; } job.asset = asset; job.error = null; } catch (issue) { error = issue; } }
+    if (error || !job.asset) { job.error = error || new Error("No baked Spine asset: " + resource); job.retryAt = Date.now() + 1000; }
+    var waiters = job.waiters; job.waiters = [];
+    drainCallbacks(waiters, job.error, job.asset);
+  }
+  job.finish = finish;
+  job.timer = typeof setTimeout === "function" ? setTimeout(function () { finish(new Error("Baked Spine request timed out: " + resource)); }, 20000) : null;
+  try { cc.resources.load(resource, sp.SkeletonData, finish); }
+  catch (error) { if (settled) throw error; finish(error); }
+  return handle;
 }
 function bakedAsset(resource) {
+  requestBakedAsset(resource, null, false);
   var job = bakedJobs[resource];
-  if (!job || job.retryAt && Date.now() >= job.retryAt) {
-    job = bakedJobs[resource] = {};
-    try {
-      cc.resources.load(resource, sp.SkeletonData, function (error, asset) {
-        if (error || !asset) job.retryAt = Date.now() + 1000;
-        else job.asset = asset;
-      });
-    } catch (error) { job.retryAt = Date.now() + 1000; }
-  }
-  return job.asset;
+  if (job && job.asset && !bakedRuntimeReady(resource, job)) return null;
+  return job && job.asset;
 }
+function bakedRevision(asset) { return { json: asset.skeletonJson, atlas: asset.atlasText, scale: asset.scale, buffer: asset._nativeAsset, textures: asset.textures, names: asset.textureNames, runtime: asset._skeletonCache }; }
+function sameBakedRevision(revision, asset) { return !!revision && revision.json === asset.skeletonJson && revision.atlas === asset.atlasText && revision.scale === asset.scale && revision.buffer === asset._nativeAsset && revision.textures === asset.textures && revision.names === asset.textureNames && revision.runtime === asset._skeletonCache; }
+function failBakedRuntime(resource, asset, issue) {
+  var cached = bakedJobs[resource];
+  if (!cached || cached.asset !== asset) return;
+  cached.failedAsset = asset; cached.failedRevision = bakedRevision(asset); cached.asset = null; cached.runtimeReady = false;
+  cached.error = issue; cached.retryAt = Date.now() + 1000;
+  if (cached.retained) { cached.retained = false; if (asset.decRef) asset.decRef(); }
+}
+function preparedBakedRuntime(resource, asset) { var cached = bakedJobs[resource]; if (cached && cached.asset === asset) { if (cached.runtimePreparing) { cached.runtimePreparing.finished = true; removeConstructionStep(cached.runtimePreparing); cached.runtimePreparing = null; } cached.runtimeReady = true; cached.runtimeRevision = bakedRevision(asset); cached.failedAsset = cached.failedRevision = null; cached.error = null; } }
+function bakedRuntimeReady(resource, cached) {
+  var asset = cached.asset;
+  if (cached.runtimeReady && sameBakedRevision(cached.runtimeRevision, asset)) return true;
+  if (cached.runtimePreparing) return false;
+  var task = { finished: false, frame: null };
+  cached.runtimePreparing = task;
+  task.run = function () {
+    task.finished = true; cached.runtimePreparing = null;
+    if (bakedJobs[resource] !== cached || cached.asset !== asset) return;
+    try { if (!(asset instanceof sp.SkeletonData) || cc.isValid && !cc.isValid(asset, true) || typeof asset.getRuntimeData !== "function" || !asset.getRuntimeData()) throw new Error("Baked Spine runtime could not prepare: " + resource); preparedBakedRuntime(resource, asset); }
+    catch (issue) { failBakedRuntime(resource, asset, issue); if (cc.warn && !failures["construction:" + resource]) { failures["construction:" + resource] = true; cc.warn("Construction appearance fallback: " + resource, issue); } }
+  };
+  task.frame = { job: task, run: task.run }; constructionSteps.push(task.frame); scheduleConstructionFrame();
+  return false;
+}
+var libraryJob = null, libraryRetryAt = 0, libraryIssue = null;
+function preloadLibrary(done, retry) {
+  var cancelled = false, waiter = done && function (error) { if (!cancelled) done(error); }, job = libraryJob;
+  var handle = { cancel: function () { cancelled = true; if (job && waiter) { var at = job.waiters.indexOf(waiter); if (at >= 0) job.waiters.splice(at, 1); } } };
+  if (library) { if (waiter) waiter(); return handle; }
+  if (!cc.resources || typeof cc.resources.load !== "function") { if (waiter) waiter(new Error("Character parts metadata loader is unavailable.")); return handle; }
+  if (job) { if (waiter) job.waiters.push(waiter); return handle; }
+  if (!retry && Date.now() < libraryRetryAt) { if (waiter) waiter(libraryIssue); return handle; }
+  job = libraryJob = { waiters: waiter ? [waiter] : [], settled: false, timer: null };
+  function finish(issue, asset) {
+    if (job.settled) return;
+    job.settled = true; job.finish = null; if (typeof clearTimeout === "function") clearTimeout(job.timer);
+    if (libraryJob === job) libraryJob = null;
+    var next = Object.create(null);
+    if (!issue) {
+      try {
+        if (!asset || !asset.json || !Array.isArray(asset.json.parts)) throw new Error("Character parts metadata returned no usable parts array.");
+        asset.json.parts.forEach(function (part) {
+          if (!plainAppearanceMap(part) || typeof part.id !== "string" || !part.id || typeof part.resource !== "string" || !part.resource) throw new Error("Character parts metadata contains an invalid part.");
+          next[part.id] = part;
+        });
+      } catch (error) { issue = error; }
+    }
+    if (!issue) { library = next; libraryIssue = null; libraryRetryAt = 0; }
+    else { libraryIssue = issue; libraryRetryAt = Date.now() + 1000; }
+    var callbacks = job.waiters; job.waiters = [];
+    drainCallbacks(callbacks, issue);
+  }
+  job.finish = finish;
+  job.timer = typeof setTimeout === "function" ? setTimeout(function () { finish(new Error("Character parts metadata request timed out.")); }, 20000) : null;
+  try { cc.resources.load("character-parts/catalog", cc.JsonAsset, finish); }
+  catch (issue) { if (job.settled) throw issue; finish(issue); }
+  return handle;
+}
+
+function constructionAssets(prefabs) {
+  var result = [], seen = new Set();
+  function add(asset) { if (asset && !seen.has(asset)) { seen.add(asset); result.push(asset); } }
+  (prefabs || []).forEach(function (prefab) {
+    if (prefab instanceof sp.SkeletonData) { add(prefab); return; }
+    if (!prefab || !prefab.data || typeof prefab.data.getComponentsInChildren !== "function") throw new Error("Construction prefab cannot enumerate Spine data.");
+    prefab.data.getComponentsInChildren(sp.Skeleton).forEach(function (component) { add(component.skeletonData); });
+    // Include loaded Spine dependencies referenced outside a renderer property.
+    var manager = cc.assetManager, deps = manager && manager.dependUtil, assets = manager && manager.assets;
+    if (prefab._uuid && deps && typeof deps.getDepsRecursively === "function" && assets && typeof assets.get === "function") {
+      deps.getDepsRecursively(prefab._uuid).forEach(function (id) { var asset = assets.get(id); if (asset instanceof sp.SkeletonData) add(asset); });
+    }
+  });
+  return result;
+}
+function constructionPlan(config, data, assets, optional) {
+  var known = Object.create(null), resources = [], seen = Object.create(null);
+  if (!validAppearanceMaps(data)) { if (optional) optional.push({ resource: "characters/catalog", message: "Character appearance maps are unavailable; using prefab appearances." }); return resources; }
+  (assets || []).forEach(function (asset) { var id = skeletonDataId(asset); if (id) known[id] = true; });
+  Object.keys(config && config.BuildEnum || {}).forEach(function (id) {
+    if (Number(id) !== 3) return;
+    (config.BuildEnum[id].levelList || []).forEach(function (row) {
+      var unit = row.Data && row.Data[1], soldier = config.AllyCfg && config.AllyCfg[unit] || config.SoldierCfg && config.SoldierCfg[unit];
+      if (!soldier) return;
+      var selected = assignedLook(data, { cfg: soldier, outBuild: { buildInfo: { cfg: row } } }, "ally"), baked = selected.profile && selected.profile.baked;
+      if (!baked || baked.uuid && known[baked.uuid]) return;
+      if (typeof baked.resource !== "string" || !baked.resource) {
+        var issue = new Error("Construction look has no baked resource: " + selected.id);
+        if (optional) { optional.push({ resource: String(selected.id), message: issue.message }); return; }
+        throw issue;
+      }
+      if (!seen[baked.resource]) { seen[baked.resource] = true; resources.push(baked.resource); }
+    });
+  });
+  return resources;
+}
+var constructionJobs = new Map(), constructionAssetIds = new WeakMap(), nextConstructionAssetId = 0;
+var constructionSteps = [], constructionFrame = null, constructionTimer = null, constructionDrawing = false;
+function scheduleConstructionFrame() {
+  if (constructionFrame || constructionTimer !== null || !constructionSteps.length) return;
+  var frame = constructionFrame = function () {
+    var task = constructionSteps.shift();
+    if (task) task.job.frame = null;
+    constructionDrawing = true;
+    try { if (task && !task.job.finished) task.run(); }
+    finally {
+      constructionDrawing = false;
+      constructionFrame = null;
+      // Register the next draw listener outside this emit, even on hosts whose
+      // event dispatcher would invoke newly appended listeners immediately.
+      if (constructionSteps.length) constructionTimer = setTimeout(function () { constructionTimer = null; scheduleConstructionFrame(); }, 0);
+    }
+  };
+  if (cc.director && typeof cc.director.once === "function" && typeof cc.director.off === "function" && cc.Director && cc.Director.EVENT_AFTER_DRAW) cc.director.once(cc.Director.EVENT_AFTER_DRAW, frame);
+  else constructionTimer = setTimeout(function () { constructionTimer = null; frame(); }, 0);
+}
+function removeConstructionStep(job) {
+  constructionSteps = constructionSteps.filter(function (task) { return task.job !== job; }); job.frame = null;
+  if (!constructionSteps.length && !constructionDrawing) {
+    if (constructionFrame && cc.director && cc.director.off && cc.Director) cc.director.off(cc.Director.EVENT_AFTER_DRAW, constructionFrame);
+    clearTimeout(constructionTimer); constructionTimer = null; constructionFrame = null;
+  }
+}
+function preloadConstruction(config, prefabs, done, isCurrent) {
+  var cancelled = false, subscription = null, librarySubscription = null, native = !!(cc.sys && cc.sys.isNative);
+  var handle = { cancel: function () { cancelled = true; if (subscription) subscription.cancel(); if (librarySubscription) librarySubscription.cancel(); } };
+  function current() { return !cancelled && (!isCurrent || isCurrent()); }
+  preload(function (error) {
+    if (!current()) return;
+    librarySubscription = preloadLibrary(function (libraryError) {
+    if (!current()) return;
+    var assets, resources, optional = error ? [{ resource: "characters/catalog", message: error.message || String(error) }] : [];
+    if (libraryError) optional.push({ resource: "character-parts/catalog", message: libraryError.message || String(libraryError) });
+    try { assets = constructionAssets(prefabs); }
+    catch (issue) { if (done) done(issue); return; }
+    try { resources = looks ? constructionPlan(config, looks, assets, optional) : []; }
+    catch (issue) { resources = []; optional.push({ resource: "characters/catalog", message: issue.message || String(issue) }); }
+    optional.forEach(function (value) { if (cc.warn && !failures["construction:" + value.resource]) { failures["construction:" + value.resource] = true; cc.warn("Construction appearance fallback: " + value.resource, value.message); } });
+    var key = JSON.stringify(assets.map(function (asset) { if (!constructionAssetIds.has(asset)) constructionAssetIds.set(asset, ++nextConstructionAssetId); return constructionAssetIds.get(asset); }).concat(resources, optional));
+    var job = constructionJobs.get(key), waiter = { done: done, current: current, cancelled: false };
+    if (!job) {
+      job = { native: native, waiters: [], items: assets.map(function (asset) { return { asset: asset }; }).concat(resources.map(function (resource) { return { resource: resource }; })), required: assets.length, fallbacks: optional, position: 0, prepared: 0, finished: false, frame: null, request: null };
+      constructionJobs.set(key, job);
+      job.live = function () { return job.waiters.some(function (value) { return !value.cancelled && value.current(); }); };
+      job.finish = function (issue) {
+        if (job.finished) return; job.finished = true; constructionJobs.delete(key);
+        removeConstructionStep(job); clearTimeout(job.watchdog); if (job.request) job.request.cancel(); job.request = null;
+        var callbacks = [], first = null, waiters = job.waiters; job.waiters = [];
+        waiters.forEach(function (value) { try { if (!value.cancelled && value.current() && value.done) callbacks.push(value.done); } catch (error) { if (!first) first = error; } });
+        try { drainCallbacks(callbacks, issue, issue ? null : { native: job.native, prepared: job.prepared, requiredReady: true, ready: !job.fallbacks.length, fallbacks: job.fallbacks.slice() }); } catch (error) { if (!first) first = error; }
+        if (first) throw first;
+      };
+      job.schedule = function () {
+        if (job.finished || job.frame) return;
+        job.frame = { job: job, run: job.run }; constructionSteps.push(job.frame); scheduleConstructionFrame();
+      };
+      job.optionalFailure = function (item, issue) {
+        if (item.asset) failBakedRuntime(item.resource, item.asset, issue);
+        job.fallbacks.push({ resource: item.resource, message: issue.message || String(issue) });
+        if (cc.warn && !failures["construction:" + item.resource]) { failures["construction:" + item.resource] = true; cc.warn("Construction appearance fallback: " + item.resource, issue); }
+        job.position++; job.schedule();
+      };
+      job.run = function () {
+        if (job.finished) return;
+        var live; try { live = job.live(); } catch (error) { job.finish(error); return; }
+        if (!live || job.position >= job.items.length) { job.finish(); return; }
+        var item = job.items[job.position];
+        if (!item.asset) {
+          var replied = false, request = requestBakedAsset(item.resource, function (error, asset) {
+            replied = true;
+            job.request = null; if (job.finished) return;
+            if (error) { job.optionalFailure(item, error); return; }
+            item.asset = asset; job.schedule();
+          }, true);
+          if (!replied && !job.finished) job.request = request;
+          return;
+        }
+        var issue = null;
+        try { if (!(item.asset instanceof sp.SkeletonData) || cc.isValid && !cc.isValid(item.asset, true) || typeof item.asset.getRuntimeData !== "function" || !item.asset.getRuntimeData()) throw new Error("Construction Spine runtime could not prepare: " + (item.resource || item.asset.name || item.asset._uuid || "unknown")); }
+        catch (error) { issue = error; }
+        if (issue) { if (item.resource) job.optionalFailure(item, issue); else job.finish(issue); return; }
+        if (item.resource) preparedBakedRuntime(item.resource, item.asset);
+        job.position++; job.prepared++; job.schedule();
+      };
+      job.watchdog = setTimeout(function () {
+        if (job.position < job.required) { job.finish(new Error("Required construction Spine preparation timed out.")); return; }
+        job.items.slice(job.position).forEach(function (item) { if (!item.resource) return; var issue = "Optional construction appearance preparation timed out; using prefab appearance."; job.fallbacks.push({ resource: item.resource, message: issue }); if (cc.warn && !failures["construction:" + item.resource]) { failures["construction:" + item.resource] = true; cc.warn("Construction appearance fallback: " + item.resource, issue); } });
+        job.finish();
+      }, 25000);
+    }
+    job.waiters.push(waiter);
+    subscription = { cancel: function () { waiter.cancelled = true; if (!job.finished && !job.live()) job.finish(); } };
+    if (job.waiters.length === 1) job.schedule();
+    }, true);
+  });
+  return handle;
+}
+
 function trackValue(track, name) {
   var getter = "get" + name.charAt(0).toUpperCase() + name.slice(1);
   return track && (typeof track[getter] === "function" ? track[getter]() : track[name]);
@@ -66,7 +303,7 @@ function switchAllyRig(component, actor, renderers, profile) {
     var records = component.bakedModels || (component.bakedModels = []);
     var record = records.filter(function (value) { return value.renderer === renderer; })[0];
     var baked = profile && profile.baked, target;
-    if (baked && renderer.skeletonData.uuid === baked.uuid) return;
+    if (baked && skeletonDataId(renderer.skeletonData) === baked.uuid) return;
     if (baked && baked.resource) {
       target = bakedAsset(baked.resource);
       if (!target) { ready = false; return; }
@@ -122,18 +359,12 @@ function profileKey(profile) {
 function load() {
   if (loading || library && looks || Date.now() < retryAt) return;
   loading = true;
-  function loadLooks() {
+  preloadLibrary(function (libraryError) {
+    if (libraryError) { loading = false; retryAt = Date.now() + 1000; return; }
     preload(function (issue) {
       loading = false;
-      if (issue) { retryAt = Date.now() + 1000; return; }
-      retryAt = 0;
+      retryAt = issue ? Date.now() + 1000 : 0;
     });
-  }
-  if (library) { loadLooks(); return; }
-  cc.resources.load("character-parts/catalog", cc.JsonAsset, function (error, asset) {
-    if (error) { loading = false; retryAt = Date.now() + 1000; return; }
-    library = {}; asset.json.parts.forEach(function (part) { library[part.id] = part; });
-    loadLooks();
   });
 }
 function skeletonTexture(image) {
@@ -220,7 +451,7 @@ var Appearance = cc.Class({
     if (!profile) { if (this.models.length) this.clear(); return; }
     // Saved imported units are baked into normal Spine assets for web and
     // native play. Their equipped parts must not be overlaid a second time.
-    if (this.team !== "hero" && renderers.some(function (renderer) { return renderer.skeletonData && (profile.baked && renderer.skeletonData.uuid === profile.baked.uuid || renderer.skeletonData.skeletonJson && renderer.skeletonData.skeletonJson._unitLook === id); })) {
+    if (this.team !== "hero" && renderers.some(function (renderer) { return renderer.skeletonData && (profile.baked && skeletonDataId(renderer.skeletonData) === profile.baked.uuid || renderer.skeletonData.skeletonJson && renderer.skeletonData.skeletonJson._unitLook === id); })) {
       if (this.models.length) this.clear();
       return;
     }
@@ -228,24 +459,25 @@ var Appearance = cc.Class({
     // by Core. Keep native attachments intact; skins/model overrides still work.
     var nativeParts = !!(cc.sys && cc.sys.isNative) || renderers.some(function (renderer) { return !!renderer._nativeSkeleton; });
     if (nativeParts && renderers.some(function (renderer) { return renderer.skeletonData && !renderer._skeleton; })) return;
-    if (nativeParts && profile.parts.length && !profile.bakedLayers && !nativePartsNotice) {
+    var profileParts = Array.isArray(profile.parts) ? profile.parts : [];
+    if (nativeParts && profileParts.length && !profile.bakedLayers && !nativePartsNotice) {
       nativePartsNotice = true;
       if (typeof cc.log === "function") cc.log("Native Spine retains original character attachments; custom part fitting requires the web Spine runtime.");
     }
-    var fittedParts = nativeParts ? [] : profile.parts.filter(function (part) { return !heroBaked || !renderers.some(function (renderer) { return heroBaked.originalId(renderer) === part.layer && (heroBaked.baked(renderer) || profile.bakedLayers && profile.bakedLayers[part.layer]); }); });
-    var signature = id + ":" + profileKey(profile) + ":" + nativeParts + ":" + renderers.map(function (renderer) { return renderer.uuid + ":" + (renderer.skeletonData && renderer.skeletonData.uuid); }).join("|");
+    var fittedParts = nativeParts ? [] : profileParts.filter(function (part) { return !heroBaked || !renderers.some(function (renderer) { return heroBaked.originalId(renderer) === part.layer && (heroBaked.baked(renderer) || profile.bakedLayers && profile.bakedLayers[part.layer]); }); });
+    var signature = id + ":" + profileKey(profile) + ":" + nativeParts + ":" + renderers.map(function (renderer) { return renderer.uuid + ":" + (renderer.skeletonData && skeletonDataId(renderer.skeletonData)); }).join("|");
     if (this.signature !== signature || this.states.some(function (state) { return !renderers.some(function (renderer) { return renderer._skeleton === state.skeleton; }); })) {
       this.clear();
       var textures = {}, ready = true;
       fittedParts.forEach(function (part) { textures[part.sprite] = texture(part.sprite); if (!textures[part.sprite]) ready = false; });
-      fittedParts.forEach(function (part) { if (!renderers.some(function (renderer) { return renderer.skeletonData && renderer.skeletonData.uuid === part.layer && renderer._skeleton; })) ready = false; });
+      fittedParts.forEach(function (part) { if (!renderers.some(function (renderer) { return renderer.skeletonData && skeletonDataId(renderer.skeletonData) === part.layer && renderer._skeleton; })) ready = false; });
       if (!ready) return;
       try {
         var pending = [], models = [];
         renderers.forEach(function (renderer) {
           var node = renderer.node;
           models.push({ renderer: renderer, scaleX: Math.abs(node.scaleX), scaleY: node.scaleY, x: node.x || 0, y: node.y || 0, angle: node.angle || 0, opacity: node.opacity === undefined ? 255 : node.opacity, color: node.color && node.color.clone ? node.color.clone() : node.color, skin: renderer._skeleton && renderer._skeleton.skin && renderer._skeleton.skin.name });
-          var parts = fittedParts.filter(function (part) { return renderer.skeletonData && part.layer === renderer.skeletonData.uuid; });
+          var parts = fittedParts.filter(function (part) { return renderer.skeletonData && part.layer === skeletonDataId(renderer.skeletonData); });
           if ((parts.length || (profile.faceless || Core.skinTint(profile)) && !nativeParts) && renderer._skeleton) pending.push(Core.prepare(sp.spine, renderer._skeleton, parts, library, textures, { faceless: !!profile.faceless, skinTint: Core.skinTint(profile) }));
         });
         this.states = pending; this.models = models; this.signature = signature;
@@ -254,7 +486,7 @@ var Appearance = cc.Class({
     this.models.forEach(function (model) {
       var node = model.renderer.node, scale = profile.scale || 1;
       node.scaleX = (node.scaleX < 0 ? -1 : 1) * model.scaleX * scale; node.scaleY = model.scaleY * scale;
-      var layerId = heroBaked ? heroBaked.originalId(model.renderer) : model.renderer.skeletonData && model.renderer.skeletonData.uuid;
+      var layerId = heroBaked ? heroBaked.originalId(model.renderer) : skeletonDataId(model.renderer.skeletonData);
       var transform = profile.models && profile.models[layerId];
       if (transform) {
         if (transform.tint) { node.color = cc.color(transform.tint); model.tinted = true; }
@@ -285,7 +517,32 @@ exports.component = Appearance;
 exports.allyLevel = allyLevel; exports.assignedLook = assignedLook;
 exports.animationSpeed = animationSpeed; exports.preload = preload;
 exports.prime = function (catalog,parts,assets) {
-  looks=catalog;library={};(parts.parts||[]).forEach(function(part){library[part.id]=part;});
-  bakedJobs={};textureJobs={};Object.keys(assets||{}).forEach(function(key){if(key.indexOf("resources/")===0&&/:spine$/.test(key))bakedJobs[key.slice(10,-6)]={asset:assets[key]};});
+  looks=catalog;library=Object.create(null);(parts.parts||[]).forEach(function(part){library[part.id]=part;});
+  textureJobs={};Object.keys(assets||{}).forEach(function(key){
+    if(key.indexOf("resources/")!==0||!/:spine$/.test(key))return;
+    var resource=key.slice(10,-6),asset=assets[key],job=bakedJobs[resource];
+    // Complete an existing coalesced request once. Its late resource callback
+    // then cannot replace the stage's asset or strand construction subscribers.
+    if(job&&job.loading&&job.finish)job.finish(null,asset);
+    else if(!job||job.asset!==asset){
+      if(job&&job.runtimePreparing){job.runtimePreparing.finished=true;removeConstructionStep(job.runtimePreparing);}
+      if(job&&job.retained&&job.asset&&job.asset.decRef)job.asset.decRef();
+      bakedJobs[resource]={asset:asset};
+    }
+    // Creator can report a failed decode by returning null without throwing.
+    // Both web and JSB publish successful data in this cache; inspect that
+    // result rather than parsing again or reviving a quarantined optional rig.
+    if(typeof sp.SkeletonData==="function"&&asset instanceof sp.SkeletonData&&!asset._skeletonCache){
+      var issue=new Error("Stage baked Spine runtime could not prepare: "+resource);failBakedRuntime(resource,asset,issue);
+      if(cc.warn&&!failures["construction:"+resource]){failures["construction:"+resource]=true;cc.warn("Construction appearance fallback: "+resource,issue);}
+    }else preparedBakedRuntime(resource,asset);
+  });
   Object.keys(library).forEach(function(id){var image=assets["resources/"+library[id].resource+":texture"];if(image)textureJobs[id]={texture:skeletonTexture(image)};});
+  // Publish every stage cache before releasing coalesced metadata consumers.
+  // Completing both jobs retires their timers and rejects older late replies.
+  var first=null,metadata=[libraryJob&&libraryJob.finish,looksFinish];
+  metadata.forEach(function(finish,index){if(finish)try{finish(null,{json:index?catalog:parts});}catch(issue){if(!first)first=issue;}});
+  if(first)throw first;
 };
+
+exports.constructionPlan = constructionPlan; exports.preloadConstruction = preloadConstruction;
