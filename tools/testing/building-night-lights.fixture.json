@@ -4454,7 +4454,7 @@
     },
     "mf": {
       "beforeSkeleton": "2089a5fb9d1d80b75a024f0fb39060023ca871282fbe4b2c28c3422cc1099da6",
-      "afterSkeleton": "86d950a3d03c432655d85229af80deacefc1ec7a79df59c8aeb409f48ea09e5a",
+      "afterSkeleton": "ca67473428aac3829869976c2dd53dd8ffae08a2cb1b6cdfd0d758e3eef8fb3c",
       "addedSlot": {
         "name": "building_aperture_rays",
         "bone": "bone3",
@@ -4744,7 +4744,7 @@
           ],
           "had": false,
           "before": null,
-          "afterHash": "a695b593ff37458914327df4bd6f4a2ee7a9f8d7e1023330627cafa4bb800433"
+          "afterHash": "95a4eab264f9bae9f92f03c6809ae6f6aabcf5c0949e35a20338b3ca0d51dc46"
         },
         {
           "path": [
@@ -4840,44 +4840,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-1",
-            "guang_1",
-            "td_4"
-          ],
-          "had": true,
-          "before": [
-            {
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 1,
-              "curve": 0.25,
-              "c3": 0.75,
-              "vertices": [
-                67.80019,
-                7.82037,
-                67.80019,
-                -20.09777,
-                67.80019,
-                -55.97527,
-                16.50356,
-                -55.97527,
-                -15.45053,
-                -55.97527
-              ]
-            },
-            {
-              "time": 2
-            }
-          ],
-          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
-        },
-        {
-          "path": [
             "skins",
             2,
             "attachments",
@@ -4956,44 +4918,6 @@
             ]
           },
           "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
-        },
-        {
-          "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-2-1",
-            "guang_2",
-            "td_4"
-          ],
-          "had": true,
-          "before": [
-            {
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 1,
-              "curve": 0.25,
-              "c3": 0.75,
-              "vertices": [
-                67.80019,
-                7.82037,
-                67.80019,
-                -20.09777,
-                67.80019,
-                -55.97527,
-                16.50356,
-                -55.97527,
-                -15.45053,
-                -55.97527
-              ]
-            },
-            {
-              "time": 2
-            }
-          ],
-          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
         },
         {
           "path": [
@@ -5078,44 +5002,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-2-2",
-            "guang_3",
-            "td_4"
-          ],
-          "had": true,
-          "before": [
-            {
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 1,
-              "curve": 0.25,
-              "c3": 0.75,
-              "vertices": [
-                67.80019,
-                7.82037,
-                67.80019,
-                -20.09777,
-                67.80019,
-                -55.97527,
-                16.50356,
-                -55.97527,
-                -15.45053,
-                -55.97527
-              ]
-            },
-            {
-              "time": 2
-            }
-          ],
-          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
-        },
-        {
-          "path": [
             "skins",
             4,
             "attachments",
@@ -5194,44 +5080,6 @@
             ]
           },
           "afterHash": "e16c2f1444c1aaf6961f35887e68abb498da10feede084d0782478b5e3a4fa58"
-        },
-        {
-          "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-3",
-            "guang_3",
-            "td_4"
-          ],
-          "had": true,
-          "before": [
-            {
-              "curve": 0.25,
-              "c3": 0.75
-            },
-            {
-              "time": 1,
-              "curve": 0.25,
-              "c3": 0.75,
-              "vertices": [
-                67.80019,
-                7.82037,
-                67.80019,
-                -20.09777,
-                67.80019,
-                -55.97527,
-                16.50356,
-                -55.97527,
-                -15.45053,
-                -55.97527
-              ]
-            },
-            {
-              "time": 2
-            }
-          ],
-          "afterHash": "bb597d7048bd218e8b11a7105ba42bfade37ebab64023390c9b9ba7e404c8c3a"
         },
         {
           "path": [
@@ -5888,17 +5736,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-bomb-2"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
-        },
-        {
-          "path": [
             "skins",
             6,
             "attachments",
@@ -5977,17 +5814,6 @@
               ]
             }
           },
-          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
-        },
-        {
-          "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-bomb-3"
-          ],
-          "had": false,
-          "before": null,
           "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
         },
         {
@@ -6075,13 +5901,244 @@
         {
           "path": [
             "animations",
-            "idle_night",
-            "deform",
-            "mf-bomb-4"
+            "Fade_in",
+            "deform"
           ],
-          "had": false,
-          "before": null,
-          "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+          "had": true,
+          "before": {
+            "mf-2-1": {
+              "guang_2": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 0.5
+                  }
+                ]
+              }
+            },
+            "mf-2-2": {
+              "guang_3": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 0.5
+                  }
+                ]
+              }
+            },
+            "mf-1": {
+              "guang_1": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 0.5
+                  }
+                ]
+              }
+            },
+            "mf-3": {
+              "guang_3": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 0.5
+                  }
+                ]
+              }
+            }
+          },
+          "afterHash": "444a98ccc625adda80e92047747c0fc9951e384a75578c937da15cbede86f5f0"
+        },
+        {
+          "path": [
+            "animations",
+            "idle_night",
+            "deform"
+          ],
+          "had": true,
+          "before": {
+            "mf-2-1": {
+              "guang_2": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75
+                  },
+                  {
+                    "time": 1,
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 2
+                  }
+                ]
+              }
+            },
+            "mf-2-2": {
+              "guang_3": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75
+                  },
+                  {
+                    "time": 1,
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 2
+                  }
+                ]
+              }
+            },
+            "mf-1": {
+              "guang_1": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75
+                  },
+                  {
+                    "time": 1,
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 2
+                  }
+                ]
+              }
+            },
+            "mf-3": {
+              "guang_3": {
+                "td_4": [
+                  {
+                    "curve": 0.25,
+                    "c3": 0.75
+                  },
+                  {
+                    "time": 1,
+                    "curve": 0.25,
+                    "c3": 0.75,
+                    "vertices": [
+                      67.80019,
+                      7.82037,
+                      67.80019,
+                      -20.09777,
+                      67.80019,
+                      -55.97527,
+                      16.50356,
+                      -55.97527,
+                      -15.45053,
+                      -55.97527
+                    ]
+                  },
+                  {
+                    "time": 2
+                  }
+                ]
+              }
+            }
+          },
+          "afterHash": "0a7952bb2a45c513c6dadce007dcb93e19c9e02e3a6584e9da70b0e4c9b33368"
         }
       ],
       "rayTextureUuid": "de34e91e-cbb0-4692-a4a6-dc348bceb818",
@@ -11216,7 +11273,7 @@
     "originalFullSprite": true,
     "customCore": false,
     "originalWindowSlot": "building_aperture_cores",
-    "originalWindowCapture": "Complete original mill window mesh and original opacity pulse in the fixed trailing emitter slot. Static light geometry keeps native bounds filtering exact without losing a copied JSB deform vector."
+    "originalWindowCapture": "Complete original mill window mesh in the fixed trailing emitter slot, with the same original 2-second opacity pulse as the other opening lights. Fixed emitter geometry preserves exact native body bounds."
   },
   "towerLighting": [
     {

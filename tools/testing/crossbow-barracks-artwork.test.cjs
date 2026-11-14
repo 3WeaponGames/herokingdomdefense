@@ -38,11 +38,14 @@ test('crossbow night masks stay on the new dark apertures and obsolete hall wind
    assert(ref.nightApertureBounds.some(([x0,y0,x1,y1])=>x>=Math.floor(x0)-1&&x<Math.ceil(x1)+1&&y>=Math.floor(y0)-1&&y<Math.ceil(y1)+1),'light stays in authored source aperture');lit++;
   }
   if(n<3){
-   assert.equal(lit,0,'the old empty full-body mask remains unchanged; fitted open-door geometry supplies the light');
+   assert.equal(lit,0,'the old empty full-body mask remains unchanged; original projected sprites supply the light');
    const skin=json.skins.find(s=>s.name==='by-painted-crossbow-'+n);
    for(const kind of ['fixture','emissive'])assert.deepEqual(skin.attachments['painted_crossbow_'+n+'_lantern_'+kind],{},'standalone lantern artwork was deliberately removed');
-   assert(skin.attachments.building_aperture_cores?.building_aperture_cores,'the actual open doorway keeps its fitted warm core');
-   assert(skin.attachments.building_aperture_rays?.building_aperture_rays,'the actual doorway keeps its outward spill');
+   assert.deepEqual(skin.attachments.building_aperture_cores||{},{},'the substituted flat doorway fill stays removed');
+   const lighting=require('./building-night-light-contract.cjs').fixture,openings=lighting.openings.filter(o=>o.rig==='by'&&o.skin===skin.name),ray=skin.attachments.building_aperture_rays?.building_aperture_rays;
+   assert(openings.some(o=>o.kind==='door'),'the actual dark doorway retains its registered original light');
+   assert(ray,'the actual doorway keeps its outward spill');assert.equal(ray.vertices.length,14*openings.length);
+   for(let i=0;i<openings.length;i++)assert.deepEqual(ray.uvs.slice(i*14,(i+1)*14),lighting.source.mesh.uvs,'the complete original sprite remains unmodified');
   }else assert(lit>40&&lit<1200,'restrained visible fitted night illumination');
  }
 });
