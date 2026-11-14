@@ -215,9 +215,10 @@ Runtime.prototype.arrow=function(event){
   if(!this.available() || this.resolvingState&&this.resolvingState!==this.state || this.projectiles.length>=MAX_PROJECTILES)return false;
   var o=point(this.hero),size=this.game.mapSize||{width:2000,height:2000};
   var renderer=require("HeroMakerRider"),aim=direction(event.direction||this.aimDirection);
+  if(renderer.releaseChargedAttack)renderer.releaseChargedAttack(this.hero.ctrPlayAni,require("GameToolsOverrides").attackPlayback(this.hero,"hero"));
   var world=renderer.skillOrigin?renderer.skillOrigin(this.hero.ctrPlayAni,aim,this.settings.visual.animation):renderer.projectileOrigin&&renderer.projectileOrigin(this.hero.ctrPlayAni),tip=world&&this.game.ndMain.convertToNodeSpaceAR(world);
   this.projectiles.push({x:o.x,y:o.y,visualOffset:tip?{x:tip.x-o.x,y:tip.y-o.y}:{x:0,y:0},scope:this.scope,direction:direction(event.direction||this.aimDirection),travelled:0,speed:event.speed||1000,width:event.width||28,distanceDamagePer100:event.distanceDamagePer100===undefined ? .1 : event.distanceDamagePer100,multiplier:event.damageMultiplier||1,hit:new Map(),strike:++this.serial,bounds:{minX:-size.width/2,maxX:size.width/2,minY:-size.height/2,maxY:size.height/2}});
-  if(Presentation.release)Presentation.release(this,this.serial);
+  if(Presentation.release)Presentation.release(this,this.serial,event.charge);
   return true;
 };
 Runtime.prototype.updateArrows=function(dt){
@@ -242,7 +243,7 @@ Runtime.prototype.update=function(dt){
   this.refresh();if(!living(this.hero)){this.clear(false);return;}
   if(!this.available())return;
   this.resolvingState=this.state;
-  var h=this.hero,pos=point(h),moving=distance(pos,this.lastPosition)>.01;this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
+  var h=this.hero,pos=point(h),moving=distance(pos,this.lastPosition)>.01||this.state.style==="skirmisher"&&!!h._relicMoving;this.lastPosition={x:pos.x,y:pos.y};this.moving=moving;
   dt=typeof dt==="number"&&isFinite(dt)&&dt>0?dt:0;
   var prior=this.state.active,remaining=dt,guard=0,self=this;
   var frame=this.state.style==="mystic"?{state:this.state,scope:this.scope,targets:null,blocked:new Set(),ticks:0,aborted:false}:null;this.beamFrame=frame;
@@ -274,9 +275,13 @@ Runtime.prototype.update=function(dt){
   var active=this.state.active||prior,aim;
   if(active&&/^(skirmisher|fighter|vanguard)$/.test(this.state.style))aim=active.direction;
   else if(this.channelTarget)aim=direction({x:point(this.channelTarget).x-pos.x,y:point(this.channelTarget).y-pos.y});
-  require("HeroMakerRider").setCombatState(h.ctrPlayAni,{moving:moving,beam:!!this.channelTarget,beamElapsed:this.beamElapsed,beamSourceTime:this.beamSourceTime,aimDirection:aim,playback:this.beamPlayback,deferUpdate:true,attackRate:h.getAttSpeed(),animation:this.state.style==="mystic"?this.beamAnimation:this.settings.visual.animation||undefined,holdTime:this.settings.visual.holdTime>=0?this.settings.visual.holdTime:undefined,rapid:(this.state.style==="vanguard"&&active)?{elapsed:active.elapsed||0,duration:active.duration,strikes:active.count}:false});
+  var rider=require("HeroMakerRider");
+  rider.setCombatState(h.ctrPlayAni,{moving:moving,charge:this.state.style==="skirmisher"&&!active?this.state.charge:0,beam:!!this.channelTarget,beamElapsed:this.beamElapsed,beamSourceTime:this.beamSourceTime,aimDirection:aim,playback:this.beamPlayback,deferUpdate:true,attackRate:h.getAttSpeed(),animation:this.state.style==="mystic"?this.beamAnimation:this.settings.visual.animation||undefined,holdTime:this.settings.visual.holdTime>=0?this.settings.visual.holdTime:undefined,rapid:(this.state.style==="vanguard"&&active)?{elapsed:active.elapsed||0,duration:active.duration,strikes:active.count}:false});
+  this.bowCharging=this.state.style==="skirmisher"&&this.state.charge<1&&!!(rider.isCharging&&rider.isCharging(h.ctrPlayAni));
+  var sounds=require("BattleSounds");if(sounds.charge)sounds.charge(h,this.bowCharging);
 };
 Runtime.prototype.clear=function(reset){
+  this.bowCharging=false;var sounds=require("BattleSounds");if(this.hero._styleRuntime===this&&sounds.charge)sounds.charge(this.hero,false);
   Presentation.clear(this);this.scope=null;this.aiming=false;this.channelTarget=null;this.beamTarget=null;this.beamVisibleSince=undefined;this.beamVisibleGeneration=undefined;this.beamWarmup=0;this.beamElapsed=0;this.beamSourceTime=0;this.beamAnimation=undefined;this.beamFrame=null;this.projectiles=[];this.effects=[];this.beamClock=0;
   this.taunted.forEach(function(record){if(record.enemy._heroTaunt===record.taunt)delete record.enemy._heroTaunt;});this.taunted=[];
   if(reset)this.state=Skills.createState(this.hero.heroStyle,this.settings);
@@ -295,7 +300,16 @@ function install(hero,config){
   var rider=require("HeroMakerRider");if(rider.enableCombatMotion)rider.enableCombatMotion(hero.ctrPlayAni);
   if(hero._styleHooks)return;hero._styleHooks=true;
   wrap(hero,"onUpdata",function(base,args){var rt=this._styleRuntime,block=rt.state.style==="mystic"||!!rt.state.active,clock=this.time.Attack;if(block)this.time.Attack=-1;base.apply(this,args);if(block)this.time.Attack=clock===-1?0:clock;});
-  wrap(hero,"doAttack",function(base,args){var rt=this._styleRuntime;if(rt.state.style==="mystic"||rt.state.active)return;rt.refresh();var fire=rt.state.style!=="skirmisher"||rt.nearest()?Skills.onBasicFire(rt.state):{damageMultiplier:1};this._styleShot=fire.damageMultiplier||1;try{return base.apply(this,args);}finally{this._styleShot=1;}});
+  wrap(hero,"doAttack",function(base,args){
+    var rt=this._styleRuntime;if(rt.state.style==="mystic"||rt.state.active)return;rt.refresh();
+    // Movement input can precede this frame's skill update and shot release.
+    if(rt.state.style==="skirmisher"&&this._relicMoving)rt.state.charge=0;
+    var fire=rt.state.style!=="skirmisher"||rt.nearest()?Skills.onBasicFire(rt.state):{damageMultiplier:1};
+    this._styleShot=fire.damageMultiplier||1;this._styleShotCharge=fire.charge||0;this._styleProjectileSpeed=fire.speedMultiplier||1;
+    var rider=require("HeroMakerRider");if(rider.releaseChargedAttack)rider.releaseChargedAttack(this.ctrPlayAni,require("GameToolsOverrides").attackPlayback(this,"hero"));
+    rt.bowCharging=false;var sounds=require("BattleSounds");if(sounds.charge)sounds.charge(this,false);
+    try{return base.apply(this,args);}finally{this._styleShot=1;delete this._styleShotCharge;delete this._styleProjectileSpeed;}
+  });
   wrap(hero,"doAttackFinish",function(base,args){if(this._styleRuntime.beamTarget||this._styleRuntime.state.active)return;return base.apply(this,args);});
   wrap(hero,"setLeft",function(base,args){var result=base.apply(this,args),active=this._styleRuntime.state.active;if(active&&this.ctrPlayAni.setBodyLeft)this.ctrPlayAni.setBodyLeft(active.direction.x);return result;});
   [["getAttack","damage"],["getAttSpeed","attackRate"],["getSpeed","move"]].forEach(function(pair){wrap(hero,pair[0],function(base,args){return base.apply(this,args)*(1+(this._styleRuntime.bonus()[pair[1]]||0))*(pair[0]==="getAttack"?(this._styleShot||1):1);});});

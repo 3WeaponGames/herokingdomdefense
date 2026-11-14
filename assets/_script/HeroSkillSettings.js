@@ -25,7 +25,7 @@ var HELP = {
   chargeDecay:"Fraction of momentum lost each second while standing still.",
   chargedDamage:"Extra shot damage at full Steady Aim charge. 0.5 means 50% additional damage.",
   windup:"Seconds between confirming the aimed skill and releasing its arrow.",
-  projectileSpeed:"Arrow travel speed in world units per second.",
+  projectileSpeed:"Base arrow speed in world units per second. Momentum scales this from 100% at zero charge to 200% at full charge.",
   distanceDamagePer100:"Added damage multiplier for every 100 units travelled. 0.1 adds 10% per 100 units.",
   projectileWidth:"Hit distance to either side of the arrow path, measured from an enemy's center.",
   maxStacks:"Maximum number of temporary melee-hit stacks.",

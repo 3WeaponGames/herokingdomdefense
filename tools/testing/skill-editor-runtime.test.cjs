@@ -61,7 +61,7 @@ test('saving tuned Vanguard count and duration changes actual independently time
 });
 test('saved wind-up and projectile tuning reaches actual Skirmisher flight state without changing target geometry',t=>{
  const saved=save(t,[['skirmisher','windup',.6],['skirmisher','projectileSpeed',777],['skirmisher','projectileWidth',16],['skirmisher','visual.offsetX',125],['skirmisher','visual.rotation',45]]),h=scene('skirmisher',saved.config);
- h.rt.cast({x:1,y:0});h.rt.update(.59);assert.equal(h.rt.projectiles.length,0);h.rt.update(.01);assert.equal(h.rt.projectiles.length,1);const arrow=h.rt.projectiles[0];assert.equal(arrow.speed,777);assert.equal(arrow.width,16);close(arrow.direction.x,1);close(arrow.direction.y,0);close(arrow.x,0,'the release at the frame boundary has not flown yet');h.rt.update(.01);close(arrow.x,7.77);assert.equal(h.hero.node.x,0,'presentation offsets must not move the gameplay actor');
+ h.rt.cast({x:1,y:0});h.rt.update(.59);assert.equal(h.rt.projectiles.length,0);h.rt.update(.01);assert.equal(h.rt.projectiles.length,1);const arrow=h.rt.projectiles[0];close(arrow.speed,777*1.15);assert.equal(arrow.width,16);close(arrow.direction.x,1);close(arrow.direction.y,0);close(arrow.x,0,'the release at the frame boundary has not flown yet');h.rt.update(.01);close(arrow.x,7.77*1.15);assert.equal(h.hero.node.x,0,'presentation offsets must not move the gameplay actor');
 });
 test('saved Mystic animation and hold frame are sent to real runtime animation control while damage stays single target',t=>{
  const saved=save(t,[['mystic','visual.animation','attack_mystic'],['mystic','visual.holdTime',.25],['mystic','slow',.35]]),h=scene('mystic',saved.config),enemy=h.enemy(),nearby=h.enemy(110);
@@ -110,9 +110,9 @@ test('Mystic preview and gameplay agree on retarget residue and integrated live 
 test('actual Skirmisher and preview use identical swept contact damage across frame sizes and map clipping',()=>{
  const {Model,segmentEntry}=require('../../packages/hkd-skills/preview-model'),tune={windup:0,chargeRate:0,chargedDamage:0,projectileSpeed:1000,projectileWidth:28,distanceDamagePer100:.1};
  for(const point of [{x:100,y:0,entry:72},{x:100,y:20,entry:100-Math.sqrt(384)},{x:100,y:28,entry:100},{x:10,y:0,entry:0},{x:1010,y:0,entry:982},{x:1030,y:0,entry:null},{x:100,y:29,entry:null}])for(const step of [1.2,.01]){
-  const h=scene('skirmisher',{HeroSkills:{skirmisher:tune}}),enemy=h.enemy(point.x),m=new Model('skirmisher',tune,{mode:'active',targets:1,targetDistance:point.x,attackRate:0});enemy.node.y=point.y;Object.assign(m.targets[0],{x:point.x,y:point.y});assert(h.rt.cast({x:1,y:0}));
+  const h=scene('skirmisher',{HeroSkills:{skirmisher:tune}}),enemy=h.enemy(point.x),m=new Model('skirmisher',tune,{mode:'active',targets:1,targetDistance:point.x,attackRate:0});enemy.node.y=point.y;Object.assign(m.targets[0],{x:point.x,y:point.y});h.rt.state.charge=.75;assert(h.rt.cast({x:1,y:0}));
   let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);h.rt.update(dt);m.advance(dt);remaining-=dt;}
   const damage=enemy.hits.reduce((total,hit)=>total+hit.damage,0),expected=point.entry===null?0:100*(1+point.entry/100*.1);close(damage,expected);close(m.damage,expected);assert.equal(m.hits,enemy.hits.length);const direct=h.load('HeroStyleRuntime').segmentEntry(point,{x:0,y:0},{x:1000,y:0},28);assert.equal(direct,segmentEntry(point,{x:0,y:0},{x:1000,y:0},28));
-  if(point.entry!==null)close(m.events.find(e=>e.kind==='impact').time,point.entry/1000);
+  if(point.entry!==null)close(m.events.find(e=>e.kind==='impact').time,point.entry/1750);
  }
 });

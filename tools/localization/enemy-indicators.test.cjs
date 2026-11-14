@@ -168,9 +168,35 @@ test('Upcoming portraits from one side pack closer together and retain their tru
  const f=fixture(),markers=[-350,0,350].map(y=>({record:{ndItem:f.indicator()},target:{x:1200,y}})),rectangles=[];
  updateUpcoming.call(f.state,markers,rectangles);
  const positions=markers.map(m=>m.record.ndItem.getPosition());
- for(const marker of markers){const node=marker.record.ndItem;assert.equal(node.width,112);assert.equal(node.getChildByName('labName').active,true,'upcoming-wave captions remain available');arrowPoints(node,marker.target);const r=bounds(node,f.ui);assert(r.minX>=-359&&r.maxX<=359&&r.minY>=-651&&r.maxY<=651);}
- assert(Math.max(...positions.map(p=>p.y))-Math.min(...positions.map(p=>p.y))<400,'incoming-side markers still spread across the screen');
+ for(const marker of markers){const node=marker.record.ndItem;assert.equal(node.width,88);assert.equal(node.getChildByName('labName').active,true,'upcoming-wave captions remain available');arrowPoints(node,marker.target);const r=bounds(node,f.ui);assert(r.minX>=-359&&r.maxX<=359&&r.minY>=-651&&r.maxY<=651);near(node.x,positions[0].x);near(r.maxX,359);}
+ for(let i=1;i<positions.length;i++){const spacing=positions[i-1].y-positions[i].y;assert(spacing>0&&spacing<120,'upcoming markers must form a tight downward list');}
  for(let i=0;i<rectangles.length;i++)for(let j=0;j<i;j++)assert(clear(rectangles[i],rectangles[j],6));
- assert.equal(catalog.labelStyles['ui.layout.kinghtfalluigame.133'].en.fontSize,54);
+ for(const style of Object.values(catalog.labelStyles['ui.layout.kinghtfalluigame.133'])){assert.equal(style.fontSize,38);assert.equal(style.wrap,false);assert.equal(style.height,44);}
+});
+
+test('Upcoming waves stay in vertical side lists even for centered, top and bottom spawn points and crowded HUD edges',()=>{
+ const f=fixture(),targets=[[-5,1200],[-1200,50],[-20,-900],[0,0],[1200,80],[5,-900]];
+ const markers=targets.map(([x,y])=>({record:{ndItem:f.indicator()},target:{x,y}}));
+ const obstacles=[{minX:-375,maxX:-220,minY:360,maxY:667},{minX:220,maxX:375,minY:300,maxY:667}],fixed=obstacles.slice();
+ updateUpcoming.call(f.state,markers,obstacles);
+ for(const marker of markers){const node=marker.record.ndItem,r=bounds(node,f.ui);arrowPoints(node,marker.target);assert(Math.abs(node.x)>290,'upcoming marker escaped into the battlefield');assert(r.maxY<=(marker.target.x<0?354:294));}
+ for(const side of[-1,1]){const list=markers.filter(m=>Math.sign(m.record.ndItem.x)===side);for(let i=1;i<list.length;i++){near(list[i].record.ndItem.x,list[0].record.ndItem.x);assert(list[i].record.ndItem.y<list[i-1].record.ndItem.y);}}
+ for(let i=fixed.length;i<obstacles.length;i++)for(let j=0;j<i;j++)assert(clear(obstacles[i],obstacles[j],6));
+ const before=markers.map(m=>m.record.ndItem.getPosition());
+ updateUpcoming.call(f.state,markers,fixed.slice());markers.forEach((m,i)=>{near(m.record.ndItem.x,before[i].x);near(m.record.ndItem.y,before[i].y);});
+});
+
+test('Upcoming columns follow the actual visible safe area through canvas transforms and screen resizing',()=>{
+ const previousView=cc.view,previousSys=cc.sys;
+ try{for(const height of[1334,1688,1900]){
+  const f=fixture();f.canvas.setPosition(200,100);f.canvas.scaleX=f.canvas.scaleY=.5;
+  cc.view={getVisibleSize:()=>({width:750,height}),getVisibleOrigin:()=>({x:0,y:0})};
+  cc.sys={getSafeAreaRect:()=>({x:24,y:32,width:702,height:height-96})};
+  const a=f.ui.convertToNodeSpaceAR({x:24,y:32}),b=f.ui.convertToNodeSpaceAR({x:726,y:height-64});
+  const markers=[{record:{ndItem:f.indicator()},target:{x:a.x,y:0}},{record:{ndItem:f.indicator()},target:{x:b.x,y:0}}],obstacles=[];
+  updateUpcoming.call(f.state,markers,obstacles);
+  near(obstacles[0].minX,a.x+16);near(obstacles[1].maxX,b.x-16);
+  for(const r of obstacles){assert(r.minY>=a.y+16-1e-6);assert(r.maxY<=b.y-16+1e-6);}
+ }}finally{cc.view=previousView;cc.sys=previousSys;}
 });
 console.log(passed+' enemy indicator HUD-layout checks passed.');

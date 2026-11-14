@@ -31,6 +31,15 @@ function arrow(h){
  return shot;
 }
 
+test('pooled hero arrows snapshot Momentum speed per shot and restore their authored speed on reuse',()=>{
+ const h=fixture(),target=h.enemy(),shot=arrow(h),base=shot.speed;
+ for(const multiplier of[1,1.5,2,1]){
+  h.p._styleProjectileSpeed=multiplier;h.g.onPlayAttack(target);near(shot.speed,base*multiplier);delete h.p._styleProjectileSpeed;
+  h.g.freeBullet(shot);
+ }
+ h.g.onPlayAttack(target);near(shot.speed,base);
+});
+
 test('missing ownership preserves hero and enemy combat values without runtime state writes',()=>{
  const h=fixture(),target=h.enemy();
  assert.equal(h.Combat.heroIncoming(h.p,100,{cfg:{AttackType:2}}),100);

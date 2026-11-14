@@ -92,17 +92,18 @@ function create(host,options){
     const animation=style==='mystic'||model.lastAttackKind==='skill'?activeAnimation:basicAnimation,clip=clipInfo(source.description,animation),basicClip=clipInfo(source.description,basicAnimation);
     const mount=heroLayers.filter(layer=>layer.description.json&&layer.description.json._heroMakerMount||layer.description.name==='wqyl_lead_ma'),riders=heroLayers.filter(layer=>!mount.includes(layer));
     const playback=finite(description.skillAttackPlayback,1),locomotion=finite(description.unitAnimationSpeed,1),age=Math.max(0,model.time-model.lastAttack),skirmisherCast=style==='skirmisher'&&model.lastAttackKind==='skill'&&model.lastCast===model.lastAttack,castPlayback=skirmisherCast?(settings.windup>0?clip.hit/settings.windup:1):playback,castOffset=skirmisherCast&&settings.windup===0?clip.hit:0;
-    let riderAnimation=model.scenario.moving?'move':'idle',riderTime=model.time*locomotion,loop=true;
+    let riderAnimation=model.scenario.moving?'move':'idle',riderTime=model.time*locomotion,loop=true,chargingBow=false;
     if(style==='mystic'&&model.channelTarget){riderAnimation=animation;riderTime=Math.min(model.channelSourceTime,visual.holdTime>=0?Math.min(clip.end,visual.holdTime):clip.hit);loop=false;}
     else if(style==='vanguard'&&model.state.active){const active=model.state.active;riderAnimation=animation;riderTime=SkillAnimation.rapidPose(active.elapsed,active.duration,active.count,clip).time;loop=false;}
     else if(style==='vanguard'&&model.lastAttackKind==='skill'&&Math.abs(model.time-model.lastCast-(settings.duration||2.5))<1e-8){riderAnimation=animation;riderTime=clip.hit;loop=false;}
     else if(!(style==='vanguard'&&model.lastAttackKind==='skill')&&castOffset+age*castPlayback<=clip.end){riderAnimation=animation;riderTime=castOffset+age*castPlayback;loop=false;}
+    else if(style==='skirmisher'&&!model.scenario.moving&&!model.state.active&&model.state.charge>0){riderAnimation=basicAnimation;riderTime=Math.max(0,basicClip.hit-.00001)*model.state.charge;loop=false;chargingBow=true;}
     renderer.seek(spine,riders,riderAnimation,riderTime,loop);
     const castDirection=model.state.active&&model.state.active.direction||model.castResult&&model.castResult.direction||model.direction();
     const aiming=style==='mystic'&&model.channelTarget?{x:model.channelTarget.x-model.hero.x,y:model.channelTarget.y-model.hero.y}:model.lastAttackKind==='skill'&&riderAnimation===activeAnimation&&['skirmisher','fighter','vanguard'].includes(style)?castDirection:null;
     if(aiming){const face=aiming.x<0?-1:1,arrow=riders.find(layer=>layer.description.json&&layer.description.json._heroMaker&&layer.description.json._heroMaker.role===3),referenceAngle=style==='skirmisher'&&arrow?SkillPose.arrowAimAngle(arrow.skeleton,arrow.description.json,animation,clip.hit):0;for(const layer of riders){layer.description.scaleX=Math.abs(layer._skillPreviewBase.scaleX)*face;SkillPose.applyAim(layer.skeleton,aiming,layer.description.scaleX,{fresh:true,referenceAngle});}}
     let mountAnimation=model.scenario.moving?'move':'idle',mountTime=model.time*locomotion,mountLoop=true;
-    if(!model.scenario.moving&&(riderAnimation===animation||riderAnimation===basicAnimation)){
+    if(!model.scenario.moving&&!chargingBow&&(riderAnimation===animation||riderAnimation===basicAnimation)){
       const beamSourceTime=model.channelSourceTime;
       if(style!=='mystic'||!model.channelTarget||beamSourceTime<clip.end){mountAnimation=animation;mountTime=style==='mystic'&&model.channelTarget?beamSourceTime:riderTime;mountLoop=false;}
     }

@@ -136,7 +136,7 @@ function family(actor, side) {
 function attack(actor, side, tower) {
   var cfg = actor && actor.cfg || {}, kind = family(actor, side), id;
   if (side === "tower") id = tower && tower.attackType === "cannon" ? "cannon-tower-fire" : tower && tower.attackType === "sniper" ? "sniper-tower-fire" : "bow-arrow-release";
-  else if (side === "hero") id = {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
+  else if (side === "hero") id = actor && actor.heroStyle === "skirmisher" && actor._styleShotCharge >= 1-1e-9 ? "archer-momentum-release" : {fighter:"sword-light-swing",vanguard:"cavalry-lance-thrust",mystic:"enemy-magic-projectile",bruiser:"sword-heavy-swing",guardian:"sword-heavy-swing"}[actor&&actor.heroStyle] || "bow-arrow-release";
   else if (side === "ally") id = Number(cfg.ID) === 90003 ? "crossbow-fire" : Number(cfg.ID) === 90004 ? "cavalry-lance-thrust" : Number(cfg.ID) === 90002 ? "sword-heavy-swing" : "sword-light-swing";
   else if (Number(cfg.AttackType) === 3) id = Number(cfg.ID) === 90009 || Number(cfg.CampaignBaseUnit) === 90009 ? "healing-cast" : "enemy-magic-projectile";
   else if (Number(cfg.AttackType) === 2) id = kind === "ghost" ? "enemy-magic-projectile" : "enemy-spit-launch";
@@ -227,6 +227,11 @@ function stopAll(state) {
   Object.keys(state.loops).forEach(function (key) { stopLoop(state, key); });
   Object.keys(state.sources).forEach(function (key) { state.manager.stopSource(state.sources[key]); });
 }
+function charge(hero, active) {
+  var state=context(hero);if(!current(state)||state.game&&state.game.ctrPlay!==hero)return;
+  var allowed=active&&audible(state)&&!paused(state)&&validNode(hero)&&!hero._isPooled&&(!hero.isDead||!hero.isDead());
+  loop(state,"archer-draw",allowed?"archer-momentum-draw-loop":null,.25);
+}
 function start(game) {
   if (!supported() || !game || !available(manager())) return false;
   if (game._battleSounds) dispose(game);
@@ -261,6 +266,7 @@ function tick(game) {
   loop(state, "horse", horse ? "hooves-" + surface + "-loop" : null, .45);
   loop(state, "foot", foot, .16);
   loop(state, "flying", flying ? "movement-flying-loop" : null, .12);
+  charge(hero,!!(hero._styleRuntime&&hero._styleRuntime.bowCharging));
 }
 function suspend(game, paused) {
   var state = game && game._battleSounds; if (!state) return;
@@ -294,6 +300,7 @@ function uiEffect(id, owner, closing) {
 }
 exports.effect = effect;
 exports.attack = attack;
+exports.charge = charge;
 exports.hit = hit;
 exports.death = death;
 exports.spawnEnemy = spawnEnemy;
