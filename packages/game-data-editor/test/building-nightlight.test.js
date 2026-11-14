@@ -2,6 +2,22 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path'),vm=require('vm');
 const T=require('../../../assets/_script/BuildingNightlight'),Data=require('../buildings/nightlight-data'),{Store}=require('../lib/store'),{Service}=require('../worlds/service'),root=path.resolve(__dirname,'../../..'),copy=v=>JSON.parse(JSON.stringify(v));
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
+test('the dim option preserves the shipped tier-one Archer ray pixels and the full option keeps its original sprite',()=>{
+ const P=require('../../hkd-characters/lib/png-atlas'),atlas=P.decode(fs.readFileSync(path.join(root,'assets/KinghtFallIconMap/com/Ani/jt/jt.png'))),original=P.crop(atlas,659,151,68,116,false),dim=P.decode(fs.readFileSync(path.join(root,'assets/resources/'+T.lightType('dim').sprite+'.png')));
+ assert.deepEqual([dim.width,dim.height],[116,116]);
+ for(let y=0;y<116;y++){assert.deepEqual(dim.rgba.subarray((y*116+24)*4,(y*116+92)*4),original.rgba.subarray(y*68*4,(y+1)*68*4));assert(dim.rgba.subarray(y*116*4,(y*116+24)*4).every(v=>v===0));assert(dim.rgba.subarray((y*116+92)*4,(y+1)*116*4).every(v=>v===0));}
+ assert.equal(T.lightType().sprite,T.sprite);assert.equal(T.lightType('full').sprite,'buildings/lighting/native-window-ray');assert.equal(T.lightType('dim').id,'dim');
+ const mill=P.decode(fs.readFileSync(path.join(root,'assets/KinghtFallIconMap/com/Ani/mf/mf.png'))),round=P.crop(mill,487,197,79,70,false),circle=P.decode(fs.readFileSync(path.join(root,'assets/resources/'+T.lightType('circle').sprite+'.png')));assert.deepEqual([circle.width,circle.height],[79,79]);
+ for(let y=0;y<70;y++)assert.deepEqual(circle.rgba.subarray((y+4)*79*4,(y+5)*79*4),round.rgba.subarray(y*79*4,(y+1)*79*4));assert(circle.rgba.subarray(0,4*79*4).every(v=>v===0));assert(circle.rgba.subarray(74*79*4).every(v=>v===0));assert.deepEqual(T.types.map(t=>t.id),['full','dim','circle']);
+});
+test('mixed full and dim emitters round-trip through the draft without changing old lights, IDs, transforms or unknown fields',()=>{
+ const store=new Store(root),config=store.documents.A.data,service=new Service(root,{previewConfig:()=>store.documents.A.data}),request={id:'2',levelIndex:0},row=config.BuildEnum[2].levelList[0],original=copy(T.layout(row)),data=Data.describe(service,request),dim=Data.add(original,{x:12,y:34},'dim'),full=Data.add(dim.value,{x:-19,y:7},'full');
+ assert.deepEqual(Data.remove(dim.value,dim.id).lights,original.lights);assert.deepEqual(dim.value.emitters.slice(0,-1),original.emitters);assert.equal(dim.value.emitters.at(-1).type,'dim');assert.equal(full.value.emitters.at(-1).type,undefined);
+ full.value.emitters.at(-2).future='keep';const W=require('../../../assets/_script/WindowLightWarp').forType('dim'),warp=W.controls();warp[1].x+=1;full.value.lights[dim.id]={...full.value.lights[dim.id],warp,warpNodes:W.addNode(warp,[],0,.5),scaleX:1.3,angle:15,future:'keep'};
+ assert.deepEqual(T.issues(full.value),[]);const renders=Data.render(data,full.value).sprites.filter(s=>s.nightlight);assert.equal(renders.at(-2).frame,'nightlight:'+T.lightType('dim').sprite);assert.equal(renders.at(-2).lightType,'dim');assert.equal(renders.at(-1).frame,'nightlight:'+T.sprite);assert(data.images[renders.at(-2).frame]);assert(data.images[renders.at(-1).frame]);
+ const baseline=store.draftState();store.change({version:store.version,edits:Data.edits(config,request,full.value,original)});const reopened=Data.describe(service,request);assert.deepEqual(reopened.value,full.value);assert.equal(reopened.entries.at(-2).glow.sprite,T.lightType('dim').sprite);store.undo({version:store.version});assert.deepEqual(store.draftState(),baseline);
+ assert.throws(()=>Data.add(original,{x:0,y:0},'other'),/Full, Dim or Circle light/);assert(T.issues({...full.value,emitters:[{id:dim.id,type:'other'}]}).length);assert.doesNotThrow(()=>T.issues({...full.value,emitters:{}}));
+});
 test('native light edits preserve original art and body geometry, transforming animation offsets as vectors',()=>{
  const source=copy(require('../../../assets/KinghtFallIconMap/com/Ani/mf/mf.json')),skin='mf-2-1';
  // Exercise affine deformation math independently of production emitters,

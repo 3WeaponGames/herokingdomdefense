@@ -1,7 +1,8 @@
 "use strict";
 // Manual window-light sprites. Legacy transforms remain readable, but the
 // active layout contains only explicitly added emitters and starts empty.
-var SPRITE="buildings/lighting/native-window-ray",SIZE=70,MAX_LIGHTS=64,quiet=new WeakMap();
+var Types=require("./BuildingLightTypes"),SPRITE=Types.get().sprite,SIZE=70,MAX_LIGHTS=64,quiet=new WeakMap();
+function glow(emitter){var type=Types.get(emitter);return{x:0,y:0,width:SIZE,height:SIZE,angle:0,shearX:0,shearY:0,color:"#FFFFFF",opacity:255,pulse:0,sprite:type.sprite,lightType:type.id};}
 function clone(v) { return JSON.parse(JSON.stringify(v)); }
 function emitters(row){var v=row&&row.Nightlight;return v&&Array.isArray(v.emitters)?v.emitters.filter(function(e){return e&&/^light:[1-9]\d{0,8}$/.test(e.id);}):[];}
 function layout(row){var v=clone(row&&row.Nightlight||{version:1,lights:{}});if(!v.emitters)v.emitters=[];return v;}
@@ -15,9 +16,9 @@ function withoutLegacy(source){
   (result.slots||[]).forEach(function(slot){var timeline=night.slots[slot.name]||(night.slots[slot.name]={});if(timeline.color)timeline.color.forEach(function(frame){frame.color=dim(frame.color);});else timeline.color=[{color:dim(slot.color)}];});
   result.animations.idle_night=night;["fade_in","Fade_in"].forEach(function(name){if(result.animations[name])result.animations[name]=clone(night);});quiet.set(source,result);return result;
 }
-function value(row, id) {
+function value(row, id, omitErase) {
   var v = row && row.Nightlight && row.Nightlight.lights && row.Nightlight.lights[id] || {};
-  var result={x:v.x || 0,y:v.y || 0,scaleX:v.scaleX === undefined ? 1 : v.scaleX,scaleY:v.scaleY === undefined ? 1 : v.scaleY,angle:v.angle || 0,flipX:!!v.flipX,flipY:!!v.flipY};if(v.warp)result.warp=clone(v.warp);if(v.warpNodes)result.warpNodes=clone(v.warpNodes);if(v.erase)result.erase=clone(v.erase);return result;
+  var result={x:v.x || 0,y:v.y || 0,scaleX:v.scaleX === undefined ? 1 : v.scaleX,scaleY:v.scaleY === undefined ? 1 : v.scaleY,angle:v.angle || 0,flipX:!!v.flipX,flipY:!!v.flipY};if(v.warp)result.warp=clone(v.warp);if(v.warpNodes)result.warpNodes=clone(v.warpNodes);if(v.erase&&!omitErase)result.erase=clone(v.erase);return result;
 }
 function identity(v) { return !v.x && !v.y && v.scaleX === 1 && v.scaleY === 1 && !v.angle && !v.flipX && !v.flipY; }
 function matrix(v, center) {
@@ -64,10 +65,12 @@ function issues(v) {
   Object.keys(v.lights).forEach(function(id){var t=v.lights[id];if(!/^(mesh:building_aperture_(rays|cores):\d+|sprite:\d+:\d+|light:[1-9]\d{0,8})$/.test(id)||!t||typeof t!=="object"||Array.isArray(t)){errors.push("Invalid night-light transform.");return;}
     ["x","y","scaleX","scaleY","angle"].forEach(function(k){if(t[k]!==undefined&&(typeof t[k]!=="number"||!isFinite(t[k])||Math.abs(t[k])>(k.indexOf("scale")===0?20:10000)||k.indexOf("scale")===0&&t[k]<.02))errors.push("Invalid night-light "+k+".");});
     ["flipX","flipY"].forEach(function(k){if(t[k]!==undefined&&typeof t[k]!=="boolean")errors.push("Invalid night-light "+k+".");});
-    if((t.warp!==undefined||t.warpNodes!==undefined)&&!require("./WindowLightWarp").valid(t.warp,t.warpNodes))errors.push("Keep finite, separate light points without folding the glow over itself.");
+    var emitter=(Array.isArray(v.emitters)?v.emitters:[]).find(function(e){return e&&e.id===id;});
+    if((t.warp!==undefined||t.warpNodes!==undefined)&&!require("./WindowLightWarp").forType(emitter&&emitter.type).valid(t.warp,t.warpNodes))errors.push("Keep finite, separate light points without folding the glow over itself.");
     if(!require("./WindowLightMask").valid(t.erase))errors.push("Invalid light brush strokes. Use up to 128 strokes and 4096 points per light.");
   });
   if(v.emitters!==undefined){if(!Array.isArray(v.emitters)||v.emitters.length>MAX_LIGHTS)errors.push("Choose up to 64 window lights per tier.");else{var seen={};v.emitters.forEach(function(e){if(!e||typeof e!=="object"||Array.isArray(e)||!/^light:[1-9]\d{0,8}$/.test(e.id)||seen[e.id])errors.push("Invalid or duplicate window-light ID.");else seen[e.id]=true;});}}
+  if(Array.isArray(v.emitters))v.emitters.forEach(function(e){if(e&&!Types.valid(e.type))errors.push("Choose Full, Dim or Circle light.");});
   if(v.nextLightId!==undefined&&(!Number.isInteger(v.nextLightId)||v.nextLightId<1||v.nextLightId>999999999))errors.push("Invalid next window-light ID.");return errors;
 }
 function glowMatrix(g,v){
@@ -78,3 +81,4 @@ function glowMatrix(g,v){
 exports.value=value;exports.identity=identity;exports.matrix=matrix;exports.point=point;exports.meshes=meshes;exports.json=json;exports.issues=issues;
 exports.glowMatrix=glowMatrix;
 exports.sprite=SPRITE;exports.size=SIZE;exports.maxLights=MAX_LIGHTS;exports.emitters=emitters;exports.layout=layout;exports.withoutLegacy=withoutLegacy;
+exports.types=Types.list;exports.lightType=Types.get;exports.glow=glow;

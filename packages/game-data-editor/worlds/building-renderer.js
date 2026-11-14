@@ -65,7 +65,7 @@ function create(options){
  }
  function measure(record,runtime){
   const points=[],origin=record.origin||{x:0,y:0},add=(m,a,b,c,d)=>{for(const x of [a,c])for(const y of [b,d])points.push({x:m[0]*x+m[2]*y+m[4]-origin.x,y:m[1]*x+m[3]*y+m[5]-origin.y});};
-  for(const [i,s]of (record.sprites||[]).entries()){if(record.purchaseField&&record.purchaseField.sprites[i])continue;if(s.nightlight&&(s.warp||s.warpNodes?.length)){const b=require('../../../assets/_script/WindowLightWarp').mesh(s.warp,s.warpNodes).bounds;add(s.matrix,b.minX,b.minY,b.maxX,b.maxY);}else{const a=s.anchor||{x:.5,y:0};add(s.matrix,-a.x*s.width,-a.y*s.height,(1-a.x)*s.width,(1-a.y)*s.height);}}
+  for(const [i,s]of (record.sprites||[]).entries()){if(record.purchaseField&&record.purchaseField.sprites[i])continue;if(s.nightlight&&(s.warp||s.warpNodes?.length)){const b=require('../../../assets/_script/WindowLightWarp').forType(s.lightType).mesh(s.warp,s.warpNodes).bounds;add(s.matrix,b.minX,b.minY,b.maxX,b.maxY);}else{const a=s.anchor||{x:.5,y:0};add(s.matrix,-a.x*s.width,-a.y*s.height,(1-a.x)*s.width,(1-a.y)*s.height);}}
   for(const d of record.skeletons||[]){const entry=cache.get(key(d,runtime));if(entry&&entry.canvas){const b=entry.bounds;add(d.matrix,b.minX,b.maxY-b.height,b.minX+b.width,b.maxY);}}
   if(!points.length)return null;return{minX:Math.min(...points.map(p=>p.x)),minY:Math.min(...points.map(p=>p.y)),maxX:Math.max(...points.map(p=>p.x)),maxY:Math.max(...points.map(p=>p.y))};
  }

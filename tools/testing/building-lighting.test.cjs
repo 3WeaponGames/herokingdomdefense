@@ -34,6 +34,16 @@ function fixture(){
   function resolve(index=0,value=frame()){requests[index].done(value);return value;}
   return{api:exports,owner,state,node,base,presentation,lighting,requests,resolve,frame,cc,Node,Graphics,maskRuntime,textures};
 }
+test('all three gameplay light types use separate exact sources and reuse their own prewarmed erase masks at native resolution',()=>{
+ for(const lightType of ['dim','circle']){
+ const h=fixture(),T=require('../../assets/_script/BuildingNightlight'),D=require('../../assets/_script/WindowLightWarp').forType(lightType),P=require('../../packages/hkd-characters/lib/png-atlas'),pixels=P.decode(fs.readFileSync(path.join(root,'assets/resources/'+T.lightType(lightType).sprite+'.png'))),dim=h.frame('dim'),texture=dim.getTexture();texture.width=pixels.width;texture.height=pixels.height;texture.pixels=pixels.rgba;
+ const row=h.owner.buildInfo.cfg;row.Nightlight.emitters[1].type=lightType;const v=row.Nightlight.lights['light:2'];v.warpNodes=D.addNode(undefined,[],0,.5);v.warpNodes[0].y+=.3;v.erase={version:1,strokes:[{op:'erase',radius:8,opacity:.55,softness:.6,flow:true,projection:{matrix:[1,0,0,1],type:lightType,warpNodes:v.warpNodes},points:[{x:-18,y:3,strength:.3}]}]};
+ const before=JSON.stringify(row),stage=h.maskRuntime.prime({BuildEnum:{2:{levelList:[row]}}},['2'],{['resources/'+T.lightType(lightType).sprite+':frame']:dim});assert.equal(h.textures.length,1);assert.equal(h.textures[0].width,pixels.width);assert.equal(h.textures[0].height,pixels.height);
+ h.api.apply(h.owner,h.state);assert.deepEqual(h.requests.map(r=>r.file),[T.sprite,T.lightType(lightType).sprite]);const full=h.resolve(0);h.resolve(1,dim);const record=h.state._buildingLighting,a=record.entries[0].sprite,b=record.entries[1].sprite;assert.equal(a.spriteFrame,full);assert.equal(b._windowLightType,lightType);assert.equal(b.spriteFrame.getTexture(),h.textures[0]);assert.equal(h.textures.length,1,'placing a dim light reuses the stage mask');assert.equal(record.maskEntries[0].refs,2);
+ const vertices=D.vertices(D.controls(),b.spriteFrame.uv,pixels.width,pixels.height,v.warpNodes);assert.deepEqual(b.spriteFrame.vertices.x,vertices.x);assert.equal(JSON.stringify(row),before);for(let i=0;i<pixels.rgba.length;i+=4)assert.deepEqual(Array.from(h.textures[0].pixels.subarray(i,i+3)),Array.from(pixels.rgba.subarray(i,i+3)));
+ h.api.setNight(h.owner,true);h.api.update(h.owner,h.state,.5);assert.equal(record.node.opacity,255);h.api.setNight(h.owner,false);assert.equal(record.node.opacity,0);h.api.dispose(h.owner,h.state);stage.dispose();assert.equal(dim.releases,1);assert.equal(full.releases,1);
+ }
+});
 function record(h){return h.state._buildingLighting;}
 function step(h,dt){h.api.update(h.owner,h.state,dt);}
 test('stage-prepared erased lights reuse their texture, carry edge nodes, and release consumers before their mask',()=>{

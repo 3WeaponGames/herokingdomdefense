@@ -30,7 +30,7 @@ function plan(config, level, names) {
   ["characters/catalog", "character-parts/catalog", "projectiles/catalog"].forEach(function (path) { add("resources", path, "json"); });
   buildingKinds(level).forEach(function (id) {
     (config.BuildEnum[id] && config.BuildEnum[id].levelList || []).forEach(function (row) {
-      if(row.Nightlight&&row.Nightlight.emitters&&row.Nightlight.emitters.length)add("resources","buildings/lighting/native-window-ray","frame");
+      if(row.Nightlight&&row.Nightlight.emitters&&row.Nightlight.emitters.length){var lights=require("./BuildingNightlight");lights.emitters(row).forEach(function(e){add("resources",lights.lightType(e).sprite,"frame");});}
       add(names.IconBuild, row.Icon, "frame");
       function artwork(value) { if (!value || typeof value !== "object") return; Object.keys(value).forEach(function (key) { if(key==="lighting")return;if ((key === "sprite" || key === "emptySprite") && typeof value[key] === "string") add("resources", value[key], "frame"); else if (typeof value[key] === "object") artwork(value[key]); }); }
       artwork(row.Appearance);

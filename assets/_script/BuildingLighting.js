@@ -19,7 +19,7 @@ function restoreColor(record) {
 }
 function config(owner) {
   var T=require("BuildingNightlight"),row=owner&&owner.buildInfo&&owner.buildInfo.cfg;
-  return T.emitters(row).map(function(emitter){return {id:emitter.id,opacity:0,glows:[{x:0,y:0,width:T.size,height:T.size,angle:0,shearX:0,shearY:0,color:"#FFFFFF",opacity:255,pulse:0,sprite:T.sprite}]};});
+  return T.emitters(row).map(function(emitter){return {id:emitter.id,opacity:0,glows:[T.glow(emitter)]};});
 }
 function live(owner, state, record) {
   return valid(owner) && valid(owner.node) && owner.enabled !== false && owner.node.activeInHierarchy !== false && !owner.isDestroyed && (!state.manual||visible(owner)) &&
@@ -89,7 +89,7 @@ function loadGlows(owner, state, record) {
       resource.frame = frame;
       resource.sprites.forEach(function (sprite) {
         var base=frame;if(sprite._windowLightErase){var entry=require("WindowLightMaskRuntime").acquire(frame,sprite._windowLightErase);if(entry){record.maskEntries.push(entry);base=entry.frame;}}
-        if(sprite._windowLightWarp){var mesh=base.clone(),texture=base.getTexture();mesh.vertices=require("WindowLightWarp").vertices(sprite._windowLightWarp,base.uv,texture.width,texture.height,sprite._windowLightNodes);mesh._uuid=(base._uuid||base.uuid||"window-light")+"@warp:"+record.meshFrames.length;record.meshFrames.push(mesh);sprite.type=cc.Sprite.Type.MESH;sprite.spriteFrame=mesh;}
+        if(sprite._windowLightWarp){var mesh=base.clone(),texture=base.getTexture();mesh.vertices=require("WindowLightWarp").forType(sprite._windowLightType).vertices(sprite._windowLightWarp,base.uv,texture.width,texture.height,sprite._windowLightNodes);mesh._uuid=(base._uuid||base.uuid||"window-light")+"@warp:"+record.meshFrames.length;record.meshFrames.push(mesh);sprite.type=cc.Sprite.Type.MESH;sprite.spriteFrame=mesh;}
         else sprite.spriteFrame = base;
       });
       // Loading never activates a light. Its phase/fade alone controls visibility.
@@ -120,7 +120,8 @@ function build(owner, state, lights, layoutSignature) {
       glow.angle = settings.angle+adjustment.angle; glow.skewX = settings.shearX; glow.skewY = settings.shearY;
       glow.scaleX=adjustment.scaleX*(adjustment.flipX?-1:1);glow.scaleY=adjustment.scaleY*(adjustment.flipY?-1:1);
       glow.setAnchorPoint(.5,.5);var sprite = glow.addComponent(cc.Sprite); sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM; sprite.trim = false;
-      if(adjustment.warp||adjustment.warpNodes&&adjustment.warpNodes.length){sprite._windowLightWarp=adjustment.warp||require("WindowLightWarp").controls();sprite._windowLightNodes=adjustment.warpNodes;}
+      sprite._windowLightType=settings.lightType;
+      if(adjustment.warp||adjustment.warpNodes&&adjustment.warpNodes.length){sprite._windowLightWarp=adjustment.warp||require("WindowLightWarp").forType(settings.lightType).controls();sprite._windowLightNodes=adjustment.warpNodes;}
       if(adjustment.erase&&adjustment.erase.strokes.length)sprite._windowLightErase=adjustment.erase;
       entry.glows.push({ node: glow, sprite: sprite, config: settings });
       if (!at) { entry.glow = glow; entry.sprite = sprite; }
