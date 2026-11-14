@@ -1,6 +1,6 @@
 "use strict";
 var Weapons = require("HeroWeapons"), Pose = require("HeroSkillPose"), SkillAnimation = require("HeroSkillAnimation"), states = new WeakMap(), layerOrders = new WeakMap(), combatStates = new WeakMap(), combatMotion = new WeakSet(), clipCache = new WeakMap(), leftSlotCache = new WeakMap(), retimedAttacks = new WeakMap(), attackTokens = new WeakMap();
-var keys = ["spAniBody", "spAniDrap", "spAniHead", "spAniBow", "spAniArrow", "spAniHand"];
+var keys = ["spAniBody", "spAniDrap", "spAniHead", "spAniBow", "spAniArrow", "spAniHand"], heldShots = new WeakMap();
 var frontOrder=['spAniMa','spAniBody','spAniDrap','spAniHand','spAniHead','spAniBow','spAniArrow'],backOrder=['spAniArrow','spAniMa','spAniBody','spAniDrap','spAniHand','spAniHead','spAniBow'];
 function metadata(controller) { var data = controller.spAniBody && controller.spAniBody.skeletonData; return data && data.skeletonJson && data.skeletonJson._heroMaker; }
 function user() { return require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData(); }
@@ -50,7 +50,13 @@ function clock(track,master) {
 function attacking(controller) { var state=combatStates.get(controller),track=controller.spAniBody&&controller.spAniBody.getCurrent&&controller.spAniBody.getCurrent(0);return !!mountMetadata(controller)&&(state&&(state.beam||state.rapid)||track&&!loop(track)&&/^attack(?:_|$)/.test(name(track))); }
 function prepareAttack(controller,animation) {
   if(!metadata(controller)||!mountMetadata(controller))return;
+  // A real shot always takes over from the passive draw, with its ordinary
+  // authored attack event and callbacks intact.
+  var charging=combatStates.get(controller);
+  heldShots.delete(controller);
+  if(charging&&charging.charge){keys.forEach(function(key){Pose.removeAim(controller[key]);});combatStates.delete(controller);}
   attackTokens.set(controller,(attackTokens.get(controller)||0)+1);
+  if(charging&&charging.charge>=1-1e-9)heldShots.set(controller,{animation:animation,clip:clipInfo(controller,animation),token:attackTokens.get(controller)});
   keys.concat(['spAniMa']).forEach(function(key){var renderer=controller[key];if(!renderer||!renderer.setMix)return;
     ['idle','move'].forEach(function(pose){renderer.setMix(pose,animation,.08);renderer.setMix(animation,pose,.12);});
     // Attack-speed buffs can begin the next swing before recovery completes.
@@ -78,6 +84,7 @@ function setLocomotion(controller,animation) {
 }
 function attack(controller,animation) {
   if(!metadata(controller)||!mountMetadata(controller))return;
+  if(holdChargedAttack(controller))return;
   var state=combatStates.get(controller);
   if(state&&state.beam){if(controller.isMove)ensureLocomotion(controller.spAniMa,'move');return;}
   if((state||combatMotion.has(controller))&&controller.isMove){ensureLocomotion(controller.spAniMa,'move');return;}
@@ -88,9 +95,10 @@ function attack(controller,animation) {
 function update(controller) {
   if (!metadata(controller)) return;
   maintainAttackTiming(controller);
+  if(holdChargedAttack(controller)){follow(controller);return;}
   var combat=combatStates.get(controller);
   if(combat&&controller.isDie){clearCombatState(controller);combat=null;}
-  if(combat&&(combat.beam||combat.rapid)){updateCombatPose(controller,combat);applyAim(controller,combat,true);follow(controller);return;}
+  if(combat&&(combat.beam||combat.rapid||combat.charge)){updateCombatPose(controller,combat);applyAim(controller,combat,true);follow(controller);return;}
   var horse = controller.spAniMa, mount = horse && horse.getCurrent && horse.getCurrent(0), body = controller.spAniBody, master = body.getCurrent && body.getCurrent(0);
   if (!master) return;
   if (!controller.isDie && loop(master)) {
@@ -119,6 +127,23 @@ function update(controller) {
 function trackValue(track,key){var getter='get'+key.charAt(0).toUpperCase()+key.slice(1);return track&&(typeof track[getter]==='function'?track[getter]():track[key]);}
 function setTrackValue(track,key,value){if(!track)return;var setter='set'+key.charAt(0).toUpperCase()+key.slice(1);if(typeof track[setter]==='function')track[setter](value);else track[key]=value;}
 function current(renderer){return renderer&&renderer.getCurrent&&renderer.getCurrent(0);}
+// The existing gameplay scheduler owns release timing. A fully drawn bow
+// waits through that windup, then resumes recovery when the shot actually fires.
+function holdChargedAttack(controller){
+  var hold=heldShots.get(controller),master=current(controller.spAniBody);
+  if(!hold)return false;
+  if(controller.isDie||hold.token!==attackTokens.get(controller)||!master||name(master)!==hold.animation||loop(master)){heldShots.delete(controller);return false;}
+  if(controller.isMove){releaseChargedAttack(controller);return false;}
+  keys.forEach(function(key){var renderer=controller[key],track=current(renderer);if(renderer&&track&&name(track)===hold.animation){setTrackValue(track,'trackTime',Math.max(0,hold.clip.hit-.00001));setTrackValue(track,'timeScale',0);applyPose(renderer);}});
+  ensureLocomotion(controller.spAniMa,'idle');return true;
+}
+function releaseChargedAttack(controller,playback){
+  var hold=heldShots.get(controller);if(!hold)return false;heldShots.delete(controller);
+  if(hold.token!==attackTokens.get(controller))return false;
+  var speed=typeof playback==='number'&&isFinite(playback)&&playback>=0?playback:1;
+  keys.forEach(function(key){var renderer=controller[key],track=current(renderer);if(renderer&&track&&name(track)===hold.animation){setTrackValue(track,'trackTime',hold.clip.hit);setTrackValue(track,'timeScale',speed);applyPose(renderer);}});
+  attack(controller,hold.animation);return true;
+}
 function ensureLocomotion(renderer,animation){var track=current(renderer);if(!renderer)return null;return !track||name(track)!==animation||!loop(track)?locomotion(renderer,animation):track;}
 function applyPose(renderer){
   if(!renderer)return;Pose.removeAim(renderer);
@@ -153,7 +178,9 @@ function enableCombatMotion(controller){if(controller)combatMotion.add(controlle
 function setMoving(controller,moving){
   if(!controller||!combatMotion.has(controller)||!metadata(controller)||!mountMetadata(controller)||controller.isDie)return false;
   controller.isMove=!!moving;
+  if(moving)releaseChargedAttack(controller);
   var state=combatStates.get(controller),horse=controller.spAniMa,master=current(controller.spAniBody);
+  if(moving&&state&&state.charge){combatStates.delete(controller);releaseCombatPose(controller);return true;}
   if(moving)ensureLocomotion(horse,'move');
   else if(state&&state.beam){var mount=current(horse);if(!mount||name(mount)==='move')ensureLocomotion(horse,'idle');}
   else if(state&&state.rapid&&master)stationaryMountPose(controller,state,trackValue(master,'trackTime')||0,trackValue(master,'timeScale'));
@@ -217,6 +244,12 @@ function stationaryMountPose(controller,state,time,speed){
 }
 function updateCombatPose(controller,state){
   var horse=controller.spAniMa,desired=controller.isMove?'move':'idle',master=current(controller.spAniBody);
+  if(state.charge){
+    // Stop just before the authored release event. Sampling the full draw must
+    // never emit a shot or complete an attack while the player is waiting.
+    var sample=Math.max(0,state.clip.hit-.00001)*state.charge;
+    seekRider(controller,state,sample,0);ensureLocomotion(horse,'idle');return;
+  }
   if(state.beam){
     if(!master||name(master)!==state.animation||loop(master)){startRiderPose(controller,state);master=current(controller.spAniBody);}
     var hold=typeof state.holdTime==='number'?Math.max(0,Math.min(state.clip.end,state.holdTime)):state.clip.hit;
@@ -255,11 +288,13 @@ function setCombatState(controller,options){
   if(!controller||!metadata(controller)||!mountMetadata(controller))return false;
   if(!options||options.enabled===false){clearCombatState(controller);combatMotion.delete(controller);return false;}
   enableCombatMotion(controller);
-  var previous=combatStates.get(controller),mode=options.beam?'beam':options.rapid?'rapid':'ordinary';
-  if(previous&&previous.mode!==mode&&(previous.beam||previous.rapid))releaseCombatPose(controller);
+  var previous=combatStates.get(controller),master=current(controller.spAniBody);
+  var charge=!options.moving&&options.charge>0&&(previous&&previous.charge||!master||loop(master))?Math.min(1,options.charge):0;
+  var mode=options.beam?'beam':options.rapid?'rapid':charge?'charge':'ordinary';
+  if(previous&&previous.mode!==mode&&(previous.beam||previous.rapid||previous.charge))releaseCombatPose(controller);
   var state=previous&&previous.mode===mode?previous:{mode:mode,lastPulse:null},animationChanged=false;
   if(typeof options.moving==='boolean')controller.isMove=options.moving;
-  state.beam=!!options.beam;state.rapid=options.rapid||false;state.pulse=options.pulse;
+  state.beam=!!options.beam;state.rapid=options.rapid||false;state.charge=mode==='charge'?charge:0;state.pulse=options.pulse;
   if(typeof options.playback==='number'&&isFinite(options.playback)&&options.playback>=0)state.playback=options.playback;
   if(options.animation&&supportedPose(controller,options.animation)&&state.animation!==options.animation){animationChanged=!!state.animation;state.animation=options.animation;state.beamHeld=false;state.referenceToken=undefined;state.referenceAnimation=undefined;}
   if(typeof options.holdTime==='number')state.holdTime=options.holdTime;
@@ -267,6 +302,10 @@ function setCombatState(controller,options){
   if(typeof options.beamSourceTime==='number'&&isFinite(options.beamSourceTime)&&options.beamSourceTime>=0)state.beamSourceTime=options.beamSourceTime;
   if(options.aimDirection&&isFinite(options.aimDirection.x)&&isFinite(options.aimDirection.y)&&Math.hypot(options.aimDirection.x,options.aimDirection.y)>0){state.aimDirection={x:options.aimDirection.x,y:options.aimDirection.y};state.aimToken=attackTokens.get(controller)||0;state.aimAnimation=name(current(controller.spAniBody));}
   combatStates.set(controller,state);
+  if(state.charge&&(!previous||previous.mode!==mode)){
+    state.animation=attackName(controller);state.clip=clipInfo(controller,state.animation);
+    keys.forEach(function(key){var renderer=controller[key];if(renderer)setTrackValue(renderer.setAnimation(0,state.animation,false),'timeScale',0);});
+  }
   if((state.beam||state.rapid)&&(!previous||previous.mode!==mode||animationChanged)){
     startRiderPose(controller,state);
     if(state.beam&&!controller.isMove){
@@ -280,9 +319,9 @@ function setCombatState(controller,options){
   else {
     // Commit gameplay-owned samples now: scene depth copies and rendering may
     // run before this controller's lateUpdate. Track clocks alone are not poses.
-    if(state.beam||state.rapid)updateCombatPose(controller,state);
-    applyAim(controller,state,state.beam||state.rapid);
-    if(state.beam||state.rapid||state.aimDirection)follow(controller);
+    if(state.beam||state.rapid||state.charge)updateCombatPose(controller,state);
+    applyAim(controller,state,state.beam||state.rapid||!!state.charge);
+    if(state.beam||state.rapid||state.charge||state.aimDirection)follow(controller);
   }
   return true;
 }
@@ -294,9 +333,10 @@ function releaseCombatPose(controller){
   var desired=controller.isMove?'move':'idle';
   keys.concat(['spAniMa']).forEach(function(key){ensureLocomotion(controller[key],desired);});
 }
-function clearCombatState(controller){retimedAttacks.delete(controller);keys.forEach(function(key){if(controller)Pose.removeAim(controller[key]);});var state=combatStates.get(controller);if(!state)return;combatStates.delete(controller);if(state.beam||state.rapid)releaseCombatPose(controller);}
+function clearCombatState(controller){var held=heldShots.has(controller);heldShots.delete(controller);retimedAttacks.delete(controller);keys.forEach(function(key){if(controller)Pose.removeAim(controller[key]);});var state=combatStates.get(controller);if(!state){if(held)releaseCombatPose(controller);return;}combatStates.delete(controller);if(state.beam||state.rapid||state.charge||held)releaseCombatPose(controller);}
 function ownsAttackClock(controller,renderer){
-  if(!controller)return false;var state=combatStates.get(controller),retimed=retimedAttacks.get(controller),body=current(controller.spAniBody),owned=state&&(state.beam||state.rapid)||retimed&&body&&!loop(body)&&name(body)===retimed.animation&&retimed.token===(attackTokens.get(controller)||0);
+  if(!controller)return false;var state=combatStates.get(controller),retimed=retimedAttacks.get(controller),body=current(controller.spAniBody),owned=state&&(state.beam||state.rapid||state.charge)||retimed&&body&&!loop(body)&&name(body)===retimed.animation&&retimed.token===(attackTokens.get(controller)||0);
+  owned=owned||heldShots.has(controller);
   if(!owned)return false;if(!renderer)return true;
   if(renderer===controller.spAniMa){var track=current(renderer);return !controller.isMove&&!!track&&!loop(track)&&/^attack(?:_|$)/.test(name(track));}
   return keys.some(function(key){return controller[key]===renderer;});
@@ -350,6 +390,8 @@ exports.setLocomotion = setLocomotion;
 exports.orderLeftHand = orderLeftHand;
 exports.setCombatState = setCombatState;
 exports.clearCombatState = clearCombatState;
+exports.isCharging = function(controller){var state=combatStates.get(controller);return !!(state&&state.charge);};
+exports.releaseChargedAttack = releaseChargedAttack;
 exports.attackPoseTime = function(controller){return clipInfo(controller,attackName(controller)).hit;};
 exports.skillTiming = skillTiming;
 exports.retimeAttack = retimeAttack;

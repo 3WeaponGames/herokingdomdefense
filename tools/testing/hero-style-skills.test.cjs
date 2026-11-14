@@ -12,6 +12,13 @@ test('Steady Aim charges only standing and first basic shot snapshots then clear
  Skills.step(s,10,{moving:false});assert.equal(s.charge,1);
  Skills.step(s,.001,{moving:true});assert.equal(s.charge,0);
 });
+
+test('Momentum scales basic and active arrow speed linearly from 100 to 200 percent at the actual release',()=>{
+ for(const charge of[0,.25,.5,.75,1]){
+  const s=Skills.createState('skirmisher',{chargeRate:0});s.charge=charge;const fire=Skills.onBasicFire(s);close(fire.speedMultiplier,1+charge);assert.equal(s.charge,0);
+  s.charge=charge;Skills.beginActive(s,{});const [arrow]=Skills.step(s,s.tuning.windup,{moving:false});close(arrow.speed,s.tuning.projectileSpeed*(1+charge));close(arrow.charge,charge);
+ }
+});
 test('aim confirmation does not consume charge before Skirmisher actually fires',()=>{
  const s=Skills.createState('skirmisher');s.charge=.5;
  assert.equal(Skills.beginActive(s,{direction:{x:0,y:5}}).ok,true);close(s.charge,.5);

@@ -1136,6 +1136,8 @@ var def_KinghtFallGameCtrl = function (t) {
     var a = this.ndUI.convertToNodeSpaceAR(i);
     n.setPosition(a);
     var o = n.getComponent($z1KinghtFallBulletPlay.default);
+    if (o._heroBaseSpeed === undefined) o._heroBaseSpeed = o.speed;
+    o.speed = o._heroBaseSpeed * (this.ctrPlay._styleProjectileSpeed || 1);
     o.setSkin(this.ctrPlay.ctrPlayAni.arrName);
     this.ndPlayArr2.push(o);
     var r = this.ctrPlay.getAttack(t);

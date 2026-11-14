@@ -13,12 +13,13 @@ function projectilePoint(projectile,v) {
   var launch=projectile.visualOffset||{};
   return offset(projectile,(launch.x||0)+v.originX+v.offsetX,(launch.y||0)+v.originY+v.offsetY);
 }
-function release(runtime,strike) {
+function release(runtime,strike,charge) {
   if(!runtime.available())return;
   var cue=runtime.settings&&runtime.settings.audio&&runtime.settings.audio.cast;
   if(cue&&cue.clip)return;
   var s=state(runtime);if(s.lastRelease===strike)return;s.lastRelease=strike;
   var sounds=require("BattleSounds");
+  if(runtime.state.style==="skirmisher"&&charge>=1-1e-9){if(sounds.effect)sounds.effect("archer-momentum-release",runtime.hero);return;}
   if(runtime.state.style==="guardian"){
     if(sounds.effect)sounds.effect("shield-activate",runtime.hero);
   }else if(sounds.attack)sounds.attack(runtime.hero,"hero");

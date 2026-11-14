@@ -70,7 +70,7 @@ function bonuses(state, context) {
 function onBasicFire(state) {
   var amount = state.style === "skirmisher" ? state.charge : 0;
   if (state.style === "skirmisher") state.charge = 0;
-  return { charge: amount, damageMultiplier: 1 + amount * positive(state.tuning.chargedDamage) };
+  return { charge: amount, speedMultiplier: 1 + amount, damageMultiplier: 1 + amount * positive(state.tuning.chargedDamage) };
 }
 function onHit(state, target, options) {
   options = options || {};
@@ -189,7 +189,7 @@ function step(state, dt, context) {
     active.emitted++;
     if (active.kind === "skirmisher-arrow") {
       var fire = onBasicFire(state); event.charge = fire.charge; event.damageMultiplier = fire.damageMultiplier;
-      event.speed = state.tuning.projectileSpeed; event.width = state.tuning.projectileWidth;
+      event.speed = state.tuning.projectileSpeed * fire.speedMultiplier; event.width = state.tuning.projectileWidth;
       event.distanceDamagePer100 = state.tuning.distanceDamagePer100; state.active = null;
     } else if (active.kind === "vanguard-thrust") {
       event.count = active.count; event.damageMultiplier = vanguardMultiplier(state, Object.assign({}, active.context, context));

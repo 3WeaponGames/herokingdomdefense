@@ -65,6 +65,22 @@ exports.effects = {
     "loop": false,
     "duration": 0.6731065759637188
   },
+  "archer-momentum-draw-loop": {
+    "path": "sfx/archer-momentum-draw-loop",
+    "group": "combat",
+    "gain": 0.25,
+    "cooldown": 0,
+    "loop": true,
+    "duration": 3.9750113378684806
+  },
+  "archer-momentum-release": {
+    "path": "sfx/archer-momentum-release",
+    "group": "combat",
+    "gain": 0.55,
+    "cooldown": 65,
+    "loop": false,
+    "duration": 1.457891156462585
+  },
   "enemy-spit-launch": {
     "path": "sfx/enemy-spit-launch",
     "group": "combat",

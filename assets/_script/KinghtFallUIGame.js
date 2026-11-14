@@ -961,7 +961,7 @@ var def_KinghtFallUIGame = function (t) {
     button.x = low <= high ? Math.max(low, Math.min(high, this._buildInfoBaseX)) : (low + high) / 2;
     this._buildCaptionBoundsSignature = signature;
   };
-  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles, viewport, placementTarget, gap) {
+  _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles, viewport, placementTarget, gap, edge) {
     var ui = this.ctrUI.node, arrow = node.getChildByName("ndArr");
     var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
     var footprint = enemyIndicatorBounds(node, ui, arrow);
@@ -979,6 +979,10 @@ var def_KinghtFallUIGame = function (t) {
     var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
     if (viewport) bounds = { minX: viewport.minX - footprint.minX + 16, maxX: viewport.maxX - footprint.maxX - 16,
       minY: viewport.minY - footprint.minY + 16, maxY: viewport.maxY - footprint.maxY - 16 };
+    // Upcoming waves stay in a single side column, even when the HUD or an
+    // earlier marker blocks their preferred position. Only move down the edge.
+    if (edge === "left") bounds.maxX = bounds.minX;
+    if (edge === "right") bounds.minX = bounds.maxX;
     var position = placeEnemyIndicator(placementTarget || target, footprint, bounds, obstacles, gap === undefined ? 12 : gap);
     node.setPosition(position.x, position.y);
     obstacles.push({ minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
@@ -990,29 +994,34 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype._placeUpcomingEnemyIndicators = function (markers, obstacles) {
+    if (!markers.length) return;
     var ui = this.ctrUI.node, width = ui.width || 750, height = ui.height || 1334, self = this;
     var viewport = { minX: -width / 2, maxX: width / 2, minY: -height / 2, maxY: height / 2 }, groups = {};
+    if (cc.view) {
+      var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
+      var safe = cc.sys && cc.sys.getSafeAreaRect ? cc.sys.getSafeAreaRect() : { x: origin.x, y: origin.y, width: size.width, height: size.height };
+      var a = ui.convertToNodeSpaceAR(cc.v2(Math.max(origin.x, safe.x), Math.max(origin.y, safe.y)));
+      var b = ui.convertToNodeSpaceAR(cc.v2(Math.min(origin.x + size.width, safe.x + safe.width), Math.min(origin.y + size.height, safe.y + safe.height)));
+      viewport = { minX: Math.min(a.x, b.x), maxX: Math.max(a.x, b.x), minY: Math.min(a.y, b.y), maxY: Math.max(a.y, b.y) };
+    }
+    var centerX = (viewport.minX + viewport.maxX) / 2;
     markers.forEach(function (marker) {
       var node = marker.record.ndItem, target = marker.target;
       if (!node._compactUpcoming) {
         node._compactUpcoming = true;
         var sprite = node.getComponent(cc.Sprite);
         if (sprite && cc.Sprite.SizeMode) sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM;
-        node.setContentSize(112, 112);
-        node.getChildByName("ndArr").setContentSize(112, 112);
+        node.setContentSize(88, 88);
+        node.getChildByName("ndArr").setContentSize(72, 72);
       }
-      var x = target.x / width, y = target.y / height;
-      var side = Math.abs(x) >= Math.abs(y) ? (x < 0 ? "left" : "right") : (y < 0 ? "bottom" : "top");
-      var group = groups[side] || (groups[side] = { items: [], x: 0, y: 0 });
-      group.items.push(marker); group.x += target.x; group.y += target.y;
+      var side = target.x < centerX ? "left" : "right";
+      (groups[side] || (groups[side] = [])).push(marker);
     });
     Object.keys(groups).forEach(function (side) {
-      var group = groups[side], anchor = { x: group.x / group.items.length, y: group.y / group.items.length };
-      if (side === "left" || side === "right") anchor.x = side === "left" ? viewport.minX : viewport.maxX;
-      else anchor.y = side === "bottom" ? viewport.minY : viewport.maxY;
-      // Pack one compact cluster per incoming side. Arrows still point to each
-      // actual spawn, and individual portraits/counts and planning clicks remain.
-      group.items.forEach(function (marker) { self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, anchor, 6); });
+      var anchor = { x: side === "left" ? viewport.minX : viewport.maxX, y: viewport.maxY };
+      // Fill from the top below existing controls; never spill toward the
+      // battlefield center. Portraits/counts, spawn arrows and clicks stay intact.
+      groups[side].forEach(function (marker) { self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, anchor, 6, side); });
     });
   };
   _ctor.prototype._updateOffscreenEnemies = function (obstacles) {

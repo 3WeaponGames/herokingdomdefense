@@ -109,8 +109,8 @@ test('queued active impacts and their effects use the selected authored delay an
 });
 test('an arrow emitted part way through a frame advances only the remaining time',()=>{
   const model=new Model('skirmisher',{windup:.35,projectileSpeed:1000},{mode:'active',targetDistance:600,targets:1,attackRate:0});
-  model.advance(.4);assert.equal(model.projectiles.length,1);close(model.projectiles[0].x,50);close(model.projectiles[0].started,.35);assert.equal(model.hits,0);
-  model.advance(.1);close(model.projectiles[0].x,150);
+  model.advance(.4);assert.equal(model.projectiles.length,1);close(model.projectiles[0].x,91.875);close(model.projectiles[0].speed,1837.5);close(model.projectiles[0].started,.35);assert.equal(model.hits,0);
+  model.advance(.1);close(model.projectiles[0].x,275.625);
 });
 test('beam preview changes a dead target, clears old charges, and never keeps hitting a corpse',()=>{
   const model=new Model('mystic',{}, {mode:'basic',targetDistance:100,targets:2,attackRate:2});simulate(model,1);assert.equal(model.state.mysticCharges,2);
@@ -129,7 +129,7 @@ test('Skirmisher cast pose reaches the authored release exactly at the configure
 test('zero-windup Skirmisher starts at its release marker and recovers at ordinary source speed',async()=>{
   const h=host(),old=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
   try{const view=Preview.create(h.root,{renderer:h.renderer,runtime:()=>({})}),d={...description,layers:[{...description.layers[0],json:{animations:{attack:{events:[{name:'attack',time:.2}],bones:{root:{rotate:[{time:1}]}}}}}}]};await view.set({style:'skirmisher',settings:{windup:0,visual:{}},description:d});view.setScenario({attackRate:0});
-    close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.2);view.seek(.1);close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.3);view.seek(.81);assert.equal(h.seeks.filter(call=>call[1].length).at(-1)[2],'idle','recovery completes after the remaining source clip');view.destroy();}
+    close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.2);view.seek(.1);close(h.seeks.filter(call=>call[2]==='attack').at(-1)[3],.3);view.seek(.81);assert.equal(h.seeks.filter(call=>call[1].length).at(-1)[2],'attack','recovery returns to the next passive draw');close(h.seeks.filter(call=>call[1].length).at(-1)[3],(.2-.00001)*.81*.25);view.destroy();}
   finally{global.requestAnimationFrame=old;global.cancelAnimationFrame=oldCancel;}
 });
 test('Skirmisher shares the equipped arrow marker calibration across bow and every rider layer',async()=>{
@@ -271,6 +271,6 @@ test('swept arrow contact uses the first circle entry while the closest-point he
 
 test('arrow preview damage and first-contact ordering are independent of rendered frame size',()=>{
  const run=step=>{const m=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0,projectileWidth:28},{mode:'active',targets:2,targetDistance:100,attackRate:0});Object.assign(m.targets[0],{x:100,y:27});Object.assign(m.targets[1],{x:110,y:0});let remaining=1.2;while(remaining>1e-9){const dt=Math.min(step,remaining);m.advance(dt);remaining-=dt;}return m;},a=run(1.2),b=run(.01),hits=a.events.filter(e=>e.kind==='impact');
- assert.deepEqual(hits.map(e=>e.target),[1,0]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[1,0]);close(a.damage,b.damage);close(hits[0].time,.082);close(hits[0].damage,108.2);
+ assert.deepEqual(hits.map(e=>e.target),[1,0]);assert.deepEqual(b.events.filter(e=>e.kind==='impact').map(e=>e.target),[1,0]);close(a.damage,b.damage);close(hits[0].time,.082/1.75);close(hits[0].damage,108.2);
  const inside=new Model('skirmisher',{windup:0,chargeRate:0,chargedDamage:0},{mode:'active',targets:3,targetDistance:1,attackRate:0});inside.targets.forEach(t=>Object.assign(t,{x:10,y:0}));inside.advance(.1);assert.deepEqual(inside.events.filter(e=>e.kind==='impact').map(e=>e.target),[0,1,2]);
 });

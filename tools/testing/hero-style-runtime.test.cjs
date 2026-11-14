@@ -12,7 +12,7 @@ function scene(style,options={}){
  const hero={heroStyle:style,node:new Node('hero',h.g.ndMain),hp:500,hpMax:1000,attackRange:200,crit:-1,critDam:1.5,time:{Attack:0},_relicHero:true,
   _heroSecondary:{},ctrHp:{setHp(...args){hpUpdates.push(args);}},ctrPlayAni:{setAttack(){},setBodyLeft(){}},
   isDead(){return this.hp<=0;},getAttack(){return 100;},getSpeed(){return 300;},getAttSpeed(){return options.attackRate||1;},getCriticalDamage(){return 1.5;},
-  onUpdata(){},doAttack(){this.lastBasicDamage=this.getAttack();},doAttackFinish(){},addBuff(type,data){buffs.push({type,data});},
+  onUpdata(){},doAttack(){this.lastBasicDamage=this.getAttack();this.lastBasicSpeed=this._styleProjectileSpeed;this.lastBasicCharge=this._styleShotCharge;},doAttackFinish(){},addBuff(type,data){buffs.push({type,data});},
   onRestart(){},endRoundGame(){},onDead(){},onDestroy(){}
  };
  hero.node._combatGeneration=1;h.g.ctrPlay=hero;
@@ -35,6 +35,15 @@ test('all hero classes keep locomotion while input is blocked or tiny without gr
   h.g.moveDir={x:0,y:0};h.rt.update(.05);assert.equal(h.poses.at(-1).moving,false);
   if(style==='vanguard')assert.equal(h.rt.state.charge,0,'Blocked animation must not grant actual movement momentum');
  }
+});
+
+test('slow movement remains movement at different frame rates while Archer input cancels its draw without granting Vanguard momentum',()=>{
+ for(const fps of [10,60,120])for(const style of ['skirmisher','vanguard']){
+  const h=scene(style);if(style==='skirmisher')h.rt.state.charge=1;
+  for(let frame=0;frame<fps;frame++){h.hero.node.x+=.02/fps;h.rt.update(1/fps);assert(h.rt.moving);assert(h.poses.at(-1).moving);}
+  if(style==='skirmisher'){assert.equal(h.rt.state.charge,0);assert.equal(h.poses.at(-1).charge,0);}else close(h.rt.state.charge,.2);
+ }
+ for(const style of ['skirmisher','vanguard']){const h=scene(style);h.hero._relicMoving=true;h.g.moveDir={x:1,y:0};if(style==='skirmisher')h.rt.state.charge=1;h.rt.update(.01);assert(h.poses.at(-1).moving);assert.equal(h.rt.state.charge,0);if(style==='skirmisher')assert.equal(h.poses.at(-1).charge,0);else assert.equal(h.rt.moving,false);}
 });
 
 test('Bruiser damage and attack speed increase as HP falls and its authored charm heals fractional primary-hit damage',()=>{
@@ -173,9 +182,9 @@ test('earliest swept contact still fences recycled later targets and retired bat
  }
 });
 test('Skirmisher cast uses the real core wind-up event to launch exactly one arrow',()=>{
- const h=scene('skirmisher'),a=h.enemy(100);h.rt.state.charge=.5;
+ const h=scene('skirmisher'),a=h.enemy(150);h.rt.state.charge=.5;
  assert.equal(h.rt.cast({x:1,y:0}),true);h.rt.update(.1);assert.equal(a.hits.length,0);
- h.rt.update(.3);assert.equal(a.hits.length,0,'only .05 seconds of flight elapse after the .35 wind-up');close(h.rt.projectiles[0].x,50);h.rt.update(.1);assert.equal(a.hits.length,1);h.rt.update(1);assert.equal(a.hits.length,1);assert.equal(h.rt.state.active,null);assert.deepEqual(h.retimes,[.35]);
+ h.rt.update(.3);assert.equal(a.hits.length,0,'only .05 seconds of flight elapse after the .35 wind-up');close(h.rt.projectiles[0].x,79.375);close(h.rt.projectiles[0].speed,1587.5);h.rt.update(.1);assert.equal(a.hits.length,1);h.rt.update(1);assert.equal(a.hits.length,1);assert.equal(h.rt.state.active,null);assert.deepEqual(h.retimes,[.35]);
 });
 
 test('Skirmisher launch snapshots the same selected clip used by the aim guide',()=>{
@@ -281,7 +290,7 @@ test('authored impact delay gates Fighter damage, VFX and knockback and checks p
 
 test('long and short frames give emitted arrows the same flight time and preserve fresh thrust effects',()=>{
  function arrow(frames){const h=scene('skirmisher');h.rt.cast({x:1,y:0});frames.forEach(dt=>h.rt.update(dt));return h.rt.projectiles[0];}
- const long=arrow([.4]),short=arrow(Array(40).fill(.01));close(long.x,50);close(long.x,short.x);close(long.travelled,short.travelled);
+ const long=arrow([.4]),short=arrow(Array(40).fill(.01));close(long.x,54.375);close(long.x,short.x);close(long.travelled,short.travelled);
  const h=scene('vanguard');h.rt.cast({x:1,y:0});h.rt.update(2.5);
  assert.equal(h.rt.effects.length,1,'the seventh effect begins at the final instant rather than aging by 2.5 seconds');close(h.rt.effects[0].remaining,.35);
 });
@@ -329,6 +338,19 @@ test('Mystic custom hold marker gates initial ticks and direct retarget preserve
 test('Steady Aim survives a failed basic release and its bonus is snapshotted on a real shot',()=>{
  const h=scene('skirmisher');h.rt.state.charge=1;h.hero.doAttack();assert.equal(h.rt.state.charge,1,'no enemy means no arrow was fired');
  h.enemy(100);h.hero.doAttack();assert.equal(h.hero.lastBasicDamage,150);assert.equal(h.rt.state.charge,0);assert.equal(h.hero.getAttack(),100,'shot-only damage does not leak into later attacks');
+});
+
+test('basic arrows snapshot Momentum speed at release and movement input cancels charge before the next update',()=>{
+ const h=scene('skirmisher');h.enemy(100);
+ for(const charge of[0,.5,1]){h.rt.state.charge=charge;h.hero.doAttack();close(h.hero.lastBasicSpeed,1+charge);close(h.hero.lastBasicCharge,charge);assert.equal(h.rt.state.charge,0);assert.equal(h.hero._styleProjectileSpeed,undefined);assert.equal(h.hero._styleShotCharge,undefined);}
+ h.rt.state.charge=1;h.hero._relicMoving=true;h.hero.doAttack();close(h.hero.lastBasicSpeed,1);close(h.hero.lastBasicCharge,0);
+ h.rt.state.charge=1;h.rt.update(.01);assert.equal(h.rt.state.charge,0);assert.equal(h.poses.at(-1).charge,0);
+});
+
+test('stationary Momentum drives the rider draw and a fully charged skill emits the epic release exactly once',()=>{
+ const h=scene('skirmisher'),sounds=[];h.e.stubs.BattleSounds={effect:id=>sounds.push(id),charge(){}};
+ h.rt.update(2);close(h.poses.at(-1).charge,.5);h.rt.update(4);close(h.poses.at(-1).charge,1);
+ assert(h.rt.cast({x:1,y:0}));h.rt.update(.35);close(h.rt.projectiles[0].speed,2000);assert.deepEqual(sounds,['archer-momentum-release']);h.rt.update(.01);assert.equal(sounds.length,1);
 });
 
 test('Mystic custom hold times beyond the animation duration clamp to the same final frame as the rider',()=>{

@@ -23,6 +23,31 @@ function setup(style='fighter'){
 const track=(actor,key='spAniBody')=>actor[key].getCurrent(0),name=(actor,key)=>track(actor,key).animation.name;
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 
+test('Skirmisher slowly samples its authored bow draw with Momentum and holds full draw without attack events',()=>{
+ const h=setup('skirmisher'),{actor,rider}=h;let hits=0,completed=0;actor.setAttackEvent(()=>hits++);actor.setAttackEnd(()=>completed++);
+ let previous=-1;
+ for(const charge of[.05,.25,.5,.75,1]){
+  rider.setCombatState(actor,{moving:false,charge});const body=track(actor);
+  assert.equal(name(actor),'attack');assert(body.trackTime>previous);assert(body.trackTime<rider.attackPoseTime(actor));assert.equal(body.timeScale,0);assert(rider.ownsAttackClock(actor,actor.spAniBody));
+  for(const key of keys.slice(2))close(track(actor,key).trackTime,body.trackTime);
+  previous=body.trackTime;h.step(.8);
+ }
+ const body=track(actor),held=body.trackTime;h.step(20);rider.setCombatState(actor,{moving:false,charge:1});assert.equal(track(actor),body);close(body.trackTime,held);assert.equal(name(actor,'spAniMa'),'idle');assert.equal(hits,0);assert.equal(completed,0);
+});
+
+test('movement immediately cancels the passive draw, while a shot interrupts a partial or full draw normally',()=>{
+ for(const charge of[.35,1]){
+  const h=setup('skirmisher'),{actor,rider}=h;let hits=0;actor.setAttackEvent(()=>hits++);
+  rider.setCombatState(actor,{moving:false,charge});actor.setMove();for(const key of keys)assert.equal(name(actor,key),'move');assert.equal(rider.isCharging(actor),false);
+  actor.setIdle();rider.setCombatState(actor,{moving:false,charge});actor.setAttack();const shot=track(actor);
+  assert.equal(rider.isCharging(actor),false);assert.equal(shot.timeScale,charge===1?0:1);
+  rider.setCombatState(actor,{moving:false,charge});assert.equal(track(actor),shot,'passive Momentum must not replace a real firing animation');
+  if(charge===1){h.step(.5);assert.equal(hits,0);close(shot.trackTime,rider.attackPoseTime(actor)-.00001);assert(rider.releaseChargedAttack(actor,1));}
+  for(let i=0;i<20;i++){h.step(.02);rider.setCombatState(actor,{moving:false,charge:0});}
+  assert.equal(hits,1);
+ }
+});
+
 test('Vanguard restores the authored weapon direction after aimed skills in every direction',()=>{
  const h=setup('vanguard'),hand=h.actor.spAniBow.findBone('Rider/HandRight'),expected=hand.rotation;
  for(const moving of [false,true])for(const degrees of [-135,-90,-45,0,45,90,135,180]){

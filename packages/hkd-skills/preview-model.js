@@ -92,7 +92,7 @@ class Model{
  basicRelease(){
   const pending=this.basicPending;if(!pending||pending.elapsed+1e-9<pending.duration)return false;this.basicPending=null;this.attackClock=0;const target=this.nearest();this.event('release',{skill:false});if(!target)return true;
   const fire=this.core.onBasicFire(this.state);
-  if(this.style==='skirmisher')this.projectiles.push({x:this.hero.x,y:this.hero.y+35,direction:unit(Math.atan2(target.y-this.hero.y-35,target.x-this.hero.x)*180/Math.PI),travelled:0,speed:550,width:30,multiplier:fire.damageMultiplier,hit:new Set(),id:++this.serial,skill:false,started:this.time});
+  if(this.style==='skirmisher')this.projectiles.push({x:this.hero.x,y:this.hero.y+35,direction:unit(Math.atan2(target.y-this.hero.y-35,target.x-this.hero.x)*180/Math.PI),travelled:0,speed:550*fire.speedMultiplier,width:30,multiplier:fire.damageMultiplier,hit:new Set(),id:++this.serial,skill:false,started:this.time});
   else this.hit(target,fire.damageMultiplier,false,++this.serial);return true;
  }
  arrows(dt){

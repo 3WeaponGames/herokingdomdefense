@@ -297,7 +297,7 @@ test('a detached hero during battle teardown stops loops without crashing on sur
 });
 
 test('the active effect library contains no death assets, keeps eight horse surfaces and only the approved lava ambience', () => {
-  const names = Object.keys(catalog.effects); assert.equal(names.length, 68); const uuids = new Set(); let bytes = 0;
+  const names = Object.keys(catalog.effects); assert.equal(names.length, 70); const uuids = new Set(); let bytes = 0;
   for (const [id, item] of Object.entries(catalog.effects)) {
     const file = path.join(root, 'assets/KinghtFallAudio', item.path + (item.loop ? '.wav' : '.mp3'));
     const meta = JSON.parse(fs.readFileSync(file + '.meta')); assert.equal(meta.importer, 'audio-clip'); assert(!uuids.has(meta.uuid)); uuids.add(meta.uuid); bytes += fs.statSync(file).size;
@@ -306,6 +306,21 @@ test('the active effect library contains no death assets, keeps eight horse surf
   assert(bytes < 8 * 1024 * 1024); assert.equal(names.filter(n => n.startsWith('hooves-')).length, 8);
   assert.deepEqual(names.filter(n => n.startsWith('ambience-')), ['ambience-lava-loop']);
   assert(!names.some(n => n.startsWith('death-')));
+});
+
+test('archer Momentum draw loops once, cancels immediately and obeys pause, mute and owned shutdown',()=>{
+ const f=fixture('desert');f.hero.heroStyle='skirmisher';f.hero._styleRuntime={bowCharging:true};f.start();f.tick();
+ const draws=()=>f.played.filter(p=>p.path==='sfx/archer-momentum-draw-loop');assert.equal(draws().length,1);assert.equal(draws()[0].loop,true);f.tick();assert.equal(draws().length,1);
+ f.hero._styleRuntime.bowCharging=false;f.sounds.charge(f.hero,false);assert.equal(draws()[0].source.state,3);
+ f.hero._styleRuntime.bowCharging=true;f.tick();assert.equal(draws().length,2);f.sounds.suspend(f.game,true);assert.equal(draws().at(-1).source.state,3);f.tick();assert.equal(draws().length,2);
+ f.sounds.suspend(f.game,false);f.tick();assert.equal(draws().length,3);f.preferences.effects=false;f.tick();assert.equal(draws().at(-1).source.state,3);
+ f.preferences.effects=true;f.tick();assert.equal(draws().length,4);f.sounds.dispose(f.game);assert(draws().every(p=>p.source.state===3));assert(!Array.from(f.manager.audioSourceMap.keys()).some(k=>k.startsWith('battle-sfx-')));assert.deepEqual(f.writes,[]);
+});
+
+test('a canceled bow-draw preload cannot start late, and full-charge release replaces the ordinary bow sound',()=>{
+ const f=fixture('desert');f.start();f.hero.heroStyle='skirmisher';f.sounds.charge(f.hero,true);assert(f.pending.some(p=>p.file==='sfx/archer-momentum-draw-loop'));f.sounds.charge(f.hero,false);f.finishAll();assert.equal(f.played.length,0);
+ for(const charge of[0,.5,1]){f.hero._styleShotCharge=charge;f.advance(100);f.sounds.attack(f.hero,'hero');f.finishAll();}
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/bow-arrow-release','sfx/bow-arrow-release','sfx/archer-momentum-release']);
 });
 
 test('the mounted hero never uses creature hurt sounds, and enemy spells and spit have matching impacts', () => {
