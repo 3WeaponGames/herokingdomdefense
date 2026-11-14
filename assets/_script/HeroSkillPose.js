@@ -33,7 +33,10 @@ function applyAim(target,direction,mirrorX,options){
   var delta=Math.atan2(y,x*(mirrorX<0?-1:1))*180/Math.PI-(options&&value(options,"referenceAngle",0)||0);
   // Uncalibrated horizontal facing already supplies the authored pose.
   if(Math.abs(delta)<1e-8)return false;
-  var base=value(bone,"rotation",0);write(bone,"rotation",base+delta);aimed.set(target,{base:base,applied:base+delta,identity:target.skeletonData||target.data});
+  var base=value(bone,"rotation",0);write(bone,"rotation",base+delta);
+  // JSB stores bone rotations as float32. Remember the value actually applied
+  // so cleanup recognizes it next frame instead of adding aim again and again.
+  aimed.set(target,{base:base,applied:value(bone,"rotation",base+delta),identity:target.skeletonData||target.data});
   commitWorld(target);
   return true;
 }

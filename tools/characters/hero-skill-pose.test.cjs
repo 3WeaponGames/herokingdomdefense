@@ -52,6 +52,17 @@ test('removing procedural aim commits the restored world transform immediately',
  Pose.applyAim(renderer,{x:0,y:1},1);near(bone.rotation,102);Pose.removeAim(renderer);near(bone.rotation,12);assert.equal(commits,2);
 });
 
+test('diagonal aim replaces its previous offset on float32 native bones without spinning or leaking into the next pose',()=>{
+ for(const base of [0,-24.371])for(const angle of [.61,1.2,-2.17])for(const face of [-1,1]){
+  let rotation=Math.fround(base);const original=rotation,bone={getRotation:()=>rotation,setRotation:v=>rotation=Math.fround(v)};
+  const renderer={skeletonData:{},findBone:()=>bone,updateWorldTransform(){}},direction={x:Math.cos(angle),y:Math.sin(angle)};
+  const expected=Math.fround(original+Math.atan2(direction.y,direction.x*face)*180/Math.PI-15.1398169511496);
+  for(let frame=0;frame<240;frame++){Pose.applyAim(renderer,direction,face,{referenceAngle:15.1398169511496});assert.equal(rotation,expected,'reapplying cast aim cannot accumulate rotation');}
+  Pose.removeAim(renderer);assert.equal(rotation,original,'ending a cast restores its exact unmodified native pose');
+  Pose.applyAim(renderer,direction,face);bone.setRotation(27.1234);const animated=rotation;Pose.removeAim(renderer);assert.equal(rotation,animated,'cleanup preserves a newer animation pose');
+ }
+});
+
 test('staff tips use the fitted attachment upper edge and native bone getters without aiming toward the target',()=>{
  const bone={getWorldX:()=>10,getWorldY:()=>20,getA:()=>0,getB:()=>-1,getC:()=>1,getD:()=>0};
  const renderer={findBone:()=>bone,findSlot:()=>({getAttachment:()=>({getOffset:()=>[-4,-10,-4,10,4,10,4,-10]})})};

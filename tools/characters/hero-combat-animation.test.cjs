@@ -355,6 +355,24 @@ function browserRealtime(h){
  return h;
 }
 
+test('all six active weapon poses stay fixed through repeated early and late updates with native float32 rotation precision',()=>{
+ for(const style of Weapons.styles.map(value=>value.id))for(const angle of [.61,1.2,-2.17]){
+  const h=setup(style),{actor,rider}=h,direction={x:Math.cos(angle),y:Math.sin(angle)},face=direction.x<0?-1:1;
+  for(const renderer of h.renderers)for(const bone of renderer.skeleton.bones){
+   let rotation=Math.fround(bone.rotation);Object.defineProperty(bone,'rotation',{get:()=>rotation,set:v=>rotation=Math.fround(v),configurable:true});
+  }
+  actor.setBodyLeft(face);if(style!=='vanguard'&&style!=='mystic')actor.setAttack();if(style==='skirmisher')rider.retimeAttack(actor,2);
+  const options=elapsed=>({moving:false,deferUpdate:true,aimDirection:['skirmisher','fighter'].includes(style)?direction:undefined,beam:style==='mystic',beamElapsed:elapsed,rapid:style==='vanguard'?{elapsed,duration:2.5,strikes:7}:false});
+  const renderers=keys.slice(1).map(key=>actor[key]),original=renderers.map(renderer=>renderer.findBone('Rider/HandRight').rotation);
+  rider.setCombatState(actor,options(0));const expected=renderers.map(renderer=>renderer.findBone('Rider/HandRight').rotation);
+  for(let frame=0;frame<36;frame++){
+   rider.setCombatState(actor,options(frame/60));h.step(1/60);
+   renderers.forEach((renderer,index)=>{assert.equal(renderer.findBone('Rider/HandRight').rotation,expected[index],style+' cast direction must not accumulate each frame');assert.equal(Math.sign(renderer.node.scaleX),face,style+' weapon keeps its cast facing');});
+  }
+  rider.clearCombatState(actor);renderers.forEach((renderer,index)=>assert.equal(renderer.findBone('Rider/HandRight').rotation,original[index],style+' cast cleanup must not leave a rotated weapon'));
+ }
+});
+
 test('Creator browser wrappers commit sampled and aimed geometry before scene capture',()=>{
  const {actor,rider}=browserRealtime(setup('mystic')),Pose=require('../../assets/_script/HeroSkillPose');
  rider.setCombatState(actor,{beam:true,beamElapsed:.2,moving:false,aimDirection:{x:0,y:1},deferUpdate:true});
