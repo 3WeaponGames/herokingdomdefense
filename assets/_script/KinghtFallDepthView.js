@@ -41,6 +41,11 @@ NativeCaptureScope.prototype.unmute=function(entry) {
   entry.color.a=entry.alpha;entry.native.paused(!!entry.renderer.paused);entry.muted=false;
 };
 function activeNativeRenderers(scene) {
+  // Creator 2.4.13 getComponents filters this own JS array into a fresh result.
+  // Append to our one result instead; unknown/custom APIs keep the public path.
+  var Type=sp.Skeleton;
+  var componentArray=!!(cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"&&
+    typeof cc.Node==="function"&&typeof cc.Node.prototype.getComponents==="function");
   var pending=scene?[scene]:[],seen=new Set(),renderers=[];
   try {
     while(pending.length) {
@@ -52,9 +57,15 @@ function activeNativeRenderers(scene) {
       if(node&&node!==scene&&node.activeInHierarchy===false)continue;
       if(!node||seen.has(node)||typeof node.getComponents!=="function")return null;
       seen.add(node);
-      var children=node.children,components=node.getComponents(sp.Skeleton);
+      var children=node.children,components,i;
+      var usePrivate=componentArray&&node instanceof cc.Node&&node.getComponents===cc.Node.prototype.getComponents&&Object.prototype.hasOwnProperty.call(node,"_components")&&Array.isArray(node._components);
+      components=usePrivate?node._components:node.getComponents(Type);
       if(!Array.isArray(children)||!Array.isArray(components))return null;
-      for(var i=0;i<components.length;i++)renderers.push(components[i]);
+      var sealed=usePrivate&&!!Type._sealed;
+      for(i=0;i<components.length;i++) {
+        var component=components[i];
+        if(!usePrivate||(sealed?component.constructor===Type:component instanceof Type))renderers.push(component);
+      }
       for(i=children.length-1;i>=0;i--)pending.push(children[i]);
     }
   } catch(error) { return null; }
