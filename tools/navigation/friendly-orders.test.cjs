@@ -21,7 +21,17 @@ function controller(e) {
 function advance(e, unit, count = 1, dt = 0.05) {
   for (let frame = 0; frame < count; frame++) {
     e.clock = (e.clock || 0) + dt * 1000;
-    e.setTime(e.clock); e.nav.beginFrame(e.game); unit.onUpdate(dt);
+    e.setTime(e.clock);
+    // The adapter uses the harness clock, but the real planner is required by
+    // Node and otherwise reads the host clock. Functional frames must share a
+    // clock so CI scheduling cannot spend a route's 2 ms slice between steps.
+    // The real planner's operation budget remains in force; deadline yielding
+    // is exercised explicitly below and in incremental-grid.test.cjs.
+    const realNow = Date.now;
+    try {
+      Date.now = () => e.clock;
+      e.nav.beginFrame(e.game); unit.onUpdate(dt);
+    } finally { Date.now = realNow; }
   }
 }
 function rally(e, point) {
@@ -89,6 +99,38 @@ test('Follow mode collects units inside the ring, tracks the live hero and remem
   game.changeAge();
   unit.node.setPosition(-150, 0); unit.node.active = false; unit.setNew();
   assert.equal(unit.isAgg, false, 'respawn automatically joined follow selection');
+  near(unit.rallyPoint.pos.x, post.x); near(unit.rallyPoint.pos.y, post.y);
+});
+
+test('A real planner deadline defers follow movement without losing its command, then resumes on the next frame', () => {
+  const e = environment(), game = controller(e), unit = soldier(e);
+  e.load('KinghtFallConfig').KinghtFallParameter.FollowMode = 2;
+  game.ctrPlay.node.setPosition(0, 0); game.changeAge();
+  assert.equal(game.isAgg, true); assert.equal(unit.isAgg, true);
+  e.clock = 50; e.setTime(e.clock);
+  const realNow = Date.now;
+  let wallClock = 0;
+  try {
+    // Advance the actual NavigationGrid clock beyond its 2 ms deadline after
+    // one real work unit, rather than substituting a fake route or timer.
+    Date.now = () => wallClock += 3;
+    e.nav.beginFrame(game); unit.onUpdate(.05);
+  } finally { Date.now = realNow; }
+  near(unit.node.x, -100); near(unit.node.y, 0);
+  assert.equal(unit.isAgg, true); assert.equal(game.isAgg, true);
+  const pending = unit._navigationState;
+  assert(pending.job && !pending.job.done, 'deadline must leave the real search pending');
+  assert.equal(pending.job.work, 1, 'the actual planner yields after its first work unit');
+  near(pending.target.x, 0); near(pending.target.y, 0);
+  advance(e, unit);
+  near(unit.node.x, -97); near(unit.node.y, 0);
+  assert.equal(unit._navigationState.job, null, 'next frame completes the bounded open-ground route');
+  assert.equal(unit.isAgg, true); assert.equal(game.isAgg, true);
+  game.ctrPlay.node.setPosition(100, 0); game.addPathNode(); advance(e, unit);
+  near(unit.node.x, -94);
+  near(unit._navigationState.target.x, 100);
+  const post = unit.node.position; game.changeAge();
+  assert.equal(unit.isAgg, false); assert.equal(game.isAgg, false);
   near(unit.rallyPoint.pos.x, post.x); near(unit.rallyPoint.pos.y, post.y);
 });
 
