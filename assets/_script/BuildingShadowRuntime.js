@@ -2,6 +2,20 @@
 var Shadow = require("BuildingShadow"),entries=[];
 function valid(node) { return !!node && (!cc.isValid || cc.isValid(node,true)); }
 function layout(owner) { var main=owner.ndAniMain,json=main&&main.skeletonData&&main.skeletonData.skeletonJson;return json&&json.wallKit&&json.wallKit.layout; }
+function ready(owner) {
+  var artwork=owner._buildingAppearance;
+  if(artwork&&(artwork.loading||artwork.placementRequest||artwork.placement))return false;
+  // Custom artwork disables its original Spine while its own placement runs.
+  // Only enabled building renderers own live native construction timelines.
+  return [owner.ndAniMain,owner.ndAniDown].concat(owner.ndAniOther||[]).every(function(renderer){
+    if(!renderer||renderer.enabled===false||!valid(renderer.node)||renderer.node.activeInHierarchy===false||!renderer.getCurrent)return true;
+    var track=renderer.getCurrent(0),animation=track&&(track.animation||track.getAnimation&&track.getAnimation()),name=animation&&(typeof animation==="string"?animation:animation.name||animation.getName&&animation.getName());
+    if(!name||!/^(?:create|upgrade)(?:_|$)/i.test(name))return true;
+    var duration=animation.duration;if(duration===undefined&&animation.getDuration)duration=animation.getDuration();
+    var time=track.trackTime;if(time===undefined&&track.getTrackTime)time=track.getTrackTime();
+    return typeof time==="number"&&typeof duration==="number"&&time>=duration;
+  });
+}
 function hide(owner) { var state=owner._buildingShadowRuntime;if(state){state.hidden=true;state.node.active=false;} }
 function prepareEntry(value,plan){
   var signature=JSON.stringify([value,plan]),entry=entries.find(function(e){return e.signature===signature;});if(entry){entry.refs++;return entry;}
@@ -39,7 +53,7 @@ function apply(owner, game) {
     if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
     var current=owner.buildInfo&&owner.buildInfo.cfg;
     if(!current||current.Shadow!==state.value||layout(owner)!==state.plan){apply(owner,game);return;}
-    node.active=!state.hidden&&owner.enabled!==false&&owner.node.activeInHierarchy!==false&&owner.index>0&&!owner.isDestroyed;
+    node.active=!state.hidden&&owner.enabled!==false&&owner.node.activeInHierarchy!==false&&owner.index>0&&!owner.isDestroyed&&ready(owner);
     if(!node.active)return;
     var source=state.value.body?owner.node:owner.ndAniMain.node;
     function point(x,y){return node.parent.convertToNodeSpaceAR(source.convertToWorldSpaceAR(cc.v2(x,y)));}
@@ -49,4 +63,5 @@ function apply(owner, game) {
   state.sync();cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.sync);
 }
 exports.apply=apply;exports.hide=hide;exports.dispose=dispose;
+exports.ready=ready;
 exports.prepareEntry=prepareEntry;exports.releaseEntry=releaseEntry;

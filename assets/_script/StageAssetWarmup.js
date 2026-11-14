@@ -112,8 +112,10 @@ Session.prototype.load = function (item) {
 };
 Session.prototype.run = async function () {
   var o = this.options, base = plan(o.config, o.level, o.names), self = this;
+  if (o.beforePrepare) await o.beforePrepare();
+  if (!this.current()) throw Error("Stage preparation cancelled");
   // Four active loads keep decoding responsive and bound transient allocations.
-  async function batch(items,offset,weight) { items=items.filter(function(item){return !self.pending[item.key];});var position=0,completed=0;self.total+=items.length;async function worker() { while (position < items.length) { if (!self.current()) throw Error("Stage preparation cancelled"); await self.load(items[position++]);completed++;self.progress(offset+weight*completed/items.length); } } await Promise.all([worker(),worker(),worker(),worker()]);self.progress(offset+weight); }
+  async function batch(items,offset,weight) { items=items.filter(function(item){return !self.pending[item.key];});var position=0,completed=0;self.total+=items.length;async function worker() { while (position < items.length) { if (!self.current()) throw Error("Stage preparation cancelled"); await self.load(items[position++]);completed++;self.progress(offset+weight*completed/items.length);if(o.yieldProgress)await o.yieldProgress(); } } await Promise.all([worker(),worker(),worker(),worker()]);self.progress(offset+weight); }
   await batch(base.items,0,.35);
   var catalogs = {characters:this.assets["resources/characters/catalog:json"].json,parts:this.assets["resources/character-parts/catalog:json"].json,projectiles:this.assets["resources/projectiles/catalog:json"].json};
   await batch(presentationPlan(o.config,o.level,base,catalogs,o),.35,.4);
@@ -136,9 +138,7 @@ Session.prototype.dispose = function () {
 };
 function create(view, config, level) {
   var Config = require("KinghtFallConfig"), manager = require("ResourceMgr").ResourceMgr.getInstance(), style = require("HeroLoadout").selected(require("KinghtFallPlayerMgr").KinghtFallPlayerMgr.getInstance().getUserData()).id;
-  var overlay = new cc.Node("StageLoading"); overlay.parent = view.node; overlay.zIndex = 10000; overlay.setContentSize(cc.winSize); overlay.addComponent(cc.BlockInputEvents);
-  var g = overlay.addComponent(cc.Graphics); g.fillColor = cc.color(24,32,37,255); g.rect(-cc.winSize.width/2,-cc.winSize.height/2,cc.winSize.width,cc.winSize.height); g.fill();
-  var text = new cc.Node("Progress"); text.parent = overlay; var label = text.addComponent(cc.Label); label.fontSize = 30; label.lineHeight = 40;
+  var loading = require("StageLoading").create(view, level, require("UIMgr").UIMgr.getInstance().uiRoot, cc);
   var types = {prefab:cc.Prefab,frame:cc.SpriteFrame,texture:cc.Texture2D,json:cc.JsonAsset,audio:cc.AudioClip,spine:sp.SkeletonData};
   function decode(asset,type){
     if(type==='prefab'){if(asset.compileCreateFunction)asset.compileCreateFunction();if(asset.data&&asset.data.getComponentsInChildren)asset.data.getComponentsInChildren(sp.Skeleton).forEach(function(r){if(r.skeletonData&&r.skeletonData.getRuntimeData)r.skeletonData.getRuntimeData();});}
@@ -146,7 +146,9 @@ function create(view, config, level) {
   }
   var session = new Session({config:config,level:level,names:Config.KinghtFallBundelName,style:style,skills:require("HeroSkillSettings").effective(style,config),skillClips:require("HeroSkillVFXCatalog").clips,effects:require("BattleSoundCatalog").effects,prefabs:Config.KinghtFallPrefabName,audio:Config.KinghtFallAudioCF,
     current:function () { return !view.isclose && cc.isValid(view.node,true); },
-    progress:function (value) { label.string = view.T("loading.progress", [Math.round(value*100)]); },
+    beforePrepare:function () { return loading.waitForDraw(); },
+    yieldProgress:function () { return loading.yieldProgress(); },
+    progress:function (value) { loading.progress(value); },
     load:function (item,done,owner) {
       function error(issue,retry,cancel) { manager.showRuntimeRecovery(issue,retry,function () { if (cancel) cancel(); owner.cancel(); if(!view.isclose)view.closeUI(); done(issue); },cancel); }
       if (item.uuid) manager.loadWithRecovery(item.path,function (callback) { cc.assetManager.loadAny({uuid:item.path,type:types[item.type]},callback); },function (asset) { if (!owner.current()) return done(Error("Stage preparation cancelled")); if (asset.addRef) asset.addRef(); owner.held.push(asset);try{decode(asset,item.type);done(null,asset);}catch(issue){done(issue);} },error,function () { return owner.current(); });
@@ -154,9 +156,10 @@ function create(view, config, level) {
     },
     prime:function (catalogs,assets) { require("CharacterAppearance").prime(catalogs.characters,catalogs.parts,assets); require("HeroBakedLooks").prime(assets); require("ProjectileLooks").prime(catalogs.projectiles); },
     shadows:function (prefab,owner,progress) { return require("BuildingShadowPreparation").prepare(prefab,config,level,owner,progress); },
-    release:function (key) { require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(key); if (cc.isValid(overlay,true)) overlay.destroy(); }
+    release:function (key) { require("ResCacheMgr").ResCacheMgr.getInstance().releaseAssetsFromMap(key); loading.destroy(); }
   });
-  session.reveal = function () { if (cc.isValid(overlay,true)) overlay.destroy(); };
+  session.reveal = function () { loading.reveal(); };
+  session.finishReveal = function () { loading.destroy(); };
   session.retire = function () { if(this.retiring)return;this.retiring=true;this.cancel();cc.director.once(cc.Director.EVENT_AFTER_DRAW,function(){session.dispose();}); };
   session.progress(0); return session;
 }

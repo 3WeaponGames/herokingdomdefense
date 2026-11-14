@@ -48,7 +48,9 @@ function apply(owner,game,data){
   if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
   var row=owner.buildInfo&&owner.buildInfo.cfg,category=state.data&&state.data.BuildEnum&&state.data.BuildEnum[row&&row.ID||owner.buildCfg&&owner.buildCfg.enumValue],current=row&&category&&FX.resolve(category,row,state.data.GameTools);
   if(!current||!current.active){apply(owner,game,state.data);return;}
-  if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed){node.active=false;return;}
+  // Prepared/cache entries must obey the same construction visibility as a
+  // fresh capture. Ordinary gate opening/shutting keeps its existing shadow.
+  if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed||!require("BuildingShadowRuntime").ready(owner)){node.active=false;return;}
   var ground=current.settings.projection==='ground',next=geometry(owner)+(ground?':structure':''),settingsKey=JSON.stringify(current.settings),prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings),key=prepared?prepared.key:next+settingsKey,list;
   if(state.key!==key){
    var entry=prepared||entries.find(function(e){return e.key===key;});

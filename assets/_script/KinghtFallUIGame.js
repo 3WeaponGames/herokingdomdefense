@@ -209,6 +209,7 @@ var def_KinghtFallUIGame = function (t) {
       stageAssets.reveal();
       t.sendEvent($z1Appcfg.BaseEventName.ShowTransition, false, function () {
         if (t.isclose) return;
+        if (stageAssets.finishReveal) stageAssets.finishReveal();
         t.isPauset = false;
         if (t.ctrGame.setAudioPaused) t.ctrGame.setAudioPaused(false);
         t.startGuide();
