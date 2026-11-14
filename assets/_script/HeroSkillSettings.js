@@ -165,7 +165,7 @@ function defaults(style){
   if(style==="vanguard")Object.assign(v,{passiveScale:1.8,passiveScaleY:.45,passiveOffsetY:12,passiveMinScale:.3,passiveMinPlayback:.2,passivePlayback:.45});
   if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveColor:"#ff5367",passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1});
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45});
-  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.25,shieldScale:1.5,shieldOffsetY:80,shieldOpacity:.85});
+  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.25,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85});
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}

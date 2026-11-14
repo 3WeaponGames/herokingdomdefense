@@ -264,7 +264,8 @@ function vfxContext(runtime){
     if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
     var at=target(enemy,true,t.enemyGeneration);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
   });
-  return{taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+  var body=target(hero,false);if(body){body.x-=v.targetX;body.y-=v.targetY;}
+  return{heroBody:body,taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;

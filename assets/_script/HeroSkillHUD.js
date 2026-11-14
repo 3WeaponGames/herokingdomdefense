@@ -190,6 +190,7 @@ function draw(hud,hero,rt) {
 }
 function update(hero,rt) {
   if(!ready())return;
+  if(rt&&typeof rt.refresh==="function")rt.refresh();
   if(typeof cc.Class==="function")require("./ForestRain").ensure(rt);
   var hud=hero._skillHUD;if(hud&&(!live(hud.button)||hud.runtime!==rt)){clear(hero);hud=null;}
   if(!hud)hud=install(hero,rt);if(!hud)return;hud.runtime=rt;

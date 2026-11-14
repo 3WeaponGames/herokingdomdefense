@@ -138,7 +138,7 @@ function create(host,options){
     if(!tip)return projectile.visualOffset={x:0,y:0};
     const at=renderer.transformPoint(layer.description,tip.x,tip.y);return projectile.visualOffset={x:at.x-model.hero.x,y:at.y-model.hero.y};
   }
-  function anchors(){const v=settings.visual||{},o=weaponOrigin(),target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget={x:target.x+finite(v.targetX,0),y:target.y+50+finite(v.targetY,0)},center=style==='mystic'?(model.scenario.mode==='active'?{x:target.x,y:target.y}:beamTarget):{x:model.hero.x,y:model.hero.y};return{taunt:{x:target.x+finite(v.tauntOffsetX,0),y:target.y+100+finite(v.tauntOffsetY,0)},shield:{x:model.hero.x+finite(v.shieldOffsetX,0),y:model.hero.y+finite(v.shieldOffsetY,0)},origin:{x:o.x+finite(v.originX,0),y:o.y+finite(v.originY,0)},target:beamTarget,effect:{x:center.x+finite(v.offsetX,0),y:center.y+finite(v.offsetY,0)},passive:{x:model.hero.x+finite(v.passiveOffsetX,0),y:model.hero.y+finite(v.passiveOffsetY,0)},buff:{x:model.hero.x+finite(v.buffOffsetX,0),y:model.hero.y+finite(v.buffOffsetY,0)},mark:{x:target.x+finite(v.markOffsetX,0),y:target.y+100+finite(v.markOffsetY,0)}};}
+  function anchors(){const v=settings.visual||{},o=weaponOrigin(),target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget={x:target.x+finite(v.targetX,0),y:target.y+50+finite(v.targetY,0)},center=style==='mystic'?(model.scenario.mode==='active'?{x:target.x,y:target.y}:beamTarget):{x:model.hero.x,y:model.hero.y};return{taunt:{x:target.x+finite(v.tauntOffsetX,0),y:target.y+100+finite(v.tauntOffsetY,0)},shield:{x:model.hero.x+finite(v.shieldOffsetX,0),y:model.hero.y+80+finite(v.shieldOffsetY,0)},origin:{x:o.x+finite(v.originX,0),y:o.y+finite(v.originY,0)},target:beamTarget,effect:{x:center.x+finite(v.offsetX,0),y:center.y+finite(v.offsetY,0)},passive:{x:model.hero.x+finite(v.passiveOffsetX,0),y:model.hero.y+finite(v.passiveOffsetY,0)},buff:{x:model.hero.x+finite(v.buffOffsetX,0),y:model.hero.y+finite(v.buffOffsetY,0)},mark:{x:target.x+finite(v.markOffsetX,0),y:target.y+100+finite(v.markOffsetY,0)}};}
   function line(a,b,width,color){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
   function circle(p,r,color,fill){ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);if(fill){ctx.fillStyle=color;ctx.fill();}else{ctx.strokeStyle=color;ctx.stroke();}}
   function customEffect(at,rotation,age,vp,loop,resource,targetContext,placement){
@@ -194,7 +194,7 @@ function create(host,options){
   function drawStyleEffects(vp){
     const a=anchors(),v=settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,x:t.x+finite(v.targetX,0),y:t.y+50+finite(v.targetY,0)}:null,marked=model.state.marked&&model.state.target;
     const frame=model.updateVFX({origin:a.origin,channelTarget:target(model.channelTarget),beamTarget:target(model.beamTarget),markedTarget:marked?{id:marked.id,generation:0,x:marked.x,y:marked.y+100}:null});
-    for(const entity of VFXLayout.entities(frame,v,{hero:model.hero})){
+    for(const entity of VFXLayout.entities(frame,v,{hero:model.hero,heroBody:{x:model.hero.x,y:model.hero.y+80}})){
       const asset=styleResources.get(entity.visual.resource);if(!asset)continue;
       asset.visual=Object.assign({},entity.visual,{scale:finite(entity.visual.scale,1)*entity.scale});
       customEffect(entity,entity.angle,entity.age,vp,entity.loop,asset,entity.behind?backCtx:ctx,entity);

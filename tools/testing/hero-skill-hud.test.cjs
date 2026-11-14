@@ -1,6 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-function fixture(style='skirmisher',maker={}){
+function fixture(style='skirmisher',maker={},cold=false){
+ const setupEvents=[];
  class Node{
   constructor(name){this.name=name;this.children=[];this.handlers={};this.x=this.y=0;this.width=this.height=0;this.anchorX=this.anchorY=.5;this.scaleX=this.scaleY=1;this.active=this.activeInHierarchy=true;this.zIndex=0;}
   setParent(parent){if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);this.parent=parent;parent.children.push(this);}
@@ -19,18 +20,20 @@ function fixture(style='skirmisher',maker={}){
  for(const method of ['roundRect','rect','fill','stroke','moveTo','lineTo','circle','close','arc'])Graphics.prototype[method]=function(...args){this.ops.push([method,...args]);};
  class Label{};Label.HorizontalAlign={CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:1};
  const fontLoads=[],cc={Node,Graphics,Label,Font:class{},LabelOutline:class{},BlockInputEvents:class{},resources:{load(resource,Type,callback){fontLoads.push({resource,Type,callback});}},v2:(x,y)=>({x,y}),color:value=>value,isValid:value=>!!value&&!value.destroyed};
+ if(cold)cc.Class=function(){};
  const entries=require('../../assets/resources/localization/catalog.json').entries,bindings=new Map();let language='en';
  const manager={bindLabel(label,key,params){bindings.set(label,{key,params});label.string=(entries[key]&&entries[key][language]||key).replace(/\{(\d+)\}/g,(_,i)=>params&&params[i]);}};
  const setLanguage=value=>{language=value;for(const [label,{key,params}]of bindings)manager.bindLabel(label,key,params);};
- const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>name==='HeroMakerRider'?maker:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
+ const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillHUD.js'),'utf8'),{cc,exports,Date,Math,require:name=>cold&&name==='./ForestRain'?{ensure(rt){setupEvents.push({kind:'weather',game:rt.game,ui:rt.ui});}}:name==='HeroMakerRider'?maker:name==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:name==='LanguageMgr'?{LanguageMgr:{getInstance:()=>manager}}:require(path.join(__dirname,'../../assets/_script',name))});
  const root=new Node('UI');root.setContentSize(750,1334);const main=new Node('Map'),visual=new Node('Effects');visual.setParent(main);
  const actor=new Node('Hero');actor.setParent(main);const hp=new Node('HP');hp.setParent(actor);hp.setContentSize(64,12);hp.y=80;hp.active=false;
  const hero={node:actor,hp:100,hpMax:100,attackRange:200,ctrHp:{node:hp},getAttWpos:()=>actor.convertToWorldSpaceAR({x:0,y:40})};
  const game={ndMain:main,ndUI:visual,mapSize:{width:1000,height:1000},ctrPlay:hero},ui={ctrUI:{node:root},isPauset:false};
  const rt={state:{style,cooldown:0,charge:.5,marked:false},game,ui,hero,aiming:false,aimDirection:{x:1,y:0},projectiles:[],effects:[],casts:[],available(){return !ui.isPauset&&hero.hp>0;},cast(d){this.casts.push(d);this.aiming=false;return true;},screenAim(p){const a=actor.getPosition(),n=Math.hypot(p.x-a.x,p.y-a.y);this.aimDirection={x:(p.x-a.x)/n,y:(p.y-a.y)/n};return this.aimDirection;}};
+ if(cold){delete rt.game;delete rt.ui;game.gameStatus=0;rt.refresh=function(){setupEvents.push({kind:'refresh'});this.game=game;this.ui=ui;};rt.available=function(){return this.game.gameStatus===2;};}
  hero._styleRuntime=rt;const controller={touchID:false,_followGame:()=>ui.isPauset?null:game};
  function event(id,x=0,y=0){return{touch:{getID:()=>id,getLocation:()=>({x,y})},stopPropagation(){this.stopped=true;}};}
- exports.update(hero,rt);return{hud:exports,hero,rt,ui,game,controller,event,root,Node,setLanguage,cc,fontLoads};
+ exports.update(hero,rt);return{hud:exports,hero,rt,ui,game,controller,event,root,Node,setLanguage,cc,fontLoads,setupEvents};
 }
 test('tap arms the piercing skill, world aiming consumes its own touch and fires once on confirmation',()=>{
  const f=fixture(),b=f.hero._skillHUD.button,e=f.event(1,200,-400);b.handlers.start(e);b.handlers.end(e);assert.equal(f.rt.aiming,true);assert.equal(f.rt.casts.length,0);assert(e.stopped);
@@ -245,4 +248,8 @@ test('cooldown uses centered white Lilita One digits for every style and locale,
 
 test('late or failed font callbacks cannot retain assets or change a recycled hero HUD',()=>{
  const f=fixture('guardian'),first=f.hero._skillHUD,old=f.fontLoads[0];let refs=0;const font={addRef(){refs++;return this;},decRef(){refs--;}};f.hud.clear(f.hero);f.hero.node._combatGeneration=2;f.hud.update(f.hero,f.rt);const second=f.hero._skillHUD;old.callback(null,font);assert.equal(refs,0);assert.notEqual(second.cooldownCount.font,font);f.fontLoads[1].callback(Error('missing'));f.rt.state.cooldown=4;f.hud.update(f.hero,f.rt);assert.equal(second.cooldownCount.string,'4');assert.equal(first.button.destroyed,true);f.hud.clear(f.hero);assert.equal(refs,0);
+});
+
+test('a cold Prepare runtime refreshes context before weather and HUD installation without enabling casts',()=>{
+ const f=fixture('guardian',{},true),hud=f.hero._skillHUD;assert(hud);assert.equal(f.setupEvents[0].kind,'refresh');assert.equal(f.setupEvents[1].kind,'weather');assert.equal(f.setupEvents[1].game,f.game);assert.equal(f.setupEvents[1].ui,f.ui);assert.equal(hud.button.active,true);assert.equal(hud.visual.node.active,false);hud.button.handlers.start(f.event(1));hud.button.handlers.end(f.event(1));assert.equal(f.rt.casts.length,0);f.game.gameStatus=2;f.hud.update(f.hero,f.rt);assert.equal(hud.visual.node.active,true);hud.button.handlers.start(f.event(2));hud.button.handlers.end(f.event(2));assert.equal(f.rt.casts.length,1);f.hud.clear(f.hero);
 });

@@ -25,6 +25,8 @@ function entities(frame,visual,context){
           var cell=clip?clip.cell:128,sx=clip?clip.startX:.0,sy=clip?clip.startY:.5,ex=clip?clip.endX:1,ey=clip?clip.endY:.5,span=Math.max(1,Math.hypot(ex-sx,ey-sy)*cell);
           base.anchorX=sx;base.anchorY=sy;base.scaleX=length/span/Math.max(.01,v.scale||1);base.scaleY=(visual.beamWidth||24)/cell;base.angle=Math.atan2(dy,dx)*180/Math.PI-Math.atan2(ey-sy,ex-sx)*180/Math.PI+(v.rotation||0);
         }
+      }else if(slot==="shield"){
+        var body=context.heroBody||{x:hero.x,y:hero.y+80};base.x=body.x+(v.offsetX||0);base.y=body.y+(v.offsetY||0);
       }else if(slot==="mark"||slot==="taunt"){
         if(!entity.target)return;base.x=entity.target.x+(v.offsetX||0);base.y=entity.target.y+(v.offsetY||0);
       }
