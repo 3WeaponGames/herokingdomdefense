@@ -140,7 +140,7 @@ function build(owner, state, lights, layoutSignature) {
       glow.setPosition(settings.x, settings.y); glow.setContentSize(settings.width, settings.height); glow.color = cc.color(settings.color);
       // Authored transforms project the retained native window fan outward.
       // They are constant; the existing night loop changes only its opacity.
-      var adjustment=require("BuildingNightlight").value(owner.buildInfo.cfg,"sprite:"+index+":"+at);
+      var adjustment=owner.buildInfo.cfg.Nightlight?require("BuildingNightlight").value(owner.buildInfo.cfg,"sprite:"+index+":"+at):{x:0,y:0,angle:0,scaleX:1,scaleY:1,flipX:false,flipY:false};
       glow.setPosition(settings.x+adjustment.x,settings.y+adjustment.y);
       glow.angle = settings.angle+adjustment.angle; glow.skewX = settings.shearX; glow.skewY = settings.shearY;
       glow.scaleX=adjustment.scaleX*(adjustment.flipX?-1:1);glow.scaleY=adjustment.scaleY*(adjustment.flipY?-1:1);

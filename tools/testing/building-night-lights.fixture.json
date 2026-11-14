@@ -4454,7 +4454,7 @@
     },
     "mf": {
       "beforeSkeleton": "2089a5fb9d1d80b75a024f0fb39060023ca871282fbe4b2c28c3422cc1099da6",
-      "afterSkeleton": "160b4b7066f82345d81a5a68f8a11ad92f23823315e7d47036d150ae266edd2f",
+      "afterSkeleton": "86d950a3d03c432655d85229af80deacefc1ec7a79df59c8aeb409f48ea09e5a",
       "addedSlot": {
         "name": "building_aperture_rays",
         "bone": "bone3",
@@ -5560,18 +5560,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-1",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
-        },
-        {
-          "path": [
             "skins",
             2,
             "attachments",
@@ -5651,18 +5639,6 @@
             }
           },
           "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
-        },
-        {
-          "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-2-1",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
         },
         {
           "path": [
@@ -5748,18 +5724,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-2-2",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
-        },
-        {
-          "path": [
             "skins",
             4,
             "attachments",
@@ -5839,18 +5803,6 @@
             }
           },
           "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
-        },
-        {
-          "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-3",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
         },
         {
           "path": [
@@ -5947,18 +5899,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-bomb-2",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
-        },
-        {
-          "path": [
             "skins",
             6,
             "attachments",
@@ -6052,18 +5992,6 @@
         },
         {
           "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-bomb-3",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
-        },
-        {
-          "path": [
             "skins",
             7,
             "attachments",
@@ -6154,18 +6082,6 @@
           "had": false,
           "before": null,
           "afterHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
-        },
-        {
-          "path": [
-            "animations",
-            "idle_night",
-            "deform",
-            "mf-bomb-4",
-            "building_aperture_cores"
-          ],
-          "had": false,
-          "before": null,
-          "afterHash": "9decb3c7b1c655f0527e66fb5de8367943e346b05f0018113b7d51e478efc7a2"
         }
       ],
       "rayTextureUuid": "de34e91e-cbb0-4692-a4a6-dc348bceb818",
@@ -11300,7 +11216,7 @@
     "originalFullSprite": true,
     "customCore": false,
     "originalWindowSlot": "building_aperture_cores",
-    "originalWindowCapture": "Complete original mill window meshes and animations live in the existing trailing light slot, excluded from solid-body depth captures."
+    "originalWindowCapture": "Complete original mill window mesh and original opacity pulse in the fixed trailing emitter slot. Static light geometry keeps native bounds filtering exact without losing a copied JSB deform vector."
   },
   "towerLighting": [
     {
@@ -12567,7 +12483,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     },
     {
       "rig": "mf",
@@ -12655,7 +12572,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     },
     {
       "rig": "mf",
@@ -12743,7 +12661,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     },
     {
       "rig": "mf",
@@ -12831,7 +12750,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     },
     {
       "rig": "mf",
@@ -12919,7 +12839,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     },
     {
       "rig": "mf",
@@ -13007,7 +12928,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     },
     {
       "rig": "mf",
@@ -13095,7 +13017,8 @@
         ]
       },
       "renderSlot": "building_aperture_cores",
-      "renderAttachment": "building_aperture_cores"
+      "renderAttachment": "building_aperture_cores",
+      "motion": "original opacity pulse; fixed original mesh"
     }
   ]
 }

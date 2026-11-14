@@ -3,7 +3,11 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const T=require('../../../assets/_script/BuildingNightlight'),Data=require('../buildings/nightlight-data'),{Store}=require('../lib/store'),{Service}=require('../worlds/service'),root=path.resolve(__dirname,'../../..'),copy=v=>JSON.parse(JSON.stringify(v));
 const near=(a,b)=>assert(Math.abs(a-b)<1e-7,`${a} != ${b}`);
 test('native light edits preserve original art and body geometry, transforming animation offsets as vectors',()=>{
- const source=require('../../../assets/KinghtFallIconMap/com/Ani/mf/mf.json'),before=JSON.stringify(source),id='mesh:building_aperture_cores:0',skin='mf-2-1',v={x:13,y:21,scaleX:.6,scaleY:1.7,angle:35,flipX:true},row={Skin:skin,Nightlight:{version:1,lights:{[id]:v}}},entry=T.meshes(source,skin).find(e=>e.id===id),result=T.json(source,row);
+ const source=copy(require('../../../assets/KinghtFallIconMap/com/Ani/mf/mf.json')),skin='mf-2-1';
+ // Exercise affine deformation math independently of production emitters,
+ // which deliberately keep fixed geometry for native occlusion bounds.
+ source.animations.idle_night.deform[skin].building_aperture_cores={building_aperture_cores:[{time:0},{time:.5,offset:2,vertices:[2,3,4,5],curve:[.25,0,.75,1]}]};
+ const before=JSON.stringify(source),id='mesh:building_aperture_cores:0',v={x:13,y:21,scaleX:.6,scaleY:1.7,angle:35,flipX:true},row={Skin:skin,Nightlight:{version:1,lights:{[id]:v}}},entry=T.meshes(source,skin).find(e=>e.id===id),result=T.json(source,row);
  assert.equal(JSON.stringify(source),before);assert.equal(T.json(source,{Skin:skin}),source);assert.deepEqual(result.bones,source.bones);assert.deepEqual(result.slots,source.slots);
  const old=source.skins.find(s=>s.name===skin),next=result.skins.find(s=>s.name===skin),mesh=next.attachments[entry.slot][entry.name];assert.deepEqual(mesh.uvs,old.attachments[entry.slot][entry.name].uvs);assert.deepEqual(mesh.triangles,old.attachments[entry.slot][entry.name].triangles);
  const m=T.matrix(T.value(row,id),entry.center),p=T.point(m,entry.vertices[0],entry.vertices[1]);near(mesh.vertices[0],p[0]);near(mesh.vertices[1],p[1]);

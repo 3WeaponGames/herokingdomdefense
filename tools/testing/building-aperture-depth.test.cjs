@@ -196,8 +196,10 @@ test('all authored night aperture skins preserve exact body bounds and browser c
         continue;
       }
       assert.ok(attachment, 'Every lit aperture skin retains its soft ray mesh');
-      const hasCore = lighting.openings.some(opening => opening.rig === key && opening.skin === skin.name && opening.coreVertices > 0);
-      assert.equal(!!coreAttachment, hasCore, 'Solid cores follow actual open windows and doors');
+      const originalWindow = (lighting.originalWindowFits || []).find(fit => fit.rig === key && fit.skin === skin.name);
+      const hasCore = !!originalWindow || lighting.openings.some(opening => opening.rig === key && opening.skin === skin.name && opening.coreVertices > 0);
+      assert.equal(!!coreAttachment, hasCore, 'Only the original mill window occupies the retained emitter slot');
+      if (originalWindow) assert.deepEqual(Array.from(coreAttachment.regionUVs), originalWindow.sourceMesh.uvs, 'The emitter keeps the full original window sprite mapping');
       checkedSkins.add(skinKey);
       assert.deepEqual(ray.deform, []);
       assert.deepEqual(core.deform, []);
