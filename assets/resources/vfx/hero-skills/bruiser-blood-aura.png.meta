@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "c15d6027-178b-5f39-a226-e38e36491d8a",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 1024,
+  "platformSettings": {},
+  "subMetas": {
+    "bruiser-blood-aura": {
+      "ver": "1.0.6",
+      "uuid": "7b3d3d57-b145-5da2-a369-41a526c080db",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "c15d6027-178b-5f39-a226-e38e36491d8a",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 1024,
+      "rawWidth": 2048,
+      "rawHeight": 1024,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

@@ -50,3 +50,14 @@ test('the arrow Origin handle uses the same locked cast direction after selectin
  try{const description={...f.description,layers:[{...f.description.layers[0],json:{...f.description.layers[0].json,_heroMaker:{role:3}}}]};await f.view.set({style:'skirmisher',settings:{windup:.35,visual:{}},description});f.view.seek(.1);const region=f.view.getState().enemyRegions[1],event={button:0,pointerId:8,clientX:(region.left+region.right)/2,clientY:(region.top+region.bottom)/2,preventDefault(){}};f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientY:event.clientY-80});f.events().get('pointerup')(event);assert.equal(f.view.getState().selectedTarget,1);assert.deepEqual(directions.at(-1),{x:1,y:0});}
  finally{pose.arrowTip=original.tip;pose.arrowAimAngle=original.angle;pose.applyAim=original.aim;}
 }));
+
+
+test('imported aura, shield and overhead mark handles edit only their own presentation offsets',()=>withPreview(async f=>{
+ const Settings=require('../../assets/_script/HeroSkillSettings');
+ for(const [style,slot]of [['fighter','passive'],['guardian','buff'],['mystic','mark']]){
+  await f.view.set({style,settings:Settings.defaults(style),description:f.description});f.view.selectHandle(slot);f.view.seek(0);f.changes.length=0;
+  const point=f.view.getState().handles.find(h=>h.name===slot),before=f.view.getState(),event={button:0,pointerId:22,clientX:point.x,clientY:point.y,preventDefault(){}};
+  f.events().get('pointerdown')(event);f.events().get('pointermove')({...event,clientX:point.x+25,clientY:point.y-15});f.events().get('pointerup')(event);
+  assert.deepEqual(f.changes.map(c=>c[0]),[['visual',slot+'OffsetX'],['visual',slot+'OffsetY']]);assert.equal(f.view.getState().hits,before.hits);assert.equal(f.view.getState().time,before.time);
+ }
+}));

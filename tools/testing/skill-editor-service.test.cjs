@@ -3,6 +3,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const {SkillService,FILES}=require('../../packages/hkd-skills/service'),Settings=require('../../assets/_script/HeroSkillSettings'),Core=require('../../assets/_script/HeroStyleSkills');
 const AUDIO='11111111-1111-4111-8111-111111111111',VFX='22222222-2222-4222-8222-222222222222';
 const catalogs={audio:[{id:AUDIO,uuid:AUDIO,file:'assets/KinghtFallAudio/cast.wav',bundle:'KinghtFallAudio',path:'cast',url:'file:///cast.wav'}],vfx:[{id:VFX,uuid:VFX,file:'assets/resources/vfx/burst.png',bundle:'resources',path:'vfx/burst',kind:'sprite',url:'file:///burst.png'}]};
+catalogs.vfx.push(...require('../../assets/_script/HeroSkillVFXCatalog').clips.map(c=>({id:c.uuid,uuid:c.uuid,kind:'sprite',path:c.resource,bundle:c.bundle,url:c.id+'.png'})));
 function fixture(t,primary={},secondary={}){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-skill-editor-'));
  t.after(()=>{const resolved=path.resolve(root);assert.equal(path.dirname(resolved),path.resolve(os.tmpdir()));assert(path.basename(resolved).startsWith('hkd-skill-editor-'));fs.rmSync(resolved,{recursive:true,force:true});});

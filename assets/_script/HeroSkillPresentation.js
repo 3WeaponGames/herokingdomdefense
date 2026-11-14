@@ -2,6 +2,7 @@
 // Authored skill presentation only. Gameplay geometry and player progress are
 // unaffected; absent overrides retain the original procedural art and sounds.
 var Settings = require("./HeroSkillSettings"), Pose = require("./HeroSkillPose"), nextOwner = 0;
+var VFXState=require("./HeroSkillVFXState"),VFXLayout=require("./HeroSkillVFXLayout");
 var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 function visual(runtime) { return (runtime.settings || Settings.effective(runtime.state.style, runtime.config)).visual; }
 function color(runtime, fallback) { return visual(runtime).color || fallback; }
@@ -107,7 +108,7 @@ function play(runtime,item) {
 function stopChannel(s) { if(s.channel){s.channel.manager.stopSource(s.channel.source);s.channel=null;}s.pending=s.pending.filter(function(item){return item.phase!=="channel";}); }
 function update(runtime) {
   var s=runtime._presentation,hasAudio=runtime.settings&&runtime.settings.audio&&Object.keys(runtime.settings.audio).some(function(key){return !!runtime.settings.audio[key].clip;});
-  if(!s&&!hasAudio&&!runtime.beamTarget||!runtime.available())return;s=state(runtime);
+  if(!s&&!hasAudio&&!runtime.beamTarget&&!hasStyleArt(visual(runtime))||!runtime.available())return;s=state(runtime);advanceVFX(runtime);
   updateHits(runtime,s);if(runtime._presentation!==s)return;
   var channel=runtime.beamTarget,generation=channel&&channel.node&&channel.node._combatGeneration,onset=beamOnset(runtime);
   var cue=runtime.settings&&runtime.settings.audio&&runtime.settings.audio.channel,cueKey=cue&&cue.clip?JSON.stringify([cue.clip,cue.bundle,cue.path,cue.delay,cue.volume]):"";
@@ -195,18 +196,18 @@ function initialize(record,asset,v,s) {
 function prepare(runtime,s,v,owner) {
   owner=owner||s;
   var key=[v.resource,v.resourceKind,v.resourceBundle,v.resourcePath,v.resourceAnimation,v.resourceFrames,v.resourceColumns,v.resourceCell,v.resourceFps,v.resourceLoop].join("|");
-  if(s.resourceKey!==key){clearNodes(s);s.resourceKey=key;s.asset=null;s.loading=false;s.loadError=null;}
+  if(s.resourceKey!==key){clearNodes(s);releaseAsset(s);s.resourceKey=key;s.asset=null;s.loading=false;s.loadError=null;}
   if(s.asset||s.loading||s.loadError)return;s.loading=true;
   try{loadResource(v,function(error,asset){
-    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s||s.resourceKey!==key)return;
-    s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset;
+    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key)return;
+    s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset.addRef?asset.addRef():asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
   });}catch(error){s.loading=false;s.loadError=error;}
 }
 function attachments(hud,runtime) {
   var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation;
   if(typeof cc==="undefined"||!cc.Sprite)return;
-  if(!v.resource&&!iv.resource){if(s){clearNodes(s);if(s.impactArt)clearNodes(s.impactArt);}return;}
+  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearNodes(s);if(s.impactArt)clearNodes(s.impactArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
   s=state(runtime);var entities=[];
   if(v.resource)prepare(runtime,s,v);else clearNodes(s);
   if(runtime.beamTarget&&runtime.beamTarget.node&&runtime.beamTarget.hp>0){
@@ -225,27 +226,72 @@ function attachments(hud,runtime) {
     var hits=s.impacts.filter(function(item){return runtime.state.time+1e-9>=item.at&&runtime.state.time<item.until&&hitCurrent(runtime,item,false);}).map(function(item){return{key:item,x:item.x+iv.offsetX,y:item.y+iv.offsetY,angle:iv.rotation,loop:false,age:Math.max(0,runtime.state.time-item.at)};});
     paintEntities(hud,runtime,art,iv,hits);
   }else if(s.impactArt)clearNodes(s.impactArt);
+  styleAttachments(hud,runtime);
 }
-function paintEntities(hud,runtime,s,v,entities) {
+function paintEntities(hud,runtime,s,v,entities,parent) {
+  parent=parent||hud.visual.node;
   var keep=new Set();
   entities.forEach(function(entity){
     keep.add(entity.key);var record=s.nodes.get(entity.key);
     if(!record){
-      var node=new cc.Node("Custom skill VFX");node.setParent(hud.visual.node);record={node:node,resource:v.resource};s.nodes.set(entity.key,record);
+      var node=new cc.Node("Custom skill VFX");node.setParent(parent);record={node:node,resource:v.resource};s.nodes.set(entity.key,record);
     }
     record.entity=entity;if(s.asset)initialize(record,s.asset,v,s);
     if(!alive(record.node))return;
-    var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(hud.visual.node.convertToNodeSpaceAR(world));
-    var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local= hud.visual.node.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
-    record.node.scale=Math.hypot(local.x-origin.x,local.y-origin.y)*v.scale;record.node.angle=entity.angle;record.node.opacity=Math.round(255*v.opacity);
-    if(v.color)record.node.color=cc.color(v.color);
+    var world=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x,entity.y));record.node.setPosition(parent.convertToNodeSpaceAR(world));
+    var unit=runtime.game.ndMain.convertToWorldSpaceAR(cc.v2(entity.x+1,entity.y)),local=parent.convertToNodeSpaceAR(unit),origin=record.node.getPosition();
+    var scale=Math.hypot(local.x-origin.x,local.y-origin.y)*v.scale*(entity.scale===undefined?1:entity.scale);
+    record.node.scaleX=scale*(entity.scaleX===undefined?1:entity.scaleX);record.node.scaleY=scale*(entity.scaleY===undefined?1:entity.scaleY);record.node.angle=entity.angle;record.node.opacity=Math.round(255*v.opacity*(entity.opacity===undefined?1:entity.opacity));record.node.active=true;
+    if(entity.anchorX!==undefined){record.node.anchorX=entity.anchorX;record.node.anchorY=entity.anchorY;}
+    if(entity.behind)record.node.zIndex=(runtime.hero.node.zIndex||0)-1;
+    record.node.color=cc.color(v.color||"#ffffff");
     seek(record);
   });
   s.nodes.forEach(function(record,key){if(!keep.has(key)){dispose(record);s.nodes.delete(key);}});
 }
+function hasStyleArt(v){return !!(v.passiveResource||v.beamResource||v.markResource||v.buffResource);}
+function vfxContext(runtime){
+  var hero=runtime.hero,main=runtime.game.ndMain,v=visual(runtime);
+  function target(actor,overhead,expected){
+    if(!actor||!alive(actor.node)||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected)return null;
+    var ground=actor.node.convertToWorldSpaceAR(cc.v2(0,0)),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node,at;
+    if(bar){var top=bar.convertToWorldSpaceAR(cc.v2(0,overhead?18:0));at=overhead?top:cc.v2(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}else at=cc.v2(ground.x,ground.y+(overhead?100:50));
+    var point=main.convertToNodeSpaceAR(at);return{id:actor,generation:actor.node._combatGeneration,x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
+  }
+  var origin=hero.getAttWpos?main.convertToNodeSpaceAR(hero.getAttWpos()):offset(hero.node.getPosition(),0,70);
+  return{hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+}
+function advanceVFX(runtime){
+  var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
+  var s=state(runtime);s.vfxClock=s.vfxClock||VFXState.create();s.vfxContext=vfxContext(runtime);s.vfxFrame=VFXState.update(s.vfxClock,runtime.state,s.vfxContext,v);return s.vfxFrame;
+}
+function preload(runtime){
+  if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
+  var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
+  ["passive","beam","mark","buff"].forEach(function(slot){
+    var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
+    ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){
+      var resource=part?part.uuid:selected;if(seen.has(resource))return;seen.add(resource);var art=arts.get(resource),value=Settings.resourceVisual(v,slot+"Resource");if(part)Settings.applyClip(value,"resource",part);
+      if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:resource};arts.set(resource,art);}prepare(runtime,art,value,s);
+    });});
+  });
+}
+function styleAttachments(hud,runtime){
+  var s=state(runtime),v=visual(runtime),frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}return;}
+  var arts=s.styleArts||(s.styleArts=new Map()),groups=new Map(),entities=VFXLayout.entities(frame,v,s.vfxContext);
+  entities.forEach(function(entity){var key=entity.visual.resource,group=groups.get(key);if(!group){group={visual:entity.visual,entities:[],behind:entity.behind};groups.set(key,group);}group.entities.push(entity);});
+  groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities,group.behind?runtime.hero.node.parent:undefined);});
+  arts.forEach(function(art,key){if(!groups.has(key)){art.nodes.forEach(dispose);art.nodes.clear();}});
+  // A style owns a small fixed phase set. Drop obsolete authored selections
+  // rather than retaining every atlas visited during a long play session.
+  if(arts.size>16)arts.forEach(function(art,key){if(!groups.has(key)){clearArt(art);arts.delete(key);}});
+}
+function suspend(runtime){var s=runtime._presentation;if(s&&s.styleArts)s.styleArts.forEach(function(art){art.nodes.forEach(function(record){if(alive(record.node))record.node.active=false;});});}
 function clearNodes(s) {s.nodes.forEach(function(record){if(typeof cc!=="undefined")dispose(record);});s.nodes.clear();s.frames.forEach(function(frame){frame.destroy();});s.frames.clear();}
+function releaseAsset(s){if(s.asset&&s.asset.decRef)s.asset.decRef();s.asset=null;}
+function clearArt(s){clearNodes(s);releaseAsset(s);}
 function clear(runtime) {
-  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearNodes(s);if(s.impactArt)clearNodes(s.impactArt);
+  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.styleArts)s.styleArts.forEach(clearArt);
   s.sources.forEach(function(entry){if(entry.manager.releaseAudioSource)entry.manager.releaseAudioSource(entry.key,entry.source);else entry.manager.stopSource(entry.source);});s.sources=[];delete runtime._presentation;
 }
 exports.visual=visual;exports.color=color;exports.width=width;exports.offset=offset;exports.rotated=rotated;exports.projectilePoint=projectilePoint;exports.release=release;
@@ -253,3 +299,7 @@ exports.queue=queue;exports.update=update;exports.attachments=attachments;export
 exports.impact=impact;exports.deferHitReaction=deferHitReaction;
 exports.hasImpactVisual=hasImpactVisual;exports.draw=draw;
 exports.limits={feedback:MAX_FEEDBACK,impacts:MAX_IMPACTS};
+
+exports.advanceVFX=advanceVFX;exports.suspend=suspend;
+
+exports.preload=preload;

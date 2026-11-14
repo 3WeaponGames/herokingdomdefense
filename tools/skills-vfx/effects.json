@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "workbook": "Skill VFX.xlsx",
+  "clips": [
+    {"id":"fighter-windup","name":"Beam Cast Windup (Fighter)","package":"Anime Powers Pack 1.5.unitypackage","prefab":"Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Beams/Beam_Cast.prefab","style":"fighter","slot":"passive","phase":"loop","group":"fighter-windup","loop":true,"frames":128,"fps":96,"warmup":2,"includeParticles":["Ki_Pickbook_Desaturated","ImpactLightrays_Blurry","Cast_Ray"],"pitch":15},
+    {"id":"vanguard-momentum","name":"Destructor Disk Yellow (Vanguard)","package":"Anime Powers Pack 1.5.unitypackage","prefab":"Assets/Piloto Studio/Anime_VFX_Pack_Vol1/DestructorDisk/DestructorDisk_Yellow.prefab","style":"vanguard","slot":"passive","phase":"loop","group":"vanguard-momentum","loop":true,"frames":128,"fps":96,"warmup":2,"pitch":60},
+    {"id":"bruiser-blood-aura","name":"Spiky Ki Charge Red (Bruiser)","package":"Anime Powers Pack 1.5.unitypackage","prefab":"Assets/Piloto Studio/Anime_VFX_Pack_Vol1/Aura/Spiky_Ki_Charge_Red.prefab","style":"bruiser","slot":"passive","phase":"loop","group":"bruiser-blood-aura","loop":true,"frames":128,"fps":96,"warmup":2,"pitch":15},
+    {"id":"mystic-mark-start","name":"Skull Head and Eyes Purple Spawn (Mystic)","package":"Cartoon FX 2 Remaster R 1.5.1.unitypackage","prefab":"Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Eerie/Variants/CFXR2 Skull Head + Eyes (Fire HDR, Blue).prefab","style":"mystic","slot":"mark","phase":"start","group":"mystic-mark","loop":false,"frames":64,"fps":64,"sourceStart":0,"sourceDuration":1,"hueShift":0.09},
+    {"id":"mystic-mark-loop","name":"Skull Head and Eyes Purple Loop (Mystic)","package":"Cartoon FX 2 Remaster R 1.5.1.unitypackage","prefab":"Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Eerie/Variants/CFXR2 Skull Head + Eyes (Fire HDR, Loop, Blue).prefab","style":"mystic","slot":"mark","phase":"loop","group":"mystic-mark","loop":true,"frames":96,"fps":64,"warmup":2,"hueShift":0.09},
+    {"id":"guardian-runic-shield","name":"Magic Aura A Runic (Guardian Shield)","package":"Cartoon FX 3 Remaster R 1.5.1.unitypackage","prefab":"Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Magic Misc/CFXR3 Magic Aura A (Runic).prefab","style":"guardian","slot":"buff","phase":"loop","group":"guardian-shield","loop":true,"frames":96,"fps":64,"warmup":2,"pitch":50},
+    {"id":"forest-rain-soft","name":"HCFX Rain 01 (Deep Forest)","package":"Hyper Casual FX Pack Vol2 v1.2.unitypackage","prefab":"Assets/VFX_Klaus/Prefabs/Hyper Casual FX Vol.2/HCFX_Rain_01.prefab","slot":"weather","phase":"loop","group":"forest-rain-soft","loop":true,"frames":64,"fps":32,"warmup":2,"rain":true},
+    {"id":"forest-rain-intense","name":"CFXR4 Rain Falling Intense (Deep Forest)","package":"Cartoon FX 4 Remaster R 1.5.1.unitypackage","prefab":"Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Rain Falling (Intense).prefab","slot":"weather","phase":"loop","group":"forest-rain-intense","loop":true,"frames":64,"fps":32,"warmup":2,"rain":true},
+    {"id":"forest-rain-light","name":"CFXR4 Rain Falling Light (Deep Forest)","package":"Cartoon FX 4 Remaster R 1.5.1.unitypackage","prefab":"Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Nature/Variants/CFXR4 Rain Falling (Light).prefab","slot":"weather","phase":"loop","group":"forest-rain-light","loop":true,"frames":64,"fps":32,"warmup":2,"rain":true}
+  ],
+  "beam": {
+    "package":"Toon Magic and Spells VFX Pack.unitypackage",
+    "prefab":"Assets/Piloto Studio/Toon FX Bundle/Toon FX Magic N Spells/vfx_Toon Laser Blast.prefab",
+    "style":"mystic",
+    "slot":"beam",
+    "parts":[
+      {"id":"body","excludeRoots":["Antecipation","Sphere_Beam_Continuos","Hit_Impact","Star_Flash","Star_Intesity_Around","Point Light For Particle System"]},
+      {"id":"origin","includeRoots":["Antecipation","Sphere_Beam_Continuos","Star_Flash","Star_Intesity_Around"]},
+      {"id":"target","includeRoots":["Hit_Impact"]}
+    ],
+    "phases":[
+      {"phase":"start","frames":48,"fps":48,"sourceStart":0,"sourceDuration":1.2,"loop":false},
+      {"phase":"loop","frames":64,"fps":48,"sourceStart":1.25,"sourceDuration":1.25,"loop":true},
+      {"phase":"end","frames":48,"fps":48,"sourceStart":2.8,"sourceDuration":1.2,"loop":false}
+    ]
+  }
+}

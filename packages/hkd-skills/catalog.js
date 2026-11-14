@@ -20,6 +20,7 @@ function spine(root,asset){
 function index(root){
   root=path.resolve(root);const audio=[],vfx=[],seen=new Set();
   let projectiles=[];try{projectiles=read(path.join(root,'assets/resources/projectiles/catalog.json')).assets||[];}catch(_){}
+  try{projectiles=projectiles.concat(read(path.join(root,'assets/resources/vfx/hero-skills/catalog.json')).clips||[]);}catch(_){}
   function record(file,kind){
     let meta;try{meta=read(file+'.meta');}catch(_){return;}
     const location=bundle(root,file);if(!location)return;
@@ -29,7 +30,7 @@ function index(root){
     const item={id:uuid,uuid,file:path.relative(root,file).replace(/\\/g,'/'),name:path.basename(file,path.extname(file)).replace(/[_-]+/g,' '),url:url.pathToFileURL(file).href,...location};
     if(location.bundle==='resources')item.resource=location.path;
     if(kind==='audio')audio.push(item);
-    else {item.kind=kind;if(kind==='spine'){let json;try{json=read(file);if(!json.skeleton||!json.animations)return;}catch(_){return;}item.animations=Object.keys(json.animations);}else{const authored=projectiles.find(row=>row.kind==='flipbook'&&row.resource===location.path&&(row.bundle||'resources')===location.bundle);if(authored){const value=require('../../assets/_script/HeroSkillSettings').flipbook({resourceFrames:authored.frames,resourceColumns:authored.columns,resourceCell:authored.cell,resourceFps:authored.fps,resourceLoop:!!authored.loop});if(value)item.flipbook=value;}}vfx.push(item);}
+    else {item.kind=kind;if(kind==='spine'){let json;try{json=read(file);if(!json.skeleton||!json.animations)return;}catch(_){return;}item.animations=Object.keys(json.animations);}else{const authored=projectiles.find(row=>row.kind==='flipbook'&&row.resource===location.path&&(row.bundle||'resources')===location.bundle);if(authored){const value=require('../../assets/_script/HeroSkillSettings').flipbook({resourceFrames:authored.frames,resourceColumns:authored.columns,resourceCell:authored.cell,resourceFps:authored.fps,resourceLoop:!!authored.loop});if(value)item.flipbook=value;item.name=authored.name||item.name;item.skillVfx=authored.slot;item.clipId=authored.id;}}vfx.push(item);}
   }
   ['assets/KinghtFallAudio','assets/audio','assets/gad_audios','assets/resources/sfx','assets/resources/voices'].forEach(folder=>walk(path.join(root,folder),file=>{if(AUDIO.test(file))record(file,'audio');}));
   const effectsFolders=['assets/KinghtFallEffect','assets/resources/projectiles','assets/resources/vfx'];

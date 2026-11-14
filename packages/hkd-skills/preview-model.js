@@ -2,6 +2,7 @@
 // Render-only skill simulation. No Cocos actors, player progress or scene are
 // touched. Skill events, ordinary windups and channel ticks share one clock.
 const DefaultCore=require('../../assets/_script/HeroStyleSkills');
+const VFXState=require('../../assets/_script/HeroSkillVFXState');
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const finite=(v,fallback)=>typeof v==='number'&&Number.isFinite(v)?v:fallback;
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -25,7 +26,12 @@ class Model{
   const d=finite(this.scenario.targetDistance,120),count=clamp(Math.floor(this.scenario.targets||3),1,5);
   this.targets=Array.from({length:count},(_,i)=>{const at=this.scenario.targetPositions&&this.scenario.targetPositions[i];return {id:i,x:finite(at&&at.x,d+i*85),y:finite(at&&at.y,i?i%2?22:-22:0),hp:100000,maxHp:100000};});
   this.state=this.core.createState(this.style,this.settings);this.effects=[];this.projectiles=[];this.events=[];this.hits=0;this.damage=0;this.attackClock=0;this.basicPending=null;this.lastAttack=-100;this.lastCast=-100;this.lastAttackKind=null;this.serial=0;this.beam=false;this.beamTarget=null;this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.channelStarted=0;this.beamVisibleStarted=0;this.castResult=null;this.pendingDamage=null;
-  if(this.scenario.mode==='active')this.cast();return this;
+  this.vfxClock=VFXState.create();if(this.scenario.mode==='active')this.cast();this.updateVFX();return this;
+ }
+ updateVFX(extra){const v=this.settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,x:t.x,y:t.y+50}:null;
+  const context=Object.assign({alive:this.hero.hp>0,hp:this.hero.hp,maxHp:this.hero.maxHp,origin:{x:this.hero.x+(v.originX||0),y:this.hero.y+70+(v.originY||0)},channelTarget:target(this.channelTarget),beamTarget:target(this.beamTarget),markedTarget:this.state.marked?target(this.state.target):null,warmupProgress:this.scenario.holdSource>0?Math.min(1,this.channelSourceTime/this.scenario.holdSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration},extra||{});
+  if(context.markedTarget&&!extra?.markedTarget)context.markedTarget.y+=50;
+  this.vfxFrame=VFXState.update(this.vfxClock,this.state,context,v);return this.vfxFrame;
  }
  selected(){return Number.isInteger(this.scenario.selectedTarget)?this.targets[this.scenario.selectedTarget]||null:null;}
  selectTarget(id){if(!this.targets[id])return;this.scenario.selectedTarget=id;this.channelTarget=null;this.visibleBeam(null);this.core.clearTarget(this.state);this.basicPending=null;return this.targets[id];}
@@ -112,12 +118,12 @@ class Model{
     else if(event.type==='vanguard-thrust'){const strike=++this.serial,stats=this.stats(),multiplier=this.core.vanguardMultiplier(this.state,{moveSpeed:stats.moveSpeed,attackRate:stats.attackRate}),damage=stats.damage*multiplier;this.lastAttack=event.time-Math.max(0,finite(this.scenario.impactDelay,.1667));this.lastAttackKind='skill';this.event('release',{skill:true,time:event.time});this.effect('arc',origin,155,event.direction,event.time,Math.PI/5);const impacts=this.targets.filter(t=>t.hp>0&&inArc(origin,t,event.direction,155,Math.PI/5)).map(target=>({target,damage}));for(const hit of impacts)this.hit(hit.target,1,true,strike,hit.damage,event.time);}
     else if(event.cast)this.resolveCast(event.cast,event.context.target,event.time);
    }
-   this.basicStart();const released=this.basicRelease();this.effects=this.effects.filter(e=>this.time-e.started<=e.duration);remaining=Math.max(0,remaining-slice);
+   this.updateVFX();this.basicStart();const released=this.basicRelease();this.effects=this.effects.filter(e=>this.time-e.started<=e.duration);remaining=Math.max(0,remaining-slice);
    if(slice<=1e-12&&!events.length&&!released&&!this.basicPending)break;
   }while(remaining>1e-9&&++guard<10000);
  }
  seek(time){const value=Math.max(0,finite(time,0));this.reset();for(let t=0;t<value;){const step=Math.min(1/60,value-t);this.advance(step);t+=step;}return this;}
- duration(){return Math.max(4,(this.settings.duration||this.settings.windup||0)+2,(this.settings.visual||{}).effectDuration+1||0);}
+ duration(){return Math.max(4,this.scenario.mode==='active'?Math.max(this.settings.buffDuration||0,this.settings.shieldDuration||0)+1:4,(this.settings.duration||this.settings.windup||0)+2,(this.settings.visual||{}).effectDuration+1||0);}
  status(){return{time:this.time,duration:this.duration(),charge:this.state.charge,cooldown:this.state.cooldown,hits:this.hits,damage:this.damage,hp:this.hero.hp/this.hero.maxHp*100,mode:this.scenario.mode,marked:this.state.marked,stacks:this.state.stacks,charges:this.state.mysticCharges,selectedTarget:this.scenario.selectedTarget,targets:this.targets.map(t=>({id:t.id,x:t.x,y:t.y,hp:t.hp}))};}
 }
 module.exports={Model,inArc,segment,segmentEntry,reach};

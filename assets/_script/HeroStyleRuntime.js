@@ -266,6 +266,7 @@ Runtime.prototype.update=function(dt){
       }else if(event.cast)self.resolveImpact(event.cast,scheduled);
     });
     if(this.resolvingState!==this.state)return;
+    if(Presentation.advanceVFX)Presentation.advanceVFX(this);
     remaining=Math.max(0,remaining-slice);if(slice===0&&!events.length&&(!frame||frame.ticks===beforeTicks))break;
   }while(remaining>1e-9&&++guard<102);
   this.taunted=this.taunted.filter(function(record){var enemy=record.enemy;if(enemy._heroTaunt!==record.taunt)return false;if(!living(enemy)||generation(enemy)!==record.taunt.enemyGeneration){delete enemy._heroTaunt;return false;}record.taunt.remaining-=dt;if(record.taunt.remaining<=0){delete enemy._heroTaunt;return false;}return true;});

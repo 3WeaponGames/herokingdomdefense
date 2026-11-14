@@ -96,10 +96,10 @@ test('preview attack rate changes tick cadence inputs without staging or saving 
 test('position handles expose only useful anchors for the selected style and reset an unavailable selection', async () => {
   const f = await fixture(), options = () => f.field('Handle').options.map(option => option.value);
   assert.deepEqual(options(), ['origin', 'effect']);
-  await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(options(), ['origin', 'target', 'effect']);
+  await f.client.selectStyle('mystic'); await f.settle(); assert.deepEqual(options(), ['origin', 'target', 'effect', 'mark']);
   f.field('Handle').value = 'target'; f.field('Handle').onchange();
-  await f.client.selectStyle('fighter'); await f.settle(); assert.deepEqual(options(), ['effect']); assert.equal(f.field('Handle').value, 'effect');
-  await f.client.selectStyle('guardian'); await f.settle(); assert.deepEqual(options(), ['effect']);
+  await f.client.selectStyle('fighter'); await f.settle(); assert.deepEqual(options(), ['effect', 'passive']); assert.equal(f.field('Handle').value, 'effect');
+  await f.client.selectStyle('guardian'); await f.settle(); assert.deepEqual(options(), ['effect', 'buff']);
   assert.equal(f.backend.calls.some(call => call.name === 'change' || call.name === 'save'), false); f.close();
 });
 test('invalid numeric fields block Ctrl+S and remain visible until corrected or discarded', async () => {

@@ -3,7 +3,7 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Document=require('../game-data-editor/lib/json-document'),Catalog=require('./catalog');
 const FILES=['assets/KinghtFallConfig/GameJsonCfg.json','assets/configs/GameJsonCfg.json'];
 const FRAME_KEYS=['Frames','Columns','Cell','Fps','Loop'];
-const RESOURCE_PREFIXES=['resource','impactResource'];
+const RESOURCE_PREFIXES=Settings.resourcePrefixes;
 const resourceKeys=prefix=>[prefix,prefix+'Bundle',prefix+'Path',prefix+'Kind',prefix+'Animation'].concat(FRAME_KEYS.map(key=>prefix+key));
 const clone=value=>JSON.parse(JSON.stringify(value)),object=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 function leaves(before,after,prefix=[],result=[]){
@@ -89,7 +89,16 @@ class SkillService{
     const sounds=require('../../assets/_script/BattleSoundCatalog').effects,release={fighter:'sword-light-swing',vanguard:'cavalry-lance-thrust',mystic:'enemy-magic-projectile',bruiser:'sword-heavy-swing',guardian:'sword-heavy-swing'}[request.style]||'bow-arrow-release';
     result.defaultSounds={};for(const [phase,id]of Object.entries({release:request.style==='guardian'?'shield-activate':release,basicRelease:release,channel:release,impact:request.style==='mystic'?'magic-impact':request.style==='skirmisher'?'arrow-impact-flesh':'impact-flesh-light'})){const sound=sounds[id],asset=sound&&this.catalogs.audio.find(row=>row.bundle==='KinghtFallAudio'&&row.path===sound.path);if(asset)result.defaultSounds[phase]={clip:asset.id,volume:sound.gain===undefined?1:sound.gain,delay:0};}
     if(enemy)try{result.target=describe(this.root,{type:'enemy',id:enemy.ID,noRuntime:!!request.noRuntime});}catch(_){}
-    for(const prefix of RESOURCE_PREFIXES){const id=Object.prototype.hasOwnProperty.call(request,prefix)?request[prefix]:visual[prefix],resourceField=Settings.visualFields.find(field=>field.path==='visual.'+prefix);if(!Settings.valid(resourceField,id))throw Error('Choose a valid VFX asset.');const asset=id&&this.asset('vfx',id);if(id&&!asset)throw Error('Choose an existing imported VFX asset.');result[prefix==='resource'?'effects':'impactEffects']=asset?[Object.assign({},asset,asset.kind==='spine'?{description:Catalog.spine(this.root,asset)}:{})]:[];}
+    for(const prefix of RESOURCE_PREFIXES){const id=Object.prototype.hasOwnProperty.call(request,prefix)?request[prefix]:visual[prefix],resourceField=Settings.visualFields.find(field=>field.path==='visual.'+prefix);if(!Settings.valid(resourceField,id))throw Error('Choose a valid VFX asset.');const asset=id&&this.asset('vfx',id);if(id&&!asset)throw Error('Choose an existing imported VFX asset.');result[prefix==='resource'?'effects':prefix==='impactResource'?'impactEffects':prefix+'Effects']=asset?[Object.assign({},asset,asset.kind==='spine'?{description:Catalog.spine(this.root,asset)}:{})]:[];}
+    // Include the phase-linked atlas parts for the preview, without changing
+    // saved resource identities or asking the panel to write defaults.
+    const VFX=require('../../assets/_script/HeroSkillVFXCatalog');result.styleEffects=[];
+    for(const prefix of RESOURCE_PREFIXES.slice(2)){
+      const id=Object.prototype.hasOwnProperty.call(request,prefix)?request[prefix]:visual[prefix],selected=VFX.clips.find(clip=>clip.uuid===id),asset=id&&this.asset('vfx',id);
+      if(!asset)continue;
+      const clips=selected?VFX.clips.filter(clip=>clip.slot===selected.slot&&(clip.group===selected.group||selected.slot==='beam')):[];
+      for(const candidate of clips.length?clips.map(clip=>this.asset('vfx',clip.uuid)).filter(Boolean):[asset])if(!result.styleEffects.some(row=>row.id===candidate.id))result.styleEffects.push(Object.assign({},candidate,candidate.kind==='spine'?{description:Catalog.spine(this.root,candidate)}:{}));
+    }
     result.skill=Settings.styles.find(row=>row.id===request.style);result.settings=Settings.effective(request.style,{HeroSkills:this.data});return result;
   }
 }

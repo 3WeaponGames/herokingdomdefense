@@ -1,0 +1,31 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const Settings=require('../../assets/_script/HeroSkillSettings'),Core=require('../../assets/_script/HeroStyleSkills'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog');
+function fixture(style){
+ class Node{constructor(name){this.name=name;this.children=[];this.x=this.y=0;this.zIndex=0;this.active=true;}setParent(parent){this.parent=parent;parent.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(p){this.x=p.x;this.y=p.y;}convertToWorldSpaceAR(p){return{x:p.x+this.x,y:p.y+this.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}addComponent(Type){const value=new Type();value.node=this;this.component=value;return value;}destroy(){this.destroyed=true;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}}
+ const loads=[],assets=[],cc={Node,Sprite:class{},SpriteFrame:class{},isValid:n=>!!n&&!n.destroyed,v2:(x,y)=>({x,y}),size:(width,height)=>({width,height}),rect:(x,y,width,height)=>({x,y,width,height}),color:value=>value,resources:{load(resource,_type,done){loads.push({resource,done});}},assetManager:{}};
+ const exported={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:exported,cc,require:name=>name.startsWith('./')?require(path.join(__dirname,'../../assets/_script',name)):name==='BattleSounds'?{}:{}});
+ const main=new Node('world'),hero={node:new Node('hero'),hp:500,hpMax:1000,getAttWpos:()=>({x:0,y:70})};hero.node.setParent(main);hero.node.zIndex=10;hero.node._combatGeneration=1;
+ const rt={hero,heroGeneration:1,state:Core.createState(style),settings:Settings.defaults(style),projectiles:[],effects:[],game:{ndMain:main,_combatEpoch:1,gameData:{}},available:()=>true},hud={visual:{node:new Node('HUD')}};
+ function finish(){for(const load of loads.splice(0)){const clip=Catalog.clips.find(c=>c.resource===load.resource);assert(clip);const asset={refs:0,clones:[],getRect:()=>({x:0,y:0,width:clip.columns*clip.cell,height:Math.ceil(clip.frames/clip.columns)*clip.cell}),addRef(){this.refs++;return this;},decRef(){this.refs--;},clone(){const frame={setRect(rect){this.rect=rect;},setOriginalSize(){},setOffset(){},destroy(){this.destroyed=true;}};this.clones.push(frame);return frame;}};assets.push(asset);load.done(null,asset);}}
+ function target(x=150){const node=new Node('enemy');node.x=x;node._combatGeneration=1;return{node,hp:1000};}
+ return{P:exported,rt,hud,hero,main,loads,assets,finish,target,paint(){exported.attachments(hud,rt);}};
+}
+test('stack-driven aura shares one resource and immutable frames, renders behind the horse, and releases owned assets',()=>{
+ const f=fixture('fighter');f.rt.state.stacks=5;f.rt.state.stackRemaining=10;f.paint();assert.equal(f.loads.length,1);f.finish();f.paint();const art=[...f.rt._presentation.styleArts.values()][0];assert.equal(art.nodes.size,5);for(const r of art.nodes.values()){assert.equal(r.node.parent,f.main);assert.equal(r.node.zIndex,9);assert.equal(r.node.anchorX,Catalog.clips.find(c=>c.id==='fighter-windup').anchorX);}
+ for(let i=0;i<200;i++){f.rt.state.time=i/60;f.paint();}assert.equal(f.loads.length,0);assert(art.frames.size<=128);const asset=f.assets[0];assert.equal(asset.refs,1);f.P.suspend(f.rt);for(const r of art.nodes.values())assert.equal(r.node.active,false);f.paint();for(const r of art.nodes.values())assert.equal(r.node.active,true);f.P.clear(f.rt);assert.equal(asset.refs,0);assert(asset.clones.every(c=>c.destroyed));assert.equal(f.main.children.length,1);
+});
+test('late resources cannot attach to retired state and disabled slots remove the world aura',()=>{
+ const f=fixture('bruiser');f.paint();assert.equal(f.loads.length,1);f.P.clear(f.rt);f.finish();assert.equal(f.assets[0].refs,0);assert.equal(f.main.children.length,1);f.paint();f.finish();f.paint();assert.equal(f.main.children.length,2);f.rt.settings.visual.passiveResource='';f.paint();assert.equal(f.main.children.length,1);assert.equal(f.assets.at(-1).refs,0);
+});
+test('Mystic paints a proportional three-part beam, one mark, bounded release tails and no stale target after recycling',()=>{
+ const f=fixture('mystic'),target=f.target();f.rt.state.target=target;f.rt.state.marked=true;f.rt.channelTarget=f.rt.beamTarget=target;f.rt.beamHoldSource=.2;f.rt.beamSourceTime=.2;f.rt.beamGeneration=f.rt.beamVisibleGeneration=f.rt.markGeneration=1;f.paint();assert.equal(f.loads.length,4);f.finish();f.paint();const arts=f.rt._presentation.styleArts,body=[...arts.values()].find(a=>a.resourceKey.includes('mystic-beam-body-loop')),record=[...body.nodes.values()][0];assert(record.node.scaleX>record.node.scaleY);assert.equal(record.node.parent,f.hud.visual.node);
+ f.rt.state.time=.6;f.paint();f.finish();f.paint();assert.equal(f.loads.length,0);target.hp=0;f.rt.state.time=.7;f.paint();assert.equal(f.rt._presentation.vfxFrame.active.mark,false);assert(f.rt._presentation.vfxFrame.entities.some(e=>e.phase==='end'));f.finish();f.rt.state.time=1;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.length,0);assert([...arts.values()].every(a=>!a.nodes.size));
+ target.hp=10;target.node._combatGeneration=2;f.rt.state.time=1.1;f.paint();assert.equal(f.rt._presentation.vfxFrame.entities.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});
+test('Guardian aura follows the actual shield rather than the short cast ring',()=>{
+ const f=fixture('guardian');f.rt.state.shield=200;f.rt.state.shieldRemaining=5;f.paint();f.finish();f.rt.state.time=2;f.paint();assert.equal(f.main.children.length,2);f.rt.state.shield=0;f.rt.state.shieldRemaining=3;f.paint();assert.equal(f.main.children.length,1);f.P.clear(f.rt);
+});
+test('Mystic phase textures preload once before combat without creating visuals and late loading remains owned',()=>{
+ const f=fixture('mystic');f.P.preload(f.rt);assert.equal(f.loads.length,11);assert.equal(f.main.children.length,1);assert.equal(f.hud.visual.node.children.length,0);f.P.preload(f.rt);assert.equal(f.loads.length,11);f.finish();assert.equal(f.assets.length,11);f.P.preload(f.rt);assert.equal(f.loads.length,0);f.P.clear(f.rt);assert(f.assets.every(a=>a.refs===0));
+});

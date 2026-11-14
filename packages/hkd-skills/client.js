@@ -175,7 +175,7 @@ function mount(host, api) {
     if (state.error) { sessionError = state.error; message(state.error + ' Your local fields are still open.', true); }
     else if (sessionError) { sessionError = ''; message('Draft updated. Changes remain unsaved until Save.'); }
     updateButtons(state); renderStyles();
-    const signature = snapshot && [selected, tab, JSON.stringify(snapshot.fields && snapshot.fields[selected]), JSON.stringify(snapshot.catalogs), tab === 'visual' && JSON.stringify([get(snapshot.effective[selected], 'visual.resource'),get(snapshot.effective[selected], 'visual.impactResource')])].join('|');
+    const signature = snapshot && [selected, tab, JSON.stringify(snapshot.fields && snapshot.fields[selected]), JSON.stringify(snapshot.catalogs), tab === 'visual' && JSON.stringify(['resource','impactResource','passiveResource','beamResource','markResource','buffResource'].map(prefix=>get(snapshot.effective[selected],'visual.'+prefix)))].join('|');
     if (signature !== lastSignature) { lastSignature = signature; renderInspector(); }
     else updateFields();
     updatePreview();
@@ -222,12 +222,14 @@ function mount(host, api) {
   }
   function renderStyles() {
     if (!snapshot) return;
-    if (handleStyle !== selected) {
+    const handleKey=JSON.stringify([selected,...['passive','mark','buff'].map(slot=>get(snapshot.effective[selected],'visual.'+slot+'Resource'))]);
+    if (handleStyle !== handleKey) {
       const previous = handle.value, choices = [['effect', 'Effect position']];
       if (selected === 'mystic') choices.unshift(['target', 'Target endpoint']);
       if (selected === 'mystic' || selected === 'skirmisher') choices.unshift(['origin', 'Skill origin']);
+      for(const [slot,label]of [['passive','Passive aura'],['mark','Target mark'],['buff','Shield aura']])if(get(snapshot.effective[selected],'visual.'+slot+'Resource'))choices.push([slot,label]);
       handle.textContent = ''; choices.forEach(([value, label]) => { const option = el('option', label, handle); option.value = value; });
-      handle.value = choices.some(([value]) => value === previous) ? previous : choices[0][0]; handleStyle = selected;
+      handle.value = choices.some(([value]) => value === previous) ? previous : choices[0][0]; handleStyle = handleKey;
       if (preview && preview.selectHandle) preview.selectHandle(handle.value);
     }
     stylesHost.textContent = '';
@@ -297,10 +299,10 @@ function mount(host, api) {
         onSound(kind, value) { if (kind === 'stop' || kind === 'stopChannel' || soundEnabled) audio.cue(kind, Object.assign({}, value, {delay:(Number(value.delay)||0)/Math.max(.01,scenario.speed)})); }
       }); preview.setScenario(scenario); if (preview.setAudioEnabled) preview.setAudioEnabled(soundEnabled); if (preview.selectHandle) preview.selectHandle(handle.value);
     }
-    const resource = get(effective(), 'visual.resource') || '',impactResource=get(effective(),'visual.impactResource')||'', key = JSON.stringify([selected,resource,impactResource]);
+    const resource = get(effective(), 'visual.resource') || '',impactResource=get(effective(),'visual.impactResource')||'', art=Object.fromEntries(['passiveResource','beamResource','markResource','buffResource'].map(prefix=>[prefix,get(effective(),'visual.'+prefix)||''])), key = JSON.stringify([selected,resource,impactResource,art]);
     if (descriptionStyle !== key) {
       const request = ++previewRequest, id = selected; loading = true; updateButtons(session.state());
-      if (!descriptionLoads.has(key)) { const task = Promise.resolve(api.ipc('describe', { style: id, resource,impactResource })); descriptionLoads.set(key, task); task.finally(() => { if (descriptionLoads.get(key) === task) descriptionLoads.delete(key); }).catch(() => {}); }
+      if (!descriptionLoads.has(key)) { const task = Promise.resolve(api.ipc('describe', { style: id, resource,impactResource,...art })); descriptionLoads.set(key, task); task.finally(() => { if (descriptionLoads.get(key) === task) descriptionLoads.delete(key); }).catch(() => {}); }
       try { const value = await descriptionLoads.get(key); if (disposed || request !== previewRequest || selected !== id) return; description = value; descriptionStyle = key; renderInspector(); }
       catch (error) { if (!disposed && request === previewRequest) message(error.message, true); return; }
       finally { if (!disposed && request === previewRequest) { loading = false; updateButtons(session.state()); } }

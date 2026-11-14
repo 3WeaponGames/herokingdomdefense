@@ -1,7 +1,8 @@
 "use strict";
 // One field contract for runtime, authoring and preview. Reading defaults never
 // creates saved overrides or changes an existing skill document.
-var Core = require("./HeroStyleSkills");
+var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCatalog");
+var RESOURCE_PREFIXES=["resource","impactResource","passiveResource","beamResource","markResource","buffResource"];
 var styles = [
   {id:"skirmisher",name:"Skirmisher",weapon:"Bow",skill:"Piercing Arrow"},
   {id:"fighter",name:"Fighter",weapon:"Sword",skill:"Battle Cry"},
@@ -11,6 +12,12 @@ var styles = [
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
 var VISUAL = {originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
+["passive","beam","mark","buff"].forEach(function(slot){
+  VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
+  VISUAL[slot+"Scale"]=1;VISUAL[slot+"ScaleX"]=1;VISUAL[slot+"ScaleY"]=1;VISUAL[slot+"OffsetX"]=0;VISUAL[slot+"OffsetY"]=0;
+  VISUAL[slot+"Rotation"]=0;VISUAL[slot+"Opacity"]=1;VISUAL[slot+"Color"]="";
+});
+Object.assign(VISUAL,{passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5});
 var AUDIO = {clip:"",volume:1,delay:0};
 var HELP = {
   cooldown:"Seconds between active-skill uses.",
@@ -101,21 +108,26 @@ function tuningFields(style){
   });
 }
 var visualFields = Object.keys(VISUAL).map(function(key){
-  if(key==="resource"||key==="impactResource")return {path:"visual."+key,key:key,label:key==="resource"?"VFX asset":"On-hit VFX asset",type:"vfx",emptyLabel:key==="resource"?"Built-in effect":"No custom on-hit effect"};
-  if(key==="resourceAnimation"||key==="impactResourceAnimation")return {path:"visual."+key,key:key,label:key==="resourceAnimation"?"VFX animation":"On-hit VFX animation",type:"effect-animation",emptyLabel:"Asset default",resourcePath:key==="resourceAnimation"?"visual.resource":"visual.impactResource"};
+  if(RESOURCE_PREFIXES.indexOf(key)>=0)return {path:"visual."+key,key:key,label:key==="resource"?"VFX asset":key==="impactResource"?"On-hit VFX asset":label(key.replace(/Resource$/,""))+" VFX asset",type:"vfx",emptyLabel:key==="resource"?"Built-in effect":key==="impactResource"?"No custom on-hit effect":"No "+label(key.replace(/Resource$/,"")).toLowerCase()+" effect"};
+  if(/ResourceAnimation$/.test(key)||key==="resourceAnimation")return {path:"visual."+key,key:key,label:key==="resourceAnimation"?"VFX animation":"On-hit VFX animation",type:"effect-animation",emptyLabel:"Asset default",resourcePath:"visual."+key.replace(/Animation$/,"")};
   if(key==="showBuiltin")return {path:"visual.showBuiltin",key:key,label:"Show built-in effect",type:"boolean"};
   if(key==="animation")return {path:"visual.animation",key:key,label:"Rider animation",type:"animation",emptyLabel:"Style default"};
-  if(key==="color"||key==="impactColor")return {path:"visual."+key,key:key,label:key==="color"?"Effect color":"On-hit effect color",type:"color",allowEmpty:true};
+  if(/Color$/.test(key)||key==="color")return {path:"visual."+key,key:key,label:key==="color"?"Effect color":"On-hit effect color",type:"color",allowEmpty:true};
   var min=-4096,max=4096,step=.1,unit="units";
-  if(key==="rotation"||key==="impactRotation"){min=-360;max=360;unit="degrees";}
-  if(key==="scale"||key==="impactScale"){min=.01;max=10;step=.01;unit="";}
-  if(key==="opacity"||key==="impactOpacity"){min=0;max=1;step=.01;unit="fraction";}
+  if(/Rotation$/.test(key)||key==="rotation"){min=-360;max=360;unit="degrees";}
+  if(/Scale(?:X|Y)?$/.test(key)||key==="scale"){min=.01;max=10;step=.01;unit="";}
+  if(/Opacity$/.test(key)||key==="opacity"){min=0;max=1;step=.01;unit="fraction";}
+  if(/Playback$/.test(key)){min=0;max=4;step=.01;unit="playback multiplier";}
+  if(key==="beamWidth"){min=1;max=200;step=1;unit="visual units";}
+  if(key==="beamEndDuration"||key==="markSpawnDuration"){min=.01;max=5;step=.01;unit="seconds";}
   if(key==="lineWidth"){min=0;max=200;step=.5;unit="0 = style default";}
   if(key==="effectDuration"||key==="impactDuration"){min=.01;max=30;step=.01;unit="seconds";}
   if(key==="impactDelay"){min=0;max=30;step=.01;unit="seconds";}
   if(key==="holdTime"){min=-1;max=30;step=.001;unit="seconds; -1 = authored hit";}
   return number("visual."+key,key.indexOf("impact")===0?"On-hit "+label(key.slice(6)).toLowerCase():label(key),min,max,step,unit);
-}).map(function(field){field.help=VISUAL_HELP[field.key];return field;});
+}).map(function(field){var key=field.key,slot=/^(passive|beam|mark|buff)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"Guardian's shield aura"}[slot[1]]:"";
+  if(slot)field.label=label(key).replace(/Resource Animation$/,"VFX animation").replace(/Resource$/,"VFX asset");
+  field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
 var audioFields=[];
 ["cast","impact","channel"].forEach(function(phase){
   var anchor=phase==="cast"?"skill confirmation":phase==="impact"?"the actual enemy hit":"the visible Mystic beam start";
@@ -125,6 +137,9 @@ var audioFields=[];
 });
 function fields(style){
   var visual=clone(visualFields).filter(function(field){
+    if(/^(beam|mark|buff)Scale[XY]$/.test(field.key))return false;
+    var slot=/^(passive|beam|mark|buff)/.exec(field.key);
+    if(slot){if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
     if(field.key==="effectDuration")return style!=="skirmisher";
@@ -144,7 +159,14 @@ function valid(descriptor,value){
 }
 function defaults(style){
   style=known(style)?style:"skirmisher";
-  return Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}});
+  var result=Object.assign({},Core.DEFAULTS.common,Core.DEFAULTS[style],{visual:clone(VISUAL),audio:{cast:clone(AUDIO),impact:clone(AUDIO),channel:clone(AUDIO)}}),v=result.visual;
+  var preset=VFXCatalog.presets[style]||{};Object.keys(preset).forEach(function(slot){var clip=VFXCatalog.clips.filter(function(row){return row.id===preset[slot];})[0];if(clip)applyClip(v,slot+"Resource",clip);});
+  if(style==="fighter")Object.assign(v,{passiveScale:1.8,passiveOffsetY:80,passiveMinScale:.5,passiveMinPlayback:.55,passivePlayback:1.35});
+  if(style==="vanguard")Object.assign(v,{passiveScale:1.8,passiveScaleY:.45,passiveOffsetY:12,passiveMinScale:.3,passiveMinPlayback:.2,passivePlayback:.45});
+  if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveColor:"#ff5367",passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1});
+  if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45});
+  if(style==="guardian")v.buffScale=1.8;
+  return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
 // Imported flipbooks remain sprites; these derived fields describe one frame
@@ -160,13 +182,21 @@ function impactVisual(value) {
   ["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","scale","rotation","opacity","color","offsetX","offsetY"].forEach(function(key){result[key]=value['impact'+key.charAt(0).toUpperCase()+key.slice(1)];});
   result.effectDuration=value.impactDuration;result.delay=value.impactDelay;return result;
 }
+function resourceVisual(value,prefix){
+  var result={};["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop"].forEach(function(key){result[key]=value[prefix+key.slice(8)];});
+  var slot=prefix.replace(/Resource$/,"");["scale","scaleX","scaleY","rotation","opacity","color","offsetX","offsetY"].forEach(function(key){result[key]=value[slot+key.charAt(0).toUpperCase()+key.slice(1)];});return result;
+}
+function applyClip(value,prefix,clip){
+  value[prefix]=clip.uuid;value[prefix+"Kind"]="sprite";value[prefix+"Bundle"]=clip.bundle;value[prefix+"Path"]=clip.resource;
+  ["frames","columns","cell","fps","loop"].forEach(function(key){value[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=clip[key];});
+}
 function effective(style,config){
   var result=defaults(style),saved=config&&config.HeroSkills&&config.HeroSkills[style];
   if(!saved||typeof saved!=="object"||Array.isArray(saved))return result;
+  RESOURCE_PREFIXES.forEach(function(prefix){var value=saved.visual&&saved.visual[prefix],field=descriptors(style).filter(function(row){return row.path==="visual."+prefix;})[0];if(field&&valid(field,value)&&value!==result.visual[prefix])Object.keys(result.visual).forEach(function(key){if(key!==prefix&&key!==prefix+"Animation"&&key.indexOf(prefix)===0)delete result.visual[key];});});
   descriptors(style).forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
-  ["visual.resourceBundle","visual.resourcePath","visual.resourceKind","visual.impactResourceBundle","visual.impactResourcePath","visual.impactResourceKind"].concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
-  var frames=flipbook(saved.visual);if(frames)Object.keys(frames).forEach(function(key){result.visual['resource'+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});
-  var impacts=flipbook(impactVisual(saved.visual));if(impacts)Object.keys(impacts).forEach(function(key){result.visual['impactResource'+key.charAt(0).toUpperCase()+key.slice(1)]=impacts[key];});
+  RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=/^visual\.(passiveResource|beamResource|markResource|buffResource)/.exec(path);if(match&&get(saved,"visual."+match[1])!==result.visual[match[1]])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
+  RESOURCE_PREFIXES.forEach(function(prefix){if(RESOURCE_PREFIXES.indexOf(prefix)>=2&&get(saved,"visual."+prefix)!==result.visual[prefix])return;var raw={};["Frames","Columns","Cell","Fps","Loop"].forEach(function(key){raw["resource"+key]=saved.visual&&saved.visual[prefix+key];});var frames=flipbook(raw);if(frames)Object.keys(frames).forEach(function(key){result.visual[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});});
   return result;
 }
 function validateStyle(style,value){
@@ -189,3 +219,5 @@ exports.styles=styles;exports.tuningFields=tuningFields;exports.visualFields=vis
 exports.riderAnimations=riderAnimations;
 exports.flipbook=flipbook;
 exports.impactVisual=impactVisual;
+
+exports.resourcePrefixes=RESOURCE_PREFIXES;exports.resourceVisual=resourceVisual;exports.applyClip=applyClip;
