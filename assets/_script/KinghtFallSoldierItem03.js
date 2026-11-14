@@ -32,6 +32,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
   };
   _ctor.prototype.doAttackStart = function () {
     if (GameToolsOverrides.isPending(this)) return;
+    if (!this.captureAttackTarget()) return;
     this.state = $z1KinghtFallSoldierBase.KinghtFallSoldierStatus.Attack;
     this.spAni.setAnimation(0, $z1KinghtFallModle.KinghtFallSoldierAniEnum.Attack, false);
     this.time[r.Attack] = 0;
@@ -42,22 +43,7 @@ var def_KinghtFallSoldierItem03 = function (t) {
     var t = this;
     this.node.getPosition(this.vec2_1);
     var e = this.getAttack();
-    var n = function () {
-      var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getEnemyList();
-      var n = null;
-      var i = -1;
-      for (var a = 0; a < e.length; a++) {
-        var o = e[a];
-        if (!o.isDead()) {
-          o.node.getPosition(t.vec2_2);
-          cc.Vec2.subtract(t.vec2_2, t.vec2_2, t.vec2_1);
-          if (t.vec2_2.len() <= t.attackRange && (-1 == i || t.vec2_2.len() < i)) {
-            i = t.vec2_2.len(), n = o;
-          }
-        }
-      }
-      return n;
-    }();
+    var n = this.releaseAttackTarget();
     if (n) {
       n.node.getPosition(this.vec2_2);
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);

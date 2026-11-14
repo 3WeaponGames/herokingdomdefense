@@ -66,9 +66,9 @@ test('only selected soldiers receive formation slots and posted bodies reserve t
  for(const slot of slots)assert(distance(slot.pos,posted.node)>=nav.radius(a)+nav.radius(posted)-2-.01);
  assert.equal(e.game.getArmyOrderGoal(posted,posted.rallyPoint.pos),null);
 });
-test('posted units engage enemies within hero sight, respect their post leash, and return after combat',()=>{
+test('posted units engage enemies within their own sight, respect their post leash, and return after combat',()=>{
  const e=setup(),unit=e.soldier(-40,0,3);delete unit.getFind;delete unit.onFindList;delete unit.isDead;
- unit.attackRange=30;unit.cfg={...unit.cfg,SearchRange:160};e.game.ctrPlay.attackRange=300;
+ unit.attackRange=30;unit.cfg={...unit.cfg,SearchRange:160,SightRange:300};e.game.ctrPlay.attackRange=300;
  const enemy={node:new Node('enemy',e.game.ndMain,220,0),attackRange:180,isDead:()=>false};
  enemy.node._combatGeneration=1;e.game.gameData.enemies.push(enemy);
  e.game.changeAge();e.game.changeAge();const post={...unit.rallyPoint.pos};e.tick([unit],10);assert(unit.node.x>-40,'a visible enemy outside melee range was ignored');

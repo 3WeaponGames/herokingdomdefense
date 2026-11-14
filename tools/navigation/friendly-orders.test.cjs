@@ -117,6 +117,7 @@ test('Every soldier archetype attacks a nearby enemy while rallying, then resume
 
 test('Soldiers retaliate against a ranged attacker outside normal search range and resume the order after it disappears', () => {
   const e = environment(), unit = soldier(e);
+  unit.cfg = { ...unit.cfg, SightRange: 60 }; // Keep this attacker outside the fixture's authored awareness.
   let dead = false;
   const attacker = { node: new Node('ranged enemy', e.game.ndMain, -100, 100), cfg: { AttackRange: 150 }, isDead: () => dead };
   e.game.gameData.enemies.push(attacker);
@@ -325,6 +326,7 @@ test('A slow soldier keeps pursuing a ranged attacker while making progress, the
 
 test('A stalled retaliation attempt releases its target and resumes a reachable rally', () => {
   const e = environment(), unit = soldier(e);
+  unit.cfg = { ...unit.cfg, SightRange: 60 };
   e.box(0, 50, 400, 10);
   const attacker = { node: new Node('unreachable archer', e.game.ndMain, -100, 100), cfg: { AttackRange: 150 }, isDead: () => false };
   e.game.gameData.enemies.push(attacker);
@@ -341,6 +343,7 @@ test('A stalled retaliation attempt releases its target and resumes a reachable 
 test('Delayed ranged hits keep damage but do not retaliate against a recycled or destroyed shooter', () => {
   for (const name of ['KinghtFallEnemyLong', 'KinghtFallEnemyItem08']) for (const invalidation of ['recycled', 'destroyed']) {
     const e = environment(), unit = soldier(e), attacker = e.actor(name, -100, 100);
+    unit.cfg = { ...unit.cfg, SightRange: 60 }; // A newly visible shooter is a different acquisition case.
     attacker.cfg = { ...e.cfg, ID: 90002, AttackRange: 150, Suppressed: -1 };
     attacker.getAttack = () => 1;
     attacker.node._combatGeneration = 1;

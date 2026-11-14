@@ -2,7 +2,7 @@
 
 // Unit stats and character looks use the barracks' authored level, not the
 // index of its upgrade branch. Unconfigured fields retain the base record.
-var FIELDS = ["Health", "AttackDamage", "AttackInterval", "AttackRange", "SearchRange", "Speed"];
+var FIELDS = ["Health", "AttackDamage", "AttackInterval", "AttackRange", "SightRange", "SearchRange", "Speed"];
 function key(id, value) { return "ally:" + id + ":level:" + value; }
 function level(actor) {
   var build = actor && actor.outBuild, row = build && build.buildInfo && build.buildInfo.cfg;

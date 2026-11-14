@@ -41,13 +41,20 @@ test('malformed runtime overrides are ignored and valid zero damage, range and m
   assert.equal(Stats.valid('Unknown',1),false);
 });
 
+test('optional sight overrides preserve virtual defaults and independently inherit or override each allied level',()=>{
+  const base=Object.freeze({ID:90001,AttackRange:50,SearchRange:220,Future:{keep:true}}),empty={unitLevels:{[Stats.key(90001,2)]:{future:{keep:true}}}};assert(Stats.FIELDS.includes('SightRange'));assert.equal(Stats.resolve(base,empty,2),base);assert.equal(Object.hasOwn(base,'SightRange'),false);
+  for(const invalid of [-1,NaN,Infinity,'240',null]){assert.equal(Stats.valid('SightRange',invalid),false);assert.equal(Stats.resolve(base,{unitLevels:{[Stats.key(90001,2)]:{SightRange:invalid}}},2),base);}
+  for(const value of [0,240,450]){const settings={unitLevels:{[Stats.key(90001,2)]:{SightRange:value}}},before=clone(settings),resolved=Stats.resolve(base,settings,2);assert.equal(resolved.SightRange,value);assert.equal(resolved.AttackRange,50);assert.equal(resolved.SearchRange,220);assert.equal(resolved.Future,base.Future);assert.equal(Stats.resolve(base,settings,1),base);assert.deepEqual(settings,before);}
+  const configured=Object.freeze({...base,SightRange:400});assert.equal(Stats.resolve(configured,{unitLevels:{[Stats.key(90001,2)]:{SightRange:400}}},2),configured);
+});
+
 test('retained allies upgrade through all three tiers with their HP, damage, cadence, range, colliders and speed',()=>{
   const f=fixture(),u=f.actor,before=clone(f.cfg);u._cc=f.cc;
   f.settings.unitLevels={};
   for(const level of [1,2,3])f.settings.unitLevels[Stats.key(90001,level)]={Health:100*level,AttackDamage:7*level,AttackInterval:.5*level,AttackRange:30*level,SearchRange:40+level,Speed:60+level};
   for(const level of [1,2,3]){
     u.outBuild.buildInfo.cfg.level=level;u.setNew();
-    assert.deepEqual(stats(u),{hp:100*level,attack:7*level,range:30*level,rate:.5*level,speed:60+level,colliders:[30*level,30*level+40+level]});
+    assert.deepEqual(stats(u),{hp:100*level,attack:7*level,range:30*level,rate:.5*level,speed:60+level,colliders:[30*level,Math.max(30*level,u.cfg.SightRange===undefined?240:u.cfg.SightRange)]});
     assert.equal(u.hp,u.hpMax);assert.equal(u.cfg.ID,90001);assert.notEqual(u.cfg,f.cfg);
   }
   assert.deepEqual(f.cfg,before,'tier upgrades never mutate the shared base unit');

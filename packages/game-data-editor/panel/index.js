@@ -2,6 +2,7 @@
 const UnitRecords=require('../lib/unit-records');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 const UnitLevelStats=require('../../../assets/_script/UnitLevelStats');
+const AllyAwareness=require('../../../assets/_script/AllyAwareness');
 const AttackRate=require('./attack-rate');
 const MapCatalog=require('../lib/map-catalog');
 const fs=require('fs'),path=require('path');
@@ -385,6 +386,7 @@ function create(kind){
         this._note('These values supply every level until you customize that level. Perks, talents and relic bonuses are applied afterward in battle.',false,base).style.gridColumn='1 / -1';
         for(const field of UnitLevelStats.FIELDS){
           if(field==='AttackInterval')this._field(base,'Base attack cooldown (seconds)',1/row.record[field],value=>this._set('A',row.path.concat(field),1/value),{min:0.000001,help:'Shared waiting time after the hit. Each level’s Attacks per second also includes its windup and animation duration.'});
+          else if(field==='SightRange')this._unitSightRangeField(base,row);
           else this._value(base,'A',row.path.concat(field),row.record[field],field,{table:'SoldierCfg',id:row.unitID,side:'ally'},row.record);
         }
       }
@@ -393,6 +395,21 @@ function create(kind){
     _attackRateField(container,row,level,write,options){return AttackRate.field(this,container,row,level,write,options,ipc);},
     _attackRateCell(element,row,level){return AttackRate.cell(this,element,row,level,ipc);},
     _attackRateMetrics(value){AttackRate.metrics(this,value);},
+    _unitSightRangeField(container,row){
+      const fallback=AllyAwareness.defaultSightRange,value=row.record.SightRange===undefined?fallback:row.record.SightRange;
+      this._field(container,'Sight range',value,next=>this._unitSightRangeEdit(row,Number(next)).catch(()=>{}),{numeric:true,min:0,commitUnchanged:true,help:'Absolute allied awareness radius in world units, independent of the hero’s weapon. Unconfigured units inherit '+fallback+'. Attack range still allows targets within reach.'});
+      if(own(row.record,'SightRange'))container.appendChild(button('Reset sight range',()=>this._unitSightRangeEdit(row).catch(()=>{}),'gt-mini'));
+    },
+    _unitSightRangeEdit(row,value){
+      return this._change(()=>{
+        const base=get(this._data('A'),row.path);
+        if(row.unitType!=='ally'||!base)throw Error('Choose an existing allied unit.');
+        if(value===undefined)return own(base,'SightRange')?[{doc:'A',path:row.path.concat('SightRange'),remove:true}]:[];
+        if(!UnitLevelStats.valid('SightRange',value))throw Error('Enter a finite sight range of zero or greater.');
+        if(value===(base.SightRange===undefined?AllyAwareness.defaultSightRange:base.SightRange))return [];
+        return [{doc:'A',path:row.path.concat('SightRange'),value}];
+      },{skipEmpty:true});
+    },
     _selectedUnitLevel(row){const levels=UnitRecords.levels(this._data('A'),row.unitType,row.unitID);if(!levels.includes(this._unitLevel))this._unitLevel=levels[0]||0;return this._unitLevel;},
     _selectUnitLevel(row,level){if(!UnitRecords.levels(this._data('A'),row.unitType,row.unitID).includes(level))return;this._unitLevel=level;this._render();if(this.$root.focus)this.$root.focus({preventScroll:true});},
     _unitLevelTabs(row){
@@ -404,17 +421,18 @@ function create(kind){
       const level=this._selectedUnitLevel(row),key=UnitLevelStats.key(row.unitID,level),settings=this._data('overrides'),effective=UnitLevelStats.resolve(row.record,settings,level),custom=(settings.unitLevels||{})[key]||{},fields=this._section('Level '+level+' stats');
       fields.classList.add('gt-unit-level-fields');
       this._note('Uses Barracks level '+level+' and Characters → '+this._text(row.record.Name)+' → Level '+level+'. Adjusting a value customizes only this level.',false,fields).style.gridColumn='1 / -1';
-      for(const field of ['Health','AttackDamage','AttackRange','AttackInterval','SearchRange','Speed']){
+      for(const field of ['Health','AttackDamage','AttackRange','AttackInterval','SightRange','SearchRange','Speed']){
         const meta=Schema.descriptor(field,{table:'SoldierCfg',side:'ally'}),overridden=own(custom,field);
-        const input=field==='AttackInterval'?this._attackRateField(fields,row,level,value=>this._unitLevelEdit(row,level,field,value),{help:overridden?'Custom cooldown for this level.':'Uses the shared base cooldown.'}):this._field(fields,meta.label,effective[field],value=>this._unitLevelEdit(row,level,field,value).catch(()=>{}),Object.assign({},meta,{help:(overridden?'Custom for this level.':'Uses shared base '+row.record[field]+'.')+(meta.help?' '+meta.help:'')}));
+        const inherited=field==='SightRange'&&row.record[field]===undefined?AllyAwareness.defaultSightRange:row.record[field],value=field==='SightRange'&&effective[field]===undefined?AllyAwareness.defaultSightRange:effective[field];
+        const input=field==='AttackInterval'?this._attackRateField(fields,row,level,value=>this._unitLevelEdit(row,level,field,value),{help:overridden?'Custom cooldown for this level.':'Uses the shared base cooldown.'}):this._field(fields,meta.label,value,value=>this._unitLevelEdit(row,level,field,field==='SightRange'?Number(value):value).catch(()=>{}),Object.assign({},meta,{numeric:field==='SightRange'||meta.numeric,commitUnchanged:field==='SightRange',help:(overridden?'Custom for this level.':'Uses shared base '+inherited+'.')+(meta.help?' '+meta.help:'')}));
         input.setAttribute('aria-label','Level '+level+' '+meta.label);
-        if(overridden){const reset=button('Use base',()=>this._unitLevelEdit(row,level,field).catch(()=>{}),'gt-mini');reset.title=field==='AttackInterval'?'Use the shared base attack cooldown':'Reset '+meta.label+' to shared base '+row.record[field];reset.setAttribute('aria-label','Reset level '+meta.label+' to base');input.parentNode.appendChild(reset);}
+        if(overridden){const reset=button('Use base',()=>this._unitLevelEdit(row,level,field).catch(()=>{}),'gt-mini');reset.title=field==='AttackInterval'?'Use the shared base attack cooldown':'Reset '+meta.label+' to shared base '+inherited;reset.setAttribute('aria-label','Reset level '+meta.label+' to base');input.parentNode.appendChild(reset);}
       }
       const actions=node('div',undefined,'gt-unit-level-actions');fields.appendChild(actions);
       const reset=button('Reset Level '+level+' stats',()=>this._unitLevelEdit(row,level,null).catch(()=>{}),'gt-mini');reset.disabled=!UnitLevelStats.FIELDS.some(field=>own(custom,field));actions.appendChild(reset);
       actions.appendChild(button('Edit level appearance in Characters',()=>ipc('open-characters',{type:'ally',id:String(row.unitID),level}).catch(error=>this._status(error.message,true)),'gt-mini'));
-      const overview=this._section('All level stats',undefined,true),table=node('table',undefined,'gt-grid-table'),head=node('tr');['Level','HP','Damage','Attacks/sec','Range','Speed'].forEach(label=>head.appendChild(node('th',label)));table.appendChild(head);
-      for(const value of UnitRecords.levels(this._data('A'),'ally',row.unitID)){const stats=UnitLevelStats.resolve(row.record,settings,value),tr=node('tr',undefined,value===level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>this._selectUnitLevel(row,value);[value,stats.Health,stats.AttackDamage,stats.AttackInterval,stats.AttackRange,stats.Speed].forEach((item,index)=>{const cell=node('td',index===3?'…':item);tr.appendChild(cell);if(index===3)this._attackRateCell(cell,row,value);});table.appendChild(tr);}overview.appendChild(table);
+      const overview=this._section('All level stats',undefined,true),table=node('table',undefined,'gt-grid-table'),head=node('tr');['Level','HP','Damage','Attacks/sec','Range','Sight','Speed'].forEach(label=>head.appendChild(node('th',label)));table.appendChild(head);
+      for(const value of UnitRecords.levels(this._data('A'),'ally',row.unitID)){const stats=UnitLevelStats.resolve(row.record,settings,value),tr=node('tr',undefined,value===level?'selected':'');tr.setAttribute('data-click','true');tr.onclick=()=>this._selectUnitLevel(row,value);[value,stats.Health,stats.AttackDamage,stats.AttackInterval,stats.AttackRange,stats.SightRange===undefined?AllyAwareness.defaultSightRange:stats.SightRange,stats.Speed].forEach((item,index)=>{const cell=node('td',index===3?'…':item);tr.appendChild(cell);if(index===3)this._attackRateCell(cell,row,value);});table.appendChild(tr);}overview.appendChild(table);
     },
     _unitLevelEdit(row,level,field,value){
       return this._change(()=>{
@@ -426,11 +444,11 @@ function create(kind){
         const table=clone(original||{}),key=UnitLevelStats.key(row.unitID,level),existing=table[key];
         if(existing!==undefined&&(!existing||typeof existing!=='object'||Array.isArray(existing)))throw Error('The unit level stats have an invalid format.');
         const next=Object.assign({},existing),base=get(this._data('A'),row.path);
-        for(const name of field===null?UnitLevelStats.FIELDS:[field]){if(resolved===undefined||field===null||resolved===base[name])delete next[name];else next[name]=resolved;}
+        for(const name of field===null?UnitLevelStats.FIELDS:[field]){const inherited=name==='SightRange'&&base[name]===undefined?AllyAwareness.defaultSightRange:base[name];if(resolved===undefined||field===null||resolved===inherited)delete next[name];else next[name]=resolved;}
         if(Object.keys(next).length)table[key]=next;else delete table[key];
         if(JSON.stringify(original||{})===JSON.stringify(table))return [];
         return [Object.keys(table).length?{doc:'overrides',path:['unitLevels'],value:table}:{doc:'overrides',path:['unitLevels'],remove:true}];
-      });
+      },{skipEmpty:field==='SightRange'});
     },
     _installUnitKeys(){
       this.$root.tabIndex=-1;this.$undo.title='Undo (Ctrl+Z)';this.$redo.title='Redo (Ctrl+Shift+Z)';this.$save.title='Save changes (Ctrl+S)';

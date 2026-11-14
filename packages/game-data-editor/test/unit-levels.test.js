@@ -41,7 +41,7 @@ test('optional sparse level stats validate independently at all three levels and
     const d=documents(),before=JSON.stringify(d);assert.deepEqual(findings(d),[]);assert.equal(JSON.stringify(d),before);
     d.overrides.unitLevels={
         [key(90001,1)]:{Health:45},[key(90001,2)]:{AttackDamage:0,AttackRange:0},
-        [key(90001,3)]:{Health:75,AttackDamage:18,AttackInterval:1.5,AttackRange:70,SearchRange:0,Speed:0}
+        [key(90001,3)]:{Health:75,AttackDamage:18,AttackInterval:1.5,AttackRange:70,SightRange:0,SearchRange:0,Speed:0}
     };
     const changed=JSON.stringify(d);assert.deepEqual(findings(d),[]);assert.equal(JSON.stringify(d),changed);
     assert.deepEqual(d.A.AllyCfg,source().AllyCfg);assert.deepEqual(d.overrides.timingDefaults,source().GameTools.timingDefaults);
@@ -56,7 +56,7 @@ test('malformed level tables, unavailable unit levels and noncanonical assignmen
 });
 
 test('level stats require finite numeric values, positive HP and attack rate, and supported stat names',()=>{
-    for(const field of ['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed']){
+    for(const field of ['Health','AttackDamage','AttackInterval','AttackRange','SightRange','SearchRange','Speed']){
         for(const value of [-1,NaN,Infinity,'5',null]){const d=documents();d.overrides.unitLevels={[key(90001,2)]:{[field]:value}};assert(findings(d).some(issue=>issue.path[2]===field),field+': '+value);}
     }
     for(const field of ['Health','AttackInterval']){const d=documents();d.overrides.unitLevels={[key(90001,1)]:{[field]:0}};assert(findings(d).some(issue=>issue.path[2]===field));}
@@ -74,6 +74,14 @@ test('opening, same-value edits, undo, redo and reset stay drafts and preserve u
     s.undo({version:s.version});assert.deepEqual(s.draftState().overrides.unitLevels,draft.overrides.unitLevels);
     for(const [relative,text]of Object.entries(f.files))assert.equal(f.read(relative),text);
     assert(!fs.existsSync(f.backupRoot));assert(!fs.existsSync(path.join(f.directory,'local')));
+});
+
+test('optional base sight validates independently and explicit sight saves preserve unrelated fields and no-op bytes',()=>{
+    const f=fixture(),s=f.store,before=JSON.parse(f.files[f.config]),basePath=['AllyCfg','90001','SightRange'];assert.equal(s.save({version:s.version}).result.noChanges,true);assert.equal(f.read(f.config),f.files[f.config]);
+    for(const value of [-1,NaN,Infinity,'240',null]){const d=documents();d.A.AllyCfg[90001].SightRange=value;assert(Schema.validate(d,[{doc:'A',path:basePath}]).some(i=>i.path.join('/')===basePath.join('/')&&i.severity==='error'));}
+    for(const value of [0,240,450]){const d=documents();d.A.AllyCfg[90001].SightRange=value;assert(!Schema.validate(d,[{doc:'A',path:basePath}]).some(i=>i.path.join('/')===basePath.join('/')));}
+    s.change({version:s.version,edits:[{doc:'A',path:basePath,value:320}]});edit(s,{[key(90001,2)]:{SightRange:500}});const saved=s.save({version:s.version});assert.equal(saved.result.saved,true);const after=JSON.parse(f.read(f.config));assert.equal(after.AllyCfg[90001].SightRange,320);assert.deepEqual(after.GameTools.unitLevels[key(90001,2)],{SightRange:500});delete after.AllyCfg[90001].SightRange;delete after.GameTools.unitLevels;assert.deepEqual(after,before);
+    const text=f.read(f.config),mtime=fs.statSync(path.join(f.directory,f.config)).mtimeMs;assert.equal(s.save({version:s.version}).result.noChanges,true);assert.equal(f.read(f.config),text);assert.equal(fs.statSync(path.join(f.directory,f.config)).mtimeMs,mtime);
 });
 
 test('explicit level Save changes only GameTools, keeps exact approved timing bytes and backs up the source; unchanged Save writes nothing',()=>{

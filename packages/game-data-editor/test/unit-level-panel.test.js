@@ -19,7 +19,7 @@ function fixture(){
     f.row=id=>f.panel._rows().find(row=>row.key===id);
     f.tabs=()=>f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('role')==='tab');
     f.section=title=>f.all(f.panel.$detail,n=>n.tagName==='details'&&n.children[0]&&n.children[0].textContent===title)[0];
-    f.levelField=(level,field)=>f.fields(f.section('Level '+level+' stats'),Schema.human(field))[0];
+    f.levelField=(level,field)=>f.fields(f.section('Level '+level+' stats'),Schema.descriptor(field,{table:'SoldierCfg',side:'ally'}).label)[0];
     f.preview=()=>f.previews.filter(p=>p.kind==='unit').at(-1).request;
     return f;
 }
@@ -43,7 +43,7 @@ test('every allied unit exposes its authored levels immediately below the title 
             assert.equal(f.tabs().find(tab=>tab.getAttribute('aria-selected')==='true').textContent,'Lvl '+level);
             for(const field of Stats.FIELDS){
                 if(field==='AttackInterval')assert.equal(f.levelField(level,field).value,Cadence.format(AttackRates.measured(f.panel,f.row('ally:'+id),level).rate));
-                else assert.equal(Number(f.levelField(level,field).value),f.row('ally:'+id).record[field]);
+                else assert.equal(Number(f.levelField(level,field).value),field==='SightRange'&&f.row('ally:'+id).record[field]===undefined?240:f.row('ally:'+id).record[field]);
             }
         }
         const shared=f.section('Shared base stats');assert(shared);assert.equal(shared.open,false,'shared defaults remain separate from selected-level edits');
@@ -51,6 +51,37 @@ test('every allied unit exposes its authored levels immediately below the title 
     for(const id of ['enemy:90001','hero']){f.render(id);assert.equal(f.tabs().length,0);assert.equal(f.preview().level,undefined);}
     assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert.equal(f.store.changes().length,0);
     assert(!f.messages.some(message=>/:(change|save)$/.test(message.message)));
+});
+
+test('allied sight defaults appear in shared and selected-level fields without seeding records or no-op drafts',async()=>{
+    const f=fixture();for(const version of ['data','original'])for(const unit of Object.values(f.store.documents.A[version].AllyCfg))delete unit.SightRange;f.panel._apply(f.store.snapshot());const before=f.store.draftState(),version=f.store.version;
+    for(const id of ['90001','90002','90003','90004']){
+        f.render('ally:'+id);const base=f.fields(f.section('Shared base stats'),'Sight range')[0],level=f.levelField(1,'SightRange');assert.equal(base.value,'240');assert.equal(level.value,'240');assert.match(base.title,/independent/);assert.match(level.title,/240/);base.onchange();level.onchange();await f.panel._queue;assert.equal(f.preview().record.SightRange,undefined,'Fallback stays virtual in preview data');
+        assert(f.fields(f.section('Level 1 stats'),'Additional search range (legacy)')[0]);
+    }
+    assert.deepEqual(f.store.draftState(),before);assert.equal(f.store.version,version);assert(!f.messages.some(m=>m.message==='game-data-editor:change'||m.message==='game-data-editor:save'));
+});
+
+test('shared sight edits compose rapidly and reset only the optional sight leaf, retaining other base and level data',async()=>{
+    const f=fixture();f.render('ally:90001');const row=f.row('ally:90001'),before=f.store.draftState(),base=f.fields(f.section('Shared base stats'),'Sight range')[0];
+    base.value='320';base.onchange();base.value='240';base.onchange();await f.panel._queue;assert.equal(f.store.draftState().A.AllyCfg[90001].SightRange,240,'The final queued control value wins');
+    await f.panel._unitSightRangeEdit(row,400);f.panel._selectUnitLevel(f.row('ally:90001'),2);assert.equal(f.levelField(2,'SightRange').value,'400');await f.panel._unitLevelEdit(f.row('ally:90001'),2,'SightRange',500);
+    const reset=f.all(f.panel.$detail,n=>n.tagName==='button'&&n.textContent==='Reset sight range')[0];assert(reset);await reset.onclick();assert.equal(f.store.draftState().A.AllyCfg[90001].SightRange,undefined);assert.equal(f.store.draftState().overrides.unitLevels[Stats.key(90001,2)].SightRange,500);const expected=clone(before.A);assert.deepEqual(f.store.draftState().A,expected);
+    for(const value of [-1,NaN,Infinity,'300',null])await assert.rejects(f.panel._unitSightRangeEdit(f.row('ally:90001'),value),/finite sight range/);
+    const version=f.store.version;await f.panel._unitSightRangeEdit(f.row('ally:90001'));assert.equal(f.store.version,version,'An absent-leaf reset is a no-op');
+});
+
+test('selected-level sight supports zero, inherits shared or virtual defaults and preserves future fields on reset',async()=>{
+    const f=fixture(),key=Stats.key(90001,2),other=Stats.key(90002,1);seedLevels(f,{[key]:{SightRange:350,future:{keep:true}},[other]:{SightRange:600}});f.render('ally:90001');f.panel._selectUnitLevel(f.row('ally:90001'),2);const before=f.store.draftState();
+    assert.equal(f.levelField(2,'SightRange').value,'350');const input=f.levelField(2,'SightRange');input.value='0';input.onchange();await f.panel._queue;assert.equal(f.preview().record.SightRange,0);
+    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Reset level Sight range to base')[0];assert(reset);await reset.onclick();await f.panel._queue;assert.deepEqual(f.store.draftState().overrides.unitLevels[key],{future:{keep:true}});assert.deepEqual(f.store.draftState().overrides.unitLevels[other],before.overrides.unitLevels[other]);assert.equal(f.levelField(2,'SightRange').value,'240');assert.equal(f.preview().record.SightRange,undefined);
+    const version=f.store.version;await f.panel._unitLevelEdit(f.row('ally:90001'),2,'SightRange',240);assert.equal(f.store.version,version,'Writing the inherited virtual default creates no override');assert.deepEqual(f.store.draftState().A,before.A);
+});
+
+test('malformed saved sight is preserved while browsing and can be explicitly corrected with a numeric control',async()=>{
+    const f=fixture();for(const version of ['data','original'])f.store.documents.A[version].AllyCfg[90001].SightRange='bad';f.panel._apply(f.store.snapshot());f.render('ally:90001');const before=f.store.draftState();assert.equal(f.fields(f.section('Shared base stats'),'Sight range')[0].value,'bad');assert.deepEqual(f.store.draftState(),before);
+    const base=f.fields(f.section('Shared base stats'),'Sight range')[0];base.value='300';base.onchange();await f.panel._queue;assert.equal(f.store.draftState().A.AllyCfg[90001].SightRange,300);
+    const input=f.levelField(1,'SightRange');input.value='400';input.onchange();input.value='300';input.onchange();await f.panel._queue;assert.equal(f.store.draftState().overrides.unitLevels,undefined,'Returning to the inherited base removes the queued level override');assert.equal(f.preview().record.SightRange,300);
 });
 
 test('rapid selected-level stat edits compose in the shared draft and the matching preview without changing base units',async()=>{

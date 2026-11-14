@@ -21,7 +21,7 @@ const LABELS = {
   Zoom:'Preview scale',Skin:'Model skin',Hp:'HP',BranchBuild:'Next upgrade branches',Excursion:'Icon offset',Data:'Special properties',
   EffectType:'Effect type',EquipName:'Equipment name',Parameters:'Stat value',GoldCost:'Gold cost',EquipBottom:'Icon background',EquipSkin:'Hero skin',
   AttackType:'Attack behavior',Health:'HP',AttackDamage:'Attack damage',AttackInterval:'Attacks per second',AttackRange:'Attack range',
-  SearchRange:'Additional search range',Speed:'Movement speed',BuildingCross:'Building collision rule',Suppressed:'Countered unit',DeathAni:'Death duration (seconds)',AttackPriority:'Target priority',loadIcon:'Battle icon',
+  SearchRange:'Additional search range',SightRange:'Sight range',Speed:'Movement speed',BuildingCross:'Building collision rule',Suppressed:'Countered unit',DeathAni:'Death duration (seconds)',AttackPriority:'Target priority',loadIcon:'Battle icon',
   kindID:'Talent effect',EffectNumber:'Effect values',vaulePercentage:'Display as percentage',Value:'Value',EffectKey:'Relic mechanic',RequiredHeroStyles:'Required fighting styles',
   MissionNumber:'Missions per battle',MissionType:'Mission selection mode',MissionID:'Mission pool / sequence',Award:'Mission rewards',
   enumValue:'Runtime ID',enumKey:'Behavior identifier',ID:'Record ID',id:'Category ID',
@@ -93,6 +93,8 @@ function descriptor(key, context) {
   if (key==='BuildingCross') result.options=[{value:0,label:'Ignore building obstruction'},{value:1,label:'Respect building obstruction'}];
   if (key==='Suppressed') {result.label='Damage bonus against';result.help='Deals the configured counter-damage multiplier to this opposing unit. Does not change target priority.';}
   if (key==='CounterType') {result.label='Countered unit type';result.help='Applies the configured damage multiplier to every opposing unit assigned to this type. Does not change target priority.';}
+  if(key==='SightRange'){result.min=0;result.help='Absolute allied awareness radius in world units, independent of hero weapon range. Missing values use 240. A longer attack range is preserved for direct attacks.';}
+  if(key==='SearchRange'&&context.side==='ally'){result.label='Additional search range (legacy)';result.help='Preserved legacy metadata. Allies now use Sight range for awareness; enemy search settings keep their existing behavior.';}
   if (key==='AttackInterval') {result.min=0.000001;result.help='Runtime attack rate: higher values attack more frequently. Animation playback speed is separate.';}
   if (['Health','Hp','Zoom'].indexOf(key)>=0) result.min=0.000001;
   if (['Weight','AttackDamage','AttackRange','SearchRange','Speed','DeathAni','GoldCost','lockCose','BuildSliverCost','VedioCount','vedioCount','StartSliver','CommerceSliver','EquipLevelCap','MissionNumber','MissionType'].indexOf(key)>=0) result.min=0;
@@ -237,6 +239,7 @@ function validate(documents, changes) {
     }
     ['Health','AttackInterval'].forEach(k=>number('A',p.concat(k),unit[k],Number.MIN_VALUE,false));
     ['AttackDamage','AttackRange','SearchRange','Speed','DeathAni'].forEach(k=>{if(own(unit,k))number('A',p.concat(k),unit[k],0,false);});
+    if(table==='AllyCfg'&&own(unit,'SightRange'))number('A',p.concat('SightRange'),unit.SightRange,0,false);
     if(unit.CounterType===undefined&&unit.Suppressed&&!opponents[unit.Suppressed])issue('A',p.concat('Suppressed'),'Opposing unit does not exist.');
     if(unit.CounterType!==undefined&&(typeof unit.CounterType!=='string'||unit.CounterType&&!((docs.overrides||base.GameTools||{}).unitTypes||{})[unit.CounterType]))issue('A',p.concat('CounterType'),'Choose an existing unit type, or None.');
     (unit.AttackPriority||[]).forEach((v,i)=>{if([1,2,3,4].indexOf(v)<0)issue('A',p.concat('AttackPriority',i),'Unknown target priority.');});
@@ -485,14 +488,14 @@ function validate(documents, changes) {
     EnemyClasses.validate(overrides,base).forEach(problem=>issue('overrides',problem.path,problem.message));
     if(overrides.version!==1)issue('overrides',['version'],'Unsupported override format.');
     if(overrides.unitLevels!==undefined){
-      const table=overrides.unitLevels,fields=['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','Speed'];
+      const table=overrides.unitLevels,fields=['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','SightRange','Speed'];
       if(!table||typeof table!=='object'||Array.isArray(table))issue('overrides',['unitLevels'],'Unit level stats must be a table of allied unit levels.');
       else for(const [key,item]of Object.entries(table)){
         const at=['unitLevels',key],match=/^ally:([1-9]\d*):level:([1-9]\d*)$/.exec(key);
         if(!match||!UnitRecords.levels(base,'ally',match[1]).includes(Number(match[2])))issue('overrides',at,'Choose an existing allied unit and barracks level.');
         if(!item||typeof item!=='object'||Array.isArray(item)){issue('overrides',at,'Unit level stats must retain their object format.');continue;}
         for(const [field,value]of Object.entries(item)){
-          if(!fields.includes(field)){issue('overrides',at.concat(field),'Unsupported unit level stat. Choose HP, attack damage, attack rate, attack range, search range or movement speed.');continue;}
+          if(!fields.includes(field)){issue('overrides',at.concat(field),'Unsupported unit level stat. Choose HP, attack damage, attack rate, attack range, search range, sight range or movement speed.');continue;}
           number('overrides',at.concat(field),value,['Health','AttackInterval'].includes(field)?Number.MIN_VALUE:0,false);
         }
       }
