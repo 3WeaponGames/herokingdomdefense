@@ -222,12 +222,29 @@ function meshVertices(slot, start, count, output, offset, stride) {
 function apertureSlot(slot) {
   return !!slot && !!slot.data && (slot.data.name === "building_aperture_rays" || slot.data.name === "building_aperture_cores");
 }
+// Native Slot vectors are fixed for one constructed Skeleton. A skin/setup
+// change updates attachments/draw order, never these handles. JSB's slots
+// getter copies every Slot into a new JS array, including on ordinary NPCs.
+var nativeApertureSlots = new WeakMap();
 function trailingApertures(renderer) {
-  var slots = renderer._skeleton && renderer._skeleton.slots;
-  if (!slots || !apertureSlot(slots[slots.length - 1])) return null;
-  var first = slots.length - 1;
-  while (first > 0 && apertureSlot(slots[first - 1])) first--;
-  return slots.slice(first);
+  var skeleton=renderer._skeleton,native=renderer._nativeSkeleton,data=renderer.skeletonData;
+  var cacheable=!!(cc.sys&&cc.sys.isNative&&skeleton&&native&&typeof skeleton.getSlots==="function"&&typeof native.getSkeleton==="function");
+  var saved=cacheable&&nativeApertureSlots.get(renderer),slots;
+  if(saved&&saved.skeleton===skeleton&&saved.native===native&&saved.data===data)return saved.slots;
+  if(cacheable) {
+    try { if(native.getSkeleton()!==skeleton)cacheable=false;else { slots=skeleton.getSlots();if(!Array.isArray(slots))cacheable=false; } }
+    catch(error) { cacheable=false; }
+  }
+  // Mutable web/runtime fixtures and unknown native APIs keep the old path.
+  if(!cacheable)slots=skeleton&&skeleton.slots;
+  var result=null;
+  if(slots&&apertureSlot(slots[slots.length-1])) {
+    var first=slots.length-1;
+    while(first>0&&apertureSlot(slots[first-1]))first--;
+    result=slots.slice(first);
+  }
+  if(cacheable)nativeApertureSlots.set(renderer,{skeleton:skeleton,native:native,data:data,slots:result});
+  return result;
 }
 function nativePhysicalBounds(renderer) {
   var slots = trailingApertures(renderer);
