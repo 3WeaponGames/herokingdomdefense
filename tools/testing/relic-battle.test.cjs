@@ -126,8 +126,9 @@ test('repurposed hero relics no longer change soldier stats or melee haste, whil
   const f=fixture({120014:[.16],120024:[.4,.4],120025:[.16,.16],120026:[.16,.16],120027:[.07,.07],120015:[.3]},'fighter');f.data.addTime={};
   const globals={$z1KinghtFallUIGame:{default:{instance:{ctrGame:{gameData:f.data}}}},$z1KinghtFallEnum:enums,$z1KinghtFallInterface:{KinghtFallEnemyBuffType:{AttackSpeed:1}},$z1KinghtFallGameCtrlData:{KinghtFallTimeType:{}},cc:{CircleCollider:function(){}}};
   const refresh=method('KinghtFallSoldierBase','initBuffData',globals),speed=method('KinghtFallSoldierBase','getAttSpeed',globals);
+  const awareness=require('../../assets/_script/AllyAwareness'),getSightRange=method('KinghtFallSoldierBase','getSightRange',{AllyAwareness:awareness}),getAcquireRange=method('KinghtFallSoldierBase','getAcquireRange',{});
   for(const id of [90001,90002,90003,90004]){
-    const soldier={cfg:{ID:id,Health:100,AttackDamage:10,AttackRange:20,SearchRange:10,AttackType:id===90003?2:1},_refreshLevelStats(){},node:{getComponents:()=>[{},{}]},attSpeed:1,getBuffList:()=>[]};
+    const soldier={cfg:{ID:id,Health:100,AttackDamage:10,AttackRange:20,SearchRange:10,AttackType:id===90003?2:1},_refreshLevelStats(){},node:{getComponents:()=>[{},{}]},attSpeed:1,getBuffList:()=>[],getSightRange,getAcquireRange};
     refresh.call(soldier);assert.equal(soldier.hpMax,100);assert.equal(soldier.attack,10);assert.equal(speed.call(soldier),id===90003?1.3:1);
   }
 });
@@ -144,8 +145,12 @@ test('real melee and ranged soldier hit callbacks pass their original life as th
     cc:{Vec2,isValid:()=>true},GameToolsOverrides:{counters:()=>false},
     $z1KinghtFallUIGame:{default:{instance:{ctrGame:game,ctrEffect:{showDamageNum(){},onMonsterAttack(){}}}}}
   };
-  const soldier={node:new Node(),time:{},vec2_1:new Vec2(),vec2_2:new Vec2(),attackRange:30,getAttack:()=>10,setLeft(){}};soldier.node._combatGeneration=1;
+  const soldier={node:new Node(),time:{},vec2_1:new Vec2(),vec2_2:new Vec2(),attackRange:30,getAttack:()=>10,setLeft(){}};soldier.node._combatGeneration=1;target.node._combatGeneration=1;game._combatEpoch=1;
+  // Exercise the real release fence before checking the original projectile-life credit.
+  const releaseGlobals={...globals,AllyAwareness:require('../../assets/_script/AllyAwareness'),Navigation:{positionOf:node=>node.getPosition()}};
+  soldier.releaseAttackTarget=method('KinghtFallSoldierBase','releaseAttackTarget',releaseGlobals);
+  const acquire=()=>{soldier._attackIntent={target,targetGeneration:1,ownerGeneration:soldier.node._combatGeneration,game,data:game.gameData,epoch:game._combatEpoch};};acquire();
   method('KinghtFallSoldierBase','doAttack',{...globals,l:{Attack:'Attack'}}).call(soldier);assert.equal(hits[0].owner,soldier);assert.equal(hits[0].damage,10);
-  method('KinghtFallSoldierItem03','doAttack',globals).call(soldier);impact();assert.equal(hits[1].owner,soldier);
+  acquire();method('KinghtFallSoldierItem03','doAttack',globals).call(soldier);impact();assert.equal(hits[1].owner,soldier);
   soldier.node._combatGeneration++;impact();assert.equal(hits[2].owner,null,'a reused soldier cannot receive credit for an earlier life projectile');
 });

@@ -693,11 +693,17 @@ test('Delayed attack effects cannot survive pooling and reuse of the same enemy 
     e.load('KinghtFallDataMgr').KinghtFallDataMgr.getInstance().data.GameTools = { timings: { [type + ':90001:default']: { attack: .1 } } };
     const actor = e.actor(name), timing = e.load('GameToolsOverrides');
     actor.initData(90001, {});
+    const target = { node: new Node('attack target', e.game.ndMain, actor.node.x, actor.node.y), hp: 100, isDead: () => false };
+    target.node._combatGeneration = 1;
+    if (type === 'ally') e.game.gameData.enemies.push(target);
+    const acquire = () => { if (type === 'ally') { actor._orderTarget = target; actor._orderTargetGeneration = 1; } };
+    acquire();
     const generation = actor.node._combatGeneration;
     let hits = 0; actor.doAttack = () => hits++;
     actor.doAttackStart(); timing.tick(.04, true); assert.equal(hits, 0); assert(timing.isPending(actor));
     actor.freeNode(); assert.equal(timing.isPending(actor), false); assert(actor.node._combatGeneration > generation);
     actor.node.active = true; actor.initData(90001, {});
+    acquire();
     timing.tick(.2, true); assert.equal(hits, 0, 'Old delayed effect fired in the reused actor generation');
     actor.doAttackStart(); timing.tick(.1, true); assert.equal(hits, 1, 'Fresh generation lost its own timed attack');
   }

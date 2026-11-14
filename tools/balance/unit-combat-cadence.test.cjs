@@ -49,8 +49,16 @@ test('real controller timer anchors and completion gates agree with CP policies'
     e.stubs.GameToolsOverrides = { isPending: () => false, attack() { starts++; } };
     const name = 'KinghtFall' + (type === 'ally' ? 'Soldier' : 'Enemy') + 'Item' + String(id - 90000).padStart(2, '0');
     const actor = e.actor(name); actor.cfg = { ...e.cfg, ID: id }; actor.time.Attack = 123;
+    let target;
+    if (type === 'ally') {
+      // A cadence measurement begins with a live in-range target for its windup.
+      e.game._combatEpoch = 1; actor.node._combatGeneration = 1;
+      target = { ...e.unit(actor.node.x + 10, actor.node.y), hp: 100, isDead: () => false }; target.node._combatGeneration = 1;
+      e.game.gameData.enemies.push(target); actor._orderTarget = target; actor._orderTargetGeneration = 1;
+    }
     const policy = Profile.describe({}, {}, { type, id, record: actor.cfg }).cooldownStart;
     actor.doAttackStart(); assert.equal(starts, 1, name); assert.equal(actor.time.Attack, policy === 'start' ? 0 : -1, name);
+    if (target) assert.equal(actor._attackIntent.target, target, name + ' retains the measured attack target');
     if (id === 90010) continue;
     starts = 0; actor.time.Attack = 1; actor.state = 2; actor.bornInfo = { nodeIndex: 1, pathList: [] }; actor.onUpdate(0);
     assert.equal(starts, policy === 'hit-unblocked' ? 1 : 0, name + ' clip completion gate');
