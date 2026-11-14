@@ -1,9 +1,10 @@
 "use strict";
-var FX=require("BuildingDropShadow"),entries=[],bytes=0,LIMIT=24*1024*1024;
+var FX=require("BuildingDropShadow"),Transition=require("BuildingShadowTransition"),entries=[],bytes=0,LIMIT=24*1024*1024;
 function valid(n){return !!n&&(!cc.isValid||cc.isValid(n,true));}
-function dispose(owner){var state=owner._buildingDropShadowRuntime;if(!state)return;delete owner._buildingDropShadowRuntime;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.sync);if(valid(state.sprite))state.sprite.spriteFrame=null;if(valid(state.node))state.node.destroy();if(state.entry){state.entry.refs--;trim();}}
+function releaseEntry(entry){if(entry&&entry.refs>0)entry.refs--;trim();}
+function dispose(owner,handoff){if(!handoff)Transition.cancel(owner);var state=owner._buildingDropShadowRuntime;if(!state)return;delete owner._buildingDropShadowRuntime;cc.director.off(cc.Director.EVENT_BEFORE_DRAW,state.sync);if(valid(state.sprite))state.sprite.spriteFrame=null;if(valid(state.node))state.node.destroy();releaseEntry(state.entry);}
 function trim(){for(var i=0;bytes>LIMIT&&i<entries.length;){var e=entries[i];if(e.refs){i++;continue;}entries.splice(i,1);bytes-=e.bytes;e.frame.destroy();e.texture.destroy();}}
-function hide(owner){var s=owner._buildingDropShadowRuntime;if(s){s.hidden=true;s.node.active=false;}}
+function hide(owner){Transition.cancel(owner);var s=owner._buildingDropShadowRuntime;if(s){s.hidden=true;s.node.active=false;s._shadowAlpha=0;}}
 function parentFor(owner,game,row){return require("BuildingShadow").aboveGround(row,owner.buildCfg&&owner.buildCfg.enumValue)&&owner.ndAniDown&&valid(owner.ndAniDown.node)?owner.ndAniDown.node:game&&(game.ndDown||game.ndMain);}
 function excluded(owner,node){for(var n=node;n;n=n.parent)if(n===owner.ndVideoSoldier||n._structureShadowExcluded)return true;return false;}
 function isWall(owner){return !!(owner.buildCfg&&owner.buildCfg.enumValue===6||owner.buildInfo&&owner.buildInfo.cfg&&owner.buildInfo.cfg.ID===6||[owner.ndAniMain].concat(owner.ndAniOther||[]).some(function(r){var j=r&&r.skeletonData&&r.skeletonData.skeletonJson;return j&&(j.wallKit||j.wallGate);}));}
@@ -59,7 +60,7 @@ function capture(owner,game,list){
  var object={sources:list},hidden=[];
  // Native camera.render(node) includes its descendants. Offer units and pads
  // can be children of the very node carrying the building's Spine component.
- [owner.ndVideoSoldier,owner._buildingDropShadowRuntime&&owner._buildingDropShadowRuntime.node,owner._buildingManualLights&&owner._buildingManualLights._buildingLighting&&owner._buildingManualLights._buildingLighting.node].concat(owner.ndLockList||[]).forEach(function(node){if(valid(node)&&node.active){hidden.push(node);node.active=false;}});
+ [owner.ndVideoSoldier,owner._buildingDropShadowRuntime&&owner._buildingDropShadowRuntime.node,owner._buildingManualLights&&owner._buildingManualLights._buildingLighting&&owner._buildingManualLights._buildingLighting.node].concat(owner.ndLockList||[],Transition.nodes(owner)).forEach(function(node){if(valid(node)&&node.active){hidden.push(node);node.active=false;}});
  try{
   view.snapshot(object,box);if(!object.texture)return null;var rgba=object.texture.readPixels(),w=object.texture.width,h=object.texture.height;if(!rgba)return null;
   function read(pixels){var data=pixels||object.texture.readPixels();if(!data)throw Error("Could not read a building shadow layer");var alpha=new Uint8Array(w*h);for(var y=0;y<h;y++)for(var x=0;x<w;x++)alpha[y*w+x]=data[((h-1-y)*w+x)*4+3];return alpha;}
@@ -79,39 +80,38 @@ function obtain(key,source,settings){
 }
 function apply(owner,game,data){
  var row=owner.buildInfo&&owner.buildInfo.cfg,category=data&&data.BuildEnum&&data.BuildEnum[row&&row.ID||owner.buildCfg&&owner.buildCfg.enumValue],effective=row&&category&&FX.resolve(category,row,data&&data.GameTools),old=owner._buildingDropShadowRuntime;
- if(!effective||!effective.active){dispose(owner);if(effective&&effective.mode==='none')require("BuildingShadowRuntime").dispose(owner);else require("BuildingShadowRuntime").apply(owner,game);return;}
- require("BuildingShadowRuntime").dispose(owner);
- if(old){old.hidden=false;old.data=data;old.sync();return;}
+ if(!effective||!effective.active){dispose(owner,true);if(effective&&effective.mode==='none'){Transition.cancel(owner);require("BuildingShadowRuntime").dispose(owner);}else require("BuildingShadowRuntime").apply(owner,game);return;}
+ require("BuildingShadowRuntime").dispose(owner,true);
+ if(old){old.hidden=false;old.data=data;return;}
  var parent=parentFor(owner,game,row);if(!valid(parent))return;
  var node=new cc.Node("BuildingTextureShadow");node.parent=parent;node.group=owner.node.group;node._depthGroundVisual=true;node.active=false;
  var child=new cc.Node("DropShadowTexture");child.parent=node;child.group=node.group;child.setAnchorPoint(0,0);var sprite=child.addComponent(cc.Sprite);sprite.sizeMode=cc.Sprite.SizeMode.CUSTOM;sprite.srcBlendFactor=cc.macro.BlendFactor.ONE;
- var state=owner._buildingDropShadowRuntime={node:node,child:child,sprite:sprite,data:data,hidden:false,wait:2};
+ var state=owner._buildingDropShadowRuntime={node:node,child:child,sprite:sprite,data:data,hidden:false,wait:2,releaseEntry:releaseEntry};
  state.sync=function(){
   if(!valid(owner.node)||!valid(node)){dispose(owner);return;}
   var row=owner.buildInfo&&owner.buildInfo.cfg,category=state.data&&state.data.BuildEnum&&state.data.BuildEnum[row&&row.ID||owner.buildCfg&&owner.buildCfg.enumValue],current=row&&category&&FX.resolve(category,row,state.data.GameTools);
   if(!current||!current.active){apply(owner,game,state.data);return;}
   var nextParent=parentFor(owner,game,row);if(!valid(nextParent)){node.active=false;return;}if(node.parent!==nextParent)node.parent=nextParent;parent=nextParent;
-  // Prepared/cache entries must obey the same construction visibility as a
-  // fresh capture. Ordinary gate opening/shutting keeps its existing shadow.
-  if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed||!require("BuildingShadowRuntime").ready(owner)){node.active=false;return;}
+  if(state.hidden||owner.enabled===false||owner.node.activeInHierarchy===false||!owner.index||owner.isDestroyed){Transition.cancel(owner);node.active=false;state._shadowAlpha=0;return;}
+  var phase=Transition.phase(owner);if(!phase.ready){Transition.hold(owner,state);return;}
   var next=geometry(owner)+':ground',settingsKey=JSON.stringify(current.settings),prepared=game._stageAssets&&game._stageAssets.shadows&&game._stageAssets.shadows.get(owner,row,current.settings),key=prepared?prepared.key:next+settingsKey,list;
   if(state.key!==key){
    var entry=prepared||entries.find(function(e){return e.key===key;});
    if(entry){entry.refs++;}
-   else{if(state.wait>0){state.wait--;return;}list=sources(owner);if(!ready(owner,list))return;if(state.failedKey===key)return;try{if(state.geometry!==next||!state.source){state.source=capture(owner,game,list);if(!state.source)return;state.geometry=next;}entry=obtain(key,state.source,current.settings);}catch(error){state.failedKey=key;node.active=false;if(cc.warn)cc.warn("Building shadow unavailable",error.message||error);return;}}
+   else{if(state.wait>0){state.wait--;Transition.hold(owner,state);return;}list=sources(owner);if(!ready(owner,list)){Transition.hold(owner,state);return;}if(state.failedKey===key)return;try{if(state.geometry!==next||!state.source){state.source=capture(owner,game,list);if(!state.source)return;state.geometry=next;}entry=obtain(key,state.source,current.settings);}catch(error){state.failedKey=key;Transition.hold(owner,state);if(cc.warn)cc.warn("Building shadow unavailable",error.message||error);return;}}
    // Detach the old frame while it is still live: cache eviction destroys its
    // texture, and Creator's Sprite setter first removes the old load listener.
    var prior=state.entry;sprite.spriteFrame=entry.frame;state.entry=entry;state.key=key;
    child.setPosition(entry.image.x,entry.image.y);child.setContentSize(entry.image.width,entry.image.height);
    if(prior){prior.refs--;trim();}
   }
-  node.active=!!state.entry;if(!node.active)return;
-  var placement=owner._buildingAppearance&&owner._buildingAppearance.placement;node.opacity=Math.round((placement?255*(.25+.75*Math.min(1,placement.elapsed/.25)):255)*(owner._buildingNight ? .05 : 1));
+  if(!state.entry){Transition.hold(owner,state);return;}
   function p(x,y){return parent.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(x,y)));}
   var origin=game.ndMain.convertToNodeSpaceAR(owner.node.convertToWorldSpaceAR(cc.v2(0,0))),o=p(origin.x,origin.y),x=p(origin.x+1,origin.y),y=p(origin.x,origin.y+1),a=x.x-o.x,b=x.y-o.y,c=y.x-o.x,d=y.y-o.y,sx=Math.hypot(a,b);
   node.setPosition(o);node.angle=Math.atan2(b,a)*180/Math.PI;node.scaleX=sx;node.scaleY=sx?(a*d-b*c)/sx:0;
+  Transition.render(owner,state,phase,true);
  };
  cc.director.on(cc.Director.EVENT_BEFORE_DRAW,state.sync);
  state.sync();
 }
-exports.apply=apply;exports.dispose=dispose;exports.hide=hide;exports.capture=capture;exports.sources=sources;exports.prepareEntry=obtain;exports.releaseEntry=function(entry){if(entry&&entry.refs>0)entry.refs--;trim();};exports.stats=function(){return{entries:entries.length,bytes:bytes,active:entries.filter(function(e){return e.refs>0;}).length};};
+exports.apply=apply;exports.dispose=dispose;exports.hide=hide;exports.capture=capture;exports.sources=sources;exports.prepareEntry=obtain;exports.releaseEntry=releaseEntry;exports.stats=function(){return{entries:entries.length,bytes:bytes,active:entries.filter(function(e){return e.refs>0;}).length};};
