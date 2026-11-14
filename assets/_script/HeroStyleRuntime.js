@@ -152,7 +152,7 @@ Runtime.prototype.resolveImpact=function(cast,pending){
     var center=point(target),gear=h._heroSecondary||{},self=this,radius=gear.splashRadius||100,multiplier=cast.damageMultiplier*(1+(gear.splashDamage||0));
     this.enemies().filter(function(e){return e===target||distanceSquared(center,point(e))<=radius*radius;}).map(candidate).forEach(function(record){self.hit(record.enemy,multiplier,true,strike,record);});this.effect("burst",center,radius);
   }else if(s.style==="guardian"){
-    var self=this;this.enemies().forEach(function(e){if(distanceSquared(o,point(e))>250*250)return;var taunt={hero:h,generation:generation(h),enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,250);
+    var self=this;this.enemies().forEach(function(e,index){if(distanceSquared(o,point(e))>250*250)return;var taunt={hero:h,generation:generation(h),enemyGeneration:generation(e),data:self.game.gameData,epoch:self.game._combatEpoch,started:s.time,visualKey:"taunt:"+strike+":"+index,remaining:cast.tauntDuration===undefined?4:cast.tauntDuration};e._heroTaunt=taunt;self.taunted.push({enemy:e,taunt:taunt});});this.effect("ring",o,250);
   }
 };
 function beamCandidate(frame,target){return living(target)&&!frame.blocked.has(target)&&(!frame.targets||frame.targets.has(target)&&frame.targets.get(target)===generation(target));}

@@ -14,7 +14,7 @@ function fixture(audioManager){
  const exports={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports,cc,sp,require:name=>name==='UnitHitFeedback'?{play:actor=>hitReactions.push(actor)}:name==='./HeroSkillVFXState'?require('../../assets/_script/HeroSkillVFXState'):name==='./HeroSkillVFXLayout'?require('../../assets/_script/HeroSkillVFXLayout'):name==='./HeroSkillPose'?require('../../assets/_script/HeroSkillPose'):name==='AudioMgr'?{AudioMgr:{getInstance:()=>manager}}:name==='BattleSounds'?{attack:(hero,side)=>defaults.push({hero,side}),effect:(id,hero)=>defaults.push({id,hero})}:Settings});
  const target={hp:10,node:{getPosition:()=>({x:100,y:20})}},root=new Node('VFX');
  const rt={heroGeneration:3,hero:{node:{}},state:{style:'mystic',time:0},settings:Settings.defaults('mystic'),game:{_combatEpoch:7,ndMain:{convertToWorldSpaceAR:p=>({x:p.x*2,y:p.y*2})}},ui:{speed:1},projectiles:[],effects:[],available:()=>true};
- Object.assign(rt.settings.visual,{passiveResource:'',beamResource:'',markResource:'',buffResource:''});
+ Object.assign(rt.settings.visual,{passiveResource:'',beamResource:'',markResource:'',buffResource:'',tauntResource:'',shieldResource:''});
  return {P:exports,rt,target,root,cc,sp,calls,loads,released,defaults,hitReactions,manager,setVolume:v=>effectVolume=v};
 }
 const uuid='a9ed4a1a-a37a-44ab-af0c-7be941a3de18';
@@ -202,7 +202,7 @@ test('same-object target recycling and a missed visible gap restart channel audi
 });
 
 test('a one-frame authored flipbook crops its single cell and releases only the owned clone',()=>{
- const f=fixture(),visual=Settings.effective('guardian',{HeroSkills:{guardian:{visual:{resource:uuid,resourceKind:'sprite',resourceFrames:1,resourceColumns:1,resourceCell:16,resourceFps:24,resourceLoop:false}}}}).visual;Object.assign(visual,{passiveResource:'',beamResource:'',markResource:'',buffResource:''});f.rt.settings.visual=visual;
+ const f=fixture(),visual=Settings.effective('guardian',{HeroSkills:{guardian:{visual:{resource:uuid,resourceKind:'sprite',resourceFrames:1,resourceColumns:1,resourceCell:16,resourceFps:24,resourceLoop:false}}}}).visual;Object.assign(visual,{passiveResource:'',beamResource:'',markResource:'',buffResource:'',tauntResource:'',shieldResource:''});f.rt.settings.visual=visual;
  let clones=0,destroyed=0,last;const asset={getRect:()=>({x:32,y:48,width:64,height:32}),clone(){clones++;return{setRect(value){last=value;},setOriginalSize(){},setOffset(){},destroy(){destroyed++;}};}};
  f.rt.effects=[{x:0,y:0,duration:1,remaining:.5}];f.P.attachments({visual:{node:f.root}},f.rt);f.loads[0].callback(null,asset);assert.deepEqual(last,{x:32,y:48,width:16,height:16});assert.equal(clones,1);f.rt.effects[0].remaining=0;f.P.attachments({visual:{node:f.root}},f.rt);assert.equal(clones,1);f.P.clear(f.rt);assert.equal(destroyed,1);
 });

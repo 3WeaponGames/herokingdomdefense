@@ -26,10 +26,10 @@ class Model{
   const d=finite(this.scenario.targetDistance,120),count=clamp(Math.floor(this.scenario.targets||3),1,5);
   this.targets=Array.from({length:count},(_,i)=>{const at=this.scenario.targetPositions&&this.scenario.targetPositions[i];return {id:i,x:finite(at&&at.x,d+i*85),y:finite(at&&at.y,i?i%2?22:-22:0),hp:100000,maxHp:100000};});
   this.state=this.core.createState(this.style,this.settings);this.effects=[];this.projectiles=[];this.events=[];this.hits=0;this.damage=0;this.attackClock=0;this.basicPending=null;this.lastAttack=-100;this.lastCast=-100;this.lastAttackKind=null;this.serial=0;this.beam=false;this.beamTarget=null;this.channelTarget=null;this.channelWarmup=0;this.channelSourceTime=0;this.channelStarted=0;this.beamVisibleStarted=0;this.castResult=null;this.pendingDamage=null;
-  this.vfxClock=VFXState.create();if(this.scenario.mode==='active')this.cast();this.updateVFX();return this;
+  this.taunts=[];this.vfxClock=VFXState.create();if(this.scenario.mode==='active')this.cast();this.updateVFX();return this;
  }
  updateVFX(extra){const v=this.settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,x:t.x,y:t.y+50}:null;
-  const context=Object.assign({alive:this.hero.hp>0,hp:this.hero.hp,maxHp:this.hero.maxHp,origin:{x:this.hero.x+(v.originX||0),y:this.hero.y+70+(v.originY||0)},channelTarget:target(this.channelTarget),beamTarget:target(this.beamTarget),markedTarget:this.state.marked?target(this.state.target):null,warmupProgress:this.scenario.holdSource>0?Math.min(1,this.channelSourceTime/this.scenario.holdSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration},extra||{});
+  const context=Object.assign({taunts:this.taunts.filter(r=>r.target.hp>0).map(r=>({key:r.key,at:r.at,target:{id:r.target.id,generation:0,x:r.target.x,y:r.target.y+100}})),tauntDuration:v.tauntResourceFrames>0?v.tauntResourceFrames/v.tauntResourceFps:1.875,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,alive:this.hero.hp>0,hp:this.hero.hp,maxHp:this.hero.maxHp,origin:{x:this.hero.x+(v.originX||0),y:this.hero.y+70+(v.originY||0)},channelTarget:target(this.channelTarget),beamTarget:target(this.beamTarget),markedTarget:this.state.marked?target(this.state.target):null,warmupProgress:this.scenario.holdSource>0?Math.min(1,this.channelSourceTime/this.scenario.holdSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration},extra||{});
   if(context.markedTarget&&!extra?.markedTarget)context.markedTarget.y+=50;
   this.vfxFrame=VFXState.update(this.vfxClock,this.state,context,v);return this.vfxFrame;
  }
@@ -69,7 +69,7 @@ class Model{
    const snapshot=this.pendingDamage===null?this.stats().damage*result.damageMultiplier:this.pendingDamage,targets=this.targets.filter(t=>distance(origin,t)<=150);this.effect('ring',origin,150,undefined,time);targets.forEach(t=>this.hit(t,1,true,strike,snapshot,time));this.pendingDamage=null;
   }else if(this.style==='mystic'){
    if(!target||target.hp<=0||distance(origin,target)>reach.mystic)return;const center={x:target.x,y:target.y};this.effect('burst',center,100,undefined,time);this.targets.filter(t=>distance(t,center)<=100).forEach(t=>this.hit(t,result.damageMultiplier,true,strike,undefined,time));
-  }else if(this.style==='guardian')this.effect('ring',origin,250,undefined,time);
+  }else if(this.style==='guardian'){this.taunts=this.targets.filter(t=>t.hp>0&&distance(origin,t)<=250).map(t=>({key:'taunt:'+strike+':'+t.id,at:time,target:t}));this.effect('ring',origin,250,undefined,time);}
  }
  visibleBeam(target){
   const previous=this.beamTarget;this.beam=!!target;this.beamTarget=target;

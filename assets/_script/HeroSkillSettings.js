@@ -2,7 +2,7 @@
 // One field contract for runtime, authoring and preview. Reading defaults never
 // creates saved overrides or changes an existing skill document.
 var Core = require("./HeroStyleSkills"), VFXCatalog = require("./HeroSkillVFXCatalog");
-var RESOURCE_PREFIXES=["resource","impactResource","passiveResource","beamResource","markResource","buffResource"];
+var RESOURCE_PREFIXES=["resource","impactResource","passiveResource","beamResource","markResource","buffResource","tauntResource","shieldResource"];
 var styles = [
   {id:"skirmisher",name:"Skirmisher",weapon:"Bow",skill:"Piercing Arrow"},
   {id:"fighter",name:"Fighter",weapon:"Sword",skill:"Battle Cry"},
@@ -12,12 +12,12 @@ var styles = [
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
 var VISUAL = {originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",showBuiltin:true,animation:"",holdTime:-1,impactResource:"",impactResourceAnimation:"",impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
-["passive","beam","mark","buff"].forEach(function(slot){
+["passive","beam","mark","buff","taunt","shield"].forEach(function(slot){
   VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
   VISUAL[slot+"Scale"]=1;VISUAL[slot+"ScaleX"]=1;VISUAL[slot+"ScaleY"]=1;VISUAL[slot+"OffsetX"]=0;VISUAL[slot+"OffsetY"]=0;
   VISUAL[slot+"Rotation"]=0;VISUAL[slot+"Opacity"]=1;VISUAL[slot+"Color"]="";
 });
-Object.assign(VISUAL,{passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5});
+Object.assign(VISUAL,{passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1,beamWidth:48,beamEndDuration:.25,markSpawnDuration:.5,shieldSpawnDuration:.5,shieldEndDuration:.625});
 var AUDIO = {clip:"",volume:1,delay:0};
 var HELP = {
   cooldown:"Seconds between active-skill uses.",
@@ -119,13 +119,13 @@ var visualFields = Object.keys(VISUAL).map(function(key){
   if(/Opacity$/.test(key)||key==="opacity"){min=0;max=1;step=.01;unit="fraction";}
   if(/Playback$/.test(key)){min=0;max=4;step=.01;unit="playback multiplier";}
   if(key==="beamWidth"){min=1;max=200;step=1;unit="visual units";}
-  if(key==="beamEndDuration"||key==="markSpawnDuration"){min=.01;max=5;step=.01;unit="seconds";}
+  if(key==="beamEndDuration"||key==="markSpawnDuration"||key==="shieldSpawnDuration"||key==="shieldEndDuration"){min=.01;max=5;step=.01;unit="seconds";}
   if(key==="lineWidth"){min=0;max=200;step=.5;unit="0 = style default";}
   if(key==="effectDuration"||key==="impactDuration"){min=.01;max=30;step=.01;unit="seconds";}
   if(key==="impactDelay"){min=0;max=30;step=.01;unit="seconds";}
   if(key==="holdTime"){min=-1;max=30;step=.001;unit="seconds; -1 = authored hit";}
   return number("visual."+key,key.indexOf("impact")===0?"On-hit "+label(key.slice(6)).toLowerCase():label(key),min,max,step,unit);
-}).map(function(field){var key=field.key,slot=/^(passive|beam|mark|buff)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"Guardian's shield aura"}[slot[1]]:"";
+}).map(function(field){var key=field.key,slot=/^(passive|beam|mark|buff|taunt|shield)/.exec(key),purpose=slot?{passive:"the state-driven passive aura",beam:"Mystic's continuous beam",mark:"the overhead target mark",buff:"Guardian's shield aura",taunt:"the one-shot effect above each taunted enemy",shield:"Guardian's body shield"}[slot[1]]:"";
   if(slot)field.label=label(key).replace(/Resource Animation$/,"VFX animation").replace(/Resource$/,"VFX asset");
   field.help=VISUAL_HELP[key]||(slot?(field.type==="vfx"?"Imported VFX for "+purpose+". Empty disables this artwork without affecting gameplay.":field.type==="effect-animation"?"Animation from the selected VFX; flipbooks use their imported timing.":/Offset/.test(key)?"Visual offset for "+purpose+" in world units; positive Y moves upward. Damage geometry is unchanged.":/Scale/.test(key)?"Size multiplier for "+purpose+". Minimum scale is the size at the lowest passive intensity.":/Playback/.test(key)?"Animation speed at minimum or maximum passive intensity. Speed blends with stacks, momentum or missing HP without seeking the animation.":/Opacity/.test(key)?"Opacity of "+purpose+" from 0 (hidden) to 1 (fully visible).":/Color/.test(key)?"Optional tint for "+purpose+". Empty preserves the imported colors.":/Rotation/.test(key)?"Visual rotation in degrees; gameplay direction is unchanged.":key==="beamWidth"?"Displayed beam thickness in world units. Origin and target flares keep their proportions.":key==="beamEndDuration"?"Seconds for the release frames after a beam stops or switches targets.":key==="markSpawnDuration"?"Seconds for the non-looping mark to appear before its persistent loop.":"Presentation setting for "+purpose+"; does not change gameplay."):undefined);return field;});
 var audioFields=[];
@@ -137,8 +137,8 @@ var audioFields=[];
 });
 function fields(style){
   var visual=clone(visualFields).filter(function(field){
-    if(/^(beam|mark|buff)Scale[XY]$/.test(field.key))return false;
-    var slot=/^(passive|beam|mark|buff)/.exec(field.key);
+    if(/^(beam|mark|buff|taunt|shield)Scale[XY]$/.test(field.key))return false;
+    var slot=/^(passive|beam|mark|buff|taunt|shield)/.exec(field.key);
     if(slot){if(slot[1]==="passive")return ["fighter","vanguard","bruiser"].indexOf(style)>=0;if(slot[1]==="beam"||slot[1]==="mark")return style==="mystic";return style==="guardian";}
     if(["holdTime","targetX","targetY"].indexOf(field.key)>=0)return style==="mystic";
     if(["originX","originY"].indexOf(field.key)>=0)return style==="mystic"||style==="skirmisher";
@@ -165,7 +165,7 @@ function defaults(style){
   if(style==="vanguard")Object.assign(v,{passiveScale:1.8,passiveScaleY:.45,passiveOffsetY:12,passiveMinScale:.3,passiveMinPlayback:.2,passivePlayback:.45});
   if(style==="bruiser")Object.assign(v,{passiveScale:1.8,passiveColor:"#ff5367",passiveMinScale:.35,passiveMinPlayback:.3,passivePlayback:1});
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45});
-  if(style==="guardian")v.buffScale=1.8;
+  if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.25,shieldScale:1.5,shieldOffsetY:80,shieldOpacity:.85});
   return result;
 }
 function set(object,path,value){var keys=path.split("."),key=keys.pop(),parent=object;keys.forEach(function(part){if(!parent[part]||typeof parent[part]!=="object"||Array.isArray(parent[part]))parent[part]={};parent=parent[part];});parent[key]=value;}
@@ -195,7 +195,7 @@ function effective(style,config){
   if(!saved||typeof saved!=="object"||Array.isArray(saved))return result;
   RESOURCE_PREFIXES.forEach(function(prefix){var value=saved.visual&&saved.visual[prefix],field=descriptors(style).filter(function(row){return row.path==="visual."+prefix;})[0];if(field&&valid(field,value)&&value!==result.visual[prefix])Object.keys(result.visual).forEach(function(key){if(key!==prefix&&key!==prefix+"Animation"&&key.indexOf(prefix)===0)delete result.visual[key];});});
   descriptors(style).forEach(function(field){var value=get(saved,field.path);if(value!==undefined&&valid(field,value))set(result,field.path,value);});
-  RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=/^visual\.(passiveResource|beamResource|markResource|buffResource)/.exec(path);if(match&&get(saved,"visual."+match[1])!==result.visual[match[1]])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
+  RESOURCE_PREFIXES.reduce(function(paths,prefix){return paths.concat("visual."+prefix+"Bundle","visual."+prefix+"Path","visual."+prefix+"Kind");},[]).concat(["cast","impact","channel"].reduce(function(paths,phase){return paths.concat("audio."+phase+".bundle","audio."+phase+".path");},[])).forEach(function(path){var match=/^visual\.(passiveResource|beamResource|markResource|buffResource|tauntResource|shieldResource)/.exec(path);if(match&&get(saved,"visual."+match[1])!==result.visual[match[1]])return;var value=get(saved,path),kind=/Kind$/.test(path),bundle=/Bundle$|\.bundle$/.test(path);if(typeof value!=="string"||value.length>500||/[\u0000-\u001f]/.test(value))return;if(kind&&!/^(sprite|spine)$/.test(value))return;if(bundle&&!/^[a-z0-9_-]+$/i.test(value))return;if(!kind&&!bundle&&(!value||/\\|:|(^|\/)\.\.?($|\/)/.test(value)||value[0]==='/'))return;set(result,path,value);});
   RESOURCE_PREFIXES.forEach(function(prefix){if(RESOURCE_PREFIXES.indexOf(prefix)>=2&&get(saved,"visual."+prefix)!==result.visual[prefix])return;var raw={};["Frames","Columns","Cell","Fps","Loop"].forEach(function(key){raw["resource"+key]=saved.visual&&saved.visual[prefix+key];});var frames=flipbook(raw);if(frames)Object.keys(frames).forEach(function(key){result.visual[prefix+key.charAt(0).toUpperCase()+key.slice(1)]=frames[key];});});
   return result;
 }

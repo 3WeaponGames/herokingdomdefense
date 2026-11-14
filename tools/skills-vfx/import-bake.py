@@ -26,6 +26,10 @@ def run(bake,artifacts):
         clip.update(kind='flipbook',bundle='resources',resource='vfx/hero-skills/'+row['id'],uuid=asset_uuid(relative+'#sprite'),sha256=hashlib.sha256(raw).hexdigest(),source={'package':row['package'],'prefab':row['prefab']})
         clips.append(clip)
     catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{'fighter':{'passive':'fighter-windup'},'vanguard':{'passive':'vanguard-momentum'},'bruiser':{'passive':'bruiser-blood-aura'},'mystic':{'beam':'mystic-beam-body-loop','mark':'mystic-mark-loop'},'guardian':{'buff':'guardian-runic-shield'}}}
+    custom=ROOT/'tools/skills-vfx/sheet-clips.json'
+    if custom.exists():
+        catalog['clips'].extend(json.loads(custom.read_text()))
+        catalog['presets']['guardian'].update(taunt='guardian-taunt-test',shield='guardian-body-shield-loop')
     tx.json(base+'/catalog.json',catalog)
     tx.json(base+'/catalog.json.meta',{'ver':'1.2.7','uuid':asset_uuid(base+'/catalog.json'),'importer':'json','subMetas':{}})
     script='assets/_script/HeroSkillVFXCatalog.js'

@@ -13,7 +13,7 @@ const finite=(value,fallback)=>typeof value==='number'&&Number.isFinite(value)?v
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 function multiplyPixels(source,color){const rgb=[1,3,5].map(start=>parseInt(color.slice(start,start+2),16)/255),result=new Uint8ClampedArray(source.length);for(let i=0;i<source.length;i+=4){result[i]=source[i]*rgb[0];result[i+1]=source[i+1]*rgb[1];result[i+2]=source[i+2]*rgb[2];result[i+3]=source[i+3];}return result;}
 function attackName(style){return style==='skirmisher'?'attack':'attack_'+style;}
-function availableHandles(style,visual){const names=style==='mystic'?['origin','target','effect']:style==='skirmisher'?['origin','effect']:['effect'];for(const slot of ['passive','mark','buff'])if(visual&&visual[slot+'Resource'])names.push(slot);return names;}
+function availableHandles(style,visual){const names=style==='mystic'?['origin','target','effect']:style==='skirmisher'?['origin','effect']:['effect'];for(const slot of ['passive','mark','buff','taunt','shield'])if(visual&&visual[slot+'Resource'])names.push(slot);return names;}
 function flipbookFrame(meta,age,width,height){
   if(!meta||!meta.cell||meta.frames<1||meta.columns<1||meta.cell*meta.columns>width||Math.ceil(meta.frames/meta.columns)*meta.cell>height)return null;
   const elapsed=Math.max(0,Math.floor(Math.max(0,finite(age,0))*meta.fps)),index=meta.loop?elapsed%meta.frames:Math.min(meta.frames-1,elapsed);
@@ -138,7 +138,7 @@ function create(host,options){
     if(!tip)return projectile.visualOffset={x:0,y:0};
     const at=renderer.transformPoint(layer.description,tip.x,tip.y);return projectile.visualOffset={x:at.x-model.hero.x,y:at.y-model.hero.y};
   }
-  function anchors(){const v=settings.visual||{},o=weaponOrigin(),target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget={x:target.x+finite(v.targetX,0),y:target.y+50+finite(v.targetY,0)},center=style==='mystic'?(model.scenario.mode==='active'?{x:target.x,y:target.y}:beamTarget):{x:model.hero.x,y:model.hero.y};return{origin:{x:o.x+finite(v.originX,0),y:o.y+finite(v.originY,0)},target:beamTarget,effect:{x:center.x+finite(v.offsetX,0),y:center.y+finite(v.offsetY,0)},passive:{x:model.hero.x+finite(v.passiveOffsetX,0),y:model.hero.y+finite(v.passiveOffsetY,0)},buff:{x:model.hero.x+finite(v.buffOffsetX,0),y:model.hero.y+finite(v.buffOffsetY,0)},mark:{x:target.x+finite(v.markOffsetX,0),y:target.y+100+finite(v.markOffsetY,0)}};}
+  function anchors(){const v=settings.visual||{},o=weaponOrigin(),target=model.beamTarget||model.state.target||model.selected()||model.targets[0]||{x:150,y:0},beamTarget={x:target.x+finite(v.targetX,0),y:target.y+50+finite(v.targetY,0)},center=style==='mystic'?(model.scenario.mode==='active'?{x:target.x,y:target.y}:beamTarget):{x:model.hero.x,y:model.hero.y};return{taunt:{x:target.x+finite(v.tauntOffsetX,0),y:target.y+100+finite(v.tauntOffsetY,0)},shield:{x:model.hero.x+finite(v.shieldOffsetX,0),y:model.hero.y+finite(v.shieldOffsetY,0)},origin:{x:o.x+finite(v.originX,0),y:o.y+finite(v.originY,0)},target:beamTarget,effect:{x:center.x+finite(v.offsetX,0),y:center.y+finite(v.offsetY,0)},passive:{x:model.hero.x+finite(v.passiveOffsetX,0),y:model.hero.y+finite(v.passiveOffsetY,0)},buff:{x:model.hero.x+finite(v.buffOffsetX,0),y:model.hero.y+finite(v.buffOffsetY,0)},mark:{x:target.x+finite(v.markOffsetX,0),y:target.y+100+finite(v.markOffsetY,0)}};}
   function line(a,b,width,color){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
   function circle(p,r,color,fill){ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);if(fill){ctx.fillStyle=color;ctx.fill();}else{ctx.strokeStyle=color;ctx.stroke();}}
   function customEffect(at,rotation,age,vp,loop,resource,targetContext,placement){
@@ -208,7 +208,7 @@ function create(host,options){
     if(token!==styleSerial||disposed)return;styleResources.clear();for(const [id,resource]of results)styleResources.set(id,resource);
   }
   function drawHandles(vp){
-    const a=anchors(),colors={origin:'#65d9ff',target:'#e2a0ff',effect:'#ffdc68',passive:'#8df0a8',mark:'#dcb0ff',buff:'#a2d9ff'};handles=[];
+    const a=anchors(),colors={origin:'#65d9ff',target:'#e2a0ff',effect:'#ffdc68',passive:'#8df0a8',mark:'#dcb0ff',buff:'#a2d9ff',taunt:'#e897ff',shield:'#b5dfff'};handles=[];
     const names=availableHandles(style,settings.visual);if(!names.includes(selectedHandle))selectedHandle=names[0];
     for(const name of names){const p=screen(a[name],vp);handles.push({name,world:a[name],...p});ctx.lineWidth=name===selectedHandle?3:1.5;circle(p,name===selectedHandle?8:6,colors[name],false);ctx.font='12px sans-serif';ctx.fillStyle=colors[name];ctx.fillText(name[0].toUpperCase()+name.slice(1),p.x+11,p.y+(name==='effect'?19:-8));}
   }
@@ -294,7 +294,7 @@ function create(host,options){
     if(!drag||drag.id!==event.pointerId)return;event.preventDefault();const p=position(event);
     if(drag.kind==='pan'){view.panX=drag.panX+p.x-drag.start.x;view.panY=drag.panY+p.y-drag.start.y;draw();return;}
     if(drag.kind==='enemy'){const at=world(p,viewport());model.moveTarget(drag.target,{x:drag.at.x+at.x-drag.start.x,y:drag.at.y+at.y-drag.start.y});draw();return;}
-    const at=world(p,viewport()),prefix=['passive','mark','buff'].includes(drag.name)?drag.name+'Offset':drag.name==='effect'?'offset':drag.name,visual=settings.visual||(settings.visual={});
+    const at=world(p,viewport()),prefix=['passive','mark','buff','taunt','shield'].includes(drag.name)?drag.name+'Offset':drag.name==='effect'?'offset':drag.name,visual=settings.visual||(settings.visual={});
     for(const [axis,delta]of [['X',at.x-drag.start.x],['Y',at.y-drag.start.y]]){const key=prefix+axis,value=Math.round((finite(drag.visual[key],0)+delta)*100)/100;visual[key]=value;if(options.onChange)options.onChange(['visual',key],value);}
     draw();
   }

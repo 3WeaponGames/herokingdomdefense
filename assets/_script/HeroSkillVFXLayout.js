@@ -5,7 +5,7 @@ function clipFor(id){return Catalog.clips.filter(function(clip){return clip.uuid
 function phaseClips(slot,selected,phase){
   if(!selected)return [null];
   if(slot==="beam"&&selected.slot==="beam")return Catalog.clips.filter(function(clip){return clip.slot==="beam"&&clip.phase===phase;});
-  if(slot==="mark"&&selected.slot==="mark"){var found=Catalog.clips.filter(function(clip){return clip.group===selected.group&&clip.phase===phase;});if(found.length)return found;}
+  if((slot==="mark"||slot==="shield")&&selected.slot===slot){var found=Catalog.clips.filter(function(clip){return clip.group===selected.group&&clip.phase===phase;});if(found.length)return found;}
   return [selected];
 }
 function duration(clip){return clip?clip.frames/clip.fps:1;}
@@ -25,7 +25,7 @@ function entities(frame,visual,context){
           var cell=clip?clip.cell:128,sx=clip?clip.startX:.0,sy=clip?clip.startY:.5,ex=clip?clip.endX:1,ey=clip?clip.endY:.5,span=Math.max(1,Math.hypot(ex-sx,ey-sy)*cell);
           base.anchorX=sx;base.anchorY=sy;base.scaleX=length/span/Math.max(.01,v.scale||1);base.scaleY=(visual.beamWidth||24)/cell;base.angle=Math.atan2(dy,dx)*180/Math.PI-Math.atan2(ey-sy,ex-sx)*180/Math.PI+(v.rotation||0);
         }
-      }else if(slot==="mark"){
+      }else if(slot==="mark"||slot==="taunt"){
         if(!entity.target)return;base.x=entity.target.x+(v.offsetX||0);base.y=entity.target.y+(v.offsetY||0);
       }
       result.push(base);

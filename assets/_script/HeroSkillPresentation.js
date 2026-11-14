@@ -249,17 +249,22 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
   });
   s.nodes.forEach(function(record,key){if(!keep.has(key)){dispose(record);s.nodes.delete(key);}});
 }
-function hasStyleArt(v){return !!(v.passiveResource||v.beamResource||v.markResource||v.buffResource);}
+function hasStyleArt(v){return !!(v.passiveResource||v.beamResource||v.markResource||v.buffResource||v.tauntResource||v.shieldResource);}
 function vfxContext(runtime){
   var hero=runtime.hero,main=runtime.game.ndMain,v=visual(runtime);
   function target(actor,overhead,expected){
-    if(!actor||!alive(actor.node)||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected)return null;
+    if(!actor||!alive(actor.node)||actor.node.activeInHierarchy===false||actor._isPooled||!(actor.hp>0)||actor.isDead&&actor.isDead()||expected!==undefined&&actor.node._combatGeneration!==expected)return null;
     var ground=actor.node.convertToWorldSpaceAR(cc.v2(0,0)),bar=actor.ndHp||actor.ctrHp&&actor.ctrHp.node,at;
     if(bar){var top=bar.convertToWorldSpaceAR(cc.v2(0,overhead?18:0));at=overhead?top:cc.v2(ground.x+(top.x-ground.x)*.55,ground.y+(top.y-ground.y)*.55);}else at=cc.v2(ground.x,ground.y+(overhead?100:50));
     var point=main.convertToNodeSpaceAR(at);return{id:actor,generation:actor.node._combatGeneration,x:point.x+(overhead?0:v.targetX),y:point.y+(overhead?0:v.targetY)};
   }
   var origin=hero.getAttWpos?main.convertToNodeSpaceAR(hero.getAttWpos()):offset(hero.node.getPosition(),0,70);
-  return{hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
+  var tauntClip=VFXLayout.clipFor(v.tauntResource),tauntDuration=tauntClip?tauntClip.frames/tauntClip.fps:1.875,taunts=[];
+  (v.tauntResource?runtime.taunted||[]:[]).forEach(function(record){var t=record.taunt,enemy=record.enemy;
+    if(!t||typeof t.started!=="number"||!isFinite(t.started)||runtime.state.time-t.started>=tauntDuration||enemy._heroTaunt!==t||t.data!==runtime.game.gameData||t.epoch!==runtime.game._combatEpoch||!(t.remaining>0))return;
+    var at=target(enemy,true,t.enemyGeneration);if(at)taunts.push({key:t.visualKey,at:t.started,target:at});
+  });
+  return{taunts:taunts,tauntDuration:tauntDuration,shieldSpawnDuration:v.shieldSpawnDuration,shieldEndDuration:v.shieldEndDuration,hero:hero.node.getPosition(),alive:hero.hp>0,hp:hero.hp,maxHp:hero.hpMax,origin:offset(origin,v.originX,v.originY),channelTarget:target(runtime.channelTarget,false,runtime.beamGeneration),beamTarget:target(runtime.beamTarget,false,runtime.beamVisibleGeneration),markedTarget:runtime.state.marked?target(runtime.state.target,true,runtime.markGeneration):null,warmupProgress:runtime.beamHoldSource>0?Math.min(1,runtime.beamSourceTime/runtime.beamHoldSource):1,beamEndDuration:v.beamEndDuration,markSpawnDuration:v.markSpawnDuration};
 }
 function advanceVFX(runtime){
   var v=visual(runtime);if(!hasStyleArt(v)||!runtime.game||!runtime.game.ndMain||!runtime.hero||typeof cc==="undefined")return null;
@@ -268,7 +273,7 @@ function advanceVFX(runtime){
 function preload(runtime){
   if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
   var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
-  ["passive","beam","mark","buff"].forEach(function(slot){
+  ["passive","beam","mark","buff","taunt","shield"].forEach(function(slot){
     var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
     ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){
       var resource=part?part.uuid:selected;if(seen.has(resource))return;seen.add(resource);var art=arts.get(resource),value=Settings.resourceVisual(v,slot+"Resource");if(part)Settings.applyClip(value,"resource",part);

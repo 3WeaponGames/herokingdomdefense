@@ -449,3 +449,7 @@ test('each beam tick samples current APS so landed-hit speed changes preserve th
 test('the beam tick budget bounds work without stalling cooldown, source pose or the full simulation clock',()=>{
  const h=scene('mystic',{attackRate:1000}),e=h.enemy(100,0,100000);h.rt.state.cooldown=10;h.rt.update(2);assert.equal(e.hits.length,32);close(h.rt.state.time,2);close(h.rt.state.cooldown,8);close(h.rt.beamSourceTime,2);assert(h.rt.beamClock>1);h.rt.update(.01);assert.equal(e.hits.length,64);close(h.rt.state.time,2.01);
 });
+
+test('Guardian records one presentation onset per actually taunted enemy with unique identities and no repeated application',()=>{
+ const h=scene('guardian'),a=h.enemy(100),b=h.enemy(240),outside=h.enemy(260);assert(h.rt.cast());h.rt.update(.2);assert.equal(h.rt.taunted.length,2);assert(a._heroTaunt&&b._heroTaunt);assert.equal(outside._heroTaunt,undefined);assert.notEqual(a._heroTaunt.visualKey,b._heroTaunt.visualKey);const start=a._heroTaunt.started;assert(start>=0&&start<=.2);h.rt.update(1);assert.equal(a._heroTaunt.started,start);assert.equal(h.rt.taunted.length,2);h.hero.endRoundGame();assert.equal(a._heroTaunt,undefined);assert.equal(b._heroTaunt,undefined);
+});

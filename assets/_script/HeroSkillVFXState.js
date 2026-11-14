@@ -5,8 +5,8 @@ function finite(value,fallback){return typeof value==="number"&&isFinite(value)?
 function clamp(value,low,high){return Math.max(low,Math.min(high,value));}
 function point(value){return value?{x:finite(value.x,0),y:finite(value.y,0)}:null;}
 function same(a,b){return !!a&&!!b&&a.id===b.id&&a.generation===b.generation;}
-function create(){return{scope:null,time:0,passive:null,beam:null,mark:null,buff:null,tails:[],frame:{entities:[],active:{}}};}
-function reset(cache,state){cache.scope=state;cache.time=finite(state.time,0);cache.passive=cache.beam=cache.mark=cache.buff=null;cache.tails=[];}
+function create(){return{scope:null,time:0,passive:null,beam:null,mark:null,buff:null,shieldTail:null,tails:[],frame:{entities:[],active:{}}};}
+function reset(cache,state){cache.scope=state;cache.time=finite(state.time,0);cache.passive=cache.beam=cache.mark=cache.buff=null;cache.shieldTail=null;cache.tails=[];}
 function setting(visual,prefix,key,fallback){return finite(visual[prefix+key],fallback);}
 function advanceClock(clock,dt){if(clock)clock.age+=dt*clock.speed;}
 function clock(speed){return{age:0,speed:speed};}
@@ -17,7 +17,7 @@ function update(cache,state,context,visual){
   var dt=Math.max(0,time-cache.time);cache.time=time;
   var entities=[],active={},style=state.style,tuning=state.tuning||{},alive=context.alive!==false;
   if(!alive){reset(cache,state);cache.frame={entities:entities,active:active};return cache.frame;}
-  advanceClock(cache.passive,dt);advanceClock(cache.beam,dt);advanceClock(cache.mark,dt);advanceClock(cache.buff,dt);
+  advanceClock(cache.passive,dt);advanceClock(cache.beam,dt);advanceClock(cache.mark,dt);advanceClock(cache.buff,dt);advanceClock(cache.shieldTail,dt);
   cache.tails.forEach(function(tail){tail.age+=dt;});
   cache.tails=cache.tails.filter(function(tail){return tail.age<tail.duration;});
   var intensity=0,speed=1,copies=1,restart=false;
@@ -76,7 +76,20 @@ function update(cache,state,context,visual){
   if(shield){
     if(!cache.buff||state.shieldRemaining>cache.buff.remaining+1e-8)cache.buff=clock(1);
     cache.buff.remaining=state.shieldRemaining;entities.push(payload("buff","loop",cache.buff.age));
-  }else cache.buff=null;
+    cache.shieldTail=null;
+    if(visual.shieldResource){var intro=Math.max(.01,finite(context.shieldSpawnDuration,.5)),starting=cache.buff.age<intro;entities.push(payload("shield",starting?"start":"loop",starting?cache.buff.age:cache.buff.age-intro,{progress:starting?cache.buff.age/intro:undefined}));}
+  }else {
+    if(cache.buff&&visual.shieldResource)cache.shieldTail=clock(1);
+    cache.buff=null;
+    var end=Math.max(.01,finite(context.shieldEndDuration,.625));
+    if(cache.shieldTail){if(cache.shieldTail.age<end)entities.push(payload("shield","end",cache.shieldTail.age,{progress:cache.shieldTail.age/end}));else cache.shieldTail=null;}
+  }
+  // Records are created only when the gameplay taunt is applied. Their fixed
+  // start time prevents a still-taunted enemy from restarting the flipbook.
+  if(style==="guardian")(context.taunts||[]).forEach(function(record){
+    var age=time-finite(record.at,time),duration=Math.max(.01,finite(context.tauntDuration,1.875));
+    if(record.target&&age>=0&&age<duration)entities.push(payload("taunt","once",age,{key:record.key,target:record.target,opacity:Math.min(1,(duration-age)/.12)}));
+  });
   cache.frame={entities:entities,active:active};return cache.frame;
 }
 exports.create=create;exports.update=update;
