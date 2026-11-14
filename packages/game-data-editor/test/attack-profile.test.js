@@ -100,7 +100,15 @@ test('inferred policies agree with the shipped controller timer anchors and atta
     e.stubs.GameToolsOverrides={isPending:()=>false,attack(){starts++;}};
     const name='KinghtFall'+(type==='ally'?'Soldier':'Enemy')+'Item'+String(id-90000).padStart(2,'0');
     const actor=e.actor(name);actor.cfg={...e.cfg,ID:id};actor.time.Attack=123;
+    let target;
+    if(type==='ally'){
+      // Timer policy is measured for an eligible attack, not an empty battlefield.
+      e.game._combatEpoch=1;actor.node._combatGeneration=1;
+      target={...e.unit(actor.node.x+10,actor.node.y),hp:100,isDead:()=>false};target.node._combatGeneration=1;
+      e.game.gameData.enemies.push(target);actor._orderTarget=target;actor._orderTargetGeneration=1;
+    }
     actor.doAttackStart();assert.equal(starts,1,name);
+    if(target)assert.equal(actor._attackIntent.target,target,name+' captures the live target before measuring its timer');
     const policy=Profile.describe({}, {}, {type,id,record:actor.cfg}).cooldownStart;
     assert.equal(actor.time.Attack,policy==='start'?0:-1,name+' cooldown anchor');
     if(id===90010)continue; // Boss form transitions have their own update path.
